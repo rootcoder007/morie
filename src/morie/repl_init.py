@@ -227,10 +227,7 @@ def _inject_convenience(ns: dict) -> None:
         if condition is None:
             print("Usage: filter_rows('condition')")
             return
-        if isinstance(condition, str):
-            result = data.query(condition)
-        else:
-            result = data[condition]
+        result = data.query(condition) if isinstance(condition, str) else data[condition]
         ns["filtered"] = result
         print(f"  Filtered: {len(result)}/{len(data)} rows -> 'filtered'")
         return result

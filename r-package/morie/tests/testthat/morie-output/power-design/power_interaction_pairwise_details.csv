@@ -1,0 +1,5 @@
+"reference_gender","comparison_gender","delta_rd","se2_const","pair_required_n","z_eff","pair_power","endpoint","scenario","allocation_strategy","target_power","alpha","compute_method","analysis_mode","power_scope"
+"Female","Male",0.0213019061548826,0.496465406774301,8589.95127856524,0.0427487563625584,0.962929278392973,"heavy_drinking_30d","pilot_observed","equal_strata",0.8,0.05,"normal_approximation","design","cpads"
+"Female","Non-binary",0.071699721333054,0.488752780942419,748.756817623538,0.144793291318216,1,"heavy_drinking_30d","pilot_observed","equal_strata",0.8,0.05,"normal_approximation","design","cpads"
+"Female","Male",0.0778339139586238,0.45244001709347,588.407962949143,0.163335115669176,1,"ebac_legal","pilot_observed","equal_strata",0.8,0.05,"normal_approximation","design","cpads"
+"Female","Non-binary",0.124312222638819,0.460532824572671,236.246736024946,0.257772110076897,1,"ebac_legal","pilot_observed","equal_strata",0.8,0.05,"normal_approximation","design","cpads"

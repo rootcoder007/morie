@@ -146,7 +146,8 @@ def mrm_twoprop_test(
         warnings.warn(
             "both arms are degenerate (pooled proportion is 0 or 1); the "
             "chi-square and Fisher tests carry no information",
-            stacklevel=2)
+            stacklevel=2,
+        )
         chi2, p_chi2, dof, p_fisher = 0.0, 1.0, 1, 1.0
     else:
         chi2, p_chi2, dof, _ = stats.chi2_contingency(tbl, correction=False)

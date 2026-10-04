@@ -411,6 +411,36 @@ def _cpu_tdp_fallback() -> float:
     return 85.0  # conservative default
 
 
+# two-letter codes people type, to the ISO-3 keys of the energy-mix table (the same map as rmorie)
+_ISO2_TO_ISO3 = {
+    "CA": "CAN", "US": "USA", "GB": "GBR", "FR": "FRA", "DE": "DEU", "IN": "IND", "CN": "CHN",
+    "AU": "AUS", "JP": "JPN", "BR": "BRA", "MX": "MEX", "IT": "ITA", "ES": "ESP", "NL": "NLD",
+    "SE": "SWE", "NO": "NOR", "FI": "FIN", "DK": "DNK", "CH": "CHE", "IE": "IRL", "NZ": "NZL",
+    "KR": "KOR", "SG": "SGP", "ZA": "ZAF", "PL": "POL", "BE": "BEL", "AT": "AUT", "PT": "PRT",
+}  # fmt: skip
+
+
+def iso3(code: str) -> str:
+    """``"fr"`` -> ``"FRA"``; an ISO-3 code (or anything else) comes back upper-cased.
+
+    Examples
+    --------
+    >>> iso3("fr"), iso3("CAN")
+    ('FRA', 'CAN')
+    """
+    c = (code or "").strip().upper()
+    return _ISO2_TO_ISO3.get(c, c) if len(c) == 2 else c
+
+
+def known_country_codes() -> set[str]:
+    """ISO-3 codes the energy-mix table knows (empty when the table is not bundled)."""
+    try:
+        _load_energy_data()
+        return set(_GLOBAL_ENERGY_MIX.keys())
+    except Exception:
+        return set()
+
+
 def _get_carbon_intensity(
     country_iso: str = "",
     region: str = "",
@@ -434,7 +464,7 @@ def _get_carbon_intensity(
                 usa_data = json.load(f)
             for state, info in usa_data.items():
                 if region.lower() in state.lower() or state.lower() in region.lower():
-                    lbs_mwh = info if isinstance(info, (int, float)) else info.get("emissions", 0)
+                    lbs_mwh = info if isinstance(info, int | float) else info.get("emissions", 0)
                     return float(lbs_mwh) * _LBS_MWH_TO_KG_KWH
 
     # Canadian provincial data
@@ -447,7 +477,7 @@ def _get_carbon_intensity(
                 can_data = json.load(f)
             for prov, info in can_data.items():
                 if region.lower() in prov.lower() or prov.lower() in region.lower():
-                    if isinstance(info, (int, float)):
+                    if isinstance(info, int | float):
                         return float(info) * _G_TO_KG
                     elif isinstance(info, dict) and "carbon_intensity" in info:
                         return float(info["carbon_intensity"]) * _G_TO_KG
@@ -463,7 +493,7 @@ def _get_carbon_intensity(
             total_twh = 0.0
             weighted_intensity = 0.0
             for source, twh in country_data.items():
-                if source in _SOURCE_INTENSITY and isinstance(twh, (int, float)):
+                if source in _SOURCE_INTENSITY and isinstance(twh, int | float):
                     total_twh += twh
                     weighted_intensity += twh * _SOURCE_INTENSITY[source]
             if total_twh > 0:
@@ -483,7 +513,8 @@ def _detect_location() -> tuple[str, str, str, float, float]:
         resp = httpx.get("https://ipapi.co/json/", timeout=5)
         data = resp.json()
         return (
-            data.get("country_code", ""),
+            # the energy-mix table is keyed by ISO-3 ("CAN"); country_code is ISO-2 ("CA")
+            data.get("country_code_iso3") or data.get("country_code", ""),
             data.get("region", ""),
             data.get("country_name", ""),
             float(data.get("latitude", 0)),
@@ -556,7 +587,11 @@ class EmissionsTracker:
         self._save_to_file = save_to_file
         self._save_to_logger = save_to_logger
         _logger.setLevel(getattr(logging, str(log_level).upper(), logging.WARNING))
-        self._country_iso = country_iso_code
+        iso = iso3(country_iso_code or "")
+        codes = known_country_codes() if iso else set()
+        # a code the energy-mix table does not know gets the world average, and must be labelled so,
+        # not "(XYZ)" in the summary, the CSV and the signed capsule
+        self._country_iso = iso if (not codes or iso in codes) else ""
         self._region = region
         self._capsule = capsule
         self.capsule: dict[str, Any] | None = None
@@ -587,7 +622,6 @@ class EmissionsTracker:
         self._tdp: float = 0.0
 
     def start(self) -> EmissionsTracker:
-
         self._start_time = time.time()
         self._last_measure_time = self._start_time
         self._ram_power = _estimate_ram_power()

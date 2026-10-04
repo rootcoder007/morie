@@ -7,7 +7,7 @@ with_stub_bin <- function(f) {
   dir <- tempfile("stubbin")
   dir.create(dir)
   log <- file.path(dir, "argv.txt")
-  bin <- file.path(dir, "morie")
+  bin <- file.path(dir, "rmorie")
   writeLines(c("#!/bin/sh", paste0("printf '%s\\n' \"$@\" > '", log, "'"),
                "echo ok"), bin)
   Sys.chmod(bin, "0755")

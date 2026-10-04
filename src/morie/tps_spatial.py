@@ -90,7 +90,7 @@ def morans_i_neighbourhood(
         return RichResult(title=f"Moran's I -- {ds_name}", warnings=["empty spatial weights -- k too small"])
     num = z @ W @ z
     den = z @ z
-    I = (n / S0) * (num / den) if den != 0 else float("nan")
+    moran_i = (n / S0) * (num / den) if den != 0 else float("nan")
     expected_I = -1.0 / (n - 1) if n > 1 else float("nan")
 
     # Approximate variance + z-score (assumes normality)
@@ -105,7 +105,7 @@ def morans_i_neighbourhood(
         z_I = float("nan")
         p = float("nan")
     else:
-        z_I = (I - expected_I) / np.sqrt(var_I)
+        z_I = (moran_i - expected_I) / np.sqrt(var_I)
         # Two-sided
         from math import erfc, sqrt
 
@@ -117,14 +117,14 @@ def morans_i_neighbourhood(
             ("Spatial unit", hood_col),
             ("Neighbourhoods", int(n)),
             ("k-nearest neighbours", int(min(k_neighbours, n - 1))),
-            ("Moran's I", round(float(I), 4)),
+            ("Moran's I", round(float(moran_i), 4)),
             ("Expected I under null", round(expected_I, 4)),
             ("Variance(I)", round(float(var_I), 6)),
             ("z-score", round(float(z_I), 4) if np.isfinite(z_I) else "n/a"),
             ("p-value (two-sided)", round(float(p), 6) if np.isfinite(p) else "n/a"),
         ],
         interpretation=(
-            f"I={float(I):+.3f}, z={float(z_I):+.2f}, p={float(p):.4f}. "
+            f"I={float(moran_i):+.3f}, z={float(z_I):+.2f}, p={float(p):.4f}. "
             "Positive I = nearby neighbourhoods have similar counts "
             "(spatial clustering of crime); negative = checkerboard "
             "pattern; near zero = random."
@@ -132,7 +132,7 @@ def morans_i_neighbourhood(
         if np.isfinite(z_I)
         else "Variance non-positive -- interpretation skipped.",
         payload={
-            "I": float(I),
+            "I": float(moran_i),
             "expected_I": expected_I,
             "var_I": float(var_I),
             "z_score": float(z_I) if np.isfinite(z_I) else None,

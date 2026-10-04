@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def integrated_emg_fn(x: np.ndarray) -> DescriptiveResult:
-    """Time discovers truth. -- Seneca"""
+    """Integrated EMG: the area under the rectified (absolute) signal."""
     from morie._waveform import integrated_emg as _backend
 
     result = _backend(x)

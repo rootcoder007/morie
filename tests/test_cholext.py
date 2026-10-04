@@ -45,8 +45,13 @@ def test_wendland_and_tapered_simulation():
         v = wendland_taper([0.0, 0.3, 1.2], 1.0, dimension=2, k=k)
         assert v[0] == 1.0 and v[2] == 0.0 and 0 < v[1] < 1
     l_ = 4
-    assert abs(wendland_taper([0.3], 1.0, dimension=2, k=2)[0]
-               - 0.7 ** 6 * ((l_ * l_ + 4 * l_ + 3) * 0.09 + (3 * l_ + 6) * 0.3 + 3) / 3) < 1e-15
+    assert (
+        abs(
+            wendland_taper([0.3], 1.0, dimension=2, k=2)[0]
+            - 0.7**6 * ((l_ * l_ + 4 * l_ + 3) * 0.09 + (3 * l_ + 6) * 0.3 + 3) / 3
+        )
+        < 1e-15
+    )
     P = [(i, 0.5 * i) for i in range(8)]
     r = tapered_simulate(P, {"model": "Exp", "psill": 1.0, "range": 2.0}, 3.0, nsim=2, seed=4)
     L = _full_chol(r.cov)
@@ -56,8 +61,10 @@ def test_wendland_and_tapered_simulation():
 
 
 def test_lmc_sensitivity_nested():
-    comps = [([[1.0, 0.6], [0.6, 2.0]], {"model": "Exp", "psill": 1.0, "range": 1.0}),
-             ([[0.5, 0.0], [0.0, 0.3]], {"model": "Nug", "psill": 1.0})]
+    comps = [
+        ([[1.0, 0.6], [0.6, 2.0]], {"model": "Exp", "psill": 1.0, "range": 1.0}),
+        ([[0.5, 0.0], [0.0, 0.3]], {"model": "Nug", "psill": 1.0}),
+    ]
     P = [(0, 0), (1, 0), (0, 2)]
     r = lmc_cosimulate(P, comps)
     assert abs(r.cov[0][3] - (0.6 + 0.0)) < 1e-15 and abs(r.cov[4][4] - 2.3) < 1e-15
@@ -72,7 +79,7 @@ def test_lmc_sensitivity_nested():
 
 
 def test_refined_solve_and_block_simulation():
-    G = [[math.exp(-((i - j) / 3.0) ** 2) + (1e-8 if i == j else 0) for j in range(12)] for i in range(12)]
+    G = [[math.exp(-(((i - j) / 3.0) ** 2)) + (1e-8 if i == j else 0) for j in range(12)] for i in range(12)]
     b = [math.sin(i) for i in range(12)]
     r = refined_solve(G, b, iterations=3)
     na = max(ssum(abs(v) for v in row) for row in G)

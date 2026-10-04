@@ -1,0 +1,4 @@
+"endpoint","scenario","target_power","required_n","gender","stratum_n","scheduled_stratum_n","top_up_n","block_sizes_allowed","analysis_mode","design_mode"
+"heavy_drinking_30d","pilot_observed",0.8,8589.95127856524,"Female, Male, Non-binary",2864,2864,0,"4","design","randomization"
+"ebac_legal","pilot_observed",0.8,8589.95127856524,"Female, Male, Non-binary",2864,2864,0,"4","design","randomization"
+"ebac_tot","pilot_observed",0.8,910.375059614413,"Female, Male, Non-binary",304,304,0,"4","design","randomization"

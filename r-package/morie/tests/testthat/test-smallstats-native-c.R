@@ -119,7 +119,7 @@ test_that("StatCan WDS client parses a mocked full-table response", {
       file.create(dest)
       invisible(dest)
     },
-    .package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie"
+    .package = if (isNamespaceLoaded("morie")) "morie" else "morie"
   )
   testthat::local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) c(fixture_csv, meta_csv),

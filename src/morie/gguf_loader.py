@@ -11,6 +11,7 @@ References
 
 from __future__ import annotations
 
+import contextlib
 import mmap
 import struct
 from dataclasses import dataclass
@@ -128,7 +129,7 @@ class GGUFModel:
         if not self.path.exists():
             raise FileNotFoundError(f"GGUF file not found: {self.path}")
 
-        self._fp = open(self.path, "rb")
+        self._fp = open(self.path, "rb")  # noqa: SIM115 -- the reader keeps it open; close() closes it
 
         self._parse_header()
 
@@ -373,10 +374,7 @@ class GGUFModel:
             out_offset = i * super_block_size
             for j in range(8):
                 sub_start = j * 32
-                if j < 4:
-                    q_bytes = qs[j * 16 : j * 16 + 16]
-                else:
-                    q_bytes = qs[(j - 4) * 16 + 64 : (j - 4) * 16 + 80]
+                q_bytes = qs[j * 16 : j * 16 + 16] if j < 4 else qs[(j - 4) * 16 + 64 : (j - 4) * 16 + 80]
                 lo = (q_bytes & 0x0F).astype(np.float32)
                 hi = ((q_bytes >> 4) & 0x0F).astype(np.float32)
                 # Sequential layout: first 16 from lo nibbles, next 16 from hi
@@ -436,16 +434,12 @@ class GGUFModel:
 
     def close(self) -> None:
         if self._mm:
-            try:
+            with contextlib.suppress(Exception):
                 self._mm.close()
-            except Exception:
-                pass
             self._mm = None
         if self._fp:
-            try:
+            with contextlib.suppress(Exception):
                 self._fp.close()
-            except Exception:
-                pass
             self._fp = None
 
     def __del__(self):

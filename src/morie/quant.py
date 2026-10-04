@@ -139,7 +139,13 @@ def _rotation_rows(d, seed):
 
 
 def verify_orthogonal(Q: F64, atol: float = 1e-10) -> bool:
-    """Verify that Q is orthogonal: Q^T · Q ≈ I."""
+    """Verify that Q is orthogonal: Q^T · Q ≈ I.
+
+    Examples
+    --------
+    >>> verify_orthogonal(rotation_matrix(8, seed=1))
+    True
+    """
     d = Q.shape[0]
     return bool(np.allclose(Q.T @ Q, np.eye(d), atol=atol))
 
@@ -219,8 +225,7 @@ def lloyd_max_codebook(d: int, bits: int, n_iter: int = 200) -> F64:
 
     cvals = [float(v) for v in centroids]
     for _ in range(n_iter):
-        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1])
-                         for k in range(K - 1)] + [hi]
+        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1]) for k in range(K - 1)] + [hi]
         new_cvals = [0.0] * K
         for k in range(K):
             # grid >= bounds[k] and grid < bounds[k + 1]
@@ -292,7 +297,7 @@ def polar_transform(x: F64) -> tuple[float, list[F64]]:
     radii = np.sqrt(x_pairs[:, 0] ** 2 + x_pairs[:, 1] ** 2)
 
     # Higher levels: recursively compute atan2 of radius ratios
-    for level in range(1, levels):
+    for _level in range(1, levels):
         pairs = radii.reshape(-1, 2)
         level_angles = np.arctan2(pairs[:, 1], pairs[:, 0])
         # These angles are in [0, π/2] since radii are non-negative
@@ -431,10 +436,8 @@ def dequantize_angles(
         codebook = get_codebook(d, b)
         centroids = codebook[idx]
 
-        if level == 0:
-            a = centroids * np.pi + np.pi  # scale back to [0, 2π)
-        else:
-            a = centroids * (np.pi / 4) + np.pi / 4  # scale back to [0, π/2]
+        # level 0 scales back to [0, 2π), deeper levels to [0, π/2]
+        a = centroids * np.pi + np.pi if level == 0 else centroids * (np.pi / 4) + np.pi / 4
 
         angles.append(a)
 
@@ -617,10 +620,7 @@ def turboquant_mse(
     y = Q @ x  # rotate
 
     norm = float(np.linalg.norm(y))
-    if norm > 1e-15:
-        y_unit = y / norm
-    else:
-        y_unit = y
+    y_unit = y / norm if norm > 1e-15 else y
 
     # Scalar-quantize each coordinate via Lloyd-Max codebook
     codebook = get_codebook(d, bits)
@@ -845,8 +845,7 @@ def pack_indices(indices: U8, bits: int) -> bytes:
     bytes
         Packed byte string.
     """
-    vals = [int(v) for v in (indices.tolist()
-                             if hasattr(indices, "tolist") else indices)]
+    vals = [int(v) for v in (indices.tolist() if hasattr(indices, "tolist") else indices)]
     if bits == 8:
         return bytes(vals)
 
@@ -860,8 +859,7 @@ def pack_indices(indices: U8, bits: int) -> bytes:
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
         # Spread across at most 2 bytes
-        packed[byte_idx] |= ((idx & ((1 << bits) - 1))
-                             << bit_offset) & 0xFF
+        packed[byte_idx] |= ((idx & ((1 << bits) - 1)) << bit_offset) & 0xFF
         overflow = bit_offset + bits - 8
         if overflow > 0 and byte_idx + 1 < n_bytes:
             packed[byte_idx + 1] |= (idx >> (bits - overflow)) & 0xFF

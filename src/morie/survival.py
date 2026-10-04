@@ -157,8 +157,6 @@ class CompetingRiskResult:
 # ===================================================================
 
 
-
-
 def _aft_fit(log_t, X, e, family, fixed_scale=False):
     """Maximum likelihood for log T = [1, X] beta + sigma W, W standard
     extreme value ("ev"), normal ("norm") or logistic ("logis"), with right
@@ -219,7 +217,7 @@ def _aft_fit(log_t, X, e, family, fixed_scale=False):
                     H[a][p] += v
                     H[p][a] += v
                 H[p][p] += g2 * w * w + g1 * w
-        return ll, g, H                           # H = Hessian of ll
+        return ll, g, H  # H = Hessian of ll
 
     evn = [i for i in range(n) if ev[i] == 1]
     b0 = [sum(y[i] for i in evn) / len(evn) if evn else sum(y) / n] + [0.0] * (p - 1)
@@ -255,6 +253,7 @@ def _aft_fit(log_t, X, e, family, fixed_scale=False):
         vcov = None
     sigma = 1.0 if fixed_scale else _m.exp(th[p])
     return th[:p], sigma, ll, vcov
+
 
 def _validate_survival_input(
     time: Union[np.ndarray, pd.Series, list],
@@ -1125,7 +1124,10 @@ def lognormal_model(
         return -ll
 
     result = minimize(
-        neg_ll, [log_t[e == 1].mean() if d > 0 else 0.0, 1.0], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14}
+        neg_ll,
+        [log_t[e == 1].mean() if d > 0 else 0.0, 1.0],
+        method="Nelder-Mead",
+        options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14},
     )
     mu_hat, sigma_hat = result.x
     ll = -result.fun
@@ -1171,7 +1173,9 @@ def loglogistic_model(
         return -ll
 
     t_median = np.median(t[e == 1]) if d > 0 else np.median(t)
-    result = minimize(neg_ll, [t_median, 1.0], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
+    result = minimize(
+        neg_ll, [t_median, 1.0], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14}
+    )
     alpha_hat, beta_hat = result.x
     ll = -result.fun
     n_params = 2
@@ -1221,7 +1225,10 @@ def gompertz_model(
         return -ll
 
     result = minimize(
-        neg_ll, [d / t.sum() if t.sum() > 0 else 0.01, 0.01], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14}
+        neg_ll,
+        [d / t.sum() if t.sum() > 0 else 0.01, 0.01],
+        method="Nelder-Mead",
+        options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14},
     )
     b_hat, c_hat = result.x
     ll = -result.fun
@@ -1285,8 +1292,7 @@ def aft_weibull(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
-        extra={"vcov_beta_logsigma": vcov,
-               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
+        extra={"vcov_beta_logsigma": vcov, "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1330,8 +1336,7 @@ def aft_lognormal(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
-        extra={"vcov_beta_logsigma": vcov,
-               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
+        extra={"vcov_beta_logsigma": vcov, "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1375,8 +1380,7 @@ def aft_loglogistic(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
-        extra={"vcov_beta_logsigma": vcov,
-               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
+        extra={"vcov_beta_logsigma": vcov, "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1422,19 +1426,18 @@ def restricted_mean_survival_time(
         surv.append(s_cur)
     idx = [j for j, u in enumerate(unique_times) if u <= tau]
     grid = [float(unique_times[j]) for j in idx] + [float(tau)]
-    s_left = [1.0] + [surv[j] for j in idx]           # S just after each grid point
+    s_left = [1.0] + [surv[j] for j in idx]  # S just after each grid point
     areas = []
     prev = 0.0
     for g, sv in zip(grid, s_left):
         areas.append((g - prev) * sv)
         prev = g
     rmst = float(sum(areas))
-    wk_var = [0.0 if at_risk[j] - events[j] == 0 else events[j] / (at_risk[j] * (at_risk[j] - events[j]))
-              for j in idx]
+    wk_var = [0.0 if at_risk[j] - events[j] == 0 else events[j] / (at_risk[j] * (at_risk[j] - events[j])) for j in idx]
     var = 0.0
     tail = 0.0
     for j in range(len(idx) - 1, -1, -1):
-        tail += areas[j + 1]                            # A_j = area to the right of t_j
+        tail += areas[j + 1]  # A_j = area to the right of t_j
         var += tail * tail * wk_var[j]
     se = math.sqrt(var)
     z = stats.norm.ppf((1 + confidence) / 2)
@@ -1541,8 +1544,8 @@ def cumulative_incidence_function(
     # removed observations at event times, so anyone censored between
     # events stayed at risk for ever.
     z = stats.norm.ppf((1 + confidence) / 2)
-    fk = 1.0                    # overall survival just before t_j
-    f_cur = 0.0                 # CIF of the event of interest
+    fk = 1.0  # overall survival just before t_j
+    f_cur = 0.0  # CIF of the event of interest
     v1 = v2 = v3 = 0.0
     var_cur = 0.0
     for i, ut in enumerate(unique_times):

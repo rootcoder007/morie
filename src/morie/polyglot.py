@@ -1183,7 +1183,7 @@ class PolyglotEngine:
 
         if self.polyglot:
             for name, val in self._py_ns.items():
-                if name.startswith("_") or not isinstance(val, (int, float, str, bool)):
+                if name.startswith("_") or not isinstance(val, int | float | str | bool):
                     continue
                 self._inject_r_var(name, val)
 
@@ -1286,7 +1286,7 @@ class PolyglotEngine:
                 capture_output=True,
                 text=True,
                 timeout=_run_timeout(),
-                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, (str, int, float))}},
+                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, str | int | float)}},
             )
             variables = {}
             for m in re.finditer(r'(\w+)=(["\']?)(.+?)\2(?:\s|$)', code):
@@ -1439,7 +1439,9 @@ class PolyglotEngine:
             result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
-            return ExecResult(language="go", stderr="Go not found (install: brew install go)", success=False)
+            return ExecResult(
+                language="go", stderr="Go not found (install go with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="go", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1541,7 +1543,9 @@ class PolyglotEngine:
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="ocaml", stderr="OCaml not found (install: brew install ocaml)", success=False)
+            return ExecResult(
+                language="ocaml", stderr="OCaml not found (install ocaml with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="ocaml", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1555,7 +1559,9 @@ class PolyglotEngine:
                 language="lua", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="lua", stderr="Lua not found (install: brew install lua)", success=False)
+            return ExecResult(
+                language="lua", stderr="Lua not found (install lua with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="lua", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
@@ -1600,7 +1606,7 @@ class PolyglotEngine:
             return ExecResult(language="latex", stdout=stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
-                language="latex", stderr="pdflatex not found (install: brew install --cask mactex)", success=False
+                language="latex", stderr="pdflatex not found (install mactex with your package manager)", success=False
             )
         except subprocess.TimeoutExpired:
             return ExecResult(language="latex", stderr="Timeout (60s)", success=False)
@@ -1615,7 +1621,7 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(
-                language="psql", stderr="psql not found (install: brew install postgresql)", success=False
+                language="psql", stderr="psql not found (install postgresql with your package manager)", success=False
             )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="psql", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
@@ -1737,7 +1743,9 @@ class PolyglotEngine:
                 language="nim", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="nim", stderr="Nim not found (install: brew install nim)", success=False)
+            return ExecResult(
+                language="nim", stderr="Nim not found (install nim with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="nim", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1767,7 +1775,9 @@ class PolyglotEngine:
                 continue
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="scheme", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
-        return ExecResult(language="scheme", stderr="Scheme not found (install: brew install racket)", success=False)
+        return ExecResult(
+            language="scheme", stderr="Scheme not found (install racket with your package manager)", success=False
+        )
 
     def _exec_clojure(self, code: str) -> ExecResult:
         return self._exec_file_based(code, "clojure", ".clj", ["clojure"])
@@ -1787,7 +1797,9 @@ class PolyglotEngine:
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="powershell", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(
-            language="powershell", stderr="PowerShell not found (install: brew install powershell)", success=False
+            language="powershell",
+            stderr="PowerShell not found (install powershell with your package manager)",
+            success=False,
         )
 
     def _exec_awk(self, code: str) -> ExecResult:
@@ -1829,11 +1841,11 @@ class PolyglotEngine:
             return
         if isinstance(value, bool):
             r_val = "TRUE" if value else "FALSE"
-        elif isinstance(value, (int, float)):
+        elif isinstance(value, int | float):
             r_val = str(value)
         elif isinstance(value, str):
             r_val = f'"{value}"'
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, list | tuple):
             try:
                 r_val = f"c({','.join(str(v) for v in value)})"
             except Exception:
@@ -1903,6 +1915,24 @@ class PolyglotEngine:
         return result
 
 
+# the line prefix that selects each language, in the order the banner prints them
+_PREFIX_LANGS = (
+    ("R>", "r"),
+    ("J>", "julia"),
+    ("Q>", "q"),
+    ("N>", "node"),
+    ("Go>", "go"),
+    ("Rs>", "rust"),
+    ("C>", "c"),
+    ("C+>", "cpp"),
+    ("ML>", "ocaml"),
+    ("Lu>", "lua"),
+    ("TS>", "typescript"),
+    ("TX>", "latex"),
+    ("PG>", "postgres"),
+)
+
+
 def run_headless_repl(
     polyglot: bool = True,
     auto_detect: bool = True,
@@ -1917,7 +1947,7 @@ def run_headless_repl(
     print(f"MORIE Polyglot REPL -- {len(langs)} languages: {', '.join(langs)}")
     if polyglot:
         print("Polyglot mode ON -- variables bridge automatically across languages")
-    print("Prefixes: R> J> Q> N> Go> Rs> C> C+> ML> Lu> TS> TX> PG> ! (shell)")
+    print("Prefixes: " + " ".join(p for p, lg in _PREFIX_LANGS if avail.get(lg)) + " ! (shell)")
     print(f"Auto-detect: {'ON' if auto_detect else 'OFF'} | Default: {lang}")
 
     try:

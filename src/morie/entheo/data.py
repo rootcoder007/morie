@@ -129,9 +129,8 @@ def _load_real_record(subject_id: str, root: Path) -> dict | None:
     def _largest_2d(blob: dict) -> np.ndarray:
         best = None
         for v in blob.values():
-            if isinstance(v, np.ndarray) and v.ndim == 2:
-                if best is None or v.size > best.size:
-                    best = v
+            if isinstance(v, np.ndarray) and v.ndim == 2 and (best is None or v.size > best.size):
+                best = v
         return best if best is not None else np.zeros((1, 1), dtype=np.float32)
 
     arr_dmt = _largest_2d(blob_dmt).astype(np.float32)

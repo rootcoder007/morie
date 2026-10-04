@@ -66,9 +66,15 @@ step() {
   return "$rc"
 }
 prompt() {
-  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.
+  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.  With no terminal to
+  # ask on (curl | bash, cron, CI) an optional step is skipped rather than assumed.
   if [ "$AUTO" = "1" ]; then return 0; fi
-  read -r -p "$1 [Y/n] " ans
+  if [ -r /dev/tty ]; then
+    read -r -p "$1 [Y/n] " ans </dev/tty || return 1
+  else
+    echo "[install.sh] no terminal to answer '$1'; skipping (pass --auto to say yes to everything)"
+    return 1
+  fi
   case "$ans" in n|N|no|NO) return 1 ;; *) return 0 ;; esac
 }
 
@@ -253,6 +259,14 @@ install_python_morie() {
       *) echo "[install.sh] NOTE: $USERBIN is not on your PATH — add this to your shell rc:"
          echo "             export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
     esac
+    # 4. the interactive layer (morie repl / exec / agent / tui) is left out of every
+    #    published artifact: fetch it for this user from the release tag of the version
+    #    just installed, verified against the manifest inside the package.
+    if step "interactive layer (morie interactive install)" "$VENV/bin/morie" interactive install; then
+      echo "[install.sh] ✓ interactive layer installed: morie repl, exec, agent and tui are ready"
+    else
+      echo "[install.sh] NOTE: the interactive layer did not install (offline?). Python morie works; add it later with: morie interactive install"
+    fi
   else
     echo "[install.sh] !! morie smoke test failed.  Try:"
     echo "    $VENV/bin/python -c 'import morie'"
@@ -265,7 +279,7 @@ if [ "$PY" = "1" ] && [ "$HAVE_PY" = "1" ]; then
 fi
 
 # --- R morie ------------------------------------------------------
-if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ]; then
+if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmorie from r-universe, rmoriebricklayer and rmoriedata from CRAN; binaries on macOS and Windows, a build of several minutes on Linux)?"; then
   echo "[install.sh] R side: rmorie (r-universe) + rmoriebricklayer, rmoriedata (CRAN)"
   if step "rmoriebricklayer + rmoriedata (CRAN)" Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata"), repos = "https://cloud.r-project.org")' \
      && step "rmorie (r-universe; binaries on macOS and Windows)" Rscript -e 'install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))' \

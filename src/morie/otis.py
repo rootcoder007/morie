@@ -237,8 +237,8 @@ def astcmb(
     summary = grouped.groupby("ac").size().reset_index(name="n_persons")
     if has_np:
         summary = summary.merge(
-            grouped.groupby("ac")[np_col].mean().reset_index(name="mean_placements"),
-            on="ac", how="left")
+            grouped.groupby("ac")[np_col].mean().reset_index(name="mean_placements"), on="ac", how="left"
+        )
     summary = summary.sort_values("ac", ascending=False)
 
     return AstRes(data=grouped, summary=summary)
@@ -264,6 +264,17 @@ def volat(
     Returns
     -------
     VolRes
+
+    Examples
+    --------
+    >>> from morie.fn import _frame_core as pd
+    >>> df = pd.DataFrame({
+    ...     "unique_individual_id": [1, 1, 2, 2, 3], "end_fiscal_year": [2020, 2021, 2020, 2021, 2021],
+    ...     "region_at_time_of_placement": ["A", "A", "B", "B", "C"], "region_most_recent_placement": ["A", "B", "B", "B", "C"],
+    ... })
+    >>> r = volat(df)
+    >>> (r.mean, r.median)
+    (1.2, 1.0)
     """
 
     def _count_regions(group):
@@ -401,6 +412,7 @@ def otdml(
 
     # Simple Frisch-Waugh-Lovell partialling out (portable, no DoubleML dep)
     from morie.fn._array_core import linalg as _la
+
     lstsq = _la.lstsq
 
     rng = np.random.default_rng(seed)

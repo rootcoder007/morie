@@ -3,9 +3,132 @@
 Reverse-chronological summary of user-facing changes per release.
 Per-package full changelogs:
 
-- **R package:** [r-package/morie/NEWS.md](r-package/morie/NEWS.md)
+- **R package:** [r-package/morie/NEWS.md](https://github.com/rootcoder007/morie/blob/main/r-package/morie/NEWS.md)
 - **Python package:** see commit history + git tags
-- **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
+- **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
+
+## 1.4.0 (2026-10-03)
+
+* **Fresh-user test, fourth pass.** McDonald's omega (`morie.psymet.mcdo`) factors by principal axes and takes omega hierarchical from the Schmid-Leiman transformation, so a multi-factor scale no longer reports it near 1 (same numbers as rmorie to 1e-12; reverse-keyed items are scored the other way round first, as psych::omega does, and named in a warning; within 0.01 of psych on the bfi items and hierarchical simulations). The power-design table `power_two_proportion_gender.csv` now carries the same columns as the R route (`n_eq`, `power_srs`, `n_eq_eff`, `power_deff` with Kish's design effect, groups by name, both outcomes). `morie sample --method stratified` writes `.weight`; the sdist no longer ships the placeholder test package; CIHI workbooks pick the sheet that holds data even when an instructions sheet declares a huge range (CIHI 885b); `ingest siu --report-id` reads the report body only and isolates the Director's decision; `list-datasets` shows an own file's path under `$MORIE_DATA_DIR`; `current_locale()` reports the locale in effect and INSTALLATION.md says exactly what is translated.
+
+* **Fresh-user test, fifth pass (installed from the sdist).** `morie.fn` trusts a cached source zip only when it is the user's own (a zip planted in a shared `/tmp/morie-cache-<uid>` was imported); the interactive layer is re-checked against its manifest at import and `interactive status` names an edited file; the formula sandbox refuses `np.memmap` and caps integer powers and sequence repetition. eBAC counts a standard drink as 0.6 fl oz of ethanol (Widmark in US units, Matthews & Miller 1979; each drink had been taken as 1 oz, about 1.7x too high), and logistic-models enters region, gender, age group and health ratings as categories, as the R route does. `sample --method stratified` with a total `--n`, `boolean_eval("~A")`, `verify-pollution --outcome ihd|stroke` (one outcome throughout; an unknown outcome is a one-line error) and `emissions --country XYZ` (labelled world average) work again; a key of the wrong kind is named in `crypto`; `mcdo` checks `nf`.
+
+* **`morie login` no longer stalls on the browser.** With `$BROWSER` set (Brave, Firefox), Python waited for the browser to exit before polling, so an approved sign-in never arrived. The browser now starts detached; over SSH or on a machine without a desktop session nothing is opened and the printed URL and code finish the sign-in from any device.
+
+* **No more exit crash on fast commands.** The daily PyPI update check ran in a daemon thread; a command that finished first (`morie list-modules`) could segfault at exit on Python 3.13 while the thread was still inside OpenSSL. The thread is now joined at exit (at most two seconds, once a day).
+
+* `morie.research`: the research programme on the hardest problems in criminology and
+  sociolegal studies arrives in Python, at parity with the R package (48 functions, thirteen
+  problems, every one resting on a Lean 4 theorem named in its `theorems` field; the
+  stochastic ones share the Philox stream with R, so a seed gives the same path in both).
+  New in this release in all three arms: pooling evaluations (DerSimonian-Laird truncation
+  bias and the random-effects variance inequality, `meta_random_effects`, `meta_dl_bias`),
+  separation in a logistic fit (why the Baldus logit could not converge, `logit_separation`),
+  Imbens-Manski intervals for partially identified sentencing effects (`bounds_confidence`)
+  and the Cheeger bound tying a hot-spot boundary to the spectral gap (`cheeger_bound`).
+
+* Seven more problems in `morie.research`, at parity with R: Duncan-Davis bounds
+  (`ecological_bounds`), monotone treatment selection (`sentence_effect_mts`), the
+  extinction probability of a near-repeat chain (`contagion_extinction`), judge-leniency
+  designs (`judge_iv`, `judge_iv_population`), the Oaxaca-Blinder decomposition
+  (`disparity_decomposition`), Little's law on a docket (`court_backlog`) and the
+  incapacitation identity (`incapacitation`) selective labels (`selective_labels`) and regression to the mean at selected hot spots (`regression_to_mean`); every theorem is named in the result.
+
+* Seven continuations close the ledger's open items on the theorems' own terms, each in Lean, R
+  and Python: Le Cam's two-point lower bound for the dark figure (`two_point_bound`), the
+  Hartung-Knapp-Sidik-Jonkman interval with DerSimonian-Laird or REML heterogeneity
+  (`meta_hksj`), the many-judge slope test of monotonicity (`judge_slope_test`),
+  DiNardo-Fortin-Lemieux reweighting without a linear model (`dfl_reweight`), the
+  disposed-cases mean as a bound (`backlog_censoring`), incapacitation under desistance and
+  replacement (`incapacitation_career`) and the empirical-Bayes shrinkage that gives the size
+  of the regression-to-the-mean fall (`hotspot_shrinkage`, `shrinkage_loss`). The Lean audit
+  now covers 264 theorems in 58 files, 0 sorry, standard axioms only.
+
+* Fixes from the 1.3.9 stress test of the published wheel. Two were serious: ML-KEM-768
+  decapsulation never recovered the encapsulated secret (the number-theoretic transform used
+  its twiddles in natural order and a coefficient-wise product; it now follows FIPS 203
+  Algorithms 9-12 and 17-18, with implicit rejection), and the hybrid file encryption derived
+  its wrapping key from the ciphertext and public key alone, so anyone holding the file and
+  the public key could open it; the key is now bound to the KEM shared secret. Files encrypted
+  by 1.3.x still open in 1.4.0 (the old derivation needed no secret, so reading them costs
+  nothing); `morie crypto decrypt` says so and asks you to encrypt them again, and every file
+  written by 1.4.0 carries a container marker. Also:
+  `morie tui` opens again (textual 8 rejected the `agent` argument); `selftest` passes on a
+  fresh wheel and says when the interactive layer or textual is absent; `doctor` reports the
+  interactive layer and textual; `list-datasets` no longer ends in a traceback; `pipeline`
+  without a terminal says to pass `-y`; `run-module` gives one-line errors for a missing CSV
+  or an unknown dataset key; `download-bootstrap --limit` caps what is fetched; `crypto
+  keygen` and `decrypt` never overwrite silently (`--force`, `--out`); `generate-template`
+  rejects an unknown module; `sample --n` must be positive and within the file; `emissions`
+  rejects a negative duration and names an unknown country code; `inspect` refuses a file
+  that is not a table; `verify`/`inspect --module` reject an unknown module; `login` does
+  not open a browser off a terminal; `exec co` and `agent` say when the interactive
+  layer is absent instead of falling back to the provider chain (`edit` opens your $EDITOR and needs no layer); `interactive
+  install` says when the layer is already installed (`--force` refetches) and only mentions
+  the textual extra when it is missing; `from morie.fn import os` is an ImportError, not the
+  stdlib module; the estimators and sampling functions accept a CSV path or a dict of columns
+  as the README says; the SIU index lists reports with case numbers first and `ingest siu
+  --report-id` works; the install one-liner asks before building the R arm, skips it with
+  no terminal, and pins it to the release; the R launcher works on R 4.6 (no explicit
+  `--args`); sampling docstrings run without pandas or numpy; docs blocks for ebac, spatial and
+  genomics name the functions that exist.
+
+* Fixes from the 1.4.0 fresh-user test agents (tests in `test_stress_1_4_0.py` and the R arm's
+  `test-agent-round-1_4_0.R`). Pollution: the concentration-response coefficients now match their
+  sources in both arms: NO2 all-cause mortality RR 1.02 per 10 µg/m³ (Huangfu & Atkinson 2020, the
+  WHO 2021 review) instead of 1.04, and PM2.5 all-cause mortality log-linear at RR 1.08 per 10 µg/m³
+  (Chen & Hoek 2020, WHO 2021) instead of an IER triple with no source (the IER stays for IHD and
+  stroke), so `verify-pollution` burdens are smaller than 1.3.x reported. The formula sandbox behind
+  `bexpr()`/`moncar()` no longer lets an attribute chain reach a module or a builtin
+  (`np.re.enum.bltns`); `serve --bind` beyond loopback needs `--token`; `pull` takes exact keys and
+  suggests near misses; `ingest siu --report-id` works; the effects estimators take a CSV path or a
+  dict of columns as documented; `edit` refuses a terminal editor off a terminal and names a missing
+  one; the R bridge accepts rmorie for the R-backed modules. Crypto: key files written by 1.4.0 carry a marker, a 1.3.x public key is
+  refused by `encrypt` (its key generation was not FIPS 203, so the file could never be opened) and a
+  1.3.x secret key says so when it meets a 1.4.0 container; `encrypt` takes `--out`/`--force` and never
+  overwrites; key names are plain identifiers (no path traversal); a missing key file is named; the
+  keystore password is confirmed when the keystore is created; prompts never wait on Windows' NUL
+  device. Datasets: a cached `ocp21` has the same columns as the first pull; your own research file
+  (`mapq`) is read in place and never copied into the cache, and the message names the directory
+  `MORIE_DATA_DIR` points at; the CIHI tables download again (the sheet declares 16,384 columns);
+  `download-bootstrap` asks for `--survey` instead of fetching several hundred MB; `--year` says it is
+  TPS-only; toy datasets print their synthetic note as a note. Verbs: `run-module` says in one line that
+  an R-backed module needs R and `morie r-install` (rmorie from r-universe, which the R bridge now
+  accepts), notes the synthetic frame, fails when a module wrote nothing, and names an unknown dataset
+  once; `generate-template` takes the module as a positional argument, fills the description and never
+  overwrites without `--force`; `sample` validates its columns, rejects a non-numeric size column and
+  gains `--per-stratum`/`--no-weight` like rmorie; `profile-dataset` validates its hint columns;
+  `inspect` refuses a non-table in one line; `emissions --country` is case-insensitive; `explain`
+  describes the columns the power table really has and exits 1 for an unknown file; `tutorial` says it
+  needs a terminal; `selftest` labels are honest and the inspector/verifier run on the shipped CSV;
+  `doctor` says which imports are optional and points `morie.db` at `morie pull`; `login --token` refuses
+  a key the gateway rejects and never prompts off a terminal; `list-datasets` says when the stored key
+  was rejected; a progress line shows no rate before half a second; every login instruction names the
+  email route; the placeholder test package stays out of the wheel.
+
+* `morie interactive install` is the second step of every install channel: the README, the
+  install pages and INSTALLATION.md say so up front, and the curl one-liner runs it as its last
+  step (the installer's two copies are one file again, with the progress spinner and the R-side
+  prompt). A verb that needs the layer prints the command and, on a terminal, offers to run it.
+
+* Supply-chain hygiene (the Socket.dev alerts on the 1.3.9 tarball). The sdist now carries
+  only what the build needs (package, C++ core, CMake file, bundling script); tests, docs,
+  CI, the audit trail, the legacy bash launcher and the R package stay on GitHub. The
+  published package contains no `eval`, `exec` or `compile` call and no `shell=True`:
+  `morie exec` runs the code in a child interpreter with the same prelude, the formula
+  evaluator behind `bexpr()`/`moncar()` walks the validated syntax tree instead of calling
+  `eval`, the `morie.fn` loader falls back to a private temporary zip instead of compiling
+  decompressed source in memory, and the editor splits `$EDITOR` itself. `import morie` no
+  longer starts the PyPI version check (the command line still does; `MORIE_NO_UPDATE_CHECK=1`
+  silences it). In the bash launcher, `morie config set` validates the key and value it writes
+  to the shell-sourced rc file and the package checker passes names by argv. A test keeps the
+  package that way.
+
+* Datasets: the fourteen Health Infobase tables download from the portal with the
+  data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research
+  environments are saved from data.rmorie.com for R to open, and `otisloc` (Ontario
+  correctional institution locations) joins the catalog; `morie list-datasets` no
+  longer calls any of them restricted.
 
 ## 1.3.9 (2026-10-01)
 

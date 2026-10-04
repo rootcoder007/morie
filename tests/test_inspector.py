@@ -229,7 +229,7 @@ class TestVerifyEdgeCases:
     def test_empty_csv(self, tmp_path):
         path = tmp_path / "empty.csv"
         pd.DataFrame().to_csv(path, index=False)
-        report = verify_statistical_output(path)
+        assert verify_statistical_output(path) is not None
         # Empty file should not crash
 
     def test_r_squared_and_aic(self, rsq_csv):

@@ -38,9 +38,12 @@ std::string section_text(const std::string& text, const std::string& header,
     const std::regex hpat("(^|\n)[ \t]*" +
                           std::regex_replace(header, std::regex(R"([\^\$\.\|\?\*\+\(\)\[\]\{\}\\])"), R"(\$&)") +
                           "[ \t]*\n");
-    std::smatch m;
-    if (!std::regex_search(text, m, hpat)) return "";
-    const size_t start = m.position(0) + m.length(0);
+    // The LAST heading line: report pages open with a table of contents that repeats every
+    // section title on its own line, and slicing from there gave each section the TOC text.
+    size_t start = std::string::npos;
+    for (auto it = std::sregex_iterator(text.begin(), text.end(), hpat); it != std::sregex_iterator(); ++it)
+        start = static_cast<size_t>(it->position(0) + it->length(0));
+    if (start == std::string::npos) return "";
     size_t end = text.size();
     for (const auto& em : ends) {
         const std::regex epat("(^|\n)[ \t]*" +
@@ -84,13 +87,25 @@ std::string count_tagged(const std::string& section, const std::string& prefix) 
 // ---- individual field extractors ----------------------------------------
 
 std::string detect_police_service(const std::string& text) {
+    // The notification sentence names the force that called the SIU in: prefer it over counting.
+    {
+        static const std::regex notif(
+            R"(((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary))\s*(?:\(\s*[A-Z]{2,6}\s*\)\s*)?(?:notified|contacted)\s+the\s+SIU)");
+        std::smatch nm;
+        if (std::regex_search(text, nm, notif)) {
+            std::string name = trim(nm[1].str());
+            static const std::regex lead0(R"(^(?:The|A|An|At|On|In|By)\s+)");
+            for (int i = 0; i < 3; ++i) name = std::regex_replace(name, lead0, "");
+            if (!name.empty()) return name;
+        }
+    }
     // DEVIATION from the Python vocabulary list: pattern-based. Capture every
     // "<Proper Name> Police Service|Police|Provincial Police" phrase, count
     // occurrences, return the most frequent (ties -> longer name). Falls back
     // to the big-force abbreviations. Boilerplate-safe enough because the
     // most-frequent rule swamps one-off footer mentions.
     static const std::regex pat(
-        R"(((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary)))");
+        R"(((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary))\b(?![ \t]+Services?[ \t]+(?:Act|Board)))");
     std::map<std::string, int> counts;
     for (auto it = std::sregex_iterator(text.begin(), text.end(), pat);
          it != std::sregex_iterator(); ++it) {
@@ -136,7 +151,7 @@ std::string detect_incident_date(const std::string& text) {
             {"Nature of Injuries", "Evidence", "The Team",
              "Analysis and Director", "Relevant Legislation"});
         if (sec.empty()) continue;
-        static const std::regex pat(R"(\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4}))");
+        static const std::regex pat(R"(\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}))");
         for (auto it = std::sregex_iterator(sec.begin(), sec.end(), pat);
              it != std::sregex_iterator(); ++it) {
             const size_t a = it->position(0) > 50 ? it->position(0) - 50 : 0;
@@ -159,18 +174,18 @@ std::string detect_siu_notified(const std::string& text) {
     std::smatch m;
     // Form A: "On <Date> ... notified/contacted the SIU"
     static const std::regex a(
-        R"(\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})[^\n]{0,200}?(?:notified|contacted)\s+the\s+SIU)");
+        R"(\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})[^\n]{0,200}?(?:notified|contacted)\s+the\s+SIU)");
     if (std::regex_search(hay, m, a))
         return std::regex_replace(m[1].str(), std::regex(","), "");
     // Form B: "notified/contacted the SIU on <Date>"
     static const std::regex b(
-        R"((?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4}))");
+        R"((?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}))");
     if (std::regex_search(hay, m, b))
         return std::regex_replace(m[1].str(), std::regex(","), "");
     // Form C: first "On <Date>" inside "Notification of the SIU"
     const std::string notif = section_text(
         text, "Notification of the SIU", {"The Team", "Incident Narrative", "Evidence"});
-    static const std::regex c(R"(On\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4}))");
+    static const std::regex c(R"(On\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}))");
     if (!notif.empty() && std::regex_search(notif, m, c))
         return std::regex_replace(m[1].str(), std::regex(","), "");
     return "";
@@ -178,7 +193,7 @@ std::string detect_siu_notified(const std::string& text) {
 
 std::string detect_decision_date(const std::string& text) {
     std::smatch m;
-    static const std::regex a(R"(Date:\s*([A-Z][a-z]+\s+\d{1,2},?\s+\d{4}))");
+    static const std::regex a(R"(Date:\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}))");
     if (std::regex_search(text, m, a))
         return std::regex_replace(m[1].str(), std::regex(","), "");
     static const std::regex b(R"(Date:\s*(\d{4}-\d{2}-\d{2}))");
@@ -295,24 +310,79 @@ std::string detect_language(const std::string& text) {
 
 }  // namespace
 
+// shared with rmoriebricklayer's parser: English and French months, ordinals (3rd, 1er)
 std::string to_iso_date(const std::string& human) {
-    static const std::map<std::string, int> kMonths = {
-        {"january", 1}, {"february", 2}, {"march", 3},    {"april", 4},
-        {"may", 5},     {"june", 6},     {"july", 7},     {"august", 8},
-        {"september", 9}, {"october", 10}, {"november", 11}, {"december", 12}};
-    static const std::regex pat(R"(([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4}))");
+    // English and French month names (the SIU publishes both); accents are kept as UTF-8
+    // a data table (no code per line), loaded into the map once
+    static const char* const kNames[] = {
+        "january", "february", "march", "april", "may", "june", "july", "august",
+        "september", "october", "november", "december",
+        "janvier", "f\xc3\xa9vrier", "fevrier", "mars", "avril", "mai", "juin", "juillet",
+        "ao\xc3\xbbt", "aout", "septembre", "octobre", "novembre", "d\xc3\xa9" "cembre", "decembre",
+        "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec"};
+    static const int kNums[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                                1, 2, 2, 3, 4, 5, 6, 7, 8, 8, 9, 10, 11, 12, 12,
+                                1, 2, 3, 4, 6, 7, 8, 9, 9, 10, 11, 12};
+    static const std::map<std::string, int> kMonths = [] {
+        std::map<std::string, int> m;
+        for (size_t i = 0; i < sizeof(kNums) / sizeof(kNums[0]); ++i) m[kNames[i]] = kNums[i];
+        return m;
+    }();
+    // "January 5, 2023" / "January 5 2023" (month first) or "5 janvier 2023" / "3 ao\xc3\xbbt 2017" (day first)
+    static const std::regex pat(R"(([^\s\d,.]+)\.?\s+(\d{1,2})(?:st|nd|rd|th|er|e)?,?\s+(\d{4}))");
+    static const std::regex pat_fr(R"((\d{1,2})(?:er|e|st|nd|rd|th)?\s+(?:of\s+)?([^\s\d,.]+)\.?,?\s+(\d{4}))");
     std::smatch m;
-    if (!std::regex_search(human, m, pat)) {
+    std::string month, day, year;
+    if (std::regex_search(human, m, pat) && kMonths.count(lower(m[1].str()))) {
+        month = m[1].str(); day = m[2].str(); year = m[3].str();
+    } else if (std::regex_search(human, m, pat_fr) && kMonths.count(lower(m[2].str()))) {
+        day = m[1].str(); month = m[2].str(); year = m[3].str();
+    } else {
         // already ISO?
         static const std::regex iso(R"(^\d{4}-\d{2}-\d{2}$)");
         return std::regex_match(human, iso) ? human : "";
     }
-    const auto it = kMonths.find(lower(m[1].str()));
+    const auto it = kMonths.find(lower(month));
     if (it == kMonths.end()) return "";
+    // "February 30, 2019" is not a date
+    const int y = std::stoi(year), mo = it->second, d = std::stoi(day);
+    static const int kDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    const bool leap = (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
+    if (d < 1 || d > kDays[mo - 1] + (mo == 2 && leap ? 1 : 0)) return "";
     char buf[16];
-    std::snprintf(buf, sizeof buf, "%s-%02d-%02d", m[3].str().c_str(),
-                  it->second, std::stoi(m[2].str()));
+    std::snprintf(buf, sizeof buf, "%s-%02d-%02d", year.c_str(), it->second, std::stoi(day));
     return buf;
+}
+
+// "&#233;" / "&#xE9;" -> the character as UTF-8 (any code point the named list misses)
+static std::string decode_numeric_entities(const std::string& s) {
+    static const std::regex ent(R"(&#(x[0-9A-Fa-f]+|[0-9]+);)");
+    std::string out;
+    std::size_t last = 0;
+    for (auto it = std::sregex_iterator(s.begin(), s.end(), ent); it != std::sregex_iterator(); ++it) {
+        const std::string g = (*it)[1].str();
+        const unsigned long cp = g[0] == 'x' ? std::stoul(g.substr(1), nullptr, 16) : std::stoul(g);
+        out.append(s, last, static_cast<std::size_t>(it->position(0)) - last);
+        last = static_cast<std::size_t>(it->position(0) + it->length(0));
+        if (cp == 0 || cp > 0x10FFFF) continue;
+        if (cp < 0x80) {
+            out += static_cast<char>(cp);
+        } else if (cp < 0x800) {
+            out += static_cast<char>(0xC0 | (cp >> 6));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        } else if (cp < 0x10000) {
+            out += static_cast<char>(0xE0 | (cp >> 12));
+            out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        } else {
+            out += static_cast<char>(0xF0 | (cp >> 18));
+            out += static_cast<char>(0x80 | ((cp >> 12) & 0x3F));
+            out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        }
+    }
+    out.append(s, last, std::string::npos);
+    return out;
 }
 
 std::string html_to_text(const std::string& html) {
@@ -330,15 +400,25 @@ std::string html_to_text(const std::string& html) {
     t = std::regex_replace(t, std::regex(R"(<[^>]+>)"), " ");
     t = std::regex_replace(t, std::regex(R"(&nbsp;)"), " ");
     t = std::regex_replace(t, std::regex(R"(&amp;)"), "&");
-    t = std::regex_replace(t, std::regex(R"(&#8217;|&rsquo;)"), "'");
-    t = std::regex_replace(t, std::regex(R"(&#8216;|&lsquo;)"), "'");
-    t = std::regex_replace(t, std::regex(R"(&#8220;|&ldquo;|&#8221;|&rdquo;)"), "\"");
+    t = std::regex_replace(t, std::regex(R"(&#8217;|&rsquo;|&#x2019;)", std::regex::icase), "'");
+    t = std::regex_replace(t, std::regex(R"(&#8216;|&lsquo;|&#x2018;)", std::regex::icase), "'");
+    t = std::regex_replace(t, std::regex(R"(&#8220;|&ldquo;|&#8221;|&rdquo;|&#x201c;|&#x201d;)", std::regex::icase), "\"");
     t = std::regex_replace(t, std::regex(R"(&quot;)"), "\"");
     t = std::regex_replace(t, std::regex(R"(&#0?39;|&apos;)"), "'");
-    t = std::regex_replace(t, std::regex(R"(&#8211;|&ndash;)"), "-");
-    t = std::regex_replace(t, std::regex(R"(&#8212;|&mdash;)"), "--");
+    t = std::regex_replace(t, std::regex(R"(&#8211;|&ndash;|&#x2013;)", std::regex::icase), "-");
+    t = std::regex_replace(t, std::regex(R"(&#8212;|&mdash;|&#x2014;)", std::regex::icase), "--");
     // Angle brackets last: the markup is already gone, so a decoded "<"
     // cannot be mistaken for a tag by anything downstream.
+    // accented named entities of the French pages, as UTF-8
+    static const std::array<std::pair<const char*, const char*>, 18> kNamed = {{
+        {"&eacute;", "\xc3\xa9"}, {"&egrave;", "\xc3\xa8"}, {"&ecirc;", "\xc3\xaa"}, {"&euml;", "\xc3\xab"},
+        {"&agrave;", "\xc3\xa0"}, {"&acirc;", "\xc3\xa2"}, {"&ccedil;", "\xc3\xa7"}, {"&icirc;", "\xc3\xae"},
+        {"&iuml;", "\xc3\xaf"}, {"&ocirc;", "\xc3\xb4"}, {"&ouml;", "\xc3\xb6"}, {"&ucirc;", "\xc3\xbb"},
+        {"&ugrave;", "\xc3\xb9"}, {"&uuml;", "\xc3\xbc"}, {"&auml;", "\xc3\xa4"}, {"&copy;", "\xc2\xa9"},
+        {"&reg;", "\xc2\xae"}, {"&Eacute;", "\xc3\x89"}}};
+    for (const auto& [ent, ch] : kNamed) t = std::regex_replace(t, std::regex(ent), ch);
+    t = std::regex_replace(t, std::regex(R"(&hellip;|&#8230;)"), "...");
+    t = decode_numeric_entities(t);
     t = std::regex_replace(t, std::regex(R"(&lt;)"), "<");
     t = std::regex_replace(t, std::regex(R"(&gt;)"), ">");
     // collapse spaces but keep newlines (section slicing needs them)

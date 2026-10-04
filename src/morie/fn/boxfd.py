@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def box_counting_fd(x: np.ndarray, n_scales: int = 10) -> DescriptiveResult:
-    """Study the past if you would define the future. -- Confucius"""
+    """Box-counting fractal dimension of a signal over ``n_scales`` box sizes."""
     from morie._waveform import box_counting_fd as _backend
 
     fd = _backend(x, n_scales=n_scales)

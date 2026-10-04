@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import math as _math
+import os
 import shutil
 import subprocess
 import tempfile
@@ -477,6 +478,72 @@ def _write_outputs(outputs: dict[str, pd.DataFrame], output_dir: str | Path | No
     return outputs
 
 
+_GENDER_LABELS = {1: "Female", 2: "Male", 3: "Non-binary"}
+
+
+def _gender_label(g) -> str:
+    """The CPADS code as its label (1 -> Female); a frame that already holds labels keeps them."""
+    try:
+        return _GENDER_LABELS.get(int(g), str(g))
+    except (TypeError, ValueError):
+        return str(g)
+
+
+def _two_proportion_rows(df, outcome: str, g1, g2) -> list[dict]:
+    """One power row for two gender groups, as the R route writes it.
+
+    p1, p2 are weighted prevalences; h is Cohen's h; n_eq the per-group n for 80% power
+    at alpha 0.05 with equal allocation, 2((z_a + z_b)/h)^2; power_srs the power the observed
+    n1, n2 give, Phi(|h| / sqrt(1/n1 + 1/n2) - z_a); the design-effect columns inflate
+    both by Kish's deff = n sum(w^2) / (sum w)^2 over the two groups' weights.
+    """
+    from statistics import NormalDist
+
+    nd = NormalDist()
+    rows: list[dict] = []
+    groups = list(df["gender"])
+    ys = list(df[outcome])
+    ws = list(df["weight"])
+
+    def _pick(g):
+        out = []
+        for gv, yv, wv in zip(groups, ys, ws):
+            if gv == g and yv == yv and yv is not None and wv == wv and wv is not None:
+                out.append((float(yv), float(wv)))
+        return out
+
+    a, b = _pick(g1), _pick(g2)
+    if not a or not b:
+        return rows
+    p1 = sum(y * w for y, w in a) / sum(w for _, w in a)
+    p2 = sum(y * w for y, w in b) / sum(w for _, w in b)
+    h = 2 * _math.asin(_math.sqrt(p1)) - 2 * _math.asin(_math.sqrt(p2))
+    z_a, z_b = nd.inv_cdf(0.975), nd.inv_cdf(0.80)
+    w_all = [w for _, w in a] + [w for _, w in b]
+    deff = len(w_all) * sum(w * w for w in w_all) / sum(w_all) ** 2
+    n1, n2 = len(a), len(b)
+    n_eq = 2 * ((z_a + z_b) / abs(h)) ** 2 if h != 0 else float("nan")
+    se_unit = _math.sqrt(1 / n1 + 1 / n2)
+    rows.append(
+        {
+            "group1": _gender_label(g1),
+            "group2": _gender_label(g2),
+            "p1": p1,
+            "p2": p2,
+            "h": h,
+            "n1": n1,
+            "n2": n2,
+            "n_eq": n_eq,
+            "power_srs": nd.cdf(abs(h) / se_unit - z_a),
+            "n_eq_eff": n_eq * deff,
+            "power_deff": nd.cdf(abs(h) / (se_unit * _math.sqrt(deff)) - z_a),
+            "analysis_mode": "observational",
+            "power_scope": outcome,
+        }
+    )
+    return rows
+
+
 def run_power_design_module(
     cpads_csv: str | Path = DEFAULT_CPADS_CSV,
     *,
@@ -521,17 +588,14 @@ def run_power_design_module(
                         "power": power,
                     }
                 )
-            pair_rows.append(
-                {
-                    "group1": ref["gender"],
-                    "group2": other["gender"],
-                    "p1": ref["weighted_prevalence"],
-                    "p2": other["weighted_prevalence"],
-                    "effect_size_h": effect,
-                    "n1": ref["n"],
-                    "n2": other["n"],
-                }
-            )
+            pair_rows.extend(_two_proportion_rows(analysis, "heavy_drinking_30d", ref["gender"], other["gender"]))
+    if "ebac_legal" in frame.columns and "alcohol_past12m" in frame.columns and len(gender_summary) >= 2:
+        # eBAC over the past-year drinkers, as the R route scopes it
+        drinkers = frame.dropna(subset=["gender", "weight", "ebac_legal", "alcohol_past12m"])
+        drinkers = drinkers[drinkers["alcohol_past12m"] == 1]
+        levels = list(gender_summary["gender"])
+        for g2 in levels[1:]:
+            pair_rows.extend(_two_proportion_rows(drinkers, "ebac_legal", levels[0], g2))
 
     overall_prev = float((analysis["heavy_drinking_30d"] * analysis["weight"]).sum() / analysis["weight"].sum())
 
@@ -932,6 +996,87 @@ _PY_FALLBACK_MODULES = frozenset(
 )
 
 
+_R_INSTALL_HINT = (
+    "install R, then `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) "
+    "and run the module again"
+)
+
+
+_R_READY: bool | None = None
+
+
+def _r_route_ready() -> None:
+    """Raise at once when Rscript or the R package (rmorie or morie) is missing; cached per process."""
+    global _R_READY
+    if _R_READY:
+        return
+    rscript = _rscript_bin()
+    if rscript is None:
+        raise RuntimeError("Rscript is not available on PATH.")
+    # the package the bridge script loads (rmorie first, then morie's R package) and its version
+    probe = subprocess.run(
+        [
+            rscript,
+            "--vanilla",
+            "-e",
+            'p <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else if '
+            '(requireNamespace("morie", quietly = TRUE)) "morie" else ""; '
+            'cat(p, if (nzchar(p)) as.character(utils::packageVersion(p)) else "", "\\n"); quit(status = !nzchar(p))',
+        ],
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    if probe.returncode != 0:
+        raise RuntimeError(
+            "The R package for the R-backed modules is required for R-backed modules but is not installed "
+            "(install rmorie, or morie's R package)"
+        )
+    pkg, _, r_version = probe.stdout.strip().partition(" ")
+    from . import __version__ as py_version
+
+    # the two arms are released in lockstep: another version computes other numbers without saying so
+    if r_version.strip() and r_version.strip() != py_version and not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
+        raise RuntimeError(
+            f"R {pkg} {r_version.strip()} is installed, but this is morie {py_version}: the R-backed modules need the "
+            f"same version (run `morie r-install`; MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
+        )
+    _R_READY = True
+
+
+def _r_package_absent(exc: BaseException) -> bool:
+    """True when the R route failed only because R or its package is not installed."""
+    text = str(exc)
+    return (
+        "Rscript is not available" in text
+        or "is required for R-backed modules but is not installed" in text
+        or "there is no package called" in text
+    )
+
+
+def r_route_problem(module_name: str, exc: BaseException) -> str:
+    """One line for the terminal when an R-backed module cannot run."""
+    if "the R-backed modules need the same version" in str(exc):
+        return f"{module_name}: {exc}"
+    if _r_package_absent(exc):
+        hint = (
+            "run `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"
+            if _rscript_bin()
+            else _R_INSTALL_HINT
+        )
+        return (
+            f"{module_name} runs in R and this machine has no R package for it: {hint}. "
+            f"The Python-only modules are: {', '.join(sorted(_PY_FALLBACK_MODULES))}."
+        )
+    text = str(exc)
+    tail = ""
+    if "STDERR:" in text:
+        err_lines = [ln for ln in text.split("STDERR:", 1)[1].splitlines() if ln.strip()]
+        tail = f": {err_lines[-1].strip()}" if err_lines else ""
+    return f"{module_name}: the R-backed run failed{tail} (`morie doctor` checks the R side)"
+
+
 def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | Path:
     """The CSV the module stages (R bridge or Python) will read.
 
@@ -985,6 +1130,15 @@ def run_module(
         valid = ", ".join(sorted(MODULE_SPECS))
         raise ValueError(f"Unknown module: {module_name}. Valid modules: {valid}")
 
+    if dataset_key:
+        # a key that names nothing is the user's mistake, reported before anything about R
+        from .data import _fuzzy_match_key
+        from .datahub import is_hosted_key
+
+        if _fuzzy_match_key(dataset_key) is None and not is_hosted_key(dataset_key):
+            raise KeyError(f"Unknown dataset key: {dataset_key!r} (morie list-datasets shows the keys)")
+    if module_name not in _PY_FALLBACK_MODULES:
+        _r_route_ready()  # R and its package first: loading the frame took 10-14 s before this failed
     cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)
     try:
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
@@ -994,13 +1148,18 @@ def run_module(
         # in OUR code and must not be masked by the Python fallback.
         if module_name not in _PY_FALLBACK_MODULES:
             raise
-        logging.getLogger(__name__).warning(
-            "R implementation of %s failed (%s); falling back to the "
-            "Python implementation. An R-side regression would otherwise "
-            "be invisible - investigate if unexpected.",
-            module_name,
-            str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
-        )
+        if _r_package_absent(exc):
+            logging.getLogger(__name__).info(
+                "%s: the R package is not installed; using the Python implementation", module_name
+            )
+        else:
+            logging.getLogger(__name__).warning(
+                "R implementation of %s failed (%s); falling back to the "
+                "Python implementation. An R-side regression would otherwise "
+                "be invisible - investigate if unexpected.",
+                module_name,
+                str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
+            )
 
     if module_name == "power-design":
         return run_power_design_module(cpads_csv, output_dir=output_dir)

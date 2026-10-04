@@ -47,7 +47,7 @@ class _Lexer:
         d, i = self.d, self.i
         n = len(d)
         while i < n:
-            c = d[i:i + 1]
+            c = d[i : i + 1]
             if c in _WS:
                 i += 1
             elif c == b"%":
@@ -61,9 +61,9 @@ class _Lexer:
         """Parse one PDF object value at the cursor."""
         self._skip()
         d, i = self.d, self.i
-        c = d[i:i + 1]
+        c = d[i : i + 1]
         if c == b"<":
-            if d[i + 1:i + 2] == b"<":
+            if d[i + 1 : i + 2] == b"<":
                 return self._dict()
             return self._hexstring()
         if c == b"(":
@@ -75,37 +75,34 @@ class _Lexer:
             arr = []
             while True:
                 self._skip()
-                if self.d[self.i:self.i + 1] == b"]":
+                if self.d[self.i : self.i + 1] == b"]":
                     self.i += 1
                     return arr
                 arr.append(self.value())
         if c in b"+-.0123456789":
             return self._number()
-        m = re.match(rb"(true|false|null)", d[i:i + 5])
+        m = re.match(rb"(true|false|null)", d[i : i + 5])
         if m:
             self.i += len(m.group(1))
-            return {b"true": True, b"false": False,
-                    b"null": None}[m.group(1)]
+            return {b"true": True, b"false": False, b"null": None}[m.group(1)]
         # bare keyword (operator etc.) -- consume a token
         j = i
         n = len(d)
-        while j < n and d[j:j + 1] not in _WS \
-                and d[j:j + 1] not in _DELIM:
+        while j < n and d[j : j + 1] not in _WS and d[j : j + 1] not in _DELIM:
             j += 1
         tok = d[i:j]
         self.i = j if j > i else i + 1
         return tok
 
     def _number(self):
-        m = re.match(rb"[+-]?\d*\.?\d+", self.d[self.i:self.i + 32])
+        m = re.match(rb"[+-]?\d*\.?\d+", self.d[self.i : self.i + 32])
         txt = m.group(0)
         # reference?  "N G R"
         save = self.i
         self.i += len(txt)
         if b"." not in txt:
             self._skip()
-            m2 = re.match(rb"(\d+)\s+R(?![A-Za-z])",
-                          self.d[self.i:self.i + 24])
+            m2 = re.match(rb"(\d+)\s+R(?![A-Za-z])", self.d[self.i : self.i + 24])
             if m2:
                 self.i += m2.end()
                 return _Ref(int(txt))
@@ -116,14 +113,12 @@ class _Lexer:
         j = self.i + 1
         d = self.d
         n = len(d)
-        while j < n and d[j:j + 1] not in _WS \
-                and d[j:j + 1] not in _DELIM:
+        while j < n and d[j : j + 1] not in _WS and d[j : j + 1] not in _DELIM:
             j += 1
-        raw = d[self.i + 1:j]
+        raw = d[self.i + 1 : j]
         self.i = j
         # #xx escapes in names (sec. 7.3.5)
-        raw = re.sub(rb"#([0-9A-Fa-f]{2})",
-                     lambda m: bytes([int(m.group(1), 16)]), raw)
+        raw = re.sub(rb"#([0-9A-Fa-f]{2})", lambda m: bytes([int(m.group(1), 16)]), raw)
         return "/" + raw.decode("latin-1")
 
     def _dict(self):
@@ -131,7 +126,7 @@ class _Lexer:
         out = {}
         while True:
             self._skip()
-            if self.d[self.i:self.i + 2] == b">>":
+            if self.d[self.i : self.i + 2] == b">>":
                 self.i += 2
                 return out
             key = self.value()
@@ -144,21 +139,28 @@ class _Lexer:
         out = bytearray()
         n = len(d)
         while i < n:
-            c = d[i:i + 1]
+            c = d[i : i + 1]
             if c == b"\\":
-                nxt = d[i + 1:i + 2]
-                esc = {b"n": b"\n", b"r": b"\r", b"t": b"\t",
-                       b"b": b"\b", b"f": b"\x0c", b"(": b"(",
-                       b")": b")", b"\\": b"\\"}
+                nxt = d[i + 1 : i + 2]
+                esc = {
+                    b"n": b"\n",
+                    b"r": b"\r",
+                    b"t": b"\t",
+                    b"b": b"\b",
+                    b"f": b"\x0c",
+                    b"(": b"(",
+                    b")": b")",
+                    b"\\": b"\\",
+                }
                 if nxt in esc:
                     out += esc[nxt]
                     i += 2
                 elif nxt.isdigit():
-                    m = re.match(rb"[0-7]{1,3}", d[i + 1:i + 4])
+                    m = re.match(rb"[0-7]{1,3}", d[i + 1 : i + 4])
                     out.append(int(m.group(0), 8) & 0xFF)
                     i += 1 + len(m.group(0))
                 elif nxt in (b"\n", b"\r"):
-                    i += 2                     # line continuation
+                    i += 2  # line continuation
                 else:
                     i += 1
             elif c == b"(":
@@ -180,7 +182,7 @@ class _Lexer:
 
     def _hexstring(self):
         j = self.d.find(b">", self.i)
-        hx = re.sub(rb"[^0-9A-Fa-f]", b"", self.d[self.i + 1:j])
+        hx = re.sub(rb"[^0-9A-Fa-f]", b"", self.d[self.i + 1 : j])
         if len(hx) % 2:
             hx += b"0"
         self.i = j + 1
@@ -221,9 +223,7 @@ def _extract_from_content(data):
             tok = lex.value()
         except Exception:
             break
-        if isinstance(tok, bytes) and tok in (
-                b"Tj", b"'", b'"', b"TJ", b"Td", b"TD", b"T*",
-                b"Tm", b"BT", b"ET"):
+        if isinstance(tok, bytes) and tok in (b"Tj", b"'", b'"', b"TJ", b"Td", b"TD", b"T*", b"Tm", b"BT", b"ET"):
             if tok == b"Tj" or tok == b"'":
                 if stack and isinstance(stack[-1], bytes):
                     out.append(_decode_pdf_text(stack[-1]))
@@ -238,9 +238,8 @@ def _extract_from_content(data):
                     for el in stack[-1]:
                         if isinstance(el, bytes):
                             out.append(_decode_pdf_text(el))
-                        elif isinstance(el, (int, float)) \
-                                and el < -180:
-                            out.append(" ")     # big kern = space
+                        elif isinstance(el, int | float) and el < -180:
+                            out.append(" ")  # big kern = space
             elif tok in (b"Td", b"TD", b"T*") or tok == b"Tm":
                 if out and not out[-1].endswith("\n"):
                     out.append("\n")
@@ -271,8 +270,7 @@ class PdfReader:
     """Native reader with the pypdf read surface morie uses."""
 
     def __init__(self, path):
-        data = Path(path).read_bytes() if not hasattr(path, "read") \
-            else path.read()
+        data = Path(path).read_bytes() if not hasattr(path, "read") else path.read()
         self._objs = {}
         for m in re.finditer(rb"(\d+)\s+\d+\s+obj\b", data):
             num = int(m.group(1))
@@ -293,17 +291,14 @@ class PdfReader:
         val = lex.value()
         if isinstance(val, dict):
             lex._skip()
-            if self._data[lex.i:lex.i + 6] == b"stream":
+            if self._data[lex.i : lex.i + 6] == b"stream":
                 j = lex.i + 6
-                if self._data[j:j + 2] == b"\r\n":
+                if self._data[j : j + 2] == b"\r\n":
                     j += 2
-                elif self._data[j:j + 1] == b"\n":
+                elif self._data[j : j + 1] == b"\n":
                     j += 1
                 ln = self._resolve(val.get("/Length"))
-                if isinstance(ln, (int, float)):
-                    end = j + int(ln)
-                else:
-                    end = self._data.find(b"endstream", j)
+                end = j + int(ln) if isinstance(ln, int | float) else self._data.find(b"endstream", j)
                 val = (val, self._data[j:end])
         self._parsed[num] = val
         return val
@@ -318,8 +313,7 @@ class PdfReader:
     def _stream_data(self, tup):
         d, raw = tup
         filt = self._resolve(d.get("/Filter"))
-        filters = filt if isinstance(filt, list) else \
-            ([filt] if filt else [])
+        filters = filt if isinstance(filt, list) else ([filt] if filt else [])
         for f in filters:
             if f == "/FlateDecode":
                 try:
@@ -332,8 +326,7 @@ class PdfReader:
     def _expand_object_streams(self):
         for num in list(self._objs):
             obj = self._object(num)
-            if isinstance(obj, tuple) and \
-                    obj[0].get("/Type") == "/ObjStm":
+            if isinstance(obj, tuple) and obj[0].get("/Type") == "/ObjStm":
                 try:
                     body = self._stream_data(obj)
                     n = int(self._resolve(obj[0].get("/N")))
@@ -370,20 +363,17 @@ class PdfReader:
             # of the standard document-information keys
             if "/Type" in d:
                 continue
-            if any(k in d for k in ("/Title", "/Author", "/Subject",
-                                    "/Creator", "/Producer")):
+            if any(k in d for k in ("/Title", "/Author", "/Subject", "/Creator", "/Producer")):
                 info = d
                 break
         if info is None:
             return None
-        return _DocumentInformation(
-            {k: self._decode_string(self._resolve(v))
-             for k, v in info.items()})
+        return _DocumentInformation({k: self._decode_string(self._resolve(v)) for k, v in info.items()})
 
     @staticmethod
     def _decode_string(v):
         if isinstance(v, bytes):
-            if v[:2] in (b"\xfe\xff",):          # UTF-16BE with BOM
+            if v[:2] in (b"\xfe\xff",):  # UTF-16BE with BOM
                 return v[2:].decode("utf-16-be", "replace")
             return v.decode("latin-1", "replace")
         return v if isinstance(v, str) else ""
@@ -401,7 +391,7 @@ class PdfReader:
             tree = self._resolve(root.get("/Pages"))
             if isinstance(tree, dict):
                 self._walk(tree, pages, 0)
-        if not pages:            # damaged tree: brute collect
+        if not pages:  # damaged tree: brute collect
             for num in sorted(self._objs):
                 obj = self._object(num)
                 d = obj[0] if isinstance(obj, tuple) else obj
@@ -415,7 +405,7 @@ class PdfReader:
         if node.get("/Type") == "/Page":
             pages.append(_Page(self, node))
             return
-        for kid in (self._resolve(node.get("/Kids")) or []):
+        for kid in self._resolve(node.get("/Kids")) or []:
             kid = self._resolve(kid)
             if isinstance(kid, tuple):
                 kid = kid[0]

@@ -14,6 +14,7 @@ Public API: :func:`html_to_text`, :func:`parse_report_text`,
 
 from __future__ import annotations
 
+import datetime
 import re
 
 from .corpus import PANEL_FIELDS
@@ -52,10 +53,12 @@ def _esc(h: bytes) -> bytes:
 
 
 def _section_text(text: bytes, header: str, ends=()) -> bytes:
-    m = re.search(rb"(^|\n)[ \t]*" + _esc(_b(header)) + rb"[ \t]*\n", text)
-    if not m:
+    # the LAST heading line: report pages open with a table of contents that repeats every
+    # section title on its own line, and slicing from there gave each section the TOC text
+    ms = list(re.finditer(rb"(^|\n)[ \t]*" + _esc(_b(header)) + rb"[ \t]*\n", text))
+    if not ms:
         return b""
-    start = m.end()
+    start = ms[-1].end()
     end = len(text)
     tail = text[start:]
     for em in ends:
@@ -84,7 +87,15 @@ def _count_tagged(section: bytes, prefix: str) -> bytes:
     return b""
 
 
-_POLICE = re.compile(rb"((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary))")
+_POLICE = re.compile(
+    rb"((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary))\b"
+    rb"(?![ \t]+Services?[ \t]+(?:Act|Board))"
+)
+_NOTIFIER = re.compile(
+    rb"((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Provincial Police|Police|Constabulary))\s*"
+    rb"(?:\(\s*[A-Z]{2,6}\s*\)\s*)?(?:notified|contacted)\s+the\s+SIU"
+)
+_LEAD0 = re.compile(rb"^(?:The|A|An|At|On|In|By)\s+")
 _LEAD = re.compile(rb"^(?:The|A|An|Of|And|On|In|By|To|With|From|That|This|Local)\s+")
 _HEADLINE = re.compile(
     rb"\b(?:Between|Involving|After|During|Following|Collision|Crash|Shooting|Death|Injury|Incident|Arrest)\b"
@@ -98,6 +109,14 @@ _ABBR = (
 
 
 def _detect_police_service(text: bytes) -> bytes:
+    # the notification sentence names the force that called the SIU in: prefer it over counting
+    m = _NOTIFIER.search(text)
+    if m:
+        name = _trim(m.group(1))
+        for _ in range(3):
+            name = _LEAD0.sub(b"", name)
+        if name:
+            return name
     counts: dict[bytes, int] = {}
     for m in _POLICE.finditer(text):
         name = _trim(m.group(1))
@@ -120,7 +139,7 @@ def _detect_police_service(text: bytes) -> bytes:
     return b""
 
 
-_ON_DATE = re.compile(rb"\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})")
+_ON_DATE = re.compile(rb"\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})")
 
 
 def _detect_incident_date(text: bytes) -> bytes:
@@ -145,25 +164,28 @@ def _detect_siu_notified(text: bytes) -> bytes:
     inv = _section_text(text, "The Investigation", ("The Team", "Incident Narrative"))
     hay = inv if inv else text
     m = re.search(
-        rb"\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})[^\n]{0,200}?"
+        rb"\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})[^\n]{0,200}?"
         rb"(?:notified|contacted)\s+the\s+SIU",
         hay,
     )
     if m:
         return m.group(1).replace(b",", b"")
-    m = re.search(rb"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", hay)
+    m = re.search(
+        rb"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})",
+        hay,
+    )
     if m:
         return m.group(1).replace(b",", b"")
     notif = _section_text(text, "Notification of the SIU", ("The Team", "Incident Narrative", "Evidence"))
     if notif:
-        m = re.search(rb"On\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", notif)
+        m = re.search(rb"On\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", notif)
         if m:
             return m.group(1).replace(b",", b"")
     return b""
 
 
 def _detect_decision_date(text: bytes) -> bytes:
-    m = re.search(rb"Date:\s*([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", text)
+    m = re.search(rb"Date:\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", text)
     if m:
         return m.group(1).replace(b",", b"")
     m = re.search(rb"Date:\s*(\d{4}-\d{2}-\d{2})", text)
@@ -306,14 +328,51 @@ _MONTHS = {
 }
 
 
+# French months and English abbreviations, as the C++ core reads them
+_MONTHS.update(
+    {
+        b"janvier": 1,
+        b"f\xc3\xa9vrier": 2,
+        b"fevrier": 2,
+        b"mars": 3,
+        b"avril": 4,
+        b"mai": 5,
+        b"juin": 6,
+        b"juillet": 7,
+        b"ao\xc3\xbbt": 8,
+        b"aout": 8,
+        b"septembre": 9,
+        b"octobre": 10,
+        b"novembre": 11,
+        b"d\xc3\xa9cembre": 12,
+        b"decembre": 12,
+        **{
+            m[:3].encode(): i
+            for i, m in enumerate(
+                ("january february march april may june july august september " "october november december").split(), 1
+            )
+        },
+        b"sept": 9,
+    }
+)
+_ISO_MD = re.compile(rb"([^\s\d,.]+)\.?\s+(\d{1,2})(?:st|nd|rd|th|er|e)?,?\s+(\d{4})")  # August 3rd, 2017
+_ISO_DM = re.compile(rb"(\d{1,2})(?:er|e|st|nd|rd|th)?\s+(?:of\s+)?([^\s\d,.]+)\.?,?\s+(\d{4})")  # 3 août 2017
+
+
 def _iso(human: bytes) -> bytes:
-    m = re.search(rb"([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})", human)
-    if not m:
-        return human if re.fullmatch(rb"\d{4}-\d{2}-\d{2}", human) else b""
-    mo = _MONTHS.get(m.group(1).lower())
-    if mo is None:
+    m = _ISO_MD.search(human)
+    if m and m.group(1).lower() in _MONTHS:
+        mo, day, year = _MONTHS[m.group(1).lower()], int(m.group(2)), m.group(3)
+    else:
+        m = _ISO_DM.search(human)
+        if not (m and m.group(2).lower() in _MONTHS):
+            return human if re.fullmatch(rb"\d{4}-\d{2}-\d{2}", human) else b""
+        mo, day, year = _MONTHS[m.group(2).lower()], int(m.group(1)), m.group(3)
+    try:  # "February 30, 2019" is not a date
+        datetime.date(int(year), mo, day)
+    except ValueError:
         return b""
-    return b"%s-%02d-%02d" % (m.group(3), mo, int(m.group(2)))
+    return b"%s-%02d-%02d" % (year, mo, day)
 
 
 def to_iso_date(human: str) -> str:
@@ -334,13 +393,13 @@ _HTML_STEPS = (
     (re.compile(rb"<[^>]+>"), b" "),
     (re.compile(rb"&nbsp;"), b" "),
     (re.compile(rb"&amp;"), b"&"),
-    (re.compile(rb"&#8217;|&rsquo;"), b"'"),
-    (re.compile(rb"&#8216;|&lsquo;"), b"'"),
-    (re.compile(rb"&#8220;|&ldquo;|&#8221;|&rdquo;"), b'"'),
+    (re.compile(rb"&#8217;|&rsquo;|&#x2019;", _I), b"'"),
+    (re.compile(rb"&#8216;|&lsquo;|&#x2018;", _I), b"'"),
+    (re.compile(rb"&#8220;|&ldquo;|&#8221;|&rdquo;|&#x201c;|&#x201d;", _I), b'"'),
     (re.compile(rb"&quot;"), b'"'),
     (re.compile(rb"&#0?39;|&apos;"), b"'"),
-    (re.compile(rb"&#8211;|&ndash;"), b"-"),
-    (re.compile(rb"&#8212;|&mdash;"), b"--"),
+    (re.compile(rb"&#8211;|&ndash;|&#x2013;", _I), b"-"),
+    (re.compile(rb"&#8212;|&mdash;|&#x2014;", _I), b"--"),
     (re.compile(rb"&lt;"), b"<"),
     (re.compile(rb"&gt;"), b">"),
     (re.compile(rb"[ \t]+"), b" "),
@@ -350,10 +409,13 @@ _HTML_STEPS = (
 
 
 def _html_to_text(html: bytes) -> bytes:
+    import html as _html
+
     t = html
     for pat, rep in _HTML_STEPS:
         t = pat.sub(rep, t)
-    return t
+    # what the ASCII steps leave (&eacute;, &#233;, &hellip;) becomes its character
+    return _b(_html.unescape(_s(t).replace("&hellip;", "...").replace("&#8230;", "...")))
 
 
 def html_to_text(html: str) -> str:

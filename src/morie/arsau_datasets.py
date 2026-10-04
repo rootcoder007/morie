@@ -784,8 +784,7 @@ def arsau_available_datasets(
     rows: list[list[Any]] = []
     for e in entries:
         desc = e.description_fr if language.lower().startswith("fr") else e.description_en
-        cached = "?" if data_dir is None else (
-            "yes" if (Path(data_dir) / e.csv_filename).exists() else "no")
+        cached = "?" if data_dir is None else ("yes" if (Path(data_dir) / e.csv_filename).exists() else "no")
         rows.append(
             [
                 e.year_or_range,

@@ -44,7 +44,7 @@ def aldrich_mckelvey(
     if zhat.std() > 0:
         zhat = (zhat - zhat.mean()) / zhat.std()
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         zhat_old = zhat.copy()
 
         alpha = np.zeros(n_resp)
@@ -320,20 +320,14 @@ def smacof(
     D = np.asarray(D, dtype=float)
     n = D.shape[0]
 
-    if weights is None:
-        W = np.ones((n, n))
-    else:
-        W = np.asarray(weights, dtype=float)
+    W = np.ones((n, n)) if weights is None else np.asarray(weights, dtype=float)
     np.fill_diagonal(W, 0)
 
     V = np.diag(W.sum(axis=1))
     V_inv = np.linalg.pinv(V)
 
     rng = np.random.default_rng(42)
-    if init is None:
-        X = rng.standard_normal((n, n_dims))
-    else:
-        X = np.asarray(init, dtype=float)
+    X = rng.standard_normal((n, n_dims)) if init is None else np.asarray(init, dtype=float)
 
     def compute_distances(X):
         d = np.zeros((n, n))
@@ -357,7 +351,7 @@ def smacof(
     d_X = compute_distances(X)
     stress = compute_stress(X, d_X)
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         B_mat = compute_B(d_X)
         X_new = V_inv @ B_mat @ X
 
@@ -434,7 +428,7 @@ def nonmetric_mds(
 
         pos = 0
         for i in range(len(block_val)):
-            for j in range(block_size[i]):
+            for _j in range(block_size[i]):
                 result[pos] = block_val[i]
                 pos += 1
         return result
@@ -443,7 +437,7 @@ def nonmetric_mds(
     d_orig = D[mask]
     order = np.argsort(d_orig)
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         d_X = compute_distances(X)
         d_current = d_X[mask]
 
@@ -492,7 +486,7 @@ def mds_fit_stats(eigenvalues: NDArray) -> dict:
     fit_by_dim = []
     cumulative = 0.0
     cumulative_fit = []
-    for i, ev in enumerate(pos):
+    for _i, ev in enumerate(pos):
         f = ev / total
         cumulative += f
         fit_by_dim.append(f)
@@ -527,10 +521,7 @@ def unfolding_stress(
         for j in range(n_s):
             d_model[i, j] = np.linalg.norm(X_r[i] - X_s[j])
 
-    if weights is None:
-        W = np.ones_like(D)
-    else:
-        W = np.asarray(weights, dtype=float)
+    W = np.ones_like(D) if weights is None else np.asarray(weights, dtype=float)
 
     mask = ~np.isnan(D)
     return float(np.sum(W[mask] * (d_model[mask] - D[mask]) ** 2))
@@ -561,7 +552,7 @@ def mlsmu6(
     best_stress = np.inf
     best_result = None
 
-    for restart in range(n_restarts):
+    for _restart in range(n_restarts):
         X_r = rng.standard_normal((n_r, n_dims))
         X_s = rng.standard_normal((n_s, n_dims))
         X_r -= X_r.mean(axis=0)
@@ -570,7 +561,7 @@ def mlsmu6(
         D_hat = D - D.mean(axis=1, keepdims=True)
 
         prev_stress = np.inf
-        for iteration in range(max_iter):
+        for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
             d_model = np.zeros((n_r, n_s))
             for i in range(n_r):
                 for j in range(n_s):
@@ -666,7 +657,7 @@ def smacof_unfolding(
     d_X = compute_distances(X)
     stress = np.sum(W * (D_full - d_X) ** 2) / 2
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         B = np.zeros((n, n))
         for i in range(n):
             for j in range(n):
@@ -739,10 +730,7 @@ def nominate_utility(
     if z_nay.ndim == 1:
         z_nay = z_nay.reshape(-1, 1)
 
-    if w is None:
-        w = np.ones(n_dims)
-    else:
-        w = np.asarray(w, dtype=float)
+    w = np.ones(n_dims) if w is None else np.asarray(w, dtype=float)
 
     U_yea = np.zeros((n_leg, n_votes))
     U_nay = np.zeros((n_leg, n_votes))
@@ -777,10 +765,7 @@ def nominate_vote_prob(
     z_yea_j = np.asarray(z_yea_j, dtype=float).ravel()
     z_nay_j = np.asarray(z_nay_j, dtype=float).ravel()
 
-    if w is None:
-        w = np.ones_like(x_i)
-    else:
-        w = np.asarray(w, dtype=float)
+    w = np.ones_like(x_i) if w is None else np.asarray(w, dtype=float)
 
     d_yea = np.sum(w**2 * (x_i - z_yea_j) ** 2)
     d_nay = np.sum(w**2 * (x_i - z_nay_j) ** 2)
@@ -1558,7 +1543,7 @@ def indscal(
 
     W = np.ones((n_indiv, n_dims))
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         X_old = X.copy()
 
         for k in range(n_indiv):
@@ -1575,12 +1560,12 @@ def indscal(
                 numer = 0.0
                 denom = 0.0
                 for k in range(n_indiv):
-                    for l in range(n_stim):
-                        if l == j:
+                    for stim in range(n_stim):
+                        if stim == j:
                             continue
-                        d_kj = D_list[k][j, l]
+                        d_kj = D_list[k][j, stim]
                         w_s = W[k, s]
-                        numer += w_s * d_kj * X[l, s]
+                        numer += w_s * d_kj * X[stim, s]
                         denom += w_s**2 + 1e-12
                 if denom > 0:
                     X[j, s] = numer / denom
@@ -1735,7 +1720,7 @@ def dw_nominate(
     mid = np.zeros((n_votes, n_dims))
     ll_prev = None
 
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         ll_old = 0.0
 
         for j in range(n_votes):
@@ -1942,7 +1927,7 @@ def alpha_nominate(
             y_v = votes[valid, j]
             yea_o = mid[j] + 0.5 * nv[j]
             nay_o = mid[j] - 0.5 * nv[j]
-            for idx, i_valid in enumerate(np.where(valid)[0]):
+            for idx, _i_valid in enumerate(np.where(valid)[0]):
                 u_yea = _utility(X_v[idx], yea_o, alpha, w)
                 u_nay = _utility(X_v[idx], nay_o, alpha, w)
                 u_diff = beta * (u_yea - u_nay)
@@ -2040,7 +2025,6 @@ def ordinal_irt(
 
     total_iter = burn_in + n_samples
     theta_chain = np.zeros((n_samples, n, n_dims))
-    ll_chain = np.zeros(n_samples)
 
     for t in range(total_iter):
         for i in range(n):
@@ -2427,7 +2411,7 @@ def wordfish_irt(
     alpha = np.log(dtm.sum(axis=0) / dtm.sum() + 1e-10)
     beta = rng.standard_normal(n_words) * 0.1
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
         omega_old = omega.copy()
 
         for i in range(n_docs):

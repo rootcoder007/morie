@@ -29,6 +29,8 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as scipy_stats
 
+from ._frames import as_frame
+
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
@@ -37,32 +39,29 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
+    sm = _MissingDep("sm")
 try:
     from morie.fn._glm_core import formula as smf
 except ImportError:
-    smf = _MissingDep('smf')
+    smf = _MissingDep("smf")
 try:
     from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
+    LinearRegression = _MissingDep("LinearRegression")
+    LogisticRegression = _MissingDep("LogisticRegression")
 try:
     from morie.fn._ml_core import StandardScaler
 except ImportError:
-    StandardScaler = _MissingDep('StandardScaler')
+    StandardScaler = _MissingDep("StandardScaler")
 
 
 def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: str) -> tuple[float, float]:
@@ -80,6 +79,7 @@ def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: 
     :return: A tuple containing the estimated ATE coefficient and its standard error.
     :rtype: tuple[float, float]
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     formula = f"{outcome} ~ {treatment}"
     # HC3 robust covariance: corrects for heteroskedasticity introduced by
     # unequal IPTW weights.  Plain OLS/WLS SEs are downward-biased when
@@ -111,10 +111,12 @@ def estimate_plr(
     :return: dict with ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
         ``pval``, ``n_obs``.
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     from morie.fn.plr import estimate_plr as _native
-    return _native(data, treatment=treatment, outcome=outcome,
-                   covariates=covariates, n_folds=n_folds,
-                   random_state=random_state)
+
+    return _native(
+        data, treatment=treatment, outcome=outcome, covariates=covariates, n_folds=n_folds, random_state=random_state
+    )
 
 
 def estimate_pliv(
@@ -136,10 +138,18 @@ def estimate_pliv(
     :return: dict with ``late``, ``se``, ``ci_lower``, ``ci_upper``,
         ``pval``, ``n_obs``, ``method``.
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     from morie.fn.pliv import estimate_pliv as _native
-    return _native(data, treatment=treatment, outcome=outcome,
-                   instrument=instrument, covariates=covariates,
-                   n_folds=n_folds, random_state=random_state)
+
+    return _native(
+        data,
+        treatment=treatment,
+        outcome=outcome,
+        instrument=instrument,
+        covariates=covariates,
+        n_folds=n_folds,
+        random_state=random_state,
+    )
 
 
 def estimate_ate_gcomputation(
@@ -185,6 +195,7 @@ def estimate_ate_gcomputation(
     Hernan, M. A., & Robins, J. M. (2020). Causal Inference: What If.
         Chapman & Hall/CRC. (Chapter 13.)
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     valid_models = {"linear", "logistic"}
     if outcome_model not in valid_models:
         raise ValueError(f"outcome_model must be one of {valid_models}.")

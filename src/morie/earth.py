@@ -394,7 +394,7 @@ def fetch_earth_engine(
     """
     ee = _ensure_ee_initialized()
 
-    if isinstance(region, (tuple, list)) and len(region) == 4:
+    if isinstance(region, tuple | list) and len(region) == 4:
         region_ee = ee.Geometry.Rectangle(list(region))
     elif isinstance(region, dict):
         region_ee = ee.Geometry(region)

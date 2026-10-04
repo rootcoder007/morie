@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
@@ -86,7 +87,7 @@ def _check_assumptions(
 
     _add(
         "exposure > reference",
-        exposure_mean > reference,
+        math.isfinite(exposure_mean) and exposure_mean > reference,
         f"mean {exposure_mean:.6g} vs ref {reference:.6g} -- CRF is monotonic only "
         "when exposure exceeds the counterfactual floor.",
     )
@@ -97,7 +98,7 @@ def _check_assumptions(
     )
     _add(
         "baseline_rate non-negative",
-        baseline_rate >= 0.0,
+        math.isfinite(baseline_rate) and baseline_rate >= 0.0,
         f"baseline_rate={baseline_rate} per 100k per year",
     )
     _add(
@@ -108,7 +109,7 @@ def _check_assumptions(
     _add(
         "pollutant supported by envhealth CRF",
         pollutant.lower() in ("no2", "pm25"),
-        "Current CRFs: NO2 (log-linear), PM2.5 (Burnett IER). Other pollutants reject.",
+        "Current CRFs: NO2 (log-linear), PM2.5 (log-linear all-cause; Burnett IER for IHD and stroke). Other pollutants reject.",
     )
     return assumptions
 
@@ -130,7 +131,9 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
 
     pollutant = args.pollutant.lower()
     outcome = args.outcome
-    reference = args.reference
+    reference = (
+        args.reference if args.reference is not None else (10.0 if str(args.pollutant).lower() == "no2" else 5.8)
+    )
 
     # --- Resolve exposure source ---
     equity_df = None
@@ -146,8 +149,22 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
             print(f"ERROR: exposure CSV not found: {p}", file=sys.stderr)
             return 2
         df = pd.read_csv(p)
+        if "exposure" not in df.columns and "value" in df.columns:
+            # a NAPS pull (morie pull naps-...): hourly `value` in `unit`; NO2 is reported in ppb
+            vals = pd.to_numeric(df["value"], errors="coerce")
+            units = {str(u).strip().lower() for u in df["unit"].dropna().unique()} if "unit" in df.columns else set()
+            if pollutant == "no2" and units & {"ppb", "ppbv"}:
+                vals = vals * 1.88  # ug/m3 per ppb of NO2 at 25 C and 1 atm (WHO 2021 conversion)
+                print("note: NO2 in ppb converted to ug/m3 (x 1.88)", file=sys.stderr)
+            elif units - {"ug/m3", "\u00b5g/m3", "\u00b5g/m\u00b3", "ug/m\u00b3"}:
+                print(f"ERROR: exposure unit {', '.join(sorted(units))} is not ug/m3 for {pollutant}", file=sys.stderr)
+                return 2
+            df = df.assign(exposure=vals).dropna(subset=["exposure"])
         if "exposure" not in df.columns:
-            print("ERROR: CSV missing 'exposure' column.", file=sys.stderr)
+            print(
+                "ERROR: CSV missing 'exposure' column (ug/m3); a NAPS pull's 'value' column also works.",
+                file=sys.stderr,
+            )
             return 2
         exposure_mean = float(df["exposure"].mean())
         exposure_prevalence = float((df["exposure"] > reference).mean())
@@ -155,6 +172,18 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
             equity_df = df
         data_source = str(p)
     else:
+        if not getattr(args, "exposure_mean", None):
+            print(
+                "no exposure given: pass --demo, --exposure-csv FILE, or --exposure-mean X with --exposure-prevalence P",
+                file=sys.stderr,
+            )
+            return 2
+        if getattr(args, "exposure_prevalence", None) in (None, 0, 0.0):
+            print(
+                "--exposure-mean needs --exposure-prevalence P (the share of the population at that mean)",
+                file=sys.stderr,
+            )
+            return 2
         exposure_mean = float(args.exposure_mean)
         exposure_prevalence = float(args.exposure_prevalence)
         data_source = "CLI scalar args"
@@ -198,18 +227,22 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
         return 1
 
     # --- Pipeline stage 1: concentration-response ---
-    if pollutant == "no2":
-        crf = envhealth.concentration_response_no2(
-            exposure_mean,
-            outcome=outcome,
-            reference_conc=reference,
-        )
-    else:  # pm25
-        crf = envhealth.concentration_response_pm25(
-            exposure_mean,
-            outcome=outcome,
-            reference_conc=reference,
-        )
+    try:
+        if pollutant == "no2":
+            crf = envhealth.concentration_response_no2(
+                exposure_mean,
+                outcome=outcome,
+                reference_conc=reference,
+            )
+        else:  # pm25
+            crf = envhealth.concentration_response_pm25(
+                exposure_mean,
+                outcome=outcome,
+                reference_conc=reference,
+            )
+    except ValueError as e:  # an unknown --outcome names the outcomes this pollutant has
+        print(f"ERROR: --outcome {outcome}: {e}", file=sys.stderr)
+        return 2
 
     # --- Stage 2: attributable fraction ---
     paf = envhealth.attributable_fraction(
@@ -223,7 +256,10 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
     baseline_rate_per_person = baseline_rate / 100_000.0
     exposure_delta = max(0.0, exposure_mean - reference)
     beta_per_unit = float(np.log(crf.rr) / max(exposure_delta, 1e-9))
-    displaced_n = envhealth.mortality_displaced(
+    # mortality_displaced() counts everyone's exposure cut to the reference; only the exposed
+    # share can gain, so the figure is scaled by the prevalence -- otherwise it exceeds the
+    # attributable count (Levin's PAF on the same prevalence) in the same report
+    displaced_n = exposure_prevalence * envhealth.mortality_displaced(
         exposure_delta=exposure_delta,
         population=population,
         baseline_rate=baseline_rate_per_person,
@@ -239,6 +275,8 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
         baseline_rate=baseline_rate_per_person,
         population=population,
         pollutant=burden_name,
+        outcome=outcome,  # the same outcome as the CRF stage (IHD/stroke were burdened as all-cause)
+        reference_conc=reference,  # the same counterfactual as the CRF and the displaced-mortality stage
     )
 
     # --- Stage 5: equity (only if we have demographic data) ---
@@ -280,13 +318,13 @@ def _dump(obj: Any) -> Any:
 
 def _round_floats(obj: Any, digits: int = 10) -> Any:
     """Ten significant digits: 5.8 prints as 5.8, not 5.7999999999999998; arrays become lists."""
-    if hasattr(obj, "tolist") and not isinstance(obj, (str, bytes)):
+    if hasattr(obj, "tolist") and not isinstance(obj, str | bytes):
         return _round_floats(obj.tolist(), digits)
     if isinstance(obj, float):
         return float(f"{obj:.{digits}g}") if obj == obj and obj not in (float("inf"), float("-inf")) else obj
     if isinstance(obj, dict):
         return {k: _round_floats(v, digits) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, list | tuple):
         return [_round_floats(v, digits) for v in obj]
     return obj
 
@@ -335,7 +373,7 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
 
     d = pipe["displaced"]
     print("\nMortality displaced")
-    print(f"  expected avoided deaths: {d.get('deaths_displaced', 0):.1f}")
+    print(f"  expected avoided deaths: {d.get('deaths_displaced', 0):.1f}  (exposed share cut to the reference)")
 
     b = pipe["burden"]
     print("\nBurden of pollution")
@@ -363,7 +401,11 @@ def register_subparser(subparsers) -> None:
         help="Run a pollution -> health causal pipeline and print a report.",
     )
     p.add_argument("--pollutant", required=True, choices=["no2", "pm25", "NO2", "PM25"], help="Pollutant to analyze.")
-    p.add_argument("--outcome", default="all_cause_mortality", help="Outcome name passed to concentration_response_*.")
+    p.add_argument(
+        "--outcome",
+        default="all_cause_mortality",
+        help="Outcome: all_cause_mortality (default); NO2 also respiratory, childhood_asthma; PM2.5 also ihd, stroke.",
+    )
     p.add_argument("--region", default=None, help="Region label for reporting (e.g. ON-FSA-M6H).")
     p.add_argument("--years", default=None, help="Year range label for reporting (e.g. 2019-2023).")
 
@@ -375,7 +417,12 @@ def register_subparser(subparsers) -> None:
         "--exposure-mean", type=float, default=0.0, help="Scalar exposure mean (µg/m³). Used if no csv/demo."
     )
     p.add_argument("--exposure-prevalence", type=float, default=0.0, help="Fraction of population above reference.")
-    p.add_argument("--reference", type=float, default=5.8, help="Counterfactual reference concentration (µg/m³).")
+    p.add_argument(
+        "--reference",
+        type=float,
+        default=None,
+        help="Counterfactual reference concentration (µg/m³); default 10 for NO2 (WHO 2021 guideline), 5.8 for PM2.5",
+    )
     p.add_argument("--baseline-rate", type=float, default=500.0, help="Baseline outcome rate per 100,000 per year.")
     p.add_argument("--population", type=int, default=1_000_000, help="Population at risk.")
     p.add_argument("--json", action="store_true", help="Emit machine-readable JSON instead of the text report.")

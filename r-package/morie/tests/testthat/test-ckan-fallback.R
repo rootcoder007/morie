@@ -1,4 +1,4 @@
-.pkg <- if (isNamespaceLoaded("rmorie")) "rmorie" else "morie"
+.pkg <- if (isNamespaceLoaded("morie")) "morie" else "morie"
 
 # When the CKAN datastore is down, the resource file (live, then Wayback) is read instead.
 

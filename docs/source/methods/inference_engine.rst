@@ -95,10 +95,12 @@ on macOS for hardware-tuned SIMD:
 .. code-block:: python
 
    from morie.engine_bridge import is_available, matvec, rmsnorm
-   print(is_available())  # True if .dylib/.so compiled
+   from morie.fn import _array_core as np
+   print(is_available())  # True if .dylib/.so compiled; the numpy path answers otherwise
 
-   # Accelerate.framework BLAS for matmul
-   out = matvec(weight_matrix, input_vec)  # cblas_sgemv under the hood
+   weight_matrix = np.array([[1.0, 2.0], [3.0, 4.0]], dtype="float32")
+   input_vec = np.array([1.0, 1.0], dtype="float32")
+   out = matvec(weight_matrix, input_vec)  # cblas_sgemv under the hood -> [3, 7]
 
 **Security design:**
 
@@ -123,7 +125,7 @@ Successfully parses real Ollama model files, now with Q4_K dequantization:
 
    from morie.gguf_loader import GGUFModel
 
-   model = GGUFModel("~/.ollama/models/blobs/sha256-...")
+   model = GGUFModel("~/.ollama/models/blobs/sha256-...")   # a GGUF file on this machine
    print(model.config)
    # {'architecture': 'llama', 'n_layers': 32, 'n_heads': 32,
    #  'head_dim': 128, 'hidden_dim': 4096, 'vocab_size': 128256,

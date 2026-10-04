@@ -189,7 +189,7 @@ def bq_summary(db: str, table: str, column: str) -> ColumnSummary:
     # client-side from a SELECT of the column. For huge tables the user
     # should use a sample.
     vals = [r[column] for r in _query(db, f"SELECT {c} FROM {t} WHERE {c} IS NOT NULL LIMIT 100000")]
-    nums = [float(v) for v in vals if isinstance(v, (int, float))]
+    nums = [float(v) for v in vals if isinstance(v, int | float)]
     median = None
     std = None
     if nums:

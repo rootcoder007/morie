@@ -25,7 +25,10 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+import shlex
 import stat
+import subprocess
+import sys
 import time
 import webbrowser
 from pathlib import Path
@@ -176,6 +179,50 @@ def _say(msg: str) -> None:
     print(msg, flush=True)  # the code must reach a redirected stdout before polling starts
 
 
+def _can_open_browser() -> bool:
+    """False over SSH and on a Linux/BSD machine without a desktop session."""
+    if os.environ.get("SSH_CONNECTION") or os.environ.get("SSH_TTY"):
+        return False
+    if sys.platform.startswith(("linux", "freebsd", "openbsd", "netbsd")):
+        return bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+    return True
+
+
+def _open_browser(uri: str) -> None:
+    """Open ``uri`` without ever waiting on the browser.
+
+    With ``$BROWSER`` set, :func:`webbrowser.open` runs that command and waits
+    for it; a browser that stays open (Brave, Firefox) then blocked the sign-in
+    before its first poll. Each ``$BROWSER`` entry is started detached instead.
+    Without a desktop session nothing is opened (a console browser such as
+    lynx would take over the terminal): the printed URL works on any device.
+    """
+    if not _can_open_browser():
+        return
+    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)):
+        try:
+            cmd = shlex.split(entry)
+        except ValueError:
+            continue
+        cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
+        try:
+            subprocess.Popen(
+                cmd,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            return
+        except OSError:
+            continue
+    with contextlib.suppress(Exception):
+        browser = webbrowser.get()
+        # a plain GenericBrowser is a console browser webbrowser waits on; the GUI launchers return at once
+        if type(browser) is not webbrowser.GenericBrowser:
+            browser.open(uri)
+
+
 def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
     """Run the GitHub device flow against the gateway's auth service.
 
@@ -192,10 +239,9 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
         raise RuntimeError(f"the sign-in service answered {start.status_code}")
     info = start.json()
     user_code, uri = info["user_code"], info["verification_uri"]
-    echo(f"Sign in at {uri} and enter the code: {user_code}")
+    echo(f"Sign in at {uri} and enter the code: {user_code}  (no GitHub? run: morie login --email you@example.com)")
     if open_browser:
-        with contextlib.suppress(Exception):
-            webbrowser.open(uri)
+        _open_browser(uri)
     interval = float(info.get("interval", 5))
     deadline = time.monotonic() + poll_max_seconds
     while time.monotonic() < deadline:
@@ -234,14 +280,19 @@ def store_token(token: str, echo=_say) -> str:
     if not token:
         raise ValueError("an empty token cannot be stored")
     data = read_credentials()
+    previous = dict(data)
     data.update({"hosted_key": token, "hosted_base_url": hosted_base_url()})
     path = write_credentials(data)
     reset_probe_cache()
     if probe_hosted():
         echo(f"Token stored in {path}; the gateway accepts it.")
-    else:
-        echo(f"Token stored in {path}, but the gateway did not accept it (check the key, or run `morie login` again).")
-    return token
+        return token
+    why = hosted_failure()
+    write_credentials(previous)  # nothing is kept that the gateway refused
+    reset_probe_cache()
+    if why == "rejected":
+        raise ValueError("the gateway rejected that key; nothing stored (check it, or run `morie login` again)")
+    raise ValueError(f"the gateway could not be reached to check that key ({why}); nothing stored, try again")
 
 
 def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
@@ -306,7 +357,9 @@ def models_lines() -> list[str]:
     if not s["base_url"]:
         return ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
     if not s["logged_in"]:
-        return [f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login`"]
+        return [
+            f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
+        ]
     if not s["reachable"]:
         return [f"Hosted tier ({s['base_url']}): {hosted_problem_line()}"]
     default = hosted_model_available()

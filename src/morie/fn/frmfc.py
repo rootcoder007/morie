@@ -8,10 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def form_factor_fn(x: np.ndarray) -> DescriptiveResult:
-    """Compute the form factor (RMS / mean absolute value).
-
-    'That'You have power over your mind. -- Marcus Aurelius'
-    """
+    """Compute the form factor (RMS / mean absolute value)."""
     from morie._waveform import form_factor as _backend
 
     result = _backend(x)

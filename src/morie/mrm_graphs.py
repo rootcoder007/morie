@@ -33,11 +33,13 @@ class CausalDag:
     latent: list[str] = field(default_factory=list)
 
     def __repr__(self) -> str:
-        return ("CausalDag: %d nodes, %d edges, %s -> %s%s"
-                % (len(self.nodes), len(self.edges), self.exposure,
-                   self.outcome,
-                   "" if not self.latent
-                   else " (latent: %s)" % ", ".join(self.latent)))
+        return "CausalDag: %d nodes, %d edges, %s -> %s%s" % (
+            len(self.nodes),
+            len(self.edges),
+            self.exposure,
+            self.outcome,
+            "" if not self.latent else " (latent: {})".format(", ".join(self.latent)),
+        )
 
     def parents(self, node: str) -> list[str]:
         return [u for u, v in self.edges if v == node]
@@ -53,23 +55,21 @@ class CausalDag:
         """
         if isinstance(adjust, str):
             adjust = (adjust,)
-        return _backdoor_criterion(self.edges, self.exposure,
-                                   self.outcome, tuple(adjust))
+        return _backdoor_criterion(self.edges, self.exposure, self.outcome, tuple(adjust))
 
 
 def _parse_edge(e) -> tuple[str, str]:
-    if isinstance(e, (tuple, list)):
+    if isinstance(e, tuple | list):
         if len(e) != 2 or not all(str(p).strip() for p in e):
-            raise ValueError("edge must be a pair of node names: %r" % (e,))
+            raise ValueError(f"edge must be a pair of node names: {e!r}")
         return (str(e[0]).strip(), str(e[1]).strip())
     parts = [p.strip() for p in str(e).split("->")]
     if len(parts) != 2 or not all(parts):
-        raise ValueError("edge must look like 'A -> B': %s" % e)
+        raise ValueError(f"edge must look like 'A -> B': {e}")
     return (parts[0], parts[1])
 
 
-def causal_dag(edges, exposure: str, outcome: str,
-               latent=()) -> CausalDag:
+def causal_dag(edges, exposure: str, outcome: str, latent=()) -> CausalDag:
     """Build a DAG from edges, rejecting cycles.
 
     `edges` may be ``"A -> B"`` strings or ``(from, to)`` pairs. The
@@ -88,9 +88,9 @@ def causal_dag(edges, exposure: str, outcome: str,
             if n not in nodes:
                 nodes.append(n)
     if exposure not in nodes:
-        raise ValueError("exposure not in graph: %s" % exposure)
+        raise ValueError(f"exposure not in graph: {exposure}")
     if outcome not in nodes:
-        raise ValueError("outcome not in graph: %s" % outcome)
+        raise ValueError(f"outcome not in graph: {outcome}")
 
     # Acyclicity by Kahn's algorithm, as the R side does. Counting the
     # nodes it can retire is the proof: anything left over is in a cycle.
@@ -111,8 +111,7 @@ def causal_dag(edges, exposure: str, outcome: str,
 
     if isinstance(latent, str):
         latent = [latent]
-    return CausalDag(nodes=nodes, edges=em, exposure=exposure,
-                     outcome=outcome, latent=list(latent))
+    return CausalDag(nodes=nodes, edges=em, exposure=exposure, outcome=outcome, latent=list(latent))
 
 
 def mrm_dags() -> dict[str, CausalDag]:
@@ -128,18 +127,26 @@ def mrm_dags() -> dict[str, CausalDag]:
     return {
         "placement": causal_dag(
             [
-                "race -> placement", "race -> outcome",
-                "prior_record -> placement", "prior_record -> outcome",
-                "age -> placement", "age -> outcome",
+                "race -> placement",
+                "race -> outcome",
+                "prior_record -> placement",
+                "prior_record -> outcome",
+                "age -> placement",
+                "age -> outcome",
                 "placement -> outcome",
             ],
-            exposure="placement", outcome="outcome"),
+            exposure="placement",
+            outcome="outcome",
+        ),
         "use_of_force": causal_dag(
             [
                 "neighbourhood -> police_contact",
                 "neighbourhood -> force",
-                "race -> police_contact", "race -> force",
+                "race -> police_contact",
+                "race -> force",
                 "police_contact -> force",
             ],
-            exposure="police_contact", outcome="force"),
+            exposure="police_contact",
+            outcome="force",
+        ),
     }

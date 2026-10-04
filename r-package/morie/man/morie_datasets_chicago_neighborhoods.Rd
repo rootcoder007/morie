@@ -64,7 +64,7 @@ To get the polygons, pass \code{geometry = TRUE} in live mode, which
 includes the SODA2 \code{the_geom} column.
 }
 \examples{
-\dontshow{if (morie_has("chicago_neighborhoods.csv")) withAutoprint(\{ # examplesIf}
+\dontshow{if (morie_has("data:chicago_neighborhoods.csv")) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
 head(df[, c("pri_neigh", "sec_neigh")])
 \dontshow{\}) # examplesIf}

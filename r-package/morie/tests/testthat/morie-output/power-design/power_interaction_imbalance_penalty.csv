@@ -1,0 +1,3 @@
+"endpoint","scenario","target_power","required_n_equal_strata","required_n_observed_strata","status_equal_strata","status_observed_strata","imbalance_penalty_n","penalty_status","analysis_mode","power_scope"
+"heavy_drinking_30d","pilot_observed",0.8,8589.95127856524,8589.95127856524,"reached","reached",0,"none","design","cpads"
+"ebac_legal","pilot_observed",0.8,8589.95127856524,8589.95127856524,"reached","reached",0,"none","design","cpads"

@@ -164,9 +164,9 @@ class TestEstimateAteCanonical:
         df["w"] = calculate_ipw_weights(df, treatment="T", ps_col="ps_true")
         ate, se = estimate_ate(df, outcome="Y", treatment="T", weights_col="w")
         # Single-simulation tolerance: |ate - tau| < 3 SE (roughly 99% interval)
-        assert abs(ate - tau_true) < max(3 * se, 0.15), (
-            f"ATE = {ate:.3f} (SE {se:.3f}), true τ = {tau_true}. Bias = {ate - tau_true:.3f} exceeds 3*SE."
-        )
+        assert abs(ate - tau_true) < max(
+            3 * se, 0.15
+        ), f"ATE = {ate:.3f} (SE {se:.3f}), true τ = {tau_true}. Bias = {ate - tau_true:.3f} exceeds 3*SE."
         assert se > 0, "HC3 SE must be positive for a non-degenerate sample."
 
     def test_bias_shrinks_with_n(self) -> None:
@@ -185,9 +185,9 @@ class TestEstimateAteCanonical:
                 seed_biases.append(abs(ate - tau_true))
             biases.append(np.mean(seed_biases))
         # Bigger n should give smaller mean absolute bias. Allow some noise.
-        assert biases[1] < biases[0] * 1.5, (
-            f"Expected bias to shrink with n. |bias(n=500)| = {biases[0]:.3f}, |bias(n=5000)| = {biases[1]:.3f}"
-        )
+        assert (
+            biases[1] < biases[0] * 1.5
+        ), f"Expected bias to shrink with n. |bias(n=500)| = {biases[0]:.3f}, |bias(n=5000)| = {biases[1]:.3f}"
 
 
 # ---------------------------------------------------------------------------
@@ -255,9 +255,9 @@ class TestPlrCanonical:
 
         # √n-consistency: at n=1000 we expect |theta_hat - 0.5| < 3/√1000 ≈ 0.095
         # plus Monte-Carlo noise; allow 0.15 for a single-seed test.
-        assert abs(theta_hat - theta_true) < 0.15, (
-            f"PLR θ̂ = {theta_hat:.4f}, true θ = {theta_true}. Bias {theta_hat - theta_true:.4f} exceeds 0.15 tolerance."
-        )
+        assert (
+            abs(theta_hat - theta_true) < 0.15
+        ), f"PLR θ̂ = {theta_hat:.4f}, true θ = {theta_true}. Bias {theta_hat - theta_true:.4f} exceeds 0.15 tolerance."
 
 
 # ---------------------------------------------------------------------------
@@ -299,9 +299,9 @@ class TestEstimateAttCanonical:
         att = float(result["att"])
         se = float(result["se"])
         assert se > 0, "ATT SE must be positive."
-        assert abs(att - tau_true) < max(3 * se, 0.15), (
-            f"ATT = {att:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {att - tau_true:.4f} exceeds 3*SE."
-        )
+        assert abs(att - tau_true) < max(
+            3 * se, 0.15
+        ), f"ATT = {att:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {att - tau_true:.4f} exceeds 3*SE."
 
     def test_att_ci_has_correct_width(self) -> None:
         """CI width ≈ 2 * z * SE where z = 1.96."""
@@ -342,9 +342,9 @@ class TestEstimateAtcCanonical:
         atc = float(result["atc"])
         se = float(result["se"])
         assert se > 0, "ATC SE must be positive."
-        assert abs(atc - tau_true) < max(3 * se, 0.15), (
-            f"ATC = {atc:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {atc - tau_true:.4f} exceeds 3*SE."
-        )
+        assert abs(atc - tau_true) < max(
+            3 * se, 0.15
+        ), f"ATC = {atc:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {atc - tau_true:.4f} exceeds 3*SE."
 
     def test_att_atc_agree_on_homogeneous_dgp(self) -> None:
         """On a homogeneous-effect DGP, ATT and ATC should both ≈ τ, and
@@ -617,9 +617,9 @@ class TestEstimateIrmCanonical:
             n_folds=3,
         )
         assert isinstance(result, dict)
-        assert {"ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.keys()), (
-            f"IRM result missing expected keys. Got: {list(result.keys())}"
-        )
+        assert {"ate", "se", "ci_lower", "ci_upper", "n"}.issubset(
+            result.keys()
+        ), f"IRM result missing expected keys. Got: {list(result.keys())}"
         ate = float(result["ate"])
         se = float(result["se"])
         assert np.isfinite(ate) and se > 0
@@ -638,9 +638,9 @@ class TestEstimateIrmCanonical:
         )
         ate = float(result["ate"])
         se = float(result["se"])
-        assert abs(ate - tau_true) < max(3 * se, 0.30), (
-            f"IRM ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate - tau_true:.4f} exceeds tolerance."
-        )
+        assert abs(ate - tau_true) < max(
+            3 * se, 0.30
+        ), f"IRM ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate - tau_true:.4f} exceeds tolerance."
 
     def test_irm_and_dml_agree_on_homogeneous_dgp(self) -> None:
         """On a homogeneous-effect DGP, IRM and DML-PLR both target the
@@ -721,9 +721,9 @@ class TestIv2slsCanonical:
         df = _dgp_iv_continuous(n=500, seed=81)
         result = iv_2sls(df, y="Y", d="D", z="Z")
         assert hasattr(result, "coefficients"), f"Expected RegressionResult, got {type(result)}"
-        assert "D" in result.coefficients, (
-            f"Expected 'D' coef in result.coefficients; got {list(result.coefficients.keys())}"
-        )
+        assert (
+            "D" in result.coefficients
+        ), f"Expected 'D' coef in result.coefficients; got {list(result.coefficients.keys())}"
         assert "first_stage_F" in result.extra, "First-stage F missing from extras"
 
     def test_iv_recovers_beta_on_well_identified_dgp(self) -> None:
@@ -749,9 +749,9 @@ class TestIv2slsCanonical:
         df = _dgp_iv_continuous(n=3000, alpha_z=0.8, seed=83)
         result = iv_2sls(df, y="Y", d="D", z="Z")
         f_stat = float(result.extra["first_stage_F"])
-        assert f_stat > 10, (
-            f"First-stage F = {f_stat:.2f}, expected > 10 for a strong instrument (alpha_z=0.8, n=3000)."
-        )
+        assert (
+            f_stat > 10
+        ), f"First-stage F = {f_stat:.2f}, expected > 10 for a strong instrument (alpha_z=0.8, n=3000)."
 
     def test_iv_matches_wald_identity_on_no_covariate(self) -> None:
         """With no exogenous covariates (only intercept), 2SLS coincides
@@ -838,9 +838,9 @@ class TestEstimateLateCanonical:
         result = estimate_late(df, treatment="T", outcome="Y", instrument="Z")
         late = float(result["late"])
         # Monte-Carlo tolerance at n=5000 with 60% compliers: ~0.15
-        assert abs(late - tau_true) < 0.20, (
-            f"LATE = {late:.4f}, true τ = {tau_true}. Bias {late - tau_true:.4f} exceeds 0.20 on binary-IV DGP."
-        )
+        assert (
+            abs(late - tau_true) < 0.20
+        ), f"LATE = {late:.4f}, true τ = {tau_true}. Bias {late - tau_true:.4f} exceeds 0.20 on binary-IV DGP."
 
     def test_late_matches_wald_formula(self) -> None:
         """Closed-form identity check: LATE should equal the grouped Wald ratio."""
@@ -934,9 +934,9 @@ class TestPlivCanonical:
             n_folds=3,
         )
         assert isinstance(result, dict)
-        assert {"late", "se", "ci_lower", "ci_upper", "pval", "n_obs", "method"}.issubset(result.keys()), (
-            f"PLIV result missing expected keys. Got: {list(result.keys())}"
-        )
+        assert {"late", "se", "ci_lower", "ci_upper", "pval", "n_obs", "method"}.issubset(
+            result.keys()
+        ), f"PLIV result missing expected keys. Got: {list(result.keys())}"
         assert np.isfinite(float(result["late"]))
         assert float(result["se"]) > 0
 
@@ -1269,9 +1269,9 @@ class TestCateCanonical:
         )
         ate_hat = float(result.mean())
         # RF CATE averaged over n=4000 should be close to ATE.
-        assert abs(ate_hat - ate_true) < 0.20, (
-            f"Mean CATE = {ate_hat:.4f}, true ATE = {ate_true:.4f}. Bias {ate_hat - ate_true:.4f} exceeds 0.20."
-        )
+        assert (
+            abs(ate_hat - ate_true) < 0.20
+        ), f"Mean CATE = {ate_hat:.4f}, true ATE = {ate_true:.4f}. Bias {ate_hat - ate_true:.4f} exceeds 0.20."
 
     def test_cate_correlates_with_true_tau_x(self) -> None:
         """CATE should track τ(X). With RF depth 5 and n=4000, Pearson
@@ -1289,9 +1289,9 @@ class TestCateCanonical:
             meta_learner="t_learner",
         )
         corr = float(np.corrcoef(result.values, true_cate)[0, 1])
-        assert corr > 0.3, (
-            f"Pearson(est CATE, true τ(X)) = {corr:.3f}. Expected > 0.3 for an identifiable heterogeneous-effect DGP."
-        )
+        assert (
+            corr > 0.3
+        ), f"Pearson(est CATE, true τ(X)) = {corr:.3f}. Expected > 0.3 for an identifiable heterogeneous-effect DGP."
 
     def test_cate_s_learner_runs(self) -> None:
         from morie.fn.cate import estimate_cate
@@ -1393,9 +1393,9 @@ class TestGateCanonical:
             group_col="G",
         )
         assert hasattr(result, "columns") or hasattr(result, "_cols")
-        assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.columns), (
-            f"GATE missing expected columns. Got: {list(result.columns)}"
-        )
+        assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(
+            result.columns
+        ), f"GATE missing expected columns. Got: {list(result.columns)}"
         # One row per group
         assert len(result) == df["G"].nunique(), f"Expected {df['G'].nunique()} rows, got {len(result)}"
 
@@ -1416,9 +1416,9 @@ class TestGateCanonical:
             ate_hat = float(row["ate"])
             se = float(row["se"])
             tau_true = tau_by_group[g]
-            assert abs(ate_hat - tau_true) < max(3 * se, 0.20), (
-                f"Group {g}: GATE = {ate_hat:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate_hat - tau_true:.4f}."
-            )
+            assert abs(ate_hat - tau_true) < max(
+                3 * se, 0.20
+            ), f"Group {g}: GATE = {ate_hat:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate_hat - tau_true:.4f}."
 
 
 # ---------------------------------------------------------------------------
@@ -1682,9 +1682,9 @@ class TestSynthControlCanonical:
         eff = float(result.estimate)
         # Tolerance: with 10 controls and 20 pre-periods, synth can match
         # common shocks well. Allow 0.30 for noise + weight-estimation error.
-        assert abs(eff - tau_true) < 0.30, (
-            f"Synth control effect = {eff:.4f}, true τ = {tau_true}. Bias {eff - tau_true:.4f} exceeds 0.30."
-        )
+        assert (
+            abs(eff - tau_true) < 0.30
+        ), f"Synth control effect = {eff:.4f}, true τ = {tau_true}. Bias {eff - tau_true:.4f} exceeds 0.30."
 
 
 # ---------------------------------------------------------------------------
@@ -1750,9 +1750,9 @@ class TestSensitivityCanonical:
         result = rosenbaum_bounds(t, c, gamma_range=[1.0 + 2.0 * k / 9 for k in range(10)])
         ps = [float(v) for v in result.p_upper]
         for a, b in zip(ps, ps[1:]):
-            assert b >= a - 1e-9, (
-                f"p_upper is non-monotone in Γ: {a:.4f} -> {b:.4f}. Rosenbaum-bound direction violated."
-            )
+            assert (
+                b >= a - 1e-9
+            ), f"p_upper is non-monotone in Γ: {a:.4f} -> {b:.4f}. Rosenbaum-bound direction violated."
 
 
 # ---------------------------------------------------------------------------
@@ -1809,9 +1809,9 @@ class TestOverlapWeightCanonical:
             outcome=df["Y"].values,
         )
         ov_bias = abs(float(result.value) - tau_true)
-        assert ov_bias < 0.7 * naive_bias + 0.05, (
-            f"Overlap-weight bias {ov_bias:.4f} not meaningfully smaller than naive bias {naive_bias:.4f}."
-        )
+        assert (
+            ov_bias < 0.7 * naive_bias + 0.05
+        ), f"Overlap-weight bias {ov_bias:.4f} not meaningfully smaller than naive bias {naive_bias:.4f}."
 
 
 # ---------------------------------------------------------------------------

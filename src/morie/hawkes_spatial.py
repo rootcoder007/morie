@@ -40,9 +40,15 @@ def _spatial(d2: np.ndarray, sigma: float) -> np.ndarray:
     return np.exp(-d2 / (2 * sigma**2)) / (2 * np.pi * sigma**2)
 
 
-def hawkes_st_intensity(events, t_q: float, x_q: float, y_q: float,
-                        params: dict[str, float]) -> float:
-    """Conditional intensity lambda(t_q, x_q, y_q). R parity: ``morie_hawkes_st_intensity``."""
+def hawkes_st_intensity(events, t_q: float, x_q: float, y_q: float, params: dict[str, float]) -> float:
+    """Conditional intensity lambda(t_q, x_q, y_q). R parity: ``morie_hawkes_st_intensity``.
+
+    Examples
+    --------
+    >>> events = {"t": [0.5, 1.0, 1.5], "x": [0.1, 0.2, 0.15], "y": [0.1, 0.1, 0.2]}
+    >>> round(hawkes_st_intensity(events, 2.0, 0.15, 0.15, {"mu": 0.5, "alpha": 0.6, "beta": 1.0, "sigma": 0.1}), 4)
+    10.0067
+    """
     _check_params(params)
     t = np.asarray(events["t"], dtype=float)
     x = np.asarray(events["x"], dtype=float)
@@ -52,14 +58,13 @@ def hawkes_st_intensity(events, t_q: float, x_q: float, y_q: float,
     if past.any():
         dt = t_q - t[past]
         d2 = (x_q - x[past]) ** 2 + (y_q - y[past]) ** 2
-        lam += float(np.sum(params["alpha"] * params["beta"] *
-                            np.exp(-params["beta"] * dt) *
-                            _spatial(d2, params["sigma"])))
+        lam += float(
+            np.sum(params["alpha"] * params["beta"] * np.exp(-params["beta"] * dt) * _spatial(d2, params["sigma"]))
+        )
     return float(lam)
 
 
-def hawkes_st_loglik(events, params: dict[str, float],
-                     end_time: float | None = None, area: float = 1.0) -> float:
+def hawkes_st_loglik(events, params: dict[str, float], end_time: float | None = None, area: float = 1.0) -> float:
     """Log-likelihood sum(log lambda) - compensator. R parity: ``morie_hawkes_st_loglik``.
 
     Compensator = mu*T*A + sum_i alpha(1 - exp(-beta(T - t_i))); the spatial
@@ -79,18 +84,26 @@ def hawkes_st_loglik(events, params: dict[str, float],
 
     try:
         from . import _core as _ck
+
         _st = _ck.hawkes_st_loglik
     except (ImportError, AttributeError):
         _st = None
     if _st is not None:
         import array as _pa
-        return float(_st(
-            _pa.array("d", [float(v) for v in t.tolist()]),
-            _pa.array("d", [float(v) for v in x.tolist()]),
-            _pa.array("d", [float(v) for v in y.tolist()]),
-            float(params["mu"]), float(params["alpha"]),
-            float(params["beta"]), float(params["sigma"]),
-            T_h, float(area)))
+
+        return float(
+            _st(
+                _pa.array("d", [float(v) for v in t.tolist()]),
+                _pa.array("d", [float(v) for v in x.tolist()]),
+                _pa.array("d", [float(v) for v in y.tolist()]),
+                float(params["mu"]),
+                float(params["alpha"]),
+                float(params["beta"]),
+                float(params["sigma"]),
+                T_h,
+                float(area),
+            )
+        )
 
     loglam = 0.0
     for j in range(n):
@@ -98,17 +111,17 @@ def hawkes_st_loglik(events, params: dict[str, float],
         if j > 0:
             dt = t[j] - t[:j]
             d2 = (x[j] - x[:j]) ** 2 + (y[j] - y[:j]) ** 2
-            lam += np.sum(params["alpha"] * params["beta"] *
-                          np.exp(-params["beta"] * dt) * _spatial(d2, params["sigma"]))
+            lam += np.sum(
+                params["alpha"] * params["beta"] * np.exp(-params["beta"] * dt) * _spatial(d2, params["sigma"])
+            )
         loglam += np.log(lam)
-    compensator = params["mu"] * T_h * area + \
-        np.sum(params["alpha"] * (1 - np.exp(-params["beta"] * (T_h - t))))
+    compensator = params["mu"] * T_h * area + np.sum(params["alpha"] * (1 - np.exp(-params["beta"] * (T_h - t))))
     return float(loglam - compensator)
 
 
-def hawkes_st_simulate(params: dict[str, float], end_time: float,
-                       region, seed: int | None = None,
-                       max_events: int = 100_000) -> pd.DataFrame:
+def hawkes_st_simulate(
+    params: dict[str, float], end_time: float, region, seed: int | None = None, max_events: int = 100_000
+) -> pd.DataFrame:
     """Exact branching (immigrant-offspring) simulation. Requires alpha < 1.
 
     R parity: ``morie_hawkes_st_simulate``. ``region`` = (xmin, xmax, ymin, ymax).
@@ -149,18 +162,24 @@ def hawkes_st_simulate(params: dict[str, float], end_time: float,
         ot, ox, oy, og = ot[within], ox[within], oy[within], pg[within] + 1
         if ot.size == 0:
             break
-        all_t.append(ot); all_x.append(ox); all_y.append(oy); all_g.append(og)
+        all_t.append(ot)
+        all_x.append(ox)
+        all_y.append(oy)
+        all_g.append(og)
         total += ot.size
         cur_t, cur_x, cur_y, cur_g = ot, ox, oy, og
 
-    t = np.concatenate(all_t); x = np.concatenate(all_x)
-    y = np.concatenate(all_y); g = np.concatenate(all_g)
+    t = np.concatenate(all_t)
+    x = np.concatenate(all_x)
+    y = np.concatenate(all_y)
+    g = np.concatenate(all_g)
     o = np.argsort(t)
     return pd.DataFrame({"t": t[o], "x": x[o], "y": y[o], "gen": g[o]})
 
 
-def hawkes_st_fit(events, end_time: float | None = None, area: float = 1.0,
-                  start: dict[str, float] | None = None) -> dict[str, Any]:
+def hawkes_st_fit(
+    events, end_time: float | None = None, area: float = 1.0, start: dict[str, float] | None = None
+) -> dict[str, Any]:
     """Maximum-likelihood fit over (mu, alpha, beta, sigma) on the log scale.
 
     R parity: ``morie_hawkes_st_fit``. Check ``fit['params']['alpha'] < 1`` for
@@ -171,13 +190,11 @@ def hawkes_st_fit(events, end_time: float | None = None, area: float = 1.0,
     """
     t = np.asarray(events["t"], dtype=float)
     T_h = float(np.max(t)) if end_time is None else float(end_time)
-    s = start or {"mu": max(t.size / (T_h * area), 1e-3),
-                  "alpha": 0.3, "beta": 1.0, "sigma": 1.0}
+    s = start or {"mu": max(t.size / (T_h * area), 1e-3), "alpha": 0.3, "beta": 1.0, "sigma": 1.0}
     p0 = np.log([s["mu"], s["alpha"], s["beta"], s["sigma"]])
 
     def nll(lp):
-        p = {"mu": np.exp(lp[0]), "alpha": np.exp(lp[1]),
-             "beta": np.exp(lp[2]), "sigma": np.exp(lp[3])}
+        p = {"mu": np.exp(lp[0]), "alpha": np.exp(lp[1]), "beta": np.exp(lp[2]), "sigma": np.exp(lp[3])}
         try:
             val = hawkes_st_loglik(events, p, end_time=T_h, area=area)
         except (ValueError, FloatingPointError):
@@ -187,8 +204,7 @@ def hawkes_st_fit(events, end_time: float | None = None, area: float = 1.0,
     opt = minimize(nll, p0, method="L-BFGS-B")
     p = np.exp(opt.x)
     return {
-        "params": {"mu": float(p[0]), "alpha": float(p[1]),
-                   "beta": float(p[2]), "sigma": float(p[3])},
+        "params": {"mu": float(p[0]), "alpha": float(p[1]), "beta": float(p[2]), "sigma": float(p[3])},
         "loglik": float(-opt.fun),
         "n": int(t.size),
         "convergence": 0 if opt.success else 1,

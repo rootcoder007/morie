@@ -57,6 +57,7 @@ def _retry(
 
     return decorator
 
+
 SIU_BASE = "https://www.siu.on.ca"
 REPORT_URL = SIU_BASE + "/en/directors_report_details.php?drid={drid}"
 NEWS_URL = SIU_BASE + "/en/news_template.php?drid={drid}"
@@ -89,6 +90,7 @@ def _atomic_write(path, html: str) -> None:
     sees the old file or the whole new one, and two scrapers on the same
     case id no longer share a temp name."""
     import tempfile
+
     fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".", suffix=".tmp")
     try:
         with open(fd, "w", encoding="utf-8") as fh:

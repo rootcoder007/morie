@@ -156,7 +156,7 @@ test_that("morie_fetch_ckan paginates a mocked CKAN datastore", {
   # no resource file behind this resource: the datastore pages are the route
   testthat::local_mocked_bindings(
     .morie_ckan_resource_meta = function(rid, ckan_base) list(url = NULL, size = NULL),
-    .package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie"
+    .package = if (isNamespaceLoaded("morie")) "morie" else "morie"
   )
   db <- tempfile(fileext = ".db")
   on.exit(unlink(db), add = TRUE)

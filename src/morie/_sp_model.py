@@ -22,6 +22,7 @@ Fields read here (all this loader needs):
 from __future__ import annotations
 
 import struct
+from pathlib import Path
 
 
 def _varint(buf, i):
@@ -47,13 +48,13 @@ def _fields(buf):
             v, i = _varint(buf, i)
         elif wt == 2:
             ln, i = _varint(buf, i)
-            v = buf[i:i + ln]
+            v = buf[i : i + ln]
             i += ln
         elif wt == 5:
-            v = buf[i:i + 4]
+            v = buf[i : i + 4]
             i += 4
         elif wt == 1:
-            v = buf[i:i + 8]
+            v = buf[i : i + 8]
             i += 8
         else:
             raise ValueError("unsupported protobuf wire type %d" % wt)
@@ -62,10 +63,10 @@ def _fields(buf):
 
 def load_model(path):
     """Return (pieces, scores, types, bos_id, eos_id, unk_id)."""
-    buf = open(path, "rb").read()
+    buf = Path(path).read_bytes()
     pieces, scores, types = [], [], []
     for fnum, wt, v in _fields(buf):
-        if fnum == 1 and wt == 2:                 # SentencePiece
+        if fnum == 1 and wt == 2:  # SentencePiece
             piece, score, ptype = "", 0.0, 1
             for f2, w2, v2 in _fields(v):
                 if f2 == 1 and w2 == 2:
@@ -84,8 +85,7 @@ def load_model(path):
     return pieces, scores, types, bos_id, eos_id, unk_id
 
 
-def encode_unigram(text, pieces, scores, unk_id,
-                   token_to_id=None):
+def encode_unigram(text, pieces, scores, unk_id, token_to_id=None):
     """Viterbi segmentation under the unigram LM (Kudo 2018,
     "Subword Regularization", ACL, eq. 3: the max-probability
     segmentation of the whitespace-escaped input).
@@ -120,7 +120,7 @@ def encode_unigram(text, pieces, scores, unk_id,
     j = n
     while j > 0:
         i, tid = back[j]
-        if i < 0:                       # gap: emit unk for one char
+        if i < 0:  # gap: emit unk for one char
             ids.append(unk_id)
             j -= 1
             continue

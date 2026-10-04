@@ -186,7 +186,7 @@ def resolve_data_dir(
         # existence — caller will use this for download targets etc.
         return candidates[0][1]
 
-    for label, path in candidates:
+    for _label, path in candidates:
         if path.exists() and path.is_dir():
             return path
 

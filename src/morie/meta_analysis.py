@@ -33,10 +33,10 @@ def _num(x, what):
     except TypeError:
         v = [float(x)]
     if not v:
-        raise ValueError("`%s` must not be empty" % what)
+        raise ValueError(f"`{what}` must not be empty")
     for i in v:
         if i != i:
-            raise ValueError("`%s` must not contain missing values" % what)
+            raise ValueError(f"`{what}` must not contain missing values")
     return v
 
 
@@ -84,7 +84,7 @@ def meta_pool(ys, ses, z_cv: float = 1.96, groups=None) -> dict:
         if len(g) != len(y):
             raise ValueError("`groups` must be the same length as `ys`")
         ys_by, ws_by = [], []
-        for lab in dict.fromkeys(g):                 # first-seen order
+        for lab in dict.fromkeys(g):  # first-seen order
             idx = [i for i, v in enumerate(g) if v == lab]
             ys_by.append([y[i] for i in idx])
             ws_by.append([w[i] for i in idx])
@@ -96,9 +96,9 @@ def meta_pool(ys, ses, z_cv: float = 1.96, groups=None) -> dict:
     return out
 
 
-def meta_effect_sizes(m1=None, m2=None, s1=None, s2=None, n1=None, n2=None,
-                      t_value=None, a=None, b=None, c=None, d=None,
-                      r=None) -> dict:
+def meta_effect_sizes(
+    m1=None, m2=None, s1=None, s2=None, n1=None, n2=None, t_value=None, a=None, b=None, c=None, d=None, r=None
+) -> dict:
     """Effect sizes from whatever a paper actually reported.
 
     Primary studies report means and SDs, or a t statistic, or a 2x2
@@ -110,11 +110,9 @@ def meta_effect_sizes(m1=None, m2=None, s1=None, s2=None, n1=None, n2=None,
     out: dict = {}
     if n1 is not None and n2 is not None:
         n1f, n2f = float(n1), float(n2)
-        if s1 is not None and m1 is not None and m2 is not None \
-                and s2 is not None:
+        if s1 is not None and m1 is not None and m2 is not None and s2 is not None:
             out["s_pooled"] = _cc.pooled_sd(float(s1), float(s2), n1f, n2f)
-            out["d"] = _cc.cohens_d_sample(float(m1), float(m2), float(s1),
-                                           float(s2), n1f, n2f)
+            out["d"] = _cc.cohens_d_sample(float(m1), float(m2), float(s1), float(s2), n1f, n2f)
         out["j"] = _cc.hedges_j(n1f, n2f)
         if "d" in out:
             out["g"] = _cc.hedges_g(out["d"], n1f, n2f)
@@ -139,9 +137,20 @@ def meta_effect_sizes(m1=None, m2=None, s1=None, s2=None, n1=None, n2=None,
     return out
 
 
-def meta_convert(ln_or=None, se_ln_or=None, p1=None, p2=None, n1=None,
-                 n2=None, d=None, se_d=None, rr=None, or_value=None,
-                 r=None, se_r=None) -> dict:
+def meta_convert(
+    ln_or=None,
+    se_ln_or=None,
+    p1=None,
+    p2=None,
+    n1=None,
+    n2=None,
+    d=None,
+    se_d=None,
+    rr=None,
+    or_value=None,
+    r=None,
+    se_r=None,
+) -> dict:
     """Move an effect between the scales a synthesis has to mix.
 
     A review rarely gets one scale. Log odds ratios, standardised mean
@@ -149,28 +158,27 @@ def meta_convert(ln_or=None, se_ln_or=None, p1=None, p2=None, n1=None,
     conversion constants are the ones the literature uses: the logistic
     SD (pi/sqrt(3)) for the logit route and Cox's 1.65.
     """
-    sd_logistic = math.sqrt(math.pi ** 2 / 3.0)
+    sd_logistic = math.sqrt(math.pi**2 / 3.0)
     out: dict = {"sd_logistic": sd_logistic}
     if ln_or is not None:
         out["d_logit"] = _cc.d_from_log_or(float(ln_or), method="logit")
         out["d_cox"] = _cc.d_from_log_or(float(ln_or), method="cox")
     if se_ln_or is not None:
-        out["se_d_logit"] = math.sqrt(float(se_ln_or) ** 2 / sd_logistic ** 2)
-        out["se_d_cox"] = math.sqrt(float(se_ln_or) ** 2 / 1.65 ** 2)
+        out["se_d_logit"] = math.sqrt(float(se_ln_or) ** 2 / sd_logistic**2)
+        out["se_d_cox"] = math.sqrt(float(se_ln_or) ** 2 / 1.65**2)
     if p1 is not None and p2 is not None:
         out["d_probit"] = _cc.d_probit(float(p1), float(p2))
         if n1 is not None and n2 is not None:
-            out["se_d_probit"] = _cc.se_d_probit(float(p1), float(p2),
-                                                 float(n1), float(n2))
+            out["se_d_probit"] = _cc.se_d_probit(float(p1), float(p2), float(n1), float(n2))
     if d is not None:
         dv = float(d)
         out["ln_or_logit"] = _cc.log_or_from_d(dv, method="logit")
         out["ln_or_cox"] = _cc.log_or_from_d(dv, method="cox")
-        out["r_from_d"] = _cc.r_from_d(dv, float(n1), float(n2)) \
-            if (n1 is not None and n2 is not None) else _cc.r_from_d(dv)
+        out["r_from_d"] = (
+            _cc.r_from_d(dv, float(n1), float(n2)) if (n1 is not None and n2 is not None) else _cc.r_from_d(dv)
+        )
         if se_d is not None:
-            out["se_ln_or_logit"] = _cc.se_log_or_from_se_d(float(se_d),
-                                                            method="logit")
+            out["se_ln_or_logit"] = _cc.se_log_or_from_se_d(float(se_d), method="logit")
     if rr is not None and p2 is not None:
         out["or_from_rr"] = _cc.or_from_rr(float(rr), float(p2))
     if or_value is not None and p2 is not None:
@@ -179,6 +187,5 @@ def meta_convert(ln_or=None, se_ln_or=None, p1=None, p2=None, n1=None,
         out["fisher_z"] = _cc.fisher_z(float(r))
         out["d_from_r"] = _cc.d_from_r_pointbiserial(float(r))
         if se_r is not None:
-            out["se_d_from_se_r"] = _cc.se_d_from_se_r(float(r),
-                                                       float(se_r))
+            out["se_d_from_se_r"] = _cc.se_d_from_se_r(float(r), float(se_r))
     return out

@@ -67,9 +67,15 @@ def _extract_case_links(index_html: str) -> list[tuple[str, str]]:
 
 
 _DATE_FIELDS = {
-    "incident_iso": re.compile(r"(?:Incident|incident occurred on)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2},\s*\d{4})"),
-    "notification_iso": re.compile(r"(?:Notification|SIU was notified on)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2},\s*\d{4})"),
-    "decision_iso": re.compile(r"(?:Director'?s? [Dd]ecision)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2},\s*\d{4})"),
+    "incident_iso": re.compile(
+        r"(?:Incident|incident occurred on)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4})"
+    ),
+    "notification_iso": re.compile(
+        r"(?:Notification|SIU was notified on)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4})"
+    ),
+    "decision_iso": re.compile(
+        r"(?:Director'?s? [Dd]ecision)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4})"
+    ),
 }
 
 _SERVICE_FIELD = re.compile(
@@ -117,7 +123,7 @@ _MONTHS = {
 
 
 def _to_iso(date_str: str) -> str:
-    m = re.match(r"([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})", date_str.strip())
+    m = re.match(r"([A-Z][a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,\s*(\d{4})", date_str.strip())
     if not m:
         return ""
     month = _MONTHS.get(m.group(1))
@@ -213,7 +219,7 @@ def fetch_siu_cases(
             "verify SIU_INDEX_URL and the regexes in siu_fetch.py."
         )
 
-    fieldnames = list({k for r in records for k in r.keys()})
+    fieldnames = list({k for r in records for k in r})
     fieldnames = [
         "case_number",
         "police_service",
@@ -244,9 +250,9 @@ def fetch_siu_dataframe(**kwargs):
 
     return pd.read_csv(fetch_siu_cases(**kwargs), low_memory=False)
 
+
 _CORPUS_URL = (
-    "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/"
-    "inst/extdata/siu_directors_reports.csv.gz"
+    "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/" "inst/extdata/siu_directors_reports.csv.gz"
 )
 
 

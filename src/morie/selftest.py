@@ -90,11 +90,11 @@ def _test_core_imports():
 
 def _test_new_modules():
     """Test that all new IDE/statistical modules import."""
+    # morie.tui belongs to the interactive layer, which the wheel leaves out: checked by the TUI test
     new_mods = [
         "morie.progress",
         "morie.inspector",
         "morie.chat",
-        "morie.tui",
         "morie.statistics",
         "morie.survival",
         "morie.missing",
@@ -167,19 +167,19 @@ def _test_chat_session():
 
 
 def _test_tui_screens():
-    """Test TUI screens render headlessly."""
+    """Test TUI screens render headlessly, through the same constructor `morie tui` uses."""
     try:
         from morie.tui import _TEXTUAL_AVAILABLE, MORIEApp
     except ImportError:
-        return "SKIP: textual not installed"
+        return "SKIP: the interactive layer (morie.tui) is not installed: morie interactive install"
 
     if not _TEXTUAL_AVAILABLE:
-        return "SKIP: textual not available"
+        return 'SKIP: textual is not installed: pip install "morie[interactive]"'
 
     import asyncio
 
     async def _verify():
-        app = MORIEApp()
+        app = MORIEApp(agent=None)
         async with app.run_test() as pilot:
             assert pilot.app.title == "MORIE"
             # Doctor screen.
@@ -204,11 +204,13 @@ def _test_tui_screens():
 
 def _test_progress_tracker():
     """Test PipelineTracker with a mock module."""
+    import contextlib
+    import io
     from unittest.mock import MagicMock, patch
 
     from morie.progress import PipelineTracker
 
-    with patch("morie.progress.run_module") as mock_run:
+    with patch("morie.progress.run_module") as mock_run, contextlib.redirect_stdout(io.StringIO()):
         mock_run.return_value = {"output": MagicMock()}
         tracker = PipelineTracker(
             ["power-design"],
@@ -216,23 +218,31 @@ def _test_progress_tracker():
             use_live=False,
             track_carbon=False,
         )
-        results = tracker.run()
+        results = tracker.run()  # a mocked run: its progress lines are not a real module run
         if results[0].status != "success":
             raise RuntimeError(f"Expected success, got {results[0].status}")
 
     return "PipelineTracker: runs, reports success"
 
 
+def _sample_csvs() -> list[Path]:
+    """A CSV every install has: the shipped synthetic CPADS frame, else a checkout's survey files."""
+    from morie.modules import DEFAULT_CPADS_CSV
+
+    shipped = Path(DEFAULT_CPADS_CSV) if DEFAULT_CPADS_CSV else None
+    if shipped is not None and shipped.is_file():
+        return [shipped]
+    project = Path(__file__).resolve().parents[2]
+    return list((project / "data" / "files" / "csv" / "survey").glob("*.csv"))[:1]
+
+
 def _test_inspector():
     """Test inspect_output on a real CSV."""
     from morie.inspector import inspect_output
 
-    # Find a CSV file.
-    project = Path(__file__).resolve().parents[2]
-    csv_dir = project / "data" / "files" / "csv" / "survey"
-    csvs = list(csv_dir.glob("*.csv"))[:1]
+    csvs = _sample_csvs()
     if not csvs:
-        return "SKIP: no CSV files found in data/"
+        return "SKIP: no CSV file ships with this install"
 
     result = inspect_output(csvs[0])
     if result.rows < 1:
@@ -244,11 +254,9 @@ def _test_verify():
     """Test verify_statistical_output on a real CSV."""
     from morie.inspector import verify_statistical_output
 
-    project = Path(__file__).resolve().parents[2]
-    csv_dir = project / "data" / "files" / "csv" / "survey"
-    csvs = list(csv_dir.glob("*.csv"))[:1]
+    csvs = _sample_csvs()
     if not csvs:
-        return "SKIP: no CSV files found"
+        return "SKIP: no CSV file ships with this install"
 
     report = verify_statistical_output(csvs[0])
     return f"Verifier: {len(report.checks)} checks on {csvs[0].name}"
@@ -324,7 +332,7 @@ def _test_doctor():
     results = run_checks()
     n_checks = len(results["checks"])
     n_passed = sum(1 for c in results["checks"] if c["passed"])
-    return f"Doctor: {n_passed}/{n_checks} checks passed"
+    return f"Doctor: {n_passed} of {n_checks} checks OK (the rest are optional); required checks passed"
 
 
 def _test_r_available():
@@ -391,8 +399,8 @@ def run_selftest() -> int:
 
     tests = [
         ("Core module imports", _test_core_imports),
-        ("New module imports (25 modules)", _test_new_modules),
-        ("Module registry (21 specs)", _test_module_registry),
+        ("New module imports (24 modules)", _test_new_modules),
+        ("Module registry", _test_module_registry),
         ("Chat session (slash commands)", _test_chat_session),
         ("TUI screens (headless render)", _test_tui_screens),
         ("Progress tracker", _test_progress_tracker),

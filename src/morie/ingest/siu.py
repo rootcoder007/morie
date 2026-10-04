@@ -40,8 +40,8 @@ CLI
 ::
 
     morie ingest siu --list                       # index → CSV
-    morie ingest siu --report-id 22-OFD-001 \\
-                     --out reports/22-OFD-001/    # text + fields
+    morie ingest siu --report-id 17-OVI-201 \\
+                     --out reports/17-OVI-201/    # text + fields
 
 """
 
@@ -77,19 +77,42 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = 
 
     The SIU site has rendered its case list with JavaScript since 2025, so
     scraping the index page yields nothing; the reviewed corpus (fetched
-    once from CRAN, then cached) is the index. Columns: ``case_number``,
-    ``drid``, ``source_url_report``, ``date_of_incident_iso``,
-    ``date_of_director_decision_iso``.
+    once from CRAN, then cached) is the index. One row per report and
+    language (most cases have an English and a French report). Columns:
+    ``case_number``, ``language``, ``drid``, ``source_url_report``,
+    ``date_of_incident_iso``, ``date_of_director_decision_iso``.
     """
     from morie.data import load_rmoriedata
 
     corpus = load_rmoriedata("siu_directors_reports")
+    if "_language" in corpus.columns and "language" not in corpus.columns:
+        corpus = corpus.rename(columns={"_language": "language"})
     cols = [
         c
-        for c in ("case_number", "drid", "source_url_report", "date_of_incident_iso", "date_of_director_decision_iso")
+        for c in (
+            "case_number",
+            "language",
+            "drid",
+            "source_url_report",
+            "date_of_incident_iso",
+            "date_of_director_decision_iso",
+        )
         if c in corpus.columns
     ]
-    return corpus[cols]
+    out = corpus[cols]
+    if "case_number" in out.columns:
+        # one row per report and language: most cases have an English and a French report (two drids).
+        # Identifiable English reports first, then French, then the oldest pages with no case number
+        # (an empty cell reads as NaN, whose str() "nan" had passed for a case number).
+        def _rank(i: int) -> tuple[int, int]:
+            case = out["case_number"].iloc[i]
+            known = case is not None and str(case).strip().lower() not in ("", "nan", "none")
+            lang = str(out["language"].iloc[i]) if "language" in out.columns else "en"
+            return (0 if known else 1, {"en": 0, "fr": 1}.get(lang, 2))
+
+        order = sorted(range(len(out)), key=_rank)
+        out = out.iloc[order].reset_index(drop=True)
+    return out
 
 
 def _list_reports_legacy_scrape(
@@ -133,7 +156,7 @@ def _list_reports_legacy_scrape(
     PDF anchors are found.
 
     Returns a DataFrame with columns:
-      - ``report_id``       : e.g. "22-OFD-001"
+      - ``report_id``       : e.g. "17-OVI-201"
       - ``url``             : direct PDF URL
       - ``incident_date``   : ISO date string when known
       - ``location``        : city / region string
@@ -199,6 +222,82 @@ def _list_reports_legacy_scrape(
 # Step 2 — fetch a single report's text
 
 
+_BLOCK_TAGS = (
+    "p",
+    "div",
+    "section",
+    "article",
+    "li",
+    "ul",
+    "ol",
+    "table",
+    "tr",
+    "td",
+    "th",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "dt",
+    "dd",
+    "figure",
+    "figcaption",
+    "pre",
+)
+
+
+def _report_page_text(body) -> str:
+    """The report's own text, one line per block, without the page chrome.
+
+    The "Warning: graphic content" banner and the "Contents:" box (its section links, the news
+    releases and the French version) come first on every page: they made the report start with
+    chrome and put "The Investigation" (a contents entry) ahead of the section itself. Inline
+    elements (``<abbr>GPS</abbr>``) stay inside their sentence instead of becoming lines.
+    """
+    for head in body.find_all(["h2", "h3", "h4", "h5"]):
+        label = head.get_text(" ", strip=True).rstrip(":").strip().lower()
+        if label in ("warning", "contents"):
+            nxt = head.find_next_sibling()
+            while nxt is not None and nxt.name not in ("h2", "h3", "h4"):
+                after = nxt.find_next_sibling()
+                nxt.decompose()
+                nxt = after
+            head.decompose()
+    for ul in body.find_all(["ul", "ol"]):  # any other in-page index of #anchors
+        links = ul.find_all("a", href=True)
+        if links and all(a["href"].startswith("#") for a in links):
+            ul.decompose()
+    for br in body.find_all("br"):
+        br.replace_with("\n")
+    for el in body.find_all(_BLOCK_TAGS):
+        el.insert_before("\n")
+        el.insert_after("\n")
+    lines: list[str] = []
+    for line in body.get_text("").splitlines():
+        line = re.sub(r"\s+", " ", line).strip()
+        line = re.sub(r"([(\u201c\u2018])\s+", r"\1", line)
+        line = re.sub(r"\s+([)\u201d\u2019,.;:])", r"\1", line)
+        if line:
+            lines.append(line)
+    first = next((i for i, x in enumerate(lines) if _FIRST_SECTION.match(x)), None)
+    if first:
+        title = [
+            x
+            for x in lines[:first]
+            if x.lower().startswith(("siu director", "director's report", "director\u2019s report"))
+        ][:1]
+        lines = title + lines[first:]
+    return "\n".join(lines)
+
+
+_FIRST_SECTION = re.compile(
+    r"^(Mandate of the SIU|Information restrictions|Mandate engaged|The Investigation|Summary of the Incident)$", re.I
+)
+
+
 def fetch_report_text(
     url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT
 ) -> str:
@@ -220,7 +319,21 @@ def fetch_report_text(
         if r.status_code >= 400:
             raise SIUError(f"report fetch -> HTTP {r.status_code}: {url}")
         pdf_bytes = r.content
+        content_type = r.headers.get("content-type", "")
 
+    if "html" in content_type or pdf_bytes.lstrip()[:1] == b"<":
+        # the SIU publishes directors' reports as web pages; the text is the page's text
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(pdf_bytes, "html.parser")
+        for tag in soup(["script", "style", "nav", "header", "footer", "form"]):
+            tag.decompose()
+        # the report body; the site menus and sidebars sit outside it
+        body = soup.find("div", class_="siu-content") or soup.find(attrs={"role": "main"}) or soup.body or soup
+        text = _report_page_text(body)
+        if not text:
+            raise SIUError(f"report page holds no text: {url}")
+        return text
     reader = PdfReader(io.BytesIO(pdf_bytes))
     parts = []
     for page in reader.pages:
@@ -228,7 +341,10 @@ def fetch_report_text(
             parts.append(page.extract_text() or "")
         except Exception:  # noqa: BLE001 — individual page failures shouldn't kill the report
             parts.append("")
-    return "\n".join(parts)
+    text = "\n".join(parts)
+    if not text.strip():
+        raise SIUError(f"no text could be extracted from the report at {url}")
+    return text
 
 
 # ----------------------------------------------------------------------
@@ -239,16 +355,31 @@ def fetch_report_text(
 _SECTION_HEADINGS = {
     "summary": re.compile(r"\b(Summary of the Incident|Summary of Incident|Summary)\s*[:\.\n]", re.IGNORECASE),
     "investigation": re.compile(r"\b(The Investigation|The Investigative Action)\s*[:\.\n]", re.IGNORECASE),
-    "narrative": re.compile(r"\b(Narrative of Events|Narrative)\s*[:\.\n]", re.IGNORECASE),
+    "narrative": re.compile(r"\b(Narrative of Events|Incident Narrative|Narrative)\s*[:\.\n]", re.IGNORECASE),
     "evidence": re.compile(r"\b(Evidence)\s*[:\.\n]", re.IGNORECASE),
     "law": re.compile(r"\b(Relevant Legislation|Applicable Law)\s*[:\.\n]", re.IGNORECASE),
-    "analysis": re.compile(r"\b(Analysis|Analysis and Director's Decision)\s*[:\.\n]", re.IGNORECASE),
-    "conclusion": re.compile(r"\b(Decision|Conclusion|Director's Decision)\s*[:\.\n]", re.IGNORECASE),
+    "analysis": re.compile(r"\b(Analysis and Director['\u2019]s Decision|Analysis)\s*[:\.\n]", re.IGNORECASE),
+    "conclusion": re.compile(r"\b(Director['\u2019]s Decision|Conclusion|Decision)\s*[:\.\n]", re.IGNORECASE),
 }
+
+# a heading on a line of its own: in running text "... in the course of the investigation." also
+# matched the investigation heading (its section became the PHIPA disclaimer)
+_SECTION_LINES = {
+    name: re.compile(r"(?im)^[ \t]*(?:" + pat.pattern.split("(", 1)[1].split(")", 1)[0] + r")[ \t]*[:.]?[ \t]*$")
+    for name, pat in _SECTION_HEADINGS.items()
+}
+
+
+def _heading(name: str, text: str, pos: int = 0):
+    m = _SECTION_LINES[name].search(text, pos)
+    if m is None and not any(p.search(text) for p in _SECTION_LINES.values()):
+        m = _SECTION_HEADINGS[name].search(text, pos)  # running-text layout (older PDFs): headings inline
+    return m
+
 
 _REPORT_ID = re.compile(r"\b(\d{2}-[A-Z]{3,4}-\d{3,4})\b")
 _INCIDENT_DATE = re.compile(
-    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}",
+    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}",
     re.IGNORECASE,
 )
 
@@ -257,7 +388,7 @@ def extract_report_fields(text: str) -> dict[str, Any]:
     """Apply the SIU-template regex to a report and return structured fields.
 
     Returned dict (every key may be missing or None on parse failure):
-      - ``report_id``        : 22-OFD-001 style
+      - ``report_id``        : 17-OVI-201 style
       - ``incident_date``    : first detected long-form date
       - ``sections``         : dict mapping section name -> raw text slice
       - ``conclusion``       : the Director's-decision section, isolated
@@ -281,8 +412,19 @@ def extract_report_fields(text: str) -> dict[str, Any]:
 
     # Section slicing — find each heading, take text up to the next heading
     boundaries: list[tuple[str, int]] = []
-    for name, pat in _SECTION_HEADINGS.items():
-        m = pat.search(text)
+    analysis_span = None
+    for name in _SECTION_HEADINGS:
+        m = _heading(name, text)
+        if name == "analysis" and m:
+            analysis_span = (m.start(), m.end())
+        if (
+            name == "conclusion"
+            and analysis_span
+            and m is not None
+            and analysis_span[0] <= m.start() < analysis_span[1]
+        ):
+            # "Decision" inside the "Analysis and Director's Decision" heading is not a heading of its own
+            m = _heading(name, text, analysis_span[1])
         if m:
             boundaries.append((name, m.end()))
     boundaries.sort(key=lambda x: x[1])
@@ -290,13 +432,14 @@ def extract_report_fields(text: str) -> dict[str, Any]:
         end = boundaries[i + 1][1] if i + 1 < len(boundaries) else len(text)
         # back off to the start of the next section's heading
         if i + 1 < len(boundaries):
-            next_pat = _SECTION_HEADINGS[boundaries[i + 1][0]]
-            m = next_pat.search(text, pos=start)
+            m = _heading(boundaries[i + 1][0], text, start)
             if m:
                 end = m.start()
         out["sections"][name] = text[start:end].strip()
     if "conclusion" in out["sections"]:
         out["conclusion"] = out["sections"]["conclusion"]
+    elif analysis_span and "decision" in text[analysis_span[0] : analysis_span[1]].lower():
+        out["conclusion"] = out["sections"].get("analysis")
 
     return out
 
@@ -306,7 +449,7 @@ def extract_report_fields(text: str) -> dict[str, Any]:
 
 
 _DATE_PAT = re.compile(
-    r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}\b)",
+    r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}\b)",
     re.IGNORECASE,
 )
 
@@ -360,7 +503,7 @@ def cli(args: list[str]) -> int:
         prog="morie ingest siu", description="Pull SIU director's-report index or a single report."
     )
     p.add_argument("--list", action="store_true", help="Fetch the index page and emit CSV to stdout")
-    p.add_argument("--report-id", help="Report id (e.g. 22-OFD-001); requires --out")
+    p.add_argument("--report-id", help="Report id (e.g. 17-OVI-201); requires --out")
     p.add_argument("--url", help="Direct PDF URL of a single report")
     p.add_argument("--out", type=Path, help="Output directory for the fetched report's text + fields")
     ns = p.parse_args(args)
@@ -374,11 +517,12 @@ def cli(args: list[str]) -> int:
     if url is None and ns.report_id:
         # Resolve from index
         df = list_reports()
-        match = df[df["report_id"] == ns.report_id]
+        match = df[df["case_number"] == ns.report_id]
         if match.empty:
             sys.stderr.write(f"report id {ns.report_id!r} not found in current index\n")
             return 3
-        url = match.iloc[0]["url"]
+        row = match.iloc[0]
+        url = row["source_url_report"] if "source_url_report" in match.columns else row["url"]
     if url is None:
         p.error("provide --list, --report-id, or --url")
         return 2
@@ -390,6 +534,12 @@ def cli(args: list[str]) -> int:
 
     text = fetch_report_text(url)
     fields = extract_report_fields(text)
+    # the panel fields the native parser reads (police service, ISO dates, counts, ...) next to the sections
+    from ..siu.native import parse_report_text, to_iso_date
+
+    fields.update(parse_report_text(text))
+    if fields.get("incident_date"):
+        fields["incident_date"] = to_iso_date(fields["incident_date"]) or fields["incident_date"]
     (ns.out / "report.txt").write_text(text)
     (ns.out / "fields.json").write_text(json.dumps(fields, indent=2))
     sys.stderr.write(f"wrote {ns.out / 'report.txt'} ({len(text):,} chars) + fields.json\n")

@@ -3,10 +3,10 @@ import math
 from morie.fn._qpcore import ssum
 from morie.fn.movement import (
     brownian_bridge_ud,
-    planar_brownian_motion,
     correlated_random_walk,
     crw_msd,
     lattice_random_walk,
+    planar_brownian_motion,
     site_percolation,
 )
 

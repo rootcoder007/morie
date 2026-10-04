@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # These six functions were dead for an unknown period: src/ registered
-# them as .rmorie_*_impl (the .cpp was copied from rmorie without
+# them as .morie_*_impl (the .cpp was copied from rmorie without
 # renaming) while R/ called .morie_*_impl, so every call raised
 # "could not find function". Nothing caught it because no test ever
 # invoked them -- R CMD check's "no visible global function definition"
@@ -46,7 +46,7 @@ test_that("hqc128 encapsulation and decapsulation agree on the secret", {
 
 test_that("the R call sites bind to implementations that exist", {
   # No liboqs guard here on purpose: exists() needs no liboqs, and this
-  # is the check that catches the original .rmorie_/.morie_ rename. A
+  # is the check that catches the original .morie_/.morie_ rename. A
   # skip would hand the regression back to the runners that lack liboqs.
   # the exact failure mode: a call site naming a function the C++ layer
   # never registered

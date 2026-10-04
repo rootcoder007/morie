@@ -1,0 +1,7 @@
+"gender","mean0","mean1","var0","var1","scenario","outcome_type","observed_prop","endpoint","outcome","assumption_type","analysis_mode","power_scope"
+"Female",0.469983351582006,0.469983351582006,0.249099000817751,0.249099000817751,"pilot_observed","binary",0.469983351582006,"heavy_drinking_30d","heavy_drinking_30d","observed_prevalence","design","cpads"
+"Male",0.448681445427123,0.448681445427123,0.247366405956551,0.247366405956551,"pilot_observed","binary",0.448681445427123,"heavy_drinking_30d","heavy_drinking_30d","observed_prevalence","design","cpads"
+"Non-binary",0.398283630248952,0.398283630248952,0.239653780124668,0.239653780124668,"pilot_observed","binary",0.398283630248952,"heavy_drinking_30d","heavy_drinking_30d","observed_prevalence","design","cpads"
+"Female",0.688133115329323,0.688133115329323,0.214605930916484,0.214605930916484,"pilot_observed","binary",0.688133115329323,"ebac_legal","ebac_legal","observed_prevalence","design","cpads"
+"Male",0.610299201370699,0.610299201370699,0.237834086176986,0.237834086176986,"pilot_observed","binary",0.610299201370699,"ebac_legal","ebac_legal","observed_prevalence","design","cpads"
+"Non-binary",0.563820892690504,0.563820892690504,0.245926893656187,0.245926893656187,"pilot_observed","binary",0.563820892690504,"ebac_legal","ebac_legal","observed_prevalence","design","cpads"

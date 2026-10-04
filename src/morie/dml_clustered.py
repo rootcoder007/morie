@@ -101,6 +101,19 @@ def dml_clustered(
     (one-way), a length-2 list (two-way), or None (i.i.d. SE). Returns a dict
     with ``ate``, ``se``, ``ci95``, ``z``, ``pval``, ``n``, ``n_clusters``,
     ``se_kind``.
+
+    Examples
+    --------
+    >>> import random
+    >>> from morie.fn import _frame_core as pd
+    >>> r = random.Random(5)
+    >>> x = [r.gauss(0, 1) for _ in range(120)]
+    >>> t = [1 if xi + r.gauss(0, 1) > 0 else 0 for xi in x]
+    >>> y = [0.7 * ti + xi + r.gauss(0, 1) for ti, xi in zip(t, x)]
+    >>> df = pd.DataFrame({"y": y, "t": t, "x": x, "g": [i % 6 for i in range(120)]})
+    >>> out = dml_clustered(df, "t", "y", ["x"], cluster="g", seed=1)
+    >>> (round(out["ate"], 3), round(out["se"], 3))
+    (0.809, 0.153)
     """
     cl_cols = [] if cluster is None else ([cluster] if isinstance(cluster, str) else list(cluster))
     if len(cl_cols) > 2:

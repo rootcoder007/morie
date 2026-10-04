@@ -47,14 +47,15 @@
       kind, name
     ))
   }
-  warning(sprintf(
+  # offline = TRUE was asked for: say what the frame is, as a message rather than a warning
+  message(sprintf(
     paste0(
       "morie_datasets_%s(offline=TRUE): using the bundled synthetic %s frame. ",
       "This is a toy dataset with the documented schema but random data; ",
       "do not interpret outputs as findings about the real population."
     ),
     kind, kind
-  ), call. = FALSE)
+  ))
   utils::read.csv(path, stringsAsFactors = FALSE)
 }
 
@@ -614,12 +615,12 @@ morie_datasets_tps_layers <- function() {
 #'   column map; [morie_datasets_load_by_key()] for catalog-wide
 #'   dispatch.
 #' @examples
-#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint({
 #' df <- try(suppressWarnings(morie_datasets_cpads()))
 #' if (!inherits(df, "try-error")) head(df)
+#' })
 #' }
-#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_cpads <- function(offline = TRUE,
                                  mode = c("datastore_search", "csv"),
@@ -1545,7 +1546,7 @@ morie_datasets_namus_missing_persons <- function(state = NULL,
 #' @param offline Logical; if `TRUE`, return a included synthetic frame.
 #' @return A `data.frame` with the NIST RDS catalog schema.
 #' @examples
-#' \dontshow{if (morie_has("nist_rds_synthetic.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:nist_rds_synthetic.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_nist_rds(offline = TRUE)
 #' head(df)
 #' \dontshow{\}) # examplesIf}
@@ -1614,7 +1615,7 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 #' @references City of Chicago Data Portal, "Boundaries -
 #'   Neighborhoods"; based on Neighborhoods_2012b.
 #' @examples
-#' \dontshow{if (morie_has("chicago_neighborhoods.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:chicago_neighborhoods.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
 #' head(df[, c("pri_neigh", "sec_neigh")])
 #' \dontshow{\}) # examplesIf}
@@ -2129,7 +2130,7 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
 #' @references City of Chicago Data Portal, "Boundaries - Police
 #'   Districts (current)" (`24zt-jpfn`).
 #' @examples
-#' \dontshow{if (morie_has("chicago_police_districts.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:chicago_police_districts.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_police_districts(offline = TRUE)
 #' head(df)
 #' \dontshow{\}) # examplesIf}
@@ -2237,7 +2238,7 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
 #' @return A wide `data.frame`: crime columns first, then the
 #'   joined resolver columns with their canonical prefixes.
 #' @examples
-#' \dontshow{if (morie_has("chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_crime_resolved(
 #'   offline = TRUE,
 #'   max_features = 5L,
@@ -2487,7 +2488,7 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
 #' @references City of Chicago Data Portal, "Boundaries - Community
 #'   Areas (current)" (`cauq-8yn6`).
 #' @examples
-#' \dontshow{if (morie_has("chicago_community_areas.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:chicago_community_areas.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_community_areas(offline = TRUE)
 #' head(df[, c("area_numbe", "community")])
 #' \dontshow{\}) # examplesIf}
@@ -2586,7 +2587,7 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
 #'   Department - Illinois Uniform Crime Reporting (IUCR) Codes"
 #'   (`c7ck-438e`).
 #' @examples
-#' \dontshow{if (morie_has("chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (morie_has("data:chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_iucr_codes(offline = TRUE)
 #' subset(df, primary_description == "HOMICIDE")
 #' \dontshow{\}) # examplesIf}

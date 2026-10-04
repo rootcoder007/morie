@@ -14,7 +14,9 @@ Then from any machine:
 Or set PERSEUS_CLOUD_URL in .env and it auto-connects.
 
 Security: The relay only exposes Perseus agent capabilities (search, run
-functions, read files within sandbox). No shell access, no filesystem
+functions, read files within sandbox); with the interactive layer the agent's tools
+can also run shell commands, execute code and write files on the serving machine, which is
+why a bind beyond loopback requires --token. No filesystem
 writes outside the project. Optional token auth for production use.
 """
 
@@ -31,11 +33,23 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
+def _registry_size() -> int | None:
+    """Number of functions in the morie.fn registry (the count `morie repl` prints)."""
+    try:
+        from morie.fn._registry import REGISTRY
+
+        return len(REGISTRY)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _create_agent():
     try:
         from .agent import create_agent
     except ImportError as exc:
-        raise RuntimeError("the morie agent is not bundled in this install; run `morie interactive install` to add it") from exc
+        raise RuntimeError(
+            "the morie agent is not bundled in this install; run `morie interactive install` to add it"
+        ) from exc
     return create_agent()
 
 
@@ -61,7 +75,7 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
                     "service": "perseus-relay",
                     "model": model,
                     "tools": 12,
-                    "functions": "5710+",
+                    "functions": _registry_size(),
                 },
             )
         else:
@@ -165,7 +179,7 @@ def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
     text = str(payload.get("output_text") or "")
     if payload.get("mode") == "local_fallback":
         return 503, {
-            "error": "no LLM backend reachable: run `morie login` for the hosted tier or start Ollama",
+            "error": "no LLM backend reachable: run `morie login` (GitHub, or --email you@example.com) for the hosted tier or start Ollama",
             "text": text,
             "tool_calls": [],
             "iterations": 0,

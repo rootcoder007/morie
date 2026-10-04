@@ -159,6 +159,12 @@ def cohens_d(
     Returns
     -------
     EffectSizeResult
+
+    Examples
+    --------
+    >>> r = cohens_d([2.1, 2.5, 3.0, 2.8, 3.3], [1.4, 1.9, 2.2, 1.7, 2.0])
+    >>> (r.measure, round(r.estimate, 4), round(r.ci_lower, 4) < r.estimate < round(r.ci_upper, 4))
+    ("Cohen's d", 2.3009, True)
     """
     x, y = _arr(x), _arr(y)
     nx, ny = len(x), len(y)

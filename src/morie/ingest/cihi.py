@@ -25,12 +25,12 @@ def _pick_data_sheet(xl, **read_excel_kwargs):
     data lives on a later, much larger sheet.  Picking the sheet with
     the most cells skips the notes page without hard-coding names.
     """
-    best_name, best_df, best_cells = xl.sheet_names[0], None, -1
+    best_df, best_cells = None, -1
     for name in xl.sheet_names:
         df = xl.parse(name, **read_excel_kwargs)
         cells = df.shape[0] * df.shape[1]
         if cells > best_cells:
-            best_name, best_df, best_cells = name, df, cells
+            best_df, best_cells = df, cells
     return best_df
 
 
@@ -94,8 +94,13 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
         if sheet is None:
 
             def _cells(ws):
+                # filled cells in the first 300 rows: an "Instructions" sheet can declare a
+                # 16 x 16,383 dimension and still hold a paragraph (CIHI 885b)
                 try:
-                    return (ws.max_row or 0) * (ws.max_column or 0)
+                    n = 0
+                    for row in ws.iter_rows(max_row=300, values_only=True):
+                        n += sum(v is not None and str(v).strip() != "" for v in row)
+                    return n
                 except Exception:  # noqa: BLE001
                     return 0
 
@@ -105,9 +110,20 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
         rows = ws.iter_rows(values_only=True)
         header = None
         records = []
+        from morie._progress import Stages
+
+        # a CIHI sheet can hold a million rows; say how far the read has got
+        stages = Stages(f"reading {getattr(ws, 'title', 'sheet')}", 0)
         for row in rows:
+            if records and len(records) % 200_000 == 0:
+                stages.n = len(records) // 200_000 - 1
+                stages.step(f"{len(records):,} rows")
             if header is None:
-                if row and sum(v is not None for v in row) >= max(1, len(row) // 2):
+                if row:
+                    last = max((i for i, v in enumerate(row) if v is not None), default=-1)
+                    row = tuple(row[: last + 1])  # the sheet may declare 16,384 columns; count the used ones
+                filled = sum(v is not None for v in row) if row else 0
+                if row and filled >= 2 and filled >= max(1, len(row) // 2):  # a sheet title is one cell
                     header = [str(v) if v is not None else f"col{i}" for i, v in enumerate(row)]
                 continue
             if row is None or all(v is None for v in row):

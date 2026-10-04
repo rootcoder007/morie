@@ -36,7 +36,7 @@ def co2_equivalent(
     emissions_kg: dict[str, float] | float,
     gas: str | None = None,
 ) -> DescriptiveResult:
-    """Difficulties strengthen the mind, as labor does the body. -- Seneca"""
+    """CO2-equivalent mass of greenhouse-gas emissions, weighted by each gas's global warming potential."""
     if isinstance(emissions_kg, dict):
         total = 0.0
         breakdown: dict[str, float] = {}

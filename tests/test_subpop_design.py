@@ -43,16 +43,15 @@ def test_neff_cluster():
 
 def test_sample_size_proportion_closed_form():
     r = morie_sample_size_proportion(0.5, 0.05)
-    assert r.n_srs == pytest.approx(Z975 ** 2 * 0.25 / 0.05 ** 2)
+    assert r.n_srs == pytest.approx(Z975**2 * 0.25 / 0.05**2)
     assert 384 < r.n_srs < 385
     assert r.n_design == pytest.approx(r.n_srs)
     assert r.n_invite == pytest.approx(r.n_srs)
 
 
 def test_fpc_deff_and_nonresponse_compose():
-    n0 = Z975 ** 2 * 0.25 / 0.05 ** 2
-    r = morie_sample_size_proportion(0.5, 0.05, N=1000, deff=1.5,
-                                     response_rate=0.6)
+    n0 = Z975**2 * 0.25 / 0.05**2
+    r = morie_sample_size_proportion(0.5, 0.05, N=1000, deff=1.5, response_rate=0.6)
     assert r.n_design == pytest.approx((n0 / (1 + (n0 - 1) / 1000)) * 1.5)
     assert r.n_invite == pytest.approx(r.n_design / 0.6)
 
@@ -75,8 +74,7 @@ def test_domain_divides_by_prevalence_and_coverage():
     assert d.n_domain == pytest.approx(base.n_design)
     assert d.n_overall == pytest.approx(base.n_invite / 0.05)
     assert 7600 < d.n_overall < 7700
-    d2 = morie_sample_size_domain(0.5, 0.05, domain_prevalence=0.05,
-                                  coverage=0.8)
+    d2 = morie_sample_size_domain(0.5, 0.05, domain_prevalence=0.05, coverage=0.8)
     assert d2.n_overall == pytest.approx(d.n_overall / 0.8)
 
 
@@ -115,10 +113,8 @@ def test_alloc_optimal_reduces_to_neyman():
 
 
 def test_rake_hits_both_margins():
-    data = {"region": ["north", "north", "south", "south"],
-            "group": ["a", "b", "a", "b"]}
-    r = morie_rake(data, {"region": {"north": 60, "south": 40},
-                          "group": {"a": 70, "b": 30}})
+    data = {"region": ["north", "north", "south", "south"], "group": ["a", "b", "a", "b"]}
+    r = morie_rake(data, {"region": {"north": 60, "south": 40}, "group": {"a": 70, "b": 30}})
     assert r.converged
     w = r.weights
     assert w[0] + w[1] == pytest.approx(60, abs=1e-6)
@@ -129,8 +125,7 @@ def test_rake_hits_both_margins():
 def test_rake_rejects_bad_input():
     data = {"region": ["north", "south"], "group": ["a", "b"]}
     with pytest.raises(ValueError, match="same population total"):
-        morie_rake(data, {"region": {"north": 60, "south": 40},
-                          "group": {"a": 70, "b": 40}})
+        morie_rake(data, {"region": {"north": 60, "south": 40}, "group": {"a": 70, "b": 40}})
     with pytest.raises(ValueError, match="levels absent"):
         morie_rake(data, {"region": {"north": 100}})
 
@@ -195,9 +190,12 @@ def test_invariance_compare():
     assert r[1]["delta_chisq"] == pytest.approx(33.5)
     assert [x["supported"] for x in r] == [True, False]
     with pytest.raises(ValueError, match="least to most constrained"):
-        morie_invariance_compare([
-            {"model": "a", "chisq": 10, "df": 20, "cfi": 0.99, "rmsea": 0.03},
-            {"model": "b", "chisq": 12, "df": 10, "cfi": 0.98, "rmsea": 0.04}])
+        morie_invariance_compare(
+            [
+                {"model": "a", "chisq": 10, "df": 20, "cfi": 0.99, "rmsea": 0.03},
+                {"model": "b", "chisq": 12, "df": 10, "cfi": 0.98, "rmsea": 0.04},
+            ]
+        )
 
 
 def test_irt_precision():

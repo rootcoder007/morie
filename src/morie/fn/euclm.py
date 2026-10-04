@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def euclidean_model(ideal_points, alternatives, *, beta: float = 1.0) -> DescriptiveResult:
-    """The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius"""
+    """Euclidean spatial voting model: an alternative's utility falls with its distance from each ideal point."""
     X = np.asarray(ideal_points, dtype=float)
     Z = np.asarray(alternatives, dtype=float)
     if X.ndim == 1:

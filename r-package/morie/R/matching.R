@@ -317,7 +317,13 @@ morie_matching_common_support <- function(data, treatment,
 #' @param replace If \code{TRUE}, controls may be re-used. The default
 #'   \code{FALSE} matches MatchIt; with fewer controls than treated units it
 #'   leaves treated units unmatched (a warning says so) and the ATT then
-#'   describes the matchable subset: pass \code{TRUE} in that case.
+#'   describes the matchable subset: pass \code{TRUE} in that case. \code{NULL} (the
+#'   default) re-uses controls only when there are fewer controls than
+#'   treated units, where 1:1 matching without replacement would leave
+#'   treated units unmatched and bias the ATT. \code{NULL} (the
+#'   default) re-uses controls only when there are fewer controls than
+#'   treated units, where 1:1 matching without replacement would leave
+#'   treated units unmatched and bias the ATT.
 #' @param ps Optional propensity scores. When supplied they REPLACE
 #'   the fitted model: matching is done on the score you pass, aligned
 #'   to the rows that survive the NA drop -- by name when the vector is
@@ -343,17 +349,24 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
   tr <- as.numeric(data[[treatment]])
   if (!isTRUE(replace) && sum(tr == 1, na.rm = TRUE) * n_neighbors > sum(tr == 0, na.rm = TRUE)) {
     # MatchIt's default too, so the cross-validation holds; but the user must know the estimand shifts
-    warning("Fewer controls than treated units: 1:1 matching without replacement leaves treated ",
+    warning("Fewer control units than treated: 1:1 matching without replacement leaves treated ",
             "units unmatched and the ATT is estimated on the matchable subset only; pass ",
             "replace = TRUE to re-use controls.", call. = FALSE)
   }
-  .morie_match_nearest_native(
-    data, treatment, covariates,
-    n_neighbors = n_neighbors,
-    caliper = caliper,
-    replace = replace,
-    alpha = alpha,
-    ps = ps
+  warned <- !isTRUE(replace) && sum(tr == 1, na.rm = TRUE) * n_neighbors > sum(tr == 0, na.rm = TRUE)
+  withCallingHandlers(
+    .morie_match_nearest_native(
+      data, treatment, covariates,
+      n_neighbors = n_neighbors,
+      caliper = caliper,
+      replace = replace,
+      alpha = alpha,
+      ps = ps
+    ),
+    warning = function(w) {
+      # the same condition in the native layer's words: said once, above
+      if (warned && startsWith(conditionMessage(w), "Fewer control units than treated units")) invokeRestart("muffleWarning")
+    }
   )
 }
 
@@ -429,7 +442,13 @@ morie_matching_cem <- function(data, treatment, covariates, n_bins = 5L) {
 #' @param replace If \code{TRUE}, controls may be re-used. The default
 #'   \code{FALSE} matches MatchIt; with fewer controls than treated units it
 #'   leaves treated units unmatched (a warning says so) and the ATT then
-#'   describes the matchable subset: pass \code{TRUE} in that case.
+#'   describes the matchable subset: pass \code{TRUE} in that case. \code{NULL} (the
+#'   default) re-uses controls only when there are fewer controls than
+#'   treated units, where 1:1 matching without replacement would leave
+#'   treated units unmatched and bias the ATT. \code{NULL} (the
+#'   default) re-uses controls only when there are fewer controls than
+#'   treated units, where 1:1 matching without replacement would leave
+#'   treated units unmatched and bias the ATT.
 #' @param exact Optional character vector of variables to match exactly
 #'   prior to distance matching.
 #' @return A list of class \code{morie_match_result}.
@@ -503,14 +522,14 @@ morie_matching_optimal_pair <- function(data, treatment, covariates,
 #' @references Hansen, B. B. (2004). Full matching in an observational
 #'   study of coaching for the SAT. \emph{JASA}, 99(467), 609--618.
 #' @examples
-#' \dontshow{if (morie_has("MatchIt", "optmatch")) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' if (morie_has("MatchIt", "optmatch")) withAutoprint({
 #' set.seed(1)
 #' df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
 #'                  x1 = rnorm(200), x2 = rnorm(200))
 #' morie_matching_full(df, "d", c("x1", "x2"))
+#' })
 #' }
-#' \dontshow{\}) # examplesIf}
 #' @export
 morie_matching_full <- function(data, treatment, covariates,
                                 ps = NULL, n_subclasses = 10L) {
@@ -547,14 +566,14 @@ morie_matching_full <- function(data, treatment, covariates,
 #'   data augmented with \code{._stratum} and \code{._ps} columns) and
 #'   \code{stratum_effects} (per-stratum sample sizes and PS ranges).
 #' @examples
-#' \dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint({
 #' set.seed(1)
 #' df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
 #'                  x1 = rnorm(200), x2 = rnorm(200))
 #' morie_matching_subclassify(df, "d", c("x1", "x2"), n_strata = 5)
+#' })
 #' }
-#' \dontshow{\}) # examplesIf}
 #' @export
 morie_matching_subclassify <- function(data, treatment, covariates,
                                        ps = NULL, n_strata = 5L) {
@@ -708,15 +727,16 @@ morie_matching_genetic <- function(data, treatment, covariates,
 #'   for back-compat).
 #' @return A list of class \code{morie_match_result}.
 #' @examples
-#' \dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint({
 #' set.seed(1)
-#' df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#' df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.25),
 #'                  x1 = rnorm(200), x2 = rnorm(200))
+#' # an average of two controls per treated unit needs twice as many controls as treated
 #' morie_matching_variable_ratio(df, "d", c("x1", "x2"),
 #'                               min_ratio = 1, max_ratio = 3)
+#' })
 #' }
-#' \dontshow{\}) # examplesIf}
 #' @export
 morie_matching_variable_ratio <- function(data, treatment, covariates,
                                           min_ratio = 1L,
@@ -807,7 +827,7 @@ morie_matching_cardinality <- function(data, treatment, covariates,
   # Track repeated MatchIt warnings across calipers; collapse to a
   # single summary at the end so we don't emit one per caliper.
   n_few_ctrl_warn <- 0L
-  ctrl_warn_pattern <- "Fewer control units than treated"
+  ctrl_warn_pattern <- "Fewer control units than treated|Fewer controls than treated units"
   call_nn <- function(...) {
     withCallingHandlers(
       morie_matching_nearest_neighbor(...),
@@ -1405,12 +1425,12 @@ morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
                                          seed = 42L, alpha = 0.05) {
   .morie_local_seed(seed)
   df <- .morie_matching_drop_na(data, c(outcome, treatment, covariates))
-  # Fold the per-match "Fewer control units than treated" warning (from
+  # Fold the per-match "fewer controls than treated" warnings (from
   # the full-data match and from every bootstrap resample) into one
   # summary at the end.
   n_few_ctrl_warn <- 0L
   data_few_ctrl <- FALSE
-  ctrl_warn_pattern <- "Fewer control units than treated"
+  ctrl_warn_pattern <- "Fewer control units than treated|Fewer controls than treated units"
   mr <- withCallingHandlers(
     morie_matching_nearest_neighbor(df, treatment, covariates,
                                     n_neighbors = 1L, ps = ps),
@@ -1506,7 +1526,8 @@ morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
 #' @examples
 #' \donttest{
 #' set.seed(1)
-#' df <- data.frame(treat3 = sample(0:2, 200, TRUE),
+#' # the reference level (the largest) must hold at least as many units as each other level
+#' df <- data.frame(treat3 = sample(rep(0:2, c(90, 55, 55))),
 #'                  x1 = rnorm(200), x2 = rnorm(200))
 #' morie_matching_multi_treatment(df, "treat3", c("x1", "x2"))
 #' }
@@ -1516,6 +1537,14 @@ morie_matching_multi_treatment <- function(data, treatment, covariates,
                                            method = "nearest_neighbor") {
   df <- .morie_matching_drop_na(data, c(treatment, covariates))
   levels <- sort(unique(df[[treatment]]))
+  # a continuous column (often the outcome passed by mistake) would be matched value by value
+  if (length(levels) > 10L) {
+    stop(sprintf("treatment '%s' has %d distinct values; a multi-valued treatment needs a few levels (at most 10)",
+                 treatment, length(levels)), call. = FALSE)
+  }
+  if (length(levels) < 2L) {
+    stop(sprintf("treatment '%s' has %d level; matching needs at least two", treatment, length(levels)), call. = FALSE)
+  }
   if (is.null(reference_group)) {
     tab <- table(df[[treatment]])
     reference_group <- names(tab)[which.max(tab)]
@@ -1526,7 +1555,10 @@ morie_matching_multi_treatment <- function(data, treatment, covariates,
   }
   results <- list()
   for (lvl in levels) {
-    if (identical(lvl, reference_group)) next
+    # the reference level comes back from table() as a string: compare values, not types
+    # (an integer treatment column against a numeric reference never matched, so the
+    # reference group was matched against itself with no controls)
+    if (as.character(lvl) == as.character(reference_group)) next
     df_b <- df[df[[treatment]] %in% c(lvl, reference_group), , drop = FALSE]
     df_b[["._treat_binary"]] <- as.integer(df_b[[treatment]] == lvl)
     mr <- if (method == "mahalanobis") {

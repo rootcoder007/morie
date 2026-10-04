@@ -162,7 +162,6 @@ def hawkes_temporal_fit(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 50
     aic = 2 * 3 + 2 * nll
     bic = 3 * math.log(n) + 2 * nll
 
-    branching = kappa  # fraction of events triggering offspring
     # Visualisation
     fig_path = None
     try:

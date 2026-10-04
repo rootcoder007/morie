@@ -20,7 +20,11 @@ def creds(tmp_path, monkeypatch):
 
 def test_provider_set_show_unset(creds, capsys):
     out = hosted.provider_set("https://api.example.org/v1/", "sk-test-1234567", "demo-model")
-    assert out == {"api_base_url": "https://api.example.org/v1", "api_key": "sk-test-1234567", "api_model": "demo-model"}
+    assert out == {
+        "api_base_url": "https://api.example.org/v1",
+        "api_key": "sk-test-1234567",
+        "api_model": "demo-model",
+    }
     assert json.loads(creds.read_text())["api_base_url"] == "https://api.example.org/v1"
     assert llm._api_base_url() == "https://api.example.org/v1"
     assert llm._api_key() == "sk-test-1234567"

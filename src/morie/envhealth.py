@@ -103,15 +103,21 @@ def concentration_response_pm25(
     outcome: str = "all_cause_mortality",
     reference_conc: float = 5.8,
 ) -> CRFResult:
-    """Integrated Exposure-Response (IER) curve for PM2.5.
+    """Concentration-response function for PM2.5.
 
-    Formula (Burnett et al. 2014, Eq. 1):
+    All-cause mortality is log-linear with RR 1.08 per 10 μg/m³, the pooled
+    cohort estimate of the WHO 2021 guideline review (Chen & Hoek 2020):
+
+        RR(z) = exp(β · (z − z_cf) / 10),  β = ln(1.08)
+
+    The cause-specific outcomes use the Integrated Exposure-Response (IER)
+    curve (Burnett et al. 2014, Eq. 1), which was fit per cause and has no
+    all-cause form:
 
         RR(z) = 1 + α · (1 − exp(−γ · (z − z_cf)^δ))   if z > z_cf
         RR(z) = 1                                        otherwise
 
-    Default parameters are fit for adult all-cause mortality from GBD
-    2013; override via ``outcome`` which selects a published (α, γ, δ)
+    ``outcome`` selects the all-cause estimate or a published IER (α, γ, δ)
     triple.
 
     Parameters
@@ -132,24 +138,35 @@ def concentration_response_pm25(
 
     References
     ----------
+    Chen, J. & Hoek, G. (2020). Environment International, 143, 105974.
+    WHO (2021). Global Air Quality Guidelines.
     Burnett, R. T. et al. (2014). EHP, 122(4), 397-403.
     """
-    # Published IER parameters (GBD 2013 adult outcomes)
+    # all-cause: RR 1.08 (95% CI 1.06-1.09) per 10 ug/m3, Chen & Hoek (2020), the WHO 2021 review
+    loglinear: dict[str, float] = {"all_cause_mortality": float(np.log(1.08))}
+    # Published IER parameters (GBD 2013 cause-specific outcomes)
     ier_params: dict[str, tuple[float, float, float]] = {
-        "all_cause_mortality": (1.2, 0.34, 0.72),
         "ihd": (1.91, 0.14, 0.49),
         "stroke": (1.46, 0.13, 0.61),
     }
-    if outcome not in ier_params:
-        raise ValueError(f"Unknown outcome {outcome!r}. Available: {list(ier_params)}")
-    alpha, gamma, delta = ier_params[outcome]
-
+    if outcome not in loglinear and outcome not in ier_params:
+        raise ValueError(f"Unknown outcome {outcome!r}. Available: {list(loglinear) + list(ier_params)}")
     z = np.asarray(exposure, dtype=float)
     scalar = z.ndim == 0
     z = np.atleast_1d(z)
     excess = np.clip(z - reference_conc, 0.0, None)
-    rr = 1.0 + alpha * (1.0 - np.exp(-gamma * np.power(excess, delta)))
-    log_rr = np.log(rr)
+    if outcome in loglinear:
+        beta = loglinear[outcome]
+        log_rr = beta * excess / 10.0
+        rr = np.exp(log_rr)
+        citation = "Chen & Hoek (2020) Environ Int 143:105974; WHO (2021) Global AQ Guidelines"
+        params: dict[str, Any] = {"beta_per_10": beta, "form": "log-linear"}
+    else:
+        alpha, gamma, delta = ier_params[outcome]
+        rr = 1.0 + alpha * (1.0 - np.exp(-gamma * np.power(excess, delta)))
+        log_rr = np.log(rr)
+        citation = "Burnett et al. (2014) EHP 122(4):397-403"
+        params = {"alpha": alpha, "gamma": gamma, "delta": delta, "form": "IER"}
 
     if scalar:
         rr_out = float(rr[0])
@@ -166,11 +183,9 @@ def concentration_response_pm25(
         reference_conc=reference_conc,
         exposure_conc=float(np.mean(exp_out)) if not scalar else exp_out,
         pollutant="PM2.5",
-        citation="Burnett et al. (2014) EHP 122(4):397-403",
+        citation=citation,
         extra={
-            "alpha": alpha,
-            "gamma": gamma,
-            "delta": delta,
+            **params,
             "outcome": outcome,
             "rr_per_unit": rr_out if not scalar else None,
         },
@@ -185,7 +200,7 @@ def concentration_response_no2(
 ) -> CRFResult:
     """Log-linear concentration-response function for NO2.
 
-    Formula (Atkinson et al. 2018; WHO 2021):
+    Formula (Huangfu & Atkinson 2020, the WHO 2021 guideline review):
 
         RR(z) = exp(β · (z − z_cf) / 10)
 
@@ -198,8 +213,9 @@ def concentration_response_no2(
     exposure : float or 1-D array
         Annual-mean NO2 concentration in μg/m³.
     outcome : str
-        ``"all_cause_mortality"`` (β=0.039), ``"respiratory"`` (β=0.029),
-        or ``"childhood_asthma"`` (β=0.039).
+        ``"all_cause_mortality"`` (β=ln 1.02=0.0198: RR 1.02, 95% CI 1.01-1.04,
+        per 10 μg/m³), ``"respiratory"`` (β=0.029), or ``"childhood_asthma"``
+        (β=0.039).
     reference_conc : float
         Counterfactual concentration z_cf. Default 10 μg/m³ (WHO 2021
         annual guideline).
@@ -218,7 +234,7 @@ def concentration_response_no2(
     WHO (2021). Global Air Quality Guidelines.
     """
     beta_lookup = {
-        "all_cause_mortality": 0.039,
+        "all_cause_mortality": float(np.log(1.02)),  # Huangfu & Atkinson (2020): RR 1.02 (1.01-1.04) per 10 ug/m3
         "respiratory": 0.029,
         "childhood_asthma": 0.039,
     }
@@ -253,7 +269,7 @@ def concentration_response_no2(
         reference_conc=reference_conc,
         exposure_conc=float(np.mean(exp_out)) if not scalar else exp_out,
         pollutant="NO2",
-        citation="Atkinson et al. (2018); WHO (2021) Global AQ Guidelines",
+        citation="Huangfu & Atkinson (2020) Environ Int 144:105998; WHO (2021) Global AQ Guidelines",
         extra={
             "beta_per_10": beta,
             "outcome": outcome,
@@ -298,6 +314,11 @@ def attributable_fraction(rr: float, exposure_prevalence: float) -> float:
     ----------
     Levin, M. L. (1953). Acta Un Int Cancr, 9, 531-541.
     Rothman, Greenland & Lash (2008). Modern Epidemiology, 3e, Ch 5.
+
+    Examples
+    --------
+    >>> round(attributable_fraction(rr=1.08, exposure_prevalence=0.9), 4)   # Levin's formula
+    0.0672
     """
     rr = float(rr)
     p = float(exposure_prevalence)
@@ -345,7 +366,7 @@ def mortality_displaced(
         for Ontario adult all-cause.
     beta_per_unit : float
         Log-RR per μg/m³ (note: per unit, NOT per 10 units). For NO2
-        all-cause with β_per_10 = 0.039, pass 0.0039 here.
+        all-cause with β_per_10 = ln(1.02) = 0.0198, pass 0.00198 here.
 
     Returns
     -------
@@ -520,7 +541,7 @@ def exposure_response_sensitivity(
 
     rng = np.random.default_rng(random_state)
     boot_ates: list[float] = []
-    for b in range(n_bootstrap):
+    for _b in range(n_bootstrap):
         idx = rng.integers(0, len(data), size=len(data))
         resample = data.iloc[idx].reset_index(drop=True)
         try:

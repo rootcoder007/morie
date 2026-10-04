@@ -7,10 +7,7 @@ from ._containers import DescriptiveResult
 
 
 def turns_count_fn(x: np.ndarray, threshold: float = 0.0) -> DescriptiveResult:
-    """Count the number of turns (direction changes) in a signal.
-
-    'The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius'
-    """
+    """Count the number of turns (direction changes) in a signal."""
     from morie._waveform import turns_count as _backend
 
     result = _backend(x, threshold=threshold)

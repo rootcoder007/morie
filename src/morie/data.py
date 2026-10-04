@@ -7,7 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import urlopen
 
 from morie.fn import _frame_core as pd
@@ -298,6 +298,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CPADS/CPADS.csv",
+        "hosted_key": "hib/cpads_cpads",
         "table_name": "hibp",
         "ckan_resource_id": "",
     },
@@ -310,6 +311,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/provinces.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "provinces.csv",
+        "hosted_key": "hib/csads_provinces",
         "table_name": "hibsa",
         "ckan_resource_id": "",
     },
@@ -322,6 +326,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/trends.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "trends.csv",
+        "hosted_key": "hib/csads_trends",
         "table_name": "hibsb",
         "ckan_resource_id": "",
     },
@@ -334,6 +341,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Alcohol.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Alcohol.csv",
+        "hosted_key": "hib/csus_alcohol",
         "table_name": "hibua",
         "ckan_resource_id": "",
     },
@@ -346,6 +356,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cannabis.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cannabis.csv",
+        "hosted_key": "hib/csus_cannabis",
         "table_name": "hibub",
         "ckan_resource_id": "",
     },
@@ -358,6 +371,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cigarette smoking and vaping.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cigarette smoking and vaping.csv",
+        "hosted_key": "hib/csus_cigarette_smoking_and_vaping",
         "table_name": "hibuc",
         "ckan_resource_id": "",
     },
@@ -370,6 +386,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Illegal substances.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Illegal substances.csv",
+        "hosted_key": "hib/csus_illegal_substances",
         "table_name": "hibud",
         "ckan_resource_id": "",
     },
@@ -382,6 +401,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Opioids.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Opioids.csv",
+        "hosted_key": "hib/csus_opioids",
         "table_name": "hibue",
         "ckan_resource_id": "",
     },
@@ -394,6 +416,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Over the counter products.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Over the counter products.csv",
+        "hosted_key": "hib/csus_over_the_counter_products",
         "table_name": "hibuf",
         "ckan_resource_id": "",
     },
@@ -406,6 +431,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Polysubstance.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Polysubstance.csv",
+        "hosted_key": "hib/csus_polysubstance",
         "table_name": "hibug",
         "ckan_resource_id": "",
     },
@@ -418,6 +446,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Sedatives.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Sedatives.csv",
+        "hosted_key": "hib/csus_sedatives",
         "table_name": "hibuh",
         "ckan_resource_id": "",
     },
@@ -430,6 +461,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Stimulants.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Stimulants.csv",
+        "hosted_key": "hib/csus_stimulants",
         "table_name": "hibui",
         "ckan_resource_id": "",
     },
@@ -442,6 +476,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Substance use harms.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Substance use harms.csv",
+        "hosted_key": "hib/csus_substance_use_harms",
         "table_name": "hibuj",
         "ckan_resource_id": "",
     },
@@ -454,6 +491,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Treatment.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Treatment.csv",
+        "hosted_key": "hib/csus_treatment",
         "table_name": "hibuk",
         "ckan_resource_id": "",
     },
@@ -589,6 +629,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": False,
         "local_path": "data/cache/correctional_stats_report_environment1b.RData",
+        "hosted_file": "otis/correctional_stats_report_environment1b.RData",
         "table_name": "otis",
         "ckan_resource_id": "",
     },
@@ -601,6 +642,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/dt_expanded.rds",
+        "hosted_file": "otis/dt_expanded.rds",
         "table_name": "otisexp",
         "ckan_resource_id": "",
     },
@@ -613,7 +655,21 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/finne_env.RData",
+        "hosted_file": "otis/finne_env.RData",
         "table_name": "otisfin",
+        "ckan_resource_id": "",
+    },
+    "otisloc": {
+        "name": "OTIS: Ontario's adult provincial correctional institutions (locations)",
+        "source": "otis",
+        "survey": "otis",
+        "year": "",
+        "format": "csv",
+        "type": "correctional",
+        "large_file": False,
+        "local_path": "data/datasets/otis/institutional_locations_en.csv",
+        "download_url": "https://data.ontario.ca/dataset/3ca4505b-091c-4b04-89e8-c316ffaa0d9e/resource/97d82317-539c-479d-9479-4dd9b7e9e08c/download/institutional_locations_en.csv",
+        "table_name": "otisloc",
         "ckan_resource_id": "",
     },
     # ── OTIS public release per-table CSVs (used by morie.mrm_otis_*) ──
@@ -1221,11 +1277,29 @@ def download_with_wayback(url: str, timeout: int = 60) -> tuple[bytes, str]:
         return urlopen(snap, timeout=timeout).read(), snap
 
 
+def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4) -> dict:
+    """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff."""
+    import time as _time
+
+    delay = 2.0
+    for attempt in range(attempts):
+        try:
+            return json.loads(urlopen(url, timeout=timeout).read().decode())
+        except HTTPError as exc:
+            if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
+                raise
+            logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
+            _time.sleep(delay)
+            delay *= 2
+    raise RuntimeError("unreachable")
+
+
 def fetch_ckan_to_cache(
     dataset_key: str = "cpads",
     limit: int = 32000,
     db_path: str | Path | None = None,
     timeout: int = 60,
+    max_records: int | None = None,
 ) -> pd.DataFrame:
     """Fetch a dataset from CKAN and store it in the SQLite cache.
 
@@ -1234,7 +1308,9 @@ def fetch_ckan_to_cache(
     dataset_key : str
         Key in CKAN_DATASETS (e.g., "cpads", "csads", "csus").
     limit : int
-        Max records to fetch from CKAN DataStore API.
+        Records per page of the CKAN DataStore API.
+    max_records : int, optional
+        Stop once this many records have been fetched (``morie download-bootstrap --limit``).
     db_path : str | Path | None
         Override cache database path.
     timeout : int
@@ -1276,7 +1352,7 @@ def fetch_ckan_to_cache(
         params = {"resource_id": resource_id, "limit": limit, "offset": offset}
         url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
         try:
-            payload = json.loads(urlopen(url, timeout=timeout).read().decode())
+            payload = _urlopen_json_with_retry(url, timeout)
         except HTTPError as exc:
             # 404: no datastore behind this resource. 500: the datastore
             # cannot serve a full page of it (the 2018-2022 CCS microdata,
@@ -1304,6 +1380,8 @@ def fetch_ckan_to_cache(
             prog.update(len(batch))
         if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
             break
+        if max_records is not None and len(records) >= max_records:
+            break
         offset += len(batch)
     if prog is not None:
         prog.close()
@@ -1321,6 +1399,11 @@ def fetch_ckan_to_cache(
 
     logger.info("Fetched %d rows x %d cols for %s", len(df), len(df.columns), dataset_key)
 
+    if max_records is not None:
+        # a --limit preview is not the dataset: caching it made later pulls and modules
+        # silently use the first rows (10 of 61,096 bootstrap replicates)
+        logger.info("%s: first %d rows fetched (--limit); not cached", dataset_key, len(df))
+        return df
     # Cache under the name load_dataset() looks up next time.
     cache_store(df, table_name, db_path)
 
@@ -1362,6 +1445,124 @@ def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = 
         logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
         _stream(snap)
         return snap
+
+
+def _download_url_table(entry: dict, matched: str, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: the catalog's ``download_url`` (a CSV/XLSX, or a zip whose ``zip_member`` is the table)."""
+    import zipfile
+
+    url = entry["download_url"]
+    dest = _user_cache_dir() / "direct" / matched / url.rsplit("/", 1)[-1]
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        _download_file(url, tmp, timeout, label=matched)
+        tmp.replace(dest)
+    if zipfile.is_zipfile(dest):
+        member = entry.get("zip_member") or ""
+        with zipfile.ZipFile(dest) as zf:
+            names = zf.namelist()
+            pick = [n for n in names if n.rsplit("/", 1)[-1].lower() == member.lower()]
+            if not pick:
+                raise RuntimeError(f"{dest.name} for {matched} has no member {member!r}; it holds {', '.join(names)}")
+            with zf.open(pick[0]) as fh:
+                return pd.read_csv(fh, low_memory=False)
+    if entry.get("format") == "xlsx":
+        return _xlsx_data_sheet(dest)
+    return pd.read_csv(dest, low_memory=False)
+
+
+_COVER_SHEET = re.compile(
+    r"^(instructions?|notes?( to readers?)?|(table of )?contents|about|read ?me|cover|footnotes?|glossary|definitions|methodology)$",
+    re.IGNORECASE,
+)
+
+
+def _xlsx_data_sheet(path) -> pd.DataFrame:
+    """The data sheet of a workbook: cover sheets ("Instructions", "Notes to readers") skipped, the most cells wins.
+
+    CIHI data tables open on an Instructions sheet; reading sheet 0 returned that cover text as the dataset.
+    """
+    import zipfile
+
+    from .fn._frame_core import _xlsx_sheet_map
+
+    with zipfile.ZipFile(path) as zf:
+        names = [nm for nm, _ in _xlsx_sheet_map(zf)]
+    candidates = [nm for nm in names if not _COVER_SHEET.match((nm or "").strip())] or names
+    best, best_cells = None, -1
+    for nm in candidates:
+        try:
+            df = pd.read_excel(path, sheet_name=nm)
+        except Exception:  # noqa: BLE001 - an unreadable sheet is skipped; the others still count
+            continue
+        cells = int(df.shape[0]) * int(df.shape[1])
+        if cells > best_cells:
+            best, best_cells = df, cells
+    if best is None:
+        raise RuntimeError(f"no readable sheet in {Path(path).name}")
+    return best
+
+
+def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: portal first, the data.rmorie.com copy second; cache whichever answered."""
+    err: Exception | None = None
+    df = None
+    if entry.get("download_url"):
+        try:
+            df = _download_url_table(entry, matched, timeout)
+        except Exception as exc:  # noqa: BLE001 - the hosted copy is the fallback
+            err = exc
+            logger.warning("Direct download of %s failed (%s)", matched, exc)
+    hk = entry.get("hosted_key")
+    if df is None and hk:
+        from .datahub import load_hosted_dataset
+        from .hosted import hosted_key
+
+        if hosted_key():
+            df = load_hosted_dataset(hk, db_path=db_path)
+        elif err is not None:
+            raise RuntimeError(
+                f"{matched}: the portal download failed ({err}); the data.rmorie.com copy ({hk}) "
+                "opens with your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once."
+            ) from err
+        else:
+            raise RuntimeError(
+                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` (GitHub) or `morie login --email you@example.com` once, then "
+                f"`morie pull {matched}` (or `morie pull {hk}`)."
+            )
+    if df is None:
+        assert err is not None
+        raise err
+    try:
+        cache_store(df, entry["table_name"], db_path)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not cache %s: %s", matched, exc)
+    return df
+
+
+class RObjectSavedError(NotImplementedError):
+    """The dataset is an R object (RData/rds): Python cannot open it, but it is saved at ``path`` for R."""
+
+    def __init__(self, key: str, path: Path):
+        self.key, self.path = key, Path(path)
+        super().__init__(
+            f"{key} is an R object ({self.path.suffix}), saved at {self.path}. Open it in R with "
+            f"rmorie::morie_load_dataset('{key}'), or {'readRDS' if str(path).lower().endswith('.rds') else 'load'}() on that file."
+        )
+
+
+def _load_hosted_file(entry: dict, matched: str):
+    """Tier 3b: fetch an R object (RData/rds) from data.rmorie.com into the data directory and say where it is."""
+    from .datahub import _get_to_file
+
+    rel = Path(entry["local_path"])
+    tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+    dest = _data_dir_candidates()[0] / tail
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
+    raise RObjectSavedError(matched, dest)
 
 
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
@@ -1493,7 +1694,12 @@ def list_rmoriedata(timeout: int = 120) -> list[dict]:
 
     ext = _rmoriedata_extdata(timeout=timeout)
     with (ext / "_catalog.csv").open(newline="", encoding="utf-8-sig") as fh:
-        return list(csv.DictReader(fh))
+        rows = list(csv.DictReader(fh))
+    for r in rows:  # counts are numbers (r["n_rows"] > 100 raised TypeError on the CSV strings)
+        for k in ("n_rows", "n_cols"):
+            v = (r.get(k) or "").strip()
+            r[k] = int(v) if v.lstrip("-").isdigit() else None
+    return rows
 
 
 def load_rmoriedata(slug: str, timeout: int = 120) -> pd.DataFrame:
@@ -1556,7 +1762,19 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
             xlsx.parent.mkdir(parents=True, exist_ok=True)
             logger.info("Fetching the CIHI indicator library (72 MB) from %s", CIHI_INDICATOR_LIBRARY_URL)
             req = Request(CIHI_INDICATOR_LIBRARY_URL, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-            xlsx.write_bytes(urlopen(req, timeout=timeout).read())
+            import tempfile
+
+            from ._progress import stream_to_file
+
+            fd, part = tempfile.mkstemp(dir=xlsx.parent, prefix=xlsx.name + ".", suffix=".part")
+            os.close(fd)
+            try:
+                with urlopen(req, timeout=timeout) as resp:
+                    stream_to_file(resp, part, "CIHI indicator library")
+                os.replace(part, xlsx)
+            finally:
+                if os.path.exists(part):
+                    os.remove(part)
     csv_path = _user_cache_dir() / "cihi" / "indicator-library-all-indicator-data-en.csv"
     if not csv_path.exists() or csv_path.stat().st_mtime < xlsx.stat().st_mtime:
         import openpyxl
@@ -1564,13 +1782,25 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
         csv_path.parent.mkdir(parents=True, exist_ok=True)
         wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
         ws = wb.worksheets[0]
-        tmp = csv_path.with_suffix(".csv.tmp")
-        with tmp.open("w", newline="", encoding="utf-8") as fh:
-            w = csv.writer(fh)
-            for row in ws.iter_rows(values_only=True):
-                w.writerow(["" if v is None else v for v in row])
-        wb.close()
-        tmp.replace(csv_path)
+        import tempfile
+
+        fd, tmp_name = tempfile.mkstemp(dir=csv_path.parent, prefix=csv_path.name + ".", suffix=".tmp")
+        tmp = Path(tmp_name)
+        try:
+            from ._progress import Progress
+
+            with (
+                open(fd, "w", newline="", encoding="utf-8") as fh,
+                Progress("CIHI workbook -> CSV", unit="rows") as prog,
+            ):
+                w = csv.writer(fh)
+                for row in ws.iter_rows(values_only=True):
+                    w.writerow(["" if v is None else v for v in row])
+                    prog.update(1)
+            wb.close()
+            tmp.replace(csv_path)  # atomic: a concurrent pull either sees the old file or the new one
+        finally:
+            tmp.unlink(missing_ok=True)
     return pd.read_csv(csv_path, low_memory=False)
 
 
@@ -1702,6 +1932,41 @@ def _fuzzy_match_key(key: str) -> str | None:
     return None
 
 
+def synthetic_mapq_panel(n: int = 400, seed: int = 2026) -> pd.DataFrame:
+    """Deterministic synthetic MAPQII panel: a toy stand-in for TKARONTOMAPQ.xlsx.
+
+    The same design as rmorie's ``.morie_mapq_synth_panel()``: 20 Likert items (1-5) in four
+    subscales (EE, EA, UA, ER) with a planted one-factor-per-subscale structure, ``gender_male``
+    and ``age``, subscale scores, and a Knowledge Scale score ``ks_score`` driven by epistemic
+    attitudes, gender and age, so the psychometric and DML stages have a real signal to recover.
+    Participant-level MAPQ data are not distributed; this panel is.
+    """
+    import random
+
+    from morie.fn._mapq_const import SUBSCALES
+
+    rng = random.Random(seed)
+    cols: dict[str, list] = {
+        "gender_male": [1 if rng.random() < 0.5 else 0 for _ in range(n)],
+        "age": [rng.randint(18, 65) for _ in range(n)],
+    }
+    for items in SUBSCALES.values():
+        latent = [rng.gauss(0.0, 1.0) for _ in range(n)]
+        for item in items:
+            cols[item] = [min(5, max(1, round(3 + 0.9 * z + rng.gauss(0.0, 0.8)))) for z in latent]
+    for name, items in SUBSCALES.items():
+        cols[f"{name.lower()}_score"] = [sum(cols[i][r] for i in items) for r in range(n)]
+    cols["ks_score"] = [
+        10 + 0.4 * cols["ea_score"][r] + 1.5 * cols["gender_male"][r] + 0.02 * cols["age"][r] + rng.gauss(0.0, 1.0)
+        for r in range(n)
+    ]
+    return pd.DataFrame(cols)
+
+
+# own-file datasets with a synthetic toy stand-in used when the real file is absent
+SYNTHETIC_OWN_FILES = {"mapq": synthetic_mapq_panel}
+
+
 def load_dataset(
     key: str,
     *,
@@ -1729,11 +1994,34 @@ def load_dataset(
         available = ", ".join(sorted(DATASET_CATALOG))
         raise KeyError(
             f"Unknown dataset key: {key!r}. Available: {available}; "
-            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after morie login)."
+            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after `morie login`, GitHub or --email)."
         )
 
     entry = DATASET_CATALOG[matched]
     table_name = entry["table_name"]
+
+    if dataset_route(entry).startswith("own file"):
+        # your own research file: read it where it is, every time, and keep it out of the cache
+        local_path = _find_local_file(entry["local_path"])
+        if local_path is None and matched in SYNTHETIC_OWN_FILES:
+            import warnings
+
+            warnings.warn(
+                f"{matched}: your file is not at $MORIE_DATA_DIR/{entry['local_path'].removeprefix('data/')}; "
+                "returning the synthetic toy panel (n = 400, planted structure) so the analyses run. "
+                "Its numbers demonstrate the pipeline, they are not findings.",
+                UserWarning,
+                stacklevel=2,
+            )
+            return SYNTHETIC_OWN_FILES[matched]()
+        if local_path is None:
+            raise FileNotFoundError(dataset_recommendation(matched, entry))
+        logger.info("Reading %s from your file: %s", matched, local_path)
+        if entry["format"] == "csv":
+            return pd.read_csv(local_path, low_memory=False)
+        if entry["format"] == "xlsx":
+            return pd.read_excel(local_path)
+        raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
 
     # 1. Built-in database (ships with package).
     builtin = _builtin_db_connect()
@@ -1746,6 +2034,8 @@ def load_dataset(
             if tables:
                 df = pd.read_sql(f"SELECT * FROM [{_safe_table_name(table_name)}]", builtin)
                 logger.info("Loaded %s from built-in DB (%d rows)", matched, len(df))
+                if matched == "ocp21" and has_raw_cpads_columns(df):
+                    return canonicalize_cpads_frame(df)  # the same frame the cache tier returns
                 return df
         finally:
             builtin.close()
@@ -1816,6 +2106,8 @@ def load_dataset(
             df = pd.read_csv(local_path, low_memory=False)
         elif entry["format"] == "xlsx":
             df = pd.read_excel(local_path)
+        elif str(entry["format"]).lower() in ("rdata", "rda", "rds"):
+            raise RObjectSavedError(matched, local_path)
         else:
             raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
         try:
@@ -1823,6 +2115,17 @@ def load_dataset(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
+
+    # 3b. Research files that are not tables (R environments) kept at data.rmorie.com:
+    #     saved under the data directory for R to open.
+    if entry.get("hosted_file"):
+        return _load_hosted_file(entry, matched)
+
+    # 3c. A direct portal download (a file, or one member of a zip), then the
+    #     data.rmorie.com copy of the same table when the portal fails or the
+    #     catalog only names the copy.
+    if entry.get("download_url") or entry.get("hosted_key"):
+        return _direct_or_hosted(entry, matched, db_path, timeout)
 
     # 4. Open data portals: Ontario's catalogue for the OTIS tables (their
     #    downloader lives in morie.otis_datasets), open.canada.ca for the
@@ -1924,9 +2227,18 @@ def dataset_route(entry: dict) -> str:
         }.get(entry.get("source", ""), "fetched on demand")
     if entry.get("ckan_resource_id"):
         return "data.ontario.ca" if entry.get("source") == "otis" else "open.canada.ca"
+    if entry.get("download_url"):
+        host = urlparse(entry["download_url"]).netloc
+        return host + (" (or data.rmorie.com)" if entry.get("hosted_key") else "")
+    if entry.get("hosted_key"):
+        return "data.rmorie.com (your MORIE key)"
+    if entry.get("hosted_file"):
+        return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
         return "open.canada.ca"
-    return "own file: " + entry.get("local_path", "")
+    rel = entry.get("local_path", "")
+    rel = rel[len("data/") :] if rel.startswith("data/") else rel
+    return "own file: $MORIE_DATA_DIR/" + rel
 
 
 def dataset_info(key: str) -> dict:
@@ -2170,7 +2482,13 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
             "morie."
         )
         if local_path:
-            lines.append(f"  Place the data file at: {local_path}")
+            rel = Path(local_path)
+            tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+            lines.append(f"  Place the data file at: {(_data_dir_candidates()[0] / tail)}")
+            lines.append(
+                f"  (catalog path {local_path}: the file goes under the directory MORIE_DATA_DIR names, else under "
+                "the per-user data directory; it is read in place and never copied into the cache)"
+            )
     return "\n".join(lines)
 
 

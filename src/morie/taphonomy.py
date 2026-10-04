@@ -45,19 +45,19 @@ from .sensitivity import e_value_d
 # for both the schema and the estimator.
 _TREATMENT = {"lime_treatment": "Int64"}  # 1 = interred with quicklime, 0 = not
 _COVARIATES = {
-    "temp_c": "float64",             # mean interment temperature (deg C)
-    "humidity_pct": "float64",       # mean relative humidity (%)
-    "arid": "Int64",                 # 1 = cool/arid microclimate
-    "casket_sealed": "Int64",        # 1 = sealed casket / low air exchange
-    "reinterment_count": "Int64",    # times exhumed / moved
-    "exposure_days": "float64",      # days of pre-burial exposure
-    "decades_elapsed": "float64",    # time since death (decades)
+    "temp_c": "float64",  # mean interment temperature (deg C)
+    "humidity_pct": "float64",  # mean relative humidity (%)
+    "arid": "Int64",  # 1 = cool/arid microclimate
+    "casket_sealed": "Int64",  # 1 = sealed casket / low air exchange
+    "reinterment_count": "Int64",  # times exhumed / moved
+    "exposure_days": "float64",  # days of pre-burial exposure
+    "decades_elapsed": "float64",  # time since death (decades)
 }
 _MEASUREMENTS = {
-    "ct_density_hu": "float64",       # CT/micro-CT mean tissue density (HU)
-    "ct_void_fraction": "float64",    # internal void fraction (0-1)
-    "pxrf_ca_ppm": "float64",         # pXRF residual surface calcium (ppm)
-    "hyperspectral_resin": "Int64",   # 1 = applied resin/wax detected
+    "ct_density_hu": "float64",  # CT/micro-CT mean tissue density (HU)
+    "ct_void_fraction": "float64",  # internal void fraction (0-1)
+    "pxrf_ca_ppm": "float64",  # pXRF residual surface calcium (ppm)
+    "hyperspectral_resin": "Int64",  # 1 = applied resin/wax detected
 }
 _OUTCOME = {"preservation_score": "float64"}  # 0 (decayed) .. 1 (intact)
 
@@ -162,16 +162,12 @@ def taphonomy_preservation_delta(
     covariates = [c for c in covariates if c not in (treatment, outcome)]
     if not covariates:
         raise ValueError(
-            "no covariates available; supply environment/handling/measurement "
-            "columns (see taphonomy_schema())"
+            "no covariates available; supply environment/handling/measurement " "columns (see taphonomy_schema())"
         )
 
     warnings: list[str] = []
     if data[treatment].dropna().nunique() < 2:
-        warnings.append(
-            "treatment has no contrast (all treated or all control) -- "
-            "the effect is not identified."
-        )
+        warnings.append("treatment has no contrast (all treated or all control) -- " "the effect is not identified.")
 
     # Normalise each estimator's output to a common summary. estimate_irm
     # returns a dict (cross-fit ATE + orthogonal SE); estimate_cate returns a
@@ -180,8 +176,11 @@ def taphonomy_preservation_delta(
     cate_sd: float | None = None
     if estimator == "irm":
         est = estimate_irm(
-            data, treatment=treatment, outcome=outcome,
-            covariates=covariates, **kwargs,
+            data,
+            treatment=treatment,
+            outcome=outcome,
+            covariates=covariates,
+            **kwargs,
         )
         ate = float(est["ate"])
         se = est.get("se")
@@ -191,8 +190,11 @@ def taphonomy_preservation_delta(
         method = est.get("method", "IRM (DoubleML)")
     elif estimator == "cate":
         tau = estimate_cate(
-            data, treatment=treatment, outcome=outcome,
-            covariates=covariates, **kwargs,
+            data,
+            treatment=treatment,
+            outcome=outcome,
+            covariates=covariates,
+            **kwargs,
         ).dropna()
         if len(tau) == 0:
             raise ValueError("CATE estimation returned no finite effects")
@@ -213,8 +215,11 @@ def taphonomy_preservation_delta(
             for _ in range(int(n_boot)):
                 idx = rng.integers(0, nrow, size=nrow)
                 tb = estimate_cate(
-                    data.iloc[idx], treatment=treatment, outcome=outcome,
-                    covariates=covariates, **kwargs,
+                    data.iloc[idx],
+                    treatment=treatment,
+                    outcome=outcome,
+                    covariates=covariates,
+                    **kwargs,
                 ).dropna()
                 if len(tb):
                     boot.append(float(tb.mean()))
@@ -239,13 +244,9 @@ def taphonomy_preservation_delta(
                 "estimator='irm'."
             )
         else:
-            raise ValueError(
-                f"unknown se_method {se_method!r}; choose 'none' or 'bootstrap'"
-            )
+            raise ValueError(f"unknown se_method {se_method!r}; choose 'none' or 'bootstrap'")
     else:
-        raise ValueError(
-            f"unknown estimator {estimator!r}; choose 'irm' or 'cate'"
-        )
+        raise ValueError(f"unknown estimator {estimator!r}; choose 'irm' or 'cate'")
 
     # Wald p-value from a valid SE only (double). IRM's SE is a cross-fit
     # orthogonal SE; the CATE path leaves se = None, so p stays None.
@@ -324,6 +325,12 @@ def taphonomy_decay_chain(
     Returns a dict with ``P`` (row-stochastic float transition matrix),
     ``states``, ``transient``, ``absorbing`` (``["skeletal", "mummified"]``),
     and ``preservation``. R parity: ``morie_taphonomy_decay_chain``.
+
+    Examples
+    --------
+    >>> chain = taphonomy_decay_chain(decay_rate=0.6, mummify_rate=0.1)
+    >>> sorted(k for k in chain if not k.startswith("_"))[:6]
+    ['P', 'absorbing', 'preservation', 'states', 'transient']
     """
     if not 0.0 <= preservation <= 1.0:
         raise ValueError("`preservation` must be in [0, 1]")
@@ -361,9 +368,7 @@ def taphonomy_decay_chain(
     }
 
 
-def taphonomy_decay_absorption(
-    chain: dict[str, Any], start: str | None = None
-) -> dict[str, Any]:
+def taphonomy_decay_absorption(chain: dict[str, Any], start: str | None = None) -> dict[str, Any]:
     """Absorption analysis via the fundamental matrix ``N = (I - Q)^-1``.
 
     For a body entering at ``start``, returns P(each terminal fate) and the
@@ -420,9 +425,7 @@ def taphonomy_decay_simulate(
     return path
 
 
-def taphonomy_decay_delta(
-    preservation: float, start: str | None = None, **kwargs: Any
-) -> dict[str, Any]:
+def taphonomy_decay_delta(preservation: float, start: str | None = None, **kwargs: Any) -> dict[str, Any]:
     """Natural-vs-treated fate delta: change in P(mummified) from preservation.
 
     The Markov-chain analogue of the preservation delta -- the rise in the
@@ -498,9 +501,7 @@ def taphonomy_evidence_loglik(evidence, mean, sd) -> float:
     return float(norm.logpdf(evidence, loc=mean, scale=sd).sum())
 
 
-def taphonomy_likelihood_ratio(
-    loglik_h1: float, loglik_h2: float
-) -> dict[str, Any]:
+def taphonomy_likelihood_ratio(loglik_h1: float, loglik_h2: float) -> dict[str, Any]:
     """Forensic likelihood ratio LR = P(E|H1) / P(E|H2).
 
     Given the evidence log-likelihood under a natural/target hypothesis and an
@@ -533,9 +534,7 @@ def taphonomy_likelihood_ratio(
     }
 
 
-def taphonomy_preservation_lr(
-    evidence, natural: dict[str, Any], alternative: dict[str, Any]
-) -> dict[str, Any]:
+def taphonomy_preservation_lr(evidence, natural: dict[str, Any], alternative: dict[str, Any]) -> dict[str, Any]:
     """Preservation likelihood ratio from measured evidence.
 
     Evaluate measured non-invasive evidence under a natural-preservation model
@@ -647,8 +646,7 @@ def taphonomy_bhm(
 
     def _numeric(col):
         s = frame[col]
-        return s.to_numpy(dtype=float) if pd.api.types.is_numeric_dtype(s) \
-            else pd.factorize(s)[0].astype(float)
+        return s.to_numpy(dtype=float) if pd.api.types.is_numeric_dtype(s) else pd.factorize(s)[0].astype(float)
 
     terms = ["(Intercept)", *covariates]
     X = np.column_stack([np.ones(n)] + [_numeric(c) for c in covariates])
@@ -697,8 +695,7 @@ def taphonomy_bhm(
         labels = pd.unique(g)
         gm = np.array([resid[g == lab].mean() for lab in labels])
         nj = np.array([int((g == lab).sum()) for lab in labels])
-        tau2 = max(0.0, float(np.var(gm, ddof=1)) - float(np.mean(sigma2 / nj))) \
-            if len(gm) > 1 else 0.0
+        tau2 = max(0.0, float(np.var(gm, ddof=1)) - float(np.mean(sigma2 / nj))) if len(gm) > 1 else 0.0
         lam = tau2 / (tau2 + sigma2 / nj)
         group_effects = pd.DataFrame(
             {
@@ -725,7 +722,7 @@ def taphonomy_bhm(
 
     return {
         "coefficients": coefficients,
-        "sigma": float(sigma2 ** 0.5),
+        "sigma": float(sigma2**0.5),
         "group_effects": group_effects,
         "fitted": fitted,
         "n": n,
@@ -769,7 +766,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
     draws_beta = [[] for _ in range(k)]
     draws_sigma = []
     warm = max(200, iter // 2)
-    for c in range(max(1, chains)):
+    for _c in range(max(1, chains)):
         beta = list(m0l)
         log_sigma = 0.0
         step_b = [0.1] * k
@@ -781,7 +778,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
                 prop = list(beta)
                 prop[j] += step_b[j] * float(rng.normal())
                 lp_new = logpost(prop, log_sigma)
-                if math.log(max(float(rng.uniform(0, 1)), 1e-300))                         < lp_new - lp:
+                if math.log(max(float(rng.uniform(0, 1)), 1e-300)) < lp_new - lp:
                     beta, lp = prop, lp_new
                     acc += 1
                     if it < warm:
@@ -790,7 +787,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
                     step_b[j] *= 0.97
             prop_s = log_sigma + step_s * float(rng.normal())
             lp_new = logpost(beta, prop_s)
-            if math.log(max(float(rng.uniform(0, 1)), 1e-300))                     < lp_new - lp:
+            if math.log(max(float(rng.uniform(0, 1)), 1e-300)) < lp_new - lp:
                 log_sigma, lp = prop_s, lp_new
                 if it < warm:
                     step_s *= 1.05
@@ -804,8 +801,8 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
     # Same result frame as the conjugate backend: term, post_mean,
     # post_sd, ci_lower, ci_upper, prob_positive.
     from morie.fn import _frame_core as _fc
-    rows = {"term": [], "post_mean": [], "post_sd": [],
-            "ci_lower": [], "ci_upper": [], "prob_positive": []}
+
+    rows = {"term": [], "post_mean": [], "post_sd": [], "ci_lower": [], "ci_upper": [], "prob_positive": []}
     for j, t in enumerate(terms):
         d = sorted(draws_beta[j])
         mean = sum(d) / len(d)
@@ -815,8 +812,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
         rows["post_sd"].append(sd)
         rows["ci_lower"].append(d[int(0.025 * len(d))])
         rows["ci_upper"].append(d[int(0.975 * len(d))])
-        rows["prob_positive"].append(
-            sum(1 for v in d if v > 0) / len(d))
+        rows["prob_positive"].append(sum(1 for v in d if v > 0) / len(d))
     coefficients = _fc.DataFrame(rows)
     fitted = []
     bmean = [sum(draws_beta[j]) / len(draws_beta[j]) for j in range(k)]
@@ -832,8 +828,10 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
         "interpretation": (
             "Posterior from %d retained draws x %d chain(s) of "
             "adaptive random-walk Metropolis; same model as the "
-            "conjugate backend." % (iter, max(1, chains))),
+            "conjugate backend." % (iter, max(1, chains))
+        ),
     }
+
 
 # Defaults for taphonomy_simulate_pxrf. Both names were referenced by that
 # function but never defined, so any call not passing `elements` and
@@ -848,6 +846,7 @@ _PXRF_ALPHA = {
     "control": (30.0, 15.0, 5.0, 1.0, 0.5, 0.5),
     "treatment": (85.0, 5.0, 2.0, 0.5, 0.2, 0.2),
 }
+
 
 def taphonomy_simulate_pxrf(
     n: int,
@@ -926,10 +925,7 @@ def taphonomy_ilr(x, pseudocount: float = 1e-6) -> np.ndarray:
     if D < 2:
         raise ValueError("need >= 2 parts for ILR")
     L = np.log(X)
-    cols = [
-        np.sqrt(i / (i + 1)) * (L[:, :i].mean(axis=1) - L[:, i])
-        for i in range(1, D)
-    ]
+    cols = [np.sqrt(i / (i + 1)) * (L[:, :i].mean(axis=1) - L[:, i]) for i in range(1, D)]
     return np.column_stack(cols)
 
 
@@ -955,7 +951,9 @@ def _read_usgs_soil_zip(zip_path, nrows=None) -> pd.DataFrame:
 
 
 def taphonomy_fetch_usgs_soil(
-    dest=None, nrows: int | None = 1000, url: str = _USGS_NGDBSOIL_URL,
+    dest=None,
+    nrows: int | None = 1000,
+    url: str = _USGS_NGDBSOIL_URL,
     refresh: bool = False,
 ) -> pd.DataFrame:
     """Fetch USGS National Geochemical Database soil geochemistry.
@@ -1004,9 +1002,7 @@ def taphonomy_pmi_schema() -> pd.DataFrame:
         "insect_activity": "Int64",
         "pmi_days": "float64",
     }
-    roles = (
-        ["observation"] * 2 + ["environment"] * 8 + ["outcome"]
-    )
+    roles = ["observation"] * 2 + ["environment"] * 8 + ["outcome"]
     df = pd.DataFrame({c: pd.Series(dtype=t) for c, t in dtypes.items()})
     df.attrs["role"] = dict(zip(df.columns, roles))
     return df
@@ -1046,16 +1042,23 @@ def _morphosource_key(api_key: str | None = None, required: bool = True):
 
 
 def _morphosource_search_params(
-    query=None, media_type=None, taxonomy_gbif=None, visibility=None,
-    media_tag=None, per_page=10, page=1,
+    query=None,
+    media_type=None,
+    taxonomy_gbif=None,
+    visibility=None,
+    media_tag=None,
+    per_page=10,
+    page=1,
 ) -> dict:
     params = {}
     if query:
         params["q"] = query
         params["search_field"] = "all_fields"
     facets = {
-        "media_type": media_type, "taxonomy_gbif": taxonomy_gbif,
-        "publication_status": visibility, "tag": media_tag,
+        "media_type": media_type,
+        "taxonomy_gbif": taxonomy_gbif,
+        "publication_status": visibility,
+        "tag": media_tag,
     }
     for k, v in facets.items():
         if v:
@@ -1066,8 +1069,15 @@ def _morphosource_search_params(
 
 
 def taphonomy_morphosource_search(
-    query=None, kind="media", media_type=None, taxonomy_gbif=None,
-    visibility=None, media_tag=None, per_page=10, page=1, api_key=None,
+    query=None,
+    kind="media",
+    media_type=None,
+    taxonomy_gbif=None,
+    visibility=None,
+    media_tag=None,
+    per_page=10,
+    page=1,
+    api_key=None,
 ) -> dict:
     """Search MorphoSource for 3D media or physical objects.
 
@@ -1083,9 +1093,7 @@ def taphonomy_morphosource_search(
 
     if kind not in ("media", "physical-objects"):
         raise ValueError("kind must be 'media' or 'physical-objects'")
-    params = _morphosource_search_params(
-        query, media_type, taxonomy_gbif, visibility, media_tag, per_page, page
-    )
+    params = _morphosource_search_params(query, media_type, taxonomy_gbif, visibility, media_tag, per_page, page)
     url = f"{_morphosource_api()}/{kind}?" + urllib.parse.urlencode(params)
     key = _morphosource_key(api_key, required=False)
     req = urllib.request.Request(url)
@@ -1095,10 +1103,7 @@ def taphonomy_morphosource_search(
         parsed = json.load(r)["response"]
     items_name = "media" if kind == "media" else "physical_objects"
     items = parsed.get(items_name) or []
-    df = pd.DataFrame(
-        {"id": [str(i.get("id", "")) for i in items],
-         "title": [str(i.get("title", "")) for i in items]}
-    )
+    df = pd.DataFrame({"id": [str(i.get("id", "")) for i in items], "title": [str(i.get("title", "")) for i in items]})
     return {
         "items": items,
         "n": len(items),
@@ -1108,8 +1113,12 @@ def taphonomy_morphosource_search(
 
 
 def taphonomy_morphosource_fetch(
-    media_id, use_statement, use_categories=None, use_category_other=None,
-    dest=None, api_key=None,
+    media_id,
+    use_statement,
+    use_categories=None,
+    use_category_other=None,
+    dest=None,
+    api_key=None,
 ) -> str:
     """Download a MorphoSource media bundle (requires a data-use statement).
 
@@ -1126,9 +1135,7 @@ def taphonomy_morphosource_fetch(
     from pathlib import Path
 
     if not use_statement or not isinstance(use_statement, str):
-        raise ValueError(
-            "MorphoSource requires a non-empty use_statement (data-use agreement)."
-        )
+        raise ValueError("MorphoSource requires a non-empty use_statement (data-use agreement).")
     key = _morphosource_key(api_key, required=True)
     body = {"use_statement": use_statement, "agreements_accepted": True}
     if use_categories:
@@ -1137,7 +1144,9 @@ def taphonomy_morphosource_fetch(
         body["use_category_other"] = use_category_other
     url = f"{_morphosource_api()}/download/{media_id}"
     req = urllib.request.Request(
-        url, data=json.dumps(body).encode(), method="POST",
+        url,
+        data=json.dumps(body).encode(),
+        method="POST",
         headers={"Authorization": key, "Content-Type": "application/json"},
     )
     try:
@@ -1146,8 +1155,7 @@ def taphonomy_morphosource_fetch(
     except urllib.error.HTTPError as e:  # noqa: F821
         if e.code == 403:
             raise PermissionError(
-                f"Restricted media {media_id}: request download permission at "
-                "https://www.morphosource.org"
+                f"Restricted media {media_id}: request download permission at " "https://www.morphosource.org"
             ) from e
         raise
     dest = Path(dest) if dest is not None else Path(tempfile.gettempdir())

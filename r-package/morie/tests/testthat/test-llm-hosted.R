@@ -1,7 +1,7 @@
 # The hosted MORIE tier: credentials file, probe, provider order, device-flow
 # login and logout -- the HTTP layer is mocked; nothing leaves the machine.
 
-.pkg <- if (isNamespaceLoaded("rmorie")) "rmorie" else "morie"
+.pkg <- if (isNamespaceLoaded("morie")) "morie" else "morie"
 
 .hosted_sandbox <- function(env = parent.frame()) {
   dir <- withr::local_tempdir(.local_envir = env)

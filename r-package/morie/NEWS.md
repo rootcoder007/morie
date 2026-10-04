@@ -1,3 +1,37 @@
+# morie 1.4.0 - 2026-10-03
+
+* Research: four new problems join the Lean-backed programme, each with its R function and
+  tests. `morie_meta_random_effects()` and `morie_meta_dl_bias()` (pooling evaluations:
+  the DerSimonian-Laird truncation is biased upward under homogeneity and the random-effects
+  variance is never below the fixed-effect one, `Research.P13`); `morie_logit_separation()`
+  (complete or quasi-complete separation makes the logistic likelihood climb without a
+  maximiser, the Baldus proportionality-review logit, `Research.P5`);
+  `morie_bounds_confidence()` (Imbens-Manski intervals for partially identified sentencing
+  effects, `Research.P11`); `morie_cheeger_bound()` (the conductance of a hot-spot set
+  bounds the spectral gap of the street graph, `Research.P3`). The Python package carries
+  every research function at parity.
+
+* Research: seven more problems join the Lean-backed programme, each with its R
+  function and tests: Duncan-Davis bounds (`morie_ecological_bounds()`,
+  `Research.P12`), monotone treatment selection (`morie_sentence_effect_mts()`,
+  `Research.P11`), the extinction probability of a near-repeat chain
+  (`morie_contagion_extinction()`, `Research.P10`), judge-leniency designs and what the
+  Wald ratio identifies (`morie_judge_iv()`, `morie_judge_iv_population()`,
+  `Research.P14`), the Oaxaca-Blinder decomposition of a sentencing gap with both
+  references and the interaction (`morie_disparity_decomposition()`, `Research.P15`),
+  Little's law on a court docket (`morie_court_backlog()`, `Research.P16`) and the
+  incapacitation identity with its marginal year (`morie_incapacitation()`,
+  `Research.P17`), and selective labels for release rules (`morie_selective_labels()`,
+  `Research.P18`), and regression to the mean at selected hot spots
+  (`morie_regression_to_mean()`, `Research.P19`).
+
+* Datasets: the fourteen Health Infobase tables (CPADS, CSADS, CSUS) download from
+  the portal and fall back to the copy at data.rmorie.com (`hib/...` keys); the three
+  OTIS research environments are fetched from data.rmorie.com as R objects
+  (`morie_load_dataset("otisfin")` returns the environment); the Ontario correctional
+  institution locations join the catalog as `otisloc`. The message for a missing
+  own file now says what it means.
+
 # morie 1.3.9 - 2026-10-01
 
 * Command line, from a hostile QA pass: the launcher works under R 4.6 (which

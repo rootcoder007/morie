@@ -10,7 +10,7 @@ from ._containers import DescriptiveResult
 def hrv_metrics_fn(
     rr_intervals: np.ndarray,
 ) -> DescriptiveResult:
-    """We are what we repeatedly do. Excellence is not an act, but a habit. -- Aristotle"""
+    """Heart-rate variability metrics from a series of RR intervals."""
     from morie._bioplot import hrv_metrics
 
     rr_intervals = np.asarray(rr_intervals, dtype=float)

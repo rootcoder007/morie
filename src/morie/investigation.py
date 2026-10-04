@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+import re
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
+
+from .causal import compute_propensity_scores
+from .cpads import validate_cpads_frame
+from .survey import SurveyDesign
 
 
 class _MissingDep:
@@ -13,23 +19,16 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
-
-from .causal import compute_propensity_scores
-from .cpads import validate_cpads_frame
-from .survey import SurveyDesign
+    sm = _MissingDep("sm")
 
 DEFAULT_INVESTIGATION_COVARIATES = [
     "age_group",
@@ -59,11 +58,40 @@ def _prepare_analysis_frame(
     return data.loc[:, required].dropna().copy()
 
 
+# CPADS codes as the R route labels them, so the two routes' tables join on term
+_TERM_LABELS = {
+    "gender": {1: "Female", 2: "Male", 3: "Non-binary"},
+    "age_group": {1: "16-19", 2: "20-22", 3: "23-25", 4: "26+"},
+    "province_region": {1: "Atlantic", 2: "Quebec", 3: "Ontario", 4: "Western"},
+}
+_C_TERM = re.compile(r"C\((\w+)\)\[T\.([^\]]+)\]")
+
+
+def _labelled_term(term: str) -> str:
+    """``C(gender)[T.2]`` -> ``gender_labelMale`` (and inside interactions); other terms unchanged.
+
+    Examples
+    --------
+    >>> _labelled_term("cannabis_any_use:C(gender)[T.2]"), _labelled_term("C(mental_health)[T.3.0]")
+    ('cannabis_any_use:gender_labelMale', 'mental_health_label3')
+    """
+
+    def one(m):
+        var, code = m.group(1), m.group(2)
+        try:
+            key = int(float(code))
+        except ValueError:
+            return f"{var}_label{code}"
+        return f"{var}_label{_TERM_LABELS.get(var, {}).get(key, key)}"
+
+    return _C_TERM.sub(one, str(term))
+
+
 def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     conf = fit.conf_int()
     table = pd.DataFrame(
         {
-            "term": fit.params.index,
+            "term": [_labelled_term(t) for t in fit.params.index],
             "log_odds": fit.params.values,
             "SE": fit.bse.values,
             "OR": _safe_exp(fit.params.values),
@@ -86,6 +114,9 @@ def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     return table
 
 
+_CATEGORICAL_CODES = frozenset({"age_group", "gender", "province_region", "mental_health", "physical_health"})
+
+
 def run_weighted_logistic_analysis(
     data: pd.DataFrame,
     *,
@@ -102,15 +133,25 @@ def run_weighted_logistic_analysis(
         "mental_health",
         treatment,
     ]
+    from ._progress import Stages
+
+    stages = Stages("logistic-models", 4)
     required = [outcome, weight_col, *predictors]
     frame = _prepare_analysis_frame(data, required=required)
     design = SurveyDesign(frame, weights_col=weight_col)
 
-    formula = f"{outcome} ~ {' + '.join(predictors)}"
+    # survey codes of nominal/ordinal groups are categories, as in the R route (factor labels):
+    # entered as numbers they gave one "per unit of region code" odds ratio
+    def term(v: str) -> str:
+        return f"C({v})" if v in _CATEGORICAL_CODES else v
+
+    formula = f"{outcome} ~ {' + '.join(term(v) for v in predictors)}"
+    stages.step(f"survey-weighted logistic model on {len(frame):,} rows")
     fit = design.svyglm(formula, family=sm.families.Binomial())
     or_table = _extract_or_table(fit)
 
-    interaction_formula = formula + f" + {treatment}:gender"
+    interaction_formula = formula + f" + {treatment}:{term('gender')}"
+    stages.step(f"interaction model ({treatment} x gender)")
     fit_int = design.svyglm(interaction_formula, family=sm.families.Binomial())
     int_or_table = _extract_or_table(
         fit_int,
@@ -146,38 +187,56 @@ def run_weighted_logistic_analysis(
         ]
     )
 
-    # SMOTE sensitivity -- rebalance and refit to check stability of ORs
-    from .ml import apply_smote
-
-    y_smote = frame[outcome].astype(int)
-    X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
-    X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
-
-    smote_status = pd.DataFrame([smote_info])
-
-    # Refit logistic on SMOTE-resampled data
-    smote_frame = X_res.copy()
-    smote_frame[outcome] = y_res.values
-    smote_formula = f"{outcome} ~ " + " + ".join(X_res.columns)
-    try:
-        smote_fit = sm.GLM(
-            smote_frame[outcome],
-            sm.add_constant(X_res),
-            family=sm.families.Binomial(),
-        ).fit()
-        smote_or_table = pd.DataFrame(
-            {
-                "term": smote_fit.params.index,
-                "log_odds": smote_fit.params.values,
-                "SE": smote_fit.bse.values,
-                "OR": _safe_exp(smote_fit.params.values),
-                "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
-                "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
-                "p_value": smote_fit.pvalues.values,
-            }
+    # SMOTE sensitivity -- rebalance and refit to check the stability of the ORs. On an outcome that is
+    # already balanced it adds nothing (1,205 synthetic rows on a 48/52 split) and the refit took 7 minutes.
+    _counts = frame[outcome].astype(int).value_counts()
+    _ratio = float(_counts.min()) / float(_counts.max()) if len(_counts) == 2 and _counts.max() else 0.0
+    if _ratio >= 0.8:
+        smote_status = pd.DataFrame(
+            [
+                {
+                    "method": "skipped: classes already balanced (minority/majority >= 0.8)",
+                    "imbalance_ratio_before": round(_ratio, 4),
+                    "total_before": int(_counts.sum()),
+                }
+            ]
         )
-    except Exception:
         smote_or_table = pd.DataFrame(columns=["term", "log_odds", "SE", "OR", "OR_lower95", "OR_upper95", "p_value"])
+    else:
+        from .ml import apply_smote
+
+        y_smote = frame[outcome].astype(int)
+        X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
+        stages.step("SMOTE resampling for the sensitivity check (the slow step on a full survey)")
+        X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
+
+        smote_status = pd.DataFrame([smote_info])
+
+        stages.step("refitting on the resampled data")
+        # Refit logistic on SMOTE-resampled data
+        smote_frame = X_res.copy()
+        smote_frame[outcome] = y_res.values
+        try:
+            smote_fit = sm.GLM(
+                smote_frame[outcome],
+                sm.add_constant(X_res),
+                family=sm.families.Binomial(),
+            ).fit()
+            smote_or_table = pd.DataFrame(
+                {
+                    "term": [_labelled_term(t) for t in smote_fit.params.index],
+                    "log_odds": smote_fit.params.values,
+                    "SE": smote_fit.bse.values,
+                    "OR": _safe_exp(smote_fit.params.values),
+                    "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
+                    "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
+                    "p_value": smote_fit.pvalues.values,
+                }
+            )
+        except Exception:
+            smote_or_table = pd.DataFrame(
+                columns=["term", "log_odds", "SE", "OR", "OR_lower95", "OR_upper95", "p_value"]
+            )
 
     return {
         "analysis_frame": frame,
@@ -232,7 +291,7 @@ def compare_nested_logistic_models(
 
     null_deviance = float(fits[0][3].deviance)
     summary_rows = []
-    for label, description, formula, fit in fits:
+    for label, description, _formula, fit in fits:
         summary_rows.append(
             {
                 "model": label,
@@ -264,13 +323,13 @@ def compare_nested_logistic_models(
 
     # Full coefficient table for the best model (Model 3 with all predictors)
     full_coef_rows = []
-    for label, description, formula, fit in fits:
+    for label, _description, _formula, fit in fits:
         conf = fit.conf_int()
         for term in fit.params.index:
             full_coef_rows.append(
                 {
                     "model": label,
-                    "term": term,
+                    "term": _labelled_term(term),
                     "log_odds": float(fit.params[term]),
                     "SE": float(fit.bse[term]),
                     "OR": float(_safe_exp(fit.params[term])),
@@ -288,7 +347,7 @@ def compare_nested_logistic_models(
     for term in int_terms:
         interaction_rows.append(
             {
-                "term": term,
+                "term": _labelled_term(term),
                 "log_odds": float(int_fit.params[term]),
                 "SE": float(int_fit.bse[term]),
                 "OR": float(_safe_exp(int_fit.params[term])),

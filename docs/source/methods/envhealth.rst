@@ -10,31 +10,36 @@ the chain end to end and logs its assumptions.
 Concentration-response
 ----------------------
 
-PM2.5, the Integrated Exposure-Response curve (Burnett et al. 2014, Eq. 1):
+PM2.5, all-cause mortality, log-linear with the pooled cohort estimate of the
+WHO 2021 guideline review (Chen & Hoek 2020: RR 1.08, 95% CI 1.06-1.09, per
+10 :math:`\mu g/m^3`):
 
 .. math::
 
-   RR(z) = 1 + \alpha \left(1 - e^{-\gamma (z - z_{cf})^{\delta}}\right) \quad (z > z_{cf}),
+   RR(z) = \exp\!\left(\ln(1.08) \, \frac{z - z_{cf}}{10}\right) \quad (z > z_{cf}),
    \qquad RR(z) = 1 \text{ otherwise}
 
-with the GBD 2013 adult triples (all-cause mortality
-:math:`(\alpha, \gamma, \delta) = (1.2, 0.34, 0.72)`, IHD
-:math:`(1.91, 0.14, 0.49)`, stroke :math:`(1.46, 0.13, 0.61)`) and the
-counterfactual :math:`z_{cf} = 5.8\ \mu g/m^3` (WHO 2021 interim target).
+with the counterfactual :math:`z_{cf} = 5.8\ \mu g/m^3` (WHO 2021 interim
+target). The cause-specific outcomes (IHD, stroke) keep the Integrated
+Exposure-Response curve of Burnett et al. (2014, Eq. 1),
+:math:`RR(z) = 1 + \alpha (1 - e^{-\gamma (z - z_{cf})^{\delta}})`, with the
+GBD 2013 triples IHD :math:`(1.91, 0.14, 0.49)` and stroke
+:math:`(1.46, 0.13, 0.61)`; the IER was fit per cause and has no all-cause form.
 
-NO2, log-linear (Atkinson et al. 2018; WHO 2021):
+NO2, log-linear (Huangfu & Atkinson 2020, the WHO 2021 review):
 
 .. math::
 
    RR(z) = \exp\!\left(\beta \, \frac{z - z_{cf}}{10}\right)
 
-with :math:`\beta` per 10 :math:`\mu g/m^3` of 0.039 (all-cause
-mortality, childhood asthma) or 0.029 (respiratory), :math:`z_{cf} = 10`.
+with :math:`\beta` per 10 :math:`\mu g/m^3` of :math:`\ln(1.02) = 0.0198`
+(all-cause mortality: RR 1.02, 95% CI 1.01-1.04), 0.029 (respiratory) or
+0.039 (childhood asthma), :math:`z_{cf} = 10`.
 
 .. code-block:: python
 
    from morie import envhealth
-   envhealth.concentration_response_pm25(12.0).rr        # 1.8612...
+   envhealth.concentration_response_pm25(12.0).rr        # 1.0489...
    envhealth.concentration_response_no2(25.0, outcome="respiratory").log_rr
 
 .. code-block:: r
@@ -116,8 +121,12 @@ References
 - Burnett, R. T. et al. (2014). An integrated risk function for estimating
   the global burden of disease attributable to ambient fine particulate
   matter exposure. *Environmental Health Perspectives*, 122(4), 397-403.
-- Atkinson, R. W. et al. (2018). Long-term concentration-response functions
-  for mortality and NO2. *Environmental Research*, 161, 101-113.
+- Chen, J. and Hoek, G. (2020). Long-term exposure to PM and all-cause and
+  cause-specific mortality: a systematic review and meta-analysis.
+  *Environment International*, 143, 105974.
+- Huangfu, P. and Atkinson, R. (2020). Long-term exposure to NO2 and O3 and
+  all-cause and respiratory mortality: a systematic review and meta-analysis.
+  *Environment International*, 144, 105998.
 - WHO (2021). *Global Air Quality Guidelines*.
 - Rothman, K. J., Greenland, S. and Lash, T. L. (2008). *Modern
   Epidemiology*, 3rd ed., chapter 5.

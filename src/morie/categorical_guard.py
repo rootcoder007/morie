@@ -16,6 +16,7 @@ blamed on the software that carried it.
 Every function here agrees with the R arms (`morie` and `rmorie`) on
 identical inputs to twelve digits, including the wording of its errors.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -29,8 +30,13 @@ __all__ = [
     "safe_relabel",
     "decode_labelled",
     "relabel_forensics",
-    "safe_recode", "safe_factor", "audit_categories", "crosstab_verify",
-    "marginals_verify", "odds_ratio_check", "guard_binary_treatment",
+    "safe_recode",
+    "safe_factor",
+    "audit_categories",
+    "crosstab_verify",
+    "marginals_verify",
+    "odds_ratio_check",
+    "guard_binary_treatment",
 ]
 
 
@@ -68,7 +74,8 @@ def safe_recode(x, mapping: dict, keep=()) -> dict:
             + ", ".join(_squote(u) for u in unmapped)
             + ". Every observed category must be mapped by name (or "
             "listed in `keep`); silent pass-through is how group "
-            "labels get corrupted.")
+            "labels get corrupted."
+        )
     out = [None if _is_na(v) else mapping.get(v, v) for v in x]
     digest = hashlib.sha256(";".join(f"{k}={v}" for k, v in mapping.items()).encode("utf-8")).hexdigest()
     return {"values": out, "audit": {"mapping": dict(mapping), "kept": keep, "checksum": digest}}
@@ -83,16 +90,20 @@ def safe_factor(x, levels, reference=None) -> dict:
     levels = list(levels)
     stray = [v for v in _uniq(x) if v not in levels]
     if stray:
-        raise ValueError("morie_safe_factor: values outside the declared levels: "
-                         + ", ".join(_squote(s) for s in stray))
+        raise ValueError(
+            "morie_safe_factor: values outside the declared levels: " + ", ".join(_squote(s) for s in stray)
+        )
     if reference is not None and reference != levels[0]:
         raise ValueError(
-            "morie_safe_factor: declared reference " + _squote(reference)
-            + " is not levels[1] (" + _squote(levels[0]) + "); reorder "
-            "`levels` so the reference is explicit and first.")
+            "morie_safe_factor: declared reference "
+            + _squote(reference)
+            + " is not levels[1] ("
+            + _squote(levels[0])
+            + "); reorder "
+            "`levels` so the reference is explicit and first."
+        )
     codes = [None if _is_na(v) else levels.index(v) + 1 for v in x]
-    return {"values": [None if _is_na(v) else v for v in x], "levels": levels,
-            "codes": codes, "reference": levels[0]}
+    return {"values": [None if _is_na(v) else v for v in x], "levels": levels, "codes": codes, "reference": levels[0]}
 
 
 def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -> list:
@@ -108,8 +119,7 @@ def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -
     """
     factor_levels = factor_levels or {}
     if cols is None:
-        cols = [c for c, v in data.items()
-                if c in factor_levels or all(_is_na(u) or isinstance(u, str) for u in v)]
+        cols = [c for c, v in data.items() if c in factor_levels or all(_is_na(u) or isinstance(u, str) for u in v)]
     rows = []
     for cn in cols:
         v = data[cn]
@@ -122,21 +132,29 @@ def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -
             storage = "character"
         obs = _uniq(str(u) for u in v if not _is_na(u))
         if lv and all(all(ch in "0123456789." for ch in lab) and lab for lab in lv):
-            hazards.append("all labels numeric-looking (" + ",".join(lv[:4])
-                           + "...): likely imported CODES whose value labels were lost; "
-                           "as.numeric() on this column returns level INDICES, not data")
+            hazards.append(
+                "all labels numeric-looking ("
+                + ",".join(lv[:4])
+                + "...): likely imported CODES whose value labels were lost; "
+                "as.numeric() on this column returns level INDICES, not data"
+            )
         if lv and all(re.match(r"^[0-9]+[.):]? ?[A-Za-z]", lab) for lab in lv):
-            hazards.append("labels carry code prefixes (" + ",".join(lv[:3])
-                           + "...): the code is part of the string, so the level order is "
-                           "the CODE order; any positional relabel with labels in another "
-                           "order rotates the groups. Decode by code (decode_labelled / "
-                           "safe_relabel), never by position")
+            hazards.append(
+                "labels carry code prefixes ("
+                + ",".join(lv[:3])
+                + "...): the code is part of the string, so the level order is "
+                "the CODE order; any positional relabel with labels in another "
+                "order rotates the groups. Decode by code (decode_labelled / "
+                "safe_relabel), never by position"
+            )
         inv = "\\s\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000\ufeff"
         padded = [lab for lab in lv if re.search("^[" + inv + "]|[" + inv + "]$", lab)]
         if padded:
-            hazards.append("labels with leading/trailing whitespace (incl. non-breaking): "
-                           + ", ".join(_squote(p) for p in padded)
-                           + ": a space splits one category into two")
+            hazards.append(
+                "labels with leading/trailing whitespace (incl. non-breaking): "
+                + ", ".join(_squote(p) for p in padded)
+                + ": a space splits one category into two"
+            )
         core = [re.sub("^[" + inv + "]+|[" + inv + "]+$", "", lab) for lab in lv]
         dupc = [lab for lab, c in zip(lv, core) if core.count(c) > 1]
         if dupc:
@@ -146,12 +164,12 @@ def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -
         sentinels = {"NA", "N/A", "NAN", "NULL", "NONE", ".", "-", "?"}
         sentinel = [lab for lab, c in zip(lv, core) if c.upper() in sentinels]
         if sentinel:
-            hazards.append("missing-value sentinel stored as a label: "
-                           + ", ".join(_squote(x) for x in sentinel))
+            hazards.append("missing-value sentinel stored as a label: " + ", ".join(_squote(x) for x in sentinel))
         if lv and (core[0] == "" or lv[0] != core[0] or lv[0] in sentinel):
-            hazards.append("the REFERENCE level " + _squote(lv[0])
-                           + " is empty, a sentinel, or differs from a real label only by "
-                           "invisible characters: every model on this column is baselined on it")
+            hazards.append(
+                "the REFERENCE level " + _squote(lv[0]) + " is empty, a sentinel, or differs from a real label only by "
+                "invisible characters: every model on this column is baselined on it"
+            )
         lc = [c.lower() for c in core]
         # a case-variant pair is two DIFFERENT trimmed labels that agree once
         # lower-cased; a whitespace-only pair was reported above
@@ -168,20 +186,31 @@ def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -
                 hazards.append("unused levels: " + ", ".join(_squote(u) for u in unused))
         if len(lv) > 50:
             hazards.append(f"{len(lv)} levels: identifier mistaken for a category?")
-        rows.append({"column": cn, "storage": storage, "n_levels": len(lv),
-                     "levels": "|".join(lv[:8]), "reference": lv[0] if lv else None,
-                     "hazards": " ;; ".join(hazards)})
+        rows.append(
+            {
+                "column": cn,
+                "storage": storage,
+                "n_levels": len(lv),
+                "levels": "|".join(lv[:8]),
+                "reference": lv[0] if lv else None,
+                "hazards": " ;; ".join(hazards),
+            }
+        )
     return rows
 
 
 def crosstab_verify(original, recoded, declared: dict) -> dict:
     """Prove a recode with a before/after cross-tabulation; errors otherwise."""
     if len(original) != len(recoded):
-        raise ValueError(f"morie_crosstab_verify: length mismatch ({len(original)} vs {len(recoded)}): "
-                         "rows were lost or duplicated during the recode.")
+        raise ValueError(
+            f"morie_crosstab_verify: length mismatch ({len(original)} vs {len(recoded)}): "
+            "rows were lost or duplicated during the recode."
+        )
     if [_is_na(a) for a in original] != [_is_na(b) for b in recoded]:
-        raise ValueError("morie_crosstab_verify: missingness changed during the recode "
-                         "(values silently became NA, or NAs were filled).")
+        raise ValueError(
+            "morie_crosstab_verify: missingness changed during the recode "
+            "(values silently became NA, or NAs were filled)."
+        )
     tab: dict = {}
     for a, b in zip(original, recoded):
         if _is_na(a):
@@ -190,17 +219,25 @@ def crosstab_verify(original, recoded, declared: dict) -> dict:
         tab[a][b] += 1
     fan = [old for old, d in tab.items() if len(d) > 1]
     if fan:
-        raise ValueError("morie_crosstab_verify: original category mapped to MULTIPLE new categories: "
-                         + ", ".join(_squote(o) for o in sorted(fan))
-                         + ". The recode is not a function of the category label.")
+        raise ValueError(
+            "morie_crosstab_verify: original category mapped to MULTIPLE new categories: "
+            + ", ".join(_squote(o) for o in sorted(fan))
+            + ". The recode is not a function of the category label."
+        )
     for old in sorted(tab):
         realized = next(iter(tab[old]))
         expected = declared.get(old, old)
         if realized != expected:
-            raise ValueError("morie_crosstab_verify: " + _squote(old) + " was mapped to "
-                             + _squote(realized) + " but the declared mapping says "
-                             + _squote(expected) + ". THIS is how groups get swapped; fix "
-                             "the recode before any model runs.")
+            raise ValueError(
+                "morie_crosstab_verify: "
+                + _squote(old)
+                + " was mapped to "
+                + _squote(realized)
+                + " but the declared mapping says "
+                + _squote(expected)
+                + ". THIS is how groups get swapped; fix "
+                "the recode before any model runs."
+            )
     return {old: dict(d) for old, d in sorted(tab.items())}
 
 
@@ -216,12 +253,18 @@ def marginals_verify(x, published: dict, tolerance: float = 0, strict: bool = Tr
     obs = {lab: sum(1 for v in x if not _is_na(v) and v == lab) for lab in labs}
     extra = [v for v in _uniq(x) if v not in labs]
     if extra:
-        msg = ("morie_marginals_verify: labels present in the data but not in the "
-               "published counts: " + ", ".join(_squote(e) for e in extra))
+        msg = "morie_marginals_verify: labels present in the data but not in the " "published counts: " + ", ".join(
+            _squote(e) for e in extra
+        )
         if strict:
             raise ValueError(msg)
-        return {"counts": obs, "published": {lab: published[lab] for lab in labs}, "ok": False,
-                "permutation": None, "message": msg}
+        return {
+            "counts": obs,
+            "published": {lab: published[lab] for lab in labs},
+            "ok": False,
+            "permutation": None,
+            "message": msg,
+        }
     ok = all(abs(obs[lab] - published[lab]) <= tolerance for lab in labs)
     perm = None
     if not ok and len(labs) <= 7:
@@ -230,18 +273,26 @@ def marginals_verify(x, published: dict, tolerance: float = 0, strict: bool = Tr
             if p != labs and all(abs(relabelled[lab] - published[lab]) <= tolerance for lab in labs):
                 perm = dict(zip(labs, p))
                 break
-    out = {"counts": obs, "published": {lab: published[lab] for lab in labs}, "ok": ok,
-           "permutation": perm, "message": None}
+    out = {
+        "counts": obs,
+        "published": {lab: published[lab] for lab in labs},
+        "ok": ok,
+        "permutation": perm,
+        "message": None,
+    }
     if not ok:
         detail = "; ".join(f"{lab}: observed {_num(obs[lab])}, published {_num(published[lab])}" for lab in labs)
         hint = ""
         if perm is not None:
             moved = [lab for lab in labs if perm[lab] != lab]
-            hint = (" The observed counts match the published ones if the labels are permuted ("
-                    + ", ".join(f"{m} -> {perm[m]}" for m in moved)
-                    + "): the labels are attached to the wrong groups.")
-        out["message"] = ("morie_marginals_verify: recoded counts do not match the published counts. "
-                          + detail + "." + hint)
+            hint = (
+                " The observed counts match the published ones if the labels are permuted ("
+                + ", ".join(f"{m} -> {perm[m]}" for m in moved)
+                + "): the labels are attached to the wrong groups."
+            )
+        out["message"] = (
+            "morie_marginals_verify: recoded counts do not match the published counts. " + detail + "." + hint
+        )
         if strict:
             raise ValueError(out["message"])
     return out
@@ -259,14 +310,18 @@ def odds_ratio_check(counts: dict, reference: str, reported: dict, tolerance: fl
     """
     labs = list(counts)
     if any(len(v) != 2 for v in counts.values()) or not labs:
-        raise ValueError("morie_odds_ratio_check: `counts` must be a k-by-2 matrix with row names "
-                         "(groups) and columns outcome-absent, outcome-present.")
+        raise ValueError(
+            "morie_odds_ratio_check: `counts` must be a k-by-2 matrix with row names "
+            "(groups) and columns outcome-absent, outcome-present."
+        )
     if reference not in labs:
         raise ValueError("morie_odds_ratio_check: reference " + _squote(reference) + " is not a row of `counts`.")
     others = [lab for lab in labs if lab != reference]
     if any(o not in reported for o in others):
-        raise ValueError("morie_odds_ratio_check: `reported` must be named by every non-reference row: "
-                         + ", ".join(_squote(o) for o in others))
+        raise ValueError(
+            "morie_odds_ratio_check: `reported` must be named by every non-reference row: "
+            + ", ".join(_squote(o) for o in others)
+        )
     rep = {o: float(reported[o]) for o in others}
 
     def or_of(m):
@@ -274,8 +329,9 @@ def odds_ratio_check(counts: dict, reference: str, reported: dict, tolerance: fl
         return {r: (m[r][1] / m[r][0]) / ref_odds for r in others}
 
     def close_to(a, b):
-        return all(math.isfinite(a[k]) and math.isfinite(b[k]) for k in b) and \
-            all(abs(a[k] - b[k]) <= tolerance * max(abs(b[k]), 2.220446049250313e-16) for k in b)
+        return all(math.isfinite(a[k]) and math.isfinite(b[k]) for k in b) and all(
+            abs(a[k] - b[k]) <= tolerance * max(abs(b[k]), 2.220446049250313e-16) for k in b
+        )
 
     computed = or_of({lab: [float(v[0]), float(v[1])] for lab, v in counts.items()})
     consistent = close_to(computed, rep)
@@ -285,20 +341,34 @@ def odds_ratio_check(counts: dict, reference: str, reported: dict, tolerance: fl
             for swap_cols in (False, True):
                 if p == labs and not swap_cols:
                     continue
-                base = {lab: ([float(counts[lab][1]), float(counts[lab][0])] if swap_cols else [float(counts[lab][0]), float(counts[lab][1])]) for lab in labs}
+                base = {
+                    lab: (
+                        [float(counts[lab][1]), float(counts[lab][0])]
+                        if swap_cols
+                        else [float(counts[lab][0]), float(counts[lab][1])]
+                    )
+                    for lab in labs
+                }
                 relabelled = dict(zip(p, [base[lab] for lab in labs]))
                 m = {lab: relabelled[lab] for lab in labs}
                 if close_to(or_of(m), rep):
                     moved = [(labs[i], p[i]) for i in range(len(labs)) if p[i] != labs[i]]
-                    matches.append({"relabelling": ", ".join(f"{a} -> {b}" for a, b in moved) if moved else "none",
-                                    "outcome_columns_swapped": swap_cols})
+                    matches.append(
+                        {
+                            "relabelling": ", ".join(f"{a} -> {b}" for a, b in moved) if moved else "none",
+                            "outcome_columns_swapped": swap_cols,
+                        }
+                    )
     if consistent:
         verdict = "the reported odds ratios follow from the table as labelled"
     elif matches:
-        verdict = ("the reported odds ratios do NOT follow from the table as labelled; they are "
-                   "reproduced under a relabelling (" + matches[0]["relabelling"]
-                   + ("; outcome columns swapped" if matches[0]["outcome_columns_swapped"] else "")
-                   + "): the groups were mislabelled, not the software")
+        verdict = (
+            "the reported odds ratios do NOT follow from the table as labelled; they are "
+            "reproduced under a relabelling ("
+            + matches[0]["relabelling"]
+            + ("; outcome columns swapped" if matches[0]["outcome_columns_swapped"] else "")
+            + "): the groups were mislabelled, not the software"
+        )
     else:
         verdict = "the reported odds ratios follow from no relabelling of this table"
     return {"computed": computed, "reported": rep, "consistent": consistent, "matches": matches, "verdict": verdict}
@@ -308,16 +378,21 @@ def guard_binary_treatment(x, col: str) -> bool:
     """Refuse a categorical column where a numeric 0/1 treatment is required."""
     if any(isinstance(v, str) for v in x if not _is_na(v)):
         lv = _uniq(str(v) for v in x if not _is_na(v))
-        raise ValueError("Column " + _squote(col) + " is categorical ("
-                         + ", ".join(_squote(lab) for lab in lv[:4])
-                         + "...). Refusing to coerce: as.numeric() on a factor returns level INDICES "
-                         "(1, 2, ...), not your data, and a mis-ordered level silently relabels every "
-                         "observation. Encode explicitly first, e.g. morie_safe_recode() + "
-                         "as.integer(x == \"treated_label\").")
+        raise ValueError(
+            "Column "
+            + _squote(col)
+            + " is categorical ("
+            + ", ".join(_squote(lab) for lab in lv[:4])
+            + "...). Refusing to coerce: as.numeric() on a factor returns level INDICES "
+            "(1, 2, ...), not your data, and a mis-ordered level silently relabels every "
+            "observation. Encode explicitly first, e.g. morie_safe_recode() + "
+            'as.integer(x == "treated_label").'
+        )
     ux = _uniq(x)
     if any(v not in (0, 1) for v in ux):
-        raise ValueError("Column " + _squote(col) + " must be binary 0/1 (saw: "
-                         + ", ".join(_num(v) for v in ux[:5]) + ").")
+        raise ValueError(
+            "Column " + _squote(col) + " must be binary 0/1 (saw: " + ", ".join(_num(v) for v in ux[:5]) + ")."
+        )
     return True
 
 
@@ -326,16 +401,20 @@ def safe_relabel(x, mapping, keep=()) -> dict:
     mechanism behind the documented four-way rotation (OHRC correction,
     26 January 2023), so anything that is not a dict is refused."""
     if not isinstance(mapping, dict):
-        raise ValueError("safe_relabel: `mapping` must be NAMED (old label = new label). "
-                         "Assigning labels by POSITION is how four race codes were rotated "
-                         "in a published analysis (OHRC correction, 26 January 2023): the "
-                         "labels were in alphabetical order, the codes were not.")
+        raise ValueError(
+            "safe_relabel: `mapping` must be NAMED (old label = new label). "
+            "Assigning labels by POSITION is how four race codes were rotated "
+            "in a published analysis (OHRC correction, 26 January 2023): the "
+            "labels were in alphabetical order, the codes were not."
+        )
     old = _uniq(str(v) for v in x if not _is_na(v))
     unmapped = [v for v in old if v not in mapping and v not in keep]
     if unmapped:
-        raise ValueError("safe_relabel: level(s) with NO mapping: "
-                         + ", ".join(_squote(v) for v in unmapped)
-                         + ". Name every level or list it in `keep`.")
+        raise ValueError(
+            "safe_relabel: level(s) with NO mapping: "
+            + ", ".join(_squote(v) for v in unmapped)
+            + ". Name every level or list it in `keep`."
+        )
     out = safe_recode(x, mapping, keep=keep)
     levels = _uniq(list(mapping.values()) + list(keep))
     out["levels"] = [lv for lv in levels if lv in mapping.values() or lv in out["values"]]
@@ -347,16 +426,18 @@ def decode_labelled(codes, value_labels: dict | None = None) -> dict:
     maps code -> label (pyreadstat's value_labels[var] shape). Levels come
     out in code order, never alphabetical."""
     if value_labels is None:
-        raise ValueError("decode_labelled: no value labels supplied; the codes alone are NOT "
-                         "the categories")
+        raise ValueError("decode_labelled: no value labels supplied; the codes alone are NOT " "the categories")
     vl = {str(k): str(v) for k, v in value_labels.items()}
-    out = safe_recode([None if _is_na(c) else str(int(c) if isinstance(c, float) and c == int(c) else c)
-                       for c in codes], vl)
+    out = safe_recode(
+        [None if _is_na(c) else str(int(c) if isinstance(c, float) and c == int(c) else c) for c in codes], vl
+    )
+
     def _key(k):
         try:
             return (0, float(k), "")
         except ValueError:
             return (1, 0.0, k)
+
     out["levels"] = [vl[k] for k in sorted(vl, key=_key)]
     return out
 
@@ -368,16 +449,16 @@ def relabel_forensics(value_labels: dict, observed: dict, counts: dict | None = 
     L = [str(v) for v in value_labels.values()]
     k = len(L)
     if set(observed) != set(L) or set(observed.values()) != set(L):
-        raise ValueError("relabel_forensics: `observed` must be a permutation of the labels "
-                         "in `value_labels`")
+        raise ValueError("relabel_forensics: `observed` must be a permutation of the labels " "in `value_labels`")
     obs = [str(observed[lab]) for lab in L]
     mech = {
         "labels sorted alphabetically, assigned by code position": sorted(L),
         "labels sorted case-insensitively, assigned by code position": sorted(L, key=str.lower),
         "labels sorted in reverse, assigned by code position": sorted(L, reverse=True),
         "labels reversed": L[::-1],
-        "codes sorted as strings, labels assigned in that order":
-            [L[i] for i in sorted(range(k), key=lambda i: str(list(value_labels)[i]))],
+        "codes sorted as strings, labels assigned in that order": [
+            L[i] for i in sorted(range(k), key=lambda i: str(list(value_labels)[i]))
+        ],
     }
     for r in range(1, k):
         mech[f"rotation by {r} position(s)"] = [L[(i + r) % k] for i in range(k)]
@@ -387,31 +468,46 @@ def relabel_forensics(value_labels: dict, observed: dict, counts: dict | None = 
         mech["labels ordered by decreasing frequency, assigned by code position"] = [L[i] for i in idx]
         idx = sorted(range(k), key=lambda i: (c[i], i))
         mech["labels ordered by increasing frequency, assigned by code position"] = [L[i] for i in idx]
-    rows = [{"mechanism": nm, "permutation": ", ".join(a + " -> " + b for a, b in zip(L, perm)),
-             "matches": perm == obs} for nm, perm in mech.items()]
+    rows = [
+        {"mechanism": nm, "permutation": ", ".join(a + " -> " + b for a, b in zip(L, perm)), "matches": perm == obs}
+        for nm, perm in mech.items()
+    ]
     if obs == L:
         for r in rows:
             r["matches"] = False
-        return {"rows": rows, "matches": [],
-                "verdict": "The labels are in place: every label was seen under itself, so "
-                           "there is no permutation to explain."}
+        return {
+            "rows": rows,
+            "matches": [],
+            "verdict": "The labels are in place: every label was seen under itself, so "
+            "there is no permutation to explain.",
+        }
     hit = [r["mechanism"] for r in rows if r["matches"]]
     if hit:
-        verdict = ("The observed permutation is reproduced EXACTLY by: " + "; ".join(hit)
-                   + ". No import routine (haven, foreign, pandas, pyreadstat) reorders value "
-                   "labels; each carries them keyed by code. A transfer fault does not select "
-                   "the sort order of the labels. The step that did this was a positional "
-                   "relabel in the analysis, and it is reproducible from the code book alone.")
+        verdict = (
+            "The observed permutation is reproduced EXACTLY by: "
+            + "; ".join(hit)
+            + ". No import routine (haven, foreign, pandas, pyreadstat) reorders value "
+            "labels; each carries them keyed by code. A transfer fault does not select "
+            "the sort order of the labels. The step that did this was a positional "
+            "relabel in the analysis, and it is reproducible from the code book alone."
+        )
     else:
-        verdict = ("No positional or sort-based mechanism reproduces the observed permutation. "
-                   "Look at merges/joins on the category column, manual edits, and the file "
-                   "itself before blaming either program.")
+        verdict = (
+            "No positional or sort-based mechanism reproduces the observed permutation. "
+            "Look at merges/joins on the category column, manual edits, and the file "
+            "itself before blaming either program."
+        )
     return {"rows": rows, "matches": hit, "verdict": verdict}
 
 
-def transfer_verify(imported, source_counts: dict, value_labels: dict | None = None,
-                    code_book: dict | None = None, tolerance: float = 0,
-                    strict: bool = True) -> dict:
+def transfer_verify(
+    imported,
+    source_counts: dict,
+    value_labels: dict | None = None,
+    code_book: dict | None = None,
+    tolerance: float = 0,
+    strict: bool = True,
+) -> dict:
     """Verify a categorical variable that crossed from SPSS/Stata/SAS.
     `value_labels` is what arrived with the file (pyreadstat), `code_book`
     what the source program's variable view says; `source_counts` its
@@ -423,17 +519,21 @@ def transfer_verify(imported, source_counts: dict, value_labels: dict | None = N
         bad = sorted(k for k in set(got) | set(want) if got.get(k) != want.get(k))
         code_book_ok = not bad
         if bad and strict:
-            raise ValueError("transfer_verify: the value labels that arrived disagree with the "
-                             "source code book at code(s) " + ", ".join(bad) + ": arrived "
-                             + ", ".join(k + "=" + str(got.get(k)) for k in bad) + "; source "
-                             + ", ".join(k + "=" + str(want.get(k)) for k in bad))
+            raise ValueError(
+                "transfer_verify: the value labels that arrived disagree with the "
+                "source code book at code(s) "
+                + ", ".join(bad)
+                + ": arrived "
+                + ", ".join(k + "=" + str(got.get(k)) for k in bad)
+                + "; source "
+                + ", ".join(k + "=" + str(want.get(k)) for k in bad)
+            )
     vl = value_labels if value_labels is not None else code_book
     if vl is not None:
         decoded = decode_labelled(imported, vl)
         values = decoded["values"]
     else:
-        decoded = {"values": [None if _is_na(v) else str(v) for v in imported],
-                   "levels": list(source_counts)}
+        decoded = {"values": [None if _is_na(v) else str(v) for v in imported], "levels": list(source_counts)}
         values = decoded["values"]
     m = marginals_verify(values, source_counts, tolerance=tolerance, strict=strict)
     ok = bool(m["ok"]) and code_book_ok is not False
@@ -442,5 +542,4 @@ def transfer_verify(imported, source_counts: dict, value_labels: dict | None = N
         reasons.append("value labels disagree with the source code book")
     if not m["ok"]:
         reasons.append(m["message"])
-    return {"ok": ok, "decoded": decoded, "marginals": m, "code_book_ok": code_book_ok,
-            "reasons": reasons}
+    return {"ok": ok, "decoded": decoded, "marginals": m, "code_book_ok": code_book_ok, "reasons": reasons}

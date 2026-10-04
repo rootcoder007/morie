@@ -7,9 +7,11 @@ so module tests run on CI without private data.
 
 from __future__ import annotations
 
+import inspect
 import os
 import random
 import sys
+import warnings
 from pathlib import Path
 
 # Keep the suite hermetic: morie's import-time update check must not
@@ -72,9 +74,6 @@ def synthetic_cpads_csv(tmp_path_factory) -> Path:
     df.to_csv(path, index=False)
     return path
 
-
-import inspect
-import warnings
 
 _TRIVIAL_PATTERNS = {
     "assert True",

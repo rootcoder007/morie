@@ -30,7 +30,7 @@ def red_pill_test(
     decision = "red_pill" if p_val < alpha else "blue_pill"
 
     return TestResult(
-        test_name="You have power over your mind -- not outside events. -- Marcus Aurelius",
+        test_name="One-sample t-test (red pill / blue pill)",
         statistic=float(t_stat),
         p_value=float(p_val),
         df=float(len(arr) - 1),

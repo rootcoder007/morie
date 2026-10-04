@@ -21,17 +21,17 @@ Cold ``import morie.fn`` stays ~1 s; the layout-3 cache is built lazily and only
 once per (version of the) archive.
 """
 
-import importlib
-import importlib.util
-import json
-import os
-import sys
-import types
+import importlib as _importlib
+import json as _json
+import os as _os
+import sys as _sys
+import types as _types
 
-_FN_DIR = os.path.dirname(__file__)
-_MAP_PATH = os.path.join(_FN_DIR, "_lazy_map.json")
+# the stdlib imports are private: `from morie.fn import os` must be an ImportError, not the stdlib module
+_FN_DIR = _os.path.dirname(__file__)
+_MAP_PATH = _os.path.join(_FN_DIR, "_lazy_map.json")
 with open(_MAP_PATH) as _f:
-    _LAZY_MAP = json.load(_f)
+    _LAZY_MAP = _json.load(_f)
 
 # module -> every public name it exports through the map
 _MODULE_NAMES: "dict[str, list[str]]" = {}
@@ -52,13 +52,13 @@ def _bind_module(modname, mod):
     g = globals()
     for n in _MODULE_NAMES.get(modname, ()):
         obj = getattr(mod, n, None)
-        if obj is not None and not isinstance(obj, types.ModuleType):
+        if obj is not None and not isinstance(obj, _types.ModuleType):
             g[n] = obj
 
 
 def __getattr__(name):
     if name in _LAZY_MAP:
-        mod = importlib.import_module("." + _LAZY_MAP[name], package=__name__)
+        mod = _importlib.import_module("." + _LAZY_MAP[name], package=__name__)
         _bind_module(_LAZY_MAP[name], mod)
         obj = getattr(mod, name)
         globals()[name] = obj
@@ -66,22 +66,25 @@ def __getattr__(name):
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-class _FnPackage(types.ModuleType):
+class _FnPackage(_types.ModuleType):
     """The package's module type: an explicit ``import morie.fn.X`` binds
     the submodule as an attribute, which would shadow the callable ``X``
     the map exports from it; keep the callable instead."""
 
     def __setattr__(self, name, value):
-        if isinstance(value, types.ModuleType) and name in _LAZY_MAP \
-                and getattr(value, "__name__", "") == __name__ + "." + _LAZY_MAP[name]:
+        if (
+            isinstance(value, _types.ModuleType)
+            and name in _LAZY_MAP
+            and getattr(value, "__name__", "") == __name__ + "." + _LAZY_MAP[name]
+        ):
             obj = getattr(value, name, None)
-            if obj is not None and not isinstance(obj, types.ModuleType):
+            if obj is not None and not isinstance(obj, _types.ModuleType):
                 _bind_module(_LAZY_MAP[name], value)
                 return
         super().__setattr__(name, value)
 
 
-sys.modules[__name__].__class__ = _FnPackage
+_sys.modules[__name__].__class__ = _FnPackage
 
 
 def __dir__():
@@ -105,96 +108,80 @@ def _candidate_cache_dirs():
     import tempfile
 
     dirs = []
-    xdg = os.environ.get("XDG_CACHE_HOME")
+    xdg = _os.environ.get("XDG_CACHE_HOME")
     if xdg:
-        dirs.append(os.path.join(xdg, "morie"))
-    home = os.path.expanduser("~")
+        dirs.append(_os.path.join(xdg, "morie"))
+    home = _os.path.expanduser("~")
     if home and home not in ("", "~"):
-        dirs.append(os.path.join(home, ".cache", "morie"))
-    uid = os.getuid() if hasattr(os, "getuid") else "u"
-    dirs.append(os.path.join(tempfile.gettempdir(), f"morie-cache-{uid}"))
+        dirs.append(_os.path.join(home, ".cache", "morie"))
+    uid = _os.getuid() if hasattr(_os, "getuid") else "u"
+    dirs.append(_os.path.join(tempfile.gettempdir(), f"morie-cache-{uid}"))
     return dirs
+
+
+def _owned_private(path, want_dir):
+    """True when ``path`` is ours alone: not a symlink, owned by this uid, not group/world-writable.
+
+    The shared ``/tmp/morie-cache-<uid>`` can be pre-created by another user with a planted
+    ``fnsrc-<tag>.zip`` (the tag is computable from the public wheel), so a cache directory or
+    zip is only trusted when it passes this check. Same-user tampering is out of scope: that
+    user can already edit the installed package. Windows has no uid; there the per-user
+    profile directories are private by default.
+    """
+    import stat
+
+    try:
+        st = _os.lstat(path)
+    except OSError:
+        return False
+    if stat.S_ISLNK(st.st_mode):
+        return False
+    if want_dir != stat.S_ISDIR(st.st_mode) or (not want_dir and not stat.S_ISREG(st.st_mode)):
+        return False
+    if not hasattr(_os, "getuid"):
+        return True
+    return st.st_uid == _os.getuid() and not st.st_mode & 0o022
 
 
 def _decompress_fnsrc(xz_path):
     import lzma
 
     with lzma.open(xz_path, "rt", encoding="utf-8") as fh:
-        return json.load(fh)  # {short: source}
+        return _json.load(fh)  # {short: source}
 
 
 def _write_cache_zip(target, sources):
     import tempfile
     import zipfile
 
-    os.makedirs(os.path.dirname(target), exist_ok=True)
-    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(target), suffix=".tmp")
-    os.close(fd)
+    _os.makedirs(_os.path.dirname(target), exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=_os.path.dirname(target), suffix=".tmp")
+    _os.close(fd)
     try:
         with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zf:
             for short, src in sources.items():
                 zf.writestr(short + ".py", src)
-        os.replace(tmp, target)  # atomic publish -- other processes never see a partial zip
+        _os.replace(tmp, target)  # atomic publish -- other processes never see a partial zip
     finally:
         try:
-            if os.path.exists(tmp):
-                os.remove(tmp)
+            if _os.path.exists(tmp):
+                _os.remove(tmp)
         except OSError:
             pass
 
 
-class _InMemoryFnLoader:
-    """Loader compiling a single morie.fn.<short> from an in-RAM source string."""
-
-    def __init__(self, fullname, source):
-        self._fullname = fullname
-        self._source = source
-
-    def create_module(self, spec):
-        return None
-
-    def exec_module(self, module):
-        # Standard importlib loader protocol. `self._source` is morie's OWN
-        # packaged fn/ source (shipped inside the wheel), never user or
-        # network input -- this is the import mechanism itself, equivalent
-        # to how CPython execs any module body.
-        exec(compile(self._source, f"<{self._fullname}>", "exec"), module.__dict__)  # noqa: S102
-
-    def get_source(self, fullname):
-        return self._source
-
-
-class _InMemoryFnFinder:
-    """MetaPathFinder serving morie.fn.<short> from a decompressed source map.
-    Used only when no cache directory is writable."""
-
-    def __init__(self, sources):
-        self._sources = sources
-        self._prefix = __name__ + "."
-
-    def find_spec(self, fullname, path=None, target=None):
-        if not fullname.startswith(self._prefix):
-            return None
-        src = self._sources.get(fullname[len(self._prefix):])
-        if src is None:
-            return None
-        return importlib.util.spec_from_loader(fullname, _InMemoryFnLoader(fullname, src))
-
-
 def _install_fnsrc():
     """Make morie.fn.<short> importable from whichever archive layout shipped."""
-    global _inmem_sources
-
     # Layout 2: a ready-made zip next to us -> just put it on the path.
-    zip_path = os.path.join(_FN_DIR, "_fnsrc.zip")
-    if os.path.isfile(zip_path):
+    zip_path = _os.path.join(_FN_DIR, "_fnsrc.zip")
+    if _os.path.isfile(zip_path):
         if zip_path not in __path__:
             __path__.append(zip_path)
         return
 
     # Layout 3: solid-lzma archive -> decompress once into an on-disk cache zip.
-    xz_path = os.path.join(_FN_DIR, "_fnsrc.json.xz")
-    if not os.path.isfile(xz_path):
+    xz_path = _os.path.join(_FN_DIR, "_fnsrc.json.xz")
+    if not _os.path.isfile(xz_path):
         return  # Layout 1 (loose files) -- the package dir is already on __path__.
 
     import hashlib
@@ -208,8 +195,8 @@ def _install_fnsrc():
 
     # Fast path: a cache zip from a previous run already exists.
     for base in _candidate_cache_dirs():
-        cz = os.path.join(base, cache_name)
-        if os.path.isfile(cz):
+        cz = _os.path.join(base, cache_name)
+        if _os.path.isfile(cz) and _owned_private(base, True) and _owned_private(cz, False):
             if cz not in __path__:
                 __path__.append(cz)
             return
@@ -220,8 +207,11 @@ def _install_fnsrc():
     except Exception:
         return  # corrupt/unreadable archive -> leave loose-file behaviour
     for base in _candidate_cache_dirs():
-        cz = os.path.join(base, cache_name)
+        cz = _os.path.join(base, cache_name)
         try:
+            _os.makedirs(base, mode=0o700, exist_ok=True)
+            if not _owned_private(base, True):
+                continue  # someone else's (or a world-writable) directory: never write or load there
             _write_cache_zip(cz, sources)
         except OSError:
             continue
@@ -229,9 +219,13 @@ def _install_fnsrc():
             __path__.append(cz)
         return
 
-    # No writable cache dir anywhere -> compile from memory.
-    _inmem_sources = sources
-    sys.meta_path.insert(0, _InMemoryFnFinder(sources))
+    # No writable cache dir anywhere -> a private temporary directory for this process, so the
+    # modules are still imported by zipimport (no in-memory compilation of decompressed source).
+    import tempfile
+
+    cz = _os.path.join(tempfile.mkdtemp(prefix="morie-fnsrc-"), cache_name)
+    _write_cache_zip(cz, sources)
+    __path__.append(cz)
 
 
 _install_fnsrc()

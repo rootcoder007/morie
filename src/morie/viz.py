@@ -477,7 +477,6 @@ def kaplan_meier_plot(
             if show_ci:
                 lo_t = [s[0] for s in ci_lo_list]
                 lo_s = [s[1] for s in ci_lo_list]
-                hi_t = [s[0] for s in ci_hi_list]
                 hi_s = [s[1] for s in ci_hi_list]
                 ax_main.fill_between(lo_t, lo_s, hi_s, step="post", alpha=0.15, color=colors[idx])
 
@@ -510,7 +509,7 @@ def kaplan_meier_plot(
             t_all = time
             tick_times = np.linspace(0, t_all.max(), min(6, int(t_all.max()) + 1))
             ax_risk.set_xlim(ax_main.get_xlim())
-            for row_idx, (lbl, rt_list) in enumerate(risk_data.items()):
+            for row_idx, (_lbl, rt_list) in enumerate(risk_data.items()):
                 rt_arr = np.array(rt_list)
                 for tt in tick_times:
                     # Find n_risk at this time
@@ -1545,10 +1544,7 @@ def correlation_heatmap(
         mask = np.triu(np.ones_like(corr, dtype=bool), k=1) if mask_upper else None
 
         vals = corr.values.copy()
-        if mask is not None:
-            display = np.where(~mask, vals, np.nan)
-        else:
-            display = vals
+        display = np.where(~mask, vals, np.nan) if mask is not None else vals
 
         im = ax.imshow(display, cmap=cmap, vmin=-1, vmax=1, aspect="equal")
         fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)

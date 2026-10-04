@@ -1,0 +1,4 @@
+"endpoint","outcome","outcome_type","scenario","allocation_strategy","target_power","alpha","required_n","estimated_power","status","compute_method","analysis_mode","power_scope"
+"heavy_drinking_30d","heavy_drinking_30d","binary","pilot_observed","equal_strata",0.8,0.05,8589.95127856524,0.8,"reached","normal_approximation","design","cpads"
+"ebac_legal","ebac_legal","binary","pilot_observed","equal_strata",0.8,0.05,8589.95127856524,0.8,"reached","normal_approximation","design","cpads"
+"ebac_tot","ebac_tot","continuous","pilot_observed","equal_strata",0.8,0.05,910.375059614413,0.8,"reached","cohen_d_normal_approximation","design","cpads"

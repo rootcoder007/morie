@@ -40,6 +40,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from morie.fn import _frame_core as pd
 
+import contextlib
+
 from .llm import (
     _MORIE_SYSTEM_PROMPT_TEMPLATE,
     _format_context_block,
@@ -272,11 +274,11 @@ class ChatSession:
             if not args:
                 return "Usage: /inspect <path>"
             try:
-                from pathlib import Path as _P
+                from pathlib import Path as _Path
 
                 from .inspector import inspect_directory, inspect_output
 
-                target = _P(args[0])
+                target = _Path(args[0])
                 if target.is_file():
                     r = inspect_output(target)
                     return f"{r.file_path}: {r.rows} rows x {r.columns} cols\nColumns: {', '.join(r.column_names)}"
@@ -295,11 +297,11 @@ class ChatSession:
             if not args:
                 return "Usage: /verify <path>"
             try:
-                from pathlib import Path as _P
+                from pathlib import Path as _Path
 
                 from .inspector import verify_directory, verify_statistical_output
 
-                target = _P(args[0])
+                target = _Path(args[0])
                 if target.is_file():
                     report = verify_statistical_output(target)
                     lines = [f"Verification: {report.file_path}"]
@@ -398,10 +400,8 @@ class ChatSession:
             f"  Columns: {', '.join(str(c) for c in df.columns.tolist()[:50])}",
             f"  Dtypes: {dict(df.dtypes.value_counts())}",
         ]
-        try:
+        with contextlib.suppress(Exception):
             lines.append(f"  Sample (first 3 rows):\n{df.head(3).to_string()}")
-        except Exception:
-            pass
         self.dataset_context = "\n".join(lines)
 
     # ------------------------------------------------------------------
@@ -545,10 +545,8 @@ def run_chat_repl(*, agent: str | None = None) -> int:
 
     # Set up readline history.
     histfile = os.path.expanduser("~/.morie_chat_history")
-    try:
+    with contextlib.suppress(FileNotFoundError):
         readline.read_history_file(histfile)
-    except FileNotFoundError:
-        pass
     readline.set_history_length(1000)
 
     # SIGINT handling.
@@ -611,9 +609,7 @@ def run_chat_repl(*, agent: str | None = None) -> int:
 
     finally:
         signal.signal(signal.SIGINT, original_sigint)
-        try:
+        with contextlib.suppress(OSError):
             readline.write_history_file(histfile)
-        except OSError:
-            pass
 
     return 0

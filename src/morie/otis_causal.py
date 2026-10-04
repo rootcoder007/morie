@@ -763,11 +763,12 @@ def otis_aipw_superlearner(
     # (_ml_core, the same second-order split rule as xgboost) instead
     # of the external xgboost package.
     from morie.fn._ml_core import (
-        GradientBoostingClassifier as _GBC,
+        GradientBoostingClassifier as _GbClassifier,
     )
     from morie.fn._ml_core import (
-        GradientBoostingRegressor as _GBR,
+        GradientBoostingRegressor as _GbRegressor,
     )
+
     HAS_XGB = True
 
     data = df[[treatment, outcome] + covariates].dropna().copy()
@@ -791,8 +792,7 @@ def otis_aipw_superlearner(
             out.append(
                 (
                     "gb",
-                    _GBR(n_estimators=300, max_depth=4,
-                         learning_rate=0.05, random_state=seed),
+                    _GbRegressor(n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -806,8 +806,7 @@ def otis_aipw_superlearner(
             out.append(
                 (
                     "gb",
-                    _GBC(n_estimators=300, max_depth=4,
-                         learning_rate=0.05, random_state=seed),
+                    _GbClassifier(n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -829,7 +828,7 @@ def otis_aipw_superlearner(
         test = folds[k]
         train = np.setdiff1d(np.arange(n), test)
         # Propensity learners
-        for j, (name, model) in enumerate(prop_learn):
+        for j, (_name, model) in enumerate(prop_learn):
             try:
                 m = type(model)(**model.get_params())
                 m.fit(X[train], d[train])
@@ -841,7 +840,7 @@ def otis_aipw_superlearner(
             except Exception:  # noqa: BLE001
                 e_oof[test, j] = float(d.mean())
         # Outcome learners (separate for D=1 and D=0)
-        for j, (name, model) in enumerate(out_learn):
+        for j, (_name, model) in enumerate(out_learn):
             for dval, mu_oof in ((1, mu1_oof), (0, mu0_oof)):
                 mask = train[d[train] == dval]
                 if mask.size < 5:
@@ -1226,7 +1225,7 @@ def _multiway_cluster_se(scores: np.ndarray, clusters: list[np.ndarray]) -> floa
         v_ab = _cluster_se(scores, intersect) ** 2
         return math.sqrt(max(v_a + v_b - v_ab, 0.0))
     # 3+ way: fall back to first axis with a warning emit
-    warnings.warn(f"multiway clustering with {len(clusters)} dims not implemented; using first axis only")
+    warnings.warn(f"multiway clustering with {len(clusters)} dims not implemented; using first axis only", stacklevel=2)
     return _cluster_se(scores, clusters[0])
 
 
@@ -1949,7 +1948,7 @@ def otis_causal_grid(df: pd.DataFrame | None = None, *, seed: int = 123) -> Rich
     rows = []
     for label, (data, T, Y, covs) in pairs.items():
         if data[T].sum() == 0 or data[T].sum() == data.shape[0]:
-            warnings.warn(f"{label}: degenerate treatment, skipping")
+            warnings.warn(f"{label}: degenerate treatment, skipping", stacklevel=2)
             continue
         for fn, kind in ((otis_ipw, "IPW"), (otis_aipw, "AIPW"), (otis_dml, "DML"), (otis_psm, "PSM")):
             try:

@@ -41,7 +41,6 @@ def njit(*args, **kwargs):
     return _passthrough
 
 
-
 # Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the
 # exponential-kernel / constant-baseline likelihood -- no numba needed
 # for that path.
@@ -497,9 +496,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # crossover, where it is already cheap.
             if len(t_c) >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
-                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)),
-                                               eta, _f64(w),
-                                               _f64(beta_soe))
+                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, _f64(w), _f64(beta_soe))
             return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
         if kernel == "gamma":
             a0, eta = float(theta[0]), float(theta[1])
@@ -515,11 +512,14 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
                 import array as _pyarray
+
                 w_re = _pyarray.array("d", [c.real for c in w])
                 w_im = _pyarray.array("d", [c.imag for c in w])
                 b_re = _pyarray.array("d", [c.real for c in beta_soe])
                 b_im = _pyarray.array("d", [c.imag for c in beta_soe])
-                return _core_ext.hawkes_ll_gamma_hybrid_ri(t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
+                return _core_ext.hawkes_ll_gamma_hybrid_ri(
+                    t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im
+                )
             # the sliding-window form is bit-identical and sub-quadratic
             return _core_ext.hawkes_ll_gamma_const_trunc(t_c, float(T), a0, eta, alpha, beta)
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
@@ -667,19 +667,16 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
     >>> hawkes_loglik_custom(t, T, nu=0.4, eta=0.3,
     ...                      kernel=g, kernel_integral=G)  # doctest: +SKIP
     """
-    if HAS_CORE and hasattr(kernel, "address") \
-            and hasattr(kernel_integral, "address"):
+    if HAS_CORE and hasattr(kernel, "address") and hasattr(kernel_integral, "address"):
         # A pre-built native callback (anything exposing .address, the
         # C-function-pointer convention) still runs GIL-free in the
         # C++ O(n^2) engine.
         return _core_ext.hawkes_ll_custom(
-            _f64(t), float(T),
-            float(nu), float(eta), int(kernel.address),
-            int(kernel_integral.address))
+            _f64(t), float(T), float(nu), float(eta), int(kernel.address), int(kernel_integral.address)
+        )
     # Plain Python callables evaluate in the pure-Python engine -- the
     # same likelihood, no compiler dependency.
-    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta),
-                                kernel, kernel_integral)
+    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta), kernel, kernel_integral)
 
 
 # --- sum-of-exponentials (SoE) fit, task #73 -------------------------------
@@ -837,10 +834,13 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     import array as _pa
 
     from morie import _core as _ck
+
     flat = _pa.array("d", [float(x2) for row in Ad for x2 in row])
     wr_b, wi_b = _ck.eig_general(flat, m)
-    _wr = _pa.array("d"); _wr.frombytes(wr_b)
-    _wi = _pa.array("d"); _wi.frombytes(wi_b)
+    _wr = _pa.array("d")
+    _wr.frombytes(wr_b)
+    _wi = _pa.array("d")
+    _wi.frombytes(wi_b)
     z = [complex(a2, b2) for a2, b2 in zip(_wr, _wi)]
 
     # Keep only physical poles: y is a decaying signal, so |z| must be
@@ -866,13 +866,12 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     # strongly correlated, and the normal equations would square the
     # condition number and destroy the small-residual solution that
     # the tail of a decaying signal needs.
-    Q = [list(c3) for c3 in cols]          # column-major, m columns
+    Q = [list(c3) for c3 in cols]  # column-major, m columns
     R = [[complex(0.0)] * m for _ in range(m)]
     for j3 in range(m):
-        for _pass in range(2):             # one reorthogonalization
+        for _pass in range(2):  # one reorthogonalization
             for i3 in range(j3):
-                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3]
-                         for r3 in range(n))
+                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3] for r3 in range(n))
                 R[i3][j3] += d3
                 for r3 in range(n):
                     Q[j3][r3] -= d3 * Q[i3][r3]
@@ -883,8 +882,7 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         inv = 1.0 / nrm
         for r3 in range(n):
             Q[j3][r3] *= inv
-    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n))
-          for j3 in range(m)]
+    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n)) for j3 in range(m)]
     residue = [complex(0.0)] * m
     for r3 in range(m - 1, -1, -1):
         acc = qb[r3]
@@ -893,8 +891,8 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         residue[r3] = acc / R[r3][r3]
 
     import cmath
-    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf"))
-            for zz in z]
+
+    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf")) for zz in z]
     return beta, residue
 
 
@@ -945,16 +943,14 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     ul = [float(vv) for vv in u.tolist()]
 
     def _fit(order):
-        pole_beta, pole_res = _soe_fit_matrix_pencil(
-            g / scale, float(dt), order=order, rank_tol=1.0e-13)
+        pole_beta, pole_res = _soe_fit_matrix_pencil(g / scale, float(dt), order=order, rank_tol=1.0e-13)
         w2 = [pr * scale for pr in pole_res]
         if any(pb.real <= 0.0 for pb in pole_beta):
             return None, None, float("inf")
         e2 = 0.0
         for i2 in range(len(ul)):
             s2 = ul[i2] - u_split
-            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2)
-                      for m2 in range(len(w2))).real
+            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2) for m2 in range(len(w2))).real
             rel = abs(val - gl[i2]) / gl[i2]
             if rel > e2:
                 e2 = rel

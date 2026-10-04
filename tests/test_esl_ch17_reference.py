@@ -30,7 +30,9 @@ def test_modified_regression_book_example():
     assert th[0][2] == 0 and th[1][3] == 0
     pc = esl_precision_regression(th)
     assert pc["partial_correlation"][0][2] == 0 and close(pc["residual_variance"][0], 1 / th[0][0])
-    assert close(pc["partial_correlation"][0][1], 0.0078589574550913203 / math.sqrt(0.1196574473628500418 * 0.104770135356931499))
+    assert close(
+        pc["partial_correlation"][0][1], 0.0078589574550913203 / math.sqrt(0.1196574473628500418 * 0.104770135356931499)
+    )
 
 
 def test_graphical_lasso_equals_glasso():

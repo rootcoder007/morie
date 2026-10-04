@@ -77,8 +77,6 @@ def seasonal_pattern(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
     """
     from morie.fn._stats_core import chisquare
 
-    sections = []
-
     def _cycle(col: str, expected_levels: int, label: str) -> dict | None:
         if col not in df.columns:
             return None

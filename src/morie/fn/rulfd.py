@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def ruler_fd(x: np.ndarray, n_rulers: int = 10) -> DescriptiveResult:
-    """The whole is greater than the sum of its parts. -- Aristotle"""
+    """Ruler (divider) fractal dimension of a signal curve over ``n_rulers`` ruler lengths."""
     from morie._waveform import ruler_fd as _backend
 
     fd = _backend(x, n_rulers=n_rulers)

@@ -14,9 +14,12 @@ Butterworth zero-phase filters (via ``scipy.signal``):
 
 .. code-block:: python
 
+   import math
    from morie.signal import buttlp, butthp, buttbp, buttbs, sgolay
 
-   result = buttlp(ecg_signal, fs=500, cutoff=40, order=4)
+   # a 5 Hz wave with 60 Hz mains hum, sampled at 256 Hz (use your own ECG samples here)
+   signal = [math.sin(2 * math.pi * 5 * i / 256) + 0.3 * math.sin(2 * math.pi * 60 * i / 256) for i in range(512)]
+   result = buttlp(signal, fs=256, cutoff=40, order=4)
    filtered = result.filtered
 
 - ``buttlp`` -- Lowpass
@@ -30,10 +33,12 @@ Spectral Analysis
 
 .. code-block:: python
 
+   import math
    from morie.signal import welch, pburg
 
-   psd = welch(signal, fs=256)        # Welch PSD
-   ar_psd = pburg(signal, order=16)   # Burg AR PSD (parametric)
+   signal = [math.sin(2 * math.pi * 5 * i / 256) for i in range(512)]
+   psd = welch(signal, fs=256)                # Welch PSD
+   ar_psd = pburg(signal, fs=256, order=16)   # Burg AR PSD (parametric)
 
 Fractal Complexity
 ------------------
@@ -42,8 +47,10 @@ Pure-numpy implementations for nonlinear time-series characterization:
 
 .. code-block:: python
 
+   import math
    from morie.signal import hfd, kfd, pfd, dfa, sampen, hurst
 
+   signal = [math.sin(2 * math.pi * 5 * i / 256) for i in range(512)]
    result = hfd(signal, kmax=10)    # Higuchi fractal dimension
    alpha = dfa(signal).value        # DFA scaling exponent
 
@@ -62,9 +69,12 @@ ECG and Heart Rate Variability
 .. code-block:: python
 
    from morie.signal import ecgdet, rrint, hrvtd, hrvfd, hrvnl
+   import math
+   # a synthetic ECG-like train: one spike per beat at 72 bpm, sampled at 360 Hz (use your own lead)
+   ecg = [1.0 if i % 300 < 4 else 0.05 * math.sin(2 * math.pi * 1.2 * i / 360) for i in range(3600)]
 
    peaks = ecgdet(ecg, fs=360)              # Pan-Tompkins QRS detection
-   rr = rrint(peaks.extra["qrs_indices"], fs=360)
+   rr = rrint(peaks.extra["r_peaks"], fs=360).extra["rr_ms"]   # RR intervals in ms
    td = hrvtd(rr)                            # SDNN, RMSSD, pNN50
    fd = hrvfd(rr)                            # VLF/LF/HF power
    nl = hrvnl(rr)                            # Poincare SD1/SD2
@@ -80,6 +90,9 @@ For cardiotoxicity studies in addiction/substance use research:
 .. code-block:: python
 
    from morie.signal import pcgflt, pcgenv, pcgseg, pcgmur
+   import math
+   # a synthetic phonocardiogram: two short bursts per cycle (S1, S2) at 2 kHz (use your own recording)
+   pcg = [(math.sin(2 * math.pi * 60 * i / 2000) if (i % 1600) < 120 or 700 <= (i % 1600) < 780 else 0.0) for i in range(8000)]
 
    filtered = pcgflt(pcg, fs=2000)           # 25-400 Hz bandpass
    envelope = pcgenv(pcg, fs=2000)           # Shannon energy envelope

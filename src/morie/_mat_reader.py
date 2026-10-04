@@ -20,10 +20,20 @@ from __future__ import annotations
 
 import struct
 import zlib
+from pathlib import Path
 
-_MI = {1: ("b", 1), 2: ("B", 1), 3: ("h", 2), 4: ("H", 2),
-       5: ("i", 4), 6: ("I", 4), 7: ("f", 4), 9: ("d", 8),
-       12: ("q", 8), 13: ("Q", 8)}
+_MI = {
+    1: ("b", 1),
+    2: ("B", 1),
+    3: ("h", 2),
+    4: ("H", 2),
+    5: ("i", 4),
+    6: ("I", 4),
+    7: ("f", 4),
+    9: ("d", 8),
+    12: ("q", 8),
+    13: ("Q", 8),
+}
 
 
 def _elements(buf):
@@ -32,13 +42,13 @@ def _elements(buf):
     n = len(buf)
     while i + 8 <= n:
         mtype, count = struct.unpack_from("<II", buf, i)
-        if mtype >> 16:                     # small data element
+        if mtype >> 16:  # small data element
             count = mtype >> 16
             mtype &= 0xFFFF
-            payload = buf[i + 4:i + 4 + count]
+            payload = buf[i + 4 : i + 4 + count]
             i += 8
         else:
-            payload = buf[i + 8:i + 8 + count]
+            payload = buf[i + 8 : i + 8 + count]
             i += 8 + count
             if mtype != 15:
                 # 8-byte alignment -- except miCOMPRESSED, which the
@@ -51,7 +61,7 @@ def _elements(buf):
 def _numeric(mtype, payload):
     fmt, w = _MI[mtype]
     k = len(payload) // w
-    return list(struct.unpack("<%d%s" % (k, fmt), payload[:k * w]))
+    return list(struct.unpack("<%d%s" % (k, fmt), payload[: k * w]))
 
 
 def _reshape_colmajor(flat, dims):
@@ -64,8 +74,7 @@ def _reshape_colmajor(flat, dims):
     step = 1
     for d in dims[:-1]:
         step *= d
-    return [_reshape_colmajor(flat[k * step:(k + 1) * step],
-                              dims[:-1]) for k in range(dims[-1])]
+    return [_reshape_colmajor(flat[k * step : (k + 1) * step], dims[:-1]) for k in range(dims[-1])]
 
 
 def _matrix(payload):
@@ -74,59 +83,53 @@ def _matrix(payload):
     mclass = int(flags[0]) & 0xFF
     dims = [int(v) for v in _numeric(subs[1][0], subs[1][1])]
     name = subs[2][1].decode("latin-1").rstrip("\x00")
-    if mclass == 4:                                       # mxCHAR
+    if mclass == 4:  # mxCHAR
         raw = subs[3][1] if len(subs) > 3 else b""
-        if subs[3][0] == 4:                               # miUINT16
-            txt = raw.decode("utf-16-le", "replace")
-        else:
-            txt = raw.decode("latin-1", "replace")
+        kind = subs[3][0] if len(subs) > 3 else 0  # an empty char matrix has no data element
+        txt = raw.decode("utf-16-le" if kind == 4 else "latin-1", "replace")  # 4 = miUINT16
         return name, txt.rstrip("\x00")
-    if mclass == 1:                                       # mxCELL
+    if mclass == 1:  # mxCELL
         cells = []
         for mt, pl in subs[3:]:
             if mt == 14:
                 cells.append(_matrix(pl)[1])
         return name, cells
-    if mclass == 2:                                       # mxSTRUCT
+    if mclass == 2:  # mxSTRUCT
         (fl,) = struct.unpack("<i", subs[3][1][:4])
         raw_names = subs[4][1]
-        fields = [raw_names[i:i + fl].decode("latin-1").rstrip("\x00")
-                  for i in range(0, len(raw_names), fl)]
+        fields = [raw_names[i : i + fl].decode("latin-1").rstrip("\x00") for i in range(0, len(raw_names), fl)]
         vals = [pl for mt, pl in subs[5:] if mt == 14]
         out = {}
         for fname, pl in zip(fields, vals):
             out[fname] = _matrix(pl)[1]
         return name, out
     # numeric / logical classes: real part is the 4th subelement
-    if len(subs) > 3:
-        real = _numeric(subs[3][0], subs[3][1])
-    else:
-        real = []
+    real = _numeric(subs[3][0], subs[3][1]) if len(subs) > 3 else []
     return name, _reshape_colmajor([float(v) for v in real], dims)
 
 
 def read_mat(path):
     """Load a v5 .mat file as {variable name: value}."""
-    data = open(path, "rb").read()
+    data = Path(path).read_bytes()
     if data[:8] == b"\x89HDF\r\n\x1a\n" or data[:4] == b"\x89HDF":
         raise ValueError(
-            "%s is a MATLAB v7.3 (HDF5) file; save it with "
-            "-v7 in MATLAB, or convert it, to load natively" % path)
+            f"{path} is a MATLAB v7.3 (HDF5) file; save it with " "-v7 in MATLAB, or convert it, to load natively"
+        )
     if len(data) < 128:
-        raise ValueError("%s is too short to be a MAT-file" % path)
+        raise ValueError(f"{path} is too short to be a MAT-file")
     (version, endian) = struct.unpack_from("<HH", data, 124)
     del version
     if endian not in (0x4D49, 0x494D):
-        raise ValueError("%s has no MAT v5 endian marker" % path)
+        raise ValueError(f"{path} has no MAT v5 endian marker")
     out = {}
     for mtype, payload in _elements(data[128:]):
-        if mtype == 15:                                  # miCOMPRESSED
+        if mtype == 15:  # miCOMPRESSED
             inner = zlib.decompress(payload)
             for mt2, pl2 in _elements(inner):
                 if mt2 == 14:
                     k, v = _matrix(pl2)
                     out[k] = v
-        elif mtype == 14:                                # miMATRIX
+        elif mtype == 14:  # miMATRIX
             k, v = _matrix(payload)
             out[k] = v
     return out

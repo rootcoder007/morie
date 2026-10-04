@@ -76,7 +76,6 @@ def df_to_latex(
     str
         Complete LaTeX table source.
     """
-    n_cols = len(df.columns) + (1 if df.index.name or True else 0)
     if column_format is None:
         column_format = "l" + "c" * len(df.columns)
 
@@ -315,9 +314,9 @@ def df_to_docx(
         If ``python-docx`` is not installed.
     """
     try:
-        from morie._docx_writer import Document, Inches, Pt
-    except ImportError:
-        raise ImportError("python-docx is required for DOCX export. Install with: pip install python-docx")
+        from morie._docx_writer import Document
+    except ImportError as exc:
+        raise ImportError("python-docx is required for DOCX export. Install with: pip install python-docx") from exc
 
     doc = Document()
     if title:
@@ -425,7 +424,7 @@ def df_to_excel(
 
         for j, val in enumerate(row):
             cell = ws.cell(row=r, column=j + 2)
-            if isinstance(val, (int, float)) and np.isfinite(val):
+            if isinstance(val, int | float) and np.isfinite(val):
                 cell.value = float(val)
                 cell.number_format = number_format
             else:
@@ -596,7 +595,7 @@ def export_results_bundle(
 
         # Zip
         with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zf:
-            for root, dirs, files in os.walk(tmpdir):
+            for root, _dirs, files in os.walk(tmpdir):
                 for file in files:
                     fp = os.path.join(root, file)
                     arcname = os.path.relpath(fp, tmpdir)
@@ -840,18 +839,24 @@ def strobe_checklist(
     ]
 
     designs = {
-        "cohort": {6: "eligibility criteria, sources and methods of selection, follow-up",
-                   12: "how loss to follow-up was addressed",
-                   14: "number of participants with missing data; follow-up time",
-                   15: "outcome events or summary measures over time"},
-        "case-control": {6: "case ascertainment and control selection, matching rationale",
-                         12: "how matching of cases and controls was addressed",
-                         14: "number of participants with missing data",
-                         15: "numbers in each exposure category or summary measures"},
-        "cross-sectional": {6: "eligibility criteria, sources and methods of selection",
-                            12: "analytical methods taking sampling strategy into account",
-                            14: "number of participants with missing data",
-                            15: "numbers of outcome events or summary measures"},
+        "cohort": {
+            6: "eligibility criteria, sources and methods of selection, follow-up",
+            12: "how loss to follow-up was addressed",
+            14: "number of participants with missing data; follow-up time",
+            15: "outcome events or summary measures over time",
+        },
+        "case-control": {
+            6: "case ascertainment and control selection, matching rationale",
+            12: "how matching of cases and controls was addressed",
+            14: "number of participants with missing data",
+            15: "numbers in each exposure category or summary measures",
+        },
+        "cross-sectional": {
+            6: "eligibility criteria, sources and methods of selection",
+            12: "analytical methods taking sampling strategy into account",
+            14: "number of participants with missing data",
+            15: "numbers of outcome events or summary measures",
+        },
     }
     if study_type not in designs:
         raise ValueError(f"study_type must be one of {sorted(designs)} (got {study_type!r})")
@@ -1133,8 +1138,9 @@ def to_clipboard(
         Separator for text format.
     """
     if fmt == "html":
-        html = df.to_html()
-        df.to_clipboard(excel=True)
+        from pandas.io import clipboard
+
+        clipboard.copy(df.to_html())
         logger.info("Copied HTML table to clipboard")
     else:
         df.to_clipboard(sep=sep)

@@ -460,17 +460,20 @@ def _summarize_column(series: pd.Series, *, level: MeasurementLevel) -> dict:
     """
     non_null = series.dropna()
 
-    if level in (MeasurementLevel.INTERVAL, MeasurementLevel.RATIO):
-        if pd.api.types.is_numeric_dtype(non_null) and len(non_null) > 0:
-            return {
-                "mean": float(non_null.mean()),
-                "std": float(non_null.std()),
-                "min": float(non_null.min()),
-                "q25": float(non_null.quantile(0.25)),
-                "median": float(non_null.median()),
-                "q75": float(non_null.quantile(0.75)),
-                "max": float(non_null.max()),
-            }
+    if (
+        level in (MeasurementLevel.INTERVAL, MeasurementLevel.RATIO)
+        and pd.api.types.is_numeric_dtype(non_null)
+        and len(non_null) > 0
+    ):
+        return {
+            "mean": float(non_null.mean()),
+            "std": float(non_null.std()),
+            "min": float(non_null.min()),
+            "q25": float(non_null.quantile(0.25)),
+            "median": float(non_null.median()),
+            "q75": float(non_null.quantile(0.75)),
+            "max": float(non_null.max()),
+        }
     # Categorical / ordinal / nominal / binary
     if len(non_null) > 0:
         top_counts = non_null.value_counts().head(10).to_dict()
@@ -548,11 +551,13 @@ def profile_dataset(
         if hasattr(df, "columns") and hasattr(df, "__getitem__"):
             df = pd.DataFrame({c: list(df[c]) for c in df.columns})
         else:
-            raise TypeError(
-                f"Expected pandas DataFrame, got {type(df).__name__}")
+            raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
     if df.shape[0] == 0 or df.shape[1] == 0:
         raise ValueError(f"DataFrame must have at least one row and one column; got shape {df.shape}")
 
+    for what, col in (("treatment", hint_treatment), ("outcome", hint_outcome), ("weights", hint_weights)):
+        if col is not None and col not in df.columns:
+            raise ValueError(f"{what} column {col!r} is not in the data (columns: {', '.join(map(str, df.columns))})")
     columns: dict[str, ColumnProfile] = {}
     treatment_candidates: list[tuple[str, int]] = []  # (name, score)
     outcome_candidates: list[tuple[str, int]] = []
@@ -561,10 +566,14 @@ def profile_dataset(
     for col_name in df.columns:
         series = df[col_name]
         level = infer_measurement_level(series, ordinal_threshold=ordinal_threshold)
-        role = _detect_role(series, level=level)
-
         non_null = series.dropna()
         n_unique = int(non_null.nunique())
+        # a column with no values, or one value, carries no information for a model
+        role = _detect_role(series, level=level)
+        if non_null.empty:
+            role = "empty"
+        elif n_unique <= 1 and role != "weight":  # equal weights are still the weights
+            role = "constant"
         missing_pct = float(series.isna().mean() * 100.0)
         is_binary = n_unique == binary_threshold
         is_constant = n_unique <= 1
@@ -607,6 +616,10 @@ def profile_dataset(
     suggested_weights = hint_weights
     if suggested_weights is None and weight_candidates:
         suggested_weights = weight_candidates[0]
+    # the columns the user named take those roles in the table
+    for role_name, col in (("treatment", hint_treatment), ("outcome", hint_outcome), ("weight", hint_weights)):
+        if col is not None:
+            columns[col].suggested_role = role_name
 
     return DatasetProfile(
         n_rows=df.shape[0],
@@ -756,6 +769,22 @@ def suggest_analysis_plan(profile: DatasetProfile) -> list[dict[str, Any]]:
         treatment_cp = profile.columns.get(treatment)
         outcome_cp = profile.columns.get(outcome)
 
+        if treatment_cp and not treatment_cp.is_binary and treatment_cp.n_unique > 2:
+            numeric_outcome = bool(outcome_cp) and outcome_cp.level in (
+                MeasurementLevel.INTERVAL,
+                MeasurementLevel.RATIO,
+            )
+            test = "ANOVA, or Kruskal-Wallis when skewed" if numeric_outcome else "chi-square test of independence"
+            suggestions.append(
+                {
+                    "analysis": "group_comparison",
+                    "rationale": (
+                        f"Compare '{outcome}' across the {treatment_cp.n_unique} levels of '{treatment}' ({test})."
+                    ),
+                    "required_vars": {"treatment": treatment, "outcome": outcome},
+                }
+            )
+
         # Propensity score analysis
         if treatment_cp and treatment_cp.is_binary and covariates:
             suggestions.append(
@@ -858,6 +887,15 @@ def suggest_analysis_plan(profile: DatasetProfile) -> list[dict[str, Any]]:
                     },
                 }
             )
+
+    if not treatment and outcome and covariates:
+        suggestions.append(
+            {
+                "analysis": "outcome_model",
+                "rationale": f"Model '{outcome}' on the covariates (a regression matched to its level).",
+                "required_vars": {"outcome": outcome, "covariates": covariates},
+            }
+        )
 
     # Survey-weighted analysis
     if weights:

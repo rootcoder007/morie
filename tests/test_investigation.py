@@ -18,8 +18,8 @@ def _draws(n, seed=20260903):
     s = seed
     out = []
     for _ in range(n):
-        s = (1664525 * s + 1013904223) % (2 ** 32)
-        out.append(s / 2 ** 32)
+        s = (1664525 * s + 1013904223) % (2**32)
+        out.append(s / 2**32)
     return out
 
 
@@ -30,7 +30,7 @@ def _pick(u, values):
 def _frame():
     n = 120
     u = _draws(n * 10)
-    c = [u[k * n:(k + 1) * n] for k in range(10)]
+    c = [u[k * n : (k + 1) * n] for k in range(10)]
     return pd.DataFrame(
         {
             "weight": [0.6 + 1.0 * v for v in c[0]],

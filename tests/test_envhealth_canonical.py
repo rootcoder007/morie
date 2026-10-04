@@ -15,12 +15,13 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 # ---------------------------------------------------------------------------
-# concentration_response_pm25 — Burnett et al. (2014) IER
+# concentration_response_pm25 — Chen & Hoek (2020) log-linear all-cause; Burnett et al. (2014) IER per cause
 # ---------------------------------------------------------------------------
 
 
 class TestCRFPm25:
-    """Reference: Burnett et al. (2014) EHP 122(4):397-403, Eq. 1."""
+    """Reference: Chen & Hoek (2020) Environ Int 143:105974 (RR 1.08 per 10 μg/m³, WHO 2021);
+    Burnett et al. (2014) EHP 122(4):397-403, Eq. 1 for the cause-specific IER."""
 
     def test_rr_is_one_at_counterfactual(self) -> None:
         """At z = z_cf, excess = 0 → RR must equal 1 exactly."""
@@ -45,12 +46,18 @@ class TestCRFPm25:
             assert b >= a - 1e-10, f"RR non-monotone in PM2.5: {a} -> {b}"
 
     def test_rr_structure_at_moderate_exposure(self) -> None:
-        """RR at 20 μg/m³ should be > 1 and < α+1 (asymptote)."""
+        """All-cause RR at 20 μg/m³ is the log-linear 1.08 per 10 above the counterfactual;
+        the IHD IER stays bounded by 1 + α."""
+        import math
+
         from morie.envhealth import concentration_response_pm25
 
         r = concentration_response_pm25(exposure=20.0, reference_conc=5.8)
-        alpha = r.extra["alpha"]
-        assert 1.0 < r.rr < 1.0 + alpha, f"RR at PM2.5=20 μg/m³ = {r.rr}, expected in (1, {1 + alpha})."
+        assert r.rr == pytest.approx(math.exp(math.log(1.08) * (20.0 - 5.8) / 10.0), rel=1e-12)
+        assert r.extra["form"] == "log-linear" and "Chen & Hoek (2020)" in r.citation
+        ihd = concentration_response_pm25(exposure=20.0, reference_conc=5.8, outcome="ihd")
+        alpha = ihd.extra["alpha"]
+        assert 1.0 < ihd.rr < 1.0 + alpha, f"IHD RR at PM2.5=20 μg/m³ = {ihd.rr}, expected in (1, {1 + alpha})."
 
     def test_unknown_outcome_raises(self) -> None:
         from morie.envhealth import concentration_response_pm25

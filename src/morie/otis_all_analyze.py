@@ -42,6 +42,7 @@ The DLRM methodology attribution and the wider acknowledgements
 from __future__ import annotations
 
 import json
+import warnings as _warnings
 from pathlib import Path
 from typing import Any
 
@@ -1208,7 +1209,6 @@ def _ruhela_formulations_on(
     # === Multi-SE comparison on IRM-DML primary point estimate ===
     multi_se_rows: list = []
     if include_multi_se and irm_results:
-        ate_pt = irm_results.get("ate", float("nan"))
         # Try four SE flavours: pooled, EFY-cluster, UID-cluster, multi-way
         flavours = [
             ("pooled (iid)", None),
@@ -1273,7 +1273,7 @@ def _ruhela_formulations_on(
         balance = oc.otis_balance(data_r, treatment=T_r, covariates=cov_r)
         smd_data = balance.payload if hasattr(balance, "payload") else {}
         max_smd = smd_data.get("max_abs_smd", "n/a")
-        balance_summary = f"max |SMD| = {max_smd:.3f}" if isinstance(max_smd, (int, float)) else str(max_smd)
+        balance_summary = f"max |SMD| = {max_smd:.3f}" if isinstance(max_smd, int | float) else str(max_smd)
     except Exception as e:  # noqa: BLE001
         balance_summary = f"err: {type(e).__name__}: {e}"
 
@@ -1557,7 +1557,7 @@ def analyze_ruhela_per_year(
                     f"{est.get('se', float('nan')):.4f}",
                     f"[{ci[0]:+.3f}, {ci[1]:+.3f}]",
                     f"{est.get('p', float('nan')):.2e}",
-                    f"n={est.get('n', '?')}",
+                    f"n={est.get('n', n)}",
                 ]
             )
         # IRM-DML: report ATE + ATTE + ATC inline
@@ -3363,7 +3363,7 @@ def analyze_ruhela_grid() -> RichResult:
         # 2. GEE-Poisson Exch -- cluster-robust, equidispersed
         # 3. NB GLM       -- overdispersion-aware, no cluster
         # 4. Poisson GLM  -- fallback
-        def _find(label_substr):
+        def _find(label_substr, r=r):
             return next(
                 (row for row in r.tables[0]["rows"] if label_substr in str(row[0]) and row[2] != "fit failed"), None
             )
@@ -3983,7 +3983,7 @@ def analyze_c11_mandela_classification(
     df["mandela_class"] = df["Aggregate_Duration"].astype(str).apply(_classify_otis_bins)
 
     rows = []
-    for (year, kind), gdf in df.groupby(
+    for (_year, _kind), _gdf in df.groupby(
         [
             "EndFiscalYear",  # noqa: PD010
             df["mandela_class"],
@@ -4694,7 +4694,6 @@ analyze_d05_mrm_aggregate = analyze_d05_ruhela_aggregate
 
 
 # ── Deprecation aliases: pre-0.9.5.4 names (Doob → MRM chi-square rename) ──
-import warnings as _warnings
 
 
 def analyze_c_doob_chi2(*args, **kwargs):

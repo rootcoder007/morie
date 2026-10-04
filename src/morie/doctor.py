@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -32,10 +33,37 @@ def _check_python_version() -> tuple[bool, str]:
 def _check_import(package: str) -> tuple[bool, str]:
     try:
         mod = importlib.import_module(package)
-        version = getattr(mod, "__version__", "?")
-        return True, version
     except ImportError:
         return False, "not installed"
+    version = getattr(mod, "__version__", None)
+    if not version:  # rich, textual and others keep their version in the package metadata only
+        try:
+            from importlib.metadata import version as _dist_version
+
+            version = _dist_version(package)
+        except Exception:
+            version = "installed"
+    return True, str(version)
+
+
+def _check_interactive_layer() -> tuple[bool, str]:
+    """The repl/exec/agent/edit/tui verbs need five modules the wheel leaves out."""
+    try:
+        from . import _interactive as inter
+
+        pkg_dir = Path(__file__).resolve().parent
+        if all((pkg_dir / n).is_file() for n in inter.FILES):
+            return True, "bundled (source checkout)"
+        d = inter.data_dir()
+        have = inter.present(d)
+        iv = inter.installed_version(d)
+        if len(have) == len(inter.FILES) and iv == inter.package_version():
+            return True, f"installed for morie {iv} in {d}"
+        if have:
+            return False, f"installed for morie {iv} (this is {inter.package_version()}): morie interactive install"
+        return False, "not installed (morie repl/exec/agent/edit/tui): morie interactive install"
+    except Exception as exc:
+        return False, f"error: {exc}"
 
 
 def _check_r() -> tuple[bool, str]:
@@ -79,7 +107,7 @@ def _check_hosted() -> tuple[bool, str]:
     if not s["base_url"]:
         return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
     if not s["logged_in"]:
-        return False, "not logged in -- run `morie login`"
+        return False, "not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
         from .hosted import hosted_problem_line
@@ -120,7 +148,10 @@ def _check_datasets() -> tuple[bool, str]:
 
         db_path = morie_db()
         if not db_path.exists():
-            return False, "morie.db not found -- it is fetched, not shipped: run `morie download-bootstrap`"
+            return (
+                False,
+                "morie.db not found -- it is built on first use: run `morie pull KEY` (keys: morie list-datasets)",
+            )
         size_mb = db_path.stat().st_size // (1024 * 1024)
         ds = list_datasets()
         catalog = [d for d in ds if d["type"] != "hosted"]
@@ -175,7 +206,7 @@ _REQUIRED_IMPORTS = [
 ]
 
 # morie's core is native: these only speed up or extend a few paths and are reported, not required
-_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels"]
+_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels", "textual"]
 
 
 def run_checks() -> dict[str, Any]:
@@ -203,7 +234,16 @@ def run_checks() -> dict[str, Any]:
     # Optional Python packages
     for pkg in _OPTIONAL_IMPORTS:
         ok, detail = _check_import(pkg)
+        if not ok:
+            detail = (
+                'not installed (morie tui needs it): pip install "morie[interactive]"'
+                if pkg == "textual"
+                else "not installed (optional: morie's native cores need none of these)"
+            )
         _add(f"import {pkg}", ok, detail, required=False)
+
+    ok, detail = _check_interactive_layer()
+    _add("Interactive layer", ok, detail, required=False)
 
     # R
     ok, detail = _check_r()
@@ -255,7 +295,9 @@ def run_checks() -> dict[str, Any]:
 
 
 def _render_plain(results: dict[str, Any]) -> None:
-    print("MORIE Doctor -- environment diagnostics")
+    from .i18n import t
+
+    print(t("doctor.heading"))
     print("=" * 50)
     for check in results["checks"]:
         status = "OK " if check["passed"] else ("FAIL" if check["required"] else "WARN")
@@ -274,7 +316,7 @@ def _render_rich(results: dict[str, Any]) -> None:
 
     console = Console()
     table = Table(
-        title="MORIE Doctor -- environment diagnostics",
+        title=__import__("morie.i18n", fromlist=["t"]).t("doctor.heading"),
         box=box.SIMPLE_HEAVY,
         show_header=True,
         header_style="bold cyan",

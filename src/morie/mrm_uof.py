@@ -534,7 +534,7 @@ def mrm_uof_yoy_change(
         )
 
     if dfs_by_year is not None:
-        years_sorted = sorted(int(y) for y in dfs_by_year.keys())
+        years_sorted = sorted(int(y) for y in dfs_by_year)
         counts: list[int] = []
         for y in years_sorted:
             sub = dfs_by_year[y]
@@ -917,10 +917,7 @@ def mrm_uof_demographic_disparity(
         k_i = int(row["k"])
         rate = float(row["rate"])
         lo, hi = _wilson_ci(k_i, n_i)
-        if baseline_rate > 0:
-            rr = rate / baseline_rate
-        else:
-            rr = float("nan")
+        rr = rate / baseline_rate if baseline_rate > 0 else float("nan")
         rr_lo: float | None = None
         rr_hi: float | None = None
 
@@ -1128,18 +1125,21 @@ def mrm_uof_data_quality_audit(
         missing_columns = [c for c in expected_names if c not in actual]
         extra_columns = [c for c in actual if c not in expected_names]
         for name, exp_dt in expected_cols:
-            if name in actual and exp_dt is not None:
-                if exp_dt.lower() not in actual[name].lower() and actual[name].lower() not in exp_dt.lower():
-                    dtype_mismatches.append({"column": name, "expected": exp_dt, "actual": actual[name]})
+            if (
+                name in actual
+                and exp_dt is not None
+                and exp_dt.lower() not in actual[name].lower()
+                and actual[name].lower() not in exp_dt.lower()
+            ):
+                dtype_mismatches.append({"column": name, "expected": exp_dt, "actual": actual[name]})
 
     suspect_flags: list[str] = []
     for entry in per_column:
         if entry["pct_null"] > 0.50:
             suspect_flags.append(f"{entry['column']}: {_fmt_pct(entry['pct_null'])} null")
         if pd.api.types.is_numeric_dtype(df[entry["column"]]):
-            if entry.get("min") == entry.get("max") and n_rows > 1:
-                if math.isfinite(entry.get("min", float("nan"))):
-                    suspect_flags.append(f"{entry['column']}: constant value ({entry['min']})")
+            if entry.get("min") == entry.get("max") and n_rows > 1 and math.isfinite(entry.get("min", float("nan"))):
+                suspect_flags.append(f"{entry['column']}: constant value ({entry['min']})")
         else:
             if entry["n_unique"] == n_rows and n_rows > 1:
                 suspect_flags.append(f"{entry['column']}: every value unique -- possible identifier")

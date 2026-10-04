@@ -28,8 +28,8 @@ Measures of spatial dependence across the entire study region.
 
 .. code-block:: python
 
-   from morie.fn import morai, geary
-   import numpy as np
+   from morie.fn import moran_permutation_test, gearyc
+   from morie.fn import _array_core as np   # numpy arrays work too
 
    values = np.array([2.5, 3.1, 2.8, 4.0, 3.7])
    W = np.array([[0, 1, 0, 0, 1],
@@ -38,8 +38,9 @@ Measures of spatial dependence across the entire study region.
                  [0, 0, 1, 0, 1],
                  [1, 0, 0, 1, 0]], dtype=float)
 
-   result = morai(values, W)
-   print(f"Moran's I = {result.statistic:.4f}, p = {result.p_value:.4f}")
+   result = moran_permutation_test(values, W, nsim=199, seed=1)   # as spdep::moran.mc
+   print(f"Moran's I = {result['statistic']:.4f}, p = {result['p_value']:.3f}")
+   print(gearyc(values, W))                                        # Geary's C with its reading
 
 Local Indicators of Spatial Association (LISA)
 ----------------------------------------------
@@ -81,11 +82,14 @@ structure.
 
 .. code-block:: python
 
-   from morie.fn import krige, svari
+   from morie.fn import empirical_variogram, krige
+   from morie.fn import _array_core as np
 
-   gamma = svari(x, y, values, n_lags=15, model="spherical")
-   predictions = krige(x, y, values, grid_x, grid_y,
-                       variogram=gamma)
+   coords = np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [2.0, 1.0], [1.5, 0.2], [0.2, 1.7]])
+   z = np.array([1.0, 1.4, 0.9, 1.6, 1.2, 2.1, 1.5, 1.1])
+   gamma = empirical_variogram(coords, z, model="spherical")   # the sample variogram with a spherical fit
+   print(gamma["nugget"], gamma["psill"], gamma["range"])
+   # krige(z, coords, new_coords, model) predicts at new locations with that model (as gstat::krige)
 
 Geographically Weighted Regression (GWR)
 -----------------------------------------

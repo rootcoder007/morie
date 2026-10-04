@@ -47,8 +47,8 @@ class Progress:
         return fmt_bytes(n) if self.unit == "B" else f"{int(n):,} {self.unit}"
 
     def _line(self) -> str:
-        elapsed = max(time.monotonic() - self.t0, 1e-6)
-        rate = f"{self._fmt(self.done / elapsed)}/s"
+        elapsed = time.monotonic() - self.t0
+        rate = f"{self._fmt(self.done / elapsed)}/s" if elapsed >= 0.5 else ""
         if self.total:
             pct = min(100, int(100 * self.done / self.total))
             filled = pct // 4
@@ -215,3 +215,26 @@ def download_url(
             )
             time.sleep(attempt)
     return written
+
+
+class Stages:
+    """Numbered stage lines on stderr for a long computation with no byte count to show.
+
+    ``Stages("logistic-models", 4).step("fitting the interaction model")`` prints
+    ``logistic-models [2/4] fitting the interaction model (12 s)``. ``MORIE_NO_PROGRESS=1``
+    silences it, like the download bars.
+    """
+
+    def __init__(self, label: str, total: int, stream: IO[str] | None = None) -> None:
+        self.label, self.total, self.n = label, total, 0
+        self.stream = stream if stream is not None else sys.stderr
+        self.enabled = not os.environ.get("MORIE_NO_PROGRESS")
+        self.t0 = time.monotonic()
+
+    def step(self, what: str) -> None:
+        self.n += 1
+        if self.enabled:
+            elapsed = time.monotonic() - self.t0
+            count = f"[{self.n}/{self.total}] " if self.total else ""
+            self.stream.write(f"{self.label} {count}{what} ({elapsed:.0f} s)\n")
+            self.stream.flush()

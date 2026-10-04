@@ -51,11 +51,18 @@ class A2AJError(RuntimeError):
     """An A2AJ API call returned an HTTP error or a non-JSON body."""
 
 
-def _get_json(endpoint: str, params: dict[str, Any] | None, *, timeout: float,
-              user_agent: str, transport: httpx.BaseTransport | None = None) -> Any:
+def _get_json(
+    endpoint: str,
+    params: dict[str, Any] | None,
+    *,
+    timeout: float,
+    user_agent: str,
+    transport: httpx.BaseTransport | None = None,
+) -> Any:
     clean = {k: v for k, v in (params or {}).items() if v is not None and v != ""}
-    with httpx.Client(timeout=timeout, headers={"User-Agent": user_agent},
-                      follow_redirects=True, transport=transport) as client:
+    with httpx.Client(
+        timeout=timeout, headers={"User-Agent": user_agent}, follow_redirects=True, transport=transport
+    ) as client:
         r = client.get(f"{API_URL}/{endpoint}", params=clean)
     if r.status_code >= 400:
         raise A2AJError(f"{endpoint} -> HTTP {r.status_code}: {r.text[:200]}")
@@ -83,9 +90,13 @@ def _as_date(value: Any) -> _dt.date | None:
     return _dt.date.fromisoformat(str(value)[:10])
 
 
-def coverage(doc_type: str = "cases", *, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-             user_agent: str = DEFAULT_USER_AGENT,
-             transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def coverage(
+    doc_type: str = "cases",
+    *,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Every court, tribunal or law collection in the corpus.
 
     Returns a DataFrame with ``dataset``, ``description_en``,
@@ -95,8 +106,7 @@ def coverage(doc_type: str = "cases", *, timeout: float = DEFAULT_TIMEOUT_SECOND
     """
     if doc_type not in ("cases", "laws"):
         raise ValueError("doc_type must be 'cases' or 'laws'")
-    res = _get_json("coverage", {"doc_type": doc_type}, timeout=timeout,
-                    user_agent=user_agent, transport=transport)
+    res = _get_json("coverage", {"doc_type": doc_type}, timeout=timeout, user_agent=user_agent, transport=transport)
     rows = res.get("results") or []
     for r in rows:
         for k in ("earliest_document_date", "latest_document_date"):
@@ -107,12 +117,21 @@ def coverage(doc_type: str = "cases", *, timeout: float = DEFAULT_TIMEOUT_SECOND
     return _records_df(rows)
 
 
-def search(query: str, *, search_type: str = "full_text", doc_type: str = "cases",
-           size: int = 10, search_language: str = "en", sort_results: str = "default",
-           dataset: str | list[str] | None = None, start_date: str | None = None,
-           end_date: str | None = None, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-           user_agent: str = DEFAULT_USER_AGENT,
-           transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def search(
+    query: str,
+    *,
+    search_type: str = "full_text",
+    doc_type: str = "cases",
+    size: int = 10,
+    search_language: str = "en",
+    sort_results: str = "default",
+    dataset: str | list[str] | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Full-text or title search; at most 50 hits, no paging.
 
     ``dataset`` restricts to one or more dataset codes (``"SCC"`` or
@@ -131,16 +150,20 @@ def search(query: str, *, search_type: str = "full_text", doc_type: str = "cases
     size = int(size)
     if not 1 <= size <= 50:
         raise ValueError("size must be between 1 and 50")
-    if isinstance(dataset, (list, tuple)):
+    if isinstance(dataset, list | tuple):
         dataset = ",".join(dataset)
     params = {
-        "query": query, "search_type": search_type, "doc_type": doc_type,
-        "size": size, "search_language": search_language,
-        "sort_results": sort_results, "dataset": dataset,
-        "start_date": start_date, "end_date": end_date,
+        "query": query,
+        "search_type": search_type,
+        "doc_type": doc_type,
+        "size": size,
+        "search_language": search_language,
+        "sort_results": sort_results,
+        "dataset": dataset,
+        "start_date": start_date,
+        "end_date": end_date,
     }
-    res = _get_json("search", params, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+    res = _get_json("search", params, timeout=timeout, user_agent=user_agent, transport=transport)
     rows = res.get("results") or []
     for r in rows:
         if "score" in r and r["score"] is not None:
@@ -148,12 +171,21 @@ def search(query: str, *, search_type: str = "full_text", doc_type: str = "cases
     return _records_df(rows)
 
 
-def fetch(citation: str, *, doc_type: str = "cases", output_language: str = "en",
-          section: str | None = None, start_char: int = 0, end_char: int = -1,
-          include_citations: bool = False, citations_limit: int = 100,
-          citations_offset: int = 0, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-          user_agent: str = DEFAULT_USER_AGENT,
-          transport: httpx.BaseTransport | None = None) -> dict[str, Any] | None:
+def fetch(
+    citation: str,
+    *,
+    doc_type: str = "cases",
+    output_language: str = "en",
+    section: str | None = None,
+    start_char: int = 0,
+    end_char: int = -1,
+    include_citations: bool = False,
+    citations_limit: int = 100,
+    citations_offset: int = 0,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any] | None:
     """One document by citation, as a dict; ``None`` when not in the corpus.
 
     Text is under ``unofficial_text_en`` / ``unofficial_text_fr``. With
@@ -168,17 +200,22 @@ def fetch(citation: str, *, doc_type: str = "cases", output_language: str = "en"
     if output_language not in ("en", "fr", "both"):
         raise ValueError("output_language must be 'en', 'fr' or 'both'")
     params: dict[str, Any] = {
-        "citation": citation, "doc_type": doc_type,
+        "citation": citation,
+        "doc_type": doc_type,
         "output_language": output_language,
         "section": section if doc_type == "laws" else None,
-        "start_char": int(start_char), "end_char": int(end_char),
+        "start_char": int(start_char),
+        "end_char": int(end_char),
     }
     if doc_type == "cases" and include_citations:
-        params.update({"include_citations": "true",
-                       "citations_limit": int(citations_limit),
-                       "citations_offset": int(citations_offset)})
-    res = _get_json("fetch", params, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+        params.update(
+            {
+                "include_citations": "true",
+                "citations_limit": int(citations_limit),
+                "citations_offset": int(citations_offset),
+            }
+        )
+    res = _get_json("fetch", params, timeout=timeout, user_agent=user_agent, transport=transport)
     rows = res.get("results") or []
     if not rows:
         return None
@@ -192,8 +229,11 @@ def parquet_url(dataset: str, doc_type: str = "cases") -> str:
     """Hugging Face download URL of one dataset's ``train.parquet``."""
     if doc_type not in ("cases", "laws"):
         raise ValueError("doc_type must be 'cases' or 'laws'")
-    if not isinstance(dataset, str) or not dataset or any(
-            c not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in dataset):
+    if (
+        not isinstance(dataset, str)
+        or not dataset
+        or any(c not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in dataset)
+    ):
         raise ValueError('dataset must be one upper-case code such as "SCC" or "LEGISLATION-FED"')
     repo = "canadian-case-law" if doc_type == "cases" else "canadian-laws"
     return f"{HF_URL}/{repo}/resolve/main/{dataset}/train.parquet"
@@ -204,13 +244,20 @@ def _default_cache_dir() -> Path:
     if override:
         return Path(override).expanduser() / "a2aj"
     from morie.data import _user_cache_dir
+
     return _user_cache_dir() / "a2aj"
 
 
-def download(dataset: str, doc_type: str = "cases", *, cache_dir: str | Path | None = None,
-             refresh: bool = False, timeout: float = 600.0,
-             user_agent: str = DEFAULT_USER_AGENT,
-             transport: httpx.BaseTransport | None = None) -> Path:
+def download(
+    dataset: str,
+    doc_type: str = "cases",
+    *,
+    cache_dir: str | Path | None = None,
+    refresh: bool = False,
+    timeout: float = 600.0,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> Path:
     """Fetch one dataset's Parquet file into the cache and return its path.
 
     Files range from a few megabytes (small tribunals) to several
@@ -223,8 +270,12 @@ def download(dataset: str, doc_type: str = "cases", *, cache_dir: str | Path | N
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(".parquet.part")
-    with httpx.Client(timeout=timeout, headers={"User-Agent": user_agent},
-                      follow_redirects=True, transport=transport) as client, client.stream("GET", url) as r:
+    with (
+        httpx.Client(
+            timeout=timeout, headers={"User-Agent": user_agent}, follow_redirects=True, transport=transport
+        ) as client,
+        client.stream("GET", url) as r,
+    ):
         if r.status_code >= 400:
             raise A2AJError(f"download of {url} failed: HTTP {r.status_code}")
         with open(part, "wb") as fh:
@@ -234,8 +285,14 @@ def download(dataset: str, doc_type: str = "cases", *, cache_dir: str | Path | N
     return dest
 
 
-def load(dataset: str, doc_type: str = "cases", *, columns: list[str] | None = None,
-         cache_dir: str | Path | None = None, refresh: bool = False) -> pd.DataFrame:
+def load(
+    dataset: str,
+    doc_type: str = "cases",
+    *,
+    columns: list[str] | None = None,
+    cache_dir: str | Path | None = None,
+    refresh: bool = False,
+) -> pd.DataFrame:
     """Download (or reuse) one dataset and decode it with the native reader.
 
     ``unofficial_text_*`` holds the full texts and dominates the file;
@@ -284,8 +341,7 @@ def cli(args: list[str], *, transport: httpx.BaseTransport | None = None) -> int
     import argparse
     import sys
 
-    p = argparse.ArgumentParser(prog="morie ingest a2aj",
-                                description="A2AJ Canadian Legal Data (api.a2aj.ca)")
+    p = argparse.ArgumentParser(prog="morie ingest a2aj", description="A2AJ Canadian Legal Data (api.a2aj.ca)")
     sub = p.add_subparsers(dest="verb", required=True)
     cov = sub.add_parser("coverage", help="courts, tribunals and law collections in the corpus")
     cov.add_argument("--doc-type", choices=["cases", "laws"], default="cases")
@@ -322,21 +378,33 @@ def cli(args: list[str], *, transport: httpx.BaseTransport | None = None) -> int
         _emit(coverage(ns.doc_type, transport=transport), ns.out)
         return 0
     if ns.verb == "search":
-        df = search(ns.query, search_type=ns.search_type, doc_type=ns.doc_type,
-                    size=ns.size, search_language=ns.language, sort_results=ns.sort,
-                    dataset=ns.dataset, start_date=ns.start_date, end_date=ns.end_date,
-                    transport=transport)
+        df = search(
+            ns.query,
+            search_type=ns.search_type,
+            doc_type=ns.doc_type,
+            size=ns.size,
+            search_language=ns.language,
+            sort_results=ns.sort,
+            dataset=ns.dataset,
+            start_date=ns.start_date,
+            end_date=ns.end_date,
+            transport=transport,
+        )
         _emit(df, ns.out)
         return 0
-    doc = fetch(ns.citation, doc_type=ns.doc_type, output_language=ns.language,
-                section=ns.section, start_char=ns.start_char, end_char=ns.end_char,
-                transport=transport)
+    doc = fetch(
+        ns.citation,
+        doc_type=ns.doc_type,
+        output_language=ns.language,
+        section=ns.section,
+        start_char=ns.start_char,
+        end_char=ns.end_char,
+        transport=transport,
+    )
     if doc is None:
-        print(f"{ns.citation!r} is not in the A2AJ corpus; see morie.ingest.a2aj.gaps()",
-              file=sys.stderr)
+        print(f"{ns.citation!r} is not in the A2AJ corpus; see morie.ingest.a2aj.gaps()", file=sys.stderr)
         return 1
-    text = "\n\n".join(str(doc[k]) for k in ("unofficial_text_en", "unofficial_text_fr")
-                       if doc.get(k))
+    text = "\n\n".join(str(doc[k]) for k in ("unofficial_text_en", "unofficial_text_fr") if doc.get(k))
     if ns.out:
         Path(ns.out).write_text(text, encoding="utf-8")
         print(f"wrote {ns.out}  ({len(text):,} chars)", file=sys.stderr)
@@ -379,10 +447,12 @@ def gaps() -> pd.DataFrame:
         ("NUCJ", "Nunavut Court of Justice", "NU", "nucj", _ISSUE_NATIONAL),
         ("YKSC", "Supreme Court of Yukon", "YT", "yksc", _ISSUE_NATIONAL),
     ]
-    return pd.DataFrame({
-        "code": [r[0] for r in rows],
-        "name": [r[1] for r in rows],
-        "jurisdiction": [r[2] for r in rows],
-        "canlii_database_id": [r[3] for r in rows],
-        "issue": [r[4] for r in rows],
-    })
+    return pd.DataFrame(
+        {
+            "code": [r[0] for r in rows],
+            "name": [r[1] for r in rows],
+            "jurisdiction": [r[2] for r in rows],
+            "canlii_database_id": [r[3] for r in rows],
+            "issue": [r[4] for r in rows],
+        }
+    )

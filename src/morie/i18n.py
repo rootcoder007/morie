@@ -222,5 +222,6 @@ def t(key: str, **fmt: object) -> str:
 
 
 def current_locale() -> str:
-    """Return the two-letter locale code currently in effect ('en' or 'fr')."""
-    return "fr" if _select_locale() is FR else "en"
+    """Return the two-letter locale code currently in effect ('en' when MORIE_LOCALE names none we carry)."""
+    code = os.environ.get("MORIE_LOCALE", "").lower()[:2]
+    return code if code in LOCALES else "en"

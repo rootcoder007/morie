@@ -1239,7 +1239,7 @@ _CORE_TOOLS: list[dict] = [
         "function": {
             "name": "search_functions",
             "description": (
-                "Search the morie fn/ registry (5710+ functions) by keyword. "
+                "Search the morie fn/ registry (10,000+ functions) by keyword. "
                 "Returns names, categories, descriptions. Use before run_morie_function."
             ),
             "parameters": {
@@ -1601,7 +1601,7 @@ _TOOL_DISPATCH: dict[str, Any] = {
 
 _SYSTEM_PROMPT_FULL = (
     "You are Perseus, the MORIE demigod -- an autonomous scientific computing agent with "
-    "mastery over 20 statistical domains and 5710+ functions.\n\n"
+    "mastery over 20 statistical domains and 10,000+ functions.\n\n"
     "INTELLIGENCE TOOLS (use these FIRST to plan your approach):\n"
     "- domain_guide(domain): complete guide for spatial/causal/biomedical/psychometrics/etc.\n"
     "- recommend_analysis(question): get analysis plan from a research question\n"
@@ -1609,7 +1609,7 @@ _SYSTEM_PROMPT_FULL = (
     "- textbook_reference(topic): find which textbook covers a method\n"
     "- similar_functions(name): find related functions\n\n"
     "EXECUTION TOOLS:\n"
-    "- search_functions(query): keyword search across 5710+ functions\n"
+    "- search_functions(query): keyword search across 10,000+ functions\n"
     "- get_cheatsheet(name): usage docs, signature, examples for any function\n"
     "- run_morie_function(name, kwargs): call any function by short name\n"
     "- run_pipeline(steps): chain multiple functions as a pipeline\n"

@@ -70,8 +70,8 @@ class TurboQuantKVCache:
     >>> cache.append(layer=0, k_vec=k, v_vec=v)
     >>> keys = cache.get_keys(0)   # (1, 128) decompressed
     >>> values = cache.get_values(0)
-    >>> cache.stats.compression_ratio
-    5.1
+    >>> round(cache.stats.compression_ratio, 3)   # 3-bit codes plus the scale: 64 / 13
+    4.923
     """
 
     def __init__(

@@ -120,7 +120,7 @@ def _is_stub(actual: Any) -> bool:
         if not actual:
             return False
         return all(_is_stub(v) for v in actual.values())
-    if isinstance(actual, (list, tuple)):
+    if isinstance(actual, list | tuple):
         if not actual:
             return False
         return all(_is_stub(v) for v in actual)
@@ -145,8 +145,8 @@ def _compare(actual: Any, expected: Any, rtol: float, atol: float) -> tuple[bool
             if err is not None and err > max_err:
                 max_err = err
         return True, max_err, ""
-    if isinstance(expected, (list, tuple)):
-        if not isinstance(actual, (list, tuple)):
+    if isinstance(expected, list | tuple):
+        if not isinstance(actual, list | tuple):
             try:
                 actual = list(actual)
             except TypeError:

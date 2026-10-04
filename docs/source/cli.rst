@@ -68,13 +68,16 @@ Datasets
 See :doc:`learn/datasets` for the walk-through.
 
 ``list-datasets``
-   List the 70 catalogued dataset keys with type, cached row count and
+   List the 71 catalogued dataset keys with type, cached row count and
    the **route** each one is obtained by: a portal it downloads from on
    first use (open.canada.ca, data.ontario.ca, Statistics Canada, CIHI,
-   ECCC NAPS whose Canada-wide hourly keys take about ten minutes, Toronto
-   Police ArcGIS), ``rmoriedata`` on CRAN, or "own file: data/..." for
-   restricted data you place under ``$MORIE_DATA_DIR`` (keeping that
-   relative path).
+   health-infobase.canada.ca, ECCC NAPS whose Canada-wide hourly keys take
+   about ten minutes, Toronto Police ArcGIS), ``rmoriedata`` on CRAN,
+   data.rmorie.com (the Health Infobase fallback copy and the OTIS research
+   environments; the curated tables join the list after ``morie login``, GitHub or ``--email``),
+   or "own file: data/..." for the one key that is your own research file
+   (the MAPQ workbook), placed under ``$MORIE_DATA_DIR`` keeping that
+   relative path.
 
 ``pull KEY [--out FILE.csv]`` / ``pull --all [--out DIR]``
    Download one dataset by catalog key (``ocp21``, ``cu23bt``, ...) or by

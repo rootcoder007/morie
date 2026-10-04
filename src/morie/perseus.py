@@ -17,6 +17,7 @@ from typing import Any
 
 from .cpads import cpads_contract
 from .llm import (
+    ModelNotOnKeyError,
     _FallbackText,
     agent_available,  # noqa: F401 -- re-exported
     build_morie_context,
@@ -61,12 +62,19 @@ def _how_to_get_a_model() -> str:
             "  1. hosted MORIE tier (free, sign in with GitHub or email): `morie login`; "
             "after that `morie ask` uses it automatically and `morie models` lists what you can ask."
         )
-    lines.append("  2. a local Ollama: install it, then `ollama pull gemma4:e2b` (or any model; pick with `morie ask --model NAME`).")
-    lines.append("  3. your own model: `morie provider set --base-url URL --key KEY [--model NAME]` for any "
-                 "OpenAI-compatible endpoint (OpenAI, Anthropic's https://api.anthropic.com/v1, OpenRouter, "
-                 "LM Studio, vLLM ...), or GEMINI_API_KEY / OPENAI_API_KEY in the environment.")
-    lines.append("`morie doctor` shows which of these answers from this machine. Until one does, this local "
-                 "mode still explains docs, commands, modules and data-contract requirements.")
+    lines.append(
+        "  2. a local Ollama: install it, then `ollama pull gemma4:e2b` (or any model; pick with `morie ask --model NAME`)."
+    )
+    lines.append(
+        "  3. your own model: `morie provider set --base-url URL --key KEY [--model NAME]` for any "
+        "OpenAI-compatible endpoint (OpenAI, Anthropic's https://api.anthropic.com/v1, OpenRouter, "
+        "LM Studio, vLLM ...), or GEMINI_API_KEY / OPENAI_API_KEY in the environment."
+    )
+    lines.append(
+        "`morie doctor` shows which of these answers from this machine. Until one does, "
+        "`morie list-modules`, `morie explain FILE` and `morie cheatsheet` describe the modules, "
+        "their outputs and the commands without a model."
+    )
     return "\n".join(lines)
 
 
@@ -203,6 +211,15 @@ def ask_percy(
             result["output_text"] = output
         return result
 
+    except ModelNotOnKeyError as exc:
+        # a model the key does not offer: the answer is that sentence, not the local setup text
+        msg = str(exc)
+        result = {"mode": "error", "model": model, "failed": True}
+        if stream:
+            result["output_stream"] = iter([msg])
+        else:
+            result["output_text"] = msg
+        return result
     except Exception as exc:
         logger.warning("LLM request failed: %s", exc)
         if allow_fallback:

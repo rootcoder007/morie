@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def pairwise_matrix(rankings) -> DescriptiveResult:
-    """Knowing others is intelligence; knowing yourself is true wisdom. -- Lao Tzu"""
+    """Pairwise preference matrix: how often each alternative is ranked above each other one."""
     R = np.asarray(rankings, dtype=float)
     if R.ndim != 2:
         raise ValueError("rankings must be 2D (voters x candidates).")
