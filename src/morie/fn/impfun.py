@@ -106,8 +106,8 @@ def copying_model(study_hap, reference_haps, rho=0.001, theta=0.01):
     if not 0.0 < r_ < 1.0 or not 0.0 < t_ < 0.5:
         raise ValueError("impfun: rho must lie in (0,1) and theta in (0,0.5)")
 
-    def emit(kk, l):
-        return 1.0 - t_ if R[kk][l] == h[l] else t_
+    def emit(kk, ell):
+        return 1.0 - t_ if R[kk][ell] == h[ell] else t_
 
     F = [[0.0] * K for _ in range(L)]
     scale = []
@@ -116,12 +116,12 @@ def copying_model(study_hap, reference_haps, rho=0.001, theta=0.01):
     s = sum(F[0]) or 1.0
     F[0] = [v / s for v in F[0]]
     scale.append(s)
-    for l in range(1, L):
-        tot = sum(F[l - 1])
+    for ell in range(1, L):
+        tot = sum(F[ell - 1])
         for kk in range(K):
-            F[l][kk] = ((1.0 - r_) * F[l - 1][kk] + r_ * tot / K) * emit(kk, l)
-        s = sum(F[l]) or 1.0
-        F[l] = [v / s for v in F[l]]
+            F[ell][kk] = ((1.0 - r_) * F[ell - 1][kk] + r_ * tot / K) * emit(kk, ell)
+        s = sum(F[ell]) or 1.0
+        F[ell] = [v / s for v in F[ell]]
         scale.append(s)
     return {
         "posterior": F,
@@ -135,12 +135,12 @@ def impute_dosage(posterior, reference_haps, site):
     r"""Posterior mean over templates -- uncertainty included."""
     P = [[float(v) for v in r] for r in k.mat(posterior)]
     R = [[int(v) for v in r] for r in k.mat(reference_haps)]
-    l = int(site)
-    if l < 0 or l >= len(P):
-        raise ValueError("impfun: site %d is outside the region" % l)
-    w = P[l]
+    ell = int(site)
+    if ell < 0 or ell >= len(P):
+        raise ValueError(f"impfun: site {int(ell)} is outside the region")
+    w = P[ell]
     tot = sum(w) or 1.0
-    p1 = sum(w[kk] * R[kk][l] for kk in range(len(R))) / tot
+    p1 = sum(w[kk] * R[kk][ell] for kk in range(len(R))) / tot
     return {
         "dosage": 2.0 * p1,
         "allele_freq": p1,
@@ -174,7 +174,7 @@ def concordance(imputed, truth):
     a = [float(v) for v in k.vec(imputed)]
     b = [float(v) for v in k.vec(truth)]
     if len(a) != len(b):
-        raise ValueError("impfun: %d imputed but %d true genotypes" % (len(a), len(b)))
+        raise ValueError(f"impfun: {int(len(a))} imputed but {int(len(b))} true genotypes")
     ok = sum(1 for i in range(len(a)) if round(a[i]) == round(b[i]))
     return RichResult(
         payload={

@@ -51,10 +51,10 @@ def soft_voting_classifier(probabilities, y=None, weights=None, classes=None):
     """
     Q = np.asarray(probabilities, dtype=float)
     if Q.ndim != 3:
-        raise ValueError("probabilities must be (M, n, C), got %d dimensions." % Q.ndim)
+        raise ValueError(f"probabilities must be (M, n, C), got {int(Q.ndim)} dimensions.")
     M, n, C = Q.shape
     if M < 2:
-        raise ValueError("need at least 2 classifiers, got %d." % M)
+        raise ValueError(f"need at least 2 classifiers, got {int(M)}.")
     if np.any(Q < -1e-9) or np.any(Q > 1 + 1e-9):
         raise ValueError("probabilities must lie in [0, 1].")
     sums = Q.sum(axis=2)
@@ -62,13 +62,13 @@ def soft_voting_classifier(probabilities, y=None, weights=None, classes=None):
         raise ValueError("each classifier's probabilities must sum to 1 over classes.")
     w = np.ones(M) / M if weights is None else np.asarray(weights, dtype=float).ravel()
     if w.size != M:
-        raise ValueError("weights has %d entries for %d members." % (w.size, M))
+        raise ValueError(f"weights has {int(w.size)} entries for {int(M)} members.")
     if np.any(w < 0) or w.sum() <= 0:
         raise ValueError("weights must be non-negative and not all zero.")
     w = w / w.sum()
     labs = np.arange(C) if classes is None else np.asarray(classes)
     if labs.size != C:
-        raise ValueError("classes has %d entries for %d columns." % (labs.size, C))
+        raise ValueError(f"classes has {int(labs.size)} entries for {int(C)} columns.")
 
     proba = np.tensordot(w, Q, axes=(0, 0))
     soft = labs[np.argmax(proba, axis=1)]
@@ -97,7 +97,7 @@ def soft_voting_classifier(probabilities, y=None, weights=None, classes=None):
     if y is not None:
         yv = np.asarray(y).ravel()
         if yv.size != n:
-            raise ValueError("y has %d entries for %d rows." % (yv.size, n))
+            raise ValueError(f"y has {int(yv.size)} entries for {int(n)} rows.")
         memb = np.array([float(np.mean(labs[votes[m]] != yv)) for m in range(M)])
         payload.update(
             {

@@ -235,7 +235,7 @@ def cox_score(beta, Z, time, event):
     lin = Z @ beta
     w = np.exp(lin - lin.max())  # stabilised; cancels in the ratio
     U = np.zeros(p)
-    I = np.zeros((p, p))
+    I_ = np.zeros((p, p))
     loglik = 0.0
     for i in np.flatnonzero(event == 1):
         at_risk = time >= time[i]
@@ -247,9 +247,9 @@ def cox_score(beta, Z, time, event):
         s1 = wr @ Zr / s0
         U += Z[i] - s1
         s2 = (Zr * wr[:, None]).T @ Zr / s0
-        I += s2 - np.outer(s1, s1)
+        I_ += s2 - np.outer(s1, s1)
         loglik += lin[i] - (np.log(s0) + lin.max())
-    return {"score": U, "information": I, "loglik": float(loglik), "n_events": int(event.sum()), "n": int(n)}
+    return {"score": U, "information": I_, "loglik": float(loglik), "n_events": int(event.sum()), "n": int(n)}
 
 
 # --- Z- and M-estimator machinery (Ch. 2-3) -----------------------

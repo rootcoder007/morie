@@ -7,7 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch9_mm_instr_predict"]
 
 
-def kamath_ch9_mm_instr_predict(I, M, theta, f=None):
+def kamath_ch9_mm_instr_predict(I, M, theta, f=None):  # noqa: E741
     r"""A = f(I, M; theta).
 
     An instruction sample is the triplet (I, M, R): instruction,

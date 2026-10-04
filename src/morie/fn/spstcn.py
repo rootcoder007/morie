@@ -109,11 +109,17 @@ def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None, method="mono
         )
         if "beta_t" in p:
             cov = gneiting_with_temporal(spatial_h, temporal_u, beta_t=float(p["beta_t"]), **kw)
-            model = lambda d, u: gneiting_with_temporal(d, u, beta_t=float(p["beta_t"]), **kw)
+
+            def model(d, u):
+                return gneiting_with_temporal(d, u, beta_t=float(p["beta_t"]), **kw)
+
             payload["equation"] = "9.9"
         else:
             cov = gneiting_covariance(spatial_h, temporal_u, **kw)
-            model = lambda d, u: gneiting_covariance(d, u, **kw)
+
+            def model(d, u):
+                return gneiting_covariance(d, u, **kw)
+
             payload["equation"] = "9.8"
         payload["separable"] = bool(beta == 0.0)
         lines.append(("beta", beta))
@@ -141,9 +147,10 @@ def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None, method="mono
         cov = scale_mixture_covariance(
             spatial_h, temporal_u, p["cov_spatial"], p["cov_temporal"], p["nodes"], p["weights"]
         )
-        model = lambda d, u: scale_mixture_covariance(
-            d, u, p["cov_spatial"], p["cov_temporal"], p["nodes"], p["weights"]
-        )
+
+        def model(d, u):
+            return scale_mixture_covariance(d, u, p["cov_spatial"], p["cov_temporal"], p["nodes"], p["weights"])
+
         payload["equation"] = "9.16"
 
     else:  # differential
@@ -156,7 +163,10 @@ def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None, method="mono
             n_quad=p.get("n_quad", 40),
         )
         cov, meta = jones_zhang_covariance(spatial_h, temporal_u, **kw)
-        model = lambda d, u: jones_zhang_covariance(d, u, **kw)[0]
+
+        def model(d, u):
+            return jones_zhang_covariance(d, u, **kw)[0]
+
         payload["equation"] = "9.17"
         payload["quadrature"] = meta
         lines += [

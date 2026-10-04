@@ -333,10 +333,7 @@ def quantal(ld50=4.0, slope=2.0, doses=(0.5, 1, 2, 4, 8, 16, 32), per_group=60, 
     rng = np.random.default_rng(seed)
     d = np.asarray(doses, dtype=float)
     eta = slope * (np.log(d) - math.log(ld50))
-    if link == "probit":
-        p = np.array([0.5 * math.erfc(-v / math.sqrt(2)) for v in eta])
-    else:
-        p = 1 / (1 + np.exp(-eta))
+    p = np.array([0.5 * math.erfc(-v / math.sqrt(2)) for v in eta]) if link == "probit" else 1 / (1 + np.exp(-eta))
     k = rng.binomial(per_group, p)
     return d, k.astype(float), np.full(d.size, float(per_group))
 
@@ -422,7 +419,7 @@ def test_the_tails_do_depend_on_the_link():
     # extreme quantile read off the wrong link is a real error
     d, k, n = quantal(per_group=400, seed=6)
     pro = acute_toxicity_ld50(d, k, n, link="probit", level=0.01)
-    log = acute_toxicity_ld50(d, k, n, link="logit", level=0.01)
+    acute_toxicity_ld50(d, k, n, link="logit", level=0.01)
     mid_pro = acute_toxicity_ld50(d, k, n, link="probit")
     assert pro["link_sensitivity"] > mid_pro["link_sensitivity"] * 3
 

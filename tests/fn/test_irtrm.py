@@ -9,7 +9,7 @@ from morie.fn.irtrm import irt_rasch_residuals
 
 class TestIrtRaschResiduals:
     def test_returns_dataframe(self, mapq_binary_df, rng):
-        k = mapq_binary_df.shape[1]
+        mapq_binary_df.shape[1]
         params = {col: {"b": float(rng.standard_normal())} for col in mapq_binary_df.columns}
         theta = rng.standard_normal(len(mapq_binary_df))
         result = irt_rasch_residuals(mapq_binary_df, params, theta)

@@ -380,7 +380,7 @@ class Series:
             other = list(other)
         if isinstance(other, list | tuple):
             if len(other) != len(self._data):
-                raise ValueError("length mismatch in Series arithmetic: %d vs %d" % (len(self._data), len(other)))
+                raise ValueError(f"length mismatch in Series arithmetic: {int(len(self._data))} vs {int(len(other))}")
             d = [fn(a, b) for a, b in zip(self._data, other)]
         else:
             d = [fn(a, other) for a in self._data]
@@ -834,7 +834,7 @@ class Series:
         elif isinstance(to_replace, list | tuple):
             if isinstance(value, list | tuple):
                 if len(value) != len(to_replace):
-                    raise ValueError("replace: %d targets but %d replacements" % (len(to_replace), len(value)))
+                    raise ValueError(f"replace: {int(len(to_replace))} targets but {int(len(value))} replacements")
                 table = dict(zip(to_replace, value))
             else:
                 table = {k: value for k in to_replace}
@@ -942,7 +942,7 @@ class Series:
         if idx and names and all(isinstance(k, tuple) for k in idx):
             width = len(idx[0])
             if all(len(k) == width for k in idx) and len(names) == width:
-                names = [nm if nm is not None else "level_%d" % i for i, nm in enumerate(names)]
+                names = [nm if nm is not None else f"level_{int(i)}" for i, nm in enumerate(names)]
                 cols = {names[i]: [k[i] for k in idx] for i in range(width)}
                 cols[val_name] = list(self._data)
                 return DataFrame(cols)
@@ -1378,7 +1378,7 @@ class DataFrame:
     def columns(self, names):
         names = list(names)
         if len(names) != len(self._cols):
-            raise ValueError("length mismatch: frame has %d columns, got %d names" % (len(self._cols), len(names)))
+            raise ValueError(f"length mismatch: frame has {int(len(self._cols))} columns, got {int(len(names))} names")
         self._cols = dict(zip(names, self._cols.values()))
 
     @property
@@ -1424,7 +1424,7 @@ class DataFrame:
         return self.shape[0]
 
     def __repr__(self):
-        return "DataFrame(%d x %d: %s)" % (self.shape[0], self.shape[1], list(self._cols)[:8])
+        return f"DataFrame({int(self.shape[0])} x {int(self.shape[1])}: {list(self._cols)[:8]})"
 
     def __contains__(self, key):
         return key in self._cols
@@ -1507,7 +1507,7 @@ class DataFrame:
         if not isinstance(value, list):
             value = [value] * (n if self._cols else 1)
         if self._cols and len(value) != n:
-            raise ValueError("length mismatch: %d vs %d" % (len(value), n))
+            raise ValueError(f"length mismatch: {int(len(value))} vs {int(n)}")
         self._cols[key] = list(value)
         if not self.index and value:
             self.index = Index(range(len(value)))
@@ -1731,7 +1731,7 @@ class DataFrame:
                 width = len(idx[0])
                 names = getattr(self, "index_names", None)
                 if not names or len(names) != width:
-                    names = ["level_%d" % i for i in range(width)]
+                    names = [f"level_{int(i)}" for i in range(width)]
                 keycols = {names[i]: [k[i] for k in idx] for i in range(width)}
                 out._cols = {**keycols, **out._cols}
                 return out
@@ -4227,10 +4227,10 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     # without this a title row ("Table 1 ...", then blanks) collapsed 23 columns into 2
     cols, seen = [], {}
     for j, v in enumerate(rows[header]):
-        name = "Unnamed: %d" % j if v is _NAN or v is None or (isinstance(v, str) and not v.strip()) else str(v)
+        name = f"Unnamed: {int(j)}" if v is _NAN or v is None or (isinstance(v, str) and not v.strip()) else str(v)
         if name in seen:
             seen[name] += 1
-            name = "%s.%d" % (name, seen[name])
+            name = f"{name}.{int(seen[name])}"
         else:
             seen[name] = 0
         cols.append(name)
@@ -4287,13 +4287,13 @@ class ExcelWriter:
             '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>',
         ]
         for i, row in enumerate(rows):
-            out.append('<row r="%d">' % (i + 1))
+            out.append(f'<row r="{int(i + 1)}">')
             for j, v in enumerate(row):
-                ref = "%s%d" % (_xlsx_col_ref(j), i + 1)
+                ref = f"{_xlsx_col_ref(j)}{int(i + 1)}"
                 if v is None:
                     continue
                 if isinstance(v, bool):
-                    out.append('<c r="%s" t="b"><v>%d</v></c>' % (ref, 1 if v else 0))
+                    out.append(f'<c r="{ref}" t="b"><v>{int(1 if v else 0)}</v></c>')
                 elif isinstance(v, int | float):
                     out.append(f'<c r="{ref}"><v>{v!r}</v></c>')
                 else:
@@ -4309,7 +4309,7 @@ class ExcelWriter:
         import zipfile
 
         n = len(self._sheets)
-        names = ["xl/worksheets/sheet%03d.xml" % (i + 1) for i in range(n)]
+        names = [f"xl/worksheets/sheet{int(i + 1):03d}.xml" for i in range(n)]
 
         ct = [
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
@@ -4345,7 +4345,7 @@ class ExcelWriter:
             "<sheets>",
         ]
         for i, (nm, _) in enumerate(self._sheets):
-            wb.append('<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (_xml_escape(nm), i + 1, i + 1))
+            wb.append(f'<sheet name="{_xml_escape(nm)}" sheetId="{int(i + 1)}" r:id="rId{int(i + 1)}"/>')
         wb.append("</sheets></workbook>")
 
         wbrels = [
@@ -4354,10 +4354,7 @@ class ExcelWriter:
         ]
         for i in range(n):
             wbrels.append(
-                '<Relationship Id="rId%d" Type="http://schemas.'
-                "openxmlformats.org/officeDocument/2006/"
-                'relationships/worksheet" Target="worksheets/'
-                'sheet%03d.xml"/>' % (i + 1, i + 1)
+                f'<Relationship Id="rId{int(i + 1)}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet{int(i + 1):03d}.xml"/>'
             )
         wbrels.append("</Relationships>")
 
@@ -4458,7 +4455,7 @@ def _assert_frame_equal(left, right, check_dtype=True, check_names=True, rtol=1e
     if lc != rc:
         raise AssertionError(f"columns differ: {lc!r} vs {rc!r}. {err_msg}")
     if len(left) != len(right):
-        raise AssertionError("row count differs: %d vs %d. %s" % (len(left), len(right), err_msg))
+        raise AssertionError(f"row count differs: {int(len(left))} vs {int(len(right))}. {err_msg}")
     for c in lc:
         a, b = list(left[c]), list(right[c])
         for i, (x, y) in enumerate(zip(a, b)):
@@ -4466,9 +4463,9 @@ def _assert_frame_equal(left, right, check_dtype=True, check_names=True, rtol=1e
                 if x != x and y != y:
                     continue
                 if not abs(x - y) <= atol + rtol * abs(y):
-                    raise AssertionError("column %r differs at row %d: %r != %r. %s" % (c, i, x, y, err_msg))
+                    raise AssertionError(f"column {c!r} differs at row {int(i)}: {x!r} != {y!r}. {err_msg}")
             elif x != y:
-                raise AssertionError("column %r differs at row %d: %r != %r. %s" % (c, i, x, y, err_msg))
+                raise AssertionError(f"column {c!r} differs at row {int(i)}: {x!r} != {y!r}. {err_msg}")
 
 
 def _assert_series_equal(left, right, **kw):

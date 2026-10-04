@@ -128,7 +128,9 @@ def grad_fd(f, x, h=1e-6):
 # activations and elementary maps
 # =======================================================================
 def test_hmsigm_derivative_matches_finite_difference():
-    f = lambda t: float(geron_sigmoid([t])["a"][0])
+    def f(t):
+        return float(geron_sigmoid([t])["a"][0])
+
     for t in (-2.0, -0.3, 0.0, 1.7):
         assert geron_sigmoid([t])["grad"][0] == pytest.approx(central(f, t), abs=1e-7)
 
@@ -151,13 +153,18 @@ def test_hmtanh_against_exponential_definition():
 def test_hmselu_continuity_and_slope():
     r = geron_selu([-1e-9, 1e-9])
     assert float(r["a"][0]) == pytest.approx(float(r["a"][1]), abs=1e-8)
-    f = lambda z: float(geron_selu([z])["a"][0])
+
+    def f(z):
+        return float(geron_selu([z])["a"][0])
+
     for z in (-1.3, -0.2, 0.4, 2.0):
         assert float(geron_selu([z])["grad"][0]) == pytest.approx(central(f, z), abs=1e-6)
 
 
 def test_hmswi_gradient_and_nonmonotonicity():
-    f = lambda z: float(geron_swish([z])["a"][0])
+    def f(z):
+        return float(geron_swish([z])["a"][0])
+
     for z in (-3.0, -1.0, 0.0, 2.0):
         assert float(geron_swish([z])["grad"][0]) == pytest.approx(central(f, z), abs=1e-6)
     # swish dips below zero on the negative side; a monotone activation cannot.
@@ -307,8 +314,13 @@ def test_hmswin_windows_are_local_without_shift():
 def test_hmrvn_inverts_a_nonlinear_block():
     u = lcg(4, seed=11)
     x = np.array(u) * 4 - 2
-    F = lambda a: np.tanh(3 * a) - 0.5
-    G = lambda a: np.sin(a) * 2
+
+    def F(a):
+        return np.tanh(3 * a) - 0.5
+
+    def G(a):
+        return np.sin(a) * 2
+
     r = geron_revnet(x, F, G)
     y1 = x[:2] + F(x[2:])
     y2 = x[2:] + G(y1)
@@ -337,7 +349,7 @@ def test_hmxcpt_separable_saving_and_totals():
     r = geron_xception(1000)
     assert int(r["trainable_params"]) == int(r["weight_params"]) + 2 * int(r["bn_channels"])
     assert int(r["total_params"]) == int(r["trainable_params"]) + int(r["non_trainable_params"])
-    assert int(r["n_separable"]) == sum(1 for l in r["layers"] if l["kind"] == "separable3x3")
+    assert int(r["n_separable"]) == sum(1 for ell in r["layers"] if ell["kind"] == "separable3x3")
 
 
 # =======================================================================
@@ -367,8 +379,12 @@ def test_hmtsf_extrapolates_and_scores_persistence():
 
 
 def test_hmseq2_loss_matches_hand_log_sum():
-    z = lambda s: np.asarray([1.0])
-    dec = lambda zz, prefix: np.asarray([0.0, math.log(3.0), 0.0])
+    def z(s):
+        return np.asarray([1.0])
+
+    def dec(zz, prefix):
+        return np.asarray([0.0, math.log(3.0), 0.0])
+
     # softmax over (0, log 3, 0) is (1/5, 3/5, 1/5)
     r = geron_seq2seq([1], [1, 0], z, dec)
     want = -(math.log(0.6) + math.log(0.2)) / 2
@@ -381,7 +397,7 @@ def test_hmt5_span_corruption_is_lossless():
     toks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
     r = geron_t5(toks, noise_density=0.4, mean_span=2, seed=5)
     assert restore(r["encoder_input"], r["decoder_target"]) == toks
-    assert int(r["n_masked"]) == sum(l for _, l in r["spans"])
+    assert int(r["n_masked"]) == sum(ell for _, ell in r["spans"])
     kept = [t for t in r["encoder_input"] if not t.startswith("<extra_id_")]
     assert len(kept) + int(r["n_masked"]) == len(toks)
 
@@ -582,7 +598,10 @@ def test_hmsgdu_gradient_matches_finite_difference():
     X = np.array([[1.5, -2.0]])
     y = np.array([0.75])
     theta = np.array([0.3, -0.1])
-    loss = lambda th: float((X[0] @ th - y[0]) ** 2)
+
+    def loss(th):
+        return float((X[0] @ th - y[0]) ** 2)
+
     r = geron_sgd_update(X, y, theta, eta=0.1, index=0)
     assert np.allclose(r["gradient"], grad_fd(loss, theta), atol=1e-6)
     assert np.allclose(r["theta"], theta - 0.1 * np.asarray(r["gradient"]), atol=1e-12)
@@ -1149,7 +1168,10 @@ def test_hmzsl_calibration_removes_a_constant_bias():
     denom = math.exp(2.0) + 1.0
     assert [float(v) for v in r["probabilities"]] == pytest.approx([math.exp(2.0) / denom, 1 / denom], abs=1e-12)
     assert r["predicted_label"] == "a"
-    f = lambda p: [1.0, 4.0] if p == "" else [3.0, 6.0]
+
+    def f(p):
+        return [1.0, 4.0] if p == "" else [3.0, 6.0]
+
     rc = geron_zero_shot(f, "x", labels=["u", "v"], null_prompt="")
     assert [float(v) for v in rc["probabilities"]] == pytest.approx([0.5, 0.5], abs=1e-12)
     with pytest.raises(ValueError):

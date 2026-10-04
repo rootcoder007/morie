@@ -130,9 +130,9 @@ def profile_beta(wy, wX, ar=(), ma=(), filter="exact"):
     """
     n = len(wy)
     if any(len(c) != n for c in wX):
-        raise ValueError("sarimax: regressor columns must match the differenced series length %d" % n)
+        raise ValueError(f"sarimax: regressor columns must match the differenced series length {int(n)}")
     if filter not in ("exact", "conditional"):
-        raise ValueError("sarimax: filter must be 'exact' or 'conditional', got %r" % filter)
+        raise ValueError(f"sarimax: filter must be 'exact' or 'conditional', got {filter!r}")
     _col = _filter_column if filter == "exact" else _residual_column
     vy, f = _col(wy, ar, ma)
     if not wX:
@@ -141,10 +141,7 @@ def profile_beta(wy, wX, ar=(), ma=(), filter="exact"):
     for j, c in enumerate(wX):
         if max(abs(v) for v in c) <= 1e-12:
             raise ValueError(
-                "sarimax: regressor %d is annihilated by the "
-                "differencing operator (a linear trend vanishes under "
-                "nabla, a seasonal dummy under nabla_s), so beta is "
-                "not identified" % j
+                f"sarimax: regressor {int(j)} is annihilated by the differencing operator (a linear trend vanishes under nabla, a seasonal dummy under nabla_s), so beta is not identified"
             )
     vx = [_col(c, ar, ma)[0] for c in wX]
     k = len(vx)
@@ -168,14 +165,14 @@ def _columns(X, n):
         cols = [[float(v) for v in X]]
     for c in cols:
         if len(c) != n:
-            raise ValueError("sarimax: regressor has %d rows but the series has %d" % (len(c), n))
+            raise ValueError(f"sarimax: regressor has {int(len(c))} rows but the series has {int(n)}")
     return cols
 
 
 def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, include_constant=None, method="ml"):
     r"""Fit a regression with seasonal ARIMA errors."""
     if method not in ("ml", "uls", "css"):
-        raise ValueError("sarimax: method must be 'ml', 'uls' or 'css', got %r" % method)
+        raise ValueError(f"sarimax: method must be 'ml', 'uls' or 'css', got {method!r}")
     y = [float(v) for v in y]
     p, d, q = (int(v) for v in order)
     P, D, Q = (int(v) for v in seasonal_order)
@@ -185,9 +182,7 @@ def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, include_cons
         include_constant = (d + D) < 2
     if include_constant and (d + D) >= 2:
         raise ValueError(
-            "sarimax: a constant is admitted only when "
-            "d + D < 2 (Hyndman-Khandakar 2008 Sec. 3.1), "
-            "got d = %d, D = %d" % (d, D)
+            f"sarimax: a constant is admitted only when d + D < 2 (Hyndman-Khandakar 2008 Sec. 3.1), got d = {int(d)}, D = {int(D)}"
         )
     if include_constant:
         cols = [[1.0] * len(y)] + cols

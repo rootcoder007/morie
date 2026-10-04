@@ -40,7 +40,7 @@ def test_evblockm_basic():
 
     # Recompute the block-maxima sample mean (location sanity check).
     bm = expected_maxima
-    sample_mean = sum(bm) / len(bm)
+    sum(bm) / len(bm)
     # Just verify the fit produced a finite, real location parameter.
     assert result["mu"] == result["mu"]  # not NaN
     assert result["xi"] == result["xi"]  # not NaN

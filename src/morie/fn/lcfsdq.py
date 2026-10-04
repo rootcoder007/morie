@@ -71,7 +71,7 @@ def _d(a, b, metric):
         return _w.csum(abs(a[k] - b[k]) for k in range(len(a)))
     if metric == "chebyshev":
         return max(abs(a[k] - b[k]) for k in range(len(a)))
-    raise ValueError("metric must be one of %r" % (METRICS,))
+    raise ValueError(f"metric must be one of {METRICS!r}")
 
 
 def nn_distances(coords, k=1, metric="euclidean"):
@@ -112,7 +112,7 @@ def clark_evans(dists, n, area, perimeter, edge="none"):
     variance, which is what stops a small window reading as regular.
     """
     if edge not in EDGE:
-        raise ValueError("edge must be one of %r" % (EDGE,))
+        raise ValueError(f"edge must be one of {EDGE!r}")
     if area <= 0.0:
         raise ValueError("the window has zero area")
     lam = n / area
@@ -180,9 +180,9 @@ def lc_first_sd_query(
     ch. 2.
     """
     if metric not in METRICS:
-        raise ValueError("metric must be one of %r" % (METRICS,))
+        raise ValueError(f"metric must be one of {METRICS!r}")
     if edge not in EDGE:
-        raise ValueError("edge must be one of %r" % (EDGE,))
+        raise ValueError(f"edge must be one of {EDGE!r}")
     pts = [[float(v) for v in p] for p in coords]
     n = len(pts)
     if n < 3:
@@ -233,10 +233,7 @@ def lc_first_sd_query(
     local_z = []
     for i in range(n):
         members = [j for j in range(n) if j != i and _d(pts[i], pts[j], metric) <= radius]
-        if members:
-            lm = _w.csum(xv[j] for j in members) / len(members)
-        else:
-            lm = float("nan")
+        lm = _w.csum(xv[j] for j in members) / len(members) if members else float("nan")
         local_mean.append(lm)
         local_count.append(len(members))
         # A z against the sampling distribution of a mean of that many

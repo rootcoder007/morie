@@ -176,7 +176,10 @@ def test_km046_filling_the_slot_removes_it():
 
 def test_km049_is_a_proportion_of_exact_top1_hits():
     R = [("x1", "pos"), ("x2", "neg"), ("x3", "pos"), ("x4", "neg")]
-    P = lambda x, t: {"pos": 0.6, "neg": 0.4}
+
+    def P(x, t):
+        return {"pos": 0.6, "neg": 0.4}
+
     out = kamath_ch3_top1_prompt_metric(R, "T", P)
     assert out["estimate"] == 0.5 and out["n_correct"] == 2
     allright = kamath_ch3_top1_prompt_metric([("x", "pos")], "T", P)
@@ -211,7 +214,10 @@ def test_km051_repeats_the_trigger_exactly_n_times():
 def test_km052_equals_a_hand_log_sum():
     D = [("a", "pos"), ("b", "neg"), ("c", "pos")]
     probs = {"a": 0.5, "b": 0.25, "c": 0.125}
-    T5 = lambda T, s: probs[s.split()[0]]
+
+    def T5(T, s):
+        return probs[s.split()[0]]
+
     out = kamath_ch3_t5_template_obj(D, "{x} -> {y}", T5)
     hand = math.log(0.5) + math.log(0.25) + math.log(0.125)
     assert abs(out["estimate"] - hand) < TOL
@@ -226,7 +232,10 @@ def test_km052_rejects_impossible_templates():
 
 def test_km053_sums_only_over_the_index_set():
     p = {"a": 0.5, "b": 0.25, "c": 0.125}
-    phi = lambda z, hp: p[z]
+
+    def phi(z, hp):
+        return p[z]
+
     y, h = ["a", "b", "c"], [0.0, 1.0, 2.0]
     full = kamath_ch3_prefix_tuning_obj(phi, "x", y, h)
     part = kamath_ch3_prefix_tuning_obj(phi, "x", y, h, Y_idx=[0, 2])
@@ -236,7 +245,10 @@ def test_km053_sums_only_over_the_index_set():
 
 def test_km053_sees_the_prefix_h_before_the_position():
     seen = []
-    phi = lambda z, hp: (seen.append(len(hp)), 0.5)[1]
+
+    def phi(z, hp):
+        return (seen.append(len(hp)), 0.5)[1]
+
     kamath_ch3_prefix_tuning_obj(phi, "x", ["a", "b", "c"], [0.0, 1.0, 2.0])
     assert seen == [0, 1, 2]
     with pytest.raises(ValueError):
@@ -280,7 +292,10 @@ def test_km055_shape_errors_are_specific():
 
 def test_km056_equals_a_hand_double_sum():
     table = {("d1", "a"): 0.5, ("d1", "b"): 0.25, ("d2", "c"): 0.125}
-    model = lambda xi, pre, t: table[(xi, t)]
+
+    def model(xi, pre, t):
+        return table[(xi, t)]
+
     out = kamath_ch4_full_finetune_obj(model, ["d1", "d2"], [["a", "b"], ["c"]])
     hand = math.log(0.5) + math.log(0.25) + math.log(0.125)
     assert abs(out["estimate"] - hand) < TOL
@@ -289,7 +304,9 @@ def test_km056_equals_a_hand_double_sum():
 
 
 def test_km056_rejects_mismatched_and_empty_inputs():
-    m = lambda xi, pre, t: 0.5
+    def m(xi, pre, t):
+        return 0.5
+
     with pytest.raises(ValueError):
         kamath_ch4_full_finetune_obj(m, ["a"], [["u"], ["v"]])
     with pytest.raises(ValueError):
@@ -297,8 +314,12 @@ def test_km056_rejects_mismatched_and_empty_inputs():
 
 
 def test_km057_scores_the_adapted_model_against_the_frozen_one():
-    adapted = lambda xi, pre, t: 0.5
-    base = lambda xi, pre, t: 0.125
+    def adapted(xi, pre, t):
+        return 0.5
+
+    def base(xi, pre, t):
+        return 0.125
+
     x, y = ["d"], [["a", "b"]]
     out = kamath_ch4_lora_obj(adapted, base, x, y)
     ref = kamath_ch4_full_finetune_obj(adapted, x, y)
@@ -307,7 +328,9 @@ def test_km057_scores_the_adapted_model_against_the_frozen_one():
 
 
 def test_km057_improvement_is_zero_when_the_adapter_changes_nothing():
-    same = lambda xi, pre, t: 0.3
+    def same(xi, pre, t):
+        return 0.3
+
     out = kamath_ch4_lora_obj(same, same, ["d"], [["a"]])
     assert abs(out["improvement"]) < TOL
 
@@ -435,7 +458,9 @@ def test_km064_is_zero_for_an_exact_decomposition():
 
 
 def test_km065_matches_a_hand_softplus_and_ignores_reward_shifts():
-    r = lambda x, y: {"g": 2.0, "b": 0.5}[y]
+    def r(x, y):
+        return {"g": 2.0, "b": 0.5}[y]
+
     out = kamath_ch5_reward_loss_pairwise(r, ["p"], ["g"], ["b"], [0])
     assert abs(out["estimate"] - math.log(1 + math.exp(-1.5))) < TOL
     shifted = kamath_ch5_reward_loss_pairwise(lambda x, y: r(x, y) + 100.0, ["p"], ["g"], ["b"], [0])
@@ -445,7 +470,9 @@ def test_km065_matches_a_hand_softplus_and_ignores_reward_shifts():
 def test_km065_gradient_matches_a_finite_difference():
     # d/dm of -log sigmoid(m) is -sigmoid(-m)
     def loss(m):
-        r = lambda x, y: m if y == "w" else 0.0
+        def r(x, y):
+            return m if y == "w" else 0.0
+
         return kamath_ch5_reward_loss_pairwise(r, ["p"], ["w"], ["l"], [0])["estimate"]
 
     m, eps = 0.75, 1e-6
@@ -455,7 +482,9 @@ def test_km065_gradient_matches_a_finite_difference():
 
 
 def test_km065_honours_the_preference_index():
-    r = lambda x, y: {"a": 3.0, "b": 0.0}[y]
+    def r(x, y):
+        return {"a": 3.0, "b": 0.0}[y]
+
     first = kamath_ch5_reward_loss_pairwise(r, ["p"], ["a"], ["b"], [0])
     second = kamath_ch5_reward_loss_pairwise(r, ["p"], ["a"], ["b"], [1])
     assert first["margins"] == [3.0] and second["margins"] == [-3.0]
@@ -477,7 +506,9 @@ def test_km066_requires_a_reward_and_valid_probabilities():
 
 
 def test_km067_agrees_with_km065_pair_for_pair():
-    r = lambda x, y: {"w": 1.25, "l": -0.5}[y]
+    def r(x, y):
+        return {"w": 1.25, "l": -0.5}[y]
+
     bt = kamath_ch5_rm_bradley_terry(["p", "q"], ["w", "w"], ["l", "l"], r)
     pair = kamath_ch5_reward_loss_pairwise(r, ["p", "q"], ["w", "w"], ["l", "l"], [0, 0])
     assert abs(bt["estimate"] - pair["estimate"]) < TOL
@@ -485,7 +516,9 @@ def test_km067_agrees_with_km065_pair_for_pair():
 
 
 def test_km068_is_the_negated_mean_of_km069():
-    r = lambda x, y: {"a": 1.0, "b": 0.0}[y]
+    def r(x, y):
+        return {"a": 1.0, "b": 0.0}[y]
+
     phi = [[0.75, 0.25], [0.5, 0.5]]
     ref = [[0.5, 0.5], [0.5, 0.5]]
     ppo = kamath_ch5_ppo_loss(phi, ["p", "q"], [["a", "b"], ["a", "b"]], r, 0.5, pi_ref=ref)
@@ -617,7 +650,9 @@ def test_km076_falls_as_the_winner_gains_probability():
 
 
 def test_km077_conditions_on_the_model_responding():
-    M = lambda x: None if x == "skip" else x
+    def M(x):
+        return None if x == "skip" else x
+
     out = kamath_ch6_factscore(M, ["a b c d", "skip", "a"], str.split, {"a"})
     # scored prompts: 1/4 and 1/1 -> mean 0.625, abstention excluded
     assert abs(out["estimate"] - 0.625) < TOL
@@ -1079,7 +1114,9 @@ def test_km107_checks_the_declared_lengths():
 
 
 def test_km108_boundary_of_the_guarantee():
-    M = lambda D: {"o1": 0.5, "o2": 0.5} if D == "A" else {"o1": 0.25, "o2": 0.75}
+    def M(D):
+        return {"o1": 0.5, "o2": 0.5} if D == "A" else {"o1": 0.25, "o2": 0.75}
+
     out = kamath_ch6_differential_privacy(M, "A", "B", ["o1"], math.log(2.0))
     assert abs(out["epsilon_required"] - math.log(2.0)) < 1e-12
     assert out["satisfied"] is True
@@ -1088,7 +1125,9 @@ def test_km108_boundary_of_the_guarantee():
 
 
 def test_km108_sums_the_mass_over_the_output_subset():
-    M = lambda D: {"o1": 0.4, "o2": 0.2, "o3": 0.4} if D == "A" else {"o1": 0.2, "o2": 0.1, "o3": 0.7}
+    def M(D):
+        return {"o1": 0.4, "o2": 0.2, "o3": 0.4} if D == "A" else {"o1": 0.2, "o2": 0.1, "o3": 0.7}
+
     out = kamath_ch6_differential_privacy(M, "A", "B", ["o1", "o2"], 5.0)
     assert abs(out["p_A"] - 0.6) < TOL and abs(out["p_B"] - 0.3) < TOL
     with pytest.raises(ValueError):

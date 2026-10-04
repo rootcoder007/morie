@@ -8,7 +8,7 @@ R = importlib.import_module("morie.fn.replwt")
 
 Y = [12.0, 20.0, 7.0, 9.5, 31.0, 24.0, 5.0, 6.5, 18.0, 11.0, 40.0, 33.0]
 W = [4.0, 4.0, 2.5, 2.5, 6.0, 6.0, 3.0, 3.0, 5.0, 5.0, 1.5, 1.5]
-STR = ["h%d" % (i // 2) for i in range(12)]
+STR = [f"h{int(i // 2)}" for i in range(12)]
 D = R.design(W, STR, list(range(12)))
 # two PSUs per stratum: V = sum_h (y_h1 - y_h2)^2
 CLOSED = sum((W[2 * h] * Y[2 * h] - W[2 * h + 1] * Y[2 * h + 1]) ** 2 for h in range(6))

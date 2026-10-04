@@ -80,7 +80,7 @@ def empirical_variogram(coords, z, lags=None, cutoff=None, model=None, weights="
     }
     if model is not None:
         if model not in MODELS:
-            raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+            raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
         fit = fit_variogram_wls(lag, gam, npair, model, weights)
         rel = fit["nugget"] / fit["sill"] if fit["sill"] > 0 else np.nan
         payload.update(
@@ -107,8 +107,9 @@ def empirical_variogram(coords, z, lags=None, cutoff=None, model=None, weights="
                     "empirical semivariogram values are appreciable and are what "
                     "actually costs efficiency"
                 ),
-                "method": "Empirical semivariogram with a %s model fitted by %s"
-                % (model, "WLS" if weights == "cressie" else "OLS"),
+                "method": "Empirical semivariogram with a {} model fitted by {}".format(
+                    model, "WLS" if weights == "cressie" else "OLS"
+                ),
             }
         )
     return RichResult(payload=payload)

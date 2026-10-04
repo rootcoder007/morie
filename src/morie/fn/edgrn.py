@@ -124,7 +124,7 @@ def tmm_factor(counts_sample, counts_reference, trim_m=0.3, trim_a=0.05, lib_sam
     y = [float(v) for v in k.vec(counts_sample)]
     r = [float(v) for v in k.vec(counts_reference)]
     if len(y) != len(r):
-        raise ValueError("edgrn: %d genes in the sample but %d in the reference" % (len(y), len(r)))
+        raise ValueError(f"edgrn: {int(len(y))} genes in the sample but {int(len(r))} in the reference")
     Nk = float(lib_sample) if lib_sample is not None else sum(y)
     Nr = float(lib_reference) if lib_reference is not None else sum(r)
     if Nk <= 0.0 or Nr <= 0.0:
@@ -193,10 +193,7 @@ def moderate_dispersion(gene_dispersions, common=None, prior_df=10.0, df_residua
     if d0 < 0.0 or dg <= 0.0:
         raise ValueError("edgrn: the degrees of freedom must be positive")
     pos = [v for v in p if v > _EPS]
-    if common is None:
-        c = math.exp(sum(math.log(v) for v in pos) / len(pos)) if pos else 0.0
-    else:
-        c = float(common)
+    c = (math.exp(sum(math.log(v) for v in pos) / len(pos)) if pos else 0.0) if common is None else float(common)
     w = d0 / (d0 + dg)
     out = []
     for v in p:

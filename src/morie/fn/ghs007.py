@@ -18,7 +18,10 @@ def ghosal_ch2_binary_regression_density(y, x=None, f=0.7, H=None):
     likelihood of a link-transformed regression function. Default
     logistic H; ``f`` a scalar value f(x). Keys: distribution."""
     if H is None:
-        H = lambda v: 1.0 / (1.0 + math.exp(-v))
+
+        def H(v):
+            return 1.0 / (1.0 + math.exp(-v))
+
     p = H(float(f))
     ys = _bnp._flat(y)
     lik = 1.0

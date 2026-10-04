@@ -90,7 +90,7 @@ def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative", kind="binary
         r["estimate"], r["adjusted"], r["unadjusted"]
     """
     if contrast not in _CONTRASTS:
-        raise ValueError("time_dep_covariate: contrast must be one of %r, got %r" % (_CONTRASTS, contrast))
+        raise ValueError(f"time_dep_covariate: contrast must be one of {_CONTRASTS!r}, got {contrast!r}")
     A_hist = list(A) if isinstance(A, (list, tuple)) and A and isinstance(A[0], (list, tuple)) else [A]
     L_hist = (
         list(L_t)
@@ -102,16 +102,14 @@ def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative", kind="binary
         raise ValueError("time_dep_covariate: need at least one time point")
     if len(L_hist) != K:
         raise ValueError(
-            "time_dep_covariate: %d treatment times but %d covariate "
-            "blocks; Sec. 21.2 needs L-bar_k at every k" % (K, len(L_hist))
+            f"time_dep_covariate: {int(K)} treatment times but {int(len(L_hist))} covariate blocks; Sec. 21.2 needs L-bar_k at every k"
         )
     yv = k.vec(y)
     n = len(yv)
     for kk in range(K):
         if len(k.vec(A_hist[kk])) != n:
             raise ValueError(
-                "time_dep_covariate: outcome has %d rows but "
-                "treatment at time %d has %d" % (n, kk, len(k.vec(A_hist[kk])))
+                f"time_dep_covariate: outcome has {int(n)} rows but treatment at time {int(kk)} has {int(len(k.vec(A_hist[kk])))}"
             )
 
     w, per_time = k.ip_weights_history(A_hist, L_hist, kind=kind, stabilize=stabilize, trim=trim)
@@ -136,10 +134,7 @@ def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative", kind="binary
         block = k.mat(L_hist[kk])
         for c in range(len(block[0])):
             Lcols.append([row[c] for row in block])
-    if Lcols:
-        Xadj = [[expo[i]] + [float(c[i]) for c in Lcols] for i in range(n)]
-    else:
-        Xadj = X
+    Xadj = [[expo[i]] + [float(c[i]) for c in Lcols] for i in range(n)] if Lcols else X
     adj = k.wls(Xadj, yv, [1.0] * n)
 
     s1 = sum(w)

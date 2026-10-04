@@ -61,7 +61,7 @@ def n_parameters(n_features, n_fields, k_dim, model="ffm"):
     r""":math:`nfk` for FFM against :math:`nk` for FM."""
     n, f, kk = int(n_features), int(n_fields), int(k_dim)
     if model not in ("ffm", "fm"):
-        raise ValueError("ffmFM: model must be ffm or fm, got %r" % (model,))
+        raise ValueError(f"ffmFM: model must be ffm or fm, got {model!r}")
     return n * f * kk if model == "ffm" else n * kk
 
 
@@ -87,7 +87,7 @@ def logistic_loss(y, phi_val):
     r""":math:`\log(1 + e^{-y\phi})`, with :math:`y \in \{-1,1\}`."""
     yv = float(y)
     if yv not in (-1.0, 1.0):
-        raise ValueError("ffmFM: the label must be -1 or 1, got %r" % (y,))
+        raise ValueError(f"ffmFM: the label must be -1 or 1, got {y!r}")
     z = -yv * float(phi_val)
     return math.log(1.0 + math.exp(z)) if z < 700 else z
 
@@ -98,13 +98,13 @@ def fit_ffm(rows, labels, fields, n_features, n_fields, k_dim=4, eta=0.1, lam=2e
     if n < 1 or F < 1 or kk < 1:
         raise ValueError("ffmFM: n_features, n_fields and k must all be at least 1")
     if len(rows) != len(labels):
-        raise ValueError("ffmFM: %d rows but %d labels" % (len(rows), len(labels)))
+        raise ValueError(f"ffmFM: {int(len(rows))} rows but {int(len(labels))} labels")
     rng = np.random.default_rng(seed)
     scale = 1.0 / math.sqrt(kk)
     W = [[[float(rng.uniform()) * scale for _ in range(kk)] for _ in range(F)] for _ in range(n)]
     G = [[[1.0] * kk for _ in range(F)] for _ in range(n)]
     hist = []
-    for ep in range(int(epochs)):
+    for _ep in range(int(epochs)):
         tot = 0.0
         for r in range(len(rows)):
             y = float(labels[r])

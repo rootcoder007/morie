@@ -64,9 +64,9 @@ def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0, kind="kl"):
     if np.any(A < -1e-9) or np.any(A > 1 + 1e-9):
         raise ValueError("activations must lie in [0, 1]; apply a sigmoid first.")
     if not 0.0 < target < 1.0:
-        raise ValueError("target must lie in (0, 1), got %r." % target)
+        raise ValueError(f"target must lie in (0, 1), got {target!r}.")
     if kind not in ("kl", "l1"):
-        raise ValueError("kind must be 'kl' or 'l1', got %r." % kind)
+        raise ValueError(f"kind must be 'kl' or 'l1', got {kind!r}.")
 
     rho_hat = A.mean(axis=0)
     eps = 1e-12
@@ -95,7 +95,7 @@ def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0, kind="kl"):
             "weight": float(weight),
             "n_units": int(A.shape[1]),
             "n": int(A.shape[0]),
-            "method": "Sparse-autoencoder %s activation penalty" % kind.upper(),
+            "method": f"Sparse-autoencoder {kind.upper()} activation penalty",
         }
     )
 

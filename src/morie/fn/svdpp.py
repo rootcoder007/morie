@@ -100,7 +100,7 @@ def predict(mu, b_user, b_item, p_u, q_i, rated_items=None, y=None, exponent=-0.
     p = [float(v) for v in k.vec(p_u)]
     q = [float(v) for v in k.vec(q_i)]
     if len(p) != len(q):
-        raise ValueError("svdpp: the user and item factors differ in width (%d, %d)" % (len(p), len(q)))
+        raise ValueError(f"svdpp: the user and item factors differ in width ({int(len(p))}, {int(len(q))})")
     imp = [0.0] * len(p)
     n_rated = 0
     if rated_items and y:

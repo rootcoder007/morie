@@ -100,7 +100,7 @@ def g_computation(strata, outcome_means, covariate_probs):
     s = list(strata)
     p = [float(covariate_probs[v]) for v in s]
     if abs(sum(p) - 1.0) > 1e-9:
-        raise ValueError("tlgcmp: the covariate distribution must sum to 1, got %.9f" % sum(p))
+        raise ValueError(f"tlgcmp: the covariate distribution must sum to 1, got {sum(p):.9f}")
     q = [float(outcome_means[v]) for v in s]
     return sum(p[i] * q[i] for i in range(len(s)))
 
@@ -116,7 +116,7 @@ def sequential_g_formula(Q_functions, L_supports, L_probs, rule):
     """
     T = len(L_supports)
     if len(L_probs) != T:
-        raise ValueError("tlgcmp: %d covariate supports but %d distributions" % (T, len(L_probs)))
+        raise ValueError(f"tlgcmp: {int(T)} covariate supports but {int(len(L_probs))} distributions")
 
     def walk(t, hist):
         if t == T:
@@ -124,10 +124,10 @@ def sequential_g_formula(Q_functions, L_supports, L_probs, rule):
         tot = 0.0
         probs = L_probs[t](hist)
         if abs(sum(probs) - 1.0) > 1e-9:
-            raise ValueError("tlgcmp: the conditional law at time %d sums to %.9f" % (t, sum(probs)))
-        for j, l in enumerate(L_supports[t]):
-            a = rule(hist + [l])
-            tot += probs[j] * walk(t + 1, hist + [l, a])
+            raise ValueError(f"tlgcmp: the conditional law at time {int(t)} sums to {sum(probs):.9f}")
+        for j, ell in enumerate(L_supports[t]):
+            a = rule(hist + [ell])
+            tot += probs[j] * walk(t + 1, hist + [ell, a])
         return tot
 
     val = walk(0, [])
@@ -153,20 +153,20 @@ def counterfactual_mean(Y, A, L, a_star, strata_probs=None):
     """
     y = [float(v) for v in k.vec(Y)]
     a = [float(v) for v in k.vec(A)]
-    l = [int(v) for v in k.vec(L)]
-    if not (len(y) == len(a) == len(l)):
+    ell = [int(v) for v in k.vec(L)]
+    if not (len(y) == len(a) == len(ell)):
         raise ValueError("tlgcmp: the inputs differ in length")
-    levels = sorted(set(l))
+    levels = sorted(set(ell))
     if strata_probs is None:
-        strata_probs = {v: sum(1 for x in l if x == v) / float(len(l)) for v in levels}
+        strata_probs = {v: sum(1 for x in ell if x == v) / float(len(ell)) for v in levels}
     tot = 0.0
     for v in levels:
-        idx = [i for i in range(len(y)) if l[i] == v and a[i] == float(a_star)]
+        idx = [i for i in range(len(y)) if ell[i] == v and a[i] == float(a_star)]
         if not idx:
             raise ValueError(
-                "tlgcmp: stratum %r contains no unit "
-                "with A = %r -- a positivity violation, "
-                "not a missing value" % (v, a_star)
+                f"tlgcmp: stratum {v!r} contains no unit "
+                f"with A = {a_star!r} -- a positivity violation, "
+                "not a missing value"
             )
         tot += strata_probs[v] * sum(y[i] for i in idx) / len(idx)
     return tot

@@ -181,7 +181,7 @@ def log_likelihood(Q, observations, alpha=1.0):
 def log_prior(R, prior="uniform", scale=1.0, r_max=None, J=0.1, H=0.0, neighbours=None):
     """Log prior over reward vectors, up to a constant."""
     if prior not in PRIORS:
-        raise ValueError("birl: prior must be one of %s" % (PRIORS,))
+        raise ValueError(f"birl: prior must be one of {PRIORS}")
     if scale <= 0:
         raise ValueError("birl: scale must be positive")
     if prior == "uniform":

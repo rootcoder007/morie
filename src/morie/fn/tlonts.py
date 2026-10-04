@@ -139,7 +139,7 @@ def martingale_check(D, past, tol=0.2):
     d = [float(q) for q in k.vec(D)]
     p = [float(q) for q in k.vec(past)]
     if len(d) != len(p):
-        raise ValueError("tlonts: %d influence terms but %d past values" % (len(d), len(p)))
+        raise ValueError(f"tlonts: {int(len(d))} influence terms but {int(len(p))} past values")
     n = len(d)
     md, mp = sum(d) / n, sum(p) / n
     num = sum((d[i] - md) * (p[i] - mp) for i in range(n))
@@ -167,13 +167,13 @@ def online_tmle_series(Y, A, Z, Q_fn, g_fn, target_prob, burn_in=10):
         raise ValueError("tlonts: the series differ in length")
     b = int(burn_in)
     if b < 1 or b >= T:
-        raise ValueError("tlonts: burn_in must lie in 1..%d" % (T - 1))
+        raise ValueError(f"tlonts: burn_in must lie in 1..{int(T - 1)}")
     est, D = [], []
     running = 0.0
     for t in range(b, T):
         g = float(g_fn(z[t]))
         if g <= 0.0 or g >= 1.0:
-            raise ValueError("tlonts: the treatment probability left (0,1) at time %d" % t)
+            raise ValueError(f"tlonts: the treatment probability left (0,1) at time {int(t)}")
         gs = float(target_prob)
         h = (gs / g) if a[t] == 1.0 else ((1.0 - gs) / (1.0 - g))
         q1 = float(Q_fn(1.0, z[t]))

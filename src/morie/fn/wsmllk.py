@@ -52,7 +52,10 @@ def wasserman_log_likelihood(data, f, theta):
     data_arr = np.atleast_1d(np.asarray(data, dtype=float))
     theta = float(theta)
     if f is None:
-        f = lambda x, th: np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
+        def f(x, th):
+            return np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
     with np.errstate(divide="ignore"):
         per = [float(v) for v in np.log(np.asarray(f(data_arr, theta), dtype=float))]
     return RichResult(

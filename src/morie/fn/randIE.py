@@ -93,7 +93,7 @@ _ROUTES = ("gformula", "weighting")
 def _labels(v, name):
     out = [str(x) for x in v]
     if not out:
-        raise ValueError("randIE: %s is empty" % name)
+        raise ValueError(f"randIE: {name} is empty")
     return out
 
 
@@ -110,10 +110,10 @@ def mediator_distribution(A, M, C=None, laplace=0.0):
     m = _labels(M, "M")
     n = len(a)
     if len(m) != n:
-        raise ValueError("randIE: %d treatments but %d mediator values" % (n, len(m)))
+        raise ValueError(f"randIE: {int(n)} treatments but {int(len(m))} mediator values")
     c = ["*"] * n if C is None else _labels(C, "C")
     if len(c) != n:
-        raise ValueError("randIE: %d strata for %d units" % (len(c), n))
+        raise ValueError(f"randIE: {int(len(c))} strata for {int(n)} units")
     levels = sorted(set(m))
     cells = {}
     for i in range(n):
@@ -141,21 +141,21 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0", route="gformula", la
     ``own_mediator_mean`` in the result.
     """
     if route not in _ROUTES:
-        raise ValueError("randIE: route must be gformula or weighting, got %r" % (route,))
+        raise ValueError(f"randIE: route must be gformula or weighting, got {route!r}")
     y = [float(v) for v in k.vec(Y)]
     av = _labels(A, "A")
     mv = _labels(M, "M")
     n = len(y)
     if not (len(av) == len(mv) == n):
-        raise ValueError("randIE: Y, A and M must agree in length (%d, %d, %d)" % (n, len(av), len(mv)))
+        raise ValueError(f"randIE: Y, A and M must agree in length ({int(n)}, {int(len(av))}, {int(len(mv))})")
     cv = ["*"] * n if C is None else _labels(C, "C")
     if len(cv) != n:
-        raise ValueError("randIE: %d strata for %d units" % (len(cv), n))
+        raise ValueError(f"randIE: {int(len(cv))} strata for {int(n)} units")
     a, a_star = str(a), str(a_star)
     if a not in set(av):
-        raise ValueError("randIE: treatment arm %r not observed; arms are %s" % (a, sorted(set(av))))
+        raise ValueError(f"randIE: treatment arm {a!r} not observed; arms are {sorted(set(av))}")
     if a_star not in set(av):
-        raise ValueError("randIE: treatment arm %r not observed; arms are %s" % (a_star, sorted(set(av))))
+        raise ValueError(f"randIE: treatment arm {a_star!r} not observed; arms are {sorted(set(av))}")
     md = mediator_distribution(av, mv, cv, laplace=laplace)
     strata = md["strata"]
     levels = md["levels"]
@@ -187,9 +187,7 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0", route="gformula", la
             total += pc[s] * w * ybar[key]
     if missing:
         raise ValueError(
-            "randIE: %d cell(s) needed by the g-formula "
-            "are empty, e.g. %r -- psi(%s, %s) is not "
-            "identified from this sample" % (len(missing), missing[0], a, a_star)
+            f"randIE: {int(len(missing))} cell(s) needed by the g-formula are empty, e.g. {missing[0]!r} -- psi({a}, {a_star}) is not identified from this sample"
         )
 
     if route == "weighting":
@@ -206,7 +204,7 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0", route="gformula", la
             num += w * y[i]
             den += w
         if den <= _EPS:
-            raise ValueError("randIE: the mediator-density ratio put no weight on arm %r" % (a,))
+            raise ValueError(f"randIE: the mediator-density ratio put no weight on arm {a!r}")
         total = num / den
 
     own = [y[i] for i in range(n) if av[i] == a]

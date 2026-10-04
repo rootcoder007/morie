@@ -51,10 +51,7 @@ def fauzi_ks_smoothed(x, cdf="norm", args=None, h=None, n_grid=512):
     else:
         dist = getattr(_sps, cdf)
         if args is None:
-            if cdf == "norm":
-                args = (float(np.mean(x)), float(np.std(x, ddof=1)))
-            else:
-                args = ()
+            args = (float(np.mean(x)), float(np.std(x, ddof=1))) if cdf == "norm" else ()
 
         def F0(t, dist=dist, args=args):
             return dist.cdf(t, *args)

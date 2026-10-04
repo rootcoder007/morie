@@ -42,8 +42,8 @@ def noise_exposure(
     twa = float(10 * np.log10(energy / total_hours))
 
     dose = 0.0
-    for l, d in zip(levels, durs):
-        allowed = criterion_hours / (2 ** ((l - oel_dba) / 5))
+    for ell, d in zip(levels, durs):
+        allowed = criterion_hours / (2 ** ((ell - oel_dba) / 5))
         dose += d / allowed * 100
 
     return ESRes(

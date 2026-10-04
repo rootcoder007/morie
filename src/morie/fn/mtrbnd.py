@@ -67,10 +67,7 @@ def monotone_treatment_response(y, D, direction="increasing", d=None, y_min=None
     lo = float(min(yv)) if y_min is None else float(y_min)
     hi = float(max(yv)) if y_max is None else float(y_max)
     lev = float(max(z)) if d is None else float(d)
-    if direction == "increasing":
-        r = mtrbound(yv, z, lev, lo, hi)
-    else:
-        r = mtrbound(yv, [-v for v in z], -lev, lo, hi)
+    r = mtrbound(yv, z, lev, lo, hi) if direction == "increasing" else mtrbound(yv, [-v for v in z], -lev, lo, hi)
     return RichResult(
         payload={
             "lower": r["lower"],

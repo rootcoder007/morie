@@ -17,8 +17,8 @@ def ghosal_semipara_eff(grad_psi, info_matrix):
     Cramer-Rao lower bound (sec. 12.3). Solves I x = grad and forms
     the quadratic. Keys: estimate."""
     g = _bnp._flat(grad_psi)
-    I = [[float(v) for v in row] for row in info_matrix]
-    x = np.linalg.solve(np.marr(I), np.marr(g))
+    I_ = [[float(v) for v in row] for row in info_matrix]
+    x = np.linalg.solve(np.marr(I_), np.marr(g))
     xl = [float(v) for v in x._flat()]
     bound = sum(a * b for a, b in zip(g, xl))
     res = RichResult(

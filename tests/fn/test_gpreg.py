@@ -11,7 +11,7 @@ def _se_kernel(u):
 
 def test_gpreg_basic():
     """Test basic functionality against the R&W (2006) eq. (2.23)-(2.24) formulas."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Use small, hand-checkable shapes: n=4 training points, m=2 test points, d=2.
     X = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
     y = [0.5, -1.2, 0.3, 1.1]
@@ -57,7 +57,7 @@ def test_gpreg_basic():
                 sub = [[M[i][j] for j in range(4) if j != c] for i in range(4) if i != r]
                 co = ((-1) ** (r + c)) * det3(sub)
                 out[c][r] = co  # transpose for inverse
-        d = det3([[M[i][j] for j in range(3)] for i in range(3)])
+        det3([[M[i][j] for j in range(3)] for i in range(3)])
 
         # full 4x4 det:
         def det4(m):

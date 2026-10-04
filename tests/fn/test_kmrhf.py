@@ -32,9 +32,16 @@ def test_kmrhf_basic():
 
 def test_kmrhf_edge():
     """Test edge cases: empty inputs raise ValueError."""
-    sft = lambda p, d: p + "+sft"
-    train_rm = lambda prefs: lambda y: len(y)
-    ppo = lambda pi, rm, ref: pi + "+ppo"
+
+    def sft(p, d):
+        return p + "+sft"
+
+    def train_rm(prefs):
+        return lambda y: len(y)
+
+    def ppo(pi, rm, ref):
+        return pi + "+ppo"
+
     with pytest.raises(ValueError):
         kamath_rlhf_pipeline([], [("a", "b")], "pi0", sft=sft, train_rm=train_rm, ppo=ppo)
     with pytest.raises(ValueError):

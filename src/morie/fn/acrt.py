@@ -89,18 +89,18 @@ def actor_critic(
     ww = k.vec(w) if w is not None else [0.0] * (len(Gv[0]) if Gv else 1)
     g = float(gamma)
     deltas = []
-    I = 1.0
+    I_ = 1.0
     for t in range(T):
         vt = V[t] if t < len(V) else 0.0
         vn = V[t + 1] if t + 1 < len(V) else 0.0
         d = R[t] + g * vn - vt
         deltas.append(d)
         for j in range(len(th)):
-            th[j] = th[j] + float(alpha_theta) * I * d * G[t][j]
+            th[j] = th[j] + float(alpha_theta) * I_ * d * G[t][j]
         for j in range(len(ww)):
             ww[j] = ww[j] + float(alpha_w) * d * Gv[t][j]
         if discount_actor:
-            I = I * g
+            I_ = I_ * g
     return RichResult(
         title="One-step actor-critic",
         summary_lines=[("steps", T)],

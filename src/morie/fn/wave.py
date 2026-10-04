@@ -75,7 +75,7 @@ def _dbfilter(name):
             (1.0 + a - b) / 16.0,
         ]
         return [v / r2 for v in c]
-    raise ValueError("wavelet_basis: unknown wavelet %r (db1, db2, db3)" % (name,))
+    raise ValueError(f"wavelet_basis: unknown wavelet {name!r} (db1, db2, db3)")
 
 
 def _mirror(h):

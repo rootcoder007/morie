@@ -57,7 +57,7 @@ def translate(seq, to_stop=False):
     s = str(seq).upper().replace("U", "T")
     for ch in s:
         if ch not in "ACGTN":
-            raise ValueError("snpeff: %r is not a nucleotide" % ch)
+            raise ValueError(f"snpeff: {ch!r} is not a nucleotide")
     out = []
     for i in range(0, len(s) - 2, 3):
         aa = _CODONS.get(s[i : i + 3], "X")
@@ -93,11 +93,10 @@ def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000, downstream=
     if not ref or not alt:
         raise ValueError("snpeff: ref and alt must be non-empty")
     if pos < 0 or pos >= len(seq):
-        raise ValueError("snpeff: position %d is outside the sequence" % pos)
+        raise ValueError(f"snpeff: position {int(pos)} is outside the sequence")
     if seq[pos : pos + len(ref)] != ref:
         raise ValueError(
-            "snpeff: the reference allele %r does not match "
-            "the sequence at position %d (%r)" % (ref, pos, seq[pos : pos + len(ref)])
+            f"snpeff: the reference allele {ref!r} does not match the sequence at position {int(pos)} ({seq[pos : pos + len(ref)]!r})"
         )
     end = len(seq) if transcript_len is None else cds_start + transcript_len
 
@@ -116,17 +115,14 @@ def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000, downstream=
 
     if len(ref) != len(alt):
         shift = (len(alt) - len(ref)) % 3
-        if shift:
-            eff = "frameshift_variant"
-        else:
-            eff = "inframe_insertion" if len(alt) > len(ref) else "inframe_deletion"
+        eff = "frameshift_variant" if shift else "inframe_insertion" if len(alt) > len(ref) else "inframe_deletion"
         return _pack(eff, None, None, translate(coding), translate(mutated), ref, alt, pos, codon_index=off // 3)
 
     ci = off // 3
     ref_codon = coding[ci * 3 : ci * 3 + 3]
     alt_codon = mutated[ci * 3 : ci * 3 + 3]
     if len(ref_codon) < 3 or len(alt_codon) < 3:
-        raise ValueError("snpeff: the coding sequence is not a whole number of codons at position %d" % pos)
+        raise ValueError(f"snpeff: the coding sequence is not a whole number of codons at position {int(pos)}")
     ra, aa = _CODONS.get(ref_codon, "X"), _CODONS.get(alt_codon, "X")
     if ci == 0 and ra == "M" and aa != "M":
         eff = "start_lost"
@@ -148,7 +144,7 @@ def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000, downstream=
         alt,
         pos,
         codon_index=ci,
-        hgvs_p="p.%s%d%s" % (ra, ci + 1, aa) if ra != aa else "p.%s%d=" % (ra, ci + 1),
+        hgvs_p=f"p.{ra}{int(ci + 1)}{aa}" if ra != aa else f"p.{ra}{int(ci + 1)}=",
     )
 
 
@@ -162,7 +158,7 @@ def _pack(effect, ref_codon, alt_codon, ref_aa, alt_aa, ref, alt, pos, codon_ind
         "alt_aa": alt_aa,
         "codon_index": codon_index,
         "hgvs_p": hgvs_p,
-        "hgvs_c": "c.%d%s>%s" % (pos + 1, ref, alt),
+        "hgvs_c": f"c.{int(pos + 1)}{ref}>{alt}",
         "pos": pos,
         "ref": ref,
         "alt": alt,

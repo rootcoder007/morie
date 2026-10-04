@@ -124,10 +124,7 @@ def geron_model_based(X, y, add_bias=True, eta=None, n_iter=1000):
     resid = A @ theta - yy
     mse = float(np.mean(resid**2))
     ss_tot = float(np.sum((yy - yy.mean()) ** 2))
-    if ss_tot == 0:
-        r2 = 1.0 if mse == 0 else float("-inf")
-    else:
-        r2 = 1.0 - float(np.sum(resid**2)) / ss_tot
+    r2 = (1.0 if mse == 0 else float("-inf")) if ss_tot == 0 else 1.0 - float(np.sum(resid**2)) / ss_tot
     gap = float(np.linalg.norm(t - theta))
 
     return RichResult(

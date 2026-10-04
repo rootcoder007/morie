@@ -78,7 +78,10 @@ def wasserman_bootstrap_percentile(data, T, B, alpha, seed=13):
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1); got {alpha}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     reps = np.sort(_boot_replicates(data, T, B, seed))
     lo = _type1_quantile(reps, alpha / 2.0)
     hi = _type1_quantile(reps, 1.0 - alpha / 2.0)

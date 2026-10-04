@@ -80,8 +80,8 @@ def _points_under(node, children, n):
         if v < n:
             out.append(v)
         else:
-            l, r, _ = children[v]
-            stack.append(l)
+            ell, r, _ = children[v]
+            stack.append(ell)
             stack.append(r)
     return out
 
@@ -169,7 +169,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         if verbose:
             print("[hdbsc] " + msg, flush=True)
 
-    _say("distances (n=%d)" % n)
+    _say(f"distances (n={int(n)})")
     D = [[math.sqrt(sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j]))) for j in range(n)] for i in range(n)]
     _say("core distances")
     core = _core_distances(D, n, mp)
@@ -195,14 +195,14 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         cid = node_to_cluster[node]
         if node < n:
             continue
-        l, r, dist = children[node]
+        ell, r, dist = children[node]
         lam = math.inf if dist <= 0 else 1.0 / dist
-        sl = node_size[l]
+        sl = node_size[ell]
         sr = node_size[r]
         ok_l = sl >= mcs
         ok_r = sr >= mcs
         if ok_l and ok_r:
-            for side, sz in ((l, sl), (r, sr)):
+            for side, sz in ((ell, sl), (r, sr)):
                 c = next_cluster[0]
                 next_cluster[0] += 1
                 node_to_cluster[side] = c
@@ -217,7 +217,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
             for p in _points_under(node, children, n):
                 rows.append((cid, p, lam, 1))
         else:
-            big, small = (l, r) if ok_l else (r, l)
+            big, small = (ell, r) if ok_l else (r, ell)
             for p in _points_under(small, children, n):
                 rows.append((cid, p, lam, 1))
             node_to_cluster[big] = cid
@@ -226,12 +226,12 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
     # --- stability (Eq. 3): for cluster C,
     # S(C) = sum over rows leaving C of size * (lambda - birth(C)). ---
     stability = {c: 0.0 for c in birth}
-    for parent, child, lam, sz in rows:
+    for parent, _child, lam, sz in rows:
         if math.isinf(lam):
             continue  # coincident points, zero density span
         stability[parent] += sz * (lam - birth[parent])
 
-    _say("extract (%s)" % selection)
+    _say(f"extract ({selection})")
 
     def subtree(c):
         out = [c]

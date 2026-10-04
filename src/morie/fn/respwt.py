@@ -63,7 +63,7 @@ def respwt(weights, responded, classes):
     fac = {}
     for c in tot:
         if resp.get(c, 0.0) <= 0.0:
-            raise ValueError("class %r has no respondents" % (c,))
+            raise ValueError(f"class {c!r} has no respondents")
         phi[c] = resp[c] / tot[c]
         fac[c] = 1.0 / phi[c]
     adjusted = [w[i] * fac[classes[i]] if responded[i] else None for i in range(n)]

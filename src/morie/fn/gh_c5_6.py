@@ -23,8 +23,8 @@ def ghosal_vb_dpm(data, K=8, alpha=1.0, tau=1.0, sigma=0.5, n_iter=60, seed=42):
     precision inverse; responsibilities by softmax. Keys: estimate."""
     xs = _bnp._flat(data)
     n = len(xs)
-    M = float(alpha)
-    rng = np.random.default_rng(seed)
+    float(alpha)
+    np.random.default_rng(seed)
     lo, hi = min(xs), max(xs)
     span = (hi - lo) or 1.0
     # spread the initial centers across the data range so the

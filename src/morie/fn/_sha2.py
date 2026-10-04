@@ -160,7 +160,7 @@ def hmac_sha256(key, message):
 
 
 def hexlify(data):
-    return "".join("%02x" % b for b in bytearray(_as_bytes(data)))
+    return "".join(f"{b:02x}" for b in bytearray(_as_bytes(data)))
 
 
 def unhexlify(text):

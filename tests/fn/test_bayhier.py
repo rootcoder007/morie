@@ -82,10 +82,7 @@ def test_bayhier_basic():
     den = 0.0
     for ng, ybg in zip(n_g, ybar):
         denom = tau2_expected + sigma2_expected / ng
-        if denom > 0.0:
-            w = 1.0 / denom
-        else:
-            w = 0.0
+        w = 1.0 / denom if denom > 0.0 else 0.0
         num += w * ybg
         den += w
     mu_expected = num / den if den > 0.0 else grand

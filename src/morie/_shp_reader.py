@@ -61,7 +61,7 @@ def _read_shp(path):
     data = Path(path).read_bytes()
     (code,) = struct.unpack(">i", data[0:4])
     if code != 9994:
-        raise ValueError("%s is not a shapefile (file code %d != 9994)" % (path, code))
+        raise ValueError(f"{path} is not a shapefile (file code {int(code)} != 9994)")
     shapes = []
     off = 100
     n = len(data)
@@ -79,14 +79,14 @@ def _read_shp(path):
         elif base in (3, 5):  # Poly*
             nparts, npts = struct.unpack("<ii", data[off + 36 : off + 44])
             p0 = off + 44
-            parts = list(struct.unpack("<%di" % nparts, data[p0 : p0 + 4 * nparts]))
+            parts = list(struct.unpack(f"<{int(nparts)}i", data[p0 : p0 + 4 * nparts]))
             q0 = p0 + 4 * nparts
-            flat = struct.unpack("<%dd" % (2 * npts), data[q0 : q0 + 16 * npts])
+            flat = struct.unpack(f"<{int(2 * npts)}d", data[q0 : q0 + 16 * npts])
             pts = [(flat[2 * i], flat[2 * i + 1]) for i in range(npts)]
         elif base == 8:  # MultiPoint*
             (npts,) = struct.unpack("<i", data[off + 36 : off + 40])
             q0 = off + 40
-            flat = struct.unpack("<%dd" % (2 * npts), data[q0 : q0 + 16 * npts])
+            flat = struct.unpack(f"<{int(2 * npts)}d", data[q0 : q0 + 16 * npts])
             pts = [(flat[2 * i], flat[2 * i + 1]) for i in range(npts)]
             parts = [0]
         shapes.append((stype, pts, parts))

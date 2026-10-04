@@ -34,10 +34,7 @@ def sha256_hash(
     if iterations < 1:
         raise ValueError("iterations must be >= 1")
 
-    if isinstance(message, str):
-        data = message.encode(encoding)
-    else:
-        data = message
+    data = message.encode(encoding) if isinstance(message, str) else message
 
     digest = hashlib.sha256(data).digest()
     for _ in range(iterations - 1):

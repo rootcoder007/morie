@@ -241,7 +241,7 @@ def select_by_criterion(y, geno, candidates, covars=None, criterion="bic"):
     are in every model being compared, so they cannot separate them.
     """
     if criterion not in CRITERIA:
-        raise ValueError("criterion must be one of %r" % (CRITERIA,))
+        raise ValueError(f"criterion must be one of {CRITERIA!r}")
     n = len(y)
     covars = [] if covars is None else covars
     if criterion == "none" or not candidates:
@@ -320,9 +320,9 @@ def blink_gwas(
     Huang et al. (2019) GigaScience 8(2), giy154.
     """
     if selection not in SELECTIONS:
-        raise ValueError("selection must be one of %r" % (SELECTIONS,))
+        raise ValueError(f"selection must be one of {SELECTIONS!r}")
     if criterion not in CRITERIA:
-        raise ValueError("criterion must be one of %r" % (CRITERIA,))
+        raise ValueError(f"criterion must be one of {CRITERIA!r}")
     ys = [float(v) for v in y]
     n = len(ys)
     if n < 3:

@@ -218,7 +218,7 @@ def bayhmc(
 ):
     """Sample ``logp`` by NUTS or HMC (Hoffman & Gelman 2014)."""
     if sampler not in _SAMPLERS:
-        raise ValueError("bayhmc: sampler must be one of %s" % (_SAMPLERS,))
+        raise ValueError(f"bayhmc: sampler must be one of {_SAMPLERS}")
     theta = [float(v) for v in theta0]
     if not theta:
         raise ValueError("bayhmc: theta0 is empty")

@@ -60,9 +60,9 @@ def alphafold_cropping(seqlen, cropsize, start=1, target=None, pair=None, msa=No
     if mode not in ("clamped", "unclamped"):
         raise ValueError("mode must be 'clamped' or 'unclamped'")
     if cropsize > seqlen:
-        raise ValueError("cropsize %d exceeds seqlen %d" % (cropsize, seqlen))
+        raise ValueError(f"cropsize {int(cropsize)} exceeds seqlen {int(seqlen)}")
     if start < 1 or start + cropsize - 1 > seqlen:
-        raise ValueError("crop [%d, %d] falls outside 1..%d" % (start, start + cropsize - 1, seqlen))
+        raise ValueError(f"crop [{int(start)}, {int(start + cropsize - 1)}] falls outside 1..{int(seqlen)}")
 
     nn = seqlen - cropsize
     # clamped: Uniform[1, n + 1]; unclamped: Uniform[1, n - x + 1], whose

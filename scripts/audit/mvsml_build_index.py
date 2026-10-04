@@ -78,8 +78,7 @@ out = [
 ]
 for r in sorted(rows, key=lambda r: (r["chapter"].zfill(2), r["equation"].zfill(3))):
     out.append(
-        "| %s | %s | %s | %s | `%s` | %s | %s |"
-        % (
+        "| {} | {} | {} | {} | `{}` | {} | {} |".format(
             r["chapter"],
             r["equation"],
             r["method"],
@@ -113,8 +112,9 @@ def k(s):
 
 for ch in sorted(census, key=int):
     out.append(
-        "| %s | %s | %s |"
-        % (ch, " ".join(sorted(census[ch], key=k)), " ".join(sorted(impl_by_ch.get(ch, []), key=k)) or "-")
+        "| {} | {} | {} |".format(
+            ch, " ".join(sorted(census[ch], key=k)), " ".join(sorted(impl_by_ch.get(ch, []), key=k)) or "-"
+        )
     )
 
 Path("scripts/audit/MVSML_INDEX.md").write_text("\n".join(out) + "\n")

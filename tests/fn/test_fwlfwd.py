@@ -65,7 +65,7 @@ def test_fwlfwd_basic():
     # For f(x) = 2*x0 + 3*x1 on the triangle conv{(0,0),(1,0),(0,1)},
     # the maximum over the vertices is attained at (0, 1) with value 3.
     expected_f_min = min(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
-    expected_f_max = max(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
+    max(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
 
     # Frank-Wolfe minimises the linear objective, so the estimate must
     # equal the vertex-minimum of f.

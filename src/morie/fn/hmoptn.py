@@ -73,11 +73,11 @@ def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0, bandwidth=N
     n, p = X.shape
     B = np.atleast_2d(np.asarray(bounds, dtype=float))
     if B.shape != (p, 2):
-        raise ValueError("bounds must have one (low, high) pair per parameter: expected %d, got %s." % (p, B.shape))
+        raise ValueError(f"bounds must have one (low, high) pair per parameter: expected {int(p)}, got {B.shape}.")
     if np.any(B[:, 1] <= B[:, 0]):
         raise ValueError("every bound must have high > low.")
     if not 0.0 < gamma < 1.0:
-        raise ValueError("gamma must lie in (0, 1), got %r." % gamma)
+        raise ValueError(f"gamma must lie in (0, 1), got {gamma!r}.")
 
     rng = np.random.default_rng(int(seed))
     span = B[:, 1] - B[:, 0]

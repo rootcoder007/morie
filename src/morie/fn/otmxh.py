@@ -57,7 +57,7 @@ def ot_mixture_w2(mus1, Sigmas1, w1, mus2, Sigmas2, w2):
         raise ValueError("the two mixtures must live in the same dimension")
     if len(S1) != K1 or len(S2) != K2 or len(p) != K1 or len(q) != K2:
         raise ValueError("means, covariances and weights must agree in count")
-    C = [[ot.w2gauss(M1[k], S1[k], M2[l], S2[l]) for l in range(K2)] for k in range(K1)]
+    C = [[ot.w2gauss(M1[k], S1[k], M2[ell], S2[ell]) for ell in range(K2)] for k in range(K1)]
     T, cost = ot.emd(p, q, C)
     return RichResult(
         payload={

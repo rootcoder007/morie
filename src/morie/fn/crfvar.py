@@ -86,7 +86,7 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
         )
     B = len(forest.trees_)
     if B < 2:
-        raise ValueError("the infinitesimal jackknife needs at least 2 trees, got %d." % B)
+        raise ValueError(f"the infinitesimal jackknife needs at least 2 trees, got {int(B)}.")
     n = forest._n
     N = np.array(forest.in_bag_, dtype=float)  # (B, n)
     s = float(N.sum(axis=1).mean())
@@ -116,10 +116,7 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
     # s (1 - s/n) / B times the per-tree prediction variance.
     var_tree = P.var(axis=0, ddof=1)
     bias = scale * (s * (1.0 - s / n) / B) * var_tree
-    if bias_correct:
-        var = np.maximum(raw - bias, 0.0)
-    else:
-        var = raw
+    var = np.maximum(raw - bias, 0.0) if bias_correct else raw
     share = np.where(raw > 0, bias / raw, np.nan)
 
     se = np.sqrt(var)
@@ -148,9 +145,7 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
             "reliability_note": (
                 None
                 if reliable
-                else "the correction removes most of the raw variance, which "
-                "means %d trees is too few to estimate it; grow more before "
-                "reading these intervals" % B
+                else f"the correction removes most of the raw variance, which means {int(B)} trees is too few to estimate it; grow more before reading these intervals"
             ),
             "n_trees": B,
             "subsample_size": s,

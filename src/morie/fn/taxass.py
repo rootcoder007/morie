@@ -67,13 +67,13 @@ def taxass(kmer_taxa, parent):
     par = {int(k): int(v) for k, v in parent.items()}
     for k, v in par.items():
         if v != k and v not in par:
-            raise ValueError("parent map is missing taxon %d" % v)
+            raise ValueError(f"parent map is missing taxon {int(v)}")
     weights = {}
     for t in hits:
         if t == 0:
             continue
         if t not in par:
-            raise ValueError("hit taxon %d not in parent map" % t)
+            raise ValueError(f"hit taxon {int(t)} not in parent map")
         weights[t] = weights.get(t, 0) + 1
     n_hit = sum(weights.values())
     if n_hit == 0:

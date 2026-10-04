@@ -7,10 +7,7 @@ from morie.fn.cmlmer import compressed_lmm
 def _to_plain(arr):
     """Convert numpy-like array to a nested list of plain Python floats."""
     # Try .tolist() first (works for the shim when implemented)
-    if hasattr(arr, "tolist"):
-        out = arr.tolist()
-    else:
-        out = list(arr)
+    out = arr.tolist() if hasattr(arr, "tolist") else list(arr)
 
     # Recursively unwrap
     def _unwrap(x):

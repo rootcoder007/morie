@@ -109,28 +109,28 @@ def prs_cs_clump(sumstats, ld_ref, p_threshold=None, r2=0.1, window=250000.0, ge
         raise ValueError("prsclm: sumstats must be a mapping with 'beta' and 'p'")
     for key in ("beta", "p"):
         if key not in sumstats:
-            raise ValueError("prsclm: sumstats is missing '%s'" % key)
+            raise ValueError(f"prsclm: sumstats is missing '{key}'")
     beta = [float(v) for v in k.vec(sumstats["beta"])]
     pv = [float(v) for v in k.vec(sumstats["p"])]
     m = len(beta)
     if m == 0:
         raise ValueError("prsclm: no variants")
     if len(pv) != m:
-        raise ValueError("prsclm: %d effect sizes but %d p-values" % (m, len(pv)))
+        raise ValueError(f"prsclm: {int(m)} effect sizes but {int(len(pv))} p-values")
     if any(v < 0.0 or v > 1.0 for v in pv):
         raise ValueError("prsclm: a p-value outside [0, 1]")
     pos = (
         [float(i) for i in range(m)] if "position" not in sumstats else [float(v) for v in k.vec(sumstats["position"])]
     )
     if len(pos) != m:
-        raise ValueError("prsclm: %d variants but %d positions" % (m, len(pos)))
-    names = ["v%d" % i for i in range(m)] if "snp" not in sumstats else [str(v) for v in sumstats["snp"]]
+        raise ValueError(f"prsclm: {int(m)} variants but {int(len(pos))} positions")
+    names = [f"v{int(i)}" for i in range(m)] if "snp" not in sumstats else [str(v) for v in sumstats["snp"]]
     if len(names) != m:
-        raise ValueError("prsclm: %d variants but %d names" % (m, len(names)))
+        raise ValueError(f"prsclm: {int(m)} variants but {int(len(names))} names")
 
     R = [[float(v) for v in row] for row in k.mat(ld_ref)]
     if len(R) != m or any(len(r) != m for r in R):
-        raise ValueError("prsclm: ld_ref must be %d by %d" % (m, m))
+        raise ValueError(f"prsclm: ld_ref must be {int(m)} by {int(m)}")
     if any(R[i][j] < -1e-9 for i in range(m) for j in range(m)):
         raise ValueError(
             "prsclm: ld_ref holds a negative entry -- it must "
@@ -140,7 +140,7 @@ def prs_cs_clump(sumstats, ld_ref, p_threshold=None, r2=0.1, window=250000.0, ge
         )
     asym = max(abs(R[i][j] - R[j][i]) for i in range(m) for j in range(m))
     if asym > 1e-8:
-        raise ValueError("prsclm: ld_ref is not symmetric (largest asymmetry %.3g)" % asym)
+        raise ValueError(f"prsclm: ld_ref is not symmetric (largest asymmetry {asym:.3g})")
     r2t = float(r2)
     if not 0.0 <= r2t <= 1.0:
         raise ValueError("prsclm: r2 must be in [0, 1]")
@@ -188,7 +188,7 @@ def prs_cs_clump(sumstats, ld_ref, p_threshold=None, r2=0.1, window=250000.0, ge
         G = [[float(v) for v in row] for row in k.mat(genotypes)]
         n = len(G)
         if n and any(len(r) != m for r in G):
-            raise ValueError("prsclm: genotypes must have %d columns" % m)
+            raise ValueError(f"prsclm: genotypes must have {int(m)} columns")
         if standardize:
             for a in range(m):
                 col = [G[i][a] for i in range(n)]

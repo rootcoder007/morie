@@ -106,19 +106,18 @@ def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time, n_place
         M, units, periods = as_panel(Ya, unit_id, time_id)
     n_u, T = M.shape
     if n_u < 3:
-        raise ValueError("need at least 3 units (one treated, two donors), got %d." % n_u)
+        raise ValueError(f"need at least 3 units (one treated, two donors), got {int(n_u)}.")
     idx = np.nonzero(units == treated_unit)[0]
     if idx.size != 1:
-        raise ValueError("treated_unit %r is not in the unit set." % (treated_unit,))
+        raise ValueError(f"treated_unit {treated_unit!r} is not in the unit set.")
     row = int(idx[0])
     tt = np.nonzero(periods >= treatment_time)[0]
     if tt.size == 0:
-        raise ValueError("treatment_time %r is after the last period." % (treatment_time,))
+        raise ValueError(f"treatment_time {treatment_time!r} is after the last period.")
     t0 = int(tt[0])
     if t0 < 2:
         raise ValueError(
-            "only %d pre-treatment period(s); the weights are fitted on the "
-            "pre-period, so there is nothing to fit." % t0
+            f"only {int(t0)} pre-treatment period(s); the weights are fitted on the pre-period, so there is nothing to fit."
         )
     if t0 >= T:
         raise ValueError("no post-treatment period.")

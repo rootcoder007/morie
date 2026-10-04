@@ -6,7 +6,10 @@ from morie.fn.infgnt import information_geometry
 
 def test_infgnt_basic():
     """Test basic functionality."""
-    log_p = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
+
+    def log_p(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
     support = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = information_geometry(log_p, theta, support)
@@ -16,7 +19,10 @@ def test_infgnt_basic():
 
 def test_infgnt_edge():
     """Test edge cases."""
-    log_p = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
+
+    def log_p(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
     support = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = information_geometry(log_p, theta, support)

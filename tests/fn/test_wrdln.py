@@ -5,7 +5,7 @@ from morie.fn.wrdln import wrdln
 
 
 def test_wrdln_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = wrdln(text="The quick brown fox jumps over the lazy dog")
     assert result is not None
     assert hasattr(result, "name")

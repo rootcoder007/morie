@@ -68,14 +68,14 @@ def mfird(a, d=None, P=None, inverse=False):
         quad = sum(A[i][r] * Pm[r][c] * A[i][c] for r in range(m) for c in range(m))
         if inverse:
             if quad >= 1.0:
-                raise ValueError("loadings imply communality >= 1 (item %d)" % i)
+                raise ValueError(f"loadings imply communality >= 1 (item {int(i)})")
             s = math.sqrt(1.0 - quad)
-            out.append([A[i][l] / s for l in range(m)])
+            out.append([A[i][ell] / s for ell in range(m)])
             norming.append(s)
             comms.append(quad)
         else:
             s = math.sqrt(1.0 + quad)
-            lam = [A[i][l] / s for l in range(m)]
+            lam = [A[i][ell] / s for ell in range(m)]
             out.append(lam)
             norming.append(s)
             comms.append(sum(lam[r] * Pm[r][c] * lam[c] for r in range(m) for c in range(m)))

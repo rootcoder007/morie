@@ -83,9 +83,9 @@ def cluster_jackknife(preds, bags, groups, correction=True):
     B = len(preds)
     m = len(groups)
     if B < 2:
-        raise ValueError("clrgrf: need at least 2 trees, got %d" % B)
+        raise ValueError(f"clrgrf: need at least 2 trees, got {int(B)}")
     if m < 3:
-        raise ValueError("clrgrf: need at least 3 clusters, got %d" % m)
+        raise ValueError(f"clrgrf: need at least 3 clusters, got {int(m)}")
     # a cluster is in-bag for tree b if any of its rows is
     inbag_c = [[any(bags[b][i] for i in g) for g in groups] for b in range(B)]
     # the AVERAGE number of clusters in a tree, not tree 0's count
@@ -128,18 +128,18 @@ def cluster_forest(
     the interval still looks respectable.
     """
     if unit not in ("cluster", "row"):
-        raise ValueError("clrgrf: unit must be cluster or row, got %r" % (unit,))
+        raise ValueError(f"clrgrf: unit must be cluster or row, got {unit!r}")
     yv = k.vec(y)
     n = len(yv)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("clrgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"clrgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     if len(clusters) != n:
-        raise ValueError("clrgrf: %d cluster labels for %d rows" % (len(clusters), n))
+        raise ValueError(f"clrgrf: {int(len(clusters))} cluster labels for {int(n)} rows")
     groups, labels = cluster_index(clusters)
     m = len(groups)
     if m < 6:
-        raise ValueError("clrgrf: need at least 6 clusters, got %d" % m)
+        raise ValueError(f"clrgrf: need at least 6 clusters, got {int(m)}")
 
     trees, bags, s = grow_forest(
         Xm,

@@ -64,7 +64,7 @@ def average_pooling(x, pool_size=2, stride=None, padding="valid", global_pool=Fa
     elif a.ndim == 4:
         res = a.mean(axis=(1, 2))
     else:
-        raise ValueError("x must have 2, 3 or 4 dimensions, got %d." % a.ndim)
+        raise ValueError(f"x must have 2, 3 or 4 dimensions, got {int(a.ndim)}.")
     return RichResult(
         payload={
             "estimate": res,

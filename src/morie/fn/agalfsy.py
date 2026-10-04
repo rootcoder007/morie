@@ -89,10 +89,10 @@ def _coords(x, what):
         if hasattr(row, "tolist"):
             row = row.tolist()
         if not isinstance(row, (list, tuple)) or len(row) != 3:
-            raise ValueError("%s: each atom needs exactly x, y, z" % what)
+            raise ValueError(f"{what}: each atom needs exactly x, y, z")
         out.append([float(v) for v in row])
     if not out:
-        raise ValueError("%s: no atoms" % what)
+        raise ValueError(f"{what}: no atoms")
     return out
 
 
@@ -202,8 +202,7 @@ def rl_pose_search(
     S = _coords(site, "agalfsy site") if site is not None else None
     if S is not None and len(S) != len(L0):
         raise ValueError(
-            "agalfsy: the site pose has %d atoms and the ligand "
-            "%d -- the reward is an RMSD over matched atoms" % (len(S), len(L0))
+            f"agalfsy: the site pose has {int(len(S))} atoms and the ligand {int(len(L0))} -- the reward is an RMSD over matched atoms"
         )
     if policy is None and S is None:
         raise ValueError(
@@ -227,7 +226,7 @@ def rl_pose_search(
         if policy is not None:
             a = int(policy(L, R, step))
             if not 0 <= a < 12:
-                raise ValueError("agalfsy: policy returned action %d, the action space is 0..11" % a)
+                raise ValueError(f"agalfsy: policy returned action {int(a)}, the action space is 0..11")
             nxt = _apply(L, a)
         else:
             best_a, best_r, nxt = 0, None, None

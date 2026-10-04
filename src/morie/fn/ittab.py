@@ -47,10 +47,7 @@ def item_table(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
         rest = total - col
         sd_r = np.std(rest, ddof=1) if nv > 1 else 0.0
-        if sd_j is not np.nan and sd_j > 1e-15 and sd_r > 1e-15:
-            rc = float(np.corrcoef(col, rest)[0, 1])
-        else:
-            rc = 0.0
+        rc = float(np.corrcoef(col, rest)[0, 1]) if sd_j is not np.nan and sd_j > 1e-15 and sd_r > 1e-15 else 0.0
 
         a_del = crba(np.delete(X, j, axis=1)).raw if k > 2 else np.nan
 

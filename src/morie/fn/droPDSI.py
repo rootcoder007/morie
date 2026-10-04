@@ -55,7 +55,7 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
     if n == 0:
         raise ValueError("droPDSI: an empty series has no water balance")
     if len(PE) != n:
-        raise ValueError("droPDSI: %d precipitation but %d PET values" % (n, len(PE)))
+        raise ValueError(f"droPDSI: {int(n)} precipitation but {int(len(PE))} PET values")
     awc = float(awc)
     if awc <= 0.0:
         raise ValueError("droPDSI: the available water capacity must be positive")
@@ -123,7 +123,7 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
     else:
         mon = [int(v) % 12 for v in k.vec(month)]
         if len(mon) != n:
-            raise ValueError("droPDSI: %d observations but %d month labels" % (n, len(mon)))
+            raise ValueError(f"droPDSI: {int(n)} observations but {int(len(mon))} month labels")
     Kp_month = [0.0] * 12
     D_month = [0.0] * 12
     for j in range(12):

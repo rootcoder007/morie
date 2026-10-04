@@ -118,7 +118,7 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
     M = [[float(v) for v in r] for r in k.mat(G)]
     n, p = len(M), len(M[0])
     if len(yv) != n:
-        raise ValueError("farmlmm: %d phenotypes but %d genotypes" % (len(yv), n))
+        raise ValueError(f"farmlmm: {int(len(yv))} phenotypes but {int(n)} genotypes")
     cov = [int(v) for v in covariates]
     pv, betas = [], []
     for j in range(p):
@@ -190,7 +190,7 @@ def farmcpu(y, G, max_iter=10, threshold=None, seed=0):
     p = len(M[0])
     thr = float(threshold) if threshold is not None else 0.05 / p
     sel, hist, converged = [], [], False
-    for it in range(int(max_iter)):
+    for _it in range(int(max_iter)):
         fem = fixed_effect_scan(yv, M, sel)
         new = sorted(j for j in range(p) if fem["p"][j] < thr)
         hist.append(list(new))

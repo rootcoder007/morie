@@ -88,7 +88,7 @@ def _dist_over(labels, domain):
     p = [0.0] * len(domain)
     for v in labels:
         if v not in idx:
-            raise ValueError("t_closeness: sensitive value %r is absent from the table-wide domain" % (v,))
+            raise ValueError(f"t_closeness: sensitive value {v!r} is absent from the table-wide domain")
         p[idx[v]] += 1.0 / n
     return p
 
@@ -124,7 +124,7 @@ def _emd_hierarchical(p, q, hierarchy, domain):
     is_child = {c for kids in children.values() for c in kids}
     roots = [n for n in named if n not in is_child]
     if len(roots) != 1:
-        raise ValueError("t_closeness: hierarchy must have exactly one root, found %d" % len(roots))
+        raise ValueError(f"t_closeness: hierarchy must have exactly one root, found {int(len(roots))}")
 
     # Height of a node = edges down to a leaf; H = height of the root.
     def height(n):
@@ -141,7 +141,7 @@ def _emd_hierarchical(p, q, hierarchy, domain):
     def extra(n):
         if n not in children:
             if n not in idx:
-                raise ValueError("t_closeness: hierarchy leaf %r is not a domain value" % (n,))
+                raise ValueError(f"t_closeness: hierarchy leaf {n!r} is not a domain value")
             return p[idx[n]] - q[idx[n]]
         kids = [extra(c) for c in children[n]]
         pos = sum(e for e in kids if e > 0)
@@ -161,11 +161,11 @@ def emd_distance(p, q, ground="ordered", hierarchy=None, domain=None):
     """Earth Mover's Distance between two distributions over one domain."""
     g = str(ground).lower()
     if g not in _GROUNDS:
-        raise ValueError("emd_distance: ground must be one of %s, got %r" % (", ".join(_GROUNDS), ground))
+        raise ValueError("emd_distance: ground must be one of {}, got {!r}".format(", ".join(_GROUNDS), ground))
     pv = [float(v) for v in p]
     qv = [float(v) for v in q]
     if len(pv) != len(qv):
-        raise ValueError("emd_distance: P has %d cells but Q has %d" % (len(pv), len(qv)))
+        raise ValueError(f"emd_distance: P has {int(len(pv))} cells but Q has {int(len(qv))}")
     if g == "equal":
         return _emd_equal(pv, qv)
     if g == "ordered":
@@ -211,11 +211,11 @@ def t_closeness(X, quasi_ids, sensitive, t, ground="ordered", hierarchy=None, do
     sv = list(sensitive)
     if len(qs) != n or len(sv) != n:
         raise ValueError(
-            "t_closeness: X, quasi_ids and sensitive must agree in length, got %d, %d and %d" % (n, len(qs), len(sv))
+            f"t_closeness: X, quasi_ids and sensitive must agree in length, got {int(n)}, {int(len(qs))} and {int(len(sv))}"
         )
     t = float(t)
     if t < 0.0:
-        raise ValueError("t_closeness: t must be non-negative, got %r" % (t,))
+        raise ValueError(f"t_closeness: t must be non-negative, got {t!r}")
 
     dom = list(domain) if domain is not None else sorted(set(sv), key=lambda v: (str(type(v)), v))
     q = _dist_over(sv, dom)

@@ -116,13 +116,13 @@ class _TReader:
             return self.double()
         if ttype == _T_BINARY:
             return self.binary()
-        if ttype == _T_LIST or ttype == _T_SET:
+        if ttype in (_T_LIST, _T_SET):
             return self.list()
         if ttype == _T_MAP:
             return self.map()
         if ttype == _T_STRUCT:
             return self.struct()
-        raise ValueError("unknown thrift compact type %d at byte %d" % (ttype, self.pos))
+        raise ValueError(f"unknown thrift compact type {int(ttype)} at byte {int(self.pos)}")
 
     def list(self):
         h = self._byte()
@@ -292,7 +292,7 @@ def _snappy_decompress(data):
             off = int.from_bytes(data[pos : pos + 4], "little")
             pos += 4
         if off == 0 or off > len(out):
-            raise ValueError("snappy: bad copy offset %d at %d" % (off, pos))
+            raise ValueError(f"snappy: bad copy offset {int(off)} at {int(pos)}")
         # Copies may overlap (that is how snappy encodes runs), so this
         # has to advance a byte at a time when off < ln.
         start = len(out) - off
@@ -303,7 +303,7 @@ def _snappy_decompress(data):
                 out.append(out[start + i])
 
     if len(out) != n:
-        raise ValueError("snappy: expected %d bytes, decoded %d" % (n, len(out)))
+        raise ValueError(f"snappy: expected {int(n)} bytes, decoded {int(len(out))}")
     return bytes(out)
 
 
@@ -464,7 +464,7 @@ def _decode_plain(buf, pos, ptype, count, type_length=None):
             vals.append((jday - 2440588) * 86400 * 10**9 + nanos)
         return vals, pos
 
-    raise ValueError("unsupported physical type %d" % ptype)
+    raise ValueError(f"unsupported physical type {int(ptype)}")
 
 
 def _apply_logical(vals, ptype, converted):
@@ -597,7 +597,7 @@ def _column_values(fh, chunk_meta, num_rows):
         pos += ptype_size
         page = _snappy_decompress(raw) if codec == _C_SNAPPY else raw
         if codec not in (_C_SNAPPY, _C_UNCOMPRESSED):
-            raise ValueError("compression codec %d not implemented; the store uses SNAPPY only" % codec)
+            raise ValueError(f"compression codec {int(codec)} not implemented; the store uses SNAPPY only")
 
         if head[1] == _P_DICT:
             dh = head[7]
@@ -635,7 +635,7 @@ def _column_values(fh, chunk_meta, num_rows):
         elif encoding == _E_PLAIN:
             vals, p = _decode_plain(page, p, ptype, present, chunk_meta.get("_typelen"))
         else:
-            raise ValueError("encoding %d not implemented; the store uses PLAIN and RLE_DICTIONARY" % encoding)
+            raise ValueError(f"encoding {int(encoding)} not implemented; the store uses PLAIN and RLE_DICTIONARY")
 
         it = iter(vals)
         got += n
@@ -685,10 +685,10 @@ def _schema_leaves(schema):
             if is_list and rep != _REPEATED and list_name is None and nchild == 1:
                 stack.append([1, maxdef, maxrep, repdef, name])
                 continue
-            raise ValueError("nested schema not implemented: group field %r has %d children" % (name, nchild))
+            raise ValueError(f"nested schema not implemented: group field {name!r} has {int(nchild)} children")
         if maxrep > 1 or (maxrep == 1 and list_name is None):
             raise ValueError(
-                "repeated column %r not implemented; decoding it as flat would silently change the row count" % name
+                f"repeated column {name!r} not implemented; decoding it as flat would silently change the row count"
             )
         leaves.append(
             {
@@ -736,7 +736,7 @@ def read_parquet(path, columns=None):
             byname = {c["name"]: i for i, c in enumerate(leaves)}
             missing = [c for c in columns if c not in byname]
             if missing:
-                raise KeyError("no such column(s) in %s: %s" % (path, ", ".join(missing)))
+                raise KeyError("no such column(s) in {}: {}".format(path, ", ".join(missing)))
             wanted = [byname[c] for c in columns]
 
         data = {}
@@ -763,7 +763,7 @@ def read_parquet(path, columns=None):
 
     df = DataFrame(data)
     if len(df) != num_rows:
-        raise ValueError("footer says %d rows, decoded %d" % (num_rows, len(df)))
+        raise ValueError(f"footer says {int(num_rows)} rows, decoded {int(len(df))}")
     return df
 
 
@@ -853,7 +853,7 @@ def _encode_plain(values, ptype):
             b = v.encode("utf-8") if isinstance(v, str) else bytes(v)
             out += struct.pack("<I", len(b)) + b
         return bytes(out)
-    raise ValueError("cannot PLAIN-encode physical type %d" % ptype)
+    raise ValueError(f"cannot PLAIN-encode physical type {int(ptype)}")
 
 
 def _encode_rle_levels(levels, width):
@@ -887,7 +887,7 @@ def to_parquet(df, path, compression="snappy"):
     is the shape every reader accepts without negotiation.
     """
     if compression not in ("snappy", None, "none", "uncompressed"):
-        raise ValueError("compression must be 'snappy' or None; got %r" % (compression,))
+        raise ValueError(f"compression must be 'snappy' or None; got {compression!r}")
     codec = _C_SNAPPY if compression == "snappy" else _C_UNCOMPRESSED
     compress = _snappy_compress if codec == _C_SNAPPY else (lambda b: b)
 

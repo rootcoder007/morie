@@ -70,8 +70,8 @@ def schabenberger_periodogram(z_lattice, coords=None, omit_zero_frequency=True, 
         "c": p["c"],
     }
     lines = [
-        ("lattice", "%d x %d" % (p["r"], p["c"])),
-        ("frequencies", "%d x %d" % (p["omega1"].size, p["omega2"].size)),
+        ("lattice", "{} x {}".format(int(p["r"]), int(p["c"]))),
+        ("frequencies", "{} x {}".format(int(p["omega1"].size), int(p["omega2"].size))),
         ("mean-invariant off the origin", p["mean_invariant"]),
     ]
     if check_identity:

@@ -85,7 +85,7 @@ def laplacian_coefficient(n_u, n_i):
     r""":math:`p_{ui} = 1/\sqrt{|N_u||N_i|}`."""
     a, b = int(n_u), int(n_i)
     if a < 1 or b < 1:
-        raise ValueError("ngcf: both nodes need at least one neighbour, got (%d, %d)" % (a, b))
+        raise ValueError(f"ngcf: both nodes need at least one neighbour, got ({int(a)}, {int(b)})")
     return 1.0 / math.sqrt(float(a * b))
 
 
@@ -113,7 +113,7 @@ def propagate(E, adjacency, W1, W2, affinity=True, slope=0.2):
     for v in range(n):
         nb = adjacency.get(v, [])
         if not nb:
-            raise ValueError("ngcf: node %d has no neighbours" % v)
+            raise ValueError(f"ngcf: node {int(v)} has no neighbours")
         acc = message(E[v], E[v], W1, W2, laplacian_coefficient(deg[v], deg[v]), affinity)
         for w in nb:
             m = message(E[w], E[v], W1, W2, laplacian_coefficient(deg[v], deg[w]), affinity)
@@ -133,7 +133,7 @@ def stack_layers(E0, adjacency, Ws, affinity=True, slope=0.2):
     for W1, W2 in Ws:
         E = propagate(E, adjacency, W1, W2, affinity, slope)
         layers.append(E)
-    final = [sum((layers[l][v] for l in range(len(layers))), []) for v in range(len(E))]
+    final = [sum((layers[ell][v] for ell in range(len(layers))), []) for v in range(len(E))]
     return RichResult(
         payload={
             "estimate": final,

@@ -158,15 +158,15 @@ def cluster_batch_counts(R, batches, names=None):
         raise ValueError("scintg: one batch label per cell is required")
     if names is None:
         names = sorted(set(batches), key=lambda v: str(v))
-    O = [[0.0] * len(names) for _ in range(K)]
+    O_ = [[0.0] * len(names) for _ in range(K)]
     E = [[0.0] * len(names) for _ in range(K)]
     for bi, b in enumerate(names):
         members = [i for i in range(N) if batches[i] == b]
         Nb = float(len(members))
         for k in range(K):
-            O[k][bi] = sum(R[k][i] for i in members)
+            O_[k][bi] = sum(R[k][i] for i in members)
             E[k][bi] = (Nb / N) * sum(R[k][i] for i in range(N))
-    return {"O": O, "E": E, "batches": names}
+    return {"O": O_, "E": E, "batches": names}
 
 
 def harmony_objective(Z, R, Y, batches, sigma=0.1, theta=2.0):
@@ -235,7 +235,7 @@ def maximum_diversity_clustering(
     differ.
     """
     if diversity not in _SIGNS:
-        raise ValueError("scintg: diversity must be one of %s" % (_SIGNS,))
+        raise ValueError(f"scintg: diversity must be one of {_SIGNS}")
     rows, N, d = _matrix(Z)
     if len(batches) != N:
         raise ValueError("scintg: one batch label per cell is required")
@@ -260,7 +260,7 @@ def maximum_diversity_clustering(
     prev = None
     for _ in range(int(max_iter)):
         counts = cluster_batch_counts(R, batches, names)
-        O, E = counts["O"], counts["E"]
+        O_, E = counts["O"], counts["E"]
         newR = [[0.0] * N for _ in range(K)]
         for i in range(N):
             bi = bidx[batches[i]]
@@ -269,7 +269,7 @@ def maximum_diversity_clustering(
                 dist = 1.0 - sum(centres[k][j] * Zn[i][j] for j in range(d))
                 val = -2.0 * dist / sigma
                 if theta > 0:
-                    o, e = O[k][bi], E[k][bi]
+                    o, e = O_[k][bi], E[k][bi]
                     ratio = (o / e) if (o > 0 and e > 0) else 1e-12
                     sign = 1.0 if diversity == "as_printed" else -1.0
                     val += sign * theta * math.log(ratio)

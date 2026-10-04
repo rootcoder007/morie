@@ -38,7 +38,7 @@ def semi_supervised(X_labeled, y_labeled, X_unlabeled, n_iter=10, threshold=0.9,
     remaining = np.arange(len(X_u))
     n_added_total = 0
 
-    for iteration in range(n_iter):
+    for _iteration in range(n_iter):
         if len(remaining) == 0:
             break
 

@@ -165,15 +165,15 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300, tol=1e-1
     if K < 1:
         raise ValueError("funmix: K must be at least 1")
     if n < K:
-        raise ValueError("funmix: %d components for %d curves" % (K, n))
+        raise ValueError(f"funmix: {int(K)} components for {int(n)} curves")
     tv = [i / (m - 1.0) for i in range(m)] if t is None else [float(v) for v in k.vec(t)]
     if len(tv) != m:
-        raise ValueError("funmix: %d grid points but curves of length %d" % (len(tv), m))
+        raise ValueError(f"funmix: {int(len(tv))} grid points but curves of length {int(m)}")
     p = int(n_basis)
     degree = int(degree)
     if p > m:
         raise ValueError(
-            "funmix: %d basis functions for %d time points -- the coefficient fit is not identified" % (p, m)
+            f"funmix: {int(p)} basis functions for {int(m)} time points -- the coefficient fit is not identified"
         )
 
     tmin, tmax = min(tv), max(tv)

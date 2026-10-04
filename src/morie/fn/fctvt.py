@@ -25,7 +25,7 @@ def factor_convert_levels(data, levels=None) -> DescriptiveResult:
     return DescriptiveResult(
         name="factor_convert_levels",
         value=len(levels),
-        extra={"coded": coded.tolist(), "levels": [str(l) for l in levels], "n_missing": int(np.sum(coded == -1))},
+        extra={"coded": coded.tolist(), "levels": [str(ell) for ell in levels], "n_missing": int(np.sum(coded == -1))},
     )
 
 

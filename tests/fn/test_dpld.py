@@ -11,8 +11,8 @@ def test_dpld_basic():
     X = rng.normal(0, 1, n)
     quasi_ids = rng.integers(0, 5, (n, 2))
     sensitive = ["A" if i % 3 == 0 else "B" if i % 3 == 1 else "C" for i in range(n)]
-    l = 2
-    result = l_diversity(X, quasi_ids, sensitive, l)
+    ell = 2
+    result = l_diversity(X, quasi_ids, sensitive, ell)
     assert isinstance(result, dict)
     expected_keys = [
         "estimate",
@@ -43,8 +43,8 @@ def test_dpld_edge():
     X = rng.normal(0, 1, n)
     quasi_ids = rng.integers(0, 2, (n, 2))
     sensitive = ["X" if i % 2 == 0 else "Y" for i in range(n)]
-    l = 1
-    result = l_diversity(X, quasi_ids, sensitive, l)
+    ell = 1
+    result = l_diversity(X, quasi_ids, sensitive, ell)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "distinct_l" in result

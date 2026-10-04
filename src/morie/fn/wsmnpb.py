@@ -72,7 +72,10 @@ def wasserman_nonparametric_boot(data, T, B, seed=13):
     if B < 2:
         raise ValueError(f"the bootstrap needs B >= 2; got {B}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     u = _lcg_uniforms(B * n, seed)
     idx = np.minimum((u * n).astype(int), n - 1).reshape(B, n)
     reps = np.array([float(T(data[row])) for row in idx])

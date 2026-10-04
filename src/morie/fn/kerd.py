@@ -77,13 +77,13 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian", bw_method="sil
     v = np.asarray(x, dtype=float).ravel()
     n = v.size
     if n < 2:
-        raise ValueError("need at least 2 observations, got %d." % n)
+        raise ValueError(f"need at least 2 observations, got {int(n)}.")
     if np.any(~np.isfinite(v)):
         raise ValueError("x contains non-finite values.")
     if kernel not in KERNELS:
-        raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kernel))
+        raise ValueError(f"kernel must be one of {KERNELS}, got {kernel!r}.")
     if bw_method not in ("silverman", "scott"):
-        raise ValueError("bw_method must be 'silverman' or 'scott', got %r." % bw_method)
+        raise ValueError(f"bw_method must be 'silverman' or 'scott', got {bw_method!r}.")
     sd = float(np.std(v, ddof=1))
     iqr = float(np.subtract(*np.percentile(v, [75, 25])))
     if bandwidth is None:
@@ -98,7 +98,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian", bw_method="sil
         h = float(bandwidth)
         auto = False
     if h <= 0:
-        raise ValueError("bandwidth must be positive, got %r." % bandwidth)
+        raise ValueError(f"bandwidth must be positive, got {bandwidth!r}.")
 
     lo, hi = v.min() - 3 * h, v.max() + 3 * h
     grid = np.linspace(lo, hi, 200) if at is None else np.asarray(at, dtype=float).ravel()
@@ -144,7 +144,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian", bw_method="sil
                 "downward -- by roughly half at a hard boundary"
             ),
             "n": int(n),
-            "method": "Kernel density estimate (%s)" % kernel,
+            "method": f"Kernel density estimate ({kernel})",
         }
     )
 

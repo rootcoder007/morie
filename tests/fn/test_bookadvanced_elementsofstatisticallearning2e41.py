@@ -23,7 +23,7 @@ def test_bookadvanced_elementsofstatisticallearning2e41_basic():
 
 def test_bookadvanced_elementsofstatisticallearning2e41_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     n = 40
     x = np.linspace(-2, 2, n)
     y = np.zeros(n)

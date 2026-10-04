@@ -208,9 +208,7 @@ def off_policy_value(log, policy, behaviour, estimator="ips", reward_model=None,
         s, a, r = log[i]
         if behaviour[i] <= 0.0 and policy[s][a] > 0.0:
             raise ValueError(
-                "the target policy takes action %d in state %d, which "
-                "the logging policy never could: no reweighting of this "
-                "log can estimate its value there" % (a, s)
+                f"the target policy takes action {int(a)} in state {int(s)}, which the logging policy never could: no reweighting of this log can estimate its value there"
             )
     w = []
     clipped = 0

@@ -70,7 +70,7 @@ def exp3_bandit(x, gamma_, T=None, seed=0):
     rows, K = x.shape
     T = rows if T is None else int(T)
     if rows < T:
-        raise ValueError("x has only %d rows" % rows)
+        raise ValueError(f"x has only {int(rows)} rows")
     g = float(gamma_)
     if not (0.0 < g <= 1.0):
         raise ValueError("gamma_ must be in (0, 1]")

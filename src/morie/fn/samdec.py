@@ -82,15 +82,17 @@ def two_way_block(prompt_tokens, image_tokens):
     image contains, and the image learns what was asked of it.
     """
     P = [[float(v) for v in r] for r in k.mat(prompt_tokens)]
-    I = [[float(v) for v in r] for r in k.mat(image_tokens)]
-    if len(P[0]) != len(I[0]):
-        raise ValueError("samdec: prompt tokens are %d-dimensional but image tokens are %d" % (len(P[0]), len(I[0])))
+    I_ = [[float(v) for v in r] for r in k.mat(image_tokens)]
+    if len(P[0]) != len(I_[0]):
+        raise ValueError(
+            f"samdec: prompt tokens are {int(len(P[0]))}-dimensional but image tokens are {int(len(I_[0]))}"
+        )
     sa, _ = _attend(P, P, P)
     P1 = [[P[i][a] + sa[i][a] for a in range(len(P[0]))] for i in range(len(P))]
-    p2i, w_p2i = _attend(P1, I, I)
+    p2i, w_p2i = _attend(P1, I_, I_)
     P2 = [[P1[i][a] + p2i[i][a] for a in range(len(P1[0]))] for i in range(len(P1))]
-    i2p, w_i2p = _attend(I, P2, P2)
-    I2 = [[I[i][a] + i2p[i][a] for a in range(len(I[0]))] for i in range(len(I))]
+    i2p, w_i2p = _attend(I_, P2, P2)
+    I2 = [[I_[i][a] + i2p[i][a] for a in range(len(I_[0]))] for i in range(len(I_))]
     return {
         "prompt_tokens": P2,
         "image_tokens": I2,
@@ -126,7 +128,7 @@ def dynamic_mask_head(output_token, image_grid_vectors, mlp=None):
     H, W = len(G), len(G[0])
     d = len(G[0][0])
     if len(w) != d:
-        raise ValueError("samdec: the dynamic classifier is %d-wide but the spatial vectors are %d" % (len(w), d))
+        raise ValueError(f"samdec: the dynamic classifier is {int(len(w))}-wide but the spatial vectors are {int(d)}")
     logits = [[sum(w[a] * G[i][j][a] for a in range(d)) for j in range(W)] for i in range(H)]
     return {
         "logits": logits,
@@ -179,15 +181,15 @@ def dice_loss(prob, target):
 def decode_mask(prompt_tokens, image_tokens, grid_shape, n_blocks=2, upsample_factor=2, output_index=0):
     r"""Two two-way blocks, upsample, dynamic head."""
     P = [[float(v) for v in r] for r in k.mat(prompt_tokens)]
-    I = [[float(v) for v in r] for r in k.mat(image_tokens)]
+    I_ = [[float(v) for v in r] for r in k.mat(image_tokens)]
     H, W = int(grid_shape[0]), int(grid_shape[1])
-    if len(I) != H * W:
-        raise ValueError("samdec: %d image tokens do not fill a %dx%d grid" % (len(I), H, W))
+    if len(I_) != H * W:
+        raise ValueError(f"samdec: {int(len(I_))} image tokens do not fill a {int(H)}x{int(W)} grid")
     for _ in range(int(n_blocks)):
-        r = two_way_block(P, I)
-        P, I = r["prompt_tokens"], r["image_tokens"]
+        r = two_way_block(P, I_)
+        P, I_ = r["prompt_tokens"], r["image_tokens"]
     f = int(upsample_factor)
-    grid = [[I[i * W + j] for j in range(W)] for i in range(H)]
+    grid = [[I_[i * W + j] for j in range(W)] for i in range(H)]
     big = [[grid[i // f][j // f] for j in range(W * f)] for i in range(H * f)]
     head = dynamic_mask_head(P[int(output_index)], big)
     return RichResult(

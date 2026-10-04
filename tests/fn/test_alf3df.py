@@ -14,7 +14,8 @@ def test_alf3df_basic():
     step_scale = 1.0
 
     # Constant denoiser: returns the clean coordinates as-is.
-    score_fn = lambda v, s: [[0.0, 0.0, 0.0] for _ in range(len(v))]
+    def score_fn(v, s):
+        return [[0.0, 0.0, 0.0] for _ in range(len(v))]
 
     result = af3_diffusion_step(
         x,
@@ -64,7 +65,9 @@ def test_alf3df_edge():
     """Test edge cases: final step with sigma_next omitted, and gamma=0 is reproducible."""
     x = np.random.default_rng(42).normal(0.0, 1.0, (4, 3))
     t = 5.0
-    score_fn = lambda v, s: [[0.0, 0.0, 0.0] for _ in range(len(v))]
+
+    def score_fn(v, s):
+        return [[0.0, 0.0, 0.0] for _ in range(len(v))]
 
     # Final step: sigma_next omitted defaults to 0.0, order 'euler' skips Heun correction.
     result = af3_diffusion_step(
@@ -84,7 +87,7 @@ def test_alf3df_edge():
     assert "direction" in result
 
     # With denoiser identically zero, nxt = cur + dt * (cur / t), dt = 0 - t = -t, so nxt = 0.
-    cur = [[float(v) for v in row] for row in x]
+    [[float(v) for v in row] for row in x]
     for row in result["x"]:
         assert len(row) == 3
         for v in row:

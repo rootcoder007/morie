@@ -125,7 +125,7 @@ def _levels(A, candidate_strata):
     else:
         lv = sorted(set(float(v) for v in A))
     if len(lv) < 2:
-        raise ValueError("tmldta: need at least 2 exposure levels, got %d" % len(lv))
+        raise ValueError(f"tmldta: need at least 2 exposure levels, got {int(len(lv))}")
     return lv
 
 
@@ -134,7 +134,7 @@ def _fit_q(y, A, W, levels, rows, ridge):
     interactions so the surface is free to differ in shape by level --
     without them every level would share one slope and the argmax could
     not move with W."""
-    ref = levels[0]
+    levels[0]
     others = levels[1:]
     p = len(W[0]) if W and W[0] else 0
 
@@ -283,22 +283,22 @@ def tmle_data_adaptive(
         r["estimate"], r["ci"], r["levels_by_split"]
     """
     if method not in _METHODS:
-        raise ValueError("tmldta: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("tmldta: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     yv, Av = k.vec(y), k.vec(D)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("tmldta: %d outcomes but %d exposures" % (n, len(Av)))
+        raise ValueError(f"tmldta: {int(n)} outcomes but {int(len(Av))} exposures")
     Wm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("tmldta: %d covariate rows for %d outcomes" % (len(Wm), n))
+        raise ValueError(f"tmldta: {int(len(Wm))} covariate rows for {int(n)} outcomes")
     if not 0.0 < float(trim) < 0.5:
-        raise ValueError("tmldta: trim must be in (0, 0.5), got %r" % (trim,))
+        raise ValueError(f"tmldta: trim must be in (0, 0.5), got {trim!r}")
     if n < 8:
-        raise ValueError("tmldta: need at least 8 observations, got %d" % n)
+        raise ValueError(f"tmldta: need at least 8 observations, got {int(n)}")
     lv = _levels(Av, candidate_strata)
     missing = [a for a in lv if not any(v == a for v in Av)]
     if missing:
-        raise ValueError("tmldta: candidate levels %s never occur" % (missing,))
+        raise ValueError(f"tmldta: candidate levels {missing} never occur")
 
     lo, hi = (min(yv), max(yv)) if bounds is None else (float(bounds[0]), float(bounds[1]))
     rng = hi - lo
@@ -394,10 +394,10 @@ def variable_importance(y, X, candidate_strata=None, method="cv-tmle", n_folds=1
     n = len(Xm)
     p = len(Xm[0]) if n else 0
     if p < 2:
-        raise ValueError("variable_importance: need at least 2 columns, got %d" % p)
-    nm = list(names) if names is not None else ["X%d" % (j + 1) for j in range(p)]
+        raise ValueError(f"variable_importance: need at least 2 columns, got {int(p)}")
+    nm = list(names) if names is not None else [f"X{int(j + 1)}" for j in range(p)]
     if len(nm) != p:
-        raise ValueError("variable_importance: %d names for %d columns" % (len(nm), p))
+        raise ValueError(f"variable_importance: {int(len(nm))} names for {int(p)} columns")
     out = []
     for j in range(p):
         A = [Xm[i][j] for i in range(n)]

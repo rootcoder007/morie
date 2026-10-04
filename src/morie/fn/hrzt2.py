@@ -42,10 +42,7 @@ def horowitz_local_ate(x, y, z, treatment):
         return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "LATE (insufficient data)"})
     # Dichotomise Z if non-binary
     uniq = np.unique(z)
-    if uniq.size > 2:
-        z_bin = (z > np.median(z)).astype(float)
-    else:
-        z_bin = (z == uniq.max()).astype(float)
+    z_bin = (z > np.median(z)).astype(float) if uniq.size > 2 else (z == uniq.max()).astype(float)
     n1 = (z_bin > 0.5).sum()
     n0 = (z_bin < 0.5).sum()
     if n1 < 5 or n0 < 5:

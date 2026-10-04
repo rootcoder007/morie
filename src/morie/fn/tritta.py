@@ -114,7 +114,7 @@ def alphafold_triangle_attn(z, wq, wk, wv, wb, wg, wo, mode="starting"):
             "estimate": sum(flat) / len(flat),
             "n": n,
             "mode": mode,
-            "method": "AlphaFold triangular self-attention (%s node)" % mode,
+            "method": f"AlphaFold triangular self-attention ({mode} node)",
         }
     )
 

@@ -18,7 +18,10 @@ def mvsml_general_eq_1_1(x, f=None, noise=None):
     Keys: estimate."""
     xs = _gp._flat(x)
     if f is None:
-        f = lambda v: v
+
+        def f(v):
+            return v
+
     sys_part = [float(f(v)) for v in xs]
     eps = [0.0] * len(xs) if noise is None else _gp._flat(noise)
     y = [a + b for a, b in zip(sys_part, eps)]

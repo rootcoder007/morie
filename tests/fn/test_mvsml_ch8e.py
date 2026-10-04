@@ -58,7 +58,7 @@ def test_larger_lambda_shrinks_the_genomic_effects():
 def test_prediction_for_new_individuals_is_k_star_beta():
     # p.276: u_new = K_s beta, a single matrix-vector product
     C, K, y, X = _setup()
-    n = len(K)
+    len(K)
     rng = gp.np.random.default_rng(21)
     Xnew = [[float(rng.integers(0, 3)) for _ in range(len(X[0]))] for _ in range(3)]
     Ks = gp.kernel_matrix(Xnew, kernel="linear", Z=X)

@@ -201,7 +201,6 @@ def steiner_triple_system(v, construct=True):
                     m = ((a + b) * half) % n
                     triples.append([idx[(a, j)], idx[(b, j)], idx[(m, (j + 1) % 3)]])
         seen = {}
-        ok = True
         for t in triples:
             for p in combinations(sorted(t), 2):
                 seen[p] = seen.get(p, 0) + 1

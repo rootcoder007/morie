@@ -29,7 +29,7 @@ def test_gls_route_equivalence():
     """Independent algebra route: with V = Z Z' + lam I,
     beta = (1'V^-1 1)^-1 1'V^-1 y (GLS) and u = Z' V^-1 (y - 1 beta)
     must reproduce the MME solution (Henderson 1975 equivalence)."""
-    n, m = 8, 3
+    n, _m = 8, 3
     M = np.asarray(
         [
             [0, 1, 2],

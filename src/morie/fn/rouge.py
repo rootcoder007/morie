@@ -76,7 +76,7 @@ def rouge_n(candidate, reference, n=1, beta=1.0):
     r"""ROUGE-N with clipped n-gram matching."""
     n = int(n)
     if n < 1:
-        raise ValueError("rouge_n: n must be at least 1, got %r" % (n,))
+        raise ValueError(f"rouge_n: n must be at least 1, got {n!r}")
     c = _ngrams(_toks(candidate), n)
     refs = (
         reference
@@ -129,9 +129,9 @@ def rouge_l(candidate, reference, beta=1.0):
     best = None
     for ref in refs:
         rt = _toks(ref)
-        l = lcs_length(c, rt)
-        p, r, f = _prf(l, len(c), len(rt), beta)
-        cand = {"precision": p, "recall": r, "f1": f, "lcs": l, "n_candidate": len(c), "n_reference": len(rt)}
+        ell = lcs_length(c, rt)
+        p, r, f = _prf(ell, len(c), len(rt), beta)
+        cand = {"precision": p, "recall": r, "f1": f, "lcs": ell, "n_candidate": len(c), "n_reference": len(rt)}
         if best is None or cand["f1"] > best["f1"]:
             best = cand
     best["estimate"] = best["f1"]
@@ -167,7 +167,7 @@ def rouge_w(candidate, reference, alpha=1.2, beta=1.0):
     r"""ROUGE-W, weighted LCS favouring consecutive matches (Sec. 4)."""
     alpha = float(alpha)
     if alpha < 1.0:
-        raise ValueError("rouge_w: alpha must be at least 1 for consecutive matches to be preferred, got %r" % (alpha,))
+        raise ValueError(f"rouge_w: alpha must be at least 1 for consecutive matches to be preferred, got {alpha!r}")
     c = _toks(candidate)
     refs = [reference] if isinstance(reference, str) else list(reference)
     best = None
@@ -201,7 +201,7 @@ def rouge(candidate, reference, variant="L", n=1, alpha=1.2, beta=1.0):
         return rouge_w(candidate, reference, alpha=alpha, beta=beta)
     if v == "N":
         return rouge_n(candidate, reference, n=n, beta=beta)
-    raise ValueError("rouge: variant must be N, L or W, got %r" % (variant,))
+    raise ValueError(f"rouge: variant must be N, L or W, got {variant!r}")
 
 
 def cheatsheet():

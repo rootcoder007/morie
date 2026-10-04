@@ -49,10 +49,7 @@ def adjusted_rand_index(
     max_index = (sum_comb_ai + sum_comb_bj) / 2
     denom = max_index - expected
 
-    if denom == 0:
-        ari = 0.0 if sum_comb_nij == expected else 1.0
-    else:
-        ari = (sum_comb_nij - expected) / denom
+    ari = (0.0 if sum_comb_nij == expected else 1.0) if denom == 0 else (sum_comb_nij - expected) / denom
 
     return DescriptiveResult(
         name="AdjustedRandIndex",

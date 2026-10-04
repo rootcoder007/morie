@@ -67,19 +67,16 @@ def speculative_decoding(draft, target, gamma=4):
     if any(t < 0 for t in q) or any(t < 0 for t in p):
         raise ValueError("probabilities must be non-negative")
     if abs(fsum(q) - 1.0) > 1e-9:
-        raise ValueError("`draft` must sum to 1 (got %.12g)" % fsum(q))
+        raise ValueError(f"`draft` must sum to 1 (got {fsum(q):.12g})")
     if abs(fsum(p) - 1.0) > 1e-9:
-        raise ValueError("`target` must sum to 1 (got %.12g)" % fsum(p))
+        raise ValueError(f"`target` must sum to 1 (got {fsum(p):.12g})")
     g = int(gamma)
     if g < 1:
         raise ValueError("`gamma` must be at least 1")
 
     alpha = fsum([min(p[i], q[i]) for i in range(len(p))])
     tv = 1.0 - alpha
-    if tv <= 1e-15:
-        expect = float(g + 1)
-    else:
-        expect = (1.0 - alpha ** (g + 1)) / (1.0 - alpha)
+    expect = float(g + 1) if tv <= 1e-15 else (1.0 - alpha ** (g + 1)) / (1.0 - alpha)
 
     return RichResult(
         payload={

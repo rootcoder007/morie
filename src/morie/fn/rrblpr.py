@@ -206,16 +206,18 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0, log_lam_hi=12.
     if n == 0:
         raise ValueError("rrblpr: no observations")
     if len(Mm) != n:
-        raise ValueError("rrblpr: %d phenotypes but %d marker rows" % (n, len(Mm)))
+        raise ValueError(f"rrblpr: {int(n)} phenotypes but {int(len(Mm))} marker rows")
     m = len(Mm[0])
     if any(len(r) != m for r in Mm):
-        raise ValueError("rrblpr: every row of M must have %d markers" % m)
+        raise ValueError(f"rrblpr: every row of M must have {int(m)} markers")
     Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     if len(Xm) != n:
-        raise ValueError("rrblpr: X has %d rows, y has %d" % (len(Xm), n))
+        raise ValueError(f"rrblpr: X has {int(len(Xm))} rows, y has {int(n)}")
     p = len(Xm[0])
     if n - p < 1:
-        raise ValueError("rrblpr: %d observations and %d fixed effects leave no residual degrees of freedom" % (n, p))
+        raise ValueError(
+            f"rrblpr: {int(n)} observations and {int(p)} fixed effects leave no residual degrees of freedom"
+        )
 
     # the kernel MM' -- the object both forms of the predictor share
     G = [[sum(Mm[i][a] * Mm[j][a] for a in range(m)) for j in range(n)] for i in range(n)]
@@ -240,12 +242,10 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0, log_lam_hi=12.
             # least squares: only defined when M has full column rank
             if m > n - p:
                 raise ValueError(
-                    "rrblpr: lambda = 0 with %d markers and %d "
-                    "residual degrees of freedom -- the least "
-                    "squares problem is not identified" % (m, n - p)
+                    f"rrblpr: lambda = 0 with {int(m)} markers and {int(n - p)} residual degrees of freedom -- the least squares problem is not identified"
                 )
             lam_hat = 0.0
-        ll, beta, s2e, L, estimated = None, None, None, None, False
+        ll, _beta, s2e, _L, estimated = None, None, None, None, False
 
     # ---- Henderson's mixed model equations, solved as written
     q = p + m
@@ -293,7 +293,7 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0, log_lam_hi=12.
     if M_new is not None:
         Mn = [[float(v) for v in row] for row in k.mat(M_new)]
         if any(len(rw) != m for rw in Mn):
-            raise ValueError("rrblpr: M_new must have %d markers" % m)
+            raise ValueError(f"rrblpr: M_new must have {int(m)} markers")
         pred_new = [sum(rw[a] * u[a] for a in range(m)) for rw in Mn]
 
     return RichResult(

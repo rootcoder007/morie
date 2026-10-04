@@ -72,10 +72,7 @@ def odds_ratio(a, b, c, d, conf_level=0.95, correction=0.0):
         if v < 0.0:
             raise ValueError("2 x 2 cell counts must be non-negative")
     n = float(a) + float(b) + float(c) + float(d)
-    if bb == 0.0 or cc == 0.0:
-        est = float("inf")
-    else:
-        est = (aa * dd) / (bb * cc)
+    est = float("inf") if bb == 0.0 or cc == 0.0 else aa * dd / (bb * cc)
     if aa == 0.0 or bb == 0.0 or cc == 0.0 or dd == 0.0:
         nan = float("nan")
         return RichResult(

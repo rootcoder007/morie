@@ -88,7 +88,7 @@ def vcomp(y, group, method="reml", conf_level=0.95):
     # conf_level = 1.5 makes alpha negative, _f_ppf returns 0, and the
     # upper limit raises ZeroDivisionError instead of saying what is wrong.
     if not 0.0 < float(conf_level) < 1.0:
-        raise ValueError("vcomp: conf_level must lie in (0, 1), got %r" % (conf_level,))
+        raise ValueError(f"vcomp: conf_level must lie in (0, 1), got {conf_level!r}")
     av = ranova(y, group)
     fit = remlfn(y, group) if method == "reml" else av
     s2a = float(fit["sigma2_a"])
@@ -124,7 +124,7 @@ def vcomp(y, group, method="reml", conf_level=0.95):
             "a": int(av["a"]),
             "N": int(av["N"]),
             "fit": dict(fit),
-            "method": "variance components, %s (Searle et al. 1992)" % method,
+            "method": f"variance components, {method} (Searle et al. 1992)",
         }
     )
 

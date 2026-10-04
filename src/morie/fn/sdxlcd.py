@@ -113,13 +113,13 @@ def crop_conditioning(c_top=0, c_left=0, dim=8):
     At inference :math:`(0,0)` asks for an image that was not cropped
     -- the augmentation is kept but no longer leaks.
     """
-    t, l = float(c_top), float(c_left)
-    if t < 0.0 or l < 0.0:
+    t, ell = float(c_top), float(c_left)
+    if t < 0.0 or ell < 0.0:
         raise ValueError("sdxlcd: crop offsets cannot be negative")
     return {
-        "c_crop": (t, l),
-        "embedding": fourier_embedding(t, dim) + fourier_embedding(l, dim),
-        "object_centred": t == 0.0 and l == 0.0,
+        "c_crop": (t, ell),
+        "embedding": fourier_embedding(t, dim) + fourier_embedding(ell, dim),
+        "object_centred": t == 0.0 and ell == 0.0,
         "note": "(0,0) at inference asks for an UNCROPPED image",
     }
 
@@ -131,8 +131,8 @@ def sample_crop(height, width, target_h, target_w, rng):
     if th > H or tw > W:
         raise ValueError("sdxlcd: the target is larger than the image")
     t = int(float(rng.uniform()) * (H - th + 1))
-    l = int(float(rng.uniform()) * (W - tw + 1))
-    return {"c_top": min(t, H - th), "c_left": min(l, W - tw)}
+    ell = int(float(rng.uniform()) * (W - tw + 1))
+    return {"c_top": min(t, H - th), "c_left": min(ell, W - tw)}
 
 
 def discarded_fraction(sizes, minimum=256):
@@ -197,7 +197,7 @@ def condition_vector(h_original, w_original, c_top=0, c_left=0, timestep_embeddi
         t = [float(v) for v in k.vec(timestep_embedding)]
         if len(t) != len(cat):
             raise ValueError(
-                "sdxlcd: the timestep embedding is %d wide but the conditioning is %d" % (len(t), len(cat))
+                f"sdxlcd: the timestep embedding is {int(len(t))} wide but the conditioning is {int(len(cat))}"
             )
         vec = [t[i] + cat[i] for i in range(len(cat))]
     return RichResult(

@@ -9,7 +9,10 @@ def test_fzse_basic():
     n = 100
     bandwidth = 0.3
     theta = 0.0
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
+
+    def cdf(v):
+        return 1.0 / (1.0 + np.exp(-v))
+
     result = fauzi_sign_moments(n, bandwidth, theta, cdf)
     assert isinstance(result, dict)
     assert "mean" in result
@@ -20,6 +23,9 @@ def test_fzse_edge():
     n = 100
     bandwidth = 0.3
     theta = 0.0
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
+
+    def cdf(v):
+        return 1.0 / (1.0 + np.exp(-v))
+
     result = fauzi_sign_moments(n, bandwidth, theta, cdf)
     assert isinstance(result, dict)

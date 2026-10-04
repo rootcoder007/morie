@@ -143,11 +143,11 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, c
     nlayer = len(widths) - 1
     W = []
     B = []
-    for l in range(nlayer):
-        fan_in = widths[l]
-        scale = np.sqrt(6.0 / (fan_in + widths[l + 1]))
-        W.append([[_rnd(scale) for _ in range(fan_in)] for _ in range(widths[l + 1])])
-        B.append([0.0] * widths[l + 1])
+    for ell in range(nlayer):
+        fan_in = widths[ell]
+        scale = np.sqrt(6.0 / (fan_in + widths[ell + 1]))
+        W.append([[_rnd(scale) for _ in range(fan_in)] for _ in range(widths[ell + 1])])
+        B.append([0.0] * widths[ell + 1])
     w_wide = [0.0] * pw
     w_deep = [0.0] * widths[nlayer]
     bias = 0.0
@@ -155,12 +155,12 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, c
     def _forward(row_d):
         acts = [row_d]
         a = row_d
-        for l in range(nlayer):
+        for ell in range(nlayer):
             nxt = []
-            for u in range(widths[l + 1]):
-                s = B[l][u]
-                wl = W[l][u]
-                for k in range(widths[l]):
+            for u in range(widths[ell + 1]):
+                s = B[ell][u]
+                wl = W[ell][u]
+                for k in range(widths[ell]):
                     s += wl[k] * a[k]
                 nxt.append(s if s > 0.0 else 0.0)  # eq. (2), ReLU
             acts.append(nxt)
@@ -172,8 +172,8 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, c
         g_wide = [0.0] * pw
         g_deep = [0.0] * widths[nlayer]
         g_bias = 0.0
-        gW = [[[0.0] * widths[l] for _ in range(widths[l + 1])] for l in range(nlayer)]
-        gB = [[0.0] * widths[l + 1] for l in range(nlayer)]
+        gW = [[[0.0] * widths[ell] for _ in range(widths[ell + 1])] for ell in range(nlayer)]
+        gB = [[0.0] * widths[ell + 1] for ell in range(nlayer)]
         loss = 0.0
         for i in range(n):
             acts = _forward(xd[i])
@@ -200,26 +200,26 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, c
                 g_deep[k] += r * top[k]
             # backprop through the ReLU stack
             delta = [r * w_deep[k] for k in range(widths[nlayer])]
-            for l in range(nlayer - 1, -1, -1):
-                a_prev = acts[l]
-                a_cur = acts[l + 1]
-                dpre = [delta[u] if a_cur[u] > 0.0 else 0.0 for u in range(widths[l + 1])]
-                for u in range(widths[l + 1]):
+            for ell in range(nlayer - 1, -1, -1):
+                a_prev = acts[ell]
+                a_cur = acts[ell + 1]
+                dpre = [delta[u] if a_cur[u] > 0.0 else 0.0 for u in range(widths[ell + 1])]
+                for u in range(widths[ell + 1]):
                     du = dpre[u]
                     if du == 0.0:
                         continue
-                    gB[l][u] += du
-                    gu = gW[l][u]
-                    for k in range(widths[l]):
+                    gB[ell][u] += du
+                    gu = gW[ell][u]
+                    for k in range(widths[ell]):
                         gu[k] += du * a_prev[k]
-                if l > 0:
-                    nd = [0.0] * widths[l]
-                    for u in range(widths[l + 1]):
+                if ell > 0:
+                    nd = [0.0] * widths[ell]
+                    for u in range(widths[ell + 1]):
                         du = dpre[u]
                         if du == 0.0:
                             continue
-                        wl = W[l][u]
-                        for k in range(widths[l]):
+                        wl = W[ell][u]
+                        for k in range(widths[ell]):
                             nd[k] += du * wl[k]
                     delta = nd
         loss = loss / n
@@ -229,11 +229,11 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, c
             w_wide[k] -= step * (g_wide[k] + l2 * w_wide[k] * n)
         for k in range(widths[nlayer]):
             w_deep[k] -= step * (g_deep[k] + l2 * w_deep[k] * n)
-        for l in range(nlayer):
-            for u in range(widths[l + 1]):
-                B[l][u] -= step * gB[l][u]
-                for k in range(widths[l]):
-                    W[l][u][k] -= step * (gW[l][u][k] + l2 * W[l][u][k] * n)
+        for ell in range(nlayer):
+            for u in range(widths[ell + 1]):
+                B[ell][u] -= step * gB[ell][u]
+                for k in range(widths[ell]):
+                    W[ell][u][k] -= step * (gW[ell][u][k] + l2 * W[ell][u][k] * n)
 
     fitted = []
     for i in range(n):

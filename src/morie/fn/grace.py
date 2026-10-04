@@ -78,7 +78,7 @@ def drop_edges(edges, p, rng):
     :math:`p`."""
     pp = float(p)
     if not 0.0 <= pp < 1.0:
-        raise ValueError("grace: the drop rate must lie in [0,1), got %r" % (p,))
+        raise ValueError(f"grace: the drop rate must lie in [0,1), got {p!r}")
     return [e for e in edges if float(rng.uniform()) >= pp]
 
 
@@ -90,7 +90,7 @@ def mask_features(X, p, rng):
     """
     pp = float(p)
     if not 0.0 <= pp < 1.0:
-        raise ValueError("grace: the mask rate must lie in [0,1), got %r" % (p,))
+        raise ValueError(f"grace: the mask rate must lie in [0,1), got {p!r}")
     rows = [[float(v) for v in r] for r in k.mat(X)]
     d = len(rows[0])
     keep = [0.0 if float(rng.uniform()) < pp else 1.0 for _ in range(d)]
@@ -134,7 +134,7 @@ def grace_objective(U, V, tau=0.5, intra=True):
     r"""The symmetric average over both views."""
     n = len(U)
     if n != len(V):
-        raise ValueError("grace: the views have %d and %d nodes" % (n, len(V)))
+        raise ValueError(f"grace: the views have {int(n)} and {int(len(V))} nodes")
     if n < 2:
         raise ValueError("grace: at least 2 nodes are needed for negatives")
     tot = sum(pair_loss(U, V, i, tau, intra) + pair_loss(V, U, i, tau, intra) for i in range(n))

@@ -57,7 +57,10 @@ def wasserman_influence_function(data, T):
     if n == 0:
         raise ValueError("the influence function of an empty sample is undefined.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     base = float(T(data))
     infl = [float((n + 1) * (float(T(np.append(data, xi))) - base)) for xi in data]
     return RichResult(

@@ -52,10 +52,7 @@ def rhotest(r, n, alternative="two-sided"):
     if not -1.0 <= r <= 1.0:
         raise ValueError("r must lie in [-1, 1].")
     z = r * math.sqrt(n - 1.0)
-    if abs(r) >= 1.0:
-        t = math.inf if r > 0 else -math.inf
-    else:
-        t = r * math.sqrt((n - 2.0) / (1.0 - r * r))
+    t = (math.inf if r > 0 else -math.inf) if abs(r) >= 1.0 else r * math.sqrt((n - 2.0) / (1.0 - r * r))
     if alternative == "greater":
         pn = stats.norm.sf(z)
         pt = stats.t.sf(t, n - 2)

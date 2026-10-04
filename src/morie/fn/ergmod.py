@@ -94,7 +94,7 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
         raise ValueError("at least one statistic is required")
     for nm in names:
         if nm not in _SUPPORTED:
-            raise ValueError("unsupported statistic: %s" % nm)
+            raise ValueError(f"unsupported statistic: {nm}")
     p = len(names)
     X = []
     yv = []

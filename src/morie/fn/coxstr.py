@@ -174,13 +174,13 @@ def _score_at(t, e, X, beta, ties):
     from ._surv import cox_fit as _fit
 
     saved = np.array(beta, dtype=float, copy=True)
-    b, ll, I, U, it, cv = _fit(t, e, X, ties=ties, max_iter=1, tol=np.inf)
+    b, ll, I_, U, it, cv = _fit(t, e, X, ties=ties, max_iter=1, tol=np.inf)
     # cox_fit takes one Newton step from zero; recompute at `beta` directly.
     n, p = X.shape
     eta = np.clip(X @ saved, -500, 500)
     w = np.exp(eta)
     U = np.zeros(p)
-    I = np.zeros((p, p))
+    I_ = np.zeros((p, p))
     ll = 0.0
     for ut in np.unique(t[e == 1]):
         at_risk = t >= ut
@@ -200,16 +200,16 @@ def _score_at(t, e, X, beta, ties):
             ll -= d * np.log(S0r)
             mu = S1r / S0r
             U -= d * mu
-            I += d * (S2r / S0r - np.outer(mu, mu))
+            I_ += d * (S2r / S0r - np.outer(mu, mu))
         else:
-            for l in range(d):
-                f = l / d
+            for ell in range(d):
+                f = ell / d
                 S0, S1, S2 = S0r - f * S0d, S1r - f * S1d, S2r - f * S2d
                 ll -= np.log(S0)
                 mu = S1 / S0
                 U -= mu
-                I += S2 / S0 - np.outer(mu, mu)
-    return saved, float(ll), I, U, 1, True
+                I_ += S2 / S0 - np.outer(mu, mu)
+    return saved, float(ll), I_, U, 1, True
 
 
 def cheatsheet():

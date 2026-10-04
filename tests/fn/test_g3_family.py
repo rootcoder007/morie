@@ -51,9 +51,9 @@ def test_samseg_rejects_bad_prompts():
 def test_samdec_two_way_updates_both():
     sd = M("samdec")
     P = [[1.0, 0.0], [0.0, 1.0]]
-    I = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
-    r = sd.two_way_block(P, I)
-    assert r["prompt_tokens"] != P and r["image_tokens"] != I
+    I_ = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
+    r = sd.two_way_block(P, I_)
+    assert r["prompt_tokens"] != P and r["image_tokens"] != I_
     assert all(sum(row) == pytest.approx(1.0) for row in r["prompt_to_image"])
 
 

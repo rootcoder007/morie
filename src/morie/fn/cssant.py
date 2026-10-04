@@ -74,10 +74,7 @@ def aggregate_att(gt, g, n_units, weights_by="cohort_size"):
         return {}
     sizes = {gg: float((g == gg).sum()) for gg, _ in post}
     tot = sum(sizes[gg] for gg, _ in post)
-    if weights_by == "equal":
-        w = {k: 1.0 / len(post) for k in post}
-    else:
-        w = {k: sizes[k[0]] / tot for k in post}
+    w = {k: 1.0 / len(post) for k in post} if weights_by == "equal" else {k: sizes[k[0]] / tot for k in post}
 
     def combine(keys, wts):
         s = sum(wts.values())

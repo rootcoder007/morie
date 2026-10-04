@@ -195,7 +195,7 @@ def af3_diffusion_step(
     Nature 630(8016), 493-500.
     """
     if order not in ORDERS:
-        raise ValueError("order must be one of %r" % (ORDERS,))
+        raise ValueError(f"order must be one of {ORDERS!r}")
     t = float(t)
     if t <= 0.0:
         raise ValueError("the current noise level must be positive")

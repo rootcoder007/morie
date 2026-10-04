@@ -67,9 +67,15 @@ def wasserman_parametric_boot(data, f, T, B, seed=13):
     if B < 2:
         raise ValueError(f"the bootstrap needs B >= 2; got {B}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     if f is None:
-        f = lambda theta, u: -np.log(1.0 - u) * theta
+
+        def f(theta, u):
+            return -np.log(1.0 - u) * theta
+
     theta_hat = float(T(data))
     u = _lcg_uniforms(B * n, seed).reshape(B, n)
     reps = np.array([float(T(np.asarray(f(theta_hat, u[b]), dtype=float))) for b in range(B)])

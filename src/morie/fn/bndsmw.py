@@ -142,7 +142,7 @@ def weighted_moments(m, g):
         raise ValueError("bndsmw: need at least 2 observations")
     gv = [float(v) for v in k.vec(g)]
     if len(gv) != n:
-        raise ValueError("bndsmw: %d weights for %d observations" % (len(gv), n))
+        raise ValueError(f"bndsmw: {int(len(gv))} weights for {int(n)} observations")
     if any(v < 0.0 for v in gv):
         raise ValueError("bndsmw: instrument weights must be non-negative")
     J = len(M[0])
@@ -164,7 +164,7 @@ def S_function(std_moments, form="sum", n_equality=0):
     are equalities, which are penalised in both directions.
     """
     if form not in _S_FORMS:
-        raise ValueError("bndsmw: form must be one of %s, got %r" % (", ".join(_S_FORMS), form))
+        raise ValueError("bndsmw: form must be one of {}, got {!r}".format(", ".join(_S_FORMS), form))
     v = [float(x) for x in k.vec(std_moments)]
     J = len(v)
     ineq = v[: J - int(n_equality)]
@@ -192,9 +192,9 @@ def cvm_statistic(m, instruments, form="sum", n_equality=0, weights=None):
         raise ValueError("bndsmw: the instrument class is empty")
     q = [1.0 / len(G)] * len(G) if weights is None else [float(v) for v in weights]
     if len(q) != len(G):
-        raise ValueError("bndsmw: %d measure weights for %d instruments" % (len(q), len(G)))
+        raise ValueError(f"bndsmw: {int(len(q))} measure weights for {int(len(G))} instruments")
     if abs(sum(q) - 1.0) > 1e-6:
-        raise ValueError("bndsmw: the measure Q must sum to 1, got %.6f" % sum(q))
+        raise ValueError(f"bndsmw: the measure Q must sum to 1, got {sum(q):.6f}")
     tot, parts = 0.0, []
     for a, g in enumerate(G):
         wm = weighted_moments(m, g)

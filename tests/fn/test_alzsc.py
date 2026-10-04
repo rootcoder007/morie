@@ -4,7 +4,9 @@ from morie.fn.alzsc import alammar_zero_shot_classification
 
 
 def test_alzsc_basic():
-    nli = lambda p, h: 5.0 if "sport" in h else 0.0
+    def nli(p, h):
+        return 5.0 if "sport" in h else 0.0
+
     out = alammar_zero_shot_classification("text", ["sport", "news"], nli)
     assert out["predicted_label"] == "sport"
 

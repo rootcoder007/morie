@@ -80,7 +80,7 @@ def ipopt_solver(f, constraints, x0, mu0=1.0, outer=8, inner=30):
             vals = [base] + plus + minus + list(cross.values())
             bad = False
             for v in vals:
-                if not (v == v) or v == float("inf") or v == float("-inf"):
+                if v != v or v == float("inf") or v == float("-inf"):
                     bad = True
             if bad:
                 break

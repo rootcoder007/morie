@@ -72,7 +72,7 @@ def vaccine_efficacy(
     ac, nc = int(cases_control), int(n_control)
     for name, v in (("cases_vaccinated", av), ("cases_control", ac)):
         if v < 0:
-            raise ValueError("%s must be non-negative." % name)
+            raise ValueError(f"{name} must be non-negative.")
     if nv <= 0 or nc <= 0:
         raise ValueError("arm sizes must be positive.")
     if av > nv or ac > nc:

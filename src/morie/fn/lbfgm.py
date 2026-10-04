@@ -63,10 +63,7 @@ def lbfgs_optimize(
             alphas.append(a)
             q -= a * y_hist[i]
         alphas.reverse()
-        if s_hist:
-            gamma = (s_hist[-1] @ y_hist[-1]) / (y_hist[-1] @ y_hist[-1] + 1e-30)
-        else:
-            gamma = 1.0
+        gamma = s_hist[-1] @ y_hist[-1] / (y_hist[-1] @ y_hist[-1] + 1e-30) if s_hist else 1.0
         r = gamma * q
         for i in range(len(s_hist)):
             b = rho_hist[i] * (y_hist[i] @ r)

@@ -86,7 +86,7 @@ def linkmm(a_from, b_from, a_to, b_to, method="mean/mean"):
             "a_transformed": [x / A for x in af],
             "b_transformed": [A * x + B for x in bf],
             "n_common": s,
-            "method": "IRT moment linking (%s; plink Eqs. 12-13)" % meth,
+            "method": f"IRT moment linking ({meth}; plink Eqs. 12-13)",
         }
     )
 

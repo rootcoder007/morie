@@ -26,10 +26,7 @@ def evt_chi_tail_dependence(x, y, u=0.95):
     rx = _ranks01(xs)
     ry = _ranks01(ys)
     nx = sum(1 for a in rx if a > u)
-    if nx == 0:
-        chi = 0.0
-    else:
-        chi = sum(1 for a, b in zip(rx, ry) if a > u and b > u) / nx
+    chi = 0.0 if nx == 0 else sum(1 for a, b in zip(rx, ry) if a > u and b > u) / nx
     res = RichResult(
         payload={"chi": float(chi), "u": float(u), "n": n, "method": "conditional exceedance chi (Coles 2001 p. 163)"}
     )

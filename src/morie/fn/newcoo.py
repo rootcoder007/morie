@@ -60,10 +60,7 @@ def newton_cooling(
         if k < 0:
             k = abs(k)
 
-    if times is None:
-        times = np.linspace(0, t_max, n_points)
-    else:
-        times = np.asarray(times, dtype=float).ravel()
+    times = np.linspace(0, t_max, n_points) if times is None else np.asarray(times, dtype=float).ravel()
 
     T = t_ambient + (t_initial - t_ambient) * np.exp(-k * times)
 

@@ -82,7 +82,7 @@ def summing_matrix(groups, n_bottom):
         row = [0.0] * n_bottom
         for i in g:
             if not 0 <= i < n_bottom:
-                raise ValueError("hierF: bottom index %d out of range" % i)
+                raise ValueError(f"hierF: bottom index {int(i)} out of range")
             row[i] = 1.0
         S.append(row)
     for i in range(n_bottom):
@@ -109,7 +109,7 @@ def shrink_covariance(residuals, lam=None):
     """
     T = len(residuals)
     if T < 2:
-        raise ValueError("hierF: need at least 2 residual rows, got %d" % T)
+        raise ValueError(f"hierF: need at least 2 residual rows, got {int(T)}")
     m = len(residuals[0])
     mu = [sum(residuals[t][i] for t in range(T)) / T for i in range(m)]
     Sig = [
@@ -136,7 +136,7 @@ def shrink_covariance(residuals, lam=None):
 def mint_P(S, W=None, method="shrink", residuals=None, ridge=1e-10):
     r""":math:`P = (S'W^{-1}S)^{-1}S'W^{-1}`."""
     if method not in ("ols", "wls", "shrink", "custom"):
-        raise ValueError("hierF: method must be ols, wls, shrink or custom, got %r" % (method,))
+        raise ValueError(f"hierF: method must be ols, wls, shrink or custom, got {method!r}")
     m = len(S)
     n = len(S[0])
     lam = None
@@ -180,7 +180,7 @@ def mint_reconcile(base, S, method="shrink", residuals=None, W=None, ridge=1e-10
     n = len(Sm[0])
     yb = k.vec(base)
     if len(yb) != m:
-        raise ValueError("hierF: %d base forecasts for %d series" % (len(yb), m))
+        raise ValueError(f"hierF: {int(len(yb))} base forecasts for {int(m)} series")
     P, lam = mint_P(Sm, W=W, method=method, residuals=residuals, ridge=ridge)
     b = [sum(P[i][a] * yb[a] for a in range(m)) for i in range(n)]
     rec = [sum(Sm[a][j] * b[j] for j in range(n)) for a in range(m)]

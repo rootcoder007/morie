@@ -10,8 +10,13 @@ def test_hmrvn_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 8)
-    F = lambda a: 2 * a
-    G = lambda a: a + 1
+
+    def F(a):
+        return 2 * a
+
+    def G(a):
+        return a + 1
+
     result = geron_revnet(x, F, G)
     assert isinstance(result, dict)
     for key in ("y", "y1", "y2", "x_reconstructed", "reconstruction_error"):
@@ -28,8 +33,13 @@ def test_hmrvn_basic():
 def test_hmrvn_edge():
     """Test edge cases."""
     x = [1.0, 2.0, 3.0, 4.0]
-    F = lambda a: 2 * a
-    G = lambda a: a + 1
+
+    def F(a):
+        return 2 * a
+
+    def G(a):
+        return a + 1
+
     result = geron_revnet(x, F, G)
     assert isinstance(result, dict)
     assert [float(v) for v in result["y"]] == [7.0, 10.0, 11.0, 15.0]

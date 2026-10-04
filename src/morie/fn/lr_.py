@@ -52,16 +52,10 @@ def likelihood_ratios(
     spec = tn / max(fp + tn, 1)
 
     # LR+
-    if (1 - spec) > 0:
-        lr_pos = sens / (1 - spec)
-    else:
-        lr_pos = float("inf")
+    lr_pos = sens / (1 - spec) if 1 - spec > 0 else float("inf")
 
     # LR-
-    if spec > 0:
-        lr_neg = (1 - sens) / spec
-    else:
-        lr_neg = float("inf")
+    lr_neg = (1 - sens) / spec if spec > 0 else float("inf")
 
     # CIs via log method (Simel 1991)
     ci_pos = _lr_ci(tp, fn, fp, tn, positive=True)

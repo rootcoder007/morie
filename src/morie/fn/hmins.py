@@ -137,13 +137,7 @@ def geron_instance_based(X_train, y_train, x_query, k=1, task="auto", weights="u
     for q in range(Q.shape[0]):
         idx = nn[q]
         d = dist[q]
-        if weights == "distance":
-            if np.any(d == 0):
-                w = (d == 0).astype(float)
-            else:
-                w = 1.0 / d
-        else:
-            w = np.ones(kk)
+        w = ((d == 0).astype(float) if np.any(d == 0) else 1.0 / d) if weights == "distance" else np.ones(kk)
         if resolved == "regression":
             vals = np.asarray(yy[idx], dtype=float)
             preds.append(float(np.sum(w * vals) / np.sum(w)))

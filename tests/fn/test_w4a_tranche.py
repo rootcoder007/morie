@@ -545,7 +545,7 @@ def test_hmdthv_variance_is_zero_only_when_trees_agree():
     from morie.fn.hmdthv import geron_tree_high_variance
 
     r = geron_tree_high_variance([[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]], [0, 1, 0, 1, 1, 0], n_resamples=12, seed=4)
-    P = np.asarray([[0]])  # placeholder to keep the intent explicit
+    np.asarray([[0]])  # placeholder to keep the intent explicit
     assert 0.0 <= r["variance"] <= 1.0
     assert 0.0 <= r["structural_instability"] <= 1.0
     assert len(r["root_splits"]) == 12
@@ -709,7 +709,9 @@ def test_hmgand_contamination_sets_the_flag_rate():
 def test_hmfad_dual_numbers_match_finite_differences():
     from morie.fn.hmfad import geron_forward_autodiff
 
-    f = lambda v: (v[0] ** 2 * v[1] + v[1].exp()) / (v[0] + 3.0)
+    def f(v):
+        return (v[0] ** 2 * v[1] + v[1].exp()) / (v[0] + 3.0)
+
     x = [1.3, -0.4]
     r = geron_forward_autodiff(f, x)
 
@@ -785,10 +787,10 @@ def test_hmcatt_matches_hand_computed_attention():
 
     dec = np.array([[1.0, 0.0]])
     enc = np.array([[1.0, 0.0], [0.0, 1.0]])
-    I = np.eye(2)
-    logits = dec @ I @ (enc @ I).T / math.sqrt(2)
+    I_ = np.eye(2)
+    logits = dec @ I_ @ (enc @ I_).T / math.sqrt(2)
     w = softmax_rows(logits)
-    r = geron_cross_attention(dec, enc, I, I, I)
+    r = geron_cross_attention(dec, enc, I_, I_, I_)
     assert np.allclose(r["attention_weights"], w)
     assert np.allclose(r["context"], w @ enc)
 
@@ -824,8 +826,8 @@ def test_hmcst_rejects_self_positives_and_tiny_batches():
 def test_hmclip_symmetric_loss_and_zero_shot():
     from morie.fn.hmclip import geron_clip
 
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    r = geron_clip(I, I, tau=1.0, class_prompts=[[1.0, 0.0], [0.0, 1.0]])
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    r = geron_clip(I_, I_, tau=1.0, class_prompts=[[1.0, 0.0], [0.0, 1.0]])
     hand = math.log(math.exp(1.0) + math.exp(0.0)) - 1.0
     assert r["loss"] == pytest.approx(hand)
     assert r["zero_shot"]["predictions"] == [0, 1]
@@ -911,7 +913,7 @@ def test_hmdrv_reverse_recovers_x0_when_noise_is_known():
     betas = [0.4, 0.6]
     abar = np.cumprod([1 - b for b in betas])
     x0, eps = 2.5, 0.8
-    xT = math.sqrt(abar[-1]) * x0 + math.sqrt(1 - abar[-1]) * eps
+    math.sqrt(abar[-1]) * x0 + math.sqrt(1 - abar[-1]) * eps
     # A one-step reverse from t=1 with the true noise returns x0 exactly.
     r = geron_diffusion_reverse(
         [math.sqrt(abar[0]) * x0 + math.sqrt(1 - abar[0]) * eps],
@@ -934,7 +936,9 @@ def test_hmdrv_enforces_the_model_contract():
 def test_hmddim_deterministic_and_fewer_model_calls():
     from morie.fn.hmddim import geron_ddim
 
-    zero = lambda x, t: np.zeros_like(x)
+    def zero(x, t):
+        return np.zeros_like(x)
+
     a = geron_ddim([1.0], zero, T=8, n_steps=2, beta_schedule=[0.2] * 8)
     b = geron_ddim([1.0], zero, T=8, n_steps=2, beta_schedule=[0.2] * 8)
     full = geron_ddim([1.0], zero, T=8, n_steps=8, beta_schedule=[0.2] * 8)
@@ -1157,7 +1161,9 @@ def test_hmdldqn_advantages_are_mean_centred_in_q():
 def test_hmddpg_polyak_and_deterministic_policy():
     from morie.fn.hmddpg import geron_ddpg
 
-    env = lambda s, a: (s, -float((a - 1.0) ** 2), False)
+    def env(s, a):
+        return (s, -float((a - 1.0) ** 2), False)
+
     r = geron_ddpg(env, [0.5], [0.0, 0.0], epochs=1, lr=0.0, ou_sigma=0.0, s0=[2.0], tau=0.25, critic_target=[0.0, 0.0])
     assert r["actions"][0] == pytest.approx(1.0)  # mu(s) = 0.5 * 2
     assert r["ou_noise"][0] == 0.0
@@ -1167,7 +1173,9 @@ def test_hmddpg_polyak_and_deterministic_policy():
 def test_hmddpg_learns_to_raise_the_reward():
     from morie.fn.hmddpg import geron_ddpg
 
-    env = lambda s, a: (s, -float((a - 1.0) ** 2), False)
+    def env(s, a):
+        return (s, -float((a - 1.0) ** 2), False)
+
     r = geron_ddpg(env, [0.0], [0.0, 0.0], epochs=300, lr=0.05, ou_sigma=0.1, seed=1)
     assert sum(r["rewards"][-50:]) > sum(r["rewards"][:50])
     with pytest.raises(ValueError):
@@ -1394,7 +1402,7 @@ def test_hmfmn_shapes_follow_the_conv_arithmetic():
     from morie.fn.hmfmn import geron_fashion_mnist
 
     r = geron_fashion_mnist()
-    outs = [l["out"] for l in r["layers"] if l["kind"] in ("conv", "pool")]
+    outs = [ell["out"] for ell in r["layers"] if ell["kind"] in ("conv", "pool")]
     assert outs == [26, 13, 11, 5]
     assert r["flatten_dim"] == 5 * 5 * 64
     assert r["fc_share"] > 0.9
@@ -1537,7 +1545,10 @@ def test_hmdale_log_likelihood_against_hand_softmax():
     from morie.fn.hmdale import geron_dalle
 
     logits = np.array([0.0, 2.0])
-    model = lambda ctx: logits
+
+    def model(ctx):
+        return logits
+
     r = geron_dalle([0], model, n_image_tokens=3)
     per = math.log(math.exp(0.0) + math.exp(2.0)) - 2.0
     assert r["image_tokens"] == [1, 1, 1]
@@ -1578,7 +1589,9 @@ def test_hmflmg_resampler_fixes_the_visual_token_count():
 def test_hmclc_iou_against_hand_computed_geometry():
     from morie.fn.hmclc import geron_classification_localization
 
-    model = lambda img: np.array([0.0, 0.0, 0.0, 0.0, 2.0, 2.0])
+    def model(img):
+        return np.array([0.0, 0.0, 0.0, 0.0, 2.0, 2.0])
+
     r = geron_classification_localization(None, model, gt_class=[0], gt_box=[[1.0, 0.0, 2.0, 2.0]])
     # Boxes [-1,-1,1,1] and [0,-1,2,1]: intersection 1x2, union 4+4-2.
     assert r["iou"][0] == pytest.approx(2 / 6)

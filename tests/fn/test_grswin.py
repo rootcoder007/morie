@@ -25,8 +25,8 @@ def test_grswin_basic():
 def test_grswin_edge():
     """Test edge case following the docstring example: 2x2 map, window_size 1."""
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    result = geron_swin_window_attention(X, 1, I, I, I)
+    I_ = [[1.0]]
+    result = geron_swin_window_attention(X, 1, I_, I_, I_)
     assert isinstance(result, dict)
     assert result["n_windows"] == 4
     assert result["tokens_per_window"] == 1

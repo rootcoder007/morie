@@ -92,7 +92,7 @@ def test_the_forest_leaves_a_third_of_the_data_out_of_bag():
 
 def test_terminal_nodes_respect_the_death_minimum():
     tree = R.grow_tree(X, T, E, mtry=2, min_deaths=5, seed=1)
-    assert all(l["na"]["deaths"] >= 5 for l in R._leaves(tree["root"]))
+    assert all(ell["na"]["deaths"] >= 5 for ell in R._leaves(tree["root"]))
 
 
 def test_the_out_of_bag_ensemble_is_less_optimistic_than_in_bag():

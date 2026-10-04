@@ -51,7 +51,7 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10, add_intercept=Tr
     if n == 0:
         raise ValueError("bayreg2: no observations")
     if len(yv) != n:
-        raise ValueError("bayreg2: %d rows but %d responses" % (n, len(yv)))
+        raise ValueError(f"bayreg2: {int(n)} rows but {int(len(yv))} responses")
     if add_intercept:
         Xm = [[1.0] + r for r in Xm]
     p = len(Xm[0])
@@ -59,7 +59,7 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10, add_intercept=Tr
     if nu <= 0.0:
         raise ValueError("bayreg2: the degrees of freedom must be positive")
     if n <= p:
-        raise ValueError("bayreg2: %d observations cannot identify %d coefficients" % (n, p))
+        raise ValueError(f"bayreg2: {int(n)} observations cannot identify {int(p)} coefficients")
 
     def wls(w):
         A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]

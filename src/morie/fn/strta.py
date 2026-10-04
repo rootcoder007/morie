@@ -33,16 +33,13 @@ def stratified_analysis(tables: list[tuple[int, int, int, int]], confidence: flo
         raise ValueError("Need at least 2 strata")
 
     stratum_ors = []
-    z = stats.norm.ppf((1 + confidence) / 2)
+    stats.norm.ppf((1 + confidence) / 2)
     num_mh = 0.0
     den_mh = 0.0
 
     for a, b, c, d in tables:
         n_k = a + b + c + d
-        if b * c > 0:
-            or_k = (a * d) / (b * c)
-        else:
-            or_k = np.inf
+        or_k = a * d / (b * c) if b * c > 0 else np.inf
         stratum_ors.append(or_k)
         num_mh += a * d / n_k
         den_mh += b * c / n_k
@@ -55,7 +52,7 @@ def stratified_analysis(tables: list[tuple[int, int, int, int]], confidence: flo
         m1 = a + b
         m0 = c + d
         n1 = a + c
-        n0 = b + d
+        b + d
 
         aa = 1 - 1 / or_mh
         bb = -(m1 + n1 * or_mh + (1 - or_mh))

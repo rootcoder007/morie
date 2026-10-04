@@ -55,7 +55,7 @@ def prefixev(tokens):
     for t in reversed(toks):
         if isinstance(t, str) and t in ops:
             if len(st) < 2:
-                raise ValueError("operator '%s' has fewer than two operands" % t)
+                raise ValueError(f"operator '{t}' has fewer than two operands")
             a = st.pop()
             b = st.pop()
             if t == "/" and b == 0.0:
@@ -67,7 +67,7 @@ def prefixev(tokens):
         if len(st) > mx:
             mx = len(st)
     if len(st) != 1:
-        raise ValueError("malformed prefix expression: %d values left on the stack" % len(st))
+        raise ValueError(f"malformed prefix expression: {int(len(st))} values left on the stack")
     return RichResult(
         payload={
             "value": st[0],

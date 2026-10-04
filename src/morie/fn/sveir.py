@@ -73,13 +73,13 @@ def sveir_model(
     t = np.arange(0, t_max, dt)
 
     def deriv(y, _t, _N, _b, _s, _g, _p, _e):
-        S, V, E, I, R = y
-        force = _b * I / _N
+        S, V, E, I_, R = y
+        force = _b * I_ / _N
         dS = -force * S - _p * S
         dV = _p * S - (1.0 - _e) * force * V
         dE = force * S + (1.0 - _e) * force * V - _s * E
-        dI = _s * E - _g * I
-        dR = _g * I
+        dI = _s * E - _g * I_
+        dR = _g * I_
         return [dS, dV, dE, dI, dR]
 
     y0 = [S0, V0, E0, I0, R0_init]

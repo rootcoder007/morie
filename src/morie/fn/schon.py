@@ -71,10 +71,7 @@ def schon(
         risk_set = time >= t_i
         weights = exp_Xbeta[risk_set]
         w_sum = weights.sum()
-        if w_sum > 0:
-            x_bar = (X[risk_set].T @ weights) / w_sum
-        else:
-            x_bar = np.zeros(p)
+        x_bar = X[risk_set].T @ weights / w_sum if w_sum > 0 else np.zeros(p)
         residuals[idx] = X[ei] - x_bar
 
     # Correlation test of residuals with event times

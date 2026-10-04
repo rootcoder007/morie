@@ -95,7 +95,7 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
     if z is not None:
         zv = np.asarray(z, dtype=float).ravel()
         if zv.size != n:
-            raise ValueError("z has %d entries for %d rows." % (zv.size, n))
+            raise ValueError(f"z has {int(zv.size)} entries for {int(n)} rows.")
         if not np.all(np.isin(zv, (0.0, 1.0))):
             raise ValueError("z must be binary 0/1.")
         m1z, m0z = zv == 1, zv == 0
@@ -133,15 +133,14 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
             "complier_note": (
                 None
                 if share is None
-                else "the LATE speaks for the %.1f %% of the sample who comply; "
-                "reporting it as an ATE silently generalises beyond them" % (100 * share)
+                else f"the LATE speaks for the {100 * share:.1f} % of the sample who comply; reporting it as an ATE silently generalises beyond them"
             ),
             "assumption_cost": cost,
             "cost_note": (
                 None
                 if cost is None
                 else "the exclusion restriction and monotonicity together bought "
-                "an interval %.1f times narrower than the data alone support" % cost
+                f"an interval {cost:.1f} times narrower than the data alone support"
             ),
             "monotonicity": bool(mono),
             "support": (lo_y, hi_y),

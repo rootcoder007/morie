@@ -61,7 +61,7 @@ def spatial_detrending(values, grid=None, iters=10):
         if len(g) != 2 or g[0] < 1 or g[1] < 1:
             raise ValueError("`grid` must be (nrow, ncol), both positive")
         if len(flat) != g[0] * g[1]:
-            raise ValueError("`values` has %d entries but `grid` asks for %d" % (len(flat), g[0] * g[1]))
+            raise ValueError(f"`values` has {int(len(flat))} entries but `grid` asks for {int(g[0] * g[1])}")
         y = [flat[r * g[1] : (r + 1) * g[1]] for r in range(g[0])]
     else:
         y = mat(values, "values")

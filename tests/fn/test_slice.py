@@ -34,7 +34,9 @@ def test_invalid_width():
 
 
 def test_reproducibility():
-    f = lambda x: -0.5 * x**2
+    def f(x):
+        return -0.5 * x**2
+
     r1 = slice_sampler(f, n_iter=100, seed=99)
     r2 = slice_sampler(f, n_iter=100, seed=99)
     np.testing.assert_array_equal(r1["samples"], r2["samples"])

@@ -65,9 +65,9 @@ def subwords(word, n_min=3, n_max=6, boundary=True, whole_word=True):
     """
     lo, hi = int(n_min), int(n_max)
     if lo < 1:
-        raise ValueError("subwords: n_min must be at least 1, got %r" % (n_min,))
+        raise ValueError(f"subwords: n_min must be at least 1, got {n_min!r}")
     if hi < lo:
-        raise ValueError("subwords: n_max (%r) is below n_min (%r)" % (n_max, n_min))
+        raise ValueError(f"subwords: n_max ({n_max!r}) is below n_min ({n_min!r})")
     w = str(word)
     padded = "<" + w + ">" if boundary else w
     grams, seen = [], set()
@@ -162,7 +162,7 @@ def fasttext(
     docs = _as_docs(corpus)
     d = int(dim)
     if d < 1:
-        raise ValueError("fasttext: dim must be at least 1, got %r" % (dim,))
+        raise ValueError(f"fasttext: dim must be at least 1, got {dim!r}")
     counts = {}
     for doc in docs:
         for t in doc:
@@ -170,7 +170,7 @@ def fasttext(
     vocab = sorted(t for t, c in counts.items() if c >= int(min_count))
     if len(vocab) < 2:
         raise ValueError(
-            "fasttext: %d word(s) above min_count=%r; skipgram needs a context to predict" % (len(vocab), min_count)
+            f"fasttext: {int(len(vocab))} word(s) above min_count={min_count!r}; skipgram needs a context to predict"
         )
     windex = {t: i for i, t in enumerate(vocab)}
 

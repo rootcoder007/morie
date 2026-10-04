@@ -15,7 +15,7 @@ def _expected_power(nvals, effect, alpha=0.05):
 
 def test_gb_cons_basic():
     """Test basic functionality with a documented sequence of sample sizes and a positive effect."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     nvals = [5, 10, 20, 40, 80]
     effect = 0.3
     result = gibbons_consistency(nvals, effect)

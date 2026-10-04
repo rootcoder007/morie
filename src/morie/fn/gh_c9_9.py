@@ -19,8 +19,8 @@ def ghosal_wn_conj_crt(X, n, prior_var):
     xs = _bnp._flat(X)
     lam = _bnp._flat(prior_var)
     n = float(n)
-    means = [n * x / (n + 1.0 / l) for x, l in zip(xs, lam)]
-    vars_ = [1.0 / (n + 1.0 / l) for l in lam]
+    means = [n * x / (n + 1.0 / ell) for x, ell in zip(xs, lam)]
+    vars_ = [1.0 / (n + 1.0 / ell) for ell in lam]
     res = RichResult(
         payload={
             "estimate": means[0],

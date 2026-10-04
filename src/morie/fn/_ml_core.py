@@ -175,9 +175,9 @@ class PolynomialFeatures:
     def get_feature_names_out(self, input_features=None):
         """sklearn's names: "1", "x0", "x0^2", "x0 x1", in transform order."""
         d = self._d
-        names = list(input_features) if input_features is not None else ["x%d" % j for j in range(d)]
+        names = list(input_features) if input_features is not None else [f"x{int(j)}" for j in range(d)]
         if len(names) != d:
-            raise ValueError("input_features has %d names for %d features" % (len(names), d))
+            raise ValueError(f"input_features has {int(len(names))} names for {int(d)} features")
         out = []
         for cmb in self._combos():
             if not cmb:
@@ -186,7 +186,7 @@ class PolynomialFeatures:
             parts = []
             for j in sorted(set(cmb)):
                 p = cmb.count(j)
-                parts.append(names[j] if p == 1 else "%s^%d" % (names[j], p))
+                parts.append(names[j] if p == 1 else f"{names[j]}^{int(p)}")
             out.append(" ".join(parts))
         return _ac.oarr(out)
 
@@ -562,10 +562,10 @@ class _SkTree:
             f = int(self.feature[i])
             if f < 0:
                 continue
-            l, r = int(self.children_left[i]), int(self.children_right[i])
-            nt, nl, nr = (float(self.n_node_samples[i]), float(self.n_node_samples[l]), float(self.n_node_samples[r]))
+            ell, r = int(self.children_left[i]), int(self.children_right[i])
+            nt, nl, nr = (float(self.n_node_samples[i]), float(self.n_node_samples[ell]), float(self.n_node_samples[r]))
             imp[f] += (nt / N) * (
-                float(self.impurity[i]) - nl / nt * float(self.impurity[l]) - nr / nt * float(self.impurity[r])
+                float(self.impurity[i]) - nl / nt * float(self.impurity[ell]) - nr / nt * float(self.impurity[r])
             )
         tot = _math.fsum(imp)
         return _ac.marr([v / tot if tot > 0 else 0.0 for v in imp])
@@ -835,10 +835,7 @@ class _ForestBase:
         self._trees = []
         boot_sets = []
         for _t in range(self.n_estimators):
-            if self.bootstrap:
-                boot = [int(rng.integers(0, n)) for _ in range(n)]
-            else:
-                boot = list(range(n))
+            boot = [int(rng.integers(0, n)) for _ in range(n)] if self.bootstrap else list(range(n))
             boot_sets.append(set(boot))
             self._trees.append(
                 _build_tree(Xd, yv, boot, 0, self.max_depth, self.min_samples_split, mf, rng, classify, n_classes)
@@ -1152,7 +1149,7 @@ class DBSCAN:
         self.eps = eps
         self.min_samples = min_samples
         if metric not in self.METRICS:
-            raise ValueError("unknown metric %r; DBSCAN supports %s" % (metric, ", ".join(self.METRICS)))
+            raise ValueError("unknown metric {!r}; DBSCAN supports {}".format(metric, ", ".join(self.METRICS)))
         self.metric = metric
 
     def _dist(self, a, b):
@@ -1734,13 +1731,15 @@ def classification_report(y_true, y_pred, output_dict=False):
     rep["accuracy"] = accuracy_score(y_true, y_pred)
     if output_dict:
         return rep
-    lines = ["%-10s %9s %9s %9s %9s" % ("", "precision", "recall", "f1-score", "support")]
+    lines = ["{:<10} {!s:>9} {!s:>9} {!s:>9} {!s:>9}".format("", "precision", "recall", "f1-score", "support")]
     for c in classes:
         d = rep[str(c)]
         lines.append(
-            "%-10s %9.3f %9.3f %9.3f %9d" % (str(c)[:10], d["precision"], d["recall"], d["f1-score"], d["support"])
+            "{:<10} {:9.3f} {:9.3f} {:9.3f} {:9d}".format(
+                str(str(c)[:10]), d["precision"], d["recall"], d["f1-score"], int(d["support"])
+            )
         )
-    lines.append("accuracy %.3f" % rep["accuracy"])
+    lines.append("accuracy {:.3f}".format(rep["accuracy"]))
     return "\n".join(lines)
 
 
@@ -1753,7 +1752,7 @@ def get_scorer(name):
         "f1": lambda est, X, y: f1_score(y, est.predict(X)),
     }
     if name not in table:
-        raise ValueError("unsupported scorer %r" % name)
+        raise ValueError(f"unsupported scorer {name!r}")
     return table[name]
 
 

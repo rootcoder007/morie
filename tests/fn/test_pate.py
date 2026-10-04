@@ -50,17 +50,17 @@ def test_theorem3_condition_and_formula():
     gamma = 0.05
     limit = (math.exp(2 * gamma) - 1) / (math.exp(4 * gamma) - 1)
     assert theorem3_moment(limit, gamma, 3) is None
-    q, l = 0.01, 4
-    want = math.log((1 - q) * ((1 - q) / (1 - math.exp(2 * gamma) * q)) ** l + q * math.exp(2 * gamma * l))
-    assert abs(theorem3_moment(q, gamma, l) - want) < 1e-12
+    q, ell = 0.01, 4
+    want = math.log((1 - q) * ((1 - q) / (1 - math.exp(2 * gamma) * q)) ** ell + q * math.exp(2 * gamma * ell))
+    assert abs(theorem3_moment(q, gamma, ell) - want) < 1e-12
     assert theorem3_moment(0.0, gamma, 5) == 0.0
 
 
 def test_accountant_composes_and_inverts_the_tail_bound():
     one = moments_accountant([[100, 2, 1]], 0.05, 1e-5)
     ten = moments_accountant([[100, 2, 1]] * 10, 0.05, 1e-5)
-    for l in one["alpha"]:
-        assert abs(ten["alpha"][l] - 10.0 * one["alpha"][l]) < 1e-12
+    for ell in one["alpha"]:
+        assert abs(ten["alpha"][ell] - 10.0 * one["alpha"][ell]) < 1e-12
     lam = ten["lambda"]
     assert abs(ten["epsilon"] - (ten["alpha"][lam] + math.log(1e5)) / lam) < 1e-12
     assert abs(math.exp(ten["alpha"][lam] - lam * ten["epsilon"]) - 1e-5) < 1e-12

@@ -114,7 +114,7 @@ def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None, mode="row"):
             "n": n,
             "s": s,
             "mode": mode,
-            "method": "AlphaFold MSA gated self-attention (%s-wise)" % mode,
+            "method": f"AlphaFold MSA gated self-attention ({mode}-wise)",
         }
     )
 

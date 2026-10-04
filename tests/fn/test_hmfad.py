@@ -7,7 +7,10 @@ from morie.fn.hmfad import geron_forward_autodiff
 
 def test_hmfad_basic():
     """Test basic functionality."""
-    f = lambda v: v[0] ** 2
+
+    def f(v):
+        return v[0] ** 2
+
     result = geron_forward_autodiff(f, [3.0])
     assert isinstance(result, dict)
     assert "value" in result
@@ -20,7 +23,10 @@ def test_hmfad_basic():
 
 def test_hmfad_edge():
     """Test edge cases."""
-    f = lambda v: v[0] * v[1] + v[0].exp()
+
+    def f(v):
+        return v[0] * v[1] + v[0].exp()
+
     result = geron_forward_autodiff(f, [0.0, 3.0])
     assert isinstance(result, dict)
     assert "value" in result

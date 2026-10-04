@@ -769,7 +769,7 @@ def bidomain(
     lim = dx * dx / (2.0 * D)
     if dt > lim:
         raise ValueError(
-            "dt_ms=%g exceeds the explicit stability limit %g ms for D=%g cm^2/ms and dx=%g cm" % (dt, lim, D, dx)
+            f"dt_ms={dt:g} exceeds the explicit stability limit {lim:g} ms for D={D:g} cm^2/ms and dx={dx:g} cm"
         )
     tf = float(threshold_frac)
     if not 0.0 < tf < 0.5:
@@ -1207,7 +1207,7 @@ def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None, fla
         raise ValueError("window_ms must be positive (ms)")
     w = int(round(window_ms * fs / 1000.0))
     if w < int(2.0 * fs / flo):
-        raise ValueError("a %g ms window holds fewer than two periods at %g Hz" % (window_ms, flo))
+        raise ValueError(f"a {window_ms:g} ms window holds fewer than two periods at {flo:g} Hz")
     nwin = len(xs) // w
     if nwin < 2:
         raise ValueError("need at least 2 whole analysis windows")
@@ -1352,9 +1352,7 @@ def eggfeat(egg, fs, normal_band=(0.0333, 0.0667)):
     xs = [float(v) for v in aslist(egg)]
     dur = len(xs) / fs
     if dur < 2.0 / lo:
-        raise ValueError(
-            "recording of %.1f s is too short to resolve %g Hz; need at least %.0f s" % (dur, lo, 2.0 / lo)
-        )
+        raise ValueError(f"recording of {dur:.1f} s is too short to resolve {lo:g} Hz; need at least {2.0 / lo:.0f} s")
     freqs, psd = _bsapsd(xs, fs)
     mom = _bsapsdmom(freqs, psd)
     tot = mom["total_power"]
@@ -1648,7 +1646,7 @@ def seizdet(eeg, fs, epoch_s=1.0, ratio_threshold=2.0, baseline_epochs=None):
         raise ValueError("ratio_threshold must exceed 1 (it is a ratio to baseline)")
     w = int(round(epoch_s * fs))
     if w < 8:
-        raise ValueError("epoch of %g s is only %d samples; use a longer epoch" % (epoch_s, w))
+        raise ValueError(f"epoch of {epoch_s:g} s is only {int(w)} samples; use a longer epoch")
     n_ep = len(xs) // w
     if n_ep < 2:
         raise ValueError("need at least 2 whole epochs")
@@ -1666,10 +1664,10 @@ def seizdet(eeg, fs, epoch_s=1.0, ratio_threshold=2.0, baseline_epochs=None):
         freqs, psd = _bsapsd(seg, fs)
         tot = fsum(psd)
         if tot <= 0.0:
-            raise ValueError("epoch %d is constant; no spectrum to analyse" % e)
+            raise ValueError(f"epoch {int(e)} is constant; no spectrum to analyse")
         row = {"t_start_s": e * epoch_s}
         for lo, hi in binnie:
-            row["b_%g_%g_hz" % (lo, hi)] = _bsabandpow(freqs, psd, lo, hi) / tot
+            row[f"b_{lo:g}_{hi:g}_hz"] = _bsabandpow(freqs, psd, lo, hi) / tot
         for nm, (lo, hi) in trad.items():
             if hi > lo:
                 row[nm + "_fraction"] = _bsabandpow(freqs, psd, lo, hi) / tot
@@ -1798,9 +1796,9 @@ def erpfeat(erp, fs, t0=0.0, components=None, baseline_ms=(None, 0.0)):
     for name, spec in components.items():
         t1, t2, pol = float(spec[0]), float(spec[1]), int(spec[2])
         if t2 <= t1:
-            raise ValueError("component %s has an empty window" % name)
+            raise ValueError(f"component {name} has an empty window")
         if pol not in (1, -1):
-            raise ValueError("component %s polarity must be +1 or -1" % name)
+            raise ValueError(f"component {name} polarity must be +1 or -1")
         win = [i for i in range(len(ts)) if t1 <= ts[i] <= t2]
         if not win:
             rows[name] = {"latency_ms": None, "amplitude_uV": None, "found": False, "window_ms": (t1, t2)}
@@ -1902,12 +1900,12 @@ def erders(eeg, fs, ref_window, active_window, band=(8.0, 13.0)):
     def cut(win, name):
         a, b = float(win[0]), float(win[1])
         if b <= a:
-            raise ValueError("%s must have end > start (s)" % name)
+            raise ValueError(f"{name} must have end > start (s)")
         if a < 0.0 or b > dur:
-            raise ValueError("%s (%g, %g) s falls outside the %.3f s record" % (name, a, b, dur))
+            raise ValueError(f"{name} ({a:g}, {b:g}) s falls outside the {dur:.3f} s record")
         seg = xs[int(round(a * fs)) : int(round(b * fs))]
         if len(seg) < 4:
-            raise ValueError("%s is only %d samples; widen it" % (name, len(seg)))
+            raise ValueError(f"{name} is only {int(len(seg))} samples; widen it")
         return seg
 
     rseg = cut(ref_window, "ref_window")
@@ -1918,7 +1916,7 @@ def erders(eeg, fs, ref_window, active_window, band=(8.0, 13.0)):
     R = _bsabandpow(rf, rp, lo, hi) / len(rseg)
     A = _bsabandpow(af, ap, lo, hi) / len(aseg)
     if R <= 0.0:
-        raise ValueError("reference window has no power in %g-%g Hz" % (lo, hi))
+        raise ValueError(f"reference window has no power in {lo:g}-{hi:g} Hz")
     pct = 100.0 * (A - R) / R
     event = "none" if abs(pct) < 1.0 else ("ERS" if pct > 0.0 else "ERD")
     return RichResult(
@@ -2577,7 +2575,7 @@ def rcmemb(t, I_inj=0.0, C_m=0.2, R_m=100.0, V_rest=-65.0):
     tau = R_m * C_m
     V = V_rest
     Vs = []
-    for i, ti in enumerate(ts):
+    for i, _ti in enumerate(ts):
         if i > 0:
             step = ts[i] - ts[i - 1]
             vinf = V_rest + cur[i - 1] * R_m
@@ -2707,8 +2705,8 @@ def vagclean(vag, emg_ref, fs, n_taps=8, mu=0.05, alpha=0.02, adaptive_mu=True):
         lim = 1.0 / (M1 * rpow)
         if mu >= lim:
             raise ValueError(
-                "mu=%g exceeds the stability limit %g for a "
-                "reference of power %g; the LMS filter would diverge" % (mu, lim, rpow)
+                f"mu={mu:g} exceeds the stability limit {lim:g} for a "
+                f"reference of power {rpow:g}; the LMS filter would diverge"
             )
     w = [0.0] * M1
     xbar2 = rpow
@@ -2837,10 +2835,7 @@ def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0, amp_uV=8.0, wid
         raise ValueError("phases must be 2 (biphasic) or 3 (triphasic)")
     amp_uV = float(amp_uV)
     span_ms = spread_mm / conduction_vel
-    if n_fibers == 1:
-        delays = [0.0]
-    else:
-        delays = [-span_ms / 2.0 + span_ms * i / (n_fibers - 1) for i in range(n_fibers)]
+    delays = [0.0] if n_fibers == 1 else [-span_ms / 2.0 + span_ms * i / (n_fibers - 1) for i in range(n_fibers)]
     tmid = 0.5 * (ts[0] + ts[-1])
     wave = []
     for ti in ts:
@@ -2943,7 +2938,7 @@ def murmspec(pcg, fs, f1=25.0, f2=75.0, f3=150.0):
     ca = fsum(m for f, m in zip(freqs, mag) if f1 <= f < f2)
     pa = fsum(m for f, m in zip(freqs, mag) if f2 <= f < f3)
     if ca <= 0.0:
-        raise ValueError("constant-area band %g-%g Hz carries no energy" % (f1, f2))
+        raise ValueError(f"constant-area band {f1:g}-{f2:g} Hz carries no energy")
     mom = _bsapsdmom(freqs, psd)
     pk = _bsapeaks(freqs, psd, count=3)
     out = dict(mom)
@@ -3132,7 +3127,7 @@ def oaefeat(oae, fs, noise_floor=None, bands=None):
         if npsd is not None:
             npow = _bsabandpow(freqs, npsd, lo, hi)
             if npow <= 0.0:
-                raise ValueError("noise floor has no power in band %g-%g Hz" % (lo, hi))
+                raise ValueError(f"noise floor has no power in band {lo:g}-{hi:g} Hz")
             row["snr_db"] = 10.0 * log(p / npow, 10.0)
             detected = detected or row["snr_db"] >= 6.0
         rows.append(row)
@@ -3392,7 +3387,7 @@ def pcgeeg(pcg, eeg, fs, n_segments=8, band=(1.0, 100.0)):
         ph.append(atan2(Sxyi[k], Sxyr[k]))
     inb = [k for k in range(m) if lo <= freqs[k] <= hi]
     if not inb:
-        raise ValueError("no spectral bins in %g-%g Hz" % (lo, hi))
+        raise ValueError(f"no spectral bins in {lo:g}-{hi:g} Hz")
     kpk = max(inb, key=lambda k: coh[k])
     delay = None
     if freqs[kpk] > 0.0:
@@ -3573,7 +3568,7 @@ def psgstage(eeg, eog, emg, fs, epoch_len=30.0):
         fr, ps = _bsapsd(a[sl], fs)
         tot = fsum(ps)
         if tot <= 0.0:
-            raise ValueError("EEG epoch %d is constant" % e)
+            raise ValueError(f"EEG epoch {int(e)} is constant")
         d = _bsabandpow(fr, ps, 0.5, 4.0) / tot
         th = _bsabandpow(fr, ps, 4.0, 8.0) / tot
         al = _bsabandpow(fr, ps, 8.0, 13.0001) / tot
@@ -3944,10 +3939,7 @@ def respfeat(resp, fs, signal_type="flow", min_breath_s=1.0):
         raise ValueError("min_breath_s must be positive (s)")
     mu = fsum(xs) / len(xs)
     ys = [v - mu for v in xs]
-    if signal_type == "volume":
-        drive = [ys[i + 1] - ys[i] for i in range(len(ys) - 1)] + [0.0]
-    else:
-        drive = ys
+    drive = [ys[i + 1] - ys[i] for i in range(len(ys) - 1)] + [0.0] if signal_type == "volume" else ys
     # inspiration onsets = upward zero crossings of the drive signal
     ons = [i for i in range(1, len(drive)) if drive[i - 1] <= 0.0 < drive[i]]
     kept = []
@@ -4086,9 +4078,9 @@ def respsound(
         ``resonance_hz`` = 1 / (2 pi sqrt(L_a C_a));
         ``area_m2``, ``circumference_m``, ``volume_m3``.
     """
-    l = float(length_m)
+    ell = float(length_m)
     r = float(radius_m)
-    if l <= 0.0:
+    if ell <= 0.0:
         raise ValueError("length_m must be positive (m)")
     if r <= 0.0:
         raise ValueError("radius_m must be positive (m)")
@@ -4100,8 +4092,8 @@ def respsound(
         raise ValueError("eta (adiabatic constant) must exceed 1")
     A = pi * r * r
     S = 2.0 * pi * r
-    Va = A * l
-    La = rho * l / A  # eq. (7.122), kg/m^4
+    Va = A * ell
+    La = rho * ell / A  # eq. (7.122), kg/m^4
     Ca = Va / (P0 * eta)  # eq. (7.127), m^3/Pa
     if freqs is None:
         fs_hz = [10.0 * k for k in range(1, 201)]
@@ -4112,8 +4104,8 @@ def respsound(
     Ra, Ga, mag = [], [], []
     for f in fs_hz:
         w = 2.0 * pi * f
-        ra = (l * S / (A * A)) * sqrt(w * rho * mu / 2.0)  # eq. (7.128)
-        ga = (S * l / (rho * c * c)) * (eta - 1.0) * sqrt(lam * w / (2.0 * cp * rho))  # eq. (7.129)
+        ra = (ell * S / (A * A)) * sqrt(w * rho * mu / 2.0)  # eq. (7.128)
+        ga = (S * ell / (rho * c * c)) * (eta - 1.0) * sqrt(lam * w / (2.0 * cp * rho))  # eq. (7.129)
         Ra.append(ra)
         Ga.append(ga)
         # series impedance Ra + j w La, shunt admittance Ga + j w Ca
@@ -4932,9 +4924,8 @@ def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(), M_I=None, M_O=None, N_
         if cnt is not None and int(cnt) != len(sets[nm]):
             raise ValueError("declared count does not match the length of " + nm)
     ak, bk, ck, dk = sets["a_k"], sets["b_k"], sets["c_k"], sets["d_k"]
-    if r != 0 or ak or ck:
-        if any(v == 0 for v in zs):
-            raise ValueError("z = 0 is a singularity of this expansion")
+    if (r != 0 or ak or ck) and any(v == 0 for v in zs):
+        raise ValueError("z = 0 is a singularity of this expansion")
 
     def clog(w):
         if w == 0:

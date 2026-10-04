@@ -132,12 +132,12 @@ def build_intervals(start, end, exposure, event_times, risk_periods, age_breaks)
     """
     s, e = float(start), float(end)
     if not e > s:
-        raise ValueError("sccsno: the observation period must have positive length, got [%g, %g]" % (s, e))
+        raise ValueError(f"sccsno: the observation period must have positive length, got [{s:g}, {e:g}]")
     for a, b in risk_periods:
         if not float(b) > float(a):
-            raise ValueError("sccsno: a risk period must satisfy b > a, got (%g, %g]" % (a, b))
+            raise ValueError(f"sccsno: a risk period must satisfy b > a, got ({a:g}, {b:g}]")
     if exposure is not None and not s <= float(exposure) <= e:
-        raise ValueError("sccsno: the exposure at %g lies outside the observation period [%g, %g]" % (exposure, s, e))
+        raise ValueError(f"sccsno: the exposure at {exposure:g} lies outside the observation period [{s:g}, {e:g}]")
     cuts = _cuts(s, e, exposure, risk_periods, age_breaks)
     cells = []
     for q in range(len(cuts) - 1):
@@ -147,7 +147,7 @@ def build_intervals(start, end, exposure, event_times, risk_periods, age_breaks)
     for t in event_times:
         tv = float(t)
         if not s <= tv <= e:
-            raise ValueError("sccsno: an event at %g lies outside the observation period [%g, %g]" % (tv, s, e))
+            raise ValueError(f"sccsno: an event at {tv:g} lies outside the observation period [{s:g}, {e:g}]")
         placed = False
         for q in range(len(cuts) - 1):
             if cuts[q] < tv <= cuts[q + 1] or (q == 0 and tv == cuts[0]):

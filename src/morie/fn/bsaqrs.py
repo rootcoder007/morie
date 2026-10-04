@@ -252,7 +252,7 @@ def _rgcheck(x, least=1, what="signal"):
     """Coerce to a list of floats and reject anything shorter than `least`."""
     v = aslist(x)
     if len(v) < least:
-        raise ValueError("%s needs at least %d samples, got %d" % (what, least, len(v)))
+        raise ValueError(f"{what} needs at least {int(least)} samples, got {int(len(v))}")
     return v
 
 
@@ -303,7 +303,7 @@ def blwander(ecg, fs, pole=0.995):
         raise ValueError("fs must be positive")
     a = float(pole)
     if not 0.0 <= a < 1.0:
-        raise ValueError("the pole must lie inside the unit circle, 0 <= pole < 1; got %g" % a)
+        raise ValueError(f"the pole must lie inside the unit circle, 0 <= pole < 1; got {a:g}")
 
     # y(n) = a y(n-1) + (1/T) [ x(n) - x(n-1) ],  T = 1/fs
     y = [0.0] * n
@@ -422,7 +422,10 @@ def cpulsefeat(cp, fs, qrs, hr=None):
 
     pepc = [v + 0.4 * hr for v in pep]
     etc = [v + 1.6 * hr for v in et]
-    mean = lambda v: (fsum(v) / len(v)) if v else None
+
+    def mean(v):
+        return (fsum(v) / len(v)) if v else None
+
     return RichResult(
         payload={
             "upstroke": ups,
@@ -817,7 +820,9 @@ def ecgfeat(x, qrs, fs):
             tdur.append((te - ts) / fs)
             qtdur.append((te - qs) / fs)
 
-    mean = lambda v: (fsum(v) / len(v)) if v else None
+    def mean(v):
+        return (fsum(v) / len(v)) if v else None
+
     return RichResult(
         payload={
             "pamp": pamp,
@@ -1107,7 +1112,10 @@ def hrvfreq(rr, fsr=4.0, bands="taskforce"):
     lf = _band(*lim["lf"])
     hf = _band(*lim["hf"])
     tot = vlf + lf + hf
-    pct = lambda v: (100.0 * v / tot) if tot > 0.0 else 0.0
+
+    def pct(v):
+        return (100.0 * v / tot) if tot > 0.0 else 0.0
+
     return RichResult(
         payload={
             "vlf": vlf,
@@ -1639,7 +1647,9 @@ def pcgparts(pcg, ecg, cp, fs):
     if not s1 or not s2:
         raise ValueError("could not locate both S1 and S2 events")
 
-    rms = lambda a, b: sqrt(fsum(v * v for v in pcg[a:b]) / (b - a)) if b > a else 0.0
+    def rms(a, b):
+        return sqrt(fsum(v * v for v in pcg[a:b]) / (b - a)) if b > a else 0.0
+
     systole, diastole = [], []
     for a in s1:
         later = [v for v in s2 if v > a]
@@ -1724,7 +1734,7 @@ def plinenotch(x, fs, f0=60.0, harmonics=1):
         b1 = -2.0 * cos(w)
         gain = 1.0 + b1 + 1.0
         if abs(gain) < 1e-12:
-            raise ValueError("notch at %g Hz has zero DC gain; choose another frequency" % f)
+            raise ValueError(f"notch at {f:g} Hz has zero DC gain; choose another frequency")
         b = (1.0 / gain, b1 / gain, 1.0 / gain)
         coeffs.append(b)
         notched.append(f)

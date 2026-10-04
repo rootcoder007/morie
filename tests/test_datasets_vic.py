@@ -114,11 +114,11 @@ def test_sheet_map_is_not_resolved_by_sorting_part_names():
     buf = io.BytesIO()
     with pd.ExcelWriter(buf) as w:
         for i in range(1, 12):
-            frame = pd.DataFrame({"v": ["sheet%d" % i]})
-            frame.to_excel(w, sheet_name="S%d" % i, index=False)
+            frame = pd.DataFrame({"v": [f"sheet{int(i)}"]})
+            frame.to_excel(w, sheet_name=f"S{int(i)}", index=False)
     buf.seek(0)
     xl = pd.ExcelFile(buf)
-    assert xl.sheet_names == ["S%d" % i for i in range(1, 12)]
+    assert xl.sheet_names == [f"S{int(i)}" for i in range(1, 12)]
     buf.seek(0)
     tenth = pd.read_excel(buf, sheet_name="S10")
     assert list(tenth["v"]) == ["sheet10"]

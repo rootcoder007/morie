@@ -73,7 +73,7 @@ def _envkey(bondset):
     index vectors (shorter prefix first).  Both arms sort with this key, so
     the round in which a duplicate environment is retired is identical.
     """
-    return "".join("%04d" % b for b in sorted(bondset))
+    return "".join(f"{int(b):04d}" for b in sorted(bondset))
 
 
 def _morgan(a, bonds, invariants, radius, nbits, use_bond_order=True):
@@ -86,7 +86,7 @@ def _morgan(a, bonds, invariants, radius, nbits, use_bond_order=True):
     emitted again, and the atom that produced it takes no further part
     (the "dead atom" rule).
     """
-    nb = len(bonds)
+    len(bonds)
     inc = [[] for _ in range(a)]
     for bi, (i, j, o) in enumerate(bonds):
         inc[i].append((bi, j, o if use_bond_order else 1))

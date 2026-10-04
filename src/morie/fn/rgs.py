@@ -102,7 +102,7 @@ def functional_regression(X, Y, basis=None):
     if n == 0:
         raise ValueError("rgs: no curves")
     if len(y) != n:
-        raise ValueError("rgs: %d curves but %d responses" % (n, len(y)))
+        raise ValueError(f"rgs: {int(n)} curves but {int(len(y))} responses")
     T = len(Xm[0])
     if any(len(r) != T for r in Xm):
         raise ValueError("rgs: every curve must lie on the same grid")
@@ -116,7 +116,7 @@ def functional_regression(X, Y, basis=None):
     if basis is not None and not isinstance(basis, (int, float, bool)):
         B = [[float(v) for v in row] for row in k.mat(basis)]
         if len(B) != T:
-            raise ValueError("rgs: the basis has %d rows for a grid of %d" % (len(B), T))
+            raise ValueError(f"rgs: the basis has {int(len(B))} rows for a grid of {int(T)}")
     elif basis is not None:
         kk = int(basis)
         if kk < 1:

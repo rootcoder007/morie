@@ -78,7 +78,7 @@ def tower_embedding(features, W, b=None, normalise=True):
     """
     x = [float(v) for v in k.vec(features)]
     if len(W[0]) != len(x):
-        raise ValueError("twoT: the tower expects %d features but got %d" % (len(W[0]), len(x)))
+        raise ValueError(f"twoT: the tower expects {int(len(W[0]))} features but got {int(len(x))}")
     bb = [0.0] * len(W) if b is None else [float(v) for v in k.vec(b)]
     z = [bb[o] + sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
     if not normalise:
@@ -98,7 +98,7 @@ def corrected_logits(scores, probabilities, temperature=1.0):
     s = [float(v) for v in k.vec(scores)]
     p = [float(v) for v in k.vec(probabilities)]
     if len(s) != len(p):
-        raise ValueError("twoT: %d scores but %d probabilities" % (len(s), len(p)))
+        raise ValueError(f"twoT: {int(len(s))} scores but {int(len(p))} probabilities")
     if any(v <= 0.0 or v > 1.0 for v in p):
         raise ValueError("twoT: the sampling probabilities must lie in (0,1]")
     t = float(temperature)
@@ -145,15 +145,15 @@ def streaming_frequency(hits, n_steps, alpha=0.05, init=None):
 def batch_softmax_loss(query_embeddings, item_embeddings, probabilities=None, temperature=0.05):
     r"""In-batch softmax, corrected when probabilities are supplied."""
     Q = [[float(v) for v in r] for r in k.mat(query_embeddings)]
-    I = [[float(v) for v in r] for r in k.mat(item_embeddings)]
+    I_ = [[float(v) for v in r] for r in k.mat(item_embeddings)]
     n = len(Q)
-    if len(I) != n:
-        raise ValueError("twoT: %d queries but %d items" % (n, len(I)))
+    if len(I_) != n:
+        raise ValueError(f"twoT: {int(n)} queries but {int(len(I_))} items")
     if n < 2:
         raise ValueError("twoT: in-batch negatives need at least 2 examples")
     tot, per = 0.0, []
     for i in range(n):
-        s = [sum(Q[i][a] * I[j][a] for a in range(len(Q[0]))) for j in range(n)]
+        s = [sum(Q[i][a] * I_[j][a] for a in range(len(Q[0]))) for j in range(n)]
         if probabilities is None:
             lg = [v / float(temperature) for v in s]
         else:
@@ -169,8 +169,8 @@ def batch_softmax_loss(query_embeddings, item_embeddings, probabilities=None, te
 def retrieve(query_embedding, item_embeddings, probabilities=None, top_k=5, temperature=1.0):
     r"""Rank the corpus, with and without the correction."""
     q = [float(v) for v in k.vec(query_embedding)]
-    I = [[float(v) for v in r] for r in k.mat(item_embeddings)]
-    s = [sum(q[a] * I[j][a] for a in range(len(q))) for j in range(len(I))]
+    I_ = [[float(v) for v in r] for r in k.mat(item_embeddings)]
+    s = [sum(q[a] * I_[j][a] for a in range(len(q))) for j in range(len(I_))]
     raw_order = sorted(range(len(s)), key=lambda j: -s[j])
     if probabilities is None:
         order, cor = raw_order, s

@@ -12,7 +12,10 @@ def test_ipfsfa_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x0 = rng.normal(0, 1, 5)
-    f = lambda x: sum([xi * xi for xi in x])
+
+    def f(x):
+        return sum([xi * xi for xi in x])
+
     constraints = [lambda x: -1.0 - sum([xi * xi for xi in x])]
     result = ipopt_solver(f, constraints, x0, outer=2, inner=5)
     assert isinstance(result, dict)
@@ -24,7 +27,10 @@ def test_ipfsfa_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     x0 = rng.normal(0, 1, 5)
-    f = lambda x: sum([xi * xi for xi in x])
+
+    def f(x):
+        return sum([xi * xi for xi in x])
+
     constraints = [lambda x: 1.0 + sum([xi * xi for xi in x])]
     with pytest.raises(ValueError):
         ipopt_solver(f, constraints, x0, outer=1, inner=1)

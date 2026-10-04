@@ -89,7 +89,7 @@ def convex_divergence(p, q, f="kl", f_inf=None, normalise=True):
     if isinstance(f, str):
         key = f.lower()
         if key not in _NAMED:
-            raise ValueError("unknown generator %r" % (f,))
+            raise ValueError(f"unknown generator {f!r}")
         fn = _NAMED[key]
         if f_inf is None:
             f_inf = _NAMED_INF[key]

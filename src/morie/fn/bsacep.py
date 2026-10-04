@@ -907,7 +907,7 @@ def ccepstrum(x):
     floor = 1e-300
     if any(v <= floor for v in mags):
         raise ValueError(
-            "the complex log needs a nonzero spectrum at every bin; %d bins vanish" % sum(1 for v in mags if v <= floor)
+            f"the complex log needs a nonzero spectrum at every bin; {int(sum(1 for v in mags if v <= floor))} bins vanish"
         )
     # Unwrap over the HALF circle only, then impose odd symmetry.  For a
     # real signal the DFT phase satisfies angle(X(N-k)) = -angle(X(k)),
@@ -1020,14 +1020,14 @@ def ratz(gain, r, zeros_in, zeros_out, poles_in, poles_out, z=None):
     for name, group in (("zeros_in", ai), ("poles_in", ci)):
         bad = [v for v in group if abs(v) >= 1.0]
         if bad:
-            raise ValueError("%s must lie inside the unit circle; |%r| = %g" % (name, bad[0], abs(bad[0])))
+            raise ValueError(f"{name} must lie inside the unit circle; |{bad[0]!r}| = {abs(bad[0]):g}")
     for name, group in (("zeros_out", bo), ("poles_out", do)):
         bad = [v for v in group if abs(v) >= 1.0]
         if bad:
             raise ValueError(
-                "%s holds the RECIPROCAL of a root outside the "
+                f"{name} holds the RECIPROCAL of a root outside the "
                 "unit circle, so it must itself be inside; "
-                "|%r| = %g" % (name, bad[0], abs(bad[0]))
+                f"|{bad[0]!r}| = {abs(bad[0]):g}"
             )
     out = {
         "gain": complex(gain),
@@ -1200,7 +1200,7 @@ def echoseries(a, n0, terms=10, omega=None):
     """
     av = float(a)
     if not abs(av) < 1.0:
-        raise ValueError("eq. (4.79) needs |a| < 1; got %g" % av)
+        raise ValueError(f"eq. (4.79) needs |a| < 1; got {av:g}")
     d = int(n0)
     if d < 1:
         raise ValueError("the echo delay must be at least one sample")

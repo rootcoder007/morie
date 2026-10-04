@@ -122,7 +122,7 @@ def attention_logits(q, k, mode="dot", tau=1.0, bias=None, n=None, tau_floor=TAU
     bias must not do.
     """
     if mode not in MODES:
-        raise ValueError("mode must be one of %r" % (MODES,))
+        raise ValueError(f"mode must be one of {MODES!r}")
     nq = len(q)
     nk = len(k)
     d = len(q[0])
@@ -174,7 +174,7 @@ def softmax_rows(logits, mask=None, neg=-1e30):
     for i, row in enumerate(logits):
         live = [j for j in range(len(row)) if mask is None or mask[i][j]]
         if not live:
-            raise ValueError("row %d is masked out entirely" % i)
+            raise ValueError(f"row {int(i)} is masked out entirely")
         mx = row[live[0]]
         for j in live:
             if row[j] > mx:

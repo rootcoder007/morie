@@ -64,11 +64,11 @@ def predictiveness(y, pred, measure="r_squared", cutoff=0.5):
     p = np.asarray(pred, dtype=float).ravel()
     n = y.size
     if p.size != n:
-        raise ValueError("predictions and outcome disagree in length, %d vs %d." % (p.size, n))
+        raise ValueError(f"predictions and outcome disagree in length, {int(p.size)} vs {int(n)}.")
     if measure not in MEASURES:
-        raise ValueError("measure must be one of %s, got %r." % (MEASURES, measure))
+        raise ValueError(f"measure must be one of {MEASURES}, got {measure!r}.")
     if measure != "r_squared" and not np.all(np.isin(y, (0.0, 1.0))):
-        raise ValueError("measure %r needs a binary 0/1 outcome." % measure)
+        raise ValueError(f"measure {measure!r} needs a binary 0/1 outcome.")
 
     if measure == "r_squared":
         # v = 1 - MSE/Var. Both pieces have the elementary gradient
@@ -208,18 +208,18 @@ def vim(y, X, s, measure="r_squared", f=None, n_folds=5, sample_split=True, alph
     X = _as2d(X)
     n = y.size
     if X.shape[0] != n:
-        raise ValueError("X has %d rows for %d outcomes." % (X.shape[0], n))
+        raise ValueError(f"X has {int(X.shape[0])} rows for {int(n)} outcomes.")
     if n < 4 * int(n_folds):
-        raise ValueError("need at least 4 observations per fold, got n = %d for %d folds." % (n, int(n_folds)))
+        raise ValueError(f"need at least 4 observations per fold, got n = {int(n)} for {int(int(n_folds))} folds.")
     s = np.atleast_1d(np.asarray(s, dtype=int)).ravel()
     if s.size == 0:
         raise ValueError("s is empty; name at least one column.")
     if s.min() < 0 or s.max() >= X.shape[1]:
-        raise ValueError("s refers to column %d, outside the %d columns of X." % (int(s.max()), X.shape[1]))
+        raise ValueError(f"s refers to column {int(int(s.max()))}, outside the {int(X.shape[1])} columns of X.")
     keep = np.setdiff1d(np.arange(X.shape[1]), s)
     binary = bool(np.all(np.isin(y, (0.0, 1.0))))
     if measure != "r_squared" and not binary:
-        raise ValueError("measure %r needs a binary outcome." % measure)
+        raise ValueError(f"measure {measure!r} needs a binary outcome.")
 
     rng = np.random.default_rng(int(seed))
     K = int(n_folds)

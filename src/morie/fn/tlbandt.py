@@ -76,7 +76,7 @@ def design_probability(blip_estimate, delta=0.1, greedy=False):
     """
     d = float(delta)
     if not 0.0 < d < 0.5:
-        raise ValueError("tlbandt: delta must lie in (0, 0.5), got %r" % (delta,))
+        raise ValueError(f"tlbandt: delta must lie in (0, 0.5), got {delta!r}")
     if greedy:
         return 1.0 if float(blip_estimate) > 0.0 else 0.0
     return 1.0 - d if float(blip_estimate) > 0.0 else d

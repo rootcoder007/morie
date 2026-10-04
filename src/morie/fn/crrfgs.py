@@ -124,11 +124,11 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     # decays as censoring accumulates. Evaluating it at the subject's own time
     # gives 1 for everyone and silently collapses Fine-Gray back to the
     # cause-specific fit.
-    beta, ll, I, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
+    beta, ll, I_, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
     from ._stats_core import norm
 
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(beta.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -172,13 +172,13 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
     beta = np.zeros(p)
     utimes = np.unique(t[e == 1])
     ll = 0.0
-    I = np.zeros((p, p))
+    I_ = np.zeros((p, p))
     U = np.zeros(p)
     for it in range(max_iter):
         w = np.exp(np.clip(X @ beta, -500, 500))
         ll = 0.0
         U = np.zeros(p)
-        I = np.zeros((p, p))
+        I_ = np.zeros((p, p))
         for ut in utimes:
             # Weight 1 for those still at risk; G(ut)/G(t_i) for those who
             # already failed from a competing cause; 0 once censored.
@@ -198,16 +198,16 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
             ll += float((X[died] @ beta).sum()) - dcount * np.log(max(S0, 1e-300))
             mu = S1 / max(S0, 1e-300)
             U += X[died].sum(axis=0) - dcount * mu
-            I += dcount * (S2 / max(S0, 1e-300) - np.outer(mu, mu))
+            I_ += dcount * (S2 / max(S0, 1e-300) - np.outer(mu, mu))
         try:
-            step = np.linalg.solve(I, U)
+            step = np.linalg.solve(I_, U)
         except np.linalg.LinAlgError:
-            step = np.linalg.lstsq(I, U, rcond=None)[0]
+            step = np.linalg.lstsq(I_, U, rcond=None)[0]
         beta = beta + step
         if np.max(np.abs(step)) < tol:
             converged = True
             break
-    return beta, float(ll), I, U, it + 1, converged
+    return beta, float(ll), I_, U, it + 1, converged
 
 
 def cheatsheet():

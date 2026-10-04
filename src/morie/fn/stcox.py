@@ -87,9 +87,9 @@ def spacetime_cox(
     xe = np.linspace(float(x.min()), float(x.max()), n_xbins + 1)
     ye = np.linspace(float(y.min()), float(y.max()), n_ybins + 1)
     te = np.linspace(float(t.min()), float(t.max()), n_tbins + 1)
-    xc = 0.5 * (xe[:-1] + xe[1:])
-    yc = 0.5 * (ye[:-1] + ye[1:])
-    tc = 0.5 * (te[:-1] + te[1:])
+    0.5 * (xe[:-1] + xe[1:])
+    0.5 * (ye[:-1] + ye[1:])
+    0.5 * (te[:-1] + te[1:])
 
     counts = np.zeros((n_xbins, n_ybins, n_tbins))
     for i in range(n):

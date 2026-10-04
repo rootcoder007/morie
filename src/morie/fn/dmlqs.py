@@ -129,7 +129,7 @@ def dmpnn_message_pass(h0, adj, T=3, W=None, activation="relu", exclude_reverse=
             return max(0.0, x)
         if activation == "tanh":
             return math.tanh(x)
-        raise ValueError("dmlqs: activation must be relu or tanh, got %r" % (activation,))
+        raise ValueError(f"dmlqs: activation must be relu or tanh, got {activation!r}")
 
     H0 = {k_: list(H[k_]) for k_ in H}
     for _ in range(int(T)):

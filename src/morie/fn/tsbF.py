@@ -146,7 +146,7 @@ def _init(y, init="global", z0=None, x0=None, p0=None):
     if not pos:
         raise ValueError("tsbF: the series has no positive demand")
     if init not in _INITS:
-        raise ValueError("tsbF: init must be one of %s, got %r" % (", ".join(_INITS), init))
+        raise ValueError("tsbF: init must be one of {}, got {!r}".format(", ".join(_INITS), init))
     first = next(i for i, v in enumerate(yv) if v > 0.0)
     if init == "known":
         if z0 is None or (x0 is None and p0 is None):
@@ -154,16 +154,16 @@ def _init(y, init="global", z0=None, x0=None, p0=None):
         Z = float(z0)
         if x0 is None:
             if not 0.0 < float(p0) <= 1.0:
-                raise ValueError("tsbF: p0 must be in (0, 1], got %r" % (p0,))
+                raise ValueError(f"tsbF: p0 must be in (0, 1], got {p0!r}")
             X = 1.0 / float(p0)
             P = float(p0)
         else:
             if float(x0) < 1.0:
-                raise ValueError("tsbF: x0 must be at least 1, got %r" % (x0,))
+                raise ValueError(f"tsbF: x0 must be at least 1, got {x0!r}")
             X = float(x0)
             P = 1.0 / X if p0 is None else float(p0)
         if Z <= 0.0:
-            raise ValueError("tsbF: z0 must be positive, got %r" % (z0,))
+            raise ValueError(f"tsbF: z0 must be positive, got {z0!r}")
         return first, Z, X, P
     if init == "global":
         Z = sum(pos) / len(pos)
@@ -190,9 +190,9 @@ def _burn(seq, burn_in):
     """
     b = int(burn_in)
     if b < 0:
-        raise ValueError("tsbF: burn_in must be non-negative, got %r" % (burn_in,))
+        raise ValueError(f"tsbF: burn_in must be non-negative, got {burn_in!r}")
     if b >= len(seq):
-        raise ValueError("tsbF: burn_in %d discards the whole series of length %d" % (b, len(seq)))
+        raise ValueError(f"tsbF: burn_in {int(b)} discards the whole series of length {int(len(seq))}")
     return seq[b:]
 
 
@@ -201,10 +201,10 @@ def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1, init="global", z0=None, p0=
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
     if n < 2:
-        raise ValueError("tsbF: need at least 2 observations, got %d" % n)
+        raise ValueError(f"tsbF: need at least 2 observations, got {int(n)}")
     for nm, v in (("alpha", alpha), ("beta", beta)):
         if not 0.0 < float(v) <= 1.0:
-            raise ValueError("tsbF: %s must be in (0, 1], got %r" % (nm, v))
+            raise ValueError(f"tsbF: {nm} must be in (0, 1], got {v!r}")
     first, zi, _, pi = _init(yv, init=init, z0=z0, p0=p0, x0=None if p0 is None else 1.0 / p0)
     a, b = float(alpha), float(beta)
     z, p = zi, pi
@@ -250,9 +250,9 @@ def croston_forecast(y, alpha=0.1, horizon=1, init="global", z0=None, x0=None, b
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
     if n < 2:
-        raise ValueError("tsbF: need at least 2 observations, got %d" % n)
+        raise ValueError(f"tsbF: need at least 2 observations, got {int(n)}")
     if not 0.0 < float(alpha) <= 1.0:
-        raise ValueError("tsbF: alpha must be in (0, 1], got %r" % (alpha,))
+        raise ValueError(f"tsbF: alpha must be in (0, 1], got {alpha!r}")
     first, zi, xi, _ = _init(yv, init=init, z0=z0, x0=x0)
     a = float(alpha)
     z, x = zi, xi
@@ -334,7 +334,7 @@ def intermittent_forecast(
 ):
     """Dispatch, so the three can be compared on one series."""
     if method not in _METHODS:
-        raise ValueError("tsbF: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("tsbF: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     if method == "tsb":
         return tsb_forecast(y, alpha=alpha, beta=beta, horizon=horizon, init=init, z0=z0, p0=p0, burn_in=burn_in)
     if method == "croston":

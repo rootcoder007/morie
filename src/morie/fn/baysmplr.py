@@ -107,26 +107,20 @@ def choose_sampler(dim, has_grad, has_conditionals=False, nuts_threshold=20):
     """The dispatch decision and the sentence that explains it."""
     if has_grad and dim >= nuts_threshold:
         return "nuts", (
-            "gradient available and dimension %d at or above "
-            "the threshold %d, where choosing a trajectory "
-            "length by hand stops being reasonable" % (dim, nuts_threshold)
+            f"gradient available and dimension {int(dim)} at or above the threshold {int(nuts_threshold)}, where choosing a trajectory length by hand stops being reasonable"
         )
     if has_grad:
         return "hmc", (
-            "gradient available and dimension %d below the "
-            "threshold %d, where a fixed trajectory is easy "
-            "to set and cheaper per draw than NUTS doubling" % (dim, nuts_threshold)
+            f"gradient available and dimension {int(dim)} below the threshold {int(nuts_threshold)}, where a fixed trajectory is easy to set and cheaper per draw than NUTS doubling"
         )
     if has_conditionals:
         return "gibbs", (
             "no gradient, but exact conditionals are available, so every move is accepted and nothing needs tuning"
         )
     if dim <= 5:
-        return "mh", ("no gradient and dimension %d is small, so a random walk is adequate" % dim)
+        return "mh", (f"no gradient and dimension {int(dim)} is small, so a random walk is adequate")
     return "mh", (
-        "no gradient and dimension %d is large; a random walk "
-        "will mix badly, and supplying a gradient would be "
-        "worth more than any amount of tuning" % dim
+        f"no gradient and dimension {int(dim)} is large; a random walk will mix badly, and supplying a gradient would be worth more than any amount of tuning"
     )
 
 
@@ -441,10 +435,10 @@ def sampler_dispatch(
         sampler, reason = choose_sampler(d, grad_p is not None, has_cond, nuts_threshold)
     else:
         if sampler not in SAMPLERS:
-            raise ValueError("sampler must be one of %r" % (SAMPLERS,))
+            raise ValueError(f"sampler must be one of {SAMPLERS!r}")
         reason = "forced by the caller, dispatch not consulted"
     if sampler in ("hmc", "nuts") and grad_p is None:
-        raise ValueError("%s needs a gradient" % sampler)
+        raise ValueError(f"{sampler} needs a gradient")
     if sampler == "gibbs" and not has_cond:
         raise ValueError("gibbs needs mean and cov_inv")
 

@@ -129,7 +129,7 @@ def topological_torsions(elements, bonds, common_types=None):
                 if c == a:
                     continue
                 for d in adj[c]:
-                    if d == b or d == a:
+                    if d in (b, a):
                         continue
                     path = (a, b, c, d)
                     code = tuple((npi[p], types[p], degree[p] - (1 if k in (0, 3) else 2)) for k, p in enumerate(path))
@@ -264,10 +264,7 @@ def toptor(elements, bonds, reference=None, common_types=None, activities=None, 
     Comput. Sci.* 27(2), 82-85.
     """
     many = bool(elements) and isinstance(elements[0], (list, tuple))
-    if many:
-        mols = [(list(e), list(b)) for e, b in zip(elements, bonds)]
-    else:
-        mols = [(list(elements), list(bonds))]
+    mols = [(list(e), list(b)) for e, b in zip(elements, bonds)] if many else [(list(elements), list(bonds))]
     tors = [topological_torsions(e, b, common_types) for e, b in mols]
 
     payload = {

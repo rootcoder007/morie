@@ -12,7 +12,6 @@ def test_hmddpg_basic():
         # 1-D environment with reward -(a - 1)^2, state passes through
         return s, -float((a - 1.0) ** 2), False
 
-    d = 1
     actor = [0.0]  # shape (d,)
     critic = [0.0, 0.0]  # shape (d + 1,) over [s, a]
 
@@ -58,7 +57,6 @@ def test_hmddpg_edge():
         # Trivial zero-reward, state-passthrough environment
         return s, 0.0, False
 
-    d = 1
     actor = [0.0]
     critic = [0.0, 0.0]
 

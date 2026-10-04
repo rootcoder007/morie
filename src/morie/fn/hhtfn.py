@@ -61,7 +61,7 @@ def hilbert_huang(
             break
         imfs.append(imf)
         residue = residue - imf
-        t = np.arange(len(residue))
+        np.arange(len(residue))
         max_idx = np.where((residue[1:-1] > residue[:-2]) & (residue[1:-1] > residue[2:]))[0] + 1
         min_idx = np.where((residue[1:-1] < residue[:-2]) & (residue[1:-1] < residue[2:]))[0] + 1
         if len(max_idx) < 2 or len(min_idx) < 2:

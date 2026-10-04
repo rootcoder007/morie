@@ -238,10 +238,10 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
     if n == 0:
         raise ValueError("sschin: no observations")
     if len(ev) != n or len(Xr) != n:
-        raise ValueError("sschin: time, event and X must agree in length (%d, %d, %d)" % (n, len(ev), len(Xr)))
+        raise ValueError(f"sschin: time, event and X must agree in length ({int(n)}, {int(len(ev))}, {int(len(Xr))})")
     p = len(Xr[0])
     if any(len(r) != p for r in Xr):
-        raise ValueError("sschin: every row of X must have %d columns" % p)
+        raise ValueError(f"sschin: every row of X must have {int(p)} columns")
     m = int(mi_iter)
     if m < 2:
         raise ValueError(
@@ -250,9 +250,9 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
             "undefined for m = 1"
         )
     if m > len(_PRIMES):
-        raise ValueError("sschin: at most %d imputations" % len(_PRIMES))
+        raise ValueError(f"sschin: at most {int(len(_PRIMES))} imputations")
     if ties != "breslow":
-        raise ValueError("sschin: only the Breslow handling of ties is implemented, got %r" % (ties,))
+        raise ValueError(f"sschin: only the Breslow handling of ties is implemented, got {ties!r}")
     if not any(v > 0.5 for v in ev):
         raise ValueError("sschin: no events -- the partial likelihood is flat")
 
@@ -262,7 +262,7 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
     cols_missing = [a for a in range(p) if any(miss[i][a] for i in range(n))]
     for a in cols_missing:
         if all(miss[i][a] for i in range(n)):
-            raise ValueError("sschin: column %d is missing for every observation and cannot be imputed" % a)
+            raise ValueError(f"sschin: column {int(a)} is missing for every observation and cannot be imputed")
 
     colmean = []
     for a in range(p):

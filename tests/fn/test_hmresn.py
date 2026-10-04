@@ -10,8 +10,11 @@ def test_hmresn_basic():
     """Test basic functionality with a callable F returning the same shape."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 10)
+
     # F must be a callable; it returns the input scaled (same shape).
-    F = lambda a: np.asarray(a, dtype=float) * 0.5
+    def F(a):
+        return np.asarray(a, dtype=float) * 0.5
+
     result = geron_resnet(x, F)
     assert isinstance(result, dict)
     # Keys named in the return / docstring
@@ -27,8 +30,11 @@ def test_hmresn_basic():
 def test_hmresn_edge():
     """Test edge case: dead residual branch (F returns zeros) leaves x unchanged."""
     x = [1.0, 2.0, 3.0]
+
     # Dead branch: F returns zeros of the same shape, so y == x.
-    F = lambda a: np.zeros(np.asarray(a).shape)
+    def F(a):
+        return np.zeros(np.asarray(a).shape)
+
     result = geron_resnet(x, F)
     assert isinstance(result, dict)
     assert "y" in result

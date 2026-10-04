@@ -411,7 +411,7 @@ def _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd, context="paire
     attack. See :func:`_deepsets_forward` for what ``context`` does.
     """
     if context not in _CONTEXTS:
-        raise ValueError("propinf: context must be one of %s" % (_CONTEXTS,))
+        raise ValueError(f"propinf: context must be one of {_CONTEXTS}")
     phi_hidden = [int(h) for h in phi_hidden]
     edge_hidden = phi_hidden if edge_hidden is None else [int(h) for h in edge_hidden]
     phis, psis = [], []
@@ -657,7 +657,7 @@ def property_inference(
         invariant, ``"paired"`` is.
     """
     if representation not in _REPRS:
-        raise ValueError("propinf: representation must be one of %s" % (_REPRS,))
+        raise ValueError(f"propinf: representation must be one of {_REPRS}")
     nets = list(shadow_models)
     lab = [float(v) for v in shadow_labels]
     if len(nets) != len(lab):
@@ -673,7 +673,7 @@ def property_inference(
         if [(len(L["W"]), len(L["W"][0])) for L in net] != arch:
             raise ValueError("propinf: all shadow models must share one architecture")
     if context not in _CONTEXTS:
-        raise ValueError("propinf: context must be one of %s" % (_CONTEXTS,))
+        raise ValueError(f"propinf: context must be one of {_CONTEXTS}")
     if repr_dim < 1:
         raise ValueError("propinf: repr_dim must be at least 1")
     if epochs < 1 or lr <= 0:
@@ -721,7 +721,7 @@ def property_inference(
             "n_target": len(targets),
             "architecture": arch,
             "meta_classifier": meta,
-            "method": ("property inference by shadow training (Ganju et al. 2018), %s representation" % representation),
+            "method": (f"property inference by shadow training (Ganju et al. 2018), {representation} representation"),
             "note": (
                 "baseline flattening is not permutation invariant and "
                 "the paper reports 55-77% for it; sorting (Algorithm 1) "

@@ -19,7 +19,7 @@ def _risk_table(time, event, group):
         raise ValueError("time, event and group must have the same length.")
     labs = list(dict.fromkeys(g))
     if len(labs) != 2:
-        raise ValueError("need exactly 2 groups; got %d." % len(labs))
+        raise ValueError(f"need exactly 2 groups; got {int(len(labs))}.")
     a = labs[0]
     rows = []
     for tt in sorted({t[i] for i in range(len(t)) if e[i] == 1}):
@@ -97,7 +97,7 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
     column is ``sqrt(n)``.
     """
     if weight not in _WEIGHTS:
-        raise ValueError("weight must be one of %s" % (_WEIGHTS,))
+        raise ValueError(f"weight must be one of {_WEIGHTS}")
     rows, labs = _risk_table(time, event, group)
     # Peto weight is the left-continuous modified KM estimate, so it is
     # built by a running product over the same event times.
@@ -120,7 +120,7 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
         raise ValueError("zero variance; the groups cannot be compared.")
     stat = num * num / den
     return hypothesis_test_result(
-        test_name="Weighted log-rank test (%s)" % weight,
+        test_name=f"Weighted log-rank test ({weight})",
         statistic=float(stat),
         pvalue=float(stats.chi2.sf(stat, 1)),
         extra_summary=[("observed", obs), ("expected", exp)],

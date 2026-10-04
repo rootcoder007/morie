@@ -86,7 +86,7 @@ def predict(mu, b_user, b_item, p_u, q_i):
     p = [float(v) for v in k.vec(p_u)]
     q = [float(v) for v in k.vec(q_i)]
     if len(p) != len(q):
-        raise ValueError("funkM: the factors differ in width (%d, %d)" % (len(p), len(q)))
+        raise ValueError(f"funkM: the factors differ in width ({int(len(p))}, {int(len(q))})")
     return float(mu) + float(b_user) + float(b_item) + sum(p[a] * q[a] for a in range(len(p)))
 
 
@@ -187,7 +187,7 @@ def imputed_svd_error(ratings, n_users, n_items, rank=2, fill="zero"):
     elif fill == "mean":
         base = global_mean(R)
     else:
-        raise ValueError("funkM: fill must be zero or mean, got %r" % (fill,))
+        raise ValueError(f"funkM: fill must be zero or mean, got {fill!r}")
     M = [[obs.get((u, i), base) for i in range(ni)] for u in range(nu)]
     U, S, Vt = np.linalg.svd(M)
     kk = int(rank)

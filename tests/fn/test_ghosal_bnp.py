@@ -143,7 +143,7 @@ def test_squared_exponential_gp_contracts_only_logarithmically():
     n = 10_000
     se = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n)
     ma = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="matern")
-    rs = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="rescaled_se")
+    ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="rescaled_se")
     # the point of the section: an analytic-path prior is too smooth
     assert se["rate_kind"] == "LOGARITHMIC"
     assert se["attains_minimax"] is False

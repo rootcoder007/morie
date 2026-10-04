@@ -36,7 +36,6 @@ def test_cmutif_basic():
 
     def marg3(p, axes):
         # axes are indices into the (i, j, k) tuple; remaining axes are summed out.
-        idx = {0: 0, 1: 1, 2: 2}
         keep = [a for a in (0, 1, 2) if a in axes]
         out_shape = [len(p)] if 0 in keep else [1]
         if 1 in keep:

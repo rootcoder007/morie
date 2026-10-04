@@ -41,17 +41,17 @@ def kamath_image_text_matching(image_emb, text_emb, W, b, fuse=None):
     >>> abs(out2["estimate"] - 1 / (1 + 2.718281828459045 ** -2)) < 1e-12
     True
     """
-    I = np.atleast_1d(np.asarray(image_emb, dtype=float)).ravel()
+    I_ = np.atleast_1d(np.asarray(image_emb, dtype=float)).ravel()
     T = np.atleast_1d(np.asarray(text_emb, dtype=float)).ravel()
-    if I.size == 0 or T.size == 0:
+    if I_.size == 0 or T.size == 0:
         raise ValueError("both embeddings must be non-empty.")
     if fuse is None:
-        fused = np.concatenate([I, T])
+        fused = np.concatenate([I_, T])
         how = "concatenation [I; T]"
     else:
         if not callable(fuse):
             raise ValueError("fuse must be callable (I, T) -> vector.")
-        fused = np.atleast_1d(np.asarray(fuse(I, T), dtype=float)).ravel()
+        fused = np.atleast_1d(np.asarray(fuse(I_, T), dtype=float)).ravel()
         how = "caller-supplied fusion"
     w = np.atleast_1d(np.asarray(W, dtype=float)).ravel()
     if w.size != fused.size:

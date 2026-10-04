@@ -72,7 +72,7 @@ def _clean(times, events, marker=None):
     T = [float(x) for x in times]
     E = [int(x) for x in events]
     if len(T) != len(E):
-        raise ValueError("survroc: %d times but %d event indicators" % (len(T), len(E)))
+        raise ValueError(f"survroc: {int(len(T))} times but {int(len(E))} event indicators")
     if not T:
         raise ValueError("survroc: no subjects given")
     if any(x < 0 for x in T):
@@ -83,7 +83,7 @@ def _clean(times, events, marker=None):
         return T, E, None
     M = [float(x) for x in marker]
     if len(M) != len(T):
-        raise ValueError("survroc: %d markers but %d subjects" % (len(M), len(T)))
+        raise ValueError(f"survroc: {int(len(M))} markers but {int(len(T))} subjects")
     return T, E, M
 
 
@@ -122,13 +122,13 @@ def kaplan_meier(times, events, at=None):
 def _empirical(T, E, M, c, t):
     if any(e == 0 and s < t for s, e in zip(T, E)):
         raise ValueError(
-            "survroc: the empirical route needs complete follow-up to time %g, but a subject is censored before it" % t
+            f"survroc: the empirical route needs complete follow-up to time {t:g}, but a subject is censored before it"
         )
     case = [i for i in range(len(T)) if T[i] <= t and E[i] == 1]
     ctrl = [i for i in range(len(T)) if T[i] > t]
     if not case or not ctrl:
         raise ValueError(
-            "survroc: at t = %g there are %d cases and %d controls; both are needed" % (t, len(case), len(ctrl))
+            f"survroc: at t = {t:g} there are {int(len(case))} cases and {int(len(ctrl))} controls; both are needed"
         )
     se = sum(1 for i in case if M[i] > c) / float(len(case))
     sp = sum(1 for i in ctrl if M[i] <= c) / float(len(ctrl))
@@ -142,10 +142,10 @@ def _km_pair(T, E, M, c, t):
     S = kaplan_meier(T, E, t)
     if S <= 0.0:
         raise ValueError(
-            "survroc: the overall survival estimate is zero at t = %g, so specificity is not defined there" % t
+            f"survroc: the overall survival estimate is zero at t = {t:g}, so specificity is not defined there"
         )
     if S >= 1.0:
-        raise ValueError("survroc: no events by t = %g, so sensitivity is not defined there" % t)
+        raise ValueError(f"survroc: no events by t = {t:g}, so sensitivity is not defined there")
     p_hi = len(hi) / float(n)
     p_lo = len(lo) / float(n)
     s_hi = kaplan_meier([T[i] for i in hi], [E[i] for i in hi], t) if hi else 1.0
@@ -167,7 +167,7 @@ def specificity(times, events, marker, threshold, t, route="km"):
 
 def _pair(times, events, marker, c, t, route):
     if route not in ROUTES:
-        raise ValueError("survroc: route must be one of %s, got %r" % (", ".join(ROUTES), route))
+        raise ValueError("survroc: route must be one of {}, got {!r}".format(", ".join(ROUTES), route))
     T, E, M = _clean(times, events, marker)
     tt = float(t)
     if tt <= 0.0:
@@ -232,7 +232,7 @@ def time_dependent_roc(times, events, marker, t, route="km"):
             "n_censored_before_t": sum(1 for i in range(len(T)) if T[i] < t and E[i] == 0),
             "survival_at_t": kaplan_meier(T, E, t),
             "out_of_range": out_of_range,
-            "method": "Heagerty, Lumley & Pepe (2000) cumulative case / dynamic control ROC, %s estimator" % route,
+            "method": f"Heagerty, Lumley & Pepe (2000) cumulative case / dynamic control ROC, {route} estimator",
         }
     )
 

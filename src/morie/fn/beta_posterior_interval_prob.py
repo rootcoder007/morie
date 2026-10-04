@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["beta_posterior_interval_prob"]
 
 
-def beta_posterior_interval_prob(v, l, z, n, c, d):
+def beta_posterior_interval_prob(v, l, z, n, c, d):  # noqa: E741
     """Posterior interval with coverage 1 - alpha
 
     Formula: integral over (v, v + l) of the posterior = 1 - alpha

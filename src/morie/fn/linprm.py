@@ -112,7 +112,7 @@ def interior_point(c, A, b, tol=1e-10, max_iter=200):
     bb = [float(v) for v in b]
     m, n = len(M), len(cv)
     if m == 0 or any(len(r) != n for r in M) or len(bb) != m:
-        raise ValueError("linprm: A must be %d by %d with a right-hand side of length %d" % (m, n, m))
+        raise ValueError(f"linprm: A must be {int(m)} by {int(n)} with a right-hand side of length {int(m)}")
     x = [1.0] * n
     s = [1.0] * n
     y = [0.0] * m
@@ -204,7 +204,7 @@ def solve_lp(
     the optimal face is wanted instead.
     """
     if method not in METHODS:
-        raise ValueError("linprm: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("linprm: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     if method in ("simplex", "auto"):
         r = _simplex_solve(c, A_ub, b_ub, A_eq, b_eq, upper, rule, maximise, 10000)
         out = dict(r)

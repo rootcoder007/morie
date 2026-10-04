@@ -45,10 +45,7 @@ def ibd(
     if n < 2:
         raise ValueError("Need at least 2 individuals.")
 
-    if allele_freqs is not None:
-        pf = np.asarray(allele_freqs, dtype=float).ravel()
-    else:
-        pf = np.mean(Z, axis=0) / 2.0
+    pf = np.asarray(allele_freqs, dtype=float).ravel() if allele_freqs is not None else np.mean(Z, axis=0) / 2.0
 
     pf = np.clip(pf, 1e-6, 1.0 - 1e-6)
 
@@ -88,10 +85,7 @@ def ibd(
                 e0 = e_ibs0 / valid
                 e1 = e_ibs1 / valid
 
-                if e0 > 1e-10:
-                    z0 = f_ibs0 / e0
-                else:
-                    z0 = 0.0
+                z0 = f_ibs0 / e0 if e0 > 1e-10 else 0.0
                 z0 = min(max(z0, 0.0), 1.0)
 
                 z2 = max(1.0 - z0 - (f_ibs1 - e1 * z0) / max(0.5 - e1, 1e-10), 0.0)

@@ -75,14 +75,14 @@ def generalized_advantage_estimation(
     elif v.size == T:
         vt, boot = v, float(last_value)
     else:
-        raise ValueError("values must have T or T+1 entries, got %d for T = %d." % (v.size, T))
+        raise ValueError(f"values must have T or T+1 entries, got {int(v.size)} for T = {int(T)}.")
     if not 0.0 <= gamma <= 1.0:
-        raise ValueError("gamma must lie in [0, 1], got %r." % gamma)
+        raise ValueError(f"gamma must lie in [0, 1], got {gamma!r}.")
     if not 0.0 <= lam <= 1.0:
-        raise ValueError("lam must lie in [0, 1], got %r." % lam)
+        raise ValueError(f"lam must lie in [0, 1], got {lam!r}.")
     d = np.zeros(T) if dones is None else np.asarray(dones, dtype=float).ravel()
     if d.size != T:
-        raise ValueError("dones has %d entries for %d steps." % (d.size, T))
+        raise ValueError(f"dones has {int(d.size)} entries for {int(T)} steps.")
     if not np.all(np.isin(d, (0.0, 1.0))):
         raise ValueError("dones must be binary 0/1.")
 

@@ -19,9 +19,9 @@ def _sij(D, m, i, j):
             t1 += D[i][k] + D[j][k]
     t3 = 0.0
     for k in range(m):
-        for l in range(k + 1, m):
-            if k != i and k != j and l != i and l != j:
-                t3 += D[k][l]
+        for ell in range(k + 1, m):
+            if k != i and k != j and ell != i and ell != j:
+                t3 += D[k][ell]
     return t1 / (2.0 * (m - 2)) + D[i][j] / 2.0 + t3 / (m - 2.0)
 
 

@@ -55,14 +55,11 @@ def coherence(x, y, nperseg=None, overlap=0.5):
     n = len(xv)
     if len(yv) != n:
         raise ValueError("`x` and `y` must have the same length")
-    if nperseg is None:
-        m = max(8, n // 4)
-    else:
-        m = int(nperseg)
+    m = max(8, n // 4) if nperseg is None else int(nperseg)
     if m < 8:
         raise ValueError("`nperseg` must be at least 8")
     if m > n:
-        raise ValueError("`nperseg` (%d) exceeds the record length (%d)" % (m, n))
+        raise ValueError(f"`nperseg` ({int(m)}) exceeds the record length ({int(n)})")
     overlap = float(overlap)
     if not 0.0 <= overlap < 1.0:
         raise ValueError("`overlap` must lie in [0, 1)")

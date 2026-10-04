@@ -11,7 +11,7 @@ def test_hmfsf_basic():
     """Test basic functionality."""
 
     def copycat(prompt):
-        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        lines = [ell for ell in prompt.split("\n") if "->" in ell and not ell.endswith("-> ")]
         return lines[-1].split("-> ")[1] if lines else "?"
 
     examples = [("a", "1"), ("b", "2"), ("c", "3"), ("d", "4"), ("e", "5")]
@@ -33,7 +33,7 @@ def test_hmfsf_edge():
     """Test edge cases."""
 
     def copycat(prompt):
-        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        lines = [ell for ell in prompt.split("\n") if "->" in ell and not ell.endswith("-> ")]
         return lines[-1].split("-> ")[1] if lines else "?"
 
     examples = [("a", "1")]

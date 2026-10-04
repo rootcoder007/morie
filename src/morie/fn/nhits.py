@@ -69,12 +69,12 @@ def max_pool(x, kernel, stride=None):
     xv = [float(v) for v in x]
     kk = int(kernel)
     if kk < 1:
-        raise ValueError("nhits: the kernel must be at least 1, got %d" % kk)
+        raise ValueError(f"nhits: the kernel must be at least 1, got {int(kk)}")
     st = kk if stride is None else int(stride)
     if st < 1:
         raise ValueError("nhits: the stride must be at least 1")
     if kk > len(xv):
-        raise ValueError("nhits: kernel %d exceeds the input length %d" % (kk, len(xv)))
+        raise ValueError(f"nhits: kernel {int(kk)} exceeds the input length {int(len(xv))}")
     return [max(xv[i : i + kk]) for i in range(0, len(xv) - kk + 1, st)]
 
 
@@ -83,7 +83,7 @@ def expressiveness_knots(horizon, ratio):
     :math:`\lceil r H\rceil`, at least 2."""
     r = float(ratio)
     if not 0.0 < r <= 1.0:
-        raise ValueError("nhits: the ratio must be in (0, 1], got %r" % (ratio,))
+        raise ValueError(f"nhits: the ratio must be in (0, 1], got {ratio!r}")
     return max(2, int(math.ceil(r * int(horizon))))
 
 
@@ -98,7 +98,7 @@ def linear_interpolate(knots, horizon):
     n = len(kv)
     H = int(horizon)
     if n < 2:
-        raise ValueError("nhits: need at least 2 knots, got %d" % n)
+        raise ValueError(f"nhits: need at least 2 knots, got {int(n)}")
     if H < 1:
         raise ValueError("nhits: the horizon must be at least 1")
     if H == 1:
@@ -131,7 +131,7 @@ def nhits_block(window, horizon, kernel=1, ratio=1.0, degree=2, ridge=1e-8):
     pooled = max_pool(w, kernel)
     Lp = len(pooled)
     if Lp < degree + 1:
-        raise ValueError("nhits: pooling by %d leaves %d points, too few for degree %d" % (kernel, Lp, degree))
+        raise ValueError(f"nhits: pooling by {int(kernel)} leaves {int(Lp)} points, too few for degree {int(degree)}")
     # a polynomial basis over the pooled (slow) view
     bb = [[(t / float(max(Lp - 1, 1))) ** p for t in range(Lp)] for p in range(int(degree) + 1)]
     theta = _fit_basis(pooled, bb, ridge)
@@ -191,7 +191,7 @@ def nhits_forecast(y, horizon, lookback=None, blocks=None, ridge=1e-8):
     H = int(horizon)
     lb = min(n, int(lookback) if lookback else min(n, max(16, 4 * H)))
     if lb < 8:
-        raise ValueError("nhits: lookback of %d is too short" % lb)
+        raise ValueError(f"nhits: lookback of {int(lb)} is too short")
     blk = [(4, 0.25, 2), (2, 0.5, 2), (1, 1.0, 2)] if blocks is None else list(blocks)
     window = yv[n - lb :]
     fc, resid, trace = nhits_stack(window, H, blk, ridge=ridge)

@@ -71,10 +71,7 @@ def miefcl(estimates, variances, nu_com=None):
         raise ValueError("total variance is not positive")
     lam = (b + b / m) / t
     riv = float("inf") if ubar == 0 else (1.0 + 1.0 / m) * b / ubar
-    if lam <= 0:
-        df_old = float("inf")
-    else:
-        df_old = (m - 1) / lam**2
+    df_old = float("inf") if lam <= 0 else (m - 1) / lam**2
     if nu_com is None:
         df = df_old
     else:
@@ -82,10 +79,7 @@ def miefcl(estimates, variances, nu_com=None):
         if nc <= 0:
             raise ValueError("nu_com must be positive")
         nu_obs = (nc + 1.0) / (nc + 3.0) * nc * (1.0 - lam)
-        if math.isinf(df_old):
-            df = min(nu_obs, nc)
-        else:
-            df = df_old * nu_obs / (df_old + nu_obs)
+        df = min(nu_obs, nc) if math.isinf(df_old) else df_old * nu_obs / (df_old + nu_obs)
     fmi = (riv + 2.0 / (df + 3.0)) / (1.0 + riv) if not math.isinf(riv) else 1.0
     return RichResult(
         payload={

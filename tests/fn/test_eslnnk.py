@@ -10,10 +10,7 @@ def _ep_weights(x0, x_data, y_data, lam):
     den = 0.0
     for xi, yi in zip(x_data, y_data):
         t = abs(x0 - xi) / lam
-        if t < 1.0:
-            k = 0.75 * (1.0 - t * t)
-        else:
-            k = 0.0
+        k = 0.75 * (1.0 - t * t) if t < 1.0 else 0.0
         num += k * yi
         den += k
     return num / den if den > 0 else float("nan")

@@ -21,7 +21,7 @@ def test_emd_basic():
 
 
 def test_emd_reconstruction():
-    rng = np.random.default_rng(7)
+    np.random.default_rng(7)
     fs = 200
     t = np.arange(0, 2.0, 1 / fs)
     x = np.sin(2 * np.pi * 5 * t) + 0.3 * np.sin(2 * np.pi * 40 * t)

@@ -70,12 +70,12 @@ def simplex_project(v):
     n = len(v)
     u = sorted(v, reverse=True)
     css = 0.0
-    rho, theta = 0, 0.0
+    _rho, theta = 0, 0.0
     for i in range(n):
         css += u[i]
         t = (css - 1.0) / (i + 1)
         if u[i] - t > 0:
-            rho, theta = i + 1, t
+            _rho, theta = i + 1, t
     return [max(x - theta, 0.0) for x in v]
 
 

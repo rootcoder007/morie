@@ -73,7 +73,7 @@ def dr_scores(y, W, mu1, mu0, e, d):
         mu = mu1[i] if pick == 1.0 else mu0[i]
         ew = e[i] if W[i] == 1.0 else 1.0 - e[i]
         if ew <= _EPS:
-            raise ValueError("itrgrf: a propensity of zero at row %d" % i)
+            raise ValueError(f"itrgrf: a propensity of zero at row {int(i)}")
         resid = 0.0
         if W[i] == pick:
             muw = mu1[i] if W[i] == 1.0 else mu0[i]
@@ -95,7 +95,7 @@ def _fit_arm(X, y, W, arm, rows, at_rows, n_trees, min_leaf, seed):
     """E[Y | W=arm, X], fitted on `rows` and read off at `at_rows`."""
     idx = [i for i in rows if W[i] == arm]
     if len(idx) < 4 * min_leaf:
-        raise ValueError("itrgrf: too few rows in treatment arm %g" % arm)
+        raise ValueError(f"itrgrf: too few rows in treatment arm {arm:g}")
     Xa = [X[i] for i in idx]
     ya = [y[i] for i in idx]
     trees, _, _ = grow_forest(Xa, ya, n_trees=n_trees, min_leaf=min_leaf, seed=seed)
@@ -115,24 +115,24 @@ def itr_forest(y, W, X, cost=0.0, n_trees=150, min_leaf=5, seed=0, evaluate="spl
     of.
     """
     if evaluate not in ("split", "in-sample"):
-        raise ValueError("itrgrf: evaluate must be split or in-sample, got %r" % (evaluate,))
+        raise ValueError(f"itrgrf: evaluate must be split or in-sample, got {evaluate!r}")
     yv, Wv = k.vec(y), k.vec(W)
     n = len(yv)
     if len(Wv) != n:
-        raise ValueError("itrgrf: %d outcomes but %d treatments" % (n, len(Wv)))
+        raise ValueError(f"itrgrf: {int(n)} outcomes but {int(len(Wv))} treatments")
     if any(v not in (0.0, 1.0) for v in Wv):
         raise ValueError("itrgrf: the treatment must be binary 0/1")
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("itrgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"itrgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     if n < 60:
-        raise ValueError("itrgrf: need at least 60 observations, got %d" % n)
+        raise ValueError(f"itrgrf: need at least 60 observations, got {int(n)}")
     if propensity is None:
         e = [sum(Wv) / n] * n
     else:
         e = [min(max(float(v), 1e-3), 1.0 - 1e-3) for v in propensity]
         if len(e) != n:
-            raise ValueError("itrgrf: %d propensities for %d rows" % (len(e), n))
+            raise ValueError(f"itrgrf: {int(len(e))} propensities for {int(n)} rows")
 
     rng = np.random.default_rng(seed)
     if evaluate == "split":

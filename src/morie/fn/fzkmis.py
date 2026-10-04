@@ -69,10 +69,7 @@ def kdfmise(n, h, rfp, varint, mu2=1.0, r1=None):
     biasterm = h**4 / 4.0 * mu2**2 * float(rfp)
     varterm = float(varint) / n
     gain = 2.0 * h / n * float(r1)
-    if float(rfp) > 0:
-        hopt = float((2.0 * float(r1) / (n * mu2**2 * float(rfp))) ** (1.0 / 3.0))
-    else:
-        hopt = float("nan")
+    hopt = float((2.0 * float(r1) / (n * mu2**2 * float(rfp))) ** (1.0 / 3.0)) if float(rfp) > 0 else float("nan")
     return RichResult(
         payload={
             "mise": float(biasterm + varterm - gain),

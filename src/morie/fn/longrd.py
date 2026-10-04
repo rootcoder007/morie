@@ -102,12 +102,12 @@ def align(a, b, match=1.0, mismatch=-1.0, gap=-2.0):
         for j in range(1, m + 1):
             d = s[i - 1][j - 1] + (match if a[i - 1] == b[j - 1] else mismatch)
             u = s[i - 1][j] + gap
-            l = s[i][j - 1] + gap
+            ell = s[i][j - 1] + gap
             best = d
             if u > best:
                 best = u
-            if l > best:
-                best = l
+            if ell > best:
+                best = ell
             s[i][j] = best
     ga = []
     gb = []

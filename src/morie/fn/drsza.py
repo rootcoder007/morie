@@ -108,13 +108,13 @@ def dr_did_santanna_zhao(
     n = y0.size
     if not (y1.size == n == D.size):
         raise ValueError(
-            "y_pre, y_post and treatment must have the same length, got %d, %d and %d." % (y0.size, y1.size, D.size)
+            f"y_pre, y_post and treatment must have the same length, got {int(y0.size)}, {int(y1.size)} and {int(D.size)}."
         )
     if not np.all(np.isin(D, (0.0, 1.0))):
         raise ValueError("treatment must be binary 0/1.")
     if D.sum() < 2 or (1 - D).sum() < 2:
         raise ValueError(
-            "need at least 2 treated and 2 control units, got %d and %d." % (int(D.sum()), int(n - D.sum()))
+            f"need at least 2 treated and 2 control units, got {int(int(D.sum()))} and {int(int(n - D.sum()))}."
         )
     dY = y1 - y0
     unadjusted = float(dY[D == 1].mean() - dY[D == 0].mean())
@@ -124,23 +124,21 @@ def dr_did_santanna_zhao(
     else:
         Xd = add_intercept(np.asarray(X, dtype=float))
         if Xd.shape[0] != n:
-            raise ValueError("X has %d rows for %d observations." % (Xd.shape[0], n))
+            raise ValueError(f"X has {int(Xd.shape[0])} rows for {int(n)} observations.")
 
     if ml_propensity is None:
         p, separated = _default_propensity(Xd, D)
     else:
         p = np.asarray(ml_propensity(Xd, D), dtype=float).ravel()
         if p.size != n:
-            raise ValueError("ml_propensity returned %d values for %d rows." % (p.size, n))
+            raise ValueError(f"ml_propensity returned {int(p.size)} values for {int(n)} rows.")
         separated = bool(np.min(p) < 1e-6 or np.max(p) > 1 - 1e-6)
 
     keep = p < float(trim)
     n_trim = int((~keep).sum())
     if keep.sum() < 4:
         raise ValueError(
-            "trimming at %g leaves %d observations; the propensity model "
-            "gives almost every unit a near-certain treatment probability, "
-            "which is a failure of overlap, not a tuning problem." % (trim, int(keep.sum()))
+            f"trimming at {trim:g} leaves {int(int(keep.sum()))} observations; the propensity model gives almost every unit a near-certain treatment probability, which is a failure of overlap, not a tuning problem."
         )
 
     ctrl = (D == 0) & keep
@@ -149,7 +147,7 @@ def dr_did_santanna_zhao(
     else:
         m0 = np.asarray(ml_outcome(Xd, dY, ctrl), dtype=float).ravel()
         if m0.size != n:
-            raise ValueError("ml_outcome returned %d values for %d rows." % (m0.size, n))
+            raise ValueError(f"ml_outcome returned {int(m0.size)} values for {int(n)} rows.")
 
     def att_from(pv, m0v):
         w1 = np.where(keep, D, 0.0)

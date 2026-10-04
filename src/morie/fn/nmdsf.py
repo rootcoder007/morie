@@ -69,7 +69,7 @@ def nonmetric_mds(delta, n_dims=2, max_iter=100, eps=1e-6):
     path = []
     converged = False
     Dhat = None
-    for it in range(int(max_iter)):
+    for _it in range(int(max_iter)):
         d = dmat(X)
         disp = isotonic_regression_disparity(d[iu], ranks)["disparities"]
         Dhat = np.zeros((n, n))

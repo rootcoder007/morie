@@ -125,7 +125,7 @@ def _otis(years=("FY2024", "FY2025"), n=(4, 3)):
         for i in range(1, k + 1):
             days = 30.0 * i
             pd_rows.append(
-                {"EndFiscalYear": y, "UniqueIndividual_ID": "%s-%d" % (y, i), "TotalAggregatedDays_Segregation": days}
+                {"EndFiscalYear": y, "UniqueIndividual_ID": f"{y}-{int(i)}", "TotalAggregatedDays_Segregation": days}
             )
             # one person, three spells: spell lengths sum to the person's
             # days here, which is the FAVOURABLE case
@@ -133,7 +133,7 @@ def _otis(years=("FY2024", "FY2025"), n=(4, 3)):
                 pl_rows.append(
                     {
                         "EndFiscalYear": y,
-                        "UniqueIndividual_ID": "%s-%d" % (y, i),
+                        "UniqueIndividual_ID": f"{y}-{int(i)}",
                         "NumberConsecutiveDays_Segregation": days / 3,
                         "Number_Of_Placements": 1,
                     }

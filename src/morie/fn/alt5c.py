@@ -18,12 +18,12 @@ def alammar_t5_text_to_text_classify(input_text, label_tokens, model, prefix="")
 
     References: Alammar and Grootendorst, Ch 4; Raffel et al. (2020).
     """
-    labels = [str(l) for l in label_tokens]
+    labels = [str(ell) for ell in label_tokens]
     if not labels:
         raise ValueError("no label tokens supplied.")
     if not callable(model):
         raise ValueError("model must be a callable (input, label) -> log-probability.")
-    lp = np.array([float(model(prefix + str(input_text), l)) for l in labels])
+    lp = np.array([float(model(prefix + str(input_text), ell)) for ell in labels])
     z = lp - lp.max()
     p = np.exp(z) / np.exp(z).sum()
     best = int(np.argmax(p))

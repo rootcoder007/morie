@@ -106,7 +106,7 @@ def dif_mantel_haenszel(X, group, total_score, alpha=0.05):
                 raise ValueError("dif_mantel_haenszel: responses must be 0/1")
         o, c, p, d = _one_item(col, g, s, strata)
         sig = (p == p) and p < alpha
-        if not (d == d) or (abs(d) < 1.0) or not sig:
+        if d != d or (abs(d) < 1.0) or not sig:
             k = "A"
         elif abs(d) >= 1.5 and sig:
             k = "C"

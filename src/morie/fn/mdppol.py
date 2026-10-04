@@ -72,7 +72,7 @@ def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000, max_improve=10
         for s in range(S):
             a = int(pi0[s])
             if a < 0 or a >= A:
-                raise ValueError("pi0[%d] out of range" % s)
+                raise ValueError(f"pi0[{int(s)}] out of range")
             pol[s] = a
     V = np.zeros(S)
     n_eval = 0

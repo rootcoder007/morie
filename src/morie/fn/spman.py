@@ -65,7 +65,7 @@ def schabenberger_mantel_test(coords, x, w=None, u=None):
     if w is None:
         cc = mat(coords, "coords")
         if len(cc) != n:
-            raise ValueError("`coords` has %d rows but `x` has %d values" % (len(cc), n))
+            raise ValueError(f"`coords` has {int(len(cc))} rows but `x` has {int(n)} values")
         ww = [[eucdist(cc[i], cc[j]) if i != j else 0.0 for j in range(n)] for i in range(n)]
     else:
         ww = sqmat(w, n, "w")

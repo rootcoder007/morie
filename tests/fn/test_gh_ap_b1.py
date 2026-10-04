@@ -13,9 +13,9 @@ def test_gh_ap_b1_basic():
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
     # KL >= 0 with equality iff P = Q (after normalization)
     assert result["estimate"] >= -1e-15
-    assert result["nonneg"] is True or result["nonneg"] == True
+    assert result["nonneg"] is True or result["nonneg"]
     # d_TV^2 <= KL/2 (Pinsker)
-    assert result["pinsker_holds"] is True or result["pinsker_holds"] == True
+    assert result["pinsker_holds"] is True or result["pinsker_holds"]
     # Independent computation of KL from the documented formula:
     #   normalize p and q, then sum a*log(a/b) over a > 0.
     p_sum = float(sum(p))

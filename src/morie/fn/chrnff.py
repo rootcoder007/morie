@@ -39,10 +39,7 @@ def chernbnd(mgf, a, s_grid=None):
     bound is stated in this exact form in every standard reference.
     """
     a = float(a)
-    if s_grid is None:
-        grid = [0.01 * (1.05**k) for k in range(141)]
-    else:
-        grid = C.vec(s_grid)
+    grid = [0.01 * 1.05**k for k in range(141)] if s_grid is None else C.vec(s_grid)
     if any(v <= 0 for v in grid):
         raise ValueError("s must be positive")
     best, bs = float("inf"), float("nan")

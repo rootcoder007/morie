@@ -93,12 +93,12 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
         raise ValueError(f"no events of cause {cause} in event_type")
     e = (d == cause).astype(float)
     _, _, Xm = prepare(t, e, X)
-    beta, ll, I, _, it, conv = cox_fit(t, e, Xm, ties=ties)
+    beta, ll, I_, _, it, conv = cox_fit(t, e, Xm, ties=ties)
 
     from ._stats_core import norm
 
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(beta.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -122,7 +122,7 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
             "p_value": 2 * norm.sf(np.abs(z)),
             "hazard_ratio": np.exp(beta),
             "loglik": ll,
-            "information": I,
+            "information": I_,
             "n_cause": int(e.sum()),
             "n_competing": int(np.sum((d != 0) & (d != cause))),
             "n_censored": int(np.sum(d == 0)),

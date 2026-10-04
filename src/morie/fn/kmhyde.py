@@ -52,10 +52,7 @@ def kamath_hyde_hypothetical_doc(query, model, embeddings, embed=None, k=3):
     hypo = model(query)
     if hypo is None:
         raise ValueError("the model returned no hypothetical document.")
-    if embed is not None:
-        q = embed(hypo)
-    else:
-        q = hypo
+    q = embed(hypo) if embed is not None else hypo
     q = np.atleast_1d(np.asarray(q, dtype=float)).ravel()
     if q.size != D.shape[1]:
         raise ValueError(

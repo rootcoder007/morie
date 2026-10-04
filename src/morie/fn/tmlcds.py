@@ -144,11 +144,11 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None, trim=0.005, scale
     itself is done by :func:`tmle_cdrs`.
     """
     if tuning not in _TUNING:
-        raise ValueError("ctmle_sequence: tuning must be 'discrete' or 'continuous', got %r" % (tuning,))
+        raise ValueError(f"ctmle_sequence: tuning must be 'discrete' or 'continuous', got {tuning!r}")
     yv, d = k.vec(y), k.vec(D)
     n = len(yv)
     if len(d) != n:
-        raise ValueError("ctmle_sequence: %d outcomes but %d treatments" % (n, len(d)))
+        raise ValueError(f"ctmle_sequence: {int(n)} outcomes but {int(len(d))} treatments")
     if any(v not in (0.0, 1.0) for v in d):
         raise ValueError("ctmle_sequence: treatment must be binary 0/1")
     Xm = k.mat(X) if X is not None else [[] for _ in range(n)]
@@ -176,7 +176,7 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None, trim=0.005, scale
     qcols = list(range(p)) if q_covariates is None else [int(c) for c in q_covariates]
     for c in qcols:
         if not 0 <= c < p:
-            raise ValueError("ctmle_sequence: q_covariates index %d is outside the %d covariates supplied" % (c, p))
+            raise ValueError(f"ctmle_sequence: q_covariates index {int(c)} is outside the {int(p)} covariates supplied")
     Zq = k.design([[d[i]] + [Xm[i][c] for c in qcols] for i in range(n)], n)
     bq = k.lstsq(Zq, ys)
 
@@ -317,7 +317,7 @@ def tmle_cdrs(y, D, X, tuning="discrete", penalties=None, n_folds=5, trim=0.005,
             "tuning": tuning,
             "n": n,
             "n_covariates": info["p"],
-            "method": "collaborative TMLE, van der Laan & Rose (2018) Ch. 10 Example 10.3 with %s tuning" % tuning,
+            "method": f"collaborative TMLE, van der Laan & Rose (2018) Ch. 10 Example 10.3 with {tuning} tuning",
         }
     )
 

@@ -29,16 +29,16 @@ def _inv(a):
 
 def _chol(a):
     k = len(a)
-    l = [[0.0] * k for _ in range(k)]
+    ell = [[0.0] * k for _ in range(k)]
     for i in range(k):
         for j in range(i + 1):
-            s = sum(l[i][t] * l[j][t] for t in range(j))
+            s = sum(ell[i][t] * ell[j][t] for t in range(j))
             if i == j:
                 v = a[i][i] - s
-                l[i][j] = math.sqrt(max(v, 1e-300))
+                ell[i][j] = math.sqrt(max(v, 1e-300))
             else:
-                l[i][j] = (a[i][j] - s) / l[j][j]
-    return l
+                ell[i][j] = (a[i][j] - s) / ell[j][j]
+    return ell
 
 
 def _norm_draw(rng, x_obs, y_obs, x_mis, kappa):
@@ -63,8 +63,8 @@ def _norm_draw(rng, x_obs, y_obs, x_mis, kappa):
     g = 2.0 * float(rng.gamma(nu / 2.0))  # chi^2_nu draw
     sigma = math.sqrt(ssr / max(g, 1e-300))
     z1 = [float(rng.normal()) for _ in range(q)]
-    l = _chol(v)
-    beta_dot = [beta_hat[r] + sigma * sum(l[r][t] * z1[t] for t in range(r + 1)) for r in range(q)]
+    ell = _chol(v)
+    beta_dot = [beta_hat[r] + sigma * sum(ell[r][t] * z1[t] for t in range(r + 1)) for r in range(q)]
     out = []
     for xi in x_mis:
         z2 = float(rng.normal())
@@ -134,7 +134,7 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
     mis_cols = [j for j in range(p) if any(mask[i][j] for i in range(n))]
     for j in range(p):
         if all(mask[i][j] for i in range(n)):
-            raise ValueError("column %d has no observed values" % j)
+            raise ValueError(f"column {int(j)} has no observed values")
     m = int(m)
     maxit = int(maxit)
     rng = np.random.default_rng(seed)

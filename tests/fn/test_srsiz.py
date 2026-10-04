@@ -5,7 +5,7 @@ from morie.fn.srsiz import srsiz
 
 
 def test_srsiz_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = srsiz(p=0.5)
     assert result is not None
     assert hasattr(result, "name")

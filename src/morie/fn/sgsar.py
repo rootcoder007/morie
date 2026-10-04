@@ -59,9 +59,9 @@ def sar_lag_model(
     best_beta = None
     best_resid = None
 
-    I = np.eye(n)
+    I_ = np.eye(n)
     for rho in rho_grid:
-        A = I - rho * W
+        A = I_ - rho * W
         Zy = A @ Z
         beta = np.linalg.lstsq(X, Zy, rcond=None)[0]
         resid = Zy - X @ beta

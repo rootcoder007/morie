@@ -69,28 +69,28 @@ def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07, nor
     >>> round(r2["loss"], 6) == round(math.log(2), 6)
     True
     """
-    I = np.atleast_2d(np.asarray(image_embeddings, dtype=float))
+    I_ = np.atleast_2d(np.asarray(image_embeddings, dtype=float))
     T = np.atleast_2d(np.asarray(text_embeddings, dtype=float))
-    if I.shape != T.shape:
-        raise ValueError(f"image and text embeddings must have the same shape, got {I.shape} and {T.shape}.")
-    if I.size == 0:
+    if I_.shape != T.shape:
+        raise ValueError(f"image and text embeddings must have the same shape, got {I_.shape} and {T.shape}.")
+    if I_.size == 0:
         raise ValueError("embeddings are empty.")
-    if not np.all(np.isfinite(I)) or not np.all(np.isfinite(T)):
+    if not np.all(np.isfinite(I_)) or not np.all(np.isfinite(T)):
         raise ValueError("embeddings contain non-finite values.")
     tau = float(tau)
     if not np.isfinite(tau) or tau <= 0:
         raise ValueError(f"tau must be a positive finite float, got {tau}.")
-    B = I.shape[0]
+    B = I_.shape[0]
 
     if normalize:
-        ni = np.linalg.norm(I, axis=1, keepdims=True)
+        ni = np.linalg.norm(I_, axis=1, keepdims=True)
         nt = np.linalg.norm(T, axis=1, keepdims=True)
         if np.any(ni == 0) or np.any(nt == 0):
             raise ValueError("cannot L2-normalise a zero embedding; pass normalize=False or drop the zero rows.")
-        I = I / ni
+        I_ = I_ / ni
         T = T / nt
 
-    sim = I @ T.T
+    sim = I_ @ T.T
     logits = sim / tau
     idx = np.arange(B)
     ls_i2t = _log_softmax_rows(logits)

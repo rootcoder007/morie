@@ -29,8 +29,12 @@ def test_bradley_terry_loss_with_the_winner_already_named():
 
 
 def test_a_wider_margin_costs_less():
-    wide = lambda x, y: {"w": 5.0, "l": 0.0}[y]
-    narrow = lambda x, y: {"w": 1.0, "l": 0.9}[y]
+    def wide(x, y):
+        return {"w": 5.0, "l": 0.0}[y]
+
+    def narrow(x, y):
+        return {"w": 1.0, "l": 0.9}[y]
+
     a = kamath_ch5_rm_bradley_terry(["q"], ["w"], ["l"], wide)["estimate"]
     b = kamath_ch5_rm_bradley_terry(["q"], ["w"], ["l"], narrow)["estimate"]
     assert a < b

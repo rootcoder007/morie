@@ -25,7 +25,10 @@ def test_ordinal_probabilities_sum_to_one_and_order_correctly():
 
 def test_logistic_link_matches_the_book_formula():
     probs = gp.ordinal_probabilities([0.3], [-0.5, 1.0], link="logistic")
-    F = lambda z: 1.0 / (1.0 + math.exp(-z))
+
+    def F(z):
+        return 1.0 / (1.0 + math.exp(-z))
+
     assert abs(probs[0][0] - F(-0.5 + 0.3)) < 1e-12
     assert abs(probs[0][1] - (F(1.0 + 0.3) - F(-0.5 + 0.3))) < 1e-12
     assert abs(sum(probs[0]) - 1.0) < 1e-12

@@ -642,12 +642,18 @@ def ictft(X, t, omega=None, f=None):
     if omega is not None:
         grid = [float(v) for v in omega]
         scale = 1.0 / (2.0 * pi)
-        ang = lambda w, tv: w * tv
+
+        def ang(w, tv):
+            return w * tv
+
         variable = "omega"
     else:
         grid = [float(v) for v in f]
         scale = 1.0
-        ang = lambda w, tv: 2.0 * pi * w * tv
+
+        def ang(w, tv):
+            return 2.0 * pi * w * tv
+
         variable = "f"
     if len(grid) != len(Xs):
         raise ValueError("X and the frequency grid must have equal length")
@@ -1164,7 +1170,7 @@ def _evenodd_core(x, n=None):
     table = dict(zip(idx, xs))
     missing = [i for i in idx if -i not in table]
     if missing:
-        raise ValueError("index grid is not symmetric: x(-n) is unavailable for n = %s" % missing[:5])
+        raise ValueError(f"index grid is not symmetric: x(-n) is unavailable for n = {missing[:5]}")
     ev = [0.5 * (table[i] + table[-i]) for i in idx]
     od = [0.5 * (table[i] - table[-i]) for i in idx]
     recon = [a + b for a, b in zip(ev, od)]
@@ -1387,7 +1393,7 @@ def logseries(x, terms=20):
         raise ValueError("terms must be positive")
     bad = [v for v in xs if abs(v) >= 1.0]
     if bad:
-        raise ValueError("the series converges only for |x| < 1; got %r" % (bad[0],))
+        raise ValueError(f"the series converges only for |x| < 1; got {bad[0]!r}")
     out, bound = [], []
     for v in xs:
         s = 0j

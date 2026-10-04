@@ -65,10 +65,7 @@ def siavg(
     delta = np.asarray(res["avg_derivative"])
 
     norm = np.linalg.norm(delta)
-    if norm < 1e-15:
-        beta = np.zeros(p)
-    else:
-        beta = delta / norm
+    beta = np.zeros(p) if norm < 1e-15 else delta / norm
 
     index = X @ beta
 

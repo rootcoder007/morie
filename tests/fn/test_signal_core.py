@@ -25,7 +25,7 @@ def _sig(n=400):
 def test_butter_ba_lowpass_matches():
     for n in (2, 3, 4, 5):
         b, a = ms.butter(n, 0.2, btype="low", output="ba")
-        w = A["butter"]["low%d" % n]
+        w = A["butter"][f"low{int(n)}"]
         assert b == pytest.approx(w["b"], rel=1e-9, abs=1e-12)
         assert a == pytest.approx(w["a"], rel=1e-9, abs=1e-12)
 
@@ -33,7 +33,7 @@ def test_butter_ba_lowpass_matches():
 def test_butter_ba_highpass_matches():
     for n in (2, 4):
         b, a = ms.butter(n, 0.3, btype="high", output="ba")
-        w = A["butter"]["high%d" % n]
+        w = A["butter"][f"high{int(n)}"]
         assert b == pytest.approx(w["b"], rel=1e-9, abs=1e-12)
         assert a == pytest.approx(w["a"], rel=1e-9, abs=1e-12)
 
@@ -63,7 +63,7 @@ def test_filtfilt_matches():
     for n, wn in ((2, 0.15), (4, 0.2), (5, 0.35)):
         b, a = ms.butter(n, wn)
         got = ms.filtfilt(list(b), list(a), x).tolist()
-        want = A["filtfilt"]["%d_%s" % (n, wn)]
+        want = A["filtfilt"][f"{int(n)}_{wn}"]
         assert got == pytest.approx(want, rel=1e-7, abs=1e-9)
 
 

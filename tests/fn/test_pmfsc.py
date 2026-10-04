@@ -52,7 +52,7 @@ def test_pmfsc_basic():
 
 def test_pmfsc_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     receptor = [[0.0, 0.0, 0.0, "C"]]
     ligand = [[1.0, 1.0, 1.0, "N"]]
     # Calling without potential or observations should raise ValueError

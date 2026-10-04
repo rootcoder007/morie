@@ -101,10 +101,10 @@ def eps_from_rho(rho, delta, omega=None):
         raise ValueError("rho cannot be negative")
     if not 0.0 < delta < 1.0:
         raise ValueError("delta must lie strictly inside (0, 1)")
-    l = math.log(1.0 / delta)
+    ell = math.log(1.0 / delta)
     if rho == 0.0:
         return 0.0
-    free = rho + 2.0 * math.sqrt(rho * l)
+    free = rho + 2.0 * math.sqrt(rho * ell)
     if omega is None:
         return free
     w = float(omega)
@@ -113,10 +113,10 @@ def eps_from_rho(rho, delta, omega=None):
     # The order that minimises the fixed-order bound is 1 + sqrt(l/rho);
     # inside the truncation it reproduces the free conversion, outside
     # it the best available order is omega itself.
-    star = 1.0 + math.sqrt(l / rho)
+    star = 1.0 + math.sqrt(ell / rho)
     if star <= w:
         return free
-    return rho * w + l / (w - 1.0)
+    return rho * w + ell / (w - 1.0)
 
 
 def epsilon_floor(delta, omega=None):
@@ -156,11 +156,11 @@ def rho_from_eps(epsilon, delta, omega=None, iters=200):
     fl = epsilon_floor(delta, omega)
     if epsilon <= fl:
         raise ValueError(
-            "no rho can reach epsilon %r at delta %r with truncation "
-            "%r: the fixed-order bound has an irreducible term "
-            "log(1/delta)/(omega - 1) = %r that does not depend on rho. "
+            f"no rho can reach epsilon {epsilon!r} at delta {delta!r} with truncation "
+            f"{omega!r}: the fixed-order bound has an irreducible term "
+            f"log(1/delta)/(omega - 1) = {fl!r} that does not depend on rho. "
             "Loosen the truncation, loosen delta, or ask for a larger "
-            "epsilon." % (epsilon, delta, omega, fl)
+            "epsilon."
         )
     lo = 0.0
     hi = 1.0

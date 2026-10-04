@@ -121,10 +121,7 @@ def esl_wavelet_smooth(y, wavelet="haar", mode="soft", threshold=None, levels=No
     zeroed = 0
     shrunk = []
     for d in details:
-        if mode == "soft":
-            t = np.sign(d) * np.maximum(np.abs(d) - lam, 0.0)
-        else:
-            t = np.where(np.abs(d) > lam, d, 0.0)
+        t = np.sign(d) * np.maximum(np.abs(d) - lam, 0.0) if mode == "soft" else np.where(np.abs(d) > lam, d, 0.0)
         zeroed += int(np.sum(t == 0))
         shrunk.append(t)
 

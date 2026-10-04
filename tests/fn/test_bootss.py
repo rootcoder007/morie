@@ -14,7 +14,7 @@ def _design(n_strata=4, n_clusters=5):
                 y.append(10.0 + h + c * 0.5 + k * 0.1)
                 w.append(2.0)
                 strata.append(h)
-                clusters.append("h%d_c%d" % (h, c))
+                clusters.append(f"h{int(h)}_c{int(c)}")
     return y, w, strata, clusters
 
 

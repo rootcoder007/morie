@@ -65,7 +65,7 @@ def discretise_times(time, n_bins=None):
         n_bins = uniq.size if uniq.size <= 50 else 20
     n_bins = int(n_bins)
     if n_bins < 2:
-        raise ValueError("need at least 2 time bins, got %d." % n_bins)
+        raise ValueError(f"need at least 2 time bins, got {int(n_bins)}.")
     if uniq.size <= n_bins:
         edges = uniq
     else:
@@ -303,8 +303,7 @@ def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025, max_iter
     n = t.size
     if not (ev.size == a.size == Wa.shape[0] == n):
         raise ValueError(
-            "time, event, treatment and covariates must agree in length, "
-            "got %d, %d, %d and %d." % (n, ev.size, a.size, Wa.shape[0])
+            f"time, event, treatment and covariates must agree in length, got {int(n)}, {int(ev.size)}, {int(a.size)} and {int(Wa.shape[0])}."
         )
     if not np.all(np.isin(ev, (0.0, 1.0))):
         raise ValueError("event must be binary 0/1 (1 = failure observed).")
@@ -312,7 +311,7 @@ def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025, max_iter
         raise ValueError("treatment must be binary 0/1.")
     if min(int(a.sum()), int((1 - a).sum())) < 5:
         raise ValueError(
-            "need at least 5 subjects in each arm, got %d treated and %d control." % (int(a.sum()), int((1 - a).sum()))
+            f"need at least 5 subjects in each arm, got {int(int(a.sum()))} treated and {int(int((1 - a).sum()))} control."
         )
 
     k_obs, edges = discretise_times(t, n_bins)

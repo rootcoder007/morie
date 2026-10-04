@@ -132,7 +132,7 @@ def se3_attention(positions, type0, type1, weights=None, sigma=1.0, temperature=
     V = [[float(v) for v in r] for r in k.mat(type1)]
     n = len(P)
     if len(S) != n or len(V) != n:
-        raise ValueError("se3T: %d positions, %d scalars, %d vectors" % (n, len(S), len(V)))
+        raise ValueError(f"se3T: {int(n)} positions, {int(len(S))} scalars, {int(len(V))} vectors")
     if any(len(v) != 3 for v in V):
         raise ValueError("se3T: type-1 features must be 3-vectors")
     t = float(temperature)

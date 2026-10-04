@@ -108,7 +108,7 @@ def laplacian_positional_encoding(adj, n, dim=2, normalized=True):
     take = order[1 : 1 + int(dim)]
     if len(take) < int(dim):
         raise ValueError(
-            "gtrf: the graph has only %d non-trivial eigenvectors, %d were asked for" % (len(take), int(dim))
+            f"gtrf: the graph has only {int(len(take))} non-trivial eigenvectors, {int(int(dim))} were asked for"
         )
     pe = [[vecs[i][j] for j in take] for i in range(int(n))]
     return {
@@ -143,7 +143,7 @@ def sparse_attention(H, adj, WQ, WK, WV, edge_bias=None):
     for i in range(len(rows)):
         nb = sorted(adj.get(i, ()))
         if not nb:
-            raise ValueError("gtrf: node %d has no neighbours" % i)
+            raise ValueError(f"gtrf: node {int(i)} has no neighbours")
         q = proj(WQ, rows[i])
         sc = []
         for j in nb:
@@ -168,7 +168,7 @@ def graph_transformer_layer(H, adj, WQ, WK, WV, W1, W2, edge_bias=None, norm="ba
     batch normalisation trains faster and generalises better.
     """
     if norm not in ("batch", "layer", "none"):
-        raise ValueError("gtrf: norm must be batch, layer or none, got %r" % (norm,))
+        raise ValueError(f"gtrf: norm must be batch, layer or none, got {norm!r}")
     att = sparse_attention(H, adj, WQ, WK, WV, edge_bias)["output"]
     res = [[H[i][f] + att[i][f] for f in range(len(att[0]))] for i in range(len(H))]
     res = _normalize(res, norm)

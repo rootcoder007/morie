@@ -48,10 +48,7 @@ def jukes_cantor_rate(
         for j in range(i + 1, n):
             diffs = sum(1 for a, b in zip(sequences[i], sequences[j]) if a != b)
             p = diffs / L
-            if p >= 0.75:
-                d = np.inf
-            else:
-                d = -0.75 * np.log(1 - (4.0 / 3.0) * p)
+            d = np.inf if p >= 0.75 else -0.75 * np.log(1 - 4.0 / 3.0 * p)
             D[i, j] = d
             D[j, i] = d
 

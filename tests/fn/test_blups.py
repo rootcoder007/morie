@@ -56,7 +56,7 @@ def test_blups_basic():
     # Convert inputs to plain Python lists for the arithmetic
     y_list = y.tolist() if hasattr(y, "tolist") else list(y)
     Z_list = Z.tolist() if hasattr(Z, "tolist") else list(Z)
-    X_list = X.tolist() if hasattr(X, "tolist") else list(X)
+    X.tolist() if hasattr(X, "tolist") else list(X)
     D_list = D.tolist() if hasattr(D, "tolist") else list(D)
 
     # residual r = y - X beta (here beta = 0, so r = y)
@@ -64,7 +64,7 @@ def test_blups_basic():
 
     def _matmul(A, B):
         rows_A, cols_A = len(A), len(A[0])
-        rows_B, cols_B = len(B), len(B[0])
+        _rows_B, cols_B = len(B), len(B[0])
         out = [[0.0] * cols_B for _ in range(rows_A)]
         for i in range(rows_A):
             for k in range(cols_A):

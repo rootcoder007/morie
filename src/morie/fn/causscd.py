@@ -104,12 +104,12 @@ def _project_simplex(v):
     m = len(v)
     u = sorted(v, reverse=True)
     css = 0.0
-    rho, theta = 0, 0.0
+    _rho, theta = 0, 0.0
     for k in range(m):
         css += u[k]
         t = (css - 1.0) / (k + 1)
         if u[k] - t > 0:
-            rho, theta = k + 1, t
+            _rho, theta = k + 1, t
     return [max(0.0, x - theta) for x in v]
 
 
@@ -205,7 +205,7 @@ def sdid(Y, treated, t_post, method="sdid", zeta=None):
             "n_control": len(co),
             "t_pre": t_post,
             "t_post": T - t_post,
-            "method": ("synthetic DID (Arkhangelsky, Athey, Hirshberg, Imbens & Wager 2021), weighting '%s'" % method),
+            "method": (f"synthetic DID (Arkhangelsky, Athey, Hirshberg, Imbens & Wager 2021), weighting '{method}'"),
             "note": (
                 "all three weightings are the same estimator of eq. "
                 "2.4; DID uses 1/N_co and uniform time weights, SC "

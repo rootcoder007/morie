@@ -71,7 +71,7 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal", base_params=No
     v = np.asarray(x, dtype=float).ravel()
     n = v.size
     if n < 2:
-        raise ValueError("need at least 2 observations, got %d." % n)
+        raise ValueError(f"need at least 2 observations, got {int(n)}.")
     if np.any(~np.isfinite(v)):
         raise ValueError("x contains non-finite values.")
     J = int(depth)
@@ -102,14 +102,21 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal", base_params=No
                 out[i] = 0.5 * (lo_ + hi_)
             return out
 
-        dens_base = lambda t: np.exp(-0.5 * ((t - mu) / sd) ** 2) / (sd * np.sqrt(2 * np.pi))
+        def dens_base(t):
+            return np.exp(-0.5 * ((t - mu) / sd) ** 2) / (sd * np.sqrt(2 * np.pi))
     else:
         a, b = (float(v.min()), float(v.max())) if base_params is None else base_params
         if b <= a:
             raise ValueError("uniform base needs b > a.")
-        cdf = lambda t: np.clip((np.atleast_1d(t) - a) / (b - a), 0, 1)
-        icdf = lambda u: a + np.atleast_1d(u) * (b - a)
-        dens_base = lambda t: np.full_like(np.atleast_1d(t), 1.0 / (b - a))
+
+        def cdf(t):
+            return np.clip((np.atleast_1d(t) - a) / (b - a), 0, 1)
+
+        def icdf(u):
+            return a + np.atleast_1d(u) * (b - a)
+
+        def dens_base(t):
+            return np.full_like(np.atleast_1d(t), 1.0 / (b - a))
 
     u = np.clip(cdf(v), 1e-12, 1 - 1e-12)
     # posterior mass multiplier on each dyadic cell at the finest level

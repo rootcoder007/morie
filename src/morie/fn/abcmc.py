@@ -45,7 +45,7 @@ def abc_mcmc(
     d = len(theta)
 
     sim_cur = np.asarray(simulator(theta), dtype=float)
-    dist_cur = float(np.sqrt(np.sum((sim_cur - obs) ** 2)))
+    float(np.sqrt(np.sum((sim_cur - obs) ** 2)))
 
     samples = np.empty((n_iter, d))
     accept = 0
@@ -59,7 +59,6 @@ def abc_mcmc(
             log_alpha = prior_log_density(proposal) - prior_log_density(theta)
             if np.log(rng.uniform()) < log_alpha:
                 theta = proposal
-                dist_cur = dist_prop
                 accept += 1
 
         samples[i] = theta

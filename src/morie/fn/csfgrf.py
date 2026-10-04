@@ -103,7 +103,7 @@ def causal_survival_forest(time, event, D, X, horizon=None, n_trees=200, min_lea
     def Ghat(t):
         return vals[np.searchsorted(grid, t, side="right") - 1]
 
-    tmin = np.minimum(time, tau)
+    np.minimum(time, tau)
     pseudo = np.where(
         (event == 1) & (time <= tau),
         time / Ghat(np.maximum(time - 1e-12, 0.0)),

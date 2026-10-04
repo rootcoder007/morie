@@ -139,13 +139,13 @@ def prehash(
     """
     y = TYPES.get(str(variant))
     if y is None:
-        raise ValueError("secarg: variant must be one of %s, got %r" % (", ".join(sorted(TYPES)), variant))
+        raise ValueError("secarg: variant must be one of {}, got {!r}".format(", ".join(sorted(TYPES)), variant))
     P = h._as_bytes(password)
     S = h._as_bytes(salt)
     K = h._as_bytes(secret)
     X = h._as_bytes(associated)
     if len(S) < 8:
-        raise ValueError("secarg: the salt must be at least 8 bytes (the RFC recommends 16), got %d" % len(S))
+        raise ValueError(f"secarg: the salt must be at least 8 bytes (the RFC recommends 16), got {int(len(S))}")
     buf = (
         _le32(parallelism)
         + _le32(tag_length)
@@ -248,7 +248,7 @@ def argon2(
     """
     y = TYPES.get(str(variant))
     if y is None:
-        raise ValueError("secarg: variant must be one of %s, got %r" % (", ".join(sorted(TYPES)), variant))
+        raise ValueError("secarg: variant must be one of {}, got {!r}".format(", ".join(sorted(TYPES)), variant))
     p = int(parallelism)
     t = int(passes)
     m = int(memory)
@@ -257,7 +257,7 @@ def argon2(
     if t < 1:
         raise ValueError("secarg: at least one pass is required")
     if m < 8 * p:
-        raise ValueError("secarg: memory must be at least 8*p = %d KiB, got %d" % (8 * p, m))
+        raise ValueError(f"secarg: memory must be at least 8*p = {int(8 * p)} KiB, got {int(m)}")
     m_prime = (m // (SL * p)) * (SL * p)
     q = m_prime // p
     seg = q // SL
@@ -283,23 +283,14 @@ def argon2(
                         addr = _addresses(r, i, sl, m_prime, t, y, counter)
                     j = sl * seg + idx
                     prev = B[i][j - 1] if j > 0 else B[i][q - 1]
-                    if data_indep:
-                        pr = addr[idx % 128]
-                    else:
-                        pr = prev[0]
+                    pr = addr[idx % 128] if data_indep else prev[0]
                     J1 = pr & _MASK32
                     J2 = (pr >> 32) & _MASK32
                     lane = i if (r == 0 and sl == 0) else J2 % p
                     if r == 0:
-                        if sl == 0 or lane == i:
-                            W = j - 1
-                        else:
-                            W = sl * seg - (1 if idx == 0 else 0)
+                        W = j - 1 if sl == 0 or lane == i else sl * seg - (1 if idx == 0 else 0)
                     else:
-                        if lane == i:
-                            W = q - seg + idx - 1
-                        else:
-                            W = q - seg - (1 if idx == 0 else 0)
+                        W = q - seg + idx - 1 if lane == i else q - seg - (1 if idx == 0 else 0)
                     if W < 1:
                         W = 1
                     x = (J1 * J1) >> 32
@@ -363,7 +354,7 @@ def parameter_advice(profile="first"):
         },
     }
     if profile not in rec:
-        raise ValueError("secarg: profile must be 'first' or 'second', got %r" % (profile,))
+        raise ValueError(f"secarg: profile must be 'first' or 'second', got {profile!r}")
     out = dict(rec[profile])
     out["memory_gib"] = out["memory"] / (1024.0 * 1024.0)
     out["warning"] = "lowering memory in favour of more passes weakens time-space trade-off resistance"

@@ -83,7 +83,7 @@ def encode_point_prompt(points, labels, dim=8, type_embeddings=None):
     P = [(float(a), float(b)) for a, b in points]
     L = [int(v) for v in labels]
     if len(P) != len(L):
-        raise ValueError("samseg: %d points but %d labels" % (len(P), len(L)))
+        raise ValueError(f"samseg: {int(len(P))} points but {int(len(L))} labels")
     if any(v not in (0, 1) for v in L):
         raise ValueError("samseg: a point label must be 1 (foreground) or 0 (background)")
     te = type_embeddings or {}
@@ -131,7 +131,7 @@ def encode_mask_prompt(mask, image_embedding, weight=1.0):
     E = [[float(v) for v in r] for r in k.mat(image_embedding)]
     if len(M) != len(E) or len(M[0]) != len(E[0]):
         raise ValueError(
-            "samseg: the mask prompt is %dx%d but the image embedding is %dx%d" % (len(M), len(M[0]), len(E), len(E[0]))
+            f"samseg: the mask prompt is {int(len(M))}x{int(len(M[0]))} but the image embedding is {int(len(E))}x{int(len(E[0]))}"
         )
     w = float(weight)
     return {

@@ -28,7 +28,6 @@ def aliasing_demo(f_signal: float, fs: float) -> DescriptiveResult:
     DescriptiveResult
     """
     nyquist = fs / 2.0
-    aliased = fs > 0
     f_alias = abs(f_signal % fs)
     if f_alias > nyquist:
         f_alias = fs - f_alias

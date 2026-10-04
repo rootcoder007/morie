@@ -76,7 +76,7 @@ def sparseattn(Q, K, V, S=None):
     for i in range(nq):
         allow = [j for j in range(nk) if Sm[i][j] != 0.0]
         if not allow:
-            raise ValueError("row %d of S allows no key" % i)
+            raise ValueError(f"row {int(i)} of S allows no key")
         mx = max(sco[i][j] for j in allow)
         e = [0.0] * nk
         tot = 0.0

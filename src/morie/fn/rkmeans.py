@@ -224,19 +224,19 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100, huber
     if k < 1:
         raise ValueError("rkmeans: k must be >= 1")
     if k > n:
-        raise ValueError("rkmeans: k = %d exceeds n = %d" % (k, n))
+        raise ValueError(f"rkmeans: k = {int(k)} exceeds n = {int(n)}")
     alpha = float(alpha)
     if not 0.0 <= alpha < 1.0:
-        raise ValueError("rkmeans: alpha must lie in [0, 1), got %r" % (alpha,))
+        raise ValueError(f"rkmeans: alpha must lie in [0, 1), got {alpha!r}")
     if penalty not in _PENALTIES:
-        raise ValueError("rkmeans: penalty must be one of %r, got %r" % (_PENALTIES, penalty))
+        raise ValueError(f"rkmeans: penalty must be one of {_PENALTIES!r}, got {penalty!r}")
     huber_c = float(huber_c)
     if penalty == "huber" and not huber_c > 0.0:
         raise ValueError("rkmeans: huber_c must be > 0")
 
     n_keep = int(math.ceil(n * (1.0 - alpha)))
     if n_keep < k:
-        raise ValueError("rkmeans: alpha = %g keeps only %d points, fewer than k = %d" % (alpha, n_keep, k))
+        raise ValueError(f"rkmeans: alpha = {alpha:g} keeps only {int(n_keep)} points, fewer than k = {int(k)}")
 
     rng = np.random.default_rng(seed)
     starts = []

@@ -5,7 +5,7 @@ from morie.fn.jaccr import jaccr
 
 
 def test_jaccr_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = jaccr(set_a={1, 2, 3, 4}, set_b={3, 4, 5, 6})
     assert result is not None
     assert hasattr(result, "name")

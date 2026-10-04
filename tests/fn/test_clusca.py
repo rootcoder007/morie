@@ -23,16 +23,12 @@ def _manual_clustering(A, node=None):
     good = [local[v] for v in range(n) if len([u for u in range(n) if u != v and A[v][u] != 0.0]) > 1]
     average = sum(good) / len(good) if good else float("nan")
     trans = tri / trip if trip > 0.0 else float("nan")
-    if node is None:
-        estimate = average
-    else:
-        estimate = local[int(node)]
+    estimate = average if node is None else local[int(node)]
     return estimate, local, average, trans, n
 
 
 def test_clusca_basic():
     """Test basic functionality on a well-defined 5-vertex adjacency matrix."""
-    n = 5
     A = [
         [0.0, 1.0, 1.0, 1.0, 0.0],
         [1.0, 0.0, 1.0, 0.0, 0.0],

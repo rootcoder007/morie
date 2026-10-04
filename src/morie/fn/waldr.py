@@ -71,7 +71,7 @@ def wald_estimator(y, d, z, alpha=0.05):
     zv = np.asarray(z, dtype=float).ravel()
     n = yv.size
     if not (dv.size == zv.size == n):
-        raise ValueError("y, d and z must agree in length, got %d, %d and %d." % (n, dv.size, zv.size))
+        raise ValueError(f"y, d and z must agree in length, got {int(n)}, {int(dv.size)} and {int(zv.size)}.")
     if not np.all(np.isin(zv, (0.0, 1.0))):
         raise ValueError("z must be binary 0/1.")
     if not np.all(np.isin(dv, (0.0, 1.0))):
@@ -79,7 +79,7 @@ def wald_estimator(y, d, z, alpha=0.05):
     m1, m0 = zv == 1, zv == 0
     if m1.sum() < 2 or m0.sum() < 2:
         raise ValueError(
-            "need at least 2 observations at each instrument value, got %d and %d." % (int(m1.sum()), int(m0.sum()))
+            f"need at least 2 observations at each instrument value, got {int(int(m1.sum()))} and {int(int(m0.sum()))}."
         )
     rf = float(yv[m1].mean() - yv[m0].mean())
     fs = float(dv[m1].mean() - dv[m0].mean())
@@ -129,9 +129,9 @@ def wald_estimator(y, d, z, alpha=0.05):
             "weak_note": (
                 None
                 if f >= 10.0
-                else "first-stage F is %.1f, below the conventional 10; the Wald "
+                else f"first-stage F is {f:.1f}, below the conventional 10; the Wald "
                 "ratio is then heavy-tailed, its interval undercovers, and "
-                "the bias runs TOWARD the OLS estimate" % f
+                "the bias runs TOWARD the OLS estimate"
             ),
             "complier_share": float(fs),
             "estimand_note": (

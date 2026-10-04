@@ -166,21 +166,18 @@ def parse_structure(s):
             stack.append(k)
         elif ch in ")>]}":
             if not stack:
-                raise ValueError("closing bracket at %d has nothing to close" % k)
+                raise ValueError(f"closing bracket at {int(k)} has nothing to close")
             pairs.append((stack.pop(), k))
         elif ch not in ".:_-,":
-            raise ValueError("character %r at %d is not dot-bracket" % (ch, k))
+            raise ValueError(f"character {ch!r} at {int(k)} is not dot-bracket")
     if stack:
-        raise ValueError("%d bracket(s) never closed, first at %d" % (len(stack), stack[0]))
+        raise ValueError(f"{int(len(stack))} bracket(s) never closed, first at {int(stack[0])}")
     pairs.sort()
     return pairs
 
 
 def _can_pair(a, b):
-    for x, y in PAIRS:
-        if a == x and b == y:
-            return True
-    return False
+    return any(a == x and b == y for x, y in PAIRS)
 
 
 def nussinov(seq, min_loop=3):
@@ -260,7 +257,7 @@ def rna_covariance(alignment, structure=None, correction="none", mode="given", m
     Clements and Eddy (2017) Nat Methods 14(1), 45-48.
     """
     if mode not in STRUCTURES:
-        raise ValueError("mode must be one of %r" % (STRUCTURES,))
+        raise ValueError(f"mode must be one of {STRUCTURES!r}")
     seqs = [str(s).upper().replace("T", "U") for s in alignment]
     if not seqs:
         raise ValueError("the alignment is empty")
@@ -282,7 +279,7 @@ def rna_covariance(alignment, structure=None, correction="none", mode="given", m
 
     for i, j in pairs:
         if i < 0 or j >= L or i >= j:
-            raise ValueError("pair (%d, %d) is outside the alignment" % (i, j))
+            raise ValueError(f"pair ({int(i)}, {int(j)}) is outside the alignment")
 
     mis = []
     sup = []

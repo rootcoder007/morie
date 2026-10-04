@@ -72,7 +72,7 @@ def causbckd(y, x, z):
         i0 = [i for i in range(n) if zl[i] == k and xv[i] == 0.0]
         nz = len(i1) + len(i0)
         if not i1 or not i0:
-            raise ValueError("stratum %r has an empty treatment or control arm (positivity violation)" % (k,))
+            raise ValueError(f"stratum {k!r} has an empty treatment or control arm (positivity violation)")
         y1 = np.asarray([y[i] for i in i1])
         y0 = np.asarray([y[i] for i in i0])
         d = float(np.mean(y1)) - float(np.mean(y0))

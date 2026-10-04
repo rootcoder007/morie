@@ -39,14 +39,8 @@ def _band_for(ys, ds, a):
     p1 = len(obs) / float(m)
     if not obs:
         return y0, y1, p1
-    if p1 > 1.0 - a:
-        lo = _type1_quantile(obs, 1.0 - (1.0 - a) / p1)
-    else:
-        lo = y0
-    if p1 >= a:
-        hi = _type1_quantile(obs, a / p1)
-    else:
-        hi = y1
+    lo = _type1_quantile(obs, 1.0 - (1.0 - a) / p1) if p1 > 1.0 - a else y0
+    hi = _type1_quantile(obs, a / p1) if p1 >= a else y1
     return lo, hi, p1
 
 
@@ -89,7 +83,7 @@ def test_bndmoq_basic():
 def test_bndmoq_edge():
     """Test an edge case: all units observed, single stratum."""
     rng_y = np.random.default_rng(43)
-    rng_D = np.random.default_rng(42)
+    np.random.default_rng(42)
 
     n = 100
     y = rng_y.normal(0.0, 1.0, n)

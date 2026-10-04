@@ -86,9 +86,9 @@ def aggregate_buckets(y, m, overlapping=False):
     n = len(yv)
     mm = int(m)
     if mm < 1:
-        raise ValueError("adida: the bucket size must be at least 1, got %d" % mm)
+        raise ValueError(f"adida: the bucket size must be at least 1, got {int(mm)}")
     if mm > n:
-        raise ValueError("adida: bucket size %d exceeds the %d observations" % (mm, n))
+        raise ValueError(f"adida: bucket size {int(mm)} exceeds the {int(n)} observations")
     if overlapping:
         return [sum(yv[t : t + mm]) for t in range(n - mm + 1)]
     n_buckets = n // mm
@@ -112,7 +112,7 @@ def disaggregate(aggregate_value, m, profile=None):
     else:
         w = [float(v) for v in profile]
         if len(w) != mm:
-            raise ValueError("adida: the profile has %d weights for a bucket of %d" % (len(w), mm))
+            raise ValueError(f"adida: the profile has {int(len(w))} weights for a bucket of {int(mm)}")
         if any(v < 0.0 for v in w):
             raise ValueError("adida: profile weights must be non-negative")
         tot = sum(w)
@@ -136,7 +136,7 @@ def adida_forecast(
         m = int(lead_time)
     agg = aggregate_buckets(yv, m, overlapping=overlapping)
     if len(agg) < 2:
-        raise ValueError("adida: bucket size %d leaves only %d aggregated points" % (int(m), len(agg)))
+        raise ValueError(f"adida: bucket size {int(int(m))} leaves only {int(len(agg))} aggregated points")
     f = intermittent_forecast(agg, method=method, alpha=alpha, beta=beta, horizon=1)
     agg_fc = f["forecast"][0]
     per_period = disaggregate(agg_fc, int(m), profile=profile)
@@ -170,7 +170,7 @@ def temporal_combination(y, levels, horizon=1, method="tsb", alpha=0.1, beta=0.0
     """
     lv = [int(v) for v in levels]
     if len(lv) < 2:
-        raise ValueError("adida: need at least 2 levels to combine, got %d" % len(lv))
+        raise ValueError(f"adida: need at least 2 levels to combine, got {int(len(lv))}")
     per = []
     for m in lv:
         r = adida_forecast(y, m, horizon=horizon, method=method, alpha=alpha, beta=beta)
@@ -180,7 +180,7 @@ def temporal_combination(y, levels, horizon=1, method="tsb", alpha=0.1, beta=0.0
     else:
         w = [float(v) for v in weights]
         if len(w) != len(lv):
-            raise ValueError("adida: %d weights for %d levels" % (len(w), len(lv)))
+            raise ValueError(f"adida: {int(len(w))} weights for {int(len(lv))} levels")
         tot = sum(w)
         if tot <= 0.0:
             raise ValueError("adida: the weights sum to zero")

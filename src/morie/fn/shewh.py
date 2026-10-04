@@ -102,7 +102,7 @@ def shewhart(x, mu, sigma, k=3.0):
             "arl0": (1.0 / p) if p > 0.0 else float("inf"),
             "n": int(n),
             "k": kk,
-            "method": "Shewhart (1926) k-sigma control chart, k = %g" % kk,
+            "method": f"Shewhart (1926) k-sigma control chart, k = {kk:g}",
         }
     )
 

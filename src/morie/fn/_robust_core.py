@@ -119,7 +119,7 @@ def trim_counts(n, tr):
     one value per tail, not 1.8.
     """
     if not 0 <= tr < 0.5:
-        raise ValueError("tr must satisfy 0 <= tr < 0.5, got %r" % (tr,))
+        raise ValueError(f"tr must satisfy 0 <= tr < 0.5, got {tr!r}")
     return int(math.floor(tr * n))
 
 
@@ -269,10 +269,7 @@ def mad_median_rule(x, crit=2.24):
     v = _flat(x)
     m = median(v)
     s = madn(v)
-    if s == 0:
-        ratios = [0.0 if t == m else float("inf") for t in v]
-    else:
-        ratios = [abs(t - m) / s for t in v]
+    ratios = [0.0 if t == m else float("inf") for t in v] if s == 0 else [abs(t - m) / s for t in v]
     flags = [r > crit for r in ratios]
     return {
         "median": m,
@@ -1738,7 +1735,7 @@ def morans_i(x, W):
     Wm = _mat_local(W)
     n = len(v)
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match x" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match x")
     m = sum(v) / n
     z = [t - m for t in v]
     s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
@@ -1772,10 +1769,10 @@ def morans_i_test(x, W, randomisation=True, alternative="greater"):
     v = _flat(x)
     n = len(v)
     if len(_mat_local(W)) != n:
-        raise ValueError("W must be %d x %d to match x" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match x")
     t = weights_totals(W)
     s0, s1, s2 = t["S0"], t["S1"], t["S2"]
-    I = morans_i(v, W)
+    I_ = morans_i(v, W)
     ei = -1.0 / (n - 1.0)
     if randomisation:
         m = sum(v) / n
@@ -1787,7 +1784,7 @@ def morans_i_test(x, W, randomisation=True, alternative="greater"):
     else:
         var = (n * n * s1 - n * s2 + 3 * s0 * s0) / (s0 * s0 * (n * n - 1.0)) - 1.0 / ((n - 1.0) ** 2)
     sd = math.sqrt(var)
-    zval = (I - ei) / sd
+    zval = (I_ - ei) / sd
     if alternative == "greater":
         p = 1.0 - 0.5 * math.erfc(-zval / math.sqrt(2.0))
     elif alternative == "less":
@@ -1796,7 +1793,7 @@ def morans_i_test(x, W, randomisation=True, alternative="greater"):
         p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(zval) / math.sqrt(2.0)))
     return {
         "statistic": zval,
-        "estimate": I,
+        "estimate": I_,
         "expectation": ei,
         "variance": var,
         "p_value": p,
@@ -1833,9 +1830,9 @@ def spatial_2sls(y, X, W, add_intercept=True, robust=False):
     n = len(ys)
     Wm = _mat_local(W)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])
@@ -1909,9 +1906,9 @@ def gm_error_sar(y, X, W, add_intercept=True):
     n = len(ys)
     Wm = _mat_local(W)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p_ = len(Xm[0])
@@ -2058,12 +2055,12 @@ def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
     Wm = _mat_local(W)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
-    k = len(Xm[0])
+    len(Xm[0])
     Wy = _lag(W, ys)
     _, e0 = _ols_resid(Xm, ys)
     _, ed = _ols_resid(Xm, Wy)
@@ -2118,9 +2115,9 @@ def spatial_error_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
     Wm = _mat_local(W)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     k = len(Xm[0])
@@ -2407,7 +2404,7 @@ def adf_test(y, lags=1, kind="drift"):
     if kind not in ("none", "drift", "trend"):
         raise ValueError('kind must be "none", "drift" or "trend"')
     if n < lags + 3:
-        raise ValueError("series too short for %d lags" % lags)
+        raise ValueError(f"series too short for {int(lags)} lags")
 
     dy = [v[i] - v[i - 1] for i in range(1, n)]
     # rows are t = lags+1 .. n-1 of the differenced series
@@ -2505,7 +2502,7 @@ def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6, scale_est="MAD
     Xm = _rg._mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])

@@ -219,13 +219,13 @@ def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES, mode="bi
     Curr Pharm Des 7(7), 567-597.
     """
     if mode not in MODES:
-        raise ValueError("mode must be one of %r" % (MODES,))
+        raise ValueError(f"mode must be one of {MODES!r}")
     feats = [str(f) for f in feature_set]
     pts = []
     for row in mol_3d:
         t = str(row[3])
         if t not in feats:
-            raise ValueError("feature type %r is not in the alphabet" % t)
+            raise ValueError(f"feature type {t!r} is not in the alphabet")
         pts.append(([float(row[0]), float(row[1]), float(row[2])], feats.index(t)))
     n = len(pts)
     if space is None:

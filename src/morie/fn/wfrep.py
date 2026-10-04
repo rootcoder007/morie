@@ -44,10 +44,7 @@ def weighted_frequency(y, weights=None, cells=None):
     n = len(lab)
     if n == 0:
         raise ValueError("weighted_frequency: y is empty")
-    if weights is None:
-        w = [1.0] * n
-    else:
-        w = C.vec(weights)
+    w = [1.0] * n if weights is None else C.vec(weights)
     if len(w) != n:
         raise ValueError("weighted_frequency: y and weights differ in length")
     lv = [_lab(v) for v in cells] if cells is not None else sorted(set(lab))

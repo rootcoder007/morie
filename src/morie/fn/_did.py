@@ -73,12 +73,14 @@ def as_panel(y, unit, time):
     u = np.asarray(unit).ravel()
     t = np.asarray(time).ravel()
     if not (len(y) == len(u) == len(t)):
-        raise ValueError("y, unit and time must have the same length, got %d, %d and %d." % (len(y), len(u), len(t)))
+        raise ValueError(
+            f"y, unit and time must have the same length, got {int(len(y))}, {int(len(u))} and {int(len(t))}."
+        )
     units, ui = np.unique(u, return_inverse=True)
     periods, ti = np.unique(t, return_inverse=True)
     n, T = len(units), len(periods)
     if n < 2 or T < 2:
-        raise ValueError("need at least 2 units and 2 periods, got %d and %d." % (n, T))
+        raise ValueError(f"need at least 2 units and 2 periods, got {int(n)} and {int(T)}.")
     Y = np.full((n, T), np.nan)
     if np.any(np.bincount(ui * T + ti, minlength=n * T) > 1):
         raise ValueError("the panel has duplicate (unit, time) observations.")
@@ -86,9 +88,7 @@ def as_panel(y, unit, time):
     if np.isnan(Y).any():
         miss = int(np.isnan(Y).sum())
         raise ValueError(
-            "the panel is unbalanced: %d of %d unit-period cells are absent. "
-            "Every estimator here differences a unit against its own earlier "
-            "value, so a missing cell is a missing comparison." % (miss, n * T)
+            f"the panel is unbalanced: {int(miss)} of {int(n * T)} unit-period cells are absent. Every estimator here differences a unit against its own earlier value, so a missing cell is a missing comparison."
         )
     return Y, units, periods
 
@@ -112,9 +112,9 @@ def first_treatment(D, unit, time, units=None, periods=None):
     if off_after_on.any():
         bad = u2[off_after_on][:5]
         raise ValueError(
-            "treatment must be absorbing; unit(s) %s switch back to untreated. "
+            f"treatment must be absorbing; unit(s) {list(bad)} switch back to untreated. "
             "Staggered-DiD identification is defined for adoption, not for "
-            "switching in and out." % (list(bad),)
+            "switching in and out."
         )
     g = np.full(Dm.shape[0], np.inf)
     ever = Dm.any(axis=1)
@@ -195,7 +195,7 @@ def simplex_lstsq(A, b, zeta=0.0, intercept=False, max_iter=5000, tol=1e-12):
     A = np.atleast_2d(np.asarray(A, dtype=float))
     b = np.asarray(b, dtype=float).ravel()
     if A.shape[0] != b.size:
-        raise ValueError("A has %d rows and b has %d entries." % (A.shape[0], b.size))
+        raise ValueError(f"A has {int(A.shape[0])} rows and b has {int(b.size)} entries.")
     m, n = A.shape
     reg = float(zeta) ** 2 * m
     w = np.full(n, 1.0 / n)

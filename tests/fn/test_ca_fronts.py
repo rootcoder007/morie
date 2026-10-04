@@ -18,11 +18,11 @@ Y21 = np.array([1, 0, 1, 2, 2, 0, 1, 1, 3, 3, 3, 4, 2, 4, 4, 4, 5, 6, 9, 7], flo
 def call(mid, *args, **kw):
     mod = importlib.import_module("morie.fn." + mid)
     ch, eq = mid[2:].split("e")
-    fn = getattr(mod, "ca_chapter_%s_equation_%s" % (ch, eq))
+    fn = getattr(mod, f"ca_chapter_{ch}_equation_{eq}")
     res = fn(*args, **kw)
     assert isinstance(res, dict)
     assert "value" in res
-    assert "eq. (%s.%s)" % (ch, eq) in res["method"]
+    assert f"eq. ({ch}.{eq})" in res["method"]
     assert isinstance(mod.cheatsheet(), str) and mid in mod.cheatsheet()
     return res
 

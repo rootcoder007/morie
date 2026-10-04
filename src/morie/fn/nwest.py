@@ -71,7 +71,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
         S = S.T
     T, k = S.shape
     if T < 3:
-        raise ValueError("need at least 3 observations, got %d." % T)
+        raise ValueError(f"need at least 3 observations, got {int(T)}.")
     L = int(np.floor(4.0 * (T / 100.0) ** (2.0 / 9.0))) if lags is None else int(lags)
     L = max(min(L, T - 1), 0)
 

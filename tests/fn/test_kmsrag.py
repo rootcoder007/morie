@@ -6,7 +6,10 @@ from morie.fn.kmsrag import kamath_self_rag
 def test_kmsrag_basic():
     """Test basic functionality."""
     context = ["doc1", "doc2"]
-    reflection_model = lambda c, q: ["[Retrieve]", "[Relevant]", "[Supported]"]
+
+    def reflection_model(c, q):
+        return ["[Retrieve]", "[Relevant]", "[Supported]"]
+
     result = kamath_self_rag(context, reflection_model)
     assert isinstance(result, dict)
     assert result["retrieve"] is True
@@ -22,7 +25,10 @@ def test_kmsrag_basic():
 def test_kmsrag_edge():
     """Test edge cases."""
     context = ["doc"]
-    reflection_model = lambda c, q: ["[No Retrieve]"]
+
+    def reflection_model(c, q):
+        return ["[No Retrieve]"]
+
     result = kamath_self_rag(context, reflection_model)
     assert isinstance(result, dict)
     assert result["retrieve"] is False

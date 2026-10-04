@@ -80,10 +80,7 @@ def schabenberger_gwr_kernels(distance, bandwidth, kernel_type="gaussian", adapt
     the boxcar.
     """
     d = np.asarray(distance, dtype=float)
-    if adaptive:
-        h = adaptive_bandwidth(d, bandwidth)
-    else:
-        h = float(bandwidth)
+    h = adaptive_bandwidth(d, bandwidth) if adaptive else float(bandwidth)
     w = kernel_weights(d, h, kernel_type, normalized=normalized)
     truncated = kernel_type != "gaussian"
     payload = {

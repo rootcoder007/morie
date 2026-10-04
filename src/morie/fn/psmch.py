@@ -61,10 +61,7 @@ def propensity_match(
                 break
 
     n_matched = len(matched_t)
-    if n_matched > 0:
-        ps_diff = np.mean(np.abs(ps[matched_t] - ps[matched_c]))
-    else:
-        ps_diff = float("nan")
+    ps_diff = np.mean(np.abs(ps[matched_t] - ps[matched_c])) if n_matched > 0 else float("nan")
 
     return DescriptiveResult(
         name="ps_match",

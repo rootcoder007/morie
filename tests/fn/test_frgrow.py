@@ -39,7 +39,7 @@ def test_frgrow_basic():
         assert le_from_blend == expected_blend
 
     # 'improved' lists indices whose group efficiency exceeds parent LE.
-    parent_hac = fragment[1]
+    fragment[1]
     expected_improved = [
         i for i, (ge, hac) in enumerate(zip(result["group_efficiency"], result["hac"])) if ge > result["parent_le"]
     ]

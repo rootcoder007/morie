@@ -63,10 +63,7 @@ def esl_se_beta(X, y, beta):
     rss = esl_residual_sum_squares(X, y, beta)
     dfr = n - p
     sigma2 = rss["estimate"] / dfr
-    if sigma2 == 0:
-        se = [0.0] * p
-    else:
-        se = esl_var_beta_hat(X, sigma2)["se"]
+    se = [0.0] * p if sigma2 == 0 else esl_var_beta_hat(X, sigma2)["se"]
     return RichResult(
         payload={
             "estimate": float(se[0]),

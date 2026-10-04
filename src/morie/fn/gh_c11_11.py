@@ -18,7 +18,7 @@ def ghosal_rescal_gp(lengths=(2.0, 1.0, 0.25), h=0.3):
     prior on l the smoothness adapts (sec. 11.5). Square-exponential:
     correlation at lag h is e^{-(h/l)^2}, decreasing as l shrinks.
     Keys: estimate."""
-    cors = [math.exp(-((h / l) ** 2)) for l in lengths]
+    cors = [math.exp(-((h / ell) ** 2)) for ell in lengths]
     res = RichResult(
         payload={
             "estimate": cors[-1],

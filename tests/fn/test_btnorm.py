@@ -14,7 +14,7 @@ def test_btnorm_basic():
     alpha = 0.05
     result = boot_normal_ci(theta_hat, theta_b, alpha)
     assert isinstance(result, dict)
-    payload = result["payload"] if "payload" in result else result
+    payload = result.get("payload", result)
     assert "lo" in payload
     assert "hi" in payload
     assert "bias" in payload
@@ -34,7 +34,7 @@ def test_btnorm_edge():
     alpha = 0.05
     result = boot_normal_ci(theta_hat, theta_b, alpha)
     assert isinstance(result, dict)
-    payload = result["payload"] if "payload" in result else result
+    payload = result.get("payload", result)
     assert payload["B"] == 5
     assert math.isfinite(payload["lo"])
     assert math.isfinite(payload["hi"])

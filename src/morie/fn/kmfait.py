@@ -65,10 +65,7 @@ def kamath_ragas_faithfulness(answer, context, entails=None):
             "the answer contains no claims; faithfulness is 0/0 and "
             "calling that 1.0 would be a decision, not a measurement."
         )
-    if isinstance(context, str):
-        ctx_text = context
-    else:
-        ctx_text = " ".join(str(c) for c in context)
+    ctx_text = context if isinstance(context, str) else " ".join(str(c) for c in context)
     if not _tokens(ctx_text):
         raise ValueError("the context is empty; every claim would be unsupported by construction.")
     if entails is not None and not callable(entails):

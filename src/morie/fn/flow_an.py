@@ -91,7 +91,7 @@ def alternating_masks(d, n_layers):
     trains and simply never sees half its input.
     """
     if d < 2:
-        raise ValueError("flow_an: need at least 2 dimensions, got %d" % d)
+        raise ValueError(f"flow_an: need at least 2 dimensions, got {int(d)}")
     out = []
     for t in range(int(n_layers)):
         par = t % 2
@@ -167,7 +167,7 @@ def anomaly_score(X, layers, threshold_quantile=0.95, reference=None):
     ref = scores if reference is None else [-log_prob(r, layers)[0] for r in k.mat(reference)]
     q = float(threshold_quantile)
     if not 0.0 < q < 1.0:
-        raise ValueError("flow_an: threshold_quantile must be in (0, 1), got %r" % (threshold_quantile,))
+        raise ValueError(f"flow_an: threshold_quantile must be in (0, 1), got {threshold_quantile!r}")
     thr = k.quantile7(sorted(ref), q)
     flags = [1.0 if v > thr else 0.0 for v in scores]
     return RichResult(

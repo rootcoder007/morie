@@ -124,14 +124,16 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True, max_iter=500, to
     if n == 0:
         raise ValueError("lcwphr: no observations")
     if len(av) != n or len(Hm) != n:
-        raise ValueError("lcwphr: y, A and H must agree in length (%d, %d, %d)" % (n, len(av), len(Hm)))
+        raise ValueError(f"lcwphr: y, A and H must agree in length ({int(n)}, {int(len(av))}, {int(len(Hm))})")
     Q = len(Hm[0])
     if any(len(r) != Q for r in Hm):
-        raise ValueError("lcwphr: every row of H must have %d indicators" % Q)
+        raise ValueError(f"lcwphr: every row of H must have {int(Q)} indicators")
     for i in range(n):
         for q in range(Q):
             if Hm[i][q] not in (0.0, 1.0):
-                raise ValueError("lcwphr: the manifest indicators must be binary; H[%d][%d] = %r" % (i, q, Hm[i][q]))
+                raise ValueError(
+                    f"lcwphr: the manifest indicators must be binary; H[{int(i)}][{int(q)}] = {Hm[i][q]!r}"
+                )
     if any(v not in (0.0, 1.0) for v in av):
         raise ValueError("lcwphr: the treatment must be binary")
     if not any(v > 0.5 for v in av) or not any(v < 0.5 for v in av):
@@ -204,10 +206,7 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True, max_iter=500, to
     # ---- propensity for treatment given the same indicators
     Xp = [[1.0] + Hm[i] for i in range(n)]
     pbeta, ps = _logit_irls(Xp, av)
-    if tr > 0.0:
-        ps = [min(max(v, tr), 1.0 - tr) for v in ps]
-    else:
-        ps = [min(max(v, 1e-8), 1.0 - 1e-8) for v in ps]
+    ps = [min(max(v, tr), 1.0 - tr) for v in ps] if tr > 0.0 else [min(max(v, 1e-08), 1.0 - 1e-08) for v in ps]
     marg = sum(av) / n
     w = []
     for i in range(n):

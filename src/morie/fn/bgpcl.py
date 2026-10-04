@@ -61,7 +61,7 @@ def bayesian_gp_classification(
         f = K @ a
 
     pi_f = _sigmoid(f)
-    W_f = np.diag(pi_f * (1 - pi_f))
+    np.diag(pi_f * (1 - pi_f))
     W_sqrt_f = np.diag(np.sqrt(pi_f * (1 - pi_f) + 1e-10))
     B_f = np.eye(n) + W_sqrt_f @ K @ W_sqrt_f
     L_f = np.linalg.cholesky(B_f)

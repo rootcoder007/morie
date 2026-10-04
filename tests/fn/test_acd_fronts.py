@@ -13,10 +13,10 @@ PREFIX = "analysis_of_categorical_data_with_r_chapman_hall_crc_christo"
 def call(mid, *args):
     mod = importlib.import_module("morie.fn." + PREFIX + mid)
     ch, eq = mid.split("e")
-    fn = getattr(mod, "%s_chapter_%s_equation_%s" % (PREFIX, ch, eq))
+    fn = getattr(mod, f"{PREFIX}_chapter_{ch}_equation_{eq}")
     res = fn(*args)
     assert isinstance(res, dict) and "value" in res
-    assert "eq. (%s.%s)" % (ch, eq) in res["method"]
+    assert f"eq. ({ch}.{eq})" in res["method"]
     assert isinstance(mod.cheatsheet(), str)
     return res
 

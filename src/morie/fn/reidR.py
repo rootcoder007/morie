@@ -75,9 +75,9 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0, threshold=0.05
     if n < 1:
         raise ValueError("need at least one record.")
     if not 0 < sample_fraction <= 1:
-        raise ValueError("sample_fraction must lie in (0, 1], got %r." % sample_fraction)
+        raise ValueError(f"sample_fraction must lie in (0, 1], got {sample_fraction!r}.")
     if attack not in ("prosecutor", "journalist", "marketer"):
-        raise ValueError("attack must be prosecutor, journalist or marketer, got %r." % attack)
+        raise ValueError(f"attack must be prosecutor, journalist or marketer, got {attack!r}.")
 
     keys = [tuple(row) for row in Q]
     uniq = {}
@@ -112,9 +112,7 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0, threshold=0.05
             "unique_note": (
                 None
                 if n_uni == 0
-                else "%d record(s) are unique on the quasi-identifiers; a single "
-                "unique makes the prosecutor and journalist risks 1.0 "
-                "however large and safe the rest of the data is" % n_uni
+                else f"{int(n_uni)} record(s) are unique on the quasi-identifiers; a single unique makes the prosecutor and journalist risks 1.0 however large and safe the rest of the data is"
             ),
             "class_sizes": sizes,
             "n_classes": int(sizes.size),
@@ -128,7 +126,7 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0, threshold=0.05
                 "conservative direction and usually wrong for survey data"
             ),
             "n": int(n),
-            "method": "Re-identification risk (%s model)" % attack,
+            "method": f"Re-identification risk ({attack} model)",
         }
     )
 

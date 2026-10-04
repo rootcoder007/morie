@@ -61,10 +61,10 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression", seed=0):
     P = np.atleast_2d(np.asarray(predictions, dtype=float))
     n = yv.size
     if P.shape[1] != n:
-        raise ValueError("predictions must be (B, %d), got %s." % (n, P.shape))
+        raise ValueError(f"predictions must be (B, {int(n)}), got {P.shape}.")
     B = P.shape[0]
     if task not in ("regression", "classification"):
-        raise ValueError("task must be 'regression' or 'classification', got %r." % task)
+        raise ValueError(f"task must be 'regression' or 'classification', got {task!r}.")
     if in_bag is None:
         rng = np.random.default_rng(int(seed))
         M = np.zeros((B, n), dtype=bool)
@@ -73,7 +73,7 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression", seed=0):
     else:
         M = np.atleast_2d(np.asarray(in_bag)).astype(bool)
         if M.shape != P.shape:
-            raise ValueError("in_bag must match predictions in shape, got %s and %s." % (M.shape, P.shape))
+            raise ValueError(f"in_bag must match predictions in shape, got {M.shape} and {P.shape}.")
     oob = ~M
 
     def _err(upto):

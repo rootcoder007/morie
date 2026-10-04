@@ -196,7 +196,7 @@ def _B(d, d_ideal, d_max, sigma, smoothing):
         return block(d, d_ideal, d_max)
     if smoothing == "gaussian":
         return smooth_block(d, d_ideal, d_max, sigma)
-    raise ValueError("smoothing must be one of %r" % (SMOOTHINGS,))
+    raise ValueError(f"smoothing must be one of {SMOOTHINGS!r}")
 
 
 def hbond_term(r, alpha, betas, smoothing="gaussian", par=None):
@@ -357,7 +357,7 @@ def chemscore(
         checked against its parts.
     """
     if smoothing not in SMOOTHINGS:
-        raise ValueError("smoothing must be one of %r" % (SMOOTHINGS,))
+        raise ValueError(f"smoothing must be one of {SMOOTHINGS!r}")
     co = dict(COEFFICIENTS)
     if coefficients:
         co.update(coefficients)

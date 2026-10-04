@@ -58,8 +58,8 @@ def jonckheere_terpstra_test(
     mu_J = (N**2 - sum(ni**2 for ni in ns)) / 4.0
 
     # Variance (no ties formula)
-    sum_ni2 = sum(ni**2 for ni in ns)
-    sum_ni3 = sum(ni**3 for ni in ns)
+    sum(ni**2 for ni in ns)
+    sum(ni**3 for ni in ns)
 
     var_num1 = N**2 * (2 * N + 3) - sum(ni**2 * (2 * ni + 3) for ni in ns)
     var_J = var_num1 / 72.0

@@ -35,10 +35,7 @@ def punif(
     if min >= max:
         raise ValueError(f"min must be < max, got min={min}, max={max}.")
     dist = stats.uniform(loc=min, scale=max - min)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

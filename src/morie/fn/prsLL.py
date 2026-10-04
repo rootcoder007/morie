@@ -84,23 +84,23 @@ def grammar(rules, start=None):
     for item in rules:
         lhs, rhs = item
         if not isinstance(lhs, str) or not lhs:
-            raise ValueError("prsLL: a left-hand side must be a non-empty symbol, got %r" % (lhs,))
+            raise ValueError(f"prsLL: a left-hand side must be a non-empty symbol, got {lhs!r}")
         seq = tuple(str(s) for s in rhs)
         if any(s == "" for s in seq):
-            raise ValueError("prsLL: write the empty production as an empty right-hand side, not as %r" % ("",))
+            raise ValueError("prsLL: write the empty production as an empty right-hand side, not as {!r}".format(""))
         if END in seq or lhs == END:
-            raise ValueError("prsLL: %r is reserved for end of input" % END)
+            raise ValueError(f"prsLL: {END!r} is reserved for end of input")
         R.append((lhs, seq))
     if not R:
         raise ValueError("prsLL: the grammar has no productions")
     S = R[0][0] if start is None else str(start)
-    if S not in {l for l, _ in R}:
-        raise ValueError("prsLL: the start symbol %r has no production" % S)
+    if S not in {ell for ell, _ in R}:
+        raise ValueError(f"prsLL: the start symbol {S!r} has no production")
     g = {"rules": R, "start": S}
     unreachable = set(nonterminals(g)) - _reachable(g)
     if unreachable:
         raise ValueError(
-            "prsLL: nonterminal(s) %s cannot be reached from the start symbol" % ", ".join(sorted(unreachable))
+            "prsLL: nonterminal(s) {} cannot be reached from the start symbol".format(", ".join(sorted(unreachable)))
         )
     return g
 
@@ -285,7 +285,7 @@ def remove_left_recursion(g):
             rules.extend((A, p) for p in prods)
             continue
         if not base:
-            raise ValueError("prsLL: %r is left-recursive with no base production, so it derives nothing" % A)
+            raise ValueError(f"prsLL: {A!r} is left-recursive with no base production, so it derives nothing")
         tail = A + "'"
         while tail in nts:
             tail += "'"
@@ -310,13 +310,13 @@ def parse(g, tokens, route="table"):
     recursive descent; both must agree.
     """
     if route not in ROUTES:
-        raise ValueError("prsLL: route must be one of %s, got %r" % (", ".join(ROUTES), route))
+        raise ValueError("prsLL: route must be one of {}, got {!r}".format(", ".join(ROUTES), route))
     t = ll1_table(g)
     if t["conflicts"]:
         raise ValueError(
-            "prsLL: the grammar is not LL(1) -- %d "
-            "conflict(s), first at (%s, %r)"
-            % (len(t["conflicts"]), t["conflicts"][0]["nonterminal"], t["conflicts"][0]["lookahead"])
+            "prsLL: the grammar is not LL(1) -- {} conflict(s), first at ({}, {!r})".format(
+                int(len(t["conflicts"])), t["conflicts"][0]["nonterminal"], t["conflicts"][0]["lookahead"]
+            )
         )
     toks = [str(x) for x in tokens] + [END]
     if route == "table":
@@ -324,13 +324,13 @@ def parse(g, tokens, route="table"):
     else:
         tree, pos = _parse_rd(g, t["table"], toks, g["start"], 0)
     if pos != len(toks) - 1:
-        raise ValueError("prsLL: input not consumed -- stopped at token %d (%r)" % (pos, toks[pos]))
+        raise ValueError(f"prsLL: input not consumed -- stopped at token {int(pos)} ({toks[pos]!r})")
     return tree
 
 
 def _pick(table, A, a):
     if (A, a) not in table:
-        raise ValueError("prsLL: no production for %r on lookahead %r" % (A, a))
+        raise ValueError(f"prsLL: no production for {A!r} on lookahead {a!r}")
     return table[(A, a)]
 
 
@@ -344,7 +344,7 @@ def _parse_rd(g, table, toks, A, pos):
             kids.append(sub)
         else:
             if toks[pos] != s:
-                raise ValueError("prsLL: expected %r but found %r at token %d" % (s, toks[pos], pos))
+                raise ValueError(f"prsLL: expected {s!r} but found {toks[pos]!r} at token {int(pos)}")
             kids.append(_leaf(s))
             pos += 1
     return _node(A, kids), pos
@@ -365,7 +365,7 @@ def _parse_table(g, table, toks):
                 stack.append((s, k))
         else:
             if toks[pos] != sym:
-                raise ValueError("prsLL: expected %r but found %r at token %d" % (sym, toks[pos], pos))
+                raise ValueError(f"prsLL: expected {sym!r} but found {toks[pos]!r} at token {int(pos)}")
             pos += 1
     return root, pos
 

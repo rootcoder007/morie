@@ -84,7 +84,7 @@ def alpha_pq(d_tx, p, q):
         return 1.0
     if d == 2:
         return 1.0 / float(q)
-    raise ValueError("node2v: d_tx must be 0, 1 or 2 for a second-order walk, got %d" % d)
+    raise ValueError(f"node2v: d_tx must be 0, 1 or 2 for a second-order walk, got {int(d)}")
 
 
 def _dist(adj, t, x):
@@ -104,7 +104,7 @@ def transition_probabilities(adj, t, v, p, q, weights=None):
     """
     nb = sorted(adj.get(v, ()))
     if not nb:
-        raise ValueError("node2v: node %r has no neighbours" % (v,))
+        raise ValueError(f"node2v: node {v!r} has no neighbours")
     pi = []
     for x in nb:
         w = 1.0 if weights is None else float(weights.get((v, x), 1.0))

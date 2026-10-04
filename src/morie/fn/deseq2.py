@@ -465,10 +465,10 @@ def deseq2(
             raise ValueError("deseq2: the design has only one group, so no coefficient can be tested")
         X = [[1.0] + [1.0 if lab == lv else 0.0 for lv in levels[1:]] for lab in design]
     if len(X) != m:
-        raise ValueError("deseq2: the design has %d rows but the counts have %d samples" % (len(X), m))
+        raise ValueError(f"deseq2: the design has {int(len(X))} rows but the counts have {int(m)} samples")
     p = len(X[0])
     if m <= p:
-        raise ValueError("deseq2: %d samples and %d coefficients leaves no residual degrees of freedom" % (m, p))
+        raise ValueError(f"deseq2: {int(m)} samples and {int(p)} coefficients leaves no residual degrees of freedom")
 
     s = size_factors(K) if size is None else [float(v) for v in size]
     if len(s) != m or any(v <= 0 for v in s):
@@ -518,7 +518,7 @@ def deseq2(
         mle.append(nb_glm_fit(K[i], X, disp[i], s))
     c = ([0.0] * (p - 1) + [1.0]) if contrast is None else [float(v) for v in contrast]
     if len(c) != p:
-        raise ValueError("deseq2: the contrast must have one entry per coefficient (%d)" % p)
+        raise ValueError(f"deseq2: the contrast must have one entry per coefficient ({int(p)})")
 
     def contrast_of(fit):
         beta = fit["beta"]
@@ -543,10 +543,7 @@ def deseq2(
         v, sd = contrast_of(mle[i])
         lfc_mle.append(v)
         se_mle.append(sd)
-        if beta_prior:
-            fit = nb_glm_fit(K[i], X, disp[i], s, lam, beta0=mle[i]["beta"])
-        else:
-            fit = mle[i]
+        fit = nb_glm_fit(K[i], X, disp[i], s, lam, beta0=mle[i]["beta"]) if beta_prior else mle[i]
         v2, sd2 = contrast_of(fit)
         lfc_map.append(v2)
         se_map.append(sd2)

@@ -64,10 +64,7 @@ def bayesian_ppc(
 
     if "residual_var" in model_fit:
         rv = model_fit["residual_var"]
-        if isinstance(rv, dict):
-            psi = np.diag(list(rv.values()))
-        else:
-            psi = np.diag(np.asarray(rv))
+        psi = np.diag(list(rv.values())) if isinstance(rv, dict) else np.diag(np.asarray(rv))
     else:
         psi = np.eye(k) * 0.5
 

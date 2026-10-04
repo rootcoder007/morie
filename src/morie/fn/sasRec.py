@@ -82,7 +82,7 @@ def causal_mask(n):
 def self_attention(E, WQ, WK, WV, mask=None):
     r"""Masked scaled dot-product attention over the item embeddings."""
     X = [[float(v) for v in r] for r in k.mat(E)]
-    n, d = len(X), len(X[0])
+    n, _d = len(X), len(X[0])
     M = causal_mask(n) if mask is None else mask
 
     def proj(W, x):

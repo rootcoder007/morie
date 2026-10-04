@@ -74,7 +74,7 @@ def tripartite_graph(triples):
     """
     nodes, edges = set(), {}
     for u, t, r in triples:
-        nu, nt, nr = ("u:%s" % u, "t:%s" % t, "r:%s" % r)
+        nu, nt, nr = (f"u:{u}", f"t:{t}", f"r:{r}")
         nodes.update([nu, nt, nr])
         for a, b in ((nu, nt), (nt, nr), (nu, nr)):
             edges[(a, b)] = edges.get((a, b), 0) + 1

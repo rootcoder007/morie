@@ -22,7 +22,7 @@ def mvsml_bayesian_regression_pt2_eq_7_1(y, X, n_iter=1200, burn_in=300, link="p
     ``fit=True`` the probit model is estimated by the Albert and Chib
     Gibbs sampler of pp.212-213. Keys: estimate."""
     if not fit:
-        eta = [sum(a * b for a, b in zip(row, _gp._flat(X[0]))) for row in [[]]] if False else None
+        [sum(a * b for a, b in zip(row, _gp._flat(X[0]))) for row in [[]]] if False else None
     f = _gp.ordinal_probit_gibbs(y, X, n_iter=n_iter, burn_in=burn_in, seed=seed)
     probs = _gp.ordinal_probabilities(_gp._mv(_gp._mat(X), f["beta"]), f["gamma"], link=link)
     res = RichResult(

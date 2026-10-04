@@ -59,7 +59,7 @@ def _gamma(h, model, nugget, sill, rng):
         return nugget + ps * (1.0 - math.exp(-3.0 * h / rng))
     if model == "gaussian":
         return nugget + ps * (1.0 - math.exp(-3.0 * (h / rng) ** 2))
-    raise ValueError("krpkrg: model must be spherical, exponential or gaussian, got %r" % (model,))
+    raise ValueError(f"krpkrg: model must be spherical, exponential or gaussian, got {model!r}")
 
 
 def ordinary_kriging(coords, values, targets, model="spherical", nugget=0.0, sill=1.0, rng=1.0):
@@ -71,7 +71,7 @@ def ordinary_kriging(coords, values, targets, model="spherical", nugget=0.0, sil
     if n == 0:
         raise ValueError("krpkrg: no data locations")
     if len(z) != n:
-        raise ValueError("krpkrg: %d locations but %d values" % (n, len(z)))
+        raise ValueError(f"krpkrg: {int(n)} locations but {int(len(z))} values")
     if sill < nugget:
         raise ValueError("krpkrg: the sill cannot be below the nugget")
     d = len(C[0])

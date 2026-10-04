@@ -69,10 +69,10 @@ def gibbons_concordance_rho_link(W, k, n=None):
     """
     k = int(k)
     if k < 2:
-        raise ValueError("need at least 2 rankings, got %d." % k)
+        raise ValueError(f"need at least 2 rankings, got {int(k)}.")
     Wv = float(W)
     if not -1e-12 <= Wv <= 1 + 1e-12:
-        raise ValueError("W must lie in [0, 1], got %r." % W)
+        raise ValueError(f"W must lie in [0, 1], got {W!r}.")
     rho = (k * Wv - 1.0) / (k - 1.0)
     rho_min = -1.0 / (k - 1.0)
     payload = {
@@ -92,7 +92,7 @@ def gibbons_concordance_rho_link(W, k, n=None):
     if n is not None:
         nn = int(n)
         if nn < 2:
-            raise ValueError("need at least 2 objects, got %d." % nn)
+            raise ValueError(f"need at least 2 objects, got {int(nn)}.")
         payload.update(
             {
                 "n": nn,

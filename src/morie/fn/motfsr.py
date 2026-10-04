@@ -142,12 +142,12 @@ def _prepare(sequences, w, alphabet):
         row = []
         for ch in s:
             if ch not in idx:
-                raise ValueError("motfsr: letter %r is not in the alphabet %r" % (ch, "".join(alpha)))
+                raise ValueError("motfsr: letter {!r} is not in the alphabet {!r}".format(ch, "".join(alpha)))
             row.append(idx[ch])
         coded.append(row)
     starts = [(i, j) for i, row in enumerate(coded) for j in range(len(row) - w + 1)]
     if not starts:
-        raise ValueError("motfsr: no sequence is at least w = %d long" % w)
+        raise ValueError(f"motfsr: no sequence is at least w = {int(w)} long")
     return coded, alpha, starts
 
 
@@ -324,10 +324,7 @@ def mm_fit(
 
     if erase_by not in ("letter", "start"):
         raise ValueError("motfsr: erase_by must be 'letter' or 'start'")
-    if erasing is None:
-        eps = None
-    else:
-        eps = [[float(v) for v in row] for row in erasing]
+    eps = None if erasing is None else [[float(v) for v in row] for row in erasing]
 
     trace = []
     converged = False
@@ -459,7 +456,7 @@ def score_sequence(spec, sequence, alphabet, threshold=None):
         for t in range(w):
             ch = s[j + t]
             if ch not in idx:
-                raise ValueError("motfsr: letter %r is not in the alphabet" % (ch,))
+                raise ValueError(f"motfsr: letter {ch!r} is not in the alphabet")
             tot += spec[t][idx[ch]]
         scores.append(tot)
     if threshold is None:

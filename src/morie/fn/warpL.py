@@ -83,7 +83,7 @@ def alpha_weights(n, scheme="reciprocal"):
     elif scheme == "top1":
         a = [1.0] + [0.0] * (N - 1)
     else:
-        raise ValueError("warpL: scheme must be reciprocal, uniform or top1, got %r" % (scheme,))
+        raise ValueError(f"warpL: scheme must be reciprocal, uniform or top1, got {scheme!r}")
     if any(a[j] < a[j + 1] - _EPS for j in range(N - 1)):
         raise ValueError("warpL: the alpha weights must be non-increasing")
     return a

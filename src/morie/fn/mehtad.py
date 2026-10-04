@@ -181,15 +181,14 @@ def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995, corrector=True
     bv = [float(v) for v in k.vec(b)]
     cv = [float(v) for v in k.vec(c)]
     if len(bv) != m or len(cv) != n:
-        raise ValueError("mehtad: A is %dx%d but b has %d and c has %d" % (m, n, len(bv), len(cv)))
+        raise ValueError(f"mehtad: A is {int(m)}x{int(n)} but b has {int(len(bv))} and c has {int(len(cv))}")
     x = [1.0] * n
     s = [1.0] * n
     y = [0.0] * m
-    it, gap = 0, float("inf")
+    it, _gap = 0, float("inf")
     for it in range(1, int(max_iter) + 1):
         r = residuals(M, bv, cv, x, y, s)
         mu = r["mu"]
-        gap = mu
         if mu < float(tol) and r["primal_norm"] < float(tol) and r["dual_norm"] < float(tol):
             break
         rc = [x[j] * s[j] for j in range(n)]

@@ -43,10 +43,7 @@ def polynomial_features(
     cols = [np.ones(n)] if include_bias else []
 
     for d in range(1, degree + 1):
-        if interaction_only and d > 1:
-            combos = combinations(range(p), d)
-        else:
-            combos = combinations_with_replacement(range(p), d)
+        combos = combinations(range(p), d) if interaction_only and d > 1 else combinations_with_replacement(range(p), d)
         for combo in combos:
             col = np.ones(n)
             for idx in combo:

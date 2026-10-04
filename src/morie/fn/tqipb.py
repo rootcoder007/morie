@@ -148,7 +148,7 @@ def distortion_constant(bits, d, route="table"):
     if d < 1:
         raise ValueError("d must be at least 1")
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     if route == "qjl":
         return math.pi / (2.0 * d)
     if route == "lower_bound":
@@ -236,14 +236,11 @@ def tail_probability(var, eps, norm_sq=1.0, x_norm_sq=1.0, tail="chebyshev"):
     if eps <= 0.0:
         raise ValueError("eps must be positive")
     if tail not in TAILS:
-        raise ValueError("tail must be one of %r" % (TAILS,))
+        raise ValueError(f"tail must be one of {TAILS!r}")
     thresh_sq = eps * eps * x_norm_sq * norm_sq
     if var <= 0.0:
         return 0.0
-    if tail == "chebyshev":
-        p = var / thresh_sq
-    else:
-        p = 2.0 * math.exp(-thresh_sq / (2.0 * var))
+    p = var / thresh_sq if tail == "chebyshev" else 2.0 * math.exp(-thresh_sq / (2.0 * var))
     return p if p < 1.0 else 1.0
 
 

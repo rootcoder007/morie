@@ -7,7 +7,10 @@ from morie.fn.ptmcmc import parallel_tempering
 def test_ptmcmc_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
-    log_p = lambda x: -0.5 * float(x) ** 2
+
+    def log_p(x):
+        return -0.5 * float(x) ** 2
+
     temperatures = np.linspace(0.1, 2.0, 10)
     x0 = float(rng.normal(0, 1, 1))
     n_iter = 50
@@ -18,7 +21,10 @@ def test_ptmcmc_basic():
 def test_ptmcmc_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
-    log_p = lambda x: -0.5 * float(x) ** 2
+
+    def log_p(x):
+        return -0.5 * float(x) ** 2
+
     temperatures = np.linspace(0.1, 1.0, 3)
     x0 = float(rng.normal(0, 1, 1))
     n_iter = 1

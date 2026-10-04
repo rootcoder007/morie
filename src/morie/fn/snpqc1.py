@@ -489,7 +489,7 @@ def snpqc1(
         raise ValueError("snpqc1: trait must be 'binary' or 'quantitative'")
     for name, v in (("geno", geno), ("mind", mind), ("geno_relaxed", geno_relaxed), ("mind_relaxed", mind_relaxed)):
         if not 0.0 <= float(v) <= 1.0:
-            raise ValueError("snpqc1: %s must lie in [0, 1]" % name)
+            raise ValueError(f"snpqc1: {name} must lie in [0, 1]")
     if not 0.0 <= float(maf_threshold) < 0.5:
         raise ValueError("snpqc1: maf_threshold must lie in [0, 0.5)")
 
@@ -553,7 +553,7 @@ def snpqc1(
     pheno = None if phenotype is None else [phenotype[i] for i in inds]
     hwe_p = []
     drop = []
-    for t, j in enumerate(snps):
+    for _t, j in enumerate(snps):
 
         def counts(rows):
             a = h = b = 0

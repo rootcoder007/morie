@@ -69,7 +69,10 @@ def wasserman_bootstrap_pivotal(data, T, B, alpha, seed=13):
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1); got {alpha}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     theta = float(T(data))
     reps = np.sort(_boot_replicates(data, T, B, seed))
     q_lo = _type1_quantile(reps, alpha / 2.0)

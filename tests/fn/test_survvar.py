@@ -27,7 +27,7 @@ def _cox_parts(b, t, e, Z):
     n = len(t)
     w = [math.exp(z[0] * b[0] + z[1] * b[1]) for z in Z]
     U = [0.0, 0.0]
-    I = [[0.0, 0.0], [0.0, 0.0]]
+    I_ = [[0.0, 0.0], [0.0, 0.0]]
     res = [[0.0, 0.0] for _ in range(n)]
     for j in range(n):
         if not e[j]:
@@ -38,18 +38,18 @@ def _cox_parts(b, t, e, Z):
         for c in range(2):
             U[c] += Z[j][c] - zb[c]
             for d in range(2):
-                I[c][d] += sum(w[k] * Z[k][c] * Z[k][d] for k in R) / S0 - zb[c] * zb[d]
+                I_[c][d] += sum(w[k] * Z[k][c] * Z[k][d] for k in R) / S0 - zb[c] * zb[d]
             res[j][c] += Z[j][c] - zb[c]
             for k in R:
                 res[k][c] -= w[k] * (Z[k][c] - zb[c]) / S0
-    return U, I, res
+    return U, I_, res
 
 
 def _fit(t, e, Z):
     b = [0.0, 0.0]
     for _ in range(50):
-        U, I, _ = _cox_parts(b, t, e, Z)
-        V = _inv2(I)
+        U, I_, _ = _cox_parts(b, t, e, Z)
+        V = _inv2(I_)
         b = [b[0] + V[0][0] * U[0] + V[0][1] * U[1], b[1] + V[1][0] * U[0] + V[1][1] * U[1]]
     return b
 
@@ -78,8 +78,8 @@ def test_survvar_basic():
     0.342087883757."""
     t, e, Z, cl = _data()
     b = _fit(t, e, Z)
-    _, I, res = _cox_parts(b, t, e, Z)
-    V = _inv2(I)
+    _, I_, res = _cox_parts(b, t, e, Z)
+    V = _inv2(I_)
     r = variance_cox_estimator(b, Z, t, e, robust=True)
     assert r["se"] == pytest.approx([math.sqrt(V[0][0]), math.sqrt(V[1][1])], rel=1e-10)
     R = _sandwich(V, res)

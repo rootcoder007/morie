@@ -87,7 +87,7 @@ def fit_power_law(x, y):
     X = [float(v) for v in k.vec(x)]
     Y = [float(v) for v in k.vec(y)]
     if len(X) != len(Y):
-        raise ValueError("opnclp: %d x values but %d y values" % (len(X), len(Y)))
+        raise ValueError(f"opnclp: {int(len(X))} x values but {int(len(Y))} y values")
     if len(X) < 2:
         raise ValueError("opnclp: at least 2 points are needed")
     if any(v <= 0.0 for v in X) or any(v <= 0.0 for v in Y):
@@ -161,11 +161,11 @@ def compare_scaling(x_a, y_a, x_b, y_b, label_a="A", label_b="B"):
 
 def infonce(image_embeddings, text_embeddings, temperature=0.07):
     r"""The contrastive objective, symmetric in the two directions."""
-    I = [[float(v) for v in r] for r in k.mat(image_embeddings)]
+    I_ = [[float(v) for v in r] for r in k.mat(image_embeddings)]
     T = [[float(v) for v in r] for r in k.mat(text_embeddings)]
-    n = len(I)
+    n = len(I_)
     if len(T) != n:
-        raise ValueError("opnclp: %d images but %d texts" % (n, len(T)))
+        raise ValueError(f"opnclp: {int(n)} images but {int(len(T))} texts")
     t = float(temperature)
     if t <= 0.0:
         raise ValueError("opnclp: the temperature must be positive")
@@ -176,7 +176,7 @@ def infonce(image_embeddings, text_embeddings, temperature=0.07):
             raise ValueError("opnclp: a zero embedding has no direction")
         return [x / m for x in v]
 
-    Iu = [nrm(v) for v in I]
+    Iu = [nrm(v) for v in I_]
     Tu = [nrm(v) for v in T]
     S = [[sum(Iu[i][a] * Tu[j][a] for a in range(len(Iu[0]))) / t for j in range(n)] for i in range(n)]
 

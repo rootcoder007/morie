@@ -68,15 +68,15 @@ def burkov_nce_loss(pos_scores, neg_scores, noise_prob=None, k=None):
     neg = np.atleast_2d(np.asarray(neg_scores, dtype=float))
     n = pos.size
     if neg.shape[0] != n:
-        raise ValueError("neg_scores has %d rows for %d positives." % (neg.shape[0], n))
+        raise ValueError(f"neg_scores has {int(neg.shape[0])} rows for {int(n)} positives.")
     kk = neg.shape[1]
     if k is not None and int(k) != kk:
-        raise ValueError("k says %d but neg_scores has %d columns." % (int(k), kk))
+        raise ValueError(f"k says {int(int(k))} but neg_scores has {int(kk)} columns.")
     corrected = noise_prob is not None
     if corrected:
         Q = np.atleast_2d(np.asarray(noise_prob, dtype=float))
         if Q.shape != neg.shape:
-            raise ValueError("noise_prob must match neg_scores in shape, got %s and %s." % (Q.shape, neg.shape))
+            raise ValueError(f"noise_prob must match neg_scores in shape, got {Q.shape} and {neg.shape}.")
         if np.any(Q <= 0):
             raise ValueError("noise probabilities must be positive.")
         neg_adj = neg - np.log(kk * Q)
@@ -109,7 +109,7 @@ def burkov_nce_loss(pos_scores, neg_scores, noise_prob=None, k=None):
             ),
             "k": int(kk),
             "cost_ratio": float(kk + 1),
-            "cost_note": ("%d binary decisions replace a softmax over the whole vocabulary" % (kk + 1)),
+            "cost_note": (f"{int(kk + 1)} binary decisions replace a softmax over the whole vocabulary"),
             "n": int(n),
             "method": "Noise-contrastive estimation loss",
         }

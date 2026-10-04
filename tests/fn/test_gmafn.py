@@ -76,7 +76,7 @@ def test_custom_model_and_url():
     mock_resp.raise_for_status = MagicMock()
     mock_resp.json.return_value = {"message": {"content": "ok", "tool_calls": []}}
     with patch("httpx.post", return_value=mock_resp) as mock_post:
-        r = gemma_function_call("test", model="gemma4:12b", base_url="http://remote:11434")
+        gemma_function_call("test", model="gemma4:12b", base_url="http://remote:11434")
     call_args = mock_post.call_args
     assert "remote:11434" in call_args[0][0]
     body = call_args[1]["json"]

@@ -26,7 +26,7 @@ def conjugate_gradient(f, grad_f, x0, max_iter=200, tol=1e-8):
     d = -g.copy()
     grad_norms = [float(np.linalg.norm(g))]
 
-    for it in range(max_iter):
+    for _it in range(max_iter):
         if np.linalg.norm(g) < tol:
             break
 

@@ -79,7 +79,7 @@ def first_order_expansion(D1, psi_plugin):
     }
 
 
-def second_order_term(D2_kernel, O, exclude_diagonal=True):
+def second_order_term(D2_kernel, O, exclude_diagonal=True):  # noqa: E741
     r"""The U-statistic :math:`\frac{1}{n(n-1)}\sum_{i \ne j}
     D_2(o_i, o_j)`.
 
@@ -106,7 +106,7 @@ def second_order_term(D2_kernel, O, exclude_diagonal=True):
     }
 
 
-def higher_order_estimate(psi_plugin, D1, D2_kernel, O):
+def higher_order_estimate(psi_plugin, D1, D2_kernel, O):  # noqa: E741
     r"""First-order plus second-order correction.
 
     The remainder that must now vanish is THIRD order, which is why

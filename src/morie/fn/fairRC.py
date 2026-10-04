@@ -74,7 +74,7 @@ def cutoffs(N, step=10):
     r"""The discrete evaluation points :math:`10, 20, \dots, N`."""
     n, s = int(N), int(step)
     if n < s:
-        raise ValueError("fairRC: the ranking of %d is shorter than the first cut-off %d" % (n, s))
+        raise ValueError(f"fairRC: the ranking of {int(n)} is shorter than the first cut-off {int(s)}")
     return list(range(s, n + 1, s))
 
 
@@ -122,7 +122,7 @@ def normalizer(protected, measure="rND", step=10):
 def _measure(protected, measure, step, normalize, caveat=None):
     p = [1 if int(v) else 0 for v in protected]
     if measure not in _MEASURES:
-        raise ValueError("fairRC: measure must be one of %s, got %r" % (", ".join(_MEASURES), measure))
+        raise ValueError("fairRC: measure must be one of {}, got {!r}".format(", ".join(_MEASURES), measure))
     if not p:
         raise ValueError("fairRC: the ranking is empty")
     if sum(p) in (0, len(p)):

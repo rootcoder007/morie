@@ -20,7 +20,7 @@ def test_gb_odi_basic():
 
 def test_gb_odi_edge():
     """Test edge cases with small counts (Gibbons method handles small samples)."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Small 2x2 table - Gibbons method is designed for this
     table = [[1, 2], [3, 4]]
     result = gibbons_odds_ratio(table)

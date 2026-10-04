@@ -46,7 +46,9 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     if n < 2:
         return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzlst -- too few obs"})
     if score is None:
-        score = lambda u: np.ones_like(u)
+
+        def score(u):
+            return np.ones_like(u)
 
     x_sorted = np.sort(x)
     u_grid = np.linspace(0.0, 1.0, n + 1)

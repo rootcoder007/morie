@@ -19,7 +19,7 @@ def panel(noise=0.0, seed=5):
                 eff = 1.0 + 0.5 * (t - int(g))
                 true[(g, str(t))] = eff
             Y.append(ai + 0.4 * t + eff + (float(rng.normal(0.0, noise)) if noise else 0.0))
-            U.append("u%d" % i)
+            U.append(f"u{int(i)}")
             T.append(str(t))
             FT.append(g)
     return Y, U, T, FT, true

@@ -6,7 +6,7 @@ from morie.fn.ca2e21 import ca_chapter_2_equation_21
 
 def test_ca2e21_basic():
     """Test basic functionality for the dummy = 0 subgroup regression equation."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     b0 = 1.5
     b1 = 0.7
     b2 = -0.3

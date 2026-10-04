@@ -70,9 +70,9 @@ def xgboost_objective(
     if deterministic_seed is not None:
         from morie._det_rng import r_seed
 
-        rs = r_seed("xgbst", deterministic_seed)
+        r_seed("xgbst", deterministic_seed)
     else:
-        rs = seed
+        pass
 
     # Native second-order boosting. The previous code imported xgboost --
     # which is declared nowhere in pyproject.toml -- and fell back to

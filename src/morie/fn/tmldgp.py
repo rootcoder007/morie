@@ -80,7 +80,7 @@ def lasso_path(X, y, lam, iters=500, tol=1e-9):
     t = [float(v) for v in k.vec(y)]
     n, p = len(rows), len(rows[0])
     if len(t) != n:
-        raise ValueError("tmldgp: %d rows but %d outcomes" % (n, len(t)))
+        raise ValueError(f"tmldgp: {int(n)} rows but {int(len(t))} outcomes")
     if float(lam) < 0.0:
         raise ValueError("tmldgp: lambda cannot be negative")
     b = [0.0] * p

@@ -70,7 +70,7 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
     x = rs.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
     fx = np.array([f(xi) for xi in x])
 
-    for gen in range(generations):
+    for _gen in range(generations):
         for i in range(pop_size):
             # Select three distinct random indices
             idxs = rs.choice(pop_size, 3, replace=False)

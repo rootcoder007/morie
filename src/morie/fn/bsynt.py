@@ -67,10 +67,7 @@ def bayesian_synthetic_control(
             weights[j] = max(w_j, 0.0)
 
         w_sum = np.sum(weights)
-        if w_sum > 1e-10:
-            weights = weights / w_sum
-        else:
-            weights = np.ones(J) / J
+        weights = weights / w_sum if w_sum > 1e-10 else np.ones(J) / J
 
         weight_samples[it] = weights
         synth_post = D[t0:] @ weights

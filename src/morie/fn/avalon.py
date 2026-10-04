@@ -317,7 +317,7 @@ def _shortest(adj, src, dst, banned):
     while head < len(q):
         u = q[head]
         head += 1
-        for v, o, k in adj[u]:
+        for v, _o, k in adj[u]:
             if k == banned or dist[v] >= 0:
                 continue
             dist[v] = dist[u] + 1
@@ -386,7 +386,7 @@ def _paths(adj, n, maxpath, ty):
         if (len(seq) - 1) // 2 >= maxpath:
             return
         u = seq[-1]
-        for v, o, k in adj[u]:
+        for v, o, _k in adj[u]:
             if v in used:
                 continue
             used.add(v)
@@ -412,7 +412,7 @@ def _bfs_dist(adj, n):
         while head < len(q):
             u = q[head]
             head += 1
-            for v, o, k in adj[u]:
+            for v, _o, _k in adj[u]:
                 if d[v] < 0:
                     d[v] = d[u] + 1
                     q.append(v)
@@ -441,13 +441,13 @@ def features_of(smiles, maxpath=5, classes=None):
     out = set()
     if "atom" in classes:
         for i in range(n):
-            out.add("A|%s|%d|%d|%d|%d|%d" % (ty[i], arom[i], chg[i], len(adj[i]), inring[i], nh[i]))
+            out.add(f"A|{ty[i]}|{int(arom[i])}|{int(chg[i])}|{int(len(adj[i]))}|{int(inring[i])}|{int(nh[i])}")
     if "bond" in classes:
         for a, b, o in bonds:
             x, y = ty[a], ty[b]
             if y < x:
                 x, y = y, x
-            out.add("B|%s|%d|%s" % (x, o, y))
+            out.add(f"B|{x}|{int(o)}|{y}")
     if "path" in classes:
         for p in _paths(adj, n, maxpath, ty):
             out.add(p)
@@ -458,7 +458,7 @@ def features_of(smiles, maxpath=5, classes=None):
                 if not arom[v]:
                     allarom = 0
             elems = sorted(el[v] for v in r)
-            out.add("R|%d|%d|%s" % (len(r), allarom, ",".join(elems)))
+            out.add("R|{}|{}|{}".format(int(len(r)), int(allarom), ",".join(elems)))
     if "pair" in classes:
         D = _bfs_dist(adj, n)
         for i in range(n):
@@ -468,7 +468,7 @@ def features_of(smiles, maxpath=5, classes=None):
                 x, y = ty[i], ty[j]
                 if y < x:
                     x, y = y, x
-                out.add("D|%s|%s|%d" % (x, y, D[i][j]))
+                out.add(f"D|{x}|{y}|{int(D[i][j])}")
     return sorted(out)
 
 

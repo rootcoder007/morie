@@ -92,11 +92,11 @@ def sequence_probabilities(beta, gamma, x, alpha, y0, link="logit"):
         raise ValueError("bnshrt: need at least one period")
     b = [float(v) for v in k.vec(beta)]
     if len(b) != len(xs[0]):
-        raise ValueError("bnshrt: beta has %d entries for %d covariates" % (len(b), len(xs[0])))
+        raise ValueError(f"bnshrt: beta has {int(len(b))} entries for {int(len(xs[0]))} covariates")
     g = float(gamma)
     a = float(alpha)
     if link not in ("logit", "probit"):
-        raise ValueError("bnshrt: link must be logit or probit, got %r" % (link,))
+        raise ValueError(f"bnshrt: link must be logit or probit, got {link!r}")
     F = _logit if link == "logit" else (lambda z: k.pnorm(z))
     out = {}
     for code in range(2**T):
@@ -190,12 +190,12 @@ def _project_simplex(v):
     n = len(v)
     u = sorted(v, reverse=True)
     css = 0.0
-    rho, theta = 0, 0.0
+    _rho, theta = 0, 0.0
     for i in range(n):
         css += u[i]
         t = (css - 1.0) / (i + 1)
         if u[i] - t > 0:
-            rho, theta = i + 1, t
+            _rho, theta = i + 1, t
     return [max(x - theta, 0.0) for x in v]
 
 

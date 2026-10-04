@@ -30,7 +30,7 @@ def test_dctgls_basic():
         "naive_complete_case",
         "effective_sample_size",
     ):
-        assert key in result, "missing key: %s" % key
+        assert key in result, f"missing key: {key}"
 
     beta = np.asarray(result["beta"]).ravel()
     assert beta.shape == (p + 1,), "beta should have shape (p+1,)"

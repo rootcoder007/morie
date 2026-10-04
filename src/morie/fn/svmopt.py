@@ -98,7 +98,7 @@ def kernel_matrix(X, kernel="linear", gamma=1.0, degree=3, coef0=0.0):
         if kernel == "rbf":
             s = sum((a[t] - b[t]) ** 2 for t in range(len(a)))
             return math.exp(-float(gamma) * s)
-        raise ValueError("svmopt: kernel must be linear, poly or rbf, got %r" % (kernel,))
+        raise ValueError(f"svmopt: kernel must be linear, poly or rbf, got {kernel!r}")
 
     return [[kf(M[i], M[j]) for j in range(n)] for i in range(n)]
 
@@ -225,7 +225,7 @@ def smo(y, K, C=1.0, tol=1e-8, max_iter=20000):
     if any(v not in (-1.0, 1.0) for v in yy):
         raise ValueError("svmopt: labels must be -1 or +1")
     if len(K) != n or len(K[0]) != n:
-        raise ValueError("svmopt: the kernel matrix is %dx%d for %d labels" % (len(K), len(K[0]), n))
+        raise ValueError(f"svmopt: the kernel matrix is {int(len(K))}x{int(len(K[0]))} for {int(n)} labels")
     if float(C) <= 0.0:
         raise ValueError("svmopt: C must be positive")
     a = [0.0] * n

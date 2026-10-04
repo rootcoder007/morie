@@ -94,7 +94,7 @@ def boyd_kkt(grad_L, f=None, h=None, lambda_=None, nu=None, tol=1e-08):
     fv = np.atleast_1d(np.asarray(f, dtype=float)).ravel() if f is not None else np.zeros(0)
     hv = np.atleast_1d(np.asarray(h, dtype=float)).ravel() if h is not None else np.zeros(0)
     lam = np.zeros(fv.size) if lambda_ is None else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel()
-    nuv = np.zeros(hv.size) if nu is None else np.atleast_1d(np.asarray(nu, dtype=float)).ravel()
+    np.zeros(hv.size) if nu is None else np.atleast_1d(np.asarray(nu, dtype=float)).ravel()
     if lam.size != fv.size:
         raise ValueError(f"lambda_ has {lam.size} entries but f has {fv.size}")
     stat = bool(np.max(np.abs(g)) <= tol) if g.size else True

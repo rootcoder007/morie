@@ -35,13 +35,12 @@ def hierarchical_dirichlet_process(
 
     J = len(x_groups)
     group_assignments = [rng.integers(0, max(2, len(x_groups[j]) // 3), size=len(x_groups[j])) for j in range(J)]
-    global_clusters = {}
     group_cluster_means = [{} for _ in range(J)]
 
     trace_n_global_clusters = []
     trace_group_n_clusters = [[] for _ in range(J)]
 
-    for iteration in range(n_iter):
+    for _iteration in range(n_iter):
         # Update global cluster structure
         all_active_clusters = set()
         for j in range(J):

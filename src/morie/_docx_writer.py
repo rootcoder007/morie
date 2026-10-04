@@ -45,7 +45,7 @@ class _Run:
             props += "<w:i/>"
         if self.size is not None:
             hp = int(round(2 * float(self.size)))
-            props += '<w:sz w:val="%d"/>' % hp
+            props += f'<w:sz w:val="{int(hp)}"/>'
         rpr = f"<w:rPr>{props}</w:rPr>" if props else ""
         return f'<w:r>{rpr}<w:t xml:space="preserve">{escape(self.text)}</w:t></w:r>'
 
@@ -154,7 +154,7 @@ class Document:
         self.tables = []
 
     def add_heading(self, text="", level=1):
-        style = "Title" if level == 0 else "Heading%d" % min(level, 3)
+        style = "Title" if level == 0 else f"Heading{int(min(level, 3))}"
         p = _Paragraph(style=style)
         p.add_run(str(text), bold=False)
         self._body.append(p)

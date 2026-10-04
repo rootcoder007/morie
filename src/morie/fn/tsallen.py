@@ -48,10 +48,7 @@ def tsallis_entropy(y, q):
         counts[t] = counts.get(t, 0) + 1
     p = [counts[k] / n for k in sorted(counts)]
     q = float(q)
-    if q == 1.0:
-        s = -sum(t * math.log(t) for t in p if t > 0)
-    else:
-        s = (1.0 - sum(t**q for t in p)) / (q - 1.0)
+    s = -sum(t * math.log(t) for t in p if t > 0) if q == 1.0 else (1.0 - sum(t**q for t in p)) / (q - 1.0)
     return RichResult(
         payload={
             "estimate": s,

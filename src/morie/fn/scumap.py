@@ -162,7 +162,7 @@ def fuzzy_simplicial_set(X, n_neighbors=15, symmetrize=True):
     if k < 2:
         raise ValueError("scumap: n_neighbors must be at least 2")
     if k >= n:
-        raise ValueError("scumap: n_neighbors (%d) must be smaller than the number of points (%d)" % (k, n))
+        raise ValueError(f"scumap: n_neighbors ({int(k)}) must be smaller than the number of points ({int(n)})")
     A = [[0.0] * n for _ in range(n)]
     rhos, sigmas, neighbours = [], [], []
     for i in range(n):
@@ -327,10 +327,7 @@ def umap_singlecell(
                 continue
             diff = [Y[i][c] - Y[j][c] for c in range(d)]
             dist2 = sum(v * v for v in diff)
-            if dist2 > 0.0:
-                coeff = (-2.0 * a * b * dist2 ** (b - 1.0)) / (1.0 + a * dist2**b)
-            else:
-                coeff = 0.0
+            coeff = -2.0 * a * b * dist2 ** (b - 1.0) / (1.0 + a * dist2**b) if dist2 > 0.0 else 0.0
             for c in range(d):
                 g = _clip(coeff * diff[c])
                 Y[i][c] += alpha * g
@@ -371,8 +368,8 @@ def umap_singlecell(
             "n": n,
             "method": (
                 "UMAP (McInnes, Healy & Melville 2018): fuzzy "
-                "simplicial sets, t-conorm symmetrisation, %s "
-                "initialisation, cross-entropy SGD" % init
+                f"simplicial sets, t-conorm symmetrisation, {init} "
+                "initialisation, cross-entropy SGD"
             ),
             "note": (
                 "distances are Euclidean and neighbours are found "

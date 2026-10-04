@@ -118,7 +118,7 @@ def sample_matrices(N, d, design="sobol", skip=1, seed=0):
     if n < 2 or dd < 1:
         raise ValueError("sobolI: need N >= 2 and d >= 1")
     if design not in _DESIGNS:
-        raise ValueError("sobolI: design must be one of %s, got %r" % (", ".join(_DESIGNS), design))
+        raise ValueError("sobolI: design must be one of {}, got {!r}".format(", ".join(_DESIGNS), design))
     if design == "sobol":
         from .abcgp import sobol_sequence
 
@@ -128,7 +128,7 @@ def sample_matrices(N, d, design="sobol", skip=1, seed=0):
     elif design == "halton":
         if 2 * dd > len(_PRIMES):
             raise ValueError(
-                "sobolI: the Halton design here has only %d bases, so d <= %d" % (len(_PRIMES), len(_PRIMES) // 2)
+                f"sobolI: the Halton design here has only {int(len(_PRIMES))} bases, so d <= {int(len(_PRIMES) // 2)}"
             )
         A = [[k.vdc(j + int(skip), _PRIMES[a]) for a in range(dd)] for j in range(n)]
         B = [[k.vdc(j + int(skip), _PRIMES[dd + a]) for a in range(dd)] for j in range(n)]
@@ -210,7 +210,7 @@ def ishigami(x, a=7.0, b=0.1):
     """
     v = [float(q) for q in k.vec(x)]
     if len(v) != 3:
-        raise ValueError("sobolI: the Ishigami function takes 3 inputs, got %d" % len(v))
+        raise ValueError(f"sobolI: the Ishigami function takes 3 inputs, got {int(len(v))}")
     return math.sin(v[0]) + float(a) * math.sin(v[1]) ** 2 + float(b) * v[2] ** 4 * math.sin(v[0])
 
 

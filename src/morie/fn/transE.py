@@ -90,7 +90,7 @@ def transe(triples, dim, epochs=50, lr=0.05, margin=1.0, seed=1):
         return math.sqrt(sum((E[h][d] + R[r][d] - E[t][d]) ** 2 for d in range(dim)))
 
     loss = 0.0
-    for ep in range(int(epochs)):
+    for _ep in range(int(epochs)):
         loss = 0.0
         for j in range(m):
             h, r, t = hs[j], rs[j], ts[j]

@@ -55,15 +55,9 @@ def mtrpr(
     if G.shape != (n, n):
         raise ValueError(f"G must be ({n},{n}).")
 
-    if X is None:
-        X = np.ones((n, 1))
-    else:
-        X = np.asarray(X, dtype=float)
+    X = np.ones((n, 1)) if X is None else np.asarray(X, dtype=float)
 
-    if lambda_vals is not None:
-        lam = np.asarray(lambda_vals, dtype=float).ravel()
-    else:
-        lam = np.ones(t)
+    lam = np.asarray(lambda_vals, dtype=float).ravel() if lambda_vals is not None else np.ones(t)
 
     G_inv = np.linalg.inv(G + np.eye(n) * 1e-6)
     p_fix = X.shape[1]
@@ -90,10 +84,7 @@ def mtrpr(
         corr = np.corrcoef(Y[:, k], gebv[:, k])[0, 1]
         accuracy.append(float(corr) if np.isfinite(corr) else 0.0)
 
-    if t >= 2:
-        gen_corr = np.corrcoef(gebv.T).tolist()
-    else:
-        gen_corr = [[1.0]]
+    gen_corr = np.corrcoef(gebv.T).tolist() if t >= 2 else [[1.0]]
 
     return GenomicsResult(
         name="MultiTraitGBLUP",

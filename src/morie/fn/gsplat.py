@@ -142,7 +142,7 @@ def alpha_composite(colours, alphas, depths=None):
     C = [[float(v) for v in r] for r in k.mat(colours)]
     a = [float(v) for v in k.vec(alphas)]
     if len(C) != len(a):
-        raise ValueError("gsplat: %d colours but %d alphas" % (len(C), len(a)))
+        raise ValueError(f"gsplat: {int(len(C))} colours but {int(len(a))} alphas")
     if any(v < 0.0 or v > 1.0 for v in a):
         raise ValueError("gsplat: alphas must lie in [0,1]")
     order = range(len(a)) if depths is None else sorted(range(len(a)), key=lambda i: float(depths[i]))

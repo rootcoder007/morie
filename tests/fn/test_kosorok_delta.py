@@ -63,13 +63,21 @@ def test_continuous_invertibility_detects_a_degenerate_map():
 
 
 def test_kaplan_meier_derivative_and_its_inverse_are_consistent():
-    S0 = lambda u: np.exp(-0.5 * u)
+    def S0(u):
+        return np.exp(-0.5 * u)
+
     # L is an at-risk-type probability: positive at 0. A hazard-like
     # L(u) = 0.5u would vanish there and make the INVERSE integrand
     # 1/(L(u-)S_0(u-)) genuinely undefined, which ksr053 refuses.
-    L = lambda u: np.exp(-0.3 * u)
-    G = lambda u: u
-    h = lambda u: 1.0
+    def L(u):
+        return np.exp(-0.3 * u)
+
+    def G(u):
+        return u
+
+    def h(u):
+        return 1.0
+
     d = kosorok_ch2_kaplan_meier_derivative(S0, L, G, h, 1.0)
     # both terms are negative contributions, so the derivative is < 0
     assert d["derivative"] < 0
@@ -94,9 +102,12 @@ def test_kaplan_meier_derivative_and_its_inverse_are_consistent():
 def test_m_estimator_remainder_is_second_order_for_smooth_criteria():
     rng = np.random.default_rng(0)
     X = rng.standard_normal(500)
+
     # squared loss: the expectation is exactly quadratic, so the
     # second-order remainder is exactly zero
-    m = lambda th, x: (x - th[0]) ** 2
+    def m(th, x):
+        return (x - th[0]) ** 2
+
     thetas = [np.array([0.5]), np.array([0.2]), np.array([0.05]), np.array([0.01])]
     out = kosorok_ch2_m_estimator_taylor_expansion(m, thetas, np.array([0.0]), X)
     assert out["ratios"].max() < 1.5  # bounded ratio => O(||delta||^2)

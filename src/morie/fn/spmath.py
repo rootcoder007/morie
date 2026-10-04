@@ -83,8 +83,7 @@ def schabenberger_matheron_estimator(coords, z, lag_bins=None, cutoff=None, exac
             "sparse_note": (
                 None
                 if not sparse
-                else "%d lag class(es) have fewer than 30 pairs; the book advises "
-                "at least 30 and preferably 50 before reading a lag" % len(sparse)
+                else f"{int(len(sparse))} lag class(es) have fewer than 30 pairs; the book advises at least 30 and preferably 50 before reading a lag"
             ),
             "n": int(np.asarray(z).size),
             "method": "Matheron classical semivariogram estimator",

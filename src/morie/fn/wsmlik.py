@@ -61,7 +61,10 @@ def wasserman_likelihood(data, f, theta):
     if f is None:
         if theta <= 0:
             raise ValueError(f"the exponential model needs theta > 0; got {theta}.")
-        f = lambda x, th: np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
+        def f(x, th):
+            return np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
     dens = np.asarray(f(data, theta), dtype=float)
     if np.any(dens < 0):
         raise ValueError("a density cannot be negative.")

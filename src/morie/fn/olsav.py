@@ -33,7 +33,7 @@ def overlap_save(x, h, block_size: int = 64, **kwargs) -> DescriptiveResult:
         N = M
     step = N - M + 1
     out_len = len(x) + M - 1
-    total_needed = M - 1 + out_len
+    M - 1 + out_len
     n_blocks = int(np.ceil(out_len / step))
     pad_len = (M - 1) + n_blocks * step + (M - 1)
     x_padded = np.zeros(pad_len)

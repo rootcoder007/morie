@@ -70,10 +70,7 @@ def metropolis_hastings(target, x0=0.0, n_iter=1000, u=None, z=None, scale=1.0, 
     for i in range(ni):
         prop = x + float(scale) * zv[i % len(zv)]
         pp = float(target(prop))
-        if px <= 0.0:
-            ratio = 1.0 if pp > 0.0 else 0.0
-        else:
-            ratio = pp / px
+        ratio = (1.0 if pp > 0.0 else 0.0) if px <= 0.0 else pp / px
         if q is not None:
             qf = float(q(prop, x))
             qb = float(q(x, prop))

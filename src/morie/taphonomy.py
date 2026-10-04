@@ -824,9 +824,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
         "n": n,
         "backend": "mcmc (native random-walk Metropolis)",
         "interpretation": (
-            "Posterior from %d retained draws x %d chain(s) of "
-            "adaptive random-walk Metropolis; same model as the "
-            "conjugate backend." % (iter, max(1, chains))
+            f"Posterior from {int(iter)} retained draws x {int(max(1, chains))} chain(s) of adaptive random-walk Metropolis; same model as the conjugate backend."
         ),
     }
 

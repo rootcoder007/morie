@@ -68,7 +68,7 @@ def _cartesian(grid):
     for kname in keys:
         vals = list(grid[kname])
         if not vals:
-            raise ValueError("hyperparameter_tuning_grid: %r has no candidate values" % (kname,))
+            raise ValueError(f"hyperparameter_tuning_grid: {kname!r} has no candidate values")
         out = [dict(list(d.items()) + [(kname, v)]) for d in out for v in vals]
     return keys, out
 

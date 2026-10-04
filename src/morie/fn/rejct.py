@@ -76,8 +76,13 @@ def rejection_point(psi="huber", tuning=None, panels=2000):
     if fam not in ("bisquare", "biweight", "tukey"):
         raise ValueError("psi must be 'huber' or 'bisquare'")
     c = 4.685 if tuning is None else float(tuning)
-    phi = lambda t: float(_st.norm.pdf(t))
-    dpsi = lambda t: (1.0 - 6.0 * t * t / (c * c) + 5.0 * t**4 / c**4) * phi(t)
+
+    def phi(t):
+        return float(_st.norm.pdf(t))
+
+    def dpsi(t):
+        return (1.0 - 6.0 * t * t / (c * c) + 5.0 * t**4 / c**4) * phi(t)
+
     eprime = _simpson(dpsi, -c, c, int(panels))
     sup = 16.0 * c / (25.0 * float(np.sqrt(5.0)))
     return RichResult(

@@ -110,7 +110,7 @@ def _act(name, z):
         return core.sigmoid(z)
     if name == "tanh":
         return math.tanh(z)
-    raise ValueError("dnn_multitrait: unknown activation %r" % (name,))
+    raise ValueError(f"dnn_multitrait: unknown activation {name!r}")
 
 
 def _dact(name, z, g):
@@ -123,7 +123,7 @@ def _dact(name, z, g):
         return g * (1.0 - g)
     if name == "tanh":
         return 1.0 - g * g
-    raise ValueError("dnn_multitrait: unknown activation %r" % (name,))
+    raise ValueError(f"dnn_multitrait: unknown activation {name!r}")
 
 
 def _head_weights(Yc, T, n):
@@ -137,8 +137,7 @@ def _head_weights(Yc, T, n):
         dt = max(abs(med - q1), abs(q3 - med))
         if not dt > 0.0:
             raise ValueError(
-                "dnn_multitrait: trait %d has a zero interquartile spread, so the "
-                "p.493 head-weight recipe divides by zero; pass heads explicitly" % (t + 1)
+                f"dnn_multitrait: trait {int(t + 1)} has a zero interquartile spread, so the p.493 head-weight recipe divides by zero; pass heads explicitly"
             )
         d.append(dt)
     return [d[0] if t == 0 else d[0] / d[t] for t in range(T)]
@@ -239,7 +238,7 @@ def dnn_multitrait(
             raise ValueError("dnn_multitrait: init must give one weight matrix per layer")
         for k in range(nlay):
             if len(W[k]) != dims[k] + 1 or len(W[k][0]) != dims[k + 1]:
-                raise ValueError("dnn_multitrait: init layer %d has the wrong shape" % (k + 1))
+                raise ValueError(f"dnn_multitrait: init layer {int(k + 1)} has the wrong shape")
     else:
         s = int(seed) % _LCG_M
         W = []

@@ -424,33 +424,33 @@ def test_grsdpa_mask_zeroes_blocked_keys():
 
 
 def test_grsa_identity_projections_reduce_to_plain_attention():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = geron_self_attention(I, I, I, I)["weights"]
-    b = geron_scaled_dot_product_attention(I, I, I)["weights"]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = geron_self_attention(I_, I_, I_, I_)["weights"]
+    b = geron_scaled_dot_product_attention(I_, I_, I_)["weights"]
     assert np.allclose(a, b, atol=TOL)
 
 
 def test_grsa_causal_mask_is_lower_triangular_in_effect():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    W = geron_self_attention(I, I, I, I, mask=[[True, False], [True, True]])["weights"]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    W = geron_self_attention(I_, I_, I_, I_, mask=[[True, False], [True, True]])["weights"]
     assert W[0][1] == 0.0
     assert abs(sum(W[1]) - 1.0) < 1e-12
 
 
 def test_grteb_output_rows_are_layernormed():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    mha = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    mha = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     ffn = {"W1": [[0.0], [0.0]], "W2": [[0.0, 0.0]]}
-    Y = np.array(geron_transformer_encoder_block(I, mha, ffn)["output"])
+    Y = np.array(geron_transformer_encoder_block(I_, mha, ffn)["output"])
     assert np.allclose(Y.mean(axis=1), 0.0, atol=1e-12)
     assert np.allclose(Y.var(axis=1), 1.0, atol=1e-4)
 
 
 def test_grtdb_builds_its_own_causal_mask():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    att = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    att = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     W = {"self": att, "cross": att, "ffn": {"W1": [[0.0], [0.0]], "W2": [[0.0, 0.0]]}}
-    r = geron_transformer_decoder_block(I, I, W)
+    r = geron_transformer_decoder_block(I_, I_, W)
     assert r["causal_mask"] == [[True, False], [True, True]]
     assert r["self_attention_weights"][0][0] == [1.0, 0.0]
     # cross-attention is NOT masked: token 0 sees both source positions
@@ -459,35 +459,35 @@ def test_grtdb_builds_its_own_causal_mask():
 
 def test_grswin_window_size_one_is_pure_value_projection():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    r = geron_swin_window_attention(X, 1, I, I, I)
+    I_ = [[1.0]]
+    r = geron_swin_window_attention(X, 1, I_, I_, I_)
     assert r["output"] == X
     assert r["n_windows"] == 4
 
 
 def test_grswin_single_window_equals_global_attention():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
+    I_ = [[1.0]]
     flat = [[1.0], [2.0], [3.0], [4.0]]
     want = geron_scaled_dot_product_attention(flat, flat, flat)["output"]
-    got = geron_swin_window_attention(X, 2, I, I, I)["output"]
+    got = geron_swin_window_attention(X, 2, I_, I_, I_)["output"]
     assert np.allclose(np.array(got).reshape(4, 1), want, atol=TOL)
 
 
 def test_grpvt_full_reduction_gives_the_spatial_mean():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    r = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=2)
+    I_ = [[1.0]]
+    r = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=2)
     assert r["reduced_tokens"] == 1
     assert np.allclose(r["output"], [[2.5]] * 4, atol=TOL)
 
 
 def test_grpvt_identity_reduction_matches_self_attention():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
+    I_ = [[1.0]]
     flat = [[1.0], [2.0], [3.0], [4.0]]
     want = geron_scaled_dot_product_attention(flat, flat, flat)["output"]
-    got = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=1)["output"]
+    got = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=1)["output"]
     assert np.allclose(got, want, atol=TOL)
 
 
@@ -528,8 +528,8 @@ def test_grvit_patch_order_is_row_major():
 
 def test_grsen_gates_are_sigmoids_of_the_bottleneck():
     X = [[[1.0, 3.0]]]
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    r = geron_senet_squeeze_excite(X, I, I)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    r = geron_senet_squeeze_excite(X, I_, I_)
     want = [1 / (1 + math.exp(-1.0)), 1 / (1 + math.exp(-3.0))]
     assert np.allclose(r["scale"], want, atol=TOL)
     assert np.allclose(r["output"][0][0], [1.0 * want[0], 3.0 * want[1]], atol=TOL)
@@ -539,9 +539,9 @@ def test_grsen_gates_are_sigmoids_of_the_bottleneck():
 
 
 def test_grrnnc_matches_manual_tanh_step():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     Wxh = [[2.0], [0.0]]
-    r = geron_simple_rnn_cell([1.0], [0.5, -0.5], I, Wxh, [0.1, -0.1])
+    r = geron_simple_rnn_cell([1.0], [0.5, -0.5], I_, Wxh, [0.1, -0.1])
     want = [math.tanh(0.5 + 2.0 + 0.1), math.tanh(-0.5 + 0.0 - 0.1)]
     assert np.allclose(r["h"], want, atol=TOL)
     assert abs(r["spectral_norm_Whh"] - 1.0) < 1e-12

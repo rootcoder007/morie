@@ -50,10 +50,7 @@ def fuzzy_entropy(x, m: int = 2, r: float | None = None, n_exp: float = 2.0, **k
     phi_m = _phi_fuzzy(m)
     phi_m1 = _phi_fuzzy(m + 1)
 
-    if phi_m <= 0 or phi_m1 <= 0:
-        fe = float("inf")
-    else:
-        fe = -np.log(phi_m1 / phi_m)
+    fe = float("inf") if phi_m <= 0 or phi_m1 <= 0 else -np.log(phi_m1 / phi_m)
 
     return ESRes(
         measure="fuzzy_entropy",

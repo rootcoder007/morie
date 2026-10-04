@@ -58,7 +58,7 @@ def gnblk(
     if block_size > p:
         block_size = p
 
-    n_blocks = max(p // block_size, 1)
+    max(p // block_size, 1)
     block_starts = np.arange(0, p, block_size)
 
     orig_stat = float(statistic_fn(Z))

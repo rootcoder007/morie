@@ -5,7 +5,10 @@ from morie.fn.hmosf import geron_one_shot
 
 def test_hmosf_basic():
     """Test basic functionality."""
-    copy = lambda prompt: prompt[0][1]
+
+    def copy(prompt):
+        return prompt[0][1]
+
     example = ("hello", "greeting")
     query = "goodbye"
     result = geron_one_shot(copy, example, query)
@@ -18,7 +21,10 @@ def test_hmosf_basic():
 
 def test_hmosf_edge():
     """Test edge cases."""
-    rule = lambda p: "greeting" if "hello" in p[-1][0] else "farewell"
+
+    def rule(p):
+        return "greeting" if "hello" in p[-1][0] else "farewell"
+
     example = ("hello there", "greeting")
     query = "goodbye now"
     result = geron_one_shot(rule, example, query)

@@ -47,7 +47,7 @@ def optics(
     ordering = []
     reachability = np.full(n, np.inf)
 
-    seeds = list(range(n))
+    list(range(n))
 
     while len(ordering) < n:
         unprocessed = [i for i in range(n) if not processed[i]]

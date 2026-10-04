@@ -90,15 +90,15 @@ def geron_blip_itm_itc(
     >>> round(r["lm_perplexity"], 6)
     2.0
     """
-    I = np.atleast_2d(np.asarray(image_emb, dtype=float))
+    I_ = np.atleast_2d(np.asarray(image_emb, dtype=float))
     T = np.atleast_2d(np.asarray(text_emb, dtype=float))
-    if I.shape != T.shape:
-        raise ValueError(f"image_emb shape {I.shape} must match text_emb shape {T.shape}.")
-    if I.size == 0:
+    if I_.shape != T.shape:
+        raise ValueError(f"image_emb shape {I_.shape} must match text_emb shape {T.shape}.")
+    if I_.size == 0:
         raise ValueError("embeddings are empty.")
-    if not np.all(np.isfinite(I)) or not np.all(np.isfinite(T)):
+    if not np.all(np.isfinite(I_)) or not np.all(np.isfinite(T)):
         raise ValueError("embeddings contain non-finite values.")
-    B = I.shape[0]
+    B = I_.shape[0]
 
     CL = np.asarray(caption_logits, dtype=float)
     if CL.ndim != 3:
@@ -123,14 +123,14 @@ def geron_blip_itm_itc(
     lam_itc, lam_itm, lam_lm = float(lam_itc), float(lam_itm), float(lam_lm)
 
     if normalize:
-        ni = np.linalg.norm(I, axis=1, keepdims=True)
+        ni = np.linalg.norm(I_, axis=1, keepdims=True)
         nt = np.linalg.norm(T, axis=1, keepdims=True)
         if np.any(ni == 0) or np.any(nt == 0):
             raise ValueError("cannot cosine-normalise a zero embedding.")
-        I = I / ni
+        I_ = I_ / ni
         T = T / nt
 
-    sim = I @ T.T
+    sim = I_ @ T.T
     logits = sim / tau
     idx = np.arange(B)
 

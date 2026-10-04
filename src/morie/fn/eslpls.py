@@ -75,7 +75,7 @@ def esl_pls(X, y, M):
     # because after the first step phi lives in the DEFLATED space.
     W, P, q = [], [], []
     fit = np.zeros(n)
-    for m in range(M):
+    for _m in range(M):
         phi = Xw.T @ yc
         nrm = float(np.linalg.norm(phi))
         if nrm <= 0:

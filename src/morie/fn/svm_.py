@@ -73,7 +73,7 @@ def svm_classify(
     b = 0.0
     lr = 0.01
 
-    for epoch in range(max_iter):
+    for _epoch in range(max_iter):
         idx = rng.permutation(n)
         for i in idx:
             margin = labels[i] * (X[i] @ w + b)
@@ -86,10 +86,7 @@ def svm_classify(
     scores = X @ w + b
     preds_raw = np.sign(scores)
     # Convert back to original label space
-    if set(unique_labels) == {0, 1}:
-        preds = ((preds_raw + 1) / 2).astype(float)
-    else:
-        preds = preds_raw
+    preds = ((preds_raw + 1) / 2).astype(float) if set(unique_labels) == {0, 1} else preds_raw
 
     # Approximate support vectors: points close to margin
     margins = np.abs(X @ w + b)

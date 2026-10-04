@@ -19,18 +19,18 @@ def burkov_bits_per_character(ce_loss, n_tokens, n_characters):
     >>> round(burkov_bits_per_character(math.log(2), 100, 100)["estimate"], 12)
     1.0
     """
-    l = float(ce_loss)
+    ell = float(ce_loss)
     nt = int(n_tokens)
     nc = int(n_characters)
-    if l < 0:
+    if ell < 0:
         raise ValueError("cross-entropy cannot be negative.")
     if nt < 1 or nc < 1:
         raise ValueError("token and character counts must be positive.")
-    bpc = (l * nt) / (math.log(2.0) * nc)
+    bpc = (ell * nt) / (math.log(2.0) * nc)
     return RichResult(
         payload={
             "estimate": bpc,
-            "bits_per_token": l / math.log(2.0),
+            "bits_per_token": ell / math.log(2.0),
             "chars_per_token": nc / nt,
             "n": nt,
             "method": "Bits per character (Burkov Ch 2)",

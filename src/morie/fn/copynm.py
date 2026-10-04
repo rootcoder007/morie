@@ -119,7 +119,7 @@ def _binary_supported(v, cut, alpha, perms, rng):
     # permutation reference for the one-change statistic
     exceed = 0
     limit = alpha * perms
-    for p in range(int(perms)):
+    for _p in range(int(perms)):
         w = list(v)
         for t in range(n - 1, 0, -1):
             u = int(rng.random() * (t + 1))
@@ -222,7 +222,7 @@ def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True, seed
         exceed = 0
         limit = alpha * permutations
         used = 0
-        for p in range(permutations):
+        for _p in range(permutations):
             w = list(seg)
             for t in range(n - 1, 0, -1):
                 u = int(rng.random() * (t + 1))

@@ -23,7 +23,7 @@ Y = [
 
 
 def _eff(i, lam):
-    return sum(Y[i][T0:]) / (TT - T0) - sum(l * y for l, y in zip(lam, Y[i][:T0]))
+    return sum(Y[i][T0:]) / (TT - T0) - sum(ell * y for ell, y in zip(lam, Y[i][:T0]))
 
 
 def test_sdiff_basic():

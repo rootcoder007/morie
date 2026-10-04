@@ -87,7 +87,7 @@ def cause_specific_hazard(time, event_type, times, weights=None):
     e = [int(v) for v in k.vec(event_type)]
     n = len(t)
     if len(e) != n:
-        raise ValueError("tlsieve: %d times but %d event types" % (n, len(e)))
+        raise ValueError(f"tlsieve: {int(n)} times but {int(len(e))} event types")
     w = [1.0] * n if weights is None else [float(v) for v in k.vec(weights)]
     types = sorted(set(v for v in e if v > 0))
     out = {}

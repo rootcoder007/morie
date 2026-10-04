@@ -33,9 +33,9 @@ class CausalDag:
     latent: list[str] = field(default_factory=list)
 
     def __repr__(self) -> str:
-        return "CausalDag: %d nodes, %d edges, %s -> %s%s" % (
-            len(self.nodes),
-            len(self.edges),
+        return "CausalDag: {} nodes, {} edges, {} -> {}{}".format(
+            int(len(self.nodes)),
+            int(len(self.edges)),
             self.exposure,
             self.outcome,
             "" if not self.latent else " (latent: {})".format(", ".join(self.latent)),

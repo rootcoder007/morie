@@ -30,7 +30,10 @@ def kosorok_maximal_inequality(x):
     n = len(x)
     sigma_n = float(np.std(x, ddof=1)) if n > 1 else float("nan")
     theta_n = 0.5
-    integrand = lambda e: np.sqrt(np.log(2.0) - 2.0 * np.log(e))
+
+    def integrand(e):
+        return np.sqrt(np.log(2.0) - 2.0 * np.log(e))
+
     j, _ = integrate.quad(integrand, 1e-8, theta_n, limit=200)
     bound = float(j * sigma_n) if np.isfinite(sigma_n) else float("nan")
     return RichResult(

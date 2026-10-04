@@ -87,7 +87,7 @@ def draw_projections(m, d, seed=0, orthogonal=True):
     lowering its variance.
     """
     if m < 1 or d < 1:
-        raise ValueError("perfat: need m >= 1 and d >= 1, got %d and %d" % (m, d))
+        raise ValueError(f"perfat: need m >= 1 and d >= 1, got {int(m)} and {int(d)}")
     rng = np.random.default_rng(seed)
     rows = [[rng.standard_normal() for _ in range(d)] for _ in range(m)]
     if not orthogonal:
@@ -123,7 +123,7 @@ def favor_features(X, omegas, kind="positive", eps=1e-6):
     near zero is the reason Lemma 1 exists.
     """
     if kind not in ("positive", "trig"):
-        raise ValueError("perfat: kind must be positive or trig, got %r" % (kind,))
+        raise ValueError(f"perfat: kind must be positive or trig, got {kind!r}")
     m = len(omegas)
     out = []
     for x in X:
@@ -171,9 +171,9 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive", orthogonal
     Qm, Km, Vm = k.mat(Q), k.mat(K), k.mat(V)
     L, d = len(Qm), len(Qm[0]) if Qm else 0
     if len(Km) != len(Vm):
-        raise ValueError("perfat: %d keys but %d values" % (len(Km), len(Vm)))
+        raise ValueError(f"perfat: {int(len(Km))} keys but {int(len(Vm))} values")
     if len(Km) != L and not causal:
-        raise ValueError("perfat: %d queries but %d keys" % (L, len(Km)))
+        raise ValueError(f"perfat: {int(L)} queries but {int(len(Km))} keys")
     if d == 0 or len(Km[0]) != d:
         raise ValueError("perfat: query and key dimensions differ")
     om = draw_projections(int(n_features), d, seed=seed, orthogonal=orthogonal)
@@ -191,9 +191,7 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive", orthogonal
             den = sum(Qf[i][a] * Ksum[a] for a in range(mf))
             if abs(den) < _EPS:
                 raise ValueError(
-                    "perfat: a renormaliser vanished at "
-                    "query %d; this is what the trig map "
-                    "does and Lemma 1 prevents" % i
+                    f"perfat: a renormaliser vanished at query {int(i)}; this is what the trig map does and Lemma 1 prevents"
                 )
             out.append([v / den for v in num])
     else:
@@ -207,7 +205,7 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive", orthogonal
             num = [sum(Qf[i][a] * KV[a][c] for a in range(mf)) for c in range(dv)]
             den = sum(Qf[i][a] * Ksum[a] for a in range(mf))
             if abs(den) < _EPS:
-                raise ValueError("perfat: a renormaliser vanished at query %d" % i)
+                raise ValueError(f"perfat: a renormaliser vanished at query {int(i)}")
             out.append([v / den for v in num])
     return RichResult(
         payload={

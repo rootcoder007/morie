@@ -108,7 +108,7 @@ def local_objective(summary, patches, other_patches, critic, estimator="jsd"):
     patch cannot encode only global statistics.
     """
     if estimator not in _ESTIMATORS:
-        raise ValueError("mienco: estimator must be one of %s, got %r" % (", ".join(_ESTIMATORS), estimator))
+        raise ValueError("mienco: estimator must be one of {}, got {!r}".format(", ".join(_ESTIMATORS), estimator))
     pos = [critic(summary, p) for p in patches]
     neg = [critic(summary, p) for p in other_patches]
     est = jsd_estimate(pos, neg) if estimator == "jsd" else dv_estimate(pos, neg)

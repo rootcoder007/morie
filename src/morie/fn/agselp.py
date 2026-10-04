@@ -60,16 +60,16 @@ def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None, draw
     """
     if wins is None:
         w = float(new_net)
-        l = float(old_net) if old_net is not None else 0.0
+        ell = float(old_net) if old_net is not None else 0.0
         d = float(draws)
-        n = w + l + d
+        n = w + ell + d
     else:
         w = float(wins)
         d = float(draws)
         n = float(n_games)
-        l = n - w - d
+        ell = n - w - d
     score = (w + 0.5 * d) / n if n > 0.0 else float("nan")
-    dec = int(round(w + l))
+    dec = int(round(w + ell))
     kk = int(round(w))
     p = float("nan")
     if dec > 0:
@@ -89,7 +89,7 @@ def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None, draw
             "p_value": p,
             "wins": w,
             "draws": d,
-            "losses": l,
+            "losses": ell,
             "n": n,
             "method": (
                 "AlphaGo Zero self-play evaluation gate (55%); AlphaZero itself omits this step and updates continually"

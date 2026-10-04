@@ -148,8 +148,8 @@ def spherical_harmonic_basis(angle, n_basis=4):
     out = [1.0]
     if n > 1:
         out.append(x)
-    for l in range(2, n):
-        out.append(((2 * l - 1) * x * out[l - 1] - (l - 1) * out[l - 2]) / l)
+    for ell in range(2, n):
+        out.append(((2 * ell - 1) * x * out[ell - 1] - (ell - 1) * out[ell - 2]) / ell)
     return out[:n]
 
 

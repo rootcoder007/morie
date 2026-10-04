@@ -96,7 +96,7 @@ def blue_gls(y, X, V=None, Z=None, Sigma=None, R=None, K=None):
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d observations." % (Xa.shape[0], n))
+        raise ValueError(f"X has {int(Xa.shape[0])} rows for {int(n)} observations.")
     p = Xa.shape[1]
 
     rank = int(np.linalg.matrix_rank(Xa))
@@ -114,10 +114,10 @@ def blue_gls(y, X, V=None, Z=None, Sigma=None, R=None, K=None):
         q = Za.shape[1]
         Sg = np.atleast_2d(np.asarray(Sigma, dtype=float))
         if Sg.shape != (q, q):
-            raise ValueError("Sigma must be %d by %d, got %s." % (q, q, Sg.shape))
+            raise ValueError(f"Sigma must be {int(q)} by {int(q)}, got {Sg.shape}.")
         Rm = np.eye(n) if R is None else np.atleast_2d(np.asarray(R, dtype=float))
         if Rm.shape != (n, n):
-            raise ValueError("R must be %d by %d, got %s." % (n, n, Rm.shape))
+            raise ValueError(f"R must be {int(n)} by {int(n)}, got {Rm.shape}.")
         Ri = np.linalg.pinv(Rm)
         Si = np.linalg.pinv(Sg)
         top = np.hstack([Xa.T @ Ri @ Xa, Xa.T @ Ri @ Za])
@@ -138,7 +138,7 @@ def blue_gls(y, X, V=None, Z=None, Sigma=None, R=None, K=None):
     else:
         Vm = np.eye(n) if V is None else np.atleast_2d(np.asarray(V, dtype=float))
         if Vm.shape != (n, n):
-            raise ValueError("V must be %d by %d, got %s." % (n, n, Vm.shape))
+            raise ValueError(f"V must be {int(n)} by {int(n)}, got {Vm.shape}.")
         Vi = np.linalg.pinv(Vm)
         XtVi = Xa.T @ Vi
         cov = np.linalg.pinv(XtVi @ Xa)
@@ -150,7 +150,7 @@ def blue_gls(y, X, V=None, Z=None, Sigma=None, R=None, K=None):
         if Ka.shape[0] != p:
             Ka = Ka.T
         if Ka.shape[0] != p:
-            raise ValueError("K must have %d rows, one per fixed effect." % p)
+            raise ValueError(f"K must have {int(p)} rows, one per fixed effect.")
         XtX = Xa.T @ Xa
         H = np.linalg.pinv(XtX) @ XtX
         estimable = np.array([bool(np.allclose(Ka[:, j] @ H, Ka[:, j], atol=1e-8)) for j in range(Ka.shape[1])])

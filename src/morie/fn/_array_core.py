@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import builtins as _bi
 import cmath as _cmath
+import contextlib
 import math as _math
 import re
 import struct as _struct
@@ -256,7 +257,7 @@ class _FlatIter:
         if k < 0:
             k += n
         if not 0 <= k < n:
-            raise IndexError("index %d is out of bounds for size %d" % (k, n))
+            raise IndexError(f"index {int(k)} is out of bounds for size {int(n)}")
         if len(b.shape) == 1:
             return b.data, k
         w = b.shape[1]
@@ -435,7 +436,7 @@ def _gather_rows_nd(a, idx):
         i = int(node)
         n = a.shape[0]
         if i < -n or i >= n:
-            raise IndexError("index %d is out of bounds for axis 0 with size %d" % (i, n))
+            raise IndexError(f"index {int(i)} is out of bounds for axis 0 with size {int(n)}")
         if len(a.shape) == 1:
             return a.data[i]
         return list(a.data[i])
@@ -473,10 +474,7 @@ def _assign_with_mask(a, i, j, value):
     va = asarray(value) if not isinstance(value, (int, float)) else None
     _d = getattr(a, "_dt", None)
     cv = float if (not _d or _d == "float64" or _d not in _DTYPE_FMT) else (lambda v: _store(a, v))
-    if va is None:
-        flat = [cv(value)]
-    else:
-        flat = [cv(v) for v in va._flat()]
+    flat = [cv(value)] if va is None else [cv(v) for v in va._flat()]
     shape = tuple(va.shape) if va is not None else ()
     R, C = len(rows), len(cols)
     if len(flat) == 1:
@@ -489,8 +487,7 @@ def _assign_with_mask(a, i, j, value):
         block = [[flat[r]] * C for r in range(R)]
     else:
         raise ValueError(
-            "shape mismatch: value array of shape %r could not "
-            "be broadcast to indexing result of shape (%d, %d)" % (shape, R, C)
+            f"shape mismatch: value array of shape {shape!r} could not be broadcast to indexing result of shape ({int(R)}, {int(C)})"
         )
     for r, rr in enumerate(rows):
         for c, cc in enumerate(cols):
@@ -587,7 +584,7 @@ class marr:
         m = b2.shape[1] if a2.shape[1] == 1 else a2.shape[1]
         for arr in (a2, b2):
             if arr.shape[0] not in (1, n) or arr.shape[1] not in (1, m):
-                raise ValueError("shape mismatch %s vs %s" % (self.shape, o.shape))
+                raise ValueError(f"shape mismatch {self.shape} vs {o.shape}")
         out = [
             [
                 fn(
@@ -676,9 +673,9 @@ class marr:
                 if gen is not None:
                     return gen
                 raise ValueError(
-                    "unsupported 3-element index %r; the rank-2 core "
+                    f"unsupported 3-element index {idx!r}; the rank-2 core "
                     "supports new axes among slices and integer indices, "
-                    "as in x[:, None, :] or x[:, None, None]" % (idx,)
+                    "as in x[:, None, :] or x[:, None, None]"
                 )
             if len(idx) > 3 and None in idx:
                 gen = _newaxis_general(self, idx)
@@ -765,10 +762,7 @@ class marr:
                     # array-of-rows selector: mask or integer indices
                     iv = i._flat() if isinstance(i, marr) else (i.tolist() if hasattr(i, "tolist") else list(i))
                     pos = _mask_positions(i, self.shape[0])
-                    if pos is not None:
-                        rows = [self.data[k] for k in pos]
-                    else:
-                        rows = [self.data[int(v)] for v in iv]
+                    rows = [self.data[k] for k in pos] if pos is not None else [self.data[int(v)] for v in iv]
                     if isinstance(j, slice):
                         return marr([r[j] for r in rows])
                     return marr([r[int(j)] for r in rows])
@@ -855,7 +849,7 @@ class marr:
             # whole-valued floats (marr is float-backed); numpy would
             # hand back int64 here
             if idx != int(idx):
-                raise TypeError("non-integer array index %r" % idx)
+                raise TypeError(f"non-integer array index {idx!r}")
             idx = int(idx)
         out = self.data[idx]
         if isinstance(out, list) and isinstance(idx, slice):
@@ -915,7 +909,7 @@ class marr:
             vals = [float(v.real if isinstance(v, complex) else v) for v in vals]
         else:
             vals = [int(v.real if isinstance(v, complex) else v) for v in vals]
-        return _struct.pack("<%d%s" % (len(vals), fmt), *vals)
+        return _struct.pack(f"<{int(len(vals))}{fmt}", *vals)
 
     @property
     def size(self):
@@ -964,7 +958,7 @@ class marr:
                 for j in range(self.shape[1]):
                     self.data[i][j] = cols[j][i]
         else:
-            raise ValueError("axis %r is out of bounds" % (axis,))
+            raise ValueError(f"axis {axis!r} is out of bounds")
         return None
 
     def nonzero(self):
@@ -1039,15 +1033,10 @@ class marr:
         fo, so = _DTYPE_FMT[old]
         fn_, sn = _DTYPE_FMT[new]
         if so != sn:
-            raise ValueError(
-                "view between %s and %s changes the item size, which this core does not support" % (old, new)
-            )
+            raise ValueError(f"view between {old} and {new} changes the item size, which this core does not support")
 
         def cast(v):
-            if fo in ("d", "f", "e"):
-                raw = _struct.pack("<" + fo, float(v))
-            else:
-                raw = _struct.pack("<" + fo, int(v))
+            raw = _struct.pack("<" + fo, float(v)) if fo in ("d", "f", "e") else _struct.pack("<" + fo, int(v))
             return _struct.unpack("<" + fn_, raw)[0]
 
         out = self._map(cast)
@@ -1122,7 +1111,7 @@ class marr:
             for d in dims:
                 total *= d
             if total != len(f):
-                raise ValueError("cannot reshape %d values into %r" % (len(f), tuple(dims)))
+                raise ValueError(f"cannot reshape {int(len(f))} values into {tuple(dims)!r}")
 
             def build(vals, ds):
                 if len(ds) == 2:
@@ -1131,7 +1120,7 @@ class marr:
                 return [build(vals[i * step : (i + 1) * step], ds[1:]) for i in range(ds[0])]
 
             return ndlist(build(list(f), dims))
-        raise ValueError("unsupported reshape %r" % (shape,))
+        raise ValueError(f"unsupported reshape {shape!r}")
 
     def __int__(self):
         # without this, int() falls back to the buffer protocol and
@@ -1256,22 +1245,19 @@ class marr:
                 if getattr(i, "_ix_outer", False) and getattr(j, "_ix_outer", False):
                     # np.ix_ pair: outer block assignment
                     v = asarray(value)
-                    if v.size == 1:
-                        block = [[_cv(v._flat()[0])] * len(jv) for _ in iv]
-                    else:
-                        block = atleast_2d(v).tolist()
+                    block = [[_cv(v._flat()[0])] * len(jv) for _ in iv] if v.size == 1 else atleast_2d(v).tolist()
                     for a, r2 in enumerate(iv):
                         for b, c2 in enumerate(jv):
                             self.data[int(r2)][int(c2)] = _cv(block[a][b])
                     return
                 if len(iv) != len(jv):
-                    raise ValueError("index arrays must be the same length, got %d and %d" % (len(iv), len(jv)))
+                    raise ValueError(f"index arrays must be the same length, got {int(len(iv))} and {int(len(jv))}")
                 v = asarray(value)
                 vals = list(v._flat()) if isinstance(v, marr) else [_cv(value)]
                 if len(vals) == 1:
                     vals = vals * len(iv)
                 if len(vals) != len(iv):
-                    raise ValueError("cannot assign %d values to %d positions" % (len(vals), len(iv)))
+                    raise ValueError(f"cannot assign {int(len(vals))} values to {int(len(iv))} positions")
                 for r2, c2, val in zip(iv, jv, vals):
                     self.data[int(r2)][int(c2)] = _cv(val)
                 return
@@ -1293,8 +1279,7 @@ class marr:
                     vr, vc = va.shape
                     if vr not in (1, len(rws)) or vc not in (1, len(cols)):
                         raise ValueError(
-                            "could not broadcast input array from shape %s "
-                            "into shape %s" % (tuple(va.shape), (len(rws), len(cols)))
+                            f"could not broadcast input array from shape {tuple(va.shape)} into shape {(len(rws), len(cols))}"
                         )
                     for ri, r2 in enumerate(rws):
                         row = va.data[ri if vr > 1 else 0]
@@ -1304,8 +1289,7 @@ class marr:
                 vf = va._flat() if isinstance(va, marr) else [_cv(va)]
                 if len(vf) not in (1, len(cols)):
                     raise ValueError(
-                        "could not broadcast input array from shape (%d,) "
-                        "into shape %s" % (len(vf), (len(rws), len(cols)))
+                        f"could not broadcast input array from shape ({int(len(vf))},) into shape {(len(rws), len(cols))}"
                     )
                 for r2 in rws:
                     for ci, c in enumerate(cols):
@@ -1359,7 +1343,7 @@ class marr:
                 if len(vals) == 1:
                     vals = vals * len(cols)
                 if len(vals) != len(cols):
-                    raise ValueError("cannot assign %d values to %d columns" % (len(vals), len(cols)))
+                    raise ValueError(f"cannot assign {int(len(vals))} values to {int(len(cols))} columns")
                 for c2, v2 in zip(cols, vals):
                     self.data[r2][c2] = _cv(v2)
                 return
@@ -1393,7 +1377,7 @@ class marr:
                 elif len(vals) == m2 and len(rng) > 1:
                     vals = vals * len(rng)
                 if len(vals) != len(rng) * m2:
-                    raise ValueError("cannot assign %d values to a (%d, %d) slice" % (len(vals), len(rng), m2))
+                    raise ValueError(f"cannot assign {int(len(vals))} values to a ({int(len(rng))}, {int(m2)}) slice")
                 for r2, k in enumerate(rng):
                     self.data[k] = [_cv(x) for x in vals[r2 * m2 : (r2 + 1) * m2]]
                 return
@@ -1423,10 +1407,7 @@ class marr:
                             self.data[r][c] = _cv(value) if vals is None else _cv(vals[k if len(vals) > 1 else 0])
                             k += 1
                 return
-            if is_mask:
-                ids = [k for k, b in enumerate(raw) if b]
-            else:
-                ids = [int(v) for v in raw]
+            ids = [k for k, b in enumerate(raw) if b] if is_mask else [int(v) for v in raw]
             if len(self.shape) == 2:
                 # row selection on a 2-D array: assign whole rows,
                 # broadcasting a scalar, a length-m row, or a
@@ -1440,7 +1421,7 @@ class marr:
                     return
                 v2 = _b2(asarray(value))
                 if v2.shape[0] not in (1, len(ids)) or v2.shape[1] not in (1, m2):
-                    raise ValueError("cannot broadcast %s to (%d, %d) selected rows" % (str(v2.shape), len(ids), m2))
+                    raise ValueError(f"cannot broadcast {str(v2.shape)} to ({int(len(ids))}, {int(m2)}) selected rows")
                 for k, r in enumerate(ids):
                     src_row = v2.data[k if v2.shape[0] > 1 else 0]
                     self.data[r] = [_cv(src_row[c if v2.shape[1] > 1 else 0]) for c in range(m2)]
@@ -1537,7 +1518,7 @@ class marr:
         return rows
 
     def __repr__(self):
-        return "marr(%r)" % (self.tolist(),)
+        return f"marr({self.tolist()!r})"
 
     # -- arithmetic ---------------------------------------------------
     def _int_dt(self, o):
@@ -1564,8 +1545,8 @@ class marr:
         wsig = wb if ua else wa  # width of the signed operand
         wuns = wa if ua else wb  # width of the unsigned operand
         if wuns < wsig:
-            return "int%d" % wsig
-        return "int%d" % (2 * wuns) if wuns < 64 else None
+            return f"int{int(wsig)}"
+        return f"int{int(2 * wuns)}" if wuns < 64 else None
 
     def _intop(self, o, fn):
         dt = self._int_dt(o)
@@ -1643,8 +1624,7 @@ class marr:
             )
         if tuple(res.shape) != tuple(self.shape):
             raise ValueError(
-                "non-broadcastable output operand with shape %s "
-                "doesn't match the broadcast shape %s" % (tuple(self.shape), tuple(res.shape))
+                f"non-broadcastable output operand with shape {tuple(self.shape)} doesn't match the broadcast shape {tuple(res.shape)}"
             )
         if len(self.shape) == 1:
             self.data[:] = res.data
@@ -2050,7 +2030,7 @@ class oarr(list):
             if c == -1:
                 c = n // r if r else 0
             if r * c != n:
-                raise ValueError("cannot reshape array of size %d into shape %s" % (n, (r, c)))
+                raise ValueError(f"cannot reshape array of size {int(n)} into shape {(r, c)}")
             vals = list(self)
             return oarr2([vals[i * c : (i + 1) * c] for i in range(r)])
         raise ValueError("object arrays reshape to 1-D or 2-D only")
@@ -2099,9 +2079,7 @@ def _is_object_like(x, dtype):
         xdt is object or getattr(xdt, "kind", "") in ("O", "U", "S") or str(getattr(xdt, "name", xdt)) == "object"
     ):
         return True
-    if isinstance(x, (list, tuple)) and x and _bi.any(isinstance(v, str) for v in x):
-        return True
-    return False
+    return bool(isinstance(x, (list, tuple)) and x and _bi.any(isinstance(v, str) for v in x))
 
 
 def _nested_depth(x, cap=8):
@@ -2145,7 +2123,7 @@ class _CStack:
             if rows is None:
                 rows = len(block)
             elif len(block) != rows:
-                raise ValueError("c_ operands disagree on the row count: %d vs %d" % (rows, len(block)))
+                raise ValueError(f"c_ operands disagree on the row count: {int(rows)} vs {int(len(block))}")
             cols.append(block)
         if rows is None:
             raise ValueError("c_ needs at least one operand")
@@ -2329,7 +2307,7 @@ class oarr2:
     __hash__ = None
 
     def __repr__(self):
-        return "array(%r, dtype=object)" % (self.rows,)
+        return f"array({self.rows!r}, dtype=object)"
 
 
 def asarray(x, dtype=None):
@@ -2630,7 +2608,7 @@ def concatenate(parts, axis=0):
     if axis == -2:
         # -2 on rank-2 operands is the row axis
         return vstack(arrs)
-    raise ValueError("concatenate: unsupported axis %r" % (axis,))
+    raise ValueError(f"concatenate: unsupported axis {axis!r}")
 
 
 # ------------------------------------------------------------- elementwise
@@ -2989,10 +2967,8 @@ def equal(x, y):
     # the other comparators. Added because hmvilb calls np.equal, which
     # did not exist: the 1-D token-id input path was uncallable.
     out = asarray(x)._zip(y, lambda a, b: 1.0 if a == b else 0.0)
-    try:
+    with contextlib.suppress(AttributeError):
         out._is_mask = True
-    except AttributeError:
-        pass
     return out
 
 
@@ -3037,7 +3013,7 @@ def where(cond, a=None, b=None):
         for src, name in ((cb, "cond"), (ab, "a"), (bb2, "b")):
             for got, want, what in ((src.shape[0], rows, "rows"), (src.shape[1], cols, "columns")):
                 if got not in (1, want):
-                    raise ValueError("where: %s has %d %s, cannot broadcast to %d" % (name, got, what, want))
+                    raise ValueError(f"where: {name} has {int(got)} {what}, cannot broadcast to {int(want)}")
 
         def pick(src, r, cc):
             row = src.data[r if src.shape[0] > 1 else 0]
@@ -3113,10 +3089,7 @@ def matmul(a, b):
     aa = atleast_2d(a_arr)
     b_arr = asarray(b)
     b_was_1d = len(b_arr.shape) == 1
-    if b_was_1d:
-        bb = marr([[v] for v in b_arr.data]) if b_arr.size else _empty2d(0, 1)
-    else:
-        bb = b_arr
+    bb = (marr([[v] for v in b_arr.data]) if b_arr.size else _empty2d(0, 1)) if b_was_1d else b_arr
     if len(aa.shape) == 2 and aa.shape[0] == 1 and a_was_1d and a_arr.size == 0:
         aa = _empty2d(1, 0)
     n, k = aa.shape
@@ -3145,12 +3118,12 @@ def _axis_arg(x, axis):
     nd = len(asarray(x).shape)
     axes = sorted({ax % nd if -nd <= ax < nd else ax for ax in axis})
     if any(ax < 0 or ax >= nd for ax in axes):
-        raise AxisError("axis %r is out of bounds for array of dimension %d" % (axis, nd))
+        raise AxisError(f"axis {axis!r} is out of bounds for array of dimension {int(nd)}")
     if len(axes) == nd:
         return None
     if len(axes) == 1:
         return axes[0]
-    raise AxisError("axis %r is not supported on a rank-%d array" % (axis, nd))
+    raise AxisError(f"axis {axis!r} is not supported on a rank-{int(nd)} array")
 
 
 # --------------------------------------------------------------- reductions
@@ -3353,7 +3326,7 @@ def _broadcast_flat(a, b, who):
         return aa, [bb[i] for i in range(sa[0]) for _ in range(sa[1])]
     if len(sa) == 2 and len(sb) == 2 and sa[1] == 1 and sa[0] == sb[0]:
         return [aa[i] for i in range(sb[0]) for _ in range(sb[1])], bb
-    raise ValueError("%s: operands could not be broadcast together with %d and %d values" % (who, len(aa), len(bb)))
+    raise ValueError(f"{who}: operands could not be broadcast together with {int(len(aa))} and {int(len(bb))} values")
 
 
 def allclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
@@ -3667,7 +3640,7 @@ class _SplitMix64:
             # This used to keep only size[0] and cycle bounds by row,
             # returning an (n,) vector from the wrong boxes.
             if width > 1 and shape[-1] != width:
-                raise ValueError("shape mismatch: bounds of length %d cannot broadcast to size %r" % (width, shape))
+                raise ValueError(f"shape mismatch: bounds of length {int(width)} cannot broadcast to size {shape!r}")
             total = 1
             for d in shape:
                 total *= d
@@ -3703,7 +3676,7 @@ class _SplitMix64:
         d = len(mu)
         c = atleast_2d(asarray(cov, dtype=float))
         if c.shape != (d, d):
-            raise ValueError("multivariate_normal: cov is %s but mean has %d entries" % (c.shape, d))
+            raise ValueError(f"multivariate_normal: cov is {c.shape} but mean has {int(d)} entries")
         try:
             lo = linalg.cholesky(c)
             L = [[float(lo[i][j]) for j in range(d)] for i in range(d)]
@@ -3804,7 +3777,7 @@ class _SplitMix64:
             if size is not None:
                 n = int(size[0]) if isinstance(size, (tuple, list)) else int(size)
                 if n != len(sv):
-                    raise ValueError("cannot broadcast a length-%d scale to size %d" % (len(sv), n))
+                    raise ValueError(f"cannot broadcast a length-{int(len(sv))} scale to size {int(n)}")
             return marr([-float(v) * _math.log(_pymax(self._u(), 1e-300)) for v in sv])
 
         def one():
@@ -4164,19 +4137,13 @@ class _SplitMix64:
 
     def shuffle(self, seq):
         # Fisher-Yates in place on a plain list
-        if isinstance(seq, marr):
-            data = seq.data
-        else:
-            data = seq
+        data = seq.data if isinstance(seq, marr) else seq
         for i in range(len(data) - 1, 0, -1):
             j = self._next() % (i + 1)
             data[i], data[j] = data[j], data[i]
 
     def permutation(self, n):
-        if isinstance(n, int):
-            out = list(range(n))
-        else:
-            out = list(asarray(n)._flat())
+        out = list(range(n)) if isinstance(n, int) else list(asarray(n)._flat())
         self.shuffle(out)
         res = marr([float(v) for v in out])
         if isinstance(n, int) or _is_int_typed(n):
@@ -4308,7 +4275,7 @@ class _SplitMix64:
             low, high = 0, low
         lo, hi = int(low), int(high) + (1 if endpoint else 0)
         if hi <= lo:
-            raise ValueError("high must exceed low; got low=%r high=%r" % (low, high))
+            raise ValueError(f"high must exceed low; got low={low!r} high={high!r}")
 
         def one():
             return lo + self._next() % (hi - lo)
@@ -4518,7 +4485,7 @@ class _FoldUfunc:
         if axis in (1, -1):
             out = [self._fold_list(row) for row in arr.data]
             return marr([[v] for v in out]) if keepdims else marr(out)
-        raise AxisError("axis %r is out of bounds" % (axis,))
+        raise AxisError(f"axis {axis!r} is out of bounds")
 
     def accumulate(self, a, axis=0):
         arr = asarray(a)
@@ -4608,8 +4575,8 @@ def _broadcast_general(a, shape):
         if s_ not in (1, t_):
             raise ValueError(
                 "operands could not be broadcast together with "
-                "remapped shapes [original->remapped]: %s and "
-                "requested shape %s" % (tuple(a.shape), shape)
+                f"remapped shapes [original->remapped]: {tuple(a.shape)} and "
+                f"requested shape {shape}"
             )
     nested = a.tolist()
     for _ in range(len(shape) - len(tuple(a.shape))):
@@ -4639,7 +4606,7 @@ def broadcast_to(x, shape):
             return marr([a.data[:] for _ in range(shape[0])])
         if a.shape[0] == 1:
             return marr([[a.data[0]] * shape[1] for _ in range(shape[0])])
-        raise ValueError("broadcast_to: cannot broadcast %r to %r" % (a.shape, shape))
+        raise ValueError(f"broadcast_to: cannot broadcast {a.shape!r} to {shape!r}")
     if len(shape) == 3 and len(a.shape) == 2:
         # rank-3 broadcast surfaces as a nested list (rank-2 core);
         # einsum and the module loops consume nested lists directly
@@ -4660,7 +4627,7 @@ def broadcast_to(x, shape):
             return marr([[v] * shape[1] for _ in range(shape[0])])
     if len(shape) == 2 and len(a.shape) == 1 and a.shape[0] == shape[1]:
         return marr([a.data[:] for _ in range(shape[0])])
-    raise ValueError("broadcast_to: unsupported %r -> %r" % (a.shape, shape))
+    raise ValueError(f"broadcast_to: unsupported {a.shape!r} -> {shape!r}")
 
 
 def expand_dims(x, axis):
@@ -4677,7 +4644,7 @@ def expand_dims(x, axis):
             return ndlist([[row[:]] for row in a.data])
         if ax == 2:
             return ndlist([[[v] for v in row] for row in a.data])
-        raise AxisError("axis %r is out of bounds for array of dimension 3" % (axis,))
+        raise AxisError(f"axis {axis!r} is out of bounds for array of dimension 3")
     raise ValueError("expand_dims: rank-2 core")
 
 
@@ -4839,7 +4806,7 @@ class _LinalgExt:
                 if want
                 else nrm(aa, -key if key == 1 else -inf) * nrm(ai, -key if key == 1 else -inf)
             )
-        raise ValueError("invalid norm order %r for cond" % (p,))
+        raise ValueError(f"invalid norm order {p!r} for cond")
 
 
 def _matrix_rank(a, tol=None):
@@ -4947,27 +4914,27 @@ def _ql_implicit(d, e, z, want_vectors):
     for i in range(1, n):
         e[i - 1] = e[i]
     e[n - 1] = 0.0
-    for l in range(n):
+    for ell in range(n):
         it = 0
         while True:
-            m = l
+            m = ell
             while m < n - 1:
                 dd = _bi.abs(d[m]) + _bi.abs(d[m + 1])
                 if _bi.abs(e[m]) <= 1e-18 * dd:
                     break
                 m += 1
-            if m == l:
+            if m == ell:
                 break
             it += 1
             if it > 60:
                 raise ValueError("eigenvalue iteration did not converge")
-            g = (d[l + 1] - d[l]) / (2.0 * e[l])
+            g = (d[ell + 1] - d[ell]) / (2.0 * e[ell])
             r = _math.hypot(g, 1.0)
-            g = d[m] - d[l] + e[l] / (g + _math.copysign(r, g))
+            g = d[m] - d[ell] + e[ell] / (g + _math.copysign(r, g))
             sn = cs = 1.0
             pp = 0.0
             broke = False
-            for i in range(m - 1, l - 1, -1):
+            for i in range(m - 1, ell - 1, -1):
                 f = sn * e[i]
                 b = cs * e[i]
                 r = _math.hypot(f, g)
@@ -4991,8 +4958,8 @@ def _ql_implicit(d, e, z, want_vectors):
                         z[k][i] = cs * z[k][i] - sn * f
             if broke:
                 continue
-            d[l] -= pp
-            e[l] = g
+            d[ell] -= pp
+            e[ell] = g
             e[m] = 0.0
     return d, z
 
@@ -5203,10 +5170,7 @@ def trapezoid(y, x=None, dx=1.0, axis=None):
             ya = ya.T
         return marr([trapezoid(row, x=x, dx=dx) for row in ya.data])
     fy = ya._flat()
-    if x is None:
-        fx = [i * dx for i in range(len(fy))]
-    else:
-        fx = asarray(x)._flat()
+    fx = [i * dx for i in range(len(fy))] if x is None else asarray(x)._flat()
     terms = [(fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0 for i in range(len(fy) - 1)]
     if _bi.any(isinstance(v, complex) for v in terms):
         return _bi.sum(terms)
@@ -5251,7 +5215,7 @@ class _DTypeNarrow:
         return hash(self.name)
 
     def __repr__(self):
-        return "dtype(%r)" % self.name
+        return f"dtype({self.name!r})"
 
     def __str__(self):
         return self.name
@@ -5601,7 +5565,7 @@ def quantile(x, q, axis=None, method="linear", **kw):
     elif method in ab:
         alpha, beta = ab[method]
     else:
-        raise ValueError("unknown quantile method %r" % (method,))
+        raise ValueError(f"unknown quantile method {method!r}")
     g = alpha + p * (n + 1 - alpha - beta)
     g = _bi.max(1.0, _bi.min(g, float(n)))
     j = int(_math.floor(g))
@@ -5752,7 +5716,7 @@ def _ufunc_out(res, out, where):
             elif len(mask) == n and wshape == (n, 1):
                 mask = [mask[r] for r in range(n) for _ in range(m)]
             else:
-                raise ValueError("where= of shape %r cannot broadcast to %r" % (wshape, tshape))
+                raise ValueError(f"where= of shape {wshape!r} cannot broadcast to {tshape!r}")
     if len(target.shape) == 2:
         k = 0
         for r in range(target.shape[0]):
@@ -6086,7 +6050,7 @@ def _ndlist_reduce(self, axis, keepdims, fn):
     if axis < 0:
         axis += len(shape)
     if not 0 <= axis < len(shape):
-        raise ValueError("axis %r is out of bounds for shape %r" % (axis, shape))
+        raise ValueError(f"axis {axis!r} is out of bounds for shape {shape!r}")
     red = _reduce_axis(nested, axis, fn)
     if keepdims:
         red = _expand_axis(red, axis)
@@ -6128,10 +6092,7 @@ def _wrap_block(b):
     if isinstance(b, list):
         # an element that is itself an array counts with its own rank: a
         # list of 2-D marr blocks is 3-D, and marr() cannot hold it
-        if b and isinstance(b[0], (marr, ndlist)):
-            d = 1 + len(b[0].shape)
-        else:
-            d = _nested_depth(b)
+        d = 1 + len(b[0].shape) if b and isinstance(b[0], (marr, ndlist)) else _nested_depth(b)
         if d >= 3:
             return ndlist(b)
         if d >= 1:
@@ -6159,12 +6120,12 @@ def _batched_matmul(a, b):
     def mm(x, y):
         n, k, m = len(x), len(y), len(y[0])
         if len(x[0]) != k:
-            raise ValueError("matmul: inner dimensions %d and %d do not agree" % (len(x[0]), k))
+            raise ValueError(f"matmul: inner dimensions {int(len(x[0]))} and {int(k)} do not agree")
         return [[_bi.sum(x[i][t] * y[t][j] for t in range(k)) for j in range(m)] for i in range(n)]
 
     if len(sa) == 3 and len(sb) == 3:
         if sa[0] != sb[0]:
-            raise ValueError("matmul: batch sizes %d and %d do not agree" % (sa[0], sb[0]))
+            raise ValueError(f"matmul: batch sizes {int(sa[0])} and {int(sb[0])} do not agree")
         return ndlist([mm(A[i], B[i]) for i in range(sa[0])])
     if len(sa) == 3:
         return ndlist([mm(A[i], B) for i in range(sa[0])])
@@ -6601,8 +6562,7 @@ class ndlist(list):
                     yield x
             elif isinstance(v, list):
                 for x in v:
-                    for y in walk(x):
-                        yield y
+                    yield from walk(x)
             else:
                 yield float(v)
 
@@ -6639,13 +6599,13 @@ class ndlist(list):
                 if d != -1:
                     known *= d
             if known <= 0 or len(flat) % known:
-                raise ValueError("cannot reshape %d values into %s" % (len(flat), tuple(shape)))
+                raise ValueError(f"cannot reshape {int(len(flat))} values into {tuple(shape)}")
             dims[dims.index(-1)] = len(flat) // known
         total = 1
         for d in dims:
             total *= d
         if total != len(flat):
-            raise ValueError("cannot reshape %d values into %s" % (len(flat), tuple(dims)))
+            raise ValueError(f"cannot reshape {int(len(flat))} values into {tuple(dims)}")
         if len(dims) == 1:
             return marr(flat)
         if len(dims) == 2:
@@ -6701,7 +6661,7 @@ class ndlist(list):
         combine rank-5 operands (group normalisation, say) at all."""
         A = self.tolist()
         sa = tuple(_list_shape(A))
-        if isinstance(other, (ndlist, marr)) or isinstance(other, (list, tuple)):
+        if isinstance(other, (ndlist, marr, list, tuple)):
             B = other.tolist() if hasattr(other, "tolist") else list(other)
             sb = tuple(_list_shape(B))
         else:
@@ -6712,7 +6672,7 @@ class ndlist(list):
         out_shape = []
         for x, y in zip(pa, pb):
             if x != y and x != 1 and y != 1:
-                raise ValueError("operands could not be broadcast together with shapes %r %r" % (sa, sb))
+                raise ValueError(f"operands could not be broadcast together with shapes {sa!r} {sb!r}")
             out_shape.append(_bi.max(x, y))
         for _ in range(r - len(sa)):
             A = [A]
@@ -6892,7 +6852,7 @@ def _newaxis_index(x, key):
 def _nested_shape(x):
     sh = []
     v = x
-    while isinstance(v, (list, tuple)) or isinstance(v, marr):
+    while isinstance(v, (list, tuple, marr)):
         if isinstance(v, marr):
             return tuple(sh) + v.shape
         sh.append(len(v))
@@ -6943,10 +6903,10 @@ def einsum(spec, *ops):
     dims = {}
     for sp, sh in zip(in_specs, shapes):
         if len(sp) != len(sh):
-            raise ValueError("einsum: spec %r vs shape %r" % (sp, sh))
+            raise ValueError(f"einsum: spec {sp!r} vs shape {sh!r}")
         for c, d in zip(sp, sh):
             if c in dims and dims[c] != d:
-                raise ValueError("einsum: size mismatch for %r" % c)
+                raise ValueError(f"einsum: size mismatch for {c!r}")
             dims[c] = d
     if out_labels is None:
         counts = {}
@@ -7046,17 +7006,16 @@ def stack(parts, axis=0):
             for a2 in arrs:
                 if tuple(a2.shape) != (nr, nc):
                     raise ValueError(
-                        "stack: all parts must have the same shape, got "
-                        "%s and %s" % (tuple(arrs[0].shape), tuple(a2.shape))
+                        f"stack: all parts must have the same shape, got {tuple(arrs[0].shape)} and {tuple(a2.shape)}"
                     )
             return ndlist([[[a2.data[i][j] for a2 in arrs] for j in range(nc)] for i in range(nr)])
-        raise ValueError("stack: 2-D parts support axis 0, 2 or -1; got %r" % (axis,))
+        raise ValueError(f"stack: 2-D parts support axis 0, 2 or -1; got {axis!r}")
     rows = [a2._flat() for a2 in arrs]
     if axis in (0, None):
         return marr(rows)
     if axis in (1, -1):
         return marr([[rows[j][i] for j in range(len(rows))] for i in range(len(rows[0]))])
-    raise ValueError("stack: unsupported axis %r" % (axis,))
+    raise ValueError(f"stack: unsupported axis {axis!r}")
 
 
 def dstack(tup):
@@ -7155,7 +7114,7 @@ def diag_indices_from(a):
     `sigma[np.diag_indices_from(sigma)] = v` raised AttributeError."""
     arr = asarray(a)
     if len(arr.shape) != 2 or arr.shape[0] != arr.shape[1]:
-        raise ValueError("diag_indices_from: input must be a square 2-D array, got shape %s" % (tuple(arr.shape),))
+        raise ValueError(f"diag_indices_from: input must be a square 2-D array, got shape {tuple(arr.shape)}")
     return diag_indices(arr.shape[0])
 
 
@@ -7304,7 +7263,7 @@ def meshgrid(*xi, **kw):
     those calls a TypeError."""
     indexing = kw.pop("indexing", "xy")
     if kw:
-        raise TypeError("meshgrid() got an unexpected keyword argument %r" % next(iter(kw)))
+        raise TypeError(f"meshgrid() got an unexpected keyword argument {next(iter(kw))!r}")
     if not xi:
         return []
     if len(xi) == 1:
@@ -7359,7 +7318,7 @@ def _meshgrid_2d(x, y, indexing="xy"):
     (len(y), len(x)); "ij" gives (len(x), len(y)), i.e. the transpose.
     """
     if indexing not in ("xy", "ij"):
-        raise ValueError("meshgrid: indexing must be 'xy' or 'ij', got %r" % (indexing,))
+        raise ValueError(f"meshgrid: indexing must be 'xy' or 'ij', got {indexing!r}")
     fx, fy = asarray(x)._flat(), asarray(y)._flat()
     if indexing == "xy":
         gx = marr([fx[:] for _ in fy])
@@ -7383,9 +7342,8 @@ def average(x, axis=None, weights=None, returned=False, keepdims=False):
         return avg
     w = asarray(weights)
     if axis is None or nd == 1:
-        if tuple(w.shape) != tuple(a.shape):
-            if nd == 1 or len(w.shape) != 1:
-                raise ValueError("weights must have the shape of the data or be 1-D along the axis")
+        if tuple(w.shape) != tuple(a.shape) and (nd == 1 or len(w.shape) != 1):
+            raise ValueError("weights must have the shape of the data or be 1-D along the axis")
         fa, fw = list(a._flat()), list(w._flat())
         if len(fa) != len(fw):
             raise ValueError("length of weights differs from the data")
@@ -7437,13 +7395,13 @@ class _Testing:
             elif len(a) == 1:
                 a = a * len(d)
             else:
-                raise AssertionError("shape mismatch: %d vs %d values. %s" % (len(a), len(d), err_msg))
+                raise AssertionError(f"shape mismatch: {int(len(a))} vs {int(len(d))} values. {err_msg}")
         for i, (x, y) in enumerate(zip(a, d)):
             if equal_nan and x != x and y != y:
                 continue
             if not _bi.abs(x - y) <= atol + rtol * _bi.abs(y):
                 raise AssertionError(
-                    "not close at index %d: %r != %r (rtol=%g, atol=%g). %s" % (i, x, y, rtol, atol, err_msg)
+                    f"not close at index {int(i)}: {x!r} != {y!r} (rtol={rtol:g}, atol={atol:g}). {err_msg}"
                 )
 
     @staticmethod
@@ -7464,13 +7422,13 @@ class _Testing:
         a, d = float(actual), float(desired)
         scale = _bi.max(_bi.abs(a), _bi.abs(d), 1e-300)
         if _bi.abs(a - d) / scale >= 10.0 ** (-(significant - 1)):
-            raise AssertionError("not equal to %d significant digits: %r != %r. %s" % (significant, a, d, err_msg))
+            raise AssertionError(f"not equal to {int(significant)} significant digits: {a!r} != {d!r}. {err_msg}")
 
     @staticmethod
     def assert_equal(actual, desired, err_msg="", verbose=True):
         if isinstance(actual, (int, float, str, bool)) and isinstance(desired, (int, float, str, bool)):
             if actual != desired and not (actual != actual and desired != desired):
-                raise AssertionError("%r != %r. %s" % (actual, desired, err_msg))
+                raise AssertionError(f"{actual!r} != {desired!r}. {err_msg}")
             return
         _Testing.assert_array_equal(actual, desired, err_msg=err_msg, verbose=verbose)
 
@@ -7483,7 +7441,7 @@ class _Testing:
             d = d * len(a)
         for i, (u, v) in enumerate(zip(a, d)):
             if not u < v:
-                raise AssertionError("not less at index %d: %r >= %r. %s" % (i, u, v, err_msg))
+                raise AssertionError(f"not less at index {int(i)}: {u!r} >= {v!r}. {err_msg}")
 
     @staticmethod
     def assert_array_equal(actual, desired, err_msg="", verbose=True):
@@ -7493,10 +7451,10 @@ class _Testing:
         if len(d) == 1 and len(a) != 1:
             d = d * len(a)  # scalar expectation broadcasts
         if len(a) != len(d):
-            raise AssertionError("shape mismatch: %d vs %d values. %s" % (len(a), len(d), err_msg))
+            raise AssertionError(f"shape mismatch: {int(len(a))} vs {int(len(d))} values. {err_msg}")
         for i, (x, y) in enumerate(zip(a, d)):
             if x != y and not (x != x and y != y):
-                raise AssertionError("arrays differ at index %d: %r != %r. %s" % (i, x, y, err_msg))
+                raise AssertionError(f"arrays differ at index {int(i)}: {x!r} != {y!r}. {err_msg}")
 
 
 testing = _Testing()
@@ -7933,7 +7891,7 @@ class _RClass:
         items = []
         for item in key:
             if isinstance(item, str):
-                raise ValueError("r_ string directives (%r) are not supported" % item)
+                raise ValueError(f"r_ string directives ({item!r}) are not supported")
             if isinstance(item, slice):
                 raise ValueError("r_ slice syntax is not supported; pass arange(...) explicitly")
             items.append(item)
@@ -8086,7 +8044,7 @@ def tensordot(a, b, axes=2):
         raise ValueError("tensordot: the two axis lists must be the same length")
     for i, j in zip(ax_a, ax_b):
         if sa[i] != sb[j]:
-            raise ValueError("tensordot: contracted axes have sizes %d and %d" % (sa[i], sb[j]))
+            raise ValueError(f"tensordot: contracted axes have sizes {int(sa[i])} and {int(sb[j])}")
     free_a = [i for i in range(na) if i not in ax_a]
     free_b = [j for j in range(nb) if j not in ax_b]
     out_shape = [sa[i] for i in free_a] + [sb[j] for j in free_b]
@@ -8315,7 +8273,7 @@ def array_str(x):
         if v in (_math.inf, -_math.inf):
             return "inf" if v > 0 else "-inf"
         if v.is_integer() and _bi.abs(v) < 1e16:
-            return "%d." % int(v)
+            return f"{int(int(v))}."
         return repr(v)
 
     flat = [c for row in (a.data if len(a.shape) == 2 else [a.data]) for c in cells(row)]
@@ -8444,7 +8402,7 @@ def _orth_fill(cols, m, want):
         slots.append(len(out) - 1)
     basis = [c for c in out if c is not None]
     if want > m:
-        raise ValueError("cannot complete %d orthonormal vectors in R^%d" % (want, m))
+        raise ValueError(f"cannot complete {int(want)} orthonormal vectors in R^{int(m)}")
     e = 0
     for sl in slots:
         while True:
@@ -8574,12 +8532,12 @@ def _lstsq(a, b, rcond=None):
     two_d = len(bb.shape) == 2
     if two_d:
         if bb.shape[0] != n:
-            raise ValueError("lstsq: a has %d rows but b has %d" % (n, bb.shape[0]))
+            raise ValueError(f"lstsq: a has {int(n)} rows but b has {int(bb.shape[0])}")
         cols = [[bb.data[r][c] for r in range(n)] for c in range(bb.shape[1])]
     else:
         cols = [bb._flat()]
         if len(cols[0]) != n:  # numpy raises here too
-            raise ValueError("lstsq: a has %d rows but b has %d" % (n, len(cols[0])))
+            raise ValueError(f"lstsq: a has {int(n)} rows but b has {int(len(cols[0]))}")
 
     sols = []
     for bv in cols:
@@ -8587,10 +8545,7 @@ def _lstsq(a, b, rcond=None):
         z = [uy[c] / svl[c] if svl[c] > cut else 0.0 for c in range(len(svl))]
         sols.append([_fsum(vt.data[c][j] * z[c] for c in range(len(svl))) for j in range(k)])
 
-    if two_d:
-        x = marr([[sols[c][j] for c in range(len(sols))] for j in range(k)])
-    else:
-        x = marr(sols[0])
+    x = marr([[sols[c][j] for c in range(len(sols))] for j in range(k)]) if two_d else marr(sols[0])
     resid = marr([])
     rank = _pysum(1 for v in svl if v > cut)
     return x, resid, rank, sv
@@ -8804,8 +8759,9 @@ class carr:
             return carr(self._shaped([fn(a, other) for a in self.data]))
         if len(od) != len(self.data):
             raise ValueError(
-                "operands could not be broadcast together "
-                "with shapes %r %r" % (self.shape, getattr(other, "shape", (len(od),)))
+                "operands could not be broadcast together with shapes {!r} {!r}".format(
+                    self.shape, getattr(other, "shape", (len(od),))
+                )
             )
         return carr(self._shaped([fn(a, b) for a, b in zip(self.data, od)]))
 
@@ -8928,7 +8884,7 @@ def _fft_axis(x, n, axis, one_d):
     if axis == 0:
         cols = [one_d(list(c), n) for c in zip(*rows)]
         return carr([list(r) for r in zip(*cols)])
-    raise ValueError("axis %r is out of bounds for a 2-D transform" % (axis,))
+    raise ValueError(f"axis {axis!r} is out of bounds for a 2-D transform")
 
 
 def _pad(a, n):
@@ -8974,7 +8930,7 @@ class _FFT:
         if got is not None:
             return got
         if axis not in (-1, 0):
-            raise ValueError("axis %r is out of bounds for a 1-D transform" % (axis,))
+            raise ValueError(f"axis {axis!r} is out of bounds for a 1-D transform")
         return carr(_FFT._fft1(_tocomplex(x), n))
 
     @staticmethod
@@ -8983,7 +8939,7 @@ class _FFT:
         if got is not None:
             return got
         if axis not in (-1, 0):
-            raise ValueError("axis %r is out of bounds for a 1-D transform" % (axis,))
+            raise ValueError(f"axis {axis!r} is out of bounds for a 1-D transform")
         return carr(_FFT._ifft1(_tocomplex(x), n))
 
     @staticmethod
@@ -8992,7 +8948,7 @@ class _FFT:
         if got is not None:
             return got
         if axis not in (-1, 0):
-            raise ValueError("axis %r is out of bounds for a 1-D transform" % (axis,))
+            raise ValueError(f"axis {axis!r} is out of bounds for a 1-D transform")
         return carr(_FFT._rfft1(_tocomplex(x), n))
 
     @staticmethod
@@ -9000,7 +8956,7 @@ class _FFT:
         # 1-D only: axis is accepted for numpy call-compatibility
         # and must select the single existing axis.
         if axis not in (-1, 0):
-            raise ValueError("only 1-D transforms are supported; axis=%r" % (axis,))
+            raise ValueError(f"only 1-D transforms are supported; axis={axis!r}")
         half = _tocomplex(x)
         m = len(half)
         if n is None:
@@ -9464,7 +9420,7 @@ def _pad_axis(seq, lo, hi, mode, c, wrap_scalar):
     if mode == "constant":
         return [wrap_scalar(c) for _ in range(lo)] + list(seq) + [wrap_scalar(c) for _ in range(hi)]
     if n == 0:
-        raise ValueError("cannot pad an empty axis with mode %r" % mode)
+        raise ValueError(f"cannot pad an empty axis with mode {mode!r}")
     if mode == "edge":
         return [seq[0]] * lo + list(seq) + [seq[-1]] * hi
     if mode in ("symmetric", "reflect", "wrap"):
@@ -9483,7 +9439,7 @@ def _pad_axis(seq, lo, hi, mode, c, wrap_scalar):
             return seq[k] if k < n else seq[period - k]
 
         return [pick(k) for k in range(-lo, 0)] + list(seq) + [pick(k) for k in range(n, n + hi)]
-    raise ValueError("unsupported pad mode %r" % (mode,))
+    raise ValueError(f"unsupported pad mode {mode!r}")
 
 
 def _pad_nested(nested, pairs, mode, c, depth=0):
@@ -9743,7 +9699,7 @@ class timedelta64:
 
     def __init__(self, value, unit="D"):
         if unit not in _DT_UNITS:
-            raise ValueError("timedelta64 unit %r is not supported" % (unit,))
+            raise ValueError(f"timedelta64 unit {unit!r} is not supported")
         self.value, self.unit = int(value), unit
 
     def _seconds(self):
@@ -9755,11 +9711,11 @@ class timedelta64:
         return _dt.timedelta(seconds=self._seconds())
 
     def __repr__(self):
-        return "numpy.timedelta64(%d,%r)" % (self.value, self.unit)
+        return f"numpy.timedelta64({int(self.value)},{self.unit!r})"
 
     def __str__(self):
         # numpy prints the bare count and the plural unit name
-        return "%d %s" % (self.value, {"D": "days", "h": "hours", "m": "minutes", "s": "seconds"}[self.unit])
+        return "{} {}".format(int(self.value), {"D": "days", "h": "hours", "m": "minutes", "s": "seconds"}[self.unit])
 
     def __eq__(self, other):
         if isinstance(other, timedelta64):
@@ -9801,9 +9757,9 @@ class datetime64:
             self._d = _dt.datetime(value.year, value.month, value.day)
             self.unit = unit or "D"
         else:
-            raise TypeError("cannot convert %r to datetime64" % (value,))
+            raise TypeError(f"cannot convert {value!r} to datetime64")
         if self.unit not in _DT_UNITS:
-            raise ValueError("datetime64 unit %r is not supported" % (self.unit,))
+            raise ValueError(f"datetime64 unit {self.unit!r} is not supported")
         if self.unit == "D":
             self._d = self._d.replace(hour=0, minute=0, second=0, microsecond=0)
 
@@ -9868,7 +9824,7 @@ class datetime64:
         return self._d.isoformat(timespec={"h": "hours", "m": "minutes", "s": "seconds"}[self.unit])
 
     def __repr__(self):
-        return "numpy.datetime64(%r)" % str(self)
+        return f"numpy.datetime64({str(self)!r})"
 
     def item(self):
         """numpy: a day-unit datetime64 gives a datetime.date."""
@@ -9994,7 +9950,7 @@ def frombuffer(buf, dtype="float64", count=-1):
     key = _dtype_name(dtype)
     fmt, size = _DTYPE_FMT.get(key, ("d", 8))
     n = len(buf) // size if count in (-1, None) else int(count)
-    vals = _struct.unpack("<%d%s" % (n, fmt), bytes(buf[: n * size]))
+    vals = _struct.unpack(f"<{int(n)}{fmt}", bytes(buf[: n * size]))
     out = marr([float(v) for v in vals])
     out._dt = None if key == "float64" else key
     return out
@@ -10137,7 +10093,7 @@ def broadcast_shapes(*shapes):
         dims = {sh[len(sh) - nd + k] for sh in shapes if len(sh) - nd + k >= 0}
         dims.discard(1)
         if len(dims) > 1:
-            raise ValueError("shape mismatch: objects cannot be broadcast to a single shape %r" % (shapes,))
+            raise ValueError(f"shape mismatch: objects cannot be broadcast to a single shape {shapes!r}")
         out.append(dims.pop() if dims else 1)
     return tuple(out)
 
@@ -10569,7 +10525,7 @@ class _DType:
         return hash(self.name)
 
     def __repr__(self):
-        return "dtype('%s')" % self.name
+        return f"dtype('{self.name}')"
 
     def __str__(self):
         return self.name
@@ -10584,7 +10540,7 @@ def savez(file, *args, **kwds):
     import json as _json
     import zipfile as _zip
 
-    arrays = {"arr_%d" % i: v for i, v in enumerate(args)}
+    arrays = {f"arr_{int(i)}": v for i, v in enumerate(args)}
     arrays.update(kwds)
     path = file if isinstance(file, str) else getattr(file, "name", str(file))
     if isinstance(file, str) and not path.endswith(".npz"):
@@ -10777,10 +10733,8 @@ for _name, _op in (
 ):
     _f = globals().get(_name)
     if _f is not None and not hasattr(_f, "outer"):
-        try:
+        with contextlib.suppress(AttributeError, TypeError):
             _f.outer = _outer_of(_op)
-        except (AttributeError, TypeError):
-            pass
 if not hasattr(add, "outer"):
     type(add).outer = staticmethod(_outer_of(lambda x, y: x + y))
 
@@ -10864,7 +10818,7 @@ def _oarr_elementwise(a, b, op):
     if isinstance(b, (oarr, marr, list, tuple)):
         bv = b._flat() if isinstance(b, marr) else list(b)
         if len(bv) != len(a):
-            raise ValueError("operands could not be broadcast together with shapes (%d,) (%d,)" % (len(a), len(bv)))
+            raise ValueError(f"operands could not be broadcast together with shapes ({int(len(a))},) ({int(len(bv))},)")
         return oarr([op(x, y) for x, y in zip(a, bv)])
     return oarr([op(x, b) for x in a])
 
@@ -10950,24 +10904,24 @@ def _hqr_eigvals(A):
     while nn >= 0:
         its = 0
         while True:
-            l = nn
-            while l >= 1:
-                s = abs(a[l - 1][l - 1]) + abs(a[l][l])
+            ell = nn
+            while ell >= 1:
+                s = abs(a[ell - 1][ell - 1]) + abs(a[ell][ell])
                 if s == 0.0:
                     s = anorm
-                if abs(a[l][l - 1]) + s == s:
-                    a[l][l - 1] = 0.0
+                if abs(a[ell][ell - 1]) + s == s:
+                    a[ell][ell - 1] = 0.0
                     break
-                l -= 1
+                ell -= 1
             x = a[nn][nn]
-            if l == nn:
+            if ell == nn:
                 wr[nn] = x + t
                 wi[nn] = 0.0
                 nn -= 1
                 break
             y = a[nn - 1][nn - 1]
             w = a[nn][nn - 1] * a[nn - 1][nn]
-            if l == nn - 1:
+            if ell == nn - 1:
                 p = 0.5 * (y - x)
                 q = p * p + w
                 z = _math.sqrt(abs(q))
@@ -10995,7 +10949,7 @@ def _hqr_eigvals(A):
                 w = -0.4375 * s * s
             its += 1
             m = nn - 2
-            while m >= l:
+            while m >= ell:
                 z = a[m][m]
                 r = x - z
                 s = y - z
@@ -11006,7 +10960,7 @@ def _hqr_eigvals(A):
                 p /= s
                 q /= s
                 r /= s
-                if m == l:
+                if m == ell:
                     break
                 u = abs(a[m][m - 1]) * (abs(q) + abs(r))
                 v = abs(p) * (abs(a[m - 1][m - 1]) + abs(z) + abs(a[m + 1][m + 1]))
@@ -11035,7 +10989,7 @@ def _hqr_eigvals(A):
                     s = -s
                 if s != 0.0:
                     if k == m:
-                        if l != m:
+                        if ell != m:
                             a[k][k - 1] = -a[k][k - 1]
                     else:
                         a[k][k - 1] = -s * x
@@ -11053,7 +11007,7 @@ def _hqr_eigvals(A):
                         a[k + 1][j] -= p * y
                         a[k][j] -= p * x
                     mmin = nn if nn < k + 3 else k + 3
-                    for i in range(l, mmin + 1):
+                    for i in range(ell, mmin + 1):
                         p = x * a[i][k] + y * a[i][k + 1]
                         if k != nn - 1:
                             p += z * a[i][k + 2]

@@ -24,7 +24,7 @@ def new_user_cohort(rx_start, drug_group, outcome_time, outcome_event, washout=1
     Ray WA (2003). Evaluating Medication Effects Outside of Clinical
     Trials: New-User Designs. American J Epidemiology 158(9):915-920.
     """
-    starts = np.asarray(rx_start, dtype=np.float64).ravel()
+    np.asarray(rx_start, dtype=np.float64).ravel()
     groups = np.asarray(drug_group).ravel()
     times = np.asarray(outcome_time, dtype=np.float64).ravel()
     events = np.asarray(outcome_event, dtype=np.int64).ravel()

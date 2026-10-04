@@ -13,12 +13,9 @@ def wvbnz(weights, *, quota=None):
     """
 
     weights = np.asarray(weights, dtype=float)
-    if quota is None:
-        quota = float(weights.sum()) / 2.0
-    else:
-        quota = float(quota)
+    quota = float(weights.sum()) / 2.0 if quota is None else float(quota)
     n = len(weights)
-    total = weights.sum()
+    weights.sum()
     swing_count = 0
     for i in range(n):
         without_i = np.delete(weights, i).sum()

@@ -17,7 +17,10 @@ def ghosal_ch3_polya_tree_posterior_density(x, data, a_of_level=None, depth=8):
     posterior via alpha* = alpha + N (Theorem 3.21).
     Keys: posterior."""
     if a_of_level is None:
-        a_of_level = lambda m: float(m * m)
+
+        def a_of_level(m):
+            return float(m * m)
+
     xs = _bnp._flat(x)
     d = _bnp._flat(data)
     n = len(d)

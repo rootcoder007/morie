@@ -77,14 +77,14 @@ def _prep(X, y):
     yy = [float(v) for v in y]
     n = len(M)
     if n != len(yy):
-        raise ValueError("forwsr: %d rows of X but %d responses" % (n, len(yy)))
+        raise ValueError(f"forwsr: {int(n)} rows of X but {int(len(yy))} responses")
     if n < 4:
         raise ValueError("forwsr: need at least four observations")
     p = len(M[0]) if M else 0
     if p == 0 or any(len(r) != p for r in M):
         raise ValueError("forwsr: the design is ragged or empty")
     if n <= p:
-        raise ValueError("forwsr: %d observations cannot support %d coefficients" % (n, p))
+        raise ValueError(f"forwsr: {int(n)} observations cannot support {int(p)} coefficients")
     return M, yy, n, p
 
 
@@ -123,7 +123,7 @@ def _norm_ppf(p):
     doi:10.2307/2347330. Coefficients as in R's src/nmath/qnorm.c.
     """
     if not 0.0 < p < 1.0:
-        raise ValueError("forwsr: a probability must lie in (0, 1), got %r" % (p,))
+        raise ValueError(f"forwsr: a probability must lie in (0, 1), got {p!r}")
     q = p - 0.5
     if abs(q) <= 0.425:
         r = 0.180625 - q * q
@@ -307,7 +307,7 @@ def ols_fit(X, y, subset=None):
     M, yy, n, p = _prep(X, y)
     idx = list(range(n)) if subset is None else [int(i) for i in subset]
     if len(idx) < p:
-        raise ValueError("forwsr: a subset of %d cannot fit %d coefficients" % (len(idx), p))
+        raise ValueError(f"forwsr: a subset of {int(len(idx))} cannot fit {int(p)} coefficients")
     A = [[sum(M[i][a] * M[i][b] for i in idx) for b in range(p)] for a in range(p)]
     v = [sum(M[i][a] * yy[i] for i in idx) for a in range(p)]
     beta = _solve(A, v)
@@ -355,7 +355,7 @@ def forward_search(X, y, start=None, n_draw=500, seed=1):
     else:
         cur = sorted(int(i) for i in start)
         if len(cur) < p:
-            raise ValueError("forwsr: the starting subset must hold at least %d observations" % p)
+            raise ValueError(f"forwsr: the starting subset must hold at least {int(p)} observations")
     steps = []
     while True:
         f = ols_fit(X, y, cur)
@@ -395,8 +395,9 @@ def forward_plot(steps, key="min_deletion_residual"):
         raise ValueError("forwsr: no steps to monitor")
     if key not in steps[0]:
         raise ValueError(
-            "forwsr: %r is not monitored; available: %s"
-            % (key, ", ".join(sorted(k for k in steps[0] if k != "subset")))
+            "forwsr: {!r} is not monitored; available: {}".format(
+                key, ", ".join(sorted(k for k in steps[0] if k != "subset"))
+            )
         )
     return {"m": [s["m"] for s in steps], key: [s[key] for s in steps]}
 

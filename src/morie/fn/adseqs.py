@@ -65,11 +65,11 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
     2005).  The objective, not the search, is what is shared.
     """
     Gm = _grid(G)
-    I = len(Gm)
-    J = len(Gm[0]) if I else 0
+    I_ = len(Gm)
+    J = len(Gm[0]) if I_ else 0
     K = int(K)
     steps = int(steps)
-    if I == 0 or J == 0:
+    if I_ == 0 or J == 0:
         raise ValueError("G must be non-empty")
     if K < 1:
         raise ValueError("K must be at least 1")
@@ -79,7 +79,7 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
         raise ValueError("genotype counts must lie in [0, 2]")
     if Q0 is None:
         Q = []
-        for i in range(I):
+        for i in range(I_):
             row = [1.0 + ((i + k) % K) for k in range(K)]
             s = sum(row)
             Q.append([v / s for v in row])
@@ -92,7 +92,7 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
 
     def loglik(Q, P):
         tot = 0.0
-        for i in range(I):
+        for i in range(I_):
             for j in range(J):
                 a = sum(Q[i][k] * P[k][j] for k in range(K))
                 b = sum(Q[i][k] * (1.0 - P[k][j]) for k in range(K))
@@ -105,10 +105,10 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
 
     ll0 = loglik(Q, P)
     for _ in range(steps):
-        Qn = [[0.0] * K for _ in range(I)]
+        Qn = [[0.0] * K for _ in range(I_)]
         num = [[0.0] * J for _ in range(K)]
         den = [[0.0] * J for _ in range(K)]
-        for i in range(I):
+        for i in range(I_):
             for j in range(J):
                 g = Gm[i][j]
                 sa = sum(Q[i][k] * P[k][j] for k in range(K))
@@ -129,7 +129,7 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
             "P": P,
             "loglik": loglik(Q, P),
             "loglik0": ll0,
-            "I": I,
+            "I": I_,
             "J": J,
             "K": K,
             "steps": steps,

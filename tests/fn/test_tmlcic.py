@@ -58,7 +58,7 @@ def trial():
             region.append(r)
             W1.append(0.50 * float(rng.uniform()))
             W3.append(rng.standard_normal())
-            pair.append("pair%02d" % j)
+            pair.append(f"pair{int(j):02d}")
     e = [0.15 * rng.standard_normal() for _ in range(N)]
     Y0 = [expit(-2.2 + 6.0 * W1[i] + 0.8 * region[i] + e[i]) for i in range(N)]
     Y1 = [expit(logit(Y0[i]) + 0.6) for i in range(N)]
@@ -270,7 +270,7 @@ def test_clusters_of_other_sizes_are_allowed(trial):
     t = trial
     A = randomize(100)
     r = tmle_cluster_ic(
-        observed(t, A), A, t["W"], cluster=["c%d" % (i // 4) for i in range(N)], design="clustered", n_folds=5
+        observed(t, A), A, t["W"], cluster=[f"c{int(i // 4)}" for i in range(N)], design="clustered", n_folds=5
     )
     assert r["independent_units"] == N // 4
     assert math.isfinite(r["se"])
@@ -310,7 +310,7 @@ def _make(J, seed, assign="E-only", interference=0.0):
             A.append(c["A"])
             E.append([c["E"]])
             W.append([c["W"][i]])
-            lab.append("c%03d" % j)
+            lab.append(f"c{int(j):03d}")
 
     def cf(a):
         return sum(sum(mu(a, c, i) for i in range(c["N"])) / c["N"] for c in cl) / len(cl)

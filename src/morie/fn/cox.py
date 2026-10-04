@@ -34,7 +34,7 @@ def cox_ph(time, event, x) -> RegressionResult:
         X = X.T
     n, p = X.shape
     order = np.argsort(-time)  # descending for risk sets
-    time_s, event_s, X_s = time[order], event[order], X[order]
+    _time_s, event_s, X_s = time[order], event[order], X[order]
 
     def neg_partial_ll(beta):
         risk = np.exp(np.clip(X_s @ beta, -500, 500))
@@ -50,14 +50,13 @@ def cox_ph(time, event, x) -> RegressionResult:
     cum_risk = np.cumsum(risk)
     H = np.zeros((p, p))
     for i in range(n):
-        if event_s[i]:
-            if cum_risk[i] > 0:
-                weighted_x = np.cumsum(X_s[: i + 1] * risk[: i + 1, None], axis=0)[i]
-                mean_x = weighted_x / cum_risk[i]
-                for j1 in range(p):
-                    for j2 in range(p):
-                        wx2 = np.sum(X_s[: i + 1, j1] * X_s[: i + 1, j2] * risk[: i + 1]) / cum_risk[i]
-                        H[j1, j2] += wx2 - mean_x[j1] * mean_x[j2]
+        if event_s[i] and cum_risk[i] > 0:
+            weighted_x = np.cumsum(X_s[: i + 1] * risk[: i + 1, None], axis=0)[i]
+            mean_x = weighted_x / cum_risk[i]
+            for j1 in range(p):
+                for j2 in range(p):
+                    wx2 = np.sum(X_s[: i + 1, j1] * X_s[: i + 1, j2] * risk[: i + 1]) / cum_risk[i]
+                    H[j1, j2] += wx2 - mean_x[j1] * mean_x[j2]
     try:
         cov = np.linalg.inv(H)
     except np.linalg.LinAlgError:

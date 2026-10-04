@@ -29,10 +29,7 @@ def ppois(
     if lambda_ <= 0:
         raise ValueError(f"lambda_ must be > 0, got {lambda_}.")
     dist = stats.poisson(mu=lambda_)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

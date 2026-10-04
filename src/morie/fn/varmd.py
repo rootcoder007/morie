@@ -77,10 +77,7 @@ def var_model(Y, p: int = 1) -> DescriptiveResult:
     # Residuals and covariance (unbiased: divide by n_use - 1 - m*p).
     resid = Y_dep - Z @ B  # (n_use, m)
     df_res = n_use - (1 + m * p)
-    if df_res > 0:
-        sigma_u = (resid.T @ resid) / df_res
-    else:
-        sigma_u = np.eye(m) * 1e-8
+    sigma_u = resid.T @ resid / df_res if df_res > 0 else np.eye(m) * 1e-08
 
     # Information criteria (Lütkepohl 2005, Ch. 4).
     k = 1 + m * p  # parameters per equation

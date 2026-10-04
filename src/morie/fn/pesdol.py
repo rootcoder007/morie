@@ -64,14 +64,14 @@ def ardl_bounds(y, x, p=1, q=1):
     Xm = [[float(v) for v in r] for r in k.mat(x)]
     n0 = len(yv)
     if n0 != len(Xm):
-        raise ValueError("pesdol: %d responses but %d regressor rows" % (n0, len(Xm)))
+        raise ValueError(f"pesdol: {int(n0)} responses but {int(len(Xm))} regressor rows")
     m = len(Xm[0])
     p, q = int(p), int(q)
     if p < 1 or q < 0:
         raise ValueError("pesdol: need p >= 1 and q >= 0")
     start = max(p, q) + 1
     if n0 - start < p + q * m + m + 3:
-        raise ValueError("pesdol: too few observations for ARDL(%d, %d) with %d regressors" % (p, q, m))
+        raise ValueError(f"pesdol: too few observations for ARDL({int(p)}, {int(q)}) with {int(m)} regressors")
 
     rows, dep = [], []
     for t in range(start, n0):
@@ -82,8 +82,8 @@ def ardl_bounds(y, x, p=1, q=1):
         for i in range(1, p):
             r.append(yv[t - i] - yv[t - i - 1])  # dy lags
         for j in range(m):
-            for l in range(0, q + 1):
-                r.append(Xm[t - l][j] - Xm[t - l - 1][j])  # dx lags
+            for ell in range(0, q + 1):
+                r.append(Xm[t - ell][j] - Xm[t - ell - 1][j])  # dx lags
         rows.append(r)
         dep.append(yv[t] - yv[t - 1])
 

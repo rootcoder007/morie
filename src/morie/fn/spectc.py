@@ -36,7 +36,7 @@ def spectral_cluster(
     if not 2 <= n_clusters <= n:
         raise ValueError(f"n_clusters must be in [2, {n}], got {n_clusters}.")
 
-    D = np.diag(A.sum(axis=1))
+    np.diag(A.sum(axis=1))
     D_inv_sqrt = np.diag(1.0 / np.sqrt(np.maximum(A.sum(axis=1), 1e-12)))
     L_sym = np.eye(n) - D_inv_sqrt @ A @ D_inv_sqrt
 

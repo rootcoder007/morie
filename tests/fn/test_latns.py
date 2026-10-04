@@ -5,7 +5,7 @@ from morie.fn.latns import latns
 
 
 def test_latns_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = latns(n_samples=50, n_dims=3)
     assert result is not None
     assert hasattr(result, "name")

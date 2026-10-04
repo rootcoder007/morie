@@ -38,7 +38,6 @@ def test_windowing_limits_pairs():
     # (2,3) pair still prunes, and (0,1) still prunes, but a duplicate
     # placed out of window survives.
     s0 = [0, 1, 2, 0, 1, 2]
-    s2 = [0, 0, 1, 1, 2, 2]
     sx = [1, 0, 1, 2, 2, 0]  # buffer, low LD with neighbours
     G = [[s0[i], sx[i], s0[i]] for i in range(6)]
     res = ld_prune(G, window=2, step=1, r2_threshold=0.5)

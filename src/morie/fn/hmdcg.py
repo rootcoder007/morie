@@ -186,8 +186,8 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
     flat = int(size * size * ch)
     dis.append({"kind": "fc", "in": flat, "out": 1, "params": flat + 1, "activation": "sigmoid"})
 
-    g_params = int(sum(l["params"] for l in gen))
-    d_params = int(sum(l["params"] for l in dis))
+    g_params = int(sum(ell["params"] for ell in gen))
+    d_params = int(sum(ell["params"] for ell in dis))
 
     # Demonstrate the resolved shapes on a real forward pass.
     Wproj = np.ones((k, h0 * w0)) / k
@@ -201,7 +201,7 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
             {
                 "title": "Generator",
                 "headers": ["kind", "channels", "out", "params"],
-                "rows": [[l["kind"], l.get("channels"), l["out"], l["params"]] for l in gen],
+                "rows": [[ell["kind"], ell.get("channels"), ell["out"], ell["params"]] for ell in gen],
             }
         ],
         interpretation="Both nets are pure convolution: no pooling, no fully-connected hidden layers, which is DCGAN's rule.",

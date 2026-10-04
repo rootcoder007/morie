@@ -72,9 +72,9 @@ _EPS = 1e-12
 def beta_min(d, alpha=0.05, pi=0.5):
     r"""Theorem 3's lower bound on the subsample exponent."""
     if not 0.0 < alpha < 0.5:
-        raise ValueError("frfgrf: alpha must be in (0, 0.5), got %r" % (alpha,))
+        raise ValueError(f"frfgrf: alpha must be in (0, 0.5), got {alpha!r}")
     if not 0.0 < pi <= 1.0:
-        raise ValueError("frfgrf: pi must be in (0, 1], got %r" % (pi,))
+        raise ValueError(f"frfgrf: pi must be in (0, 1], got {pi!r}")
     if d < 1:
         raise ValueError("frfgrf: need at least one feature")
     ratio = math.log(1.0 / alpha) / math.log(1.0 / (1.0 - alpha))
@@ -172,12 +172,12 @@ def forest_fit_check(
     n = len(yv)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("frfgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"frfgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     d = len(Xm[0]) if Xm and Xm[0] else 0
     if d == 0:
         raise ValueError("frfgrf: no features")
     if n < 40:
-        raise ValueError("frfgrf: need at least 40 observations, got %d" % n)
+        raise ValueError(f"frfgrf: need at least 40 observations, got {int(n)}")
     trees, bags, s = grow_forest(
         Xm,
         yv,
@@ -217,9 +217,9 @@ def forest_fit_check(
             "honesty": hon,
             "subsample_rate_ok": rate_ok,
             "subsample_rate_note": (
-                "beta = log(s)/log(n) = %.3f against beta_min = %.3f; the "
+                f"beta = log(s)/log(n) = {beta:.3f} against beta_min = {bmin:.3f}; the "
                 "bound is near 1 for any moderate d, so it is reported "
-                "rather than scored" % (beta, bmin)
+                "rather than scored"
             ),
             "split_share": share,
             "split_counts": counts,

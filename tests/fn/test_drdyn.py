@@ -24,10 +24,7 @@ def test_drdyn_basic():
             time_ids.append(float(t))
             cohort_vals.append(g)
             base_val = rng.normal(0, 1)
-            if g > 0 and t >= g:
-                te = 1.5
-            else:
-                te = 0.0
+            te = 1.5 if g > 0 and t >= g else 0.0
             y_vals.append(base_val + te)
 
     result = dr_dynamic_did(y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=3)
@@ -61,10 +58,7 @@ def test_drdyn_edge():
             time_ids.append(float(t))
             cohort_vals.append(g)
             base_val = rng.normal(0, 1)
-            if g > 0 and t >= g:
-                te = 1.0
-            else:
-                te = 0.0
+            te = 1.0 if g > 0 and t >= g else 0.0
             y_vals.append(base_val + te)
 
     result = dr_dynamic_did(y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=1)

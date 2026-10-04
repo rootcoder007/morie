@@ -80,7 +80,7 @@ def vaccine_efficacy_exact(
 
     total_cases = cases_vacc + cases_ctrl
     if total_cases > 0:
-        p = cases_vacc / total_cases
+        cases_vacc / total_cases
         ci_lo_p = _st.beta.ppf(alpha / 2, cases_vacc + 0.5, cases_ctrl + 0.5) if cases_vacc > 0 else 0.0
         ci_hi_p = _st.beta.ppf(1 - alpha / 2, cases_vacc + 0.5, cases_ctrl + 0.5) if cases_vacc < total_cases else 1.0
         rr_lo_e = (ci_lo_p / (1 - ci_lo_p)) * (n_ctrl / n_vacc)

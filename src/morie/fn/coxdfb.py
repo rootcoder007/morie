@@ -92,7 +92,7 @@ def cox_dfbeta_influence(fit):
     e = np.asarray(fit["event"], dtype=float)
     X = np.atleast_2d(np.asarray(fit["X"], dtype=float))
     beta = np.asarray(fit["beta"], dtype=float).ravel()
-    I = np.asarray(fit["information"], dtype=float)
+    I_ = np.asarray(fit["information"], dtype=float)
     se = np.asarray(fit["se"], dtype=float).ravel()
     n, p = X.shape
     w = np.exp(np.clip(X @ beta, -500, 500))
@@ -110,9 +110,9 @@ def cox_dfbeta_influence(fit):
         L[at_risk] -= d * (w[at_risk][:, None] * (X[at_risk] - mu)) / S0
 
     try:
-        Iinv = np.linalg.inv(I)
+        Iinv = np.linalg.inv(I_)
     except np.linalg.LinAlgError:
-        Iinv = np.linalg.pinv(I)
+        Iinv = np.linalg.pinv(I_)
     dfbeta = L @ Iinv
     with np.errstate(divide="ignore", invalid="ignore"):
         dfbetas = dfbeta / np.where(se > 0, se, np.nan)

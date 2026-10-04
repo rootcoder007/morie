@@ -280,7 +280,7 @@ def facrisk(alpha0, W, phi):
     Wm, p = _as_mat(W), _as_vec(phi)
     if any(len(row) != len(p) for row in Wm):
         raise ValueError("each row of W must have one weight per component")
-    lr = [float(alpha0) + sum(row[l] * p[l] for l in range(len(p))) for row in Wm]
+    lr = [float(alpha0) + sum(row[ell] * p[ell] for ell in range(len(p))) for row in Wm]
     return {"logrisk": lr, "risk": [math.exp(t) for t in lr], "n": len(lr), "n_components": len(p)}
 
 
@@ -615,9 +615,9 @@ def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
                 for j in range(n):
                     d = X[i][j]
                     Tj = T[j]
-                    for l in range(m):
-                        e = d - Y[k][l]
-                        tot += e * e * tik * Tj[l]
+                    for ell in range(m):
+                        e = d - Y[k][ell]
+                        tot += e * e * tik * Tj[ell]
         return tot
 
     def grad(T):
@@ -629,9 +629,9 @@ def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
                 for j in range(n):
                     d = X[i][j]
                     Tj = T[j]
-                    for l in range(m):
-                        e = d - Y[k][l]
-                        s += e * e * Tj[l]
+                    for ell in range(m):
+                        e = d - Y[k][ell]
+                        s += e * e * Tj[ell]
                 G[i][k] = 2.0 * s
         return G
 
@@ -1371,7 +1371,7 @@ def ssmk(A, B, C, L):
 def ssmconv(K, x):
     """Causal convolution y_t = sum_{l<=t} K_l x_{t-l}; standard."""
     Kv, xv = _as_vec(K), _as_vec(x)
-    return [sum(Kv[l] * xv[t - l] for l in range(min(t + 1, len(Kv)))) for t in range(len(xv))]
+    return [sum(Kv[ell] * xv[t - ell] for ell in range(min(t + 1, len(Kv)))) for t in range(len(xv))]
 
 
 def fftperiod(x, k=1):

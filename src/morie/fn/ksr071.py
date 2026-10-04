@@ -48,8 +48,8 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, log_pl_
     th = np.atleast_1d(np.asarray(theta_hat_n, dtype=float))
     if tb.shape != th.shape:
         raise ValueError("theta_bar_n and theta_hat_n must have the same shape.")
-    I = np.atleast_2d(np.asarray(I_tilde, dtype=float))
-    if I.shape[0] != tb.size or I.shape[1] != tb.size:
+    I_ = np.atleast_2d(np.asarray(I_tilde, dtype=float))
+    if I_.shape[0] != tb.size or I_.shape[1] != tb.size:
         raise ValueError(f"I_tilde must be {tb.size}x{tb.size}.")
     if n is None:
         raise ValueError("n is required for the n-scaling of the quadratic term.")
@@ -57,7 +57,7 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, log_pl_
     if n < 1:
         raise ValueError(f"n must be at least 1, got {n}.")
     d = tb - th
-    quad = 0.5 * n * float(d @ I @ d)
+    quad = 0.5 * n * float(d @ I_ @ d)
     return RichResult(
         payload={
             "log_pl": float(log_pl_hat) - quad,

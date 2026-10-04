@@ -73,7 +73,7 @@ def blip_function(y, A, W, V=None, ridge=1e-8):
     yv, av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("blip_function: %d outcomes but %d treatments" % (n, len(av)))
+        raise ValueError(f"blip_function: {int(n)} outcomes but {int(len(av))} treatments")
     if any(v not in (0.0, 1.0) for v in av):
         raise ValueError("blip_function: treatment must be binary 0/1")
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
@@ -111,7 +111,7 @@ def rc_threshold(blip, kappa):
     """
     kap = float(kappa)
     if not 0.0 < kap < 1.0:
-        raise ValueError("rc_threshold: kappa must be in (0,1), got %r" % (kappa,))
+        raise ValueError(f"rc_threshold: kappa must be in (0,1), got {kappa!r}")
     b = sorted(float(v) for v in blip)
     n = len(b)
     if n == 0:
@@ -140,7 +140,7 @@ def rc_rule(blip, kappa, rule="deterministic", seed=0):
     relaxation the paper points to.
     """
     if rule not in _RULES:
-        raise ValueError("rc_rule: rule must be 'deterministic' or 'stochastic', got %r" % (rule,))
+        raise ValueError(f"rc_rule: rule must be 'deterministic' or 'stochastic', got {rule!r}")
     b = [float(v) for v in blip]
     n = len(b)
     tau, info = rc_threshold(b, kappa)

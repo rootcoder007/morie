@@ -91,7 +91,7 @@ def _cols(X, n, nm):
         return [[] for _ in range(n)]
     M = core.mat(X)
     if len(M) != n:
-        raise ValueError("stratified_weights: %s has the wrong number of rows" % nm)
+        raise ValueError(f"stratified_weights: {nm} has the wrong number of rows")
     return [list(r) for r in M]
 
 

@@ -31,15 +31,15 @@ def tensor_decompose(X, rank: int = 3, max_iter: int = 100, tol: float = 1e-6, *
     X = np.asarray(X, dtype=float)
     if X.ndim != 3:
         raise ValueError("Input must be a 3-D tensor")
-    I, J, K = X.shape
+    I_, J, K = X.shape
     rng = np.random.default_rng(0)
-    A = rng.standard_normal((I, rank))
+    A = rng.standard_normal((I_, rank))
     B = rng.standard_normal((J, rank))
     C = rng.standard_normal((K, rank))
 
-    X0 = X.reshape(I, J * K)
-    X1 = X.transpose(1, 0, 2).reshape(J, I * K)
-    X2 = X.transpose(2, 0, 1).reshape(K, I * J)
+    X0 = X.reshape(I_, J * K)
+    X1 = X.transpose(1, 0, 2).reshape(J, I_ * K)
+    X2 = X.transpose(2, 0, 1).reshape(K, I_ * J)
 
     iters = 0
     for it in range(max_iter):

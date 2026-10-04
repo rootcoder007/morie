@@ -45,10 +45,9 @@ def mxcrk(
         X_cure = np.asarray(X_cure, dtype=float)
         p1 = X_cure.shape[1]
 
-    p2 = 0
     if X_surv is not None:
         X_surv = np.asarray(X_surv, dtype=float)
-        p2 = X_surv.shape[1]
+        X_surv.shape[1]
 
     def neg_loglik(params):
         gamma0 = params[0]

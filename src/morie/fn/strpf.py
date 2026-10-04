@@ -33,10 +33,7 @@ def string_partition(
     for n in range(1, n_terms + 1):
         eta *= 1 - q**n
     eta_abs = abs(eta)
-    if eta_abs == 0:
-        Z = float("inf")
-    else:
-        Z = 1.0 / (tau.imag ** (d / 2.0) * eta_abs ** (2 * d))
+    Z = float("inf") if eta_abs == 0 else 1.0 / (tau.imag ** (d / 2.0) * eta_abs ** (2 * d))
     return DescriptiveResult(
         name="string_partition",
         value=float(Z) if np.isfinite(Z) else Z,

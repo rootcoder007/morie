@@ -25,7 +25,7 @@ def _kernel(t, kind):
         return np.where(np.abs(t) <= 1, (3.0 / 8.0) * (3 - 5 * t**2), 0.0)
     if kind == "uniform":
         return np.where(np.abs(t) <= 1, 0.5, 0.0)
-    raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kind))
+    raise ValueError(f"kernel must be one of {KERNELS}, got {kind!r}.")
 
 
 def _kernel_cdf(t, kind):
@@ -132,9 +132,9 @@ def schabenberger_intensity_estimation(
         raise ValueError("points must have two coordinate columns.")
     n = P.shape[0]
     if n < 2:
-        raise ValueError("need at least 2 events, got %d." % n)
+        raise ValueError(f"need at least 2 events, got {int(n)}.")
     if kernel not in KERNELS:
-        raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kernel))
+        raise ValueError(f"kernel must be one of {KERNELS}, got {kernel!r}.")
 
     if region is None:
         xmin, xmax = float(P[:, 0].min()), float(P[:, 0].max())

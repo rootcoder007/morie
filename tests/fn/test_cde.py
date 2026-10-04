@@ -116,7 +116,7 @@ def test_cde_zero_interaction():
 
 def test_cde_edge():
     """Edge case: minimum number of observations (n == 5, just enough)."""
-    rng = np.random.default_rng(7)
+    np.random.default_rng(7)
     X = np.array([0.0, 1.0, 0.0, 1.0, 1.0])
     M = np.array([0.5, 1.5, -0.5, 2.0, 0.0])
     Y = np.array([0.1, 1.2, -0.3, 2.1, 0.9])

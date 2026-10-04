@@ -11,7 +11,10 @@ __all__ = ["ddim_step"]
 
 def alpha_bar_cosine(t, T):
     """Nichol-Dhariwal cosine schedule for the cumulative alpha."""
-    f = lambda u: math.cos((u / T + 0.008) / 1.008 * math.pi / 2.0) ** 2
+
+    def f(u):
+        return math.cos((u / T + 0.008) / 1.008 * math.pi / 2.0) ** 2
+
     return f(t) / f(0.0)
 
 

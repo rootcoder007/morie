@@ -164,7 +164,7 @@ def _reliability(y_true, y_prob, n_bins):
 def _isotonic_regression(x, y):
     """Pool-adjacent violators (PAV) isotonic regression."""
     order = np.argsort(x)
-    x_s = x[order]
+    x[order]
     y_s = y[order].copy().astype(float)
     n = len(y_s)
 

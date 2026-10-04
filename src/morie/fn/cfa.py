@@ -52,13 +52,10 @@ def cfa(
     S = np.cov(Z, rowvar=False)  # sample covariance (correlation of standardised)
 
     # Map item names to indices
-    if isinstance(data, pd.DataFrame):
-        col_map = {c: i for i, c in enumerate(data.columns)}
-    else:
-        col_map = {i: i for i in range(p)}
+    col_map = {c: i for i, c in enumerate(data.columns)} if isinstance(data, pd.DataFrame) else {i: i for i in range(p)}
 
     n_factors = len(structure)
-    factor_names = list(structure.keys())
+    list(structure.keys())
 
     # Build Lambda (loadings matrix) via regression on factor scores
     Lambda = np.zeros((p, n_factors))
@@ -98,8 +95,8 @@ def cfa(
 
     # SRMR
     mask = np.tril_indices(p)
-    s_vals = S[mask]
-    r_vals = residuals[mask]
+    S[mask]
+    residuals[mask]
     sd_diag = np.sqrt(np.diag(S))
     sd_outer = np.outer(sd_diag, sd_diag)
     std_resid = residuals / np.where(sd_outer > 0, sd_outer, 1.0)

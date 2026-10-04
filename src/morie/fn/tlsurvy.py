@@ -77,12 +77,12 @@ def inclusion_probabilities(V, n, design="adaptive", influence=None, floor=0.01)
     probability makes the estimand unidentifiable for that stratum.
     """
     if design not in _DESIGNS:
-        raise ValueError("tlsurvy: design must be one of %s, got %r" % (", ".join(_DESIGNS), design))
+        raise ValueError("tlsurvy: design must be one of {}, got {!r}".format(", ".join(_DESIGNS), design))
     v = [float(q) for q in k.vec(V)]
     N = len(v)
     nn = int(n)
     if nn < 1 or nn > N:
-        raise ValueError("tlsurvy: n must lie in 1..%d, got %d" % (N, nn))
+        raise ValueError(f"tlsurvy: n must lie in 1..{int(N)}, got {int(nn)}")
     if design == "uniform":
         base = [1.0] * N
     elif design == "proportional":
@@ -92,7 +92,7 @@ def inclusion_probabilities(V, n, design="adaptive", influence=None, floor=0.01)
             raise ValueError("tlsurvy: the adaptive design needs the expected influence given V")
         base = [abs(float(q)) + _EPS for q in k.vec(influence)]
         if len(base) != N:
-            raise ValueError("tlsurvy: %d influence values for %d units" % (len(base), N))
+            raise ValueError(f"tlsurvy: {int(len(base))} influence values for {int(N)} units")
     # Rescale to sum exactly to n, iterating because capping at 1 and
     # flooring both remove mass that has to go somewhere -- a single
     # pass leaves the expected sample size short of n.

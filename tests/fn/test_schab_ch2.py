@@ -7,12 +7,21 @@ from morie.fn.spcont import schabenberger_spatial_continuity as continuity
 from morie.fn.spcovf import schabenberger_covariance_function as covfun
 from morie.fn.spmsd import schabenberger_mean_square_diff as differentiability
 
-EXPO = lambda h: np.exp(-3 * np.asarray(h, dtype=float))
-GAUSS = lambda h: np.exp(-3 * np.asarray(h, dtype=float) ** 2)
-SPH = lambda h: np.where(
-    np.asarray(h, float) <= 1, 1 - 1.5 * np.asarray(h, float) + 0.5 * np.asarray(h, float) ** 3, 0.0
-)
-NUGGET = lambda h: np.where(np.asarray(h, float) == 0, 1.3, EXPO(h))
+
+def EXPO(h):
+    return np.exp(-3 * np.asarray(h, dtype=float))
+
+
+def GAUSS(h):
+    return np.exp(-3 * np.asarray(h, dtype=float) ** 2)
+
+
+def SPH(h):
+    return np.where(np.asarray(h, float) <= 1, 1 - 1.5 * np.asarray(h, float) + 0.5 * np.asarray(h, float) ** 3, 0.0)
+
+
+def NUGGET(h):
+    return np.where(np.asarray(h, float) == 0, 1.3, EXPO(h))
 
 
 @pytest.mark.parametrize("cov", [EXPO, GAUSS, SPH])

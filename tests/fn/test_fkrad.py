@@ -5,7 +5,7 @@ from morie.fn.fkrad import fkrad
 
 
 def test_fkrad_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = fkrad(text="The quick brown fox jumps over the lazy dog")
     assert result is not None
     assert hasattr(result, "name")

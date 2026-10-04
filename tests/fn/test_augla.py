@@ -10,8 +10,12 @@ class TestAugla:
         assert augla is augmented_lagrangian
 
     def test_constrained_min(self):
-        f = lambda x: x[0] ** 2 + x[1] ** 2
-        g = lambda x: np.array([2 * x[0], 2 * x[1]])
+        def f(x):
+            return x[0] ** 2 + x[1] ** 2
+
+        def g(x):
+            return np.array([2 * x[0], 2 * x[1]])
+
         cons = [lambda x: x[0] + x[1] - 1]
         r = augmented_lagrangian(f, g, cons, np.array([2.0, 2.0]))
         assert isinstance(r, DescriptiveResult)

@@ -37,7 +37,7 @@ def modwt_decompose(
 
     x = np.asarray(x, dtype=float).ravel()
     lo, hi = _wavelet_filter(wavelet)
-    N = len(x)
+    len(x)
     result_coeffs = []
     approx = x.copy()
     for j in range(level):

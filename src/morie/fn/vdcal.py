@@ -84,7 +84,7 @@ def _phys(par):
         p.update(par)
     for k in ("Vp", "Ve", "Vr"):
         if p[k] <= 0.0:
-            raise ValueError("%s must be positive" % k)
+            raise ValueError(f"{k} must be positive")
     if p["Re_i"] < 0.0:
         raise ValueError("the albumin ratio cannot be negative")
     return p
@@ -214,7 +214,7 @@ def volume_of_distribution(
     Lombardo (2010) Drug Metab Dispos 38(7), 1094-1102.
     """
     if direction not in DIRECTIONS:
-        raise ValueError("direction must be one of %r" % (DIRECTIONS,))
+        raise ValueError(f"direction must be one of {DIRECTIONS!r}")
     fu = float(ppb)
     p = _phys(par)
     route = "given"

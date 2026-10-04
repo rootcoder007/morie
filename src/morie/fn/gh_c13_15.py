@@ -105,9 +105,9 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
             for k in range(p):
                 gr[k] += float(X[i][k]) - xb[k]
             for k in range(p):
-                for l in range(p):
-                    xx = _math.fsum(float(w[j]) * float(X[j][k]) * float(X[j][l]) for j in rows) / sw
-                    he[k][l] -= xx - xb[k] * xb[l]
+                for ell in range(p):
+                    xx = _math.fsum(float(w[j]) * float(X[j][k]) * float(X[j][ell]) for j in rows) / sw
+                    he[k][ell] -= xx - xb[k] * xb[ell]
         return (-ll, np.marr([-v for v in gr]), np.marr([[-v for v in row] for row in he]))
 
     b = np.zeros(p)

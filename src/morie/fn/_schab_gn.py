@@ -161,7 +161,7 @@ def gauss_newton_semivariogram(
             if np.isfinite(trial_obj) and trial_obj < obj:
                 rel = (obj - trial_obj) / max(abs(obj), 1e-300)
                 theta, obj = trial, trial_obj
-                fitted, w, resid = t_fitted, t_w, t_resid
+                _fitted, w, resid = t_fitted, t_w, t_resid
                 stepped = True
                 converged = rel < tol
                 break

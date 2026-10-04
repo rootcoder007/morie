@@ -32,7 +32,10 @@ def test_gh_ap_e1_basic():
     # value at x = 0.5 for the largest K, and compare against f(0.5) = 0.
     # Since |x - 1/2| is symmetric about 0.5, B_K[f](0.5) should be tiny.
     K = K_list[-1]
-    f = lambda x: abs(x - 0.5)
+
+    def f(x):
+        return abs(x - 0.5)
+
     x = 0.5
     import math as _math
 

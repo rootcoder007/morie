@@ -23,7 +23,10 @@ def _make_env():
 def test_hmrl_basic():
     """Test basic functionality."""
     env = _make_env()
-    pi = lambda s: 0
+
+    def pi(s):
+        return 0
+
     result = geron_reinforcement_learning(env, pi, gamma=0.5)
     assert isinstance(result, dict)
     assert "mean_return" in result
@@ -38,7 +41,10 @@ def test_hmrl_basic():
 def test_hmrl_edge():
     """Test edge cases."""
     env = _make_env()
-    pi = lambda s: 0
+
+    def pi(s):
+        return 0
+
     # Undiscounted case: each episode returns 3.0 (3 steps of reward 1)
     result = geron_reinforcement_learning(env, pi, gamma=1.0, n_episodes=3)
     assert isinstance(result, dict)

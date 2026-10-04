@@ -123,7 +123,7 @@ def test_get_dummies_matches():
     s = ["a", "b", "a", "c"]
     gd = pd.get_dummies(pd.Series(s, name="col"))
     want = {"a": [1, 0, 1, 0], "b": [0, 1, 0, 0], "c": [0, 0, 0, 1]}
-    for c in gd.keys():
+    for c in gd:
         assert gd[c].tolist() == want[str(c)]
     gdrop = pd.get_dummies(pd.Series(s, name="col"), drop_first=True)
     assert sorted(map(str, gdrop.keys())) == ["b", "c"]

@@ -56,7 +56,9 @@ def kosorok_ch2_quantile_hadamard_inequality(F, h_n, t_n, p, eps_pn=None):
     if eps < 0:
         raise ValueError("eps_pn must be non-negative.")
 
-    Fp = lambda z: float(F(z)) + t_n * float(h_n(z))
+    def Fp(z):
+        return float(F(z)) + t_n * float(h_n(z))
+
     # locate the perturbed p-quantile by bisection on the monotone Fp
     lo, hi = -50.0, 50.0
     for _ in range(200):

@@ -43,21 +43,21 @@ def lempel_ziv_complexity(y):
     """
     s = [repr(v) for v in C.vec(y)]
     n = len(s)
-    i, k, l, c, kmax = 0, 1, 1, 1, 1
+    i, k, ell, c, kmax = 0, 1, 1, 1, 1
     while True:
-        if s[i + k - 1] == s[l + k - 1]:
+        if s[i + k - 1] == s[ell + k - 1]:
             k += 1
-            if l + k > n:
+            if ell + k > n:
                 c += 1
                 break
         else:
             if k > kmax:
                 kmax = k
             i += 1
-            if i == l:
+            if i == ell:
                 c += 1
-                l += kmax
-                if l + 1 > n:
+                ell += kmax
+                if ell + 1 > n:
                     break
                 i = 0
                 k = kmax = 1

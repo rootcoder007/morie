@@ -66,7 +66,10 @@ def wasserman_posterior(data, f, prior):
     if np.any(pd < 0):
         raise ValueError("a prior density cannot be negative.")
     if f is None:
-        f = lambda x, th: np.exp(-0.5 * (x - th) ** 2) / np.sqrt(2.0 * np.pi)
+
+        def f(x, th):
+            return np.exp(-0.5 * (x - th) ** 2) / np.sqrt(2.0 * np.pi)
+
     with np.errstate(divide="ignore"):
         ll = np.array([float(np.sum(np.log(np.asarray(f(data, th), dtype=float)))) for th in grid])
         logpost = ll + np.log(pd)

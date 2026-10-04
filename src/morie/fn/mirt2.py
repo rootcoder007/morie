@@ -84,10 +84,7 @@ def mirt_2d_compensatory(y, theta, a, d, c=0.0, D=1.0):
         raise ValueError("c must lie in [0, 1)")
     dd = float(d)
     Dm = float(D)
-    if m == 1:
-        th = [[v] for v in C.vec(theta)]
-    else:
-        th = C.mat(theta)
+    th = [[v] for v in C.vec(theta)] if m == 1 else C.mat(theta)
     if len(th) != n:
         raise ValueError("theta must have one row per response")
     for row in th:

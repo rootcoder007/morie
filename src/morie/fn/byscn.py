@@ -76,7 +76,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0, seed=0, nu=4.
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d phenotypes." % (Xa.shape[0], n))
+        raise ValueError(f"X has {int(Xa.shape[0])} rows for {int(n)} phenotypes.")
     m = Xa.shape[1]
     n_iter, burn_in = int(n_iter), int(burn_in)
     if burn_in >= n_iter:

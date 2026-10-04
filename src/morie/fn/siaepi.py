@@ -58,10 +58,10 @@ def sir_epidemic(G, beta, gamma, initial, t_max=50.0, dt=0.01):
     n = len(A)
     if n == 0 or any(len(r) != n for r in A):
         raise ValueError("sir_epidemic: G must be a square adjacency matrix")
-    I = [float(v) for v in np.atleast_1d(np.asarray(initial, dtype=float)).tolist()]
-    if len(I) != n:
+    I_ = [float(v) for v in np.atleast_1d(np.asarray(initial, dtype=float)).tolist()]
+    if len(I_) != n:
         raise ValueError("sir_epidemic: initial must have one entry per node")
-    if any(v < 0.0 or v > 1.0 for v in I):
+    if any(v < 0.0 or v > 1.0 for v in I_):
         raise ValueError("sir_epidemic: initial probabilities must lie in [0, 1]")
     beta = float(beta)
     gamma = float(gamma)
@@ -72,7 +72,7 @@ def sir_epidemic(G, beta, gamma, initial, t_max=50.0, dt=0.01):
     if dt <= 0.0 or t_max < 0.0:
         raise ValueError("sir_epidemic: need dt > 0 and t_max >= 0")
 
-    S = [1.0 - v for v in I]
+    S = [1.0 - v for v in I_]
     R = [0.0] * n
 
     def deriv(s, i, r):
@@ -90,45 +90,45 @@ def sir_epidemic(G, beta, gamma, initial, t_max=50.0, dt=0.01):
         return ds, di, dr
 
     nsteps = int(round(t_max / dt))
-    peak_I = sum(I) / n
+    peak_I = sum(I_) / n
     peak_time = 0.0
     for step in range(nsteps):
-        a1, b1, c1 = deriv(S, I, R)
+        a1, b1, c1 = deriv(S, I_, R)
         a2, b2, c2 = deriv(
             [S[i] + 0.5 * dt * a1[i] for i in range(n)],
-            [I[i] + 0.5 * dt * b1[i] for i in range(n)],
+            [I_[i] + 0.5 * dt * b1[i] for i in range(n)],
             [R[i] + 0.5 * dt * c1[i] for i in range(n)],
         )
         a3, b3, c3 = deriv(
             [S[i] + 0.5 * dt * a2[i] for i in range(n)],
-            [I[i] + 0.5 * dt * b2[i] for i in range(n)],
+            [I_[i] + 0.5 * dt * b2[i] for i in range(n)],
             [R[i] + 0.5 * dt * c2[i] for i in range(n)],
         )
         a4, b4, c4 = deriv(
             [S[i] + dt * a3[i] for i in range(n)],
-            [I[i] + dt * b3[i] for i in range(n)],
+            [I_[i] + dt * b3[i] for i in range(n)],
             [R[i] + dt * c3[i] for i in range(n)],
         )
         S = [S[i] + (dt / 6.0) * (a1[i] + 2.0 * a2[i] + 2.0 * a3[i] + a4[i]) for i in range(n)]
-        I = [I[i] + (dt / 6.0) * (b1[i] + 2.0 * b2[i] + 2.0 * b3[i] + b4[i]) for i in range(n)]
+        I_ = [I_[i] + (dt / 6.0) * (b1[i] + 2.0 * b2[i] + 2.0 * b3[i] + b4[i]) for i in range(n)]
         R = [R[i] + (dt / 6.0) * (c1[i] + 2.0 * c2[i] + 2.0 * c3[i] + c4[i]) for i in range(n)]
-        cur = sum(I) / n
+        cur = sum(I_) / n
         if cur > peak_I:
             peak_I = cur
             peak_time = (step + 1) * dt
 
     deg = [sum(A[i]) for i in range(n)]
     kbar = sum(deg) / n
-    cons = max(abs(S[i] + I[i] + R[i] - 1.0) for i in range(n))
+    cons = max(abs(S[i] + I_[i] + R[i] - 1.0) for i in range(n))
 
     return RichResult(
         payload={
             "estimate": sum(R) / n,
             "S": S,
-            "I": I,
+            "I": I_,
             "R": R,
             "attack_rate": sum(R) / n,
-            "prevalence": sum(I) / n,
+            "prevalence": sum(I_) / n,
             "susceptible": sum(S) / n,
             "peak_prevalence": peak_I,
             "peak_time": peak_time,

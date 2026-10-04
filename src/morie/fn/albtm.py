@@ -34,7 +34,7 @@ def alammar_bertopic_pipeline(documents, embeddings, min_cluster_size=2):
     labels = cl["labels"]
     vocab = sorted({w for d in docs for w in d})
     widx = {w: i for i, w in enumerate(vocab)}
-    clusters = sorted({l for l in labels if l >= 0})
+    clusters = sorted({ell for ell in labels if ell >= 0})
     if not clusters:
         raise ValueError("every document came out as noise; loosen min_cluster_size.")
     M = np.zeros((len(clusters), len(vocab)))

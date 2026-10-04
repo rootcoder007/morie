@@ -43,8 +43,8 @@ def test_kmitm_edge():
     assert zero_result["match"] is True
 
     # Caller-supplied fusion produces a fused width that W must match.
-    def fuse(I, T):
-        return [I[0] * T[0], I[0] + T[0]]
+    def fuse(I_, T):
+        return [I_[0] * T[0], I_[0] + T[0]]
 
     custom_result = kamath_image_text_matching(image_emb, text_emb, [1.0, 1.0], 0.0, fuse=fuse)
     assert isinstance(custom_result, dict)

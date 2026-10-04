@@ -133,7 +133,7 @@ def _breslow_baseline(time, event, X, beta):
         d_i = sum(1 for i in range(len(t)) if t[i] == u and e[i] == 1)
         denom = fsum(w[i] for i in range(len(t)) if t[i] >= u)
         if denom <= 0:
-            raise ValueError("empty risk set at t = %g" % u)
+            raise ValueError(f"empty risk set at t = {u:g}")
         cum += d_i / denom
         H.append(cum)
     return ut, H, w
@@ -257,12 +257,12 @@ def rmstdiff(time, event, group, tau=None, alpha=0.05):
         raise ValueError("group must have one entry per observation")
     levels = sorted(set(g), key=str)
     if len(levels) != 2:
-        raise ValueError("rmstdiff compares exactly two groups, got %d" % len(levels))
+        raise ValueError(f"rmstdiff compares exactly two groups, got {int(len(levels))}")
     parts = []
     for lv in levels:
         idx = [i for i in range(len(t)) if g[i] == lv]
         if not idx:
-            raise ValueError("group %r is empty" % (lv,))
+            raise ValueError(f"group {lv!r} is empty")
         parts.append(([t[i] for i in idx], [e[i] for i in idx]))
     cap = min(max(p[0]) for p in parts)
     horizon = min(float(tau), cap) if tau is not None else cap
@@ -352,7 +352,7 @@ def devresid(time, event, X, beta):
         if e[i]:
             arg = e[i] - m[i]
             if arg <= 0:
-                raise ValueError("delta - M is not positive at i = %d; the deviance residual is undefined there" % i)
+                raise ValueError(f"delta - M is not positive at i = {int(i)}; the deviance residual is undefined there")
             inner = m[i] + e[i] * log(arg)
         val = -2.0 * inner
         s = 1.0 if m[i] >= 0 else -1.0
@@ -578,7 +578,7 @@ def cif(time, cause, code=1, alpha=0.05):
     if k == 0:
         raise ValueError("cause 0 marks censoring; pick an event cause")
     if k not in c:
-        raise ValueError("cause %d does not occur in the data" % k)
+        raise ValueError(f"cause {int(k)} does not occur in the data")
     ut = sorted(set(t[i] for i in range(len(t)) if c[i] != 0))
     surv = 1.0
     F, times, nr, nk, var = [], [], [], [], []
@@ -668,7 +668,7 @@ def finegray(time, cause, X, code=1, max_iter=50, tol=1e-9):
 
     ut = sorted(set(t[i] for i in range(n) if c[i] == k))
     if not ut:
-        raise ValueError("cause %d does not occur in the data" % k)
+        raise ValueError(f"cause {int(k)} does not occur in the data")
 
     def riskset(u):
         """(index, weight) pairs in the subdistribution risk set at u."""
@@ -840,7 +840,7 @@ def landmark(time, event, landmark_time, X=None, group=None, alpha=0.05):
         raise ValueError("the landmark must be positive")
     keep = [i for i in range(len(t)) if t[i] > lm]
     if len(keep) < 2:
-        raise ValueError("the landmark leaves %d subjects; it is past the bulk of the follow-up" % len(keep))
+        raise ValueError(f"the landmark leaves {int(len(keep))} subjects; it is past the bulk of the follow-up")
     tt = [t[i] - lm for i in keep]
     ee = [e[i] for i in keep]
     out = {
@@ -1004,7 +1004,7 @@ def _logsf_logpdf(dist, y, mu, logsig):
         ez = exp(z)
         S = 1.0 / (1.0 + ez)
         return log(S), (z - 2.0 * log(1.0 + ez) - logsig)
-    raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
+    raise ValueError("unknown distribution {!r}; known: {}".format(dist, ", ".join(_DISTS)))
 
 
 def _fit_lls(dist, time, event, X=None):
@@ -1080,7 +1080,7 @@ def parasurv(time, event, dist="weibull"):
     hazard is really constant, and it is returned.
     """
     if dist not in _DISTS:
-        raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
+        raise ValueError("unknown distribution {!r}; known: {}".format(dist, ", ".join(_DISTS)))
     fit = _fit_lls(dist, time, event)
     out = dict(fit)
     out["intercept"] = fit["coef"][0]
@@ -1119,7 +1119,7 @@ def aftfit(time, event, X, dist="weibull", alpha=0.05):
     hold for log-normal or log-logistic.
     """
     if dist not in _DISTS:
-        raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
+        raise ValueError("unknown distribution {!r}; known: {}".format(dist, ", ".join(_DISTS)))
     fit = _fit_lls(dist, time, event, X)
     beta = fit["coef"]
     out = dict(fit)
@@ -1161,9 +1161,9 @@ def paracompare(time, event, X=None, dists=None):
         try:
             fits[d] = aftfit(time, event, X, dist=d) if X is not None else parasurv(time, event, dist=d)
         except Exception as exc:  # noqa: BLE001
-            errs[d] = "%s: %s" % (type(exc).__name__, exc)
+            errs[d] = f"{type(exc).__name__}: {exc}"
     if not fits:
-        raise ValueError("no family could be fitted: %r" % errs)
+        raise ValueError(f"no family could be fitted: {errs!r}")
     rows = [
         {"dist": d, "loglik": f["loglik"], "aic": f["aic"], "bic": f["bic"], "n_par": f["n_par"]}
         for d, f in fits.items()

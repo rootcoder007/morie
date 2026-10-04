@@ -140,7 +140,10 @@ def _figarch_weights(d, beta, phi, trunc):
 
 def _pack(spec, x):
     """Unconstrained vector -> parameter dict inside the valid region."""
-    sig = lambda z: 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))
+
+    def sig(z):
+        return 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))
+
     if spec == "garch":
         w = np.exp(np.clip(x[0], -30, 5))
         # a + b < 1 enforced by splitting a simplex weight
@@ -470,7 +473,9 @@ def ms_garch_fit(r, n_regimes=2, max_iter=60):
         raise ValueError("r has zero variance.")
 
     def unpack(x):
-        sig = lambda z: 1 / (1 + np.exp(-np.clip(z, -30, 30)))
+        def sig(z):
+            return 1 / (1 + np.exp(-np.clip(z, -30, 30)))
+
         pars = []
         for j in range(K):
             o = np.exp(np.clip(x[3 * j], -30, 5))

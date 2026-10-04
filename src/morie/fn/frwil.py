@@ -68,7 +68,7 @@ def _prep(compounds, activity):
         C.append(tuple(str(g) for g in row))
     y = [float(v) for v in activity]
     if len(C) != len(y):
-        raise ValueError("frwil: %d compounds but %d activities" % (len(C), len(y)))
+        raise ValueError(f"frwil: {int(len(C))} compounds but {int(len(y))} activities")
     if not C:
         raise ValueError("frwil: no compounds given")
     k = len(C[0])
@@ -83,7 +83,7 @@ def design_matrix(compounds, constraint="reference"):
     Returns the matrix, the column names, and the group inventory.
     """
     if constraint not in CONSTRAINTS:
-        raise ValueError("frwil: constraint must be one of %s, got %r" % (", ".join(CONSTRAINTS), constraint))
+        raise ValueError("frwil: constraint must be one of {}, got {!r}".format(", ".join(CONSTRAINTS), constraint))
     C = [tuple(str(g) for g in row) for row in compounds]
     if not C:
         raise ValueError("frwil: no compounds given")
@@ -96,9 +96,7 @@ def design_matrix(compounds, constraint="reference"):
                 seen.append(row[p])
         if len(seen) < 2:
             raise ValueError(
-                "frwil: position %d has only the group "
-                "%r, so its contribution cannot be "
-                "separated from the intercept" % (p + 1, seen[0])
+                f"frwil: position {int(p + 1)} has only the group {seen[0]!r}, so its contribution cannot be separated from the intercept"
             )
         groups.append(seen)
     names = ["intercept"]
@@ -106,7 +104,7 @@ def design_matrix(compounds, constraint="reference"):
     for p in range(k):
         keep = groups[p][1:] if constraint == "reference" else groups[p]
         for g in keep:
-            names.append("P%d:%s" % (p + 1, g))
+            names.append(f"P{int(p + 1)}:{g}")
             cols.append((p, g))
     M = []
     for row in C:
@@ -198,7 +196,7 @@ def free_wilson(compounds, activity, constraint="reference"):
             "reference": D["reference"],
             "constraint": constraint,
             "n_positions": k,
-            "method": "Free & Wilson (1964) additive substituent model, %s constraint" % constraint,
+            "method": f"Free & Wilson (1964) additive substituent model, {constraint} constraint",
         }
     )
 
@@ -207,15 +205,17 @@ def predict_activity(fit, compound):
     r"""Predicted activity of a compound, made or unmade."""
     row = tuple(str(g) for g in compound)
     if len(row) != fit["n_positions"]:
-        raise ValueError("frwil: the compound lists %d positions but the model has %d" % (len(row), fit["n_positions"]))
+        raise ValueError(
+            "frwil: the compound lists {} positions but the model has {}".format(int(len(row)), int(fit["n_positions"]))
+        )
     coef = fit["coefficients"]
     total = coef["intercept"]
     for p, g in enumerate(row):
         if g not in fit["groups"][p]:
             raise ValueError(
-                "frwil: group %r was never observed at position %d, so the model says nothing about it" % (g, p + 1)
+                f"frwil: group {g!r} was never observed at position {int(p + 1)}, so the model says nothing about it"
             )
-        key = "P%d:%s" % (p + 1, g)
+        key = f"P{int(p + 1)}:{g}"
         total += coef.get(key, 0.0)
     return total
 

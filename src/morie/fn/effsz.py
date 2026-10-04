@@ -15,7 +15,7 @@ def effective_sample_size(chain) -> DescriptiveResult:
 
     chain = np.asarray(chain, dtype=float).ravel()
     n = len(chain)
-    mean = np.mean(chain)
+    np.mean(chain)
     var = np.var(chain, ddof=1)
     if var < 1e-15:
         return DescriptiveResult(name="effective_sample_size", value=float(n), extra={"ess": float(n), "n": n})

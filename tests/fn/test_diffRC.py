@@ -9,7 +9,7 @@ def test_diffRC_basic():
     rng_R = np.random.default_rng(42)
     rng_T = np.random.default_rng(43)
     R = rng_R.normal(0, 1, 100)
-    T = rng_T.integers(0, 2, 100)
+    rng_T.integers(0, 2, 100)
 
     n_steps = 10
     beta = [0.1] * n_steps
@@ -48,7 +48,7 @@ def test_diffRC_edge():
     rng_R = np.random.default_rng(42)
     rng_T = np.random.default_rng(43)
     R = rng_R.normal(0, 1, 100)
-    T = rng_T.integers(0, 2, 100)
+    rng_T.integers(0, 2, 100)
 
     n_steps = 5
     beta = [0.05] * n_steps

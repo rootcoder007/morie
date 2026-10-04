@@ -34,10 +34,7 @@ def custody_gender_parity(
     """
     means = df.groupby(gender_col)[metric_col].mean()
     group_means = means.to_dict()
-    if len(means) < 2 or means.max() == 0:
-        parity = 1.0
-    else:
-        parity = float(means.min() / means.max())
+    parity = 1.0 if len(means) < 2 or means.max() == 0 else float(means.min() / means.max())
     return RichResult(payload={"parity_index": parity, "group_means": group_means, "n_groups": len(means)})
 
 

@@ -40,7 +40,7 @@ from ._richresult import RichResult
 __all__ = ["l_diversity"]
 
 
-def l_diversity(X, quasi_ids, sensitive, l, c=1.0):
+def l_diversity(X, quasi_ids, sensitive, l, c=1.0):  # noqa: E741
     """Distinct, entropy and recursive (c, l)-diversity of a release.
 
     Parameters
@@ -87,7 +87,7 @@ def l_diversity(X, quasi_ids, sensitive, l, c=1.0):
     blocks = {}
     order = []
     for i in range(n):
-        key = "|".join("%.12g" % v for v in rows[i])
+        key = "|".join(f"{v:.12g}" for v in rows[i])
         if key not in blocks:
             blocks[key] = []
             order.append(key)

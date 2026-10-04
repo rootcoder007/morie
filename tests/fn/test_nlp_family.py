@@ -167,9 +167,9 @@ def test_sacrb_brevity_penalty_closed_form():
 
 def test_sacrb_best_match_is_closest_not_shortest():
     """Candidate 16, references 12 and 17: r must be 17."""
-    c16 = " ".join("w%d" % i for i in range(16))
-    r12 = " ".join("x%d" % i for i in range(12))
-    r17 = " ".join("y%d" % i for i in range(17))
+    c16 = " ".join(f"w{int(i)}" for i in range(16))
+    r12 = " ".join(f"x{int(i)}" for i in range(12))
+    r17 = " ".join(f"y{int(i)}" for i in range(17))
     b = sacrb.bleu([c16], [[r12, r17]], max_n=1)
     assert b["reference_length"] == 17
     assert abs(b["bp"] - math.exp(1.0 - 17.0 / 16.0)) < 1e-12

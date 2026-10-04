@@ -7,20 +7,20 @@ from morie.fn.gf2ml import gf2_matrix_mul
 
 class TestGf2MatrixMul:
     def test_basic(self):
-        I = np.eye(3, dtype=int)
+        I_ = np.eye(3, dtype=int)
         M = np.array([[1, 0, 1], [0, 1, 1], [1, 1, 0]], dtype=int)
-        result = gf2_matrix_mul(a=I, b=M)
+        result = gf2_matrix_mul(a=I_, b=M)
         assert isinstance(result, DescriptiveResult)
 
     def test_output_type(self):
-        I = np.eye(3, dtype=int)
+        I_ = np.eye(3, dtype=int)
         M = np.array([[1, 0, 1], [0, 1, 1], [1, 1, 0]], dtype=int)
-        result = gf2_matrix_mul(a=I, b=M)
+        result = gf2_matrix_mul(a=I_, b=M)
         assert "result" in result.extra
 
     def test_identity_mul(self):
-        I = np.eye(3, dtype=int)
+        I_ = np.eye(3, dtype=int)
         M = np.array([[1, 0, 1], [0, 1, 1], [1, 1, 0]], dtype=int)
-        result = gf2_matrix_mul(a=I, b=M)
+        result = gf2_matrix_mul(a=I_, b=M)
         r = np.asarray(result.extra["result"])
         np.testing.assert_array_equal(r, M)

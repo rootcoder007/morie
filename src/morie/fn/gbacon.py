@@ -143,20 +143,20 @@ def goodman_bacon_decomp(y, D, unit, time):
             )
 
     for i, c in enumerate(cohorts):
-        for l in cohorts[i + 1 :]:
-            c, l = float(c), float(l)
-            k, m = int(c), int(l)
-            nk, nl = share[c], share[l]
+        for ell in cohorts[i + 1 :]:
+            c, ell = float(c), float(ell)
+            k, m = int(c), int(ell)
+            nk, nl = share[c], share[ell]
             nbar = nk / (nk + nl)
-            Dk, Dl = Dbar[c], Dbar[l]
+            Dk, Dl = Dbar[c], Dbar[ell]
             # earlier cohort treated, later cohort still untreated
             w_k = ((nk + nl) * (1 - Dl)) ** 2 * nbar * (1 - nbar) * ((Dk - Dl) / (1 - Dl)) * ((1 - Dk) / (1 - Dl))
-            b_k = _did_2x2(Y, rows[c], rows[l], np.arange(k), np.arange(k, m))
+            b_k = _did_2x2(Y, rows[c], rows[ell], np.arange(k), np.arange(k, m))
             comps.append(
                 {
                     "type": "early vs late (before late adopts)",
                     "treated": c,
-                    "control": l,
+                    "control": ell,
                     "weight": w_k / var_D,
                     "beta": b_k,
                     "forbidden": False,
@@ -165,11 +165,11 @@ def goodman_bacon_decomp(y, D, unit, time):
             # later cohort treated, EARLIER cohort used as control while
             # already treated -- the comparison the literature forbids
             w_l = ((nk + nl) * Dk) ** 2 * nbar * (1 - nbar) * (Dl / Dk) * ((Dk - Dl) / Dk)
-            b_l = _did_2x2(Y, rows[l], rows[c], np.arange(k, m), np.arange(m, T))
+            b_l = _did_2x2(Y, rows[ell], rows[c], np.arange(k, m), np.arange(m, T))
             comps.append(
                 {
                     "type": "late vs early (early already treated)",
-                    "treated": l,
+                    "treated": ell,
                     "control": c,
                     "weight": w_l / var_D,
                     "beta": b_l,

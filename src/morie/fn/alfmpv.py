@@ -65,7 +65,7 @@ def _field(chain, name, n, default):
         return [default] * n
     v = list(v)
     if len(v) != n:
-        raise ValueError("alfmpv: chain field %s has %d entries but %d hits" % (name, len(v), n))
+        raise ValueError(f"alfmpv: chain field {name} has {int(len(v))} entries but {int(n)} hits")
     return v
 
 
@@ -76,7 +76,7 @@ def _chain_table(chain, idx):
         species = [str(s) for s in chain]
         chain = {}
     else:
-        raise ValueError("alfmpv: chain %d has no species field" % idx)
+        raise ValueError(f"alfmpv: chain {int(idx)} has no species field")
     n = len(species)
     return {
         "species": species,
@@ -145,7 +145,7 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=Non
         n_paired, n_unpaired, n_rows, n_chains, pairing_rule, mode.
     """
     if mode not in _MODES:
-        raise ValueError("alfmpv: mode = %r; expected one of %s" % (mode, ", ".join(_MODES)))
+        raise ValueError("alfmpv: mode = {!r}; expected one of {}".format(mode, ", ".join(_MODES)))
     if not msas:
         raise ValueError("alfmpv: no chains given")
 
@@ -155,13 +155,13 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=Non
     # than searching again, so the copies are the same table.
     if copies is not None:
         if len(copies) != len(tabs):
-            raise ValueError("alfmpv: copies has %d entries for %d chains" % (len(copies), len(tabs)))
+            raise ValueError(f"alfmpv: copies has {int(len(copies))} entries for {int(len(tabs))} chains")
         expanded = []
         source = []
         for j, k in enumerate(copies):
             k = int(k)
             if k < 1:
-                raise ValueError("alfmpv: copies[%d] = %d; need at least 1" % (j, k))
+                raise ValueError(f"alfmpv: copies[{int(j)}] = {int(k)}; need at least 1")
             for _ in range(k):
                 expanded.append(tabs[j])
                 source.append(j)
@@ -198,9 +198,9 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=Non
     used = [set() for _ in range(nc)]
     for s in order:
         lists = [by_species[c].get(s, []) for c in range(nc)]
-        if any(len(l) == 0 for l in lists):
+        if any(len(ell) == 0 for ell in lists):
             continue  # species must cover every chain
-        depth = 1 if mode in ("colabfold", "folddock") else min(len(l) for l in lists)
+        depth = 1 if mode in ("colabfold", "folddock") else min(len(ell) for ell in lists)
         for k in range(depth):
             if max_pairs is not None and len(paired) >= int(max_pairs):
                 break
@@ -237,9 +237,8 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=Non
             "pairing_rule": rule,
             "method": {
                 "multimer": "AlphaFold-Multimer species pairing (Evans et al. 2022, section 2.1)",
-                "colabfold": "ColabFold best-hit-per-species pairing (Mirdita "
-                "et al. 2022), coverage >= %g" % min_coverage,
-                "folddock": "FoldDock top-ranked-per-organism pairing (Bryant et al. 2022), gaps <= %g" % max_gap,
+                "colabfold": f"ColabFold best-hit-per-species pairing (Mirdita et al. 2022), coverage >= {min_coverage:g}",
+                "folddock": f"FoldDock top-ranked-per-organism pairing (Bryant et al. 2022), gaps <= {max_gap:g}",
             }[mode],
         }
     )

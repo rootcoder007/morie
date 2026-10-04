@@ -5,7 +5,10 @@ from morie.fn.grnud import geron_numerical_differentiation
 
 def test_grnud_basic():
     """Test basic functionality."""
-    f = lambda t: 3 * t**2 + 2 * t
+
+    def f(t):
+        return 3 * t**2 + 2 * t
+
     x = 4.0
     result = geron_numerical_differentiation(f, x)
     assert isinstance(result, dict)
@@ -14,7 +17,10 @@ def test_grnud_basic():
 
 def test_grnud_edge():
     """Test edge cases."""
-    f = lambda t: 3 * t**2 + 2 * t
+
+    def f(t):
+        return 3 * t**2 + 2 * t
+
     x = 4.0
     result = geron_numerical_differentiation(f, x)
     assert isinstance(result, dict)

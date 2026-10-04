@@ -87,9 +87,9 @@ def _panel(Y, unit, period):
     t = [str(v) for v in period]
     n = len(y)
     if not (len(u) == len(t) == n):
-        raise ValueError("causdidwd: Y, unit and period must agree in length (%d, %d, %d)" % (n, len(u), len(t)))
+        raise ValueError(f"causdidwd: Y, unit and period must agree in length ({int(n)}, {int(len(u))}, {int(len(t))})")
     if n < 4:
-        raise ValueError("causdidwd: need at least 4 observations, got %d" % n)
+        raise ValueError(f"causdidwd: need at least 4 observations, got {int(n)}")
     return y, u, t, n
 
 
@@ -103,11 +103,11 @@ def two_way_fixed_effects(Y, unit, period, X):
     y, u, t, n = _panel(Y, unit, period)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("causdidwd: X has %d rows for %d observations" % (len(Xm), n))
+        raise ValueError(f"causdidwd: X has {int(len(Xm))} rows for {int(n)} observations")
     us = sorted(set(u))
     ts = sorted(set(t))
     if len(us) < 2 or len(ts) < 2:
-        raise ValueError("causdidwd: need at least 2 units and 2 periods, got %d and %d" % (len(us), len(ts)))
+        raise ValueError(f"causdidwd: need at least 2 units and 2 periods, got {int(len(us))} and {int(len(ts))}")
     ui = {v: i for i, v in enumerate(us)}
     ti = {v: i for i, v in enumerate(ts)}
     p = len(Xm[0])
@@ -144,7 +144,7 @@ def two_way_mundlak(Y, unit, period, X):
     y, u, t, n = _panel(Y, unit, period)
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     if len(Xm) != n:
-        raise ValueError("causdidwd: X has %d rows for %d observations" % (len(Xm), n))
+        raise ValueError(f"causdidwd: X has {int(len(Xm))} rows for {int(n)} observations")
     p = len(Xm[0])
     by_u, by_t = {}, {}
     for i in range(n):
@@ -176,7 +176,7 @@ def _cohorts(first_treated, period):
             continue
         s = str(v)
         if s not in order:
-            raise ValueError("causdidwd: adoption period %r is not a period in the data" % (v,))
+            raise ValueError(f"causdidwd: adoption period {v!r} is not a period in the data")
         G.append(s)
     if not any(g is not None for g in G):
         raise ValueError("causdidwd: no unit is ever treated")
@@ -193,7 +193,7 @@ def etwfe(Y, unit, period, first_treated, X=None):
     """
     y, u, t, n = _panel(Y, unit, period)
     if len(first_treated) != n:
-        raise ValueError("causdidwd: %d adoption periods for %d observations" % (len(first_treated), n))
+        raise ValueError(f"causdidwd: {int(len(first_treated))} adoption periods for {int(n)} observations")
     G, ts, order = _cohorts(first_treated, t)
     cells = sorted({(G[i], t[i]) for i in range(n) if G[i] is not None and order[t[i]] >= order[G[i]]})
     if not cells:
@@ -240,7 +240,7 @@ def imputation(Y, unit, period, first_treated, X=None):
     """
     y, u, t, n = _panel(Y, unit, period)
     if len(first_treated) != n:
-        raise ValueError("causdidwd: %d adoption periods for %d observations" % (len(first_treated), n))
+        raise ValueError(f"causdidwd: {int(len(first_treated))} adoption periods for {int(n)} observations")
     G, ts, order = _cohorts(first_treated, t)
     treated = [G[i] is not None and order[t[i]] >= order[G[i]] for i in range(n)]
     untreated = [i for i in range(n) if not treated[i]]
@@ -288,7 +288,7 @@ def aggregate(result, scheme="simple", weights=None):
     profile, with the weights reported (Sec. 7).
     """
     if scheme not in ("simple", "event", "cohort"):
-        raise ValueError("causdidwd: scheme must be simple, event or cohort, got %r" % (scheme,))
+        raise ValueError(f"causdidwd: scheme must be simple, event or cohort, got {scheme!r}")
     att = result["att"] if not isinstance(result, dict) or "att" in result else result
     if not att:
         raise ValueError("causdidwd: nothing to aggregate")

@@ -48,10 +48,7 @@ def chpdl(
     n = len(x)
     t = np.arange(n) / fs
 
-    if chirp_rates is None:
-        chirp_rates = np.linspace(-fs, fs, 21)
-    else:
-        chirp_rates = np.asarray(chirp_rates, dtype=float).ravel()
+    chirp_rates = np.linspace(-fs, fs, 21) if chirp_rates is None else np.asarray(chirp_rates, dtype=float).ravel()
 
     sigma = window_len / (2.0 * fs)
     residual = x.copy()

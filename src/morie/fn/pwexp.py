@@ -41,10 +41,7 @@ def piecewise_exponential(
 
     if breaks is None:
         event_times = t[d == 1]
-        if len(event_times) < 4:
-            breaks = [np.median(t)]
-        else:
-            breaks = np.percentile(event_times, [25, 50, 75]).tolist()
+        breaks = [np.median(t)] if len(event_times) < 4 else np.percentile(event_times, [25, 50, 75]).tolist()
 
     breaks = sorted(breaks)
     edges = [0.0] + list(breaks) + [float(np.max(t)) + 1]

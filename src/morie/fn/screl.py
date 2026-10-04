@@ -45,10 +45,7 @@ def score_reliability(
     total = subset.sum(axis=1)
     sd_total = float(np.std(total, ddof=1))
 
-    if np.isnan(alpha) or alpha < 0:
-        sem = np.nan
-    else:
-        sem = sd_total * np.sqrt(1 - alpha)
+    sem = np.nan if np.isnan(alpha) or alpha < 0 else sd_total * np.sqrt(1 - alpha)
 
     mdc_90 = sem * 1.645 * np.sqrt(2) if not np.isnan(sem) else np.nan
     mdc_95 = sem * 1.96 * np.sqrt(2) if not np.isnan(sem) else np.nan

@@ -43,10 +43,7 @@ def byzantine_detect(
     elif method == "trimmed_mean":
         sorted_r = np.sort(R, axis=0)
         trim = max(1, n_rep // 4)
-        if n_rep - 2 * trim > 0:
-            consensus = sorted_r[trim:-trim].mean(axis=0)
-        else:
-            consensus = sorted_r.mean(axis=0)
+        consensus = sorted_r[trim:-trim].mean(axis=0) if n_rep - 2 * trim > 0 else sorted_r.mean(axis=0)
     else:
         raise ValueError(f"Unknown method: {method}")
 

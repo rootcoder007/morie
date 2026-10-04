@@ -110,7 +110,7 @@ def cfconv(X, R, filter_net, cutoff=5.0, **kw):
     pos = [[float(v) for v in r] for r in k.mat(R)]
     n, d = len(feats), len(feats[0])
     if len(pos) != n:
-        raise ValueError("schN: %d feature rows but %d positions" % (n, len(pos)))
+        raise ValueError(f"schN: {int(n)} feature rows but {int(len(pos))} positions")
     out = []
     for i in range(n):
         acc = [0.0] * d
@@ -121,7 +121,7 @@ def cfconv(X, R, filter_net, cutoff=5.0, **kw):
             w = filter_net(gaussian_expansion(r, **kw))
             fc = cosine_cutoff(r, cutoff)
             if len(w) != d:
-                raise ValueError("schN: the filter is %d-dimensional but the features are %d" % (len(w), d))
+                raise ValueError(f"schN: the filter is {int(len(w))}-dimensional but the features are {int(d)}")
             for a in range(d):
                 acc[a] += feats[j][a] * float(w[a]) * fc
         out.append(acc)

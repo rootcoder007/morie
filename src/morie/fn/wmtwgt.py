@@ -92,10 +92,7 @@ def weights_matrix(coords, method="distance", k_or_threshold=1, alpha=1.0, row_s
     lst = arr.tolist()
     if len(lst) == 0:
         raise ValueError("coords must be non-empty")
-    if not isinstance(lst[0], list):
-        pts = [[float(v)] for v in lst]
-    else:
-        pts = [[float(v) for v in row] for row in lst]
+    pts = [[float(v)] for v in lst] if not isinstance(lst[0], list) else [[float(v) for v in row] for row in lst]
     n = len(pts)
     if n < 2:
         raise ValueError("need at least two units")

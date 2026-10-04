@@ -52,7 +52,7 @@ def rmsprop(grads, params=None, lr=0.001, rho=0.9, eps=1e-7):
     T, p = G.shape
     theta = np.zeros(p) if params is None else np.asarray(params, dtype=float).ravel().copy()
     if theta.size != p:
-        raise ValueError("params has %d entries for %d gradient components." % (theta.size, p))
+        raise ValueError(f"params has {int(theta.size)} entries for {int(p)} gradient components.")
     state = None
     path = np.empty((T, p))
     effl = np.empty((T, p))

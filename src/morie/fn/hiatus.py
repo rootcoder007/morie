@@ -87,7 +87,7 @@ def _check(beta, nu, mu, sigma):
     n = len(b)
     nv = [float(nu)] * n if isinstance(nu, (int, float)) else [float(v) for v in k.vec(nu)]
     if len(nv) != n:
-        raise ValueError("hiatus: %d recovery rates for %d strains" % (len(nv), n))
+        raise ValueError(f"hiatus: {int(len(nv))} recovery rates for {int(n)} strains")
     if n < 1:
         raise ValueError("hiatus: at least one strain is needed")
     if any(v <= 0.0 for v in b):
@@ -98,12 +98,12 @@ def _check(beta, nu, mu, sigma):
         raise ValueError("hiatus: the birth/death rate must be non-negative")
     S = k.mat(sigma)
     if len(S) != n or any(len(r) != n for r in S):
-        raise ValueError("hiatus: sigma must be %d by %d" % (n, n))
+        raise ValueError(f"hiatus: sigma must be {int(n)} by {int(n)}")
     Sm = [[float(v) for v in r] for r in S]
     for r in Sm:
         for v in r:
             if not 0.0 <= v <= 1.0:
-                raise ValueError("hiatus: sigma entries are probabilities and must lie in [0, 1], got %r" % (v,))
+                raise ValueError(f"hiatus: sigma entries are probabilities and must lie in [0, 1], got {v!r}")
     return b, nv, float(mu), Sm, n
 
 
@@ -117,7 +117,7 @@ def basic_reproduction_numbers(beta, nu, mu):
     for i in range(n):
         d = nv[i] + m
         if d <= _EPS:
-            raise ValueError("hiatus: strain %d never leaves the infectious class (nu + mu = 0)" % i)
+            raise ValueError(f"hiatus: strain {int(i)} never leaves the infectious class (nu + mu = 0)")
         out.append(b[i] / d)
     return out
 
@@ -139,13 +139,13 @@ def endemic_equilibrium(beta, nu, mu, strain=0):
     return {"R0": R0, "S": 1.0 / R0, "I": float(mu) * (1.0 - 1.0 / R0) / d}
 
 
-def derivatives(S, I, beta, nu, mu, sigma):
+def derivatives(S, I, beta, nu, mu, sigma):  # noqa: E741
     r"""The right-hand sides of the two equations, as printed."""
     b, nv, m, sg, n = _check(beta, nu, mu, sigma)
     Sv = [float(v) for v in k.vec(S)]
     Iv = [float(v) for v in k.vec(I)]
     if len(Sv) != n or len(Iv) != n:
-        raise ValueError("hiatus: S and I must have one entry per strain (%d, %d, %d)" % (len(Sv), len(Iv), n))
+        raise ValueError(f"hiatus: S and I must have one entry per strain ({int(len(Sv))}, {int(len(Iv))}, {int(n)})")
     dI = [b[i] * Sv[i] * Iv[i] - nv[i] * Iv[i] - m * Iv[i] for i in range(n)]
     dS = [m - sum(b[j] * Sv[i] * sg[i][j] * Iv[j] for j in range(n)) - m * Sv[i] for i in range(n)]
     return dS, dI
@@ -217,7 +217,7 @@ def simulate(beta, nu, mu, sigma, S0=None, I0=None, t_end=2000.0, dt=0.05, mutat
             "n_strains": n,
             "R0": basic_reproduction_numbers(b, nv, m),
             "n_variables": 2 * n,
-            "n_variables_history_based": "2^%d = %d" % (n, 2**n) if n <= 30 else "2^%d" % n,
+            "n_variables_history_based": f"2^{int(n)} = {int(2**n)}" if n <= 30 else f"2^{int(n)}",
             "surviving": [i for i in range(n) if Iv[i] > 1e-8],
             "method": "status-based many-strain model, Gog & Grenfell (2002), integrated by RK4",
         }

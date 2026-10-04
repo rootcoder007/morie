@@ -83,9 +83,9 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     cen = 1.0 - e
     if cen.sum() == 0:
         raise ValueError("there are no censored observations to model")
-    b_c, ll, I, _, _, conv = cox_fit(t, cen, Xm, ties=ties)
+    b_c, ll, I_, _, _, conv = cox_fit(t, cen, Xm, ties=ties)
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(b_c.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):

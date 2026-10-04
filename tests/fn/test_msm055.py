@@ -48,11 +48,11 @@ def test_replicates_of_one_genotype_receive_the_same_effect():
 
 def test_an_identity_relationship_gives_an_identity_covariance():
     n = 3
-    I = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
-    res = mvsml_bayesian_regression_eq_6_5([1.0, 2.0, 3.0], I, I, n_iter=200, burn_in=50, seed=3)
+    I_ = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    res = mvsml_bayesian_regression_eq_6_5([1.0, 2.0, 3.0], I_, I_, n_iter=200, burn_in=50, seed=3)
     for i in range(n):
         for j in range(n):
-            assert res["K_L"][i][j] == pytest.approx(I[i][j], abs=1e-12)
+            assert res["K_L"][i][j] == pytest.approx(I_[i][j], abs=1e-12)
 
 
 def test_the_same_seed_reproduces_the_same_chain():

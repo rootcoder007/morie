@@ -63,7 +63,7 @@ def mice_impute(
 
         imputed_sets.append(imp)
 
-    combined = np.mean(imputed_sets, axis=0)
+    np.mean(imputed_sets, axis=0)
     between_var = np.var([s.mean(axis=0) for s in imputed_sets], axis=0, ddof=1)
 
     return DescriptiveResult(

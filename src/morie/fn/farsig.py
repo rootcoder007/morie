@@ -125,7 +125,7 @@ def farrington_signal(counts, baseline_years=5, reference_window=3, period=52, a
     nb = len(idx)
     p = 2 if trend else 1
     if nb < p + 1:
-        raise ValueError("not enough baseline observations (%d)" % nb)
+        raise ValueError(f"not enough baseline observations ({int(nb)})")
     X = [([1.0, float(k - t0)] if trend else [1.0]) for k in idx]
     yb = [y[k] for k in idx]
     om = [1.0] * nb

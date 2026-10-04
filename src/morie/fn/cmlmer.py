@@ -183,7 +183,7 @@ def _upgma(K, g):
                     best, bi, bj = d, alive[ai], alive[aj]
         na, nb = len(members[bi]), len(members[bj])
         for c in alive:
-            if c == bi or c == bj:
+            if c in (bi, bj):
                 continue
             nd = _snap12((na * D[bi][c] + nb * D[bj][c]) / (na + nb))
             D[bi][c] = nd
@@ -254,21 +254,21 @@ def compressed_lmm(
         raise ValueError("cmlmer: no observations")
     Km = [[float(v) for v in row] for row in k.mat(K)]
     if len(Km) != n or any(len(r) != n for r in Km):
-        raise ValueError("cmlmer: K must be %d by %d" % (n, n))
+        raise ValueError(f"cmlmer: K must be {int(n)} by {int(n)}")
     asym = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
     if asym > 1e-8:
-        raise ValueError("cmlmer: K is not symmetric (largest asymmetry %.3g)" % asym)
+        raise ValueError(f"cmlmer: K is not symmetric (largest asymmetry {asym:.3g})")
     Mm = ([] if M is None else [[float(v) for v in row] for row in k.mat(M)]) if M is not None else []
     if Mm and len(Mm) != n:
-        raise ValueError("cmlmer: %d phenotypes but %d marker rows" % (n, len(Mm)))
+        raise ValueError(f"cmlmer: {int(n)} phenotypes but {int(len(Mm))} marker rows")
     nm = len(Mm[0]) if Mm else 0
     Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     p = len(Xm[0])
     if n - p - 1 < 1:
-        raise ValueError("cmlmer: too few observations for %d fixed effects plus a marker" % p)
+        raise ValueError(f"cmlmer: too few observations for {int(p)} fixed effects plus a marker")
     g = n if clusters is None else int(clusters)
     if g < 1 or g > n:
-        raise ValueError("cmlmer: the number of groups must be between 1 and %d, got %d" % (n, g))
+        raise ValueError(f"cmlmer: the number of groups must be between 1 and {int(n)}, got {int(g)}")
 
     lab, groups = _upgma(Km, g)
     ng = len(groups)
@@ -328,7 +328,7 @@ def compressed_lmm(
         for gl in compare_levels:
             gl = int(gl)
             if gl < 1 or gl > n:
-                raise ValueError("cmlmer: compare_levels entry %d is outside 1..%d" % (gl, n))
+                raise ValueError(f"cmlmer: compare_levels entry {int(gl)} is outside 1..{int(n)}")
             lab2, gr2 = _upgma(Km, gl)
             ng2 = len(gr2)
             Kg2 = [

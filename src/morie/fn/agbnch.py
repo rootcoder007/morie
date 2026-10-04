@@ -61,8 +61,8 @@ def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e", c_elo=1.0
     """
     g = k.vec(games)
     if len(g) >= 3:
-        w, d, l = g[0], g[1], g[2]
-        tot = w + d + l
+        w, d, ell = g[0], g[1], g[2]
+        tot = w + d + ell
         score = (w + 0.5 * d) / tot if tot > 0.0 else float("nan")
     else:
         score = g[0] if g else float("nan")

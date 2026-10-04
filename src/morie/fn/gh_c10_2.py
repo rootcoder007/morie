@@ -27,7 +27,7 @@ def ghosal_univ_weights(n=100, c=2.0, K_max=200, eps_scale=1.0):
         total += math.exp(log_pis[k - 1] - mx - math.log(Z) + n_eps2)
         if k in (10, 50, K_max):
             partial.append(total)
-    converged = partial[-1] < 10.0 * partial[0] + 1e9 and math.isfinite(total)
+    partial[-1] < 10.0 * partial[0] + 1e9 and math.isfinite(total)
     res = RichResult(
         payload={
             "estimate": total,

@@ -86,19 +86,19 @@ def jaro_winkler(s1, s2, p=0.1, max_prefix=4):
     kb = [b[j] for j in range(lb) if fb[j]]
     t = sum(1 for i in range(m) if ka[i] != kb[i]) / 2.0
     jaro = (m / la + m / lb + (m - t) / m) / 3.0
-    l = 0
+    ell = 0
     for i in range(min(max_prefix, la, lb)):
         if a[i] == b[i]:
-            l += 1
+            ell += 1
         else:
             break
     return RichResult(
         payload={
-            "estimate": jaro + l * p * (1.0 - jaro),
+            "estimate": jaro + ell * p * (1.0 - jaro),
             "jaro": jaro,
             "matches": m,
             "transpositions": t,
-            "prefix": l,
+            "prefix": ell,
             "method": "Jaro-Winkler string similarity",
         }
     )

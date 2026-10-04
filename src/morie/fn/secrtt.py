@@ -98,7 +98,7 @@ def wrap_dek(dek, kek, nonce, kek_id="kek-1", aad=b""):
     r"""Encrypt the DEK under the KEK. The result is safe to store."""
     d = h._as_bytes(dek)
     if len(d) != 32:
-        raise ValueError("secrtt: a DEK must be 32 bytes, got %d" % len(d))
+        raise ValueError(f"secrtt: a DEK must be 32 bytes, got {int(len(d))}")
     bound = h._as_bytes(aad) + h._as_bytes(kek_id)
     r = ae.aead_encrypt(kek, nonce, d, bound)
     return {
@@ -154,8 +154,7 @@ def rotate_kek(wrapped_deks, old_kek, new_kek, new_nonces, new_kek_id="kek-2", a
     """
     if len(new_nonces) != len(wrapped_deks):
         raise ValueError(
-            "secrtt: %d wrapped DEKs but %d nonces -- a "
-            "nonce must never be reused under a new KEK" % (len(wrapped_deks), len(new_nonces))
+            f"secrtt: {int(len(wrapped_deks))} wrapped DEKs but {int(len(new_nonces))} nonces -- a nonce must never be reused under a new KEK"
         )
     out = []
     for i, w in enumerate(wrapped_deks):

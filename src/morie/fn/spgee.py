@@ -67,7 +67,7 @@ def spgee(
         eta = X @ beta
         mu = _inv_link(eta)
         v = _var_func(mu)
-        A_half = np.diag(np.sqrt(v))
+        np.diag(np.sqrt(v))
         A_half_inv = np.diag(1.0 / np.sqrt(v))
         V_inv = A_half_inv @ R_inv @ A_half_inv
         S = X.T @ V_inv @ (y - mu)

@@ -78,14 +78,14 @@ def cause_specific_hazards(time, event_type, times, A=None, arm=None, weights=No
     e = [int(v) for v in k.vec(event_type)]
     n = len(t)
     if len(e) != n:
-        raise ValueError("tmlcmp: %d times but %d event types" % (n, len(e)))
+        raise ValueError(f"tmlcmp: {int(n)} times but {int(len(e))} event types")
     w = [1.0] * n if weights is None else [float(v) for v in k.vec(weights)]
     keep = list(range(n))
     if A is not None and arm is not None:
         a = [float(v) for v in k.vec(A)]
         keep = [i for i in range(n) if a[i] == float(arm)]
         if not keep:
-            raise ValueError("tmlcmp: no subjects in arm %r" % (arm,))
+            raise ValueError(f"tmlcmp: no subjects in arm {arm!r}")
     types = sorted(set(e[i] for i in keep if e[i] > 0))
     if not types:
         raise ValueError("tmlcmp: no events of any type")
@@ -138,7 +138,7 @@ def one_minus_km(hazards, times, cause):
     """
     j = cause
     if j not in hazards:
-        raise ValueError("tmlcmp: cause %r has no hazard" % (j,))
+        raise ValueError(f"tmlcmp: cause {j!r} has no hazard")
     S, out = 1.0, []
     for u in range(len(times)):
         S *= 1.0 - hazards[j][u]

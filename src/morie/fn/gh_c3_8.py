@@ -63,7 +63,7 @@ def momprior(moments):
         raise ValueError("m_0 must equal 1 for a probability measure")
     tri = [list(m)]
     cur = list(m)
-    for k in range(1, N):
+    for _k in range(1, N):
         cur = [cur[j] - cur[j + 1] for j in range(len(cur) - 1)]
         tri.append(list(cur))
     worst = math.inf

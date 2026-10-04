@@ -239,7 +239,7 @@ def solve_relaxation(A, b, c, bounds=(), n=None, maximise=True, solver="simplex"
             "note": "a valid BOUND on every integer point below this node",
         }
     if solver != "interior":
-        raise ValueError("miprgr: solver must be simplex or interior, got %r" % (solver,))
+        raise ValueError(f"miprgr: solver must be simplex or interior, got {solver!r}")
     M, rhs, cc = _standard_form(A, b, c, list(bounds), nn)
     obj = [-v for v in cc] if maximise else list(cc)
     try:
@@ -353,8 +353,8 @@ def branch_and_bound(A, b, c, integer_vars, maximise=True, prune=True, max_nodes
     not to change the answer.
     """
     n = len(c)
-    I = sorted(set(int(v) for v in integer_vars))
-    if any(j < 0 or j >= n for j in I):
+    I_ = sorted(set(int(v) for v in integer_vars))
+    if any(j < 0 or j >= n for j in I_):
         raise ValueError("miprgr: an integer index is outside the variable set")
     better = (lambda a, bb: a > bb + _EPS) if maximise else (lambda a, bb: a < bb - _EPS)
     incumbent = (-float("inf")) if maximise else float("inf")
@@ -375,11 +375,11 @@ def branch_and_bound(A, b, c, integer_vars, maximise=True, prune=True, max_nodes
             if cut:
                 pruned += 1
             else:
-                fv = fractional_variable(rel["x"], I)  # step 4
+                fv = fractional_variable(rel["x"], I_)  # step 4
                 if fv["integral"]:
                     if better(rel["value"], incumbent):  # step 5
                         incumbent = rel["value"]
-                        inc_x = [float(round(v)) if j in I else float(v) for j, v in enumerate(rel["x"])]
+                        inc_x = [float(round(v)) if j in I_ else float(v) for j, v in enumerate(rel["x"])]
                 else:  # step 6
                     j = fv["index"]
                     v = rel["x"][j]

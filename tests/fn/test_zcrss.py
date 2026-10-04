@@ -5,7 +5,7 @@ from morie.fn.zcrss import zero_crossings
 
 
 def test_zcrss_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = zero_crossings(signal=np.sin(np.linspace(0, 4 * np.pi, 100)))
     assert result is not None
     assert hasattr(result, "name")

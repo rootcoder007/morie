@@ -22,14 +22,14 @@ def alammar_zero_shot_classification(
     References: Alammar and Grootendorst, Ch 4; Yin, Hay and Roth
     (2019).
     """
-    labels = [str(l) for l in candidate_labels]
+    labels = [str(ell) for ell in candidate_labels]
     if not labels:
         raise ValueError("no candidate labels supplied.")
     if len(set(labels)) != len(labels):
         raise ValueError("candidate labels contain duplicates.")
     if not callable(nli_model):
         raise ValueError("nli_model must be a callable (premise, hypothesis) -> score.")
-    scores = np.array([float(nli_model(str(text), hypothesis_template.format(l))) for l in labels])
+    scores = np.array([float(nli_model(str(text), hypothesis_template.format(ell))) for ell in labels])
     z = scores - scores.max()
     p = np.exp(z) / np.exp(z).sum()
     order = np.argsort(-p)

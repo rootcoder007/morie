@@ -91,7 +91,9 @@ def rule(lhs, rhs):
         raise ValueError("trmRew: a rule cannot have a bare variable on the left -- it would match everything")
     extra = set(variables(rhs)) - set(variables(lhs))
     if extra:
-        raise ValueError("trmRew: the right-hand side introduces the unbound variable(s) %s" % ", ".join(sorted(extra)))
+        raise ValueError(
+            "trmRew: the right-hand side introduces the unbound variable(s) {}".format(", ".join(sorted(extra)))
+        )
     return (lhs, rhs)
 
 
@@ -109,7 +111,7 @@ def subterm_at(t, pos):
     cur = t
     for i in pos:
         if is_var(cur) or i >= len(cur[2]):
-            raise ValueError("trmRew: position %r does not exist in the term" % (pos,))
+            raise ValueError(f"trmRew: position {pos!r} does not exist in the term")
         cur = cur[2][i]
     return cur
 
@@ -119,7 +121,7 @@ def replace_at(t, pos, new):
     if not pos:
         return new
     if is_var(t) or pos[0] >= len(t[2]):
-        raise ValueError("trmRew: position %r does not exist in the term" % (pos,))
+        raise ValueError(f"trmRew: position {pos!r} does not exist in the term")
     args = list(t[2])
     args[pos[0]] = replace_at(args[pos[0]], pos[1:], new)
     return app(t[1], *args)
@@ -133,15 +135,15 @@ def rewrite_step(t, rules, strategy="innermost"):
     normal form, which the anchor checks.
     """
     if strategy not in STRATEGIES:
-        raise ValueError("trmRew: strategy must be one of %s, got %r" % (", ".join(STRATEGIES), strategy))
+        raise ValueError("trmRew: strategy must be one of {}, got {!r}".format(", ".join(STRATEGIES), strategy))
     pos = positions(t)
     pos.sort(key=len, reverse=(strategy == "innermost"))
     for p in pos:
         s = subterm_at(t, p)
         if is_var(s):
             continue
-        for i, (l, r) in enumerate(rules):
-            m = match(l, s)
+        for i, (ell, r) in enumerate(rules):
+            m = match(ell, s)
             if m is not None:
                 return {"term": replace_at(t, p, substitute(r, m)), "position": p, "rule": i, "binding": m}
     return None
@@ -159,7 +161,7 @@ def normal_form(t, rules, strategy="innermost", max_steps=10000):
         trace.append((st["rule"], st["position"]))
         cur = st["term"]
     raise ValueError(
-        "trmRew: no normal form after %d steps -- the system does not terminate on this term" % int(max_steps)
+        f"trmRew: no normal form after {int(int(max_steps))} steps -- the system does not terminate on this term"
     )
 
 
@@ -201,7 +203,7 @@ def is_terminating(rules, precedence):
     Sufficient, not necessary: a ``False`` means this order does not
     prove termination, not that the system loops.
     """
-    bad = [i for i, (l, r) in enumerate(rules) if not lpo_greater(l, r, precedence)]
+    bad = [i for i, (ell, r) in enumerate(rules) if not lpo_greater(ell, r, precedence)]
     return {
         "terminating": not bad,
         "unoriented": bad,
@@ -313,7 +315,7 @@ def complete(equations, precedence, max_rules=60, max_steps=10000, max_iter=4000
     otherwise would be a lie.
     """
     rules = []
-    queue = [(l, r) for l, r in equations]
+    queue = [(ell, r) for ell, r in equations]
     for _ in range(int(max_iter)):
         if not queue:
             rules = _interreduce(rules, precedence)
@@ -341,11 +343,11 @@ def complete(equations, precedence, max_rules=60, max_steps=10000, max_iter=4000
         # Collapse: a rule whose left-hand side the new rule can
         # rewrite is no longer a rule; it goes back into the queue.
         keep = []
-        for l, r in rules:
-            if rewrite_step(l, [new]) is not None:
-                queue.append((l, r))
+        for ell, r in rules:
+            if rewrite_step(ell, [new]) is not None:
+                queue.append((ell, r))
             else:
-                keep.append((l, normal_form(r, [new], max_steps=max_steps)["normal_form"]))
+                keep.append((ell, normal_form(r, [new], max_steps=max_steps)["normal_form"]))
         rules = keep + [new]
         if len(rules) > int(max_rules):
             return _incomplete(rules, "rule budget exhausted", None)
@@ -376,10 +378,10 @@ def _canonical(rules):
     """Rename variables to x0, x1, ... so completion output does not
     carry the bookkeeping suffixes renaming apart introduced."""
     out = []
-    for l, r in rules:
-        names = variables(l)
-        sub = {n: var("x%d" % i) for i, n in enumerate(names)}
-        out.append((substitute(l, sub), substitute(r, sub)))
+    for ell, r in rules:
+        names = variables(ell)
+        sub = {n: var(f"x{int(i)}") for i, n in enumerate(names)}
+        out.append((substitute(ell, sub), substitute(r, sub)))
     return out
 
 
@@ -390,14 +392,14 @@ def _interreduce(rules, precedence):
         changed = False
         for i in range(len(out)):
             rest = out[:i] + out[i + 1 :]
-            l, r = out[i]
+            ell, r = out[i]
             nr = normal_form(r, rest)["normal_form"] if rest else r
-            if rest and rewrite_step(l, rest) is not None:
+            if rest and rewrite_step(ell, rest) is not None:
                 out = rest
                 changed = True
                 break
             if nr != r:
-                out[i] = (l, nr)
+                out[i] = (ell, nr)
                 changed = True
                 break
     return _canonical(out)
@@ -424,7 +426,7 @@ def term_rewriting(term, rules, strategy="innermost", max_steps=10000):
             "steps": nf["steps"],
             "trace": nf["trace"],
             "strategy": strategy,
-            "method": "leftmost-%s rewriting to normal form" % strategy,
+            "method": f"leftmost-{strategy} rewriting to normal form",
         }
     )
 

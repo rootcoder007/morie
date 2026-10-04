@@ -69,7 +69,7 @@ def schabenberger_composite_likelihood(coords, z, variogram_model="exponential")
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     fit = composite_likelihood_fit(coords, z, model)
     return RichResult(
         payload={

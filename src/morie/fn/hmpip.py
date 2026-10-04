@@ -57,10 +57,10 @@ def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median", "standa
         A = A[:, None]
     B = None if X_test is None else np.atleast_2d(np.asarray(X_test, dtype=float))
     if B is not None and B.shape[1] != A.shape[1]:
-        raise ValueError("X_test has %d columns, X_train has %d." % (B.shape[1], A.shape[1]))
+        raise ValueError(f"X_test has {int(B.shape[1])} columns, X_train has {int(A.shape[1])}.")
     for s in steps:
         if s not in STEPS:
-            raise ValueError("unknown step %r; expected one of %s." % (s, STEPS))
+            raise ValueError(f"unknown step {s!r}; expected one of {STEPS}.")
 
     params = {}
     leak = {}

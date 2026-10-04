@@ -6,7 +6,7 @@ from morie.fn.beta_standardized import beta_standardized
 
 def test_ca2e20_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     b = 2.5
     s_x = 3.0
     s_y = 1.5

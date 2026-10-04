@@ -43,10 +43,7 @@ def weighted_variance(y, weights=None):
     n = len(yy)
     if n == 0:
         raise ValueError("weighted_variance: y is empty")
-    if weights is None:
-        w = [1.0] * n
-    else:
-        w = C.vec(weights)
+    w = [1.0] * n if weights is None else C.vec(weights)
     if len(w) != n:
         raise ValueError("weighted_variance: y and weights differ in length")
     for v in w:

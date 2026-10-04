@@ -135,12 +135,12 @@ def partial_linear_grf(y, W, X, at=None, n_trees=200, n_folds=5, min_leaf=5, see
     yv, Wv = k.vec(y), k.vec(W)
     n = len(yv)
     if len(Wv) != n:
-        raise ValueError("plrgrf: %d outcomes but %d treatments" % (n, len(Wv)))
+        raise ValueError(f"plrgrf: {int(n)} outcomes but {int(len(Wv))} treatments")
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("plrgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"plrgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     if n < 40:
-        raise ValueError("plrgrf: need at least 40 observations, got %d" % n)
+        raise ValueError(f"plrgrf: need at least 40 observations, got {int(n)}")
     if center:
         mh, eh = local_centering(
             yv, Wv, Xm, n_folds=n_folds, n_trees=max(50, n_trees // 2), min_leaf=min_leaf, seed=seed

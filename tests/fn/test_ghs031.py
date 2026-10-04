@@ -22,23 +22,28 @@ def test_ghs031_basic():
     """Test basic functionality against the documented formula."""
     depth = 8
     n = 16
-    a_of_level = lambda m: float(m * m)
+
+    def a_of_level(m):
+        return float(m * m)
+
     a_levels = [a_of_level(j) for j in range(1, depth + 1)]
 
     # Standard normal parametric family: G_theta = Phi, g_theta = phi at theta=0
-    g_theta = lambda v: _normal_pdf(v)
-    G_theta = lambda v: _normal_cdf(v)
+    def g_theta(v):
+        return _normal_pdf(v)
+
+    def G_theta(v):
+        return _normal_cdf(v)
 
     data = [float(v) for v in np.random.default_rng(42).normal(0.0, 1.0, n)]
     x = 0.3
 
     # Expected: g_theta(x0) * prod_j (2 a_j + 2 N*_j) / (2 a_j + N*_{j-1})
-    a0 = a_levels[0]
+    a_levels[0]
     us = [G_theta(v) for v in data]
     u0 = G_theta(x)
-    int_part = 0
     for j in range(depth):
-        cell = int(us[0] * (2**j)) if False else None  # placeholder, do manual
+        int(us[0] * (2**j)) if False else None  # placeholder, do manual
     # Compute dyadic path counts N*_j at each level on the G_theta scale
     N_star = []
     for j in range(depth + 1):  # levels 0..depth, where level 0 is the root (0)
@@ -87,10 +92,15 @@ def test_ghs031_edge():
     """Test edge cases."""
     depth = 6
     n = 32
-    a_of_level = lambda m: float(m * m)
 
-    g_theta = lambda v: _normal_pdf(v)
-    G_theta = lambda v: _normal_cdf(v)
+    def a_of_level(m):
+        return float(m * m)
+
+    def g_theta(v):
+        return _normal_pdf(v)
+
+    def G_theta(v):
+        return _normal_cdf(v)
 
     data = [float(v) for v in np.random.default_rng(43).normal(0.0, 1.0, n)]
     x = 1.0

@@ -92,7 +92,7 @@ __all__ = [
 
 def _check_rho(rho):
     if rho <= 0.0:
-        raise ValueError("zfmech: rho must be positive, got %r" % rho)
+        raise ValueError(f"zfmech: rho must be positive, got {rho!r}")
 
 
 def renyi_divergence_gaussian(mu0, mu1, sigma, alpha):
@@ -105,7 +105,7 @@ def renyi_divergence_gaussian(mu0, mu1, sigma, alpha):
     if sigma <= 0.0:
         raise ValueError("zfmech: sigma must be positive")
     if not 1.0 < float(alpha) < float("inf"):
-        raise ValueError("zfmech: alpha must lie in (1, inf), got %r" % alpha)
+        raise ValueError(f"zfmech: alpha must lie in (1, inf), got {alpha!r}")
     d = float(mu0) - float(mu1)
     return float(alpha) * d * d / (2.0 * sigma * sigma)
 
@@ -165,7 +165,7 @@ def to_approx_dp(rho, delta):
     _check_rho(rho)
     d = float(delta)
     if not 0.0 < d < 1.0:
-        raise ValueError("zfmech: delta must lie in (0, 1), got %r" % delta)
+        raise ValueError(f"zfmech: delta must lie in (0, 1), got {delta!r}")
     eps = float(rho) + 2.0 * math.sqrt(float(rho) * math.log(1.0 / d))
     return {"epsilon": eps, "delta": d, "rho": float(rho)}
 

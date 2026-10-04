@@ -74,10 +74,7 @@ def mkrsl(
             else:
                 scores[j] = 1.0
 
-        if n_select is None:
-            selected = np.where(scores < alpha)[0]
-        else:
-            selected = np.argsort(scores)[:n_select]
+        selected = np.where(scores < alpha)[0] if n_select is None else np.argsort(scores)[:n_select]
         importance = 1.0 - scores
 
     elif method == "ridge_importance":

@@ -8,7 +8,7 @@ def test_fzt52_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     n = 100
-    x = rng.normal(0, 1, n)
+    rng.normal(0, 1, n)
     bandwidth = 0.3
     # Pick a single evaluation point inside the support.
     x0 = 0.0
@@ -33,10 +33,10 @@ def test_fzt52_basic():
     # Independent recomputation of the documented formulas (Gaussian r1 ~= 1/(2*sqrt(pi))).
     mu2 = 1.0
     r1 = 1.0 / (2.0 * np.sqrt(np.pi))
-    bias = (bandwidth**2 / 2.0) * c1 * mu2
+    (bandwidth**2 / 2.0) * c1 * mu2
     edfvar = fx * (1.0 - fx) / n
     vargain = 2.0 * bandwidth / n * dg * density * r1
-    variance = edfvar - vargain
+    edfvar - vargain
 
     assert result["bias"] == (bandwidth**2 / 2.0) * c1 * mu2
     assert result["edfvar"] == fx * (1.0 - fx) / n

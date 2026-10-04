@@ -87,10 +87,7 @@ def _rsm_expected(theta, delta, tau):
     numer = 0.0
     denom = 0.0
     for cat in range(m + 1):
-        if cat == 0:
-            log_p = 0.0
-        else:
-            log_p = cat * (theta.mean() - delta) - cum_tau[cat - 1]
+        log_p = 0.0 if cat == 0 else cat * (theta.mean() - delta) - cum_tau[cat - 1]
         exp_p = np.exp(np.clip(log_p, -500, 500))
         numer += cat * exp_p
         denom += exp_p

@@ -68,7 +68,7 @@ def _clustered(shared):
             e.append(1 if (g * 4 + k) % 5 else 0)
             x.append([xv])
             w.append(25.0)
-            cl.append("g%d" % g)
+            cl.append(f"g{int(g)}")
     return t, e, x, w, cl
 
 
@@ -128,7 +128,7 @@ def test_complete_separation_is_reported():
         lambda: V.svycoxph(T, [2] * 12, X),
         lambda: V.svycoxph(T, E, [[1.0]] * 12),
         lambda: V.svycoxph(T, E, [[v[0], 2 * v[0]] for v in X]),
-        lambda: V.svycoxph(T, E, X, None, ["a"] * 6 + ["b"] * 6, ["c%d" % (i // 6) for i in range(12)]),
+        lambda: V.svycoxph(T, E, X, None, ["a"] * 6 + ["b"] * 6, [f"c{int(i // 6)}" for i in range(12)]),
         lambda: V.svycoxph([-1.0] + T[1:], E, X),
     ],
 )

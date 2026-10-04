@@ -66,7 +66,7 @@ def cxreg(
     beta = np.zeros(p)
     converged = False
 
-    for it in range(max_iter):
+    for _it in range(max_iter):
         eta = X @ beta
         exp_eta = np.exp(eta - np.max(eta))
 

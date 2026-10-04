@@ -649,7 +649,7 @@ class Figure:
             with open(p, "wb") as fh:
                 fh.write(render_png(self, dpi or self.dpi))
         else:
-            raise ValueError("native plot core writes svg and png; got %r" % fmt)
+            raise ValueError(f"native plot core writes svg and png; got {fmt!r}")
 
     def savefig_bytes(self, dpi=None):
         return render_png(self, dpi or self.dpi)
@@ -683,7 +683,7 @@ def _ticks(lo, hi, n=5):
 def _fmt_tick(v):
     if v == int(v) and abs(v) < 1e6:
         return str(int(v))
-    return "%.3g" % v
+    return f"{v:.3g}"
 
 
 class _Canvas:
@@ -925,11 +925,11 @@ def render_svg(fig):
     png_like = []  # simple approach: draw same primitives as SVG
     W, H = _layout(fig)
     out = [
-        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % (W, H, W, H),
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{int(W)}" height="{int(H)}" viewBox="0 0 {int(W)} {int(H)}">',
         '<rect width="100%" height="100%" fill="white"/>',
     ]
     if fig._suptitle:
-        out.append('<text x="%d" y="14" text-anchor="middle" font-size="13">%s</text>' % (W // 2, _esc(fig._suptitle)))
+        out.append(f'<text x="{int(W // 2)}" y="14" text-anchor="middle" font-size="13">{_esc(fig._suptitle)}</text>')
     for ax in fig.axes:
         out.append(_render_axes_svg(ax, W, H))
     out.append("</svg>")
@@ -964,19 +964,18 @@ def _render_axes_svg(ax, W, H):
         k = it[0]
         if k == "line":
             _, xs, ys, col, wdt, style, alpha = it
-            pts = " ".join("%.2f,%.2f" % (X(a), Y(b)) for a, b in zip(xs, ys))
+            pts = " ".join(f"{X(a):.2f},{Y(b):.2f}" for a, b in zip(xs, ys))
             dash = {"--": "6,4", ":": "2,3", "-.": "6,3"}.get(style, "")
             o.append(
-                '<polyline fill="none" stroke="%s" '
-                'stroke-width="%.2f" stroke-opacity="%.2f"%s '
-                'points="%s"/>' % (rgb(col), wdt, alpha, ' stroke-dasharray="%s"' % dash if dash else "", pts)
+                '<polyline fill="none" stroke="{}" '
+                'stroke-width="{:.2f}" stroke-opacity="{:.2f}"{} '
+                'points="{}"/>'.format(rgb(col), wdt, alpha, f' stroke-dasharray="{dash}"' if dash else "", pts)
             )
         elif k == "scatter":
             _, xs, ys, cols, sizes, alpha = it
             for a, b, c, sv in zip(xs, ys, cols, sizes):
                 o.append(
-                    '<circle cx="%.2f" cy="%.2f" r="%.2f" '
-                    'fill="%s" fill-opacity="%.2f"/>' % (X(a), Y(b), max(1.5, math.sqrt(sv) / 2), rgb(c), alpha)
+                    f'<circle cx="{X(a):.2f}" cy="{Y(b):.2f}" r="{max(1.5, math.sqrt(sv) / 2):.2f}" fill="{rgb(c)}" fill-opacity="{alpha:.2f}"/>'
                 )
         elif k == "bar":
             _, pos, val, base, w, col, alpha, horiz = it
@@ -988,28 +987,30 @@ def _render_axes_svg(ax, W, H):
                     xa, xb = sorted((X(p - w / 2), X(p + w / 2)))
                     ya, yb = sorted((Y(b), Y(b + v)))
                 o.append(
-                    '<rect x="%.2f" y="%.2f" width="%.2f" '
-                    'height="%.2f" fill="%s" '
-                    'fill-opacity="%.2f"/>' % (xa, ya, xb - xa, yb - ya, rgb(col), alpha)
+                    f'<rect x="{xa:.2f}" y="{ya:.2f}" width="{xb - xa:.2f}" '
+                    f'height="{yb - ya:.2f}" fill="{rgb(col)}" '
+                    f'fill-opacity="{alpha:.2f}"/>'
                 )
         elif k == "fill":
             _, xs, a, b, col, alpha = it
-            fwd = ["%.2f,%.2f" % (X(p), Y(q)) for p, q in zip(xs, a)]
-            back = ["%.2f,%.2f" % (X(p), Y(q)) for p, q in zip(xs[::-1], b[::-1])]
-            o.append('<polygon fill="%s" fill-opacity="%.2f" points="%s"/>' % (rgb(col), alpha, " ".join(fwd + back)))
+            fwd = [f"{X(p):.2f},{Y(q):.2f}" for p, q in zip(xs, a)]
+            back = [f"{X(p):.2f},{Y(q):.2f}" for p, q in zip(xs[::-1], b[::-1])]
+            o.append(
+                '<polygon fill="{}" fill-opacity="{:.2f}" points="{}"/>'.format(rgb(col), alpha, " ".join(fwd + back))
+            )
         elif k == "hline":
             _, yv, col, wdt, style, alpha = it
             o.append(
-                '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
-                'stroke="%s" stroke-width="%.1f" '
-                'stroke-dasharray="6,4" stroke-opacity="%.2f"/>' % (x0, Y(yv), x1, Y(yv), rgb(col), wdt, alpha)
+                f'<line x1="{x0:.1f}" y1="{Y(yv):.1f}" x2="{x1:.1f}" y2="{Y(yv):.1f}" '
+                f'stroke="{rgb(col)}" stroke-width="{wdt:.1f}" '
+                f'stroke-dasharray="6,4" stroke-opacity="{alpha:.2f}"/>'
             )
         elif k == "vline":
             _, xv, col, wdt, style, alpha = it
             o.append(
-                '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
-                'stroke="%s" stroke-width="%.1f" '
-                'stroke-dasharray="6,4" stroke-opacity="%.2f"/>' % (X(xv), y0, X(xv), y1, rgb(col), wdt, alpha)
+                f'<line x1="{X(xv):.1f}" y1="{y0:.1f}" x2="{X(xv):.1f}" y2="{y1:.1f}" '
+                f'stroke="{rgb(col)}" stroke-width="{wdt:.1f}" '
+                f'stroke-dasharray="6,4" stroke-opacity="{alpha:.2f}"/>'
             )
         elif k == "mesh":
             _, grid, extent, alpha = it
@@ -1020,20 +1021,19 @@ def _render_axes_svg(ax, W, H):
             for r in range(nr):
                 for c in range(nc):
                     o.append(
-                        '<rect x="%.2f" y="%.2f" width="%.2f" '
-                        'height="%.2f" fill="%s" '
-                        'fill-opacity="%.2f"/>' % (x0 + c * cw, y0 + r * ch, cw + 0.5, ch + 0.5, rgb(grid[r][c]), alpha)
+                        f'<rect x="{x0 + c * cw:.2f}" y="{y0 + r * ch:.2f}" width="{cw + 0.5:.2f}" '
+                        f'height="{ch + 0.5:.2f}" fill="{rgb(grid[r][c])}" '
+                        f'fill-opacity="{alpha:.2f}"/>'
                     )
         elif k == "polyfill":
             _, xs, ys, col, alpha = it
-            pts = " ".join("%.2f,%.2f" % (X(a), Y(b)) for a, b in zip(xs, ys))
-            o.append('<polygon fill="%s" fill-opacity="%.2f" points="%s"/>' % (rgb(col), alpha, pts))
+            pts = " ".join(f"{X(a):.2f},{Y(b):.2f}" for a, b in zip(xs, ys))
+            o.append(f'<polygon fill="{rgb(col)}" fill-opacity="{alpha:.2f}" points="{pts}"/>')
         elif k == "text":
             _, xv, yv, s, size, col, ha, va = it
             anchor = {"left": "start", "center": "middle", "right": "end"}.get(ha, "start")
             o.append(
-                '<text x="%.1f" y="%.1f" font-size="%.1f" '
-                'fill="%s" text-anchor="%s">%s</text>' % (X(xv), Y(yv), size, rgb(col), anchor, _esc(s))
+                f'<text x="{X(xv):.1f}" y="{Y(yv):.1f}" font-size="{size:.1f}" fill="{rgb(col)}" text-anchor="{anchor}">{_esc(s)}</text>'
             )
 
     xticks = ax._xticks if ax._xticks is not None else _ticks(dx0, dx1)
@@ -1041,33 +1041,31 @@ def _render_axes_svg(ax, W, H):
     xlabels = ax._xticklabels if ax._xticklabels is not None else [_fmt_tick(t) for t in xticks]
     ylabels = ax._yticklabels if ax._yticklabels is not None else [_fmt_tick(t) for t in yticks]
     o.append(
-        '<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="none" stroke="black"/>' % (x0, y0, x1 - x0, y1 - y0)
+        f'<rect x="{x0:.1f}" y="{y0:.1f}" width="{x1 - x0:.1f}" height="{y1 - y0:.1f}" fill="none" stroke="black"/>'
     )
     for t, lab in zip(xticks, xlabels):
-        o.append('<text x="%.1f" y="%.1f" font-size="9" text-anchor="middle">%s</text>' % (X(t), y1 + 12, _esc(lab)))
+        o.append(f'<text x="{X(t):.1f}" y="{y1 + 12:.1f}" font-size="9" text-anchor="middle">{_esc(lab)}</text>')
     for t, lab in zip(yticks, ylabels):
-        o.append('<text x="%.1f" y="%.1f" font-size="9" text-anchor="end">%s</text>' % (x0 - 4, Y(t) + 3, _esc(lab)))
+        o.append(f'<text x="{x0 - 4:.1f}" y="{Y(t) + 3:.1f}" font-size="9" text-anchor="end">{_esc(lab)}</text>')
     if ax.title:
         o.append(
-            '<text x="%.1f" y="%.1f" font-size="12" '
-            'text-anchor="middle">%s</text>' % ((x0 + x1) / 2, y0 - 6, _esc(ax.title))
+            f'<text x="{(x0 + x1) / 2:.1f}" y="{y0 - 6:.1f}" font-size="12" text-anchor="middle">{_esc(ax.title)}</text>'
         )
     if ax.xlabel:
         o.append(
-            '<text x="%.1f" y="%.1f" font-size="10" '
-            'text-anchor="middle">%s</text>' % ((x0 + x1) / 2, y1 + 26, _esc(ax.xlabel))
+            f'<text x="{(x0 + x1) / 2:.1f}" y="{y1 + 26:.1f}" font-size="10" text-anchor="middle">{_esc(ax.xlabel)}</text>'
         )
     if ax.ylabel:
         o.append(
-            '<text x="%.1f" y="%.1f" font-size="10" '
-            'transform="rotate(-90 %.1f %.1f)" '
-            'text-anchor="middle">%s</text>' % (x0 - 30, (y0 + y1) / 2, x0 - 30, (y0 + y1) / 2, _esc(ax.ylabel))
+            f'<text x="{x0 - 30:.1f}" y="{(y0 + y1) / 2:.1f}" font-size="10" '
+            f'transform="rotate(-90 {x0 - 30:.1f} {(y0 + y1) / 2:.1f})" '
+            f'text-anchor="middle">{_esc(ax.ylabel)}</text>'
         )
     if ax._show_legend and ax._legend:
         ly = y0 + 12
         for lab, col in ax._legend[:8]:
-            o.append('<rect x="%.1f" y="%.1f" width="10" height="8" fill="%s"/>' % (x1 - 90, ly - 8, rgb(col)))
-            o.append('<text x="%.1f" y="%.1f" font-size="9">%s</text>' % (x1 - 76, ly, _esc(lab[:16])))
+            o.append(f'<rect x="{x1 - 90:.1f}" y="{ly - 8:.1f}" width="10" height="8" fill="{rgb(col)}"/>')
+            o.append(f'<text x="{x1 - 76:.1f}" y="{ly:.1f}" font-size="9">{_esc(lab[:16])}</text>')
             ly += 13
     return "\n".join(o)
 

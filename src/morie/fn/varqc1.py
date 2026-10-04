@@ -128,7 +128,7 @@ def hard_filter(records, fields, thresholds):
                 continue
             bad = v < cut if direction == "lt" else v > cut
             if bad:
-                failed.append("%s%s%g" % (ann, "<" if direction == "lt" else ">", cut))
+                failed.append("{}{}{:g}".format(ann, "<" if direction == "lt" else ">", cut))
         if failed:
             out.append(";".join(failed))
         else:
@@ -180,7 +180,7 @@ def fit_mixture(
     remedy.
     """
     if covariance not in COVARIANCES:
-        raise ValueError("covariance must be one of %r" % (COVARIANCES,))
+        raise ValueError(f"covariance must be one of {COVARIANCES!r}")
     n = len(X)
     d = len(X[0])
     K = int(n_components)
@@ -188,9 +188,7 @@ def fit_mixture(
         raise ValueError("need at least one component")
     if n < K * (d + 1):
         raise ValueError(
-            "too few training variants for %d components in "
-            "%d dimensions; use a diagonal covariance or "
-            "fewer components" % (K, d)
+            f"too few training variants for {int(K)} components in {int(d)} dimensions; use a diagonal covariance or fewer components"
         )
     rng = _core._SplitMix64(seed)
     gmean = [_w.csum(X[i][j] for i in range(n)) / n for j in range(d)]
@@ -318,7 +316,7 @@ def vcf_filter(
     Curr. Protoc. Bioinformatics 43, 11.10.1-11.10.33.
     """
     if method not in METHODS:
-        raise ValueError("method must be one of %r" % (METHODS,))
+        raise ValueError(f"method must be one of {METHODS!r}")
     if mode not in DEFAULT_THRESHOLDS:
         raise ValueError("mode must be snp or indel")
     if fields is None:
@@ -360,9 +358,7 @@ def vcf_filter(
         for c in cols:
             if recs[i][c] is None or recs[i][c] != recs[i][c]:
                 raise ValueError(
-                    "record %d is missing annotation %s, "
-                    "which the mixture cannot use; drop the "
-                    "record or the annotation" % (i, fields[c])
+                    f"record {int(i)} is missing annotation {fields[c]}, which the mixture cannot use; drop the record or the annotation"
                 )
     X = [[recs[i][c] for c in cols] for i in range(n)]
     good = fit_mixture(
@@ -402,7 +398,7 @@ def vcf_filter(
         lab = "FAIL"
         for t, c in cuts:
             if lod[i] >= c:
-                lab = "%.1f" % t
+                lab = f"{t:.1f}"
                 break
         tranche.append(lab)
 

@@ -77,7 +77,7 @@ def residual_loss(x, g_z):
     a = [float(v) for v in k.vec(x)]
     b = [float(v) for v in k.vec(g_z)]
     if len(a) != len(b):
-        raise ValueError("gan_an: the query and reconstruction differ in size (%d, %d)" % (len(a), len(b)))
+        raise ValueError(f"gan_an: the query and reconstruction differ in size ({int(len(a))}, {int(len(b))})")
     return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
 
@@ -98,12 +98,12 @@ def discrimination_loss(f_x, f_gz):
 
 def anomaly_score(x, g_z, f_x, f_gz, lam=0.1):
     r""":math:`(1-\lambda)L_R + \lambda L_D`."""
-    l = float(lam)
-    if not 0.0 <= l <= 1.0:
-        raise ValueError("gan_an: lambda must lie in [0,1], got %r" % (lam,))
+    ell = float(lam)
+    if not 0.0 <= ell <= 1.0:
+        raise ValueError(f"gan_an: lambda must lie in [0,1], got {lam!r}")
     lr = residual_loss(x, g_z)
     ld = discrimination_loss(f_x, f_gz)
-    return {"score": (1.0 - l) * lr + l * ld, "residual": lr, "discrimination": ld, "lambda": l}
+    return {"score": (1.0 - ell) * lr + ell * ld, "residual": lr, "discrimination": ld, "lambda": ell}
 
 
 def invert_to_latent(x, generator, feature_fn, z_dim, steps=200, lr=0.05, lam=0.1, seed=0, h=1e-4, step_decay=0.05):
@@ -178,7 +178,7 @@ def residual_map(x, g_z, shape=None):
     if shape is not None:
         h, w = int(shape[0]), int(shape[1])
         if h * w != len(r):
-            raise ValueError("gan_an: the shape %dx%d does not match %d values" % (h, w, len(r)))
+            raise ValueError(f"gan_an: the shape {int(h)}x{int(w)} does not match {int(len(r))} values")
         r = [r[i * w : (i + 1) * w] for i in range(h)]
     return {
         "map": r,

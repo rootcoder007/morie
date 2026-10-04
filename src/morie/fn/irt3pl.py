@@ -62,9 +62,9 @@ def three_parameter_logistic(theta, a=1.0, b=0.0, c=0.0):
 
     for i in range(n):
         if not (cv[i] >= 0.0) or cv[i] >= 1.0:
-            raise ValueError("c must lie in [0, 1); got %r" % (cv[i],))
+            raise ValueError(f"c must lie in [0, 1); got {cv[i]!r}")
         if av[i] != av[i] or av[i] in (INF, -INF):
-            raise ValueError("a must be finite; got %r" % (av[i],))
+            raise ValueError(f"a must be finite; got {av[i]!r}")
 
     logit = [av[i] * (th[i] - bv[i]) for i in range(n)]
     p = [cv[i] + (1.0 - cv[i]) * expit(logit[i]) for i in range(n)]

@@ -22,7 +22,6 @@ def _independent_fm(X_rows, w, V, w0, p, K):
         lin = w0 + sum(w[j] * x[j] for j in range(p))
         # FM second-order term: 0.5 * sum_f ((sum_j v_jf x_j)^2 - sum_j v_jf^2 x_j^2)
         s = 0.0
-        s2 = 0.0
         for f in range(K):
             acc = 0.0
             acc2 = 0.0

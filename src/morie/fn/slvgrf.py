@@ -103,9 +103,9 @@ def _check(scores, priority):
     g = [float(v) for v in k.vec(scores)]
     s = [float(v) for v in k.vec(priority)]
     if len(g) != len(s):
-        raise ValueError("slvgrf: %d scores but %d priority values" % (len(g), len(s)))
+        raise ValueError(f"slvgrf: {int(len(g))} scores but {int(len(s))} priority values")
     if len(g) < 2:
-        raise ValueError("slvgrf: need at least 2 units, got %d" % len(g))
+        raise ValueError(f"slvgrf: need at least 2 units, got {int(len(g))}")
     return g, s
 
 
@@ -125,13 +125,13 @@ def aipw_scores(Y, W, mu1, mu0, e):
     ev = [float(e)] * n if isinstance(e, (int, float)) else [float(v) for v in k.vec(e)]
     for nm, v in (("W", w), ("mu1", m1), ("mu0", m0), ("e", ev)):
         if len(v) != n:
-            raise ValueError("slvgrf: %s has %d entries for %d units" % (nm, len(v), n))
+            raise ValueError(f"slvgrf: {nm} has {int(len(v))} entries for {int(n)} units")
     for v in w:
         if v not in (0.0, 1.0):
-            raise ValueError("slvgrf: W must be 0/1, got %r" % (v,))
+            raise ValueError(f"slvgrf: W must be 0/1, got {v!r}")
     for v in ev:
         if not 0.0 < v < 1.0:
-            raise ValueError("slvgrf: the propensity must lie strictly in (0, 1); got %r -- overlap fails" % (v,))
+            raise ValueError(f"slvgrf: the propensity must lie strictly in (0, 1); got {v!r} -- overlap fails")
     return [
         m1[i] - m0[i] + w[i] * (y[i] - m1[i]) / ev[i] - (1.0 - w[i]) * (y[i] - m0[i]) / (1.0 - ev[i]) for i in range(n)
     ]
@@ -165,13 +165,10 @@ def rate(scores, priority, weight="autoc"):
     because the literature names the same weight both ways.
     """
     if weight not in _WEIGHTS:
-        raise ValueError("slvgrf: weight must be one of %s, got %r" % (", ".join(_WEIGHTS), weight))
+        raise ValueError("slvgrf: weight must be one of {}, got {!r}".format(", ".join(_WEIGHTS), weight))
     c = toc_curve(scores, priority)
     n = c["n"]
-    if weight == "qini":
-        val = sum(c["u"][j] * c["toc"][j] for j in range(n)) / n
-    else:
-        val = sum(c["toc"]) / n
+    val = sum(c["u"][j] * c["toc"][j] for j in range(n)) / n if weight == "qini" else sum(c["toc"]) / n
     return {"estimate": val, "weight": weight, "curve": c, "n": n}
 
 
@@ -202,7 +199,7 @@ def qini_curve(scores, priority, cost=None):
     else:
         cv = [float(cost)] * n if isinstance(cost, (int, float)) else [float(v) for v in k.vec(cost)]
         if len(cv) != n:
-            raise ValueError("slvgrf: %d costs for %d units" % (len(cv), n))
+            raise ValueError(f"slvgrf: {int(len(cv))} costs for {int(n)} units")
         if any(v <= 0.0 for v in cv):
             raise ValueError("slvgrf: costs must be positive")
     total = sum(cv)
@@ -233,7 +230,7 @@ def rate_test(scores, priority, weight="autoc", reps=500, seed=0):
     g, s = _check(scores, priority)
     n = len(g)
     if n < 8:
-        raise ValueError("slvgrf: the half-sample bootstrap needs at least 8 units, got %d" % n)
+        raise ValueError(f"slvgrf: the half-sample bootstrap needs at least 8 units, got {int(n)}")
     theta = rate(g, s, weight=weight)["estimate"]
     rng = np.random.default_rng(seed)
     half = n // 2

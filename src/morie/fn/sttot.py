@@ -40,7 +40,7 @@ def subscale_total_corr(
     if not all_items:
         return RichResult(payload={})
 
-    total = data[all_items].mean(axis=1).to_numpy()
+    data[all_items].mean(axis=1).to_numpy()
 
     result = {}
     for name, items in subs.items():

@@ -56,7 +56,7 @@ def stepped_wedge_design(
     tau2 = icc * sigma2
     sigma_e2 = sigma2 - tau2
 
-    U = K * m * S * (S + 2) / (6 * (S + 1))
+    K * m * S * (S + 2) / (6 * (S + 1))
     W = K * m**2 * S**2 / (4 * T * (sigma_e2 / m + tau2))
     var_theta = 1.0 / max(W, 1e-10) if W > 0 else np.inf
 

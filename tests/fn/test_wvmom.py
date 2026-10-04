@@ -27,8 +27,8 @@ def test_moments_labels():
     x = np.random.default_rng(42).standard_normal(128)
     result = wavelet_moments(x, level=2)
     labels = result.extra["labels"]
-    assert any(l.startswith("D") for l in labels)
-    assert any(l.startswith("A") for l in labels)
+    assert any(ell.startswith("D") for ell in labels)
+    assert any(ell.startswith("A") for ell in labels)
 
 
 def test_moments_alias():

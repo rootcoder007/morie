@@ -5,7 +5,7 @@ from morie.fn.diffu import heat_diffusion
 
 
 def test_diffu_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = heat_diffusion(T0=np.sin(np.linspace(0, 4 * np.pi, 100)))
     assert result is not None
     assert hasattr(result, "name")

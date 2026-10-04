@@ -85,11 +85,11 @@ def knn_entropy(x, k=3, base="nats"):
     n, d = X.shape
     k = int(k)
     if k < 1:
-        raise ValueError("k must be at least 1, got %d." % k)
+        raise ValueError(f"k must be at least 1, got {int(k)}.")
     if n <= k:
-        raise ValueError("need more than k = %d observations, got %d." % (k, n))
+        raise ValueError(f"need more than k = {int(k)} observations, got {int(n)}.")
     if base not in ("nats", "bits"):
-        raise ValueError("base must be 'nats' or 'bits', got %r." % base)
+        raise ValueError(f"base must be 'nats' or 'bits', got {base!r}.")
 
     D = np.sqrt(((X[:, None, :] - X[None, :, :]) ** 2).sum(axis=2))
     np.fill_diagonal(D, np.inf)

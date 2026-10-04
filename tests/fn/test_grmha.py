@@ -57,10 +57,10 @@ def test_grmha_basic():
 
 def test_grmha_edge():
     """Test edge case: a single head with identity projections on the smallest valid width."""
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     Kv = [[1.0, 0.0], [0.0, 1.0]]
     # d_model = 2, h = 1, d_head = 2, d_out = 2
-    result = geron_multi_head_attention([[1.0, 0.0]], Kv, Kv, I, I, I, I, h=1)
+    result = geron_multi_head_attention([[1.0, 0.0]], Kv, Kv, I_, I_, I_, I_, h=1)
 
     assert isinstance(result, dict)
     for key in (

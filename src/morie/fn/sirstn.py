@@ -65,32 +65,32 @@ def sir_stochastic(S0, I0, beta, gamma, T, seed=1):
     doi:10.1021/j100540a008
     """
     S = int(S0)
-    I = int(I0)
+    I_ = int(I0)
     R = 0
     beta = float(beta)
     gamma = float(gamma)
     T = float(T)
-    if S < 0 or I < 0:
+    if S < 0 or I_ < 0:
         raise ValueError("sir_stochastic: S0 and I0 must be non-negative")
     if beta < 0.0 or gamma < 0.0:
         raise ValueError("sir_stochastic: beta and gamma must be non-negative")
     if T < 0.0:
         raise ValueError("sir_stochastic: T must be non-negative")
-    N = S + I
+    N = S + I_
     if N <= 0:
         raise ValueError("sir_stochastic: total population must be positive")
 
     rng = C.Lcg(seed)
     t = 0.0
-    peak_I = float(I)
+    peak_I = float(I_)
     peak_time = 0.0
     n_events = 0
     n_infections = 0
     extinction_time = float("nan")
 
     while True:
-        a1 = beta * S * I / N
-        a2 = gamma * I
+        a1 = beta * S * I_ / N
+        a2 = gamma * I_
         a0 = a1 + a2
         if a0 <= 0.0:
             extinction_time = t
@@ -102,13 +102,13 @@ def sir_stochastic(S0, I0, beta, gamma, T, seed=1):
         t = t + tau
         if rng.unif() * a0 < a1:
             S -= 1
-            I += 1
+            I_ += 1
             n_infections += 1
-            if peak_I < I:
-                peak_I = float(I)
+            if peak_I < I_:
+                peak_I = float(I_)
                 peak_time = t
         else:
-            I -= 1
+            I_ -= 1
             R += 1
         n_events += 1
 
@@ -117,7 +117,7 @@ def sir_stochastic(S0, I0, beta, gamma, T, seed=1):
         payload={
             "estimate": float(R),
             "S": float(S),
-            "I": float(I),
+            "I": float(I_),
             "R": float(R),
             "N": float(N),
             "final_size": float(R),

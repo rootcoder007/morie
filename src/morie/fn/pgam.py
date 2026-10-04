@@ -40,10 +40,7 @@ def pgamma(
     if effective_scale <= 0:
         raise ValueError(f"Effective scale must be > 0, got {effective_scale}.")
     dist = stats.gamma(a=shape, scale=effective_scale)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

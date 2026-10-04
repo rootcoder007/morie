@@ -119,7 +119,7 @@ def _expand(W, spec):
         elif kind == "subset":
             r += [W[i][c] for c in spec["cols"]]
         else:
-            raise ValueError("flxipt: unknown learner kind %r" % (kind,))
+            raise ValueError(f"flxipt: unknown learner kind {kind!r}")
         out.append(r)
     return out
 
@@ -142,7 +142,7 @@ def default_learners(p, ridge_penalties=(0.0, 1.0, 10.0)):
         lib.append({"name": "interaction", "kind": "interaction", "penalty": 0.0})
         for pen in ridge_penalties:
             if pen > 0.0:
-                lib.append({"name": "interaction+ridge%g" % pen, "kind": "interaction", "penalty": pen})
+                lib.append({"name": f"interaction+ridge{pen:g}", "kind": "interaction", "penalty": pen})
     return lib
 
 
@@ -177,12 +177,12 @@ def _project_simplex(v):
         return []
     u = sorted(v, reverse=True)
     css = 0.0
-    rho, theta = 0, 0.0
+    _rho, theta = 0, 0.0
     for j in range(n):
         css += u[j]
         t = (css - 1.0) / (j + 1)
         if u[j] - t > 0.0:
-            rho, theta = j + 1, t
+            _rho, theta = j + 1, t
     return [max(x - theta, 0.0) for x in v]
 
 
@@ -268,7 +268,7 @@ def cv_risk(y, Z, loss="l2"):
                 tot -= y[i] * math.log(p) + (1 - y[i]) * math.log(1 - p)
             out.append(tot / n)
         else:
-            raise ValueError("flxipt: loss must be l2 or nll, got %r" % (loss,))
+            raise ValueError(f"flxipt: loss must be l2 or nll, got {loss!r}")
     return out
 
 
@@ -301,14 +301,14 @@ def super_learner(
         each candidate's ``cv_risk``, and the ensemble's own.
     """
     if meta not in _METAS:
-        raise ValueError("flxipt: meta must be one of %s, got %r" % (", ".join(_METAS), meta))
+        raise ValueError("flxipt: meta must be one of {}, got {!r}".format(", ".join(_METAS), meta))
     yv = k.vec(y)
     n = len(yv)
     Wm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("flxipt: %d covariate rows for %d outcomes" % (len(Wm), n))
+        raise ValueError(f"flxipt: {int(len(Wm))} covariate rows for {int(n)} outcomes")
     if n < 8:
-        raise ValueError("flxipt: need at least 8 observations, got %d" % n)
+        raise ValueError(f"flxipt: need at least 8 observations, got {int(n)}")
     p = len(Wm[0]) if Wm and Wm[0] else 0
     lib = default_learners(p) if library is None else list(library)
     if not lib:
@@ -396,7 +396,7 @@ def flexible_iptw(A, H, library=None, n_folds=10, meta="nnls", trim=0.01, ridge=
         raise ValueError("flxipt: both treatment arms must be non-empty")
     t = float(trim)
     if not 0.0 <= t < 0.5:
-        raise ValueError("flxipt: trim must be in [0, 0.5), got %r" % (trim,))
+        raise ValueError(f"flxipt: trim must be in [0, 0.5), got {trim!r}")
     sl = super_learner(Av, H, library=library, n_folds=n_folds, meta=meta, binary=True, loss="l2", ridge=ridge)
     g = [min(max(v, max(t, _EPS)), 1.0 - max(t, _EPS)) for v in sl["fitted"]]
     if stabilize:
@@ -437,7 +437,7 @@ def iptw_ate(y, A, H, library=None, n_folds=10, meta="nnls", trim=0.01, ridge=1e
     yv, Av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("flxipt: %d outcomes but %d treatments" % (n, len(Av)))
+        raise ValueError(f"flxipt: {int(n)} outcomes but {int(len(Av))} treatments")
     r = flexible_iptw(Av, H, library=library, n_folds=n_folds, meta=meta, trim=trim, ridge=ridge)
     w = r["weights"]
     w1 = sum(w[i] for i in range(n) if Av[i] == 1.0)

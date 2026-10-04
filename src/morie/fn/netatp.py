@@ -57,7 +57,7 @@ def netattack(A, strategy="attack", k=1, seed=1):
     else:
         raise ValueError("strategy must be 'attack' or 'error'")
     keep = [i for i in range(n) if i not in set(removed)]
-    idx = {v: i for i, v in enumerate(keep)}
+    {v: i for i, v in enumerate(keep)}
     m = len(keep)
     adj = [[] for _ in range(m)]
     for a in range(m):

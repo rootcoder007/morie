@@ -87,7 +87,7 @@ _KINDS = ("single_weights", "single_atoms", "both", "independent")
 def dependence_kind(kind):
     r"""What varies with :math:`x`, and what that buys."""
     if kind not in _KINDS:
-        raise ValueError("ddpest: kind must be one of %s, got %r" % (", ".join(_KINDS), kind))
+        raise ValueError("ddpest: kind must be one of {}, got {!r}".format(", ".join(_KINDS), kind))
     table = {
         "single_weights": ("atoms", "clusters keep their membership across x but move location"),
         "single_atoms": (
@@ -136,10 +136,10 @@ def single_atoms_ddp(xs, alpha, K, weight_fn, atom_sampler=None, rng=None, seed=
     for x in xs:
         raw = [float(weight_fn(x, h)) for h in range(int(K))]
         if any(v < 0.0 for v in raw):
-            raise ValueError("ddpest: a weight is negative at x = %r" % (x,))
+            raise ValueError(f"ddpest: a weight is negative at x = {x!r}")
         z = sum(raw)
         if z <= _EPS:
-            raise ValueError("ddpest: the weights vanish at x = %r" % (x,))
+            raise ValueError(f"ddpest: the weights vanish at x = {x!r}")
         G[x] = {"weights": [v / z for v in raw], "atoms": list(atoms)}
     return {
         "G": G,
@@ -195,7 +195,7 @@ def predict_density(G, x, grid, kernel):
     r"""The density at :math:`x`: :math:`\sum_h w_h(x)
     k(y\mid\theta_h(x))`."""
     if x not in G:
-        raise ValueError("ddpest: no measure at x = %r" % (x,))
+        raise ValueError(f"ddpest: no measure at x = {x!r}")
     g = G[x]
     out = []
     for y in grid:

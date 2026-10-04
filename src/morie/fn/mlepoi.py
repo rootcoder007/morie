@@ -17,7 +17,7 @@ def mlepoi(counts: Union[Sequence, np.ndarray]):
     lam = float(a.mean())
     var_obs = float(a.var(ddof=1)) if a.size > 1 else float("nan")
     overdisp = var_obs / lam if lam > 0 else float("nan")
-    log_lik = (
+    (
         float(
             np.sum(
                 a * np.log(lam)

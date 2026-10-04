@@ -17,7 +17,7 @@ def ghosal_random_measure_def(x, n_atoms=50, seed=42):
     weights on atoms (GvdV 2017 sec. 3.1): additivity of the induced
     set function is checked explicitly, the Kolmogorov-consistency
     property the section formalizes."""
-    xs = _bnp._flat(x)
+    _bnp._flat(x)
     rng = np.random.default_rng(seed)
     atoms = [float(v) for v in rng.uniform(0, 1, n_atoms)._flat()]
     w = _bnp.normalize_weights([float(v) for v in rng.gamma(1.0, 1.0, n_atoms)._flat()])

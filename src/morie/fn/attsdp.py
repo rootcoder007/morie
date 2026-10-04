@@ -44,10 +44,7 @@ def scaled_dot_product_attention(Q, K, V, mask=None):
         m = np.asarray(mask)
         if m.shape != scores.shape:
             raise ValueError(f"mask shape {m.shape} does not match scores {scores.shape}.")
-        if getattr(m, "_is_mask", False) or m.dtype == bool:
-            scores = np.where(m, scores, -np.inf)
-        else:
-            scores = scores + m
+        scores = np.where(m, scores, -np.inf) if getattr(m, "_is_mask", False) or m.dtype == bool else scores + m
     A = _softmax_rows(scores)
     out = A @ V
     return RichResult(

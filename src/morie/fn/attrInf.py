@@ -83,11 +83,11 @@ def tree_predict(tree, x):
         try:
             v = x[i]
         except (IndexError, KeyError):
-            raise ValueError("attrInf: no value supplied for feature %r, which the tree needs" % (i,))
+            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs")
         if v is None:
-            raise ValueError("attrInf: no value supplied for feature %r, which the tree needs" % (i,))
+            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs")
         if v not in br:
-            raise ValueError("attrInf: no branch for value %r of feature %r" % (v, i))
+            raise ValueError(f"attrInf: no branch for value {v!r} of feature {i!r}")
         node = br[v]
     return node["label"]
 
@@ -221,7 +221,7 @@ def attrInf(
     is known and the attack is being evaluated, ``"truth"``.
     """
     if mode not in _MODES:
-        raise ValueError("attrInf: mode must be one of %s" % (_MODES,))
+        raise ValueError(f"attrInf: mode must be one of {_MODES}")
     paths = tree_paths(tree)
     if candidates is None:
         cand = sorted(

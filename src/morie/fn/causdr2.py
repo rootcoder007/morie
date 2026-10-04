@@ -84,9 +84,7 @@ def causdr2(y, d, X, K=2, seed=1):
         col = [row[j] for row in Xl]
         if max(col) - min(col) == 0.0:
             raise ValueError(
-                "causdr2: column %d of X is constant; the nuisance "
-                "regressions add their own intercept, so do not pass "
-                "one" % j
+                f"causdr2: column {int(j)} of X is constant; the nuisance regressions add their own intercept, so do not pass one"
             )
     Dg = np.concatenate([np.ones((n, 1)), Xa], axis=1)
     if K == 1:

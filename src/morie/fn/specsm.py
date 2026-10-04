@@ -57,7 +57,7 @@ def spectral_smoothed(y, span=3):
     raw = base["periodogram"]
     m = len(raw)
     if span > m:
-        raise ValueError("`span` (%d) exceeds the number of Fourier ordinates (%d)" % (span, m))
+        raise ValueError(f"`span` ({int(span)}) exceeds the number of Fourier ordinates ({int(m)})")
     half = span // 2
     sm = []
     for k in range(m):

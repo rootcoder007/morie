@@ -107,15 +107,14 @@ def verify_chain(entries, hashes, key=None, genesis=GENESIS):
     """
     if len(entries) != len(hashes):
         raise ValueError(
-            "sechsh: %d entries but %d hashes -- an entry or a hash has been dropped" % (len(entries), len(hashes))
+            f"sechsh: {int(len(entries))} entries but {int(len(hashes))} hashes -- an entry or a hash has been dropped"
         )
     prev = h._as_bytes(genesis)
     first_bad = None
     for i in range(len(entries)):
         want = chain_entry(prev, entries[i], key)["hash"]
-        if not h.constant_time_equal(want, hashes[i]):
-            if first_bad is None:
-                first_bad = i
+        if not h.constant_time_equal(want, hashes[i]) and first_bad is None:
+            first_bad = i
         prev = h._as_bytes(hashes[i])
     return RichResult(
         payload={
@@ -156,7 +155,7 @@ def inclusion_proof(leaves, index):
     L = [h._as_bytes(v) for v in leaves]
     m = int(index)
     if m < 0 or m >= len(L):
-        raise ValueError("sechsh: index %d is outside a log of %d" % (m, len(L)))
+        raise ValueError(f"sechsh: index {int(m)} is outside a log of {int(len(L))}")
     path = []
     lo, hi = 0, len(L)
     while hi - lo > 1:
@@ -183,7 +182,7 @@ def verify_inclusion(leaf, index, size, path, root):
     r"""Recompute the head from the leaf and the path alone."""
     m, n = int(index), int(size)
     if m < 0 or m >= n:
-        raise ValueError("sechsh: index %d is outside a log of %d" % (m, n))
+        raise ValueError(f"sechsh: index {int(m)} is outside a log of {int(n)}")
     node = h.sha256(_LEAF + h._as_bytes(leaf))
     # The audit path is recorded top-down by inclusion_proof, but the
     # hashing has to run bottom-up from the leaf: collect the descent
@@ -196,7 +195,7 @@ def verify_inclusion(leaf, index, size, path, root):
     p = list(path)
     while hi - lo > 1:
         if used >= len(p):
-            raise ValueError("sechsh: the audit path is too short for a log of %d" % n)
+            raise ValueError(f"sechsh: the audit path is too short for a log of {int(n)}")
         k = 1
         while k * 2 < hi - lo:
             k *= 2

@@ -28,8 +28,8 @@ def test_grsen_basic():
 def test_grsen_edge():
     """Test edge cases."""
     X = [[[1.0, 3.0]]]
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    result = geron_senet_squeeze_excite(X, I, I)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    result = geron_senet_squeeze_excite(X, I_, I_)
     assert isinstance(result, dict)
     assert "scale" in result
     assert "squeeze" in result

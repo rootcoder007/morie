@@ -65,10 +65,7 @@ def vanraden_method2(marker_matrix, weights=None, freq=None):
     p = len(M[0])
     pj = _allele_freq(M, freq)
     var = [2.0 * q * (1.0 - q) for q in pj]
-    if weights is None:
-        w = [1.0 / v if v > 0 else 0.0 for v in var]
-    else:
-        w = [float(v) for v in weights]
+    w = [1.0 / v if v > 0 else 0.0 for v in var] if weights is None else [float(v) for v in weights]
     Z = [[M[i][j] - 2.0 * pj[j] for j in range(p)] for i in range(J)]
     den = sum(w[j] * var[j] for j in range(p))
     G = [[sum(w[k] * Z[i][k] * Z[j][k] for k in range(p)) / den for j in range(J)] for i in range(J)]

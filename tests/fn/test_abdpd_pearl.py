@@ -69,14 +69,14 @@ def test_support_too_large_is_refused():
         # discrete path is genuinely reached
         return lambda **kw: 1.0 if kw[name] > 0.5 else 0.0
 
-    eqs = {"y%d" % i: (("u%d" % i,), _mk("u%d" % i)) for i in range(30)}
+    eqs = {f"y{int(i)}": ((f"u{int(i)}",), _mk(f"u{int(i)}")) for i in range(30)}
     with pytest.raises(ValueError):
         # declaring the support routes straight to the discrete path,
         # whose size guard refuses 2^30 candidates immediately
         aap(
-            evidence={"y%d" % i: 7.7 for i in range(30)},
+            evidence={f"y{int(i)}": 7.7 for i in range(30)},
             equations=eqs,
-            exogenous_names=["u%d" % i for i in range(30)],
+            exogenous_names=[f"u{int(i)}" for i in range(30)],
             do={"y0": 0.0},
             query="y1",
             u_support=(0.0, 1.0),

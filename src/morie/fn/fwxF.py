@@ -22,10 +22,7 @@ def _ffmc_day(f0, t, h, w, r):
     if r > 0.5:
         ra = r - 0.5
         dm = 42.5 * ra * math.exp(-100.0 / (251.0 - wmo)) * (1.0 - math.exp(-6.93 / ra))
-        if wmo > 150.0:
-            wmo = wmo + dm + 0.0015 * (wmo - 150.0) ** 2 * math.sqrt(ra)
-        else:
-            wmo = wmo + dm
+        wmo = wmo + dm + 0.0015 * (wmo - 150.0) ** 2 * math.sqrt(ra) if wmo > 150.0 else wmo + dm
         if wmo > 250.0:
             wmo = 250.0
     ed = 0.942 * h**0.679 + 11.0 * math.exp((h - 100.0) / 10.0) + 0.18 * (21.1 - t) * (1.0 - 1.0 / math.exp(0.115 * h))
@@ -118,10 +115,7 @@ def _isi_bui_fwi(ffm, dmc, dc, w):
         bb = 0.1 * isi * (1000.0 / (25.0 + 108.64 / math.exp(0.023 * bui)))
     else:
         bb = 0.1 * isi * (0.626 * bui**0.809 + 2.0)
-    if bb <= 1.0:
-        fwi = bb
-    else:
-        fwi = math.exp(2.72 * (0.434 * math.log(bb)) ** 0.647)
+    fwi = bb if bb <= 1.0 else math.exp(2.72 * (0.434 * math.log(bb)) ** 0.647)
     dsr = 0.0272 * fwi**1.77
     return isi, bui, fwi, dsr
 

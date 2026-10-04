@@ -5,7 +5,7 @@ from morie.fn.fdiff import fdiff
 
 
 def test_fdiff_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = fdiff(f=lambda x: x**2 - 2, x=1.0)
     assert result is not None
     assert hasattr(result, "name")

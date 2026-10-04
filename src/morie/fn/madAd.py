@@ -41,10 +41,7 @@ def mad_anomaly_score(x, threshold=3.5, constant=0.6745):
     v = np.asarray(x, dtype=float).ravel()
     ctr = float(np.median(v))
     mad = float(np.median(np.abs(v - ctr)))
-    if mad > 0.0:
-        m = float(constant) * (v - ctr) / mad
-    else:
-        m = np.zeros(len(v))
+    m = float(constant) * (v - ctr) / mad if mad > 0.0 else np.zeros(len(v))
     flag = [bool(abs(float(t)) > float(threshold)) for t in m]
     return RichResult(
         payload={

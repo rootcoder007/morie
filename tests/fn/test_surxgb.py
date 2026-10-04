@@ -12,7 +12,7 @@ from morie.fn.surxgb import aft_loss, survival_xgboost
 def _intervals(n=40):
     X = [[float(i % 6), float((i * 3) % 4)] for i in range(n)]
     lower = [1.0 + float(i % 6) for i in range(n)]
-    upper = [l + 1.0 for l in lower]
+    upper = [ell + 1.0 for ell in lower]
     return X, lower, upper
 
 

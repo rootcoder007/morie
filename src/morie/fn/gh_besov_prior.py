@@ -24,7 +24,7 @@ def ghosal_besov_prior(s=1.0, J=8, pi_j=0.5, seed=42):
     for j in range(J):
         sd = 2.0 ** (-j * (2.0 * s + 1.0) / 2.0)
         lvl = 0.0
-        for k in range(2**j):
+        for _k in range(2**j):
             if float(rng.uniform(0, 1)) < pi_j:
                 th = sd * float(rng.normal(0, 1))
                 lvl += th * th

@@ -74,10 +74,7 @@ def metropolis_hastings(
     theta = np.asarray(init, dtype=float).copy()
     d = len(theta)
 
-    if proposal_cov is None:
-        L = np.eye(d)
-    else:
-        L = np.linalg.cholesky(np.asarray(proposal_cov, dtype=float))
+    L = np.eye(d) if proposal_cov is None else np.linalg.cholesky(np.asarray(proposal_cov, dtype=float))
 
     all_samples = np.empty((n_iter, d))
     log_p_cur = log_target(theta)

@@ -104,7 +104,7 @@ def causal_three_layer_grf(
     JASA 119(545), 97-102.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     ys = [float(v) for v in y]
     d = [1.0 if v else 0.0 for v in D]
     m = [float(v) for v in M]

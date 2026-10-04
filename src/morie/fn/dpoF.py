@@ -102,7 +102,7 @@ def _logsumexp(vals):
 def _vec(x, name):
     v = [float(t) for t in np.atleast_1d(np.asarray(x, dtype=float))]
     if not v:
-        raise ValueError("dpoF: %s must be non-empty" % name)
+        raise ValueError(f"dpoF: {name} must be non-empty")
     return v
 
 
@@ -160,17 +160,17 @@ def dpoF(
     and the gradient expression of section 4.
     """
     if model not in _MODELS:
-        raise ValueError("dpoF: model must be one of %r, got %r" % (_MODELS, model))
+        raise ValueError(f"dpoF: model must be one of {_MODELS!r}, got {model!r}")
     beta = float(beta)
     if not beta > 0.0:
-        raise ValueError("dpoF: beta must be > 0, got %r" % (beta,))
+        raise ValueError(f"dpoF: beta must be > 0, got {beta!r}")
 
     if model == "plackett-luce":
         return _plackett_luce(logp, logp_ref, beta)
 
     eps = float(label_smoothing)
     if not 0.0 <= eps < 0.5:
-        raise ValueError("dpoF: label_smoothing must lie in [0, 0.5), got %r" % (eps,))
+        raise ValueError(f"dpoF: label_smoothing must lie in [0, 0.5), got {eps!r}")
     pw = _vec(logp_w, "logp_w")
     pl = _vec(logp_l, "logp_l")
     rw = _vec(logp_ref_w, "logp_ref_w")
@@ -223,7 +223,9 @@ def _plackett_luce(logp, logp_ref, beta):
         if K < 2:
             raise ValueError("dpoF: each ranking needs K >= 2 completions")
         if len(R[i]) != K:
-            raise ValueError("dpoF: ranking %d has %d policy entries but %d reference entries" % (i, K, len(R[i])))
+            raise ValueError(
+                f"dpoF: ranking {int(i)} has {int(K)} policy entries but {int(len(R[i]))} reference entries"
+            )
         rhat = [beta * (row[k] - R[i][k]) for k in range(K)]
         rewards.append(rhat)
         # log prod_k exp(r_k) / sum_{j>=k} exp(r_j)

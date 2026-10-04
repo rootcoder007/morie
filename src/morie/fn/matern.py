@@ -125,7 +125,7 @@ def matern_cluster(lambda_p, mu, r, t=None):
     rr = float(r)
     for nm, val in (("lambda_p", lam), ("mu", m), ("r", rr)):
         if val != val or not (val > 0.0):
-            raise ValueError("matern_cluster: %s must be positive" % nm)
+            raise ValueError(f"matern_cluster: {nm} must be positive")
     if t is None:
         tv = [0.25 * rr, 0.5 * rr, 1.0 * rr, 1.5 * rr, 2.0 * rr, 3.0 * rr]
     else:

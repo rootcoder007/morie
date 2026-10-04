@@ -76,10 +76,7 @@ def bound_nonlinear(data, g, theta_grid, alpha=0.05, B=500, seed=0):
     if n < 10:
         raise ValueError(f"need at least 10 observations, got {n}.")
     grid = np.atleast_1d(np.asarray(theta_grid, dtype=float))
-    if grid.ndim == 1:
-        thetas = list(grid)
-    else:
-        thetas = [grid[i] for i in range(grid.shape[0])]
+    thetas = list(grid) if grid.ndim == 1 else [grid[i] for i in range(grid.shape[0])]
     a = float(alpha)
     if not 0 < a < 1:
         raise ValueError(f"alpha must lie in (0, 1), got {a}.")

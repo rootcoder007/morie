@@ -277,7 +277,7 @@ def perm_importance(trees, oob, X, Y, q, normalise=True):
     deviation of the differences."  The permutation is the deterministic
     reversal of the OOB row order, so both arms permute identically.
     """
-    n = len(X)
+    len(X)
     p = len(X[0])
     imp = [0.0] * p
     for j in range(p):

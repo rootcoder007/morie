@@ -107,7 +107,7 @@ def local_encoder(H, alpha):
     rows = [[float(q) for q in r] for r in k.mat(H)]
     a = [float(q) for q in k.vec(alpha)]
     if len(a) != len(rows):
-        raise ValueError("narm: %d weights for %d hidden states" % (len(a), len(rows)))
+        raise ValueError(f"narm: {int(len(a))} weights for {int(len(rows))} hidden states")
     d = len(rows[0])
     return [sum(a[j] * rows[j][f] for j in range(len(rows))) for f in range(d)]
 
@@ -122,10 +122,10 @@ def bilinear_scores(embeddings, B, c_t):
     E = [[float(q) for q in r] for r in k.mat(embeddings)]
     c = [float(q) for q in k.vec(c_t)]
     if len(B[0]) != len(c):
-        raise ValueError("narm: B has %d columns for a session vector of %d" % (len(B[0]), len(c)))
+        raise ValueError(f"narm: B has {int(len(B[0]))} columns for a session vector of {int(len(c))}")
     Bc = [sum(B[d][h] * c[h] for h in range(len(c))) for d in range(len(B))]
     if len(E[0]) != len(Bc):
-        raise ValueError("narm: embeddings are %d-dimensional but B has %d rows" % (len(E[0]), len(Bc)))
+        raise ValueError(f"narm: embeddings are {int(len(E[0]))}-dimensional but B has {int(len(Bc))} rows")
     s = [sum(E[i][d] * Bc[d] for d in range(len(Bc))) for i in range(len(E))]
     return RichResult(
         payload={

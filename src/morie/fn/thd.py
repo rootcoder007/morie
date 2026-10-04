@@ -29,7 +29,7 @@ def thd_compute(x, fs: float = 1.0, n_harmonics: int = 5, **kwargs) -> Descripti
     DescriptiveResult
     """
     x = np.asarray(x, dtype=float)
-    N = len(x)
+    len(x)
     X = np.fft.rfft(x)
     mag = np.abs(X)
     fund_idx = np.argmax(mag[1:]) + 1
@@ -41,10 +41,7 @@ def thd_compute(x, fs: float = 1.0, n_harmonics: int = 5, **kwargs) -> Descripti
         if h_idx < len(mag):
             harm_power += mag[h_idx] ** 2
             harmonics.append((k, int(h_idx), float(mag[h_idx] ** 2)))
-    if fund_power <= 0:
-        thd_val = float("inf")
-    else:
-        thd_val = float(np.sqrt(harm_power / fund_power))
+    thd_val = float("inf") if fund_power <= 0 else float(np.sqrt(harm_power / fund_power))
     thd_db = 20.0 * np.log10(max(thd_val, 1e-30))
     return DescriptiveResult(
         name="thd",

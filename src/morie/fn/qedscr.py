@@ -93,7 +93,7 @@ def qed_score(properties, weights=None, unweighted=False):
         raise TypeError("properties must be a mapping of descriptor names.")
     missing = [k for k in _ORDER if properties.get(k) is None]
     if missing:
-        raise ValueError("missing descriptor(s): %s. QED needs all eight." % ", ".join(missing))
+        raise ValueError("missing descriptor(s): {}. QED needs all eight.".format(", ".join(missing)))
     if unweighted:
         w = {k: 1.0 for k in _ORDER}
     elif weights is None:

@@ -124,7 +124,7 @@ def miest1(X, Y, k=3, algorithm=1):
             "k": k,
             "algorithm": algorithm,
             "n": n,
-            "method": "KSG mutual information, Eq. %d (Kraskov 2004)" % (8 if algorithm == 1 else 9),
+            "method": f"KSG mutual information, Eq. {int(8 if algorithm == 1 else 9)} (Kraskov 2004)",
         }
     )
 

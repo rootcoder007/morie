@@ -104,13 +104,10 @@ def amsig(x, fc, fs, conventional=False, depth=1.0):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the carrier must satisfy 0 < fc < fs/2, got fc=%g with fs=%g" % (fcv, fsv))
+        raise ValueError(f"the carrier must satisfy 0 < fc < fs/2, got fc={fcv:g} with fs={fsv:g}")
     w = 2.0 * pi * fcv / fsv
     carrier = [cos(w * n) for n in range(len(xs))]
-    if conventional:
-        y = [(1.0 + depth * v) * c for v, c in zip(xs, carrier)]
-    else:
-        y = [v * c for v, c in zip(xs, carrier)]
+    y = [(1.0 + depth * v) * c for v, c in zip(xs, carrier)] if conventional else [v * c for v, c in zip(xs, carrier)]
     demod = [v * c for v, c in zip(y, carrier)]
     return RichResult(
         payload={
@@ -209,7 +206,7 @@ def fmsig(m, fc, fs, kf=1.0, amplitude=1.0):
         raise ValueError("the carrier must satisfy 0 < fc < fs/2")
     dt = 1.0 / fsv
     phase, acc = [], 0.0
-    for i, v in enumerate(ms):
+    for i, _v in enumerate(ms):
         if i:
             acc += 0.5 * (ms[i] + ms[i - 1]) * dt
         phase.append(2.0 * pi * fcv * i * dt + 2.0 * pi * kf * acc)
@@ -268,7 +265,9 @@ def tvlsi(x, h):
     if len(rows) == 1:
         rows = rows * n
     if len(rows) != n:
-        raise ValueError("give one impulse response per sample (%d), or one response for all; got %d" % (n, len(rows)))
+        raise ValueError(
+            f"give one impulse response per sample ({int(n)}), or one response for all; got {int(len(rows))}"
+        )
     y = []
     for i in range(n):
         row = rows[i]
@@ -661,10 +660,7 @@ def kdelta(n, shift=0, amplitude=1.0):
     amplitude : float
         Scale factor.
     """
-    if isinstance(n, int):
-        idx = list(range(n))
-    else:
-        idx = [int(v) for v in n]
+    idx = list(range(n)) if isinstance(n, int) else [int(v) for v in n]
     s, a = int(shift), float(amplitude)
     return RichResult(
         payload={
@@ -692,10 +688,7 @@ def stepseq(n, shift=0):
     of this sequence is the discrete impulse of eq. (3.34), which is
     returned as a cross-check.
     """
-    if isinstance(n, int):
-        idx = list(range(n))
-    else:
-        idx = [int(v) for v in n]
+    idx = list(range(n)) if isinstance(n, int) else [int(v) for v in n]
     s = int(shift)
     u = [1.0 if i - s >= 0 else 0.0 for i in idx]
     diff = [u[0]] + [u[i] - u[i - 1] for i in range(1, len(u))]
@@ -803,7 +796,7 @@ def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0, duration=1.0):
         raise ValueError("fs must be positive")
     for f in (f1, f2):
         if abs(float(f)) >= fsv / 2.0:
-            raise ValueError("component at %g Hz is at or above the Nyquist frequency %g Hz" % (f, fsv / 2.0))
+            raise ValueError(f"component at {f:g} Hz is at or above the Nyquist frequency {fsv / 2.0:g} Hz")
     if n is not None:
         N = int(n)
     else:

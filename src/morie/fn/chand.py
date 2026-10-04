@@ -44,10 +44,7 @@ def calinski_harabasz(
         Bgss += nc * np.sum((mc - overall_mean) ** 2)
         Wgss += np.sum((Xc - mc) ** 2)
 
-    if Wgss == 0 or k <= 1 or n <= k:
-        ch = 0.0
-    else:
-        ch = (Bgss / (k - 1)) / (Wgss / (n - k))
+    ch = 0.0 if Wgss == 0 or k <= 1 or n <= k else Bgss / (k - 1) / (Wgss / (n - k))
 
     return DescriptiveResult(
         name="CalinskiHarabasz",

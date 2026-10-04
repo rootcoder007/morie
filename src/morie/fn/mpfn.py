@@ -132,7 +132,7 @@ def readout(H, how="sum", H0=None, i_fn=None, j_fn=None):
     that changed from one that did not.
     """
     if how not in _READOUTS:
-        raise ValueError("mpfn: readout must be one of %s, got %r" % (", ".join(_READOUTS), how))
+        raise ValueError("mpfn: readout must be one of {}, got {!r}".format(", ".join(_READOUTS), how))
     rows = [[float(v) for v in r] for r in k.mat(H)]
     d = len(rows[0])
     if how == "sum":

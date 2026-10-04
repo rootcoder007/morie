@@ -190,11 +190,10 @@ def sobol_sequence(n, dim, skip=0):
     n = int(n)
     dim = int(dim)
     if n < 1:
-        raise ValueError("sobol_sequence: n must be at least 1, got %r" % n)
+        raise ValueError(f"sobol_sequence: n must be at least 1, got {n!r}")
     if not 1 <= dim <= len(_SOBOL_POLY):
         raise ValueError(
-            "sobol_sequence: dim must be between 1 and %d (the direction "
-            "numbers tabulated here), got %r" % (len(_SOBOL_POLY), dim)
+            f"sobol_sequence: dim must be between 1 and {int(len(_SOBOL_POLY))} (the direction numbers tabulated here), got {dim!r}"
         )
     total = n + int(skip)
     bits = max(1, int(math.ceil(math.log(total + 1, 2))) + 1)
@@ -253,7 +252,7 @@ def design_from_prior(n, prior_ppf, dim=None, skip=1):
         )
     fns = list(prior_ppf)
     if dim is not None and int(dim) != len(fns):
-        raise ValueError("design_from_prior: dim=%r but %d quantile functions given" % (dim, len(fns)))
+        raise ValueError(f"design_from_prior: dim={dim!r} but {int(len(fns))} quantile functions given")
     u = sobol_sequence(n, len(fns), skip=skip)
     return np.asarray([[float(fns[j](row[j])) for j in range(len(fns))] for row in u.tolist()], dtype=float)
 
@@ -277,7 +276,7 @@ def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0, summary=None, ke
     :math:`\pi(D\mid X)\propto 1_{\rho(D,X)\le\epsilon}`.
     """
     if kernel not in ("gaussian", "uniform"):
-        raise ValueError("gabc_log_likelihood: kernel must be 'gaussian' or 'uniform', got %r" % (kernel,))
+        raise ValueError(f"gabc_log_likelihood: kernel must be 'gaussian' or 'uniform', got {kernel!r}")
     eps = float(epsilon)
     if eps <= 0.0:
         raise ValueError("gabc_log_likelihood: epsilon must be positive")
@@ -289,8 +288,7 @@ def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0, summary=None, ke
         s = _summarise(x, summary)
         if len(s) != len(d_obs):
             raise ValueError(
-                "gabc_log_likelihood: simulator summary has length %d but "
-                "the observed summary has length %d" % (len(s), len(d_obs))
+                f"gabc_log_likelihood: simulator summary has length {int(len(s))} but the observed summary has length {int(len(d_obs))}"
             )
         rho = math.sqrt(sum((a - b) ** 2 for a, b in zip(s, d_obs)))
         if kernel == "uniform":
@@ -331,11 +329,11 @@ def synthetic_log_likelihood(draws, obs, epsilon=0.0, summary=None):
     rows = [_summarise(x, summary) for x in draws]
     S = len(rows)
     if S < 2:
-        raise ValueError("synthetic_log_likelihood: need at least 2 simulations to form a covariance, got %d" % S)
+        raise ValueError(f"synthetic_log_likelihood: need at least 2 simulations to form a covariance, got {int(S)}")
     J = len(rows[0])
     y = _summarise(obs, summary)
     if len(y) != J:
-        raise ValueError("synthetic_log_likelihood: %d observed summaries but %d simulated" % (len(y), J))
+        raise ValueError(f"synthetic_log_likelihood: {int(len(y))} observed summaries but {int(J)} simulated")
     mu = [sum(r[j] for r in rows) / S for j in range(J)]
     cov = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in rows) / (S - 1) for b in range(J)] for a in range(J)]
     e2 = float(epsilon) ** 2
@@ -423,14 +421,14 @@ def gp_fit(design, values, nugget=None, lengthscale=None, kernel="sqexp", tau2=N
     `nugget` is :math:`v^2` from :func:`gabc_log_likelihood`, per point.
     """
     if kernel not in _KERNELS:
-        raise ValueError("gp_fit: kernel must be one of %r, got %r" % (_KERNELS, kernel))
+        raise ValueError(f"gp_fit: kernel must be one of {_KERNELS!r}, got {kernel!r}")
     X = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(design, dtype=float)).tolist()]
     y = [float(v) for v in np.atleast_1d(np.asarray(values, dtype=float))]
     n = len(X)
     if n != len(y):
-        raise ValueError("gp_fit: %d design points but %d values" % (n, len(y)))
+        raise ValueError(f"gp_fit: {int(n)} design points but {int(len(y))} values")
     if n < 3:
-        raise ValueError("gp_fit: need at least 3 design points, got %d" % n)
+        raise ValueError(f"gp_fit: need at least 3 design points, got {int(n)}")
     p = len(X[0])
     if lengthscale is None:
         lengthscale = _mle_lengthscale(X, y, nugget, kernel)
@@ -447,8 +445,7 @@ def gp_fit(design, values, nugget=None, lengthscale=None, kernel="sqexp", tau2=N
     q = len(H[0])
     if n <= q:
         raise ValueError(
-            "gp_fit: the quadratic mean has %d coefficients and only %d "
-            "design points; add points or the mean is not identified" % (q, n)
+            f"gp_fit: the quadratic mean has {int(q)} coefficients and only {int(n)} design points; add points or the mean is not identified"
         )
     Ainv_y = _chol_solve(L, y)
     Ainv_H = [_chol_solve(L, [H[i][k] for i in range(n)]) for k in range(q)]
@@ -486,7 +483,7 @@ def _as_nugget(nugget, n):
     if len(v) == 1:
         v = v * n
     if len(v) != n:
-        raise ValueError("gp_fit: %d nugget values for %d points" % (len(v), n))
+        raise ValueError(f"gp_fit: {int(len(v))} nugget values for {int(n)} points")
     return [max(float(t), 1e-12) for t in v]
 
 
@@ -561,7 +558,7 @@ def gp_predict(fit, theta):
     ls, kern = fit["lengthscale"], fit["kernel"]
     t = [float(v) for v in np.atleast_1d(np.asarray(theta, dtype=float))]
     if len(t) != fit["dim"]:
-        raise ValueError("gp_predict: theta has %d entries, design has %d" % (len(t), fit["dim"]))
+        raise ValueError("gp_predict: theta has {} entries, design has {}".format(int(len(t)), int(fit["dim"])))
     k = [_corr(t, X[i], ls, kern) for i in range(fit["n"])]
     h = _basis(t)
     mean = sum(h[j] * fit["beta"][j] for j in range(fit["q"])) + sum(k[i] * fit["Ainv_r"][i] for i in range(fit["n"]))
@@ -649,9 +646,7 @@ def history_match(
                 ensemble_v.append(v)
         if len(ensemble_x) < 3:
             raise ValueError(
-                "history_match: wave %d left %d usable points; every "
-                "simulation was rejected, so epsilon is too small for this "
-                "simulator" % (w, len(ensemble_x))
+                f"history_match: wave {int(w)} left {int(len(ensemble_x))} usable points; every simulation was rejected, so epsilon is too small for this simulator"
             )
         fit = gp_fit(ensemble_x, ensemble_y, nugget=ensemble_v, kernel=kernel)
         waves.append(
@@ -679,10 +674,7 @@ def _expected_error(alphas, tau, n_grid=101):
     total = 0.0
     for i in range(n_grid):
         u = (i + 0.5) / n_grid
-        if u <= tau:
-            err = sum(1 for a in alphas if a < u) / float(M)
-        else:
-            err = sum(1 for a in alphas if a >= u) / float(M)
+        err = sum(1 for a in alphas if a < u) / float(M) if u <= tau else sum(1 for a in alphas if a >= u) / float(M)
         total += err
     return total / n_grid
 
@@ -789,7 +781,7 @@ def _mw_sampler(
     n_accept = 0
     unresolved = 0
     sims_used = 0
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         prop = [theta[j] + sd[j] * rng.standard_normal() for j in range(p)]
         if log_prior(prop) == float("-inf"):
             chain.append(list(theta))
@@ -899,7 +891,7 @@ def abc_gp_emulator(
         r["estimate"]           # posterior mode, near 2.0
     """
     if method not in _METHODS:
-        raise ValueError("abc_gp_emulator: method must be one of %r, got %r" % (_METHODS, method))
+        raise ValueError(f"abc_gp_emulator: method must be one of {_METHODS!r}, got {method!r}")
     if not callable(sim):
         raise ValueError("abc_gp_emulator: sim must be a callable simulator sim(theta, rng)")
 
@@ -960,7 +952,7 @@ def abc_gp_emulator(
 
     if log_prior is None or theta0 is None:
         raise ValueError(
-            "abc_gp_emulator: method=%r is a Metropolis-Hastings sampler and needs log_prior and theta0" % (method,)
+            f"abc_gp_emulator: method={method!r} is a Metropolis-Hastings sampler and needs log_prior and theta0"
         )
     if method == "synthetic":
         out = synthetic_abc(

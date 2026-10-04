@@ -17,7 +17,10 @@ def _iou(a, b):
     ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
     iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
     inter = ix * iy
-    area = lambda r: (r[2] - r[0]) * (r[3] - r[1])
+
+    def area(r):
+        return (r[2] - r[0]) * (r[3] - r[1])
+
     return inter / (area(a) + area(b) - inter)
 
 

@@ -158,7 +158,7 @@ def sample_pdf(bins, weights, n_samples, rng, eps=1e-5):
     b = [float(v) for v in k.vec(bins)]
     w = [float(v) + float(eps) for v in k.vec(weights)]
     if len(w) != len(b) - 1 and len(w) != len(b):
-        raise ValueError("nrfrad: %d weights do not match %d bins" % (len(w), len(b)))
+        raise ValueError(f"nrfrad: {int(len(w))} weights do not match {int(len(b))} bins")
     tot = sum(w)
     pdf = [v / tot for v in w]
     cdf, acc = [], 0.0

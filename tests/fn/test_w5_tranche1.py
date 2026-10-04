@@ -91,10 +91,7 @@ def test_gr1cy_closed_form_and_shape():
     assert peak == (T - 1) // 2
     # Closed form: linear interpolation on [0, peak] and [peak, T-1].
     for i in range(T):
-        if i <= peak:
-            want = lo + (hi - lo) * i / peak
-        else:
-            want = hi + (lo - hi) * (i - peak) / (T - 1 - peak)
+        want = lo + (hi - lo) * i / peak if i <= peak else hi + (lo - hi) * (i - peak) / (T - 1 - peak)
         assert lr[i] == pytest.approx(want, abs=1e-12)
 
 
@@ -423,11 +420,11 @@ def test_grbgd_converges_to_normal_equation_solution():
 
 
 def test_grblip_components_match_independent_formulas():
-    I = np.array([[1.0, 0.0], [0.0, 1.0]])
+    I_ = np.array([[1.0, 0.0], [0.0, 1.0]])
     T = np.array([[1.0, 0.0], [0.0, 1.0]])
     CL = np.zeros((2, 3, 4))  # uniform over 4 tokens
     tgt = np.array([[0, 1, 2], [3, 0, 1]])
-    r = geron_blip_itm_itc(I, T, CL, tgt, tau=1.0)
+    r = geron_blip_itm_itc(I_, T, CL, tgt, tau=1.0)
     # ITC: logits = I2 identity; each row CE = log(1 + e^-1).
     assert r["itc"] == pytest.approx(math.log(1 + math.exp(-1)))
     # ITM: two matched pairs at logit 1, two mismatched at logit 0.
@@ -440,9 +437,9 @@ def test_grblip_components_match_independent_formulas():
 
 
 def test_grblip_weights_scale_the_terms():
-    I = np.array([[1.0, 0.0]])
-    r0 = geron_blip_itm_itc(I, I, np.zeros((1, 1, 2)), [[0]], tau=1.0)
-    r1 = geron_blip_itm_itc(I, I, np.zeros((1, 1, 2)), [[0]], tau=1.0, lam_lm=3.0)
+    I_ = np.array([[1.0, 0.0]])
+    r0 = geron_blip_itm_itc(I_, I_, np.zeros((1, 1, 2)), [[0]], tau=1.0)
+    r1 = geron_blip_itm_itc(I_, I_, np.zeros((1, 1, 2)), [[0]], tau=1.0, lam_lm=3.0)
     assert (r1["loss"] - r0["loss"]) == pytest.approx(2.0 * r0["lm"])
 
 

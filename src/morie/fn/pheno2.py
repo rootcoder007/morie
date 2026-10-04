@@ -60,10 +60,7 @@ def phenotype_qc(y, k=1.5, lambdas=None):
     slog = sum(math.log(t) for t in v)
     best_l, best_ll = 0.0, float("-inf")
     for lam in lambdas:
-        if lam == 0.0:
-            z = [math.log(t) for t in v]
-        else:
-            z = [(t**lam - 1.0) / lam for t in v]
+        z = [math.log(t) for t in v] if lam == 0.0 else [(t**lam - 1.0) / lam for t in v]
         m = sum(z) / n
         s2 = sum((t - m) ** 2 for t in z) / n
         ll = -0.5 * n * math.log(s2) + (lam - 1.0) * slog

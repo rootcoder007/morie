@@ -167,13 +167,13 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3, coef0=1.0, tol=
         C = 1.0
     C = float(C)
     if C <= 0.0:
-        raise ValueError("svdd: C must be > 0, got %r" % (C,))
+        raise ValueError(f"svdd: C must be > 0, got {C!r}")
     if C * n < 1.0:
         raise ValueError(
-            "svdd: C = %g with n = %d makes sum(alpha) = 1 infeasible under alpha_i <= C; need C >= 1/n" % (C, n)
+            f"svdd: C = {C:g} with n = {int(n)} makes sum(alpha) = 1 infeasible under alpha_i <= C; need C >= 1/n"
         )
     if kernel not in ("rbf", "linear", "poly"):
-        raise ValueError("svdd: kernel must be rbf, linear or poly, got %r" % (kernel,))
+        raise ValueError(f"svdd: kernel must be rbf, linear or poly, got {kernel!r}")
     if gamma is None:
         gamma = 1.0 / p
 
@@ -241,7 +241,7 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3, coef0=1.0, tol=
         """||z - a||^2 - R^2 via eq. 14. Negative means accepted."""
         zr = _mat(Z, "Z")
         if len(zr[0]) != p:
-            raise ValueError("svdd: test data has %d columns, training had %d" % (len(zr[0]), p))
+            raise ValueError(f"svdd: test data has {int(len(zr[0]))} columns, training had {int(p)}")
         Kz = kernel_matrix(zr, rows, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
         Kzz = kernel_matrix(zr, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
         return [dist2_row([float(v) for v in Kz[t]], float(Kzz[t][t])) - R2 for t in range(len(zr))]
@@ -314,10 +314,7 @@ def _solve_dual(K, C, n, tol, max_iter):
         # objective along alpha_i += d, alpha_j -= d is a downward
         # parabola; its unconstrained maximiser is
         denom = 2.0 * (K[i][i] - 2.0 * K[i][j] + K[j][j])
-        if denom <= 1e-15:
-            d = alpha[j] if g[i] > g[j] else 0.0
-        else:
-            d = (g[i] - g[j]) / denom
+        d = (alpha[j] if g[i] > g[j] else 0.0) if denom <= 1e-15 else (g[i] - g[j]) / denom
         d = min(d, C - alpha[i], alpha[j])
         if d <= 1e-15:
             break

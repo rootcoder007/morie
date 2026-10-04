@@ -104,8 +104,8 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     t_rho = (rho - 1.0) / se_rho
     s = ssr / n
     lrvar = s
-    for l in range(1, lags + 1):
-        lrvar += (2.0 / n) * (1.0 - l / (lags + 1.0)) * sum(res[t] * res[t - l] for t in range(l, n))
+    for ell in range(1, lags + 1):
+        lrvar += (2.0 / n) * (1.0 - ell / (lags + 1.0)) * sum(res[t] * res[t - ell] for t in range(ell, n))
     ybar2 = sum((c - mc) ** 2 for c in ycur) / n**2
     if lrvar <= 0.0 or ybar2 <= 0.0:
         return nan_out

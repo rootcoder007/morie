@@ -10,10 +10,7 @@ SENTINEL = "<extra_id_{}>"
 
 
 def _tokens(x, name):
-    if isinstance(x, str):
-        out = x.split()
-    else:
-        out = [str(t) for t in x]
+    out = x.split() if isinstance(x, str) else [str(t) for t in x]
     if not out:
         raise ValueError(f"geron_t5: {name} is empty")
     return out
@@ -50,14 +47,14 @@ def span_corrupt(tokens, noise_density=0.15, mean_span=3, seed=0):
         guard += 1
         s = (1664525 * s + 1013904223) % 2**32
         start = int(((s + 0.5) / 2**32) * n)
-        length = max(1, min(span, n - start, n_noise - sum(l for _, l in chosen)))
+        length = max(1, min(span, n - start, n_noise - sum(ell for _, ell in chosen)))
         if length < 1 or any(i in used for i in range(start, start + length)):
             continue
         if start + length > n or (start == 0 and length == n):
             continue
         chosen.append((start, length))
         used.update(range(start, start + length))
-        if sum(l for _, l in chosen) >= n_noise:
+        if sum(ell for _, ell in chosen) >= n_noise:
             break
     if not chosen:
         raise ValueError("span_corrupt: could not place any span; try a larger sequence or smaller mean_span")
@@ -174,7 +171,7 @@ def geron_t5(src, tgt=None, noise_density=0.15, mean_span=3, seed=0, prefix="tra
         tgt_toks = _tokens(tgt, "tgt")
         t2t = (f"{prefix} {' '.join(toks)}".strip(), " ".join(tgt_toks))
 
-    n_masked = int(sum(l for _, l in spans))
+    n_masked = int(sum(ell for _, ell in spans))
 
     return RichResult(
         title="T5 span corruption",

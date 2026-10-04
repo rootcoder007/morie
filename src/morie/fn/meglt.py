@@ -107,7 +107,7 @@ def coherence(A, rank=None):
 def sample_bound(n, r, C=1.0, exponent=1.2):
     r""":math:`C n^{1.2} r \log n`, or 1.25 to cover all ranks."""
     if exponent not in (1.2, 1.25):
-        raise ValueError("meglt: the exponent must be 1.2 (moderate rank) or 1.25 (all ranks), got %r" % (exponent,))
+        raise ValueError(f"meglt: the exponent must be 1.2 (moderate rank) or 1.25 (all ranks), got {exponent!r}")
     nn, rr = int(n), int(r)
     if nn < 2 or rr < 1:
         raise ValueError("meglt: need n >= 2 and r >= 1")

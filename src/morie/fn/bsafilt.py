@@ -223,7 +223,7 @@ def bwhp(cutoff_hz, order=4, fs=1000.0, z=None):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency %g Hz" % (fsv / 2.0))
+        raise ValueError(f"the cutoff must lie strictly between 0 and the Nyquist frequency {fsv / 2.0:g} Hz")
     n = int(order)
     lp = bwdigital(N=n, fc=fcv, fs=fsv)
     a = list(lp["a"])
@@ -290,7 +290,7 @@ def bwlp(cutoff_hz, order=4, fs=1000.0, z=None):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency %g Hz" % (fsv / 2.0))
+        raise ValueError(f"the cutoff must lie strictly between 0 and the Nyquist frequency {fsv / 2.0:g} Hz")
     r = bwdigital(N=int(order), fc=fcv, fs=fsv, z=z)
     out = dict(r)
     out.update(
@@ -605,7 +605,7 @@ def freqresp(b, a=None, fs=1000.0, n_freqs=512):
         num = sum(bs[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(bs)))
         den = sum(az[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(az)))
         if abs(den) <= 1e-300:
-            raise ValueError("the denominator vanishes at f = %g Hz; the filter has a pole on the unit circle" % f)
+            raise ValueError(f"the denominator vanishes at f = {f:g} Hz; the filter has a pole on the unit circle")
         freqs.append(f)
         H.append(num / den)
     mag = [abs(v) for v in H]
@@ -950,21 +950,21 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
     if w < 1:
         raise ValueError("the window must hold at least one sample")
     if w % 2 == 0:
-        raise ValueError("the window must be odd so it can be centred, got %d" % w)
+        raise ValueError(f"the window must be odd so it can be centred, got {int(w)}")
     if w > n:
         raise ValueError("the window is longer than the record")
     kinds = ("min", "max", "minmax", "median", "trimmed", "l", "order")
     if kind not in kinds:
-        raise ValueError("kind must be one of %s, got %r" % (", ".join(kinds), kind))
+        raise ValueError("kind must be one of {}, got {!r}".format(", ".join(kinds), kind))
     av = float(alpha)
     if kind == "trimmed" and not 0.0 <= av < 0.5:
-        raise ValueError("the book writes 0 <= alpha < 0.5; at 0.5 the whole list is trimmed away, got %g" % av)
+        raise ValueError(f"the book writes 0 <= alpha < 0.5; at 0.5 the whole list is trimmed away, got {av:g}")
     if kind == "l":
         if weights is None:
             raise ValueError("the L-filter needs one weight per rank")
         wts = aslist(weights)
         if len(wts) != w:
-            raise ValueError("the L-filter needs %d weights, one per rank, got %d" % (w, len(wts)))
+            raise ValueError(f"the L-filter needs {int(w)} weights, one per rank, got {int(len(wts))}")
         tot = fsum(wts)
         if abs(tot) <= 1e-300:
             raise ValueError("the L-filter weights sum to zero")
@@ -973,7 +973,7 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
             raise ValueError("kind='order' needs the rank to take")
         i_ord = int(order)
         if not 1 <= i_ord <= w:
-            raise ValueError("order must lie in 1..%d, got %d" % (w, i_ord))
+            raise ValueError(f"order must lie in 1..{int(w)}, got {int(i_ord)}")
 
     half = w // 2
 
@@ -1371,7 +1371,7 @@ def windowfn(N, window_type="hamming"):
         raise ValueError("N must be at least 1")
     kinds = ("rectangular", "hann", "hamming", "blackman")
     if window_type not in kinds:
-        raise ValueError("window_type must be one of %s, got %r" % (", ".join(kinds), window_type))
+        raise ValueError("window_type must be one of {}, got {!r}".format(", ".join(kinds), window_type))
     if window_type == "rectangular":
         w = [1.0] * n
         r = {"w": w, "N": n, "sum": float(n), "endpoints": [1.0, 1.0], "coherent_gain": 1.0, "symmetric": True}
@@ -1800,9 +1800,9 @@ def iirtf(b_k, a_k, z, N=None, M=None):
     if not b:
         raise ValueError("need at least one numerator coefficient")
     if N is not None and int(N) != len(b) - 1:
-        raise ValueError("N must be len(b_k) - 1, got %d for %d coefficients" % (int(N), len(b)))
+        raise ValueError(f"N must be len(b_k) - 1, got {int(int(N))} for {int(len(b))} coefficients")
     if M is not None and int(M) != len(a):
-        raise ValueError("M must be len(a_k), got %d for %d coefficients" % (int(M), len(a)))
+        raise ValueError(f"M must be len(a_k), got {int(int(M))} for {int(len(a))} coefficients")
     den_coefs = [1.0] + list(a)
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
@@ -3565,7 +3565,7 @@ def bwanalog(Omega_c, N, G=None, s=None):
         raise ValueError("the order N must be at least 1")
     poles = bwpoles(Wc, n)["left_half_plane"]
     if len(poles) != n:
-        raise ValueError("expected %d left-half-plane poles, found %d" % (n, len(poles)))
+        raise ValueError(f"expected {int(n)} left-half-plane poles, found {int(len(poles))}")
     coefs = _poly_from_roots(poles)
     resid = max(abs(c.imag) for c in coefs)
     den = [c.real for c in coefs]

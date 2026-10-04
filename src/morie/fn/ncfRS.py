@@ -80,14 +80,14 @@ def gmf(p_u, q_i, h=None, activation="sigmoid"):
     p = [float(v) for v in k.vec(p_u)]
     q = [float(v) for v in k.vec(q_i)]
     if len(p) != len(q):
-        raise ValueError("ncfRS: embeddings differ in length (%d, %d)" % (len(p), len(q)))
+        raise ValueError(f"ncfRS: embeddings differ in length ({int(len(p))}, {int(len(q))})")
     hh = [1.0] * len(p) if h is None else [float(v) for v in k.vec(h)]
     z = sum(hh[f] * p[f] * q[f] for f in range(len(p)))
     if activation == "identity":
         return z
     if activation == "sigmoid":
         return _sig(z)
-    raise ValueError("ncfRS: activation must be identity or sigmoid, got %r" % (activation,))
+    raise ValueError(f"ncfRS: activation must be identity or sigmoid, got {activation!r}")
 
 
 def mlp_layers(p_u, q_i, Ws, bs):
@@ -97,8 +97,8 @@ def mlp_layers(p_u, q_i, Ws, bs):
     supplies it.
     """
     z = [float(v) for v in k.vec(p_u)] + [float(v) for v in k.vec(q_i)]
-    for l in range(len(Ws)):
-        W, b = Ws[l], bs[l]
+    for ell in range(len(Ws)):
+        W, b = Ws[ell], bs[ell]
         z = [max(0.0, b[o] + sum(W[o][i] * z[i] for i in range(len(z)))) for o in range(len(b))]
     return z
 
@@ -110,7 +110,7 @@ def neumf(p_gmf, q_gmf, p_mlp, q_mlp, Ws, bs, h):
     cat = list(g) + list(m)
     hh = [float(v) for v in k.vec(h)]
     if len(hh) != len(cat):
-        raise ValueError("ncfRS: h has %d entries for a fused vector of %d" % (len(hh), len(cat)))
+        raise ValueError(f"ncfRS: h has {int(len(hh))} entries for a fused vector of {int(len(cat))}")
     return {
         "score": _sig(sum(hh[i] * cat[i] for i in range(len(cat)))),
         "gmf_part": g,
@@ -132,15 +132,15 @@ def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000, n_neg=4, see
     ``learn_h=False`` freezes :math:`h` at ones, which is matrix
     factorisation with a sigmoid output.
     """
-    U, I, K = int(n_users), int(n_items), int(k_dim)
-    if U < 1 or I < 2 or K < 1:
+    U, I_, K = int(n_users), int(n_items), int(k_dim)
+    if U < 1 or I_ < 2 or K < 1:
         raise ValueError("ncfRS: need at least 1 user, 2 items, 1 factor")
     users = sorted(pos)
     if not users:
         raise ValueError("ncfRS: no observed interactions")
     rng = np.random.default_rng(seed)
     P = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)] for _ in range(U)]
-    Q = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)] for _ in range(I)]
+    Q = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)] for _ in range(I_)]
     h = [1.0] * K
     a = float(alpha)
     hist = []
@@ -149,7 +149,7 @@ def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000, n_neg=4, see
         seen = set(pos[u])
         pool = [(i, 1.0) for i in pos[u]]
         for _ in range(int(n_neg)):
-            j = int(float(rng.uniform()) * I) % I
+            j = int(float(rng.uniform()) * I_) % I_
             if j not in seen:
                 pool.append((j, 0.0))
         for i, y in pool:
@@ -166,7 +166,7 @@ def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000, n_neg=4, see
         if (it + 1) % max(1, int(iters) // 20) == 0:
             L, n = 0.0, 0
             for uu in users:
-                for i in range(I):
+                for i in range(I_):
                     y = 1.0 if i in set(pos[uu]) else 0.0
                     L += log_loss(y, gmf(P[uu], Q[i], h))
                     n += 1

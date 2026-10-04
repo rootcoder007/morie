@@ -203,8 +203,8 @@ def test_ripley_k_edge_correction_raises_k_near_the_boundary():
 def test_ripley_l_linearises_k():
     pts = [[float(i), float(j)] for i in range(8) for j in range(8)]
     out = rb.ripley_k(pts, [1.0, 2.0, 3.0])
-    for k, l in zip(out["K"], out["L"]):
-        assert abs(l - math.sqrt(k / math.pi)) < 1e-12
+    for k, ell in zip(out["K"], out["L"]):
+        assert abs(ell - math.sqrt(k / math.pi)) < 1e-12
 
 
 def test_ripley_k_rejects_bad_input():

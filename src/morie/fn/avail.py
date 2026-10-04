@@ -39,10 +39,7 @@ def availability(
         raise ValueError("MTBF and MTTR must be non-negative.")
 
     total = mtbf_val + mttr
-    if total == 0:
-        a = 0.0
-    else:
-        a = mtbf_val / total
+    a = 0.0 if total == 0 else mtbf_val / total
 
     unavail = 1.0 - a
 

@@ -24,10 +24,7 @@ def bb_dimensionality_select(Z, max_dims: int = 5) -> DescriptiveResult:
     k = min(max_dims, len(eigvals))
     eigvals = eigvals[:k]
     diffs = np.diff(eigvals)
-    if len(diffs) > 0:
-        elbow = int(np.argmax(np.abs(diffs))) + 1
-    else:
-        elbow = 1
+    elbow = int(np.argmax(np.abs(diffs))) + 1 if len(diffs) > 0 else 1
     return DescriptiveResult(
         name="bb_dimensionality_select",
         value=elbow,

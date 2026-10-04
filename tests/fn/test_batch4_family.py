@@ -157,18 +157,18 @@ def test_ngcf_laplacian_coefficient():
 
 
 def test_ngcf_affinity_term_changes_the_message():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = ngcf.message([2.0, 3.0], [1.0, 4.0], I, I, 1.0, True)
-    b = ngcf.message([2.0, 3.0], [1.0, 4.0], I, I, 1.0, False)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = ngcf.message([2.0, 3.0], [1.0, 4.0], I_, I_, 1.0, True)
+    b = ngcf.message([2.0, 3.0], [1.0, 4.0], I_, I_, 1.0, False)
     assert abs(a[0] - b[0]) > 1e-9
     assert abs(b[0] - 2.0) < 1e-12
     assert abs(a[0] - 4.0) < 1e-12
 
 
 def test_ngcf_concatenates_every_order():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     E0 = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
-    st = ngcf.stack_layers(E0, ADJ, [(I, I), (I, I)])
+    st = ngcf.stack_layers(E0, ADJ, [(I_, I_), (I_, I_)])
     assert len(st["final"][0]) == 6
 
 
@@ -211,8 +211,8 @@ def test_narm_bilinear_decoder_parameter_count():
 
 def test_narm_attention_is_a_distribution():
     H = [[1.0, 0.0], [0.0, 1.0], [0.9, 0.1]]
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = narm.attention_weights([1.0, 0.0], H, I, I, [1.0, 0.0])
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = narm.attention_weights([1.0, 0.0], H, I_, I_, [1.0, 0.0])
     assert abs(sum(a) - 1.0) < 1e-12
     assert a[0] > a[1]
 
@@ -443,17 +443,17 @@ def test_gtrf_path_graph_encoding_is_a_sinusoid():
 
 
 def test_gtrf_attention_covers_every_node():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     H = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
-    out = gtrf.sparse_attention(H, ADJ, I, I, I)["output"]
+    out = gtrf.sparse_attention(H, ADJ, I_, I_, I_)["output"]
     assert len(out) == 5
 
 
 def test_gtrf_rejects_bad_norm():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     H = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
     with pytest.raises(ValueError):
-        gtrf.graph_transformer_layer(H, ADJ, I, I, I, I, I, norm="group")
+        gtrf.graph_transformer_layer(H, ADJ, I_, I_, I_, I_, I_, norm="group")
 
 
 # -------------------------------------------------------------- meglt

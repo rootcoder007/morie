@@ -19,7 +19,10 @@ def ghosal_exp_link(x, psi=None):
 
     xs = sorted(_bnp._flat(x))
     if psi is None:
-        psi = lambda t: math.sin(3.0 * t)
+
+        def psi(t):
+            return math.sin(3.0 * t)
+
     e = [math.exp(psi(v)) for v in xs]
     Z = sum(0.5 * (e[i] + e[i - 1]) * (xs[i] - xs[i - 1]) for i in range(1, len(xs)))
     dens = [v / Z for v in e]

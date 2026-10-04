@@ -20,7 +20,7 @@ def test_kernels_are_symmetric_and_psd():
             for j in range(n):
                 assert abs(K[i][j] - K[j][i]) < 1e-12
         ok, lam = gp.is_positive_semidefinite(K)
-        assert ok, "%s kernel is not PSD: %s" % (kern, lam)
+        assert ok, f"{kern} kernel is not PSD: {lam}"
 
 
 def test_linear_kernel_is_the_inner_product():

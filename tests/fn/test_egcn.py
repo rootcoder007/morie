@@ -17,14 +17,23 @@ def test_egcn_basic():
 
 
 def test_egcn_edge():
-    phi_e = lambda hi, hj, d2, a: [math.tanh(hi[0] + d2)]
-    phi_x = lambda m: 0.1 * m[0]
-    phi_h = lambda h, m: [h[0] + m[0]]
+    def phi_e(hi, hj, d2, a):
+        return [math.tanh(hi[0] + d2)]
+
+    def phi_x(m):
+        return 0.1 * m[0]
+
+    def phi_h(h, m):
+        return [h[0] + m[0]]
+
     H = [[0.2], [0.5], [-0.1]]
     X = [[0.0, 0.0], [1.0, 0.0], [0.0, 2.0]]
     th = 0.7
     Q = [[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]]
-    move = lambda P: [[Q[0][0] * p[0] + Q[0][1] * p[1] + 4.0, Q[1][0] * p[0] + Q[1][1] * p[1] - 1.0] for p in P]
+
+    def move(P):
+        return [[Q[0][0] * p[0] + Q[0][1] * p[1] + 4.0, Q[1][0] * p[0] + Q[1][1] * p[1] - 1.0] for p in P]
+
     a = e_gcn(H, X, 2, phi_e, phi_x, phi_h)
     b = e_gcn(H, move(X), 2, phi_e, phi_x, phi_h)
     for i in range(3):

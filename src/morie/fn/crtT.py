@@ -65,7 +65,7 @@ def crtT(residues, moduli):
     for ai, mi in zip(a[1:], m[1:]):
         g, c, _ = _egcd(mod, mi)
         if g != 1:
-            raise ValueError("moduli must be pairwise coprime (gcd(%d, %d) = %d)" % (mod, mi, g))
+            raise ValueError(f"moduli must be pairwise coprime (gcd({int(mod)}, {int(mi)}) = {int(g)})")
         # Algorithm 2.2.3: x_new = x + (b - x) c mod, with c mod + d mi = 1
         x = (x + (ai - x) * c * mod) % (mod * mi)
         mod *= mi

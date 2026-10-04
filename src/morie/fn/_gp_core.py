@@ -135,10 +135,7 @@ def mme_solve(X, Z, y, Sigma_inv, R_inv=None):
     n = len(y)
     p = len(X[0])
     q = len(Z[0])
-    if R_inv is None:
-        R_inv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
-    else:
-        R_inv = _mat(R_inv)
+    R_inv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)] if R_inv is None else _mat(R_inv)
     Xt = _t(X)
     Zt = _t(Z)
     XtRi = _mm(Xt, R_inv)
@@ -243,10 +240,7 @@ def scale_columns(M, center=True, scale=True):
     out_cols = []
     for c in _t(Mm):
         mu = sum(c) / n if center else 0.0
-        if scale:
-            sd = math.sqrt(sum((v - mu) ** 2 for v in c) / (n - 1))
-        else:
-            sd = 1.0
+        sd = math.sqrt(sum((v - mu) ** 2 for v in c) / (n - 1)) if scale else 1.0
         out_cols.append([(v - mu) / sd if sd > 0 else 0.0 for v in c])
     return _t(out_cols)
 
@@ -363,7 +357,7 @@ def expected_prediction_error(sigma2, x_star, eigenvalues):
     lam = _flat(eigenvalues)
     if any(v <= 0 for v in lam):
         raise ValueError("eigenvalues must be positive")
-    return float(sigma2) * (1.0 + sum(v * v / l for v, l in zip(xs, lam)))
+    return float(sigma2) * (1.0 + sum(v * v / ell for v, ell in zip(xs, lam)))
 
 
 def ridge_fit(X, y, lam, add_intercept=True):
@@ -507,8 +501,8 @@ def kron(A, B):
     for i in range(ra):
         for j in range(ca):
             for k in range(rb):
-                for l in range(cb):
-                    out[i * rb + k][j * cb + l] = A[i][j] * B[k][l]
+                for ell in range(cb):
+                    out[i * rb + k][j * cb + ell] = A[i][j] * B[k][ell]
     return out
 
 
@@ -1283,11 +1277,11 @@ def bmtme_conditionals(
     q2 = len(_mat(Z2)[0])
     b2 = _mat(b2) if b2 is not None else [[0.0] * nT for _ in range(q2)]
     SEinv = _inv(_mat(Sigma_E))
-    I = len(SEinv)
+    I_ = len(SEinv)
     nu_T = float(nu_T if nu_T is not None else nT + 2)
-    nu_E = float(nu_E if nu_E is not None else I + 2)
+    nu_E = float(nu_E if nu_E is not None else I_ + 2)
     S_T = _mat(S_T) if S_T is not None else [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
-    S_E = _mat(S_E) if S_E is not None else [[1.0 if i == j else 0.0 for j in range(I)] for i in range(I)]
+    S_E = _mat(S_E) if S_E is not None else [[1.0 if i == j else 0.0 for j in range(I_)] for i in range(I_)]
     # b1' G^-1 b1
     term1 = _mm(_t(b1), _mm(Ginv, b1))
     # b2' (Sigma_E^-1 (x) G^-1) b2
@@ -1296,11 +1290,11 @@ def bmtme_conditionals(
     scale_T = [[term1[i][j] + term2[i][j] + S_T[i][j] for j in range(nT)] for i in range(nT)]
     # Sigma_E scale uses b2 reshaped so that vec(b2*') = vec(b2')
     STinv = _inv(_mat(Sigma_T))
-    b2s = [[b2[e * J + a][t] if e * J + a < len(b2) else 0.0 for t in range(nT) for a in range(J)] for e in range(I)]
+    b2s = [[b2[e * J + a][t] if e * J + a < len(b2) else 0.0 for t in range(nT) for a in range(J)] for e in range(I_)]
     KE = kron(Ginv, STinv)
     inner = _mm(b2s, _mm(KE, _t(b2s)))
-    scale_E = [[inner[i][j] + S_E[i][j] for j in range(I)] for i in range(I)]
-    return {"nu_T_post": nu_T + J + len(b2), "scale_T": scale_T, "nu_E_post": nu_E + J * I, "scale_E": scale_E}
+    scale_E = [[inner[i][j] + S_E[i][j] for j in range(I_)] for i in range(I_)]
+    return {"nu_T_post": nu_T + J + len(b2), "scale_T": scale_T, "nu_E_post": nu_E + J * I_, "scale_E": scale_E}
 
 
 # ------------- ordinal / categorical / count models (ch. 7)
@@ -1423,7 +1417,7 @@ def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400, nu_beta=5.0, S_beta=Non
     beta = [0.0] * p
     s2b = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     Xt = _t(Xm)
     col_ss = [sum(v * v for v in col) for col in Xt]
     acc_beta = [0.0] * p
@@ -1436,15 +1430,15 @@ def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400, nu_beta=5.0, S_beta=Non
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -eta[i], 1.0, lo, hi)
+            ell[i] = _rtruncnorm(rng, -eta[i], 1.0, lo, hi)
         for j in range(p):
-            e_j = [l[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
+            e_j = [ell[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             var = 1.0 / (1.0 / s2b + col_ss[j])
             mean = -var * sum(Xm[i][j] * e_j[i] for i in range(n))
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c], default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1], default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
@@ -1489,7 +1483,7 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400, nu_g=5.0, S_g=Non
     b = [0.0] * n
     s2g = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     acc_b = [0.0] * n
     acc_gamma = [0.0] * max(len(gamma), 1)
     acc_s2g = 0.0
@@ -1499,16 +1493,16 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400, nu_g=5.0, S_g=Non
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -b[i], 1.0, lo, hi)
+            ell[i] = _rtruncnorm(rng, -b[i], 1.0, lo, hi)
         A = [[Ginv[i][j] / s2g + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
         Sig = _inv(A)
-        mean = [-v for v in _mv(Sig, l)]
+        mean = [-v for v in _mv(Sig, ell)]
         L = _chol(Sig)
         z = [float(rng.normal(0, 1)) for _ in range(n)]
         b = [mean[i] + sum(L[i][k] * z[k] for k in range(n)) for i in range(n)]
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c], default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1], default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
@@ -1571,7 +1565,7 @@ def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200, nu_beta=5.0, S_beta=1.
     beta = [0.0] * p
     s2b = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     omega = [1.0] * n
     acc_beta = [0.0] * p
     acc_gamma = [0.0] * max(len(gamma), 1)
@@ -1579,21 +1573,21 @@ def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200, nu_beta=5.0, S_beta=1.
     for it in range(int(n_iter)):
         eta = _mv(Xm, beta)
         for i in range(n):
-            omega[i] = max(_rpolya_gamma(rng, 2.0, l[i] + eta[i]), 1e-9)
+            omega[i] = max(_rpolya_gamma(rng, 2.0, ell[i] + eta[i]), 1e-9)
         for i in range(n):
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -eta[i], 1.0 / math.sqrt(omega[i]), lo, hi)
+            ell[i] = _rtruncnorm(rng, -eta[i], 1.0 / math.sqrt(omega[i]), lo, hi)
         for j in range(p):
-            e_j = [l[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
+            e_j = [ell[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             prec = 1.0 / s2b + sum(omega[i] * Xm[i][j] ** 2 for i in range(n))
             var = 1.0 / prec
             mean = -var * sum(omega[i] * Xm[i][j] * e_j[i] for i in range(n))
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c], default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1], default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
@@ -1678,10 +1672,7 @@ def penalized_multinomial_loglik(X, y, beta0, beta, lam, penalty="ridge", baseli
     l_p = l(beta; y) - lambda sum_c sum_j |beta_cj|.  Only the slopes
     are penalized, never the intercepts (p.226)."""
     ll = multinomial_loglik(X, y, beta0, beta, baseline_last)
-    if penalty == "lasso":
-        pen = sum(abs(v) for row in beta for v in row)
-    else:
-        pen = sum(v * v for row in beta for v in row)
+    pen = sum(abs(v) for row in beta for v in row) if penalty == "lasso" else sum(v * v for row in beta for v in row)
     return {"loglik": ll, "penalty": float(lam) * pen, "penalized_loglik": ll - float(lam) * pen}
 
 
@@ -1812,7 +1803,7 @@ def kernel_matrix(X, kernel="linear", gamma=None, degree=2, coef0=1.0, Z=None):
             elif kernel == "sigmoid":
                 v = math.tanh(gamma * sum(u * w for u, w in zip(a, b)) + coef0)
             else:
-                raise ValueError("unknown kernel: %s" % kernel)
+                raise ValueError(f"unknown kernel: {kernel}")
             row.append(v)
         out.append(row)
     return out
@@ -1901,7 +1892,7 @@ def generalized_kernel_model(K, beta, eta0=0.0, link="identity"):
     elif link == "log":
         mu = [math.exp(min(v, 700.0)) for v in eta]
     else:
-        raise ValueError("unknown link: %s" % link)
+        raise ValueError(f"unknown link: {link}")
     return {"eta": eta, "mu": mu, "link": link}
 
 
@@ -2366,7 +2357,7 @@ def _act(name, z, deriv=False):
         return 1.0 - t * t if deriv else t
     if name == "relu":
         return (1.0 if z > 0 else 0.0) if deriv else max(0.0, z)
-    raise ValueError("unknown activation: %s" % name)
+    raise ValueError(f"unknown activation: {name}")
 
 
 def ann_forward(X, W, activations=None):
@@ -2448,7 +2439,7 @@ def ann_train(X, y, W, eta=0.1, n_iter=500, activations=None, tol=1e-12):
     iterated until the loss stops decreasing."""
     Wc = [[list(map(float, row)) for row in _mat(Wl)] for Wl in W]
     hist = []
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         g = ann_backprop_gradients(X, y, Wc, activations)
         hist.append(g["loss"])
         for li in range(len(Wc)):
@@ -2494,7 +2485,7 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
     translational invariance: the same filter detects the feature
     wherever it appears.  Output size is (H - F)/stride + 1.
     """
-    I = (
+    I_ = (
         [[list(map(float, ch)) for ch in row] for row in image]
         if isinstance(image[0][0], (list, tuple))
         else [[[float(v)] for v in row] for row in image]
@@ -2504,7 +2495,7 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
         if isinstance(kernel[0][0], (list, tuple))
         else [[[float(v)] for v in row] for row in kernel]
     )
-    H, W, C = len(I), len(I[0]), len(I[0][0])
+    H, W, C = len(I_), len(I_[0]), len(I_[0][0])
     F, Fw = len(K), len(K[0])
     out_h = (H - F) // stride + 1
     out_w = (W - Fw) // stride + 1
@@ -2518,7 +2509,7 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
             for a in range(F):
                 for b in range(Fw):
                     for ch in range(C):
-                        z += K[a][b][ch] * I[r * stride + a][c * stride + b][ch]
+                        z += K[a][b][ch] * I_[r * stride + a][c * stride + b][ch]
             row.append(_act(activation, z) if activation else z)
         out.append(row)
     return out
@@ -2548,7 +2539,7 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
         raise ValueError("t is empty.")
     L = int(n_basis)
     if L < 1:
-        raise ValueError("n_basis must be a positive integer; got %r" % (n_basis,))
+        raise ValueError(f"n_basis must be a positive integer; got {n_basis!r}")
     lo, hi = min(ts), max(ts)
     span = (hi - lo) or 1.0
     if period is None:
@@ -2559,24 +2550,24 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
         # sine argument. R clamped non-positive to 1. Both now refuse it.
         P = float(period)
         if not (P > 0.0) or P != P or P in (float("inf"), float("-inf")):
-            raise ValueError("period must be a finite positive number; got %r" % (period,))
+            raise ValueError(f"period must be a finite positive number; got {period!r}")
     out = []
     for tv in ts:
         row = []
-        for l in range(L):
+        for ell in range(L):
             if kind == "fourier":
-                if l == 0:
+                if ell == 0:
                     row.append(1.0)
-                elif l % 2 == 1:
-                    row.append(math.sin(2.0 * math.pi * ((l + 1) // 2) * tv / P))
+                elif ell % 2 == 1:
+                    row.append(math.sin(2.0 * math.pi * ((ell + 1) // 2) * tv / P))
                 else:
-                    row.append(math.cos(2.0 * math.pi * (l // 2) * tv / P))
+                    row.append(math.cos(2.0 * math.pi * (ell // 2) * tv / P))
             elif kind in ("poly", "polynomial"):
                 # "poly" is the spelling R's own @param documents; Python
                 # accepted only "polynomial" and raised on the other.
-                row.append(((tv - lo) / span) ** l)
+                row.append(((tv - lo) / span) ** ell)
             else:
-                raise ValueError("unknown basis: %s" % kind)
+                raise ValueError(f"unknown basis: {kind}")
         out.append(row)
     return out
 
@@ -2599,13 +2590,13 @@ def fda_inner_product_matrix(t, L1, L2, kind="fourier"):
     Psi = fda_basis_matrix(ts, L2, kind=kind)
     m = len(ts)
     Q = [[0.0] * L2 for _ in range(L1)]
-    for l in range(L1):
+    for ell in range(L1):
         for o in range(L2):
             s = 0.0
             for j in range(m - 1):
                 dt = ts[j + 1] - ts[j]
-                s += 0.5 * dt * (Phi[j][l] * Psi[j][o] + Phi[j + 1][l] * Psi[j + 1][o])
-            Q[l][o] = s
+                s += 0.5 * dt * (Phi[j][ell] * Psi[j][o] + Phi[j + 1][ell] * Psi[j + 1][o])
+            Q[ell][o] = s
     return Q
 
 
@@ -2646,7 +2637,7 @@ def fda_beta_function(t, beta_coefs, L1, kind="fourier"):
     basis-based estimate of the coefficient function."""
     Phi = fda_basis_matrix(t, L1, kind=kind)
     b = _flat(beta_coefs)
-    return [sum(Phi[j][l] * b[l] for l in range(L1)) for j in range(len(Phi))]
+    return [sum(Phi[j][ell] * b[ell] for ell in range(L1)) for j in range(len(Phi))]
 
 
 def fda_bic(loglik, n_params, n_obs):
@@ -2846,7 +2837,7 @@ def msm_weighted_glm(y, X, weights=None, family="gaussian", offset=None, n_iter=
                 mu = [math.exp(min(v, 700.0)) for v in eta]
                 Wd = [max(mu[i], 1e-9) for i in range(n)]
             else:
-                raise ValueError("unknown family: %s" % family)
+                raise ValueError(f"unknown family: {family}")
             z = [eta[i] - off[i] + (ys[i] - mu[i]) / Wd[i] for i in range(n)]
             ww = [w[i] * Wd[i] for i in range(n)]
             A = [[sum(ww[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
@@ -3068,7 +3059,7 @@ def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None, lam=None, al
     gf = _flat(grad_f)
     Gh = _mat(grad_h) if grad_h is not None else []
     Gg = _mat(grad_g) if grad_g is not None else []
-    L = float(f) - sum(l * v for l, v in zip(lm, hv)) - sum(a * v for a, v in zip(al, gv))
+    L = float(f) - sum(ell * v for ell, v in zip(lm, hv)) - sum(a * v for a, v in zip(al, gv))
     stat = []
     for j in range(len(gf)):
         s = gf[j]
@@ -3307,28 +3298,28 @@ def fda_basis_derivative(t, n_basis, p=1, kind="fourier", period=None):
     out = []
     for tv in ts:
         row = []
-        for l in range(L):
+        for ell in range(L):
             if kind == "fourier":
-                if l == 0:
+                if ell == 0:
                     row.append(1.0 if p == 0 else 0.0)
                     continue
-                k = (l + 1) // 2 if l % 2 == 1 else l // 2
+                k = (ell + 1) // 2 if ell % 2 == 1 else ell // 2
                 w = 2.0 * math.pi * k / P
                 phase = w * tv + 0.5 * math.pi * p
-                if l % 2 == 1:
+                if ell % 2 == 1:
                     row.append((w**p) * math.sin(phase))
                 else:
                     row.append((w**p) * math.cos(phase))
             elif kind == "polynomial":
-                if p > l:
+                if p > ell:
                     row.append(0.0)
                 else:
                     c = 1.0
                     for j in range(p):
-                        c *= l - j
-                    row.append(c * (((tv - lo) / span) ** (l - p)) / (span**p))
+                        c *= ell - j
+                    row.append(c * (((tv - lo) / span) ** (ell - p)) / (span**p))
             else:
-                raise ValueError("unknown basis: %s" % kind)
+                raise ValueError(f"unknown basis: {kind}")
         out.append(row)
     return out
 

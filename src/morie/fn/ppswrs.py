@@ -58,10 +58,7 @@ def pps_with_replacement(y, p, sizes=None):
     n = int(min(yy.size, pp.size))
     z = np.asarray([float(yy[i]) / float(pp[i]) for i in range(n)], dtype=float)
     est = float(np.sum(z)) / n
-    if n > 1:
-        var = float(np.sum((z - est) * (z - est))) / (n * (n - 1))
-    else:
-        var = float("nan")
+    var = float(np.sum((z - est) * (z - est))) / (n * (n - 1)) if n > 1 else float("nan")
     se = float(np.sqrt(var)) if var == var and var >= 0.0 else float("nan")
     return RichResult(
         payload={

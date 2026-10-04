@@ -58,7 +58,7 @@ def spectral_anomaly(x, q=3):
     if q < 1 or q % 2 == 0:
         raise ValueError("`q` must be an odd positive integer")
     if q > n:
-        raise ValueError("`q` (%d) exceeds the record length (%d)" % (q, n))
+        raise ValueError(f"`q` ({int(q)}) exceeds the record length ({int(n)})")
 
     re, im = dft(v)
     amp = [sqrt(re[k] * re[k] + im[k] * im[k]) for k in range(n)]

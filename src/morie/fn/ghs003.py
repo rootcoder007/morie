@@ -21,7 +21,10 @@ def ghosal_ch2_basis_truncation_error(f=None, J=8, alpha=2.0, k=1.0):
     n_int = 800
     xs = [(i + 0.5) / n_int for i in range(n_int)]
     if f is None:
-        f = lambda x: x * (1.0 - x)
+
+        def f(x):
+            return x * (1.0 - x)
+
     coefs = []
     for j in range(1, J + 1):
         c = sum(f(x) * math.sqrt(2.0) * math.cos(j * math.pi * x) for x in xs) / n_int

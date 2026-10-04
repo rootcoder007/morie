@@ -105,7 +105,7 @@ def forward_corrupt(x0, alpha_bar_t, rng=None):
     x = [float(v) for v in k.vec(x0)]
     ab = float(alpha_bar_t)
     if not 0.0 <= ab <= 1.0:
-        raise ValueError("diffRC: alpha_bar must lie in [0,1], got %r" % (alpha_bar_t,))
+        raise ValueError(f"diffRC: alpha_bar must lie in [0,1], got {alpha_bar_t!r}")
     sm = math.sqrt(ab)
     sv = math.sqrt(max(1.0 - ab, 0.0))
     mean = [sm * v for v in x]

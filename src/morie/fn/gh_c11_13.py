@@ -29,9 +29,9 @@ def ghosal_gp_adapt_thm(n=60, l_true=0.2, l_grid=(0.05, 0.2, 0.8), noise=0.1, se
     f0 = [math.sin(2.0 * math.pi * x / (5.0 * l_true)) for x in xs]
     ys = [f + noise * float(rng.normal(0, 1)) for f in f0]
 
-    def logev(l):
+    def logev(ell):
         K = [
-            [math.exp(-0.5 * ((xs[i] - xs[j]) / l) ** 2) + (noise**2 + 1e-8 if i == j else 0.0) for j in range(n)]
+            [math.exp(-0.5 * ((xs[i] - xs[j]) / ell) ** 2) + (noise**2 + 1e-8 if i == j else 0.0) for j in range(n)]
             for i in range(n)
         ]
         alpha = _chol_solve(K, ys)
@@ -47,7 +47,7 @@ def ghosal_gp_adapt_thm(n=60, l_true=0.2, l_grid=(0.05, 0.2, 0.8), noise=0.1, se
                     m[r][c] -= fmul * m[i][c]
         return -0.5 * quad - 0.5 * ld
 
-    evs = [logev(l) for l in l_grid]
+    evs = [logev(ell) for ell in l_grid]
     l_hat = l_grid[evs.index(max(evs))]
     res = RichResult(
         payload={"estimate": l_hat, "log_evidence": evs, "method": "GP length-scale adaptation (GvdV 2017 sec. 11.6)"}

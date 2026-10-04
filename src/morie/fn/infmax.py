@@ -137,7 +137,7 @@ def global_objective(global_features, feature_maps, critic, estimator="jsd"):
     F = [[float(v) for v in k.vec(m)] for m in feature_maps]
     n = len(G)
     if len(F) != n:
-        raise ValueError("infmax: %d globals but %d feature maps" % (n, len(F)))
+        raise ValueError(f"infmax: {int(n)} globals but {int(len(F))} feature maps")
     if n < 2:
         raise ValueError("infmax: negatives come from other examples in the batch, so at least 2 are needed")
     joint = [float(critic(G[i], F[i])) for i in range(n)]
@@ -165,7 +165,7 @@ def local_objective(global_features, feature_maps, critic, estimator="jsd"):
     M = [[[float(v) for v in k.vec(p)] for p in m] for m in feature_maps]
     n = len(G)
     if len(M) != n:
-        raise ValueError("infmax: %d globals but %d feature maps" % (n, len(M)))
+        raise ValueError(f"infmax: {int(n)} globals but {int(len(M))} feature maps")
     if n < 2:
         raise ValueError("infmax: at least 2 examples are needed for negatives")
     L = len(M[0])
@@ -173,11 +173,11 @@ def local_objective(global_features, feature_maps, critic, estimator="jsd"):
         raise ValueError("infmax: the feature maps have differing numbers of locations")
     joint, marg = [], []
     for i in range(n):
-        for l in range(L):
-            joint.append(float(critic(G[i], M[i][l])))
+        for ell in range(L):
+            joint.append(float(critic(G[i], M[i][ell])))
             for j in range(n):
                 if j != i:
-                    marg.append(float(critic(G[i], M[j][l])))
+                    marg.append(float(critic(G[i], M[j][ell])))
     est = jsd_estimator if estimator == "jsd" else dv_estimator
     r = est(joint, marg)
     return RichResult(

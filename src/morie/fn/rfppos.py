@@ -160,10 +160,10 @@ def find_warhead(smiles, mode="burgi_dunitz"):
         for i in range(n):
             if el[i] != "C" or arom[i]:
                 continue
-            for v, o, k in adj[i]:
+            for v, o, _k in adj[i]:
                 if (o == 2 and el[v] in ("O", "N")) or (o == 3 and el[v] == "N"):
                     third = None
-                    for w, oo, kk in adj[i]:
+                    for w, _oo, _kk in adj[i]:
                         if w != v:
                             third = w
                     if third is None:
@@ -175,14 +175,14 @@ def find_warhead(smiles, mode="burgi_dunitz"):
     for i in range(n):
         if el[i] != "C":
             continue
-        for v, o, k in adj[i]:
+        for v, o, _k in adj[i]:
             if o == 2 and el[v] == "O":
                 carbonyl[i] = True
     for a, b, o in bonds:
         if o != 2 or el[a] != "C" or el[b] != "C":
             continue
         for alpha, beta in ((a, b), (b, a)):
-            for v, oo, kk in adj[alpha]:
+            for v, _oo, _kk in adj[alpha]:
                 if v != beta and carbonyl[v]:
                     return beta, alpha, v
     return None
@@ -246,9 +246,9 @@ def reactive_pose_filter(
             payload={
                 "passes": False,
                 "reason": (
-                    "the ligand carries no %s warhead: there is no "
+                    f"the ligand carries no {mode} warhead: there is no "
                     "electrophilic carbon for the cysteine to attack, "
-                    "so there is no pose geometry to judge" % mode
+                    "so there is no pose geometry to judge"
                 ),
                 "electrophile": None,
                 "reference": None,

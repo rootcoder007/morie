@@ -408,8 +408,8 @@ def _lattice(x):
     if abs(v - n) > 1e-9:
         raise ValueError(
             "blstn: scores must lie on the integer lattice "
-            "(got %r); multiply the whole scheme by a common "
-            "factor first" % (x,)
+            f"(got {x!r}); multiply the whole scheme by a common "
+            "factor first"
         )
     return n
 
@@ -451,8 +451,8 @@ def _lambda_star(dist, hi=20.0, tol=1e-14, max_iter=300):
     if mean >= 0:
         raise ValueError(
             "blstn: the expected score per letter must be "
-            "negative (it is %.6g); otherwise the maximal "
-            "segment is the whole sequence" % mean
+            f"negative (it is {mean:.6g}); otherwise the maximal "
+            "segment is the whole sequence"
         )
     if max(scores) <= 0:
         raise ValueError("blstn: at least one score must be positive")

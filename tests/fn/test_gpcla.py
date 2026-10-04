@@ -14,7 +14,10 @@ def test_gpcla_basic():
     y = [1 if v > 0 else 0 for v in y01]
     rng_t = np.random.default_rng(43)
     X_test = rng_t.normal(0, 1, 30).tolist()
-    kernel = lambda u: math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
+    def kernel(u):
+        return math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
     result = gp_classification(X, y, X_test, kernel)
     # Independent check on the documented probit prediction
     # formula p = Phi(mu / sqrt(1 + var)) using the returned
@@ -48,7 +51,10 @@ def test_gpcla_edge():
     y = [1 if v > 0 else 0 for v in y01]
     rng_t = np.random.default_rng(43)
     X_test = rng_t.normal(0, 1, 30).tolist()
-    kernel = lambda u: math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
+    def kernel(u):
+        return math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
     result = gp_classification(X, y, X_test, kernel)
     assert isinstance(result.title, str)
     assert len(result.payload["p"]) == len(X_test)

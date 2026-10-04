@@ -80,7 +80,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01, seed=0, ema=
     if Y.shape[0] != n:
         raise ValueError("x and y must have the same number of rows.")
     if n < 20:
-        raise ValueError("need at least 20 paired observations, got %d." % n)
+        raise ValueError(f"need at least 20 paired observations, got {int(n)}.")
     X = (X - X.mean(0)) / (X.std(0) + 1e-12)
     Y = (Y - Y.mean(0)) / (Y.std(0) + 1e-12)
     d = X.shape[1] + Y.shape[1]
@@ -102,7 +102,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01, seed=0, ema=
 
     denom_ema = None
     curve = []
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         idx = rng.permutation(cut)
         Xj, Yj = X[tr], Y[tr]
         Ym = Yj[idx]

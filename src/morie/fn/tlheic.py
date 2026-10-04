@@ -78,7 +78,7 @@ def numerical_derivative(psi_of_P, weights, score, h=1e-5):
     w = [float(v) for v in k.vec(weights)]
     s = [float(v) for v in k.vec(score)]
     if len(w) != len(s):
-        raise ValueError("tlheic: %d weights but %d score values" % (len(w), len(s)))
+        raise ValueError(f"tlheic: {int(len(w))} weights but {int(len(s))} score values")
     m = sum(w[i] * s[i] for i in range(len(w))) / sum(w)
 
     def tilt(e):
@@ -96,7 +96,7 @@ def gradient_inner_product(D, score, weights=None):
     d = [float(v) for v in k.vec(D)]
     s = [float(v) for v in k.vec(score)]
     if len(d) != len(s):
-        raise ValueError("tlheic: %d gradient values but %d score values" % (len(d), len(s)))
+        raise ValueError(f"tlheic: {int(len(d))} gradient values but {int(len(s))} score values")
     w = [1.0 / len(d)] * len(d) if weights is None else [float(v) for v in k.vec(weights)]
     t = sum(w)
     return sum(w[i] * d[i] * s[i] for i in range(len(d))) / t

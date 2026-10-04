@@ -80,7 +80,7 @@ def friend_summary(values, friends, kind="fraction"):
     v = [float(q) for q in k.vec(values)]
     N = len(v)
     if len(friends) != N:
-        raise ValueError("tlnet1: %d values but %d friend sets" % (N, len(friends)))
+        raise ValueError(f"tlnet1: {int(N)} values but {int(len(friends))} friend sets")
     out = []
     for i in range(N):
         f = sorted(set(friends[i]) - {i})
@@ -91,7 +91,7 @@ def friend_summary(values, friends, kind="fraction"):
         elif kind == "count":
             out.append(float(sum(v[j] for j in f)))
         else:
-            raise ValueError("tlnet1: kind must be fraction or count, got %r" % (kind,))
+            raise ValueError(f"tlnet1: kind must be fraction or count, got {kind!r}")
     return out
 
 
@@ -133,7 +133,7 @@ def policy_mean(Q_fn, W, friends, own_prob, seed=0, draws=200):
     N = len(rows)
     p = float(own_prob)
     if not 0.0 <= p <= 1.0:
-        raise ValueError("tlnet1: the policy probability must lie in [0,1], got %r" % (own_prob,))
+        raise ValueError(f"tlnet1: the policy probability must lie in [0,1], got {own_prob!r}")
     rng = np.random.default_rng(seed)
     tot = 0.0
     for _ in range(int(draws)):
@@ -186,7 +186,7 @@ def network_influence_variance(ic, friends):
     v = [float(q) for q in k.vec(ic)]
     N = len(v)
     if len(friends) != N:
-        raise ValueError("tlnet1: %d influence values but %d friend sets" % (N, len(friends)))
+        raise ValueError(f"tlnet1: {int(N)} influence values but {int(len(friends))} friend sets")
     m = sum(v) / N
     var = sum((q - m) ** 2 for q in v) / N
     cov = sum((v[i] - m) * (v[j] - m) for i in range(N) for j in set(friends[i]) - {i})

@@ -17,7 +17,10 @@ def ghosal_bernstein_poly(K_list=(5, 20, 80)):
     f(x) = |x - 1/2| the Bernstein error decays like K^{-1/2}.
     Uses the certified operator from _bnp (sec. 2.3.4 form on the
     CDF scale, applied to f directly). Keys: estimate."""
-    f = lambda x: abs(x - 0.5)
+
+    def f(x):
+        return abs(x - 0.5)
+
     errs = []
     for K in K_list:
         err = 0.0

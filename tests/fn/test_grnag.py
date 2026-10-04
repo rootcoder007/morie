@@ -16,8 +16,11 @@ def test_grnag_basic():
     v = rng.normal(0, 1, p)
     eta = 0.1
     beta = 0.8
+
     # gradient of theta^T theta is 2 theta
-    grad_fn = lambda t: [2.0 * x for x in t]
+    def grad_fn(t):
+        return [2.0 * x for x in t]
+
     result = geron_nesterov_accelerated_gradient(theta, grad_fn, v, eta, beta)
     assert isinstance(result, dict)
     for key in (
@@ -44,7 +47,10 @@ def test_grnag_basic():
 
 def test_grnag_edge():
     """Test that invalid inputs raise ValueError per the function's contract."""
-    grad_fn = lambda t: [2.0 * x for x in t]
+
+    def grad_fn(t):
+        return [2.0 * x for x in t]
+
     # Empty theta
     with pytest.raises(ValueError):
         geron_nesterov_accelerated_gradient([], grad_fn, [], eta=0.1)

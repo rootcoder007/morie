@@ -15,10 +15,7 @@ def polarquant_encode(x: np.ndarray) -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=np.float64).ravel()
     magnitude = float(np.linalg.norm(x))
-    if magnitude > 0:
-        direction = x / magnitude
-    else:
-        direction = np.zeros_like(x)
+    direction = x / magnitude if magnitude > 0 else np.zeros_like(x)
     return DescriptiveResult(
         name="polarquant_encode",
         value=magnitude,

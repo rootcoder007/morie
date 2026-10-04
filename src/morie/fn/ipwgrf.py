@@ -78,7 +78,7 @@ def forest_nuisances(y, W, X, n_folds=5, n_trees=120, min_leaf=5, seed=0):
         for arm, dest in ((1.0, mu1), (0.0, mu0)):
             idx = [i for i in tr if W[i] == arm]
             if len(idx) < 4 * min_leaf:
-                raise ValueError("ipwgrf: too few training rows in treatment arm %g" % arm)
+                raise ValueError(f"ipwgrf: too few training rows in treatment arm {arm:g}")
             Xa, ya = [X[i] for i in idx], [y[i] for i in idx]
             trees, _, _ = grow_forest(Xa, ya, n_trees=n_trees, min_leaf=min_leaf, seed=seed + int(arm))
             for i in val:
@@ -97,7 +97,7 @@ def aipw_scores(y, W, mu1, mu0, e, trim=0.02):
     n = len(y)
     t = float(trim)
     if not 0.0 <= t < 0.5:
-        raise ValueError("ipwgrf: trim must be in [0, 0.5), got %r" % (trim,))
+        raise ValueError(f"ipwgrf: trim must be in [0, 0.5), got {trim!r}")
     g, weights = [], []
     for i in range(n):
         ei = min(max(float(e[i]), max(t, _EPS)), 1.0 - max(t, _EPS))
@@ -130,16 +130,16 @@ def ipw_forest(
     yv, Wv = k.vec(y), k.vec(W)
     n = len(yv)
     if len(Wv) != n:
-        raise ValueError("ipwgrf: %d outcomes but %d treatments" % (n, len(Wv)))
+        raise ValueError(f"ipwgrf: {int(n)} outcomes but {int(len(Wv))} treatments")
     if any(v not in (0.0, 1.0) for v in Wv):
         raise ValueError("ipwgrf: the treatment must be binary 0/1")
     if not 0 < sum(Wv) < n:
         raise ValueError("ipwgrf: both arms must be non-empty")
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("ipwgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"ipwgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     if n < 60:
-        raise ValueError("ipwgrf: need at least 60 observations, got %d" % n)
+        raise ValueError(f"ipwgrf: need at least 60 observations, got {int(n)}")
     mu1, mu0, e = forest_nuisances(yv, Wv, Xm, n_folds=n_folds, n_trees=n_trees, min_leaf=min_leaf, seed=seed)
     if break_outcome:
         ybar = sum(yv) / n

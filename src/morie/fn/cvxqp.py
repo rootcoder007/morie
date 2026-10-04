@@ -110,7 +110,7 @@ def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None, max_iter=200, t
 
     active = np.zeros(0, dtype=int)
     conv = False
-    for it in range(int(max_iter)):
+    for _it in range(int(max_iter)):
         x, mult = kkt(active)
         viol = Gm @ x - hv if Gm.shape[0] else np.zeros(0)
         worst = int(np.argmax(viol)) if viol.size else -1

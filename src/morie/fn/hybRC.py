@@ -86,7 +86,7 @@ def is_order_sensitive(method):
     r"""Does swapping the two components give a different system?"""
     m = str(method)
     if m not in METHODS:
-        raise ValueError("hybRC: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("hybRC: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     return {
         "method": m,
         "order_sensitive": m not in _ORDER_INSENSITIVE,
@@ -108,7 +108,7 @@ def weighted(scores, weights=None):
         raise ValueError("hybRC: no component scores given")
     w = [1.0 / len(S)] * len(S) if weights is None else [float(v) for v in k.vec(weights)]
     if len(w) != len(S):
-        raise ValueError("hybRC: %d weight(s) for %d components" % (len(w), len(S)))
+        raise ValueError(f"hybRC: {int(len(w))} weight(s) for {int(len(S))} components")
     items = sorted(set().union(*[set(s) for s in S]))
     out, partial = {}, {}
     for it in items:
@@ -132,7 +132,7 @@ def switching(scores, criterion, context=None):
     S = [dict(s) for s in scores]
     c = int(criterion(context))
     if c < 0 or c >= len(S):
-        raise ValueError("hybRC: the switching criterion chose component %d of %d" % (c, len(S)))
+        raise ValueError(f"hybRC: the switching criterion chose component {int(c)} of {int(len(S))}")
     return {
         "scores": S[c],
         "chosen": c,
@@ -165,7 +165,7 @@ def feature_combination(content_features, collaborative_features):
     C = [[float(v) for v in r] for r in k.mat(content_features)]
     D = [[float(v) for v in r] for r in k.mat(collaborative_features)]
     if len(C) != len(D):
-        raise ValueError("hybRC: %d content rows but %d collaborative rows" % (len(C), len(D)))
+        raise ValueError(f"hybRC: {int(len(C))} content rows but {int(len(D))} collaborative rows")
     return {
         "features": [C[i] + D[i] for i in range(len(C))],
         "content_dim": len(C[0]),

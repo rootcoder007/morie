@@ -116,7 +116,7 @@ def geron_alexnet(n_classes=1000, input_size=227, in_channels=3, dropout=0.5):
         {"kind": "fc", "filters": C, "in": last_hidden, "out": C, "params": last_hidden * C + C, "dropout": 0.0}
     )
 
-    total = int(sum(l["params"] for l in layers))
+    total = int(sum(ell["params"] for ell in layers))
 
     return RichResult(
         title="AlexNet architecture",
@@ -125,7 +125,7 @@ def geron_alexnet(n_classes=1000, input_size=227, in_channels=3, dropout=0.5):
             {
                 "title": "Layers",
                 "headers": ["#", "kind", "units", "out", "params"],
-                "rows": [[i, l["kind"], l["filters"], l["out"], l["params"]] for i, l in enumerate(layers)],
+                "rows": [[i, ell["kind"], ell["filters"], ell["out"], ell["params"]] for i, ell in enumerate(layers)],
             }
         ],
         payload={
@@ -134,8 +134,8 @@ def geron_alexnet(n_classes=1000, input_size=227, in_channels=3, dropout=0.5):
             "trainable_params": total,
             "output_shape": (C,),
             "flatten_dim": int(flatten_dim),
-            "conv_params": int(sum(l["params"] for l in layers if l["kind"] == "conv")),
-            "fc_params": int(sum(l["params"] for l in layers if l["kind"] == "fc")),
+            "conv_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "conv")),
+            "fc_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "fc")),
             "dropout": p_drop,
             "estimate": float(total),
             "n": int(len(layers)),

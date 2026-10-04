@@ -45,7 +45,7 @@ def test_bndnmt_basic():
     assert yv.shape == (n,) and dv.shape == (n,) and zv.shape == (n,)
 
     n1 = int((zv == 1.0).sum())
-    n0 = n - n1
+    n - n1
     sy1 = float(yv[zv == 1.0].mean())
     sy0 = float(yv[zv == 0.0].mean())
     pd1 = float(dv[zv == 1.0].mean())

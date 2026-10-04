@@ -80,11 +80,18 @@ def network_comparison(G1, G2, kernel="wl", h=3, k_size=3, lam=0.1):
         k11, k22 : the two self-similarities
     """
     if kernel == "graphlet":
-        f = lambda a, b: graphlet_kernel(a, b, k_size, True)["estimate"]
+
+        def f(a, b):
+            return graphlet_kernel(a, b, k_size, True)["estimate"]
     elif kernel == "rw":
-        f = lambda a, b: _rw(a, b, lam)
+
+        def f(a, b):
+            return _rw(a, b, lam)
     else:
-        f = lambda a, b: wl_kernel(a, b, h)["estimate"]
+
+        def f(a, b):
+            return wl_kernel(a, b, h)["estimate"]
+
     raw = f(G1, G2)
     k11 = f(G1, G1)
     k22 = f(G2, G2)

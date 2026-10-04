@@ -5,7 +5,7 @@ from morie.fn.pid import pid
 
 
 def test_pid_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = pid()
     assert result is not None
     assert hasattr(result, "name")

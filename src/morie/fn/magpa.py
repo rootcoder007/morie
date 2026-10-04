@@ -105,7 +105,10 @@ def ma_glmm_ipd_proportion(xi, ni, quad=21, level=0.95):
     det = hmm * fss - fms * fms
     se = float(np.sqrt(fss / det)) if det > 0.0 and fss > 0.0 else float("nan")
     crit = k02z(0.5 + 0.5 * float(level))
-    ilogit = lambda t: 1.0 / (1.0 + float(np.exp(-t)))
+
+    def ilogit(t):
+        return 1.0 / (1.0 + float(np.exp(-t)))
+
     return RichResult(
         payload={
             "estimate": float(ilogit(mu)),

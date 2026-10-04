@@ -126,11 +126,11 @@ def _logistic(s):
 def _as_matrix(x, name):
     rows = [list(map(float, r)) for r in np.atleast_2d(np.asarray(x, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("reinfc: %s must be non-empty" % name)
+        raise ValueError(f"reinfc: {name} must be non-empty")
     width = len(rows[0])
     for r in rows:
         if len(r) != width:
-            raise ValueError("reinfc: %s must be rectangular" % name)
+            raise ValueError(f"reinfc: {name} must be rectangular")
     return rows
 
 
@@ -243,13 +243,13 @@ def reinfc(
     8, 9, 10, 13, 14 and Theorems 1-2.
     """
     if unit not in _UNITS:
-        raise ValueError("reinfc: unit must be one of %r, got %r" % (_UNITS, unit))
+        raise ValueError(f"reinfc: unit must be one of {_UNITS!r}, got {unit!r}")
     if baseline not in _BASELINES:
-        raise ValueError("reinfc: baseline must be one of %r, got %r" % (_BASELINES, baseline))
+        raise ValueError(f"reinfc: baseline must be one of {_BASELINES!r}, got {baseline!r}")
     if mode not in _MODES:
-        raise ValueError("reinfc: mode must be one of %r, got %r" % (_MODES, mode))
+        raise ValueError(f"reinfc: mode must be one of {_MODES!r}, got {mode!r}")
     if eligibility not in ("p", "ybar"):
-        raise ValueError("reinfc: eligibility must be 'p' or 'ybar', got %r" % (eligibility,))
+        raise ValueError(f"reinfc: eligibility must be 'p' or 'ybar', got {eligibility!r}")
     if not callable(reward_fn):
         raise TypeError("reinfc: reward_fn must be callable")
     trials = int(trials)
@@ -284,7 +284,7 @@ def reinfc(
     else:
         wm = _as_matrix(w, "w")
         if len(wm[0]) != n_in:
-            raise ValueError("reinfc: w has %d columns but x has %d" % (len(wm[0]), n_in))
+            raise ValueError(f"reinfc: w has {int(len(wm[0]))} columns but x has {int(n_in)}")
     return _run_logistic(reward_fn, xs, wm, baseline, mode, float(alpha), float(gamma), k, trials, eligibility, rng)
 
 

@@ -142,7 +142,7 @@ def dipole_moment(charges, R, centre=None):
     q = [float(v) for v in k.vec(charges)]
     pos = [[float(v) for v in r] for r in k.mat(R)]
     if len(q) != len(pos):
-        raise ValueError("painn: %d charges but %d positions" % (len(q), len(pos)))
+        raise ValueError(f"painn: {int(len(q))} charges but {int(len(pos))} positions")
     d = len(pos[0])
     c = [sum(p[a] for p in pos) / len(pos) for a in range(d)] if centre is None else [float(v) for v in k.vec(centre)]
     mu = [sum(q[i] * (pos[i][a] - c[a]) for i in range(len(q))) for a in range(d)]

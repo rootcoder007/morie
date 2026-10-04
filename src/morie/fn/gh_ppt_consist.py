@@ -20,7 +20,10 @@ def ghosal_polya_tree_consist_rate(ns=(50, 200, 800), depth=6, seed=42):
     p0 as n grows; L1-type error over a query grid decreases.
     Truth: triangular density 2x on [0,1]. Keys: estimate."""
     rng = np.random.default_rng(seed)
-    a_of = lambda m: float(m * m)
+
+    def a_of(m):
+        return float(m * m)
+
     errs = []
     for n in ns:
         data = [math.sqrt(float(rng.uniform(0, 1))) for _ in range(n)]  # p0(x) = 2x

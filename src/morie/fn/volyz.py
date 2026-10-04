@@ -8,7 +8,7 @@ from .volrs import _ohlc
 __all__ = ["vol_yang_zhang"]
 
 
-def vol_yang_zhang(o, h, l, c):
+def vol_yang_zhang(o, h, l, c):  # noqa: E741
     r"""Yang-Zhang combined estimator.
 
     .. math:: \hat\sigma^2_{YZ} = \hat\sigma^2_{overnight}
@@ -39,7 +39,7 @@ def vol_yang_zhang(o, h, l, c):
     estimation based on high, low, open, and close prices. *The
     Journal of Business*, 73(3), 477-492.
     """
-    o, h, l, c = _ohlc(o, h, l, c)
+    o, h, l, c = _ohlc(o, h, l, c)  # noqa: E741
     n = o.size
     if n < 2:
         raise ValueError("need at least 2 days for the overnight component.")

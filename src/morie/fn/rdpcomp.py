@@ -81,17 +81,17 @@ def rdp_sampled_gaussian(alpha, q, sigma):
             "rdp_sampled_gaussian: alpha must be an integer -- the closed "
             "form is the paper's Case I binomial expansion. Fractional "
             "orders are Case II, an infinite series, which is not "
-            "implemented; got %r" % (alpha,)
+            f"implemented; got {alpha!r}"
         )
     ai = int(a)
     if ai <= 1:
-        raise ValueError("rdp_sampled_gaussian: alpha must exceed 1, got %r" % (alpha,))
+        raise ValueError(f"rdp_sampled_gaussian: alpha must exceed 1, got {alpha!r}")
     qq = float(q)
     if not (0.0 < qq <= 1.0):
-        raise ValueError("rdp_sampled_gaussian: q must lie in (0, 1], got %r" % (q,))
+        raise ValueError(f"rdp_sampled_gaussian: q must lie in (0, 1], got {q!r}")
     s = float(sigma)
     if s <= 0.0:
-        raise ValueError("rdp_sampled_gaussian: sigma must be positive, got %r" % (s,))
+        raise ValueError(f"rdp_sampled_gaussian: sigma must be positive, got {s!r}")
 
     # A_alpha = sum_k C(a,k) (1-q)^(a-k) q^k exp(k(k-1)/(2 sigma^2)).
     # Summed in log space: the exp term reaches exp(a^2/(2 sigma^2)),
@@ -105,10 +105,7 @@ def rdp_sampled_gaussian(alpha, q, sigma):
                 continue
             lt = lg + k * math.log(qq)
         else:
-            if k == 0:
-                lt = lg + (ai - k) * math.log1p(-qq)
-            else:
-                lt = lg + (ai - k) * math.log1p(-qq) + k * math.log(qq)
+            lt = lg + (ai - k) * math.log1p(-qq) if k == 0 else lg + (ai - k) * math.log1p(-qq) + k * math.log(qq)
         lt += k * (k - 1.0) / (2.0 * s * s)
         log_terms.append(lt)
 
@@ -122,7 +119,7 @@ def rdp_compose(alpha, q, sigma, steps=1):
     """Proposition 1: identical mechanisms add their RDP curves."""
     t = int(steps)
     if t < 1:
-        raise ValueError("rdp_compose: steps must be at least 1, got %r" % (steps,))
+        raise ValueError(f"rdp_compose: steps must be at least 1, got {steps!r}")
     return t * rdp_sampled_gaussian(alpha, q, sigma)
 
 
@@ -177,7 +174,7 @@ def rdpcomp(q, sigma, alpha=None, steps=1, delta=None):
     if delta is not None:
         d = float(delta)
         if not (0.0 < d < 1.0):
-            raise ValueError("rdpcomp: delta must lie strictly in (0, 1), got %r" % (d,))
+            raise ValueError(f"rdpcomp: delta must lie strictly in (0, 1), got {d!r}")
         log_inv = math.log(1.0 / d)
         eps = [e + log_inv / (a - 1.0) for a, e in zip(orders, curve)]
         best = 0

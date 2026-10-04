@@ -342,10 +342,7 @@ def chernoff_bound(n, p, t, tail="upper"):
 
     if tail == "upper":
         delta = t / mu - 1.0
-        if delta <= 0:
-            bound = 1.0
-        else:
-            bound = math.exp(mu * (delta - (1 + delta) * math.log1p(delta)))
+        bound = 1.0 if delta <= 0 else math.exp(mu * (delta - (1 + delta) * math.log1p(delta)))
         exact = sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(math.ceil(t), n + 1))
     else:
         delta = 1.0 - t / mu

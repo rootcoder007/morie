@@ -88,10 +88,7 @@ def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10, max_sweeps=500):
                 denom = 2.0 * (K[i][i] - 2.0 * K[i][j] + K[j][j])
                 gi = _grad(i)
                 gj = _grad(j)
-                if denom <= 1e-300:
-                    new = hi if gi - gj > 0 else lo
-                else:
-                    new = alpha[i] + (gi - gj) / denom
+                new = (hi if gi - gj > 0 else lo) if denom <= 1e-300 else alpha[i] + (gi - gj) / denom
                 new = min(max(new, lo), hi)
                 delta = new - alpha[i]
                 if abs(delta) > 1e-16:

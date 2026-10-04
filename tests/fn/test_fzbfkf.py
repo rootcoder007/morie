@@ -24,7 +24,7 @@ def test_fzbfkf_basic():
     ys = [log(float(t)) for t in xv]
     mean_y = sum(ys) / len(ys)
     var_y = sum((v - mean_y) ** 2 for v in ys) / len(ys)
-    sd_y = var_y**0.5
+    var_y**0.5
     sorted_x = sorted(float(t) for t in xv)
     from statistics import NormalDist
 

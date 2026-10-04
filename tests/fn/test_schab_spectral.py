@@ -11,7 +11,10 @@ from morie.fn.spspec import schabenberger_spectral_representation as spectral
 from morie.fn.spwkth import schabenberger_wiener_khinchin as wiener_khinchin
 
 A = 2.0
-EXPO = lambda h: np.exp(-A * np.abs(np.asarray(h, dtype=float)))
+
+
+def EXPO(h):
+    return np.exp(-A * np.abs(np.asarray(h, dtype=float)))
 
 
 def test_spectral_density_of_the_exponential_is_the_cauchy_density():

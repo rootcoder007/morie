@@ -15,7 +15,7 @@ class TestStscm:
         reports[0] = 100.0
         r = byzantine_detect(reports, threshold=2.0)
         assert isinstance(r, DescriptiveResult)
-        assert r.value[0] == True
+        assert r.value[0]
 
     def test_all_honest(self):
         reports = np.ones((5, 10))

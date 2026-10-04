@@ -70,7 +70,7 @@ def random_forest(
     oob_preds: dict[int, list] = {i: [] for i in range(n)}
     tree_predictions = []
 
-    for t in range(n_trees):
+    for _t in range(n_trees):
         # Bootstrap sample
         boot_idx = rng.choice(n, size=n, replace=True)
         oob_idx = np.setdiff1d(np.arange(n), boot_idx)
@@ -138,10 +138,10 @@ def _majority_vote_ensemble(
 ) -> np.ndarray:
     """Train and predict via majority vote."""
     n = X.shape[0]
-    votes = np.zeros((n,), dtype=object)
+    np.zeros((n,), dtype=object)
     vote_lists: dict[int, list] = {i: [] for i in range(n)}
 
-    for t in range(min(n_trees, 10)):
+    for _t in range(min(n_trees, 10)):
         boot_idx = rng.choice(n, size=n, replace=True)
         feat_idx = rng.choice(p, size=m, replace=False)
         X_boot = X[boot_idx][:, feat_idx]

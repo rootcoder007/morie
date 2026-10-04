@@ -105,8 +105,8 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
         W[i, idx[i]] = w
         err += float(np.sum((X[i] - w @ X[idx[i]]) ** 2))
 
-    I = np.eye(n)
-    M = (I - W).T @ (I - W)
+    I_ = np.eye(n)
+    M = (I_ - W).T @ (I_ - W)
     w_eig, V = np.linalg.eigh((M + M.T) / 2)
     # Skip the first eigenvector: it is constant with eigenvalue ~0 and
     # carries no embedding information.

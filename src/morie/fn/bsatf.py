@@ -495,14 +495,14 @@ def _tfspline(xs, ys, xq):
     alpha = [0.0] * n
     for i in range(1, n - 1):
         alpha[i] = 3.0 * ((ys[i + 1] - ys[i]) / hh[i] - (ys[i] - ys[i - 1]) / hh[i - 1])
-    l = [1.0] + [0.0] * (n - 1)
+    ell = [1.0] + [0.0] * (n - 1)
     mu = [0.0] * n
     z = [0.0] * n
     for i in range(1, n - 1):
-        l[i] = 2.0 * (xs[i + 1] - xs[i - 1]) - hh[i - 1] * mu[i - 1]
-        mu[i] = hh[i] / l[i]
-        z[i] = (alpha[i] - hh[i - 1] * z[i - 1]) / l[i]
-    l[n - 1] = 1.0
+        ell[i] = 2.0 * (xs[i + 1] - xs[i - 1]) - hh[i - 1] * mu[i - 1]
+        mu[i] = hh[i] / ell[i]
+        z[i] = (alpha[i] - hh[i - 1] * z[i - 1]) / ell[i]
+    ell[n - 1] = 1.0
     c = [0.0] * n
     b = [0.0] * (n - 1)
     d = [0.0] * (n - 1)
@@ -4044,10 +4044,7 @@ def vmodes(x, K=3, alpha=2000.0, tau=0.0, init="uniform", tol=1e-7, max_iter=300
     half = n // 2 + 1
     fh = [F[i] for i in range(half)]
     om = [i / float(n) for i in range(half)]  # cycles per sample
-    if ini == "uniform":
-        wk = [0.5 * (j + 0.5) / k for j in range(k)]
-    else:
-        wk = [0.0] * k
+    wk = [0.5 * (j + 0.5) / k for j in range(k)] if ini == "uniform" else [0.0] * k
     uk = [[0j] * half for _ in range(k)]
     lam = [0j] * half
     it = 0

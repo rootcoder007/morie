@@ -72,8 +72,8 @@ def horowitz_smoothed_maximum_score(x, y, bandwidth=None):
         # d/dbn = (1/n) sum y_signed * phi(z) * X_i / h
         g_bn = (y_signed[:, None] * phi[:, None] * X / h).mean(axis=0)
         # chain rule for b -> bn
-        I = np.eye(p)
-        J = (I - np.outer(bn, bn)) / nrm
+        I_ = np.eye(p)
+        J = (I_ - np.outer(bn, bn)) / nrm
         return -(J @ g_bn)
 
     beta0, *_ = np.linalg.lstsq(X, y_signed, rcond=None)

@@ -88,8 +88,8 @@ def flash_attention_block(y=None, Q=None, K=None, V=None, block_size=2, causal=F
         raise ValueError("flash_attention_block: block_size must be at least one")
     sc = 1.0 / math.sqrt(d)
     NEG = float("-inf")
-    O = [[0.0] * dv for _ in range(nq)]
-    l = [0.0] * nq
+    O_ = [[0.0] * dv for _ in range(nq)]
+    ell = [0.0] * nq
     m = [NEG] * nq
     nb = 0
     j0 = 0
@@ -122,26 +122,26 @@ def flash_attention_block(y=None, Q=None, K=None, V=None, block_size=2, causal=F
                 ev = 0.0 if v == NEG else math.exp(v - mnew)
                 e.append(ev)
                 s += ev
-            l[i] = resc * l[i] + s
+            ell[i] = resc * ell[i] + s
             for t in range(dv):
-                acc = resc * O[i][t]
+                acc = resc * O_[i][t]
                 for a, j in enumerate(range(j0, j1)):
                     acc += e[a] * Vm[j][t]
-                O[i][t] = acc
+                O_[i][t] = acc
             m[i] = mnew
         j0 = j1
     for i in range(nq):
-        if l[i] <= 0.0:
+        if ell[i] <= 0.0:
             raise ValueError("flash_attention_block: a query row has every key masked out")
         for t in range(dv):
-            O[i][t] = O[i][t] / l[i]
+            O_[i][t] = O_[i][t] / ell[i]
     return RichResult(
         title="FlashAttention (block-tiled, exact)",
         summary_lines=[("n_q", nq), ("n_k", nk), ("blocks", nb)],
         payload={
-            "output": O,
-            "estimate": O[0][0],
-            "l": l,
+            "output": O_,
+            "estimate": O_[0][0],
+            "l": ell,
             "m": m,
             "n_blocks": nb,
             "block_size": bs,

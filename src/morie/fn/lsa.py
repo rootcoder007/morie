@@ -75,7 +75,7 @@ _WEIGHTS = ("raw", "log_entropy", "tfidf")
 def term_weighting(X, how="log_entropy"):
     r"""Raw counts, log-entropy, or TF-IDF."""
     if how not in _WEIGHTS:
-        raise ValueError("lsa: weighting must be one of %s, got %r" % (", ".join(_WEIGHTS), how))
+        raise ValueError("lsa: weighting must be one of {}, got {!r}".format(", ".join(_WEIGHTS), how))
     A = [[float(v) for v in r] for r in k.mat(X)]
     t, d = len(A), len(A[0])
     if how == "raw":
@@ -110,7 +110,7 @@ def lsa_decompose(X, k_dim=None, how="log_entropy"):
     full = len(S)
     kk = full if k_dim is None else int(k_dim)
     if kk < 1 or kk > full:
-        raise ValueError("lsa: k must lie in 1..%d, got %d" % (full, kk))
+        raise ValueError(f"lsa: k must lie in 1..{int(full)}, got {int(kk)}")
     return RichResult(
         payload={
             "estimate": [list(r[:kk]) for r in T],
@@ -142,7 +142,7 @@ def fold_in(query, model):
     q = [float(v) for v in k.vec(query)]
     T, S = model["T"], model["S"]
     if len(q) != len(T):
-        raise ValueError("lsa: the query has %d terms but the model has %d" % (len(q), len(T)))
+        raise ValueError(f"lsa: the query has {int(len(q))} terms but the model has {int(len(T))}")
     return [sum(q[i] * T[i][f] for i in range(len(q))) / max(S[f], _EPS) for f in range(len(S))]
 
 

@@ -59,7 +59,10 @@ def btdbl(x, statistic=None, alpha=0.05, B_outer=400, B_inner=200, seed=0):
     if n < 5:
         raise ValueError("need at least five observations")
     if statistic is None:
-        statistic = lambda s: sum(s) / len(s)
+
+        def statistic(s):
+            return sum(s) / len(s)
+
     alpha = float(alpha)
     if not (0.0 < alpha < 1.0):
         raise ValueError("alpha must be in (0, 1)")

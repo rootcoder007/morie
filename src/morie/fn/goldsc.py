@@ -142,7 +142,7 @@ def split_potential(r, r0, eps, outer=(4, 8), inner=(2, 4)):
 
 def _pair(r, r0, eps, potential):
     if potential not in POTENTIALS:
-        raise ValueError("potential must be one of %r" % (POTENTIALS,))
+        raise ValueError(f"potential must be one of {POTENTIALS!r}")
     if potential in _INNER:
         return split_potential(r, r0, eps, _EXPONENTS[potential], _INNER[potential])
     m, n = _EXPONENTS[potential]
@@ -153,7 +153,7 @@ def _lookup(table, key, what):
     for k, v in table:
         if k == key:
             return float(v)
-    raise ValueError("no %s for atom type %r" % (what, key))
+    raise ValueError(f"no {what} for atom type {key!r}")
 
 
 def vdw_energy(pairs, radii, depths, potential="4-8", cutoff=None):

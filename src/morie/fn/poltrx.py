@@ -103,14 +103,14 @@ def level_parameters(level, c=1.0, rule="m_squared"):
     elif rule == "linear":
         a = float(c) * m
     else:
-        raise ValueError("poltrx: rule must be one of %s, got %r" % (", ".join(_RULES), rule))
+        raise ValueError("poltrx: rule must be one of {}, got {!r}".format(", ".join(_RULES), rule))
     return {"alpha": a, "level": m, "rule": rule}
 
 
 def continuity_regime(rule):
     r"""What the parameter rule implies about the draws."""
     if rule not in _RULES:
-        raise ValueError("poltrx: rule must be one of %s, got %r" % (", ".join(_RULES), rule))
+        raise ValueError("poltrx: rule must be one of {}, got {!r}".format(", ".join(_RULES), rule))
     table = {
         "m_squared": (
             "absolutely continuous",
@@ -132,7 +132,7 @@ def partition_index(x, level, lo=0.0, hi=1.0):
     a, b = float(lo), float(hi)
     v = float(x)
     if not a <= v <= b:
-        raise ValueError("poltrx: x = %r lies outside the partitioned interval [%r, %r]" % (x, lo, hi))
+        raise ValueError(f"poltrx: x = {x!r} lies outside the partitioned interval [{lo!r}, {hi!r}]")
     bits = []
     for _ in range(m):
         mid = 0.5 * (a + b)
@@ -187,7 +187,7 @@ def finite_tree(levels, c=1.0, rule="m_squared", rng=None, seed=0):
         "rule": rule,
         "c": float(c),
         "n_nodes": len(Y),
-        "note": "truncated at level %d; the partition depth is part of the model, not an approximation to hide" % M,
+        "note": f"truncated at level {int(M)}; the partition depth is part of the model, not an approximation to hide",
     }
 
 
@@ -197,7 +197,9 @@ def set_probability(epsilon, tree):
     eps = tuple(int(b) for b in epsilon)
     if len(eps) > tree["levels"]:
         raise ValueError(
-            "poltrx: the tree was truncated at level %d, so it says nothing about level %d" % (tree["levels"], len(eps))
+            "poltrx: the tree was truncated at level {}, so it says nothing about level {}".format(
+                int(tree["levels"]), int(len(eps))
+            )
         )
     p = 1.0
     for m in range(len(eps)):

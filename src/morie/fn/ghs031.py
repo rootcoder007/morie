@@ -18,7 +18,10 @@ def ghosal_ch3_polya_tree_mixture_post_density(x, data, g_theta, G_theta, a_of_l
     G_theta scale pushed back through the parametric family
     (GvdV 2017 sec. 3.7.2). Keys: posterior."""
     if a_of_level is None:
-        a_of_level = lambda m: float(m * m)
+
+        def a_of_level(m):
+            return float(m * m)
+
     x0 = _bnp._flat(x)[0]
     d = _bnp._flat(data)
     u0 = float(G_theta(x0))

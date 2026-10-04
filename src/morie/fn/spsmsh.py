@@ -80,7 +80,7 @@ def spsm_shifted_intervention(y, a, h, delta=1.0, trim=None):
     else:
         hm = mat(h, "h")
         if len(hm) != n:
-            raise ValueError("`h` has %d rows but `y` has %d values" % (len(hm), n))
+            raise ValueError(f"`h` has {int(len(hm))} rows but `y` has {int(n)} values")
     d = float(delta)
     des = [[1.0] + list(hm[i]) for i in range(n)]
     k = len(des[0])

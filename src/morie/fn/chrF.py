@@ -72,10 +72,10 @@ def chrf_score(hypothesis, reference, n_char=6, beta=2.0, remove_whitespace=True
     r"""chrF-beta between a hypothesis and one or more references."""
     N = int(n_char)
     if N < 1:
-        raise ValueError("chrf_score: n_char must be at least 1, got %r" % (n_char,))
+        raise ValueError(f"chrf_score: n_char must be at least 1, got {n_char!r}")
     beta = float(beta)
     if beta <= 0.0:
-        raise ValueError("chrf_score: beta must be positive, got %r" % (beta,))
+        raise ValueError(f"chrf_score: beta must be positive, got {beta!r}")
     w_order = int(word_order)
     if w_order < 0:
         raise ValueError("chrf_score: word_order must be >= 0")
@@ -131,7 +131,7 @@ def chrf_score(hypothesis, reference, n_char=6, beta=2.0, remove_whitespace=True
         if best is None or cand["chrf"] > best["chrf"]:
             best = cand
 
-    best["method"] = "chrF%g, arithmetic mean over character n-gram orders (Popovic 2015)" % beta
+    best["method"] = f"chrF{beta:g}, arithmetic mean over character n-gram orders (Popovic 2015)"
     return RichResult(payload=best)
 
 

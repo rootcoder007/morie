@@ -31,14 +31,14 @@ def kamath_bradley_terry_preference(r_w, r_l):
     0.5
     """
     w = np.atleast_1d(np.asarray(r_w, dtype=float))
-    l = np.atleast_1d(np.asarray(r_l, dtype=float))
-    if w.shape != l.shape:
-        raise ValueError(f"{w.size} winner scores but {l.size} loser scores.")
+    ell = np.atleast_1d(np.asarray(r_l, dtype=float))
+    if w.shape != ell.shape:
+        raise ValueError(f"{w.size} winner scores but {ell.size} loser scores.")
     if w.size == 0:
         raise ValueError("no preference pairs were given.")
-    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(l))):
+    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(ell))):
         raise ValueError("reward scores must be finite.")
-    d = w - l
+    d = w - ell
     p = np.where(d >= 0, 1.0 / (1.0 + np.exp(-np.abs(d))), np.exp(-np.abs(d)) / (1.0 + np.exp(-np.abs(d))))
     est = float(p[0]) if p.size == 1 else [float(v) for v in p]
     return RichResult(

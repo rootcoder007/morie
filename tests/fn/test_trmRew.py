@@ -35,7 +35,7 @@ def test_the_completed_system_is_confluent():
 
 
 def test_the_raw_axioms_are_not():
-    raw = [T.rule(l, r) for l, r in AX]
+    raw = [T.rule(ell, r) for ell, r in AX]
     assert not T.is_locally_confluent(raw)["locally_confluent"]
 
 

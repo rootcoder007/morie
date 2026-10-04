@@ -28,7 +28,7 @@ def test_jocros_basic():
 
 def test_jocros_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(44)
+    np.random.default_rng(44)
     # Constant positive demand: interval = 1, CV^2 = 0 -> "smooth".
     y = [5] * 20
     result = joseph_croston_intermittent(y, alpha=0.2)

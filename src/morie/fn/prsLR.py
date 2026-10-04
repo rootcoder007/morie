@@ -156,16 +156,16 @@ def canonical_collection(ag, k=1):
     trans = {}
     q = [I0]
     while q:
-        I = q.pop(0)
+        I_ = q.pop(0)
         for X in syms:
-            J = goto(I, X, ag, first, nts, k)
+            J = goto(I_, X, ag, first, nts, k)
             if not J:
                 continue
             if J not in index:
                 index[J] = len(states)
                 states.append(J)
                 q.append(J)
-            trans[(index[I], X)] = index[J]
+            trans[(index[I_], X)] = index[J]
     return {"states": states, "index": index, "transitions": trans, "first": first, "nonterminals": nts}
 
 
@@ -176,7 +176,7 @@ def _core(state):
 def build_tables(g, method="lr1"):
     r"""ACTION and GOTO, with every conflict recorded."""
     if method not in METHODS:
-        raise ValueError("prsLR: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("prsLR: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     ag = augment(g)
     k = 0 if method == "slr1" else 1
     col = canonical_collection(ag, k)
@@ -189,7 +189,7 @@ def build_tables(g, method="lr1"):
         for n, st in enumerate(states):
             groups.setdefault(_core(st), []).append(n)
         remap, merged = {}, []
-        for core, members in groups.items():
+        for members in groups.values():
             new = len(merged)
             union = set()
             for n in members:
@@ -229,10 +229,7 @@ def build_tables(g, method="lr1"):
             if i == 0:
                 put(s, END, ("accept", None))
                 continue
-            if method == "slr1":
-                looks = follow[lhs]
-            else:
-                looks = {it[2]}
+            looks = follow[lhs] if method == "slr1" else {it[2]}
             for a in looks:
                 put(s, a, ("reduce", i))
     return {
@@ -272,9 +269,9 @@ def parse(g, tokens, method="lr1", tables=None):
     if t["conflicts"]:
         c = t["conflicts"][0]
         raise ValueError(
-            "prsLR: the grammar is not %s -- %d "
-            "conflict(s), first a %s in state %d on %r"
-            % (t["method"], len(t["conflicts"]), c["kind"], c["state"], c["lookahead"])
+            "prsLR: the grammar is not {} -- {} conflict(s), first a {} in state {} on {!r}".format(
+                t["method"], int(len(t["conflicts"])), c["kind"], int(c["state"]), c["lookahead"]
+            )
         )
     toks = [str(x) for x in tokens] + [END]
     stack, trees, pos = [0], [], 0
@@ -282,7 +279,7 @@ def parse(g, tokens, method="lr1", tables=None):
         a = toks[pos]
         act = t["action"].get((stack[-1], a))
         if act is None:
-            raise ValueError("prsLR: syntax error at token %d (%r) in state %d" % (pos, a, stack[-1]))
+            raise ValueError(f"prsLR: syntax error at token {int(pos)} ({a!r}) in state {int(stack[-1])}")
         if act[0] == "shift":
             stack.append(act[1])
             trees.append(_leaf(a))
@@ -297,12 +294,14 @@ def parse(g, tokens, method="lr1", tables=None):
             node = {"symbol": lhs, "children": kids}
             nxt = t["goto"].get((stack[-1], lhs))
             if nxt is None:
-                raise ValueError("prsLR: no goto for %r in state %d" % (lhs, stack[-1]))
+                raise ValueError(f"prsLR: no goto for {lhs!r} in state {int(stack[-1])}")
             stack.append(nxt)
             trees.append(node)
         else:
             if len(trees) != 1 or pos != len(toks) - 1:
-                raise ValueError("prsLR: accepted with %d trees and %d tokens left" % (len(trees), len(toks) - 1 - pos))
+                raise ValueError(
+                    f"prsLR: accepted with {int(len(trees))} trees and {int(len(toks) - 1 - pos)} tokens left"
+                )
             return trees[0]
     raise ValueError("prsLR: the parser did not terminate")
 

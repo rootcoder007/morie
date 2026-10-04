@@ -69,7 +69,7 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
     pop = rs.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
     fitness = np.array([f(x) for x in pop])
 
-    for gen in range(generations):
+    for _gen in range(generations):
         # Selection: tournament
         selected = []
         for _ in range(pop_size):

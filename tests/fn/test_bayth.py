@@ -56,9 +56,11 @@ def test_bayth_basic():
 
     # The posterior mean should be the grid-weighted integral of the
     # normalised posterior (independent expression).
-    simpson_weighted = lambda vs: (
-        (sum((4.0 if i % 2 == 1 else 2.0) * vs[i] for i in range(1, n_grid - 1)) + vs[0] + vs[n_grid - 1]) * h / 3.0
-    )
+    def simpson_weighted(vs):
+        return (
+            (sum((4.0 if i % 2 == 1 else 2.0) * vs[i] for i in range(1, n_grid - 1)) + vs[0] + vs[n_grid - 1]) * h / 3.0
+        )
+
     mean_from_grid = simpson_weighted([th[i] * post[i] for i in range(n_grid)])
     assert abs(payload["estimate"] - mean_from_grid) < 1e-9
     assert abs(payload["post_mean"] - mean_from_grid) < 1e-9

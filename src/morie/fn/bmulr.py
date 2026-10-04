@@ -32,10 +32,7 @@ def bayesian_multinomial(
     """
     c = np.asarray(counts, dtype=float)
     k = len(c)
-    if prior_alpha is None:
-        prior_alpha = np.ones(k)
-    else:
-        prior_alpha = np.asarray(prior_alpha, dtype=float)
+    prior_alpha = np.ones(k) if prior_alpha is None else np.asarray(prior_alpha, dtype=float)
 
     post_alpha = prior_alpha + c
     alpha_sum = float(np.sum(post_alpha))

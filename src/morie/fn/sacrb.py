@@ -92,7 +92,7 @@ def tokenize_13a(text, lowercase=False):
         s = s.lower()
     out = []
     for ch in s:
-        out.append(" %s " % ch if ch in _PUNCT else ch)
+        out.append(f" {ch} " if ch in _PUNCT else ch)
     return "".join(out).split()
 
 
@@ -124,7 +124,7 @@ def _tok(text, scheme, lowercase):
     if scheme == "none":
         s = str(text).lower() if lowercase else str(text)
         return s.split()
-    raise ValueError("sacrb: tokenizer must be one of %s, got %r" % (", ".join(_TOKENIZERS), scheme))
+    raise ValueError("sacrb: tokenizer must be one of {}, got {!r}".format(", ".join(_TOKENIZERS), scheme))
 
 
 def ngram_counts(tokens, n):
@@ -177,7 +177,7 @@ def bleu(candidates, references, max_n=4, weights=None, tokenizer="13a", lowerca
     C = [str(v) for v in candidates]
     R = [[str(x) for x in refs] for refs in references]
     if len(C) != len(R):
-        raise ValueError("sacrb: %d candidates but %d reference sets" % (len(C), len(R)))
+        raise ValueError(f"sacrb: {int(len(C))} candidates but {int(len(R))} reference sets")
     if not C:
         raise ValueError("sacrb: no candidates given")
     if any(not refs for refs in R):
@@ -187,9 +187,9 @@ def bleu(candidates, references, max_n=4, weights=None, tokenizer="13a", lowerca
         raise ValueError("sacrb: max_n must be at least 1")
     w = [1.0 / N] * N if weights is None else [float(v) for v in weights]
     if len(w) != N:
-        raise ValueError("sacrb: %d weights for max_n = %d" % (len(w), N))
+        raise ValueError(f"sacrb: {int(len(w))} weights for max_n = {int(N)}")
     if abs(sum(w) - 1.0) > 1e-9:
-        raise ValueError("sacrb: the weights must sum to 1, got %.6f" % sum(w))
+        raise ValueError(f"sacrb: the weights must sum to 1, got {sum(w):.6f}")
     num = [0] * N
     den = [0] * N
     c_total, r_total = 0, 0
@@ -237,12 +237,8 @@ def signature(tokenizer="13a", lowercase=False, max_n=4, n_refs=1, version="mori
     Post's point: BLEU is a function of the tokenisation, and without
     naming it the number is not comparable to anyone else's.
     """
-    return "nrefs:%d|case:%s|tok:%s|ngram:%d|version:%s" % (
-        int(n_refs),
-        "lc" if lowercase else "mixed",
-        str(tokenizer),
-        int(max_n),
-        version,
+    return "nrefs:{}|case:{}|tok:{}|ngram:{}|version:{}".format(
+        int(int(n_refs)), "lc" if lowercase else "mixed", str(tokenizer), int(int(max_n)), version
     )
 
 

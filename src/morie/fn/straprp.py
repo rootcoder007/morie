@@ -77,7 +77,7 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
     elif N_h is not None:
         Nv = np.atleast_1d(
             np.asarray(
-                [N_h[l] for l in labs]
+                [N_h[ell] for ell in labs]
                 if hasattr(N_h, "__getitem__") and not isinstance(N_h, (list, tuple, np.ndarray))
                 else N_h,
                 dtype=float,

@@ -14,7 +14,7 @@ def test_gh_c13_15_basic():
     se = np.asarray(result["se"], dtype=float)
     bg = np.asarray(result["beta_grid"], dtype=float)
     post = np.asarray(result["posterior_normal"], dtype=float)
-    info = np.asarray(result["efficient_information"], dtype=float)
+    np.asarray(result["efficient_information"], dtype=float)
 
     # Documented return keys must all be present and finite where numeric.
     assert "beta" in result

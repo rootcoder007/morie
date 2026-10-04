@@ -79,16 +79,16 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate", complier=N
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if estimand not in ESTIMANDS:
-        raise ValueError("estimand must be one of %s, got %r." % (ESTIMANDS, estimand))
+        raise ValueError(f"estimand must be one of {ESTIMANDS}, got {estimand!r}.")
     sw = np.ones(n) if weights is None else np.asarray(weights, dtype=float).ravel()
     if sw.size != n:
-        raise ValueError("weights has %d entries for %d rows." % (sw.size, n))
+        raise ValueError(f"weights has {int(sw.size)} entries for {int(n)} rows.")
 
     e = None
     if propensity is not None:
         e = np.asarray(propensity, dtype=float).ravel()
         if e.size != n:
-            raise ValueError("propensity has %d entries for %d rows." % (e.size, n))
+            raise ValueError(f"propensity has {int(e.size)} entries for {int(n)} rows.")
         e = np.clip(e, 1e-6, 1 - 1e-6)
 
     if estimand == "ate":
@@ -96,17 +96,11 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate", complier=N
         share = 1.0
         question = "the effect of treating everyone, which may not correspond to any available intervention"
     elif estimand == "att":
-        if e is None:
-            w = sw * dv
-        else:
-            w = sw * e / float(np.mean(e))
+        w = sw * dv if e is None else sw * e / float(np.mean(e))
         share = float(np.mean(dv))
         question = "whether treating those who were treated was right"
     elif estimand == "atc":
-        if e is None:
-            w = sw * (1 - dv)
-        else:
-            w = sw * (1 - e) / float(np.mean(1 - e))
+        w = sw * (1 - dv) if e is None else sw * (1 - e) / float(np.mean(1 - e))
         share = float(np.mean(1 - dv))
         question = "whether to extend treatment to those not treated"
     elif estimand == "late":
@@ -163,7 +157,7 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate", complier=N
             ),
             "n_treated": int(dv.sum()),
             "n": int(n),
-            "method": "Causal estimand definition (%s)" % estimand.upper(),
+            "method": f"Causal estimand definition ({estimand.upper()})",
         }
     )
 

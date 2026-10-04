@@ -170,13 +170,13 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6, ties
 
     from ._stats_core import norm
 
-    _, _, I, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw, max_iter=1)
+    _, _, I_, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw, max_iter=1)
     # Cluster-robust variance: the frailty inflates uncertainty relative to an
     # i.i.d. fit, which is the point of fitting it.
     try:
-        Iinv = np.linalg.inv(I)
+        Iinv = np.linalg.inv(I_)
     except np.linalg.LinAlgError:
-        Iinv = np.linalg.pinv(I)
+        Iinv = np.linalg.pinv(I_)
     scale = 1.0 + th * float(np.mean(np.bincount(idx, minlength=K)) - 1.0)
     se = np.sqrt(np.clip(np.diag(Iinv) * max(scale, 1.0), 0, None))
     with np.errstate(divide="ignore", invalid="ignore"):

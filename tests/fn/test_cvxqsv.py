@@ -37,7 +37,7 @@ def test_cvxqsv_basic():
     # Residual ||X - x x^T|| must be tiny when the relaxation is tight.
     X = result["X"]
     x = result["x"]
-    expected_residual = float(np.linalg.norm(X - np.outer(x, x)))
+    float(np.linalg.norm(X - np.outer(x, x)))
     assert float(result["residual"]) < 1e-5
 
     # Lower bound, recomputed independently from the formula on

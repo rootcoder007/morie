@@ -19,7 +19,10 @@ def ghosal_ch2_feller_density_approximation(x=0.4, k=40, F=None, h_k=None, g_k=N
     approximates the density F'. Default truth F(z) = z^2 (density
     2z). Keys: value."""
     if F is None:
-        F = lambda z: max(0.0, min(1.0, z)) ** 2
+
+        def F(z):
+            return max(0.0, min(1.0, z)) ** 2
+
     k = int(k)
     dens = 0.0
     for j in range(k):

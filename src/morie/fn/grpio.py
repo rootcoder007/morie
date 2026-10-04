@@ -72,16 +72,16 @@ def geron_perceiver_io(X, Z_latent, output_queries, n_iter=1):
     """
     A = np.atleast_2d(np.asarray(X, dtype=float))
     Z = np.atleast_2d(np.asarray(Z_latent, dtype=float))
-    O = np.atleast_2d(np.asarray(output_queries, dtype=float))
-    for name, M in (("X", A), ("Z_latent", Z), ("output_queries", O)):
+    O_ = np.atleast_2d(np.asarray(output_queries, dtype=float))
+    for name, M in (("X", A), ("Z_latent", Z), ("output_queries", O_)):
         if M.ndim != 2 or M.size == 0:
             raise ValueError(f"{name} must be a non-empty 2-D array, got shape {M.shape}.")
         if not np.all(np.isfinite(M)):
             raise ValueError(f"{name} contains non-finite values.")
     if Z.shape[1] != A.shape[1]:
         raise ValueError(f"Z_latent width {Z.shape[1]} != input width {A.shape[1]}; project them to a common d first.")
-    if O.shape[1] != Z.shape[1]:
-        raise ValueError(f"output_queries width {O.shape[1]} != latent width {Z.shape[1]}.")
+    if O_.shape[1] != Z.shape[1]:
+        raise ValueError(f"output_queries width {O_.shape[1]} != latent width {Z.shape[1]}.")
     if Z.shape[0] > A.shape[0]:
         raise ValueError(
             f"the latent array ({Z.shape[0]} rows) is not smaller than the input "
@@ -98,11 +98,11 @@ def geron_perceiver_io(X, Z_latent, output_queries, n_iter=1):
         cross_w.append(w.tolist())
         z, w2 = attend(z, z, z)
         self_w.append(w2.tolist())
-    y, ow = attend(O, z, z)
+    y, ow = attend(O_, z, z)
 
     return RichResult(
         title="Perceiver IO",
-        summary_lines=[("Inputs", int(A.shape[0])), ("Latents", int(Z.shape[0])), ("Outputs", int(O.shape[0]))],
+        summary_lines=[("Inputs", int(A.shape[0])), ("Latents", int(Z.shape[0])), ("Outputs", int(O_.shape[0]))],
         payload={
             "output": y.tolist(),
             "latent": z.tolist(),

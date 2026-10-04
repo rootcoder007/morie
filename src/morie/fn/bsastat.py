@@ -583,7 +583,7 @@ def nlfeatures(x, m=2, r=None, dt=1.0):
             out[key] = res
         except Exception as exc:  # noqa: BLE001
             out[key] = None
-            errs[key] = "%s: %s" % (type(exc).__name__, exc)
+            errs[key] = f"{type(exc).__name__}: {exc}"
     return RichResult(
         payload={
             "features": out,
@@ -1641,7 +1641,7 @@ def ensmean(observations, index=None):
         for rec in observations:
             r = aslist(rec)
             if i < 0 or i >= len(r):
-                raise IndexError("index %d outside a record of length %d" % (i, len(r)))
+                raise IndexError(f"index {int(i)} outside a record of length {int(len(r))}")
             vals.append(r[i])
     m = len(vals)
     if m == 0:
@@ -1731,7 +1731,7 @@ def covxy(x, y, ddof=0):
     n = len(xs)
     d = n - int(ddof)
     if d <= 0:
-        raise ValueError("not enough samples for ddof=%d" % ddof)
+        raise ValueError(f"not enough samples for ddof={int(ddof)}")
     mx, my = fsum(xs) / n, fsum(ys) / n
     cov = fsum((a - mx) * (b - my) for a, b in zip(xs, ys)) / d
     vx = fsum((a - mx) ** 2 for a in xs) / d

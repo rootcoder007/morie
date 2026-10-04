@@ -7,7 +7,7 @@ from ._richresult import RichResult
 __all__ = ["wasserman_cramer_rao"]
 
 
-def wasserman_cramer_rao(theta, n, I):
+def wasserman_cramer_rao(theta, n, I):  # noqa: E741
     """
     Cramer-Rao lower bound for an unbiased estimator.
 
@@ -55,7 +55,7 @@ def wasserman_cramer_rao(theta, n, I):
     """
     theta = float(theta)
     n = int(n)
-    I = float(I)
+    I = float(I)  # noqa: E741
     if n < 1:
         raise ValueError(f"the Cramer-Rao bound needs n >= 1; got {n}.")
     if I <= 0:

@@ -73,7 +73,10 @@ def test_local_linear_beats_nw_at_the_boundary():
     rng = np.random.default_rng(3)
     n = 400
     x = rng.uniform(0, 1, n)
-    truth = lambda z: 2.0 * z  # a straight line
+
+    def truth(z):
+        return 2.0 * z  # a straight line
+
     y = truth(x) + rng.standard_normal(n) * 0.05
     edge = np.array([0.02, 0.05])
     ll = hrz_local_linear(x, y, grid=edge)["fitted"]

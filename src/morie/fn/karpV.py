@@ -132,7 +132,7 @@ def _apply(op, vals):
         # Koza's protected division: a zero divisor yields 1, so one bad
         # division does not throw away an otherwise good program.
         return 1.0 if vals[1] == 0.0 else vals[0] / vals[1]
-    raise ValueError("karpV: unknown function %r" % op)
+    raise ValueError(f"karpV: unknown function {op!r}")
 
 
 def evaluate(node, env):
@@ -163,9 +163,9 @@ def to_string(node):
             # An ephemeral constant is printed through printf, not
             # through either language's own float formatting, so the two
             # arms produce the same expression text.
-            return "%.17g" % t
+            return f"{t:.17g}"
         return str(t)
-    return "(%s %s)" % (node["op"], " ".join(to_string(a) for a in node["args"]))
+    return "({} {})".format(node["op"], " ".join(to_string(a) for a in node["args"]))
 
 
 def _random_terminal(rng, terminals, erc):
@@ -365,7 +365,7 @@ def genetic_programming(
             return raw_fitness(tree, cases, terminals)
 
     if max_depth_init < 2:
-        raise ValueError("karpV: max_depth_init = %d; ramped half-and-half needs at least 2" % max_depth_init)
+        raise ValueError(f"karpV: max_depth_init = {int(max_depth_init)}; ramped half-and-half needs at least 2")
 
     rng = _Rng(seed)
     pop = ramped_half_and_half(rng, int(pop_size), functions, terminals, erc, int(max_depth_init))
@@ -435,10 +435,7 @@ def genetic_programming(
             "pop_size": int(pop_size),
             "seed": int(seed),
             "method": (
-                "genetic programming (Koza 1992): ramped half-and-half "
-                "over depths 2..%d, fitness-proportionate selection on "
-                "adjusted fitness, %g crossover with a %g internal-node "
-                "bias, depth cap %d" % (max_depth_init, p_crossover, internal_bias, max_depth)
+                f"genetic programming (Koza 1992): ramped half-and-half over depths 2..{int(max_depth_init)}, fitness-proportionate selection on adjusted fitness, {p_crossover:g} crossover with a {internal_bias:g} internal-node bias, depth cap {int(max_depth)}"
             ),
         }
     )

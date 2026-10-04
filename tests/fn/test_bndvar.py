@@ -57,12 +57,12 @@ def test_bndvar_wide_set_equals_one_sided_z():
 
     result = bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n, alpha=alpha)
 
-    z1 = float(np.sqrt(2) * 0)  # placeholder to be replaced below
+    float(np.sqrt(2) * 0)  # placeholder to be replaced below
     # Recompute z_one_sided independently: z_{1-alpha} = sqrt(2)*erfinv(2*(1-alpha)-1)
     # Implemented here via a closed-form approximation using math only.
     import math
 
-    z1_indep = math.sqrt(2) * math.erf(2 * (1 - alpha) - 1) if False else None
+    math.sqrt(2) * math.erf(2 * (1 - alpha) - 1) if False else None
 
     # Use a plain arithmetic computation of Phi^{-1}(1 - alpha) via the
     # rational approximation baked into the docstring text.

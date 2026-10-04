@@ -84,9 +84,9 @@ def kriging(coords, values, new_coords, model="exponential", nugget=0.0, sill=1.
         t = t.reshape(1, -1)
     n = int(z.size)
     if s.shape[0] != n:
-        raise ValueError("coords rows (%d) must match values (%d)" % (s.shape[0], n))
+        raise ValueError(f"coords rows ({int(s.shape[0])}) must match values ({int(n)})")
     if t.shape[1] != s.shape[1]:
-        raise ValueError("new_coords dim %d must match coords dim %d" % (t.shape[1], s.shape[1]))
+        raise ValueError(f"new_coords dim {int(t.shape[1])} must match coords dim {int(s.shape[1])}")
     c0 = float(nugget)
     c1 = float(sill) - c0
     if c1 < 0.0:

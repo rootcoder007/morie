@@ -210,7 +210,7 @@ def paired_variance(pair_ids, ic):
     p = list(pair_ids)
     v = [float(q) for q in k.vec(ic)]
     if len(p) != len(v):
-        raise ValueError("tlsate: %d pair labels for %d influence values" % (len(p), len(v)))
+        raise ValueError(f"tlsate: {int(len(p))} pair labels for {int(len(v))} influence values")
     agg = {}
     for i in range(len(p)):
         agg.setdefault(p[i], []).append(v[i])

@@ -6,7 +6,7 @@ from morie.fn.gh_c8_7 import ghosal_fin_apx_pri
 
 def test_gh_c8_7_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     n = 100
     a = 1.0
     result = ghosal_fin_apx_pri(a, n)

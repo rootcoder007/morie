@@ -74,7 +74,9 @@ def quantize(vectors, codebook):
     if not Z:
         raise ValueError("vqgenc: the codebook is empty")
     if len(Z[0]) != len(V[0]):
-        raise ValueError("vqgenc: codebook entries are %d-wide but the encoder output is %d" % (len(Z[0]), len(V[0])))
+        raise ValueError(
+            f"vqgenc: codebook entries are {int(len(Z[0]))}-wide but the encoder output is {int(len(V[0]))}"
+        )
     idx, codes, dists = [], [], []
     for v in V:
         d = [sum((v[a] - z[a]) ** 2 for a in range(len(v))) for z in Z]
@@ -151,7 +153,7 @@ def sequence_length(height, width, downsample=16):
     r"""The compression that brings a transformer into range."""
     H, W, f = int(height), int(width), int(downsample)
     if f < 1 or H % f or W % f:
-        raise ValueError("vqgenc: %dx%d is not divisible by the downsampling factor %d" % (H, W, f))
+        raise ValueError(f"vqgenc: {int(H)}x{int(W)} is not divisible by the downsampling factor {int(f)}")
     n = (H // f) * (W // f)
     return {
         "tokens": n,

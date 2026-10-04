@@ -486,7 +486,7 @@ def _beta_cdf(x, a, b, n_grid=20001):
     return float((f.sum() - 0.5 * (f[0] + f[-1])) * dx)
 
 
-def beta_posterior_interval_prob(v, l, z, n, c, d):
+def beta_posterior_interval_prob(v, l, z, n, c, d):  # noqa: E741
     """Pr{p in (v, v+l)} under the Beta posterior, eqs (12.18), (12.27)."""
     if l < 0 or not 0 <= v <= 1:
         raise ValueError("invalid inputs")

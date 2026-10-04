@@ -98,9 +98,7 @@ def _side_fit(v, y, k_pt, bandwidth, order, side, kernel):
         w.append(kw)
     if len(rows) < int(order) + 1:
         raise ValueError(
-            "bnskt2: too few observations on the %s of "
-            "the kink within the bandwidth (%d for order "
-            "%d)" % (side, len(rows), order)
+            f"bnskt2: too few observations on the {side} of the kink within the bandwidth ({int(len(rows))} for order {int(order)})"
         )
     fit = k.wls(rows, ys, w)
     # coefficient on d is the derivative at the kink
@@ -110,9 +108,9 @@ def _side_fit(v, y, k_pt, bandwidth, order, side, kernel):
 def local_polynomial_slope(v, y, kink, bandwidth, order=2, side="right", kernel="triangular"):
     r"""The one-sided derivative of :math:`E[Y \mid V]` at the kink."""
     if side not in ("left", "right"):
-        raise ValueError("bnskt2: side must be left or right, got %r" % (side,))
+        raise ValueError(f"bnskt2: side must be left or right, got {side!r}")
     if kernel not in ("triangular", "uniform"):
-        raise ValueError("bnskt2: kernel must be triangular or uniform, got %r" % (kernel,))
+        raise ValueError(f"bnskt2: kernel must be triangular or uniform, got {kernel!r}")
     if int(order) < 1:
         raise ValueError("bnskt2: the polynomial order must be at least 1")
     if float(bandwidth) <= 0.0:
@@ -131,16 +129,16 @@ def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular", policy_slo
     v = [float(x) for x in k.vec(V)]
     y = [float(x) for x in k.vec(Y)]
     if len(v) != len(y):
-        raise ValueError("bnskt2: V and Y must agree in length (%d, %d)" % (len(v), len(y)))
+        raise ValueError(f"bnskt2: V and Y must agree in length ({int(len(v))}, {int(len(y))})")
     r = _side_fit(v, y, kink, bandwidth, order, "right", kernel)
-    l = _side_fit(v, y, kink, bandwidth, order, "left", kernel)
-    num = r["slope"] - l["slope"]
+    ell = _side_fit(v, y, kink, bandwidth, order, "left", kernel)
+    num = r["slope"] - ell["slope"]
     if fuzzy:
         if B is None:
             raise ValueError("bnskt2: fuzzy RKD needs the observed treatment B")
         b = [float(x) for x in k.vec(B)]
         if len(b) != len(v):
-            raise ValueError("bnskt2: B has %d entries for %d observations" % (len(b), len(v)))
+            raise ValueError(f"bnskt2: B has {int(len(b))} entries for {int(len(v))} observations")
         rb = _side_fit(v, b, kink, bandwidth, order, "right", kernel)
         lb = _side_fit(v, b, kink, bandwidth, order, "left", kernel)
         den = rb["slope"] - lb["slope"]
@@ -154,7 +152,7 @@ def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular", policy_slo
         den_src = "known policy rule"
     if abs(den) <= _EPS:
         raise ValueError(
-            "bnskt2: the change in the policy slope is zero (%.3g) -- there is no kink to identify from" % den
+            f"bnskt2: the change in the policy slope is zero ({den:.3g}) -- there is no kink to identify from"
         )
     return RichResult(
         payload={
@@ -163,9 +161,9 @@ def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular", policy_slo
             "outcome_kink": num,
             "policy_kink": den,
             "slope_right": r["slope"],
-            "slope_left": l["slope"],
+            "slope_left": ell["slope"],
             "n_right": r["n"],
-            "n_left": l["n"],
+            "n_left": ell["n"],
             "bandwidth": float(bandwidth),
             "order": int(order),
             "kernel": kernel,
@@ -188,7 +186,7 @@ def density_kink_test(V, kink, bandwidth, n_bins=20, order=1):
     kp, bw = float(kink), float(bandwidth)
     inside = [x for x in v if abs(x - kp) <= bw]
     if len(inside) < 4 * int(n_bins):
-        raise ValueError("bnskt2: too few observations within the bandwidth for %d bins" % n_bins)
+        raise ValueError(f"bnskt2: too few observations within the bandwidth for {int(n_bins)} bins")
     edges = [kp - bw + 2.0 * bw * i / n_bins for i in range(int(n_bins) + 1)]
     ctr, dens = [], []
     for b in range(int(n_bins)):
@@ -217,13 +215,13 @@ def density_kink_test(V, kink, bandwidth, n_bins=20, order=1):
 def covariate_kink_test(V, Z, kink, bandwidth, order=2, kernel="triangular"):
     r"""A covariate that the policy cannot affect must not kink."""
     r = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "right", kernel)
-    l = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "left", kernel)
+    ell = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "left", kernel)
     return {
-        "slope_change": r["slope"] - l["slope"],
+        "slope_change": r["slope"] - ell["slope"],
         "slope_right": r["slope"],
-        "slope_left": l["slope"],
+        "slope_left": ell["slope"],
         "n_right": r["n"],
-        "n_left": l["n"],
+        "n_left": ell["n"],
         "interpretation": "a kink here is evidence the design is picking up composition rather than the policy",
     }
 

@@ -92,7 +92,7 @@ def cooccurrence(corpus, window=10, harmonic=True, min_count=1):
     X = {}
     w = int(window)
     if w < 1:
-        raise ValueError("cooccurrence: window must be at least 1, got %r" % (window,))
+        raise ValueError(f"cooccurrence: window must be at least 1, got {window!r}")
     for doc in docs:
         ids = [index[t] for t in doc if t in index]
         for pos, i in enumerate(ids):
@@ -162,16 +162,15 @@ def glove(
         r["vocab"], r["estimate"]
     """
     if combine not in ("sum", "w", "wtilde", "concat"):
-        raise ValueError("glove: combine must be 'sum', 'w', 'wtilde' or 'concat', got %r" % (combine,))
+        raise ValueError(f"glove: combine must be 'sum', 'w', 'wtilde' or 'concat', got {combine!r}")
     d = int(dim)
     if d < 1:
-        raise ValueError("glove: dim must be at least 1, got %r" % (dim,))
+        raise ValueError(f"glove: dim must be at least 1, got {dim!r}")
     X, vocab, index = cooccurrence(corpus, window=window, harmonic=harmonic, min_count=min_count)
     V = len(vocab)
     if V < 2:
         raise ValueError(
-            "glove: the corpus has %d word(s) above min_count=%r; GloVe "
-            "factorises a co-occurrence matrix and needs at least two" % (V, min_count)
+            f"glove: the corpus has {int(V)} word(s) above min_count={min_count!r}; GloVe factorises a co-occurrence matrix and needs at least two"
         )
     if not X:
         raise ValueError("glove: no co-occurrences within the window, so eq. (8) has no terms")

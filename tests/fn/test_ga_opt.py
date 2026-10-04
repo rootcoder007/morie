@@ -7,8 +7,11 @@ from morie.fn.ga_opt import genetic_algorithm
 def test_ga_opt_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
+
     # f must be callable (e.g. a lambda/function)
-    f = lambda x: float(sum(xi * xi for xi in x))
+    def f(x):
+        return float(sum(xi * xi for xi in x))
+
     # population is a sequence of candidate vectors
     population = [rng.normal(0.0, 1.0, 4).tolist() for _ in range(10)]
     generations = 5
@@ -33,7 +36,10 @@ def test_ga_opt_basic():
 def test_ga_opt_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
-    f = lambda x: float(sum(xi * xi for xi in x))
+
+    def f(x):
+        return float(sum(xi * xi for xi in x))
+
     population = [rng.normal(0.0, 1.0, 3).tolist() for _ in range(6)]
     # Calling with the default generations should also work
     result = genetic_algorithm(f, population)

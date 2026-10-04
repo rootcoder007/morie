@@ -24,10 +24,7 @@ def bayesian_fdr(
     pp = np.asarray(posterior_probs, dtype=float).ravel()
     discoveries = pp >= threshold
     n_disc = int(np.sum(discoveries))
-    if n_disc == 0:
-        bfdr = 0.0
-    else:
-        bfdr = float(np.mean(1.0 - pp[discoveries]))
+    bfdr = 0.0 if n_disc == 0 else float(np.mean(1.0 - pp[discoveries]))
 
     return DescriptiveResult(
         name="bfdr",

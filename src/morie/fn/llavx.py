@@ -78,7 +78,7 @@ def symbolic_representation(captions, boxes):
         raise ValueError("llavx: an image with no captions and no boxes has no symbolic representation")
     lines = list(caps)
     for name, x, y, w, h in bx:
-        lines.append("%s: [%.3f, %.3f, %.3f, %.3f]" % (str(name), float(x), float(y), float(w), float(h)))
+        lines.append(f"{str(name)}: [{float(x):.3f}, {float(y):.3f}, {float(w):.3f}, {float(h):.3f}]")
     return {
         "text": "\n".join(lines),
         "n_captions": len(caps),
@@ -90,13 +90,13 @@ def symbolic_representation(captions, boxes):
 def instruction_prompt(symbolic, kind="conversation"):
     r"""Ask the language-only model for one of the three data types."""
     if kind not in _KINDS:
-        raise ValueError("llavx: kind must be one of %s, got %r" % (", ".join(_KINDS), kind))
+        raise ValueError("llavx: kind must be one of {}, got {!r}".format(", ".join(_KINDS), kind))
     ask = {
         "conversation": "Ask and answer questions about this image as if you can see it.",
         "detailed_description": "Describe this image in detail.",
         "complex_reasoning": "Give a question requiring step-by-step reasoning about this image, and answer it.",
     }[kind]
-    return {"prompt": "%s\n\n%s" % (symbolic["text"], ask), "kind": kind}
+    return {"prompt": "{}\n\n{}".format(symbolic["text"], ask), "kind": kind}
 
 
 def project_patches(patch_features, W, b=None):
@@ -108,7 +108,7 @@ def project_patches(patch_features, W, b=None):
     F = [[float(v) for v in r] for r in k.mat(patch_features)]
     d_out = len(W)
     if len(W[0]) != len(F[0]):
-        raise ValueError("llavx: the projection expects %d features but got %d" % (len(W[0]), len(F[0])))
+        raise ValueError(f"llavx: the projection expects {int(len(W[0]))} features but got {int(len(F[0]))}")
     bb = [0.0] * d_out if b is None else [float(v) for v in k.vec(b)]
     return [[bb[o] + sum(W[o][j] * f[j] for j in range(len(f))) for o in range(d_out)] for f in F]
 
@@ -123,9 +123,7 @@ def build_sequence(visual_tokens, text_embeddings):
     T = [[float(v) for v in r] for r in k.mat(text_embeddings)]
     if V and T and len(V[0]) != len(T[0]):
         raise ValueError(
-            "llavx: visual tokens are %d-dimensional but "
-            "text embeddings are %d -- the projection "
-            "target is wrong" % (len(V[0]), len(T[0]))
+            f"llavx: visual tokens are {int(len(V[0]))}-dimensional but text embeddings are {int(len(T[0]))} -- the projection target is wrong"
         )
     return RichResult(
         payload={
@@ -148,7 +146,7 @@ def training_stage(stage):
     """
     s = int(stage)
     if s not in (1, 2):
-        raise ValueError("llavx: the stage must be 1 or 2, got %r" % (stage,))
+        raise ValueError(f"llavx: the stage must be 1 or 2, got {stage!r}")
     if s == 1:
         return {
             "stage": 1,

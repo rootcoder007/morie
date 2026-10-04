@@ -72,7 +72,7 @@ _KERNELS = ("epanechnikov", "gaussian", "uniform")
 def kernel_smooth(u, kernel="epanechnikov"):
     r"""Kernel weight at scaled distance :math:`u`."""
     if kernel not in _KERNELS:
-        raise ValueError("tlcvnp: kernel must be one of %s, got %r" % (", ".join(_KERNELS), kernel))
+        raise ValueError("tlcvnp: kernel must be one of {}, got {!r}".format(", ".join(_KERNELS), kernel))
     v = float(u)
     if kernel == "epanechnikov":
         return 0.75 * (1.0 - v * v) if abs(v) <= 1.0 else 0.0
@@ -140,7 +140,7 @@ def select_bandwidth(X, x0, bandwidths, kernel="epanechnikov", criterion="lepski
     if not hs:
         raise ValueError("tlcvnp: no bandwidths given")
     if criterion not in ("lepski", "smallest_se"):
-        raise ValueError("tlcvnp: criterion must be lepski or smallest_se, got %r" % (criterion,))
+        raise ValueError(f"tlcvnp: criterion must be lepski or smallest_se, got {criterion!r}")
     fits = [smoothed_parameter(X, x0, h, kernel) for h in hs]
     if criterion == "smallest_se":
         j = min(range(len(hs)), key=lambda i: fits[i]["se"])

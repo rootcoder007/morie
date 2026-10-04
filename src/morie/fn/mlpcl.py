@@ -69,7 +69,7 @@ def mlp_classify(X_train, y_train, X_test, hidden=(64, 32), lr=0.01, n_iter=500,
 
     n = len(X_tr)
     losses = []
-    for epoch in range(n_iter):
+    for _epoch in range(n_iter):
         acts = _forward(X_tr)
         out = acts[-1]
         out_clip = np.clip(out, 1e-7, 1 - 1e-7)

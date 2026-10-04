@@ -80,7 +80,7 @@ def pooled_features(hyp, src, ref):
     """
     h, s, r = _vec(hyp), _vec(src), _vec(ref)
     if not (len(h) == len(s) == len(r)):
-        raise ValueError("comet: the three embeddings differ in length (%d, %d, %d)" % (len(h), len(s), len(r)))
+        raise ValueError(f"comet: the three embeddings differ in length ({int(len(h))}, {int(len(s))}, {int(len(r))})")
     d = len(h)
     hs = [h[i] * s[i] for i in range(d)]
     hr = [h[i] * r[i] for i in range(d)]
@@ -101,7 +101,7 @@ def estimator_score(hyp, src, ref, W, b=None):
     r"""The estimator head: regress a human quality score."""
     f = pooled_features(hyp, src, ref)["features"]
     if len(W[0]) != len(f):
-        raise ValueError("comet: the head expects %d features but got %d" % (len(W[0]), len(f)))
+        raise ValueError(f"comet: the head expects {int(len(W[0]))} features but got {int(len(f))}")
     bb = [0.0] * len(W) if b is None else _vec(b)
     z = [bb[o] + sum(W[o][j] * f[j] for j in range(len(f))) for o in range(len(W))]
     return RichResult(
@@ -151,7 +151,7 @@ def kendall_tau(scores, human):
     a = _vec(scores)
     b = _vec(human)
     if len(a) != len(b):
-        raise ValueError("comet: %d scores but %d human judgements" % (len(a), len(b)))
+        raise ValueError(f"comet: {int(len(a))} scores but {int(len(b))} human judgements")
     n = len(a)
     if n < 2:
         raise ValueError("comet: at least 2 segments are needed")
@@ -181,7 +181,7 @@ def reference_free(hyp, src, W, b=None):
     d = len(h)
     f = h + s + [h[i] * s[i] for i in range(d)] + [abs(h[i] - s[i]) for i in range(d)]
     if len(W[0]) != len(f):
-        raise ValueError("comet: the reference-free head expects %d features but got %d" % (len(W[0]), len(f)))
+        raise ValueError(f"comet: the reference-free head expects {int(len(W[0]))} features but got {int(len(f))}")
     bb = [0.0] * len(W) if b is None else _vec(b)
     z = [bb[o] + sum(W[o][j] * f[j] for j in range(len(f))) for o in range(len(W))]
     return {

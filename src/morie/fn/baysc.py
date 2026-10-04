@@ -21,7 +21,7 @@ def baysc_fn(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray) -> De
     y_train = np.asarray(y_train)
     X_test = np.asarray(X_test, dtype=float)
     preds, posteriors = bayes_classifier(X_train, y_train, X_test)
-    acc = float(np.mean(preds == y_train[: len(preds)])) if len(preds) <= len(y_train) else 0.0
+    float(np.mean(preds == y_train[: len(preds)])) if len(preds) <= len(y_train) else 0.0
     return DescriptiveResult(
         name="bayes_classifier",
         value=len(preds),

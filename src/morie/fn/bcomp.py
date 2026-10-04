@@ -53,7 +53,7 @@ def bayesian_model_compare(
         # DIC
         mean_ll = np.mean(ll, axis=0)
         D_bar = -2.0 * np.sum(mean_ll)
-        D_theta_bar = -2.0 * np.sum(np.mean(ll, axis=0))
+        -2.0 * np.sum(np.mean(ll, axis=0))
         # Effective parameters
         p_D = 2.0 * (np.sum(np.mean(ll, axis=0)) - np.mean(np.sum(ll, axis=1)))
         # Actually: p_D = var of deviance / 2

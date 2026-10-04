@@ -7,8 +7,13 @@ import pytest
 
 B = importlib.import_module("morie.fn.baygsl")
 
-NORMAL = lambda x: -0.5 * x * x
-EXPO = lambda x: -x if x > 0 else float("-inf")
+
+def NORMAL(x):
+    return -0.5 * x * x
+
+
+def EXPO(x):
+    return -x if x > 0 else float("-inf")
 
 
 def moments(d):
@@ -32,7 +37,9 @@ def test_a_bounded_target_stays_bounded():
 
 
 def test_a_gamma_target():
-    g = lambda x: 2.0 * math.log(x) - 2.0 * x if x > 0 else float("-inf")
+    def g(x):
+        return 2.0 * math.log(x) - 2.0 * x if x > 0 else float("-inf")
+
     m, v = moments(B.slice_chain(g, 1.0, n=6000, w=1.0, burn=500, seed=7, lower=0.0)["draws"])
     assert abs(m - 1.5) < 0.06
     assert abs(v - 0.75) < 0.08

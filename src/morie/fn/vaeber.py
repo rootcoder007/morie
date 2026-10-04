@@ -149,8 +149,8 @@ def vae_elbo(x, encoder=None, decoder=None, latent_dim=2, n_samples=64, decoder_
     anap = [0.0] * n
     for i in range(n):
         acc = 0.0
-        for l in range(L):
-            z = [mu[i][j] + sig[i][j] * eps[l][j] for j in range(m)]
+        for ell in range(L):
+            z = [mu[i][j] + sig[i][j] * eps[ell][j] for j in range(m)]
             t = 0.0
             for k in range(d):
                 r = bd[k]

@@ -76,7 +76,7 @@ _CREDITS = {
 }
 
 
-def ramsey_number(k, l=None):
+def ramsey_number(k, l=None):  # noqa: E741
     r"""The Ramsey number :math:`R(k, l)`, exactly or as an interval.
 
     :math:`R(k, l)` is the least :math:`n` such that every red-blue
@@ -130,8 +130,8 @@ def ramsey_number(k, l=None):
     (43, 46)
     """
     if l is None:
-        l = k
-    k, l = int(k), int(l)
+        l = k  # noqa: E741
+    k, l = int(k), int(l)  # noqa: E741
     if k < 1 or l < 1:
         raise ValueError(f"k and l must be at least 1; got {k}, {l}.")
     a, b = min(k, l), max(k, l)
@@ -202,12 +202,12 @@ def ramsey_number(k, l=None):
     return out
 
 
-def _erdos_szekeres(k, l):
+def _erdos_szekeres(k, l):  # noqa: E741
     r"""The bound :math:`R(k,l) \le \binom{k+l-2}{k-1}`."""
     return int(math.comb(k + l - 2, k - 1))
 
 
-def ramsey_upper_bound(k, l, use_known=True):
+def ramsey_upper_bound(k, l, use_known=True):  # noqa: E741
     r"""Upper bounds on :math:`R(k, l)` from the two classical arguments.
 
     The recursive bound is
@@ -234,7 +234,7 @@ def ramsey_upper_bound(k, l, use_known=True):
     dict with ``binomial``, ``recursive``, ``best``, ``parity_saving``,
     ``used_known_values``.
     """
-    k, l = int(k), int(l)
+    k, l = int(k), int(l)  # noqa: E741
     if k < 1 or l < 1:
         raise ValueError(f"k and l must be at least 1; got {k}, {l}.")
 
@@ -460,7 +460,7 @@ def goodman_minimum(n):
     return {"minimum": max(total - max_bi, 0), "total_triangles": total, "max_bichromatic": max_bi}
 
 
-def verify_ramsey_witness(colouring, k, l):
+def verify_ramsey_witness(colouring, k, l):  # noqa: E741
     """Check a colouring really avoids a red K_k and a blue K_l.
 
     A lower bound :math:`R(k,l) > n` is proved by exhibiting such a
@@ -479,7 +479,7 @@ def verify_ramsey_witness(colouring, k, l):
     np.fill_diagonal(R, 0)
     if not np.array_equal(R, R.T):
         raise ValueError("colouring must be symmetric.")
-    k, l = int(k), int(l)
+    k, l = int(k), int(l)  # noqa: E741
 
     red = None
     if k <= n:

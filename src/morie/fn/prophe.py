@@ -73,12 +73,12 @@ def additive_components(t, y, seasonalities=None, holidays=None, holiday_window=
         for i in range(n):
             s = 0.0
             for nn in range(1, int(order) + 1):
-                s += coef["%s_cos%d" % (name, nn)] * F[i][2 * nn - 2] + coef["%s_sin%d" % (name, nn)] * F[i][2 * nn - 1]
+                s += coef[f"{name}_cos{int(nn)}"] * F[i][2 * nn - 2] + coef[f"{name}_sin{int(nn)}"] * F[i][2 * nn - 1]
             vals.append(s)
         comps[name] = vals
     if holidays:
         H, names = holiday_matrix(tv, holidays, holiday_window[0], holiday_window[1])
-        comps["holidays"] = [sum(coef["holiday_%s" % names[j]] * H[i][j] for j in range(len(names))) for i in range(n)]
+        comps["holidays"] = [sum(coef[f"holiday_{names[j]}"] * H[i][j] for j in range(len(names))) for i in range(n)]
 
     total = [sum(comps[c][i] for c in comps) for i in range(n)]
     gap = max(abs(total[i] - fit["fitted"][i]) for i in range(n))

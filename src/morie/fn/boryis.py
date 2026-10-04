@@ -25,19 +25,15 @@ def _as_slabs(X):
 def _check_identified(obs, n, T):
     if obs.sum() < n + T - 1:
         raise ValueError(
-            "only %d untreated cells for %d unit and period effects; the "
-            "model is not identified. Every unit needs an untreated period "
-            "and every period an untreated unit." % (int(obs.sum()), n + T - 1)
+            f"only {int(int(obs.sum()))} untreated cells for {int(n + T - 1)} unit and period effects; the model is not identified. Every unit needs an untreated period and every period an untreated unit."
         )
     if not obs.any(axis=1).all():
         raise ValueError(
-            "%d unit(s) are treated in every period, so their untreated "
-            "level cannot be imputed." % int((~obs.any(axis=1)).sum())
+            f"{int(int((~obs.any(axis=1)).sum()))} unit(s) are treated in every period, so their untreated level cannot be imputed."
         )
     if not obs.any(axis=0).all():
         raise ValueError(
-            "%d period(s) have no untreated unit, so that period's effect "
-            "cannot be identified." % int((~obs.any(axis=0)).sum())
+            f"{int(int((~obs.any(axis=0)).sum()))} period(s) have no untreated unit, so that period's effect cannot be identified."
         )
 
 

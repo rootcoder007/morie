@@ -74,7 +74,7 @@ def vic_table(key, table=1, cache_dir=None, offline=True):
         req = urllib.request.Request(e["url"], headers={"User-Agent": "morie/dataset-loader"})
         with urllib.request.urlopen(req) as r, open(dest, "wb") as fh:
             fh.write(r.read())
-    sheet = ("Table %02d" % int(table)) if isinstance(table, int) else table
+    sheet = (f"Table {int(int(table)):02d}") if isinstance(table, int) else table
     return pd.read_excel(dest, sheet_name=sheet)
 
 

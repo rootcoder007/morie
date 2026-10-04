@@ -106,9 +106,12 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
     # 3. outcome regression
     By = np.column_stack([Bc, xv, mv])
     by = ols_fit(By, yv)
-    mu = lambda xx, mm: np.column_stack([Bc, xx, mm]) @ by
+
+    def mu(xx, mm):
+        return np.column_stack([Bc, xx, mm]) @ by
+
     mu1 = mu(np.ones(n), mv)
-    mu0 = mu(np.zeros(n), mv)
+    mu(np.zeros(n), mv)
 
     # E[Y(1, M(1))] and E[Y(0, M(0))] by the usual AIPW pieces
     ey11 = np.mean(xv * yv / e + (1 - xv / e) * (mu(np.ones(n), m1 + (mv - mhat))))

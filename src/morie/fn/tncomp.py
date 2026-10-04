@@ -66,7 +66,7 @@ def _seed(D, seed):
     if seed is not None:
         s = int(seed)
         if not 0 <= s < len(D):
-            raise ValueError("tncomp: seed %d is not a compound index" % s)
+            raise ValueError(f"tncomp: seed {int(s)} is not a compound index")
         return s
     # Deterministic default: the compound furthest from the rest.
     tot = [sum(row) for row in D]
@@ -75,12 +75,12 @@ def _seed(D, seed):
 
 def _select(fps, k, objective, seed=None, D=None):
     if objective not in OBJECTIVES:
-        raise ValueError("tncomp: objective must be one of %s, got %r" % (", ".join(OBJECTIVES), objective))
+        raise ValueError("tncomp: objective must be one of {}, got {!r}".format(", ".join(OBJECTIVES), objective))
     M = distance_matrix(fps) if D is None else D
     n = len(M)
     kk = int(k)
     if not 1 <= kk <= n:
-        raise ValueError("tncomp: k must lie in [1, %d], got %d" % (n, kk))
+        raise ValueError(f"tncomp: k must lie in [1, {int(n)}], got {int(kk)}")
     chosen = [_seed(M, seed)]
     while len(chosen) < kk:
         rest = [i for i in range(n) if i not in chosen]
@@ -133,7 +133,7 @@ def maxmin_diversity(fps, k, objective="maxmin", seed=None):
         "k": int(k),
         "seed": chosen[0],
         "n_compounds": len(M),
-        "method": "Snarey et al. (1997) greedy %s selection on Tanimoto distance" % objective,
+        "method": f"Snarey et al. (1997) greedy {objective} selection on Tanimoto distance",
     }
     if len(chosen) > 1:
         out.update(diversity(fps, chosen, M))

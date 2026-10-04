@@ -123,10 +123,10 @@ def gumbel_pvalue(score, mu, lam):
     MSV scores share this distribution with gapped local alignment
     scores, which is what turns the filter threshold into a p-value.
     """
-    l = float(lam)
-    if l <= 0.0:
+    ell = float(lam)
+    if ell <= 0.0:
         raise ValueError("phmmsr: lambda must be positive")
-    z = -l * (float(score) - float(mu))
+    z = -ell * (float(score) - float(mu))
     return 1.0 - math.exp(-math.exp(z)) if z < 700 else 1.0
 
 

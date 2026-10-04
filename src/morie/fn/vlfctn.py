@@ -94,10 +94,10 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw", trunc=0.01):
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if method not in ("aipw", "ipw", "regression"):
-        raise ValueError("method must be aipw, ipw or regression, got %r." % method)
+        raise ValueError(f"method must be aipw, ipw or regression, got {method!r}.")
     g = np.asarray(regime(Xa), dtype=float).ravel() if callable(regime) else np.asarray(regime, dtype=float).ravel()
     if g.size != n:
-        raise ValueError("regime has %d entries for %d rows." % (g.size, n))
+        raise ValueError(f"regime has {int(g.size)} entries for {int(n)} rows.")
     if not np.all(np.isin(g, (0.0, 1.0))):
         raise ValueError("regime must recommend 0 or 1.")
 
@@ -107,7 +107,7 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw", trunc=0.01):
     else:
         e = np.asarray(propensity, dtype=float).ravel()
         if e.size != n:
-            raise ValueError("propensity has %d entries for %d rows." % (e.size, n))
+            raise ValueError(f"propensity has {int(e.size)} entries for {int(n)} rows.")
     e = np.clip(e, trunc, 1 - trunc)
     pi = np.where(dv == 1, e, 1 - e)
 
@@ -170,7 +170,7 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw", trunc=0.01):
             "method_used": method,
             "propensity_range": (float(e.min()), float(e.max())),
             "n": int(n),
-            "method": "Value of a treatment regime (%s)" % method.upper(),
+            "method": f"Value of a treatment regime ({method.upper()})",
         }
     )
 

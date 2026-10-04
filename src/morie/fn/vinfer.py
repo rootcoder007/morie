@@ -110,7 +110,7 @@ def variational_inference(
         raise ValueError("variational_inference: need at least two observations")
     for nm, v in (("lambda0", lambda0), ("a0", a0), ("b0", b0)):
         if float(v) < 0.0:
-            raise ValueError("variational_inference: %s must be non-negative" % nm)
+            raise ValueError(f"variational_inference: {nm} must be non-negative")
     if float(tol) <= 0.0:
         raise ValueError("variational_inference: tol must be positive")
     mu0 = float(mu0)

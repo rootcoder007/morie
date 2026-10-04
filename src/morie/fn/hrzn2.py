@@ -39,10 +39,7 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None, noise="lap
     n = y.size
     if n < 30:
         return RichResult(payload={"estimate": np.nan, "n": n, "method": "deconvolution (insufficient data)"})
-    if bandwidth is None:
-        h = max(1.5 * np.std(y, ddof=1) * n ** (-1.0 / 7.0), 1e-3)
-    else:
-        h = float(bandwidth)
+    h = max(1.5 * np.std(y, ddof=1) * n ** (-1.0 / 7.0), 0.001) if bandwidth is None else float(bandwidth)
     if grid is None:
         grid = np.linspace(y.min(), y.max(), 51)
     grid = np.asarray(grid, dtype=float).ravel()

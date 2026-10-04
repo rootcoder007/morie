@@ -18,19 +18,19 @@ def alammar_openclip_contrastive(I_emb, T_emb, tau=0.07):
     t = float(tau)
     if t <= 0:
         raise ValueError("the temperature must be positive.")
-    I = np.atleast_2d(np.asarray(I_emb, dtype=float))
+    I_ = np.atleast_2d(np.asarray(I_emb, dtype=float))
     T = np.atleast_2d(np.asarray(T_emb, dtype=float))
-    if I.shape != T.shape:
+    if I_.shape != T.shape:
         raise ValueError("image and text batches must align.")
-    if I.shape[0] < 2:
+    if I_.shape[0] < 2:
         raise ValueError("need a batch of at least 2.")
-    ni = np.linalg.norm(I, axis=1, keepdims=True)
+    ni = np.linalg.norm(I_, axis=1, keepdims=True)
     nt = np.linalg.norm(T, axis=1, keepdims=True)
     if np.any(ni == 0) or np.any(nt == 0):
         raise ValueError("zero embedding vectors have no direction.")
-    I = I / ni
+    I_ = I_ / ni
     T = T / nt
-    S = I @ T.T / t
+    S = I_ @ T.T / t
 
     def ce_diag(M):
         Z = M - M.max(axis=1, keepdims=True)
@@ -46,7 +46,7 @@ def alammar_openclip_contrastive(I_emb, T_emb, tau=0.07):
             "image_to_text_loss": float(li.mean()),
             "text_to_image_loss": float(lt.mean()),
             "similarity_matrix": [[float(v * t) for v in r] for r in S],
-            "n": I.shape[0],
+            "n": I_.shape[0],
             "method": "CLIP symmetric contrastive loss (Radford et al. 2021)",
         }
     )

@@ -6,7 +6,7 @@ from morie.fn.ca7e16 import ca_chapter_7_equation_16
 
 def test_ca7e16_basic():
     """Test basic functionality with scalar inputs."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     beta1 = 1.5
     u_1j = 0.25
     result = ca_chapter_7_equation_16(beta1, u_1j)
@@ -22,7 +22,7 @@ def test_ca7e16_basic():
 
 def test_ca7e16_edge():
     """Test edge case with zero random effect."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     beta1 = 0.0
     u_1j = 0.0
     result = ca_chapter_7_equation_16(beta1, u_1j)
@@ -34,7 +34,7 @@ def test_ca7e16_edge():
 
 def test_ca7e16_negative_random_effect():
     """Test with a negative random-effect term."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     beta1 = 2.0
     u_1j = -0.75
     result = ca_chapter_7_equation_16(beta1, u_1j)

@@ -23,7 +23,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e15_basic(
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e15_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(0)
+    np.random.default_rng(0)
     # Use zero values, which are valid inputs.
     b0 = 0.0
     beta_w_a = 0.0

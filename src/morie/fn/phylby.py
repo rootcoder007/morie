@@ -147,7 +147,7 @@ def _branch_paths(node, path=()):
     if not isinstance(node, (tuple, list)):
         return out
     if len(node) % 2:
-        raise ValueError("phylby: a node must be (child, length) pairs, got %d entries" % len(node))
+        raise ValueError(f"phylby: a node must be (child, length) pairs, got {int(len(node))} entries")
     for c in range(0, len(node), 2):
         out.append(path + (c + 1,))
         out.extend(_branch_paths(node[c], path + (c,)))

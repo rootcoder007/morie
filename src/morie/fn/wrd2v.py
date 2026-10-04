@@ -117,7 +117,7 @@ def training_complexity(architecture, D, V, N=None, C=None, hierarchical=True):
     of the plain softmax this module actually evaluates.
     """
     if architecture not in _ARCH:
-        raise ValueError("wrd2v: architecture must be one of %r, got %r" % (_ARCH, architecture))
+        raise ValueError(f"wrd2v: architecture must be one of {_ARCH!r}, got {architecture!r}")
     out = math.log(V, 2) if hierarchical else float(V)
     if architecture == "cbow":
         if N is None:
@@ -234,9 +234,9 @@ def wrd2v(
     3.1-3.2 and eqs. 4-5.
     """
     if architecture not in _ARCH:
-        raise ValueError("wrd2v: architecture must be one of %r, got %r" % (_ARCH, architecture))
+        raise ValueError(f"wrd2v: architecture must be one of {_ARCH!r}, got {architecture!r}")
     if loss not in ("softmax", "neg"):
-        raise ValueError("wrd2v: loss must be 'softmax' or 'neg', got %r" % (loss,))
+        raise ValueError(f"wrd2v: loss must be 'softmax' or 'neg', got {loss!r}")
     if loss == "neg" and architecture != "skip-gram":
         raise ValueError(
             "wrd2v: negative sampling is defined in Mikolov "
@@ -263,7 +263,7 @@ def wrd2v(
             counts[w] = counts.get(w, 0) + 1
     vocab = sorted([w for w, c in counts.items() if c >= int(min_count)], key=repr)
     if not vocab:
-        raise ValueError("wrd2v: min_count = %r discarded every word" % (min_count,))
+        raise ValueError(f"wrd2v: min_count = {min_count!r} discarded every word")
     idx = dict((w, i) for i, w in enumerate(vocab))
     V = len(vocab)
     sents = [[w for w in s if w in idx] for s in sents]
@@ -296,7 +296,7 @@ def wrd2v(
 
     scale = 0.5 / size
     W = [[(rng.random() * 2.0 - 1.0) * scale for _ in range(size)] for _ in range(V)]  # projection (input) vectors
-    O = [[0.0] * size for _ in range(V)]  # output layer
+    O_ = [[0.0] * size for _ in range(V)]  # output layer
 
     curve = []
     for _ep in range(max(1, int(epochs))):
@@ -313,27 +313,27 @@ def wrd2v(
                     continue
                 c = idx[s[t]]
                 if architecture == "cbow":
-                    total += _cbow_step(W, O, ctx, c, size, V, lr)
+                    total += _cbow_step(W, O_, ctx, c, size, V, lr)
                     n_ex += 1
                 elif loss == "neg":
                     for j in ctx:
-                        total += _neg_step(W, O, c, j, size, lr, negative, draw_noise)
+                        total += _neg_step(W, O_, c, j, size, lr, negative, draw_noise)
                         n_ex += 1
                 else:
                     for j in ctx:
-                        total += _sg_step(W, O, c, j, size, V, lr)
+                        total += _sg_step(W, O_, c, j, size, V, lr)
                         n_ex += 1
         curve.append(total / n_ex if n_ex else 0.0)
 
     vectors = dict((vocab[i], list(W[i])) for i in range(V))
-    outv = dict((vocab[i], list(O[i])) for i in range(V))
+    outv = dict((vocab[i], list(O_[i])) for i in range(V))
 
     def similarity(a, b):
         return _cos(vectors[a], vectors[b])
 
     def most_similar(word, topn=5):
         if word not in vectors:
-            raise KeyError("wrd2v: %r is not in the vocabulary" % (word,))
+            raise KeyError(f"wrd2v: {word!r} is not in the vocabulary")
         sims = [(w, _cos(vectors[word], v)) for w, v in vectors.items() if w != word]
         sims.sort(key=lambda p: -p[1])
         return sims[:topn]
@@ -360,11 +360,11 @@ def wrd2v(
     )
 
 
-def _scores(O, h, V, size):
+def _scores(O, h, V, size):  # noqa: E741
     return [sum(O[k][d] * h[d] for d in range(size)) for k in range(V)]
 
 
-def _sg_step(W, O, c, j, size, V, lr):
+def _sg_step(W, O, c, j, size, V, lr):  # noqa: E741
     """Skip-gram: input is the centre word, target a context word."""
     h = W[c]
     p = _softmax(_scores(O, h, V, size))
@@ -391,7 +391,7 @@ def _sigmoid(z):
     return e / (1.0 + e)
 
 
-def _neg_step(W, O, c, j, size, lr, k, draw_noise):
+def _neg_step(W, O, c, j, size, lr, k, draw_noise):  # noqa: E741
     r"""Mikolov et al. (2013b) eq. 4, one positive and k noise draws.
 
     The loss minimised is the negative of eq. 4:
@@ -418,7 +418,7 @@ def _neg_step(W, O, c, j, size, lr, k, draw_noise):
     return loss
 
 
-def _cbow_step(W, O, ctx, c, size, V, lr):
+def _cbow_step(W, O, ctx, c, size, V, lr):  # noqa: E741
     """CBOW: the projection is the MEAN of the context vectors."""
     n = float(len(ctx))
     h = [0.0] * size
@@ -462,7 +462,7 @@ def analogy(vectors, a, b, c, topn=1):
     """
     for w in (a, b, c):
         if w not in vectors:
-            raise KeyError("analogy: %r is not in the vocabulary" % (w,))
+            raise KeyError(f"analogy: {w!r} is not in the vocabulary")
     size = len(vectors[a])
     target = [vectors[b][d] - vectors[a][d] + vectors[c][d] for d in range(size)]
     sims = [(w, _cos(target, v)) for w, v in vectors.items() if w not in (a, b, c)]

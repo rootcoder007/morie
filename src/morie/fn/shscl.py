@@ -154,7 +154,7 @@ def scaled_schoenfeld_residual(time, event, X, transform="km"):
     81(3), 515-526.
     """
     if transform not in _TRANSFORMS:
-        raise ValueError("transform must be one of %s" % (_TRANSFORMS,))
+        raise ValueError(f"transform must be one of {_TRANSFORMS}")
     t = [float(v) for v in np.asarray(time, dtype=float).ravel().tolist()]
     e = [float(v) for v in np.asarray(event, dtype=float).ravel().tolist()]
     Xa = np.atleast_2d(np.asarray(X, dtype=float))
@@ -171,7 +171,7 @@ def scaled_schoenfeld_residual(time, event, X, transform="km"):
     d = len(times)
     if d < 3:
         raise ValueError("need at least 3 events.")
-    e_times = [t[i] for i in range(len(t)) if e[i] == 1]
+    [t[i] for i in range(len(t)) if e[i] == 1]
     g = _transform(times, t, e, transform)
     gbar = sum(g) / d
     gc = [v - gbar for v in g]

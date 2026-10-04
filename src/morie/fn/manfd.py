@@ -304,7 +304,7 @@ def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2, sweeps=60):
     and Langford (2000) Science 290(5500), 2319-2323.
     """
     if method not in METHODS:
-        raise ValueError("method must be one of %r" % (METHODS,))
+        raise ValueError(f"method must be one of {METHODS!r}")
     ys = [[float(v) for v in row] for row in Y]
     n = len(ys)
     if n < 3:

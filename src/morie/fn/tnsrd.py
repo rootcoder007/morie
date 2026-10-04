@@ -42,9 +42,9 @@ def tensor_decompose(
     X = np.asarray(X, dtype=float)
     if X.ndim != 3:
         raise ValueError("Input must be a 3-D array.")
-    I, J, K = X.shape
+    I_dim, J, K = X.shape
     rng = np.random.default_rng(seed)
-    A = rng.standard_normal((I, rank))
+    A = rng.standard_normal((I_dim, rank))
     B = rng.standard_normal((J, rank))
     C = rng.standard_normal((K, rank))
 
@@ -57,9 +57,9 @@ def tensor_decompose(
             else np.einsum("ir,jr->ijr", A, B).reshape(-1, R)
         )
 
-    X0 = X.reshape(I, J * K)
-    X1 = X.transpose(1, 0, 2).reshape(J, I * K)
-    X2 = X.transpose(2, 0, 1).reshape(K, I * J)
+    X0 = X.reshape(I_dim, J * K)
+    X1 = X.transpose(1, 0, 2).reshape(J, I_dim * K)
+    X2 = X.transpose(2, 0, 1).reshape(K, I_dim * J)
 
     for _ in range(max_iter):
         V = (B.T @ B) * (C.T @ C)

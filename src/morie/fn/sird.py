@@ -55,10 +55,10 @@ def sir_model(
     t = np.arange(0, t_max, dt)
 
     def deriv(y, _t, _N, _beta, _gamma):
-        S, I, R = y
-        dSdt = -_beta * S * I / _N
-        dIdt = _beta * S * I / _N - _gamma * I
-        dRdt = _gamma * I
+        S, I_, R = y
+        dSdt = -_beta * S * I_ / _N
+        dIdt = _beta * S * I_ / _N - _gamma * I_
+        dRdt = _gamma * I_
         return [dSdt, dIdt, dRdt]
 
     y0 = [S0, I0, R0_init]

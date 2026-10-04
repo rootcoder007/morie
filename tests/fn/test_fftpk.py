@@ -5,7 +5,7 @@ from morie.fn.fftpk import fft_peaks
 
 
 def test_fftpk_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = fft_peaks(signal=np.sin(np.linspace(0, 4 * np.pi, 100)))
     assert result is not None
     assert hasattr(result, "name")

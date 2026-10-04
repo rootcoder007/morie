@@ -23,8 +23,6 @@ def test_gcnL_basic():
     assert len(result["H"]) == 10
     assert len(result["H"][0]) == 100
 
-    expected_sum = 0.0
-    count = 0
     for i in range(10):
         At_i_d = sum(A[i][j] for j in range(10)) + (1.0)
         s_i = At_i_d**-0.5 if At_i_d > 0 else 0.0

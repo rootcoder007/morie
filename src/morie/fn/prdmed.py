@@ -66,7 +66,9 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None, alpha=0.05, n_bo
     av = np.atleast_1d(np.asarray(a, dtype=float)).ravel()
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()
     if av.size != bv.size and av.size != 1 and bv.size != 1:
-        raise ValueError("a and b must be scalars or arrays of the same length, got %d and %d." % (av.size, bv.size))
+        raise ValueError(
+            f"a and b must be scalars or arrays of the same length, got {int(av.size)} and {int(bv.size)}."
+        )
     ab = av * bv
     point = float(np.mean(ab))
     z = 1.959963984540054 if abs(alpha - 0.05) < 1e-12 else _z(1 - alpha / 2)

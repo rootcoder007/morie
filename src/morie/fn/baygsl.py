@@ -186,7 +186,7 @@ def gibbs_slice(log_conditionals, x0, n=2000, w=None, burn=0, seed=1, bounds=Non
     """
     p = len(x0)
     if len(log_conditionals) != p:
-        raise ValueError("baygsl: %d conditionals for %d coordinates" % (len(log_conditionals), p))
+        raise ValueError(f"baygsl: {int(len(log_conditionals))} conditionals for {int(p)} coordinates")
     if p == 0:
         raise ValueError("baygsl: no coordinates to sample")
     ws = [1.0] * p if w is None else ([float(w)] * p if not isinstance(w, (list, tuple)) else [float(t) for t in w])

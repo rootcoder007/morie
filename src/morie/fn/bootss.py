@@ -73,7 +73,10 @@ def bootss(y, weights, strata, clusters, statistic=None, B=200, m=None, seed=0):
     if any(v <= 0 for v in wv):
         raise ValueError("weights must be positive")
     if statistic is None:
-        statistic = lambda yy, ww: sum(a * b for a, b in zip(ww, yy))
+
+        def statistic(yy, ww):
+            return sum(a * b for a, b in zip(ww, yy))
+
     # index clusters within strata (insertion order = data order)
     strat_order = []
     clus = {}

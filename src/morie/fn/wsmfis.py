@@ -62,7 +62,10 @@ def wasserman_fisher_info(f, theta, x_grid=None, h=1e-5):
     if f is None:
         if theta <= 0:
             raise ValueError(f"the exponential model needs theta > 0; got {theta}.")
-        f = lambda x, th: np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
+        def f(x, th):
+            return np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
         if x_grid is None:
             x_grid = np.linspace(0.0, 40.0 * theta, 200001)
     if x_grid is None:

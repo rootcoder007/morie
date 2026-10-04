@@ -52,9 +52,9 @@ def fast_pca(
     k = min(k, min(n, p))
 
     oversampling = min(10, min(n, p) - k)
-    l = k + oversampling
+    ell = k + oversampling
 
-    Omega = rng.standard_normal((p, l))
+    Omega = rng.standard_normal((p, ell))
     Y = X_centered @ Omega
 
     Q, _ = np.linalg.qr(Y)

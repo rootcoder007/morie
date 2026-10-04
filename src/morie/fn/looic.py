@@ -31,7 +31,7 @@ def _psis_weights(log_ratios: np.ndarray, k_threshold: float = 0.7):
             k_hat = float("inf")
             smoothed = log_ratios.copy()
         else:
-            m = len(positive)
+            len(positive)
             log_pos = np.log(positive)
             k_hat = float(np.mean(log_pos) - log_pos[0])
             k_hat = max(k_hat, 1e-10)

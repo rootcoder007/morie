@@ -75,7 +75,7 @@ def regime_switching(x, k_regimes=2):
         pass
 
     # ---- Pure-NumPy EM with Hamilton filter ------------------------------
-    rng = np.random.default_rng(0)
+    np.random.default_rng(0)
     mu = np.linspace(y.min(), y.max(), k_regimes)
     sig = np.full(k_regimes, max(y.std(), 1e-6))
     P = np.full((k_regimes, k_regimes), 1.0 / k_regimes)

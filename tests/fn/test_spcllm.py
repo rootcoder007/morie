@@ -77,7 +77,7 @@ def test_labels_follow_the_moran_scatterplot_and_significance():
             lag_hi = r["lagged_mean"][i] > 0
             assert lab == ("H" if hi else "L") + ("H" if lag_hi else "L")
     assert sum(r["counts"].values()) == 9
-    assert r["counts"]["HH"] == sum(1 for l in r["labels"] if l == "HH")
+    assert r["counts"]["HH"] == sum(1 for ell in r["labels"] if ell == "HH")
 
 
 def test_spcllm_edge():

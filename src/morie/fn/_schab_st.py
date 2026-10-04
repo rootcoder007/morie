@@ -648,10 +648,7 @@ def _hankel_j0_panels(hval, kval, theta, c, p, n_quad=40, rtol=1e-10, max_upper=
     is merely argued away rather than integrated.
     """
     x, w = gauss_legendre(int(n_quad))
-    if hval > 0:
-        panel = min(np.pi / hval, max(1.0, 2.0 * theta))
-    else:
-        panel = max(1.0, 2.0 * theta)
+    panel = min(np.pi / hval, max(1.0, 2.0 * theta)) if hval > 0 else max(1.0, 2.0 * theta)
     panel = max(panel, 1e-3)
     if max_upper is None:
         max_upper = np.inf

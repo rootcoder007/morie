@@ -35,10 +35,7 @@ def dirichlet_process_mixture_density(
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
 
-    if x_eval is None:
-        x_eval = np.quantile(x, np.linspace(0.01, 0.99, 100))
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = np.quantile(x, np.linspace(0.01, 0.99, 100)) if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     # Initialize cluster assignments
     z = rng.integers(0, max(2, n // 5), size=n)
@@ -47,7 +44,7 @@ def dirichlet_process_mixture_density(
     densities = []
     n_components_trace = []
 
-    for iteration in range(n_iter):
+    for _iteration in range(n_iter):
         # Update cluster assignments (Polya urn)
         for i in range(n):
             cluster_ids = list(set(z[:i]) if i > 0 else [])

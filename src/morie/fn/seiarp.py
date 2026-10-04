@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["seira_asymptomatic"]
 
 
-def seira_asymptomatic(S, E, I, A, R, params, t_max=160.0, dt=0.1):
+def seira_asymptomatic(S, E, I, A, R, params, t_max=160.0, dt=0.1):  # noqa: E741
     r"""Integrate an SEIRA model: the latent class splits into two
     infectious streams, symptomatic and asymptomatic.
 

@@ -192,12 +192,12 @@ def ols(y, X, add_intercept=True, names=None):
     Xm = _mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     k = len(Xm[0])
     if n <= k:
-        raise ValueError("need more observations than parameters (n=%d, k=%d)" % (n, k))
+        raise ValueError(f"need more observations than parameters (n={int(n)}, k={int(k)})")
     XtX = _xtx(Xm)
     Xty = [sum(Xm[i][a] * ys[i] for i in range(n)) for a in range(k)]
     beta = _solve(XtX, Xty)
@@ -225,7 +225,7 @@ def ols(y, X, add_intercept=True, names=None):
 
     if names is None:
         names = (["(Intercept)"] if add_intercept else []) + [
-            "x%d" % (j + 1) for j in range(k - (1 if add_intercept else 0))
+            f"x{int(j + 1)}" for j in range(k - (1 if add_intercept else 0))
         ]
     return {
         "coef": beta,
@@ -348,13 +348,13 @@ def newey_west_vcov(fit, lags=None, prewhite=False):
         lags = int(math.floor(4.0 * (n / 100.0) ** (2.0 / 9.0)))
     u = [[X[i][a] * e[i] for a in range(k)] for i in range(n)]
 
-    def gamma(l):
-        return [[sum(u[i][a] * u[i - l][b] for i in range(l, n)) for b in range(k)] for a in range(k)]
+    def gamma(ell):
+        return [[sum(u[i][a] * u[i - ell][b] for i in range(ell, n)) for b in range(k)] for a in range(k)]
 
     S = gamma(0)
-    for l in range(1, lags + 1):
-        g = gamma(l)
-        w = 1.0 - l / (lags + 1.0)
+    for ell in range(1, lags + 1):
+        g = gamma(ell)
+        w = 1.0 - ell / (lags + 1.0)
         for a in range(k):
             for b in range(k):
                 S[a][b] += w * (g[a][b] + g[b][a])
@@ -451,5 +451,5 @@ def variance_inflation_factors(X, add_intercept=True, names=None):
         r2 = ols(yj, others, add_intercept=add_intercept)["r_squared"]
         out.append(1.0 / (1.0 - r2) if r2 < 1 else float("inf"))
     if names is None:
-        names = ["x%d" % (j + 1) for j in range(p)]
+        names = [f"x{int(j + 1)}" for j in range(p)]
     return {"vif": out, "names": list(names), "method": "variance inflation factors"}

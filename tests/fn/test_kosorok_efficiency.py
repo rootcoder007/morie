@@ -45,7 +45,10 @@ def test_almost_sure_version_carries_the_extra_envelope_condition():
 
 def test_quantile_sandwich_brackets_the_level():
     F = stats.norm.cdf
-    h = lambda z: 0.1 * stats.norm.pdf(z)  # a valid perturbation direction
+
+    def h(z):
+        return 0.1 * stats.norm.pdf(z)  # a valid perturbation direction
+
     out = kosorok_ch2_quantile_hadamard_inequality(F, h, t_n=0.01, p=0.7)
     assert out["sandwich_holds"] is True
     assert out["lower"] <= out["upper"]
@@ -59,7 +62,10 @@ def test_quantile_sandwich_brackets_the_level():
 
 def test_quantile_bounds_collapse_onto_the_hadamard_derivative():
     F = stats.norm.cdf
-    h = lambda z: 0.1 * stats.norm.pdf(z)
+
+    def h(z):
+        return 0.1 * stats.norm.pdf(z)
+
     p = 0.6
     gaps = []
     for t in (0.05, 0.01, 0.002):
@@ -99,8 +105,12 @@ def test_bootstrap_delta_method_centres_at_the_sample_not_the_truth():
 
 def test_dqm_holds_for_a_normal_location_family():
     # N(theta, 1): score is (x - theta), DQM integral -> 0
-    dens = lambda x, th: float(stats.norm.pdf(x, loc=th))
-    score = lambda x: float(x)
+    def dens(x, th):
+        return float(stats.norm.pdf(x, loc=th))
+
+    def score(x):
+        return float(x)
+
     out = kosorok_ch3_differentiable_quadratic_mean(dens, score, theta=0.0)
     assert out["shrinking"] is True
     assert out["dqm_integrals"][-1] < 1e-3  # converging to zero

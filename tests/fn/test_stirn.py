@@ -5,7 +5,7 @@ from morie.fn.stirn import stirn
 
 
 def test_stirn_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = stirn(n=5, k=3)
     assert result is not None
     assert hasattr(result, "name")

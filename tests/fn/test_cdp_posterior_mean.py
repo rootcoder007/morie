@@ -7,7 +7,6 @@ from morie.fn.cdp_posterior_mean import cdp_posterior_mean
 def test_ghs014_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
-    n = 100
     alpha_total = 10.0
     # alpha_j is the Dirichlet prior parameter vector (length k)
     alpha_j = rng.uniform(0.1, 5.0, 5)

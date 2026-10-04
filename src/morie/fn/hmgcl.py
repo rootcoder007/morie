@@ -76,10 +76,7 @@ def geron_gradient_clipping(grads, max_norm, norm_type=2.0):
     if not np.all(np.isfinite(flat)):
         raise ValueError("geron_gradient_clipping: grads contains non-finite values")
 
-    if np.isinf(p):
-        total = float(np.max(np.abs(flat)))
-    else:
-        total = float(np.sum(np.abs(flat) ** p) ** (1.0 / p))
+    total = float(np.max(np.abs(flat))) if np.isinf(p) else float(np.sum(np.abs(flat) ** p) ** (1.0 / p))
     scale = 1.0 if total <= c else c / total
     clipped = [a * scale for a in arrays]
     out = clipped[0] if single else clipped

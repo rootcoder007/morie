@@ -94,7 +94,10 @@ def reassigned_stft(
         RT.append(colt)
         RF.append(colf)
         start += step
-    T = lambda M: np.array([[M[j][i] for j in range(len(M))] for i in range(nf)])
+
+    def T(M):
+        return np.array([[M[j][i] for j in range(len(M))] for i in range(nf)])
+
     power = T(P)
     return DescriptiveResult(
         name="reassigned_stft",

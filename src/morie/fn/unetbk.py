@@ -90,7 +90,7 @@ def valid_output_size(input_size, depth=4, convs_per_block=2, kernel=3):
         sizes.append(s)
         if s % 2 != 0:
             raise ValueError(
-                "unetbk: size %d is odd before pooling; U-Net requires even sizes at every pooling step" % s
+                f"unetbk: size {int(s)} is odd before pooling; U-Net requires even sizes at every pooling step"
             )
         s //= 2
     s -= kk * int(convs_per_block)
@@ -121,7 +121,7 @@ def mirror_pad(image, pad):
         raise ValueError("unetbk: the pad must be non-negative")
     h, w = len(img), len(img[0])
     if p >= h or p >= w:
-        raise ValueError("unetbk: the mirror pad (%d) must be smaller than the image (%dx%d)" % (p, h, w))
+        raise ValueError(f"unetbk: the mirror pad ({int(p)}) must be smaller than the image ({int(h)}x{int(w)})")
     out = []
     for i in range(-p, h + p):
         ii = -i if i < 0 else (2 * h - 2 - i if i >= h else i)
@@ -170,7 +170,7 @@ def skip_concat(upsampled, contracting):
     hc, wc = len(co), len(co[0])
     if hc < hu or wc < wu:
         raise ValueError(
-            "unetbk: the contracting map (%dx%d) is smaller than the upsampled one (%dx%d)" % (hc, wc, hu, wu)
+            f"unetbk: the contracting map ({int(hc)}x{int(wc)}) is smaller than the upsampled one ({int(hu)}x{int(wu)})"
         )
     oi, oj = (hc - hu) // 2, (wc - wu) // 2
     crop = [[co[oi + i][oj + j] for j in range(wu)] for i in range(hu)]

@@ -65,7 +65,7 @@ def test_icc3k_basic():
 
 def test_icc3k_edge():
     """Test edge case: constant ratings lead to zero between-target MSR."""
-    rng = np.random.default_rng(123)
+    np.random.default_rng(123)
     n_subjects = 10
     k_raters = 2
     total = n_subjects * k_raters

@@ -180,7 +180,7 @@ def lemma4_bound(counts, gamma):
     return min(tot, 1.0), tot
 
 
-def theorem3_moment(q, gamma, l):
+def theorem3_moment(q, gamma, l):  # noqa: E741
     r"""Theorem 3's data-dependent moment bound, or ``None`` when its
     condition fails.
 
@@ -226,30 +226,30 @@ def moments_accountant(vote_counts, gamma, delta, lambdas=None, data_dependent=T
     if not 0.0 < delta < 1.0:
         raise ValueError("pate: delta must lie in (0, 1)")
     lams = list(lambdas) if lambdas else list(range(1, 9))
-    if not lams or any(l <= 0 for l in lams):
+    if not lams or any(ell <= 0 for ell in lams):
         raise ValueError("pate: lambdas must be positive")
-    alpha = dict((l, 0.0) for l in lams)
+    alpha = dict((ell, 0.0) for ell in lams)
     used = {"data_dependent": 0, "data_independent": 0}
     for counts in vote_counts:
         q = lemma4_bound(counts, gamma)[0] if data_dependent else 1.0
-        for l in lams:
-            indep = 2.0 * gamma**2 * l * (l + 1)
-            dep = theorem3_moment(q, gamma, l) if data_dependent else None
+        for ell in lams:
+            indep = 2.0 * gamma**2 * ell * (ell + 1)
+            dep = theorem3_moment(q, gamma, ell) if data_dependent else None
             if dep is not None and dep < indep:
-                alpha[l] += dep
-                if l == lams[0]:
+                alpha[ell] += dep
+                if ell == lams[0]:
                     used["data_dependent"] += 1
             else:
-                alpha[l] += indep
-                if l == lams[0]:
+                alpha[ell] += indep
+                if ell == lams[0]:
                     used["data_independent"] += 1
     log_inv_delta = math.log(1.0 / delta)
     best = None
     best_l = lams[0]
-    for l in lams:
-        eps = (alpha[l] + log_inv_delta) / l
+    for ell in lams:
+        eps = (alpha[ell] + log_inv_delta) / ell
         if best is None or eps < best:
-            best, best_l = eps, l
+            best, best_l = eps, ell
     return {
         "epsilon": best,
         "lambda": best_l,

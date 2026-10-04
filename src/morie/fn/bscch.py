@@ -36,10 +36,7 @@ def bscch(p: float) -> dict:
     """
     if not 0 <= p <= 1:
         raise ValueError(f"p must be in [0, 1], got {p}.")
-    if p == 0 or p == 1:
-        h = 0.0
-    else:
-        h = -p * np.log2(p) - (1 - p) * np.log2(1 - p)
+    h = 0.0 if p == 0 or p == 1 else -p * np.log2(p) - (1 - p) * np.log2(1 - p)
     return RichResult(payload={"capacity": 1.0 - h, "crossover_prob": p})
 
 

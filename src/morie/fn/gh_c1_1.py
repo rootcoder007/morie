@@ -21,9 +21,15 @@ def ghosal_bayes_rule_infinite(x, log_lik=None, log_prior=None):
 
     th = _bnp._flat(x)
     if log_lik is None:
-        log_lik = lambda t: -0.5 * (1.0 - t) ** 2
+
+        def log_lik(t):
+            return -0.5 * (1.0 - t) ** 2
+
     if log_prior is None:
-        log_prior = lambda t: -0.5 * t * t
+
+        def log_prior(t):
+            return -0.5 * t * t
+
     lw = [log_lik(t) + log_prior(t) for t in th]
     mx = max(lw)
     w = [math.exp(v - mx) for v in lw]

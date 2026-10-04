@@ -200,7 +200,7 @@ def integrate(forcing, lam, gamma=0.7, epsilon=1.0, C=8.0, C_deep=100.0, solver=
     and len(forcing) for the imbalance.
     """
     if solver not in _SOLVERS:
-        raise ValueError("ecsTCR: solver = %r; expected one of %s" % (solver, ", ".join(_SOLVERS)))
+        raise ValueError("ecsTCR: solver = {!r}; expected one of {}".format(solver, ", ".join(_SOLVERS)))
     step = _STEPPERS[solver]
     T, TD = float(T0), float(TD0)
     Ts = [T]
@@ -300,25 +300,25 @@ def ecs_tcr(
         within_charney, route, solver, method.
     """
     if route not in _ROUTES:
-        raise ValueError("ecsTCR: route = %r; expected one of %s" % (route, ", ".join(_ROUTES)))
+        raise ValueError("ecsTCR: route = {!r}; expected one of {}".format(route, ", ".join(_ROUTES)))
     if temperature is None:
         temperature = model_run
 
     fitted = None
     if route in ("gregory", "emulate"):
         if temperature is None or imbalance is None:
-            raise ValueError("ecsTCR: the %s route needs both a temperature series and the net imbalance" % route)
+            raise ValueError(f"ecsTCR: the {route} route needs both a temperature series and the net imbalance")
         T = [float(v) for v in temperature]
         N = [float(v) for v in imbalance]
         if len(T) != len(N):
-            raise ValueError("ecsTCR: temperature has %d entries and imbalance %d" % (len(T), len(N)))
+            raise ValueError(f"ecsTCR: temperature has {int(len(T))} entries and imbalance {int(len(N))}")
         slope, intercept = _ols(T, N)
         lam_fit = -slope
         if lam_fit <= 0.0:
             raise ValueError(
                 "ecsTCR: the regression gives a non-positive "
-                "feedback parameter (%g), so the system has no "
-                "equilibrium" % lam_fit
+                f"feedback parameter ({lam_fit:g}), so the system has no "
+                "equilibrium"
             )
         # The intercept is the forcing of whatever step was run; scale to
         # the doubling value by the logarithmic CO2 relation.
@@ -330,7 +330,7 @@ def ecs_tcr(
     if lam is None:
         raise ValueError("ecsTCR: give lam, or use a route that fits it")
     if lam <= 0.0:
-        raise ValueError("ecsTCR: lam = %g; a non-positive feedback parameter has no equilibrium" % lam)
+        raise ValueError(f"ecsTCR: lam = {lam:g}; a non-positive feedback parameter has no equilibrium")
 
     ecs = f2x / lam
 
@@ -380,7 +380,7 @@ def ecs_tcr(
             "method": (
                 "two-layer energy balance (Held et al. 2010; Geoffroy "
                 "et al. 2013), ECS = F_2x / lambda, TCR at CO2 "
-                "doubling in a %g%%/yr run, %s route, %s solver" % (rate * 100.0, route, solver)
+                f"doubling in a {rate * 100.0:g}%/yr run, {route} route, {solver} solver"
             ),
         }
     )

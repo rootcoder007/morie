@@ -41,10 +41,10 @@ def spatial_ar_error(x, y, w):
         raise ValueError(f"len(y)={y.size} != n={n}")
     if W.shape != (n, n):
         raise ValueError(f"w must be ({n},{n})")
-    I = np.eye(n)
+    I_ = np.eye(n)
 
     def neg_ll(lam):
-        A = I - lam * W
+        A = I_ - lam * W
         AX = A @ X
         Ay = A @ y
         try:
@@ -70,7 +70,7 @@ def spatial_ar_error(x, y, w):
         options={"xatol": 1e-10 * max(hi - lo, 1.0)},
     )
     lam = float(res.x)
-    A = I - lam * W
+    A = I_ - lam * W
     AX = A @ X
     Ay = A @ y
     beta = np.linalg.solve(AX.T @ AX, AX.T @ Ay)

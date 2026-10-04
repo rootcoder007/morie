@@ -87,7 +87,7 @@ def resource_threshold(B, kappa):
     b = sorted(float(v) for v in k.vec(B))
     kp = float(kappa)
     if not 0.0 < kp <= 1.0:
-        raise ValueError("tloilr: kappa must lie in (0,1], got %r" % (kappa,))
+        raise ValueError(f"tloilr: kappa must lie in (0,1], got {kappa!r}")
     n = len(b)
     idx = int(math.ceil((1.0 - kp) * n)) - 1
     idx = min(max(idx, 0), n - 1)

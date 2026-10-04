@@ -47,10 +47,7 @@ def evt_pickands_dep_fn(x, y, t_grid=None, u=None):
         raise ValueError("empty input: x has no observations")
     if len(ys) != n:
         raise ValueError("x and y must have the same length")
-    if t_grid is None:
-        t_grid = [i / 10.0 for i in range(11)]
-    else:
-        t_grid = core.vec(t_grid)
+    t_grid = [i / 10.0 for i in range(11)] if t_grid is None else core.vec(t_grid)
     if any(v < 0.0 or v > 1.0 for v in t_grid):
         raise ValueError("t_grid must lie in [0, 1]")
     if u is None:

@@ -91,7 +91,7 @@ def session_parallel_batches(sessions, batch_size):
         raise ValueError("gru4r: every session needs at least 2 events")
     B = int(batch_size)
     if B < 1 or len(S) < B:
-        raise ValueError("gru4r: batch_size must lie in 1..%d, got %d" % (len(S), B))
+        raise ValueError(f"gru4r: batch_size must lie in 1..{int(len(S))}, got {int(B)}")
     slot = list(range(B))
     pos = [0] * B
     nxt = B

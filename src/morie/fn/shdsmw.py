@@ -90,11 +90,11 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0, contrast="cu
         r["estimate"], r["path"]
     """
     if float(lam) < 0.0:
-        raise ValueError("shrinkage_msm: lam must be non-negative, got %r" % (lam,))
+        raise ValueError(f"shrinkage_msm: lam must be non-negative, got {lam!r}")
     A_hist = _hist(treatment_history)
     L_hist = _hist(covariate_history, allow_none=True)
     if len(L_hist) != len(A_hist):
-        raise ValueError("shrinkage_msm: %d treatment times but %d covariate blocks" % (len(A_hist), len(L_hist)))
+        raise ValueError(f"shrinkage_msm: {int(len(A_hist))} treatment times but {int(len(L_hist))} covariate blocks")
     yv = k.vec(y)
     n = len(yv)
 
@@ -109,7 +109,7 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0, contrast="cu
             e = [1.0 if v > 0.0 else 0.0 for v in cum]
         else:
             raise ValueError(
-                "shrinkage_msm: contrast must be 'cumulative', 'final' or 'everexposed', got %r" % (contrast,)
+                f"shrinkage_msm: contrast must be 'cumulative', 'final' or 'everexposed', got {contrast!r}"
             )
         f = k.wls([[v] for v in e], yv, w)
         s1, s2 = sum(w), sum(v * v for v in w)

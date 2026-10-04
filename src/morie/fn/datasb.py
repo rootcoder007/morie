@@ -64,7 +64,7 @@ def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50, seed=0, 
     if not callable(estimator):
         raise ValueError("estimator must be callable.")
     if not 0.0 < fraction < 1.0:
-        raise ValueError("fraction must lie in (0, 1), got %r." % fraction)
+        raise ValueError(f"fraction must lie in (0, 1), got {fraction!r}.")
     yv = np.asarray(y, dtype=float).ravel()
     dv = np.asarray(d, dtype=float).ravel()
     Xa = np.atleast_2d(np.asarray(X, dtype=float))

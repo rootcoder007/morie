@@ -147,10 +147,7 @@ def _compute_ece(y_true, y_prob, n_bins, norm, strategy):
 
     gap = np.abs(accs - confs)
     weights = counts / n
-    if norm == 1:
-        ece = float(np.sum(weights * gap))
-    else:
-        ece = float(np.sqrt(np.sum(weights * gap**norm)))
+    ece = float(np.sum(weights * gap)) if norm == 1 else float(np.sqrt(np.sum(weights * gap**norm)))
     return ece, accs, confs, counts
 
 

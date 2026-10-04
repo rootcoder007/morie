@@ -54,13 +54,13 @@ def planck_function(lam, T, h=6.62607015e-34, c=299792458.0, kB=1.380649e-23):
     if T <= 0:
         raise ValueError("plncF: temperature must be > 0")
     vals = []
-    for l in lam_a.ravel():
-        l = float(l)
-        if l <= 0:
+    for ell in lam_a.ravel():
+        ell = float(ell)
+        if ell <= 0:
             raise ValueError("plncF: wavelengths must be > 0")
-        x = h * c / (l * kB * T)
+        x = h * c / (ell * kB * T)
         x = min(x, 700.0)
-        B = (2.0 * h * c * c / l**5) / (math.exp(x) - 1.0 + 1e-300)
+        B = (2.0 * h * c * c / ell**5) / (math.exp(x) - 1.0 + 1e-300)
         vals.append(B)
     # Wien displacement: lam_max = b / T, b = hc / (kB x*) with
     # x* = 4.965114231744276 the root of (x-5)e^x + 5 = 0

@@ -79,7 +79,6 @@ def dp_stochastic_block(adjacency, alpha=1.0, n_iter=30, seed=42):
     K = 1
     for _ in range(int(n_iter)):
         for i in range(n):
-            best = None
             logw = []
             cand = []
             counts = [sum(1 for v in range(n) if v != i and z[v] == c) for c in range(K)]

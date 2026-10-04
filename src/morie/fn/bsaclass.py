@@ -779,9 +779,9 @@ def accuracy(table=None, tp=None, tn=None, fp=None, fn=None, prevalence=None, ki
         raise ValueError("a class is empty; the sensitivity or specificity is undefined")
     kinds = ("raw", "weighted", "balanced")
     if kind is not None and kind not in kinds:
-        raise ValueError("kind must be one of %s, got %r" % (", ".join(kinds), kind))
+        raise ValueError("kind must be one of {}, got {!r}".format(", ".join(kinds), kind))
 
-    num = Fraction if exact else (lambda a, b=1: float(a) / float(b))
+    Fraction if exact else (lambda a, b=1: float(a) / float(b))
     se = Fraction(TP, TP + FN) if exact else TP / (TP + FN)
     sp = Fraction(TN, TN + FP) if exact else TN / (TN + FP)
     raw = Fraction(TP + TN, total) if exact else (TP + TN) / total
@@ -898,13 +898,13 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
         else:
             D.append([1.0 if i == idx[int(t)] else 0.0 for i in range(K)])
 
-    n, I = len(X), len(X[0])
+    n, I_ = len(X), len(X[0])
     u = _bxrng(seed)
-    W1 = [[u() - 0.5 for _ in range(hidden)] for _ in range(I)]
+    W1 = [[u() - 0.5 for _ in range(hidden)] for _ in range(I_)]
     T1 = [u() - 0.5 for _ in range(hidden)]
     W2 = [[u() - 0.5 for _ in range(K)] for _ in range(hidden)]
     T2 = [u() - 0.5 for _ in range(K)]
-    dW1 = [[0.0] * hidden for _ in range(I)]
+    dW1 = [[0.0] * hidden for _ in range(I_)]
     dT1 = [0.0] * hidden
     dW2 = [[0.0] * K for _ in range(hidden)]
     dT2 = [0.0] * K
@@ -922,7 +922,7 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
         tot = 0.0
         for s in range(n):
             xs = X[s]
-            xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j]) for j in range(hidden)]
+            xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I_)) - T1[j]) for j in range(hidden)]
             yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k]) for k in range(K)]
             dk = [yo[k] * (1.0 - yo[k]) * (D[s][k] - yo[k]) for k in range(K)]
             tot += fsum((D[s][k] - yo[k]) ** 2 for k in range(K))
@@ -936,7 +936,7 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
                 T2[k] += step
                 dT2[k] = step
             bp = [xh[j] * (1.0 - xh[j]) * fsum(dk[k] * W2[j][k] for k in range(K)) for j in range(hidden)]
-            for i in range(I):
+            for i in range(I_):
                 for j in range(hidden):
                     step = eta * bp[j] * xs[i] + alpha * dW1[i][j]
                     W1[i][j] += step
@@ -952,7 +952,7 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
     pred, raw = [], []
     for s in range(n):
         xs = X[s]
-        xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j]) for j in range(hidden)]
+        xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I_)) - T1[j]) for j in range(hidden)]
         yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k]) for k in range(K)]
         raw.append(yo)
         if K == 1:
@@ -1011,7 +1011,7 @@ def bayescls(likelihoods, priors=None):
             raise ValueError("a prior cannot be negative")
         s = fsum(pr)
         if abs(s - 1.0) > 1e-9:
-            raise ValueError("the priors must sum to 1, got %g" % s)
+            raise ValueError(f"the priors must sum to 1, got {s:g}")
     d = [lk[i] * pr[i] for i in range(m)]
     tot = fsum(d)
     post = [v / tot for v in d] if tot > 0 else [0.0] * m
@@ -1083,7 +1083,7 @@ def bayesnorm(x, means, covs, priors=None, full=False):
             continue
         det = _det(cs[i])
         if det <= 0:
-            raise ValueError("covariance %d is not positive definite" % i)
+            raise ValueError(f"covariance {int(i)} is not positive definite")
         Ci = _inv(cs[i])
         d = [xs[j] - ms[i][j] for j in range(n)]
         quad = fsum(d[a] * fsum(Ci[a][b] * d[b] for b in range(n)) for a in range(n))
@@ -1487,7 +1487,7 @@ def divergence(m1, m2, C1, C2):
     if len(b) != p:
         raise ValueError("the two mean vectors must have the same length")
     if len(A) != p or len(B) != p or any(len(r) != p for r in A + B):
-        raise ValueError("the covariance matrices must be %d x %d" % (p, p))
+        raise ValueError(f"the covariance matrices must be {int(p)} x {int(p)}")
     Ai, Bi = _inv(A), _inv(B)
     diff = [[A[i][j] - B[i][j] for j in range(p)] for i in range(p)]
     invd = [[Bi[i][j] - Ai[i][j] for j in range(p)] for i in range(p)]
@@ -1582,7 +1582,7 @@ def kld(p1, p2):
         raise ValueError("a PDF cannot be negative")
     bad = [i for i in range(len(a)) if b[i] > 0 and a[i] <= 0]
     if bad:
-        raise ValueError("p1 vanishes at %d bin(s) where p2 does not; the KLD is unbounded there" % len(bad))
+        raise ValueError(f"p1 vanishes at {int(len(bad))} bin(s) where p2 does not; the KLD is unbounded there")
     fwd = float(kl_divergence(b, a).estimate)  # note the swap
     rev = float(kl_divergence(a, b).estimate)
     return RichResult(
@@ -1798,7 +1798,7 @@ def gaussoverlap(m1, m2, C1, C2):
     if len(b) != p:
         raise ValueError("the two mean vectors must have the same length")
     if len(A) != p or len(B) != p or any(len(r) != p for r in A + B):
-        raise ValueError("the covariance matrices must be %d x %d" % (p, p))
+        raise ValueError(f"the covariance matrices must be {int(p)} x {int(p)}")
     M = [[0.5 * (A[i][j] + B[i][j]) for j in range(p)] for i in range(p)]
     Mi = _inv(M)
     dm = [a[i] - b[i] for i in range(p)]
@@ -2107,7 +2107,7 @@ def cnnsig(x, kernels, bias=None, pool=2, dense=None):
     if dense is not None:
         Wd = _bxmat(dense, "dense")
         if len(Wd[0]) != len(feat):
-            raise ValueError("dense rows must match the pooled feature length of %d" % len(feat))
+            raise ValueError(f"dense rows must match the pooled feature length of {int(len(feat))}")
         z = _bxmv(Wd, feat)
         mx = max(z)
         e = [exp(t - mx) for t in z]
@@ -2432,9 +2432,9 @@ def eegbands(x, fs, bands=None):
         try:
             f1, f2 = float(lim[0]), float(lim[1])
         except (TypeError, ValueError, IndexError):
-            raise ValueError("band %r must be an (f1, f2) pair" % (name,))
+            raise ValueError(f"band {name!r} must be an (f1, f2) pair")
         if f1 < 0.0 or f2 <= f1:
-            raise ValueError("band %r must satisfy 0 <= f1 < f2" % (name,))
+            raise ValueError(f"band {name!r} must satisfy 0 <= f1 < f2")
         c1, c2 = closure.get(name, (True, f2 >= nyq))
 
         def inside(f, f1=f1, f2=f2, c1=c1, c2=c2):
@@ -2681,7 +2681,7 @@ def errbound(p1, p2, db):
     if a < 0 or b < 0:
         raise ValueError("prior probabilities cannot be negative")
     if abs(a + b - 1.0) > 1e-9:
-        raise ValueError("the two priors must sum to 1, got %g" % (a + b))
+        raise ValueError(f"the two priors must sum to 1, got {a + b:g}")
     d = float(db)
     if d < 0:
         raise ValueError("the Bhattacharyya distance cannot be negative")
@@ -2773,7 +2773,7 @@ def fishlda(X, y):
     p = len(Xs[0])
     order, grp = _groups(Xs, ys)
     if len(order) != 2:
-        raise ValueError("Fisher's linear discriminant as stated is a two-class method; got %d classes" % len(order))
+        raise ValueError(f"Fisher's linear discriminant as stated is a two-class method; got {int(len(order))} classes")
     a, b = grp[order[0]], grp[order[1]]
     if len(a) < 2 or len(b) < 2:
         raise ValueError("each class needs at least two samples")
@@ -2967,7 +2967,7 @@ def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
     C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)] for i in range(K)]
     vals, vecs = _bxjacobi(C)
     if vals[L - 1] <= 1e-14:
-        raise ValueError("the mixture covariance is rank deficient for %d components" % L)
+        raise ValueError(f"the mixture covariance is rank deficient for {int(L)} components")
     Wh = [[vecs[j][k] / sqrt(vals[k]) for j in range(K)] for k in range(L)]
     Z = _bxmm(Wh, Yc)
 
@@ -3089,7 +3089,7 @@ def icaclean(X, ncomp=None, kurtosis=3.0, drop=None, maxiter=200, seed=1):
     else:
         art = sorted({int(t) for t in drop})
         if any(c < 0 or c >= L for c in art):
-            raise ValueError("drop indices must lie in [0, %d)" % L)
+            raise ValueError(f"drop indices must lie in [0, {int(L)})")
 
     Sk = [[0.0] * T if c in art else list(S[c]) for c in range(L)]
     rec = _bxmm(A, Sk)
@@ -3186,7 +3186,7 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
     C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)] for i in range(K)]
     vals, vecs = _bxjacobi(C)
     if vals[L - 1] <= 1e-14:
-        raise ValueError("the mixture covariance is rank deficient for %d components" % L)
+        raise ValueError(f"the mixture covariance is rank deficient for {int(L)} components")
     Wh = [[vecs[j][k] / sqrt(vals[k]) for j in range(K)] for k in range(L)]
     Z = _bxmm(Wh, Yc)
 
@@ -3292,7 +3292,7 @@ def kfoldcv(X, y, k=5, classifier=None, stratified=True):
         tr = [i for i in range(n) if i not in set(test)]
         if len(set(ys[i] for i in tr)) < 2:
             raise ValueError(
-                "fold %d leaves fewer than two classes in the training set; use stratified folds or a smaller k" % f
+                f"fold {int(f)} leaves fewer than two classes in the training set; use stratified folds or a smaller k"
             )
         Xt = [Xs[i] for i in tr]
         yt = [ys[i] for i in tr]
@@ -3563,7 +3563,7 @@ def knn(X, y, query, k=1, metric="euclidean", C=None):
     d.sort(key=lambda t: t[0])
     near = d[:kk]
     votes = {}
-    for dd, lab, _ in near:
+    for _dd, lab, _ in near:
         votes[lab] = votes.get(lab, 0) + 1
     top = max(votes.values())
     tied = [lab for lab, v in votes.items() if v == top]
@@ -3930,7 +3930,7 @@ def loocv(X, y, classifier=None):
         Xt = [Xs[j] for j in range(n) if j != i]
         yt = [ys[j] for j in range(n) if j != i]
         if len(set(yt)) < 2:
-            raise ValueError("removing sample %d leaves one class; the classifier cannot be trained" % i)
+            raise ValueError(f"removing sample {int(i)} leaves one class; the classifier cannot be trained")
         if classifier(Xt, yt, Xs[i]) != ys[i]:
             errors += 1
             wrong.append(i)
@@ -4116,14 +4116,14 @@ def lstm(sequences, labels=None, hidden=8, ridge=1e-6, seed=1, weights=None):
         W = {}
         for k in ("i", "f", "o", "g"):
             if k not in weights:
-                raise ValueError("weights is missing gate %r" % k)
-            M = _bxmat(weights[k], "weights[%r]" % k)
+                raise ValueError(f"weights is missing gate {k!r}")
+            M = _bxmat(weights[k], f"weights[{k!r}]")
             if len(M) != H or len(M[0]) != H + d:
-                raise ValueError("weights[%r] must be %d x %d" % (k, H, H + d))
+                raise ValueError(f"weights[{k!r}] must be {int(H)} x {int(H + d)}")
             W[k] = M
         bb = _bxmat(weights.get("bias", [[0.0] * H] * 4), "weights['bias']")
         if len(bb) != 4 or any(len(r) != H for r in bb):
-            raise ValueError("weights['bias'] must be 4 rows of length %d" % H)
+            raise ValueError(f"weights['bias'] must be 4 rows of length {int(H)}")
         B = {"i": bb[0], "f": bb[1], "o": bb[2], "g": bb[3]}
 
     def sig(b):
@@ -4212,7 +4212,7 @@ def mahal(x, mu, C):
     if len(m) != p:
         raise ValueError("x and mu must have the same length")
     if len(S) != p or any(len(r) != p for r in S):
-        raise ValueError("the covariance must be %d x %d" % (p, p))
+        raise ValueError(f"the covariance must be {int(p)} x {int(p)}")
     Si = _inv(S)
     d = [xs[i] - m[i] for i in range(p)]
     d2 = fsum(d[i] * fsum(Si[i][j] * d[j] for j in range(p)) for i in range(p))
@@ -4463,13 +4463,13 @@ def bmidec(y, C, a=None, procnoise=1e-4, obsnoise=1e-2, p0=1e-2):
     Cm = _bxmat(C, "C")
     K, L = len(Cm), len(Cm[0])
     if len(Y[0]) != K:
-        raise ValueError("each observation row must have %d entries" % K)
+        raise ValueError(f"each observation row must have {int(K)} entries")
     if a is None:
         A = [[1.0 if i == j else 0.0 for j in range(L)] for i in range(L)]
     else:
         A = _bxmat(a, "a")
         if len(A) != L or len(A[0]) != L:
-            raise ValueError("a must be %d x %d" % (L, L))
+            raise ValueError(f"a must be {int(L)} x {int(L)}")
     if float(p0) <= 0.0:
         raise ValueError("p0 must be positive")
 
@@ -4480,7 +4480,7 @@ def bmidec(y, C, a=None, procnoise=1e-4, obsnoise=1e-2, p0=1e-2):
             return [[float(arg) if i == j else 0.0 for j in range(k)] for i in range(k)]
         M = _bxmat(arg, name)
         if len(M) != k or len(M[0]) != k:
-            raise ValueError(name + " must be %d x %d" % (k, k))
+            raise ValueError(name + f" must be {int(k)} x {int(k)}")
         return M
 
     Qd = cov(procnoise, L, "procnoise")
@@ -5007,9 +5007,7 @@ def qda(X, y, query, priors=None):
     for lab in order:
         if len(grp[lab]) <= p:
             raise ValueError(
-                "class %r has %d samples for %d features; "
-                "QDA needs more samples than features per "
-                "class or the covariance is singular" % (lab, len(grp[lab]), p)
+                f"class {lab!r} has {int(len(grp[lab]))} samples for {int(p)} features; QDA needs more samples than features per class or the covariance is singular"
             )
     if priors is None:
         pr = [len(grp[lab]) / len(Xs) for lab in order]

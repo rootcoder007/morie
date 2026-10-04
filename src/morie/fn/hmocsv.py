@@ -118,10 +118,7 @@ def geron_one_class_svm(X, nu=0.5, gamma=1.0, max_iter=2000, tol=1e-9):
         if gap <= tol:
             break
         denom = K[i, i] + K[j, j] - 2.0 * K[i, j]
-        if denom <= 1e-15:
-            step = min(C - alpha[i], alpha[j])
-        else:
-            step = min(gap / denom, C - alpha[i], alpha[j])
+        step = min(C - alpha[i], alpha[j]) if denom <= 1e-15 else min(gap / denom, C - alpha[i], alpha[j])
         if step <= 0:
             break
         alpha[i] += step

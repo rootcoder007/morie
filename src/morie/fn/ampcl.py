@@ -25,10 +25,7 @@ def amplitude_classify(x, thresholds=None, **kwargs) -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=float)
 
-    if thresholds is None:
-        thresholds = np.percentile(np.abs(x), [33, 67])
-    else:
-        thresholds = np.asarray(thresholds, dtype=float)
+    thresholds = np.percentile(np.abs(x), [33, 67]) if thresholds is None else np.asarray(thresholds, dtype=float)
 
     labels = np.zeros(len(x), dtype=int)
     amp = np.abs(x)

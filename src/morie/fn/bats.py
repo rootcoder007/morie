@@ -147,16 +147,13 @@ def seasonal_harmonics(m, k=None):
         raise ValueError("bats: a seasonal period must exceed 1")
     if k is None:
         mi = int(round(m))
-        if abs(m - mi) < 1e-9:
-            k = mi // 2 if mi % 2 == 0 else (mi - 1) // 2
-        else:
-            k = int(math.floor(m / 2.0))
+        k = (mi // 2 if mi % 2 == 0 else (mi - 1) // 2) if abs(m - mi) < 1e-09 else int(math.floor(m / 2.0))
     k = int(k)
     if k < 1:
         raise ValueError("bats: a seasonal component needs at least one harmonic")
     if k > m / 2.0 + 1e-9:
         raise ValueError(
-            "bats: k = %d exceeds m/2 = %g; the harmonics above m/2 are aliases of those below" % (k, m / 2.0)
+            f"bats: k = {int(k)} exceeds m/2 = {m / 2.0:g}; the harmonics above m/2 are aliases of those below"
         )
     return [2.0 * math.pi * (j + 1) / m for j in range(k)]
 
@@ -184,12 +181,12 @@ class BatsSpec:
                 if abs(m - round(m)) > 1e-9:
                     raise ValueError(
                         "bats: the index seasonal of eq. 3e needs integer "
-                        "periods; m = %g is not one. Use the trigonometric "
-                        "seasonal (harmonics=...) for a fractional period." % m
+                        f"periods; m = {m:g} is not one. Use the trigonometric "
+                        "seasonal (harmonics=...) for a fractional period."
                     )
         else:
             if len(harmonics) != len(self.periods):
-                raise ValueError("bats: %d harmonic counts for %d periods" % (len(harmonics), len(self.periods)))
+                raise ValueError(f"bats: {int(len(harmonics))} harmonic counts for {int(len(self.periods))} periods")
             self.harmonics = [len(seasonal_harmonics(m, k)) for m, k in zip(self.periods, harmonics)]
         self.use_box_cox = bool(use_box_cox)
         self.use_trend = bool(use_trend)
@@ -233,11 +230,11 @@ class BatsSpec:
         omega = "omega" if self.use_box_cox else "1"
         phi = "phi" if self.damped else "1"
         if self.trigonometric:
-            seas = ", ".join("{%g, %d}" % (m, k) for m, k in zip(self.periods, self.harmonics))
+            seas = ", ".join(f"{{{m:g}, {int(k)}}}" for m, k in zip(self.periods, self.harmonics))
         else:
-            seas = ", ".join("%g" % m for m in self.periods)
+            seas = ", ".join(f"{m:g}" for m in self.periods)
         parts = [omega, phi, str(self.p), str(self.q)]
-        return "%s(%s%s)" % (head, ", ".join(parts), (", " + seas) if seas else "")
+        return "{}({}{})".format(head, ", ".join(parts), (", " + seas) if seas else "")
 
 
 # --------------------------------------------------------------------------

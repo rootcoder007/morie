@@ -132,20 +132,20 @@ def geron_mlp(X, weights, biases, activations):
     pres = []
     n_params = 0
     fns = []
-    for l in range(L):
-        W = np.atleast_2d(np.asarray(weights[l], dtype=float))
-        b = np.atleast_1d(np.asarray(biases[l], dtype=float)).ravel()
+    for ell in range(L):
+        W = np.atleast_2d(np.asarray(weights[ell], dtype=float))
+        b = np.atleast_1d(np.asarray(biases[ell], dtype=float)).ravel()
         if W.shape[0] != a.shape[1]:
             raise ValueError(
-                f"geron_mlp: weights[{l}] expects {W.shape[0]} inputs but the previous layer produced {a.shape[1]}"
+                f"geron_mlp: weights[{ell}] expects {W.shape[0]} inputs but the previous layer produced {a.shape[1]}"
             )
         if b.size != W.shape[1]:
             raise ValueError(
-                f"geron_mlp: biases[{l}] has {b.size} entries but weights[{l}] has {W.shape[1]} output units"
+                f"geron_mlp: biases[{ell}] has {b.size} entries but weights[{ell}] has {W.shape[1]} output units"
             )
         if not np.all(np.isfinite(W)) or not np.all(np.isfinite(b)):
-            raise ValueError(f"geron_mlp: weights[{l}] or biases[{l}] contains non-finite values")
-        spec = activations[l]
+            raise ValueError(f"geron_mlp: weights[{ell}] or biases[{ell}] contains non-finite values")
+        spec = activations[ell]
         if callable(spec):
             fn = spec
             fns.append(getattr(spec, "__name__", "callable"))
@@ -153,14 +153,14 @@ def geron_mlp(X, weights, biases, activations):
             key = str(spec).lower()
             if key not in _ACTIVATIONS:
                 raise ValueError(
-                    f"geron_mlp: activations[{l}] = {spec!r} is not one of {sorted(_ACTIVATIONS)} or a callable"
+                    f"geron_mlp: activations[{ell}] = {spec!r} is not one of {sorted(_ACTIVATIONS)} or a callable"
                 )
             fn = _ACTIVATIONS[key]
             fns.append(key)
         z = a @ W + b
         a = np.asarray(fn(z), dtype=float)
         if a.shape != z.shape:
-            raise ValueError(f"geron_mlp: activations[{l}] changed the shape from {z.shape} to {a.shape}")
+            raise ValueError(f"geron_mlp: activations[{ell}] changed the shape from {z.shape} to {a.shape}")
         pres.append(z)
         acts.append(a)
         n_params += int(W.size + b.size)

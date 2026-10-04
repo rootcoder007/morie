@@ -88,8 +88,8 @@ def _kron(A, B):
     for i in range(ra):
         for j in range(ca):
             for k in range(rb):
-                for l in range(cb):
-                    out[i * rb + k][j * cb + l] = A[i][j] * B[k][l]
+                for ell in range(cb):
+                    out[i * rb + k][j * cb + ell] = A[i][j] * B[k][ell]
     return out
 
 

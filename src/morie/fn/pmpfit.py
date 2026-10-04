@@ -90,9 +90,9 @@ def check_parameters(alpha, theta):
     """
     a, t = float(alpha), float(theta)
     if not 0.0 <= a < 1.0:
-        raise ValueError("pmpfit: the discount must satisfy 0 <= alpha < 1, got %r" % (alpha,))
+        raise ValueError(f"pmpfit: the discount must satisfy 0 <= alpha < 1, got {alpha!r}")
     if t <= -a:
-        raise ValueError("pmpfit: the concentration must satisfy theta > -alpha = %r, got %r" % (-a, theta))
+        raise ValueError(f"pmpfit: the concentration must satisfy theta > -alpha = {-a!r}, got {theta!r}")
     return {"alpha": a, "theta": t, "is_dirichlet": a == 0.0, "note": "alpha = 0 is exactly the Dirichlet process"}
 
 

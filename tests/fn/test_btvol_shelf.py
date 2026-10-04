@@ -59,7 +59,10 @@ def test_bootstrap_bias_finds_the_mle_variance_bias_with_the_right_sign():
     mean -- the direction is the classic mistake."""
     rng = np.random.default_rng(2)
     x = rng.normal(scale=2, size=200)
-    mlvar = lambda d: float(np.var(d))
+
+    def mlvar(d):
+        return float(np.var(d))
+
     b = boot_iid_resample(x, mlvar, B=8000, seed=1)
     o = boot_bias_estimator(b["estimate"], b["replicates"])
     # the bias estimate's own Monte-Carlo sd is sqrt(2 s^4 / n / B)
@@ -152,20 +155,20 @@ def test_ratio_ci_covers_and_pairing_matters():
 
 def gbm_bars(n_bars, sigma, steps=390, seed=0):
     rng = np.random.default_rng(seed)
-    O, H, L, C = [], [], [], []
+    O_, H, L, C = [], [], [], []
     p = 0.0
     for _ in range(n_bars):
         path = p + np.cumsum(rng.normal(scale=sigma / np.sqrt(steps), size=steps))
-        O.append(p)
+        O_.append(p)
         C.append(path[-1])
         H.append(max(p, path.max()))
         L.append(min(p, path.min()))
         p = path[-1]
-    return (np.exp(np.array(O)), np.exp(np.array(H)), np.exp(np.array(L)), np.exp(np.array(C)))
+    return (np.exp(np.array(O_)), np.exp(np.array(H)), np.exp(np.array(L)), np.exp(np.array(C)))
 
 
 def test_parkinson_is_unbiased_for_driftless_gbm():
-    O, H, L, C = gbm_bars(400, 0.02, seed=0)
+    O_, H, L, C = gbm_bars(400, 0.02, seed=0)
     o = vol_parkinson(H, L)
     assert o["sigma"] == pytest.approx(0.02, rel=0.08)
     assert o["constant"] == pytest.approx(1 / (4 * np.log(2)), rel=1e-12)
@@ -180,7 +183,7 @@ def test_parkinson_efficiency_over_close_to_close_is_measured():
     exist, so it is measured over replications rather than quoted."""
     pk, cc = [], []
     for rep in range(60):
-        O, H, L, C = gbm_bars(100, 0.02, seed=100 + rep)
+        O_, H, L, C = gbm_bars(100, 0.02, seed=100 + rep)
         pk.append(vol_parkinson(H, L)["variance"])
         r = np.diff(np.log(C), prepend=0.0)
         cc.append(float(np.var(r, ddof=1)))
@@ -189,8 +192,8 @@ def test_parkinson_efficiency_over_close_to_close_is_measured():
 
 
 def test_garman_klass_beats_parkinson_and_partials_out_trend():
-    O, H, L, C = gbm_bars(400, 0.02, seed=1)
-    g = vol_garman_klass(O, H, L, C)
+    O_, H, L, C = gbm_bars(400, 0.02, seed=1)
+    g = vol_garman_klass(O_, H, L, C)
     assert g["sigma"] == pytest.approx(0.02, rel=0.08)
     # the open-close term is genuinely SUBTRACTED
     assert g["variance"] == pytest.approx(g["range_term"] - g["openclose_term"], rel=1e-10)

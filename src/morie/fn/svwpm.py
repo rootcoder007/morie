@@ -24,16 +24,10 @@ def svwpm(voter, candidates=None, weights=None):
     DescriptiveResult
     """
     voter = np.asarray(voter, dtype=float)
-    if candidates is None:
-        candidates = np.zeros((1, len(voter)))
-    else:
-        candidates = np.asarray(candidates, dtype=float)
+    candidates = np.zeros((1, len(voter))) if candidates is None else np.asarray(candidates, dtype=float)
     if candidates.ndim == 1:
         candidates = candidates.reshape(1, -1)
-    if weights is None:
-        weights = np.ones(len(voter)) / len(voter)
-    else:
-        weights = np.asarray(weights, dtype=float)
+    weights = np.ones(len(voter)) / len(voter) if weights is None else np.asarray(weights, dtype=float)
     dists = np.array([float(np.sum(weights * (voter - c) ** 2)) for c in candidates])
     utilities = np.exp(-0.5 * dists)
     stat = float(np.max(utilities))

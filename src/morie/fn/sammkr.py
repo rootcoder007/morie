@@ -107,7 +107,7 @@ def min_loss_over_masks(predictions, target, loss_fn):
         "losses": losses,
         "mean_loss": mean,
         "gap": mean - losses[j],
-        "note": "only output %d receives gradient; the others are free to specialise elsewhere" % j,
+        "note": f"only output {int(j)} receives gradient; the others are free to specialise elsewhere",
     }
 
 
@@ -115,7 +115,7 @@ def whole_part_subpart(masks, target_hierarchy=None):
     r"""Name the three outputs by the nesting they were meant for."""
     if len(masks) != 3:
         raise ValueError(
-            "sammkr: the paper's argument is about THREE outputs (whole, part, subpart), got %d" % len(masks)
+            f"sammkr: the paper's argument is about THREE outputs (whole, part, subpart), got {int(len(masks))}"
         )
     sizes = [sum(1 for v in _flat(m) if v > 0.5) for m in masks]
     order = sorted(range(3), key=lambda i: -sizes[i])
@@ -139,7 +139,7 @@ def rank_masks(masks, predicted_iou, target=None):
     """
     p = [float(v) for v in k.vec(predicted_iou)]
     if len(p) != len(masks):
-        raise ValueError("sammkr: %d masks but %d predicted IoUs" % (len(masks), len(p)))
+        raise ValueError(f"sammkr: {int(len(masks))} masks but {int(len(p))} predicted IoUs")
     order = sorted(range(len(p)), key=lambda i: -p[i])
     out = {"order": order, "best": order[0], "predicted_iou": p}
     if target is not None:

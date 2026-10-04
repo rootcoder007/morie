@@ -133,7 +133,7 @@ def test_the_static_comparators_match_their_closed_forms(two_stage):
     r = tmle_dynamic_regime(d["Y"], d["A"], d["L"], n_folds=5)
     for a0 in (0.0, 1.0):
         for a1 in (0.0, 1.0):
-            key = "static_%d%d" % (int(a0), int(a1))
+            key = f"static_{int(int(a0))}{int(int(a1))}"
             assert r[key] == pytest.approx(d["static"][(a0, a1)], abs=0.07)
 
 

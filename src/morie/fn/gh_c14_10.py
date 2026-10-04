@@ -25,8 +25,8 @@ def ghosal_py_eppf(block_sizes, d=0.5, theta=1.0):
     for i in range(1, n):
         lp -= math.log(theta + i)
     for nj in ns:
-        for l in range(nj - 1):
-            lp += math.log(1.0 - d + l)
+        for ell in range(nj - 1):
+            lp += math.log(1.0 - d + ell)
     res = RichResult(payload={"estimate": math.exp(lp), "log_eppf": lp, "method": "PY EPPF (GvdV 2017 sec. 14.4)"})
     return with_describe_pointer(res, "gh_c14_10")
 

@@ -76,30 +76,30 @@ def geron_embedding_lookup(ids, E):
     if not np.all(np.isfinite(T)):
         raise ValueError("E must be finite.")
     V, d = T.shape
-    I = np.asarray(ids)
-    if I.size == 0:
+    I_ = np.asarray(ids)
+    if I_.size == 0:
         raise ValueError("ids is empty.")
-    if not np.issubdtype(I.dtype, np.integer):
-        if not np.all(np.asarray(I, dtype=float) == np.floor(np.asarray(I, dtype=float))):
+    if not np.issubdtype(I_.dtype, np.integer):
+        if not np.all(np.asarray(I_, dtype=float) == np.floor(np.asarray(I_, dtype=float))):
             raise ValueError("token ids must be integers.")
-        I = I.astype(int)
-    if I.min() < 0 or I.max() >= V:
-        raise ValueError(f"token ids must lie in [0, {V - 1}], got range [{int(I.min())}, {int(I.max())}].")
+        I_ = I_.astype(int)
+    if I_.min() < 0 or I_.max() >= V:
+        raise ValueError(f"token ids must lie in [0, {V - 1}], got range [{int(I_.min())}, {int(I_.max())}].")
 
-    out = T[I]
+    out = T[I_]
 
     return RichResult(
         title="Embedding lookup",
-        summary_lines=[("Vocab", int(V)), ("Dim", int(d)), ("Ids", int(I.size))],
+        summary_lines=[("Vocab", int(V)), ("Dim", int(d)), ("Ids", int(I_.size))],
         payload={
             "embeddings": out.tolist(),
             "vocab_size": int(V),
             "dim": int(d),
-            "n_unique": int(np.unique(I).size),
+            "n_unique": int(np.unique(I_).size),
             "n_parameters": int(V * d),
-            "ids": I.tolist(),
+            "ids": I_.tolist(),
             "estimate": out.tolist(),
-            "n": int(I.size),
+            "n": int(I_.size),
             "method": _METHOD,
         },
     )

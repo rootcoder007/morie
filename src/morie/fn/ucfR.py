@@ -103,9 +103,7 @@ def pearson(ratings_a, ratings_b, min_common=2, significance=False, threshold=50
     n = c["n"]
     if n < int(min_common):
         raise ValueError(
-            "ucfR: only %d co-rated items, below the "
-            "minimum of %d -- a correlation here would "
-            "be noise" % (n, int(min_common))
+            f"ucfR: only {int(n)} co-rated items, below the minimum of {int(int(min_common))} -- a correlation here would be noise"
         )
     ma = sum(c["a"]) / n
     mb = sum(c["b"]) / n

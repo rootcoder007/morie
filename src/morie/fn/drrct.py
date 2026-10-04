@@ -87,7 +87,7 @@ def dr_rct_assisted_did(y_obs, y_rct, D, X=None, G=None):
     for idx, nm in ((ie, "experimental"), (io, "observational")):
         s = sum(dv[i] for i in idx)
         if s <= 0.0 or s >= float(len(idx)):
-            raise ValueError("the %s subsample must contain both arms" % nm)
+            raise ValueError(f"the {nm} subsample must contain both arms")
     bs = k.lstsq([W[i] for i in ie], [ys[i] for i in ie])
     alpha = []
     for i in io:

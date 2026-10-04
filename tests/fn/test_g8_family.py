@@ -210,7 +210,7 @@ def test_hybRC_mixed_and_feature_combination():
 def _hub_triples():
     t = [("u1", "t1", "r1"), ("u1", "t1", "r2")]
     for n in range(2, 12):
-        t += [("u%d" % n, "tHUB", "r%d" % n), ("u%d" % n, "tHUB", "r1")]
+        t += [(f"u{int(n)}", "tHUB", f"r{int(n)}"), (f"u{int(n)}", "tHUB", "r1")]
     return t
 
 

@@ -64,17 +64,16 @@ def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
         mu = eta.copy()
 
         if family == "gaussian":
-            g_mu = mu
             g_prime = np.ones(n)
             w = np.ones(n)
         elif family == "binomial":
             mu = 1.0 / (1.0 + np.exp(-eta))
-            g_mu = np.log(mu / (1 - mu + 1e-10))
+            np.log(mu / (1 - mu + 1e-10))
             g_prime = 1.0 / (mu * (1 - mu) + 1e-10)
             w = mu * (1 - mu)
         elif family == "poisson":
             mu = np.exp(eta)
-            g_mu = np.log(mu + 1e-10)
+            np.log(mu + 1e-10)
             g_prime = 1.0 / (mu + 1e-10)
             w = mu
         else:

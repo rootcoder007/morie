@@ -53,11 +53,19 @@ def rey_gm(
     if link == "log":
         g = np.log
         g_inv = np.exp
-        g_deriv = lambda mu: 1.0 / mu
+
+        def g_deriv(mu):
+            return 1.0 / mu
     else:  # inverse
-        g = lambda mu: 1.0 / mu
-        g_inv = lambda eta: 1.0 / eta
-        g_deriv = lambda mu: -1.0 / (mu**2)
+
+        def g(mu):
+            return 1.0 / mu
+
+        def g_inv(eta):
+            return 1.0 / eta
+
+        def g_deriv(mu):
+            return -1.0 / (mu**2)
 
     # Initialize
     mu = y_arr.copy()
@@ -65,7 +73,7 @@ def rey_gm(
     eta = g(mu)
     beta = np.linalg.lstsq(X_arr, eta, rcond=None)[0]
 
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         eta = X_arr @ beta
         mu = g_inv(eta)
         mu = np.clip(mu, 1e-10, None)

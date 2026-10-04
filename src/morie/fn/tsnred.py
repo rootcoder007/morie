@@ -83,7 +83,7 @@ def tsne_reduce(
 
     Y = rng.normal(0, 1e-4, (n, n_dims))
     vel = np.zeros_like(Y)
-    for it in range(n_iter):
+    for _it in range(n_iter):
         d_low = np.sum((Y[:, None, :] - Y[None, :, :]) ** 2, axis=2)
         Q = 1.0 / (1.0 + d_low)
         np.fill_diagonal(Q, 0)

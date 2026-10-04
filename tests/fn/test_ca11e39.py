@@ -32,7 +32,7 @@ def test_ca11e39_edge():
     # Recompute independently using plain arithmetic on the inputs.
     w = ws
     y = ys
-    wbar = w.mean()
+    w.mean()
     ybar = (w * y).sum() / w.sum()
     # Weighted variance under simple frequency weights (degree of freedom = sum(w) - 1...
     # but we'll match what _ca_crim.mean_effect_size does: it returns a dict with

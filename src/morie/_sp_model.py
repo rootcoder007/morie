@@ -57,7 +57,7 @@ def _fields(buf):
             v = buf[i : i + 8]
             i += 8
         else:
-            raise ValueError("unsupported protobuf wire type %d" % wt)
+            raise ValueError(f"unsupported protobuf wire type {int(wt)}")
         yield fnum, wt, v
 
 

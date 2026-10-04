@@ -35,7 +35,7 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
     if n < max(10, 3 * k):
         return RichResult(payload={"estimate": np.nan, "n": n, "method": "mixture-EM (insufficient data)"})
     k = max(2, int(k))
-    rng = np.random.default_rng(seed)
+    np.random.default_rng(seed)
     # k-means style warm start via quantile init
     qs = np.linspace(0.1, 0.9, k)
     mu = np.quantile(y, qs).astype(float)

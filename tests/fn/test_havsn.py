@@ -5,7 +5,7 @@ from morie.fn.havsn import havsn
 
 
 def test_havsn_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = havsn(lat1=43.65, lon1=-79.38, lat2=43.7, lon2=-79.4)
     assert result is not None
     assert hasattr(result, "name")

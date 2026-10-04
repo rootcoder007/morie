@@ -71,7 +71,7 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d observations." % (Xa.shape[0], n))
+        raise ValueError(f"X has {int(Xa.shape[0])} rows for {int(n)} observations.")
     p = Xa.shape[1]
 
     if V is None:
@@ -83,15 +83,15 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
         q = Za.shape[1]
         Dm = np.atleast_2d(np.asarray(D, dtype=float))
         if Dm.shape != (q, q):
-            raise ValueError("D must be %d by %d, got %s." % (q, q, Dm.shape))
+            raise ValueError(f"D must be {int(q)} by {int(q)}, got {Dm.shape}.")
         Rm = np.eye(n) if R is None else np.atleast_2d(np.asarray(R, dtype=float))
         if Rm.shape != (n, n):
-            raise ValueError("R must be %d by %d, got %s." % (n, n, Rm.shape))
+            raise ValueError(f"R must be {int(n)} by {int(n)}, got {Rm.shape}.")
         Vm = Za @ Dm @ Za.T + Rm  # ZDZ', not Z'DZ
     else:
         Vm = np.atleast_2d(np.asarray(V, dtype=float))
         if Vm.shape != (n, n):
-            raise ValueError("V must be %d by %d, got %s." % (n, n, Vm.shape))
+            raise ValueError(f"V must be {int(n)} by {int(n)}, got {Vm.shape}.")
 
     Vm = 0.5 * (Vm + Vm.T)
     sign, logdet = np.linalg.slogdet(Vm)
@@ -109,11 +109,9 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
         if s2 <= 0:
             raise ValueError("X'V^{-1}X is singular; X is rank deficient.")
         ll = -0.5 * (logdet + ld2 + quad + (n - p) * np.log(2 * np.pi))
-        k = p
     else:
         ll = -0.5 * (logdet + quad + n * np.log(2 * np.pi))
         ld2 = None
-        k = 0
     npar = p + 1
     return RichResult(
         payload={

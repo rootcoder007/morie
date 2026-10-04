@@ -76,7 +76,7 @@ __all__ = [
 def _as_series(y):
     out = [float(v) for v in np.atleast_1d(np.asarray(y, dtype=float))]
     if len(out) < 10:
-        raise ValueError("lyapun: need at least 10 observations, got %d" % len(out))
+        raise ValueError(f"lyapun: need at least 10 observations, got {int(len(out))}")
     for v in out:
         if v != v or v in (float("inf"), float("-inf")):
             raise ValueError("lyapun: the series contains a non-finite value")
@@ -97,7 +97,7 @@ def embed(y, m, tau):
         raise ValueError("lyapun: the reconstruction delay must be >= 1")
     n_pts = len(y) - (m - 1) * tau
     if n_pts < 3:
-        raise ValueError("lyapun: m = %d and J = %d leave only %d reconstructed points" % (m, tau, n_pts))
+        raise ValueError(f"lyapun: m = {int(m)} and J = {int(tau)} leave only {int(n_pts)} reconstructed points")
     return [[y[j + k * tau] for k in range(m)] for j in range(n_pts)]
 
 
@@ -210,9 +210,7 @@ def divergence_curve(y, m=None, tau=None, dt=1.0, min_sep=None, max_steps=None):
         raise ValueError("lyapun: min_sep must be >= 0")
     if min_sep >= n_pts - 2:
         raise ValueError(
-            "lyapun: the mean period (%d samples) leaves no "
-            "admissible neighbours among %d reconstructed "
-            "points; pass min_sep explicitly" % (min_sep, n_pts)
+            f"lyapun: the mean period ({int(min_sep)} samples) leaves no admissible neighbours among {int(n_pts)} reconstructed points; pass min_sep explicitly"
         )
     nn, d0 = _nearest_neighbours(pts, min_sep)
     usable = [j for j in range(n_pts) if nn[j] >= 0 and d0[j] > 0.0]
@@ -372,7 +370,9 @@ def lyapunov_exponent(
     else:
         lo, hi = int(fit[0]), int(fit[1])
         if lo < 0 or hi > n_steps or hi - lo < 2:
-            raise ValueError("lyapun: the fitting window must lie inside 0..%d and span at least two steps" % n_steps)
+            raise ValueError(
+                f"lyapun: the fitting window must lie inside 0..{int(n_steps)} and span at least two steps"
+            )
     slope, intercept, se, r2 = _ols_slope(times[lo:hi], curve[lo:hi])
 
     # eq. 9, read at the end of the same window
@@ -444,7 +444,7 @@ def lyapunov_exponent(
             "n_points": dv["n_points"],
             "n": dv["n_obs"],
             "dt": dt,
-            "method": ("largest Lyapunov exponent, Rosenstein, Collins & De Luca (1993), route '%s'" % method),
+            "method": (f"largest Lyapunov exponent, Rosenstein, Collins & De Luca (1993), route '{method}'"),
             "note": (
                 "the exponent is the slope of <ln d_j(i)> over the "
                 "initial rise; a positive value indicates chaos, and the "

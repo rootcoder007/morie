@@ -129,14 +129,14 @@ def horowitz_tikhonov_unknown_T(x, y, w, bandwidth=None, alpha=1e-3, grid=25):
     # t_hat(x, z) = int f_hat(x, w) f_hat(z, w) dw, eq. (5.43) form.
     that = [[0.0] * m for _ in range(m)]
     for k in range(m):
-        for l in range(m):
+        for ell in range(m):
             s = 0.0
             for q in range(m):
-                s += float(wq[q]) * fxw[k][q] * fxw[l][q]
-            that[k][l] = s
+                s += float(wq[q]) * fxw[k][q] * fxw[ell][q]
+            that[k][ell] = s
 
     # (T_hat h)(z_l) = sum_k wq_k t_hat(z_k, z_l) h_k; solve (T + a I) g = r.
-    A = [[that[k][l] * float(wq[k]) for k in range(m)] for l in range(m)]
+    A = [[that[k][ell] * float(wq[k]) for k in range(m)] for ell in range(m)]
     for k in range(m):
         A[k][k] += alpha
     g_hat = np.linalg.solve(np.asarray(A, dtype=float), np.asarray(r_hat, dtype=float))

@@ -114,7 +114,7 @@ def genre_distribution(items, p_g_given_i, weights=None):
     G = len(p_g_given_i[0])
     w = [1.0] * len(it) if weights is None else [float(v) for v in k.vec(weights)]
     if len(w) != len(it):
-        raise ValueError("caltbR: %d weights for %d items" % (len(w), len(it)))
+        raise ValueError(f"caltbR: {int(len(w))} weights for {int(len(it))} items")
     tot = sum(w)
     if tot <= _EPS:
         raise ValueError("caltbR: the weights sum to zero")
@@ -126,10 +126,10 @@ def calibration_kl(p, q, alpha=0.01):
     pp = _norm([float(v) for v in k.vec(p)])
     qq = _norm([float(v) for v in k.vec(q)])
     if len(pp) != len(qq):
-        raise ValueError("caltbR: %d genres in p but %d in q" % (len(pp), len(qq)))
+        raise ValueError(f"caltbR: {int(len(pp))} genres in p but {int(len(qq))} in q")
     a = float(alpha)
     if not 0.0 < a < 1.0:
-        raise ValueError("caltbR: alpha must lie in (0,1), got %r" % (alpha,))
+        raise ValueError(f"caltbR: alpha must lie in (0,1), got {alpha!r}")
     tot = 0.0
     for g in range(len(pp)):
         if pp[g] <= _EPS:
@@ -161,9 +161,9 @@ def diversity_prior(p_u, p0, beta):
     b = [float(v) for v in k.vec(p0)]
     t = float(beta)
     if not 0.0 <= t <= 1.0:
-        raise ValueError("caltbR: beta must lie in [0,1], got %r" % (beta,))
+        raise ValueError(f"caltbR: beta must lie in [0,1], got {beta!r}")
     if len(a) != len(b):
-        raise ValueError("caltbR: prior has %d genres, target %d" % (len(b), len(a)))
+        raise ValueError(f"caltbR: prior has {int(len(b))} genres, target {int(len(a))}")
     return [t * b[g] + (1.0 - t) * a[g] for g in range(len(a))]
 
 
@@ -175,7 +175,7 @@ def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5, metric="kl",
     view.
     """
     if metric not in _METRICS:
-        raise ValueError("caltbR: metric must be one of %s, got %r" % (", ".join(_METRICS), metric))
+        raise ValueError("caltbR: metric must be one of {}, got {!r}".format(", ".join(_METRICS), metric))
     s = [float(v) for v in k.vec(scores)]
     n = len(s)
     if n == 0:
@@ -185,7 +185,7 @@ def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5, metric="kl",
         raise ValueError("caltbR: N must be at least 1")
     lm = float(lam)
     if not 0.0 <= lm <= 1.0:
-        raise ValueError("caltbR: lambda must lie in [0,1], got %r" % (lam,))
+        raise ValueError(f"caltbR: lambda must lie in [0,1], got {lam!r}")
     pt = _norm([float(v) for v in k.vec(p_target)])
 
     def cal(sel):

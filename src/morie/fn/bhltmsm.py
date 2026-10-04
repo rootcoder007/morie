@@ -107,7 +107,7 @@ def cumulative_episodes(histories, states=_STATES):
         for a in h:
             key = a if isinstance(a, str) else S[int(a)]
             if key not in idx:
-                raise ValueError("bhltmsm: unknown treatment state %r; the states are %s" % (key, ", ".join(S)))
+                raise ValueError("bhltmsm: unknown treatment state {!r}; the states are {}".format(key, ", ".join(S)))
             row[idx[key]] += 1.0
         out.append(row)
     return {
@@ -131,12 +131,10 @@ def treatment_weights(histories, propensities, stabilise=True, marginal=None, tr
     for i, h in enumerate(histories):
         P = [float(v) for v in propensities[i]]
         if len(P) != len(h):
-            raise ValueError("bhltmsm: person %d has %d periods but %d propensities" % (i, len(h), len(P)))
+            raise ValueError(f"bhltmsm: person {int(i)} has {int(len(h))} periods but {int(len(P))} propensities")
         if any(v <= 0.0 or v > 1.0 for v in P):
             raise ValueError(
-                "bhltmsm: a propensity is outside (0,1] "
-                "for person %d -- positivity fails, so "
-                "the weight is undefined" % i
+                f"bhltmsm: a propensity is outside (0,1] for person {int(i)} -- positivity fails, so the weight is undefined"
             )
         den = 1.0
         for v in P:
@@ -205,7 +203,7 @@ def confounding_check(covariate_history, treatment_history, outcome=None):
     L = [[float(v) for v in r] for r in k.mat(covariate_history)]
     A = [[float(v) for v in r] for r in k.mat(treatment_history)]
     if len(L) != len(A):
-        raise ValueError("bhltmsm: %d covariate histories but %d treatment histories" % (len(L), len(A)))
+        raise ValueError(f"bhltmsm: {int(len(L))} covariate histories but {int(len(A))} treatment histories")
     T = len(L[0])
     if T < 2:
         raise ValueError("bhltmsm: at least 2 periods are needed to ask whether treatment affects the covariate")
@@ -235,10 +233,10 @@ def fit_msm(outcome, cumulative, weights=None, states=_STATES):
     X = [[float(v) for v in r] for r in k.mat(cumulative)]
     n = len(y)
     if len(X) != n:
-        raise ValueError("bhltmsm: %d outcomes but %d covariate rows" % (n, len(X)))
+        raise ValueError(f"bhltmsm: {int(n)} outcomes but {int(len(X))} covariate rows")
     w = [1.0] * n if weights is None else [float(v) for v in k.vec(weights)]
     if len(w) != n:
-        raise ValueError("bhltmsm: %d weights for %d people" % (len(w), n))
+        raise ValueError(f"bhltmsm: {int(len(w))} weights for {int(n)} people")
     if any(v < 0.0 for v in w):
         raise ValueError("bhltmsm: a weight is negative")
     co = k.wls(X, y, w, 1e-10)["coef"]

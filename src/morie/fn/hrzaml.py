@@ -85,7 +85,7 @@ def addlink(x, y, link="logistic", K=4, h=None, niter=20, ngrid=25):
         raise ValueError("an additive model needs at least two covariates.")
     if isinstance(link, str):
         if link not in _LINKS:
-            raise ValueError("link must be one of %s or a (G, Gprime) pair, got %r." % (sorted(_LINKS), link))
+            raise ValueError(f"link must be one of {sorted(_LINKS)} or a (G, Gprime) pair, got {link!r}.")
         G, Gp = _LINKS[link]
     else:
         G, Gp = link

@@ -56,9 +56,9 @@ def wasserman_log_linear(table):
     ValueError: the saturated log-linear model needs strictly positive counts.
     """
     T = np.atleast_2d(np.asarray(table, dtype=float))
-    I, J = T.shape
-    if I < 2 or J < 2:
-        raise ValueError(f"a two-way table needs at least 2x2 cells; got {I}x{J}.")
+    I_, J = T.shape
+    if I_ < 2 or J < 2:
+        raise ValueError(f"a two-way table needs at least 2x2 cells; got {I_}x{J}.")
     if np.any(T <= 0):
         raise ValueError("the saturated log-linear model needs strictly positive counts.")
     L = np.log(T)
@@ -77,7 +77,7 @@ def wasserman_log_linear(table):
             "lambda_col": [float(v) for v in lc],
             "lambda_int": [float(v) for v in lint.ravel()],
             "independence_fit": [float(v) for v in mu_ind.ravel()],
-            "df": int((I - 1) * (J - 1)),
+            "df": int((I_ - 1) * (J - 1)),
             "n": n,
             "method": "saturated log-linear (zero-sum ANOVA of log counts) + G^2",
         }

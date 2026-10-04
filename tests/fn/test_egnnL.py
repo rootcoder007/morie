@@ -35,7 +35,10 @@ def _rot(a, b, c):
     Rz = [[ca, -sa, 0], [sa, ca, 0], [0, 0, 1]]
     Ry = [[cb, 0, sb], [0, 1, 0], [-sb, 0, cb]]
     Rx = [[1, 0, 0], [0, cc, -sc], [0, sc, cc]]
-    mm = lambda A, B: [[sum(A[i][k] * B[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+
+    def mm(A, B):
+        return [[sum(A[i][k] * B[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+
     return mm(mm(Rz, Ry), Rx)
 
 
@@ -79,7 +82,10 @@ def test_rotation_reflection_and_translation_equivariance():
 
 def test_momentum_variant_is_equivariant_too():
     V = [[0.1, 0.0, -0.2], [0.0, 0.3, 0.1], [-0.1, 0.1, 0.0], [0.2, -0.2, 0.2]]
-    phi_v = lambda h: 1.0 + 0.1 * h[0]
+
+    def phi_v(h):
+        return 1.0 + 0.1 * h[0]
+
     base = egcl(H, X, phi_e, phi_x, phi_h, V=V, mode="momentum", phi_v=phi_v)
     Q, g = _rot(0.9, 0.1, -1.4), [0.0, 5.0, -1.0]
     Vt = [[sum(Q[a][b] * v[b] for b in range(3)) for a in range(3)] for v in V]

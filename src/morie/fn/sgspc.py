@@ -32,8 +32,8 @@ def spectral_density(Z, coords, n_freq=50):
 
     xmin, ymin = coords.min(axis=0)
     xmax, ymax = coords.max(axis=0)
-    xi = np.linspace(xmin, xmax, n_freq)
-    yi = np.linspace(ymin, ymax, n_freq)
+    np.linspace(xmin, xmax, n_freq)
+    np.linspace(ymin, ymax, n_freq)
     grid = np.full((n_freq, n_freq), np.nan)
 
     for k in range(len(Z)):

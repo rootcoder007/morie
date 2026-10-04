@@ -86,7 +86,7 @@ def build_ulfm(Q, H_fn, Y, eps_max=2.0, steps=400):
     y = [float(v) for v in k.vec(Y)]
     n = len(q)
     if len(y) != n:
-        raise ValueError("tl1step: %d fits but %d outcomes" % (n, len(y)))
+        raise ValueError(f"tl1step: {int(n)} fits but {int(len(y))} outcomes")
     if int(steps) < 1:
         raise ValueError("tl1step: steps must be at least 1")
     de = float(eps_max) / int(steps)

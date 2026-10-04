@@ -660,7 +660,7 @@ def normalized_similarity_matrix(
     above zero.
     """
     if mode not in _MATRICES:
-        raise ValueError("mafft: mode must be one of %s" % (_MATRICES,))
+        raise ValueError(f"mafft: mode must be one of {_MATRICES}")
     if default not in ("jtt200", "grantham"):
         raise ValueError("mafft: default must be 'jtt200' or 'grantham'")
     alpha = _NT if seq_type == "nt" else _AA
@@ -682,7 +682,7 @@ def normalized_similarity_matrix(
     for a in alpha:
         for b in alpha:
             if (a, b) not in M:
-                raise ValueError("mafft: raw_matrix is missing (%s, %s)" % (a, b))
+                raise ValueError(f"mafft: raw_matrix is missing ({a}, {b})")
     avg1 = sum(freqs[a] * M[(a, a)] for a in alpha)
     avg2 = sum(freqs[a] * freqs[b] * M[(a, b)] for a in alpha for b in alpha)
     if abs(avg1 - avg2) < 1e-15:
@@ -1147,7 +1147,7 @@ def mafft_alignment(
 ):
     """Align ``sequences`` by one of the paper's named methods."""
     if method not in _METHODS:
-        raise ValueError("mafft: method must be one of %s" % (_METHODS,))
+        raise ValueError(f"mafft: method must be one of {_METHODS}")
     seqs, kind = _clean(sequences, seq_type)
     if len(seqs) < 2:
         raise ValueError("mafft: at least two sequences are needed")

@@ -5,7 +5,7 @@ from morie.fn.simps import simps
 
 
 def test_simps_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = simps(f=lambda x: x**2 - 2, a=0.0, b=1.0)
     assert result is not None
     assert hasattr(result, "name")

@@ -26,7 +26,7 @@ def test_ghs026_basic():
 
 def test_ghs026_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m = 0
     masses = [1.0]
     x = 0.0

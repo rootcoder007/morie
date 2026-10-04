@@ -100,12 +100,9 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1, s
     # per-position mean absorbs 0.5 * position of slope and the
     # resulting indices come out phase-shifted (Hyndman &
     # Athanasopoulos Sec. 3.4, classical decomposition).
-    half = m // 2
+    m // 2
     trend_ma = np.full(n, np.nan)
-    if m % 2 == 0:
-        w = np.r_[0.5, np.ones(m - 1), 0.5] / m
-    else:
-        w = np.ones(m) / m
+    w = np.r_[0.5, np.ones(m - 1), 0.5] / m if m % 2 == 0 else np.ones(m) / m
     valid = np.convolve(y, w, mode="valid")
     start = (w.size - 1) // 2
     trend_ma[start : start + valid.size] = valid

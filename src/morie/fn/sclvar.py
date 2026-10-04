@@ -73,7 +73,7 @@ def selection_coefficient(counts, n_total=None, generations=None, n_e=None, alph
     C = np.atleast_2d(np.asarray(counts, dtype=float))
     L, D = C.shape
     if D < 2:
-        raise ValueError("need at least 2 demes, got %d." % D)
+        raise ValueError(f"need at least 2 demes, got {int(D)}.")
     if L < 2:
         raise ValueError(
             "need at least 2 loci: a single locus has no genome-wide distribution to be an outlier against."

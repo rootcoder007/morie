@@ -289,7 +289,9 @@ def test_task_conditioning_validates_the_distribution():
 
 
 def test_moe_skips_zero_weight_experts():
-    boom = lambda x: (_ for _ in ()).throw(AssertionError("expert ran"))
+    def boom(x):
+        return (_ for _ in ()).throw(AssertionError("expert ran"))
+
     out = kamath_ch2_moe_output([1.0], [1.0, 0.0], [lambda x: x * 3, boom])
     assert out["output"] == [3.0]
     assert out["experts_evaluated"] == 1

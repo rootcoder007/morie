@@ -42,7 +42,7 @@ def slice_sampling_dp_mixture(
     trace_z = []
     trace_n_clusters = []
 
-    for iteration in range(n_iter):
+    for _iteration in range(n_iter):
         # Slice sampling of cluster assignments
         for i in range(n):
             z_old = z[i]

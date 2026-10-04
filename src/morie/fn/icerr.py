@@ -53,10 +53,7 @@ def incremental_cost_effectiveness_ratio(
     delta_c = cost_new - cost_ref
     delta_e = effect_new - effect_ref
 
-    if abs(delta_e) < 1e-15:
-        icer = np.inf if delta_c > 0 else (-np.inf if delta_c < 0 else 0.0)
-    else:
-        icer = delta_c / delta_e
+    icer = (np.inf if delta_c > 0 else -np.inf if delta_c < 0 else 0.0) if abs(delta_e) < 1e-15 else delta_c / delta_e
 
     if delta_c >= 0 and delta_e >= 0:
         quadrant = "NE (more costly, more effective)"

@@ -68,10 +68,7 @@ def vrmxr(L, max_iter=1000, tol=1e-6, gamma=1.0):
                 numerator = np.sum(v * (u))
                 denominator = np.sum(u**2 - v**2)
 
-                if abs(denominator) < 1e-10:
-                    theta = 0
-                else:
-                    theta = 0.25 * np.arctan2(numerator, denominator)
+                theta = 0 if abs(denominator) < 1e-10 else 0.25 * np.arctan2(numerator, denominator)
 
                 # Apply rotation to columns i, j
                 cos_t = np.cos(gamma * theta)

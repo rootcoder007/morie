@@ -78,7 +78,10 @@ def btarsv(x, p=None, statistic=None, B=500, burn=100, seed=0, p_max=None):
     if n < 20:
         raise ValueError("need at least 20 observations")
     if statistic is None:
-        statistic = lambda s: sum(s) / len(s)
+
+        def statistic(s):
+            return sum(s) / len(s)
+
     xbar = sum(xv) / n
     xc = [v - xbar for v in xv]
     if p is None:

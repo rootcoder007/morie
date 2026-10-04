@@ -57,7 +57,7 @@ def signzero(x, m0=0.0, method="discard"):
             "nzero": int(nz),
             "k_raw": int(kpos),
             "n_raw": int(n_raw),
-            "method": "sign test zero handling (%s), Sec. 5.4.8" % method,
+            "method": f"sign test zero handling ({method}), Sec. 5.4.8",
         }
     )
 

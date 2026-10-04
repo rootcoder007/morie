@@ -65,7 +65,7 @@ def _aggregate(name, vals):
         if var < 0.0:
             var = 0.0  # the ReLU of eq. (3)
         return math.sqrt(var + _EPS)
-    raise ValueError("unknown aggregator %r" % (name,))
+    raise ValueError(f"unknown aggregator {name!r}")
 
 
 def pna(A, X, aggregators=_AGGREGATORS, scalers=_SCALERS):
@@ -104,10 +104,10 @@ def pna(A, X, aggregators=_AGGREGATORS, scalers=_SCALERS):
     scls = list(scalers)
     for a in aggs:
         if a not in _AGGREGATORS:
-            raise ValueError("unknown aggregator %r" % (a,))
+            raise ValueError(f"unknown aggregator {a!r}")
     for s in scls:
         if s not in _SCALERS:
-            raise ValueError("unknown scaler %r" % (s,))
+            raise ValueError(f"unknown scaler {s!r}")
 
     nb = _neighbours(Am)
     deg = [len(nb[i]) for i in range(n)]

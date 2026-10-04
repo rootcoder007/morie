@@ -19,11 +19,11 @@ def _design(n, psi_true, seed=12345, confounded=False):
     rng = np.random.default_rng(seed)
     U, L, A = [], [], []
     for _ in range(n):
-        l = 1.0 if rng.random() < 0.5 else 0.0
+        ell = 1.0 if rng.random() < 0.5 else 0.0
         base = -math.log(1.0 - rng.random()) * 5.0 + 1.0
-        U.append(base * (0.5 if (confounded and l) else 1.0))
-        L.append([l])
-        A.append(1.0 if rng.random() < (0.2 + 0.6 * l) else 0.0)
+        U.append(base * (0.5 if (confounded and ell) else 1.0))
+        L.append([ell])
+        A.append(1.0 if rng.random() < (0.2 + 0.6 * ell) else 0.0)
     T = [U[i] * math.exp(-psi_true * A[i]) for i in range(n)]
     return T, [1.0] * n, A, L, U
 

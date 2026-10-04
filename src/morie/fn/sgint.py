@@ -48,8 +48,8 @@ def intensity_estimate(points, window, method="kernel", bandwidth=None, grid_n=5
         global_intensity = n / area
     else:
         nx = ny = int(np.sqrt(grid_n))
-        xedges = np.linspace(xmin, xmax, nx + 1)
-        yedges = np.linspace(ymin, ymax, ny + 1)
+        np.linspace(xmin, xmax, nx + 1)
+        np.linspace(ymin, ymax, ny + 1)
         cell_area = ((xmax - xmin) / nx) * ((ymax - ymin) / ny)
         intensity = np.zeros((ny, nx))
         for k in range(n):

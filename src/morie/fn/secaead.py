@@ -107,9 +107,9 @@ def chacha20_block(key, counter, nonce, rounds=20):
     k = bytearray(h._as_bytes(key))
     n = bytearray(h._as_bytes(nonce))
     if len(k) != 32:
-        raise ValueError("secaead: the key must be 32 bytes, got %d" % len(k))
+        raise ValueError(f"secaead: the key must be 32 bytes, got {int(len(k))}")
     if len(n) != 12:
-        raise ValueError("secaead: the nonce must be 12 bytes, got %d" % len(n))
+        raise ValueError(f"secaead: the nonce must be 12 bytes, got {int(len(n))}")
     state = list(_CONST) + _words_le(k) + [int(counter) & _MASK32] + _words_le(n)
     work = list(state)
     for _ in range(int(rounds) // 2):
@@ -147,7 +147,7 @@ def poly1305_mac(message, key):
     """
     k = bytearray(h._as_bytes(key))
     if len(k) != 32:
-        raise ValueError("secaead: the Poly1305 key must be 32 bytes, got %d" % len(k))
+        raise ValueError(f"secaead: the Poly1305 key must be 32 bytes, got {int(len(k))}")
     r = _clamp(int.from_bytes(bytes(k[:16]), "little"))
     s = int.from_bytes(bytes(k[16:]), "little")
     m = bytearray(h._as_bytes(message))

@@ -7,10 +7,16 @@ from morie.fn.hmvth import geron_voting_hard
 
 def test_hmvth_basic():
     """Test basic functionality."""
+
     # Simple models returning labels for 4 rows
-    a = lambda X: [1, 1, 0, 0]
-    b = lambda X: [1, 0, 1, 0]
-    c = lambda X: [1, 1, 0, 1]
+    def a(X):
+        return [1, 1, 0, 0]
+
+    def b(X):
+        return [1, 0, 1, 0]
+
+    def c(X):
+        return [1, 1, 0, 1]
 
     X = [[0.0], [1.0], [2.0], [3.0]]
     y_true = [1, 0, 1, 0]
@@ -43,9 +49,15 @@ def test_hmvth_basic():
 
 def test_hmvth_edge():
     """Test edge cases using the docstring example."""
-    a = lambda X: [1, 1]
-    b = lambda X: [1, 0]
-    c = lambda X: [0, 0]
+
+    def a(X):
+        return [1, 1]
+
+    def b(X):
+        return [1, 0]
+
+    def c(X):
+        return [0, 0]
 
     X = [[0.0], [1.0]]
     y_true = [1, 0]

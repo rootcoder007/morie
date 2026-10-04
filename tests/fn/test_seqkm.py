@@ -5,7 +5,7 @@ from morie.fn.seqkm import kmer_frequency
 
 
 def test_seqkm_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = kmer_frequency(sequence="ACGTACGT")
     assert result is not None
     assert hasattr(result, "name")

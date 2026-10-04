@@ -52,8 +52,8 @@ def cluster_variance(y, cluster, N=None):
     n = labs.size
     if n < 2:
         raise ValueError(f"need at least 2 clusters, got {n}.")
-    means = np.array([yv[cl == l].mean() for l in labs])
-    sizes = np.array([np.sum(cl == l) for l in labs], dtype=float)
+    means = np.array([yv[cl == ell].mean() for ell in labs])
+    sizes = np.array([np.sum(cl == ell) for ell in labs], dtype=float)
     Sb2 = float(np.var(means, ddof=1))
     fpc = 1.0 if N is None else max(0.0, 1.0 - n / float(N))
     var = fpc * Sb2 / n
@@ -61,7 +61,7 @@ def cluster_variance(y, cluster, N=None):
     # one-way ANOVA intra-cluster correlation
     grand = float(yv.mean())
     ssb = float(np.sum(sizes * (means - grand) ** 2))
-    ssw = float(np.sum([(np.sum((yv[cl == l] - means[i]) ** 2)) for i, l in enumerate(labs)]))
+    ssw = float(np.sum([(np.sum((yv[cl == ell] - means[i]) ** 2)) for i, ell in enumerate(labs)]))
     msb = ssb / (n - 1)
     msw = ssw / max(yv.size - n, 1)
     icc = float((msb - msw) / (msb + (mbar - 1) * msw)) if (msb + (mbar - 1) * msw) != 0 else 0.0

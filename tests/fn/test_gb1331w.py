@@ -10,7 +10,7 @@ def test_gb1331w_basic():
     """Test basic functionality."""
     N = 100
     rng = np.random.default_rng(42)
-    f = rng.normal(0, 1, 100)
+    rng.normal(0, 1, 100)
 
     # f0 is the standard normal density evaluated at 0.
     f0 = 1.0 / math.sqrt(2.0 * math.pi)

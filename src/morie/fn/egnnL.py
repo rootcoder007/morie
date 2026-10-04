@@ -102,7 +102,7 @@ def coord_update(X, M, phi_x, C=None):
 def egcl(H, X, phi_e, phi_x, phi_h, A=None, C=None, V=None, mode="position", phi_v=None, dt=1.0):
     r"""One equivariant graph convolutional layer, eqs. (3)-(6)."""
     if mode not in _MODES:
-        raise ValueError("egnnL: mode must be one of %s, got %r" % (", ".join(_MODES), mode))
+        raise ValueError("egnnL: mode must be one of {}, got {!r}".format(", ".join(_MODES), mode))
     n = len(H)
     M = [[None] * n for _ in range(n)]
     for i in range(n):

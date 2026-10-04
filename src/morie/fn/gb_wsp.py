@@ -72,9 +72,9 @@ def gibbons_concordance_preference(rankings):
     R = np.atleast_2d(np.asarray(rankings, dtype=float))
     k, n = R.shape
     if k < 2:
-        raise ValueError("need at least 2 rankings, got %d." % k)
+        raise ValueError(f"need at least 2 rankings, got {int(k)}.")
     if n < 2:
-        raise ValueError("need at least 2 objects, got %d." % n)
+        raise ValueError(f"need at least 2 objects, got {int(n)}.")
     if np.any(~np.isfinite(R)):
         raise ValueError("rankings contain non-finite values.")
     # rank within each observer, so raw scores are accepted too

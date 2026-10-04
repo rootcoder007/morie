@@ -117,7 +117,7 @@ def rinvapply(T, x):
 
 def rcompose(A, B):
     """Frame composition A o B, i.e. (A o B) o x = A o (B o x)."""
-    RA, tA = A[0], A[1]
+    RA, _tA = A[0], A[1]
     RB, tB = B[0], B[1]
     R = [[sum(RA[i][k] * RB[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
     return [R, rapply(A, tB)]

@@ -92,7 +92,7 @@ def variance_cox_estimator(beta, z, time, event, robust=False, cluster=None):
             cl = np.asarray(cluster).ravel()
             if cl.size != n:
                 raise ValueError(f"cluster has {cl.size} entries for {n}.")
-            agg = np.array([score_i[cl == l].sum(axis=0) for l in np.unique(cl)])
+            agg = np.array([score_i[cl == ell].sum(axis=0) for ell in np.unique(cl)])
             meat = agg.T @ agg
         rob = var @ meat @ var
         out["robust_variance"] = rob

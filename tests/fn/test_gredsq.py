@@ -5,8 +5,13 @@ from morie.fn.gredsq import geron_encoder_decoder_seq2seq
 
 def test_gredsq_basic():
     """Test basic functionality."""
-    encoder = lambda x: [float(sum(x))]
-    decoder = lambda y_prev, c, t: [c[0] - t]
+
+    def encoder(x):
+        return [float(sum(x))]
+
+    def decoder(y_prev, c, t):
+        return [c[0] - t]
+
     x = [1.0, 2.0]
     max_out_len = 3
     result = geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len)
@@ -27,8 +32,13 @@ def test_gredsq_basic():
 
 def test_gredsq_edge():
     """Test edge cases."""
-    encoder = lambda x: [float(sum(x))]
-    decoder = lambda y_prev, c, t: [c[0] - t]
+
+    def encoder(x):
+        return [float(sum(x))]
+
+    def decoder(y_prev, c, t):
+        return [c[0] - t]
+
     x = [1.0, 2.0]
     max_out_len = 10
     result = geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len, eos_token=0.0)

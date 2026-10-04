@@ -83,13 +83,13 @@ def frank_wolfe_qp(Q, c, x0=None, domain="simplex", lower=None, upper=None, step
         raise ValueError("frank_wolfe_qp: Q must be square")
     cv = [float(v) for v in np.atleast_1d(np.asarray(c, dtype=float))]
     if len(cv) != n:
-        raise ValueError("frank_wolfe_qp: c has length %d but Q is %dx%d" % (len(cv), n, n))
+        raise ValueError(f"frank_wolfe_qp: c has length {int(len(cv))} but Q is {int(n)}x{int(n)}")
     dom = str(domain).lower()
     if dom not in _DOMAINS:
-        raise ValueError("frank_wolfe_qp: domain must be one of %s, got %r" % (", ".join(_DOMAINS), domain))
+        raise ValueError("frank_wolfe_qp: domain must be one of {}, got {!r}".format(", ".join(_DOMAINS), domain))
     st = str(step).lower()
     if st not in _STEPS:
-        raise ValueError("frank_wolfe_qp: step must be one of %s, got %r" % (", ".join(_STEPS), step))
+        raise ValueError("frank_wolfe_qp: step must be one of {}, got {!r}".format(", ".join(_STEPS), step))
 
     if dom == "box":
         if lower is None or upper is None:
@@ -98,7 +98,7 @@ def frank_wolfe_qp(Q, c, x0=None, domain="simplex", lower=None, upper=None, step
         hi = [float(v) for v in np.atleast_1d(np.asarray(upper, dtype=float))]
         for i in range(n):
             if lo[i] > hi[i]:
-                raise ValueError("frank_wolfe_qp: lower[%d] exceeds upper[%d]" % (i, i))
+                raise ValueError(f"frank_wolfe_qp: lower[{int(i)}] exceeds upper[{int(i)}]")
         x = (
             [0.5 * (lo[i] + hi[i]) for i in range(n)]
             if x0 is None

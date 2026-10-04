@@ -59,10 +59,7 @@ def annuity_value(
     if n_periods < 1:
         raise ValueError(f"n_periods must be >= 1, got {n_periods}.")
 
-    if rate == 0:
-        pv = payment * n_periods
-    else:
-        pv = payment * (1 - (1 + rate) ** (-n_periods)) / rate
+    pv = payment * n_periods if rate == 0 else payment * (1 - (1 + rate) ** (-n_periods)) / rate
 
     if due:
         pv *= 1 + rate

@@ -52,10 +52,7 @@ def yang_realized_relationship(marker_matrix, freq=None, yang_diagonal=False):
     M = [[float(v) for v in row] for row in marker_matrix]
     J = len(M)
     p = len(M[0])
-    if freq is not None:
-        pi = [float(v) for v in freq]
-    else:
-        pi = [sum(row[j] for row in M) / (2.0 * J) for j in range(p)]
+    pi = [float(v) for v in freq] if freq is not None else [sum(row[j] for row in M) / (2.0 * J) for j in range(p)]
     var = [2.0 * q * (1.0 - q) for q in pi]
     A = []
     for i in range(J):

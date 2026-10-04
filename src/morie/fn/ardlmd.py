@@ -95,10 +95,7 @@ def ardl_bounds_test(y, X, p=1, q=1, case=3):
     xa = np.asarray(X, dtype=float).tolist()
     if len(xa) == 0:
         raise ValueError("X must be non-empty")
-    if not isinstance(xa[0], list):
-        xm = [[float(v)] for v in xa]
-    else:
-        xm = [[float(v) for v in row] for row in xa]
+    xm = [[float(v)] for v in xa] if not isinstance(xa[0], list) else [[float(v) for v in row] for row in xa]
     n = len(yv)
     if len(xm) != n:
         raise ValueError("y and X must have the same number of rows")

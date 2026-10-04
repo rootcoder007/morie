@@ -5,7 +5,7 @@ from morie.fn.envlp import envelope
 
 
 def test_envlp_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = envelope(signal=np.sin(np.linspace(0, 4 * np.pi, 100)))
     assert result is not None
     assert hasattr(result, "name")

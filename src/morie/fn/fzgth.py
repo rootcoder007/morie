@@ -60,9 +60,15 @@ def hsumcdf(theta=0.0, cdf=None, density=None, lo=-10.0, hi=10.0, ngrid=4001):
     from . import _stats_core as stats
 
     if cdf is None:
-        cdf = lambda t: float(stats.norm.cdf(t))
+
+        def cdf(t):
+            return float(stats.norm.cdf(t))
+
     if density is None:
-        density = lambda t: float(stats.norm.pdf(t))
+
+        def density(t):
+            return float(stats.norm.pdf(t))
+
     if not callable(cdf) or not callable(density):
         raise ValueError("cdf and density must be callables.")
     u = np.linspace(float(lo), float(hi), int(ngrid))

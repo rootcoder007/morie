@@ -67,7 +67,7 @@ def cvtml(
         n_val = len(Y_val)
 
         Xd_tr = np.column_stack([X_tr, np.ones(n_tr)])
-        ps_tr = _logistic_predict(Xd_tr, T_tr)
+        _logistic_predict(Xd_tr, T_tr)
         Xd_val = np.column_stack([X_val, np.ones(n_val)])
         beta_ps = _logistic_fit(Xd_tr, T_tr)
         from ._sci_core import expit

@@ -7,7 +7,7 @@ import pytest
 from morie.fn.volgkr import vol_garman_klass
 
 # six bars with low <= open, close <= high throughout
-O = [100.0, 101.0, 102.0, 99.0, 98.0, 100.0]
+OPEN = [100.0, 101.0, 102.0, 99.0, 98.0, 100.0]
 H = [102.0, 103.0, 103.0, 101.0, 100.0, 104.0]
 L = [99.0, 100.0, 98.0, 97.0, 96.0, 99.0]
 C = [101.0, 102.0, 99.0, 98.0, 100.0, 103.0]
@@ -16,9 +16,9 @@ _K = 2.0 * math.log(2.0) - 1.0
 
 
 def test_volgkr_matches_equation_20():
-    out = vol_garman_klass(O, H, L, C)
-    hl = [math.log(h / l) ** 2 for h, l in zip(H, L)]
-    co = [math.log(c / o) ** 2 for c, o in zip(C, O)]
+    out = vol_garman_klass(OPEN, H, L, C)
+    hl = [math.log(h / ell) ** 2 for h, ell in zip(H, L)]
+    co = [math.log(c / o) ** 2 for c, o in zip(C, OPEN)]
     per_bar = [0.5 * a - _K * b for a, b in zip(hl, co)]
     var = sum(per_bar) / len(per_bar)
     assert out["variance"] == pytest.approx(var, rel=1e-12)
@@ -35,8 +35,8 @@ def test_volgkr_matches_equation_20():
 
 
 def test_volgkr_annualises_by_the_square_root_of_the_period_count():
-    out = vol_garman_klass(O, H, L, C, periods_per_year=252)
-    plain = vol_garman_klass(O, H, L, C)
+    out = vol_garman_klass(OPEN, H, L, C, periods_per_year=252)
+    plain = vol_garman_klass(OPEN, H, L, C)
     assert out["variance"] == pytest.approx(plain["variance"], rel=1e-12)
     assert out["sigma_annualised"] == pytest.approx(plain["sigma"] * math.sqrt(252.0), rel=1e-12)
 
@@ -63,12 +63,12 @@ def test_volgkr_no_bar_can_be_negative_once_the_ohlc_ordering_holds():
     out = vol_garman_klass([100.0, 100.0], [104.0, 104.0], [100.0, 100.0], [104.0, 104.0])
     assert out["negative_bar_fraction"] == 0.0
     assert out["variance"] == pytest.approx((0.5 - _K) * r * r, rel=1e-12)
-    assert vol_garman_klass(O, H, L, C)["negative_bar_fraction"] == 0.0
+    assert vol_garman_klass(OPEN, H, L, C)["negative_bar_fraction"] == 0.0
 
 
 def test_volgkr_rejects_bad_input():
     with pytest.raises(ValueError, match="share a length"):
-        vol_garman_klass(O, H, L, C[:-1])
+        vol_garman_klass(OPEN, H, L, C[:-1])
     with pytest.raises(ValueError, match="at least 2 bars"):
         vol_garman_klass([100.0], [101.0], [99.0], [100.0])
     with pytest.raises(ValueError, match="positive"):

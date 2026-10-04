@@ -145,7 +145,9 @@ def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None, control="notyet"
         elif Xa.shape[0] == n_u:
             Xu = add_intercept(Xa)
         else:
-            raise ValueError("X has %d rows; expected %d (long) or %d (one per unit)." % (Xa.shape[0], len(y), n_u))
+            raise ValueError(
+                f"X has {int(Xa.shape[0])} rows; expected {int(len(y))} (long) or {int(n_u)} (one per unit)."
+            )
 
     cells, dropped, warn = {}, [], []
     for gg in np.unique(g[np.isfinite(g)]):

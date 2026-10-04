@@ -35,6 +35,7 @@ See memory: feedback_never_invent_citations_verify_each.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import pathlib
 import re
@@ -179,10 +180,8 @@ def check_ledger_online(ledger):
             bad.append(f"ledger[{key}]: E6: DOI did not resolve ({exc})")
             continue
         yr = None
-        try:
+        with contextlib.suppress(Exception):
             yr = msg["issued"]["date-parts"][0][0]
-        except Exception:
-            pass
         for field, got in (("year", yr), ("volume", msg.get("volume")), ("pages", msg.get("page"))):
             want = v.get(field)
             if want is None or got is None:

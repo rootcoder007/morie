@@ -117,11 +117,11 @@ def spatial_ar_combined(y, X, W1, W2):
         raise ValueError("shape mismatch among y, X, W1, W2")
     if n <= p:
         raise ValueError("need more observations than columns of X")
-    I = np.eye(n)
+    I_ = np.eye(n)
 
     def parts(rho, lam):
-        A = I - rho * A1
-        B = I - lam * A2
+        A = I_ - rho * A1
+        B = I_ - lam * A2
         ystar = B @ (A @ yv)
         Xstar = B @ Xm
         G = Xstar.T @ Xstar
@@ -161,8 +161,8 @@ def spatial_ar_combined(y, X, W1, W2):
         r_, l_, s2_ = th[p], th[p + 1], th[p + 2]
         if s2_ <= 0:
             return -_math.inf
-        A_ = I - r_ * A1
-        B_ = I - l_ * A2
+        A_ = I_ - r_ * A1
+        B_ = I_ - l_ * A2
         sa, la = np.linalg.slogdet(A_)
         sb, lb = np.linalg.slogdet(B_)
         if sa <= 0 or sb <= 0:

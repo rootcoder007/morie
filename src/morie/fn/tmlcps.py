@@ -76,10 +76,10 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
     yv, av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("pseudo_outcome: %d outcomes but %d treatments" % (n, len(av)))
+        raise ValueError(f"pseudo_outcome: {int(n)} outcomes but {int(len(av))} treatments")
     Xm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Xm) != n:
-        raise ValueError("pseudo_outcome: %d outcomes but %d covariate rows" % (n, len(Xm)))
+        raise ValueError(f"pseudo_outcome: {int(n)} outcomes but {int(len(Xm))} covariate rows")
     p = len(Xm[0]) if Xm and Xm[0] else 0
 
     # pi(a | l): Gaussian, mean linear in l
@@ -117,7 +117,7 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
         den = pi_at(a_i, i)
         if den <= 0.0:
             raise ValueError(
-                "pseudo_outcome: pi(A|L) is zero at observation %d, so positivity fails and xi is undefined" % i
+                f"pseudo_outcome: pi(A|L) is zero at observation {int(i)}, so positivity fails and xi is undefined"
             )
         xi.append((yv[i] - mu_at(a_i, i)) * m / den + s)
         marg.append(m)
@@ -142,7 +142,7 @@ def effect_curve(xi, A, grid, fit="kernel", bandwidth=None, n_folds=5):
     cross-validation when not given, as in Sec. 3.3.
     """
     if fit not in _FITS:
-        raise ValueError("effect_curve: fit must be one of %r, got %r" % (_FITS, fit))
+        raise ValueError(f"effect_curve: fit must be one of {_FITS!r}, got {fit!r}")
     xv, av = list(xi), k.vec(A)
     n = len(xv)
     gr = [float(v) for v in k.vec(grid)]
@@ -155,7 +155,7 @@ def effect_curve(xi, A, grid, fit="kernel", bandwidth=None, n_folds=5):
         bandwidth = _cv_bandwidth(xv, av, fit, n_folds)
     h = float(bandwidth)
     if h <= 0.0:
-        raise ValueError("effect_curve: bandwidth must be positive, got %r" % (bandwidth,))
+        raise ValueError(f"effect_curve: bandwidth must be positive, got {bandwidth!r}")
     out = [_smooth_at(xv, av, g, h, fit) for g in gr]
     return out, {"bandwidth": h, "coef": None}
 
@@ -238,9 +238,7 @@ def tmle_continuous_treatment(y, A, X, a_grid=None, fit="kernel", bandwidth=None
     av = k.vec(A)
     if len(set(av)) < 3:
         raise ValueError(
-            "tmle_continuous_treatment: the treatment takes %d distinct "
-            "values; this estimates a continuous effect curve and a "
-            "binary exposure belongs elsewhere" % len(set(av))
+            f"tmle_continuous_treatment: the treatment takes {int(len(set(av)))} distinct values; this estimates a continuous effect curve and a binary exposure belongs elsewhere"
         )
     xi, info = pseudo_outcome(y, A, X)
     if a_grid is None:

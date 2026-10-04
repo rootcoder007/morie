@@ -69,7 +69,7 @@ def layer_norm(x, gain=None, bias=None, eps=1e-12):
     out = [(v - mu) * inv for v in x]
     if gain is not None:
         if len(gain) != d:
-            raise ValueError("berte: gain has %d entries for %d channels" % (len(gain), d))
+            raise ValueError(f"berte: gain has {int(len(gain))} entries for {int(d)} channels")
         out = [out[i] * gain[i] for i in range(d)]
     if bias is not None:
         out = [out[i] + bias[i] for i in range(d)]
@@ -86,7 +86,7 @@ def attention_weights(Q, K, n_heads, pad_mask=None, causal=False):
     L = len(Q)
     d = len(Q[0])
     if d % n_heads != 0:
-        raise ValueError("berte: dimension %d is not divisible by %d heads" % (d, n_heads))
+        raise ValueError(f"berte: dimension {int(d)} is not divisible by {int(n_heads)} heads")
     hd = d // n_heads
     scale = 1.0 / math.sqrt(hd)
     heads = []

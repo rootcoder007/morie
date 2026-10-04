@@ -94,7 +94,7 @@ def _check(t):
         return t
     if isinstance(t, tuple) and len(t) == 3 and t[0] == APP and isinstance(t[1], str):
         return (APP, t[1], tuple(_check(a) for a in t[2]))
-    raise ValueError("unifAlg: not a term: %r -- build terms with var(), app() or const()" % (t,))
+    raise ValueError(f"unifAlg: not a term: {t!r} -- build terms with var(), app() or const()")
 
 
 def variables(t):
@@ -132,9 +132,9 @@ def apply_subst(t, subst):
             return cur
         cur = nxt
     raise ValueError(
-        "unifAlg: the substitution %r does not reach a "
+        f"unifAlg: the substitution {subst!r} does not reach a "
         "fixed point -- it binds a variable to a term "
-        "containing itself" % (subst,)
+        "containing itself"
     )
 
 
@@ -216,11 +216,11 @@ def unify(t1, t2, occurs_check=True):
         if is_var(y) and not is_var(x):
             x, y = y, x
         if not is_var(x):
-            why = "symbol clash: %s/%d against %s/%d" % (x[1], len(x[2]), y[1], len(y[2]))
+            why = f"symbol clash: {x[1]}/{int(len(x[2]))} against {y[1]}/{int(len(y[2]))}"
             return _fail(sub, why, occurs_check)
         if occurs(x[1], y):
             if occurs_check:
-                why = "occurs check: %s occurs in the term it would be bound to" % x[1]
+                why = f"occurs check: {x[1]} occurs in the term it would be bound to"
                 return _fail(sub, why, occurs_check)
             # No finite term satisfies this. Record the binding and
             # stop: pretending to continue would not terminate.

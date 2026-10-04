@@ -7,8 +7,11 @@ from morie.fn.cvxdgp import boyd_dual_problem
 
 def test_cvxdgp_basic():
     """Test basic functionality with the example from the docstring."""
+
     # Example: g(lam, nu) = -lam[0]^2 + lam[0] - 1.0, n_lambda=1, primal_value=-0.75
-    g = lambda lam, nu: -(lam[0] ** 2) + lam[0] - 1.0
+    def g(lam, nu):
+        return -(lam[0] ** 2) + lam[0] - 1.0
+
     result = boyd_dual_problem(g, n_lambda=1, primal_value=-0.75, seed=42)
 
     # Assert that result is a dict-like RichResult
@@ -59,7 +62,10 @@ def test_cvxdgp_basic():
 
 def test_cvxdgp_edge():
     """Test edge case where unconstrained optimum is negative, so constraint binds."""
-    g = lambda lam, nu: -(lam[0] ** 2) - lam[0] - 1.0
+
+    def g(lam, nu):
+        return -(lam[0] ** 2) - lam[0] - 1.0
+
     result = boyd_dual_problem(g, n_lambda=1, seed=42)
 
     assert isinstance(result, dict)

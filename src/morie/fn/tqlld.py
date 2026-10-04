@@ -91,10 +91,10 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None, hi=None,
     """
     N = int(levels)
     if N < 1:
-        raise ValueError("lloyd_max_codebook: levels must be >= 1, got %r" % (levels,))
+        raise ValueError(f"lloyd_max_codebook: levels must be >= 1, got {levels!r}")
     src = str(source).lower()
     if src not in _SOURCES:
-        raise ValueError("lloyd_max_codebook: source must be one of %s, got %r" % (", ".join(_SOURCES), source))
+        raise ValueError("lloyd_max_codebook: source must be one of {}, got {!r}".format(", ".join(_SOURCES), source))
 
     if src == "uniform":
         a = -1.0 if lo is None else float(lo)
@@ -133,7 +133,7 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None, hi=None,
         if not xs:
             raise ValueError("lloyd_max_codebook: empirical source needs data")
         if len(xs) < N:
-            raise ValueError("lloyd_max_codebook: %d samples cannot support %d levels" % (len(xs), N))
+            raise ValueError(f"lloyd_max_codebook: {int(len(xs))} samples cannot support {int(N)} levels")
         # Initial codewords at evenly spaced sample quantiles.
         cb = [xs[min(len(xs) - 1, int((k + 0.5) * len(xs) / N))] for k in range(N)]
     else:

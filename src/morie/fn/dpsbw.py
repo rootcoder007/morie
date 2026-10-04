@@ -45,10 +45,7 @@ def stick_breaking_weights(alpha=1.0, truncation=10, V=None, base=2):
     """
     a = float(alpha)
     K = int(truncation)
-    if V is not None:
-        Vs = k.vec(V)
-    else:
-        Vs = [1.0 - (1.0 - k.vdc(i, int(base))) ** (1.0 / a) for i in range(K)]
+    Vs = k.vec(V) if V is not None else [1.0 - (1.0 - k.vdc(i, int(base))) ** (1.0 / a) for i in range(K)]
     pi = []
     rest = 1.0
     for i in range(len(Vs)):

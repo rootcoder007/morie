@@ -56,7 +56,7 @@ def test_cvxmin_l1_specific():
     b = np.array([3.0])
     result = boyd_minimum_norm(A, b, norm=1)
 
-    x = np.asarray(result.payload["x"], dtype=float)
+    np.asarray(result.payload["x"], dtype=float)
     # Independent expectation: norm_value == sum(|x|) == |b| == 3.0.
     assert abs(float(result.payload["norm_value"]) - 3.0) < 1e-6
     assert int(result.payload["n_nonzero"]) == 1

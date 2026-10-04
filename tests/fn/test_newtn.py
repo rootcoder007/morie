@@ -5,7 +5,7 @@ from morie.fn.newtn import newtn
 
 
 def test_newtn_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = newtn(f=lambda x: x**2 - 2, df=lambda x: 2 * x, x0=1.0)
     assert result is not None
     assert hasattr(result, "name")

@@ -146,32 +146,32 @@ def honest_tree(
     -- or an anchor -- can check *which* responses touched the splits.
     """
     if kind not in _KINDS:
-        raise ValueError("hntfst: kind must be one of %s, got %r" % (", ".join(_KINDS), kind))
+        raise ValueError("hntfst: kind must be one of {}, got {!r}".format(", ".join(_KINDS), kind))
     n = len(y)
     d = len(X[0]) if n and X[0] else 0
     if d == 0:
         raise ValueError("hntfst: no features")
     if not 0.0 < alpha < 0.5:
-        raise ValueError("hntfst: alpha must be in (0, 0.5), got %r" % (alpha,))
+        raise ValueError(f"hntfst: alpha must be in (0, 0.5), got {alpha!r}")
     if not 0.0 < pi <= 1.0:
-        raise ValueError("hntfst: pi must be in (0, 1], got %r" % (pi,))
+        raise ValueError(f"hntfst: pi must be in (0, 1], got {pi!r}")
     rng = np.random.default_rng(seed)
     sub = list(range(n)) if subsample is None else list(subsample)
     s = len(sub)
     if s < 4 * min_leaf:
-        raise ValueError("hntfst: subsample of %d is too small for a minimum leaf of %d" % (s, min_leaf))
+        raise ValueError(f"hntfst: subsample of {int(s)} is too small for a minimum leaf of {int(min_leaf)}")
 
     if kind == "double-sample":
         # Procedure 1 step 1: split the subsample into disjoint I and J
         perm = sorted(sub, key=lambda _i: float(rng.uniform()))
         half = s // 2
-        I, J = perm[:half], perm[half:]
+        I_, J = perm[:half], perm[half:]
     elif kind == "propensity":
         # Procedure 2: splits ignore Y altogether, so no split is
         # needed -- every row estimates and every row splits
-        I = J = list(sub)
+        I_ = J = list(sub)
     else:
-        I = J = list(sub)  # adaptive: not honest
+        I_ = J = list(sub)  # adaptive: not honest
 
     if kind == "propensity":
         if W is None:
@@ -218,8 +218,8 @@ def honest_tree(
             "right": grow(JR, IR, depth + 1),
         }
 
-    tree = grow(J, I, 0)
-    return tree, {"I": I, "J": J, "kind": kind, "subsample": sub}
+    tree = grow(J, I_, 0)
+    return tree, {"I": I_, "J": J, "kind": kind, "subsample": sub}
 
 
 def leaf_of(tree, x):
@@ -247,9 +247,9 @@ def infinitesimal_jackknife(preds, in_bag, n, s, correction=True):
     """
     B = len(preds)
     if B < 2:
-        raise ValueError("hntfst: the IJ variance needs at least 2 trees, got %d" % B)
+        raise ValueError(f"hntfst: the IJ variance needs at least 2 trees, got {int(B)}")
     if n <= s:
-        raise ValueError("hntfst: need n > s for the IJ correction, got n=%d s=%d" % (n, s))
+        raise ValueError(f"hntfst: need n > s for the IJ correction, got n={int(n)} s={int(s)}")
     pbar = _mean(preds)
     total = 0.0
     for i in range(n):
@@ -299,18 +299,18 @@ def honest_forest(
     n = len(yv)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("hntfst: %d feature rows for %d responses" % (len(Xm), n))
+        raise ValueError(f"hntfst: {int(len(Xm))} feature rows for {int(n)} responses")
     if n < 16:
-        raise ValueError("hntfst: need at least 16 observations, got %d" % n)
+        raise ValueError(f"hntfst: need at least 16 observations, got {int(n)}")
     if not 0.0 < subsample_frac < 1.0:
-        raise ValueError("hntfst: subsample_frac must be in (0, 1), got %r" % (subsample_frac,))
+        raise ValueError(f"hntfst: subsample_frac must be in (0, 1), got {subsample_frac!r}")
     s = max(4 * min_leaf, int(subsample_frac * n))
     if s >= n:
         raise ValueError("hntfst: the subsample must be smaller than n")
     Q = k.mat(at) if at is not None else Xm
     B = int(n_trees)
     if B < 2:
-        raise ValueError("hntfst: need at least 2 trees, got %d" % B)
+        raise ValueError(f"hntfst: need at least 2 trees, got {int(B)}")
 
     rng = np.random.default_rng(seed)
     preds = [[0.0] * len(Q) for _ in range(B)]
@@ -406,7 +406,7 @@ def grow_forest(
     if clusters is not None:
         lab = [str(c) for c in clusters]
         if len(lab) != n:
-            raise ValueError("hntfst: %d cluster labels for %d rows" % (len(lab), n))
+            raise ValueError(f"hntfst: {int(len(lab))} cluster labels for {int(n)} rows")
         groups = {}
         for i, c in enumerate(lab):
             groups.setdefault(c, []).append(i)

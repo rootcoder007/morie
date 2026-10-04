@@ -144,20 +144,20 @@ def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None, seed=20260809)
     matteson-james-2014-edivisive-nonparametric-changepoint.pdf
     """
     xv = np.asarray(x, dtype=float)
-    if xv.ndim == 1:
-        z = [float(v) for v in xv]
-    else:
-        z = [[float(v) for v in row] for row in xv]
+    z = [float(v) for v in xv] if xv.ndim == 1 else [[float(v) for v in row] for row in xv]
     n = len(z)
     if n < 2 * min_size:
         raise ValueError("series too short")
     if not (0.0 < alpha < 2.0):
         raise ValueError("alpha must be in (0, 2)")
-    order = list(range(n))
+    list(range(n))
     cps = []
     pvals = []
     qstats = []
-    clusters_of = lambda taus: [(a, b) for a, b in zip([0] + sorted(taus), sorted(taus) + [n])]
+
+    def clusters_of(taus):
+        return [(a, b) for a, b in zip([0] + sorted(taus), sorted(taus) + [n])]
+
     D = _pairwise_alpha(z, alpha)
     P = _prefix2d(D)
     while True:

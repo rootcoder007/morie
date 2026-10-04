@@ -95,7 +95,7 @@ def second_order_loss(adjacency, reconstruction, beta=5.0):
     H = [[float(v) for v in r] for r in k.mat(reconstruction)]
     if len(X) != len(H) or len(X[0]) != len(H[0]):
         raise ValueError(
-            "sdne: the adjacency is %dx%d but the reconstruction is %dx%d" % (len(X), len(X[0]), len(H), len(H[0]))
+            f"sdne: the adjacency is {int(len(X))}x{int(len(X[0]))} but the reconstruction is {int(len(H))}x{int(len(H[0]))}"
         )
     B = penalty_matrix(X, beta)["B"]
     weighted = sum(((H[i][j] - X[i][j]) * B[i][j]) ** 2 for i in range(len(X)) for j in range(len(X[0])))
@@ -118,7 +118,7 @@ def first_order_loss(adjacency, embeddings):
     Y = [[float(v) for v in r] for r in k.mat(embeddings)]
     n = len(S)
     if len(Y) != n:
-        raise ValueError("sdne: %d vertices but %d embeddings" % (n, len(Y)))
+        raise ValueError(f"sdne: {int(n)} vertices but {int(len(Y))} embeddings")
     tot, pairs = 0.0, 0
     for i in range(n):
         for j in range(n):

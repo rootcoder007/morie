@@ -14,8 +14,8 @@ def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e18_basic():
     c = 1  # prior shape parameter
     d = 1  # prior shape parameter
     v = 0.2  # lower bound of the interval
-    l = 0.1  # length of the interval
-    result = beta_posterior_interval_prob(v, l, z, n, c, d)
+    ell = 0.1  # length of the interval
+    result = beta_posterior_interval_prob(v, ell, z, n, c, d)
     assert isinstance(result, dict)
     assert "value" in result
     value = result["value"]
@@ -30,8 +30,8 @@ def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e18_edge():
     c = 2
     d = 2
     v = 0.0
-    l = 1.0
-    result = beta_posterior_interval_prob(v, l, z, n, c, d)
+    ell = 1.0
+    result = beta_posterior_interval_prob(v, ell, z, n, c, d)
     assert isinstance(result, dict)
     assert "value" in result
     value = result["value"]

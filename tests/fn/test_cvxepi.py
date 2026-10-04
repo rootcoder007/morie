@@ -6,7 +6,10 @@ from morie.fn.cvxepi import boyd_epigraph
 
 def test_cvxepi_basic():
     """Test basic functionality."""
-    f = lambda x: x**2
+
+    def f(x):
+        return x**2
+
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 100)
     t = np.linspace(0, 10, 100)
@@ -32,7 +35,10 @@ def test_cvxepi_basic():
 
 def test_cvxepi_edge():
     """Test edge cases."""
-    f = lambda x: x**2
+
+    def f(x):
+        return x**2
+
     b = boyd_epigraph(f, [2.0], [4.0])
     assert isinstance(b, dict)
     assert bool(b["on_boundary"][0]) is True

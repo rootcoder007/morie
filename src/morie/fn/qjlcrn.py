@@ -74,7 +74,9 @@ DISTRIBUTIONS = ("rademacher", "sparse")
 
 def _check(distribution):
     if distribution not in DISTRIBUTIONS:
-        raise ValueError("qjlcrn: distribution must be one of %s, got %r" % (", ".join(DISTRIBUTIONS), distribution))
+        raise ValueError(
+            "qjlcrn: distribution must be one of {}, got {!r}".format(", ".join(DISTRIBUTIONS), distribution)
+        )
 
 
 def target_dimension(n, epsilon, beta=1.0):
@@ -85,7 +87,7 @@ def target_dimension(n, epsilon, beta=1.0):
     if n < 2:
         raise ValueError("qjlcrn: need at least two points")
     if not 0.0 < e < 1.0:
-        raise ValueError("qjlcrn: epsilon must lie in (0, 1), got %r" % epsilon)
+        raise ValueError(f"qjlcrn: epsilon must lie in (0, 1), got {epsilon!r}")
     if b <= 0.0:
         raise ValueError("qjlcrn: beta must be positive")
     denom = e * e / 2.0 - e**3 / 3.0
@@ -153,7 +155,7 @@ def project(A, k, distribution="rademacher", seed=0):
         raise ValueError("qjlcrn: no points supplied")
     d = len(A[0])
     if any(len(row) != d for row in A):
-        raise ValueError("qjlcrn: every point needs %d coordinates" % d)
+        raise ValueError(f"qjlcrn: every point needs {int(d)} coordinates")
     R = projection_matrix(d, k, distribution, seed)
     scale = 1.0 / math.sqrt(float(k))
     E = [[scale * sum(A[i][t] * R[t][j] for t in range(d)) for j in range(int(k))] for i in range(n)]

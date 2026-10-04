@@ -76,9 +76,9 @@ def compositional_chisq(X, cdf=None, n=None):
     N = np.atleast_2d(np.asarray(X, dtype=float))
     if N.ndim != 2:
         raise ValueError(f"X must be a two-way table; got shape {N.shape}.")
-    I, J = N.shape
-    if I < 2 or J < 2:
-        raise ValueError(f"Need at least a 2x2 table, got {I}x{J}.")
+    I_, J = N.shape
+    if I_ < 2 or J < 2:
+        raise ValueError(f"Need at least a 2x2 table, got {I_}x{J}.")
     if not np.all(np.isfinite(N)):
         raise ValueError("X must be finite.")
     if np.any(N < 0):
@@ -103,7 +103,7 @@ def compositional_chisq(X, cdf=None, n=None):
         raise ValueError(f"n must be positive, got {grand}.")
     statistic = grand * inertia
 
-    df = (I - 1) * (J - 1)
+    df = (I_ - 1) * (J - 1)
     p = float(1.0 - cdf(statistic)) if cdf is not None else float(stats.chi2.sf(statistic, df))
     sv = np.linalg.svd(S, compute_uv=False)
 
@@ -119,7 +119,7 @@ def compositional_chisq(X, cdf=None, n=None):
             "row_masses": r,
             "col_masses": c,
             "n": grand,
-            "shape": (int(I), int(J)),
+            "shape": (int(I_), int(J)),
             "method": "Pearson chi-square via correspondence analysis (Nenadic & Greenacre 2007)",
         },
     )

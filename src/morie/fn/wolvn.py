@@ -57,7 +57,7 @@ def mice_impute(
         )
 
     imputed_list = []
-    for m in range(n_imputations):
+    for _m in range(n_imputations):
         df = data.copy()
         for c in cols_to_impute:
             obs = df[c].dropna()

@@ -62,7 +62,10 @@ def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2", smooth=0.0, 
     if n < 3 or any(len(r) != m for r in X):
         raise ValueError("curves must be rectangular with n >= 3")
     if statistic is None:
-        statistic = lambda cs: [sum(c[j] for c in cs) / len(cs) for j in range(m)]
+
+        def statistic(cs):
+            return [sum(c[j] for c in cs) / len(cs) for j in range(m)]
+
     alpha = float(alpha)
     if not (0.0 < alpha < 1.0):
         raise ValueError("alpha must be in (0, 1)")

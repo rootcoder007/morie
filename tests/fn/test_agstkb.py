@@ -30,8 +30,8 @@ def test_agstkb_basic():
     num = 0.0
     den = 0.0
     expected_per = []
-    for i, (w, d, l) in enumerate(games):
-        n = w + d + l
+    for i, (w, d, ell) in enumerate(games):
+        n = w + d + ell
         s = (w + 0.5 * d) / n
         if 0.0 < s < 1.0:
             odds = math.log(s / (1.0 - s))
@@ -47,8 +47,8 @@ def test_agstkb_basic():
     expected_estimate = num / den
 
     # scores and n_games
-    expected_scores = [(w + 0.5 * d) / (w + d + l) for (w, d, l) in games]
-    expected_ns = [w + d + l for (w, d, l) in games]
+    expected_scores = [(w + 0.5 * d) / (w + d + ell) for (w, d, ell) in games]
+    expected_ns = [w + d + ell for (w, d, ell) in games]
 
     assert len(result.per_rung) == len(games)
     assert len(result.scores) == len(games)

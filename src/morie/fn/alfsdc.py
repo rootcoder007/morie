@@ -79,7 +79,7 @@ def alphafold_sidechain(frames, angles, littf, parent, litx, frameof):
         for f in range(nf):
             base = frames[i] if parent[f] < 0 else tf[parent[f]]
             if base is None:
-                raise ValueError("frame %d referenced before its parent" % f)
+                raise ValueError(f"frame {int(f)} referenced before its parent")
             tf[f] = A.rcompose(A.rcompose(base, littf[f]), _rotx(angles[i][f]))
         allf.append(tf)
         allx.append([A.rapply(tf[frameof[a]], litx[a]) for a in range(len(litx))])

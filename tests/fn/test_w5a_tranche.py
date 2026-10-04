@@ -854,10 +854,10 @@ def test_grgruc_open_carry_when_z_is_zero():
 
 
 def test_grmha_single_head_matches_hand_softmax_attention():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     K = [[1.0, 0.0], [0.0, 1.0]]
     V = [[1.0, 0.0], [0.0, 1.0]]
-    r = geron_multi_head_attention([[1.0, 0.0]], K, V, I, I, I, I, h=1)
+    r = geron_multi_head_attention([[1.0, 0.0]], K, V, I_, I_, I_, I_, h=1)
     s = 1 / math.sqrt(2)
     w = [math.exp(s), math.exp(0.0)]
     tot = sum(w)
@@ -865,9 +865,9 @@ def test_grmha_single_head_matches_hand_softmax_attention():
 
 
 def test_grmha_attention_rows_are_distributions():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     r = geron_multi_head_attention(
-        [[1.0, 2.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]], I, I, I, I, h=2
+        [[1.0, 2.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]], I_, I_, I_, I_, h=2
     )
     for A in r["attention_weights"]:
         for row in A:
@@ -876,9 +876,9 @@ def test_grmha_attention_rows_are_distributions():
 
 
 def test_grmha_rejects_head_count_that_does_not_divide_d_model():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     with pytest.raises(ValueError):
-        geron_multi_head_attention([[1.0, 0.0]], I, I, I, I, I, I, h=3)
+        geron_multi_head_attention([[1.0, 0.0]], I_, I_, I_, I_, I_, I_, h=3)
 
 
 def test_grflash_equals_hand_computed_softmax_attention():
@@ -904,12 +904,12 @@ def test_grflash_peak_memory_is_smaller_than_the_full_matrix():
 
 
 def test_grflam_gate_is_tanh_and_zero_alpha_is_identity():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     h = [[0.3, -0.4]]
     vis = [[2.0, 6.0], [4.0, 2.0]]
-    zero = geron_flamingo_cross_modal_attn(h, vis, 0.0, {"WQ": I, "WK": I, "WV": I})
+    zero = geron_flamingo_cross_modal_attn(h, vis, 0.0, {"WQ": I_, "WK": I_, "WV": I_})
     assert np.asarray(zero["h_new"]) == pytest.approx(np.asarray(h))
-    open_ = geron_flamingo_cross_modal_attn([[0.0, 0.0]], vis, 0.8, {"WQ": I, "WK": I, "WV": I})
+    open_ = geron_flamingo_cross_modal_attn([[0.0, 0.0]], vis, 0.8, {"WQ": I_, "WK": I_, "WV": I_})
     # zero query -> uniform attention -> mean visual vector
     mean_vis = [3.0, 4.0]
     assert open_["gate"] == pytest.approx(math.tanh(0.8))
@@ -1048,7 +1048,7 @@ def test_grdpo_rejects_positive_log_probabilities():
 def test_grkldg_matches_hand_closed_form():
     mu = [0.5, -1.0]
     lv = [0.2, -0.3]
-    hand = -0.5 * sum(1 + l - m**2 - math.exp(l) for m, l in zip(mu, lv))
+    hand = -0.5 * sum(1 + ell - m**2 - math.exp(ell) for m, ell in zip(mu, lv))
     r = geron_kl_divergence_gaussian(mu, lv)
     assert r["kl"] == pytest.approx(hand)
     assert r["kl"] >= 0

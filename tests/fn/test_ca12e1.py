@@ -6,7 +6,7 @@ from morie.fn.ca12e1 import ca_chapter_12_equation_1
 
 def _build_row_standardized_weights(n, k=4, seed=0):
     """Build a row-standardized k-nearest-neighbor-style weight matrix."""
-    rng = np.random.default_rng(seed)
+    np.random.default_rng(seed)
     # Build a deterministic symmetric adjacency: connect i to its k nearest
     # neighbors along the index axis (wrap-around). This keeps the test
     # self-contained and reproducible.

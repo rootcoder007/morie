@@ -40,10 +40,7 @@ def spectral_centroid(
     spectrum = np.abs(np.fft.rfft(x, n=nfft))
     freqs = np.fft.rfftfreq(nfft, d=1.0 / fs)
     total = spectrum.sum()
-    if total == 0:
-        centroid = 0.0
-    else:
-        centroid = float(np.sum(freqs * spectrum) / total)
+    centroid = 0.0 if total == 0 else float(np.sum(freqs * spectrum) / total)
     return DescriptiveResult(
         name="spectral_centroid",
         value=centroid,

@@ -90,16 +90,12 @@ def expand(prk, info=b"", length=32):
         raise ValueError("seckdf: the output length must be positive")
     if L > MAX_BLOCKS * HASH_LEN:
         raise ValueError(
-            "seckdf: L = %d exceeds 255*HashLen = %d; "
-            "the counter is a single octet, so this "
-            "cannot be satisfied" % (L, MAX_BLOCKS * HASH_LEN)
+            f"seckdf: L = {int(L)} exceeds 255*HashLen = {int(MAX_BLOCKS * HASH_LEN)}; the counter is a single octet, so this cannot be satisfied"
         )
     p = h._as_bytes(prk)
     if len(p) < HASH_LEN:
         raise ValueError(
-            "seckdf: the PRK is %d bytes, shorter than "
-            "the hash length %d -- Extract was probably "
-            "skipped on non-uniform input" % (len(p), HASH_LEN)
+            f"seckdf: the PRK is {int(len(p))} bytes, shorter than the hash length {int(HASH_LEN)} -- Extract was probably skipped on non-uniform input"
         )
     inf = h._as_bytes(info)
     out, t = bytearray(), b""

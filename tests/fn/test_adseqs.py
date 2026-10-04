@@ -8,11 +8,11 @@ from morie.fn.adseqs import admixture_seq
 
 def _loglik_formula(G, Q, P):
     """Independent implementation of the log-likelihood from the docstring."""
-    I = len(G)
-    J = len(G[0]) if I else 0
-    K = len(Q[0]) if I else 0
+    I_ = len(G)
+    J = len(G[0]) if I_ else 0
+    K = len(Q[0]) if I_ else 0
     tot = 0.0
-    for i in range(I):
+    for i in range(I_):
         for j in range(J):
             a = sum(Q[i][k] * P[k][j] for k in range(K))
             b = sum(Q[i][k] * (1.0 - P[k][j]) for k in range(K))

@@ -12,8 +12,8 @@ from morie.fn import _stats_core as stats
 from morie.fn.aitcsq import compositional_chisq
 
 
-def _table(seed=0, I=5, J=4, lam=40):
-    return np.random.default_rng(seed).poisson(lam, (I, J)).astype(float)
+def _table(seed=0, n_rows=5, J=4, lam=40):
+    return np.random.default_rng(seed).poisson(lam, (n_rows, J)).astype(float)
 
 
 def test_matches_scipy_chi2_contingency():
@@ -45,7 +45,7 @@ def test_number_of_principal_inertias_is_the_table_rank():
     One dimension is lost because the row profiles all lie in a simplex:
     the trivial axis carries the masses, not the association.
     """
-    res = compositional_chisq(_table(seed=3, I=5, J=4))
+    res = compositional_chisq(_table(seed=3, n_rows=5, J=4))
     sv = res["singular_values"]
     assert sv.size == 4
     assert np.sum(sv > 1e-10) <= 3

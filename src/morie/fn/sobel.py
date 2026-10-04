@@ -73,7 +73,7 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
     *Journal of the American Statistical Association*, 55, 708-713.
     """
     if variant not in _VARIANTS:
-        raise ValueError("variant must be one of %s" % (_VARIANTS,))
+        raise ValueError(f"variant must be one of {_VARIANTS}")
     a = float(a)
     b = float(b)
     va = float(se_a) ** 2
@@ -86,7 +86,7 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
     elif variant == "goodman":
         var -= va * vb
     if var <= 0:
-        raise ValueError("non-positive variance for the indirect effect (variant=%r); no z statistic exists." % variant)
+        raise ValueError(f"non-positive variance for the indirect effect (variant={variant!r}); no z statistic exists.")
     se = sqrt(var)
     est = a * b
     z = est / se
@@ -105,7 +105,7 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
             "se_b": float(se_b),
             "ci_lower": float(est - 1.959963984540054 * se),
             "ci_upper": float(est + 1.959963984540054 * se),
-            "method": "Sobel (1982) delta-method test of a*b (%s variance)" % variant,
+            "method": f"Sobel (1982) delta-method test of a*b ({variant} variance)",
         },
     )
 

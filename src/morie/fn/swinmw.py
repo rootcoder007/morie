@@ -120,10 +120,10 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
                 e = [math.exp(v - mx) for v in row]
                 z = sum(e)
                 Wt.append([v / z for v in e])
-            O = np.asarray(Wt, dtype=float) @ V
+            O_ = np.asarray(Wt, dtype=float) @ V
             for p in range(M * M):
                 i, j = divmod(p, M)
-                out[h0 + i][w0 + j] = [float(v) for v in O[p]]
+                out[h0 + i][w0 + j] = [float(v) for v in O_[p]]
     return RichResult(
         payload={
             "output": out,

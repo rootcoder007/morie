@@ -123,7 +123,7 @@ class ESRes:
 
 
 @dataclass
-class TestResult:  # noqa: pytest collection disabled via __test__ = False
+class TestResult:  # pytest collection disabled via __test__ = False
     """Result from a hypothesis test."""
 
     __test__ = False
@@ -545,7 +545,7 @@ class SIRResult:
     model: str  # "SIR", "SEIR", etc.
     t: np.ndarray | None = None  # time points
     S: np.ndarray | None = None  # susceptible
-    I: np.ndarray | None = None  # infected
+    I: np.ndarray | None = None  # infected  # noqa: E741
     R: np.ndarray | None = None  # recovered
     E: np.ndarray | None = None  # exposed (SEIR only)
     R0: float | None = None

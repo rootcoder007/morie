@@ -11,10 +11,7 @@ def _sim_gompertz(n=200, log_lam=-1.0, gamma=0.3, seed=0):
     rng = np.random.default_rng(seed)
     lam = np.exp(log_lam)
     u = rng.uniform(0.001, 0.999, size=n)
-    if abs(gamma) < 1e-10:
-        T = -np.log(u) / lam
-    else:
-        T = np.log(1 - gamma / lam * np.log(u)) / gamma
+    T = -np.log(u) / lam if abs(gamma) < 1e-10 else np.log(1 - gamma / lam * np.log(u)) / gamma
     T = np.maximum(T, 1e-6)
     C = rng.exponential(T.mean() * 2, size=n)
     time = np.minimum(T, C)
@@ -46,7 +43,7 @@ def test_gamma_near_zero_exponential():
 def test_aic_formula():
     time, event = _sim_gompertz()
     result = gmprl(time, event)
-    n = len(time)
+    len(time)
     k = 2  # log_lambda + gamma, no covariates
     expected_aic = -2 * result["log_likelihood"] + 2 * k
     assert abs(result["aic"] - expected_aic) < 1e-6

@@ -69,7 +69,7 @@ _EPS = 1e-9
 def _mat(A, name, ncol=None):
     M = [[float(v) for v in row] for row in A]
     if ncol is not None and any(len(r) != ncol for r in M):
-        raise ValueError("clpopt: %s has rows of differing length; every row needs %d entries" % (name, ncol))
+        raise ValueError(f"clpopt: {name} has rows of differing length; every row needs {int(ncol)} entries")
     return M
 
 
@@ -84,13 +84,13 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None):
     n = len(cv)
     if n == 0:
         raise ValueError("clpopt: the objective has no variables")
-    rows, rhs = [], []
+    rows, _rhs = [], []
     n_slack = 0
     if A_ub is not None:
         M = _mat(A_ub, "A_ub", n)
         bb = [float(v) for v in b_ub]
         if len(M) != len(bb):
-            raise ValueError("clpopt: A_ub has %d rows but b_ub has %d entries" % (len(M), len(bb)))
+            raise ValueError(f"clpopt: A_ub has {int(len(M))} rows but b_ub has {int(len(bb))} entries")
         for r, v in zip(M, bb):
             rows.append((list(r), v, "ub"))
             n_slack += 1
@@ -99,7 +99,7 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None):
             if u is None:
                 continue
             if j >= n:
-                raise ValueError("clpopt: an upper bound was given for variable %d of %d" % (j, n))
+                raise ValueError(f"clpopt: an upper bound was given for variable {int(j)} of {int(n)}")
             r = [0.0] * n
             r[j] = 1.0
             rows.append((r, float(u), "ub"))
@@ -108,7 +108,7 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None):
         M = _mat(A_eq, "A_eq", n)
         bb = [float(v) for v in b_eq]
         if len(M) != len(bb):
-            raise ValueError("clpopt: A_eq has %d rows but b_eq has %d entries" % (len(M), len(bb)))
+            raise ValueError(f"clpopt: A_eq has {int(len(M))} rows but b_eq has {int(len(bb))} entries")
         for r, v in zip(M, bb):
             rows.append((list(r), v, "eq"))
     if not rows:
@@ -183,7 +183,7 @@ def simplex(c, A, b, rule="bland", max_iter=10000, initial_basis=None):
     starting there rather than wherever phase I happens to land.
     """
     if rule not in PIVOT_RULES:
-        raise ValueError("clpopt: rule must be one of %s, got %r" % (", ".join(PIVOT_RULES), rule))
+        raise ValueError("clpopt: rule must be one of {}, got {!r}".format(", ".join(PIVOT_RULES), rule))
     cv = [float(v) for v in c]
     n = len(cv)
     M = _mat(A, "A", n)
@@ -192,7 +192,7 @@ def simplex(c, A, b, rule="bland", max_iter=10000, initial_basis=None):
     if m == 0:
         raise ValueError("clpopt: no constraints")
     if len(bb) != m:
-        raise ValueError("clpopt: A has %d rows but b has %d entries" % (m, len(bb)))
+        raise ValueError(f"clpopt: A has {int(m)} rows but b has {int(len(bb))} entries")
     if any(v < -_EPS for v in bb):
         raise ValueError("clpopt: every right-hand side must be non-negative in standard form")
     total = n + m
@@ -201,9 +201,9 @@ def simplex(c, A, b, rule="bland", max_iter=10000, initial_basis=None):
     if initial_basis is not None:
         want = [int(j) for j in initial_basis]
         if len(want) != m:
-            raise ValueError("clpopt: initial_basis needs %d columns, got %d" % (m, len(want)))
+            raise ValueError(f"clpopt: initial_basis needs {int(m)} columns, got {int(len(want))}")
         if any(not 0 <= j < n for j in want) or len(set(want)) != m:
-            raise ValueError("clpopt: initial_basis must name %d distinct structural columns in [0, %d)" % (m, n))
+            raise ValueError(f"clpopt: initial_basis must name {int(m)} distinct structural columns in [0, {int(n)})")
         for i, j in enumerate(want):
             if abs(T[i][j]) <= _EPS:
                 for r in range(i + 1, m):
@@ -259,7 +259,7 @@ def simplex(c, A, b, rule="bland", max_iter=10000, initial_basis=None):
                 "status": "infeasible",
                 "x": None,
                 "fun": None,
-                "message": "no point satisfies every constraint (phase 1 residual %.3g)" % (-T[m][-1]),
+                "message": f"no point satisfies every constraint (phase 1 residual {-T[m][-1]:.3g})",
                 "rule": rule,
                 "method": "two-phase primal simplex (Dantzig 1963)",
             }
@@ -342,7 +342,7 @@ def _fail(st, rule, phase):
             "x": None,
             "fun": None,
             "rule": rule,
-            "message": "%s in %s%s" % (why, phase, hint),
+            "message": f"{why} in {phase}{hint}",
             "method": "two-phase primal simplex (Dantzig 1963)",
         }
     )

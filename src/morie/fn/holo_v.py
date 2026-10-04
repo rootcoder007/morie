@@ -48,7 +48,7 @@ def holo_violin(
         for g in sorted(data[group].unique()):
             groups_data.append(np.asarray(data.loc[data[group] == g, col], dtype=float))
             tick_labels.append(str(g))
-        parts = ax.violinplot(groups_data, showmedians=True)
+        ax.violinplot(groups_data, showmedians=True)
         ax.set_xticks(range(1, len(tick_labels) + 1))
         ax.set_xticklabels(tick_labels)
         ax.set_xlabel(group)

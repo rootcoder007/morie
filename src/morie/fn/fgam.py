@@ -70,7 +70,7 @@ def _knots(lo, hi, n_basis, degree=3):
     """Clamped knot vector with equally spaced interior knots."""
     n_int = n_basis - degree - 1
     if n_int < 0:
-        raise ValueError("fgam: a cubic basis needs at least %d functions" % (degree + 1))
+        raise ValueError(f"fgam: a cubic basis needs at least {int(degree + 1)} functions")
     span = hi - lo
     if span <= _EPS:
         span = 1.0
@@ -139,7 +139,7 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
     if n == 0:
         raise ValueError("fgam: no curves")
     if len(y) != n:
-        raise ValueError("fgam: %d curves but %d responses" % (n, len(y)))
+        raise ValueError(f"fgam: {int(n)} curves but {int(len(y))} responses")
     T = len(Xm[0])
     if any(len(r) != T for r in Xm):
         raise ValueError("fgam: every curve must lie on the same grid")

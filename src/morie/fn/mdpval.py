@@ -21,10 +21,10 @@ def _mdp_args(P, R):
     S = Pm[0].shape[0]
     for a in range(A):
         if Pm[a].shape != (S, S):
-            raise ValueError("P[%d] is not (S, S)" % a)
+            raise ValueError(f"P[{int(a)}] is not (S, S)")
         for s in range(S):
             if abs(float(np.sum(Pm[a][s])) - 1.0) > 1e-8:
-                raise ValueError("P[%d] row %d does not sum to 1" % (a, s))
+                raise ValueError(f"P[{int(a)}] row {int(s)} does not sum to 1")
     if isinstance(R, (list, tuple)) and len(R) == A and np.asarray(R[0], dtype=float).ndim == 2:
         Rsa = np.zeros((S, A))
         for a in range(A):

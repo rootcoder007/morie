@@ -36,7 +36,7 @@ def mvsml_categorical_count_eq_8_1(K, y, beta, eta0=0.0, lam=1.0, loss="squared"
     elif loss == "hinge":
         emp = sum(max(0.0, 1.0 - (2 * a - 1) * b) for a, b in zip(ys, f)) / n
     else:
-        raise ValueError("unknown loss: %s" % loss)
+        raise ValueError(f"unknown loss: {loss}")
     norm = _gp.rkhs_norm(beta, K)
     obj = emp + float(lam) * norm
     res = RichResult(

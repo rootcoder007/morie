@@ -20,10 +20,7 @@ def test_gb1021_basic():
     # Q = N^2 / (t (N - t)) * sum_i (u_i - n_i * t / N)^2 / n_i
     pooled = sorted(v for s in samples for v in s)
     nn = len(pooled)
-    if nn % 2:
-        d = pooled[nn // 2]
-    else:
-        d = (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
+    d = pooled[nn // 2] if nn % 2 else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
     u = [sum(1 for v in s if v < d) for s in samples]
     ns = [len(s) for s in samples]
     t = sum(u)

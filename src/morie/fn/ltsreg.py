@@ -121,7 +121,7 @@ def least_trimmed_squares(y, X, h=None, max_starts=200000, max_iter=100):
         raise ValueError("least_trimmed_squares: h cannot exceed the number of observations")
     total = R.nchoosek(n, p)
     if total > max_starts:
-        raise ValueError("least_trimmed_squares: %d elemental subsets exceeds max_starts" % total)
+        raise ValueError(f"least_trimmed_squares: {int(total)} elemental subsets exceeds max_starts")
     best = None
     for J in R.combos(n, p):
         A = [[Xm[i][j] for j in range(p)] for i in J]

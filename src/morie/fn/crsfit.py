@@ -106,7 +106,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0, trunc=0.01):
         raise ValueError("fit_nuisance must be callable.")
     K = int(n_folds)
     if K < 2:
-        raise ValueError("cross-fitting needs at least 2 folds, got %d." % K)
+        raise ValueError(f"cross-fitting needs at least 2 folds, got {int(K)}.")
 
     rng = np.random.default_rng(int(seed))
     folds = rng.permutation(n) % K
@@ -162,9 +162,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0, trunc=0.01):
             "fold_size_warning": (
                 None
                 if n * (K - 1) / K > 5 * Xa.shape[1]
-                else "each fold trains on %d rows for %d covariates; the fold "
-                "models may be worse than the full-sample one by more than "
-                "the bias cross-fitting removes" % (int(round(n * (K - 1) / K)), Xa.shape[1])
+                else f"each fold trains on {int(int(round(n * (K - 1) / K)))} rows for {int(Xa.shape[1])} covariates; the fold models may be worse than the full-sample one by more than the bias cross-fitting removes"
             ),
             "n": int(n),
             "method": "Cross-fitted one-step (double machine learning) ATE",

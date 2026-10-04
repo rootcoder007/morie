@@ -10,8 +10,11 @@ def test_hmclc_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     image = rng.normal(0, 1, (10, 10))
+
     # Model returns K=2 class scores + 4 box values = 6 total
-    model = lambda img: np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
+    def model(img):
+        return np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
+
     result = geron_classification_localization(image, model)
     assert isinstance(result, dict)
     # All keys named in the return statement must be present
@@ -44,7 +47,10 @@ def test_hmclc_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     image = rng.normal(0, 1, (10, 10))
-    model = lambda img: np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
+
+    def model(img):
+        return np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
+
     # Perfect box match: IoU == 1, loss_box == 0, loss == log(2)
     result = geron_classification_localization(
         image,

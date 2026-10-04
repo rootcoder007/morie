@@ -145,7 +145,7 @@ def auc(W, H, pos, n_items):
         seen = set(pos[u])
         neg = [j for j in range(n_items) if j not in seen]
         if not seen or not neg:
-            raise ValueError("bprMF: user %r has no comparable pair" % (u,))
+            raise ValueError(f"bprMF: user {u!r} has no comparable pair")
         c = 0
         for i in seen:
             for j in neg:
@@ -166,16 +166,18 @@ def learn_bpr(
     sign that actually ascends BPR-Opt.
     """
     if regularizer_sign not in _SIGNS:
-        raise ValueError("bprMF: regularizer_sign must be one of %s, got %r" % (", ".join(_SIGNS), regularizer_sign))
-    U, I, K = int(n_users), int(n_items), int(k_dim)
-    if U < 1 or I < 2 or K < 1:
+        raise ValueError(
+            "bprMF: regularizer_sign must be one of {}, got {!r}".format(", ".join(_SIGNS), regularizer_sign)
+        )
+    U, I_, K = int(n_users), int(n_items), int(k_dim)
+    if U < 1 or I_ < 2 or K < 1:
         raise ValueError("bprMF: need at least 1 user, 2 items and 1 factor")
     users = sorted(pos)
     if not users:
         raise ValueError("bprMF: no positive feedback given")
     rng = np.random.default_rng(seed)
     W = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale for _ in range(K)] for _ in range(U)]
-    H = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale for _ in range(K)] for _ in range(I)]
+    H = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale for _ in range(K)] for _ in range(I_)]
     sgn = -1.0 if regularizer_sign == "correct" else 1.0
     a, lm = float(alpha), float(lam)
     hist = []
@@ -183,10 +185,10 @@ def learn_bpr(
         u = users[int(float(rng.uniform()) * len(users)) % len(users)]
         seen = list(pos[u])
         i = seen[int(float(rng.uniform()) * len(seen)) % len(seen)]
-        j = int(float(rng.uniform()) * I) % I
+        j = int(float(rng.uniform()) * I_) % I_
         guard = 0
         while j in set(pos[u]) and guard < 100:
-            j = int(float(rng.uniform()) * I) % I
+            j = int(float(rng.uniform()) * I_) % I_
             guard += 1
         if j in set(pos[u]):
             continue
@@ -198,7 +200,7 @@ def learn_bpr(
             H[i][f] = hif + a * (g * wuf + sgn * lm * hif)
             H[j][f] = hjf + a * (g * (-wuf) + sgn * lm * hjf)
         if (it + 1) % max(1, int(iters) // 20) == 0:
-            hist.append(bpr_opt(W, H, pos, I, lm)["bpr_opt"])
+            hist.append(bpr_opt(W, H, pos, I_, lm)["bpr_opt"])
     norm = math.sqrt(sum(v * v for r in W for v in r) + sum(v * v for r in H for v in r))
     return RichResult(
         payload={
@@ -208,7 +210,7 @@ def learn_bpr(
             "k": K,
             "bpr_opt_history": hist,
             "final_bpr_opt": hist[-1] if hist else float("nan"),
-            "auc": auc(W, H, pos, I)["auc"],
+            "auc": auc(W, H, pos, I_)["auc"],
             "param_norm": norm,
             "regularizer_sign": regularizer_sign,
             "method": "LearnBPR, bootstrap SGD; Rendle et al. (2009) Fig. 4",

@@ -55,7 +55,7 @@ def neighbour_lists(fps, threshold=0.8):
     r"""For each compound, the set of others within ``threshold``."""
     th = float(threshold)
     if not 0.0 <= th <= 1.0:
-        raise ValueError("clusmd: the threshold must lie in [0, 1], got %g" % th)
+        raise ValueError(f"clusmd: the threshold must lie in [0, 1], got {th:g}")
     F = [fingerprint(x) for x in fps]
     if len(F) < 1:
         raise ValueError("clusmd: no compounds given")
@@ -76,10 +76,7 @@ def butina_clusters(fps, threshold=0.8, recount=False):
     live = set(range(n))
     clusters = []
     while live:
-        if recount:
-            counts = {i: len(nb[i] & live) for i in live}
-        else:
-            counts = {i: len(nb[i]) for i in live}
+        counts = {i: len(nb[i] & live) for i in live} if recount else {i: len(nb[i]) for i in live}
         # Ties broken by index, so the result is deterministic.
         centre = min(live, key=lambda i: (-counts[i], i))
         members = sorted({centre} | (nb[centre] & live))
@@ -121,7 +118,7 @@ def butina_clustering(fps, threshold=0.8, recount=False):
             "n_singletons": s["n_singletons"],
             "assignment": s["assignment"],
             "centroids": s["centroids"],
-            "method": "Butina (1999) exclusion-sphere clustering at Tanimoto >= %g" % float(threshold),
+            "method": f"Butina (1999) exclusion-sphere clustering at Tanimoto >= {float(threshold):g}",
         }
     )
 

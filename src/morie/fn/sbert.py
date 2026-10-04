@@ -85,14 +85,14 @@ def pool(token_vectors, mode="mean", mask=None):
     vector.
     """
     if mode not in _POOLING:
-        raise ValueError("sbert: pooling must be one of %s, got %r" % (", ".join(_POOLING), mode))
+        raise ValueError("sbert: pooling must be one of {}, got {!r}".format(", ".join(_POOLING), mode))
     T = [[float(v) for v in r] for r in k.mat(token_vectors)]
     if not T:
         raise ValueError("sbert: no token vectors given")
     d = len(T[0])
     m = [True] * len(T) if mask is None else [bool(v) for v in mask]
     if len(m) != len(T):
-        raise ValueError("sbert: %d mask entries for %d tokens" % (len(m), len(T)))
+        raise ValueError(f"sbert: {int(len(m))} mask entries for {int(len(T))} tokens")
     keep = [i for i in range(len(T)) if m[i]]
     if not keep:
         raise ValueError("sbert: the mask excludes every token")
@@ -108,7 +108,7 @@ def cosine_similarity(u, v):
     a = [float(x) for x in k.vec(u)]
     b = [float(x) for x in k.vec(v)]
     if len(a) != len(b):
-        raise ValueError("sbert: vectors differ in length (%d, %d)" % (len(a), len(b)))
+        raise ValueError(f"sbert: vectors differ in length ({int(len(a))}, {int(len(b))})")
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(x * x for x in b))
     if na <= _EPS or nb <= _EPS:
@@ -125,7 +125,7 @@ def classification_features(u, v):
     a = [float(x) for x in k.vec(u)]
     b = [float(x) for x in k.vec(v)]
     if len(a) != len(b):
-        raise ValueError("sbert: vectors differ in length (%d, %d)" % (len(a), len(b)))
+        raise ValueError(f"sbert: vectors differ in length ({int(len(a))}, {int(len(b))})")
     diff = [abs(a[i] - b[i]) for i in range(len(a))]
     return {
         "features": a + b + diff,
@@ -147,7 +147,7 @@ def pair_cost(n, mode="cross-encoder"):
     if N < 2:
         raise ValueError("sbert: need at least 2 sentences")
     if mode not in ("cross-encoder", "bi-encoder"):
-        raise ValueError("sbert: mode must be cross-encoder or bi-encoder, got %r" % (mode,))
+        raise ValueError(f"sbert: mode must be cross-encoder or bi-encoder, got {mode!r}")
     cross = N * (N - 1) // 2
     return {
         "forward_passes": cross if mode == "cross-encoder" else N,

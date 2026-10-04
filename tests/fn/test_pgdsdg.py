@@ -56,8 +56,12 @@ def test_projections_are_idempotent(name, pr):
 
 @pytest.mark.parametrize("name,pr", PROJ)
 def test_descent_reaches_the_projection_itself(name, pr):
-    f = lambda z: d2(z, A)
-    g = lambda z: [2.0 * (z[i] - A[i]) for i in range(3)]
+    def f(z):
+        return d2(z, A)
+
+    def g(z):
+        return [2.0 * (z[i] - A[i]) for i in range(3)]
+
     r = P.projected_gradient(f, g, [1.0, 0.0, 0.0], pr)
     want = pr(A)
     assert r["x"] == pytest.approx(want, abs=1e-8)
@@ -76,12 +80,20 @@ def test_an_optimum_outside_the_set_lands_on_the_boundary():
 
 
 Q = [1000.0, 1.0, 0.01]
-FA = lambda z: sum(Q[i] * (z[i] - 0.3) ** 2 for i in range(3))
-GA = lambda z: [2.0 * Q[i] * (z[i] - 0.3) for i in range(3)]
+
+
+def FA(z):
+    return sum(Q[i] * (z[i] - 0.3) ** 2 for i in range(3))
+
+
+def GA(z):
+    return [2.0 * Q[i] * (z[i] - 0.3) for i in range(3)]
 
 
 def test_fista_is_not_monotone_but_gets_further():
-    ball = lambda z: P.project_ball(z, 2.0)
+    def ball(z):
+        return P.project_ball(z, 2.0)
+
     nm = P.projected_gradient(FA, GA, [3.0] * 3, ball, rule="fista", max_iter=300, tol=0.0)
     mo = P.projected_gradient(FA, GA, [3.0] * 3, ball, rule="backtracking", max_iter=300, tol=0.0)
     assert not nm["monotone"]
@@ -110,8 +122,12 @@ def test_backtracking_finds_a_step_without_knowing_l():
 
 
 def test_the_entry_point_matches():
-    f = lambda z: d2(z, A)
-    g = lambda z: [2.0 * (z[i] - A[i]) for i in range(3)]
+    def f(z):
+        return d2(z, A)
+
+    def g(z):
+        return [2.0 * (z[i] - A[i]) for i in range(3)]
+
     assert P.projected_gradient_descent(f, g, [1.0, 0.0, 0.0], P.project_simplex)["x"] == pytest.approx(
         P.project_simplex(A), abs=1e-8
     )

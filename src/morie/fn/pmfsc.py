@@ -181,9 +181,9 @@ def derive_potential(
         density, the potential A(r) and the count of capped bins.
     """
     if reference not in REFERENCES:
-        raise ValueError("reference must be one of %r" % (REFERENCES,))
+        raise ValueError(f"reference must be one of {REFERENCES!r}")
     if correction not in CORRECTIONS:
-        raise ValueError("correction must be one of %r" % (CORRECTIONS,))
+        raise ValueError(f"correction must be one of {CORRECTIONS!r}")
     n_bins = int(n_bins)
     if n_bins < 1:
         raise ValueError("need at least one radial bin")
@@ -202,7 +202,9 @@ def derive_potential(
         for t in range(n_bins):
             free = vol[t] - float(occupied[t])
             if free <= 0.0:
-                raise ValueError("bin %d is entirely occupied by ligand atoms; the correction is undefined there" % t)
+                raise ValueError(
+                    f"bin {int(t)} is entirely occupied by ligand atoms; the correction is undefined there"
+                )
             # The available space is smaller than the shell, so the true
             # density is HIGHER than the raw count suggests, by exactly
             # this ratio.
@@ -224,10 +226,7 @@ def derive_potential(
         c = counts[key]
         dens = [c[t] / (nc * vol[t]) for t in range(n_bins)]
         n_tot = sum(c)
-        if reference == "bulk":
-            ref = n_tot / (nc * total_vol)
-        else:
-            ref = 1.0 / total_vol
+        ref = n_tot / (nc * total_vol) if reference == "bulk" else 1.0 / total_vol
         a = []
         capped = 0
         for t in range(n_bins):

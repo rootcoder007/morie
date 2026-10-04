@@ -56,7 +56,7 @@ def mxinq(
     n = x.size
     x_sorted = np.sort(x)
     ecdf_vals = np.arange(1, n + 1) / n
-    true_cdf = cdf_func(x_sorted)
+    cdf_func(x_sorted)
 
     boot_sups = np.empty(n_boot)
     indicators = (x[:, None] <= x_sorted[None, :]).astype(float)

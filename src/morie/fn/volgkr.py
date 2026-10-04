@@ -54,21 +54,21 @@ def vol_garman_klass(open_, high, low, close, periods_per_year=None):
     security price volatilities from historical data", *Journal of
     Business* 53:67-78, Eq. (20).
     """
-    O = np.asarray(open_, dtype=float).ravel()
+    O_ = np.asarray(open_, dtype=float).ravel()
     H = np.asarray(high, dtype=float).ravel()
     L = np.asarray(low, dtype=float).ravel()
     C = np.asarray(close, dtype=float).ravel()
-    n = O.size
+    n = O_.size
     if not (H.size == L.size == C.size == n):
         raise ValueError("open, high, low and close must share a length.")
     if n < 2:
         raise ValueError(f"need at least 2 bars, got {n}.")
     if np.any(L <= 0):
         raise ValueError("prices must be positive.")
-    if np.any((H < L) | (O > H) | (O < L) | (C > H) | (C < L)):
+    if np.any((H < L) | (O_ > H) | (O_ < L) | (C > H) | (C < L)):
         raise ValueError("each bar needs low <= open, close <= high.")
     hl = np.log(H / L) ** 2
-    co = np.log(C / O) ** 2
+    co = np.log(C / O_) ** 2
     per_bar = 0.5 * hl - (2.0 * np.log(2.0) - 1.0) * co
     var = float(per_bar.mean())
     if var <= 0:

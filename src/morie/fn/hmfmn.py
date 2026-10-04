@@ -140,8 +140,8 @@ def geron_fashion_mnist(epochs=10, lr=0.001, batch_size=32, n_classes=10, input_
     layers.append({"kind": "fc", "out": dense, "channels": dense, "params": flat * dense + dense})
     layers.append({"kind": "fc", "out": C, "channels": C, "params": dense * C + C, "activation": "softmax"})
 
-    total = int(sum(l["params"] for l in layers))
-    fc_params = int(sum(l["params"] for l in layers if l["kind"] == "fc"))
+    total = int(sum(ell["params"] for ell in layers))
+    fc_params = int(sum(ell["params"] for ell in layers if ell["kind"] == "fc"))
 
     return RichResult(
         title="FashionMNIST CNN",
@@ -150,14 +150,14 @@ def geron_fashion_mnist(epochs=10, lr=0.001, batch_size=32, n_classes=10, input_
             {
                 "title": "Layers",
                 "headers": ["kind", "out", "channels", "params"],
-                "rows": [[l["kind"], l["out"], l["channels"], l["params"]] for l in layers],
+                "rows": [[ell["kind"], ell["out"], ell["channels"], ell["params"]] for ell in layers],
             }
         ],
         interpretation="Nearly all the parameters sit in the dense layer after the flatten; that is where overfitting starts.",
         payload={
             "layers": layers,
             "total_params": total,
-            "conv_params": int(sum(l["params"] for l in layers if l["kind"] == "conv")),
+            "conv_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "conv")),
             "fc_params": fc_params,
             "fc_share": float(fc_params / total),
             "flatten_dim": flat,

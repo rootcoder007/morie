@@ -200,12 +200,12 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None, offset=None, 
     """
     fam = FAMILIES.get(str(family).lower())
     if fam is None:
-        raise ValueError("family must be one of %s" % ", ".join(sorted(FAMILIES)))
+        raise ValueError("family must be one of {}".format(", ".join(sorted(FAMILIES))))
     ys = _flat(y)
     Xm = _mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])
@@ -266,10 +266,7 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None, offset=None, 
     V = _inv(A)
 
     pearson = sum(pw[i] * (ys[i] - mu[i]) ** 2 / fam["variance"](mu[i]) for i in range(n))
-    if fam["dispersion_fixed"]:
-        disp = 1.0
-    else:
-        disp = pearson / df_resid if df_resid > 0 else float("nan")
+    disp = 1.0 if fam["dispersion_fixed"] else pearson / df_resid if df_resid > 0 else float("nan")
     V = [[V[a][b] * disp for b in range(p)] for a in range(p)]
     se = [math.sqrt(V[j][j]) for j in range(p)]
     stat = [beta[j] / se[j] for j in range(p)]
@@ -337,7 +334,7 @@ def glm_predict(fit, X, add_intercept=True, type="response", offset=None):
         Xm = [[1.0] + list(r) for r in Xm]
     b = fit["coef"]
     if len(Xm[0]) != len(b):
-        raise ValueError("X has %d columns but the fit has %d coefficients" % (len(Xm[0]), len(b)))
+        raise ValueError(f"X has {int(len(Xm[0]))} columns but the fit has {int(len(b))} coefficients")
     off = [0.0] * len(Xm) if offset is None else _flat(offset)
     eta = [off[i] + sum(Xm[i][j] * b[j] for j in range(len(b))) for i in range(len(Xm))]
     if type == "link":
@@ -438,7 +435,7 @@ def _bisect(fn, lo, hi, tol=1e-7):
     if fhi == 0.0:
         return hi
     if flo * fhi > 0.0:
-        raise ValueError("solve_power: no solution in bracket [%g, %g]" % (lo, hi))
+        raise ValueError(f"solve_power: no solution in bracket [{lo:g}, {hi:g}]")
     for _ in range(200):
         mid = 0.5 * (lo + hi)
         if hi - lo <= tol * max(1.0, abs(mid)):
@@ -481,8 +478,7 @@ class _PowerBase:
         missing = [k for k, v in (("effect_size", effect_size), (self._nobs_name, nobs), ("alpha", alpha)) if v is None]
         if len(missing) != 1:
             raise ValueError(
-                "solve_power: exactly one of effect_size, %s, alpha, power "
-                "must be None (got %d unknowns)" % (self._nobs_name, len(missing))
+                f"solve_power: exactly one of effect_size, {self._nobs_name}, alpha, power must be None (got {int(len(missing))} unknowns)"
             )
         what = missing[0]
         if what == "effect_size":
@@ -503,7 +499,7 @@ def _two_tail_power(crit_hi, crit_lo, sf, cdf, alternative):
         return sf(crit_hi)
     if alternative in ("smaller", "less"):
         return cdf(crit_lo)
-    raise ValueError("alternative must be 'two-sided', 'larger' or 'smaller', got %r" % (alternative,))
+    raise ValueError(f"alternative must be 'two-sided', 'larger' or 'smaller', got {alternative!r}")
 
 
 class TTestPower(_PowerBase):
@@ -556,7 +552,7 @@ class TTestIndPower(_PowerBase):
         if df is None:
             df = nobs1 * (1.0 + ratio) - 2.0
         if df <= 0:
-            raise ValueError("nobs1 too small: df = %g" % df)
+            raise ValueError(f"nobs1 too small: df = {df:g}")
         ncp = float(effect_size) * math.sqrt(nobs1 * ratio / (1.0 + ratio))
         if alternative in ("two-sided", "two_sided", "2s"):
             hi = _t.ppf(1.0 - alpha / 2.0, df)
@@ -618,7 +614,7 @@ class FTestAnovaPower(_PowerBase):
         dfn = float(k_groups) - 1.0
         dfd = nobs - float(k_groups)
         if dfn <= 0 or dfd <= 0:
-            raise ValueError("need k_groups >= 2 and nobs > k_groups (got %g, %g)" % (dfn, dfd))
+            raise ValueError(f"need k_groups >= 2 and nobs > k_groups (got {dfn:g}, {dfd:g})")
         ncp = float(effect_size) ** 2 * nobs
         crit = _f.ppf(1.0 - alpha, dfn, dfd)
         return float(ncf.sf(crit, dfn, dfd, ncp))
@@ -647,7 +643,7 @@ class _Family:
         return self.name
 
     def __repr__(self):
-        return "%s()" % type(self).__name__
+        return f"{type(self).__name__}()"
 
 
 class Gaussian(_Family):
@@ -869,10 +865,7 @@ def _norm_ppf(p):
         return q * poly(A, r) / poly(B, r)
     r = p if q < 0 else 1.0 - p
     r = math.sqrt(-math.log(r))
-    if r <= 5.0:
-        val = poly(C, r - 1.6) / poly(D, r - 1.6)
-    else:
-        val = poly(E, r - 5.0) / poly(F, r - 5.0)
+    val = poly(C, r - 1.6) / poly(D, r - 1.6) if r <= 5.0 else poly(E, r - 5.0) / poly(F, r - 5.0)
     return -val if q < 0 else val
 
 
@@ -882,7 +875,7 @@ def OLS(endog, exog, weights=None):  # noqa: N802  (statsmodels spelling)
     X = _mat(exog)
     n = len(X)
     if n != len(y):
-        raise ValueError("OLS: %d rows of design against %d responses" % (n, len(y)))
+        raise ValueError(f"OLS: {int(n)} rows of design against {int(len(y))} responses")
     k = len(X[0])
     W = None if weights is None else _flat(weights)
     XtX, Xty = _xtx_xty(X, y, W)
@@ -890,7 +883,7 @@ def OLS(endog, exog, weights=None):  # noqa: N802  (statsmodels spelling)
     resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
     dfr = n - k
     if dfr <= 0:
-        raise ValueError("OLS: %d observations cannot support %d parameters" % (n, k))
+        raise ValueError(f"OLS: {int(n)} observations cannot support {int(k)} parameters")
     s2 = sum(r * r for r in resid) / dfr
     inv = _inv(XtX)
     cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]
@@ -915,7 +908,7 @@ def IV2SLS(endog, exog, instrument):  # noqa: N802
     k = len(X[0])
     kz = len(Z[0])
     if kz < k:
-        raise ValueError("IV2SLS: %d instruments cannot identify %d parameters" % (kz, k))
+        raise ValueError(f"IV2SLS: {int(kz)} instruments cannot identify {int(k)} parameters")
     ZtZ, _ = _xtx_xty(Z, [0.0] * n)
     ZtZ_inv = _inv(ZtZ)
     # Xhat = Z (Z'Z)^-1 Z'X, computed column by column of X.
@@ -927,7 +920,7 @@ def IV2SLS(endog, exog, instrument):  # noqa: N802
     resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
     dfr = n - k
     if dfr <= 0:
-        raise ValueError("IV2SLS: %d observations cannot support %d parameters" % (n, k))
+        raise ValueError(f"IV2SLS: {int(n)} observations cannot support {int(k)} parameters")
     s2 = sum(r * r for r in resid) / dfr
     inv = _inv(XhX)
     cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]

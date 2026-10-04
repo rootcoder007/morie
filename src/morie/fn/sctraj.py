@@ -142,7 +142,7 @@ def cluster_distances(X, labels, cov="full", weights=None):
     "naturally and readily" into the weighted means and covariances.
     """
     if cov not in _COV:
-        raise ValueError("sctraj: cov must be one of %s" % (_COV,))
+        raise ValueError(f"sctraj: cov must be one of {_COV}")
     rows, n, p = _matrix(X)
     lab = list(labels)
     if len(lab) != n:
@@ -160,7 +160,7 @@ def cluster_distances(X, labels, cov="full", weights=None):
         idx = [i for i in range(n) if lab[i] == c]
         wsum = sum(weights[i] for i in idx)
         if wsum <= 0:
-            raise ValueError("sctraj: cluster %r has no weight" % (c,))
+            raise ValueError(f"sctraj: cluster {c!r} has no weight")
         mu = [sum(weights[i] * rows[i][j] for i in idx) / wsum for j in range(p)]
         S = [[0.0] * p for _ in range(p)]
         if cov != "euclidean" and len(idx) > 1:
@@ -207,7 +207,7 @@ def minimum_spanning_tree(D, clusters, ends=None):
     ends = [e for e in (ends or [])]
     for e in ends:
         if e not in nodes:
-            raise ValueError("sctraj: terminal state %r is not a cluster" % (e,))
+            raise ValueError(f"sctraj: terminal state {e!r} is not a cluster")
     inner = [v for v in nodes if v not in ends]
     if not inner:
         raise ValueError("sctraj: every cluster was marked terminal")
@@ -331,8 +331,8 @@ def principal_curve(X, init, weights=None, max_iter=15, tol=1e-3, span=0.4, n_kn
     for _ in range(int(max_iter)):
         s = _arc_length(curve)
         for i in range(n):
-            d2, l, _pt = _project(rows[i], curve, s)
-            lam[i] = l
+            d2, ell, _pt = _project(rows[i], curve, s)
+            lam[i] = ell
             dist[i] = math.sqrt(d2)
         lo = min(lam)
         lam = [v - lo for v in lam]
@@ -522,8 +522,8 @@ def sctraj(
             s = _arc_length(c)
             lam, dd = [], []
             for i in range(n):
-                d2, l, _q = _project(rows[i], c, s)
-                lam.append(l)
+                d2, ell, _q = _project(rows[i], c, s)
+                lam.append(ell)
                 dd.append(math.sqrt(d2))
             lo = min(lam)
             pts.append([v - lo for v in lam])

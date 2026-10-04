@@ -67,7 +67,7 @@ def _cells(Y, D, g, t):
         if key not in acc:
             acc[key] = [0.0, 0, D[i]]
         if acc[key][2] != D[i]:
-            raise ValueError("causdiddc: treatment varies within the (group, period) cell %r" % (key,))
+            raise ValueError(f"causdiddc: treatment varies within the (group, period) cell {key!r}")
         acc[key][0] += Y[i]
         acc[key][1] += 1
     return dict((k, (v[0] / v[1], v[1], v[2])) for k, v in acc.items())

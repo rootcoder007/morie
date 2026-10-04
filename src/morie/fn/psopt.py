@@ -79,7 +79,7 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, ful
     gbest = x[best_idx].copy()
     fgbest = fbest[best_idx]
 
-    for gen in range(generations):
+    for _gen in range(generations):
         for i in range(n_particles):
             r1 = rs.rand(n_vars)
             r2 = rs.rand(n_vars)

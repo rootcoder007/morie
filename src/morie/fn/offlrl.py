@@ -160,12 +160,12 @@ def offlrl(
     Theorems 3.1-3.2.
     """
     if variant not in _VARIANTS:
-        raise ValueError("offlrl: variant must be one of %r, got %r" % (_VARIANTS, variant))
+        raise ValueError(f"offlrl: variant must be one of {_VARIANTS!r}, got {variant!r}")
     if backup not in _BACKUPS:
-        raise ValueError("offlrl: backup must be 'max' or 'pi', got %r" % (backup,))
+        raise ValueError(f"offlrl: backup must be 'max' or 'pi', got {backup!r}")
     alpha = float(alpha)
     if alpha < 0.0:
-        raise ValueError("offlrl: alpha must be >= 0, got %r" % (alpha,))
+        raise ValueError(f"offlrl: alpha must be >= 0, got {alpha!r}")
 
     D = []
     for t in dataset:
@@ -184,7 +184,7 @@ def offlrl(
     A = list(actions) if actions is not None else sorted(set(t[1] for t in D), key=repr)
     if not S or not A:
         raise ValueError("offlrl: states and actions must be non-empty")
-    ai = dict((a, i) for i, a in enumerate(A))
+    dict((a, i) for i, a in enumerate(A))
 
     # Empirical behaviour policy and counts, straight off the data.
     n_sa = {}
@@ -313,7 +313,7 @@ def _as_dist(d, S, A, name):
     for s in S:
         tot = sum(out[(s, a)] for a in A)
         if abs(tot - 1.0) > 1e-6:
-            raise ValueError("offlrl: %s(.|%r) sums to %g, not 1" % (name, s, tot))
+            raise ValueError(f"offlrl: {name}(.|{s!r}) sums to {tot:g}, not 1")
     return out
 
 

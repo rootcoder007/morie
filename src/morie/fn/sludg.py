@@ -55,7 +55,7 @@ def herschel_bulkley(
         )
     except RuntimeError:
         popt = p0
-        pcov = np.eye(3) * np.inf
+        np.eye(3) * np.inf
 
     tau_y, K, n = popt
     fitted = model(sr_f, *popt)

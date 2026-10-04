@@ -46,10 +46,7 @@ def target_trial(
     if treatment_col not in df.columns or outcome_col not in df.columns:
         raise ValueError("treatment and outcome columns required.")
 
-    if eligibility_fn is not None:
-        eligible = df[df.apply(eligibility_fn, axis=1)].copy()
-    else:
-        eligible = df.copy()
+    eligible = df[df.apply(eligibility_fn, axis=1)].copy() if eligibility_fn is not None else df.copy()
 
     n_elig = len(eligible)
     if n_elig < 4:

@@ -151,10 +151,7 @@ def bai_perron(
         # Guard against perfect fit (rss_m == 0) and degenerate k == 0.
         # A perfect fit means the improvement-ratio is effectively infinite,
         # which is "accept this many breaks"; use a large sentinel.
-        if rss_m <= 0 or k <= 0:
-            f_stat = 1e12
-        else:
-            f_stat = float(((rss_m1 - rss_m) / k) / (rss_m / n_use))
+        f_stat = 1000000000000.0 if rss_m <= 0 or k <= 0 else float((rss_m1 - rss_m) / k / (rss_m / n_use))
         f_stats.append(f_stat)
         cv_val = cv_row[m - 1] if m - 1 < len(cv_row) else cv_row[-1]
         if f_stat > cv_val:

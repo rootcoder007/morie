@@ -69,10 +69,7 @@ def horowitz_sample_selection(x, y, z, d):
     mills = norm.pdf(eta) / np.maximum(norm.cdf(eta), 1e-8)
 
     # Auto-add intercept on X if not already present
-    if not np.all(X[:, 0] == 1.0):
-        Xc = np.column_stack([np.ones(n), X])
-    else:
-        Xc = X
+    Xc = np.column_stack([np.ones(n), X]) if not np.all(X[:, 0] == 1.0) else X
 
     # Step 2: OLS on selected sub-sample with [Xc, mills] as regressors
     sel = d > 0.5

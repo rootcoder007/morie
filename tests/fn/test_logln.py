@@ -5,7 +5,7 @@ from morie.fn.logln import logln
 
 
 def test_logln_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = logln(table=np.array([[10, 20], [30, 40]]))
     assert result is not None
     assert hasattr(result, "name")

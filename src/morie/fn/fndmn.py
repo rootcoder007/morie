@@ -39,10 +39,7 @@ def fundamental_freq(x, fs: float = 1.0, **kwargs) -> DescriptiveResult:
         if diff[i - 1] > 0 and diff[i] <= 0:
             peak_idx = i
             break
-    if peak_idx is None:
-        f0 = 0.0
-    else:
-        f0 = float(fs / peak_idx)
+    f0 = 0.0 if peak_idx is None else float(fs / peak_idx)
     return DescriptiveResult(
         name="fundamental_freq",
         value=f0,

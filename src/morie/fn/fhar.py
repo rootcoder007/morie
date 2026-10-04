@@ -59,10 +59,7 @@ def fourier_basis(t, K, period=None):
     KK = int(K)
     if KK < 0:
         raise ValueError("fourier_basis: K must be non-negative")
-    if period is None:
-        P = max(tt) - min(tt)
-    else:
-        P = float(period)
+    P = max(tt) - min(tt) if period is None else float(period)
     if P <= 0.0:
         raise ValueError("fourier_basis: the period must be positive")
     w = 2.0 * math.pi / P

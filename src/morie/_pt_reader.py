@@ -63,7 +63,7 @@ def _decode(storage, offset, count):
             (v,) = struct.unpack("<f", struct.pack("<I", hi << 16))
             out.append(v)
         return out
-    vals = struct.unpack_from("<%d%s" % (count, fmt), buf, 0)
+    vals = struct.unpack_from(f"<{int(count)}{fmt}", buf, 0)
     return [float(v) for v in vals]
 
 
@@ -91,7 +91,7 @@ class PtArray(list):
         return PtArray(list(self), self.shape)
 
     def tobytes(self, fmt="f"):
-        return struct.pack("<%d%s" % (len(self), fmt), *self)
+        return struct.pack(f"<{int(len(self))}{fmt}", *self)
 
 
 class PtTensor:

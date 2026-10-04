@@ -31,7 +31,7 @@ def disparity_fit(D_obs, D_model):
     mod_flat = D_model[triu]
 
     order = np.argsort(obs_flat)
-    obs_sorted = obs_flat[order]
+    obs_flat[order]
     mod_sorted = mod_flat[order]
 
     from morie.fn.isorg import isotonic_regression

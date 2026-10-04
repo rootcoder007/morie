@@ -158,7 +158,7 @@ def rollout(history, predictor, horizon, input_patch_len, output_patch_len):
         pat = input_patches(ctx, p)["patches"]
         nxt = [float(z) for z in predictor(pat)]
         if len(nxt) != q:
-            raise ValueError("timesfm: the predictor returned %d values but output_patch_len is %d" % (len(nxt), q))
+            raise ValueError(f"timesfm: the predictor returned {int(len(nxt))} values but output_patch_len is {int(q)}")
         out.extend(nxt)
         ctx.extend(nxt)
     return RichResult(

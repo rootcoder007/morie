@@ -68,7 +68,7 @@ def feature_importance_trees(impurity_decrease, n_features=None, normalize=True,
         raise ValueError("impurity_decrease must be 1- or 2-dimensional.")
     B, p = A.shape
     if n_features is not None and int(n_features) != p:
-        raise ValueError("n_features says %d but the data has %d columns." % (int(n_features), p))
+        raise ValueError(f"n_features says {int(int(n_features))} but the data has {int(p)} columns.")
     if np.any(A < -1e-12):
         raise ValueError("impurity decrease cannot be negative.")
     if normalize:
@@ -85,9 +85,9 @@ def feature_importance_trees(impurity_decrease, n_features=None, normalize=True,
     else:
         imp = A.mean(axis=0)
     order = np.argsort(imp)[::-1]
-    names = list(feature_names) if feature_names is not None else ["x%d" % j for j in range(p)]
+    names = list(feature_names) if feature_names is not None else [f"x{int(j)}" for j in range(p)]
     if len(names) != p:
-        raise ValueError("feature_names has %d entries for %d features." % (len(names), p))
+        raise ValueError(f"feature_names has {int(len(names))} entries for {int(p)} features.")
     s = imp.sum()
     share = imp / s if s > 0 else np.full(p, np.nan)
     # Gini of the shares, and the inverse Simpson index

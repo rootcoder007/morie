@@ -37,10 +37,7 @@ def eproc(x: np.ndarray, eval_points: np.ndarray | None = None, cdf=None, *, cdf
     n = x.size
     x_sorted = np.sort(x)
 
-    if eval_points is None:
-        eval_points = np.unique(x_sorted)
-    else:
-        eval_points = np.asarray(eval_points, dtype=float).ravel()
+    eval_points = np.unique(x_sorted) if eval_points is None else np.asarray(eval_points, dtype=float).ravel()
 
     ecdf_vals = np.searchsorted(x_sorted, eval_points, side="right") / n
     true_cdf_vals = cdf_func(eval_points)

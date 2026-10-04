@@ -78,10 +78,7 @@ def dr_clustered_did(y, D, X=None, cluster=None):
             labels.append(c)
     G = len(labels)
     nk = 1 + (k.ncol(k.mat(X)) if X is not None else 0)
-    if G < 2 or n <= nk:
-        adj = 1.0
-    else:
-        adj = (G / (G - 1.0)) * ((n - 1.0) / (n - nk))
+    adj = 1.0 if G < 2 or n <= nk else G / (G - 1.0) * ((n - 1.0) / (n - nk))
     v = 0.0
     for c in labels:
         s = 0.0

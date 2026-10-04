@@ -136,7 +136,7 @@ def stochastic_estimand(Q_fn, A, W, delta, lower=None, upper=None):
     a = [float(v) for v in k.vec(A)]
     rows = [[float(v) for v in r] for r in k.mat(W)]
     if len(rows) != len(a):
-        raise ValueError("tlstoch: %d exposures but %d covariate rows" % (len(a), len(rows)))
+        raise ValueError(f"tlstoch: {int(len(a))} exposures but {int(len(rows))} covariate rows")
     sh = shift_regime(a, delta, lower, upper)["shifted"]
     vals = [float(Q_fn(sh[i], rows[i])) for i in range(len(a))]
     obs = [float(Q_fn(a[i], rows[i])) for i in range(len(a))]
@@ -165,10 +165,7 @@ def density_ratio(A, W, delta, g_fn, lower=None, upper=None):
         den = float(g_fn(a[i], rows[i]))
         if den <= _EPS:
             raise ValueError(
-                "tlstoch: the observed exposure has zero "
-                "density at observation %d -- the "
-                "conditional density estimate is "
-                "degenerate" % i
+                f"tlstoch: the observed exposure has zero density at observation {int(i)} -- the conditional density estimate is degenerate"
             )
         out.append(num / den)
     return {"H": out, "max": max(out), "mean": sum(out) / len(out)}

@@ -166,15 +166,15 @@ def rule_status(rule=None):
     if rule is None:
         return {"rules": SPLIT_RULES, "available": _AVAILABLE, "unavailable": dict(_UNSOURCED)}
     if rule not in SPLIT_RULES:
-        raise ValueError("survrsf: rule must be one of %s, got %r" % (", ".join(SPLIT_RULES), rule))
+        raise ValueError("survrsf: rule must be one of {}, got {!r}".format(", ".join(SPLIT_RULES), rule))
     return {"rule": rule, "available": rule in _AVAILABLE, "reason": _UNSOURCED.get(rule, "")}
 
 
 def _check_rule(rule):
     if rule not in SPLIT_RULES:
-        raise ValueError("survrsf: rule must be one of %s, got %r" % (", ".join(SPLIT_RULES), rule))
+        raise ValueError("survrsf: rule must be one of {}, got {!r}".format(", ".join(SPLIT_RULES), rule))
     if rule not in _AVAILABLE:
-        raise ValueError("survrsf: the %r splitting rule is not implemented -- %s" % (rule, _UNSOURCED[rule]))
+        raise ValueError(f"survrsf: the {rule!r} splitting rule is not implemented -- {_UNSOURCED[rule]}")
 
 
 class _Rng:
@@ -203,7 +203,7 @@ def nelson_aalen(times, events):
     r"""The terminal-node estimator of equation (3.1)."""
     n = len(times)
     if n != len(events):
-        raise ValueError("survrsf: %d times but %d event indicators" % (n, len(events)))
+        raise ValueError(f"survrsf: {int(n)} times but {int(len(events))} event indicators")
     if n == 0:
         raise ValueError("survrsf: no observations")
     order = sorted(range(n), key=lambda i: times[i])
@@ -494,7 +494,7 @@ def forest(X, times, events, n_trees=50, mtry=None, min_deaths=3, rule="logrank"
     n = len(times)
     rng = _Rng(seed)
     trees, inbag = [], []
-    for b in range(int(n_trees)):
+    for _b in range(int(n_trees)):
         boot = [rng.randint(n) for _ in range(n)]
         used = set(boot)
         Xb = [X[i] for i in boot]
@@ -506,7 +506,7 @@ def forest(X, times, events, n_trees=50, mtry=None, min_deaths=3, rule="logrank"
         inbag.append(used)
     if not trees:
         raise ValueError(
-            "survrsf: no tree could be grown; the data hold too few deaths for min_deaths = %d" % min_deaths
+            f"survrsf: no tree could be grown; the data hold too few deaths for min_deaths = {int(min_deaths)}"
         )
     oob_fraction = sum(n - len(u) for u in inbag) / float(len(inbag) * n)
     return {

@@ -246,9 +246,9 @@ def purity_completeness(bins, truth):
         if not labs:
             continue
         counts = {}
-        for l in labs:
-            counts[l] = counts.get(l, 0) + 1
-        dom = max(sorted(counts), key=lambda l: counts[l])
+        for ell in labs:
+            counts[ell] = counts.get(ell, 0) + 1
+        dom = max(sorted(counts), key=lambda ell: counts[ell])
         purity = counts[dom] / float(len(labs))
         total = sum(1 for x in t if x == dom)
         out.append(

@@ -77,7 +77,7 @@ def schabenberger_disjunctive_kriging(
 
     if indicator_threshold is not None:
         b = indicator_coefficients(indicator_threshold, degree)
-        label = "indicator I(Z <= %g)" % float(indicator_threshold)
+        label = f"indicator I(Z <= {float(indicator_threshold):g})"
 
         def g(_x, _b=b):
             raise RuntimeError("coefficients supplied directly")

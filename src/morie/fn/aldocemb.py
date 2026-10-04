@@ -22,10 +22,7 @@ def alammar_document_embedding_pool(token_embeddings, attention_mask=None):
     [3.0]
     """
     H = np.atleast_2d(np.asarray(token_embeddings, dtype=float))
-    if attention_mask is None:
-        m = np.ones(H.shape[0])
-    else:
-        m = np.atleast_1d(np.asarray(attention_mask, dtype=float))
+    m = np.ones(H.shape[0]) if attention_mask is None else np.atleast_1d(np.asarray(attention_mask, dtype=float))
     if len(m) != H.shape[0]:
         raise ValueError(f"mask length {len(m)} does not match {H.shape[0]} tokens.")
     if m.sum() == 0:

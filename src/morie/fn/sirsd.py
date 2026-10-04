@@ -69,11 +69,11 @@ def sirs_demographics(
     t = np.arange(0, t_max, dt)
 
     def deriv(y, _t, _N, _b, _g, _x, _m, _n):
-        S, I, R = y
-        Nt = S + I + R
-        dS = _n * Nt - _b * S * I / Nt + _x * R - _m * S
-        dI = _b * S * I / Nt - _g * I - _m * I
-        dR = _g * I - _x * R - _m * R
+        S, I_, R = y
+        Nt = S + I_ + R
+        dS = _n * Nt - _b * S * I_ / Nt + _x * R - _m * S
+        dI = _b * S * I_ / Nt - _g * I_ - _m * I_
+        dR = _g * I_ - _x * R - _m * R
         return [dS, dI, dR]
 
     y0 = [S0, I0, R0_init]

@@ -30,7 +30,10 @@ def kosorok_donsker_class(x):
     """
     x = np.asarray(x, dtype=float)
     n = len(x)
-    integrand = lambda e: np.sqrt(np.log(2.0) - 2.0 * np.log(e))
+
+    def integrand(e):
+        return np.sqrt(np.log(2.0) - 2.0 * np.log(e))
+
     j, _ = integrate.quad(integrand, 1e-8, 1.0, limit=200)
     return RichResult(
         payload={

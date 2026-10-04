@@ -85,7 +85,7 @@ def schabenberger_moran_i_residuals(residuals, w, x=None):
     else:
         xx = mat(x, "x")
         if len(xx) != n:
-            raise ValueError("`x` has %d rows but `residuals` has %d values" % (len(xx), n))
+            raise ValueError(f"`x` has {int(len(xx))} rows but `residuals` has {int(n)} values")
         k = len(xx[0])
         if n - k < 3:
             raise ValueError("need n - k >= 3 residual degrees of freedom")

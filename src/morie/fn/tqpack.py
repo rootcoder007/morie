@@ -41,15 +41,15 @@ def pack_indices(indices, bits):
     """
     b = int(bits)
     if not (1 <= b <= 32):
-        raise ValueError("pack_indices: bits must lie in 1..32, got %r" % (bits,))
+        raise ValueError(f"pack_indices: bits must lie in 1..32, got {bits!r}")
     vals = []
     limit = (1 << b) - 1
     for v in np.atleast_1d(np.asarray(indices, dtype=float)):
         iv = int(v)
         if iv != v:
-            raise ValueError("pack_indices: index %r is not an integer" % (v,))
+            raise ValueError(f"pack_indices: index {v!r} is not an integer")
         if iv < 0 or iv > limit:
-            raise ValueError("pack_indices: index %d does not fit in %d bits (max %d)" % (iv, b, limit))
+            raise ValueError(f"pack_indices: index {int(iv)} does not fit in {int(b)} bits (max {int(limit)})")
         vals.append(iv)
 
     out = []
@@ -87,14 +87,16 @@ def unpack_indices(data, bits, count):
     r"""Inverse of :func:`pack_indices`."""
     b = int(bits)
     if not (1 <= b <= 32):
-        raise ValueError("unpack_indices: bits must lie in 1..32, got %r" % (bits,))
+        raise ValueError(f"unpack_indices: bits must lie in 1..32, got {bits!r}")
     n = int(count)
     if n < 0:
         raise ValueError("unpack_indices: count must be non-negative")
     by = [int(v) & 0xFF for v in np.atleast_1d(np.asarray(data, dtype=float))]
     need = (n * b + 7) // 8
     if len(by) < need:
-        raise ValueError("unpack_indices: %d bytes cannot hold %d indices of %d bits (need %d)" % (len(by), n, b, need))
+        raise ValueError(
+            f"unpack_indices: {int(len(by))} bytes cannot hold {int(n)} indices of {int(b)} bits (need {int(need)})"
+        )
 
     out = []
     acc = 0

@@ -85,10 +85,10 @@ def spatial_error_ml(
     lam_lo = max(lam_lo, -0.99)
     lam_hi = min(lam_hi, 0.99)
 
-    I = np.eye(n)
+    I_ = np.eye(n)
 
     def _concentrated_ll(lam):
-        A = I - lam * Wm
+        A = I_ - lam * Wm
         y_star = A @ yv
         X_star = A @ Xm
         beta, res, _, _ = np.linalg.lstsq(X_star, y_star, rcond=None)
@@ -123,7 +123,7 @@ def spatial_error_ml(
 
     p_value = float(1.0 - _chi2.cdf(max(lr_stat, 0), df=1))
 
-    A_hat = I - lam_hat * Wm
+    A_hat = I_ - lam_hat * Wm
     residuals = A_hat @ yv - A_hat @ Xm @ beta_hat
     aic = -2 * ll_hat + 2 * (p + 2)
 

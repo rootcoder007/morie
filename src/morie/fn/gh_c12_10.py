@@ -28,7 +28,7 @@ def ghosal_wn_lin_bvm(L_coefs=(0.6, 0.8), n=500, prior_var=50.0, n_sim=500, seed
     for _ in range(n_sim):
         y = [t + float(rng.normal(0, 1)) / math.sqrt(n) for t in theta0]
         post = [shrink * v for v in y]
-        devs.append(math.sqrt(n) * sum(l * (p - t) for l, p, t in zip(L, post, theta0)))
+        devs.append(math.sqrt(n) * sum(ell * (p - t) for ell, p, t in zip(L, post, theta0)))
     m = sum(devs) / n_sim
     v = sum((d - m) ** 2 for d in devs) / (n_sim - 1)
     res = RichResult(

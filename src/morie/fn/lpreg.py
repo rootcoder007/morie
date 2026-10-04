@@ -65,10 +65,7 @@ def lpreg(
     if bandwidth is None:
         bandwidth = _silverman_bw(x)
 
-    if x_eval is None:
-        x_eval = x.copy()
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = x.copy() if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     m = len(x_eval)
     y_hat = np.empty(m)

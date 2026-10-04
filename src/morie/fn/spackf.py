@@ -57,7 +57,7 @@ def schabenberger_autocorrelation_function(coords, z, bins=None, cutoff=None):
     cc = mat(coords, "coords")
     n = len(zz)
     if len(cc) != n:
-        raise ValueError("`coords` has %d rows but `z` has %d values" % (len(cc), n))
+        raise ValueError(f"`coords` has {int(len(cc))} rows but `z` has {int(n)} values")
     if n < 3:
         raise ValueError("at least 3 sites are needed for a lag class")
     d = [t - mean(zz) for t in zz]

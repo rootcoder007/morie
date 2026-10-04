@@ -22,9 +22,9 @@ def unfolding_residuals(observed, predicted):
     """
     from morie.fn import _array_core as np
 
-    O = np.asarray(observed, dtype=float)
+    O_ = np.asarray(observed, dtype=float)
     P = np.asarray(predicted, dtype=float)
-    resid = O - P
+    resid = O_ - P
     rmse = float(np.sqrt(np.mean(resid**2)))
     return DescriptiveResult(
         name="unfolding_residuals", value=resid, extra={"rmse": rmse, "mean_resid": float(np.mean(resid))}

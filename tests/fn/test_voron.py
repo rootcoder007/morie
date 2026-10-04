@@ -111,7 +111,7 @@ def test_voron_rejects_bad_shapes():
         except ValueError:
             pass
         else:
-            raise AssertionError("expected ValueError for %r" % (bad,))
+            raise AssertionError(f"expected ValueError for {bad!r}")
 
 
 def test_cheatsheet():

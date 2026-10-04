@@ -83,7 +83,7 @@ def rescale(y, lower=None, upper=None):
     a = float(lower) if lower is not None else min(v)
     b = float(upper) if upper is not None else max(v)
     if b <= a:
-        raise ValueError("tmlcou: the upper bound must exceed the lower one, got (%r, %r)" % (a, b))
+        raise ValueError(f"tmlcou: the upper bound must exceed the lower one, got ({a!r}, {b!r})")
     if any(q < a - _EPS or q > b + _EPS for q in v):
         raise ValueError("tmlcou: an outcome lies outside the stated bounds")
     return {"scaled": [(q - a) / (b - a) for q in v], "lower": a, "upper": b, "range": b - a}

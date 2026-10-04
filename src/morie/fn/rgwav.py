@@ -56,7 +56,7 @@ def _filters(wavelet):
     try:
         lo = _DEC_LO[wavelet]
     except KeyError:
-        raise ValueError("unsupported wavelet %r; native families: %s" % (wavelet, sorted(_DEC_LO))) from None
+        raise ValueError(f"unsupported wavelet {wavelet!r}; native families: {sorted(_DEC_LO)}") from None
     n = len(lo)
     # quadrature-mirror relation (Mallat 2009, A Wavelet Tour of
     # Signal Processing, 3rd ed., sec. 7.3): dec_hi[k] = (-1)^k

@@ -514,7 +514,7 @@ def barrier_method(
         and ``newton`` counts, and the per-outer-iteration ``history``.
     """
     if centering not in _CENTERING:
-        raise ValueError("barerp: centering must be one of %s" % (_CENTERING,))
+        raise ValueError(f"barerp: centering must be one of {_CENTERING}")
     if mu <= 1.0:
         raise ValueError("barerp: mu must exceed 1")
     if t0 <= 0.0 or eps <= 0.0:
@@ -534,7 +534,7 @@ def barrier_method(
             for r, row in enumerate(aeq):
                 lhs = sum(row[j] * x[j] for j in range(len(x)))
                 if abs(lhs - float(beq[r])) > 1e-8:
-                    raise ValueError("barerp: x0 violates equality row %d by %g" % (r, lhs - float(beq[r])))
+                    raise ValueError(f"barerp: x0 violates equality row {int(r)} by {lhs - float(beq[r]):g}")
 
     if centering == "none":
         t = m / eps
@@ -610,7 +610,7 @@ def barrier_lp(c, A_ub, b_ub, A_eq=None, b_eq=None, x0=None, **kw):
     rows = [[float(v) for v in row] for row in A_ub]
     b = [float(v) for v in b_ub]
     if len(rows) != len(b):
-        raise ValueError("barerp: A_ub has %d rows but b_ub has %d" % (len(rows), len(b)))
+        raise ValueError(f"barerp: A_ub has {int(len(rows))} rows but b_ub has {int(len(b))}")
     for row in rows:
         if len(row) != n:
             raise ValueError("barerp: A_ub row width does not match c")
@@ -628,7 +628,7 @@ def barrier_lp(c, A_ub, b_ub, A_eq=None, b_eq=None, x0=None, **kw):
     if x0 is None:
         ph = phase1(cons, [0.0] * n, aeq=A_eq, beq=b_eq)
         if not ph["feasible"]:
-            raise ValueError("barerp: no strictly feasible point found; phase1 stopped at s = %g" % ph["s"])
+            raise ValueError("barerp: no strictly feasible point found; phase1 stopped at s = {:g}".format(ph["s"]))
         x0 = ph["x"]
     res = barrier_method(obj, cons, x0, aeq=A_eq, beq=b_eq, **kw)
     return res

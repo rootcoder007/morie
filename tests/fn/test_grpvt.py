@@ -28,8 +28,8 @@ def test_grpvt_basic():
 def test_grpvt_edge():
     """Test edge case R=1 (plain self-attention, no reduction)."""
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    result = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=1)
+    I_ = [[1.0]]
+    result = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=1)
     assert isinstance(result, dict)
     assert result["reduced_tokens"] == 4
 

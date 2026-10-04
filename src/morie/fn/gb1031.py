@@ -74,7 +74,7 @@ def kctrlmed(samples, p=(0.5,)):
     edges = [0] + r + [n1 + 1]
     pcell = [(edges[j + 1] - edges[j]) / (n1 + 1.0) for j in range(q + 1)]
     stat = 0.0
-    for i, row in enumerate(counts):
+    for _i, row in enumerate(counts):
         ni = sum(row)
         for j in range(q + 1):
             e = ni * pcell[j]

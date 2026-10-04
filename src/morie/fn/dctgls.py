@@ -91,7 +91,7 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None, max_iter=100, t
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d responses." % (Xa.shape[0], n))
+        raise ValueError(f"X has {int(Xa.shape[0])} rows for {int(n)} responses.")
     B = add_intercept(Xa)
 
     lo = None if left is None else np.broadcast_to(np.asarray(left, dtype=float), (n,))
@@ -105,9 +105,9 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None, max_iter=100, t
     else:
         dl = np.asarray(delta, dtype=float).ravel()
         if dl.size != n:
-            raise ValueError("delta has %d entries for %d rows." % (dl.size, n))
+            raise ValueError(f"delta has {int(dl.size)} entries for {int(n)} rows.")
     if dl.sum() < B.shape[1] + 1:
-        raise ValueError("only %d fully observed rows for %d parameters." % (int(dl.sum()), B.shape[1]))
+        raise ValueError(f"only {int(int(dl.sum()))} fully observed rows for {int(B.shape[1])} parameters.")
 
     # censoring model: probability of being observed, as a function of X
     from ._did import logit_fit, logit_predict

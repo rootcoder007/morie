@@ -188,7 +188,7 @@ def level1_stack(preds, y, cv="kfold", k=5, lam=None):
     on held-out folds.
     """
     if cv not in CV_SCHEMES:
-        raise ValueError("regmlm: cv must be one of %s, got %r" % (", ".join(CV_SCHEMES), cv))
+        raise ValueError("regmlm: cv must be one of {}, got {!r}".format(", ".join(CV_SCHEMES), cv))
     n = len(y)
     m = len(preds)
     if m == 0:

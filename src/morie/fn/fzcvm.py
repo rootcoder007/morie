@@ -70,10 +70,7 @@ def fauzi_cvm_smoothed(x, cdf="norm", args=None, h=None):
     else:
         dist = getattr(_sps, cdf)
         if args is None:
-            if cdf == "norm":
-                args = (float(np.mean(x)), float(np.std(x, ddof=1)))
-            else:
-                args = ()
+            args = (float(np.mean(x)), float(np.std(x, ddof=1))) if cdf == "norm" else ()
         u = (np.arange(1, n + 1) - 0.5) / n
         t_grid = dist.ppf(u, *args)
         F_ref = dist.cdf(t_grid, *args)

@@ -52,10 +52,7 @@ def wind_rose(
     for i, center in enumerate(sector_centers):
         lo = (center - sector_width / 2) % 360
         hi = (center + sector_width / 2) % 360
-        if lo < hi:
-            mask = (dirs >= lo) & (dirs < hi)
-        else:
-            mask = (dirs >= lo) | (dirs < hi)
+        mask = (dirs >= lo) & (dirs < hi) if lo < hi else (dirs >= lo) | (dirs < hi)
         sector_spds = spds[mask]
         for j in range(len(speed_bins) - 1):
             freq_table[i, j] = int(np.sum((sector_spds >= speed_bins[j]) & (sector_spds < speed_bins[j + 1])))

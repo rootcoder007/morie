@@ -73,7 +73,7 @@ def kosorok_ch1_partly_linear_logistic(Y, Z, U, beta=None, eta=None, df=5):
 
     res = optimize.minimize(neg, np.zeros(X.shape[1]), method="BFGS")
     par = res.x
-    lin = np.clip(X @ par, -30, 30)
+    np.clip(X @ par, -30, 30)
     return RichResult(
         payload={
             "beta": par[:p],

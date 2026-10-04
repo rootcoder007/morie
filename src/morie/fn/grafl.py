@@ -40,7 +40,7 @@ def _sig(A, idx):
                 m += 1
                 deg[a] += 1
                 deg[b] += 1
-    return "%d:%s" % (m, ",".join([str(x) for x in sorted(deg)]))
+    return "{}:{}".format(int(m), ",".join([str(x) for x in sorted(deg)]))
 
 
 def _counts(G, kk, types):

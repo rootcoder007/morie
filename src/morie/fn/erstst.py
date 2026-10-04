@@ -54,7 +54,7 @@ def ers_unit_root(x, lags=1, trend=False):
     if p < 0:
         raise ValueError("lags must be non-negative")
     if n < p + 3:
-        raise ValueError("series too short for %d lags" % p)
+        raise ValueError(f"series too short for {int(p)} lags")
     cbar = -13.5 if trend else -7.0
     abar = 1.0 + cbar / n
     k = 2 if trend else 1
@@ -77,7 +77,7 @@ def ers_unit_root(x, lags=1, trend=False):
     nobs = len(rows)
     kk = p + 1
     if nobs <= kk:
-        raise ValueError("series too short for %d lags" % p)
+        raise ValueError(f"series too short for {int(p)} lags")
     b = core.lstsq(rows, rhs, 0.0)
     resid = [rhs[i] - sum(rows[i][j] * b[j] for j in range(kk)) for i in range(nobs)]
     s2 = sum(r * r for r in resid) / (nobs - kk)

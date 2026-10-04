@@ -109,10 +109,7 @@ def pensp(
         gcv_score = _gcv(penalty)
 
     beta = _fit(penalty)
-    if x_new is None:
-        x_new = np.sort(x)
-    else:
-        x_new = np.asarray(x_new, dtype=float)
+    x_new = np.sort(x) if x_new is None else np.asarray(x_new, dtype=float)
 
     B_new = _basis(x_new)
     y_hat = B_new @ beta

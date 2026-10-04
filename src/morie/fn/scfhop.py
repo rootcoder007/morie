@@ -112,7 +112,7 @@ def atom_types(smiles):
     dbl_o = [0] * n
     sng_o = [0] * n
     for i in range(n):
-        for v, o, k in adj[i]:
+        for v, o, _k in adj[i]:
             if el[v] == "O":
                 if o == 2:
                     dbl_o[i] += 1
@@ -128,18 +128,18 @@ def atom_types(smiles):
                 t.append("D")
         if e == "N" and not arom[i]:
             amide = False
-            for v, o, k in adj[i]:
+            for v, o, _k in adj[i]:
                 if el[v] == "C" and dbl_o[v] > 0:
                     amide = True
             if not amide:
                 t.append("P")
         if e == "O":
-            for v, o, k in adj[i]:
+            for v, o, _k in adj[i]:
                 if el[v] == "C" and dbl_o[v] > 0 and sng_o[v] > 0:
                     t.append("N")
         if e == "C":
             het = False
-            for v, o, k in adj[i]:
+            for v, o, _k in adj[i]:
                 if el[v] in ("N", "O"):
                     het = True
             if not het:
@@ -270,7 +270,7 @@ def murcko_scaffold(smiles):
     while changed:
         changed = False
         deg = [0] * n
-        for a, b, o in bonds:
+        for a, b, _o in bonds:
             if keep[a] and keep[b]:
                 deg[a] += 1
                 deg[b] += 1
@@ -309,12 +309,12 @@ def scaffold_signature(smiles, rounds=3):
     for a, b, o in keptb:
         nb[pos[a]].append((pos[b], o))
         nb[pos[b]].append((pos[a], o))
-    col = [_fnv("%s|%d|%d" % (el[atoms[k]], arom[atoms[k]], chg[atoms[k]])) for k in range(m)]
+    col = [_fnv(f"{el[atoms[k]]}|{int(arom[atoms[k]])}|{int(chg[atoms[k]])}") for k in range(m)]
     for _ in range(int(rounds)):
         nxt = []
         for k in range(m):
-            around = sorted("%d:%d" % (o, col[v]) for v, o in nb[k])
-            nxt.append(_fnv("%d|%s" % (col[k], ",".join(around))))
+            around = sorted(f"{int(o)}:{int(col[v])}" for v, o in nb[k])
+            nxt.append(_fnv("{}|{}".format(int(col[k]), ",".join(around))))
         col = nxt
     return sorted(col)
 

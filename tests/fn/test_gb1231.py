@@ -25,7 +25,7 @@ def test_gb1231_basic():
 
     # Independently recompute L from the literature formula.
     rows = [[float(v) for v in r] for r in data]
-    k = len(rows)
+    len(rows)
     n = len(rows[0])
     Y = [float(i + 1) for i in range(n)]
     rsum = [0.0] * n

@@ -56,12 +56,12 @@ def ensemble_evaluate(predictions, y=None, weights=None, task="regression"):
     P = np.atleast_2d(np.asarray(predictions, dtype=float))
     M, n = P.shape
     if M < 2:
-        raise ValueError("need at least 2 members, got %d." % M)
+        raise ValueError(f"need at least 2 members, got {int(M)}.")
     if task not in ("regression", "classification"):
-        raise ValueError("task must be 'regression' or 'classification', got %r." % task)
+        raise ValueError(f"task must be 'regression' or 'classification', got {task!r}.")
     w = np.ones(M) / M if weights is None else np.asarray(weights, dtype=float).ravel()
     if w.size != M:
-        raise ValueError("weights has %d entries for %d members." % (w.size, M))
+        raise ValueError(f"weights has {int(w.size)} entries for {int(M)} members.")
     if np.any(w < 0):
         raise ValueError("weights must be non-negative.")
     s = w.sum()
@@ -96,7 +96,7 @@ def ensemble_evaluate(predictions, y=None, weights=None, task="regression"):
     if y is not None:
         yv = np.asarray(y, dtype=float).ravel()
         if yv.size != n:
-            raise ValueError("y has %d entries for %d predictions." % (yv.size, n))
+            raise ValueError(f"y has {int(yv.size)} entries for {int(n)} predictions.")
         if task == "regression":
             memb = np.array([float(np.mean((P[m] - yv) ** 2)) for m in range(M)])
             ens = float(np.mean((pred - yv) ** 2))

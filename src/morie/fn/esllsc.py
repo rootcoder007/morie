@@ -87,7 +87,7 @@ def esl_lda_disc(X, y, query=None):
     for j, (mu, pi_) in enumerate(zip(means, priors)):
         D[:, j] = Q @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_)
     pred = [classes[i] for i in np.argmax(D, axis=1)]
-    spread = (
+    (
         float(
             np.max(
                 [np.linalg.norm(np.cov((X[y_arr == c] - np.mean(X[y_arr == c], axis=0)).T, bias=True)) for c in classes]

@@ -220,7 +220,7 @@ def rangayyan_ar_order_aic(prediction_errors, n_samples, window="hamming"):
     if isinstance(window, str):
         frac = {"hamming": 0.4, "rectangular": 1.0, "none": 1.0}.get(window.lower())
         if frac is None:
-            raise ValueError("unknown window %r" % window)
+            raise ValueError(f"unknown window {window!r}")
     else:
         frac = float(window)
         if not (0.0 < frac <= 1.0):
@@ -684,7 +684,7 @@ def levinson(acf, order=None):
     if p < 1:
         raise ValueError("order must be at least 1")
     if p > len(r) - 1:
-        raise ValueError("order %d needs %d ACF lags, got %d" % (p, p + 1, len(r) - 1))
+        raise ValueError(f"order {int(p)} needs {int(p + 1)} ACF lags, got {int(len(r) - 1)}")
     if r[0] <= 0:
         raise ValueError("phi(0) must be positive")
     a = []
@@ -759,7 +759,7 @@ def lpc(x, order, method="autocorrelation"):
     if p < 1:
         raise ValueError("order must be at least 1")
     if n <= p:
-        raise ValueError("need more samples (%d) than the order (%d)" % (n, p))
+        raise ValueError(f"need more samples ({int(n)}) than the order ({int(p)})")
     if method != "autocorrelation":
         raise ValueError("only the autocorrelation method is implemented; eq. (7.40)'s covariance method is not")
     acf = [fsum(xs[i] * xs[i + m] for i in range(n - m)) / n for m in range(p + 1)]
@@ -823,7 +823,7 @@ def lpcsynth(a, excitation, gain=1.0, initial=None):
     p = len(ak)
     hist = [0.0] * p if initial is None else aslist(initial)
     if len(hist) != p:
-        raise ValueError("initial state must hold %d samples" % p)
+        raise ValueError(f"initial state must hold {int(p)} samples")
     y = []
     limit = 1e12 * (1.0 + max(abs(v) for v in e))
     diverged = False
@@ -1040,7 +1040,7 @@ def armafit(x, p, q, fs=1.0):
     resid = ar["residual"][pi_:]
     n = len(resid)
     if n <= qi:
-        raise ValueError("too few residual samples (%d) for MA order %d" % (n, qi))
+        raise ValueError(f"too few residual samples ({int(n)}) for MA order {int(qi)}")
     if qi == 0:
         b = [ar["gain"]]
     else:

@@ -88,7 +88,7 @@ def replicated_pfilter(y, n_particles, init, step, loglik, n_reps=10, seed=0, **
     """
     R = int(n_reps)
     if R < 1:
-        raise ValueError("pftrep: need at least 1 replicate, got %d" % R)
+        raise ValueError(f"pftrep: need at least 1 replicate, got {int(R)}")
     lls, minless = [], []
     for r in range(R):
         res = particle_filter(y, n_particles, init, step, loglik, seed=seed * 1013 + r, **kw)
@@ -125,7 +125,7 @@ def loglik_profile(y, grid, make_model, n_particles=200, n_reps=5, seed=0, **kw)
     """
     g = [float(v) for v in grid]
     if len(g) < 2:
-        raise ValueError("pftrep: need at least 2 grid points, got %d" % len(g))
+        raise ValueError(f"pftrep: need at least 2 grid points, got {int(len(g))}")
     vals, ses = [], []
     for t, th in enumerate(g):
         init, step, loglik = make_model(th)

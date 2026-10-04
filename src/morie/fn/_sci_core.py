@@ -92,7 +92,7 @@ def _metric_fn(metric):
             return 1.0 - dp / (nu * nv)
 
         return cos
-    raise ValueError("unsupported metric %r" % metric)
+    raise ValueError(f"unsupported metric {metric!r}")
 
 
 def cdist(xa, xb, metric="euclidean"):
@@ -320,12 +320,12 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
     if bounds is not None:
         bl = list(bounds)
         if len(bl) != len(x0):
-            raise ValueError("bounds has %d entries but x0 has %d" % (len(bl), len(x0)))
+            raise ValueError(f"bounds has {int(len(bl))} entries but x0 has {int(len(x0))}")
         lo = [(-_math.inf if b is None or b[0] is None else float(b[0])) for b in bl]
         hi = [(_math.inf if b is None or b[1] is None else float(b[1])) for b in bl]
         for a, b in zip(lo, hi):
             if a > b:
-                raise ValueError("lower bound %g exceeds upper bound %g" % (a, b))
+                raise ValueError(f"lower bound {a:g} exceeds upper bound {b:g}")
 
         def clip(v):
             return [min(max(vi, a), b) for vi, a, b in zip(v, lo, hi)]
@@ -357,7 +357,7 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
     elif m in ("bfgs", "lbfgsb", "cg"):
         res = _bfgs(fun, x0, args=args, maxiter=opts.get("maxiter"), gtol=opts.get("gtol", 1e-6))
     else:
-        raise ValueError("unsupported method %r" % method)
+        raise ValueError(f"unsupported method {method!r}")
 
     if bounds is not None:
         xc = clip(list(_ac.asarray(res.x)._flat()))
@@ -458,7 +458,7 @@ def _constrained(fun, x0, constraints, args=(), maxiter=None, ftol=1e-9, lo=None
         fun=fx,
         success=viol <= 1e-6,
         nit=outer,
-        message=("constraints satisfied" if viol <= 1e-6 else "constraint violation %.3g" % viol),
+        message=("constraints satisfied" if viol <= 1e-6 else f"constraint violation {viol:.3g}"),
     )
 
 
@@ -778,10 +778,7 @@ def brentq(f, a, b, args=(), xtol=2e-12, rtol=8.9e-16, maxiter=100):
 
 def approx_fprime(xk, f, epsilon=1.4901161193847656e-08, *args):
     x = list(_ac.asarray(xk)._flat())
-    if isinstance(epsilon, (int, float)):
-        eps = [float(epsilon)] * len(x)
-    else:
-        eps = [float(v) for v in epsilon]
+    eps = [float(epsilon)] * len(x) if isinstance(epsilon, (int, float)) else [float(v) for v in epsilon]
     f0 = float(f(x, *args))
     g = []
     for i in range(len(x)):
@@ -891,10 +888,7 @@ def _curve_fit_bounded(f, xdata, ydata, p0, maxfev, bounds):
     import inspect
 
     lo_b, hi_b = bounds
-    if p0 is None:
-        k = len(inspect.signature(f).parameters) - 1
-    else:
-        k = len(list(_ac.asarray(p0)._flat()))
+    k = len(inspect.signature(f).parameters) - 1 if p0 is None else len(list(_ac.asarray(p0)._flat()))
 
     def vec(b_):
         vals = list(_ac.asarray(b_)._flat()) if hasattr(b_, "__len__") or hasattr(b_, "_flat") else [float(b_)]
@@ -909,7 +903,10 @@ def _curve_fit_bounded(f, xdata, ydata, p0, maxfev, bounds):
             (l_ + h_) / 2.0 if l_ > -inf and h_ < inf else (l_ + 1.0 if l_ > -inf else (h_ - 1.0 if h_ < inf else 1.0))
             for l_, h_ in zip(lo, hi)
         ]
-    clip = lambda v: [_bi.min(_bi.max(x, l_), h_) for x, l_, h_ in zip(v, lo, hi)]
+
+    def clip(v):
+        return [_bi.min(_bi.max(x, l_), h_) for x, l_, h_ in zip(v, lo, hi)]
+
     p = clip([float(v) for v in _ac.asarray(p0)._flat()])
     xs = list(_ac.asarray(xdata)._flat()) if not isinstance(xdata, (list, tuple)) else list(xdata)
     ys = [float(v) for v in _ac.asarray(ydata)._flat()]
@@ -1465,7 +1462,7 @@ def expm(a):
         return [[ca * X[i][j] + cb * Y[i][j] for j in range(n)] for i in range(n)]
 
     ident = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
-    c = [1.0, 0.5, 12 / 120.0, 1 / 120.0 * 10 / 6.0]
+    [1.0, 0.5, 12 / 120.0, 1 / 120.0 * 10 / 6.0]
     # Pade(6) coefficients: c_k = (6! (12-k)!) / (12! k! (6-k)!)
     coef = []
     for k in range(7):
@@ -1576,7 +1573,7 @@ class interp1d:
             return ys[i]
         if self.kind == "next":
             return ys[i + 1]
-        raise ValueError("unsupported kind %r" % self.kind)
+        raise ValueError(f"unsupported kind {self.kind!r}")
 
     def __call__(self, xnew):
         if isinstance(xnew, (int, float)):
@@ -1809,7 +1806,7 @@ def kmeans2(data, k, iter=10, seed=1, minit="points"):
     X = _ac.atleast_2d(data)
     n, d = X.shape
     rng = _ac.random.default_rng(seed)
-    if minit == "points" or True:
+    if True:
         idx = []
         while len(idx) < int(k):
             j = int(rng.integers(0, n))
@@ -1875,7 +1872,7 @@ def _pair_metric(metric):
     if callable(metric):
         return metric
     if metric not in table:
-        raise ValueError("unsupported linkage metric %r" % (metric,))
+        raise ValueError(f"unsupported linkage metric {metric!r}")
     return table[metric]
 
 
@@ -1935,7 +1932,7 @@ def linkage(y, method="single", metric="euclidean", optimal_ordering=False):
                 tot = si + sj + sk
                 dnew = _math.sqrt(((si + sk) * dik * dik + (sj + sk) * djk * djk - sk * dv * dv) / tot)
             else:
-                raise ValueError("unsupported method %r" % method)
+                raise ValueError(f"unsupported method {method!r}")
             D[(min(ck, next_id), max(ck, next_id))] = dnew
         del active[ci], active[cj]
         active[next_id] = si + sj
@@ -2216,10 +2213,7 @@ def differential_evolution(func, bounds, args=(), maxiter=200, popsize=15, seed=
             jrand = int(rng.integers(0, d))
             trial = []
             for j in range(d):
-                if rng.uniform() < 0.7 or j == jrand:
-                    v = a[j] + 0.8 * (b[j] - c[j])
-                else:
-                    v = pop[i][j]
+                v = a[j] + 0.8 * (b[j] - c[j]) if rng.uniform() < 0.7 or j == jrand else pop[i][j]
                 trial.append(_bi.min(hi[j], _bi.max(lo[j], v)))
             ft = float(func(_ac.marr(trial), *args))
             if ft < fit[i]:
@@ -2593,7 +2587,7 @@ def loadmat(path, **kw):
         _t, name_raw, p = parse_element(payload, p)
         name = name_raw.rstrip(b"\x00").decode("latin1")
         ndim = len(dims_raw) // 4
-        dims = _st.unpack("<%di" % ndim, dims_raw)
+        dims = _st.unpack(f"<{int(ndim)}i", dims_raw)
         cls = flags[0] if flags else 0
         if cls in (1, 2, 5) or cls > 15:  # cell/struct/sparse: skip
             return name, None
@@ -2608,7 +2602,7 @@ def loadmat(path, **kw):
             return name, txt.replace("\x00", "")
         fmt, size = NUM_FMT.get(t, ("d", 8))
         cnt = len(real_raw) // size
-        vals = list(_st.unpack("<%d%s" % (cnt, fmt), real_raw))
+        vals = list(_st.unpack(f"<{int(cnt)}{fmt}", real_raw))
         if len(dims) == 2:
             r, c = dims
             # column-major

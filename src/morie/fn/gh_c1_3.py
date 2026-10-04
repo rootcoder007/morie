@@ -22,9 +22,15 @@ def ghosal_prior_posterior_update(x, data=None, log_lik_one=None, log_prior=None
     if data is None:
         data = [0.8, 1.2, 1.0]
     if log_lik_one is None:
-        log_lik_one = lambda t, d: -0.5 * (d - t) ** 2
+
+        def log_lik_one(t, d):
+            return -0.5 * (d - t) ** 2
+
     if log_prior is None:
-        log_prior = lambda t: -0.5 * t * t
+
+        def log_prior(t):
+            return -0.5 * t * t
+
     # batch
     lw = [sum(log_lik_one(t, d) for d in data) + log_prior(t) for t in th]
     mx = max(lw)

@@ -30,10 +30,7 @@ def _best_child(node, c, rng):
     # the native RNG so both language arms agree.
     best, ties = -math.inf, []
     for ch in node.children:
-        if ch.N == 0:
-            v = math.inf
-        else:
-            v = ch.Q / ch.N + 2.0 * c * math.sqrt(2.0 * math.log(node.N) / ch.N)
+        v = math.inf if ch.N == 0 else ch.Q / ch.N + 2.0 * c * math.sqrt(2.0 * math.log(node.N) / ch.N)
         if v > best:
             best, ties = v, [ch]
         elif v == best:

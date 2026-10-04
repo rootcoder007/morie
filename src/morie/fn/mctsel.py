@@ -82,10 +82,7 @@ def mcts_selection(Q, N, P, c=1.25, rule="puct", c2=19652.0):
                 u[a] = float("inf")
         else:
             base = p[a] * root / (1.0 + n[a])
-            if rule == "muzero":
-                base = base * (c + math.log((tot + c2 + 1.0) / c2))
-            else:
-                base = base * c
+            base = base * (c + math.log((tot + c2 + 1.0) / c2)) if rule == "muzero" else base * c
             u[a] = base
         scores[a] = q[a] + u[a]
     best = 0

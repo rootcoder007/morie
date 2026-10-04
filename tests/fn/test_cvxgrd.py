@@ -6,7 +6,7 @@ from morie.fn.cvxgrd import boyd_gradient_descent
 
 def test_cvxgrd_basic():
     """Test basic functionality on a well-conditioned quadratic."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Well-conditioned diagonal Hessian with eigenvalues in [1, 2].
     Q = np.diag([1.0, 2.0])
 

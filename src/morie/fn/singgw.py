@@ -110,7 +110,7 @@ def single_step_h(A, G, genotyped, w=0.0):
     Ap = A[np.ix_(idx, idx)]
     A11 = Ap[:q, :q]
     A12 = Ap[:q, q:]
-    A21 = Ap[q:, :q]
+    Ap[q:, :q]
     A22 = Ap[q:, q:]
     Gw = (1.0 - w) * G + w * A11
     A11inv = np.linalg.inv(A11)

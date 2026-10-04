@@ -76,10 +76,7 @@ def rubins_rules(
     fmi = (r + 2 / (m + 1)) / (1 + r) if (1 + r) > 0 else 1.0
 
     # Barnard-Rubin degrees of freedom
-    if b > 0:
-        df_old = (m - 1) * (1 + u_bar / ((1 + 1 / m) * b)) ** 2
-    else:
-        df_old = float("inf")
+    df_old = (m - 1) * (1 + u_bar / ((1 + 1 / m) * b)) ** 2 if b > 0 else float("inf")
 
     df = float(df_old)
 

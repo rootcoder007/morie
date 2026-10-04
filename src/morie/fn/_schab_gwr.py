@@ -185,10 +185,7 @@ def adaptive_bandwidth(distance_row, n_neighbours, eps=1.0000001):
 
 
 def _local_weights(d_row, bandwidth, kernel, adaptive):
-    if adaptive:
-        h = adaptive_bandwidth(d_row, bandwidth)
-    else:
-        h = float(bandwidth)
+    h = adaptive_bandwidth(d_row, bandwidth) if adaptive else float(bandwidth)
     return kernel_weights(d_row, h, kernel)
 
 
@@ -562,10 +559,7 @@ def mgwr_backfit(
             "bandwidth"
         ]
 
-    if init_bandwidth is None:
-        bw_gwr = _select(y, X)
-    else:
-        bw_gwr = init_bandwidth
+    bw_gwr = _select(y, X) if init_bandwidth is None else init_bandwidth
     optim = _fit(y, X, bw_gwr)
     err = optim["resid"].reshape(-1, 1)
     XB = X * optim["params"]

@@ -109,7 +109,7 @@ def kernel_matrix(X, Z, log_ls, log_sf, kind="squared_exponential"):
     list of list of float
     """
     if kind not in KERNELS:
-        raise ValueError("kind must be one of %r" % (KERNELS,))
+        raise ValueError(f"kind must be one of {KERNELS!r}")
     ls = math.exp(log_ls)
     sf2 = math.exp(2.0 * log_sf)
     out = []
@@ -276,9 +276,9 @@ def hyperparam_optim_gp(
     Rasmussen and Williams (2006) chapters 2 and 4.
     """
     if kind not in KERNELS:
-        raise ValueError("kind must be one of %r" % (KERNELS,))
+        raise ValueError(f"kind must be one of {KERNELS!r}")
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     Xv = [[float(v) for v in row] for row in X]
     yv = [float(v) for v in y]
     n = len(yv)

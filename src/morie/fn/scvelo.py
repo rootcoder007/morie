@@ -99,7 +99,7 @@ def solve_kinetics(tau, alpha, beta, gamma, u0=0.0, s0=0.0):
     :math:`\tau` after a phase switch."""
     for name, v in (("beta", beta), ("gamma", gamma)):
         if v <= 0.0:
-            raise ValueError("scvelo: %s must be positive" % name)
+            raise ValueError(f"scvelo: {name} must be positive")
     if alpha < 0.0:
         raise ValueError("scvelo: the transcription rate cannot be negative")
     t = float(tau)

@@ -73,7 +73,7 @@ def wl_colours(adj, n, rounds=2, initial=None):
     """
     c = [1.0] * int(n) if initial is None else [float(v) for v in k.vec(initial)]
     if len(c) != int(n):
-        raise ValueError("sortP: %d initial colours for %d vertices" % (len(c), n))
+        raise ValueError(f"sortP: {int(len(c))} initial colours for {int(n)} vertices")
     for _ in range(int(rounds)):
         nc = []
         for v in range(int(n)):
@@ -128,7 +128,7 @@ def choose_k(graph_sizes, coverage=0.6):
     s = sorted(int(v) for v in graph_sizes)
     c = float(coverage)
     if not 0.0 < c <= 1.0:
-        raise ValueError("sortP: the coverage must lie in (0,1], got %r" % (coverage,))
+        raise ValueError(f"sortP: the coverage must lie in (0,1], got {coverage!r}")
     if not s:
         raise ValueError("sortP: no graph sizes given")
     idx = min(len(s) - 1, int(math.ceil(c * len(s))) - 1)

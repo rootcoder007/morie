@@ -65,9 +65,9 @@ def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
     M = np.atleast_2d(np.asarray(in_bag)).astype(bool)
     n = yv.size
     if P.shape[1] != n or M.shape != P.shape:
-        raise ValueError("predictions and in_bag must both be (B, %d); got %s and %s." % (n, P.shape, M.shape))
+        raise ValueError(f"predictions and in_bag must both be (B, {int(n)}); got {P.shape} and {M.shape}.")
     if task not in ("regression", "classification"):
-        raise ValueError("task must be 'regression' or 'classification', got %r." % task)
+        raise ValueError(f"task must be 'regression' or 'classification', got {task!r}.")
     oob = ~M
     votes = oob.sum(axis=0)
     have = votes > 0

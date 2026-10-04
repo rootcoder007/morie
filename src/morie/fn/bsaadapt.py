@@ -195,7 +195,7 @@ def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
         raise ValueError("each window needs at least two samples")
     for name, v in (("Th_P", thp), ("Th_F", thf)):
         if float(v) <= 0:
-            raise ValueError("%s must be positive" % name)
+            raise ValueError(f"{name} must be positive")
     nmax = min(len(a), len(b))
     rt = _acf(a, nmax)
     rr = _acf(b, nmax)
@@ -217,7 +217,7 @@ def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
             raise ValueError("need at least one lag")
         if q > auto:
             raise ValueError(
-                "eq. (8.28) needs the ACFs nonnegative out to lag q; they turn negative at lag %d" % (auto + 1)
+                f"eq. (8.28) needs the ACFs nonnegative out to lag q; they turn negative at lag {int(auto + 1)}"
             )
     if q < 1:
         raise ValueError("both ACFs turn negative at lag 1; no lags to compare")
@@ -424,10 +424,7 @@ def eegadapt(x, fs, window=None, step=None, order=4, threshold=None):
     while pos + w <= N:
         seg = xs[start : pos + w]
         mrel = pos - start + 1
-        if mrel - 1 > p and w > p:
-            d = glr(seg, mrel, len(seg), order=p)["d"]
-        else:
-            d = 0.0
+        d = glr(seg, mrel, len(seg), order=p)["d"] if mrel - 1 > p and w > p else 0.0
         dists.append(d)
         times.append(pos / fsv)
         pos += hop
@@ -554,7 +551,7 @@ def glr(x, m, n=None, order=4):
     if p < 1:
         raise ValueError("order must be at least 1")
     if not 2 <= mv <= nv <= N:
-        raise ValueError("need 2 <= m <= n <= len(x); got m=%d n=%d N=%d" % (mv, nv, N))
+        raise ValueError(f"need 2 <= m <= n <= len(x); got m={int(mv)} n={int(nv)} N={int(N)}")
     if mv - 1 <= p or nv - mv + 1 <= p:
         raise ValueError("each window must hold more samples than the AR order")
 
@@ -672,7 +669,7 @@ def kalman(z, F, H, Q, R, x0=None, P0=None):
     for zk in z:
         zv = aslist(zk)
         if len(zv) != p:
-            raise ValueError("every measurement must have length %d" % p)
+            raise ValueError(f"every measurement must have length {int(p)}")
         xp = mv(Fm, x)
         Pp = mm(mm(Fm, P), tr(Fm))
         Pp = [[Pp[i][j] + Qm[i][j] for j in range(ns)] for i in range(ns)]
@@ -867,7 +864,7 @@ def pcgseg(x, fs, window=None, step=None, order=6, threshold=None):
     thr = float(threshold) if threshold is not None else med + 3.0 * 1.4826 * mad
     bounds, ref = [], spectrum(xs[starts[0] : starts[0] + w])
     adaptive = []
-    for idx, s in enumerate(starts):
+    for _idx, s in enumerate(starts):
         sp = spectrum(xs[s : s + w])
         v = sem(sp, ref)["sem"] if (sp and ref) else 0.0
         adaptive.append(v)
@@ -1023,7 +1020,7 @@ def rlsfilt(primary, reference, order=8, lam=0.98, delta=1.0):
         Pr = [fsum(P[a][b] * rv[b] for b in range(m)) for a in range(m)]
         den = lv + fsum(rv[a] * Pr[a] for a in range(m))
         if den <= 0:
-            raise ValueError("the RLS denominator vanished at sample %d; P has lost positive definiteness" % i)
+            raise ValueError(f"the RLS denominator vanished at sample {int(i)}; P has lost positive definiteness")
         kg = [v / den for v in Pr]
         newP = [[(P[a][b] - kg[a] * Pr[b]) / lv for b in range(m)] for a in range(m)]
         asym = max(asym, max(abs(newP[a][b] - newP[b][a]) for a in range(m) for b in range(m)))
@@ -1362,7 +1359,7 @@ def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
     half = n // 2 + 1
     if len(W) != half:
         raise ValueError(
-            "the PSDs need one value per one-sided DFT bin (%d for %d samples), got %d" % (half, n, len(W))
+            f"the PSDs need one value per one-sided DFT bin ({int(half)} for {int(n)} samples), got {int(len(W))}"
         )
     re, im = [], []
     step = 2.0 * pi / n
@@ -2642,7 +2639,7 @@ def lmszhang(mu, order, r, alpha=0.02, power_prev=None):
         raise ValueError(
             "the book writes 0 <= alpha << 1; alpha above 0.5 "
             "tracks the instantaneous sample instead of "
-            "averaging, got %g" % av
+            f"averaging, got {av:g}"
         )
     rv = float(r)
     prev = rv * rv if power_prev is None else float(power_prev)

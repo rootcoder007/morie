@@ -110,7 +110,7 @@ def horowitz_series_unknown_T(x, y, w, K=4, basis="poly"):
             C[k][j] = float(sol[k])
 
     # (5.85): m_hat = C beta, solved in normal-equation form.
-    CtC = [[sum(C[r][k] * C[r][l] for r in range(J)) for l in range(J)] for k in range(J)]
+    CtC = [[sum(C[r][k] * C[r][ell] for r in range(J)) for ell in range(J)] for k in range(J)]
     Ctm = [sum(C[r][k] * m_hat[r] for r in range(J)) for k in range(J)]
     beta = [float(t) for t in core.ridgesolve(CtC, Ctm)]
     g_hat = [sum(float(Phi[i][k]) * beta[k] for k in range(J)) for i in range(n)]

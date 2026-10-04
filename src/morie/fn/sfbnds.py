@@ -12,9 +12,9 @@ __all__ = ["sharp_bounds_balke_pearl"]
 def _binary(v, name):
     x = [float(t) for t in np.atleast_1d(np.asarray(v, dtype=float)).tolist()]
     if len(x) == 0:
-        raise ValueError("sharp_bounds_balke_pearl: %s is empty" % name)
+        raise ValueError(f"sharp_bounds_balke_pearl: {name} is empty")
     if any(t not in (0.0, 1.0) for t in x):
-        raise ValueError("sharp_bounds_balke_pearl: %s must be binary 0/1" % name)
+        raise ValueError(f"sharp_bounds_balke_pearl: {name} must be binary 0/1")
     return x
 
 

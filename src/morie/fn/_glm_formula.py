@@ -22,7 +22,7 @@ __all__ = ["ols", "wls", "glm", "formula_terms"]
 def formula_terms(formula):
     """Split ``"y ~ x1 + x2"`` into ``("y", ["x1", "x2"], intercept)``."""
     if "~" not in formula:
-        raise ValueError("formula must contain '~': %r" % formula)
+        raise ValueError(f"formula must contain '~': {formula!r}")
     lhs, rhs = formula.split("~", 1)
     outcome = lhs.strip()
     intercept = True
@@ -39,10 +39,10 @@ def formula_terms(formula):
             if stripped in ("1", "0"):
                 intercept = False
                 continue
-            raise ValueError("unsupported formula term: %r" % t)
+            raise ValueError(f"unsupported formula term: {t!r}")
         terms.append(t)
     if not outcome:
-        raise ValueError("formula has no outcome: %r" % formula)
+        raise ValueError(f"formula has no outcome: {formula!r}")
     return outcome, terms, intercept
 
 
@@ -155,7 +155,7 @@ def _design(formula, data):
     n = len(y)
     for t, c in zip(labels, cols):
         if len(c) != n:
-            raise ValueError("term %r has %d rows, outcome has %d" % (t, len(c), n))
+            raise ValueError(f"term {t!r} has {int(len(c))} rows, outcome has {int(n)}")
     X = [[c[i] for c in cols] for i in range(n)]
     names = (["Intercept"] if intercept else []) + labels
     return y, X, names, intercept, spec
@@ -216,7 +216,7 @@ class _ConfInt:
         return [list(r) for r in self._rows]
 
     def __repr__(self):
-        return "\n".join("%-24s [%.6g, %.6g]" % (n, r[0], r[1]) for n, r in zip(self.names, self._rows))
+        return "\n".join(f"{str(n):<24} [{r[0]:.6g}, {r[1]:.6g}]" for n, r in zip(self.names, self._rows))
 
 
 class _NamedVec(list):
@@ -287,7 +287,7 @@ class _WaldResult:
         self.df_denom = None
 
     def __repr__(self):
-        return "<Wald chi2=%.6g df=%d p=%.6g>" % (self.statistic, self.df_constraint, self.pvalue)
+        return f"<Wald chi2={self.statistic:.6g} df={int(self.df_constraint)} p={self.pvalue:.6g}>"
 
 
 class _WaldTerms:
@@ -380,7 +380,7 @@ class _Result:
         k = len(b)
         for row in R:
             if len(row) != k:
-                raise ValueError("contrast has %d columns, the fit has %d parameters" % (len(row), k))
+                raise ValueError(f"contrast has {int(len(row))} columns, the fit has {int(k)} parameters")
         Rb = [sum(R[i][j] * b[j] for j in range(k)) for i in range(q)]
         RV = [[sum(R[i][a] * V[a][j] for a in range(k)) for j in range(k)] for i in range(q)]
         M = [[sum(RV[i][a] * R[j][a] for a in range(k)) for j in range(q)] for i in range(q)]
@@ -415,9 +415,9 @@ class _Result:
         return _WaldTerms(table)
 
     def summary(self):
-        head = "%-24s %12s %12s %10s" % ("term", "estimate", "std.error", "p")
+        head = "{:<24} {!s:>12} {!s:>12} {!s:>10}".format("term", "estimate", "std.error", "p")
         rows = [
-            "%-24s %12.6g %12.6g %10.4g" % (n, b, s, p)
+            f"{str(n):<24} {b:12.6g} {s:12.6g} {p:10.4g}"
             for n, b, s, p in zip(self.param_names, self.params, self.bse, self.pvalues)
         ]
         return "\n".join([head] + rows)
@@ -493,7 +493,7 @@ class _LinearModel:
         resid = [y[i] - fitted[i] for i in range(n)]
         dfr = n - k
         if dfr <= 0:
-            raise ValueError("%d observations cannot support %d parameters" % (n, k))
+            raise ValueError(f"{int(n)} observations cannot support {int(k)} parameters")
         XtX_inv = _glm_core._inv(XtX)
         ct = (cov_type or "nonrobust").upper()
         if ct.startswith("HC"):
@@ -552,7 +552,7 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
     X = [[1.0] + list(r) for r in model.X] if model.intercept else [list(r) for r in model.X]
     y = [float(v) for v in model.y]
     n, k = len(X), len(X[0])
-    pw = model.weights or [1.0] * n
+    model.weights or [1.0] * n
     mu, eta = fit["fitted"], fit["linear_predictor"]
     scale = fit["dispersion"]
     # R's sandwich (estfun.glm, bread.glm, hatvalues.glm) uses the
@@ -575,7 +575,7 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
             raise ValueError("cov_type='cluster' needs cov_kwds={'groups': ...}")
         gl = list(groups.values if hasattr(groups, "values") else groups)
         if len(gl) != n:
-            raise ValueError("groups has %d entries for %d observations" % (len(gl), n))
+            raise ValueError(f"groups has {int(len(gl))} entries for {int(n)} observations")
         sums = {}
         for i, g in enumerate(gl):
             acc = sums.setdefault(g, [0.0] * k)
@@ -588,7 +588,7 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
         rows = scores
         corr = n / (n - k) if ct == "HC1" else 1.0
     else:
-        raise ValueError("cov_type must be nonrobust, HC0-HC3 or cluster; got %r" % (ct,))
+        raise ValueError(f"cov_type must be nonrobust, HC0-HC3 or cluster; got {ct!r}")
     S = [[sum(r[a] * r[b] for r in rows) for b in range(k)] for a in range(k)]
     M = [[sum(Hi[a][c] * S[c][d] * Hi[d][b] for c in range(k) for d in range(k)) for b in range(k)] for a in range(k)]
     return [[corr * M[a][b] for b in range(k)] for a in range(k)]

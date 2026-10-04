@@ -49,25 +49,25 @@ def indirect_age_adjustment(
     if len(obs) != len(er) or len(obs) != len(pop):
         raise ValueError("All arrays must have equal length")
 
-    O = float(np.sum(obs))
+    O_ = float(np.sum(obs))
     E = float(np.sum(er * pop))
 
     if E <= 0:
         raise ValueError("Expected deaths (E) must be positive")
 
-    smr = O / E
+    smr = O_ / E
 
     z = stats.norm.ppf((1 + confidence) / 2)
-    ci_lo = (np.sqrt(O) - z * 0.5) ** 2 / E if O > 0 else 0.0
-    ci_hi = (np.sqrt(O) + z * 0.5) ** 2 / E
+    ci_lo = (np.sqrt(O_) - z * 0.5) ** 2 / E if O_ > 0 else 0.0
+    ci_hi = (np.sqrt(O_) + z * 0.5) ** 2 / E
 
     return ESRes(
         measure="SMR",
         estimate=float(smr),
         ci_lower=float(ci_lo),
         ci_upper=float(ci_hi),
-        n=int(O),
-        extra={"O": O, "E": E},
+        n=int(O_),
+        extra={"O": O_, "E": E},
     )
 
 

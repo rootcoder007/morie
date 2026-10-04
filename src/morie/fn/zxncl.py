@@ -15,7 +15,7 @@ def network_cluster_sp(observed, *, expected=None):
     expected = np.asarray(expected, dtype=float) if expected is not None else np.ones_like(observed) * observed.mean()
     ratio = observed / (expected + 1e-10)
     stat = float(np.max(ratio))
-    idx = int(np.argmax(ratio))
+    int(np.argmax(ratio))
     return DescriptiveResult(
         name="zxncl",
         value=float(stat) if isinstance(stat, (int, float)) else stat,

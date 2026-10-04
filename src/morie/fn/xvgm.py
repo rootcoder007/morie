@@ -46,8 +46,8 @@ def xvgm(
     if max_dist is None:
         max_dist = float(pair_dists.max() / 2.0)
 
-    diff1 = squareform(pdist(var1.reshape(-1, 1)))
-    diff2 = squareform(pdist(var2.reshape(-1, 1)))
+    squareform(pdist(var1.reshape(-1, 1)))
+    squareform(pdist(var2.reshape(-1, 1)))
     sign1 = var1[:, None] - var1[None, :]
     sign2 = var2[:, None] - var2[None, :]
     cross_prod = sign1 * sign2

@@ -93,12 +93,12 @@ def _check(R, A, H, propensity):
     Hm = [[float(v) for v in row] for row in k.mat(H)]
     n = len(r)
     if not (len(a) == len(Hm) == n):
-        raise ValueError("awltrn: R, A and H must agree in length (%d, %d, %d)" % (n, len(a), len(Hm)))
+        raise ValueError(f"awltrn: R, A and H must agree in length ({int(n)}, {int(len(a))}, {int(len(Hm))})")
     if n < 4:
-        raise ValueError("awltrn: need at least 4 subjects, got %d" % n)
+        raise ValueError(f"awltrn: need at least 4 subjects, got {int(n)}")
     for v in a:
         if v not in (-1, 1):
-            raise ValueError("awltrn: treatments must be coded -1/+1, got %r" % (v,))
+            raise ValueError(f"awltrn: treatments must be coded -1/+1, got {v!r}")
     p = (
         [0.5] * n
         if propensity is None
@@ -107,7 +107,7 @@ def _check(R, A, H, propensity):
         )
     )
     if len(p) != n:
-        raise ValueError("awltrn: %d propensities for %d subjects" % (len(p), n))
+        raise ValueError(f"awltrn: {int(len(p))} propensities for {int(n)} subjects")
     if any(not 0.0 < v < 1.0 for v in p):
         raise ValueError("awltrn: randomisation probabilities must lie strictly in (0, 1)")
     return r, a, Hm, p, n
@@ -125,7 +125,7 @@ def owl_weights(R, A, H, propensity=None, shift=None):
     c = (0.0 if min(r) >= 0.0 else -min(r)) if shift is None else float(shift)
     w = [(r[i] + c) / p[i] for i in range(n)]
     if any(v < 0.0 for v in w):
-        raise ValueError("awltrn: OWL weights must be non-negative; increase shift (smallest weight %.4g)" % min(w))
+        raise ValueError(f"awltrn: OWL weights must be non-negative; increase shift (smallest weight {min(w):.4g})")
     lab = list(a)
     m = sum(w) / n
     sd = math.sqrt(sum((v - m) ** 2 for v in w) / max(n - 1, 1))
@@ -157,7 +157,7 @@ def aol_weights(R, A, H, propensity=None, prognostic=None, ridge=1e-8):
     else:
         m = [float(v) for v in k.vec(prognostic)]
         if len(m) != n:
-            raise ValueError("awltrn: %d prognostic values for %d subjects" % (len(m), n))
+            raise ValueError(f"awltrn: {int(len(m))} prognostic values for {int(n)} subjects")
     resid = [r[i] - m[i] for i in range(n)]
     w = [abs(resid[i]) / p[i] for i in range(n)]
     lab = [a[i] if resid[i] >= 0.0 else -a[i] for i in range(n)]
@@ -189,7 +189,7 @@ def weighted_rule(H, labels, weights, ridge=1e-6):
         raise ValueError("awltrn: H, labels and weights must agree in length")
     if any(float(v) < 0.0 for v in weights):
         raise ValueError("awltrn: weights must be non-negative")
-    D = k.design(Hm, n)
+    k.design(Hm, n)
     fit = k.wls(Hm, [float(v) for v in labels], [float(v) for v in weights], ridge=ridge)
     b = fit["coef"]
 
@@ -213,7 +213,7 @@ def regimen_value(R, A, H, rule, propensity=None):
 def fit_aol(R, A, H, propensity=None, method="aol", prognostic=None, shift=None, ridge=1e-6):
     r"""Single-stage AOL (or plain OWL, for comparison)."""
     if method not in _METHODS:
-        raise ValueError("awltrn: method must be aol or owl, got %r" % (method,))
+        raise ValueError(f"awltrn: method must be aol or owl, got {method!r}")
     if method == "aol":
         w = aol_weights(R, A, H, propensity=propensity, prognostic=prognostic)
     else:
@@ -255,7 +255,7 @@ def fit_stages(stages, propensity=None, ridge=1e-6):
     n = len(k.vec(stages[0][0]))
     for j, (Rk, Ak, Hk) in enumerate(stages):
         if len(k.vec(Rk)) != n or len(k.vec(Ak)) != n or len(k.mat(Hk)) != n:
-            raise ValueError("awltrn: stage %d has a different number of subjects" % j)
+            raise ValueError(f"awltrn: stage {int(j)} has a different number of subjects")
     future = [0.0] * n
     rules, used = [], []
     for j in range(K - 1, -1, -1):

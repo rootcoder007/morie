@@ -217,20 +217,20 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9, male_label=1):
         raise ValueError("sxrhrt: no observations")
     sv = list(k.vec(sex))
     if len(sv) != n:
-        raise ValueError("sxrhrt: %d phenotypes but %d sex labels" % (n, len(sv)))
+        raise ValueError(f"sxrhrt: {int(n)} phenotypes but {int(len(sv))} sex labels")
     male = [float(v) == float(male_label) for v in sv]
     nm = sum(1 for v in male if v)
     nf = n - nm
     if nm < 2 or nf < 2:
         raise ValueError(
-            "sxrhrt: %d in one sex and %d in the other -- a variance cannot be estimated from fewer than two" % (nm, nf)
+            f"sxrhrt: {int(nm)} in one sex and {int(nf)} in the other -- a variance cannot be estimated from fewer than two"
         )
     Km = [[float(v) for v in row] for row in k.mat(K)]
     if len(Km) != n or any(len(r) != n for r in Km):
-        raise ValueError("sxrhrt: K must be %d by %d" % (n, n))
+        raise ValueError(f"sxrhrt: K must be {int(n)} by {int(n)}")
     asym = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
     if asym > 1e-8:
-        raise ValueError("sxrhrt: K is not symmetric (largest asymmetry %.3g)" % asym)
+        raise ValueError(f"sxrhrt: K is not symmetric (largest asymmetry {asym:.3g})")
     # the cross-sex block is the only source of information about rg
     cross = max(abs(Km[i][j]) for i in range(n) for j in range(n) if male[i] != male[j])
     # the sexes are two traits, so each carries its OWN fixed effects
@@ -257,7 +257,7 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9, male_label=1):
     converged = False
     prev_theta = None
     for cycles in range(1, int(max_cycles) + 1):
-        prev = path[-1]
+        path[-1]
         for idx in (0, 1, 3, 4):
 
             def f(logv, idx=idx):

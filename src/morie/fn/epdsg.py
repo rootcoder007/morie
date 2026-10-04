@@ -46,14 +46,11 @@ def epidemic_curve_fit(
     if inc.ndim != 1 or inc.size < 5:
         raise ValueError("incidence must be 1-D with >= 5 points.")
 
-    if t is None:
-        t = np.arange(len(inc), dtype=float)
-    else:
-        t = np.asarray(t, dtype=float)
+    t = np.arange(len(inc), dtype=float) if t is None else np.asarray(t, dtype=float)
 
     total = float(np.sum(inc))
-    t_pos = t[t > 0]
-    inc_pos = inc[t > 0]
+    t[t > 0]
+    inc[t > 0]
 
     if distribution == "lognormal":
 

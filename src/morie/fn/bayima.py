@@ -90,7 +90,7 @@ def importance_sampling(log_weights, values=None, normalized=True):
         if h.ndim == 1:
             h = h[:, None]
         if h.shape[0] != n:
-            raise ValueError("values has %d rows for %d weights." % (h.shape[0], n))
+            raise ValueError(f"values has {int(h.shape[0])} rows for {int(n)} weights.")
         if normalized:
             est = (w @ h) / s
             # delta-method variance of a ratio of weighted sums
@@ -116,9 +116,7 @@ def importance_sampling(log_weights, values=None, normalized=True):
             "reliability_note": (
                 None
                 if reliable
-                else "the effective sample size is %.1f out of %d draws, so the "
-                "answer rests on a handful of points; the standard error "
-                "will look fine regardless" % (ess, n)
+                else f"the effective sample size is {ess:.1f} out of {int(n)} draws, so the answer rests on a handful of points; the standard error will look fine regardless"
             ),
             "log_normalizer": log_norm,
             "normalized": bool(normalized),

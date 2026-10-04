@@ -68,7 +68,10 @@ def test_confidence_set_recovers_theta_below_the_mean():
     rng = np.random.default_rng(5)
     Xs = [[float(v)] for v in rng.uniform(0.0, 1.0, size=200)]
     W = [2.0 + float(v) for v in rng.normal(0.0, 1.0, size=200)]
-    mom = lambda th: [[w - th] for w in W]
+
+    def mom(th):
+        return [[w - th] for w in W]
+
     res = confidence_set(mom, [0.5, 1.5, 3.5], Xs, n_levels=2, reps=60)
     assert 0.5 in res["set"] and 1.5 in res["set"]
     assert 3.5 not in res["set"]

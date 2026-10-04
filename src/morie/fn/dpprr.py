@@ -54,7 +54,9 @@ def dirichlet_process_prior_predictive(
         raise ValueError(f"n_samples must be > 0, got {n_samples}")
 
     if base_dist is None:
-        base_dist = lambda: rng.standard_normal(theta_dim)
+
+        def base_dist():
+            return rng.standard_normal(theta_dim)
 
     samples = []
     cluster_assignments = []

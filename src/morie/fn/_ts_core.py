@@ -347,7 +347,7 @@ class SARIMAX(ARIMA):
             # x_t = w_t + x_{t-s} on the d-differenced scale
             xd = list(w_hist)
             out_d = []
-            for k, v in enumerate(wfc):
+            for _k, v in enumerate(wfc):
                 nxt = v + xd[len(xd) - self.s]
                 xd.append(nxt)
                 out_d.append(nxt)
@@ -545,8 +545,8 @@ class MarkovRegression:
         smooth = [[smooth[t][order[j]] for j in range(k)] for t in range(n)]
         params = {}
         for j in range(k):
-            params["const[%d]" % j] = mu[j]
-            params["sigma2[%d]" % j] = sig2[j]
+            params[f"const[{int(j)}]"] = mu[j]
+            params[f"sigma2[{int(j)}]"] = sig2[j]
         npar = k * 2 + k * (k - 1)
         return _MarkovResults(params, P, smooth, llf, npar)
 
@@ -666,7 +666,7 @@ class VECM:
         # step itself and are not implemented, so they are refused
         # rather than silently fitted as "co".
         if deterministic not in ("co", "n"):
-            raise ValueError("VECM: deterministic must be 'co' or 'n', got %r" % (deterministic,))
+            raise ValueError(f"VECM: deterministic must be 'co' or 'n', got {deterministic!r}")
         self.det = deterministic
         self.Y = _ac.atleast_2d(endog)
         self.k_ar_diff = k_ar_diff

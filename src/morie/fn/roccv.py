@@ -44,7 +44,7 @@ def roc_curve(y_true, y_score, **kwargs) -> DescriptiveResult:
     thresholds.append(ys_sorted[0] + 1.0)
     tp, fp = 0, 0
     prev_score = None
-    for i, (label, score) in enumerate(zip(yt_sorted, ys_sorted)):
+    for _i, (label, score) in enumerate(zip(yt_sorted, ys_sorted)):
         if score != prev_score and prev_score is not None:
             fpr_list.append(fp / total_neg)
             tpr_list.append(tp / total_pos)

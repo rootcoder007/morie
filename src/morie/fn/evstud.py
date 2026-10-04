@@ -97,7 +97,7 @@ def event_study_coefficients(y, D, unit, time, cohort, max_lead=None, max_lag=No
         raise ValueError("no event-time indicators left after dropping ref")
     p = 1 + (U - 1) + (Tn - 1) + len(ets)
     if n <= p:
-        raise ValueError("more parameters (%d) than observations (%d)" % (p, n))
+        raise ValueError(f"more parameters ({int(p)}) than observations ({int(n)})")
     X = []
     for i in range(n):
         row = [1.0]
@@ -114,7 +114,7 @@ def event_study_coefficients(y, D, unit, time, cohort, max_lead=None, max_lag=No
     off = 1 + (U - 1) + (Tn - 1)
     coef = []
     se = []
-    for k, e in enumerate(ets):
+    for k, _e in enumerate(ets):
         j = off + k
         col = core.cholsolve(XtX, [1.0 if q == j else 0.0 for q in range(p)])
         coef.append(b[j])

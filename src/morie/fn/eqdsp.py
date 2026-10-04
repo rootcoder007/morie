@@ -49,7 +49,7 @@ def disparity_decompose(
     Xa_aug = np.column_stack([np.ones(len(ya)), Xa])
     Xb_aug = np.column_stack([np.ones(len(yb)), Xb])
 
-    beta_a = np.linalg.lstsq(Xa_aug, ya, rcond=None)[0]
+    np.linalg.lstsq(Xa_aug, ya, rcond=None)[0]
     beta_b = np.linalg.lstsq(Xb_aug, yb, rcond=None)[0]
 
     mean_Xa = Xa_aug.mean(axis=0)

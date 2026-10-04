@@ -87,10 +87,10 @@ def atoms(v_min, v_max, n_atoms):
     """The fixed support {z_i} and its spacing."""
     n = int(n_atoms)
     if n < 2:
-        raise ValueError("distq: need at least 2 atoms, got %d" % n)
+        raise ValueError(f"distq: need at least 2 atoms, got {int(n)}")
     lo, hi = float(v_min), float(v_max)
     if not hi > lo:
-        raise ValueError("distq: need v_max > v_min, got %r and %r" % (v_min, v_max))
+        raise ValueError(f"distq: need v_max > v_min, got {v_min!r} and {v_max!r}")
     dz = (hi - lo) / (n - 1)
     return [lo + i * dz for i in range(n)], dz
 
@@ -98,7 +98,7 @@ def atoms(v_min, v_max, n_atoms):
 def distribution_mean(probs, z):
     """E[Z] = sum_i z_i p_i."""
     if len(probs) != len(z):
-        raise ValueError("distq: %d probabilities for %d atoms" % (len(probs), len(z)))
+        raise ValueError(f"distq: {int(len(probs))} probabilities for {int(len(z))} atoms")
     return sum(z[i] * probs[i] for i in range(len(z)))
 
 
@@ -127,15 +127,15 @@ def categorical_projection(reward, gamma, next_probs, v_min, v_max, n_atoms=None
     p = [float(v) for v in next_probs]
     n = len(p) if n_atoms is None else int(n_atoms)
     if len(p) != n:
-        raise ValueError("distq: %d next probabilities for %d atoms" % (len(p), n))
+        raise ValueError(f"distq: {int(len(p))} next probabilities for {int(n)} atoms")
     if any(v < -1e-9 for v in p):
         raise ValueError("distq: next_probs has a negative entry")
     tot = sum(p)
     if abs(tot - 1.0) > 1e-6:
-        raise ValueError("distq: next_probs sums to %.9f, not 1" % tot)
+        raise ValueError(f"distq: next_probs sums to {tot:.9f}, not 1")
     g = 0.0 if done else float(gamma)
     if not 0.0 <= g <= 1.0:
-        raise ValueError("distq: gamma must be in [0, 1], got %r" % (gamma,))
+        raise ValueError(f"distq: gamma must be in [0, 1], got {gamma!r}")
     z, dz = atoms(v_min, v_max, n)
     m = [0.0] * n
     for j in range(n):
@@ -160,7 +160,7 @@ def categorical_projection(reward, gamma, next_probs, v_min, v_max, n_atoms=None
 def categorical_loss(m, probs, eps=1e-12):
     """The cross-entropy term of D_KL(Phi T_hat Z || Z): -sum m log p."""
     if len(m) != len(probs):
-        raise ValueError("distq: %d targets for %d probabilities" % (len(m), len(probs)))
+        raise ValueError(f"distq: {int(len(m))} targets for {int(len(probs))} probabilities")
     tot = 0.0
     for i in range(len(m)):
         tot -= m[i] * math.log(max(float(probs[i]), eps))
@@ -215,7 +215,7 @@ def bernoulli_algorithm(reward, gamma, next_probs, v_min, v_max, done=False):
     z, dz = atoms(v_min, v_max, len(p))
     g = 0.0 if done else float(gamma)
     if not 0.0 <= g <= 1.0:
-        raise ValueError("distq: gamma must be in [0, 1], got %r" % (gamma,))
+        raise ValueError(f"distq: gamma must be in [0, 1], got {gamma!r}")
     ex = float(reward) + g * distribution_mean(p, z)
     return min(max((ex - v_min) / dz, 0.0), 1.0)
 
@@ -231,9 +231,9 @@ def value_distribution_iteration(reward_atoms, reward_probs, gamma, v_min, v_max
     ra = [float(v) for v in reward_atoms]
     rp = [float(v) for v in reward_probs]
     if len(ra) != len(rp):
-        raise ValueError("distq: %d reward atoms but %d probabilities" % (len(ra), len(rp)))
+        raise ValueError(f"distq: {int(len(ra))} reward atoms but {int(len(rp))} probabilities")
     if abs(sum(rp) - 1.0) > 1e-9:
-        raise ValueError("distq: reward_probs sums to %.9f, not 1" % sum(rp))
+        raise ValueError(f"distq: reward_probs sums to {sum(rp):.9f}, not 1")
     z, _ = atoms(v_min, v_max, n_atoms)
     n = len(z)
     cur = [1.0 / n] * n

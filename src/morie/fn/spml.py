@@ -73,9 +73,9 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential", method=
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     if method not in ("ml", "reml", "both"):
-        raise ValueError("method must be 'ml', 'reml' or 'both', got %r." % method)
+        raise ValueError(f"method must be 'ml', 'reml' or 'both', got {method!r}.")
     zz = np.asarray(z, dtype=float).ravel()
     v0 = float(np.var(zz))
     if v0 <= 0:
@@ -140,7 +140,7 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential", method=
                 "independent data with unknown mean the bias is exactly -theta/n"
             ),
             "n": int(zz.size),
-            "method": "%s estimation of covariance parameters" % payload["method_used"].upper(),
+            "method": "{} estimation of covariance parameters".format(payload["method_used"].upper()),
         }
     )
     return RichResult(payload=payload)

@@ -72,7 +72,7 @@ def decode_indices(indices, codebook):
     for i in indices:
         j = int(i)
         if j < 0 or j >= len(Z):
-            raise ValueError("vqgdec: index %d is outside a codebook of %d" % (j, len(Z)))
+            raise ValueError(f"vqgdec: index {int(j)} is outside a codebook of {int(len(Z))}")
         out.append(list(Z[j]))
     return {"codes": out, "n": len(out), "note": "exact: the index IS the code"}
 
@@ -106,16 +106,16 @@ def patch_discriminator(image, patch=4, scorer=None):
     patch discriminator gives a dense signal about local texture,
     which is what the codebook needs to learn.
     """
-    I = [[float(v) for v in r] for r in k.mat(image)]
+    I_ = [[float(v) for v in r] for r in k.mat(image)]
     p = int(patch)
-    H, W = len(I), len(I[0])
+    H, W = len(I_), len(I_[0])
     if p < 1 or H % p or W % p:
-        raise ValueError("vqgdec: a %dx%d image does not tile into %dx%d patches" % (H, W, p, p))
+        raise ValueError(f"vqgdec: a {int(H)}x{int(W)} image does not tile into {int(p)}x{int(p)} patches")
     scores = []
     for i in range(0, H, p):
         row = []
         for j in range(0, W, p):
-            blk = [I[a][b] for a in range(i, i + p) for b in range(j, j + p)]
+            blk = [I_[a][b] for a in range(i, i + p) for b in range(j, j + p)]
             row.append(float(scorer(blk)) if scorer is not None else sum(blk) / len(blk))
         scores.append(row)
     flat = [v for r in scores for v in r]

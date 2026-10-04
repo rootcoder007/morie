@@ -41,10 +41,7 @@ def hamiltonian_mc(
     theta = np.asarray(init, dtype=float).copy()
     d = len(theta)
 
-    if mass is None:
-        mass_inv = np.eye(d)
-    else:
-        mass_inv = np.linalg.inv(np.asarray(mass, dtype=float))
+    mass_inv = np.eye(d) if mass is None else np.linalg.inv(np.asarray(mass, dtype=float))
 
     samples = np.empty((n_iter, d))
     accept = 0

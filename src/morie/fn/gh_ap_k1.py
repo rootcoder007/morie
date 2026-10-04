@@ -46,14 +46,14 @@ def fano(M, mutual_info, base_e=True):
     could not be confirmed and the primary sources are cited instead.
     """
     M = int(M)
-    I = float(mutual_info)
+    I_ = float(mutual_info)
     if M < 2:
         raise ValueError("M must be at least 2")
-    if I < 0:
+    if I_ < 0:
         raise ValueError("the mutual information must be non-negative")
     lg = math.log(M) if base_e else math.log(M, 2.0)
     l2 = math.log(2.0) if base_e else 1.0
-    raw = 1.0 - (I + l2) / lg
+    raw = 1.0 - (I_ + l2) / lg
     return RichResult(
         payload={
             "bound": min(1.0, max(0.0, raw)),

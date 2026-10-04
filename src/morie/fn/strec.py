@@ -90,7 +90,7 @@ def trilinear(a, b, c):
     B = [float(v) for v in k.vec(b)]
     C = [float(v) for v in k.vec(c)]
     if not (len(A) == len(B) == len(C)):
-        raise ValueError("strec: the three vectors differ in length (%d, %d, %d)" % (len(A), len(B), len(C)))
+        raise ValueError(f"strec: the three vectors differ in length ({int(len(A))}, {int(len(B))}, {int(len(C))})")
     return sum(A[i] * B[i] * C[i] for i in range(len(A)))
 
 
@@ -121,14 +121,14 @@ def mlp_cell(m, W, b=None, activation="tanh"):
     """
     v = [float(x) for x in k.vec(m)]
     if len(W[0]) != len(v):
-        raise ValueError("strec: the cell expects %d inputs but got %d" % (len(W[0]), len(v)))
+        raise ValueError(f"strec: the cell expects {int(len(W[0]))} inputs but got {int(len(v))}")
     bb = [0.0] * len(W) if b is None else [float(x) for x in k.vec(b)]
     z = [bb[o] + sum(W[o][j] * v[j] for j in range(len(v))) for o in range(len(W))]
     if activation == "tanh":
         return [math.tanh(x) for x in z]
     if activation == "identity":
         return z
-    raise ValueError("strec: activation must be tanh or identity, got %r" % (activation,))
+    raise ValueError(f"strec: activation must be tanh or identity, got {activation!r}")
 
 
 def attention_weights(embeddings, W1, W2, W3, W0, b_a=None):

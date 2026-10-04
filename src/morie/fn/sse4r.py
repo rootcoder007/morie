@@ -70,16 +70,16 @@ def personalise(item_embeddings, user_embedding):
     Appending it once at the end would let attention ignore it; here
     it modulates every position.
     """
-    I = [[float(v) for v in r] for r in k.mat(item_embeddings)]
+    I_ = [[float(v) for v in r] for r in k.mat(item_embeddings)]
     u = [float(v) for v in k.vec(user_embedding)]
-    if not I:
+    if not I_:
         raise ValueError("sse4r: the sequence is empty")
     return {
-        "sequence": [list(row) + list(u) for row in I],
-        "item_dim": len(I[0]),
+        "sequence": [list(row) + list(u) for row in I_],
+        "item_dim": len(I_[0]),
         "user_dim": len(u),
-        "width": len(I[0]) + len(u),
-        "length": len(I),
+        "width": len(I_[0]) + len(u),
+        "length": len(I_),
         "note": "every position carries the user, so two users with the same history diverge",
     }
 
@@ -96,7 +96,7 @@ def sse_replace(indices, table_size, p=0.0, seed=0):
     if n < 1:
         raise ValueError("sse4r: the embedding table is empty")
     if not 0.0 <= pr <= 1.0:
-        raise ValueError("sse4r: p must lie in [0,1], got %r" % (p,))
+        raise ValueError(f"sse4r: p must lie in [0,1], got {p!r}")
     if any(v < 0 or v >= n for v in idx):
         raise ValueError("sse4r: an index is outside the table")
     if pr == 0.0:
@@ -195,7 +195,9 @@ def predict_next(sequence, user_embedding, item_table, attend=None, top_k=3):
     scores = []
     for row in T:
         if len(row) != di:
-            raise ValueError("sse4r: the item table is %d-wide but the item part of the context is %d" % (len(row), di))
+            raise ValueError(
+                f"sse4r: the item table is {int(len(row))}-wide but the item part of the context is {int(di)}"
+            )
         scores.append(sum(ctx[a] * row[a] for a in range(di)) + sum(ctx[di + a] * u[a] for a in range(len(u))))
     order = sorted(range(len(scores)), key=lambda j: -scores[j])
     kk = min(int(top_k), len(order))

@@ -70,7 +70,7 @@ def dixon_test(x, type=10, opposite=False):
     xs = sorted(float(v) for v in x)
     n = len(xs)
     if n < _MIN_N[type]:
-        raise ValueError("Dixon type %d needs at least %d observations" % (type, _MIN_N[type]))
+        raise ValueError(f"Dixon type {int(type)} needs at least {int(_MIN_N[type])} observations")
     num_off, den_off = _RATIOS[type]
     m = sum(xs) / n
     take_high = (xs[n - 1] - m) >= (m - xs[0])
@@ -97,8 +97,7 @@ def dixon_test(x, type=10, opposite=False):
             "numerator": float(num),
             "denominator": float(den),
             "n": n,
-            "method": "Dixon (1953) ratio type %d, outliers::dixon.test; "
-            "no p-value, the null distribution is tabulated only" % (type,),
+            "method": f"Dixon (1953) ratio type {int(type)}, outliers::dixon.test; no p-value, the null distribution is tabulated only",
         }
     )
 

@@ -83,7 +83,7 @@ def appnp(A, H, alpha=0.1, K=10, exact=False, softmax=True):
         Z = [row[:] for row in Hm]
         for _ in range(steps):
             Z = [
-                [(1.0 - alpha) * sum(Ah[i][l] * Z[l][j] for l in range(n)) + alpha * Hm[i][j] for j in range(c)]
+                [(1.0 - alpha) * sum(Ah[i][ell] * Z[ell][j] for ell in range(n)) + alpha * Hm[i][j] for j in range(c)]
                 for i in range(n)
             ]
     if softmax:

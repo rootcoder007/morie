@@ -56,7 +56,7 @@ def bertscore(reference, candidate, idf=None):
     X = C.mat(reference)
     Y = C.mat(candidate)
     k, d = len(X), len(X[0])
-    l = len(Y)
+    ell = len(Y)
     if len(Y[0]) != d:
         raise ValueError("embeddings must share their dimension")
 
@@ -68,9 +68,9 @@ def bertscore(reference, candidate, idf=None):
 
     Xn = [unit(r) for r in X]
     Yn = [unit(r) for r in Y]
-    Sim = [[sum(Xn[i][t] * Yn[j][t] for t in range(d)) for j in range(l)] for i in range(k)]
+    Sim = [[sum(Xn[i][t] * Yn[j][t] for t in range(d)) for j in range(ell)] for i in range(k)]
     rm = [max(Sim[i]) for i in range(k)]
-    pm = [max(Sim[i][j] for i in range(k)) for j in range(l)]
+    pm = [max(Sim[i][j] for i in range(k)) for j in range(ell)]
     if idf is None:
         w = [1.0] * k
     else:
@@ -80,7 +80,7 @@ def bertscore(reference, candidate, idf=None):
         if sum(w) <= 0.0:
             raise ValueError("idf weights must not all be zero")
     R = sum(w[i] * rm[i] for i in range(k)) / sum(w)
-    P = sum(pm) / l
+    P = sum(pm) / ell
     Fv = 0.0 if P + R == 0.0 else 2.0 * P * R / (P + R)
     return RichResult(
         payload={
@@ -90,7 +90,7 @@ def bertscore(reference, candidate, idf=None):
             "recallmatch": rm,
             "precmatch": pm,
             "k": k,
-            "l": l,
+            "l": ell,
             "d": d,
             "method": "BERTScore greedy cosine matching (Zhang et al. 2020)",
         }

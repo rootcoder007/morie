@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["scanstat", "bivand2013_chapter_10_equation_3"]
 
 
-def scanstat(O, E, zones, highonly=True):
+def scanstat(O, E, zones, highonly=True):  # noqa: E741
     """Poisson likelihood-ratio scan over candidate clusters.
 
     A scan statistic compares the relative risk inside a moving window
@@ -56,7 +56,7 @@ def scanstat(O, E, zones, highonly=True):
     proportion of the population.  Read from the corpus PDF
     (bivand2013.pdf, p. 354).
     """
-    O = C.vec(O)
+    O = C.vec(O)  # noqa: E741
     E = C.vec(E)
     n = len(O)
     if len(E) != n:

@@ -107,13 +107,12 @@ def rstml(
                 break
             n_r = np.sum(t_s >= t_j)
             n_e = np.sum((t_s == t_j) & (e_s == 1))
-            S_prev = S
             S *= (1 - n_e / n_r) if n_r > 0 else 1.0
             km_t.append(t_j)
             km_s.append(S)
 
         km_t.append(tau_val)
-        km_s_for_area = km_s[:-1] if km_t[-1] == tau_val else km_s
+        km_s[:-1] if km_t[-1] == tau_val else km_s
 
         km_t = np.array(km_t)
         km_s = np.array(km_s)

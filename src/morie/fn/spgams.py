@@ -66,7 +66,7 @@ def spatial_gams(y, x, coords, lam=0.0):
     n = len(yv)
     cc = mat(coords, "coords")
     if len(cc) != n:
-        raise ValueError("`coords` has %d rows but `y` has %d values" % (len(cc), n))
+        raise ValueError(f"`coords` has {int(len(cc))} rows but `y` has {int(n)} values")
     if len(cc[0]) < 2:
         raise ValueError("`coords` must have two columns for a 2-D thin-plate spline")
     lam = float(lam)
@@ -77,11 +77,11 @@ def spatial_gams(y, x, coords, lam=0.0):
     else:
         xm = mat(x, "x")
         if len(xm) != n:
-            raise ValueError("`x` has %d rows but `y` has %d values" % (len(xm), n))
+            raise ValueError(f"`x` has {int(len(xm))} rows but `y` has {int(n)} values")
     t = [[1.0, cc[i][0], cc[i][1]] + list(xm[i]) for i in range(n)]
     m = len(t[0])
     if n <= m:
-        raise ValueError("need more sites than null-space columns (%d)" % m)
+        raise ValueError(f"need more sites than null-space columns ({int(m)})")
 
     k = [[0.0] * n for _ in range(n)]
     for i in range(n):

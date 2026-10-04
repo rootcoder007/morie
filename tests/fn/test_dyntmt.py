@@ -14,7 +14,10 @@ def test_dyntmt_basic():
     y = rng.normal(0, 1, n)
     D_history = rng.integers(0, 2, (n, T))
     H_history = rng.normal(0, 1, (n, T))
-    regime_fn = lambda v: 1.0 if v > 0.0 else 0.0
+
+    def regime_fn(v):
+        return 1.0 if v > 0.0 else 0.0
+
     result = dynamic_marginal_msm(y, D_history, H_history, regime_fn)
     assert isinstance(result, dict)
     assert "estimate" in result

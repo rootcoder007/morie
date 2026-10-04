@@ -74,7 +74,7 @@ def bayesian_mi(
     loading_samples: dict[str, np.ndarray] = {}
     intercept_samples: dict[str, np.ndarray] = {}
 
-    for gi, grp in enumerate(unique_g):
+    for _gi, grp in enumerate(unique_g):
         grp_str = str(grp)
         Xg = X[g == grp]
         ng_i = Xg.shape[0]

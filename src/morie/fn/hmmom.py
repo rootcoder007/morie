@@ -94,10 +94,7 @@ def geron_momentum(grads, v=None, beta=0.9, eta=0.01, theta=None, nesterov=False
         raise ValueError(f"geron_momentum: eta must be a positive finite learning rate, got {eta!r}")
 
     v_new = b * vv + g
-    if nesterov:
-        step = -lr * (b * v_new + g)
-    else:
-        step = -lr * v_new
+    step = -lr * (b * v_new + g) if nesterov else -lr * v_new
     theta_next = th + step
     terminal = lr * g / (1.0 - b)
 

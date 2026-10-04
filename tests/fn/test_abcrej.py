@@ -15,7 +15,7 @@ def _make_sim(slope, intercept):
 
 def test_abcrej_basic():
     """Test basic functionality with a 1-D simulator and 1-D summaries."""
-    rng = np.random.default_rng(0)
+    np.random.default_rng(0)
     obs = np.asarray([0.5], dtype=float)
 
     slope = 2.0
@@ -71,7 +71,7 @@ def test_abcrej_basic():
 
 def test_abcrej_edge():
     """Test edge case: very tight eps accepts nothing, posterior_mean is NaN."""
-    rng = np.random.default_rng(1)
+    np.random.default_rng(1)
     obs = np.asarray([1000.0], dtype=float)  # far from any simulator value in [0,1]
 
     sim = _make_sim(slope=0.0, intercept=0.0)  # sim(theta, rng) = 0 always

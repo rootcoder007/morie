@@ -118,10 +118,7 @@ def ergdc(
         stationary = pi
 
         eigs_sorted = np.sort(np.abs(eigenvalues))[::-1]
-        if len(eigs_sorted) > 1:
-            spectral_gap = float(1.0 - eigs_sorted[1])
-        else:
-            spectral_gap = 1.0
+        spectral_gap = float(1.0 - eigs_sorted[1]) if len(eigs_sorted) > 1 else 1.0
 
         if is_ergodic:
             dist = np.ones(n) / n

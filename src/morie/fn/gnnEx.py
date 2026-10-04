@@ -134,7 +134,7 @@ def explain_node(
     cg = computation_graph(adj, v, L)
     edges = cg["edges"]
     if not edges:
-        raise ValueError("gnnEx: node %r has an empty computation graph" % (v,))
+        raise ValueError(f"gnnEx: node {v!r} has an empty computation graph")
     rng = np.random.default_rng(seed)
     el = [(float(rng.uniform()) - 0.5) * 0.1 for _ in edges]
     fl = [(float(rng.uniform()) - 0.5) * 0.1 for _ in range(int(n_features))]

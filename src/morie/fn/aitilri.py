@@ -70,7 +70,7 @@ def aitchison_ilr_inverse(y, V=None, kappa=1.0):
     D = len(Vm)
     p = len(Vm[0])
     if p != len(yy):
-        raise ValueError("aitchison_ilr_inverse: V has %d columns but y has %d entries" % (p, len(yy)))
+        raise ValueError(f"aitchison_ilr_inverse: V has {int(p)} columns but y has {int(len(yy))} entries")
     lx = []
     for j in range(D):
         s = 0.0

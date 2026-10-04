@@ -119,7 +119,7 @@ def test_drbnk_edge():
     """Test edge cases: still-valid inputs plus both documented result keys."""
     n = 100
     rng_y = np.random.default_rng(43)
-    rng_d = np.random.default_rng(42)
+    np.random.default_rng(42)
     rng_x = np.random.default_rng(42)
     rng_p = np.random.default_rng(41)
 

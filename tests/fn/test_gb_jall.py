@@ -7,8 +7,11 @@ from morie.fn.gb_jall import gibbons_joint_all_order
 def test_gb_jall_basic():
     """Test basic functionality."""
     x = np.array([0.1, 0.3, 0.5, 0.7, 0.9])
+
     # pdf must be callable; use a simple parent density
-    f = lambda v: float(np.exp(-(v**2) / 2) / np.sqrt(2 * np.pi))
+    def f(v):
+        return float(np.exp(-(v**2) / 2) / np.sqrt(2 * np.pi))
+
     result = gibbons_joint_all_order(x, f)
     assert isinstance(result, dict)
     # Documented keys
@@ -35,7 +38,10 @@ def test_gb_jall_edge():
     """Test edge cases."""
     # Test with x not strictly ordered -> pdf should be 0
     x = np.array([0.5, 0.3, 0.7])
-    f = lambda v: float(np.exp(-(v**2) / 2) / np.sqrt(2 * np.pi))
+
+    def f(v):
+        return float(np.exp(-(v**2) / 2) / np.sqrt(2 * np.pi))
+
     result = gibbons_joint_all_order(x, f)
     assert isinstance(result, dict)
     assert result["ordered"] == 0

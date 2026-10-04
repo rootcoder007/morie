@@ -9,8 +9,11 @@ def test_kmarel_basic():
     """Test basic functionality."""
     answer = "The cat sat on the mat."
     original_question = [1.0, 0.0]
+
     # model(answer) returns the reverse-generated question EMBEDDINGS (n x d).
-    model = lambda a: [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]]
+    def model(a):
+        return [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]]
+
     result = kamath_ragas_answer_relevance(answer, original_question, model)
     assert isinstance(result, dict)
     assert "estimate" in result
@@ -28,9 +31,14 @@ def test_kmarel_edge():
     """Test edge cases: model returns text and embed callable is supplied."""
     answer = "Paris is the capital of France."
     original_question = "What is the capital of France?"
+
     # model returns text reverse-questions; embed turns each into a vector.
-    model = lambda a: ["reverse_q_1", "reverse_q_2"]
-    embed = lambda q: [1.0, 0.0] if q == "reverse_q_1" else [0.0, 1.0]
+    def model(a):
+        return ["reverse_q_1", "reverse_q_2"]
+
+    def embed(q):
+        return [1.0, 0.0] if q == "reverse_q_1" else [0.0, 1.0]
+
     result = kamath_ragas_answer_relevance(answer, original_question, model, embed=embed)
     assert isinstance(result, dict)
     assert "estimate" in result

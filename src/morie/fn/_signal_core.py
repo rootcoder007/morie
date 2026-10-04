@@ -123,7 +123,7 @@ def _butter_zpk(n, wn, btype):
         k *= (1.0 / prod).real
         p = pn
     else:
-        raise ValueError("unsupported btype %r" % btype)
+        raise ValueError(f"unsupported btype {btype!r}")
     return _bilinear_zpk(z, p, k, fs)
 
 
@@ -197,10 +197,7 @@ def _zpk2sos(z, p, k):
 
 def butter(N, Wn, btype="low", output="ba", fs=None):
     if fs is not None:
-        if isinstance(Wn, (list, tuple)):
-            Wn = [2.0 * w / fs for w in Wn]
-        else:
-            Wn = 2.0 * float(Wn) / fs
+        Wn = [2.0 * w / fs for w in Wn] if isinstance(Wn, (list, tuple)) else 2.0 * float(Wn) / fs
     if hasattr(Wn, "tolist"):
         Wn = Wn.tolist()
     z, p, k = _butter_zpk(int(N), Wn, btype)
@@ -208,7 +205,7 @@ def butter(N, Wn, btype="low", output="ba", fs=None):
         return _zpk2tf(z, p, k)
     if output == "sos":
         return _ac.marr(_zpk2sos(z, p, k))
-    raise ValueError("unsupported output %r" % output)
+    raise ValueError(f"unsupported output {output!r}")
 
 
 # ------------------------------------------------------------ filtering
@@ -277,7 +274,7 @@ def filtfilt(b, a, x, axis=-1):
     xs = list(_ac.asarray(x)._flat())
     edge = 3 * max(len(as_), len(bs))
     if len(xs) <= edge:
-        raise ValueError("input too short for padlen %d" % edge)
+        raise ValueError(f"input too short for padlen {int(edge)}")
     ext = _odd_ext(xs, edge)
     zi = lfilter_zi(bs, as_)
     y, _ = lfilter(bs, as_, ext, zi=[z * ext[0] for z in zi])
@@ -334,7 +331,7 @@ def sosfiltfilt(sos, x):
     ntaps -= min(sum(1 for r in rows if r[2] == 0.0), sum(1 for r in rows if r[5] == 0.0))
     edge = ntaps * 3
     if len(xs) <= edge:
-        raise ValueError("input too short for padlen %d" % edge)
+        raise ValueError(f"input too short for padlen {int(edge)}")
     ext = _odd_ext(xs, edge)
     zi = sosfilt_zi(rows)
     y, _ = sosfilt(rows, ext, zi=[[v * ext[0] for v in zs] for zs in zi])
@@ -372,7 +369,7 @@ def get_window(window, nperseg):
     ):
         vals = [float(v) for v in (window.tolist() if hasattr(window, "tolist") else window)]
         if len(vals) != int(nperseg):
-            raise ValueError("window is %d long but nperseg is %d" % (len(vals), int(nperseg)))
+            raise ValueError(f"window is {int(len(vals))} long but nperseg is {int(int(nperseg))}")
         return vals
     if window in ("hann", "hanning"):
         return _hann(nperseg)
@@ -402,7 +399,7 @@ def get_window(window, nperseg):
             0.42 - 0.5 * _math.cos(2.0 * _math.pi * i / nperseg) + 0.08 * _math.cos(4.0 * _math.pi * i / nperseg)
             for i in range(nperseg)
         ]
-    raise ValueError("unsupported window %r" % (window,))
+    raise ValueError(f"unsupported window {window!r}")
 
 
 def _csd_core(x, y, fs, window, nperseg, noverlap, detrend):
@@ -568,7 +565,7 @@ def fftconvolve(a, b, mode="full"):
         lo = min(len(av), len(bv)) - 1
         hi = max(len(av), len(bv))
         return _ac.marr(full[lo:hi])
-    raise ValueError("unsupported mode %r" % mode)
+    raise ValueError(f"unsupported mode {mode!r}")
 
 
 def find_peaks(x, height=None, distance=None, prominence=None, **kw):
@@ -597,7 +594,6 @@ def find_peaks(x, height=None, distance=None, prominence=None, **kw):
         kept = []
         proms = []
         for p in peaks:
-            lo = p
             left_min = xs[p]
             for k in range(p - 1, -1, -1):
                 if xs[k] > xs[p]:
@@ -742,7 +738,7 @@ def _cheb2_analog_zpk(n, rs):
         # chebyshev-1 pole, inverted
         p1 = complex(-_math.sinh(mu) * _math.sin(theta), _math.cosh(mu) * _math.cos(theta))
         p.append(1.0 / p1)
-        s = _math.sin(theta)
+        _math.sin(theta)
         if abs(_math.cos(theta)) > 1e-15:
             z.append(complex(0.0, 1.0 / _math.cos(theta)))
     # pure imaginary zeros come in conjugate pairs; odd n drops one
@@ -818,10 +814,7 @@ def iirnotch(w0, Q, fs=2.0):
 
 def firwin(numtaps, cutoff, window="hamming", pass_zero=True, fs=None):
     if fs is not None:
-        if isinstance(cutoff, (list, tuple)):
-            cutoff = [2.0 * c / fs for c in cutoff]
-        else:
-            cutoff = 2.0 * float(cutoff) / fs
+        cutoff = [2.0 * c / fs for c in cutoff] if isinstance(cutoff, (list, tuple)) else 2.0 * float(cutoff) / fs
     n = int(numtaps)
     m = (n - 1) / 2.0
     if not isinstance(cutoff, (list, tuple)):
@@ -1092,7 +1085,7 @@ def _tri_kth_largest(diag, off, k):
     hi = max(diag[i] + rad[i] for i in range(n))
     for _ in range(200):
         mid = 0.5 * (lo + hi)
-        if mid == lo or mid == hi:
+        if mid in (lo, hi):
             break
         if _tri_count_greater(diag, off, mid) > k:
             lo = mid
@@ -1190,7 +1183,7 @@ def iirfilter(N, Wn, rp=None, rs=None, btype="low", ftype="butter", output="ba",
         return cheby1(N, rp, Wn, btype=btype, output=output, fs=fs)
     if ftype in ("cheby2", "chebyshev2"):
         return cheby2(N, rs, Wn, btype=btype, output=output, fs=fs)
-    raise NotImplementedError("iirfilter ftype %r" % ftype)
+    raise NotImplementedError(f"iirfilter ftype {ftype!r}")
 
 
 for _n in (

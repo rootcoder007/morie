@@ -115,18 +115,12 @@ def meta1l(y, w, X, ps=None):
     d0 = D0 @ b1 - y0
     t1 = _ols(D1, d1)
     t0 = _ols(D0, d0)
-    if ps is not None:
-        g = np.asarray(ps, dtype=float)
-    else:
-        g = np.full(n, float(np.mean(wv)))
+    g = np.asarray(ps, dtype=float) if ps is not None else np.full(n, float(np.mean(wv)))
     cate_x = g * (D @ t0) + (1.0 - g) * (D @ t1)
 
     # R-learner: Robinson residualization + OLS on the R-loss
     m_hat = D @ _ols(D, yv)
-    if ps is not None:
-        e_hat = np.asarray(ps, dtype=float)
-    else:
-        e_hat = D @ _ols(D, wv)
+    e_hat = np.asarray(ps, dtype=float) if ps is not None else D @ _ols(D, wv)
     ry = yv - m_hat
     rw = wv - e_hat
     Dr = np.stack([D[i] * rw[i] for i in range(n)], axis=0)

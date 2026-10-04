@@ -94,7 +94,7 @@ class RewardMachine:
         self.states = set([u0]) | self.terminal
         for e in edges:
             if len(e) != 4:
-                raise ValueError("reward_machine: each edge must be (u, formula, u_next, reward), got %r" % (e,))
+                raise ValueError(f"reward_machine: each edge must be (u, formula, u_next, reward), got {e!r}")
             u, phi, u2, c = e
             self.edges.setdefault(u, []).append((_compile(phi), u2, float(c)))
             self.states.add(u)
@@ -110,7 +110,7 @@ class RewardMachine:
         return u, 0.0
 
     def __repr__(self):
-        return "RewardMachine(|U|=%d, u0=%r, terminal=%r)" % (len(self.states), self.u0, sorted(self.terminal))
+        return f"RewardMachine(|U|={int(len(self.states))}, u0={self.u0!r}, terminal={sorted(self.terminal)!r})"
 
 
 def _compile(phi):
@@ -123,7 +123,7 @@ def _compile(phi):
             p, n = phi
         except (TypeError, ValueError):
             raise ValueError(
-                "reward_machine: formula must be 'true', a proposition name, or (positive, negative), got %r" % (phi,)
+                f"reward_machine: formula must be 'true', a proposition name, or (positive, negative), got {phi!r}"
             )
         pos, neg = set(p), set(n)
     return lambda sigma: pos <= set(sigma) and not (neg & set(sigma))
@@ -243,7 +243,7 @@ def rmrl(
     de = dead_end if callable(dead_end) else (lambda s: False)
     s0 = start if callable(start) else (lambda: S[0] if start is None else start)
     if task_order is None:
-        task_order = [l % len(machines) for l in range(episodes)]
+        task_order = [ell % len(machines) for ell in range(episodes)]
     else:
         task_order = list(task_order)
         if len(task_order) < episodes:
@@ -257,8 +257,8 @@ def rmrl(
             q[(i, u)] = dict((s, dict((a, 0.0) for a in A)) for s in S)
 
     returns = []
-    for l in range(episodes):
-        i = task_order[l]
+    for ell in range(episodes):
+        i = task_order[ell]
         mm = machines[i]
         u = mm.u0
         s = s0()
@@ -279,10 +279,7 @@ def rmrl(
             for o, mo in enumerate(machines):
                 for uj in mo.states:
                     uk, r = mo.step(uj, sigma)
-                    if dead or uk in mo.terminal:
-                        target = r
-                    else:
-                        target = r + gamma * max(q[(o, uk)][s1].values())
+                    target = r if dead or uk in mo.terminal else r + gamma * max(q[o, uk][s1].values())
                     cur = q[(o, uj)][s][a]
                     q[(o, uj)][s][a] = cur + alpha * (target - cur)
             u, r_real = mm.step(u, sigma)
@@ -356,10 +353,7 @@ def qlearn_flat(
             else:
                 s1 = out
             u1, r = machine.step(u, set(label(s1)))
-            if de(s1) or u1 in machine.terminal:
-                target = r
-            else:
-                target = r + gamma * max(q[(u1, s1)].values())
+            target = r if de(s1) or u1 in machine.terminal else r + gamma * max(q[u1, s1].values())
             cur = q[(u, s)][a]
             q[(u, s)][a] = cur + alpha * (target - cur)
             total += r

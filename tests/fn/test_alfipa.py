@@ -29,7 +29,7 @@ def _vnorm2(a):
 
 def _smax(logits):
     m = max(logits)
-    exps = [math.exp(l - m) for l in logits]
+    exps = [math.exp(ell - m) for ell in logits]
     s = sum(exps)
     return [e / s for e in exps]
 
@@ -48,11 +48,7 @@ def test_alfipa_basic():
     """
     n = 1
     cs = 1
-    cz = 1
-    c = 1
     nh = 1
-    nqp = 1
-    npv = 1
 
     # Single-residue single representation (n=1, cs=1).
     s = [[1.0]]
@@ -88,10 +84,7 @@ def test_alfipa_basic():
 
     # Must be a RichResult with the documented keys.
     assert hasattr(result, "keys") or isinstance(result, dict)
-    if isinstance(result, dict):
-        keys = result.keys()
-    else:
-        keys = result.keys()
+    keys = result.keys() if isinstance(result, dict) else result.keys()
 
     for k in ("s", "attn", "points", "estimate", "n", "method"):
         assert k in keys, f"missing key {k!r}"
@@ -123,11 +116,7 @@ def test_alfipa_edge():
     """Test edge cases with n=2 residues and nh=1."""
     n = 2
     cs = 1
-    cz = 1
     c = 1
-    nh = 1
-    nqp = 1
-    npv = 1
 
     s = [[0.5], [-0.5]]
     z = [[[0.1], [0.2]], [[0.3], [0.4]]]
@@ -167,7 +156,7 @@ def test_alfipa_edge():
     expected_attn = []
     for i in range(n):
         m = max(logits[i])
-        exps = [math.exp(l - m) for l in logits[i]]
+        exps = [math.exp(ell - m) for ell in logits[i]]
         ssum = sum(exps)
         expected_attn.append([e / ssum for e in exps])
 

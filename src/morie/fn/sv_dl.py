@@ -333,9 +333,8 @@ def maximal_clique(members, edges):
             if inside != 1:
                 continue
             outside = j if i in clique else i
-            if all(outside in adj and m in adj[outside] for m in clique):
-                if best is None or w < best[0]:
-                    best = (w, outside)
+            if all(outside in adj and m in adj[outside] for m in clique) and (best is None or w < best[0]):
+                best = (w, outside)
         if best is None:
             break
         clique.add(best[1])
@@ -407,7 +406,7 @@ def deletion_type_reference(ref, sv_type):
     its second half reverse complemented, a translocation gets both.
     """
     if sv_type not in _SV_TYPES:
-        raise ValueError("sv_dl: sv_type must be one of %s" % (_SV_TYPES,))
+        raise ValueError(f"sv_dl: sv_type must be one of {_SV_TYPES}")
     s = str(ref).upper()
     if sv_type == "DEL":
         return s

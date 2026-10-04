@@ -44,7 +44,7 @@ def variational_mode(
     x = np.asarray(x, dtype=float).ravel()
     N = len(x)
     T = N
-    t = np.arange(T) / T
+    np.arange(T) / T
     freqs = np.fft.fftfreq(T)
     x_hat = np.fft.fft(x)
 

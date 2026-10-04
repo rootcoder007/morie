@@ -57,7 +57,7 @@ def alphafold_recycle_loss(losses, nprime=None):
         raise ValueError("losses must not be empty")
     avg = sum(losses) / nc
     if nprime is not None and not 1 <= nprime <= nc:
-        raise ValueError("nprime %r outside 1..%d" % (nprime, nc))
+        raise ValueError(f"nprime {nprime!r} outside 1..{int(nc)}")
     est = avg if nprime is None else losses[nprime - 1]
     return RichResult(
         payload={

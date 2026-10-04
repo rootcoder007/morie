@@ -22,7 +22,7 @@ def ghosal_dir_marginal(alpha, merge_idx=(0, 1)):
     a = _bnp._flat(alpha)
     idx = [int(i) for i in merge_idx]
     if len(set(idx)) != len(idx) or any(not 0 <= i < len(a) for i in idx):
-        raise ValueError("merge_idx must be distinct cell indices in 0..%d" % (len(a) - 1))
+        raise ValueError(f"merge_idx must be distinct cell indices in 0..{int(len(a) - 1)}")
     if any(v <= 0 for v in a):
         raise ValueError("Dirichlet parameters must be positive")
     A = sum(a)

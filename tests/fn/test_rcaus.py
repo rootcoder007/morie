@@ -6,7 +6,10 @@ from morie.fn.rcaus import random_cause_refutation
 
 def test_rcaus_basic():
     """Test basic functionality."""
-    estimator = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
+
+    def estimator(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     y = np.random.default_rng(42).normal(0.0, 1.0, 40)
     d = np.array(
         [
@@ -60,7 +63,10 @@ def test_rcaus_basic():
 
 def test_rcaus_edge():
     """Test edge cases."""
-    estimator = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
+
+    def estimator(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     y = np.random.default_rng(42).normal(0.0, 1.0, 40)
     d = np.array(
         [

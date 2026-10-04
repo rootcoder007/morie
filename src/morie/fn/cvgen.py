@@ -73,7 +73,7 @@ def cvgen(
         G_tr = G[np.ix_(train_idx, train_idx)]
         G_te_tr = G[np.ix_(test_idx, train_idx)]
 
-        X_tr = np.ones((n_tr, 1))
+        np.ones((n_tr, 1))
 
         lhs = np.zeros((1 + n_tr, 1 + n_tr))
         lhs[0, 0] = n_tr

@@ -81,7 +81,7 @@ def _pi(pi):
         raise ValueError("phylml: pi must be non-negative")
     s = sum(p)
     if abs(s - 1.0) > 1e-9:
-        raise ValueError("phylml: pi must sum to 1, got %g" % s)
+        raise ValueError(f"phylml: pi must sum to 1, got {s:g}")
     return p
 
 
@@ -106,7 +106,7 @@ def _tip_vector(base):
     if b in ("-", "N", "?"):
         return [1.0] * 4  # missing data contributes nothing
     if b not in BASES:
-        raise ValueError("phylml: unknown base %r; expected one of ACGT or a gap" % (base,))
+        raise ValueError(f"phylml: unknown base {base!r}; expected one of ACGT or a gap")
     return [1.0 if BASES[i] == b else 0.0 for i in range(4)]
 
 
@@ -121,7 +121,7 @@ def _prune(node, site, pi, u, seqs):
     if not isinstance(node, (tuple, list)):
         return _tip_vector(seqs[node][site])
     if len(node) % 2:
-        raise ValueError("phylml: a node must be (child, length, ...) pairs, got %d entries" % len(node))
+        raise ValueError(f"phylml: a node must be (child, length, ...) pairs, got {int(len(node))} entries")
     out = [1.0] * 4
     for c in range(0, len(node), 2):
         child, v = node[c], node[c + 1]
@@ -179,7 +179,7 @@ def phylml(tree, seqs, pi=None, u=1.0):
         raise ValueError("phylml: seqs must be a non-empty dict of name -> sequence")
     lens = set(len(v) for v in seqs.values())
     if len(lens) != 1:
-        raise ValueError("phylml: sequences must be aligned to a common length, got %r" % sorted(lens))
+        raise ValueError(f"phylml: sequences must be aligned to a common length, got {sorted(lens)!r}")
     n_sites = lens.pop()
     if n_sites == 0:
         raise ValueError("phylml: sequences are empty")
@@ -188,7 +188,7 @@ def phylml(tree, seqs, pi=None, u=1.0):
     for i in range(n_sites):
         Li = site_likelihood(tree, seqs, i, p, u)
         if Li <= 0.0:
-            raise ValueError("phylml: site %d has zero likelihood; check the tree and the alignment" % i)
+            raise ValueError(f"phylml: site {int(i)} has zero likelihood; check the tree and the alignment")
         site_L.append(Li)
     logs = [math.log(v) for v in site_L]
     return RichResult(

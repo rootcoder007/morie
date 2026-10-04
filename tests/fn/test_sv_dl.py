@@ -54,7 +54,10 @@ def _simulate(n_frag=600, seed=7):
                 splits.append(DONOR[a:b])
         if d1a < BP1 < d1b or d2a < BP1 < d2b:
             continue
-        to_ref = lambda d: d if d < BP1 else d + DELSIZE
+
+        def to_ref(d):
+            return d if d < BP1 else d + DELSIZE
+
         pairs.append(
             {
                 "chrom1": "chr1",

@@ -120,7 +120,7 @@ def luvR(A, resolution=1.0, max_levels=20):
     cur = a
     qs = []
     labels = list(range(n))
-    for level in range(int(max_levels)):
+    for _level in range(int(max_levels)):
         nn = cur.shape[0]
         comm = _relabel(_phase1_gamma(cur, nn, m2, gamma))
         labels = [comm[mapping[i]] for i in range(n)]

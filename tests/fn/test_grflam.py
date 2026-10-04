@@ -35,10 +35,10 @@ def test_grflam_edge():
     """Test edge cases."""
     # Identity at alpha = 0: hidden states must come back unchanged
     # and the layer must flag itself as the identity mapping.
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     vis = [[5.0, 5.0], [-5.0, 3.0]]
     h = [[1.0, 0.0]]
-    weights = {"WQ": I, "WK": I, "WV": I}
+    weights = {"WQ": I_, "WK": I_, "WV": I_}
     result = geron_flamingo_cross_modal_attn(h, vis, 0.0, weights)
     assert isinstance(result, dict)
     assert result["is_identity"] is True

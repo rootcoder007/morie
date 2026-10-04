@@ -113,7 +113,7 @@ def cfint(
         for _ in range(max_iter):
             # Numerical gradient of prediction loss
             pred = float(predict_fn(x_cf[None, :])[0])
-            pred_loss = (pred - target_class) ** 2
+            (pred - target_class) ** 2
 
             # Numerical gradient via finite differences
             eps = 1e-4

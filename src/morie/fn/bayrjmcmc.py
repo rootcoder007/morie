@@ -161,8 +161,7 @@ def numeric_log_jacobian(mapfun, z, h=1e-6):
     out0 = mapfun(z)
     if len(out0) != n:
         raise ValueError(
-            "bayrjmcmc: the bijection maps %d values to %d; dimension "
-            "matching requires n1 + m1 == n2 + m2" % (n, len(out0))
+            f"bayrjmcmc: the bijection maps {int(n)} values to {int(len(out0))}; dimension matching requires n1 + m1 == n2 + m2"
         )
     if n == 0:
         return 0.0
@@ -199,47 +198,50 @@ def check_dimension_matching(models, moves):
         raise ValueError("bayrjmcmc: no models given")
     for name, spec in models.items():
         if "dim" not in spec or "logpost" not in spec:
-            raise ValueError("bayrjmcmc: model %r needs 'dim' and 'logpost'" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} needs 'dim' and 'logpost'")
         if int(spec["dim"]) < 0:
-            raise ValueError("bayrjmcmc: model %r has negative dim" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} has negative dim")
     by_pair = {}
     for mv in moves:
         for key in _MOVE_KEYS:
             if key not in mv:
-                raise ValueError("bayrjmcmc: a move is missing %r" % (key,))
+                raise ValueError(f"bayrjmcmc: a move is missing {key!r}")
         if mv["frm"] not in models or mv["to"] not in models:
-            raise ValueError("bayrjmcmc: move %r -> %r names an unknown model" % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: move {!r} -> {!r} names an unknown model".format(mv["frm"], mv["to"]))
         if mv["frm"] == mv["to"]:
             raise ValueError(
-                "bayrjmcmc: %r -> %r is a within-model move; give it as 'within', not as a jump" % (mv["frm"], mv["to"])
+                "bayrjmcmc: {!r} -> {!r} is a within-model move; give it as 'within', not as a jump".format(
+                    mv["frm"], mv["to"]
+                )
             )
         if (mv["frm"], mv["to"]) in by_pair:
-            raise ValueError("bayrjmcmc: two moves given for %r -> %r" % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: two moves given for {!r} -> {!r}".format(mv["frm"], mv["to"]))
         by_pair[(mv["frm"], mv["to"])] = mv
     for mv in moves:
         rev = by_pair.get((mv["to"], mv["frm"]))
         if rev is None:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r has no reverse move; detailed "
+                "bayrjmcmc: move {!r} -> {!r} has no reverse move; detailed "
                 "balance is imposed within each move type, so the reverse "
-                "must be supplied" % (mv["frm"], mv["to"])
+                "must be supplied".format(mv["frm"], mv["to"])
             )
         n1 = int(models[mv["frm"]]["dim"])
         n2 = int(models[mv["to"]]["dim"])
         m1 = int(mv["n_u"])
         m2 = int(mv["n_u_rev"])
         if m1 < 0 or m2 < 0:
-            raise ValueError("bayrjmcmc: move %r -> %r has negative n_u" % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: move {!r} -> {!r} has negative n_u".format(mv["frm"], mv["to"]))
         if n1 + m1 != n2 + m2:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r violates dimension matching: "
-                "n1 + m1 = %d + %d != %d + %d = n2 + m2" % (mv["frm"], mv["to"], n1, m1, n2, m2)
+                "bayrjmcmc: move {!r} -> {!r} violates dimension matching: n1 + m1 = {} + {} != {} + {} = n2 + m2".format(
+                    mv["frm"], mv["to"], int(n1), int(m1), int(n2), int(m2)
+                )
             )
         if int(rev["n_u"]) != m2 or int(rev["n_u_rev"]) != m1:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r declares u of length %d and a "
-                "reverse u of length %d, but the reverse move declares "
-                "%d and %d" % (mv["frm"], mv["to"], m1, m2, int(rev["n_u"]), int(rev["n_u_rev"]))
+                "bayrjmcmc: move {!r} -> {!r} declares u of length {} and a reverse u of length {}, but the reverse move declares {} and {}".format(
+                    mv["frm"], mv["to"], int(m1), int(m2), int(int(rev["n_u"])), int(int(rev["n_u_rev"]))
+                )
             )
     return by_pair
 
@@ -323,10 +325,10 @@ def reversible_jump_mcmc(
         ``(model, theta)`` after burn-in and thinning.
     """
     if jacobian not in _JACOBIAN_ROUTES:
-        raise ValueError("bayrjmcmc: jacobian must be one of %s" % (_JACOBIAN_ROUTES,))
+        raise ValueError(f"bayrjmcmc: jacobian must be one of {_JACOBIAN_ROUTES}")
     by_pair = check_dimension_matching(models, moves)
     if init_model not in models:
-        raise ValueError("bayrjmcmc: init_model %r is not a model" % (init_model,))
+        raise ValueError(f"bayrjmcmc: init_model {init_model!r} is not a model")
     n_iter = int(n_iter)
     burn_in = int(burn_in)
     thin = int(thin)
@@ -340,8 +342,9 @@ def reversible_jump_mcmc(
     theta = [float(v) for v in init_theta]
     if len(theta) != int(models[init_model]["dim"]):
         raise ValueError(
-            "bayrjmcmc: init_theta has %d values but model %r "
-            "has dim %d" % (len(theta), init_model, int(models[init_model]["dim"]))
+            "bayrjmcmc: init_theta has {} values but model {!r} has dim {}".format(
+                int(len(theta)), init_model, int(int(models[init_model]["dim"]))
+            )
         )
 
     # j(x) depends only on the model, so tabulate it once: a within-model
@@ -354,7 +357,7 @@ def reversible_jump_mcmc(
                 opts.append(("jump", mv, float(mv.get("weight", move_weight))))
         tot = sum(w for _, _, w in opts)
         if tot <= 0.0:
-            raise ValueError("bayrjmcmc: model %r has no move with positive weight" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} has no move with positive weight")
         avail[name] = (opts, tot)
 
     uni = _unif_stream(seed)
@@ -377,7 +380,7 @@ def reversible_jump_mcmc(
                 break
 
         if kind == "within":
-            label = "within:%s" % (cur,)
+            label = f"within:{cur}"
             tried[label] = tried.get(label, 0) + 1
             if theta:
                 if within is not None and cur in within:
@@ -391,12 +394,14 @@ def reversible_jump_mcmc(
                     theta, logp = prop, lp_new
                     accepted[label] = accepted.get(label, 0) + 1
         else:
-            label = mv.get("name") or ("%s->%s" % (mv["frm"], mv["to"]))
+            label = mv.get("name") or ("{}->{}".format(mv["frm"], mv["to"]))
             tried[label] = tried.get(label, 0) + 1
             u = [float(v) for v in mv["propose"](theta, uni)]
             if len(u) != int(mv["n_u"]):
                 raise ValueError(
-                    "bayrjmcmc: move %s proposed %d values of u but declares n_u = %d" % (label, len(u), int(mv["n_u"]))
+                    "bayrjmcmc: move {} proposed {} values of u but declares n_u = {}".format(
+                        label, int(len(u)), int(int(mv["n_u"]))
+                    )
                 )
             theta2, u2 = mv["transform"](theta, u)
             theta2 = [float(v) for v in theta2]
@@ -404,9 +409,9 @@ def reversible_jump_mcmc(
             dim2 = int(models[mv["to"]]["dim"])
             if len(theta2) != dim2 or len(u2) != int(mv["n_u_rev"]):
                 raise ValueError(
-                    "bayrjmcmc: move %s produced theta of length %d and u2 "
-                    "of length %d; the model has dim %d and the move "
-                    "declares n_u_rev = %d" % (label, len(theta2), len(u2), dim2, int(mv["n_u_rev"]))
+                    "bayrjmcmc: move {} produced theta of length {} and u2 of length {}; the model has dim {} and the move declares n_u_rev = {}".format(
+                        label, int(len(theta2)), int(len(u2)), int(dim2), int(int(mv["n_u_rev"]))
+                    )
                 )
 
             if jacobian == "numeric" or "logjac" not in mv:
@@ -483,12 +488,12 @@ def step_function_loglik(y, s, h, L):
     """
     edges = [0.0] + [float(v) for v in s] + [float(L)]
     if len(h) != len(edges) - 1:
-        raise ValueError("bayrjmcmc: %d heights for %d intervals" % (len(h), len(edges) - 1))
+        raise ValueError(f"bayrjmcmc: {int(len(h))} heights for {int(len(edges) - 1)} intervals")
     counts = [0] * len(h)
     for v in y:
         v = float(v)
         if v < 0.0 or v > float(L):
-            raise ValueError("bayrjmcmc: point %g lies outside [0, %g]" % (v, float(L)))
+            raise ValueError(f"bayrjmcmc: point {v:g} lies outside [0, {float(L):g}]")
         j = 0
         while j + 1 < len(edges) - 1 and v >= edges[j + 1]:
             j += 1
@@ -650,7 +655,7 @@ def changepoint_rjmcmc(
     y = [float(v) for v in y]
     for v in y:
         if v < 0.0 or v > L:
-            raise ValueError("bayrjmcmc: point %g lies outside [0, %g]" % (v, L))
+            raise ValueError(f"bayrjmcmc: point {v:g} lies outside [0, {L:g}]")
     eta, pi_, b, d, c = changepoint_move_probabilities(lam, k_max, cap=cap)
     k_init = int(k_init)
     if k_init < 0 or k_init > k_max:

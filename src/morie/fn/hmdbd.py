@@ -97,10 +97,7 @@ def geron_decision_boundary(theta, X_grid, fit_intercept=True):
 
     line = None
     if w.size == 2:
-        if w[1] != 0:
-            line = [float(-w[0] / w[1]), float(-b / w[1])]
-        else:
-            line = [float("inf"), float(-b / w[0])]
+        line = [float(-w[0] / w[1]), float(-b / w[1])] if w[1] != 0 else [float("inf"), float(-b / w[0])]
 
     return RichResult(
         title="Decision boundary",

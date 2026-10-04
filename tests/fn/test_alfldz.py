@@ -23,9 +23,6 @@ def test_alfldz_basic():
     assert "unscaled" in result
 
     # Hand-computed weighted sum on the same inputs.
-    weights = {
-        "fape": 1.0,  # placeholder, replaced below
-    }
 
 
 def test_alfldz_edge():

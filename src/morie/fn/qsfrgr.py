@@ -211,7 +211,7 @@ def survival_forest(
     the first half and fills the leaves from the second.
     """
     if rule not in SPLITS:
-        raise ValueError("rule must be one of %r" % (SPLITS,))
+        raise ValueError(f"rule must be one of {SPLITS!r}")
     n = len(time)
     p = len(X[0])
     m = p if mtry is None else int(mtry)

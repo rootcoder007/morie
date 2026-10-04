@@ -77,7 +77,7 @@ _EPS = 1e-12
 def _changepoints(t, n_changepoints, changepoint_range=0.8, changepoints=None):
     if changepoints is not None:
         return [float(v) for v in changepoints]
-    n = len(t)
+    len(t)
     hi = t[0] + changepoint_range * (t[-1] - t[0])
     m = int(n_changepoints)
     if m < 1:
@@ -121,9 +121,9 @@ def trend_matrix(t, cps):
 def fourier_terms(t, period, order):
     r"""Cosine and sine pairs, exactly periodic with ``period``."""
     if period <= 0.0:
-        raise ValueError("prphet: period must be positive, got %r" % (period,))
+        raise ValueError(f"prphet: period must be positive, got {period!r}")
     if order < 1:
-        raise ValueError("prphet: order must be at least 1, got %d" % order)
+        raise ValueError(f"prphet: order must be at least 1, got {int(order)}")
     rows = []
     for tv in t:
         row = []
@@ -159,18 +159,18 @@ def holiday_matrix(t, holidays, lower=0, upper=0):
 def prophet_design(t, cps, seasonalities=None, holidays=None, holiday_window=(0, 0)):
     """Stack trend, seasonality and holiday columns into one design."""
     tm = trend_matrix(t, cps)
-    cols = ["k", "m"] + ["delta_%d" % j for j in range(len(cps))]
+    cols = ["k", "m"] + [f"delta_{int(j)}" for j in range(len(cps))]
     blocks = [tm]
     seas = seasonalities or []
     for name, period, order in seas:
         blocks.append(fourier_terms(t, period, order))
         for n in range(1, int(order) + 1):
-            cols += ["%s_cos%d" % (name, n), "%s_sin%d" % (name, n)]
+            cols += [f"{name}_cos{int(n)}", f"{name}_sin{int(n)}"]
     hn = []
     if holidays:
         hm, hn = holiday_matrix(t, holidays, holiday_window[0], holiday_window[1])
         blocks.append(hm)
-        cols += ["holiday_%s" % v for v in hn]
+        cols += [f"holiday_{v}" for v in hn]
     X = [[v for b in blocks for v in b[i]] for i in range(len(t))]
     return X, cols, hn
 
@@ -205,12 +205,12 @@ def prophet_fit(
     yv = k.vec(y)
     n = len(tv)
     if len(yv) != n:
-        raise ValueError("prphet: %d times but %d observations" % (n, len(yv)))
+        raise ValueError(f"prphet: {int(n)} times but {int(len(yv))} observations")
     if n < 8:
-        raise ValueError("prphet: need at least 8 observations, got %d" % n)
+        raise ValueError(f"prphet: need at least 8 observations, got {int(n)}")
     tau = float(changepoint_prior)
     if tau <= 0.0:
-        raise ValueError("prphet: changepoint_prior must be positive, got %r" % (changepoint_prior,))
+        raise ValueError(f"prphet: changepoint_prior must be positive, got {changepoint_prior!r}")
     cps = _changepoints(tv, n_changepoints, changepoint_range, changepoints)
     X, cols, hn = prophet_design(tv, cps, seasonalities, holidays, holiday_window)
     p = len(cols)
@@ -243,7 +243,7 @@ def prophet_fit(
     fitted = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
     resid = [yv[i] - fitted[i] for i in range(n)]
     named = {cols[a]: beta[a] for a in range(p)}
-    deltas = [named["delta_%d" % j] for j in range(len(cps))]
+    deltas = [named[f"delta_{int(j)}"] for j in range(len(cps))]
     return RichResult(
         payload={
             "estimate": fitted,

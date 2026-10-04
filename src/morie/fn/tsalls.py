@@ -42,10 +42,7 @@ def tsallis_entropy(p, q):
     s = sum(v)
     pp = [t / s for t in v]
     q = float(q)
-    if q == 1.0:
-        val = -sum(t * math.log(t) for t in pp if t > 0)
-    else:
-        val = (1.0 - sum(t**q for t in pp)) / (q - 1.0)
+    val = -sum(t * math.log(t) for t in pp if t > 0) if q == 1.0 else (1.0 - sum(t**q for t in pp)) / (q - 1.0)
     return RichResult(payload={"estimate": val, "k": len(pp), "q": q, "method": "Tsallis q-entropy of a supplied pmf"})
 
 

@@ -35,19 +35,19 @@ def gibbons_phi_cramers_v(table):
     Cramer, H. (1946). *Mathematical Methods of Statistics*.
     Princeton University Press. Sec. 21.9.
     """
-    O = np.asarray(table, dtype=float)
-    if O.ndim != 2 or O.shape[0] < 2 or O.shape[1] < 2:
+    O_ = np.asarray(table, dtype=float)
+    if O_.ndim != 2 or O_.shape[0] < 2 or O_.shape[1] < 2:
         raise ValueError("table must be at least 2x2.")
-    if np.any(O < 0):
+    if np.any(O_ < 0):
         raise ValueError("counts must be non-negative.")
-    r, c = O.shape
-    ntot = O.sum()
+    r, c = O_.shape
+    ntot = O_.sum()
     if ntot <= 0:
         raise ValueError("the table is empty.")
-    E = np.outer(O.sum(axis=1), O.sum(axis=0)) / ntot
+    E = np.outer(O_.sum(axis=1), O_.sum(axis=0)) / ntot
     if np.any(E == 0):
         raise ValueError("a margin is zero; the measures are degenerate.")
-    Q = float(np.sum((O - E) ** 2 / E))
+    Q = float(np.sum((O_ - E) ** 2 / E))
     V = float(np.sqrt(Q / (ntot * min(r - 1, c - 1))))
     phi = float(np.sqrt(Q / ntot)) if (r, c) == (2, 2) else None
     return RichResult(

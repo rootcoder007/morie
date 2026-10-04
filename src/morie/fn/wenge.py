@@ -94,14 +94,14 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True, ridge=1e-8):
     noise.
     """
     if strategy not in _STRATEGIES:
-        raise ValueError("mediation_functional: strategy must be one of %r, got %r" % (_STRATEGIES, strategy))
+        raise ValueError(f"mediation_functional: strategy must be one of {_STRATEGIES!r}, got {strategy!r}")
     yv, ev = k.vec(Y), k.vec(E)
     Mm = k.mat(M) if M is not None else [[0.0]] * len(yv)
     Xm = k.mat(X) if X is not None else [[0.0]] * len(yv)
     n = len(yv)
     for name, arr in (("E", ev), ("M", Mm), ("X", Xm)):
         if len(arr) != n:
-            raise ValueError("mediation_functional: Y has %d rows but %s has %d" % (n, name, len(arr)))
+            raise ValueError(f"mediation_functional: Y has {int(n)} rows but {name} has {int(len(arr))}")
     if any(v not in (0.0, 1.0) for v in ev):
         raise ValueError(
             "mediation_functional: E must be binary 0/1; the "
@@ -119,9 +119,7 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True, ridge=1e-8):
         p = fe1(i)
         if p <= 0.0 or p >= 1.0:
             raise ValueError(
-                "mediation_functional: f(E|X) is %g at observation %d, so "
-                "positivity fails in the sample and the functional is not "
-                "identified there" % (p, i)
+                f"mediation_functional: f(E|X) is {p:g} at observation {int(i)}, so positivity fails in the sample and the functional is not identified there"
             )
 
     out = {}
@@ -139,9 +137,7 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True, ridge=1e-8):
                 d0 = fm(i, 0.0)
                 if d1 <= 0.0:
                     raise ValueError(
-                        "mediation_functional: f(M|E,X) is zero at "
-                        "observation %d, so the inverse-odds weight is "
-                        "undefined" % i
+                        f"mediation_functional: f(M|E,X) is zero at observation {int(i)}, so the inverse-odds weight is undefined"
                     )
                 tot += yv[i] * (d0 / d1) / fe1(i)
         out["em"] = tot / n
@@ -308,7 +304,7 @@ def weight_based_mediation(X, M, C, Y, strategy="em", saturated=True):
         "strategy": strategy,
         "method": "natural direct and indirect effects via the "
         "mediation functional, Tchetgen Tchetgen & "
-        "Shpitser (2012) strategy %r" % (strategy,),
+        f"Shpitser (2012) strategy {strategy!r}",
     }
     for kk, v in thetas.items():
         out["theta_" + kk] = v

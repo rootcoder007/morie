@@ -191,10 +191,10 @@ def reconstruction_guidance(x_hat, observed, index, weight=2.0, downsample=None)
     construction gives super-resolution.
     """
     X = [[float(v) for v in k.vec(fr)] for fr in x_hat]
-    O = [[float(v) for v in k.vec(fr)] for fr in observed]
+    O_ = [[float(v) for v in k.vec(fr)] for fr in observed]
     idx = [int(v) for v in index]
-    if len(O) != len(idx):
-        raise ValueError("vidgen: %d observed frames but %d indices" % (len(O), len(idx)))
+    if len(O_) != len(idx):
+        raise ValueError(f"vidgen: {int(len(O_))} observed frames but {int(len(idx))} indices")
     w = float(weight)
     if w <= 0.0:
         raise ValueError("vidgen: the guidance weight must be positive")
@@ -202,9 +202,9 @@ def reconstruction_guidance(x_hat, observed, index, weight=2.0, downsample=None)
     err = 0.0
     for a, t in enumerate(idx):
         if t < 0 or t >= len(X):
-            raise ValueError("vidgen: frame %d is outside the sample" % t)
+            raise ValueError(f"vidgen: frame {int(t)} is outside the sample")
         pred = X[t]
-        tgt = O[a]
+        tgt = O_[a]
         if downsample is not None:
             pred = [float(v) for v in k.vec(downsample(pred))]
             if len(pred) != len(tgt):

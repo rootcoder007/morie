@@ -12,8 +12,13 @@ def _r2_manual(a, lo=-8.0, hi=8.0, ngrid=4001):
     """
     a = float(a)
     y = np.linspace(float(lo), float(hi), int(ngrid))
-    kfun = lambda t: stats.norm.pdf(t)
-    wfun = lambda t: stats.norm.cdf(t)
+
+    def kfun(t):
+        return stats.norm.pdf(t)
+
+    def wfun(t):
+        return stats.norm.cdf(t)
+
     term = kfun(y) * wfun(y / a) + (1.0 / a) * wfun(y) * kfun(y / a)
     return float(np.trapezoid(y * term, y))
 

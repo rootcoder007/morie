@@ -26,7 +26,7 @@ def test_gpvarF_basic():
         assert abs(p - 1.0) < 1e-12
     # Estimate equals prior minus k* @ (K + sn^2 I)^{-1} @ k*.
     # Compute independently using plain arithmetic.
-    sf, l = kernel
+    sf, ell = kernel
     sn2 = float(sigma2)
     n = 10
     m = 5
@@ -37,7 +37,7 @@ def test_gpvarF_basic():
             for d in range(3):
                 diff = X[i][d] - X[j][d]
                 sq += diff * diff
-            K[i][j] = sf * sf * np.exp(-0.5 * sq / (l * l))
+            K[i][j] = sf * sf * np.exp(-0.5 * sq / (ell * ell))
             if i == j:
                 K[i][j] += sn2
 
@@ -68,13 +68,13 @@ def test_gpvarF_basic():
         for d in range(3):
             diff = X_star[p][d] - X_star[p][d]
             sq_pp += diff * diff
-        kpp = sf * sf * np.exp(-0.5 * sq_pp / (l * l))
+        kpp = sf * sf * np.exp(-0.5 * sq_pp / (ell * ell))
         for i in range(n):
             sq = 0.0
             for d in range(3):
                 diff = X_star[p][d] - X[i][d]
                 sq += diff * diff
-            ks[i] = sf * sf * np.exp(-0.5 * sq / (l * l))
+            ks[i] = sf * sf * np.exp(-0.5 * sq / (ell * ell))
         w = solve(K, ks)
         expected = kpp - sum(ks[i] * w[i] for i in range(n))
         assert abs(result["estimate"][p] - expected) < 1e-9

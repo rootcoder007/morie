@@ -63,7 +63,7 @@ def dmxlr(
             per_locus_lr.append(0.0)
             continue
 
-        remaining = mix_set - sus_alleles_set
+        mix_set - sus_alleles_set
         all_alleles = list(freqs.keys())
 
         def _geno_prob(a1, a2):

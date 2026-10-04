@@ -120,20 +120,17 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None, n_boo
     n_u, T = M.shape
 
     tr = np.asarray(treated)
-    if tr.dtype == bool and tr.size == n_u:
-        mask = tr
-    else:
-        mask = np.isin(units, tr)
+    mask = tr if tr.dtype == bool and tr.size == n_u else np.isin(units, tr)
     if mask.sum() < 1:
         raise ValueError("no treated unit was found in the unit set.")
     if (~mask).sum() < 2:
-        raise ValueError("need at least 2 control units, got %d." % int((~mask).sum()))
+        raise ValueError(f"need at least 2 control units, got {int(int((~mask).sum()))}.")
     tt = np.nonzero(periods >= treatment_time)[0]
     if tt.size == 0:
         raise ValueError("treatment_time is after the last period.")
     t0 = int(tt[0])
     if t0 < 2:
-        raise ValueError("only %d pre-treatment period(s); both weight sets are fitted on the pre-period." % t0)
+        raise ValueError(f"only {int(t0)} pre-treatment period(s); both weight sets are fitted on the pre-period.")
     if t0 >= T:
         raise ValueError("no post-treatment period.")
 

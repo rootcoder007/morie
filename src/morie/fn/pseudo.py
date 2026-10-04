@@ -96,7 +96,7 @@ def pseudo(B, x, y, edges=None):
             i = int(i)
             j = int(j)
             if not (0 <= i < k and 0 <= j < k):
-                raise ValueError("edge (%d, %d) out of range" % (i, j))
+                raise ValueError(f"edge ({int(i)}, {int(j)}) out of range")
             Bg[i, j] = Bm[i, j]
             used += 1
     T_g = _path_sum(Bg, k)

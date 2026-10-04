@@ -75,7 +75,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
     X = X_init
     y = y_init
 
-    for it in range(n_iter):
+    for _it in range(n_iter):
         # Simple GP: use kernel trick with RBF
         from ._sci_core import cdist
 

@@ -70,10 +70,7 @@ def epsilon_contamination(epsilon, H, x=None):
     m = len(h)
     if m == 0:
         raise ValueError("empty input: H has no observations")
-    if x is None:
-        x = [float(i) for i in range(-3, 4)]
-    else:
-        x = core.vec(x)
+    x = [float(i) for i in range(-3, 4)] if x is None else core.vec(x)
     hs = sorted(h)
     F = []
     for v in x:

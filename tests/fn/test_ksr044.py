@@ -8,7 +8,9 @@ from morie.fn.ksr044 import kosorok_ch2_quantile_taylor_bounds
 def test_ksr044_basic():
     from morie.fn import _stats_core as stats
 
-    h = lambda z: 0.1 * stats.norm.pdf(z)
+    def h(z):
+        return 0.1 * stats.norm.pdf(z)
+
     out = kosorok_ch2_quantile_taylor_bounds(stats.norm.cdf, h, t_n=0.01, p=0.6)
     xi = stats.norm.ppf(0.6)
     assert out["implied_derivative"] == pytest.approx(-h(xi) / stats.norm.pdf(xi), rel=1e-3)

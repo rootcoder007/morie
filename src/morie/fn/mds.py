@@ -48,10 +48,7 @@ def mds(
     """
     X = np.asarray(data, dtype=np.float64)
 
-    if is_distance:
-        D = X
-    else:
-        D = squareform(pdist(X, metric="euclidean"))
+    D = X if is_distance else squareform(pdist(X, metric="euclidean"))
 
     n = D.shape[0]
 

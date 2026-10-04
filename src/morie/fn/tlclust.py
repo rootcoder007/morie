@@ -97,7 +97,7 @@ def cluster_variance(ic, cluster):
     v = [float(q) for q in k.vec(ic)]
     c = list(cluster)
     if len(v) != len(c):
-        raise ValueError("tlclust: %d influence values for %d cluster labels" % (len(v), len(c)))
+        raise ValueError(f"tlclust: {int(len(v))} influence values for {int(len(c))} cluster labels")
     agg = {}
     for i in range(len(v)):
         agg[c[i]] = agg.get(c[i], 0.0) + v[i]
@@ -158,7 +158,7 @@ def g_formula_sequential(Q_seq):
     for t in range(len(Q_seq) - 2, -1, -1):
         nxt = [float(v) for v in k.vec(Q_seq[t])]
         if len(nxt) != len(cur):
-            raise ValueError("tlclust: the regressions differ in length at time %d" % t)
+            raise ValueError(f"tlclust: the regressions differ in length at time {int(t)}")
         cur = nxt
     return {
         "psi": sum(cur) / len(cur),

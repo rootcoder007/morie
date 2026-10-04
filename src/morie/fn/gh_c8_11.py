@@ -31,9 +31,9 @@ def ghosal_ts_crt(ns=(256, 2048), n_bins=8, seed=42):
             for t, v in enumerate(x):
                 wr += v * math.cos(ang * t)
                 wi += v * math.sin(ang * t)
-            I = (wr * wr + wi * wi) / (2.0 * math.pi * n)
+            I_ = (wr * wr + wi * wi) / (2.0 * math.pi * n)
             b = min(int(n_bins * j / m), n_bins - 1)
-            binsum[b] += I
+            binsum[b] += I_
             bincnt[b] += 1
         truth = 1.0 / (2.0 * math.pi)
         est = [(0.5 + s) / (1.0 + c) for s, c in zip(binsum, bincnt)]

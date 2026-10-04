@@ -198,7 +198,7 @@ def rdkfp(adjacency, atomnum, aromatic=None, nbits=2048, minpath=1, maxpath=7, b
                 if m == k:
                     continue
                 p, q, _ = bonds[bj]
-                if p == i or p == j or q == i or q == j:
+                if p in (i, j) or q in (i, j):
                     nbr += 1
             a1, a2 = ainv[i], ainv[j]
             d1, d2 = deg[i], deg[j]

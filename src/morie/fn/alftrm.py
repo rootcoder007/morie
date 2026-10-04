@@ -100,7 +100,7 @@ def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing", laye
             "estimate": sum(flat) / len(flat),
             "n": n,
             "mode": mode,
-            "method": "AlphaFold triangular multiplicative update (%s)" % mode,
+            "method": f"AlphaFold triangular multiplicative update ({mode})",
         }
     )
 

@@ -30,10 +30,7 @@ def lsf_to_ar(lsf, **kwargs) -> DescriptiveResult:
             P_roots.extend([np.exp(1j * w), np.exp(-1j * w)])
         else:
             Q_roots.extend([np.exp(1j * w), np.exp(-1j * w)])
-    if len(P_roots) == 0:
-        P = np.array([1.0])
-    else:
-        P = np.real(np.poly(P_roots))
+    P = np.array([1.0]) if len(P_roots) == 0 else np.real(np.poly(P_roots))
     if len(Q_roots) == 0:
         Q = np.array([1.0])
     else:

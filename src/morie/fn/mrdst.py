@@ -29,14 +29,8 @@ def mahalanobis_distance(
         x = x.reshape(1, -1)
     n, p = x.shape
 
-    if mean is None:
-        mean = x.mean(axis=0)
-    else:
-        mean = np.asarray(mean, dtype=float)
-    if cov is None:
-        cov = np.cov(x, rowvar=False)
-    else:
-        cov = np.asarray(cov, dtype=float)
+    mean = x.mean(axis=0) if mean is None else np.asarray(mean, dtype=float)
+    cov = np.cov(x, rowvar=False) if cov is None else np.asarray(cov, dtype=float)
     if cov.ndim == 0:
         cov = cov.reshape(1, 1)
 

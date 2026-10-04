@@ -55,7 +55,7 @@ def test_sarmix_edge():
         row = [1.0] + list(rng.normal(0, 1, p - 1))
         X.append(row)
     y = rng.normal(0, 1, n)
-    W1 = _make_ring_weights(n)
+    _make_ring_weights(n)
     W2 = _make_ring_weights(n)
     # Create W1 with wrong shape (n, n-1)
     W1_wrong = [[0.0] * (n - 1) for _ in range(n)]

@@ -15,7 +15,10 @@ def test_kmlv_basic():
     image = "img"  # placeholder; the encoder does not have to consume it
     W = rng.normal(0, 1, (d, d_v))
     feats = rng.normal(0, 1, (n_patches, d_v))
-    visual_encoder = lambda im: feats
+
+    def visual_encoder(im):
+        return feats
+
     text_tokens = rng.normal(0, 1, (n_text, d))
 
     result = kamath_llava_visual_instruction(image, W, visual_encoder, text_tokens)
@@ -58,9 +61,15 @@ def test_kmlv_edge():
     image = "img"
     W = rng.normal(0, 1, (d, d_v))
     feats = rng.normal(0, 1, (n_patches, d_v))
-    visual_encoder = lambda im: feats
+
+    def visual_encoder(im):
+        return feats
+
     text_tokens = rng.normal(0, 1, (n_text, d))
-    lm_head = lambda x: rng.normal(0, 1, (x.shape[0], vocab_size))
+
+    def lm_head(x):
+        return rng.normal(0, 1, (x.shape[0], vocab_size))
+
     targets = np.array([ignore_index, ignore_index, 0, 1, 2])
 
     result = kamath_llava_visual_instruction(

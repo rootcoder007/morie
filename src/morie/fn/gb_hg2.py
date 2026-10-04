@@ -61,7 +61,7 @@ def gibbons_hodges_lehmann_2(x, y, alpha=0.05):
     b = np.asarray(y, dtype=float).ravel()
     m, n = a.size, b.size
     if m < 1 or n < 1:
-        raise ValueError("both samples must be non-empty, got %d and %d." % (m, n))
+        raise ValueError(f"both samples must be non-empty, got {int(m)} and {int(n)}.")
     if np.any(~np.isfinite(a)) or np.any(~np.isfinite(b)):
         raise ValueError("samples contain non-finite values.")
     diffs = np.sort((b[:, None] - a[None, :]).ravel())

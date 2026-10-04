@@ -105,7 +105,10 @@ def ab_indirect_effect(a, b, se_a=None, se_b=None, alpha=0.05):
     pval = 2 * stats.norm.sf(np.abs(z))
 
     scalar = ie.ndim == 0
-    out = lambda v: float(v) if scalar else v
+
+    def out(v):
+        return float(v) if scalar else v
+
     return RichResult(
         title="Indirect effect (Sobel)",
         payload={

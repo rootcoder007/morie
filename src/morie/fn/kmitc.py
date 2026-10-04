@@ -41,12 +41,12 @@ def kamath_image_text_contrastive(I_emb, T_emb, tau):
     >>> out["n"]
     2
     """
-    I = np.atleast_2d(np.asarray(I_emb, dtype=float))
+    I_ = np.atleast_2d(np.asarray(I_emb, dtype=float))
     T = np.atleast_2d(np.asarray(T_emb, dtype=float))
     tau = float(tau)
-    if I.shape != T.shape:
-        raise ValueError(f"the two towers must produce matching batches; got {I.shape} and {T.shape}.")
-    B = I.shape[0]
+    if I_.shape != T.shape:
+        raise ValueError(f"the two towers must produce matching batches; got {I_.shape} and {T.shape}.")
+    B = I_.shape[0]
     if B < 2:
         raise ValueError(
             "InfoNCE needs at least two pairs in the batch; with one "
@@ -55,11 +55,11 @@ def kamath_image_text_contrastive(I_emb, T_emb, tau):
         )
     if tau <= 0:
         raise ValueError(f"tau must be positive; got {tau}.")
-    ni = np.linalg.norm(I, axis=1)
+    ni = np.linalg.norm(I_, axis=1)
     nt = np.linalg.norm(T, axis=1)
     if np.any(ni == 0) or np.any(nt == 0):
         raise ValueError("a zero embedding has no direction; cosine similarity is undefined.")
-    S = (I / ni[:, None]) @ (T / nt[:, None]).T
+    S = (I_ / ni[:, None]) @ (T / nt[:, None]).T
     logits = S / tau
     i2t = _row_ce(logits)
     t2i = _row_ce(logits.T)

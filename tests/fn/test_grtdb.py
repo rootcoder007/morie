@@ -10,8 +10,8 @@ def test_grtdb_basic():
     T, S, d_model = 4, 3, 2
     x = rng.normal(0, 1, (T, d_model))
     encoder_output = rng.normal(0, 1, (S, d_model))
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    att = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    att = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     weights = {
         "self": att,
         "cross": att,
@@ -41,14 +41,14 @@ def test_grtdb_basic():
 
 def test_grtdb_edge():
     """Test edge cases (identity projections, zero ffn) matching the docstring example."""
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    att = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    att = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     W = {
         "self": att,
         "cross": att,
         "ffn": {"W1": [[0.0], [0.0]], "W2": [[0.0, 0.0]]},
     }
-    result = geron_transformer_decoder_block(I, I, W)
+    result = geron_transformer_decoder_block(I_, I_, W)
     assert isinstance(result, dict)
     assert "output" in result
     assert "causal_mask" in result

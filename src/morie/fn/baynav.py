@@ -163,16 +163,16 @@ def transform_to_real(value, support="positive", eps=1e-10):
     v = float(value)
     if support == "positive":
         if v <= 0.0:
-            raise ValueError("baynav: a positive parameter must be positive, got %r" % (value,))
+            raise ValueError(f"baynav: a positive parameter must be positive, got {value!r}")
         return {"real": math.log(v), "log_jacobian": -math.log(v), "inverse": math.exp(math.log(v))}
     if support == "unit":
         if not 0.0 < v < 1.0:
-            raise ValueError("baynav: a unit parameter must lie in (0,1), got %r" % (value,))
+            raise ValueError(f"baynav: a unit parameter must lie in (0,1), got {value!r}")
         z = math.log(v / (1.0 - v))
         return {"real": z, "log_jacobian": -math.log(v) - math.log(1.0 - v), "inverse": 1.0 / (1.0 + math.exp(-z))}
     if support == "real":
         return {"real": v, "log_jacobian": 0.0, "inverse": v}
-    raise ValueError("baynav: support must be positive, unit or real, got %r" % (support,))
+    raise ValueError(f"baynav: support must be positive, unit or real, got {support!r}")
 
 
 def elbo(log_joint, log_q, samples):

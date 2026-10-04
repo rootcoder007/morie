@@ -147,7 +147,7 @@ def int8_attention(y=None, Q=None, K=None, V=None, scales=None):
                 acc += Qi[i][t] * Ki[j][t]
             row.append(acc * sq[i] * sk[j] * sc)
         S.append(row)
-    O = []
+    O_ = []
     W = []
     for i in range(nq):
         mx = max(S[i])
@@ -162,7 +162,7 @@ def int8_attention(y=None, Q=None, K=None, V=None, scales=None):
             wj = w[j] * sv[j]
             for t in range(dv):
                 o[t] += wj * Vi[j][t]
-        O.append(o)
+        O_.append(o)
     # exact float attention, for the error report only
     err = 0.0
     for i in range(nq):
@@ -181,15 +181,15 @@ def int8_attention(y=None, Q=None, K=None, V=None, scales=None):
             ref = 0.0
             for j in range(nk):
                 ref += (e[j] / tot) * Vm[j][t]
-            dd = abs(O[i][t] - ref)
+            dd = abs(O_[i][t] - ref)
             if dd > err:
                 err = dd
     return RichResult(
         title="INT8 quantised attention",
         summary_lines=[("n_q", nq), ("n_k", nk), ("max_abs_error", err)],
         payload={
-            "output": O,
-            "estimate": O[0][0],
+            "output": O_,
+            "estimate": O_[0][0],
             "scores": S,
             "weights": W,
             "s_q": sq,

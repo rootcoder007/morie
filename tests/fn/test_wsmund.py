@@ -8,8 +8,12 @@ from morie.fn.wsmund import wasserman_undirected_graph
 
 
 def _pots():
-    agree = lambda t: 2.0 if t[0] == t[1] else 1.0
-    tri = lambda t: 3.0 if sum(t) == 3 else 1.0
+    def agree(t):
+        return 2.0 if t[0] == t[1] else 1.0
+
+    def tri(t):
+        return 3.0 if sum(t) == 3 else 1.0
+
     return (3, [(0, 1), (0, 1, 2)]), [agree, tri]
 
 

@@ -86,7 +86,7 @@ def kmcnf(
     if ci_type not in ("linear", "log", "log-log", "logit", "arcsin"):
         raise ValueError("ci_type must be one of: 'linear', 'log', 'log-log', 'logit', 'arcsin'.")
 
-    n = len(time)
+    len(time)
     z = float(_stats.norm.ppf(1 - alpha / 2))
 
     order = np.argsort(time)

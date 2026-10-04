@@ -89,10 +89,7 @@ def wavelet_denoise(
 
     thresholded = []
     for cd in coeffs:
-        if threshold == "soft":
-            tc = np.sign(cd) * np.maximum(np.abs(cd) - thr, 0)
-        else:
-            tc = cd * (np.abs(cd) >= thr)
+        tc = np.sign(cd) * np.maximum(np.abs(cd) - thr, 0) if threshold == "soft" else cd * (np.abs(cd) >= thr)
         thresholded.append(tc)
 
     rec = approx

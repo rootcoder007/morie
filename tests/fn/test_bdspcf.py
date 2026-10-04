@@ -28,7 +28,6 @@ def test_bdspcf_basic():
     # We use a hard-coded tabulated value because the function uses C.qnorm,
     # and our independent expression must be a plain number, not copied
     # from the function. Using the common 1.959963984540054 for 0.95.
-    conf = 0.95
     z = 1.959963984540054  # standard normal quantile for 1 - 0.05/2
     hw = bias + z * se
     assert abs(result["bias"] - bias) < 1e-10

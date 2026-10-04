@@ -11,8 +11,8 @@ def _pochhammer_log(x, m):
     if m <= 0:
         return 0.0
     s = 0.0
-    for l in range(m):
-        s += math.log(x + l)
+    for ell in range(m):
+        s += math.log(x + ell)
     return s
 
 

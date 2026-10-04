@@ -71,12 +71,12 @@ def exposure_summary(A_history, how="cumulative"):
     about what part of the history matters.
     """
     if how not in _SUMMARIES:
-        raise ValueError("exposure_summary: how must be one of %r, got %r" % (_SUMMARIES, how))
+        raise ValueError(f"exposure_summary: how must be one of {_SUMMARIES!r}, got {how!r}")
     cols = [k.vec(a) for a in A_history]
     n = len(cols[0])
     for j, c in enumerate(cols):
         if len(c) != n:
-            raise ValueError("exposure_summary: time 0 has %d rows but time %d has %d" % (n, j, len(c)))
+            raise ValueError(f"exposure_summary: time 0 has {int(n)} rows but time {int(j)} has {int(len(c))}")
     if how == "cumulative":
         return [sum(c[i] for c in cols) for i in range(n)]
     if how == "final":
@@ -96,7 +96,7 @@ def rbf_basis(x, n_centres=5, width=None):
     xs = [float(v) for v in k.vec(x)]
     m = int(n_centres)
     if m < 1:
-        raise ValueError("rbf_basis: need at least one centre, got %r" % (n_centres,))
+        raise ValueError(f"rbf_basis: need at least one centre, got {n_centres!r}")
     centres = [k.quantile7(xs, (j + 0.5) / m) for j in range(m)]
     uniq = sorted(set(centres))
     if len(uniq) < 2:
@@ -108,7 +108,7 @@ def rbf_basis(x, n_centres=5, width=None):
         width = sum(gaps) / len(gaps)
     h = float(width)
     if h <= 0.0:
-        raise ValueError("rbf_basis: width must be positive, got %r" % (width,))
+        raise ValueError(f"rbf_basis: width must be positive, got {width!r}")
     return [[math.exp(-0.5 * ((v - c) / h) ** 2) for c in centres] for v in xs], centres, h
 
 
@@ -158,15 +158,15 @@ def polynomial_kernel_msm(
         r["estimate"], r["curve_polynomial"]
     """
     if basis not in _BASES:
-        raise ValueError("polynomial_kernel_msm: basis must be one of %r, got %r" % (_BASES, basis))
+        raise ValueError(f"polynomial_kernel_msm: basis must be one of {_BASES!r}, got {basis!r}")
     deg = int(degree)
     if deg < 1:
-        raise ValueError("polynomial_kernel_msm: degree must be at least 1, got %r" % (degree,))
+        raise ValueError(f"polynomial_kernel_msm: degree must be at least 1, got {degree!r}")
     A_hist = list(A_history)
     L_hist = list(H_history) if H_history is not None else [None] * len(A_hist)
     if len(L_hist) != len(A_hist):
         raise ValueError(
-            "polynomial_kernel_msm: %d treatment times but %d covariate blocks" % (len(A_hist), len(L_hist))
+            f"polynomial_kernel_msm: {int(len(A_hist))} treatment times but {int(len(L_hist))} covariate blocks"
         )
     yv = k.vec(y)
     n = len(yv)
@@ -226,9 +226,9 @@ def polynomial_kernel_msm(
             out["se"] = float("nan")
 
     out["method"] = (
-        "marginal structural model with a %s exposure basis, "
+        f"marginal structural model with a {basis} exposure basis, "
         "Hernan, Brumback & Robins (2002); weights by "
-        "Robins, Hernan & Brumback (2000)" % basis
+        "Robins, Hernan & Brumback (2000)"
     )
     return RichResult(payload=out)
 

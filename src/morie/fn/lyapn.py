@@ -36,10 +36,7 @@ def lyapunov_stability(A, Q=None, **kwargs) -> DescriptiveResult:
         raise ValueError("A must be a square matrix.")
     n = A.shape[0]
 
-    if Q is None:
-        Q = np.eye(n)
-    else:
-        Q = np.asarray(Q, dtype=np.float64)
+    Q = np.eye(n) if Q is None else np.asarray(Q, dtype=np.float64)
 
     eigenvalues = np.linalg.eigvals(A)
     max_real = float(np.max(np.real(eigenvalues)))

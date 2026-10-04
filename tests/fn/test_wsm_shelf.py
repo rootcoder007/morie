@@ -137,7 +137,7 @@ def test_the_self_normalised_estimator_needs_no_normalising_constants():
         normalised=True,
         **kw,
     )["estimate"]
-    assert not un == pytest.approx(base, rel=0.5)
+    assert un != pytest.approx(base, rel=0.5)
 
 
 def test_a_light_tailed_sampler_degrades_the_effective_sample_size():

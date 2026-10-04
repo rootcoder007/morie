@@ -55,7 +55,6 @@ def test_alfpea_basic():
 def test_alfpea_edge():
     """Test edge case: n=1 (single residue)."""
     n = 1
-    cz = 2
     nbins = 3
     bins = [0.5, 1.5, 2.5]
 
@@ -70,7 +69,7 @@ def test_alfpea_edge():
     logits = [z[0][0][0] * w[b][0] + z[0][0][1] * w[b][1] for b in range(nbins)]
     # logits = [2.0, -2.0, 0.0]
     m = max(logits)
-    exps = [pow(2.718281828459045, l - m) for l in logits]
+    exps = [pow(2.718281828459045, ell - m) for ell in logits]
     s_exp = sum(exps)
     expected_p = [e / s_exp for e in exps]
     expected_pae = sum(expected_p[b] * bins[b] for b in range(nbins))

@@ -32,6 +32,9 @@ class TestFeatureImportance:
     def test_std_shape(self):
         X = np.ones((10, 4))
         y = np.ones(10)
-        model_fn = lambda X: np.ones(X.shape[0])
+
+        def model_fn(X):
+            return np.ones(X.shape[0])
+
         result = feature_importance(model_fn, X, y, n_repeats=3)
         assert len(result["importance_std"]) == 4

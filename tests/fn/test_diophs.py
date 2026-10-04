@@ -14,7 +14,7 @@ def test_diophs_basic():
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "solvable" in result
-    assert result["solvable"] is True or result["solvable"] == True
+    assert result["solvable"] is True or result["solvable"]
     # Independent verification: gcd(4,6)=2; 2 divides 10 -> solvable.
     g_indep = 2
     assert int(result["gcd"]) == g_indep
@@ -35,7 +35,7 @@ def test_diophs_edge():
     a, b, c = 4, 6, 7  # gcd(4,6)=2 does not divide 7 -> not solvable
     result = diophantine(a, b, c)
     assert isinstance(result, dict)
-    assert result["solvable"] is False or result["solvable"] == False
+    assert result["solvable"] is False or not result["solvable"]
     assert float(result["estimate"]) == 0.0
     assert result["x"] is None
     assert result["y"] is None
@@ -52,7 +52,7 @@ def test_diophs_edge():
             break
     assert found is not None  # sanity: there is a solution
     result = diophantine(a, b, c)
-    assert result["solvable"] is True or result["solvable"] == True
+    assert result["solvable"] is True or result["solvable"]
     assert float(result["estimate"]) == 1.0
     xv = int(np.asarray(result["x"]).item())
     yv = int(np.asarray(result["y"]).item())

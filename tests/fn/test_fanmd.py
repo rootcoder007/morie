@@ -72,7 +72,7 @@ def test_fanmd_basic():
 def test_fanmd_edge():
     """Test edge cases: scalar (d=1) and constant function."""
     g = 8
-    pts = [(t + 0.5) / g for t in range(g)]
+    [(t + 0.5) / g for t in range(g)]
 
     def constant_f(x):
         return 7.5

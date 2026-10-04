@@ -155,22 +155,22 @@ def test_volyz_recovers_sigma():
     sig_step = 0.02 / np.sqrt(steps)
     o = np.empty(n)
     h = np.empty(n)
-    l = np.empty(n)
+    ell = np.empty(n)
     c = np.empty(n)
     price = 0.0
     for d in range(n):
         o[d] = price
         path = price + np.cumsum(rng.normal(scale=sig_step, size=steps))
         h[d] = max(path.max(), price)
-        l[d] = min(path.min(), price)
+        ell[d] = min(path.min(), price)
         c[d] = path[-1]
         price = c[d]
-    O, H, L, C = (np.exp(v) for v in (o, h, l, c))
-    out = vol_yang_zhang(O, H, L, C)
+    O_, H, L, C = (np.exp(v) for v in (o, h, ell, c))
+    out = vol_yang_zhang(O_, H, L, C)
     assert out["sigma"] == pytest.approx(0.02, rel=0.2)  # daily sigma
     assert out["k"] == pytest.approx(0.34 / (1.34 + (n + 1) / (n - 1)))
     with pytest.raises(ValueError):
-        vol_yang_zhang(O[:1], H[:1], L[:1], C[:1])
+        vol_yang_zhang(O_[:1], H[:1], L[:1], C[:1])
 
 
 def _har_sim(seed, n=600):

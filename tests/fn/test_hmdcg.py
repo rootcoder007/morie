@@ -22,9 +22,9 @@ def test_hmdcg_basic():
     assert "sample_shape" in result
     assert result["sample_shape"] == (16, 16)
     assert result["n_layers"] == 2
-    deconv_outs = [l["out"] for l in result["generator_layers"] if l["kind"] == "deconv"]
+    deconv_outs = [ell["out"] for ell in result["generator_layers"] if ell["kind"] == "deconv"]
     assert deconv_outs == [8, 16]
-    conv_outs = [l["out"] for l in result["discriminator_layers"] if l["kind"] == "conv"]
+    conv_outs = [ell["out"] for ell in result["discriminator_layers"] if ell["kind"] == "conv"]
     assert conv_outs == [8, 4]
     assert result["generator_layers"][0]["params"] == 1152
 

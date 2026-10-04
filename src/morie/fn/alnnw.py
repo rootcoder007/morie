@@ -106,12 +106,12 @@ def needleman_wunsch(seq1, seq2, sub_matrix=None, gap=1.0):
         for j in range(1, m + 1):
             d = F[i - 1][j - 1] + s(a[i - 1], b[j - 1])
             u = F[i - 1][j] - g
-            l = F[i][j - 1] - g
+            ell = F[i][j - 1] - g
             best = d
             if u > best:
                 best = u
-            if l > best:
-                best = l
+            if ell > best:
+                best = ell
             F[i][j] = best
     o1 = []
     o2 = []

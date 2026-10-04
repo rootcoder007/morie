@@ -110,7 +110,7 @@ _SQRT2PI = math.sqrt(2.0 * math.pi)
 
 def _check_dist(dist):
     if dist not in DISTRIBUTIONS:
-        raise ValueError("surxgb: distribution must be one of %s, got %r" % (", ".join(DISTRIBUTIONS), dist))
+        raise ValueError("surxgb: distribution must be one of {}, got {!r}".format(", ".join(DISTRIBUTIONS), dist))
 
 
 def pdf(z, dist="normal"):
@@ -185,10 +185,10 @@ def aft_loss(y_lower, y_upper, u, sigma=1.0, dist="normal"):
     """
     _check_dist(dist)
     if sigma <= 0.0:
-        raise ValueError("surxgb: sigma must be positive, got %r" % sigma)
+        raise ValueError(f"surxgb: sigma must be positive, got {sigma!r}")
     lo, hi = float(y_lower), float(y_upper)
     if hi < lo:
-        raise ValueError("surxgb: the upper bound %r is below the lower bound %r" % (hi, lo))
+        raise ValueError(f"surxgb: the upper bound {hi!r} is below the lower bound {lo!r}")
     if lo < 0.0:
         raise ValueError("surxgb: a survival time cannot be negative")
     if lo == hi:
@@ -233,7 +233,7 @@ def aft_gradient_hessian(y_lower, y_upper, u, sigma=1.0, dist="normal", method="
     in the tails.
     """
     if method not in ("analytic", "numeric"):
-        raise ValueError("surxgb: method must be 'analytic' or 'numeric', got %r" % method)
+        raise ValueError(f"surxgb: method must be 'analytic' or 'numeric', got {method!r}")
     f0 = aft_loss(y_lower, y_upper, u, sigma, dist)
     if method == "numeric":
         fp = aft_loss(y_lower, y_upper, u + eps, sigma, dist)

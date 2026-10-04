@@ -140,7 +140,7 @@ def _corr(h, model, phi, kappa):
         lg = k.lgamma(kappa)
         val = (2.0 ** (1.0 - kappa)) / math.exp(lg) * (z**kappa) * k.besselk(kappa, z)
         return max(min(val, 1.0), 0.0)
-    raise ValueError("sgflrt: model must be exponential, gaussian, spherical or matern, got %r" % (model,))
+    raise ValueError(f"sgflrt: model must be exponential, gaussian, spherical or matern, got {model!r}")
 
 
 def _family(family, disp=1.0):
@@ -189,7 +189,7 @@ def _family(family, disp=1.0):
             lambda m: 1.0 / d,
             lambda y, m: -0.5 * (math.log(2.0 * math.pi * d) + (y - m) ** 2 / d),
         )
-    raise ValueError("sgflrt: family must be poisson, binomial or gaussian, got %r" % (family,))
+    raise ValueError(f"sgflrt: family must be poisson, binomial or gaussian, got {family!r}")
 
 
 def _laplace(y, X, Sig, family, inner_iter, tol, disp=1.0):
@@ -330,11 +330,11 @@ def spatial_glmm_fit(
         raise ValueError("sgflrt: no observations")
     Xm = [[float(v) for v in row] for row in k.mat(X)]
     if len(Xm) != n:
-        raise ValueError("sgflrt: %d responses but %d design rows" % (n, len(Xm)))
+        raise ValueError(f"sgflrt: {int(n)} responses but {int(len(Xm))} design rows")
     p = len(Xm[0])
     C = [[float(v) for v in row] for row in k.mat(coords)]
     if len(C) != n:
-        raise ValueError("sgflrt: %d responses but %d coordinate rows" % (n, len(C)))
+        raise ValueError(f"sgflrt: {int(n)} responses but {int(len(C))} coordinate rows")
     d = len(C[0])
     if any(len(r) != d for r in C):
         raise ValueError("sgflrt: all coordinates must have the same dimension")

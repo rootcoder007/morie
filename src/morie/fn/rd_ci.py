@@ -56,8 +56,8 @@ def risk_difference_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.0
 
     l1, u1 = _wilson_bounds(a, n1)
     l2, u2 = _wilson_bounds(c, n2)
-    ci_lower = rd - z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
-    ci_upper = rd + z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
+    rd - z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
+    rd + z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
     # Newcombe's refined bounds using Wilson limits
     ci_lower_nc = rd - math.sqrt((p1 - l1) ** 2 + (u2 - p2) ** 2)
     ci_upper_nc = rd + math.sqrt((u1 - p1) ** 2 + (p2 - l2) ** 2)

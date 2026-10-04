@@ -28,4 +28,4 @@ def test_gh_c4_16_edge():
     assert "estimate" in result
     assert result["method"] == "DP tail bounds (GvdV 2017 eq. 4.24)"
     # Thinner-than-base assertion from the documented behaviour
-    assert result["thinner_than_base"] is True or result["thinner_than_base"] == True
+    assert result["thinner_than_base"] is True or result["thinner_than_base"]

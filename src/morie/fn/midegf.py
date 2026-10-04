@@ -71,10 +71,7 @@ def midegf(b, t, m, nu_com=None):
         if nc <= 0:
             raise ValueError("nu_com must be positive")
         nu_obs = (nc + 1.0) / (nc + 3.0) * nc * (1.0 - lam)
-        if math.isinf(df_old):
-            df = nu_obs
-        else:
-            df = df_old * nu_obs / (df_old + nu_obs) if df_old + nu_obs > 0 else 0.0
+        df = nu_obs if math.isinf(df_old) else df_old * nu_obs / (df_old + nu_obs) if df_old + nu_obs > 0 else 0.0
     return RichResult(
         payload={
             "df": df,

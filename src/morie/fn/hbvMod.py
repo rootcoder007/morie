@@ -85,7 +85,7 @@ def hbvMod(precip, temp, epot, params, init=None):
     req = ("tt", "cfmax", "fc", "lp", "beta", "k0", "k1", "k2", "uzl", "perc", "maxbas")
     miss = [k for k in req if k not in params]
     if miss:
-        raise ValueError("params missing: %s" % ", ".join(miss))
+        raise ValueError("params missing: {}".format(", ".join(miss)))
     tt = float(params["tt"])
     cfmax = float(params["cfmax"])
     cfr = float(params.get("cfr", 0.05))

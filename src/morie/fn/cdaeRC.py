@@ -84,7 +84,7 @@ def _act(name, x):
         return x
     if name == "tanh":
         return math.tanh(x)
-    raise ValueError("cdaeRC: activation must be one of %s, got %r" % (", ".join(_ACTS), name))
+    raise ValueError("cdaeRC: activation must be one of {}, got {!r}".format(", ".join(_ACTS), name))
 
 
 def _dact(name, y):
@@ -104,7 +104,7 @@ def corrupt(y, q, rng):
     """
     qq = float(q)
     if not 0.0 <= qq < 1.0:
-        raise ValueError("cdaeRC: q must lie in [0,1), got %r" % (q,))
+        raise ValueError(f"cdaeRC: q must lie in [0,1), got {q!r}")
     d = 1.0 / (1.0 - qq)
     return [0.0 if float(rng.uniform()) < qq else d * float(v) for v in y]
 
@@ -135,10 +135,10 @@ def loss(y, y_hat, kind="square"):
     passing :math:`0` is rejected rather than silently mis-scored.
     """
     if kind not in _LOSSES:
-        raise ValueError("cdaeRC: loss must be one of %s, got %r" % (", ".join(_LOSSES), kind))
+        raise ValueError("cdaeRC: loss must be one of {}, got {!r}".format(", ".join(_LOSSES), kind))
     yv, yh = float(y), float(y_hat)
     if kind in ("log", "hinge") and yv == 0.0:
-        raise ValueError("cdaeRC: the %s loss needs y = -1 for negatives, not 0" % kind)
+        raise ValueError(f"cdaeRC: the {kind} loss needs y = -1 for negatives, not 0")
     if kind == "square":
         return 0.5 * (yv - yh) ** 2
     if kind == "log":
@@ -170,34 +170,34 @@ def fit_cdae(
     The squared :math:`L_2` penalty of eq. (13) is applied to every
     parameter block.
     """
-    U, I, K = int(n_users), int(n_items), int(k_dim)
-    if U < 1 or I < 2 or K < 1:
+    U, I_, K = int(n_users), int(n_items), int(k_dim)
+    if U < 1 or I_ < 2 or K < 1:
         raise ValueError("cdaeRC: need at least 1 user, 2 items and 1 hidden node")
     rng = np.random.default_rng(seed)
 
     def rand():
         return (float(rng.uniform()) - 0.5) * 2.0 * init_scale
 
-    W = [[rand() for _ in range(K)] for _ in range(I)]
-    Wp = [[rand() for _ in range(K)] for _ in range(I)]
+    W = [[rand() for _ in range(K)] for _ in range(I_)]
+    Wp = [[rand() for _ in range(K)] for _ in range(I_)]
     V = [[rand() for _ in range(K)] for _ in range(U)]
     b = [0.0] * K
-    bp = [0.0] * I
+    bp = [0.0] * I_
     a, lm = float(alpha), float(lam)
     hist = []
-    for it in range(int(iters)):
+    for _it in range(int(iters)):
         tot = 0.0
         for u in range(U):
             seen = sorted(set(int(v) for v in pos.get(u, [])))
             if not seen:
                 continue
-            y = [1.0 if i in set(seen) else 0.0 for i in range(I)]
+            y = [1.0 if i in set(seen) else 0.0 for i in range(I_)]
             yt = corrupt(y, q, rng)
             z = encode(yt, W, V[u], b, activation)
             neg = []
             guard = 0
             while len(neg) < int(n_neg) and guard < 100 * int(n_neg):
-                j = int(float(rng.uniform()) * I) % I
+                j = int(float(rng.uniform()) * I_) % I_
                 if j not in set(seen):
                     neg.append(j)
                 guard += 1
@@ -213,7 +213,7 @@ def fit_cdae(
                     Wp[i][f] -= a * (e * z[f] + lm * Wp[i][f])
                 bp[i] -= a * e
             dpre = [dz[f] * _dact(activation, z[f]) for f in range(K)]
-            for i in range(I):
+            for i in range(I_):
                 if yt[i] != 0.0:
                     for f in range(K):
                         W[i][f] -= a * (dpre[f] * yt[i] + lm * W[i][f])

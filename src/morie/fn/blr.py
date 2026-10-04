@@ -56,10 +56,7 @@ def bayesian_linear_regression(
         raise ValueError(f"X has {n} rows but y has {len(yv)} elements.")
 
     # Prior
-    if np.isscalar(prior_mean):
-        beta_0 = np.full(p, float(prior_mean))
-    else:
-        beta_0 = np.asarray(prior_mean, dtype=float)
+    beta_0 = np.full(p, float(prior_mean)) if np.isscalar(prior_mean) else np.asarray(prior_mean, dtype=float)
     Lambda_0 = prior_precision * np.eye(p)
 
     # Posterior parameters

@@ -12,7 +12,10 @@ def test_hmhfpi_basic():
     """Test basic functionality."""
     task = "sentiment-analysis"
     inputs = ["good", "bad"]
-    model = lambda xs: [[2.0, 0.0], [0.0, 3.0]]
+
+    def model(xs):
+        return [[2.0, 0.0], [0.0, 3.0]]
+
     result = geron_hf_pipelines(task, inputs, model, labels=["POSITIVE", "NEGATIVE"])
     assert isinstance(result, dict)
     assert "predictions" in result
@@ -38,8 +41,11 @@ def test_hmhfpi_edge():
     """Test edge cases."""
     task = "text-classification"
     inputs = ["a", "b"]
+
     # Model returns one row for two inputs -> documented to raise.
-    model = lambda xs: [[1.0, 0.0]]
+    def model(xs):
+        return [[1.0, 0.0]]
+
     with pytest.raises(ValueError):
         geron_hf_pipelines(task, inputs, model)
 

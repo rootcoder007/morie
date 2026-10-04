@@ -287,7 +287,7 @@ class RFunctionDirective(SphinxDirective):
         lines.append("")
 
         # Title
-        title = _clean_rd_text(parsed.get("title", func_name))
+        _clean_rd_text(parsed.get("title", func_name))
         lines.append(f"``{func_name}()``")
         lines.append("~" * (len(func_name) + 4))
         lines.append("")
@@ -498,7 +498,7 @@ class RAutoPackageDirective(SphinxDirective):
 
             # Skip internal functions if requested
             if skip_internal:
-                keywords_section = parsed.get("section", {})
+                parsed.get("section", {})
                 raw_text = rd_path.read_text(encoding="utf-8", errors="replace")
                 if "\\keyword{internal}" in raw_text:
                     continue

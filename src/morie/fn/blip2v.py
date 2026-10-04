@@ -177,7 +177,7 @@ def project_to_llm(query_out, W, b=None):
     for q in Q:
         if len(W[0]) != len(q):
             raise ValueError(
-                "blip2v: the projection expects %d inputs but the query output is %d" % (len(W[0]), len(q))
+                f"blip2v: the projection expects {int(len(W[0]))} inputs but the query output is {int(len(q))}"
             )
         out.append([bb[o] + sum(W[o][j] * q[j] for j in range(len(q))) for o in range(d_out)])
     return RichResult(

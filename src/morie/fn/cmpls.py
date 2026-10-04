@@ -21,10 +21,7 @@ def computable_complexity(data: bytes | str, **kwargs) -> ESRes:
     Li M, Vitanyi P (2008). An Introduction to Kolmogorov Complexity
     and Its Applications, 3rd ed. Springer.
     """
-    if isinstance(data, str):
-        raw = data.encode("utf-8")
-    else:
-        raw = data
+    raw = data.encode("utf-8") if isinstance(data, str) else data
     if len(raw) < 1:
         raise ValueError("Data must be non-empty.")
     compressed = zlib.compress(raw, level=9)

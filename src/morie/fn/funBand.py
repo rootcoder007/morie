@@ -98,7 +98,7 @@ def _qr_bands(x):
     natural cubic spline, Green & Silverman Sec. 2.1.2."""
     n = len(x)
     if n < 4:
-        raise ValueError("funBand: a cubic smoothing spline needs at least four distinct design points, got %d" % n)
+        raise ValueError(f"funBand: a cubic smoothing spline needs at least four distinct design points, got {int(n)}")
     h = [x[i + 1] - x[i] for i in range(n - 1)]
     if any(v <= 0.0 for v in h):
         raise ValueError("funBand: the design points must be strictly increasing and distinct")
@@ -231,18 +231,18 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None, n_lambda=
     y = [float(v) for v in k.vec(Y)]
     n = len(y)
     if n < 4:
-        raise ValueError("funBand: need at least four observations, got %d" % n)
+        raise ValueError(f"funBand: need at least four observations, got {int(n)}")
     a = float(alpha)
     if not 0.0 < a < 1.0:
-        raise ValueError("funBand: alpha must lie in (0, 1), got %g" % a)
+        raise ValueError(f"funBand: alpha must lie in (0, 1), got {a:g}")
     if x is None:
         xs = [(i + 1.0) / n for i in range(n)]
     else:
         xs = [float(v) for v in k.vec(x)]
         if len(xs) != n:
-            raise ValueError("funBand: %d observations but %d design points" % (n, len(xs)))
+            raise ValueError(f"funBand: {int(n)} observations but {int(len(xs))} design points")
     if quantile not in ("t", "normal"):
-        raise ValueError("funBand: quantile must be 't' or 'normal', got %r" % (quantile,))
+        raise ValueError(f"funBand: quantile must be 't' or 'normal', got {quantile!r}")
 
     if lam is None:
         lo, hi = (float(v) for v in log_lambda_range)
@@ -270,10 +270,7 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None, n_lambda=
     sigma = math.sqrt(sigma2)
     diag = [A[i][i] for i in range(n)]
 
-    if quantile == "normal":
-        z = _st.norm.ppf(1.0 - a / 2.0)
-    else:
-        z = _st.t.ppf(1.0 - a / 2.0, edf_err)
+    z = _st.norm.ppf(1.0 - a / 2.0) if quantile == "normal" else _st.t.ppf(1.0 - a / 2.0, edf_err)
     half = [z * sigma * math.sqrt(v if v > 0.0 else 0.0) for v in diag]
     lower = [fit[i] - half[i] for i in range(n)]
     upper = [fit[i] + half[i] for i in range(n)]
@@ -282,7 +279,7 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None, n_lambda=
     if truth is not None:
         g = [float(v) for v in k.vec(truth)]
         if len(g) != n:
-            raise ValueError("funBand: %d observations but %d true values" % (n, len(g)))
+            raise ValueError(f"funBand: {int(n)} observations but {int(len(g))} true values")
         cover = sum(1 for i in range(n) if lower[i] <= g[i] <= upper[i]) / float(n)
 
     return RichResult(

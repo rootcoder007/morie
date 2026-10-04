@@ -80,7 +80,7 @@ def segment_layout_boxes(boxes, segment_ids, width, height, scale=1000):
     segs = list(segment_ids)
     B = list(boxes)
     if len(segs) != len(B):
-        raise ValueError("ocrwit: %d boxes but %d segment ids" % (len(B), len(segs)))
+        raise ValueError(f"ocrwit: {int(len(B))} boxes but {int(len(segs))} segment ids")
     by_seg = {}
     for i in range(len(segs)):
         by_seg.setdefault(segs[i], []).append(normalise_bbox(B[i], width, height, scale))

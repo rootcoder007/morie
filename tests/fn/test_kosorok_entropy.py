@@ -33,8 +33,11 @@ def test_class_glivenko_cantelli_converges_for_indicators():
     out = kosorok_ch2_glivenko_cantelli_class(F, X, P=None)
     assert out["shrinking"] is True
     assert out["n_functions"] == 12
+
     # with the true P known, the deviation must fall with n
-    Ptrue = lambda f: float(np.mean(f(np.linspace(0, 1, 20001))))
+    def Ptrue(f):
+        return float(np.mean(f(np.linspace(0, 1, 20001))))
+
     out2 = kosorok_ch2_glivenko_cantelli_class(F, X, P=Ptrue)
     assert out2["sup_deviation"][-1] < out2["sup_deviation"][0]
     with pytest.raises(ValueError):

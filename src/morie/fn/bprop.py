@@ -47,7 +47,7 @@ def _dact(name, a):
         return 1.0 if a > 0.0 else 0.0
     if name == "tanh":
         return 1.0 - a * a
-    raise ValueError("backpropagation_chain_rule: unknown activation %r" % (name,))
+    raise ValueError(f"backpropagation_chain_rule: unknown activation {name!r}")
 
 
 def backpropagation_chain_rule(layers, activations, loss_grad, act_fun="sigmoid"):
@@ -93,38 +93,38 @@ def backpropagation_chain_rule(layers, activations, loss_grad, act_fun="sigmoid"
     fns = [act_fun] * L if isinstance(act_fun, str) else list(act_fun)
     if len(fns) != L:
         raise ValueError("backpropagation_chain_rule: one activation name per layer is required")
-    for l in range(L):
-        if len(W[l]) != len(A[l + 1][0]):
-            raise ValueError("backpropagation_chain_rule: layer %d has the wrong number of rows" % l)
-        if len(W[l][0]) != len(A[l][0]) + 1:
-            raise ValueError("backpropagation_chain_rule: layer %d has the wrong number of columns" % l)
+    for ell in range(L):
+        if len(W[ell]) != len(A[ell + 1][0]):
+            raise ValueError(f"backpropagation_chain_rule: layer {int(ell)} has the wrong number of rows")
+        if len(W[ell][0]) != len(A[ell][0]) + 1:
+            raise ValueError(f"backpropagation_chain_rule: layer {int(ell)} has the wrong number of columns")
     # Step 9, then Step 10 backwards through the layers.
     deltas = [None] * L
     d = [[Gd[i][j] * _dact(fns[L - 1], A[L][i][j]) for j in range(len(A[L][0]))] for i in range(n)]
     deltas[L - 1] = d
-    for l in range(L - 2, -1, -1):
-        u = len(A[l + 1][0])
-        nxt = deltas[l + 1]
+    for ell in range(L - 2, -1, -1):
+        u = len(A[ell + 1][0])
+        nxt = deltas[ell + 1]
         new = []
         for i in range(n):
             row = []
             for kk in range(u):
                 s = 0.0
-                for j in range(len(W[l + 1])):
-                    s += nxt[i][j] * W[l + 1][j][kk + 1]
-                row.append(s * _dact(fns[l], A[l + 1][i][kk]))
+                for j in range(len(W[ell + 1])):
+                    s += nxt[i][j] * W[ell + 1][j][kk + 1]
+                row.append(s * _dact(fns[ell], A[ell + 1][i][kk]))
             new.append(row)
-        deltas[l] = new
+        deltas[ell] = new
     # Steps 11 and 12: the increment is sum_i delta_i outer [1, a_{l-1,i}].
     grads = []
-    for l in range(L):
-        rows = len(W[l])
-        cols = len(W[l][0])
+    for ell in range(L):
+        rows = len(W[ell])
+        cols = len(W[ell][0])
         G = [[0.0] * cols for _ in range(rows)]
         for i in range(n):
-            prev = [1.0] + list(A[l][i])
+            prev = [1.0] + list(A[ell][i])
             for j in range(rows):
-                dj = deltas[l][i][j]
+                dj = deltas[ell][i][j]
                 for c in range(cols):
                     G[j][c] += dj * prev[c]
         grads.append(G)

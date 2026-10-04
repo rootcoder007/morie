@@ -79,10 +79,7 @@ def bootm(
     rng = np.random.default_rng(seed)
 
     if estimator is None:
-        if data.ndim == 1:
-            estimator = np.mean
-        else:
-            estimator = lambda x: float(np.mean(x[:, 0]))
+        estimator = np.mean if data.ndim == 1 else lambda x: float(np.mean(x[:, 0]))
 
     point = float(estimator(data))
     n = data.shape[0]

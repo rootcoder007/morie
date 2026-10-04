@@ -65,7 +65,7 @@ def tmlerd(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025, level=0.95):
     n = len(Y)
     for v, nm in ((A, "A"), (QAW, "QAW"), (Q1W, "Q1W"), (Q0W, "Q0W"), (g1W, "g1W")):
         if len(C.vec(v)) != n:
-            raise ValueError("%s must have one entry per observation" % nm)
+            raise ValueError(f"{nm} must have one entry per observation")
     if any(v not in (0.0, 1.0) for v in A):
         raise ValueError("A must be binary 0/1")
     if any(v < 0.0 or v > 1.0 for v in Y):

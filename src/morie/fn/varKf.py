@@ -83,7 +83,7 @@ def variational_gp(X, y, Z=None, gamma=1.0, sigma2=1e-2, jitter=1e-8, X_test=Non
     pred = []
     var = []
     for t in range(len(Xt)):
-        ks = [_rbf(Xt[t], Xm[i], g) for i in range(n)]
+        [_rbf(Xt[t], Xm[i], g) for i in range(n)]
         # project through the inducing set, as the variational posterior does
         kz = [_rbf(Xt[t], Zm[j], g) for j in range(m)]
         w = k.cholsolve(Kmm, kz)

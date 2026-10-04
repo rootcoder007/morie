@@ -46,7 +46,7 @@ def test_but_agree_on_every_fitted_value():
 def test_the_sum_zero_contributions_sum_to_zero():
     f = F.free_wilson(C, Y, "sum_zero")
     for p, grp in enumerate([P1, P2]):
-        tot = sum(f["occurrences"]["P%d:%s" % (p + 1, g)] * f["coefficients"]["P%d:%s" % (p + 1, g)] for g in grp)
+        tot = sum(f["occurrences"][f"P{int(p + 1)}:{g}"] * f["coefficients"][f"P{int(p + 1)}:{g}"] for g in grp)
         assert tot == pytest.approx(0.0, abs=1e-9)
 
 

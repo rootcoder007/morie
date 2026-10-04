@@ -81,8 +81,8 @@ def bio_labels(types):
         raise ValueError("benRea: duplicate entity types")
     out = ["O"]
     for t in ts:
-        out.append("B-%s" % t)
-        out.append("I-%s" % t)
+        out.append(f"B-{t}")
+        out.append(f"I-{t}")
     return out
 
 
@@ -216,7 +216,7 @@ def span_f1(pred, gold):
 def ner_decode(emissions, types, decoder="viterbi", transition_scores=None, gold=None):
     """Decode a sentence and, if gold labels are given, score it."""
     if decoder not in ("viterbi", "greedy"):
-        raise ValueError("benRea: decoder must be viterbi or greedy, got %r" % (decoder,))
+        raise ValueError(f"benRea: decoder must be viterbi or greedy, got {decoder!r}")
     labels = bio_labels(types)
     if decoder == "viterbi":
         path, score = viterbi_decode(emissions, labels, transition_scores=transition_scores)

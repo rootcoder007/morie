@@ -92,7 +92,7 @@ def test_blupr_edge():
     rng_e = np.random.default_rng(39)
 
     y = rng_y.normal(0.0, 1.0, 100)
-    X = rng_x.normal(0.0, 1.0, (100, 5))
+    rng_x.normal(0.0, 1.0, (100, 5))
     cluster = rng_g.integers(0, 10, size=100)
     sigma2_u = float(rng_u.uniform(0.5, 1.5))
     sigma2_e = float(rng_e.uniform(0.5, 1.5))

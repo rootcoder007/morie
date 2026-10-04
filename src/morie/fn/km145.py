@@ -8,7 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch9_mmllm_autoregressive"]
 
 
-def kamath_ch9_mmllm_autoregressive(R, I, theta=None):
+def kamath_ch9_mmllm_autoregressive(R, I, theta=None):  # noqa: E741
     r"""L(theta) = -sum_{i=1..N} log p(R_i | I, R_{<i}; theta).
 
     ``R`` holds the model's probability of each ground-truth response

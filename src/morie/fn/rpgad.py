@@ -67,9 +67,9 @@ def rdp_gaussian(alpha, sigma, sensitivity=1.0):
     s = float(sigma)
     d = float(sensitivity)
     if s <= 0.0:
-        raise ValueError("rdp_gaussian: sigma must be positive, got %r" % (s,))
+        raise ValueError(f"rdp_gaussian: sigma must be positive, got {s!r}")
     if d < 0.0:
-        raise ValueError("rdp_gaussian: sensitivity must be non-negative, got %r" % (d,))
+        raise ValueError(f"rdp_gaussian: sensitivity must be non-negative, got {d!r}")
     return a * d * d / (2.0 * s * s)
 
 
@@ -78,9 +78,9 @@ def rdp_laplace(alpha, lam, sensitivity=1.0):
     a = float(alpha)
     lm = float(lam) / float(sensitivity) if float(sensitivity) != 0 else float("inf")
     if a <= 1.0:
-        raise ValueError("rdp_laplace: alpha must exceed 1, got %r" % (alpha,))
+        raise ValueError(f"rdp_laplace: alpha must exceed 1, got {alpha!r}")
     if lm <= 0.0:
-        raise ValueError("rdp_laplace: lambda must be positive, got %r" % (lam,))
+        raise ValueError(f"rdp_laplace: lambda must be positive, got {lam!r}")
     # Evaluated in log space. The first term carries exp((a-1)/lam),
     # which overflows a float for large alpha -- and large alpha is
     # exactly where the curve is read, since eps_alpha -> 1/lam (the
@@ -133,14 +133,14 @@ def rdp_to_eps_delta(
     for a in orders:
         if a <= 1.0:
             raise ValueError(
-                "rdp_to_eps_delta: every alpha must exceed 1 (Proposition 3 divides by alpha - 1), got %r" % (a,)
+                f"rdp_to_eps_delta: every alpha must exceed 1 (Proposition 3 divides by alpha - 1), got {a!r}"
             )
     d = float(delta)
     if not (0.0 < d < 1.0):
-        raise ValueError("rdp_to_eps_delta: delta must lie strictly in (0, 1), got %r" % (d,))
+        raise ValueError(f"rdp_to_eps_delta: delta must lie strictly in (0, 1), got {d!r}")
     k = int(n_compositions)
     if k < 1:
-        raise ValueError("rdp_to_eps_delta: n_compositions must be at least 1, got %r" % (n_compositions,))
+        raise ValueError(f"rdp_to_eps_delta: n_compositions must be at least 1, got {n_compositions!r}")
 
     if epsilon_R is not None:
         ev = np.atleast_1d(np.asarray(epsilon_R, dtype=float))
@@ -148,7 +148,7 @@ def rdp_to_eps_delta(
         if len(eps_r) == 1 and len(orders) > 1:
             eps_r = eps_r * len(orders)
         if len(eps_r) != len(orders):
-            raise ValueError("rdp_to_eps_delta: got %d alpha but %d epsilon_R" % (len(orders), len(eps_r)))
+            raise ValueError(f"rdp_to_eps_delta: got {int(len(orders))} alpha but {int(len(eps_r))} epsilon_R")
         mech = "supplied"
     else:
         if mechanism is None:
@@ -156,7 +156,7 @@ def rdp_to_eps_delta(
         mech = str(mechanism).lower()
         if mech not in _MECHANISMS:
             raise ValueError(
-                "rdp_to_eps_delta: mechanism must be one of %s, got %r" % (", ".join(_MECHANISMS), mechanism)
+                "rdp_to_eps_delta: mechanism must be one of {}, got {!r}".format(", ".join(_MECHANISMS), mechanism)
             )
         if mech == "gaussian":
             if sigma is None:

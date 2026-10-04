@@ -88,7 +88,7 @@ def fingerprint(bits, n_bits=None):
     if any(i < 0 for i in idx):
         raise ValueError("sasimi: a bit index cannot be negative")
     if n_bits is not None and idx and max(idx) >= int(n_bits):
-        raise ValueError("sasimi: bit %d is outside a %d-bit fingerprint" % (max(idx), int(n_bits)))
+        raise ValueError(f"sasimi: bit {int(max(idx))} is outside a {int(int(n_bits))}-bit fingerprint")
     return frozenset(idx)
 
 
@@ -136,7 +136,7 @@ def tversky(fp_a, fp_b, alpha=1.0, beta=1.0):
     den = al * (n["a"] - n["c"]) + be * (n["b"] - n["c"]) + n["c"]
     if den == 0:
         raise ValueError(
-            "sasimi: the Tversky denominator vanishes for alpha=%g, beta=%g on these fingerprints" % (al, be)
+            f"sasimi: the Tversky denominator vanishes for alpha={al:g}, beta={be:g} on these fingerprints"
         )
     return n["c"] / float(den)
 
@@ -148,7 +148,7 @@ def _coef(name):
         return dice
     if name == "cosine":
         return cosine
-    raise ValueError("sasimi: coefficient must be one of %s, got %r" % (", ".join(COEFFICIENTS), name))
+    raise ValueError("sasimi: coefficient must be one of {}, got {!r}".format(", ".join(COEFFICIENTS), name))
 
 
 def distance(fp_a, fp_b, coefficient="tanimoto"):
@@ -188,7 +188,7 @@ def tanimoto_similarity(fp_a, fp_b, coefficient="tanimoto", alpha=None, beta=Non
     n = counts(fp_a, fp_b)
     if alpha is not None or beta is not None:
         s = tversky(fp_a, fp_b, 1.0 if alpha is None else alpha, 1.0 if beta is None else beta)
-        how = "Tversky(alpha=%g, beta=%g)" % (1.0 if alpha is None else alpha, 1.0 if beta is None else beta)
+        how = f"Tversky(alpha={1.0 if alpha is None else alpha:g}, beta={1.0 if beta is None else beta:g})"
     else:
         s = _coef(coefficient)(fp_a, fp_b)
         how = coefficient

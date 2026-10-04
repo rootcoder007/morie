@@ -7,17 +7,17 @@ from morie.fn.gf2iv import gf2_matrix_inv
 
 class TestGf2MatrixInv:
     def test_basic(self):
-        I = np.eye(3, dtype=int)
-        result = gf2_matrix_inv(a=I)
+        I_ = np.eye(3, dtype=int)
+        result = gf2_matrix_inv(a=I_)
         assert isinstance(result, DescriptiveResult)
 
     def test_output_type(self):
-        I = np.eye(3, dtype=int)
-        result = gf2_matrix_inv(a=I)
+        I_ = np.eye(3, dtype=int)
+        result = gf2_matrix_inv(a=I_)
         assert "inverse" in result.extra
 
     def test_identity_inverse(self):
-        I = np.eye(3, dtype=int)
-        result = gf2_matrix_inv(a=I)
+        I_ = np.eye(3, dtype=int)
+        result = gf2_matrix_inv(a=I_)
         r = np.asarray(result.extra["inverse"])
-        np.testing.assert_array_equal(r, I)
+        np.testing.assert_array_equal(r, I_)

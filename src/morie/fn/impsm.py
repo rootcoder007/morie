@@ -40,11 +40,20 @@ def importance_sampling(x, h=None, p=None, q=None):
     if n < 1:
         return RichResult(payload={"estimate": float("nan"), "n": 0, "method": "Importance sampling (empty)"})
     if h is None:
-        h = lambda z: z
+
+        def h(z):
+            return z
+
     if p is None:
-        p = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+
+        def p(z):
+            return np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+
     if q is None:
-        q = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+
+        def q(z):
+            return np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+
     hx = np.asarray(h(x), dtype=float)
     px = np.asarray(p(x), dtype=float)
     qx = np.asarray(q(x), dtype=float)

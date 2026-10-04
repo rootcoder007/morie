@@ -207,7 +207,7 @@ def bnp_percent_quantile(
     Rubin (1981) Ann. Statist. 9(1), 130-134.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     qs = [float(quantile)] if not hasattr(quantile, "__len__") else [float(v) for v in quantile]
     if any(not (0.0 < v < 1.0) for v in qs):
         raise ValueError("quantiles must lie strictly inside (0, 1)")
@@ -283,10 +283,7 @@ def bnp_percent_quantile(
         v = sorted(draws[q])
         m = len(v)
         mean = _w.csum(v) / m
-        if m > 1:
-            sdq = math.sqrt(_w.csum((t - mean) * (t - mean) for t in v) / (m - 1))
-        else:
-            sdq = 0.0
+        sdq = math.sqrt(_w.csum((t - mean) * (t - mean) for t in v) / (m - 1)) if m > 1 else 0.0
         a = (1.0 - cred) / 2.0
         out.append(
             {

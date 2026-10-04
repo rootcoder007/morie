@@ -106,7 +106,7 @@ def gwPot(gas, horizon=100):
     aliases = {"CFC11": "CFC-11", "CFC12": "CFC-12", "HFC134A": "HFC-134a", "HFC-134A": "HFC-134a"}
     key = aliases.get(key, key)
     if key not in _TABLE:
-        raise ValueError("unknown gas %r; known: %s" % (gas, ", ".join(sorted(_TABLE))))
+        raise ValueError("unknown gas {!r}; known: {}".format(gas, ", ".join(sorted(_TABLE))))
     h = int(horizon)
     if h not in _HORIZONS:
         raise ValueError("horizon must be one of 20, 100, 500 (AR6 assessed horizons)")

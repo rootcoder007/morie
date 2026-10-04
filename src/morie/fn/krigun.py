@@ -71,7 +71,7 @@ def universal_kriging(coords, values, s_predict, trend_order=1, model="exponenti
             "se": [float(v) for v in se],
             "n": int(res["n"]),
             "trend_order": int(trend_order),
-            "method": "Universal kriging with a polynomial trend of order %d" % (int(trend_order),),
+            "method": f"Universal kriging with a polynomial trend of order {int(int(trend_order))}",
         }
     )
 

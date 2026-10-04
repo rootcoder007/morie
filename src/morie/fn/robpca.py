@@ -87,16 +87,16 @@ _Z975 = 1.959963984540054  # Phi^{-1}(0.975)
 def _matrix(X, name="X"):
     rows = [list(map(float, r)) for r in np.asarray(X, dtype=float)]
     if not rows:
-        raise ValueError("robpca: %s is empty" % name)
+        raise ValueError(f"robpca: {name} is empty")
     p = len(rows[0])
     if p == 0:
-        raise ValueError("robpca: %s has no columns" % name)
+        raise ValueError(f"robpca: {name} has no columns")
     for r in rows:
         if len(r) != p:
-            raise ValueError("robpca: %s is ragged" % name)
+            raise ValueError(f"robpca: {name} is ragged")
         for v in r:
             if v != v or v in (float("inf"), float("-inf")):
-                raise ValueError("robpca: %s contains a non-finite value" % name)
+                raise ValueError(f"robpca: {name} contains a non-finite value")
     return rows, len(rows), p
 
 
@@ -237,13 +237,13 @@ def univariate_mcd(values, h=None, consistent=True):
     for t in v:
         csum.append(csum[-1] + t)
         csq.append(csq[-1] + t * t)
-    best, best_ss, best_mean = 0, None, 0.0
+    _best, best_ss, best_mean = 0, None, 0.0
     for i in range(0, n - h + 1):
         s = csum[i + h] - csum[i]
         q = csq[i + h] - csq[i]
         ss = q - s * s / h
         if best_ss is None or ss < best_ss:
-            best_ss, best, best_mean = ss, i, s / h
+            best_ss, _best, best_mean = ss, i, s / h
     scale = math.sqrt(max(best_ss, 0.0) / (h - 1.0))
     if consistent and scale > 0.0:
         a = h / float(n)
@@ -617,7 +617,7 @@ def _choose_k(l0, k, kmax, r1):
     r = len(pos)
     if isinstance(k, int) and not isinstance(k, bool):
         if not 1 <= k <= r:
-            raise ValueError("robpca: k must lie in [1, %d], the rank of the preliminary scatter" % r)
+            raise ValueError(f"robpca: k must lie in [1, {int(r)}], the rank of the preliminary scatter")
         return k
     rule = "cumulative" if k is None else k
     if rule == "cumulative":  # eq. 5

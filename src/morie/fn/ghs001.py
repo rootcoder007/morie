@@ -19,8 +19,8 @@ def ghosal_ch1_bayes_formula(B, X, p_theta, Pi):
     supp = _bnp._flat(supp)
     wts = _bnp._flat(wts)
     liks = [p_theta(t, X) for t in supp]
-    num = sum(l * w for l, w, t in zip(liks, wts, supp) if B(t))
-    den = sum(l * w for l, w in zip(liks, wts))
+    num = sum(ell * w for ell, w, t in zip(liks, wts, supp) if B(t))
+    den = sum(ell * w for ell, w in zip(liks, wts))
     if den <= 0:
         raise ValueError("zero marginal likelihood on this prior")
     res = RichResult(

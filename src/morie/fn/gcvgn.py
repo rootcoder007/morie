@@ -62,10 +62,7 @@ def genomic_cross_validation(x, y, K: int = 5, lam: float = 1.0, seed: int = 0):
     mse = float(np.mean((y - y_hat) ** 2))
     mspe = mse
     # Regression slope of y_hat on y (calibration slope)
-    if np.var(y_hat) > 0:
-        slope = float(np.cov(y_hat, y, ddof=1)[0, 1] / np.var(y, ddof=1))
-    else:
-        slope = float("nan")
+    slope = float(np.cov(y_hat, y, ddof=1)[0, 1] / np.var(y, ddof=1)) if np.var(y_hat) > 0 else float("nan")
     return RichResult(
         title=f"{K}-fold cross-validation (ridge predictor)",
         summary_lines=[

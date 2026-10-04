@@ -42,10 +42,7 @@ def sample_entropy(x, m: int = 2, r: float | None = None, **kwargs) -> ESRes:
     a = _count_matches(m + 1)
     b = _count_matches(m)
 
-    if b == 0 or a == 0:
-        se = float("inf")
-    else:
-        se = -np.log(a / b)
+    se = float("inf") if b == 0 or a == 0 else -np.log(a / b)
 
     return ESRes(
         measure="sample_entropy",

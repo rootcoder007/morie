@@ -23,7 +23,7 @@ def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp11e1_basic(
     res = facrisk(ALPHA0, W, PHI)
     assert res["n"] == 5
     assert res["n_components"] == 2
-    expect = [ALPHA0 + sum(row[l] * PHI[l] for l in range(2)) for row in W]
+    expect = [ALPHA0 + sum(row[ell] * PHI[ell] for ell in range(2)) for row in W]
     for got, want in zip(res["logrisk"], expect):
         assert abs(got - want) < 1e-12
     for got, want in zip(res["risk"], expect):

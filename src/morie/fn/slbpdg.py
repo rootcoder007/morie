@@ -236,7 +236,7 @@ def slice_break_dp(
     Escobar and West (1995) JASA 90(430), 577-588.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     if not (0.0 < kappa < 1.0):
         raise ValueError("kappa must lie strictly inside (0, 1)")
     if alpha <= 0.0:

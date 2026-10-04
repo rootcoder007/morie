@@ -61,7 +61,7 @@ def dimensionality_test(x, threshold: float = 1.0):
     return RichResult(
         title="Dimensionality test (Kaiser scree)",
         summary_lines=[
-            ("n dimensions (λ > %.2f)" % threshold, n_dims),
+            (f"n dimensions (λ > {threshold:.2f})", n_dims),
             ("Largest-gap k* (scree elbow)", scree_gap_idx),
             ("Top eigenvalues", list(np.round(eigvals[: min(5, eigvals.size)], 4))),
         ],

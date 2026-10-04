@@ -55,7 +55,7 @@ def dark_energy_eos(
     for i, zi in enumerate(z):
         if zi > 0:
             zz = np.linspace(0, zi, 200)
-            ww = w0 + wa * zz / (1 + zz)
+            w0 + wa * zz / (1 + zz)
             de_f = (1 + zz) ** (3 * (1 + w0 + wa)) * np.exp(-3 * wa * zz / (1 + zz))
             Hz = h0 * np.sqrt(omega_m * (1 + zz) ** 3 + omega_de * de_f)
             d_L[i] = (1 + zi) * np.trapezoid(1.0 / Hz, zz) * 2.998e5

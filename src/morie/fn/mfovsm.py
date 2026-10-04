@@ -87,12 +87,12 @@ def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative", trim=N
     A_hist = _hist(A)
     L_hist = _hist(H, allow_none=True)
     if len(L_hist) != len(A_hist):
-        raise ValueError("mfo_vsm: %d treatment times but %d covariate blocks" % (len(A_hist), len(L_hist)))
+        raise ValueError(f"mfo_vsm: {int(len(A_hist))} treatment times but {int(len(L_hist))} covariate blocks")
     yv = k.vec(y)
     vv = k.vec(feature)
     n = len(yv)
     if len(vv) != n:
-        raise ValueError("mfo_vsm: outcome has %d rows but the feature has %d" % (n, len(vv)))
+        raise ValueError(f"mfo_vsm: outcome has {int(n)} rows but the feature has {int(len(vv))}")
 
     # Sec. 21.2's product, with V added to the numerator model when
     # asked -- Sec. 12.5's refinement for a V-conditional MSM.
@@ -127,7 +127,7 @@ def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative", trim=N
     elif contrast == "everexposed":
         e = [1.0 if v > 0.0 else 0.0 for v in cum]
     else:
-        raise ValueError("mfo_vsm: contrast must be 'cumulative', 'final' or 'everexposed', got %r" % (contrast,))
+        raise ValueError(f"mfo_vsm: contrast must be 'cumulative', 'final' or 'everexposed', got {contrast!r}")
 
     X = [[e[i], vv[i], e[i] * vv[i]] for i in range(n)]
     fit = k.wls(X, yv, w)

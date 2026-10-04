@@ -168,7 +168,7 @@ def muzero(
         raise ValueError("muzero: actions must be non-empty")
     for fn, name in ((representation, "representation"), (dynamics, "dynamics"), (prediction, "prediction")):
         if not callable(fn):
-            raise TypeError("muzero: %s must be callable" % name)
+            raise TypeError(f"muzero: {name} must be callable")
     simulations = int(simulations)
     if simulations < 1:
         raise ValueError("muzero: simulations must be >= 1")
@@ -182,7 +182,7 @@ def muzero(
         p, v = prediction(s)
         p = [float(x) for x in p]
         if len(p) != len(A):
-            raise ValueError("muzero: prediction returned %d priors for %d actions" % (len(p), len(A)))
+            raise ValueError(f"muzero: prediction returned {int(len(p))} priors for {int(len(A))} actions")
         tot = sum(p)
         if tot <= 0.0:
             raise ValueError("muzero: prior must have positive mass")

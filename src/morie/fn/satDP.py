@@ -124,10 +124,7 @@ def dpll(cnf):
                 return got
         return None
 
-    if any(len(cl) == 0 for cl in clauses):
-        found = None
-    else:
-        found = search(clauses, {})
+    found = None if any(len(cl) == 0 for cl in clauses) else search(clauses, {})
     sat = found is not None
     model = {}
     if sat:

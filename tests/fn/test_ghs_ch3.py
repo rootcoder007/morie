@@ -193,7 +193,9 @@ def test_pt_mixture_posterior():
 
 
 def test_pt_density_bounds_sandwich():
-    a = lambda j: float(j * j)
+    def a(j):
+        return float(j * j)
+
     r = ghosal_ch3_polya_tree_density_bounds(5, a, m=3, depth=40)
     assert r["lower"] <= 1.0 <= r["upper"]
     assert r["lower"] > 0.0
@@ -205,10 +207,15 @@ def test_pt_density_bounds_sandwich():
 
 def test_pt_mixture_second_kind():
     # theta scales alpha symmetrically -> each g_theta = 1, mix = 1
-    ap = lambda th, x: [(th, th), (th, th)]
+    def ap(th, x):
+        return [(th, th), (th, th)]
+
     r = ghosal_ch3_polya_tree_mixture_second_kind(0.3, ap, [1.0, 2.0, 5.0])
     assert abs(r["distribution"] - 1.0) < 1e-12
+
     # asymmetric alphas give a nonuniform mean density
-    ap2 = lambda th, x: [(2.0 * th, th)]
+    def ap2(th, x):
+        return [(2.0 * th, th)]
+
     r2 = ghosal_ch3_polya_tree_mixture_second_kind(0.2, ap2, [1.0])
     assert abs(r2["distribution"] - 2.0 * 2.0 / 3.0) < 1e-12

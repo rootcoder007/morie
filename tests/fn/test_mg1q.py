@@ -5,7 +5,7 @@ from morie.fn.mg1q import mg1q
 
 
 def test_mg1q_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = mg1q(arrival_rate=0.5, mean_service=1.0, var_service=1.0)
     assert result is not None
     assert hasattr(result, "name")

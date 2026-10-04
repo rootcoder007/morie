@@ -434,7 +434,7 @@ def neighbour_structure(adjacency):
     Moore-Penrose inverse rather than an ordinary one.
     """
     A = np.atleast_2d(np.asarray(adjacency, dtype=float))
-    n = A.shape[0]
+    A.shape[0]
     if A.shape[0] != A.shape[1]:
         raise ValueError("`adjacency` must be square")
     if not np.allclose(A, A.T):
@@ -850,13 +850,13 @@ def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
 
     u = np.zeros(n)
     v = np.zeros(n)
-    I = np.eye(n)
+    I_ = np.eye(n)
     converged = False
     for it in range(int(max_iter)):
         w = c * np.exp(u + v)
         g_u = y - w - R @ u / kappa
         g_v = y - w - v / lam
-        H = np.block([[-np.diag(w) - R / kappa, -np.diag(w)], [-np.diag(w), -np.diag(w) - I / lam]])
+        H = np.block([[-np.diag(w) - R / kappa, -np.diag(w)], [-np.diag(w), -np.diag(w) - I_ / lam]])
         step = np.linalg.solve(H, np.concatenate([g_u, g_v]))
         u_new, v_new = u - step[:n], v - step[n:]
         delta = float(np.max(np.abs(np.concatenate([u_new - u, v_new - v]))))

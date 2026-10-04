@@ -48,10 +48,7 @@ def aft_model(
     n = len(t)
     y = np.log(t)
 
-    if X is None:
-        X_aug = np.ones((n, 1))
-    else:
-        X_aug = np.column_stack([np.ones(n), np.asarray(X, dtype=float)])
+    X_aug = np.ones((n, 1)) if X is None else np.column_stack([np.ones(n), np.asarray(X, dtype=float)])
     p = X_aug.shape[1]
 
     if distribution == "lognormal":

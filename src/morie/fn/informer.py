@@ -110,14 +110,14 @@ def sparsity_measure(q, K, measure="exact", scale=None):
     log-sum-exp and is what makes the selection affordable.
     """
     if measure not in _MEASURES:
-        raise ValueError("informer: measure must be exact or maxmean, got %r" % (measure,))
+        raise ValueError(f"informer: measure must be exact or maxmean, got {measure!r}")
     Km = [[float(v) for v in r] for r in k.mat(K)]
     qv = [float(v) for v in k.vec(q)]
     if not Km:
         raise ValueError("informer: the key set is empty")
     d = len(qv)
     if len(Km[0]) != d:
-        raise ValueError("informer: query has %d dimensions but keys have %d" % (d, len(Km[0])))
+        raise ValueError(f"informer: query has {int(d)} dimensions but keys have {int(len(Km[0]))}")
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)
     z = _logits(qv, Km, sc)
     mean = sum(z) / len(z)
@@ -176,7 +176,7 @@ def full_attention(Q, K, V, scale=None):
     Km = [[float(v) for v in r] for r in k.mat(K)]
     Vm = [[float(v) for v in r] for r in k.mat(V)]
     if len(Km) != len(Vm):
-        raise ValueError("informer: keys and values must match in length (%d, %d)" % (len(Km), len(Vm)))
+        raise ValueError(f"informer: keys and values must match in length ({int(len(Km))}, {int(len(Vm))})")
     d = len(Qm[0])
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)
     out = []
@@ -198,7 +198,7 @@ def probsparse_attention(Q, K, V, factor=5, measure="maxmean", n_sample=None, se
     Km = [[float(v) for v in r] for r in k.mat(K)]
     Vm = [[float(v) for v in r] for r in k.mat(V)]
     if len(Km) != len(Vm):
-        raise ValueError("informer: keys and values must match in length (%d, %d)" % (len(Km), len(Vm)))
+        raise ValueError(f"informer: keys and values must match in length ({int(len(Km))}, {int(len(Vm))})")
     sel = select_queries(Qm, Km, factor=factor, measure=measure, n_sample=n_sample, seed=seed)
     d = len(Qm[0])
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)

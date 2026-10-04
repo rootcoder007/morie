@@ -123,15 +123,15 @@ def method_status(method=None):
     if method is None:
         return {"methods": METHODS, "available": _AVAILABLE, "unavailable": dict(_UNSOURCED)}
     if method not in METHODS:
-        raise ValueError("mqtmpl: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("mqtmpl: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     return {"method": method, "available": method in _AVAILABLE, "reason": _UNSOURCED.get(method, "")}
 
 
 def _check_method(method):
     if method not in METHODS:
-        raise ValueError("mqtmpl: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("mqtmpl: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     if method not in _AVAILABLE:
-        raise ValueError("mqtmpl: the %r scan method is not implemented -- %s" % (method, _UNSOURCED[method]))
+        raise ValueError(f"mqtmpl: the {method!r} scan method is not implemented -- {_UNSOURCED[method]}")
 
 
 def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
@@ -142,7 +142,7 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
     """
     e = float(error_rate)
     if not 0.0 <= e < 0.5:
-        raise ValueError("mqtmpl: the genotyping error rate must lie in [0, 0.5), got %r" % error_rate)
+        raise ValueError(f"mqtmpl: the genotyping error rate must lie in [0, 0.5), got {error_rate!r}")
     m = len(positions)
     if any(len(row) != m for row in genotypes):
         raise ValueError("mqtmpl: every individual needs one call per marker")
@@ -305,7 +305,7 @@ def scanone(y, markers, positions, method="em", step=0.02, covariates=(), error_
     _check_method(method)
     n = len(y)
     if any(len(c) != n for c in markers):
-        raise ValueError("mqtmpl: every marker must be typed on all %d individuals" % n)
+        raise ValueError(f"mqtmpl: every marker must be typed on all {int(n)} individuals")
     if method == "imp":
         return _scan_imp(y, markers, positions, step, kw_n_imp(covariates), error_rate, 0)
     if method == "mr":

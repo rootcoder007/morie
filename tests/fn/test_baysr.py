@@ -66,10 +66,7 @@ def test_baysr_basic():
             if sc[k] > 0.0:
                 ss += gam[j][k] * beta[j] * beta[j] / sc[k]
                 wsum += gam[j][k]
-    if wsum > 0.0:
-        sg2_check = max(ss / wsum, 1e-12)
-    else:
-        sg2_check = sg2
+    sg2_check = max(ss / wsum, 1e-12) if wsum > 0.0 else sg2
     assert abs(sg2 - sg2_check) < 1e-12
     # Reconstruct the residual variance from the residuals r = y - mu - X beta.
     res = 0.0

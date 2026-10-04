@@ -164,12 +164,7 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None, estimand
             "ratio_warning": (
                 None
                 if not (ipw_var > 0 and bound / ipw_var > 1.0 + 1e-9)
-                else "the ratio came out at %.3f, above the 1 it cannot "
-                "exceed in population. Both quantities were formed with "
-                "the SAME truncated propensity, so under poor overlap "
-                "neither is the asymptotic object and the comparison "
-                "does not hold. Measured on a design with %d of %d "
-                "propensities truncated" % (bound / ipw_var, int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))), n)
+                else f"the ratio came out at {bound / ipw_var:.3f}, above the 1 it cannot exceed in population. Both quantities were formed with the SAME truncated propensity, so under poor overlap neither is the asymptotic object and the comparison does not hold. Measured on a design with {int(int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))))} of {int(n)} propensities truncated"
             ),
             "n_truncated": int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))),
             "below_bound_note": (

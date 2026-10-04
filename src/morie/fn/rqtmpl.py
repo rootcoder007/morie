@@ -109,7 +109,7 @@ def inverse_haldane(r):
     r"""Recombination fraction back to Morgans."""
     r = float(r)
     if not 0.0 <= r < 0.5:
-        raise ValueError("rqtmpl: a recombination fraction must lie in [0, 0.5), got %r" % r)
+        raise ValueError(f"rqtmpl: a recombination fraction must lie in [0, 0.5), got {r!r}")
     return -0.5 * math.log(1.0 - 2.0 * r)
 
 
@@ -122,7 +122,7 @@ def genotype_probabilities(left, right, r_left, r_right):
     """
     for r in (r_left, r_right):
         if not 0.0 <= float(r) <= 0.5:
-            raise ValueError("rqtmpl: recombination fractions lie in [0, 0.5], got %r" % r)
+            raise ValueError(f"rqtmpl: recombination fractions lie in [0, 0.5], got {r!r}")
     out = []
     for q in (0, 1):
         p = float(r_left) if q != int(left) else 1.0 - float(r_left)
@@ -202,7 +202,7 @@ def interval_map(y, left, right, r_left, r_right, max_iter=200, tol=1e-10):
             m1 = G[i][1] * d1
             tot = m0 + m1
             if tot <= 0.0:
-                raise ValueError("rqtmpl: the mixture vanished at individual %d" % i)
+                raise ValueError(f"rqtmpl: the mixture vanished at individual {int(i)}")
             post.append(m1 / tot)
             ll += math.log(tot / math.sqrt(2.0 * math.pi * s2))
         history.append(ll)

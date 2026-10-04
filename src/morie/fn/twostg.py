@@ -157,8 +157,12 @@ def two_stage_hazard(time, event, X, Z=None, error="ph", max_iter=50, tol=1e-10)
     if error == "ph":
         xi, dxi = _xi_ph, _dxi_ph
     elif error == "po":
-        xi = lambda s: _xi_po_scalar(float(s))
-        dxi = lambda s: _dxi_po_scalar(float(s))
+
+        def xi(s):
+            return _xi_po_scalar(float(s))
+
+        def dxi(s):
+            return _dxi_po_scalar(float(s))
     else:
         raise ValueError("error must be 'ph' or 'po'")
 
@@ -216,23 +220,23 @@ def two_stage_hazard(time, event, X, Z=None, error="ph", max_iter=50, tol=1e-10)
             zij = Xa[i] - Xa[j]
             aij = ehat[i][j] - ehat[j][i]
             for k in range(n):
-                if k == j or k == i:
+                if k in (j, i):
                     continue
                 zik = Xa[i] - Xa[k]
                 aik = ehat[i][k] - ehat[k][i]
                 gam = gam + aij * aik * np.outer(zij, zik)
     gam = gam / (n**3)
     corr = np.zeros((p, p))
-    for l in range(n):
-        if d[l] == 1.0:
+    for ell in range(n):
+        if d[ell] == 1.0:
             continue
-        atrisk = sum(1 for k in range(n) if t[k] >= t[l])
+        atrisk = sum(1 for k in range(n) if t[k] >= t[ell])
         v = np.zeros(p)
         for i in range(n):
             for j in range(n):
                 if i == j or d[j] != 1.0:
                     continue
-                if t[i] >= t[j] and t[j] >= t[l]:
+                if t[i] >= t[j] and t[j] >= t[ell]:
                     v = v + (Xa[i] - Xa[j]) * (1.0 / G2[j])
         corr = corr + np.outer(v, v) / (atrisk**2)
     gam = gam - 4.0 * corr / (n**3)

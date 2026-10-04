@@ -8,7 +8,7 @@ from morie.fn.mahg import ma_hedges_g
 
 def test_mahg_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m1, m2 = 1.5, 0.7
     s1, s2 = 1.1, 0.9
     n1, n2 = 30, 35
@@ -36,7 +36,7 @@ def test_mahg_basic():
 
 def test_mahg_edge():
     """Test edge cases with balanced small samples."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     s1, s2 = 0.5, 0.5
     m1, m2 = 0.0, 0.0
     n1, n2 = 5, 5

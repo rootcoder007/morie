@@ -27,10 +27,7 @@ def cohens_w(
     ESRes
     """
     obs = np.asarray(observed, dtype=np.float64)
-    if expected is None:
-        exp = np.full_like(obs, obs.sum() / len(obs))
-    else:
-        exp = np.asarray(expected, dtype=np.float64)
+    exp = np.full_like(obs, obs.sum() / len(obs)) if expected is None else np.asarray(expected, dtype=np.float64)
     n = obs.sum()
     chi2 = np.sum((obs - exp) ** 2 / (exp + 1e-15))
     w_val = math.sqrt(chi2 / n) if n > 0 else 0.0

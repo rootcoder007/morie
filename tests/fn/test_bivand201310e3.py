@@ -8,11 +8,11 @@ from morie.fn.bivand201310e3 import bivand2013_chapter_10_equation_3
 def test_bivand201310e3_basic():
     """Test basic functionality with hand-crafted data."""
     # Simple, non-random data so we can compute expectations independently.
-    O = [5.0, 1.0, 2.0, 0.0, 3.0]
+    O_ = [5.0, 1.0, 2.0, 0.0, 3.0]
     E = [10.0, 10.0, 10.0, 10.0, 10.0]
     zones = [[0], [1], [2], [3], [4], [0, 1], [2, 3, 4]]
 
-    result = bivand2013_chapter_10_equation_3(O, E, zones)
+    result = bivand2013_chapter_10_equation_3(O_, E, zones)
 
     # Must be a dict-like RichResult.
     assert isinstance(result, dict)
@@ -28,19 +28,19 @@ def test_bivand201310e3_basic():
     assert len(result["Ez"]) == len(zones)
 
     # Totals match an independent sum.
-    assert result["Otot"] == sum(O)
+    assert result["Otot"] == sum(O_)
     assert result["Etot"] == sum(E)
 
     # Per-zone Oz/Ez match independent sums over each zone.
     for zs, oz_expected, ez_expected in zip(zones, result["Oz"], result["Ez"]):
-        assert oz_expected == sum(O[t] for t in zs)
+        assert oz_expected == sum(O_[t] for t in zs)
         assert ez_expected == sum(E[t] for t in zs)
 
     # Independently compute the log-likelihood ratio per zone using
     # the documented formula and compare (allowing tiny float error).
     rr = result["Otot"] / result["Etot"]
     for zs, ll_actual in zip(zones, result["loglr"]):
-        oz = sum(O[t] for t in zs)
+        oz = sum(O_[t] for t in zs)
         ez = sum(E[t] for t in zs)
         oo = result["Otot"] - oz
         eo = result["Etot"] - ez
@@ -68,11 +68,11 @@ def test_bivand201310e3_basic():
 
 def test_bivand201310e3_edge():
     """Test edge cases: highonly=False keeps all valid windows."""
-    O = [5.0, 1.0, 2.0, 0.0, 3.0]
+    O_ = [5.0, 1.0, 2.0, 0.0, 3.0]
     E = [10.0, 10.0, 10.0, 10.0, 10.0]
     zones = [[0], [1], [2], [3], [4]]
 
-    result = bivand2013_chapter_10_equation_3(O, E, zones, highonly=False)
+    result = bivand2013_chapter_10_equation_3(O_, E, zones, highonly=False)
     assert isinstance(result, dict)
     assert result["nzone"] == len(zones)
 

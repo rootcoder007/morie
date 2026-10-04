@@ -105,7 +105,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
     True
     """
     if estimator not in _ESTIMATORS:
-        raise ValueError("estimator must be one of %s, got %r." % (_ESTIMATORS, estimator))
+        raise ValueError(f"estimator must be one of {_ESTIMATORS}, got {estimator!r}.")
     y = np.asarray(Y, dtype=float).ravel()
     t = np.asarray(T, dtype=float).ravel()
     Xa = np.asarray(X, dtype=float)
@@ -113,12 +113,12 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
         Xa = Xa[:, None]
     n = y.size
     if not (t.size == n == Xa.shape[0]):
-        raise ValueError("Y, T and X must agree in length, got %d, %d and %d." % (n, t.size, Xa.shape[0]))
+        raise ValueError(f"Y, T and X must agree in length, got {int(n)}, {int(t.size)} and {int(Xa.shape[0])}.")
     if not np.all(np.isin(t, (0.0, 1.0))):
         raise ValueError("T must be binary 0/1.")
     n1, n0 = int(t.sum()), int((1 - t).sum())
     if n1 < 5 or n0 < 5:
-        raise ValueError("need at least 5 units in each arm, got %d treated and %d control." % (n1, n0))
+        raise ValueError(f"need at least 5 units in each arm, got {int(n1)} treated and {int(n0)} control.")
 
     B = _basis(Xa, int(degree))
     tr, ct = t == 1, t == 0
@@ -184,7 +184,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
             "n_treated": n1,
             "n_control": n0,
             "n": n,
-            "method": "CATE by %s-learner" % estimator,
+            "method": f"CATE by {estimator}-learner",
         }
     )
 

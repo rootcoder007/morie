@@ -30,10 +30,7 @@ def snr_compute(signal, noise, **kwargs) -> DescriptiveResult:
     noise = np.asarray(noise, dtype=float)
     ps = float(np.mean(signal**2))
     pn = float(np.mean(noise**2))
-    if pn == 0.0:
-        snr_db = float("inf")
-    else:
-        snr_db = float(10.0 * np.log10(ps / pn))
+    snr_db = float("inf") if pn == 0.0 else float(10.0 * np.log10(ps / pn))
     return DescriptiveResult(
         name="snr_compute",
         value=snr_db,

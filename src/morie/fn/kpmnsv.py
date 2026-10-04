@@ -76,7 +76,7 @@ def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
     if np.any(t < 0):
         raise ValueError("time must be non-negative.")
     if conf_type not in ("log-log", "plain"):
-        raise ValueError("conf_type must be 'log-log' or 'plain', got %r." % conf_type)
+        raise ValueError(f"conf_type must be 'log-log' or 'plain', got {conf_type!r}.")
 
     order = np.argsort(t, kind="mergesort")
     t, e = t[order], e[order]

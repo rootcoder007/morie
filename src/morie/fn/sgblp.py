@@ -54,7 +54,7 @@ def blup_spatial(
     Z = np.asarray(Z, dtype=np.float64).ravel()
     X = np.asarray(X, dtype=np.float64)
     C = np.asarray(cov_matrix, dtype=np.float64)
-    n = len(Z)
+    len(Z)
 
     C_inv = np.linalg.inv(C)
     XtCiX = X.T @ C_inv @ X

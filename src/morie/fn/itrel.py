@@ -37,10 +37,7 @@ def item_reliability_index(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
         rest = total - X[:, j]
         sd_item = float(np.std(X[:, j], ddof=1))
         sd_rest = float(np.std(rest, ddof=1))
-        if sd_item < 1e-15 or sd_rest < 1e-15:
-            rc = 0.0
-        else:
-            rc = float(np.corrcoef(X[:, j], rest)[0, 1])
+        rc = 0.0 if sd_item < 1e-15 or sd_rest < 1e-15 else float(np.corrcoef(X[:, j], rest)[0, 1])
         ri = rc * sd_item
         rows.append(
             {

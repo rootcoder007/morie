@@ -37,7 +37,7 @@ def mcmc_diagnostics(
     m, n = c.shape
 
     chain_means = np.mean(c, axis=1)
-    grand_mean = np.mean(chain_means)
+    np.mean(chain_means)
     B = n * np.var(chain_means, ddof=1) if m > 1 else 0.0
     W = np.mean(np.var(c, axis=1, ddof=1))
 

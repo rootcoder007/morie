@@ -62,7 +62,10 @@ def kosorok_ch2_quantile_taylor_bounds(F, h, t_n, p, eps_pn=None):
         return 0.5 * (lo + hi)
 
     xi_p = quantile(lambda z: float(F(z)), p)
-    Fp = lambda z: float(F(z)) + t_n * float(h(z))
+
+    def Fp(z):
+        return float(F(z)) + t_n * float(h(z))
+
     xi_n = quantile(Fp, p)
     lower = float(F(xi_n)) + t_n * float(h(xi_p - eps))
     upper = float(F(xi_n)) + t_n * float(h(xi_n))

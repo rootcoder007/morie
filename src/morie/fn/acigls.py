@@ -75,7 +75,7 @@ __all__ = ["adjusted_ipgls", "adjustedipgls"]
 def _design(A, n):
     M = [[float(v) for v in row] for row in A]
     if len(M) != n:
-        raise ValueError("acigls: A has %d rows but y has %d entries" % (len(M), n))
+        raise ValueError(f"acigls: A has {int(len(M))} rows but y has {int(n)} entries")
     p = len(M[0]) if M else 0
     if p == 0 or any(len(r) != p for r in M):
         raise ValueError("acigls: A is ragged or has no columns")
@@ -125,14 +125,14 @@ def adjusted_ipgls(y, A, H, cluster, small_sample=True):
     M, p = _design(A, n)
     w = [float(v) for v in H]
     if len(w) != n:
-        raise ValueError("acigls: %d weights but %d observations" % (len(w), n))
+        raise ValueError(f"acigls: {int(len(w))} weights but {int(n)} observations")
     if any(v <= 0 for v in w):
         raise ValueError(
             "acigls: every weight must be positive; an inverse-probability weight cannot be zero or negative"
         )
     cl = [str(v) for v in cluster]
     if len(cl) != n:
-        raise ValueError("acigls: %d cluster labels but %d observations" % (len(cl), n))
+        raise ValueError(f"acigls: {int(len(cl))} cluster labels but {int(n)} observations")
     groups = {}
     for i, c in enumerate(cl):
         groups.setdefault(c, []).append(i)
@@ -144,7 +144,7 @@ def adjusted_ipgls(y, A, H, cluster, small_sample=True):
             "between-cluster information"
         )
     if n <= p:
-        raise ValueError("acigls: %d observations cannot support %d coefficients" % (n, p))
+        raise ValueError(f"acigls: {int(n)} observations cannot support {int(p)} coefficients")
 
     XtWX = [[sum(w[i] * M[i][a] * M[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     XtWy = [sum(w[i] * M[i][a] * yy[i] for i in range(n)) for a in range(p)]
@@ -160,7 +160,7 @@ def adjusted_ipgls(y, A, H, cluster, small_sample=True):
                 meat[a][b] += u[a] * u[b]
     corr = (G / float(G - 1)) * ((n - 1) / float(n - p)) if small_sample else 1.0
     V = [
-        [corr * sum(bread[a][k] * meat[k][l] * bread[l][b] for k in range(p) for l in range(p)) for b in range(p)]
+        [corr * sum(bread[a][k] * meat[k][ell] * bread[ell][b] for k in range(p) for ell in range(p)) for b in range(p)]
         for a in range(p)
     ]
     se = [math.sqrt(V[k][k]) if V[k][k] > 0 else float("nan") for k in range(p)]

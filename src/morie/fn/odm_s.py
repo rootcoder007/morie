@@ -31,10 +31,7 @@ def otis_demo_standardize(
     """
     observed = np.asarray(observed, dtype=float)
     standard = np.asarray(standard, dtype=float)
-    if rates is None:
-        rates = observed / np.maximum(standard, 1e-10)
-    else:
-        rates = np.asarray(rates, dtype=float)
+    rates = observed / np.maximum(standard, 1e-10) if rates is None else np.asarray(rates, dtype=float)
     std_weights = standard / max(np.sum(standard), 1e-10)
     standardized_rate = float(np.sum(rates * std_weights))
     crude_rate = float(np.sum(observed) / max(np.sum(standard), 1e-10))

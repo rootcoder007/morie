@@ -52,7 +52,7 @@ def test_spthom_edge():
         except ValueError:
             pass
         else:
-            raise AssertionError("expected ValueError for %r" % (bad,))
+            raise AssertionError(f"expected ValueError for {bad!r}")
 
     try:
         schabenberger_thomas_process([-1.0])

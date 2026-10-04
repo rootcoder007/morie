@@ -45,7 +45,7 @@ def test_eq_8_8_recovers_the_blup_at_the_gls_intercept():
     Sigma = [[s2u * G[i][j] for j in range(n)] for i in range(n)]
     R = [[s2e if i == j else 0.0 for j in range(n)] for i in range(n)]
     beta, u = gp.blue_blup_via_v(X, Z, y, Sigma, R)
-    f = gp.bayesian_kernel_blup(y, G, sigma2_u=s2u, sigma2_e=s2e, gibbs=False)
+    gp.bayesian_kernel_blup(y, G, sigma2_u=s2u, sigma2_e=s2e, gibbs=False)
     # rebuild the conditional mode at the GLS intercept
     Kinv = gp._inv(G)
     A = [[Kinv[i][j] / s2u + ((1.0 / s2e) if i == j else 0.0) for j in range(n)] for i in range(n)]

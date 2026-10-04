@@ -244,12 +244,11 @@ def synthesize(
     for _ in range(int(iter_max)):
         y = list(target_predict([x])[0])
         if c >= len(y):
-            raise ValueError("memb: class %r is outside the target's output vector" % (c,))
+            raise ValueError(f"memb: class {c!r} is outside the target's output vector")
         yc = y[c]
         if yc >= y_best:
-            if yc > conf_min and c == max(range(len(y)), key=lambda t: y[t]):
-                if rng.random() < yc:
-                    return x
+            if yc > conf_min and c == max(range(len(y)), key=lambda t: y[t]) and rng.random() < yc:
+                return x
             x_best = list(x)
             y_best = yc
             j = 0

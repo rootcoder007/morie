@@ -62,7 +62,7 @@ def littles_mcar_test(
     if not data.isna().any().any():
         raise ValueError("No missing values found; MCAR test is not applicable.")
 
-    n = len(data)
+    len(data)
     values = data.values  # n x p
 
     # EM estimates of mean and covariance (simple: use pairwise complete)

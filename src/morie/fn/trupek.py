@@ -144,10 +144,7 @@ def _cauchy(g, H, delta):
     if gn == 0.0:
         return [0.0] * len(g)
     curv = _dot(g, _matvec(H, g))
-    if curv <= 0.0:
-        t = delta / gn
-    else:
-        t = min(gn * gn / curv, delta / gn)
+    t = delta / gn if curv <= 0.0 else min(gn * gn / curv, delta / gn)
     return [-t * gi for gi in g]
 
 
@@ -341,7 +338,7 @@ def trust_region(
         history of (f, gnorm, delta, rho), subproblem, method.
     """
     if subproblem not in _SUBS:
-        raise ValueError("trupek: subproblem = %r; expected one of %s" % (subproblem, ", ".join(_SUBS)))
+        raise ValueError("trupek: subproblem = {!r}; expected one of {}".format(subproblem, ", ".join(_SUBS)))
     x = [float(v) for v in x0]
     if delta_max is None:
         delta_max = 1e3 * delta
@@ -404,8 +401,7 @@ def trust_region(
             "history": hist,
             "subproblem": subproblem,
             "subproblem_exit": last_why,
-            "method": "basic trust region (Conn, Gould & Toint 2000, Algorithm "
-            "6.1.1) with the %s subproblem" % subproblem,
+            "method": f"basic trust region (Conn, Gould & Toint 2000, Algorithm 6.1.1) with the {subproblem} subproblem",
         }
     )
 

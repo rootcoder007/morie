@@ -79,10 +79,10 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None, labels=No
     tau = np.asarray(cate, dtype=float).ravel()
     n = tau.size
     if n < 2:
-        raise ValueError("need at least 2 units, got %d." % n)
+        raise ValueError(f"need at least 2 units, got {int(n)}.")
     sev = None if se is None else np.asarray(se, dtype=float).ravel()
     if sev is not None and sev.size != n:
-        raise ValueError("se has %d entries for %d units." % (sev.size, n))
+        raise ValueError(f"se has {int(sev.size)} entries for {int(n)} units.")
 
     selection = False
     if group_var is None:
@@ -96,13 +96,13 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None, labels=No
             Xa = Xa[:, None]
         if not 0 <= int(group_var) < Xa.shape[1]:
             raise ValueError(
-                "group_var index %d is out of range for X with %d columns." % (int(group_var), Xa.shape[1])
+                f"group_var index {int(int(group_var))} is out of range for X with {int(Xa.shape[1])} columns."
             )
         source = Xa[:, int(group_var)]
     else:
         gv = np.asarray(group_var).ravel()
         if gv.size != n:
-            raise ValueError("group_var has %d entries for %d units." % (gv.size, n))
+            raise ValueError(f"group_var has {int(gv.size)} entries for {int(n)} units.")
         source = gv
 
     discrete = source.dtype.kind not in "fc" or np.unique(source).size <= max(int(n_groups), 2)
@@ -112,7 +112,7 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None, labels=No
     else:
         k = int(n_groups)
         if k < 2:
-            raise ValueError("n_groups must be at least 2, got %d." % k)
+            raise ValueError(f"n_groups must be at least 2, got {int(k)}.")
         edges = np.quantile(source, np.linspace(0, 1, k + 1))
         edges[0] -= 1e-12
         idx, keys = [], []
@@ -120,13 +120,13 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None, labels=No
             m = (source > edges[j]) & (source <= edges[j + 1])
             if m.any():
                 idx.append(m)
-                keys.append("Q%d" % (j + 1))
+                keys.append(f"Q{int(j + 1)}")
     if labels is not None:
         if len(labels) != len(keys):
-            raise ValueError("labels has %d entries for %d groups." % (len(labels), len(keys)))
+            raise ValueError(f"labels has {int(len(labels))} entries for {int(len(keys))} groups.")
         keys = list(labels)
     if len(idx) < 2:
-        raise ValueError("the grouping produced %d non-empty group(s); at least 2 are needed." % len(idx))
+        raise ValueError(f"the grouping produced {int(len(idx))} non-empty group(s); at least 2 are needed.")
 
     gate = np.array([float(tau[m].mean()) for m in idx])
     ns = np.array([int(m.sum()) for m in idx])

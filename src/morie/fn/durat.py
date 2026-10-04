@@ -61,10 +61,7 @@ def durat(
     if np.any(t < 0):
         raise ValueError("Duration times must be non-negative.")
 
-    if event is None:
-        event = np.ones(n)
-    else:
-        event = np.asarray(event, dtype=float).ravel()
+    event = np.ones(n) if event is None else np.asarray(event, dtype=float).ravel()
     if event.shape[0] != n:
         raise ValueError("event must have same length as t.")
 

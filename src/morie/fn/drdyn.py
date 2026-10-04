@@ -93,12 +93,11 @@ def dr_dynamic_did(y, D=None, unit=None, time=None, cohort=None, horizon=3, X=No
                     base = gg - 1.0
                 else:
                     base = None
-                if treated:
-                    if (uu, p) in val and (uu, base) in val:
-                        dys.append(val[(uu, p)] - val[(uu, base)])
-                        ds.append(1.0)
-                        if Xr is not None:
-                            xs.append(xof[uu])
+                if treated and (uu, p) in val and (uu, base) in val:
+                    dys.append(val[(uu, p)] - val[(uu, base)])
+                    ds.append(1.0)
+                    if Xr is not None:
+                        xs.append(xof[uu])
             if not treated:
                 # never-treated contribute the same calendar contrast as the
                 # cohorts observed at this horizon

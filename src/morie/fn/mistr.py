@@ -109,7 +109,7 @@ def rms_norm(x, weight=None, eps=1e-6):
     if weight is None:
         return [v * inv for v in x]
     if len(weight) != d:
-        raise ValueError("mistr: gain has %d entries for %d channels" % (len(weight), d))
+        raise ValueError(f"mistr: gain has {int(len(weight))} entries for {int(d)} channels")
     return [x[i] * inv * weight[i] for i in range(d)]
 
 
@@ -131,7 +131,7 @@ def swiglu(x, W1, W2, W3):
 def rope_angles(d, base=10000.0):
     r""":math:`\theta_i = \mathrm{base}^{-2i/d}` for each channel pair."""
     if d % 2 != 0:
-        raise ValueError("mistr: RoPE needs an even dimension, got %d" % d)
+        raise ValueError(f"mistr: RoPE needs an even dimension, got {int(d)}")
     return [base ** (-2.0 * i / d) for i in range(d // 2)]
 
 
@@ -146,7 +146,7 @@ def apply_rope(x, pos, theta=None, base=10000.0):
     d = len(x)
     th = rope_angles(d, base) if theta is None else list(theta)
     if len(th) != d // 2:
-        raise ValueError("mistr: %d angles for %d channels" % (len(th), d))
+        raise ValueError(f"mistr: {int(len(th))} angles for {int(d)} channels")
     out = [0.0] * d
     for i in range(d // 2):
         ang = pos * th[i]
@@ -161,7 +161,7 @@ def sliding_window_mask(L, window, causal=True):
     r"""Row :math:`i` may attend to :math:`j` when
     :math:`i - W < j \le i`."""
     if window < 1:
-        raise ValueError("mistr: window must be at least 1, got %d" % window)
+        raise ValueError(f"mistr: window must be at least 1, got {int(window)}")
     mask = []
     for i in range(L):
         row = []
@@ -194,9 +194,9 @@ def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None, positions=N
     if n_heads < 1 or n_kv_heads < 1:
         raise ValueError("mistr: need at least one head of each kind")
     if n_heads % n_kv_heads != 0:
-        raise ValueError("mistr: n_heads (%d) must be a multiple of n_kv_heads (%d)" % (n_heads, n_kv_heads))
+        raise ValueError(f"mistr: n_heads ({int(n_heads)}) must be a multiple of n_kv_heads ({int(n_kv_heads)})")
     if d % n_heads != 0:
-        raise ValueError("mistr: dimension %d is not divisible by %d heads" % (d, n_heads))
+        raise ValueError(f"mistr: dimension {int(d)} is not divisible by {int(n_heads)} heads")
     hd = d // n_heads
     # K and V carry n_kv_heads heads of the SAME head dimension as Q --
     # that is where the cache saving comes from, so the width is
@@ -204,8 +204,7 @@ def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None, positions=N
     dk = len(Km[0])
     if dk != n_kv_heads * hd:
         raise ValueError(
-            "mistr: K and V must be %d wide (n_kv_heads=%d "
-            "times head_dim=%d), got %d" % (n_kv_heads * hd, n_kv_heads, hd, dk)
+            f"mistr: K and V must be {int(n_kv_heads * hd)} wide (n_kv_heads={int(n_kv_heads)} times head_dim={int(hd)}), got {int(dk)}"
         )
     kd = hd
     group = n_heads // n_kv_heads
@@ -223,7 +222,7 @@ def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None, positions=N
         for i in range(L):
             allowed = [j for j in range(L) if mask is None or mask[i][j]]
             if not allowed:
-                raise ValueError("mistr: row %d may attend to nothing" % i)
+                raise ValueError(f"mistr: row {int(i)} may attend to nothing")
             sc = [scale * sum(qs[i][c] * ks[j][c] for c in range(hd)) for j in allowed]
             mx = max(sc)
             w = [math.exp(v - mx) for v in sc]

@@ -71,10 +71,7 @@ def geron_bias_variance_tradeoff(preds, y, f_true=None):
     if target.size != yv.size:
         raise ValueError(f"geron_bias_variance_tradeoff: f_true has {target.size} entries but y has {yv.size}")
     bias2 = float(np.mean((mean_pred - target) ** 2))
-    if f_true is None:
-        noise = mse - bias2 - variance
-    else:
-        noise = float(np.mean((yv - target) ** 2))
+    noise = mse - bias2 - variance if f_true is None else float(np.mean((yv - target) ** 2))
 
     return RichResult(
         title="Bias-variance decomposition",

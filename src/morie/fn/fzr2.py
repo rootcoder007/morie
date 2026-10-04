@@ -59,13 +59,22 @@ def kdfr2(a, kernel="gaussian", lo=-8.0, hi=8.0, ngrid=4001):
         raise ValueError("a = 1 is excluded: (2.5) divides by a^2 - 1.")
     y = np.linspace(float(lo), float(hi), int(ngrid))
     if kernel == "gaussian":
-        kfun = lambda t: stats.norm.pdf(t)
-        wfun = lambda t: stats.norm.cdf(t)
+
+        def kfun(t):
+            return stats.norm.pdf(t)
+
+        def wfun(t):
+            return stats.norm.cdf(t)
     elif callable(kernel):
-        kfun = lambda t: np.asarray([float(kernel(float(u))) for u in np.atleast_1d(t)], dtype=float)
+
+        def kfun(t):
+            return np.asarray([float(kernel(float(u))) for u in np.atleast_1d(t)], dtype=float)
+
         base = kfun(y)
         cum = np.concatenate(([0.0], np.cumsum(np.diff(y) * (base[:-1] + base[1:]) / 2.0)))
-        wfun = lambda t: np.interp(t, y, cum)
+
+        def wfun(t):
+            return np.interp(t, y, cum)
     else:
         raise ValueError('kernel must be "gaussian" or a callable K(y).')
     term = kfun(y) * wfun(y / a) + (1.0 / a) * wfun(y) * kfun(y / a)

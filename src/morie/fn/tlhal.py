@@ -124,7 +124,7 @@ def hal_fit(X, y, lam=1.0, iters=2000, step=0.05, max_order=2, knots=None, inter
     t = [float(v) for v in k.vec(y)]
     n, p = len(D), len(D[0])
     if len(t) != n:
-        raise ValueError("tlhal: %d rows but %d outcomes" % (n, len(t)))
+        raise ValueError(f"tlhal: {int(n)} rows but {int(len(t))} outcomes")
     if float(lam) <= 0.0:
         raise ValueError("tlhal: lambda must be positive")
     b = [0.0] * p
@@ -179,11 +179,11 @@ def _project_l1(v, lam):
     if sum(abs(x) for x in v) <= lam:
         return v
     u = sorted((abs(x) for x in v), reverse=True)
-    css, rho, theta = 0.0, 0, 0.0
+    css, _rho, theta = 0.0, 0, 0.0
     for j in range(len(u)):
         css += u[j]
         if u[j] - (css - lam) / (j + 1) > 0:
-            rho = j + 1
+            j + 1
             theta = (css - lam) / (j + 1)
     return [math.copysign(max(abs(x) - theta, 0.0), x) for x in v]
 

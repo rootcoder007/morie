@@ -20,7 +20,7 @@ def _triad_counts(adj, n):
             if j == i or not adj[i][j]:
                 continue
             for k in range(n):
-                if k == i or k == j:
+                if k in (i, j):
                     continue
                 if adj[i][k] and adj[j][k]:
                     ff += 1

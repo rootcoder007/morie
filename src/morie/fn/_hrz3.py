@@ -223,20 +223,20 @@ def fxw_grid(u, v, z, wq, h):
     m = int(np.asarray(z).size)
     f = [[0.0] * m for _ in range(m)]
     for k in range(m):
-        for l in range(m):
+        for ell in range(m):
             s = 0.0
             for i in range(n):
-                s += float(KX[k][i]) * float(KW[l][i])
-            f[k][l] = s / (n * h * h)
+                s += float(KX[k][i]) * float(KW[ell][i])
+            f[k][ell] = s / (n * h * h)
     mass = 0.0
     for k in range(m):
-        for l in range(m):
-            mass += float(wq[k]) * float(wq[l]) * f[k][l]
+        for ell in range(m):
+            mass += float(wq[k]) * float(wq[ell]) * f[k][ell]
     if mass <= 0:
         raise ValueError("the kernel density estimate has non-positive mass.")
     for k in range(m):
-        for l in range(m):
-            f[k][l] /= mass
+        for ell in range(m):
+            f[k][ell] /= mass
     return f, mass
 
 

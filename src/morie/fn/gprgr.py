@@ -64,7 +64,7 @@ def gaussian_process_regression(
         if x_test.ndim == 1:
             x_test = x_test.reshape(-1, 1)
 
-    m = len(x_test)
+    len(x_test)
 
     # Squared-exponential kernel
     def se_kernel(x1, x2):

@@ -55,23 +55,23 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None, add_intercept=True, 
     if n == 0:
         raise ValueError("svyrcq: no observations")
     if len(yv) != n:
-        raise ValueError("svyrcq: %d rows but %d responses" % (n, len(yv)))
+        raise ValueError(f"svyrcq: {int(n)} rows but {int(len(yv))} responses")
     tau = float(tau)
     if not 0.0 < tau < 1.0:
-        raise ValueError("svyrcq: tau must lie strictly in (0, 1), got %r" % (tau,))
+        raise ValueError(f"svyrcq: tau must lie strictly in (0, 1), got {tau!r}")
     if weights is None:
         w = [1.0] * n
     else:
         w = [float(v) for v in k.vec(weights)]
         if len(w) != n:
-            raise ValueError("svyrcq: %d rows but %d weights" % (n, len(w)))
+            raise ValueError(f"svyrcq: {int(n)} rows but {int(len(w))} weights")
         if any(v < 0.0 for v in w):
             raise ValueError("svyrcq: design weights cannot be negative")
     if add_intercept:
         Xm = [[1.0] + r for r in Xm]
     p = len(Xm[0])
     if n <= p:
-        raise ValueError("svyrcq: %d observations cannot identify %d coefficients" % (n, p))
+        raise ValueError(f"svyrcq: {int(n)} observations cannot identify {int(p)} coefficients")
 
     def check_loss(beta):
         s = 0.0

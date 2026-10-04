@@ -61,9 +61,13 @@ def kdfassum(kernel=None, h=None, n=None, smooth=None, tol=1e-6, lo=-8.0, hi=8.0
     from . import _stats_core as stats
 
     if kernel is None:
-        kfun = lambda t: float(stats.norm.pdf(t))
+
+        def kfun(t):
+            return float(stats.norm.pdf(t))
     elif callable(kernel):
-        kfun = lambda t: float(kernel(t))
+
+        def kfun(t):
+            return float(kernel(t))
     else:
         raise ValueError("kernel must be None or a callable K(w).")
     w = np.linspace(float(lo), float(hi), int(ngrid))
@@ -73,10 +77,7 @@ def kdfassum(kernel=None, h=None, n=None, smooth=None, tol=1e-6, lo=-8.0, hi=8.0
     mu4 = float(np.trapezoid(w**4 * kv, w))
     b1 = bool(np.all(kv >= 0) and abs(mass - 1.0) < float(tol) and sym < float(tol))
     b2 = bool(np.isfinite(mu4))
-    if h is None or n is None:
-        b3 = None
-    else:
-        b3 = bool(float(h) > 0 and float(h) < 1 and int(n) * float(h) > 1)
+    b3 = None if h is None or n is None else bool(float(h) > 0 and float(h) < 1 and int(n) * float(h) > 1)
     b4 = None if smooth is None else bool(smooth)
     b5 = None
     return RichResult(

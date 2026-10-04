@@ -281,7 +281,7 @@ class TestSampleSize:
     def test_beta_posterior(self):
         # density integrates to 1, matches closed Beta moments
         z, n, c, d = 7, 20, 1, 1
-        xs = np.linspace(1e-9, 1 - 1e-9, 200001)
+        np.linspace(1e-9, 1 - 1e-9, 200001)
         fs = np.array([br.beta_posterior_pdf(x, z, n, c, d) for x in (0.2, 0.35, 0.5)])
         # spot values against scipy-free closed form
         a, b = z + c, n - z + d

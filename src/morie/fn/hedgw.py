@@ -75,10 +75,7 @@ def hedgw(
 
     mu3_k = np.mean(k_vals**3) / bw**3
     mu2_k = np.mean(k_vals**2) / bw**2
-    if mu2_k > 0:
-        kappa3 = mu3_k / mu2_k**1.5
-    else:
-        kappa3 = 0.0
+    kappa3 = mu3_k / mu2_k**1.5 if mu2_k > 0 else 0.0
 
     bias_term = 0.5 * bw**2 * f2_hat
 

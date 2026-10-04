@@ -25,7 +25,7 @@ def test_gh_c11_11_basic():
     assert float(est) == expected_estimate
 
     # correlation_by_length matches the documented formula per-length
-    expected_cors = [math.exp(-((h / l) ** 2)) for l in lengths]
+    expected_cors = [math.exp(-((h / ell) ** 2)) for ell in lengths]
     got_cors = [float(v) for v in result["correlation_by_length"]]
     assert len(got_cors) == len(expected_cors)
     for got, exp in zip(got_cors, expected_cors):
@@ -49,7 +49,7 @@ def test_gh_c11_11_custom_lengths_and_h():
     h = 0.4
     result = ghosal_rescal_gp(lengths=lengths, h=h)
 
-    expected_cors = [math.exp(-((h / l) ** 2)) for l in lengths]
+    expected_cors = [math.exp(-((h / ell) ** 2)) for ell in lengths]
     got_cors = [float(v) for v in result["correlation_by_length"]]
     for got, exp in zip(got_cors, expected_cors):
         assert got == exp

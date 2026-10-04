@@ -65,15 +65,15 @@ def sir_incidence(beta, gamma, S0, I0, N, n_steps, dt=1.0):
         raise ValueError("likemc: beta and gamma must be positive")
     if float(N) <= 0:
         raise ValueError("likemc: the population size must be positive")
-    S, I = float(S0), float(I0)
+    S, I_ = float(S0), float(I0)
     out = []
     for _ in range(int(n_steps)):
-        lam = b * S * I / float(N) * float(dt)
+        lam = b * S * I_ / float(N) * float(dt)
         lam = max(lam, 1e-12)
-        rem = g * I * float(dt)
+        rem = g * I_ * float(dt)
         out.append(lam)
         S = max(S - lam, 0.0)
-        I = max(I + lam - rem, 0.0)
+        I_ = max(I_ + lam - rem, 0.0)
     return out
 
 
@@ -82,7 +82,7 @@ def poisson_loglik(observed, expected):
     y = [float(v) for v in observed]
     lam = [float(v) for v in expected]
     if len(y) != len(lam):
-        raise ValueError("likemc: %d observations but %d expected counts" % (len(y), len(lam)))
+        raise ValueError(f"likemc: {int(len(y))} observations but {int(len(lam))} expected counts")
     if any(v < 0 for v in y):
         raise ValueError("likemc: a count cannot be negative")
     tot = 0.0

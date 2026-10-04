@@ -8,7 +8,10 @@ def test_hmdrv_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x_T = rng.normal(0, 1, 5)
-    model = lambda x, t: np.zeros_like(x)
+
+    def model(x, t):
+        return np.zeros_like(x)
+
     T = 5
     result = geron_diffusion_reverse(x_T, model, T, beta_schedule="linear", seed=0)
     assert isinstance(result, dict)
@@ -26,7 +29,10 @@ def test_hmdrv_basic():
 def test_hmdrv_edge():
     """Test edge cases."""
     x_T = [1.0]
-    model = lambda x, t: np.zeros_like(x)
+
+    def model(x, t):
+        return np.zeros_like(x)
+
     T = 1
     result = geron_diffusion_reverse(x_T, model, T, beta_schedule=[0.75])
     assert isinstance(result, dict)

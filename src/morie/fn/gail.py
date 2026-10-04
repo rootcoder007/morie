@@ -61,9 +61,9 @@ def _pairs(states, actions, name):
     S = [tuple(np.atleast_1d(np.asarray(s, dtype=float))) if not isinstance(s, (int, str)) else (s,) for s in states]
     A = list(actions)
     if len(S) != len(A):
-        raise ValueError("gail: %s states and actions must have the same length" % name)
+        raise ValueError(f"gail: {name} states and actions must have the same length")
     if not S:
-        raise ValueError("gail: %s must be non-empty" % name)
+        raise ValueError(f"gail: {name} must be non-empty")
     return [(S[i], A[i]) for i in range(len(S))]
 
 

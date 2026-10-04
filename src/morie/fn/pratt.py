@@ -80,7 +80,9 @@ def attention(H, W, b, u_context):
     for h in rows:
         u = [math.tanh(b[o] + sum(W[o][j] * h[j] for j in range(len(h)))) for o in range(len(W))]
         if len(u) != len(uc):
-            raise ValueError("pratt: the context vector is %d-dimensional but the projection is %d" % (len(uc), len(u)))
+            raise ValueError(
+                f"pratt: the context vector is {int(len(uc))}-dimensional but the projection is {int(len(u))}"
+            )
         sc.append(sum(u[o] * uc[o] for o in range(len(u))))
     m = max(sc)
     e = [math.exp(v - m) for v in sc]

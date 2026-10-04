@@ -82,8 +82,7 @@ def bic_ar_order(x, max_p):
     T = n - P
     if T < P + 3:
         raise ValueError(
-            "bic_ar_order: too few observations; %d points leave T = %d for "
-            "order %d, which cannot support %d parameters" % (n, T, P, P + 2)
+            f"bic_ar_order: too few observations; {int(n)} points leave T = {int(T)} for order {int(P)}, which cannot support {int(P + 2)} parameters"
         )
     y = xv[P:]
     bic = []
@@ -108,7 +107,7 @@ def bic_ar_order(x, max_p):
         s2 = rss / T
         if not s2 > 0.0:
             raise ValueError(
-                "bic_ar_order: the order-%d fit is exact, so the Gaussian likelihood is unbounded and no BIC exists" % p
+                f"bic_ar_order: the order-{int(p)} fit is exact, so the Gaussian likelihood is unbounded and no BIC exists"
             )
         sig2.append(s2)
         coefs.append([float(b) for b in beta])

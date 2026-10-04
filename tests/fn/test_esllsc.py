@@ -7,7 +7,7 @@ from morie.fn.esllsc import esl_lda_disc
 def test_esllsc_basic():
     """Test basic functionality."""
     rng_x = np.random.default_rng(42)
-    rng_y = np.random.default_rng(43)
+    np.random.default_rng(43)
     # Two well-separated classes in 5-D so n > K and the pooled covariance
     # is well defined.
     X = np.vstack(

@@ -6,7 +6,7 @@ from morie.fn.ca6e5 import ca_chapter_6_equation_5
 
 def test_ca6e5_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # neg2ll_null and neg2ll_full must be scalars (per the formula:
     # Model chi2 = (-2LL_null) - (-2LL_full)). Use a value for the null
     # model larger than the full model so that the chi-square is positive.

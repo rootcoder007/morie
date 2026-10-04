@@ -90,10 +90,10 @@ def _cohort(S):
     s = [float(v) for v in k.vec(S)]
     for v in s:
         if v not in (0.0, 1.0):
-            raise ValueError("trnsfr: the cohort indicator must be 0/1 (1 = source), got %r" % (v,))
+            raise ValueError(f"trnsfr: the cohort indicator must be 0/1 (1 = source), got {v!r}")
     if sum(s) < 2 or len(s) - sum(s) < 2:
         raise ValueError(
-            "trnsfr: both cohorts need at least 2 units (source %d, target %d)" % (int(sum(s)), int(len(s) - sum(s)))
+            f"trnsfr: both cohorts need at least 2 units (source {int(int(sum(s)))}, target {int(int(len(s) - sum(s)))})"
         )
     return s
 
@@ -115,7 +115,7 @@ def transport_weights(X, S, trim=1e-3, ridge=1e-6):
     s = _cohort(S)
     n = len(Xm)
     if len(s) != n:
-        raise ValueError("trnsfr: %d cohort labels for %d rows" % (len(s), n))
+        raise ValueError(f"trnsfr: {int(len(s))} cohort labels for {int(n)} rows")
     D = k.design(Xm, n)
     beta = k.logit_irls(D, s, ridge=ridge)
     pi = [k.sigmoid(sum(D[i][j] * beta[j] for j in range(len(beta)))) for i in range(n)]
@@ -123,11 +123,7 @@ def transport_weights(X, S, trim=1e-3, ridge=1e-6):
     bad = [i for i in range(n) if not lo <= pi[i] <= hi]
     if bad:
         raise ValueError(
-            "trnsfr: %d unit(s) have a cohort-membership "
-            "probability outside [%g, %g] (extreme %.4g) "
-            "-- there is no overlap there and the "
-            "transported effect is not identified for "
-            "them" % (len(bad), lo, hi, min(pi[i] for i in bad) if pi[bad[0]] < lo else max(pi[i] for i in bad))
+            f"trnsfr: {int(len(bad))} unit(s) have a cohort-membership probability outside [{lo:g}, {hi:g}] (extreme {min(pi[i] for i in bad) if pi[bad[0]] < lo else max(pi[i] for i in bad):.4g}) -- there is no overlap there and the transported effect is not identified for them"
         )
     raw = [((1.0 - pi[i]) / pi[i]) if s[i] == 1.0 else 0.0 for i in range(n)]
     tot = sum(raw)
@@ -169,13 +165,13 @@ def balancing_weights(X, S, ridge=1e-8):
     s = _cohort(S)
     n = len(Xm)
     if len(s) != n:
-        raise ValueError("trnsfr: %d cohort labels for %d rows" % (len(s), n))
+        raise ValueError(f"trnsfr: {int(len(s))} cohort labels for {int(n)} rows")
     D = k.design(Xm, n)
     p = len(D[0])
     src = [i for i in range(n) if s[i] == 1.0]
     tgt = [i for i in range(n) if s[i] == 0.0]
     if len(src) < p:
-        raise ValueError("trnsfr: %d source units cannot balance %d moments" % (len(src), p))
+        raise ValueError(f"trnsfr: {int(len(src))} source units cannot balance {int(p)} moments")
     b = [sum(D[i][j] for i in tgt) / len(tgt) for j in range(p)]
     # G = A A^T with A the p-by-|src| constraint matrix
     G = [[sum(D[i][a] * D[i][c] for i in src) + (ridge if a == c else 0.0) for c in range(p)] for a in range(p)]
@@ -209,7 +205,7 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3, ridge=1e-6):
         exactly-balancing weights instead of the fitted ones.
     """
     if method not in _METHODS:
-        raise ValueError("trnsfr: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("trnsfr: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     y = [float(v) for v in k.vec(Y)]
     w = [float(v) for v in k.vec(W)]
     Xm = k.mat(X)
@@ -217,10 +213,10 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3, ridge=1e-6):
     n = len(y)
     for nm, v in (("W", w), ("X", Xm), ("S", s)):
         if len(v) != n:
-            raise ValueError("trnsfr: %s has %d rows for %d outcomes" % (nm, len(v), n))
+            raise ValueError(f"trnsfr: {nm} has {int(len(v))} rows for {int(n)} outcomes")
     for v in w:
         if v not in (0.0, 1.0):
-            raise ValueError("trnsfr: W must be 0/1, got %r" % (v,))
+            raise ValueError(f"trnsfr: W must be 0/1, got {v!r}")
     src = [i for i in range(n) if s[i] == 1.0]
     tgt = [i for i in range(n) if s[i] == 0.0]
     if not any(w[i] == 1.0 for i in src) or not any(w[i] == 0.0 for i in src):
@@ -266,7 +262,7 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3, ridge=1e-6):
             n0 = sum(tw[i] * (1.0 - w[i]) / (1.0 - ps[i]) for i in src)
             if abs(n1) <= _EPS or abs(n0) <= _EPS:
                 raise ValueError(
-                    "trnsfr: one treatment arm carries no transport weight (treated %.3g, control %.3g)" % (n1, n0)
+                    f"trnsfr: one treatment arm carries no transport weight (treated {n1:.3g}, control {n0:.3g})"
                 )
             est = (
                 sum(tw[i] * w[i] * y[i] / ps[i] for i in src) / n1
@@ -321,11 +317,11 @@ def transfer_msm(Y, A, H, cohort, target=0, e=None, trim=1e-3, ridge=1e-6):
     n = len(y)
     if not (len(a) == len(Hm) == len(lab) == n):
         raise ValueError(
-            "trnsfr: Y, A, H and cohort must agree in length (%d, %d, %d, %d)" % (n, len(a), len(Hm), len(lab))
+            f"trnsfr: Y, A, H and cohort must agree in length ({int(n)}, {int(len(a))}, {int(len(Hm))}, {int(len(lab))})"
         )
     tgt = str(target)
     if tgt not in set(lab):
-        raise ValueError("trnsfr: target cohort %r is not present; cohorts are %s" % (target, sorted(set(lab))))
+        raise ValueError(f"trnsfr: target cohort {target!r} is not present; cohorts are {sorted(set(lab))}")
     S = [0.0 if c == tgt else 1.0 for c in lab]
     tw = transport_weights(Hm, S, trim=trim, ridge=ridge)["weights"]
     if e is None:

@@ -95,20 +95,20 @@ def sequential_risk(y, algorithm, loss="squared", burn_in=5, lags=1):
     honest analogue for a sequentially generated sample.
     """
     if loss not in _LOSSES:
-        raise ValueError("tlonsl: loss must be one of %s, got %r" % (", ".join(_LOSSES), loss))
+        raise ValueError("tlonsl: loss must be one of {}, got {!r}".format(", ".join(_LOSSES), loss))
     v = [float(q) for q in k.vec(y)]
     b = int(burn_in)
     if b < 1 or b >= len(v):
-        raise ValueError("tlonsl: burn_in must lie in 1..%d, got %d" % (len(v) - 1, b))
+        raise ValueError(f"tlonsl: burn_in must lie in 1..{int(len(v) - 1)}, got {int(b)}")
     tot, preds, losses = 0.0, [], []
     for t in range(b, len(v)):
         fit = algorithm(v[:t])
         z = summary_measure(v[:t], lags)
         p = float(fit(z))
         preds.append(p)
-        l = _loss(loss, v[t], p)
-        losses.append(l)
-        tot += l
+        ell = _loss(loss, v[t], p)
+        losses.append(ell)
+        tot += ell
     return {
         "risk": tot / len(losses),
         "predictions": preds,
@@ -154,7 +154,7 @@ def online_super_learner(y, library, loss="squared", burn_in=5, lags=1, eta=1.0)
         weight_path.append(dict(zip(names, w)))
         p = sum(w[j] * per[names[j]]["predictions"][s] for j in range(len(names)))
         ens_loss += _loss(loss, v[burn_in + s], p)
-        for j, n in enumerate(names):
+        for _j, n in enumerate(names):
             cum[n] += per[n]["losses"][s]
     best = min(names, key=lambda n: per[n]["risk"])
     return RichResult(

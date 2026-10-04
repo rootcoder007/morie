@@ -53,17 +53,11 @@ def prediction_accuracy(y_true, y_pred):
     # Pearson r
     sd_t = float(np.std(y_true, ddof=1))
     sd_p = float(np.std(y_pred, ddof=1))
-    if sd_t > 0 and sd_p > 0:
-        r = float(np.corrcoef(y_true, y_pred)[0, 1])
-    else:
-        r = float("nan")
+    r = float(np.corrcoef(y_true, y_pred)[0, 1]) if sd_t > 0 and sd_p > 0 else float("nan")
     # Spearman
     rt = np.argsort(np.argsort(y_true))
     rp = np.argsort(np.argsort(y_pred))
-    if np.std(rt) > 0 and np.std(rp) > 0:
-        rho = float(np.corrcoef(rt, rp)[0, 1])
-    else:
-        rho = float("nan")
+    rho = float(np.corrcoef(rt, rp)[0, 1]) if np.std(rt) > 0 and np.std(rp) > 0 else float("nan")
     # Calibration slope/intercept of y ~ a + b*y_pred
     if np.var(y_pred, ddof=1) > 0:
         slope = float(np.cov(y_true, y_pred, ddof=1)[0, 1] / np.var(y_pred, ddof=1))

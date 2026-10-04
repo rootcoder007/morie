@@ -45,10 +45,7 @@ def oblimin(
         B = A @ np.linalg.inv(T).T
         B2 = B**2
 
-        if I_gamma is not None:
-            grad = A.T @ (B2 @ N - I_gamma @ B @ N)
-        else:
-            grad = A.T @ (B2 @ N)
+        grad = A.T @ (B2 @ N - I_gamma @ B @ N) if I_gamma is not None else A.T @ (B2 @ N)
 
         T_new = T - alpha * grad @ np.linalg.inv(T @ T.T) @ T
 

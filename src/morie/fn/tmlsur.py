@@ -162,8 +162,9 @@ def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None, tru
             "propensity_range": (float(g.min()), float(g.max())),
             "n_truncated": res["n_truncated"],
             "positivity_note": (
-                "propensities were truncated for %d of %d subjects; a large "
-                "share means the contrast is extrapolated, not estimated" % (res["n_truncated"], res["n"])
+                "propensities were truncated for {} of {} subjects; a large share means the contrast is extrapolated, not estimated".format(
+                    int(res["n_truncated"]), int(res["n"])
+                )
             ),
             "separated": res["separated"],
             "n_events": res["n_events"],

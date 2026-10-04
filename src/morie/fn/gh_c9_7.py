@@ -30,9 +30,9 @@ def ghosal_whittle_crt(ns=(256, 1024, 4096), n_bins=6, seed=42):
             ang = 2.0 * math.pi * j / n
             wr = sum(v * math.cos(ang * t) for t, v in enumerate(x))
             wi = sum(v * math.sin(ang * t) for t, v in enumerate(x))
-            I = (wr * wr + wi * wi) / (2.0 * math.pi * n)
+            I_ = (wr * wr + wi * wi) / (2.0 * math.pi * n)
             b = min(int(n_bins * j / m), n_bins - 1)
-            bs[b] += I
+            bs[b] += I_
             bc[b] += 1
         est = [(0.5 * truth + s) / (0.5 + c) for s, c in zip(bs, bc)]
         errs.append(sum(abs(e - truth) for e in est) / n_bins)

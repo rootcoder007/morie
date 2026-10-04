@@ -8,7 +8,10 @@ from morie.fn.hmzsl import geron_zero_shot
 def test_hmzsl_basic():
     """Test basic functionality with a dict-returning model."""
     scores = {"negative": 0.0, "positive": 1.0}
-    model = lambda p: scores
+
+    def model(p):
+        return scores
+
     prompt = "Review: it was great. Sentiment:"
     result = geron_zero_shot(model, prompt)
     assert isinstance(result, dict)
@@ -36,7 +39,10 @@ def test_hmzsl_basic():
 
 def test_hmzsl_edge():
     """Test calibration with null_prompt yields uniform probabilities."""
-    f = lambda p: [5.0, 0.0] if p == "" else [6.0, 1.0]
+
+    def f(p):
+        return [5.0, 0.0] if p == "" else [6.0, 1.0]
+
     result = geron_zero_shot(f, "x", labels=["a", "b"], null_prompt="")
     assert isinstance(result, dict)
     assert result["calibrated"]

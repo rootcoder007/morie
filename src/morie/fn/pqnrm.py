@@ -15,10 +15,7 @@ def polar_normalize(x: np.ndarray) -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=np.float64).ravel()
     norm = float(np.linalg.norm(x))
-    if norm > 0:
-        normalized = x / norm
-    else:
-        normalized = np.zeros_like(x)
+    normalized = x / norm if norm > 0 else np.zeros_like(x)
     return DescriptiveResult(
         name="polar_normalize",
         value=norm,

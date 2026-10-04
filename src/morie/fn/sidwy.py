@@ -46,10 +46,7 @@ def adversarial_perturb(
         perturbation = epsilon * np.sign(g)
     elif method == "pgd_step":
         g_norm = np.linalg.norm(g)
-        if g_norm > 1e-30:
-            perturbation = epsilon * g / g_norm
-        else:
-            perturbation = np.zeros_like(g)
+        perturbation = epsilon * g / g_norm if g_norm > 1e-30 else np.zeros_like(g)
     else:
         raise ValueError(f"Unknown method: {method}")
 

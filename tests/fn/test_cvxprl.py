@@ -7,7 +7,10 @@ from morie.fn.cvxprl import boyd_perspective
 def test_cvxprl_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
-    f = lambda z: z**2
+
+    def f(z):
+        return z**2
+
     x = rng.normal(0, 1, 100)
     t = np.linspace(0.5, 10, 100)
     result = boyd_perspective(f, x, t)
@@ -26,7 +29,10 @@ def test_cvxprl_basic():
 def test_cvxprl_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
-    f = lambda z: z**2
+
+    def f(z):
+        return z**2
+
     x = rng.normal(0, 1, 100)
     t = np.linspace(0.5, 10, 100)
     result = boyd_perspective(f, x, t)

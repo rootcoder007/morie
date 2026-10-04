@@ -86,7 +86,7 @@ _FLOOR = 1e-300
 
 def _check(primitive):
     if primitive not in PRIMITIVES:
-        raise ValueError("survvae: primitive must be one of %s, got %r" % (", ".join(PRIMITIVES), primitive))
+        raise ValueError("survvae: primitive must be one of {}, got {!r}".format(", ".join(PRIMITIVES), primitive))
 
 
 def log_pdf(t, shape, scale, primitive="weibull"):
@@ -132,7 +132,7 @@ def elbo(X, y_lower, events, W, bias, shapes, scales, primitive="weibull", alpha
     r"""The paper's lower bound: gates outside the logarithm."""
     _check(primitive)
     if not 0.0 <= alpha <= 1.0:
-        raise ValueError("survvae: alpha must lie in [0, 1], got %r" % alpha)
+        raise ValueError(f"survvae: alpha must lie in [0, 1], got {alpha!r}")
     tot_u = tot_c = 0.0
     for i in range(len(X)):
         g = gates(X[i], W, bias)
@@ -201,11 +201,11 @@ def fit(X, times, events, K=3, primitive="weibull", alpha=1.0, prior=0.0, seed=0
 
     rng = _rsf._Rng(seed)
     best = None
-    for r in range(max(1, int(restarts))):
+    for _r in range(max(1, int(restarts))):
         v0 = [0.0] * (K * d + K)
-        for k in range(K):
+        for _k in range(K):
             v0.append(math.log(1.0 + 0.5 * (rng.next() - 0.5)))
-        for k in range(K):
+        for _k in range(K):
             v0.append(math.log(t0 * (0.5 + rng.next())))
         val = objective(v0)
         cur = list(v0)
@@ -239,9 +239,9 @@ def fit(X, times, events, K=3, primitive="weibull", alpha=1.0, prior=0.0, seed=0
             "prior": float(prior),
             "times": list(times),
             "events": list(events),
-            "method": "Deep Survival Machines: mixture of %s experts with "
+            "method": f"Deep Survival Machines: mixture of {primitive} experts with "
             "softmax gates, ELBO_U + alpha ELBO_C + prior; "
-            "Nagpal et al. (2021) Sec. III" % primitive,
+            "Nagpal et al. (2021) Sec. III",
         }
     )
 

@@ -119,7 +119,7 @@ def fit_fm(X, y, k_dim=4, iters=300, alpha=0.02, lam=0.01, seed=0):
     rows = [[float(v) for v in r] for r in k.mat(X)]
     t = [float(v) for v in k.vec(y)]
     if len(rows) != len(t):
-        raise ValueError("fmFM: %d rows but %d targets" % (len(rows), len(t)))
+        raise ValueError(f"fmFM: {int(len(rows))} rows but {int(len(t))} targets")
     if not rows:
         raise ValueError("fmFM: no data")
     n, kk = len(rows[0]), int(k_dim)
@@ -131,7 +131,7 @@ def fit_fm(X, y, k_dim=4, iters=300, alpha=0.02, lam=0.01, seed=0):
     V = [[(float(rng.uniform()) - 0.5) * 0.1 for _ in range(kk)] for _ in range(n)]
     a, lm = float(alpha), float(lam)
     hist = []
-    for it in range(int(iters)):
+    for _it in range(int(iters)):
         for r in range(len(rows)):
             e = predict(rows[r], w0, w, V) - t[r]
             w0 -= a * e

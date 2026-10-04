@@ -103,8 +103,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
     support = tuple(float(v) for v in (u_support or (0.0, 1.0)))
     if u_support is not None and len(support) ** len(unames) > 200_000:
         raise ValueError(
-            "discrete abduction over %d^%d candidates is too large; "
-            "pass a smaller u_support" % (len(support), len(unames))
+            f"discrete abduction over {int(len(support))}^{int(len(unames))} candidates is too large; pass a smaller u_support"
         )
 
     solutions = []
@@ -117,7 +116,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
     if solutions:
         u_hat = solutions[0]
         resid = 0.0
-        method = "discrete abduction over support %s" % (support,)
+        method = f"discrete abduction over support {support}"
     else:
         u0 = np.zeros(len(unames))
         if len(unames) == len(observed):
@@ -148,7 +147,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
             "residual": resid,
             "do": dict(do),
             "query": query,
-            "method": "Abduction-action-prediction (Pearl 2000, Sec. 1.4; %s)" % method,
+            "method": f"Abduction-action-prediction (Pearl 2000, Sec. 1.4; {method})",
         }
     )
 

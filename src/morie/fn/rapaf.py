@@ -88,15 +88,15 @@ _EPS = 1e-12
 def _norm(case_counts, rate_ratios):
     n = len(case_counts)
     if len(rate_ratios) != n:
-        raise ValueError("rapaf: %d strata of cases but %d rate ratios" % (n, len(rate_ratios)))
+        raise ValueError(f"rapaf: {int(n)} strata of cases but {int(len(rate_ratios))} rate ratios")
     if n < 2:
-        raise ValueError("rapaf: need at least 2 strata, got %d" % n)
+        raise ValueError(f"rapaf: need at least 2 strata, got {int(n)}")
     cc = [float(v) for v in case_counts]
     rr = [float(v) for v in rate_ratios]
     if any(v < 0.0 for v in cc):
         raise ValueError("rapaf: case counts must be non-negative")
     if any(v <= 0.0 for v in rr):
-        raise ValueError("rapaf: rate ratios must be positive, got %r" % (min(rr),))
+        raise ValueError(f"rapaf: rate ratios must be positive, got {min(rr)!r}")
     tot = sum(cc)
     if tot <= _EPS:
         raise ValueError("rapaf: there are no cases")
@@ -137,7 +137,7 @@ def levin_ar(prevalence, rate_ratio):
     """
     p, R = float(prevalence), float(rate_ratio)
     if not 0.0 <= p <= 1.0:
-        raise ValueError("rapaf: prevalence must be in [0, 1], got %r" % (prevalence,))
+        raise ValueError(f"rapaf: prevalence must be in [0, 1], got {prevalence!r}")
     if R <= 0.0:
         raise ValueError("rapaf: the rate ratio must be positive")
     d = 1.0 + p * (R - 1.0)
@@ -160,7 +160,7 @@ def partial_ar(case_counts, rate_ratios, baseline_map):
     n = len(cc)
     bm = [int(v) for v in baseline_map]
     if len(bm) != n:
-        raise ValueError("rapaf: %d baseline targets for %d strata" % (len(bm), n))
+        raise ValueError(f"rapaf: {int(len(bm))} baseline targets for {int(n)} strata")
     if any(not 0 <= v < n for v in bm):
         raise ValueError("rapaf: a baseline target is out of range")
     s = 0.0
@@ -188,7 +188,9 @@ def rate_ratios_from_logit(case_counts, control_counts, design, ridge=1e-8):
     D = k.mat(design)
     n = len(ca)
     if not (len(co) == len(D) == n):
-        raise ValueError("rapaf: cases, controls and design must agree in length (%d, %d, %d)" % (n, len(co), len(D)))
+        raise ValueError(
+            f"rapaf: cases, controls and design must agree in length ({int(n)}, {int(len(co))}, {int(len(D))})"
+        )
     rows, y, w = [], [], []
     for j in range(n):
         if ca[j] > 0:
@@ -221,7 +223,7 @@ def ar_confidence_interval(case_counts, rate_ratios, log_rr_se, level=0.95, draw
     cc, rr, tot = _norm(case_counts, rate_ratios)
     se = [float(v) for v in log_rr_se]
     if len(se) != len(rr):
-        raise ValueError("rapaf: %d standard errors for %d rate ratios" % (len(se), len(rr)))
+        raise ValueError(f"rapaf: {int(len(se))} standard errors for {int(len(rr))} rate ratios")
     if any(v < 0.0 for v in se):
         raise ValueError("rapaf: standard errors must be non-negative")
     if not 0.0 < float(level) < 1.0:

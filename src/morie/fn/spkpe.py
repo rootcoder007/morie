@@ -113,7 +113,7 @@ def schabenberger_kriging_pred_error(
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     P = np.atleast_2d(np.asarray(coords, dtype=float))
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
@@ -123,7 +123,7 @@ def schabenberger_kriging_pred_error(
     if T.shape[1] != P.shape[1]:
         T = T.T
     if T.shape[1] != P.shape[1]:
-        raise ValueError("target has %d coordinate columns, coords has %d." % (T.shape[1], P.shape[1]))
+        raise ValueError(f"target has {int(T.shape[1])} coordinate columns, coords has {int(P.shape[1])}.")
 
     estimated = nugget is None or psill is None or rng is None
     if estimated:

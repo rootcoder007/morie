@@ -138,7 +138,7 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate", n_trees=8, min_
     Stat Med 28(25), 3083-3107.
     """
     if weight not in WEIGHTS:
-        raise ValueError("weight must be one of %r" % (WEIGHTS,))
+        raise ValueError(f"weight must be one of {WEIGHTS!r}")
     ys = [float(v) for v in y]
     d = [1 if v else 0 for v in D]
     xs = [[float(v) for v in row] for row in X]

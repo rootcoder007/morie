@@ -62,7 +62,7 @@ def cellular_automaton(
         return n
 
     densities = [float(grid.mean())]
-    for step in range(n_steps):
+    for _step in range(n_steps):
         nb = _count_neighbors(grid)
         if rule == "life":
             birth = (grid == 0) & (nb == 3)

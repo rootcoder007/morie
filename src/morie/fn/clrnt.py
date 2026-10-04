@@ -184,7 +184,7 @@ def observed_clint_u(cl_h, fu_blood, species="human", qh=None, liver_model="well
         raise ValueError("clrnt: hepatic clearance must be positive")
     if cl >= q:
         raise ValueError(
-            "clrnt: hepatic clearance cannot reach or exceed hepatic blood flow (%.4g >= %.4g ml/min/kg)" % (cl, q)
+            f"clrnt: hepatic clearance cannot reach or exceed hepatic blood flow ({cl:.4g} >= {q:.4g} ml/min/kg)"
         )
     if liver_model == "well_stirred":
         return cl / (fu * (1.0 - cl / q))
@@ -295,7 +295,7 @@ def clrnt(
         if not isinstance(v, (list, tuple)):
             return [float(v)] * n
         if len(v) != n:
-            raise ValueError("clrnt: %s must have one entry per compound" % name)
+            raise ValueError(f"clrnt: {name} must have one entry per compound")
         return [float(t) for t in v]
 
     lp = spread(log_pd, "log_pd")

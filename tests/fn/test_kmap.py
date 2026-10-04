@@ -12,8 +12,11 @@ def test_kmap_basic():
     template = ["x", None]
     dataset = [1]
     vocab = ["a", "b"]
+
     # Loss is 1.0 if the slot is 'a', else 0.5; the search must pick 'b'.
-    model = lambda tpl, d: 1.0 if tpl[1] == "a" else 0.5
+    def model(tpl, d):
+        return 1.0 if tpl[1] == "a" else 0.5
+
     result = kamath_autoprompt_gradient_search(template, dataset, model, vocab=vocab)
 
     # RichResult is dict-like: the docstring indexes it by key.

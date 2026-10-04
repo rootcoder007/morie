@@ -19,7 +19,7 @@ def test_ca4e9_basic():
 
 def test_ca4e9_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     ybar = 0.4
     b = 2.0
     result = derivative_at_mean(ybar, b)

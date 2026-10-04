@@ -44,10 +44,7 @@ def recidivism_dml(
         covariate_cols = [
             c for c in df.select_dtypes(include=[np.number]).columns if c not in (outcome_col, treatment_col)
         ]
-    if len(covariate_cols) == 0:
-        X = np.ones((len(y), 1))
-    else:
-        X = np.asarray(df[covariate_cols], dtype=float)
+    X = np.ones((len(y), 1)) if len(covariate_cols) == 0 else np.asarray(df[covariate_cols], dtype=float)
     n = len(y)
     idx = np.arange(n)
     rng = np.random.default_rng(0)

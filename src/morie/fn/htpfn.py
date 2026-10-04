@@ -180,10 +180,10 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0
     PtP = core.crossprod(Psi)
     Chat = []
     for i in range(n):
-        rr = [sum(Psi[j][l] * Wm[i][j] for j in range(m)) for l in range(L)]
+        rr = [sum(Psi[j][ell] * Wm[i][j] for j in range(m)) for ell in range(L)]
         Chat.append(core.ridgesolve(PtP, rr, 1e-12))
-    Q = [[sum(wq[j] * Psi[j][l] * Psi[j][o] for j in range(m)) for o in range(L)] for l in range(L)]
-    Xd = [[sum(Q[l][o] * Chat[i][o] for o in range(L)) for l in range(L)] for i in range(n)]
+    Q = [[sum(wq[j] * Psi[j][ell] * Psi[j][o] for j in range(m)) for o in range(L)] for ell in range(L)]
+    Xd = [[sum(Q[ell][o] * Chat[i][o] for o in range(L)) for ell in range(L)] for i in range(n)]
     Xs = [[1.0] + Xd[i] for i in range(n)]
     K = L + 1
 
@@ -209,10 +209,10 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0
     except ValueError as exc:
         raise ValueError(
             "htp_functional_predictor: the mixed model equations are not positive "
-            "definite (%s). The genomic block is regularised by lam G^-1 but the "
+            f"definite ({exc}). The genomic block is regularised by lam G^-1 but the "
             "fixed-effect block is not, so this means the functional design Xstar "
             "is rank deficient -- typically n_basis >= n, or curves that are "
-            "identical across lines." % (exc,)
+            "identical across lines."
         )
     # The Cholesky solve returns a ZERO VECTOR, silently and without error,
     # when the coefficient matrix is not positive definite. Check that the
@@ -229,13 +229,13 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0
     if not worst <= 1e-6 * scale:
         raise ValueError(
             "htp_functional_predictor: the mixed model equations did not solve "
-            "(residual %.3g); the coefficient matrix is not positive definite" % worst
+            f"(residual {worst:.3g}); the coefficient matrix is not positive definite"
         )
 
     beta = list(sol[:K])
     ghat = list(sol[K:])
     mu = beta[0]
-    beta_func = [sum(beta[l + 1] * Psi[j][l] for l in range(L)) for j in range(m)]
+    beta_func = [sum(beta[ell + 1] * Psi[j][ell] for ell in range(L)) for j in range(m)]
     fitted = [sum(Xs[i][k] * beta[k] for k in range(K)) + ghat[i] for i in range(n)]
     sse = 0.0
     for i in range(n):
@@ -250,9 +250,9 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0
             rows = [Psi[q] for q in range(m) if q != j]
             xs_ = [Wm[i][q] for q in range(m) if q != j]
             A = core.crossprod(rows)
-            rr = [sum(rows[q][l] * xs_[q] for q in range(m - 1)) for l in range(L)]
+            rr = [sum(rows[q][ell] * xs_[q] for q in range(m - 1)) for ell in range(L)]
             cj = core.ridgesolve(A, rr, 1e-12)
-            pred = sum(cj[l] * Psi[j][l] for l in range(L))
+            pred = sum(cj[ell] * Psi[j][ell] for ell in range(L))
             d = Wm[i][j] - pred
             cv1 += d * d
 

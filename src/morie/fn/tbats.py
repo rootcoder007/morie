@@ -62,10 +62,7 @@ def tbats(y, seasonal_periods=None, use_box_cox=True, p=0, q=0, m=1, verbose=Fal
             lambdas = np.arange(-2, 2, 0.1)
             logliks = []
             for lam in lambdas:
-                if abs(lam) < 1e-6:
-                    x_bc = np.log(x)
-                else:
-                    x_bc = ((x**lam) - 1) / lam
+                x_bc = np.log(x) if abs(lam) < 1e-06 else (x**lam - 1) / lam
                 loglik = -0.5 * np.sum((x_bc - np.mean(x_bc)) ** 2)
                 logliks.append(loglik)
             return lambdas[np.argmax(logliks)]
@@ -75,10 +72,7 @@ def tbats(y, seasonal_periods=None, use_box_cox=True, p=0, q=0, m=1, verbose=Fal
         lambda_bc = 1.0
 
     # Apply transformation
-    if abs(lambda_bc) < 1e-6:
-        y_t = np.log(y)
-    else:
-        y_t = ((y**lambda_bc) - 1) / lambda_bc
+    y_t = np.log(y) if abs(lambda_bc) < 1e-06 else (y**lambda_bc - 1) / lambda_bc
 
     # Simplified fit: use exponential smoothing for level + trend
     alpha = 0.1

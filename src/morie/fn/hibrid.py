@@ -232,22 +232,22 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
     if n == 0:
         raise ValueError("hibrid: no crosses")
     if len(P1) != n or len(P2) != n:
-        raise ValueError("hibrid: %d phenotypes but %d and %d parental genotype rows" % (n, len(P1), len(P2)))
+        raise ValueError(f"hibrid: {int(n)} phenotypes but {int(len(P1))} and {int(len(P2))} parental genotype rows")
     m = len(P1[0])
     if any(len(r) != m for r in P1) or any(len(r) != m for r in P2):
-        raise ValueError("hibrid: both parents must be typed at the same %d markers" % m)
+        raise ValueError(f"hibrid: both parents must be typed at the same {int(m)} markers")
     Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     p = len(Xm[0])
     if n - p < 2:
         raise ValueError(
-            "hibrid: %d crosses and %d fixed effects leave too little information for two variance components" % (n, p)
+            f"hibrid: {int(n)} crosses and {int(p)} fixed effects leave too little information for two variance components"
         )
 
     G1 = [[sum(P1[i][a] * P1[j][a] for a in range(m)) / m for j in range(n)] for i in range(n)]
     G2 = [[sum(P2[i][a] * P2[j][a] for a in range(m)) / m for j in range(n)] for i in range(n)]
     Kg = [[G1[i][j] + G2[i][j] for j in range(n)] for i in range(n)]
     Ks = [[G1[i][j] * G2[i][j] for j in range(n)] for i in range(n)]
-    I = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
 
     fixed_sca = sigma2_sca is not None
     path = []
@@ -257,8 +257,8 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
         # is fitted as exactly that -- one ratio, nothing else moving
         Kz = [[0.0] * n for _ in range(n)]
 
-        def f1(l):
-            return _reml_at(math.exp(l), 1e300, Kg, Kz, yv, Xm)[0]
+        def f1(ell):
+            return _reml_at(math.exp(ell), 1e300, Kg, Kz, yv, Xm)[0]
 
         la = math.exp(_gridmax(f1, _LO, _HI))
         path.append(f1(math.log(la)))
@@ -273,10 +273,10 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
         path.append(_reml_at(la, ls, Kg, Ks_used, yv, Xm)[0])
         prev_la = prev_ls = None
         for it in range(1, int(max_iter) + 1):
-            prev = path[-1]
+            path[-1]
 
-            def fa(l):
-                return _reml_at(math.exp(l), ls, Kg, Ks_used, yv, Xm)[0]
+            def fa(ell):
+                return _reml_at(math.exp(ell), ls, Kg, Ks_used, yv, Xm)[0]
 
             la = math.exp(_gridmax(fa, _LO, _HI))
             if fixed_sca:
@@ -286,8 +286,8 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
                 ls = s2e_now / max(float(sigma2_sca), 1e-300)
             else:
 
-                def fs(l):
-                    return _reml_at(la, math.exp(l), Kg, Ks_used, yv, Xm)[0]
+                def fs(ell):
+                    return _reml_at(la, math.exp(ell), Kg, Ks_used, yv, Xm)[0]
 
                 ls = math.exp(_gridmax(fs, _LO, _HI))
             cur = _reml_at(la, ls, Kg, Ks_used, yv, Xm)[0]
@@ -318,7 +318,7 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
         if len(Q1) != len(Q2):
             raise ValueError("hibrid: p1_new and p2_new must describe the same crosses")
         if any(len(rw) != m for rw in Q1) or any(len(rw) != m for rw in Q2):
-            raise ValueError("hibrid: new parents must be typed at the same %d markers" % m)
+            raise ValueError(f"hibrid: new parents must be typed at the same {int(m)} markers")
         pred_new = []
         for u in range(len(Q1)):
             c1 = [sum(Q1[u][a] * P1[j][a] for a in range(m)) / m for j in range(n)]

@@ -114,11 +114,11 @@ def _panel(Y):
         raise ValueError("didfst: the panel is empty")
     T = len(M[0])
     if T < 2:
-        raise ValueError("didfst: need at least 2 periods, got %d" % T)
+        raise ValueError(f"didfst: need at least 2 periods, got {int(T)}")
     for r, row in enumerate(M):
         if len(row) != T:
             raise ValueError(
-                "didfst: row %d has %d periods, expected %d -- the panel must be balanced" % (r, len(row), T)
+                f"didfst: row {int(r)} has {int(len(row))} periods, expected {int(T)} -- the panel must be balanced"
             )
     return [[float(v) for v in row] for row in M], len(M), T
 
@@ -133,7 +133,7 @@ def panel_differences(Y, event_time):
     M, n, T = _panel(Y)
     H = int(event_time)
     if not 1 <= H < T:
-        raise ValueError("didfst: event_time must satisfy 1 <= H < T = %d, got %d" % (T, H))
+        raise ValueError(f"didfst: event_time must satisfy 1 <= H < T = {int(T)}, got {int(H)}")
     out = []
     for row in M:
         pre = sum(row[:H]) / float(H)
@@ -153,13 +153,13 @@ def did_estimate(delta, D, weights=None):
     Dv = [float(v) for v in k.vec(D)]
     n = len(d)
     if len(Dv) != n:
-        raise ValueError("didfst: %d differences but %d adoption indicators" % (n, len(Dv)))
+        raise ValueError(f"didfst: {int(n)} differences but {int(len(Dv))} adoption indicators")
     for v in Dv:
         if v not in (0.0, 1.0):
-            raise ValueError("didfst: D must be 0/1, got %r" % (v,))
+            raise ValueError(f"didfst: D must be 0/1, got {v!r}")
     w = [1.0] * n if weights is None else [float(v) for v in weights]
     if len(w) != n:
-        raise ValueError("didfst: %d weights for %d units" % (len(w), n))
+        raise ValueError(f"didfst: {int(len(w))} weights for {int(n)} units")
     if any(v < 0.0 for v in w):
         raise ValueError("didfst: weights must be non-negative")
     st = sum(w[i] * Dv[i] for i in range(n))
@@ -167,8 +167,8 @@ def did_estimate(delta, D, weights=None):
     if st <= _EPS or sc <= _EPS:
         raise ValueError(
             "didfst: the comparison needs weight on both "
-            "adopters and non-adopters (treated %.3g, "
-            "control %.3g)" % (st, sc)
+            f"adopters and non-adopters (treated {st:.3g}, "
+            f"control {sc:.3g})"
         )
     mt = sum(w[i] * Dv[i] * d[i] for i in range(n)) / st
     mc = sum(w[i] * (1.0 - Dv[i]) * d[i] for i in range(n)) / sc
@@ -216,7 +216,7 @@ def did_forest(
     Xm = k.mat(X)
     n = len(delta)
     if len(Xm) != n:
-        raise ValueError("didfst: %d covariate rows for %d panel units" % (len(Xm), n))
+        raise ValueError(f"didfst: {int(len(Xm))} covariate rows for {int(n)} panel units")
     Dv = [float(v) for v in k.vec(D)]
     flat, _, _, _, _ = did_estimate(delta, Dv)
     trees, bags, s = grow_forest(
@@ -269,10 +269,10 @@ def placebo_did(Y, D, event_time, split=None):
     M, n, T = _panel(Y)
     H = int(event_time)
     if H < 2:
-        raise ValueError("didfst: a pre-period placebo needs at least 2 pre-periods, event_time is %d" % H)
+        raise ValueError(f"didfst: a pre-period placebo needs at least 2 pre-periods, event_time is {int(H)}")
     cut = H // 2 if split is None else int(split)
     if not 1 <= cut < H:
-        raise ValueError("didfst: the placebo split must satisfy 1 <= split < %d, got %d" % (H, cut))
+        raise ValueError(f"didfst: the placebo split must satisfy 1 <= split < {int(H)}, got {int(cut)}")
     pre = [row[:H] for row in M]
     d = panel_differences(pre, cut)
     est, mt, mc, _, _ = did_estimate(d, D)
@@ -311,9 +311,9 @@ def group_time_att(Y, first_treated, comparison="not-yet-treated"):
     """
     M, n, T = _panel(Y)
     if comparison not in _COMPARISON:
-        raise ValueError("didfst: comparison must be one of %s, got %r" % (", ".join(_COMPARISON), comparison))
+        raise ValueError("didfst: comparison must be one of {}, got {!r}".format(", ".join(_COMPARISON), comparison))
     if len(first_treated) != n:
-        raise ValueError("didfst: %d adoption times for %d units" % (len(first_treated), n))
+        raise ValueError(f"didfst: {int(len(first_treated))} adoption times for {int(n)} units")
     G = []
     for v in first_treated:
         if v is None:
@@ -326,7 +326,7 @@ def group_time_att(Y, first_treated, comparison="not-yet-treated"):
         g = int(f)
         if not 2 <= g <= T:
             raise ValueError(
-                "didfst: adoption time %d is outside 2..T = %d (a unit treated in period 1 has no pre-period)" % (g, T)
+                f"didfst: adoption time {int(g)} is outside 2..T = {int(T)} (a unit treated in period 1 has no pre-period)"
             )
         G.append(g)
     cohorts = sorted({g for g in G if g is not None})
@@ -373,7 +373,7 @@ def aggregate_att(gt, scheme="simple", horizon=None):
         one number per adoption cohort, averaged over its post periods.
     """
     if scheme not in ("simple", "event", "cohort"):
-        raise ValueError("didfst: scheme must be simple, event or cohort, got %r" % (scheme,))
+        raise ValueError(f"didfst: scheme must be simple, event or cohort, got {scheme!r}")
     cells = gt["att"] if isinstance(gt, (dict, RichResult)) else gt
     if not cells:
         raise ValueError("didfst: nothing to aggregate")

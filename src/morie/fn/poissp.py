@@ -93,12 +93,12 @@ def _adjacency(W):
         raise ValueError("poissp: W must be a square weight matrix")
     for i in range(n):
         if A[i][i] != 0.0:
-            raise ValueError("poissp: W must have a zero diagonal; area %d is its own neighbour" % i)
+            raise ValueError(f"poissp: W must have a zero diagonal; area {int(i)} is its own neighbour")
         for j in range(n):
             if A[i][j] < 0.0:
                 raise ValueError("poissp: weights must be non-negative")
             if abs(A[i][j] - A[j][i]) > 1e-12:
-                raise ValueError("poissp: W must be symmetric; w[%d][%d] and w[%d][%d] differ" % (i, j, j, i))
+                raise ValueError(f"poissp: W must be symmetric; w[{int(i)}][{int(j)}] and w[{int(j)}][{int(i)}] differ")
     return A, n
 
 
@@ -201,7 +201,7 @@ def _fit_mode(y, X, off, Q, constrain, iters, tol, ridge):
     if p and all(abs(X[i][0] - 1.0) < 1e-12 for i in range(n)):
         beta[0] = math.log(tot_y / tot_e) if tot_y > 0 and tot_e > 0 else 0.0
     u = [0.0] * n
-    dim = p + n
+    p + n
     for _ in range(int(iters)):
         eta = [sum(X[i][a] * beta[a] for a in range(p)) + u[i] for i in range(n)]
         m = [off[i] * math.exp(eta[i]) for i in range(n)]
@@ -300,12 +300,12 @@ def poissp(
         raise ValueError("poissp: counts must be integers")
     off = [1.0] * n if offset is None else [float(v) for v in k.vec(offset)]
     if len(off) != n:
-        raise ValueError("poissp: %d counts but %d offsets" % (n, len(off)))
+        raise ValueError(f"poissp: {int(n)} counts but {int(len(off))} offsets")
     if any(v <= 0.0 for v in off):
         raise ValueError("poissp: offsets must be positive")
     Xd = k.design(X, n)
     if len(Xd) != n:
-        raise ValueError("poissp: %d counts but %d covariate rows" % (n, len(Xd)))
+        raise ValueError(f"poissp: {int(n)} counts but {int(len(Xd))} covariate rows")
 
     if W is None:
         Q = [[0.0] * n for _ in range(n)]
@@ -323,8 +323,8 @@ def poissp(
             b = rho_bounds(W)
             if not (b["lower"] < rho_used < b["upper"]):
                 raise ValueError(
-                    "poissp: rho = %g is outside the propriety interval "
-                    "(%g, %g); the CAR prior would be improper" % (rho_used, b["lower"], b["upper"])
+                    "poissp: rho = {:g} is outside the propriety interval "
+                    "({:g}, {:g}); the CAR prior would be improper".format(rho_used, b["lower"], b["upper"])
                 )
         if tau is None:
             grid = tau_grid if tau_grid is not None else [0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0, 25.0, 50.0, 100.0]

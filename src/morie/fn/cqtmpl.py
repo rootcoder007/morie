@@ -97,7 +97,7 @@ def cim(y, left, right, r_left, r_right, cofactors=(), max_iter=200, tol=1e-10):
     cof = [[float(v) for v in c] for c in cofactors]
     for c in cof:
         if len(c) != n:
-            raise ValueError("cqtmpl: every cofactor must have %d entries" % n)
+            raise ValueError(f"cqtmpl: every cofactor must have {int(n)} entries")
     G = [_im.genotype_probabilities(left[i], right[i], r_left, r_right) for i in range(n)]
     my = sum(y) / n
     beta = [my, 0.1 * (max(y) - min(y) + 1e-12)] + [0.0] * len(cof)
@@ -119,7 +119,7 @@ def cim(y, left, right, r_left, r_right, cofactors=(), max_iter=200, tol=1e-10):
             m0, m1 = G[i][0] * d0, G[i][1] * d1
             tot = m0 + m1
             if tot <= 0.0:
-                raise ValueError("cqtmpl: the mixture vanished at individual %d" % i)
+                raise ValueError(f"cqtmpl: the mixture vanished at individual {int(i)}")
             post[i] = m1 / tot
             ll += math.log(tot / math.sqrt(2.0 * math.pi * s2))
         history.append(ll)

@@ -92,9 +92,9 @@ def schabenberger_cov_param_estimation_kriging(
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     if method not in METHODS:
-        raise ValueError("method must be one of %s, got %r." % (METHODS, method))
+        raise ValueError(f"method must be one of {METHODS}, got {method!r}.")
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
     Xd = np.ones((n, 1)) if X is None else add_intercept(np.atleast_2d(np.asarray(X, dtype=float)))
@@ -185,7 +185,7 @@ def schabenberger_cov_param_estimation_kriging(
                 else None
             ),
             "n": n,
-            "method": "Covariance-parameter estimation for kriging (%s)" % method.upper(),
+            "method": f"Covariance-parameter estimation for kriging ({method.upper()})",
         }
     )
 

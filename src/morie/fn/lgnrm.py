@@ -92,10 +92,9 @@ def lgnrm(
             X = X.T
         if X.shape[0] != n:
             raise ValueError("covariates rows must match length of time.")
-        p = X.shape[1]
+        X.shape[1]
     else:
         X = np.ones((n, 1))
-        p = 0  # we count mu separately
 
     # Parameter vector: [mu, beta (p elements), log_sigma]
     def _neg_loglik(params):
@@ -108,10 +107,7 @@ def lgnrm(
             log_sigma = params[1]
 
         sigma = np.exp(log_sigma)
-        if has_covariates:
-            eta = mu + X[:, 1:] @ beta if X.shape[1] > 1 else np.full(n, mu)
-        else:
-            eta = np.full(n, mu)
+        eta = (mu + X[:, 1:] @ beta if X.shape[1] > 1 else np.full(n, mu)) if has_covariates else np.full(n, mu)
 
         z = (log_t - eta) / sigma
         # Log-likelihood contributions

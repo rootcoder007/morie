@@ -102,20 +102,18 @@ def generalized_treatment_msm(y, A, H, method="weight", degree=1, n_strata=5, do
         r["estimate"]
     """
     if method not in _METHODS:
-        raise ValueError("generalized_treatment_msm: method must be one of %r, got %r" % (_METHODS, method))
+        raise ValueError(f"generalized_treatment_msm: method must be one of {_METHODS!r}, got {method!r}")
     deg = int(degree)
     if deg < 1:
-        raise ValueError("generalized_treatment_msm: degree must be at least 1, got %r" % (degree,))
+        raise ValueError(f"generalized_treatment_msm: degree must be at least 1, got {degree!r}")
     yv = k.vec(y)
     av = k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("generalized_treatment_msm: %d outcomes but %d doses" % (n, len(av)))
+        raise ValueError(f"generalized_treatment_msm: {int(n)} outcomes but {int(len(av))} doses")
     if len(set(av)) < 3:
         raise ValueError(
-            "generalized_treatment_msm: the dose takes %d distinct values; "
-            "this is the continuous-treatment estimator and a binary or "
-            "near-binary exposure belongs in a binary MSM" % len(set(av))
+            f"generalized_treatment_msm: the dose takes {int(len(set(av)))} distinct values; this is the continuous-treatment estimator and a binary or near-binary exposure belongs in a binary MSM"
         )
 
     if method == "weight":
@@ -167,11 +165,10 @@ def gps_subclassify(y, A, H, n_strata=5, degree=1):
     n = len(yv)
     J = int(n_strata)
     if J < 2:
-        raise ValueError("gps_subclassify: need at least 2 strata, got %r" % (n_strata,))
+        raise ValueError(f"gps_subclassify: need at least 2 strata, got {n_strata!r}")
     if n < 4 * J:
         raise ValueError(
-            "gps_subclassify: %d observations cannot support %d strata; "
-            "each needs enough points to fit a degree-%d dose model" % (n, J, degree)
+            f"gps_subclassify: {int(n)} observations cannot support {int(J)} strata; each needs enough points to fit a degree-{int(degree)} dose model"
         )
     _, info = k.treatment_density(av, H, kind="normal")
     mu = list(info["mu"])

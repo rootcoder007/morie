@@ -194,7 +194,7 @@ def msa_row_attention(msa, bias, scale=None, gate=None):
     for k in range(s):
         seq = msa[k]
         A = []
-        O = []
+        O_ = []
         for i in range(r):
             logits = [_w.dot(seq[i], seq[j]) * scale + bias[i][j] for j in range(r)]
             a = softmax(logits)
@@ -202,9 +202,9 @@ def msa_row_attention(msa, bias, scale=None, gate=None):
             row = [_w.csum(a[j] * seq[j][d] for j in range(r)) for d in range(c)]
             if gate is not None:
                 row = [row[d] * float(gate[d]) for d in range(c)]
-            O.append(row)
+            O_.append(row)
         attn.append(A)
-        out.append(O)
+        out.append(O_)
     return attn, out
 
 

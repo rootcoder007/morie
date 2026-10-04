@@ -318,7 +318,7 @@ def _splice_terms(t, v, lo, hi):
     """
     terms = set()
     fwd = t["strand"] == "+"
-    for k, (ia, ib) in enumerate(_introns(t)):
+    for _k, (ia, ib) in enumerate(_introns(t)):
         # donor side of this intron in transcript orientation
         d_start, a_end = (ia, ib) if fwd else (ib, ia)
         step = 1 if fwd else -1
@@ -452,7 +452,7 @@ def _hgvs_c(t, v, seq, gpos, cds_first):
         k = idx[v["pos"]]
         ref = seq[k]
         alt = v["alt"] if t["strand"] == "+" else _COMPLEMENT[v["alt"]]
-        return "c.%d%s>%s" % (c_of(k), ref, alt)
+        return f"c.{int(c_of(k))}{ref}>{alt}"
     if kind == "insertion":
         ins = v["alt"][1:]
         if t["strand"] == "-":
@@ -461,7 +461,7 @@ def _hgvs_c(t, v, seq, gpos, cds_first):
         # 3' shift: slide the insertion right while it repeats
         while k + len(ins) <= len(seq) and seq[k : k + len(ins)] == ins:
             k += len(ins)
-        return "c.%d_%dins%s" % (c_of(k - 1), c_of(k), ins)
+        return f"c.{int(c_of(k - 1))}_{int(c_of(k))}ins{ins}"
     ks = sorted(idx[p] for p in range(lo, hi + 1) if p in idx)
     if not ks:
         return None
@@ -471,8 +471,8 @@ def _hgvs_c(t, v, seq, gpos, cds_first):
         a, b = a + n, b + n
     dele = seq[a : b + 1]
     if a == b:
-        return "c.%ddel%s" % (c_of(a), dele)
-    return "c.%d_%ddel%s" % (c_of(a), c_of(b), dele)
+        return f"c.{int(c_of(a))}del{dele}"
+    return f"c.{int(c_of(a))}_{int(c_of(b))}del{dele}"
 
 
 def _hgvs_p(info, terms):
@@ -481,14 +481,14 @@ def _hgvs_p(info, terms):
     ref, alt = info.get("ref_aa"), info.get("alt_aa")
     pos = info["protein_position"]
     if "frameshift_variant" in terms:
-        return "p.%s%dfs" % (_AA3.get(ref, "Xaa"), pos)
+        return "p.{}{}fs".format(_AA3.get(ref, "Xaa"), int(pos))
     if not ref:
         return None
     if "synonymous_variant" in terms or "stop_retained_variant" in terms or "start_retained_variant" in terms:
-        return "p.%s%d=" % (_AA3.get(ref, "Xaa"), pos)
+        return "p.{}{}=".format(_AA3.get(ref, "Xaa"), int(pos))
     if not alt:
         return None
-    return "p.%s%d%s" % (_AA3.get(ref, "Xaa"), pos, _AA3.get(alt, "Xaa"))
+    return "p.{}{}{}".format(_AA3.get(ref, "Xaa"), int(pos), _AA3.get(alt, "Xaa"))
 
 
 # ------------------------------------------------------------- annotate
@@ -549,7 +549,7 @@ def annotate(variant, transcripts, genome, upstream=5000, downstream=5000):
             if not terms:
                 terms.add("intron_variant")
         record = {
-            "variant": v.get("id") or "%s:%d%s>%s" % (v["chrom"], v["pos"], v["ref"], v["alt"]),
+            "variant": v.get("id") or "{}:{}{}>{}".format(v["chrom"], int(v["pos"]), v["ref"], v["alt"]),
             "transcript": t["id"],
             "gene": t["gene"],
             "biotype": t["biotype"],
@@ -566,7 +566,7 @@ def annotate(variant, transcripts, genome, upstream=5000, downstream=5000):
     if not out:
         out.append(
             {
-                "variant": v.get("id") or "%s:%d%s>%s" % (v["chrom"], v["pos"], v["ref"], v["alt"]),
+                "variant": v.get("id") or "{}:{}{}>{}".format(v["chrom"], int(v["pos"]), v["ref"], v["alt"]),
                 "transcript": None,
                 "gene": None,
                 "biotype": None,

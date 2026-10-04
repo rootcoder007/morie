@@ -13,7 +13,7 @@ def _xgb_build(X, g, h, depth, max_depth, lam, min_child):
     best_feat, best_thr = 0, 0.0
     G, H = g.sum(), h.sum()
     for j in range(X.shape[1]):
-        thresholds = np.unique(X[:, j])
+        np.unique(X[:, j])
         GL, HL = 0.0, 0.0
         sorted_idx = np.argsort(X[:, j])
         for idx in sorted_idx:

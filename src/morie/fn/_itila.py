@@ -31,10 +31,10 @@ def r3post(r, f):
     """(1.18) p.9 -- posterior over the source bit of an R3 codeword."""
     r = [int(b) for b in r]
     if len(r) != 3 or any(b not in (0, 1) for b in r):
-        raise ValueError("r must be three bits, got %r" % (r,))
+        raise ValueError(f"r must be three bits, got {r!r}")
     f = float(f)
     if not 0.0 < f < 1.0:
-        raise ValueError("f must lie strictly in (0, 1), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 1), got {f!r}")
     lik = []
     for s in (0, 1):
         p = 1.0
@@ -55,7 +55,7 @@ def cbcapx(n):
     """(1.40) p.17 -- Gaussian approximation to the central binomial."""
     n = int(n)
     if n < 1:
-        raise ValueError("n must be at least 1, got %r" % (n,))
+        raise ValueError(f"n must be at least 1, got {n!r}")
     approx = 2.0**n / math.sqrt(2.0 * math.pi * n / 4.0)
     exact = float(math.comb(n, n // 2))
     return {
@@ -77,7 +77,7 @@ def binsumga(n):
     """
     n = int(n)
     if n < 1:
-        raise ValueError("n must be at least 1, got %r" % (n,))
+        raise ValueError(f"n must be at least 1, got {n!r}")
     var = n / 4.0
     gsum = math.sqrt(2.0 * math.pi * var)
     exact = float(math.comb(n, n // 2))
@@ -95,9 +95,9 @@ def repcpb(n, f):
     n = int(n)
     f = float(f)
     if n < 1 or n % 2 == 0:
-        raise ValueError("n must be a positive odd integer, got %r" % (n,))
+        raise ValueError(f"n must be a positive odd integer, got {n!r}")
     if not 0.0 < f < 1.0:
-        raise ValueError("f must lie strictly in (0, 1), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 1), got {f!r}")
     k = (n + 1) // 2
     leading = math.comb(n, k) * f**k * (1.0 - f) ** (n - k)
     half = (n - 1) / 2.0
@@ -121,9 +121,9 @@ def repcn(pb, f, n0=68.0, iters=3):
     pb = float(pb)
     f = float(f)
     if not 0.0 < pb < 1.0:
-        raise ValueError("pb must lie strictly in (0, 1), got %r" % (pb,))
+        raise ValueError(f"pb must lie strictly in (0, 1), got {pb!r}")
     if not 0.0 < f < 0.5:
-        raise ValueError("f must lie strictly in (0, 0.5), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 0.5), got {f!r}")
     n = float(n0)
     denom = math.log10(4.0 * f * (1.0 - f))
     half = float("nan")
@@ -319,7 +319,7 @@ def sexbeta(gamma):
     """(19.7) p.271 -- dynamic-equilibrium variance factor 1/(1 - gamma)."""
     gamma = float(gamma)
     if not 0.0 <= gamma < 1.0:
-        raise ValueError("gamma must lie in [0, 1), got %r" % (gamma,))
+        raise ValueError(f"gamma must lie in [0, 1), got {gamma!r}")
     onep = 1.0 / (1.0 - gamma)
     return {"onepbeta": onep, "beta": onep - 1.0, "gamma": gamma}
 
@@ -418,7 +418,7 @@ def postgapx(dw, a):
     k = int(np.shape(dw)[0])
     sh = np.shape(a)
     if sh[0] != k or sh[1] != k:
-        raise ValueError("A must be %d x %d to match dw" % (k, k))
+        raise ValueError(f"A must be {int(k)} x {int(k)} to match dw")
     quad = float(np.dot(dw, np.dot(a, dw)))
     cov = np._pinv(a)
     sd = [math.sqrt(abs(float(cov[i][i]))) for i in range(k)]

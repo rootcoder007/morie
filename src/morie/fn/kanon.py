@@ -50,7 +50,7 @@ def k_anonymity_check(y, quasi_ids, k):
     counts = {}
     order = []
     for row in rows:
-        key = "|".join("%.12g" % v for v in row)
+        key = "|".join(f"{v:.12g}" for v in row)
         if key not in counts:
             counts[key] = 0
             order.append(key)

@@ -108,12 +108,10 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True, kind="binary", t
         r["estimate"]
     """
     if contrast not in ("cumulative", "final", "everexposed"):
-        raise ValueError(
-            "laggedval_iptw: contrast must be 'cumulative', 'final' or 'everexposed', got %r" % (contrast,)
-        )
+        raise ValueError(f"laggedval_iptw: contrast must be 'cumulative', 'final' or 'everexposed', got {contrast!r}")
     lag = int(lag)
     if lag < 0:
-        raise ValueError("laggedval_iptw: lag must be non-negative, got %r" % (lag,))
+        raise ValueError(f"laggedval_iptw: lag must be non-negative, got {lag!r}")
     A_hist = _as_history(A)
     K = len(A_hist)
     L_hist = _as_history(H, allow_none=True)
@@ -124,7 +122,7 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True, kind="binary", t
     for kk in range(K):
         if len(k.vec(A_hist[kk])) != n:
             raise ValueError(
-                "laggedval_iptw: outcome has %d rows but treatment at time %d has %d" % (n, kk, len(k.vec(A_hist[kk])))
+                f"laggedval_iptw: outcome has {int(n)} rows but treatment at time {int(kk)} has {int(len(k.vec(A_hist[kk])))}"
             )
 
     # Sec. 21.2's product, with the lagged design at each time point.

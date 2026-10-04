@@ -74,7 +74,7 @@ def embed(series, E=2, tau=1):
         raise ValueError("cnvlfc: the delay must be at least 1")
     need = (e - 1) * t
     if len(v) <= need + 1:
-        raise ValueError("cnvlfc: %d points cannot support dimension %d at delay %d" % (len(v), e, t))
+        raise ValueError(f"cnvlfc: {int(len(v))} points cannot support dimension {int(e)} at delay {int(t)}")
     idx = list(range(need, len(v)))
     pts = [[v[i - k * t] for k in range(e)] for i in idx]
     return {"points": pts, "index": idx, "E": e, "tau": t}
@@ -103,7 +103,7 @@ def cross_map(driver, response, E=2, tau=1, library=None, seed=1, exclude=0):
     X = [float(v) for v in driver]
     Y = [float(v) for v in response]
     if len(X) != len(Y):
-        raise ValueError("cnvlfc: the two series have %d and %d points" % (len(X), len(Y)))
+        raise ValueError(f"cnvlfc: the two series have {int(len(X))} and {int(len(Y))} points")
     em = embed(Y, E, tau)
     pts, idx = em["points"], em["index"]
     m = len(pts)
@@ -113,9 +113,9 @@ def cross_map(driver, response, E=2, tau=1, library=None, seed=1, exclude=0):
     else:
         L = int(library)
         if k + 1 > L:
-            raise ValueError("cnvlfc: a library of %d points cannot supply %d neighbours" % (L, k))
+            raise ValueError(f"cnvlfc: a library of {int(L)} points cannot supply {int(k)} neighbours")
         if m < L:
-            raise ValueError("cnvlfc: the library asks for %d points but only %d are embeddable" % (L, m))
+            raise ValueError(f"cnvlfc: the library asks for {int(L)} points but only {int(m)} are embeddable")
         rng = np.random.default_rng(int(seed))
         start = int(rng.random() * (m - L + 1)) % (m - L + 1)
         lib = list(range(start, start + L))
@@ -127,10 +127,7 @@ def cross_map(driver, response, E=2, tau=1, library=None, seed=1, exclude=0):
             continue
         d = sorted((math.sqrt(sum((pts[a][c] - pts[b][c]) ** 2 for c in range(len(pts[a])))), b) for b in cand)[:k]
         d1 = d[0][0]
-        if d1 <= 0:
-            w = [1.0 if j == 0 else 0.0 for j in range(k)]
-        else:
-            w = [math.exp(-dist / d1) for dist, _b in d]
+        w = [1.0 if j == 0 else 0.0 for j in range(k)] if d1 <= 0 else [math.exp(-dist / d1) for dist, _b in d]
         sw = sum(w)
         w = [t / sw for t in w]
         est = sum(w[j] * X[idx[d[j][1]]] for j in range(k))
@@ -216,7 +213,7 @@ def coupled_logistic(n, rx=3.8, ry=3.5, bxy=0.0, byx=0.1, x0=0.4, y0=0.2, burn=3
         x, y = xn, yn
         if not (math.isfinite(x) and math.isfinite(y)):
             raise ValueError(
-                "cnvlfc: the coupled map diverged at step %d; the parameters are outside the bounded regime" % i
+                f"cnvlfc: the coupled map diverged at step {int(i)}; the parameters are outside the bounded regime"
             )
         if i >= int(burn):
             X.append(x)

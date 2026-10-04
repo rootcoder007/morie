@@ -29,11 +29,11 @@ def moods(x, y, axis=0, cdf=None):
         raise ValueError("Both samples must have ≥1 observation")
 
     combined = np.concatenate([x, y])
-    med = np.median(combined)
+    np.median(combined)
 
     # Scores: (rank - (n+1)/2)² for each observation's position
     n = len(combined)
-    indices = sp_stats.rankdata(combined)
+    sp_stats.rankdata(combined)
 
     scores_x = []
     scores_y = []
@@ -52,7 +52,7 @@ def moods(x, y, axis=0, cdf=None):
         scores_y.append((rank_i - (n + 1) / 2) ** 2)
 
     M_x = np.sum(scores_x)
-    M_y = np.sum(scores_y)
+    np.sum(scores_y)
 
     E_M = n_x * (n**2 - 1) / 12
     Var_M = n_x * n_y * (n**2 - 1) * (n**2 - 4) / (180 * (n - 1))

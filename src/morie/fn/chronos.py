@@ -104,7 +104,7 @@ def mean_scale(x, context=None):
         raise ValueError("chronos: the series is empty")
     C = len(v) if context is None else int(context)
     if C < 1 or len(v) < C:
-        raise ValueError("chronos: the context length must lie in 1..%d, got %d" % (len(v), C))
+        raise ValueError(f"chronos: the context length must lie in 1..{int(len(v))}, got {int(C)}")
     s = sum(abs(q) for q in v[:C]) / C
     if s <= _EPS:
         return {
@@ -120,7 +120,7 @@ def uniform_bins(lo=-15.0, hi=15.0, n_bins=4096):
     r"""Evenly spaced centres with edges exactly midway between them."""
     B = int(n_bins)
     if B < 2:
-        raise ValueError("chronos: need at least 2 bins, got %d" % B)
+        raise ValueError(f"chronos: need at least 2 bins, got {int(B)}")
     if float(hi) <= float(lo):
         raise ValueError("chronos: hi must exceed lo")
     centers = [float(lo) + (float(hi) - float(lo)) * i / (B - 1) for i in range(B)]
@@ -138,7 +138,7 @@ def quantile_bins(samples, n_bins=4096):
     v = sorted(float(q) for q in k.vec(samples))
     B = int(n_bins)
     if len(v) < B:
-        raise ValueError("chronos: %d samples cannot define %d quantile bins" % (len(v), B))
+        raise ValueError(f"chronos: {int(len(v))} samples cannot define {int(B)} quantile bins")
     centers = [v[min(len(v) - 1, int((i + 0.5) * len(v) / B))] for i in range(B)]
     centers = sorted(set(centers))
     if len(centers) < 2:
@@ -189,7 +189,7 @@ def dequantize(tokens, bins):
         if j in (PAD, EOS):
             continue
         if not 0 <= j < len(c):
-            raise ValueError("chronos: token %d is outside the vocabulary of %d bins" % (j, len(c)))
+            raise ValueError(f"chronos: token {int(j)} is outside the vocabulary of {int(len(c))} bins")
         out.append(c[j])
     return out
 
@@ -233,7 +233,7 @@ def forecast_summary(token_probs, bins, quantiles=(0.1, 0.5, 0.9)):
     p = [float(q) for q in k.vec(token_probs)]
     c = bins["centers"]
     if len(p) != len(c):
-        raise ValueError("chronos: %d probabilities for %d bins" % (len(p), len(c)))
+        raise ValueError(f"chronos: {int(len(p))} probabilities for {int(len(c))} bins")
     tot = sum(p)
     if tot <= _EPS:
         raise ValueError("chronos: the predicted distribution has no mass")

@@ -20,7 +20,7 @@ def _vec(x, name, n=None):
     if n is not None and len(v) == 1:
         v = v * n
     if n is not None and len(v) != n:
-        raise ValueError("%s must have one entry per item (got %d, expected %d)" % (name, len(v), n))
+        raise ValueError(f"{name} must have one entry per item (got {int(len(v))}, expected {int(n)})")
     return v
 
 

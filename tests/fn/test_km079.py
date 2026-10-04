@@ -14,9 +14,9 @@ def test_alignscore_total_is_the_weighted_sum_of_the_three_heads():
     losses = (1.0, 2.0, 3.0)
     lambdas = [0.2, 0.3, 0.5]
     res = kamath_ch6_alignscore_total_loss(*losses, lambdas)
-    assert res["estimate"] == pytest.approx(sum(l * w for l, w in zip(losses, lambdas)), rel=1e-12)
-    for got, (l, w) in zip(res["contributions"], zip(losses, lambdas)):
-        assert got == pytest.approx(l * w, rel=1e-12)
+    assert res["estimate"] == pytest.approx(sum(ell * w for ell, w in zip(losses, lambdas)), rel=1e-12)
+    for got, (ell, w) in zip(res["contributions"], zip(losses, lambdas)):
+        assert got == pytest.approx(ell * w, rel=1e-12)
 
 
 def test_all_weight_on_one_head_returns_that_loss():

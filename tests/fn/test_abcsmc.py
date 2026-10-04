@@ -13,7 +13,7 @@ def _toy_model(theta):
 
 def test_abcsmc_basic():
     """Test basic functionality with a simple recoverable model."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Observed summary statistics: we want the model to match when theta[0] == 0.7.
     summary_stats = [0.7, 0.0]
     priors = [[0.0, 1.0]]
@@ -66,7 +66,7 @@ def test_abcsmc_basic():
 
 def test_abcsmc_edge():
     """Test edge cases: minimum n_particles and tight prior around truth."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     summary_stats = [0.5, 0.0]
     priors = [[0.0, 1.0]]
     # Smallest reasonable particle count.

@@ -81,7 +81,7 @@ def _loss(kind, y, p):
 def cv_folds(n, V=10, seed=0):
     r"""V-fold splits of :math:`\{0,\dots,n-1\}`."""
     if int(V) < 2 or int(V) > int(n):
-        raise ValueError("tlseqsl: V must lie in 2..%d, got %d" % (n, V))
+        raise ValueError(f"tlseqsl: V must lie in 2..{int(n)}, got {int(V)}")
     rng = np.random.default_rng(seed)
     idx = list(range(int(n)))
     for i in range(len(idx) - 1, 0, -1):
@@ -96,7 +96,7 @@ def cv_risk(X, y, algorithm, V=10, loss="squared", seed=0):
     ``algorithm(X_train, y_train)`` must return a prediction function.
     """
     if loss not in _LOSSES:
-        raise ValueError("tlseqsl: loss must be one of %s, got %r" % (", ".join(_LOSSES), loss))
+        raise ValueError("tlseqsl: loss must be one of {}, got {!r}".format(", ".join(_LOSSES), loss))
     rows = [[float(v) for v in r] for r in k.mat(X)]
     t = [float(v) for v in k.vec(y)]
     folds = cv_folds(len(t), V, seed)

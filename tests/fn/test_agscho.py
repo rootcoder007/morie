@@ -13,20 +13,20 @@ def test_agscho_basic():
     k_start = 0
     result = alphazero_search_horizon(depth_limit, state, rewards=rewards, values=values, gamma=gamma, k_start=k_start)
     # Independent recomputation of the documented formula:
-    l = depth_limit
+    ell = depth_limit
     g = gamma
     kk = k_start
     part = 0.0
     tau = 0
-    while kk + tau < l:
+    while kk + tau < ell:
         part += (g**tau) * rewards[kk + tau]
         tau += 1
-    idx = l if l < len(values) else len(values) - 1
-    boot = (g ** (l - kk)) * values[idx]
+    idx = ell if ell < len(values) else len(values) - 1
+    boot = (g ** (ell - kk)) * values[idx]
     expected_estimate = part + boot
     expected_reward_part = part
     expected_bootstrap = boot
-    expected_depth = l
+    expected_depth = ell
 
     assert "estimate" in result
     assert "bootstrap" in result
@@ -48,18 +48,18 @@ def test_agscho_edge():
     k_start = 1
     result = alphazero_search_horizon(depth_limit, state, rewards=rewards, values=None, gamma=gamma, k_start=k_start)
     # Independent recomputation: no bootstrap since values is None.
-    l = depth_limit
+    ell = depth_limit
     g = gamma
     kk = k_start
     part = 0.0
     tau = 0
-    while kk + tau < l:
+    while kk + tau < ell:
         part += (g**tau) * rewards[kk + tau]
         tau += 1
     expected_reward_part = part
     expected_bootstrap = 0.0
     expected_estimate = part
-    expected_depth = l
+    expected_depth = ell
 
     assert "estimate" in result
     assert result["estimate"] == expected_estimate

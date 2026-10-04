@@ -18,7 +18,7 @@ def gelman_rubin_rhat(chains) -> DescriptiveResult:
     n = min(len(c) for c in chains)
     chains = [c[:n] for c in chains]
     chain_means = np.array([np.mean(c) for c in chains])
-    grand_mean = np.mean(chain_means)
+    np.mean(chain_means)
     B = n * np.var(chain_means, ddof=1)
     W = np.mean([np.var(c, ddof=1) for c in chains])
     var_hat = (1 - 1 / n) * W + B / n

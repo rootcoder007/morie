@@ -73,7 +73,7 @@ def sparse_vector(queries, threshold, c=1, epsilon=1.0, threshold_noise=0.0, que
     if c < 1:
         raise ValueError("`c` must be at least 1")
     if c > m:
-        raise ValueError("`c` (%d) exceeds the number of queries (%d)" % (c, m))
+        raise ValueError(f"`c` ({int(c)}) exceeds the number of queries ({int(m)})")
     if eps <= 0:
         raise ValueError("`epsilon` must be positive")
     if query_noise is None:

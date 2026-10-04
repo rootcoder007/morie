@@ -58,10 +58,7 @@ def conditional_var(
     tail = r[r <= cutoff]
     n_tail = len(tail)
 
-    if n_tail == 0:
-        cvar = -float(cutoff)
-    else:
-        cvar = -float(np.mean(tail))
+    cvar = -float(cutoff) if n_tail == 0 else -float(np.mean(tail))
 
     var = -float(cutoff)
 

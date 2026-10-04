@@ -22,9 +22,16 @@ def test_inlasm_edge():
     """A Poisson log-rate likelihood: the mode zeros the gradient of the log
     posterior, and the precision is its negative curvature there."""
     y = 4.0
-    ll = lambda x: y * x - math.exp(x)
-    d1 = lambda x: y - math.exp(x)
-    d2 = lambda x: -math.exp(x)
+
+    def ll(x):
+        return y * x - math.exp(x)
+
+    def d1(x):
+        return y - math.exp(x)
+
+    def d2(x):
+        return -math.exp(x)
+
     r = gaussian_approximation(ll, d1, d2, 0.0, 1.0)
     m = r["mode"]
     assert d1(m) - 1.0 * (m - 0.0) == pytest.approx(0.0, abs=1e-10)

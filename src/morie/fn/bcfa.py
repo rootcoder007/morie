@@ -49,10 +49,7 @@ def bayesian_cfa(
     n, p = X.shape
     rng = np.random.default_rng(seed)
 
-    if isinstance(data, pd.DataFrame):
-        col_names = list(data.columns)
-    else:
-        col_names = [f"i{j}" for j in range(p)]
+    col_names = list(data.columns) if isinstance(data, pd.DataFrame) else [f"i{j}" for j in range(p)]
 
     # Convert structure to index-based
     factors = list(structure.keys())

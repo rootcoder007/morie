@@ -101,7 +101,7 @@ def test_tlgcmp_sequential_formula_ignores_the_treatment_mechanism():
     Q = {1: lambda h: 0.3 + 0.4 * h[0] + 0.2 * h[1]}
     sup = [[0.0, 1.0]]
     probs = [lambda h: [0.5, 0.5]]
-    r = tlseq = tlgcmp.sequential_g_formula({1: Q[1]}, sup, probs, lambda h: 1.0)
+    r = tlgcmp.sequential_g_formula({1: Q[1]}, sup, probs, lambda h: 1.0)
     assert abs(r["psi"] - (0.3 + 0.4 * 0.5 + 0.2)) < 1e-12
 
 

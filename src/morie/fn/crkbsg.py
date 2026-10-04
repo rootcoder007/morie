@@ -87,7 +87,7 @@ def _rho(h, model, rng):
         return math.exp(-3.0 * h / rng)
     if model == "gaussian":
         return math.exp(-3.0 * (h / rng) ** 2)
-    raise ValueError("crkbsg: model must be spherical, exponential or gaussian, got %r" % (model,))
+    raise ValueError(f"crkbsg: model must be spherical, exponential or gaussian, got {model!r}")
 
 
 def _dist(a, b):
@@ -171,9 +171,9 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
     if n1 == 0:
         raise ValueError("crkbsg: no primary observations")
     if len(yv) != n1:
-        raise ValueError("crkbsg: %d primary locations but %d values" % (n1, len(yv)))
+        raise ValueError(f"crkbsg: {int(n1)} primary locations but {int(len(yv))} values")
     if len(zv) != n2:
-        raise ValueError("crkbsg: %d secondary locations but %d values" % (n2, len(zv)))
+        raise ValueError(f"crkbsg: {int(n2)} secondary locations but {int(len(zv))} values")
     d = len(C1[0])
     if any(len(r) != d for r in C1) or any(len(r) != d for r in C2):
         raise ValueError("crkbsg: all coordinates must have the same dimension")
@@ -182,7 +182,7 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
     if cross_variogram:
         for key in cross_variogram:
             if key not in _DEFAULT_LMC:
-                raise ValueError("crkbsg: unknown cross_variogram key %r" % (key,))
+                raise ValueError(f"crkbsg: unknown cross_variogram key {key!r}")
             par[key] = cross_variogram[key]
     model = str(par["model"])
     rng = float(par["range"])
@@ -196,8 +196,8 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
     if b11 < 0.0 or b22 < 0.0 or b11 * b22 < b12 * b12 - 1e-12:
         raise ValueError(
             "crkbsg: the coregionalisation matrix is not "
-            "positive semidefinite (b11*b22 = %.6g < b12^2 = "
-            "%.6g)" % (b11 * b22, b12 * b12)
+            f"positive semidefinite (b11*b22 = {b11 * b22:.6g} < b12^2 = "
+            f"{b12 * b12:.6g})"
         )
     if n11 < 0.0 or n22 < 0.0 or n11 * n22 < n12 * n12 - 1e-12:
         raise ValueError("crkbsg: the nugget matrix is not positive semidefinite")
@@ -207,7 +207,7 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
         tg = [list(tg)]
     targets = [[float(v) for v in row] for row in tg]
     if any(len(t) != d for t in targets):
-        raise ValueError("crkbsg: targets must have dimension %d" % d)
+        raise ValueError(f"crkbsg: targets must have dimension {int(d)}")
 
     def cov(a, b_, bij, nij):
         h = _dist(a, b_)

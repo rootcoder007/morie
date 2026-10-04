@@ -110,7 +110,7 @@ def tmle_average_predictiveness(
     True
     """
     if loss not in MEASURES:
-        raise ValueError("loss must be one of %s, got %r." % (MEASURES, loss))
+        raise ValueError(f"loss must be one of {MEASURES}, got {loss!r}.")
     res = vim(y, X, D, measure=loss, f=f, n_folds=n_folds, sample_split=sample_split, alpha=alpha, seed=seed, **learner)
     return RichResult(
         payload={
@@ -152,7 +152,7 @@ def tmle_average_predictiveness(
             "n_reduced": res["n_reduced"],
             "binary_outcome": res["binary_outcome"],
             "n": res["n"],
-            "method": ("Algorithm-agnostic variable importance from %s predictiveness" % res["measure"]),
+            "method": ("Algorithm-agnostic variable importance from {} predictiveness".format(res["measure"])),
         }
     )
 

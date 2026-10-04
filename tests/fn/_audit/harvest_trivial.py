@@ -77,9 +77,8 @@ def _target_of(tree: ast.Module) -> str:
     imports nothing from morie.fn (a hand-written test may not).
     """
     for node in tree.body:
-        if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("morie.fn."):
-            if node.names:
-                return node.names[0].name
+        if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("morie.fn.") and node.names:
+            return node.names[0].name
     return ""
 
 

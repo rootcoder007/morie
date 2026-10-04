@@ -70,7 +70,7 @@ def dimensionality(X, n_sim=100, seed=0, quantile=0.95):
     share = [v / tot for v in ev]
     k = len(ev)
     if k >= 3:
-        x0, y0, x1, y1 = 0.0, ev[0], float(k - 1), ev[-1]
+        _x0, y0, _x1, y1 = 0.0, ev[0], float(k - 1), ev[-1]
         gap = [(y0 + (y1 - y0) * i / (k - 1)) - ev[i] for i in range(k)]
         elbow = max(range(k), key=lambda i: (gap[i], -i))
     else:

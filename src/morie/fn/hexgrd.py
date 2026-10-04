@@ -76,10 +76,7 @@ def hexgrd(coords, values=None, cell_size=1.0):
         else:
             j2, i2 = int(np.floor(sxi)), int(np.floor(syi))
             d2 = (sxi - j2 - 0.5) ** 2 + 3.0 * (syi - i2 - 0.5) ** 2
-            if d1 > con2 or d1 > d2:
-                key = (j2, i2, 1)
-            else:
-                key = (j1, i1, 0)
+            key = (j2, i2, 1) if d1 > con2 or d1 > d2 else (j1, i1, 0)
         keys.append(key)
     uniq = sorted(set(keys))
     index = {k: c for c, k in enumerate(uniq)}

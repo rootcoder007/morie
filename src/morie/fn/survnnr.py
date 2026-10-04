@@ -153,7 +153,7 @@ def fit(X, times, events, hidden=(), activation="tanh", l2=0.0, lr=0.1, n_epochs
     the anchor holds against :mod:`morie.fn.coxph`.
     """
     if activation not in ACTIVATIONS:
-        raise ValueError("survnnr: activation must be one of %s, got %r" % (", ".join(ACTIVATIONS), activation))
+        raise ValueError("survnnr: activation must be one of {}, got {!r}".format(", ".join(ACTIVATIONS), activation))
     n = len(times)
     if n != len(X) or n != len(events):
         raise ValueError("survnnr: X, times and events must have the same length")

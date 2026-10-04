@@ -45,10 +45,7 @@ def partial_kendall(
     tau_yz, _ = sp_stats.kendalltau(y, z)
 
     denom = np.sqrt((1 - tau_xz**2) * (1 - tau_yz**2))
-    if denom < 1e-12:
-        partial_tau = 0.0
-    else:
-        partial_tau = (tau_xy - tau_xz * tau_yz) / denom
+    partial_tau = 0.0 if denom < 1e-12 else (tau_xy - tau_xz * tau_yz) / denom
 
     return ESRes(
         measure="partial_kendall",

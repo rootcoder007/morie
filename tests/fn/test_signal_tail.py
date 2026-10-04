@@ -74,7 +74,7 @@ def test_stft_matches():
     fg, tg, zg = mg.stft(xa.tolist(), fs=2.0, nperseg=64)
     for k in (2, 5, 20):
         for t in (0, 2):
-            assert abs(zg[k][t]) == pytest.approx(A["stft_absz"]["%d_%d" % (k, t)], rel=1e-7, abs=1e-12)
+            assert abs(zg[k][t]) == pytest.approx(A["stft_absz"][f"{int(k)}_{int(t)}"], rel=1e-7, abs=1e-12)
 
 
 def test_spectrogram_matches():

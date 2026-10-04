@@ -195,7 +195,7 @@ def outlyingness(X, directions="subsample", n_directions=500, seed=1):
     reported.
     """
     if directions not in DIRECTIONS:
-        raise ValueError("stahdo: directions must be one of %s, got %r" % (", ".join(DIRECTIONS), directions))
+        raise ValueError("stahdo: directions must be one of {}, got {!r}".format(", ".join(DIRECTIONS), directions))
     M, n, p = _prep(X)
     if p == 1:
         dirs, exhaustive = [[1.0]], True
@@ -263,7 +263,7 @@ def stahel_donoho(X, directions="subsample", n_directions=500, seed=1, cutoff=No
             "n_downweighted": sum(1 for x in w if x < 1.0),
             "n": n,
             "p": p,
-            "method": "Stahel-Donoho estimator (Maronna & Yohai 1995) with %s directions" % directions,
+            "method": f"Stahel-Donoho estimator (Maronna & Yohai 1995) with {directions} directions",
         }
     )
 

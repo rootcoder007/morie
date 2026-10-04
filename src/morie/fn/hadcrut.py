@@ -117,7 +117,7 @@ def blend_weights(land_fraction, sea_ice=0.0, has_land=True, has_sst=True, rule=
     does not exist, which is the one thing the rule is not for.
     """
     if rule not in WEIGHT_RULES:
-        raise ValueError("rule must be one of %r" % (WEIGHT_RULES,))
+        raise ValueError(f"rule must be one of {WEIGHT_RULES!r}")
     lf = float(land_fraction)
     if lf < 0.0 or lf > 1.0:
         raise ValueError("land_fraction must lie in [0, 1]")
@@ -254,7 +254,7 @@ def area_mean(grid, route="hemispheric", var=None):
                    areas.
     """
     if route not in MEAN_ROUTES:
-        raise ValueError("route must be one of %r" % (MEAN_ROUTES,))
+        raise ValueError(f"route must be one of {MEAN_ROUTES!r}")
     n_lat = len(grid)
     south = [i for i in range(n_lat) if _cell_lat(i, n_lat) < 0.0]
     north = [i for i in range(n_lat) if _cell_lat(i, n_lat) >= 0.0]
@@ -367,11 +367,11 @@ def hadcrut(
     Morice et al. (2021) JGR Atmospheres 126(3), e2019JD032361.
     """
     if rule not in WEIGHT_RULES:
-        raise ValueError("rule must be one of %r" % (WEIGHT_RULES,))
+        raise ValueError(f"rule must be one of {WEIGHT_RULES!r}")
     if route not in MEAN_ROUTES:
-        raise ValueError("route must be one of %r" % (MEAN_ROUTES,))
+        raise ValueError(f"route must be one of {MEAN_ROUTES!r}")
     if interval not in INTERVALS:
-        raise ValueError("interval must be one of %r" % (INTERVALS,))
+        raise ValueError(f"interval must be one of {INTERVALS!r}")
     if not 0.0 < float(level) < 1.0:
         raise ValueError("level must lie strictly inside (0, 1)")
     n_lat = len(T)
@@ -380,7 +380,7 @@ def hadcrut(
     n_lon = len(T[0])
     for g, nm in ((T, "T"), (sst, "sst")):
         if len(g) != n_lat or any(len(r) != n_lon for r in g):
-            raise ValueError("%s must be a rectangular grid matching T" % nm)
+            raise ValueError(f"{nm} must be a rectangular grid matching T")
     if land_fraction is None:
         land_fraction = [[0.0] * n_lon for _ in range(n_lat)]
 

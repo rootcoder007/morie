@@ -61,7 +61,7 @@ def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output
     True
     """
     x = np.atleast_1d(x0).astype(float)
-    n = len(x)
+    len(x)
     Delta = radius
     eta = 0.15
 

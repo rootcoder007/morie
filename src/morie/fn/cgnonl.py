@@ -168,7 +168,7 @@ def _beta(rule, g_new, g_old):
         return beta_polak_ribiere(g_new, g_old, plus=False)
     if rule == "polak-ribiere-plus":
         return beta_polak_ribiere(g_new, g_old, plus=True)
-    raise ValueError("cgnonl: beta must be one of %s" % (BETA_RULES,))
+    raise ValueError(f"cgnonl: beta must be one of {BETA_RULES}")
 
 
 # --------------------------------------------------------------------------
@@ -211,7 +211,7 @@ def line_search_fr(f, grad, x, p, f0, g0, est=None, max_double=60, max_cubic=40,
     n = len(x)
     slope0 = _dot(p, g0)
     if slope0 >= 0.0:
-        raise ValueError("cgnonl: the search direction is not a descent direction (p'g = %g >= 0)" % slope0)
+        raise ValueError(f"cgnonl: the search direction is not a descent direction (p'g = {slope0:g} >= 0)")
     pnorm = math.sqrt(_dot(p, p))
     if pnorm <= 0.0:
         raise ValueError("cgnonl: the search direction is zero")
@@ -276,7 +276,7 @@ def _exact_quadratic_step(x, p, g, hess_vec):
     den = _dot(p, ap)
     if den <= 0.0:
         raise ValueError(
-            "cgnonl: p'Ap = %g is not positive; the exact quadratic step needs a positive definite A" % den
+            f"cgnonl: p'Ap = {den:g} is not positive; the exact quadratic step needs a positive definite A"
         )
     return -_dot(p, g) / den
 
@@ -334,9 +334,9 @@ def nonlinear_cg(
         ``n_feval``, ``converged``, and the ``beta`` history.
     """
     if beta not in BETA_RULES:
-        raise ValueError("cgnonl: beta must be one of %s" % (BETA_RULES,))
+        raise ValueError(f"cgnonl: beta must be one of {BETA_RULES}")
     if line_search not in _SEARCHES:
-        raise ValueError("cgnonl: line_search must be one of %s" % (_SEARCHES,))
+        raise ValueError(f"cgnonl: line_search must be one of {_SEARCHES}")
     if line_search == "exact-quadratic" and hess_vec is None:
         raise ValueError("cgnonl: line_search='exact-quadratic' needs hess_vec, the map p -> Ap")
     x = [float(v) for v in x0]

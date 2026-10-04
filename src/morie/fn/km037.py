@@ -22,17 +22,17 @@ def kamath_ch2_gpt_combined_obj(L_1, L_2, lam=0.5):
     """
     l1 = float(L_1)
     l2 = float(L_2)
-    l = float(lam)
-    if l < 0:
+    ell = float(lam)
+    if ell < 0:
         raise ValueError(
             "lambda must be non-negative; a negative weight turns the auxiliary objective into a penalty on likelihood."
         )
     return RichResult(
         payload={
-            "estimate": l2 + l * l1,
+            "estimate": l2 + ell * l1,
             "L1": l1,
             "L2": l2,
-            "lambda": l,
+            "lambda": ell,
             "n": 2,
             "method": "Combined objective L2 + lambda L1 (Kamath Eq 2.37)",
         }

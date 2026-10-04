@@ -47,8 +47,8 @@ def _rff(M, W1, b1, W2, b2):
     for row in H:
         r = [max(0.0, float(v) + float(b)) for v, b in zip(row, b1)]
         R.append(r)
-    O = np.asarray(R, dtype=float) @ W2
-    return [[float(v) + float(b) for v, b in zip(row, b2)] for row in O]
+    O_ = np.asarray(R, dtype=float) @ W2
+    return [[float(v) + float(b) for v, b in zip(row, b2)] for row in O_]
 
 
 def _attend(X, Y, Wq, Wk, Wv):
@@ -64,16 +64,16 @@ def _attend(X, Y, Wq, Wk, Wv):
         e = [math.exp(v - m) for v in r]
         z = sum(e)
         W.append([v / z for v in e])
-    O = np.asarray(W, dtype=float) @ V
-    return [[float(v) for v in row] for row in O], W
+    O_ = np.asarray(W, dtype=float) @ V
+    return [[float(v) for v in row] for row in O_], W
 
 
 def _mab(X, Y, p):
     A, W = _attend(X, Y, p["Wq"], p["Wk"], p["Wv"])
     H = [_ln([x + a for x, a in zip(xr, ar)]) for xr, ar in zip(X, A)]
     F = _rff(H, p["W1"], p["b1"], p["W2"], p["b2"])
-    O = [_ln([h + f for h, f in zip(hr, fr)]) for hr, fr in zip(H, F)]
-    return O, W
+    O_ = [_ln([h + f for h, f in zip(hr, fr)]) for hr, fr in zip(H, F)]
+    return O_, W
 
 
 def setT(Z, S, params):
@@ -107,13 +107,13 @@ def setT(Z, S, params):
     Zl = [[float(v) for v in row] for row in Za]
     Sl = [[float(v) for v in row] for row in Sa]
     FZ = _rff(Zl, p["W1"], p["b1"], p["W2"], p["b2"])  # rFF(Z)
-    O, W = _mab(Sl, FZ, p)  # MAB(S, rFF(Z))
+    O_, W = _mab(Sl, FZ, p)  # MAB(S, rFF(Z))
     return RichResult(
         payload={
-            "output": O,
+            "output": O_,
             "attention": W,
             "k": len(Sl),
-            "estimate": float(O[0][0]),
+            "estimate": float(O_[0][0]),
             "n": int(Za.shape[0]),
             "method": "Set Transformer PMA_k(Z) = MAB(S, rFF(Z)) (Lee et al. 2019, Eq 7 + Sec 3.2)",
         }

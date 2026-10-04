@@ -27,10 +27,7 @@ def mto_vehicle_type(
     """
     if vehicle_col not in df.columns:
         raise ValueError(f"Column '{vehicle_col}' not found")
-    if crash_col in df.columns:
-        grouped = df.groupby(vehicle_col)[crash_col].sum()
-    else:
-        grouped = df[vehicle_col].value_counts()
+    grouped = df.groupby(vehicle_col)[crash_col].sum() if crash_col in df.columns else df[vehicle_col].value_counts()
     total = grouped.sum()
     return DescriptiveResult(
         name="vehicle_type_crashes",

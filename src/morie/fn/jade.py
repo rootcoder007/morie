@@ -55,14 +55,14 @@ def jade_ica(X, n_components: int | None = None, max_iter: int = 100, tol: float
         for j in range(i, m):
             M = np.zeros((m, m))
             for k in range(m):
-                for l in range(m):
-                    M[k, l] = np.mean(Z[:, i] * Z[:, j] * Z[:, k] * Z[:, l])
+                for ell in range(m):
+                    M[k, ell] = np.mean(Z[:, i] * Z[:, j] * Z[:, k] * Z[:, ell])
                     if i == j:
-                        M[k, l] -= 1.0 if k == l else 0.0
-                    if i == k and j == l:
-                        M[k, l] -= 1.0
-                    if i == l and j == k:
-                        M[k, l] -= 1.0
+                        M[k, ell] -= 1.0 if k == ell else 0.0
+                    if i == k and j == ell:
+                        M[k, ell] -= 1.0
+                    if i == ell and j == k:
+                        M[k, ell] -= 1.0
             cumulant_matrices.append(M)
 
     V = np.eye(m)

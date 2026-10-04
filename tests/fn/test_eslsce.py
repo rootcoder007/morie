@@ -18,7 +18,9 @@ def test_eslsce_basic():
     n = 4000
     d = 1
     X = rng.normal(0.0, 1.0, (n, d))
-    score_fn = lambda z: -(z - 0.0)
+
+    def score_fn(z):
+        return -(z - 0.0)
 
     result = esl_score_match(score_fn, X)
 
@@ -49,7 +51,9 @@ def test_eslsce_edge():
     n = 2000
     d = 1
     X = rng.normal(2.0, 1.0, (n, d))
-    score_fn = lambda z: -(z - 2.0)
+
+    def score_fn(z):
+        return -(z - 2.0)
 
     r_fd = esl_score_match(score_fn, X)
     r_an = esl_score_match(score_fn, X, grad_score=lambda z: -np.ones_like(z))

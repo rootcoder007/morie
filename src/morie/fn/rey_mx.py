@@ -71,7 +71,7 @@ def rey_mx(
     b = {g: 0.0 for g in unique_groups}
 
     prev_ll = -np.inf
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         # E-step: compute posterior mean and variance of b_i
         for g in unique_groups:
             idx = group_idx[g]

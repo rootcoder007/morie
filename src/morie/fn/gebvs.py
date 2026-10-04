@@ -76,7 +76,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None, n_select=None, met
     M = np.atleast_2d(np.asarray(marker_matrix, dtype=float))
     n, m = M.shape
     if method != "vanraden1":
-        raise ValueError("method must be 'vanraden1', got %r." % method)
+        raise ValueError(f"method must be 'vanraden1', got {method!r}.")
     if np.any(M < 0) or np.any(M > 2):
         raise ValueError("markers must be coded 0, 1 or 2.")
     p = M.mean(axis=0) / 2.0  # allele frequencies
@@ -90,15 +90,15 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None, n_select=None, met
     if effects is not None:
         b = np.asarray(effects, dtype=float).ravel()
         if b.size != m:
-            raise ValueError("effects has %d entries for %d markers." % (b.size, m))
+            raise ValueError(f"effects has {int(b.size)} entries for {int(m)} markers.")
         g = Z @ b
     elif y is not None:
         yv = np.asarray(y, dtype=float).ravel()
         if yv.size != n:
-            raise ValueError("y has %d entries for %d individuals." % (yv.size, n))
+            raise ValueError(f"y has {int(yv.size)} entries for {int(n)} individuals.")
         h = 0.5 if h2 is None else float(h2)
         if not 0 < h < 1:
-            raise ValueError("h2 must lie in (0, 1), got %r." % h2)
+            raise ValueError(f"h2 must lie in (0, 1), got {h2!r}.")
         lam = (1 - h) / h
         A = G + lam * np.eye(n)
         yc = yv - yv.mean()

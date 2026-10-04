@@ -100,7 +100,7 @@ def stale_wrapper_claims(tree: pathlib.Path):
     out = []
     for p in sorted(tree.glob("*.R")):
         text = p.read_text(errors="replace")
-        code = "\n".join(l for l in text.splitlines() if not l.strip().startswith("#"))
+        code = "\n".join(ell for ell in text.splitlines() if not ell.strip().startswith("#"))
         for lineno, line in enumerate(text.splitlines(), 1):
             if not _CLAIM.search(line):
                 continue

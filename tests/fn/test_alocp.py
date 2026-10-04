@@ -4,8 +4,8 @@ from morie.fn.alocp import alammar_openclip_contrastive
 
 
 def test_alocp_basic():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    out = alammar_openclip_contrastive(I, I, tau=0.5)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    out = alammar_openclip_contrastive(I_, I_, tau=0.5)
     assert out["image_to_text_loss"] == out["text_to_image_loss"]
 
 

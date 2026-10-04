@@ -69,7 +69,7 @@ def split_sample(n, V=10, seed=0):
     r"""Training splits define the parameter; estimation splits
     estimate it."""
     if int(V) < 2 or int(V) > int(n):
-        raise ValueError("tldapar: V must lie in 2..%d, got %d" % (n, V))
+        raise ValueError(f"tldapar: V must lie in 2..{int(n)}, got {int(V)}")
     rng = np.random.default_rng(seed)
     idx = list(range(int(n)))
     for i in range(len(idx) - 1, 0, -1):
@@ -126,7 +126,7 @@ def cv_tmle(fold_estimates, fold_ics, n):
     for f in fold_ics:
         ic.extend(float(v) for v in k.vec(f))
     if len(ic) != int(n):
-        raise ValueError("tldapar: %d influence-curve values for %d observations" % (len(ic), n))
+        raise ValueError(f"tldapar: {int(len(ic))} influence-curve values for {int(n)} observations")
     m = sum(ic) / len(ic)
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (len(ic) - 1) / len(ic))
     return {

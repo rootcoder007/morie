@@ -16,7 +16,6 @@ def test_alfsdc_basic():
     rng = np.random.default_rng(42)
 
     n = 1  # one residue
-    nf = 1  # one torsion frame
 
     # One backbone frame: random proper rotation R plus a translation t.
     Rb = _make_R(0.1)
@@ -59,7 +58,7 @@ def test_alfsdc_basic():
     import math
 
     theta = math.atan2(sin_a, cos_a)
-    cx, sx = math.cos(theta), math.sin(theta)
+    _cx, _sx = math.cos(theta), math.sin(theta)
 
     # rotx(theta) acting on [1.5, 0, 0] -> [1.5, 0, 0].
     rx_litx = [1.5, 0.0, 0.0]
@@ -92,8 +91,6 @@ def test_alfsdc_basic():
 
 def test_alfsdc_edge():
     """Test edge cases: zero torsion angle and identity literature transform."""
-    n = 2
-    nf = 1
     Rb = _make_R(0.2)
     tb = [1.0, 2.0, 3.0]
     frames = [[Rb, tb], [Rb, [tb[0] + 1.0, tb[1], tb[2]]]]

@@ -68,7 +68,7 @@ def crime_network_centrality(
             if D[s, t] == np.inf:
                 continue
             for v in range(n):
-                if v == s or v == t:
+                if v in (s, t):
                     continue
                 if abs(D[s, v] + D[v, t] - D[s, t]) < 1e-10:
                     between[v] += 1.0

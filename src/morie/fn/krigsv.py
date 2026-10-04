@@ -149,7 +149,7 @@ def _rho(u, model):
         if u >= 1.0:
             return 0.0
         return 1.0 - 1.5 * u + 0.5 * u**3
-    raise ValueError("unknown model %r; expected exponential, gaussian or spherical" % (model,))
+    raise ValueError(f"unknown model {model!r}; expected exponential, gaussian or spherical")
 
 
 def _wls2(x, y, w):

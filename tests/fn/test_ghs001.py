@@ -32,8 +32,8 @@ def test_ghosal_ch1_bayes_formula_basic():
 
     # Independent re-derivation from the documented formula.
     liks = [p_theta(t, X) for t in supp]
-    expected_num = sum(l * w for l, w, t in zip(liks, wts, supp) if B(t))
-    expected_den = sum(l * w for l, w in zip(liks, wts))
+    expected_num = sum(ell * w for ell, w, t in zip(liks, wts, supp) if B(t))
+    expected_den = sum(ell * w for ell, w in zip(liks, wts))
     expected_posterior = expected_num / expected_den
     expected_marginal = expected_den
 
@@ -55,6 +55,6 @@ def test_ghosal_ch1_bayes_formula_edge_full_support():
     result = ghosal_ch1_bayes_formula(B, X, p_theta, Pi)
 
     liks = [p_theta(t, X) for t in supp]
-    expected_marginal = sum(l * w for l, w in zip(liks, wts))
+    expected_marginal = sum(ell * w for ell, w in zip(liks, wts))
     assert result.payload["posterior"] == 1.0
     assert result.payload["marginal"] == expected_marginal

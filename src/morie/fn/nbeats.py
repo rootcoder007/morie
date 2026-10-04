@@ -61,7 +61,7 @@ def trend_basis(length, degree, offset=0.0, scale=None):
     r"""Powers of normalised time: the polynomial the trend block is
     constrained to."""
     if degree < 0:
-        raise ValueError("nbeats: degree must be non-negative, got %d" % degree)
+        raise ValueError(f"nbeats: degree must be non-negative, got {int(degree)}")
     sc = float(length) if scale is None else float(scale)
     return [[((offset + t) / sc) ** p for t in range(length)] for p in range(degree + 1)]
 
@@ -70,7 +70,7 @@ def seasonality_basis(length, harmonics, offset=0.0, period=None):
     r"""Cosine and sine pairs: the Fourier basis of the seasonality
     block."""
     if harmonics < 1:
-        raise ValueError("nbeats: need at least 1 harmonic, got %d" % harmonics)
+        raise ValueError(f"nbeats: need at least 1 harmonic, got {int(harmonics)}")
     per = float(length) if period is None else float(period)
     rows = []
     for h in range(1, int(harmonics) + 1):
@@ -96,11 +96,11 @@ def nbeats_block(window, horizon, kind="generic", degree=2, harmonics=3, ridge=1
     meaningful.
     """
     if kind not in ("generic", "trend", "seasonality"):
-        raise ValueError("nbeats: kind must be generic, trend or seasonality, got %r" % (kind,))
+        raise ValueError(f"nbeats: kind must be generic, trend or seasonality, got {kind!r}")
     L = len(window)
     H = int(horizon)
     if H < 1:
-        raise ValueError("nbeats: horizon must be at least 1, got %d" % H)
+        raise ValueError(f"nbeats: horizon must be at least 1, got {int(H)}")
     if kind == "trend":
         bb = trend_basis(L, degree, scale=L)
         fb = trend_basis(H, degree, offset=L, scale=L)
@@ -149,9 +149,9 @@ def nbeats_forecast(y, horizon, lookback=None, blocks=None, ridge=1e-8):
     H = int(horizon)
     lb = min(n, int(lookback) if lookback else min(n, max(8, 3 * H)))
     if lb < 4:
-        raise ValueError("nbeats: lookback of %d is too short" % lb)
+        raise ValueError(f"nbeats: lookback of {int(lb)} is too short")
     if n < lb:
-        raise ValueError("nbeats: %d observations for a lookback of %d" % (n, lb))
+        raise ValueError(f"nbeats: {int(n)} observations for a lookback of {int(lb)}")
     blk = [("trend", 2, 3), ("seasonality", 2, 3), ("trend", 1, 3)] if blocks is None else list(blocks)
     window = yv[n - lb :]
     fc, resid, trace = nbeats_stack(window, H, blk, ridge=ridge)

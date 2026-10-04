@@ -50,7 +50,7 @@ def ml_loglik(y, X, V):
     Vm = C.mat(V)
     n = len(C.vec(y))
     if len(Vm) != n or any(len(row) != n for row in Vm):
-        raise ValueError("V must be %d by %d" % (n, n))
+        raise ValueError(f"V must be {int(n)} by {int(n)}")
     # Certify positive definiteness here, by Cholesky, before delegating.
     # lmmll screens with the sign of the log-determinant, and that test
     # cannot see a negative definite matrix of EVEN order: the sign of

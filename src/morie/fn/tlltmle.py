@@ -93,7 +93,7 @@ def clever_covariate(A, g, rule=1.0):
     a = [float(v) for v in k.vec(A)]
     gg = [float(v) for v in k.vec(g)]
     if len(a) != len(gg):
-        raise ValueError("ltmle: %d treatments but %d propensities" % (len(a), len(gg)))
+        raise ValueError(f"ltmle: {int(len(a))} treatments but {int(len(gg))} propensities")
     if any(v <= 0.0 or v >= 1.0 for v in gg):
         raise ValueError("ltmle: propensities must lie strictly inside (0,1)")
     h = [(1.0 if a[i] == float(rule) else 0.0) / gg[i] for i in range(len(a))]
@@ -186,7 +186,7 @@ def ltmle(Q_seq, H_seq, Y_seq):
     if T < 1:
         raise ValueError("ltmle: the sequence is empty")
     if len(H_seq) != T:
-        raise ValueError("ltmle: %d fits but %d clever covariates" % (T, len(H_seq)))
+        raise ValueError(f"ltmle: {int(T)} fits but {int(len(H_seq))} clever covariates")
     eps, current = [], [float(v) for v in k.vec(Y_seq[-1])]
     stars = []
     for t in range(T - 1, -1, -1):

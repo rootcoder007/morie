@@ -10,7 +10,7 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner3e35 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e35_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     values = [0.0, 1.0, 2.0, 3.0, 4.0]
     probs = [0.1, 0.2, 0.3, 0.3, 0.1]
     result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_35(values, probs)

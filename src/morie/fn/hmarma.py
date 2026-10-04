@@ -70,7 +70,7 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
     if p + q == 0:
         raise ValueError("need at least one AR or MA term.")
     if n <= p + q + 2:
-        raise ValueError("series of length %d is too short for ARMA(%d, %d)." % (n, p, q))
+        raise ValueError(f"series of length {int(n)} is too short for ARMA({int(p)}, {int(q)}).")
 
     m = max(p, q)
     eps = np.zeros(n)
@@ -135,7 +135,7 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
             "p": p,
             "q": q,
             "n": int(n),
-            "method": "ARMA(%d, %d) by conditional least squares" % (p, q),
+            "method": f"ARMA({int(p)}, {int(q)}) by conditional least squares",
         }
     )
 

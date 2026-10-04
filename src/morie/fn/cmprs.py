@@ -43,7 +43,7 @@ def competing_risks(
     if len(t) != len(ev):
         raise ValueError("times and event_types must match.")
 
-    n = len(t)
+    len(t)
     order = np.argsort(t)
     t_sorted = t[order]
     ev_sorted = ev[order]

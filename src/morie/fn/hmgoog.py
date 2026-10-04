@@ -180,7 +180,7 @@ def geron_googlenet(n_classes=1000, input_size=224, in_channels=3, dropout=0.4):
     layers.append({"kind": "gap", "name": "global_avg_pool", "out": 1, "channels": ch, "params": 0})
     layers.append({"kind": "fc", "name": "classifier", "out": C, "channels": C, "params": fc_params, "dropout": p_drop})
 
-    total = int(sum(l["params"] for l in layers))
+    total = int(sum(ell["params"] for ell in layers))
     saving = int(sum(m["reduction_saving"] for m in modules))
 
     return RichResult(
@@ -198,8 +198,8 @@ def geron_googlenet(n_classes=1000, input_size=224, in_channels=3, dropout=0.4):
             "layers": layers,
             "modules": modules,
             "total_params": total,
-            "conv_params": int(sum(l["params"] for l in layers if l["kind"] == "conv")),
-            "inception_params": int(sum(l["params"] for l in layers if l["kind"] == "inception")),
+            "conv_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "conv")),
+            "inception_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "inception")),
             "fc_params": int(fc_params),
             "output_shape": (C,),
             "final_feature_map": (int(ch), int(size), int(size)),

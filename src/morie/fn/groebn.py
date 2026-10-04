@@ -99,7 +99,7 @@ def _key(order):
         # total degree, then the NEGATED reversed exponents: a > b
         # when the rightmost non-zero entry of a - b is negative.
         return lambda e: (sum(e),) + tuple(-x for x in reversed(e))
-    raise ValueError("groebn: order must be one of %s, got %r" % (", ".join(ORDERS), order))
+    raise ValueError("groebn: order must be one of {}, got {!r}".format(", ".join(ORDERS), order))
 
 
 def poly(terms, nvars=None):
@@ -108,25 +108,22 @@ def poly(terms, nvars=None):
     Zero coefficients are dropped, so equality of the returned dicts
     is equality of polynomials.
     """
-    if isinstance(terms, dict):
-        items = terms.items()
-    else:
-        items = list(terms)
+    items = terms.items() if isinstance(terms, dict) else list(terms)
     out = {}
     n = None
     for e, cf in items:
         ev = tuple(int(x) for x in e)
         if any(x < 0 for x in ev):
-            raise ValueError("groebn: negative exponent in %r" % (e,))
+            raise ValueError(f"groebn: negative exponent in {e!r}")
         if n is None:
             n = len(ev)
         elif len(ev) != n:
-            raise ValueError("groebn: exponent vectors of differing length, %d and %d" % (n, len(ev)))
+            raise ValueError(f"groebn: exponent vectors of differing length, {int(n)} and {int(len(ev))}")
         out[ev] = out.get(ev, Fraction(0)) + Fraction(cf)
     if nvars is not None:
         n = int(nvars) if n is None else n
         if out and n != int(nvars):
-            raise ValueError("groebn: %d variables declared but the exponents have %d" % (int(nvars), n))
+            raise ValueError(f"groebn: {int(int(nvars))} variables declared but the exponents have {int(n)}")
     return {e: c for e, c in out.items() if c != 0}
 
 

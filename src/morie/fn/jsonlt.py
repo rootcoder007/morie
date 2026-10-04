@@ -91,7 +91,7 @@ class RVector:
         return len(self.values)
 
     def __repr__(self):
-        return "RVector(%r, %r)" % (self.values, self.rtype)
+        return f"RVector({self.values!r}, {self.rtype!r})"
 
 
 class DataFrame:
@@ -103,7 +103,7 @@ class DataFrame:
         self.columns = [(str(k), v) for k, v in columns]
         lens = set(len(_as_values(v)) for _, v in self.columns)
         if len(lens) > 1:
-            raise ValueError("jsonlt: data.frame columns differ in length: %s" % sorted(lens))
+            raise ValueError(f"jsonlt: data.frame columns differ in length: {sorted(lens)}")
         self.nrow = lens.pop() if lens else 0
 
     def names(self):
@@ -173,7 +173,7 @@ class Unboxed:
     def __init__(self, value):
         n = len(_as_values(value))
         if n != 1:
-            raise ValueError("jsonlt: unbox() needs length 1, got %d" % n)
+            raise ValueError(f"jsonlt: unbox() needs length 1, got {int(n)}")
         self.value = value
 
 
@@ -267,7 +267,7 @@ def _fmt_num(x, digits):
     if x == float("-inf"):
         return '"-Inf"'
     if digits is None:
-        s = "%.17g" % x
+        s = f"{x:.17g}"
     elif isinstance(digits, Sig):
         s = "%.*g" % (max(1, digits.n), x)
     else:
@@ -290,7 +290,7 @@ def _tidy(s):
             sign = "-" if expo[0] == "-" else ""
             expo = expo[1:]
         expo = expo.lstrip("0") or "0"
-        return "%se%s%s" % (mant, sign, expo)
+        return f"{mant}e{sign}{expo}"
     if "." in s:
         s = s.rstrip("0").rstrip(".")
     if s in ("-0", ""):
@@ -310,7 +310,7 @@ def _esc(s):
         if e is not None:
             out.append(e)
         elif ord(c) < 0x20:
-            out.append("\\u%04x" % ord(c))
+            out.append(f"\\u{ord(c):04x}")
         else:
             out.append(c)
     return '"' + "".join(out) + '"'
@@ -389,7 +389,7 @@ def _opts(**kw):
     ):
         v = getattr(o, name)
         if v not in allowed:
-            raise ValueError("jsonlt: %s = %r; expected one of %s" % (name, v, ", ".join(map(repr, allowed))))
+            raise ValueError("jsonlt: {} = {!r}; expected one of {}".format(name, v, ", ".join(map(repr, allowed))))
     return o
 
 
@@ -415,7 +415,7 @@ def _scalar(v, rtype, o):
             re_s = _fmt_num(v.real, o.digits)
             im_s = _fmt_num(abs(v.imag), o.digits)
             sign = "-" if v.imag < 0 else "+"
-            return _esc("%s%s%si" % (re_s, sign, im_s))
+            return _esc(f"{re_s}{sign}{im_s}i")
         return None  # handled vector-wise
     if isinstance(v, datetime.datetime):
         return _posix(v, o)
@@ -426,7 +426,7 @@ def _scalar(v, rtype, o):
     if isinstance(v, float):
         return _fmt_num(v, o.digits)
     if isinstance(v, int):
-        return "%d" % v
+        return f"{int(v)}"
     return _esc(str(v))
 
 
@@ -438,7 +438,7 @@ def _posix(v, o):
     if o.POSIXt == "epoch":
         return _fmt_num(ms, o.digits)
     if o.POSIXt == "mongo":
-        return '{"$date":%s}' % _fmt_num(ms, o.digits)
+        return f'{{"$date":{_fmt_num(ms, o.digits)}}}'
     u = v.astimezone(datetime.timezone.utc)
     if o.POSIXt == "ISO8601":
         return _esc(u.strftime("%Y-%m-%dT%H:%M:%SZ"))
@@ -449,7 +449,7 @@ def _atomic(values, rtype, o, unbox_ok):
     if rtype == "complex" and o.complex == "list":
         reals = [v.real if isinstance(v, complex) else v for v in values]
         imags = [v.imag if isinstance(v, complex) else v for v in values]
-        return '{"r":%s,"i":%s}' % (_atomic(reals, "double", o, False), _atomic(imags, "double", o, False))
+        return '{{"r":{},"i":{}}}'.format(_atomic(reals, "double", o, False), _atomic(imags, "double", o, False))
     parts = [_scalar(v, rtype, o) for v in values]
     if len(parts) == 1 and unbox_ok and o.auto_unbox:
         return parts[0]
@@ -458,11 +458,11 @@ def _atomic(values, rtype, o, unbox_ok):
 
 def _raw_enc(rv, o):
     if o.raw == "int":
-        return "[" + ",".join("%d" % b for b in rv.data) + "]"
+        return "[" + ",".join(f"{int(b)}" for b in rv.data) + "]"
     if o.raw == "hex":
-        return _esc("".join("%02x" % b for b in rv.data))
+        return _esc("".join(f"{b:02x}" for b in rv.data))
     if o.raw == "mongo":
-        return '{"$binary":%s,"$type":"00"}' % _esc(_b64(rv.data))
+        return f'{{"$binary":{_esc(_b64(rv.data))},"$type":"00"}}'
     return _esc(_b64(rv.data))
 
 
@@ -474,7 +474,7 @@ def _df_rows(df, o):
             cell = _cell(col, i, o)
             if cell is None:  # NA, na unset: field omitted
                 continue
-            parts.append("%s:%s" % (_esc(name), cell))
+            parts.append(f"{_esc(name)}:{cell}")
         rows.append("{" + ",".join(parts) + "}")
     return "[" + ",".join(rows) + "]"
 
@@ -516,7 +516,7 @@ def _slice(col, i):
 def _df_columns(df, o):
     parts = []
     for name, col in df.columns:
-        parts.append("%s:%s" % (_esc(name), _encode(col, o, False)))
+        parts.append(f"{_esc(name)}:{_encode(col, o, False)}")
     return "{" + ",".join(parts) + "}"
 
 
@@ -565,7 +565,7 @@ def _encode(x, o, unbox_ok):
     if isinstance(x, RVector):
         return _atomic(x.values, x.rtype, o, unbox_ok)
     if isinstance(x, dict):
-        parts = ["%s:%s" % (_esc(str(k)), _encode(v, o, True)) for k, v in x.items()]
+        parts = [f"{_esc(str(k))}:{_encode(v, o, True)}" for k, v in x.items()]
         return "{" + ",".join(parts) + "}"
     if isinstance(x, (list, tuple)):
         # A plain list is an R LIST, not an atomic vector, and jsonlite
@@ -578,7 +578,7 @@ def _encode(x, o, unbox_ok):
         return _atomic([x], _infer_type([x]), o, unbox_ok)
     if o.force:
         return _esc(str(x))
-    raise TypeError("jsonlt: no JSON mapping for %s; pass force = True to write it as a string" % type(x).__name__)
+    raise TypeError(f"jsonlt: no JSON mapping for {type(x).__name__}; pass force = True to write it as a string")
 
 
 def _is_scalar(v):
@@ -611,7 +611,7 @@ class _P:
             self.i += 1
 
     def err(self, msg):
-        raise ValueError("jsonlt: %s at character %d" % (msg, self.i + 1))
+        raise ValueError(f"jsonlt: {msg} at character {int(self.i + 1)}")
 
     def value(self):
         self.ws()
@@ -840,7 +840,7 @@ def flatten(df, recursive=True):
         if isinstance(col, DataFrame):
             inner = flatten(col) if recursive else col
             for nm2, c2 in inner.columns:
-                cols.append(("%s.%s" % (name, nm2), c2))
+                cols.append((f"{name}.{nm2}", c2))
         else:
             cols.append((name, col))
     return DataFrame(cols)
@@ -868,7 +868,7 @@ def serialize_json(x, pretty=False):
 def _ser_attr(pairs):
     if not pairs:
         return "{}"
-    return "{" + ",".join("%s:%s" % (_esc(k), _ser(v)) for k, v in pairs) + "}"
+    return "{" + ",".join(f"{_esc(k)}:{_ser(v)}" for k, v in pairs) + "}"
 
 
 def _ser(x):
@@ -882,36 +882,36 @@ def _ser(x):
             ("row.names", RVector(list(range(1, x.nrow + 1)), "integer")),
         ]
         vals = ",".join(_ser(c) for _, c in x.columns)
-        return '{"type":"list","attributes":%s,"value":[%s]}' % (_ser_attr(attrs), vals)
+        return f'{{"type":"list","attributes":{_ser_attr(attrs)},"value":[{vals}]}}'
     if isinstance(x, Matrix):
         flat = [x.rows[r][c] for c in range(x.ncol) for r in range(x.nrow)]
         attrs = [("dim", RVector([x.nrow, x.ncol], "integer"))]
-        return '{"type":"%s","attributes":%s,"value":%s}' % (
+        return '{{"type":"{}","attributes":{},"value":{}}}'.format(
             _RTYPE_JSON.get(x.rtype, "character"),
             _ser_attr(attrs),
             _atomic(flat, x.rtype, o, False),
         )
     if isinstance(x, Factor):
         attrs = [("levels", RVector(x.levels, "character")), ("class", RVector(["factor"], "character"))]
-        return '{"type":"integer","attributes":%s,"value":%s}' % (
+        return '{{"type":"integer","attributes":{},"value":{}}}'.format(
             _ser_attr(attrs),
             _atomic(x.codes, "integer", o, False),
         )
     if isinstance(x, RawVec):
-        return '{"type":"raw","attributes":{},"value":%s}' % _esc(_b64(x.data))
+        return f'{{"type":"raw","attributes":{{}},"value":{_esc(_b64(x.data))}}}'
     if isinstance(x, (Boxed, Unboxed)):
         return _ser(x.value)
     if isinstance(x, dict):
         attrs = [("names", RVector([str(k) for k in x], "character"))]
         vals = ",".join(_ser(v) for v in x.values())
-        return '{"type":"list","attributes":%s,"value":[%s]}' % (_ser_attr(attrs), vals)
+        return f'{{"type":"list","attributes":{_ser_attr(attrs)},"value":[{vals}]}}'
     if isinstance(x, RVector):
-        return '{"type":"%s","attributes":{},"value":%s}' % (
+        return '{{"type":"{}","attributes":{{}},"value":{}}}'.format(
             _RTYPE_JSON.get(x.rtype, "character"),
             _atomic(x.values, x.rtype, o, False),
         )
     if isinstance(x, (list, tuple)):
-        return '{"type":"list","attributes":{},"value":[%s]}' % ",".join(_ser(v) for v in x)
+        return '{{"type":"list","attributes":{{}},"value":[{}]}}'.format(",".join(_ser(v) for v in x))
     return _ser(RVector([x]))
 
 
@@ -964,7 +964,7 @@ def _unser(node):
     vals = val if isinstance(val, list) else [val]
     vals = [_coerce(v, t) for v in vals]
     if "levels" in attrs:
-        return Factor(vals, [str(l) for l in attrs["levels"]])
+        return Factor(vals, [str(ell) for ell in attrs["levels"]])
     if "dim" in attrs:
         d = [int(v) for v in attrs["dim"]]
         nr, nc = d[0], d[1]
@@ -986,7 +986,7 @@ def jsonlt(x=None, route="to_json", **kw):
            unserialize
     """
     if route not in _ROUTES:
-        raise ValueError("jsonlt: route = %r; expected one of %s" % (route, ", ".join(_ROUTES)))
+        raise ValueError("jsonlt: route = {!r}; expected one of {}".format(route, ", ".join(_ROUTES)))
     if route == "to_json":
         out = to_json(x, **kw)
     elif route == "from_json":

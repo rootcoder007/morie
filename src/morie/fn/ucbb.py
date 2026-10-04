@@ -60,9 +60,9 @@ def ucb_bandit(x, T=None):
     rows, K = x.shape
     T = rows if T is None else int(T)
     if T < K:
-        raise ValueError("need at least K = %d plays" % K)
+        raise ValueError(f"need at least K = {int(K)} plays")
     if rows < T:
-        raise ValueError("x has only %d rows" % rows)
+        raise ValueError(f"x has only {int(rows)} rows")
     counts = [0] * K
     sums = [0.0] * K
     actions = np.zeros(T)

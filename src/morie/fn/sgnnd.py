@@ -24,7 +24,7 @@ def nearest_neighbor_distances(points):
     from ._sci_core import pdist, squareform
 
     pts = np.asarray(points, dtype=np.float64)
-    n = pts.shape[0]
+    pts.shape[0]
 
     D = squareform(pdist(pts))
     np.fill_diagonal(D, np.inf)

@@ -158,8 +158,8 @@ def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None, w_scale
             t += mu[u][j] * mu[u][j] + sig[j] * sig[j] - 1.0 - lv[u][j]
         klu[u] = 0.5 * t
         acc = 0.0
-        for l in range(L):
-            z = [mu[u][j] + sig[j] * eps[l][j] for j in range(m)]
+        for ell in range(L):
+            z = [mu[u][j] + sig[j] * eps[ell][j] for j in range(m)]
             lg = [0.0] * ni
             for i in range(ni):
                 s = 0.0

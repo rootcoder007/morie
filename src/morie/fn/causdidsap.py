@@ -92,7 +92,7 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None, control="ne
     if rel_periods is None:
         lo = int(-min(cohorts))
         hi = int(T - 1 - min(cohorts))
-        rel_periods = [l for l in range(max(lo, -5), min(hi, 5) + 1)]
+        rel_periods = [ell for ell in range(max(lo, -5), min(hi, 5) + 1)]
     rel = list(rel_periods)
 
     catt = np.full((cohorts.size, len(rel)), np.nan)
@@ -100,8 +100,8 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None, control="ne
     for ci, e in enumerate(cohorts):
         ei = int(e)
         treated = e == G
-        for li, l in enumerate(rel):
-            t = ei + l
+        for li, ell in enumerate(rel):
+            t = ei + ell
             if t < 0 or t >= T or ei - 1 < 0:
                 continue
             if control == "never":
@@ -134,12 +134,12 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None, control="ne
     per_m = Y.mean(axis=0, keepdims=True)
     Yd = Y - unit_m - per_m + Y.mean()
     naive = []
-    for l in rel:
+    for ell in rel:
         cells = []
         for i in range(n):
             if not ever[i]:
                 continue
-            t = int(G[i]) + l
+            t = int(G[i]) + ell
             if 0 <= t < T:
                 cells.append(Yd[i, t])
         naive.append(float(np.mean(cells)) if cells else np.nan)

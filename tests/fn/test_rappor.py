@@ -99,7 +99,7 @@ def test_permanent_response_is_memoized_per_client():
     # Different clients get independent permanent responses, so at least
     # one of six differs from the first.
     many = rappor_encode(
-        ["x"] * 6, k=16, h=2, f=0.5, variant="one-time", seed=3, client_ids=["c%d" % i for i in range(6)]
+        ["x"] * 6, k=16, h=2, f=0.5, variant="one-time", seed=3, client_ids=[f"c{int(i)}" for i in range(6)]
     )
     assert any(r != many["reports"][0] for r in many["reports"])
 

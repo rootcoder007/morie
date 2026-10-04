@@ -52,10 +52,7 @@ def tsale(pmf: np.ndarray, q: float) -> dict:
     p_pos = pmf[pmf > eps]
     shannon = float(-np.sum(p_pos * np.log2(p_pos)))
 
-    if np.isclose(q, 1.0):
-        s_q = float(-np.sum(p_pos * np.log(p_pos)))
-    else:
-        s_q = float((1.0 - np.sum(p_pos**q)) / (q - 1.0))
+    s_q = float(-np.sum(p_pos * np.log(p_pos))) if np.isclose(q, 1.0) else float((1.0 - np.sum(p_pos**q)) / (q - 1.0))
 
     s_q_bits = s_q / np.log(2) if not np.isclose(q, 1.0) else shannon
 

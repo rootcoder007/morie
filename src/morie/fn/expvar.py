@@ -106,7 +106,7 @@ def _lags(h):
         raise ValueError("h is empty.")
     for v in hs:
         if not (v >= 0.0):
-            raise ValueError("lag distances must be non-negative; got %r" % (v,))
+            raise ValueError(f"lag distances must be non-negative; got {v!r}")
     return hs
 
 

@@ -94,7 +94,7 @@ def _hit(h):
         raise ValueError("funcal: an e-value cannot be negative")
     for k in ("query_cov", "target_cov"):
         if not 0.0 <= out[k] <= 1.0:
-            raise ValueError("funcal: %s must be a fraction in [0, 1]" % k)
+            raise ValueError(f"funcal: {k} must be a fraction in [0, 1]")
     return out
 
 
@@ -105,7 +105,7 @@ def seed_orthologs(hits, evalue=1e-3, score=60.0, query_cov=0.2, target_cov=0.2,
     e-value wins, ties broken by the higher bit-score.
     """
     if searcher not in _SEARCHERS:
-        raise ValueError("funcal: searcher must be one of %s" % (_SEARCHERS,))
+        raise ValueError(f"funcal: searcher must be one of {_SEARCHERS}")
     if evalue <= 0 or score < 0:
         raise ValueError("funcal: evalue must be positive and score non-negative")
     for c in (query_cov, target_cov):
@@ -127,7 +127,7 @@ def seed_orthologs(hits, evalue=1e-3, score=60.0, query_cov=0.2, target_cov=0.2,
 def _type_of(n_query_side, n_target_side):
     left = "one" if n_query_side <= 1 else "many"
     right = "one" if n_target_side <= 1 else "many"
-    return "%s2%s" % (left, right)
+    return f"{left}2{right}"
 
 
 def assign_orthologs(seeds, groups, taxa=None, target_taxa=None, target_types=None):
@@ -140,7 +140,7 @@ def assign_orthologs(seeds, groups, taxa=None, target_taxa=None, target_types=No
     if target_types is not None:
         bad = [t for t in target_types if t not in ORTHOLOGY_TYPES]
         if bad:
-            raise ValueError("funcal: unknown orthology type %r" % bad[0])
+            raise ValueError(f"funcal: unknown orthology type {bad[0]!r}")
     taxa = taxa or {}
     out = {}
     for q, seed in seeds.items():
@@ -177,7 +177,7 @@ def transfer_terms(assignments, annotations, sources=None, min_support=1):
     srcs = tuple(sources) if sources is not None else ANNOTATION_SOURCES
     bad = [s for s in srcs if s not in ANNOTATION_SOURCES]
     if bad:
-        raise ValueError("funcal: unknown annotation source %r" % bad[0])
+        raise ValueError(f"funcal: unknown annotation source {bad[0]!r}")
     out = {}
     for q, a in assignments.items():
         counts = {}

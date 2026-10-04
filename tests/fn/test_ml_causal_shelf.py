@@ -235,7 +235,7 @@ def test_hac_inflates_under_autocorrelation_and_not_under_white_noise():
 
 
 def test_bartlett_weights_keep_the_matrix_positive_semidefinite():
-    rng = np.random.default_rng(1)
+    np.random.default_rng(1)
     for seed in range(5):
         g = np.random.default_rng(seed).normal(size=(150, 3))
         assert newey_west_hac(g, lags=12)["positive_definite"]

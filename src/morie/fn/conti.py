@@ -37,7 +37,7 @@ def continued_fraction_pi(n):
     """
     nn = int(n)
     if not 1 <= nn <= len(_PI_TERMS):
-        raise ValueError("n must be between 1 and %d" % len(_PI_TERMS))
+        raise ValueError(f"n must be between 1 and {int(len(_PI_TERMS))}")
     terms = _PI_TERMS[:nn]
     hm1, hm2 = 1, 0
     km1, km2 = 0, 1

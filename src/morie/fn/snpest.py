@@ -136,7 +136,7 @@ def _resample(rng, weights, scheme):
         u0 = float(rng.uniform())
         us = [(k + u0) / n for k in range(n)]
     else:
-        raise ValueError("resampler must be one of %r" % (RESAMPLERS,))
+        raise ValueError(f"resampler must be one of {RESAMPLERS!r}")
     out = []
     acc = 0.0
     j = 0
@@ -218,9 +218,9 @@ def sn_pseudo_estimate(
     Caron, Doucet and Gottardo (2012) Statist. Comput. 22(2), 579-595.
     """
     if proposal not in PROPOSALS:
-        raise ValueError("proposal must be one of %r" % (PROPOSALS,))
+        raise ValueError(f"proposal must be one of {PROPOSALS!r}")
     if resampler not in RESAMPLERS:
-        raise ValueError("resampler must be one of %r" % (RESAMPLERS,))
+        raise ValueError(f"resampler must be one of {RESAMPLERS!r}")
     if alpha <= 0.0:
         raise ValueError("alpha must be positive")
     ys = [float(v) for v in y_stream]

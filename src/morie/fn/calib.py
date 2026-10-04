@@ -49,10 +49,7 @@ def calibration_curve(
     bin_freqs = []
 
     for lo, hi in zip(bin_edges[:-1], bin_edges[1:]):
-        if lo == bin_edges[0]:
-            mask = (yp >= lo) & (yp <= hi)
-        else:
-            mask = (yp > lo) & (yp <= hi)
+        mask = (yp >= lo) & (yp <= hi) if lo == bin_edges[0] else (yp > lo) & (yp <= hi)
         if mask.sum() > 0:
             bin_means.append(float(yp[mask].mean()))
             bin_freqs.append(float(yt[mask].mean()))

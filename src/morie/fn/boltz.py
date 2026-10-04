@@ -44,10 +44,7 @@ def boltz(
     if T <= 0:
         raise ValueError("Temperature must be > 0.")
 
-    if degeneracies is None:
-        g = np.ones_like(energies)
-    else:
-        g = np.asarray(degeneracies, dtype=float)
+    g = np.ones_like(energies) if degeneracies is None else np.asarray(degeneracies, dtype=float)
 
     beta = 1.0 / (kB * T)
     exps = g * np.exp(-beta * (energies - energies.min()))

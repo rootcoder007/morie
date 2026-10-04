@@ -42,11 +42,8 @@ class MrmDataset:
 
     def __repr__(self) -> str:
         p = self.provenance
-        return "MRM dataset %r: %d rows x %d cols, sha256 %s" % (
-            p.get("name"),
-            p.get("n_rows"),
-            p.get("n_cols"),
-            str(p.get("sha256"))[:16] + "...",
+        return "MRM dataset {!r}: {} rows x {} cols, sha256 {}".format(
+            p.get("name"), int(p.get("n_rows")), int(p.get("n_cols")), str(p.get("sha256"))[:16] + "..."
         )
 
 
@@ -108,19 +105,13 @@ class MrmReconciliation:
     schema: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return (
-            "MRM reconciliation\n"
-            "  keys       : %s\n"
-            "  match rate : %.1f%% (%d matched, %d/%d orphans)\n"
-            "  conflicts  : %d field-level"
-            % (
-                ", ".join(self.schema.get("keys", [])),
-                100 * (self.match_rate or 0.0),
-                len(self.matched),
-                len(self.unmatched_primary),
-                len(self.unmatched_secondary),
-                len(self.conflicts),
-            )
+        return "MRM reconciliation\n  keys       : {}\n  match rate : {:.1f}% ({} matched, {}/{} orphans)\n  conflicts  : {} field-level".format(
+            ", ".join(self.schema.get("keys", [])),
+            100 * (self.match_rate or 0.0),
+            int(len(self.matched)),
+            int(len(self.unmatched_primary)),
+            int(len(self.unmatched_secondary)),
+            int(len(self.conflicts)),
         )
 
     def conflicts_frame(self):
@@ -241,7 +232,7 @@ def _fmt(v, digits: int) -> str:
     if v is None:
         return ""
     if isinstance(v, float):
-        return ("%%.%df" % digits) % v
+        return (f"%.{int(digits)}f") % v
     return str(v)
 
 
@@ -259,21 +250,22 @@ def mrm_report(effect=None, reconciliation=None, dataset=None, digits: int = 3, 
         p = getattr(dataset, "provenance", None) or {}
         lines.append("")
         lines.append("Source")
-        lines.append("  %-14s %s" % ("dataset", p.get("name", "")))
-        lines.append("  %-14s %s rows x %s cols" % ("shape", p.get("n_rows"), p.get("n_cols")))
-        lines.append("  %-14s %s" % ("sha256", str(p.get("sha256", ""))[:32]))
+        lines.append("  {:<14} {}".format("dataset", p.get("name", "")))
+        lines.append("  {:<14} {} rows x {} cols".format("shape", p.get("n_rows"), p.get("n_cols")))
+        lines.append("  {:<14} {}".format("sha256", str(p.get("sha256", ""))[:32]))
 
     if reconciliation is not None:
         r = reconciliation
         lines.append("")
         lines.append("Reconciliation")
-        lines.append("  %-14s %s" % ("keys", ", ".join(r.schema.get("keys", []))))
-        lines.append("  %-14s %.1f%%" % ("match rate", 100 * (r.match_rate or 0.0)))
+        lines.append("  {:<14} {}".format("keys", ", ".join(r.schema.get("keys", []))))
+        lines.append("  {:<14} {:.1f}%".format("match rate", 100 * (r.match_rate or 0.0)))
         lines.append(
-            "  %-14s %d matched, %d/%d orphans"
-            % ("counts", len(r.matched), len(r.unmatched_primary), len(r.unmatched_secondary))
+            "  {:<14} {} matched, {}/{} orphans".format(
+                "counts", int(len(r.matched)), int(len(r.unmatched_primary)), int(len(r.unmatched_secondary))
+            )
         )
-        lines.append("  %-14s %d" % ("conflicts", len(r.conflicts)))
+        lines.append("  {:<14} {}".format("conflicts", int(len(r.conflicts))))
 
     if effect is not None:
         rows = getattr(effect, "results", None)
@@ -282,7 +274,9 @@ def mrm_report(effect=None, reconciliation=None, dataset=None, digits: int = 3, 
         rows = _as_rows(rows, "effect.results")
         lines.append("")
         lines.append("Causal effect")
-        head = "  %-28s %10s %10s %22s %10s" % ("method", "estimate", "std.err", "95% CI", "p.adj")
+        head = "  {:<28} {!s:>10} {!s:>10} {!s:>22} {!s:>10}".format(
+            "method", "estimate", "std.err", "95% CI", "p.adj"
+        )
         lines.append(head)
         lines.append("  " + "-" * (len(head) - 2))
         for r in rows:
@@ -293,9 +287,8 @@ def mrm_report(effect=None, reconciliation=None, dataset=None, digits: int = 3, 
                 if pa is not None:
                     star = "***" if pa < 0.001 else "**" if pa < 0.01 else "*" if pa < 0.05 else ""
             lines.append(
-                "  %-28s %10s %10s %22s %10s%s"
-                % (
-                    r.get("method", ""),
+                "  {:<28} {!s:>10} {!s:>10} {!s:>22} {!s:>10}{}".format(
+                    str(r.get("method", "")),
                     _fmt(r.get("estimate"), digits),
                     _fmt(r.get("std_error"), digits),
                     ci,
@@ -306,8 +299,11 @@ def mrm_report(effect=None, reconciliation=None, dataset=None, digits: int = 3, 
         cons = getattr(effect, "consensus", None)
         if cons:
             lines.append(
-                "  %-28s %10s %10s"
-                % ("consensus (inv-variance)", _fmt(cons.get("estimate"), digits), _fmt(cons.get("std_error"), digits))
+                "  {:<28} {!s:>10} {!s:>10}".format(
+                    "consensus (inv-variance)",
+                    _fmt(cons.get("estimate"), digits),
+                    _fmt(cons.get("std_error"), digits),
+                )
             )
         if stars:
             lines.append("  signif: *** p<0.001, ** p<0.01, * p<0.05")
@@ -327,9 +323,9 @@ class MrmEffect:
     failed: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return "MRM effect: %d of %d estimators, consensus %.4f (se %.4f)" % (
-            len(self.results),
-            len(self.results) + len(self.failed),
+        return "MRM effect: {} of {} estimators, consensus {:.4f} (se {:.4f})".format(
+            int(len(self.results)),
+            int(len(self.results) + len(self.failed)),
             self.consensus.get("estimate", float("nan")),
             self.consensus.get("std_error", float("nan")),
         )

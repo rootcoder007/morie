@@ -22,9 +22,9 @@ def test_wsmlgr_basic():
     p = [1 / (1 + math.exp(-(x[0] * b[0] + x[1] * b[1]))) for x in X]
     for j in range(2):
         assert abs(sum(x[j] * (yi - pi) for x, yi, pi in zip(X, y, p))) < 1e-9
-    I = [[sum(x[a] * x[c] * pi * (1 - pi) for x, pi in zip(X, p)) for c in range(2)] for a in range(2)]
-    det = I[0][0] * I[1][1] - I[0][1] * I[1][0]
-    assert r["se"] == pytest.approx([math.sqrt(I[1][1] / det), math.sqrt(I[0][0] / det)], rel=1e-9)
+    I_ = [[sum(x[a] * x[c] * pi * (1 - pi) for x, pi in zip(X, p)) for c in range(2)] for a in range(2)]
+    det = I_[0][0] * I_[1][1] - I_[0][1] * I_[1][0]
+    assert r["se"] == pytest.approx([math.sqrt(I_[1][1] / det), math.sqrt(I_[0][0] / det)], rel=1e-9)
     ll = sum(yi * math.log(pi) + (1 - yi) * math.log(1 - pi) for yi, pi in zip(y, p))
     assert r["log_likelihood"] == pytest.approx(ll, abs=1e-10)
     assert r["converged"]

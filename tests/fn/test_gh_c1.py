@@ -35,7 +35,10 @@ def test_set_mass_formula():
 
     supp = [i / 100.0 - 6.0 for i in range(1201)]
     w = [1.0] * len(supp)
-    p_theta = lambda t, X: math.exp(-0.5 * (X - t) ** 2)
+
+    def p_theta(t, X):
+        return math.exp(-0.5 * (X - t) ** 2)
+
     r = ghosal_ch1_bayes_formula(lambda t: t > 0.5, 1.0, p_theta, (supp, w))
     # flat prior, N(1,1) likelihood: P(theta > 0.5 | X) = Phi(0.5)
     from morie.fn._stats_core import norm

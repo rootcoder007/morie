@@ -86,10 +86,7 @@ def logrt(
     if k < 2:
         raise ValueError("At least two groups required.")
 
-    if strata is None:
-        strata_labels = np.zeros(len(time), dtype=int)
-    else:
-        strata_labels = np.asarray(strata)
+    strata_labels = np.zeros(len(time), dtype=int) if strata is None else np.asarray(strata)
 
     unique_strata = np.unique(strata_labels)
 
@@ -109,7 +106,6 @@ def logrt(
         event_times = np.unique(t_s[e_s == 1])
 
         # Compute overall KM survival for weighting (rho != 0)
-        S_prev = 1.0
         km_surv_map = {}
         if rho != 0:
             order = np.argsort(t_s)

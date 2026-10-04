@@ -23,7 +23,7 @@ def _label(row, thr, fields):
     for name, op, cut in thr:
         v = row[fields.index(name)]
         if (op == "lt" and v < cut) or (op == "gt" and v > cut):
-            bad.append("%s%s%s" % (name, "<" if op == "lt" else ">", ("%g" % cut)))
+            bad.append("{}{}{}".format(name, "<" if op == "lt" else ">", (f"{cut:g}")))
     return ";".join(bad) if bad else "PASS"
 
 

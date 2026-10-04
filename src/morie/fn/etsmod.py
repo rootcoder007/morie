@@ -61,7 +61,7 @@ def ets(y, error="A", trend=False, season=0, alpha=None, beta=None, gamma=None):
     if m <= 1:
         m = 0
     if m and n < 2 * m:
-        raise ValueError("need at least two full seasons for season = %d" % m)
+        raise ValueError(f"need at least two full seasons for season = {int(m)}")
     use_b = bool(trend)
 
     def _init():
@@ -76,27 +76,24 @@ def ets(y, error="A", trend=False, season=0, alpha=None, beta=None, gamma=None):
         return l0, b0, s0
 
     def _sse(a, b, g):
-        l, bt, s0 = _init()
+        ell, bt, s0 = _init()
         s = list(s0)
         tot = 0.0
         for t in range(n):
             sea = s[t % m] if m else 0.0
-            fit = l + bt + sea
+            fit = ell + bt + sea
             e = y[t] - fit
             tot += e * e
-            lnew = l + bt + a * e
+            lnew = ell + bt + a * e
             if use_b:
                 bt = bt + b * e
             if m:
                 s[t % m] = sea + g * e
-            l = lnew
-        return tot, l, bt, s
+            ell = lnew
+        return tot, ell, bt, s
 
     grid = [0.1 * k for k in range(1, 10)]
-    if alpha is not None:
-        A = [float(alpha)]
-    else:
-        A = grid
+    A = [float(alpha)] if alpha is not None else grid
     best = None
     for a in A:
         Bs = [float(beta)] if beta is not None else ([b for b in grid if b <= a] if use_b else [0.0])

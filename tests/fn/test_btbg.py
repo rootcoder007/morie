@@ -39,10 +39,7 @@ def test_btbg_basic():
         # Independent sample standard deviation (B - 1 in the denominator).
         mean = expected_mu
         ss = sum((v - mean) ** 2 for v in col)
-        if B > 1:
-            expected_sd = (ss / (B - 1.0)) ** 0.5
-        else:
-            expected_sd = 0.0
+        expected_sd = (ss / (B - 1.0)) ** 0.5 if B > 1 else 0.0
         assert abs(vote_share[j] - expected_sd) < 1e-12
 
     # estimate is documented to be y_pred[0].

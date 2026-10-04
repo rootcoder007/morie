@@ -8,7 +8,7 @@ from morie.fn.ca4e11 import ca_chapter_4_equation_11
 
 def test_ca4e11_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     b = 0.5
     s = 0.25
     result = ca_chapter_4_equation_11(b, s)
@@ -19,7 +19,7 @@ def test_ca4e11_basic():
 
 def test_ca4e11_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     b = -1.5
     s = 0.3
     result = ca_chapter_4_equation_11(b, s)

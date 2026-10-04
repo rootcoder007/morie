@@ -57,10 +57,7 @@ def mahalanobis_depth(x, mu=None, Sigma=None):
     p = len(X[0])
     if any(len(r) != p for r in X):
         raise ValueError("x must be rectangular")
-    if mu is None:
-        mu = [sum(X[i][j] for i in range(n)) / n for j in range(p)]
-    else:
-        mu = T.vec(mu)
+    mu = [sum(X[i][j] for i in range(n)) / n for j in range(p)] if mu is None else T.vec(mu)
     if len(mu) != p:
         raise ValueError("mu must have one entry per column of x")
     if Sigma is None:

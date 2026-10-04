@@ -88,7 +88,7 @@ def top_k(query, corpus, k_top=5, metric="inner_product"):
     norms, which for passage embeddings usually means long passages.
     """
     if metric not in _METRICS:
-        raise ValueError("ragRet: metric must be one of %s, got %r" % (", ".join(_METRICS), metric))
+        raise ValueError("ragRet: metric must be one of {}, got {!r}".format(", ".join(_METRICS), metric))
     q = [float(v) for v in k.vec(query)]
     D = [[float(v) for v in k.vec(d)] for d in corpus]
     if not D:
@@ -123,7 +123,7 @@ def ivf_index(corpus, n_cells=4, iters=25, seed=0):
     if n < 1 or c < 1:
         raise ValueError("ragRet: need a non-empty corpus and at least one cell")
     if c > n:
-        raise ValueError("ragRet: %d cells for %d vectors" % (c, n))
+        raise ValueError(f"ragRet: {int(c)} cells for {int(n)} vectors")
     rng = np.random.default_rng(seed)
     cent = [list(D[int(float(rng.uniform()) * n) % n]) for _ in range(c)]
     assign = [0] * n
@@ -207,7 +207,7 @@ def marginalise(doc_scores, token_probs, mode="sequence"):
     w = [v / z for v in p]
     T = [[float(v) for v in k.vec(t)] for t in token_probs]
     if len(T) != len(w):
-        raise ValueError("ragRet: %d documents but %d token distributions" % (len(w), len(T)))
+        raise ValueError(f"ragRet: {int(len(w))} documents but {int(len(T))} token distributions")
     if mode == "sequence":
         seq = [math.exp(sum(math.log(max(v, _EPS)) for v in T[d])) for d in range(len(w))]
         return RichResult(
@@ -237,7 +237,7 @@ def marginalise(doc_scores, token_probs, mode="sequence"):
                 "note": "each token may draw on a DIFFERENT document, so facts can be composed across passages",
             }
         )
-    raise ValueError("ragRet: mode must be sequence or token, got %r" % (mode,))
+    raise ValueError(f"ragRet: mode must be sequence or token, got {mode!r}")
 
 
 def cheatsheet():

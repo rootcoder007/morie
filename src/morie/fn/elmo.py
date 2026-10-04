@@ -118,9 +118,7 @@ def bilm_forward(X, layers):
         d = len(Whf)
         if len(reps[0][0]) != 2 * d:
             raise ValueError(
-                "elmo: token dimension %d but hidden "
-                "dimension %d; layer 0 is [x; x] so they "
-                "must match" % (len(Xm[0]), d)
+                f"elmo: token dimension {int(len(Xm[0]))} but hidden dimension {int(d)}; layer 0 is [x; x] so they must match"
             )
         h = [0.0] * d
         c = [0.0] * d
@@ -144,12 +142,12 @@ def elmo_mix(reps, raw_weights, gamma=1.0, position=None):
     r"""Eq. (1): :math:`\gamma \sum_j s_j h_{k,j}`."""
     n_layers = len(reps)
     if len(raw_weights) != n_layers:
-        raise ValueError("elmo: %d weights for %d layers" % (len(raw_weights), n_layers))
+        raise ValueError(f"elmo: {int(len(raw_weights))} weights for {int(n_layers)} layers")
     s = layer_weights(raw_weights)
     L = len(reps[0])
     dims = {len(reps[j][0]) for j in range(n_layers)}
     if len(dims) != 1:
-        raise ValueError("elmo: layers have differing widths %s" % sorted(dims))
+        raise ValueError(f"elmo: layers have differing widths {sorted(dims)}")
     d = dims.pop()
     idx = range(L) if position is None else [int(position)]
     out = []

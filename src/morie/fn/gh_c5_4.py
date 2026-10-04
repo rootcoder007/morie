@@ -41,7 +41,7 @@ def ghosal_splitmerge(data, z_current, split_label=None, alpha=1.0, sigma=0.5):
     z = [int(v) for v in _bnp._flat(z_current)]
     M = float(alpha)
     if split_label is None:
-        split_label = max(set(z), key=lambda l: z.count(l))
+        split_label = max(set(z), key=lambda ell: z.count(ell))
     members = [j for j in range(len(xs)) if z[j] == int(split_label)]
     if len(members) < 2:
         raise ValueError("cluster too small to split")

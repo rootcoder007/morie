@@ -34,7 +34,7 @@ def _fuzzy_simplicial_set(D: np.ndarray, n_neighbors: int) -> np.ndarray:
                 lo = sigma
             sigma = (lo + hi) / 2.0
 
-        for j_pos, j in enumerate(nn_idx):
+        for _j_pos, j in enumerate(nn_idx):
             W[i, j] = np.exp(-max(dists[j] - rho, 0.0) / sigma)
 
     # Symmetrise: W_sym = W + W^T - W * W^T

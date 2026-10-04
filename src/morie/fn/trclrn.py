@@ -88,12 +88,12 @@ def _check(Y, A, X, propensity, min_propensity):
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     n = len(y)
     if not (len(a) == len(Xm) == n):
-        raise ValueError("trclrn: Y, A and X must agree in length (%d, %d, %d)" % (n, len(a), len(Xm)))
+        raise ValueError(f"trclrn: Y, A and X must agree in length ({int(n)}, {int(len(a))}, {int(len(Xm))})")
     if n < 4:
-        raise ValueError("trclrn: need at least 4 observations, got %d" % n)
+        raise ValueError(f"trclrn: need at least 4 observations, got {int(n)}")
     arms = sorted(set(a))
     if len(arms) < 2:
-        raise ValueError("trclrn: at least 2 treatment arms are needed, got %d" % len(arms))
+        raise ValueError(f"trclrn: at least 2 treatment arms are needed, got {int(len(arms))}")
     if propensity is None:
         p = [1.0 / len(arms)] * n
     elif isinstance(propensity, (int, float)):
@@ -101,14 +101,11 @@ def _check(Y, A, X, propensity, min_propensity):
     else:
         p = [float(v) for v in k.vec(propensity)]
     if len(p) != n:
-        raise ValueError("trclrn: %d propensities for %d observations" % (len(p), n))
+        raise ValueError(f"trclrn: {int(len(p))} propensities for {int(n)} observations")
     bad = [v for v in p if v < float(min_propensity)]
     if bad:
         raise ValueError(
-            "trclrn: %d observation(s) have a propensity "
-            "below %g (smallest %.4g) -- Assumption 1 "
-            "(positivity) fails and the value of a rule "
-            "assigning that arm there is not estimable" % (len(bad), min_propensity, min(bad))
+            f"trclrn: {int(len(bad))} observation(s) have a propensity below {min_propensity:g} (smallest {min(bad):.4g}) -- Assumption 1 (positivity) fails and the value of a rule assigning that arm there is not estimable"
         )
     return y, a, Xm, p, n, arms
 
@@ -122,7 +119,7 @@ def rule_value(Y, A, X, rule, propensity=None, method="ipw", outcome_model=None,
     either that or the propensity is correct.
     """
     if method not in _METHODS:
-        raise ValueError("trclrn: method must be ipw or augmented, got %r" % (method,))
+        raise ValueError(f"trclrn: method must be ipw or augmented, got {method!r}")
     y, a, Xm, p, n, arms = _check(Y, A, X, propensity, min_propensity)
     tot = 0.0
     for i in range(n):
@@ -176,7 +173,7 @@ def fit_tree(
     so the tree stops where the data stop supporting heterogeneity.
     """
     if method not in _METHODS:
-        raise ValueError("trclrn: method must be ipw or augmented, got %r" % (method,))
+        raise ValueError(f"trclrn: method must be ipw or augmented, got {method!r}")
     if method == "augmented" and outcome_model is None:
         raise ValueError("trclrn: method='augmented' needs an outcome_model(x, a) -> E[Y | x, a]")
     y, a, Xm, p, n, arms = _check(Y, A, X, propensity, min_propensity)
@@ -279,11 +276,11 @@ def tree_rules(tree, names=None, indent=0):
     """The tree as readable if-then lines -- the point of using one."""
     pad = " " * indent
     if tree["leaf"]:
-        return ["%streat with %s  (n = %d)" % (pad, tree["treatment"], tree["n"])]
-    nm = "x%d" % tree["feature"] if names is None else names[tree["feature"]]
-    out = ["%sif %s < %.6g:" % (pad, nm, tree["threshold"])]
+        return ["{}treat with {}  (n = {})".format(pad, tree["treatment"], int(tree["n"]))]
+    nm = "x{}".format(int(tree["feature"])) if names is None else names[tree["feature"]]
+    out = ["{}if {} < {:.6g}:".format(pad, nm, tree["threshold"])]
     out += tree_rules(tree["left"], names, indent + 2)
-    out.append("%selse:" % pad)
+    out.append(f"{pad}else:")
     out += tree_rules(tree["right"], names, indent + 2)
     return out
 

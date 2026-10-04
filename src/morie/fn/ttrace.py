@@ -100,15 +100,12 @@ def negbinom_offspring(R0, dispersion, rng):
     r0 = float(R0)
     kk = float(dispersion)
     if r0 < 0.0:
-        raise ValueError("ttrace: R0 must be non-negative, got %r" % (R0,))
+        raise ValueError(f"ttrace: R0 must be non-negative, got {R0!r}")
     if kk <= 0.0:
-        raise ValueError("ttrace: the dispersion k must be positive, got %r" % (dispersion,))
+        raise ValueError(f"ttrace: the dispersion k must be positive, got {dispersion!r}")
     if r0 <= _EPS:
         return 0
-    if kk > 1e6:
-        lam = r0
-    else:
-        lam = _gamma_draw(kk, r0 / kk, rng)
+    lam = r0 if kk > 1000000.0 else _gamma_draw(kk, r0 / kk, rng)
     return _poisson_draw(lam, rng)
 
 
@@ -187,9 +184,9 @@ def simulate_outbreak(
     """
     rng = np.random.default_rng(seed)
     if not 0.0 <= float(trace_prob) <= 1.0:
-        raise ValueError("ttrace: trace_prob must lie in [0, 1], got %r" % (trace_prob,))
+        raise ValueError(f"ttrace: trace_prob must lie in [0, 1], got {trace_prob!r}")
     if not 0.0 <= float(subclinical) <= 1.0:
-        raise ValueError("ttrace: subclinical must lie in [0, 1], got %r" % (subclinical,))
+        raise ValueError(f"ttrace: subclinical must lie in [0, 1], got {subclinical!r}")
     if int(n_initial) < 1:
         raise ValueError("ttrace: need at least one initial case")
     horizon = float(max_weeks) * 7.0

@@ -105,8 +105,8 @@ def gaussian_approximation(log_lik, log_lik_d1, log_lik_d2, prior_mean, prior_pr
         if h >= -_EPS:
             raise ValueError(
                 "inlasm: the objective is not locally "
-                "concave at x = %r, so the Gaussian "
-                "approximation has no mode here" % (x,)
+                f"concave at x = {x!r}, so the Gaussian "
+                "approximation has no mode here"
             )
         step = g / h
         x -= step
@@ -173,13 +173,10 @@ def hyperparameter_design(mode, curvature, step=1.0, dim=None):
     m = [float(v) for v in k.vec(mode)]
     d = len(m) if dim is None else int(dim)
     if d != len(m):
-        raise ValueError("inlasm: the mode has %d entries but dim is %d" % (len(m), d))
+        raise ValueError(f"inlasm: the mode has {int(len(m))} entries but dim is {int(d)}")
     if d > _MAX_HYPER:
         raise ValueError(
-            "inlasm: %d hyperparameters -- the outer "
-            "integral is a small weighted SUM, so the "
-            "method assumes a low-dimensional theta "
-            "(the paper says a FEW)" % d
+            f"inlasm: {int(d)} hyperparameters -- the outer integral is a small weighted SUM, so the method assumes a low-dimensional theta (the paper says a FEW)"
         )
     sd = [1.0 / math.sqrt(float(v)) if float(v) > 0.0 else 1.0 for v in k.vec(curvature)]
     pts = [list(m)]
@@ -208,7 +205,7 @@ def integrate_marginals(conditional_marginals, log_weights, x_grid):
     lw = [float(v) for v in k.vec(log_weights)]
     xs = [float(v) for v in k.vec(x_grid)]
     if len(M) != len(lw):
-        raise ValueError("inlasm: %d conditional marginals but %d weights" % (len(M), len(lw)))
+        raise ValueError(f"inlasm: {int(len(M))} conditional marginals but {int(len(lw))} weights")
     if any(len(m) != len(xs) for m in M):
         raise ValueError("inlasm: a conditional marginal does not match the grid")
     mx = max(lw)

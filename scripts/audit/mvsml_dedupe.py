@@ -36,17 +36,17 @@ for key, members in groups.items():
     for mod, _ in members[1:]:
         shim = (
             "# morie.fn -- function file (rootcoder007/morie)\n"
-            '"""%s, re-exported from :mod:`morie.fn.%s`.\n\n'
+            f'"""{cite}, re-exported from :mod:`morie.fn.{canon_mod}`.\n\n'
             "The stub generator stamped several extracted page\n"
             "fragments with this same function name, so the\n"
-            "implementation lives once in %s and this module re-exports\n"
+            f"implementation lives once in {canon_mod} and this module re-exports\n"
             'it.  Calling either path runs the same code.\n"""\n\n'
-            "from .%s import %s\n\n"
-            '__all__ = ["%s"]\n\n\n'
+            f"from .{canon_mod} import {fn}\n\n"
+            f'__all__ = ["{fn}"]\n\n\n'
             "def cheatsheet():\n"
-            '    return "%s: see %s"\n' % (cite, canon_mod, canon_mod, canon_mod, fn, fn, mod, canon_mod)
+            f'    return "{mod}: see {canon_mod}"\n'
         )
-        Path("src/morie/fn/%s.py" % mod).write_text(shim)
+        Path(f"src/morie/fn/{mod}.py").write_text(shim)
         shimmed += 1
 print("canonical implementations kept:", sum(1 for m in groups.values() if m))
 print("files converted to re-export shims:", shimmed)

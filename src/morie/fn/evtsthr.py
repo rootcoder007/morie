@@ -46,10 +46,7 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
     n = len(x)
     if n < 10:
         raise ValueError("need at least ten observations to select a threshold")
-    if u_grid is None:
-        u_grid = [core.quantile7(x, 0.5 + 0.05 * i) for i in range(9)]
-    else:
-        u_grid = core.vec(u_grid)
+    u_grid = [core.quantile7(x, 0.5 + 0.05 * i) for i in range(9)] if u_grid is None else core.vec(u_grid)
     window = int(window)
     if window < 2:
         raise ValueError("window must be at least 2")

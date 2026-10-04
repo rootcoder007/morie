@@ -34,10 +34,7 @@ def cfa_expected_change(
     ----------
     Sorbom, D. (1989). Model modification. Psychometrika, 54(3), 371-384.
     """
-    if isinstance(mod_indices, dict):
-        df = pd.DataFrame(mod_indices)
-    else:
-        df = mod_indices.copy()
+    df = pd.DataFrame(mod_indices) if isinstance(mod_indices, dict) else mod_indices.copy()
 
     if "mi" not in df.columns or "epc" not in df.columns:
         raise ValueError("Input must have 'mi' and 'epc' columns.")

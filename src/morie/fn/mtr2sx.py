@@ -124,7 +124,7 @@ def ratio_estimates(beta_x, beta_y):
 def ivw_variance(beta_x, se_x, beta_y, se_y, weights="first_order", theta=0.0):
     r"""Delta-method variance of each ratio estimate, eqs (2)-(5)."""
     if weights not in WEIGHTS:
-        raise ValueError("mtr2sx: weights must be one of %s, got %r" % (", ".join(WEIGHTS), weights))
+        raise ValueError("mtr2sx: weights must be one of {}, got {!r}".format(", ".join(WEIGHTS), weights))
     L = _check(beta_x, se_x, beta_y, se_y)
     out = []
     for j in range(L):
@@ -135,7 +135,7 @@ def ivw_variance(beta_x, se_x, beta_y, se_y, weights="first_order", theta=0.0):
             v += by * by * sx * sx / (bx**4)
             v -= 2.0 * float(theta) * by * sy * sx / (bx**3)
             if v <= 0.0:
-                raise ValueError("mtr2sx: the second-order variance for variant %d is non-positive; check theta" % j)
+                raise ValueError(f"mtr2sx: the second-order variance for variant {int(j)} is non-positive; check theta")
         out.append(v)
     return out
 
@@ -178,7 +178,7 @@ def heterogeneity(estimates, variances, pooled):
 def ivw(beta_x, se_x, beta_y, se_y, model="multiplicative", weights="first_order", theta=0.0):
     r"""The inverse-variance weighted causal estimate."""
     if model not in MODELS:
-        raise ValueError("mtr2sx: model must be one of %s, got %r" % (", ".join(MODELS), model))
+        raise ValueError("mtr2sx: model must be one of {}, got {!r}".format(", ".join(MODELS), model))
     L = _check(beta_x, se_x, beta_y, se_y)
     bx = [float(v) for v in beta_x]
     by = [float(v) for v in beta_y]
@@ -221,8 +221,7 @@ def ivw(beta_x, se_x, beta_y, se_y, model="multiplicative", weights="first_order
             "regression_estimate": reg["estimate"],
             "regression_se_fixed": reg["se_fixed"],
             "n_variants": L,
-            "method": "inverse-variance weighted MR (%s model, %s "
-            "weights); Burgess & Bowden (2015) Sec. 2" % (model, weights),
+            "method": f"inverse-variance weighted MR ({model} model, {weights} weights); Burgess & Bowden (2015) Sec. 2",
         }
     )
 

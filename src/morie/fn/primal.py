@@ -90,15 +90,15 @@ def chambolle_pock(
         sigma = 1.0 / norm_K
     tau, sigma = float(tau), float(sigma)
     if tau <= 0.0 or sigma <= 0.0:
-        raise ValueError("chambolle_pock: tau and sigma must be positive, got %r and %r" % (tau, sigma))
+        raise ValueError(f"chambolle_pock: tau and sigma must be positive, got {tau!r} and {sigma!r}")
     prod = tau * sigma * norm_K * norm_K
     if prod >= 1.0 + 1e-12:
         raise ValueError(
             "chambolle_pock: Theorem 1 requires tau*sigma*||K||^2 <= 1, "
             "got "
-            "%.6g. The iteration diverges outside this range while still "
+            f"{prod:.6g}. The iteration diverges outside this range while still "
             "returning finite numbers, so this is refused rather than "
-            "warned about." % prod
+            "warned about."
         )
 
     xbar = list(x)

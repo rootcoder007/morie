@@ -17,7 +17,10 @@ def ghosal_bernstein_feller(x, F=None, K=30):
     uniformly to F on [0,1]."""
     xs = _bnp._flat(x)
     if F is None:
-        F = lambda t: t * t  # a genuine CDF on [0,1]
+
+        def F(t):
+            return t * t  # a genuine CDF on [0,1]
+
     vals = [_bnp.bernstein_feller_cdf(F, min(max(v, 0.0), 1.0), int(K)) for v in xs]
     err = max(abs(v - F(min(max(u, 0.0), 1.0))) for v, u in zip(vals, xs))
     res = RichResult(

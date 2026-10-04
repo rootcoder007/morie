@@ -125,19 +125,19 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     True
     """
     if model not in MODELS:
-        raise ValueError("model must be 'error' or 'lag', got %r." % model)
+        raise ValueError(f"model must be 'error' or 'lag', got {model!r}.")
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yy = np.asarray(y, dtype=float).ravel()
     n = yy.size
     if X.shape[0] != n:
         X = X.T
     if X.shape[0] != n:
-        raise ValueError("x has %d rows for %d responses." % (X.shape[0], n))
+        raise ValueError(f"x has {int(X.shape[0])} rows for {int(n)} responses.")
     if not np.any(np.all(np.isclose(X, 1.0), axis=0)):
         X = np.column_stack([np.ones(n), X])
     W = np.asarray(w, dtype=float)
     if W.shape != (n, n):
-        raise ValueError("w must be %d by %d, got %s." % (n, n, W.shape))
+        raise ValueError(f"w must be {int(n)} by {int(n)}, got {W.shape}.")
     if np.any(np.abs(np.diag(W)) > 1e-12):
         raise ValueError("w must have a zero diagonal; a site cannot be its own neighbour.")
 
@@ -250,7 +250,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
             "jacobian_note": ("the ln|I - rho W| term is exactly what least squares drops"),
             "spatial_lag_mean": float(np.mean(Wy)),
             "n": n,
-            "method": "Spatial autoregressive (%s) model by maximum likelihood" % model,
+            "method": f"Spatial autoregressive ({model}) model by maximum likelihood",
         }
     )
 

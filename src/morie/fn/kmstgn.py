@@ -52,8 +52,8 @@ def kamath_summarize_from_feedback(preferences, rewards, pi_logprobs, ref_logpro
     if any(len(p) != 2 for p in pairs):
         raise ValueError("each preference must be (score_chosen, score_rejected).")
     w = np.array([p[0] for p in pairs], dtype=float)
-    l = np.array([p[1] for p in pairs], dtype=float)
-    rm = kamath_reward_model_training_loss(w, l)
+    ell = np.array([p[1] for p in pairs], dtype=float)
+    rm = kamath_reward_model_training_loss(w, ell)
     rl = kamath_ppo_rlhf_objective(rewards, pi_logprobs, ref_logprobs, beta)
     return RichResult(
         payload={

@@ -108,12 +108,12 @@ def encode_box(box, cx, cy, stride=1.0):
 
 def decode_box(ltrb, cx, cy, stride=1.0):
     r"""Back to corners. Inverts :func:`encode_box` exactly."""
-    l, t, r, b = [float(v) for v in k.vec(ltrb)]
+    ell, t, r, b = [float(v) for v in k.vec(ltrb)]
     s = float(stride)
     px, py = (float(cx) + 0.5) * s, (float(cy) + 0.5) * s
-    if l < 0 or t < 0 or r < 0 or b < 0:
+    if ell < 0 or t < 0 or r < 0 or b < 0:
         raise ValueError("yolovx: the distances cannot be negative")
-    return [px - l * s, py - t * s, px + r * s, py + b * s]
+    return [px - ell * s, py - t * s, px + r * s, py + b * s]
 
 
 def box_iou(a, b):
@@ -164,14 +164,14 @@ def simota_assign(costs, ious, top_q=10, max_k=None):
     extra hyperparameter.
     """
     C = [[float(v) for v in r] for r in k.mat(costs)]
-    I = [[float(v) for v in r] for r in k.mat(ious)]
+    I_ = [[float(v) for v in r] for r in k.mat(ious)]
     G, P = len(C), len(C[0])
-    if len(I) != G or len(I[0]) != P:
+    if len(I_) != G or len(I_[0]) != P:
         raise ValueError("yolovx: the cost and IoU matrices differ in shape")
     q = min(int(top_q), P)
     assign, ks = {}, []
     for g in range(G):
-        top = sorted(I[g], reverse=True)[:q]
+        top = sorted(I_[g], reverse=True)[:q]
         kg = max(1, int(round(sum(top))))
         if max_k is not None:
             kg = min(kg, int(max_k))

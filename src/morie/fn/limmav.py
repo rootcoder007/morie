@@ -287,10 +287,7 @@ def ebayes(sigma2, df, robust_floor=1e-12):
     e = [math.log(s2[g]) - digamma(dg[g] / 2.0) + math.log(dg[g] / 2.0) for g in use]
     ebar = sum(e) / len(e)
     n = len(e)
-    if n > 1:
-        target = sum((v - ebar) ** 2 for v in e) * n / (n - 1.0) / n
-    else:
-        target = 0.0
+    target = sum((v - ebar) ** 2 for v in e) * n / (n - 1.0) / n if n > 1 else 0.0
     target -= sum(trigamma(dg[g] / 2.0) for g in use) / len(use)
     if target <= 0.0:
         # "there is no evidence that the underlying variances vary between
@@ -342,7 +339,7 @@ def voom_weights(counts, design, lib_sizes=None, span=0.5):
     G, m = len(y), len(y[0])
     X = [[float(t) for t in row] for row in design]
     if len(X) != m:
-        raise ValueError("limmav: the design has %d rows but there are %d samples" % (len(X), m))
+        raise ValueError(f"limmav: the design has {int(len(X))} rows but there are {int(m)} samples")
     # step 1: OLS per gene
     fitted, sds, means = [], [], []
     for g in range(G):
@@ -529,7 +526,7 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5, weights=True
     p = len(X[0])
     c = ([0.0] * (p - 1) + [1.0]) if contrast is None else [float(t) for t in contrast]
     if len(c) != p:
-        raise ValueError("limmav: the contrast must have one entry per coefficient (%d)" % p)
+        raise ValueError(f"limmav: the contrast must have one entry per coefficient ({int(p)})")
     est, se, tt, pv = [], [], [], []
     sd2, vun = [], []
     df = m - p

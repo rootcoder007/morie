@@ -96,7 +96,7 @@ def remainder_bound(err_Q, err_g, delta):
     """
     d = float(delta)
     if not 0.0 < d <= 1.0:
-        raise ValueError("tlhaltm: the positivity bound delta must lie in (0,1], got %r" % (delta,))
+        raise ValueError(f"tlhaltm: the positivity bound delta must lie in (0,1], got {delta!r}")
     return {
         "bound": float(err_Q) * float(err_g) / d,
         "delta": d,
@@ -140,7 +140,7 @@ def cv_tmle_split(n, V=10, seed=0):
     function fixed independently of the data it is averaged over.
     """
     if int(V) < 2 or int(V) > int(n):
-        raise ValueError("tlhaltm: V must lie in 2..%d, got %d" % (n, V))
+        raise ValueError(f"tlhaltm: V must lie in 2..{int(n)}, got {int(V)}")
     rng = np.random.default_rng(seed)
     idx = list(range(int(n)))
     for i in range(len(idx) - 1, 0, -1):

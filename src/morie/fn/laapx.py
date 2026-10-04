@@ -38,7 +38,7 @@ def laplace_approximation(
 
     eps = 1e-5
     H = np.zeros((d, d))
-    f0 = log_posterior(mode)
+    log_posterior(mode)
     for i in range(d):
         for j in range(i, d):
             e_i = np.zeros(d)

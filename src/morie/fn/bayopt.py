@@ -90,10 +90,7 @@ def _Phi(z):
 
 
 def _lengths(ls, d):
-    if isinstance(ls, (int, float)):
-        out = [float(ls)] * d
-    else:
-        out = [float(v) for v in ls]
+    out = [float(ls)] * d if isinstance(ls, (int, float)) else [float(v) for v in ls]
     if len(out) != d:
         raise ValueError("bayopt: length_scale must be a scalar or one value per dimension")
     if any(v <= 0 for v in out):
@@ -130,7 +127,7 @@ def _dkernel_dr2(name, amplitude, r2):
 
 def _kernel(name):
     if name not in _KERNELS:
-        raise ValueError("bayopt: kernel must be one of %s" % (_KERNELS,))
+        raise ValueError(f"bayopt: kernel must be one of {_KERNELS}")
     return matern52 if name == "matern52" else squared_exponential
 
 
@@ -264,7 +261,7 @@ def acquisition_gradient(gmu, gsd, mu, sd, best, acq="ei", kappa=2.0, xi=0.0):
                         - \Phi(\gamma)\,\nabla\mu .
     """
     if acq not in _ACQ:
-        raise ValueError("bayopt: acq must be one of %s" % (_ACQ,))
+        raise ValueError(f"bayopt: acq must be one of {_ACQ}")
     d = len(gmu)
     if acq == "lcb":  # maximising -LCB
         return [-gmu[i] + kappa * gsd[i] for i in range(d)]
@@ -378,7 +375,7 @@ def acquire(mu, sd, best, acq="ei", kappa=2.0, xi=0.0):
     lets the loop treat them alike.
     """
     if acq not in _ACQ:
-        raise ValueError("bayopt: acq must be one of %s" % (_ACQ,))
+        raise ValueError(f"bayopt: acq must be one of {_ACQ}")
     if acq == "ei":
         return expected_improvement(mu, sd, best, xi)
     if acq == "pi":
@@ -422,7 +419,7 @@ def bayopt(
     if n_starts < 1:
         raise ValueError("bayopt: n_starts must be positive")
     if acq not in _ACQ:
-        raise ValueError("bayopt: acq must be one of %s" % (_ACQ,))
+        raise ValueError(f"bayopt: acq must be one of {_ACQ}")
     box = [(float(a), float(b)) for a, b in bounds]
     if not box:
         raise ValueError("bayopt: bounds are empty")
@@ -482,8 +479,8 @@ def bayopt(
             "n_eval": len(Y),
             "method": (
                 "Bayesian optimisation (Mockus 1975; Snoek, "
-                "Larochelle & Adams 2012) with a %s kernel and the "
-                "%s acquisition" % (kernel, acq)
+                f"Larochelle & Adams 2012) with a {kernel} kernel and the "
+                f"{acq} acquisition"
             ),
             "note": (
                 "minimisation throughout, as the paper writes it "

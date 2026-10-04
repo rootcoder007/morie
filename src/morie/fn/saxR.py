@@ -137,10 +137,7 @@ def sax_mindist(word1, word2, n, alphabet):
         c = _LETTERS.index(s2) + 1
         if max(r, c) > a:
             raise ValueError("symbol outside alphabet")
-        if abs(r - c) <= 1:
-            d = 0.0
-        else:
-            d = bps[max(r, c) - 2] - bps[min(r, c) - 1]
+        d = 0.0 if abs(r - c) <= 1 else bps[max(r, c) - 2] - bps[min(r, c) - 1]
         tot += d * d
     return math.sqrt(float(n) / w) * math.sqrt(tot)
 

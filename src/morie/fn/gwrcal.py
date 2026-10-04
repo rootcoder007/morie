@@ -89,23 +89,25 @@ def _prepare(y, X, coords):
         raise ValueError("gwrcal: need at least three observations")
     Xr = [list(map(float, r)) for r in np.asarray(X, dtype=float)]
     if len(Xr) != n:
-        raise ValueError("gwrcal: X has %d rows for %d responses" % (len(Xr), n))
+        raise ValueError(f"gwrcal: X has {int(len(Xr))} rows for {int(n)} responses")
     p = len(Xr[0])
     if any(len(r) != p for r in Xr):
         raise ValueError("gwrcal: X is ragged")
     C = [list(map(float, r)) for r in np.asarray(coords, dtype=float)]
     if len(C) != n:
-        raise ValueError("gwrcal: coords has %d rows for %d observations" % (len(C), n))
+        raise ValueError(f"gwrcal: coords has {int(len(C))} rows for {int(n)} observations")
     for block, name in ((Xr, "X"), (C, "coords")):
         for r in block:
             for v in r:
                 if v != v or v in (float("inf"), float("-inf")):
-                    raise ValueError("gwrcal: %s contains a non-finite value" % name)
+                    raise ValueError(f"gwrcal: {name} contains a non-finite value")
     for v in y:
         if v != v or v in (float("inf"), float("-inf")):
             raise ValueError("gwrcal: y contains a non-finite value")
     if p >= n:
-        raise ValueError("gwrcal: %d columns in X for %d observations leaves no residual degrees of freedom" % (p, n))
+        raise ValueError(
+            f"gwrcal: {int(p)} columns in X for {int(n)} observations leaves no residual degrees of freedom"
+        )
     return y, Xr, C, n, p
 
 
@@ -167,9 +169,9 @@ def gwr_calibrate(
     """
     y, Xr, C, n, p = _prepare(y, X, coords)
     if kernel not in _KERNELS:
-        raise ValueError("gwrcal: kernel must be one of %s" % (", ".join(_KERNELS)))
+        raise ValueError("gwrcal: kernel must be one of {}".format(", ".join(_KERNELS)))
     if criterion not in _CRITERIA:
-        raise ValueError("gwrcal: criterion must be one of %s" % (", ".join(_CRITERIA)))
+        raise ValueError("gwrcal: criterion must be one of {}".format(", ".join(_CRITERIA)))
     if search is None:
         search = "grid" if adaptive else "golden"
     if search not in ("golden", "grid"):
@@ -244,8 +246,8 @@ def gwr_calibrate(
             "p": p,
             "method": (
                 "GWR bandwidth selection (Fotheringham, Brunsdon & "
-                "Charlton 2002): %s kernel, %s bandwidth, %s "
-                "minimised by %s search" % (kernel, "adaptive" if adaptive else "fixed", criterion.upper(), search)
+                "Charlton 2002): {} kernel, {} bandwidth, {} "
+                "minimised by {} search".format(kernel, "adaptive" if adaptive else "fixed", criterion.upper(), search)
             ),
             "note": (
                 "aicc_improvement is the global OLS AICc minus this "

@@ -156,7 +156,7 @@ def is_curriculum(weights, p=None, tol=1e-12):
     for k, w in enumerate(weights):
         q = [w[i] * p[i] for i in range(n)]
         if sum(q) <= 0:
-            raise ValueError("prgrl: step %d has no mass" % k)
+            raise ValueError(f"prgrl: step {int(k)} has no mass")
         ents.append(entropy(q))
         if k > 0:
             for i in range(n):

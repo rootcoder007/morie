@@ -130,7 +130,7 @@ def test_kaplan_meier_is_monotone_and_bounded():
     assert all(a >= b - 1e-15 for a, b in zip(km["surv"], km["surv"][1:]))
     assert all(0.0 <= s <= 1.0 for s in km["surv"])
     # the log-log interval cannot leave [0, 1], which is why it is used
-    assert all(0.0 <= l <= 1.0 for l in km["lower"])
+    assert all(0.0 <= ell <= 1.0 for ell in km["lower"])
     assert all(0.0 <= u <= 1.0 for u in km["upper"])
 
 

@@ -46,7 +46,7 @@ def aalen(
 
     for j, tj in enumerate(event_times):
         at_risk = time >= tj
-        Y = at_risk.astype(float)
+        at_risk.astype(float)
         X_r = X_aug[at_risk]
         nr = X_r.shape[0]
         if nr < q:

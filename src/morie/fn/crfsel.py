@@ -114,9 +114,9 @@ def split_frequency_importance(trees, d, max_depth=4, decay=2.0):
     the answer no matter what the decay is.
     """
     if max_depth < 1:
-        raise ValueError("crfsel: max_depth must be at least 1, got %d" % max_depth)
+        raise ValueError(f"crfsel: max_depth must be at least 1, got {int(max_depth)}")
     if decay < 0.0:
-        raise ValueError("crfsel: decay must be non-negative, got %r" % (decay,))
+        raise ValueError(f"crfsel: decay must be non-negative, got {decay!r}")
     total = [0.0] * d
     for depth in range(1, max_depth + 1):
         at_depth = [0.0] * d
@@ -177,18 +177,18 @@ def cate_variable_importance(
     yv, Wv = k.vec(y), k.vec(W)
     n = len(yv)
     if len(Wv) != n:
-        raise ValueError("crfsel: %d outcomes but %d treatments" % (n, len(Wv)))
+        raise ValueError(f"crfsel: {int(n)} outcomes but {int(len(Wv))} treatments")
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("crfsel: %d covariate rows for %d outcomes" % (len(Xm), n))
+        raise ValueError(f"crfsel: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     d = len(Xm[0]) if Xm and Xm[0] else 0
     if d == 0:
         raise ValueError("crfsel: no covariates")
-    nm = list(names) if names is not None else ["X%d" % (j + 1) for j in range(d)]
+    nm = list(names) if names is not None else [f"X{int(j + 1)}" for j in range(d)]
     if len(nm) != d:
-        raise ValueError("crfsel: %d names for %d covariates" % (len(nm), d))
+        raise ValueError(f"crfsel: {int(len(nm))} names for {int(d)} covariates")
     if n < 60:
-        raise ValueError("crfsel: need at least 60 observations, got %d" % n)
+        raise ValueError(f"crfsel: need at least 60 observations, got {int(n)}")
 
     # Local centering FIRST. Without it the pseudo-outcome still
     # carries m(X), so the forest splits on the confounding surface and

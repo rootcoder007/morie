@@ -137,10 +137,7 @@ def panel_regression(
             se_arr = np.full(kk, float("nan"))
 
         fitted = X_re @ beta
-        if add_intercept:
-            names = ["(Intercept)"] + [f"x{j}" for j in range(p)]
-        else:
-            names = [f"x{j}" for j in range(p)]
+        names = ["(Intercept)"] + [f"x{j}" for j in range(p)] if add_intercept else [f"x{j}" for j in range(p)]
     else:
         raise ValueError("method must be 'fe' or 're'.")
 

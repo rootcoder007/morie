@@ -251,7 +251,7 @@ def matched_filter(
     x = np.asarray(x, dtype=float).ravel()
     template = np.asarray(template, dtype=float).ravel()
 
-    h = template[::-1] / (np.linalg.norm(template) + 1e-12)
+    template[::-1] / (np.linalg.norm(template) + 1e-12)
 
     output = np.correlate(x, template, mode="full")
     output = output[: len(x)]
@@ -1244,7 +1244,7 @@ def matchedfilt(ref, x=None, noise_psd=None, freqs=None, t0=None, gain=1.0, dt=1
     if noise_psd is not None:
         pn = aslist(noise_psd)
         if len(pn) != n:
-            raise ValueError("noise_psd needs one value per DFT bin (%d)" % n)
+            raise ValueError(f"noise_psd needs one value per DFT bin ({int(n)})")
         if any(v <= 0 for v in pn):
             raise ValueError("the noise PSD must be positive everywhere")
         H = [h / p for h, p in zip(H, pn)]
@@ -1525,7 +1525,7 @@ def psdhz(psd, fs, n=None, bands=None):
         powers = {}
         for name, (lo, hi) in items:
             if hi <= lo:
-                raise ValueError("band %r has hi <= lo" % (name,))
+                raise ValueError(f"band {name!r} has hi <= lo")
             powers[name] = fsum(v * width for f, v in zip(freqs, p) if lo <= f < hi)
         out["band_power"] = powers
         tot = fsum(powers.values())
@@ -1818,7 +1818,7 @@ def specres(n, fs=1.0, window="rectangular"):
     }
     key = str(window).lower()
     if key not in table:
-        raise ValueError("unknown window %r; known: %s" % (window, ", ".join(sorted(table))))
+        raise ValueError("unknown window {!r}; known: {}".format(window, ", ".join(sorted(table))))
     lobe, side, enbw = table[key]
     df = fsv / nn
     return RichResult(
@@ -2159,7 +2159,7 @@ def ensavg(observations, M=None):
     if m == 0:
         raise ValueError("need at least one observation")
     if M is not None and int(M) != m:
-        raise ValueError("M=%d was asserted but %d records were given" % (int(M), m))
+        raise ValueError(f"M={int(int(M))} was asserted but {int(m)} records were given")
     n = len(recs[0])
     if n == 0:
         raise ValueError("records must be nonempty")
@@ -2709,7 +2709,7 @@ def ccfouter(x, y, order, tol=1e-3):
     if n < 1:
         raise ValueError("order must be at least 1")
     if len(xs) < n:
-        raise ValueError("need at least %d samples" % n)
+        raise ValueError(f"need at least {int(n)} samples")
     m = len(xs) - n + 1
     mat = [[0.0] * n for _ in range(n)]
     for i in range(n):
@@ -2819,10 +2819,7 @@ def cohere(x, y, fs=1.0, nperseg=None, noverlap=None):
     starts = list(range(0, n - m + 1, step))
     if len(starts) < 2:
         raise ValueError(
-            "eq. (4.32) needs the spectra AVERAGED over "
-            "several observations; %d segment(s) of %d "
-            "samples would give a coherence of 1 at every "
-            "frequency" % (len(starts), m)
+            f"eq. (4.32) needs the spectra AVERAGED over several observations; {int(len(starts))} segment(s) of {int(m)} samples would give a coherence of 1 at every frequency"
         )
     half = m // 2 + 1
     sxx = [0.0] * half
@@ -3478,9 +3475,7 @@ def mfimpulse(x, t0=None, gain=1.0, dt=1.0):
     shift = n if t0 is None else int(round(float(t0) / step))
     if shift < n:
         raise ValueError(
-            "t0 must be at least the reference duration "
-            "(%d samples) for a causal filter; the DFT of "
-            "eq. (4.55) at length N supplies only N-1" % n
+            f"t0 must be at least the reference duration ({int(n)} samples) for a causal filter; the DFT of eq. (4.55) at length N supplies only N-1"
         )
     h = [0.0] * (shift + 1)
     for i, v in enumerate(xs):

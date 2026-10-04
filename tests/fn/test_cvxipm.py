@@ -6,8 +6,11 @@ from morie.fn.cvxipm import boyd_interior_point
 
 def test_cvxipm_basic():
     """Test basic functionality: minimise x^2/2 subject to x >= 1."""
+
     # Objective: f0(x) = x[0]^2 / 2
-    obj = lambda x: 0.5 * x[0] ** 2
+    def obj(x):
+        return 0.5 * x[0] ** 2
+
     # Inequality constraint: 1 - x[0] <= 0  (i.e., x >= 1)
     con = [lambda x: 1.0 - x[0]]
     # Strictly feasible start: x0 = 2.0 satisfies 1 - 2 = -1 < 0
@@ -55,8 +58,11 @@ def test_cvxipm_basic():
 
 def test_cvxipm_edge():
     """Test edge cases: single outer iteration gives the golden-ratio centered point."""
+
     # Same problem as test_cvxipm_basic but capped at max_outer=1
-    obj = lambda x: 0.5 * x[0] ** 2
+    def obj(x):
+        return 0.5 * x[0] ** 2
+
     con = [lambda x: 1.0 - x[0]]
     x0 = [2.0]
 

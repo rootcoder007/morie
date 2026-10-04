@@ -353,10 +353,7 @@ def rubin_pool(ests, vars_, pooling="rubin1987", df_complete=None):
     m = len(ests)
     qbar = _csum(ests) / m
     ubar = _csum(vars_) / m
-    if m > 1:
-        b = _csum((e - qbar) * (e - qbar) for e in ests) / (m - 1)
-    else:
-        b = 0.0
+    b = _csum((e - qbar) * (e - qbar) for e in ests) / (m - 1) if m > 1 else 0.0
     total = ubar + (1.0 + 1.0 / m) * b
     if b <= 0.0 or m < 2:
         # No between-imputation variance: the imputation added nothing,
@@ -454,9 +451,9 @@ def tipping_point_sensitivity(
     Rubin (1987) ch. 3; Barnard and Rubin (1999) Biometrika 86, 948-955.
     """
     if mi not in MI_ROUTES:
-        raise ValueError("mi must be one of %r" % (MI_ROUTES,))
+        raise ValueError(f"mi must be one of {MI_ROUTES!r}")
     if pooling not in POOLING_ROUTES:
-        raise ValueError("pooling must be one of %r" % (POOLING_ROUTES,))
+        raise ValueError(f"pooling must be one of {POOLING_ROUTES!r}")
     yv = [None if v is None or v != v else float(v) for v in y]
     n = len(yv)
     arm = [float(v) for v in D]
@@ -483,10 +480,7 @@ def tipping_point_sensitivity(
         delta_treat = [-step * k for k in range(11)]
     else:
         delta_treat = [float(v) for v in delta_treat]
-    if delta_control is None:
-        delta_control = [0.0]
-    else:
-        delta_control = [float(v) for v in delta_control]
+    delta_control = [0.0] if delta_control is None else [float(v) for v in delta_control]
 
     m = 1 if mi == "deterministic" else int(n_imputations)
 

@@ -38,10 +38,7 @@ def bartlett_psd(x, nseg: int = 8, fs: float = 1.0, **kwargs) -> DescriptiveResu
         seg = x[i * seg_len : (i + 1) * seg_len]
         X = np.fft.rfft(seg)
         psd_seg = (np.abs(X) ** 2) / (seg_len * fs)
-        if psd_sum is None:
-            psd_sum = psd_seg
-        else:
-            psd_sum = psd_sum + psd_seg
+        psd_sum = psd_seg if psd_sum is None else psd_sum + psd_seg
     psd_avg = psd_sum / nseg
     freqs = np.fft.rfftfreq(seg_len, d=1.0 / fs)
     return DescriptiveResult(

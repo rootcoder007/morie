@@ -73,10 +73,7 @@ def krreg(
 
     alpha = np.linalg.solve(K_mat + penalty * np.eye(n), y)
 
-    if x_eval is None:
-        x_eval = x.copy()
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = x.copy() if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     K_eval = k_fn((x_eval[:, None] - x[None, :]) / bandwidth)
     y_hat = K_eval @ alpha

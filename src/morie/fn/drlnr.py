@@ -79,7 +79,7 @@ def dr_learner(y, T, X, n_folds=5, seed=0, trunc=0.01):
             raise ValueError("a fold lacks one treatment arm; reduce n_folds.")
         m1 = _pred(_ridge(X[tr1], y[tr1]), X[te])
         m0 = _pred(_ridge(X[tr0], y[tr0]), X[te])
-        e = np.clip(_logit_fit(X[tr], T[tr]), trunc, 1 - trunc)
+        np.clip(_logit_fit(X[tr], T[tr]), trunc, 1 - trunc)
         # propensity for the held-out rows: refit coefficients via the same routine
         e_te = np.clip(_logit_fit(X, T)[te], trunc, 1 - trunc)
         psi[te] = m1 - m0 + T[te] * (y[te] - m1) / e_te - (1 - T[te]) * (y[te] - m0) / (1 - e_te)

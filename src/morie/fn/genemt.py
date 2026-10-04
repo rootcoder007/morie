@@ -132,7 +132,7 @@ def gene_statistic(y, G, keep=0.999):
     X = pc["components"]
     n, m = len(X), pc["n_components"]
     if len(yv) != n:
-        raise ValueError("genemt: %d phenotypes but %d individuals" % (len(yv), n))
+        raise ValueError(f"genemt: {int(len(yv))} phenotypes but {int(n)} individuals")
     if m < 1:
         raise ValueError("genemt: the gene has no non-degenerate components")
     co = k.wls(X, yv, [1.0] * n, 1e-8)["coef"]
@@ -164,7 +164,7 @@ def gene_covariates(n_markers, gene_length, ld_scores=None):
     nm = [float(v) for v in k.vec(n_markers)]
     gl = [float(v) for v in k.vec(gene_length)]
     if len(nm) != len(gl):
-        raise ValueError("genemt: %d marker counts but %d lengths" % (len(nm), len(gl)))
+        raise ValueError(f"genemt: {int(len(nm))} marker counts but {int(len(gl))} lengths")
     if any(v <= 0.0 for v in nm + gl):
         raise ValueError("genemt: marker counts and lengths must be positive")
     dens = [nm[i] / gl[i] for i in range(len(nm))]
@@ -189,12 +189,12 @@ def gene_set_regression(z_scores, membership, covariates=None):
     s = [float(v) for v in k.vec(membership)]
     n = len(z)
     if len(s) != n:
-        raise ValueError("genemt: %d z-scores but %d membership values" % (n, len(s)))
+        raise ValueError(f"genemt: {int(n)} z-scores but {int(len(s))} membership values")
     X = [[s[i]] for i in range(n)]
     if covariates is not None:
         C = [[float(v) for v in r] for r in k.mat(covariates)]
         if len(C) != n:
-            raise ValueError("genemt: %d covariate rows for %d genes" % (len(C), n))
+            raise ValueError(f"genemt: {int(len(C))} covariate rows for {int(n)} genes")
         X = [X[i] + list(C[i]) for i in range(n)]
     co = k.wls(X, z, [1.0] * n, 1e-8)["coef"]
     fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(len(X[0]))) for i in range(n)]

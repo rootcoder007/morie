@@ -79,7 +79,7 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4, penalty_
     if yv.size != n:
         raise ValueError("x and y must agree in length.")
     if n < 6:
-        raise ValueError("need at least 6 points, got %d." % n)
+        raise ValueError(f"need at least 6 points, got {int(n)}.")
     order = int(order)
     if order < 0:
         raise ValueError("order must be non-negative.")
@@ -163,7 +163,7 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4, penalty_
                 "have a derivative that is pure noise"
             ),
             "n": int(n),
-            "method": "Order-%d derivative from a penalised smooth" % order,
+            "method": f"Order-{int(order)} derivative from a penalised smooth",
         }
     )
 

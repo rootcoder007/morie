@@ -96,7 +96,7 @@ _ROUTES = ("local", "global")
 def _cols(A, n, name):
     M = k.mat(A)
     if len(M) != n:
-        raise ValueError("orfgrf: %s has %d rows for %d observations" % (name, len(M), n))
+        raise ValueError(f"orfgrf: {name} has {int(len(M))} rows for {int(n)} observations")
     return [[float(v) for v in r] for r in M]
 
 
@@ -141,7 +141,7 @@ def orthogonal_moment(y_res, t_res, weights):
         raise ValueError(
             "orfgrf: no residual treatment variation "
             "near this point (weighted sum of T~^2 is "
-            "%.3g) -- the effect is not identified here" % den
+            f"{den:.3g}) -- the effect is not identified here"
         )
     return num / den, den
 
@@ -156,7 +156,7 @@ def orf_estimate(Y, T, X, W, x, trees, residualize="local", ridge=1e-8, leave_on
     functions vary with :math:`x`.
     """
     if residualize not in _ROUTES:
-        raise ValueError("orfgrf: residualize must be local or global, got %r" % (residualize,))
+        raise ValueError(f"orfgrf: residualize must be local or global, got {residualize!r}")
     n = len(Y)
     w = forest_weights(trees, X, x)
     if residualize == "global":
@@ -218,11 +218,11 @@ def orthogonal_random_forest(
     t = [float(v) for v in k.vec(T)]
     n = len(y)
     if len(t) != n:
-        raise ValueError("orfgrf: %d treatments for %d outcomes" % (len(t), n))
+        raise ValueError(f"orfgrf: {int(len(t))} treatments for {int(n)} outcomes")
     Xm = _cols(X, n, "X")
     Wm = _cols(W, n, "W")
     if n < 8:
-        raise ValueError("orfgrf: need at least 8 observations, got %d" % n)
+        raise ValueError(f"orfgrf: need at least 8 observations, got {int(n)}")
     trees, bags, s = grow_forest(
         Xm, y, W=t, kind=kind, n_trees=n_trees, min_leaf=min_leaf, alpha=alpha, max_depth=max_depth, seed=seed
     )
@@ -246,7 +246,7 @@ def orthogonal_random_forest(
             "n_features": len(Xm[0]),
             "orthogonal": True,
             "method": "Orthogonal Random Forest, Oprescu, Syrgkanis & Wu "
-            "(2019), eq. (2) with %s residualization" % residualize,
+            f"(2019), eq. (2) with {residualize} residualization",
         }
     )
 

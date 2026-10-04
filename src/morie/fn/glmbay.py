@@ -88,7 +88,7 @@ def _links(family):
             return -0.5 * (math.log(2.0 * math.pi) + (y - m) ** 2)
 
         return inv, var, ll
-    raise ValueError("glmbay: family must be binomial, poisson or gaussian, got %r" % (family,))
+    raise ValueError(f"glmbay: family must be binomial, poisson or gaussian, got {family!r}")
 
 
 def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True, max_iter=100, tol=1e-10):
@@ -114,7 +114,7 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True, max_
     if n == 0:
         raise ValueError("glmbay: no observations")
     if len(yv) != n:
-        raise ValueError("glmbay: %d rows but %d responses" % (n, len(yv)))
+        raise ValueError(f"glmbay: {int(n)} rows but {int(len(yv))} responses")
     if add_intercept:
         Xm = [[1.0] + r for r in Xm]
     p = len(Xm[0])
@@ -155,7 +155,6 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True, max_
     loglik = sum(ll(yv[i], mu[i]) for i in range(n))
     logprior = sum(-0.5 * tau * beta[a] ** 2 - 0.5 * math.log(2.0 * math.pi * ps * ps) for a in range(p))
     # log|H| from the Cholesky factor of H, without forming a determinant
-    L = k.cholsolve  # marker: H is used only through solves above
     logdet = 0.0
     Hc = [row[:] for row in H]
     for a in range(p):  # in-place Cholesky for log|H|

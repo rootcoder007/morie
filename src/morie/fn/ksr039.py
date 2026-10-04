@@ -48,10 +48,15 @@ def kosorok_ch2_weak_convergence_lipschitz(X_n, X, n_functions=200, rng=None):
         if rng.random() < 0.5:
             w = rng.uniform(0.1, 1.0)
             shift = rng.uniform(-3, 3)
-            f = lambda z, w=w, s=shift: np.sin(w * (z - s)) / max(w, 1.0)
+
+            def f(z, w=w, s=shift):
+                return np.sin(w * (z - s)) / max(w, 1.0)
         else:
             s = rng.uniform(-3, 3)
-            f = lambda z, s=s: np.clip(z - s, -1.0, 1.0)
+
+            def f(z, s=s):
+                return np.clip(z - s, -1.0, 1.0)
+
         best = max(best, abs(float(np.mean(f(A))) - float(np.mean(f(B)))))
     return RichResult(
         payload={

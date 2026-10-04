@@ -62,10 +62,10 @@ def average_forecast(y, horizon=1, window=None, seasonal_period=None):
     v = np.asarray(y, dtype=float).ravel()
     T = v.size
     if T < 2:
-        raise ValueError("need at least 2 observations, got %d." % T)
+        raise ValueError(f"need at least 2 observations, got {int(T)}.")
     h = int(horizon)
     if h < 1:
-        raise ValueError("horizon must be at least 1, got %d." % h)
+        raise ValueError(f"horizon must be at least 1, got {int(h)}.")
     use = v if window is None else v[-int(window) :]
     if use.size < 2:
         raise ValueError("window leaves fewer than 2 observations.")
@@ -112,7 +112,7 @@ def average_forecast(y, horizon=1, window=None, seasonal_period=None):
             "recommendation_note": (
                 "the mean forecast is optimal under stationarity and "
                 "arbitrarily bad under a trend or unit root; lag-1 "
-                "autocorrelation of %.2f suggests the %s baseline" % (ac1, rec)
+                f"autocorrelation of {ac1:.2f} suggests the {rec} baseline"
                 if ac1 == ac1
                 else None
             ),

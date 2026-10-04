@@ -42,19 +42,19 @@ def gibbons_chi2_yates(table, cdf=None):
     the chi-square test. *Supplement to the Journal of the Royal
     Statistical Society*, 1(2), 217-235.
     """
-    O = np.asarray(table, dtype=float)
-    if O.shape != (2, 2):
-        raise ValueError(f"Yates's correction is a 2x2 argument; got shape {O.shape}.")
-    if np.any(O < 0):
+    O_ = np.asarray(table, dtype=float)
+    if O_.shape != (2, 2):
+        raise ValueError(f"Yates's correction is a 2x2 argument; got shape {O_.shape}.")
+    if np.any(O_ < 0):
         raise ValueError("counts must be non-negative.")
-    ntot = O.sum()
+    ntot = O_.sum()
     if ntot <= 0:
         raise ValueError("the table is empty.")
-    E = np.outer(O.sum(axis=1), O.sum(axis=0)) / ntot
+    E = np.outer(O_.sum(axis=1), O_.sum(axis=0)) / ntot
     if np.any(E == 0):
         raise ValueError("a margin is zero; the test is degenerate.")
-    qc = float(np.sum((np.maximum(np.abs(O - E) - 0.5, 0.0)) ** 2 / E))
-    q0 = float(np.sum((O - E) ** 2 / E))
+    qc = float(np.sum((np.maximum(np.abs(O_ - E) - 0.5, 0.0)) ** 2 / E))
+    q0 = float(np.sum((O_ - E) ** 2 / E))
     return RichResult(
         payload={
             "chi2_corrected": qc,

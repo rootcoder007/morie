@@ -161,7 +161,7 @@ def coulomb_term(pairs, dielectric="constant", epsilon=1.0):
     different constant, so it is a route and not a parameter tweak.
     """
     if dielectric not in DIELECTRICS:
-        raise ValueError("dielectric must be one of %r" % (DIELECTRICS,))
+        raise ValueError(f"dielectric must be one of {DIELECTRICS!r}")
     if epsilon <= 0.0:
         raise ValueError("the permittivity must be positive")
     terms = []
@@ -216,7 +216,7 @@ def hbond_term(bonds, weights=None):
     for c, s in bonds:
         c = str(c)
         if c not in by:
-            raise ValueError("hydrogen bond class must be one of %r" % (HBOND_CLASSES,))
+            raise ValueError(f"hydrogen bond class must be one of {HBOND_CLASSES!r}")
         v = w["hbond_" + c] * float(s)
         by[c] += v
         terms.append(v)
@@ -318,7 +318,7 @@ def glide_score_proxy(
         for k, v in table:
             if k == key:
                 return float(v)
-        raise ValueError("no %s for atom type %r" % (what, key))
+        raise ValueError(f"no {what} for atom type {key!r}")
 
     rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in receptor]
     lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in ligand_pose]

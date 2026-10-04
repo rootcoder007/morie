@@ -52,7 +52,9 @@ def bayesian_bootstrap(
         raise ValueError(f"x must have at least 1 element, got {len(x)}")
 
     if statistic is None:
-        statistic = lambda data: float(np.mean(data))
+
+        def statistic(data):
+            return float(np.mean(data))
 
     statistic_samples = []
 

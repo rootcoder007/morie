@@ -6,7 +6,7 @@ from morie.fn.fzt22 import fauzi_thm2_2_bias_brdkdfe
 
 def test_fzt22_basic():
     """Test basic functionality against the documented Theorem 2.2 formula."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Pick a bandwidth and a second smoothing parameter meeting the
     # documented constraints: a > 0 and a != 1.
     h = 0.3

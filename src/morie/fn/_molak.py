@@ -119,7 +119,7 @@ def bicdag(data, dag, names=None):
     pars = {nm: [] for nm in names}
     for u, v in edges:
         if u not in idx or v not in idx:
-            raise ValueError("DAG node %r has no data column" % (u if u not in idx else v,))
+            raise ValueError(f"DAG node {u if u not in idx else v!r} has no data column")
         pars[v].append(u)
     total = 0.0
     k = 0
@@ -399,7 +399,7 @@ def causrung(rung):
     """
     rung = int(rung)
     if rung not in _RUNGS:
-        raise ValueError("rung must be 1, 2 or 3, got %r" % (rung,))
+        raise ValueError(f"rung must be 1, 2 or 3, got {rung!r}")
     name, action, question = _RUNGS[rung]
     return {
         "level": rung,

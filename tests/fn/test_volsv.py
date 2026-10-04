@@ -130,7 +130,7 @@ def test_volsv_edge():
         except ValueError:
             pass
         else:
-            raise AssertionError("out-of-range init must raise: %r" % (bad,))
+            raise AssertionError(f"out-of-range init must raise: {bad!r}")
 
     r = _sample()
     res = vol_sv_quasi_lik(r, init=(0.0, 0.5, 0.3), sweeps=2, offset=1e-8)

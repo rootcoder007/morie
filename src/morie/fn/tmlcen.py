@@ -85,7 +85,7 @@ def coarsen_interval(times, deltas):
     ts = [float(v) for v in times]
     ds = [float(v) for v in deltas]
     if len(ts) != len(ds):
-        raise ValueError("coarsen_interval: %d monitoring times but %d indicators" % (len(ts), len(ds)))
+        raise ValueError(f"coarsen_interval: {int(len(ts))} monitoring times but {int(len(ds))} indicators")
     if not ts:
         raise ValueError("coarsen_interval: no monitoring times")
     order = sorted(range(len(ts)), key=lambda i: ts[i])
@@ -112,7 +112,7 @@ def censoring_survival(times, censored, A=None, W=None, grid=None, by_covariate=
     c = [float(v) for v in k.vec(censored)]
     n = len(t)
     if len(c) != n:
-        raise ValueError("censoring_survival: %d times but %d censoring indicators" % (n, len(c)))
+        raise ValueError(f"censoring_survival: {int(n)} times but {int(len(c))} censoring indicators")
     if grid is None:
         grid = sorted(set(t))
     grid = [float(v) for v in grid]
@@ -160,7 +160,7 @@ def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None, ridge=1e-
     Dm = [[float(v) for v in row] for row in deltas]
     if len(Tm) != n or len(Dm) != n:
         raise ValueError(
-            "ipcw_interval: %d treatments but %d monitoring rows and %d indicator rows" % (n, len(Tm), len(Dm))
+            f"ipcw_interval: {int(n)} treatments but {int(len(Tm))} monitoring rows and {int(len(Dm))} indicator rows"
         )
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     if r is None:
@@ -180,18 +180,18 @@ def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None, ridge=1e-
     for i in range(n):
         M = len(Tm[i])
         if M == 0:
-            raise ValueError("ipcw_interval: subject %d has no monitoring times" % i)
+            raise ValueError(f"ipcw_interval: subject {int(i)} has no monitoring times")
         if av[i] != a:
             continue
         if g[i] <= 0.0:
             raise ValueError(
-                "ipcw_interval: g(A|W) is zero for subject %d, so positivity fails and the weight is undefined" % i
+                f"ipcw_interval: g(A|W) is zero for subject {int(i)}, so positivity fails and the weight is undefined"
             )
         s = 0.0
         for m in range(M):
             dens = gc[i][m] if gc is not None else _uniform_density(Tm[i])
             if dens <= 0.0:
-                raise ValueError("ipcw_interval: the monitoring density is zero for subject %d at time %d" % (i, m))
+                raise ValueError(f"ipcw_interval: the monitoring density is zero for subject {int(i)} at time {int(m)}")
             s += (1.0 - Dm[i][m]) * r(Tm[i][m]) / dens
         tot += s / M / g[i]
     return tot / n
@@ -238,7 +238,7 @@ def tmle_censoring(
         r["estimate"], r["naive"]
     """
     if kind not in _KINDS:
-        raise ValueError("tmle_censoring: kind must be 'right' or 'interval', got %r" % (kind,))
+        raise ValueError(f"tmle_censoring: kind must be 'right' or 'interval', got {kind!r}")
     if kind == "interval":
         psi = ipcw_interval(covariates, treatment, time, event, a=a, r=r, g=g, gc=gc)
         return RichResult(
@@ -258,7 +258,7 @@ def tmle_censoring(
     n = len(t)
     for nm, arr in (("event", d), ("censor", c), ("treatment", av)):
         if len(arr) != n:
-            raise ValueError("tmle_censoring: %d times but %d %s" % (n, len(arr), nm))
+            raise ValueError(f"tmle_censoring: {int(n)} times but {int(len(arr))} {nm}")
     if any(d[i] == 1.0 and c[i] == 1.0 for i in range(n)):
         raise ValueError("tmle_censoring: a subject cannot be both an event and censored at the same time")
     Wm = k.mat(covariates) if covariates is not None else [[] for _ in range(n)]

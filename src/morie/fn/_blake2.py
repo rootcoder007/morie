@@ -112,9 +112,9 @@ def blake2b(data=b"", digest_size=64, key=b""):
     n = int(digest_size)
     k = _as_bytes(key)
     if not 1 <= n <= MAX_DIGEST:
-        raise ValueError("_blake2: the digest size must lie in 1..64, got %d" % n)
+        raise ValueError(f"_blake2: the digest size must lie in 1..64, got {int(n)}")
     if len(k) > MAX_DIGEST:
-        raise ValueError("_blake2: the key may be at most 64 bytes, got %d" % len(k))
+        raise ValueError(f"_blake2: the key may be at most 64 bytes, got {int(len(k))}")
     h = list(_IV)
     h[0] ^= 0x01010000 ^ (len(k) << 8) ^ n
     msg = bytearray()

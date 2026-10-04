@@ -41,14 +41,14 @@ def kamath_reward_model_training_loss(scores_w, scores_l):
     1.0
     """
     w = np.atleast_1d(np.asarray(scores_w, dtype=float)).ravel()
-    l = np.atleast_1d(np.asarray(scores_l, dtype=float)).ravel()
-    if w.size != l.size:
-        raise ValueError(f"{w.size} chosen scores against {l.size} rejected ones; the loss is over PAIRS.")
+    ell = np.atleast_1d(np.asarray(scores_l, dtype=float)).ravel()
+    if w.size != ell.size:
+        raise ValueError(f"{w.size} chosen scores against {ell.size} rejected ones; the loss is over PAIRS.")
     if w.size == 0:
         raise ValueError("no preference pairs supplied.")
-    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(l))):
+    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(ell))):
         raise ValueError("reward scores must be finite.")
-    d = w - l
+    d = w - ell
     per = np.logaddexp(0.0, -d)
     loss = float(per.mean())
     return RichResult(

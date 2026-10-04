@@ -108,7 +108,7 @@ def network_communities(
         # Relabel contiguously
         unique = np.unique(labels)
         remap = {old: new for new, old in enumerate(unique)}
-        labels = np.array([remap[l] for l in labels])
+        labels = np.array([remap[ell] for ell in labels])
         n_communities = len(unique)
 
     # Compute modularity

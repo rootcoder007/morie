@@ -77,7 +77,7 @@ def aggregate(vectors, how="mean", W=None):
     random permutation.
     """
     if how not in _AGGS:
-        raise ValueError("gsageemd: aggregator must be one of %s, got %r" % (", ".join(_AGGS), how))
+        raise ValueError("gsageemd: aggregator must be one of {}, got {!r}".format(", ".join(_AGGS), how))
     V = [[float(v) for v in r] for r in k.mat(vectors)]
     if not V:
         raise ValueError("gsageemd: no neighbours to aggregate")
@@ -97,7 +97,7 @@ def sample_neighbors(adj, v, size, rng):
     smaller -- this is what bounds the per-batch cost."""
     nb = sorted(adj.get(v, ()))
     if not nb:
-        raise ValueError("gsageemd: node %r has no neighbours" % (v,))
+        raise ValueError(f"gsageemd: node {v!r} has no neighbours")
     s = int(size)
     if s < 1:
         raise ValueError("gsageemd: the sample size must be at least 1")
@@ -115,11 +115,11 @@ def sage_layer(H, adj, W, how="mean", sizes=None, rng=None, normalize=True):
     for v in range(len(H)):
         nb = sorted(adj.get(v, ())) if sizes is None else sample_neighbors(adj, v, sizes, rng)
         if not nb:
-            raise ValueError("gsageemd: node %d has no neighbours" % v)
+            raise ValueError(f"gsageemd: node {int(v)} has no neighbours")
         agg = aggregate([H[u] for u in nb], how)
         cat = list(H[v]) + list(agg)
         if len(W[0]) != len(cat):
-            raise ValueError("gsageemd: W expects %d inputs but the concatenation is %d" % (len(W[0]), len(cat)))
+            raise ValueError(f"gsageemd: W expects {int(len(W[0]))} inputs but the concatenation is {int(len(cat))}")
         z = [max(0.0, sum(W[o][j] * cat[j] for j in range(len(cat)))) for o in range(len(W))]
         out.append(_norm(z) if normalize else z)
     return out

@@ -64,15 +64,15 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights, output_bias
     W = np.atleast_2d(np.asarray(output_weights, dtype=float))
     V, d = E.shape
     if W.shape[1] != d:
-        raise ValueError("output_weights has dimension %d, embeddings %d." % (W.shape[1], d))
+        raise ValueError(f"output_weights has dimension {int(W.shape[1])}, embeddings {int(d)}.")
     n, k = C.shape
     if y.size != n:
-        raise ValueError("center_ids has %d entries for %d context rows." % (y.size, n))
+        raise ValueError(f"center_ids has {int(y.size)} entries for {int(n)} context rows.")
     if C.min() < 0 or C.max() >= V or y.min() < 0 or y.max() >= W.shape[0]:
         raise ValueError("a word index is out of range for the vocabulary.")
     b = np.zeros(W.shape[0]) if output_bias is None else np.asarray(output_bias, dtype=float).ravel()
     if b.size != W.shape[0]:
-        raise ValueError("output_bias has %d entries for %d output rows." % (b.size, W.shape[0]))
+        raise ValueError(f"output_bias has {int(b.size)} entries for {int(W.shape[0])} output rows.")
 
     # ponytail: E[C] would need 3-D fancy indexing, which the array
     # core does not provide; average the context rows directly

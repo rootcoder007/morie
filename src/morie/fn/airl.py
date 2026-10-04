@@ -131,7 +131,7 @@ def airl(
         n = len(S)
         if not (len(A) == len(S1) == len(LP) == n) or n == 0:
             raise ValueError(
-                "airl: %s states, actions, next states and log_policy must be non-empty and the same length" % name
+                f"airl: {name} states, actions, next states and log_policy must be non-empty and the same length"
             )
         return list(zip(S, A, S1, LP))
 
@@ -139,10 +139,7 @@ def airl(
     P = prep(policy_states, policy_actions, policy_next, policy_log_policy, "policy")
 
     states = sorted(set([t[0] for t in E + P] + [t[2] for t in E + P]), key=repr)
-    if state_only:
-        gkeys = list(states)
-    else:
-        gkeys = sorted(set((t[0], t[1]) for t in E + P), key=repr)
+    gkeys = list(states) if state_only else sorted(set((t[0], t[1]) for t in E + P), key=repr)
     gi = dict((k, i) for i, k in enumerate(gkeys))
     hi = dict((k, i) for i, k in enumerate(states))
     ng, nh = len(gkeys), len(states)

@@ -18,9 +18,15 @@ def ghosal_ch2_location_scale_mixture_limit(psi=None, f=None, sigma=(0.5, 0.1, 0
     sigma -> 0 (sec. 2.3.3): the kernel-convolution bias vanishes.
     Default: normal psi, f = 6x(1-x). Keys: value."""
     if f is None:
-        f = lambda t: 6.0 * t * (1.0 - t) if 0 <= t <= 1 else 0.0
+
+        def f(t):
+            return 6.0 * t * (1.0 - t) if 0 <= t <= 1 else 0.0
+
     if psi is None:
-        psi = lambda z: math.exp(-0.5 * z * z) / math.sqrt(2.0 * math.pi)
+
+        def psi(z):
+            return math.exp(-0.5 * z * z) / math.sqrt(2.0 * math.pi)
+
     gaps = []
     for s in _bnp._flat(sigma):
         conv = sum(psi((x - (i + 0.5) / n_int) / s) / s * f((i + 0.5) / n_int) for i in range(n_int)) / n_int

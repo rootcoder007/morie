@@ -30,7 +30,7 @@ _TWOPI = 2.0 * math.pi
 def _vec(x, name="x"):
     v = [float(t) for t in x]
     if not v:
-        raise ValueError("%s must be non-empty" % name)
+        raise ValueError(f"{name} must be non-empty")
     return v
 
 
@@ -263,10 +263,7 @@ def boxcox(x, lam):
     lam = float(lam)
     if any(t <= 0.0 for t in v):
         raise ValueError("Box-Cox needs strictly positive values")
-    if lam == 0.0:
-        w = [math.log(t) for t in v]
-    else:
-        w = [(t**lam - 1.0) / lam for t in v]
+    w = [math.log(t) for t in v] if lam == 0.0 else [(t**lam - 1.0) / lam for t in v]
     return {"w": w, "lam": lam, "mean": _mean(w), "var": sum((t - _mean(w)) ** 2 for t in w) / len(w), "n": len(w)}
 
 
@@ -542,7 +539,7 @@ def tsimpute(x, method="linear", season=1):
             else:
                 out.append(gm)
         else:
-            raise ValueError("unknown method %r" % (method,))
+            raise ValueError(f"unknown method {method!r}")
     return {
         "x": out,
         "nmissing": n - len(obs),
@@ -612,7 +609,7 @@ def pacfts(x, maxlag=20):
         num = r[k] - sum(phi[k - 1][j] * r[k - j] for j in range(1, k))
         den = 1.0 - sum(phi[k - 1][j] * r[j] for j in range(1, k))
         if abs(den) < 1e-300:
-            raise ValueError("Durbin-Levinson recursion broke down at lag %d" % k)
+            raise ValueError(f"Durbin-Levinson recursion broke down at lag {int(k)}")
         phi[k][k] = num / den
         for j in range(1, k):
             phi[k][j] = phi[k - 1][j] - phi[k][k] * phi[k - 1][k - j]
@@ -656,7 +653,7 @@ def adfur(x, lags=1):
     start = lags
     n = len(d) - start
     if n <= lags + 3:
-        raise ValueError("series is too short for %d augmenting lags" % lags)
+        raise ValueError(f"series is too short for {int(lags)} augmenting lags")
     rows, y = [], []
     for i in range(start, len(d)):
         row = [1.0, v[i]]
@@ -1414,15 +1411,15 @@ def nhitsnet(y, horizon, kernels, ratios, wf, wb):
     resid = list(v)
     fc = [0.0] * H
     sizes = []
-    for l in range(len(ks)):
-        pooled = _maxpool(resid, ks[l])
-        need = int(math.ceil(rs[l] * H))
+    for ell in range(len(ks)):
+        pooled = _maxpool(resid, ks[ell])
+        need = int(math.ceil(rs[ell] * H))
         if need < 1:
-            raise ValueError("ratio %r gives no coefficients" % (rs[l],))
-        thf = _matvec(wf[l], pooled)
-        thb = _matvec(wb[l], pooled)
+            raise ValueError(f"ratio {rs[ell]!r} gives no coefficients")
+        thf = _matvec(wf[ell], pooled)
+        thb = _matvec(wb[ell], pooled)
         if len(thf) != need:
-            raise ValueError("wf[%d] must produce ceil(r_l H) = %d coefficients" % (l, need))
+            raise ValueError(f"wf[{int(ell)}] must produce ceil(r_l H) = {int(need)} coefficients")
         sizes.append(need)
         f = _interp(thf, H)
         b = _interp(thb, len(resid))

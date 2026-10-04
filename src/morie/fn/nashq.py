@@ -68,11 +68,11 @@ _SELECTIONS = ("global_optimal", "saddle", "first", "best_for_agent")
 def _mat(M, name):
     rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(M, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("nashq: %s must be a non-empty matrix" % name)
+        raise ValueError(f"nashq: {name} must be a non-empty matrix")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("nashq: %s must be rectangular" % name)
+            raise ValueError(f"nashq: {name} must be rectangular")
     return rows
 
 
@@ -123,19 +123,19 @@ def nash_equilibria_bimatrix(A, B, tol=1e-9):
     out = []
     seen = set()
     for k in range(1, min(m, n) + 1):
-        for I in itertools.combinations(range(m), k):
+        for I_ in itertools.combinations(range(m), k):
             for J in itertools.combinations(range(n), k):
                 # Column player mixes over J to make the row player
                 # indifferent across I; and vice versa.
-                q = _indifference([[A[i][j] for j in J] for i in I], k)
-                p = _indifference([[B[i][j] for i in I] for j in J], k)
+                q = _indifference([[A[i][j] for j in J] for i in I_], k)
+                p = _indifference([[B[i][j] for i in I_] for j in J], k)
                 if q is None or p is None:
                     continue
                 if min(q) < -tol or min(p) < -tol:
                     continue
                 P = [0.0] * m
                 Q = [0.0] * n
-                for a, i in enumerate(I):
+                for a, i in enumerate(I_):
                     P[i] = max(0.0, p[a])
                 for a, j in enumerate(J):
                     Q[j] = max(0.0, q[a])
@@ -353,7 +353,7 @@ def nashq(
     12-13, eqs. 5-7, Table 2.
     """
     if selection not in _SELECTIONS:
-        raise ValueError("nashq: selection must be one of %r, got %r" % (_SELECTIONS, selection))
+        raise ValueError(f"nashq: selection must be one of {_SELECTIONS!r}, got {selection!r}")
     S = list(states)
     if len(actions) != 2:
         raise ValueError("nashq: this implementation covers two players; pass actions as (A1, A2)")

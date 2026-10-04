@@ -15,7 +15,7 @@ def test_gh_c12_7_basic():
 
     # Compute the expected estimate independently from the formula:
     #   score = (0.0 if not prior_mass_ok else 1.0) - lan_remainder - change_of_measure_gap
-    pm, lr, cg, tol = True, 0.01, 0.02, 0.05
+    pm, lr, cg, _tol = True, 0.01, 0.02, 0.05
     expected_score = (0.0 if not pm else 1.0) - lr - cg
     assert np.isclose(float(result["estimate"]), expected_score)
 

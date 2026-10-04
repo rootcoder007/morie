@@ -315,10 +315,7 @@ def evchibu(x, y, ugrid=None):
     """
     xs, ys = _pair(x, y)
     n = len(xs)
-    if ugrid is None:
-        ugrid = [0.5 + 0.45 * k / 19.0 for k in range(20)]
-    else:
-        ugrid = [float(v) for v in ugrid]
+    ugrid = [0.5 + 0.45 * k / 19.0 for k in range(20)] if ugrid is None else [float(v) for v in ugrid]
     if any(not 0.0 < v < 1.0 for v in ugrid):
         raise ValueError("every u must lie strictly in (0, 1)")
     rx = [r / (n + 1.0) for r in _rank_avg(xs)]

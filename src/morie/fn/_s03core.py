@@ -125,10 +125,7 @@ def chol(A):
                     # against -H, or ridge the matrix into positive
                     # definiteness, but do not accept a wrong answer.
                     raise ValueError(
-                        "chol: matrix is not positive definite "
-                        "(pivot %d is %.17g); a Cholesky factor does not "
-                        "exist. If this is a log-likelihood Hessian, solve "
-                        "against -H." % (i, d)
+                        f"chol: matrix is not positive definite (pivot {int(i)} is {d:.17g}); a Cholesky factor does not exist. If this is a log-likelihood Hessian, solve against -H."
                     )
                 L[i][j] = math.sqrt(d)
             else:
@@ -601,7 +598,7 @@ def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13, penalty=0.0, obs_weights=
     p = len(X[0]) if n else 0
     ow = [1.0] * n if obs_weights is None else [float(v) for v in obs_weights]
     if len(ow) != n:
-        raise ValueError("logit_irls: %d weights for %d rows" % (len(ow), n))
+        raise ValueError(f"logit_irls: {int(len(ow))} weights for {int(n)} rows")
     beta = [0.0] * p
     for _ in range(iters):
         eta = matvec(X, beta)
@@ -758,7 +755,7 @@ def treatment_density(A, X, kind="binary", ridge=1e-8, penalty=0.0):
         c = 1.0 / math.sqrt(2.0 * math.pi * s2)
         dens = [c * math.exp(-0.5 * r * r / s2) for r in resid]
         return dens, {"coef": b, "mu": mu, "sigma2": s2}
-    raise ValueError("treatment_density: kind must be 'binary' or 'normal', got %r" % (kind,))
+    raise ValueError(f"treatment_density: kind must be 'binary' or 'normal', got {kind!r}")
 
 
 def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True, trim=None, ridge=1e-8, penalty=0.0):
@@ -789,9 +786,7 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True, trim=None,
     for i in range(n):
         if den[i] <= 0.0:
             raise ValueError(
-                "ip_weights: f(A|L) is zero for observation %d, so the "
-                "positivity condition fails in the sample and the weight "
-                "is undefined" % i
+                f"ip_weights: f(A|L) is zero for observation {int(i)}, so the positivity condition fails in the sample and the weight is undefined"
             )
     if not stabilize:
         num = [1.0] * n
@@ -806,7 +801,7 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True, trim=None,
     if trim is not None:
         q = float(trim)
         if not 0.5 < q < 1.0:
-            raise ValueError("ip_weights: trim must be in (0.5, 1), got %r" % (trim,))
+            raise ValueError(f"ip_weights: trim must be in (0.5, 1), got {trim!r}")
         hi = quantile7(w, q)
         lo = quantile7(w, 1.0 - q)
         w = [min(max(v, lo), hi) for v in w]
@@ -860,7 +855,7 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True, trim=None,
     if K == 0:
         raise ValueError("ip_weights_history: need at least one time point")
     if len(L_hist) != K:
-        raise ValueError("ip_weights_history: %d treatment times but %d covariate blocks" % (K, len(L_hist)))
+        raise ValueError(f"ip_weights_history: {int(K)} treatment times but {int(len(L_hist))} covariate blocks")
     n = len(vec(A_hist[0]))
     w = [1.0] * n
     per_time = []
@@ -869,12 +864,12 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True, trim=None,
     for k in range(K):
         ak = vec(A_hist[k])
         if len(ak) != n:
-            raise ValueError("ip_weights_history: time %d has %d rows, time 0 has %d" % (k, len(ak), n))
+            raise ValueError(f"ip_weights_history: time {int(k)} has {int(len(ak))} rows, time 0 has {int(n)}")
         if L_hist[k] is not None:
             block = mat(L_hist[k])
             if len(block) != n:
                 raise ValueError(
-                    "ip_weights_history: covariate block at time %d has %d rows, treatment has %d" % (k, len(block), n)
+                    f"ip_weights_history: covariate block at time {int(k)} has {int(len(block))} rows, treatment has {int(n)}"
                 )
             for c in range(len(block[0])):
                 lbar.append([row[c] for row in block])
@@ -927,7 +922,7 @@ def wls(X, y, w, ridge=1e-10):
     Z = design(X, n)
     wv = [float(v) for v in vec(w)]
     if len(wv) != n:
-        raise ValueError("wls: %d weights for %d observations" % (len(wv), n))
+        raise ValueError(f"wls: {int(len(wv))} weights for {int(n)} observations")
     if any(v < 0.0 for v in wv):
         raise ValueError("wls: weights must be non-negative")
     k = len(Z[0])
@@ -971,7 +966,7 @@ def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100, tol=1e-
     idx = list(range(n)) if rows is None else list(rows)
     ow = [1.0] * n if obs_weights is None else [float(v) for v in obs_weights]
     if len(ow) != n:
-        raise ValueError("logistic_fluctuation: %d weights for %d rows" % (len(ow), n))
+        raise ValueError(f"logistic_fluctuation: {int(len(ow))} weights for {int(n)} rows")
     if not idx or all(abs(H[i]) < 1e-14 for i in idx):
         return 0.0
     eps = 0.0

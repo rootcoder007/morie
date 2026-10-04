@@ -125,7 +125,7 @@ def alibi_position_bias(y=None, Q=None, K=None, V=None, slopes=None, causal=Fals
     B0 = None
     for h, m in enumerate(sl):
         B = alibi_bias(nq, nk, m, causal)
-        O = []
+        O_ = []
         Wh = []
         for i in range(nq):
             row = []
@@ -140,8 +140,8 @@ def alibi_position_bias(y=None, Q=None, K=None, V=None, slopes=None, causal=Fals
             for j in range(nk):
                 for t in range(dv):
                     o[t] += w[j] * Vm[j][t]
-            O.append(o)
-        outs.append(O)
+            O_.append(o)
+        outs.append(O_)
         if h == 0:
             W0 = Wh
             B0 = B

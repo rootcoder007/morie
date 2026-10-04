@@ -124,9 +124,9 @@ def spmlebin(x, y, h=None, trim=0.01, floor=1e-4, niter=12, delta=1.0, b0=None):
         _, gm, _, _ = negll(bm, want=True)
         dg = (gp - gm) / (2.0 * eps)
         S[:, j] = kf * dg * (yv / gh - (1.0 - yv) / (1.0 - gh))
-    I = S.T @ S / n
+    I_ = S.T @ S / n
     try:
-        cov = np.linalg.inv(I + 1e-12 * np.eye(d - 1)) / n
+        cov = np.linalg.inv(I_ + 1e-12 * np.eye(d - 1)) / n
         se = np.sqrt(np.maximum(np.diag(cov), 0.0))
     except Exception:
         se = np.full(d - 1, np.nan)

@@ -51,27 +51,27 @@ def cycle_colouring(n):
 
 def test_the_nine_known_values_match_ds1_table_ia():
     known = {(3, 3): 6, (3, 4): 9, (3, 5): 14, (3, 6): 18, (3, 7): 23, (3, 8): 28, (3, 9): 36, (4, 4): 18, (4, 5): 25}
-    for (k, l), v in known.items():
-        assert ramsey_number(k, l)["value"] == v
-        assert ramsey_number(k, l)["exact"] is True
+    for (k, ell), v in known.items():
+        assert ramsey_number(k, ell)["value"] == v
+        assert ramsey_number(k, ell)["exact"] is True
 
 
 def test_ramsey_numbers_are_symmetric():
-    for k, l in [(3, 4), (3, 7), (4, 5), (5, 5)]:
-        a, b = ramsey_number(k, l), ramsey_number(l, k)
+    for k, ell in [(3, 4), (3, 7), (4, 5), (5, 5)]:
+        a, b = ramsey_number(k, ell), ramsey_number(ell, k)
         assert a["value"] == b["value"]
         assert (a["lower"], a["upper"]) == (b["lower"], b["upper"])
 
 
 def test_the_trivial_cases_are_exact():
     assert ramsey_number(1, 9)["value"] == 1
-    for l in range(2, 8):
-        assert ramsey_number(2, l)["value"] == l
+    for ell in range(2, 8):
+        assert ramsey_number(2, ell)["value"] == ell
 
 
 def test_unknown_values_return_an_interval_and_never_a_number():
-    for k, l in [(5, 5), (6, 6), (4, 6), (3, 10)]:
-        out = ramsey_number(k, l)
+    for k, ell in [(5, 5), (6, 6), (4, 6), (3, 10)]:
+        out = ramsey_number(k, ell)
         assert out["value"] is None
         assert out["exact"] is False
         assert out["lower"] < out["upper"]
@@ -89,8 +89,8 @@ def test_the_circulating_wrong_value_for_r55_is_flagged():
 
 
 def test_known_values_lie_inside_their_own_bounds():
-    for k, l in [(3, 3), (3, 5), (4, 4), (4, 5)]:
-        out = ramsey_number(k, l)
+    for k, ell in [(3, 3), (3, 5), (4, 4), (4, 5)]:
+        out = ramsey_number(k, ell)
         assert out["lower"] == out["value"] == out["upper"]
         assert out["value"] <= out["erdos_szekeres_bound"]
 
@@ -210,8 +210,8 @@ def test_no_colouring_of_k6_can_witness_r33():
 def test_the_pure_recursion_derives_the_classical_values_tightly():
     # Greenwood and Gleason: R(k-1,l) + R(k,l-1), strict when both even.
     # With use_known=False nothing is looked up, so these are derived.
-    for (k, l), v in [((3, 3), 6), ((3, 4), 9), ((3, 5), 14), ((4, 4), 18)]:
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for (k, ell), v in [((3, 3), 6), ((3, 4), 9), ((3, 5), 14), ((4, 4), 18)]:
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert b["used_known_values"] is False
         assert b["recursive"] == v
 
@@ -231,16 +231,16 @@ def test_looking_up_known_values_tightens_the_recursion():
 
 
 def test_the_binomial_bound_is_weaker_than_the_recursion():
-    for k, l in [(3, 4), (4, 4), (4, 5), (5, 5), (6, 6)]:
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for k, ell in [(3, 4), (4, 4), (4, 5), (5, 5), (6, 6)]:
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert b["binomial"] >= b["recursive"]
         assert b["best"] == min(b["binomial"], b["recursive"])
 
 
 def test_every_upper_bound_actually_bounds_the_known_value():
-    for k, l in [(3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5)]:
-        v = ramsey_number(k, l)["value"]
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for k, ell in [(3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5)]:
+        v = ramsey_number(k, ell)["value"]
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert v <= b["recursive"]
         assert v <= b["binomial"]
 

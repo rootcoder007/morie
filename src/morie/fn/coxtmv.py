@@ -120,11 +120,11 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
         if counts[j] == 0:
             ses[j] = np.nan
             continue
-        b, ll_j, I, _, _, _ = cox_fit(tj, ej, Xm[keep], ties=ties)
+        b, ll_j, I_, _, _, _ = cox_fit(tj, ej, Xm[keep], ties=ties)
         betas[j] = b
         ll_tv += ll_j
         try:
-            ses[j] = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+            ses[j] = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
         except np.linalg.LinAlgError:
             ses[j] = np.nan
 

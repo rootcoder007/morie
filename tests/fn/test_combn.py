@@ -5,7 +5,7 @@ from morie.fn.combn import combn
 
 
 def test_combn_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = combn(n=5, k=3)
     assert result is not None
     assert hasattr(result, "name")

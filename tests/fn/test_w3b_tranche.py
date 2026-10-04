@@ -309,8 +309,12 @@ def test_km129_encoder_contract():
 
 
 def test_km130_argmin_picks_the_best_candidate():
-    mse = lambda y, t: float(np.mean((np.asarray(y) - np.asarray(t)) ** 2))
-    add = lambda p, f: np.asarray(p) + np.asarray(f)
+    def mse(y, t):
+        return float(np.mean((np.asarray(y) - np.asarray(t)) ** 2))
+
+    def add(p, f):
+        return np.asarray(p) + np.asarray(f)
+
     out = kamath_ch9_input_alignment_loss([[[5.0]], [[0.0]], [[2.0]]], [[1.0]], [[1.0]], llm=add, loss_fn=mse)
     assert out["argmin"] == 1
     assert out["losses"] == [25.0, 0.0, 4.0]

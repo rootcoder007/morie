@@ -38,7 +38,7 @@ def test_bprMF_basic():
 
 def test_bprMF_edge():
     """Test edge cases."""
-    rng_pos = np.random.default_rng(42)
+    np.random.default_rng(42)
     pairs = {0: [1, 2]}
     result = bpr_mf(pairs, 1, 3, k_dim=2, iters=20, seed=1)
     assert isinstance(result, dict)

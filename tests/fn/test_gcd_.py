@@ -5,7 +5,7 @@ from morie.fn.gcd_ import gcd_
 
 
 def test_gcd__smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = gcd_(a=12, b=8)
     assert result is not None
     assert hasattr(result, "name")

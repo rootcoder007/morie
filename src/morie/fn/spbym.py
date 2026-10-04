@@ -101,16 +101,16 @@ def schabenberger_bym(counts, expected, adjacency, kappa, lam, max_iter=200, tol
         ("iterations", fit["n_iter"]),
         ("converged", fit["converged"]),
         ("sum of v* (should be 0)", fit["sum_v"]),
-        ("fitted total vs observed", "%.6f vs %.6f" % (fit["fitted_total"], fit["observed_total"])),
+        ("fitted total vs observed", "{:.6f} vs {:.6f}".format(fit["fitted_total"], fit["observed_total"])),
     ]
 
     problems = []
     if not fit["converged"]:
         problems.append("Newton did not converge")
     if abs(fit["sum_v"]) > 1e-6:
-        problems.append("sum of v* is %.3g, not 0" % fit["sum_v"])
+        problems.append("sum of v* is {:.3g}, not 0".format(fit["sum_v"]))
     if total_gap > 1e-5 * max(fit["observed_total"], 1.0):
-        problems.append("fitted total misses the observed total by %.3g" % total_gap)
+        problems.append(f"fitted total misses the observed total by {total_gap:.3g}")
     if problems:
         payload["warning"] = (
             "the Sec. 4 stationarity identities do not hold, so this is not a maximum of (4.5): " + "; ".join(problems)

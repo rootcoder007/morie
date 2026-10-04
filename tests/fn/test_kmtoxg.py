@@ -8,7 +8,10 @@ from morie.fn.kmtoxg import kamath_toxigen_score
 def test_kmtoxg_basic():
     """Test basic functionality with a callable classifier returning a scalar probability."""
     text = "hello world"
-    classifier = lambda t: 0.1
+
+    def classifier(t):
+        return 0.1
+
     result = kamath_toxigen_score(text, classifier)
     assert isinstance(result, dict)
     assert math.isclose(result["estimate"], 0.1)
@@ -22,7 +25,10 @@ def test_kmtoxg_basic():
 def test_kmtoxg_edge():
     """Test edge cases with a callable returning a (p_benign, p_toxic) pair."""
     text = "some text"
-    classifier = lambda t: (0.2, 0.8)
+
+    def classifier(t):
+        return (0.2, 0.8)
+
     result = kamath_toxigen_score(text, classifier)
     assert isinstance(result, dict)
     assert math.isclose(result["estimate"], 0.8)

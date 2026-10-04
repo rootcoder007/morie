@@ -8,7 +8,7 @@ from ._richresult import RichResult
 __all__ = ["turboquant_normal_moment"]
 
 
-def turboquant_normal_moment(sigma, l):
+def turboquant_normal_moment(sigma, l):  # noqa: E741
     """The l-th absolute moment of a zero-mean normal.
 
     This is the fact that makes the sign quantizer work.  The estimator
@@ -42,7 +42,7 @@ def turboquant_normal_moment(sigma, l):
     distortion rate, arXiv:2504.19874.
     """
     sigma = float(sigma)
-    l = float(l)
+    l = float(l)  # noqa: E741
     val = sigma**l * 2.0 ** (l / 2.0) * math.gamma((l + 1.0) / 2.0) / math.sqrt(math.pi)
     return RichResult(
         payload={

@@ -88,18 +88,18 @@ __all__ = ["safrl", "safe_rl", "cpo_step", "cmdp_returns", "worst_case_violation
 def _mat(M, name):
     rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(M, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("safrl: %s must be non-empty" % name)
+        raise ValueError(f"safrl: {name} must be non-empty")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("safrl: %s must be rectangular" % name)
+            raise ValueError(f"safrl: {name} must be rectangular")
     return rows
 
 
 def _vec(v, name):
     out = [float(x) for x in np.atleast_1d(np.asarray(v, dtype=float))]
     if not out:
-        raise ValueError("safrl: %s must be non-empty" % name)
+        raise ValueError(f"safrl: {name} must be non-empty")
     return out
 
 
@@ -213,7 +213,7 @@ def safrl(g, H, B=None, c=None, delta=0.01, tol=1e-12, max_iter=5000):
         j = max(range(m), key=lambda k: cv[k])
         denom = S[j][j]
         if denom <= 0.0:
-            raise ValueError("safrl: constraint %d has zero curvature; cannot recover" % j)
+            raise ValueError(f"safrl: constraint {int(j)} has zero curvature; cannot recover")
         scale = math.sqrt(2.0 * delta / denom)
         step = [-scale * v for v in Hinv_b[j]]
         return _finish(step, gv, cols, cv, Hm, delta, None, [], False, True)

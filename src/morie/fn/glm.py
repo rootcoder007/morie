@@ -69,13 +69,13 @@ _FAMILIES = ("bernoulli", "normal", "poisson")
 def _score_bernoulli(p0, p1):
     """Log f1/f0 for Bernoulli, plus its KL number under f1."""
     if not (0.0 < p0 < 1.0) or not (0.0 < p1 < 1.0):
-        raise ValueError("glr_test: bernoulli p0 and p1 must lie strictly in (0, 1), got %r and %r" % (p0, p1))
+        raise ValueError(f"glr_test: bernoulli p0 and p1 must lie strictly in (0, 1), got {p0!r} and {p1!r}")
     a = math.log(p1 / p0)
     b = math.log((1.0 - p1) / (1.0 - p0))
 
     def z(v):
         if v not in (0.0, 1.0):
-            raise ValueError("glr_test: bernoulli data must be 0 or 1, got %r" % (v,))
+            raise ValueError(f"glr_test: bernoulli data must be 0 or 1, got {v!r}")
         return a if v == 1.0 else b
 
     return z, p1 * a + (1.0 - p1) * b
@@ -84,7 +84,7 @@ def _score_bernoulli(p0, p1):
 def _score_normal(p0, p1, sd):
     """Log f1/f0 for a Gaussian mean shift with known sd."""
     if sd <= 0.0:
-        raise ValueError("glr_test: sd must be positive, got %r" % (sd,))
+        raise ValueError(f"glr_test: sd must be positive, got {sd!r}")
     d = p1 - p0
     mid = 0.5 * (p0 + p1)
     s2 = sd * sd
@@ -99,12 +99,12 @@ def _score_normal(p0, p1, sd):
 def _score_poisson(p0, p1):
     """Log f1/f0 for Poisson rates."""
     if p0 <= 0.0 or p1 <= 0.0:
-        raise ValueError("glr_test: poisson rates must be positive, got %r and %r" % (p0, p1))
+        raise ValueError(f"glr_test: poisson rates must be positive, got {p0!r} and {p1!r}")
     lr = math.log(p1 / p0)
 
     def z(v):
         if v < 0.0 or v != math.floor(v):
-            raise ValueError("glr_test: poisson data must be non-negative integers, got %r" % (v,))
+            raise ValueError(f"glr_test: poisson data must be non-negative integers, got {v!r}")
         return v * lr - (p1 - p0)
 
     return z, p1 * lr - (p1 - p0)
@@ -159,7 +159,7 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
         raise ValueError("glr_test: x must hold at least one observation")
     fam = str(family).lower()
     if fam not in _FAMILIES:
-        raise ValueError("glr_test: family must be one of %s, got %r" % (", ".join(_FAMILIES), family))
+        raise ValueError("glr_test: family must be one of {}, got {!r}".format(", ".join(_FAMILIES), family))
     p0 = float(p0)
     p1 = float(p1)
     if p0 == p1:

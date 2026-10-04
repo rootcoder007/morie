@@ -96,9 +96,9 @@ _FAMILIES = ("SD", "RM")
 def _split(beta, n_pre, n_post):
     b = [float(v) for v in k.vec(beta)]
     if len(b) != int(n_pre) + int(n_post):
-        raise ValueError("snmtst: %d coefficients but n_pre + n_post = %d" % (len(b), int(n_pre) + int(n_post)))
+        raise ValueError(f"snmtst: {int(len(b))} coefficients but n_pre + n_post = {int(int(n_pre) + int(n_post))}")
     if int(n_pre) < 1 or int(n_post) < 1:
-        raise ValueError("snmtst: need at least one pre and one post period, got %d and %d" % (n_pre, n_post))
+        raise ValueError(f"snmtst: need at least one pre and one post period, got {int(n_pre)} and {int(n_post)}")
     return b[: int(n_pre)], b[int(n_pre) :]
 
 
@@ -107,7 +107,7 @@ def _target(post, l_vec):
         return [1.0] + [0.0] * (len(post) - 1)
     lv = [float(v) for v in k.vec(l_vec)]
     if len(lv) != len(post):
-        raise ValueError("snmtst: the target vector has %d entries for %d post periods" % (len(lv), len(post)))
+        raise ValueError(f"snmtst: the target vector has {int(len(lv))} entries for {int(len(post))} post periods")
     return lv
 
 
@@ -127,10 +127,10 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD", l_vec=None, grid=Non
     agree, and the option exists so the closed form can be falsified.
     """
     if family not in _FAMILIES:
-        raise ValueError("snmtst: family must be SD or RM, got %r" % (family,))
+        raise ValueError(f"snmtst: family must be SD or RM, got {family!r}")
     Mv = float(M)
     if Mv < 0.0:
-        raise ValueError("snmtst: M must be non-negative, got %r" % (M,))
+        raise ValueError(f"snmtst: M must be non-negative, got {M!r}")
     pre, post = _split(beta, n_pre, n_post)
     lv = _target(post, l_vec)
     Tp = len(post)
@@ -140,7 +140,7 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD", l_vec=None, grid=Non
         # the last two pre-period values and let the second difference
         # wander within +-M each step.
         if len(pre) < 2:
-            raise ValueError("snmtst: Delta^SD needs at least 2 pre-periods to define a slope, got %d" % len(pre))
+            raise ValueError(f"snmtst: Delta^SD needs at least 2 pre-periods to define a slope, got {int(len(pre))}")
         base, slope = pre[-1], pre[-1] - pre[-2]
         # the linear path: delta_t = base + slope * t
         lin = [base + slope * (t + 1) for t in range(Tp)]
@@ -183,7 +183,9 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD", l_vec=None, grid=Non
 
     # RM: |delta_t| <= M * max pre-period first difference
     if len(pre) < 2:
-        raise ValueError("snmtst: Delta^RM needs at least 2 pre-periods to form a first difference, got %d" % len(pre))
+        raise ValueError(
+            f"snmtst: Delta^RM needs at least 2 pre-periods to form a first difference, got {int(len(pre))}"
+        )
     scale = max(abs(pre[i + 1] - pre[i]) for i in range(len(pre) - 1))
     bound = Mv * scale
     hi = sum(lv[t] * post[t] for t in range(Tp)) + bound * sum(abs(v) for v in lv)
@@ -212,12 +214,11 @@ def _brute(point, c, M, grid, post=None, lin=None, lv=None):
     is the point of having it.
     """
     if grid < 2:
-        raise ValueError("snmtst: the brute-force grid needs at least 2 points per coordinate, got %d" % grid)
+        raise ValueError(f"snmtst: the brute-force grid needs at least 2 points per coordinate, got {int(grid)}")
     p = len(c)
     if grid**p > 2000000:
         raise ValueError(
-            "snmtst: a %d-point grid over %d coordinates "
-            "is %d evaluations -- refuse rather than hang" % (grid, p, grid**p)
+            f"snmtst: a {int(grid)}-point grid over {int(p)} coordinates is {int(grid**p)} evaluations -- refuse rather than hang"
         )
     steps = [-M + 2.0 * M * j / (grid - 1) for j in range(grid)]
     idx = [0] * p
@@ -275,7 +276,7 @@ def breakdown_value(beta, n_pre, n_post, family="SD", l_vec=None, sign="positive
     silent endpoint.
     """
     if sign not in ("positive", "negative"):
-        raise ValueError("snmtst: sign must be positive or negative, got %r" % (sign,))
+        raise ValueError(f"snmtst: sign must be positive or negative, got {sign!r}")
 
     def holds(M):
         s = identified_set(beta, n_pre, n_post, M=M, family=family, l_vec=l_vec)
@@ -314,9 +315,9 @@ def fixed_length_ci(beta, sigma, n_pre, n_post, M=0.0, family="SD", l_vec=None, 
     """
     s = identified_set(beta, n_pre, n_post, M=M, family=family, l_vec=l_vec)
     if float(sigma) < 0.0:
-        raise ValueError("snmtst: sigma must be non-negative, got %r" % (sigma,))
+        raise ValueError(f"snmtst: sigma must be non-negative, got {sigma!r}")
     if not 0.0 < float(level) < 1.0:
-        raise ValueError("snmtst: level must be in (0, 1), got %r" % (level,))
+        raise ValueError(f"snmtst: level must be in (0, 1), got {level!r}")
     z = k.qnorm(0.5 + float(level) / 2.0)
     return RichResult(
         payload={

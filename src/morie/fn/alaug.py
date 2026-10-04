@@ -36,7 +36,7 @@ def alammar_augmented_sbert(unlabeled_pairs, cross_encoder, gold_pairs=None, gol
             agreement = float(np.corrcoef(pred, gold)[0, 1])
     training_set = [{"pair": p, "label": s, "source": "silver"} for p, s in zip(pairs, silver)]
     if gold_pairs is not None and gold_labels is not None:
-        training_set += [{"pair": p, "label": float(l), "source": "gold"} for p, l in zip(gp, gl)]
+        training_set += [{"pair": p, "label": float(ell), "source": "gold"} for p, ell in zip(gp, gl)]
     return RichResult(
         payload={
             "training_set": training_set,

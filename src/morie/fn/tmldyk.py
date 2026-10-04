@@ -100,7 +100,7 @@ def ate_sensitivity(n, g_min, y_range=1.0):
     if nn < 1:
         raise ValueError("tmldyk: n must be at least 1")
     if not 0.0 < gm <= 0.5:
-        raise ValueError("tmldyk: the propensity truncation bound must lie in (0, 0.5], got %r" % (g_min,))
+        raise ValueError(f"tmldyk: the propensity truncation bound must lie in (0, 0.5], got {g_min!r}")
     return {
         "sensitivity": 2.0 * float(y_range) / (nn * gm),
         "naive_1_over_n": float(y_range) / nn,

@@ -92,7 +92,7 @@ _HANSEN_T2 = {
 
 def _ols_ssr(x_rows, y):
     # SSR via normal equations with partial-pivot elimination
-    n = len(y)
+    len(y)
     k = len(x_rows[0])
     a = [[0.0] * k for _ in range(k)]
     b = [0.0] * k

@@ -56,7 +56,7 @@ def sequential_gaussian_sim(
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
     grid = np.asarray(grid, dtype=np.float64)
-    n = len(Z)
+    len(Z)
     m = len(grid)
     params = cov_params or {"sill": 1.0, "range": 1.0, "nugget": 0.0}
     sill = params.get("sill", 1.0)

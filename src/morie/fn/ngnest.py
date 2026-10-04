@@ -109,7 +109,7 @@ def aggregate_forecasts(members, how="median"):
     diverging member drags a mean and is ignored by a median.
     """
     if how not in _AGG:
-        raise ValueError("ngnest: how must be median or mean, got %r" % (how,))
+        raise ValueError(f"ngnest: how must be median or mean, got {how!r}")
     if not members:
         raise ValueError("ngnest: no members to aggregate")
     H = len(members[0]["forecast"])

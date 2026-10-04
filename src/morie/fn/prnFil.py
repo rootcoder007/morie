@@ -72,7 +72,7 @@ def changepoint_path(t, y, taus=None, n_changepoints=15, changepoint_range=0.8, 
     """
     grid = [0.001, 0.01, 0.05, 0.1, 0.5, 1.0] if taus is None else [float(v) for v in taus]
     if len(grid) < 2:
-        raise ValueError("prnFil: need at least 2 tau values, got %d" % len(grid))
+        raise ValueError(f"prnFil: need at least 2 tau values, got {int(len(grid))}")
     rows = []
     for tau in grid:
         f = prophet_fit(

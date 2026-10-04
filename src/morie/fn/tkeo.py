@@ -24,10 +24,7 @@ def teager_energy(x, **kwargs) -> DescriptiveResult:
     DescriptiveResult
     """
     x = np.asarray(x, dtype=float)
-    if len(x) < 3:
-        energy = np.array([])
-    else:
-        energy = x[1:-1] ** 2 - x[:-2] * x[2:]
+    energy = np.array([]) if len(x) < 3 else x[1:-1] ** 2 - x[:-2] * x[2:]
     mean_energy = float(np.mean(energy)) if len(energy) > 0 else 0.0
     return DescriptiveResult(
         name="teager_energy",

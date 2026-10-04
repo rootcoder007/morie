@@ -107,10 +107,7 @@ def ander(x, dist="norm", dist_params=None, axis=0, cdf=None):
 
     # Critical values (α = 0.05) for normal distribution
     # For other distributions, use normal approximation
-    if dist == "norm":
-        critical_value = 0.752
-    else:
-        critical_value = 0.752
+    critical_value = 0.752 if dist == "norm" else 0.752
 
     # p-value (approximation)
     if A_squared < 0.576:

@@ -75,11 +75,11 @@ _FEATURES = ("inverse", "identity")
 def _mat(x, name):
     rows = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(x, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("explor: %s must be non-empty" % name)
+        raise ValueError(f"explor: {name} must be non-empty")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("explor: %s must be rectangular" % name)
+            raise ValueError(f"explor: {name} must be rectangular")
     return rows
 
 
@@ -168,7 +168,7 @@ def explor(
     Pathak et al. (2017) arXiv:1705.05363, eqs. 2-7.
     """
     if features not in _FEATURES:
-        raise ValueError("explor: features must be one of %r, got %r" % (_FEATURES, features))
+        raise ValueError(f"explor: features must be one of {_FEATURES!r}, got {features!r}")
     eta = float(eta)
     if not eta > 0.0:
         raise ValueError("explor: eta must be > 0")
@@ -187,7 +187,7 @@ def explor(
     if discrete:
         A = [int(a) for a in np.atleast_1d(np.asarray(actions))]
         if len(A) != T:
-            raise ValueError("explor: got %d actions for %d transitions" % (len(A), T))
+            raise ValueError(f"explor: got {int(len(A))} actions for {int(T)} transitions")
         nA = int(n_actions) if n_actions is not None else max(A) + 1
         if nA < 2:
             raise ValueError("explor: need at least 2 discrete actions")
@@ -197,7 +197,7 @@ def explor(
     else:
         Ac = _mat(actions, "actions")
         if len(Ac) != T:
-            raise ValueError("explor: got %d actions for %d transitions" % (len(Ac), T))
+            raise ValueError(f"explor: got {int(len(Ac))} actions for {int(T)} transitions")
         a_dim = len(Ac[0])
 
     rng = np.random.default_rng(seed)

@@ -43,10 +43,7 @@ def selection_bias_factor(
         raise ValueError(f"outcome_diff must be >= 0, got {outcome_diff}.")
 
     denom = 1.0 - (1.0 - p_selected) * outcome_diff
-    if denom <= 0:
-        bf = float("inf")
-    else:
-        bf = 1.0 / denom
+    bf = float("inf") if denom <= 0 else 1.0 / denom
 
     return DescriptiveResult(
         name="Selection Bias Factor",

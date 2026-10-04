@@ -112,7 +112,7 @@ def _concentration(level, c, schedule):
         return float(c) * level * level * level
     if schedule == "constant":
         return float(c)
-    raise ValueError("schedule must be one of %r" % (SCHEDULES,))
+    raise ValueError(f"schedule must be one of {SCHEDULES!r}")
 
 
 def _null_mean(nullq, j, level):
@@ -235,7 +235,7 @@ def log_likelihood(u, q, kind="exact"):
     conservative.
     """
     if kind not in LIKELIHOODS:
-        raise ValueError("kind must be one of %r" % (LIKELIHOODS,))
+        raise ValueError(f"kind must be one of {LIKELIHOODS!r}")
     k = len(q) - 1
     cnt = cell_counts(u, q)
     n = sum(cnt)
@@ -391,13 +391,13 @@ def np_predictive_value(
     Hjort and Walker (2009) Annals of Statistics 37(1), 105-131.
     """
     if likelihood not in LIKELIHOODS:
-        raise ValueError("likelihood must be one of %r" % (LIKELIHOODS,))
+        raise ValueError(f"likelihood must be one of {LIKELIHOODS!r}")
     if centring not in CENTRINGS:
-        raise ValueError("centring must be one of %r" % (CENTRINGS,))
+        raise ValueError(f"centring must be one of {CENTRINGS!r}")
     if schedule not in SCHEDULES:
-        raise ValueError("schedule must be one of %r" % (SCHEDULES,))
+        raise ValueError(f"schedule must be one of {SCHEDULES!r}")
     if init not in INITS:
-        raise ValueError("init must be one of %r" % (INITS,))
+        raise ValueError(f"init must be one of {INITS!r}")
     if centring == "null" and nullq is None:
         raise ValueError("centring on a null distribution needs nullq")
     m = int(m)
@@ -422,10 +422,7 @@ def np_predictive_value(
     n = len(u)
 
     rng = _core._SplitMix64(seed)
-    if init == "prior":
-        q = pyramid_draw(rng, m, c, schedule, centring, nullq)
-    else:
-        q = _empirical_start(u, k)
+    q = pyramid_draw(rng, m, c, schedule, centring, nullq) if init == "prior" else _empirical_start(u, k)
     lp = pyramid_log_prior(q, m, c, schedule, centring, nullq)
     cnt = cell_counts(u, q)
 

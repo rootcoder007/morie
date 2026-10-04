@@ -229,7 +229,7 @@ def fit_selection(x, sigma, family="symmetric_step", mu0=None, tau0=None, beta0=
       `tau_at_floor` rather than hidden.
     """
     if family not in FAMILIES:
-        raise ValueError("family must be one of %r" % (sorted(FAMILIES),))
+        raise ValueError(f"family must be one of {sorted(FAMILIES)!r}")
     n = len(x)
     if mu0 is None:
         mu0 = _w.csum(x) / n
@@ -360,7 +360,7 @@ def bound_adversarial(y, D, family="symmetric_step", grid=None, target=None, tar
     Andrews and Kasy (2019) AER 109(8), 2766-2794.
     """
     if family not in FAMILIES:
-        raise ValueError("family must be one of %r" % (sorted(FAMILIES),))
+        raise ValueError(f"family must be one of {sorted(FAMILIES)!r}")
     x = [float(v) for v in y]
     sigma = [float(v) for v in D]
     n = len(x)

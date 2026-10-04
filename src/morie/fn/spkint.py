@@ -70,7 +70,7 @@ def spike_information(spike, stim, nbins=2):
     if nbins < 2:
         raise ValueError("`nbins` must be at least 2")
     if nbins > n:
-        raise ValueError("`nbins` (%d) exceeds the number of trials (%d)" % (nbins, n))
+        raise ValueError(f"`nbins` ({int(nbins)}) exceeds the number of trials ({int(n)})")
     si = [int(round(t)) for t in s]
     for t, u in zip(s, si):
         if abs(t - u) > 1e-9:

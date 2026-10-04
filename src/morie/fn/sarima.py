@@ -156,7 +156,7 @@ def difference(y, d=0, D=0, s=1):
     if d < 0 or D < 0:
         raise ValueError("sarima: d and D must be non-negative")
     if D and s < 2:
-        raise ValueError("sarima: seasonal differencing needs s >= 2, got %d" % s)
+        raise ValueError(f"sarima: seasonal differencing needs s >= 2, got {int(s)}")
     w = [float(v) for v in y]
     for _ in range(d):
         if len(w) < 2:
@@ -164,7 +164,7 @@ def difference(y, d=0, D=0, s=1):
         w = [w[t] - w[t - 1] for t in range(1, len(w))]
     for _ in range(D):
         if len(w) <= s:
-            raise ValueError("sarima: series too short for seasonal differencing at s = %d" % s)
+            raise ValueError(f"sarima: series too short for seasonal differencing at s = {int(s)}")
         w = [w[t] - w[t - s] for t in range(s, len(w))]
     return w
 
@@ -196,7 +196,7 @@ def expand_polynomials(phi=(), Phi=(), theta=(), Theta=(), s=12):
     """
     s = int(s)
     if (Phi or Theta) and s < 2:
-        raise ValueError("sarima: seasonal terms need s >= 2, got %d" % s)
+        raise ValueError(f"sarima: seasonal terms need s >= 2, got {int(s)}")
     ar_poly = _poly_mult([1.0] + [-float(v) for v in phi], _seasonal_lift([1.0] + [-float(v) for v in Phi], s))
     ma_poly = _poly_mult([1.0] + [-float(v) for v in theta], _seasonal_lift([1.0] + [-float(v) for v in Theta], s))
     return ([-v for v in ar_poly[1:]], [-v for v in ma_poly[1:]])
@@ -215,7 +215,7 @@ def sample_acf(x, lags):
     for k in lags:
         k = int(k)
         if k < 1 or k >= n:
-            raise ValueError("sarima: lag %d out of range" % k)
+            raise ValueError(f"sarima: lag {int(k)} out of range")
         out[k] = sum((x[t] - m) * (x[t - k] - m) for t in range(k, n)) / d
     return out
 
@@ -243,7 +243,7 @@ def _invert_rho(rho):
     r"""Solve :math:`\rho = -x/(1+x^2)` for the invertible root."""
     r = float(rho)
     if abs(r) > 0.5:
-        raise ValueError("sarima: |rho| = %.4f exceeds 0.5, so no invertible MA(1) reproduces it" % abs(r))
+        raise ValueError(f"sarima: |rho| = {abs(r):.4f} exceeds 0.5, so no invertible MA(1) reproduces it")
     disc = math.sqrt(1.0 - 4.0 * r * r)
     return (-1.0 + disc) / (2.0 * r) if r != 0.0 else 0.0
 
@@ -414,7 +414,7 @@ def fit(y, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, method="ml", start=N
     model).
     """
     if method not in METHODS:
-        raise ValueError("sarima: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("sarima: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     p, d, q = (int(v) for v in order)
     P, D, Q = (int(v) for v in seasonal_order)
     s = int(s)
@@ -425,13 +425,11 @@ def fit(y, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, method="ml", start=N
     if npar == 0:
         raise ValueError("sarima: the model has no free parameters")
     if len(w) <= npar:
-        raise ValueError("sarima: %d differenced observations cannot support %d parameters" % (len(w), npar))
+        raise ValueError(f"sarima: {int(len(w))} differenced observations cannot support {int(npar)} parameters")
     if method == "moment":
         if (p, q, P, Q) != (0, 1, 0, 1):
             raise ValueError(
-                "sarima: the moment route is defined for "
-                "the (0,d,1)x(0,D,1) airline model only, "
-                "got orders (%d,%d)x(%d,%d)" % (p, q, P, Q)
+                f"sarima: the moment route is defined for the (0,d,1)x(0,D,1) airline model only, got orders ({int(p)},{int(q)})x({int(P)},{int(Q)})"
             )
         pre = preliminary_estimates(w, s)
         theta = [pre["theta"]]
@@ -472,7 +470,7 @@ def fit(y, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, method="ml", start=N
     if start is not None:
         x0 = [float(v) for v in start]
         if len(x0) != npar:
-            raise ValueError("sarima: %d starting values for %d parameters" % (len(x0), npar))
+            raise ValueError(f"sarima: {int(len(x0))} starting values for {int(npar)} parameters")
     elif (p, q, P, Q) == (0, 1, 0, 1):
         pre = preliminary_estimates(w, s)
         x0 = [pre["theta"], pre["Theta"]]
@@ -528,7 +526,7 @@ def _package(y, w, phi, theta, Phi, Theta, s, order, seasonal_order, ll, cs, met
             "w": w,
             "fit_method": method,
             "converged": bool(getattr(res, "success", True)) if res is not None else True,
-            "method": "multiplicative seasonal ARIMA by %s; Box et al. (2016) Ch. 9" % method,
+            "method": f"multiplicative seasonal ARIMA by {method}; Box et al. (2016) Ch. 9",
         }
     )
 
@@ -554,7 +552,7 @@ def forecast(fitted, h=12):
     zpad = list(y)
     apad = [0.0] * (len(y) - len(a)) + list(a)
     out = []
-    for step in range(h):
+    for _step in range(h):
         t = len(zpad)
         val = 0.0
         for i, c in enumerate(z_ar):

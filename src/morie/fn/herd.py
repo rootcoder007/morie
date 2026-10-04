@@ -29,10 +29,7 @@ def herd_immunity_threshold(
     """
     if R0 <= 0:
         raise ValueError("R0 must be positive")
-    if R0 <= 1:
-        hit = 0.0
-    else:
-        hit = 1.0 - 1.0 / R0
+    hit = 0.0 if R0 <= 1 else 1.0 - 1.0 / R0
 
     return ESRes(
         measure="Herd immunity threshold",

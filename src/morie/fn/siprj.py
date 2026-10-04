@@ -97,7 +97,7 @@ def siprj(
         for j in range(p):
             dg_dbeta = np.zeros(n)
             for i in range(n):
-                xdiff = X[:, j] - X[i, j]
+                X[:, j] - X[i, j]
                 dg_dbeta[i] = (k_prime[i, :] * y).sum() / (denom[i] * h)
             grad[j] = -2 * np.mean(resid * dg_dbeta)
 

@@ -80,7 +80,7 @@ def hadamard(a, b):
     x = [float(v) for v in k.vec(a)]
     y = [float(v) for v in k.vec(b)]
     if len(x) != len(y):
-        raise ValueError("xdeep: embeddings differ in length (%d, %d)" % (len(x), len(y)))
+        raise ValueError(f"xdeep: embeddings differ in length ({int(len(x))}, {int(len(y))})")
     return [x[i] * y[i] for i in range(len(x))]
 
 
@@ -167,7 +167,7 @@ def xdeepfm_score(x_linear, w_linear, X0, Ws, w_cin, dnn_output=0.0, w_dnn=1.0, 
     c = cin(X0, Ws)["pooled"]
     wc = [float(v) for v in k.vec(w_cin)]
     if len(wc) != len(c):
-        raise ValueError("xdeep: %d CIN weights for %d pooled units" % (len(wc), len(c)))
+        raise ValueError(f"xdeep: {int(len(wc))} CIN weights for {int(len(c))} pooled units")
     ci = sum(wc[i] * c[i] for i in range(len(c)))
     z = float(bias) + lin + ci + float(w_dnn) * float(dnn_output)
     return {

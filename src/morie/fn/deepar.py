@@ -103,9 +103,9 @@ def negative_binomial_loglik(z, mu, alpha):
     m = max(float(mu), _EPS)
     a = float(alpha)
     if zz < 0.0:
-        raise ValueError("deepar: the negative binomial needs a non-negative count, got %r" % (z,))
+        raise ValueError(f"deepar: the negative binomial needs a non-negative count, got {z!r}")
     if a < 0.0:
-        raise ValueError("deepar: alpha must be non-negative, got %r" % (alpha,))
+        raise ValueError(f"deepar: alpha must be non-negative, got {alpha!r}")
     if a < 1e-10:  # Poisson limit
         return zz * math.log(m) - m - k.lgamma(zz + 1.0)
     r = 1.0 / a
@@ -166,12 +166,12 @@ def deepar_fit(z, n_lags=2, likelihood="negative-binomial", ridge=1e-6):
     about, and they are identical either way.
     """
     if likelihood not in ("negative-binomial", "gaussian"):
-        raise ValueError("deepar: likelihood must be negative-binomial or gaussian, got %r" % (likelihood,))
+        raise ValueError(f"deepar: likelihood must be negative-binomial or gaussian, got {likelihood!r}")
     zv = [float(v) for v in k.vec(z)]
     n = len(zv)
     p = int(n_lags)
     if n < p + 4:
-        raise ValueError("deepar: %d observations is too few for %d lags" % (n, p))
+        raise ValueError(f"deepar: {int(n)} observations is too few for {int(p)} lags")
     nu = scale_factor(zv)
     zs = [v / nu for v in zv]  # scaled to a common range
     X = [[1.0] + [zs[t - j - 1] for j in range(p)] for t in range(p, n)]
@@ -218,7 +218,7 @@ def deepar_sample(fit, z_history, horizon, n_samples=200, seed=0):
     H = int(horizon)
     hist = [float(v) / nu for v in k.vec(z_history)][-p:]
     if len(hist) < p:
-        raise ValueError("deepar: need at least %d history points, got %d" % (p, len(hist)))
+        raise ValueError(f"deepar: need at least {int(p)} history points, got {int(len(hist))}")
     rng = np.random.default_rng(seed)
     paths = []
     for _ in range(int(n_samples)):
@@ -247,7 +247,7 @@ def deepar_forecast(
     qs = {}
     for q in quantiles:
         if not 0.0 < float(q) < 1.0:
-            raise ValueError("deepar: quantiles must be in (0, 1), got %r" % (q,))
+            raise ValueError(f"deepar: quantiles must be in (0, 1), got {q!r}")
         qs[float(q)] = [k.quantile7(sorted(pp[h] for pp in paths), float(q)) for h in range(H)]
     mean = [k.mean([pp[h] for pp in paths]) for h in range(H)]
     width = [qs[max(quantiles)][h] - qs[min(quantiles)][h] for h in range(H)]

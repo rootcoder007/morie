@@ -39,16 +39,16 @@ def spatial_ar_lag(x, y, w):
     n, p = X.shape
     if y.size != n or W.shape != (n, n):
         raise ValueError("shape mismatch among x, y, w")
-    I = np.eye(n)
+    I_ = np.eye(n)
     XtX_inv = np.linalg.inv(X.T @ X)
-    M = I - X @ XtX_inv @ X.T
+    M = I_ - X @ XtX_inv @ X.T
     e0 = M @ y
     e1 = M @ (W @ y)
 
     def neg_ll(rho):
         e = e0 - rho * e1
         sigma2 = float(e @ e) / n
-        A = I - rho * W
+        A = I_ - rho * W
         sign, logdetA = np.linalg.slogdet(A)
         if sign <= 0 or sigma2 <= 0:
             return 1e12

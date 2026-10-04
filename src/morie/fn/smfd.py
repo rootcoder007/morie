@@ -118,7 +118,7 @@ def bspline_basis(x, knots, degree=3):
     degree = int(degree)
     p = len(knots) - degree - 1
     if p < 1:
-        raise ValueError("smfd: the knot sequence is too short for degree %d" % degree)
+        raise ValueError(f"smfd: the knot sequence is too short for degree {int(degree)}")
     return [[_bspline(float(v), k, degree, knots) for k in range(p)] for v in x]
 
 
@@ -139,7 +139,7 @@ def difference_matrix(p, order=2):
     if order < 0:
         raise ValueError("smfd: the penalty order cannot be negative")
     if order >= p:
-        raise ValueError("smfd: a %d-th order penalty needs more than %d coefficients" % (order, p))
+        raise ValueError(f"smfd: a {int(order)}-th order penalty needs more than {int(p)} coefficients")
     D = [[1.0 if i == j else 0.0 for j in range(p)] for i in range(p)]
     for _ in range(order):
         D = [[D[i + 1][j] - D[i][j] for j in range(p)] for i in range(len(D) - 1)]
@@ -218,7 +218,7 @@ def cross_validation(fit_result):
     for i in range(n):
         denom = 1.0 - fit_result["hat_diagonal"][i]
         if abs(denom) < 1e-12:
-            raise ValueError("smfd: h_ii = 1 at point %d, so the deletion residual is undefined" % i)
+            raise ValueError(f"smfd: h_ii = 1 at point {int(i)}, so the deletion residual is undefined")
         tot += (fit_result["residuals"][i] / denom) ** 2
     return {"cv": math.sqrt(tot / n), "press": tot}
 
@@ -238,7 +238,7 @@ def aic(fit_result):
 def choose_lambda(x, y, lambdas=None, criterion="cv", nseg=10, degree=3, order=2):
     r"""Search a grid and return the whole trace, not just the winner."""
     if criterion not in ("cv", "aic"):
-        raise ValueError("smfd: criterion must be 'cv' or 'aic', got %r" % criterion)
+        raise ValueError(f"smfd: criterion must be 'cv' or 'aic', got {criterion!r}")
     if lambdas is None:
         lambdas = [10.0 ** (k / 2.0) for k in range(-8, 13)]
     trace = []
@@ -257,7 +257,7 @@ def choose_lambda(x, y, lambdas=None, criterion="cv", nseg=10, degree=3, order=2
             "fit": best[2],
             "trace": trace,
             "criterion": criterion,
-            "method": "lambda by %s over a grid; Eilers & Marx (1996) Sec. 6" % criterion,
+            "method": f"lambda by {criterion} over a grid; Eilers & Marx (1996) Sec. 6",
         }
     )
 

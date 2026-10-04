@@ -116,7 +116,7 @@ def ideal_weights(p_low, p_high, n):
     """
     pl, pu = float(p_low), float(p_high)
     if not 2.0 <= pl < pu:
-        raise ValueError("crfflt: need 2 <= p_low < p_high, got (%.4f, %.4f)" % (pl, pu))
+        raise ValueError(f"crfflt: need 2 <= p_low < p_high, got ({pl:.4f}, {pu:.4f})")
     if int(n) < 0:
         raise ValueError("crfflt: n must be non-negative")
     a, b = 2.0 * math.pi / pu, 2.0 * math.pi / pl
@@ -161,11 +161,11 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None, drift=True
     to 8 years).
     """
     if method not in _METHODS:
-        raise ValueError("crfflt: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("crfflt: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     v = [float(q) for q in k.vec(x)]
     T = len(v)
     if T < 5:
-        raise ValueError("crfflt: need at least 5 observations, got %d" % T)
+        raise ValueError(f"crfflt: need at least 5 observations, got {int(T)}")
     mu = 0.0
     if drift and method != "symmetric":
         da = drift_adjust(v)
@@ -175,7 +175,7 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None, drift=True
     if method == "symmetric":
         pp = int(p) if p is not None else min(12, (T - 1) // 2)
         if pp < 1 or 2 * pp >= T:
-            raise ValueError("crfflt: p must satisfy 1 <= p < T/2, got %d for T = %d" % (pp, T))
+            raise ValueError(f"crfflt: p must satisfy 1 <= p < T/2, got {int(pp)} for T = {int(T)}")
         w = [B[j] for j in range(pp)]
         end = _tail(B, pp)
         out = [float("nan")] * T

@@ -174,7 +174,7 @@ def edge_encoding(paths, edge_features, w_table):
         for step, e in enumerate(path):
             f = edge_features.get(e, edge_features.get((e[1], e[0])))
             if f is None:
-                raise ValueError("grphmr: no features for edge %r" % (e,))
+                raise ValueError(f"grphmr: no features for edge {e!r}")
             w = w_table[min(step, len(w_table) - 1)]
             fv = [float(q) for q in k.vec(f)]
             wv = [float(q) for q in k.vec(w)]

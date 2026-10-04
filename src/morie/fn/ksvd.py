@@ -62,7 +62,7 @@ def ksvd_dictionary(Y, n_atoms: int = 20, sparsity: int = 3, n_iter: int = 50, *
         c[idx] = coeffs
         return c
 
-    for it in range(n_iter):
+    for _it in range(n_iter):
         for i in range(n_samples):
             X[:, i] = _omp(D, Y[:, i], sparsity)
 

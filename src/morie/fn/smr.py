@@ -45,10 +45,7 @@ def standardized_mortality_ratio(
     smr_val = observed / expected
 
     # Exact Poisson CI on the count
-    if observed == 0:
-        ci_lo_count = 0.0
-    else:
-        ci_lo_count = _st.chi2.ppf(alpha / 2, 2 * observed) / 2
+    ci_lo_count = 0.0 if observed == 0 else _st.chi2.ppf(alpha / 2, 2 * observed) / 2
     ci_hi_count = _st.chi2.ppf(1 - alpha / 2, 2 * (observed + 1)) / 2
 
     return {

@@ -108,7 +108,7 @@ def exposure_summary(A, friends, kind="fraction"):
     a = [float(v) for v in k.vec(A)]
     N = len(a)
     if len(friends) != N:
-        raise ValueError("tlnetlg: %d treatments but %d friend sets" % (N, len(friends)))
+        raise ValueError(f"tlnetlg: {int(N)} treatments but {int(len(friends))} friend sets")
     out = []
     for i in range(N):
         f = sorted(set(friends[i]) - {i})
@@ -121,7 +121,7 @@ def exposure_summary(A, friends, kind="fraction"):
         elif kind == "any":
             s = 1.0 if any(a[j] == 1.0 for j in f) else 0.0
         else:
-            raise ValueError("tlnetlg: kind must be fraction, count or any, got %r" % (kind,))
+            raise ValueError(f"tlnetlg: kind must be fraction, count or any, got {kind!r}")
         out.append((a[i], s))
     return {"summary": out, "kind": kind, "note": "own treatment plus a fixed-dimensional summary of the friends'"}
 
@@ -135,7 +135,7 @@ def community_estimand(Q_fn, friends, W, policy):
     rows = [[float(v) for v in r] for r in k.mat(W)]
     N = len(rows)
     if len(friends) != N:
-        raise ValueError("tlnetlg: %d covariate rows but %d friend sets" % (N, len(friends)))
+        raise ValueError(f"tlnetlg: {int(N)} covariate rows but {int(len(friends))} friend sets")
     a = [float(policy(i, rows)) for i in range(N)]
     es = exposure_summary(a, friends)["summary"]
     vals = [float(Q_fn(es[i][0], es[i][1], rows[i])) for i in range(N)]
@@ -152,7 +152,7 @@ def network_variance(ic, friends):
     v = [float(q) for q in k.vec(ic)]
     N = len(v)
     if len(friends) != N:
-        raise ValueError("tlnetlg: %d influence values but %d friend sets" % (N, len(friends)))
+        raise ValueError(f"tlnetlg: {int(N)} influence values but {int(len(friends))} friend sets")
     m = sum(v) / N
     var = sum((q - m) ** 2 for q in v) / N
     cov = 0.0
@@ -181,7 +181,7 @@ def longitudinal_network_gcomp(Q_seq, friends, W, policy, T):
     if int(T) < 1:
         raise ValueError("tlnetlg: need at least one time point")
     if len(Q_seq) != int(T):
-        raise ValueError("tlnetlg: %d regressions for %d time points" % (len(Q_seq), T))
+        raise ValueError(f"tlnetlg: {int(len(Q_seq))} regressions for {int(T)} time points")
     rows = [[float(v) for v in r] for r in k.mat(W)]
     cur = rows
     path = []

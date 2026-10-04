@@ -69,7 +69,7 @@ def birth_death_process(
         deaths = rng.poisson(death_rate * n * dt)
         pop[i + 1] = max(0, n + births - deaths)
 
-    times = np.linspace(0, t_max, steps + 1)
+    np.linspace(0, t_max, steps + 1)
     net_rate = birth_rate - death_rate
     expected_final = n0 * np.exp(net_rate * t_max)
 

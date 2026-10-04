@@ -90,7 +90,7 @@ def e_log_theta(gamma):
     r"""Eq. (8): :math:`\Psi(\gamma_i) - \Psi(\sum_j \gamma_j)`."""
     g = [float(v) for v in k.vec(gamma)]
     if any(v <= 0.0 for v in g):
-        raise ValueError("lda: gamma must be strictly positive, got %r" % (min(g),))
+        raise ValueError(f"lda: gamma must be strictly positive, got {min(g)!r}")
     s = k.digamma(sum(g))
     return [k.digamma(v) - s for v in g]
 
@@ -109,13 +109,13 @@ def variational_inference(doc, alpha, beta, iters=100, tol=1e-8):
         raise ValueError("lda: beta must have at least one topic")
     V = len(B[0])
     if any(v < 0 or v >= V for v in w):
-        raise ValueError("lda: a word index is outside the vocabulary of %d" % V)
+        raise ValueError(f"lda: a word index is outside the vocabulary of {int(V)}")
     N = len(w)
     if N < 1:
         raise ValueError("lda: the document is empty")
     a = [float(alpha)] * K if isinstance(alpha, (int, float)) else [float(v) for v in k.vec(alpha)]
     if len(a) != K:
-        raise ValueError("lda: alpha has %d entries for %d topics" % (len(a), K))
+        raise ValueError(f"lda: alpha has {int(len(a))} entries for {int(K)} topics")
     if any(v <= 0.0 for v in a):
         raise ValueError("lda: alpha must be strictly positive")
     phi = [[1.0 / K] * K for _ in range(N)]
@@ -128,7 +128,7 @@ def variational_inference(doc, alpha, beta, iters=100, tol=1e-8):
             row = [B[i][w[n]] * math.exp(elog[i]) for i in range(K)]
             z = sum(row)
             if z <= _EPS:
-                raise ValueError("lda: word %d has zero probability under every topic" % w[n])
+                raise ValueError(f"lda: word {int(w[n])} has zero probability under every topic")
             new.append([v / z for v in row])
         ng = [a[i] + sum(new[n][i] for n in range(N)) for i in range(K)]
         delta = max(abs(ng[i] - gam[i]) for i in range(K))
@@ -194,7 +194,7 @@ def variational_em(docs, K, V, alpha=0.1, iters=30, inner=50, seed=0, tol=1e-6):
         z = sum(row)
         B.append([v / z for v in row])
     hist, prev = [], None
-    for it in range(1, int(iters) + 1):
+    for _it in range(1, int(iters) + 1):
         counts = [[_EPS] * int(V) for _ in range(int(K))]
         total = 0.0
         for d in D:

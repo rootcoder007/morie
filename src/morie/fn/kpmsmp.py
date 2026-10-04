@@ -93,9 +93,9 @@ def km_simultaneous_band(fit, alpha):
             continue
         w = h / math.sqrt(n) * (1.0 + n * sig2[j]) * S[j]
         half.append(w)
-        l = S[j] - w
+        ell = S[j] - w
         u = S[j] + w
-        lo.append(0.0 if l < 0.0 else l)
+        lo.append(0.0 if ell < 0.0 else ell)
         hi.append(1.0 if u > 1.0 else u)
     return RichResult(
         title="Hall-Wellner simultaneous band",

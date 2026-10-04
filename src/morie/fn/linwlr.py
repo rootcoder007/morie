@@ -119,15 +119,15 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest", baseline=No
         r["estimate"]
     """
     if method not in _METHODS:
-        raise ValueError("linear_weighted_learner: method must be 'gest' or 'wls', got %r" % (method,))
+        raise ValueError(f"linear_weighted_learner: method must be 'gest' or 'wls', got {method!r}")
     yv = k.vec(y)
     av = k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("linear_weighted_learner: %d outcomes but %d treatments" % (n, len(av)))
+        raise ValueError(f"linear_weighted_learner: {int(n)} outcomes but {int(len(av))} treatments")
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("linear_weighted_learner: %d outcomes but %d history rows" % (n, len(Wm)))
+        raise ValueError(f"linear_weighted_learner: {int(n)} outcomes but {int(len(Wm))} history rows")
     binary = all(v in (0.0, 1.0) for v in av)
 
     if propensity is None:
@@ -135,7 +135,7 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest", baseline=No
             Zsrc = k.mat(pi_covariates)
             if len(Zsrc) != n:
                 raise ValueError(
-                    "linear_weighted_learner: %d propensity covariate rows for %d observations" % (len(Zsrc), n)
+                    f"linear_weighted_learner: {int(len(Zsrc))} propensity covariate rows for {int(n)} observations"
                 )
         else:
             Zsrc = Wm if Wm and Wm[0] else None
@@ -147,7 +147,7 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest", baseline=No
     else:
         pi = [float(v) for v in k.vec(propensity)]
         if len(pi) != n:
-            raise ValueError("linear_weighted_learner: %d propensities for %d observations" % (len(pi), n))
+            raise ValueError(f"linear_weighted_learner: {int(len(pi))} propensities for {int(n)} observations")
     if binary and any(p <= 0.0 or p >= 1.0 for p in pi):
         raise ValueError(
             "linear_weighted_learner: a propensity of 0 or 1 violates positivity and makes the blip unidentified there"

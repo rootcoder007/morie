@@ -75,13 +75,13 @@ def lmi(x, F0, Fs):
     v = [float(t) for t in k.vec(x)]
     A = [[float(t) for t in r] for r in k.mat(F0)]
     if len(v) != len(Fs):
-        raise ValueError("sdpwts: %d variables but %d matrices" % (len(v), len(Fs)))
+        raise ValueError(f"sdpwts: {int(len(v))} variables but {int(len(Fs))} matrices")
     n = len(A)
     out = [row[:] for row in A]
     for i in range(len(v)):
         M = [[float(t) for t in r] for r in k.mat(Fs[i])]
         if len(M) != n or len(M[0]) != n:
-            raise ValueError("sdpwts: F_%d is not %dx%d" % (i, n, n))
+            raise ValueError(f"sdpwts: F_{int(i)} is not {int(n)}x{int(n)}")
         for a in range(n):
             for b in range(n):
                 out[a][b] += v[i] * M[a][b]

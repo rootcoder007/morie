@@ -69,9 +69,9 @@ def horowitz_binary_response(x, y):
             b = r.x / max(np.linalg.norm(r.x), 1e-12)
             if b[0] < 0:
                 b = -b
-            l = _score(b, X, y_signed)
-            if l < best_loss:
-                best_loss = l
+            ell = _score(b, X, y_signed)
+            if ell < best_loss:
+                best_loss = ell
                 best_beta = b
         except Exception:
             continue

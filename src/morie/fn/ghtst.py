@@ -74,10 +74,7 @@ def ghosal_np_testing(x, ref_loc=0.0, ref_scale=1.0, depth=6, c=1.0):
     BF10 = float(np.exp(log_bf))
     # Calibrate Bayes factor to a frequentist p-value via the Vovk-style
     # bound p_max <= 1/(1 + BF10) when BF10 > 1.  Otherwise p ≈ 0.5.
-    if BF10 > 1:
-        p_value = 1.0 / (1.0 + BF10)
-    else:
-        p_value = 0.5
+    p_value = 1.0 / (1.0 + BF10) if BF10 > 1 else 0.5
     return RichResult(
         payload={
             "statistic": float(log_bf),

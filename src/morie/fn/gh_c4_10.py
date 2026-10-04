@@ -18,7 +18,7 @@ def ghosal_dp_polya_urn(n, alpha, seed=42):
     M = float(alpha)
     rng = np.random.default_rng(seed)
     xs = []
-    for i in range(int(n)):
+    for _i in range(int(n)):
         if not xs or float(rng.uniform(0, 1)) < M / (M + len(xs)):
             xs.append(float(rng.uniform(0, 1)))  # fresh from G0
         else:

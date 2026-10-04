@@ -29,8 +29,8 @@ def _logit_fit(Z, a):
     for _ in range(100):
         mu = [_expit(sum(x * c for x, c in zip(z, b))) for z in Z]
         g = [sum(z[r] * (y - m) for z, y, m in zip(Z, a, mu)) for r in range(p)]
-        I = [[sum(z[r] * z[c] * m * (1 - m) for z, m in zip(Z, mu)) for c in range(p)] for r in range(p)]
-        M = [row[:] + [g[i]] for i, row in enumerate(I)]
+        I_ = [[sum(z[r] * z[c] * m * (1 - m) for z, m in zip(Z, mu)) for c in range(p)] for r in range(p)]
+        M = [row[:] + [g[i]] for i, row in enumerate(I_)]
         for c in range(p):
             for r in range(p):
                 if r != c:

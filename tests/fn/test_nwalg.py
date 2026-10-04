@@ -5,7 +5,7 @@ from morie.fn.nwalg import needleman_wunsch
 
 
 def test_nwalg_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = needleman_wunsch(seq1="ACGTACGT", seq2="ACGTACGT")
     assert result is not None
     assert hasattr(result, "name")

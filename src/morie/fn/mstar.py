@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Markov-switching AR model (Hamilton regime switching)."""
 
+import contextlib
+
 from . import _array_core as np
 from ._containers import DescriptiveResult
 
@@ -32,7 +34,7 @@ def ms_ar(y: np.ndarray, p: int = 1, n_regimes: int = 2, max_iter: int = 100) ->
     T = n - p
     dep = y[p:]
     X = np.column_stack([np.ones(T)] + [y[p - i - 1 : n - i - 1] for i in range(p)])
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     mu = np.array([np.mean(dep) + (i - n_regimes / 2) * np.std(dep) for i in range(n_regimes)])
     sigma2 = np.full(n_regimes, float(np.var(dep)))
     betas = np.zeros((n_regimes, p + 1))
@@ -53,10 +55,8 @@ def ms_ar(y: np.ndarray, p: int = 1, n_regimes: int = 2, max_iter: int = 100) ->
             W = np.diag(w)
             XtWX = X.T @ W @ X
             XtWy = X.T @ (w * dep)
-            try:
+            with contextlib.suppress(np.linalg.LinAlgError):
                 betas[r] = np.linalg.solve(XtWX + 1e-8 * np.eye(p + 1), XtWy)
-            except np.linalg.LinAlgError:
-                pass
             resid = dep - X @ betas[r]
             sigma2[r] = max(float(np.sum(w * resid**2) / max(np.sum(w), 1e-10)), 1e-10)
         for r in range(n_regimes):

@@ -93,7 +93,7 @@ def harmonise(series_list, patch_len, normalise=True):
         D = len(M[0])
         L = (len(M) // P) * P
         if L < P:
-            raise ValueError("momento: a series has %d points, fewer than one patch of %d" % (len(M), P))
+            raise ValueError(f"momento: a series has {int(len(M))} points, fewer than one patch of {int(P)}")
         for d in range(D):
             col = [M[t][d] for t in range(L)]
             if normalise:
@@ -125,7 +125,7 @@ def mask_patches(patches, mask_idx, fill=0.0):
     n = len(P)
     idx = sorted(set(int(i) for i in mask_idx))
     if any(not 0 <= i < n for i in idx):
-        raise ValueError("momento: a mask index is outside 0..%d" % (n - 1))
+        raise ValueError(f"momento: a mask index is outside 0..{int(n - 1)}")
     if not idx:
         raise ValueError("momento: nothing was masked, so there is nothing to learn from")
     if len(idx) == n:
@@ -151,14 +151,14 @@ def masked_loss(truth, reconstruction, mask):
     R = [[float(v) for v in p] for p in reconstruction]
     if len(T) != len(R) or len(T) != len(mask):
         raise ValueError(
-            "momento: truth, reconstruction and mask must agree in length (%d, %d, %d)" % (len(T), len(R), len(mask))
+            f"momento: truth, reconstruction and mask must agree in length ({int(len(T))}, {int(len(R))}, {int(len(mask))})"
         )
     tot, cnt = 0.0, 0
     for i in range(len(T)):
         if not mask[i]:
             continue
         if len(T[i]) != len(R[i]):
-            raise ValueError("momento: patch %d differs in length between truth and reconstruction" % i)
+            raise ValueError(f"momento: patch {int(i)} differs in length between truth and reconstruction")
         for j in range(len(T[i])):
             tot += (T[i][j] - R[i][j]) ** 2
             cnt += 1
@@ -181,9 +181,9 @@ def task_mask(n_patches, task="forecast", span=1, start=None):
     n = int(n_patches)
     s = int(span)
     if task not in _TASKS:
-        raise ValueError("momento: task must be one of %s, got %r" % (", ".join(_TASKS), task))
+        raise ValueError("momento: task must be one of {}, got {!r}".format(", ".join(_TASKS), task))
     if not 1 <= s < n:
-        raise ValueError("momento: the span must lie in 1..%d, got %d" % (n - 1, s))
+        raise ValueError(f"momento: the span must lie in 1..{int(n - 1)}, got {int(s)}")
     if task == "forecast":
         return list(range(n - s, n))
     if task == "impute":

@@ -72,10 +72,7 @@ def svariog(coords, z, breaks=None, nbins=10, cutoff=None):
             dd = math.sqrt(sum((P[i][t] - P[j][t]) ** 2 for t in range(k)))
             d.append(dd)
             g.append((z[i] - z[j]) ** 2)
-    if cutoff is None:
-        cut = max(d) / 3.0
-    else:
-        cut = float(cutoff)
+    cut = max(d) / 3.0 if cutoff is None else float(cutoff)
     if breaks is None:
         nb = int(nbins)
         if nb < 1:

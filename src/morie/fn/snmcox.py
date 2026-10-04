@@ -229,17 +229,17 @@ def snmcox(
         raise ValueError("snmcox: no subjects")
     ev = [float(v) for v in k.vec(event)]
     if len(ev) != n:
-        raise ValueError("snmcox: %d times but %d event indicators" % (n, len(ev)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(ev))} event indicators")
     if any(v not in (0.0, 1.0) for v in ev):
         raise ValueError("snmcox: event must be 0/1")
     A = [float(v) for v in k.vec(treatment_history)]
     if len(A) != n:
-        raise ValueError("snmcox: %d times but %d treatment values" % (n, len(A)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(A))} treatment values")
     L = covariate_history
     if treat_times is None:
         treat_times = [([(0.0, T[i])] if A[i] > 0 else []) for i in range(n)]
     if len(treat_times) != n:
-        raise ValueError("snmcox: %d times but %d treatment histories" % (n, len(treat_times)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(treat_times))} treatment histories")
     if censor_time is not None:
         raise NotImplementedError(
             "snmcox: g-estimation under administrative censoring needs "

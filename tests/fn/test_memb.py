@@ -18,10 +18,7 @@ D = 10
 def _gen(n, seed, noise=False):
     r = np.random.default_rng(seed)
     X = [[1.0 if r.random() < 0.5 else 0.0 for _ in range(D)] for _ in range(n)]
-    if noise:
-        y = [1 if r.random() < 0.5 else 0 for _ in X]
-    else:
-        y = [1 if sum(x[:3]) >= 2 else 0 for x in X]
+    y = [1 if r.random() < 0.5 else 0 for _ in X] if noise else [1 if sum(x[:3]) >= 2 else 0 for x in X]
     return X, y
 
 

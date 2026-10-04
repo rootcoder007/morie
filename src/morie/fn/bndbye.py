@@ -95,7 +95,7 @@ def identified_set_interval(phi_hat, half_width):
     """
     h = float(half_width)
     if h < 0.0:
-        raise ValueError("bndbye: the half-width must be non-negative, got %r" % (half_width,))
+        raise ValueError(f"bndbye: the half-width must be non-negative, got {half_width!r}")
     return {"lower": float(phi_hat) - h, "upper": float(phi_hat) + h, "width": 2.0 * h, "phi_hat": float(phi_hat)}
 
 
@@ -169,7 +169,7 @@ def frequentist_confidence_set(theta_set, se_phi, level=0.95, target="parameter"
     :math:`\Theta(\hat\phi_n)`, because :math:`\hat\phi_n` is noisy.
     """
     if target not in ("parameter", "set"):
-        raise ValueError("bndbye: target must be parameter or set, got %r" % (target,))
+        raise ValueError(f"bndbye: target must be parameter or set, got {target!r}")
     s = float(se_phi)
     if s < 0.0:
         raise ValueError("bndbye: the standard error must be non-negative")

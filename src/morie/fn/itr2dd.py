@@ -95,7 +95,7 @@ def itr_optimal_did(y, D, W, min_frac=0.25):
         tau_c = float("nan")
     return RichResult(
         title="Optimal individualized treatment regime via DR-DiD",
-        summary_lines=[("rule", "W%d > %.6g" % (j, c)), ("value", tau), ("targeted", m)],
+        summary_lines=[("rule", f"W{int(j)} > {c:.6g}"), ("value", tau), ("targeted", m)],
         payload={
             "estimate": tau,
             "se": se,

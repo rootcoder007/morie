@@ -47,7 +47,7 @@ def manova_one(X: np.ndarray, groups: np.ndarray, cdf=None) -> TestResult:
         lam = 1.0
 
     df_h = p * (k - 1)
-    df_e = p * (n - k)
+    p * (n - k)
     t_val = np.sqrt((p**2 * (k - 1) ** 2 - 4) / (p**2 + (k - 1) ** 2 - 5)) if (p**2 + (k - 1) ** 2 - 5) > 0 else 1.0
     lam_t = max(lam, 1e-12) ** (1 / t_val)
     df2 = (n - k - 1) - (p - (k - 1) + 1) / 2

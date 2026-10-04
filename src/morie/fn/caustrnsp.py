@@ -101,7 +101,7 @@ def caustrnsp(y, z, s, mode="transport", pr_w0=None):
             "n_treat": len(i1),
             "n_control": len(i0),
             "mode": mode,
-            "method": "Tipton-Hartman Eq. 3.10 weighted PATE, %s weights" % mode,
+            "method": f"Tipton-Hartman Eq. 3.10 weighted PATE, {mode} weights",
         }
     )
 

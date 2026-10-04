@@ -15,8 +15,8 @@ def _make_fit(n=60, p=2, seed=42):
     t = np.minimum(T, C)
 
     n_events = int(e.sum())
-    I = rng.normal(size=(p, p))
-    I = I + I.T + n * np.eye(p)
+    I_ = rng.normal(size=(p, p))
+    I_ = I_ + I_.T + n * np.eye(p)
     se = rng.uniform(0.1, 1.0, size=p)
 
     return {
@@ -24,7 +24,7 @@ def _make_fit(n=60, p=2, seed=42):
         "event": e,
         "X": X,
         "beta": beta,
-        "information": I,
+        "information": I_,
         "se": se,
         "n_events": n_events,
     }

@@ -90,10 +90,7 @@ def splrg(
     except np.linalg.LinAlgError:
         beta = np.linalg.lstsq(XtX, X.T @ y, rcond=None)[0]
 
-    if x_eval is None:
-        x_eval = np.sort(x)
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = np.sort(x) if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     X_eval = np.column_stack([np.ones(len(x_eval)), x_eval] + [_tp(x_eval, k) for k in knots])
     y_hat = X_eval @ beta

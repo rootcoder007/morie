@@ -107,11 +107,11 @@ def _blocks(covariate_history, n):
         raise ValueError("tmldyn: covariate_history is required")
     ch = list(covariate_history)
     if len(ch) != 2:
-        raise ValueError("tmldyn: covariate_history must be two blocks [L0, L1], got %d" % len(ch))
+        raise ValueError(f"tmldyn: covariate_history must be two blocks [L0, L1], got {int(len(ch))}")
     L0, L1 = k.mat(ch[0]), k.mat(ch[1])
     if len(L0) != n or len(L1) != n:
         raise ValueError(
-            "tmldyn: covariate blocks have %d and %d rows but there are %d outcomes" % (len(L0), len(L1), n)
+            f"tmldyn: covariate blocks have {int(len(L0))} and {int(len(L1))} rows but there are {int(n)} outcomes"
         )
     return L0, L1
 
@@ -145,7 +145,7 @@ def intervention_mechanism(L0, A0, L1, A1, trim=0.01, known=None, penalty=0.0):
         p1 = [_expit(v) for v in k.matvec(X1, k.logit_irls(X1, A1, penalty=penalty))]
     t = float(trim)
     if not 0.0 <= t < 0.5:
-        raise ValueError("tmldyn: trim must be in [0, 0.5), got %r" % (trim,))
+        raise ValueError(f"tmldyn: trim must be in [0, 0.5), got {trim!r}")
     lo, hi = max(t, _EPS), 1.0 - max(t, _EPS)
     p0 = [min(max(v, lo), hi) for v in p0]
     p1 = [min(max(v, lo), hi) for v in p1]
@@ -326,7 +326,7 @@ def _coerce_regime(regime, n):
     if regime is None or (isinstance(regime, str) and regime.lower() in ("optimal", "v-optimal")):
         return None
     if isinstance(regime, str):
-        raise ValueError("tmldyn: regime must be 'optimal' or an array, got %r" % (regime,))
+        raise ValueError(f"tmldyn: regime must be 'optimal' or an array, got {regime!r}")
     r = list(regime)
     if len(r) == 2 and hasattr(r[0], "__len__") and len(r[0]) == n:
         d0 = [float(v) for v in r[0]]
@@ -339,13 +339,13 @@ def _coerce_regime(regime, n):
             col = [float(v) for v in second]
             d1 = [list(col), list(col)]
         else:
-            raise ValueError("tmldyn: regime's second component has length %d, expected %d or 2" % (len(second), n))
+            raise ValueError(f"tmldyn: regime's second component has length {int(len(second))}, expected {int(n)} or 2")
         return d0, d1
     if len(r) == n:  # n-by-2 table of assignments
         d0 = [float(row[0]) for row in r]
         col = [float(row[1]) for row in r]
         return d0, [list(col), list(col)]
-    raise ValueError("tmldyn: cannot read regime of length %d for n = %d" % (len(r), n))
+    raise ValueError(f"tmldyn: cannot read regime of length {int(len(r))} for n = {int(n)}")
 
 
 def tmle_dynamic_regime(
@@ -417,14 +417,14 @@ def tmle_dynamic_regime(
         r = tmle_dynamic_regime(y, A, [L0, L1], regime=(d0, d1))
     """
     if method not in _METHODS:
-        raise ValueError("tmldyn: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("tmldyn: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     yv = k.vec(y)
     n = len(yv)
     if n < 4:
-        raise ValueError("tmldyn: need at least 4 observations, got %d" % n)
+        raise ValueError(f"tmldyn: need at least 4 observations, got {int(n)}")
     Am = k.mat(treatment_history)
     if len(Am) != n or len(Am[0]) != 2:
-        raise ValueError("tmldyn: treatment_history must be n-by-2, got %d-by-%d" % (len(Am), len(Am[0])))
+        raise ValueError(f"tmldyn: treatment_history must be n-by-2, got {int(len(Am))}-by-{int(len(Am[0]))}")
     A0 = [float(r[0]) for r in Am]
     A1 = [float(r[1]) for r in Am]
     if any(v not in (0.0, 1.0) for v in A0 + A1):
@@ -522,7 +522,7 @@ def tmle_dynamic_regime(
     for a0 in (0.0, 1.0):
         for a1 in (0.0, 1.0):
             v = rule_value_seq(ys, L0, A0, L1, A1, [a0] * n, [[a1] * n, [a1] * n], g0, g1, ridge)
-            static["static_%d%d" % (int(a0), int(a1))] = ymin + rng * v
+            static[f"static_{int(int(a0))}{int(int(a1))}"] = ymin + rng * v
 
     return RichResult(
         payload={

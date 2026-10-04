@@ -102,7 +102,7 @@ def patchify(x, patch_len, stride=None):
     if S < 1:
         raise ValueError("patchT: the stride must be at least 1")
     if L < P:
-        raise ValueError("patchT: the series has %d points but the patch length is %d" % (L, P))
+        raise ValueError(f"patchT: the series has {int(L)} points but the patch length is {int(P)}")
     n = (L - P) // S + 1
     return {
         "patches": [v[i * S : i * S + P] for i in range(n)],

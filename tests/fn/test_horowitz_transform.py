@@ -139,8 +139,7 @@ def test_baseline_hazard_smooths_the_step_function():
 def test_baseline_hazard_handles_censoring_and_validates():
     rng = np.random.default_rng(6)
     n = 300
-    X = np.column_stack([rng.standard_normal(n), rng.standard_normal(n)])
-    beta = np.array([0.4, 0.0])
-    t = rng.exponential(1.0, n)
-    ev = (rng.random(n) > 0.3).astype(float)
-    out = horowitz_baseline_hazard_est
+    np.column_stack([rng.standard_normal(n), rng.standard_normal(n)])
+    np.array([0.4, 0.0])
+    rng.exponential(1.0, n)
+    (rng.random(n) > 0.3).astype(float)

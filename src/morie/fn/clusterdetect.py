@@ -454,10 +454,10 @@ def lawson_waller(cases, expected, exposure, *, conditional: bool = True) -> Ric
     >>> r.U, r.variance
     (1.5, 0.75)
     """
-    O, E, c = _vec(cases), _vec(expected), _vec(exposure)
+    O_, E, c = _vec(cases), _vec(expected), _vec(exposure)
     if conditional:
-        E = [v * ssum(O) / ssum(E) for v in E]
-    U = ssum(ci * (o - e) for ci, o, e in zip(c, O, E))
+        E = [v * ssum(O_) / ssum(E) for v in E]
+    U = ssum(ci * (o - e) for ci, o, e in zip(c, O_, E))
     V = ssum(ci * ci * e for ci, e in zip(c, E))
     if conditional:
         V -= ssum(ci * e for ci, e in zip(c, E)) ** 2 / ssum(E)
@@ -524,19 +524,19 @@ def fixed_circle_scan(
                 if not mem:
                     continue
                 ntest += 1
-                O = ssum(y[j] for j in mem)
+                O_ = ssum(y[j] for j in mem)
                 E = ssum(pp[j] for j in mem) * Y / tp
                 if method == "gam":
-                    pv = 1.0 if O <= 0 else 1 - float(gammaincc(O, E))
+                    pv = 1.0 if O_ <= 0 else 1 - float(gammaincc(O_, E))
                 else:
-                    pv = (1 + sum(1 for s in sims if ssum(s[j] for j in mem) >= O)) / (nsim + 1)
+                    pv = (1 + sum(1 for s in sims if ssum(s[j] for j in mem) >= O_)) / (nsim + 1)
                 if pv <= alpha:
                     out.append(
                         {
                             "center": (cx, cy),
                             "radius": float(r),
                             "members": mem,
-                            "observed": O,
+                            "observed": O_,
                             "expected": E,
                             "pvalue": pv,
                         }

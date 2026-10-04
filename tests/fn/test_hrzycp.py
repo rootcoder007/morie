@@ -37,10 +37,7 @@ def _expected_keys():
 
 def _to_finite_list(val):
     """Convert a scalar or array to a list of floats, checking finiteness."""
-    if hasattr(val, "__len__"):
-        items = [float(v) for v in val]
-    else:
-        items = [float(val)]
+    items = [float(v) for v in val] if hasattr(val, "__len__") else [float(val)]
     for v in items:
         assert math.isfinite(v)
     return items

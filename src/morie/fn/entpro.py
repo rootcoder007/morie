@@ -44,7 +44,9 @@ def entropy_production(
     elif base == np.e:
         log_fn = np.log
     else:
-        log_fn = lambda x: np.log(x) / np.log(base)
+
+        def log_fn(x):
+            return np.log(x) / np.log(base)
 
     H = float(-np.sum(p * log_fn(p)))
 

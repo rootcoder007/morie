@@ -95,7 +95,7 @@ def local_linear(t, y, at, bw, kernel="epan"):
     boundary, where sparse designs put a large share of their points.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r" % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     if bw <= 0:
         raise ValueError("pace: the bandwidth must be positive")
     out = []
@@ -113,7 +113,7 @@ def local_linear(t, y, at, bw, kernel="epan"):
             b1 += w * d * y[i]
         det = s0 * s2 - s1 * s1
         if s0 <= 0.0:
-            raise ValueError("pace: bandwidth %g leaves the point %g with no data" % (bw, t0))
+            raise ValueError(f"pace: bandwidth {bw:g} leaves the point {t0:g} with no data")
         if abs(det) < 1e-12:
             out.append(b0 / s0)  # only one distinct design point
         else:
@@ -133,7 +133,7 @@ def local_linear_2d(s, t, z, at_s, at_t, bw, kernel="epan"):
     hundreds of thousands of raw covariances.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r" % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     if bw <= 0:
         raise ValueError("pace: the bandwidth must be positive")
     # a Gaussian kernel has unbounded support, so its cell radius is
@@ -162,7 +162,7 @@ def local_linear_2d(s, t, z, at_s, at_t, bw, kernel="epan"):
                         W.append(w)
                         Y.append(z[i])
             if not X:
-                raise ValueError("pace: bandwidth %g leaves (%g, %g) with no data" % (bw, sv, tv))
+                raise ValueError(f"pace: bandwidth {bw:g} leaves ({sv:g}, {tv:g}) with no data")
             Xw = [[X[i][a] * W[i] for a in range(3)] for i in range(len(X))]
             XtX = [[sum(Xw[i][a] * X[i][b] for i in range(len(X))) for b in range(3)] for a in range(3)]
             Xty = [sum(Xw[i][a] * Y[i] for i in range(len(X))) for a in range(3)]
@@ -212,17 +212,17 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None, kernel="epan", shr
         ``mean``, ``sigma2``, ``fve``, ``fitted``, ``grid``.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r" % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     ys = [[float(v) for v in row] for row in Y]
     ts = [[float(v) for v in row] for row in argvals]
     n = len(ys)
     if n == 0:
         raise ValueError("pace: no subjects")
     if len(ts) != n:
-        raise ValueError("pace: %d subjects but %d time vectors" % (n, len(ts)))
+        raise ValueError(f"pace: {int(n)} subjects but {int(len(ts))} time vectors")
     for i in range(n):
         if len(ys[i]) != len(ts[i]):
-            raise ValueError("pace: subject %d has %d values and %d times" % (i, len(ys[i]), len(ts[i])))
+            raise ValueError(f"pace: subject {int(i)} has {int(len(ys[i]))} values and {int(len(ts[i]))} times")
     pooled_t = [v for row in ts for v in row]
     pooled_y = [v for row in ys for v in row]
     if len(pooled_t) < 3:

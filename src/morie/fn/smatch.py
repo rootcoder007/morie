@@ -212,11 +212,11 @@ def sample_size(log_ri, r, p_exposed, alpha=0.05, power=0.8):
     if not 0.0 < rr < 1.0:
         raise ValueError(
             "smatch: r must lie strictly in (0, 1), got "
-            "%r -- it is the risk period as a fraction "
-            "of the observation period" % (r,)
+            f"{r!r} -- it is the risk period as a fraction "
+            "of the observation period"
         )
     if not 0.0 < p <= 1.0:
-        raise ValueError("smatch: p_exposed must lie in (0, 1], got %r" % (p_exposed,))
+        raise ValueError(f"smatch: p_exposed must lie in (0, 1], got {p_exposed!r}")
     if not 0.0 < float(alpha) < 1.0:
         raise ValueError("smatch: alpha must lie in (0, 1)")
     if not 0.0 < float(power) < 1.0:
@@ -226,7 +226,7 @@ def sample_size(log_ri, r, p_exposed, alpha=0.05, power=0.8):
     rho = rr * eb / den
     A = 2.0 * (rho * b - math.log(den))
     if A <= _EPS:
-        raise ValueError("smatch: the information A is non-positive (%.3e) -- the design carries no signal here" % A)
+        raise ValueError(f"smatch: the information A is non-positive ({A:.3e}) -- the design carries no signal here")
     B = b * b * rho * (1.0 - rho) / A
     C = 1.0 + (1.0 - p) / (p * den)
     za = k.qnorm(1.0 - float(alpha) / 2.0)

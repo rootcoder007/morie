@@ -72,17 +72,17 @@ def patch_grid(latent_size, patch):
     count essentially untouched -- the axis a parameter count cannot
     see.
     """
-    I, p = int(latent_size), int(patch)
-    if p < 1 or I < 1:
+    I_, p = int(latent_size), int(patch)
+    if p < 1 or I_ < 1:
         raise ValueError("dits16: the latent size and patch must be positive")
-    if I % p != 0:
-        raise ValueError("dits16: the patch %d does not divide the latent size %d" % (p, I))
-    t = (I // p) ** 2
+    if I_ % p != 0:
+        raise ValueError(f"dits16: the patch {int(p)} does not divide the latent size {int(I_)}")
+    t = (I_ // p) ** 2
     return {
         "tokens": t,
-        "grid": I // p,
+        "grid": I_ // p,
         "patch": p,
-        "latent_size": I,
+        "latent_size": I_,
         "note": "the token count scales as 1/p^2, at constant parameters",
     }
 
@@ -128,7 +128,9 @@ def adaln_zero(cond, hidden, W_scale, W_shift, W_alpha, eps=1e-6):
 
     def reg(W):
         if len(W) != d:
-            raise ValueError("dits16: the conditioning projection is mis-sized (%d rows for %d channels)" % (len(W), d))
+            raise ValueError(
+                f"dits16: the conditioning projection is mis-sized ({int(len(W))} rows for {int(d)} channels)"
+            )
         return [sum(W[o][j] * c[j] for j in range(len(c))) for o in range(d)]
 
     m = sum(h) / d
@@ -163,8 +165,8 @@ def scaling_comparison(configs):
     is that three different axes land on the same scale.
     """
     out = []
-    for name, I, p, L, d in configs:
-        t = patch_grid(I, p)["tokens"]
+    for name, I_, p, L, d in configs:
+        t = patch_grid(I_, p)["tokens"]
         g = gflops(t, L, d)
         # per block: attention 4d^2 + MLP 8d^2 + the adaLN-Zero
         # modulation (a d -> 6d projection) 6d^2; omitting the last

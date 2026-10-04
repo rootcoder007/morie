@@ -62,7 +62,7 @@ def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
     if lp.size == 0:
         raise ValueError("need at least one token log-probability.")
     if base not in ("e", "2"):
-        raise ValueError("base must be 'e' or '2', got %r." % base)
+        raise ValueError(f"base must be 'e' or '2', got {base!r}.")
     if base == "2":
         lp = lp * np.log(2.0)
     if np.any(lp > 1e-9):

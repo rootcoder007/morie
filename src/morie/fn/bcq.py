@@ -126,9 +126,9 @@ def bcq(
     """
     tau = float(tau)
     if not 0.0 <= tau <= 1.0:
-        raise ValueError("bcq: tau must lie in [0, 1], got %r" % (tau,))
+        raise ValueError(f"bcq: tau must lie in [0, 1], got {tau!r}")
     if loss not in ("huber", "squared"):
-        raise ValueError("bcq: loss must be 'huber' or 'squared', got %r" % (loss,))
+        raise ValueError(f"bcq: loss must be 'huber' or 'squared', got {loss!r}")
     huber_c = float(huber_c)
     if huber_c <= 0.0:
         raise ValueError("bcq: huber_c must be > 0")
@@ -170,7 +170,7 @@ def bcq(
     for s in S:
         tot = sum(G[(s, a)] for a in A)
         if tot <= 0.0:
-            raise ValueError("bcq: G(.|%r) is all zero" % (s,))
+            raise ValueError(f"bcq: G(.|{s!r}) is all zero")
 
     # eq. 17's constraint set, computed once: the relative threshold
     # depends only on G, not on Q.

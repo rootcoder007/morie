@@ -63,7 +63,7 @@ def bvdecomp(preds, truth, noisevar=0.0):
     rows = [[float(v) for v in r] for r in preds]
     b = len(rows)
     if b < 2:
-        raise ValueError("need at least 2 predictor rows, got %d" % b)
+        raise ValueError(f"need at least 2 predictor rows, got {int(b)}")
     n = len(rows[0])
     if n < 1 or any(len(r) != n for r in rows):
         raise ValueError("all predictor rows must be the same non-zero length")
@@ -347,7 +347,7 @@ def trkassign(posdist, appdist=None, weight=0.5, maxn=8):
     if any(len(r) != nd for r in pos):
         raise ValueError("posdist must be rectangular")
     if nt > int(maxn) or nd > int(maxn):
-        raise ValueError("exhaustive assignment is capped at maxn=%d" % int(maxn))
+        raise ValueError(f"exhaustive assignment is capped at maxn={int(int(maxn))}")
     weight = float(weight)
     if not 0.0 <= weight <= 1.0:
         raise ValueError("weight must lie in [0, 1]")

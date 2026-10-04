@@ -98,7 +98,7 @@ def systematic_resample(weights, u=None, rng=None):
     if u is None:
         u = float(rng.uniform()) if rng is not None else 0.5
     if not 0.0 <= u < 1.0:
-        raise ValueError("prtcl: the offset must lie in [0, 1), got %r" % (u,))
+        raise ValueError(f"prtcl: the offset must lie in [0, 1), got {u!r}")
     idx = []
     cum = w[0]
     j = 0
@@ -137,11 +137,11 @@ def particle_filter(y, n_particles, init, step, loglik, seed=0, resample_thresho
     N = len(obs)
     J = int(n_particles)
     if J < 2:
-        raise ValueError("prtcl: need at least 2 particles, got %d" % J)
+        raise ValueError(f"prtcl: need at least 2 particles, got {int(J)}")
     if N == 0:
         raise ValueError("prtcl: no observations")
     if not 0.0 < resample_threshold <= 1.0:
-        raise ValueError("prtcl: resample_threshold must be in (0, 1], got %r" % (resample_threshold,))
+        raise ValueError(f"prtcl: resample_threshold must be in (0, 1], got {resample_threshold!r}")
     rng = np.random.default_rng(seed)
     parts = [init(rng) for _ in range(J)]
     ll = 0.0
@@ -151,7 +151,7 @@ def particle_filter(y, n_particles, init, step, loglik, seed=0, resample_thresho
         lw = [loglik(parts[j], obs[n], n) for j in range(J)]
         mx = max(lw)
         if mx == float("-inf"):
-            raise ValueError("prtcl: every particle has zero likelihood at observation %d" % n)
+            raise ValueError(f"prtcl: every particle has zero likelihood at observation {int(n)}")
         w = [math.exp(v - mx) for v in lw]
         tot = sum(w)
         # log mean weight: the one-step predictive density

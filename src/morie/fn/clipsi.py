@@ -48,19 +48,19 @@ def clip_similarity(I_emb, T_emb, tau=0.01):
     Radford et al. (2021), Learning Transferable Visual Models From
     Natural Language Supervision, ICML 139:8748-8763.
     """
-    I = core.mat(I_emb)
+    I_ = core.mat(I_emb)
     T = core.mat(T_emb)
-    n = len(I)
+    n = len(I_)
     if n == 0:
         raise ValueError("empty input: I_emb has no rows")
     if len(T) != n:
         raise ValueError("I_emb and T_emb must have the same number of rows")
-    d = len(I[0])
+    d = len(I_[0])
     if len(T[0]) != d:
         raise ValueError("image and text embeddings must share a dimension")
     if not (tau > 0.0):
         raise ValueError("tau must be strictly positive")
-    In = [l2_normalize(r) for r in I]
+    In = [l2_normalize(r) for r in I_]
     Tn = [l2_normalize(r) for r in T]
     cos = [[sum(In[i][k] * Tn[j][k] for k in range(d)) for j in range(n)] for i in range(n)]
     logits = [[cos[i][j] / tau for j in range(n)] for i in range(n)]

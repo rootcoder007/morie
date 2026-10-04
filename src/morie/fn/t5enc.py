@@ -76,7 +76,7 @@ def task_prefix(task, text):
         raise ValueError(
             "t5enc: the task prefix cannot be empty -- the model has no other signal of which job it is doing"
         )
-    return "%s: %s" % (t, str(text))
+    return f"{t}: {str(text)}"
 
 
 def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0, sentinel="<extra_id_%d>"):
@@ -90,7 +90,7 @@ def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0, sentinel="<extra_i
     n = len(toks)
     r = float(rate)
     if not 0.0 < r < 1.0:
-        raise ValueError("t5enc: the corruption rate must lie in (0,1), got %r" % (rate,))
+        raise ValueError(f"t5enc: the corruption rate must lie in (0,1), got {rate!r}")
     if float(mean_span) < 1.0:
         raise ValueError("t5enc: the mean span must be at least 1")
     n_corrupt = max(1, int(round(n * r)))

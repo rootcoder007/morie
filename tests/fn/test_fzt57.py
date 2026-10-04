@@ -6,7 +6,7 @@ from morie.fn.fzt57 import fauzi_thm5_7_bdfree_cvm_equiv
 
 def test_fzt57_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     empirical = 0.12
     smoothed = 0.14
     tol = 0.05

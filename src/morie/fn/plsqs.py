@@ -43,7 +43,7 @@ def pls_regression(X, Y, n_components=2):
     if n == 0:
         raise ValueError("plsqs: no observations")
     if len(y) != n:
-        raise ValueError("plsqs: %d rows but %d responses" % (n, len(y)))
+        raise ValueError(f"plsqs: {int(n)} rows but {int(len(y))} responses")
     p = len(Xm[0])
     a = int(n_components)
     if a < 1:

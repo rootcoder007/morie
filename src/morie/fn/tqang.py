@@ -60,7 +60,7 @@ def quantize_angles(theta, bits=4):
     """
     b = int(bits)
     if not (1 <= b <= 30):
-        raise ValueError("quantize_angles: bits must lie in 1..30, got %r" % (bits,))
+        raise ValueError(f"quantize_angles: bits must lie in 1..30, got {bits!r}")
     n_levels = 1 << b
     delta = TWO_PI / n_levels
 

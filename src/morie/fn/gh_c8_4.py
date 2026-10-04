@@ -28,8 +28,8 @@ def ghosal_prior_mass_cnd(p0, eps=0.3, alpha=None, n_sim=4000, seed=42):
         g = [float(rng.gamma(a, 1.0)) for a in alpha]
         p = _bnp.normalize_weights(g)
         lr = [math.log(q / max(pi, 1e-300)) for q, pi in zip(p0, p)]
-        K = sum(q * l for q, l in zip(p0, lr))
-        V = sum(q * max(l - K, 0.0) ** 2 for q, l in zip(p0, lr))
+        K = sum(q * ell for q, ell in zip(p0, lr))
+        V = sum(q * max(ell - K, 0.0) ** 2 for q, ell in zip(p0, lr))
         if eps**2 > K and eps**2 > V:
             hits += 1
     mass = max(hits, 0) / n_sim

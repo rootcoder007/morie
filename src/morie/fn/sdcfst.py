@@ -338,9 +338,9 @@ def semi_doubly_robust_forest(
     113(523), 1228-1242.
     """
     if score not in SCORES:
-        raise ValueError("score must be one of %r" % (SCORES,))
+        raise ValueError(f"score must be one of {SCORES!r}")
     if learner not in LEARNERS:
-        raise ValueError("learner must be one of %r" % (LEARNERS,))
+        raise ValueError(f"learner must be one of {LEARNERS!r}")
     yv = [float(v) for v in y]
     dv = [float(v) for v in D]
     Xv = [[float(v) for v in row] for row in X]

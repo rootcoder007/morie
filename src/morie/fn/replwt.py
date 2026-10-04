@@ -95,7 +95,7 @@ def design(weights, strata=None, psu=None):
     h = ["1"] * n if strata is None else [str(x) for x in strata]
     p = [str(i) for i in range(n)] if psu is None else [str(x) for x in psu]
     if len(h) != n or len(p) != n:
-        raise ValueError("replwt: strata and psu must have one entry per unit (%d)" % n)
+        raise ValueError(f"replwt: strata and psu must have one entry per unit ({int(n)})")
     order, groups = [], {}
     for i in range(n):
         key = (h[i], p[i])
@@ -109,7 +109,7 @@ def design(weights, strata=None, psu=None):
     for hh, ps in by_stratum.items():
         if len(ps) < 2:
             raise ValueError(
-                "replwt: stratum %r has a single PSU, so its contribution to the variance is not estimable" % hh
+                f"replwt: stratum {hh!r} has a single PSU, so its contribution to the variance is not estimable"
             )
     return {
         "weights": w,
@@ -131,7 +131,9 @@ def hadamard(order):
     """
     k = int(order)
     if k < 1 or (k & (k - 1)) != 0:
-        raise ValueError("replwt: this construction gives Hadamard matrices of order a power of two; %d is not one" % k)
+        raise ValueError(
+            f"replwt: this construction gives Hadamard matrices of order a power of two; {int(k)} is not one"
+        )
     H = [[1]]
     while len(H) < k:
         H = [r + r for r in H] + [r + [-v for v in r] for r in H]
@@ -150,7 +152,7 @@ def _psu_totals(d, values):
 def jackknife_weights(d, method="jkn"):
     r"""One replicate per PSU: drop it, inflate its stratum."""
     if method not in ("jk1", "jkn"):
-        raise ValueError("replwt: jackknife method must be jk1 or jkn, got %r" % method)
+        raise ValueError(f"replwt: jackknife method must be jk1 or jkn, got {method!r}")
     reps, drop = [], []
     if method == "jk1":
         m = len(d["psu_order"])
@@ -193,12 +195,14 @@ def brr_weights(d, fay=0.0):
     """
     rho = float(fay)
     if not 0.0 <= rho < 1.0:
-        raise ValueError("replwt: Fay's rho must lie in [0, 1), got %g" % rho)
+        raise ValueError(f"replwt: Fay's rho must lie in [0, 1), got {rho:g}")
     strata = d["stratum_order"]
     for hh in strata:
         if len(d["stratum_psus"][hh]) != 2:
             raise ValueError(
-                "replwt: BRR needs exactly two PSUs per stratum; stratum %r has %d" % (hh, len(d["stratum_psus"][hh]))
+                "replwt: BRR needs exactly two PSUs per stratum; stratum {!r} has {}".format(
+                    hh, int(len(d["stratum_psus"][hh]))
+                )
             )
     H = len(strata)
     R = 1
@@ -290,7 +294,7 @@ def replicate_variance(estimator, d, rep, values=None):
 def replicate_weights(d, method="jkn", R=200, fay=0.0, seed=1):
     r"""Entry point: build a replicate-weight set for a design."""
     if method not in METHODS:
-        raise ValueError("replwt: method must be one of %s, got %r" % (", ".join(METHODS), method))
+        raise ValueError("replwt: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     if method in ("jk1", "jkn"):
         rep = jackknife_weights(d, method)
     elif method == "brr":

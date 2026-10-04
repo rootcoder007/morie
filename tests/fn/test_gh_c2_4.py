@@ -22,7 +22,10 @@ def test_gh_c2_4_edge():
     assert "normalizer" in result
     # Independent computation of the trapezoidal normalizer.
     xs = [1.0, 2.0]
-    psi = lambda t: math.sin(3.0 * t)
+
+    def psi(t):
+        return math.sin(3.0 * t)
+
     e0 = math.exp(psi(xs[0]))
     e1 = math.exp(psi(xs[1]))
     expected_Z = 0.5 * (e0 + e1) * (xs[1] - xs[0])

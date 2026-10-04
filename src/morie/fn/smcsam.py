@@ -296,10 +296,7 @@ def smcsam(
     for n in range(1, len(phis)):
         prev, cur = phis[n - 1], phis[n]
         # incremental weights BEFORE the move (equation 31)
-        if weight_rule == "mcmc":
-            inc = [log_gamma(X[i], cur) - log_gamma(X[i], prev) for i in range(N)]
-        else:
-            inc = None
+        inc = [log_gamma(X[i], cur) - log_gamma(X[i], prev) for i in range(N)] if weight_rule == "mcmc" else None
         if inc is not None:
             mx = max(inc)
             wprev = [math.exp(v) for v in [lw - max(logW) for lw in logW]]

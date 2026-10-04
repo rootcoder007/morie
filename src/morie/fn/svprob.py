@@ -101,7 +101,7 @@ def vote_probability(
             if isinstance(voters[0], (int, float))
             else [[float(t) for t in r] for r in voters]
         )
-        for i, row in enumerate(U):
+        for _i, row in enumerate(U):
             s = float(scale)
             if ideal_cov is not None:
                 if model != "quadratic" or link != "normal":

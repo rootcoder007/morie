@@ -7,8 +7,13 @@ from morie.fn.cvxadm import boyd_admm
 def test_cvxadm_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
-    f = lambda v, r: v
-    g = lambda v, r: v
+
+    def f(v, r):
+        return v
+
+    def g(v, r):
+        return v
+
     A = rng.normal(0, 1, (10, 10))
     B = rng.normal(0, 1, (10, 10))
     c = rng.normal(0, 1, 10)
@@ -28,8 +33,13 @@ def test_cvxadm_basic():
 def test_cvxadm_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
-    f = lambda v, r: v
-    g = lambda v, r: v
+
+    def f(v, r):
+        return v
+
+    def g(v, r):
+        return v
+
     A = rng.normal(0, 1, (10, 10))
     B = rng.normal(0, 1, (10, 10))
     c = rng.normal(0, 1, 10)

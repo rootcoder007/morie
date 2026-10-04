@@ -38,7 +38,9 @@ def test_the_index_names_which_candidate_was_preferred():
 
 
 def test_a_zero_margin_costs_log_two():
-    flat = lambda x, y: 1.0
+    def flat(x, y):
+        return 1.0
+
     res = kamath_ch5_reward_loss_pairwise(flat, ["q"], ["a"], ["b"], [0])
     assert res["estimate"] == pytest.approx(math.log(2.0), rel=1e-12)
 

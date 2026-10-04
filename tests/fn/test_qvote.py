@@ -5,19 +5,19 @@ from morie.fn.qvote import qvote
 
 
 def test_qvote_basic():
-    I = np.array([[10, -5, 1], [1, 10, -5]])
-    r = qvote(I)
+    I_ = np.array([[10, -5, 1], [1, 10, -5]])
+    r = qvote(I_)
     assert "outcomes" in r.value
     assert len(r.value["outcomes"]) == 3
 
 
 def test_qvote_unanimous():
-    I = np.array([[10, 10], [10, 10]])
-    r = qvote(I)
+    I_ = np.array([[10, 10], [10, 10]])
+    r = qvote(I_)
     assert all(r.value["outcomes"] == 1)
 
 
 def test_qvote_budget():
-    I = np.array([[1, -1]])
-    r = qvote(I, budget=50.0)
+    I_ = np.array([[1, -1]])
+    r = qvote(I_, budget=50.0)
     assert r.extra["budget"] == 50.0

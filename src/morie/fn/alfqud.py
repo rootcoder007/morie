@@ -209,7 +209,7 @@ def sort_action_space(n_mem, n_reg):
 
 def program_text(program):
     """A program as one readable line per instruction."""
-    return "\n".join("%s %s%d %s%d" % (i[0], i[1][0], i[1][1], i[2][0], i[2][1]) for i in program)
+    return "\n".join(f"{i[0]} {i[1][0]}{int(i[1][1])} {i[2][0]}{int(i[2][1])}" for i in program)
 
 
 def _score(program, inputs, targets, n_reg, latency_weight, reward_fn):

@@ -154,7 +154,7 @@ def ears_detect(counts, method="C2", threshold=3.0, sigma_floor=1.0):
     an unformed statistic is not a zero.
     """
     if method not in _METHODS:
-        raise ValueError("surepi: method must be one of %s, got %r" % (", ".join(_METHODS), method))
+        raise ValueError("surepi: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     cv = [float(v) for v in k.vec(counts)]
     if any(v < 0.0 for v in cv):
         raise ValueError("surepi: counts must be non-negative")
@@ -165,7 +165,7 @@ def ears_detect(counts, method="C2", threshold=3.0, sigma_floor=1.0):
     lag, width = _WINDOWS[method]
     need = lag + width - 1
     if len(cv) <= need:
-        raise ValueError("surepi: %s needs more than %d days of history, got %d" % (method, need, len(cv)))
+        raise ValueError(f"surepi: {method} needs more than {int(need)} days of history, got {int(len(cv))}")
     base = _stat(cv, "C2" if method == "C3" else method, sigma_floor)
     if method == "C3":
         stat = []
@@ -214,7 +214,7 @@ def salmonella_cusum(counts, mu0, sigma, k_shift=1.0, decision=0.5, min_count=5)
     sv = [float(sigma)] * n if isinstance(sigma, (int, float)) else [float(v) for v in k.vec(sigma)]
     if not (len(mv) == len(sv) == n):
         raise ValueError(
-            "surepi: mu0 and sigma must be scalars or match the series length (%d, %d, %d)" % (n, len(mv), len(sv))
+            f"surepi: mu0 and sigma must be scalars or match the series length ({int(n)}, {int(len(mv))}, {int(len(sv))})"
         )
     if any(v <= 0.0 for v in sv):
         raise ValueError("surepi: sigma must be positive everywhere")
@@ -248,7 +248,7 @@ def compound_smoothing(values, current, passes=(4, 2, 5, 3), multiplier=2.0):
     v = [float(x) for x in k.vec(values)]
     if len(v) < max(passes) + 2:
         raise ValueError(
-            "surepi: the series is too short for the smoothing passes %s (have %d)" % (list(passes), len(v))
+            f"surepi: the series is too short for the smoothing passes {list(passes)} (have {int(len(v))})"
         )
     s = list(v)
     for w in passes:

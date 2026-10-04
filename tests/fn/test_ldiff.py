@@ -9,8 +9,8 @@ def test_ldiff_basic():
     X = np.random.default_rng(42).normal(0.0, 1.0, 40)
     quasi_ids = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     sensitive = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    l = 5
-    result = l_diversity_check(X, quasi_ids, sensitive, l)
+    ell = 5
+    result = l_diversity_check(X, quasi_ids, sensitive, ell)
     assert isinstance(result, dict)
     assert "estimate" in result or "estimate" in result
 
@@ -20,6 +20,6 @@ def test_ldiff_edge():
     X = np.random.default_rng(42).normal(0.0, 1.0, 40)
     quasi_ids = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     sensitive = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    l = 5
-    result = l_diversity_check(X, quasi_ids, sensitive, l)
+    ell = 5
+    result = l_diversity_check(X, quasi_ids, sensitive, ell)
     assert isinstance(result, dict)

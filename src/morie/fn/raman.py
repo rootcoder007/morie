@@ -39,7 +39,7 @@ def ramanujan_tau(
 
     prod_coeffs = np.zeros(limit + 1)
     prod_coeffs[0] = 1.0
-    for m in range(1, limit + 1):
+    for _m in range(1, limit + 1):
         new = np.zeros(limit + 1)
         for i in range(limit + 1):
             for j in range(limit + 1):

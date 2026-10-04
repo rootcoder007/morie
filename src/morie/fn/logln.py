@@ -37,7 +37,7 @@ def loglinear_model(table: np.ndarray, max_iter: int = 100, tol: float = 1e-8, c
     r, c = T.shape
     row_totals = T.sum(axis=1)
     col_totals = T.sum(axis=0)
-    grand = T.sum()
+    T.sum()
     fitted = np.ones_like(T)
     for _ in range(max_iter):
         fitted *= row_totals[:, None] / np.maximum(fitted.sum(axis=1, keepdims=True), 1e-12)

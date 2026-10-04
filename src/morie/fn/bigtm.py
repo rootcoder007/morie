@@ -121,9 +121,9 @@ def dirichlet_predictive(N_ij, N_j, beta, m):
     n = [float(v) for v in k.vec(N_ij)]
     mm = [float(v) for v in k.vec(m)]
     if len(n) != len(mm):
-        raise ValueError("bigtm: %d counts for %d prior weights" % (len(n), len(mm)))
+        raise ValueError(f"bigtm: {int(len(n))} counts for {int(len(mm))} prior weights")
     if abs(sum(mm) - 1.0) > 1e-9:
-        raise ValueError("bigtm: m must sum to 1, got %.9f" % sum(mm))
+        raise ValueError(f"bigtm: m must sum to 1, got {sum(mm):.9f}")
     b, Nj = float(beta), float(N_j)
     if b <= 0.0:
         raise ValueError("bigtm: beta must be positive")
@@ -171,7 +171,7 @@ def bigram_topic_predictive(N_ijk, N_jk, beta, m, prior=1):
     ``beta`` and ``m`` are the ones for that topic.
     """
     if int(prior) not in _PRIORS:
-        raise ValueError("bigtm: prior must be 1 or 2, got %r" % (prior,))
+        raise ValueError(f"bigtm: prior must be 1 or 2, got {prior!r}")
     n = [float(v) for v in k.vec(N_ijk)]
     mm = [float(v) for v in k.vec(m)]
     b = float(beta)
@@ -206,7 +206,7 @@ def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None, n=None, prior=1,
     not assigned; sampling runs over positions :math:`t \ge 2`.
     """
     if int(prior) not in _PRIORS:
-        raise ValueError("bigtm: prior must be 1 or 2, got %r" % (prior,))
+        raise ValueError(f"bigtm: prior must be 1 or 2, got {prior!r}")
     D = [[int(v) for v in d] for d in docs]
     if not D:
         raise ValueError("bigtm: no documents given")
@@ -214,7 +214,7 @@ def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None, n=None, prior=1,
     if Tn < 1 or Vn < 1:
         raise ValueError("bigtm: T and V must be at least 1")
     if any(v < 0 or v >= Vn for d in D for v in d):
-        raise ValueError("bigtm: a word index is outside the vocabulary of %d" % Vn)
+        raise ValueError(f"bigtm: a word index is outside the vocabulary of {int(Vn)}")
     mm = [1.0 / Vn] * Vn if m is None else [float(v) for v in k.vec(m)]
     nn = [1.0 / Tn] * Tn if n is None else [float(v) for v in k.vec(n)]
     if abs(sum(mm) - 1.0) > 1e-9 or abs(sum(nn) - 1.0) > 1e-9:

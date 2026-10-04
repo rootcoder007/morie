@@ -57,10 +57,7 @@ def years_of_life_lost(
     remaining = np.maximum(le - ages, 0.0)
 
     r = discount_rate
-    if r > 0:
-        yll = np.where(remaining > 0, (1 - np.exp(-r * remaining)) / r, 0.0)
-    else:
-        yll = remaining.copy()
+    yll = np.where(remaining > 0, (1 - np.exp(-r * remaining)) / r, 0.0) if r > 0 else remaining.copy()
 
     if age_weight:
         C = 0.1658

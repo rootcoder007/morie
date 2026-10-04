@@ -98,8 +98,8 @@ def geron_flash_attention_tile(Q, K, V, block_size=2):
     scale = 1.0 / np.sqrt(dk)
 
     m = np.full(Tq, -np.inf)
-    l = np.zeros(Tq)
-    O = np.zeros((Tq, dv))
+    ell = np.zeros(Tq)
+    O_ = np.zeros((Tq, dv))
     n_blocks = 0
     for start in range(0, Tk, bs):
         Kj = Ka[start : start + bs]
@@ -111,29 +111,29 @@ def geron_flash_attention_tile(Q, K, V, block_size=2):
         m_new = np.maximum(m, m_tilde)
         a = np.exp(np.where(np.isfinite(m), m, 0.0) - m_new) * np.isfinite(m)
         b = np.exp(m_tilde - m_new)
-        l_new = a * l + b * l_tilde
-        O = (a[:, None] * l[:, None] * O + b[:, None] * (P @ Vj)) / l_new[:, None]
-        m, l = m_new, l_new
+        l_new = a * ell + b * l_tilde
+        O_ = (a[:, None] * ell[:, None] * O_ + b[:, None] * (P @ Vj)) / l_new[:, None]
+        m, ell = m_new, l_new
         n_blocks += 1
 
     ref = scaled_dot_product_attention(Qa, Ka, Va)
     R = np.asarray(ref["output"], dtype=float)
-    err = float(np.max(np.abs(O - R)))
+    err = float(np.max(np.abs(O_ - R)))
 
     return RichResult(
         title="FlashAttention (tiled)",
         summary_lines=[("Blocks", n_blocks), ("Block size", bs), ("Max abs error vs direct", err)],
         payload={
-            "output": O.tolist(),
+            "output": O_.tolist(),
             "reference_output": R.tolist(),
             "max_abs_error": err,
             "n_blocks": int(n_blocks),
             "row_max": m.tolist(),
-            "row_denominator": l.tolist(),
+            "row_denominator": ell.tolist(),
             "peak_score_elements": int(Tq * min(bs, Tk)),
             "full_score_elements": int(Tq * Tk),
             "block_size": bs,
-            "estimate": O.tolist(),
+            "estimate": O_.tolist(),
             "n": int(Tq),
             "method": _METHOD,
         },

@@ -62,7 +62,7 @@ def kosorok_m_estimator(x, y=None, k=1.345, max_iter=100, tol=1e-10):
             "estimate": float(theta),
             "se": se,
             "n": n,
-            "method": "Huber-M location (k=%.3f) with profiled MAD/0.6745 scale" % k,
+            "method": f"Huber-M location (k={k:.3f}) with profiled MAD/0.6745 scale",
         }
     )
 

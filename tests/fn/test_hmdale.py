@@ -9,7 +9,10 @@ from morie.fn.hmdale import geron_dalle
 def test_hmdale_basic():
     """Test basic functionality."""
     text = [0, 1]
-    model = lambda ctx: np.zeros(2)
+
+    def model(ctx):
+        return np.zeros(2)
+
     result = geron_dalle(text, model, n_image_tokens=4)
     assert isinstance(result, dict)
     for key in (
@@ -35,7 +38,10 @@ def test_hmdale_basic():
 def test_hmdale_edge():
     """Test edge cases with a custom grid shape."""
     text = [0]
-    model = lambda ctx: np.array([0.0, 5.0])
+
+    def model(ctx):
+        return np.array([0.0, 5.0])
+
     result = geron_dalle(text, model, n_image_tokens=6, grid=(2, 3))
     assert isinstance(result, dict)
     assert len(result["image_tokens"]) == 6

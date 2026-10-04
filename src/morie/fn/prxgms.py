@@ -59,7 +59,7 @@ def prox_gradient(
     n = len(x)
     L = float(L)
     if L <= 0.0:
-        raise ValueError("prox_gradient: L must be positive, got %r" % (L,))
+        raise ValueError(f"prox_gradient: L must be positive, got {L!r}")
     y = list(x)
     t = 1.0
     prev = list(x)
@@ -136,7 +136,7 @@ def lasso_fista(A, b, lam, max_iter=500, tol=1e-10, accelerate=True):
     v = [1.0] * p
     L = 1.0
     for _ in range(200):
-        w = g([0.0] * p)
+        g([0.0] * p)
         Av = [sum(Am[i][j] * v[j] for j in range(p)) for i in range(n_rows)]
         u = [sum(Am[i][j] * Av[i] for i in range(n_rows)) for j in range(p)]
         nrm = math.sqrt(sum(t * t for t in u))

@@ -65,11 +65,11 @@ def turboquant_prodqjl_unbiasedness(q, k, m=64, trials=2000, seed=0):
     qv = np.asarray(q, dtype=float).ravel()
     kv = np.asarray(k, dtype=float).ravel()
     if qv.size != kv.size:
-        raise ValueError("q and k must have the same dimension, got %d and %d." % (qv.size, kv.size))
+        raise ValueError(f"q and k must have the same dimension, got {int(qv.size)} and {int(kv.size)}.")
     d = qv.size
     m = int(m)
     if m < 1:
-        raise ValueError("m must be positive, got %d." % m)
+        raise ValueError(f"m must be positive, got {int(m)}.")
     nk = float(np.linalg.norm(kv))
     if nk == 0:
         raise ValueError("k must be non-zero.")

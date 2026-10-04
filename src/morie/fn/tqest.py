@@ -67,15 +67,15 @@ def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None, softmax=True):
     Sm = np.atleast_2d(np.asarray(S, dtype=float))
     m, d = Sm.shape
     if qv.size != d:
-        raise ValueError("q has dimension %d, S expects %d." % (qv.size, d))
+        raise ValueError(f"q has dimension {int(qv.size)}, S expects {int(d)}.")
     K = np.atleast_2d(np.asarray(k_tildes, dtype=float))
     if K.shape[1] != m:
-        raise ValueError("k_tildes has %d columns, S has %d rows." % (K.shape[1], m))
+        raise ValueError(f"k_tildes has {int(K.shape[1])} columns, S has {int(m)} rows.")
     if not np.all(np.isin(K, (-1.0, 1.0))):
         raise ValueError("k_tildes must contain only -1 and +1.")
     nu = np.asarray(norms, dtype=float).ravel()
     if nu.size != K.shape[0]:
-        raise ValueError("norms has %d entries for %d keys." % (nu.size, K.shape[0]))
+        raise ValueError(f"norms has {int(nu.size)} entries for {int(K.shape[0])} keys.")
     sc = 1.0 / np.sqrt(d) if scale is None else float(scale)
 
     Sq = Sm @ qv  # computed once, reused for every key

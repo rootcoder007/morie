@@ -28,8 +28,8 @@ def test_bnsiii_basic():
     """
     n = 100
     rng_y = np.random.default_rng(43)
-    rng_X = np.random.default_rng(42)
-    rng_m = np.random.default_rng(7)
+    np.random.default_rng(42)
+    np.random.default_rng(7)
 
     y, X = _make_intervals(rng_y, n)
     # X must be 1-D of length n, like y.

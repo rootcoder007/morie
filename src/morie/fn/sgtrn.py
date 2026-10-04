@@ -82,10 +82,7 @@ def trans_gaussian_kriging(
     y_hat = w @ Y
     ok_var = w @ g0 + lam[n]
 
-    if transform == "log":
-        z_hat = float(np.exp(y_hat + 0.5 * ok_var))
-    else:
-        z_hat = float(y_hat**2 + max(ok_var, 0.0))
+    z_hat = float(np.exp(y_hat + 0.5 * ok_var)) if transform == "log" else float(y_hat**2 + max(ok_var, 0.0))
 
     return SpatialResult(
         name="trans_gaussian_kriging",

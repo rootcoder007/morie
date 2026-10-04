@@ -88,10 +88,10 @@ def _atoms(x, what):
         if hasattr(r, "tolist"):
             r = r.tolist()
         if not isinstance(r, (list, tuple)) or len(r) != 3:
-            raise ValueError("%s: each atom needs exactly x, y, z" % what)
+            raise ValueError(f"{what}: each atom needs exactly x, y, z")
         out.append([float(v) for v in r])
     if not out:
-        raise ValueError("%s: no atoms" % what)
+        raise ValueError(f"{what}: no atoms")
     return out
 
 
@@ -204,10 +204,7 @@ def af3_sample(
     if T < 1:
         raise ValueError("alfbnp: steps must be at least 1")
 
-    if clean is not None:
-        ref = [_atoms(c, "alfbnp clean") for c in clean]
-    else:
-        ref = None
+    ref = [_atoms(c, "alfbnp clean") for c in clean] if clean is not None else None
 
     if isinstance(sigma_data, str):
         if sigma_data != "fit":
@@ -288,7 +285,7 @@ def af3_sample(
             Xn.append(row)
         Xd = denoise(Xn, t_hat)
         if len(Xd) != n:
-            raise ValueError("alfbnp: the denoiser returned %d atoms, not %d" % (len(Xd), n))
+            raise ValueError(f"alfbnp: the denoiser returned {int(len(Xd))} atoms, not {int(n)}")
         dt = sig[i] - t_hat
         X = [
             [

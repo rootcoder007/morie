@@ -20,16 +20,16 @@ def _phi(v, p):
 
 def _gram(p):
     """Exact Gram matrix int_0^1 phi_k phi_l dv."""
-    return [[1.0 / (k + l + 1.0) - 1.0 / ((k + 1.0) * (l + 1.0)) for l in range(1, p + 1)] for k in range(1, p + 1)]
+    return [[1.0 / (k + ell + 1.0) - 1.0 / ((k + 1.0) * (ell + 1.0)) for ell in range(1, p + 1)] for k in range(1, p + 1)]
 
 
 def _rough(p):
     """Exact int_0^1 phi_k'' phi_l'' dv (zero unless k, l >= 2)."""
     R = [[0.0] * p for _ in range(p)]
     for k in range(1, p + 1):
-        for l in range(1, p + 1):
-            if k >= 2 and l >= 2:
-                R[k - 1][l - 1] = k * (k - 1.0) * l * (l - 1.0) / (k + l - 3.0)
+        for ell in range(1, p + 1):
+            if k >= 2 and ell >= 2:
+                R[k - 1][ell - 1] = k * (k - 1.0) * ell * (ell - 1.0) / (k + ell - 3.0)
     return R
 
 
@@ -159,8 +159,8 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3, link_degree=3
         s = 0.0
         for j in range(d):
             for k in range(p):
-                for l in range(p):
-                    s += c[j][k] * Om[k][l] * c[j][l]
+                for ell in range(p):
+                    s += c[j][k] * Om[k][ell] * c[j][ell]
         return s
 
     def renorm(c):
@@ -215,8 +215,8 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3, link_degree=3
         A2 = [[float(A2[r][s]) for s in range(P)] for r in range(P)]
         for j in range(d):
             for k in range(p):
-                for l in range(p):
-                    A2[j * p + k][j * p + l] += lam * lam * Rm[k][l]
+                for ell in range(p):
+                    A2[j * p + k][j * p + ell] += lam * lam * Rm[k][ell]
         rhs2 = [float(v) for v in (Am.T @ np.asarray(t, dtype=float))]
         sol = core.ridgesolve(A2, rhs2)
         c = renorm([[float(sol[j * p + k]) for k in range(p)] for j in range(d)])

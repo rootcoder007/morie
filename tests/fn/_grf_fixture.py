@@ -41,5 +41,5 @@ def clustered(m, per, seed, icc=2.0):
             x = [rng.standard_normal() for _ in range(2)]
             X.append(x)
             y.append(1.0 * x[0] + u + 0.3 * rng.standard_normal())
-            lab.append("c%02d" % c)
+            lab.append(f"c{int(c):02d}")
     return {"X": X, "y": y, "cluster": lab, "n": len(y), "m": m}

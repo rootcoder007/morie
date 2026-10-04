@@ -92,7 +92,7 @@ def schabenberger_spatial_error_model(x, y, w, n_grid=201, refine=60):
     n = len(yy)
     xx = mat(x, "x")
     if len(xx) != n:
-        raise ValueError("`x` has %d rows but `y` has %d values" % (len(xx), n))
+        raise ValueError(f"`x` has {int(len(xx))} rows but `y` has {int(n)} values")
     k = len(xx[0])
     if n <= k + 1:
         raise ValueError("need n > k + 1 observations")

@@ -61,12 +61,12 @@ def burkov_lm_ch1_dataset_bce(y_hat, y, N=None, eps=1e-12):
     p = np.asarray(y_hat, dtype=float).ravel()
     t = np.asarray(y, dtype=float).ravel()
     if p.size != t.size:
-        raise ValueError("y_hat and y must agree in length, got %d and %d." % (p.size, t.size))
+        raise ValueError(f"y_hat and y must agree in length, got {int(p.size)} and {int(t.size)}.")
     n = p.size
     if n == 0:
         raise ValueError("need at least one example.")
     if N is not None and int(N) != n:
-        raise ValueError("N says %d but the data has %d rows." % (int(N), n))
+        raise ValueError(f"N says {int(int(N))} but the data has {int(n)} rows.")
     if not np.all(np.isin(t, (0.0, 1.0))):
         raise ValueError("y must be binary 0/1.")
     if np.any(p < -1e-9) or np.any(p > 1 + 1e-9):

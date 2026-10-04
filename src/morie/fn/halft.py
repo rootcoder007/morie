@@ -137,7 +137,7 @@ def half_life(smiles=None, Vd=None, Cl=None, route="one_compartment", V1=None, V
     Boxenbaum and Battle (1995) J. Clin. Pharmacol. 35(8), 763-766.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     if Cl is None or float(Cl) <= 0.0:
         raise ValueError("Cl must be positive")
     CL = float(Cl)

@@ -61,10 +61,7 @@ def bpe_tokenizer(x: Iterable[str] | str, num_merges: int = 10):
     RichResult with keys: merges (ordered list of pairs), vocab
     (set of subword tokens), n_merges, n_vocab.
     """
-    if isinstance(x, str):
-        words = x.split()
-    else:
-        words = list(x)
+    words = x.split() if isinstance(x, str) else list(x)
     if not words:
         return RichResult(payload={"merges": [], "vocab": set(), "n_merges": 0, "n_vocab": 0, "method": "BPE"})
 

@@ -269,15 +269,15 @@ def test_kminst_empty_mask_refused():
 def test_kmitc_matches_a_hand_written_infonce():
     from morie.fn.kmitc import kamath_image_text_contrastive
 
-    I = rand_matrix(3, 3, seed=21)
+    I_ = rand_matrix(3, 3, seed=21)
     T = rand_matrix(3, 3, seed=29)
     tau = 0.4
-    In = I / np.linalg.norm(I, axis=1, keepdims=True)
+    In = I_ / np.linalg.norm(I_, axis=1, keepdims=True)
     Tn = T / np.linalg.norm(T, axis=1, keepdims=True)
     S = In @ Tn.T / tau
     rows = np.mean([-math.log(softmax(S[i])[i]) for i in range(3)])
     cols = np.mean([-math.log(softmax(S[:, j])[j]) for j in range(3)])
-    out = kamath_image_text_contrastive(I, T, tau)
+    out = kamath_image_text_contrastive(I_, T, tau)
     assert out["estimate"] == pytest.approx(0.5 * (rows + cols))
 
 
@@ -292,10 +292,10 @@ def test_kmitc_single_pair_refused():
 def test_kmitm_is_a_logistic_head_on_the_concatenation():
     from morie.fn.kmitm import kamath_image_text_matching
 
-    I, T = [0.5, -1.0], [2.0, 0.25]
+    I_, T = [0.5, -1.0], [2.0, 0.25]
     W, b = [1.0, 2.0, -0.5, 4.0], 0.75
-    z = sum(w * v for w, v in zip(W, I + T)) + b
-    out = kamath_image_text_matching(I, T, W, b)
+    z = sum(w * v for w, v in zip(W, I_ + T)) + b
+    out = kamath_image_text_matching(I_, T, W, b)
     assert out["logit"] == pytest.approx(z)
     assert out["estimate"] == pytest.approx(1 / (1 + math.exp(-z)))
     assert out["match"] is (z >= 0)
@@ -952,10 +952,10 @@ def test_kmrlaif_satisfies_the_bradley_terry_stationarity_condition():
     idx = {it: i for i, it in enumerate(items)}
     wins = np.zeros(3)
     counts = np.zeros((3, 3))
-    for w, l in prefs:
+    for w, ell in prefs:
         wins[idx[w]] += 1
-        counts[idx[w], idx[l]] += 1
-        counts[idx[l], idx[w]] += 1
+        counts[idx[w], idx[ell]] += 1
+        counts[idx[ell], idx[w]] += 1
     # MLE first-order condition: w_i == sum_j n_ij p_i / (p_i + p_j).
     for i in range(3):
         rhs = sum(counts[i, j] * p[i] / (p[i] + p[j]) for j in range(3) if j != i)
@@ -975,11 +975,11 @@ def test_kmrmloss_is_invariant_to_a_constant_shift():
     from morie.fn.kmrmloss import kamath_reward_model_training_loss
 
     w = [2.0, -1.0, 0.5]
-    l = [1.0, 0.5, 0.5]
-    base = kamath_reward_model_training_loss(w, l)
-    shifted = kamath_reward_model_training_loss([v + 100 for v in w], [v + 100 for v in l])
+    ell = [1.0, 0.5, 0.5]
+    base = kamath_reward_model_training_loss(w, ell)
+    shifted = kamath_reward_model_training_loss([v + 100 for v in w], [v + 100 for v in ell])
     assert shifted["estimate"] == pytest.approx(base["estimate"])
-    want = np.mean([-math.log(1 / (1 + math.exp(-(a - b)))) for a, b in zip(w, l)])
+    want = np.mean([-math.log(1 / (1 + math.exp(-(a - b)))) for a, b in zip(w, ell)])
     assert base["estimate"] == pytest.approx(want)
     assert base["accuracy"] == pytest.approx(1 / 3)
 

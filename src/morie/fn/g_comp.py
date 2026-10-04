@@ -90,10 +90,7 @@ def estimate_ate_gcomputation(
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
 
-        if outcome_model == "linear":
-            model = LinearRegression()
-        else:
-            model = LogisticRegression(penalty=None, max_iter=500)
+        model = LinearRegression() if outcome_model == "linear" else LogisticRegression(penalty=None, max_iter=500)
 
         model.fit(X_scaled, y)
 

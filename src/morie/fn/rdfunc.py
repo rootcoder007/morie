@@ -95,10 +95,7 @@ def rate_distortion(px, distortion=None, D=0.1, beta_hi=1e4, iters=500):
         tot += v
     p = [v / tot for v in p]
     n = len(p)
-    if distortion is None:
-        Dm = [[0.0 if i == j else 1.0 for j in range(n)] for i in range(n)]
-    else:
-        Dm = k.mat(distortion)
+    Dm = [[0.0 if i == j else 1.0 for j in range(n)] for i in range(n)] if distortion is None else k.mat(distortion)
     lo = 0.0
     hi = float(beta_hi)
     R = d0 = 0.0

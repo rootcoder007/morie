@@ -221,7 +221,7 @@ KERNEL_CONSTANTS = {
 
 def _check_kernel(kernel):
     if kernel not in KERNELS:
-        raise ValueError("andmnh: kernel must be one of %s, got %r" % (sorted(KERNELS), kernel))
+        raise ValueError(f"andmnh: kernel must be one of {sorted(KERNELS)}, got {kernel!r}")
     return KERNELS[kernel], KERNEL_CONSTANTS[kernel]
 
 
@@ -239,7 +239,7 @@ def moment_vectors(e, X):
     e = [float(v) for v in e]
     rows = [[float(v) for v in row] for row in X]
     if len(rows) != len(e):
-        raise ValueError("andmnh: %d residuals but %d regressor rows" % (len(e), len(rows)))
+        raise ValueError(f"andmnh: {int(len(e))} residuals but {int(len(rows))} regressor rows")
     if not rows:
         raise ValueError("andmnh: no observations")
     p = len(rows[0])
@@ -288,7 +288,7 @@ def prewhiten_var(v, order=1, cap=EIGENVALUE_CAP, adjust=True):
     if order == 0:
         return [], rows, np.eye(p)
     if n <= order * p + 1:
-        raise ValueError("andmnh: %d observations cannot fit a VAR(%d) in %d variables" % (n, order, p))
+        raise ValueError(f"andmnh: {int(n)} observations cannot fit a VAR({int(order)}) in {int(p)} variables")
 
     # least squares of V_t on V_{t-1}, ..., V_{t-order}
     y = [rows[t] for t in range(order, n)]
@@ -371,7 +371,7 @@ def alpha_ar1(v, q=2, weights=None):
     else:
         w = [float(x) for x in weights]
         if len(w) != p:
-            raise ValueError("andmnh: %d weights for %d series" % (len(w), p))
+            raise ValueError(f"andmnh: {int(len(w))} weights for {int(p)} series")
     if any(x < 0.0 for x in w) or sum(w) <= 0.0:
         raise ValueError("andmnh: weights must be non-negative and not all zero")
     q = int(q)
@@ -437,7 +437,7 @@ def kernel_hac(v, bandwidth, kernel="qs", n_params=0, n=None):
     p = len(rows[0])
     t = int(n) if n is not None else m
     if t <= n_params:
-        raise ValueError("andmnh: T = %d is not larger than the %d estimated parameters" % (t, n_params))
+        raise ValueError(f"andmnh: T = {int(t)} is not larger than the {int(n_params)} estimated parameters")
     s = float(bandwidth)
     if s <= 0.0:
         raise ValueError("andmnh: bandwidth must be positive")
@@ -577,8 +577,8 @@ def andrews_monahan_hac(
             ),
             "note": (
                 "the VAR is a filter, not a model; its coefficients are "
-                "capped through their SVD at %.2f so that I - sum(A_r) "
-                "stays %.2f away from singular (footnote 4)" % (cap, 1.0 - cap)
+                f"capped through their SVD at {cap:.2f} so that I - sum(A_r) "
+                f"stays {1.0 - cap:.2f} away from singular (footnote 4)"
             ),
         }
     )

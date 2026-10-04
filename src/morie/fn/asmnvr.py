@@ -82,7 +82,7 @@ def de_bruijn_graph(reads, k, multiplicity="set"):
     Returns ``(edges, indeg, outdeg)``.
     """
     if multiplicity not in ("set", "count"):
-        raise ValueError("asmnvr: multiplicity must be 'set' or 'count', got %r" % (multiplicity,))
+        raise ValueError(f"asmnvr: multiplicity must be 'set' or 'count', got {multiplicity!r}")
     k = int(k)
     if k < 2:
         raise ValueError("asmnvr: k must be >= 2 (a k-mer needs a (k-1)-mer prefix and suffix)")
@@ -116,7 +116,7 @@ def de_bruijn_graph(reads, k, multiplicity="set"):
             outdeg.setdefault(w, outdeg.get(w, 0))
             n_kmers += 1
     if n_kmers == 0:
-        raise ValueError("asmnvr: no read is at least k = %d long" % k)
+        raise ValueError(f"asmnvr: no read is at least k = {int(k)} long")
     return edges, indeg, outdeg
 
 

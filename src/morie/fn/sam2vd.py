@@ -137,7 +137,9 @@ def memory_attention(frame_features, bank, current_frame, n_blocks=1, include_po
     for e in bank["prompted"] + bank["recent"]:
         t = temporal_embedding(e, current_frame)
         if len(t["features"]) != len(x):
-            raise ValueError("sam2vd: a memory has width %d but the frame has %d" % (len(t["features"]), len(x)))
+            raise ValueError(
+                "sam2vd: a memory has width {} but the frame has {}".format(int(len(t["features"])), int(len(x)))
+            )
         mem.append(t["features"])
     if include_pointers:
         for p in bank["pointers"]:

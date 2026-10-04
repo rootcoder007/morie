@@ -93,9 +93,9 @@ def lstm_cell(x, h, c, W, b, forget_bias=0.0):
         raise ValueError("netsts: hidden and cell sizes differ")
     inp = list(x) + list(h)
     if len(W) != len(inp):
-        raise ValueError("netsts: W has %d rows for an input of %d" % (len(W), len(inp)))
+        raise ValueError(f"netsts: W has {int(len(W))} rows for an input of {int(len(inp))}")
     if len(b) != 4 * d:
-        raise ValueError("netsts: the bias needs 4*hidden = %d entries, got %d" % (4 * d, len(b)))
+        raise ValueError(f"netsts: the bias needs 4*hidden = {int(4 * d)} entries, got {int(len(b))}")
     z = [sum(inp[i] * W[i][j] for i in range(len(inp))) + b[j] for j in range(4 * d)]
     i_g = [k.sigmoid(z[j]) for j in range(d)]
     f_g = [k.sigmoid(z[d + j] + forget_bias) for j in range(d)]
@@ -129,7 +129,7 @@ def gradient_retention(forget_value, steps):
     """
     f = float(forget_value)
     if not 0.0 <= f <= 1.0:
-        raise ValueError("netsts: the forget value must be in [0, 1], got %r" % (forget_value,))
+        raise ValueError(f"netsts: the forget value must be in [0, 1], got {forget_value!r}")
     return f ** int(steps)
 
 
@@ -142,13 +142,13 @@ def lstm_forecast(y, horizon, hidden=8, n_lags=4, strategy="recursive", forget_b
     instead of feeding predictions back.
     """
     if strategy not in ("recursive", "direct"):
-        raise ValueError("netsts: strategy must be recursive or direct, got %r" % (strategy,))
+        raise ValueError(f"netsts: strategy must be recursive or direct, got {strategy!r}")
     yv = k.vec(y)
     n = len(yv)
     H = int(horizon)
     p = int(n_lags)
     if n < p + H + 4:
-        raise ValueError("netsts: %d observations is too few for %d lags and a horizon of %d" % (n, p, H))
+        raise ValueError(f"netsts: {int(n)} observations is too few for {int(p)} lags and a horizon of {int(H)}")
     zs, mu, sd = standardize(yv)
     d = int(hidden)
     rng = np.random.default_rng(seed)

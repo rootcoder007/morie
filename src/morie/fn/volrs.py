@@ -7,8 +7,8 @@ from ._richresult import RichResult
 __all__ = ["vol_rogers_satchell"]
 
 
-def _ohlc(o, h, l, c):
-    o, h, l, c = (np.asarray(v, dtype=float).ravel() for v in (o, h, l, c))
+def _ohlc(o, h, l, c):  # noqa: E741
+    o, h, l, c = (np.asarray(v, dtype=float).ravel() for v in (o, h, l, c))  # noqa: E741
     n = o.size
     if not (h.size == n and l.size == n and c.size == n):
         raise ValueError("o, h, l, c must have equal length.")
@@ -19,7 +19,7 @@ def _ohlc(o, h, l, c):
     return o, h, l, c
 
 
-def vol_rogers_satchell(o, h, l, c):
+def vol_rogers_satchell(o, h, l, c):  # noqa: E741
     r"""Rogers-Satchell per-bar variance.
 
     .. math:: \hat\sigma^2 = \ln\tfrac{H}{C}\ln\tfrac{H}{O}
@@ -46,7 +46,7 @@ def vol_rogers_satchell(o, h, l, c):
     from high, low and closing prices. *The Annals of Applied
     Probability*, 1(4), 504-512.
     """
-    o, h, l, c = _ohlc(o, h, l, c)
+    o, h, l, c = _ohlc(o, h, l, c)  # noqa: E741
     s2 = np.log(h / c) * np.log(h / o) + np.log(l / c) * np.log(l / o)
     m = float(s2.mean())
     return RichResult(

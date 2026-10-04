@@ -179,7 +179,7 @@ def score_root(f, left, right):
         return None
     for _ in range(200):
         mid = 0.5 * (left + right)
-        if mid == left or mid == right:
+        if mid in (left, right):
             break
         fm = f(mid)
         if fm > 0:

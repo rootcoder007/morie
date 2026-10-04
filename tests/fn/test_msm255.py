@@ -44,7 +44,7 @@ def test_the_first_recorded_loss_is_the_untrained_one():
 
 def test_the_reported_loss_is_the_one_the_last_weights_give():
     res = mvsml_reproducing_kernel_eq_10_17(X, Y, W, eta=0.1, n_iter=5)
-    _, out = res["output"], res["output"]
+    _, _out = res["output"], res["output"]
     assert res["loss"] == pytest.approx(0.5 * (1.0 - res["output"][0][0]) ** 2, rel=1e-9)
     assert res["iterations"] == 5
 

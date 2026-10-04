@@ -73,7 +73,7 @@ def dueling_aggregate(value, advantage, mode="mean"):
     rather than described.
     """
     if mode not in _AGG:
-        raise ValueError("duel: mode must be one of %s, got %r" % (", ".join(_AGG), mode))
+        raise ValueError("duel: mode must be one of {}, got {!r}".format(", ".join(_AGG), mode))
     a = [float(v) for v in advantage]
     if not a:
         raise ValueError("duel: no actions")
@@ -90,7 +90,7 @@ def dueling_aggregate(value, advantage, mode="mean"):
 def dueling_q(values, advantages, mode="mean"):
     """Aggregate a batch of states."""
     if len(values) != len(advantages):
-        raise ValueError("duel: %d values but %d advantage rows" % (len(values), len(advantages)))
+        raise ValueError(f"duel: {int(len(values))} values but {int(len(advantages))} advantage rows")
     return [dueling_aggregate(values[i], advantages[i], mode=mode) for i in range(len(values))]
 
 
@@ -131,7 +131,7 @@ def dueling_step(
     """One dueling + double-Q update's worth of quantities."""
     q = dueling_aggregate(value, advantage, mode=mode)
     if not 0 <= action < len(q):
-        raise ValueError("duel: action %d out of range" % action)
+        raise ValueError(f"duel: action {int(action)} out of range")
     q_next_online = dueling_aggregate(next_value, next_advantage, mode=mode)
     q_next_target = dueling_aggregate(next_target_value, next_target_advantage, mode=mode)
     tgt = double_q_target(reward, gamma, q_next_online, q_next_target, done=done)

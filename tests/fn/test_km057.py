@@ -14,8 +14,12 @@ from morie.fn.km057 import kamath_ch4_lora_obj
 def test_the_lora_objective_is_the_same_sum_as_full_finetuning():
     # Eq 4.3: the SAME token log-probability sum as Eq 4.2, taken over
     # the low-rank parameters instead of every weight
-    theta = lambda x, prefix, y_t: 0.5
-    base = lambda x, prefix, y_t: 0.25
+    def theta(x, prefix, y_t):
+        return 0.5
+
+    def base(x, prefix, y_t):
+        return 0.25
+
     res = kamath_ch4_lora_obj(theta, base, ["x1"], [["a", "b"]])
     assert res["estimate"] == pytest.approx(2.0 * math.log(0.5), rel=1e-12)
 
@@ -23,7 +27,9 @@ def test_the_lora_objective_is_the_same_sum_as_full_finetuning():
 def test_the_frozen_base_does_not_enter_the_objective():
     # only the adapted model scores the tokens; the base is carried for
     # reference, so changing it must not move the objective
-    theta = lambda x, prefix, y_t: 0.5
+    def theta(x, prefix, y_t):
+        return 0.5
+
     a = kamath_ch4_lora_obj(theta, lambda *_: 0.1, ["x1"], [["a", "b"]])["estimate"]
     b = kamath_ch4_lora_obj(theta, lambda *_: 0.9, ["x1"], [["a", "b"]])["estimate"]
     assert a == pytest.approx(b, rel=1e-12)

@@ -125,7 +125,7 @@ def ligand_efficiency(kd, hac, route="rt", temperature=T_STANDARD):
                at 298.15 K and drifts from it elsewhere.
     """
     if route not in ENERGY_ROUTES:
-        raise ValueError("route must be one of %r" % (ENERGY_ROUTES,))
+        raise ValueError(f"route must be one of {ENERGY_ROUTES!r}")
     n = float(hac)
     if n <= 0.0:
         raise ValueError("the heavy-atom count must be positive")

@@ -85,7 +85,7 @@ __all__ = ["dreamr", "dreamer", "lambda_return", "imagine", "value_update"]
 def _vec(x, name):
     v = [float(t) for t in np.atleast_1d(np.asarray(x, dtype=float))]
     if not v:
-        raise ValueError("dreamr: %s must be non-empty" % name)
+        raise ValueError(f"dreamr: {name} must be non-empty")
     return v
 
 
@@ -103,7 +103,7 @@ def imagine(state, action_model, transition, reward_model, horizon, value_model=
         raise ValueError("dreamr: horizon must be >= 1")
     for fn, name in ((action_model, "action_model"), (transition, "transition"), (reward_model, "reward_model")):
         if not callable(fn):
-            raise TypeError("dreamr: %s must be callable" % name)
+            raise TypeError(f"dreamr: {name} must be callable")
     states = [state]
     actions = []
     rewards = []
@@ -161,12 +161,12 @@ def lambda_return(rewards, values, gamma=0.99, lam=0.95, estimator="lambda", k=1
     Hafner, Lillicrap, Ba & Norouzi (2020) arXiv:1912.01603, eqs. 4-6.
     """
     if estimator not in ("lambda", "k-step", "reward"):
-        raise ValueError("dreamr: estimator must be 'lambda', 'k-step' or 'reward', got %r" % (estimator,))
+        raise ValueError(f"dreamr: estimator must be 'lambda', 'k-step' or 'reward', got {estimator!r}")
     r = _vec(rewards, "rewards")
     H = len(r)
     v = _vec(values, "values")
     if len(v) != H + 1:
-        raise ValueError("dreamr: values must have one more entry than rewards (got %d and %d)" % (len(v), H))
+        raise ValueError(f"dreamr: values must have one more entry than rewards (got {int(len(v))} and {int(H)})")
     gamma = float(gamma)
     lam = float(lam)
     if not 0.0 <= lam <= 1.0:
@@ -209,7 +209,7 @@ def _pack(vals, name):
             "estimate": vals,
             "returns": vals,
             "n": len(vals),
-            "method": "Dreamer %s (Hafner et al. 2020)" % name,
+            "method": f"Dreamer {name} (Hafner et al. 2020)",
         }
     )
 

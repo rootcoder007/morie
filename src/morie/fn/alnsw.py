@@ -89,14 +89,14 @@ def smith_waterman(seq1, seq2, sub_matrix=None, gap=1.0):
         for j in range(1, m + 1):
             d = H[i - 1][j - 1] + s(a[i - 1], b[j - 1])
             u = H[i - 1][j] - g
-            l = H[i][j - 1] - g
+            ell = H[i][j - 1] - g
             v = 0.0
             if d > v:
                 v = d
             if u > v:
                 v = u
-            if l > v:
-                v = l
+            if ell > v:
+                v = ell
             H[i][j] = v
             if v > best:
                 best = v

@@ -27,16 +27,16 @@ def _to_float_symmetric(rng, J):
 def test_bmtme_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(43)
-    I = 2
+    I_ = 2
     J = 5
     n_T = 2
-    N = I * J
+    N = I_ * J
 
     Y = _to_float_matrix(rng, N, n_T)
     G = _to_float_symmetric(rng, J)
 
     n_iter = 10
-    result = bmtme_model(Y, G, I, n_iter=n_iter)
+    result = bmtme_model(Y, G, I_, n_iter=n_iter)
 
     assert isinstance(result, dict)
     expected_keys = (
@@ -62,16 +62,16 @@ def test_bmtme_basic():
 def test_bmtme_edge():
     """Test with a small but valid configuration."""
     rng = np.random.default_rng(43)
-    I = 2
+    I_ = 2
     J = 3
     n_T = 1
-    N = I * J
+    N = I_ * J
 
     Y = _to_float_matrix(rng, N, n_T)
     G = _to_float_symmetric(rng, J)
 
     n_iter = 5
-    result = bmtme_model(Y, G, I, n_iter=n_iter)
+    result = bmtme_model(Y, G, I_, n_iter=n_iter)
 
     assert isinstance(result, dict)
     expected_keys = (

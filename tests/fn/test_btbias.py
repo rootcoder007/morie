@@ -16,7 +16,6 @@ def test_btbias_basic():
     """
     rng = np.random.default_rng(42)
     n = 100
-    sigma2 = 1.0
 
     # Original sample variance (MLE, biased by -sigma^2/n).
     x = rng.normal(0, 1, n)

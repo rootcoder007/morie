@@ -9,7 +9,10 @@ from morie.fn.hmrad import geron_reverse_autodiff
 
 def test_hmrad_basic():
     """Test basic functionality."""
-    f = lambda v: v[0] * v[1]
+
+    def f(v):
+        return v[0] * v[1]
+
     x = [3.0, 4.0]
     result = geron_reverse_autodiff(f, x)
     assert isinstance(result, dict)
@@ -28,7 +31,10 @@ def test_hmrad_basic():
 
 def test_hmrad_edge():
     """Test edge cases."""
-    f = lambda v: v[0].tanh() ** 2
+
+    def f(v):
+        return v[0].tanh() ** 2
+
     x = [0.0]
     result = geron_reverse_autodiff(f, x)
     assert isinstance(result, dict)

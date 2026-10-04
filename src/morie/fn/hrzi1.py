@@ -68,10 +68,7 @@ def horowitz_index_model(x, y, bandwidth=None):
     # OLS warm start
     beta0, *_ = np.linalg.lstsq(X, y, rcond=None)
     nrm = np.linalg.norm(beta0)
-    if nrm < 1e-10:
-        beta0 = np.ones(p) / np.sqrt(p)
-    else:
-        beta0 = beta0 / nrm
+    beta0 = np.ones(p) / np.sqrt(p) if nrm < 1e-10 else beta0 / nrm
     # Sign normalisation: leading coefficient positive
     if beta0[0] < 0:
         beta0 = -beta0

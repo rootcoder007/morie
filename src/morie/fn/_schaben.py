@@ -80,9 +80,9 @@ def pair_differences(coords, z):
     if P.shape[0] != n:
         P = P.T
     if P.shape[0] != n:
-        raise ValueError("coords has %d rows for %d values." % (P.shape[0], n))
+        raise ValueError(f"coords has {int(P.shape[0])} rows for {int(n)} values.")
     if n < 2:
-        raise ValueError("need at least 2 locations, got %d." % n)
+        raise ValueError(f"need at least 2 locations, got {int(n)}.")
     i, j = np.triu_indices(n, k=1)
     h = np.sqrt(np.sum((P[i] - P[j]) ** 2, axis=1))
     return h, zz[i] - zz[j]
@@ -108,10 +108,10 @@ def lag_bins(h, bins=None, cutoff=None, tol=None):
     else:
         k = 15 if bins is None else int(bins)
         if k < 1:
-            raise ValueError("need at least 1 lag class, got %d." % k)
+            raise ValueError(f"need at least 1 lag class, got {int(k)}.")
         top = float(np.max(h)) / 2.0 if cutoff is None else float(cutoff)
         if top <= 0:
-            raise ValueError("cutoff must be positive, got %r." % cutoff)
+            raise ValueError(f"cutoff must be positive, got {cutoff!r}.")
         edges = np.linspace(0.0, top, k + 1)
     idx = np.digitize(h, edges[1:-1], right=True)
     inside = (h > edges[0] - 1e-12) & (h <= edges[-1] + 1e-12)
@@ -206,7 +206,7 @@ def variogram_model(h, model, nugget, psill, rng):
     with the scale parameter rescales every fitted range by 3.
     """
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     h = np.asarray(h, dtype=float)
     a = max(float(rng), 1e-12)
     if model == "exponential":
@@ -299,7 +299,7 @@ def fit_variogram_wls(centres, gam, npair, model="exponential", weights="cressie
     ok = np.isfinite(gam) & (npair > 0)
     centres, gam, npair = centres[ok], gam[ok], npair[ok]
     if centres.size < 3:
-        raise ValueError("need at least 3 usable lag classes to fit 3 parameters, got %d." % centres.size)
+        raise ValueError(f"need at least 3 usable lag classes to fit 3 parameters, got {int(centres.size)}.")
     theta = _start(centres, gam)
     w = np.ones_like(gam) if weights == "ols" else None
     prev = None
@@ -417,11 +417,11 @@ def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e
         "diverged_note": (
             None
             if not diverged
-            else "the fitted range (%.3g) exceeds ten times the largest "
-            "separation in the data (%.3g), which means no bounded sill was "
+            else f"the fitted range ({theta[2]:.3g}) exceeds ten times the largest "
+            f"separation in the data ({hmax:.3g}), which means no bounded sill was "
             "found; the usual cause is a trend in the mean, whose squared "
             "difference is added to the semivariance by equation (5.35). "
-            "Detrend first, or fit the 'linear' model." % (theta[2], hmax)
+            "Detrend first, or fit the 'linear' model."
         ),
     }
 

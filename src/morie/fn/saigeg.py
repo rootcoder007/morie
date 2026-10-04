@@ -118,7 +118,7 @@ def score_statistic(y, G, mu):
     mv = [float(v) for v in k.vec(mu)]
     n = len(yv)
     if not (len(gv) == len(mv) == n):
-        raise ValueError("saigeg: y, G and mu must agree in length (%d, %d, %d)" % (n, len(gv), len(mv)))
+        raise ValueError(f"saigeg: y, G and mu must agree in length ({int(n)}, {int(len(gv))}, {int(len(mv))})")
     if any(not 0.0 < v < 1.0 for v in mv):
         raise ValueError("saigeg: fitted means must lie strictly in (0, 1)")
     s = sum(gv[i] * (yv[i] - mv[i]) for i in range(n))
@@ -148,7 +148,7 @@ def cgf(t, G, mu, order=0):
         e = math.exp(gt)
         d = 1.0 - mv[i] + mv[i] * e
         if d <= _EPS:
-            raise ValueError("saigeg: the CGF diverged at t = %r" % (t,))
+            raise ValueError(f"saigeg: the CGF diverged at t = {t!r}")
         if order == 0:
             tot += math.log(d) - gv[i] * float(t) * mv[i]
         elif order == 1:
@@ -166,7 +166,7 @@ def _solve_saddle(s, G, mu, lo=-50.0, hi=50.0, tol=1e-11, iters=200):
     fh = cgf(hi, G, mu, 1) - s
     if fl > 0 or fh < 0:
         raise ValueError(
-            "saigeg: the observed score %g lies outside the range K'(t) can reach -- no saddlepoint exists" % s
+            f"saigeg: the observed score {s:g} lies outside the range K'(t) can reach -- no saddlepoint exists"
         )
     for _ in range(int(iters)):
         mid = 0.5 * (lo + hi)
@@ -263,10 +263,10 @@ def saige_test(y, G, X=None, mu=None, ratio=1.0, two_sided=True):
     yv = [float(v) for v in k.vec(y)]
     for v in yv:
         if v not in (0.0, 1.0):
-            raise ValueError("saigeg: the phenotype must be 0/1, got %r" % (v,))
+            raise ValueError(f"saigeg: the phenotype must be 0/1, got {v!r}")
     n_case = int(sum(yv))
     if n_case == 0 or n_case == len(yv):
-        raise ValueError("saigeg: the phenotype has only one class (%d cases of %d)" % (n_case, len(yv)))
+        raise ValueError(f"saigeg: the phenotype has only one class ({int(n_case)} cases of {int(len(yv))})")
     if mu is None:
         mu, _ = _fit_null(yv, X if X is not None else [[] for _ in yv])
     st = score_statistic(yv, G, mu)

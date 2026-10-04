@@ -53,13 +53,13 @@ def fgreg(
 
     is_cause = (event == cause).astype(float)
     is_competing = ((event > 0) & (event != cause)).astype(float)
-    is_censored = (event == 0).astype(float)
+    (event == 0).astype(float)
 
     order = np.argsort(-time)
-    t_s = time[order]
-    cause_s = is_cause[order]
-    comp_s = is_competing[order]
-    X_s = X[order]
+    time[order]
+    is_cause[order]
+    is_competing[order]
+    X[order]
 
     from .km import kaplan_meier
 

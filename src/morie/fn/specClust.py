@@ -73,7 +73,7 @@ def spectral_clustering(a, k=2):
     deg = [fsum(row) for row in w]
     for i in range(n):
         if deg[i] <= 0:
-            raise ValueError("node %d has degree 0; an isolated node belongs to no cluster" % i)
+            raise ValueError(f"node {int(i)} has degree 0; an isolated node belongs to no cluster")
     ds = [1.0 / sqrt(t) for t in deg]
 
     lsym = eye(n)

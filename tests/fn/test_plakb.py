@@ -5,7 +5,7 @@ from morie.fn.plakb import plakb
 
 
 def test_plakb_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = plakb(n_factors=3)
     assert result is not None
     assert hasattr(result, "name")

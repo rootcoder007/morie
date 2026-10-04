@@ -8,7 +8,10 @@ def test_fzchsp_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 100)
-    cdf = lambda t: 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
+    def cdf(t):
+        return 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
     h = 0.3
     result = fauzi_chung_smirnov(x, cdf, h=h)
     assert isinstance(result, dict)
@@ -44,7 +47,10 @@ def test_fzchsp_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 100)
-    cdf = lambda t: 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
+    def cdf(t):
+        return 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
     h = 0.3
     result = fauzi_chung_smirnov(x, cdf, h=h)
     assert isinstance(result, dict)

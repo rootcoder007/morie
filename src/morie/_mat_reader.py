@@ -61,7 +61,7 @@ def _elements(buf):
 def _numeric(mtype, payload):
     fmt, w = _MI[mtype]
     k = len(payload) // w
-    return list(struct.unpack("<%d%s" % (k, fmt), payload[: k * w]))
+    return list(struct.unpack(f"<{int(k)}{fmt}", payload[: k * w]))
 
 
 def _reshape_colmajor(flat, dims):

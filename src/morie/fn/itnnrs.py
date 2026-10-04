@@ -29,7 +29,7 @@ __all__ = ["item_nonresponse"]
 
 
 def _classkey(row):
-    return "|".join("%.12g" % v for v in row)
+    return "|".join(f"{v:.12g}" for v in row)
 
 
 def item_nonresponse(y, R, X, weights=None):

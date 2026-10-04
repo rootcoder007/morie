@@ -94,10 +94,7 @@ def geron_logistic_cost(X, y, theta, add_bias=False):
     cost = float(np.mean(per))
 
     rate = float(np.mean(yy))
-    if 0.0 < rate < 1.0:
-        baseline = float(-(rate * np.log(rate) + (1 - rate) * np.log1p(-rate)))
-    else:
-        baseline = 0.0
+    baseline = float(-(rate * np.log(rate) + (1 - rate) * np.log1p(-rate))) if 0.0 < rate < 1.0 else 0.0
 
     return RichResult(
         title="Logistic log loss",

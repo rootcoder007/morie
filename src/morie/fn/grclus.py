@@ -79,26 +79,25 @@ def _as_graph(A, name="A"):
     """Adjacency matrix or edge list to ``{u: {v: w}}``, symmetric."""
     rows = [list(map(float, r)) for r in np.asarray(A, dtype=float)]
     if not rows:
-        raise ValueError("grclus: %s is empty" % name)
+        raise ValueError(f"grclus: {name} is empty")
     n = len(rows)
     if len(rows[0]) != n:
-        raise ValueError("grclus: %s must be a square adjacency matrix (got %d x %d)" % (name, n, len(rows[0])))
+        raise ValueError(f"grclus: {name} must be a square adjacency matrix (got {int(n)} x {int(len(rows[0]))})")
     adj = [{} for _ in range(n)]
     for i in range(n):
         if len(rows[i]) != n:
-            raise ValueError("grclus: %s is ragged" % name)
+            raise ValueError(f"grclus: {name} is ragged")
         for j in range(n):
             w = rows[i][j]
             if w != w or w in (float("inf"), float("-inf")):
-                raise ValueError("grclus: %s contains a non-finite value" % name)
+                raise ValueError(f"grclus: {name} contains a non-finite value")
             if w < 0:
-                raise ValueError("grclus: edge weights must be non-negative (found %g)" % w)
+                raise ValueError(f"grclus: edge weights must be non-negative (found {w:g})")
             if i == j or w == 0.0:
                 continue
             if abs(w - rows[j][i]) > 1e-9 * max(1.0, abs(w)):
                 raise ValueError(
-                    "grclus: %s must be symmetric; entry "
-                    "(%d, %d) is %g but (%d, %d) is %g" % (name, i, j, w, j, i, rows[j][i])
+                    f"grclus: {name} must be symmetric; entry ({int(i)}, {int(j)}) is {w:g} but ({int(j)}, {int(i)}) is {rows[j][i]:g}"
                 )
             adj[i][j] = w
     return adj
@@ -112,7 +111,7 @@ def edge_cut(A, parts):
     """Total weight of edges whose endpoints are in different parts."""
     adj = A if isinstance(A, list) and A and isinstance(A[0], dict) else _as_graph(A)
     if len(parts) != len(adj):
-        raise ValueError("grclus: the partition has %d entries for %d vertices" % (len(parts), len(adj)))
+        raise ValueError(f"grclus: the partition has {int(len(parts))} entries for {int(len(adj))} vertices")
     cut = 0.0
     for u in range(len(adj)):
         for v, w in adj[u].items():
@@ -300,9 +299,8 @@ def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True, max_pas
                 # never recover: every move is judged by where it lands,
                 # and nothing lands inside.
                 nw0 = w0 - vw[v] if parts[v] == 0 else w0 + vw[v]
-                if not (lo <= nw0 <= hi):
-                    if abs(nw0 - target) >= abs(w0 - target):
-                        continue
+                if not (lo <= nw0 <= hi) and abs(nw0 - target) >= abs(w0 - target):
+                    continue
                 cands.append(v)
             if not cands:
                 break
@@ -399,7 +397,7 @@ def metis_partition(
     if k < 1:
         raise ValueError("grclus: k must be at least 1")
     if k > n:
-        raise ValueError("grclus: k = %d exceeds the %d vertices" % (k, n))
+        raise ValueError(f"grclus: k = {int(k)} exceeds the {int(n)} vertices")
     if matching not in ("hem", "rm", "lem"):
         raise ValueError("grclus: matching must be 'hem', 'rm' or 'lem'")
     if initial not in ("gggp", "ggp"):
@@ -413,7 +411,7 @@ def metis_partition(
     else:
         vw = [float(t) for t in np.atleast_1d(np.asarray(weights, dtype=float))]
         if len(vw) != n:
-            raise ValueError("grclus: weights has %d entries for %d vertices" % (len(vw), n))
+            raise ValueError(f"grclus: weights has {int(len(vw))} entries for {int(n)} vertices")
         if any(t <= 0 for t in vw):
             raise ValueError("grclus: vertex weights must be positive")
 
@@ -466,8 +464,8 @@ def metis_partition(
             "n": n,
             "method": (
                 "multilevel recursive bisection (Karypis & Kumar "
-                "1998): %s matching, %s initial partition, %s "
-                "refinement" % (matching.upper(), initial.upper(), refinement.upper())
+                f"1998): {matching.upper()} matching, {initial.upper()} initial partition, {refinement.upper()} "
+                "refinement"
             ),
             "note": (
                 "edge_cut is the total weight of edges between parts; "

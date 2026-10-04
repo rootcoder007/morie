@@ -145,7 +145,7 @@ def encode_pileup(reads, reference, candidate, width=21, height=100, channels="b
     than presented as the paper's.
     """
     if channels not in CHANNEL_SETS:
-        raise ValueError("varcal: channels must be one of %s, got %r" % (", ".join(CHANNEL_SETS), channels))
+        raise ValueError("varcal: channels must be one of {}, got {!r}".format(", ".join(CHANNEL_SETS), channels))
     if width % 2 == 0:
         raise ValueError("varcal: width must be odd so the candidate sits in the middle column")
     half = width // 2

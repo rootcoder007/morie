@@ -63,8 +63,8 @@ def validity_mtmm(
     hetero_mono = []  # different trait, same method
     hetero_hetero = []  # different trait, different method
 
-    trait_names = list(traits.keys())
-    method_names = list(methods.keys())
+    list(traits.keys())
+    list(methods.keys())
 
     for i, ni in enumerate(names):
         ti, mi = ni.rsplit("_", 1)

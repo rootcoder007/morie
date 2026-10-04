@@ -65,7 +65,7 @@ def manski_bounds(
         n_arm = int(np.sum(arm_mask))
         if n_arm == 0:
             return (float("nan"), float("nan"))
-        n_obs = int(np.sum(obs_arm))
+        int(np.sum(obs_arm))
         n_mis = int(np.sum(mis_arm))
         sum_obs = float(np.sum(Y[obs_arm]))
         # Best case for this arm mean: observed sum + missing * yhi / n_arm (or ylo)

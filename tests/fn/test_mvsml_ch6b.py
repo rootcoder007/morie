@@ -64,19 +64,19 @@ def test_eq_6_10_ridge_form_reproduces_g():
 def test_eq_6_11_bmtme_conditionals_follow_p196():
     Y, Z1, G = _data()
     J = len(G)
-    I = 2
-    Z2 = [[1.0 if i == j else 0.0 for j in range(I * J)] for i in range(J)]
+    I_ = 2
+    Z2 = [[1.0 if i == j else 0.0 for j in range(I_ * J)] for i in range(J)]
     b1 = [[0.1 * (i + 1), -0.05 * (i + 1)] for i in range(J)]
-    b2 = [[0.02 * (i + 1), 0.01 * (i + 1)] for i in range(I * J)]
+    b2 = [[0.02 * (i + 1), 0.01 * (i + 1)] for i in range(I_ * J)]
     Sigma_T = [[1.0, 0.2], [0.2, 1.0]]
     Sigma_E = [[1.0, 0.0], [0.0, 1.0]]
     R = [[1.0, 0.0], [0.0, 1.0]]
     r = mvsml_bayesian_regression_eq_6_11(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, b1=b1, b2=b2)
     # step 5: nu_T + J + IJ degrees of freedom
-    assert abs(r["nu_T_post"] - (4.0 + J + I * J)) < 1e-12
+    assert abs(r["nu_T_post"] - (4.0 + J + I_ * J)) < 1e-12
     # step 6: nu_E + J L
-    assert abs(r["nu_E_post"] - (4.0 + J * I)) < 1e-12
-    for M, k in ((r["scale_T"], 2), (r["scale_E"], I)):
+    assert abs(r["nu_E_post"] - (4.0 + J * I_)) < 1e-12
+    for M, k in ((r["scale_T"], 2), (r["scale_E"], I_)):
         assert len(M) == k
         assert abs(M[0][1] - M[1][0]) < 1e-9
         assert M[0][0] > 0

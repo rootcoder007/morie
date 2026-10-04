@@ -67,7 +67,7 @@ def resolve_acquisition(name):
     """Map a spelling to one of the three rules of Equations 1-3."""
     key = str(name).lower()
     if key not in ACQUISITIONS:
-        raise ValueError("bayoptr: acquisition must be one of %s" % (sorted(ACQUISITIONS),))
+        raise ValueError(f"bayoptr: acquisition must be one of {sorted(ACQUISITIONS)}")
     return ACQUISITIONS[key]
 
 

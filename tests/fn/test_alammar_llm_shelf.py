@@ -231,9 +231,9 @@ def test_mnr_and_simcse_share_the_in_batch_softmax_shape():
 
 
 def test_clip_loss_is_symmetric_and_minimal_on_aligned_towers():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    aligned = alammar_openclip_contrastive(I, I, tau=0.5)
-    swapped = alammar_openclip_contrastive(I, [I[1], I[0]], tau=0.5)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    aligned = alammar_openclip_contrastive(I_, I_, tau=0.5)
+    swapped = alammar_openclip_contrastive(I_, [I_[1], I_[0]], tau=0.5)
     assert aligned["estimate"] < swapped["estimate"]
     assert aligned["image_to_text_loss"] == pytest.approx(aligned["text_to_image_loss"])
 
@@ -526,7 +526,9 @@ def test_continued_pretraining_reports_the_loss_curve():
 
 
 def test_augmented_sbert_measures_gold_agreement():
-    ce = lambda a, b: 1.0 if a == b else 0.0
+    def ce(a, b):
+        return 1.0 if a == b else 0.0
+
     out = alammar_augmented_sbert(
         [("x", "x"), ("x", "y")],
         ce,

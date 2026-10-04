@@ -26,7 +26,7 @@ def test_gh_c11_6_edge():
     """Test edge cases."""
     n_grid, n_sim, seed = 50, 100, 7
     result = ghosal_bm_prior(n_grid=n_grid, n_sim=n_sim, seed=seed)
-    s_idx, t_idx = n_grid // 4, n_grid // 2
+    s_idx, _t_idx = n_grid // 4, n_grid // 2
     theory_min_st = s_idx / n_grid
     est = float(np.asarray(result["estimate"], dtype=float))
     assert result["theory_min_st"] == theory_min_st

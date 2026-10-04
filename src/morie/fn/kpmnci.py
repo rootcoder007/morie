@@ -80,9 +80,9 @@ def km_pointwise_ci(fit, alpha):
             lo.append(float("nan"))
             hi.append(float("nan"))
             continue
-        l = S[j] - z * se[j]
+        ell = S[j] - z * se[j]
         u = S[j] + z * se[j]
-        lo.append(0.0 if l < 0.0 else l)
+        lo.append(0.0 if ell < 0.0 else ell)
         hi.append(1.0 if u > 1.0 else u)
     return RichResult(
         title="Kaplan-Meier pointwise CI (Greenwood)",

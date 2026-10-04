@@ -21,7 +21,7 @@ def _rw(n, seed):
 
 
 def test_adf_rejects_stationary_and_not_random_walk():
-    rng = np.random.default_rng(0)
+    np.random.default_rng(0)
     rej_stat = rej_rw = 0
     for seed in range(8):
         r = np.random.default_rng(seed)

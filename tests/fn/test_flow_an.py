@@ -15,8 +15,13 @@ def layers(seed):
     masks = alternating_masks(D, NL)
     out = []
     for t in range(NL):
-        M = lambda: [[r.standard_normal() * 0.3 for _ in range(D)] for _ in range(D)]
-        b = lambda: [r.standard_normal() * 0.1 for _ in range(D)]
+
+        def M():
+            return [[r.standard_normal() * 0.3 for _ in range(D)] for _ in range(D)]
+
+        def b():
+            return [r.standard_normal() * 0.1 for _ in range(D)]
+
         out.append((masks[t], M(), b(), M(), b()))
     return out
 
@@ -62,7 +67,7 @@ def test_the_log_determinant_matches_the_jacobian(lay):
 
 
 def test_masks_must_alternate_or_channels_are_never_modelled(lay):
-    same = [(alternating_masks(D, 1)[0], l[1], l[2], l[3], l[4]) for l in lay]
+    same = [(alternating_masks(D, 1)[0], ell[1], ell[2], ell[3], ell[4]) for ell in lay]
     z1, _ = flow_forward([1.0, 0.0, 0.0, 0.0], same)
     z2, _ = flow_forward([2.0, 0.0, 0.0, 0.0], same)
     assert z1[0] == pytest.approx(1.0, abs=1e-12)

@@ -44,7 +44,7 @@ def nels(
     if len(time) == 0:
         raise ValueError("Input arrays must not be empty.")
 
-    n = len(time)
+    len(time)
     order = np.argsort(time)
     t_sorted = time[order]
     e_sorted = event[order]

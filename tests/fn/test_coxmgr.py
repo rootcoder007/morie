@@ -59,7 +59,7 @@ def test_coxmgr_basic():
     # Mean-zero under a correct model. Compute the expected mean independently:
     # mean(M) = mean(delta) - mean(Lambda_0(t_i) * exp(x_i' beta)).
     Xb = fit["X"] @ np.asarray([0.8, -0.5])
-    w = np.exp(np.clip(Xb, -500, 500))
+    np.exp(np.clip(Xb, -500, 500))
     # For a synthetic fit with arbitrary cumhaz, we don't have a faithful
     # Lambda_0(t_i) to compare against. So only check that ``mean`` is in
     # the documented payload and is finite.
