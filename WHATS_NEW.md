@@ -9,6 +9,11 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* `morie.fn.ggrcst.granger_causality` and `morie.fn.granci.granger_causality_info` (and the Gaussian
+  `transfer_entropy`) refuse a constant or perfectly predictable response: an exact fit leaves
+  round-off in the residual sum, which passed the old `<= 0` check and returned noise. The values
+  equal the R arm's on every other series.
+
 * **Hawkes fits in seconds instead of tens of minutes.** `fit_hawkes_general` and the TPS functions
   built on it fit in the compiled core: the analytic gradient, projected BFGS from the default start
   and from the exponential fit, and a `method` choosing how the likelihood is evaluated: `"exact"`
