@@ -193,7 +193,8 @@ def test_msm_two_periods_runs_and_weights_stabilised():
     y = 1.0 * (A1 + A2) + L1 + rng.normal(size=n)
     out = marginal_structural_model(y, np.c_[A1, A2], np.c_[L1, L2])
     # stabilised weights average ~1 by construction (measured 1.00)
-    assert out["weights"].mean() == pytest.approx(1.0, abs=0.15)
+    w = list(out["weights"])
+    assert sum(w) / len(w) == pytest.approx(1.0, abs=0.15)
     assert out["estimate"] == pytest.approx(1.0, abs=0.35)  # measured ~1.05
 
 

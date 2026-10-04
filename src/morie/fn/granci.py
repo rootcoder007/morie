@@ -57,8 +57,13 @@ def granger_causality_info(x, y, lag=1):
     Dr, t = _lag_design(y, x, p, include_x=False)
     Du, _ = _lag_design(y, x, p, include_x=True)
     rss_r, rss_u = _rss(Dr, t), _rss(Du, t)
-    if rss_u <= 0:
-        raise ValueError("unrestricted model fits exactly; CMI undefined.")
+    # an exact fit leaves a residual sum at round-off, not at 0: a constant or perfectly predictable
+    # response is caught against its own total sum of squares
+    tl = [float(v) for v in t]
+    mu = sum(tl) / len(tl)
+    tss = sum((v - mu) ** 2 for v in tl)
+    if tss == 0.0 or rss_u <= 1e-12 * tss:
+        raise ValueError("unrestricted model fits exactly (a constant or perfectly predictable series); CMI undefined.")
     mi = 0.5 * np.log(rss_r / rss_u)
     lr = 2.0 * m * mi
     pv = float(stats.chi2.sf(lr, p))

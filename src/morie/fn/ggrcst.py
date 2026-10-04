@@ -78,8 +78,15 @@ def granger_causality(x, y, p=1):
     Dr, t = _lag_design(y, x, p, include_x=False)
     Du, _ = _lag_design(y, x, p, include_x=True)
     rss_r, rss_u = _rss(Dr, t), _rss(Du, t)
-    if rss_u <= 0:
-        raise ValueError("unrestricted model fits exactly; F statistic undefined.")
+    # an exact fit leaves a residual sum at round-off, not at 0: a constant or perfectly predictable
+    # response is caught against its own total sum of squares
+    tl = [float(v) for v in t]
+    mu = sum(tl) / len(tl)
+    tss = sum((v - mu) ** 2 for v in tl)
+    if tss == 0.0 or rss_u <= 1e-12 * tss:
+        raise ValueError(
+            "unrestricted model fits exactly (a constant or perfectly predictable series); F statistic undefined."
+        )
     F = ((rss_r - rss_u) / p) / (rss_u / dof2)
     pv = float(stats.f.sf(F, p, dof2))
 

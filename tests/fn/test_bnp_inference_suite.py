@@ -20,7 +20,7 @@ BNP_MODULES = [
     "dpmix",
     "dpprr",
     "ewens",
-    "gpclf",
+    "gproc",  # gpclf was retired as a duplicate of gproc.gp_classify
     "gphyp",
     "gpkrn",
     "gprgr",

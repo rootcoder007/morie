@@ -26,6 +26,7 @@ def kamath_pass_at_k(n, c, k):
     0.0
     >>> kamath_pass_at_k(10, 10, 3)["estimate"]
     1.0
+    >>> from math import comb
     >>> out = kamath_pass_at_k(4, 1, 2)
     >>> abs(out["estimate"] - (1 - comb(3, 2) / comb(4, 2))) < 1e-12
     True
