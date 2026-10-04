@@ -386,10 +386,10 @@ def fit_hawkes_general(
     """
     auto = method == "auto"
     method = _resolve_method(method, kernel_kind)
-    # Clip events strictly inside [0, T) -- jittered timestamps that land at
-    # or past T break the kernel-CDF integral term (negative^non-integer = NaN).
+    # keep the events in [0, T]: one past T would give the kernel CDF a negative lag; one at T
+    # (the last event, when T is the last event time) is part of the record
     t = np.asarray(t, dtype=float)
-    t = t[(t >= 0.0) & (t < T)]
+    t = t[(t >= 0.0) & (t <= T)]
     n = int(t.size)
     if n < 50:
         raise ValueError(f"too few events ({n}) for non-stationary fit")

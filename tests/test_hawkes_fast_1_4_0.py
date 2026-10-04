@@ -255,12 +255,12 @@ def test_event_times_and_fits_equal_rmories_on_the_same_records():
         [0.1599103928769201, 0.27860113025513866, 0.34419071652363753], rel=1e-12
     )
     ex = H.fit_hawkes_general(t, horizon, "exponential", "constant")
-    assert ex["method"] == "exact"
-    assert ex["theta"] == pytest.approx([-1.922293478697747, 0.6487520011514453, 4.223801901963725], rel=1e-6)
-    assert ex["nll"] == pytest.approx(344.614130477208, rel=1e-8)
+    assert ex["method"] == "exact" and ex["n"] == 300  # the last event, at T, is part of the record
+    assert ex["theta"] == pytest.approx([-1.9229920843209447, 0.6523636308313808, 4.235992308382929], rel=1e-6)
+    assert ex["nll"] == pytest.approx(342.8276118056356, rel=1e-8)
     wb = H.fit_hawkes_general(t, horizon, "weibull", "constant")
     assert wb["method"] == "truncate"
     assert wb["theta"] == pytest.approx(
-        [-1.939719899574386, 0.6555040436347355, 1.3783925046462655, 0.2633894093656961], rel=1e-6
+        [-1.940282186867362, 0.6590628336268858, 1.3760780701481492, 0.26255518901442443], rel=1e-6
     )
-    assert wb["nll"] == pytest.approx(335.84396830466795, rel=1e-8)
+    assert wb["nll"] == pytest.approx(334.0862418399089, rel=1e-8)
