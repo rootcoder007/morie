@@ -1683,6 +1683,23 @@ def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> 
     return df
 
 
+def _r_object_frame(path: Path) -> pd.DataFrame | None:
+    """The data frame in an R object file (an .rds, or an .RData holding exactly one), read natively; else None."""
+    import struct
+
+    from .rds import read_rdata, read_rds
+
+    try:
+        if str(path).lower().endswith(".rds"):
+            obj = read_rds(path)
+            return obj if hasattr(obj, "columns") else None
+        frames = [v for v in read_rdata(path).values() if hasattr(v, "columns")]
+        return frames[0] if len(frames) == 1 else None
+    except (ValueError, OSError, EOFError, IndexError, KeyError, struct.error) as exc:
+        logger.info("%s is not readable as R data here (%s)", path, exc)
+        return None
+
+
 class RObjectSavedError(NotImplementedError):
     """The dataset is an R object (RData/rds): Python cannot open it, but it is saved at ``path`` for R."""
 
@@ -1704,7 +1721,11 @@ def _load_hosted_file(entry: dict, matched: str):
     if not dest.exists():
         dest.parent.mkdir(parents=True, exist_ok=True)
         _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
-    raise RObjectSavedError(matched, dest)
+    # a data frame in it is read natively (no R needed); anything else is saved for R
+    df = _r_object_frame(dest)
+    if df is None:
+        raise RObjectSavedError(matched, dest)
+    return df
 
 
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
@@ -2266,7 +2287,9 @@ def _load_dataset_raw(
         elif entry["format"] == "xlsx":
             df = pd.read_excel(local_path)
         elif str(entry["format"]).lower() in ("rdata", "rda", "rds"):
-            raise RObjectSavedError(matched, local_path)
+            df = _r_object_frame(Path(local_path))
+            if df is None:
+                raise RObjectSavedError(matched, local_path)
         else:
             raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
         try:

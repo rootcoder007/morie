@@ -85,13 +85,12 @@ Usage
 
 .. code-block:: python
 
-   # df is the expanded OTIS placement frame. `morie pull otisexp` (after morie login, GitHub or
-   # --email) saves it as an R object and prints where; write it to CSV once with R:
-   #   Rscript -e 'write.csv(readRDS("PATH/dt_expanded.rds"), "dt_expanded.csv", row.names = FALSE)'
+   # the expanded OTIS placement frame (1.9 million rows; data.rmorie.com, after `morie login`).
+   # It is stored as an R object (.rds); morie reads it natively, no R needed.
    from morie.otis import rplace, astcmb, otdml
-   from morie.dataset import load_dataset
+   from morie.data import load_dataset
 
-   df = load_dataset("dt_expanded.csv")
+   df = load_dataset("otisexp")
 
    # Regional placement by year
    result = rplace(df, year=2024, sex="Male")
