@@ -71,7 +71,7 @@ def geron_lr_exponential(eta0, decay, t):
         raise ValueError(f"geron_lr_exponential: decay must lie in (0, 1], got {decay!r}")
 
     tt = np.asarray(t)
-    scalar = tt.ndim == 0
+    scalar = np.ndim(t) == 0
     tt = np.atleast_1d(tt).astype(float)
     if tt.size == 0:
         raise ValueError("geron_lr_exponential: t is empty")

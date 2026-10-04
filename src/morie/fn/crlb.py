@@ -25,7 +25,7 @@ def cramer_rao_lower_bound(fisher_info, **kwargs) -> DescriptiveResult:
     DescriptiveResult
     """
     fi = np.asarray(fisher_info, dtype=float)
-    if fi.ndim == 0:
+    if np.ndim(fisher_info) == 0:
         if fi == 0:
             raise ValueError("Fisher information must be non-zero.")
         crlb = float(1.0 / fi)

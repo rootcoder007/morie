@@ -223,6 +223,9 @@ morie_cache_dir <- function(subdir = NULL) {
 #' }
 #' @export
 morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
+  if (!is.null(subdir) && (!is.character(subdir) || length(subdir) != 1L || grepl("(^|[/\\\\])\\.\\.([/\\\\]|$)|^([A-Za-z]:)?[/\\\\]|^~", subdir))) {
+    stop("`subdir` must be a folder inside the cache (no \"..\", no absolute path)", call. = FALSE)
+  }
   path <- morie_cache_dir(subdir)
   if (!dir.exists(path)) {
     return(invisible(0L))
@@ -235,7 +238,7 @@ morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
     }
   }
   n_files <- length(list.files(path, recursive = TRUE, full.names = TRUE))
-  unlink(path, recursive = TRUE, force = TRUE)
+  .morie_unlink_owned(path)
   invisible(n_files)
 }
 

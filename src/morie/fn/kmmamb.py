@@ -62,7 +62,7 @@ def kamath_mamba_ssm(x, A, B, C, delta):
     Bm = _per_step(B, T, N, "B")
     Cm = _per_step(C, T, N, "C")
     d = np.asarray(delta, dtype=float)
-    if d.ndim == 0:
+    if np.ndim(delta) == 0:
         d = np.full(T, float(d))
     else:
         d = d.ravel()

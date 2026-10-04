@@ -257,10 +257,12 @@ def test_mann_whitney_exact_p_is_the_exact_two_sided_tail():
     assert r["statistic"] == 1.0
     assert abs(r["p_value"] - want) < 1e-12 and abs(want - 4 / 126) < 1e-12
     c = null_counts(6, 5)
-    r = mwu([0.5, 1.5, 2.5, 3.5, 4.5, 5.5], [1, 2, 3, 6, 7])  # U = 9
-    lower = sum(v for u, v in c.items() if u <= 9) / math.comb(11, 6)
-    upper = sum(v for u, v in c.items() if u >= 9) / math.comb(11, 6)
-    assert r["statistic"] == 9.0 and abs(r["p_value"] - min(1.0, 2 * min(lower, upper))) < 1e-12
+    x, y = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5], [1, 2, 3, 6, 7]
+    u_obs = sum(a > b for a in x for b in y)  # pairs where X is larger: 12
+    r = mwu(x, y)
+    lower = sum(v for u, v in c.items() if u <= u_obs) / math.comb(11, 6)
+    upper = sum(v for u, v in c.items() if u >= u_obs) / math.comb(11, 6)
+    assert r["statistic"] == u_obs and abs(r["p_value"] - min(1.0, 2 * min(lower, upper))) < 1e-12
 
 
 def test_pull_of_a_missing_own_file_says_where_it_goes_and_writes_nothing(monkeypatch, tmp_path, capsys):
@@ -299,6 +301,8 @@ def test_the_tutorial_ends_on_its_last_line(monkeypatch, capsys, tmp_path):
     from morie import tutorial
 
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr("sys.stdin.isatty", lambda: True)  # the tutorial refuses without a terminal
     monkeypatch.setattr(tutorial, "_prompt", lambda: print("<PROMPT>") or "s")
     tutorial.run()
     out = capsys.readouterr().out.rstrip()
@@ -356,11 +360,10 @@ def test_doctor_reports_the_trust_knobs_without_the_interactive_layer(monkeypatc
     monkeypatch.setenv("MORIE_TRUST_CHECKPOINT", "1")
     monkeypatch.setattr(doctor, "_check_morie_version", lambda: (True, "skipped"))
     res = doctor.run_checks()
-    rows = {k: v for k, v in (res.get("checks") or res).items() if str(k).startswith("trust: ")} if isinstance(res, dict) else {}
-    text = repr(res)
-    assert text.count("trust: MORIE_") == 5
-    assert "ENABLED -- when set: convert-checkpoint" in text
-    del rows
+    rows = [c for c in res["checks"] if c["label"].startswith("trust: ")]
+    assert len(rows) == 5
+    detail = {c["label"][len("trust: ") :]: c["detail"] for c in rows}
+    assert detail["MORIE_TRUST_CHECKPOINT"].startswith("ENABLED -- when set: convert-checkpoint")
 
 
 def test_r_install_pins_the_r_arm_to_this_version():
@@ -508,6 +511,9 @@ def _cpads_like_frame(n=300):
                 "heavy_drinking_30d": int(rng.random() < 0.2 + 0.2 * c),
                 "gender": "Male" if g else "Female",
                 "age_group": a,
+                "province_region": rng.choice(["Atlantic", "Quebec", "Ontario", "Prairies", "BC"]),
+                "mental_health": rng.choice(["Good", "Fair", "Poor"]),
+                "physical_health": rng.choice(["Good", "Fair", "Poor"]),
                 "weight": 0.5 + rng.random(),
             }
         )

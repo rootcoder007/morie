@@ -65,7 +65,7 @@ def geron_heaviside_step(z, threshold=0.0):
         raise ValueError(f"threshold must be finite, got {threshold}.")
 
     out = (z_arr >= threshold).astype(float)
-    scalar = z_arr.ndim == 0
+    scalar = np.ndim(z) == 0
 
     return RichResult(
         title="Heaviside step",

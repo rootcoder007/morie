@@ -127,7 +127,7 @@ def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257
     Géron Ch 15
     """
     A = np.asarray(X)
-    if A.ndim == 0 or A.size == 0:
+    if np.ndim(X) == 0 or A.size == 0:
         raise ValueError("geron_decoder_only: X must contain at least one token")
     T = int(A.shape[-1])
     L = int(n_layers)

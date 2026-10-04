@@ -67,7 +67,7 @@ def geron_prelu(z, alpha=0.25, upstream=None):
         raise ValueError("geron_prelu: z contains non-finite values")
     C = a.shape[-1]
     al = np.asarray(alpha, dtype=float)
-    if al.ndim == 0:
+    if np.ndim(alpha) == 0:
         alv = np.full(C, float(al))
         shared = True
     else:

@@ -71,7 +71,7 @@ def geron_learning_rate_schedule(t, eta0, t0):
         )
 
     tt = np.asarray(t)
-    scalar = tt.ndim == 0
+    scalar = np.ndim(t) == 0
     tt = np.atleast_1d(tt).astype(float)
     if tt.size == 0:
         raise ValueError("geron_learning_rate_schedule: t is empty")

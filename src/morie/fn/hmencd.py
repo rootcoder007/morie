@@ -102,7 +102,7 @@ def geron_encoder_decoder_transformer(
     """
     S = np.asarray(src)
     Tg = np.asarray(tgt)
-    if S.ndim == 0 or S.size == 0 or Tg.ndim == 0 or Tg.size == 0:
+    if np.ndim(src) == 0 or S.size == 0 or Tg.ndim == 0 or Tg.size == 0:
         raise ValueError("geron_encoder_decoder_transformer: src and tgt must each contain at least one token")
     Ts, Tt = int(S.shape[-1]), int(Tg.shape[-1])
     L, Hh, d = int(n_layers), int(n_heads), int(d_model)

@@ -76,7 +76,7 @@ def geron_cosine_annealing(t, T, eta_max, eta_min=0.0):
         raise ValueError(f"geron_cosine_annealing: eta_max ({hi}) must be at least eta_min ({lo})")
 
     tt = np.asarray(t)
-    scalar = tt.ndim == 0
+    scalar = np.ndim(t) == 0
     tt = np.atleast_1d(tt).astype(float)
     if tt.size == 0:
         raise ValueError("geron_cosine_annealing: t is empty")
