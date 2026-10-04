@@ -9,6 +9,18 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* **Hawkes fits in seconds instead of tens of minutes.** `fit_hawkes_general` and the TPS functions
+  built on it fit in the compiled core: the analytic gradient, projected BFGS from the default start
+  and from the exponential fit, and a `method` choosing how the likelihood is evaluated: `"exact"`
+  (Ozaki's O(n) recursion for the exponential kernel), `"soe"` (Lomax, and gamma with shape < 1, as
+  sums of exponentials with relative error `eps`; Beylkin & Monzon 2010), `"truncate"` (kernel tail
+  mass below `eps` left out), `"em"` (Veen & Schoenberg 2008) and `"inar"` (Kirchner 2017); `"auto"`
+  is exact for the exponential kernel, truncate for Weibull and soe for Lomax and gamma. The
+  reported `nll` is always the exact likelihood, so AIC compares across routes. The TPS functions
+  fit every event by default (`max_n=None`; a requested subsample is deterministic), the KS p-value
+  is exact up to n = 10,000, and rmorie calls the same C++ routine through rmoriebricklayer, so both
+  arms return the same estimate on the same events.
+
 * **Matching, survey designs and the g-formula agree with the R arm and its references.** `morie.matching.match_full` is exact optimal full matching (a minimum-weight edge cover; it was a quantile-stratification stand-in), `subclassify` and `match_variable_ratio` follow MatchIt's rules (the same subclasses, pairs and weights as R), and `match_nearest_neighbor` is MatchIt's matcher on the logit score: treated units in decreasing score, every one getting its first control before any gets a second, the caliper in the score's sample SD -- so its pairs change (it took treated units in data order). `morie.survey.SurveyDesign` takes clusters, `nest` and a finite-population correction, adds `mean()` with its design SE, keeps rows with a missing covariate in the design, and refuses a stratum with one PSU; estimates and SEs equal R's to 1e-12. `morie.effects.estimate_ate_gcomputation` fits the unpenalised GLM and reports stdReg's sandwich SE (it fitted a penalised model on standardised features with a bootstrap SE), equal to R to 1e-15. The OTIS `match_first` step keeps the same rows as R, and a CIHI workbook's data sheet is the one with the most filled cells, in both arms.
 
 * **Fresh-user test, fourth pass.** McDonald's omega (`morie.psymet.mcdo`) factors by principal axes and takes omega hierarchical from the Schmid-Leiman transformation, so a multi-factor scale no longer reports it near 1 (same numbers as rmorie to 1e-12; reverse-keyed items are scored the other way round first, as psych::omega does, and named in a warning; within 0.01 of psych on the bfi items and hierarchical simulations). The power-design table `power_two_proportion_gender.csv` now carries the same columns as the R route (`n_eq`, `power_srs`, `n_eq_eff`, `power_deff` with Kish's design effect, groups by name, both outcomes). `morie sample --method stratified` writes `.weight`; the sdist no longer ships the placeholder test package; CIHI workbooks pick the sheet that holds data even when an instructions sheet declares a huge range (CIHI 885b); `ingest siu --report-id` reads the report body only and isolates the Director's decision; `list-datasets` shows an own file's path under `$MORIE_DATA_DIR`; `current_locale()` reports the locale in effect and INSTALLATION.md says exactly what is translated.

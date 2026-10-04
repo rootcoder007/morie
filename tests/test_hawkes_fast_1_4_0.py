@@ -219,3 +219,48 @@ def test_frame_fixes_found_on_the_way():
     assert pd.to_datetime(["1/2/2014"], dayfirst=True).tolist()[0].month == 2
     assert pd.Series([1, 2])[[]].tolist() == []
     assert list(pd.DataFrame({"a": [1], "b": [2]})) == ["a", "b"]
+
+
+def test_event_times_and_fits_equal_rmories_on_the_same_records():
+    # the values rmorie returns for these records (tests/testthat/test-tps_hawkes_advanced.R)
+    from morie.fn import _frame_core as pd
+
+    months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
+    ks = range(1, 401)
+    df = pd.DataFrame(
+        {
+            "OCC_YEAR": [2015 + k % 2 for k in ks],
+            "OCC_MONTH": [months[(k * 5) % 12] for k in ks],
+            "OCC_DAY": [1 + (k * 13) % 28 for k in ks],
+        }
+    )
+    t, horizon = H._events_to_days(df, 300)
+    assert t.size == 300
+    assert horizon == pytest.approx(727.3948813285101, rel=1e-12)
+    assert float(t.sum()) == pytest.approx(108783.93019224967, rel=1e-12)
+    assert [float(v) for v in t[:3]] == pytest.approx(
+        [0.1599103928769201, 0.27860113025513866, 0.34419071652363753], rel=1e-12
+    )
+    ex = H.fit_hawkes_general(t, horizon, "exponential", "constant")
+    assert ex["method"] == "exact"
+    assert ex["theta"] == pytest.approx([-1.922293478697747, 0.6487520011514453, 4.223801901963725], rel=1e-6)
+    assert ex["nll"] == pytest.approx(344.614130477208, rel=1e-8)
+    wb = H.fit_hawkes_general(t, horizon, "weibull", "constant")
+    assert wb["method"] == "truncate"
+    assert wb["theta"] == pytest.approx(
+        [-1.939719899574386, 0.6555040436347355, 1.3783925046462655, 0.2633894093656961], rel=1e-6
+    )
+    assert wb["nll"] == pytest.approx(335.84396830466795, rel=1e-8)
