@@ -1,7 +1,6 @@
 """Tests for stacv.spatiotemporal_autocovariance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stacv import spatiotemporal_autocovariance
 
 

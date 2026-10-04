@@ -1,7 +1,5 @@
 """Tests for forsnp.forensic_lr."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.forsnp import forensic_lr
 
 
@@ -27,9 +25,9 @@ def test_forsnp_basic():
     # homozygote -> p^2 ; heterozygote -> 2*p_i*p_j
     p_hom = 0.2
     p_i, p_j = 0.3, 0.1
-    locus1 = p_hom * p_hom           # 0.04
-    locus2 = 2.0 * p_i * p_j         # 0.06
-    expected_rmp = locus1 * locus2   # 0.0024
+    locus1 = p_hom * p_hom  # 0.04
+    locus2 = 2.0 * p_i * p_j  # 0.06
+    expected_rmp = locus1 * locus2  # 0.0024
 
     assert result["n_loci"] == 2
     assert result["theta"] == 0.0
@@ -56,10 +54,7 @@ def test_forsnp_edge():
     #   2 [t + (1-t) p_i][t + (1-t) p_j] / [(1+t)(1+2t)]
     t = theta
     p_i, p_j = 0.3, 0.1
-    expected_locus = (
-        2.0 * (t + (1.0 - t) * p_i) * (t + (1.0 - t) * p_j)
-        / ((1.0 + t) * (1.0 + 2.0 * t))
-    )
+    expected_locus = 2.0 * (t + (1.0 - t) * p_i) * (t + (1.0 - t) * p_j) / ((1.0 + t) * (1.0 + 2.0 * t))
     expected_rmp = expected_locus  # single locus
 
     assert result["n_loci"] == 1

@@ -79,16 +79,18 @@ def hampel_three_part(y, a=2.0, b=4.0, c=8.0):
             nz += 1
         w.append(wi)
         tot += wi
-    return RichResult(payload={
-        "estimate": tot / len(r),
-        "weights": w,
-        "n_zero": nz,
-        "n": len(r),
-        "a": a,
-        "b": b,
-        "c": c,
-        "method": "Hampel three-part redescending weight",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / len(r),
+            "weights": w,
+            "n_zero": nz,
+            "n": len(r),
+            "a": a,
+            "b": b,
+            "c": c,
+            "method": "Hampel three-part redescending weight",
+        }
+    )
 
 
 def cheatsheet():

@@ -114,7 +114,7 @@ def dr_overlap_weighted(y, D, X, ps=None, n_folds=2, seed=0):
         else:
             e_hat[te] = np.asarray(ps, dtype=float).ravel()[te]
         for lvl, out in ((1, mu1), (0, mu0)):
-            m = tr & (D == lvl)
+            m = tr & (lvl == D)
             if m.sum() > A.shape[1]:
                 c = np.linalg.lstsq(A[m], y[m], rcond=None)[0]
                 out[te] = A[te] @ c
@@ -122,9 +122,7 @@ def dr_overlap_weighted(y, D, X, ps=None, n_folds=2, seed=0):
                 out[te] = y[m].mean() if m.any() else y[tr].mean()
     e_hat = np.clip(e_hat, 1e-4, 1 - 1e-4)
     h = e_hat * (1.0 - e_hat)
-    psi = (mu1 - mu0
-           + D * (y - mu1) / e_hat
-           - (1 - D) * (y - mu0) / (1 - e_hat))
+    psi = mu1 - mu0 + D * (y - mu1) / e_hat - (1 - D) * (y - mu0) / (1 - e_hat)
     tot = float(h.sum())
     ate = float(np.sum(h * psi) / tot)
     infl = h * (psi - ate) / (tot / n)
@@ -132,15 +130,19 @@ def dr_overlap_weighted(y, D, X, ps=None, n_folds=2, seed=0):
     return RichResult(
         title="Doubly-robust ATE (overlap-weighted)",
         summary_lines=[("n", n), ("ATE", ate), ("se", se)],
-        warnings=["doubly robust means consistent if EITHER nuisance model is "
-                  "right, not that both may be wrong"],
+        warnings=["doubly robust means consistent if EITHER nuisance model is right, not that both may be wrong"],
         payload={
-            "ate": ate, "se": se,
+            "ate": ate,
+            "se": se,
             "ci": (ate - 1.96 * se, ate + 1.96 * se),
-            "estimand": "ATO (overlap-weighted)", "influence": infl,
-            "propensity": e_hat, "mu1": mu1, "mu0": mu0,
+            "estimand": "ATO (overlap-weighted)",
+            "influence": infl,
+            "propensity": e_hat,
+            "mu1": mu1,
+            "mu0": mu0,
             "max_weight_share": float(h.max() / tot),
-            "n_folds": n_folds, "method": "dr_overlap_weighted",
+            "n_folds": n_folds,
+            "method": "dr_overlap_weighted",
         },
     )
 

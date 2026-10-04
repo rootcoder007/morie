@@ -20,8 +20,7 @@ def _phi(v, p):
 
 def _gram(p):
     """Exact Gram matrix int_0^1 phi_k phi_l dv."""
-    return [[1.0 / (k + l + 1.0) - 1.0 / ((k + 1.0) * (l + 1.0))
-             for l in range(1, p + 1)] for k in range(1, p + 1)]
+    return [[1.0 / (k + l + 1.0) - 1.0 / ((k + 1.0) * (l + 1.0)) for l in range(1, p + 1)] for k in range(1, p + 1)]
 
 
 def _rough(p):
@@ -30,13 +29,11 @@ def _rough(p):
     for k in range(1, p + 1):
         for l in range(1, p + 1):
             if k >= 2 and l >= 2:
-                R[k - 1][l - 1] = (k * (k - 1.0) * l * (l - 1.0)
-                                   / (k + l - 3.0))
+                R[k - 1][l - 1] = k * (k - 1.0) * l * (l - 1.0) / (k + l - 3.0)
     return R
 
 
-def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
-                                   link_degree=3, iters=15):
+def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3, link_degree=3, iters=15):
     r"""Nonparametric additive model with an UNKNOWN link function,
     by penalised least squares.
 
@@ -137,7 +134,8 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
     if d < 2:
         raise ValueError(
             "identification of G and the additive components requires at "
-            f"least two nonconstant components (p. 78); got d = {d}.")
+            f"least two nonconstant components (p. 78); got d = {d}."
+        )
     if n < 6:
         raise ValueError(f"need at least 6 observations, got {n}.")
     p = int(degree)
@@ -151,8 +149,7 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
     if iters < 1:
         raise ValueError(f"iters must be at least 1, got {iters}.")
 
-    U = [[float(t) for t in H.u01([float(X[i][j]) for i in range(n)])]
-         for j in range(d)]
+    U = [[float(t) for t in H.u01([float(X[i][j]) for i in range(n)])] for j in range(d)]
     # B[j][i][k] = phi_k(u_ij)
     B = [[_phi(U[j][i], p) for i in range(n)] for j in range(d)]
     Om = _gram(p)
@@ -170,13 +167,12 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
         s = scale_norm(c)
         if s <= 0:
             raise ValueError(
-                "the additive components collapsed to zero, so the scale "
-                "normalisation (3.26) cannot be imposed.")
-        f = s ** -0.5
+                "the additive components collapsed to zero, so the scale normalisation (3.26) cannot be imposed."
+            )
+        f = s**-0.5
         return [[c[j][k] * f for k in range(p)] for j in range(d)]
 
-    c = renorm([[1.0 if k == 0 else 0.0 for k in range(p)]
-                for j in range(d)])
+    c = renorm([[1.0 if k == 0 else 0.0 for k in range(p)] for j in range(d)])
 
     def index(c):
         nu = [0.0] * n
@@ -199,25 +195,20 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
         for q in range(2, pg + 1):
             for r in range(2, pg + 1):
                 e = q + r - 3
-                Rg[q][r] = (q * (q - 1.0) * r * (r - 1.0)
-                            * (hi ** (e + 1) - lo ** (e + 1)) / (e + 1.0))
+                Rg[q][r] = q * (q - 1.0) * r * (r - 1.0) * (hi ** (e + 1) - lo ** (e + 1)) / (e + 1.0)
         Dm = np.asarray(D, dtype=float)
         A1 = Dm.T @ Dm
-        A1 = np.asarray([[float(A1[q][r]) + lam * lam * Rg[q][r]
-                          for r in range(pg + 1)] for q in range(pg + 1)],
-                        dtype=float)
+        A1 = np.asarray(
+            [[float(A1[q][r]) + lam * lam * Rg[q][r] for r in range(pg + 1)] for q in range(pg + 1)], dtype=float
+        )
         rhs = [float(t) for t in (Dm.T @ np.asarray(y, dtype=float))]
-        a = [float(t) for t in core.ridgesolve(
-            [[float(A1[q][r]) for r in range(pg + 1)] for q in range(pg + 1)],
-            rhs)]
+        a = [float(t) for t in core.ridgesolve([[float(A1[q][r]) for r in range(pg + 1)] for q in range(pg + 1)], rhs)]
 
         # --- m step: linearise G about the current index (Gauss-Newton).
         G0 = [sum(a[q] * nu[i] ** q for q in range(pg + 1)) for i in range(n)]
-        Gp = [sum(q * a[q] * nu[i] ** (q - 1) for q in range(1, pg + 1))
-              for i in range(n)]
+        Gp = [sum(q * a[q] * nu[i] ** (q - 1) for q in range(1, pg + 1)) for i in range(n)]
         t = [float(y[i]) - G0[i] + Gp[i] * nu[i] for i in range(n)]
-        A = [[Gp[i] * B[j][i][k] for j in range(d) for k in range(p)]
-             for i in range(n)]
+        A = [[Gp[i] * B[j][i][k] for j in range(d) for k in range(p)] for i in range(n)]
         Am = np.asarray(A, dtype=float)
         A2 = Am.T @ Am
         P = d * p
@@ -228,13 +219,11 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
                     A2[j * p + k][j * p + l] += lam * lam * Rm[k][l]
         rhs2 = [float(v) for v in (Am.T @ np.asarray(t, dtype=float))]
         sol = core.ridgesolve(A2, rhs2)
-        c = renorm([[float(sol[j * p + k]) for k in range(p)]
-                    for j in range(d)])
+        c = renorm([[float(sol[j * p + k]) for k in range(p)] for j in range(d)])
 
     nu = index(c)
     G_hat = [sum(a[q] * nu[i] ** q for q in range(pg + 1)) for i in range(n)]
-    m_hats = [[sum(c[j][k] * B[j][i][k] for k in range(p)) for i in range(n)]
-              for j in range(d)]
+    m_hats = [[sum(c[j][k] * B[j][i][k] for k in range(p)) for i in range(n)] for j in range(d)]
     rss = 0.0
     for i in range(n):
         rss += (float(y[i]) - G_hat[i]) ** 2
@@ -244,20 +233,22 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3,
     for j in range(d):
         loc += abs(0.0)
 
-    return RichResult(payload={
-        "G_hat": G_hat,
-        "m_j_hats": m_hats,
-        "index": nu,
-        "link_coef": a,
-        "m_coef": c,
-        "loc_norm": loc,
-        "scale_norm": scale_norm(c),
-        "lambda_n": lam,
-        "rss": rss,
-        "n": n,
-        "d": d,
-        "method": "Horowitz (2009) eq. (3.28), Horowitz-Mammen PLS",
-    })
+    return RichResult(
+        payload={
+            "G_hat": G_hat,
+            "m_j_hats": m_hats,
+            "index": nu,
+            "link_coef": a,
+            "m_coef": c,
+            "loc_norm": loc,
+            "scale_norm": scale_norm(c),
+            "lambda_n": lam,
+            "rss": rss,
+            "n": n,
+            "d": d,
+            "method": "Horowitz (2009) eq. (3.28), Horowitz-Mammen PLS",
+        }
+    )
 
 
 def cheatsheet():

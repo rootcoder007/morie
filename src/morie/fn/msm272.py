@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,9 +20,14 @@ def mvsml_convolutional_nn_eq_14_9(t, X_curves, L1=3, L2=5, kind="fourier"):
     where Q collects the inner products int phi_l(t) psi_o(t) dt.
     Each row is x_i = Q c-hat_i. Keys: estimate."""
     d = _gp.fda_design_matrix(t, X_curves, L1, L2, kind=kind)
-    res = RichResult(payload={"estimate": d["X_star"][0][0],
-                              "X_star": d["X_star"], "Q": d["Q"],
-                              "method": "functional design matrix (MVSML 2022 eq. 14.9)"})
+    res = RichResult(
+        payload={
+            "estimate": d["X_star"][0][0],
+            "X_star": d["X_star"],
+            "Q": d["Q"],
+            "method": "functional design matrix (MVSML 2022 eq. 14.9)",
+        }
+    )
     return with_describe_pointer(res, "msm272")
 
 

@@ -19,25 +19,26 @@ def alammar_llm_as_judge(responses, rubric, judge_model, n_samples=1):
     References: Alammar and Grootendorst, Ch 12; Zheng et al. (2023).
     """
     if not callable(judge_model):
-        raise ValueError("judge_model must be callable "
-                         "(rubric, response, sample_index) -> score.")
+        raise ValueError("judge_model must be callable (rubric, response, sample_index) -> score.")
     R = [str(r) for r in responses]
     if not R:
         raise ValueError("no responses supplied.")
     k = int(n_samples)
     if k < 1:
         raise ValueError("n_samples must be positive.")
-    scores = np.array([[float(judge_model(rubric, r, s))
-                        for s in range(k)] for r in R])
+    scores = np.array([[float(judge_model(rubric, r, s)) for s in range(k)] for r in R])
     means = scores.mean(axis=1)
     sds = scores.std(axis=1, ddof=1) if k > 1 else np.zeros(len(R))
-    return RichResult(payload={
-        "scores": [float(v) for v in means],
-        "judge_sd": [float(v) for v in sds],
-        "best_response": int(np.argmax(means)),
-        "estimate": float(means.max()), "n": len(R),
-        "method": "LLM-as-judge with self-disagreement reported "
-                  "(Zheng et al. 2023)"})
+    return RichResult(
+        payload={
+            "scores": [float(v) for v in means],
+            "judge_sd": [float(v) for v in sds],
+            "best_response": int(np.argmax(means)),
+            "estimate": float(means.max()),
+            "n": len(R),
+            "method": "LLM-as-judge with self-disagreement reported (Zheng et al. 2023)",
+        }
+    )
 
 
 def cheatsheet():

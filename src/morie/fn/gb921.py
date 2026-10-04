@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['moodscale', 'gibbons_mood_scale']
+__all__ = ["moodscale", "gibbons_mood_scale"]
 
 
 def _tagged(xs, ys):

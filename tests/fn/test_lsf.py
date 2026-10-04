@@ -1,7 +1,6 @@
 """Tests for lsf.py - Line Spectral Frequencies."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lsf import line_spectral_freq_fn, lsf
 
 

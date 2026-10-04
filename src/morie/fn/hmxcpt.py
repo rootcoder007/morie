@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Xception: extreme inception using depthwise separable convolutions."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_xception", "separable_params"]
@@ -93,9 +92,7 @@ def geron_xception(n_classes=1000, in_channels=3, input_size=299):
         nonlocal bn_channels
         if bn:
             bn_channels += c_out
-        layers.append(
-            {"kind": kind, "params": int(params), "channels": int(c_out), "out": int(spatial), "note": note}
-        )
+        layers.append({"kind": kind, "params": int(params), "channels": int(c_out), "out": int(spatial), "note": note})
 
     # -- entry flow -------------------------------------------------------
     spatial = _out(3, 2, 0)

@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Test ar_normalize (arnrm)."""
 
 from morie.fn._containers import DescriptiveResult

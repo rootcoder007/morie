@@ -1,8 +1,8 @@
 """Tests for morie.fn.cstfr — custody facility rate."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cstfr import custody_facility_rate
 

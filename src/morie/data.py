@@ -1588,7 +1588,7 @@ def _xlsx_promote_header(df: pd.DataFrame) -> pd.DataFrame:
         k = seen.get(nm, 0)
         seen[nm] = k + 1
         new.append(nm if k == 0 else f"{nm}.{k}")
-    return pd.DataFrame({nm: _xlsx_number(col[hdr + 1:end]) for nm, col in zip(new, cols)})
+    return pd.DataFrame({nm: _xlsx_number(col[hdr + 1 : end]) for nm, col in zip(new, cols)})
 
 
 def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:
@@ -2359,7 +2359,11 @@ def dataset_info(key: str) -> dict:
                 manifest = None
         row = next((d for d in (manifest or {}).get("datasets", []) if d.get("key") == key), None)
         if row is None:
-            hint = "" if manifest else " (no data.rmorie.com manifest at hand: run `morie login`, then `morie list-datasets`)"
+            hint = (
+                ""
+                if manifest
+                else " (no data.rmorie.com manifest at hand: run `morie login`, then `morie list-datasets`)"
+            )
             raise KeyError(f"Unknown dataset key: {key!r}{hint}")
         info = hosted_entries({"datasets": [row]})[0]
         info["meta"] = row.get("meta") or {}

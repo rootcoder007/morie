@@ -12,9 +12,9 @@ and Ch 5 (binary choice, printed p.129); the module formerly cited
 "Armstrong Ch 7", which does not exist -- that book has six chapters.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.unfdl import unfolding_analysis as unfold
 
 
@@ -61,7 +61,7 @@ def test_unfdl_default_now_converges_across_many_configurations():
     for seed in range(1100, 1130):
         rng = np.random.default_rng(seed)
         delta = _cross(rng.standard_normal((10, 2)), rng.standard_normal((4, 2)))
-        d = unfold(delta, k=2)                       # default n_iter
+        d = unfold(delta, k=2)  # default n_iter
         ref = unfold(delta, k=2, n_iter=6000)
         e_def = np.abs(_cross(np.asarray(d["X"]), np.asarray(d["Y"])) - delta).max()
         e_ref = np.abs(_cross(np.asarray(ref["X"]), np.asarray(ref["Y"])) - delta).max()

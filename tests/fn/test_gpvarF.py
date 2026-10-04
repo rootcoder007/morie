@@ -1,7 +1,6 @@
 """Tests for gpvarF.gp_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpvarF import gp_variance
 
 
@@ -41,6 +40,7 @@ def test_gpvarF_basic():
             K[i][j] = sf * sf * np.exp(-0.5 * sq / (l * l))
             if i == j:
                 K[i][j] += sn2
+
     # Solve K w = k* for each test point using Cramer's rule for the
     # general n x n system via Gaussian elimination.
     def solve(A, b):

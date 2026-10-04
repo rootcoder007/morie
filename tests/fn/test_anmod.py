@@ -1,8 +1,8 @@
 """Tests for anmod.additive_noise_model (Hoyer et al. 2009)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.anmod import additive_noise_model, hsic
 
 
@@ -98,7 +98,8 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="at least 10 observations"):
         additive_noise_model(x[:5], y[:5])
     with pytest.raises(ValueError, match="must be finite"):
-        bad = x.copy(); bad[0] = np.nan
+        bad = x.copy()
+        bad[0] = np.nan
         additive_noise_model(bad, y)
     with pytest.raises(ValueError, match="B must be at least 1"):
         additive_noise_model(x, y, B=0)

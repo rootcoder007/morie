@@ -1,15 +1,13 @@
 """cslat: causal (autoregressive) attention mask (Radford et al. 2019)."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.cslat import causal_attention_mask as mask
 
 
 def test_cslat_is_lower_triangular():
     """Position i may attend to j <= i and to nothing later. That single
     property is what makes an LM autoregressive."""
-    m = np.asarray(mask(np.zeros((6, 6))))if False else np.asarray(mask(6)["tensor"])
+    m = np.asarray(mask(np.zeros((6, 6)))) if False else np.asarray(mask(6)["tensor"])
     n = m.shape[-1]
     for i in range(n):
         for j in range(n):

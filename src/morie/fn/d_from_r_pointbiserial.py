@@ -28,17 +28,16 @@ def d_from_r_pointbiserial(r):
     """
     value = _ca_crim.d_from_r_pointbiserial(r)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.22)"
     return RichResult(
-        title='Point-biserial r to d: d = 2r / sqrt(1-r^2)',
+        title="Point-biserial r to d: d = 2r / sqrt(1-r^2)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e22: d = 2r / sqrt(1 - r^2) [Weisburd et al. 2022, eq. 11.22]'
+    return "ca11e22: d = 2r / sqrt(1 - r^2) [Weisburd et al. 2022, eq. 11.22]"

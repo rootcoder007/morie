@@ -1,7 +1,6 @@
 """Tests for mme_solve.mme_solve."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mme_solve import mme_solve
 
 

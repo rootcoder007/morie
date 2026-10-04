@@ -57,6 +57,7 @@ def otis_risk_table(
         else:
             # OLS approximation for log(OR) per unit increase
             from morie.fn._array_core import linalg as _acl
+
             lstsq = _acl.lstsq
 
             X = np.column_stack([np.ones(n), x])

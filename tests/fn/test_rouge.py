@@ -1,7 +1,6 @@
 """Tests for rouge.rouge."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rouge import rouge
 
 

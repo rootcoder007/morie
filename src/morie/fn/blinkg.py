@@ -64,9 +64,19 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["blinkg", "blink_gwas", "marker_scan", "ld_filter", "bin_filter",
-           "select_by_criterion", "SELECTIONS", "CRITERIA", "LD_THRESHOLD",
-           "ALPHA", "cheatsheet"]
+__all__ = [
+    "blinkg",
+    "blink_gwas",
+    "marker_scan",
+    "ld_filter",
+    "bin_filter",
+    "select_by_criterion",
+    "SELECTIONS",
+    "CRITERIA",
+    "LD_THRESHOLD",
+    "ALPHA",
+    "cheatsheet",
+]
 
 SELECTIONS = ("ld", "bin")
 CRITERIA = ("bic", "aic", "none")
@@ -119,8 +129,7 @@ def marker_scan(y, geno, covars=None, qtn=()):
     """
     n = len(y)
     m = len(geno)
-    covars = [] if covars is None else [[float(v) for v in c]
-                                        for c in covars]
+    covars = [] if covars is None else [[float(v) for v in c] for c in covars]
     qtn = list(qtn)
     beta = []
     se = []
@@ -261,9 +270,18 @@ def select_by_criterion(y, geno, candidates, covars=None, criterion="bic"):
     return list(candidates[:best_k]), scores, best_k
 
 
-def blink_gwas(y, geno, positions=None, covars=None, selection="ld",
-               criterion="bic", ld_threshold=LD_THRESHOLD, alpha=ALPHA,
-               bin_size=None, max_iter=10):
+def blink_gwas(
+    y,
+    geno,
+    positions=None,
+    covars=None,
+    selection="ld",
+    criterion="bic",
+    ld_threshold=LD_THRESHOLD,
+    alpha=ALPHA,
+    bin_size=None,
+    max_iter=10,
+):
     """Iterate the scan and the pseudo-QTN selection to a fixed point.
 
     Parameters
@@ -358,45 +376,50 @@ def blink_gwas(y, geno, positions=None, covars=None, selection="ld",
     else:
         lam = float("nan")
 
-    sig = [j for j in range(m) if scan["p"][j] == scan["p"][j]
-           and scan["p"][j] < thr]
+    sig = [j for j in range(m) if scan["p"][j] == scan["p"][j] and scan["p"][j] < thr]
     live_p = [v for v in scan["p"] if v == v]
     live_se = [v for v in scan["se"] if v == v]
     best_p = min(live_p) if live_p else float("nan")
     best_se = min(live_se) if live_se else float("nan")
-    return RichResult(payload={
-        "p": scan["p"],
-        "beta": scan["beta"],
-        "se": scan["se"],
-        "t": scan["t"],
-        "qtn": qtn,
-        "candidates": cand,
-        "criterion_path": scores,
-        "n_qtn": len(qtn),
-        "significant": sig,
-        "n_significant": len(sig),
-        "threshold": thr,
-        "lambda_gc": lam,
-        "iterations": it,
-        "converged": converged,
-        "estimate": best_p,
-        "se_min": best_se,
-        "n": n,
-        "m": m,
-        "selection": selection,
-        "criterion": criterion,
-        "ld_threshold": float(ld_threshold),
-        "alpha": float(alpha),
-        "method": "BLINK iterative fixed-effect GWAS",
-    })
+    return RichResult(
+        payload={
+            "p": scan["p"],
+            "beta": scan["beta"],
+            "se": scan["se"],
+            "t": scan["t"],
+            "qtn": qtn,
+            "candidates": cand,
+            "criterion_path": scores,
+            "n_qtn": len(qtn),
+            "significant": sig,
+            "n_significant": len(sig),
+            "threshold": thr,
+            "lambda_gc": lam,
+            "iterations": it,
+            "converged": converged,
+            "estimate": best_p,
+            "se_min": best_se,
+            "n": n,
+            "m": m,
+            "selection": selection,
+            "criterion": criterion,
+            "ld_threshold": float(ld_threshold),
+            "alpha": float(alpha),
+            "method": "BLINK iterative fixed-effect GWAS",
+        }
+    )
 
 
 blinkg = blink_gwas
 
 
 def cheatsheet():
-    return ("blinkg: BLINK iterative fixed-effect GWAS. selections "
-            + ", ".join(SELECTIONS) + "; criteria " + ", ".join(CRITERIA))
+    return (
+        "blinkg: BLINK iterative fixed-effect GWAS. selections "
+        + ", ".join(SELECTIONS)
+        + "; criteria "
+        + ", ".join(CRITERIA)
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

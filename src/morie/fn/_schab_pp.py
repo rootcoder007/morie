@@ -29,8 +29,7 @@ def as_region(region, points=None):
         if points is None:
             raise ValueError("`region` is required when `points` is not given")
         p = as_points(points)
-        return (float(p[:, 0].min()), float(p[:, 1].min()),
-                float(p[:, 0].max()), float(p[:, 1].max()))
+        return (float(p[:, 0].min()), float(p[:, 1].min()), float(p[:, 0].max()), float(p[:, 1].max()))
     r = np.asarray(region, dtype=float)
     if r.ndim == 1 and r.size == 4:
         xmin, ymin, xmax, ymax = (float(v) for v in r)
@@ -38,8 +37,7 @@ def as_region(region, points=None):
         xmin, ymin = float(r[:, 0].min()), float(r[:, 1].min())
         xmax, ymax = float(r[:, 0].max()), float(r[:, 1].max())
     else:
-        raise ValueError("`region` must be (xmin, ymin, xmax, ymax) or an "
-                         "(m, 2) array of vertices")
+        raise ValueError("`region` must be (xmin, ymin, xmax, ymax) or an (m, 2) array of vertices")
     if not (xmax > xmin and ymax > ymin):
         raise ValueError("`region` must have positive area")
     return xmin, ymin, xmax, ymax
@@ -78,8 +76,7 @@ def border_distance(points, region):
     xmin, ymin, xmax, ymax = region
     # _array_core.minimum is a plain binary function, not a numpy ufunc, so
     # it has no .reduce; fold the four edge distances pairwise instead.
-    return np.minimum(np.minimum(p[:, 0] - xmin, xmax - p[:, 0]),
-                      np.minimum(p[:, 1] - ymin, ymax - p[:, 1]))
+    return np.minimum(np.minimum(p[:, 0] - xmin, xmax - p[:, 0]), np.minimum(p[:, 1] - ymin, ymax - p[:, 1]))
 
 
 def k_function(points, region, r, correction="border"):
@@ -115,6 +112,7 @@ def k_function(points, region, r, correction="border"):
         m = int(keep.sum())
         out[k] = ((d[keep] <= h).sum() / m / lam) if m else np.nan
     return out
+
 
 # --- Cross-K for bivariate point patterns, Sec. 3.4.4 -----------------------
 #
@@ -168,14 +166,14 @@ def ripley_weight(point, region, radius):
     dxm, dxp = x - xmin, xmax - x
     dym, dyp = y - ymin, ymax - y
     if min(dxm, dxp, dym, dyp) >= t:
-        return 1.0                                   # circle wholly inside
+        return 1.0  # circle wholly inside
 
     crit = [0.0, 2.0 * np.pi]
-    for b in (-dxm / t, dxp / t):                    # cos t == b
+    for b in (-dxm / t, dxp / t):  # cos t == b
         if -1.0 <= b <= 1.0:
             a = np.arccos(b)
             crit += [a, 2.0 * np.pi - a]
-    for b in (-dym / t, dyp / t):                    # sin t == b
+    for b in (-dym / t, dyp / t):  # sin t == b
         if -1.0 <= b <= 1.0:
             a = np.arcsin(b)
             crit += [a % (2.0 * np.pi), (np.pi - a) % (2.0 * np.pi)]
@@ -216,8 +214,8 @@ def ripley_weights(points, region, radii):
     dyp = ymax - p[:, 1]
 
     with np.errstate(divide="ignore", invalid="ignore"):
-        cos_b = np.stack([-dxm / t, dxp / t], axis=1)      # (n, 2)
-        sin_b = np.stack([-dym / t, dyp / t], axis=1)      # (n, 2)
+        cos_b = np.stack([-dxm / t, dxp / t], axis=1)  # (n, 2)
+        sin_b = np.stack([-dym / t, dyp / t], axis=1)  # (n, 2)
 
     cand = np.zeros((n, 10))
     cand[:, 1] = 2.0 * np.pi
@@ -231,7 +229,7 @@ def ripley_weights(points, region, radii):
     cand[:, 8:10] = np.where(ok_s, (np.pi - as_) % (2.0 * np.pi), 0.0)
 
     cand.sort(axis=1)
-    mid = 0.5 * (cand[:, :-1] + cand[:, 1:])               # (n, 9)
+    mid = 0.5 * (cand[:, :-1] + cand[:, 1:])  # (n, 9)
     width = np.diff(cand, axis=1)
     cx = p[:, 0:1] + t[:, None] * np.cos(mid)
     cy = p[:, 1:2] + t[:, None] * np.sin(mid)
@@ -303,7 +301,7 @@ def cross_k_combined(points1, points2, region, r, correction="ripley"):
         "K_21": k21,
         "L_star": lstar,
         "L_minus_h": lstar - r,
-        "K_independence": np.pi * r ** 2,
+        "K_independence": np.pi * r**2,
         "r": r,
         "lambda_1": lam1,
         "lambda_2": lam2,

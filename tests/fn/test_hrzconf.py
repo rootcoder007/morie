@@ -1,7 +1,6 @@
 """Tests for hrzconf.horowitz_confidence_bands."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzconf import horowitz_confidence_bands
 
 

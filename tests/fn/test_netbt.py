@@ -1,7 +1,6 @@
 """Tests for morie.fn.netbt — Node betweenness centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netbt import network_betweenness
 
 

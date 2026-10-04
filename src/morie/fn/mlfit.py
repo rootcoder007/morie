@@ -56,15 +56,22 @@ def ml_loglik(y, X, V):
     # cannot see a negative definite matrix of EVEN order: the sign of
     # |V| is (-1)^n = +1 there.  The R arm factorises, so without this
     # the two arms would disagree on the error path.
-    C.chol([[0.5 * (Vm[i][j] + Vm[j][i]) for j in range(n)]
-            for i in range(n)])
+    C.chol([[0.5 * (Vm[i][j] + Vm[j][i]) for j in range(n)] for i in range(n)])
     r = lmm_loglik(y, X, V=V, reml=False)
-    return RichResult(payload={
-        "estimate": r["loglik"], "loglik": r["loglik"],
-        "neg2loglik": r["neg2loglik"], "logdet_V": r["logdet_V"],
-        "quadratic_form": r["quadratic_form"], "aic": r["aic"],
-        "bic": r["bic"], "n": r["n"], "p": r["p"],
-        "method": "ML log-likelihood of a linear mixed model"})
+    return RichResult(
+        payload={
+            "estimate": r["loglik"],
+            "loglik": r["loglik"],
+            "neg2loglik": r["neg2loglik"],
+            "logdet_V": r["logdet_V"],
+            "quadratic_form": r["quadratic_form"],
+            "aic": r["aic"],
+            "bic": r["bic"],
+            "n": r["n"],
+            "p": r["p"],
+            "method": "ML log-likelihood of a linear mixed model",
+        }
+    )
 
 
 mlloglik = ml_loglik

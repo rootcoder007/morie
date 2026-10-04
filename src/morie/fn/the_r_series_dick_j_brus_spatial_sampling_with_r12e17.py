@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -26,18 +25,17 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_17(leng
     eq. (12.17).
     """
     payload = dict(_brus.average_length_criterion(lengths, probs, l_max))
-    value = payload['expected_length']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["expected_length"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (12.17)"
     return RichResult(
-        title='Bayesian average length criterion (continuous data)',
+        title="Bayesian average length criterion (continuous data)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r12e17: E[l(z, n)] <= l_max over the predictive distribution [Brus 2022, eq. 12.17]'
+    return "r12e17: E[l(z, n)] <= l_max over the predictive distribution [Brus 2022, eq. 12.17]"

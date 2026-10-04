@@ -23,9 +23,26 @@ prefix .w3_ in place of the leading underscore.
 
 import math
 
-__all__ = ["csum", "dot", "chol", "solve_chol", "inv_from_chol", "ols",
-           "lgamma", "gammp", "gammq", "ncdf", "npdf", "nppf", "betainc",
-           "t_sf", "bisect", "simpson", "nelder_mead", "logsumexp"]
+__all__ = [
+    "csum",
+    "dot",
+    "chol",
+    "solve_chol",
+    "inv_from_chol",
+    "ols",
+    "lgamma",
+    "gammp",
+    "gammq",
+    "ncdf",
+    "npdf",
+    "nppf",
+    "betainc",
+    "t_sf",
+    "bisect",
+    "simpson",
+    "nelder_mead",
+    "logsumexp",
+]
 
 
 def csum(vals):
@@ -101,8 +118,7 @@ def solve_chol(lo, b):
 def inv_from_chol(lo):
     """(L L')^-1, column by column from the factor."""
     p = len(lo)
-    cols = [solve_chol(lo, [1.0 if k == j else 0.0 for k in range(p)])
-            for j in range(p)]
+    cols = [solve_chol(lo, [1.0 if k == j else 0.0 for k in range(p)]) for j in range(p)]
     return [[cols[j][i] for j in range(p)] for i in range(p)]
 
 
@@ -114,21 +130,32 @@ def ols(y, design):
     """
     n = len(y)
     p = len(design[0])
-    xtx = [[csum(design[i][a] * design[i][b] for i in range(n))
-            for b in range(p)] for a in range(p)]
+    xtx = [[csum(design[i][a] * design[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     xty = [csum(design[i][a] * y[i] for i in range(n)) for a in range(p)]
     lo = chol(xtx)
     beta = solve_chol(lo, xty)
     fitted = [dot(design[i], beta) for i in range(n)]
     rss = csum((y[i] - fitted[i]) * (y[i] - fitted[i]) for i in range(n))
     df = n - p
-    return {"beta": beta, "rss": rss, "df": df,
-            "sigma2": rss / df if df > 0 else float("nan"),
-            "xtx_inv": inv_from_chol(lo), "fitted": fitted, "chol": lo}
+    return {
+        "beta": beta,
+        "rss": rss,
+        "df": df,
+        "sigma2": rss / df if df > 0 else float("nan"),
+        "xtx_inv": inv_from_chol(lo),
+        "fitted": fitted,
+        "chol": lo,
+    }
 
 
-_LG = (76.18009172947146, -86.50532032941677, 24.01409824083091,
-       -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5)
+_LG = (
+    76.18009172947146,
+    -86.50532032941677,
+    24.01409824083091,
+    -1.231739572450155,
+    0.1208650973866179e-2,
+    -0.5395239384953e-5,
+)
 
 
 def lgamma(z):
@@ -289,8 +316,7 @@ def betainc(a, b, x):
     front = math.exp(a * math.log(x) + b * math.log(1.0 - x) - lb)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
-    return 1.0 - math.exp(b * math.log(1.0 - x) + a * math.log(x)
-                          - lb) * _betacf(b, a, 1.0 - x) / b
+    return 1.0 - math.exp(b * math.log(1.0 - x) + a * math.log(x) - lb) * _betacf(b, a, 1.0 - x) / b
 
 
 def t_sf(t, df):
@@ -342,8 +368,7 @@ def simpson(f, a, b, n=200):
     return h / 3.0 * csum(terms)
 
 
-def nelder_mead(f, x0, step=0.1, iters=400, alpha=1.0, gamma=2.0,
-                rho=0.5, sigma=0.5):
+def nelder_mead(f, x0, step=0.1, iters=400, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5):
     """Nelder-Mead simplex minimisation.
 
     Derivative-free and deterministic given the starting point, which is
@@ -394,8 +419,7 @@ def nelder_mead(f, x0, step=0.1, iters=400, alpha=1.0, gamma=2.0,
                 pts[n], vals[n] = xc, fc
                 continue
         for i in range(1, n + 1):
-            pts[i] = [pts[0][j] + sigma * (pts[i][j] - pts[0][j])
-                      for j in range(n)]
+            pts[i] = [pts[0][j] + sigma * (pts[i][j] - pts[0][j]) for j in range(n)]
             vals[i] = f(pts[i])
     best = min(range(n + 1), key=lambda i: (vals[i], i))
     return {"x": pts[best], "value": vals[best]}

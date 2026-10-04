@@ -91,16 +91,18 @@ def catstop(items, theta, se_target, estimator="ML", prior_var=1.0):
     else:
         denom = total
     se = float("inf") if denom <= 0 else 1.0 / math.sqrt(denom)
-    return RichResult(payload={
-        "stop": bool(se <= tgt),
-        "se": se,
-        "information": total,
-        "item_information": infos,
-        "n_items": len(infos),
-        "estimator": est,
-        "se_target": tgt,
-        "method": "CAT precision stopping rule (catR Eqs. 3-4, 6)",
-    })
+    return RichResult(
+        payload={
+            "stop": bool(se <= tgt),
+            "se": se,
+            "information": total,
+            "item_information": infos,
+            "n_items": len(infos),
+            "estimator": est,
+            "se_target": tgt,
+            "method": "CAT precision stopping rule (catR Eqs. 3-4, 6)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

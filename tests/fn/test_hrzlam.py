@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzlam import horowitz_baseline_hazard_est
 
 

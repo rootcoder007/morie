@@ -81,7 +81,6 @@ fluctuation carry a continuous outcome.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -116,13 +115,9 @@ def _fluctuate(qa, q1, q0, y, d, g, clip=1e-8):
             break
     qa2, q1b, q0b = [], [], []
     for i in range(n):
-        qa2.append(min(max(k.sigmoid(math.log(qa[i] / (1.0 - qa[i]))
-                                     + eps * h[i]), clip), 1.0 - clip))
-        q1b.append(min(max(k.sigmoid(math.log(q1[i] / (1.0 - q1[i]))
-                                     + eps / g[i]), clip), 1.0 - clip))
-        q0b.append(min(max(k.sigmoid(math.log(q0[i] / (1.0 - q0[i]))
-                                     - eps / (1.0 - g[i])), clip),
-                       1.0 - clip))
+        qa2.append(min(max(k.sigmoid(math.log(qa[i] / (1.0 - qa[i])) + eps * h[i]), clip), 1.0 - clip))
+        q1b.append(min(max(k.sigmoid(math.log(q1[i] / (1.0 - q1[i])) + eps / g[i]), clip), 1.0 - clip))
+        q0b.append(min(max(k.sigmoid(math.log(q0[i] / (1.0 - q0[i])) - eps / (1.0 - g[i])), clip), 1.0 - clip))
     return qa2, q1b, q0b, eps
 
 
@@ -130,22 +125,18 @@ def _q_loss(qa, y):
     """L(Qbar) = -{Y log Qbar + (1-Y) log(1-Qbar)}, the chapter's loss."""
     tot = 0.0
     for i in range(len(y)):
-        tot -= (y[i] * math.log(qa[i])
-                + (1.0 - y[i]) * math.log(1.0 - qa[i]))
+        tot -= y[i] * math.log(qa[i]) + (1.0 - y[i]) * math.log(1.0 - qa[i])
     return tot / len(y)
 
 
 def _propensity(d, cols, n, penalty=0.0, trim=0.005):
-    Z = k.design([[c[i] for c in cols] for i in range(n)] if cols
-                 else None, n)
+    Z = k.design([[c[i] for c in cols] for i in range(n)] if cols else None, n)
     b = k.logit_irls(Z, d, 60, 1e-10, penalty=float(penalty))
-    g = [min(max(k.sigmoid(v), trim), 1.0 - trim)
-         for v in k.matvec(Z, b)]
+    g = [min(max(k.sigmoid(v), trim), 1.0 - trim) for v in k.matvec(Z, b)]
     return g, b
 
 
-def ctmle_sequence(y, D, X, tuning="discrete", penalties=None,
-                   trim=0.005, scale=None, q_covariates=None):
+def ctmle_sequence(y, D, X, tuning="discrete", penalties=None, trim=0.005, scale=None, q_covariates=None):
     """Build the nested sequence of (G, targeted Q) and score each.
 
     Returns one record per step with the treatment model used, the
@@ -153,13 +144,11 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None,
     itself is done by :func:`tmle_cdrs`.
     """
     if tuning not in _TUNING:
-        raise ValueError("ctmle_sequence: tuning must be 'discrete' or "
-                         "'continuous', got %r" % (tuning,))
+        raise ValueError("ctmle_sequence: tuning must be 'discrete' or 'continuous', got %r" % (tuning,))
     yv, d = k.vec(y), k.vec(D)
     n = len(yv)
     if len(d) != n:
-        raise ValueError("ctmle_sequence: %d outcomes but %d treatments"
-                         % (n, len(d)))
+        raise ValueError("ctmle_sequence: %d outcomes but %d treatments" % (n, len(d)))
     if any(v not in (0.0, 1.0) for v in d):
         raise ValueError("ctmle_sequence: treatment must be binary 0/1")
     Xm = k.mat(X) if X is not None else [[] for _ in range(n)]
@@ -184,21 +173,17 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None,
     # explicitly about the case where "the initial estimator is
     # inconsistent", so q_covariates lets the caller say what the
     # outcome model actually saw. None means all of them.
-    qcols = (list(range(p)) if q_covariates is None
-             else [int(c) for c in q_covariates])
+    qcols = list(range(p)) if q_covariates is None else [int(c) for c in q_covariates]
     for c in qcols:
         if not 0 <= c < p:
-            raise ValueError(
-                "ctmle_sequence: q_covariates index %d is outside the "
-                "%d covariates supplied" % (c, p))
-    Zq = k.design([[d[i]] + [Xm[i][c] for c in qcols]
-                   for i in range(n)], n)
+            raise ValueError("ctmle_sequence: q_covariates index %d is outside the %d covariates supplied" % (c, p))
+    Zq = k.design([[d[i]] + [Xm[i][c] for c in qcols] for i in range(n)], n)
     bq = k.lstsq(Zq, ys)
 
     def q_at(a, i):
         row = [1.0, a] + [Xm[i][c] for c in qcols]
-        return min(max(sum(bq[j] * row[j] for j in range(len(bq))),
-                       1e-8), 1.0 - 1e-8)
+        return min(max(sum(bq[j] * row[j] for j in range(len(bq))), 1e-8), 1.0 - 1e-8)
+
     qa = [q_at(d[i], i) for i in range(n)]
     q1 = [q_at(1.0, i) for i in range(n)]
     q0 = [q_at(0.0, i) for i in range(n)]
@@ -209,15 +194,20 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None,
         # step 0: intercept-only treatment model
         g, _ = _propensity(d, [], n, trim=trim)
         qa, q1, q0, eps = _fluctuate(qa, q1, q0, ys, d, g)
-        steps.append({"step": 0, "covariates": [], "loss": _q_loss(qa, ys),
-                      "epsilon": eps, "g": g,
-                      "psi": rng * sum(q1[i] - q0[i]
-                                       for i in range(n)) / n})
+        steps.append(
+            {
+                "step": 0,
+                "covariates": [],
+                "loss": _q_loss(qa, ys),
+                "epsilon": eps,
+                "g": g,
+                "psi": rng * sum(q1[i] - q0[i] for i in range(n)) / n,
+            }
+        )
         while remaining:
             best = None
             for j in remaining:
-                gj, _ = _propensity(d, [cols[c] for c in chosen + [j]],
-                                    n, trim=trim)
+                gj, _ = _propensity(d, [cols[c] for c in chosen + [j]], n, trim=trim)
                 # nested: start from the CURRENT targeted fit
                 a2, b2, c2, e2 = _fluctuate(qa, q1, q0, ys, d, gj)
                 loss = _q_loss(a2, ys)
@@ -227,28 +217,45 @@ def ctmle_sequence(y, D, X, tuning="discrete", penalties=None,
             chosen.append(j)
             remaining.remove(j)
             qa, q1, q0 = a2, b2, c2
-            steps.append({"step": len(chosen), "covariates": list(chosen),
-                          "loss": loss, "epsilon": e2, "g": gj,
-                          "psi": rng * sum(q1[i] - q0[i]
-                                           for i in range(n)) / n})
+            steps.append(
+                {
+                    "step": len(chosen),
+                    "covariates": list(chosen),
+                    "loss": loss,
+                    "epsilon": e2,
+                    "g": gj,
+                    "psi": rng * sum(q1[i] - q0[i] for i in range(n)) / n,
+                }
+            )
     else:
         if penalties is None:
             penalties = [1e4, 1e3, 1e2, 10.0, 1.0, 0.1, 1e-2, 0.0]
         for s, lam in enumerate(penalties):
             g, _ = _propensity(d, cols, n, penalty=float(lam), trim=trim)
             qa, q1, q0, eps = _fluctuate(qa, q1, q0, ys, d, g)
-            steps.append({"step": s, "penalty": float(lam),
-                          "loss": _q_loss(qa, ys), "epsilon": eps,
-                          "g": g,
-                          "psi": rng * sum(q1[i] - q0[i]
-                                           for i in range(n)) / n})
-    return steps, {"scale": rng, "shift": lo, "n": n, "p": p,
-                   "y_scaled": ys, "treatment": d, "columns": cols,
-                   "q_covariates": qcols}
+            steps.append(
+                {
+                    "step": s,
+                    "penalty": float(lam),
+                    "loss": _q_loss(qa, ys),
+                    "epsilon": eps,
+                    "g": g,
+                    "psi": rng * sum(q1[i] - q0[i] for i in range(n)) / n,
+                }
+            )
+    return steps, {
+        "scale": rng,
+        "shift": lo,
+        "n": n,
+        "p": p,
+        "y_scaled": ys,
+        "treatment": d,
+        "columns": cols,
+        "q_covariates": qcols,
+    }
 
 
-def tmle_cdrs(y, D, X, tuning="discrete", penalties=None, n_folds=5,
-              trim=0.005, scale=None, q_covariates=None):
+def tmle_cdrs(y, D, X, tuning="discrete", penalties=None, n_folds=5, trim=0.005, scale=None, q_covariates=None):
     r"""Collaborative TMLE for the ATE.
 
     Parameters
@@ -277,12 +284,11 @@ def tmle_cdrs(y, D, X, tuning="discrete", penalties=None, n_folds=5,
         r = tmle_cdrs(y, D, X)
         r["selected_covariates"]
     """
-    steps, info = ctmle_sequence(y, D, X, tuning=tuning,
-                                 penalties=penalties, trim=trim,
-                                 scale=scale, q_covariates=q_covariates)
+    steps, info = ctmle_sequence(
+        y, D, X, tuning=tuning, penalties=penalties, trim=trim, scale=scale, q_covariates=q_covariates
+    )
     n = info["n"]
-    folds = [[i for i in range(n) if i % int(n_folds) == f]
-             for f in range(int(n_folds))]
+    folds = [[i for i in range(n) if i % int(n_folds) == f] for f in range(int(n_folds))]
     # Cross-validated version of the same loss: the chapter selects h by
     # "the L-fit of Q*_{n,h}", and the honest version of that fit is
     # out-of-sample.
@@ -291,28 +297,29 @@ def tmle_cdrs(y, D, X, tuning="discrete", penalties=None, n_folds=5,
         tot = 0.0
         for f in folds:
             tr = [i for i in range(n) if i not in set(f)]
-            sub = _refit_on(info, steps, s, tr, f, tuning, penalties,
-                            trim)
+            sub = _refit_on(info, steps, s, tr, f, tuning, penalties, trim)
             tot += sub
         cv.append(tot / len(folds))
     sel = min(range(len(steps)), key=lambda s: cv[s])
     best = steps[sel]
 
-    return RichResult(payload={
-        "estimate": best["psi"],
-        "psi": best["psi"],
-        "selected": sel,
-        "selected_covariates": best.get("covariates"),
-        "selected_penalty": best.get("penalty"),
-        "steps": [{kk: vv for kk, vv in st.items() if kk != "g"}
-                  for st in steps],
-        "cv_loss": cv,
-        "in_sample_loss": [st["loss"] for st in steps],
-        "epsilon": best["epsilon"],
-        "tuning": tuning, "n": n, "n_covariates": info["p"],
-        "method": "collaborative TMLE, van der Laan & Rose (2018) "
-                  "Ch. 10 Example 10.3 with %s tuning" % tuning,
-    })
+    return RichResult(
+        payload={
+            "estimate": best["psi"],
+            "psi": best["psi"],
+            "selected": sel,
+            "selected_covariates": best.get("covariates"),
+            "selected_penalty": best.get("penalty"),
+            "steps": [{kk: vv for kk, vv in st.items() if kk != "g"} for st in steps],
+            "cv_loss": cv,
+            "in_sample_loss": [st["loss"] for st in steps],
+            "epsilon": best["epsilon"],
+            "tuning": tuning,
+            "n": n,
+            "n_covariates": info["p"],
+            "method": "collaborative TMLE, van der Laan & Rose (2018) Ch. 10 Example 10.3 with %s tuning" % tuning,
+        }
+    )
 
 
 def _refit_on(info, steps, s, tr, fold, tuning, penalties, trim):
@@ -324,8 +331,7 @@ def _refit_on(info, steps, s, tr, fold, tuning, penalties, trim):
     st = steps[s]
     use = st.get("covariates")
     lam = st.get("penalty", 0.0)
-    sub_cols = ([[cols[c][i] for i in tr] for c in use] if use is not None
-                else [[c[i] for i in tr] for c in cols])
+    sub_cols = [[cols[c][i] for i in tr] for c in use] if use is not None else [[c[i] for i in tr] for c in cols]
     dtr = [d[i] for i in tr]
     ytr = [ys[i] for i in tr]
     if len(set(dtr)) < 2:
@@ -339,8 +345,8 @@ def _refit_on(info, steps, s, tr, fold, tuning, penalties, trim):
 
     def q_at(a, row):
         r = [1.0, a] + list(row)
-        return min(max(sum(bq[j] * r[j] for j in range(len(bq))), 1e-8),
-                   1.0 - 1e-8)
+        return min(max(sum(bq[j] * r[j] for j in range(len(bq))), 1e-8), 1.0 - 1e-8)
+
     qa = [q_at(dtr[j], Xtr[j]) for j in range(ntr)]
     q1 = [q_at(1.0, Xtr[j]) for j in range(ntr)]
     q0 = [q_at(0.0, Xtr[j]) for j in range(ntr)]
@@ -348,12 +354,13 @@ def _refit_on(info, steps, s, tr, fold, tuning, penalties, trim):
 
     # evaluate on the held-out rows with the training-fitted pieces
     tot, m = 0.0, 0
-    Zg = k.design([[cols[c][i] for c in (use if use is not None
-                                         else range(len(cols)))]
-                   for i in fold] if (cols and (use is None or use))
-                  else None, len(fold))
-    gs = [min(max(k.sigmoid(v), trim), 1.0 - trim)
-          for v in k.matvec(Zg, bg)] if len(bg) == len(Zg[0]) else None
+    Zg = k.design(
+        [[cols[c][i] for c in (use if use is not None else range(len(cols)))] for i in fold]
+        if (cols and (use is None or use))
+        else None,
+        len(fold),
+    )
+    gs = [min(max(k.sigmoid(v), trim), 1.0 - trim) for v in k.matvec(Zg, bg)] if len(bg) == len(Zg[0]) else None
     for idx, i in enumerate(fold):
         row = [cols[c][i] for c in qc]
         q = q_at(d[i], row)
@@ -361,19 +368,20 @@ def _refit_on(info, steps, s, tr, fold, tuning, penalties, trim):
         h = d[i] / gi - (1.0 - d[i]) / (1.0 - gi)
         qs = k.sigmoid(math.log(q / (1.0 - q)) + eps * h)
         qs = min(max(qs, 1e-8), 1.0 - 1e-8)
-        tot -= (ys[i] * math.log(qs)
-                + (1.0 - ys[i]) * math.log(1.0 - qs))
+        tot -= ys[i] * math.log(qs) + (1.0 - ys[i]) * math.log(1.0 - qs)
         m += 1
     return tot / m if m else float("inf")
 
 
 def cheatsheet():
-    return ("tmlcds: collaborative TMLE. Build a NESTED sequence of "
-            "treatment mechanisms and select by the cross-validated "
-            "loss of the TARGETED OUTCOME fit, not of G itself -- so an "
-            "instrument stays out of the propensity model. Submodel "
-            "logit Q* = logit Q + eps A/G (vdL & Rose 2018 Ch.10 Ex.10.3). "
-            "tuning = discrete (greedy covariates) or continuous (penalty).")
+    return (
+        "tmlcds: collaborative TMLE. Build a NESTED sequence of "
+        "treatment mechanisms and select by the cross-validated "
+        "loss of the TARGETED OUTCOME fit, not of G itself -- so an "
+        "instrument stays out of the propensity model. Submodel "
+        "logit Q* = logit Q + eps A/G (vdL & Rose 2018 Ch.10 Ex.10.3). "
+        "tuning = discrete (greedy covariates) or continuous (penalty)."
+    )
 
 
 # compact alias per ledger/NAMING.md

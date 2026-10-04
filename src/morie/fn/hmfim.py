@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["feature_importance_trees", "geron_feature_importance"]
 
 
-def feature_importance_trees(impurity_decrease, n_features=None,
-                             normalize=True, feature_names=None):
+def feature_importance_trees(impurity_decrease, n_features=None, normalize=True, feature_names=None):
     r"""Average impurity decrease per feature across an ensemble.
 
     .. math::
@@ -69,10 +68,7 @@ def feature_importance_trees(impurity_decrease, n_features=None,
         raise ValueError("impurity_decrease must be 1- or 2-dimensional.")
     B, p = A.shape
     if n_features is not None and int(n_features) != p:
-        raise ValueError(
-            "n_features says %d but the data has %d columns."
-            % (int(n_features), p)
-        )
+        raise ValueError("n_features says %d but the data has %d columns." % (int(n_features), p))
     if np.any(A < -1e-12):
         raise ValueError("impurity decrease cannot be negative.")
     if normalize:
@@ -89,22 +85,17 @@ def feature_importance_trees(impurity_decrease, n_features=None,
     else:
         imp = A.mean(axis=0)
     order = np.argsort(imp)[::-1]
-    names = (list(feature_names) if feature_names is not None
-             else ["x%d" % j for j in range(p)])
+    names = list(feature_names) if feature_names is not None else ["x%d" % j for j in range(p)]
     if len(names) != p:
-        raise ValueError(
-            "feature_names has %d entries for %d features." % (len(names), p)
-        )
+        raise ValueError("feature_names has %d entries for %d features." % (len(names), p))
     s = imp.sum()
     share = imp / s if s > 0 else np.full(p, np.nan)
     # Gini of the shares, and the inverse Simpson index
     srt = np.sort(share)
     idx = np.arange(1, p + 1)
-    gini = float(2 * np.sum(idx * srt) / (p * np.sum(srt)) - (p + 1) / p) \
-        if s > 0 and p > 1 else 0.0
-    eff = float(1.0 / np.sum(share ** 2)) if s > 0 else np.nan
-    stab = (float(np.mean(np.std(A, axis=0) / np.maximum(A.mean(axis=0), 1e-12)))
-            if B > 1 else np.nan)
+    gini = float(2 * np.sum(idx * srt) / (p * np.sum(srt)) - (p + 1) / p) if s > 0 and p > 1 else 0.0
+    eff = float(1.0 / np.sum(share**2)) if s > 0 else np.nan
+    stab = float(np.mean(np.std(A, axis=0) / np.maximum(A.mean(axis=0), 1e-12))) if B > 1 else np.nan
     return RichResult(
         payload={
             "estimate": imp,

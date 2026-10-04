@@ -64,9 +64,7 @@ def minimum_spanning_tree(edges, n_vertices, weights=None):
         raise ValueError(f"n_vertices must be positive; got {n}.")
     w = [1] * m if weights is None else list(weights)
     if len(w) != m:
-        raise ValueError(
-            f"weights has length {len(w)} but there are {m} edges."
-        )
+        raise ValueError(f"weights has length {len(w)} but there are {m} edges.")
     for a, b in E:
         if not (0 <= a < n and 0 <= b < n):
             raise ValueError(f"edge ({a}, {b}) leaves 0 .. {n - 1}.")
@@ -154,8 +152,7 @@ def bipartite_matching(left_n, right_n, edges):
         if augment(u, [False] * rn):
             size += 1
     pairs = [(u, v) for v, u in enumerate(match_r) if u != -1]
-    return {"size": size, "pairs": sorted(pairs), "match_right": match_r,
-            "left_n": ln, "right_n": rn}
+    return {"size": size, "pairs": sorted(pairs), "match_right": match_r, "left_n": ln, "right_n": rn}
 
 
 def konig_theorem(left_n, right_n, edges):
@@ -307,8 +304,8 @@ def hall_condition(left_n, right_n, edges):
         interpretation=(
             f"Every subset of the left side has at least as many neighbours "
             f"as members, so a matching saturating all {ln} exists."
-            if holds else
-            f"The set {worst} has only {len(set().union(*[nbr[u] for u in worst])) if worst else 0} "
+            if holds
+            else f"The set {worst} has only {len(set().union(*[nbr[u] for u in worst])) if worst else 0} "
             f"neighbours for {len(worst) if worst else 0} members, so no "
             "matching can saturate the left side."
         ),
@@ -393,8 +390,7 @@ def max_flow_min_cut(capacity, source=0, sink=None):
             if not reach[v] and R[u][v] > 1e-12:
                 reach[v] = True
                 queue.append(v)
-    cut_edges = [(i, j) for i in range(n) for j in range(n)
-                 if reach[i] and not reach[j] and C[i][j] > 0]
+    cut_edges = [(i, j) for i in range(n) for j in range(n) if reach[i] and not reach[j] and C[i][j] > 0]
     cut_cap = sum(C[i][j] for i, j in cut_edges)
 
     out = RichResult(
@@ -413,7 +409,8 @@ def max_flow_min_cut(capacity, source=0, sink=None):
             "cut_edges": cut_edges,
             "theorem_holds": abs(flow - cut_cap) < 1e-9,
             "residual_gap": abs(flow - cut_cap),
-            "source": s, "sink": t,
+            "source": s,
+            "sink": t,
             "n": n,
             "method": "Ford-Fulkerson with a verified minimum cut",
         },

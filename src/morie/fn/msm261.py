@@ -19,7 +19,6 @@ __all__ = ["flmint", "mvsml_convolutional_nn_eq_14_1"]
 
 
 def flmint(t, x_values, beta_values, mu=0.0):
-
     """Y = mu + int_0^T x(t) beta(t) dt + E (eq. 14.1).  Functional
     regression replaces the linear predictor of an ordinary
     regression by the integral of the product of a centered covariate

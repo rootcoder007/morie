@@ -1,8 +1,8 @@
 """Tests for morie.fn.smscr — Smoothed maximum score estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.smscr import smscr
 
 

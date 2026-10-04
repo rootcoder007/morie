@@ -28,8 +28,14 @@ def test_bnsnig_basic():
 
     # Documented return keys per the docstring.
     expected_keys = {
-        "lower", "upper", "width", "estimate",
-        "n_strata", "n_cells", "refuted", "n",
+        "lower",
+        "upper",
+        "width",
+        "estimate",
+        "n_strata",
+        "n_cells",
+        "refuted",
+        "n",
     }
     assert expected_keys.issubset(result.keys())
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.savgf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.savgf import savgf
 
 

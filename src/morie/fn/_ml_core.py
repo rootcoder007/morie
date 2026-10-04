@@ -23,10 +23,9 @@ from . import _array_core as _ac
 
 
 def _X2d(X):
-    if hasattr(X, "_cols"):            # native DataFrame
+    if hasattr(X, "_cols"):  # native DataFrame
         cols = list(X._cols.values())
-        return [[float(c[i]) for c in cols]
-                for i in range(X.shape[0])]
+        return [[float(c[i]) for c in cols] for i in range(X.shape[0])]
     if hasattr(X, "columns") and hasattr(X, "values"):  # real pandas
         return [[float(v) for v in row] for row in X.values.tolist()]
     if hasattr(X, "_data") and hasattr(X, "index"):  # native Series
@@ -38,13 +37,13 @@ def _X2d(X):
 def _y1d(y):
     if hasattr(y, "_data") and hasattr(y, "index"):  # native Series
         return [float(v) for v in y._data]
-    if hasattr(y, "values") and hasattr(y, "index") \
-            and not hasattr(y, "_flat"):             # real pandas
+    if hasattr(y, "values") and hasattr(y, "index") and not hasattr(y, "_flat"):  # real pandas
         return [float(v) for v in y.values.tolist()]
     return [float(v) for v in _ac.asarray(y)._flat()]
 
 
 # ===================================================== preprocessing
+
 
 class StandardScaler:
     def __init__(self, with_mean=True, with_std=True):
@@ -55,13 +54,9 @@ class StandardScaler:
         del y
         Xd = _X2d(X)
         n, d = len(Xd), len(Xd[0])
-        self.mean_ = [_math.fsum(Xd[r][j] for r in range(n)) / n
-                      for j in range(d)]
-        self.var_ = [_math.fsum((Xd[r][j] - self.mean_[j]) ** 2
-                                for r in range(n)) / n
-                     for j in range(d)]
-        self.scale_ = [_math.sqrt(v) if v > 0 else 1.0
-                       for v in self.var_]
+        self.mean_ = [_math.fsum(Xd[r][j] for r in range(n)) / n for j in range(d)]
+        self.var_ = [_math.fsum((Xd[r][j] - self.mean_[j]) ** 2 for r in range(n)) / n for j in range(d)]
+        self.scale_ = [_math.sqrt(v) if v > 0 else 1.0 for v in self.var_]
         return self
 
     def transform(self, X):
@@ -82,8 +77,7 @@ class StandardScaler:
 
     def inverse_transform(self, X):
         Xd = _X2d(X)
-        return _ac.marr([[v * self.scale_[j] + self.mean_[j]
-                          for j, v in enumerate(r)] for r in Xd])
+        return _ac.marr([[v * self.scale_[j] + self.mean_[j] for j, v in enumerate(r)] for r in Xd])
 
 
 class MinMaxScaler:
@@ -100,23 +94,20 @@ class MinMaxScaler:
         self.data_min_ = [min(r[j] for r in Xd) for j in range(d)]
         self.data_max_ = [max(r[j] for r in Xd) for j in range(d)]
         lo, hi = self.feature_range
-        self.scale_ = [(hi - lo) / (mx - mn) if mx > mn else 1.0
-                       for mn, mx in zip(self.data_min_, self.data_max_)]
+        self.scale_ = [(hi - lo) / (mx - mn) if mx > mn else 1.0 for mn, mx in zip(self.data_min_, self.data_max_)]
         self.min_ = [lo - mn * sc for mn, sc in zip(self.data_min_, self.scale_)]
         return self
 
     def transform(self, X):
         Xd = _X2d(X)
-        return _ac.marr([[v * self.scale_[j] + self.min_[j] for j, v in enumerate(r)]
-                         for r in Xd])
+        return _ac.marr([[v * self.scale_[j] + self.min_[j] for j, v in enumerate(r)] for r in Xd])
 
     def fit_transform(self, X, y=None):
         return self.fit(X).transform(X)
 
     def inverse_transform(self, X):
         Xd = _X2d(X)
-        return _ac.marr([[(v - self.min_[j]) / self.scale_[j] for j, v in enumerate(r)]
-                         for r in Xd])
+        return _ac.marr([[(v - self.min_[j]) / self.scale_[j] for j, v in enumerate(r)] for r in Xd])
 
 
 class LabelEncoder:
@@ -134,13 +125,11 @@ class LabelEncoder:
         return self.fit(y).transform(y)
 
     def inverse_transform(self, idx):
-        return [self.classes_[int(i)] for i in
-                (idx._flat() if hasattr(idx, "_flat") else idx)]
+        return [self.classes_[int(i)] for i in (idx._flat() if hasattr(idx, "_flat") else idx)]
 
 
 class PolynomialFeatures:
-    def __init__(self, degree=2, include_bias=True,
-                 interaction_only=False):
+    def __init__(self, degree=2, include_bias=True, interaction_only=False):
         self.degree = degree
         self.include_bias = include_bias
         self.interaction_only = interaction_only
@@ -152,15 +141,17 @@ class PolynomialFeatures:
 
     def _combos(self):
         import itertools
+
         d = self._d
         out = []
         if self.include_bias:
             out.append(())
         for deg in range(1, self.degree + 1):
-            gen = (itertools.combinations(range(d), deg)
-                   if self.interaction_only else
-                   itertools.combinations_with_replacement(
-                       range(d), deg))
+            gen = (
+                itertools.combinations(range(d), deg)
+                if self.interaction_only
+                else itertools.combinations_with_replacement(range(d), deg)
+            )
             out.extend(gen)
         return out
 
@@ -184,11 +175,9 @@ class PolynomialFeatures:
     def get_feature_names_out(self, input_features=None):
         """sklearn's names: "1", "x0", "x0^2", "x0 x1", in transform order."""
         d = self._d
-        names = (list(input_features) if input_features is not None
-                 else ["x%d" % j for j in range(d)])
+        names = list(input_features) if input_features is not None else ["x%d" % j for j in range(d)]
         if len(names) != d:
-            raise ValueError("input_features has %d names for %d features"
-                             % (len(names), d))
+            raise ValueError("input_features has %d names for %d features" % (len(names), d))
         out = []
         for cmb in self._combos():
             if not cmb:
@@ -204,6 +193,7 @@ class PolynomialFeatures:
 
 # ===================================================== linear models
 
+
 class LinearRegression:
     def __init__(self, fit_intercept=True):
         self.fit_intercept = fit_intercept
@@ -214,26 +204,19 @@ class LinearRegression:
         if self.fit_intercept:
             Xd = [[1.0] + r for r in Xd]
         n, k = len(Xd), len(Xd[0])
-        XtX = [[_math.fsum(Xd[r][i] * Xd[r][j] for r in range(n))
-                for j in range(k)] for i in range(k)]
-        Xty = [_math.fsum(Xd[r][i] * yv[r] for r in range(n))
-               for i in range(k)]
+        XtX = [[_math.fsum(Xd[r][i] * Xd[r][j] for r in range(n)) for j in range(k)] for i in range(k)]
+        Xty = [_math.fsum(Xd[r][i] * yv[r] for r in range(n)) for i in range(k)]
         try:
-            b = list(_ac.linalg.solve(_ac.marr(XtX),
-                                      _ac.marr(Xty))._flat())
+            b = list(_ac.linalg.solve(_ac.marr(XtX), _ac.marr(Xty))._flat())
         except Exception:
             # rank-deficient design: minimum-norm least squares via
             # SVD, matching sklearn (scipy.linalg.lstsq)
             u, sv, vt = _ac.linalg.svd(_ac.marr(Xd))
             svl = list(sv._flat())
             cut = (max(svl) if svl else 0.0) * max(n, k) * 2.2e-16
-            uy = [_math.fsum(u.data[r][c] * yv[r] for r in range(n))
-                  for c in range(len(svl))]
-            z = [uy[c] / svl[c] if svl[c] > cut else 0.0
-                 for c in range(len(svl))]
-            b = [_math.fsum(vt.data[c][j] * z[c]
-                            for c in range(len(svl)))
-                 for j in range(k)]
+            uy = [_math.fsum(u.data[r][c] * yv[r] for r in range(n)) for c in range(len(svl))]
+            z = [uy[c] / svl[c] if svl[c] > cut else 0.0 for c in range(len(svl))]
+            b = [_math.fsum(vt.data[c][j] * z[c] for c in range(len(svl))) for j in range(k)]
         if self.fit_intercept:
             self.intercept_ = b[0]
             self.coef_ = _ac.marr(b[1:])
@@ -245,10 +228,7 @@ class LinearRegression:
     def predict(self, X):
         Xd = _X2d(X)
         c = list(self.coef_._flat())
-        return _ac.marr([self.intercept_
-                         + _math.fsum(r[j] * c[j]
-                                      for j in range(len(c)))
-                         for r in Xd])
+        return _ac.marr([self.intercept_ + _math.fsum(r[j] * c[j] for j in range(len(c))) for r in Xd])
 
     def score(self, X, y):
         yv = _y1d(y)
@@ -274,25 +254,20 @@ class Ridge(LinearRegression):
         d = len(Xd[0])
         if self.fit_intercept:
             # center (sklearn does not penalize the intercept)
-            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n
-                  for j in range(d)]
+            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n for j in range(d)]
             ym = _math.fsum(yv) / n
-            Xc = [[Xd[r][j] - xm[j] for j in range(d)]
-                  for r in range(n)]
+            Xc = [[Xd[r][j] - xm[j] for j in range(d)] for r in range(n)]
             yc = [v - ym for v in yv]
         else:
             Xc, yc = Xd, yv
-        A = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n))
-              + (self.alpha if i == j else 0.0)
-              for j in range(d)] for i in range(d)]
-        b = [_math.fsum(Xc[r][i] * yc[r] for r in range(n))
-             for i in range(d)]
-        coef = list(_ac.linalg.solve(_ac.marr(A),
-                                     _ac.marr(b))._flat())
+        A = [
+            [_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n)) + (self.alpha if i == j else 0.0) for j in range(d)]
+            for i in range(d)
+        ]
+        b = [_math.fsum(Xc[r][i] * yc[r] for r in range(n)) for i in range(d)]
+        coef = list(_ac.linalg.solve(_ac.marr(A), _ac.marr(b))._flat())
         self.coef_ = _ac.marr(coef)
-        self.intercept_ = (ym - _math.fsum(coef[j] * xm[j]
-                                           for j in range(d))) \
-            if self.fit_intercept else 0.0
+        self.intercept_ = (ym - _math.fsum(coef[j] * xm[j] for j in range(d))) if self.fit_intercept else 0.0
         return self
 
 
@@ -313,18 +288,15 @@ class RidgeCV(Ridge):
             press = 0.0
             # hat diagonal from centered design
             d = len(Xd[0])
-            xm = [_math.fsum(Xd[t][j] for t in range(n)) / n
-                  for j in range(d)]
-            Xc = [[Xd[t][j] - xm[j] for j in range(d)]
-                  for t in range(n)]
-            A = [[_math.fsum(Xc[t][i] * Xc[t][j] for t in range(n))
-                  + (alpha if i == j else 0.0)
-                  for j in range(d)] for i in range(d)]
+            xm = [_math.fsum(Xd[t][j] for t in range(n)) / n for j in range(d)]
+            Xc = [[Xd[t][j] - xm[j] for j in range(d)] for t in range(n)]
+            A = [
+                [_math.fsum(Xc[t][i] * Xc[t][j] for t in range(n)) + (alpha if i == j else 0.0) for j in range(d)]
+                for i in range(d)
+            ]
             Ainv = _ac.linalg.inv(_ac.marr(A)).tolist()
             for t in range(n):
-                h = 1.0 / n + _math.fsum(
-                    Xc[t][i] * Ainv[i][j] * Xc[t][j]
-                    for i in range(d) for j in range(d))
+                h = 1.0 / n + _math.fsum(Xc[t][i] * Ainv[i][j] * Xc[t][j] for i in range(d) for j in range(d))
                 e = (yv[t] - pred[t]) / _bi.max(1.0 - h, 1e-10)
                 press += e * e
             if best is None or press < best:
@@ -358,14 +330,14 @@ def _check_finite(rows, what="X"):
             if v != v or v in (float("inf"), float("-inf")):
                 raise ValueError(
                     f"{what} contains NaN or infinite values; drop or impute "
-                    "them before fitting (sklearn raises here too)")
+                    "them before fitting (sklearn raises here too)"
+                )
 
 
 class LogisticRegression:
     """Binary or multinomial logistic with L2 (sklearn C parametrization)."""
 
-    def __init__(self, C=1.0, fit_intercept=True, penalty="l2",
-                 max_iter=200, **kw):
+    def __init__(self, C=1.0, fit_intercept=True, penalty="l2", max_iter=200, **kw):
         del kw
         self.C = C
         self.fit_intercept = fit_intercept
@@ -376,7 +348,7 @@ class LogisticRegression:
         Xd = _X2d(X)
         yraw = list(y.tolist() if hasattr(y, "tolist") else y)
         try:
-            self.classes_ = sorted(set(yraw))      # numpy.unique order
+            self.classes_ = sorted(set(yraw))  # numpy.unique order
         except TypeError:
             self.classes_ = sorted(set(yraw), key=str)
         if len(self.classes_) < 2:
@@ -391,21 +363,19 @@ class LogisticRegression:
         lam = 0.0 if self.penalty in (None, "none") else 1.0 / self.C
         b = [0.0] * k
         for _ in range(self.max_iter):
-            eta = [_math.fsum(Xd[r][j] * b[j] for j in range(k))
-                   for r in range(n)]
+            eta = [_math.fsum(Xd[r][j] * b[j] for j in range(k)) for r in range(n)]
             p = [_sigmoid(e) for e in eta]
-            g = [_math.fsum(Xd[r][i] * (p[r] - yv[r])
-                            for r in range(n)) for i in range(k)]
-            H = [[_math.fsum(Xd[r][i] * p[r] * (1.0 - p[r])
-                             * Xd[r][j] for r in range(n))
-                  for j in range(k)] for i in range(k)]
+            g = [_math.fsum(Xd[r][i] * (p[r] - yv[r]) for r in range(n)) for i in range(k)]
+            H = [
+                [_math.fsum(Xd[r][i] * p[r] * (1.0 - p[r]) * Xd[r][j] for r in range(n)) for j in range(k)]
+                for i in range(k)
+            ]
             for i in range(k):
                 if not (self.fit_intercept and i == 0):
                     g[i] += lam * b[i]
                     H[i][i] += lam
                 H[i][i] += 1e-10
-            step = list(_ac.linalg.solve(_ac.marr(H),
-                                         _ac.marr(g))._flat())
+            step = list(_ac.linalg.solve(_ac.marr(H), _ac.marr(g))._flat())
             b = [b[i] - step[i] for i in range(k)]
             if max(abs(s) for s in step) < 1e-10:
                 break
@@ -430,22 +400,21 @@ class LogisticRegression:
         X1 = [[1.0] + r for r in Xd] if self.fit_intercept else Xd
         n, k = len(X1), len(X1[0])
         lam = 0.0 if self.penalty in (None, "none") else 1.0 / self.C
-        pen = [0.0 if (self.fit_intercept and j == 0) else lam
-               for j in range(k)]
+        pen = [0.0 if (self.fit_intercept and j == 0) else lam for j in range(k)]
         W = [[0.0] * k for _ in range(K)]
         for _ in range(self.max_iter):
             P = []
             for r in range(n):
-                z = [_math.fsum(X1[r][j] * W[c][j] for j in range(k))
-                     for c in range(K)]
+                z = [_math.fsum(X1[r][j] * W[c][j] for j in range(k)) for c in range(K)]
                 m = max(z)
                 e = [_math.exp(v - m) for v in z]
                 t = _math.fsum(e)
                 P.append([v / t for v in e])
-            g = [_math.fsum(X1[r][j] * (P[r][c] - (1.0 if yi[r] == c
-                                                     else 0.0))
-                            for r in range(n)) + pen[j] * W[c][j]
-                 for c in range(K) for j in range(k)]
+            g = [
+                _math.fsum(X1[r][j] * (P[r][c] - (1.0 if yi[r] == c else 0.0)) for r in range(n)) + pen[j] * W[c][j]
+                for c in range(K)
+                for j in range(k)
+            ]
             d = K * k
             H = [[0.0] * d for _ in range(d)]
             for c in range(K):
@@ -453,9 +422,9 @@ class LogisticRegression:
                     for j in range(k):
                         for j2 in range(k):
                             h = _math.fsum(
-                                X1[r][j] * X1[r][j2] * P[r][c]
-                                * ((1.0 if c == c2 else 0.0) - P[r][c2])
-                                for r in range(n))
+                                X1[r][j] * X1[r][j2] * P[r][c] * ((1.0 if c == c2 else 0.0) - P[r][c2])
+                                for r in range(n)
+                            )
                             H[c * k + j][c2 * k + j2] = h
                             H[c2 * k + j2][c * k + j] = h
             for c in range(K):
@@ -489,14 +458,12 @@ class LogisticRegression:
         if len(self.classes_) > 2:
             C = self.coef_.tolist()
             b = self.intercept_.tolist()
-            return _ac.marr([[b[c] + _math.fsum(r[j] * C[c][j]
-                                                for j in range(len(r)))
-                              for c in range(len(C))] for r in Xd])
+            return _ac.marr(
+                [[b[c] + _math.fsum(r[j] * C[c][j] for j in range(len(r))) for c in range(len(C))] for r in Xd]
+            )
         c = self.coef_.tolist()[0]
         b0 = self.intercept_.tolist()[0]
-        return _ac.marr([b0 + _math.fsum(r[j] * c[j]
-                                         for j in range(len(c)))
-                         for r in Xd])
+        return _ac.marr([b0 + _math.fsum(r[j] * c[j] for j in range(len(c))) for r in Xd])
 
     def predict_proba(self, X):
         if len(self.classes_) > 2:
@@ -516,19 +483,17 @@ class LogisticRegression:
 
     def predict(self, X):
         if len(self.classes_) > 2:
-            return [self.classes_[max(range(len(p)), key=p.__getitem__)]
-                    for p in self.predict_proba(X).tolist()]
-        return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0]
-                for p in self.predict_proba(X).data]
+            return [self.classes_[max(range(len(p)), key=p.__getitem__)] for p in self.predict_proba(X).tolist()]
+        return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0] for p in self.predict_proba(X).data]
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = self.predict(X)
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 # ===================================================== trees
+
 
 class _Tree:
     __slots__ = ("feat", "thr", "left", "right", "value", "impurity", "n")
@@ -545,8 +510,7 @@ class _Tree:
 
 def _class_impurity(counts, n, criterion):
     if criterion == "entropy" or criterion == "log_loss":
-        return -_math.fsum((c / n) * _math.log2(c / n)
-                           for c in counts if c > 0)
+        return -_math.fsum((c / n) * _math.log2(c / n) for c in counts if c > 0)
     return 1.0 - _math.fsum((c / n) ** 2 for c in counts)
 
 
@@ -566,14 +530,14 @@ class _SkTree:
             self.threshold.append(node.thr if node.feat >= 0 else -2.0)
             self.impurity.append(node.impurity)
             self.n_node_samples.append(node.n)
-            self.value.append([list(node.value)] if isinstance(node.value, list)
-                              else [[node.value]])
+            self.value.append([list(node.value)] if isinstance(node.value, list) else [[node.value]])
             self.children_left.append(-1)
             self.children_right.append(-1)
             if node.feat >= 0:
                 self.children_left[i] = walk(node.left, depth + 1)
                 self.children_right[i] = walk(node.right, depth + 1)
             return i
+
         walk(root, 0)
         self.node_count = len(self.feature)
         self.max_depth = self._depth
@@ -582,8 +546,11 @@ class _SkTree:
             setattr(self, k, _ac._typed(_ac.marr([float(v) for v in getattr(self, k)]), int))
         self.threshold = _ac.marr(self.threshold)
         self.impurity = _ac.marr(self.impurity)
-        self.value = _ac.ndlist(self.value) if n_classes > 1 else _ac.marr(
-            [[v[0][0]] for v in self.value]).reshape((self.node_count, 1, 1))
+        self.value = (
+            _ac.ndlist(self.value)
+            if n_classes > 1
+            else _ac.marr([[v[0][0]] for v in self.value]).reshape((self.node_count, 1, 1))
+        )
         self.weighted_n_node_samples = _ac.marr([float(v) for v in self.n_node_samples._flat()])
 
     def compute_feature_importances(self, n_features):
@@ -596,11 +563,10 @@ class _SkTree:
             if f < 0:
                 continue
             l, r = int(self.children_left[i]), int(self.children_right[i])
-            nt, nl, nr = (float(self.n_node_samples[i]), float(self.n_node_samples[l]),
-                          float(self.n_node_samples[r]))
-            imp[f] += (nt / N) * (float(self.impurity[i])
-                                  - nl / nt * float(self.impurity[l])
-                                  - nr / nt * float(self.impurity[r]))
+            nt, nl, nr = (float(self.n_node_samples[i]), float(self.n_node_samples[l]), float(self.n_node_samples[r]))
+            imp[f] += (nt / N) * (
+                float(self.impurity[i]) - nl / nt * float(self.impurity[l]) - nr / nt * float(self.impurity[r])
+            )
         tot = _math.fsum(imp)
         return _ac.marr([v / tot if tot > 0 else 0.0 for v in imp])
 
@@ -627,14 +593,18 @@ class _TreeMixin:
         for r in _X2d(X):
             i = 0
             while int(t.feature[i]) >= 0:
-                i = int(t.children_left[i]) if r[int(t.feature[i])] <= float(t.threshold[i]) \
+                i = (
+                    int(t.children_left[i])
+                    if r[int(t.feature[i])] <= float(t.threshold[i])
                     else int(t.children_right[i])
+                )
             out.append(float(i))
         return _ac._typed(_ac.marr(out), int)
 
 
-def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
-                max_features, rng, classify, n_classes, criterion="gini"):
+def _build_tree(
+    Xd, yv, idx, depth, max_depth, min_samples_split, max_features, rng, classify, n_classes, criterion="gini"
+):
     node = _Tree()
     n = len(idx)
     node.n = n
@@ -652,8 +622,7 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
         var = _math.fsum((yv[i] - m) ** 2 for i in idx)
         node.impurity = var / n
         pure = var <= 1e-12
-    if (pure or n < min_samples_split
-            or (max_depth is not None and depth >= max_depth)):
+    if pure or n < min_samples_split or (max_depth is not None and depth >= max_depth):
         return node
     d = len(Xd[0])
     feats = list(range(d))
@@ -687,8 +656,7 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
                     # EPSILON guard mirrors sklearn's splitter: scores
                     # within float noise keep the first feature found
                     # in the (seeded) random order
-                    thr = 0.5 * (Xd[order[pos]][f]
-                                 + Xd[order[pos + 1]][f])
+                    thr = 0.5 * (Xd[order[pos]][f] + Xd[order[pos + 1]][f])
                     best = (score, f, thr)
         else:
             sl = 0.0
@@ -709,8 +677,7 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
                     # EPSILON guard mirrors sklearn's splitter: scores
                     # within float noise keep the first feature found
                     # in the (seeded) random order
-                    thr = 0.5 * (Xd[order[pos]][f]
-                                 + Xd[order[pos + 1]][f])
+                    thr = 0.5 * (Xd[order[pos]][f] + Xd[order[pos + 1]][f])
                     best = (score, f, thr)
     if best is None:
         return node
@@ -721,25 +688,23 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
         return node
     node.feat = f
     node.thr = thr
-    node.left = _build_tree(Xd, yv, li, depth + 1, max_depth,
-                            min_samples_split, max_features, rng,
-                            classify, n_classes, criterion)
-    node.right = _build_tree(Xd, yv, ri, depth + 1, max_depth,
-                             min_samples_split, max_features, rng,
-                             classify, n_classes, criterion)
+    node.left = _build_tree(
+        Xd, yv, li, depth + 1, max_depth, min_samples_split, max_features, rng, classify, n_classes, criterion
+    )
+    node.right = _build_tree(
+        Xd, yv, ri, depth + 1, max_depth, min_samples_split, max_features, rng, classify, n_classes, criterion
+    )
     return node
 
 
 def _tree_predict(node, row):
     while node.feat >= 0:
-        node = node.left if row[node.feat] <= node.thr \
-            else node.right
+        node = node.left if row[node.feat] <= node.thr else node.right
     return node.value
 
 
 class DecisionTreeRegressor(_TreeMixin):
-    def __init__(self, criterion="squared_error", max_depth=None,
-                 min_samples_split=2, random_state=None, **kw):
+    def __init__(self, criterion="squared_error", max_depth=None, min_samples_split=2, random_state=None, **kw):
         del kw
         self.criterion = criterion
         self.max_depth = max_depth
@@ -750,20 +715,17 @@ class DecisionTreeRegressor(_TreeMixin):
         Xd = _X2d(X)
         yv = _y1d(y)
         self.n_features_in_ = len(Xd[0]) if Xd else 0
-        self._root = _build_tree(Xd, yv, list(range(len(yv))), 0,
-                                 self.max_depth,
-                                 self.min_samples_split, None, None,
-                                 False, 0)
+        self._root = _build_tree(
+            Xd, yv, list(range(len(yv))), 0, self.max_depth, self.min_samples_split, None, None, False, 0
+        )
         return self
 
     def predict(self, X):
-        return _ac.marr([_tree_predict(self._root, r)
-                         for r in _X2d(X)])
+        return _ac.marr([_tree_predict(self._root, r) for r in _X2d(X)])
 
 
 class DecisionTreeClassifier(_TreeMixin):
-    def __init__(self, criterion="gini", max_depth=None,
-                 min_samples_split=2, random_state=None, **kw):
+    def __init__(self, criterion="gini", max_depth=None, min_samples_split=2, random_state=None, **kw):
         del kw
         if criterion not in ("gini", "entropy", "log_loss"):
             raise ValueError("criterion must be 'gini', 'entropy' or 'log_loss'")
@@ -780,10 +742,19 @@ class DecisionTreeClassifier(_TreeMixin):
         self.n_features_in_ = len(Xd[0]) if Xd else 0
         cmap = {c: i for i, c in enumerate(self.classes_)}
         yv = [float(cmap[v]) for v in yraw]
-        self._root = _build_tree(Xd, yv, list(range(len(yv))), 0,
-                                 self.max_depth,
-                                 self.min_samples_split, None, None,
-                                 True, len(self.classes_), self.criterion)
+        self._root = _build_tree(
+            Xd,
+            yv,
+            list(range(len(yv))),
+            0,
+            self.max_depth,
+            self.min_samples_split,
+            None,
+            None,
+            True,
+            len(self.classes_),
+            self.criterion,
+        )
         return self
 
     def predict_proba(self, X):
@@ -797,24 +768,30 @@ class DecisionTreeClassifier(_TreeMixin):
     def predict(self, X):
         out = []
         for p in self.predict_proba(X).data:
-            out.append(self.classes_[max(range(len(p)),
-                                         key=lambda i: p[i])])
+            out.append(self.classes_[max(range(len(p)), key=lambda i: p[i])])
         return out
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = self.predict(X)
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 # ===================================================== ensembles
 
+
 class _ForestBase:
-    def __init__(self, n_estimators=100, max_depth=None,
-                 min_samples_split=2, max_features=None,
-                 random_state=0, oob_score=False, bootstrap=True,
-                 **kw):
+    def __init__(
+        self,
+        n_estimators=100,
+        max_depth=None,
+        min_samples_split=2,
+        max_features=None,
+        random_state=0,
+        oob_score=False,
+        bootstrap=True,
+        **kw,
+    ):
         del kw
         self.n_estimators = n_estimators
         self.max_depth = max_depth
@@ -863,24 +840,21 @@ class _ForestBase:
             else:
                 boot = list(range(n))
             boot_sets.append(set(boot))
-            self._trees.append(_build_tree(
-                Xd, yv, boot, 0, self.max_depth,
-                self.min_samples_split, mf, rng, classify,
-                n_classes))
+            self._trees.append(
+                _build_tree(Xd, yv, boot, 0, self.max_depth, self.min_samples_split, mf, rng, classify, n_classes)
+            )
         if self.oob_score and self.bootstrap:
             # Out-of-bag estimate: Breiman, L. (1996), "Bagging predictors",
-# Machine Learning 24(2), 123-140, doi:10.1007/BF00058655. PDF not
-# in hand (Springer serves HTML); cited from bibliographic details.
-# Each sample scored
+            # Machine Learning 24(2), 123-140, doi:10.1007/BF00058655. PDF not
+            # in hand (Springer serves HTML); cited from bibliographic details.
+            # Each sample scored
             # only by the trees whose bootstrap excluded it
             correct = 0.0
             counted = 0
             sse = 0.0
             oob_pairs = []
             for i in range(n):
-                preds = [_tree_predict(t, Xd[i])
-                         for t, bs in zip(self._trees, boot_sets)
-                         if i not in bs]
+                preds = [_tree_predict(t, Xd[i]) for t, bs in zip(self._trees, boot_sets) if i not in bs]
                 if not preds:
                     continue
                 counted += 1
@@ -889,8 +863,7 @@ class _ForestBase:
                     for p in preds:
                         if isinstance(p, list):
                             # class-count leaf: argmax class
-                            k = _bi.max(range(len(p)),
-                                        key=lambda c2: p[c2])
+                            k = _bi.max(range(len(p)), key=lambda c2: p[c2])
                         else:
                             k = int(round(p))
                         votes[k] = votes.get(k, 0) + 1
@@ -907,8 +880,7 @@ class _ForestBase:
                 self.oob_score_ = correct / counted
             else:
                 ybar = _math.fsum(y2 for _p, y2 in oob_pairs) / counted
-                tss = _math.fsum((y2 - ybar) ** 2
-                                 for _p, y2 in oob_pairs)
+                tss = _math.fsum((y2 - ybar) ** 2 for _p, y2 in oob_pairs)
                 self.oob_score_ = 1.0 - sse / tss if tss > 0 else 0.0
 
 
@@ -961,15 +933,12 @@ class RandomForestClassifier(_ForestBase):
         return _ac.marr(out)
 
     def predict(self, X):
-        return [self.classes_[max(range(len(p)),
-                                  key=lambda i: p[i])]
-                for p in self.predict_proba(X).data]
+        return [self.classes_[max(range(len(p)), key=lambda i: p[i])] for p in self.predict_proba(X).data]
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = self.predict(X)
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 def _split_count_importances(trees, n_features):
@@ -983,16 +952,15 @@ def _split_count_importances(trees, n_features):
         d_counts[node.feat] = d_counts.get(node.feat, 0.0) + w
         walk(node.left, w)
         walk(node.right, w)
+
     for t in trees:
         walk(t, 1.0)
     tot = _math.fsum(d_counts.values()) or 1.0
-    return _ac.marr([d_counts.get(j, 0.0) / tot
-                     for j in range(n_features)])
+    return _ac.marr([d_counts.get(j, 0.0) / tot for j in range(n_features)])
 
 
 class GradientBoostingRegressor:
-    def __init__(self, n_estimators=100, learning_rate=0.1,
-                 max_depth=3, random_state=0, **kw):
+    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, random_state=0, **kw):
         del kw
         self.n_estimators = n_estimators
         self.learning_rate = learning_rate
@@ -1010,13 +978,10 @@ class GradientBoostingRegressor:
         self._trees = []
         for _ in range(self.n_estimators):
             resid = [yv[i] - pred[i] for i in range(n)]
-            t = _build_tree(Xd, resid, list(range(n)), 0,
-                            self.max_depth, 2, self._n_features, rng,
-                            False, 0)
+            t = _build_tree(Xd, resid, list(range(n)), 0, self.max_depth, 2, self._n_features, rng, False, 0)
             self._trees.append(t)
             for i in range(n):
-                pred[i] += self.learning_rate * _tree_predict(
-                    t, Xd[i])
+                pred[i] += self.learning_rate * _tree_predict(t, Xd[i])
         return self
 
     def predict(self, X):
@@ -1045,8 +1010,7 @@ class GradientBoostingRegressor:
 class GradientBoostingClassifier:
     """Binary log-loss boosting on the logit scale."""
 
-    def __init__(self, n_estimators=100, learning_rate=0.1,
-                 max_depth=3, random_state=0, **kw):
+    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, random_state=0, **kw):
         del kw
         self.n_estimators = n_estimators
         self.learning_rate = learning_rate
@@ -1060,8 +1024,7 @@ class GradientBoostingClassifier:
         yv = [1.0 if v == self.classes_[1] else 0.0 for v in yraw]
         n = len(yv)
         self._n_features = len(Xd[0]) if Xd else 0
-        pbar = _bi.min(_bi.max(_math.fsum(yv) / n, 1e-10),
-                       1.0 - 1e-10)
+        pbar = _bi.min(_bi.max(_math.fsum(yv) / n, 1e-10), 1.0 - 1e-10)
         self._f0 = _math.log(pbar / (1.0 - pbar))
         f = [self._f0] * n
         rng = _ac.random.default_rng(self.random_state)
@@ -1069,9 +1032,7 @@ class GradientBoostingClassifier:
         for _ in range(self.n_estimators):
             p = [1.0 / (1.0 + _math.exp(-v)) for v in f]
             resid = [yv[i] - p[i] for i in range(n)]
-            t = _build_tree(Xd, resid, list(range(n)), 0,
-                            self.max_depth, 2, self._n_features, rng,
-                            False, 0)
+            t = _build_tree(Xd, resid, list(range(n)), 0, self.max_depth, 2, self._n_features, rng, False, 0)
             self._trees.append(t)
             for i in range(n):
                 f[i] += self.learning_rate * _tree_predict(t, Xd[i])
@@ -1099,21 +1060,19 @@ class GradientBoostingClassifier:
         return _split_count_importances(self._trees, self._n_features)
 
     def predict(self, X):
-        return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0]
-                for p in self.predict_proba(X).data]
+        return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0] for p in self.predict_proba(X).data]
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = self.predict(X)
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 # ===================================================== clustering / PCA
 
+
 class KMeans:
-    def __init__(self, n_clusters=8, n_init=10, max_iter=300,
-                 random_state=0, **kw):
+    def __init__(self, n_clusters=8, n_init=10, max_iter=300, random_state=0, **kw):
         del kw
         self.n_clusters = n_clusters
         self.n_init = n_init
@@ -1133,9 +1092,7 @@ class KMeans:
             while len(cents) < k:
                 dists = []
                 for r in Xd:
-                    dmin = min(_math.fsum((r[j] - c[j]) ** 2
-                                          for j in range(d))
-                               for c in cents)
+                    dmin = min(_math.fsum((r[j] - c[j]) ** 2 for j in range(d)) for c in cents)
                     dists.append(dmin)
                 tot = _math.fsum(dists)
                 u = rng.uniform() * tot
@@ -1153,22 +1110,17 @@ class KMeans:
                 n_it = _it + 1
                 moved = False
                 for i, r in enumerate(Xd):
-                    bj = min(range(k), key=lambda j: _math.fsum(
-                        (r[t] - cents[j][t]) ** 2 for t in range(d)))
+                    bj = min(range(k), key=lambda j: _math.fsum((r[t] - cents[j][t]) ** 2 for t in range(d)))
                     if bj != labels[i]:
                         labels[i] = bj
                         moved = True
                 for j in range(k):
                     mem = [i for i in range(n) if labels[i] == j]
                     if mem:
-                        cents[j] = [
-                            _math.fsum(Xd[i][t] for i in mem)
-                            / len(mem) for t in range(d)]
+                        cents[j] = [_math.fsum(Xd[i][t] for i in mem) / len(mem) for t in range(d)]
                 if not moved:
                     break
-            inertia = _math.fsum(
-                _math.fsum((Xd[i][t] - cents[labels[i]][t]) ** 2
-                           for t in range(d)) for i in range(n))
+            inertia = _math.fsum(_math.fsum((Xd[i][t] - cents[labels[i]][t]) ** 2 for t in range(d)) for i in range(n))
             if best is None or inertia < best[0]:
                 best = (inertia, cents, labels, n_it)
         self.inertia_, cents, labels, self.n_iter_ = best
@@ -1184,10 +1136,12 @@ class KMeans:
         Xd = _X2d(X)
         cents = self.cluster_centers_.data
         d = len(Xd[0])
-        return _ac.marr([float(min(
-            range(len(cents)), key=lambda j: _math.fsum(
-                (r[t] - cents[j][t]) ** 2 for t in range(d))))
-            for r in Xd])
+        return _ac.marr(
+            [
+                float(min(range(len(cents)), key=lambda j: _math.fsum((r[t] - cents[j][t]) ** 2 for t in range(d))))
+                for r in Xd
+            ]
+        )
 
 
 class DBSCAN:
@@ -1198,9 +1152,7 @@ class DBSCAN:
         self.eps = eps
         self.min_samples = min_samples
         if metric not in self.METRICS:
-            raise ValueError(
-                "unknown metric %r; DBSCAN supports %s"
-                % (metric, ", ".join(self.METRICS)))
+            raise ValueError("unknown metric %r; DBSCAN supports %s" % (metric, ", ".join(self.METRICS)))
         self.metric = metric
 
     def _dist(self, a, b):
@@ -1219,8 +1171,7 @@ class DBSCAN:
 
         nbrs = []
         for i in range(n):
-            nbrs.append([j for j in range(n)
-                         if self._dist(Xd[i], Xd[j]) <= eps])
+            nbrs.append([j for j in range(n) if self._dist(Xd[i], Xd[j]) <= eps])
         core = [len(nbrs[i]) >= self.min_samples for i in range(n)]
 
         labels = [None] * n
@@ -1236,14 +1187,12 @@ class DBSCAN:
                     continue
                 labels[j] = cid
                 if core[j]:
-                    seeds.extend(t for t in nbrs[j]
-                                 if labels[t] is None or labels[t] == -1)
+                    seeds.extend(t for t in nbrs[j] if labels[t] is None or labels[t] == -1)
             cid += 1
         labels = [-1 if v is None else v for v in labels]
 
         self.labels_ = _ac.marr([float(v) for v in labels])
-        self.core_sample_indices_ = _ac.marr(
-            [float(i) for i in range(n) if core[i]])
+        self.core_sample_indices_ = _ac.marr([float(i) for i in range(n) if core[i]])
         return self
 
     def fit_predict(self, X, y=None):
@@ -1259,22 +1208,18 @@ class PCA:
         del y
         Xd = _X2d(X)
         n, d = len(Xd), len(Xd[0])
-        self.mean_ = [_math.fsum(Xd[r][j] for r in range(n)) / n
-                      for j in range(d)]
+        self.mean_ = [_math.fsum(Xd[r][j] for r in range(n)) / n for j in range(d)]
         if n < 2:
             # sklearn: one sample has no variance to explain; the
             # variances are 0/0 = nan and the components the identity
             k = self.n_components or d
-            self.components_ = _ac.marr([[1.0 if i == j else 0.0 for j in range(d)]
-                                         for i in range(k)])
+            self.components_ = _ac.marr([[1.0 if i == j else 0.0 for j in range(d)] for i in range(k)])
             self.explained_variance_ = _ac.marr([_math.nan] * k)
             self.explained_variance_ratio_ = _ac.marr([_math.nan] * k)
             self.singular_values_ = _ac.marr([0.0] * k)
             return self
-        Xc = [[Xd[r][j] - self.mean_[j] for j in range(d)]
-              for r in range(n)]
-        cov = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n))
-                / (n - 1) for j in range(d)] for i in range(d)]
+        Xc = [[Xd[r][j] - self.mean_[j] for j in range(d)] for r in range(n)]
+        cov = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n)) / (n - 1) for j in range(d)] for i in range(d)]
         w, V = _ac.linalg.eigh(_ac.marr(cov))
         wl = list(w._flat())
         Vd = V.tolist()
@@ -1289,30 +1234,30 @@ class PCA:
                 vec = [-v for v in vec]
             comps.append(vec)
         self.components_ = _ac.marr(comps)
-        self.explained_variance_ = _ac.marr(
-            [wl[c] for c in order[:k]])
+        self.explained_variance_ = _ac.marr([wl[c] for c in order[:k]])
         # sklearn: explained_variance_ = S^2 / (n - 1) for the singular
         # values S of the centred data
-        self.singular_values_ = _ac.marr(
-            [_math.sqrt(max(wl[c], 0.0) * (n - 1)) for c in order[:k]])
+        self.singular_values_ = _ac.marr([_math.sqrt(max(wl[c], 0.0) * (n - 1)) for c in order[:k]])
         tot = _math.fsum(wl)
-        self.explained_variance_ratio_ = _ac.marr(
-            [wl[c] / tot for c in order[:k]])
+        self.explained_variance_ratio_ = _ac.marr([wl[c] / tot for c in order[:k]])
         return self
 
     def transform(self, X):
         Xd = _X2d(X)
         comps = self.components_.data
-        return _ac.marr([[_math.fsum(
-            (r[j] - self.mean_[j]) * comps[c][j]
-            for j in range(len(r))) for c in range(len(comps))]
-            for r in Xd])
+        return _ac.marr(
+            [
+                [_math.fsum((r[j] - self.mean_[j]) * comps[c][j] for j in range(len(r))) for c in range(len(comps))]
+                for r in Xd
+            ]
+        )
 
     def fit_transform(self, X, y=None):
         return self.fit(X).transform(X)
 
 
 # ===================================================== isotonic / svm
+
 
 class IsotonicRegression:
     def __init__(self, increasing=True, **kw):
@@ -1335,11 +1280,10 @@ class IsotonicRegression:
         while i < len(vals) - 1:
             if vals[i] > vals[i + 1] + 1e-15:
                 tot = wts[i] + wts[i + 1]
-                merged = (vals[i] * wts[i]
-                          + vals[i + 1] * wts[i + 1]) / tot
-                vals[i:i + 2] = [merged]
-                wts[i:i + 2] = [tot]
-                blocks[i:i + 2] = [blocks[i] + blocks[i + 1]]
+                merged = (vals[i] * wts[i] + vals[i + 1] * wts[i + 1]) / tot
+                vals[i : i + 2] = [merged]
+                wts[i : i + 2] = [tot]
+                blocks[i : i + 2] = [blocks[i] + blocks[i + 1]]
                 if i > 0:
                     i -= 1
             else:
@@ -1356,6 +1300,7 @@ class IsotonicRegression:
 
     def predict(self, X):
         import bisect
+
         xs = _y1d(X)
         out = []
         for v in xs:
@@ -1400,10 +1345,9 @@ class LinearSVC:
         for t in range(1, self.max_iter + 1):
             i = int(rng.integers(0, n))
             eta = 1.0 / (lam * t)
-            margin = ys[i] * (_math.fsum(
-                w[j] * Xd[i][j] for j in range(d)) + b)
+            margin = ys[i] * (_math.fsum(w[j] * Xd[i][j] for j in range(d)) + b)
             for j in range(d):
-                w[j] *= (1.0 - eta * lam)
+                w[j] *= 1.0 - eta * lam
             if margin < 1.0:
                 for j in range(d):
                     w[j] += eta * ys[i] * Xd[i][j]
@@ -1416,19 +1360,15 @@ class LinearSVC:
         Xd = _X2d(X)
         w = self.coef_.tolist()[0]
         b = self.intercept_.tolist()[0]
-        return _ac.marr([b + _math.fsum(r[j] * w[j]
-                                        for j in range(len(w)))
-                         for r in Xd])
+        return _ac.marr([b + _math.fsum(r[j] * w[j] for j in range(len(w))) for r in Xd])
 
     def predict(self, X):
-        return [self.classes_[1] if v >= 0 else self.classes_[0]
-                for v in self.decision_function(X)._flat()]
+        return [self.classes_[1] if v >= 0 else self.classes_[0] for v in self.decision_function(X)._flat()]
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = self.predict(X)
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 class SVC:
@@ -1447,9 +1387,20 @@ class SVC:
     three-class problem as "class 1 against the rest".
     """
 
-    def __init__(self, C=1.0, kernel="rbf", degree=3, gamma="scale",
-                 coef0=0.0, tol=1e-3, max_iter=-1, probability=False,
-                 decision_function_shape="ovr", random_state=None, **kw):
+    def __init__(
+        self,
+        C=1.0,
+        kernel="rbf",
+        degree=3,
+        gamma="scale",
+        coef0=0.0,
+        tol=1e-3,
+        max_iter=-1,
+        probability=False,
+        decision_function_shape="ovr",
+        random_state=None,
+        **kw,
+    ):
         del kw
         self.C = C
         self.kernel = kernel
@@ -1471,8 +1422,7 @@ class SVC:
             return (g * dot + self.coef0) ** self.degree
         if self.kernel == "sigmoid":
             return _math.tanh(g * dot + self.coef0)
-        return _math.exp(-g * _math.fsum((x - y) ** 2
-                                         for x, y in zip(a, b)))
+        return _math.exp(-g * _math.fsum((x - y) ** 2 for x, y in zip(a, b)))
 
     def _solve(self, K, ys):
         """Binary dual by SMO with WSS2; returns (alpha, rho)."""
@@ -1481,14 +1431,12 @@ class SVC:
         tau = 1e-12
         alpha = [0.0] * n
         G = [-1.0] * n
-        limit = self.max_iter if self.max_iter and self.max_iter > 0 \
-            else 10000000
+        limit = self.max_iter if self.max_iter and self.max_iter > 0 else 10000000
         for _ in range(limit):
             gmax = -_math.inf
             i = -1
             for t in range(n):
-                if (ys[t] > 0 and alpha[t] < C) or \
-                        (ys[t] < 0 and alpha[t] > 0):
+                if (ys[t] > 0 and alpha[t] < C) or (ys[t] < 0 and alpha[t] > 0):
                     v = -ys[t] * G[t]
                     if v >= gmax:
                         gmax, i = v, t
@@ -1496,8 +1444,7 @@ class SVC:
             j = -1
             best = _math.inf
             for t in range(n):
-                if (ys[t] > 0 and alpha[t] > 0) or \
-                        (ys[t] < 0 and alpha[t] < C):
+                if (ys[t] > 0 and alpha[t] > 0) or (ys[t] < 0 and alpha[t] < C):
                     v = -ys[t] * G[t]
                     if v <= gmin:
                         gmin = v
@@ -1601,8 +1548,7 @@ class SVC:
                 ys = [1.0 if cls[t] == a else -1.0 for t in idx]
                 Ks = [[K[p][q] for q in idx] for p in idx]
                 al, rho = self._solve(Ks, ys)
-                coef = {idx[t]: al[t] * ys[t] for t in range(len(idx))
-                        if al[t] > 0}
+                coef = {idx[t]: al[t] * ys[t] for t in range(len(idx)) if al[t] > 0}
                 for t in coef:
                     is_sv[t] = True
                 pairs.append((a, b, coef, rho))
@@ -1610,11 +1556,9 @@ class SVC:
         pos = {i: k for k, i in enumerate(sv)}
         self.support_ = _ac.marr([float(i) for i in sv])
         self.support_._is_index = True
-        self.n_support_ = _ac.marr([float(sum(1 for i in members[c] if is_sv[i]))
-                                   for c in range(nc)])
+        self.n_support_ = _ac.marr([float(sum(1 for i in members[c] if is_sv[i])) for c in range(nc)])
         self.n_support_._dt = "int32"
-        self.support_vectors_ = _ac.marr([list(Xd[i]) for i in sv]) \
-            if sv else _ac.zeros((0, d))
+        self.support_vectors_ = _ac.marr([list(Xd[i]) for i in sv]) if sv else _ac.zeros((0, d))
         dual = [[0.0] * len(sv) for _ in range(nc - 1)]
         inter = []
         for a, b, coef, rho in pairs:
@@ -1623,8 +1567,7 @@ class SVC:
                 row = b - 1 if cls[i] == a else a
                 dual[row][pos[i]] = c
             inter.append(-rho)
-        self._pairs = [(a, b, {pos[i]: c for i, c in coef.items()}, rho)
-                       for a, b, coef, rho in pairs]
+        self._pairs = [(a, b, {pos[i]: c for i, c in coef.items()}, rho) for a, b, coef, rho in pairs]
         self._svx = [list(Xd[i]) for i in sv]
         if nc == 2:
             # sklearn negates the binary solution so that a positive
@@ -1640,8 +1583,7 @@ class SVC:
         out = []
         for r in Xd:
             kr = [self._k(s, r) for s in self._svx]
-            out.append([_math.fsum(c * kr[k] for k, c in coef.items()) - rho
-                        for _a, _b, coef, rho in self._pairs])
+            out.append([_math.fsum(c * kr[k] for k, c in coef.items()) - rho for _a, _b, coef, rho in self._pairs])
         return out
 
     def decision_function(self, X):
@@ -1663,8 +1605,7 @@ class SVC:
                     # sklearn: dec < 0 votes for j, so a tie votes i
                     votes[i if row[k] >= 0 else j] += 1
                     k += 1
-            out.append([votes[c] + conf[c] / (3.0 * (abs(conf[c]) + 1.0))
-                        for c in range(nc)])
+            out.append([votes[c] + conf[c] / (3.0 * (abs(conf[c]) + 1.0)) for c in range(nc)])
         return _ac.marr(out)
 
     def predict(self, X):
@@ -1686,8 +1627,7 @@ class SVC:
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         p = list(self.predict(X).tolist())
-        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
-            / len(yv)
+        return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) / len(yv)
 
 
 class SVR(SVC):
@@ -1698,8 +1638,7 @@ class SVR(SVC):
     sparse SVR behavior.
     """
 
-    def __init__(self, C=1.0, kernel="rbf", gamma="scale",
-                 epsilon=0.1, **kw):
+    def __init__(self, C=1.0, kernel="rbf", gamma="scale", epsilon=0.1, **kw):
         super().__init__(C=C, kernel=kernel, gamma=gamma)
         self.epsilon = epsilon
 
@@ -1713,11 +1652,8 @@ class SVR(SVC):
             var = _math.fsum((v - m) ** 2 for v in flat) / len(flat)
             self._gamma = 1.0 / (d * var) if var > 0 else 1.0
         else:
-            self._gamma = 1.0 / d if self.gamma == "auto" \
-                else float(self.gamma)
-        K = [[self._k(Xd[i], Xd[j]) + (1.0 / self.C if i == j
-                                       else 0.0)
-              for j in range(n)] for i in range(n)]
+            self._gamma = 1.0 / d if self.gamma == "auto" else float(self.gamma)
+        K = [[self._k(Xd[i], Xd[j]) + (1.0 / self.C if i == j else 0.0) for j in range(n)] for i in range(n)]
         alpha = _ac.linalg.solve(_ac.marr(K), _ac.marr(yv))
         self._X = Xd
         self._alpha = list(alpha._flat())
@@ -1725,31 +1661,24 @@ class SVR(SVC):
 
     def predict(self, X):
         Xd = _X2d(X)
-        return _ac.marr([
-            _math.fsum(self._alpha[i] * self._k(self._X[i], r)
-                       for i in range(len(self._X))) for r in Xd])
+        return _ac.marr([_math.fsum(self._alpha[i] * self._k(self._X[i], r) for i in range(len(self._X))) for r in Xd])
 
 
 # ===================================================== metrics
 
+
 def accuracy_score(y_true, y_pred):
-    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
-              else y_true)
-    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist")
-              else y_pred)
-    return _math.fsum(1.0 for a, b in zip(yt, yp) if a == b) \
-        / len(yt)
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist") else y_true)
+    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist") else y_pred)
+    return _math.fsum(1.0 for a, b in zip(yt, yp) if a == b) / len(yt)
 
 
 def roc_auc_score(y_true, y_score):
-    yt = [float(v) for v in (y_true.tolist()
-                             if hasattr(y_true, "tolist")
-                             else y_true)]
-    ys = [float(v) for v in (y_score.tolist()
-                             if hasattr(y_score, "tolist")
-                             else y_score)]
+    yt = [float(v) for v in (y_true.tolist() if hasattr(y_true, "tolist") else y_true)]
+    ys = [float(v) for v in (y_score.tolist() if hasattr(y_score, "tolist") else y_score)]
     # Mann-Whitney with midranks (exact AUC incl ties)
     from . import _stats_core as _stats
+
     ranks = _stats.rankdata(ys)
     pos = [i for i, v in enumerate(yt) if v == 1.0]
     n1 = len(pos)
@@ -1780,16 +1709,11 @@ def r2_score(y_true, y_pred):
 
 
 def precision_recall_f1(y_true, y_pred, positive):
-    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
-              else y_true)
-    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist")
-              else y_pred)
-    tp = sum(1 for a, b in zip(yt, yp)
-             if a == positive and b == positive)
-    fp = sum(1 for a, b in zip(yt, yp)
-             if a != positive and b == positive)
-    fn = sum(1 for a, b in zip(yt, yp)
-             if a == positive and b != positive)
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist") else y_true)
+    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist") else y_pred)
+    tp = sum(1 for a, b in zip(yt, yp) if a == positive and b == positive)
+    fp = sum(1 for a, b in zip(yt, yp) if a != positive and b == positive)
+    fn = sum(1 for a, b in zip(yt, yp) if a == positive and b != positive)
     prec = tp / (tp + fp) if tp + fp else 0.0
     rec = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2.0 * prec * rec / (prec + rec) if prec + rec else 0.0
@@ -1801,24 +1725,21 @@ def f1_score(y_true, y_pred, pos_label=1):
 
 
 def classification_report(y_true, y_pred, output_dict=False):
-    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
-              else y_true)
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist") else y_true)
     classes = sorted(set(yt), key=str)
     rep = {}
     for c in classes:
         p, r, f1 = precision_recall_f1(y_true, y_pred, c)
-        rep[str(c)] = {"precision": p, "recall": r, "f1-score": f1,
-                       "support": sum(1 for v in yt if v == c)}
+        rep[str(c)] = {"precision": p, "recall": r, "f1-score": f1, "support": sum(1 for v in yt if v == c)}
     rep["accuracy"] = accuracy_score(y_true, y_pred)
     if output_dict:
         return rep
-    lines = ["%-10s %9s %9s %9s %9s" % ("", "precision", "recall",
-                                        "f1-score", "support")]
+    lines = ["%-10s %9s %9s %9s %9s" % ("", "precision", "recall", "f1-score", "support")]
     for c in classes:
         d = rep[str(c)]
-        lines.append("%-10s %9.3f %9.3f %9.3f %9d" % (
-            str(c)[:10], d["precision"], d["recall"], d["f1-score"],
-            d["support"]))
+        lines.append(
+            "%-10s %9.3f %9.3f %9.3f %9d" % (str(c)[:10], d["precision"], d["recall"], d["f1-score"], d["support"])
+        )
     lines.append("accuracy %.3f" % rep["accuracy"])
     return "\n".join(lines)
 
@@ -1827,10 +1748,8 @@ def get_scorer(name):
     table = {
         "accuracy": lambda est, X, y: est.score(X, y),
         "r2": lambda est, X, y: r2_score(y, est.predict(X)),
-        "neg_mean_squared_error": lambda est, X, y:
-            -mean_squared_error(y, est.predict(X)),
-        "roc_auc": lambda est, X, y: roc_auc_score(
-            y, [p[1] for p in est.predict_proba(X).data]),
+        "neg_mean_squared_error": lambda est, X, y: -mean_squared_error(y, est.predict(X)),
+        "roc_auc": lambda est, X, y: roc_auc_score(y, [p[1] for p in est.predict_proba(X).data]),
         "f1": lambda est, X, y: f1_score(y, est.predict(X)),
     }
     if name not in table:
@@ -1896,12 +1815,12 @@ class metrics:
 
 # ===================================================== linear tail
 
+
 class Lasso(LinearRegression):
     """Coordinate descent on the sklearn objective
     (1/2n)||y-Xb||^2 + alpha*||b||_1."""
 
-    def __init__(self, alpha=1.0, fit_intercept=True,
-                 max_iter=2000, tol=1e-8):
+    def __init__(self, alpha=1.0, fit_intercept=True, max_iter=2000, tol=1e-8):
         super().__init__(fit_intercept)
         self.alpha = alpha
         self.max_iter = max_iter
@@ -1913,17 +1832,14 @@ class Lasso(LinearRegression):
         yv = _y1d(y)
         n, d = len(Xd), len(Xd[0])
         if self.fit_intercept:
-            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n
-                  for j in range(d)]
+            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n for j in range(d)]
             ym = _math.fsum(yv) / n
-            Xc = [[Xd[r][j] - xm[j] for j in range(d)]
-                  for r in range(n)]
+            Xc = [[Xd[r][j] - xm[j] for j in range(d)] for r in range(n)]
             yc = [v - ym for v in yv]
         else:
             xm, ym = [0.0] * d, 0.0
             Xc, yc = Xd, yv
-        col_ss = [_math.fsum(Xc[r][j] ** 2 for r in range(n))
-                  for j in range(d)]
+        col_ss = [_math.fsum(Xc[r][j] ** 2 for r in range(n)) for j in range(d)]
         b = [0.0] * d
         resid = list(yc)
         l1 = self.alpha * self.l1_ratio * n
@@ -1933,9 +1849,7 @@ class Lasso(LinearRegression):
             for j in range(d):
                 if col_ss[j] == 0.0:
                     continue
-                rho = _math.fsum(Xc[r][j] * resid[r]
-                                 for r in range(n)) \
-                    + b[j] * col_ss[j]
+                rho = _math.fsum(Xc[r][j] * resid[r] for r in range(n)) + b[j] * col_ss[j]
                 if rho > l1:
                     new = (rho - l1) / (col_ss[j] + l2)
                 elif rho < -l1:
@@ -1951,15 +1865,12 @@ class Lasso(LinearRegression):
             if delta < self.tol:
                 break
         self.coef_ = _ac.marr(b)
-        self.intercept_ = ym - _math.fsum(b[j] * xm[j]
-                                          for j in range(d)) \
-            if self.fit_intercept else 0.0
+        self.intercept_ = ym - _math.fsum(b[j] * xm[j] for j in range(d)) if self.fit_intercept else 0.0
         return self
 
 
 class ElasticNet(Lasso):
-    def __init__(self, alpha=1.0, l1_ratio=0.5, fit_intercept=True,
-                 max_iter=2000, tol=1e-8):
+    def __init__(self, alpha=1.0, l1_ratio=0.5, fit_intercept=True, max_iter=2000, tol=1e-8):
         super().__init__(alpha, fit_intercept, max_iter, tol)
         self.l1_ratio = l1_ratio
 
@@ -1977,35 +1888,26 @@ class BayesianRidge(LinearRegression):
         yv = _y1d(y)
         n, d = len(Xd), len(Xd[0])
         if self.fit_intercept:
-            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n
-                  for j in range(d)]
+            xm = [_math.fsum(Xd[r][j] for r in range(n)) / n for j in range(d)]
             ym = _math.fsum(yv) / n
-            Xc = [[Xd[r][j] - xm[j] for j in range(d)]
-                  for r in range(n)]
+            Xc = [[Xd[r][j] - xm[j] for j in range(d)] for r in range(n)]
             yc = [v - ym for v in yv]
         else:
             xm, ym = [0.0] * d, 0.0
             Xc, yc = Xd, yv
         alpha_ = 1.0 / (_math.fsum(v * v for v in yc) / n + 1e-10)
         lambda_ = 1.0
-        XtX = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n))
-                for j in range(d)] for i in range(d)]
-        Xty = [_math.fsum(Xc[r][i] * yc[r] for r in range(n))
-               for i in range(d)]
+        XtX = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n)) for j in range(d)] for i in range(d)]
+        Xty = [_math.fsum(Xc[r][i] * yc[r] for r in range(n)) for i in range(d)]
         b = [0.0] * d
         for _ in range(self.max_iter):
-            A = [[alpha_ * XtX[i][j] + (lambda_ if i == j else 0.0)
-                  for j in range(d)] for i in range(d)]
+            A = [[alpha_ * XtX[i][j] + (lambda_ if i == j else 0.0) for j in range(d)] for i in range(d)]
             rhs = [alpha_ * v for v in Xty]
-            bn = list(_ac.linalg.solve(_ac.marr(A),
-                                       _ac.marr(rhs))._flat())
+            bn = list(_ac.linalg.solve(_ac.marr(A), _ac.marr(rhs))._flat())
             Sinv = _ac.linalg.inv(_ac.marr(A)).tolist()
-            gamma_ = d - lambda_ * _math.fsum(Sinv[i][i]
-                                              for i in range(d))
+            gamma_ = d - lambda_ * _math.fsum(Sinv[i][i] for i in range(d))
             ssb = _math.fsum(v * v for v in bn) + 1e-300
-            resid = [yc[r] - _math.fsum(Xc[r][j] * bn[j]
-                                        for j in range(d))
-                     for r in range(n)]
+            resid = [yc[r] - _math.fsum(Xc[r][j] * bn[j] for j in range(d)) for r in range(n)]
             ssr = _math.fsum(v * v for v in resid) + 1e-300
             lambda_new = gamma_ / ssb
             alpha_new = (n - gamma_) / ssr
@@ -2015,9 +1917,7 @@ class BayesianRidge(LinearRegression):
             if done:
                 break
         self.coef_ = _ac.marr(b)
-        self.intercept_ = ym - _math.fsum(b[j] * xm[j]
-                                          for j in range(d)) \
-            if self.fit_intercept else 0.0
+        self.intercept_ = ym - _math.fsum(b[j] * xm[j] for j in range(d)) if self.fit_intercept else 0.0
         self.alpha_ = alpha_
         self.lambda_ = lambda_
         return self
@@ -2030,17 +1930,15 @@ linear_model.BayesianRidge = BayesianRidge
 
 # ===================================================== model_selection
 
-def train_test_split(*arrays, test_size=0.25, random_state=0,
-                     shuffle=True, stratify=None):
+
+def train_test_split(*arrays, test_size=0.25, random_state=0, shuffle=True, stratify=None):
     del stratify
-    n = len(arrays[0].tolist() if hasattr(arrays[0], "tolist")
-            else arrays[0])
+    n = len(arrays[0].tolist() if hasattr(arrays[0], "tolist") else arrays[0])
     idx = list(range(n))
     if shuffle:
         rng = _ac.random.default_rng(random_state or 0)
         rng.shuffle(idx)
-    ntest = int(round(n * test_size)) if test_size < 1 \
-        else int(test_size)
+    ntest = int(round(n * test_size)) if test_size < 1 else int(test_size)
     te, tr = idx[:ntest], idx[ntest:]
     out = []
     for a in arrays:
@@ -2063,13 +1961,11 @@ class KFold:
         if self.shuffle:
             rng = _ac.random.default_rng(self.random_state)
             rng.shuffle(idx)
-        sizes = [n // self.n_splits
-                 + (1 if i < n % self.n_splits else 0)
-                 for i in range(self.n_splits)]
+        sizes = [n // self.n_splits + (1 if i < n % self.n_splits else 0) for i in range(self.n_splits)]
         pos = 0
         for s in sizes:
-            test = idx[pos:pos + s]
-            train = idx[:pos] + idx[pos + s:]
+            test = idx[pos : pos + s]
+            train = idx[:pos] + idx[pos + s :]
             yield train, test
             pos += s
 
@@ -2089,10 +1985,8 @@ class StratifiedKFold(KFold):
         enc = [code[v] for v in yv]
         K = len(code)
         order = sorted(enc)
-        alloc = [[order[i::self.n_splits].count(k) for k in range(K)]
-                 for i in range(self.n_splits)]
-        rng = _ac.random.default_rng(self.random_state) \
-            if self.shuffle else None
+        alloc = [[order[i :: self.n_splits].count(k) for k in range(K)] for i in range(self.n_splits)]
+        rng = _ac.random.default_rng(self.random_state) if self.shuffle else None
         fold_of = [0] * n
         for k in range(K):
             ff = [i for i in range(self.n_splits) for _ in range(alloc[i][k])]
@@ -2113,9 +2007,15 @@ def _is_classifier(est):
         return True
     name = type(est).__name__
     return name.endswith("Classifier") or name in (
-        "LogisticRegression", "SVC", "LinearSVC", "GaussianNB",
-        "MultinomialNB", "BernoulliNB", "LinearDiscriminantAnalysis",
-        "QuadraticDiscriminantAnalysis")
+        "LogisticRegression",
+        "SVC",
+        "LinearSVC",
+        "GaussianNB",
+        "MultinomialNB",
+        "BernoulliNB",
+        "LinearDiscriminantAnalysis",
+        "QuadraticDiscriminantAnalysis",
+    )
 
 
 def _index_rows(X, idx):
@@ -2125,6 +2025,7 @@ def _index_rows(X, idx):
 
 def cross_val_score(estimator, X, y, cv=5, scoring=None):
     import copy
+
     if hasattr(cv, "split"):
         folds = cv
     elif _is_classifier(estimator):
@@ -2138,17 +2039,14 @@ def cross_val_score(estimator, X, y, cv=5, scoring=None):
         est = copy.deepcopy(estimator)
         est.fit(_index_rows(X, tr), _index_rows(y, tr))
         if scorer is not None:
-            scores.append(scorer(est, _index_rows(X, te),
-                                 _index_rows(y, te)))
+            scores.append(scorer(est, _index_rows(X, te), _index_rows(y, te)))
         else:
-            scores.append(est.score(_index_rows(X, te),
-                                    _index_rows(y, te)))
+            scores.append(est.score(_index_rows(X, te), _index_rows(y, te)))
     return _ac.marr(scores)
 
 
 class GridSearchCV:
-    def __init__(self, estimator, param_grid, cv=5, scoring=None,
-                 **kw):
+    def __init__(self, estimator, param_grid, cv=5, scoring=None, **kw):
         del kw
         self.estimator = estimator
         self.param_grid = param_grid
@@ -2157,28 +2055,27 @@ class GridSearchCV:
 
     def _grid(self):
         import itertools
+
         keys = list(self.param_grid)
-        for combo in itertools.product(*(self.param_grid[k]
-                                         for k in keys)):
+        for combo in itertools.product(*(self.param_grid[k] for k in keys)):
             yield dict(zip(keys, combo))
 
     def fit(self, X, y):
         import copy
+
         best = None
         all_params, all_scores = [], []
         for params in self._grid():
             est = copy.deepcopy(self.estimator)
             for k, v in params.items():
                 setattr(est, k, v)
-            sc = cross_val_score(est, X, y, cv=self.cv,
-                                 scoring=self.scoring)
+            sc = cross_val_score(est, X, y, cv=self.cv, scoring=self.scoring)
             m = _math.fsum(sc._flat()) / len(sc._flat())
             all_params.append(dict(params))
             all_scores.append(m)
             if best is None or m > best[0]:
                 best = (m, params)
-        self.cv_results_ = {"params": all_params,
-                            "mean_test_score": _ac.marr(all_scores)}
+        self.cv_results_ = {"params": all_params, "mean_test_score": _ac.marr(all_scores)}
         self.best_score_, self.best_params_ = best
         self.best_estimator_ = copy.deepcopy(self.estimator)
         for k, v in self.best_params_.items():
@@ -2194,8 +2091,7 @@ class GridSearchCV:
 
 
 class RandomizedSearchCV(GridSearchCV):
-    def __init__(self, estimator, param_distributions, n_iter=10,
-                 cv=5, scoring=None, random_state=0, **kw):
+    def __init__(self, estimator, param_distributions, n_iter=10, cv=5, scoring=None, random_state=0, **kw):
         super().__init__(estimator, param_distributions, cv, scoring)
         self.n_iter = n_iter
         self.random_state = random_state or 0
@@ -2215,9 +2111,17 @@ class RandomizedSearchCV(GridSearchCV):
             yield out
 
 
-def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
-                                                 0.78, 1.0), cv=5,
-                   scoring=None, shuffle=False, random_state=None, **kw):
+def learning_curve(
+    estimator,
+    X,
+    y,
+    train_sizes=(0.1, 0.33, 0.55, 0.78, 1.0),
+    cv=5,
+    scoring=None,
+    shuffle=False,
+    random_state=None,
+    **kw,
+):
     """sklearn.model_selection.learning_curve: one set of absolute
     training sizes, fixed from the first fold's training-set length
     (fractions floored, clipped to [1, n_max], duplicates dropped); each
@@ -2225,6 +2129,7 @@ def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
     indices. An int cv stratifies a classifier, as check_cv does."""
     del kw
     import copy
+
     if hasattr(cv, "split"):
         folds = list(cv.split(X, y))
     elif _is_classifier(estimator):
@@ -2233,12 +2138,10 @@ def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
         folds = list(KFold(n_splits=cv).split(X, y))
     if shuffle:
         rng = _ac.random.default_rng(random_state)
-        folds = [([tr[i] for i in rng.permutation(len(tr)).tolist()], te)
-                 for tr, te in folds]
+        folds = [([tr[i] for i in rng.permutation(len(tr)).tolist()], te) for tr, te in folds]
     n_max = len(folds[0][0])
     sizes_abs = []
-    for frac in (train_sizes.tolist() if hasattr(train_sizes, "tolist")
-                 else train_sizes):
+    for frac in train_sizes.tolist() if hasattr(train_sizes, "tolist") else train_sizes:
         f = float(frac)
         m = int(f * n_max) if f <= 1.0 else int(f)
         m = min(max(m, 1), n_max)
@@ -2254,19 +2157,14 @@ def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
             est = copy.deepcopy(estimator)
             est.fit(_index_rows(X, sub), _index_rows(y, sub))
             if scorer is not None:
-                tr_scores.append(scorer(est, _index_rows(X, sub),
-                                        _index_rows(y, sub)))
-                te_scores.append(scorer(est, _index_rows(X, te),
-                                        _index_rows(y, te)))
+                tr_scores.append(scorer(est, _index_rows(X, sub), _index_rows(y, sub)))
+                te_scores.append(scorer(est, _index_rows(X, te), _index_rows(y, te)))
             else:
-                tr_scores.append(est.score(_index_rows(X, sub),
-                                           _index_rows(y, sub)))
-                te_scores.append(est.score(_index_rows(X, te),
-                                           _index_rows(y, te)))
+                tr_scores.append(est.score(_index_rows(X, sub), _index_rows(y, sub)))
+                te_scores.append(est.score(_index_rows(X, te), _index_rows(y, te)))
         train_scores.append(tr_scores)
         test_scores.append(te_scores)
-    return (_ac.marr([int(v) for v in sizes_abs]),
-            _ac.marr(train_scores), _ac.marr(test_scores))
+    return (_ac.marr([int(v) for v in sizes_abs]), _ac.marr(train_scores), _ac.marr(test_scores))
 
 
 class model_selection:
@@ -2281,13 +2179,10 @@ class model_selection:
 
 # ===================================================== metrics tail
 
+
 def roc_curve(y_true, y_score):
-    yt = [float(v) for v in (y_true.tolist()
-                             if hasattr(y_true, "tolist")
-                             else y_true)]
-    ys = [float(v) for v in (y_score.tolist()
-                             if hasattr(y_score, "tolist")
-                             else y_score)]
+    yt = [float(v) for v in (y_true.tolist() if hasattr(y_true, "tolist") else y_true)]
+    ys = [float(v) for v in (y_score.tolist() if hasattr(y_score, "tolist") else y_score)]
     order = sorted(range(len(ys)), key=lambda i: -ys[i])
     P = sum(1 for v in yt if v == 1.0)
     N = len(yt) - P
@@ -2311,12 +2206,8 @@ def roc_curve(y_true, y_score):
 
 
 def precision_recall_curve(y_true, y_score):
-    yt = [float(v) for v in (y_true.tolist()
-                             if hasattr(y_true, "tolist")
-                             else y_true)]
-    ys = [float(v) for v in (y_score.tolist()
-                             if hasattr(y_score, "tolist")
-                             else y_score)]
+    yt = [float(v) for v in (y_true.tolist() if hasattr(y_true, "tolist") else y_true)]
+    ys = [float(v) for v in (y_score.tolist() if hasattr(y_score, "tolist") else y_score)]
     order = sorted(range(len(ys)), key=lambda i: -ys[i])
     P = sum(1 for v in yt if v == 1.0)
     prec = []
@@ -2347,16 +2238,14 @@ def average_precision_score(y_true, y_score):
     # curve is built with recall increasing; AP = sum dR * P
     ap = 0.0
     prev_r = 0.0
-    for i in range(len(rv) - 1):        # last point is the (1, 0) pad
+    for i in range(len(rv) - 1):  # last point is the (1, 0) pad
         ap += (rv[i] - prev_r) * pv[i]
         prev_r = rv[i]
     return ap
 
 
 def log_loss(y_true, y_prob, eps=1e-15):
-    yt = [float(v) for v in (y_true.tolist()
-                             if hasattr(y_true, "tolist")
-                             else y_true)]
+    yt = [float(v) for v in (y_true.tolist() if hasattr(y_true, "tolist") else y_true)]
     yp = y_prob.tolist() if hasattr(y_prob, "tolist") else list(y_prob)
     total = 0.0
     for t, p in zip(yt, yp):
@@ -2366,19 +2255,15 @@ def log_loss(y_true, y_prob, eps=1e-15):
     return total / len(yt)
 
 
-def confusion_matrix(y_true, y_pred, labels=None, sample_weight=None,
-                     normalize=None):
-    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
-              else y_true)
-    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist")
-              else y_pred)
+def confusion_matrix(y_true, y_pred, labels=None, sample_weight=None, normalize=None):
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist") else y_true)
+    yp = list(y_pred.tolist() if hasattr(y_pred, "tolist") else y_pred)
     if labels is None:
         classes = sorted(set(yt) | set(yp), key=str)
     else:
         classes = list(labels.tolist() if hasattr(labels, "tolist") else labels)
     cmap = {c: i for i, c in enumerate(classes)}
-    w = ([1.0] * len(yt) if sample_weight is None
-         else [float(v) for v in _ac.asarray(sample_weight)._flat()])
+    w = [1.0] * len(yt) if sample_weight is None else [float(v) for v in _ac.asarray(sample_weight)._flat()]
     m = [[0.0] * len(classes) for _ in classes]
     for a, b, wi in zip(yt, yp, w):
         if a in cmap and b in cmap:
@@ -2397,34 +2282,33 @@ def confusion_matrix(y_true, y_pred, labels=None, sample_weight=None,
 
 
 def calibration_curve(y_true, y_prob, n_bins=5):
-    yt = [float(v) for v in (y_true.tolist()
-                             if hasattr(y_true, "tolist")
-                             else y_true)]
-    yp = [float(v) for v in (y_prob.tolist()
-                             if hasattr(y_prob, "tolist")
-                             else y_prob)]
+    yt = [float(v) for v in (y_true.tolist() if hasattr(y_true, "tolist") else y_true)]
+    yp = [float(v) for v in (y_prob.tolist() if hasattr(y_prob, "tolist") else y_prob)]
     frac = []
     mean_pred = []
     for b in range(n_bins):
         lo, hi = b / n_bins, (b + 1) / n_bins
-        members = [i for i, p in enumerate(yp)
-                   if (lo < p <= hi) or (b == 0 and p == 0.0)]
+        members = [i for i, p in enumerate(yp) if (lo < p <= hi) or (b == 0 and p == 0.0)]
         if not members:
             continue
-        frac.append(_math.fsum(yt[i] for i in members)
-                    / len(members))
-        mean_pred.append(_math.fsum(yp[i] for i in members)
-                         / len(members))
+        frac.append(_math.fsum(yt[i] for i in members) / len(members))
+        mean_pred.append(_math.fsum(yp[i] for i in members) / len(members))
     return _ac.marr(frac), _ac.marr(mean_pred)
 
 
-for _n in ("roc_curve", "precision_recall_curve",
-           "average_precision_score", "log_loss",
-           "confusion_matrix", "calibration_curve"):
+for _n in (
+    "roc_curve",
+    "precision_recall_curve",
+    "average_precision_score",
+    "log_loss",
+    "confusion_matrix",
+    "calibration_curve",
+):
     setattr(metrics, _n, staticmethod(globals()[_n]))
 
 
 # ===================================================== neighbors / tsne
+
 
 class NearestNeighbors:
     def __init__(self, n_neighbors=5, **kw):
@@ -2444,11 +2328,10 @@ class NearestNeighbors:
         idxs = []
         for r in q:
             dd = sorted(
-                (_math.sqrt(_math.fsum((r[t] - s[t]) ** 2
-                                       for t in range(d))), i)
-                for i, s in enumerate(self._X))
+                (_math.sqrt(_math.fsum((r[t] - s[t]) ** 2 for t in range(d))), i) for i, s in enumerate(self._X)
+            )
             if X is None:
-                dd = dd[1:]        # exclude self
+                dd = dd[1:]  # exclude self
             dists.append([v for v, _ in dd[:k]])
             idxs.append([float(i) for _, i in dd[:k]])
         return _ac.marr(dists), _ac.marr(idxs)
@@ -2457,9 +2340,9 @@ class NearestNeighbors:
 class TSNE:
     """Exact t-SNE (no Barnes-Hut): fine for the small n morie plots."""
 
-    def __init__(self, n_components=2, perplexity=30.0,
-                 learning_rate=200.0, n_iter=500, random_state=0,
-                 init="random", **kw):
+    def __init__(
+        self, n_components=2, perplexity=30.0, learning_rate=200.0, n_iter=500, random_state=0, init="random", **kw
+    ):
         del kw
         self.n_components = n_components
         self.perplexity = perplexity
@@ -2474,9 +2357,7 @@ class TSNE:
         n = len(Xd)
         d = len(Xd[0])
         # pairwise squared distances
-        D = [[_math.fsum((Xd[i][t] - Xd[j][t]) ** 2
-                         for t in range(d)) for j in range(n)]
-             for i in range(n)]
+        D = [[_math.fsum((Xd[i][t] - Xd[j][t]) ** 2 for t in range(d)) for j in range(n)] for i in range(n)]
         # binary-search sigmas for target perplexity
         target = _math.log(_bi.min(self.perplexity, (n - 1) / 3.0))
         P = [[0.0] * n for _ in range(n)]
@@ -2484,21 +2365,18 @@ class TSNE:
             lo, hi = 1e-10, 1e10
             beta = 1.0
             for _ in range(60):
-                num = [_math.exp(-D[i][j] * beta) if j != i else 0.0
-                       for j in range(n)]
+                num = [_math.exp(-D[i][j] * beta) if j != i else 0.0 for j in range(n)]
                 s = _math.fsum(num) + 1e-300
-                H = _math.log(s) + beta * _math.fsum(
-                    num[j] * D[i][j] for j in range(n)) / s
+                H = _math.log(s) + beta * _math.fsum(num[j] * D[i][j] for j in range(n)) / s
                 if abs(H - target) < 1e-5:
                     break
-                if H > target:
+                if target < H:
                     lo = beta
                     beta = beta * 2 if hi >= 1e10 else 0.5 * (lo + hi)
                 else:
                     hi = beta
                     beta = 0.5 * (lo + hi)
-            num = [_math.exp(-D[i][j] * beta) if j != i else 0.0
-                   for j in range(n)]
+            num = [_math.exp(-D[i][j] * beta) if j != i else 0.0 for j in range(n)]
             s = _math.fsum(num) + 1e-300
             for j in range(n):
                 P[i][j] = num[j] / s
@@ -2519,17 +2397,19 @@ class TSNE:
             mu = [_math.fsum(r[j] for r in Xd) / n for j in range(d)]
             Xc = _ac.marr([[r[j] - mu[j] for j in range(d)] for r in Xd])
             _u, _sv, _vt = _ac.linalg.svd(Xc)
-            comp = [[_vt.data[c][j] for j in range(d)]
-                    for c in range(self.n_components)]
-            Y = [[_math.fsum(Xd[i][j2] - mu[j2] for j2 in range(0)) or
-                  _math.fsum((Xd[i][j2] - mu[j2]) * comp[c][j2]
-                             for j2 in range(d))
-                  for c in range(self.n_components)] for i in range(n)]
-            s0 = _math.sqrt(_math.fsum(y0[0] ** 2 for y0 in Y) / n)                 or 1.0
+            comp = [[_vt.data[c][j] for j in range(d)] for c in range(self.n_components)]
+            Y = [
+                [
+                    _math.fsum(Xd[i][j2] - mu[j2] for j2 in range(0))
+                    or _math.fsum((Xd[i][j2] - mu[j2]) * comp[c][j2] for j2 in range(d))
+                    for c in range(self.n_components)
+                ]
+                for i in range(n)
+            ]
+            s0 = _math.sqrt(_math.fsum(y0[0] ** 2 for y0 in Y) / n) or 1.0
             Y = [[v / s0 * 1e-4 for v in row] for row in Y]
         else:
-            Y = [[rng.normal(0.0, 1e-4)
-                  for _ in range(self.n_components)] for _ in range(n)]
+            Y = [[rng.normal(0.0, 1e-4) for _ in range(self.n_components)] for _ in range(n)]
         vel = [[0.0] * self.n_components for _ in range(n)]
         for it in range(self.n_iter):
             mom = 0.5 if it < 250 else 0.8
@@ -2538,9 +2418,7 @@ class TSNE:
             qs = 0.0
             for i in range(n):
                 for j in range(i + 1, n):
-                    dq = 1.0 / (1.0 + _math.fsum(
-                        (Y[i][t] - Y[j][t]) ** 2
-                        for t in range(self.n_components)))
+                    dq = 1.0 / (1.0 + _math.fsum((Y[i][t] - Y[j][t]) ** 2 for t in range(self.n_components)))
                     Q[i][j] = Q[j][i] = dq
                     qs += 2.0 * dq
             for i in range(n):
@@ -2548,16 +2426,14 @@ class TSNE:
                 for j in range(n):
                     if j == i:
                         continue
-                    coef = 4.0 * (exag * P[i][j] - Q[i][j] / qs) \
-                        * Q[i][j]
+                    coef = 4.0 * (exag * P[i][j] - Q[i][j] / qs) * Q[i][j]
                     for t in range(self.n_components):
                         grad[t] += coef * (Y[i][t] - Y[j][t])
                 for t in range(self.n_components):
                     vel[i][t] = mom * vel[i][t] - lr * grad[t]
                     # clamp step to keep the exact-gradient descent
                     # stable at high learning rates
-                    vel[i][t] = _bi.max(-5.0, _bi.min(5.0,
-                                                      vel[i][t]))
+                    vel[i][t] = _bi.max(-5.0, _bi.min(5.0, vel[i][t]))
                     Y[i][t] += vel[i][t]
         # final KL(P || Q) on the converged embedding
         kl = 0.0
@@ -2582,8 +2458,7 @@ class manifold:
 class BaseEstimator:
     def get_params(self, deep=True):
         del deep
-        return {k: v for k, v in vars(self).items()
-                if not k.endswith("_") and not k.startswith("_")}
+        return {k: v for k, v in vars(self).items() if not k.endswith("_") and not k.startswith("_")}
 
     def set_params(self, **params):
         for k, v in params.items():
@@ -2593,6 +2468,7 @@ class BaseEstimator:
 
 def clone(estimator):
     import copy
+
     new = copy.deepcopy(estimator)
     for k in list(vars(new)):
         if k.endswith("_") and not k.startswith("_"):
@@ -2607,14 +2483,14 @@ class base:
 
 # ===================================================== splitters tail
 
+
 class GroupKFold:
     def __init__(self, n_splits=5):
         self.n_splits = n_splits
 
     def split(self, X, y=None, groups=None):
         del y
-        gv = list(groups.tolist() if hasattr(groups, "tolist")
-                  else groups)
+        gv = list(groups.tolist() if hasattr(groups, "tolist") else groups)
         uniq = sorted(set(gv), key=str)
         # assign groups to folds by size (largest first, greedy)
         sizes = {g: gv.count(g) for g in uniq}
@@ -2649,8 +2525,7 @@ class ShuffleSplit:
     def split(self, X, y=None):
         del y
         n = len(X.tolist() if hasattr(X, "tolist") else X)
-        ntest = int(round(n * self.test_size)) \
-            if self.test_size < 1 else int(self.test_size)
+        ntest = int(round(n * self.test_size)) if self.test_size < 1 else int(self.test_size)
         rng = _ac.random.default_rng(self.random_state)
         for _ in range(self.n_splits):
             idx = list(range(n))
@@ -2668,21 +2543,17 @@ class TimeSeriesSplit:
         fold = n // (self.n_splits + 1)
         for k in range(1, self.n_splits + 1):
             train = list(range(0, fold * k))
-            test = list(range(fold * k,
-                              min(fold * (k + 1), n)))
+            test = list(range(fold * k, min(fold * (k + 1), n)))
             yield train, test
 
 
-for _n in ("GroupKFold", "LeaveOneOut", "ShuffleSplit",
-           "TimeSeriesSplit"):
+for _n in ("GroupKFold", "LeaveOneOut", "ShuffleSplit", "TimeSeriesSplit"):
     setattr(model_selection, _n, globals()[_n])
 
 
-def precision_recall_fscore_support(y_true, y_pred, average=None,
-                                    **kw):
+def precision_recall_fscore_support(y_true, y_pred, average=None, **kw):
     del kw
-    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
-              else y_true)
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist") else y_true)
     classes = sorted(set(yt), key=str)
     precs, recs, f1s, sups = [], [], [], []
     for c in classes:
@@ -2693,24 +2564,23 @@ def precision_recall_fscore_support(y_true, y_pred, average=None,
         sups.append(float(sum(1 for v in yt if v == c)))
     if average == "macro":
         k = len(classes)
-        return (_math.fsum(precs) / k, _math.fsum(recs) / k,
-                _math.fsum(f1s) / k, None)
+        return (_math.fsum(precs) / k, _math.fsum(recs) / k, _math.fsum(f1s) / k, None)
     if average == "weighted":
         tot = _math.fsum(sups)
         return (
             _math.fsum(p * s for p, s in zip(precs, sups)) / tot,
             _math.fsum(r * s for r, s in zip(recs, sups)) / tot,
             _math.fsum(f * s for f, s in zip(f1s, sups)) / tot,
-            None)
-    return (_ac.marr(precs), _ac.marr(recs), _ac.marr(f1s),
-            _ac.marr(sups))
+            None,
+        )
+    return (_ac.marr(precs), _ac.marr(recs), _ac.marr(f1s), _ac.marr(sups))
 
 
-metrics.precision_recall_fscore_support = staticmethod(
-    precision_recall_fscore_support)
+metrics.precision_recall_fscore_support = staticmethod(precision_recall_fscore_support)
 
 
 # ===================================================== imputation
+
 
 def enable_iterative_imputer():
     """No-op: native IterativeImputer is always available."""
@@ -2726,20 +2596,17 @@ class IterativeImputer:
 
     def fit_transform(self, X, y=None):
         del y
-        Xd = [[float(v) if v is not None and v == v else None
-               for v in row]
-              for row in (X.tolist() if hasattr(X, "tolist")
-                          else X)]
+        Xd = [
+            [float(v) if v is not None and v == v else None for v in row]
+            for row in (X.tolist() if hasattr(X, "tolist") else X)
+        ]
         n, d = len(Xd), len(Xd[0])
-        miss = [(r, c) for r in range(n) for c in range(d)
-                if Xd[r][c] is None]
+        miss = [(r, c) for r in range(n) for c in range(d) if Xd[r][c] is None]
         # initial fill: column means
         means = []
         for c in range(d):
-            vals = [Xd[r][c] for r in range(n)
-                    if Xd[r][c] is not None]
-            means.append(_math.fsum(vals) / len(vals)
-                         if vals else 0.0)
+            vals = [Xd[r][c] for r in range(n) if Xd[r][c] is not None]
+            means.append(_math.fsum(vals) / len(vals) if vals else 0.0)
         for r, c in miss:
             Xd[r][c] = means[c]
         for _sweep in range(self.max_iter):
@@ -2750,11 +2617,8 @@ class IterativeImputer:
                     continue
                 obs = [r for r in range(n) if r not in set(rows_c)]
                 feats = [j for j in range(d) if j != c]
-                reg = BayesianRidge().fit(
-                    [[Xd[r][j] for j in feats] for r in obs],
-                    [Xd[r][c] for r in obs])
-                pred = reg.predict(
-                    [[Xd[r][j] for j in feats] for r in rows_c])
+                reg = BayesianRidge().fit([[Xd[r][j] for j in feats] for r in obs], [Xd[r][c] for r in obs])
+                pred = reg.predict([[Xd[r][j] for j in feats] for r in rows_c])
                 for k, r in enumerate(rows_c):
                     new = float(pred[k])
                     delta = _bi.max(delta, abs(new - Xd[r][c]))

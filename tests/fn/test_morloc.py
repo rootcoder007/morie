@@ -1,7 +1,6 @@
 """Tests for morloc.local_morans_i."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.morloc import local_morans_i
 
 
@@ -26,7 +25,7 @@ def test_morloc_basic():
     # Local Moran's I should return arrays of length n
     checked = False
     for value in result.values():
-        if hasattr(value, '__len__') and not isinstance(value, str):
+        if hasattr(value, "__len__") and not isinstance(value, str):
             assert len(value) == n
             checked = True
             break

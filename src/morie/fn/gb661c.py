@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Confidence interval for the location shift from Mann-Whitney."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['mwuci', 'gibbons_mw_ci']
+__all__ = ["mwuci", "gibbons_mw_ci"]
 
 
 def mwuci(x, y, k):

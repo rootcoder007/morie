@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["genomic_ebv", "gebv_selection"]
 
 
-def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
-                n_select=None, method="vanraden1"):
+def genomic_ebv(marker_matrix, y=None, effects=None, h2=None, n_select=None, method="vanraden1"):
     r"""GEBVs and the selection decision they support.
 
     With the genomic relationship matrix of VanRaden method 1,
@@ -80,28 +79,23 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
         raise ValueError("method must be 'vanraden1', got %r." % method)
     if np.any(M < 0) or np.any(M > 2):
         raise ValueError("markers must be coded 0, 1 or 2.")
-    p = M.mean(axis=0) / 2.0                    # allele frequencies
-    Z = M - 2.0 * p[None, :]                    # centring is not optional
+    p = M.mean(axis=0) / 2.0  # allele frequencies
+    Z = M - 2.0 * p[None, :]  # centring is not optional
     denom = 2.0 * float(np.sum(p * (1.0 - p)))
     if denom <= 0:
-        raise ValueError(
-            "every marker is monomorphic; the relationship matrix is "
-            "undefined."
-        )
+        raise ValueError("every marker is monomorphic; the relationship matrix is undefined.")
     G = Z @ Z.T / denom
 
     acc = np.nan
     if effects is not None:
         b = np.asarray(effects, dtype=float).ravel()
         if b.size != m:
-            raise ValueError("effects has %d entries for %d markers."
-                             % (b.size, m))
+            raise ValueError("effects has %d entries for %d markers." % (b.size, m))
         g = Z @ b
     elif y is not None:
         yv = np.asarray(y, dtype=float).ravel()
         if yv.size != n:
-            raise ValueError("y has %d entries for %d individuals."
-                             % (yv.size, n))
+            raise ValueError("y has %d entries for %d individuals." % (yv.size, n))
         h = 0.5 if h2 is None else float(h2)
         if not 0 < h < 1:
             raise ValueError("h2 must lie in (0, 1), got %r." % h2)
@@ -113,8 +107,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
         Ci = np.linalg.inv(A)
         pev = np.diag(G) - np.diag(G @ Ci @ G)
         with np.errstate(invalid="ignore", divide="ignore"):
-            r = np.sqrt(np.clip(1.0 - pev / np.maximum(np.diag(G), 1e-12),
-                                0.0, 1.0))
+            r = np.sqrt(np.clip(1.0 - pev / np.maximum(np.diag(G), 1e-12), 0.0, 1.0))
         acc = float(np.mean(r))
     else:
         raise ValueError("supply y (for GBLUP) or effects.")
@@ -126,8 +119,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
     frac = k / n
     # selection intensity for truncation selection at proportion frac
     zq = _z(1 - frac)
-    i = float(np.exp(-0.5 * zq ** 2) / np.sqrt(2 * np.pi) / frac) \
-        if 0 < frac < 1 else 0.0
+    i = float(np.exp(-0.5 * zq**2) / np.sqrt(2 * np.pi) / frac) if 0 < frac < 1 else 0.0
     sg = float(np.std(g, ddof=1)) if n > 1 else 0.0
     sub = G[np.ix_(sel, sel)]
     off = sub[~np.eye(k, dtype=bool)] if k > 1 else np.array([np.nan])
@@ -154,8 +146,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
             "accuracy": acc,
             "selection_intensity": i,
             "selected_fraction": float(frac),
-            "expected_response": (float(i * acc * sg)
-                                  if acc == acc else float(i * sg)),
+            "expected_response": (float(i * acc * sg) if acc == acc else float(i * sg)),
             "response_note": (
                 "breeder's equation R = i r sigma_g; accuracy enters "
                 "linearly, so a GEBV with r = 0.3 delivers under a third of "
@@ -170,6 +161,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
 
 def _z(q):
     import math
+
     lo, hi = -12.0, 12.0
     for _ in range(200):
         mid = 0.5 * (lo + hi)

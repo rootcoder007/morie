@@ -5,9 +5,9 @@ The fit is by Gauss-Newton, which is the algorithm the text names for this
 problem (after 4.43), with the derivatives of (4.42) taken analytically.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_fit import _objective, _start_and_bounds
 from morie.fn._schab_gn import semivariogram_jacobian
 from morie.fn._schab_vario import semivariogram
@@ -34,8 +34,7 @@ def test_analytic_jacobian_matches_the_derivative_it_claims_to_be():
         for i in range(3):
             e = np.zeros(3)
             e[i] = 1e-7
-            num[:, i] = (semivariogram(h, *(theta + e), model)
-                         - semivariogram(h, *(theta - e), model)) / 2e-7
+            num[:, i] = (semivariogram(h, *(theta + e), model) - semivariogram(h, *(theta - e), model)) / 2e-7
         assert np.abs(jac - num).max() < 1e-6
 
 

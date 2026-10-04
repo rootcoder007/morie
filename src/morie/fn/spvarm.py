@@ -84,20 +84,24 @@ def spherical_variogram_model(h, c0=0.0, c=1.0, a=1.0):
             gam.append(c0 + c)
             cov.append(0.0)
 
-    return RichResult(payload={
-        "h": hh,
-        "gamma": gam,
-        "cov": cov,
-        "nugget": c0,
-        "psill": c,
-        "sill": c0 + c,
-        "range": a,
-        "true_range": True,
-        "n": len(hh),
-        "method": ("Spherical semivariogram, Schabenberger & Gotway (2005) "
-                   "eq (4.15) with the nugget of Sec. 4.3.6; covariance "
-                   "eq (4.14)"),
-    })
+    return RichResult(
+        payload={
+            "h": hh,
+            "gamma": gam,
+            "cov": cov,
+            "nugget": c0,
+            "psill": c,
+            "sill": c0 + c,
+            "range": a,
+            "true_range": True,
+            "n": len(hh),
+            "method": (
+                "Spherical semivariogram, Schabenberger & Gotway (2005) "
+                "eq (4.15) with the nugget of Sec. 4.3.6; covariance "
+                "eq (4.14)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

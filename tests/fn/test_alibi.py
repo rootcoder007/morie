@@ -1,7 +1,6 @@
 """Tests for alibi.alibi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alibi import alibi
 
 
@@ -20,7 +19,7 @@ def test_alibi_basic():
     assert "causal" in result
     assert result["n_q"] == 6
     assert result["n_k"] == 8
-    assert result["slope"] == 2.0 ** -8.0
+    assert result["slope"] == 2.0**-8.0
     assert result["causal"] is False
     assert len(result["biased"]) == 6
     assert len(result["biased"][0]) == 8

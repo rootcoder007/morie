@@ -77,24 +77,28 @@ def bnp_density_pl(y, grid=None, tree_depth=6, alpha=1.0, lo=None, hi=None):
         pad = 0.05 * (yv.max() - yv.min() + 1e-12)
         grid = np.linspace(yv.min() - pad, yv.max() + pad, 256)
     g = np.atleast_1d(np.asarray(grid, dtype=float))
-    dens = polya_tree_density(yv, g, levels=depth,
-                              a_fn=lambda m: av * m ** 2, lo=lo, hi=hi)
+    dens = polya_tree_density(yv, g, levels=depth, a_fn=lambda m: av * m**2, lo=lo, hi=hi)
     dens = np.asarray(dens, dtype=float)
-    mass = float(np.trapezoid(dens, g)) if g.size > 2 and \
-        np.all(np.diff(g) > 0) else None
-    return RichResult(payload={
-        "grid": g, "density": dens, "mass": mass,
-        "tree_depth": depth, "alpha": av,
-        "alpha_rule": "alpha_m = alpha m^2, the Kraft rule that makes the "
-                      "prior sit on absolutely continuous distributions; a "
-                      "CONSTANT alpha_m gives a Dirichlet-process-like tree "
-                      "with discrete realisations",
-        "continuity_note": "larger alpha smooths toward the uniform base "
-                           "measure; smaller alpha follows the empirical "
-                           "histogram",
-        "n": int(n),
-        "method": "Polya tree posterior mean density (Lavine 1992), "
-                  "computed by morie.fn._ghosal.polya_tree_density"})
+    mass = float(np.trapezoid(dens, g)) if g.size > 2 and np.all(np.diff(g) > 0) else None
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "mass": mass,
+            "tree_depth": depth,
+            "alpha": av,
+            "alpha_rule": "alpha_m = alpha m^2, the Kraft rule that makes the "
+            "prior sit on absolutely continuous distributions; a "
+            "CONSTANT alpha_m gives a Dirichlet-process-like tree "
+            "with discrete realisations",
+            "continuity_note": "larger alpha smooths toward the uniform base "
+            "measure; smaller alpha follows the empirical "
+            "histogram",
+            "n": int(n),
+            "method": "Polya tree posterior mean density (Lavine 1992), "
+            "computed by morie.fn._ghosal.polya_tree_density",
+        }
+    )
 
 
 def cheatsheet():

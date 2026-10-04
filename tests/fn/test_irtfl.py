@@ -1,7 +1,6 @@
 """Tests for irtfl — item fit statistics."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.irtfl import irtfl
 
 

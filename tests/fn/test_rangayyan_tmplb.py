@@ -5,24 +5,30 @@ These modules previously computed `np.median(arg)` and a NaN standard
 error while ignoring every real argument. Each test therefore asserts
 against the closed form the docstring states."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.bsafilt import rangayyan_moving_average
-from morie.fn.bsastat import rangayyan_ch3_sample_mean
-from morie.fn.bsastat import rangayyan_ch3_sample_mean_squared
-from morie.fn.bsastat import rangayyan_ch3_sample_rms
-from morie.fn.bsastat import rangayyan_ch3_sample_std
-from morie.fn.bsafilt import rangayyan_ch3_ma_filter_11pt
-from morie.fn.bsafilt import rangayyan_ch3_ma_filter_general
-from morie.fn.bsafilt import rangayyan_ch3_ma_8point
-from morie.fn.bsaadapt import rangayyan_ch3_estimation_error
-from morie.fn.bsaadapt import rangayyan_ch3_estimation_error_vector_form
-from morie.fn.bsaadapt import rangayyan_ch3_lms_estimation_error
-from morie.fn.bsaadapt import rangayyan_ch3_lms_gradient_estimate
-from morie.fn.bsaadapt import rangayyan_ch3_rls_phi_matrix
-from morie.fn.bsaadapt import rangayyan_ch3_rls_theta_vector
+from morie.fn import _array_core as np
+from morie.fn.bsaadapt import (
+    rangayyan_ch3_estimation_error,
+    rangayyan_ch3_estimation_error_vector_form,
+    rangayyan_ch3_lms_estimation_error,
+    rangayyan_ch3_lms_gradient_estimate,
+    rangayyan_ch3_rls_phi_matrix,
+    rangayyan_ch3_rls_theta_vector,
+)
+from morie.fn.bsafilt import (
+    rangayyan_ch3_ma_8point,
+    rangayyan_ch3_ma_filter_11pt,
+    rangayyan_ch3_ma_filter_general,
+    rangayyan_moving_average,
+)
 from morie.fn.bsaqrs import rangayyan_ch4_heart_rate_from_rr
+from morie.fn.bsastat import (
+    rangayyan_ch3_sample_mean,
+    rangayyan_ch3_sample_mean_squared,
+    rangayyan_ch3_sample_rms,
+    rangayyan_ch3_sample_std,
+)
 
 
 def test_basic_statistics_match_their_closed_forms():
@@ -119,10 +125,7 @@ def test_lms_gradient_equals_the_numerical_gradient_of_squared_error():
     # d/dw [e(n)^2] with e = x - w'r is -2 e(n) r(n); check numerically
     h = 1e-7
     for n in (0, 17, 49):
-        num = np.array([
-            ((x[n] - (w + h * unit) @ r[n]) ** 2 - (x[n] - w @ r[n]) ** 2) / h
-            for unit in np.eye(2)
-        ])
+        num = np.array([((x[n] - (w + h * unit) @ r[n]) ** 2 - (x[n] - w @ r[n]) ** 2) / h for unit in np.eye(2)])
         assert grad[n] == pytest.approx(num, abs=1e-4)
     with pytest.raises(ValueError):
         rangayyan_ch3_lms_gradient_estimate(r, e[:10])
@@ -149,8 +152,7 @@ def test_rls_solves_the_normal_equations_and_forgets_geometrically():
     # symmetry elementwise -- P[i][j] == P[j][i] is the actual property.
     Pl = [list(row) for row in P]
     k = len(Pl)
-    assert all(Pl[i][j] == pytest.approx(Pl[j][i], abs=1e-9)
-               for i in range(k) for j in range(k))
+    assert all(Pl[i][j] == pytest.approx(Pl[j][i], abs=1e-9) for i in range(k) for j in range(k))
     assert np.linalg.eigvalsh(P).min() > -1e-9
     with pytest.raises(ValueError):
         rangayyan_ch3_rls_phi_matrix(r, lam=1.5)

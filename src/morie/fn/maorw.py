@@ -51,10 +51,17 @@ def ma_orwin_fsn(d_obs, d_crit, d_filldraw, k):
         raise ValueError("d_crit and d_filldraw must differ")
     n = kk * (do - dc) / (dc - df)
     ceil = float(int(n)) + (1.0 if n > float(int(n)) else 0.0)
-    return RichResult(payload={
-        "Nfs": n, "Nfs_ceiling": ceil, "d_obs": do, "d_crit": dc,
-        "d_fill": df, "k": kk,
-        "method": "Orwin's fail-safe N"})
+    return RichResult(
+        payload={
+            "Nfs": n,
+            "Nfs_ceiling": ceil,
+            "d_obs": do,
+            "d_crit": dc,
+            "d_fill": df,
+            "k": kk,
+            "method": "Orwin's fail-safe N",
+        }
+    )
 
 
 def cheatsheet():

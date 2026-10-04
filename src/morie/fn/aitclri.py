@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['clrinv', 'aitchison_clr_inverse']
+__all__ = ["clrinv", "aitchison_clr_inverse"]
 
 
 def clrinv(z, total=1.0):
@@ -37,13 +37,18 @@ def clrinv(z, total=1.0):
     e = [math.exp(v - m) for v in z]
     s = sum(e)
     k = float(total)
-    return RichResult(payload={
-        "composition": [k * v / s for v in e], "total": k, "D": len(z),
-        "method": "Inverse centred log-ratio transform"})
+    return RichResult(
+        payload={
+            "composition": [k * v / s for v in e],
+            "total": k,
+            "D": len(z),
+            "method": "Inverse centred log-ratio transform",
+        }
+    )
 
 
 aitchison_clr_inverse = clrinv
 
 
 def cheatsheet():
-    return 'aitclri: Inverse centred log-ratio transform.'
+    return "aitclri: Inverse centred log-ratio transform."

@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['rvntest', 'gibbons_rvn_test']
+__all__ = ["rvntest", "gibbons_rvn_test"]
 
 
 def rvntest(x, alternative="two-sided"):
@@ -57,10 +57,7 @@ def rvntest(x, alternative="two-sided"):
     nm = sum((ranks[i] - ranks[i + 1]) ** 2 for i in range(n - 1))
     den = sum((ranks[i] - (n + 1.0) / 2.0) ** 2 for i in range(n))
     rvn = nm / den
-    var = (
-        4.0 * (n - 2.0) * (5.0 * n * n - 2.0 * n - 9.0)
-        / (5.0 * n * (n + 1.0) * (n - 1.0) ** 2)
-    )
+    var = 4.0 * (n - 2.0) * (5.0 * n * n - 2.0 * n - 9.0) / (5.0 * n * (n + 1.0) * (n - 1.0) ** 2)
     z = (rvn - 2.0) / math.sqrt(var)
     if alternative == "less":
         pv = stats.norm.cdf(z)

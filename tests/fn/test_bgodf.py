@@ -1,8 +1,8 @@
 """Tests for morie.fn.bgodf — Breusch-Godfrey serial correlation LM test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bgodf import bg_test, bgodf
 
 

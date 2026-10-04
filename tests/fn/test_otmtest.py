@@ -4,17 +4,21 @@ The estimators are checked against a direct transcription of Gretton et
 al. (201), and the test against its own operating characteristics.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.otmtest import _gram, ot_mmd_two_sample
 
 
 def _brute_mmd2(A, B, gamma, unbiased):
     """Equations from the paper, written out with explicit loops."""
     m, n = len(A), len(B)
-    kxx = sum(np.exp(-gamma * np.sum((A[i] - A[j]) ** 2)) for i in range(m) for j in range(m) if not (unbiased and i == j))
-    kyy = sum(np.exp(-gamma * np.sum((B[i] - B[j]) ** 2)) for i in range(n) for j in range(n) if not (unbiased and i == j))
+    kxx = sum(
+        np.exp(-gamma * np.sum((A[i] - A[j]) ** 2)) for i in range(m) for j in range(m) if not (unbiased and i == j)
+    )
+    kyy = sum(
+        np.exp(-gamma * np.sum((B[i] - B[j]) ** 2)) for i in range(n) for j in range(n) if not (unbiased and i == j)
+    )
     kxy = sum(np.exp(-gamma * np.sum((A[i] - B[j]) ** 2)) for i in range(m) for j in range(n))
     if unbiased:
         return kxx / (m * (m - 1)) + kyy / (n * (n - 1)) - 2 * kxy / (m * n)

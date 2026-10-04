@@ -54,8 +54,7 @@ def schabenberger_lisa(x, w):
     ww = sqmat(w, n, "w")
     for i in range(n):
         if ww[i][i] != 0.0:
-            raise ValueError("`w` must have a zero diagonal; "
-                             "a site is not its own neighbour")
+            raise ValueError("`w` must have a zero diagonal; a site is not its own neighbour")
     m = mean(z)
     d = [t - m for t in z]
     ss = fsum([t * t for t in d])
@@ -68,21 +67,21 @@ def schabenberger_lisa(x, w):
     lagged = [fsum([ww[i][j] * d[j] for j in range(n)]) for i in range(n)]
     local = [n * d[i] * lagged[i] / ss for i in range(n)]
     expect = [-fsum(ww[i]) / (n - 1.0) for i in range(n)]
-    gi = n * fsum([ww[i][j] * d[i] * d[j] for i in range(n)
-                   for j in range(n)]) / (s0 * ss)
+    gi = n * fsum([ww[i][j] * d[i] * d[j] for i in range(n) for j in range(n)]) / (s0 * ss)
     gap = fsum(local) - s0 * gi
 
-    return RichResult(payload={
-        "local": local,
-        "expectation": expect,
-        "lagged": lagged,
-        "global_i": gi,
-        "s0": s0,
-        "sum_identity_gap": gap,
-        "n": n,
-        "method": ("Local Moran's I, Schabenberger & Gotway (2005) "
-                   "eq (1.17), Sec. 1.3.3; after Anselin (1995)"),
-    })
+    return RichResult(
+        payload={
+            "local": local,
+            "expectation": expect,
+            "lagged": lagged,
+            "global_i": gi,
+            "s0": s0,
+            "sum_identity_gap": gap,
+            "n": n,
+            "method": ("Local Moran's I, Schabenberger & Gotway (2005) eq (1.17), Sec. 1.3.3; after Anselin (1995)"),
+        }
+    )
 
 
 def cheatsheet():

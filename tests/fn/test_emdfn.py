@@ -1,7 +1,6 @@
 """Tests for emdfn.py - Empirical Mode Decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.emdfn import emd_fn, emdfn
 
 

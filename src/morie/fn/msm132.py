@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,14 +24,17 @@ def mvsml_categorical_count_eq_8_5(X, Z=None, depth=2, normalize_median=False):
     makes this kernel behave like a deep network.  No bandwidth
     parameter is required; only the number of layers.
     Keys: estimate."""
-    K = _gp.arccos_kernel(X, Z=Z, depth=depth,
-                          normalize_median=normalize_median)
-    ok, lam = _gp.is_positive_semidefinite(K) if Z is None \
-        else (None, None)
-    res = RichResult(payload={"estimate": K[0][0], "kernel": K,
-                              "depth": int(depth),
-                              "positive_semidefinite": ok,
-                              "method": "deep arc-cosine kernel (MVSML 2022 eq. 8.5)"})
+    K = _gp.arccos_kernel(X, Z=Z, depth=depth, normalize_median=normalize_median)
+    ok, lam = _gp.is_positive_semidefinite(K) if Z is None else (None, None)
+    res = RichResult(
+        payload={
+            "estimate": K[0][0],
+            "kernel": K,
+            "depth": int(depth),
+            "positive_semidefinite": ok,
+            "method": "deep arc-cosine kernel (MVSML 2022 eq. 8.5)",
+        }
+    )
     return with_describe_pointer(res, "msm132")
 
 

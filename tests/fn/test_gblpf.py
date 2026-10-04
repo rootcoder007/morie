@@ -1,7 +1,6 @@
 """Tests for gblpf.gblup_full."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gblpf import gblup_full
 
 

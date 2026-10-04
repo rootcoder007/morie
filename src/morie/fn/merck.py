@@ -4,7 +4,7 @@
 from . import _gp_core as G
 from ._richresult import RichResult
 
-__all__ = ['mercerchk', 'mercer_theorem', 'mercertheorem']
+__all__ = ["mercerchk", "mercer_theorem", "mercertheorem"]
 
 
 def mercerchk(K, tol=1e-9):
@@ -34,10 +34,16 @@ def mercerchk(K, tol=1e-9):
         raise ValueError("K must be a non-empty square matrix")
     gap = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
     ok, lam = G.is_positive_semidefinite(Km, tol=float(tol))
-    return RichResult(payload={
-        "is_kernel": bool(ok), "min_eigenvalue": min(lam), "eigenvalues": lam,
-        "symmetry_gap": gap, "n": n,
-        "method": "Mercer / positive semi-definiteness check, MVSML Sect. 8.2.1"})
+    return RichResult(
+        payload={
+            "is_kernel": bool(ok),
+            "min_eigenvalue": min(lam),
+            "eigenvalues": lam,
+            "symmetry_gap": gap,
+            "n": n,
+            "method": "Mercer / positive semi-definiteness check, MVSML Sect. 8.2.1",
+        }
+    )
 
 
 mercer_theorem = mercerchk
@@ -45,4 +51,4 @@ mercertheorem = mercerchk
 
 
 def cheatsheet():
-    return 'merck: Mercer check: is a Gram matrix a valid kernel matrix?'
+    return "merck: Mercer check: is a Gram matrix a valid kernel matrix?"

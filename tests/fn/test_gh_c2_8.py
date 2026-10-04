@@ -1,7 +1,6 @@
 """Tests for gh_c2_8.ghosal_np_normal_reg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c2_8 import ghosal_np_normal_reg
 
 

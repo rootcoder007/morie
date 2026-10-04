@@ -128,7 +128,8 @@ def chol(A):
                         "chol: matrix is not positive definite "
                         "(pivot %d is %.17g); a Cholesky factor does not "
                         "exist. If this is a log-likelihood Hessian, solve "
-                        "against -H." % (i, d))
+                        "against -H." % (i, d)
+                    )
                 L[i][j] = math.sqrt(d)
             else:
                 L[i][j] = (A[i][j] - s) / L[j][j] if L[j][j] != 0.0 else 0.0
@@ -191,9 +192,7 @@ def jacobi(A, sweeps=60):
                 if abs(M[p][q]) <= 1e-300:
                     continue
                 theta = (M[q][q] - M[p][p]) / (2.0 * M[p][q])
-                t = (1.0 if theta >= 0.0 else -1.0) / (
-                    abs(theta) + math.sqrt(theta * theta + 1.0)
-                )
+                t = (1.0 if theta >= 0.0 else -1.0) / (abs(theta) + math.sqrt(theta * theta + 1.0))
                 c = 1.0 / math.sqrt(t * t + 1.0)
                 s = t * c
                 for k in range(n):
@@ -393,36 +392,108 @@ def qnorm(p):
     if abs(q) <= 0.425:
         r = 0.180625 - q * q
         num = (
-            ((((((2509.0809287301226727 * r + 33430.575583588128105) * r + 67265.770927008700853) * r
-                 + 45921.953931549871457) * r + 13731.693765509461125) * r + 1971.5909503065514427) * r
-               + 133.14166789178437745) * r + 3.387132872796366608)
+            (
+                (
+                    (
+                        ((2509.0809287301226727 * r + 33430.575583588128105) * r + 67265.770927008700853) * r
+                        + 45921.953931549871457
+                    )
+                    * r
+                    + 13731.693765509461125
+                )
+                * r
+                + 1971.5909503065514427
+            )
+            * r
+            + 133.14166789178437745
+        ) * r + 3.387132872796366608
         den = (
-            ((((((5226.495278852854561 * r + 28729.085735721942674) * r + 39307.89580009271061) * r
-                 + 21213.794301586595867) * r + 5394.1960214247511077) * r + 687.1870074920579083) * r
-               + 42.313330701600911252) * r + 1.0)
+            (
+                (
+                    (
+                        ((5226.495278852854561 * r + 28729.085735721942674) * r + 39307.89580009271061) * r
+                        + 21213.794301586595867
+                    )
+                    * r
+                    + 5394.1960214247511077
+                )
+                * r
+                + 687.1870074920579083
+            )
+            * r
+            + 42.313330701600911252
+        ) * r + 1.0
         return q * num / den
     r = p if q < 0.0 else 1.0 - p
     r = math.sqrt(-math.log(r))
     if r <= 5.0:
         r -= 1.6
         num = (
-            ((((((7.7454501427834140764e-4 * r + 0.0227238449892691845833) * r + 0.24178072517745061177) * r
-                 + 1.27045825245236838258) * r + 3.64784832476320460504) * r + 5.7694972214606914055) * r
-               + 4.6303378461565452959) * r + 1.42343711074968357734)
+            (
+                (
+                    (
+                        ((7.7454501427834140764e-4 * r + 0.0227238449892691845833) * r + 0.24178072517745061177) * r
+                        + 1.27045825245236838258
+                    )
+                    * r
+                    + 3.64784832476320460504
+                )
+                * r
+                + 5.7694972214606914055
+            )
+            * r
+            + 4.6303378461565452959
+        ) * r + 1.42343711074968357734
         den = (
-            ((((((1.05075007164441684324e-9 * r + 5.475938084995344946e-4) * r + 0.0151986665636164571966) * r
-                 + 0.14810397642748007459) * r + 0.68976733498510000455) * r + 1.6763848301838038494) * r
-               + 2.05319162663775882187) * r + 1.0)
+            (
+                (
+                    (
+                        ((1.05075007164441684324e-9 * r + 5.475938084995344946e-4) * r + 0.0151986665636164571966) * r
+                        + 0.14810397642748007459
+                    )
+                    * r
+                    + 0.68976733498510000455
+                )
+                * r
+                + 1.6763848301838038494
+            )
+            * r
+            + 2.05319162663775882187
+        ) * r + 1.0
     else:
         r -= 5.0
         num = (
-            ((((((2.01033439929228813265e-7 * r + 2.71155556874348757815e-5) * r + 0.0012426609473880784386) * r
-                 + 0.026532189526576123093) * r + 0.29656057182850489123) * r + 1.7848265399172913358) * r
-               + 5.4637849111641143699) * r + 6.6579046435011037772)
+            (
+                (
+                    (
+                        ((2.01033439929228813265e-7 * r + 2.71155556874348757815e-5) * r + 0.0012426609473880784386) * r
+                        + 0.026532189526576123093
+                    )
+                    * r
+                    + 0.29656057182850489123
+                )
+                * r
+                + 1.7848265399172913358
+            )
+            * r
+            + 5.4637849111641143699
+        ) * r + 6.6579046435011037772
         den = (
-            ((((((2.04426310338993978564e-15 * r + 1.4215117583164458887e-7) * r + 1.8463183175100546818e-5) * r
-                 + 7.868691311456132591e-4) * r + 0.0148753612908506148525) * r + 0.13692988092273580531) * r
-               + 0.59983220655588793769) * r + 1.0)
+            (
+                (
+                    (
+                        ((2.04426310338993978564e-15 * r + 1.4215117583164458887e-7) * r + 1.8463183175100546818e-5) * r
+                        + 7.868691311456132591e-4
+                    )
+                    * r
+                    + 0.0148753612908506148525
+                )
+                * r
+                + 0.13692988092273580531
+            )
+            * r
+            + 0.59983220655588793769
+        ) * r + 1.0
     val = num / den
     return -val if q < 0.0 else val
 
@@ -502,8 +573,7 @@ def besselk(nu, x, terms=160):
 # performs the identical arithmetic in the identical order.
 
 
-def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13,
-               penalty=0.0, obs_weights=None):
+def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13, penalty=0.0, obs_weights=None):
     """Logistic regression by iteratively reweighted least squares.
 
     Newton-Raphson on the log-likelihood, which for the canonical link
@@ -529,11 +599,9 @@ def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13,
     """
     n = len(X)
     p = len(X[0]) if n else 0
-    ow = [1.0] * n if obs_weights is None else [float(v) for v in
-                                               obs_weights]
+    ow = [1.0] * n if obs_weights is None else [float(v) for v in obs_weights]
     if len(ow) != n:
-        raise ValueError("logit_irls: %d weights for %d rows"
-                         % (len(ow), n))
+        raise ValueError("logit_irls: %d weights for %d rows" % (len(ow), n))
     beta = [0.0] * p
     for _ in range(iters):
         eta = matvec(X, beta)
@@ -549,7 +617,7 @@ def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13,
                     XtWX[a][b] += X[i][a] * w[i] * X[i][b]
         pen = float(penalty)
         if pen > 0.0:
-            for a in range(1, p):          # slopes only, not the intercept
+            for a in range(1, p):  # slopes only, not the intercept
                 Xtr[a] -= pen * beta[a]
                 XtWX[a][a] += pen
         step = ridgesolve(XtWX, Xtr, ridge)
@@ -610,8 +678,7 @@ def drdid_panel(dy, D, X=None, weights=None):
         s1 += w[i] * d[i]
         s0 += w[i] * pi[i] * (1.0 - d[i]) / (1.0 - pi[i])
     w1 = [w[i] * d[i] / s1 if s1 > 0.0 else 0.0 for i in range(n)]
-    w0 = [w[i] * pi[i] * (1.0 - d[i]) / (1.0 - pi[i]) / s0 if s0 > 0.0 else 0.0
-          for i in range(n)]
+    w0 = [w[i] * pi[i] * (1.0 - d[i]) / (1.0 - pi[i]) / s0 if s0 > 0.0 else 0.0 for i in range(n)]
     tau = 0.0
     for i in range(n):
         tau += (w1[i] - w0[i]) * (dyv[i] - mu0[i])
@@ -620,8 +687,7 @@ def drdid_panel(dy, D, X=None, weights=None):
     for x in inf:
         v += x * x
     se = math.sqrt(v / (n * n)) if n else float("nan")
-    return {"tau": tau, "inf": inf, "se": se, "pi": pi, "mu0": mu0,
-            "w1": w1, "w0": w0, "gamma": gam, "beta0": b0}
+    return {"tau": tau, "inf": inf, "se": se, "pi": pi, "mu0": mu0, "w1": w1, "w0": w0, "gamma": gam, "beta0": b0}
 
 
 def mammen(i):
@@ -687,16 +753,15 @@ def treatment_density(A, X, kind="binary", ridge=1e-8, penalty=0.0):
         if s2 <= 0.0:
             raise ValueError(
                 "treatment_density: the treatment model fits the dose "
-                "exactly, so f(A|X) is degenerate and no IP weight exists")
+                "exactly, so f(A|X) is degenerate and no IP weight exists"
+            )
         c = 1.0 / math.sqrt(2.0 * math.pi * s2)
         dens = [c * math.exp(-0.5 * r * r / s2) for r in resid]
         return dens, {"coef": b, "mu": mu, "sigma2": s2}
-    raise ValueError("treatment_density: kind must be 'binary' or "
-                     "'normal', got %r" % (kind,))
+    raise ValueError("treatment_density: kind must be 'binary' or 'normal', got %r" % (kind,))
 
 
-def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
-               trim=None, ridge=1e-8, penalty=0.0):
+def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True, trim=None, ridge=1e-8, penalty=0.0):
     """One time point's IP weight, Sec. 12.3.
 
     `X_num` is the numerator model's covariates. Passing None gives the
@@ -719,15 +784,15 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
     comes out low, so the mean-1 check stops being informative. It is
     reported rather than silently tolerated.
     """
-    den, dinfo = treatment_density(A, X_denom, kind=kind, ridge=ridge,
-                                   penalty=penalty)
+    den, dinfo = treatment_density(A, X_denom, kind=kind, ridge=ridge, penalty=penalty)
     n = len(den)
     for i in range(n):
         if den[i] <= 0.0:
             raise ValueError(
                 "ip_weights: f(A|L) is zero for observation %d, so the "
                 "positivity condition fails in the sample and the weight "
-                "is undefined" % i)
+                "is undefined" % i
+            )
     if not stabilize:
         num = [1.0] * n
         ninfo = None
@@ -741,13 +806,11 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
     if trim is not None:
         q = float(trim)
         if not 0.5 < q < 1.0:
-            raise ValueError("ip_weights: trim must be in (0.5, 1), got %r"
-                             % (trim,))
+            raise ValueError("ip_weights: trim must be in (0.5, 1), got %r" % (trim,))
         hi = quantile7(w, q)
         lo = quantile7(w, 1.0 - q)
         w = [min(max(v, lo), hi) for v in w]
-    out = {"denominator": den, "numerator": num,
-           "denominator_fit": dinfo, "numerator_fit": ninfo}
+    out = {"denominator": den, "numerator": num, "denominator_fit": dinfo, "numerator_fit": ninfo}
     out.update(diag)
     return w, out
 
@@ -767,23 +830,23 @@ def _weight_diagnostics(w, dinfo, ninfo, kind, stabilize):
     s1 = sum(w)
     s2 = sum(v * v for v in w)
     ess = (s1 * s1 / s2) if s2 > 0.0 else 0.0
-    out = {"mean_weight": s1 / n if n else float("nan"),
-           "max_weight": max(w) if w else float("nan"),
-           "effective_sample_size": ess,
-           "ess_fraction": ess / n if n else float("nan"),
-           "finite_variance": None,
-           "variance_ratio": None}
+    out = {
+        "mean_weight": s1 / n if n else float("nan"),
+        "max_weight": max(w) if w else float("nan"),
+        "effective_sample_size": ess,
+        "ess_fraction": ess / n if n else float("nan"),
+        "finite_variance": None,
+        "variance_ratio": None,
+    }
     if kind == "normal" and stabilize and ninfo is not None:
         sc2 = float(dinfo["sigma2"])
         sm2 = float(ninfo["sigma2"])
-        out["variance_ratio"] = sc2 / (0.5 * sm2) if sm2 > 0.0 else \
-            float("inf")
+        out["variance_ratio"] = sc2 / (0.5 * sm2) if sm2 > 0.0 else float("inf")
         out["finite_variance"] = bool(sc2 > 0.5 * sm2)
     return out
 
 
-def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
-                       trim=None, ridge=1e-8, penalty=0.0):
+def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True, trim=None, ridge=1e-8, penalty=0.0):
     """Sec. 21.2's product over time.
 
     `A_hist` is a list of K treatment vectors, one per time point;
@@ -797,24 +860,22 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
     if K == 0:
         raise ValueError("ip_weights_history: need at least one time point")
     if len(L_hist) != K:
-        raise ValueError("ip_weights_history: %d treatment times but %d "
-                         "covariate blocks" % (K, len(L_hist)))
+        raise ValueError("ip_weights_history: %d treatment times but %d covariate blocks" % (K, len(L_hist)))
     n = len(vec(A_hist[0]))
     w = [1.0] * n
     per_time = []
-    past = []                       # columns of treatment history so far
-    lbar = []                       # columns of COVARIATE history so far
+    past = []  # columns of treatment history so far
+    lbar = []  # columns of COVARIATE history so far
     for k in range(K):
         ak = vec(A_hist[k])
         if len(ak) != n:
-            raise ValueError("ip_weights_history: time %d has %d rows, "
-                             "time 0 has %d" % (k, len(ak), n))
+            raise ValueError("ip_weights_history: time %d has %d rows, time 0 has %d" % (k, len(ak), n))
         if L_hist[k] is not None:
             block = mat(L_hist[k])
             if len(block) != n:
                 raise ValueError(
-                    "ip_weights_history: covariate block at time %d has "
-                    "%d rows, treatment has %d" % (k, len(block), n))
+                    "ip_weights_history: covariate block at time %d has %d rows, treatment has %d" % (k, len(block), n)
+                )
             for c in range(len(block[0])):
                 lbar.append([row[c] for row in block])
         # Sec. 21.2: the denominator conditions on L-bar_k, the whole
@@ -822,9 +883,7 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
         # on A-bar_{k-1} alone.
         den_X = _bind_cols(None, lbar + past, n)
         num_X = _bind_cols(None, past, n) if past else None
-        wk, info = ip_weights(ak, den_X, num_X, kind=kind,
-                              stabilize=stabilize, ridge=ridge,
-                              penalty=penalty)
+        wk, info = ip_weights(ak, den_X, num_X, kind=kind, stabilize=stabilize, ridge=ridge, penalty=penalty)
         for i in range(n):
             w[i] *= wk[i]
         per_time.append({"time": k, "weight": wk, "info": info})
@@ -868,26 +927,20 @@ def wls(X, y, w, ridge=1e-10):
     Z = design(X, n)
     wv = [float(v) for v in vec(w)]
     if len(wv) != n:
-        raise ValueError("wls: %d weights for %d observations"
-                         % (len(wv), n))
+        raise ValueError("wls: %d weights for %d observations" % (len(wv), n))
     if any(v < 0.0 for v in wv):
         raise ValueError("wls: weights must be non-negative")
     k = len(Z[0])
-    XtWX = [[sum(wv[i] * Z[i][a] * Z[i][b] for i in range(n))
-             for b in range(k)] for a in range(k)]
-    XtWy = [sum(wv[i] * Z[i][a] * yv[i] for i in range(n))
-            for a in range(k)]
+    XtWX = [[sum(wv[i] * Z[i][a] * Z[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
+    XtWy = [sum(wv[i] * Z[i][a] * yv[i] for i in range(n)) for a in range(k)]
     for a in range(k):
         XtWX[a][a] += ridge
     beta = cholsolve(XtWX, XtWy)
     fitted = matvec(Z, beta)
     resid = [yv[i] - fitted[i] for i in range(n)]
     # sandwich: (X'WX)^-1 (sum w^2 e^2 x x') (X'WX)^-1
-    meat = [[sum((wv[i] * resid[i]) ** 2 * Z[i][a] * Z[i][b]
-                 for i in range(n))
-             for b in range(k)] for a in range(k)]
-    bread_cols = [cholsolve(XtWX, [1.0 if j == a else 0.0
-                                   for j in range(k)]) for a in range(k)]
+    meat = [[sum((wv[i] * resid[i]) ** 2 * Z[i][a] * Z[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
+    bread_cols = [cholsolve(XtWX, [1.0 if j == a else 0.0 for j in range(k)]) for a in range(k)]
     var = []
     for a in range(k):
         row = []
@@ -898,14 +951,11 @@ def wls(X, y, w, ridge=1e-10):
                     t += bread_cols[a][u] * meat[u][v] * bread_cols[b][v]
             row.append(t)
         var.append(row)
-    se = [math.sqrt(var[a][a]) if var[a][a] > 0.0 else float("nan")
-          for a in range(k)]
-    return {"coef": beta, "se": se, "vcov": var, "fitted": fitted,
-            "resid": resid, "n": n}
+    se = [math.sqrt(var[a][a]) if var[a][a] > 0.0 else float("nan") for a in range(k)]
+    return {"coef": beta, "se": se, "vcov": var, "fitted": fitted, "resid": resid, "n": n}
 
 
-def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
-                         tol=1e-12, obs_weights=None):
+def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100, tol=1e-12, obs_weights=None):
     """One-dimensional logistic fluctuation of a bounded regression.
 
     Solves the score equation sum_i H_i (Y_i - expit(offset_i + eps H_i))
@@ -919,11 +969,9 @@ def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
     """
     n = len(outcome)
     idx = list(range(n)) if rows is None else list(rows)
-    ow = [1.0] * n if obs_weights is None else [float(v) for v in
-                                                obs_weights]
+    ow = [1.0] * n if obs_weights is None else [float(v) for v in obs_weights]
     if len(ow) != n:
-        raise ValueError("logistic_fluctuation: %d weights for %d rows"
-                         % (len(ow), n))
+        raise ValueError("logistic_fluctuation: %d weights for %d rows" % (len(ow), n))
     if not idx or all(abs(H[i]) < 1e-14 for i in idx):
         return 0.0
     eps = 0.0
@@ -1010,8 +1058,7 @@ def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
         if abs(step) < 1e-13:
             break
     q1s = [sigmoid(math.log(q1[i] / (1.0 - q1[i])) + eps / g[i]) for i in range(n)]
-    q0s = [sigmoid(math.log(q0[i] / (1.0 - q0[i])) - eps / (1.0 - g[i]))
-           for i in range(n)]
+    q0s = [sigmoid(math.log(q0[i] / (1.0 - q0[i])) - eps / (1.0 - g[i])) for i in range(n)]
     psi_s = 0.0
     for i in range(n):
         psi_s += (q1s[i] - q0s[i]) / n
@@ -1029,6 +1076,16 @@ def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
     for x in inf:
         v += x * x
     se = math.sqrt(v / (n * n)) if n else float("nan")
-    return {"psi": psi, "se": se, "eps": eps, "g": g, "q1": q1s, "q0": q0s,
-            "inf": inf, "ey1": lo + rng * m1, "ey0": lo + rng * m0,
-            "scale": rng, "shift": lo}
+    return {
+        "psi": psi,
+        "se": se,
+        "eps": eps,
+        "g": g,
+        "q1": q1s,
+        "q0": q0s,
+        "inf": inf,
+        "ey1": lo + rng * m1,
+        "ey0": lo + rng * m0,
+        "scale": rng,
+        "shift": lo,
+    }

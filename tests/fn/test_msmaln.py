@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.msmaln import aalen_johansen
 
 
@@ -15,8 +14,7 @@ def test_msmaln_basic():
     cause = rng.integers(0, 3, n)  # 0 = censored, 1 or 2 = cause of event
     result = aalen_johansen(time, cause, n_causes=2)
     assert isinstance(result, dict)
-    expected_keys = {"times", "cif", "overall_survival", "naive_km",
-                     "overstatement", "partition_residual", "at_risk"}
+    expected_keys = {"times", "cif", "overall_survival", "naive_km", "overstatement", "partition_residual", "at_risk"}
     for key in expected_keys:
         assert key in result
     T = len(result["times"])
@@ -55,7 +53,7 @@ import morie.fn.msmaln as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

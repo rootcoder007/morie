@@ -52,7 +52,7 @@ def _transform(yv, a, family):
         for v in yv:
             if v <= 0.0:
                 raise ValueError("horowitz_parametric_T: the Box-Cox family of (6.3) needs positive Y")
-            out.append(math.log(v) if a == 0.0 else (v ** a - 1.0) / a)
+            out.append(math.log(v) if a == 0.0 else (v**a - 1.0) / a)
     elif family == "bickel-doksum":
         if a <= 0.0:
             raise ValueError("horowitz_parametric_T: the Bickel-Doksum family of (6.4) needs a > 0")

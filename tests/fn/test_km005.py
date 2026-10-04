@@ -13,6 +13,8 @@ def test_km005_doctest():
 
 def test_km005_edge():
     import pytest
+
     from morie.fn.km005 import kamath_ch2_decoder_token_distribution
+
     with pytest.raises(ValueError):
         kamath_ch2_decoder_token_distribution([1.0], [1.0], [1.0], W=[[1.0]])

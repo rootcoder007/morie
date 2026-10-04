@@ -1,7 +1,6 @@
 """Tests for vaeber.vae_elbo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vaeber import vae_elbo
 
 

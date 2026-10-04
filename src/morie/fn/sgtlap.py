@@ -39,11 +39,16 @@ def graphlap(W):
     if any(len(r) != n for r in W):
         raise ValueError("W must be square")
     d = [sum(W[i]) for i in range(n)]
-    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)]
-         for i in range(n)]
-    return RichResult(payload={
-        "L": L, "degree": d, "rowsum": [sum(r) for r in L], "n": n,
-        "method": "Combinatorial Laplacian L = T - A"})
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)] for i in range(n)]
+    return RichResult(
+        payload={
+            "L": L,
+            "degree": d,
+            "rowsum": [sum(r) for r in L],
+            "n": n,
+            "method": "Combinatorial Laplacian L = T - A",
+        }
+    )
 
 
 sgt_laplacian = graphlap

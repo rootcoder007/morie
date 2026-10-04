@@ -1,7 +1,6 @@
 """Test perplexity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.pplxy import perplexity, pplxy
 

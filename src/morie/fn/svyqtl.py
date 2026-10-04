@@ -83,11 +83,20 @@ def survey_quantile(y, weights=None, quantile=0.5):
     z = 1.959963984540054
     lo = _inv(xs, cum, min(max(p - z * se, 1e-12), 1.0 - 1e-12))
     hi = _inv(xs, cum, min(max(p + z * se, 1e-12), 1.0 - 1e-12))
-    return RichResult(payload={
-        "estimate": float(q), "se": float(se), "lower": float(lo),
-        "upper": float(hi), "p": p, "F": float(F), "sumw": float(tot),
-        "neff": float(tot * tot / sw2), "n": n,
-        "method": "weighted CDF inversion with Woodruff interval [Francisco & Fuller 1991]"})
+    return RichResult(
+        payload={
+            "estimate": float(q),
+            "se": float(se),
+            "lower": float(lo),
+            "upper": float(hi),
+            "p": p,
+            "F": float(F),
+            "sumw": float(tot),
+            "neff": float(tot * tot / sw2),
+            "n": n,
+            "method": "weighted CDF inversion with Woodruff interval [Francisco & Fuller 1991]",
+        }
+    )
 
 
 def _inv(xs, cum, p):
@@ -112,6 +121,7 @@ def _cdf(yy, w, tot, t):
 
 def cheatsheet():
     return "svyqtl(y, weights, quantile): weighted-CDF quantile, Woodruff interval."
+
 
 # public names resolved by fn/_lazy_map.json
 surveyquantile = survey_quantile

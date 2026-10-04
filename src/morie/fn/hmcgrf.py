@@ -76,9 +76,7 @@ def _forward(node, env, nodes, cache):
             else:
                 v = a * a
         else:
-            raise ValueError(
-                f"geron_computational_graph: unknown op {op!r}; supported: {sorted(_BINARY | _UNARY)}"
-            )
+            raise ValueError(f"geron_computational_graph: unknown op {op!r}; supported: {sorted(_BINARY | _UNARY)}")
         idx = len(nodes)
         nodes.append({"op": op, "value": v, "inputs": args})
     else:

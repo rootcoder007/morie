@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_chen_estimator_T"]
 
 
-def horowitz_chen_estimator_T(x, y, bandwidth=None, beta_hat=None, y0=None,
-                              y_grid=None, t_grid=None):
+def horowitz_chen_estimator_T(x, y, bandwidth=None, beta_hat=None, y0=None, y_grid=None, t_grid=None):
     r"""Chen's (2002) rank estimator of T in the transformation model
     (Horowitz Sec. 6.3.3), equation (6.67):
 
@@ -89,36 +88,51 @@ def horowitz_chen_estimator_T(x, y, bandwidth=None, beta_hat=None, y0=None,
     else:
         b = normalize_scale(beta_hat)
         if b.size != d:
-            raise ValueError(
-                f"beta_hat has {b.size} entries for {d} covariates.")
+            raise ValueError(f"beta_hat has {b.size} entries for {d} covariates.")
 
     Z = X @ b
     yy0 = float(np.median(yv)) if y0 is None else float(y0)
-    yg = np.linspace(np.quantile(yv, 0.1), np.quantile(yv, 0.9), 21) \
-        if y_grid is None else np.atleast_1d(np.asarray(y_grid, dtype=float))
-    diff = Z[:, None] - Z[None, :]          # X_i'b - X_j'b
-    np.fill_diagonal(diff, np.nan)          # j != i
+    yg = (
+        np.linspace(np.quantile(yv, 0.1), np.quantile(yv, 0.9), 21)
+        if y_grid is None
+        else np.atleast_1d(np.asarray(y_grid, dtype=float))
+    )
+    diff = Z[:, None] - Z[None, :]  # X_i'b - X_j'b
+    np.fill_diagonal(diff, np.nan)  # j != i
     dj0 = (yv >= yy0).astype(float)[None, :]
-    tg = np.linspace(np.nanmin(diff), np.nanmax(diff), 121) \
-        if t_grid is None else np.atleast_1d(np.asarray(t_grid, dtype=float))
+    tg = (
+        np.linspace(np.nanmin(diff), np.nanmax(diff), 121)
+        if t_grid is None
+        else np.atleast_1d(np.asarray(t_grid, dtype=float))
+    )
 
     T_hat = np.empty(yg.size)
     objmax = np.empty(yg.size)
     denom = n * (n - 1)
     for k, yq in enumerate(yg):
-        wgt = (yv >= yq).astype(float)[:, None] - dj0   # d_iy - d_jy0
+        wgt = (yv >= yq).astype(float)[:, None] - dj0  # d_iy - d_jy0
         vals = np.array([np.nansum(wgt * (diff >= t)) / denom for t in tg])
         j = int(np.argmax(vals))
         T_hat[k] = float(tg[j])
         objmax[k] = float(vals[j])
 
-    return RichResult(payload={
-        "y_grid": yg, "T_hat": T_hat, "objective_max": objmax,
-        "y0": yy0, "beta": b, "t_grid": tg,
-        "uses_kernel": False, "rate_exponent": -0.5,
-        "faster_than_horowitz": False,
-        "normalisation": SCALE_NOTE, "n": int(n), "d": int(d),
-        "method": "Chen (2002) pairwise rank maximisation (6.67); same n^{-1/2} rate as Horowitz"})
+    return RichResult(
+        payload={
+            "y_grid": yg,
+            "T_hat": T_hat,
+            "objective_max": objmax,
+            "y0": yy0,
+            "beta": b,
+            "t_grid": tg,
+            "uses_kernel": False,
+            "rate_exponent": -0.5,
+            "faster_than_horowitz": False,
+            "normalisation": SCALE_NOTE,
+            "n": int(n),
+            "d": int(d),
+            "method": "Chen (2002) pairwise rank maximisation (6.67); same n^{-1/2} rate as Horowitz",
+        }
+    )
 
 
 def cheatsheet():

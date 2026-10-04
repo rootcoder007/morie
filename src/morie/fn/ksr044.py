@@ -71,10 +71,16 @@ def kosorok_ch2_quantile_taylor_bounds(F, h, t_n, p, eps_pn=None):
     dens = (float(F(xi_p + d)) - float(F(xi_p - d))) / (2 * d)
     implied = -float(h(xi_p)) / dens if dens > 0 else np.nan
     return RichResult(
-        payload={"lower": lower, "upper": upper, "gap": upper - lower,
-                 "implied_derivative": implied, "xi_p": xi_p,
-                 "xi_perturbed": xi_n, "t_n": t_n,
-                 "method": "First-order quantile bounds; limit is -h(xi_p)/f(xi_p)"}
+        payload={
+            "lower": lower,
+            "upper": upper,
+            "gap": upper - lower,
+            "implied_derivative": implied,
+            "xi_p": xi_p,
+            "xi_perturbed": xi_n,
+            "t_n": t_n,
+            "method": "First-order quantile bounds; limit is -h(xi_p)/f(xi_p)",
+        }
     )
 
 

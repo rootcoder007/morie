@@ -60,10 +60,8 @@ import math
 
 from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["design_probability", "run_bandit", "martingale_terms",
-           "sequential_ci", "regret"]
+__all__ = ["design_probability", "run_bandit", "martingale_terms", "sequential_ci", "regret"]
 
 _EPS = 1e-12
 
@@ -78,15 +76,13 @@ def design_probability(blip_estimate, delta=0.1, greedy=False):
     """
     d = float(delta)
     if not 0.0 < d < 0.5:
-        raise ValueError("tlbandt: delta must lie in (0, 0.5), got %r"
-                         % (delta,))
+        raise ValueError("tlbandt: delta must lie in (0, 0.5), got %r" % (delta,))
     if greedy:
         return 1.0 if float(blip_estimate) > 0.0 else 0.0
     return 1.0 - d if float(blip_estimate) > 0.0 else d
 
 
-def run_bandit(W, Y1, Y0, blip_fn, delta=0.1, seed=0, greedy=False,
-               burn_in=20):
+def run_bandit(W, Y1, Y0, blip_fn, delta=0.1, seed=0, greedy=False, burn_in=20):
     r"""Play the sequential design, revealing one reward per step.
 
     ``blip_fn(history)`` returns the current estimate of the blip
@@ -103,18 +99,23 @@ def run_bandit(W, Y1, Y0, blip_fn, delta=0.1, seed=0, greedy=False,
     hist, A, Y, G = [], [], [], []
     for t in range(n):
         b = 0.0 if t < int(burn_in) else float(blip_fn(hist))
-        g = 0.5 if t < int(burn_in) else design_probability(b, delta,
-                                                            greedy)
+        g = 0.5 if t < int(burn_in) else design_probability(b, delta, greedy)
         a = 1.0 if float(rng.uniform()) < g else 0.0
         r = y1[t] if a == 1.0 else y0[t]
         A.append(a)
         Y.append(r)
         G.append(g)
         hist.append({"W": rows[t], "A": a, "Y": r, "g": g})
-    return {"A": A, "Y": Y, "g": G, "history": hist,
-            "greedy": bool(greedy),
-            "min_g": min(G), "max_g": max(G),
-            "note": "only the reward of the action TAKEN is observed"}
+    return {
+        "A": A,
+        "Y": Y,
+        "g": G,
+        "history": hist,
+        "greedy": bool(greedy),
+        "min_g": min(G),
+        "max_g": max(G),
+        "note": "only the reward of the action TAKEN is observed",
+    }
 
 
 def martingale_terms(A, Y, g, Q1, Q0, psi):
@@ -131,9 +132,9 @@ def martingale_terms(A, Y, g, Q1, Q0, psi):
     q0 = [float(v) for v in k.vec(Q0)]
     n = len(a)
     if any(v <= 0.0 or v >= 1.0 for v in gg):
-        raise ValueError("tlbandt: the design probability left (0,1) "
-                         "-- a greedy rule destroys the positivity "
-                         "the inference rests on")
+        raise ValueError(
+            "tlbandt: the design probability left (0,1) -- a greedy rule destroys the positivity the inference rests on"
+        )
     out = []
     for i in range(n):
         qa = q1[i] if a[i] == 1.0 else q0[i]
@@ -150,9 +151,12 @@ def sequential_ci(D, level=1.96):
         raise ValueError("tlbandt: at least 2 steps are needed")
     s2 = sum(q * q for q in v) / T
     se = math.sqrt(s2 / T)
-    return {"se": se, "half_width": float(level) * se, "T": T,
-            "note": "sum of squares, not the i.i.d. variance -- the "
-                    "terms are dependent but uncorrelated"}
+    return {
+        "se": se,
+        "half_width": float(level) * se,
+        "T": T,
+        "note": "sum of squares, not the i.i.d. variance -- the terms are dependent but uncorrelated",
+    }
 
 
 def regret(Y, Y1, Y0):
@@ -166,24 +170,26 @@ def regret(Y, Y1, Y0):
     b = [float(v) for v in k.vec(Y0)]
     n = len(y)
     best = [max(a[i], b[i]) for i in range(n)]
-    return {"cumulative_regret": sum(best[i] - y[i]
-                                     for i in range(n)),
-            "mean_regret": sum(best[i] - y[i]
-                               for i in range(n)) / n,
-            "note": "the price of keeping the design randomised"}
+    return {
+        "cumulative_regret": sum(best[i] - y[i] for i in range(n)),
+        "mean_regret": sum(best[i] - y[i] for i in range(n)) / n,
+        "note": "the price of keeping the design randomised",
+    }
 
 
 def cheatsheet():
-    return ("tlbandt: contexts arrive, we choose a RANDOMISED action "
-            "with a probability we design from the past, and only the "
-            "reward of the action taken is revealed. The goal is "
-            "INFERENCE, not cumulative reward -- and those pull apart, "
-            "because an algorithm that converges to one arm stops "
-            "generating data about the other. So keep g in "
-            "[delta, 1-delta]: it costs regret and buys positivity. "
-            "The data are dependent, but the influence terms are a "
-            "MARTINGALE difference sequence precisely because the "
-            "randomisation probability is known and past-measurable.")
+    return (
+        "tlbandt: contexts arrive, we choose a RANDOMISED action "
+        "with a probability we design from the past, and only the "
+        "reward of the action taken is revealed. The goal is "
+        "INFERENCE, not cumulative reward -- and those pull apart, "
+        "because an algorithm that converges to one arm stops "
+        "generating data about the other. So keep g in "
+        "[delta, 1-delta]: it costs regret and buys positivity. "
+        "The data are dependent, but the influence terms are a "
+        "MARTINGALE difference sequence precisely because the "
+        "randomisation probability is known and past-measurable."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -75,10 +75,18 @@ def newton_raphson(f, grad_f, hess_f, x0, n_iter=50, tol=1e-12):
         g = [float(v) for v in grad_f(x)]
         gn = math.sqrt(sum(v * v for v in g))
     fv = float(f(x))
-    return RichResult(payload={
-        "x": x, "estimate": fv, "fval": fv, "grad_norm": gn,
-        "iterations": it, "converged": 1.0 if gn <= tol else 0.0, "p": p,
-        "method": "Newton-Raphson"})
+    return RichResult(
+        payload={
+            "x": x,
+            "estimate": fv,
+            "fval": fv,
+            "grad_norm": gn,
+            "iterations": it,
+            "converged": 1.0 if gn <= tol else 0.0,
+            "p": p,
+            "method": "Newton-Raphson",
+        }
+    )
 
 
 def cheatsheet():

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["bridge_sampling", "bridge_sampling_marginal"]
 
 
-def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
-                    log_q_proposal, max_iter=1000, tol=1e-10):
+def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal, log_q_proposal, max_iter=1000, tol=1e-10):
     r"""Marginal likelihood by the optimal bridge, iterated to a fixed point.
 
     Meng and Wong's optimal bridge function gives
@@ -83,8 +82,8 @@ def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
         raise ValueError("need at least 2 draws from each source.")
     s1, s2 = n1 / (n1 + n2), n2 / (n1 + n2)
 
-    l1 = lp1 - lq1                          # log p*/q at posterior draws
-    l2 = lp2 - lq2                          # log p*/q at proposal draws
+    l1 = lp1 - lq1  # log p*/q at posterior draws
+    l2 = lp2 - lq2  # log p*/q at proposal draws
     shift = float(np.median(np.concatenate([l1, l2])))
     e1, e2 = np.exp(l1 - shift), np.exp(l2 - shift)
 
@@ -115,18 +114,17 @@ def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
     r = np.exp(logr)
     f1 = e1 / (s1 * e1 + s2 * r)
     f2 = 1.0 / (s1 * e2 + s2 * r)
-    rel = float(np.sqrt(
-        np.var(f2, ddof=1) / np.mean(f2) ** 2 / n2
-        + np.var(f1, ddof=1) / np.mean(f1) ** 2 / n1
-    )) if np.mean(f1) > 0 and np.mean(f2) > 0 else np.nan
-    hm = float(shift - np.log(np.mean(np.exp(-(l1 - shift)))) - 2 * shift) \
-        if np.all(np.isfinite(l1)) else np.nan
+    rel = (
+        float(np.sqrt(np.var(f2, ddof=1) / np.mean(f2) ** 2 / n2 + np.var(f1, ddof=1) / np.mean(f1) ** 2 / n1))
+        if np.mean(f1) > 0 and np.mean(f2) > 0
+        else np.nan
+    )
+    hm = float(shift - np.log(np.mean(np.exp(-(l1 - shift)))) - 2 * shift) if np.all(np.isfinite(l1)) else np.nan
     return RichResult(
         payload={
             "estimate": log_marginal,
             "log_marginal": log_marginal,
-            "marginal": float(np.exp(log_marginal))
-            if abs(log_marginal) < 700 else np.inf,
+            "marginal": float(np.exp(log_marginal)) if abs(log_marginal) < 700 else np.inf,
             "iterations": int(it),
             "converged": bool(converged),
             "overlap": ov,
@@ -150,10 +148,7 @@ def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
 
 
 def cheatsheet():
-    return (
-        "bdgsm: iterated optimal-bridge marginal likelihood, with the "
-        "overlap it actually depends on"
-    )
+    return "bdgsm: iterated optimal-bridge marginal likelihood, with the overlap it actually depends on"
 
 
 #: Catalogue alias for :func:`bridge_sampling`.

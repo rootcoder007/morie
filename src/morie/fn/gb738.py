@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['lrankasymp', 'gibbons_chernoff_savage']
+__all__ = ["lrankasymp", "gibbons_chernoff_savage"]
 
 
 def lrankasymp(j, jprime, lam, n, nodes=2001):
@@ -93,4 +93,6 @@ gibbons_chernoff_savage = lrankasymp
 
 
 def cheatsheet() -> str:
-    return "gb738: lrankasymp(j, jprime, lam, n, nodes) -> Null Chernoff-Savage mean and variance from the score function."
+    return (
+        "gb738: lrankasymp(j, jprime, lam, n, nodes) -> Null Chernoff-Savage mean and variance from the score function."
+    )

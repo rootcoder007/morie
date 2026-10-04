@@ -62,15 +62,17 @@ def dfbetas(y, X, intercept=True):
                     flag = 1
         n_infl += flag
         out.append(row)
-    return RichResult(payload={
-        "estimate": worst,
-        "dfbetas": out,
-        "threshold": thr,
-        "n_influential": n_infl,
-        "n": n,
-        "p": p,
-        "method": "DFBETAS scaled change in coefficient when obs i deleted",
-    })
+    return RichResult(
+        payload={
+            "estimate": worst,
+            "dfbetas": out,
+            "threshold": thr,
+            "n_influential": n_infl,
+            "n": n,
+            "p": p,
+            "method": "DFBETAS scaled change in coefficient when obs i deleted",
+        }
+    )
 
 
 def cheatsheet():

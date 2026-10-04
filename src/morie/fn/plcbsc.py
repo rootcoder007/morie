@@ -53,11 +53,16 @@ methodological section.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["plcbsc", "placebo_inference", "placebo_scm_inference", "synthetic_control",
-           "in_time_placebo", "simplex_project"]
+__all__ = [
+    "plcbsc",
+    "placebo_inference",
+    "placebo_scm_inference",
+    "synthetic_control",
+    "in_time_placebo",
+    "simplex_project",
+]
 
 
 def simplex_project(v):
@@ -74,8 +79,7 @@ def simplex_project(v):
     return [max(x - theta, 0.0) for x in v]
 
 
-def synthetic_control(x_treated, x_donors, v=None, max_iter=5000,
-                      tol=1e-12, step=None):
+def synthetic_control(x_treated, x_donors, v=None, max_iter=5000, tol=1e-12, step=None):
     r"""Weights :math:`W` minimising :math:`\lVert X_1 - X_0 W\rVert_V` on
     the simplex.
 
@@ -103,39 +107,34 @@ def synthetic_control(x_treated, x_donors, v=None, max_iter=5000,
     if J == 0:
         raise ValueError("plcbsc: the donor pool is empty")
     if any(len(col) != k for col in D):
-        raise ValueError("plcbsc: every donor needs the same predictors as "
-                         "the treated unit")
+        raise ValueError("plcbsc: every donor needs the same predictors as the treated unit")
     if v is None:
         vv = [1.0] * k
     else:
         vv = [float(t) for t in v]
         if len(vv) != k or any(t < 0 for t in vv):
-            raise ValueError("plcbsc: v must be one non-negative weight per "
-                             "predictor")
+            raise ValueError("plcbsc: v must be one non-negative weight per predictor")
         if sum(vv) <= 0:
             raise ValueError("plcbsc: v must have some positive weight")
 
     w = [1.0 / J] * J
 
     def resid(ws):
-        return [X1[i] - sum(D[j][i] * ws[j] for j in range(J))
-                for i in range(k)]
+        return [X1[i] - sum(D[j][i] * ws[j] for j in range(J)) for i in range(k)]
 
     def loss(ws):
         r = resid(ws)
         return sum(vv[i] * r[i] * r[i] for i in range(k))
 
     if step is None:
-        norm = max(sum(vv[i] * D[j][i] ** 2 for i in range(k))
-                   for j in range(J))
+        norm = max(sum(vv[i] * D[j][i] ** 2 for i in range(k)) for j in range(J))
         step = 1.0 / (2.0 * norm * J) if norm > 0 else 1e-3
     cur = loss(w)
     converged = False
     it = 0
     for it in range(1, int(max_iter) + 1):
         r = resid(w)
-        grad = [-2.0 * sum(vv[i] * r[i] * D[j][i] for i in range(k))
-                for j in range(J)]
+        grad = [-2.0 * sum(vv[i] * r[i] * D[j][i] for i in range(k)) for j in range(J)]
         s = step
         for _ in range(60):
             cand = simplex_project([w[j] - s * grad[j] for j in range(J)])
@@ -148,17 +147,18 @@ def synthetic_control(x_treated, x_donors, v=None, max_iter=5000,
             converged = True
             break
         w, cur = cand, new
-    return {"weights": w, "loss": cur,
-            "fitted": [sum(D[j][i] * w[j] for j in range(J))
-                       for i in range(k)],
-            "n_iter": it, "converged": converged}
+    return {
+        "weights": w,
+        "loss": cur,
+        "fitted": [sum(D[j][i] * w[j] for j in range(J)) for i in range(k)],
+        "n_iter": it,
+        "converged": converged,
+    }
 
 
 def _gaps(y_treated, y_donors, weights):
     T = len(y_treated)
-    return [y_treated[t] - sum(y_donors[j][t] * weights[j]
-                               for j in range(len(weights)))
-            for t in range(T)]
+    return [y_treated[t] - sum(y_donors[j][t] * weights[j] for j in range(len(weights))) for t in range(T)]
 
 
 def _rmspe(gaps):
@@ -178,8 +178,7 @@ def _effect(gaps, t0, statistic, pre_gaps=None):
     return _rmspe(post) / denom
 
 
-def plcbsc(y_treated, y_donors, t0, x_treated=None, x_donors=None, v=None,
-           statistic="effect", **fit_kwargs):
+def plcbsc(y_treated, y_donors, t0, x_treated=None, x_donors=None, v=None, statistic="effect", **fit_kwargs):
     r"""Synthetic control estimate with in-space placebo inference.
 
     Parameters
@@ -231,15 +230,12 @@ def plcbsc(y_treated, y_donors, t0, x_treated=None, x_donors=None, v=None,
     if J == 0:
         raise ValueError("plcbsc: the donor pool is empty")
     if any(len(row) != T for row in Y0):
-        raise ValueError("plcbsc: every donor needs the same number of "
-                         "periods as the treated unit")
+        raise ValueError("plcbsc: every donor needs the same number of periods as the treated unit")
     t0 = int(t0)
     if not 1 <= t0 < T:
-        raise ValueError("plcbsc: t0 must leave at least one pre- and one "
-                         "post-intervention period")
+        raise ValueError("plcbsc: t0 must leave at least one pre- and one post-intervention period")
     if statistic not in ("effect", "rmspe_ratio"):
-        raise ValueError("plcbsc: statistic must be 'effect' or "
-                         "'rmspe_ratio'")
+        raise ValueError("plcbsc: statistic must be 'effect' or 'rmspe_ratio'")
 
     def predictors(unit_y, others_y):
         if x_treated is None:
@@ -262,8 +258,7 @@ def plcbsc(y_treated, y_donors, t0, x_treated=None, x_donors=None, v=None,
         ox = None
         if x_donors is not None:
             ox = [x_donors[m] for m in range(J) if m != j]
-        pf = fit(Y0[j], others, None if x_donors is None else x_donors[j],
-                 ox)
+        pf = fit(Y0[j], others, None if x_donors is None else x_donors[j], ox)
         pg = _gaps(Y0[j], others, pf["weights"])
         placebo.append(_effect(pg, t0, statistic))
 
@@ -271,25 +266,25 @@ def plcbsc(y_treated, y_donors, t0, x_treated=None, x_donors=None, v=None,
     at_least = sum(1 for s in all_stats if s >= abs(est) - 1e-12)
     pvalue = at_least / float(len(all_stats))
     rank = sorted(all_stats, reverse=True).index(abs(est)) + 1
-    return RichResult(payload={
-        "estimate": est,
-        "gaps": gaps,
-        "weights": main["weights"],
-        "fit_loss": main["loss"],
-        "placebo": placebo,
-        "pvalue": pvalue,
-        "rank": rank,
-        "n_donors": J,
-        "t0": t0,
-        "statistic": statistic,
-        "rmspe_pre": _rmspe(gaps[:t0]),
-        "rmspe_post": _rmspe(gaps[t0:]),
-        "note": "inference is by permutation over the donor pool, so the "
-                "smallest attainable p-value is 1/(J+1) = %.4g"
-                % (1.0 / (J + 1)),
-        "method": "synthetic control with in-space placebos (Abadie, "
-                  "Diamond & Hainmueller 2015)",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "gaps": gaps,
+            "weights": main["weights"],
+            "fit_loss": main["loss"],
+            "placebo": placebo,
+            "pvalue": pvalue,
+            "rank": rank,
+            "n_donors": J,
+            "t0": t0,
+            "statistic": statistic,
+            "rmspe_pre": _rmspe(gaps[:t0]),
+            "rmspe_post": _rmspe(gaps[t0:]),
+            "note": "inference is by permutation over the donor pool, so the "
+            "smallest attainable p-value is 1/(J+1) = %.4g" % (1.0 / (J + 1)),
+            "method": "synthetic control with in-space placebos (Abadie, Diamond & Hainmueller 2015)",
+        }
+    )
 
 
 def in_time_placebo(y_treated, y_donors, t0, fake_t0, v=None, **fit_kwargs):
@@ -306,29 +301,32 @@ def in_time_placebo(y_treated, y_donors, t0, fake_t0, v=None, **fit_kwargs):
     fake_t0 = int(fake_t0)
     t0 = int(t0)
     if not 1 <= fake_t0 < t0:
-        raise ValueError("plcbsc: fake_t0 must fall before the real t0 and "
-                         "leave a pre-period")
-    fit = synthetic_control(y1[:fake_t0], [o[:fake_t0] for o in Y0], v,
-                            **fit_kwargs)
+        raise ValueError("plcbsc: fake_t0 must fall before the real t0 and leave a pre-period")
+    fit = synthetic_control(y1[:fake_t0], [o[:fake_t0] for o in Y0], v, **fit_kwargs)
     gaps = _gaps(y1, Y0, fit["weights"])
-    return {"weights": fit["weights"], "gaps": gaps,
-            "placebo_effect": sum(gaps[fake_t0:t0]) / (t0 - fake_t0),
-            "rmspe_pre": _rmspe(gaps[:fake_t0]),
-            "rmspe_placebo": _rmspe(gaps[fake_t0:t0])}
+    return {
+        "weights": fit["weights"],
+        "gaps": gaps,
+        "placebo_effect": sum(gaps[fake_t0:t0]) / (t0 - fake_t0),
+        "rmspe_pre": _rmspe(gaps[:fake_t0]),
+        "rmspe_placebo": _rmspe(gaps[fake_t0:t0]),
+    }
 
 
 def cheatsheet():
-    return ("plcbsc: synthetic control + placebo inference (Abadie, "
-            "Diamond & Hainmueller 2015). Weights live on the SIMPLEX -- "
-            "non-negative, summing to one -- which is what stops the "
-            "counterfactual extrapolating outside the donors' support, "
-            "unlike regression weights. No standard errors: run the whole "
-            "procedure pretending each donor was treated, and the p-value "
-            "is the fraction of placebo effects at least as large as the "
-            "real one, so the smallest attainable p-value is 1/(J+1). "
-            "in_time_placebo moves the date instead of the unit. The "
-            "post/pre RMSPE ratio is offered as an option, not attributed "
-            "to this paper.")
+    return (
+        "plcbsc: synthetic control + placebo inference (Abadie, "
+        "Diamond & Hainmueller 2015). Weights live on the SIMPLEX -- "
+        "non-negative, summing to one -- which is what stops the "
+        "counterfactual extrapolating outside the donors' support, "
+        "unlike regression weights. No standard errors: run the whole "
+        "procedure pretending each donor was treated, and the p-value "
+        "is the fraction of placebo effects at least as large as the "
+        "real one, so the smallest attainable p-value is 1/(J+1). "
+        "in_time_placebo moves the date instead of the unit. The "
+        "post/pre RMSPE ratio is offered as an option, not attributed "
+        "to this paper."
+    )
 
 
 # compact alias per ledger/NAMING.md

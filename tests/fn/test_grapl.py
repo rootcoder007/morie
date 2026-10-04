@@ -39,8 +39,12 @@ def test_grapl_edge():
     assert r["output_shape"] == (3, 4)
     for i in range(3):
         for j in range(4):
-            w = [x[a][b] for a in range(2 * i - 1, 2 * i + 2)
-                 for b in range(2 * j - 1, 2 * j + 2) if 0 <= a < 5 and 0 <= b < 7]
+            w = [
+                x[a][b]
+                for a in range(2 * i - 1, 2 * i + 2)
+                for b in range(2 * j - 1, 2 * j + 2)
+                if 0 <= a < 5 and 0 <= b < 7
+            ]
             assert got[i][j] == pytest.approx(_mean(w), rel=1e-15, abs=0)
 
 
@@ -53,7 +57,7 @@ import morie.fn.grapl as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

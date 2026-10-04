@@ -51,10 +51,17 @@ def bound_neg_treatment(y, D, y_min):
     hi0 = m0 * p0 + y1 * p1
     lo = lo1 - hi0
     hi = 0.0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "p_treated": p1, "n": len(yv),
-        "method": "Negative-only treatment bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "p_treated": p1,
+            "n": len(yv),
+            "method": "Negative-only treatment bound",
+        }
+    )
 
 
 def cheatsheet():

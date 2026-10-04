@@ -42,14 +42,18 @@ def fauzi_muller_kernel(u):
     K = muller_order_m(uv, 4)
     grid = np.linspace(-10, 10, 4001)
     Kg = muller_order_m(grid, 4)
-    return RichResult(payload={
-        "u": uv, "K": K,
-        "mu0": float(np.trapezoid(Kg, grid)),
-        "mu2": float(np.trapezoid(grid ** 2 * Kg, grid)),
-        "mu4": float(np.trapezoid(grid ** 4 * Kg, grid)),
-        "negative_beyond": float(np.sqrt(3.0)),
-        "bias_order": "O(h^4)",
-        "method": "Fourth-order Muller kernel (3 - u^2)phi(u)/2; mu_2 = 0 by construction"})
+    return RichResult(
+        payload={
+            "u": uv,
+            "K": K,
+            "mu0": float(np.trapezoid(Kg, grid)),
+            "mu2": float(np.trapezoid(grid**2 * Kg, grid)),
+            "mu4": float(np.trapezoid(grid**4 * Kg, grid)),
+            "negative_beyond": float(np.sqrt(3.0)),
+            "bias_order": "O(h^4)",
+            "method": "Fourth-order Muller kernel (3 - u^2)phi(u)/2; mu_2 = 0 by construction",
+        }
+    )
 
 
 def cheatsheet():

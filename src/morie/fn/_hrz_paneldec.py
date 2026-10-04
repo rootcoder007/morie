@@ -26,8 +26,7 @@ what this particular construction rests on (Horowitz and Markatou
 
 from . import _array_core as np
 
-__all__ = ["panel_residuals", "char_funcs", "smoothing_cf", "deconvolve_pair",
-           "default_bandwidths", "KERNELS"]
+__all__ = ["panel_residuals", "char_funcs", "smoothing_cf", "deconvolve_pair", "default_bandwidths", "KERNELS"]
 
 KERNELS = ("fourfold", "flattop")
 # f_U flat-top cut-off: the first tau where |psi_nW| drops to this many
@@ -61,10 +60,9 @@ def panel_residuals(y, x, beta):
     if X.shape[:2] != (n, T):
         raise ValueError(f"x has shape {X.shape}, expected {(n, T)} plus d.")
     if X.shape[2] != b.size:
-        raise ValueError(
-            f"beta has {b.size} entries for {X.shape[2]} covariates.")
-    W = Y - X @ b                                                    # (5.21)
-    eta = (Y[:, 1:] - Y[:, :1]) - (X[:, 1:, :] - X[:, :1, :]) @ b    # (5.22)
+        raise ValueError(f"beta has {b.size} entries for {X.shape[2]} covariates.")
+    W = Y - X @ b  # (5.21)
+    eta = (Y[:, 1:] - Y[:, :1]) - (X[:, 1:, :] - X[:, :1, :]) @ b  # (5.22)
     return W.ravel(), eta.ravel()
 
 
@@ -98,8 +96,7 @@ def smoothing_cf(u, kernel="fourfold"):
     _check_kernel(kernel)
     if kernel == "flattop":
         uv = np.atleast_1d(np.asarray(u, dtype=float)).ravel()
-        return np.asarray([1.0 if abs(v) <= 1.0 else 0.0 for v in uv.tolist()],
-                          dtype=float)
+        return np.asarray([1.0 if abs(v) <= 1.0 else 0.0 for v in uv.tolist()], dtype=float)
     u = np.atleast_1d(np.asarray(u, dtype=float)).ravel()
     out = []
     for v in u.tolist():
@@ -107,8 +104,7 @@ def smoothing_cf(u, kernel="fourfold"):
             out.append(0.0)
             continue
         x = 2.0 * abs(v) + 2.0
-        ih = (x ** 3 - 4.0 * (x - 1.0) ** 3 + 6.0 * (x - 2.0) ** 3
-              - 4.0 * max(x - 3.0, 0.0) ** 3) / 6.0
+        ih = (x**3 - 4.0 * (x - 1.0) ** 3 + 6.0 * (x - 2.0) ** 3 - 4.0 * max(x - 3.0, 0.0) ** 3) / 6.0
         out.append(1.5 * ih)
     return np.asarray(out, dtype=float)
 
@@ -135,12 +131,13 @@ def default_bandwidths(eta, n, kernel="fourfold", W=None):
     if N < 2:
         raise ValueError("need at least two differences to set a bandwidth")
     m = sum(e) / N
-    sig = (sum((v - m) ** 2 for v in e) / (N - 1)) ** 0.5 / 2.0 ** 0.5
+    sig = (sum((v - m) ** 2 for v in e) / (N - 1)) ** 0.5 / 2.0**0.5
     if not sig > 0:
         raise ValueError("the differenced errors have zero spread")
     import math
+
     if _check_kernel(kernel) == "fourfold":
-        return sig / math.sqrt(math.log(n)), 0.5 * sig * N ** -0.2
+        return sig / math.sqrt(math.log(n)), 0.5 * sig * N**-0.2
     # flat-top: f_eps (no division) cuts off where the noise amplification
     # of the square root stays bounded, nu = sigma_eps / sqrt(log n);
     # f_U cuts off where |psi_nW| reaches its own sampling noise floor --
@@ -165,8 +162,7 @@ def default_bandwidths(eta, n, kernel="fourfold", W=None):
     return 1.0 / T, sig / math.sqrt(math.log(n))
 
 
-def deconvolve_pair(W, eta, grid_u, grid_z, nu_U, nu_eps, n_tau=2001,
-                    kernel="fourfold"):
+def deconvolve_pair(W, eta, grid_u, grid_z, nu_U, nu_eps, n_tau=2001, kernel="fourfold"):
     """(5.25) and (5.26): smoothed estimators of f_eps and f_U."""
     nu_U = float(nu_U)
     nu_eps = float(nu_eps)
@@ -178,20 +174,25 @@ def deconvolve_pair(W, eta, grid_u, grid_z, nu_U, nu_eps, n_tau=2001,
     _, psi_eta_e = char_funcs(W, eta, tau_e)
     # (5.25)
     integ_e = np.sqrt(np.abs(psi_eta_e)) * smoothing_cf(nu_eps * tau_e, kernel)
-    f_eps = np.array([
-        float(np.real(np.trapezoid(integ_e * np.exp(-1j * tau_e * z), tau_e))
-              / (2 * np.pi)) for z in np.atleast_1d(grid_z)])
+    f_eps = np.array(
+        [
+            float(np.real(np.trapezoid(integ_e * np.exp(-1j * tau_e * z), tau_e)) / (2 * np.pi))
+            for z in np.atleast_1d(grid_z)
+        ]
+    )
 
     psi_W_u, psi_eta_u = char_funcs(W, eta, tau_u)
     root = np.sqrt(np.abs(psi_eta_u))
     # psi_zeta is compactly supported, so the ratio is never formed
     # outside |nu tau| <= 1, where the root stays bounded away from 0
     weight = smoothing_cf(nu_U * tau_u, kernel)
-    integ_u = np.where(weight > 0,
-                       psi_W_u * weight / np.maximum(root, 1e-300), 0.0)
-    f_U = np.array([
-        float(np.real(np.trapezoid(integ_u * np.exp(-1j * tau_u * u), tau_u))
-              / (2 * np.pi)) for u in np.atleast_1d(grid_u)])
+    integ_u = np.where(weight > 0, psi_W_u * weight / np.maximum(root, 1e-300), 0.0)
+    f_U = np.array(
+        [
+            float(np.real(np.trapezoid(integ_u * np.exp(-1j * tau_u * u), tau_u)) / (2 * np.pi))
+            for u in np.atleast_1d(grid_u)
+        ]
+    )
     return f_U, f_eps
 
 

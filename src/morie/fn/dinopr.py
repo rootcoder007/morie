@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dinoloss', 'dino_self_distill']
+__all__ = ["dinoloss", "dino_self_distill"]
 
 
 def dinoloss(s_logits, t_logits, tau_s=0.1, tau_t=0.04, center=None):
@@ -43,8 +43,10 @@ def dinoloss(s_logits, t_logits, tau_s=0.1, tau_t=0.04, center=None):
     for the temperature softmax, equation (4) for the centre update,
     and Algorithm 1's pseudocode for the order of centre-then-sharpen.
     """
-    Sm = C.mat(s_logits); Tm = C.mat(t_logits)
-    B = len(Sm); K = len(Sm[0])
+    Sm = C.mat(s_logits)
+    Tm = C.mat(t_logits)
+    B = len(Sm)
+    K = len(Sm[0])
     if len(Tm) != B or len(Tm[0]) != K:
         raise ValueError("student and teacher logits must have the same shape")
     c = [0.0] * K if center is None else C.vec(center)
@@ -62,9 +64,17 @@ def dinoloss(s_logits, t_logits, tau_s=0.1, tau_t=0.04, center=None):
     Ps = [sm(r, tau_s, zero) for r in Sm]
     Pt = [sm(r, tau_t, c) for r in Tm]
     per = [-sum(Pt[i][j] * math.log(Ps[i][j]) for j in range(K)) for i in range(B)]
-    return RichResult(payload={
-        "loss": sum(per) / B, "per_view": per, "p_s": Ps, "p_t": Pt,
-        "B": B, "K": K, "method": "DINO self-distillation loss"})
+    return RichResult(
+        payload={
+            "loss": sum(per) / B,
+            "per_view": per,
+            "p_s": Ps,
+            "p_t": Pt,
+            "B": B,
+            "K": K,
+            "method": "DINO self-distillation loss",
+        }
+    )
 
 
 dino_self_distill = dinoloss

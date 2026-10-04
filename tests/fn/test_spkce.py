@@ -1,7 +1,6 @@
 """Tests for spkce.schabenberger_cov_param_estimation_kriging."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spkce import schabenberger_cov_param_estimation_kriging
 
 

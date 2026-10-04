@@ -101,7 +101,7 @@ def hazard_design(W, A, k, tmax, max_dummies=25):
             cols.append((k == j).astype(float))
     else:
         s = (k - 1.0) / max(tmax - 1.0, 1.0)
-        cols += [s, s ** 2, s ** 3]
+        cols += [s, s**2, s**3]
     for j in range(W.shape[1]):
         cols.append(W[:, j])
         cols.append(A * W[:, j])
@@ -154,9 +154,7 @@ def fit_hazards(W, A, k_obs, event, tmax):
         for a in (1.0, 0.0):
             H = np.empty((n, int(tmax)))
             for j in range(1, int(tmax) + 1):
-                Xj = hazard_design(
-                    Wl, np.full(n, a), np.full(n, float(j)), tmax
-                )
+                Xj = hazard_design(Wl, np.full(n, a), np.full(n, float(j)), tmax)
                 H[:, j - 1] = logit_predict(Xj, beta)
             arm.append(np.clip(H, _CLIP, 1 - _CLIP))
         out.extend(arm)
@@ -193,8 +191,7 @@ def _clever(g_a, S_a, SC_a, t0):
     H = np.zeros((n, tmax))
     j = int(t0) - 1
     H[:, : j + 1] = -(
-        (S_a[:, [j]] / np.maximum(S_a[:, : j + 1], _CLIP))
-        / (g_a[:, None] * np.maximum(Sminus[:, : j + 1], _CLIP))
+        (S_a[:, [j]] / np.maximum(S_a[:, : j + 1], _CLIP)) / (g_a[:, None] * np.maximum(Sminus[:, : j + 1], _CLIP))
     )
     return H
 
@@ -222,8 +219,7 @@ def _fit_epsilon(y, offset, cov, weights, max_iter=100, tol=1e-12):
     return float(eps)
 
 
-def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0,
-               max_iter=100):
+def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0, max_iter=100):
     """Iterate the targeting step for one treatment arm.
 
     Cai and van der Laan are explicit that a single fluctuation is not
@@ -241,7 +237,7 @@ def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0,
     n = len(k_obs)
     tmax = lam_a.shape[1]
     j0 = int(t0) - 1
-    in_arm = (A == a).astype(float)
+    in_arm = (a == A).astype(float)
     S_a = survival_from_hazard(lam_a)
     SC_a = survival_from_hazard(lamc_a)
 
@@ -266,15 +262,14 @@ def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0,
         eic = eic + S_a[:, j0] - psi
         if abs(float(np.mean(eic))) <= 1.0 / n:
             break
-        eps = _fit_epsilon(
-            dN, _logit(lam_a[ridx, rt - 1]), H[ridx, rt - 1], wt
-        )
+        eps = _fit_epsilon(dN, _logit(lam_a[ridx, rt - 1]), H[ridx, rt - 1], wt)
         if not np.isfinite(eps) or eps == 0.0:
             break
         lam_a = lam_a.copy()
         lam_a[:, : j0 + 1] = np.clip(
             _expit(_logit(lam_a[:, : j0 + 1]) + eps * H[:, : j0 + 1]),
-            _CLIP, 1 - _CLIP,
+            _CLIP,
+            1 - _CLIP,
         )
         S_a = survival_from_hazard(lam_a)
 
@@ -291,8 +286,7 @@ def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0,
     }
 
 
-def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025,
-                  max_iter=100):
+def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025, max_iter=100):
     """Full discrete-time survival TMLE for S_1(t0), S_0(t0) and the
     difference.
 
@@ -310,8 +304,7 @@ def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025,
     if not (ev.size == a.size == Wa.shape[0] == n):
         raise ValueError(
             "time, event, treatment and covariates must agree in length, "
-            "got %d, %d, %d and %d."
-            % (n, ev.size, a.size, Wa.shape[0])
+            "got %d, %d, %d and %d." % (n, ev.size, a.size, Wa.shape[0])
         )
     if not np.all(np.isin(ev, (0.0, 1.0))):
         raise ValueError("event must be binary 0/1 (1 = failure observed).")
@@ -319,36 +312,28 @@ def survival_tmle(time, event, A, W, t0=None, n_bins=None, trunc=0.025,
         raise ValueError("treatment must be binary 0/1.")
     if min(int(a.sum()), int((1 - a).sum())) < 5:
         raise ValueError(
-            "need at least 5 subjects in each arm, got %d treated and %d "
-            "control." % (int(a.sum()), int((1 - a).sum()))
+            "need at least 5 subjects in each arm, got %d treated and %d control." % (int(a.sum()), int((1 - a).sum()))
         )
 
     k_obs, edges = discretise_times(t, n_bins)
     tmax = int(k_obs.max())
     if tmax < 2:
-        raise ValueError(
-            "the time grid collapsed to a single bin; supply more distinct "
-            "times or a larger n_bins."
-        )
-    j0 = tmax if t0 is None else int(np.searchsorted(edges, float(t0),
-                                                     side="left") + 1)
+        raise ValueError("the time grid collapsed to a single bin; supply more distinct times or a larger n_bins.")
+    j0 = tmax if t0 is None else int(np.searchsorted(edges, float(t0), side="left") + 1)
     j0 = int(np.clip(j0, 1, tmax))
 
     Xg = add_intercept(Wa)
     gbeta, separated = logit_fit(Xg, a)
     g1 = np.clip(logit_predict(Xg, gbeta), trunc, 1 - trunc)
-    n_trunc = int(np.sum((logit_predict(Xg, gbeta) < trunc)
-                         | (logit_predict(Xg, gbeta) > 1 - trunc)))
+    n_trunc = int(np.sum((logit_predict(Xg, gbeta) < trunc) | (logit_predict(Xg, gbeta) > 1 - trunc)))
 
     lam1, lam0, lc1, lc0 = fit_hazards(Wa, a, k_obs, ev.astype(int), tmax)
-    arm1 = target_arm(1.0, a, k_obs, ev.astype(int), lam1, lc1, g1, j0,
-                      max_iter)
-    arm0 = target_arm(0.0, a, k_obs, ev.astype(int), lam0, lc0, 1.0 - g1,
-                      j0, max_iter)
+    arm1 = target_arm(1.0, a, k_obs, ev.astype(int), lam1, lc1, g1, j0, max_iter)
+    arm0 = target_arm(0.0, a, k_obs, ev.astype(int), lam0, lc0, 1.0 - g1, j0, max_iter)
 
     eic = arm1["eic"] - arm0["eic"]
     psi = arm1["psi"] - arm0["psi"]
-    se = float(np.sqrt(np.mean(eic ** 2) / n))
+    se = float(np.sqrt(np.mean(eic**2) / n))
     return {
         "estimate": psi,
         "se": se,

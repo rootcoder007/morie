@@ -105,8 +105,7 @@ def geron_image_segmentation(image, n_clusters, seed=0):
             ("Inertia", float(km["inertia"])),
         ],
         interpretation=(
-            "Colour-only segmentation: no spatial term, so disconnected regions of the same shade "
-            "share a segment."
+            "Colour-only segmentation: no spatial term, so disconnected regions of the same shade share a segment."
         ),
         payload={
             "segmented": seg,

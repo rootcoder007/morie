@@ -1,8 +1,8 @@
 """Test spectral_bound (spcbd)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spcbd import spcbd, spectral_bound
 

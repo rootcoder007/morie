@@ -88,8 +88,7 @@ def geron_feature_importance_mdi(tree_importances):
 
     return RichResult(
         title="Feature importance (MDI)",
-        summary_lines=[("Trees", int(A.shape[0])), ("Features", int(A.shape[1])),
-                       ("Top feature", int(order[0]))],
+        summary_lines=[("Trees", int(A.shape[0])), ("Features", int(A.shape[1])), ("Top feature", int(order[0]))],
         payload={
             "importance": imp.tolist(),
             "spread": spread.tolist(),

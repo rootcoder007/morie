@@ -1,7 +1,6 @@
 """Tests for magen.py - MA process generation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.magen import ma_generate_fn, magen
 
 

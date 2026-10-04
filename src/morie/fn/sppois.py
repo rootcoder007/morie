@@ -47,14 +47,19 @@ def schabenberger_poisson_process(lam=1.0, region=None, seed=None):
     area = region_area(reg)
     rng = np.random.default_rng(seed)
     n = int(rng.poisson(lam * area))
-    pts = np.column_stack([rng.uniform(reg[0], reg[2], n),
-                           rng.uniform(reg[1], reg[3], n)])
+    pts = np.column_stack([rng.uniform(reg[0], reg[2], n), rng.uniform(reg[1], reg[3], n)])
     return RichResult(
         title="Homogeneous Poisson process",
         summary_lines=[("lambda", float(lam)), ("area", area), ("n", n)],
-        payload={"points": pts, "n": n, "lambda": float(lam), "area": area,
-                 "expected_n": float(lam) * area, "var_n": float(lam) * area,
-                 "region": reg},
+        payload={
+            "points": pts,
+            "n": n,
+            "lambda": float(lam),
+            "area": area,
+            "expected_n": float(lam) * area,
+            "var_n": float(lam) * area,
+            "region": reg,
+        },
     )
 
 

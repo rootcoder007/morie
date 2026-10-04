@@ -349,7 +349,21 @@ _MONTHS.update(
         **{
             m[:3].encode(): i
             for i, m in enumerate(
-                ("january february march april may june july august september " "october november december").split(), 1
+                [
+                    "january",
+                    "february",
+                    "march",
+                    "april",
+                    "may",
+                    "june",
+                    "july",
+                    "august",
+                    "september",
+                    "october",
+                    "november",
+                    "december",
+                ],
+                1,
             )
         },
         b"sept": 9,

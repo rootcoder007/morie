@@ -60,7 +60,7 @@ def sample_autocorrelation(y, max_lag=20):
     if c[0] <= 0:
         raise ValueError("series is constant; the autocorrelation is undefined.")
     r = [ck / c[0] for ck in c]
-    ci = 1.96 / (n ** 0.5)
+    ci = 1.96 / (n**0.5)
     return RichResult(
         payload={
             "acf": r,

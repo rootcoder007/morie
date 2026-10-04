@@ -84,14 +84,23 @@ reused here from :mod:`morie.fn.survrsf` to score the fit.
 
 import math
 
-from . import _array_core as np
 from . import survrsf as _rsf
 from ._richresult import RichResult
 
-__all__ = ["DISTRIBUTIONS", "pdf", "cdf", "dpdf", "ddpdf",
-           "aft_loss",
-           "aft_gradient_hessian", "leaf_weight", "split_gain",
-           "boost", "predict", "concordance"]
+__all__ = [
+    "DISTRIBUTIONS",
+    "pdf",
+    "cdf",
+    "dpdf",
+    "ddpdf",
+    "aft_loss",
+    "aft_gradient_hessian",
+    "leaf_weight",
+    "split_gain",
+    "boost",
+    "predict",
+    "concordance",
+]
 
 DISTRIBUTIONS = ("normal", "logistic", "extreme")
 _CLAMP = 30.0
@@ -101,8 +110,7 @@ _SQRT2PI = math.sqrt(2.0 * math.pi)
 
 def _check_dist(dist):
     if dist not in DISTRIBUTIONS:
-        raise ValueError("surxgb: distribution must be one of %s, "
-                         "got %r" % (", ".join(DISTRIBUTIONS), dist))
+        raise ValueError("surxgb: distribution must be one of %s, got %r" % (", ".join(DISTRIBUTIONS), dist))
 
 
 def pdf(z, dist="normal"):
@@ -177,27 +185,22 @@ def aft_loss(y_lower, y_upper, u, sigma=1.0, dist="normal"):
     """
     _check_dist(dist)
     if sigma <= 0.0:
-        raise ValueError("surxgb: sigma must be positive, got %r"
-                         % sigma)
+        raise ValueError("surxgb: sigma must be positive, got %r" % sigma)
     lo, hi = float(y_lower), float(y_upper)
     if hi < lo:
-        raise ValueError("surxgb: the upper bound %r is below the "
-                         "lower bound %r" % (hi, lo))
+        raise ValueError("surxgb: the upper bound %r is below the lower bound %r" % (hi, lo))
     if lo < 0.0:
         raise ValueError("surxgb: a survival time cannot be negative")
     if lo == hi:
         if lo <= 0.0:
-            raise ValueError("surxgb: an observed event needs a "
-                             "positive time")
+            raise ValueError("surxgb: an observed event needs a positive time")
         d = pdf(_s(lo, u, sigma), dist)
         return -math.log(max(d, _FLOOR) / (sigma * lo))
-    p = (cdf(_s(hi, u, sigma), dist)
-         - cdf(_s(lo, u, sigma), dist))
+    p = cdf(_s(hi, u, sigma), dist) - cdf(_s(lo, u, sigma), dist)
     return -math.log(max(p, _FLOOR))
 
 
-def aft_gradient_hessian(y_lower, y_upper, u, sigma=1.0,
-                         dist="normal", method="analytic", eps=1e-5):
+def aft_gradient_hessian(y_lower, y_upper, u, sigma=1.0, dist="normal", method="analytic", eps=1e-5):
     r"""Gradient and hessian of the loss in :math:`u`.
 
     ``method="analytic"`` differentiates Definition 2 in closed form.
@@ -230,8 +233,7 @@ def aft_gradient_hessian(y_lower, y_upper, u, sigma=1.0,
     in the tails.
     """
     if method not in ("analytic", "numeric"):
-        raise ValueError("surxgb: method must be 'analytic' or "
-                         "'numeric', got %r" % method)
+        raise ValueError("surxgb: method must be 'analytic' or 'numeric', got %r" % method)
     f0 = aft_loss(y_lower, y_upper, u, sigma, dist)
     if method == "numeric":
         fp = aft_loss(y_lower, y_upper, u + eps, sigma, dist)
@@ -258,9 +260,13 @@ def aft_gradient_hessian(y_lower, y_upper, u, sigma=1.0,
             A = f_hi - f_lo
             g = A / (sigma * D)
             h = (A * A - (d_hi - d_lo) * D) / (sigma * sigma * D * D)
-    return {"gradient": g, "hessian": h if h > 1e-8 else 1e-8,
-            "loss": f0, "hessian_floored": h <= 1e-8,
-            "derivative_method": method}
+    return {
+        "gradient": g,
+        "hessian": h if h > 1e-8 else 1e-8,
+        "loss": f0,
+        "hessian_floored": h <= 1e-8,
+        "derivative_method": method,
+    }
 
 
 def leaf_weight(G, H, lam=1.0):
@@ -272,17 +278,17 @@ def leaf_weight(G, H, lam=1.0):
 
 def split_gain(GL, HL, GR, HR, lam=1.0, gamma=0.0):
     r"""Equation (7): the loss reduction, net of the leaf price."""
+
     def term(g, h):
         return g * g / (h + lam)
-    return 0.5 * (term(GL, HL) + term(GR, HR)
-                  - term(GL + GR, HL + HR)) - gamma
+
+    return 0.5 * (term(GL, HL) + term(GR, HR) - term(GL + GR, HL + HR)) - gamma
 
 
 def _build(X, g, h, idx, depth, max_depth, lam, gamma, min_child):
     G = sum(g[i] for i in idx)
     H = sum(h[i] for i in idx)
-    leaf = {"leaf": True, "weight": leaf_weight(G, H, lam),
-            "n": len(idx)}
+    leaf = {"leaf": True, "weight": leaf_weight(G, H, lam), "n": len(idx)}
     if depth >= max_depth or len(idx) < 2 * min_child:
         return leaf
     best = None
@@ -299,42 +305,55 @@ def _build(X, g, h, idx, depth, max_depth, lam, gamma, min_child):
                 continue
             gain = split_gain(GL, HL, G - GL, H - HL, lam, gamma)
             if gain > 0.0 and (best is None or gain > best["gain"]):
-                best = {"gain": gain, "variable": j,
-                        "cut": (X[order[k]][j]
-                                + X[order[k + 1]][j]) / 2.0,
-                        "left": order[:k + 1],
-                        "right": order[k + 1:]}
+                best = {
+                    "gain": gain,
+                    "variable": j,
+                    "cut": (X[order[k]][j] + X[order[k + 1]][j]) / 2.0,
+                    "left": order[: k + 1],
+                    "right": order[k + 1 :],
+                }
     if best is None:
         return leaf
-    return {"leaf": False, "variable": best["variable"],
-            "cut": best["cut"], "gain": best["gain"],
-            "left": _build(X, g, h, best["left"], depth + 1,
-                           max_depth, lam, gamma, min_child),
-            "right": _build(X, g, h, best["right"], depth + 1,
-                            max_depth, lam, gamma, min_child)}
+    return {
+        "leaf": False,
+        "variable": best["variable"],
+        "cut": best["cut"],
+        "gain": best["gain"],
+        "left": _build(X, g, h, best["left"], depth + 1, max_depth, lam, gamma, min_child),
+        "right": _build(X, g, h, best["right"], depth + 1, max_depth, lam, gamma, min_child),
+    }
 
 
 def _eval_tree(node, x):
     while not node["leaf"]:
-        node = (node["right"] if x[node["variable"]] > node["cut"]
-                else node["left"])
+        node = node["right"] if x[node["variable"]] > node["cut"] else node["left"]
     return node["weight"]
 
 
-def boost(X, y_lower, y_upper, n_rounds=50, eta=0.1, max_depth=3,
-          lam=1.0, gamma=0.0, min_child=5, sigma=1.0, dist="normal",
-          base_score=None, derivatives="analytic"):
+def boost(
+    X,
+    y_lower,
+    y_upper,
+    n_rounds=50,
+    eta=0.1,
+    max_depth=3,
+    lam=1.0,
+    gamma=0.0,
+    min_child=5,
+    sigma=1.0,
+    dist="normal",
+    base_score=None,
+    derivatives="analytic",
+):
     r"""Fit the AFT model by second-order gradient boosting."""
     _check_dist(dist)
     n = len(y_lower)
     if not (n == len(y_upper) == len(X)):
-        raise ValueError("surxgb: X, y_lower and y_upper must have "
-                         "the same length")
+        raise ValueError("surxgb: X, y_lower and y_upper must have the same length")
     if n == 0:
         raise ValueError("surxgb: no observations")
     if base_score is None:
-        obs = [math.log(y_lower[i]) for i in range(n)
-               if y_lower[i] > 0.0]
+        obs = [math.log(y_lower[i]) for i in range(n) if y_lower[i] > 0.0]
         base_score = sum(obs) / len(obs) if obs else 0.0
     pred = [float(base_score)] * n
     trees = []
@@ -342,30 +361,34 @@ def boost(X, y_lower, y_upper, n_rounds=50, eta=0.1, max_depth=3,
     for _ in range(int(n_rounds)):
         g, h = [], []
         for i in range(n):
-            d = aft_gradient_hessian(y_lower[i], y_upper[i], pred[i],
-                                     sigma, dist, derivatives)
+            d = aft_gradient_hessian(y_lower[i], y_upper[i], pred[i], sigma, dist, derivatives)
             g.append(d["gradient"])
             h.append(d["hessian"])
-        tree = _build(X, g, h, list(range(n)), 0, int(max_depth),
-                      float(lam), float(gamma), int(min_child))
+        tree = _build(X, g, h, list(range(n)), 0, int(max_depth), float(lam), float(gamma), int(min_child))
         for i in range(n):
             pred[i] += eta * _eval_tree(tree, X[i])
         trees.append(tree)
-        history.append(sum(aft_loss(y_lower[i], y_upper[i], pred[i],
-                                    sigma, dist)
-                           for i in range(n)) / n)
-    return RichResult(payload={
-        "estimate": history[-1] if history else float("nan"),
-        "trees": trees, "eta": float(eta), "lam": float(lam),
-        "gamma": float(gamma), "sigma": float(sigma),
-        "dist": dist, "base_score": float(base_score),
-        "derivatives": derivatives,
-        "loss_history": history, "prediction": pred,
-        "n_rounds": len(trees), "max_depth": int(max_depth),
-        "method": "AFT survival regression by second-order gradient "
-                  "boosting; Chen & Guestrin (2016) eqs (5)-(7), "
-                  "Barnwal et al. (2022) Definition 2",
-    })
+        history.append(sum(aft_loss(y_lower[i], y_upper[i], pred[i], sigma, dist) for i in range(n)) / n)
+    return RichResult(
+        payload={
+            "estimate": history[-1] if history else float("nan"),
+            "trees": trees,
+            "eta": float(eta),
+            "lam": float(lam),
+            "gamma": float(gamma),
+            "sigma": float(sigma),
+            "dist": dist,
+            "base_score": float(base_score),
+            "derivatives": derivatives,
+            "loss_history": history,
+            "prediction": pred,
+            "n_rounds": len(trees),
+            "max_depth": int(max_depth),
+            "method": "AFT survival regression by second-order gradient "
+            "boosting; Chen & Guestrin (2016) eqs (5)-(7), "
+            "Barnwal et al. (2022) Definition 2",
+        }
+    )
 
 
 def predict(fit, X):
@@ -387,15 +410,17 @@ def concordance(fit, X, times, events):
 
 
 def cheatsheet():
-    return ("surxgb: AFT loss (Barnwal et al. Definition 2) driven by "
-            "XGBoost's second-order boosting -- leaf weight "
-            "-G/(H+lambda), split gain the eq (7) difference of three "
-            "such terms, gamma the price of a leaf. One loss covers "
-            "uncensored, right-, left- and interval-censored labels. "
-            "Three distributions for Z (normal, logistic, extreme) "
-            "and they are NOT interchangeable in the tails. The "
-            "gradient and hessian are checked against the loss they "
-            "belong to, because a sign error there still trains.")
+    return (
+        "surxgb: AFT loss (Barnwal et al. Definition 2) driven by "
+        "XGBoost's second-order boosting -- leaf weight "
+        "-G/(H+lambda), split gain the eq (7) difference of three "
+        "such terms, gamma the price of a leaf. One loss covers "
+        "uncensored, right-, left- and interval-censored labels. "
+        "Three distributions for Z (normal, logistic, extreme) "
+        "and they are NOT interchangeable in the tails. The "
+        "gradient and hessian are checked against the loss they "
+        "belong to, because a sign error there still trains."
+    )
 
 
 # compact alias per ledger/NAMING.md

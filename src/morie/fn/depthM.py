@@ -66,8 +66,10 @@ def mahalanobis_depth(x, mu=None, Sigma=None):
     if Sigma is None:
         if n < 2:
             raise ValueError("need at least 2 rows to estimate Sigma")
-        S = [[sum((X[i][a] - mu[a]) * (X[i][b] - mu[b]) for i in range(n)) / (n - 1.0)
-              for b in range(p)] for a in range(p)]
+        S = [
+            [sum((X[i][a] - mu[a]) * (X[i][b] - mu[b]) for i in range(n)) / (n - 1.0) for b in range(p)]
+            for a in range(p)
+        ]
     else:
         S = T.mat(Sigma)
     if len(S) != p or any(len(r) != p for r in S):

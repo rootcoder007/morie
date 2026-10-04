@@ -62,17 +62,19 @@ def kosorok_ch2_functional_delta_bootstrap(phi, X_n, X_hat_n, r_n, c=1.0, mu=Non
     if len(reps) < 2:
         raise ValueError("need at least 2 bootstrap replicates.")
     base = np.asarray(phi(Xn), dtype=float)
-    scaled = np.array([r_n * c * (np.asarray(phi(r), dtype=float) - base)
-                       for r in reps])
+    scaled = np.array([r_n * c * (np.asarray(phi(r), dtype=float) - base) for r in reps])
     der, _drift, _ok = hadamard_derivative(phi, Xn, np.ones_like(Xn))
-    payload = {"scaled_replicates": scaled, "mean": float(np.mean(scaled)),
-               "sd": float(np.std(scaled, ddof=1)), "derivative": der,
-               "n_boot": len(reps),
-               "method": "Centred at phi(X_n), the SAMPLE value, not at phi(mu)"}
+    payload = {
+        "scaled_replicates": scaled,
+        "mean": float(np.mean(scaled)),
+        "sd": float(np.std(scaled, ddof=1)),
+        "derivative": der,
+        "n_boot": len(reps),
+        "method": "Centred at phi(X_n), the SAMPLE value, not at phi(mu)",
+    }
     if mu is not None:
         truth = np.asarray(phi(np.asarray(mu, dtype=float)), dtype=float)
-        wrong = np.array([r_n * c * (np.asarray(phi(r), dtype=float) - truth)
-                          for r in reps])
+        wrong = np.array([r_n * c * (np.asarray(phi(r), dtype=float) - truth) for r in reps])
         payload["truth_centred_sd"] = float(np.std(wrong, ddof=1))
         payload["truth_centred_mean"] = float(np.mean(wrong))
     return RichResult(payload=payload)

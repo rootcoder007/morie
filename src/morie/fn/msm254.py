@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,9 +25,9 @@ def mvsml_reproducing_kernel_eq_10_16(X, y, W, activations=None, eta=0.1):
     g = _gp.ann_backprop_gradients(X, y, W, activations)
     first = g["gradients"][0]
     upd = [[-eta * v for v in row] for row in first]
-    res = RichResult(payload={"estimate": upd[0][0],
-                              "delta_w": upd,
-                              "method": "hidden delta rule (MVSML 2022 eq. 10.16)"})
+    res = RichResult(
+        payload={"estimate": upd[0][0], "delta_w": upd, "method": "hidden delta rule (MVSML 2022 eq. 10.16)"}
+    )
     return with_describe_pointer(res, "msm254")
 
 

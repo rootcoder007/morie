@@ -1,7 +1,6 @@
 """Tests for bkfour -- the treatment-first front-end over bkmed."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bkfour import baron_kenny_four_step
 from morie.fn.bkmed import baron_kenny
 

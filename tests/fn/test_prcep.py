@@ -1,7 +1,6 @@
 """Test power_cepstrum (prcep)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.prcep import power_cepstrum, prcep
 

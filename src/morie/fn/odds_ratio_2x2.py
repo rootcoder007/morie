@@ -28,20 +28,19 @@ def odds_ratio_2x2(a, b, c, d):
     """
     value = _ca_crim.odds_ratio_2x2(a, b, c, d)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.10)"
     return RichResult(
-        title='Odds ratio OR = ad / bc',
+        title="Odds ratio OR = ad / bc",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e10: OR = (p1/(1-p1)) / (p2/(1-p2)) = ad/bc [Weisburd et al. 2022, eq. 11.10]'
+    return "ca11e10: OR = (p1/(1-p1)) / (p2/(1-p2)) = ad/bc [Weisburd et al. 2022, eq. 11.10]"
 
 
 # compact alias per ledger/NAMING.md

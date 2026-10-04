@@ -1,7 +1,6 @@
 """Tests for multinomial_block_update.multinomial_block_update."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.multinomial_block_update import multinomial_block_update
 
 

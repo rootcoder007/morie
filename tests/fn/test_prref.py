@@ -1,7 +1,6 @@
 """Tests for morie.fn.prref -- Procrustes reflection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prref import procrustes_reflection, prref
 
 

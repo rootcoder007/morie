@@ -44,7 +44,11 @@ def expandcv(n, initial, testsize, step=None):
     res = _core.expandcv(n=n, initial=initial, testsize=testsize, step=step)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("nfolds", res["nfolds"]), ("firsttrainend", res["firsttrainend"]), ("lasttrainend", res["lasttrainend"])],
+        summary_lines=[
+            ("nfolds", res["nfolds"]),
+            ("firsttrainend", res["firsttrainend"]),
+            ("lasttrainend", res["lasttrainend"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

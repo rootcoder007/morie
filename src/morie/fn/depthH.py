@@ -86,17 +86,17 @@ def halfspace_depth(X, theta):
             dirs.append([-v for v in row])
         exact = 0
     if not dirs:
-        return RichResult(payload={
-            "estimate": 1.0, "count": n, "exact": exact, "n": n, "p": p,
-            "method": "Tukey halfspace depth"})
+        return RichResult(
+            payload={"estimate": 1.0, "count": n, "exact": exact, "n": n, "p": p, "method": "Tukey halfspace depth"}
+        )
     best = n
     for u in dirs:
         cnt = sum(1 for row in d if sum(u[j] * row[j] for j in range(p)) >= 0.0)
         if cnt < best:
             best = cnt
-    return RichResult(payload={
-        "estimate": best / n, "count": best, "exact": exact, "n": n, "p": p,
-        "method": "Tukey halfspace depth"})
+    return RichResult(
+        payload={"estimate": best / n, "count": best, "exact": exact, "n": n, "p": p, "method": "Tukey halfspace depth"}
+    )
 
 
 halfspacedepth = halfspace_depth

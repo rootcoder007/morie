@@ -78,7 +78,7 @@ def boyd_chebyshev_center(A, b, max_iter=500, tol=1e-10):
     m, n = Am.shape
     if bv.size != m:
         raise ValueError(f"A has {m} rows but b has {bv.size} entries")
-    norms = np.sqrt((Am ** 2).sum(axis=1))
+    norms = np.sqrt((Am**2).sum(axis=1))
     if np.any(norms <= 0):
         raise ValueError("A has a zero row, which is not a constraint")
 
@@ -89,31 +89,37 @@ def boyd_chebyshev_center(A, b, max_iter=500, tol=1e-10):
 
     c = np.r_[np.zeros(n), -1.0]
     A_ub = np.column_stack([Am, norms])
-    res = linprog(c, A_ub=A_ub, b_ub=bv,
-                  bounds=[(None, None)] * n + [(0.0, None)],
-                  method="highs")
+    res = linprog(c, A_ub=A_ub, b_ub=bv, bounds=[(None, None)] * n + [(0.0, None)], method="highs")
     if not res.success:
         return RichResult(
             title="Chebyshev center",
-            summary_lines=[("n", int(n)), ("constraints", int(m)),
-                           ("status", res.message)],
-            warnings=["the LP did not solve: the polyhedron is empty or "
-                      "unbounded in the direction of the inscribed ball"],
-            payload={"center": np.full(n, np.nan), "radius": float("nan"),
-                     "active": np.zeros(m, dtype=bool),
-                     "distances": np.full(m, np.nan), "bounded": False,
-                     "norms": norms, "method": "boyd_chebyshev_center"})
+            summary_lines=[("n", int(n)), ("constraints", int(m)), ("status", res.message)],
+            warnings=[
+                "the LP did not solve: the polyhedron is empty or unbounded in the direction of the inscribed ball"
+            ],
+            payload={
+                "center": np.full(n, np.nan),
+                "radius": float("nan"),
+                "active": np.zeros(m, dtype=bool),
+                "distances": np.full(m, np.nan),
+                "bounded": False,
+                "norms": norms,
+                "method": "boyd_chebyshev_center",
+            },
+        )
     x = np.asarray(res.x[:n], dtype=float)
     r = float(res.x[n])
     w = (bv - Am @ x) / norms
     return RichResult(
         title="Chebyshev center",
-        summary_lines=[("n", int(n)), ("constraints", int(m)),
-                       ("radius", r)],
+        summary_lines=[("n", int(n)), ("constraints", int(m)), ("radius", r)],
         payload={
-            "center": x, "radius": r,
+            "center": x,
+            "radius": r,
             "active": np.abs(w - r) <= 1e-7 * max(1.0, abs(r)),
-            "distances": w, "bounded": True, "norms": norms,
+            "distances": w,
+            "bounded": True,
+            "norms": norms,
             "method": "boyd_chebyshev_center",
         },
     )

@@ -1,7 +1,6 @@
 """Tests for morie.fn.spflt — eigenvector spatial filtering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spflt import spatial_filter
 
 

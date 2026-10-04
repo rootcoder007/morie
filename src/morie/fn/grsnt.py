@@ -78,10 +78,7 @@ def geron_sentiment_binary(token_ids, E, w, b=0.0, pooling="mean", threshold=0.5
     if Em.ndim != 2 or Em.size == 0:
         raise ValueError(f"E must be a non-empty (V, d) matrix, got shape {Em.shape}.")
     if ids.min() < 0 or ids.max() >= Em.shape[0]:
-        raise ValueError(
-            f"token ids must lie in [0, {Em.shape[0] - 1}], got "
-            f"[{int(ids.min())}, {int(ids.max())}]."
-        )
+        raise ValueError(f"token ids must lie in [0, {Em.shape[0] - 1}], got [{int(ids.min())}, {int(ids.max())}].")
     wv = np.asarray(w, dtype=float).ravel()
     if wv.size != Em.shape[1]:
         raise ValueError(f"w has {wv.size} weights but embeddings are {Em.shape[1]}-dimensional.")

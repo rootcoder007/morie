@@ -20,9 +20,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner3e56_basic():
     """Test basic functionality."""
     n = 10000
     p = 1.0 / 6.0
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_56(
-        n=n, p=p
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_56(n=n, p=p)
     value = _extract_sd(result)
     assert math.isfinite(value)
     assert value >= 0
@@ -34,9 +32,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner3e56_edge():
     """Test edge cases."""
     n = 10
     p = 0.5
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_56(
-        n=n, p=p
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_56(n=n, p=p)
     value = _extract_sd(result)
     assert math.isfinite(value)
     assert value >= 0

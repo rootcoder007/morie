@@ -1,7 +1,6 @@
 """Tests for rrblpr.rr_blup."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rrblpr import rr_blup
 
 

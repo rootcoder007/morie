@@ -1,7 +1,6 @@
 """Tests for hmsslc.geron_semisupervised_cluster."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsslc import geron_semisupervised_cluster
 
 

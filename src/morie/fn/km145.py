@@ -34,25 +34,28 @@ def kamath_ch9_mmllm_autoregressive(R, I, theta=None):
     """
     if theta is not None:
         if not callable(theta):
-            raise ValueError("theta must be a callable theta(R, I) or "
-                             "None when R already holds the "
-                             "per-token probabilities.")
+            raise ValueError(
+                "theta must be a callable theta(R, I) or None when R already holds the per-token probabilities."
+            )
         R = theta(R, I)
     p = np.atleast_1d(np.asarray(R, dtype=float)).ravel()
     if p.size == 0:
-        raise ValueError("the response is empty; its log-likelihood is "
-                         "not 0 but undefined.")
+        raise ValueError("the response is empty; its log-likelihood is not 0 but undefined.")
     if np.any((p < 0) | (p > 1)):
-        raise ValueError("response-token probabilities must lie in "
-                         "[0, 1].")
+        raise ValueError("response-token probabilities must lie in [0, 1].")
     with np.errstate(divide="ignore"):
         nll = -np.log(p)
     total = float(nll.sum())
-    return RichResult(payload={
-        "estimate": total, "mean_nll": total / p.size,
-        "per_token": [float(u) for u in nll],
-        "sequence_probability": float(np.prod(p)), "n": int(p.size),
-        "method": "MMLLM autoregressive response loss (Kamath Eq 9.17)"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "mean_nll": total / p.size,
+            "per_token": [float(u) for u in nll],
+            "sequence_probability": float(np.prod(p)),
+            "n": int(p.size),
+            "method": "MMLLM autoregressive response loss (Kamath Eq 9.17)",
+        }
+    )
 
 
 def cheatsheet():

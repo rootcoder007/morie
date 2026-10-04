@@ -1,7 +1,5 @@
 """Tests for wsmcrl.wasserman_cramer_rao."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wsmcrl import wasserman_cramer_rao
 
 

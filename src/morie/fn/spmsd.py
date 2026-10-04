@@ -93,20 +93,30 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=None, tol=1e6):
     finite = bool(converged and abs(d2) <= tol)
     return RichResult(
         title="Mean-square differentiability",
-        summary_lines=[("order m", m), ("d^{2m}C/dh^{2m} at 0", d2),
-                       ("growth on halving h", growth),
-                       ("significant digits", round(digits, 1)),
-                       ("differentiable", finite)],
-        payload={"is_differentiable": finite, "order": m,
-                 "derivative_2m": d2, "derivative_coarse": d1,
-                 "growth_ratio": float(growth), "converged": converged,
-                 "derivative_cov": float((-1) ** m * d2), "h": float(h),
-                 "significant_digits": float(digits)},
+        summary_lines=[
+            ("order m", m),
+            ("d^{2m}C/dh^{2m} at 0", d2),
+            ("growth on halving h", growth),
+            ("significant digits", round(digits, 1)),
+            ("differentiable", finite),
+        ],
+        payload={
+            "is_differentiable": finite,
+            "order": m,
+            "derivative_2m": d2,
+            "derivative_coarse": d1,
+            "growth_ratio": float(growth),
+            "converged": converged,
+            "derivative_cov": float((-1) ** m * d2),
+            "h": float(h),
+            "significant_digits": float(digits),
+        },
     )
 
 
 def cheatsheet():
     return "spmsd: m-times MS differentiable iff d^2m C/dh^2m at 0 is finite."
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

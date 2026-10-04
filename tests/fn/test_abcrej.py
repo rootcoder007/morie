@@ -1,14 +1,15 @@
 """Tests for abcrej.abc_rejection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.abcrej import abc_rejection
 
 
 def _make_sim(slope, intercept):
     """A deterministic simulator: returns intercept + slope * theta[0]."""
+
     def sim(theta, rng):
         return np.asarray([intercept + slope * theta[0]])
+
     return sim
 
 

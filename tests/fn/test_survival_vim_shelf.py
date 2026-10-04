@@ -6,9 +6,9 @@ construction. Nothing is anchored to whatever the code happened to
 print.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._did import add_intercept, ols_fit
 from morie.fn._survtmle import discretise_times, survival_from_hazard
 from morie.fn._vimp import gateaux_check, predictiveness, vim
@@ -35,9 +35,7 @@ def _true_survival():
     w = rng.normal(size=2_000_000)
     l1 = 1 / (1 + np.exp(-(B0 + BW * w + BA)))
     l0 = 1 / (1 + np.exp(-(B0 + BW * w)))
-    return float(np.mean((1 - l1) ** HORIZON)), float(
-        np.mean((1 - l0) ** HORIZON)
-    )
+    return float(np.mean((1 - l1) ** HORIZON)), float(np.mean((1 - l0) ** HORIZON))
 
 
 TRUE_S1, TRUE_S0 = _true_survival()
@@ -120,9 +118,7 @@ def test_confounding_is_actually_removed():
     # also drives the hazard; the adjusted estimate must be closer to
     # truth than the naive one
     Y, E, A, W = survival_data(seed=15, n=3000)
-    naive = float(np.mean(Y[A == 1] > HORIZON)) - float(
-        np.mean(Y[A == 0] > HORIZON)
-    )
+    naive = float(np.mean(Y[A == 1] > HORIZON)) - float(np.mean(Y[A == 0] > HORIZON))
     out = tmle_survival(Y, E, A, W, tau=HORIZON)
     truth = TRUE_S1 - TRUE_S0
     assert abs(out["estimate"] - truth) < abs(naive - truth)
@@ -185,8 +181,7 @@ def ols_learner(Xtr, ytr):
     return lambda Z: add_intercept(Z) @ b
 
 
-@pytest.mark.parametrize("measure", ["r_squared", "accuracy", "auc",
-                                     "deviance"])
+@pytest.mark.parametrize("measure", ["r_squared", "accuracy", "auc", "deviance"])
 def test_every_gradient_is_the_real_gateaux_derivative(measure):
     # tilt the empirical distribution towards one point EXACTLY (append
     # a duplicate, eps = 1/(n+1)) and difference; a resampled tilt is
@@ -286,8 +281,7 @@ def test_sample_splitting_is_what_makes_the_null_testable():
 def test_null_flag_is_reported_not_left_to_the_reader():
     y, X = vim_data(seed=6)
     on = tmle_average_predictiveness(y, 2, X, f=ols_learner)
-    off = tmle_average_predictiveness(y, 2, X, f=ols_learner,
-                                      sample_split=False)
+    off = tmle_average_predictiveness(y, 2, X, f=ols_learner, sample_split=False)
     assert on["null_inference_valid"] is True
     assert on["null_note"] is None
     assert off["null_inference_valid"] is False
@@ -319,8 +313,7 @@ def test_group_importance_is_at_least_the_largest_member():
 
 def test_default_learner_runs_and_orders_the_variables():
     y, X = vim_data(seed=9, n=800)
-    est = [tmle_average_predictiveness(y, j, X, seed=1)["estimate"]
-           for j in range(3)]
+    est = [tmle_average_predictiveness(y, j, X, seed=1)["estimate"] for j in range(3)]
     assert est[0] > est[1] > est[2]
 
 

@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.agstkb import alphazero_stockfish_baseline
 
 
@@ -11,11 +9,11 @@ def test_agstkb_basic():
     """Test basic functionality."""
     # games: one row per rung, each row is (wins, draws, losses)
     games = [
-        [10, 2, 3],   # rung 0
-        [5, 0, 5],    # rung 1
-        [2, 4, 6],    # rung 2
-        [0, 1, 9],    # rung 3
-        [8, 2, 2],    # rung 4
+        [10, 2, 3],  # rung 0
+        [5, 0, 5],  # rung 1
+        [2, 4, 6],  # rung 2
+        [0, 1, 9],  # rung 3
+        [8, 2, 2],  # rung 4
     ]
     ladder = [2400.0, 2500.0, 2600.0, 2700.0, 2800.0]
 
@@ -49,9 +47,7 @@ def test_agstkb_basic():
     expected_estimate = num / den
 
     # scores and n_games
-    expected_scores = [
-        (w + 0.5 * d) / (w + d + l) for (w, d, l) in games
-    ]
+    expected_scores = [(w + 0.5 * d) / (w + d + l) for (w, d, l) in games]
     expected_ns = [w + d + l for (w, d, l) in games]
 
     assert len(result.per_rung) == len(games)

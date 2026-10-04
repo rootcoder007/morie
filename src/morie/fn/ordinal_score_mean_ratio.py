@@ -27,13 +27,12 @@ def ordinal_score_mean_ratio(beta_z_j, beta_z_jp, beta_xz_i, s_j, s_jp):
     """
     value = _acd.ordinal_score_mean_ratio(beta_z_j, beta_z_jp, beta_xz_i, s_j, s_jp)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.12)"
     return RichResult(
-        title='Ordinal-score mean ratio between column levels',
+        title="Ordinal-score mean ratio between column levels",
         summary_lines=summary,
         payload=payload,
     )

@@ -1,7 +1,6 @@
 """Test syndrome_compute."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.syndc import syndc, syndrome_compute
 

@@ -1,8 +1,8 @@
 """Tests for acfds.py - ACF distance between signals."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.acfds import acf_dist, acfds
 
 

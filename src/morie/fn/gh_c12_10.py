@@ -14,8 +14,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_wn_lin_bvm"]
 
 
-def ghosal_wn_lin_bvm(L_coefs=(0.6, 0.8), n=500, prior_var=50.0,
-                      n_sim=500, seed=42):
+def ghosal_wn_lin_bvm(L_coefs=(0.6, 0.8), n=500, prior_var=50.0, n_sim=500, seed=42):
     """sqrt(n)(L(theta_post) - L(theta0)) -> N(0, ||L||^2) for a
     bounded linear functional (sec. 12.4.2). Conjugate simulation:
     the rescaled posterior-mean functional has variance ~ ||L||^2.
@@ -27,17 +26,19 @@ def ghosal_wn_lin_bvm(L_coefs=(0.6, 0.8), n=500, prior_var=50.0,
     devs = []
     shrink = prior_var / (prior_var + 1.0 / n)
     for _ in range(n_sim):
-        y = [t + float(rng.normal(0, 1)) / math.sqrt(n)
-             for t in theta0]
+        y = [t + float(rng.normal(0, 1)) / math.sqrt(n) for t in theta0]
         post = [shrink * v for v in y]
-        devs.append(math.sqrt(n) * sum(
-            l * (p - t) for l, p, t in zip(L, post, theta0)))
+        devs.append(math.sqrt(n) * sum(l * (p - t) for l, p, t in zip(L, post, theta0)))
     m = sum(devs) / n_sim
     v = sum((d - m) ** 2 for d in devs) / (n_sim - 1)
-    res = RichResult(payload={"estimate": v,
-                              "norm2_L": L2,
-                              "gap": abs(v - L2),
-                              "method": "linear-functional BvM (GvdV 2017 sec. 12.4.2)"})
+    res = RichResult(
+        payload={
+            "estimate": v,
+            "norm2_L": L2,
+            "gap": abs(v - L2),
+            "method": "linear-functional BvM (GvdV 2017 sec. 12.4.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c12_10")
 
 

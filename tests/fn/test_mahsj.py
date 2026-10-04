@@ -1,7 +1,6 @@
 """Tests for mahsj.ma_hksj_t_pi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mahsj import ma_hksj_t_pi
 
 

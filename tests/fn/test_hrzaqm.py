@@ -1,7 +1,6 @@
 """Tests for hrzaqm.horowitz_additive_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzaqm import horowitz_additive_quantile
 
 

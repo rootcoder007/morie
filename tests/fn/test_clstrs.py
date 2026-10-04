@@ -1,7 +1,5 @@
 """Tests for clstrs.cluster_design."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.clstrs import cluster_design
 
 

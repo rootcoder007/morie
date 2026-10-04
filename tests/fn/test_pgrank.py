@@ -1,7 +1,6 @@
 """Tests for pgrank.pagerank."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pgrank import pagerank
 
 

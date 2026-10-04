@@ -1,13 +1,13 @@
 """Tests for alpz.alphazero_search."""
 
 import math
-import pytest
-from morie.fn import _array_core as np
+
 from morie.fn.alpz import alphazero_search
 
 
 def test_alpz_basic():
     """Test basic functionality."""
+
     def net(s):
         # Return 3 actions with priors and a value
         return [0.5, 0.3, 0.2], 0.0
@@ -34,6 +34,7 @@ def test_alpz_basic():
 
 def test_alpz_edge():
     """Test edge cases with terminal function and custom parameters."""
+
     def net(s):
         return [0.6, 0.4], 0.5
 

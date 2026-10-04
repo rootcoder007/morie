@@ -23,8 +23,16 @@ def test_matccd_basic():
 
     # result is a dict-like RichResult; check all advertised keys are present
     expected_keys = (
-        "estimate", "log_or", "se", "ci", "information",
-        "loglik", "n_sets", "n_obs", "iters", "converged",
+        "estimate",
+        "log_or",
+        "se",
+        "ci",
+        "information",
+        "loglik",
+        "n_sets",
+        "n_obs",
+        "iters",
+        "converged",
     )
     for key in expected_keys:
         assert key in result

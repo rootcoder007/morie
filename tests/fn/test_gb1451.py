@@ -1,7 +1,5 @@
 """Tests for gb1451.gibbons_mcnemar."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1451 import gibbons_mcnemar
 
 
@@ -19,7 +17,7 @@ def _expected(table):
     q = (x12 - x21) ** 2 / nd
     k = int(round(min(x12, x21)))
     n = int(round(nd))
-    pex = min(1.0, 2.0 * sum(math.comb(n, i) for i in range(k + 1)) * 0.5 ** n)
+    pex = min(1.0, 2.0 * sum(math.comb(n, i) for i in range(k + 1)) * 0.5**n)
     # chi-square survival function with 1 df: sf(x,1) = 1 - erf(sqrt(x/2))
     # but we already let the function own its own p_value; the test only
     # verifies the statistic and exact p.
@@ -28,14 +26,12 @@ def _expected(table):
 
 def test_gb1451_basic():
     """Test basic functionality with a hand-crafted 2x2 table of discordant counts."""
-    table = [[12.0, 7.0],
-             [5.0,  3.0]]
+    table = [[12.0, 7.0], [5.0, 3.0]]
     result = gibbons_mcnemar(table)
 
     assert isinstance(result, dict)
     # Documented return keys.
-    for key in ("statistic", "df", "p_value", "p_exact",
-                "x12", "x21", "ndisc", "method"):
+    for key in ("statistic", "df", "p_value", "p_exact", "x12", "x21", "ndisc", "method"):
         assert key in result, f"missing key {key!r} in result"
 
     q_exp, x12_exp, x21_exp, nd_exp, pex_exp = _expected(table)
@@ -49,8 +45,7 @@ def test_gb1451_basic():
 
 def test_gb1451_correct():
     """Continuity correction subtracts 1 from |X12 - X21| before squaring."""
-    table = [[12.0, 7.0],
-             [5.0,  3.0]]
+    table = [[12.0, 7.0], [5.0, 3.0]]
     result = gibbons_mcnemar(table, correct=True)
 
     x12, x21 = 7.0, 5.0
@@ -61,8 +56,7 @@ def test_gb1451_correct():
 
 def test_gb1451_edge():
     """Edge case: minimal discordant counts (X12 = X21 = 1)."""
-    table = [[5.0, 1.0],
-             [1.0, 4.0]]
+    table = [[5.0, 1.0], [1.0, 4.0]]
     result = gibbons_mcnemar(table)
 
     assert isinstance(result, dict)

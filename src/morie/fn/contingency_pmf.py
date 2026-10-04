@@ -27,20 +27,19 @@ def contingency_pmf(count_table, prob_table):
     """
     value = _acd.contingency_pmf(count_table, prob_table)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.2)"
     return RichResult(
-        title='One-multinomial contingency table PMF',
+        title="One-multinomial contingency table PMF",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e2: P(N11 = n11, ..., NIJ = nIJ) over I x J cells [Bilder & Loughin 2025, eq. 3.2]'
+    return "3e2: P(N11 = n11, ..., NIJ = nIJ) over I x J cells [Bilder & Loughin 2025, eq. 3.2]"
 
 
 # compact alias per ledger/NAMING.md

@@ -62,9 +62,7 @@ def geron_auc_roc(y_true, scores, pos_label=1):
     n_pos = int(np.sum(pos))
     n_neg = int(y.size - n_pos)
     if n_pos == 0 or n_neg == 0:
-        raise ValueError(
-            f"geron_auc_roc: ROC AUC needs both classes present (got {n_pos} positive, {n_neg} negative)"
-        )
+        raise ValueError(f"geron_auc_roc: ROC AUC needs both classes present (got {n_pos} positive, {n_neg} negative)")
 
     # Mann-Whitney U via mid-ranks, which credits ties with 0.5.
     order = np.argsort(s, kind="mergesort")

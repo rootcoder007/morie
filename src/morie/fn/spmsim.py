@@ -3,16 +3,25 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_gwr import mgwr_backfit, pairwise_distances
+from ._schab_gwr import mgwr_backfit
 
 __all__ = ["schabenberger_mgwr_bandwidth"]
 
 
-def schabenberger_mgwr_bandwidth(x, y, coords, kernel="gaussian",
-                                 criterion="aicc", adaptive=False, tol=1e-5,
-                                 max_iter=200, rss_score=False,
-                                 bws_same_times=5, init_bandwidth=None,
-                                 standardize=True):
+def schabenberger_mgwr_bandwidth(
+    x,
+    y,
+    coords,
+    kernel="gaussian",
+    criterion="aicc",
+    adaptive=False,
+    tol=1e-5,
+    max_iter=200,
+    rss_score=False,
+    bws_same_times=5,
+    init_bandwidth=None,
+    standardize=True,
+):
     """Multiscale GWR: fit each covariate at its own spatial scale.
 
     Ordinary GWR gives every covariate the same bandwidth, which asserts
@@ -112,11 +121,20 @@ def schabenberger_mgwr_bandwidth(x, y, coords, kernel="gaussian",
     if x.ndim == 1:
         x = x.reshape(-1, 1)
     y = np.asarray(y, dtype=float).ravel()
-    res = mgwr_backfit(y, x, coords, kernel=kernel, criterion=criterion,
-                       adaptive=adaptive, tol=tol, max_iter=max_iter,
-                       rss_score=rss_score, bws_same_times=bws_same_times,
-                       init_bandwidth=init_bandwidth,
-                       standardize=standardize)
+    res = mgwr_backfit(
+        y,
+        x,
+        coords,
+        kernel=kernel,
+        criterion=criterion,
+        adaptive=adaptive,
+        tol=tol,
+        max_iter=max_iter,
+        rss_score=rss_score,
+        bws_same_times=bws_same_times,
+        init_bandwidth=init_bandwidth,
+        standardize=standardize,
+    )
     bws = res["bandwidths"]
     payload = {
         "bandwidths": bws,
@@ -149,12 +167,14 @@ def schabenberger_mgwr_bandwidth(x, y, coords, kernel="gaussian",
             "MOVED, so a first sweep that changes nothing scores as "
             "converged. No scale separation was found -- rerun from a "
             "narrower init_bandwidth before reading anything into these "
-            "bandwidths")
+            "bandwidths"
+        )
     if not res["converged"]:
         payload["warning"] = (
             f"backfitting hit max_iter={max_iter} with SOC="
             f"{res['score_history'][-1]:.3e} still above tol={tol}; the "
-            "bandwidths are the last sweep's, not a converged optimum")
+            "bandwidths are the last sweep's, not a converged optimum"
+        )
     return RichResult(
         title="Multiscale GWR bandwidths",
         summary_lines=[
@@ -170,8 +190,7 @@ def schabenberger_mgwr_bandwidth(x, y, coords, kernel="gaussian",
 
 
 def cheatsheet():
-    return ("spmsim: multiscale GWR -- one bandwidth per covariate by GAM "
-            "backfitting (Fotheringham, Yang & Kang 2017)")
+    return "spmsim: multiscale GWR -- one bandwidth per covariate by GAM backfitting (Fotheringham, Yang & Kang 2017)"
 
 
 # CANONICAL TEST

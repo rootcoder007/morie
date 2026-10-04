@@ -66,15 +66,17 @@ def discriminant_validity(AVE, factor_correlations):
         pass_factor.append(ok if k > 1 else 1)
     if k == 1:
         margin = float("nan")
-    return RichResult(payload={
-        "estimate": margin,
-        "sqrt_ave": sq,
-        "pass_factor": pass_factor,
-        "n_violations": viol,
-        "discriminant": 1 if viol == 0 else 0,
-        "k": k,
-        "method": "Fornell-Larcker discriminant validity",
-    })
+    return RichResult(
+        payload={
+            "estimate": margin,
+            "sqrt_ave": sq,
+            "pass_factor": pass_factor,
+            "n_violations": viol,
+            "discriminant": 1 if viol == 0 else 0,
+            "k": k,
+            "method": "Fornell-Larcker discriminant validity",
+        }
+    )
 
 
 def cheatsheet():

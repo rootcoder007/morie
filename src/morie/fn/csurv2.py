@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Best linear predictor for causal survival forest CATE."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .crfhte import causal_forest_hte_test
 from .csfgrf import causal_survival_forest
@@ -33,9 +32,7 @@ def causal_survival_blp(time, event, D, X, horizon=None, n_trees=200, min_leaf=1
     (2018). Generic machine learning inference on heterogenous
     treatment effects. arXiv:1712.04802.
     """
-    f = causal_survival_forest(
-        time, event, D, X, horizon=horizon, n_trees=n_trees, min_leaf=min_leaf, seed=seed
-    )
+    f = causal_survival_forest(time, event, D, X, horizon=horizon, n_trees=n_trees, min_leaf=min_leaf, seed=seed)
     blp = causal_forest_hte_test(f["pseudo_outcome"], D, f["cate_oob"])
     return RichResult(
         payload={

@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def mixed_calibration_si(z_sample, b_si, m_all_mean, m_sample_mean):
     """
     value = _brus.mixed_calibration_si(z_sample, b_si, m_all_mean, m_sample_mean)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (10.40)"
     return RichResult(
-        title='Mixed-model calibration under SI',
+        title="Mixed-model calibration under SI",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r10e40: zbar_MC = zbar_S + b_SI (mbar_pop - mbar_S) [Brus 2022, eq. 10.40]'
+    return "r10e40: zbar_MC = zbar_S + b_SI (mbar_pop - mbar_S) [Brus 2022, eq. 10.40]"

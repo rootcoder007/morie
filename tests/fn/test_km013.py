@@ -13,6 +13,8 @@ def test_km013_doctest():
 
 def test_km013_edge():
     import pytest
+
     from morie.fn.km013 import kamath_ch2_positional_encoding_sin
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_positional_encoding_sin(*([None] * 3))

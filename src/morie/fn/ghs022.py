@@ -90,8 +90,10 @@ def ghosal_ch3_tailfree_cell_counts(X_i, A_epsilon, n=None):
         prop = (N / nn) if nn else float("nan")
     else:
         N = np.array(counts, dtype=int)
-        prop = np.array([c / nn for c in counts], dtype=float) if nn else np.array(
-            [float("nan")] * len(counts), dtype=float
+        prop = (
+            np.array([c / nn for c in counts], dtype=float)
+            if nn
+            else np.array([float("nan")] * len(counts), dtype=float)
         )
     return RichResult(
         payload={

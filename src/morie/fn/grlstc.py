@@ -95,8 +95,7 @@ def geron_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, bf, bi, bg, bo):
         M = np.atleast_2d(np.asarray(W, dtype=float))
         if M.shape != (H, H + n):
             raise ValueError(
-                f"W{name} must have shape (H, H + n) = ({H}, {H + n}) to act on "
-                f"[h_prev, x_t], got {M.shape}."
+                f"W{name} must have shape (H, H + n) = ({H}, {H + n}) to act on [h_prev, x_t], got {M.shape}."
             )
         bv = np.asarray(b, dtype=float).ravel()
         if bv.size == 1:

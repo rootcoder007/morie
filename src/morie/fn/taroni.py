@@ -102,15 +102,14 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
     # Peto weight is the left-continuous modified KM estimate, so it is
     # built by a running product over the same event times.
     s, peto = 1.0, []
-    for (_, n, _, d, _) in rows:
+    for _, n, _, d, _ in rows:
         peto.append(s)
         s *= 1.0 - d / (n + 1.0)
     num = den = obs = exp = 0.0
     for j, (_, n, n1, d, d1) in enumerate(rows):
         if n <= 1:
             continue
-        w = {"logrank": 1.0, "gehan": float(n),
-             "tarone-ware": sqrt(n), "peto": peto[j]}[weight]
+        w = {"logrank": 1.0, "gehan": float(n), "tarone-ware": sqrt(n), "peto": peto[j]}[weight]
         e1 = d * n1 / n
         v = d * (n - d) * n1 * (n - n1) / (n * n * (n - 1.0))
         num += w * (d1 - e1)
@@ -143,6 +142,7 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
 # compact alias -- _lazy_map.json resolves 'taroniware' to this module, so the
 # name has to exist here or the lookup dies.
 taroniware = taroni_ware
+
 
 def cheatsheet():
     return "taroni: Tarone-Ware / log-rank / Gehan / Peto weighted log-rank test"

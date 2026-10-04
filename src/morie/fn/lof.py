@@ -106,8 +106,13 @@ def local_outlier_factor(X, k=20):
         title="Local outlier factor",
         summary_lines=[("n", n), ("k", k), ("max LOF", float(lof.max()))],
         payload={
-            "lof": lof, "score": lof, "rank": rank, "lrd": lrd,
-            "k_distance": kdist, "neighbors": nbrs, "k": k,
+            "lof": lof,
+            "score": lof,
+            "rank": rank,
+            "lrd": lrd,
+            "k_distance": kdist,
+            "neighbors": nbrs,
+            "k": k,
             "method": "local_outlier_factor",
         },
     )

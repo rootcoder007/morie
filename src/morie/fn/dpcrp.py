@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chinese restaurant process seating."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['crp', 'chinese_restaurant_process']
+__all__ = ["crp", "chinese_restaurant_process"]
 
 
 def crp(n, alpha=1.0, u=None, seed=1):
@@ -41,7 +39,8 @@ def crp(n, alpha=1.0, u=None, seed=1):
     the E[K] = sum_i alpha/(alpha + i - 1) identity are the standard
     published forms.
     """
-    n = int(n); a = float(alpha)
+    n = int(n)
+    a = float(alpha)
     if a <= 0:
         raise ValueError("alpha must be positive")
     if n < 1:
@@ -64,10 +63,17 @@ def crp(n, alpha=1.0, u=None, seed=1):
         counts[pick] += 1
         table.append(pick)
     ek = sum(a / (a + i) for i in range(n))
-    return RichResult(payload={
-        "table": table, "counts": counts, "n_tables": len(counts),
-        "expected_tables": ek, "alpha": a, "n": n,
-        "method": "Chinese restaurant process"})
+    return RichResult(
+        payload={
+            "table": table,
+            "counts": counts,
+            "n_tables": len(counts),
+            "expected_tables": ek,
+            "alpha": a,
+            "n": n,
+            "method": "Chinese restaurant process",
+        }
+    )
 
 
 chinese_restaurant_process = crp

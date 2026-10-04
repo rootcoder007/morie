@@ -60,8 +60,7 @@ from ._richresult import RichResult
 __all__ = ["rf_multivariate"]
 
 
-def rf_multivariate(X, Y_matrix, n_trees=100, mtry=None, nodesize=5,
-                    standardize=True):
+def rf_multivariate(X, Y_matrix, n_trees=100, mtry=None, nodesize=5, standardize=True):
     """Multivariate random forest, split by eq. (15.6) on standardized y.
 
     Parameters
@@ -128,7 +127,7 @@ def rf_multivariate(X, Y_matrix, n_trees=100, mtry=None, nodesize=5,
             "mtry": m,
             "n": n,
             "method": "Chapter 15 Sect. 15.4 forest with the eq. (15.6) multivariate split, "
-                      "maximised (the page's 'minimizing' is an erratum)",
+            "maximised (the page's 'minimizing' is an erratum)",
         },
     )
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.sieve -- Sieve estimation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sieve import sieve
 
 

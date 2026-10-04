@@ -1,7 +1,6 @@
 """Tests for aitlnf.logistic_normal_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitlnf import logistic_normal_fit
 
 
@@ -85,5 +84,4 @@ def test_aitlnf_edge():
     assert np.allclose(np.asarray(res0["Sigma"]), Sigma_ddof0, atol=1e-10)
 
     # Different ddof choices must produce different Sigma when n > 1.
-    assert not np.allclose(np.asarray(res1["Sigma"]),
-                           np.asarray(res0["Sigma"]))
+    assert not np.allclose(np.asarray(res1["Sigma"]), np.asarray(res0["Sigma"]))

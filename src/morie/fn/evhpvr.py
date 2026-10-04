@@ -9,7 +9,6 @@ from ._richresult import RichResult
 __all__ = ["evt_heffernan_tawn"]
 
 
-
 def _ht_prof(xv, yv, b):
     """Objective at b with a, mu and sigma all profiled out.
 
@@ -139,17 +138,19 @@ def evt_heffernan_tawn(X, u):
                 best = (f, cb)
         b = best[1]
     nll, a, mu, sd = _ht_prof(xv, yv, b)
-    return RichResult(payload={
-        "a": a,
-        "b": b,
-        "mu_z": mu,
-        "sigma_z": sd,
-        "estimate": a,
-        "nll": nll,
-        "n_exceed": k,
-        "n": n,
-        "method": "Heffernan-Tawn conditional extremes model",
-    })
+    return RichResult(
+        payload={
+            "a": a,
+            "b": b,
+            "mu_z": mu,
+            "sigma_z": sd,
+            "estimate": a,
+            "nll": nll,
+            "n_exceed": k,
+            "n": n,
+            "method": "Heffernan-Tawn conditional extremes model",
+        }
+    )
 
 
 def cheatsheet():

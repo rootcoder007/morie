@@ -1,9 +1,9 @@
 """Tests for copgmb."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.copgmb import gumbel_copula
+
 
 def test_copgmb_basic():
     out = gumbel_copula(0.5, 0.5, 4.0)

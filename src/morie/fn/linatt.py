@@ -68,36 +68,34 @@ def linatt(Q, K, V, E, F):
     if Ka.shape[1] != dk:
         raise ValueError(f"linatt: K width {Ka.shape[1]} != Q width {dk}")
     if Ka.shape[0] != Va.shape[0]:
-        raise ValueError(
-            f"linatt: K has {Ka.shape[0]} rows but V has {Va.shape[0]}")
+        raise ValueError(f"linatt: K has {Ka.shape[0]} rows but V has {Va.shape[0]}")
     if Ea.shape[1] != Ka.shape[0]:
-        raise ValueError(
-            f"linatt: E must be (k, n) with n = {Ka.shape[0]}, got {Ea.shape}")
+        raise ValueError(f"linatt: E must be (k, n) with n = {Ka.shape[0]}, got {Ea.shape}")
     if Fa.shape[1] != Va.shape[0]:
-        raise ValueError(
-            f"linatt: F must be (k, n) with n = {Va.shape[0]}, got {Fa.shape}")
+        raise ValueError(f"linatt: F must be (k, n) with n = {Va.shape[0]}, got {Fa.shape}")
     if Ea.shape[0] != Fa.shape[0]:
-        raise ValueError(
-            f"linatt: E and F must share k, got {Ea.shape[0]} and {Fa.shape[0]}")
+        raise ValueError(f"linatt: E and F must share k, got {Ea.shape[0]} and {Fa.shape[0]}")
     for name, arr in (("Q", Qa), ("K", Ka), ("V", Va), ("E", Ea), ("F", Fa)):
         if not np.all(np.isfinite(arr)):
             raise ValueError(f"linatt: {name} contains non-finite values")
-    EK = Ea @ Ka                       # (k, d_k)
-    FV = Fa @ Va                       # (k, d_v)
-    S = (Qa @ EK.T) * (1.0 / math.sqrt(dk))   # (n, k)
+    EK = Ea @ Ka  # (k, d_k)
+    FV = Fa @ Va  # (k, d_v)
+    S = (Qa @ EK.T) * (1.0 / math.sqrt(dk))  # (n, k)
     P = _softmax_rows([[float(v) for v in row] for row in S])
     Pm = np.asarray(P, dtype=float)
-    out = Pm @ FV                      # (n, d_v)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in out],
-        "weights": P,
-        "projected_K": [[float(v) for v in row] for row in EK],
-        "projected_V": [[float(v) for v in row] for row in FV],
-        "k": int(Ea.shape[0]),
-        "estimate": float(out[0][0] if out.ndim == 2 else out[0]),
-        "n": int(n),
-        "method": "Linformer low-rank attention (Wang et al. 2020, Eq 7)",
-    })
+    out = Pm @ FV  # (n, d_v)
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in out],
+            "weights": P,
+            "projected_K": [[float(v) for v in row] for row in EK],
+            "projected_V": [[float(v) for v in row] for row in FV],
+            "k": int(Ea.shape[0]),
+            "estimate": float(out[0][0] if out.ndim == 2 else out[0]),
+            "n": int(n),
+            "method": "Linformer low-rank attention (Wang et al. 2020, Eq 7)",
+        }
+    )
 
 
 linformer_linear_attention = linatt

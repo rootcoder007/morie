@@ -40,12 +40,10 @@ def _rbf(x, y, gamma):
 
 
 def _cross(A, B, gamma):
-    return [[_rbf(A[i], B[j], gamma) for j in range(len(B))]
-            for i in range(len(A))]
+    return [[_rbf(A[i], B[j], gamma) for j in range(len(B))] for i in range(len(A))]
 
 
-def gp_sparse_inducing(X, y, X_test=None, inducing=None, gamma=1.0,
-                       sigma2=1e-2, jitter=1e-8, kind="fitc"):
+def gp_sparse_inducing(X, y, X_test=None, inducing=None, gamma=1.0, sigma2=1e-2, jitter=1e-8, kind="fitc"):
     """FITC (or DTC) sparse GP prediction.
 
     Returns

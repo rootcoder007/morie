@@ -59,13 +59,17 @@ def wasserman_influence_function(data, T):
     if T is None:
         T = lambda a: float(np.mean(a))
     base = float(T(data))
-    infl = [float((n + 1) * (float(T(np.append(data, xi))) - base))
-            for xi in data]
-    return RichResult(payload={
-        "estimate": base, "influence": infl,
-        "epsilon": 1.0 / (n + 1),
-        "mean_influence": float(np.mean(infl)), "n": int(n),
-        "method": "sensitivity curve SC(x) = (n+1)(T(data+x) - T(data))"})
+    infl = [float((n + 1) * (float(T(np.append(data, xi))) - base)) for xi in data]
+    return RichResult(
+        payload={
+            "estimate": base,
+            "influence": infl,
+            "epsilon": 1.0 / (n + 1),
+            "mean_influence": float(np.mean(infl)),
+            "n": int(n),
+            "method": "sensitivity curve SC(x) = (n+1)(T(data+x) - T(data))",
+        }
+    )
 
 
 def cheatsheet():

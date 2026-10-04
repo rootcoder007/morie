@@ -30,8 +30,7 @@ def barte(src, tgt, mask_ratio=0.3, mean_span=3.0, permute=False, model=None, se
     Delegates to :func:`morie.fn.hmbart.geron_bart`; see that function
     for parameters and payload.
     """
-    return _impl(src, tgt, mask_ratio=mask_ratio, mean_span=mean_span,
-                 permute=permute, model=model, seed=seed)
+    return _impl(src, tgt, mask_ratio=mask_ratio, mean_span=mean_span, permute=permute, model=model, seed=seed)
 
 
 bart = barte

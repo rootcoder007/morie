@@ -1,7 +1,6 @@
 """Tests for svmge.svm_genomic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svmge import svm_genomic
 
 

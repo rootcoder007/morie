@@ -90,10 +90,18 @@ def agdproj(X, y, lower=None, upper=None, steps=100, lipschitz=None):
         t = tn
     res = [sum(Xm[i][j] * x[j] for j in range(p)) - y[i] for i in range(n)]
     act = sum(1 for j in range(p) if x[j] == lo[j] or x[j] == hi[j])
-    return RichResult(payload={
-        "beta": x, "objective": 0.5 * sum(e * e for e in res),
-        "lipschitz": L, "steps": steps, "nactive": act, "n": n, "p": p,
-        "method": "Accelerated projected gradient on a box (Beck-Teboulle 2009)"})
+    return RichResult(
+        payload={
+            "beta": x,
+            "objective": 0.5 * sum(e * e for e in res),
+            "lipschitz": L,
+            "steps": steps,
+            "nactive": act,
+            "n": n,
+            "p": p,
+            "method": "Accelerated projected gradient on a box (Beck-Teboulle 2009)",
+        }
+    )
 
 
 def _bound(b, p):

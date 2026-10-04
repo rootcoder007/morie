@@ -28,14 +28,17 @@ def kamath_ch2_scaled_dot_attention(Q, K, V, d_k=None):
     """
     Q = np.atleast_2d(np.asarray(Q, dtype=float))
     if d_k is not None and int(d_k) != Q.shape[1]:
-        raise ValueError(
-            f"d_k = {d_k} contradicts Q's width {Q.shape[1]}.")
+        raise ValueError(f"d_k = {d_k} contradicts Q's width {Q.shape[1]}.")
     out = scaled_dot_product_attention(Q, K, V)
-    return RichResult(payload={
-        "output": out["output"], "attention": out["attention"],
-        "estimate": out["estimate"], "n": out["n"],
-        "method": "Scaled dot-product attention (Kamath Eq 2.12, "
-                  "shared core)"})
+    return RichResult(
+        payload={
+            "output": out["output"],
+            "attention": out["attention"],
+            "estimate": out["estimate"],
+            "n": out["n"],
+            "method": "Scaled dot-product attention (Kamath Eq 2.12, shared core)",
+        }
+    )
 
 
 def cheatsheet():

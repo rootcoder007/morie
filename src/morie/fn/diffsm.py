@@ -110,15 +110,19 @@ def diffusion_score_matching(x, score, sigma=0.1, n_noise=16, seed=0):
     per /= int(n_noise)
     return RichResult(
         title="Denoising score matching",
-        summary_lines=[("n", n), ("d", d), ("sigma", sigma),
-                       ("objective", float(per.mean()))],
-        warnings=["the objective targets the NOISED distribution p_sigma, not "
-                  "p; small sigma reduces the bias but leaves the score "
-                  "unconstrained where data is sparse"],
+        summary_lines=[("n", n), ("d", d), ("sigma", sigma), ("objective", float(per.mean()))],
+        warnings=[
+            "the objective targets the NOISED distribution p_sigma, not "
+            "p; small sigma reduces the bias but leaves the score "
+            "unconstrained where data is sparse"
+        ],
         payload={
-            "objective": float(per.mean()), "sigma": sigma,
-            "per_sample": per, "target_norm": float(1.0 / sigma**2),
-            "n_noise": int(n_noise), "method": "diffusion_score_matching",
+            "objective": float(per.mean()),
+            "sigma": sigma,
+            "per_sample": per,
+            "target_norm": float(1.0 / sigma**2),
+            "n_noise": int(n_noise),
+            "method": "diffusion_score_matching",
         },
     )
 

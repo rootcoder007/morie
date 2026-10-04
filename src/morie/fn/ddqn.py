@@ -11,8 +11,9 @@ __all__ = ["ddqn", "double_q_learning"]
 _METHOD = "Tabular Double Q-learning (decoupled selection and evaluation)"
 
 
-def double_q_learning(P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100,
-                      start=0, terminal=(), max_steps=1000, seed=0):
+def double_q_learning(
+    P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100, start=0, terminal=(), max_steps=1000, seed=0
+):
     r"""
     Tabular Double Q-learning on an explicit finite MDP.
 
@@ -117,14 +118,12 @@ def double_q_learning(P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100,
                 nxt = 0.0
                 if s2 not in term:
                     nxt = float(Q2[s2, _greedy(Q1[s2], A)])
-                Q1[s, a] = float(Q1[s, a]) + alpha * (
-                    r + gamma * nxt - float(Q1[s, a]))
+                Q1[s, a] = float(Q1[s, a]) + alpha * (r + gamma * nxt - float(Q1[s, a]))
             else:
                 nxt = 0.0
                 if s2 not in term:
                     nxt = float(Q1[s2, _greedy(Q2[s2], A)])
-                Q2[s, a] = float(Q2[s, a]) + alpha * (
-                    r + gamma * nxt - float(Q2[s, a]))
+                Q2[s, a] = float(Q2[s, a]) + alpha * (r + gamma * nxt - float(Q2[s, a]))
             n_steps += 1
             s = s2
     Q = np.zeros((S, A))
@@ -137,16 +136,18 @@ def double_q_learning(P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100,
         b = _greedy(Q[s], A)
         pol[s] = float(b)
         V[s] = float(Q[s, b])
-    return RichResult(payload={
-        "estimate": Q,
-        "q1": Q1,
-        "q2": Q2,
-        "policy": pol,
-        "v": V,
-        "n_steps": n_steps,
-        "n_episodes": int(n_episodes),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "q1": Q1,
+            "q2": Q2,
+            "policy": pol,
+            "v": V,
+            "n_steps": n_steps,
+            "n_episodes": int(n_episodes),
+            "method": _METHOD,
+        }
+    )
 
 
 ddqn = double_q_learning
@@ -154,6 +155,7 @@ ddqn = double_q_learning
 
 def cheatsheet():
     return "ddqn(P, R, gamma, ...) -> tabular Double Q-learning (Sutton-Barto 2018 Sec 6.7; van Hasselt 2010)."
+
 
 # public names resolved by fn/_lazy_map.json
 double_dqn = double_q_learning

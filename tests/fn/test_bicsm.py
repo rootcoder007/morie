@@ -1,7 +1,6 @@
 """Tests for bicsm.bic_score_dag."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bicsm import bic_score_dag
 
 
@@ -46,6 +45,7 @@ def test_bicsm_basic():
     columns = {"A": 0, "B": 1, "C": 2}
     loglik = 0.0
     import math
+
     for node, parents in dag.items():
         y = data[:, columns[node]]
         X = data[:, [columns[p] for p in parents]] if parents else np.zeros((n, 0))

@@ -1,13 +1,12 @@
 """saigeg -- SAIGE. Source: Zhou, W. et al. (2018) Nature Genetics,
 doi:10.1038/s41588-018-0184-y."""
+
 import math
 
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.saigeg import (cgf, normal_pvalue, saddlepoint_pvalue,
-                             saige_test, score_statistic,
-                             variance_ratio)
+from morie.fn.saigeg import cgf, normal_pvalue, saddlepoint_pvalue, saige_test, score_statistic, variance_ratio
 
 
 def setup(n=1500, mu=0.03, seed=3):
@@ -34,17 +33,13 @@ def test_second_derivative_is_the_score_variance():
 
 
 def test_the_score_is_the_stated_sum():
-    s = score_statistic([1.0] * 5 + [0.0] * 15, [1.0] * 20,
-                        [0.25] * 20)
-    assert s["score"] == pytest.approx(5 * 0.75 + 15 * -0.25,
-                                       abs=1e-12)
+    s = score_statistic([1.0] * 5 + [0.0] * 15, [1.0] * 20, [0.25] * 20)
+    assert s["score"] == pytest.approx(5 * 0.75 + 15 * -0.25, abs=1e-12)
 
 
 def test_the_score_variance_is_the_stated_sum():
-    s = score_statistic([1.0] * 5 + [0.0] * 15, [1.0] * 20,
-                        [0.25] * 20)
-    assert s["variance"] == pytest.approx(20 * 0.25 * 0.75,
-                                          abs=1e-12)
+    s = score_statistic([1.0] * 5 + [0.0] * 15, [1.0] * 20, [0.25] * 20)
+    assert s["variance"] == pytest.approx(20 * 0.25 * 0.75, abs=1e-12)
 
 
 def test_saddlepoint_solves_its_defining_equation():
@@ -86,8 +81,7 @@ def test_both_p_values_are_proper_probabilities():
 
 def test_a_zero_score_gives_a_p_value_near_one():
     MU, G = setup()
-    assert saddlepoint_pvalue(0.0, G, MU)["p_value"] == \
-        pytest.approx(1.0, abs=1e-6)
+    assert saddlepoint_pvalue(0.0, G, MU)["p_value"] == pytest.approx(1.0, abs=1e-6)
 
 
 def test_variance_ratio_of_a_doubled_series_is_four():

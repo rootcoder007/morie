@@ -30,10 +30,14 @@ def kamath_ch2_gpt_supervised_obj(C, x=None, y=None):
         raise ValueError("probabilities must lie in [0, 1].")
     with np.errstate(divide="ignore"):
         logs = np.log(p)
-    return RichResult(payload={
-        "estimate": float(logs.sum()),
-        "mean_log_likelihood": float(logs.mean()), "n": len(p),
-        "method": "GPT supervised objective L2 (Kamath Eq 2.36)"})
+    return RichResult(
+        payload={
+            "estimate": float(logs.sum()),
+            "mean_log_likelihood": float(logs.mean()),
+            "n": len(p),
+            "method": "GPT supervised objective L2 (Kamath Eq 2.36)",
+        }
+    )
 
 
 def cheatsheet():

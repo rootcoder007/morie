@@ -1,7 +1,6 @@
 """Tests for rng184.rangayyan_ch4_pan_tompkins_highpass_lp_difference_eq."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_highpass_lp_difference_eq
 
 

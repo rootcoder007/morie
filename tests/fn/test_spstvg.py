@@ -1,30 +1,25 @@
 """spstvg -- spatio-temporal semivariogram, Schabenberger & Gotway Sec. 9.4."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._schab_st import (semivariogram_from_covariance,
-                                separable_covariance)
+from morie.fn import _array_core as np
+from morie.fn._schab_st import semivariogram_from_covariance, separable_covariance
 from morie.fn.spstvg import schabenberger_st_variogram
 
-CS = lambda h: 2.0 * np.exp(-h / 3.0)          # noqa: E731
-CT = lambda k: 1.5 * np.exp(-k / 2.0)          # noqa: E731
-COV = lambda d, u: separable_covariance(d, u, CS, CT)      # noqa: E731
+CS = lambda h: 2.0 * np.exp(-h / 3.0)  # noqa: E731
+CT = lambda k: 1.5 * np.exp(-k / 2.0)  # noqa: E731
+COV = lambda d, u: separable_covariance(d, u, CS, CT)  # noqa: E731
 
 
 def _data(n=80, seed=3):
     rs = np.random.RandomState(seed)
-    return (rs.uniform(0, 10, size=(n, 2)),
-            rs.uniform(0, 5, n),
-            rs.normal(0, 1, n))
+    return (rs.uniform(0, 10, size=(n, 2)), rs.uniform(0, 5, n), rs.normal(0, 1, n))
 
 
 def test_gamma_zero_zero_is_zero_and_reaches_the_sill():
     """gamma(h,k) = C(0,0) - C(h,k), Sec. 9.4."""
-    assert semivariogram_from_covariance(
-        np.array([0.0]), np.array([0.0]), COV)[0] == pytest.approx(0.0, abs=1e-12)
-    assert semivariogram_from_covariance(
-        np.array([1e3]), np.array([1e3]), COV)[0] == pytest.approx(3.0)
+    assert semivariogram_from_covariance(np.array([0.0]), np.array([0.0]), COV)[0] == pytest.approx(0.0, abs=1e-12)
+    assert semivariogram_from_covariance(np.array([1e3]), np.array([1e3]), COV)[0] == pytest.approx(3.0)
 
 
 def test_estimator_matches_its_own_definition_exactly():
@@ -34,8 +29,7 @@ def test_estimator_matches_its_own_definition_exactly():
     the pair count are both pinned exactly rather than statistically.
     """
     coords, times, z = _data()
-    r = schabenberger_st_variogram(coords, times, z, n_space_bins=4,
-                                   n_time_bins=3)
+    r = schabenberger_st_variogram(coords, times, z, n_space_bins=4, n_time_bins=3)
     i, j = np.triu_indices(z.size, k=1)
     d = np.linalg.norm(coords[i] - coords[j], axis=1)
     u = np.abs(times[i] - times[j])
@@ -62,8 +56,7 @@ def test_estimator_matches_its_own_definition_exactly():
 def test_empty_cells_are_nan_not_zero():
     """An unestimated semivariogram and a zero one are different claims."""
     coords, times, z = _data(n=25, seed=11)
-    r = schabenberger_st_variogram(coords, times, z, n_space_bins=12,
-                                   n_time_bins=8)
+    r = schabenberger_st_variogram(coords, times, z, n_space_bins=12, n_time_bins=8)
     empty = r["counts"] == 0
     if empty.any():
         assert np.all(np.isnan(r["st_variogram"][empty]))
@@ -76,8 +69,7 @@ def test_conditional_estimator_uses_only_that_time_slice():
     coords = rs.uniform(0, 10, size=(60, 2))
     times = np.repeat([0.0, 1.0, 2.0], 20)
     z = rs.normal(0, 1, 60)
-    r = schabenberger_st_variogram(coords, times, z, n_space_bins=3,
-                                   n_time_bins=3, at_time=1.0)
+    r = schabenberger_st_variogram(coords, times, z, n_space_bins=3, n_time_bins=3, at_time=1.0)
     assert r["conditional"]["n_at_time"] == 20
 
 
@@ -94,13 +86,11 @@ def test_wls_objective_prefers_the_true_model():
     z = np.linalg.cholesky(c) @ rs.normal(0, 1, n)
 
     truth = lambda h, u: semivariogram_from_covariance(h, u, COV)  # noqa: E731
-    wrong = lambda h, u: semivariogram_from_covariance(               # noqa: E731
-        h, u, lambda dd, uu: separable_covariance(
-            dd, uu, lambda x: 2.0 * np.exp(-x / 40.0), CT))
-    a = schabenberger_st_variogram(coords, times, z, n_space_bins=4,
-                                   n_time_bins=3, model_fn=truth)
-    b = schabenberger_st_variogram(coords, times, z, n_space_bins=4,
-                                   n_time_bins=3, model_fn=wrong)
+    wrong = lambda h, u: semivariogram_from_covariance(  # noqa: E731
+        h, u, lambda dd, uu: separable_covariance(dd, uu, lambda x: 2.0 * np.exp(-x / 40.0), CT)
+    )
+    a = schabenberger_st_variogram(coords, times, z, n_space_bins=4, n_time_bins=3, model_fn=truth)
+    b = schabenberger_st_variogram(coords, times, z, n_space_bins=4, n_time_bins=3, model_fn=wrong)
     assert a["wls_objective"] < b["wls_objective"]
 
 

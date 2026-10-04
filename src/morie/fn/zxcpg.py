@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-from ._copula import copula_tau, tau_to_theta
 from ._richresult import RichResult
 
 __all__ = ["copula_gauss_sp"]
@@ -15,8 +14,8 @@ def copula_gauss_sp(data):
     Ranks each column to pseudo-observations, then fits the gaussian
     dependence structure by matching Kendall's tau pairwise (Czado
     2019 Table 3.2, p. 54).
-    
-    
+
+
     The Gaussian copula is elliptical, so the pairwise map rho = sin(pi tau / 2) yields a full correlation matrix, projected to the nearest positive-definite matrix if the pairwise estimates are inconsistent.
 
     Parameters

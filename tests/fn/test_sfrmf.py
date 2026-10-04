@@ -1,7 +1,6 @@
 """Test form_factor (sfrmf)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sfrmf import form_factor, sfrmf
 

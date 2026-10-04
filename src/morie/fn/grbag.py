@@ -75,9 +75,7 @@ def geron_bagging_predictor(predictions, aggregate="mean"):
             vals, counts = np.unique(P[:, j], return_counts=True)
             agg[j] = vals[np.argmax(counts)]
     else:
-        raise ValueError(
-            f"aggregate must be one of 'mean', 'median', 'vote', got {aggregate!r}."
-        )
+        raise ValueError(f"aggregate must be one of 'mean', 'median', 'vote', got {aggregate!r}.")
 
     var = P.var(axis=0, ddof=1) if B > 1 else np.zeros(m)
     se = float(np.sqrt(var.mean() / B)) if B > 1 else float("nan")

@@ -11,8 +11,7 @@ from ._richresult import RichResult
 __all__ = ["alphafold_fape_loss"]
 
 
-def alphafold_fape_loss(frames_pred, x, frames_true, x_true, Z=10.0,
-                        dclamp=10.0, eps=1e-4):
+def alphafold_fape_loss(frames_pred, x, frames_true, x_true, Z=10.0, dclamp=10.0, eps=1e-4):
     """Frame aligned point error -- Algorithm 28, p. 34.
 
     Every predicted atom is expressed in the local frame of every predicted
@@ -64,11 +63,11 @@ def alphafold_fape_loss(frames_pred, x, frames_true, x_true, Z=10.0,
     for i in range(nf):
         row = []
         for j in range(na):
-            xi = A.rinvapply(frames_pred[i], x[j])          # line 1
-            xt = A.rinvapply(frames_true[i], x_true[j])     # line 2
+            xi = A.rinvapply(frames_pred[i], x[j])  # line 1
+            xt = A.rinvapply(frames_true[i], x_true[j])  # line 2
             dij = math.sqrt(A.vnorm2(A.vsub(xi, xt)) + eps)  # line 3
             row.append(dij)
-            tot += dij if dij < dclamp else dclamp          # line 4
+            tot += dij if dij < dclamp else dclamp  # line 4
         d.append(row)
 
     loss = tot / (nf * na) / Z

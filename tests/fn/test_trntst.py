@@ -1,7 +1,6 @@
 """Tests for trntst.transportability_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.trntst import transportability_test
 
 

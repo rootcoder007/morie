@@ -1,7 +1,6 @@
 """Tests for morie.fn.hedges — alias for Hedges' g."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hedges import hedges
 
 

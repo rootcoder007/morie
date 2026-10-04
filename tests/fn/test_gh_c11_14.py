@@ -1,7 +1,6 @@
 """Tests for gh_c11_14.ghosal_gp_laplace."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_14 import ghosal_gp_laplace
 
 

@@ -113,10 +113,13 @@ def geron_blip(images, texts, temperature=1.0, caption_logprobs=None):
     pos = sim[idx, idx]
     neg = sim[idx, (idx + 1) % n]
     sig = lambda z: 1.0 / (1.0 + np.exp(-z))
-    itm = float(
-        -np.mean(np.log(np.clip(sig(pos / tau), 1e-15, None)))
-        - np.mean(np.log(np.clip(1.0 - sig(neg / tau), 1e-15, None)))
-    ) / 2.0
+    itm = (
+        float(
+            -np.mean(np.log(np.clip(sig(pos / tau), 1e-15, None)))
+            - np.mean(np.log(np.clip(1.0 - sig(neg / tau), 1e-15, None)))
+        )
+        / 2.0
+    )
 
     lm = None
     if caption_logprobs is not None:

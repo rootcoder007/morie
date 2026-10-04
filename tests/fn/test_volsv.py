@@ -9,7 +9,6 @@ scale equivariance implied by ``log (c r)**2 = log r**2 + 2 log c``.
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.volsv import vol_sv_quasi_lik
 
 # E[log z**2] = -gamma - log 2 and Var[log z**2] = psi'(1/2) = pi**2 / 2,
@@ -76,9 +75,7 @@ def test_volsv_iid_returns_collapse_to_the_closed_form():
     mu_star = sum(y) / len(y) - _M
     assert abs(res["mu"] - mu_star) < 1e-6
 
-    flat_ll = -0.5 * sum(
-        math.log(2.0 * math.pi * _V) + (t - mu_star - _M) ** 2 / _V for t in y
-    )
+    flat_ll = -0.5 * sum(math.log(2.0 * math.pi * _V) + (t - mu_star - _M) ** 2 / _V for t in y)
     assert abs(res["ll"] - flat_ll) < 1e-9
     # And the reported ll cannot beat that maximum.
     assert res["ll"] <= flat_ll + 1e-9
@@ -115,9 +112,7 @@ def test_volsv_scale_equivariance():
     # The identity holds exactly for the hand filter, with no optimiser in play.
     y = [math.log(v * v) for v in r]
     ys = [math.log((c * v) ** 2) for v in r]
-    assert abs(
-        _qll(ys, base["mu"] + 2.0 * math.log(c), 0.7, 0.4) - _qll(y, base["mu"], 0.7, 0.4)
-    ) < 1e-9
+    assert abs(_qll(ys, base["mu"] + 2.0 * math.log(c), 0.7, 0.4) - _qll(y, base["mu"], 0.7, 0.4)) < 1e-9
 
 
 def test_volsv_edge():

@@ -1,7 +1,6 @@
 """Tests for mcdAnm.mcd_outlier."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mcdAnm import mcd_outlier
 
 

@@ -89,13 +89,15 @@ def boyd_smooth_huber_grad(u, M=1.0):
     sat = ~inner
     return RichResult(
         title="Smoothed Huber gradient",
-        summary_lines=[("n", int(uv.size)), ("M", m),
-                       ("saturated", int(sat.sum()))],
+        summary_lines=[("n", int(uv.size)), ("M", m), ("saturated", int(sat.sum()))],
         payload={
-            "gradient": grad, "saturated": sat,
-            "second_derivative": d2, "n_saturated": int(sat.sum()),
+            "gradient": grad,
+            "saturated": sat,
+            "second_derivative": d2,
+            "n_saturated": int(sat.sum()),
             "approximates": "sign(u), with a ramp of width 2M at the origin",
-            "M": m, "method": "boyd_smooth_huber_grad",
+            "M": m,
+            "method": "boyd_smooth_huber_grad",
         },
     )
 

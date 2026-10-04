@@ -12,8 +12,7 @@ references.
 
 from .egnnL import cheatsheet, coord_update, edge_message, egcl, equivariance_error, run_egnn
 
-__all__ = ["edge_message", "coord_update", "egcl", "run_egnn",
-           "equivariance_error", "cheatsheet"]
+__all__ = ["edge_message", "coord_update", "egcl", "run_egnn", "equivariance_error", "cheatsheet"]
 
 # compact alias per ledger/NAMING.md
 equivariantgraphconv = run_egnn

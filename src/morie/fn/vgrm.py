@@ -74,11 +74,16 @@ def vgrm(coords, values, bins=15):
             if cnt[b]:
                 lag[b] = float(d[m].mean())
                 gam[b] = float(sq[m].sum() / (2.0 * cnt[b]))
-    return RichResult(payload={
-        "lag": lag, "gamma": gam, "n_pairs": cnt, "edges": edges,
-        "n": int(values.size),
-        "method": "Matheron empirical semivariogram (Schabenberger-Gotway eq. 4.1)",
-    })
+    return RichResult(
+        payload={
+            "lag": lag,
+            "gamma": gam,
+            "n_pairs": cnt,
+            "edges": edges,
+            "n": int(values.size),
+            "method": "Matheron empirical semivariogram (Schabenberger-Gotway eq. 4.1)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

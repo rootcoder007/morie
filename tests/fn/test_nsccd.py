@@ -1,8 +1,8 @@
 """Tests for morie.fn.nsccd — new-user active-comparator cohort."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.nsccd import new_user_cohort
 
 

@@ -1,7 +1,6 @@
 """Tests for cvxmin.boyd_minimum_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxmin import boyd_minimum_norm
 
 
@@ -20,8 +19,7 @@ def test_cvxmin_basic():
         assert isinstance(result.payload, dict)
 
         # Documented payload keys.
-        for key in ("x", "norm_value", "n_nonzero", "residual",
-                    "feasible", "in_row_space", "norm"):
+        for key in ("x", "norm_value", "n_nonzero", "residual", "feasible", "in_row_space", "norm"):
             assert key in result.payload
 
         # x must have the expected shape and satisfy the constraints.

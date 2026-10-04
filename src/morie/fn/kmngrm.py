@@ -29,13 +29,16 @@ def kamath_ngram_language_model(counts_ngram, counts_prefix):
     0.0
     """
     base = burkov_ngram_mle(counts_ngram, counts_prefix)
-    return RichResult(payload={
-        "estimate": float(base["estimate"]),
-        "probability": float(base["estimate"]),
-        "count_ngram": float(base["count_ngram"]),
-        "count_prefix": float(base["count_prefix"]),
-        "n": int(base["n"]),
-        "method": "N-gram MLE conditional probability (delegates to bkngr)"})
+    return RichResult(
+        payload={
+            "estimate": float(base["estimate"]),
+            "probability": float(base["estimate"]),
+            "count_ngram": float(base["count_ngram"]),
+            "count_prefix": float(base["count_prefix"]),
+            "n": int(base["n"]),
+            "method": "N-gram MLE conditional probability (delegates to bkngr)",
+        }
+    )
 
 
 def cheatsheet():

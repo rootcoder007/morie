@@ -1,7 +1,6 @@
 """Tests for wvdec.py - Wavelet decompose."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvdec import wavelet_decompose, wvdec
 
 

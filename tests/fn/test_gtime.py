@@ -1,8 +1,8 @@
 """Tests for morie.fn.gtime — Generation time distribution."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gtime import generation_time
 
 

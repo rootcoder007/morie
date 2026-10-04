@@ -1,16 +1,13 @@
 """Tests for aitlns.logistic_normal_sample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitlns import logistic_normal_sample
 
 
 def test_aitlns_basic():
     """Test basic functionality."""
     mu = np.array([0.0, 0.0, 0.0])
-    Sigma = np.array([[1.0, 0.1, 0.0],
-                      [0.1, 1.0, 0.1],
-                      [0.0, 0.1, 1.0]])
+    Sigma = np.array([[1.0, 0.1, 0.0], [0.1, 1.0, 0.1], [0.0, 0.1, 1.0]])
     n = 100
     result = logistic_normal_sample(mu, Sigma, n)
     assert isinstance(result, dict)
@@ -49,8 +46,7 @@ def test_aitlns_basic():
 
     # mean_alr is the column mean of the alr draws
     p = D - 1
-    expected_mean_alr = [sum(result["alr"][t][i] for t in range(n)) / n
-                         for i in range(p)]
+    expected_mean_alr = [sum(result["alr"][t][i] for t in range(n)) / n for i in range(p)]
     for a, b in zip(result["mean_alr"], expected_mean_alr):
         assert abs(a - b) < 1e-9
 

@@ -1,6 +1,7 @@
 """Tests for irt1pl.rasch_one_parameter."""
 
 import math
+
 import pytest
 
 from morie.fn import _array_core as np

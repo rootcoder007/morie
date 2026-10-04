@@ -1,7 +1,6 @@
 """Tests for alrt1 — mental health alert."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.alrt1 import alrt_mh
 
 

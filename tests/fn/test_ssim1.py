@@ -1,7 +1,6 @@
 """Tests for morie.fn.ssim1 -- SSIM."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ssim1 import ssim, ssim1
 

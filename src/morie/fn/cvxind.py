@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .cvxprc import boyd_projection
 
@@ -78,13 +77,15 @@ def boyd_indicator(x, C="ball", tol=1e-09, **set_kw):
     inside = bool(dist <= tol)
     return RichResult(
         title=f"Indicator of {C}",
-        summary_lines=[("in set", inside), ("distance", dist),
-                       ("value", 0.0 if inside else float("inf"))],
+        summary_lines=[("in set", inside), ("distance", dist), ("value", 0.0 if inside else float("inf"))],
         payload={
-            "value": 0.0 if inside else float("inf"), "in_set": inside,
-            "distance": dist, "prox": proj["x"],
+            "value": 0.0 if inside else float("inf"),
+            "in_set": inside,
+            "distance": dist,
+            "prox": proj["x"],
             "on_boundary": bool(proj["on_boundary"] and inside),
-            "set": C, "method": "boyd_indicator",
+            "set": C,
+            "method": "boyd_indicator",
         },
     )
 

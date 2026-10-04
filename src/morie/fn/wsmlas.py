@@ -65,7 +65,7 @@ def wasserman_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
         raise ValueError(f"X has {n} rows but y has {y.size} entries.")
     if lam < 0:
         raise ValueError(f"the lasso penalty must be non-negative; got {lam}.")
-    colsq = np.sum(X ** 2, axis=0)
+    colsq = np.sum(X**2, axis=0)
     if np.any(colsq == 0):
         raise ValueError("an all-zero column cannot be penalised meaningfully.")
     beta = np.zeros(p)
@@ -86,12 +86,20 @@ def wasserman_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
             converged = True
             break
     obj = 0.5 * float(r @ r) + lam * float(np.sum(np.abs(beta)))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "n_nonzero": int(np.sum(beta != 0)), "objective": float(obj),
-        "iterations": int(it), "converged": bool(converged),
-        "lambda": lam, "n": int(n), "p": int(p),
-        "method": "lasso cyclic coordinate descent, soft threshold"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "n_nonzero": int(np.sum(beta != 0)),
+            "objective": float(obj),
+            "iterations": int(it),
+            "converged": bool(converged),
+            "lambda": lam,
+            "n": int(n),
+            "p": int(p),
+            "method": "lasso cyclic coordinate descent, soft threshold",
+        }
+    )
 
 
 def cheatsheet():

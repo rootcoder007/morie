@@ -1,7 +1,6 @@
 """Tests for gh_c14_9.ghosal_py_process."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_9 import ghosal_py_process
 
 

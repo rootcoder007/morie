@@ -1,7 +1,6 @@
 """Tests for randwk.random_walk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.randwk import random_walk
 
 

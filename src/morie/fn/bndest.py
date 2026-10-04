@@ -82,7 +82,8 @@ def bound_estimation(y, observed, support, treatment=None):
                 raise ValueError(
                     "an observed outcome lies outside the declared support; "
                     "the support is the one assumption here, so violating "
-                    "it voids the bounds.")
+                    "it voids the bounds."
+                )
             m = float(ys.mean())
         else:
             m = 0.0
@@ -93,14 +94,19 @@ def bound_estimation(y, observed, support, treatment=None):
         if obs.size != n:
             raise ValueError(f"observed has {obs.size} entries for {n}.")
         lo, hi, p = one_mean(obs)
-        return RichResult(payload={
-            "lower": lo, "upper": hi, "width": hi - lo,
-            "p_observed": p, "identified": bool(p == 1.0),
-            "width_identity": "(K1 - K0)(1 - P(obs)) exactly",
-            "assumptions": "the outcome's support alone; nothing about "
-                           "WHY data are missing",
-            "n": int(n),
-            "method": "Manski worst-case bounds on a partially observed mean"})
+        return RichResult(
+            payload={
+                "lower": lo,
+                "upper": hi,
+                "width": hi - lo,
+                "p_observed": p,
+                "identified": bool(p == 1.0),
+                "width_identity": "(K1 - K0)(1 - P(obs)) exactly",
+                "assumptions": "the outcome's support alone; nothing about WHY data are missing",
+                "n": int(n),
+                "method": "Manski worst-case bounds on a partially observed mean",
+            }
+        )
 
     Tv = np.asarray(treatment, dtype=float).ravel()
     if Tv.size != n:
@@ -111,17 +117,23 @@ def bound_estimation(y, observed, support, treatment=None):
     lo0, hi0, p0 = one_mean(Tv == 0)
     ate_lo = lo1 - hi0
     ate_hi = hi1 - lo0
-    return RichResult(payload={
-        "ate_lower": ate_lo, "ate_upper": ate_hi,
-        "ate_width": ate_hi - ate_lo,
-        "y1_bounds": (lo1, hi1), "y0_bounds": (lo0, hi0),
-        "p_treated": p1, "contains_zero": bool(ate_lo <= 0.0 <= ate_hi),
-        "width_identity": "the ATE bounds always have width exactly K1 - K0, "
-                          "so they always contain zero: no-assumption bounds "
-                          "never sign an effect on their own",
-        "identified": False,
-        "n": int(n),
-        "method": "Manski (1990) worst-case bounds on the average treatment effect"})
+    return RichResult(
+        payload={
+            "ate_lower": ate_lo,
+            "ate_upper": ate_hi,
+            "ate_width": ate_hi - ate_lo,
+            "y1_bounds": (lo1, hi1),
+            "y0_bounds": (lo0, hi0),
+            "p_treated": p1,
+            "contains_zero": bool(ate_lo <= 0.0 <= ate_hi),
+            "width_identity": "the ATE bounds always have width exactly K1 - K0, "
+            "so they always contain zero: no-assumption bounds "
+            "never sign an effect on their own",
+            "identified": False,
+            "n": int(n),
+            "method": "Manski (1990) worst-case bounds on the average treatment effect",
+        }
+    )
 
 
 def cheatsheet():

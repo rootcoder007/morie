@@ -19,7 +19,6 @@ __all__ = ["penfreg", "mvsml_convolutional_nn_eq_14_12"]
 
 
 def penfreg(y, X, P, lam, mu=None):
-
     """With the spectral decomposition P = Gamma D Gamma' of the
     penalty matrix, X* = X Gamma and beta* = Gamma' beta, the
     penalized criterion (14.10) becomes

@@ -5,14 +5,13 @@ Sources are Montesinos Lopez, Montesinos Lopez and Crossa (2022),
 Prediction*; section and equation numbers are the book's.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bluerg import blue_gls
 
 
-def mixed_design(seed=0, n=60, q=8, var_u=2.0, var_e=0.5,
-                 beta=(1.0, 3.0)):
+def mixed_design(seed=0, n=60, q=8, var_u=2.0, var_e=0.5, beta=(1.0, 3.0)):
     rng = np.random.default_rng(seed)
     X = np.column_stack([np.ones(n), rng.normal(size=n)])
     Z = np.zeros((n, q))
@@ -65,8 +64,7 @@ def test_blup_tracks_the_realised_random_effects():
 
 def test_blup_shrinks_toward_zero():
     # shrinkage is the whole point of calling the effect random
-    y, X, Z, Sg, R, u = mixed_design(seed=3, n=80, q=8, var_u=0.05,
-                                     var_e=4.0)
+    y, X, Z, Sg, R, u = mixed_design(seed=3, n=80, q=8, var_u=0.05, var_e=4.0)
     out = blue_gls(y, X, Z=Z, Sigma=Sg, R=R)
     # with a tiny prior variance the BLUPs are pulled hard to zero
     assert float(np.max(np.abs(out["blup"]))) < float(np.max(np.abs(u))) + 1e-9
@@ -117,8 +115,7 @@ def test_standard_errors_are_the_gls_ones():
 
 def test_ignoring_the_random_effect_understates_the_standard_error():
     # treating clustered data as independent is the classic error
-    y, X, Z, Sg, R, _ = mixed_design(seed=6, n=100, q=5, var_u=4.0,
-                                     var_e=0.5)
+    y, X, Z, Sg, R, _ = mixed_design(seed=6, n=100, q=5, var_u=4.0, var_e=0.5)
     correct = blue_gls(y, X, Z=Z, Sigma=Sg, R=R)["se"][0]
     naive = blue_gls(y, X)["se"][0]
     assert naive < correct

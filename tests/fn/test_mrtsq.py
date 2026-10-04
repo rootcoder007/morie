@@ -1,7 +1,6 @@
 """Tests for morie.fn.mrtsq -- Mauchly's sphericity test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mrtsq import mauchly_test, mrtsq
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.sim2d -- simulate 2D unfolding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sim2d import sim2d, simulate_2d_unfolding
 
 

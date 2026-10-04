@@ -1,7 +1,6 @@
 """Tests for hmselu.geron_selu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmselu import geron_selu
 
 

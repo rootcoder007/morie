@@ -82,8 +82,7 @@ def boyd_linear_program(c, A=None, b=None, G=None, h=None, bounds=None):
         kw["b_ub"] = np.atleast_1d(np.asarray(h, dtype=float)).ravel()
     bnds = [(0.0, None)] * n if bounds is None else list(bounds)
     res = linprog(cv, bounds=bnds, method="highs", **kw)
-    status = {0: "optimal", 2: "infeasible", 3: "unbounded"}.get(
-        int(res.status), "failed")
+    status = {0: "optimal", 2: "infeasible", 3: "unbounded"}.get(int(res.status), "failed")
     ok = status == "optimal"
     x = np.asarray(res.x, dtype=float) if ok and res.x is not None else np.full(n, np.nan)
     n_active = 0
@@ -93,15 +92,17 @@ def boyd_linear_program(c, A=None, b=None, G=None, h=None, bounds=None):
         n_active = int(np.sum(np.abs(Gm @ x - hv) <= 1e-9))
     return RichResult(
         title="Linear program",
-        summary_lines=[("n", int(n)), ("status", status),
-                       ("value", float(res.fun) if ok else float("nan"))],
+        summary_lines=[("n", int(n)), ("status", status), ("value", float(res.fun) if ok else float("nan"))],
         warnings=[] if ok else [f"the LP is {status}"],
         payload={
-            "x": x, "value": float(res.fun) if ok else (
-                float("-inf") if status == "unbounded" else float("nan")),
-            "status": status, "feasible": status != "infeasible",
-            "bounded": status != "unbounded", "n_active": n_active,
-            "message": str(res.message), "method": "boyd_linear_program",
+            "x": x,
+            "value": float(res.fun) if ok else (float("-inf") if status == "unbounded" else float("nan")),
+            "status": status,
+            "feasible": status != "infeasible",
+            "bounded": status != "unbounded",
+            "n_active": n_active,
+            "message": str(res.message),
+            "method": "boyd_linear_program",
         },
     )
 

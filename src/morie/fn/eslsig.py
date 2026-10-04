@@ -55,8 +55,7 @@ def esl_residual_variance(X, y, beta=None):
     if A.shape[0] != yv.size:
         A = A.T
     if A.shape[0] != yv.size:
-        raise ValueError(
-            f"X has {A.shape[0]} rows for {yv.size} responses.")
+        raise ValueError(f"X has {A.shape[0]} rows for {yv.size} responses.")
     n = yv.size
     # an all-ones column IS the intercept; adding another would make
     # the design singular and charge a degree of freedom twice
@@ -68,30 +67,37 @@ def esl_residual_variance(X, y, beta=None):
         raise ValueError(
             f"(3.8) needs N > p + 1; got N = {n} and p = {p}, so the "
             "residual degrees of freedom would be "
-            f"{df} and the estimate is undefined.")
+            f"{df} and the estimate is undefined."
+        )
     if beta is None:
         b = np.linalg.lstsq(D, yv, rcond=None)[0]
     else:
         b = np.asarray(beta, dtype=float).ravel()
-        if b.size == p:                      # slopes only
+        if b.size == p:  # slopes only
             b = np.r_[float(np.mean(yv - A @ b)), b] if not has_int else b
         if b.size != D.shape[1]:
-            raise ValueError(
-                f"beta has {b.size} entries for a design of "
-                f"{D.shape[1]} columns.")
+            raise ValueError(f"beta has {b.size} entries for a design of {D.shape[1]} columns.")
     fitted = D @ b
     resid = yv - fitted
     rss = float(resid @ resid)
-    return RichResult(payload={
-        "value": rss / df, "sigma": float(np.sqrt(rss / df)), "rss": rss,
-        "df": int(df), "n": int(n), "p": int(p),
-        "intercept_in_X": has_int,
-        "mle_variance": rss / n,
-        "bias_factor": float(df) / n,
-        "fitted": fitted, "residuals": resid,
-        "denominator_note": "N - p - 1, not N: that is what makes it unbiased (3.8)",
-        "chi_square_fact": "(N-p-1) sigma_hat^2 ~ sigma^2 chi^2_{N-p-1} (3.11)",
-        "method": "ESL (3.8) unbiased residual variance"})
+    return RichResult(
+        payload={
+            "value": rss / df,
+            "sigma": float(np.sqrt(rss / df)),
+            "rss": rss,
+            "df": int(df),
+            "n": int(n),
+            "p": int(p),
+            "intercept_in_X": has_int,
+            "mle_variance": rss / n,
+            "bias_factor": float(df) / n,
+            "fitted": fitted,
+            "residuals": resid,
+            "denominator_note": "N - p - 1, not N: that is what makes it unbiased (3.8)",
+            "chi_square_fact": "(N-p-1) sigma_hat^2 ~ sigma^2 chi^2_{N-p-1} (3.11)",
+            "method": "ESL (3.8) unbiased residual variance",
+        }
+    )
 
 
 def cheatsheet():

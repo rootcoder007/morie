@@ -1,7 +1,6 @@
 """Tests for kmfait.kamath_ragas_faithfulness."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmfait import kamath_ragas_faithfulness
 
 

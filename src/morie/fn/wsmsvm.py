@@ -114,13 +114,19 @@ def wasserman_svm(X, y, C=1e6, max_iter=100000, tol=1e-12):
     margins = y * (X @ w + b)
     kkt = float(max(0.0, 1.0 - float(np.min(margins[sv])))) if sv.size else float("nan")
     norm = float(np.linalg.norm(w))
-    return RichResult(payload={
-        "estimate": float(2.0 / norm) if norm > 0 else float("inf"),
-        "w": [float(v) for v in w], "b": b,
-        "support_vectors": [int(v) for v in sv],
-        "alphas": [float(v) for v in a],
-        "kkt_violation": kkt, "n": int(n), "d": int(d),
-        "method": "linear SVM, cyclic pairwise dual ascent, C=1e6 ~ hard margin"})
+    return RichResult(
+        payload={
+            "estimate": float(2.0 / norm) if norm > 0 else float("inf"),
+            "w": [float(v) for v in w],
+            "b": b,
+            "support_vectors": [int(v) for v in sv],
+            "alphas": [float(v) for v in a],
+            "kkt_violation": kkt,
+            "n": int(n),
+            "d": int(d),
+            "method": "linear SVM, cyclic pairwise dual ascent, C=1e6 ~ hard margin",
+        }
+    )
 
 
 def cheatsheet():

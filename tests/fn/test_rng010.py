@@ -1,7 +1,6 @@
 """Tests for rng010.rangayyan_ch3_sample_std."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsastat import rangayyan_ch3_sample_std
 
 

@@ -1,7 +1,6 @@
 """Tests for cvxbgm.boyd_basis_pursuit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxbgm import boyd_basis_pursuit
 
 

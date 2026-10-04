@@ -1,7 +1,6 @@
 """Tests for eslnln.esl_elastic_net."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslnln import esl_elastic_net
 
 
@@ -13,10 +12,22 @@ def test_eslnln_basic():
     alpha = 0.5
     result = esl_elastic_net(X, y, lambda_, alpha)
     assert isinstance(result, dict)
-    for key in ("estimate", "beta", "n_nonzero", "active_set",
-                "objective", "lambda", "alpha", "lambda1",
-                "lambda2", "iterations", "converged", "n",
-                "p", "method"):
+    for key in (
+        "estimate",
+        "beta",
+        "n_nonzero",
+        "active_set",
+        "objective",
+        "lambda",
+        "alpha",
+        "lambda1",
+        "lambda2",
+        "iterations",
+        "converged",
+        "n",
+        "p",
+        "method",
+    ):
         assert key in result
     assert result["lambda"] == 0.1
     assert result["alpha"] == 0.5

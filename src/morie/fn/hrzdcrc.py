@@ -51,13 +51,17 @@ def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
     poly = float(n ** (-float(r)))
     logr = float(np.log(n) ** (-float(s)))
     supersmooth = error == "normal"
-    return RichResult(payload={"rate": logr if supersmooth else poly,
-                               "regime": "supersmooth" if supersmooth
-                               else "ordinary smooth",
-                               "polynomial_rate": poly, "logarithmic_rate": logr,
-                               "ratio": logr / poly if poly > 0 else np.inf,
-                               "n": n,
-                               "method": "n^{-r} vs (log n)^{-s}; the gap is the chapter's point"})
+    return RichResult(
+        payload={
+            "rate": logr if supersmooth else poly,
+            "regime": "supersmooth" if supersmooth else "ordinary smooth",
+            "polynomial_rate": poly,
+            "logarithmic_rate": logr,
+            "ratio": logr / poly if poly > 0 else np.inf,
+            "n": n,
+            "method": "n^{-r} vs (log n)^{-s}; the gap is the chapter's point",
+        }
+    )
 
 
 def cheatsheet():

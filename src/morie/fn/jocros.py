@@ -84,18 +84,28 @@ def joseph_croston_intermittent(y, alpha=0.1, variant="sba"):
         cls = "smooth"
     return RichResult(
         title=f"Intermittent demand ({variant})",
-        summary_lines=[("forecast", float(r["forecast"])),
-                       ("classification", cls), ("CV^2", cv2)],
-        warnings=(list(r.warnings)
-                  + (["demand is smooth; ordinary exponential smoothing is "
-                      "more appropriate than Croston here"] if cls == "smooth" else [])),
+        summary_lines=[("forecast", float(r["forecast"])), ("classification", cls), ("CV^2", cv2)],
+        warnings=(
+            list(r.warnings)
+            + (
+                ["demand is smooth; ordinary exponential smoothing is more appropriate than Croston here"]
+                if cls == "smooth"
+                else []
+            )
+        ),
         payload={
-            "forecast": r["forecast"], "rate": r["rate"],
-            "demand_size": r["demand_size"], "interval": r["interval"],
-            "bias_factor": r["bias_factor"], "n_nonzero": r["n_nonzero"],
+            "forecast": r["forecast"],
+            "rate": r["rate"],
+            "demand_size": r["demand_size"],
+            "interval": r["interval"],
+            "bias_factor": r["bias_factor"],
+            "n_nonzero": r["n_nonzero"],
             "intermittency": r["intermittency"],
-            "classification": cls, "cv_squared": cv2,
-            "average_interval": p, "alpha": r["alpha"], "variant": variant,
+            "classification": cls,
+            "cv_squared": cv2,
+            "average_interval": p,
+            "alpha": r["alpha"],
+            "variant": variant,
             "method": "joseph_croston_intermittent",
         },
     )

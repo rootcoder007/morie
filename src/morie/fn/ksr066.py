@@ -64,17 +64,24 @@ def kosorok_no_bias(eff_scores, theta_seq, theta0, n_seq):
         b = float(np.abs(np.atleast_1d(eff_scores(th, nn))).max())
         d = float(np.abs(np.atleast_1d(np.asarray(th, dtype=float)) - t0).max())
         bias.append(b)
-        tol.append(nn ** -0.5 + d)
-    bias = np.array(bias); tol = np.array(tol)
+        tol.append(nn**-0.5 + d)
+    bias = np.array(bias)
+    tol = np.array(tol)
     ratio = bias / tol
-    return RichResult(payload={
-        "n": ns, "bias": bias, "tolerance": tol, "ratio": ratio,
-        "holds": bool(ratio[-1] < ratio[0]),
-        "why_it_works": "the efficient score is orthogonal to the nuisance tangent "
-                        "space, so a first-order nuisance error moves it only to second order",
-        "tolerance_note": "n^{-1/2} + ||theta_n - theta||, not n^{-1/2} alone: the "
-                          "slack grows when theta_n is far from the truth",
-        "method": "No-bias condition (Eq. 3.6); why a slow nuisance rate does not contaminate theta"})
+    return RichResult(
+        payload={
+            "n": ns,
+            "bias": bias,
+            "tolerance": tol,
+            "ratio": ratio,
+            "holds": bool(ratio[-1] < ratio[0]),
+            "why_it_works": "the efficient score is orthogonal to the nuisance tangent "
+            "space, so a first-order nuisance error moves it only to second order",
+            "tolerance_note": "n^{-1/2} + ||theta_n - theta||, not n^{-1/2} alone: the "
+            "slack grows when theta_n is far from the truth",
+            "method": "No-bias condition (Eq. 3.6); why a slow nuisance rate does not contaminate theta",
+        }
+    )
 
 
 def cheatsheet():

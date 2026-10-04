@@ -26,6 +26,7 @@ def homomorphic_deconvolve(
         and excitation in ``extra["excitation"]``.
     """
     import math
+
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n_fft is None:
@@ -69,8 +70,7 @@ def homomorphic_deconvolve(
         filtered=h,
         fs=0.0,
         n_samples=len(h),
-        extra={"excitation": e, "cutoff": cutoff, "n_fft": n_fft,
-               "delay": nd, "cepstrum": cepstrum},
+        extra={"excitation": e, "cutoff": cutoff, "n_fft": n_fft, "delay": nd, "cepstrum": cepstrum},
     )
 
 

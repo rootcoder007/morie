@@ -93,11 +93,19 @@ def plrident(x, z, h=None, tol=1e-10):
     identified = bool(mineig > maxeig * tol and not hasintercept)
     return RichResult(
         title="Partially linear model identification (eq. 3.33)",
-        payload={"identified": identified, "mineig": mineig,
-                 "maxeig": maxeig, "condnum": condnum, "eigvals": ev,
-                 "rank": rank, "dim": p, "hasintercept": hasintercept,
-                 "bandwidth": hh, "n": n,
-                 "method": "Horowitz (2009) eq. (3.33), Sigma_X positive definite"},
+        payload={
+            "identified": identified,
+            "mineig": mineig,
+            "maxeig": maxeig,
+            "condnum": condnum,
+            "eigvals": ev,
+            "rank": rank,
+            "dim": p,
+            "hasintercept": hasintercept,
+            "bandwidth": hh,
+            "n": n,
+            "method": "Horowitz (2009) eq. (3.33), Sigma_X positive definite",
+        },
     )
 
 
@@ -118,6 +126,6 @@ if __name__ == "__main__":  # pragma: no cover
     r = plrident(np.column_stack([x1, x2]), z.reshape(-1, 1))
     assert r["identified"], r
     # X a deterministic function of Z -> (3.33) fails
-    bad = plrident(np.column_stack([z, z ** 2]), z.reshape(-1, 1))
+    bad = plrident(np.column_stack([z, z**2]), z.reshape(-1, 1))
     assert bad["mineig"] < r["mineig"], (bad["mineig"], r["mineig"])
     print("ok", r["mineig"], bad["mineig"])

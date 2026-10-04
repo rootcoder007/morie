@@ -83,7 +83,11 @@ def geron_reinforce(episodes, policy, gamma=0.99, eta=0.01, theta=None, baseline
     theta_next = th + step
     return RichResult(
         title="REINFORCE update",
-        summary_lines=[("Episodes", int(base["n_episodes"])), ("Mean return", float(base["mean_return"])), ("Step norm", float(np.linalg.norm(step)))],
+        summary_lines=[
+            ("Episodes", int(base["n_episodes"])),
+            ("Mean return", float(base["mean_return"])),
+            ("Step norm", float(np.linalg.norm(step))),
+        ],
         interpretation="On-policy: after this step the episodes that produced the gradient are stale.",
         payload={
             "theta": theta_next,

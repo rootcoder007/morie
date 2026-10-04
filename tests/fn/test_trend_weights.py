@@ -1,7 +1,6 @@
 """Tests for trend_weights.trend_weights."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.trend_weights import (
     trend_weights,
 )

@@ -64,18 +64,25 @@ def hrz_backfitting(X, y, h=None, max_iter=50, tol=1e-6, kernel_name="gaussian")
         for j in range(d):
             partial = y - mu - (G.sum(axis=1) - G[:, j])
             hj = silverman_bw(X[:, j]) if h is None else float(h)
-            _, gj, _, _ = local_linear(X[:, j], partial, grid=X[:, j], h=hj,
-                                       name=kernel_name)
+            _, gj, _, _ = local_linear(X[:, j], partial, grid=X[:, j], h=hj, name=kernel_name)
             gj = np.where(np.isfinite(gj), gj, 0.0)
             G[:, j] = gj - gj.mean()  # only the sum is identified
         if np.max(np.abs(G - prev)) < tol:
             conv = True
             break
-    return RichResult(payload={"mu": mu, "components": G,
-                               "fitted": mu + G.sum(axis=1), "n_iter": it,
-                               "converged": conv, "rate_exponent": -0.4,
-                               "d": int(d), "n": int(n),
-                               "method": "Backfitting; additivity restores n^{-2/5} in any d"})
+    return RichResult(
+        payload={
+            "mu": mu,
+            "components": G,
+            "fitted": mu + G.sum(axis=1),
+            "n_iter": it,
+            "converged": conv,
+            "rate_exponent": -0.4,
+            "d": int(d),
+            "n": int(n),
+            "method": "Backfitting; additivity restores n^{-2/5} in any d",
+        }
+    )
 
 
 def cheatsheet():

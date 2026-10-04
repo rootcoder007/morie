@@ -1,7 +1,6 @@
 """Test butterworth_filter (bwflt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.bwflt import butterworth_filter, bwflt
 

@@ -58,11 +58,21 @@ def interaction_mediation_4way(X, M, Y, Cc=None, a=1.0, astar=0.0, m=0.0):
     """
     theta, beta, cbar = S.medmodels(Y, X, M, Cc)
     cde, intref, intmed, pie, te = S.fourway(theta, beta, cbar, a, astar, m)
-    return RichResult(payload={
-        "estimate": te, "cde": cde, "intref": intref, "intmed": intmed,
-        "pie": pie, "pai": intref + intmed, "pe": intref + intmed + pie,
-        "theta": theta, "beta": beta, "n": len(list(Y)),
-        "method": "VanderWeele four-way decomposition"})
+    return RichResult(
+        payload={
+            "estimate": te,
+            "cde": cde,
+            "intref": intref,
+            "intmed": intmed,
+            "pie": pie,
+            "pai": intref + intmed,
+            "pe": intref + intmed + pie,
+            "theta": theta,
+            "beta": beta,
+            "n": len(list(Y)),
+            "method": "VanderWeele four-way decomposition",
+        }
+    )
 
 
 def cheatsheet():

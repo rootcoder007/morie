@@ -1,7 +1,6 @@
 """Tests for hmovf.geron_overfitting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmovf import geron_overfitting
 
 

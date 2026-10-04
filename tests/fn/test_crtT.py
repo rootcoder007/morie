@@ -1,7 +1,5 @@
 """Tests for crtT.chinese_remainder."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.crtT import chinese_remainder
 
 
@@ -23,8 +21,7 @@ def test_crtT_basic():
     assert x % 3 == 2 and x % 5 == 3 and x % 7 == 2
     assert result["estimate"] == x % mod
     assert result["estimate"] < result["modulus"]
-    assert all(r % mm == result["estimate"] % mm
-               for r, mm in zip(result["residues"], result["moduli"]))
+    assert all(r % mm == result["estimate"] % mm for r, mm in zip(result["residues"], result["moduli"]))
 
 
 def test_crtT_edge():

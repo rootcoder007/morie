@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ctrltree', 'gibbons_fligner_wolfe_test']
+__all__ = ["ctrltree", "gibbons_fligner_wolfe_test"]
 
 
 def ctrltree(samples, r=None):
@@ -70,10 +70,7 @@ def ctrltree(samples, r=None):
         raise ValueError("need at least one treatment observation.")
     w = sum(1 for v in treat if v < t)
     den = math.comb(n1 + mt, mt)
-    pmf = [
-        math.comb(n1 + mt - rr - j, mt - j) * math.comb(rr + j - 1, j) / den
-        for j in range(mt + 1)
-    ]
+    pmf = [math.comb(n1 + mt - rr - j, mt - j) * math.comb(rr + j - 1, j) / den for j in range(mt + 1)]
     mean = sum(j * p for j, p in enumerate(pmf))
     return RichResult(
         payload={

@@ -1,7 +1,6 @@
 """Tests for hrmns -- Harmonic analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hrmns import hrmns
 

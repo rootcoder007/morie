@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['msetst', 'mse_metric', 'msemetric']
+__all__ = ["msetst", "mse_metric", "msemetric"]
 
 
 def msetst(y, yhat):
@@ -37,9 +37,9 @@ def msetst(y, yhat):
     if n == 0:
         raise ValueError("y must be non-empty")
     mse = sum((a - b) ** 2 for a, b in zip(y, yhat)) / n
-    return RichResult(payload={
-        "mse": mse, "rmse": math.sqrt(mse), "n": n,
-        "method": "Test-set mean squared error, MVSML Eq. (4.1)"})
+    return RichResult(
+        payload={"mse": mse, "rmse": math.sqrt(mse), "n": n, "method": "Test-set mean squared error, MVSML Eq. (4.1)"}
+    )
 
 
 mse_metric = msetst
@@ -47,4 +47,4 @@ msemetric = msetst
 
 
 def cheatsheet():
-    return 'msdef: Mean squared error of a set of predictions.'
+    return "msdef: Mean squared error of a set of predictions."

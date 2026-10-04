@@ -1,7 +1,6 @@
 """Tests for spcfl.py - spectral flatness."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spcfl import spcfl, spectral_flatness_fn
 
 

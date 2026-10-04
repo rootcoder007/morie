@@ -1,7 +1,6 @@
 """Tests for mean_semivariance_stsi_variance.mean_semivariance_stsi_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mean_semivariance_stsi_variance import (
     mean_semivariance_stsi_variance,
 )

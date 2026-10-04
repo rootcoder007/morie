@@ -94,10 +94,18 @@ def atompairfp(adjacency, atomtype, nbits=2048, maxdist=30):
             cnt[h] += 1
             npairs += 1
             dists.append(dd)
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits), "npairs": npairs,
-        "distance": dists, "a": a, "nbits": nbits,
-        "method": "Atom-pair fingerprint (Carhart et al. 1985)"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "npairs": npairs,
+            "distance": dists,
+            "a": a,
+            "nbits": nbits,
+            "method": "Atom-pair fingerprint (Carhart et al. 1985)",
+        }
+    )
 
 
 atom_pair_fp = atompairfp

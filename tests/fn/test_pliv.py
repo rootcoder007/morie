@@ -2,10 +2,10 @@
 
 import math
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.pliv import estimate_pliv
 
 
@@ -99,8 +99,15 @@ def test_pliv_without_covariates_is_the_cross_fitted_iv_ratio():
     d = [0.5, -0.8, 1.1, 1.2, 0.1, 0.4, -0.9, 0.6, 1.4, -1.0, 0.2, 0.7, -0.3, 0.9]
     y = [1.2, -1.5, 2.4, 2.1, 0.5, 0.6, -1.9, 1.0, 3.1, -2.2, 0.1, 1.6, -0.2, 1.7]
     n, K = len(z), 4
-    r = estimate_pliv(pd.DataFrame({"z": z, "d": d, "y": y}), treatment="d", outcome="y", instrument="z",
-                      covariates=[], n_folds=K, random_state=7)
+    r = estimate_pliv(
+        pd.DataFrame({"z": z, "d": d, "y": y}),
+        treatment="d",
+        outcome="y",
+        instrument="z",
+        covariates=[],
+        n_folds=K,
+        random_state=7,
+    )
     u = [float(v) for v in random_uniform(n, seed=7)]
     order = sorted(range(n), key=lambda i: (u[i], i))
     fold_of = {i: f for f in range(K) for i in order[f::K]}

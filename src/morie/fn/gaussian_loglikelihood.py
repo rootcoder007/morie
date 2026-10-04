@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def gaussian_loglikelihood(z, mu, cov):
     """
     value = _brus.gaussian_loglikelihood(z, mu, cov)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (21.23)"
     return RichResult(
-        title='Gaussian log-likelihood of the geostatistical model',
+        title="Gaussian log-likelihood of the geostatistical model",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r21e23: ln f(z|mu, theta) = -0.5(n ln 2pi + ln|C| + (z-mu)^T C^-1 (z-mu)) [Brus 2022, eq. 21.23]'
+    return "r21e23: ln f(z|mu, theta) = -0.5(n ln 2pi + ln|C| + (z-mu)^T C^-1 (z-mu)) [Brus 2022, eq. 21.23]"

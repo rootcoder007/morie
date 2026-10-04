@@ -61,10 +61,7 @@ def burkov_lm_ch1_dataset_bce(y_hat, y, N=None, eps=1e-12):
     p = np.asarray(y_hat, dtype=float).ravel()
     t = np.asarray(y, dtype=float).ravel()
     if p.size != t.size:
-        raise ValueError(
-            "y_hat and y must agree in length, got %d and %d."
-            % (p.size, t.size)
-        )
+        raise ValueError("y_hat and y must agree in length, got %d and %d." % (p.size, t.size))
     n = p.size
     if n == 0:
         raise ValueError("need at least one example.")
@@ -88,10 +85,7 @@ def burkov_lm_ch1_dataset_bce(y_hat, y, N=None, eps=1e-12):
             "per_example": per,
             "baseline_loss": baseline,
             "skill": float(1.0 - loss / baseline) if baseline > 0 else np.nan,
-            "skill_note": (
-                "1 - loss/baseline; at or below zero the model is no better "
-                "than predicting the base rate"
-            ),
+            "skill_note": ("1 - loss/baseline; at or below zero the model is no better than predicting the base rate"),
             "n_clipped": clipped,
             "clip_note": (
                 "a confident wrong prediction would otherwise contribute an "

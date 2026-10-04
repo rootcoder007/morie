@@ -26,9 +26,18 @@ from .alpz import alphazero_search
 __all__ = ["alphazero_self_play"]
 
 
-def alphazero_self_play(state, policy, value=None, mcts_iter=16, step=None,
-                        terminal=None, outcome=None, max_moves=32,
-                        temp_threshold=30, c_puct=1.25):
+def alphazero_self_play(
+    state,
+    policy,
+    value=None,
+    mcts_iter=16,
+    step=None,
+    terminal=None,
+    outcome=None,
+    max_moves=32,
+    temp_threshold=30,
+    c_puct=1.25,
+):
     """Play one self-play game and return its (s, pi, z) record.
 
     Parameters
@@ -55,6 +64,7 @@ def alphazero_self_play(state, policy, value=None, mcts_iter=16, step=None,
         states, pis, zs : the training record
         moves    : number of moves played
     """
+
     def net(s):
         out = policy(s)
         if isinstance(out, tuple) and len(out) == 2:
@@ -69,8 +79,7 @@ def alphazero_self_play(state, policy, value=None, mcts_iter=16, step=None,
     while m < int(max_moves):
         if terminal is not None and terminal(s):
             break
-        res = alphazero_search(s, net, mcts_iter, step=step, c_puct=c_puct,
-                               terminal=terminal)
+        res = alphazero_search(s, net, mcts_iter, step=step, c_puct=c_puct, terminal=terminal)
         pi = res["pi"]
         states.append(s)
         pis.append(pi)

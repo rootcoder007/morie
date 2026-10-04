@@ -35,19 +35,23 @@ def kamath_ch6_weat_effect_size(A_1, A_2, W_1, W_2, ddof=0):
     union = np.asarray(s1 + s2, dtype=float)
     ddof = int(ddof)
     if union.size - ddof <= 0:
-        raise ValueError(
-            f"the union holds {union.size} attribute words, too few for "
-            f"ddof = {ddof}.")
+        raise ValueError(f"the union holds {union.size} attribute words, too few for ddof = {ddof}.")
     sd = float(np.std(union, ddof=ddof))
     if sd == 0:
-        raise ValueError("every attribute word has the same association; "
-                         "the effect size divides by zero.")
+        raise ValueError("every attribute word has the same association; the effect size divides by zero.")
     num = float(np.mean(s1) - np.mean(s2))
-    return RichResult(payload={
-        "estimate": num / sd, "numerator": num, "std": sd, "ddof": ddof,
-        "s_A1": [float(v) for v in s1], "s_A2": [float(v) for v in s2],
-        "n": int(union.size),
-        "method": "WEAT effect size (Kamath Eq 6.6)"})
+    return RichResult(
+        payload={
+            "estimate": num / sd,
+            "numerator": num,
+            "std": sd,
+            "ddof": ddof,
+            "s_A1": [float(v) for v in s1],
+            "s_A2": [float(v) for v in s2],
+            "n": int(union.size),
+            "method": "WEAT effect size (Kamath Eq 6.6)",
+        }
+    )
 
 
 def cheatsheet():

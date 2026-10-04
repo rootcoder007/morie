@@ -1,7 +1,6 @@
 """Tests for fzksst.fauzi_ks_statistic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzksst import fauzi_ks_statistic
 
 

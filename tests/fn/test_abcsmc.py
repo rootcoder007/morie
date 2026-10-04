@@ -1,7 +1,6 @@
 """Tests for abcsmc.abc_smc_epi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.abcsmc import abc_smc_epi
 
 
@@ -20,8 +19,12 @@ def test_abcsmc_basic():
     priors = [[0.0, 1.0]]
     n_particles = 32
     result = abc_smc_epi(
-        _toy_model, summary_stats, priors=priors, n_particles=n_particles,
-        schedule=[1.0, 0.5, 0.1], kernel_sd=0.1,
+        _toy_model,
+        summary_stats,
+        priors=priors,
+        n_particles=n_particles,
+        schedule=[1.0, 0.5, 0.1],
+        kernel_sd=0.1,
     )
 
     # Function returns a RichResult with a .payload dict, not a bare dict.
@@ -69,8 +72,12 @@ def test_abcsmc_edge():
     # Smallest reasonable particle count.
     n_particles = 4
     result = abc_smc_epi(
-        _toy_model, summary_stats, priors=priors, n_particles=n_particles,
-        schedule=[0.5, 0.1], kernel_sd=0.05,
+        _toy_model,
+        summary_stats,
+        priors=priors,
+        n_particles=n_particles,
+        schedule=[0.5, 0.1],
+        kernel_sd=0.05,
     )
     assert hasattr(result, "payload")
     payload = result.payload

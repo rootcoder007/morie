@@ -16,8 +16,7 @@ def test_the_substituted_preference_drops_the_partition_function():
     # p* = sigma(beta log(pi*(y1)/pi_ref(y1)) - beta log(pi*(y2)/pi_ref(y2)))
     res = kamath_ch5_dpo_pref_substituted([0.75, 0.25], [0.5, 0.5], 1.0, Z=1000.0)
     logit = math.log(0.75 / 0.5) - math.log(0.25 / 0.5)
-    assert res["estimate"] == pytest.approx(1.0 / (1.0 + math.exp(-logit)),
-                                            rel=1e-12)
+    assert res["estimate"] == pytest.approx(1.0 / (1.0 + math.exp(-logit)), rel=1e-12)
     assert round(res["estimate"], 12) == pytest.approx(0.75, abs=1e-12)
     assert res["z_terms_cancel"] is True
 

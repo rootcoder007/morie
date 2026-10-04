@@ -117,16 +117,12 @@ def boyd_socp(f, A, b, c, d, x0=None):
     ds = np.atleast_1d(np.asarray(d, dtype=float)).ravel()
     m = len(As)
     if not (len(bs) == len(cs) == ds.size == m):
-        raise ValueError(
-            f"A, b, c, d must have the same length; got {m}, {len(bs)}, "
-            f"{len(cs)}, {ds.size}")
+        raise ValueError(f"A, b, c, d must have the same length; got {m}, {len(bs)}, {len(cs)}, {ds.size}")
     for i in range(m):
         if As[i].shape[1] != n:
-            raise ValueError(
-                f"A[{i}] has {As[i].shape[1]} columns, expected {n}")
+            raise ValueError(f"A[{i}] has {As[i].shape[1]} columns, expected {n}")
         if bs[i].size != As[i].shape[0]:
-            raise ValueError(
-                f"b[{i}] has {bs[i].size} entries, expected {As[i].shape[0]}")
+            raise ValueError(f"b[{i}] has {bs[i].size} entries, expected {As[i].shape[0]}")
         if cs[i].size != n:
             raise ValueError(f"c[{i}] has {cs[i].size} entries, expected {n}")
 
@@ -136,30 +132,38 @@ def boyd_socp(f, A, b, c, d, x0=None):
         # Squaring keeps the derivative defined at the cone's apex,
         # where the norm itself is not differentiable; on the halfspace
         # rhs >= 0 the two forms cut out the same set.
-        cons.append({
-            "type": "ineq",
-            "fun": lambda x, Ai=Ai, bi=bi, ci=ci, di=di: (
-                float(ci @ x + di) ** 2 - float(np.sum((Ai @ x + bi) ** 2))),
-            "jac": lambda x, Ai=Ai, bi=bi, ci=ci, di=di: (
-                2.0 * float(ci @ x + di) * ci - 2.0 * Ai.T @ (Ai @ x + bi)),
-        })
+        cons.append(
+            {
+                "type": "ineq",
+                "fun": lambda x, Ai=Ai, bi=bi, ci=ci, di=di: (
+                    float(ci @ x + di) ** 2 - float(np.sum((Ai @ x + bi) ** 2))
+                ),
+                "jac": lambda x, Ai=Ai, bi=bi, ci=ci, di=di: 2.0 * float(ci @ x + di) * ci - 2.0 * Ai.T @ (Ai @ x + bi),
+            }
+        )
         # ...but squaring ALONE also admits the mirror nappe, where the
         # right-hand side is negative and its square still dominates. So
         # the sign has to be pinned separately or the solver can return
         # a point on the wrong half of the double cone entirely.
-        cons.append({
-            "type": "ineq",
-            "fun": lambda x, ci=ci, di=di: float(ci @ x + di),
-            "jac": lambda x, ci=ci: ci,
-        })
+        cons.append(
+            {
+                "type": "ineq",
+                "fun": lambda x, ci=ci, di=di: float(ci @ x + di),
+                "jac": lambda x, ci=ci: ci,
+            }
+        )
 
-    z0 = (np.zeros(n) if x0 is None
-          else np.atleast_1d(np.asarray(x0, dtype=float)).ravel())
+    z0 = np.zeros(n) if x0 is None else np.atleast_1d(np.asarray(x0, dtype=float)).ravel()
     if z0.size != n:
         raise ValueError(f"x0 has {z0.size} entries, expected {n}")
-    res = minimize(lambda x: float(fv @ x), z0, jac=lambda x: fv,
-                   constraints=cons, method="SLSQP",
-                   options={"maxiter": 1000, "ftol": 1e-12})
+    res = minimize(
+        lambda x: float(fv @ x),
+        z0,
+        jac=lambda x: fv,
+        constraints=cons,
+        method="SLSQP",
+        options={"maxiter": 1000, "ftol": 1e-12},
+    )
     x = np.asarray(res.x, dtype=float)
     lhs = np.array([float(np.linalg.norm(As[i] @ x + bs[i])) for i in range(m)])
     rhs = np.array([float(cs[i] @ x + ds[i]) for i in range(m)])
@@ -167,16 +171,23 @@ def boyd_socp(f, A, b, c, d, x0=None):
     tolr = 1e-06 * np.maximum(1.0, np.abs(rhs))
     return RichResult(
         title="Second-order cone program",
-        summary_lines=[("n", int(n)), ("cones", int(m)),
-                       ("objective", float(fv @ x)),
-                       ("min slack", float(slack.min()) if m else float("nan")),
-                       ("active", int(np.sum(slack <= tolr)))],
+        summary_lines=[
+            ("n", int(n)),
+            ("cones", int(m)),
+            ("objective", float(fv @ x)),
+            ("min slack", float(slack.min()) if m else float("nan")),
+            ("active", int(np.sum(slack <= tolr))),
+        ],
         payload={
-            "x": x, "objective": float(fv @ x),
-            "lhs": lhs, "rhs": rhs, "slack": slack,
+            "x": x,
+            "objective": float(fv @ x),
+            "lhs": lhs,
+            "rhs": rhs,
+            "slack": slack,
             "active": slack <= tolr,
             "feasible": bool(np.all(slack >= -tolr)),
-            "converged": bool(res.success), "message": str(res.message),
+            "converged": bool(res.success),
+            "message": str(res.message),
             "method": "boyd_socp",
         },
     )

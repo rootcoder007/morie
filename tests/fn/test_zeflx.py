@@ -1,7 +1,6 @@
 """Tests for morie.fn.zeflx -- Flexible spatial scan (Tango)"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zeflx import flexible_scan
 
 

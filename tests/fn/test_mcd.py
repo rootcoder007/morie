@@ -1,7 +1,6 @@
 """Tests for min_covariance_det."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mcd import min_covariance_det
 
 

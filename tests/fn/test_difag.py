@@ -1,7 +1,6 @@
 """Tests for difag — DIF by age group."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.difag import difag
 
 

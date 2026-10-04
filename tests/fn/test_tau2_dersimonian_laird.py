@@ -1,7 +1,6 @@
 """Tests for tau2_dersimonian_laird.tau2_dersimonian_laird."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tau2_dersimonian_laird import tau2_dersimonian_laird
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.txtcl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.txtcl import text_classify
 
 

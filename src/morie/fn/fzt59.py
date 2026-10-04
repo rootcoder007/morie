@@ -73,13 +73,13 @@ def smthedge(y, n, which="sign", book=False):
     yv = np.atleast_1d(np.asarray(y, dtype=float))
     base = stats.norm.cdf(yv)
     phi = stats.norm.pdf(yv)
-    he3 = yv ** 3 - 3.0 * yv
+    he3 = yv**3 - 3.0 * yv
     if which == "sign":
         coef = 1.0 / (24.0 * n)
         corr = coef * he3 * phi
     elif book:
         coef = 7.0 / 20.0
-        corr = (7.0 / 20.0 * yv ** 3 - 21.0 / 20.0 * yv) * phi
+        corr = (7.0 / 20.0 * yv**3 - 21.0 / 20.0 * yv) * phi
     else:
         coef = 1.0 / (20.0 * n)
         corr = coef * he3 * phi

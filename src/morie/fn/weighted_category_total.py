@@ -27,17 +27,16 @@ def weighted_category_total(weights, ys, category):
     """
     value = _acd.weighted_category_total(weights, ys, category)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.7)"
     return RichResult(
-        title='Survey-weighted population category count',
+        title="Survey-weighted population category count",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e7: N_hat_i = sum_s w_s I(y_s = i) [Bilder & Loughin 2025, eq. 6.7]'
+    return "6e7: N_hat_i = sum_s w_s I(y_s = i) [Bilder & Loughin 2025, eq. 6.7]"

@@ -1,7 +1,5 @@
 """Tests for satDP.dpll."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.satDP import dpll
 
 

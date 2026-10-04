@@ -60,14 +60,10 @@ criterion, discussed in Chap. 2 as an alternative route to
 identifiability.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["g_computation", "positivity_check",
-           "sequential_g_formula", "counterfactual_mean"]
+__all__ = ["g_computation", "positivity_check", "sequential_g_formula", "counterfactual_mean"]
 
 _EPS = 1e-12
 
@@ -84,10 +80,14 @@ def positivity_check(g, delta=0.01):
         raise ValueError("tlgcmp: no propensity scores given")
     lo, hi = min(gg), max(gg)
     worst = min(lo, 1.0 - hi)
-    return {"min_g": lo, "max_g": hi, "worst": worst,
-            "satisfied": worst > float(delta), "delta": float(delta),
-            "note": "without positivity the outcome regression is "
-                    "asked to extrapolate into cells with no data"}
+    return {
+        "min_g": lo,
+        "max_g": hi,
+        "worst": worst,
+        "satisfied": worst > float(delta),
+        "delta": float(delta),
+        "note": "without positivity the outcome regression is asked to extrapolate into cells with no data",
+    }
 
 
 def g_computation(strata, outcome_means, covariate_probs):
@@ -100,8 +100,7 @@ def g_computation(strata, outcome_means, covariate_probs):
     s = list(strata)
     p = [float(covariate_probs[v]) for v in s]
     if abs(sum(p) - 1.0) > 1e-9:
-        raise ValueError("tlgcmp: the covariate distribution must sum "
-                         "to 1, got %.9f" % sum(p))
+        raise ValueError("tlgcmp: the covariate distribution must sum to 1, got %.9f" % sum(p))
     q = [float(outcome_means[v]) for v in s]
     return sum(p[i] * q[i] for i in range(len(s)))
 
@@ -117,8 +116,7 @@ def sequential_g_formula(Q_functions, L_supports, L_probs, rule):
     """
     T = len(L_supports)
     if len(L_probs) != T:
-        raise ValueError("tlgcmp: %d covariate supports but %d "
-                         "distributions" % (T, len(L_probs)))
+        raise ValueError("tlgcmp: %d covariate supports but %d distributions" % (T, len(L_probs)))
 
     def walk(t, hist):
         if t == T:
@@ -126,23 +124,23 @@ def sequential_g_formula(Q_functions, L_supports, L_probs, rule):
         tot = 0.0
         probs = L_probs[t](hist)
         if abs(sum(probs) - 1.0) > 1e-9:
-            raise ValueError("tlgcmp: the conditional law at time %d "
-                             "sums to %.9f" % (t, sum(probs)))
+            raise ValueError("tlgcmp: the conditional law at time %d sums to %.9f" % (t, sum(probs)))
         for j, l in enumerate(L_supports[t]):
             a = rule(hist + [l])
             tot += probs[j] * walk(t + 1, hist + [l, a])
         return tot
 
     val = walk(0, [])
-    return RichResult(payload={
-        "estimate": val, "psi": val, "horizon": T,
-        "method": "sequential g-computation; van der Laan & Rose "
-                  "(2018) Chaps. 2 and 4",
-        "note": "the treatment mechanism does not appear -- the "
-                "intervention replaces it",
-        "assumptions": ("sequential randomization (no unmeasured "
-                        "confounding) and positivity"),
-    })
+    return RichResult(
+        payload={
+            "estimate": val,
+            "psi": val,
+            "horizon": T,
+            "method": "sequential g-computation; van der Laan & Rose (2018) Chaps. 2 and 4",
+            "note": "the treatment mechanism does not appear -- the intervention replaces it",
+            "assumptions": ("sequential randomization (no unmeasured confounding) and positivity"),
+        }
+    )
 
 
 def counterfactual_mean(Y, A, L, a_star, strata_probs=None):
@@ -160,32 +158,34 @@ def counterfactual_mean(Y, A, L, a_star, strata_probs=None):
         raise ValueError("tlgcmp: the inputs differ in length")
     levels = sorted(set(l))
     if strata_probs is None:
-        strata_probs = {v: sum(1 for x in l if x == v) / float(len(l))
-                        for v in levels}
+        strata_probs = {v: sum(1 for x in l if x == v) / float(len(l)) for v in levels}
     tot = 0.0
     for v in levels:
-        idx = [i for i in range(len(y))
-               if l[i] == v and a[i] == float(a_star)]
+        idx = [i for i in range(len(y)) if l[i] == v and a[i] == float(a_star)]
         if not idx:
-            raise ValueError("tlgcmp: stratum %r contains no unit "
-                             "with A = %r -- a positivity violation, "
-                             "not a missing value" % (v, a_star))
+            raise ValueError(
+                "tlgcmp: stratum %r contains no unit "
+                "with A = %r -- a positivity violation, "
+                "not a missing value" % (v, a_star)
+            )
         tot += strata_probs[v] * sum(y[i] for i in idx) / len(idx)
     return tot
 
 
 def cheatsheet():
-    return ("tlgcmp: the causal parameter lives on the FULL data "
-            "(U, X); identification maps it to a functional of the "
-            "OBSERVED data. The g-computation formula integrates the "
-            "outcome regression over the covariate law with treatment "
-            "held FIXED, so the treatment mechanism disappears -- the "
-            "intervention replaced it. Two assumptions doing different "
-            "jobs: sequential randomization (no unmeasured "
-            "confounding) and positivity (every history keeps positive "
-            "probability). Break positivity and the regression is "
-            "asked to extrapolate into empty cells. Either way "
-            "Psi(P) remains a valid STATISTICAL parameter.")
+    return (
+        "tlgcmp: the causal parameter lives on the FULL data "
+        "(U, X); identification maps it to a functional of the "
+        "OBSERVED data. The g-computation formula integrates the "
+        "outcome regression over the covariate law with treatment "
+        "held FIXED, so the treatment mechanism disappears -- the "
+        "intervention replaced it. Two assumptions doing different "
+        "jobs: sequential randomization (no unmeasured "
+        "confounding) and positivity (every history keeps positive "
+        "probability). Break positivity and the regression is "
+        "asked to extrapolate into empty cells. Either way "
+        "Psi(P) remains a valid STATISTICAL parameter."
+    )
 
 
 # compact alias per ledger/NAMING.md

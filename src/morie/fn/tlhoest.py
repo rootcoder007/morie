@@ -56,15 +56,10 @@ David A. Freedman*, IMS, 335-421, doi:10.1214/193940307000000527.
 Higher-order influence functions.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["first_order_expansion", "second_order_term",
-           "higher_order_estimate", "remainder_order",
-           "rate_requirement"]
+__all__ = ["first_order_expansion", "second_order_term", "higher_order_estimate", "remainder_order", "rate_requirement"]
 
 _EPS = 1e-12
 
@@ -76,10 +71,12 @@ def first_order_expansion(D1, psi_plugin):
     if n < 2:
         raise ValueError("tlhoest: at least 2 observations are needed")
     m = sum(d) / n
-    return {"estimate": float(psi_plugin) + m, "mean_D1": m,
-            "order": 1,
-            "note": "valid only if the SECOND-order remainder is "
-                    "o(n^{-1/2})"}
+    return {
+        "estimate": float(psi_plugin) + m,
+        "mean_D1": m,
+        "order": 1,
+        "note": "valid only if the SECOND-order remainder is o(n^{-1/2})",
+    }
 
 
 def second_order_term(D2_kernel, O, exclude_diagonal=True):
@@ -93,8 +90,7 @@ def second_order_term(D2_kernel, O, exclude_diagonal=True):
     obs = list(O)
     n = len(obs)
     if n < 2:
-        raise ValueError("tlhoest: a second-order term needs at least "
-                         "2 observations")
+        raise ValueError("tlhoest: a second-order term needs at least 2 observations")
     tot, m = 0.0, 0
     for i in range(n):
         for j in range(n):
@@ -102,9 +98,12 @@ def second_order_term(D2_kernel, O, exclude_diagonal=True):
                 continue
             tot += float(D2_kernel(obs[i], obs[j]))
             m += 1
-    return {"value": tot / m, "n_pairs": m, "cost": "O(n^2)",
-            "note": "a U-statistic over PAIRS, which is where the "
-                    "curvature the first-order term misses lives"}
+    return {
+        "value": tot / m,
+        "n_pairs": m,
+        "cost": "O(n^2)",
+        "note": "a U-statistic over PAIRS, which is where the curvature the first-order term misses lives",
+    }
 
 
 def higher_order_estimate(psi_plugin, D1, D2_kernel, O):
@@ -115,17 +114,17 @@ def higher_order_estimate(psi_plugin, D1, D2_kernel, O):
     """
     fo = first_order_expansion(D1, psi_plugin)
     so = second_order_term(D2_kernel, O)
-    return RichResult(payload={
-        "estimate": fo["estimate"] + so["value"],
-        "psi": fo["estimate"] + so["value"],
-        "first_order": fo["estimate"],
-        "second_order_correction": so["value"],
-        "n_pairs": so["n_pairs"],
-        "method": "higher-order targeted loss-based estimation; van "
-                  "der Laan & Rose (2018) Chap. 26",
-        "note": "the remainder that must be o(n^{-1/2}) is now THIRD "
-                "order",
-    })
+    return RichResult(
+        payload={
+            "estimate": fo["estimate"] + so["value"],
+            "psi": fo["estimate"] + so["value"],
+            "first_order": fo["estimate"],
+            "second_order_correction": so["value"],
+            "n_pairs": so["n_pairs"],
+            "method": "higher-order targeted loss-based estimation; van der Laan & Rose (2018) Chap. 26",
+            "note": "the remainder that must be o(n^{-1/2}) is now THIRD order",
+        }
+    )
 
 
 def rate_requirement(order, n=1000):
@@ -140,33 +139,39 @@ def rate_requirement(order, n=1000):
     if o < 1:
         raise ValueError("tlhoest: the order must be at least 1")
     per = 0.5 / (o + 1)
-    return {"order": o, "required_rate_per_nuisance": per,
-            "example_n": int(n),
-            "error_at_that_rate": int(n) ** (-per),
-            "note": "each additional order relaxes the per-nuisance "
-                    "rate requirement"}
+    return {
+        "order": o,
+        "required_rate_per_nuisance": per,
+        "example_n": int(n),
+        "error_at_that_rate": int(n) ** (-per),
+        "note": "each additional order relaxes the per-nuisance rate requirement",
+    }
 
 
 def remainder_order(order):
     r"""Which remainder the argument is relying on."""
     o = int(order)
-    return {"expansion_order": o, "remainder_order": o + 1,
-            "must_be": "o(n^{-1/2})",
-            "note": "naming the order is naming the assumption doing "
-                    "the work"}
+    return {
+        "expansion_order": o,
+        "remainder_order": o + 1,
+        "must_be": "o(n^{-1/2})",
+        "note": "naming the order is naming the assumption doing the work",
+    }
 
 
 def cheatsheet():
-    return ("tlhoest: TMLE's first-order representation works only if "
-            "the SECOND-order remainder is o(n^{-1/2}), which forces "
-            "nuisance rates faster than n^{-1/4} -- unavailable in "
-            "high dimensions or under weak smoothness. Carry the "
-            "expansion further: add a second-order kernel D_2 "
-            "integrated over PAIRS (a U-statistic, O(n^2), diagonal "
-            "excluded), target against both, and now only the THIRD- "
-            "order remainder must vanish. Better finite-sample "
-            "behaviour, efficiency under weaker conditions, at "
-            "quadratic cost and needing a second kernel estimated.")
+    return (
+        "tlhoest: TMLE's first-order representation works only if "
+        "the SECOND-order remainder is o(n^{-1/2}), which forces "
+        "nuisance rates faster than n^{-1/4} -- unavailable in "
+        "high dimensions or under weak smoothness. Carry the "
+        "expansion further: add a second-order kernel D_2 "
+        "integrated over PAIRS (a U-statistic, O(n^2), diagonal "
+        "excluded), target against both, and now only the THIRD- "
+        "order remainder must vanish. Better finite-sample "
+        "behaviour, efficiency under weaker conditions, at "
+        "quadratic cost and needing a second kernel estimated."
+    )
 
 
 # compact alias per ledger/NAMING.md

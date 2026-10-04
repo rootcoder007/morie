@@ -1,7 +1,6 @@
 """Tests for eslkrn.esl_kernel_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslkrn import esl_kernel_density
 
 
@@ -12,6 +11,8 @@ def test_eslkrn_basic():
     result = esl_kernel_density(x, data)
     assert isinstance(result, dict)
     assert "x" in result
+
+
 def test_eslkrn_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

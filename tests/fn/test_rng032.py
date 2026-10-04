@@ -1,8 +1,8 @@
 """Tests for rng032.rangayyan_ch3_causal_convolution."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsasig import rangayyan_ch3_causal_convolution
 
 

@@ -4,22 +4,22 @@ Correctness is established against PUBLISHED Known Answer Tests, not against
 whatever the implementation happens to produce.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._rng import (normal_quantile, philox4x32, random_multivariate_normal,
-                           random_normal, random_uniform)
+from morie.fn import _array_core as np
+from morie.fn._rng import normal_quantile, philox4x32, random_multivariate_normal, random_normal, random_uniform
 
 # Known Answer Tests from the Random123 reference distribution accompanying
 # Salmon, Moraes, Dror & Shaw (2011). The third counter/key pair is the
 # leading hex digits of pi, which is the suite's standard vector.
 PHILOX_KAT = [
-    ((0, 0, 0, 0), (0, 0),
-     (0x6627E8D5, 0xE169C58D, 0xBC57AC4C, 0x9B00DBD8)),
-    ((0xFFFFFFFF,) * 4, (0xFFFFFFFF,) * 2,
-     (0x408F276D, 0x41C83B0E, 0xA20BC7C6, 0x6D5451FD)),
-    ((0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344), (0xA4093822, 0x299F31D0),
-     (0xD16CFE09, 0x94FDCCEB, 0x5001E420, 0x24126EA1)),
+    ((0, 0, 0, 0), (0, 0), (0x6627E8D5, 0xE169C58D, 0xBC57AC4C, 0x9B00DBD8)),
+    ((0xFFFFFFFF,) * 4, (0xFFFFFFFF,) * 2, (0x408F276D, 0x41C83B0E, 0xA20BC7C6, 0x6D5451FD)),
+    (
+        (0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344),
+        (0xA4093822, 0x299F31D0),
+        (0xD16CFE09, 0x94FDCCEB, 0x5001E420, 0x24126EA1),
+    ),
 ]
 
 
@@ -31,9 +31,13 @@ def test_philox_matches_the_published_known_answer_tests(ctr, key, want):
 def test_as241_matches_published_normal_quantiles():
     """Wichura (1988) is accurate to about 1e-16; these are standard table
     values."""
-    cases = {0.975: 1.959963984540054, 0.5: 0.0,
-             0.001: -3.090232306167813, 0.99: 2.3263478740408408,
-             0.025: -1.959963984540054}
+    cases = {
+        0.975: 1.959963984540054,
+        0.5: 0.0,
+        0.001: -3.090232306167813,
+        0.99: 2.3263478740408408,
+        0.025: -1.959963984540054,
+    }
     for p, want in cases.items():
         assert float(normal_quantile(np.array([p]))[0]) == pytest.approx(want, abs=1e-13)
 
@@ -59,10 +63,8 @@ def test_normal_quantile_is_antisymmetric():
 def test_extreme_upper_tail_is_limited_by_representing_one_minus_p():
     """Documented, not hidden: through an exact argument the tail is exact;
     through 1 - p it is not."""
-    assert float(normal_quantile(np.array([1e-8]))[0]) == pytest.approx(
-        -5.61200124417479, abs=1e-13)
-    lost = abs(float(normal_quantile(np.array([1.0 - 1e-8]))[0])
-               + float(normal_quantile(np.array([1e-8]))[0]))
+    assert float(normal_quantile(np.array([1e-8]))[0]) == pytest.approx(-5.61200124417479, abs=1e-13)
+    lost = abs(float(normal_quantile(np.array([1.0 - 1e-8]))[0]) + float(normal_quantile(np.array([1e-8]))[0]))
     assert lost < 1e-8
 
 
@@ -118,8 +120,7 @@ def test_multivariate_normal_reproduces_the_target_covariance():
     one asked for."""
     cov = np.array([[2.0, 0.8, 0.3], [0.8, 1.5, 0.2], [0.3, 0.2, 1.0]])
     mean = np.array([1.0, -2.0, 0.5])
-    draws = np.array([random_multivariate_normal(mean, cov, seed=5, stream=s)
-                      for s in range(4000)])
+    draws = np.array([random_multivariate_normal(mean, cov, seed=5, stream=s) for s in range(4000)])
     assert np.allclose(draws.mean(axis=0), mean, atol=0.1)
     assert np.allclose(np.cov(draws.T), cov, atol=0.12)
 

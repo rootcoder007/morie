@@ -35,15 +35,22 @@ def burkov_ngram_backoff(counts_by_order, alpha=0.4):
         if c > p:
             raise ValueError("count(ngram) cannot exceed count(prefix).")
         if c > 0:
-            return RichResult(payload={
-                "estimate": discount * c / p, "order_used": level,
-                "backed_off": level, "discount": discount, "n": int(p),
-                "method": "N-gram backoff (Burkov Ch 2)"})
+            return RichResult(
+                payload={
+                    "estimate": discount * c / p,
+                    "order_used": level,
+                    "backed_off": level,
+                    "discount": discount,
+                    "n": int(p),
+                    "method": "N-gram backoff (Burkov Ch 2)",
+                }
+            )
         discount *= a
     raise ValueError(
         "every order has count 0, including the lowest; backoff has "
         "nowhere left to go. Supply a unigram floor with a positive "
-        "count.")
+        "count."
+    )
 
 
 def cheatsheet():

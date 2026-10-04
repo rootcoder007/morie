@@ -1,9 +1,9 @@
 """Tests for morie.fn.mcar -- Little's MCAR test."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.mcar import littles_mcar_test
 
 

@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Tests for bidmn.py - Bidomain cardiac model."""
 
 from morie.fn.bidmn import bidmn, bidomain_model_fn

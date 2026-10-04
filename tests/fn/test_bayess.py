@@ -1,7 +1,6 @@
 """Tests for bayess.effective_sample_size_bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bayess import effective_sample_size_bayes
 
 
@@ -11,6 +10,8 @@ def test_bayess_basic():
     result = effective_sample_size_bayes(chain)
     assert isinstance(result, dict)
     assert "ess" in result
+
+
 def test_bayess_edge():
     """Test edge cases."""
     chain = np.random.default_rng(42).normal(0, 1, 100)

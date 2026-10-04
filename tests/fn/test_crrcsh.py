@@ -1,7 +1,6 @@
 """Tests for crrcsh.cause_specific_hazard."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crrcsh import cause_specific_hazard
 
 
@@ -14,6 +13,8 @@ def test_crrcsh_basic():
     result = cause_specific_hazard(time, event_type, X, cause)
     assert isinstance(result, dict)
     assert "beta" in result
+
+
 def test_crrcsh_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

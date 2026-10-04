@@ -72,9 +72,7 @@ def multistate_transition_matrix(time, state_from, state_to, n_states=None, s=0.
     order = np.argsort(time)
     time, sf, st = time[order], sf[order], st[order]
     # occupancy: everyone starts in their first observed origin state
-    at_risk = np.bincount(sf[np.unique(time, return_index=True)[1]], minlength=ns).astype(
-        float
-    )
+    at_risk = np.bincount(sf[np.unique(time, return_index=True)[1]], minlength=ns).astype(float)
     at_risk = np.bincount(sf, minlength=ns).astype(float)
 
     P = np.eye(ns)
@@ -100,9 +98,14 @@ def multistate_transition_matrix(time, state_from, state_to, n_states=None, s=0.
 
     return RichResult(
         payload={
-            "P": P, "event_times": np.array(times), "increments": incs,
-            "at_risk": at_risk, "n_states": ns, "n_transitions": int(k),
-            "s": float(s), "t": t,
+            "P": P,
+            "event_times": np.array(times),
+            "increments": incs,
+            "at_risk": at_risk,
+            "n_states": ns,
+            "n_transitions": int(k),
+            "s": float(s),
+            "t": t,
             "method": "Aalen-Johansen product-integral transition matrix",
         }
     )

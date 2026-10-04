@@ -74,10 +74,17 @@ def neural_prophet(ds, y, ar_layers=0, n_changepoints=3, seasonality=(365.25, 3)
         targ.append(yv[i])
     beta, fitted, resid, _ = C.lstsq(rows, targ)
     rmse = math.sqrt(sum(v * v for v in resid) / len(resid))
-    return RichResult(payload={
-        "estimate": fitted[-1], "coef": beta, "fitted": fitted, "resid": resid,
-        "rmse": rmse, "n": n,
-        "method": "NeuralProphet decomposition with linear AR-Net"})
+    return RichResult(
+        payload={
+            "estimate": fitted[-1],
+            "coef": beta,
+            "fitted": fitted,
+            "resid": resid,
+            "rmse": rmse,
+            "n": n,
+            "method": "NeuralProphet decomposition with linear AR-Net",
+        }
+    )
 
 
 neuralprophet = neural_prophet

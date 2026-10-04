@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -15,8 +14,9 @@ __all__ = ["ghosal_dp_median"]
 
 
 def _beta_pdf_log(u, a, b):
-    return (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
-            + (a - 1.0) * math.log(u) + (b - 1.0) * math.log(1.0 - u))
+    return (
+        math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + (a - 1.0) * math.log(u) + (b - 1.0) * math.log(1.0 - u)
+    )
 
 
 def ghosal_dp_median(G_x, alpha, n_grid=4000):
@@ -36,9 +36,9 @@ def ghosal_dp_median(G_x, alpha, n_grid=4000):
         if u >= 1.0:
             continue
         tot += math.exp(_beta_pdf_log(u, a, b)) * h
-    res = RichResult(payload={"estimate": tot,
-                              "beta_params": [a, b],
-                              "method": "median-Dirichlet CDF (GvdV 2017 Thm 4.25)"})
+    res = RichResult(
+        payload={"estimate": tot, "beta_params": [a, b], "method": "median-Dirichlet CDF (GvdV 2017 Thm 4.25)"}
+    )
     return with_describe_pointer(res, "gh_c4_17")
 
 

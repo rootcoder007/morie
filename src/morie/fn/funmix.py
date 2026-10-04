@@ -70,8 +70,7 @@ def _knots(tmin, tmax, n_basis, degree):
     n_int = n_basis - degree - 1
     if n_int < 0:
         raise ValueError("funmix: n_basis must be at least degree + 1")
-    inner = [tmin + (tmax - tmin) * (i + 1.0) / (n_int + 1.0)
-             for i in range(n_int)]
+    inner = [tmin + (tmax - tmin) * (i + 1.0) / (n_int + 1.0) for i in range(n_int)]
     return [tmin] * (degree + 1) + inner + [tmax] * (degree + 1)
 
 
@@ -82,7 +81,7 @@ def _bspline_row(x, kn, degree, n_basis, tmax):
     for i in range(m):
         if kn[i] <= x < kn[i + 1]:
             N[i] = 1.0
-    if x >= tmax:                       # close the right end
+    if x >= tmax:  # close the right end
         for i in range(m - 1, -1, -1):
             if kn[i] < kn[i + 1]:
                 N[i] = 1.0
@@ -106,8 +105,7 @@ def _first_pc(C, p):
     n = len(C)
     mean = [sum(C[i][a] for i in range(n)) / n for a in range(p)]
     Z = [[C[i][a] - mean[a] for a in range(p)] for i in range(n)]
-    S = [[sum(Z[i][a] * Z[i][b] for i in range(n)) / max(n - 1, 1)
-          for b in range(p)] for a in range(p)]
+    S = [[sum(Z[i][a] * Z[i][b] for i in range(n)) / max(n - 1, 1) for b in range(p)] for a in range(p)]
     v = [1.0 / math.sqrt(p)] * p
     for _ in range(200):
         u = [sum(S[a][b] * v[b] for b in range(p)) for a in range(p)]
@@ -130,8 +128,7 @@ def _first_pc(C, p):
     return [sum(Z[i][a] * v[a] for a in range(p)) for i in range(n)], v
 
 
-def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
-                       tol=1e-10, var_floor=1e-8):
+def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300, tol=1e-10, var_floor=1e-8):
     r"""Model-based clustering of curves through a spline basis.
 
     Parameters
@@ -167,18 +164,17 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
     K = int(K)
     if K < 1:
         raise ValueError("funmix: K must be at least 1")
-    if K > n:
+    if n < K:
         raise ValueError("funmix: %d components for %d curves" % (K, n))
-    tv = ([i / (m - 1.0) for i in range(m)] if t is None
-          else [float(v) for v in k.vec(t)])
+    tv = [i / (m - 1.0) for i in range(m)] if t is None else [float(v) for v in k.vec(t)]
     if len(tv) != m:
-        raise ValueError("funmix: %d grid points but curves of length %d"
-                         % (len(tv), m))
+        raise ValueError("funmix: %d grid points but curves of length %d" % (len(tv), m))
     p = int(n_basis)
     degree = int(degree)
     if p > m:
-        raise ValueError("funmix: %d basis functions for %d time points -- "
-                         "the coefficient fit is not identified" % (p, m))
+        raise ValueError(
+            "funmix: %d basis functions for %d time points -- the coefficient fit is not identified" % (p, m)
+        )
 
     tmin, tmax = min(tv), max(tv)
     if tmax - tmin <= _EPS:
@@ -189,8 +185,7 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
     # coefficients per curve: ridge-stabilised least squares on the basis.
     # The ridge is scaled to the matrix -- a fixed 1e-10 does nothing when
     # the entries are themselves small.
-    BtB = [[sum(B[i][a] * B[i][b] for i in range(m)) for b in range(p)]
-           for a in range(p)]
+    BtB = [[sum(B[i][a] * B[i][b] for i in range(m)) for b in range(p)] for a in range(p)]
     scale = sum(BtB[a][a] for a in range(p)) / p
     for a in range(p):
         BtB[a][a] += 1e-8 * scale
@@ -208,8 +203,7 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
         lab0[i] = min(rank * K // n, K - 1)
 
     grand = [sum(C[i][a] for i in range(n)) / n for a in range(p)]
-    total_var = sum(sum((C[i][a] - grand[a]) ** 2 for i in range(n)) / n
-                    for a in range(p)) / p
+    total_var = sum(sum((C[i][a] - grand[a]) ** 2 for i in range(n)) / n for a in range(p)) / p
     floor = max(var_floor * max(total_var, _EPS), 1e-300)
 
     pi = [0.0] * K
@@ -228,8 +222,7 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
     def logdens(i, j):
         s = 0.0
         for a in range(p):
-            s += (-0.5 * math.log(2.0 * math.pi * sg[j][a])
-                  - 0.5 * (C[i][a] - mu[j][a]) ** 2 / sg[j][a])
+            s += -0.5 * math.log(2.0 * math.pi * sg[j][a]) - 0.5 * (C[i][a] - mu[j][a]) ** 2 / sg[j][a]
         return s
 
     path = []
@@ -240,8 +233,7 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
     for it in range(1, max_iter + 1):
         ll_new = 0.0
         for i in range(n):
-            lp = [math.log(max(pi[j], 1e-300)) + logdens(i, j)
-                  for j in range(K)]
+            lp = [math.log(max(pi[j], 1e-300)) + logdens(i, j) for j in range(K)]
             mx = max(lp)
             ssum = sum(math.exp(v - mx) for v in lp)
             ll_new += mx + math.log(ssum)
@@ -259,18 +251,15 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
             nk = max(nk, 1e-300)
             for a in range(p):
                 mu[j][a] = sum(post[i][j] * C[i][a] for i in range(n)) / nk
-                v = sum(post[i][j] * (C[i][a] - mu[j][a]) ** 2
-                        for i in range(n)) / nk
+                v = sum(post[i][j] * (C[i][a] - mu[j][a]) ** 2 for i in range(n)) / nk
                 sg[j][a] = max(v, floor)
 
-    mean_curves = [[sum(B[u][a] * mu[j][a] for a in range(p))
-                    for u in range(m)] for j in range(K)]
+    mean_curves = [[sum(B[u][a] * mu[j][a] for a in range(p)) for u in range(m)] for j in range(K)]
 
     # canonical component order: a mixture is identified only up to
     # relabelling, so sort by the integral of the mean curve (trapezoid).
     def integral(cv):
-        return sum(0.5 * (cv[u] + cv[u + 1]) * (tv[u + 1] - tv[u])
-                   for u in range(m - 1))
+        return sum(0.5 * (cv[u] + cv[u + 1]) * (tv[u + 1] - tv[u]) for u in range(m - 1))
 
     ordk = sorted(range(K), key=lambda j: (integral(mean_curves[j]), j))
     pi = [pi[j] for j in ordk]
@@ -285,29 +274,47 @@ def functional_mixture(Y, K, t=None, n_basis=5, degree=3, max_iter=300,
     aic = -2.0 * ll + 2.0 * nfree
     # entropy of the classification: 0 means every curve is assigned with
     # certainty, and a large value means K is doing no work
-    ent = -sum(post[i][j] * math.log(max(post[i][j], 1e-300))
-               for i in range(n) for j in range(K))
+    ent = -sum(post[i][j] * math.log(max(post[i][j], 1e-300)) for i in range(n) for j in range(K))
 
-    return RichResult(payload={
-        "estimate": labels, "labels": labels, "posterior": post,
-        "proportions": pi, "coefficients": mu, "variances": sg,
-        "mean_curves": mean_curves, "basis": B, "knots": kn,
-        "curve_coefficients": C, "grid": tv,
-        "loglik": ll, "loglik_path": path, "bic": bic, "aic": aic,
-        "entropy": ent, "n_parameters": nfree,
-        "iterations": it, "converged": converged,
-        "K": K, "n": n, "n_basis": p, "degree": degree,
-        "method": "functional clustering: a K-component Gaussian mixture on "
-                  "B-spline coefficients fitted by EM, deterministic "
-                  "principal-score initialisation (James & Sugar 2003)",
-        "note": "components are returned sorted by the integral of their "
-                "mean curve -- a mixture is identified only up to "
-                "relabelling, and a canonical order is what makes two "
-                "correct fits comparable",
-    })
+    return RichResult(
+        payload={
+            "estimate": labels,
+            "labels": labels,
+            "posterior": post,
+            "proportions": pi,
+            "coefficients": mu,
+            "variances": sg,
+            "mean_curves": mean_curves,
+            "basis": B,
+            "knots": kn,
+            "curve_coefficients": C,
+            "grid": tv,
+            "loglik": ll,
+            "loglik_path": path,
+            "bic": bic,
+            "aic": aic,
+            "entropy": ent,
+            "n_parameters": nfree,
+            "iterations": it,
+            "converged": converged,
+            "K": K,
+            "n": n,
+            "n_basis": p,
+            "degree": degree,
+            "method": "functional clustering: a K-component Gaussian mixture on "
+            "B-spline coefficients fitted by EM, deterministic "
+            "principal-score initialisation (James & Sugar 2003)",
+            "note": "components are returned sorted by the integral of their "
+            "mean curve -- a mixture is identified only up to "
+            "relabelling, and a canonical order is what makes two "
+            "correct fits comparable",
+        }
+    )
 
 
 def cheatsheet():
-    return ("funmix: functional_mixture(Y, K) -> EM clustering of curves "
-            "through a spline basis, canonically ordered components "
-            "(James & Sugar 2003, JASA 98:397-408)")
+    return (
+        "funmix: functional_mixture(Y, K) -> EM clustering of curves "
+        "through a spline basis, canonically ordered components "
+        "(James & Sugar 2003, JASA 98:397-408)"
+    )

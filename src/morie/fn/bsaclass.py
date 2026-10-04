@@ -7,146 +7,146 @@ symbols are unchanged.
 """
 
 from fractions import Fraction
-from math import cos, erf, exp, fsum, isfinite, log, pi, sin, sqrt, tanh
+from math import cos, exp, fsum, isfinite, log, pi, sin, sqrt, tanh
 from math import lgamma as _lgamma
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._rgcore import aslist
 from ._richresult import RichResult
 
 __all__ = [
-    'accuracy',
-    'rangayyan_accuracy',
-    'mlpbp',
-    'rangayyan_ann_mlp',
-    'bayescls',
-    'rangayyan_bayes_classifier',
-    'bayesnorm',
-    'rangayyan_bayes_gaussian',
-    'bbb',
-    'rangayyan_bundle_branch_block',
-    'pvcbayes',
-    'rangayyan_ecg_bbb_normal',
-    'bcichsel',
-    'rangayyan_bci_nmf',
-    'normdist',
-    'divergence',
-    'divav',
-    'kld',
-    'pdfoverlap',
-    'chernoff',
-    'hellinger',
-    'gaussoverlap',
-    'rangayyan_bhattacharyya',
-    'bpursuit',
-    'rangayyan_basis_pursuit',
-    'cadpipe',
-    'rangayyan_cad_pipeline',
-    'cnnsig',
-    'rangayyan_cnn_signal',
-    'fecgnmf',
-    'rangayyan_fetal_ecg_single',
-    'pvclindf',
-    'rangayyan_ecg_normal_ectopic',
-    'eegbands',
-    'rangayyan_eeg_rhythms',
-    'elbow',
-    'rangayyan_kmeans_elbow',
-    'seizdict',
-    'rangayyan_epilepsy_ksvd',
-    'errbound',
-    'rangayyan_bayes_error_bound',
-    'fishcrit',
-    'rangayyan_fisher_criterion',
-    'fishlda',
-    'rangayyan_fisher_lda',
-    'hclust',
-    'rangayyan_hierarchical_clust',
-    'icafix',
-    'rangayyan_fastica',
-    'icaclean',
-    'rangayyan_ica_artifact',
-    'infomax',
-    'rangayyan_infomax_ica',
-    'kfoldcv',
-    'rangayyan_kfold_cv',
-    'kmeans',
-    'rangayyan_kmeans',
-    'vagclass',
-    'rangayyan_knee_classify',
-    'knn',
-    'rangayyan_knn_classifier',
-    'ksvdfit',
-    'rangayyan_ksvd',
-    'dictcode',
-    'rangayyan_dictionary_sparse',
-    'lindisc',
-    'rangayyan_linear_discrim',
-    'lindsep',
-    'rangayyan_lin_discr_sep',
-    'loocv',
-    'rangayyan_loo_cv',
-    'logreg',
-    'rangayyan_logistic_regression',
-    'lstm',
-    'rangayyan_lstm_signal',
-    'mahal',
-    'rangayyan_mahalanobis',
-    'mcnemar',
-    'rangayyan_mcnemar_test',
-    'mpursuit',
-    'rangayyan_matching_pursuit',
-    'bmidec',
-    'rangayyan_neural_decode',
-    'nmfmu',
-    'rangayyan_nmf',
-    'nmfchsel',
-    'rangayyan_nmf_channel_sel',
-    'ompfit',
-    'rangayyan_omp',
-    'pcasig',
-    'rangayyan_pca_signals',
-    'mixcmp',
-    'rangayyan_pca_vs_ica',
-    'ppv',
-    'rangayyan_ppv',
-    'qda',
-    'rangayyan_qda',
-    'rbfn',
-    'rangayyan_rbf_network',
-    'roc',
-    'rangayyan_roc_curve',
-    'ahi',
-    'rangayyan_sleep_apnea_nmf',
-    'sens',
-    'rangayyan_sensitivity',
-    'sepindex',
-    'rangayyan_separability_index',
-    'spec',
-    'rangayyan_specificity',
-    'sparsecode',
-    'rangayyan_sparse_rep',
-    'svm',
-    'rangayyan_svm',
-    'svmkern',
-    'rangayyan_svm_kernel',
-    'vagtfd',
-    'rangayyan_vag_adaptive_tfd',
-    'rangayyan_ch4_pan_tompkins_peak_classification',
-    'rangayyanksvd',
-    'rangayyanloocv',
-    'rangayyannmf',
-    'rangayyanomp',
-    'rangayyanppv',
-    'rangayyanqda',
-    'rangayyansvm',
+    "accuracy",
+    "rangayyan_accuracy",
+    "mlpbp",
+    "rangayyan_ann_mlp",
+    "bayescls",
+    "rangayyan_bayes_classifier",
+    "bayesnorm",
+    "rangayyan_bayes_gaussian",
+    "bbb",
+    "rangayyan_bundle_branch_block",
+    "pvcbayes",
+    "rangayyan_ecg_bbb_normal",
+    "bcichsel",
+    "rangayyan_bci_nmf",
+    "normdist",
+    "divergence",
+    "divav",
+    "kld",
+    "pdfoverlap",
+    "chernoff",
+    "hellinger",
+    "gaussoverlap",
+    "rangayyan_bhattacharyya",
+    "bpursuit",
+    "rangayyan_basis_pursuit",
+    "cadpipe",
+    "rangayyan_cad_pipeline",
+    "cnnsig",
+    "rangayyan_cnn_signal",
+    "fecgnmf",
+    "rangayyan_fetal_ecg_single",
+    "pvclindf",
+    "rangayyan_ecg_normal_ectopic",
+    "eegbands",
+    "rangayyan_eeg_rhythms",
+    "elbow",
+    "rangayyan_kmeans_elbow",
+    "seizdict",
+    "rangayyan_epilepsy_ksvd",
+    "errbound",
+    "rangayyan_bayes_error_bound",
+    "fishcrit",
+    "rangayyan_fisher_criterion",
+    "fishlda",
+    "rangayyan_fisher_lda",
+    "hclust",
+    "rangayyan_hierarchical_clust",
+    "icafix",
+    "rangayyan_fastica",
+    "icaclean",
+    "rangayyan_ica_artifact",
+    "infomax",
+    "rangayyan_infomax_ica",
+    "kfoldcv",
+    "rangayyan_kfold_cv",
+    "kmeans",
+    "rangayyan_kmeans",
+    "vagclass",
+    "rangayyan_knee_classify",
+    "knn",
+    "rangayyan_knn_classifier",
+    "ksvdfit",
+    "rangayyan_ksvd",
+    "dictcode",
+    "rangayyan_dictionary_sparse",
+    "lindisc",
+    "rangayyan_linear_discrim",
+    "lindsep",
+    "rangayyan_lin_discr_sep",
+    "loocv",
+    "rangayyan_loo_cv",
+    "logreg",
+    "rangayyan_logistic_regression",
+    "lstm",
+    "rangayyan_lstm_signal",
+    "mahal",
+    "rangayyan_mahalanobis",
+    "mcnemar",
+    "rangayyan_mcnemar_test",
+    "mpursuit",
+    "rangayyan_matching_pursuit",
+    "bmidec",
+    "rangayyan_neural_decode",
+    "nmfmu",
+    "rangayyan_nmf",
+    "nmfchsel",
+    "rangayyan_nmf_channel_sel",
+    "ompfit",
+    "rangayyan_omp",
+    "pcasig",
+    "rangayyan_pca_signals",
+    "mixcmp",
+    "rangayyan_pca_vs_ica",
+    "ppv",
+    "rangayyan_ppv",
+    "qda",
+    "rangayyan_qda",
+    "rbfn",
+    "rangayyan_rbf_network",
+    "roc",
+    "rangayyan_roc_curve",
+    "ahi",
+    "rangayyan_sleep_apnea_nmf",
+    "sens",
+    "rangayyan_sensitivity",
+    "sepindex",
+    "rangayyan_separability_index",
+    "spec",
+    "rangayyan_specificity",
+    "sparsecode",
+    "rangayyan_sparse_rep",
+    "svm",
+    "rangayyan_svm",
+    "svmkern",
+    "rangayyan_svm_kernel",
+    "vagtfd",
+    "rangayyan_vag_adaptive_tfd",
+    "rangayyan_ch4_pan_tompkins_peak_classification",
+    "rangayyanksvd",
+    "rangayyanloocv",
+    "rangayyannmf",
+    "rangayyanomp",
+    "rangayyanppv",
+    "rangayyanqda",
+    "rangayyansvm",
 ]
 
 # ---------------------------------------------------------------- shared arithmetic
 # Small dense-linear-algebra and spectral helpers used by the adaptive-decomposition
 # and classifier blocks below.  Pure standard library on purpose: morie.fn carries no
 # external numeric dependency.
+
 
 def _bxvec(v, name="x"):
     """Coerce to a non-empty list of finite floats."""
@@ -452,7 +452,7 @@ def _bxgabor(n, natoms, seed=1):
     if n < 4 or natoms < 1:
         raise ValueError("need n >= 4 samples and at least one atom")
     atoms, params = [], []
-    scales = [n / (2.0 ** j) for j in range(1, 6)]
+    scales = [n / (2.0**j) for j in range(1, 6)]
     j = 0
     while len(atoms) < natoms:
         s = scales[j % len(scales)]
@@ -465,8 +465,7 @@ def _bxgabor(n, natoms, seed=1):
                     if abs(z) > 6.0:
                         a.append(0.0)
                     else:
-                        a.append(2.0 ** 0.25 / sqrt(s) * exp(-pi * z * z)
-                                 * cos(2.0 * pi * f * t))
+                        a.append(2.0**0.25 / sqrt(s) * exp(-pi * z * z) * cos(2.0 * pi * f * t))
                 nr = _bxnrm(a)
                 if nr <= 1e-12:
                     continue
@@ -564,6 +563,7 @@ def _bxscores(tp, tn, fp, fn):
     acc = (tp + tn) / tot if tot else float("nan")
     return sen, spe, acc
 
+
 def _solve_lin(A, b):
     """Solve A x = b by Gauss-Jordan with partial pivoting."""
     n = len(b)
@@ -593,6 +593,7 @@ def _tanh(v):
     e = exp(2.0 * v)
     return (e - 1.0) / (e + 1.0)
 
+
 def _mat(m):
     """Accept a matrix as a list of rows and return a list of lists."""
     return [aslist(r) for r in m]
@@ -620,14 +621,13 @@ def _scatter(X, mu):
 def _inv(M):
     """Gauss-Jordan inverse, raising rather than returning garbage."""
     n = len(M)
-    A = [list(M[i]) + [1.0 if i == j else 0.0 for j in range(n)]
-         for i in range(n)]
+    A = [list(M[i]) + [1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     for c in range(n):
         p = max(range(c, n), key=lambda r: abs(A[r][c]))
         if abs(A[p][c]) < 1e-300:
-            raise ValueError("the matrix is singular and cannot be "
-                             "inverted; a class may have fewer samples "
-                             "than features")
+            raise ValueError(
+                "the matrix is singular and cannot be inverted; a class may have fewer samples than features"
+            )
         A[c], A[p] = A[p], A[c]
         piv = A[c][c]
         A[c] = [v / piv for v in A[c]]
@@ -663,8 +663,7 @@ def _trace(M):
 
 
 def _matmul(A, B):
-    return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
-             for j in range(len(B[0]))] for i in range(len(A))]
+    return [[fsum(A[i][t] * B[t][j] for t in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
 
 def _lower_gamma(s, x):
@@ -727,8 +726,7 @@ def _groups(X, y):
 
 
 # -- rgacc: Classification accuracy.
-def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
-             prevalence=None, kind=None, exact=False):
+def accuracy(table=None, tp=None, tn=None, fp=None, fn=None, prevalence=None, kind=None, exact=False):
     """Classification accuracy -- every definition, not just one.
 
     The book gives two.  Eq. (10.102), stated first, is prevalence
@@ -762,13 +760,11 @@ def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
     if table is not None:
         t = [aslist(r) for r in table]
         if len(t) != 2 or any(len(r) != 2 for r in t):
-            raise ValueError("the table must be 2x2, "
-                             "[[TP, FN], [FP, TN]]")
+            raise ValueError("the table must be 2x2, [[TP, FN], [FP, TN]]")
         TP, FN, FP, TN = t[0][0], t[0][1], t[1][0], t[1][1]
     else:
         if None in (tp, tn, fp, fn):
-            raise ValueError("give a 2x2 table or all four of tp, tn, "
-                             "fp, fn")
+            raise ValueError("give a 2x2 table or all four of tp, tn, fp, fn")
         TP, TN, FP, FN = tp, tn, fp, fn
     counts = [TP, TN, FP, FN]
     if any(float(v) < 0 for v in counts):
@@ -780,12 +776,10 @@ def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
     if total <= 0:
         raise ValueError("the table is empty")
     if TP + FN <= 0 or TN + FP <= 0:
-        raise ValueError("a class is empty; the sensitivity or "
-                         "specificity is undefined")
+        raise ValueError("a class is empty; the sensitivity or specificity is undefined")
     kinds = ("raw", "weighted", "balanced")
     if kind is not None and kind not in kinds:
-        raise ValueError("kind must be one of %s, got %r"
-                         % (", ".join(kinds), kind))
+        raise ValueError("kind must be one of %s, got %r" % (", ".join(kinds), kind))
 
     num = Fraction if exact else (lambda a, b=1: float(a) / float(b))
     se = Fraction(TP, TP + FN) if exact else TP / (TP + FN)
@@ -807,25 +801,31 @@ def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
     if chosen is None:
         chosen = "weighted" if prevalence is not None else "raw"
     if chosen == "weighted" and weighted is None:
-        raise ValueError("kind='weighted' needs a prevalence; without "
-                         "the priors the book falls back on "
-                         "eq. (10.103), kind='raw'")
-    headline = {"raw": raw, "weighted": weighted,
-                "balanced": balanced}[chosen]
+        raise ValueError(
+            "kind='weighted' needs a prevalence; without the priors the book falls back on eq. (10.103), kind='raw'"
+        )
+    headline = {"raw": raw, "weighted": weighted, "balanced": balanced}[chosen]
 
-    return RichResult(payload={
-        "accuracy": headline, "kind": chosen,
-        "raw_accuracy": raw, "weighted_accuracy": weighted,
-        "balanced_accuracy": balanced,
-        "sensitivity": se, "specificity": sp,
-        "prevalence": prev, "test_set_prevalence": test_prev,
-        "counts": {"tp": TP, "tn": TN, "fp": FP, "fn": FN},
-        "n": total, "exact": bool(exact),
-        "prior_weighted": chosen == "weighted",
-        "balanced_is_eq_10_102_at_one_half": True,
-        "eq_10_103_is_eq_10_102_at_the_test_set_prevalence": True,
-        "method": "Rangayyan (2024) eqs. (10.102)-(10.103), with the "
-                  "balanced form at P(A) = 1/2"})
+    return RichResult(
+        payload={
+            "accuracy": headline,
+            "kind": chosen,
+            "raw_accuracy": raw,
+            "weighted_accuracy": weighted,
+            "balanced_accuracy": balanced,
+            "sensitivity": se,
+            "specificity": sp,
+            "prevalence": prev,
+            "test_set_prevalence": test_prev,
+            "counts": {"tp": TP, "tn": TN, "fp": FP, "fn": FN},
+            "n": total,
+            "exact": bool(exact),
+            "prior_weighted": chosen == "weighted",
+            "balanced_is_eq_10_102_at_one_half": True,
+            "eq_10_103_is_eq_10_102_at_the_test_set_prevalence": True,
+            "method": "Rangayyan (2024) eqs. (10.102)-(10.103), with the balanced form at P(A) = 1/2",
+        }
+    )
 
 
 rangayyan_accuracy = accuracy  # pre-policy spelling
@@ -922,10 +922,8 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
         tot = 0.0
         for s in range(n):
             xs = X[s]
-            xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j])
-                  for j in range(hidden)]
-            yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k])
-                  for k in range(K)]
+            xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j]) for j in range(hidden)]
+            yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k]) for k in range(K)]
             dk = [yo[k] * (1.0 - yo[k]) * (D[s][k] - yo[k]) for k in range(K)]
             tot += fsum((D[s][k] - yo[k]) ** 2 for k in range(K))
             for j in range(hidden):
@@ -937,8 +935,7 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
                 step = -eta * dk[k] + alpha * dT2[k]
                 T2[k] += step
                 dT2[k] = step
-            bp = [xh[j] * (1.0 - xh[j]) * fsum(dk[k] * W2[j][k] for k in range(K))
-                  for j in range(hidden)]
+            bp = [xh[j] * (1.0 - xh[j]) * fsum(dk[k] * W2[j][k] for k in range(K)) for j in range(hidden)]
             for i in range(I):
                 for j in range(hidden):
                     step = eta * bp[j] * xs[i] + alpha * dW1[i][j]
@@ -955,29 +952,29 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
     pred, raw = [], []
     for s in range(n):
         xs = X[s]
-        xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j])
-              for j in range(hidden)]
-        yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k])
-              for k in range(K)]
+        xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j]) for j in range(hidden)]
+        yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k]) for k in range(K)]
         raw.append(yo)
         if K == 1:
             pred.append(labels[1] if yo[0] >= 0.5 else labels[0])
         else:
             pred.append(labels[max(range(K), key=lambda k: yo[k])])
     acc = fsum(1.0 for a, b in zip(y, pred) if int(a) == b) / n
-    return RichResult(payload={
-        "weights": {"input_hidden": W1, "hidden_output": W2},
-        "offsets": {"hidden": T1, "output": T2},
-        "predictions": pred,
-        "outputs": raw,
-        "classes": labels,
-        "accuracy": acc,
-        "mse": mse,
-        "iterations": it,
-        "method": "two-layer perceptron trained by back-propagation, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.8, "
-                  "eqs. (10.79)-(10.85)",
-    })
+    return RichResult(
+        payload={
+            "weights": {"input_hidden": W1, "hidden_output": W2},
+            "offsets": {"hidden": T1, "output": T2},
+            "predictions": pred,
+            "outputs": raw,
+            "classes": labels,
+            "accuracy": acc,
+            "mse": mse,
+            "iterations": it,
+            "method": "two-layer perceptron trained by back-propagation, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.8, "
+            "eqs. (10.79)-(10.85)",
+        }
+    )
 
 
 rangayyan_ann_mlp = mlpbp  # pre-policy spelling
@@ -1020,12 +1017,18 @@ def bayescls(likelihoods, priors=None):
     post = [v / tot for v in d] if tot > 0 else [0.0] * m
     mapc = max(range(m), key=lambda i: d[i])
     mlc = max(range(m), key=lambda i: lk[i])
-    return RichResult(payload={
-        "d": d, "posterior": post, "assigned": mapc,
-        "maximum_likelihood_choice": mlc,
-        "prior_changed_the_decision": mapc != mlc,
-        "priors": pr, "uniform_priors": priors is None,
-        "method": "Rangayyan (2024) eq. (10.70)"})
+    return RichResult(
+        payload={
+            "d": d,
+            "posterior": post,
+            "assigned": mapc,
+            "maximum_likelihood_choice": mlc,
+            "prior_changed_the_decision": mapc != mlc,
+            "priors": pr,
+            "uniform_priors": priors is None,
+            "method": "Rangayyan (2024) eq. (10.70)",
+        }
+    )
 
 
 rangayyan_bayes_classifier = bayescls  # pre-policy spelling
@@ -1083,24 +1086,27 @@ def bayesnorm(x, means, covs, priors=None, full=False):
             raise ValueError("covariance %d is not positive definite" % i)
         Ci = _inv(cs[i])
         d = [xs[j] - ms[i][j] for j in range(n)]
-        quad = fsum(d[a] * fsum(Ci[a][b] * d[b] for b in range(n))
-                    for a in range(n))
+        quad = fsum(d[a] * fsum(Ci[a][b] * d[b] for b in range(n)) for a in range(n))
         short = log(pr[i]) - 0.5 * log(det) - 0.5 * quad
         dshort.append(short)
         dfull.append(short - const)
     use = dfull if full else dshort
     best = max(range(m), key=lambda i: use[i])
-    equal = all(all(abs(cs[0][a][b] - cs[i][a][b]) < 1e-12
-                    for a in range(n) for b in range(n))
-                for i in range(m))
-    return RichResult(payload={
-        "d": use, "d_full": dfull, "d_dropped_constant": dshort,
-        "assigned": best, "priors": pr,
-        "constant_term": const,
-        "surfaces_are_hyperquadrics": True,
-        "linear_when_covariances_are_equal": equal,
-        "log_form_avoids_underflow": True,
-        "method": "Rangayyan (2024) eqs. (10.71)-(10.73)"})
+    equal = all(all(abs(cs[0][a][b] - cs[i][a][b]) < 1e-12 for a in range(n) for b in range(n)) for i in range(m))
+    return RichResult(
+        payload={
+            "d": use,
+            "d_full": dfull,
+            "d_dropped_constant": dshort,
+            "assigned": best,
+            "priors": pr,
+            "constant_term": const,
+            "surfaces_are_hyperquadrics": True,
+            "linear_when_covariances_are_equal": equal,
+            "log_form_avoids_underflow": True,
+            "method": "Rangayyan (2024) eqs. (10.71)-(10.73)",
+        }
+    )
 
 
 rangayyan_bayes_gaussian = bayesnorm  # pre-policy spelling
@@ -1167,8 +1173,7 @@ def bbb(qrsdur, criteria=None):
     }
     right_parts = {
         "qrs_91_to_120_ms": 91.0 <= qrsdur <= 120.0,
-        "s_at_least_40_ms_in_two_of_i_avl_v4_v5_v6":
-            g("sdur40_two_of_i_avl_v4_v5_v6"),
+        "s_at_least_40_ms_in_two_of_i_avl_v4_v5_v6": g("sdur40_two_of_i_avl_v4_v5_v6"),
         "r_or_rprime_pattern_in_v1_or_v2": g("r_v1v2") or g("rprime_v1v2"),
     }
     left = all(left_parts.values())
@@ -1188,16 +1193,18 @@ def bbb(qrsdur, criteria=None):
     else:
         block = "no bundle-branch block by these criteria"
 
-    return RichResult(payload={
-        "blocktype": block,
-        "qrsdur": qrsdur,
-        "wide": wide,
-        "left": left,
-        "right": right,
-        "satisfied": {"left": left_parts, "right": right_parts},
-        "method": "incomplete bundle-branch block decision rules, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.2.1",
-    })
+    return RichResult(
+        payload={
+            "blocktype": block,
+            "qrsdur": qrsdur,
+            "wide": wide,
+            "left": left,
+            "right": right,
+            "satisfied": {"left": left_parts, "right": right_parts},
+            "method": "incomplete bundle-branch block decision rules, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.2.1",
+        }
+    )
 
 
 rangayyan_bundle_branch_block = bbb  # pre-policy spelling
@@ -1266,8 +1273,7 @@ def pvcbayes(features, labels, priors=None, query=None):
     for c in classes:
         rows = [Z[i] for i in range(len(Z)) if y[i] == c]
         if len(rows) < p + 1:
-            raise ValueError("each class needs more rows than features "
-                             "to estimate a covariance matrix")
+            raise ValueError("each class needs more rows than features to estimate a covariance matrix")
         mu, C = _bxcov(rows)
         for i in range(p):
             C[i][i] += 1e-9
@@ -1277,8 +1283,7 @@ def pvcbayes(features, labels, priors=None, query=None):
         det = 1.0
         for t in vals:
             det *= t
-        inv = [[fsum(vecs[i][k] * vecs[j][k] / vals[k] for k in range(p))
-                for j in range(p)] for i in range(p)]
+        inv = [[fsum(vecs[i][k] * vecs[j][k] / vals[k] for k in range(p)) for j in range(p)] for i in range(p)]
         means.append(mu)
         covs.append(C)
         invs.append(inv)
@@ -1297,8 +1302,7 @@ def pvcbayes(features, labels, priors=None, query=None):
 
     P = [post(z) for z in Z]
     pred = [classes[0] if t[0] >= t[1] else classes[1] for t in P]
-    tp, tn, fp, fn = _bxconfusion([1 if t == classes[1] else 0 for t in y],
-                                  [1 if t == classes[1] else 0 for t in pred])
+    tp, tn, fp, fn = _bxconfusion([1 if t == classes[1] else 0 for t in y], [1 if t == classes[1] else 0 for t in pred])
     sen, spe, acc = _bxscores(tp, tn, fp, fn)
 
     qcls = None
@@ -1312,23 +1316,25 @@ def pvcbayes(features, labels, priors=None, query=None):
             t = post(z)
             qcls.append(classes[0] if t[0] >= t[1] else classes[1])
 
-    return RichResult(payload={
-        "predictions": pred,
-        "queryclass": qcls,
-        "posterior": P,
-        "means": means,
-        "covariances": covs,
-        "scale": scale,
-        "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
-        "accuracy": acc,
-        "sensitivity": sen,
-        "specificity": spe,
-        "priors": pri,
-        "classes": classes,
-        "method": "Gaussian Bayes classifier on [QRSTA, FF] beat features, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.11.2 "
-                  "with the normal-pattern classifier of Section 10.6.2",
-    })
+    return RichResult(
+        payload={
+            "predictions": pred,
+            "queryclass": qcls,
+            "posterior": P,
+            "means": means,
+            "covariances": covs,
+            "scale": scale,
+            "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
+            "accuracy": acc,
+            "sensitivity": sen,
+            "specificity": spe,
+            "priors": pri,
+            "classes": classes,
+            "method": "Gaussian Bayes classifier on [QRSTA, FF] beat features, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.11.2 "
+            "with the normal-pattern classifier of Section 10.6.2",
+        }
+    )
 
 
 rangayyan_ecg_bbb_normal = pvcbayes  # pre-policy spelling
@@ -1380,10 +1386,12 @@ def bcichsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
         raise ValueError("nselect must satisfy 1 <= nselect <= number of channels")
     rank = int(rank)
     if rank < 3:
-        raise ValueError("rank must be at least 3: with r = 2 the min-max "
-                         "normalisation of eq. (9.95) maps every basis row to "
-                         "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
-                         "0.5 for every channel and ranks nothing")
+        raise ValueError(
+            "rank must be at least 3: with r = 2 the min-max "
+            "normalisation of eq. (9.95) maps every basis row to "
+            "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
+            "0.5 for every channel and ranks nothing"
+        )
 
     mu, C = _bxcov(_bxtr(X))
     shift = min(min(r) for r in C)
@@ -1402,20 +1410,22 @@ def bcichsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
     sel = sorted(order[:nselect])
     weighted = [[rmsd[i] * t for t in X[i]] for i in sel]
 
-    return RichResult(payload={
-        "selected": sel,
-        "weights": [rmsd[i] for i in sel],
-        "rmsd": rmsd,
-        "normalized": Wn,
-        "weighted": weighted,
-        "W": W,
-        "H": H,
-        "covariance": C,
-        "error": err,
-        "method": "NMF-based EEG channel selection and weighting for BCI, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.12.1, "
-                  "eqs. (9.94)-(9.96)",
-    })
+    return RichResult(
+        payload={
+            "selected": sel,
+            "weights": [rmsd[i] for i in sel],
+            "rmsd": rmsd,
+            "normalized": Wn,
+            "weighted": weighted,
+            "W": W,
+            "H": H,
+            "covariance": C,
+            "error": err,
+            "method": "NMF-based EEG channel selection and weighting for BCI, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.12.1, "
+            "eqs. (9.94)-(9.96)",
+        }
+    )
 
 
 rangayyan_bci_nmf = bcichsel  # pre-policy spelling
@@ -1440,14 +1450,17 @@ def normdist(m1, m2, s1, s2):
         raise ValueError("a standard deviation cannot be negative")
     den = p + q
     if den <= 0:
-        raise ValueError("both standard deviations are zero; the "
-                         "normalized distance is undefined")
-    return RichResult(payload={
-        "dn": abs(a - b) / den, "mean_difference": abs(a - b),
-        "sd_sum": den,
-        "blind_to_variance_when_means_match": abs(a - b) < 1e-300,
-        "denominator_is_the_sum_not_the_quadrature_sum": True,
-        "method": "Rangayyan (2024) eq. (10.112)"})
+        raise ValueError("both standard deviations are zero; the normalized distance is undefined")
+    return RichResult(
+        payload={
+            "dn": abs(a - b) / den,
+            "mean_difference": abs(a - b),
+            "sd_sum": den,
+            "blind_to_variance_when_means_match": abs(a - b) < 1e-300,
+            "denominator_is_the_sum_not_the_quadrature_sum": True,
+            "method": "Rangayyan (2024) eq. (10.112)",
+        }
+    )
 
 
 def divergence(m1, m2, C1, C2):
@@ -1484,13 +1497,19 @@ def divergence(m1, m2, C1, C2):
     summ = [[Ai[i][j] + Bi[i][j] for j in range(p)] for i in range(p)]
     term2 = 0.5 * _trace(_matmul(summ, outer))
     D = term1 + term2
-    return RichResult(payload={
-        "divergence": D, "covariance_term": term1, "mean_term": term2,
-        "nonnegative": D >= -1e-9,
-        "symmetric": True, "zero_for_identical_pdfs": abs(D) < 1e-9,
-        "separates_equal_means_via_the_covariance_term": abs(term1) > 1e-12,
-        "additive_over_independent_features": True,
-        "method": "Rangayyan (2024) eqs. (10.115)-(10.117)"})
+    return RichResult(
+        payload={
+            "divergence": D,
+            "covariance_term": term1,
+            "mean_term": term2,
+            "nonnegative": D >= -1e-9,
+            "symmetric": True,
+            "zero_for_identical_pdfs": abs(D) < 1e-9,
+            "separates_equal_means_via_the_covariance_term": abs(term1) > 1e-12,
+            "additive_over_independent_features": True,
+            "method": "Rangayyan (2024) eqs. (10.115)-(10.117)",
+        }
+    )
 
 
 def divav(means, covs):
@@ -1515,12 +1534,18 @@ def divav(means, covs):
             vals.append(d)
             pairs.append((i, j, d))
     worst = min(pairs, key=lambda t: t[2])
-    return RichResult(payload={
-        "average": fsum(vals) / len(vals), "pairwise": pairs,
-        "minimum": worst[2], "worst_pair": (worst[0], worst[1]),
-        "n_classes": m, "n_pairs": len(vals),
-        "average_hides_the_worst_pair": True,
-        "method": "Rangayyan (2024) Section 10.10.1 (average divergence)"})
+    return RichResult(
+        payload={
+            "average": fsum(vals) / len(vals),
+            "pairwise": pairs,
+            "minimum": worst[2],
+            "worst_pair": (worst[0], worst[1]),
+            "n_classes": m,
+            "n_pairs": len(vals),
+            "average_hides_the_worst_pair": True,
+            "method": "Rangayyan (2024) Section 10.10.1 (average divergence)",
+        }
+    )
 
 
 def kld(p1, p2):
@@ -1547,6 +1572,7 @@ def kld(p1, p2):
     classification with the KLD alone.
     """
     from .kldiv import kl_divergence
+
     a, b = aslist(p1), aslist(p2)
     if len(a) != len(b):
         raise ValueError("the two PDFs must be sampled on the same grid")
@@ -1556,20 +1582,24 @@ def kld(p1, p2):
         raise ValueError("a PDF cannot be negative")
     bad = [i for i in range(len(a)) if b[i] > 0 and a[i] <= 0]
     if bad:
-        raise ValueError("p1 vanishes at %d bin(s) where p2 does not; "
-                         "the KLD is unbounded there" % len(bad))
-    fwd = float(kl_divergence(b, a).estimate)      # note the swap
+        raise ValueError("p1 vanishes at %d bin(s) where p2 does not; the KLD is unbounded there" % len(bad))
+    fwd = float(kl_divergence(b, a).estimate)  # note the swap
     rev = float(kl_divergence(a, b).estimate)
-    return RichResult(payload={
-        "kld": fwd, "reversed": rev, "symmetric_sum": fwd + rev,
-        "asymmetric": abs(fwd - rev) > 1e-12,
-        "weighted_by_the_second_pdf": True,
-        "book_order_is_the_reverse_of_the_standard": True,
-        "standard_notation": "KLD(p1, p2) here is D_KL(p2 || p1)",
-        "symmetric_sum_is_the_divergence_of_eq_10_115": True,
-        "nonnegative": fwd >= -1e-12,
-        "delegates_to": "morie.fn.kldiv.kl_divergence",
-        "method": "Rangayyan (2024) eq. (5.33)"})
+    return RichResult(
+        payload={
+            "kld": fwd,
+            "reversed": rev,
+            "symmetric_sum": fwd + rev,
+            "asymmetric": abs(fwd - rev) > 1e-12,
+            "weighted_by_the_second_pdf": True,
+            "book_order_is_the_reverse_of_the_standard": True,
+            "standard_notation": "KLD(p1, p2) here is D_KL(p2 || p1)",
+            "symmetric_sum_is_the_divergence_of_eq_10_115": True,
+            "nonnegative": fwd >= -1e-12,
+            "delegates_to": "morie.fn.kldiv.kl_divergence",
+            "method": "Rangayyan (2024) eq. (5.33)",
+        }
+    )
 
 
 def pdfoverlap(p1, p2):
@@ -1593,21 +1623,25 @@ def pdfoverlap(p1, p2):
     if any(v < 0 for v in a) or any(v < 0 for v in b):
         raise ValueError("a PDF cannot be negative")
     bc = fsum(sqrt(a[i] * b[i]) for i in range(len(a)))
-    return RichResult(payload={
-        "coefficient": bc, "overlap": bc,
-        "distance": (-log(bc)) if bc > 0 else float("inf"),
-        "identical": abs(bc - 1.0) < 1e-12,
-        "disjoint": bc <= 1e-15,
-        "in_unit_interval": -1e-12 <= bc <= 1.0 + 1e-12,
-        "the_overlap_is_where_errors_must_happen": True,
-        "not_from_this_book": True,
-        "reference": "Bhattacharyya A. On a measure of divergence "
-                     "between two statistical populations defined by "
-                     "their probability distributions. Bulletin of the "
-                     "Calcutta Mathematical Society 35:99-109, 1943 "
-                     "(Zbl 0063.00364).",
-        "method": "Bhattacharyya coefficient; Rangayyan (2024) uses the "
-                  "KLD of eq. (5.33) and the divergence of eq. (10.115)"})
+    return RichResult(
+        payload={
+            "coefficient": bc,
+            "overlap": bc,
+            "distance": (-log(bc)) if bc > 0 else float("inf"),
+            "identical": abs(bc - 1.0) < 1e-12,
+            "disjoint": bc <= 1e-15,
+            "in_unit_interval": -1e-12 <= bc <= 1.0 + 1e-12,
+            "the_overlap_is_where_errors_must_happen": True,
+            "not_from_this_book": True,
+            "reference": "Bhattacharyya A. On a measure of divergence "
+            "between two statistical populations defined by "
+            "their probability distributions. Bulletin of the "
+            "Calcutta Mathematical Society 35:99-109, 1943 "
+            "(Zbl 0063.00364).",
+            "method": "Bhattacharyya coefficient; Rangayyan (2024) uses the "
+            "KLD of eq. (5.33) and the divergence of eq. (10.115)",
+        }
+    )
 
 
 def chernoff(p1, p2, alpha=None, n_grid=201):
@@ -1639,8 +1673,7 @@ def chernoff(p1, p2, alpha=None, n_grid=201):
         raise ValueError("a PDF cannot be negative")
 
     def rho(t):
-        return fsum((a[i] ** t) * (b[i] ** (1.0 - t)) for i in range(len(a))
-                    if a[i] > 0 and b[i] > 0)
+        return fsum((a[i] ** t) * (b[i] ** (1.0 - t)) for i in range(len(a)) if a[i] > 0 and b[i] > 0)
 
     if alpha is not None:
         av = float(alpha)
@@ -1658,21 +1691,25 @@ def chernoff(p1, p2, alpha=None, n_grid=201):
         best_a, best_rho = grid[k], vals[k]
         searched = True
     bc = rho(0.5)
-    return RichResult(payload={
-        "coefficient": best_rho, "alpha": best_a,
-        "information": (-log(best_rho)) if best_rho > 0 else float("inf"),
-        "bhattacharyya_coefficient": bc,
-        "bhattacharyya_is_alpha_one_half": True,
-        "alpha_searched": searched,
-        "at_least_as_tight_as_bhattacharyya": best_rho <= bc + 1e-12,
-        "reference": "Chernoff H. A measure of asymptotic efficiency for "
-                     "tests of a hypothesis based on the sum of "
-                     "observations. Annals of Mathematical Statistics "
-                     "23(4):493-507, 1952, doi:10.1214/aoms/1177729330. "
-                     "The alpha = 1/2 identity is Nielsen and Nock, "
-                     "Pattern Recognition Letters, 2014.",
-        "not_from_this_book": True,
-        "method": "Chernoff alpha-coefficient and information"})
+    return RichResult(
+        payload={
+            "coefficient": best_rho,
+            "alpha": best_a,
+            "information": (-log(best_rho)) if best_rho > 0 else float("inf"),
+            "bhattacharyya_coefficient": bc,
+            "bhattacharyya_is_alpha_one_half": True,
+            "alpha_searched": searched,
+            "at_least_as_tight_as_bhattacharyya": best_rho <= bc + 1e-12,
+            "reference": "Chernoff H. A measure of asymptotic efficiency for "
+            "tests of a hypothesis based on the sum of "
+            "observations. Annals of Mathematical Statistics "
+            "23(4):493-507, 1952, doi:10.1214/aoms/1177729330. "
+            "The alpha = 1/2 identity is Nielsen and Nock, "
+            "Pattern Recognition Letters, 2014.",
+            "not_from_this_book": True,
+            "method": "Chernoff alpha-coefficient and information",
+        }
+    )
 
 
 def hellinger(p1, p2):
@@ -1693,6 +1730,7 @@ def hellinger(p1, p2):
     NOT FROM RANGAYYAN (2024).
     """
     from .helld import hellinger_dist
+
     a, b = aslist(p1), aslist(p2)
     if len(a) != len(b):
         raise ValueError("the two PDFs must be sampled on the same grid")
@@ -1705,23 +1743,27 @@ def hellinger(p1, p2):
     if sa <= 0 or sb <= 0:
         raise ValueError("a PDF has no mass")
     bc = fsum(sqrt((a[i] / sa) * (b[i] / sb)) for i in range(len(a)))
-    return RichResult(payload={
-        "hellinger": h, "squared": h * h,
-        "bhattacharyya_coefficient": bc,
-        "identity_h2_equals_one_minus_bc": abs(h * h - (1.0 - bc)) < 1e-12,
-        "is_a_true_metric": True,
-        "satisfies_the_triangle_inequality": True,
-        "bhattacharyya_distance_does_not": True,
-        "normalization": "one half; unnormalized gives 2(1 - BC)",
-        "in_unit_interval": -1e-12 <= h <= 1.0 + 1e-12,
-        "delegates_to": "morie.fn.helld.hellinger_dist",
-        "reference": "Hellinger E. Neue Begruendung der Theorie "
-                     "quadratischer Formen von unendlichvielen "
-                     "Veraenderlichen. Journal fuer die reine und "
-                     "angewandte Mathematik 136:210-271, 1909, "
-                     "doi:10.1515/crll.1909.136.210.",
-        "not_from_this_book": True,
-        "method": "Hellinger distance, H^2 = 1 - BC"})
+    return RichResult(
+        payload={
+            "hellinger": h,
+            "squared": h * h,
+            "bhattacharyya_coefficient": bc,
+            "identity_h2_equals_one_minus_bc": abs(h * h - (1.0 - bc)) < 1e-12,
+            "is_a_true_metric": True,
+            "satisfies_the_triangle_inequality": True,
+            "bhattacharyya_distance_does_not": True,
+            "normalization": "one half; unnormalized gives 2(1 - BC)",
+            "in_unit_interval": -1e-12 <= h <= 1.0 + 1e-12,
+            "delegates_to": "morie.fn.helld.hellinger_dist",
+            "reference": "Hellinger E. Neue Begruendung der Theorie "
+            "quadratischer Formen von unendlichvielen "
+            "Veraenderlichen. Journal fuer die reine und "
+            "angewandte Mathematik 136:210-271, 1909, "
+            "doi:10.1515/crll.1909.136.210.",
+            "not_from_this_book": True,
+            "method": "Hellinger distance, H^2 = 1 - BC",
+        }
+    )
 
 
 def gaussoverlap(m1, m2, C1, C2):
@@ -1760,27 +1802,29 @@ def gaussoverlap(m1, m2, C1, C2):
     M = [[0.5 * (A[i][j] + B[i][j]) for j in range(p)] for i in range(p)]
     Mi = _inv(M)
     dm = [a[i] - b[i] for i in range(p)]
-    quad = fsum(dm[i] * fsum(Mi[i][j] * dm[j] for j in range(p))
-                for i in range(p))
+    quad = fsum(dm[i] * fsum(Mi[i][j] * dm[j] for j in range(p)) for i in range(p))
     dA, dB, dM = _det(A), _det(B), _det(M)
     if dA <= 0 or dB <= 0 or dM <= 0:
         raise ValueError("a covariance matrix is not positive definite")
-    return RichResult(payload={
-        "bhattacharyya": 0.125 * quad + 0.5 * log(dM / sqrt(dA * dB)),
-        "mean_term": 0.125 * quad,
-        "covariance_term": 0.5 * log(dM / sqrt(dA * dB)),
-        "not_from_this_book": True,
-        "book_uses_divergence_eq_10_115": True,
-        "reference": "Bhattacharyya A. Bulletin of the Calcutta "
-                     "Mathematical Society 35:99-109, 1943; the "
-                     "Gaussian closed form and the error bound are "
-                     "Kailath T, The divergence and Bhattacharyya "
-                     "distance measures in signal selection, IEEE "
-                     "Transactions on Communication Technology "
-                     "15(1):52-60, 1967, doi:10.1109/TCOM.1967.1089532.",
-        "method": "standard Bhattacharyya distance for Gaussians; "
-                  "Rangayyan (2024) uses eqs. (10.112) and (10.115) "
-                  "instead"})
+    return RichResult(
+        payload={
+            "bhattacharyya": 0.125 * quad + 0.5 * log(dM / sqrt(dA * dB)),
+            "mean_term": 0.125 * quad,
+            "covariance_term": 0.5 * log(dM / sqrt(dA * dB)),
+            "not_from_this_book": True,
+            "book_uses_divergence_eq_10_115": True,
+            "reference": "Bhattacharyya A. Bulletin of the Calcutta "
+            "Mathematical Society 35:99-109, 1943; the "
+            "Gaussian closed form and the error bound are "
+            "Kailath T, The divergence and Bhattacharyya "
+            "distance measures in signal selection, IEEE "
+            "Transactions on Communication Technology "
+            "15(1):52-60, 1967, doi:10.1109/TCOM.1967.1089532.",
+            "method": "standard Bhattacharyya distance for Gaussians; "
+            "Rangayyan (2024) uses eqs. (10.112) and (10.115) "
+            "instead",
+        }
+    )
 
 
 rangayyan_bhattacharyya = divergence  # pre-policy spelling
@@ -1871,19 +1915,21 @@ def bpursuit(x, D, lam=0.01, maxiter=2000, tol=1e-10):
     r = [x[i] - approx[i] for i in range(n)]
     l1 = fsum(abs(t) for t in a)
     obj = 0.5 * fsum(t * t for t in r) + lam * l1
-    return RichResult(payload={
-        "alpha": a,
-        "support": [j for j in range(m) if a[j] != 0.0],
-        "reconstruction": approx,
-        "residual": r,
-        "l1norm": l1,
-        "objective": obj,
-        "iterations": it,
-        "method": "basis-pursuit denoising by iterative soft thresholding; "
-                  "Chen, Donoho and Saunders, SIAM J. Sci. Comput. 20(1):33-61, "
-                  "1998; solver of Daubechies, Defrise and De Mol, Comm. Pure "
-                  "Appl. Math. 57(11):1413-1457, 2004 (not covered by Rangayyan)",
-    })
+    return RichResult(
+        payload={
+            "alpha": a,
+            "support": [j for j in range(m) if a[j] != 0.0],
+            "reconstruction": approx,
+            "residual": r,
+            "l1norm": l1,
+            "objective": obj,
+            "iterations": it,
+            "method": "basis-pursuit denoising by iterative soft thresholding; "
+            "Chen, Donoho and Saunders, SIAM J. Sci. Comput. 20(1):33-61, "
+            "1998; solver of Daubechies, Defrise and De Mol, Comm. Pure "
+            "Appl. Math. 57(11):1413-1457, 2004 (not covered by Rangayyan)",
+        }
+    )
 
 
 rangayyan_basis_pursuit = bpursuit  # pre-policy spelling
@@ -1961,8 +2007,7 @@ def cadpipe(features, labels, k=5, standardize=True):
         proto = {}
         for c in (0, 1):
             rows = [i for i in train if y[i] == c]
-            proto[c] = [fsum(F[i][j] / sc[j] for i in rows) / len(rows)
-                        for j in range(p)]
+            proto[c] = [fsum(F[i][j] / sc[j] for i in rows) / len(rows) for j in range(p)]
         for i in test:
             z = [F[i][j] / sc[j] for j in range(p)]
             d0 = fsum((z[j] - proto[0][j]) ** 2 for j in range(p))
@@ -1973,19 +2018,21 @@ def cadpipe(features, labels, k=5, standardize=True):
     sen, spe, acc = _bxscores(tp, tn, fp, fn)
     prev = fsum(1.0 for t in y if t == 1) / n
     wacc = sen * prev + spe * (1.0 - prev)
-    return RichResult(payload={
-        "accuracy": acc,
-        "sensitivity": sen,
-        "specificity": spe,
-        "weightedaccuracy": wacc,
-        "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
-        "predictions": pred,
-        "folds": [sorted(f) for f in folds],
-        "prevalence": prev,
-        "method": "cross-validated prototype-discriminant CAD pipeline, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Sections 10.4.1 "
-                  "and 10.10.3, scored by eqs. (10.100)-(10.103)",
-    })
+    return RichResult(
+        payload={
+            "accuracy": acc,
+            "sensitivity": sen,
+            "specificity": spe,
+            "weightedaccuracy": wacc,
+            "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
+            "predictions": pred,
+            "folds": [sorted(f) for f in folds],
+            "prevalence": prev,
+            "method": "cross-validated prototype-discriminant CAD pipeline, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Sections 10.4.1 "
+            "and 10.10.3, scored by eqs. (10.100)-(10.103)",
+        }
+    )
 
 
 rangayyan_cad_pipeline = cadpipe  # pre-policy spelling
@@ -2048,10 +2095,9 @@ def cnnsig(x, kernels, bias=None, pool=2, dense=None):
     for ki in range(len(K)):
         w = K[ki]
         m = len(w)
-        conv = [max(0.0, fsum(w[j] * x[i + j] for j in range(m)) + b[ki])
-                for i in range(len(x) - m + 1)]
+        conv = [max(0.0, fsum(w[j] * x[i + j] for j in range(m)) + b[ki]) for i in range(len(x) - m + 1)]
         maps.append(conv)
-        pl = [max(conv[i:i + pool]) for i in range(0, len(conv) - pool + 1, pool)]
+        pl = [max(conv[i : i + pool]) for i in range(0, len(conv) - pool + 1, pool)]
         if not pl:
             pl = [max(conv)]
         pooled.append(pl)
@@ -2061,8 +2107,7 @@ def cnnsig(x, kernels, bias=None, pool=2, dense=None):
     if dense is not None:
         Wd = _bxmat(dense, "dense")
         if len(Wd[0]) != len(feat):
-            raise ValueError("dense rows must match the pooled feature length "
-                             "of %d" % len(feat))
+            raise ValueError("dense rows must match the pooled feature length of %d" % len(feat))
         z = _bxmv(Wd, feat)
         mx = max(z)
         e = [exp(t - mx) for t in z]
@@ -2070,26 +2115,27 @@ def cnnsig(x, kernels, bias=None, pool=2, dense=None):
         scores = [t / s for t in e]
         best = max(range(len(scores)), key=lambda i: scores[i])
 
-    return RichResult(payload={
-        "maps": maps,
-        "pooled": pooled,
-        "features": feat,
-        "scores": scores,
-        "predicted": best,
-        "method": "1-D convolution, rectifier and max-pooling forward pass; "
-                  "architecture per LeCun, Bengio and Hinton, Nature "
-                  "521(7553):436-444, 2015, cited as ref. [35] of Rangayyan "
-                  "Biomedical Signal Analysis 3rd ed. Section 10.8.2, which "
-                  "gives no equations for these layers",
-    })
+    return RichResult(
+        payload={
+            "maps": maps,
+            "pooled": pooled,
+            "features": feat,
+            "scores": scores,
+            "predicted": best,
+            "method": "1-D convolution, rectifier and max-pooling forward pass; "
+            "architecture per LeCun, Bengio and Hinton, Nature "
+            "521(7553):436-444, 2015, cited as ref. [35] of Rangayyan "
+            "Biomedical Signal Analysis 3rd ed. Section 10.8.2, which "
+            "gives no equations for these layers",
+        }
+    )
 
 
 rangayyan_cnn_signal = cnnsig  # pre-policy spelling
 
 
 # -- rgecgfe: Single-channel fetal ECG extraction using NMF/ICA.
-def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150,
-            taum=0.6, tauf=0.45, seed=1):
+def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150, taum=0.6, tauf=0.45, seed=1):
     """Separate the fetal ECG from a single-channel abdominal ECG by NMF.
 
     Why: the fetal and maternal ECG overlap in the spectrum, so no linear
@@ -2151,8 +2197,7 @@ def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150,
 
     re_f, im_f, mag_f, win = _bxstft(x, nwin, hop)
     V = _bxtr(mag_f)
-    W, H, err, _ = _bxnmfmu(V, rank, maxiter, 1e-10, seed,
-                            "ls" if float(lam) == 0.0 else "kld")
+    W, H, err, _ = _bxnmfmu(V, rank, maxiter, 1e-10, seed, "ls" if float(lam) == 0.0 else "kld")
     if float(lam) > 0.0:
         eps = 1e-12
         for _ in range(20):
@@ -2169,21 +2214,18 @@ def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150,
             return 0
         nr = [abs(t) / m for t in row]
         thr = tau * 1.0
-        return sum(1 for i in range(1, len(nr) - 1)
-                   if nr[i] > thr and nr[i] >= nr[i - 1] and nr[i] > nr[i + 1])
+        return sum(1 for i in range(1, len(nr) - 1) if nr[i] > thr and nr[i] >= nr[i - 1] and nr[i] > nr[i + 1])
 
     counts = [(peakcount(H[a], tauf), a) for a in range(len(H))]
     counts.sort()
     mrow = counts[0][1]
     frow = counts[1][1] if len(counts) > 1 else counts[0][1]
     mcount = peakcount(H[mrow], taum)
-    peaks = {"per_row": {a: c for c, a in counts},
-             "maternal_row_count_at_taum": mcount}
+    peaks = {"per_row": {a: c for c, a in counts}, "maternal_row_count_at_taum": mcount}
 
     def rebuild(row):
         R = _bxmm(W, H)
-        C = [[W[i][row] * H[row][j] for j in range(len(H[0]))]
-             for i in range(len(W))]
+        C = [[W[i][row] * H[row][j] for j in range(len(H[0]))] for i in range(len(W))]
         ren, imn = [], []
         for fi in range(len(mag_f)):
             rr, ii = [], []
@@ -2196,20 +2238,22 @@ def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150,
             imn.append(ii)
         return _bxistft(ren, imn, nwin, hop, win, len(x))
 
-    return RichResult(payload={
-        "fetal": rebuild(frow),
-        "maternal": rebuild(mrow),
-        "fetalrow": frow,
-        "maternalrow": mrow,
-        "peaks": peaks,
-        "W": W,
-        "H": H,
-        "error": err,
-        "method": "single-channel fetal ECG extraction by NMF of the STFT "
-                  "magnitude with activation-peak selection, Rangayyan "
-                  "Biomedical Signal Analysis 3rd ed. Section 9.11, "
-                  "eqs. (9.88)-(9.91)",
-    })
+    return RichResult(
+        payload={
+            "fetal": rebuild(frow),
+            "maternal": rebuild(mrow),
+            "fetalrow": frow,
+            "maternalrow": mrow,
+            "peaks": peaks,
+            "W": W,
+            "H": H,
+            "error": err,
+            "method": "single-channel fetal ECG extraction by NMF of the STFT "
+            "magnitude with activation-peak selection, Rangayyan "
+            "Biomedical Signal Analysis 3rd ed. Section 9.11, "
+            "eqs. (9.88)-(9.91)",
+        }
+    )
 
 
 rangayyan_fetal_ecg_single = fecgnmf  # pre-policy spelling
@@ -2277,10 +2321,14 @@ def pvclindf(rr, ff, train=None):
             raise ValueError("training rr, ff and labels must have equal length")
         if set(tlab) != {0, 1}:
             raise ValueError("training labels must contain both 0 (normal) and 1 (PVC)")
-        p0 = [_bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 0]),
-              _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 0])]
-        p1 = [_bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 1]),
-              _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 1])]
+        p0 = [
+            _bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 0]),
+            _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 0]),
+        ]
+        p1 = [
+            _bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 1]),
+            _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 1]),
+        ]
         d = [p1[0] - p0[0], p1[1] - p0[1]]
         if abs(d[0]) < 1e-12 and abs(d[1]) < 1e-12:
             raise ValueError("the two class prototypes coincide")
@@ -2292,16 +2340,18 @@ def pvclindf(rr, ff, train=None):
 
     disc = [a * rr[i] + b * ff[i] + c for i in range(len(rr))]
     labs = [0 if t > 0.0 else 1 for t in disc]
-    return RichResult(payload={
-        "labels": labs,
-        "discriminant": disc,
-        "coefficients": {"rr": a, "ff": b, "constant": c},
-        "prototypes": proto,
-        "source": src,
-        "method": "linear discriminant on [RR interval, form factor] for "
-                  "normal vs. ectopic beats, Rangayyan Biomedical Signal "
-                  "Analysis 3rd ed. Section 10.11.1, eq. (10.131)",
-    })
+    return RichResult(
+        payload={
+            "labels": labs,
+            "discriminant": disc,
+            "coefficients": {"rr": a, "ff": b, "constant": c},
+            "prototypes": proto,
+            "source": src,
+            "method": "linear discriminant on [RR interval, form factor] for "
+            "normal vs. ectopic beats, Rangayyan Biomedical Signal "
+            "Analysis 3rd ed. Section 10.11.1, eq. (10.131)",
+        }
+    )
 
 
 rangayyan_ecg_normal_ectopic = pvclindf  # pre-policy spelling
@@ -2359,9 +2409,13 @@ def eegbands(x, fs, bands=None):
             "beta": (13.0, nyq),
             "gamma": (30.0, min(80.0, nyq)),
         }
-        closure = {"delta": (True, False), "theta": (True, False),
-                   "alpha": (True, True), "beta": (False, True),
-                   "gamma": (True, True)}
+        closure = {
+            "delta": (True, False),
+            "theta": (True, False),
+            "alpha": (True, True),
+            "beta": (False, True),
+            "gamma": (True, True),
+        }
     if not isinstance(bands, dict) or not bands:
         raise ValueError("bands must be a non-empty dict of (f1, f2) pairs")
 
@@ -2385,22 +2439,25 @@ def eegbands(x, fs, bands=None):
 
         def inside(f, f1=f1, f2=f2, c1=c1, c2=c2):
             return (f >= f1 if c1 else f > f1) and (f <= f2 if c2 else f < f2)
+
         p = fsum(psd[k] for k in range(len(psd)) if inside(freqs[k]))
         power[name] = p
         frac[name] = p / total if total > 0.0 else 0.0
 
     dom = max(frac, key=lambda t: frac[t]) if total > 0.0 else None
-    return RichResult(payload={
-        "power": power,
-        "fraction": frac,
-        "dominant": dom,
-        "totalpower": total,
-        "frequencies": freqs,
-        "bands": {k: (float(v[0]), float(v[1])) for k, v in bands.items()},
-        "method": "fractional power in the EEG rhythm bands, band limits from "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 1.2.6, "
-                  "fraction by eq. (6.44) as used in Section 10.2.3",
-    })
+    return RichResult(
+        payload={
+            "power": power,
+            "fraction": frac,
+            "dominant": dom,
+            "totalpower": total,
+            "frequencies": freqs,
+            "bands": {k: (float(v[0]), float(v[1])) for k, v in bands.items()},
+            "method": "fractional power in the EEG rhythm bands, band limits from "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 1.2.6, "
+            "fraction by eq. (6.44) as used in Section 10.2.3",
+        }
+    )
 
 
 rangayyan_eeg_rhythms = eegbands  # pre-policy spelling
@@ -2444,16 +2501,22 @@ def elbow(X, kmax=8, kmin=1):
     if den <= 0:
         knee = ks[0]
     else:
-        dists = [abs((y2 - y1) * kx - (x2 - x1) * ky + x2 * y1 - y2 * x1)
-                 / den for kx, ky in zip([float(v) for v in ks], wcss)]
+        dists = [
+            abs((y2 - y1) * kx - (x2 - x1) * ky + x2 * y1 - y2 * x1) / den
+            for kx, ky in zip([float(v) for v in ks], wcss)
+        ]
         knee = ks[max(range(len(ks)), key=lambda i: dists[i])]
-    return RichResult(payload={
-        "k": ks, "wcss": wcss, "knee": knee,
-        "monotonic": mono,
-        "wcss_cannot_be_minimized": True,
-        "heuristic_only": True,
-        "method": "elbow criterion on the k-means WCSS; Rangayyan "
-                  "(2024) Section 10.5.1"})
+    return RichResult(
+        payload={
+            "k": ks,
+            "wcss": wcss,
+            "knee": knee,
+            "monotonic": mono,
+            "wcss_cannot_be_minimized": True,
+            "heuristic_only": True,
+            "method": "elbow criterion on the k-means WCSS; Rangayyan (2024) Section 10.5.1",
+        }
+    )
 
 
 rangayyan_kmeans_elbow = elbow  # pre-policy spelling
@@ -2545,19 +2608,16 @@ def seizdict(signals, labels, iterations=7, atoms=None, test=None):
             if best < 0:
                 break
             psi = raw.pop(best)
-            if not any(all(abs(psi[i] - d[i]) < 1e-12 for i in range(n))
-                       for d in trained):
+            if not any(all(abs(psi[i] - d[i]) < 1e-12 for i in range(n)) for d in trained):
                 trained.append(psi)
             a = _bxdot(x, psi)
             x = [x[i] - a * psi[i] for i in range(n)]
     if not trained:
-        raise ValueError("dictionary learning produced no atoms; "
-                         "check that the signals are not all zero")
+        raise ValueError("dictionary learning produced no atoms; check that the signals are not all zero")
 
     def feats(sig):
         co = [_bxdot(sig, d) for d in trained]
-        rec = [fsum(co[j] * trained[j][i] for j in range(len(trained)))
-               for i in range(n)]
+        rec = [fsum(co[j] * trained[j][i] for j in range(len(trained))) for i in range(n)]
         err = _bxnrm([sig[i] - rec[i] for i in range(n)])
         return co + [err], co, err
 
@@ -2569,8 +2629,7 @@ def seizdict(signals, labels, iterations=7, atoms=None, test=None):
         cent[c] = [fsum(r[j] for r in rows) / len(rows) for j in range(len(rows[0]))]
 
     def assign(v):
-        return min(classes, key=lambda c: fsum((v[j] - cent[c][j]) ** 2
-                                               for j in range(len(v))))
+        return min(classes, key=lambda c: fsum((v[j] - cent[c][j]) ** 2 for j in range(len(v))))
 
     pred = [assign(Ftr[i][0]) for i in range(len(y))]
     acc = fsum(1.0 for a, b in zip(y, pred) if a == b) / len(y)
@@ -2582,19 +2641,21 @@ def seizdict(signals, labels, iterations=7, atoms=None, test=None):
             raise ValueError("test signals must have the same length as training signals")
         tcls = [assign(feats(r)[0]) for r in T]
 
-    return RichResult(payload={
-        "dictionary": trained,
-        "coefficients": [Ftr[i][1] for i in range(len(y))],
-        "error": [Ftr[i][2] for i in range(len(y))],
-        "predictions": pred,
-        "isseizure": [t == max(classes) for t in pred],
-        "testclass": tcls,
-        "accuracy": acc,
-        "method": "signal-derived dictionary learning (Algorithm 9.2) with "
-                  "projection-coefficient and reconstruction-error features "
-                  "for seizure detection, Rangayyan Biomedical Signal Analysis "
-                  "3rd ed. Section 9.8",
-    })
+    return RichResult(
+        payload={
+            "dictionary": trained,
+            "coefficients": [Ftr[i][1] for i in range(len(y))],
+            "error": [Ftr[i][2] for i in range(len(y))],
+            "predictions": pred,
+            "isseizure": [t == max(classes) for t in pred],
+            "testclass": tcls,
+            "accuracy": acc,
+            "method": "signal-derived dictionary learning (Algorithm 9.2) with "
+            "projection-coefficient and reconstruction-error features "
+            "for seizure detection, Rangayyan Biomedical Signal Analysis "
+            "3rd ed. Section 9.8",
+        }
+    )
 
 
 rangayyan_epilepsy_ksvd = seizdict  # pre-policy spelling
@@ -2625,19 +2686,23 @@ def errbound(p1, p2, db):
     if d < 0:
         raise ValueError("the Bhattacharyya distance cannot be negative")
     bound = sqrt(a * b) * exp(-d)
-    return RichResult(payload={
-        "bound": bound, "priors": [a, b], "bhattacharyya": d,
-        "tightest_at_equal_priors": abs(a - b) < 1e-12,
-        "bounds_the_optimal_classifier_not_yours": True,
-        "not_from_this_book": True,
-        "pairs_with_the_overlap_not_with_divergence": True,
-        "reference": "Kailath T. The divergence and Bhattacharyya "
-                     "distance measures in signal selection. IEEE "
-                     "Transactions on Communication Technology "
-                     "15(1):52-60, February 1967, "
-                     "doi:10.1109/TCOM.1967.1089532.",
-        "method": "Kailath's Bhattacharyya bound; not given in "
-                  "Rangayyan (2024)"})
+    return RichResult(
+        payload={
+            "bound": bound,
+            "priors": [a, b],
+            "bhattacharyya": d,
+            "tightest_at_equal_priors": abs(a - b) < 1e-12,
+            "bounds_the_optimal_classifier_not_yours": True,
+            "not_from_this_book": True,
+            "pairs_with_the_overlap_not_with_divergence": True,
+            "reference": "Kailath T. The divergence and Bhattacharyya "
+            "distance measures in signal selection. IEEE "
+            "Transactions on Communication Technology "
+            "15(1):52-60, February 1967, "
+            "doi:10.1109/TCOM.1967.1089532.",
+            "method": "Kailath's Bhattacharyya bound; not given in Rangayyan (2024)",
+        }
+    )
 
 
 rangayyan_bayes_error_bound = errbound  # pre-policy spelling
@@ -2666,18 +2731,20 @@ def fishcrit(x1, x2):
     v2 = fsum((v - m2) ** 2 for v in b) / (len(b) - 1)
     den = v1 + v2
     if den <= 0:
-        raise ValueError("both classes have zero variance; the criterion "
-                         "is undefined")
+        raise ValueError("both classes have zero variance; the criterion is undefined")
     s1, s2 = sqrt(v1), sqrt(v2)
     dn = abs(m1 - m2) / (s1 + s2) if (s1 + s2) > 0 else float("inf")
-    return RichResult(payload={
-        "j": (m1 - m2) ** 2 / den, "means": [m1, m2],
-        "variances": [v1, v2], "normalized_distance": dn,
-        "agrees_with_eq_10_112_ranking_only_for_equal_spread":
-            abs(s1 - s2) < 1e-12,
-        "is_not_eq_10_112": True,
-        "method": "Fisher's criterion; compare Rangayyan (2024) "
-                  "eq. (10.112)"})
+    return RichResult(
+        payload={
+            "j": (m1 - m2) ** 2 / den,
+            "means": [m1, m2],
+            "variances": [v1, v2],
+            "normalized_distance": dn,
+            "agrees_with_eq_10_112_ranking_only_for_equal_spread": abs(s1 - s2) < 1e-12,
+            "is_not_eq_10_112": True,
+            "method": "Fisher's criterion; compare Rangayyan (2024) eq. (10.112)",
+        }
+    )
 
 
 rangayyan_fisher_criterion = fishcrit  # pre-policy spelling
@@ -2706,9 +2773,7 @@ def fishlda(X, y):
     p = len(Xs[0])
     order, grp = _groups(Xs, ys)
     if len(order) != 2:
-        raise ValueError("Fisher's linear discriminant as stated is a "
-                         "two-class method; got %d classes"
-                         % len(order))
+        raise ValueError("Fisher's linear discriminant as stated is a two-class method; got %d classes" % len(order))
     a, b = grp[order[0]], grp[order[1]]
     if len(a) < 2 or len(b) < 2:
         raise ValueError("each class needs at least two samples")
@@ -2728,16 +2793,21 @@ def fishlda(X, y):
     va = fsum((v - ma) ** 2 for v in proj_a)
     vb = fsum((v - mb) ** 2 for v in proj_b)
     thr = 0.5 * (ma + mb)
-    return RichResult(payload={
-        "w": w, "threshold": thr, "classes": order,
-        "means": [m1, m2], "s_within": SW,
-        "projected": {order[0]: proj_a, order[1]: proj_b},
-        "projected_means": [ma, mb],
-        "criterion": ((ma - mb) ** 2 / (va + vb)) if (va + vb) > 0
-        else float("inf"),
-        "two_class_only": True,
-        "not_a_reconstruction_basis": True,
-        "method": "Rangayyan (2024) Section 10.4.2 (Fisher LDA)"})
+    return RichResult(
+        payload={
+            "w": w,
+            "threshold": thr,
+            "classes": order,
+            "means": [m1, m2],
+            "s_within": SW,
+            "projected": {order[0]: proj_a, order[1]: proj_b},
+            "projected_means": [ma, mb],
+            "criterion": ((ma - mb) ** 2 / (va + vb)) if (va + vb) > 0 else float("inf"),
+            "two_class_only": True,
+            "not_a_reconstruction_basis": True,
+            "method": "Rangayyan (2024) Section 10.4.2 (Fisher LDA)",
+        }
+    )
 
 
 rangayyan_fisher_lda = fishlda  # pre-policy spelling
@@ -2769,8 +2839,7 @@ def hclust(X, linkage="single", k=None):
     if n < 2:
         raise ValueError("need at least two patterns")
     if linkage not in ("single", "complete", "average"):
-        raise ValueError("linkage must be 'single', 'complete' or "
-                         "'average'")
+        raise ValueError("linkage must be 'single', 'complete' or 'average'")
     p = len(Xs[0])
 
     def d2(a, b):
@@ -2794,9 +2863,14 @@ def hclust(X, linkage="single", k=None):
                 if best is None or dd < best[0]:
                     best = (dd, keys[a], keys[b])
         dd, ka, kb = best
-        history.append({"merged": (ka, kb), "distance": dd,
-                        "size": len(groups[ka]) + len(groups[kb]),
-                        "n_clusters_after": len(groups) - 1})
+        history.append(
+            {
+                "merged": (ka, kb),
+                "distance": dd,
+                "size": len(groups[ka]) + len(groups[kb]),
+                "n_clusters_after": len(groups) - 1,
+            }
+        )
         groups[ka] = groups[ka] + groups[kb]
         del groups[kb]
     labels = None
@@ -2815,17 +2889,22 @@ def hclust(X, linkage="single", k=None):
         for c, key in enumerate(sorted(g)):
             for i in g[key]:
                 labels[i] = c
-    return RichResult(payload={
-        "history": history, "labels": labels, "linkage": linkage,
-        "n": n, "k": k,
-        "merge_distances": [h["distance"] for h in history],
-        "monotonic_merges": all(
-            b >= a - 1e-12 for a, b in zip(
-                [h["distance"] for h in history],
-                [h["distance"] for h in history][1:])),
-        "single_linkage_chains": linkage == "single",
-        "linkage_changes_the_partition": True,
-        "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)"})
+    return RichResult(
+        payload={
+            "history": history,
+            "labels": labels,
+            "linkage": linkage,
+            "n": n,
+            "k": k,
+            "merge_distances": [h["distance"] for h in history],
+            "monotonic_merges": all(
+                b >= a - 1e-12 for a, b in zip([h["distance"] for h in history], [h["distance"] for h in history][1:])
+            ),
+            "single_linkage_chains": linkage == "single",
+            "linkage_changes_the_partition": True,
+            "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)",
+        }
+    )
 
 
 rangayyan_hierarchical_clust = hclust  # pre-policy spelling
@@ -2885,8 +2964,7 @@ def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
 
     mu = [_bxmean(r) for r in Y]
     Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
-    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)]
-         for i in range(K)]
+    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)] for i in range(K)]
     vals, vecs = _bxjacobi(C)
     if vals[L - 1] <= 1e-14:
         raise ValueError("the mixture covariance is rank deficient for %d components" % L)
@@ -2898,8 +2976,7 @@ def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
     for c in range(L):
         w = [u() - 0.5 for _ in range(L)]
         nr = _bxnrm(w)
-        w = [t / nr for t in w] if nr > 1e-12 else [1.0 if i == c else 0.0
-                                                    for i in range(L)]
+        w = [t / nr for t in w] if nr > 1e-12 else [1.0 if i == c else 0.0 for i in range(L)]
         it = 0
         for it in range(1, maxiter + 1):
             g, gp = [0.0] * L, 0.0
@@ -2931,21 +3008,27 @@ def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
     G = _bxmm(W, Wt)
     for i in range(L):
         G[i][i] += 1e-12
-    A = [[fsum(Wt[i][k] * _bxsolve(G, [1.0 if r == j else 0.0
-                                       for r in range(L)])[k] for k in range(L))
-          for j in range(L)] for i in range(K)]
-    return RichResult(payload={
-        "sources": S,
-        "unmixing": W,
-        "mixing": A,
-        "whitening": Wh,
-        "mean": mu,
-        "iterations": iters,
-        "method": "FastICA fixed-point ICA with the tanh nonlinearity; model "
-                  "and unmixing per Rangayyan Biomedical Signal Analysis 3rd "
-                  "ed. Section 9.7.2, eqs. (9.43)-(9.44); update rule from "
-                  "Hyvarinen and Oja, Neural Networks 13, 2000 (ref. [50] there)",
-    })
+    A = [
+        [
+            fsum(Wt[i][k] * _bxsolve(G, [1.0 if r == j else 0.0 for r in range(L)])[k] for k in range(L))
+            for j in range(L)
+        ]
+        for i in range(K)
+    ]
+    return RichResult(
+        payload={
+            "sources": S,
+            "unmixing": W,
+            "mixing": A,
+            "whitening": Wh,
+            "mean": mu,
+            "iterations": iters,
+            "method": "FastICA fixed-point ICA with the tanh nonlinearity; model "
+            "and unmixing per Rangayyan Biomedical Signal Analysis 3rd "
+            "ed. Section 9.7.2, eqs. (9.43)-(9.44); update rule from "
+            "Hyvarinen and Oja, Neural Networks 13, 2000 (ref. [50] there)",
+        }
+    )
 
 
 rangayyan_fastica = icafix  # pre-policy spelling
@@ -3013,17 +3096,19 @@ def icaclean(X, ncomp=None, kurtosis=3.0, drop=None, maxiter=200, seed=1):
     clean = [[rec[i][t] + mu[i] for t in range(T)] for i in range(len(A))]
     orig = fsum(fsum(t * t for t in S[c]) for c in range(L))
     gone = fsum(fsum(t * t for t in S[c]) for c in art)
-    return RichResult(payload={
-        "clean": clean,
-        "components": S,
-        "kurtosis": kv,
-        "artifacts": art,
-        "mixing": A,
-        "removedpower": gone / orig if orig > 0.0 else 0.0,
-        "method": "ICA artifact removal by zeroing high-kurtosis components and "
-                  "back-projection, Rangayyan Biomedical Signal Analysis 3rd "
-                  "ed. Section 9.7.2 with the kurtosis excess of eq. (3.5)",
-    })
+    return RichResult(
+        payload={
+            "clean": clean,
+            "components": S,
+            "kurtosis": kv,
+            "artifacts": art,
+            "mixing": A,
+            "removedpower": gone / orig if orig > 0.0 else 0.0,
+            "method": "ICA artifact removal by zeroing high-kurtosis components and "
+            "back-projection, Rangayyan Biomedical Signal Analysis 3rd "
+            "ed. Section 9.7.2 with the kurtosis excess of eq. (3.5)",
+        }
+    )
 
 
 rangayyan_ica_artifact = icaclean  # pre-policy spelling
@@ -3098,8 +3183,7 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
 
     mu = [_bxmean(r) for r in Y]
     Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
-    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)]
-         for i in range(K)]
+    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)] for i in range(K)]
     vals, vecs = _bxjacobi(C)
     if vals[L - 1] <= 1e-14:
         raise ValueError("the mixture covariance is rank deficient for %d components" % L)
@@ -3107,8 +3191,7 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
     Z = _bxmm(Wh, Yc)
 
     u = _bxrng(seed)
-    W = [[(1.0 if i == j else 0.0) + 0.01 * (u() - 0.5) for j in range(L)]
-         for i in range(L)]
+    W = [[(1.0 if i == j else 0.0) + 0.01 * (u() - 0.5) for j in range(L)] for i in range(L)]
 
     def sig(b):
         if b < -700.0:
@@ -3121,9 +3204,10 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
     for it in range(1, maxiter + 1):
         U = _bxmm(W, Z)
         P = [[1.0 - 2.0 * sig(U[i][t]) for t in range(T)] for i in range(L)]
-        M = [[(1.0 if i == j else 0.0)
-              + fsum(P[i][t] * U[j][t] for t in range(T)) / T
-              for j in range(L)] for i in range(L)]
+        M = [
+            [(1.0 if i == j else 0.0) + fsum(P[i][t] * U[j][t] for t in range(T)) / T for j in range(L)]
+            for i in range(L)
+        ]
         D = _bxmm(M, W)
         chg = max(abs(D[i][j]) for i in range(L) for j in range(L)) * eta
         for i in range(L):
@@ -3136,19 +3220,21 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
             break
 
     S = _bxmm(W, Z)
-    return RichResult(payload={
-        "sources": S,
-        "unmixing": _bxmm(W, Wh),
-        "whitening": Wh,
-        "mean": mu,
-        "iterations": it,
-        "change": chg,
-        "method": "Infomax ICA with the natural gradient; unmixing model per "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. eq. (9.44), "
-                  "update from Bell and Sejnowski, Neural Computation "
-                  "7(6):1129-1159, 1995 and Amari, Cichocki and Yang, NIPS "
-                  "8:757-763, 1996 (not covered by Rangayyan)",
-    })
+    return RichResult(
+        payload={
+            "sources": S,
+            "unmixing": _bxmm(W, Wh),
+            "whitening": Wh,
+            "mean": mu,
+            "iterations": it,
+            "change": chg,
+            "method": "Infomax ICA with the natural gradient; unmixing model per "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. eq. (9.44), "
+            "update from Bell and Sejnowski, Neural Computation "
+            "7(6):1129-1159, 1995 and Amari, Cichocki and Yang, NIPS "
+            "8:757-763, 1996 (not covered by Rangayyan)",
+        }
+    )
 
 
 rangayyan_infomax_ica = infomax  # pre-policy spelling
@@ -3183,8 +3269,10 @@ def kfoldcv(X, y, k=5, classifier=None, stratified=True):
     if not 2 <= kk <= n:
         raise ValueError("k must lie in 2..n")
     if classifier is None:
+
         def classifier(Xt, yt, q):
             return knn(Xt, yt, q, k=1)["assigned"]
+
     if stratified:
         order, _ = _groups(Xs, ys)
         by = {lab: [i for i in range(n) if ys[i] == lab] for lab in order}
@@ -3203,23 +3291,28 @@ def kfoldcv(X, y, k=5, classifier=None, stratified=True):
             continue
         tr = [i for i in range(n) if i not in set(test)]
         if len(set(ys[i] for i in tr)) < 2:
-            raise ValueError("fold %d leaves fewer than two classes in "
-                             "the training set; use stratified folds or "
-                             "a smaller k" % f)
+            raise ValueError(
+                "fold %d leaves fewer than two classes in the training set; use stratified folds or a smaller k" % f
+            )
         Xt = [Xs[i] for i in tr]
         yt = [ys[i] for i in tr]
         e = sum(1 for i in test if classifier(Xt, yt, Xs[i]) != ys[i])
         errors += e
-        per_fold.append({"fold": f, "n": len(test), "errors": e,
-                         "error_rate": e / len(test)})
+        per_fold.append({"fold": f, "n": len(test), "errors": e, "error_rate": e / len(test)})
     rate = errors / n
-    return RichResult(payload={
-        "error_rate": rate, "accuracy": 1.0 - rate, "errors": errors,
-        "n": n, "k": kk, "per_fold": per_fold,
-        "stratified": bool(stratified),
-        "train_and_test_must_be_separate": True,
-        "method": "Rangayyan (2024) Section 10.10.3 (training and test "
-                  "steps)"})
+    return RichResult(
+        payload={
+            "error_rate": rate,
+            "accuracy": 1.0 - rate,
+            "errors": errors,
+            "n": n,
+            "k": kk,
+            "per_fold": per_fold,
+            "stratified": bool(stratified),
+            "train_and_test_must_be_separate": True,
+            "method": "Rangayyan (2024) Section 10.10.3 (training and test steps)",
+        }
+    )
 
 
 rangayyan_kfold_cv = kfoldcv  # pre-policy spelling
@@ -3289,14 +3382,21 @@ def kmeans(X, k, maxiter=100, tol=1e-10, init=None):
             break
         prev = wcss
     sizes = [sum(1 for v in lab if v == c) for c in range(kk)]
-    return RichResult(payload={
-        "labels": lab, "centroids": cent, "wcss": prev, "k": kk,
-        "sizes": sizes, "iterations": it,
-        "converged": it < int(maxiter),
-        "local_minimum_only": True,
-        "depends_on_the_starting_centroids": True,
-        "unsupervised_groups_need_not_be_the_classes": True,
-        "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)"})
+    return RichResult(
+        payload={
+            "labels": lab,
+            "centroids": cent,
+            "wcss": prev,
+            "k": kk,
+            "sizes": sizes,
+            "iterations": it,
+            "converged": it < int(maxiter),
+            "local_minimum_only": True,
+            "depends_on_the_starting_centroids": True,
+            "unsupervised_groups_need_not_be_the_classes": True,
+            "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)",
+        }
+    )
 
 
 rangayyan_kmeans = kmeans  # pre-policy spelling
@@ -3388,19 +3488,21 @@ def vagclass(segments, durations=None, segclass=None, arthro=None):
                 else:
                     dec, stage, abn = "normal", 2, False
 
-    return RichResult(payload={
-        "varmeans": vms,
-        "segmentmeans": smeans,
-        "abnormalfraction": fabn,
-        "normalfraction": fnor,
-        "decision": dec,
-        "stage": stage,
-        "abnormal": abn,
-        "durations": d,
-        "method": "VAG cartilage-pathology screening: variance of segment means "
-                  "plus the two-step 90%/10% duration rule, Rangayyan "
-                  "Biomedical Signal Analysis 3rd ed. Section 10.12",
-    })
+    return RichResult(
+        payload={
+            "varmeans": vms,
+            "segmentmeans": smeans,
+            "abnormalfraction": fabn,
+            "normalfraction": fnor,
+            "decision": dec,
+            "stage": stage,
+            "abnormal": abn,
+            "durations": d,
+            "method": "VAG cartilage-pathology screening: variance of segment means "
+            "plus the two-step 90%/10% duration rule, Rangayyan "
+            "Biomedical Signal Analysis 3rd ed. Section 10.12",
+        }
+    )
 
 
 rangayyan_knee_classify = vagclass  # pre-policy spelling
@@ -3446,16 +3548,14 @@ def knn(X, y, query, k=1, metric="euclidean", C=None):
         raise ValueError("metric must be 'euclidean' or 'mahalanobis'")
     if metric == "mahalanobis":
         if C is None:
-            raise ValueError("the Mahalanobis metric needs the "
-                             "covariance C")
+            raise ValueError("the Mahalanobis metric needs the covariance C")
         Ci = _inv(_mat(C))
 
         def dist(r):
             d = [r[i] - q[i] for i in range(p)]
-            return sqrt(max(0.0, fsum(
-                d[i] * fsum(Ci[i][j] * d[j] for j in range(p))
-                for i in range(p))))
+            return sqrt(max(0.0, fsum(d[i] * fsum(Ci[i][j] * d[j] for j in range(p)) for i in range(p))))
     else:
+
         def dist(r):
             return sqrt(fsum((r[i] - q[i]) ** 2 for i in range(p)))
 
@@ -3475,14 +3575,21 @@ def knn(X, y, query, k=1, metric="euclidean", C=None):
             s = fsum(dd for dd, l2, _ in near if l2 == lab)
             if best is None or s < best:
                 best, winner = s, lab
-    return RichResult(payload={
-        "assigned": winner, "votes": votes, "k": kk, "metric": metric,
-        "neighbours": [{"index": i, "label": lab, "distance": dd}
-                       for dd, lab, i in near],
-        "tie": len(tied) > 1, "tied_classes": tied,
-        "nearest_distance": near[0][0], "nearest_label": near[0][1],
-        "single_neighbour_may_be_an_outlier": kk == 1,
-        "method": "Rangayyan (2024) eq. (10.29) and Section 10.4.4"})
+    return RichResult(
+        payload={
+            "assigned": winner,
+            "votes": votes,
+            "k": kk,
+            "metric": metric,
+            "neighbours": [{"index": i, "label": lab, "distance": dd} for dd, lab, i in near],
+            "tie": len(tied) > 1,
+            "tied_classes": tied,
+            "nearest_distance": near[0][0],
+            "nearest_label": near[0][1],
+            "single_neighbour_may_be_an_outlier": kk == 1,
+            "method": "Rangayyan (2024) eq. (10.29) and Section 10.4.4",
+        }
+    )
 
 
 rangayyan_knn_classifier = knn  # pre-policy spelling
@@ -3551,8 +3658,7 @@ def ksvdfit(Y, natoms, sparsity, maxiter=15, tol=1e-10, seed=1):
         a = list(S[k % m]) if k < m else [u() - 0.5 for _ in range(n)]
         a = [t + 1e-3 * (u() - 0.5) for t in a]
         nr = _bxnrm(a)
-        D.append([t / nr for t in a] if nr > 1e-12
-                 else [1.0 if i == k % n else 0.0 for i in range(n)])
+        D.append([t / nr for t in a] if nr > 1e-12 else [1.0 if i == k % n else 0.0 for i in range(n)])
 
     prev, err, it = None, float("nan"), 0
     Xc = [[0.0] * natoms for _ in range(m)]
@@ -3561,18 +3667,17 @@ def ksvdfit(Y, natoms, sparsity, maxiter=15, tol=1e-10, seed=1):
         for k in range(natoms):
             users = [i for i in range(m) if Xc[i][k] != 0.0]
             if not users:
-                worst = max(range(m), key=lambda i: _bxnrm(
-                    [S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms))
-                     for t in range(n)]))
+                worst = max(
+                    range(m),
+                    key=lambda i: _bxnrm([S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms)) for t in range(n)]),
+                )
                 nr = _bxnrm(S[worst])
                 if nr > 1e-12:
                     D[k] = [t / nr for t in S[worst]]
                 continue
             E = []
             for i in users:
-                E.append([S[i][t] - fsum(Xc[i][j] * D[j][t]
-                                         for j in range(natoms) if j != k)
-                          for t in range(n)])
+                E.append([S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms) if j != k) for t in range(n)])
             v = list(D[k])
             for _ in range(30):
                 w = [_bxdot(row, v) for row in E]
@@ -3584,22 +3689,25 @@ def ksvdfit(Y, natoms, sparsity, maxiter=15, tol=1e-10, seed=1):
             D[k] = v
             for r, i in enumerate(users):
                 Xc[i][k] = _bxdot(E[r], v)
-        err = sqrt(fsum((S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms))) ** 2
-                        for i in range(m) for t in range(n)))
+        err = sqrt(
+            fsum((S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms))) ** 2 for i in range(m) for t in range(n))
+        )
         if prev is not None and abs(prev - err) <= tol * max(1.0, prev):
             break
         prev = err
 
-    return RichResult(payload={
-        "dictionary": D,
-        "coefficients": Xc,
-        "error": err,
-        "iterations": it,
-        "method": "K-SVD dictionary learning with OMP sparse coding; Aharon, "
-                  "Elad and Bruckstein, IEEE Trans. Signal Processing "
-                  "54(11):4311-4322, 2006 (not the EMD-based scheme of "
-                  "Rangayyan Section 9.5)",
-    })
+    return RichResult(
+        payload={
+            "dictionary": D,
+            "coefficients": Xc,
+            "error": err,
+            "iterations": it,
+            "method": "K-SVD dictionary learning with OMP sparse coding; Aharon, "
+            "Elad and Bruckstein, IEEE Trans. Signal Processing "
+            "54(11):4311-4322, 2006 (not the EMD-based scheme of "
+            "Rangayyan Section 9.5)",
+        }
+    )
 
 
 rangayyan_ksvd = ksvdfit  # pre-policy spelling
@@ -3661,17 +3769,19 @@ def dictcode(Y, D, sparsity, tol=1e-12):
         recs.append(rec)
         res.append(r)
     err = sqrt(fsum(t * t for r in res for t in r))
-    return RichResult(payload={
-        "coefficients": coefs,
-        "support": sups,
-        "reconstruction": recs,
-        "residual": res,
-        "error": err,
-        "method": "sparse coding of signals in a fixed dictionary by orthogonal "
-                  "matching pursuit; greedy framework of Rangayyan Biomedical "
-                  "Signal Analysis 3rd ed. Section 9.5, orthogonalised per "
-                  "Pati, Rezaiifar and Krishnaprasad, Asilomar 1993",
-    })
+    return RichResult(
+        payload={
+            "coefficients": coefs,
+            "support": sups,
+            "reconstruction": recs,
+            "residual": res,
+            "error": err,
+            "method": "sparse coding of signals in a fixed dictionary by orthogonal "
+            "matching pursuit; greedy framework of Rangayyan Biomedical "
+            "Signal Analysis 3rd ed. Section 9.5, orthogonalised per "
+            "Pati, Rezaiifar and Krishnaprasad, Asilomar 1993",
+        }
+    )
 
 
 rangayyan_dictionary_sparse = dictcode  # pre-policy spelling
@@ -3703,16 +3813,20 @@ def lindisc(x, weights, w0=None):
     b = [0.0] * m if w0 is None else aslist(w0)
     if len(b) != m:
         raise ValueError("give one offset per class")
-    d = [fsum(W[i][j] * xs[j] for j in range(len(xs))) + b[i]
-         for i in range(m)]
+    d = [fsum(W[i][j] * xs[j] for j in range(len(xs))) + b[i] for i in range(m)]
     best = max(range(m), key=lambda i: d[i])
     srt = sorted(d, reverse=True)
-    return RichResult(payload={
-        "d": d, "assigned": best, "margin": srt[0] - srt[1],
-        "n_classes": m, "regions_are_convex": True,
-        "decision_surfaces_are_hyperplanes": True,
-        "method": "Rangayyan (2024) Section 10.4.1 (discriminant and "
-                  "decision functions)"})
+    return RichResult(
+        payload={
+            "d": d,
+            "assigned": best,
+            "margin": srt[0] - srt[1],
+            "n_classes": m,
+            "regions_are_convex": True,
+            "decision_surfaces_are_hyperplanes": True,
+            "method": "Rangayyan (2024) Section 10.4.1 (discriminant and decision functions)",
+        }
+    )
 
 
 rangayyan_linear_discrim = lindisc  # pre-policy spelling
@@ -3757,20 +3871,26 @@ def lindsep(X, y):
             best_err, best_t = err, t
     n = len(a) + len(b)
     if hi_first:
-        mid_err = sum(1 for v in a if v <= mid) + sum(1 for v in b
-                                                     if v > mid)
+        mid_err = sum(1 for v in a if v <= mid) + sum(1 for v in b if v > mid)
     else:
-        mid_err = sum(1 for v in a if v > mid) + sum(1 for v in b
-                                                    if v <= mid)
-    return RichResult(payload={
-        "w": w, "threshold": best_t, "midpoint_threshold": mid,
-        "classes": order, "first_class_is_above": hi_first,
-        "training_errors": best_err, "midpoint_errors": mid_err,
-        "training_accuracy": 1.0 - best_err / n, "n": n,
-        "projected": proj,
-        "midpoint_optimal_only_for_equal_priors_and_spread": True,
-        "resubstitution_error_is_optimistic": True,
-        "method": "Rangayyan (2024) Sections 10.4.2 and 10.10.3"})
+        mid_err = sum(1 for v in a if v > mid) + sum(1 for v in b if v <= mid)
+    return RichResult(
+        payload={
+            "w": w,
+            "threshold": best_t,
+            "midpoint_threshold": mid,
+            "classes": order,
+            "first_class_is_above": hi_first,
+            "training_errors": best_err,
+            "midpoint_errors": mid_err,
+            "training_accuracy": 1.0 - best_err / n,
+            "n": n,
+            "projected": proj,
+            "midpoint_optimal_only_for_equal_priors_and_spread": True,
+            "resubstitution_error_is_optimistic": True,
+            "method": "Rangayyan (2024) Sections 10.4.2 and 10.10.3",
+        }
+    )
 
 
 rangayyan_lin_discr_sep = lindsep  # pre-policy spelling
@@ -3801,24 +3921,33 @@ def loocv(X, y, classifier=None):
     if n < 3:
         raise ValueError("need at least three samples")
     if classifier is None:
+
         def classifier(Xt, yt, q):
             return knn(Xt, yt, q, k=1)["assigned"]
+
     errors, wrong = 0, []
     for i in range(n):
         Xt = [Xs[j] for j in range(n) if j != i]
         yt = [ys[j] for j in range(n) if j != i]
         if len(set(yt)) < 2:
-            raise ValueError("removing sample %d leaves one class; the "
-                             "classifier cannot be trained" % i)
+            raise ValueError("removing sample %d leaves one class; the classifier cannot be trained" % i)
         if classifier(Xt, yt, Xs[i]) != ys[i]:
             errors += 1
             wrong.append(i)
-    return RichResult(payload={
-        "error_rate": errors / n, "accuracy": 1.0 - errors / n,
-        "errors": errors, "misclassified": wrong, "n": n, "n_fits": n,
-        "deterministic": True, "nearly_unbiased": True,
-        "high_variance": True,
-        "method": "Rangayyan (2024) Section 10.10.3 (leave-one-out)"})
+    return RichResult(
+        payload={
+            "error_rate": errors / n,
+            "accuracy": 1.0 - errors / n,
+            "errors": errors,
+            "misclassified": wrong,
+            "n": n,
+            "n_fits": n,
+            "deterministic": True,
+            "nearly_unbiased": True,
+            "high_variance": True,
+            "method": "Rangayyan (2024) Section 10.10.3 (leave-one-out)",
+        }
+    )
 
 
 rangayyan_loo_cv = loocv  # pre-policy spelling
@@ -3859,8 +3988,7 @@ def logreg(X, y, maxiter=100, tol=1e-8, ridge=1e-8):
     for it in range(1, int(maxiter) + 1):
         eta = [fsum(A[i][j] * w[j] for j in range(p)) for i in range(n)]
         mu = [1.0 / (1.0 + exp(-min(500.0, max(-500.0, v)))) for v in eta]
-        g = [fsum(A[i][j] * (ys[i] - mu[i]) for i in range(n))
-             - lam * w[j] for j in range(p)]
+        g = [fsum(A[i][j] * (ys[i] - mu[i]) for i in range(n)) - lam * w[j] for j in range(p)]
         H = [[0.0] * p for _ in range(p)]
         for i in range(n):
             wt = mu[i] * (1.0 - mu[i])
@@ -3881,20 +4009,28 @@ def logreg(X, y, maxiter=100, tol=1e-8, ridge=1e-8):
         sep = True
     eta = [fsum(A[i][j] * w[j] for j in range(p)) for i in range(n)]
     mu = [1.0 / (1.0 + exp(-min(500.0, max(-500.0, v)))) for v in eta]
-    ll = fsum(ys[i] * log(max(mu[i], 1e-300))
-              + (1 - ys[i]) * log(max(1 - mu[i], 1e-300))
-              for i in range(n))
+    ll = fsum(ys[i] * log(max(mu[i], 1e-300)) + (1 - ys[i]) * log(max(1 - mu[i], 1e-300)) for i in range(n))
     pred = [1 if v >= 0.5 else 0 for v in mu]
     acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
-    return RichResult(payload={
-        "intercept": w[0], "coefficients": w[1:], "w": w,
-        "fitted": mu, "predicted": pred, "loglik": ll,
-        "iterations": it, "converged": it < int(maxiter),
-        "separable": sep, "ridge": lam,
-        "training_accuracy": acc, "n": n,
-        "models_the_posterior_directly": True,
-        "no_gaussian_assumption": True,
-        "method": "Rangayyan (2024) Section 10.7 (logistic regression)"})
+    return RichResult(
+        payload={
+            "intercept": w[0],
+            "coefficients": w[1:],
+            "w": w,
+            "fitted": mu,
+            "predicted": pred,
+            "loglik": ll,
+            "iterations": it,
+            "converged": it < int(maxiter),
+            "separable": sep,
+            "ridge": lam,
+            "training_accuracy": acc,
+            "n": n,
+            "models_the_posterior_directly": True,
+            "no_gaussian_assumption": True,
+            "method": "Rangayyan (2024) Section 10.7 (logistic regression)",
+        }
+    )
 
 
 rangayyan_logistic_regression = logreg  # pre-policy spelling
@@ -3972,8 +4108,7 @@ def lstm(sequences, labels=None, hidden=8, ridge=1e-6, seed=1, weights=None):
     if weights is None:
         u = _bxrng(seed)
         sc = 1.0 / sqrt(H + d)
-        W = {k: [[sc * (2.0 * u() - 1.0) for _ in range(H + d)] for _ in range(H)]
-             for k in ("i", "f", "o", "g")}
+        W = {k: [[sc * (2.0 * u() - 1.0) for _ in range(H + d)] for _ in range(H)] for k in ("i", "f", "o", "g")}
         B = {"i": [0.0] * H, "f": [1.0] * H, "o": [0.0] * H, "g": [0.0] * H}
     else:
         if not isinstance(weights, dict):
@@ -4032,19 +4167,21 @@ def lstm(sequences, labels=None, hidden=8, ridge=1e-6, seed=1, weights=None):
             pred.append(classes[max(range(len(classes)), key=lambda k: sc[k])])
         acc = fsum(1.0 for a, b in zip(y, pred) if a == b) / len(y)
 
-    return RichResult(payload={
-        "hidden": hs,
-        "cell": cs,
-        "predictions": pred,
-        "accuracy": acc,
-        "readout": read,
-        "classes": classes,
-        "method": "LSTM recurrence with a ridge least-squares readout on the "
-                  "final hidden state; Hochreiter and Schmidhuber, Neural "
-                  "Computation 9(8):1735-1780, 1997, with the forget gate of "
-                  "Gers, Schmidhuber and Cummins, Neural Computation "
-                  "12(10):2451-2471, 2000 (not covered by Rangayyan)",
-    })
+    return RichResult(
+        payload={
+            "hidden": hs,
+            "cell": cs,
+            "predictions": pred,
+            "accuracy": acc,
+            "readout": read,
+            "classes": classes,
+            "method": "LSTM recurrence with a ridge least-squares readout on the "
+            "final hidden state; Hochreiter and Schmidhuber, Neural "
+            "Computation 9(8):1735-1780, 1997, with the forget gate of "
+            "Gers, Schmidhuber and Cummins, Neural Computation "
+            "12(10):2451-2471, 2000 (not covered by Rangayyan)",
+        }
+    )
 
 
 rangayyan_lstm_signal = lstm  # pre-policy spelling
@@ -4078,15 +4215,19 @@ def mahal(x, mu, C):
         raise ValueError("the covariance must be %d x %d" % (p, p))
     Si = _inv(S)
     d = [xs[i] - m[i] for i in range(p)]
-    d2 = fsum(d[i] * fsum(Si[i][j] * d[j] for j in range(p))
-              for i in range(p))
+    d2 = fsum(d[i] * fsum(Si[i][j] * d[j] for j in range(p)) for i in range(p))
     eucl = sqrt(fsum(v * v for v in d))
-    return RichResult(payload={
-        "d2": d2, "distance": sqrt(d2) if d2 >= 0 else float("nan"),
-        "squared": d2, "euclidean": eucl,
-        "differs_from_euclidean": abs(sqrt(max(d2, 0.0)) - eucl) > 1e-12,
-        "scale_free": True,
-        "method": "Rangayyan (2024) Section 10.4.3 (distance functions)"})
+    return RichResult(
+        payload={
+            "d2": d2,
+            "distance": sqrt(d2) if d2 >= 0 else float("nan"),
+            "squared": d2,
+            "euclidean": eucl,
+            "differs_from_euclidean": abs(sqrt(max(d2, 0.0)) - eucl) > 1e-12,
+            "scale_free": True,
+            "method": "Rangayyan (2024) Section 10.4.3 (distance functions)",
+        }
+    )
 
 
 rangayyan_mahalanobis = mahal  # pre-policy spelling
@@ -4138,19 +4279,25 @@ def mcnemar(table, correct=None):
             df += 1
             pairs.append({"i": i, "j": j, "n_ij": a, "n_ji": b})
     if df == 0:
-        raise ValueError("the table is symmetric with no off-diagonal "
-                         "counts; the test is undefined")
+        raise ValueError("the table is symmetric with no off-diagonal counts; the test is undefined")
     p = _chisq_sf(stat, df)
     n = fsum(v for r in t for v in r)
     diag = fsum(t[i][i] for i in range(k))
-    return RichResult(payload={
-        "statistic": stat, "df": df, "p_value": p,
-        "pairs": pairs, "n": n, "n_agree": diag,
-        "continuity_correction": yates,
-        "is_bowker": k > 2, "k": k,
-        "diagonal_contributes_nothing": True,
-        "method": "Rangayyan (2024) Section 10.9.2 (McNemar's test of "
-                  "symmetry; Bowker's generalization for k > 2)"})
+    return RichResult(
+        payload={
+            "statistic": stat,
+            "df": df,
+            "p_value": p,
+            "pairs": pairs,
+            "n": n,
+            "n_agree": diag,
+            "continuity_correction": yates,
+            "is_bowker": k > 2,
+            "k": k,
+            "diagonal_contributes_nothing": True,
+            "method": "Rangayyan (2024) Section 10.9.2 (McNemar's test of symmetry; Bowker's generalization for k > 2)",
+        }
+    )
 
 
 rangayyan_mcnemar_test = mcnemar  # pre-policy spelling
@@ -4253,19 +4400,21 @@ def mpursuit(x, dictionary=None, natoms=20, tol=1e-10, decaystop=None):
             break
 
     rec = [fsum(coef[k] * D[idx[k]][i] for k in range(len(idx))) for i in range(n)]
-    return RichResult(payload={
-        "coefficients": coef,
-        "atoms": [D[j] for j in idx],
-        "indices": idx,
-        "residual": r,
-        "reconstruction": rec,
-        "decay": decay,
-        "energyratio": 1.0 - e_prev / e0,
-        "parameters": [params[j] for j in idx],
-        "method": "matching-pursuit decomposition into time-frequency atoms, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.3, "
-                  "eqs. (9.1)-(9.7) with the Gabor dictionary of eqs. (9.2)-(9.3)",
-    })
+    return RichResult(
+        payload={
+            "coefficients": coef,
+            "atoms": [D[j] for j in idx],
+            "indices": idx,
+            "residual": r,
+            "reconstruction": rec,
+            "decay": decay,
+            "energyratio": 1.0 - e_prev / e0,
+            "parameters": [params[j] for j in idx],
+            "method": "matching-pursuit decomposition into time-frequency atoms, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.3, "
+            "eqs. (9.1)-(9.7) with the Gabor dictionary of eqs. (9.2)-(9.3)",
+        }
+    )
 
 
 rangayyan_matching_pursuit = mpursuit  # pre-policy spelling
@@ -4328,8 +4477,7 @@ def bmidec(y, C, a=None, procnoise=1e-4, obsnoise=1e-2, p0=1e-2):
         if isinstance(arg, (int, float)):
             if float(arg) <= 0.0:
                 raise ValueError(name + " must be positive")
-            return [[float(arg) if i == j else 0.0 for j in range(k)]
-                    for i in range(k)]
+            return [[float(arg) if i == j else 0.0 for j in range(k)] for i in range(k)]
         M = _bxmat(arg, name)
         if len(M) != k or len(M[0]) != k:
             raise ValueError(name + " must be %d x %d" % (k, k))
@@ -4354,34 +4502,33 @@ def bmidec(y, C, a=None, procnoise=1e-4, obsnoise=1e-2, p0=1e-2):
             e = [1.0 if r == col else 0.0 for r in range(K)]
             Sinv_col = _bxsolve(Sm, e)
             Kg.append(Sinv_col)
-        Kmat = [[fsum(APCt[i][k] * Kg[j][k] for k in range(K)) for j in range(K)]
-                for i in range(L)]
+        Kmat = [[fsum(APCt[i][k] * Kg[j][k] for k in range(K)) for j in range(K)] for i in range(L)]
         pred = _bxmv(Cm, xh)
         z = [Y[t][i] - pred[i] for i in range(K)]
         preds.append(pred)
         innov.append(z)
         states.append(list(xh))
         gains.append([list(r) for r in Kmat])
-        xh = [fsum(A[i][j] * xh[j] for j in range(L))
-              + fsum(Kmat[i][j] * z[j] for j in range(K)) for i in range(L)]
+        xh = [fsum(A[i][j] * xh[j] for j in range(L)) + fsum(Kmat[i][j] * z[j] for j in range(K)) for i in range(L)]
         KC = _bxmm(Kmat, Cm)
-        Pf = [[P[i][j] - fsum(KC[i][k] * P[k][j] for k in range(L))
-               for j in range(L)] for i in range(L)]
+        Pf = [[P[i][j] - fsum(KC[i][k] * P[k][j] for k in range(L)) for j in range(L)] for i in range(L)]
         P = _bxmm(_bxmm(A, Pf), _bxtr(A))
         for i in range(L):
             for j in range(L):
                 P[i][j] += Qd[i][j]
 
-    return RichResult(payload={
-        "states": states,
-        "innovations": innov,
-        "gain": gains,
-        "predicted": preds,
-        "method": "Kalman-filter neural decoder for prosthesis control, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 8.18 "
-                  "with the recursion of Section 8.7, eqs. (8.60), (8.63) and "
-                  "(8.95)-(8.99)",
-    })
+    return RichResult(
+        payload={
+            "states": states,
+            "innovations": innov,
+            "gain": gains,
+            "predicted": preds,
+            "method": "Kalman-filter neural decoder for prosthesis control, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 8.18 "
+            "with the recursion of Section 8.7, eqs. (8.60), (8.63) and "
+            "(8.95)-(8.99)",
+        }
+    )
 
 
 rangayyan_neural_decode = bmidec  # pre-policy spelling
@@ -4436,22 +4583,22 @@ def nmfmu(V, r, maxiter=200, tol=1e-10, cost="ls", seed=1):
     if int(maxiter) < 1:
         raise ValueError("maxiter must be a positive integer")
     if cost == "kld" and any(t <= 0.0 for row in M for t in row):
-        raise ValueError("the divergence cost is undefined where V has a zero "
-                         "element; use cost='ls'")
+        raise ValueError("the divergence cost is undefined where V has a zero element; use cost='ls'")
     W, H, err, it = _bxnmfmu(M, r, int(maxiter), float(tol), seed, cost)
-    subs = [[[W[i][k] * H[k][j] for j in range(len(H[0]))]
-             for i in range(len(W))] for k in range(len(H))]
-    return RichResult(payload={
-        "W": W,
-        "H": H,
-        "submatrices": subs,
-        "error": err,
-        "iterations": it,
-        "cost": cost,
-        "method": "nonnegative matrix factorisation by multiplicative updates, "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.7.3, "
-                  "eqs. (9.46), (9.49)-(9.50) and (9.53)-(9.55)",
-    })
+    subs = [[[W[i][k] * H[k][j] for j in range(len(H[0]))] for i in range(len(W))] for k in range(len(H))]
+    return RichResult(
+        payload={
+            "W": W,
+            "H": H,
+            "submatrices": subs,
+            "error": err,
+            "iterations": it,
+            "cost": cost,
+            "method": "nonnegative matrix factorisation by multiplicative updates, "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.7.3, "
+            "eqs. (9.46), (9.49)-(9.50) and (9.53)-(9.55)",
+        }
+    )
 
 
 rangayyan_nmf = nmfmu  # pre-policy spelling
@@ -4520,10 +4667,12 @@ def nmfchsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
         raise ValueError("nselect must satisfy 1 <= nselect <= number of channels")
     rank = int(rank)
     if rank < 3:
-        raise ValueError("rank must be at least 3: with r = 2 the min-max "
-                         "normalisation of eq. (9.95) maps every basis row to "
-                         "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
-                         "0.5 for every channel and ranks nothing")
+        raise ValueError(
+            "rank must be at least 3: with r = 2 the min-max "
+            "normalisation of eq. (9.95) maps every basis row to "
+            "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
+            "0.5 for every channel and ranks nothing"
+        )
 
     mu, C = _bxcov(_bxtr(X))
     shift = min(min(r) for r in C)
@@ -4539,19 +4688,21 @@ def nmfchsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
         rmsd.append(sqrt(fsum((t - 0.5) ** 2 for t in nr) / len(nr)))
 
     ranking = sorted(range(nch), key=lambda i: (-rmsd[i], i))
-    return RichResult(payload={
-        "selected": sorted(ranking[:nselect]),
-        "rmsd": rmsd,
-        "ranking": ranking,
-        "normalized": Wn,
-        "W": W,
-        "H": H,
-        "covariance": C,
-        "error": err,
-        "method": "NMF-based EEG channel ranking by normalised basis-row RMS "
-                  "deviation, Rangayyan Biomedical Signal Analysis 3rd ed. "
-                  "Section 9.12.1, eqs. (9.94)-(9.96)",
-    })
+    return RichResult(
+        payload={
+            "selected": sorted(ranking[:nselect]),
+            "rmsd": rmsd,
+            "ranking": ranking,
+            "normalized": Wn,
+            "W": W,
+            "H": H,
+            "covariance": C,
+            "error": err,
+            "method": "NMF-based EEG channel ranking by normalised basis-row RMS "
+            "deviation, Rangayyan Biomedical Signal Analysis 3rd ed. "
+            "Section 9.12.1, eqs. (9.94)-(9.96)",
+        }
+    )
 
 
 rangayyan_nmf_channel_sel = nmfchsel  # pre-policy spelling
@@ -4604,17 +4755,19 @@ def ompfit(x, D, sparsity=None, tol=1e-10):
     c, sup, r = _bxomp(x, A, sparsity, float(tol))
     rec = [fsum(c[j] * A[j][i] for j in range(len(A))) for i in range(n)]
     err = _bxnrm(r)
-    return RichResult(payload={
-        "coefficients": c,
-        "support": sup,
-        "reconstruction": rec,
-        "residual": r,
-        "error": err,
-        "energyratio": 1.0 - (err * err) / e0,
-        "method": "orthogonal matching pursuit; Pati, Rezaiifar and "
-                  "Krishnaprasad, Proc. 27th Asilomar Conf., pp. 40-44, 1993 "
-                  "(Rangayyan Section 9.3 covers plain matching pursuit)",
-    })
+    return RichResult(
+        payload={
+            "coefficients": c,
+            "support": sup,
+            "reconstruction": rec,
+            "residual": r,
+            "error": err,
+            "energyratio": 1.0 - (err * err) / e0,
+            "method": "orthogonal matching pursuit; Pati, Rezaiifar and "
+            "Krishnaprasad, Proc. 27th Asilomar Conf., pp. 40-44, 1993 "
+            "(Rangayyan Section 9.3 covers plain matching pursuit)",
+        }
+    )
 
 
 rangayyan_omp = ompfit  # pre-policy spelling
@@ -4663,26 +4816,26 @@ def pcasig(X, ncomp=None):
 
     mu = [_bxmean(r) for r in Y]
     Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
-    S = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / (T - 1) for j in range(K)]
-         for i in range(K)]
+    S = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / (T - 1) for j in range(K)] for i in range(K)]
     vals, vecs = _bxjacobi(S)
     W = [[vecs[j][k] for j in range(K)] for k in range(L)]
     P = _bxmm(W, Yc)
     tot = fsum(max(0.0, t) for t in vals)
-    return RichResult(payload={
-        "components": P,
-        "eigenvalues": vals,
-        "eigenvectors": vecs,
-        "mean": mu,
-        "covariance": S,
-        "varexplained": [max(0.0, vals[k]) / tot if tot > 0 else 0.0
-                         for k in range(L)],
-        "mse": fsum(max(0.0, vals[k]) for k in range(L, K)),
-        "method": "principal component analysis of signal mixtures by "
-                  "eigendecomposition of the covariance matrix, Rangayyan "
-                  "Biomedical Signal Analysis 3rd ed. Section 9.7.1, "
-                  "eqs. (9.37)-(9.41)",
-    })
+    return RichResult(
+        payload={
+            "components": P,
+            "eigenvalues": vals,
+            "eigenvectors": vecs,
+            "mean": mu,
+            "covariance": S,
+            "varexplained": [max(0.0, vals[k]) / tot if tot > 0 else 0.0 for k in range(L)],
+            "mse": fsum(max(0.0, vals[k]) for k in range(L, K)),
+            "method": "principal component analysis of signal mixtures by "
+            "eigendecomposition of the covariance matrix, Rangayyan "
+            "Biomedical Signal Analysis 3rd ed. Section 9.7.1, "
+            "eqs. (9.37)-(9.41)",
+        }
+    )
 
 
 rangayyan_pca_signals = pcasig  # pre-policy spelling
@@ -4732,8 +4885,7 @@ def mixcmp(X, ncomp=None, maxiter=200, seed=1):
         raise ValueError("X has zero energy")
 
     def relerr(R):
-        return sqrt(fsum((Y[i][t] - R[i][t]) ** 2
-                         for i in range(K) for t in range(T))) / denom
+        return sqrt(fsum((Y[i][t] - R[i][t]) ** 2 for i in range(K) for t in range(T))) / denom
 
     p = pcasig(Y, ncomp=L)
     vecs, mu = p["eigenvectors"], p["mean"]
@@ -4753,24 +4905,24 @@ def mixcmp(X, ncomp=None, maxiter=200, seed=1):
         Rn = [[Rn[i][t] + lo for t in range(T)] for i in range(K)]
 
     err = {"pca": relerr(Rp), "ica": relerr(Ri), "nmf": relerr(Rn)}
-    return RichResult(payload={
-        "error": err,
-        "best": min(err, key=lambda k: err[k]),
-        "components": {"pca": p["components"], "ica": ic["sources"],
-                       "nmf": {"W": nm["W"], "H": nm["H"]}},
-        "rank": L,
-        "method": "comparison of PCA, ICA and NMF by relative reconstruction "
-                  "error, Rangayyan Biomedical Signal Analysis 3rd ed. "
-                  "Section 9.7.4",
-    })
+    return RichResult(
+        payload={
+            "error": err,
+            "best": min(err, key=lambda k: err[k]),
+            "components": {"pca": p["components"], "ica": ic["sources"], "nmf": {"W": nm["W"], "H": nm["H"]}},
+            "rank": L,
+            "method": "comparison of PCA, ICA and NMF by relative reconstruction "
+            "error, Rangayyan Biomedical Signal Analysis 3rd ed. "
+            "Section 9.7.4",
+        }
+    )
 
 
 rangayyan_pca_vs_ica = mixcmp  # pre-policy spelling
 
 
 # -- rgppv: Positive predictive value (precision).
-def ppv(tp, fp=None, prevalence=None, sensitivity=None,
-        specificity=None):
+def ppv(tp, fp=None, prevalence=None, sensitivity=None, specificity=None):
     """Positive predictive value, eq. (10.106).
 
         PPV = TP / (TP + FP)
@@ -4786,8 +4938,7 @@ def ppv(tp, fp=None, prevalence=None, sensitivity=None,
     if fp is None and tp is not None and not isinstance(tp, (int, float)):
         t = _mat(tp)
         if len(t) != 2 or any(len(r) != 2 for r in t):
-            raise ValueError("give TP and FP, or a 2x2 table "
-                             "[[TP, FN], [FP, TN]]")
+            raise ValueError("give TP and FP, or a 2x2 table [[TP, FN], [FP, TN]]")
         TP, FP = t[0][0], t[1][0]
     else:
         if fp is None:
@@ -4798,13 +4949,18 @@ def ppv(tp, fp=None, prevalence=None, sensitivity=None,
     n = TP + FP
     if n <= 0:
         raise ValueError("no positive decisions; the PPV is undefined")
-    out = {"ppv": TP / n, "precision": TP / n, "tp": TP, "fp": FP,
-           "n_positive_calls": n, "depends_on_prevalence": True,
-           "method": "Rangayyan (2024) eq. (10.106)"}
+    out = {
+        "ppv": TP / n,
+        "precision": TP / n,
+        "tp": TP,
+        "fp": FP,
+        "n_positive_calls": n,
+        "depends_on_prevalence": True,
+        "method": "Rangayyan (2024) eq. (10.106)",
+    }
     if prevalence is not None:
         if sensitivity is None or specificity is None:
-            raise ValueError("a prevalence correction needs both the "
-                             "sensitivity and the specificity")
+            raise ValueError("a prevalence correction needs both the sensitivity and the specificity")
         p = float(prevalence)
         if not 0 <= p <= 1:
             raise ValueError("the prevalence must lie in [0, 1]")
@@ -4850,10 +5006,11 @@ def qda(X, y, query, priors=None):
         raise ValueError("need at least two classes")
     for lab in order:
         if len(grp[lab]) <= p:
-            raise ValueError("class %r has %d samples for %d features; "
-                             "QDA needs more samples than features per "
-                             "class or the covariance is singular"
-                             % (lab, len(grp[lab]), p))
+            raise ValueError(
+                "class %r has %d samples for %d features; "
+                "QDA needs more samples than features per "
+                "class or the covariance is singular" % (lab, len(grp[lab]), p)
+            )
     if priors is None:
         pr = [len(grp[lab]) / len(Xs) for lab in order]
     else:
@@ -4866,19 +5023,23 @@ def qda(X, y, query, priors=None):
         mu = _colmeans(rows)
         S = _scatter(rows, mu)
         nk = len(rows)
-        covs.append([[S[i][j] / (nk - 1) for j in range(p)]
-                     for i in range(p)])
+        covs.append([[S[i][j] / (nk - 1) for j in range(p)] for i in range(p)])
         means.append(mu)
     r = bayesnorm(q, means, covs, priors=pr)
-    return RichResult(payload={
-        "g": r["d"], "assigned": order[r["assigned"]],
-        "assigned_index": r["assigned"], "classes": order,
-        "means": means, "covariances": covs, "priors": pr,
-        "reduces_to_lda_when_covariances_are_equal":
-            r["linear_when_covariances_are_equal"],
-        "parameters_per_class": p * (p + 1) // 2,
-        "method": "Rangayyan (2024) eqs. (10.68)-(10.73), per-class "
-                  "covariances"})
+    return RichResult(
+        payload={
+            "g": r["d"],
+            "assigned": order[r["assigned"]],
+            "assigned_index": r["assigned"],
+            "classes": order,
+            "means": means,
+            "covariances": covs,
+            "priors": pr,
+            "reduces_to_lda_when_covariances_are_equal": r["linear_when_covariances_are_equal"],
+            "parameters_per_class": p * (p + 1) // 2,
+            "method": "Rangayyan (2024) eqs. (10.68)-(10.73), per-class covariances",
+        }
+    )
 
 
 rangayyan_qda = qda  # pre-policy spelling
@@ -4990,21 +5151,22 @@ def rbfn(X, y, ncenters=None, spread=1.0, centers=None, ridge=1e-8, query=None):
         Q = _bxmat(query, "query")
         if len(Q[0]) != p:
             raise ValueError("query must have the same dimension as X")
-        qv = [fsum(w[j] * phi(row, Cs[j]) for j in range(len(Cs))) + w[-1]
-              for row in Q]
+        qv = [fsum(w[j] * phi(row, Cs[j]) for j in range(len(Cs))) + w[-1] for row in Q]
 
-    return RichResult(payload={
-        "centers": Cs,
-        "weights": w[:-1],
-        "bias": w[-1],
-        "predictions": fit,
-        "queryvalues": qv,
-        "mse": mse,
-        "spread": spread,
-        "method": "radial basis function network with greedy forward centre "
-                  "selection, Rangayyan Biomedical Signal Analysis 3rd ed. "
-                  "Section 10.8.1, eqs. (10.86)-(10.87)",
-    })
+    return RichResult(
+        payload={
+            "centers": Cs,
+            "weights": w[:-1],
+            "bias": w[-1],
+            "predictions": fit,
+            "queryvalues": qv,
+            "mse": mse,
+            "spread": spread,
+            "method": "radial basis function network with greedy forward centre "
+            "selection, Rangayyan Biomedical Signal Analysis 3rd ed. "
+            "Section 10.8.1, eqs. (10.86)-(10.87)",
+        }
+    )
 
 
 rangayyan_rbf_network = rbfn  # pre-policy spelling
@@ -5052,26 +5214,33 @@ def roc(scores, labels, positive=1):
             wins += 1.0 if a > b else (0.5 if a == b else 0.0)
     mw = wins / (npos * nneg)
     # the operating point closest to the top-left corner
-    best = min(range(len(tpf)),
-               key=lambda i: (1.0 - tpf[i]) ** 2 + fpf[i] ** 2)
-    return RichResult(payload={
-        "fpf": fpf, "tpf": tpf, "sensitivity": tpf,
-        "one_minus_specificity": fpf, "thresholds": thresholds,
-        "auc": area, "az": area, "mann_whitney": mw,
-        "trapezoidal_equals_mann_whitney": abs(area - mw) < 1e-9,
-        "n_positive": npos, "n_negative": nneg,
-        "best_index": best,
-        "best_operating_point": (fpf[best], tpf[best]),
-        "ties_counted_as_half": True,
-        "method": "Rangayyan (2024) Section 10.9.1 (ROC, A_z)"})
+    best = min(range(len(tpf)), key=lambda i: (1.0 - tpf[i]) ** 2 + fpf[i] ** 2)
+    return RichResult(
+        payload={
+            "fpf": fpf,
+            "tpf": tpf,
+            "sensitivity": tpf,
+            "one_minus_specificity": fpf,
+            "thresholds": thresholds,
+            "auc": area,
+            "az": area,
+            "mann_whitney": mw,
+            "trapezoidal_equals_mann_whitney": abs(area - mw) < 1e-9,
+            "n_positive": npos,
+            "n_negative": nneg,
+            "best_index": best,
+            "best_operating_point": (fpf[best], tpf[best]),
+            "ties_counted_as_half": True,
+            "method": "Rangayyan (2024) Section 10.9.1 (ROC, A_z)",
+        }
+    )
 
 
 rangayyan_roc_curve = roc  # pre-policy spelling
 
 
 # -- rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.
-def ahi(airflow, fs, spo2=None, hours=None, apneafrac=0.10, hypofrac=0.50,
-        minsec=10.0, desat=0.0, envsec=1.0):
+def ahi(airflow, fs, spo2=None, hours=None, apneafrac=0.10, hypofrac=0.50, minsec=10.0, desat=0.0, envsec=1.0):
     """Score sleep apnea from airflow and oximetry: event detection and the AHI.
 
     Why: the severity of obstructive sleep apnea is reported as one number, the
@@ -5169,12 +5338,13 @@ def ahi(airflow, fs, spo2=None, hours=None, apneafrac=0.10, hypofrac=0.50,
                 ok = True
                 dv = None
                 if ox is not None:
-                    pre = ox[max(0, i - int(fs * 30)):i + 1] or ox[i:i + 1]
+                    pre = ox[max(0, i - int(fs * 30)) : i + 1] or ox[i : i + 1]
                     dv = max(pre) - min(ox[i:j])
                     ok = dv > float(desat)
                 if ok:
-                    events.append({"kind": kind, "start": i / fs, "end": j / fs,
-                                   "duration": (j - i) / fs, "desaturation": dv})
+                    events.append(
+                        {"kind": kind, "start": i / fs, "end": j / fs, "duration": (j - i) / fs, "desaturation": dv}
+                    )
             i = j
         else:
             i += 1
@@ -5191,22 +5361,24 @@ def ahi(airflow, fs, spo2=None, hours=None, apneafrac=0.10, hypofrac=0.50,
     else:
         sev = "severe"
 
-    return RichResult(payload={
-        "ahi": index,
-        "severity": sev,
-        "apnea": na,
-        "hypopnea": nh,
-        "events": events,
-        "hours": hrs,
-        "baseline": base,
-        "envsec": envsec,
-        "oxygenchecked": ox is not None,
-        "method": "apnea-hypopnea index from airflow and oximetry with the "
-                  "10 s minimum episode duration and the mild/moderate/severe "
-                  "bands of Rangayyan Biomedical Signal Analysis 3rd ed. "
-                  "Section 10.13; amplitude and desaturation thresholds are "
-                  "parameters, not values given by that section",
-    })
+    return RichResult(
+        payload={
+            "ahi": index,
+            "severity": sev,
+            "apnea": na,
+            "hypopnea": nh,
+            "events": events,
+            "hours": hrs,
+            "baseline": base,
+            "envsec": envsec,
+            "oxygenchecked": ox is not None,
+            "method": "apnea-hypopnea index from airflow and oximetry with the "
+            "10 s minimum episode duration and the mild/moderate/severe "
+            "bands of Rangayyan Biomedical Signal Analysis 3rd ed. "
+            "Section 10.13; amplitude and desaturation thresholds are "
+            "parameters, not values given by that section",
+        }
+    )
 
 
 rangayyan_sleep_apnea_nmf = ahi  # pre-policy spelling
@@ -5229,8 +5401,7 @@ def sens(tp, fn=None):
     if fn is None:
         t = _mat(tp)
         if len(t) != 2 or any(len(r) != 2 for r in t):
-            raise ValueError("give TP and FN, or a 2x2 table "
-                             "[[TP, FN], [FP, TN]]")
+            raise ValueError("give TP and FN, or a 2x2 table [[TP, FN], [FP, TN]]")
         TP, FN = t[0][0], t[0][1]
     else:
         TP, FN = float(tp), float(fn)
@@ -5238,13 +5409,19 @@ def sens(tp, fn=None):
         raise ValueError("counts cannot be negative")
     n = TP + FN
     if n <= 0:
-        raise ValueError("no subjects with the disease; the sensitivity "
-                         "is undefined")
-    return RichResult(payload={
-        "sensitivity": TP / n, "tpf": TP / n, "fnf": FN / n,
-        "n_diseased": n, "tp": TP, "fn": FN,
-        "says_nothing_about_false_alarms": True,
-        "method": "Rangayyan (2024) eq. (10.100)"})
+        raise ValueError("no subjects with the disease; the sensitivity is undefined")
+    return RichResult(
+        payload={
+            "sensitivity": TP / n,
+            "tpf": TP / n,
+            "fnf": FN / n,
+            "n_diseased": n,
+            "tp": TP,
+            "fn": FN,
+            "says_nothing_about_false_alarms": True,
+            "method": "Rangayyan (2024) eq. (10.100)",
+        }
+    )
 
 
 rangayyan_sensitivity = sens  # pre-policy spelling
@@ -5294,15 +5471,21 @@ def sepindex(X, y):
                 SB[i][j] += len(rows) * d[i] * d[j]
     tw = _trace(SW)
     if tw <= 0:
-        raise ValueError("the within-class scatter vanishes; every class "
-                         "is a single repeated point")
-    return RichResult(payload={
-        "j": _trace(SB) / tw, "trace_between": _trace(SB),
-        "trace_within": tw, "s_within": SW, "s_between": SB,
-        "classes": order, "n_classes": len(order), "n_features": p,
-        "ignores_off_diagonal_structure": True,
-        "method": "Rangayyan (2024) Section 10.10.1 (separability of "
-                  "features)"})
+        raise ValueError("the within-class scatter vanishes; every class is a single repeated point")
+    return RichResult(
+        payload={
+            "j": _trace(SB) / tw,
+            "trace_between": _trace(SB),
+            "trace_within": tw,
+            "s_within": SW,
+            "s_between": SB,
+            "classes": order,
+            "n_classes": len(order),
+            "n_features": p,
+            "ignores_off_diagonal_structure": True,
+            "method": "Rangayyan (2024) Section 10.10.1 (separability of features)",
+        }
+    )
 
 
 rangayyan_separability_index = sepindex  # pre-policy spelling
@@ -5325,8 +5508,7 @@ def spec(tn, fp=None):
     if fp is None:
         t = _mat(tn)
         if len(t) != 2 or any(len(r) != 2 for r in t):
-            raise ValueError("give TN and FP, or a 2x2 table "
-                             "[[TP, FN], [FP, TN]]")
+            raise ValueError("give TN and FP, or a 2x2 table [[TP, FN], [FP, TN]]")
         TN, FP = t[1][1], t[1][0]
     else:
         TN, FP = float(tn), float(fp)
@@ -5334,12 +5516,18 @@ def spec(tn, fp=None):
         raise ValueError("counts cannot be negative")
     n = TN + FP
     if n <= 0:
-        raise ValueError("no subjects without the disease; the "
-                         "specificity is undefined")
-    return RichResult(payload={
-        "specificity": TN / n, "tnf": TN / n, "fpf": FP / n,
-        "n_healthy": n, "tn": TN, "fp": FP,
-        "method": "Rangayyan (2024) eq. (10.101)"})
+        raise ValueError("no subjects without the disease; the specificity is undefined")
+    return RichResult(
+        payload={
+            "specificity": TN / n,
+            "tnf": TN / n,
+            "fpf": FP / n,
+            "n_healthy": n,
+            "tn": TN,
+            "fp": FP,
+            "method": "Rangayyan (2024) eq. (10.101)",
+        }
+    )
 
 
 rangayyan_specificity = spec  # pre-policy spelling
@@ -5388,8 +5576,7 @@ def sparsecode(x, D, sparsity=None, lam=None, maxiter=2000, tol=1e-10):
         ``error``, ``energyratio``, ``mode``, ``method``.
     """
     if (sparsity is None) == (lam is None):
-        raise ValueError("give exactly one of sparsity (atom budget) or "
-                         "lam (L1 penalty)")
+        raise ValueError("give exactly one of sparsity (atom budget) or lam (L1 penalty)")
     x = _bxvec(x, "x")
     A = _bxmat(D, "D")
     n = len(x)
@@ -5402,31 +5589,31 @@ def sparsecode(x, D, sparsity=None, lam=None, maxiter=2000, tol=1e-10):
     if sparsity is not None:
         r = ompfit(x, A, sparsity=int(sparsity), tol=float(tol))
         mode = "omp"
-        src = ("orthogonal matching pursuit; Pati, Rezaiifar and "
-               "Krishnaprasad, Asilomar 1993")
+        src = "orthogonal matching pursuit; Pati, Rezaiifar and Krishnaprasad, Asilomar 1993"
     else:
         r = bpursuit(x, A, lam=float(lam), maxiter=int(maxiter), tol=float(tol))
         mode = "lasso"
-        src = ("lasso by iterative soft thresholding; Tibshirani, JRSS B "
-               "58(1):267-288, 1996")
+        src = "lasso by iterative soft thresholding; Tibshirani, JRSS B 58(1):267-288, 1996"
 
     a = r["alpha"] if mode == "lasso" else r["coefficients"]
     rec = r["reconstruction"]
     res = r["residual"]
     err = _bxnrm(res)
-    return RichResult(payload={
-        "alpha": a,
-        "support": [j for j in range(len(A)) if a[j] != 0.0],
-        "reconstruction": rec,
-        "residual": res,
-        "error": err,
-        "energyratio": 1.0 - (err * err) / e0,
-        "mode": mode,
-        "method": "sparse representation of a biomedical signal in a learned "
-                  "dictionary, in the greedy-approximation framing of "
-                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.5; "
-                  "solver: " + src,
-    })
+    return RichResult(
+        payload={
+            "alpha": a,
+            "support": [j for j in range(len(A)) if a[j] != 0.0],
+            "reconstruction": rec,
+            "residual": res,
+            "error": err,
+            "energyratio": 1.0 - (err * err) / e0,
+            "mode": mode,
+            "method": "sparse representation of a biomedical signal in a learned "
+            "dictionary, in the greedy-approximation framing of "
+            "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.5; "
+            "solver: " + src,
+        }
+    )
 
 
 rangayyan_sparse_rep = sparsecode  # pre-policy spelling
@@ -5468,43 +5655,48 @@ def svm(X, y, C=1.0, maxiter=2000, tol=1e-6):
     Cv = float(C)
     if Cv <= 0:
         raise ValueError("C must be positive")
-    K = [[fsum(Xs[i][t] * Xs[j][t] for t in range(p)) for j in range(n)]
-         for i in range(n)]
+    K = [[fsum(Xs[i][t] * Xs[j][t] for t in range(p)) for j in range(n)] for i in range(n)]
     # Dual solved by SMO on the MAXIMAL VIOLATING PAIR (Fan, Chen & Lin
     # 2005, as in morie.fn.svmopt, checked against sklearn): the former
     # simplified-Platt loop paired i with (i + 1 + it) mod n -- for two
     # points always i itself, so it never moved -- and stopped after a
     # single pass without a change even when the KKT conditions failed.
     from .svmopt import smo as _smo
+
     _sol = _smo(ys, K, C=Cv, tol=float(tol), max_iter=int(maxiter) * max(n, 1))
     a = [float(v) for v in _sol["alpha"]]
     b = float(_sol["b"])
     it = int(_sol["iterations"])
     _conv = bool(_sol["converged"])
-    w = [fsum(a[i] * ys[i] * Xs[i][t] for i in range(n))
-         for t in range(p)]
+    w = [fsum(a[i] * ys[i] * Xs[i][t] for i in range(n)) for t in range(p)]
     sv = [i for i in range(n) if a[i] > 1e-8]
     marg = (2.0 / sqrt(fsum(v * v for v in w))) if any(w) else float("inf")
-    pred = [1.0 if fsum(w[t] * Xs[i][t] for t in range(p)) + b >= 0
-            else -1.0 for i in range(n)]
+    pred = [1.0 if fsum(w[t] * Xs[i][t] for t in range(p)) + b >= 0 else -1.0 for i in range(n)]
     acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
-    return RichResult(payload={
-        "w": w, "b": b, "alpha": a, "support_vectors": sv,
-        "n_support": len(sv), "margin": marg, "C": Cv,
-        "iterations": it, "converged": _conv,
-        "training_accuracy": acc,
-        "boundary_set_by_the_support_vectors_only": True,
-        "large_c_contorts_around_outliers": True,
-        "method": "Rangayyan (2024) Section 10.4.5 (support vector "
-                  "machine)"})
+    return RichResult(
+        payload={
+            "w": w,
+            "b": b,
+            "alpha": a,
+            "support_vectors": sv,
+            "n_support": len(sv),
+            "margin": marg,
+            "C": Cv,
+            "iterations": it,
+            "converged": _conv,
+            "training_accuracy": acc,
+            "boundary_set_by_the_support_vectors_only": True,
+            "large_c_contorts_around_outliers": True,
+            "method": "Rangayyan (2024) Section 10.4.5 (support vector machine)",
+        }
+    )
 
 
 rangayyan_svm = svm  # pre-policy spelling
 
 
 # -- rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).
-def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3,
-            coef0=0.0, C=1.0, maxiter=2000, tol=1e-6):
+def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3, coef0=0.0, C=1.0, maxiter=2000, tol=1e-6):
     """Kernel SVM, Section 10.4.5.
 
         K(x, x') = exp(-gamma ||x - x'||^2)      RBF
@@ -5534,8 +5726,7 @@ def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3,
     p = len(Xs[0])
     g = (1.0 / p) if gamma is None else float(gamma)
     if kernel not in ("rbf", "poly", "linear", "sigmoid"):
-        raise ValueError("kernel must be 'rbf', 'poly', 'linear' or "
-                         "'sigmoid'")
+        raise ValueError("kernel must be 'rbf', 'poly', 'linear' or 'sigmoid'")
 
     def kf(u, v):
         dot = fsum(u[t] * v[t] for t in range(p))
@@ -5556,24 +5747,31 @@ def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3,
     # points always i itself, so it never moved -- and stopped after a
     # single pass without a change even when the KKT conditions failed.
     from .svmopt import smo as _smo
+
     _sol = _smo(ys, K, C=Cv, tol=float(tol), max_iter=int(maxiter) * max(n, 1))
     a = [float(v) for v in _sol["alpha"]]
     b = float(_sol["b"])
     it = int(_sol["iterations"])
     _conv = bool(_sol["converged"])
     sv = [i for i in range(n) if a[i] > 1e-8]
-    pred = [1.0 if fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b >= 0
-            else -1.0 for i in range(n)]
+    pred = [1.0 if fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b >= 0 else -1.0 for i in range(n)]
     acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
-    out = {"alpha": a, "b": b, "support_vectors": sv,
-           "n_support": len(sv), "kernel": kernel, "gamma": g, "C": Cv,
-           "iterations": it, "converged": _conv,
-           "training_accuracy": acc,
-           "no_weight_vector_in_the_original_space": kernel != "linear",
-           "model_grows_with_the_training_set": True,
-           "sigmoid_kernel_is_not_always_positive_definite":
-               kernel == "sigmoid",
-           "method": "Rangayyan (2024) Section 10.4.5 (kernel SVM)"}
+    out = {
+        "alpha": a,
+        "b": b,
+        "support_vectors": sv,
+        "n_support": len(sv),
+        "kernel": kernel,
+        "gamma": g,
+        "C": Cv,
+        "iterations": it,
+        "converged": _conv,
+        "training_accuracy": acc,
+        "no_weight_vector_in_the_original_space": kernel != "linear",
+        "model_grows_with_the_training_set": True,
+        "sigmoid_kernel_is_not_always_positive_definite": kernel == "sigmoid",
+        "method": "Rangayyan (2024) Section 10.4.5 (kernel SVM)",
+    }
     if query is not None:
         q = aslist(query)
         if len(q) != p:
@@ -5683,34 +5881,34 @@ def vagtfd(x, fs, natoms=12, nfreq=32, ntime=None, lag=12):
         if s > 0.0:
             f1 = fsum(freqs[k] * pos[k] for k in range(nfreq)) / s
             fp.append(f1)
-            fsp.append(sqrt(max(0.0, fsum((freqs[k] - f1) ** 2 * pos[k]
-                                          for k in range(nfreq)) / s)))
+            fsp.append(sqrt(max(0.0, fsum((freqs[k] - f1) ** 2 * pos[k] for k in range(nfreq)) / s)))
         else:
             fp.append(0.0)
             fsp.append(0.0)
 
-    return RichResult(payload={
-        "tfd": tfd,
-        "times": times,
-        "frequencies": freqs,
-        "ep": ep,
-        "esp": esp,
-        "fp": fp,
-        "fsp": fsp,
-        "coefficients": coef,
-        "method": "matching-pursuit adaptive TFD of a VAG signal with the "
-                  "EP/ESP/FP/FSP features, Rangayyan Biomedical Signal "
-                  "Analysis 3rd ed. Section 9.6, eq. (9.15) diagonal term, "
-                  "and Section 9.9, eqs. (9.79)-(9.82)",
-    })
+    return RichResult(
+        payload={
+            "tfd": tfd,
+            "times": times,
+            "frequencies": freqs,
+            "ep": ep,
+            "esp": esp,
+            "fp": fp,
+            "fsp": fsp,
+            "coefficients": coef,
+            "method": "matching-pursuit adaptive TFD of a VAG signal with the "
+            "EP/ESP/FP/FSP features, Rangayyan Biomedical Signal "
+            "Analysis 3rd ed. Section 9.6, eq. (9.15) diagonal term, "
+            "and Section 9.9, eqs. (9.79)-(9.82)",
+        }
+    )
 
 
 rangayyan_vag_adaptive_tfd = vagtfd  # pre-policy spelling
 
 
 # -- rng190: Pan-Tompkins peak classification.
-def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None,
-                                                   is_signal=None):
+def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None, is_signal=None):
     r"""Pan-Tompkins adaptive threshold update (Rangayyan Ch. 4):
 
     .. math:: SPKI &= 0.125\,PEAKI + 0.875\,SPKI
@@ -5766,75 +5964,81 @@ def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None,
         else:
             npki = 0.125 * p + 0.875 * npki
         classified.append(sig)
-    return RichResult(payload={"SPKI": spki, "NPKI": npki,
-                               "threshold": npki + 0.25 * (spki - npki),
-                               "classified": np.array(classified),
-                               "n_peaks": int(peaks.size),
-                               "method": "Pan-Tompkins 1/8 trackers; threshold floats between them"})
+    return RichResult(
+        payload={
+            "SPKI": spki,
+            "NPKI": npki,
+            "threshold": npki + 0.25 * (spki - npki),
+            "classified": np.array(classified),
+            "n_peaks": int(peaks.size),
+            "method": "Pan-Tompkins 1/8 trackers; threshold floats between them",
+        }
+    )
 
 
 _CHEATSHEET = [
-    'rgacc: Classification accuracy.',
-    'Two-layer perceptron trained by back-propagation (Rangayyan eqs. 10.79-10.85).',
-    'rgbayes: Bayes minimum-error classifier.',
-    'rgbayng: Bayes classifier for normal (Gaussian) patterns.',
-    'Incomplete left/right bundle-branch block decision rules (Rangayyan Section 10.2.1).',
-    'Bayes classifier for normal vs. ectopic beats on [QRSTA, FF] (Rangayyan Section 10.11.2).',
-    'NMF channel selection and weighting for a motor-imagery BCI (Rangayyan eqs. 9.94-9.96).',
-    'rgbhatt: Bhattacharyya distance for class separability.',
-    'Basis-pursuit denoising by iterative soft thresholding (Chen, Donoho and Saunders 1998).',
-    'Cross-validated CAD pipeline scored by sensitivity/specificity/accuracy (Rangayyan Ch. 10).',
-    '1-D CNN forward pass: convolution, rectifier, max-pooling, softmax readout.',
-    'Single-channel fetal ECG extraction by NMF of the STFT magnitude (Rangayyan Section 9.11).',
-    'Linear discriminant on [RR, form factor] for normal vs. PVC beats (Rangayyan eq. 10.131).',
-    'Fractional EEG power in the delta/theta/alpha/beta/gamma bands (Rangayyan Section 1.2.6).',
-    'rgelbow: Elbow method for k-means cluster count selection.',
-    'Seizure detection by signal-derived dictionary learning, Algorithm 9.2 (Rangayyan Section 9.8).',
-    'rgerrbd: Bhattacharyya bound on Bayes classification error.',
+    "rgacc: Classification accuracy.",
+    "Two-layer perceptron trained by back-propagation (Rangayyan eqs. 10.79-10.85).",
+    "rgbayes: Bayes minimum-error classifier.",
+    "rgbayng: Bayes classifier for normal (Gaussian) patterns.",
+    "Incomplete left/right bundle-branch block decision rules (Rangayyan Section 10.2.1).",
+    "Bayes classifier for normal vs. ectopic beats on [QRSTA, FF] (Rangayyan Section 10.11.2).",
+    "NMF channel selection and weighting for a motor-imagery BCI (Rangayyan eqs. 9.94-9.96).",
+    "rgbhatt: Bhattacharyya distance for class separability.",
+    "Basis-pursuit denoising by iterative soft thresholding (Chen, Donoho and Saunders 1998).",
+    "Cross-validated CAD pipeline scored by sensitivity/specificity/accuracy (Rangayyan Ch. 10).",
+    "1-D CNN forward pass: convolution, rectifier, max-pooling, softmax readout.",
+    "Single-channel fetal ECG extraction by NMF of the STFT magnitude (Rangayyan Section 9.11).",
+    "Linear discriminant on [RR, form factor] for normal vs. PVC beats (Rangayyan eq. 10.131).",
+    "Fractional EEG power in the delta/theta/alpha/beta/gamma bands (Rangayyan Section 1.2.6).",
+    "rgelbow: Elbow method for k-means cluster count selection.",
+    "Seizure detection by signal-derived dictionary learning, Algorithm 9.2 (Rangayyan Section 9.8).",
+    "rgerrbd: Bhattacharyya bound on Bayes classification error.",
     "rgfish: Fisher's criterion for feature separability.",
-    'rgfld: Fisher linear discriminant analysis (LDA).',
-    'rghier: Hierarchical agglomerative clustering.',
-    'FastICA fixed-point independent component analysis with tanh nonlinearity.',
-    'EEG artifact removal by zeroing high-kurtosis ICA components and back-projecting.',
-    'Infomax ICA with the natural-gradient update (Bell and Sejnowski 1995).',
-    'rgkfcv: K-fold cross-validation.',
-    'rgkmns: K-means clustering algorithm.',
-    'Knee VAG cartilage screening: variance of segment means and the two-step duration rule.',
-    'rgknn: K-nearest neighbor (k-NN) classifier.',
-    'K-SVD dictionary learning with OMP sparse coding (Aharon, Elad and Bruckstein 2006).',
-    'Sparse-code a signal set against a fixed dictionary by orthogonal matching pursuit.',
-    'rglindf: Linear discriminant function for pattern classification.',
-    'rglindsep: Linear discriminant function with optimal separability.',
-    'rgloo: Leave-one-out cross-validation (LOO-CV).',
-    'rglr: Logistic regression for binary classification.',
-    'LSTM recurrence with a ridge least-squares readout on the final hidden state.',
-    'rgmahd: Mahalanobis distance from sample to class.',
+    "rgfld: Fisher linear discriminant analysis (LDA).",
+    "rghier: Hierarchical agglomerative clustering.",
+    "FastICA fixed-point independent component analysis with tanh nonlinearity.",
+    "EEG artifact removal by zeroing high-kurtosis ICA components and back-projecting.",
+    "Infomax ICA with the natural-gradient update (Bell and Sejnowski 1995).",
+    "rgkfcv: K-fold cross-validation.",
+    "rgkmns: K-means clustering algorithm.",
+    "Knee VAG cartilage screening: variance of segment means and the two-step duration rule.",
+    "rgknn: K-nearest neighbor (k-NN) classifier.",
+    "K-SVD dictionary learning with OMP sparse coding (Aharon, Elad and Bruckstein 2006).",
+    "Sparse-code a signal set against a fixed dictionary by orthogonal matching pursuit.",
+    "rglindf: Linear discriminant function for pattern classification.",
+    "rglindsep: Linear discriminant function with optimal separability.",
+    "rgloo: Leave-one-out cross-validation (LOO-CV).",
+    "rglr: Logistic regression for binary classification.",
+    "LSTM recurrence with a ridge least-squares readout on the final hidden state.",
+    "rgmahd: Mahalanobis distance from sample to class.",
     "rgmcn: McNemar's test for comparing two classifiers.",
-    'Matching-pursuit decomposition into Gabor time-frequency atoms (Rangayyan eqs. 9.1-9.7).',
-    'Kalman-filter neural decoder for prosthesis control (Rangayyan Section 8.18, eqs. 8.95-8.99).',
-    'Nonnegative matrix factorisation by multiplicative updates (Rangayyan eqs. 9.49, 9.50).',
-    'Rank EEG channels by the normalised NMF basis-row RMS deviation (Rangayyan eqs. 9.94-9.96).',
-    'Orthogonal matching pursuit with least-squares reprojection (Pati et al. 1993).',
-    'PCA of correlated signals by eigendecomposition of the covariance (Rangayyan eqs. 9.37-9.41).',
-    'Compare PCA, ICA and NMF on one mixture by reconstruction error (Rangayyan Section 9.7.4).',
-    'rgppv: Positive predictive value (precision).',
-    'rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.',
-    'RBF network with greedy centre selection and closed-form weights (Rangayyan eqs. 10.86-10.87).',
-    'rgroc: Receiver operating characteristic (ROC) curve and AUC.',
-    'Apnea-hypopnea index and severity from airflow and oximetry (Rangayyan Section 10.13).',
-    'rgsen: Sensitivity (recall, true positive rate).',
-    'rgsepix: Separability index: ratio of between-class to within-class scatter.',
-    'rgspe: Specificity (true negative rate).',
-    'Sparse representation of one signal by OMP (atom budget) or lasso (L1 penalty).',
-    'rgsvm: Support vector machine (SVM) via margin maximization.',
-    'rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).',
-    'MP-based adaptive TFD of a VAG signal with the EP/ESP/FP/FSP features (Rangayyan 9.6, 9.9).',
-    'rng190: Pan-Tompkins peak classification.',
+    "Matching-pursuit decomposition into Gabor time-frequency atoms (Rangayyan eqs. 9.1-9.7).",
+    "Kalman-filter neural decoder for prosthesis control (Rangayyan Section 8.18, eqs. 8.95-8.99).",
+    "Nonnegative matrix factorisation by multiplicative updates (Rangayyan eqs. 9.49, 9.50).",
+    "Rank EEG channels by the normalised NMF basis-row RMS deviation (Rangayyan eqs. 9.94-9.96).",
+    "Orthogonal matching pursuit with least-squares reprojection (Pati et al. 1993).",
+    "PCA of correlated signals by eigendecomposition of the covariance (Rangayyan eqs. 9.37-9.41).",
+    "Compare PCA, ICA and NMF on one mixture by reconstruction error (Rangayyan Section 9.7.4).",
+    "rgppv: Positive predictive value (precision).",
+    "rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.",
+    "RBF network with greedy centre selection and closed-form weights (Rangayyan eqs. 10.86-10.87).",
+    "rgroc: Receiver operating characteristic (ROC) curve and AUC.",
+    "Apnea-hypopnea index and severity from airflow and oximetry (Rangayyan Section 10.13).",
+    "rgsen: Sensitivity (recall, true positive rate).",
+    "rgsepix: Separability index: ratio of between-class to within-class scatter.",
+    "rgspe: Specificity (true negative rate).",
+    "Sparse representation of one signal by OMP (atom budget) or lasso (L1 penalty).",
+    "rgsvm: Support vector machine (SVM) via margin maximization.",
+    "rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).",
+    "MP-based adaptive TFD of a VAG signal with the EP/ESP/FP/FSP features (Rangayyan 9.6, 9.9).",
+    "rng190: Pan-Tompkins peak classification.",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

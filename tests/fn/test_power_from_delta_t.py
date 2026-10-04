@@ -1,7 +1,5 @@
 """Tests for power_from_delta_t.power_from_delta_t."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.power_from_delta_t import power_from_delta_t
 
 

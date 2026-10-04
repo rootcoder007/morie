@@ -45,6 +45,7 @@ NON_MATROID_IND = [(), (0,), (1,), (2,), (1, 2)]
 # Matroid axioms
 # --------------------------------------------------------------------
 
+
 def test_uniform_matroids_satisfy_both_axioms():
     for n in range(1, 6):
         for k in range(n + 1):
@@ -53,9 +54,11 @@ def test_uniform_matroids_satisfy_both_axioms():
 
 
 def test_graphic_matroids_satisfy_both_axioms():
-    for edges, n in [([(0, 1), (1, 2), (0, 2)], 3),
-                     ([(0, 1), (1, 2), (2, 3), (3, 0), (0, 2)], 4),
-                     ([(0, 1), (2, 3)], 4)]:
+    for edges, n in [
+        ([(0, 1), (1, 2), (0, 2)], 3),
+        ([(0, 1), (1, 2), (2, 3), (3, 0), (0, 2)], 4),
+        ([(0, 1), (2, 3)], 4),
+    ]:
         g = graphic_matroid(edges, n)
         assert is_matroid(g["ground"], g["independent"])["is_matroid"]
 
@@ -84,19 +87,18 @@ def test_an_empty_family_is_not_a_matroid():
 # Rank, bases, circuits, duality
 # --------------------------------------------------------------------
 
+
 def test_uniform_matroid_rank_and_basis_count():
     for n in range(1, 6):
         for k in range(n + 1):
             u = uniform_matroid(n, k)
             assert matroid_rank(u["ground"], u["independent"]) == min(k, n)
-            assert len(matroid_bases(u["ground"], u["independent"])) == \
-                math.comb(n, min(k, n))
+            assert len(matroid_bases(u["ground"], u["independent"])) == math.comb(n, min(k, n))
 
 
 def test_all_bases_have_the_same_size():
     # a consequence of exchange, not an assumption
-    for edges, n in [([(0, 1), (1, 2), (2, 3), (3, 0), (0, 2)], 4),
-                     ([(0, 1), (1, 2), (0, 2), (2, 3)], 4)]:
+    for edges, n in [([(0, 1), (1, 2), (2, 3), (3, 0), (0, 2)], 4), ([(0, 1), (1, 2), (0, 2), (2, 3)], 4)]:
         g = graphic_matroid(edges, n)
         sizes = {len(b) for b in matroid_bases(g["ground"], g["independent"])}
         assert len(sizes) == 1
@@ -113,7 +115,7 @@ def test_a_graphic_matroid_circuit_is_a_graph_cycle():
     edges = [(0, 1), (1, 2), (0, 2), (2, 3)]
     g = graphic_matroid(edges, 4)
     circ = matroid_circuits(g["ground"], g["independent"])
-    assert [0, 1, 2] in circ          # the triangle
+    assert [0, 1, 2] in circ  # the triangle
     assert all(len(c) >= 3 for c in circ)
 
 
@@ -142,6 +144,7 @@ def test_the_dual_of_a_matroid_is_a_matroid():
 # --------------------------------------------------------------------
 # Rado-Edmonds, both directions
 # --------------------------------------------------------------------
+
 
 def test_greedy_is_optimal_on_uniform_matroids():
     rng = random.Random(0)
@@ -190,14 +193,14 @@ def test_a_concrete_weighting_where_greedy_loses():
 
 def test_greedy_never_takes_a_negative_weight_element():
     u = uniform_matroid(4, 3)
-    g = greedy_independent_set(u["ground"], u["independent"],
-                               [-1, -2, 5, -3])
+    g = greedy_independent_set(u["ground"], u["independent"], [-1, -2, 5, -3])
     assert g["set"] == [2]
 
 
 # --------------------------------------------------------------------
 # Minimum spanning tree
 # --------------------------------------------------------------------
+
 
 def brute_mst(edges, n, w):
     best = None
@@ -230,8 +233,7 @@ def test_mst_matches_exhaustive_search_over_spanning_trees():
     checked = 0
     for _ in range(120):
         n = rng.randint(3, 6)
-        edges = [e for e in itertools.combinations(range(n), 2)
-                 if rng.random() < 0.75]
+        edges = [e for e in itertools.combinations(range(n), 2) if rng.random() < 0.75]
         if len(edges) < n - 1:
             continue
         w = [rng.randint(1, 20) for _ in edges]
@@ -252,8 +254,7 @@ def test_mst_is_exactly_greedy_on_the_cycle_matroid():
         w = [rng.randint(1, 20) for _ in edges]
         mst = minimum_spanning_tree(edges, 4, w)
         M = max(w) + 1
-        got = greedy_independent_set(g["ground"], g["independent"],
-                                     [M - x for x in w])
+        got = greedy_independent_set(g["ground"], g["independent"], [M - x for x in w])
         assert sum(w[i] for i in got["set"]) == mst["weight"]
 
 
@@ -283,12 +284,12 @@ def test_mst_validation():
 # Konig and Hall
 # --------------------------------------------------------------------
 
+
 def test_konig_holds_on_random_bipartite_graphs():
     rng = random.Random(5)
     for _ in range(150):
         ln, rn = rng.randint(1, 5), rng.randint(1, 5)
-        E = [(a, b) for a in range(ln) for b in range(rn)
-             if rng.random() < 0.5]
+        E = [(a, b) for a in range(ln) for b in range(rn) if rng.random() < 0.5]
         out = konig_theorem(ln, rn, E)
         assert out["konig_holds"] is True
         assert out["matching_size"] == out["cover_size"]
@@ -308,15 +309,13 @@ def test_matching_size_matches_brute_force():
     rng = random.Random(6)
     for _ in range(60):
         ln, rn = rng.randint(1, 4), rng.randint(1, 4)
-        E = [(a, b) for a in range(ln) for b in range(rn)
-             if rng.random() < 0.6]
+        E = [(a, b) for a in range(ln) for b in range(rn) if rng.random() < 0.6]
         got = bipartite_matching(ln, rn, E)["size"]
         best = 0
         for r in range(min(ln, rn), 0, -1):
             found = False
             for sub in itertools.combinations(E, r):
-                if len({a for a, _ in sub}) == r and \
-                        len({b for _, b in sub}) == r:
+                if len({a for a, _ in sub}) == r and len({b for _, b in sub}) == r:
                     found = True
                     break
             if found:
@@ -329,8 +328,7 @@ def test_hall_agrees_with_the_matching_everywhere():
     rng = random.Random(7)
     for _ in range(200):
         ln, rn = rng.randint(1, 5), rng.randint(1, 5)
-        E = [(a, b) for a in range(ln) for b in range(rn)
-             if rng.random() < 0.5]
+        E = [(a, b) for a in range(ln) for b in range(rn) if rng.random() < 0.5]
         assert hall_condition(ln, rn, E)["agrees_with_matching"] is True
 
 
@@ -354,6 +352,7 @@ def test_hall_holds_on_a_complete_bipartite_graph():
 # --------------------------------------------------------------------
 # Max-flow min-cut
 # --------------------------------------------------------------------
+
 
 def test_max_flow_equals_min_cut_on_random_networks():
     rng = random.Random(8)

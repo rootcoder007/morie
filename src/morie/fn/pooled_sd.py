@@ -28,20 +28,19 @@ def pooled_sd(s1, s2, n1, n2):
     """
     value = _ca_crim.pooled_sd(s1, s2, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.2)"
     return RichResult(
-        title='Pooled within-groups standard deviation',
+        title="Pooled within-groups standard deviation",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e2: s_pooled = sqrt(((n1-1)s1^2 + (n2-1)s2^2)/(n1+n2-2)) [Weisburd et al. 2022, eq. 11.2]'
+    return "ca11e2: s_pooled = sqrt(((n1-1)s1^2 + (n2-1)s2^2)/(n1+n2-2)) [Weisburd et al. 2022, eq. 11.2]"
 
 
 # compact alias per ledger/NAMING.md

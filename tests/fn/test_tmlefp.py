@@ -2,9 +2,7 @@
 
 import math
 
-from morie.fn.tmlefp import (alpha_from_gamma, optimal_alpha,
-                             optimal_alpha_att, optimal_overlap,
-                             owate_weights, tmlefp)
+from morie.fn.tmlefp import alpha_from_gamma, optimal_alpha, optimal_alpha_att, optimal_overlap, owate_weights, tmlefp
 
 
 def _lcg(seed):
@@ -13,6 +11,7 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -21,7 +20,7 @@ def _bad_overlap(n=400, seed=11):
     out = []
     for _ in range(n):
         u = rnd()
-        out.append(0.01 + 0.98 * u ** 3 if u < 0.5 else 0.02 + 0.96 * u)
+        out.append(0.01 + 0.98 * u**3 if u < 0.5 else 0.02 + 0.96 * u)
     return out
 
 
@@ -51,9 +50,7 @@ def test_fixed_point_solves_its_own_equation():
     sel = [v for v in k if v < r["gamma"]]
     assert abs(r["gamma"] - 2.0 * sum(sel) / len(sel)) < 1e-6
     assert abs(1.0 / (r["alpha"] * (1 - r["alpha"])) - r["gamma"]) < 1e-6
-    assert all(r["keep"][i] ==
-               (r["alpha"] - 1e-12 <= e[i] <= 1 - r["alpha"] + 1e-12)
-               for i in range(len(e)))
+    assert all(r["keep"][i] == (r["alpha"] - 1e-12 <= e[i] <= 1 - r["alpha"] + 1e-12) for i in range(len(e)))
 
 
 def test_trimming_lowers_the_variance_bound():
@@ -72,7 +69,7 @@ def test_heteroskedastic_rule():
     k = [5.0 / v + 0.2 / (1 - v) for v in e]
     sel = [v for v in k if v < lop["gamma"]]
     assert abs(lop["gamma"] - 2.0 * sum(sel) / len(sel)) < 1e-6
-    assert lop["alpha"] != lop["alpha"]      # NaN: not an interval in e
+    assert lop["alpha"] != lop["alpha"]  # NaN: not an interval in e
 
 
 def test_att_rule_is_one_sided():
@@ -80,22 +77,17 @@ def test_att_rule_is_one_sided():
     rnd = _lcg(5)
     w = [1 if v > rnd() else 0 for v in e]
     att = optimal_alpha_att(e, w)
-    assert all(att["keep"][i] == (e[i] <= att["alpha_t"])
-               for i in range(len(e)))
-    g = [1.0 / (1.0 - e[i]) for i in range(len(e))
-         if w[i] == 1 and e[i] <= att["alpha_t"]]
-    assert abs(1.0 / (1.0 - att["alpha_t"]) -
-               2.0 * sum(g) / len(g)) < 1e-6
+    assert all(att["keep"][i] == (e[i] <= att["alpha_t"]) for i in range(len(e)))
+    g = [1.0 / (1.0 - e[i]) for i in range(len(e)) if w[i] == 1 and e[i] <= att["alpha_t"]]
+    assert abs(1.0 / (1.0 - att["alpha_t"]) - 2.0 * sum(g) / len(g)) < 1e-6
 
 
 def test_owate_weights():
     e = _bad_overlap()
     om = owate_weights(e)
-    assert all(abs(om[i] - e[i] * (1 - e[i])) < 1e-15
-               for i in range(len(e)))
+    assert all(abs(om[i] - e[i] * (1 - e[i])) < 1e-15 for i in range(len(e)))
     het = owate_weights(e, [3.0] * len(e), [1.0] * len(e))
-    assert all(abs(het[i] - 1.0 / (3.0 / e[i] + 1.0 / (1 - e[i]))) < 1e-15
-               for i in range(len(e)))
+    assert all(abs(het[i] - 1.0 / (3.0 / e[i] + 1.0 / (1 - e[i]))) < 1e-15 for i in range(len(e)))
 
 
 def test_recovers_a_known_effect():
@@ -117,14 +109,15 @@ def test_recovers_a_known_effect():
 
 
 def test_validation():
-    for call in (lambda: optimal_alpha([0.0, 0.5]),
-                 lambda: optimal_alpha([1.0, 0.5]),
-                 lambda: optimal_alpha([]),
-                 lambda: tmlefp([1.0, 2.0], [0, 2], [0.4, 0.6]),
-                 lambda: tmlefp([1.0], [0, 1], [0.4, 0.6]),
-                 lambda: tmlefp([1.0, 2.0], [0, 1], [0.4, 0.6],
-                                estimand="atu"),
-                 lambda: optimal_alpha_att([0.4, 0.6], [0, 0])):
+    for call in (
+        lambda: optimal_alpha([0.0, 0.5]),
+        lambda: optimal_alpha([1.0, 0.5]),
+        lambda: optimal_alpha([]),
+        lambda: tmlefp([1.0, 2.0], [0, 2], [0.4, 0.6]),
+        lambda: tmlefp([1.0], [0, 1], [0.4, 0.6]),
+        lambda: tmlefp([1.0, 2.0], [0, 1], [0.4, 0.6], estimand="atu"),
+        lambda: optimal_alpha_att([0.4, 0.6], [0, 0]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

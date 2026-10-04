@@ -1,8 +1,8 @@
 """Tests for hrzc1.horowitz_censored_regression (CLAD)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hrzc1 import horowitz_censored_regression
 
 

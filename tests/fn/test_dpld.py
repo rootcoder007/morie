@@ -1,7 +1,6 @@
 """Tests for dpld.l_diversity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpld import l_diversity
 
 
@@ -16,9 +15,19 @@ def test_dpld_basic():
     result = l_diversity(X, quasi_ids, sensitive, l)
     assert isinstance(result, dict)
     expected_keys = [
-        "estimate", "distinct_l", "entropy_l", "min_entropy", "c_min",
-        "satisfies_distinct", "satisfies_entropy", "satisfies_recursive",
-        "n_blocks", "min_block_size", "l", "c", "n",
+        "estimate",
+        "distinct_l",
+        "entropy_l",
+        "min_entropy",
+        "c_min",
+        "satisfies_distinct",
+        "satisfies_entropy",
+        "satisfies_recursive",
+        "n_blocks",
+        "min_block_size",
+        "l",
+        "c",
+        "n",
     ]
     for key in expected_keys:
         assert key in result

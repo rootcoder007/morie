@@ -5,10 +5,7 @@ import warnings
 
 from . import _array_core as np
 from . import _frame_core as pd
-
-
-from ._ml_core import LinearRegression, LogisticRegression
-from ._ml_core import StandardScaler
+from ._ml_core import LinearRegression, LogisticRegression, StandardScaler
 from ._rng import random_uniform
 
 

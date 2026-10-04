@@ -9,8 +9,7 @@ from .attsdp import scaled_dot_product_attention
 __all__ = ["alammar_multi_query_attention"]
 
 
-def alammar_multi_query_attention(Q_heads, K_shared, V_shared,
-                                  n_query_heads):
+def alammar_multi_query_attention(Q_heads, K_shared, V_shared, n_query_heads):
     """Every query head attends over ONE shared K and V.
 
     References: Alammar and Grootendorst, Ch 3; Shazeer (2019).
@@ -25,11 +24,15 @@ def alammar_multi_query_attention(Q_heads, K_shared, V_shared,
         h = scaled_dot_product_attention(Q_heads[i], K_shared, V_shared)
         outs.append(np.asarray(h["output"]))
     concat = np.concatenate(outs, axis=1)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in concat],
-        "kv_cache_ratio": 1.0 / H,
-        "estimate": float(concat[0, 0]), "n": H,
-        "method": "Multi-query attention (Shazeer 2019)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in concat],
+            "kv_cache_ratio": 1.0 / H,
+            "estimate": float(concat[0, 0]),
+            "n": H,
+            "method": "Multi-query attention (Shazeer 2019)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for vit2lf.vit2_log_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vit2lf import vit2_log_attention
 
 

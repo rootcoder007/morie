@@ -106,8 +106,7 @@ def impulse_response(
     # Orthogonalised IRF: Theta[h] = Phi[h] @ P; column shock_var.
     irf = []
     for h in range(horizon + 1):
-        irf.append([sum(Phi[h][i][t] * P[t][shock_var] for t in range(m))
-                    for i in range(m)])
+        irf.append([sum(Phi[h][i][t] * P[t][shock_var] for t in range(m)) for i in range(m)])
 
     return DescriptiveResult(
         name="impulse_response",

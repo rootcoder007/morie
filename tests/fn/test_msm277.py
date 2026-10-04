@@ -6,12 +6,9 @@ Springer, ch 14, eq. 14.10 p.470, the penalised sum of squares. Expected values 
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm277 import pensse
-
 
 Y = [1.0, 2.0]
 X = [[1.0, 0.0], [0.0, 1.0]]
@@ -38,8 +35,7 @@ def test_the_penalty_is_the_quadratic_form_of_the_roughness_matrix():
     res = pensse(Y, X, [2.0, 3.0], 1.0, [[2.0, 1.0], [1.0, 4.0]], mu=0.0)
     b = [2.0, 3.0]
     Pm = [[2.0, 1.0], [1.0, 4.0]]
-    expected = sum(b[i] * Pm[i][j] * b[j] for i in range(2)
-                   for j in range(2))
+    expected = sum(b[i] * Pm[i][j] * b[j] for i in range(2) for j in range(2))
     assert res["penalty"] == pytest.approx(expected, rel=1e-12)
 
 

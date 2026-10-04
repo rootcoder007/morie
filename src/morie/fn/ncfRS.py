@@ -80,16 +80,14 @@ def gmf(p_u, q_i, h=None, activation="sigmoid"):
     p = [float(v) for v in k.vec(p_u)]
     q = [float(v) for v in k.vec(q_i)]
     if len(p) != len(q):
-        raise ValueError("ncfRS: embeddings differ in length (%d, %d)"
-                         % (len(p), len(q)))
+        raise ValueError("ncfRS: embeddings differ in length (%d, %d)" % (len(p), len(q)))
     hh = [1.0] * len(p) if h is None else [float(v) for v in k.vec(h)]
     z = sum(hh[f] * p[f] * q[f] for f in range(len(p)))
     if activation == "identity":
         return z
     if activation == "sigmoid":
         return _sig(z)
-    raise ValueError("ncfRS: activation must be identity or sigmoid, "
-                     "got %r" % (activation,))
+    raise ValueError("ncfRS: activation must be identity or sigmoid, got %r" % (activation,))
 
 
 def mlp_layers(p_u, q_i, Ws, bs):
@@ -98,31 +96,27 @@ def mlp_layers(p_u, q_i, Ws, bs):
     Concatenation alone models no interaction; the depth is what
     supplies it.
     """
-    z = [float(v) for v in k.vec(p_u)] + \
-        [float(v) for v in k.vec(q_i)]
+    z = [float(v) for v in k.vec(p_u)] + [float(v) for v in k.vec(q_i)]
     for l in range(len(Ws)):
         W, b = Ws[l], bs[l]
-        z = [max(0.0, b[o] + sum(W[o][i] * z[i]
-                                 for i in range(len(z))))
-             for o in range(len(b))]
+        z = [max(0.0, b[o] + sum(W[o][i] * z[i] for i in range(len(z)))) for o in range(len(b))]
     return z
 
 
 def neumf(p_gmf, q_gmf, p_mlp, q_mlp, Ws, bs, h):
     r"""Fuse the two pathways in the last layer only."""
-    g = [float(a) * float(b) for a, b in
-         zip(k.vec(p_gmf), k.vec(q_gmf))]
+    g = [float(a) * float(b) for a, b in zip(k.vec(p_gmf), k.vec(q_gmf))]
     m = mlp_layers(p_mlp, q_mlp, Ws, bs)
     cat = list(g) + list(m)
     hh = [float(v) for v in k.vec(h)]
     if len(hh) != len(cat):
-        raise ValueError("ncfRS: h has %d entries for a fused vector "
-                         "of %d" % (len(hh), len(cat)))
-    return {"score": _sig(sum(hh[i] * cat[i]
-                              for i in range(len(cat)))),
-            "gmf_part": g, "mlp_part": m,
-            "note": "separate embeddings per pathway -- sharing one "
-                    "would tie both models to the same dimension"}
+        raise ValueError("ncfRS: h has %d entries for a fused vector of %d" % (len(hh), len(cat)))
+    return {
+        "score": _sig(sum(hh[i] * cat[i] for i in range(len(cat)))),
+        "gmf_part": g,
+        "mlp_part": m,
+        "note": "separate embeddings per pathway -- sharing one would tie both models to the same dimension",
+    }
 
 
 def log_loss(y, y_hat):
@@ -132,8 +126,7 @@ def log_loss(y, y_hat):
     return -(yv * math.log(p) + (1.0 - yv) * math.log(1.0 - p))
 
 
-def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000,
-            n_neg=4, seed=0, learn_h=True):
+def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000, n_neg=4, seed=0, learn_h=True):
     r"""GMF by SGD with sampled negatives.
 
     ``learn_h=False`` freezes :math:`h` at ones, which is matrix
@@ -141,16 +134,13 @@ def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000,
     """
     U, I, K = int(n_users), int(n_items), int(k_dim)
     if U < 1 or I < 2 or K < 1:
-        raise ValueError("ncfRS: need at least 1 user, 2 items, 1 "
-                         "factor")
+        raise ValueError("ncfRS: need at least 1 user, 2 items, 1 factor")
     users = sorted(pos)
     if not users:
         raise ValueError("ncfRS: no observed interactions")
     rng = np.random.default_rng(seed)
-    P = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)]
-         for _ in range(U)]
-    Q = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)]
-         for _ in range(I)]
+    P = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)] for _ in range(U)]
+    Q = [[(float(rng.uniform()) - 0.5) * 0.2 for _ in range(K)] for _ in range(I)]
     h = [1.0] * K
     a = float(alpha)
     hist = []
@@ -181,25 +171,33 @@ def fit_gmf(pos, n_users, n_items, k_dim=8, alpha=0.05, iters=2000,
                     L += log_loss(y, gmf(P[uu], Q[i], h))
                     n += 1
             hist.append(L / n)
-    return RichResult(payload={
-        "estimate": (P, Q, h), "P": P, "Q": Q, "h": h,
-        "loss_history": hist, "final_loss": hist[-1] if hist else
-        float("nan"), "k": K, "learned_h": bool(learn_h),
-        "method": "GMF by SGD with sampled negatives; He et al. "
-                  "(2017) eq. (9)",
-    })
+    return RichResult(
+        payload={
+            "estimate": (P, Q, h),
+            "P": P,
+            "Q": Q,
+            "h": h,
+            "loss_history": hist,
+            "final_loss": hist[-1] if hist else float("nan"),
+            "k": K,
+            "learned_h": bool(learn_h),
+            "method": "GMF by SGD with sampled negatives; He et al. (2017) eq. (9)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ncfRS: the inner product is an ASSUMPTION, not a "
-            "necessity. GMF = a_out(h' (p_u * q_i)) elementwise, which "
-            "IS matrix factorisation when a_out is the identity and h "
-            "is all ones -- learning h weights the dimensions, a "
-            "sigmoid makes it non-linear. MLP concatenates, and "
-            "concatenation alone models NO interaction, which is why "
-            "the depth is required. NeuMF gives each pathway its OWN "
-            "embedding and fuses only at the last layer. Implicit "
-            "data, so log loss with sampled negatives.")
+    return (
+        "ncfRS: the inner product is an ASSUMPTION, not a "
+        "necessity. GMF = a_out(h' (p_u * q_i)) elementwise, which "
+        "IS matrix factorisation when a_out is the identity and h "
+        "is all ones -- learning h weights the dimensions, a "
+        "sigmoid makes it non-linear. MLP concatenates, and "
+        "concatenation alone models NO interaction, which is why "
+        "the depth is required. NeuMF gives each pathway its OWN "
+        "embedding and fuses only at the last layer. Implicit "
+        "data, so log loss with sampled negatives."
+    )
 
 
 # compact alias per ledger/NAMING.md

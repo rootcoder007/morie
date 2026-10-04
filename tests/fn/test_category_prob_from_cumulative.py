@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.category_prob_from_cumulative import (
     category_prob_from_cumulative,
 )

@@ -51,8 +51,9 @@ def soft_threshold(v, tau):
     return out
 
 
-def prox_gradient(fun, grad, prox, x0, L=1.0, max_iter=500, tol=1e-10,
-                  accelerate=True, backtrack=False, eta=2.0, g_fun=None):
+def prox_gradient(
+    fun, grad, prox, x0, L=1.0, max_iter=500, tol=1e-10, accelerate=True, backtrack=False, eta=2.0, g_fun=None
+):
     r"""Proximal gradient / FISTA on ``f + g``."""
     x = [float(v) for v in np.atleast_1d(np.asarray(x0, dtype=float))]
     n = len(x)
@@ -74,8 +75,7 @@ def prox_gradient(fun, grad, prox, x0, L=1.0, max_iter=500, tol=1e-10,
             for _ in range(60):
                 z = prox([y[j] - gy[j] / Lk for j in range(n)], 1.0 / Lk)
                 d = [z[j] - y[j] for j in range(n)]
-                q = (fy + sum(gy[j] * d[j] for j in range(n))
-                     + 0.5 * Lk * sum(v * v for v in d))
+                q = fy + sum(gy[j] * d[j] for j in range(n)) + 0.5 * Lk * sum(v * v for v in d)
                 if float(fun(z)) <= q + 1e-15:
                     break
                 Lk *= eta
@@ -99,18 +99,21 @@ def prox_gradient(fun, grad, prox, x0, L=1.0, max_iter=500, tol=1e-10,
             converged = True
             break
 
-    return RichResult(payload={
-        "estimate": prev,
-        "x": prev,
-        "fun": float(fun(prev)),
-        "objective": obj,
-        "iterations": int(it),
-        "L": float(L),
-        "accelerated": bool(accelerate),
-        "converged": bool(converged),
-        "method": ("FISTA (Beck & Teboulle 2009, eq. 4.1-4.3)" if accelerate
-                   else "ISTA (Beck & Teboulle 2009, Sec. 2)"),
-    })
+    return RichResult(
+        payload={
+            "estimate": prev,
+            "x": prev,
+            "fun": float(fun(prev)),
+            "objective": obj,
+            "iterations": int(it),
+            "L": float(L),
+            "accelerated": bool(accelerate),
+            "converged": bool(converged),
+            "method": (
+                "FISTA (Beck & Teboulle 2009, eq. 4.1-4.3)" if accelerate else "ISTA (Beck & Teboulle 2009, Sec. 2)"
+            ),
+        }
+    )
 
 
 def lasso_fista(A, b, lam, max_iter=500, tol=1e-10, accelerate=True):
@@ -122,13 +125,11 @@ def lasso_fista(A, b, lam, max_iter=500, tol=1e-10, accelerate=True):
     lam = float(lam)
 
     def f(x):
-        r = [sum(Am[i][j] * x[j] for j in range(p)) - bv[i]
-             for i in range(n_rows)]
+        r = [sum(Am[i][j] * x[j] for j in range(p)) - bv[i] for i in range(n_rows)]
         return 0.5 * sum(v * v for v in r)
 
     def g(x):
-        r = [sum(Am[i][j] * x[j] for j in range(p)) - bv[i]
-             for i in range(n_rows)]
+        r = [sum(Am[i][j] * x[j] for j in range(p)) - bv[i] for i in range(n_rows)]
         return [sum(Am[i][j] * r[i] for i in range(n_rows)) for j in range(p)]
 
     # L = largest eigenvalue of A'A, by power iteration.
@@ -153,9 +154,17 @@ def lasso_fista(A, b, lam, max_iter=500, tol=1e-10, accelerate=True):
     def _prox(v, t):
         return soft_threshold(v, lam * t)
 
-    res = prox_gradient(f, g, _prox, [0.0] * p, L=L,
-                        max_iter=max_iter, tol=tol, accelerate=accelerate,
-                        g_fun=lambda x: lam * sum(abs(t) for t in x))
+    res = prox_gradient(
+        f,
+        g,
+        _prox,
+        [0.0] * p,
+        L=L,
+        max_iter=max_iter,
+        tol=tol,
+        accelerate=accelerate,
+        g_fun=lambda x: lam * sum(abs(t) for t in x),
+    )
     d = dict(res)
     d["lambda"] = lam
     d["L"] = L
@@ -163,9 +172,11 @@ def lasso_fista(A, b, lam, max_iter=500, tol=1e-10, accelerate=True):
 
 
 def cheatsheet():
-    return ("prxgms: ISTA/FISTA, x = prox_{g/L}(x - grad f / L), "
-            "t_{k+1} = (1+sqrt(1+4t^2))/2, y = x + (t-1)/t_next (x - x_prev); "
-            "soft threshold for the lasso.")
+    return (
+        "prxgms: ISTA/FISTA, x = prox_{g/L}(x - grad f / L), "
+        "t_{k+1} = (1+sqrt(1+4t^2))/2, y = x + (t-1)/t_next (x - x_prev); "
+        "soft threshold for the lasso."
+    )
 
 
 prxgms = prox_gradient

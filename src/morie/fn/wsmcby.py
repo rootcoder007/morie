@@ -52,14 +52,18 @@ def wasserman_chebyshev_ineq(k):
     if np.any(k <= 0):
         bad = float(k[k <= 0][0])
         raise ValueError(f"Chebyshev inequality needs k > 0; got {bad}.")
-    raw = 1.0 / k ** 2
+    raw = 1.0 / k**2
     capped = np.minimum(raw, 1.0)
-    return RichResult(payload={
-        "estimate": float(capped[0]),
-        "bounds": [float(v) for v in capped],
-        "raw_bounds": [float(v) for v in raw],
-        "k": [float(v) for v in k], "n": int(k.size),
-        "method": "Chebyshev bound 1/k^2 (capped at 1)"})
+    return RichResult(
+        payload={
+            "estimate": float(capped[0]),
+            "bounds": [float(v) for v in capped],
+            "raw_bounds": [float(v) for v in raw],
+            "k": [float(v) for v in k],
+            "n": int(k.size),
+            "method": "Chebyshev bound 1/k^2 (capped at 1)",
+        }
+    )
 
 
 def cheatsheet():

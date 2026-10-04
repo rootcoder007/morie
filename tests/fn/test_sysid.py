@@ -1,7 +1,6 @@
 """Tests for sysid.py - System identification."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sysid import sysid, system_identify_fn
 
 

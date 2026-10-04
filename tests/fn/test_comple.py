@@ -1,7 +1,6 @@
 """Tests for complE.complex."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.comple import complex
 
 
@@ -31,10 +30,12 @@ def test_comple_basic():
     for h, r, t in triples:
         s = 0.0
         for k in range(dim):
-            s += (re_e[h, k] * re_r[r, k] * re_e[t, k]
-                  + re_e[h, k] * im_r[r, k] * im_e[t, k]
-                  + im_e[h, k] * re_r[r, k] * im_e[t, k]
-                  - im_e[h, k] * im_r[r, k] * re_e[t, k])
+            s += (
+                re_e[h, k] * re_r[r, k] * re_e[t, k]
+                + re_e[h, k] * im_r[r, k] * im_e[t, k]
+                + im_e[h, k] * re_r[r, k] * im_e[t, k]
+                - im_e[h, k] * im_r[r, k] * re_e[t, k]
+            )
         expected_scores.append(s)
     expected_estimate = sum(expected_scores) / len(expected_scores)
 
@@ -69,8 +70,10 @@ def test_comple_edge():
     h, r, t = 0, 0, 1
     expected = 0.0
     for k in range(dim):
-        expected += (re_e[h, k] * re_r[r, k] * re_e[t, k]
-                     + re_e[h, k] * im_r[r, k] * im_e[t, k]
-                     + im_e[h, k] * re_r[r, k] * im_e[t, k]
-                     - im_e[h, k] * im_r[r, k] * re_e[t, k])
+        expected += (
+            re_e[h, k] * re_r[r, k] * re_e[t, k]
+            + re_e[h, k] * im_r[r, k] * im_e[t, k]
+            + im_e[h, k] * re_r[r, k] * im_e[t, k]
+            - im_e[h, k] * im_r[r, k] * re_e[t, k]
+        )
     assert abs(single_result["scores"][0] - expected) < 1e-9

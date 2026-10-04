@@ -1,7 +1,6 @@
 """Tests for morie.fn.odm_y — Demographic profile per year."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.odm_y import otis_demo_year
 
 

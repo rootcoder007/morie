@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), eq. (11.3)-(11.4), Bochner's spectral representation.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c11_9 import ghosal_statgp_spec

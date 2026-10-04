@@ -1,7 +1,6 @@
 """Tests for morie.fn.irtdl — IRT difficulty extraction."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.irtdl import irt_difficulty
 
 

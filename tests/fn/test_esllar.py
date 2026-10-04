@@ -1,7 +1,6 @@
 """Tests for esllar.esl_least_angle_reg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esllar import esl_least_angle_reg
 
 
@@ -12,6 +11,8 @@ def test_esllar_basic():
     result = esl_least_angle_reg(X, y)
     assert isinstance(result, dict)
     assert "coef_path" in result
+
+
 def test_esllar_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

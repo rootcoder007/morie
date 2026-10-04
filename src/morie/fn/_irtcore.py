@@ -31,9 +31,7 @@ def broadcast(v, n, name):
     if len(vals) == 1:
         return vals * n
     if len(vals) != n:
-        raise ValueError(
-            "%s has length %d; expected 1 or %d" % (name, len(vals), n)
-        )
+        raise ValueError("%s has length %d; expected 1 or %d" % (name, len(vals), n))
     return vals
 
 

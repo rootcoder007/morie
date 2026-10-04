@@ -1,7 +1,6 @@
 """Tests for morie.fn.zcrdt — zero-crossing rate detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zcrdt import zcr_detect, zcrdt
 
 

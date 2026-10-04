@@ -10,9 +10,9 @@ template vectors against phi^(m+1) over N-m. The asymmetric template count
 that is a bug in rgsam is correct here.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgapn import rangayyan_approximate_entropy
 
 
@@ -20,14 +20,15 @@ def _apen_reference(x, m, r):
     """Literal Pincus (1991), self-matches included, N-m+1 vectors per phi."""
     x = np.asarray(x, float)
     N = x.size
+
     def phi(mm):
         nT = N - mm + 1
         tot = 0.0
         for i in range(nT):
-            c = sum(1 for j in range(nT)
-                    if np.max(np.abs(x[i:i+mm] - x[j:j+mm])) <= r)
-            tot += np.log(c / nT)          # self-match always counted
+            c = sum(1 for j in range(nT) if np.max(np.abs(x[i : i + mm] - x[j : j + mm])) <= r)
+            tot += np.log(c / nT)  # self-match always counted
         return tot / nT
+
     return phi(m) - phi(m + 1)
 
 
@@ -58,24 +59,21 @@ def test_identity_constant_signal_has_zero_entropy():
     """A constant series is perfectly regular: every C_i = 1, so phi = 0 and
     ApEn = 0."""
     x = np.full(200, -1.5)
-    assert np.isclose(rangayyan_approximate_entropy(x, m=2, r=0.1)["ApEn"], 0.0,
-                      atol=1e-12)
+    assert np.isclose(rangayyan_approximate_entropy(x, m=2, r=0.1)["ApEn"], 0.0, atol=1e-12)
 
 
 def test_identity_periodic_is_more_regular_than_noise():
     t = np.linspace(0, 20 * np.pi, 500)
     sine = np.sin(t)
     noise = np.random.default_rng(23).standard_normal(500)
-    assert (rangayyan_approximate_entropy(sine, m=2)["ApEn"]
-            < rangayyan_approximate_entropy(noise, m=2)["ApEn"])
+    assert rangayyan_approximate_entropy(sine, m=2)["ApEn"] < rangayyan_approximate_entropy(noise, m=2)["ApEn"]
 
 
 def test_identity_scale_invariance_with_relative_tolerance():
     x = np.random.default_rng(29).standard_normal(250)
     base = rangayyan_approximate_entropy(x, m=2)["ApEn"]
     for a, b in ((50.0, 0.0), (0.02, 0.0), (1.0, 12.0), (-4.0, -1.0)):
-        assert np.isclose(rangayyan_approximate_entropy(a * x + b, m=2)["ApEn"],
-                          base, rtol=1e-9, atol=1e-9)
+        assert np.isclose(rangayyan_approximate_entropy(a * x + b, m=2)["ApEn"], base, rtol=1e-9, atol=1e-9)
 
 
 def test_returns_documented_keys():

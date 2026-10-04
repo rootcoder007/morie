@@ -78,10 +78,15 @@ def schabenberger_gls_spatial(x, y, sigma=None):
     return RichResult(
         title="Spatial GLS with known Sigma",
         summary_lines=[("n", n), ("p", int(X.shape[1]))],
-        payload={"beta": beta, "vcov": vcov, "se": np.sqrt(np.diag(vcov)),
-                 "residuals": z - X @ beta, "beta_ols": beta_ols,
-                 "se_ols_naive": se_naive,
-                 "se_ols_correct": np.sqrt(np.diag(vcov_ols))},
+        payload={
+            "beta": beta,
+            "vcov": vcov,
+            "se": np.sqrt(np.diag(vcov)),
+            "residuals": z - X @ beta,
+            "beta_ols": beta_ols,
+            "se_ols_naive": se_naive,
+            "se_ols_correct": np.sqrt(np.diag(vcov_ols)),
+        },
     )
 
 

@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Jonckheere-Terpstra statistic as the matrix of pairwise counts."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['jtsum', 'gibbons_jt_cd_form']
+__all__ = ["jtsum", "gibbons_jt_cd_form"]
 
 
 def jtsum(samples):

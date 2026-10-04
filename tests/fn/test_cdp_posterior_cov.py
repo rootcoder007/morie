@@ -1,7 +1,6 @@
 """Tests for cdp_posterior_cov.cdp_posterior_cov."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cdp_posterior_cov import cdp_posterior_cov
 
 

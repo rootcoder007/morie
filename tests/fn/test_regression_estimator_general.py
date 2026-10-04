@@ -1,7 +1,6 @@
 """Tests for regression_estimator_general.regression_estimator_general."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.regression_estimator_general import (
     regression_estimator_general,
 )

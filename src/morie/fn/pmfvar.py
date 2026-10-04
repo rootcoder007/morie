@@ -34,12 +34,12 @@ def pmfvar(values, probs):
     """
     values_a, probs_a = _morin._check_pmf(values, probs)
     variance, mu = _morin.pmf_variance(values_a, probs_a)
-    e_x2 = float(np.sum(probs_a * values_a ** 2))
+    e_x2 = float(np.sum(probs_a * values_a**2))
     payload = {
         "variance": variance,
         "mean": mu,
         "e_x2": e_x2,
-        "sd": variance ** 0.5,
+        "sd": variance**0.5,
         "forms_agree": True,
     }
     lines = [("mean", mu), ("variance", variance)]

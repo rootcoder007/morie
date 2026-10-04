@@ -1,8 +1,8 @@
 """Tests for morie.fn.odm_i — OTIS demo diversity index."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import ESRes
 from morie.fn.odm_i import otis_demo_index
 

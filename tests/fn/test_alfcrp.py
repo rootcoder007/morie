@@ -1,7 +1,5 @@
 """Tests for alfcrp.alphafold_cropping."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.alfcrp import alphafold_cropping
 
 

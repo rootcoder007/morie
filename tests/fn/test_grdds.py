@@ -1,7 +1,6 @@
 """Tests for grdds.gradient_descent_vanilla."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grdds import gradient_descent_vanilla
 
 

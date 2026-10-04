@@ -22,19 +22,19 @@ def kamath_ch2_positional_encoding_cos(i, j, d):
     >>> kamath_ch2_positional_encoding_cos(0, 0, 4)["estimate"]
     1.0
     """
-    i = int(i); j = int(j); d = int(d)
+    i = int(i)
+    j = int(j)
+    d = int(d)
     if d < 1:
         raise ValueError("the model dimension d must be positive.")
     if i < 0 or j < 0:
         raise ValueError("position and index must be non-negative.")
     if 2 * j + 1 >= d:
-        raise ValueError(
-            f"2j+1 = {2 * j + 1} must lie below d = {d}.")
+        raise ValueError(f"2j+1 = {2 * j + 1} must lie below d = {d}.")
     val = float(np.cos(i / 10000.0 ** (2.0 * j / d)))
-    return RichResult(payload={
-        "estimate": val, "n": d,
-        "method": "Sinusoidal positional encoding, odd dims "
-                  "(Kamath Eq 2.14)"})
+    return RichResult(
+        payload={"estimate": val, "n": d, "method": "Sinusoidal positional encoding, odd dims (Kamath Eq 2.14)"}
+    )
 
 
 def cheatsheet():

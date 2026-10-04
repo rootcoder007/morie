@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonparametric Bayes quantile regression."""
 
-import math
-
 from . import _horowitz as hrz
 from . import _s03core as core
 from . import _tail1core as C
@@ -81,8 +79,7 @@ def np_bayes_quant_reg(y, X, tau=0.5, alpha=1.0, niter=40, eps=1e-3):
     if len(Xm) != n:
         raise ValueError("np_bayes_quant_reg: X and y have different lengths")
     p = len(Xm[0])
-    beta = [float(v) for v in hrz.qirls(Xm, yv, [1.0] * n, t,
-                                        niter=int(niter), eps=float(eps))]
+    beta = [float(v) for v in hrz.qirls(Xm, yv, [1.0] * n, t, niter=int(niter), eps=float(eps))]
     loss = 0.0
     for i in range(n):
         r = yv[i] - sum(Xm[i][k] * beta[k] for k in range(p))
@@ -90,12 +87,21 @@ def np_bayes_quant_reg(y, X, tau=0.5, alpha=1.0, niter=40, eps=1e-3):
     ek = 0.0
     for i in range(1, n + 1):
         ek += a / (a + i - 1.0)
-    return RichResult(payload={
-        "beta": beta, "estimate": beta[0], "sigma": loss / n,
-        "check_loss": loss, "e_k": ek,
-        "e_k_digamma": a * (core.digamma(a + n) - core.digamma(a)),
-        "tau": t, "alpha": a, "n": n, "p": p,
-        "method": "Quantile regression with a DP scale mixture (Kottas-Gelfand 2001)"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "estimate": beta[0],
+            "sigma": loss / n,
+            "check_loss": loss,
+            "e_k": ek,
+            "e_k_digamma": a * (core.digamma(a + n) - core.digamma(a)),
+            "tau": t,
+            "alpha": a,
+            "n": n,
+            "p": p,
+            "method": "Quantile regression with a DP scale mixture (Kottas-Gelfand 2001)",
+        }
+    )
 
 
 def cheatsheet():

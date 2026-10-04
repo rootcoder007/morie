@@ -1,7 +1,5 @@
 """Tests for ols_prediction_variance.ols_prediction_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ols_prediction_variance import (
     ols_prediction_variance,
 )

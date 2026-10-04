@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['medtestpow', 'gibbons_median_test_power']
+__all__ = ["medtestpow", "gibbons_median_test_power"]
 
 
 def _simpson(f, nodes=2001):
@@ -67,20 +67,14 @@ def medtestpow(m, n, r, wcrit, g, nodes=2001):
         raise ValueError("m and n must be at least 1.")
     if not 1 <= r <= m:
         raise ValueError("need 1 <= r <= m.")
-    beta = (
-        math.gamma(r) * math.gamma(m - r + 1) / math.gamma(m + 1)
-    )
+    beta = math.gamma(r) * math.gamma(m - r + 1) / math.gamma(m + 1)
     pmf = []
     for i in range(n + 1):
+
         def integrand(u, i=i):
             gu = float(g(u))
             gu = min(1.0, max(0.0, gu))
-            return (
-                gu**i
-                * (1.0 - gu) ** (n - i)
-                * u ** (r - 1)
-                * (1.0 - u) ** (m - r)
-            )
+            return gu**i * (1.0 - gu) ** (n - i) * u ** (r - 1) * (1.0 - u) ** (m - r)
 
         pmf.append(math.comb(n, i) * _simpson(integrand, nodes) / beta)
     power = sum(pmf[i] for i in range(min(wcrit, n + 1)))

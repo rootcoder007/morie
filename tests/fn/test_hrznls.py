@@ -1,7 +1,6 @@
 """Tests for hrznls.horowitz_nls_sim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrznls import horowitz_nls_sim
 
 

@@ -1,7 +1,6 @@
 """Tests for kmptun.kamath_prompt_tuning."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmptun import kamath_prompt_tuning
 
 

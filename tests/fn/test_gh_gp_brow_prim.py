@@ -1,7 +1,6 @@
 """Tests for gh_gp_brow_prim.ghosal_gp_brownian_primitive."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_gp_brow_prim import ghosal_gp_brownian_primitive
 
 

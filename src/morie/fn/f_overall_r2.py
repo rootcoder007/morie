@@ -28,20 +28,19 @@ def f_overall_r2(r2, n, k):
     """
     value = _ca_crim.f_overall_r2(r2, n, k)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.17)"
     return RichResult(
-        title='Overall model F-test from R^2',
+        title="Overall model F-test from R^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e17: F = R^2 (n-k-1) / ((1-R^2) k) [Weisburd et al. 2022, eq. 2.17]'
+    return "ca2e17: F = R^2 (n-k-1) / ((1-R^2) k) [Weisburd et al. 2022, eq. 2.17]"
 
 
 # compact alias per ledger/NAMING.md

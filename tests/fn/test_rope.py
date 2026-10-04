@@ -1,8 +1,8 @@
 """Tests for morie.fn.rope -- Region of Practical Equivalence."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rope import rope_test
 
 

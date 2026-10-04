@@ -2,14 +2,12 @@
 """KMT strong approximation."""
 
 from . import _array_core as np
-from ._kosorok import sup_norm
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_kmt_strong_approximation"]
 
 
-def kosorok_ch2_kmt_strong_approximation(n, x=1.0, a=None, b=None, c=None,
-                                         G_n=None, B_n=None, F=None):
+def kosorok_ch2_kmt_strong_approximation(n, x=1.0, a=None, b=None, c=None, G_n=None, B_n=None, F=None):
     r"""KMT (Komlos-Major-Tusnady) strong approximation bound:
 
     .. math:: P\Big(\|G_n - B_n(F)\|_\infty >
@@ -81,11 +79,14 @@ def kosorok_ch2_kmt_strong_approximation(n, x=1.0, a=None, b=None, c=None,
         obs = float(np.max(np.abs(g - bb)))
         within = bool(obs <= thr)
     return RichResult(
-        payload={"threshold": float(thr),
-                 "probability_bound": float(min(1.0, b * np.exp(-c * x))),
-                 "observed_sup_distance": obs, "within_threshold": within,
-                 "n": n,
-                 "method": "KMT: ||G_n - B_n(F)||_inf <= (a log n + x)/sqrt(n) w.h.p."}
+        payload={
+            "threshold": float(thr),
+            "probability_bound": float(min(1.0, b * np.exp(-c * x))),
+            "observed_sup_distance": obs,
+            "within_threshold": within,
+            "n": n,
+            "method": "KMT: ||G_n - B_n(F)||_inf <= (a log n + x)/sqrt(n) w.h.p.",
+        }
     )
 
 

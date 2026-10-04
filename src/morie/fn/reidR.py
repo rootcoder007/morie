@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["reidentification_risk"]
 
 
-def reidentification_risk(quasi_identifiers, sample_fraction=1.0,
-                          threshold=0.05, attack="prosecutor"):
+def reidentification_risk(quasi_identifiers, sample_fraction=1.0, threshold=0.05, attack="prosecutor"):
     r"""Risk under the three standard attacker models.
 
     Records sharing a quasi-identifier combination form an equivalence
@@ -76,14 +75,9 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0,
     if n < 1:
         raise ValueError("need at least one record.")
     if not 0 < sample_fraction <= 1:
-        raise ValueError(
-            "sample_fraction must lie in (0, 1], got %r." % sample_fraction
-        )
+        raise ValueError("sample_fraction must lie in (0, 1], got %r." % sample_fraction)
     if attack not in ("prosecutor", "journalist", "marketer"):
-        raise ValueError(
-            "attack must be prosecutor, journalist or marketer, got %r."
-            % attack
-        )
+        raise ValueError("attack must be prosecutor, journalist or marketer, got %r." % attack)
 
     keys = [tuple(row) for row in Q]
     uniq = {}
@@ -96,8 +90,7 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0,
     prosecutor = float(np.max(1.0 / pop))
     journalist = float(1.0 / np.min(pop))
     marketer = float(np.sum(sizes / pop) / n)
-    risk = {"prosecutor": prosecutor, "journalist": journalist,
-            "marketer": marketer}[attack]
+    risk = {"prosecutor": prosecutor, "journalist": journalist, "marketer": marketer}[attack]
     k_anon = int(sizes.min())
     n_uni = int(np.sum(sizes == 1))
     return RichResult(
@@ -117,8 +110,9 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0,
             "k_anonymity": k_anon,
             "n_unique": n_uni,
             "unique_note": (
-                None if n_uni == 0 else
-                "%d record(s) are unique on the quasi-identifiers; a single "
+                None
+                if n_uni == 0
+                else "%d record(s) are unique on the quasi-identifiers; a single "
                 "unique makes the prosecutor and journalist risks 1.0 "
                 "however large and safe the rest of the data is" % n_uni
             ),
@@ -140,7 +134,4 @@ def reidentification_risk(quasi_identifiers, sample_fraction=1.0,
 
 
 def cheatsheet():
-    return (
-        "reidR: prosecutor, journalist and marketer risks with k-anonymity "
-        "and the uniques that drive them"
-    )
+    return "reidR: prosecutor, journalist and marketer risks with k-anonymity and the uniques that drive them"

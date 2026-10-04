@@ -34,8 +34,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["aipw_efficient_influence"]
 
 
-def aipw_efficient_influence(y, D, X=None, ml_outcome=None,
-                             ml_propensity=None):
+def aipw_efficient_influence(y, D, X=None, ml_outcome=None, ml_propensity=None):
     """Doubly robust ATE with its influence-function standard error.
 
     ``ml_outcome`` is the pair (m1, m0) of fitted outcome predictions
@@ -77,22 +76,28 @@ def aipw_efficient_influence(y, D, X=None, ml_outcome=None,
         raise ValueError("propensities must lie strictly in (0, 1)")
     inf = []
     for i in range(n):
-        inf.append(dd[i] * (ys[i] - m1[i]) / e[i] + m1[i]
-                   - (1.0 - dd[i]) * (ys[i] - m0[i]) / (1.0 - e[i]) - m0[i])
+        inf.append(dd[i] * (ys[i] - m1[i]) / e[i] + m1[i] - (1.0 - dd[i]) * (ys[i] - m0[i]) / (1.0 - e[i]) - m0[i])
     est = sum(inf) / n
     var = sum((v - est) ** 2 for v in inf) / (n * n) if n > 1 else float("nan")
     se = math.sqrt(var) if var == var else float("nan")
     z = 1.959963984540054
-    ipw = sum(dd[i] * ys[i] / e[i] - (1.0 - dd[i]) * ys[i] / (1.0 - e[i])
-              for i in range(n)) / n
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(est), "se": float(se),
-        "ci_lower": float(est - z * se), "ci_upper": float(est + z * se),
-        "influence": inf, "ipw": float(ipw),
-        "plugin": float(sum(m1[i] - m0[i] for i in range(n)) / n),
-        "n": n,
-        "method": "augmented IPW ATE (Robins, Rotnitzky & Zhao 1994)",
-    }), "eaiprl")
+    ipw = sum(dd[i] * ys[i] / e[i] - (1.0 - dd[i]) * ys[i] / (1.0 - e[i]) for i in range(n)) / n
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(est),
+                "se": float(se),
+                "ci_lower": float(est - z * se),
+                "ci_upper": float(est + z * se),
+                "influence": inf,
+                "ipw": float(ipw),
+                "plugin": float(sum(m1[i] - m0[i] for i in range(n)) / n),
+                "n": n,
+                "method": "augmented IPW ATE (Robins, Rotnitzky & Zhao 1994)",
+            }
+        ),
+        "eaiprl",
+    )
 
 
 def cheatsheet():

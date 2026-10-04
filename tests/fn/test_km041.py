@@ -13,6 +13,8 @@ def test_km041_doctest():
 
 def test_km041_edge():
     import pytest
+
     from morie.fn.km041 import kamath_ch2_mixtral_swiglu_moe
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_mixtral_swiglu_moe(*([None] * 3))

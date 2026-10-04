@@ -76,7 +76,7 @@ def function_register(y1, y2, max_lag=None):
     M = n // 2 if max_lag is None else int(max_lag)
     if M < 1:
         raise ValueError("function_register: max_lag must be at least 1")
-    if M > n - 2:
+    if n - 2 < M:
         M = n - 2
     lags = list(range(-M, M + 1))
     prof = []

@@ -104,11 +104,13 @@ def joseph_simple_exponential_smoothing(y, alpha=None, horizon=1):
     resid = y - fitted
     return RichResult(
         title="Simple exponential smoothing",
-        summary_lines=[("n", int(y.size)), ("alpha", alpha),
-                       ("level", float(level))],
+        summary_lines=[("n", int(y.size)), ("alpha", alpha), ("level", float(level))],
         payload={
-            "forecast": np.full(horizon, level), "level": float(level),
-            "fitted": fitted, "residuals": resid, "alpha": alpha,
+            "forecast": np.full(horizon, level),
+            "level": float(level),
+            "fitted": fitted,
+            "residuals": resid,
+            "alpha": alpha,
             "sse": float(np.sum(resid**2)),
             "effective_window": float(2.0 / alpha - 1.0),
             "horizon": horizon,

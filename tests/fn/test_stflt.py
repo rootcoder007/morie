@@ -1,7 +1,6 @@
 """Tests for stflt.py - Subband filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stflt import stflt, subband_filter
 
 

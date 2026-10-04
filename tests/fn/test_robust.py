@@ -1,12 +1,13 @@
 """Tests for morie.fn.robust — Random Forest robustness evaluation."""
 
-from morie.fn import _frame_core as pd
-import pytest
 import random
 
+import pytest
 
-def make_classification(n_samples=100, n_features=20, n_informative=2,
-                        random_state=None):
+from morie.fn import _frame_core as pd
+
+
+def make_classification(n_samples=100, n_features=20, n_informative=2, random_state=None):
     """Native stand-in for sklearn.datasets.make_classification.
 
     Standard-normal features; the label is a fixed linear rule on the
@@ -14,12 +15,11 @@ def make_classification(n_samples=100, n_features=20, n_informative=2,
     structure these tests rely on.
     """
     rng = random.Random(random_state)
-    X = [[rng.gauss(0.0, 1.0) for _ in range(n_features)]
-         for _ in range(n_samples)]
+    X = [[rng.gauss(0.0, 1.0) for _ in range(n_features)] for _ in range(n_samples)]
     w = [1.0 + 0.5 * j for j in range(n_informative)]
-    y = [1 if sum(w[j] * row[j] for j in range(n_informative)) > 0 else 0
-         for row in X]
+    y = [1 if sum(w[j] * row[j] for j in range(n_informative)) > 0 else 0 for row in X]
     return X, y
+
 
 from morie.fn.robust import eval_robustness as robust
 

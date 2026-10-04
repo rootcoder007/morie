@@ -1,8 +1,8 @@
 """Tests for morie.fn.knn_i -- KNN imputation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.knn_i import knn_impute
 
 

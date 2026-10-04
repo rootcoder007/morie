@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch2_continuous_invertibility"]
 
 
-def kosorok_ch2_continuous_invertibility(A, theta_1, theta_2=None, c=None,
-                                         n_pairs=200, rng=None, radius=1.0):
+def kosorok_ch2_continuous_invertibility(A, theta_1, theta_2=None, c=None, n_pairs=200, rng=None, radius=1.0):
     r"""Continuous invertibility condition:
 
     .. math:: \|A(\theta_1) - A(\theta_2)\|_L
@@ -58,14 +57,16 @@ def kosorok_ch2_continuous_invertibility(A, theta_1, theta_2=None, c=None,
         d = float(np.linalg.norm(t1 - t2))
         if d == 0:
             raise ValueError("theta_1 and theta_2 must differ.")
-        ratio = float(np.linalg.norm(
-            np.asarray(A(t1), dtype=float) - np.asarray(A(t2), dtype=float))) / d
+        ratio = float(np.linalg.norm(np.asarray(A(t1), dtype=float) - np.asarray(A(t2), dtype=float))) / d
         return RichResult(
-            payload={"c_estimate": ratio, "is_upper_bound": True,
-                     "min_ratio": ratio,
-                     "holds_for_c": None if c is None else bool(ratio >= float(c)),
-                     "n_pairs": 1,
-                     "method": "||A(t1) - A(t2)||/||t1 - t2|| at the supplied pair"}
+            payload={
+                "c_estimate": ratio,
+                "is_upper_bound": True,
+                "min_ratio": ratio,
+                "holds_for_c": None if c is None else bool(ratio >= float(c)),
+                "n_pairs": 1,
+                "method": "||A(t1) - A(t2)||/||t1 - t2|| at the supplied pair",
+            }
         )
     rng = np.random.default_rng(0) if rng is None else rng
     ratios = []
@@ -74,15 +75,18 @@ def kosorok_ch2_continuous_invertibility(A, theta_1, theta_2=None, c=None,
         u = u / max(np.linalg.norm(u), 1e-12) * rng.uniform(1e-3, float(radius))
         t2 = t1 + u
         d = float(np.linalg.norm(u))
-        ratios.append(float(np.linalg.norm(
-            np.asarray(A(t1), dtype=float) - np.asarray(A(t2), dtype=float))) / d)
+        ratios.append(float(np.linalg.norm(np.asarray(A(t1), dtype=float) - np.asarray(A(t2), dtype=float))) / d)
     ratios = np.array(ratios)
     lo = float(ratios.min())
     return RichResult(
-        payload={"c_estimate": lo, "is_upper_bound": True, "min_ratio": lo,
-                 "holds_for_c": None if c is None else bool(lo >= float(c)),
-                 "n_pairs": int(n_pairs),
-                 "method": "min over sampled pairs => UPPER bound on the true c"}
+        payload={
+            "c_estimate": lo,
+            "is_upper_bound": True,
+            "min_ratio": lo,
+            "holds_for_c": None if c is None else bool(lo >= float(c)),
+            "n_pairs": int(n_pairs),
+            "method": "min over sampled pairs => UPPER bound on the true c",
+        }
     )
 
 

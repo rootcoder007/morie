@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['consist', 'gibbons_consistency']
+__all__ = ["consist", "gibbons_consistency"]
 
 
 def consist(nvals, effect, alpha=0.05):
@@ -69,4 +69,6 @@ gibbons_consistency = consist
 
 
 def cheatsheet() -> str:
-    return "gb_cons: consist(nvals, effect, alpha) -> Power along a sequence of sample sizes, and the consistency verdict."
+    return (
+        "gb_cons: consist(nvals, effect, alpha) -> Power along a sequence of sample sizes, and the consistency verdict."
+    )

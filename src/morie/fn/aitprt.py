@@ -45,9 +45,14 @@ def perturb(x, y, total=1.0):
     p = [a * b for a, b in zip(x, y)]
     s = sum(p)
     k = float(total)
-    return RichResult(payload={
-        "composition": [k * v / s for v in p], "total": k, "D": len(x),
-        "method": "Perturbation on the simplex"})
+    return RichResult(
+        payload={
+            "composition": [k * v / s for v in p],
+            "total": k,
+            "D": len(x),
+            "method": "Perturbation on the simplex",
+        }
+    )
 
 
 aitchison_perturbation = perturb

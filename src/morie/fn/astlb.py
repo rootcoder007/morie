@@ -93,21 +93,36 @@ def astle_balding_grm(marker_matrix, freq=None):
     G = Z @ Z.T / keep.sum()
     return RichResult(
         title="Astle-Balding GRM",
-        summary_lines=[("individuals", int(n)), ("markers used", int(keep.sum())),
-                       ("dropped", int((~keep).sum())),
-                       ("mean diagonal", float(np.mean(np.diag(G))))],
-        warnings=(["per-marker standardisation up-weights rare variants "
-                   "relative to VanRaden scaling; that helps when rare variants "
-                   "carry signal and hurts when they carry genotyping error"]
-                  + ([] if freq is not None else
-                     ["frequencies were estimated from this sample, so the "
-                      "matrix is sample-specific and not comparable across "
-                      "cohorts"])),
+        summary_lines=[
+            ("individuals", int(n)),
+            ("markers used", int(keep.sum())),
+            ("dropped", int((~keep).sum())),
+            ("mean diagonal", float(np.mean(np.diag(G)))),
+        ],
+        warnings=(
+            [
+                "per-marker standardisation up-weights rare variants "
+                "relative to VanRaden scaling; that helps when rare variants "
+                "carry signal and hurts when they carry genotyping error"
+            ]
+            + (
+                []
+                if freq is not None
+                else [
+                    "frequencies were estimated from this sample, so the "
+                    "matrix is sample-specific and not comparable across "
+                    "cohorts"
+                ]
+            )
+        ),
         payload={
-            "G": G, "n_markers_used": int(keep.sum()),
-            "n_dropped": int((~keep).sum()), "freq": p,
+            "G": G,
+            "n_markers_used": int(keep.sum()),
+            "n_dropped": int((~keep).sum()),
+            "freq": p,
             "mean_diagonal": float(np.mean(np.diag(G))),
-            "n": int(n), "method": "astle_balding_grm",
+            "n": int(n),
+            "method": "astle_balding_grm",
         },
     )
 

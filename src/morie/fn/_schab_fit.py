@@ -36,23 +36,19 @@ def as_empirical_variogram(ev):
     if hasattr(ev, "keys"):
         lags = np.asarray(ev["lags"], dtype=float).ravel()
         gamma = np.asarray(ev["gamma"], dtype=float).ravel()
-        counts = (np.asarray(ev["counts"], dtype=float).ravel()
-                  if "counts" in ev else np.ones_like(lags))
+        counts = np.asarray(ev["counts"], dtype=float).ravel() if "counts" in ev else np.ones_like(lags)
         return lags, gamma, counts
     # `empirical_semivariogram` returns (lag, gamma, count) as a tuple, so
     # accept that shape directly rather than letting it fall through to the
     # column-array branch, where it would transpose into nonsense.
-    if isinstance(ev, (tuple, list)) and len(ev) in (2, 3) \
-            and all(np.ndim(part) == 1 for part in ev):
+    if isinstance(ev, (tuple, list)) and len(ev) in (2, 3) and all(np.ndim(part) == 1 for part in ev):
         lags = np.asarray(ev[0], dtype=float)
         gamma = np.asarray(ev[1], dtype=float)
-        counts = (np.asarray(ev[2], dtype=float) if len(ev) == 3
-                  else np.ones_like(lags))
+        counts = np.asarray(ev[2], dtype=float) if len(ev) == 3 else np.ones_like(lags)
         return lags, gamma, counts
     arr = np.atleast_2d(np.asarray(ev, dtype=float))
     if arr.ndim != 2 or arr.shape[1] < 2:
-        raise ValueError(
-            "`empirical_variogram` needs at least lag and gamma columns")
+        raise ValueError("`empirical_variogram` needs at least lag and gamma columns")
     counts = arr[:, 2] if arr.shape[1] > 2 else np.ones(arr.shape[0])
     return arr[:, 0], arr[:, 1], counts
 
@@ -76,9 +72,7 @@ def _start_and_bounds(lags, ghat):
     start = np.array([0.1 * gmax, 0.9 * gmax, 0.5 * hmax])
     # (nugget, partial sill, range); the upper limits are generous rather
     # than informative -- they exist so the optimiser stays finite.
-    bounds = [(0.0, 10.0 * gmax + 1.0),
-              (0.0, 10.0 * gmax + 1.0),
-              (1e-8 * hmax + 1e-12, 10.0 * hmax)]
+    bounds = [(0.0, 10.0 * gmax + 1.0), (0.0, 10.0 * gmax + 1.0), (1e-8 * hmax + 1e-12, 10.0 * hmax)]
     return start, bounds
 
 
@@ -99,8 +93,7 @@ def _residuals(kind, lags, ghat, counts, model):
 
     def r(theta):
         nugget, sill, rng = theta
-        fitted = semivariogram(h, max(nugget, 0.0), max(sill, 0.0),
-                               max(rng, 1e-12), model)
+        fitted = semivariogram(h, max(nugget, 0.0), max(sill, 0.0), max(rng, 1e-12), model)
         resid = g - fitted
         if kind == "ols":
             return resid
@@ -163,10 +156,8 @@ def fit_semivariogram(lags, ghat, counts, model="exponential", kind="wls"):
     if ok.sum() < 3:
         raise ValueError("need at least 3 usable lag classes to fit 3 parameters")
     start, _ = _start_and_bounds(np.asarray(lags)[ok], np.asarray(ghat)[ok])
-    theta, obj, converged, _ = gauss_newton_semivariogram(
-        lags, ghat, counts, start, model=model, kind=kind)
-    return (float(theta[0]), float(theta[1]), float(theta[2]),
-            float(obj), bool(converged))
+    theta, obj, converged, _ = gauss_newton_semivariogram(lags, ghat, counts, start, model=model, kind=kind)
+    return (float(theta[0]), float(theta[1]), float(theta[2]), float(obj), bool(converged))
 
 
 def covariance_matrix(coords, nugget, sill, rng, model):

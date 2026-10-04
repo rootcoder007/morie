@@ -1,7 +1,5 @@
 """Tests for cohens_d_population.cohens_d_population."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.cohens_d_population import cohens_d_population
 
 

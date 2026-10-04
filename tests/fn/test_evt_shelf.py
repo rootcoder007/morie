@@ -11,11 +11,11 @@ dependence. Sign conventions are load-bearing (Hosking's k = -xi)
 and tested explicitly.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
-from morie.fn._evt import gev_from_lmoments, l_moments, pwm_b
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
+from morie.fn._evt import l_moments, pwm_b
 from morie.fn.evdedh import ev_dedh
 from morie.fn.evextidx import ev_extremal_runs
 from morie.fn.evextint import ev_extremal_intervals
@@ -125,14 +125,12 @@ def test_lmoments_and_pwms_agree_by_construction():
     l1, l2, l3, t3 = l_moments(x)
     assert l1 == pytest.approx(pwm_b(x, 0), rel=1e-12)
     assert l2 == pytest.approx(2 * pwm_b(x, 1) - pwm_b(x, 0), rel=1e-12)
-    assert l3 == pytest.approx(
-        6 * pwm_b(x, 2) - 6 * pwm_b(x, 1) + pwm_b(x, 0), rel=1e-10)
+    assert l3 == pytest.approx(6 * pwm_b(x, 2) - 6 * pwm_b(x, 1) + pwm_b(x, 0), rel=1e-10)
 
 
 def test_gev_lmoment_fit_recovers_known_parameters():
     # scipy's genextreme c is MINUS xi, i.e. Hosking's k
-    x = stats.genextreme.rvs(c=-0.3, loc=10, scale=2, size=20_000,
-                             random_state=1)
+    x = stats.genextreme.rvs(c=-0.3, loc=10, scale=2, size=20_000, random_state=1)
     o = ev_gev_lmoments(x)
     assert o["mu"] == pytest.approx(10.0, abs=0.15)
     assert o["sigma"] == pytest.approx(2.0, abs=0.15)
@@ -149,8 +147,7 @@ def test_gev_gumbel_limit_and_weibull_branch():
     g = stats.gumbel_r.rvs(loc=5, scale=1.5, size=20_000, random_state=3)
     o = ev_gev_lmoments(g)
     assert abs(o["xi"]) < 0.05
-    w = stats.genextreme.rvs(c=0.25, loc=0, scale=1, size=20_000,
-                             random_state=5)
+    w = stats.genextreme.rvs(c=0.25, loc=0, scale=1, size=20_000, random_state=5)
     ow = ev_gev_lmoments(w)
     assert ow["xi"] == pytest.approx(-0.25, abs=0.05)
     assert ow["tail_type"].startswith("Weibull")
@@ -160,8 +157,7 @@ def test_pwm_fit_is_the_lmoment_fit_exactly():
     """Hosking (1990): L-moments are linear combinations of the PWMs,
     so the 1985 PWM fit and the 1990 L-moment fit coincide. Exactly,
     not approximately."""
-    x = stats.genextreme.rvs(c=-0.2, loc=3, scale=1, size=3_000,
-                             random_state=7)
+    x = stats.genextreme.rvs(c=-0.2, loc=3, scale=1, size=3_000, random_state=7)
     a = ev_gev_pwm(x)
     b = ev_gev_lmoments(x)
     for key in ("mu", "sigma", "xi"):
@@ -199,22 +195,19 @@ def test_the_extremal_index_of_max_ar_is_one_minus_alpha():
     x = max_ar(0.5, 60_000, seed=1)
     u = float(np.quantile(x, 0.98))
     assert ev_extremal_runs(x, u)["theta"] == pytest.approx(0.5, abs=0.07)
-    assert ev_extremal_intervals(x, u)["theta"] == pytest.approx(0.5,
-                                                                abs=0.07)
+    assert ev_extremal_intervals(x, u)["theta"] == pytest.approx(0.5, abs=0.07)
     s = ev_extremal_sliding(x, block_length=200)
     assert s["theta"] == pytest.approx(0.5, abs=0.09)
     # a different alpha moves all three the right way
     x2 = max_ar(0.8, 60_000, seed=2)
     u2 = float(np.quantile(x2, 0.98))
-    assert ev_extremal_intervals(x2, u2)["theta"] == pytest.approx(0.2,
-                                                                   abs=0.07)
+    assert ev_extremal_intervals(x2, u2)["theta"] == pytest.approx(0.2, abs=0.07)
 
 
 def test_independent_data_have_extremal_index_one():
     x = np.random.default_rng(3).random(60_000)
     u = float(np.quantile(x, 0.98))
-    assert ev_extremal_intervals(x, u)["theta"] == pytest.approx(1.0,
-                                                                 abs=0.05)
+    assert ev_extremal_intervals(x, u)["theta"] == pytest.approx(1.0, abs=0.05)
     assert ev_extremal_runs(x, u)["theta"] > 0.9
     s = ev_extremal_sliding(x, block_length=200)
     assert s["theta"] > 0.85
@@ -224,8 +217,7 @@ def test_theta_is_the_reciprocal_mean_cluster_size():
     x = max_ar(0.5, 40_000, seed=5)
     u = float(np.quantile(x, 0.98))
     o = ev_extremal_runs(x, u)
-    assert o["mean_cluster_size"] == pytest.approx(1.0 / o["theta"],
-                                                   rel=1e-12)
+    assert o["mean_cluster_size"] == pytest.approx(1.0 / o["theta"], rel=1e-12)
     assert o["n_clusters"] <= o["n_exceedances"]
     with pytest.raises(ValueError, match="lower the threshold"):
         ev_extremal_runs(x, float(x.max()) + 1.0)
@@ -237,8 +229,7 @@ def test_ferro_segers_uses_the_corrected_form_when_gaps_exceed_two():
     o = ev_extremal_intervals(x, u)
     assert o["form_used"].startswith("Eq. (34)")
     assert 0 < o["theta"] <= 1.0
-    assert o["implied_mean_cluster_size"] == pytest.approx(
-        1.0 / o["theta"], rel=1e-12)
+    assert o["implied_mean_cluster_size"] == pytest.approx(1.0 / o["theta"], rel=1e-12)
 
 
 def test_sliding_blocks_beat_disjoint_blocks_in_spread():

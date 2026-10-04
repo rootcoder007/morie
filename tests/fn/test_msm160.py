@@ -1,7 +1,6 @@
 """Tests for msm160.mvsml_general_eq_1_2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm160 import mvsml_general_eq_1_2
 
 

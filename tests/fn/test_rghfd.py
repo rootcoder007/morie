@@ -13,9 +13,9 @@ direct re-derivation of (5.40)/(5.41) from the equations plus the limiting
 values the method is defined by.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsastat import rangayyan_higuchi_fd
 
 
@@ -30,14 +30,13 @@ def _hfd_reference(x, kmax):
     Lk = []
     for k in range(1, kmax + 1):
         Lmk = []
-        for m in range(1, k + 1):           # (5.39): m = 1..k, 1-based
-            n_i = (N - m) // k              # (5.40): floor((N-m)/k)
+        for m in range(1, k + 1):  # (5.39): m = 1..k, 1-based
+            n_i = (N - m) // k  # (5.40): floor((N-m)/k)
             if n_i < 1:
                 continue
-            s = sum(abs(x[m + i * k - 1] - x[m + (i - 1) * k - 1])
-                    for i in range(1, n_i + 1))
+            s = sum(abs(x[m + i * k - 1] - x[m + (i - 1) * k - 1]) for i in range(1, n_i + 1))
             Lmk.append((1.0 / k) * ((N - 1) / (k * n_i)) * s)
-        Lk.append(sum(Lmk) / len(Lmk))      # (5.41): (1/k) sum_m
+        Lk.append(sum(Lmk) / len(Lmk))  # (5.41): (1/k) sum_m
     ks = np.arange(1, kmax + 1)
     return np.polyfit(np.log(1.0 / ks), np.log(Lk), 1)[0]
 
@@ -84,8 +83,7 @@ def test_identity_scale_invariance():
     x = np.random.default_rng(11).standard_normal(600)
     base = rangayyan_higuchi_fd(x, kmax=10)["HFD"]
     for a, b in ((1000.0, 0.0), (0.001, 0.0), (1.0, 500.0), (-3.0, -2.0)):
-        assert np.isclose(rangayyan_higuchi_fd(a * x + b, kmax=10)["HFD"], base,
-                          rtol=1e-9, atol=1e-9)
+        assert np.isclose(rangayyan_higuchi_fd(a * x + b, kmax=10)["HFD"], base, rtol=1e-9, atol=1e-9)
 
 
 def test_returns_documented_keys():

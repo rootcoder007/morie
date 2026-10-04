@@ -70,7 +70,7 @@ def bfassum(kernel=None, g=None, h=None, n=None, smooth=None, tol=1e-6, lo=-8.0,
     kv = np.asarray([kfun(float(t)) for t in v], dtype=float)
     mass = float(np.trapezoid(kv, v))
     sym = float(np.max(np.abs(kv - kv[::-1])))
-    mu2 = float(np.trapezoid(v ** 2 * kv, v))
+    mu2 = float(np.trapezoid(v**2 * kv, v))
     d1 = bool(np.all(kv >= 0) and sym < float(tol))
     d2 = bool(np.isfinite(mu2) and abs(mass - 1.0) < float(tol))
     if h is None or n is None:

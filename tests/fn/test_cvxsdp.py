@@ -2,8 +2,6 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
 from morie.fn.cvxsdp import boyd_sdp
 
@@ -14,8 +12,17 @@ def test_cvxsdp_basic():
     c = [1.0]
     F = [-A, np.eye(2)]
     result = boyd_sdp(c, F)
-    for key in ("x", "objective", "slack", "eigenvalues", "gap_bound",
-                "feasible", "strictly_feasible", "active", "converged"):
+    for key in (
+        "x",
+        "objective",
+        "slack",
+        "eigenvalues",
+        "gap_bound",
+        "feasible",
+        "strictly_feasible",
+        "active",
+        "converged",
+    ):
         assert key in result
     assert math.isfinite(float(result["objective"]))
     assert len(result["x"]) == 1
@@ -27,8 +34,17 @@ def test_cvxsdp_edge():
     c = [1.0]
     F = [-A, np.eye(3)]
     result = boyd_sdp(c, F, tol=1e-6)
-    for key in ("x", "objective", "slack", "eigenvalues", "gap_bound",
-                "feasible", "strictly_feasible", "active", "converged"):
+    for key in (
+        "x",
+        "objective",
+        "slack",
+        "eigenvalues",
+        "gap_bound",
+        "feasible",
+        "strictly_feasible",
+        "active",
+        "converged",
+    ):
         assert key in result
     assert math.isfinite(float(result["objective"]))
     assert len(result["x"]) == 1

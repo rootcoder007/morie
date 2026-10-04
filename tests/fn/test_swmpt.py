@@ -1,7 +1,6 @@
 """Tests for morie.fn.swmpt -- Biomass estimation."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.swmpt import biomass_estimate, swmpt
 

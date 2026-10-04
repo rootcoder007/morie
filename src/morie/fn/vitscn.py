@@ -57,13 +57,11 @@ def vitscn(q, k, v, tau=0.1, B=None):
     Va = np.atleast_2d(np.asarray(v, dtype=float))
     t = float(tau)
     if not t > 0.01:
-        raise ValueError(
-            f"vitscn: tau must exceed 0.01 (paper constraint), got {t}")
+        raise ValueError(f"vitscn: tau must exceed 0.01 (paper constraint), got {t}")
     if Qa.shape[1] != Ka.shape[1]:
         raise ValueError(f"vitscn: q width {Qa.shape[1]} != k width {Ka.shape[1]}")
     if Ka.shape[0] != Va.shape[0]:
-        raise ValueError(
-            f"vitscn: k has {Ka.shape[0]} rows but v has {Va.shape[0]}")
+        raise ValueError(f"vitscn: k has {Ka.shape[0]} rows but v has {Va.shape[0]}")
     for name, arr in (("q", Qa), ("k", Ka), ("v", Va)):
         if not np.all(np.isfinite(arr)):
             raise ValueError(f"vitscn: {name} contains non-finite values")
@@ -73,8 +71,7 @@ def vitscn(q, k, v, tau=0.1, B=None):
     else:
         Ba = np.atleast_2d(np.asarray(B, dtype=float))
         if Ba.shape != (nq, nk):
-            raise ValueError(
-                f"vitscn: B must be ({nq}, {nk}), got {Ba.shape}")
+            raise ValueError(f"vitscn: B must be ({nq}, {nk}), got {Ba.shape}")
         Bm = [[float(x) for x in row] for row in Ba]
     qn = [math.sqrt(sum(float(x) * float(x) for x in row)) for row in Qa]
     kn = [math.sqrt(sum(float(x) * float(x) for x in row)) for row in Ka]
@@ -94,15 +91,17 @@ def vitscn(q, k, v, tau=0.1, B=None):
         z = sum(e)
         W.append([x / z for x in e])
     out = np.asarray(W, dtype=float) @ Va
-    return RichResult(payload={
-        "output": [[float(x) for x in row] for row in out],
-        "weights": W,
-        "similarities": S,
-        "tau": t,
-        "estimate": float(out[0][0] if out.ndim == 2 else out[0]),
-        "n": int(nq),
-        "method": "scaled cosine attention cos(q,k)/tau + B (Liu et al. 2022, Sec 3.2)",
-    })
+    return RichResult(
+        payload={
+            "output": [[float(x) for x in row] for row in out],
+            "weights": W,
+            "similarities": S,
+            "tau": t,
+            "estimate": float(out[0][0] if out.ndim == 2 else out[0]),
+            "n": int(nq),
+            "method": "scaled cosine attention cos(q,k)/tau + B (Liu et al. 2022, Sec 3.2)",
+        }
+    )
 
 
 vit_scaled_cosine = vitscn

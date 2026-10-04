@@ -78,9 +78,18 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["vit2lf", "vit2_log_attention", "attention_logits", "softmax_rows",
-           "log_spaced_coords", "relative_bias", "row_entropy", "MODES",
-           "TAU_FLOOR", "cheatsheet"]
+__all__ = [
+    "vit2lf",
+    "vit2_log_attention",
+    "attention_logits",
+    "softmax_rows",
+    "log_spaced_coords",
+    "relative_bias",
+    "row_entropy",
+    "MODES",
+    "TAU_FLOOR",
+    "cheatsheet",
+]
 
 MODES = ("dot", "logn", "cosine", "logn_cosine")
 
@@ -94,8 +103,7 @@ def _norm(v):
     return math.sqrt(_w.dot(v, v))
 
 
-def attention_logits(q, k, mode="dot", tau=1.0, bias=None, n=None,
-                     tau_floor=TAU_FLOOR):
+def attention_logits(q, k, mode="dot", tau=1.0, bias=None, n=None, tau_floor=TAU_FLOOR):
     """The pre-softmax scores, one row per query.
 
     "dot"          the inner product over the square root of the head
@@ -122,8 +130,7 @@ def attention_logits(q, k, mode="dot", tau=1.0, bias=None, n=None,
         raise ValueError("queries and keys must share one head dimension")
     nn = float(nk if n is None else n)
     if nn <= 0.0:
-        raise ValueError("the length used for the log scaling must be "
-                         "positive")
+        raise ValueError("the length used for the log scaling must be positive")
     if mode in ("cosine", "logn_cosine"):
         t = float(tau)
         if t <= 0.0:
@@ -165,8 +172,7 @@ def softmax_rows(logits, mask=None, neg=-1e30):
     """
     out = []
     for i, row in enumerate(logits):
-        live = [j for j in range(len(row))
-                if mask is None or mask[i][j]]
+        live = [j for j in range(len(row)) if mask is None or mask[i][j]]
         if not live:
             raise ValueError("row %d is masked out entirely" % i)
         mx = row[live[0]]
@@ -203,10 +209,12 @@ def log_spaced_coords(dx, dy):
     an eight-by-eight window the raw range [-7, 7] becomes
     [-2.079, 2.079], the figure the paper quotes.
     """
+
     def f(v):
         v = float(v)
         s = 0.0 if v == 0.0 else (1.0 if v > 0.0 else -1.0)
         return s * math.log1p(abs(v))
+
     return f(dx), f(dy)
 
 
@@ -238,15 +246,13 @@ def relative_bias(coords, table, window, log_spaced=True):
                 a = int(dx) + window - 1
                 b = int(dy) + window - 1
                 if a < 0 or a >= span or b < 0 or b >= span:
-                    raise ValueError("a relative offset falls outside the "
-                                     "table")
+                    raise ValueError("a relative offset falls outside the table")
             row.append(float(table[a][b]))
         out.append(row)
     return out
 
 
-def vit2_log_attention(q, k, v, mode="logn", tau=1.0, bias=None, mask=None,
-                       n=None, tau_floor=TAU_FLOOR):
+def vit2_log_attention(q, k, v, mode="logn", tau=1.0, bias=None, mask=None, n=None, tau_floor=TAU_FLOOR):
     """Attention with the logits scaled by log n, by a cosine, or by both.
 
     Parameters
@@ -295,36 +301,38 @@ def vit2_log_attention(q, k, v, mode="logn", tau=1.0, bias=None, mask=None,
     dv = len(vv[0])
     ctx = []
     for i in range(len(qq)):
-        ctx.append([_w.csum(w[i][j] * vv[j][t] for j in range(len(kk)))
-                    for t in range(dv)])
+        ctx.append([_w.csum(w[i][j] * vv[j][t] for j in range(len(kk))) for t in range(dv)])
     ent = row_entropy(w)
     mx = [max(row) for row in w]
-    return RichResult(payload={
-        "weights": w,
-        "context": ctx,
-        "logits": logits,
-        "scale": scale,
-        "entropy": ent,
-        "max_weight": mx,
-        "mean_entropy": _w.csum(ent) / len(ent),
-        "estimate": _w.csum(mx) / len(mx),
-        "se": max(ent) - min(ent),
-        "n_query": len(qq),
-        "n_key": len(kk),
-        "d": len(qq[0]),
-        "d_value": dv,
-        "tau": max(float(tau), tau_floor) if mode in ("cosine",
-                                                      "logn_cosine")
-                else float("nan"),
-        "mode": mode,
-        "method": "log-scaled attention",
-    })
+    return RichResult(
+        payload={
+            "weights": w,
+            "context": ctx,
+            "logits": logits,
+            "scale": scale,
+            "entropy": ent,
+            "max_weight": mx,
+            "mean_entropy": _w.csum(ent) / len(ent),
+            "estimate": _w.csum(mx) / len(mx),
+            "se": max(ent) - min(ent),
+            "n_query": len(qq),
+            "n_key": len(kk),
+            "d": len(qq[0]),
+            "d_value": dv,
+            "tau": max(float(tau), tau_floor) if mode in ("cosine", "logn_cosine") else float("nan"),
+            "mode": mode,
+            "method": "log-scaled attention",
+        }
+    )
 
 
 vit2lf = vit2_log_attention
 
 
 def cheatsheet():
-    return ("vit2lf: log-scaled attention. modes " + ", ".join(MODES)
-            + "; log-length logits (Chiang-Cholak) and scaled cosine "
-              "similarity (Swin V2)")
+    return (
+        "vit2lf: log-scaled attention. modes "
+        + ", ".join(MODES)
+        + "; log-length logits (Chiang-Cholak) and scaled cosine "
+        "similarity (Swin V2)"
+    )

@@ -73,7 +73,9 @@ def geron_confusion_matrix(y_true, y_pred, n_classes=None, labels=None):
         index = {v: i for i, v in enumerate(lab)}
         missing = [v for v in set(yt.tolist()) | set(yp.tolist()) if v not in index]
         if missing:
-            raise ValueError(f"geron_confusion_matrix: observed labels missing from `labels`: {sorted(map(str, missing))}")
+            raise ValueError(
+                f"geron_confusion_matrix: observed labels missing from `labels`: {sorted(map(str, missing))}"
+            )
         it = np.array([index[v] for v in yt.tolist()], dtype=int)
         ip = np.array([index[v] for v in yp.tolist()], dtype=int)
         K = len(lab)
@@ -96,7 +98,9 @@ def geron_confusion_matrix(y_true, y_pred, n_classes=None, labels=None):
     return RichResult(
         title="Confusion matrix",
         summary_lines=[("Accuracy", float(base["accuracy"])), ("Classes", int(K))],
-        tables=[{"title": "rows = actual, columns = predicted", "headers": [f"pred {v}" for v in lab], "rows": cm.tolist()}],
+        tables=[
+            {"title": "rows = actual, columns = predicted", "headers": [f"pred {v}" for v in lab], "rows": cm.tolist()}
+        ],
         payload={
             "matrix": cm.tolist(),
             "labels": lab,

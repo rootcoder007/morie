@@ -74,12 +74,17 @@ def wasserman_bootstrap_pivotal(data, T, B, alpha, seed=13):
     reps = np.sort(_boot_replicates(data, T, B, seed))
     q_lo = _type1_quantile(reps, alpha / 2.0)
     q_hi = _type1_quantile(reps, 1.0 - alpha / 2.0)
-    return RichResult(payload={
-        "estimate": theta,
-        "lower": float(2.0 * theta - q_hi),
-        "upper": float(2.0 * theta - q_lo),
-        "alpha": alpha, "B": B, "n": int(data.size),
-        "method": "bootstrap pivotal CI (2 theta - q*_{1-a/2}, 2 theta - q*_{a/2})"})
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "lower": float(2.0 * theta - q_hi),
+            "upper": float(2.0 * theta - q_lo),
+            "alpha": alpha,
+            "B": B,
+            "n": int(data.size),
+            "method": "bootstrap pivotal CI (2 theta - q*_{1-a/2}, 2 theta - q*_{a/2})",
+        }
+    )
 
 
 def cheatsheet():

@@ -68,10 +68,16 @@ def wasserman_kernel_regression(x, x_data, y_data, h):
         s = float(np.sum(w))
         eff.append(s)
         vals.append(float(np.sum(w * yd) / s) if s > 0 else float("nan"))
-    return RichResult(payload={
-        "estimate": vals[0], "values": vals, "effective_n": eff,
-        "h": h, "n": int(xd.size),
-        "method": "Nadaraya-Watson, Gaussian kernel; zero-weight -> nan"})
+    return RichResult(
+        payload={
+            "estimate": vals[0],
+            "values": vals,
+            "effective_n": eff,
+            "h": h,
+            "n": int(xd.size),
+            "method": "Nadaraya-Watson, Gaussian kernel; zero-weight -> nan",
+        }
+    )
 
 
 def cheatsheet():

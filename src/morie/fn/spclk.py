@@ -74,8 +74,7 @@ def schabenberger_composite_likelihood(coords, z, variogram_model="exponential")
     return RichResult(
         payload={
             "estimate": np.array([fit["nugget"], fit["psill"], fit["range"]]),
-            "parameters": {"nugget": fit["nugget"], "psill": fit["psill"],
-                           "range": fit["range"]},
+            "parameters": {"nugget": fit["nugget"], "psill": fit["psill"], "range": fit["range"]},
             "nugget": fit["nugget"],
             "psill": fit["psill"],
             "range": fit["range"],
@@ -87,8 +86,7 @@ def schabenberger_composite_likelihood(coords, z, variogram_model="exponential")
             "converged": fit["converged"],
             "convergence_note": fit["diverged_note"],
             "binning_note": (
-                "fitted to the semivariogram cloud, so no lag classes, "
-                "tolerance or cutoff enter the estimate"
+                "fitted to the semivariogram cloud, so no lag classes, tolerance or cutoff enter the estimate"
             ),
             "likelihood_note": (
                 "a composite likelihood is an unbiased estimating function, "

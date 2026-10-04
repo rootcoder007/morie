@@ -1,8 +1,8 @@
 """Tests for morie.fn.npmle — Nonparametric MLE."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.npmle import npmle
 
 

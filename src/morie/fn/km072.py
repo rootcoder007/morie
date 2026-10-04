@@ -47,15 +47,21 @@ def kamath_ch5_bradley_terry_pref(r_star, y_w, y_l):
                 raise ValueError(f"response {k!r} has no reward in r_star.")
         rw, rl = float(r_star[y_w]), float(r_star[y_l])
     else:
-        raise ValueError("r_star must be a mapping response -> reward or a "
-                         "callable.")
+        raise ValueError("r_star must be a mapping response -> reward or a callable.")
     if not (np.isfinite(rw) and np.isfinite(rl)):
         raise ValueError("a reward is not finite.")
     p = _sigmoid(rw - rl)
-    return RichResult(payload={
-        "estimate": p, "margin": rw - rl, "r_w": rw, "r_l": rl,
-        "p_reversed": 1.0 - p, "n": 2,
-        "method": "Bradley-Terry preference probability (Kamath Eq 5.8)"})
+    return RichResult(
+        payload={
+            "estimate": p,
+            "margin": rw - rl,
+            "r_w": rw,
+            "r_l": rl,
+            "p_reversed": 1.0 - p,
+            "n": 2,
+            "method": "Bradley-Terry preference probability (Kamath Eq 5.8)",
+        }
+    )
 
 
 def cheatsheet():

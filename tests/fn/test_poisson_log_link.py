@@ -1,7 +1,5 @@
 """Tests for poisson_log_link.poisson_log_link."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.poisson_log_link import (
     poisson_log_link,
 )

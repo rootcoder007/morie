@@ -1,8 +1,8 @@
 """Tests for morie.fn.ecdf — Empirical CDF with DKW confidence bands."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ecdf import ECDFResult, ecdf
 
 

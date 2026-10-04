@@ -82,8 +82,7 @@ def dp_stochastic_block(adjacency, alpha=1.0, n_iter=30, seed=42):
             best = None
             logw = []
             cand = []
-            counts = [sum(1 for v in range(n) if v != i and z[v] == c)
-                      for c in range(K)]
+            counts = [sum(1 for v in range(n) if v != i and z[v] == c) for c in range(K)]
             for c in range(K):
                 if counts[c] == 0:
                     continue
@@ -119,15 +118,17 @@ def dp_stochastic_block(adjacency, alpha=1.0, n_iter=30, seed=42):
             z = [remap[v] for v in z]
             K = len(used)
     counts = [sum(1 for v in z if v == c) for c in range(K)]
-    return RichResult(payload={
-        "estimate": K,
-        "z": z,
-        "counts": counts,
-        "n_blocks": K,
-        "log_likelihood": block_ll(z, K),
-        "n": n,
-        "method": "Dirichlet-process stochastic block model",
-    })
+    return RichResult(
+        payload={
+            "estimate": K,
+            "z": z,
+            "counts": counts,
+            "n_blocks": K,
+            "log_likelihood": block_ll(z, K),
+            "n": n,
+            "method": "Dirichlet-process stochastic block model",
+        }
+    )
 
 
 def cheatsheet():

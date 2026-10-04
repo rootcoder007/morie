@@ -2,9 +2,6 @@
 
 import math
 
-import pytest
-
-from morie.fn import _array_core as np
 from morie.fn.grjll import geron_johnson_lindenstrauss_bound
 
 
@@ -12,8 +9,7 @@ def test_grjll_basic():
     """Test basic functionality with scalar eps."""
     result = geron_johnson_lindenstrauss_bound(10000, 0.1)
     assert isinstance(result, dict)
-    for key in ("min_dimension", "estimate", "n_samples", "eps",
-                "denominator", "method", "n"):
+    for key in ("min_dimension", "estimate", "n_samples", "eps", "denominator", "method", "n"):
         assert key in result
     assert result["n_samples"] == 10000
     assert result["n"] == 10000

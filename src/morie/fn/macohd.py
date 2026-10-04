@@ -89,9 +89,7 @@ def ma_cohens_d(m1, m2, s1, s2, n1, n2):
     base = 1.0 / n1 + 1.0 / n2
     var_d = base + d * d / (2.0 * ntot)
     # exact Hedges (1981) correction; lgamma keeps it finite for large df
-    j = math.exp(math.lgamma(df / 2.0)
-                 - 0.5 * math.log(df / 2.0)
-                 - math.lgamma((df - 1.0) / 2.0))
+    j = math.exp(math.lgamma(df / 2.0) - 0.5 * math.log(df / 2.0) - math.lgamma((df - 1.0) / 2.0))
     j_approx = 1.0 - 3.0 / (4.0 * df - 1.0)
     g = j * d
     var_g = base + g * g / (2.0 * ntot)

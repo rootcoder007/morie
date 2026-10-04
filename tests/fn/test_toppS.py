@@ -1,7 +1,6 @@
 """Tests for toppS.top_p_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.toppS import top_p_sampling
 
 

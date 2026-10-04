@@ -1,7 +1,6 @@
 """Tests for kappac.cohens_kappa."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kappac import cohens_kappa
 
 

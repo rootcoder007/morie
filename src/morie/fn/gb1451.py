@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['mcnemarq', 'gibbons_mcnemar']
+__all__ = ["mcnemarq", "gibbons_mcnemar"]
 
 
 def mcnemarq(table, correct=False):
@@ -57,9 +57,7 @@ def mcnemarq(table, correct=False):
     ni = int(round(nd))
     pex = min(
         1.0,
-        2.0
-        * sum(math.comb(ni, i) for i in range(k + 1))
-        * 0.5**ni,
+        2.0 * sum(math.comb(ni, i) for i in range(k + 1)) * 0.5**ni,
     )
     return RichResult(
         payload={

@@ -1,7 +1,6 @@
 """Tests for ppswrs.pps_with_replacement."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ppswrs import pps_with_replacement
 
 

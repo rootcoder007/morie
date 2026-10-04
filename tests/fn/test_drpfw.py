@@ -1,8 +1,8 @@
 """drpfw: inverted dropout forward pass (Srivastava et al. 2014)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.drpfw import dropout_forward as do
 
 
@@ -22,7 +22,7 @@ def test_drpfw_p_zero_keeps_everything():
 
 
 def test_drpfw_surviving_units_are_scaled_by_one_over_one_minus_p():
-    """"Inverted" dropout: the scaling happens at TRAIN time, which is what
+    """ "Inverted" dropout: the scaling happens at TRAIN time, which is what
     lets eval mode be a plain identity."""
     rng = np.random.default_rng(1913)
     x = np.ones(2000)

@@ -1,4 +1,5 @@
 """Tests for _blake2 (RFC 7693) and secarg (Argon2, RFC 9106)."""
+
 import importlib
 
 import pytest
@@ -18,14 +19,16 @@ def test_blake2b_rfc7693_abc():
     assert H(b2.blake2b(b"abc")) == (
         "ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbff"
         "a2d17d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386ed"
-        "d4009923")
+        "d4009923"
+    )
 
 
 def test_blake2b_empty():
     assert H(b2.blake2b(b"")) == (
         "786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f"
         "5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701a"
-        "fe9be2ce")
+        "fe9be2ce"
+    )
 
 
 def test_blake2b_length_is_not_truncation():
@@ -55,35 +58,31 @@ def test_argon2_prehash_matches_rfc9106():
     assert got.startswith("b8819791a0359660bb7709c85fa48f04")
 
 
-@pytest.mark.parametrize("variant,tag", [
-    ("argon2d", "512b391b6f1162975371d30919734294"
-                "f868e3be3984f3c1a13a4db9fabe4acb"),
-    ("argon2i", "c814d9d1dc7f37aa13f0d77f2494bda1"
-                "c8de6b016dd388d29952a4c4672b6ce8"),
-    ("argon2id", "0d640df58d78766c08c037a34a8b53c9"
-                 "d01ef0452d75b65eb52520e96b01e659"),
-])
+@pytest.mark.parametrize(
+    "variant,tag",
+    [
+        ("argon2d", "512b391b6f1162975371d30919734294f868e3be3984f3c1a13a4db9fabe4acb"),
+        ("argon2i", "c814d9d1dc7f37aa13f0d77f2494bda1c8de6b016dd388d29952a4c4672b6ce8"),
+        ("argon2id", "0d640df58d78766c08c037a34a8b53c9d01ef0452d75b65eb52520e96b01e659"),
+    ],
+)
 def test_argon2_rfc9106_test_vectors(variant, tag):
-    r = ar.argon2(P32, S16, memory=32, passes=3, parallelism=4,
-                  tag_length=32, variant=variant, secret=K8,
-                  associated=X12)
+    r = ar.argon2(
+        P32, S16, memory=32, passes=3, parallelism=4, tag_length=32, variant=variant, secret=K8, associated=X12
+    )
     assert r["tag_hex"] == tag
 
 
 def test_argon2_parameters_are_bound_into_the_tag():
-    a = ar.argon2(P32, S16, memory=32, passes=3, parallelism=4,
-                  variant="argon2id", secret=K8, associated=X12)
-    b = ar.argon2(P32, S16, memory=32, passes=4, parallelism=4,
-                  variant="argon2id", secret=K8, associated=X12)
-    c = ar.argon2(P32, S16, memory=32, passes=3, parallelism=4,
-                  variant="argon2id", associated=X12)
+    a = ar.argon2(P32, S16, memory=32, passes=3, parallelism=4, variant="argon2id", secret=K8, associated=X12)
+    b = ar.argon2(P32, S16, memory=32, passes=4, parallelism=4, variant="argon2id", secret=K8, associated=X12)
+    c = ar.argon2(P32, S16, memory=32, passes=3, parallelism=4, variant="argon2id", associated=X12)
     assert len({a["tag_hex"], b["tag_hex"], c["tag_hex"]}) == 3
     assert a["memory_kib"] == 32 and a["version"] == 0x13
 
 
 def test_argon2_variable_hash_stretches_and_matches_below_64():
-    assert ar.variable_hash(b"abc", 32) == b2.blake2b(
-        (32).to_bytes(4, "little") + b"abc", 32)
+    assert ar.variable_hash(b"abc", 32) == b2.blake2b((32).to_bytes(4, "little") + b"abc", 32)
     long_out = ar.variable_hash(b"abc", 128)
     assert len(long_out) == 128
     assert long_out[:32] != long_out[32:64]
@@ -93,7 +92,7 @@ def test_argon2_variable_hash_stretches_and_matches_below_64():
 
 def test_argon2_compress_diffuses_and_depends_on_the_xor():
     spike = [0] * 128
-    spike[0] = 0x0123456789abcdef
+    spike[0] = 0x0123456789ABCDEF
     g = ar.compress(spike, [0] * 128)
     flat = ar.compress([0] * 128, [0] * 128)
     assert g[127] != flat[127]

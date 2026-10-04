@@ -1,7 +1,6 @@
 """Test 1D convolution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.conv1 import conv1
 
 

@@ -1,7 +1,6 @@
 """Test peak_factor (spkfc)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spkfc import peak_factor, spkfc
 

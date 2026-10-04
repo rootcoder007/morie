@@ -12,9 +12,16 @@ def test_nashq_basic():
     """A one-shot prisoner's dilemma with uniform exploration: every
     joint action is revisited until Q = (1 - 2^-k) r reaches the stage
     payoffs exactly, and the Nash policy is mutual defection."""
-    r = nash_q_learning(["s", "end"], A, lambda s, a, b: "end",
-                        lambda s, a, b, s2: PD[(a, b)], epsilon=1.0,
-                        episodes=300, terminal=("end",), alpha=0.5)
+    r = nash_q_learning(
+        ["s", "end"],
+        A,
+        lambda s, a, b: "end",
+        lambda s, a, b, s2: PD[(a, b)],
+        epsilon=1.0,
+        episodes=300,
+        terminal=("end",),
+        alpha=0.5,
+    )
     assert isinstance(r, dict)
     assert r["q"][(0, "s")] == [[3.0, 0.0], [5.0, 1.0]]
     assert r["q"][(1, "s")] == [[3.0, 5.0], [0.0, 1.0]]
@@ -33,11 +40,10 @@ def test_nashq_edge():
     def rew(s, a, b, s2):
         return R0[(a, b)] if s == "s0" else PD[(a, b)]
 
-    r = nash_q_learning(["s0", "s1", "end"], A, step, rew, gamma=0.9, epsilon=1.0,
-                        episodes=600, terminal=("end",), alpha=0.5)
+    r = nash_q_learning(
+        ["s0", "s1", "end"], A, step, rew, gamma=0.9, epsilon=1.0, episodes=600, terminal=("end",), alpha=0.5
+    )
     for p in (0, 1):
         exp = [[R0[(a, b)][p] + 0.9 * 1.0 for b in A[1]] for a in A[0]]
         for row, erow in zip(r["q"][(p, "s0")], exp):
             assert row == pytest.approx(erow, rel=1e-12)
-
-

@@ -35,15 +35,12 @@ def _irls_qpois(X, y, w, iters=60, tol=1e-12):
             break
     eta = [sum(X[i][j] * b[j] for j in range(p)) for i in range(n)]
     mu = [math.exp(e) for e in eta]
-    A = [[sum(w[i] * mu[i] * X[i][a] * X[i][c] for i in range(n))
-          for c in range(p)] for a in range(p)]
-    inv = [core.cholsolve(A, [1.0 if j == c else 0.0 for j in range(p)])
-           for c in range(p)]
+    A = [[sum(w[i] * mu[i] * X[i][a] * X[i][c] for i in range(n)) for c in range(p)] for a in range(p)]
+    inv = [core.cholsolve(A, [1.0 if j == c else 0.0 for j in range(p)]) for c in range(p)]
     return b, mu, inv
 
 
-def farrington_signal(counts, baseline_years=5, reference_window=3,
-                      period=52, alpha=0.005, reweight=True, trend=True):
+def farrington_signal(counts, baseline_years=5, reference_window=3, period=52, alpha=0.005, reweight=True, trend=True):
     """
     Farrington flexible algorithm
 
@@ -144,19 +141,17 @@ def farrington_signal(counts, baseline_years=5, reference_window=3,
     if reweight:
         hat = []
         for i in range(nb):
-            q = sum(X[i][r] * sum(inv[c][r] * X[i][c] for c in range(p))
-                    for r in range(p))
+            q = sum(X[i][r] * sum(inv[c][r] * X[i][c] for c in range(p)) for r in range(p))
             hat.append(om[i] * mu[i] * q)
         s = []
         for i in range(nb):
-            an = 1.5 * (yb[i] ** (2.0 / 3.0) * mu[i] ** (-1.0 / 6.0)
-                        - mu[i] ** 0.5)
+            an = 1.5 * (yb[i] ** (2.0 / 3.0) * mu[i] ** (-1.0 / 6.0) - mu[i] ** 0.5)
             den = phi * (1.0 - hat[i])
             s.append(an / math.sqrt(den) if den > 0.0 else 0.0)
         # Farrington weights: gamma * s^-2 above 1, gamma below
-        den = sum((v ** -2.0) if v > 1.0 else 1.0 for v in s)
+        den = sum((v**-2.0) if v > 1.0 else 1.0 for v in s)
         gam = nb / den if den > 0.0 else 1.0
-        om = [gam * (v ** -2.0) if v > 1.0 else gam for v in s]
+        om = [gam * (v**-2.0) if v > 1.0 else gam for v in s]
         beta, mu, inv, phi, raw = _fit(om)
     x0 = [1.0, 0.0] if trend else [1.0]
     mu0 = math.exp(sum(x0[j] * beta[j] for j in range(p)))
@@ -169,21 +164,23 @@ def farrington_signal(counts, baseline_years=5, reference_window=3,
     z = core.qnorm(1.0 - a / 2.0)
     U = (mu0 ** (2.0 / 3.0) + z * se) ** 1.5
     y0 = y[t0]
-    score = (y0 - mu0) / (U - mu0) if U > mu0 else float("inf")
-    return RichResult(payload={
-        "estimate": score,
-        "observed": y0,
-        "expected": mu0,
-        "threshold": U,
-        "alarm": 1.0 if y0 > U else 0.0,
-        "phi": phi,
-        "phi_raw": raw,
-        "trend_coef": beta[1] if trend else 0.0,
-        "score": score,
-        "nbaseline": nb,
-        "n": n,
-        "method": "Farrington flexible algorithm",
-    })
+    score = (y0 - mu0) / (U - mu0) if mu0 < U else float("inf")
+    return RichResult(
+        payload={
+            "estimate": score,
+            "observed": y0,
+            "expected": mu0,
+            "threshold": U,
+            "alarm": 1.0 if y0 > U else 0.0,
+            "phi": phi,
+            "phi_raw": raw,
+            "trend_coef": beta[1] if trend else 0.0,
+            "score": score,
+            "nbaseline": nb,
+            "n": n,
+            "method": "Farrington flexible algorithm",
+        }
+    )
 
 
 def cheatsheet():

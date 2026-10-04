@@ -18,5 +18,6 @@ __all__ = ["lilliefors_test", "lillieforstest"]
 # name has to exist here or the lookup dies.
 lillieforstest = lilliefors_test
 
+
 def cheatsheet():
     return "lbrst: alias of morie.fn.lilf.lilliefors_test -- Lilliefors normality test"

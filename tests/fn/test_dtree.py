@@ -1,7 +1,6 @@
 """Test decision_tree (dtree)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dtree import decision_tree, dtree
 

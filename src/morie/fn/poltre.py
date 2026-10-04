@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["polya_tree_density", "polya_tree_prior"]
 
 
-def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
-                       base_params=None):
+def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal", base_params=None):
     r"""Nonparametric density under a Polya tree prior.
 
     The unit interval is split recursively; at level :math:`j` each
@@ -84,12 +83,12 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
         raise ValueError("base must be 'normal' or 'uniform'.")
 
     if base == "normal":
-        mu, sd = (float(np.mean(v)), float(np.std(v, ddof=1)) or 1.0) \
-            if base_params is None else base_params
+        mu, sd = (float(np.mean(v)), float(np.std(v, ddof=1)) or 1.0) if base_params is None else base_params
         import math
+
         def cdf(t):
-            return 0.5 * np.array([math.erfc(-(ti - mu) / (sd * math.sqrt(2)))
-                                   for ti in np.atleast_1d(t)])
+            return 0.5 * np.array([math.erfc(-(ti - mu) / (sd * math.sqrt(2))) for ti in np.atleast_1d(t)])
+
         def icdf(u):
             out = np.empty_like(u)
             for i, q in enumerate(np.atleast_1d(u)):
@@ -102,11 +101,10 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
                         hi_ = mid
                 out[i] = 0.5 * (lo_ + hi_)
             return out
-        dens_base = lambda t: np.exp(-0.5 * ((t - mu) / sd) ** 2) \
-            / (sd * np.sqrt(2 * np.pi))
+
+        dens_base = lambda t: np.exp(-0.5 * ((t - mu) / sd) ** 2) / (sd * np.sqrt(2 * np.pi))
     else:
-        a, b = (float(v.min()), float(v.max())) if base_params is None \
-            else base_params
+        a, b = (float(v.min()), float(v.max())) if base_params is None else base_params
         if b <= a:
             raise ValueError("uniform base needs b > a.")
         cdf = lambda t: np.clip((np.atleast_1d(t) - a) / (b - a), 0, 1)
@@ -115,10 +113,10 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
 
     u = np.clip(cdf(v), 1e-12, 1 - 1e-12)
     # posterior mass multiplier on each dyadic cell at the finest level
-    mult = np.ones(2 ** J)
+    mult = np.ones(2**J)
     for j in range(1, J + 1):
-        alpha = c * j ** 2
-        cells = 2 ** j
+        alpha = c * j**2
+        cells = 2**j
         edges = np.linspace(0.0, 1.0, cells + 1)
         idx = np.clip(np.searchsorted(edges, u, side="right") - 1, 0, cells - 1)
         counts = np.bincount(idx, minlength=cells).astype(float)
@@ -128,16 +126,15 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
             wl = (alpha + nl) / tot * 2.0
             wr = (alpha + nr) / tot * 2.0
             rep = 2 ** (J - j)
-            mult[(2 * p) * rep:(2 * p + 1) * rep] *= wl
-            mult[(2 * p + 1) * rep:(2 * p + 2) * rep] *= wr
+            mult[(2 * p) * rep : (2 * p + 1) * rep] *= wl
+            mult[(2 * p + 1) * rep : (2 * p + 2) * rep] *= wr
 
-    grid = (np.linspace(v.min() - 0.5, v.max() + 0.5, 400)
-            if at is None else np.asarray(at, dtype=float).ravel())
+    grid = np.linspace(v.min() - 0.5, v.max() + 0.5, 400) if at is None else np.asarray(at, dtype=float).ravel()
     ug = np.clip(cdf(grid), 1e-12, 1 - 1e-12)
-    cell = np.clip((ug * 2 ** J).astype(int), 0, 2 ** J - 1)
+    cell = np.clip((ug * 2**J).astype(int), 0, 2**J - 1)
     dens = dens_base(grid) * mult[cell]
     integral = float(np.trapezoid(dens, grid)) if grid.size > 1 else np.nan
-    growth_ok = True                        # alpha_j = c j^2 by construction
+    growth_ok = True  # alpha_j = c j^2 by construction
     return RichResult(
         payload={
             "estimate": dens,
@@ -152,7 +149,7 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
                 "then puts all its mass on discrete distributions while the "
                 "posterior still computes"
             ),
-            "partition_artefacts": int(2 ** J - 1),
+            "partition_artefacts": int(2**J - 1),
             "artefact_note": (
                 "the fitted density is discontinuous at every dyadic cut; "
                 "those jumps belong to the partition, not to the data"

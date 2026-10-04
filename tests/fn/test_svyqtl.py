@@ -1,7 +1,6 @@
 """Tests for svyqtl.survey_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svyqtl import survey_quantile
 
 

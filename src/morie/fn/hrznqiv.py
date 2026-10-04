@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonparametric quantile IV."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["hrz_npiv_quantile", "horowitz_nonpar_quantile_iv"]
@@ -49,10 +48,16 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
     from .hrzsitr import hrz_sieve_iv
 
     out = hrz_sieve_iv(T, tau_target, K=K)
-    return RichResult(payload={"g": out["g"], "K": out["K"],
-                               "residual_norm": out["residual_norm"],
-                               "tau": float(tau), "nonlinear": False,
-                               "method": "Linear sieve solve of the MEAN restriction; tau recorded, not enforced"})
+    return RichResult(
+        payload={
+            "g": out["g"],
+            "K": out["K"],
+            "residual_norm": out["residual_norm"],
+            "tau": float(tau),
+            "nonlinear": False,
+            "method": "Linear sieve solve of the MEAN restriction; tau recorded, not enforced",
+        }
+    )
 
 
 def cheatsheet():

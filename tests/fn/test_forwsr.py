@@ -11,11 +11,14 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
-from morie.fn.forwsr import (consistency_factor, forward_plot,
-                             forward_search,
-                             forward_search_regression, lms_start,
-                             ols_fit)
+from morie.fn.forwsr import (
+    consistency_factor,
+    forward_plot,
+    forward_search,
+    forward_search_regression,
+    lms_start,
+    ols_fit,
+)
 
 
 def _clean(n=60):
@@ -111,8 +114,9 @@ def test_deletion_residual_is_finite_once_the_scale_is_estimable():
         v = s["min_deletion_residual"]
         if p < s["m"] < len(y):
             assert v == v and math.isfinite(v)
-    assert forward_search(X, y)[-1]["min_deletion_residual"] != \
-        forward_search(X, y)[-1]["min_deletion_residual"]  # nan at m = n
+    assert (
+        forward_search(X, y)[-1]["min_deletion_residual"] != forward_search(X, y)[-1]["min_deletion_residual"]
+    )  # nan at m = n
 
 
 def test_consistency_factor_flattens_the_scale():
@@ -130,8 +134,8 @@ def test_consistency_factor_flattens_the_scale():
     steps = forward_search(X, y)
     raw = [s["sigma"] for s in steps if s["m"] >= 20]
     cor = [s["sigma_corrected"] for s in steps if s["m"] >= 20]
-    assert max(raw) / min(raw) > 8.0            # the bias is real
-    assert max(cor) / min(cor) < 1.5            # the fix removes it
+    assert max(raw) / min(raw) > 8.0  # the bias is real
+    assert max(cor) / min(cor) < 1.5  # the fix removes it
     for v in cor:
         assert abs(v - sigma) < 0.25 * sigma
 

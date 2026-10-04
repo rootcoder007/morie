@@ -1,7 +1,6 @@
 """Tests for tnie.total_natural_indirect_effect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tnie import total_natural_indirect_effect
 
 

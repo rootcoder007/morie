@@ -1,7 +1,6 @@
 """Tests for morie.fn.wghtm — Weighted Euclidean model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wghtm import wghtm
 
 

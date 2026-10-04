@@ -18,18 +18,24 @@ _PI = np.pi
 # distribution -> {comparison: exact value}; Table 13.3.1
 ARE_TABLE = {
     "uniform": {
-        "wilcoxon_vs_t": 1.0, "sign_vs_t": 1.0 / 3.0, "sign_vs_wilcoxon": 1.0 / 3.0,
+        "wilcoxon_vs_t": 1.0,
+        "sign_vs_t": 1.0 / 3.0,
+        "sign_vs_wilcoxon": 1.0 / 3.0,
     },
     "normal": {
-        "wilcoxon_vs_t": 3.0 / _PI, "sign_vs_t": 2.0 / _PI,
+        "wilcoxon_vs_t": 3.0 / _PI,
+        "sign_vs_t": 2.0 / _PI,
         "sign_vs_wilcoxon": 2.0 / 3.0,
     },
     "logistic": {
-        "wilcoxon_vs_t": _PI**2 / 9.0, "sign_vs_t": _PI**2 / 12.0,
+        "wilcoxon_vs_t": _PI**2 / 9.0,
+        "sign_vs_t": _PI**2 / 12.0,
         "sign_vs_wilcoxon": 3.0 / 4.0,
     },
     "double_exponential": {
-        "wilcoxon_vs_t": 1.5, "sign_vs_t": 2.0, "sign_vs_wilcoxon": 4.0 / 3.0,
+        "wilcoxon_vs_t": 1.5,
+        "sign_vs_t": 2.0,
+        "sign_vs_wilcoxon": 4.0 / 3.0,
     },
 }
 
@@ -69,7 +75,9 @@ def efficacy_are(f, cdf=None):
         "wilcoxon_vs_t": float(12.0 * m2 * if2**2),
         "sign_vs_t": float(4.0 * m2 * f0**2),
         "sign_vs_wilcoxon": float(f0**2 / (3.0 * if2**2)),
-        "sigma2": float(m2), "int_f2": float(if2), "f0": f0,
+        "sigma2": float(m2),
+        "int_f2": float(if2),
+        "f0": f0,
     }
 
 

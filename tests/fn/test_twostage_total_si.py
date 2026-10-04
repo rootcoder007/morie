@@ -17,8 +17,7 @@ def test_twostage_total_si_matches_the_book_equation():
 
 def test_twostage_total_si_equals_the_sum_when_all_psus_are_sampled():
     # N = n means the sample is the population, so no scaling up occurs
-    assert twostage_total_si([10.0, 20.0, 30.0], 3.0)["value"] == pytest.approx(
-        60.0, abs=1e-12)
+    assert twostage_total_si([10.0, 20.0, 30.0], 3.0)["value"] == pytest.approx(60.0, abs=1e-12)
 
 
 def test_twostage_total_si_rejects_bad_input():

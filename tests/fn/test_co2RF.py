@@ -12,8 +12,7 @@ def test_co2RF_basic():
 
     # Verify result is dict-like with expected keys
     assert isinstance(result, dict)
-    for key in ("estimate", "sarf", "alpha_prime", "method_used",
-                "C", "C0", "N", "erf_adjustment"):
+    for key in ("estimate", "sarf", "alpha_prime", "method_used", "C", "C0", "N", "erf_adjustment"):
         assert key in result
 
     # Verify numerical properties
@@ -44,12 +43,8 @@ def test_co2RF_edge():
     assert isinstance(result_erf, dict)
     assert result_erf["erf_adjustment"] is True
     assert result_sarf["erf_adjustment"] is False
-    assert math.isclose(result_erf["estimate"],
-                        1.05 * result_sarf["estimate"],
-                        rel_tol=1e-12)
-    assert math.isclose(result_erf["estimate"],
-                        1.05 * result_erf["sarf"],
-                        rel_tol=1e-12)
+    assert math.isclose(result_erf["estimate"], 1.05 * result_sarf["estimate"], rel_tol=1e-12)
+    assert math.isclose(result_erf["estimate"], 1.05 * result_erf["sarf"], rel_tol=1e-12)
 
     # Myhre 1998 expression: SARF = 5.35 * ln(C / C0)
     C0 = 277.15

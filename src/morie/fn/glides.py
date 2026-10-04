@@ -79,10 +79,20 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["glides", "glide_score_proxy", "glide_score", "vdw_term",
-           "coulomb_term", "lipophilic_term", "hbond_term",
-           "DIELECTRICS", "HBOND_CLASSES", "COEFFICIENTS", "WEIGHTS",
-           "cheatsheet"]
+__all__ = [
+    "glides",
+    "glide_score_proxy",
+    "glide_score",
+    "vdw_term",
+    "coulomb_term",
+    "lipophilic_term",
+    "hbond_term",
+    "DIELECTRICS",
+    "HBOND_CLASSES",
+    "COEFFICIENTS",
+    "WEIGHTS",
+    "cheatsheet",
+]
 
 DIELECTRICS = ("constant", "distance")
 HBOND_CLASSES = ("neutral_neutral", "neutral_charged", "charged_charged")
@@ -93,10 +103,17 @@ COEFFICIENTS = {"vdw": 0.065, "coulomb": 0.130}
 # Unit defaults for the six terms whose internal weights the papers do
 # not state in a quotable form. They are parameters, not constants; a
 # caller with a calibration should pass it.
-WEIGHTS = {"lipo": 1.0, "hbond": 1.0, "metal": 1.0, "buryp": 1.0,
-           "rotb": 1.0, "site": 1.0,
-           "hbond_neutral_neutral": 1.0, "hbond_neutral_charged": 1.0,
-           "hbond_charged_charged": 1.0}
+WEIGHTS = {
+    "lipo": 1.0,
+    "hbond": 1.0,
+    "metal": 1.0,
+    "buryp": 1.0,
+    "rotb": 1.0,
+    "site": 1.0,
+    "hbond_neutral_neutral": 1.0,
+    "hbond_neutral_charged": 1.0,
+    "hbond_charged_charged": 1.0,
+}
 
 # Coulomb's constant in kcal/mol per elementary charge squared per
 # angstrom -- the unit system a docking score works in.
@@ -130,8 +147,7 @@ def vdw_term(pairs, m=6, n=12):
             terms.append(float("inf"))
             continue
         q = r0 / r
-        terms.append(eps * ((float(m) / (n - m)) * _ipow(q, n)
-                            - (float(n) / (n - m)) * _ipow(q, m)))
+        terms.append(eps * ((float(m) / (n - m)) * _ipow(q, n) - (float(n) / (n - m)) * _ipow(q, m)))
     return _w.csum(terms) if terms else 0.0, terms
 
 
@@ -200,17 +216,16 @@ def hbond_term(bonds, weights=None):
     for c, s in bonds:
         c = str(c)
         if c not in by:
-            raise ValueError("hydrogen bond class must be one of %r"
-                             % (HBOND_CLASSES,))
+            raise ValueError("hydrogen bond class must be one of %r" % (HBOND_CLASSES,))
         v = w["hbond_" + c] * float(s)
         by[c] += v
         terms.append(v)
     return (_w.csum(terms) if terms else 0.0), terms, by
 
 
-def glide_score(vdw=0.0, coulomb=0.0, lipo=0.0, hbond=0.0, metal=0.0,
-                buryp=0.0, rotb=0.0, site=0.0, coefficients=None,
-                weights=None):
+def glide_score(
+    vdw=0.0, coulomb=0.0, lipo=0.0, hbond=0.0, metal=0.0, buryp=0.0, rotb=0.0, site=0.0, coefficients=None, weights=None
+):
     """Assemble the eight terms into a GScore.
 
     The two published coefficients multiply the van der Waals and
@@ -234,23 +249,38 @@ def glide_score(vdw=0.0, coulomb=0.0, lipo=0.0, hbond=0.0, metal=0.0,
         "rotb": w["rotb"] * float(rotb),
         "site": w["site"] * float(site),
     }
-    order = ("vdw", "coulomb", "lipo", "hbond", "metal", "buryp", "rotb",
-             "site")
+    order = ("vdw", "coulomb", "lipo", "hbond", "metal", "buryp", "rotb", "site")
     total = _w.csum(parts[k] for k in order)
     return total, parts, order
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t])
-                             for t in range(3)))
+    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t]) for t in range(3)))
 
 
-def glide_score_proxy(receptor, ligand_pose, radii=(), depths=(),
-                      charges=(), lipophilic=(), hbonds=(),
-                      dielectric="constant", epsilon=1.0, m=6, n=12,
-                      r1=4.1, r2=7.1, metal=0.0, buryp=0.0, n_rot=0,
-                      rot_penalty=0.35, site=0.0, coefficients=None,
-                      weights=None, cutoff=None):
+def glide_score_proxy(
+    receptor,
+    ligand_pose,
+    radii=(),
+    depths=(),
+    charges=(),
+    lipophilic=(),
+    hbonds=(),
+    dielectric="constant",
+    epsilon=1.0,
+    m=6,
+    n=12,
+    r1=4.1,
+    r2=7.1,
+    metal=0.0,
+    buryp=0.0,
+    n_rot=0,
+    rot_penalty=0.35,
+    site=0.0,
+    coefficients=None,
+    weights=None,
+    cutoff=None,
+):
     """Score a pose in the Glide form.
 
     Parameters
@@ -283,16 +313,15 @@ def glide_score_proxy(receptor, ligand_pose, radii=(), depths=(),
     ----------
     Friesner et al. (2004) J Med Chem 47(7), 1739-1749.
     """
+
     def look(table, key, what):
         for k, v in table:
             if k == key:
                 return float(v)
         raise ValueError("no %s for atom type %r" % (what, key))
 
-    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in receptor]
-    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in ligand_pose]
+    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in receptor]
+    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in ligand_pose]
     lipset = [str(t) for t in lipophilic]
 
     vp = []
@@ -303,12 +332,14 @@ def glide_score_proxy(receptor, ligand_pose, radii=(), depths=(),
             d = _dist(rx, lx)
             if cutoff is not None and d > float(cutoff):
                 continue
-            vp.append((d, look(radii, rt, "radius")
-                       + look(radii, lt, "radius"),
-                       math.sqrt(look(depths, rt, "well depth")
-                                 * look(depths, lt, "well depth"))))
-            cp.append((d, look(charges, rt, "charge"),
-                       look(charges, lt, "charge")))
+            vp.append(
+                (
+                    d,
+                    look(radii, rt, "radius") + look(radii, lt, "radius"),
+                    math.sqrt(look(depths, rt, "well depth") * look(depths, lt, "well depth")),
+                )
+            )
+            cp.append((d, look(charges, rt, "charge"), look(charges, lt, "charge")))
             if rt in lipset and lt in lipset:
                 lp.append(d)
     e_vdw, vdw_terms = vdw_term(vp, m, n)
@@ -317,42 +348,44 @@ def glide_score_proxy(receptor, ligand_pose, radii=(), depths=(),
     e_hb, hb_terms, hb_by = hbond_term(hbonds, weights)
     e_rot = float(rot_penalty) * int(n_rot)
 
-    total, parts, order = glide_score(e_vdw, e_cou, e_lip, e_hb, metal,
-                                      buryp, e_rot, site, coefficients,
-                                      weights)
-    return RichResult(payload={
-        "gscore": total,
-        "estimate": total,
-        "se": float("nan"),
-        "parts": [parts[k] for k in order],
-        "part_names": list(order),
-        "vdw_energy": e_vdw,
-        "coulomb_energy": e_cou,
-        "lipophilic_count": e_lip,
-        "hbond_total": e_hb,
-        "hbond_by_class": [hb_by[c] for c in HBOND_CLASSES],
-        "rot_penalty": e_rot,
-        "metal": float(metal),
-        "buryp": float(buryp),
-        "site": float(site),
-        "vdw_terms": vdw_terms,
-        "coulomb_terms": cou_terms,
-        "lipophilic_terms": lip_terms,
-        "hbond_terms": hb_terms,
-        "n_contacts": len(vp),
-        "n_lipophilic": len(lp),
-        "n_hbond": len(hb_terms),
-        "n_rot": int(n_rot),
-        "dielectric": dielectric,
-        "epsilon": float(epsilon),
-        "method": "Glide-style empirical docking score",
-    })
+    total, parts, order = glide_score(e_vdw, e_cou, e_lip, e_hb, metal, buryp, e_rot, site, coefficients, weights)
+    return RichResult(
+        payload={
+            "gscore": total,
+            "estimate": total,
+            "se": float("nan"),
+            "parts": [parts[k] for k in order],
+            "part_names": list(order),
+            "vdw_energy": e_vdw,
+            "coulomb_energy": e_cou,
+            "lipophilic_count": e_lip,
+            "hbond_total": e_hb,
+            "hbond_by_class": [hb_by[c] for c in HBOND_CLASSES],
+            "rot_penalty": e_rot,
+            "metal": float(metal),
+            "buryp": float(buryp),
+            "site": float(site),
+            "vdw_terms": vdw_terms,
+            "coulomb_terms": cou_terms,
+            "lipophilic_terms": lip_terms,
+            "hbond_terms": hb_terms,
+            "n_contacts": len(vp),
+            "n_lipophilic": len(lp),
+            "n_hbond": len(hb_terms),
+            "n_rot": int(n_rot),
+            "dielectric": dielectric,
+            "epsilon": float(epsilon),
+            "method": "Glide-style empirical docking score",
+        }
+    )
 
 
 glides = glide_score_proxy
 
 
 def cheatsheet():
-    return ("glides: Glide-style empirical docking score. dielectrics "
-            + ", ".join(DIELECTRICS)
-            + "; GScore = 0.065 vdW + 0.130 Coulomb + six weighted terms")
+    return (
+        "glides: Glide-style empirical docking score. dielectrics "
+        + ", ".join(DIELECTRICS)
+        + "; GScore = 0.065 vdW + 0.130 Coulomb + six weighted terms"
+    )

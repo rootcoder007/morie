@@ -78,11 +78,21 @@ def normalized_gamma_process(y, alpha=1.0, tau=1.0):
         ek += a / (a + i - 1.0)
         vk += a * (i - 1.0) / (a + i - 1.0) ** 2
     ekd = a * (core.digamma(a + n) - core.digamma(a))
-    return RichResult(payload={
-        "estimate": ek, "e_k": ek, "e_k_digamma": ekd, "var_k": vk,
-        "k_observed": len(seen), "total_mass": a * t,
-        "psi1": a * math.log(1.0 + t), "alpha": a, "tau": t, "n": n,
-        "method": "Normalized gamma process (Dirichlet process) prior"})
+    return RichResult(
+        payload={
+            "estimate": ek,
+            "e_k": ek,
+            "e_k_digamma": ekd,
+            "var_k": vk,
+            "k_observed": len(seen),
+            "total_mass": a * t,
+            "psi1": a * math.log(1.0 + t),
+            "alpha": a,
+            "tau": t,
+            "n": n,
+            "method": "Normalized gamma process (Dirichlet process) prior",
+        }
+    )
 
 
 def cheatsheet():

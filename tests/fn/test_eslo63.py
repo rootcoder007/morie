@@ -1,7 +1,5 @@
 """Tests for eslo63.esl_oob_632."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.eslo63 import esl_oob_632
 
 

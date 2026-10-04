@@ -1,7 +1,6 @@
 """Tests for louv.louvain_communities."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.louv import louvain_communities
 
 

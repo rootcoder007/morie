@@ -1,8 +1,8 @@
 """Tests for morie.fn.grnge — Granger causality test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.grnge import granger_test, grnge
 
 

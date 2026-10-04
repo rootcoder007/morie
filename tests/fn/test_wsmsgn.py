@@ -1,7 +1,6 @@
 """Tests for wsmsgn.wasserman_sign_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmsgn import wasserman_sign_test
 
 

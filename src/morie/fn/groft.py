@@ -56,9 +56,7 @@ def geron_overfitting_gap(train_scores, val_scores):
     if tr.size == 0:
         raise ValueError("train_scores is empty.")
     if tr.shape != va.shape:
-        raise ValueError(
-            f"train_scores has {tr.size} epochs but val_scores has {va.size}."
-        )
+        raise ValueError(f"train_scores has {tr.size} epochs but val_scores has {va.size}.")
     if not np.all(np.isfinite(tr)) or not np.all(np.isfinite(va)):
         raise ValueError("scores must be finite.")
 

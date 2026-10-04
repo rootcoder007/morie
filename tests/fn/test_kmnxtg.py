@@ -20,8 +20,7 @@ def test_kmnxtg_basic():
         return [feats["image"][0] + feats["text"][0]]
 
     inputs_by_modality = {"text": "abc", "image": [1, 2, 3]}
-    result = kamath_nextgpt_any2any(
-        inputs_by_modality, encoders, llm, decoders)
+    result = kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders)
     assert isinstance(result, dict)
     assert "outputs" in result
     assert "features" in result
@@ -63,7 +62,7 @@ import morie.fn.kmnxtg as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

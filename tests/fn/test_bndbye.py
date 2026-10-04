@@ -1,7 +1,5 @@
 """Tests for bndbye.bound_bayes_credible."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bndbye import bound_bayes_credible
 
 

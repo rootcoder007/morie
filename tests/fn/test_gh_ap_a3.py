@@ -1,7 +1,6 @@
 """Tests for gh_ap_a3.ghosal_tv_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_a3 import ghosal_tv_distance
 
 

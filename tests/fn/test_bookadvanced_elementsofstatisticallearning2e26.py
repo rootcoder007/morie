@@ -1,8 +1,8 @@
 """Tests for bookadvanced_elementsofstatisticallearning2e26.bookadvanced_elementsofstatisticallearning_chapter_2_equation_26."""
 
 import pytest
-from morie.fn import _array_core as np
 
+from morie.fn import _array_core as np
 from morie.fn.bookadvanced_elementsofstatisticallearning2e26 import (
     bookadvanced_elementsofstatisticallearning_chapter_2_equation_26,
 )

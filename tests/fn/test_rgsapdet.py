@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_sleep_apnea_detect
 
-
 FS = 100.0
 APNEA = (2, 4)
 
@@ -27,10 +26,10 @@ def test_rgsapdet_basic():
     epoch is flagged at score >= 2.  Two flagged 10 s epochs in a
     60 s record are 120 events per hour, the "severe" AHI band."""
     r = rangayyan_sleep_apnea_detect(ECG, SPO2, SNORE, FS, epoch_s=10.0)
-    rms = [math.sqrt(sum(v * v for v in SNORE[k * 1000:(k + 1) * 1000]) / 1000) for k in range(6)]
+    rms = [math.sqrt(sum(v * v for v in SNORE[k * 1000 : (k + 1) * 1000]) / 1000) for k in range(6)]
     med = sorted(rms)[3]
     for k, row in enumerate(r["epochs"]):
-        seg = SPO2[k * 1000:(k + 1) * 1000]
+        seg = SPO2[k * 1000 : (k + 1) * 1000]
         assert row["desat_depth_pct"] == pytest.approx(max(seg) - min(seg), abs=1e-12)
         assert row["snore_rms"] == pytest.approx(rms[k], rel=1e-12)
         assert row["mean_hr_bpm"] == pytest.approx(60.0, rel=1e-12)

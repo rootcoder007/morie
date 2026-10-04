@@ -10,8 +10,7 @@ __all__ = ["miord2", "mice_chained_equations"]
 
 def _inv(a):
     k = len(a)
-    m = [row[:] + [1.0 if i == j else 0.0 for j in range(k)]
-         for i, row in enumerate(a)]
+    m = [row[:] + [1.0 if i == j else 0.0 for j in range(k)] for i, row in enumerate(a)]
     for c in range(k):
         piv = max(range(c, k), key=lambda r: abs(m[r][c]))
         if abs(m[piv][c]) < 1e-300:
@@ -53,8 +52,7 @@ def _norm_draw(rng, x_obs, y_obs, x_mis, kappa):
             xty[r] += xi[r] * yi
             for c in range(q):
                 s[r][c] += xi[r] * xi[c]
-    a = [[s[r][c] + (kappa * s[r][r] if r == c else 0.0)
-          for c in range(q)] for r in range(q)]
+    a = [[s[r][c] + (kappa * s[r][r] if r == c else 0.0) for c in range(q)] for r in range(q)]
     v = _inv(a)
     beta_hat = [sum(v[r][c] * xty[c] for c in range(q)) for r in range(q)]
     ssr = 0.0
@@ -62,13 +60,11 @@ def _norm_draw(rng, x_obs, y_obs, x_mis, kappa):
         e = yi - sum(b * t for b, t in zip(beta_hat, xi))
         ssr += e * e
     nu = max(n1 - q, 1)
-    g = 2.0 * float(rng.gamma(nu / 2.0))          # chi^2_nu draw
+    g = 2.0 * float(rng.gamma(nu / 2.0))  # chi^2_nu draw
     sigma = math.sqrt(ssr / max(g, 1e-300))
     z1 = [float(rng.normal()) for _ in range(q)]
     l = _chol(v)
-    beta_dot = [beta_hat[r] + sigma * sum(l[r][t] * z1[t]
-                                          for t in range(r + 1))
-                for r in range(q)]
+    beta_dot = [beta_hat[r] + sigma * sum(l[r][t] * z1[t] for t in range(r + 1)) for r in range(q)]
     out = []
     for xi in x_mis:
         z2 = float(rng.normal())
@@ -127,9 +123,7 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
         Keys: imputations (m completed data sets), missing_mask,
         m, maxit, column_means (per imputation).
     """
-    rows = [[(None if v is None or (isinstance(v, float)
-                                    and v != v) else float(v))
-             for v in r] for r in data]
+    rows = [[(None if v is None or (isinstance(v, float) and v != v) else float(v)) for v in r] for r in data]
     n = len(rows)
     if n < 3:
         raise ValueError("need at least three rows")
@@ -137,8 +131,7 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
     if any(len(r) != p for r in rows):
         raise ValueError("rows must have equal length")
     mask = [[rows[i][j] is None for j in range(p)] for i in range(n)]
-    mis_cols = [j for j in range(p)
-                if any(mask[i][j] for i in range(n))]
+    mis_cols = [j for j in range(p) if any(mask[i][j] for i in range(n))]
     for j in range(p):
         if all(mask[i][j] for i in range(n)):
             raise ValueError("column %d has no observed values" % j)
@@ -153,8 +146,7 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
             obs = [rows[i][j] for i in range(n) if not mask[i][j]]
             for i in range(n):
                 if mask[i][j]:
-                    pick = min(int(float(rng.uniform()) * len(obs)),
-                               len(obs) - 1)
+                    pick = min(int(float(rng.uniform()) * len(obs)), len(obs) - 1)
                     cur[i][j] = obs[pick]
         for _t in range(maxit):
             for j in mis_cols:
@@ -173,17 +165,18 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
                 for i, v in zip(mis_idx, draws):
                     cur[i][j] = v
         imps.append(cur)
-    means = [[sum(imp[i][j] for i in range(n)) / n for j in range(p)]
-             for imp in imps]
-    return RichResult(payload={
-        "imputations": imps,
-        "missing_mask": mask,
-        "m": m,
-        "maxit": maxit,
-        "column_means": means,
-        "seed": int(seed),
-        "method": "MICE norm (van Buuren Algs. 3.1 + 4.3)",
-    })
+    means = [[sum(imp[i][j] for i in range(n)) / n for j in range(p)] for imp in imps]
+    return RichResult(
+        payload={
+            "imputations": imps,
+            "missing_mask": mask,
+            "m": m,
+            "maxit": maxit,
+            "column_means": means,
+            "seed": int(seed),
+            "method": "MICE norm (van Buuren Algs. 3.1 + 4.3)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -192,6 +185,7 @@ mice_chained_equations = miord2
 
 def cheatsheet():
     return "miord2: chained Bayesian-normal imputation, m chains x maxit sweeps"
+
 
 # public names resolved by fn/_lazy_map.json
 mi_chained_eq = miord2

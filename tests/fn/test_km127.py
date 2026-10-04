@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
 Deep Dive, eq. 8.15, the G-Eval probability-weighted score. Expected values are recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km127 import kamath_ch8_geval_score

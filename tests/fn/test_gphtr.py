@@ -1,7 +1,6 @@
 """Tests for gphtr.gp_heteroscedastic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gphtr import gp_heteroscedastic
 
 

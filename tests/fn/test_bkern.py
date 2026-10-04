@@ -1,7 +1,6 @@
 """Tests for morie.fn.bkern -- Bayesian kernel regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bkern import bayesian_kernel_regression
 
 

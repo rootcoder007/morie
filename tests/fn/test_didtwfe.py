@@ -1,7 +1,6 @@
 """Tests for didtwfe.twoway_fixed_effects_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.didtwfe import twoway_fixed_effects_did
 
 

@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Tests for morie.fn.cfacm -- nested CFA model comparison."""
 
 from morie.fn.cfacm import cfa_compare

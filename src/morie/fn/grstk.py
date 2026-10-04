@@ -89,9 +89,7 @@ def geron_stacking_predictor(base_preds, y, blender=None, include_intercept=True
             raise ValueError("blender(P, y) must return a callable predictor.")
         pred = np.asarray(fitted(P), dtype=float).ravel()
         if pred.shape != yv.shape:
-            raise ValueError(
-                f"blender predictor returned {pred.size} predictions for {yv.size} instances."
-            )
+            raise ValueError(f"blender predictor returned {pred.size} predictions for {yv.size} instances.")
         if not np.all(np.isfinite(pred)):
             raise ValueError("blender predictor returned non-finite values.")
         weights = None

@@ -1,7 +1,6 @@
 """Tests for bldal (Bland-Altman)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bldal import bland_altman
 
 

@@ -63,14 +63,19 @@ def sandwich_robust_se(X, y, kind="HC0"):
             w.append(1.0 / (1.0 - h[i]) ** 2)
         else:
             w.append(1.0)
-    mid = [[sum(Xm[i][a] * w[i] * resid[i] ** 2 * Xm[i][b] for i in range(n))
-            for b in range(p)] for a in range(p)]
+    mid = [[sum(Xm[i][a] * w[i] * resid[i] ** 2 * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     V = C.matmul(C.matmul(xtxinv, mid), xtxinv)
     s2 = sum(t * t for t in resid) / (n - p)
-    return RichResult(payload={
-        "estimate": [math.sqrt(V[j][j]) for j in range(p)], "coef": beta, "V": V,
-        "ols_se": [math.sqrt(s2 * xtxinv[j][j]) for j in range(p)], "n": n,
-        "method": "Sandwich heteroskedasticity-consistent standard errors"})
+    return RichResult(
+        payload={
+            "estimate": [math.sqrt(V[j][j]) for j in range(p)],
+            "coef": beta,
+            "V": V,
+            "ols_se": [math.sqrt(s2 * xtxinv[j][j]) for j in range(p)],
+            "n": n,
+            "method": "Sandwich heteroskedasticity-consistent standard errors",
+        }
+    )
 
 
 def cheatsheet():

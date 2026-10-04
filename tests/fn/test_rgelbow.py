@@ -1,7 +1,6 @@
 """Tests for rgelbow.rangayyan_kmeans_elbow."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_kmeans_elbow
 
 

@@ -1,7 +1,6 @@
 """Tests for aitalri.aitchison_alr_inverse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitalri import aitchison_alr_inverse
 
 
@@ -11,6 +10,8 @@ def test_aitalri_basic():
     result = aitchison_alr_inverse(y)
     assert isinstance(result, dict)
     assert "composition" in result
+
+
 def test_aitalri_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

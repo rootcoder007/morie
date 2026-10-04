@@ -5,7 +5,7 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['pcadim', 'pca_dimensionality_reduction']
+__all__ = ["pcadim", "pca_dimensionality_reduction"]
 
 
 def pcadim(X, k=None):
@@ -48,16 +48,24 @@ def pcadim(X, k=None):
             for t in range(n):
                 PC[t][j] = -PC[t][j]
     lam = list(out["eigenvalues"])
-    return RichResult(payload={
-        "scores": PC, "loadings": W, "eigenvalues": lam,
-        "compressed": [row[:kk] for row in PC],
-        "prop_variance": out["prop_variance"], "cum_variance": out["cum_variance"],
-        "k": kk, "n": n, "p": p,
-        "method": "PCA compression, MVSML Sect. 2.8"})
+    return RichResult(
+        payload={
+            "scores": PC,
+            "loadings": W,
+            "eigenvalues": lam,
+            "compressed": [row[:kk] for row in PC],
+            "prop_variance": out["prop_variance"],
+            "cum_variance": out["cum_variance"],
+            "k": kk,
+            "n": n,
+            "p": p,
+            "method": "PCA compression, MVSML Sect. 2.8",
+        }
+    )
 
 
 pca_dimensionality_reduction = pcadim
 
 
 def cheatsheet():
-    return 'pcadr: Principal component compression of a marker matrix.'
+    return "pcadr: Principal component compression of a marker matrix."

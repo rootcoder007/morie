@@ -1,7 +1,5 @@
 """Tests for avalon.avalon_fingerprint."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.avalon import avalon_fingerprint
 
 
@@ -62,17 +60,13 @@ def test_avalon_edge():
     assert len(payload["bits"]) == n_bits
 
     # explicit classes restriction: only path features
-    result2 = avalon_fingerprint(
-        "c1ccccc1", n_bits=256, maxpath=4, classes=["path"]
-    )
+    result2 = avalon_fingerprint("c1ccccc1", n_bits=256, maxpath=4, classes=["path"])
     payload2 = result2.payload if hasattr(result2, "payload") else result2
     assert payload2["classes"] == ["path"]
     assert payload2["n_bits"] == 256
 
     # explicit classes restriction: only bond features
-    result3 = avalon_fingerprint(
-        "c1ccccc1", n_bits=256, maxpath=4, classes=["bond"]
-    )
+    result3 = avalon_fingerprint("c1ccccc1", n_bits=256, maxpath=4, classes=["bond"])
     payload3 = result3.payload if hasattr(result3, "payload") else result3
     assert payload3["classes"] == ["bond"]
 

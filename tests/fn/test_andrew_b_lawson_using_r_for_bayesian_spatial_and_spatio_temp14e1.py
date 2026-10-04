@@ -6,14 +6,13 @@ import pytest
 
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14e1 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_equation_1 as eq14_1,
+)
+from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14e1 import (
     mvfacmu,
 )
 
 # four areas by three diseases of expected counts
-E = [[10.0, 20.0, 5.0],
-     [8.0, 16.0, 4.0],
-     [12.0, 24.0, 6.0],
-     [30.0, 15.0, 9.0]]
+E = [[10.0, 20.0, 5.0], [8.0, 16.0, 4.0], [12.0, 24.0, 6.0], [30.0, 15.0, 9.0]]
 LAM = [1.0, 0.5, -0.25]
 F = [0.2, -0.4, 0.0, 0.6]
 

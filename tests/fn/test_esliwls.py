@@ -1,7 +1,6 @@
 """Tests for esliwls.esl_iwls."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esliwls import esl_iwls
 
 
@@ -20,8 +19,16 @@ def test_esliwls_basic():
     result = esl_iwls(X, y, beta0)
     # Documented return keys.
     expected_keys = {
-        "beta", "se", "z", "p_value", "fitted", "loglik",
-        "deviance", "n_iter", "converged", "separated",
+        "beta",
+        "se",
+        "z",
+        "p_value",
+        "fitted",
+        "loglik",
+        "deviance",
+        "n_iter",
+        "converged",
+        "separated",
     }
     assert isinstance(result, dict)
     for k in expected_keys:

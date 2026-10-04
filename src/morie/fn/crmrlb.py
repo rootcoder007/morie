@@ -36,8 +36,7 @@ def _as_matrix(a):
         raise ValueError("fisher_info is empty")
     if isinstance(rows[0], (int, float)):
         k = len(rows)
-        return [[float(rows[i]) if i == j else 0.0 for j in range(k)]
-                for i in range(k)]
+        return [[float(rows[i]) if i == j else 0.0 for j in range(k)] for i in range(k)]
     out = [[float(v) for v in r] for r in rows]
     k = len(out)
     for r in out:
@@ -49,8 +48,7 @@ def _as_matrix(a):
 def _inv(A):
     """Inverse by Gauss-Jordan with partial pivoting."""
     k = len(A)
-    M = [list(A[i]) + [1.0 if i == j else 0.0 for j in range(k)]
-         for i in range(k)]
+    M = [list(A[i]) + [1.0 if i == j else 0.0 for j in range(k)] for i in range(k)]
     for c in range(k):
         piv = max(range(c, k), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
@@ -109,9 +107,7 @@ def cramer_rao_bound(fisher_info, var_estimate=None):
     eff = None
     attained = None
     if var_estimate is not None:
-        ve = [float(v) for v in
-              ([var_estimate] if isinstance(var_estimate, (int, float))
-               else list(var_estimate))]
+        ve = [float(v) for v in ([var_estimate] if isinstance(var_estimate, (int, float)) else list(var_estimate))]
         if len(ve) != k:
             raise ValueError("var_estimate must have one entry per parameter")
         eff = [var[i] / ve[i] for i in range(k)]

@@ -87,17 +87,19 @@ def effective_sample_size_bayes(chain):
     sd = float(np.std(C.ravel(), ddof=1))
     return RichResult(
         title="Effective sample size",
-        summary_lines=[("draws", int(total)), ("ESS", float(ess)),
-                       ("efficiency", float(ess / total))],
-        warnings=(["ESS is below 100; the posterior summaries are dominated by "
-                   "Monte Carlo error"] if ess < 100 else []),
+        summary_lines=[("draws", int(total)), ("ESS", float(ess)), ("efficiency", float(ess / total))],
+        warnings=(
+            ["ESS is below 100; the posterior summaries are dominated by Monte Carlo error"] if ess < 100 else []
+        ),
         payload={
-            "ess": float(ess), "n_draws": int(total),
+            "ess": float(ess),
+            "n_draws": int(total),
             "efficiency": float(ess / total),
             "mcse": float(sd / np.sqrt(max(ess, 1e-12))),
             "rhat": split_rhat(C) if m > 1 else float("nan"),
             "autocorr_time": float(total / max(ess, 1e-12)),
-            "n_chains": int(m), "method": "effective_sample_size_bayes",
+            "n_chains": int(m),
+            "method": "effective_sample_size_bayes",
         },
     )
 

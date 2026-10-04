@@ -105,10 +105,7 @@ def causal_mahalanobis_match(X, treat, k=1, replace=True, caliper=None):
     if ti.size == 0 or ci.size == 0:
         raise ValueError("both treatment groups must be non-empty")
     if not replace and ci.size < k * ti.size:
-        raise ValueError(
-            f"matching without replacement needs {k * ti.size} controls but "
-            f"only {ci.size} are available"
-        )
+        raise ValueError(f"matching without replacement needs {k * ti.size} controls but only {ci.size} are available")
 
     S = np.cov(X, rowvar=False).reshape(X.shape[1], X.shape[1])
     try:
@@ -147,19 +144,27 @@ def causal_mahalanobis_match(X, treat, k=1, replace=True, caliper=None):
             "arbitrary one; prefer propensity-score matching"
         )
     if replace and used.max() > max(3, ti.size // 10):
-        warn.append(f"one control is matched to {int(used.max())} treated units; "
-                    "the effective control sample is much smaller than it looks")
+        warn.append(
+            f"one control is matched to {int(used.max())} treated units; "
+            "the effective control sample is much smaller than it looks"
+        )
     return RichResult(
         title="Mahalanobis matching",
-        summary_lines=[("treated", int(ti.size)), ("matched", int(ok.sum())),
-                       ("mean distance", float(np.nanmean(dists[ok])) if ok.any() else np.nan)],
+        summary_lines=[
+            ("treated", int(ti.size)),
+            ("matched", int(ok.sum())),
+            ("mean distance", float(np.nanmean(dists[ok])) if ok.any() else np.nan),
+        ],
         warnings=warn,
         payload={
-            "matches": matches, "distances": dists,
-            "matched_treated": ti[ok], "n_unmatched": int((~ok).sum()),
+            "matches": matches,
+            "distances": dists,
+            "matched_treated": ti[ok],
+            "n_unmatched": int((~ok).sum()),
             "reuse_max": int(used.max()) if used.size else 0,
             "mean_distance": float(np.nanmean(dists[ok])) if ok.any() else float("nan"),
-            "treated_index": ti, "control_index": ci,
+            "treated_index": ti,
+            "control_index": ci,
             "method": "causal_mahalanobis_match",
         },
     )

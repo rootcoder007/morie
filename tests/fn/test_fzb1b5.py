@@ -1,7 +1,6 @@
 """Tests for fzb1b5.fauzi_assumptions_b1_b5."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzb1b5 import fauzi_assumptions_b1_b5
 
 

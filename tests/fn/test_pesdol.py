@@ -6,8 +6,6 @@ rule rather than on a fabricated key.
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.pesdol import ardl_bounds
 
 
@@ -20,8 +18,7 @@ def _series(n=60):
 def test_returns_the_bounds_test_machinery():
     y, x = _series()
     r = ardl_bounds(y, x, p=1, q=1)
-    for k in ("f_statistic", "bound_lower", "bound_upper", "verdict",
-              "speed_of_adjustment", "long_run"):
+    for k in ("f_statistic", "bound_lower", "bound_upper", "verdict", "speed_of_adjustment", "long_run"):
         assert k in r
     assert np.isfinite(float(r["f_statistic"]))
 

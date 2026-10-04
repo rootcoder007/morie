@@ -59,12 +59,17 @@ def simidentd(xs, gvals, blim=100.0, tie=1e-12):
     g = np.asarray(gvals, dtype=float).ravel()
     M, d = Xs.shape
     if g.size != M or M < 2 or d < 2:
-        return RichResult(payload={
-            "lower": np.full(max(d - 1, 0), np.nan),
-            "upper": np.full(max(d - 1, 0), np.nan),
-            "width": np.full(max(d - 1, 0), np.nan),
-            "bounded": [False] * max(d - 1, 0), "dim": d, "M": M,
-            "method": "identified bounds (2.13) -- input too small"})
+        return RichResult(
+            payload={
+                "lower": np.full(max(d - 1, 0), np.nan),
+                "upper": np.full(max(d - 1, 0), np.nan),
+                "width": np.full(max(d - 1, 0), np.nan),
+                "bounded": [False] * max(d - 1, 0),
+                "dim": d,
+                "M": M,
+                "method": "identified bounds (2.13) -- input too small",
+            }
+        )
 
     order = np.argsort(g, kind="stable")
     Xs = Xs[order]
@@ -104,14 +109,19 @@ def simidentd(xs, gvals, blim=100.0, tie=1e-12):
         v2 = float(r2["x"][m]) - blim if r2["success"] else np.nan
         lo[m] = v1
         hi[m] = v2
-        bounded.append(bool(np.isfinite(v1) and np.isfinite(v2)
-                            and v1 > -blim + 1e-6 and v2 < blim - 1e-6))
+        bounded.append(bool(np.isfinite(v1) and np.isfinite(v2) and v1 > -blim + 1e-6 and v2 < blim - 1e-6))
     width = hi - lo
     return RichResult(
         title="Identified bounds on beta, discrete X (eq. 2.13)",
-        payload={"lower": lo, "upper": hi, "width": width,
-                 "bounded": bounded, "dim": d, "M": M,
-                 "method": "Horowitz (2009) eq. (2.13) linear programs"},
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": width,
+            "bounded": bounded,
+            "dim": d,
+            "M": M,
+            "method": "Horowitz (2009) eq. (2.13) linear programs",
+        },
     )
 
 

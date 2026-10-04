@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brownian bridge covariance."""
 
-from . import _array_core as np
 from ._kosorok import bridge_cov
 from ._richresult import RichResult
 
@@ -39,8 +38,13 @@ def kosorok_ch2_brownian_bridge_covariance(s, t, F=None):
     cov = bridge_cov(s, t, F)
     var = bridge_cov(s, s, F)
     return RichResult(
-        payload={"covariance": cov, "variance_s": var, "s": s, "t": t,
-                 "method": "cov[G(s), G(t)] = F(s ^ t) - F(s)F(t) (Kosorok Ch. 2)"}
+        payload={
+            "covariance": cov,
+            "variance_s": var,
+            "s": s,
+            "t": t,
+            "method": "cov[G(s), G(t)] = F(s ^ t) - F(s)F(t) (Kosorok Ch. 2)",
+        }
     )
 
 

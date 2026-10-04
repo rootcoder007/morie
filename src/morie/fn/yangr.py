@@ -67,24 +67,30 @@ def yang_realized_relationship(marker_matrix, freq=None, yang_diagonal=False):
                     if var[k] <= 0:
                         continue
                     x = M[i][k]
-                    s += (x * x - (1.0 + 2.0 * pi[k]) * x
-                          + 2.0 * pi[k] * pi[k]) / var[k]
+                    s += (x * x - (1.0 + 2.0 * pi[k]) * x + 2.0 * pi[k] * pi[k]) / var[k]
                 row.append(1.0 + s / p)
             else:
                 s = 0.0
                 for k in range(p):
                     if var[k] <= 0:
                         continue
-                    s += ((M[i][k] - 2.0 * pi[k])
-                          * (M[j][k] - 2.0 * pi[k]) / var[k])
+                    s += (M[i][k] - 2.0 * pi[k]) * (M[j][k] - 2.0 * pi[k]) / var[k]
                 row.append(s / p)
         A.append(row)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(A[i][i] for i in range(J)) / J),
-        "A": A, "freq": pi, "n_lines": J, "n_markers": p,
-        "yang_diagonal": bool(yang_diagonal),
-        "method": "Yang et al. (2010) realized relationship matrix",
-    }), "yangr")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(A[i][i] for i in range(J)) / J),
+                "A": A,
+                "freq": pi,
+                "n_lines": J,
+                "n_markers": p,
+                "yang_diagonal": bool(yang_diagonal),
+                "method": "Yang et al. (2010) realized relationship matrix",
+            }
+        ),
+        "yangr",
+    )
 
 
 def cheatsheet():

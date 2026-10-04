@@ -1,7 +1,6 @@
 """Tests for dprcl.dp_release_calibration."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dprcl import dp_release_calibration
 
 
@@ -12,8 +11,10 @@ def test_dprcl_basic():
     confidence = 0.95
     n = 1000
     result = dp_release_calibration(
-        sensitivity=sensitivity, epsilon=epsilon,
-        confidence=confidence, n=n,
+        sensitivity=sensitivity,
+        epsilon=epsilon,
+        confidence=confidence,
+        n=n,
     )
     assert isinstance(result, dict)
     assert "epsilon" in result
@@ -40,8 +41,10 @@ def test_dprcl_edge():
     confidence = 0.95
     n = 1000
     result = dp_release_calibration(
-        sensitivity=sensitivity, target_error=target_error,
-        confidence=confidence, n=n,
+        sensitivity=sensitivity,
+        target_error=target_error,
+        confidence=confidence,
+        n=n,
     )
     assert isinstance(result, dict)
     assert "epsilon" in result

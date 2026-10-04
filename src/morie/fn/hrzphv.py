@@ -61,9 +61,9 @@ __all__ = ["horowitz_ph_heterogeneity"]
 _GR = 0.6180339887498949
 
 
-def horowitz_ph_heterogeneity(t, x, event=None, frailty_dist="gamma",
-                              theta=None, em_iter=60, cycles=8, gs_iter=44,
-                              tol=1e-11):
+def horowitz_ph_heterogeneity(
+    t, x, event=None, frailty_dist="gamma", theta=None, em_iter=60, cycles=8, gs_iter=44, tol=1e-11
+):
     """Gamma-frailty proportional hazards: beta, the baseline, and theta.
 
     Parameters

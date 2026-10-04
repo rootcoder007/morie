@@ -1,7 +1,6 @@
 """Tests for dfbetb.dfbetas."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dfbetb import dfbetas
 
 
@@ -35,13 +34,11 @@ def test_dfbetb_basic():
     assert result["estimate"] == expected_estimate
     # threshold = 2 / sqrt(n)
     n = 100
-    expected_threshold = 2.0 / (n ** 0.5)
+    expected_threshold = 2.0 / (n**0.5)
     assert result["threshold"] == expected_threshold
     # n_influential counts rows with any |DFBETAS| > threshold
     thr = expected_threshold
-    expected_n_infl = sum(
-        1 for row in dfb if any(abs(v) > thr for v in row)
-    )
+    expected_n_infl = sum(1 for row in dfb if any(abs(v) > thr for v in row))
     assert result["n_influential"] == expected_n_infl
 
 

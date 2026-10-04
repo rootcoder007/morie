@@ -1,8 +1,8 @@
 """Tests for wet-bulb globe temperature (ISO 7243 heat-stress index)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.wbgt import wbgt, wet_bulb_globe_temp
 
 

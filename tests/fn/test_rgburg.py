@@ -1,7 +1,6 @@
 """Tests for rgburg.rangayyan_burg_method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaar import rangayyan_burg_method
 
 

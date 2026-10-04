@@ -14,11 +14,11 @@ def _curves(n=40, m=25, seed=3, noise=0.2):
     def r():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     out = []
     for _ in range(n):
         shift = noise * (r() - 0.5)
-        out.append([math.sin(2 * math.pi * t / m) + shift
-                    for t in range(m)])
+        out.append([math.sin(2 * math.pi * t / m) + shift for t in range(m)])
     return out
 
 
@@ -73,10 +73,12 @@ def test_seed_reproducibility():
 
 def test_validation():
     curves = _curves(n=10, m=5)
-    for call in (lambda: funBoot(curves[:2]),
-                 lambda: funBoot([[1.0, 2.0], [1.0], [1.0, 2.0]]),
-                 lambda: funBoot(curves, alpha=0.0),
-                 lambda: funBoot(curves, metric="l1")):
+    for call in (
+        lambda: funBoot(curves[:2]),
+        lambda: funBoot([[1.0, 2.0], [1.0], [1.0, 2.0]]),
+        lambda: funBoot(curves, alpha=0.0),
+        lambda: funBoot(curves, metric="l1"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

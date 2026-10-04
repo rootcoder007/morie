@@ -103,16 +103,22 @@ def autoencoder_anomaly(X, k=2, n_iter=300, lr=0.05, seed=0, contamination=0.05)
     total = float((Z**2).sum())
     return RichResult(
         title="Autoencoder anomaly score",
-        summary_lines=[("n", n), ("d", d), ("k", k),
-                       ("explained", 1.0 - float(err.sum()) / max(total, 1e-300))],
-        warnings=["the anomalies are in the training data, so more bottleneck "
-                  "capacity makes detection WORSE; keep k well below the "
-                  "intrinsic dimension"],
+        summary_lines=[("n", n), ("d", d), ("k", k), ("explained", 1.0 - float(err.sum()) / max(total, 1e-300))],
+        warnings=[
+            "the anomalies are in the training data, so more bottleneck "
+            "capacity makes detection WORSE; keep k well below the "
+            "intrinsic dimension"
+        ],
         payload={
-            "score": err, "rank": rank, "anomaly": err > cut,
-            "reconstruction": rec + mu, "threshold": cut,
+            "score": err,
+            "rank": rank,
+            "anomaly": err > cut,
+            "reconstruction": rec + mu,
+            "threshold": cut,
             "explained_fraction": 1.0 - float(err.sum()) / max(total, 1e-300),
-            "W": W, "k": k, "method": "autoencoder_anomaly",
+            "W": W,
+            "k": k,
+            "method": "autoencoder_anomaly",
         },
     )
 

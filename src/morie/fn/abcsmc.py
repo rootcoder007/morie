@@ -36,8 +36,7 @@ from ._richresult import RichResult
 __all__ = ["abc_smc_epi"]
 
 
-def abc_smc_epi(model, summary_stats, priors=None, n_particles=32,
-                schedule=None, kernel_sd=0.1):
+def abc_smc_epi(model, summary_stats, priors=None, n_particles=32, schedule=None, kernel_sd=0.1):
     """ABC-SMC over a decreasing tolerance schedule.
 
     Parameters
@@ -68,8 +67,7 @@ def abc_smc_epi(model, summary_stats, priors=None, n_particles=32,
     d = len(pr)
     N = int(n_particles)
     sch = k.vec(schedule) if schedule is not None else [2.0, 1.0, 0.5]
-    theta = [[pr[a][0] + (pr[a][1] - pr[a][0]) * k.vdc(i, 2 + a)
-              for a in range(d)] for i in range(N)]
+    theta = [[pr[a][0] + (pr[a][1] - pr[a][0]) * k.vdc(i, 2 + a) for a in range(d)] for i in range(N)]
     w = [1.0 / N] * N
     accept = []
     for t in range(len(sch)):
@@ -80,11 +78,10 @@ def abc_smc_epi(model, summary_stats, priors=None, n_particles=32,
         i = 0
         while len(newth) < N and tries < 20 * N:
             src = theta[i % N]
-            off = [(k.vdc(tries * d + a, 2 + a) - 0.5) * 2.0
-                   * float(kernel_sd) * (pr[a][1] - pr[a][0])
-                   for a in range(d)]
-            cand = [min(max(src[a] + off[a], pr[a][0]), pr[a][1])
-                    for a in range(d)]
+            off = [
+                (k.vdc(tries * d + a, 2 + a) - 0.5) * 2.0 * float(kernel_sd) * (pr[a][1] - pr[a][0]) for a in range(d)
+            ]
+            cand = [min(max(src[a] + off[a], pr[a][0]), pr[a][1]) for a in range(d)]
             sim = k.vec(model(cand))
             dist = 0.0
             for a in range(len(S)):
@@ -99,8 +96,7 @@ def abc_smc_epi(model, summary_stats, priors=None, n_particles=32,
                     for a in range(d):
                         h = float(kernel_sd) * (pr[a][1] - pr[a][0])
                         u = (cand[a] - theta[j][a]) / h if h > 0.0 else 0.0
-                        q *= math.exp(-0.5 * u * u) / (h * math.sqrt(2.0 * math.pi)) \
-                            if h > 0.0 else 1.0
+                        q *= math.exp(-0.5 * u * u) / (h * math.sqrt(2.0 * math.pi)) if h > 0.0 else 1.0
                     den += w[j] * q
                 newth.append(cand)
                 neww.append(1.0 / den if den > 0.0 else 0.0)

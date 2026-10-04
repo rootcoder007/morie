@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["funBoot", "functional_bootstrap_band"]
 
 
-def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2",
-            smooth=0.0, seed=0):
+def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2", smooth=0.0, seed=0):
     """
     Bootstrap tolerance band for a functional estimator.
 
@@ -63,8 +62,7 @@ def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2",
     if n < 3 or any(len(r) != m for r in X):
         raise ValueError("curves must be rectangular with n >= 3")
     if statistic is None:
-        statistic = lambda cs: [sum(c[j] for c in cs) / len(cs)
-                                for j in range(m)]
+        statistic = lambda cs: [sum(c[j] for c in cs) / len(cs) for j in range(m)]
     alpha = float(alpha)
     if not (0.0 < alpha < 1.0):
         raise ValueError("alpha must be in (0, 1)")
@@ -80,8 +78,7 @@ def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2",
         for _i in range(n):
             pick = X[min(int(float(rng.uniform()) * n), n - 1)]
             if smooth > 0.0:
-                sample.append([pick[j] + smooth * float(rng.normal())
-                               for j in range(m)])
+                sample.append([pick[j] + smooth * float(rng.normal()) for j in range(m)])
             else:
                 sample.append(pick)
         reps.append([float(v) for v in statistic(sample)])
@@ -97,18 +94,20 @@ def funBoot(curves, statistic=None, alpha=0.05, B=500, metric="l2",
     idx = max(min(int(math.ceil((1.0 - alpha) * B)) - 1, B - 1), 0)
     D = sd[idx]
     n_within = sum(1 for d in dists if d <= D)
-    return RichResult(payload={
-        "center": center,
-        "radius": D,
-        "estimate": t_obs,
-        "distances": dists,
-        "n_within": n_within,
-        "metric": met,
-        "alpha": alpha,
-        "B": int(B),
-        "seed": int(seed),
-        "method": "functional bootstrap band (Cuevas et al. 2006, Sec. 3e)",
-    })
+    return RichResult(
+        payload={
+            "center": center,
+            "radius": D,
+            "estimate": t_obs,
+            "distances": dists,
+            "n_within": n_within,
+            "metric": met,
+            "alpha": alpha,
+            "B": int(B),
+            "seed": int(seed),
+            "method": "functional bootstrap band (Cuevas et al. 2006, Sec. 3e)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -117,6 +116,7 @@ functional_bootstrap_band = funBoot
 
 def cheatsheet():
     return "funBoot: D = q_{1-a}(dist(T*_b, mean T*)); band = ball(center, D)"
+
 
 # public names resolved by fn/_lazy_map.json
 functional_bootstrap = funBoot

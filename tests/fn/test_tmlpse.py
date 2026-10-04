@@ -42,8 +42,10 @@ def _data(n=60):
     D = [1.0 if math.cos(3 * k) > 0 else 0.0 for k in range(n)]
     M1 = [0.5 * d + 0.3 * x[0] + 0.1 * math.sin(5 * k) for k, (d, x) in enumerate(zip(D, X))]
     M2 = [0.4 * d + 0.6 * m + 0.1 * math.cos(7 * k) for k, (m, d) in enumerate(zip(M1, D))]
-    y = [1 + 0.2 * d + 0.7 * a + 0.5 * b + 0.3 * x[0] + 0.2 * math.sin(11 * k)
-         for k, (d, a, b, x) in enumerate(zip(D, M1, M2, X))]
+    y = [
+        1 + 0.2 * d + 0.7 * a + 0.5 * b + 0.3 * x[0] + 0.2 * math.sin(11 * k)
+        for k, (d, a, b, x) in enumerate(zip(D, M1, M2, X))
+    ]
     return y, D, [[a, b] for a, b in zip(M1, M2)], X
 
 
@@ -65,13 +67,15 @@ def _reference(y, D, M, X, path):
     theta = b1 + b2 + by
 
     def psi(th):
-        c1, c2, cy = th[:sizes[0]], th[sizes[0]:sizes[0] + sizes[1]], th[sizes[0] + sizes[1]:]
+        c1, c2, cy = th[: sizes[0]], th[sizes[0] : sizes[0] + sizes[1]], th[sizes[0] + sizes[1] :]
         tot = 0.0
         for w in W:
+
             def chain(a1, a2):
                 m1 = sum(u * v for u, v in zip([a1] + w, c1))
                 m2 = sum(u * v for u, v in zip([a2] + w + [m1], c2))
                 return m1, m2
+
             s1, s2 = chain(float(path[0]), float(path[1]))
             z1, z2 = chain(0.0, 0.0)
             tot += sum(u * v for u, v in zip([1.0] + w + [s1, s2], cy))

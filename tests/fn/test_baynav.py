@@ -33,8 +33,7 @@ def test_baynav_basic():
     assert isinstance(result, dict)
 
     # The function must return the documented keys
-    for key in ("estimate", "log_q", "z", "log_dets", "depth",
-                "method", "note"):
+    for key in ("estimate", "log_q", "z", "log_dets", "depth", "method", "note"):
         assert key in result, f"missing documented key: {key}"
 
     # Depth matches the number of layers supplied

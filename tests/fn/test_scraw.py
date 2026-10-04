@@ -1,7 +1,6 @@
 """Tests for scraw -- raw scoring."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.scraw import raw_score
 

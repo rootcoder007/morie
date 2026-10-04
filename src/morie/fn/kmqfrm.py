@@ -42,25 +42,27 @@ def kamath_q_former(queries, visual_features, W_out=None):
         raise ValueError(
             f"queries are {Q.shape[1]}-dim but the visual features are "
             f"{F.shape[1]}-dim; cross-attention needs a shared width "
-            "(project the visual side first).")
+            "(project the visual side first)."
+        )
     att = scaled_dot_product_attention(Q, F, F)
     Z = np.asarray(att["output"], dtype=float)
     if W_out is not None:
         W = np.atleast_2d(np.asarray(W_out, dtype=float))
         if W.shape[0] != Z.shape[1]:
-            raise ValueError(
-                f"W_out expects {W.shape[0]}-dim inputs but Z is "
-                f"{Z.shape[1]}-dim.")
+            raise ValueError(f"W_out expects {W.shape[0]}-dim inputs but Z is {Z.shape[1]}-dim.")
         Z = Z @ W
-    return RichResult(payload={
-        "Z": [[float(v) for v in row] for row in Z],
-        "attention": att["attention"],
-        "n_queries": int(Q.shape[0]),
-        "n_patches": int(F.shape[0]),
-        "compression": float(F.shape[0]) / Q.shape[0],
-        "estimate": float(Z[0, 0]),
-        "n": int(Q.shape[0]),
-        "method": "Q-Former cross-attention (delegates to attsdp)"})
+    return RichResult(
+        payload={
+            "Z": [[float(v) for v in row] for row in Z],
+            "attention": att["attention"],
+            "n_queries": int(Q.shape[0]),
+            "n_patches": int(F.shape[0]),
+            "compression": float(F.shape[0]) / Q.shape[0],
+            "estimate": float(Z[0, 0]),
+            "n": int(Q.shape[0]),
+            "method": "Q-Former cross-attention (delegates to attsdp)",
+        }
+    )
 
 
 def cheatsheet():

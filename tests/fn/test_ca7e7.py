@@ -1,7 +1,5 @@
 """Tests for ca7e7.ca_chapter_7_equation_7."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ca7e7 import ca_chapter_7_equation_7
 
 

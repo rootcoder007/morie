@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,17 +26,20 @@ def mvsml_ridge_lasso_elastic_eq_9_31(alpha, X, y, beta0=0.0, K=None):
     a = _gp._flat(alpha)
     ys = _gp._flat(y)
     n = len(a)
-    G = _gp._mat(K) if K is not None else \
-        _gp._mm(_gp._mat(X), _gp._t(_gp._mat(X)))
-    quad = sum(a[i] * a[j] * ys[i] * ys[j] * G[i][j]
-               for i in range(n) for j in range(n))
+    G = _gp._mat(K) if K is not None else _gp._mm(_gp._mat(X), _gp._t(_gp._mat(X)))
+    quad = sum(a[i] * a[j] * ys[i] * ys[j] * G[i][j] for i in range(n) for j in range(n))
     balance = sum(a[i] * ys[i] for i in range(n))
     val = 0.5 * quad - quad - balance * float(beta0) + sum(a)
-    res = RichResult(payload={"estimate": val, "L": val,
-                              "norm_term": 0.5 * quad,
-                              "cross_term": -quad,
-                              "balance_term": -balance * float(beta0),
-                              "method": "Wolfe dual expansion (MVSML 2022 eq. 9.31)"})
+    res = RichResult(
+        payload={
+            "estimate": val,
+            "L": val,
+            "norm_term": 0.5 * quad,
+            "cross_term": -quad,
+            "balance_term": -balance * float(beta0),
+            "method": "Wolfe dual expansion (MVSML 2022 eq. 9.31)",
+        }
+    )
     return with_describe_pointer(res, "msm210")
 
 

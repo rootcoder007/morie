@@ -1,8 +1,6 @@
 """Tests for dqnv.deep_q_network."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.dqnv import deep_q_network
 
 
@@ -29,18 +27,34 @@ def test_dqnv_basic():
     P, R = _make_chain_mdp(n_states=n_states, n_actions=n_actions)
 
     result = deep_q_network(
-        P, R, n_states, n_actions,
-        gamma=0.9, alpha=0.1,
-        steps=2000, C=100, buffer_size=500, batch=8,
-        seed=0, use_replay=True, use_target=True,
+        P,
+        R,
+        n_states,
+        n_actions,
+        gamma=0.9,
+        alpha=0.1,
+        steps=2000,
+        C=100,
+        buffer_size=500,
+        batch=8,
+        seed=0,
+        use_replay=True,
+        use_target=True,
     )
 
     # Result must be a mapping with the documented keys.
     assert isinstance(result, dict)
-    for key in ("estimate", "Q", "residual_history",
-                "final_residual", "greedy_policy",
-                "used_replay", "used_target_network",
-                "C", "method"):
+    for key in (
+        "estimate",
+        "Q",
+        "residual_history",
+        "final_residual",
+        "greedy_policy",
+        "used_replay",
+        "used_target_network",
+        "C",
+        "method",
+    ):
         assert key in result, f"missing key {key!r} in result"
 
     # 'estimate' is the canonical output name for this function.
@@ -78,10 +92,19 @@ def test_dqnv_edge():
     P[0, 0, 0] = 1.0
 
     result = deep_q_network(
-        P, R, n_states, n_actions,
-        gamma=0.99, alpha=0.1,
-        steps=200, C=20, buffer_size=50, batch=4,
-        seed=1, use_replay=True, use_target=True,
+        P,
+        R,
+        n_states,
+        n_actions,
+        gamma=0.99,
+        alpha=0.1,
+        steps=200,
+        C=20,
+        buffer_size=50,
+        batch=4,
+        seed=1,
+        use_replay=True,
+        use_target=True,
     )
     assert isinstance(result, dict)
     assert result["used_replay"] is True
@@ -93,10 +116,19 @@ def test_dqnv_edge():
 
     # Both devices can be turned off; the function still runs.
     result_plain = deep_q_network(
-        P, R, n_states, n_actions,
-        gamma=0.99, alpha=0.1,
-        steps=200, C=20, buffer_size=50, batch=4,
-        seed=1, use_replay=False, use_target=False,
+        P,
+        R,
+        n_states,
+        n_actions,
+        gamma=0.99,
+        alpha=0.1,
+        steps=200,
+        C=20,
+        buffer_size=50,
+        batch=4,
+        seed=1,
+        use_replay=False,
+        use_target=False,
     )
     assert isinstance(result_plain, dict)
     assert result_plain["used_replay"] is False

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zcrss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zcrss import zero_crossings
 
 

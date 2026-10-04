@@ -1,7 +1,6 @@
 """Tests for tmlphd.tmle_high_dim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlphd import tmle_high_dim
 
 

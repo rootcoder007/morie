@@ -32,5 +32,3 @@ def test_dreamr_edge():
     assert td == pytest.approx([r[t] + 0.9 * v[t + 1] for t in range(3)], rel=1e-12)
     with pytest.raises(ValueError, match="one more entry"):
         lambda_return(r, v[:3])
-
-

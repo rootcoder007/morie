@@ -1,7 +1,6 @@
 """Tests for morie.fn.otrd — OTIS trend summary."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.otrd import otis_trend_summary
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.spclr -- Spectral clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spclr import spclr, spectral_clustering
 

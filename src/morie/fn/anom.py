@@ -40,5 +40,6 @@ anom = alpha_nominate_estimate
 def cheatsheet() -> str:
     return "alpha_nominate_estimate({}) -> Alpha-NOMINATE: Bayesian NOMINATE via MCMC."
 
+
 # alias kept from the retired placeholder of the same name
 alpha_nom_post = alpha_nominate_estimate

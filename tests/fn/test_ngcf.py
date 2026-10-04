@@ -1,7 +1,6 @@
 """Tests for ngcf.ngcf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ngcf import ngcf
 
 
@@ -22,10 +21,8 @@ def test_ngcf_basic():
     # NGCF propagation layers: list of (W1, W2) weight matrix pairs,
     # each of shape (emb_dim, emb_dim)
     layers = [
-        (rng.normal(0, 1, (emb_dim, emb_dim)),
-         rng.normal(0, 1, (emb_dim, emb_dim))),
-        (rng.normal(0, 1, (emb_dim, emb_dim)),
-         rng.normal(0, 1, (emb_dim, emb_dim))),
+        (rng.normal(0, 1, (emb_dim, emb_dim)), rng.normal(0, 1, (emb_dim, emb_dim))),
+        (rng.normal(0, 1, (emb_dim, emb_dim)), rng.normal(0, 1, (emb_dim, emb_dim))),
     ]
 
     result = ngcf(R, adjacency, layers)
@@ -48,8 +45,7 @@ def test_ngcf_edge():
 
     # Single NGCF propagation layer: (W1, W2) weight matrix pair
     layers = [
-        (rng.normal(0, 1, (emb_dim, emb_dim)),
-         rng.normal(0, 1, (emb_dim, emb_dim))),
+        (rng.normal(0, 1, (emb_dim, emb_dim)), rng.normal(0, 1, (emb_dim, emb_dim))),
     ]
 
     result = ngcf(R, adjacency, layers)

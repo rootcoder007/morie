@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxqcr import boyd_quadratic_constraint
 
 
@@ -43,8 +42,7 @@ def test_cvxqcr_basic():
     result = boyd_quadratic_constraint(P0, q0, P, q, r)
 
     assert isinstance(result, dict)
-    for key in ("x", "objective", "constraints", "active", "feasible",
-                "convex", "min_eigenvalues", "converged"):
+    for key in ("x", "objective", "constraints", "active", "feasible", "convex", "min_eigenvalues", "converged"):
         assert key in result
 
     assert len(result["x"]) == n

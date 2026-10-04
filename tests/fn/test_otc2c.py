@@ -1,7 +1,6 @@
 """Tests for otc2c.ot_cost_pairwise."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otc2c import ot_cost_pairwise
 
 

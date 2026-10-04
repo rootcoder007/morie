@@ -78,12 +78,10 @@ paper; the source of the serotype CUSUM reproduced here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["c1_mild", "c2_medium", "c3_ultra", "ears_detect",
-           "salmonella_cusum", "compound_smoothing"]
+__all__ = ["c1_mild", "c2_medium", "c3_ultra", "ears_detect", "salmonella_cusum", "compound_smoothing"]
 
 _EPS = 1e-12
 _METHODS = ("C1", "C2", "C3")
@@ -127,8 +125,7 @@ def c1_mild(counts, threshold=3.0, sigma_floor=1.0):
     plain standardised deviation -- which is why this is the mildest
     of the three.
     """
-    return ears_detect(counts, method="C1", threshold=threshold,
-                       sigma_floor=sigma_floor)
+    return ears_detect(counts, method="C1", threshold=threshold, sigma_floor=sigma_floor)
 
 
 def c2_medium(counts, threshold=3.0, sigma_floor=1.0):
@@ -137,8 +134,7 @@ def c2_medium(counts, threshold=3.0, sigma_floor=1.0):
     The two-day gap keeps the start of an outbreak out of its own
     baseline.
     """
-    return ears_detect(counts, method="C2", threshold=threshold,
-                       sigma_floor=sigma_floor)
+    return ears_detect(counts, method="C2", threshold=threshold, sigma_floor=sigma_floor)
 
 
 def c3_ultra(counts, threshold=2.0, sigma_floor=1.0):
@@ -147,8 +143,7 @@ def c3_ultra(counts, threshold=2.0, sigma_floor=1.0):
     Accumulating over three days detects a sustained small excess that
     no single day would flag. The published default threshold is 2.
     """
-    return ears_detect(counts, method="C3", threshold=threshold,
-                       sigma_floor=sigma_floor)
+    return ears_detect(counts, method="C3", threshold=threshold, sigma_floor=sigma_floor)
 
 
 def ears_detect(counts, method="C2", threshold=3.0, sigma_floor=1.0):
@@ -159,50 +154,50 @@ def ears_detect(counts, method="C2", threshold=3.0, sigma_floor=1.0):
     an unformed statistic is not a zero.
     """
     if method not in _METHODS:
-        raise ValueError("surepi: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("surepi: method must be one of %s, got %r" % (", ".join(_METHODS), method))
     cv = [float(v) for v in k.vec(counts)]
     if any(v < 0.0 for v in cv):
         raise ValueError("surepi: counts must be non-negative")
     if float(sigma_floor) <= 0.0:
-        raise ValueError("surepi: sigma_floor must be positive -- a "
-                         "flat baseline gives sigma = 0 and an "
-                         "undefined statistic")
+        raise ValueError(
+            "surepi: sigma_floor must be positive -- a flat baseline gives sigma = 0 and an undefined statistic"
+        )
     lag, width = _WINDOWS[method]
     need = lag + width - 1
     if len(cv) <= need:
-        raise ValueError("surepi: %s needs more than %d days of "
-                         "history, got %d" % (method, need, len(cv)))
+        raise ValueError("surepi: %s needs more than %d days of history, got %d" % (method, need, len(cv)))
     base = _stat(cv, "C2" if method == "C3" else method, sigma_floor)
     if method == "C3":
         stat = []
         for t in range(len(cv)):
-            trio = [base[q] for q in (t, t - 1, t - 2)
-                    if q >= 0 and base[q] is not None]
+            trio = [base[q] for q in (t, t - 1, t - 2) if q >= 0 and base[q] is not None]
             # C3 accumulates only over days that HAVE a C2 statistic
             stat.append(sum(trio) if len(trio) == 3 else None)
     else:
         stat = base
-    flags = [None if s is None else bool(s > float(threshold))
-             for s in stat]
-    return RichResult(payload={
-        "estimate": stat, "statistic": stat, "flag": flags,
-        "n_flagged": sum(1 for f in flags if f),
-        "method": method, "threshold": float(threshold),
-        "baseline_lag": lag, "baseline_width": width,
-        "sigma_floor": float(sigma_floor),
-        "n": len(cv), "n_evaluable": sum(1 for s in stat
-                                         if s is not None),
-        "reference": "Hutwagner, Thompson, Seeman & Treadwell (2003), "
-                     "EARS long-term methods",
-        "caveat": "a flag marks a count unusual against its own recent "
-                  "history; it is not a test that an outbreak is "
-                  "occurring",
-    })
+    flags = [None if s is None else bool(s > float(threshold)) for s in stat]
+    return RichResult(
+        payload={
+            "estimate": stat,
+            "statistic": stat,
+            "flag": flags,
+            "n_flagged": sum(1 for f in flags if f),
+            "method": method,
+            "threshold": float(threshold),
+            "baseline_lag": lag,
+            "baseline_width": width,
+            "sigma_floor": float(sigma_floor),
+            "n": len(cv),
+            "n_evaluable": sum(1 for s in stat if s is not None),
+            "reference": "Hutwagner, Thompson, Seeman & Treadwell (2003), EARS long-term methods",
+            "caveat": "a flag marks a count unusual against its own recent "
+            "history; it is not a test that an outbreak is "
+            "occurring",
+        }
+    )
 
 
-def salmonella_cusum(counts, mu0, sigma, k_shift=1.0, decision=0.5,
-                     min_count=5):
+def salmonella_cusum(counts, mu0, sigma, k_shift=1.0, decision=0.5, min_count=5):
     r"""Eq. (4): the serotype-specific Salmonella CUSUM.
 
     .. math:: S_t = \max\!\left(0,\; S_{t-1}
@@ -215,32 +210,32 @@ def salmonella_cusum(counts, mu0, sigma, k_shift=1.0, decision=0.5,
     """
     cv = [float(v) for v in k.vec(counts)]
     n = len(cv)
-    mv = ([float(mu0)] * n if isinstance(mu0, (int, float))
-          else [float(v) for v in k.vec(mu0)])
-    sv = ([float(sigma)] * n if isinstance(sigma, (int, float))
-          else [float(v) for v in k.vec(sigma)])
+    mv = [float(mu0)] * n if isinstance(mu0, (int, float)) else [float(v) for v in k.vec(mu0)]
+    sv = [float(sigma)] * n if isinstance(sigma, (int, float)) else [float(v) for v in k.vec(sigma)]
     if not (len(mv) == len(sv) == n):
-        raise ValueError("surepi: mu0 and sigma must be scalars or "
-                         "match the series length (%d, %d, %d)"
-                         % (n, len(mv), len(sv)))
+        raise ValueError(
+            "surepi: mu0 and sigma must be scalars or match the series length (%d, %d, %d)" % (n, len(mv), len(sv))
+        )
     if any(v <= 0.0 for v in sv):
         raise ValueError("surepi: sigma must be positive everywhere")
     S, out, flags = 0.0, [], []
     for t in range(n):
-        S = max(0.0, S + (cv[t] - (mv[t] + float(k_shift) * sv[t]))
-                / sv[t])
+        S = max(0.0, S + (cv[t] - (mv[t] + float(k_shift) * sv[t])) / sv[t])
         out.append(S)
-        flags.append(bool(S >= float(decision)
-                          and cv[t] >= float(min_count)))
-    return {"cusum": out, "flag": flags, "estimate": out,
-            "n_flagged": sum(flags), "decision": float(decision),
-            "k": float(k_shift), "min_count": float(min_count),
-            "method": "Hutwagner et al. (2003) eq. (4); the Salmonella "
-                      "Outbreak Detection Algorithm"}
+        flags.append(bool(float(decision) <= S and cv[t] >= float(min_count)))
+    return {
+        "cusum": out,
+        "flag": flags,
+        "estimate": out,
+        "n_flagged": sum(flags),
+        "decision": float(decision),
+        "k": float(k_shift),
+        "min_count": float(min_count),
+        "method": "Hutwagner et al. (2003) eq. (4); the Salmonella Outbreak Detection Algorithm",
+    }
 
 
-def compound_smoothing(values, current, passes=(4, 2, 5, 3),
-                       multiplier=2.0):
+def compound_smoothing(values, current, passes=(4, 2, 5, 3), multiplier=2.0):
     r"""Eq. (5): the 4253H compound smoothing baseline and threshold.
 
     Running medians of the stated widths, then the hanning step that
@@ -252,27 +247,27 @@ def compound_smoothing(values, current, passes=(4, 2, 5, 3),
     """
     v = [float(x) for x in k.vec(values)]
     if len(v) < max(passes) + 2:
-        raise ValueError("surepi: the series is too short for the "
-                         "smoothing passes %s (have %d)"
-                         % (list(passes), len(v)))
+        raise ValueError(
+            "surepi: the series is too short for the smoothing passes %s (have %d)" % (list(passes), len(v))
+        )
     s = list(v)
     for w in passes:
         s = _runmed(s, int(w))
     # the H of 4253H
-    s = [s[0]] + [0.25 * s[i - 1] + 0.5 * s[i] + 0.25 * s[i + 1]
-                  for i in range(1, len(s) - 1)] + [s[-1]]
+    s = [s[0]] + [0.25 * s[i - 1] + 0.5 * s[i] + 0.25 * s[i + 1] for i in range(1, len(s) - 1)] + [s[-1]]
     resid = [v[i] - s[i] for i in range(len(v))]
     m = sum(resid) / len(resid)
-    sd = math.sqrt(sum((r - m) ** 2 for r in resid)
-                   / max(len(resid) - 1, 1))
+    sd = math.sqrt(sum((r - m) ** 2 for r in resid) / max(len(resid) - 1, 1))
     base = s[-1]
-    return {"smoothed": s, "baseline": base, "sigma": sd,
-            "threshold": base + float(multiplier) * sd,
-            "flag": bool(float(current) > base
-                         + float(multiplier) * sd),
-            "current": float(current),
-            "method": "Hutwagner et al. (2003) eq. (5), 4253H compound "
-                      "smoothing after Stern & Lightfoot"}
+    return {
+        "smoothed": s,
+        "baseline": base,
+        "sigma": sd,
+        "threshold": base + float(multiplier) * sd,
+        "flag": bool(float(current) > base + float(multiplier) * sd),
+        "current": float(current),
+        "method": "Hutwagner et al. (2003) eq. (5), 4253H compound smoothing after Stern & Lightfoot",
+    }
 
 
 def _runmed(x, width):
@@ -288,18 +283,20 @@ def _runmed(x, width):
             hi = i + half - 1
         if lo < 0 or hi >= n:
             continue
-        out[i] = k.median(x[lo:hi + 1])
+        out[i] = k.median(x[lo : hi + 1])
     return out
 
 
 def cheatsheet():
-    return ("surepi: EARS. C1 baseline = days t-7..t-1, C2 = t-9..t-3, "
-            "C3 = sum of three consecutive C2s. S_{t-1} = 0 for C1 and "
-            "C2, so both are just z-scores against a MOVING baseline; "
-            "flag at mean + 3 sd. C2's two-day gap keeps a starting "
-            "outbreak out of its own baseline. A flat baseline gives "
-            "sigma = 0, so sigma_floor is explicit, not silent. A flag "
-            "is an aberration, not an outbreak.")
+    return (
+        "surepi: EARS. C1 baseline = days t-7..t-1, C2 = t-9..t-3, "
+        "C3 = sum of three consecutive C2s. S_{t-1} = 0 for C1 and "
+        "C2, so both are just z-scores against a MOVING baseline; "
+        "flag at mean + 3 sd. C2's two-day gap keeps a starting "
+        "outbreak out of its own baseline. A flat baseline gives "
+        "sigma = 0, so sigma_floor is explicit, not silent. A flag "
+        "is an aberration, not an outbreak."
+    )
 
 
 # compact alias per ledger/NAMING.md

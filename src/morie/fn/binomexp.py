@@ -36,8 +36,7 @@ def binomexp(x, n, delta):
     n_i = int(n)
     if n_i < 0:
         raise ValueError("n must be >= 0")
-    terms = [math.comb(n_i, k) * x_f ** (n_i - k) * d_f ** k
-             for k in range(n_i + 1)]
+    terms = [math.comb(n_i, k) * x_f ** (n_i - k) * d_f**k for k in range(n_i + 1)]
     total = float(sum(terms))
     exact = (x_f + d_f) ** n_i
     payload = {

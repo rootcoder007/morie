@@ -71,7 +71,7 @@ def gekdfvar(n, h, a, fx, density, r1=None, r2=None):
         r1 = float(kdfr1()["estimate"])
     if r2 is None:
         r2 = float(kdfr2(a=a)["estimate"])
-    bracket = 2.0 * (a ** 4 + 1.0) / (a * a - 1.0) ** 2 * float(r1) + float(r2)
+    bracket = 2.0 * (a**4 + 1.0) / (a * a - 1.0) ** 2 * float(r1) + float(r2)
     edfvar = float(fx) * (1.0 - float(fx)) / n
     var = edfvar - h / n * bracket * float(density)
     return RichResult(

@@ -12,6 +12,7 @@ def _series(n_years=40, seed=3):
     def r():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     # a seasonal cycle plus noise, 12 months a year
     out = []
     for y in range(n_years):
@@ -27,7 +28,7 @@ def test_the_index_is_standardised():
     mean = sum(vals) / len(vals)
     var = sum((v - mean) ** 2 for v in vals) / (len(vals) - 1)
     assert abs(mean) < 0.2
-    assert abs(var ** 0.5 - 1.0) < 0.2
+    assert abs(var**0.5 - 1.0) < 0.2
 
 
 def test_the_first_months_have_no_index_at_scale_3():
@@ -41,12 +42,10 @@ def test_the_first_months_have_no_index_at_scale_3():
 
 def test_a_dry_spell_scores_negative_and_a_wet_one_positive():
     x = _series()
-    x[100:112] = [1.0] * 12                      # a drought year
+    x[100:112] = [1.0] * 12  # a drought year
     res = droSPI(x, scale=3, by_month=False)
     assert res["spi"][105] < -1.0
-    wettest = max(range(len(res["spi"])),
-                  key=lambda i: res["totals"][i]
-                  if res["totals"][i] is not None else -1e18)
+    wettest = max(range(len(res["spi"])), key=lambda i: res["totals"][i] if res["totals"][i] is not None else -1e18)
     assert res["spi"][wettest] > 0
 
 
@@ -55,8 +54,7 @@ def test_scale_changes_the_accumulation_window():
     a = droSPI(x, scale=3)
     b = droSPI(x, scale=12)
     assert a["scale"] == 3 and b["scale"] == 12
-    assert sum(1 for v in b["spi"] if v is None) > \
-        sum(1 for v in a["spi"] if v is None)
+    assert sum(1 for v in b["spi"] if v is None) > sum(1 for v in a["spi"] if v is None)
 
 
 def test_by_month_fits_a_distribution_per_calendar_month():

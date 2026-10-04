@@ -27,17 +27,16 @@ def group_testing_expected_tests(i_size, se, sp, pi_tilde):
     """
     value = _acd.group_testing_expected_tests(i_size, se, sp, pi_tilde)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.26)"
     return RichResult(
-        title='Expected number of tests in Dorfman group testing',
+        title="Expected number of tests in Dorfman group testing",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e26: E(T_k) = 1 + I [Se + (1 - Se - Sp)(1 - pi_tilde)^I] [Bilder & Loughin 2025, eq. 6.26]'
+    return "6e26: E(T_k) = 1 + I [Se + (1 - Se - Sp)(1 - pi_tilde)^I] [Bilder & Loughin 2025, eq. 6.26]"

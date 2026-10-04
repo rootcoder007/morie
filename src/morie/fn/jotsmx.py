@@ -61,10 +61,18 @@ def tsmixer(x, wtime, btime, wfeat, bfeat, wproj, bproj, horizon):
     ----------
     Chen, Li, Yoder, Arik and Pfister (2023) TMLR, arXiv:2303.06053, eqs. (4)-(5)
     """
-    res = _core.tsmixer(x=x, wtime=wtime, btime=btime, wfeat=wfeat, bfeat=bfeat, wproj=wproj, bproj=bproj, horizon=horizon)
+    res = _core.tsmixer(
+        x=x, wtime=wtime, btime=btime, wfeat=wfeat, bfeat=bfeat, wproj=wproj, bproj=bproj, horizon=horizon
+    )
     return RichResult(
         title=_METHOD,
-        summary_lines=[("nchannels", res["nchannels"]), ("L", res["L"]), ("horizon", res["horizon"]), ("mean", res["mean"]), ("sumsq", res["sumsq"])],
+        summary_lines=[
+            ("nchannels", res["nchannels"]),
+            ("L", res["L"]),
+            ("horizon", res["horizon"]),
+            ("mean", res["mean"]),
+            ("sumsq", res["sumsq"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

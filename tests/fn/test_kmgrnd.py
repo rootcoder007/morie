@@ -1,7 +1,6 @@
 """Tests for kmgrnd.kamath_groundedness_reward."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmgrnd import kamath_groundedness_reward
 
 

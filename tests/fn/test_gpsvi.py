@@ -1,7 +1,6 @@
 """Tests for gpsvi.gp_stochastic_vi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpsvi import gp_stochastic_vi
 
 

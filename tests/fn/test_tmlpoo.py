@@ -1,7 +1,6 @@
 """Tests for tmlpoo.tmle_pooled."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlpoo import tmle_pooled
 
 

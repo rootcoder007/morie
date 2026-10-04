@@ -10,8 +10,7 @@ def _panel(adopt, effect=None, T=6, growth=None):
         for t in range(1, T + 1):
             d = 1.0 if t >= adopt[g] else 0.0
             expo = (t - adopt[g] + 1) if d else 0
-            e = (growth * expo if growth is not None
-                 else effect.get(g, 0.0)) if d else 0.0
+            e = (growth * expo if growth is not None else effect.get(g, 0.0)) if d else 0.0
             Y.append(1.0 + 0.2 * t + e)
             D.append(d)
             G.append(g)
@@ -20,8 +19,7 @@ def _panel(adopt, effect=None, T=6, growth=None):
 
 
 def test_the_weights_always_sum_to_one():
-    for adopt in ({"a": 2, "b": 4}, {"a": 2, "b": 3, "c": 4},
-                  {"a": 2, "b": 3, "c": 99}):
+    for adopt in ({"a": 2, "b": 4}, {"a": 2, "b": 3, "c": 4}, {"a": 2, "b": 3, "c": 99}):
         res = twfe(*_panel(adopt, {g: 1.0 for g in adopt}))
         assert abs(res["weight_sum"] - 1.0) < 1e-12
 
@@ -42,8 +40,7 @@ def test_negative_weights_appear_without_a_never_treated_group():
 
 def test_a_never_treated_group_shrinks_but_does_not_remove_them():
     without = twfe(*_panel({"a": 2, "b": 4}, {"a": 1.0, "b": 1.0}))
-    with_nt = twfe(*_panel({"a": 2, "b": 4, "c": 99},
-                           {"a": 1.0, "b": 1.0}))
+    with_nt = twfe(*_panel({"a": 2, "b": 4, "c": 99}, {"a": 1.0, "b": 1.0}))
     assert with_nt["n_negative"] == 3
     assert 0 < with_nt["negative_mass"] < without["negative_mass"]
 
@@ -69,8 +66,7 @@ def test_switches_out_of_treatment_need_a_treated_control():
     for g, on in (("a", (3, 4)), ("b", ()), ("c", (1, 2, 3, 4, 5))):
         for t in range(1, 6):
             d = 1.0 if t in on else 0.0
-            Y.append(1.0 + {"a": 0.0, "b": 0.5, "c": 0.2}[g] +
-                     0.1 * t + 2.0 * d)
+            Y.append(1.0 + {"a": 0.0, "b": 0.5, "c": 0.2}[g] + 0.1 * t + 2.0 * d)
             D.append(d)
             G.append(g)
             T.append(t)
@@ -83,19 +79,19 @@ def test_weights_are_reported_per_treated_cell():
     Y, D, G, T = _panel({"a": 2, "b": 4}, {"a": 1.0, "b": 1.0})
     w, resid = twfe_weights(D, G, T)
     assert len(resid) == len(D)
-    assert all(D[i] == 1.0 for i in range(len(D))
-               if (G[i], T[i]) in w) or True
+    assert all(D[i] == 1.0 for i in range(len(D)) if (G[i], T[i]) in w) or True
     assert abs(sum(w.values()) - 1.0) < 1e-12
 
 
 def test_validation():
     Y, D, G, T = _panel({"a": 2, "b": 4}, {"a": 1.0, "b": 1.0})
-    for call in (lambda: twfe(Y[:-1], D, G, T),
-                 lambda: twfe([1.0] * 4, [0.5] * 4, ["a"] * 4,
-                              [1, 2, 3, 4]),
-                 lambda: twfe([1.0, 2.0], [0.0, 1.0], ["a", "a"], [1, 2]),
-                 lambda: twfe(Y, [0.0] * len(D), G, T),
-                 lambda: did_m(Y, [0.0] * len(D), G, T)):
+    for call in (
+        lambda: twfe(Y[:-1], D, G, T),
+        lambda: twfe([1.0] * 4, [0.5] * 4, ["a"] * 4, [1, 2, 3, 4]),
+        lambda: twfe([1.0, 2.0], [0.0, 1.0], ["a", "a"], [1, 2]),
+        lambda: twfe(Y, [0.0] * len(D), G, T),
+        lambda: did_m(Y, [0.0] * len(D), G, T),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

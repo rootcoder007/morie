@@ -1,7 +1,6 @@
 """Tests for lstmb.py - LSTM for biosignals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lstmb import lstmb, lstmb_fn
 
 

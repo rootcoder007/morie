@@ -1,7 +1,6 @@
 """Tests for htvar1.ht_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.htvar1 import ht_variance
 
 

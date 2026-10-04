@@ -431,7 +431,7 @@ class TestCheckpointTrustGate:
         # that whatever it raises, it is not the gate's refusal.
         with pytest.raises(Exception) as excinfo, pytest.warns(RuntimeWarning, match="MORIE_TRUST_CHECKPOINT is set"):
             pt2gguf.convert("nonexistent.pt", "out.gguf")
-        assert "MORIE_TRUST_CHECKPOINT" not in str(
-            excinfo.value
-        ), f"gate should have opened with the knob set, but it refused: {excinfo.value}"
+        assert "MORIE_TRUST_CHECKPOINT" not in str(excinfo.value), (
+            f"gate should have opened with the knob set, but it refused: {excinfo.value}"
+        )
         assert not isinstance(excinfo.value, RuntimeError) or "refusing to deserialize" not in str(excinfo.value)

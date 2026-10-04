@@ -1,7 +1,6 @@
 """Tests for ghs017.ghosal_ch3_discrete_random_measure."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs017 import ghosal_ch3_discrete_random_measure
 
 

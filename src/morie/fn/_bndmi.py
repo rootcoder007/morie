@@ -50,7 +50,7 @@ def stats(yl, yu):
 
 def crit(theta, n, mL, sL, mU, sU):
     """``Q_n(theta)``, the sum of squared positive parts, eq. (4.2)."""
-    rn = n ** 0.5
+    rn = n**0.5
     a = rn * (mL - theta) / sL
     b = rn * (theta - mU) / sU
     if a < 0.0:
@@ -62,7 +62,7 @@ def crit(theta, n, mL, sL, mU, sU):
 
 def critmax(theta, n, mL, sL, mU, sU):
     """``q_max(theta)``, the max form of eq. (4.3)."""
-    rn = n ** 0.5
+    rn = n**0.5
     a = rn * (mL - theta) / sL
     b = rn * (theta - mU) / sU
     m = a if a > b else b

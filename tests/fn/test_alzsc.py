@@ -11,5 +11,6 @@ def test_alzsc_basic():
 
 def test_alzsc_edge():
     import pytest
+
     with pytest.raises(ValueError, match="duplicates"):
         alammar_zero_shot_classification("t", ["a", "a"], lambda p, h: 0)

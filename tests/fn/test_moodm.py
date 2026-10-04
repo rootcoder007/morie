@@ -1,7 +1,6 @@
 """Tests for mood_median_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.moodm import mood_median_test
 
 

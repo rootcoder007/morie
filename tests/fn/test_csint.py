@@ -1,7 +1,6 @@
 """Tests for morie.fn.csint."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.csint import cubic_spline_interp
 
 

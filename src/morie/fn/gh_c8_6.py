@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["ghosal_iid_crt_thm"]
 
 
-def ghosal_iid_crt_thm(x, eps=None, n=None, prior_mass=None, entropy=None,
-                       C=1.0):
+def ghosal_iid_crt_thm(x, eps=None, n=None, prior_mass=None, entropy=None, C=1.0):
     r"""The i.i.d. posterior contraction theorem (Ghosal Sec. 8.2).
 
     A rate :math:`\varepsilon_n` is attained,
@@ -77,18 +76,22 @@ def ghosal_iid_crt_thm(x, eps=None, n=None, prior_mass=None, entropy=None,
     ent_budget = ne2
     pm_budget = float(np.exp(-float(C) * ne2))
     ent_ok = None if entropy is None else bool(float(entropy) <= ent_budget)
-    pm_ok = None if prior_mass is None else \
-        bool(float(prior_mass) >= pm_budget)
-    return RichResult(payload={
-        "n": nn, "eps": e, "n_eps_squared": float(ne2),
-        "entropy_budget": float(ent_budget),
-        "prior_mass_budget": pm_budget,
-        "entropy_ok": ent_ok, "prior_mass_ok": pm_ok,
-        "all_conditions_checked": bool(ent_ok is not None and pm_ok is not None),
-        "metric": "Hellinger",
-        "conditions": ("entropy <= n eps^2; prior mass >= exp(-C n eps^2); "
-                       "sieve remainder o(exp(-(C+4) n eps^2))"),
-        "method": "i.i.d. contraction theorem (Sec. 8.2); all three conditions calibrated by n eps^2"})
+    pm_ok = None if prior_mass is None else bool(float(prior_mass) >= pm_budget)
+    return RichResult(
+        payload={
+            "n": nn,
+            "eps": e,
+            "n_eps_squared": float(ne2),
+            "entropy_budget": float(ent_budget),
+            "prior_mass_budget": pm_budget,
+            "entropy_ok": ent_ok,
+            "prior_mass_ok": pm_ok,
+            "all_conditions_checked": bool(ent_ok is not None and pm_ok is not None),
+            "metric": "Hellinger",
+            "conditions": ("entropy <= n eps^2; prior mass >= exp(-C n eps^2); sieve remainder o(exp(-(C+4) n eps^2))"),
+            "method": "i.i.d. contraction theorem (Sec. 8.2); all three conditions calibrated by n eps^2",
+        }
+    )
 
 
 def cheatsheet():

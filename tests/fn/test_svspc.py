@@ -1,7 +1,6 @@
 """Tests for svspc.py - Subspace decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svspc import subspace_decompose_fn, svspc
 
 

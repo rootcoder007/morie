@@ -97,13 +97,11 @@ implementation follows Wager (2025) ch. 13 for the design and
 Callaway-Sant'Anna (2021) for the staggered case.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 from .hntfst import forest_weights, grow_forest
 
-__all__ = ["panel_differences", "did_estimate", "did_forest",
-           "group_time_att", "aggregate_att", "placebo_did"]
+__all__ = ["panel_differences", "did_estimate", "did_forest", "group_time_att", "aggregate_att", "placebo_did"]
 
 _EPS = 1e-12
 _COMPARISON = ("never-treated", "not-yet-treated")
@@ -119,9 +117,9 @@ def _panel(Y):
         raise ValueError("didfst: need at least 2 periods, got %d" % T)
     for r, row in enumerate(M):
         if len(row) != T:
-            raise ValueError("didfst: row %d has %d periods, expected "
-                             "%d -- the panel must be balanced"
-                             % (r, len(row), T))
+            raise ValueError(
+                "didfst: row %d has %d periods, expected %d -- the panel must be balanced" % (r, len(row), T)
+            )
     return [[float(v) for v in row] for row in M], len(M), T
 
 
@@ -135,8 +133,7 @@ def panel_differences(Y, event_time):
     M, n, T = _panel(Y)
     H = int(event_time)
     if not 1 <= H < T:
-        raise ValueError("didfst: event_time must satisfy 1 <= H < T = "
-                         "%d, got %d" % (T, H))
+        raise ValueError("didfst: event_time must satisfy 1 <= H < T = %d, got %d" % (T, H))
     out = []
     for row in M:
         pre = sum(row[:H]) / float(H)
@@ -156,31 +153,42 @@ def did_estimate(delta, D, weights=None):
     Dv = [float(v) for v in k.vec(D)]
     n = len(d)
     if len(Dv) != n:
-        raise ValueError("didfst: %d differences but %d adoption "
-                         "indicators" % (n, len(Dv)))
+        raise ValueError("didfst: %d differences but %d adoption indicators" % (n, len(Dv)))
     for v in Dv:
         if v not in (0.0, 1.0):
             raise ValueError("didfst: D must be 0/1, got %r" % (v,))
     w = [1.0] * n if weights is None else [float(v) for v in weights]
     if len(w) != n:
-        raise ValueError("didfst: %d weights for %d units"
-                         % (len(w), n))
+        raise ValueError("didfst: %d weights for %d units" % (len(w), n))
     if any(v < 0.0 for v in w):
         raise ValueError("didfst: weights must be non-negative")
     st = sum(w[i] * Dv[i] for i in range(n))
     sc = sum(w[i] * (1.0 - Dv[i]) for i in range(n))
     if st <= _EPS or sc <= _EPS:
-        raise ValueError("didfst: the comparison needs weight on both "
-                         "adopters and non-adopters (treated %.3g, "
-                         "control %.3g)" % (st, sc))
+        raise ValueError(
+            "didfst: the comparison needs weight on both "
+            "adopters and non-adopters (treated %.3g, "
+            "control %.3g)" % (st, sc)
+        )
     mt = sum(w[i] * Dv[i] * d[i] for i in range(n)) / st
     mc = sum(w[i] * (1.0 - Dv[i]) * d[i] for i in range(n)) / sc
     return mt - mc, mt, mc, st, sc
 
 
-def did_forest(Y, D, X, event_time, x_eval=None, n_trees=200,
-               min_leaf=5, alpha=0.05, max_depth=12, seed=0,
-               kind="double-sample", clusters=None):
+def did_forest(
+    Y,
+    D,
+    X,
+    event_time,
+    x_eval=None,
+    n_trees=200,
+    min_leaf=5,
+    alpha=0.05,
+    max_depth=12,
+    seed=0,
+    kind="double-sample",
+    clusters=None,
+):
     r"""Heterogeneous ATT: DiD taken locally under forest weights.
 
     Parameters
@@ -208,14 +216,21 @@ def did_forest(Y, D, X, event_time, x_eval=None, n_trees=200,
     Xm = k.mat(X)
     n = len(delta)
     if len(Xm) != n:
-        raise ValueError("didfst: %d covariate rows for %d panel units"
-                         % (len(Xm), n))
+        raise ValueError("didfst: %d covariate rows for %d panel units" % (len(Xm), n))
     Dv = [float(v) for v in k.vec(D)]
     flat, _, _, _, _ = did_estimate(delta, Dv)
-    trees, bags, s = grow_forest(Xm, delta, W=Dv, kind=kind,
-                                 n_trees=n_trees, min_leaf=min_leaf,
-                                 alpha=alpha, max_depth=max_depth,
-                                 seed=seed, clusters=clusters)
+    trees, bags, s = grow_forest(
+        Xm,
+        delta,
+        W=Dv,
+        kind=kind,
+        n_trees=n_trees,
+        min_leaf=min_leaf,
+        alpha=alpha,
+        max_depth=max_depth,
+        seed=seed,
+        clusters=clusters,
+    )
     pts = Xm if x_eval is None else k.mat(x_eval)
     taus, wt_t, wt_c = [], [], []
     for x in pts:
@@ -224,17 +239,23 @@ def did_forest(Y, D, X, event_time, x_eval=None, n_trees=200,
         taus.append(t)
         wt_t.append(st)
         wt_c.append(sc)
-    return RichResult(payload={
-        "estimate": sum(taus) / len(taus),
-        "tau": taus, "delta": delta,
-        "att_uniform": flat,
-        "treated_weight": wt_t, "control_weight": wt_c,
-        "n": n, "n_trees": int(n_trees), "event_time": int(event_time),
-        "design": "block-adoption",
-        "method": "difference-in-differences under honest forest "
-                  "weights; Wager (2025) eq. (13.7) localised by "
-                  "Athey-Tibshirani-Wager (2019) eq. (3)",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(taus) / len(taus),
+            "tau": taus,
+            "delta": delta,
+            "att_uniform": flat,
+            "treated_weight": wt_t,
+            "control_weight": wt_c,
+            "n": n,
+            "n_trees": int(n_trees),
+            "event_time": int(event_time),
+            "design": "block-adoption",
+            "method": "difference-in-differences under honest forest "
+            "weights; Wager (2025) eq. (13.7) localised by "
+            "Athey-Tibshirani-Wager (2019) eq. (3)",
+        }
+    )
 
 
 def placebo_did(Y, D, event_time, split=None):
@@ -248,22 +269,24 @@ def placebo_did(Y, D, event_time, split=None):
     M, n, T = _panel(Y)
     H = int(event_time)
     if H < 2:
-        raise ValueError("didfst: a pre-period placebo needs at least "
-                         "2 pre-periods, event_time is %d" % H)
+        raise ValueError("didfst: a pre-period placebo needs at least 2 pre-periods, event_time is %d" % H)
     cut = H // 2 if split is None else int(split)
     if not 1 <= cut < H:
-        raise ValueError("didfst: the placebo split must satisfy "
-                         "1 <= split < %d, got %d" % (H, cut))
+        raise ValueError("didfst: the placebo split must satisfy 1 <= split < %d, got %d" % (H, cut))
     pre = [row[:H] for row in M]
     d = panel_differences(pre, cut)
     est, mt, mc, _, _ = did_estimate(d, D)
-    return RichResult(payload={
-        "estimate": est, "treated_change": mt, "control_change": mc,
-        "split": cut, "n_pre": H,
-        "interpretation": "zero is consistent with parallel trends but "
-                          "does not establish it",
-        "method": "pre-period placebo DiD; Wager (2025) Assumption 13.1",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "treated_change": mt,
+            "control_change": mc,
+            "split": cut,
+            "n_pre": H,
+            "interpretation": "zero is consistent with parallel trends but does not establish it",
+            "method": "pre-period placebo DiD; Wager (2025) Assumption 13.1",
+        }
+    )
 
 
 def group_time_att(Y, first_treated, comparison="not-yet-treated"):
@@ -288,11 +311,9 @@ def group_time_att(Y, first_treated, comparison="not-yet-treated"):
     """
     M, n, T = _panel(Y)
     if comparison not in _COMPARISON:
-        raise ValueError("didfst: comparison must be one of %s, got %r"
-                         % (", ".join(_COMPARISON), comparison))
+        raise ValueError("didfst: comparison must be one of %s, got %r" % (", ".join(_COMPARISON), comparison))
     if len(first_treated) != n:
-        raise ValueError("didfst: %d adoption times for %d units"
-                         % (len(first_treated), n))
+        raise ValueError("didfst: %d adoption times for %d units" % (len(first_treated), n))
     G = []
     for v in first_treated:
         if v is None:
@@ -304,9 +325,9 @@ def group_time_att(Y, first_treated, comparison="not-yet-treated"):
             continue
         g = int(f)
         if not 2 <= g <= T:
-            raise ValueError("didfst: adoption time %d is outside "
-                             "2..T = %d (a unit treated in period 1 "
-                             "has no pre-period)" % (g, T))
+            raise ValueError(
+                "didfst: adoption time %d is outside 2..T = %d (a unit treated in period 1 has no pre-period)" % (g, T)
+            )
         G.append(g)
     cohorts = sorted({g for g in G if g is not None})
     if not cohorts:
@@ -318,26 +339,26 @@ def group_time_att(Y, first_treated, comparison="not-yet-treated"):
             if comparison == "never-treated":
                 idx_c = [i for i in range(n) if G[i] is None]
             else:
-                idx_c = [i for i in range(n)
-                         if G[i] is None or G[i] > t]
+                idx_c = [i for i in range(n) if G[i] is None or G[i] > t]
             if not idx_c:
                 continue
-            a, b = t - 1, g - 2          # 0-based period indices
-            dg = (sum(M[i][a] for i in idx_g) / len(idx_g)
-                  - sum(M[i][b] for i in idx_g) / len(idx_g))
-            dc = (sum(M[i][a] for i in idx_c) / len(idx_c)
-                  - sum(M[i][b] for i in idx_c) / len(idx_c))
-            out[(g, t)] = {"att": dg - dc, "n_treated": len(idx_g),
-                           "n_control": len(idx_c)}
+            a, b = t - 1, g - 2  # 0-based period indices
+            dg = sum(M[i][a] for i in idx_g) / len(idx_g) - sum(M[i][b] for i in idx_g) / len(idx_g)
+            dc = sum(M[i][a] for i in idx_c) / len(idx_c) - sum(M[i][b] for i in idx_c) / len(idx_c)
+            out[(g, t)] = {"att": dg - dc, "n_treated": len(idx_g), "n_control": len(idx_c)}
     if not out:
-        raise ValueError("didfst: no (g, t) cell had a usable "
-                         "comparison group")
-    return RichResult(payload={
-        "att": out, "cohorts": cohorts, "T": T, "n": n,
-        "comparison": comparison,
-        "estimate": sum(v["att"] for v in out.values()) / len(out),
-        "method": "group-time ATT(g,t), Callaway & Sant'Anna (2021)",
-    })
+        raise ValueError("didfst: no (g, t) cell had a usable comparison group")
+    return RichResult(
+        payload={
+            "att": out,
+            "cohorts": cohorts,
+            "T": T,
+            "n": n,
+            "comparison": comparison,
+            "estimate": sum(v["att"] for v in out.values()) / len(out),
+            "method": "group-time ATT(g,t), Callaway & Sant'Anna (2021)",
+        }
+    )
 
 
 def aggregate_att(gt, scheme="simple", horizon=None):
@@ -352,16 +373,14 @@ def aggregate_att(gt, scheme="simple", horizon=None):
         one number per adoption cohort, averaged over its post periods.
     """
     if scheme not in ("simple", "event", "cohort"):
-        raise ValueError("didfst: scheme must be simple, event or "
-                         "cohort, got %r" % (scheme,))
+        raise ValueError("didfst: scheme must be simple, event or cohort, got %r" % (scheme,))
     cells = gt["att"] if isinstance(gt, (dict, RichResult)) else gt
     if not cells:
         raise ValueError("didfst: nothing to aggregate")
     if scheme == "simple":
         num = sum(v["att"] * v["n_treated"] for v in cells.values())
         den = sum(v["n_treated"] for v in cells.values())
-        return {"estimate": num / den, "scheme": "simple", "n_cells":
-                len(cells)}
+        return {"estimate": num / den, "scheme": "simple", "n_cells": len(cells)}
     keyed = {}
     for (g, t), v in cells.items():
         key = (t - g) if scheme == "event" else g
@@ -375,20 +394,21 @@ def aggregate_att(gt, scheme="simple", horizon=None):
         num = sum(v["att"] * v["n_treated"] for v in vs)
         den = sum(v["n_treated"] for v in vs)
         prof[key] = num / den
-    return {"profile": prof, "scheme": scheme,
-            "estimate": sum(prof.values()) / len(prof)}
+    return {"profile": prof, "scheme": scheme, "estimate": sum(prof.values()) / len(prof)}
 
 
 def cheatsheet():
-    return ("didfst: DiD forest. Delta_i = post-mean - pre-mean; the "
-            "scalar estimator (Wager 2025 eq. 13.7) is the difference "
-            "of group means of Delta, and the forest version is the "
-            "SAME contrast under alpha_i(x) weights -- uniform weights "
-            "reproduce it exactly. Parallel trends is untestable in "
-            "the post period; placebo_did only checks the pre-period. "
-            "Staggered adoption is NOT the same estimand: use "
-            "group_time_att (Callaway-Sant'Anna 2021), because TWFE "
-            "weights can go negative.")
+    return (
+        "didfst: DiD forest. Delta_i = post-mean - pre-mean; the "
+        "scalar estimator (Wager 2025 eq. 13.7) is the difference "
+        "of group means of Delta, and the forest version is the "
+        "SAME contrast under alpha_i(x) weights -- uniform weights "
+        "reproduce it exactly. Parallel trends is untestable in "
+        "the post period; placebo_did only checks the pre-period. "
+        "Staggered adoption is NOT the same estimand: use "
+        "group_time_att (Callaway-Sant'Anna 2021), because TWFE "
+        "weights can go negative."
+    )
 
 
 # compact alias per ledger/NAMING.md

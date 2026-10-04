@@ -62,12 +62,9 @@ implemented in :mod:`dqnv`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["polyak_average", "running_average", "soft_update",
-           "lag_halflife", "hard_update"]
+__all__ = ["polyak_average", "running_average", "soft_update", "lag_halflife", "hard_update"]
 
 _EPS = 1e-12
 
@@ -79,26 +76,21 @@ def polyak_average(iterates, burn_in=0):
         raise ValueError("polyak: no iterates given")
     b = int(burn_in)
     if b >= len(X):
-        raise ValueError("polyak: the burn-in of %d discards all %d "
-                         "iterates" % (b, len(X)))
+        raise ValueError("polyak: the burn-in of %d discards all %d iterates" % (b, len(X)))
     keep = X[b:]
     d = len(keep[0])
-    return {"average": [sum(t[f] for t in keep) / len(keep)
-                        for f in range(d)],
-            "n_averaged": len(keep), "burn_in": b}
+    return {"average": [sum(t[f] for t in keep) / len(keep) for f in range(d)], "n_averaged": len(keep), "burn_in": b}
 
 
 def running_average(prev, new, decay=0.999):
     r"""An exponential form, so nothing needs storing."""
     a = float(decay)
     if not 0.0 < a < 1.0:
-        raise ValueError("polyak: the decay must lie in (0,1), got %r"
-                         % (decay,))
+        raise ValueError("polyak: the decay must lie in (0,1), got %r" % (decay,))
     p = [float(v) for v in k.vec(prev)]
     n = [float(v) for v in k.vec(new)]
     if len(p) != len(n):
-        raise ValueError("polyak: the parameter vectors differ in "
-                         "length (%d, %d)" % (len(p), len(n)))
+        raise ValueError("polyak: the parameter vectors differ in length (%d, %d)" % (len(p), len(n)))
     return [a * p[i] + (1.0 - a) * n[i] for i in range(len(p))]
 
 
@@ -106,23 +98,19 @@ def soft_update(target, online, tau=0.001):
     r""":math:`\theta' \leftarrow \tau\theta + (1-\tau)\theta'`."""
     t = float(tau)
     if not 0.0 < t <= 1.0:
-        raise ValueError("polyak: tau must lie in (0,1], got %r"
-                         % (tau,))
+        raise ValueError("polyak: tau must lie in (0,1], got %r" % (tau,))
     a = [float(v) for v in k.vec(target)]
     b = [float(v) for v in k.vec(online)]
     if len(a) != len(b):
-        raise ValueError("polyak: the networks differ in size (%d, "
-                         "%d)" % (len(a), len(b)))
+        raise ValueError("polyak: the networks differ in size (%d, %d)" % (len(a), len(b)))
     return [t * b[i] + (1.0 - t) * a[i] for i in range(len(a))]
 
 
 def hard_update(target, online, step, C=10000):
     r"""DQN's periodic copy, every :math:`C` steps."""
     if int(step) % int(C) == 0:
-        return {"target": [float(v) for v in k.vec(online)],
-                "copied": True}
-    return {"target": [float(v) for v in k.vec(target)],
-            "copied": False}
+        return {"target": [float(v) for v in k.vec(online)], "copied": True}
+    return {"target": [float(v) for v in k.vec(target)], "copied": False}
 
 
 def lag_halflife(tau):
@@ -134,24 +122,27 @@ def lag_halflife(tau):
     """
     t = float(tau)
     if not 0.0 < t < 1.0:
-        raise ValueError("polyak: tau must lie in (0,1) for a "
-                         "half-life, got %r" % (tau,))
-    return {"halflife": math.log(0.5) / math.log(1.0 - t),
-            "approx": math.log(2.0) / t, "tau": t,
-            "note": "the target lags the online network; that delay "
-                    "IS the stabiliser"}
+        raise ValueError("polyak: tau must lie in (0,1) for a half-life, got %r" % (tau,))
+    return {
+        "halflife": math.log(0.5) / math.log(1.0 - t),
+        "approx": math.log(2.0) / t,
+        "tau": t,
+        "note": "the target lags the online network; that delay IS the stabiliser",
+    }
 
 
 def cheatsheet():
-    return ("polyak: (1) averaging the iterates of a SLOWLY decaying "
-            "stochastic approximation is asymptotically optimal -- the "
-            "second-order rate without second derivatives, provided "
-            "the step decays slower than 1/t. (2) Q-learning diverges "
-            "because the network computes its own target; DQN copies "
-            "the weights every C steps, DDPG instead TRACKS them, "
-            "theta' <- tau theta + (1-tau) theta' with tau = 1e-3, so "
-            "targets move slowly and the problem resembles supervised "
-            "learning. The lag, about 0.69/tau steps, is the price.")
+    return (
+        "polyak: (1) averaging the iterates of a SLOWLY decaying "
+        "stochastic approximation is asymptotically optimal -- the "
+        "second-order rate without second derivatives, provided "
+        "the step decays slower than 1/t. (2) Q-learning diverges "
+        "because the network computes its own target; DQN copies "
+        "the weights every C steps, DDPG instead TRACKS them, "
+        "theta' <- tau theta + (1-tau) theta' with tau = 1e-3, so "
+        "targets move slowly and the problem resembles supervised "
+        "learning. The lag, about 0.69/tau steps, is the price."
+    )
 
 
 # compact alias per ledger/NAMING.md

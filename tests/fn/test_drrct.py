@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.drrct import dr_rct_assisted_did
 
 
@@ -21,9 +20,18 @@ def test_drrct_basic():
     X = rng.normal(0, 1, (n, p))
     result = dr_rct_assisted_did(y_obs, y_rct, D, X)
     assert isinstance(result, dict)
-    for key in ("estimate", "tau_esc", "tau_naive", "correction",
-                "delta", "tau_secondary", "alpha_sd",
-                "n_exp", "n_obs", "n"):
+    for key in (
+        "estimate",
+        "tau_esc",
+        "tau_naive",
+        "correction",
+        "delta",
+        "tau_secondary",
+        "alpha_sd",
+        "n_exp",
+        "n_obs",
+        "n",
+    ):
         assert key in result
     assert math.isfinite(result["estimate"])
     assert math.isfinite(result["tau_esc"])

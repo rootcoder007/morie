@@ -1,7 +1,6 @@
 """Test equalization_inverse (eqint)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.eqint import eqint, equalization_inverse
 

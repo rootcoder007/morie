@@ -1,8 +1,6 @@
 """Tests for dropr.dropout_regularization."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.dropr import dropout_regularization
 
 

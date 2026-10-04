@@ -8,7 +8,7 @@ computed by hand from the formula on p. 3711 of the paper.
 
 import math
 
-from morie.fn.goenr import goenr, go_enrichment
+from morie.fn.goenr import go_enrichment, goenr
 
 
 def test_goenr_hand_fraction():
@@ -32,8 +32,7 @@ def test_goenr_complement_consistency():
     for k in range(0, min(n, M) + 1):
         up = goenr(k, n, M, N)["pvalue"][0]
         # brute-force lower tail from exact binomials
-        lo = sum(math.comb(M, i) * math.comb(N - M, n - i)
-                 for i in range(0, k)) / math.comb(N, n)
+        lo = sum(math.comb(M, i) * math.comb(N - M, n - i) for i in range(0, k)) / math.comb(N, n)
         assert abs(up + lo - 1.0) < 1e-10
 
 

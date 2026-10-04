@@ -70,11 +70,9 @@ def _attend(X, Y, Wq, Wk, Wv):
 
 def _mab(X, Y, p):
     A, W = _attend(X, Y, p["Wq"], p["Wk"], p["Wv"])
-    H = [_ln([x + a for x, a in zip(xr, ar)])
-         for xr, ar in zip(X, A)]
+    H = [_ln([x + a for x, a in zip(xr, ar)]) for xr, ar in zip(X, A)]
     F = _rff(H, p["W1"], p["b1"], p["W2"], p["b2"])
-    O = [_ln([h + f for h, f in zip(hr, fr)])
-         for hr, fr in zip(H, F)]
+    O = [_ln([h + f for h, f in zip(hr, fr)]) for hr, fr in zip(H, F)]
     return O, W
 
 
@@ -101,24 +99,25 @@ def setT(Z, S, params):
     Za = np.atleast_2d(np.asarray(Z, dtype=float))
     Sa = np.atleast_2d(np.asarray(S, dtype=float))
     if Za.shape[1] != Sa.shape[1]:
-        raise ValueError(
-            f"setT: Z width {Za.shape[1]} != seed width {Sa.shape[1]}")
+        raise ValueError(f"setT: Z width {Za.shape[1]} != seed width {Sa.shape[1]}")
     for name in ("Wq", "Wk", "Wv", "W1", "b1", "W2", "b2"):
         if name not in params:
             raise ValueError(f"setT: params is missing {name}")
     p = {k: np.asarray(v, dtype=float) for k, v in params.items()}
     Zl = [[float(v) for v in row] for row in Za]
     Sl = [[float(v) for v in row] for row in Sa]
-    FZ = _rff(Zl, p["W1"], p["b1"], p["W2"], p["b2"])   # rFF(Z)
-    O, W = _mab(Sl, FZ, p)                              # MAB(S, rFF(Z))
-    return RichResult(payload={
-        "output": O,
-        "attention": W,
-        "k": len(Sl),
-        "estimate": float(O[0][0]),
-        "n": int(Za.shape[0]),
-        "method": "Set Transformer PMA_k(Z) = MAB(S, rFF(Z)) (Lee et al. 2019, Eq 7 + Sec 3.2)",
-    })
+    FZ = _rff(Zl, p["W1"], p["b1"], p["W2"], p["b2"])  # rFF(Z)
+    O, W = _mab(Sl, FZ, p)  # MAB(S, rFF(Z))
+    return RichResult(
+        payload={
+            "output": O,
+            "attention": W,
+            "k": len(Sl),
+            "estimate": float(O[0][0]),
+            "n": int(Za.shape[0]),
+            "method": "Set Transformer PMA_k(Z) = MAB(S, rFF(Z)) (Lee et al. 2019, Eq 7 + Sec 3.2)",
+        }
+    )
 
 
 def set_transformer(X=None, k=None, S=None, params=None):
@@ -134,6 +133,7 @@ def set_transformer(X=None, k=None, S=None, params=None):
 
 def cheatsheet():
     return "setT: Set Transformer PMA pooling (Lee et al. 2019, arXiv:1810.00825, Eq 7 + Sec 3.2)"
+
 
 # public names resolved by fn/_lazy_map.json
 settransformer = setT

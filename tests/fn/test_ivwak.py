@@ -1,7 +1,6 @@
 """Tests for morie.fn.ivwak — instrumental variable weak test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ivwak import iv_weak_test
 
 

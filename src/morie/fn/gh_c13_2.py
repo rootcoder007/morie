@@ -54,8 +54,7 @@ def ghosal_surv_dp_km(x, event=None, alpha=1.0, g0_rate=None):
         raise ValueError(f"need at least 2 observations, got {n}.")
     if np.any(xv < 0):
         raise ValueError("times must be non-negative.")
-    ev = np.ones(n) if event is None else \
-        np.asarray(event, dtype=float).ravel()
+    ev = np.ones(n) if event is None else np.asarray(event, dtype=float).ravel()
     if ev.size != n:
         raise ValueError(f"event has {ev.size} entries for {n} times.")
     if not np.all(np.isin(ev, (0.0, 1.0))):
@@ -74,23 +73,27 @@ def ghosal_surv_dp_km(x, event=None, alpha=1.0, g0_rate=None):
         at_risk = float(np.sum(ts >= t))
         deaths = float(np.sum((ts == t) & (es == 1.0)))
         if at_risk > 0 and deaths > 0:
-            surv *= (1.0 - deaths / at_risk)
+            surv *= 1.0 - deaths / at_risk
         km[i] = surv
     # DP posterior mean survival: the prior survival pulled toward the
     # data with weight n/(alpha+n)
-    rate = (1.0 / max(float(np.mean(xv)), 1e-12)) if g0_rate is None \
-        else float(g0_rate)
+    rate = (1.0 / max(float(np.mean(xv)), 1e-12)) if g0_rate is None else float(g0_rate)
     prior_s = np.exp(-rate * uniq)
     wt = n / (a + n)
     dp = wt * km + (1.0 - wt) * prior_s
-    return RichResult(payload={
-        "times": uniq, "survival_dp": dp, "survival_km": km,
-        "max_abs_diff_to_km": float(np.max(np.abs(dp - km))),
-        "alpha": a,
-        "limit_note": "alpha -> 0 gives Kaplan-Meier exactly; "
-                      "alpha -> infinity gives the base measure",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "DP posterior survival (Sec. 13.2); Kaplan-Meier is the alpha -> 0 limit"})
+    return RichResult(
+        payload={
+            "times": uniq,
+            "survival_dp": dp,
+            "survival_km": km,
+            "max_abs_diff_to_km": float(np.max(np.abs(dp - km))),
+            "alpha": a,
+            "limit_note": "alpha -> 0 gives Kaplan-Meier exactly; alpha -> infinity gives the base measure",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "DP posterior survival (Sec. 13.2); Kaplan-Meier is the alpha -> 0 limit",
+        }
+    )
 
 
 def cheatsheet():

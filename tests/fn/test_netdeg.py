@@ -1,7 +1,6 @@
 """Tests for netdeg.degree_centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netdeg import degree_centrality
 
 

@@ -5,7 +5,6 @@ Classical number theory.  Triage confirmed this names no owning source; the
 standard definition is implemented and no citation is manufactured.
 """
 
-
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["farey_seq"]
@@ -39,11 +38,18 @@ def farey_seq(n):
         terms.append((c, d))
         k = (nn + b) // d
         a, b, c, d = c, d, k * c - a, k * d - b
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(len(terms)), "terms": terms,
-        "values": [p / float(q) for p, q in terms], "n": nn,
-        "method": "Farey sequence of order n",
-    }), "diopT")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(len(terms)),
+                "terms": terms,
+                "values": [p / float(q) for p, q in terms],
+                "n": nn,
+                "method": "Farey sequence of order n",
+            }
+        ),
+        "diopT",
+    )
 
 
 def cheatsheet():

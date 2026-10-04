@@ -2,12 +2,12 @@
 
 import math
 
-from morie.fn import _array_core as np
 from morie.fn.prdldm import prox_method
 
 
 def test_prdldm_basic():
     """Test basic functionality on a smooth convex quadratic."""
+
     def f(x):
         return 0.5 * sum(v * v for v in x)
 
@@ -40,6 +40,7 @@ def test_prdldm_basic():
 
 def test_prdldm_edge():
     """Test edge cases with a small input and non-default relaxation."""
+
     def f(x):
         return sum(v * v for v in x)
 

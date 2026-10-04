@@ -25,8 +25,7 @@ def _mdp_args(P, R):
         for s in range(S):
             if abs(float(np.sum(Pm[a][s])) - 1.0) > 1e-8:
                 raise ValueError("P[%d] row %d does not sum to 1" % (a, s))
-    if isinstance(R, (list, tuple)) and len(R) == A and \
-            np.asarray(R[0], dtype=float).ndim == 2:
+    if isinstance(R, (list, tuple)) and len(R) == A and np.asarray(R[0], dtype=float).ndim == 2:
         Rsa = np.zeros((S, A))
         for a in range(A):
             Ra = np.asarray(R[a], dtype=float)
@@ -130,15 +129,17 @@ def mdp_value_iteration(P, R, gamma, tol=1e-10, max_iter=100000, V0=None):
             if Q[s, a] > Q[s, b]:
                 b = a
         pol[s] = float(b)
-    return RichResult(payload={
-        "estimate": V,
-        "policy": pol,
-        "q": Q,
-        "n_iter": it,
-        "delta": delta,
-        "converged": bool(delta < tol),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": V,
+            "policy": pol,
+            "q": Q,
+            "n_iter": it,
+            "delta": delta,
+            "converged": bool(delta < tol),
+            "method": _METHOD,
+        }
+    )
 
 
 mdpval = mdp_value_iteration

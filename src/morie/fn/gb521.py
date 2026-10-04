@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['quantci', 'gibbons_quantile_ci']
+__all__ = ["quantci", "gibbons_quantile_ci"]
 
 
 def quantci(x, p, r, s):

@@ -89,7 +89,7 @@ def geron_kfold(X, y, k, seed=None, fit=None, predict=None, score=None):
     K = int(k)
     if K < 2:
         raise ValueError(f"geron_kfold: k must be at least 2 folds, got {k!r}")
-    if K > m:
+    if m < K:
         raise ValueError(f"geron_kfold: k={K} exceeds the {m} available observations")
 
     idx = np.arange(m)
@@ -104,8 +104,14 @@ def geron_kfold(X, y, k, seed=None, fit=None, predict=None, score=None):
         raise ValueError("geron_kfold: the folds do not partition the data; this is a bug in the split")
 
     inner = geron_cross_validation_score(
-        A, yy, K=K, fit=fit, predict=predict, score=score,
-        shuffle=seed is not None, random_state=None if seed is None else int(seed),
+        A,
+        yy,
+        K=K,
+        fit=fit,
+        predict=predict,
+        score=score,
+        shuffle=seed is not None,
+        random_state=None if seed is None else int(seed),
     )
 
     return RichResult(

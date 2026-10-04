@@ -6,9 +6,14 @@ import statistics
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.tmldyk import (ate_sensitivity, composition_budget,
-                             laplace_noise, private_ci, private_release,
-                             tmle_diff_kernel)
+from morie.fn.tmldyk import (
+    ate_sensitivity,
+    composition_budget,
+    laplace_noise,
+    private_ci,
+    private_release,
+    tmle_diff_kernel,
+)
 
 
 def _expit(x):
@@ -44,8 +49,10 @@ def _tmle(Y, A, g, Q1, Q0):
 def _data(n=40):
     W = [math.sin(2.3 * k) for k in range(n)]
     A = [1.0 if ((17 * k + 4) % 61 + 0.5) / 61.0 < _expit(0.5 * w) else 0.0 for k, w in enumerate(W)]
-    Y = [1.0 if ((23 * k + 2) % 67 + 0.5) / 67.0 < _expit(-0.2 + 0.6 * a + w) else 0.0
-         for k, (a, w) in enumerate(zip(A, W))]
+    Y = [
+        1.0 if ((23 * k + 2) % 67 + 0.5) / 67.0 < _expit(-0.2 + 0.6 * a + w) else 0.0
+        for k, (a, w) in enumerate(zip(A, W))
+    ]
     g = [_expit(0.1 + 0.4 * w) for w in W]
     Q1 = [_expit(0.4 + 0.9 * w) for w in W]
     Q0 = [_expit(-0.2 + 0.9 * w) for w in W]

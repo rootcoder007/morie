@@ -49,18 +49,24 @@ def hrz_npiv_operator(X, W, K=5, kind="poly"):
     if X.size != W.size:
         raise ValueError("X and W must have the same length.")
     K = int(K)
-    if K < 1 or K > X.size:
+    if K < 1 or X.size < K:
         raise ValueError(f"K must lie in 1..{X.size}, got {K}.")
     P = sieve_basis(X, K=K, kind=kind)
     Q = sieve_basis(W, K=K, kind=kind)
     T = Q.T @ P / X.size
     sv = np.linalg.svd(T, compute_uv=False)
     ratio = float(sv[-1] / sv[0]) if sv[0] > 0 else 0.0
-    return RichResult(payload={"T": T, "singular_values": sv,
-                               "decay_ratio": ratio,
-                               "severity": "severe" if ratio < 1e-6 else "mild",
-                               "K": K, "n": int(X.size),
-                               "method": "T_jk = E[p_k(X) q_j(W)]; singular decay IS the ill-posedness"})
+    return RichResult(
+        payload={
+            "T": T,
+            "singular_values": sv,
+            "decay_ratio": ratio,
+            "severity": "severe" if ratio < 1e-6 else "mild",
+            "K": K,
+            "n": int(X.size),
+            "method": "T_jk = E[p_k(X) q_j(W)]; singular decay IS the ill-posedness",
+        }
+    )
 
 
 def cheatsheet():

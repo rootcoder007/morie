@@ -104,7 +104,7 @@ def hyperparameter_tuning_grid(param_grid, cv_data, fit_cv=None, k=5):
     if n < 2 or len(X) != n:
         raise ValueError("hyperparameter_tuning_grid: cv_data must be an n-by-p X and an n-vector y")
     K = int(k)
-    if K < 2 or K > n:
+    if K < 2 or n < K:
         raise ValueError("hyperparameter_tuning_grid: k must lie between 2 and n")
     fn = fit_cv if fit_cv is not None else _ridge_cv
     keys, pts = _cartesian(param_grid)

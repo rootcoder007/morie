@@ -1,7 +1,6 @@
 """Tests for hrzllr.horowitz_local_linear."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzllr import horowitz_local_linear
 
 

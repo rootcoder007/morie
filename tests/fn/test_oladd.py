@@ -1,7 +1,6 @@
 """Test overlap_add (oladd)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.oladd import oladd, overlap_add
 

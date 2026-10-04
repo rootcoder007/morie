@@ -1,7 +1,6 @@
 """Tests for cvxmnr.boyd_minimax."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxmnr import boyd_minimax
 
 
@@ -11,6 +10,8 @@ def test_cvxmnr_basic():
     result = boyd_minimax(f)
     assert isinstance(result, dict)
     assert "x" in result
+
+
 def test_cvxmnr_edge():
     """Test edge cases."""
     f = np.random.default_rng(42).normal(0, 1, 100)

@@ -69,8 +69,7 @@ def geron_rlhf_reward_kl_objective(rewards, policy_logprobs, ref_logprobs, beta=
         raise ValueError("rewards is empty.")
     if not (r.shape == lp.shape == lr.shape):
         raise ValueError(
-            f"rewards, policy_logprobs and ref_logprobs must have equal length; "
-            f"got {r.size}, {lp.size}, {lr.size}."
+            f"rewards, policy_logprobs and ref_logprobs must have equal length; got {r.size}, {lp.size}, {lr.size}."
         )
     if not (np.all(np.isfinite(r)) and np.all(np.isfinite(lp)) and np.all(np.isfinite(lr))):
         raise ValueError("rewards and log-probabilities must be finite.")

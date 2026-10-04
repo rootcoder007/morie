@@ -1,7 +1,6 @@
 """Tests for rfcomp.robust_factor_analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rfcomp import robust_factor_analysis
 
 

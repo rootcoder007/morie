@@ -83,11 +83,18 @@ def bayisr(samples, log_target, log_proposal, m, seed=0):
                 break
         idx.append(j)
     res = [xs[j] for j in idx]
-    return RichResult(payload={
-        "resample": res, "indices": idx, "weights": wbar,
-        "ess": float(ess), "n": int(n), "m": m, "seed": int(seed),
-        "method": "SIR weighted bootstrap (Rubin 1988; Smith-Gelfand 1992)",
-    })
+    return RichResult(
+        payload={
+            "resample": res,
+            "indices": idx,
+            "weights": wbar,
+            "ess": float(ess),
+            "n": int(n),
+            "m": m,
+            "seed": int(seed),
+            "method": "SIR weighted bootstrap (Rubin 1988; Smith-Gelfand 1992)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

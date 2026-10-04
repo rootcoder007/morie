@@ -70,10 +70,8 @@ def ma_network_lme(yi, vi, design):
     df = n - p
     denom = 0.0
     if df > 0:
-        A = [[sum(w0[i] * X[i][r] * X[i][s] for i in range(n))
-              for s in range(p)] for r in range(p)]
-        A2 = [[sum(w0[i] * w0[i] * X[i][r] * X[i][s] for i in range(n))
-               for s in range(p)] for r in range(p)]
+        A = [[sum(w0[i] * X[i][r] * X[i][s] for i in range(n)) for s in range(p)] for r in range(p)]
+        A2 = [[sum(w0[i] * w0[i] * X[i][r] * X[i][s] for i in range(n)) for s in range(p)] for r in range(p)]
         inv = []
         for j in range(p):
             e = [1.0 if r == j else 0.0 for r in range(p)]
@@ -88,16 +86,24 @@ def ma_network_lme(yi, vi, design):
     w = [1.0 / (v[i] + tau2) for i in range(n)]
     beta, cov, _ = ma.wls(X, y, w)
     theta = [0.0] + list(beta)
-    se = [0.0] + [math.sqrt(cov[j][j]) if cov[j][j] > 0.0 else float("nan")
-                  for j in range(p)]
+    se = [0.0] + [math.sqrt(cov[j][j]) if cov[j][j] > 0.0 else float("nan") for j in range(p)]
     order = sorted(range(T), key=lambda j: (theta[j], j))
     ranks = [0] * T
     for r, j in enumerate(order):
         ranks[j] = r + 1
-    return RichResult(payload={
-        "theta": theta, "se_theta": se, "ranks": ranks, "tau2": tau2,
-        "QE": QE, "treatments": treats, "n": n, "T": T,
-        "method": "Network meta-analysis on contrasts"})
+    return RichResult(
+        payload={
+            "theta": theta,
+            "se_theta": se,
+            "ranks": ranks,
+            "tau2": tau2,
+            "QE": QE,
+            "treatments": treats,
+            "n": n,
+            "T": T,
+            "method": "Network meta-analysis on contrasts",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for eegar -- EEG autoregressive modeling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.eegar import eegar
 

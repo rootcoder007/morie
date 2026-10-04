@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.vargpc import variational_gp_classifier
 
-
 X = [[-2.0 + 0.25 * i] for i in range(16)]
 Y = [1 if x[0] > 0.1 else 0 for x in X]
 
@@ -36,8 +35,10 @@ def test_vargpc_basic():
     r = variational_gp_classifier(X, Y, m_inducing=4, lengthscale=1.0, variance=1.0, steps=60)
     Z = [[float(v) for v in z] for z in r["Z"]]
     M = len(Z)
-    K = [[math.exp(-0.5 * sum((a - b) ** 2 for a, b in zip(Z[i], Z[j]))) + (1e-8 if i == j else 0.0)
-          for j in range(M)] for i in range(M)]
+    K = [
+        [math.exp(-0.5 * sum((a - b) ** 2 for a, b in zip(Z[i], Z[j]))) + (1e-8 if i == j else 0.0) for j in range(M)]
+        for i in range(M)
+    ]
     Ki, ldK = _inv_logdet(K)
     S = [[float(v) for v in row] for row in r["S"]]
     m = [float(v) for v in r["m"]]

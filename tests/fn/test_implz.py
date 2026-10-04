@@ -1,7 +1,6 @@
 """Tests for implz.py - Impulse response from I/O."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.implz import implz, impulse_from_io_fn
 
 

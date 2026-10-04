@@ -29,12 +29,16 @@ def alammar_reward_model_training_bt(scores_w, scores_l):
     if rw.shape != rl.shape:
         raise ValueError("need one loser score per winner score.")
     diff = rw - rl
-    losses = np.logaddexp(0.0, -diff)      # -log sigmoid(diff), stable
-    return RichResult(payload={
-        "estimate": float(losses.mean()),
-        "losses": [float(v) for v in losses],
-        "pair_accuracy": float(np.mean(diff > 0)), "n": len(diff),
-        "method": "Bradley-Terry reward loss (Ouyang et al. 2022)"})
+    losses = np.logaddexp(0.0, -diff)  # -log sigmoid(diff), stable
+    return RichResult(
+        payload={
+            "estimate": float(losses.mean()),
+            "losses": [float(v) for v in losses],
+            "pair_accuracy": float(np.mean(diff > 0)),
+            "n": len(diff),
+            "method": "Bradley-Terry reward loss (Ouyang et al. 2022)",
+        }
+    )
 
 
 def cheatsheet():

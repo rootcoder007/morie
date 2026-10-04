@@ -8,14 +8,12 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_hierarchical_np"]
 
 
-def ghosal_hierarchical_np(x=None, a=1.0, b=1.0, n=60, n_sweeps=200,
-                           seed=42):
+def ghosal_hierarchical_np(x=None, a=1.0, b=1.0, n=60, n_sweeps=200, seed=42):
     """theta_i | G ~ G, G ~ DP(alpha, G0), alpha ~ Ga(a, b): alpha is
     updated through the auxiliary-variable Gibbs step (eq. 4.30):
     alpha | eta, K ~ Ga(a + K, b - log eta), eta | alpha ~
@@ -42,15 +40,17 @@ def ghosal_hierarchical_np(x=None, a=1.0, b=1.0, n=60, n_sweeps=200,
     draws = []
     for _ in range(int(n_sweeps)):
         eta = float(rng.beta(max(alpha, 1e-6), float(n)))
-        alpha = float(rng.gamma(a + K, 1.0 / (b - math.log(max(
-            eta, 1e-12)))))
+        alpha = float(rng.gamma(a + K, 1.0 / (b - math.log(max(eta, 1e-12)))))
         draws.append(alpha)
-    post_mean = sum(draws[n_sweeps // 4:]) \
-        / len(draws[n_sweeps // 4:])
-    res = RichResult(payload={"estimate": post_mean,
-                              "K_n": K,
-                              "posterior_positive": post_mean > 0,
-                              "method": "hierarchical DP, alpha Gibbs (GvdV 2017 eq. 4.30)"})
+    post_mean = sum(draws[n_sweeps // 4 :]) / len(draws[n_sweeps // 4 :])
+    res = RichResult(
+        payload={
+            "estimate": post_mean,
+            "K_n": K,
+            "posterior_positive": post_mean > 0,
+            "method": "hierarchical DP, alpha Gibbs (GvdV 2017 eq. 4.30)",
+        }
+    )
     return with_describe_pointer(res, "gh_hier_np")
 
 

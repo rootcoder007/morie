@@ -10,8 +10,7 @@ __all__ = ["sacc", "soft_policy_iteration"]
 _METHOD = "Soft policy iteration (maximum-entropy RL, exact tabular SAC core)"
 
 
-def soft_policy_iteration(P, R, gamma, temp=1.0, tol=1e-12, max_eval=100000,
-                          max_improve=1000):
+def soft_policy_iteration(P, R, gamma, temp=1.0, tol=1e-12, max_eval=100000, max_improve=1000):
     r"""
     Soft policy iteration on an explicit finite MDP.
 
@@ -91,8 +90,7 @@ def soft_policy_iteration(P, R, gamma, temp=1.0, tol=1e-12, max_eval=100000,
             for s in range(S):
                 acc = 0.0
                 for a in range(A):
-                    acc += float(pi[s, a]) * (float(Q[s, a])
-                                              - temp * float(logpi[s, a]))
+                    acc += float(pi[s, a]) * (float(Q[s, a]) - temp * float(logpi[s, a]))
                 V[s] = acc
             delta = 0.0
             for s in range(S):
@@ -137,16 +135,18 @@ def soft_policy_iteration(P, R, gamma, temp=1.0, tol=1e-12, max_eval=100000,
                 h -= float(pi[s, a]) * float(logpi[s, a])
         V[s] = acc
         H[s] = h
-    return RichResult(payload={
-        "estimate": V,
-        "policy": pi,
-        "q": Q,
-        "entropy": H,
-        "n_improve": rounds,
-        "n_eval": n_eval,
-        "converged": converged,
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": V,
+            "policy": pi,
+            "q": Q,
+            "entropy": H,
+            "n_improve": rounds,
+            "n_eval": n_eval,
+            "converged": converged,
+            "method": _METHOD,
+        }
+    )
 
 
 sacc = soft_policy_iteration
@@ -154,6 +154,7 @@ sacc = soft_policy_iteration
 
 def cheatsheet():
     return "sacc(P, R, gamma, temp) -> exact soft policy iteration (Haarnoja et al 2018, Sec 4.1)."
+
 
 # public names resolved by fn/_lazy_map.json
 sac = soft_policy_iteration

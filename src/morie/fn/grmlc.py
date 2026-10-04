@@ -72,8 +72,7 @@ def geron_classification_mlp_output(a_last, W_out, b_out):
     Z = np.atleast_2d(np.asarray(inner["output"], dtype=float))
     if Z.shape[1] < 2:
         raise ValueError(
-            f"a softmax head needs at least 2 classes, got {Z.shape[1]}; "
-            f"use grlogp for the single-logit binary case."
+            f"a softmax head needs at least 2 classes, got {Z.shape[1]}; use grlogp for the single-logit binary case."
         )
     P = _softmax_rows(Z)
     single = np.asarray(inner["output"]).ndim == 1

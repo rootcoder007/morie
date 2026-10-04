@@ -1,7 +1,6 @@
 """Tests for morie.fn.wvasym."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvasym import wvasym
 
 

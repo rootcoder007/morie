@@ -123,9 +123,7 @@ def geron_masked_lm(X, mask_frac=0.15, model=None, vocab_size=None, seed=0, mask
     n_tok = flat.size
     n_mask = max(1, int(round(frac * n_tok)))
     if n_mask >= n_tok:
-        raise ValueError(
-            f"geron_masked_lm: masking {n_mask} of {n_tok} tokens leaves no visible context"
-        )
+        raise ValueError(f"geron_masked_lm: masking {n_mask} of {n_tok} tokens leaves no visible context")
     rng = np.random.default_rng(int(seed))
     positions = np.sort(rng.choice(n_tok, size=n_mask, replace=False))
     targets = flat[positions]
@@ -147,18 +145,14 @@ def geron_masked_lm(X, mask_frac=0.15, model=None, vocab_size=None, seed=0, mask
             raise ValueError(f"geron_masked_lm: model must be callable, got {type(model).__name__}")
         probs = np.atleast_2d(np.asarray(model(masked_view, positions), dtype=float))
         if probs.shape != (n_mask, V):
-            raise ValueError(
-                f"geron_masked_lm: model returned shape {probs.shape}, expected ({n_mask}, {V})"
-            )
+            raise ValueError(f"geron_masked_lm: model returned shape {probs.shape}, expected ({n_mask}, {V})")
         if not np.all(np.isfinite(probs)) or np.any(probs < 0):
             raise ValueError("geron_masked_lm: model returned negative or non-finite probabilities")
         sums = probs.sum(axis=1)
         bad = np.flatnonzero(np.abs(sums - 1.0) > 1e-6)
         if bad.size:
             i = int(bad[0])
-            raise ValueError(
-                f"geron_masked_lm: model returned rows that do not sum to 1 (row {i} sums to {sums[i]:g})"
-            )
+            raise ValueError(f"geron_masked_lm: model returned rows that do not sum to 1 (row {i} sums to {sums[i]:g})")
 
     picked = probs[np.arange(n_mask), targets]
     loss = float(np.mean(-np.log(np.clip(picked, 1e-300, None))))

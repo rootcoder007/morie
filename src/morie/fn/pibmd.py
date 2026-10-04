@@ -99,8 +99,7 @@ def _kl_gaussian(mq, sq2, mp, sp2):
     """KL(q || p) for two normals -- exact when both are normal."""
     sp2 = max(sp2, 1e-300)
     sq2 = max(sq2, 1e-300)
-    return (0.5 * math.log(sp2 / sq2)
-            + (sq2 + (mq - mp) ** 2) / (2.0 * sp2) - 0.5)
+    return 0.5 * math.log(sp2 / sq2) + (sq2 + (mq - mp) ** 2) / (2.0 * sp2) - 0.5
 
 
 def _bandwidth(v):
@@ -198,34 +197,32 @@ def prior_informativeness_bias_diagnostic(samples, prior, n_grid=512):
     q = [float(v) for v in k.vec(samples)]
     nq = len(q)
     if nq < 2:
-        raise ValueError("pibmd: at least two posterior draws are needed to "
-                         "estimate a variance")
+        raise ValueError("pibmd: at least two posterior draws are needed to estimate a variance")
 
     moments_only = False
     if isinstance(prior, dict):
         if "mean" not in prior or "sd" not in prior:
-            raise ValueError("pibmd: a mapping prior must give 'mean' and "
-                             "'sd'")
+            raise ValueError("pibmd: a mapping prior must give 'mean' and 'sd'")
         mp = float(prior["mean"])
         sdp = float(prior["sd"])
         if sdp <= 0.0:
-            raise ValueError("pibmd: the prior standard deviation must be "
-                             "positive")
+            raise ValueError("pibmd: the prior standard deviation must be positive")
         sp2 = sdp * sdp
         p = []
         moments_only = True
     else:
         p = [float(v) for v in k.vec(prior)]
         if len(p) < 2:
-            raise ValueError("pibmd: at least two prior draws are needed -- "
-                             "pass {'mean': ..., 'sd': ...} for a normal "
-                             "prior known only by its moments")
+            raise ValueError(
+                "pibmd: at least two prior draws are needed -- "
+                "pass {'mean': ..., 'sd': ...} for a normal "
+                "prior known only by its moments"
+            )
         mp, sp2 = _moments(p)
 
     mq, sq2 = _moments(q)
     if sp2 <= _EPS:
-        raise ValueError("pibmd: the prior has no spread, so every "
-                         "divergence from it is infinite")
+        raise ValueError("pibmd: the prior has no spread, so every divergence from it is infinite")
 
     kl_g = _kl_gaussian(mq, sq2, mp, sp2)
     kl_kde = float("nan") if moments_only else _kl_kde(q, p, int(n_grid))
@@ -259,44 +256,58 @@ def prior_informativeness_bias_diagnostic(samples, prior, n_grid=512):
             wass += abs(_quantile(qs, u) - _quantile(ps, u))
         wass /= ng
 
-    conflict = (pval if moments_only else pval_emp)
-    verdict = ("prior-data conflict: the posterior mean sits in the tail of "
-               "the prior" if conflict < 0.05 else
-               ("no evidence of prior-data conflict" if conflict == conflict
-                else "conflict not assessable from moments alone"))
+    conflict = pval if moments_only else pval_emp
+    verdict = (
+        "prior-data conflict: the posterior mean sits in the tail of the prior"
+        if conflict < 0.05
+        else (
+            "no evidence of prior-data conflict"
+            if conflict == conflict
+            else "conflict not assessable from moments alone"
+        )
+    )
     if shrink < 0.05:
-        informative = ("the prior dominated -- the data barely narrowed it")
+        informative = "the prior dominated -- the data barely narrowed it"
     elif shrink > 0.95:
         informative = "the data dominated -- the prior is nearly irrelevant"
     else:
         informative = "prior and data both contributed"
 
-    return RichResult(payload={
-        "estimate": kl_g, "kl_divergence": kl_g,
-        "kl_divergence_kde": kl_kde,
-        "kl_divergence_reverse": kl_rev, "kl_symmetric": sym,
-        "shrinkage": shrink, "bias_in_prior_sd": bias,
-        "wasserstein_1": wass,
-        "conflict_p_value": conflict,
-        "conflict_p_value_gaussian": pval,
-        "conflict_p_value_empirical": pval_emp,
-        "posterior_mean": mq, "posterior_var": sq2,
-        "posterior_sd": math.sqrt(max(sq2, 0.0)),
-        "prior_mean": mp, "prior_var": sp2,
-        "prior_sd": math.sqrt(sp2),
-        "n_posterior": nq, "n_prior": len(p),
-        "moments_only": moments_only,
-        "verdict": verdict, "informativeness": informative,
-        "method": "prior-data conflict and prior informativeness: Gaussian "
-                  "and kernel-density KL(posterior || prior), shrinkage, "
-                  "and the tail probability of the posterior mean under the "
-                  "prior (Evans & Moshonov 2006; Silverman 1986)",
-        "note": "kl_divergence is the Gaussian route, which is exact for "
-                "normal pairs and blind to shape; kl_divergence_kde is "
-                "shape-aware and will disagree "
-                "when the posterior is not unimodal -- the disagreement is "
-                "the signal, not an error",
-    })
+    return RichResult(
+        payload={
+            "estimate": kl_g,
+            "kl_divergence": kl_g,
+            "kl_divergence_kde": kl_kde,
+            "kl_divergence_reverse": kl_rev,
+            "kl_symmetric": sym,
+            "shrinkage": shrink,
+            "bias_in_prior_sd": bias,
+            "wasserstein_1": wass,
+            "conflict_p_value": conflict,
+            "conflict_p_value_gaussian": pval,
+            "conflict_p_value_empirical": pval_emp,
+            "posterior_mean": mq,
+            "posterior_var": sq2,
+            "posterior_sd": math.sqrt(max(sq2, 0.0)),
+            "prior_mean": mp,
+            "prior_var": sp2,
+            "prior_sd": math.sqrt(sp2),
+            "n_posterior": nq,
+            "n_prior": len(p),
+            "moments_only": moments_only,
+            "verdict": verdict,
+            "informativeness": informative,
+            "method": "prior-data conflict and prior informativeness: Gaussian "
+            "and kernel-density KL(posterior || prior), shrinkage, "
+            "and the tail probability of the posterior mean under the "
+            "prior (Evans & Moshonov 2006; Silverman 1986)",
+            "note": "kl_divergence is the Gaussian route, which is exact for "
+            "normal pairs and blind to shape; kl_divergence_kde is "
+            "shape-aware and will disagree "
+            "when the posterior is not unimodal -- the disagreement is "
+            "the signal, not an error",
+        }
+    )
 
 
 def _quantile(sorted_v, u):
@@ -311,7 +322,9 @@ def _quantile(sorted_v, u):
 
 
 def cheatsheet():
-    return ("pibmd: prior_informativeness_bias_diagnostic(samples, prior) -> "
-            "KL(posterior||prior) two ways, shrinkage and a prior-data "
-            "conflict p-value (Evans & Moshonov 2006, Bayesian Analysis "
-            "1:893-914)")
+    return (
+        "pibmd: prior_informativeness_bias_diagnostic(samples, prior) -> "
+        "KL(posterior||prior) two ways, shrinkage and a prior-data "
+        "conflict p-value (Evans & Moshonov 2006, Bayesian Analysis "
+        "1:893-914)"
+    )

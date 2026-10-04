@@ -64,12 +64,10 @@ requiring matched covariates that Sec. 1 contrasts this approach with.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sequence_probabilities", "in_identified_set",
-           "identified_set", "sequence_frequencies"]
+__all__ = ["sequence_probabilities", "in_identified_set", "identified_set", "sequence_frequencies"]
 
 _EPS = 1e-9
 
@@ -94,21 +92,18 @@ def sequence_probabilities(beta, gamma, x, alpha, y0, link="logit"):
         raise ValueError("bnshrt: need at least one period")
     b = [float(v) for v in k.vec(beta)]
     if len(b) != len(xs[0]):
-        raise ValueError("bnshrt: beta has %d entries for %d "
-                         "covariates" % (len(b), len(xs[0])))
+        raise ValueError("bnshrt: beta has %d entries for %d covariates" % (len(b), len(xs[0])))
     g = float(gamma)
     a = float(alpha)
     if link not in ("logit", "probit"):
-        raise ValueError("bnshrt: link must be logit or probit, got "
-                         "%r" % (link,))
+        raise ValueError("bnshrt: link must be logit or probit, got %r" % (link,))
     F = _logit if link == "logit" else (lambda z: k.pnorm(z))
     out = {}
-    for code in range(2 ** T):
+    for code in range(2**T):
         seq = [(code >> t) & 1 for t in range(T)]
         p, prev = 1.0, int(y0)
         for t in range(T):
-            idx = sum(xs[t][j] * b[j] for j in range(len(b))) \
-                + g * prev + a
+            idx = sum(xs[t][j] * b[j] for j in range(len(b))) + g * prev + a
             pt = F(idx)
             p *= pt if seq[t] == 1 else (1.0 - pt)
             prev = seq[t]
@@ -124,21 +119,16 @@ def sequence_frequencies(Y):
         raise ValueError("bnshrt: no observations")
     T = len(rows[0])
     if any(len(r) != T for r in rows):
-        raise ValueError("bnshrt: all sequences must have the same "
-                         "length")
+        raise ValueError("bnshrt: all sequences must have the same length")
     if any(v not in (0, 1) for r in rows for v in r):
         raise ValueError("bnshrt: choices must be 0/1")
     counts = {}
     for r in rows:
         counts[r] = counts.get(r, 0) + 1
-    return {seq: counts.get(seq, 0) / float(n)
-            for seq in [tuple((c >> t) & 1 for t in range(T))
-                        for c in range(2 ** T)]}
+    return {seq: counts.get(seq, 0) / float(n) for seq in [tuple((c >> t) & 1 for t in range(T)) for c in range(2**T)]}
 
 
-def in_identified_set(freq, beta, gamma, x, alpha_grid,
-                      y0_values=(0, 1), link="logit", tol=1e-4,
-                      iters=4000):
+def in_identified_set(freq, beta, gamma, x, alpha_grid, y0_values=(0, 1), link="logit", tol=1e-4, iters=4000):
     r"""Is :math:`\theta` consistent with the observed frequencies?
 
     Solves the feasibility problem: do there exist non-negative mixing
@@ -153,8 +143,7 @@ def in_identified_set(freq, beta, gamma, x, alpha_grid,
     cols = []
     for a in alpha_grid:
         for y0 in y0_values:
-            sp = sequence_probabilities(beta, gamma, x, a, y0,
-                                        link=link)
+            sp = sequence_probabilities(beta, gamma, x, a, y0, link=link)
             cols.append(sp)
     if not cols:
         raise ValueError("bnshrt: the alpha grid is empty")
@@ -173,8 +162,7 @@ def in_identified_set(freq, beta, gamma, x, alpha_grid,
     L = 1.0
     for _ in range(60):
         Av = [sum(A[r][j] * v[j] for j in range(m)) for r in range(R)]
-        AtAv = [2.0 * sum(A[r][j] * Av[r] for r in range(R))
-                for j in range(m)]
+        AtAv = [2.0 * sum(A[r][j] * Av[r] for r in range(R)) for j in range(m)]
         nrm = math.sqrt(sum(x * x for x in AtAv))
         if nrm <= _EPS:
             break
@@ -185,22 +173,16 @@ def in_identified_set(freq, beta, gamma, x, alpha_grid,
     # convex problem rather than oscillating
     y_acc, t_acc, prev = list(w), 1.0, list(w)
     for _ in range(int(iters)):
-        pred = [sum(A[r][j] * y_acc[j] for j in range(m))
-                for r in range(R)]
-        grad = [2.0 * sum((pred[r] - target[r]) * A[r][j]
-                          for r in range(R)) for j in range(m)]
-        w = _project_simplex([y_acc[j] - step * grad[j]
-                              for j in range(m)])
+        pred = [sum(A[r][j] * y_acc[j] for j in range(m)) for r in range(R)]
+        grad = [2.0 * sum((pred[r] - target[r]) * A[r][j] for r in range(R)) for j in range(m)]
+        w = _project_simplex([y_acc[j] - step * grad[j] for j in range(m)])
         t_new = 0.5 * (1.0 + math.sqrt(1.0 + 4.0 * t_acc * t_acc))
         mom = (t_acc - 1.0) / t_new
         y_acc = [w[j] + mom * (w[j] - prev[j]) for j in range(m)]
         prev, t_acc = list(w), t_new
-    pred = [sum(A[r][j] * w[j] for j in range(m))
-            for r in range(len(keys))]
-    disc = math.sqrt(sum((pred[r] - target[r]) ** 2
-                         for r in range(len(keys))))
-    return {"discrepancy": disc, "feasible": disc <= float(tol),
-            "weights": w, "fitted": pred, "target": target}
+    pred = [sum(A[r][j] * w[j] for j in range(m)) for r in range(len(keys))]
+    disc = math.sqrt(sum((pred[r] - target[r]) ** 2 for r in range(len(keys))))
+    return {"discrepancy": disc, "feasible": disc <= float(tol), "weights": w, "fitted": pred, "target": target}
 
 
 def _project_simplex(v):
@@ -217,8 +199,7 @@ def _project_simplex(v):
     return [max(x - theta, 0.0) for x in v]
 
 
-def identified_set(Y, x, beta_grid, gamma_grid, alpha_grid,
-                   beta_fixed=None, link="logit", tol=1e-3):
+def identified_set(Y, x, beta_grid, gamma_grid, alpha_grid, beta_fixed=None, link="logit", tol=1e-3):
     r"""The set of :math:`(\beta_1, \gamma)` not ruled out by the data.
 
     Sweeps a grid and keeps the feasible points. The width of the
@@ -230,47 +211,52 @@ def identified_set(Y, x, beta_grid, gamma_grid, alpha_grid,
     for bv in beta_grid:
         for gv in gamma_grid:
             b = [bv] if beta_fixed is None else [bv] + list(beta_fixed)
-            r = in_identified_set(freq, b, gv, x, alpha_grid,
-                                  link=link, tol=tol)
+            r = in_identified_set(freq, b, gv, x, alpha_grid, link=link, tol=tol)
             disc[(bv, gv)] = r["discrepancy"]
             if r["feasible"]:
                 keep.append((bv, gv))
     if not keep:
-        return RichResult(payload={
-            "estimate": None, "set": [], "n_feasible": 0,
-            "discrepancy": disc,
-            "note": "no grid point is feasible at this tolerance -- "
-                    "either the grid misses the identified set or the "
-                    "model is rejected",
-        })
+        return RichResult(
+            payload={
+                "estimate": None,
+                "set": [],
+                "n_feasible": 0,
+                "discrepancy": disc,
+                "note": "no grid point is feasible at this tolerance -- "
+                "either the grid misses the identified set or the "
+                "model is rejected",
+            }
+        )
     bs = [p[0] for p in keep]
     gs = [p[1] for p in keep]
-    return RichResult(payload={
-        "estimate": (sum(bs) / len(bs), sum(gs) / len(gs)),
-        "set": keep, "n_feasible": len(keep),
-        "beta_bounds": (min(bs), max(bs)),
-        "gamma_bounds": (min(gs), max(gs)),
-        "beta_width": max(bs) - min(bs),
-        "gamma_width": max(gs) - min(gs),
-        "point_identified": (max(bs) - min(bs) < _EPS
-                             and max(gs) - min(gs) < _EPS),
-        "discrepancy": disc,
-        "method": "identified set by mixture feasibility over "
-                  "(alpha, y0); Honore & Tamer (2006) Sec. 2.1",
-        "assumes": "nothing about G(alpha | x) or the initial "
-                   "condition distribution",
-    })
+    return RichResult(
+        payload={
+            "estimate": (sum(bs) / len(bs), sum(gs) / len(gs)),
+            "set": keep,
+            "n_feasible": len(keep),
+            "beta_bounds": (min(bs), max(bs)),
+            "gamma_bounds": (min(gs), max(gs)),
+            "beta_width": max(bs) - min(bs),
+            "gamma_width": max(gs) - min(gs),
+            "point_identified": (max(bs) - min(bs) < _EPS and max(gs) - min(gs) < _EPS),
+            "discrepancy": disc,
+            "method": "identified set by mixture feasibility over (alpha, y0); Honore & Tamer (2006) Sec. 2.1",
+            "assumes": "nothing about G(alpha | x) or the initial condition distribution",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bnshrt: short dynamic panel probit/logit. The initial "
-            "conditions problem means f_1(y_1|x,alpha) is unknown, so "
-            "leave BOTH it and G(alpha|x) unrestricted. theta is in "
-            "the identified set iff the observed sequence frequencies "
-            "lie in the CONVEX HULL of the model's sequence "
-            "probabilities over (alpha, y_0) -- a linear feasibility "
-            "problem. Point identification usually FAILS (positive "
-            "width) but the set is often small.")
+    return (
+        "bnshrt: short dynamic panel probit/logit. The initial "
+        "conditions problem means f_1(y_1|x,alpha) is unknown, so "
+        "leave BOTH it and G(alpha|x) unrestricted. theta is in "
+        "the identified set iff the observed sequence frequencies "
+        "lie in the CONVEX HULL of the model's sequence "
+        "probabilities over (alpha, y_0) -- a linear feasibility "
+        "problem. Point identification usually FAILS (positive "
+        "width) but the set is often small."
+    )
 
 
 # compact alias per ledger/NAMING.md

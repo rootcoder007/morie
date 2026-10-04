@@ -28,8 +28,7 @@ def ca_chapter_12_equation_1(x, w):
     """
     value = _ca_crim.morans_i(x, w)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (12.1)"
@@ -41,4 +40,4 @@ def ca_chapter_12_equation_1(x, w):
 
 
 def cheatsheet():
-    return 'ca12e1: I = n sum_ij w_ij (x_i - xbar)(x_j - xbar) / (W sum(x - xbar)^2) [Weisburd et al. 2022, eq. 12.1]'
+    return "ca12e1: I = n sum_ij w_ij (x_i - xbar)(x_j - xbar) / (W sum(x - xbar)^2) [Weisburd et al. 2022, eq. 12.1]"

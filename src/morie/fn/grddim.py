@@ -91,20 +91,14 @@ def geron_ddim_sampling_step(x_t, t, t_prev, eps_pred, alpha_bar, clip_x0=None):
     if np.any(ab <= 0) or np.any(ab > 1):
         raise ValueError("alpha_bar entries must lie in (0, 1].")
     if np.any(np.diff(ab) > 1e-12):
-        raise ValueError(
-            "alpha_bar must be non-increasing in t (it is a cumulative product "
-            "of alphas < 1)."
-        )
+        raise ValueError("alpha_bar must be non-increasing in t (it is a cumulative product of alphas < 1).")
     t = int(t)
     t_prev = int(t_prev)
     for name, v in (("t", t), ("t_prev", t_prev)):
         if not (0 <= v < ab.size):
             raise ValueError(f"{name}={v} out of range for alpha_bar of length {ab.size}.")
     if t_prev >= t:
-        raise ValueError(
-            f"denoising runs backwards, so t_prev ({t_prev}) must be strictly "
-            f"below t ({t})."
-        )
+        raise ValueError(f"denoising runs backwards, so t_prev ({t_prev}) must be strictly below t ({t}).")
 
     ab_t = float(ab[t])
     ab_p = float(ab[t_prev])
@@ -120,8 +114,7 @@ def geron_ddim_sampling_step(x_t, t, t_prev, eps_pred, alpha_bar, clip_x0=None):
 
     return RichResult(
         title="DDIM sampling step",
-        summary_lines=[("t -> t_prev", f"{t} -> {t_prev}"),
-                       ("Signal scale", sig), ("Noise scale", noi)],
+        summary_lines=[("t -> t_prev", f"{t} -> {t_prev}"), ("Signal scale", sig), ("Noise scale", noi)],
         payload={
             "x_prev": x_prev.tolist(),
             "x0_pred": x0.tolist(),

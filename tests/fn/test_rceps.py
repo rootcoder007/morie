@@ -1,7 +1,6 @@
 """Test real_cepstrum (rceps)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rceps import rceps, real_cepstrum
 

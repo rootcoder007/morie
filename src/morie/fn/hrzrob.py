@@ -70,11 +70,17 @@ def simbrate(errors, sizes, target=-0.5):
     se = float(np.sqrt(sse / max(k - 2, 1) / sxx))
     return RichResult(
         title="Empirical convergence exponent for beta",
-        payload={"exponent": slope, "se": se, "intercept": float(inter),
-                 "gap": float(slope - float(target)),
-                 "rsq": float(1.0 - sse / sst) if sst > 0 else float("nan"),
-                 "target": float(target), "k": k, "n": int(ns[-1]),
-                 "method": "Horowitz (2009) eq. (2.26), root-n rate for beta"},
+        payload={
+            "exponent": slope,
+            "se": se,
+            "intercept": float(inter),
+            "gap": float(slope - float(target)),
+            "rsq": float(1.0 - sse / sst) if sst > 0 else float("nan"),
+            "target": float(target),
+            "k": k,
+            "n": int(ns[-1]),
+            "method": "Horowitz (2009) eq. (2.26), root-n rate for beta",
+        },
     )
 
 
@@ -88,7 +94,7 @@ def cheatsheet():
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
     ns = np.array([100.0, 200.0, 400.0, 800.0, 1600.0])
-    err = 3.0 * ns ** -0.5           # exactly the theoretical rate
+    err = 3.0 * ns**-0.5  # exactly the theoretical rate
     r = simbrate(err, ns)
     assert abs(r["exponent"] + 0.5) < 1e-10, r["exponent"]
     assert abs(r["gap"]) < 1e-10

@@ -2,8 +2,6 @@
 
 from math import exp
 
-from morie.fn import _array_core as np
-
 from morie.fn.finalsz import final_epidemic_size
 
 
@@ -11,8 +9,10 @@ def _solve_final_size(R0, s0=1.0, i0=None, tol=1e-14, max_iter=200):
     """Independent bisection of Z = s0 (1 - exp(-R0 (Z + i0)))."""
     if i0 is None:
         i0 = 1.0 - s0
+
     def resid(Z):
         return s0 * (1.0 - exp(-R0 * (Z + i0))) - Z
+
     lo, hi = 0.0, s0
     if i0 == 0.0 and R0 * s0 <= 1.0:
         return 0.0

@@ -15,9 +15,12 @@ __all__ = ["grm_vanraden"]
 # deliberately absent -- VanRaden's third method regresses MM' on A and is not
 # implemented here, so claiming the name would be a lie.
 _METHOD_ALIASES = {
-    1: 1, "G_VR1": 1,
-    2: 2, "G_VR2": 2,
-    3: 3, "G_XX": 3,
+    1: 1,
+    "G_VR1": 1,
+    2: 2,
+    "G_VR2": 2,
+    3: 3,
+    "G_XX": 3,
 }
 
 
@@ -110,10 +113,7 @@ def grm_vanraden(markers, method=1):
     try:
         mode = _METHOD_ALIASES[method]
     except (KeyError, TypeError):
-        raise ValueError(
-            "method must be one of: 1, 2, 3, 'G_VR1', 'G_VR2', 'G_XX' "
-            f"(got {method!r})"
-        ) from None
+        raise ValueError(f"method must be one of: 1, 2, 3, 'G_VR1', 'G_VR2', 'G_XX' (got {method!r})") from None
     n, m = M.shape
     # Allele frequencies (assume coding 0/1/2)
     p = M.mean(axis=0) / 2.0

@@ -1,7 +1,6 @@
 """Tests for otlowrk.ot_low_rank_sinkhorn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otlowrk import ot_low_rank_sinkhorn
 
 

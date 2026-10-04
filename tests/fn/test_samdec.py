@@ -7,7 +7,7 @@ import pytest
 from morie.fn.samdec import dice_loss, focal_loss, sam_mask_decoder, two_way_block
 
 P = [[0.5, -0.2, 0.1], [0.0, 0.3, -0.4]]
-I = [[0.1 * (i + 1), -0.05 * i, 0.2 * ((-1) ** i)] for i in range(6)]   # 2 x 3 grid
+I = [[0.1 * (i + 1), -0.05 * i, 0.2 * ((-1) ** i)] for i in range(6)]  # 2 x 3 grid
 
 
 def _attend(Q, K, V):
@@ -52,8 +52,10 @@ def test_samdec_edge():
     assert d2["shape"] == (4, 6)
     assert d2["logits"] == [[d1["logits"][i // 2][j // 2] for j in range(6)] for i in range(4)]
     p, t = [0.9, 0.2, 0.6], [1.0, 0.0, 0.0]
-    fl = sum(-(0.25 if y else 0.75) * (1 - (q if y else 1 - q)) ** 2 * math.log(q if y else 1 - q)
-             for q, y in zip(p, t)) / 3
+    fl = (
+        sum(-(0.25 if y else 0.75) * (1 - (q if y else 1 - q)) ** 2 * math.log(q if y else 1 - q) for q, y in zip(p, t))
+        / 3
+    )
     assert focal_loss(p, t)["loss"] == pytest.approx(fl, rel=1e-14)
     assert dice_loss(p, t)["dice"] == pytest.approx(2 * 0.9 / (1.7 + 1.0), rel=1e-15)
     with pytest.raises(ValueError):

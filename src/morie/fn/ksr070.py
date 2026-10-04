@@ -60,13 +60,18 @@ def kosorok_score_operator(log_p, eta_path, x, h, t=0.0, step=1e-5):
     raw = (up - dn) / (2.0 * dt)
     mean = float(raw.mean())
     centred = raw - mean
-    return RichResult(payload={
-        "score": raw, "mean": mean, "centred": centred,
-        "mean_after_centring": float(centred.mean()),
-        "range_is": "the nuisance tangent space, which the efficient score is orthogonal to",
-        "centring_note": "scores have mean zero by construction; the raw derivative does not",
-        "n": int(xs.size),
-        "method": "Score operator (Eq. 3.10); maps a nuisance DIRECTION to a score"})
+    return RichResult(
+        payload={
+            "score": raw,
+            "mean": mean,
+            "centred": centred,
+            "mean_after_centring": float(centred.mean()),
+            "range_is": "the nuisance tangent space, which the efficient score is orthogonal to",
+            "centring_note": "scores have mean zero by construction; the raw derivative does not",
+            "n": int(xs.size),
+            "method": "Score operator (Eq. 3.10); maps a nuisance DIRECTION to a score",
+        }
+    )
 
 
 def cheatsheet():

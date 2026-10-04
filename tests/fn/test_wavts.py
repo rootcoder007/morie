@@ -10,9 +10,9 @@ must satisfy -- energy preservation above all -- plus a hand-computed Haar
 transform, which is short enough to write out by hand from the definition.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.wavts import wavelet_time_series
 
 
@@ -58,8 +58,7 @@ def test_energies_are_aligned_with_the_returned_arrays():
     res = wavelet_time_series(x, wavelet="haar", level=3)
     assert np.isclose(res["energies"][0], float(np.sum(res["approximation"] ** 2)))
     for i, d in enumerate(res["details"]):
-        assert np.isclose(res["energies"][i + 1], float(np.sum(d**2))), \
-            f"energies[{i + 1}] does not match details[{i}]"
+        assert np.isclose(res["energies"][i + 1], float(np.sum(d**2))), f"energies[{i + 1}] does not match details[{i}]"
 
 
 def test_details_are_ordered_deepest_first():
@@ -72,7 +71,6 @@ def test_details_are_ordered_deepest_first():
     res = wavelet_time_series(x, wavelet="haar", level=3)
     sizes = [d.size for d in res["details"]]
     assert sizes == sorted(sizes), f"expected coarsest-first, got sizes {sizes}"
-
 
 
 def test_refuses_an_unknown_wavelet_and_runs_db4_natively():
@@ -89,6 +87,7 @@ def test_refuses_an_unknown_wavelet_and_runs_db4_natively():
     for bad in ("sym8", "coif3", "not_a_wavelet"):
         with pytest.raises(ValueError, match="not a native family"):
             wavelet_time_series(x, wavelet=bad)
+
 
 def test_haar_still_works_without_pywavelets():
     """The native path covers Haar, so the base install stays useful."""
@@ -108,8 +107,7 @@ def test_energy_preserved_for_every_family_when_pywavelets_present():
     x = np.random.default_rng(31).standard_normal(256)
     for w in ("haar", "db4", "sym8", "coif3"):
         res = wavelet_time_series(x, wavelet=w, level=3)
-        assert np.isclose(sum(res["energies"]), float(np.sum(x**2)), rtol=1e-9), \
-            f"energy not preserved for {w}"
+        assert np.isclose(sum(res["energies"]), float(np.sum(x**2)), rtol=1e-9), f"energy not preserved for {w}"
 
 
 def test_pywt_and_native_haar_agree():
@@ -122,6 +120,7 @@ def test_pywt_and_native_haar_agree():
     x = np.random.default_rng(37).standard_normal(64)
     viapywt = wavelet_time_series(x, wavelet="haar", level=3)
     import builtins
+
     real = builtins.__import__
 
     def blocked(name, *a, **k):

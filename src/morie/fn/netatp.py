@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Error and attack tolerance of a network."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['netattack', 'network_attack_tolerance']
+__all__ = ["netattack", "network_attack_tolerance"]
 
 
 def netattack(A, strategy="attack", k=1, seed=1):
@@ -48,7 +46,8 @@ def netattack(A, strategy="attack", k=1, seed=1):
         removed = sorted(order[:k])
     elif strategy == "error":
         g = C.Lcg(seed)
-        pool = list(range(n)); removed = []
+        pool = list(range(n))
+        removed = []
         for _ in range(min(k, n)):
             j = int(g.unif() * len(pool))
             if j >= len(pool):
@@ -87,22 +86,30 @@ def netattack(A, strategy="attack", k=1, seed=1):
     for s in range(m):
         dist = [-1] * m
         dist[s] = 0
-        q = [s]; h = 0
+        q = [s]
+        h = 0
         while h < len(q):
-            v = q[h]; h += 1
+            v = q[h]
+            h += 1
             for w in adj[v]:
                 if dist[w] < 0:
                     dist[w] = dist[v] + 1
                     q.append(w)
         for t in range(m):
             if t != s and dist[t] > 0:
-                tot += dist[t]; pairs += 1
-    return RichResult(payload={
-        "s_giant": giant / n if n else float("nan"),
-        "mean_fragment": (sum(rest) / len(rest)) if rest else float("nan"),
-        "diameter": tot / pairs if pairs else float("nan"),
-        "removed": removed, "n_components": len(comps), "n": n,
-        "method": "Error and attack tolerance (Albert-Jeong-Barabasi)"})
+                tot += dist[t]
+                pairs += 1
+    return RichResult(
+        payload={
+            "s_giant": giant / n if n else float("nan"),
+            "mean_fragment": (sum(rest) / len(rest)) if rest else float("nan"),
+            "diameter": tot / pairs if pairs else float("nan"),
+            "removed": removed,
+            "n_components": len(comps),
+            "n": n,
+            "method": "Error and attack tolerance (Albert-Jeong-Barabasi)",
+        }
+    )
 
 
 network_attack_tolerance = netattack

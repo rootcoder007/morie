@@ -35,8 +35,10 @@ def test_spred_basic():
     q = 3
     # unknowns (mu, u0, u1, u2); C'C + diag(0, s2e/s2u, ...)
     rows = [[1.0] + [1.0 if c == j else 0.0 for j in range(q)] for c in cl]
-    A = [[sum(r[a] * r[b] for r in rows) + (s2e / s2u if a == b and a > 0 else 0.0)
-          for b in range(q + 1)] for a in range(q + 1)]
+    A = [
+        [sum(r[a] * r[b] for r in rows) + (s2e / s2u if a == b and a > 0 else 0.0) for b in range(q + 1)]
+        for a in range(q + 1)
+    ]
     sol = _solve(A, [sum(r[a] * t for r, t in zip(rows, y)) for a in range(q + 1)])
     r = shrinkage_predictor_level2(y, cl, s2u, s2e)
     assert r["grand_mean"] == pytest.approx(sol[0], abs=1e-12)

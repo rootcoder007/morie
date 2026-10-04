@@ -1,7 +1,6 @@
 """Tests for hrzaml.horowitz_additive_nonid_link."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzaml import horowitz_additive_nonid_link
 
 

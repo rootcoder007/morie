@@ -56,23 +56,26 @@ def fauzi_theorem_4_5(mrl_hat, mrl_true, t_grid, interval=None):
     else:
         lo, hi = float(interval[0]), float(interval[1])
         if not np.isfinite(lo) or not np.isfinite(hi) or hi <= lo:
-            raise ValueError("the interval must be bounded with lo < hi; "
-                             "uniform consistency is stated on a BOUNDED B.")
+            raise ValueError("the interval must be bounded with lo < hi; uniform consistency is stated on a BOUNDED B.")
         sel = (tg >= lo) & (tg <= hi)
         iv = (lo, hi)
     if not np.any(sel):
         raise ValueError("no grid points fall inside the interval.")
     err = np.abs(mh[sel] - mt[sel])
     k = int(np.nanargmax(err))
-    return RichResult(payload={
-        "sup_error": float(np.nanmax(err)), "argmax_t": float(tg[sel][k]),
-        "interval": iv, "mode": "uniform, almost sure",
-        "requires_bounded_B": True, "stronger_than_pointwise": True,
-        "proof_device": "monotonicity plus pointwise convergence on a finite "
-                        "grid, as in Glivenko-Cantelli",
-        "licenses": "using the whole estimated curve -- a maximum, a crossing "
-                    "point -- not just one pre-chosen t",
-        "method": "Theorem 4.5: strong uniform consistency on a bounded interval"})
+    return RichResult(
+        payload={
+            "sup_error": float(np.nanmax(err)),
+            "argmax_t": float(tg[sel][k]),
+            "interval": iv,
+            "mode": "uniform, almost sure",
+            "requires_bounded_B": True,
+            "stronger_than_pointwise": True,
+            "proof_device": "monotonicity plus pointwise convergence on a finite grid, as in Glivenko-Cantelli",
+            "licenses": "using the whole estimated curve -- a maximum, a crossing point -- not just one pre-chosen t",
+            "method": "Theorem 4.5: strong uniform consistency on a bounded interval",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Test gf2_matrix_add."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gf2ad import gf2_matrix_add
 

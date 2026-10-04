@@ -1,18 +1,17 @@
 """didfst -- DiD with a forest. Source: Wager (2025) ch. 13;
 Callaway & Sant'Anna (2021) JoE 225(2), 200-230."""
+
 import pytest
 
-from morie.fn.didfst import (aggregate_att, did_estimate, did_forest,
-                             group_time_att, panel_differences,
-                             placebo_did)
+from morie.fn.didfst import aggregate_att, did_estimate, did_forest, group_time_att, panel_differences, placebo_did
 
 
 def panel():
     # 4 units, 4 periods, H = 2. Treated units gain exactly 3.
-    return ([[1.0, 2.0, 6.0, 7.0],
-             [2.0, 3.0, 7.0, 8.0],
-             [0.0, 1.0, 2.0, 3.0],
-             [5.0, 6.0, 7.0, 8.0]], [1.0, 1.0, 0.0, 0.0])
+    return (
+        [[1.0, 2.0, 6.0, 7.0], [2.0, 3.0, 7.0, 8.0], [0.0, 1.0, 2.0, 3.0], [5.0, 6.0, 7.0, 8.0]],
+        [1.0, 1.0, 0.0, 0.0],
+    )
 
 
 def test_panel_differences_is_post_mean_minus_pre_mean():
@@ -50,8 +49,7 @@ def test_forest_returns_one_estimate_per_row():
     for i in range(60):
         d = 1.0 if i % 2 == 0 else 0.0
         base = float(i) / 10.0
-        Y.append([base, base + 1.0, base + 2.0 + 3.0 * d,
-                  base + 3.0 + 3.0 * d])
+        Y.append([base, base + 1.0, base + 2.0 + 3.0 * d, base + 3.0 + 3.0 * d])
         D.append(d)
         X.append([float(i % 7) / 7.0])
     r = did_forest(Y, D, X, 2, n_trees=10, min_leaf=5, seed=0)
@@ -60,43 +58,38 @@ def test_forest_returns_one_estimate_per_row():
 
 
 def test_placebo_is_zero_when_pre_trends_are_parallel():
-    Y = [[1.0, 2.0, 3.0, 9.0], [2.0, 3.0, 4.0, 10.0],
-         [0.0, 1.0, 2.0, 3.0], [5.0, 6.0, 7.0, 8.0]]
+    Y = [[1.0, 2.0, 3.0, 9.0], [2.0, 3.0, 4.0, 10.0], [0.0, 1.0, 2.0, 3.0], [5.0, 6.0, 7.0, 8.0]]
     r = placebo_did(Y, [1.0, 1.0, 0.0, 0.0], 3, split=1)
     assert r["estimate"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_placebo_detects_a_planted_pre_trend():
-    Y = [[1.0, 3.0, 5.0, 9.0], [2.0, 4.0, 6.0, 10.0],
-         [0.0, 1.0, 2.0, 3.0], [5.0, 6.0, 7.0, 8.0]]
+    Y = [[1.0, 3.0, 5.0, 9.0], [2.0, 4.0, 6.0, 10.0], [0.0, 1.0, 2.0, 3.0], [5.0, 6.0, 7.0, 8.0]]
     r = placebo_did(Y, [1.0, 1.0, 0.0, 0.0], 3, split=1)
     assert abs(r["estimate"]) > 0.5
 
 
 def test_group_time_att_is_the_double_difference():
-    Y = [[0.0, 1.0, 5.0, 6.0],      # cohort g = 3
-         [1.0, 2.0, 6.0, 7.0],
-         [0.0, 1.0, 2.0, 3.0],      # never treated
-         [2.0, 3.0, 4.0, 5.0]]
+    Y = [
+        [0.0, 1.0, 5.0, 6.0],  # cohort g = 3
+        [1.0, 2.0, 6.0, 7.0],
+        [0.0, 1.0, 2.0, 3.0],  # never treated
+        [2.0, 3.0, 4.0, 5.0],
+    ]
     gt = group_time_att(Y, [3, 3, None, None])
     assert gt["att"][(3, 3)]["att"] == pytest.approx(3.0, abs=1e-12)
     assert gt["att"][(3, 4)]["att"] == pytest.approx(3.0, abs=1e-12)
 
 
 def test_not_yet_treated_is_the_larger_comparison_group():
-    Y = [[0.0, 1.0, 5.0, 6.0], [0.0, 1.0, 2.0, 7.0],
-         [0.0, 1.0, 2.0, 3.0], [2.0, 3.0, 4.0, 5.0]]
-    a = group_time_att(Y, [3, 4, None, None],
-                       comparison="never-treated")
-    b = group_time_att(Y, [3, 4, None, None],
-                       comparison="not-yet-treated")
-    assert (b["att"][(3, 3)]["n_control"]
-            > a["att"][(3, 3)]["n_control"])
+    Y = [[0.0, 1.0, 5.0, 6.0], [0.0, 1.0, 2.0, 7.0], [0.0, 1.0, 2.0, 3.0], [2.0, 3.0, 4.0, 5.0]]
+    a = group_time_att(Y, [3, 4, None, None], comparison="never-treated")
+    b = group_time_att(Y, [3, 4, None, None], comparison="not-yet-treated")
+    assert b["att"][(3, 3)]["n_control"] > a["att"][(3, 3)]["n_control"]
 
 
 def test_aggregate_event_profile_keys_are_event_times():
-    Y = [[0.0, 1.0, 5.0, 6.0], [1.0, 2.0, 6.0, 7.0],
-         [0.0, 1.0, 2.0, 3.0], [2.0, 3.0, 4.0, 5.0]]
+    Y = [[0.0, 1.0, 5.0, 6.0], [1.0, 2.0, 6.0, 7.0], [0.0, 1.0, 2.0, 3.0], [2.0, 3.0, 4.0, 5.0]]
     gt = group_time_att(Y, [3, 3, None, None])
     prof = aggregate_att(gt, scheme="event")["profile"]
     assert sorted(prof) == [0, 1]

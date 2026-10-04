@@ -1,7 +1,6 @@
 """Tests for rboot -- bootstrap reliability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import ESRes
 from morie.fn.rboot import bootstrap_reliability
 

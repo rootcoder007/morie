@@ -9,8 +9,7 @@ from .scmdf import scm_definition
 __all__ = ["abduction_modification_prediction"]
 
 
-def abduction_modification_prediction(evidence, equations, exogenous_names, do, query,
-                                      u_support=None):
+def abduction_modification_prediction(evidence, equations, exogenous_names, do, query, u_support=None):
     r"""Pearl's three-step counterfactual algorithm.
 
     1. **Abduction** -- update the exogenous variables U to be
@@ -105,11 +104,13 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
     if u_support is not None and len(support) ** len(unames) > 200_000:
         raise ValueError(
             "discrete abduction over %d^%d candidates is too large; "
-            "pass a smaller u_support" % (len(support), len(unames)))
+            "pass a smaller u_support" % (len(support), len(unames))
+        )
 
     solutions = []
     if len(support) ** len(unames) <= 200_000:
         import itertools
+
         for cand in itertools.product(support, repeat=len(unames)):
             if max(abs(x) for x in residuals(list(cand))) < 1e-9:
                 solutions.append(list(cand))
@@ -123,8 +124,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
             u_hat = optimize.fsolve(residuals, u0)
         else:
             u_hat = optimize.least_squares(residuals, u0).x
-        u_hat = (list(u_hat._flat()) if hasattr(u_hat, "_flat")
-                 else list(u_hat))
+        u_hat = list(u_hat._flat()) if hasattr(u_hat, "_flat") else list(u_hat)
         resid = max(abs(r) for r in residuals(u_hat))
         solutions = [u_hat]
         method = "gradient abduction"
@@ -148,8 +148,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
             "residual": resid,
             "do": dict(do),
             "query": query,
-            "method": "Abduction-action-prediction (Pearl 2000, Sec. 1.4; %s)"
-                      % method,
+            "method": "Abduction-action-prediction (Pearl 2000, Sec. 1.4; %s)" % method,
         }
     )
 

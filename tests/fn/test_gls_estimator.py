@@ -36,7 +36,6 @@ def test_gls_estimator_edge():
 # of whatever the tests above already check.
 
 import doctest as _doctest
-
 import importlib as _importlib
 
 # the package also exports a function of this name, so the import
@@ -46,7 +45,7 @@ _doctest_module = _importlib.import_module("morie.fn.gls_estimator")
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

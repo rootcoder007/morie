@@ -1,7 +1,5 @@
 """Tests for small_area_mb_mean.small_area_mb_mean."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.small_area_mb_mean import (
     small_area_mb_mean,
 )

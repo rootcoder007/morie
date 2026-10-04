@@ -53,31 +53,36 @@ def mm_regression_estimator(X, y, n_subsets=200, seed=0):
     from ._robust import TUKEY_C_95, mm_regression, prepare_design, tukey_weight
 
     A, yv = prepare_design(X, y)
-    beta, scale, beta_s, conv = mm_regression(A, yv, n_subsets=n_subsets,
-                                              seed=seed)
+    beta, scale, beta_s, conv = mm_regression(A, yv, n_subsets=n_subsets, seed=seed)
     r = yv - A @ beta
     u = r / scale if scale > 0 else r
     w = tukey_weight(u, TUKEY_C_95)
     # asymptotic sandwich at the MM solution
     psi = u * w
-    dpsi_mean = float(np.mean((1 - (u / TUKEY_C_95) ** 2)
-                              * (1 - 5 * (u / TUKEY_C_95) ** 2)
-                              * (np.abs(u) < TUKEY_C_95)))
-    kappa = float(np.mean(psi ** 2)) / max(dpsi_mean ** 2, 1e-12)
+    dpsi_mean = float(np.mean((1 - (u / TUKEY_C_95) ** 2) * (1 - 5 * (u / TUKEY_C_95) ** 2) * (np.abs(u) < TUKEY_C_95)))
+    kappa = float(np.mean(psi**2)) / max(dpsi_mean**2, 1e-12)
     XtX_inv = np.linalg.pinv(A.T @ A)
-    se = np.sqrt(np.maximum(np.diag(XtX_inv) * kappa * scale ** 2, 0.0))
-    return RichResult(payload={
-        "beta": beta, "scale": float(scale), "beta_initial": beta_s,
-        "residuals": r, "se": se, "weights": w,
-        "breakdown": 0.5, "gaussian_efficiency": 0.95,
-        "scale_held_fixed": True,
-        "why_fixed": "re-estimating the scale in the efficiency stage would "
-                     "let outliers back into it through the larger c, and "
-                     "the breakdown would fall back toward zero",
-        "converged": bool(conv),
-        "n": int(A.shape[0]), "p": int(A.shape[1]),
-        "method": "MM-estimator (Yohai 1987): S-scale at c = 1.5476, "
-                  "M-step at c = 4.685, scale fixed"})
+    se = np.sqrt(np.maximum(np.diag(XtX_inv) * kappa * scale**2, 0.0))
+    return RichResult(
+        payload={
+            "beta": beta,
+            "scale": float(scale),
+            "beta_initial": beta_s,
+            "residuals": r,
+            "se": se,
+            "weights": w,
+            "breakdown": 0.5,
+            "gaussian_efficiency": 0.95,
+            "scale_held_fixed": True,
+            "why_fixed": "re-estimating the scale in the efficiency stage would "
+            "let outliers back into it through the larger c, and "
+            "the breakdown would fall back toward zero",
+            "converged": bool(conv),
+            "n": int(A.shape[0]),
+            "p": int(A.shape[1]),
+            "method": "MM-estimator (Yohai 1987): S-scale at c = 1.5476, M-step at c = 4.685, scale fixed",
+        }
+    )
 
 
 def cheatsheet():

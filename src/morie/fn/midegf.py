@@ -62,7 +62,7 @@ def midegf(b, t, m, nu_com=None):
         raise ValueError("need b >= 0 and t > 0")
     lam = (1.0 + 1.0 / m) * b / t
     lam = min(max(lam, 0.0), 1.0)
-    df_old = float("inf") if lam == 0 else (m - 1) / lam ** 2
+    df_old = float("inf") if lam == 0 else (m - 1) / lam**2
     nu_obs = None
     if nu_com is None:
         df = df_old
@@ -74,16 +74,17 @@ def midegf(b, t, m, nu_com=None):
         if math.isinf(df_old):
             df = nu_obs
         else:
-            df = df_old * nu_obs / (df_old + nu_obs) \
-                if df_old + nu_obs > 0 else 0.0
-    return RichResult(payload={
-        "df": df,
-        "df_old": df_old,
-        "nu_obs": nu_obs,
-        "lambda_": lam,
-        "m": m,
-        "method": "Barnard-Rubin (1999) adjusted MI df",
-    })
+            df = df_old * nu_obs / (df_old + nu_obs) if df_old + nu_obs > 0 else 0.0
+    return RichResult(
+        payload={
+            "df": df,
+            "df_old": df_old,
+            "nu_obs": nu_obs,
+            "lambda_": lam,
+            "m": m,
+            "method": "Barnard-Rubin (1999) adjusted MI df",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

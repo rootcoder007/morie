@@ -66,12 +66,10 @@ doi:10.1111/j.1541-0420.2005.00377.x.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["clever_covariate", "fluctuate", "tmle_point",
-           "ltmle", "influence_curve_se"]
+__all__ = ["clever_covariate", "fluctuate", "tmle_point", "ltmle", "influence_curve_se"]
 
 _EPS = 1e-12
 
@@ -95,16 +93,16 @@ def clever_covariate(A, g, rule=1.0):
     a = [float(v) for v in k.vec(A)]
     gg = [float(v) for v in k.vec(g)]
     if len(a) != len(gg):
-        raise ValueError("ltmle: %d treatments but %d propensities"
-                         % (len(a), len(gg)))
+        raise ValueError("ltmle: %d treatments but %d propensities" % (len(a), len(gg)))
     if any(v <= 0.0 or v >= 1.0 for v in gg):
-        raise ValueError("ltmle: propensities must lie strictly "
-                         "inside (0,1)")
-    h = [(1.0 if a[i] == float(rule) else 0.0) / gg[i]
-         for i in range(len(a))]
-    return {"H": h, "max": max(h), "mean": sum(h) / len(h),
-            "note": "a large clever covariate IS the positivity "
-                    "violation showing itself"}
+        raise ValueError("ltmle: propensities must lie strictly inside (0,1)")
+    h = [(1.0 if a[i] == float(rule) else 0.0) / gg[i] for i in range(len(a))]
+    return {
+        "H": h,
+        "max": max(h),
+        "mean": sum(h) / len(h),
+        "note": "a large clever covariate IS the positivity violation showing itself",
+    }
 
 
 def fluctuate(Q, H, Y, iters=100, tol=1e-10):
@@ -132,9 +130,7 @@ def fluctuate(Q, H, Y, iters=100, tol=1e-10):
         if abs(step) < float(tol):
             break
     upd = [_expit(off[i] + eps * h[i]) for i in range(n)]
-    return {"epsilon": eps, "Q_star": upd,
-            "score": sum(h[i] * (y[i] - upd[i])
-                         for i in range(n)) / n}
+    return {"epsilon": eps, "Q_star": upd, "score": sum(h[i] * (y[i] - upd[i]) for i in range(n)) / n}
 
 
 def tmle_point(A, Y, Q1, Q0, g):
@@ -149,33 +145,34 @@ def tmle_point(A, Y, Q1, Q0, g):
     q0 = [float(v) for v in k.vec(Q0)]
     gg = [float(v) for v in k.vec(g)]
     n = len(a)
-    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i])
-         for i in range(n)]
+    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i]) for i in range(n)]
     qa = [q1[i] if a[i] == 1.0 else q0[i] for i in range(n)]
     fl = fluctuate(qa, H, y)
     e = fl["epsilon"]
-    q1s = [_expit(_logit(q1[i]) + e * (1.0 / gg[i]))
-           for i in range(n)]
-    q0s = [_expit(_logit(q0[i]) - e * (1.0 / (1.0 - gg[i])))
-           for i in range(n)]
+    q1s = [_expit(_logit(q1[i]) + e * (1.0 / gg[i])) for i in range(n)]
+    q0s = [_expit(_logit(q0[i]) - e * (1.0 / (1.0 - gg[i]))) for i in range(n)]
     psi = sum(q1s[i] - q0s[i] for i in range(n)) / n
     d = []
     for i in range(n):
         qas = q1s[i] if a[i] == 1.0 else q0s[i]
         d.append(H[i] * (y[i] - qas) + q1s[i] - q0s[i] - psi)
     m = sum(d) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in d) / n ** 2)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "epsilon": e,
-        "se": se, "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "mean_eic": m, "solves_eic": abs(m) < 1e-6,
-        "max_clever_covariate": max(abs(v) for v in H),
-        "initial_plugin": sum(q1[i] - q0[i] for i in range(n)) / n,
-        "method": "TMLE with a logistic submodel and clever "
-                  "covariate; van der Laan & Rose (2018) Chap. 4",
-        "note": "consistent if EITHER the outcome regression OR the "
-                "treatment mechanism is consistent",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in d) / n**2)
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "epsilon": e,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "mean_eic": m,
+            "solves_eic": abs(m) < 1e-6,
+            "max_clever_covariate": max(abs(v) for v in H),
+            "initial_plugin": sum(q1[i] - q0[i] for i in range(n)) / n,
+            "method": "TMLE with a logistic submodel and clever covariate; van der Laan & Rose (2018) Chap. 4",
+            "note": "consistent if EITHER the outcome regression OR the treatment mechanism is consistent",
+        }
+    )
 
 
 def ltmle(Q_seq, H_seq, Y_seq):
@@ -189,8 +186,7 @@ def ltmle(Q_seq, H_seq, Y_seq):
     if T < 1:
         raise ValueError("ltmle: the sequence is empty")
     if len(H_seq) != T:
-        raise ValueError("ltmle: %d fits but %d clever covariates"
-                         % (T, len(H_seq)))
+        raise ValueError("ltmle: %d fits but %d clever covariates" % (T, len(H_seq)))
     eps, current = [], [float(v) for v in k.vec(Y_seq[-1])]
     stars = []
     for t in range(T - 1, -1, -1):
@@ -199,13 +195,16 @@ def ltmle(Q_seq, H_seq, Y_seq):
         current = fl["Q_star"]
         stars.append(current)
     psi = sum(current) / len(current)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi,
-        "epsilons": list(reversed(eps)),
-        "Q_star": list(reversed(stars)), "T": T,
-        "method": "LTMLE by backward sequential fluctuation; van der "
-                  "Laan & Rose (2018) Chap. 4",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "epsilons": list(reversed(eps)),
+            "Q_star": list(reversed(stars)),
+            "T": T,
+            "method": "LTMLE by backward sequential fluctuation; van der Laan & Rose (2018) Chap. 4",
+        }
+    )
 
 
 def influence_curve_se(d):
@@ -219,16 +218,18 @@ def influence_curve_se(d):
 
 
 def cheatsheet():
-    return ("tlltmle: write the g-formula as ITERATED conditional "
-            "expectations, fit them with machine learning, then TARGET "
-            "each one. Every step is a one-dimensional logistic "
-            "fluctuation with the initial fit as OFFSET and the clever "
-            "covariate H = I(A = d)/g as the covariate; the MLE for "
-            "epsilon makes the update solve the efficient influence "
-            "curve equation. DOUBLE ROBUST: consistent if EITHER the "
-            "outcome regressions OR the treatment mechanism is right "
-            "-- not both. The clever covariate is an inverse "
-            "probability, so a large one IS the positivity violation.")
+    return (
+        "tlltmle: write the g-formula as ITERATED conditional "
+        "expectations, fit them with machine learning, then TARGET "
+        "each one. Every step is a one-dimensional logistic "
+        "fluctuation with the initial fit as OFFSET and the clever "
+        "covariate H = I(A = d)/g as the covariate; the MLE for "
+        "epsilon makes the update solve the efficient influence "
+        "curve equation. DOUBLE ROBUST: consistent if EITHER the "
+        "outcome regressions OR the treatment mechanism is right "
+        "-- not both. The clever covariate is an inverse "
+        "probability, so a large one IS the positivity violation."
+    )
 
 
 # compact alias per ledger/NAMING.md

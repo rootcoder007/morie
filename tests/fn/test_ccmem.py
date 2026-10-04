@@ -1,7 +1,6 @@
 """Tests for ccmem.cross_classified_membership."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ccmem import cross_classified_membership
 
 

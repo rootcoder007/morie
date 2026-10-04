@@ -11,5 +11,6 @@ def test_b111_basic():
 
 def test_b111_edge():
     import pytest
+
     with pytest.raises(ValueError, match="dataset size"):
         burkov_lm_ch1_bce_gradients([0.5], [1.0], [[2.0]], N=7)

@@ -1,12 +1,10 @@
 """Tests for intlpa.interior_point_lp."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.intlpa import interior_point_lp
-
 import math
 
 import pytest
+
+from morie.fn.intlpa import interior_point_lp
 
 
 def test_intlpa_basic():

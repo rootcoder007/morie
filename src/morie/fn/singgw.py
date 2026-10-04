@@ -93,11 +93,18 @@ def single_step_h(A, G, genotyped, w=0.0):
         Gw = (1.0 - w) * G + w * A[np.ix_(gset, gset)]
         H = Gw[np.ix_(inv_idx, inv_idx)]
         Hinv = np.linalg.inv(Gw)[np.ix_(inv_idx, inv_idx)]
-        return RichResult(payload={
-            "estimate": H, "Hinv": Hinv, "Gw": Gw,
-            "genotyped": gset, "w": w, "n": int(n), "n_genotyped": int(q),
-            "method": "Single-step H (Christensen-Lund 2010 eq. 4/8; ssGBLUP)",
-        })
+        return RichResult(
+            payload={
+                "estimate": H,
+                "Hinv": Hinv,
+                "Gw": Gw,
+                "genotyped": gset,
+                "w": w,
+                "n": int(n),
+                "n_genotyped": int(q),
+                "method": "Single-step H (Christensen-Lund 2010 eq. 4/8; ssGBLUP)",
+            }
+        )
     idx = gset + others
     # permuted A with genotyped first
     Ap = A[np.ix_(idx, idx)]
@@ -107,15 +114,18 @@ def single_step_h(A, G, genotyped, w=0.0):
     A22 = Ap[q:, q:]
     Gw = (1.0 - w) * G + w * A11
     A11inv = np.linalg.inv(A11)
-    B = A11inv @ A12          # q x (n-q)
+    B = A11inv @ A12  # q x (n-q)
     H11 = Gw
     H12 = Gw @ B
     H21 = B.T @ Gw
     H22 = A22 + B.T @ (Gw - A11) @ B
-    Hp = np.concatenate([
-        np.concatenate([H11, H12], axis=1),
-        np.concatenate([H21, H22], axis=1),
-    ], axis=0)
+    Hp = np.concatenate(
+        [
+            np.concatenate([H11, H12], axis=1),
+            np.concatenate([H21, H22], axis=1),
+        ],
+        axis=0,
+    )
     # undo the permutation
     inv_idx = [0] * n
     for pos, i in enumerate(idx):
@@ -127,11 +137,18 @@ def single_step_h(A, G, genotyped, w=0.0):
     Hinvp = Ainv.copy()
     Hinvp[:q, :q] = Hinvp[:q, :q] + Gwinv - A11inv
     Hinv = Hinvp[np.ix_(inv_idx, inv_idx)]
-    return RichResult(payload={
-        "estimate": H, "Hinv": Hinv, "Gw": Gw,
-        "genotyped": gset, "w": w, "n": int(n), "n_genotyped": int(q),
-        "method": "Single-step H (Christensen-Lund 2010 eq. 4/8; ssGBLUP)",
-    })
+    return RichResult(
+        payload={
+            "estimate": H,
+            "Hinv": Hinv,
+            "Gw": Gw,
+            "genotyped": gset,
+            "w": w,
+            "n": int(n),
+            "n_genotyped": int(q),
+            "method": "Single-step H (Christensen-Lund 2010 eq. 4/8; ssGBLUP)",
+        }
+    )
 
 
 def cheatsheet():

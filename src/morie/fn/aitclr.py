@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['clr', 'aitchison_clr', 'aitchisonclr']
+__all__ = ["clr", "aitchison_clr", "aitchisonclr"]
 
 
 def clr(x):
@@ -35,9 +35,15 @@ def clr(x):
         raise ValueError("compositions must be strictly positive")
     lg = sum(math.log(v) for v in x) / len(x)
     z = [math.log(v) - lg for v in x]
-    return RichResult(payload={
-        "clr": z, "geomean": math.exp(lg), "D": len(x), "sum_check": sum(z),
-        "method": "Centred log-ratio transform"})
+    return RichResult(
+        payload={
+            "clr": z,
+            "geomean": math.exp(lg),
+            "D": len(x),
+            "sum_check": sum(z),
+            "method": "Centred log-ratio transform",
+        }
+    )
 
 
 aitchison_clr = clr
@@ -45,4 +51,4 @@ aitchisonclr = clr
 
 
 def cheatsheet():
-    return 'aitclr: Centred log-ratio transform of a composition.'
+    return "aitclr: Centred log-ratio transform of a composition."

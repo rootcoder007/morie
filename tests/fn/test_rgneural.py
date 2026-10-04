@@ -1,7 +1,6 @@
 """Tests for rgneural.rangayyan_neural_decode."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_neural_decode
 
 

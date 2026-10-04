@@ -68,19 +68,23 @@ def wasserman_white_huber(X, y, f=None):
     fitted = X @ beta if f is None else np.asarray(f(X, beta), dtype=float)
     e = y - fitted
     A = X.T @ X / n
-    B = (X * (e ** 2)[:, None]).T @ X / n
+    B = (X * (e**2)[:, None]).T @ X / n
     Ainv = np.linalg.inv(A)
     V = Ainv @ B @ Ainv / n
     rse = np.sqrt(np.diag(V))
-    return RichResult(payload={
-        "estimate": float(rse[0]),
-        "beta": [float(v) for v in beta],
-        "robust_se": [float(v) for v in rse],
-        "covariance": [float(v) for v in V.ravel()],
-        "bread": [float(v) for v in A.ravel()],
-        "meat": [float(v) for v in B.ravel()],
-        "n": int(n), "p": int(p),
-        "method": "White-Huber HC0 sandwich A^-1 B A^-1 / n"})
+    return RichResult(
+        payload={
+            "estimate": float(rse[0]),
+            "beta": [float(v) for v in beta],
+            "robust_se": [float(v) for v in rse],
+            "covariance": [float(v) for v in V.ravel()],
+            "bread": [float(v) for v in A.ravel()],
+            "meat": [float(v) for v in B.ravel()],
+            "n": int(n),
+            "p": int(p),
+            "method": "White-Huber HC0 sandwich A^-1 B A^-1 / n",
+        }
+    )
 
 
 def cheatsheet():

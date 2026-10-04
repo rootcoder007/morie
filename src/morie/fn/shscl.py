@@ -27,8 +27,13 @@ def _schoenfeld(t, e, X, beta):
         # weighted covariance of the covariates over the risk set: this is
         # the per-event-time contribution to the information matrix, and
         # it is exactly Var(s_j) under the null.
-        V = [[sum(w[m] * (X[risk[m]][a] - xbar[a]) * (X[risk[m]][b] - xbar[b])
-                  for m in range(len(risk))) / sw for b in range(p)] for a in range(p)]
+        V = [
+            [
+                sum(w[m] * (X[risk[m]][a] - xbar[a]) * (X[risk[m]][b] - xbar[b]) for m in range(len(risk))) / sw
+                for b in range(p)
+            ]
+            for a in range(p)
+        ]
         times.append(t[i])
         res.append([X[i][k] - xbar[k] for k in range(p)])
         var.append(V)
@@ -171,20 +176,21 @@ def scaled_schoenfeld_residual(time, event, X, transform="km"):
     gbar = sum(g) / d
     gc = [v - gbar for v in g]
 
-    scaled = [[beta[k] + d * sum(Vbl[k][m] * res[j][m] for m in range(p)) for k in range(p)]
-              for j in range(d)]
+    scaled = [[beta[k] + d * sum(Vbl[k][m] * res[j][m] for m in range(p)) for k in range(p)] for j in range(d)]
     U = [sum(gc[j] * res[j][k] for j in range(d)) for k in range(p)]
-    A = [[sum(gc[j] * gc[j] * var[j][a][b] for j in range(d)) for b in range(p)]
-         for a in range(p)]
-    C = [[sum(gc[j] * var[j][a][b] for j in range(d)) for b in range(p)]
-         for a in range(p)]
+    A = [[sum(gc[j] * gc[j] * var[j][a][b] for j in range(d)) for b in range(p)] for a in range(p)]
+    C = [[sum(gc[j] * var[j][a][b] for j in range(d)) for b in range(p)] for a in range(p)]
     Iinf = [[sum(var[j][a][b] for j in range(d)) for b in range(p)] for a in range(p)]
     # efficient variance of the theta-score: beta-hat is estimated too
-    IC = [[float(v) for v in col] for col in np.linalg.solve(
-        np.asarray(Iinf, dtype=float), np.asarray(C, dtype=float).T).T.tolist()] \
-        if p > 1 else [[C[0][0] / Iinf[0][0]]]
-    VU = [[A[a][b] - sum(IC[a][m] * C[b][m] for m in range(p)) for b in range(p)]
-          for a in range(p)]
+    IC = (
+        [
+            [float(v) for v in col]
+            for col in np.linalg.solve(np.asarray(Iinf, dtype=float), np.asarray(C, dtype=float).T).T.tolist()
+        ]
+        if p > 1
+        else [[C[0][0] / Iinf[0][0]]]
+    )
+    VU = [[A[a][b] - sum(IC[a][m] * C[b][m] for m in range(p)) for b in range(p)] for a in range(p)]
     stat, pv = [], []
     for k in range(p):
         vk = VU[k][k]

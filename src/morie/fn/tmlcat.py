@@ -125,11 +125,21 @@ def tmlecat(Y, A, Q, G, ref=1, gbound=0.025, level=0.95):
         cse.append(s)
         lo.append(d - z * s)
         hi.append(d + z * s)
-    return RichResult(payload={
-        "psi": psi, "se": ses, "contrast": con, "contrast_se": cse,
-        "ci_lower": lo, "ci_upper": hi, "min_g": mg, "ref": float(ref),
-        "n": float(n), "L": float(L),
-        "method": "TMLE for a categorical treatment, one fluctuation per level"})
+    return RichResult(
+        payload={
+            "psi": psi,
+            "se": ses,
+            "contrast": con,
+            "contrast_se": cse,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "min_g": mg,
+            "ref": float(ref),
+            "n": float(n),
+            "L": float(L),
+            "method": "TMLE for a categorical treatment, one fluctuation per level",
+        }
+    )
 
 
 tmle_categorical_outcome = tmlecat

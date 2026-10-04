@@ -72,22 +72,18 @@ doi:10.1109/MC.2009.263. The explicit-feedback factorisation this is
 adapted from.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["preference", "confidence", "als_step", "fit_wrmf",
-           "cost", "explain"]
+__all__ = ["preference", "confidence", "als_step", "fit_wrmf", "cost", "explain"]
 
 _EPS = 1e-12
 
 
 def preference(r):
     r""":math:`p_{ui} = 1` if :math:`r_{ui} > 0`, else 0."""
-    return [[1.0 if float(v) > 0.0 else 0.0 for v in row]
-            for row in k.mat(r)]
+    return [[1.0 if float(v) > 0.0 else 0.0 for v in row] for row in k.mat(r)]
 
 
 def confidence(r, alpha=40.0):
@@ -104,8 +100,7 @@ def _solve(A, b):
     for c in range(n):
         p = max(range(c, n), key=lambda i: abs(M[i][c]))
         if abs(M[p][c]) < 1e-14:
-            raise ValueError("impFB: the normal equations are "
-                             "singular; increase lambda")
+            raise ValueError("impFB: the normal equations are singular; increase lambda")
         M[c], M[p] = M[p], M[c]
         d = M[c][c]
         M[c] = [v / d for v in M[c]]
@@ -126,8 +121,7 @@ def als_step(Y, C_row, p_row, lam, fast=True):
     n, f = len(Y), len(Y[0])
     lm = float(lam)
     if fast:
-        A = [[sum(Y[i][a] * Y[i][b] for i in range(n))
-              for b in range(f)] for a in range(f)]
+        A = [[sum(Y[i][a] * Y[i][b] for i in range(n)) for b in range(f)] for a in range(f)]
         nz = [i for i in range(n) if C_row[i] != 1.0]
         for i in nz:
             w = C_row[i] - 1.0
@@ -135,12 +129,10 @@ def als_step(Y, C_row, p_row, lam, fast=True):
                 for b in range(f):
                     A[a][b] += w * Y[i][a] * Y[i][b]
     else:
-        A = [[sum(C_row[i] * Y[i][a] * Y[i][b] for i in range(n))
-              for b in range(f)] for a in range(f)]
+        A = [[sum(C_row[i] * Y[i][a] * Y[i][b] for i in range(n)) for b in range(f)] for a in range(f)]
     for a in range(f):
         A[a][a] += lm
-    rhs = [sum(C_row[i] * p_row[i] * Y[i][a] for i in range(n))
-           for a in range(f)]
+    rhs = [sum(C_row[i] * p_row[i] * Y[i][a] for i in range(n)) for a in range(f)]
     return _solve(A, rhs)
 
 
@@ -151,16 +143,13 @@ def cost(R, X, Y, alpha=40.0, lam=0.1):
     tot = 0.0
     for u in range(len(P)):
         for i in range(len(P[0])):
-            e = P[u][i] - sum(X[u][f] * Y[i][f]
-                              for f in range(len(X[0])))
+            e = P[u][i] - sum(X[u][f] * Y[i][f] for f in range(len(X[0])))
             tot += C[u][i] * e * e
-    reg = sum(v * v for r in X for v in r) + \
-        sum(v * v for r in Y for v in r)
+    reg = sum(v * v for r in X for v in r) + sum(v * v for r in Y for v in r)
     return tot + float(lam) * reg
 
 
-def fit_wrmf(R, f=8, alpha=40.0, lam=0.1, iters=15, seed=0,
-             fast=True):
+def fit_wrmf(R, f=8, alpha=40.0, lam=0.1, iters=15, seed=0, fast=True):
     r"""Alternating least squares over all pairs."""
     M = [[float(v) for v in row] for row in k.mat(R)]
     m, n = len(M), len(M[0])
@@ -170,10 +159,8 @@ def fit_wrmf(R, f=8, alpha=40.0, lam=0.1, iters=15, seed=0,
         raise ValueError("impFB: implicit counts cannot be negative")
     P, C = preference(M), confidence(M, alpha)
     rng = np.random.default_rng(seed)
-    X = [[float(rng.uniform()) * 0.1 for _ in range(int(f))]
-         for _ in range(m)]
-    Y = [[float(rng.uniform()) * 0.1 for _ in range(int(f))]
-         for _ in range(n)]
+    X = [[float(rng.uniform()) * 0.1 for _ in range(int(f))] for _ in range(m)]
+    Y = [[float(rng.uniform()) * 0.1 for _ in range(int(f))] for _ in range(n)]
     hist = []
     for _ in range(int(iters)):
         for u in range(m):
@@ -183,15 +170,20 @@ def fit_wrmf(R, f=8, alpha=40.0, lam=0.1, iters=15, seed=0,
             col_p = [P[u][i] for u in range(m)]
             Y[i] = als_step(X, col_c, col_p, lam, fast)
         hist.append(cost(M, X, Y, alpha, lam))
-    return RichResult(payload={
-        "estimate": (X, Y), "X": X, "Y": Y, "cost_history": hist,
-        "final_cost": hist[-1] if hist else float("nan"),
-        "f": int(f), "alpha": float(alpha), "lambda": float(lam),
-        "method": "weighted ALS over all m*n pairs; Hu, Koren & "
-                  "Volinsky (2008) eqs. (3)-(4)",
-        "note": "the numerical value of implicit feedback is "
-                "CONFIDENCE, not preference",
-    })
+    return RichResult(
+        payload={
+            "estimate": (X, Y),
+            "X": X,
+            "Y": Y,
+            "cost_history": hist,
+            "final_cost": hist[-1] if hist else float("nan"),
+            "f": int(f),
+            "alpha": float(alpha),
+            "lambda": float(lam),
+            "method": "weighted ALS over all m*n pairs; Hu, Koren & Volinsky (2008) eqs. (3)-(4)",
+            "note": "the numerical value of implicit feedback is CONFIDENCE, not preference",
+        }
+    )
 
 
 def explain(Y, C_row, p_row, i, lam=0.1):
@@ -201,32 +193,32 @@ def explain(Y, C_row, p_row, i, lam=0.1):
     item contributes a term.
     """
     n, f = len(Y), len(Y[0])
-    A = [[sum(C_row[t] * Y[t][a] * Y[t][b] for t in range(n))
-          for b in range(f)] for a in range(f)]
+    A = [[sum(C_row[t] * Y[t][a] * Y[t][b] for t in range(n)) for b in range(f)] for a in range(f)]
     for a in range(f):
         A[a][a] += float(lam)
-    W = [_solve(A, [1.0 if b == a else 0.0 for b in range(f)])
-         for a in range(f)]
+    W = [_solve(A, [1.0 if b == a else 0.0 for b in range(f)]) for a in range(f)]
     yi = Y[int(i)]
     v = [sum(W[a][b] * yi[b] for b in range(f)) for a in range(f)]
-    terms = {j: C_row[j] * p_row[j]
-             * sum(v[a] * Y[j][a] for a in range(f))
-             for j in range(n) if p_row[j] > 0.0}
-    return {"contributions": terms, "prediction": sum(terms.values()),
-            "note": "each past item's share of the predicted "
-                    "preference"}
+    terms = {j: C_row[j] * p_row[j] * sum(v[a] * Y[j][a] for a in range(f)) for j in range(n) if p_row[j] > 0.0}
+    return {
+        "contributions": terms,
+        "prediction": sum(terms.values()),
+        "note": "each past item's share of the predicted preference",
+    }
 
 
 def cheatsheet():
-    return ("impFB: implicit feedback measures CONFIDENCE, not "
-            "preference -- the favourite film is watched once, the "
-            "merely-liked series weekly. Split into binary p_ui and "
-            "c_ui = 1 + alpha r_ui (alpha = 40). The cost sums over "
-            "ALL m*n pairs, because zeros are missing evidence rather "
-            "than negatives, which rules out SGD and forces ALS. "
-            "Y'C^u Y = Y'Y + Y'(C^u - I)Y makes each update "
-            "O(f^2 n_u + f^3), linear in the input. Substituting the "
-            "update into the prediction yields per-item explanations.")
+    return (
+        "impFB: implicit feedback measures CONFIDENCE, not "
+        "preference -- the favourite film is watched once, the "
+        "merely-liked series weekly. Split into binary p_ui and "
+        "c_ui = 1 + alpha r_ui (alpha = 40). The cost sums over "
+        "ALL m*n pairs, because zeros are missing evidence rather "
+        "than negatives, which rules out SGD and forces ALS. "
+        "Y'C^u Y = Y'Y + Y'(C^u - I)Y makes each update "
+        "O(f^2 n_u + f^3), linear in the input. Substituting the "
+        "update into the prediction yields per-item explanations."
+    )
 
 
 # compact alias per ledger/NAMING.md

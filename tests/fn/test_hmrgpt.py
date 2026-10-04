@@ -1,7 +1,6 @@
 """Tests for hmrgpt.geron_regression_mlp_pytorch."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrgpt import geron_regression_mlp_pytorch
 
 

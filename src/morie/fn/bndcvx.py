@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["bound_convex_estimator"]
 
 
-def bound_convex_estimator(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
-                           bounds=None):
+def bound_convex_estimator(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None):
     r"""Sharp bounds on a linear target parameter by linear
     programming, the computational engine of Mogstad, Santos and
     Torgovitsky (2018).
@@ -69,8 +68,7 @@ def bound_convex_estimator(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
     cv = np.asarray(c, dtype=float).ravel()
     k = cv.size
     if k < 1:
-        raise ValueError("the target functional needs at least one "
-                         "coefficient.")
+        raise ValueError("the target functional needs at least one coefficient.")
     bx = [(0.0, 1.0)] * k if bounds is None else list(bounds)
     if len(bx) != k:
         raise ValueError(f"bounds has {len(bx)} pairs for {k} coordinates.")
@@ -93,26 +91,28 @@ def bound_convex_estimator(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
     hi = linprog(-cv, bounds=bx, method="highs", **kw)
     infeasible = lo.status == 2 or hi.status == 2
     unbounded = lo.status == 3 or hi.status == 3
-    return RichResult(payload={
-        "lower": float(lo.fun) if lo.status == 0 else
-        (-np.inf if lo.status == 3 else np.nan),
-        "upper": float(-hi.fun) if hi.status == 0 else
-        (np.inf if hi.status == 3 else np.nan),
-        "width": (float(-hi.fun) - float(lo.fun)
-                  if lo.status == 0 and hi.status == 0 else np.nan),
-        "argmin": lo.x if lo.status == 0 else None,
-        "argmax": hi.x if hi.status == 0 else None,
-        "feasible": not infeasible, "bounded": not unbounded,
-        "sharp": True,
-        "sharpness_note": "the interval IS the identified set for the "
-                          "target: the feasible set is convex, so every "
-                          "value between the optima is attained",
-        "infeasibility_note": "an empty feasible set is a specification "
-                              "REJECTION -- the maintained assumptions "
-                              "contradict the data moments",
-        "k": int(k), "n_inequalities": int(n_ub), "n_equalities": int(n_eq),
-        "method": "Sharp LP bounds on a linear target "
-                  "(Mogstad-Santos-Torgovitsky 2018)"})
+    return RichResult(
+        payload={
+            "lower": float(lo.fun) if lo.status == 0 else (-np.inf if lo.status == 3 else np.nan),
+            "upper": float(-hi.fun) if hi.status == 0 else (np.inf if hi.status == 3 else np.nan),
+            "width": (float(-hi.fun) - float(lo.fun) if lo.status == 0 and hi.status == 0 else np.nan),
+            "argmin": lo.x if lo.status == 0 else None,
+            "argmax": hi.x if hi.status == 0 else None,
+            "feasible": not infeasible,
+            "bounded": not unbounded,
+            "sharp": True,
+            "sharpness_note": "the interval IS the identified set for the "
+            "target: the feasible set is convex, so every "
+            "value between the optima is attained",
+            "infeasibility_note": "an empty feasible set is a specification "
+            "REJECTION -- the maintained assumptions "
+            "contradict the data moments",
+            "k": int(k),
+            "n_inequalities": int(n_ub),
+            "n_equalities": int(n_eq),
+            "method": "Sharp LP bounds on a linear target (Mogstad-Santos-Torgovitsky 2018)",
+        }
+    )
 
 
 def cheatsheet():

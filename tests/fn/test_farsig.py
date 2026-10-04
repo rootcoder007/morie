@@ -1,7 +1,6 @@
 """Tests for farsig.farrington_signal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.farsig import farrington_signal
 
 

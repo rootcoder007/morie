@@ -2897,6 +2897,7 @@ def cheatsheet() -> str:
         "molecular_properties(smiles); morgan_environments(smiles); sa_score(smiles, fragment_scores)."
     )
 
+
 # alias kept from the retired placeholder of the same name
 maccs_keys = maccs_fingerprint
 

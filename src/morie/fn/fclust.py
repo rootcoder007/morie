@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Functional clustering by k-means on B-spline coefficients."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['fdaclust', 'functional_clustering']
+__all__ = ["fdaclust", "functional_clustering"]
 
 
 def fdaclust(Y, K=2, basis=None, iters=25):
@@ -44,7 +42,8 @@ def fdaclust(Y, K=2, basis=None, iters=25):
     literature (arXiv:1803.00276).
     """
     Y = C.mat(Y)
-    n = len(Y); K = int(K)
+    n = len(Y)
+    K = int(K)
     if n < K or K < 1:
         raise ValueError("need at least K curves")
     if basis is None:
@@ -68,11 +67,18 @@ def fdaclust(Y, K=2, basis=None, iters=25):
             mem = [coef[i] for i in range(n) if labels[i] == j]
             if mem:
                 centers[j] = [sum(m[k] for m in mem) / len(mem) for k in range(p)]
-    wss = sum(sum((coef[i][k] - centers[labels[i]][k]) ** 2 for k in range(p))
-              for i in range(n))
-    return RichResult(payload={
-        "labels": labels, "centers": centers, "coef": coef, "wss": wss,
-        "K": K, "n": n, "method": "Functional clustering (k-means on B-spline coefficients)"})
+    wss = sum(sum((coef[i][k] - centers[labels[i]][k]) ** 2 for k in range(p)) for i in range(n))
+    return RichResult(
+        payload={
+            "labels": labels,
+            "centers": centers,
+            "coef": coef,
+            "wss": wss,
+            "K": K,
+            "n": n,
+            "method": "Functional clustering (k-means on B-spline coefficients)",
+        }
+    )
 
 
 functional_clustering = fdaclust

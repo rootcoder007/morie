@@ -120,9 +120,7 @@ def esl_em_gmm(X, k=2, max_iter=200, tol=1e-6, reg=1e-6, seed=0):
         resp = np.exp(logp - lse[:, None])
         path.append(ll)
         if ll + 1e-9 < prev:
-            raise RuntimeError(
-                f"EM log-likelihood decreased ({prev:.10g} -> {ll:.10g}); this is a bug"
-            )
+            raise RuntimeError(f"EM log-likelihood decreased ({prev:.10g} -> {ll:.10g}); this is a bug")
         if abs(ll - prev) < tol:
             converged = True
             prev = ll
@@ -141,13 +139,19 @@ def esl_em_gmm(X, k=2, max_iter=200, tol=1e-6, reg=1e-6, seed=0):
         summary_lines=[("n", n), ("p", p), ("k", k), ("loglik", prev), ("iterations", it)],
         warnings=[] if converged else [f"did not converge in {max_iter} iterations"],
         payload={
-            "pi": pi, "mu": mu, "sigma": sigma, "resp": resp,
+            "pi": pi,
+            "mu": mu,
+            "sigma": sigma,
+            "resp": resp,
             "labels": resp.argmax(axis=1),
-            "loglik": float(prev), "loglik_path": np.asarray(path),
-            "n_iter": int(it), "converged": bool(converged),
+            "loglik": float(prev),
+            "loglik_path": np.asarray(path),
+            "n_iter": int(it),
+            "converged": bool(converged),
             "aic": float(2 * n_par - 2 * prev),
             "bic": float(n_par * np.log(n) - 2 * prev),
-            "n": int(n), "k": int(k),
+            "n": int(n),
+            "k": int(k),
             "method": "esl_em_gmm",
         },
     )

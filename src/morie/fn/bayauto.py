@@ -70,10 +70,7 @@ def autocorrelation_check(chain, max_lag=None):
     x = np.asarray(chain, dtype=float).ravel()
     n = x.size
     if np.asarray(chain).ndim > 1 and np.asarray(chain).shape[0] != n:
-        raise ValueError(
-            f"chain must be 1-D (a single chain in sampling order); got shape "
-            f"{np.asarray(chain).shape}"
-        )
+        raise ValueError(f"chain must be 1-D (a single chain in sampling order); got shape {np.asarray(chain).shape}")
     if n < 4:
         raise ValueError(f"need at least 4 draws to estimate autocorrelation; got {n}")
     if not np.all(np.isfinite(x)):

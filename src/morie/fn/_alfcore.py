@@ -97,16 +97,14 @@ def lnorm(v, g=None, b=None, eps=1e-5):
 # t a length-3 translation.  T o x = R x + t.
 def rapply(T, x):
     R, t = T[0], T[1]
-    return [R[r][0] * x[0] + R[r][1] * x[1] + R[r][2] * x[2] + t[r]
-            for r in range(3)]
+    return [R[r][0] * x[0] + R[r][1] * x[1] + R[r][2] * x[2] + t[r] for r in range(3)]
 
 
 def rinv(T):
     """Inverse frame: (R', -R' t).  T^-1 o x = R'(x - t)."""
     R, t = T[0], T[1]
     Rt = [[R[0][r], R[1][r], R[2][r]] for r in range(3)]
-    ti = [-(Rt[r][0] * t[0] + Rt[r][1] * t[1] + Rt[r][2] * t[2])
-          for r in range(3)]
+    ti = [-(Rt[r][0] * t[0] + Rt[r][1] * t[1] + Rt[r][2] * t[2]) for r in range(3)]
     return [Rt, ti]
 
 
@@ -121,8 +119,7 @@ def rcompose(A, B):
     """Frame composition A o B, i.e. (A o B) o x = A o (B o x)."""
     RA, tA = A[0], A[1]
     RB, tB = B[0], B[1]
-    R = [[sum(RA[i][k] * RB[k][j] for k in range(3)) for j in range(3)]
-         for i in range(3)]
+    R = [[sum(RA[i][k] * RB[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
     return [R, rapply(A, tB)]
 
 
@@ -165,5 +162,4 @@ def onehotnb(x, bins):
 
 def xent(y, p, eps=1e-12):
     """Cross entropy -sum(y log p) for one distribution."""
-    return -sum(y[k] * math.log(p[k] if p[k] > eps else eps)
-                for k in range(len(y)))
+    return -sum(y[k] * math.log(p[k] if p[k] > eps else eps) for k in range(len(y)))

@@ -1,7 +1,6 @@
 """Tests for bnscnf.bound_confidence_set."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnscnf import bound_confidence_set
 
 

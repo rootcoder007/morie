@@ -68,13 +68,10 @@ def bfgsupd(H, s, y, inverse=True):
         raise ValueError("curvature condition y's > 0 is violated")
     if inverse:
         rho = 1.0 / ys
-        L = [[(1.0 if i == j else 0.0) - rho * s[i] * y[j]
-              for j in range(p)] for i in range(p)]
-        R = [[(1.0 if i == j else 0.0) - rho * y[i] * s[j]
-              for j in range(p)] for i in range(p)]
+        L = [[(1.0 if i == j else 0.0) - rho * s[i] * y[j] for j in range(p)] for i in range(p)]
+        R = [[(1.0 if i == j else 0.0) - rho * y[i] * s[j] for j in range(p)] for i in range(p)]
         T = C.matmul(C.matmul(L, M), R)
-        N = [[T[i][j] + rho * s[i] * s[j] for j in range(p)]
-             for i in range(p)]
+        N = [[T[i][j] + rho * s[i] * s[j] for j in range(p)] for i in range(p)]
         sec = C.matvec(N, y)
         gap = max(abs(sec[i] - s[i]) for i in range(p))
     else:
@@ -83,14 +80,20 @@ def bfgsupd(H, s, y, inverse=True):
         sBs = sum(s[i] * Bs[i] for i in range(p))
         if sBs <= 0.0:
             raise ValueError("s'Bs must be strictly positive")
-        N = [[M[i][j] - Bs[i] * Bs[j] / sBs + y[i] * y[j] / ys
-              for j in range(p)] for i in range(p)]
+        N = [[M[i][j] - Bs[i] * Bs[j] / sBs + y[i] * y[j] / ys for j in range(p)] for i in range(p)]
         sec = C.matvec(N, s)
         gap = max(abs(sec[i] - y[i]) for i in range(p))
-    return RichResult(payload={
-        "M": N, "rho": rho, "curvature": ys, "secant": gap, "p": p,
-        "inverse": bool(inverse),
-        "method": "BFGS rank-two secant update (Broyden-Fletcher-Goldfarb-Shanno 1970)"})
+    return RichResult(
+        payload={
+            "M": N,
+            "rho": rho,
+            "curvature": ys,
+            "secant": gap,
+            "p": p,
+            "inverse": bool(inverse),
+            "method": "BFGS rank-two secant update (Broyden-Fletcher-Goldfarb-Shanno 1970)",
+        }
+    )
 
 
 bfgs = bfgsupd

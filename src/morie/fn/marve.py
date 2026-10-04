@@ -82,11 +82,12 @@ def ma_robust_variance_est(yi, X, cluster, w=None, small_sample=True):
         raise ValueError("working weights must be positive.")
     groups = np.unique(g)
     G = groups.size
-    if G <= p:
+    if p >= G:
         raise ValueError(
             f"robust variance estimation needs more clusters than "
             f"parameters: {G} studies for {p} coefficients. The asymptotics "
-            "are in the number of STUDIES, not effect sizes.")
+            "are in the number of STUDIES, not effect sizes."
+        )
     XtWX = A.T @ (A * wv[:, None])
     bread = np.linalg.pinv(XtWX)
     beta = bread @ (A.T @ (wv * y))
@@ -102,7 +103,7 @@ def ma_robust_variance_est(yi, X, cluster, w=None, small_sample=True):
             Hg = Xg @ bread @ (Xg * wg[:, None]).T
             I_H = np.eye(Hg.shape[0]) - Hg
             vals, vecs = np.linalg.eigh((I_H + I_H.T) / 2)
-            vals = np.where(vals > 1e-10, vals ** -0.5, 0.0)
+            vals = np.where(vals > 1e-10, vals**-0.5, 0.0)
             adj = vecs @ np.diag(vals) @ vecs.T
             eg = adj @ eg
         u = Xg.T @ (wg * eg)
@@ -122,24 +123,34 @@ def ma_robust_variance_est(yi, X, cluster, w=None, small_sample=True):
                 cj = (bread @ (Xg.T * wg))[j]
                 q = float(cj @ cj)
                 num += q
-                den += q ** 2
-            df[j] = (num ** 2 / den) if den > 0 else float(G - 1)
+                den += q**2
+            df[j] = (num**2 / den) if den > 0 else float(G - 1)
     t = np.divide(beta, se, out=np.full(p, np.nan), where=se > 0)
-    pval = np.array([2 * stats.t.sf(abs(t[j]), max(df[j], 1.0))
-                     for j in range(p)])
-    return RichResult(payload={
-        "beta": beta, "se": se, "t": t, "df": df, "p": pval, "vcov": V,
-        "n_clusters": int(G), "n_effects": int(m),
-        "small_sample": bool(small_sample),
-        "df_warning": ("Tipton's rule of thumb: df below 4 makes the test "
-                       "untrustworthy regardless of the correction"
-                       if np.any(df < 4) else None),
-        "asymptotics_note": "consistent as the number of STUDIES grows, "
-                            "whatever the within-study correlation is; the "
-                            "working weights affect efficiency, never "
-                            "validity",
-        "method": "Robust variance estimation for dependent effects "
-                  "(Hedges-Tipton-Johnson 2010; Tipton 2015 correction)"})
+    pval = np.array([2 * stats.t.sf(abs(t[j]), max(df[j], 1.0)) for j in range(p)])
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "t": t,
+            "df": df,
+            "p": pval,
+            "vcov": V,
+            "n_clusters": int(G),
+            "n_effects": int(m),
+            "small_sample": bool(small_sample),
+            "df_warning": (
+                "Tipton's rule of thumb: df below 4 makes the test untrustworthy regardless of the correction"
+                if np.any(df < 4)
+                else None
+            ),
+            "asymptotics_note": "consistent as the number of STUDIES grows, "
+            "whatever the within-study correlation is; the "
+            "working weights affect efficiency, never "
+            "validity",
+            "method": "Robust variance estimation for dependent effects "
+            "(Hedges-Tipton-Johnson 2010; Tipton 2015 correction)",
+        }
+    )
 
 
 def cheatsheet():

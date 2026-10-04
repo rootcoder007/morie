@@ -1,7 +1,6 @@
 """Tests for jowink.joseph_winkler_interval_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jowink import joseph_winkler_interval_score
 
 

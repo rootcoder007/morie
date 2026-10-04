@@ -44,13 +44,17 @@ def population_attributable(pe, RR, se_RR=None, alpha=0.05):
     Unio Internationalis Contra Cancrum, 9(3), 531--541.
     """
     res = _af(float(RR), float(pe), alpha=float(alpha), se_RR=se_RR)
-    return RichResult(payload={
-        "estimate": float(res.estimate),
-        "se": float(res.se) if res.se is not None else float("nan"),
-        "ci_lower": float(res.ci_lower) if res.ci_lower is not None else float("nan"),
-        "ci_upper": float(res.ci_upper) if res.ci_upper is not None else float("nan"),
-        "pe": float(pe), "RR": float(RR),
-        "method": "Levin population attributable fraction"})
+    return RichResult(
+        payload={
+            "estimate": float(res.estimate),
+            "se": float(res.se) if res.se is not None else float("nan"),
+            "ci_lower": float(res.ci_lower) if res.ci_lower is not None else float("nan"),
+            "ci_upper": float(res.ci_upper) if res.ci_upper is not None else float("nan"),
+            "pe": float(pe),
+            "RR": float(RR),
+            "method": "Levin population attributable fraction",
+        }
+    )
 
 
 def cheatsheet():

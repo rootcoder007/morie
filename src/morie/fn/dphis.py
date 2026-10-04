@@ -88,12 +88,16 @@ def dp_histogram(x, bins=10, epsilon=1.0, range_=None, seed=None, nonneg=True):
     rel = np.maximum(raw, 0.0) if nonneg else raw
     return RichResult(
         title="DP histogram",
-        summary_lines=[("epsilon", epsilon), ("bins", int(counts.size)),
-                       ("noise scale", scale)],
+        summary_lines=[("epsilon", epsilon), ("bins", int(counts.size)), ("noise scale", scale)],
         payload={
-            "release": rel, "raw": raw, "true_counts": counts,
-            "edges": edges, "noise_scale": scale, "sensitivity": sens,
-            "epsilon": epsilon, "method": "dp_histogram",
+            "release": rel,
+            "raw": raw,
+            "true_counts": counts,
+            "edges": edges,
+            "noise_scale": scale,
+            "sensitivity": sens,
+            "epsilon": epsilon,
+            "method": "dp_histogram",
         },
     )
 

@@ -84,13 +84,9 @@ def geron_backprop_through_time(loss_grads, hiddens, inputs, W_h=None, h_init=No
     H = np.atleast_2d(np.asarray(hiddens, dtype=float))
     X = np.atleast_2d(np.asarray(inputs, dtype=float))
     if G.shape != H.shape:
-        raise ValueError(
-            f"loss_grads shape {G.shape} must match hiddens shape {H.shape}."
-        )
+        raise ValueError(f"loss_grads shape {G.shape} must match hiddens shape {H.shape}.")
     if X.shape[0] != H.shape[0]:
-        raise ValueError(
-            f"inputs has {X.shape[0]} time steps but hiddens has {H.shape[0]}."
-        )
+        raise ValueError(f"inputs has {X.shape[0]} time steps but hiddens has {H.shape[0]}.")
     if H.size == 0:
         raise ValueError("no time steps supplied.")
     for name, arr in (("loss_grads", G), ("hiddens", H), ("inputs", X)):
@@ -98,10 +94,7 @@ def geron_backprop_through_time(loss_grads, hiddens, inputs, W_h=None, h_init=No
             raise ValueError(f"{name} contains non-finite values.")
     T, hdim = H.shape
     if np.any(np.abs(H) > 1.0 + 1e-9):
-        raise ValueError(
-            "hiddens fall outside [-1, 1]; this routine assumes a tanh RNN, so "
-            "1 - h^2 would be negative."
-        )
+        raise ValueError("hiddens fall outside [-1, 1]; this routine assumes a tanh RNN, so 1 - h^2 would be negative.")
     if W_h is None:
         Wh = None
     else:

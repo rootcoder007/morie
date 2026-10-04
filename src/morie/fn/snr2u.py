@@ -57,12 +57,17 @@ def snijders_bosker_r2_level2(sigma2_e1, sigma2_u1, sigma2_e0, sigma2_u0, n=1.0)
     t0 = e0 / nn + u0
     if t0 <= 0.0:
         raise ValueError("snijders_bosker_r2_level2: baseline total variance must be positive")
-    return RichResult(payload={
-        "estimate": float(1.0 - t1 / t0), "total1": t1, "total0": t0,
-        "n": nn,
-        "limit_large_n": float(1.0 - u1 / u0) if u0 > 0.0 else float("nan"),
-        "reduction": float(t0 - t1),
-        "method": "R2_2 = 1 - (s2_e1/n+s2_u1)/(s2_e0/n+s2_u0) [Snijders & Bosker 1994]"})
+    return RichResult(
+        payload={
+            "estimate": float(1.0 - t1 / t0),
+            "total1": t1,
+            "total0": t0,
+            "n": nn,
+            "limit_large_n": float(1.0 - u1 / u0) if u0 > 0.0 else float("nan"),
+            "reduction": float(t0 - t1),
+            "method": "R2_2 = 1 - (s2_e1/n+s2_u1)/(s2_e0/n+s2_u0) [Snijders & Bosker 1994]",
+        }
+    )
 
 
 # CANONICAL TEST

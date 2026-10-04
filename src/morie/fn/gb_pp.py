@@ -50,8 +50,11 @@ def gibbons_pp_plot(x, F0=None):
     dep = float(np.max(np.maximum(np.abs(emp - Fv), np.abs(Fv - lo))))
     return RichResult(
         payload={
-            "theoretical": Fv, "empirical": emp, "max_departure": dep,
-            "ks_equivalent": dep, "n": int(n),
+            "theoretical": Fv,
+            "empirical": emp,
+            "max_departure": dep,
+            "ks_equivalent": dep,
+            "n": int(n),
             "method": "P-P pairs (F0(X_(i)), i/n); max departure = D_n (Ch. 4.8)",
         }
     )

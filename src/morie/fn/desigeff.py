@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Design effect of a weighted, clustered sample (Kish)."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -82,16 +80,18 @@ def design_effect(y, weights=None, cluster=None):
         rho = 0.0
     deff_c = 1.0 + (m0 - 1.0) * rho
     deff = deff_w * deff_c
-    return RichResult(payload={
-        "estimate": deff,
-        "deff_w": deff_w,
-        "deff_c": deff_c,
-        "rho": rho,
-        "m0": m0,
-        "n_eff": n / deff if deff > 0.0 else float("nan"),
-        "n": n,
-        "method": "Kish design effect: unequal weighting x clustering",
-    })
+    return RichResult(
+        payload={
+            "estimate": deff,
+            "deff_w": deff_w,
+            "deff_c": deff_c,
+            "rho": rho,
+            "m0": m0,
+            "n_eff": n / deff if deff > 0.0 else float("nan"),
+            "n": n,
+            "method": "Kish design effect: unequal weighting x clustering",
+        }
+    )
 
 
 def cheatsheet():

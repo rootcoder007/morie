@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_fwt import gibbons_fligner_wolfe_test
 
 
@@ -24,14 +23,11 @@ def test_gb_fwt_basic():
     # ---- Independent recomputation of every reported quantity ----
     n1 = 20
     mt = 20
-    rr = (n1 // 2) + 1          # default median index
+    rr = (n1 // 2) + 1  # default median index
     t = sorted([float(v) for v in ctrl])[rr - 1]
     w_indep = sum(1 for v in [float(v) for v in treat_a] if v < t)
     den = math.comb(n1 + mt, mt)
-    pmf_indep = [
-        math.comb(n1 + mt - rr - j, mt - j) * math.comb(rr + j - 1, j) / den
-        for j in range(mt + 1)
-    ]
+    pmf_indep = [math.comb(n1 + mt - rr - j, mt - j) * math.comb(rr + j - 1, j) / den for j in range(mt + 1)]
     pvalue_indep = min(1.0, sum(pmf_indep[: w_indep + 1]))
     mean_indep = sum(j * p for j, p in enumerate(pmf_indep))
 
@@ -79,10 +75,7 @@ def test_gb_fwt_edge():
     all_treat = [float(v) for v in treat_a] + [float(v) for v in treat_b]
     w_indep = sum(1 for v in all_treat if v < t)
     den = math.comb(n1 + mt, mt)
-    pmf_indep = [
-        math.comb(n1 + mt - r - j, mt - j) * math.comb(r + j - 1, j) / den
-        for j in range(mt + 1)
-    ]
+    pmf_indep = [math.comb(n1 + mt - r - j, mt - j) * math.comb(r + j - 1, j) / den for j in range(mt + 1)]
     pvalue_indep = min(1.0, sum(pmf_indep[: w_indep + 1]))
 
     assert int(result["statistic"]) == w_indep

@@ -11,9 +11,9 @@ noise variance of contaminated high-frequency returns is recovered to
 a few percent while naive realized variance is two orders off.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bt632 import boot_632_estimator
 from morie.fn.btbias import boot_bias_estimator
 from morie.fn.btciratio import boot_ci_ratio
@@ -25,7 +25,6 @@ from morie.fn.volgkr import vol_garman_klass
 from morie.fn.volharm import vol_harmonic
 from morie.fn.volnois import vol_noise_variance
 from morie.fn.volpark import vol_parkinson
-
 
 # ------------------------------------------------- bootstrap
 
@@ -67,12 +66,10 @@ def test_bootstrap_bias_finds_the_mle_variance_bias_with_the_right_sign():
     # ~ 0.005 here, so the tolerance is three of those, not a
     # percentage that pretends the estimate is deterministic
     mc_sd = np.sqrt(2 * np.var(x, ddof=1) ** 2 / 200 / 8000)
-    assert o["bias"] == pytest.approx(-np.var(x, ddof=1) / 200,
-                                      abs=3 * mc_sd + 2 / 200 ** 1.5)
+    assert o["bias"] == pytest.approx(-np.var(x, ddof=1) / 200, abs=3 * mc_sd + 2 / 200**1.5)
     assert o["bias"] < 0
-    assert o["corrected"] > o["estimate"]          # moves UP
-    assert o["corrected"] == pytest.approx(
-        2 * o["estimate"] - o["mean_replicate"], rel=1e-12)
+    assert o["corrected"] > o["estimate"]  # moves UP
+    assert o["corrected"] == pytest.approx(2 * o["estimate"] - o["mean_replicate"], rel=1e-12)
 
 
 def test_jackknife_variance_of_the_mean_is_exactly_s2_over_n():
@@ -115,8 +112,7 @@ def test_oob_error_is_honest_and_the_oob_fraction_is_0368():
     y = X @ [1.0, -1.0] + rng.normal(scale=0.5, size=n)
 
     def fit(Xa, ya):
-        return np.linalg.lstsq(np.column_stack([np.ones(len(ya)), Xa]),
-                               ya, rcond=None)[0]
+        return np.linalg.lstsq(np.column_stack([np.ones(len(ya)), Xa]), ya, rcond=None)[0]
 
     def pred(b, Xn):
         return np.column_stack([np.ones(len(Xn)), Xn]) @ b
@@ -159,15 +155,13 @@ def gbm_bars(n_bars, sigma, steps=390, seed=0):
     O, H, L, C = [], [], [], []
     p = 0.0
     for _ in range(n_bars):
-        path = p + np.cumsum(rng.normal(scale=sigma / np.sqrt(steps),
-                                        size=steps))
+        path = p + np.cumsum(rng.normal(scale=sigma / np.sqrt(steps), size=steps))
         O.append(p)
         C.append(path[-1])
         H.append(max(p, path.max()))
         L.append(min(p, path.min()))
         p = path[-1]
-    return (np.exp(np.array(O)), np.exp(np.array(H)),
-            np.exp(np.array(L)), np.exp(np.array(C)))
+    return (np.exp(np.array(O)), np.exp(np.array(H)), np.exp(np.array(L)), np.exp(np.array(C)))
 
 
 def test_parkinson_is_unbiased_for_driftless_gbm():
@@ -199,8 +193,7 @@ def test_garman_klass_beats_parkinson_and_partials_out_trend():
     g = vol_garman_klass(O, H, L, C)
     assert g["sigma"] == pytest.approx(0.02, rel=0.08)
     # the open-close term is genuinely SUBTRACTED
-    assert g["variance"] == pytest.approx(
-        g["range_term"] - g["openclose_term"], rel=1e-10)
+    assert g["variance"] == pytest.approx(g["range_term"] - g["openclose_term"], rel=1e-10)
     # measured efficiency: GK spread below Parkinson's
     gk, pk = [], []
     for rep in range(60):
@@ -220,8 +213,7 @@ def test_harmonic_mean_inequality_and_use_guidance():
     # equal inputs collapse all four
     e = vol_harmonic([0.3, 0.3, 0.3])
     assert e["harmonic"] == pytest.approx(e["rms"], rel=1e-12)
-    assert "ARITHMETIC" in o["which_to_use"].upper() or \
-        "arithmetic" in o["which_to_use"]
+    assert "ARITHMETIC" in o["which_to_use"].upper() or "arithmetic" in o["which_to_use"]
     with pytest.raises(ValueError, match="positive"):
         vol_harmonic([0.1, 0.0])
 
@@ -233,14 +225,14 @@ def test_noise_variance_is_recovered_and_naive_rv_diverges():
     plot in one test."""
     rng = np.random.default_rng(11)
     n = 23_400
-    iv = 0.01 ** 2
+    iv = 0.01**2
     dP = rng.normal(scale=np.sqrt(iv / n), size=n)
     eps = rng.normal(scale=5e-4, size=n + 1)
     r = dP + np.diff(eps)
     o = vol_noise_variance(r)
     assert o["noise_variance"] == pytest.approx((5e-4) ** 2, rel=0.1)
     assert o["iv_two_scale"] == pytest.approx(iv, rel=0.5)
-    assert o["rv_all"] > 50 * iv                     # the divergence
+    assert o["rv_all"] > 50 * iv  # the divergence
     assert o["noise_share_of_rv"] > 0.9
     # clean returns: tiny noise estimate, TSRV near naive RV
     clean = vol_noise_variance(dP)

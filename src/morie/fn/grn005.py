@@ -87,8 +87,7 @@ def geron_ch4_normal_equation(X, y):
 
     return RichResult(
         title="Normal equation",
-        summary_lines=[("Parameters", int(n)), ("MSE", fit["cost"]),
-                       ("cond(X^T X)", cond)],
+        summary_lines=[("Parameters", int(n)), ("MSE", fit["cost"]), ("cond(X^T X)", cond)],
         payload={
             "theta": theta.tolist(),
             "cost": fit["cost"],

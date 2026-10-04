@@ -1,7 +1,6 @@
 """Tests for hmgand.geron_anomaly_gmm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmgand import geron_anomaly_gmm
 
 

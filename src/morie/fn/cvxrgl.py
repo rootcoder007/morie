@@ -87,15 +87,19 @@ def boyd_regularized_ls(A, b, delta=1.0):
     rss = float(resid @ resid)
     pen = float(d * (x @ x))
     sv = np.linalg.svd(Am, compute_uv=False)
-    edf = float(np.sum(sv ** 2 / (sv ** 2 + d))) if sv.size else 0.0
+    edf = float(np.sum(sv**2 / (sv**2 + d))) if sv.size else 0.0
     return RichResult(
         title="Regularized least squares",
-        summary_lines=[("delta", d), ("rss", rss), ("penalty", pen),
-                       ("effective df", edf)],
+        summary_lines=[("delta", d), ("rss", rss), ("penalty", pen), ("effective df", edf)],
         payload={
-            "x": x, "rss": rss, "penalty": pen, "objective": rss + pen,
-            "effective_df": edf, "shrinkage": float(np.linalg.norm(x)),
-            "residual": resid, "delta": d,
+            "x": x,
+            "rss": rss,
+            "penalty": pen,
+            "objective": rss + pen,
+            "effective_df": edf,
+            "shrinkage": float(np.linalg.norm(x)),
+            "residual": resid,
+            "delta": d,
             "method": "boyd_regularized_ls",
         },
     )

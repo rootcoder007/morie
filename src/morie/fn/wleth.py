@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["weighted_likelihood_theta"]
 
 
-def weighted_likelihood_theta(y, a=None, b=None, c=None,
-                              bounds=(-6.0, 6.0)):
+def weighted_likelihood_theta(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
     r"""Warm's (1989) weighted likelihood estimate: maximise
 
     .. math:: \log\ell(\theta) + \log\sqrt{I(\theta)},
@@ -72,10 +71,9 @@ def weighted_likelihood_theta(y, a=None, b=None, c=None,
 
     def objective(t):
         # log L(theta) + (1/2) log I(theta), Warm (1989)
-        p = np.clip(logistic_3pl(np.array([t]), av, bv, cv)[0],
-                    1e-12, 1 - 1e-12)
+        p = np.clip(logistic_3pl(np.array([t]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
         dp = logistic_3pl_deriv(np.array([t]), av, bv, cv)[0]
-        inf_t = float(np.sum(dp ** 2 / (p * (1 - p))))
+        inf_t = float(np.sum(dp**2 / (p * (1 - p))))
         llt = float(np.sum(yv * np.log(p) + (1 - yv) * np.log(1 - p)))
         return llt + 0.5 * math.log(max(inf_t, 1e-300)), llt
 
@@ -84,7 +82,7 @@ def weighted_likelihood_theta(y, a=None, b=None, c=None,
     grid = np.linspace(float(bounds[0]), float(bounds[1]), 401)
     P = np.clip(logistic_3pl(grid, av, bv, cv), 1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(grid, av, bv, cv)
-    info = np.sum(dP ** 2 / (P * (1 - P)), axis=1)
+    info = np.sum(dP**2 / (P * (1 - P)), axis=1)
     ll = (yv * np.log(P) + (1 - yv) * np.log(1 - P)).sum(axis=1)
     obj = ll + 0.5 * np.log(np.maximum(info, 1e-300))
     i = int(np.argmax(obj))
@@ -108,41 +106,44 @@ def weighted_likelihood_theta(y, a=None, b=None, c=None,
     # polish on Warm's estimating equation, which is well conditioned
     # where the objective is flat
     from ._psycho import score_root, theta_score
+
     yl, al, bl, cl = ([float(v) for v in q.tolist()] for q in (yv, av, bv, cv))
     g = [float(v) for v in grid.tolist()]
-    r = score_root(lambda t: theta_score(t, yl, al, bl, cl, weighted=True),
-                   g[max(i - 1, 0)], g[min(i + 1, len(g) - 1)])
+    r = score_root(lambda t: theta_score(t, yl, al, bl, cl, weighted=True), g[max(i - 1, 0)], g[min(i + 1, len(g) - 1)])
     if r is not None:
         th = r
-    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
-                 1e-12, 1 - 1e-12)
+    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
     dPt = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
-    info_t = float(np.sum(dPt ** 2 / (Pt * (1 - Pt))))
+    info_t = float(np.sum(dPt**2 / (Pt * (1 - Pt))))
     ml_theta = None
     try:
         from .mleth import mle_theta_estimator
+
         ml = mle_theta_estimator(y, a=av, b=bv, c=cv, bounds=bounds)
         ml_theta = ml["theta"] if ml["finite"] else None
     except Exception:
         pass
-    return RichResult(payload={
-        "theta": th, "se": float(1 / np.sqrt(info_t)) if info_t > 0
-        else np.inf,
-        "information": info_t,
-        "loglik": objective(th)[1],
-        "weight_term": float(0.5 * np.log(max(info_t, 1e-300))),
-        "bias_corrected": True,
-        "finite_for_perfect_patterns": True,
-        "why_finite": "sqrt(I(theta)) tends to zero in both tails, so the "
-                      "weighted objective turns over where the raw "
-                      "likelihood does not -- the existence property MAP "
-                      "buys with a prior, obtained without one",
-        "not_a_prior": "the weight removes the O(1/n) bias of the ML "
-                       "estimator to first order (Warm 1989); it is a "
-                       "bias correction, not prior information",
-        "vs_ml": None if ml_theta is None else float(th - ml_theta),
-        "n_items": int(m),
-        "method": "Warm (1989) weighted likelihood: loglik + log sqrt(information)"})
+    return RichResult(
+        payload={
+            "theta": th,
+            "se": float(1 / np.sqrt(info_t)) if info_t > 0 else np.inf,
+            "information": info_t,
+            "loglik": objective(th)[1],
+            "weight_term": float(0.5 * np.log(max(info_t, 1e-300))),
+            "bias_corrected": True,
+            "finite_for_perfect_patterns": True,
+            "why_finite": "sqrt(I(theta)) tends to zero in both tails, so the "
+            "weighted objective turns over where the raw "
+            "likelihood does not -- the existence property MAP "
+            "buys with a prior, obtained without one",
+            "not_a_prior": "the weight removes the O(1/n) bias of the ML "
+            "estimator to first order (Warm 1989); it is a "
+            "bias correction, not prior information",
+            "vs_ml": None if ml_theta is None else float(th - ml_theta),
+            "n_items": int(m),
+            "method": "Warm (1989) weighted likelihood: loglik + log sqrt(information)",
+        }
+    )
 
 
 def cheatsheet():

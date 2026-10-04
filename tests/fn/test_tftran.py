@@ -1,7 +1,6 @@
 """Tests for tftran.temporal_fusion_transformer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tftran import temporal_fusion_transformer
 
 

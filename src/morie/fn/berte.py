@@ -49,12 +49,10 @@ Hendrycks, D. & Gimpel, K. (2016) "Gaussian Error Linear Units
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["layer_norm", "multi_head_attention", "encoder_block",
-           "bert_encoder", "attention_weights"]
+__all__ = ["layer_norm", "multi_head_attention", "encoder_block", "bert_encoder", "attention_weights"]
 
 _EPS = 1e-12
 _NEG = -1e9
@@ -71,8 +69,7 @@ def layer_norm(x, gain=None, bias=None, eps=1e-12):
     out = [(v - mu) * inv for v in x]
     if gain is not None:
         if len(gain) != d:
-            raise ValueError("berte: gain has %d entries for %d "
-                             "channels" % (len(gain), d))
+            raise ValueError("berte: gain has %d entries for %d channels" % (len(gain), d))
         out = [out[i] * gain[i] for i in range(d)]
     if bias is not None:
         out = [out[i] + bias[i] for i in range(d)]
@@ -89,8 +86,7 @@ def attention_weights(Q, K, n_heads, pad_mask=None, causal=False):
     L = len(Q)
     d = len(Q[0])
     if d % n_heads != 0:
-        raise ValueError("berte: dimension %d is not divisible by %d "
-                         "heads" % (d, n_heads))
+        raise ValueError("berte: dimension %d is not divisible by %d heads" % (d, n_heads))
     hd = d // n_heads
     scale = 1.0 / math.sqrt(hd)
     heads = []
@@ -99,8 +95,7 @@ def attention_weights(Q, K, n_heads, pad_mask=None, causal=False):
         for i in range(L):
             sc = []
             for j in range(L):
-                v = scale * sum(Q[i][h * hd + c] * K[j][h * hd + c]
-                                for c in range(hd))
+                v = scale * sum(Q[i][h * hd + c] * K[j][h * hd + c] for c in range(hd))
                 if pad_mask is not None and not pad_mask[j]:
                     v = _NEG
                 if causal and j > i:
@@ -119,32 +114,43 @@ def multi_head_attention(Q, K, V, n_heads, pad_mask=None, causal=False):
     L = len(Q)
     d = len(Q[0])
     hd = d // n_heads
-    w = attention_weights(Q, K, n_heads, pad_mask=pad_mask,
-                          causal=causal)
+    w = attention_weights(Q, K, n_heads, pad_mask=pad_mask, causal=causal)
     out = [[0.0] * d for _ in range(L)]
     for h in range(n_heads):
         for i in range(L):
             for c in range(hd):
-                out[i][h * hd + c] = sum(
-                    w[h][i][j] * V[j][h * hd + c] for j in range(L))
+                out[i][h * hd + c] = sum(w[h][i][j] * V[j][h * hd + c] for j in range(L))
     return out, w
 
 
-def encoder_block(X, Wq, Wk, Wv, Wo, W1, b1, W2, b2, n_heads,
-                  pad_mask=None, gain1=None, bias1=None, gain2=None,
-                  bias2=None, pre_norm=False):
+def encoder_block(
+    X,
+    Wq,
+    Wk,
+    Wv,
+    Wo,
+    W1,
+    b1,
+    W2,
+    b2,
+    n_heads,
+    pad_mask=None,
+    gain1=None,
+    bias1=None,
+    gain2=None,
+    bias2=None,
+    pre_norm=False,
+):
     r"""One block: attention, residual, LayerNorm, FFN, residual,
     LayerNorm -- post-norm as published."""
     Xm = k.mat(X)
     L, d = len(Xm), len(Xm[0])
 
     def proj(row, Wm, b=None):
-        v = [sum(row[i] * Wm[i][j] for i in range(len(row)))
-             for j in range(len(Wm[0]))]
+        v = [sum(row[i] * Wm[i][j] for i in range(len(row))) for j in range(len(Wm[0]))]
         return v if b is None else [v[j] + b[j] for j in range(len(v))]
 
-    src = ([layer_norm(Xm[t], gain1, bias1) for t in range(L)]
-           if pre_norm else Xm)
+    src = [layer_norm(Xm[t], gain1, bias1) for t in range(L)] if pre_norm else Xm
     Q = [proj(src[t], Wq) for t in range(L)]
     K = [proj(src[t], Wk) for t in range(L)]
     V = [proj(src[t], Wv) for t in range(L)]
@@ -153,8 +159,7 @@ def encoder_block(X, Wq, Wk, Wv, Wo, W1, b1, W2, b2, n_heads,
     x1 = [[Xm[t][c] + a[t][c] for c in range(d)] for t in range(L)]
     if not pre_norm:
         x1 = [layer_norm(x1[t], gain1, bias1) for t in range(L)]
-    src2 = ([layer_norm(x1[t], gain2, bias2) for t in range(L)]
-            if pre_norm else x1)
+    src2 = [layer_norm(x1[t], gain2, bias2) for t in range(L)] if pre_norm else x1
     f = [proj(src2[t], W1, b1) for t in range(L)]
     f = [[k.gelu(v) for v in row] for row in f]
     f = [proj(f[t], W2, b2) for t in range(L)]
@@ -170,26 +175,35 @@ def bert_encoder(X, blocks, n_heads, pad_mask=None, pre_norm=False):
     cur = k.mat(X)
     attn = []
     for b in blocks:
-        cur, w = encoder_block(cur, *b, n_heads=n_heads,
-                               pad_mask=pad_mask, pre_norm=pre_norm)
+        cur, w = encoder_block(cur, *b, n_heads=n_heads, pad_mask=pad_mask, pre_norm=pre_norm)
         attn.append(w)
     L = len(cur)
-    return RichResult(payload={
-        "estimate": cur, "output": cur, "attention": attn,
-        "pooled": cur[0], "L": L, "d": len(cur[0]),
-        "n_layers": len(blocks), "n_heads": n_heads,
-        "pre_norm": bool(pre_norm), "bidirectional": True,
-        "method": "BERT encoder forward pass, Devlin et al. (2019)",
-    })
+    return RichResult(
+        payload={
+            "estimate": cur,
+            "output": cur,
+            "attention": attn,
+            "pooled": cur[0],
+            "L": L,
+            "d": len(cur[0]),
+            "n_layers": len(blocks),
+            "n_heads": n_heads,
+            "pre_norm": bool(pre_norm),
+            "bidirectional": True,
+            "method": "BERT encoder forward pass, Devlin et al. (2019)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("berte: encoder block = LayerNorm(x + MHA(x)) then "
-            "LayerNorm(x + FFN(x)), post-norm as published, GELU in the "
-            "FFN. NO causal mask -- it is bidirectional, which is why "
-            "the objective is masked-LM. Padding must be driven to -1e9 "
-            "BEFORE the softmax or padded positions leak into every "
-            "normaliser and the answer depends on batch shape.")
+    return (
+        "berte: encoder block = LayerNorm(x + MHA(x)) then "
+        "LayerNorm(x + FFN(x)), post-norm as published, GELU in the "
+        "FFN. NO causal mask -- it is bidirectional, which is why "
+        "the objective is masked-LM. Padding must be driven to -1e9 "
+        "BEFORE the softmax or padded positions leak into every "
+        "normaliser and the answer depends on batch shape."
+    )
 
 
 # compact alias per ledger/NAMING.md

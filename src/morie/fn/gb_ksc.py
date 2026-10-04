@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kolmogorov-Smirnov versus Cramer-von Mises on the same sample."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['kscvmcmp', 'gibbons_ks_cvm_comparison']
+__all__ = ["kscvmcmp", "gibbons_ks_cvm_comparison"]
 
 
 def kscvmcmp(x, cdf):
@@ -47,9 +45,7 @@ def kscvmcmp(x, cdf):
         devs.append(max((i + 1) / n - z[i], z[i] - i / n))
     d = max(devs)
     arg = devs.index(d)
-    terms = [
-        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
-    ]
+    terms = [(z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)]
     w2 = 1.0 / (12.0 * n) + sum(terms)
     return RichResult(
         payload={

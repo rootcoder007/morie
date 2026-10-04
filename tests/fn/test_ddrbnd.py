@@ -1,8 +1,8 @@
 """Tests for ddrbnd.deer_dr_bounds."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ddrbnd import deer_dr_bounds
 
 

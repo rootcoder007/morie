@@ -1,7 +1,6 @@
 """Tests for esltrs.esl_basis_truncated."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esltrs import esl_basis_truncated
 
 

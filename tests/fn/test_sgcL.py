@@ -17,8 +17,7 @@ def _S():
 
 
 def _mm(M, Y):
-    return [[sum(M[i][k] * Y[k][j] for k in range(len(Y))) for j in range(len(Y[0]))]
-            for i in range(len(M))]
+    return [[sum(M[i][k] * Y[k][j] for k in range(len(Y))) for j in range(len(Y[0]))] for i in range(len(M))]
 
 
 def test_sgcL_basic():

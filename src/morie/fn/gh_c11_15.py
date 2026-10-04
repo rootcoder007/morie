@@ -32,9 +32,10 @@ def ghosal_ep_gp(x=None, y=None, length=0.5):
     xs = _bnp._flat(x)
     ys = _bnp._flat(y)
     n = len(xs)
-    K = [[math.exp(-0.5 * ((xs[i] - xs[j]) / length) ** 2)
-          + (1e-8 if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    K = [
+        [math.exp(-0.5 * ((xs[i] - xs[j]) / length) ** 2) + (1e-8 if i == j else 0.0) for j in range(n)]
+        for i in range(n)
+    ]
     mu = [0.0] * n
     Lam = [0.25] * n
     for _ in range(60):
@@ -43,23 +44,22 @@ def ghosal_ep_gp(x=None, y=None, length=0.5):
         # mu solves (K^{-1} + Lam) mu = grad-like target: use
         # mu = K (y - p) damped toward the data pull
         pull = [ys[i] - p[i] for i in range(n)]
-        Kpull = [sum(K[i][j] * pull[j] for j in range(n))
-                 for i in range(n)]
-        mu = [0.7 * m + 0.3 * (m + kp)
-              for m, kp in zip(mu, Kpull)]
+        Kpull = [sum(K[i][j] * pull[j] for j in range(n)) for i in range(n)]
+        mu = [0.7 * m + 0.3 * (m + kp) for m, kp in zip(mu, Kpull)]
     # Sigma_00 = ((K^{-1} + diag(Lam))^{-1})_{00}
-    Kinv_cols = [_chol_solve(K, [1.0 if r == c else 0.0
-                                 for r in range(n)])
-                 for c in range(n)]
-    B = [[Kinv_cols[c][r] + (Lam[r] if r == c else 0.0)
-          for c in range(n)] for r in range(n)]
+    Kinv_cols = [_chol_solve(K, [1.0 if r == c else 0.0 for r in range(n)]) for c in range(n)]
+    B = [[Kinv_cols[c][r] + (Lam[r] if r == c else 0.0) for c in range(n)] for r in range(n)]
     var0 = _chol_solve(B, [1.0] + [0.0] * (n - 1))[0]
     p = [1.0 / (1.0 + math.exp(-v)) for v in mu]
-    res = RichResult(payload={"estimate": p[-1],
-                              "site_precisions": Lam,
-                              "ep_var_site0": var0,
-                              "separates": p[-1] > 0.5 > p[0],
-                              "method": "EP for GP classification (GvdV 2017 sec. 11.7.4)"})
+    res = RichResult(
+        payload={
+            "estimate": p[-1],
+            "site_precisions": Lam,
+            "ep_var_site0": var0,
+            "separates": p[-1] > 0.5 > p[0],
+            "method": "EP for GP classification (GvdV 2017 sec. 11.7.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_15")
 
 

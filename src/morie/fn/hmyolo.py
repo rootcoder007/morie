@@ -109,9 +109,7 @@ def geron_yolo(image, model, n_boxes=1, conf_threshold=0.5, iou_threshold=0.45):
 
     P = np.asarray(model(image), dtype=float)
     if P.ndim != 3 or P.shape[0] != P.shape[1]:
-        raise ValueError(
-            f"geron_yolo: model returned shape {P.shape}; a square (S, S, B*5 + C) grid is required"
-        )
+        raise ValueError(f"geron_yolo: model returned shape {P.shape}; a square (S, S, B*5 + C) grid is required")
     if not np.all(np.isfinite(P)):
         raise ValueError("geron_yolo: model returned non-finite predictions")
     S = P.shape[0]

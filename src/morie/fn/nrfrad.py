@@ -66,12 +66,9 @@ alternative; implemented in :mod:`gsplat`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["positional_encoding", "volume_render", "sample_pdf",
-           "ray_points", "density_is_view_independent"]
+__all__ = ["positional_encoding", "volume_render", "sample_pdf", "ray_points", "density_is_view_independent"]
 
 _EPS = 1e-12
 
@@ -87,15 +84,14 @@ def positional_encoding(p, L=10, include_input=True):
         raise ValueError("nrfrad: L must be at least 1")
     out = list(v) if include_input else []
     for j in range(int(L)):
-        f = (2.0 ** j) * math.pi
+        f = (2.0**j) * math.pi
         for q in v:
             out.append(math.sin(f * q))
             out.append(math.cos(f * q))
     return out
 
 
-def ray_points(origin, direction, t_near, t_far, n_samples,
-               rng=None, stratified=True):
+def ray_points(origin, direction, t_near, t_far, n_samples, rng=None, stratified=True):
     r"""Sample points along a ray, stratified within equal bins.
 
     Stratification avoids the network only ever seeing the same fixed
@@ -114,11 +110,9 @@ def ray_points(origin, direction, t_near, t_far, n_samples,
     ts = []
     for i in range(n):
         lo = float(t_near) + i * step
-        u = float(rng.uniform()) if (stratified and rng is not None) \
-            else 0.5
+        u = float(rng.uniform()) if (stratified and rng is not None) else 0.5
         ts.append(lo + u * step)
-    return {"t": ts, "points": [[o[a] + t * d[a] for a in range(3)]
-                                for t in ts], "direction": d}
+    return {"t": ts, "points": [[o[a] + t * d[a] for a in range(3)] for t in ts], "direction": d}
 
 
 def volume_render(sigma, colour, t):
@@ -134,8 +128,7 @@ def volume_render(sigma, colour, t):
     ts = [float(v) for v in k.vec(t)]
     n = len(s)
     if not (len(C) == len(ts) == n):
-        raise ValueError("nrfrad: sigma, colour and t differ in "
-                         "length")
+        raise ValueError("nrfrad: sigma, colour and t differ in length")
     if any(v < 0.0 for v in s):
         raise ValueError("nrfrad: density cannot be negative")
     deltas = [ts[i + 1] - ts[i] for i in range(n - 1)] + [1e10]
@@ -146,12 +139,14 @@ def volume_render(sigma, colour, t):
         weights.append(w)
         for c in range(len(acc)):
             acc[c] += w * C[i][c]
-        T *= (1.0 - a)
-    return {"colour": acc, "weights": weights,
-            "accumulated_alpha": sum(weights),
-            "transmittance_final": T,
-            "note": "differentiable, which is why only posed IMAGES "
-                    "are needed -- no 3D supervision"}
+        T *= 1.0 - a
+    return {
+        "colour": acc,
+        "weights": weights,
+        "accumulated_alpha": sum(weights),
+        "transmittance_final": T,
+        "note": "differentiable, which is why only posed IMAGES are needed -- no 3D supervision",
+    }
 
 
 def sample_pdf(bins, weights, n_samples, rng, eps=1e-5):
@@ -163,8 +158,7 @@ def sample_pdf(bins, weights, n_samples, rng, eps=1e-5):
     b = [float(v) for v in k.vec(bins)]
     w = [float(v) + float(eps) for v in k.vec(weights)]
     if len(w) != len(b) - 1 and len(w) != len(b):
-        raise ValueError("nrfrad: %d weights do not match %d bins"
-                         % (len(w), len(b)))
+        raise ValueError("nrfrad: %d weights do not match %d bins" % (len(w), len(b)))
     tot = sum(w)
     pdf = [v / tot for v in w]
     cdf, acc = [], 0.0
@@ -191,27 +185,30 @@ def density_is_view_independent(model, point, directions, tol=1e-9):
     views and interpolating to nonsense.
     """
     p = [float(v) for v in k.vec(point)]
-    ss = [float(model(p, [float(q) for q in k.vec(d)])["sigma"])
-          for d in directions]
+    ss = [float(model(p, [float(q) for q in k.vec(d)])["sigma"]) for d in directions]
     dev = max(ss) - min(ss)
-    return {"sigmas": ss, "max_deviation": dev,
-            "view_independent": dev < float(tol),
-            "note": "sigma from position alone; direction enters only "
-                    "for colour"}
+    return {
+        "sigmas": ss,
+        "max_deviation": dev,
+        "view_independent": dev < float(tol),
+        "note": "sigma from position alone; direction enters only for colour",
+    }
 
 
 def cheatsheet():
-    return ("nrfrad: a scene IS a continuous 5D function -- position "
-            "plus viewing direction to density and radiance -- stored "
-            "in a plain MLP; the weights are the scene. DENSITY must "
-            "come from position ALONE (direction only affects colour), "
-            "or the network fakes specularity by making geometry "
-            "appear and vanish with the camera. Classic volume "
-            "rendering, and because it is DIFFERENTIABLE the only "
-            "input is posed images -- no 3D supervision. POSITIONAL "
-            "ENCODING is not optional: a raw-coordinate MLP is "
-            "low-frequency biased and renders blurry. Hierarchical "
-            "sampling reuses the coarse weights as a PDF.")
+    return (
+        "nrfrad: a scene IS a continuous 5D function -- position "
+        "plus viewing direction to density and radiance -- stored "
+        "in a plain MLP; the weights are the scene. DENSITY must "
+        "come from position ALONE (direction only affects colour), "
+        "or the network fakes specularity by making geometry "
+        "appear and vanish with the camera. Classic volume "
+        "rendering, and because it is DIFFERENTIABLE the only "
+        "input is posed images -- no 3D supervision. POSITIONAL "
+        "ENCODING is not optional: a raw-coordinate MLP is "
+        "low-frequency biased and renders blurry. Hierarchical "
+        "sampling reuses the coarse weights as a PDF."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -1,8 +1,8 @@
 """Tests for morie.fn.vcidx — VC index / VC dimension computation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.vcidx import VCIndexResult, vcidx
 
 

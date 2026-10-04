@@ -66,5 +66,4 @@ def safe_search_interval(W, form="identity", pad=1e-6):
     # deterministic grid) started from these endpoints to land on a
     # visibly different point when the likelihood is flat. Snapping makes
     # the interval bit-identical across the two arms.
-    return (_math.ceil((lo + eps) * 1e8) / 1e8,
-            _math.floor((hi - eps) * 1e8) / 1e8)
+    return (_math.ceil((lo + eps) * 1e8) / 1e8, _math.floor((hi - eps) * 1e8) / 1e8)

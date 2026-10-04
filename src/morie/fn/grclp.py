@@ -16,8 +16,7 @@ def _log_softmax_rows(Z):
     return Z - np.log(np.exp(Z).sum(axis=1, keepdims=True))
 
 
-def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07,
-                                normalize=True):
+def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07, normalize=True):
     r"""Symmetric InfoNCE over the matched pairs in a batch.
 
     .. math::
@@ -73,9 +72,7 @@ def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07,
     I = np.atleast_2d(np.asarray(image_embeddings, dtype=float))
     T = np.atleast_2d(np.asarray(text_embeddings, dtype=float))
     if I.shape != T.shape:
-        raise ValueError(
-            f"image and text embeddings must have the same shape, got {I.shape} and {T.shape}."
-        )
+        raise ValueError(f"image and text embeddings must have the same shape, got {I.shape} and {T.shape}.")
     if I.size == 0:
         raise ValueError("embeddings are empty.")
     if not np.all(np.isfinite(I)) or not np.all(np.isfinite(T)):
@@ -89,10 +86,7 @@ def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07,
         ni = np.linalg.norm(I, axis=1, keepdims=True)
         nt = np.linalg.norm(T, axis=1, keepdims=True)
         if np.any(ni == 0) or np.any(nt == 0):
-            raise ValueError(
-                "cannot L2-normalise a zero embedding; pass normalize=False or "
-                "drop the zero rows."
-            )
+            raise ValueError("cannot L2-normalise a zero embedding; pass normalize=False or drop the zero rows.")
         I = I / ni
         T = T / nt
 
@@ -133,6 +127,7 @@ def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07,
 
 def cheatsheet():
     return "grclp: CLIP loss = mean of image->text and text->image InfoNCE with diagonal targets"
+
 
 # alias kept from the retired placeholder of the same name
 clip_image_text = geron_clip_contrastive_loss

@@ -32,14 +32,20 @@ def kamath_ch8_brevity_penalty(c, r):
     c = float(c)
     r = float(r)
     if c <= 0:
-        raise ValueError("the candidate length c must be positive; "
-                         "1 - r/c is a pole at c = 0.")
+        raise ValueError("the candidate length c must be positive; 1 - r/c is a pole at c = 0.")
     if r < 0:
         raise ValueError("the reference length r cannot be negative.")
     bp = 1.0 if c > r else float(np.exp(1.0 - r / c))
-    return RichResult(payload={
-        "estimate": bp, "c": c, "r": r, "penalized": bool(c <= r),
-        "n": 1, "method": "BLEU brevity penalty (Kamath Eq 8.4)"})
+    return RichResult(
+        payload={
+            "estimate": bp,
+            "c": c,
+            "r": r,
+            "penalized": bool(c <= r),
+            "n": 1,
+            "method": "BLEU brevity penalty (Kamath Eq 8.4)",
+        }
+    )
 
 
 def cheatsheet():

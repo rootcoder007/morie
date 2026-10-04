@@ -123,8 +123,11 @@ def cox_schoenfeld_residuals(fit, transform="km"):
         title="Schoenfeld residuals",
         summary_lines=[("events", int(res.shape[0])), ("transform", transform)],
         payload={
-            "residuals": res, "times": times, "correlation": corr,
-            "p_value": pval, "transform": transform,
+            "residuals": res,
+            "times": times,
+            "correlation": corr,
+            "p_value": pval,
+            "transform": transform,
             "method": "cox_schoenfeld_residuals",
         },
     )

@@ -62,6 +62,7 @@ def wasserman_poisson_regression(X, y, max_iter=100, tol=1e-10):
     if np.any(y < 0) or np.any(y != np.round(y)):
         raise ValueError("Poisson counts must be non-negative integers.")
     from math import lgamma
+
     beta = np.zeros(p)
     beta[0] = np.log(np.mean(y)) if np.mean(y) > 0 else 0.0
     converged = False
@@ -84,12 +85,20 @@ def wasserman_poisson_regression(X, y, max_iter=100, tol=1e-10):
     deviance = float(2.0 * np.sum(dev_terms))
     cov = np.linalg.inv(X.T @ (X * mu[:, None]))
     se = np.sqrt(np.diag(cov))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "se": [float(v) for v in se], "log_likelihood": ll,
-        "deviance": deviance, "iterations": int(it),
-        "converged": bool(converged), "n": int(n), "p": int(p),
-        "method": "Poisson GLM Newton; ll includes lgamma constant"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "se": [float(v) for v in se],
+            "log_likelihood": ll,
+            "deviance": deviance,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "p": int(p),
+            "method": "Poisson GLM Newton; ll includes lgamma constant",
+        }
+    )
 
 
 def cheatsheet():

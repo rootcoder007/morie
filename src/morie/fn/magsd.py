@@ -55,12 +55,18 @@ def ma_glass_delta(m1, m2, s_ctrl, n1, n2):
     d = (float(m1) - float(m2)) / s
     v = (a + b) / (a * b) + d * d / (2.0 * (b - 1.0))
     se = math.sqrt(v)
-    return RichResult(payload={
-        "delta": d, "var": v, "se": se,
-        "ci_lo": d - 1.959963984540054 * se,
-        "ci_hi": d + 1.959963984540054 * se,
-        "n1": a, "n2": b,
-        "method": "Glass's delta"})
+    return RichResult(
+        payload={
+            "delta": d,
+            "var": v,
+            "se": se,
+            "ci_lo": d - 1.959963984540054 * se,
+            "ci_hi": d + 1.959963984540054 * se,
+            "n1": a,
+            "n2": b,
+            "method": "Glass's delta",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for hrzinst.horowitz_instruments_transformation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzinst import horowitz_instruments_transformation
 
 

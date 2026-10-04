@@ -80,8 +80,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["gwasem", "emmax", "emmax_gwas", "gower_normalize", "reml_variance",
-           "kinship_ibs", "genomic_control"]
+__all__ = ["gwasem", "emmax", "emmax_gwas", "gower_normalize", "reml_variance", "kinship_ibs", "genomic_control"]
 
 
 def _eigh(M):
@@ -102,8 +101,7 @@ def kinship_ibs(genotypes):
     G = [[float(v) for v in row] for row in genotypes]
     n = len(G)
     if n == 0 or not G[0]:
-        raise ValueError("gwasem: genotypes must be a non-empty "
-                         "individual x marker matrix")
+        raise ValueError("gwasem: genotypes must be a non-empty individual x marker matrix")
     m = len(G[0])
     if any(len(r) != m for r in G):
         raise ValueError("gwasem: ragged genotype matrix")
@@ -133,51 +131,40 @@ def gower_normalize(S):
     for i in range(n):
         tr += S[i][i] - 2.0 * rows[i] + total
     if abs(tr) < 1e-300:
-        raise ValueError("gwasem: the relatedness matrix has zero centred "
-                         "trace; it carries no structure to normalise")
+        raise ValueError("gwasem: the relatedness matrix has zero centred trace; it carries no structure to normalise")
     f = (n - 1.0) / tr
     return [[S[i][j] * f for j in range(n)] for i in range(n)]
 
 
-def _reml_delta(y, X, evals, evecs, ml=False, lo=-10.0, hi=10.0,
-                n_grid=100, refine=60):
+def _reml_delta(y, X, evals, evecs, ml=False, lo=-10.0, hi=10.0, n_grid=100, refine=60):
     r"""Maximise the (restricted) likelihood over
     :math:`\delta = \sigma_e^2/\sigma_a^2` on the spectral basis."""
     n = len(y)
     p = len(X[0])
     yt = [sum(evecs[i][k] * y[i] for i in range(n)) for k in range(n)]
-    Xt = [[sum(evecs[i][k] * X[i][a] for i in range(n)) for a in range(p)]
-          for k in range(n)]
+    Xt = [[sum(evecs[i][k] * X[i][a] for i in range(n)) for a in range(p)] for k in range(n)]
 
     def loglik(delta):
         d = [evals[k] + delta for k in range(n)]
         if min(d) <= 1e-12:
             return float("-inf")
-        M = [[sum(Xt[k][a] * Xt[k][b] / d[k] for k in range(n))
-              for b in range(p)] for a in range(p)]
-        v = [sum(Xt[k][a] * yt[k] / d[k] for k in range(n))
-             for a in range(p)]
+        M = [[sum(Xt[k][a] * Xt[k][b] / d[k] for k in range(n)) for b in range(p)] for a in range(p)]
+        v = [sum(Xt[k][a] * yt[k] / d[k] for k in range(n)) for a in range(p)]
         try:
-            beta = [float(t) for t in
-                    np.linalg.solve(np.asarray(M, dtype=float),
-                                    np.asarray(v, dtype=float))]
+            beta = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
             sign, logdetM = np.linalg.slogdet(np.asarray(M, dtype=float))
         except Exception:
             return float("-inf")
         if sign <= 0:
             return float("-inf")
-        rss = sum((yt[k] - sum(Xt[k][a] * beta[a]
-                               for a in range(p))) ** 2 / d[k]
-                  for k in range(n))
+        rss = sum((yt[k] - sum(Xt[k][a] * beta[a] for a in range(p))) ** 2 / d[k] for k in range(n))
         if rss <= 0:
             return float("-inf")
         logdetV = sum(math.log(t) for t in d)
         if ml:
-            return -0.5 * (n * math.log(2 * math.pi * rss / n) + n +
-                           logdetV)
+            return -0.5 * (n * math.log(2 * math.pi * rss / n) + n + logdetV)
         df = n - p
-        return -0.5 * (df * math.log(2 * math.pi * rss / df) + df +
-                       logdetV + float(logdetM))
+        return -0.5 * (df * math.log(2 * math.pi * rss / df) + df + logdetV + float(logdetM))
 
     best_u, best_v = lo, loglik(math.exp(lo))
     for g in range(1, n_grid + 1):
@@ -201,13 +188,10 @@ def _reml_delta(y, X, evals, evecs, ml=False, lo=-10.0, hi=10.0,
             fd = loglik(math.exp(d))
     delta = math.exp(0.5 * (a + b))
     dd = [evals[k] + delta for k in range(n)]
-    M = [[sum(Xt[k][a] * Xt[k][b] / dd[k] for k in range(n))
-          for b in range(p)] for a in range(p)]
+    M = [[sum(Xt[k][a] * Xt[k][b] / dd[k] for k in range(n)) for b in range(p)] for a in range(p)]
     v = [sum(Xt[k][a] * yt[k] / dd[k] for k in range(n)) for a in range(p)]
-    beta = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float),
-                                              np.asarray(v, dtype=float))]
-    rss = sum((yt[k] - sum(Xt[k][a] * beta[a] for a in range(p))) ** 2 /
-              dd[k] for k in range(n))
+    beta = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
+    rss = sum((yt[k] - sum(Xt[k][a] * beta[a] for a in range(p))) ** 2 / dd[k] for k in range(n))
     df = n if ml else n - p
     sigma_a2 = rss / df
     return delta, sigma_a2, sigma_a2 * delta, loglik(delta)
@@ -240,25 +224,28 @@ def reml_variance(y, kinship, covariates=None, ml=False):
     delta, s_a2, s_e2, ll = _reml_delta(yv, X, evals, evecs, ml)
     # null: sigma_a2 = 0, i.e. ordinary least squares
     p = len(X[0])
-    M = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)]
-         for a in range(p)]
+    M = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     v = [sum(X[i][a] * yv[i] for i in range(n)) for a in range(p)]
-    beta0 = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float),
-                                               np.asarray(v, dtype=float))]
-    rss0 = sum((yv[i] - sum(X[i][a] * beta0[a] for a in range(p))) ** 2
-               for i in range(n))
+    beta0 = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
+    rss0 = sum((yv[i] - sum(X[i][a] * beta0[a] for a in range(p))) ** 2 for i in range(n))
     df0 = n if ml else n - p
     ll0 = -0.5 * (df0 * math.log(2 * math.pi * rss0 / df0) + df0)
     if not ml:
         sign, logdetM = np.linalg.slogdet(np.asarray(M, dtype=float))
         ll0 -= 0.5 * float(logdetM)
-    return {"sigma_a2": s_a2, "sigma_e2": s_e2, "delta": delta,
-            "pseudo_heritability": s_a2 / (s_a2 + s_e2)
-            if s_a2 + s_e2 > 0 else 0.0,
-            "loglik": ll, "loglik_null": ll0,
-            "lrt": max(0.0, 2.0 * (ll - ll0)),
-            "evals": evals, "evecs": evecs, "kinship_normalized": K,
-            "shift": shift}
+    return {
+        "sigma_a2": s_a2,
+        "sigma_e2": s_e2,
+        "delta": delta,
+        "pseudo_heritability": s_a2 / (s_a2 + s_e2) if s_a2 + s_e2 > 0 else 0.0,
+        "loglik": ll,
+        "loglik_null": ll0,
+        "lrt": max(0.0, 2.0 * (ll - ll0)),
+        "evals": evals,
+        "evecs": evecs,
+        "kinship_normalized": K,
+        "shift": shift,
+    }
 
 
 def _norm_sf(z):
@@ -298,8 +285,7 @@ def _f_sf(f, df1, df2):
         return h
 
     a, b = 0.5 * df2, 0.5 * df1
-    lbeta = (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) +
-             a * math.log(x) + b * math.log(1.0 - x))
+    lbeta = math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + a * math.log(x) + b * math.log(1.0 - x)
     if x < (a + 1.0) / (a + b + 2.0):
         return math.exp(lbeta) * betacf(a, b, x) / a
     return 1.0 - math.exp(lbeta) * betacf(b, a, 1.0 - x) / b
@@ -317,13 +303,21 @@ def genomic_control(stats, df=1):
         raise ValueError("gwasem: no statistics")
     n = len(s)
     med = s[n // 2] if n % 2 else 0.5 * (s[n // 2 - 1] + s[n // 2])
-    null_median = 0.4549364231195736 if df == 1 else float(df) * (
-        1.0 - 2.0 / (9.0 * df)) ** 3
+    null_median = 0.4549364231195736 if df == 1 else float(df) * (1.0 - 2.0 / (9.0 * df)) ** 3
     return med / null_median
 
 
-def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
-           test="f", ml=False, per_marker_reml=False, min_maf=0.0):
+def gwasem(
+    y,
+    genotypes,
+    kinship=None,
+    covariates=None,
+    trait="quantitative",
+    test="f",
+    ml=False,
+    per_marker_reml=False,
+    min_maf=0.0,
+):
     r"""EMMAX association scan.
 
     Parameters
@@ -393,13 +387,10 @@ def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
     evals, evecs, delta = vc["evals"], vc["evecs"], vc["delta"]
 
     def rotate(vec):
-        return [sum(evecs[i][k] * vec[i] for i in range(n))
-                for k in range(n)]
+        return [sum(evecs[i][k] * vec[i] for i in range(n)) for k in range(n)]
 
-    base = [[1.0] for _ in range(n)] if covariates is None else \
-        [[1.0] + [float(v) for v in row] for row in covariates]
-    base_t = [rotate([row[a] for row in base])
-              for a in range(len(base[0]))]
+    base = [[1.0] for _ in range(n)] if covariates is None else [[1.0] + [float(v) for v in row] for row in covariates]
+    base_t = [rotate([row[a] for row in base]) for a in range(len(base[0]))]
     y_t = rotate(yv)
 
     beta, se, stat, pval, skipped = [], [], [], [], []
@@ -415,32 +406,26 @@ def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
             continue
         if per_marker_reml:
             Xfull = [base[i] + [col[i]] for i in range(n)]
-            vcj = reml_variance(yv, K, [row[1:] + [col[i]]
-                                        for i, row in enumerate(base)], ml)
+            vcj = reml_variance(yv, K, [row[1:] + [col[i]] for i, row in enumerate(base)], ml)
             dj = vcj["delta"]
             ev = vcj["evals"]
-            rot = [[sum(vcj["evecs"][i][k] * Xfull[i][a] for i in range(n))
-                    for a in range(len(Xfull[0]))] for k in range(n)]
-            yr = [sum(vcj["evecs"][i][k] * yv[i] for i in range(n))
-                  for k in range(n)]
+            rot = [
+                [sum(vcj["evecs"][i][k] * Xfull[i][a] for i in range(n)) for a in range(len(Xfull[0]))]
+                for k in range(n)
+            ]
+            yr = [sum(vcj["evecs"][i][k] * yv[i] for i in range(n)) for k in range(n)]
             d = [ev[k] + dj for k in range(n)]
         else:
             col_t = rotate(col)
-            rot = [[base_t[a][k] for a in range(len(base_t))] + [col_t[k]]
-                   for k in range(n)]
+            rot = [[base_t[a][k] for a in range(len(base_t))] + [col_t[k]] for k in range(n)]
             yr = y_t
             d = [evals[k] + delta for k in range(n)]
         p = len(rot[0])
-        M = [[sum(rot[k][a] * rot[k][b] / d[k] for k in range(n))
-              for b in range(p)] for a in range(p)]
-        v = [sum(rot[k][a] * yr[k] / d[k] for k in range(n))
-             for a in range(p)]
+        M = [[sum(rot[k][a] * rot[k][b] / d[k] for k in range(n)) for b in range(p)] for a in range(p)]
+        v = [sum(rot[k][a] * yr[k] / d[k] for k in range(n)) for a in range(p)]
         try:
-            bb = [float(t) for t in
-                  np.linalg.solve(np.asarray(M, dtype=float),
-                                  np.asarray(v, dtype=float))]
-            inv = [[float(t) for t in row] for row in
-                   np.linalg.inv(np.asarray(M, dtype=float))]
+            bb = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
+            inv = [[float(t) for t in row] for row in np.linalg.inv(np.asarray(M, dtype=float))]
         except Exception:
             skipped.append(j)
             beta.append(float("nan"))
@@ -448,8 +433,7 @@ def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
             stat.append(0.0)
             pval.append(1.0)
             continue
-        rss = sum((yr[k] - sum(rot[k][a] * bb[a] for a in range(p))) ** 2 /
-                  d[k] for k in range(n))
+        rss = sum((yr[k] - sum(rot[k][a] * bb[a] for a in range(p))) ** 2 / d[k] for k in range(n))
         df = n - p
         s2 = rss / df
         b_k = bb[-1]
@@ -466,25 +450,15 @@ def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
             # residuals, the residual variance and the information -- which
             # is what distinguishes it from the Wald/F statistic above.
             p0 = p - 1
-            M0 = [[sum(rot[k][a] * rot[k][b] / d[k] for k in range(n))
-                   for b in range(p0)] for a in range(p0)]
-            v0 = [sum(rot[k][a] * yr[k] / d[k] for k in range(n))
-                  for a in range(p0)]
-            b0 = [float(t) for t in
-                  np.linalg.solve(np.asarray(M0, dtype=float),
-                                  np.asarray(v0, dtype=float))]
-            r0 = [yr[k] - sum(rot[k][a] * b0[a] for a in range(p0))
-                  for k in range(n)]
+            M0 = [[sum(rot[k][a] * rot[k][b] / d[k] for k in range(n)) for b in range(p0)] for a in range(p0)]
+            v0 = [sum(rot[k][a] * yr[k] / d[k] for k in range(n)) for a in range(p0)]
+            b0 = [float(t) for t in np.linalg.solve(np.asarray(M0, dtype=float), np.asarray(v0, dtype=float))]
+            r0 = [yr[k] - sum(rot[k][a] * b0[a] for a in range(p0)) for k in range(n)]
             s20 = sum(r0[k] ** 2 / d[k] for k in range(n)) / (n - p0)
             # residualise the marker on the null design under V^-1
-            vx = [sum(rot[k][a] * rot[k][p - 1] / d[k] for k in range(n))
-                  for a in range(p0)]
-            cx = [float(t) for t in
-                  np.linalg.solve(np.asarray(M0, dtype=float),
-                                  np.asarray(vx, dtype=float))]
-            xres = [rot[k][p - 1] - sum(rot[k][a] * cx[a]
-                                        for a in range(p0))
-                    for k in range(n)]
+            vx = [sum(rot[k][a] * rot[k][p - 1] / d[k] for k in range(n)) for a in range(p0)]
+            cx = [float(t) for t in np.linalg.solve(np.asarray(M0, dtype=float), np.asarray(vx, dtype=float))]
+            xres = [rot[k][p - 1] - sum(rot[k][a] * cx[a] for a in range(p0)) for k in range(n)]
             num = sum(xres[k] * r0[k] / d[k] for k in range(n))
             den = sum(xres[k] * xres[k] / d[k] for k in range(n)) * s20
             chi = (num * num / den) if den > 0 else 0.0
@@ -492,40 +466,44 @@ def gwasem(y, genotypes, kinship=None, covariates=None, trait="quantitative",
             pval.append(_norm_sf(math.sqrt(max(chi, 0.0))))
 
     tested = [stat[j] for j in range(m) if j not in set(skipped)]
-    return RichResult(payload={
-        "estimate": beta,
-        "beta": beta,
-        "se": se,
-        "stat": stat,
-        "pvalue": pval,
-        "variance_components": vc,
-        "pseudo_heritability": vc["pseudo_heritability"],
-        "lambda_gc": genomic_control(tested) if tested else float("nan"),
-        "skipped": skipped,
-        "n": n,
-        "n_markers": m,
-        "test": test,
-        "trait": trait,
-        "per_marker_reml": bool(per_marker_reml),
-        "note": "the variance components are estimated ONCE under the null "
-                "(that is what makes it EMMAX rather than EMMA); "
-                "per_marker_reml=True restores the exact model",
-        "method": "EMMAX variance component association (Kang et al. 2010)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "beta": beta,
+            "se": se,
+            "stat": stat,
+            "pvalue": pval,
+            "variance_components": vc,
+            "pseudo_heritability": vc["pseudo_heritability"],
+            "lambda_gc": genomic_control(tested) if tested else float("nan"),
+            "skipped": skipped,
+            "n": n,
+            "n_markers": m,
+            "test": test,
+            "trait": trait,
+            "per_marker_reml": bool(per_marker_reml),
+            "note": "the variance components are estimated ONCE under the null "
+            "(that is what makes it EMMAX rather than EMMA); "
+            "per_marker_reml=True restores the exact model",
+            "method": "EMMAX variance component association (Kang et al. 2010)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("gwasem: EMMAX (Kang et al. 2010). One-marker-at-a-time "
-            "regression is misspecified when relatives are present -- the "
-            "omitted polygenic background inflates the statistics. Fix: "
-            "Gower-normalise a relatedness matrix (eq.5), estimate "
-            "sigma_a^2 and sigma_e^2 ONCE by REML in Var(Y) = sigma_a^2 "
-            "S_N + sigma_e^2 I (eq.6), then GLS F-test or score test at "
-            "every marker with that fixed V (eq.7). Estimating the "
-            "components once instead of per marker is the eXpedited part. "
-            "sigma_a^2/(sigma_a^2 + sigma_e^2) is PSEUDOheritability, not "
-            "heritability. Case-control is the 0/1 response as a "
-            "quantitative trait, in the spirit of Armitage; no GLMM.")
+    return (
+        "gwasem: EMMAX (Kang et al. 2010). One-marker-at-a-time "
+        "regression is misspecified when relatives are present -- the "
+        "omitted polygenic background inflates the statistics. Fix: "
+        "Gower-normalise a relatedness matrix (eq.5), estimate "
+        "sigma_a^2 and sigma_e^2 ONCE by REML in Var(Y) = sigma_a^2 "
+        "S_N + sigma_e^2 I (eq.6), then GLS F-test or score test at "
+        "every marker with that fixed V (eq.7). Estimating the "
+        "components once instead of per marker is the eXpedited part. "
+        "sigma_a^2/(sigma_a^2 + sigma_e^2) is PSEUDOheritability, not "
+        "heritability. Case-control is the 0/1 response as a "
+        "quantitative trait, in the spirit of Armitage; no GLMM."
+    )
 
 
 # compact aliases

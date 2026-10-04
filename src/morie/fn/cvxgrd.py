@@ -96,22 +96,25 @@ def boyd_gradient_descent(f, grad_f, x0, t=0.01, max_iter=1000, tol=1e-08):
         if not np.all(np.isfinite(x)) or np.max(np.abs(x)) > 1e12:
             break
     fs = np.asarray(fs)
-    diverged = bool(not np.all(np.isfinite(fs)) or fs[-1] > fs[0] * 1.0 + 1e-9
-                    and fs[-1] > fs[0])
+    diverged = bool(not np.all(np.isfinite(fs)) or fs[-1] > fs[0] * 1.0 + 1e-9 and fs[-1] > fs[0])
     return RichResult(
         title="Gradient descent",
-        summary_lines=[("iterations", int(it)), ("f", float(fs[-1])),
-                       ("converged", conv), ("diverged", diverged)],
-        warnings=["the iterates diverged; a fixed step needs t < 2/L, and "
-                  "L is the largest Hessian eigenvalue"] if diverged else [],
+        summary_lines=[("iterations", int(it)), ("f", float(fs[-1])), ("converged", conv), ("diverged", diverged)],
+        warnings=["the iterates diverged; a fixed step needs t < 2/L, and L is the largest Hessian eigenvalue"]
+        if diverged
+        else [],
         payload={
-            "x": x, "f": float(fs[-1]), "n_iter": int(it),
-            "converged": conv, "diverged": diverged,
-            "grad_norm": float(np.max(np.abs(
-                np.atleast_1d(np.asarray(grad_f(x), dtype=float))))),
-            "trajectory": np.asarray(traj), "objective_path": fs,
+            "x": x,
+            "f": float(fs[-1]),
+            "n_iter": int(it),
+            "converged": conv,
+            "diverged": diverged,
+            "grad_norm": float(np.max(np.abs(np.atleast_1d(np.asarray(grad_f(x), dtype=float))))),
+            "trajectory": np.asarray(traj),
+            "objective_path": fs,
             "monotone": bool(np.all(np.diff(fs) <= 1e-12)),
-            "step": t, "method": "boyd_gradient_descent",
+            "step": t,
+            "method": "boyd_gradient_descent",
         },
     )
 

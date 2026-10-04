@@ -1,7 +1,6 @@
 """Tests for mestrg.m_estimator_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mestrg import m_estimator_regression
 
 

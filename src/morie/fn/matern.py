@@ -90,12 +90,7 @@ def _H(t, r):
     if S >= 1.0:
         return 1.0
     w = math.sqrt(1.0 - S * S)
-    br = (
-        0.5 * S * S * math.acos(S)
-        + 0.125 * math.asin(S)
-        - 0.125 * S * w
-        - 0.25 * S * S * S * w
-    )
+    br = 0.5 * S * S * math.acos(S) + 0.125 * math.asin(S) - 0.125 * S * w - 0.25 * S * S * S * w
     return 16.0 / math.pi * br
 
 

@@ -67,31 +67,41 @@ def nonlinear_least_squares_surv(time, event, model="weibull", t_grid=None):
         if at > 0 and d > 0:
             s *= 1.0 - d / at
         km[i] = s
-    g = uniq if t_grid is None else \
-        np.atleast_1d(np.asarray(t_grid, dtype=float))
+    g = uniq if t_grid is None else np.atleast_1d(np.asarray(t_grid, dtype=float))
     target = np.interp(g, uniq, km)
 
     if model == "exponential":
+
         def surv(p, t):
             return np.exp(-np.exp(p[0]) * t)
+
         p0 = np.array([np.log(1.0 / max(tv.mean(), 1e-6))])
     else:
+
         def surv(p, t):
-            return np.exp(-(t / np.exp(p[0])) ** np.exp(p[1]))
+            return np.exp(-((t / np.exp(p[0])) ** np.exp(p[1])))
+
         p0 = np.array([np.log(max(tv.mean(), 1e-6)), 0.0])
 
     res = optimize.least_squares(lambda p: surv(p, g) - target, p0)
     params = np.exp(res.x)
-    return RichResult(payload={
-        "params": params, "model": model, "sse": float(np.sum(res.fun ** 2)),
-        "t_grid": g, "fitted": surv(res.x, g), "km": target,
-        "valid_for_inference": False,
-        "why_not": "it fits the CURVE, not the data: it ignores censoring "
-                   "status per observation and the Kaplan-Meier points are "
-                   "not independent, so the sum of squares is not a likelihood",
-        "use_for": "a robust visual check on a parametric fit",
-        "n": int(n),
-        "method": "Least squares of a parametric survival curve against Kaplan-Meier"})
+    return RichResult(
+        payload={
+            "params": params,
+            "model": model,
+            "sse": float(np.sum(res.fun**2)),
+            "t_grid": g,
+            "fitted": surv(res.x, g),
+            "km": target,
+            "valid_for_inference": False,
+            "why_not": "it fits the CURVE, not the data: it ignores censoring "
+            "status per observation and the Kaplan-Meier points are "
+            "not independent, so the sum of squares is not a likelihood",
+            "use_for": "a robust visual check on a parametric fit",
+            "n": int(n),
+            "method": "Least squares of a parametric survival curve against Kaplan-Meier",
+        }
+    )
 
 
 def cheatsheet():

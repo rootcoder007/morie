@@ -27,17 +27,16 @@ def logistic_joint_probability(b, x, y):
     """
     value = _acd.logistic_joint_probability(b, x, y)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.4)"
     return RichResult(
-        title='Joint probability of logistic responses (sufficiency form)',
+        title="Joint probability of logistic responses (sufficiency form)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e4: P(Y1..Yn) = exp(sum y Xb)/prod(1 + exp(Xb)) (log form) [Bilder & Loughin 2025, eq. 6.4]'
+    return "6e4: P(Y1..Yn) = exp(sum y Xb)/prod(1 + exp(Xb)) (log form) [Bilder & Loughin 2025, eq. 6.4]"

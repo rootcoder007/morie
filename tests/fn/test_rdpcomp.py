@@ -3,8 +3,6 @@
 Replaces the generated stub, which imported a name the module never had.
 """
 
-import math
-
 from morie.fn.rdpcomp import rdp_compose, rdp_sampled_gaussian, rdpcomp
 
 
@@ -13,8 +11,7 @@ def test_full_sampling_is_the_plain_gaussian_mechanism():
     for alpha in (2, 5, 32):
         for sigma in (0.8, 2.0):
             want = alpha / (2.0 * sigma * sigma)
-            assert abs(rdp_sampled_gaussian(alpha, 1.0, sigma) -
-                       want) < 1e-9
+            assert abs(rdp_sampled_gaussian(alpha, 1.0, sigma) - want) < 1e-9
 
 
 def test_subsampling_only_helps():
@@ -49,11 +46,13 @@ def test_conversion_to_epsilon_delta_is_reported():
 
 
 def test_validation():
-    for call in (lambda: rdp_sampled_gaussian(2.5, 0.1, 1.0),
-                 lambda: rdp_sampled_gaussian(1, 0.1, 1.0),
-                 lambda: rdp_sampled_gaussian(2, 0.0, 1.0),
-                 lambda: rdp_sampled_gaussian(2, 1.5, 1.0),
-                 lambda: rdp_sampled_gaussian(2, 0.1, 0.0)):
+    for call in (
+        lambda: rdp_sampled_gaussian(2.5, 0.1, 1.0),
+        lambda: rdp_sampled_gaussian(1, 0.1, 1.0),
+        lambda: rdp_sampled_gaussian(2, 0.0, 1.0),
+        lambda: rdp_sampled_gaussian(2, 1.5, 1.0),
+        lambda: rdp_sampled_gaussian(2, 0.1, 0.0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

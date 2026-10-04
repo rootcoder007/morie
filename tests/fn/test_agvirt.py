@@ -1,7 +1,6 @@
 """Tests for agvirt.alphazero_virtual_loss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agvirt import alphazero_virtual_loss
 
 
@@ -25,13 +24,8 @@ def test_agvirt_basic():
     # Independent computation of the documented formula
     expected_Nv = [N[i] + nvl * pending[i] for i in range(100)]
     expected_Wv = [W[i] - nvl * pending[i] for i in range(100)]
-    expected_Q = [
-        0.0 if expected_Nv[i] == 0.0 else expected_Wv[i] / expected_Nv[i]
-        for i in range(100)
-    ]
-    expected_Qc = [
-        0.0 if N[i] == 0.0 else W[i] / N[i] for i in range(100)
-    ]
+    expected_Q = [0.0 if expected_Nv[i] == 0.0 else expected_Wv[i] / expected_Nv[i] for i in range(100)]
+    expected_Qc = [0.0 if N[i] == 0.0 else W[i] / N[i] for i in range(100)]
     for i in range(100):
         assert result["N"][i] == expected_Nv[i]
         assert result["W"][i] == expected_Wv[i]

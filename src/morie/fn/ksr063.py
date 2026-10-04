@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch3_cox_efficient_score_beta"]
 
 
-def kosorok_ch3_cox_efficient_score_beta(Z, Y=None, beta=None, Lambda=None,
-                                         M=None, tau=None, time=None, event=None):
+def kosorok_ch3_cox_efficient_score_beta(Z, Y=None, beta=None, Lambda=None, M=None, tau=None, time=None, event=None):
     r"""Efficient score for beta in the Cox model (Kosorok Ch. 3):
 
     .. math:: \tilde\ell_{\beta,\Lambda} = \int_0^\tau
@@ -59,11 +58,14 @@ def kosorok_ch3_cox_efficient_score_beta(Z, Y=None, beta=None, Lambda=None,
         beta = np.zeros(Z.shape[1])
     out = cox_score(beta, Z, time, event)
     return RichResult(
-        payload={"score": out["score"],
-                 "efficient_information": out["information"],
-                 "loglik": out["loglik"], "n_events": out["n_events"],
-                 "n": out["n"],
-                 "method": "Cox efficient score; risk-set centring gives orthogonality"}
+        payload={
+            "score": out["score"],
+            "efficient_information": out["information"],
+            "loglik": out["loglik"],
+            "n_events": out["n_events"],
+            "n": out["n"],
+            "method": "Cox efficient score; risk-set centring gives orthogonality",
+        }
     )
 
 

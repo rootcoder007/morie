@@ -1,8 +1,8 @@
 """Tests for morie.fn.onest — One-step semiparametric ATE estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.onest import onest
 
 

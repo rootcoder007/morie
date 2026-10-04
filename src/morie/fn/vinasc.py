@@ -84,13 +84,20 @@ def autodock_vina_score(receptor, ligand_pose, n_rot=0):
                     hb += 1.0
                 elif d < 0.0:
                     hb += -d / 0.7
-    c_inter = (W_GAUSS1 * g1 + W_GAUSS2 * g2 + W_REPULSION * rep
-               + W_HYDROPHOBIC * hyd + W_HBOND * hb)
+    c_inter = W_GAUSS1 * g1 + W_GAUSS2 * g2 + W_REPULSION * rep + W_HYDROPHOBIC * hyd + W_HBOND * hb
     score = c_inter / (1.0 + W_ROT * float(n_rot))
-    return RichResult(payload={
-        "estimate": score, "c_inter": c_inter, "gauss1": g1, "gauss2": g2,
-        "repulsion": rep, "hydrophobic": hyd, "hbond": hb,
-        "method": "AutoDock Vina scoring function"})
+    return RichResult(
+        payload={
+            "estimate": score,
+            "c_inter": c_inter,
+            "gauss1": g1,
+            "gauss2": g2,
+            "repulsion": rep,
+            "hydrophobic": hyd,
+            "hbond": hb,
+            "method": "AutoDock Vina scoring function",
+        }
+    )
 
 
 def cheatsheet():

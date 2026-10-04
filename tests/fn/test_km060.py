@@ -1,7 +1,6 @@
 """Tests for km060.kamath_ch4_krona_efficient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km060 import kamath_ch4_krona_efficient
 
 

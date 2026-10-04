@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.11: the CrowS-Pairs Score."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km086 import kamath_ch6_pll
 
@@ -36,20 +35,23 @@ def kamath_ch6_cps_metric(U, M, theta=None):
     toks = list(U)
     mod = list(M)
     if not mod:
-        raise ValueError("M is empty; CPS conditions on the modified "
-                         "tokens, so there must be at least one.")
+        raise ValueError("M is empty; CPS conditions on the modified tokens, so there must be at least one.")
     if theta is None:
         probs = toks
     else:
         if not callable(theta):
-            raise ValueError("theta must be a callable (U, M, i) -> "
-                             "probability.")
+            raise ValueError("theta must be a callable (U, M, i) -> probability.")
         probs = [float(theta(toks, mod, i)) for i in range(len(toks))]
     inner = kamath_ch6_pll(probs)
-    return RichResult(payload={
-        "estimate": inner["estimate"], "per_token": inner["per_token"],
-        "n_modified": len(mod), "n": inner["n"],
-        "method": "CrowS-Pairs Score (Kamath Eq 6.11)"})
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "per_token": inner["per_token"],
+            "n_modified": len(mod),
+            "n": inner["n"],
+            "method": "CrowS-Pairs Score (Kamath Eq 6.11)",
+        }
+    )
 
 
 def cheatsheet():

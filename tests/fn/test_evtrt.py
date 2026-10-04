@@ -1,7 +1,6 @@
 """Tests for morie.fn.evtrt — event rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evtrt import event_rate, evtrt
 
 

@@ -27,18 +27,17 @@ def ca_chapter_11_equation_35(ys, ws):
     ch.11 eq.11.35
     """
     payload = dict(_ca_crim.mean_effect_size(ys, ws))
-    value = payload['mean']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["mean"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.35)"
     return RichResult(
-        title='Weighted mean effect size ybar = sum(w y)/sum(w)',
+        title="Weighted mean effect size ybar = sum(w y)/sum(w)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e35: ybar = sum(w_i y_i) / sum(w_i) [Weisburd et al. 2022, eq. 11.35]'
+    return "ca11e35: ybar = sum(w_i y_i) / sum(w_i) [Weisburd et al. 2022, eq. 11.35]"

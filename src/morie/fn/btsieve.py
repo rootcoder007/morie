@@ -103,8 +103,7 @@ def _ar_rvs(model, resid, n, g):
     return out
 
 
-def boot_sieve_general(x, fit_fn=None, rvs_fn=None, stat=None, B=200, seed=1,
-                       p_max=None, alpha=0.05):
+def boot_sieve_general(x, fit_fn=None, rvs_fn=None, stat=None, B=200, seed=1, p_max=None, alpha=0.05):
     """Sieve bootstrap replicates.
 
     Parameters

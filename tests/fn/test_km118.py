@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 8.6, ROUGE-N recall. Expected va
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km118 import kamath_ch8_rouge_n

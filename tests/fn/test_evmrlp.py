@@ -1,7 +1,6 @@
 """Tests for evmrlp.evt_mean_residual_life."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evmrlp import evt_mean_residual_life
 
 

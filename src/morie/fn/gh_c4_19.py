@@ -35,9 +35,9 @@ def ghosal_dp_charact(dir_params, n_sim=4000, seed=42):
     sx = math.sqrt(sum((x - mx) ** 2 for x in xs))
     sy = math.sqrt(sum((y - my) ** 2 for y in ys))
     corr = sxy / (sx * sy)
-    res = RichResult(payload={"estimate": corr,
-                              "neutral": abs(corr) < 0.05,
-                              "method": "DP neutrality check (GvdV 2017 Thm 4.28)"})
+    res = RichResult(
+        payload={"estimate": corr, "neutral": abs(corr) < 0.05, "method": "DP neutrality check (GvdV 2017 Thm 4.28)"}
+    )
     return with_describe_pointer(res, "gh_c4_19")
 
 

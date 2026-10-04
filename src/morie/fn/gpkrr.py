@@ -50,8 +50,7 @@ def gp_kernel_ridge_reg(X, y, X_test=None, lam=1e-2, gamma=1.0):
     yv = k.vec(y)
     n = len(Xm)
     K = [[_rbf(Xm[i], Xm[j], float(gamma)) for j in range(n)] for i in range(n)]
-    A = [[K[i][j] + (float(lam) if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    A = [[K[i][j] + (float(lam) if i == j else 0.0) for j in range(n)] for i in range(n)]
     alpha = k.cholsolve(A, yv)
     Xt = k.mat(X_test) if X_test is not None else Xm
     pred = []

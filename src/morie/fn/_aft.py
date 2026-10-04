@@ -27,18 +27,16 @@ __all__ = ["aft_fit", "log_dens_surv"]
 
 def log_dens_surv(z, family):
     """Standardised log density and log survivor at ``z`` for each family."""
-    if family == "weibull":            # extreme-value (Gumbel, min) errors
+    if family == "weibull":  # extreme-value (Gumbel, min) errors
         return z - np.exp(np.clip(z, -500, 500)), -np.exp(np.clip(z, -500, 500))
-    if family == "loglogistic":        # logistic errors
+    if family == "loglogistic":  # logistic errors
         zz = np.clip(z, -500, 500)
         return zz - 2.0 * np.logaddexp(0.0, zz), -np.logaddexp(0.0, zz)
-    if family == "lognormal":          # normal errors
+    if family == "lognormal":  # normal errors
         from ._stats_core import norm
 
         return norm.logpdf(z), norm.logsf(z)
-    raise ValueError(
-        f'family must be "weibull", "loglogistic" or "lognormal", got {family!r}'
-    )
+    raise ValueError(f'family must be "weibull", "loglogistic" or "lognormal", got {family!r}')
 
 
 def _numeric_cov(fn, theta, rel=1e-5):
@@ -48,12 +46,19 @@ def _numeric_cov(fn, theta, rel=1e-5):
     H = np.empty((k, k))
     for i in range(k):
         for j in range(i, k):
-            tp = theta.copy(); tp[i] += h[i]; tp[j] += h[j]
-            tm = theta.copy(); tm[i] -= h[i]; tm[j] -= h[j]
-            tpm = theta.copy(); tpm[i] += h[i]; tpm[j] -= h[j]
-            tmp = theta.copy(); tmp[i] -= h[i]; tmp[j] += h[j]
-            H[i, j] = H[j, i] = (fn(tp) - fn(tpm) - fn(tmp) + fn(tm)) / (
-                4.0 * h[i] * h[j])
+            tp = theta.copy()
+            tp[i] += h[i]
+            tp[j] += h[j]
+            tm = theta.copy()
+            tm[i] -= h[i]
+            tm[j] -= h[j]
+            tpm = theta.copy()
+            tpm[i] += h[i]
+            tpm[j] -= h[j]
+            tmp = theta.copy()
+            tmp[i] -= h[i]
+            tmp[j] += h[j]
+            H[i, j] = H[j, i] = (fn(tp) - fn(tpm) - fn(tmp) + fn(tm)) / (4.0 * h[i] * h[j])
     try:
         return np.linalg.inv(H)
     except np.linalg.LinAlgError:
@@ -81,8 +86,7 @@ def aft_fit(t, e, X, family="weibull", max_iter=500, tol=1e-6, add_intercept=Tru
         return -float(np.sum(np.where(e > 0, ld - np.log(sigma), lsv)))
 
     start = np.r_[np.linalg.lstsq(A, logt, rcond=None)[0], 0.0]
-    res = minimize(nll, start, method="BFGS",
-                   options={"maxiter": max_iter, "gtol": tol})
+    res = minimize(nll, start, method="BFGS", options={"maxiter": max_iter, "gtol": tol})
     theta = res.x
     # BFGS's hess_inv is a secant approximation accumulated along the path
     # the optimiser happened to walk, not the curvature at the optimum: it
@@ -98,5 +102,4 @@ def aft_fit(t, e, X, family="weibull", max_iter=500, tol=1e-6, add_intercept=Tru
     grad = np.asarray(getattr(res, "jac", np.full(p + 1, np.nan)), dtype=float)
     gnorm = float(np.max(np.abs(grad))) if np.all(np.isfinite(grad)) else np.inf
     converged = bool(res.success or gnorm < 1e-3 * max(1.0, abs(float(res.fun))))
-    return (theta[:p], float(theta[p]), float(-res.fun), cov,
-            int(res.nit), converged)
+    return (theta[:p], float(theta[p]), float(-res.fun), cov, int(res.nit), converged)

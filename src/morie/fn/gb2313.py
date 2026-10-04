@@ -55,8 +55,10 @@ def gibbons_edf_joint_moment(F_x, F_y, n):
     corr = cov / np.sqrt(vx * vy) if vx > 0 and vy > 0 else np.nan
     return RichResult(
         payload={
-            "joint_moment": float(jm), "cov_edf": float(cov),
-            "corr_edf": float(corr), "n": n,
+            "joint_moment": float(jm),
+            "cov_edf": float(cov),
+            "corr_edf": float(corr),
+            "n": n,
             "method": "E[T(x)T(y)] = nF(x) + n(n-1)F(x)F(y) (Corollary 2.3.1.3)",
         }
     )

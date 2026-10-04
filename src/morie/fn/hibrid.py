@@ -139,8 +139,7 @@ def _chol(A):
             if i == j:
                 s += jit
                 if s <= 0.0:
-                    raise ValueError("hibrid: the covariance matrix is not "
-                                     "positive definite")
+                    raise ValueError("hibrid: the covariance matrix is not positive definite")
                 L[i][i] = math.sqrt(s)
             else:
                 L[i][j] = s / L[j][j]
@@ -176,8 +175,7 @@ def _logdet(L):
 
 def _matmul(A, B):
     n, q, m = len(A), len(B), len(B[0])
-    return [[sum(A[i][u] * B[u][j] for u in range(q)) for j in range(m)]
-            for i in range(n)]
+    return [[sum(A[i][u] * B[u][j] for u in range(q)) for j in range(m)] for i in range(n)]
 
 
 def _reml_at(la, ls, Kg, Ks, y, X):
@@ -189,13 +187,11 @@ def _reml_at(la, ls, Kg, Ks, y, X):
     """
     n = len(y)
     p = len(X[0])
-    V = [[Kg[i][j] / la + Ks[i][j] / ls + (1.0 if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    V = [[Kg[i][j] / la + Ks[i][j] / ls + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = _chol(V)
     Viy = _solve(L, y)
     ViX = [_solve(L, [X[i][a] for i in range(n)]) for a in range(p)]
-    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)]
-             for a in range(p)]
+    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
     XtViy = [sum(X[i][a] * Viy[i] for i in range(n)) for a in range(p)]
     Lx = _chol(XtViX)
     beta = _solve(Lx, XtViy)
@@ -203,13 +199,11 @@ def _reml_at(la, ls, Kg, Ks, y, X):
     Vir = _solve(L, r)
     dfr = n - p
     s2e = sum(r[i] * Vir[i] for i in range(n)) / dfr
-    ll = -0.5 * (dfr * math.log(max(s2e, 1e-300)) + _logdet(L)
-                 + _logdet(Lx) + dfr)
+    ll = -0.5 * (dfr * math.log(max(s2e, 1e-300)) + _logdet(L) + _logdet(Lx) + dfr)
     return ll, beta, s2e, L
 
 
-def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
-                      p1_new=None, p2_new=None, max_iter=300, tol=1e-10):
+def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None, p2_new=None, max_iter=300, tol=1e-10):
     r"""Genomic prediction of hybrid performance from GCA and SCA.
 
     Parameters
@@ -238,24 +232,19 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
     if n == 0:
         raise ValueError("hibrid: no crosses")
     if len(P1) != n or len(P2) != n:
-        raise ValueError("hibrid: %d phenotypes but %d and %d parental "
-                         "genotype rows" % (n, len(P1), len(P2)))
+        raise ValueError("hibrid: %d phenotypes but %d and %d parental genotype rows" % (n, len(P1), len(P2)))
     m = len(P1[0])
     if any(len(r) != m for r in P1) or any(len(r) != m for r in P2):
-        raise ValueError("hibrid: both parents must be typed at the same "
-                         "%d markers" % m)
-    Xm = ([[1.0] for _ in range(n)] if X is None
-          else [[float(v) for v in row] for row in k.mat(X)])
+        raise ValueError("hibrid: both parents must be typed at the same %d markers" % m)
+    Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     p = len(Xm[0])
     if n - p < 2:
-        raise ValueError("hibrid: %d crosses and %d fixed effects leave too "
-                         "little information for two variance components"
-                         % (n, p))
+        raise ValueError(
+            "hibrid: %d crosses and %d fixed effects leave too little information for two variance components" % (n, p)
+        )
 
-    G1 = [[sum(P1[i][a] * P1[j][a] for a in range(m)) / m for j in range(n)]
-          for i in range(n)]
-    G2 = [[sum(P2[i][a] * P2[j][a] for a in range(m)) / m for j in range(n)]
-          for i in range(n)]
+    G1 = [[sum(P1[i][a] * P1[j][a] for a in range(m)) / m for j in range(n)] for i in range(n)]
+    G2 = [[sum(P2[i][a] * P2[j][a] for a in range(m)) / m for j in range(n)] for i in range(n)]
     Kg = [[G1[i][j] + G2[i][j] for j in range(n)] for i in range(n)]
     Ks = [[G1[i][j] * G2[i][j] for j in range(n)] for i in range(n)]
     I = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
@@ -270,6 +259,7 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
 
         def f1(l):
             return _reml_at(math.exp(l), 1e300, Kg, Kz, yv, Xm)[0]
+
         la = math.exp(_gridmax(f1, _LO, _HI))
         path.append(f1(math.log(la)))
         ll, beta, s2e, L = _reml_at(la, 1e300, Kg, Kz, yv, Xm)
@@ -287,6 +277,7 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
 
             def fa(l):
                 return _reml_at(math.exp(l), ls, Kg, Ks_used, yv, Xm)[0]
+
             la = math.exp(_gridmax(fa, _LO, _HI))
             if fixed_sca:
                 # the SCA variance is pinned, so its ratio follows the
@@ -294,8 +285,10 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
                 s2e_now = _reml_at(la, ls, Kg, Ks_used, yv, Xm)[2]
                 ls = s2e_now / max(float(sigma2_sca), 1e-300)
             else:
+
                 def fs(l):
                     return _reml_at(la, math.exp(l), Kg, Ks_used, yv, Xm)[0]
+
                 ls = math.exp(_gridmax(fs, _LO, _HI))
             cur = _reml_at(la, ls, Kg, Ks_used, yv, Xm)[0]
             path.append(cur)
@@ -314,10 +307,8 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
     r = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
     w = _solve(L, r)
     gca = [s2a * sum(Kg[i][j] * w[j] for j in range(n)) for i in range(n)]
-    sca = [s2s * sum(Ks_used[i][j] * w[j] for j in range(n))
-           for i in range(n)]
-    fitted = [sum(Xm[i][a] * beta[a] for a in range(p)) + gca[i] + sca[i]
-              for i in range(n)]
+    sca = [s2s * sum(Ks_used[i][j] * w[j] for j in range(n)) for i in range(n)]
+    fitted = [sum(Xm[i][a] * beta[a] for a in range(p)) + gca[i] + sca[i] for i in range(n)]
 
     tot = s2a + s2s + s2e
     pred_new = None
@@ -325,60 +316,69 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None,
         Q1 = [[float(v) for v in row] for row in k.mat(p1_new)]
         Q2 = [[float(v) for v in row] for row in k.mat(p2_new)]
         if len(Q1) != len(Q2):
-            raise ValueError("hibrid: p1_new and p2_new must describe the "
-                             "same crosses")
+            raise ValueError("hibrid: p1_new and p2_new must describe the same crosses")
         if any(len(rw) != m for rw in Q1) or any(len(rw) != m for rw in Q2):
-            raise ValueError("hibrid: new parents must be typed at the same "
-                             "%d markers" % m)
+            raise ValueError("hibrid: new parents must be typed at the same %d markers" % m)
         pred_new = []
         for u in range(len(Q1)):
-            c1 = [sum(Q1[u][a] * P1[j][a] for a in range(m)) / m
-                  for j in range(n)]
-            c2 = [sum(Q2[u][a] * P2[j][a] for a in range(m)) / m
-                  for j in range(n)]
+            c1 = [sum(Q1[u][a] * P1[j][a] for a in range(m)) / m for j in range(n)]
+            c2 = [sum(Q2[u][a] * P2[j][a] for a in range(m)) / m for j in range(n)]
             cg = [c1[j] + c2[j] for j in range(n)]
             cs = [c1[j] * c2[j] for j in range(n)]
             # an untested cross carries no covariate row, so the fixed part
             # is the intercept alone -- beta[0] by construction of X
-            pred_new.append(beta[0]
-                            + s2a * sum(cg[j] * w[j] for j in range(n))
-                            + s2s * sum(cs[j] * w[j] for j in range(n)))
+            pred_new.append(
+                beta[0] + s2a * sum(cg[j] * w[j] for j in range(n)) + s2s * sum(cs[j] * w[j] for j in range(n))
+            )
 
-    return RichResult(payload={
-        "estimate": fitted, "fitted": fitted,
-        "gca_effect": gca, "sca_effect": sca,
-        "coefficients": beta,
-        "sigma2_gca": s2a, "sigma2_sca": s2s, "sigma2_e": s2e,
-        "sca_share": (s2s / (s2a + s2s)) if s2a + s2s > _EPS else 0.0,
-        "h2": (s2a + s2s) / tot if tot > _EPS else float("nan"),
-        "gca_kernel": Kg, "sca_kernel": Ks,
-        "reml_path": path, "reml_loglik": ll, "iterations": it,
-        "converged": conv,
-        "sca_fixed": fixed_sca,
-        "prediction_new": pred_new,
-        "residuals": [yv[i] - fitted[i] for i in range(n)],
-        "n": n, "m": m, "p": p,
-        "method": "genomic hybrid prediction: additive GCA kernel from the "
-                  "sum of the parental relationship matrices, SCA kernel "
-                  "from their Hadamard product, variance components by "
-                  "profiled REML (Sprague & Tatum 1942; Technow et al. 2012, "
-                  "2014)",
-        "note": "sca_share is the fraction of genetic variance that only "
-                "the specific combination explains -- near zero means "
-                "choosing good parents is enough, and large means the "
-                "cross itself has to be tested; fixing sigma2_sca at 0 "
-                "reduces this exactly to additive GBLUP. Separating the "
-                "two needs a factorial design with many parents: with p "
-                "lines per pool the GCA kernel already spans about 2p - 1 "
-                "dimensions, so at 6 by 6 it takes eleven of the "
-                "thirty-six observations and no estimator can tell the "
-                "remaining interaction from residual noise. Compare "
-                "reml_loglik against the same fit with sigma2_sca = 0 "
-                "before reporting an SCA variance.",
-    })
+    return RichResult(
+        payload={
+            "estimate": fitted,
+            "fitted": fitted,
+            "gca_effect": gca,
+            "sca_effect": sca,
+            "coefficients": beta,
+            "sigma2_gca": s2a,
+            "sigma2_sca": s2s,
+            "sigma2_e": s2e,
+            "sca_share": (s2s / (s2a + s2s)) if s2a + s2s > _EPS else 0.0,
+            "h2": (s2a + s2s) / tot if tot > _EPS else float("nan"),
+            "gca_kernel": Kg,
+            "sca_kernel": Ks,
+            "reml_path": path,
+            "reml_loglik": ll,
+            "iterations": it,
+            "converged": conv,
+            "sca_fixed": fixed_sca,
+            "prediction_new": pred_new,
+            "residuals": [yv[i] - fitted[i] for i in range(n)],
+            "n": n,
+            "m": m,
+            "p": p,
+            "method": "genomic hybrid prediction: additive GCA kernel from the "
+            "sum of the parental relationship matrices, SCA kernel "
+            "from their Hadamard product, variance components by "
+            "profiled REML (Sprague & Tatum 1942; Technow et al. 2012, "
+            "2014)",
+            "note": "sca_share is the fraction of genetic variance that only "
+            "the specific combination explains -- near zero means "
+            "choosing good parents is enough, and large means the "
+            "cross itself has to be tested; fixing sigma2_sca at 0 "
+            "reduces this exactly to additive GBLUP. Separating the "
+            "two needs a factorial design with many parents: with p "
+            "lines per pool the GCA kernel already spans about 2p - 1 "
+            "dimensions, so at 6 by 6 it takes eleven of the "
+            "thirty-six observations and no estimator can tell the "
+            "remaining interaction from residual noise. Compare "
+            "reml_loglik against the same fit with sigma2_sca = 0 "
+            "before reporting an SCA variance.",
+        }
+    )
 
 
 def cheatsheet():
-    return ("hibrid: hibrid_prediction(y, p1_geno, p2_geno) -> GCA and SCA "
-            "variance components and hybrid predictions from marker kernels "
-            "(Sprague & Tatum 1942; Technow et al. 2014, Genetics 197:1343)")
+    return (
+        "hibrid: hibrid_prediction(y, p1_geno, p2_geno) -> GCA and SCA "
+        "variance components and hybrid predictions from marker kernels "
+        "(Sprague & Tatum 1942; Technow et al. 2014, Genetics 197:1343)"
+    )

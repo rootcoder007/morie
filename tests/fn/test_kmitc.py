@@ -1,7 +1,6 @@
 """Tests for kmitc.kamath_image_text_contrastive."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmitc import kamath_image_text_contrastive
 
 

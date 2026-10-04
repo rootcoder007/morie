@@ -415,7 +415,7 @@ def morie_misclass_correct(p_obs, sensitivity, specificity, n=None, conf=0.95):
     sp_ = _prob(specificity, "specificity")
     youden = se_ + sp_ - 1.0
     if abs(youden) < 1e-8:
-        raise ValueError("sensitivity + specificity must differ from 1; " "the classifier carries no information")
+        raise ValueError("sensitivity + specificity must differ from 1; the classifier carries no information")
     p_true = (p_obs + sp_ - 1.0) / youden
     out = MisclassCorrection(
         p_corrected=p_true,

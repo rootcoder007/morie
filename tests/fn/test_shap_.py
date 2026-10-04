@@ -1,7 +1,6 @@
 """Tests for morie.fn.shap_ -- Permutation-based SHAP values."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.shap_ import shap_values
 
 

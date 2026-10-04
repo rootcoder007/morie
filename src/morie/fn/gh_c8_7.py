@@ -5,10 +5,6 @@ Implements Theorem 8.15 + Example 8.16 of Ghosal & van der Vaart (2017), *Fundam
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_fin_apx_pri"]
@@ -21,13 +17,15 @@ def ghosal_fin_apx_pri(smoothness, n):
     mixture prior of Thm 8.15. Keys: estimate."""
     a = float(smoothness)
     eps_n = float(n) ** (-a / (2.0 * a + 1.0))
-    balance_gap = abs(eps_n ** (-1.0 / a)
-                      - float(n) * eps_n ** 2) \
-        / (float(n) * eps_n ** 2)
-    res = RichResult(payload={"estimate": eps_n,
-                              "net_size_log": eps_n ** (-1.0 / a),
-                              "balance_gap": balance_gap,
-                              "method": "net-prior rate (GvdV 2017 Thm 8.15, Ex 8.16)"})
+    balance_gap = abs(eps_n ** (-1.0 / a) - float(n) * eps_n**2) / (float(n) * eps_n**2)
+    res = RichResult(
+        payload={
+            "estimate": eps_n,
+            "net_size_log": eps_n ** (-1.0 / a),
+            "balance_gap": balance_gap,
+            "method": "net-prior rate (GvdV 2017 Thm 8.15, Ex 8.16)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_7")
 
 

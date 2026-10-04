@@ -11,5 +11,6 @@ def test_alfrz_basic():
 
 def test_alfrz_edge():
     import pytest
+
     with pytest.raises(ValueError, match="n_stages"):
         alammar_layer_freezing(3, 5)

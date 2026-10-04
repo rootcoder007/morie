@@ -70,7 +70,13 @@ def nhitsnet(y, horizon, kernels, ratios, wf, wb):
     res = _core.nhitsnet(y=y, horizon=horizon, kernels=kernels, ratios=ratios, wf=wf, wb=wb)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("nblocks", res["nblocks"]), ("first", res["first"]), ("last", res["last"]), ("mean", res["mean"]), ("residnorm", res["residnorm"])],
+        summary_lines=[
+            ("nblocks", res["nblocks"]),
+            ("first", res["first"]),
+            ("last", res["last"]),
+            ("mean", res["mean"]),
+            ("residnorm", res["residnorm"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

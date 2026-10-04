@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsatf import rangayyan_seizure_wavelet
 
-
 FS = 256.0
 E = [math.sin(2 * math.pi * 10 * t / FS) + 0.1 * math.sin(1.7 * t) for t in range(1024)]
 

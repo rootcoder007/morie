@@ -1,7 +1,6 @@
 """Tests for cox_snell_r2.cox_snell_r2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cox_snell_r2 import cox_snell_r2
 
 

@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Renewal-equation reproduction number with reporting delay."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['rtrenew', 'epinow2']
+__all__ = ["rtrenew", "epinow2"]
 
 
 def rtrenew(incidence, gen_int, delays=None):
@@ -51,17 +49,25 @@ def rtrenew(incidence, gen_int, delays=None):
         d = [v / sum(d) for v in d]
         shift = int(round(sum(i * p for i, p in enumerate(d))))
     infections = y[shift:] if shift else list(y)
-    n = len(infections); s = len(w)
+    n = len(infections)
+    s = len(w)
     times, rt = [], []
     for t in range(s, n):
         force = sum(w[k] * infections[t - k - 1] for k in range(s))
         times.append(t)
         rt.append(infections[t] / force if force > 0 else float("nan"))
     good = [v for v in rt if v == v]
-    return RichResult(payload={
-        "rt": rt, "time": times, "infections": infections, "shift": shift,
-        "mean_rt": (sum(good) / len(good)) if good else float("nan"), "n": n,
-        "method": "Renewal-equation Rt with reporting delay"})
+    return RichResult(
+        payload={
+            "rt": rt,
+            "time": times,
+            "infections": infections,
+            "shift": shift,
+            "mean_rt": (sum(good) / len(good)) if good else float("nan"),
+            "n": n,
+            "method": "Renewal-equation Rt with reporting delay",
+        }
+    )
 
 
 epinow2 = rtrenew

@@ -1,7 +1,6 @@
 """Tests for catep.cate_estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.catep import cate_estimation
 
 

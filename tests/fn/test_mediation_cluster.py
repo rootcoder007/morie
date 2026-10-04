@@ -2,9 +2,9 @@
 tdmed, mcausm, pscme, nemed, immid, weakid, medSEM, mlmMd, longMd,
 countMd, survmd, baymed, medML, dmlMed, mssm."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.baymed import bayes_mediation
 from morie.fn.causmedi import causal_mediation_imai
 from morie.fn.countMd import count_mediation
@@ -172,9 +172,7 @@ def test_medSEM_path_enumeration():
     out = sem_mediation({"M": ["X"], "Y": ["X", "M"]}, {"X": X, "M": M, "Y": Y})
     assert out["paths"]["X->Y"] == pytest.approx(0.5, abs=0.06)
     assert out["paths"]["X->M->Y"] == pytest.approx(0.96, abs=0.08)
-    assert out["total_effects"]["X"] == pytest.approx(
-        out["paths"]["X->Y"] + out["paths"]["X->M->Y"]
-    )
+    assert out["total_effects"]["X"] == pytest.approx(out["paths"]["X->Y"] + out["paths"]["X->M->Y"])
     assert 0 < out["r_squared"]["Y"] < 1
     with pytest.raises(ValueError):
         sem_mediation({"Y": ["Z"]}, {"Y": Y})

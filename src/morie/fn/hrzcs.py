@@ -24,7 +24,6 @@ randomness.
 
 from __future__ import annotations
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["nprate", "horowitz_curse_dimensionality"]
@@ -66,11 +65,19 @@ def nprate(d, n, s=2, c=1.0, dref=1):
     nequiv = float(n ** (expref / expo))
     return RichResult(
         title="Nonparametric convergence rate and the curse of dimensionality",
-        payload={"exponent": expo, "rate": rate,
-                 "mseexponent": 2.0 * expo, "mse": float(rate * rate),
-                 "bandwidth": bw, "nequiv": nequiv,
-                 "penalty": float(nequiv / n), "d": d, "s": s, "n": n,
-                 "method": "Horowitz (2009) Appendix A.1/A.2 optimal rates"},
+        payload={
+            "exponent": expo,
+            "rate": rate,
+            "mseexponent": 2.0 * expo,
+            "mse": float(rate * rate),
+            "bandwidth": bw,
+            "nequiv": nequiv,
+            "penalty": float(nequiv / n),
+            "d": d,
+            "s": s,
+            "n": n,
+            "method": "Horowitz (2009) Appendix A.1/A.2 optimal rates",
+        },
     )
 
 
@@ -88,6 +95,6 @@ if __name__ == "__main__":  # pragma: no cover
     assert abs(r["mseexponent"] - 4.0 / 5.0) < 1e-12
     r5 = nprate(5, 1000)
     assert abs(r5["mseexponent"] - 4.0 / 9.0) < 1e-12, r5["mseexponent"]
-    assert r5["rate"] > r["rate"]          # slower convergence in d = 5
+    assert r5["rate"] > r["rate"]  # slower convergence in d = 5
     assert r5["penalty"] > 1.0
     print("ok", r["rate"], r5["rate"], r5["penalty"])

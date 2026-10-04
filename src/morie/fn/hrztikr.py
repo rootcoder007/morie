@@ -58,25 +58,29 @@ def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
     def solve(a):
         return np.linalg.solve(TtT + float(a) * np.eye(k), Ttb)
 
-    grid = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1] if alphas is None else \
-        [float(a) for a in alphas]
+    grid = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1] if alphas is None else [float(a) for a in alphas]
     if any(a <= 0 for a in grid):
         raise ValueError("alpha values must be positive.")
     curve = []
     for a in grid:
         ga = solve(a)
-        curve.append((a, float(np.linalg.norm(Tm @ ga - b)),
-                      float(np.linalg.norm(ga))))
+        curve.append((a, float(np.linalg.norm(Tm @ ga - b)), float(np.linalg.norm(ga))))
     a_use = grid[len(grid) // 2] if alpha is None else float(alpha)
     if a_use <= 0:
         raise ValueError(f"alpha must be positive, got {a_use}.")
     g = solve(a_use)
-    return RichResult(payload={"g": g, "alpha": a_use,
-                               "residual_norm": float(np.linalg.norm(Tm @ g - b)),
-                               "solution_norm": float(np.linalg.norm(g)),
-                               "l_curve": curve, "condition_number": cond,
-                               "ill_posed": True,
-                               "method": "Tikhonov; T compact so T^{-1} is unbounded"})
+    return RichResult(
+        payload={
+            "g": g,
+            "alpha": a_use,
+            "residual_norm": float(np.linalg.norm(Tm @ g - b)),
+            "solution_norm": float(np.linalg.norm(g)),
+            "l_curve": curve,
+            "condition_number": cond,
+            "ill_posed": True,
+            "method": "Tikhonov; T compact so T^{-1} is unbounded",
+        }
+    )
 
 
 def cheatsheet():

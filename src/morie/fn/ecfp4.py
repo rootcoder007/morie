@@ -156,8 +156,7 @@ def _defaults(a, numhs, charge, inring, isotope_delta):
     return (col(numhs, 0), col(charge, 0), col(inring, 0), col(isotope_delta, 0))
 
 
-def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None,
-          isotope_delta=None, nbits=2048, radius=2):
+def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None, isotope_delta=None, nbits=2048, radius=2):
     """Extended-connectivity fingerprint of radius 2 (ECFP4).
 
     ECFP diameter 4 is Morgan radius 2.  The molecule is supplied as a
@@ -239,11 +238,19 @@ def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None,
     inv = _connectivity_invariants(a, bonds, at, nh, ch, ir, isd)
     bits, cnt, ident = _morgan(a, bonds, inv, int(radius), int(nbits))
     uniq = sorted(set(ident))
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits),
-        "identifiers": uniq, "nenv": len(ident), "a": a,
-        "nbits": int(nbits), "radius": int(radius),
-        "method": "ECFP4 (Morgan radius 2), Rogers-Hahn / RDKit"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "identifiers": uniq,
+            "nenv": len(ident),
+            "a": a,
+            "nbits": int(nbits),
+            "radius": int(radius),
+            "method": "ECFP4 (Morgan radius 2), Rogers-Hahn / RDKit",
+        }
+    )
 
 
 ecfp_4_fingerprint = ecfp4

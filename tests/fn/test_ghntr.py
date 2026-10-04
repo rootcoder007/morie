@@ -1,7 +1,6 @@
 """Tests for ghntr.ghosal_neutral_right."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghntr import ghosal_neutral_right
 
 

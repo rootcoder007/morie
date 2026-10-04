@@ -10,14 +10,12 @@ __all__ = ["kamath_ch3_prompt_label_mapping"]
 
 def _validate_dist(d, name):
     if not isinstance(d, dict) or not d:
-        raise ValueError(f"{name} must be a non-empty mapping "
-                         f"answer-word -> probability.")
+        raise ValueError(f"{name} must be a non-empty mapping answer-word -> probability.")
     p = np.asarray([float(v) for v in d.values()], dtype=float)
     if np.any(p < 0):
         raise ValueError(f"{name} holds a negative probability.")
     if abs(float(p.sum()) - 1.0) > 1e-8:
-        raise ValueError(
-            f"{name} must sum to 1; it sums to {float(p.sum()):.6g}.")
+        raise ValueError(f"{name} must sum to 1; it sums to {float(p.sum()):.6g}.")
     return p
 
 
@@ -53,15 +51,20 @@ def kamath_ch3_prompt_label_mapping(x, y, M):
     missing = [w for w in M.values() if w not in x]
     if missing:
         raise ValueError(
-            f"the answer words {missing!r} carry no probability in x; "
-            "the label map and the distribution disagree.")
+            f"the answer words {missing!r} carry no probability in x; the label map and the distribution disagree."
+        )
     label_probs = {k: float(x[w]) for k, w in M.items()}
-    return RichResult(payload={
-        "estimate": float(x[M[y]]), "label": y, "answer_word": M[y],
-        "label_probs": label_probs,
-        "label_mass": float(sum(label_probs.values())),
-        "n": len(x),
-        "method": "prompt label word mapping (Kamath Eq 3.1)"})
+    return RichResult(
+        payload={
+            "estimate": float(x[M[y]]),
+            "label": y,
+            "answer_word": M[y],
+            "label_probs": label_probs,
+            "label_mass": float(sum(label_probs.values())),
+            "n": len(x),
+            "method": "prompt label word mapping (Kamath Eq 3.1)",
+        }
+    )
 
 
 def cheatsheet():

@@ -106,13 +106,19 @@ one, Sec. 5 for their comparison.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tmle_cluster_ic", "adaptive_prespecification",
-           "candidate_tmle", "influence_curve", "variance_estimate",
-           "default_library", "tmle_hierarchical", "cluster_weights"]
+__all__ = [
+    "tmle_cluster_ic",
+    "adaptive_prespecification",
+    "candidate_tmle",
+    "influence_curve",
+    "variance_estimate",
+    "default_library",
+    "tmle_hierarchical",
+    "cluster_weights",
+]
 
 _TARGETS = ("SATE", "PATE")
 _DESIGNS = ("unmatched", "matched", "clustered")
@@ -134,12 +140,10 @@ def default_library(p, interactions=True):
     """
     lib = [{"name": "unadjusted", "cols": (), "interact": False}]
     for j in range(p):
-        lib.append({"name": "W%d" % (j + 1), "cols": (j,),
-                    "interact": False})
+        lib.append({"name": "W%d" % (j + 1), "cols": (j,), "interact": False})
     if interactions:
         for j in range(p):
-            lib.append({"name": "W%d x A" % (j + 1), "cols": (j,),
-                        "interact": True})
+            lib.append({"name": "W%d x A" % (j + 1), "cols": (j,), "interact": True})
     return lib
 
 
@@ -181,8 +185,7 @@ def _fit_g(A, W, cand, rows, ridge):
     return g1, b
 
 
-def candidate_tmle(y, A, W, cand, g1, rows=None, eval_rows=None,
-                   ridge=1e-8, target_step=True):
+def candidate_tmle(y, A, W, cand, g1, rows=None, eval_rows=None, ridge=1e-8, target_step=True):
     r"""One candidate TMLE: initial fit, targeting, predictions.
 
     Returns ``(q1, q0, qa, eps)`` evaluated on ``eval_rows``: the
@@ -206,7 +209,7 @@ def candidate_tmle(y, A, W, cand, g1, rows=None, eval_rows=None,
     for i in range(n):
         p1 = min(max(g1(i), _EPS), 1.0 - _EPS)
         gA[i] = p1 if A[i] == 1.0 else 1.0 - p1
-        H[i] = (1.0 / p1 if A[i] == 1.0 else -1.0 / (1.0 - p1))
+        H[i] = 1.0 / p1 if A[i] == 1.0 else -1.0 / (1.0 - p1)
 
     eps = 0.0
     if target_step:
@@ -227,8 +230,7 @@ def candidate_tmle(y, A, W, cand, g1, rows=None, eval_rows=None,
 def influence_curve(y, A, q1, q0, qa, gA, rows, psi, target):
     """Eq. (13.3) for the PATE and eq. (13.4) for the SATE."""
     if target not in _TARGETS:
-        raise ValueError("tmlcic: target must be SATE or PATE, got %r"
-                         % (target,))
+        raise ValueError("tmlcic: target must be SATE or PATE, got %r" % (target,))
     out = {}
     for i in rows:
         sign = 1.0 if A[i] == 1.0 else -1.0
@@ -243,12 +245,10 @@ def influence_curve(y, A, q1, q0, qa, gA, rows, psi, target):
 def _pairs_from(cluster, n):
     """Group row indices by pair (or cluster) label, in first-seen order."""
     if cluster is None:
-        raise ValueError("tmlcic: a matched or clustered design needs "
-                         "the pair labels")
+        raise ValueError("tmlcic: a matched or clustered design needs the pair labels")
     lab = list(cluster)
     if len(lab) != n:
-        raise ValueError("tmlcic: %d pair labels for %d observations"
-                         % (len(lab), n))
+        raise ValueError("tmlcic: %d pair labels for %d observations" % (len(lab), n))
     order, groups = [], {}
     for i, c in enumerate(lab):
         key = str(c)
@@ -283,8 +283,7 @@ def variance_estimate(D, y, qa, groups, n, design, target):
                     rho += res[grp[a]] * res[grp[b]]
         rho /= float(len(groups))
         v = sum(D[i] * D[i] for i in range(n)) / n - 2.0 * rho
-        return max(v, 0.0) / n, {"unit": "pair", "m": len(groups),
-                                 "rho": rho}
+        return max(v, 0.0) / n, {"unit": "pair", "m": len(groups), "rho": rho}
     dbar = [sum(D[i] for i in grp) / len(grp) for grp in groups]
     m = len(groups)
     v = sum(x * x for x in dbar) / m
@@ -320,17 +319,14 @@ def _cv_folds(groups, n_folds, design, n):
         units = [[i] for i in range(n)]
     else:
         units = groups
-    V = len(units) if n_folds in (None, 0, "loo") else \
-        max(2, min(int(n_folds), len(units)))
+    V = len(units) if n_folds in (None, 0, "loo") else max(2, min(int(n_folds), len(units)))
     folds = [[] for _ in range(V)]
     for j, u in enumerate(units):
         folds[j % V].extend(u)
     return [f for f in folds if f]
 
 
-def adaptive_prespecification(y, A, W, groups, design, target,
-                              library=None, g_library=None,
-                              n_folds=None, ridge=1e-8):
+def adaptive_prespecification(y, A, W, groups, design, target, library=None, g_library=None, n_folds=None, ridge=1e-8):
     r"""Sec. 13.2-13.4: choose the working model, then choose g.
 
     The Q library is selected first with g held at its known value, then
@@ -353,11 +349,9 @@ def adaptive_prespecification(y, A, W, groups, design, target,
             if not train:
                 continue
             g1 = gfit(train)
-            q1, q0, qa, info = candidate_tmle(y, A, W, cand, g1,
-                                              rows=train, ridge=ridge)
+            q1, q0, qa, info = candidate_tmle(y, A, W, cand, g1, rows=train, ridge=ridge)
             psi = sum(q1[i] - q0[i] for i in val) / len(val)
-            D = influence_curve(y, A, q1, q0, qa, info["gA"], val, psi,
-                                target)
+            D = influence_curve(y, A, q1, q0, qa, info["gA"], val, psi, target)
             tot += _loss(D, y, qa, groups, design, target, val)
         return tot / len(folds)
 
@@ -365,9 +359,14 @@ def adaptive_prespecification(y, A, W, groups, design, target,
     best_q = min(range(len(lib)), key=lambda t: q_risks[t])
     chosen = lib[best_q]
 
-    glib = ([{"name": "known (0.5)", "cols": (), "interact": False}]
-            + [{"name": "W%d" % (j + 1), "cols": (j,), "interact": False}
-               for j in range(p)]) if g_library is None else list(g_library)
+    glib = (
+        (
+            [{"name": "known (0.5)", "cols": (), "interact": False}]
+            + [{"name": "W%d" % (j + 1), "cols": (j,), "interact": False} for j in range(p)]
+        )
+        if g_library is None
+        else list(g_library)
+    )
 
     def gfit_for(cand_g):
         if cand_g.get("name") == "known (0.5)" and not cand_g["cols"]:
@@ -377,16 +376,32 @@ def adaptive_prespecification(y, A, W, groups, design, target,
     g_risks = [cv_risk(chosen, gfit_for(cg)) for cg in glib]
     best_g = min(range(len(glib)), key=lambda t: g_risks[t])
 
-    return {"q_candidate": chosen, "q_risks": q_risks,
-            "q_names": [c["name"] for c in lib],
-            "g_candidate": glib[best_g], "g_risks": g_risks,
-            "g_names": [c["name"] for c in glib],
-            "gfit": gfit_for(glib[best_g]), "n_folds": len(folds)}
+    return {
+        "q_candidate": chosen,
+        "q_risks": q_risks,
+        "q_names": [c["name"] for c in lib],
+        "g_candidate": glib[best_g],
+        "g_risks": g_risks,
+        "g_names": [c["name"] for c in glib],
+        "gfit": gfit_for(glib[best_g]),
+        "n_folds": len(folds),
+    }
 
 
-def tmle_cluster_ic(y, D, X, cluster=None, target="SATE",
-                    design=None, library=None, g_library=None,
-                    n_folds=None, adapt=True, ridge=1e-8, level=0.95):
+def tmle_cluster_ic(
+    y,
+    D,
+    X,
+    cluster=None,
+    target="SATE",
+    design=None,
+    library=None,
+    g_library=None,
+    n_folds=None,
+    adapt=True,
+    ridge=1e-8,
+    level=0.95,
+):
     r"""TMLE for a cluster randomized trial, with adaptive
     pre-specification of the adjustment set.
 
@@ -435,32 +450,25 @@ def tmle_cluster_ic(y, D, X, cluster=None, target="SATE",
         r["q_selected"], r["se"], r["se_unadjusted"]
     """
     if target not in _TARGETS:
-        raise ValueError("tmlcic: target must be SATE or PATE, got %r"
-                         % (target,))
+        raise ValueError("tmlcic: target must be SATE or PATE, got %r" % (target,))
     yv, Av = k.vec(y), k.vec(D)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("tmlcic: %d outcomes but %d treatments"
-                         % (n, len(Av)))
+        raise ValueError("tmlcic: %d outcomes but %d treatments" % (n, len(Av)))
     if any(v not in (0.0, 1.0) for v in Av):
-        raise ValueError("tmlcic: the randomization indicator must be "
-                         "binary 0/1")
+        raise ValueError("tmlcic: the randomization indicator must be binary 0/1")
     if not 0 < sum(Av) < n:
         raise ValueError("tmlcic: both arms must be non-empty")
     Wm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("tmlcic: %d covariate rows for %d outcomes"
-                         % (len(Wm), n))
+        raise ValueError("tmlcic: %d covariate rows for %d outcomes" % (len(Wm), n))
     if design is None:
         design = "unmatched" if cluster is None else "matched"
     if design not in _DESIGNS:
-        raise ValueError("tmlcic: design must be one of %s, got %r"
-                         % (", ".join(_DESIGNS), design))
-    groups = (_pairs_from(cluster, n) if design != "unmatched"
-              else [[i] for i in range(n)])
+        raise ValueError("tmlcic: design must be one of %s, got %r" % (", ".join(_DESIGNS), design))
+    groups = _pairs_from(cluster, n) if design != "unmatched" else [[i] for i in range(n)]
     if design == "matched" and any(len(g) != 2 for g in groups):
-        raise ValueError("tmlcic: design='matched' needs pairs; use "
-                         "design='clustered' for other sizes")
+        raise ValueError("tmlcic: design='matched' needs pairs; use design='clustered' for other sizes")
     if n < 4:
         raise ValueError("tmlcic: need at least 4 units, got %d" % n)
 
@@ -476,32 +484,33 @@ def tmle_cluster_ic(y, D, X, cluster=None, target="SATE",
         return 0.5
 
     if adapt:
-        sel = adaptive_prespecification(ys, Av, Wm, groups, design,
-                                        target, library=library,
-                                        g_library=g_library,
-                                        n_folds=n_folds, ridge=ridge)
+        sel = adaptive_prespecification(
+            ys, Av, Wm, groups, design, target, library=library, g_library=g_library, n_folds=n_folds, ridge=ridge
+        )
         cand, gfit = sel["q_candidate"], sel["gfit"]
         g1 = gfit(list(range(n)))
     else:
-        sel = {"q_candidate": unadj, "q_risks": [], "q_names": [],
-               "g_candidate": {"name": "known (0.5)"}, "g_risks": [],
-               "g_names": [], "n_folds": 0}
+        sel = {
+            "q_candidate": unadj,
+            "q_risks": [],
+            "q_names": [],
+            "g_candidate": {"name": "known (0.5)"},
+            "g_risks": [],
+            "g_names": [],
+            "n_folds": 0,
+        }
         cand, g1 = unadj, known_g
 
     q1, q0, qa, info = candidate_tmle(ys, Av, Wm, cand, g1, ridge=ridge)
     rows = list(range(n))
     psi_s = sum(q1[i] - q0[i] for i in rows) / n
-    Dic = influence_curve(ys, Av, q1, q0, qa, info["gA"], rows, psi_s,
-                          target)
-    var_s, vinfo = variance_estimate(Dic, ys, qa, groups, n, design,
-                                     target)
+    Dic = influence_curve(ys, Av, q1, q0, qa, info["gA"], rows, psi_s, target)
+    var_s, vinfo = variance_estimate(Dic, ys, qa, groups, n, design, target)
 
     # the unadjusted comparator, same design and target
-    u1, u0, ua, uinfo = candidate_tmle(ys, Av, Wm, unadj, known_g,
-                                       ridge=ridge)
+    u1, u0, ua, uinfo = candidate_tmle(ys, Av, Wm, unadj, known_g, ridge=ridge)
     psi_u = sum(u1[i] - u0[i] for i in rows) / n
-    Du = influence_curve(ys, Av, u1, u0, ua, uinfo["gA"], rows, psi_u,
-                         target)
+    Du = influence_curve(ys, Av, u1, u0, ua, uinfo["gA"], rows, psi_u, target)
     var_u, _ = variance_estimate(Du, ys, ua, groups, n, design, target)
 
     psi = rng * psi_s
@@ -509,32 +518,39 @@ def tmle_cluster_ic(y, D, X, cluster=None, target="SATE",
     se_u = rng * math.sqrt(var_u)
     z = k.qnorm(0.5 + 0.5 * float(level))
 
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n": n,
-        "ci": (psi - z * se, psi + z * se),
-        "level": float(level),
-        "unadjusted": rng * psi_u, "se_unadjusted": se_u,
-        "variance_ratio": (var_s / var_u) if var_u > 0.0
-        else float("nan"),
-        "q_selected": sel["q_candidate"]["name"],
-        "q_risks": dict(zip(sel["q_names"], sel["q_risks"])),
-        "g_selected": sel["g_candidate"]["name"],
-        "g_risks": dict(zip(sel["g_names"], sel["g_risks"])),
-        "epsilon": info["eps"],
-        "influence_curve": [Dic[i] * rng for i in rows],
-        "eic_mean": sum(Dic.values()) / n,
-        "rho": vinfo.get("rho", float("nan")),
-        "independent_units": vinfo["m"], "unit": vinfo["unit"],
-        "design": design, "target": target,
-        "n_folds": sel["n_folds"], "adapt": bool(adapt),
-        "method": "adaptive pre-specification TMLE, Balzer, van der "
-                  "Laan & Petersen (2018) Ch. 13",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n": n,
+            "ci": (psi - z * se, psi + z * se),
+            "level": float(level),
+            "unadjusted": rng * psi_u,
+            "se_unadjusted": se_u,
+            "variance_ratio": (var_s / var_u) if var_u > 0.0 else float("nan"),
+            "q_selected": sel["q_candidate"]["name"],
+            "q_risks": dict(zip(sel["q_names"], sel["q_risks"])),
+            "g_selected": sel["g_candidate"]["name"],
+            "g_risks": dict(zip(sel["g_names"], sel["g_risks"])),
+            "epsilon": info["eps"],
+            "influence_curve": [Dic[i] * rng for i in rows],
+            "eic_mean": sum(Dic.values()) / n,
+            "rho": vinfo.get("rho", float("nan")),
+            "independent_units": vinfo["m"],
+            "unit": vinfo["unit"],
+            "design": design,
+            "target": target,
+            "n_folds": sel["n_folds"],
+            "adapt": bool(adapt),
+            "method": "adaptive pre-specification TMLE, Balzer, van der Laan & Petersen (2018) Ch. 13",
+        }
+    )
 
 
 # ---------------------------------------------------------------------
 # Hierarchical data: the cluster-level and individual-level TMLEs
 # ---------------------------------------------------------------------
+
 
 def cluster_weights(cluster, weights=None):
     r"""The per-individual weights alpha_ij and the cluster groups.
@@ -562,15 +578,13 @@ def cluster_weights(cluster, weights=None):
         return alpha, grp
     alpha = [float(v) for v in weights]
     if len(alpha) != n:
-        raise ValueError("cluster_weights: %d weights for %d rows"
-                         % (len(alpha), n))
+        raise ValueError("cluster_weights: %d weights for %d rows" % (len(alpha), n))
     if any(v < 0.0 for v in alpha):
         raise ValueError("cluster_weights: weights must be non-negative")
     for g in grp:
         tot = sum(alpha[i] for i in g)
         if abs(tot - 1.0) > 1e-8:
-            raise ValueError("cluster_weights: weights in a cluster sum "
-                             "to %.6f, not 1" % tot)
+            raise ValueError("cluster_weights: weights in a cluster sum to %.6f, not 1" % tot)
     return alpha, grp
 
 
@@ -581,8 +595,7 @@ def _one_per_cluster(v, groups, name):
         first = v[g[0]]
         for i in g:
             if v[i] != first:
-                raise ValueError("tmlcic: %s varies within a cluster; "
-                                 "it is a cluster-level variable" % name)
+                raise ValueError("tmlcic: %s varies within a cluster; it is a cluster-level variable" % name)
         out.append(first)
     return out
 
@@ -595,15 +608,13 @@ def _hier_cluster_arm(yc, Aj, Zj, groups, a, trim, ridge, known_g):
         p1 = [min(max(float(v), trim), 1.0 - trim) for v in known_g]
     else:
         b = k.logit_irls(X, Aj, ridge=max(ridge, 1e-10))
-        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim)
-              for v in k.matvec(X, b)]
+        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim) for v in k.matvec(X, b)]
     ga = [p1[j] if a == 1.0 else 1.0 - p1[j] for j in range(J)]
 
     def row(av, j):
         return [1.0, av] + list(Zj[j])
 
-    bq = k.logit_irls([row(Aj[j], j) for j in range(J)], yc,
-                      ridge=max(ridge, 1e-10))
+    bq = k.logit_irls([row(Aj[j], j) for j in range(J)], yc, ridge=max(ridge, 1e-10))
 
     def q(av, j):
         r = row(av, j)
@@ -616,12 +627,10 @@ def _hier_cluster_arm(yc, Aj, Zj, groups, a, trim, ridge, known_g):
     qs_a = [k.sigmoid(_logit(q(a, j)) + eps / ga[j]) for j in range(J)]
     psi = sum(qs_a) / J
     D = [H[j] * (yc[j] - qs_obs[j]) + qs_a[j] - psi for j in range(J)]
-    return psi, D, {"eps": eps, "max_weight": max(1.0 / g for g in ga),
-                    "min_g": min(ga)}
+    return psi, D, {"eps": eps, "max_weight": max(1.0 / g for g in ga), "min_g": min(ga)}
 
 
-def _hier_individual_arm(y, Ai, Zi, alpha, groups, a, trim, ridge,
-                         known_g):
+def _hier_individual_arm(y, Ai, Zi, alpha, groups, a, trim, ridge, known_g):
     """TMLE II, eq. (14)-(21).
 
     The difference from TMLE I is only where the averaging happens: the
@@ -636,17 +645,14 @@ def _hier_individual_arm(y, Ai, Zi, alpha, groups, a, trim, ridge,
     if known_g is not None:
         p1 = [min(max(float(v), trim), 1.0 - trim) for v in known_g]
     else:
-        b = k.logit_irls(X, Ai, ridge=max(ridge, 1e-10),
-                         obs_weights=alpha)
-        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim)
-              for v in k.matvec(X, b)]
+        b = k.logit_irls(X, Ai, ridge=max(ridge, 1e-10), obs_weights=alpha)
+        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim) for v in k.matvec(X, b)]
     ga = [p1[i] if a == 1.0 else 1.0 - p1[i] for i in range(n)]
 
     def row(av, i):
         return [1.0, av] + list(Zi[i])
 
-    bq = k.logit_irls([row(Ai[i], i) for i in range(n)], y,
-                      ridge=max(ridge, 1e-10), obs_weights=alpha)
+    bq = k.logit_irls([row(Ai[i], i) for i in range(n)], y, ridge=max(ridge, 1e-10), obs_weights=alpha)
 
     def q(av, i):
         r = row(av, i)
@@ -662,14 +668,11 @@ def _hier_individual_arm(y, Ai, Zi, alpha, groups, a, trim, ridge,
     psi = sum(qc_a) / J
     D = []
     for t, g in enumerate(groups):
-        D.append(sum(alpha[i] * (H[i] * (y[i] - qs_obs[i]) + qs_a[i])
-                     for i in g) - psi)
-    return psi, D, {"eps": eps, "max_weight": max(1.0 / gv for gv in ga),
-                    "min_g": min(ga), "qc": qc_a}
+        D.append(sum(alpha[i] * (H[i] * (y[i] - qs_obs[i]) + qs_a[i]) for i in g) - psi)
+    return psi, D, {"eps": eps, "max_weight": max(1.0 / gv for gv in ga), "min_g": min(ga), "qc": qc_a}
 
 
-def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
-                      known_g=None, trim=0.01, ridge=1e-8, level=0.95):
+def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None, known_g=None, trim=0.01, ridge=1e-8, level=0.95):
     r"""Causal effect of a CLUSTER-level exposure on hierarchical data.
 
     Two estimators of :math:`E[Y^c(1)] - E[Y^c(0)]`, differing in the
@@ -744,27 +747,22 @@ def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
         r["estimate_cluster"], r["estimate_individual"]
     """
     if arm not in ("both", "cluster", "individual"):
-        raise ValueError("tmlcic: arm must be both, cluster or "
-                         "individual, got %r" % (arm,))
+        raise ValueError("tmlcic: arm must be both, cluster or individual, got %r" % (arm,))
     yv, Av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("tmlcic: %d outcomes but %d exposures"
-                         % (n, len(Av)))
+        raise ValueError("tmlcic: %d outcomes but %d exposures" % (n, len(Av)))
     if any(v not in (0.0, 1.0) for v in Av):
         raise ValueError("tmlcic: the exposure must be binary 0/1")
     if any(v < 0.0 or v > 1.0 for v in yv):
-        raise ValueError("tmlcic: individual outcomes must lie in "
-                         "[0, 1]; rescale them first")
+        raise ValueError("tmlcic: individual outcomes must lie in [0, 1]; rescale them first")
     Em = k.mat(E) if E is not None else [[] for _ in range(n)]
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     if len(Em) != n or len(Wm) != n:
-        raise ValueError("tmlcic: covariate blocks have %d and %d rows "
-                         "for %d individuals" % (len(Em), len(Wm), n))
+        raise ValueError("tmlcic: covariate blocks have %d and %d rows for %d individuals" % (len(Em), len(Wm), n))
     t = float(trim)
     if not 0.0 < t < 0.5:
-        raise ValueError("tmlcic: trim must be in (0, 0.5), got %r"
-                         % (trim,))
+        raise ValueError("tmlcic: trim must be in (0, 0.5), got %r" % (trim,))
     alpha, groups = cluster_weights(cluster, weights)
     J = len(groups)
     if J < 4:
@@ -773,13 +771,11 @@ def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
     if not 0 < sum(Aj) < J:
         raise ValueError("tmlcic: both exposure arms must be non-empty")
     for c in range(len(Em[0]) if Em[0] else 0):
-        _one_per_cluster([r[c] for r in Em], groups,
-                         "a cluster-level covariate")
+        _one_per_cluster([r[c] for r in Em], groups, "a cluster-level covariate")
 
     yc = [sum(alpha[i] * yv[i] for i in g) for g in groups]
     Ej = [Em[g[0]] for g in groups]
-    Wbar = [[sum(alpha[i] * Wm[i][c] for i in g)
-             for c in range(len(Wm[0]) if Wm[0] else 0)] for g in groups]
+    Wbar = [[sum(alpha[i] * Wm[i][c] for i in g) for c in range(len(Wm[0]) if Wm[0] else 0)] for g in groups]
     Zj = [list(Ej[t]) + list(Wbar[t]) for t in range(J)]
     Zi = [list(Em[i]) + list(Wm[i]) for i in range(n)]
     kg_c = known_g[0] if known_g is not None else None
@@ -787,42 +783,46 @@ def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
 
     out = {}
     z = k.qnorm(0.5 + 0.5 * float(level))
-    for nm, run in (("cluster", arm in ("both", "cluster")),
-                    ("individual", arm in ("both", "individual"))):
+    for nm, run in (("cluster", arm in ("both", "cluster")), ("individual", arm in ("both", "individual"))):
         if not run:
             continue
         psi, D, info = {}, {}, {}
         for a in (0.0, 1.0):
             if nm == "cluster":
-                p, d, inf = _hier_cluster_arm(yc, Aj, Zj, groups, a, t,
-                                              ridge, kg_c)
+                p, d, inf = _hier_cluster_arm(yc, Aj, Zj, groups, a, t, ridge, kg_c)
             else:
-                p, d, inf = _hier_individual_arm(yv, Av, Zi, alpha,
-                                                 groups, a, t, ridge,
-                                                 kg_i)
+                p, d, inf = _hier_individual_arm(yv, Av, Zi, alpha, groups, a, t, ridge, kg_i)
             psi[a], D[a], info[a] = p, d, inf
         contrast = psi[1.0] - psi[0.0]
         Dc = [D[1.0][j] - D[0.0][j] for j in range(J)]
         se = k.sd(Dc) / math.sqrt(J) if J > 1 else float("nan")
-        out[nm] = {"estimate": contrast, "se": se,
-                   "ci": (contrast - z * se, contrast + z * se),
-                   "mean_1": psi[1.0], "mean_0": psi[0.0],
-                   "influence_curve": Dc,
-                   "eic_mean": sum(Dc) / J,
-                   "epsilon": (info[0.0]["eps"], info[1.0]["eps"]),
-                   "max_weight": max(info[0.0]["max_weight"],
-                                     info[1.0]["max_weight"])}
+        out[nm] = {
+            "estimate": contrast,
+            "se": se,
+            "ci": (contrast - z * se, contrast + z * se),
+            "mean_1": psi[1.0],
+            "mean_0": psi[0.0],
+            "influence_curve": Dc,
+            "eic_mean": sum(Dc) / J,
+            "epsilon": (info[0.0]["eps"], info[1.0]["eps"]),
+            "max_weight": max(info[0.0]["max_weight"], info[1.0]["max_weight"]),
+        }
 
     main = "individual" if "individual" in out else "cluster"
     payload = {
-        "estimate": out[main]["estimate"], "se": out[main]["se"],
-        "ci": out[main]["ci"], "arm_reported": main, "arm": arm,
-        "n": n, "n_clusters": J,
+        "estimate": out[main]["estimate"],
+        "se": out[main]["se"],
+        "ci": out[main]["ci"],
+        "arm_reported": main,
+        "arm": arm,
+        "n": n,
+        "n_clusters": J,
         "cluster_sizes": [len(g) for g in groups],
-        "cluster_outcome": yc, "alpha": alpha,
-        "level": float(level), "known_g": known_g is not None,
-        "method": "hierarchical TMLE for a cluster-level exposure, "
-                  "Balzer, Zheng, van der Laan & Petersen (2019)",
+        "cluster_outcome": yc,
+        "alpha": alpha,
+        "level": float(level),
+        "known_g": known_g is not None,
+        "method": "hierarchical TMLE for a cluster-level exposure, Balzer, Zheng, van der Laan & Petersen (2019)",
     }
     for nm, r in out.items():
         for key, val in r.items():
@@ -831,14 +831,16 @@ def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
 
 
 def cheatsheet():
-    return ("tmlcic: cluster randomized trial. Pre-specify a LIBRARY of "
-            "working models, select by cross-validated squared "
-            "influence curve (the TMLE's own variance). Losses: 13.5 "
-            "PATE / 13.6 SATE unmatched, 13.8 / 13.9 matched -- the "
-            "matched ones subtract the within-pair residual covariance "
-            "so a perfectly matched covariate earns no credit. Then "
-            "select g collaboratively by the same loss. Pairs are never "
-            "split across folds.")
+    return (
+        "tmlcic: cluster randomized trial. Pre-specify a LIBRARY of "
+        "working models, select by cross-validated squared "
+        "influence curve (the TMLE's own variance). Losses: 13.5 "
+        "PATE / 13.6 SATE unmatched, 13.8 / 13.9 matched -- the "
+        "matched ones subtract the within-pair residual covariance "
+        "so a perfectly matched covariate earns no credit. Then "
+        "select g collaboratively by the same loss. Pairs are never "
+        "split across folds."
+    )
 
 
 # compact alias per ledger/NAMING.md

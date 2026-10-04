@@ -7,8 +7,7 @@ import math
 
 import pytest
 
-from morie.fn.bsasig import (amsig, fmsig, linconv, lsipar, lsipar2, lsipary,
-                             lsiser, lsisery, ltiprod, perconv, tvlsi)
+from morie.fn.bsasig import amsig, fmsig, linconv, lsipar, lsipar2, lsipary, lsiser, lsisery, ltiprod, perconv, tvlsi
 
 
 def test_linconv_eqs336_339():
@@ -22,13 +21,11 @@ def test_linconv_contributions_sum_to_the_output():
     # eq (3.39): y is the sum of delayed, weighted copies of h
     r = linconv([1.0, -2.0, 0.5], [2.0, 1.0])
     for k in range(r["n"]):
-        assert sum(row[k] for row in r["contributions"]) == pytest.approx(
-            r["y"][k])
+        assert sum(row[k] for row in r["contributions"]) == pytest.approx(r["y"][k])
 
 
 def test_linconv_with_an_impulse_returns_h():
-    assert linconv([1.0], [5.0, -1.0, 2.0])["y"] == pytest.approx(
-        [5.0, -1.0, 2.0])
+    assert linconv([1.0], [5.0, -1.0, 2.0])["y"] == pytest.approx([5.0, -1.0, 2.0])
 
 
 def test_linconv_rejects_empty():
@@ -41,8 +38,8 @@ def test_lsiser_eqs343_345():
     h1 = [1.0, 1.0]
     h2 = [1.0, -1.0]
     r = lsiser(x, h1, h2)
-    assert r["s"] == pytest.approx([1.0, 3.0, 5.0, 3.0])     # x * h1
-    assert r["h"] == pytest.approx([1.0, 0.0, -1.0])         # h1 * h2
+    assert r["s"] == pytest.approx([1.0, 3.0, 5.0, 3.0])  # x * h1
+    assert r["h"] == pytest.approx([1.0, 0.0, -1.0])  # h1 * h2
     assert r["equivalent"] is True
     # y = x * h computed independently here
     want = [1.0, 2.0, 2.0, -2.0, -3.0]
@@ -64,7 +61,7 @@ def test_lsipar_eqs346_349():
     r = lsipar(x, h1, h2)
     assert r["s1"] == pytest.approx([1.0, 3.0, 2.0])
     assert r["s2"] == pytest.approx([2.0, 4.0])
-    assert r["h"] == pytest.approx([3.0, 1.0])     # h1 + h2, zero-extended
+    assert r["h"] == pytest.approx([3.0, 1.0])  # h1 + h2, zero-extended
     assert r["y"] == pytest.approx([3.0, 7.0, 2.0])
     assert r["equivalent"] is True
 
@@ -91,8 +88,8 @@ def test_series_convolves_where_parallel_adds():
     h1, h2 = [1.0, 1.0], [1.0, -1.0]
     ser = lsiser([1.0], h1, h2)["h"]
     par = lsipar([1.0], h1, h2)["h"]
-    assert ser == pytest.approx([1.0, 0.0, -1.0])   # convolution, length 3
-    assert par == pytest.approx([2.0, 0.0])         # addition, length 2
+    assert ser == pytest.approx([1.0, 0.0, -1.0])  # convolution, length 3
+    assert par == pytest.approx([2.0, 0.0])  # addition, length 2
 
 
 def test_ltiprod_eq353_in_the_s_domain():
@@ -116,10 +113,8 @@ def test_ltiprod_needs_exactly_one_variable():
 
 
 def test_perconv_eq390_is_the_circular_convolution():
-    assert perconv([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx(
-        [11.0, 10.0])
-    assert perconv([1.0, 2.0], [3.0, 4.0], npoints=3)["y"] == pytest.approx(
-        [3.0, 10.0, 8.0])
+    assert perconv([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx([11.0, 10.0])
+    assert perconv([1.0, 2.0], [3.0, 4.0], npoints=3)["y"] == pytest.approx([3.0, 10.0, 8.0])
 
 
 def test_amsig_uses_the_books_suppressed_carrier_model():
@@ -207,12 +202,8 @@ def test_tvlsi_rejects_a_kernel_of_the_wrong_length():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsasig import (rangayyan_am_signal,
-                                 rangayyan_ch3_lsi_parallel_total,
-                                 rangayyan_linear_convolution)
-    assert rangayyan_linear_convolution([1.0, 2.0], [3.0, 4.0])["y"] == \
-        pytest.approx([3.0, 10.0, 8.0])
-    assert rangayyan_ch3_lsi_parallel_total([1.0], [1.0], [2.0])["h"] == \
-        pytest.approx([3.0])
-    assert rangayyan_am_signal([0.0] * 4, fc=1.0, fs=8.0)["y"] == \
-        pytest.approx([0.0] * 4)
+    from morie.fn.bsasig import rangayyan_am_signal, rangayyan_ch3_lsi_parallel_total, rangayyan_linear_convolution
+
+    assert rangayyan_linear_convolution([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx([3.0, 10.0, 8.0])
+    assert rangayyan_ch3_lsi_parallel_total([1.0], [1.0], [2.0])["h"] == pytest.approx([3.0])
+    assert rangayyan_am_signal([0.0] * 4, fc=1.0, fs=8.0)["y"] == pytest.approx([0.0] * 4)

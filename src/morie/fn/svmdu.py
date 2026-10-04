@@ -5,7 +5,7 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['svmwolfe', 'svm_dual_wolfe', 'svmdualwolfe']
+__all__ = ["svmwolfe", "svm_dual_wolfe", "svmdualwolfe"]
 
 
 def svmwolfe(alpha, X, y, K=None):
@@ -39,10 +39,16 @@ def svmwolfe(alpha, X, y, K=None):
         raise ValueError("alpha and y must have the same length")
     L = G.svm_dual_objective(a, X, yv, K=K)
     lin = sum(a)
-    return RichResult(payload={
-        "dual": L, "linear_term": lin, "quadratic_term": lin - L,
-        "constraint_sum": sum(u * w for u, w in zip(a, yv)), "n": len(a),
-        "method": "SVM Wolfe dual objective, MVSML Eq. (9.32)"})
+    return RichResult(
+        payload={
+            "dual": L,
+            "linear_term": lin,
+            "quadratic_term": lin - L,
+            "constraint_sum": sum(u * w for u, w in zip(a, yv)),
+            "n": len(a),
+            "method": "SVM Wolfe dual objective, MVSML Eq. (9.32)",
+        }
+    )
 
 
 svm_dual_wolfe = svmwolfe
@@ -50,4 +56,4 @@ svmdualwolfe = svmwolfe
 
 
 def cheatsheet():
-    return 'svmdu: Wolfe dual objective of the support vector machine.'
+    return "svmdu: Wolfe dual objective of the support vector machine."

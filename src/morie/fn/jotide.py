@@ -69,7 +69,13 @@ def tide(y, feats, fproj, enc, dec, tdec, wglobal, horizon):
     res = _core.tide(y=y, feats=feats, fproj=fproj, enc=enc, dec=dec, tdec=tdec, wglobal=wglobal, horizon=horizon)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("horizon", res["horizon"]), ("p", res["p"]), ("encdim", res["encdim"]), ("first", res["first"]), ("mean", res["mean"])],
+        summary_lines=[
+            ("horizon", res["horizon"]),
+            ("p", res["p"]),
+            ("encdim", res["encdim"]),
+            ("first", res["first"]),
+            ("mean", res["mean"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

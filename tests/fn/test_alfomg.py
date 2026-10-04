@@ -1,7 +1,6 @@
 """Tests for alfomg.openfold_msa_pair."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfomg import openfold_msa_pair
 
 

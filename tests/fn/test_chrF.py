@@ -41,16 +41,17 @@ def test_per_order_precisions_are_reported_for_each_n():
 
 def test_multiple_references_take_the_best():
     single = chrf_score("the cat sat", "a dog barked")["chrf"]
-    multi = chrf_score("the cat sat",
-                       ["a dog barked", "the cat sat"])["chrf"]
+    multi = chrf_score("the cat sat", ["a dog barked", "the cat sat"])["chrf"]
     assert multi > single
     assert abs(multi - 1.0) < 1e-12
 
 
 def test_validation():
-    for call in (lambda: chrf_score("a", "b", n_char=0),
-                 lambda: chrf_score("a", "b", beta=0.0),
-                 lambda: chrf_score("a", "b", word_order=-1)):
+    for call in (
+        lambda: chrf_score("a", "b", n_char=0),
+        lambda: chrf_score("a", "b", beta=0.0),
+        lambda: chrf_score("a", "b", word_order=-1),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

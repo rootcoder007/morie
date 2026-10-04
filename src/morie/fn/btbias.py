@@ -56,19 +56,24 @@ def boot_bias_estimator(theta_hat, theta_b):
     if r.size < 2:
         raise ValueError(f"need at least 2 replicates, got {r.size}.")
     bias = float(r.mean() - th)
-    return RichResult(payload={
-        "bias": bias, "corrected": th - bias, "estimate": th,
-        "mean_replicate": float(r.mean()),
-        "relative_bias": bias / th if th != 0 else np.inf,
-        "B": int(r.size),
-        "direction_note": "the corrected value is 2 theta_hat - mean(reps), "
-                          "on the OPPOSITE side of theta_hat from the "
-                          "replicate mean; using the replicate mean itself "
-                          "doubles the bias",
-        "correction_warning": "correction adds variance and can raise the "
-                              "MSE (Efron-Tibshirani Ch. 10); report the "
-                              "bias, correct only when it dominates",
-        "method": "Bootstrap bias = mean(replicates) - estimate, corrected = 2*estimate - mean"})
+    return RichResult(
+        payload={
+            "bias": bias,
+            "corrected": th - bias,
+            "estimate": th,
+            "mean_replicate": float(r.mean()),
+            "relative_bias": bias / th if th != 0 else np.inf,
+            "B": int(r.size),
+            "direction_note": "the corrected value is 2 theta_hat - mean(reps), "
+            "on the OPPOSITE side of theta_hat from the "
+            "replicate mean; using the replicate mean itself "
+            "doubles the bias",
+            "correction_warning": "correction adds variance and can raise the "
+            "MSE (Efron-Tibshirani Ch. 10); report the "
+            "bias, correct only when it dominates",
+            "method": "Bootstrap bias = mean(replicates) - estimate, corrected = 2*estimate - mean",
+        }
+    )
 
 
 def cheatsheet():

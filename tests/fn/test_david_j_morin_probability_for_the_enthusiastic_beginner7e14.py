@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e14 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e14 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14,
+)
 
 
 def test_first_order_exponential_approximation():

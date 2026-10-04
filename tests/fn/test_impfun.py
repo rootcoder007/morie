@@ -1,7 +1,6 @@
 """Tests for impfun.genotype_imputation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.impfun import genotype_imputation
 
 

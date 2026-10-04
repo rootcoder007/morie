@@ -95,5 +95,6 @@ def ma_cochran_q(yi, vi):
 # name has to exist here or the lookup dies.
 macochranq = ma_cochran_q
 
+
 def cheatsheet():
     return "macn: Cochran's Q heterogeneity test, with tau^2, I^2 and H^2"

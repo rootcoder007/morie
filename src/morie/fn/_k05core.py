@@ -7,7 +7,7 @@ these are thin adapters that return plain lists.
 """
 
 from ._rng import normal_quantile as _normal_quantile
-from ._rng import philox4x32, random_normal, random_uniform
+from ._rng import random_normal, random_uniform
 
 __all__ = []
 

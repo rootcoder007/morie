@@ -1,7 +1,6 @@
 """Tests for infmer.informer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.infmer import informer
 
 

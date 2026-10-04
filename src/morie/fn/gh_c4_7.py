@@ -5,9 +5,6 @@ Implements eq. (4.13) of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,10 +25,14 @@ def ghosal_dp_pred(x_seen, alpha, x_new_equals=None):
         est = sum(w_each for v in xs if v == t)
     else:
         est = w_new
-    res = RichResult(payload={"estimate": est,
-                              "weight_fresh": w_new,
-                              "weight_per_obs": w_each,
-                              "method": "generalized Polya urn predictive (GvdV 2017 eq. 4.13)"})
+    res = RichResult(
+        payload={
+            "estimate": est,
+            "weight_fresh": w_new,
+            "weight_per_obs": w_each,
+            "method": "generalized Polya urn predictive (GvdV 2017 eq. 4.13)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_7")
 
 

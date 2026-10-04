@@ -55,10 +55,7 @@ def permutation_attention_masks(permutation):
     if T == 0:
         raise ValueError("permutation must not be empty.")
     if not np.array_equal(np.sort(z), np.arange(T)):
-        raise ValueError(
-            "permutation must be a permutation of 0 .. T-1; got values "
-            f"{np.sort(z).tolist()}."
-        )
+        raise ValueError(f"permutation must be a permutation of 0 .. T-1; got values {np.sort(z).tolist()}.")
     # rank[p] = the step at which position p is generated
     rank = np.empty(T, dtype=int)
     rank[z] = np.arange(T)
@@ -67,8 +64,7 @@ def permutation_attention_masks(permutation):
     return {"content": content, "query": query, "rank": rank}
 
 
-def kamath_permutation_lm_loss(logits, targets, permutation,
-                               num_predict=None, reduction="mean"):
+def kamath_permutation_lm_loss(logits, targets, permutation, num_predict=None, reduction="mean"):
     """Permutation language-model loss under one factorization order.
 
     Equation (3) of the XLNet paper is
@@ -139,17 +135,13 @@ def kamath_permutation_lm_loss(logits, targets, permutation,
     T, V = L.shape
     y = np.asarray(targets, dtype=int).ravel()
     if y.size != T:
-        raise ValueError(
-            f"targets has length {y.size} but logits has {T} positions."
-        )
+        raise ValueError(f"targets has length {y.size} but logits has {T} positions.")
     if np.any(y < 0) or np.any(y >= V):
         raise ValueError(f"targets must lie in 0 .. {V - 1}.")
     masks = permutation_attention_masks(permutation)
     z = np.asarray(permutation, dtype=int).ravel()
     if z.size != T:
-        raise ValueError(
-            f"permutation has length {z.size} but logits has {T} positions."
-        )
+        raise ValueError(f"permutation has length {z.size} but logits has {T} positions.")
     if reduction not in ("mean", "sum", "none"):
         raise ValueError('reduction must be "mean", "sum" or "none".')
 
@@ -163,7 +155,7 @@ def kamath_permutation_lm_loss(logits, targets, permutation,
         k = int(num_predict)
         if k < 1 or k > T:
             raise ValueError(f"num_predict must lie in 1 .. {T}; got {k}.")
-        scored = z[T - k:]
+        scored = z[T - k :]
         partial = k < T
 
     sel = nll[scored]
@@ -189,8 +181,7 @@ def kamath_permutation_lm_loss(logits, targets, permutation,
             "token_nll": nll,
             "scored_positions": scored,
             "mean_context_length": float(np.mean(ctx)),
-            "perplexity": (float(np.exp(np.mean(sel)))
-                           if sel.size else float("nan")),
+            "perplexity": (float(np.exp(np.mean(sel))) if sel.size else float("nan")),
             "order_invariant": not partial,
             "partial_prediction": partial,
             "content_mask": masks["content"],

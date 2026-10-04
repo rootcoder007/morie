@@ -1,7 +1,6 @@
 """Tests for qlrtst.quandt_likelihood_ratio."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.qlrtst import quandt_likelihood_ratio
 
 

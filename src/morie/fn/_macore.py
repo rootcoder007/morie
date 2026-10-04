@@ -20,8 +20,7 @@ def wls(X, y, w):
     """
     n = len(X)
     p = len(X[0])
-    A = [[sum(w[i] * X[i][r] * X[i][s] for i in range(n)) for s in range(p)]
-         for r in range(p)]
+    A = [[sum(w[i] * X[i][r] * X[i][s] for i in range(n)) for s in range(p)] for r in range(p)]
     b = [sum(w[i] * X[i][r] * y[i] for i in range(n)) for r in range(p)]
     beta = core.ridgesolve(A, b, 1e-12)
     cols = []

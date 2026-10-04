@@ -1,10 +1,10 @@
 """Tests for bndinf.bound_inference."""
 
-from morie.fn import _array_core as np
-
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bndinf import bound_inference
 
 
@@ -17,8 +17,7 @@ def test_bndinf_basic():
     theta = np.linspace(-3, 3, 50)
     result = bound_inference(theta, moments, 0.05)
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "grid_lower", "grid_upper",
-                "n_in_set", "cutoff", "criterion_min", "n"):
+    for key in ("lower", "upper", "width", "grid_lower", "grid_upper", "n_in_set", "cutoff", "criterion_min", "n"):
         assert key in result
     assert result["upper"] >= result["lower"]
     assert math.isclose(result["width"], result["upper"] - result["lower"])

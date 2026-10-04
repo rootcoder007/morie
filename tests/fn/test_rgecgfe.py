@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaclass import rangayyan_fetal_ecg_single
 
-
 FS = 250.0
 
 

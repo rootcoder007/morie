@@ -28,20 +28,19 @@ def se_d_from_se_r(r, se_r):
     """
     value = _ca_crim.se_d_from_se_r(r, se_r)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.23)"
     return RichResult(
-        title='se_d from se_r: sqrt(4 se_r^2 / (1-r^2)^3)',
+        title="se_d from se_r: sqrt(4 se_r^2 / (1-r^2)^3)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e23: se_d = sqrt(4 se_r^2 / (1 - r^2)^3) [Weisburd et al. 2022, eq. 11.23]'
+    return "ca11e23: se_d = sqrt(4 se_r^2 / (1 - r^2)^3) [Weisburd et al. 2022, eq. 11.23]"
 
 
 # compact alias per ledger/NAMING.md

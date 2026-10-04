@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch3_log_profile_expansion"]
 
 
-def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde,
-                                      log_pl_hat=0.0, n=None):
+def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, log_pl_hat=0.0, n=None):
     r"""Quadratic expansion of the log profile likelihood (Kosorok
     Ch. 3):
 
@@ -60,9 +59,14 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde,
     d = tb - th
     quad = 0.5 * n * float(d @ I @ d)
     return RichResult(
-        payload={"log_pl": float(log_pl_hat) - quad, "quadratic_term": quad,
-                 "delta": d, "lrt_statistic": 2.0 * quad, "n": n,
-                 "method": "log pl(theta_bar) = log pl(theta_hat) - n d'I d/2 + o_P(1)"}
+        payload={
+            "log_pl": float(log_pl_hat) - quad,
+            "quadratic_term": quad,
+            "delta": d,
+            "lrt_statistic": 2.0 * quad,
+            "n": n,
+            "method": "log pl(theta_bar) = log pl(theta_hat) - n d'I d/2 + o_P(1)",
+        }
     )
 
 

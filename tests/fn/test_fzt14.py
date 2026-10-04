@@ -24,6 +24,7 @@ def test_fzt14_basic():
     num1 = x + s
     num2 = 2.0 * x + 4.0 * s
     from morie.fn._fauzi import rratio
+
     r1 = float(np.atleast_1d(rratio(1.0 / s - 1.0))[0])
     r2 = float(np.atleast_1d(rratio(1.0 / (2.0 * s) - 1.0))[0])
     r3 = float(np.atleast_1d(rratio(3.0 / (2.0 * s) - 2.0))[0])
@@ -40,7 +41,7 @@ def test_fzt14_basic():
         + (1.0 / (2.0 * s) - 1.0) * np.log(num1 / den)
         + (1.0 / s - 1.0) * np.log(num2 / den)
     )
-    expected = float(np.exp(log_v)) * f / (n * h ** 0.25)
+    expected = float(np.exp(log_v)) * f / (n * h**0.25)
     assert abs(result["covariance"] - expected) < 1e-10 * max(1.0, abs(expected))
 
 
@@ -63,6 +64,7 @@ def test_fzt14_edge():
     num1 = cc * s + 1.0
     num2 = 2.0 * cc * s + 4.0
     from morie.fn._fauzi import rratio
+
     r1 = float(np.atleast_1d(rratio(1.0 / s - 1.0))[0])
     r2 = float(np.atleast_1d(rratio(1.0 / (2.0 * s) - 1.0))[0])
     r3 = float(np.atleast_1d(rratio(3.0 / (2.0 * s) - 2.0))[0])
@@ -79,5 +81,5 @@ def test_fzt14_edge():
         + (1.0 / (2.0 * s) - 1.0) * np.log(num1 / den)
         + (1.0 / s - 1.0) * np.log(num2 / den)
     )
-    expected = float(np.exp(log_v)) * f / (n * h ** 0.75)
+    expected = float(np.exp(log_v)) * f / (n * h**0.75)
     assert abs(result["covariance"] - expected) < 1e-10 * max(1.0, abs(expected))

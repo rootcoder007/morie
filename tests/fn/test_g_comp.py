@@ -2,10 +2,10 @@
 
 import math
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.g_comp import estimate_ate_gcomputation
 
 
@@ -85,6 +85,7 @@ def test_too_few_observations_raises():
             outcome="y",
             covariates=["x1"],
         )
+
 
 GD = {
     "t": [0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0],

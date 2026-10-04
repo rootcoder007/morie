@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 2.31: sentence order prediction (SOP)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km030 import kamath_ch2_nsp_loss
 
@@ -27,10 +26,15 @@ def kamath_ch2_sop_loss(x, y, d):
     True
     """
     inner = kamath_ch2_nsp_loss(x, y, d)
-    return RichResult(payload={
-        "estimate": inner["estimate"], "p_in_order": inner["p_next"],
-        "label": inner["label"], "n": 1,
-        "method": "Sentence order prediction loss (Kamath Eq 2.31)"})
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "p_in_order": inner["p_next"],
+            "label": inner["label"],
+            "n": 1,
+            "method": "Sentence order prediction loss (Kamath Eq 2.31)",
+        }
+    )
 
 
 def cheatsheet():

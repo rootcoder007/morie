@@ -63,13 +63,17 @@ def esl_softmax(T):
     shift = M.max(axis=1, keepdims=True)
     e = np.exp(M - shift)
     P = e / e.sum(axis=1, keepdims=True)
-    return RichResult(payload={
-        "estimate": float(P[0, 0]),
-        "probabilities": [float(v) for v in (P[0] if single_row else P.ravel())],
-        "argmax": [int(v) for v in np.argmax(P, axis=1)],
-        "max_shift": [float(v) for v in shift.ravel()],
-        "n": int(n), "K": int(K),
-        "method": "softmax via max-shift; invariant to adding a constant to all scores"})
+    return RichResult(
+        payload={
+            "estimate": float(P[0, 0]),
+            "probabilities": [float(v) for v in (P[0] if single_row else P.ravel())],
+            "argmax": [int(v) for v in np.argmax(P, axis=1)],
+            "max_shift": [float(v) for v in shift.ravel()],
+            "n": int(n),
+            "K": int(K),
+            "method": "softmax via max-shift; invariant to adding a constant to all scores",
+        }
+    )
 
 
 def cheatsheet():

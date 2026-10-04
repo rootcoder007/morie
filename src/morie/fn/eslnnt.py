@@ -9,8 +9,9 @@ from ._richresult import RichResult
 __all__ = ["esl_neural_net"]
 
 
-def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regression",
-                   newdata=None, seed=0, standardize=True):
+def esl_neural_net(
+    X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regression", newdata=None, seed=0, standardize=True
+):
     r"""Fit ESL's single-hidden-layer network by gradient descent.
 
     The architecture of Sec 11.3, with ``M`` hidden units:
@@ -174,19 +175,28 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
     Htr = 1.0 / (1.0 + np.exp(-np.clip(Xs @ a + a0, -500, 500)))
     Ttr = Htr @ b + b0
     payload = {
-        "alpha": a, "alpha0": a0, "beta": b, "beta0": b0,
-        "hidden": Hh, "loss_path": np.array(losses),
-        "M": int(M), "lambda_": float(lambda_), "task": task,
-        "mean": mu, "sd": sd,
+        "alpha": a,
+        "alpha0": a0,
+        "beta": b,
+        "beta0": b0,
+        "hidden": Hh,
+        "loss_path": np.array(losses),
+        "M": int(M),
+        "lambda_": float(lambda_),
+        "task": task,
+        "mean": mu,
+        "sd": sd,
         "method": "esl_neural_net",
     }
     if task == "regression":
         fit_tr = Ttr.ravel()
         ss = float(np.sum((yr - yr.mean()) ** 2))
-        payload.update({
-            "fitted": T.ravel(),
-            "r_squared": float(1 - np.sum((yr - fit_tr) ** 2) / ss) if ss > 0 else np.nan,
-        })
+        payload.update(
+            {
+                "fitted": T.ravel(),
+                "r_squared": float(1 - np.sum((yr - fit_tr) ** 2) / ss) if ss > 0 else np.nan,
+            }
+        )
         head = [("R^2", payload["r_squared"])]
     else:
         e = np.exp(T - T.max(axis=1, keepdims=True))
@@ -194,10 +204,14 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
         etr = np.exp(Ttr - Ttr.max(axis=1, keepdims=True))
         ptr = etr / etr.sum(axis=1, keepdims=True)
         acc = float(np.mean(classes[ptr.argmax(1)] == yr))
-        payload.update({
-            "prob": prob, "class_": classes[prob.argmax(1)],
-            "classes": classes, "accuracy": acc,
-        })
+        payload.update(
+            {
+                "prob": prob,
+                "class_": classes[prob.argmax(1)],
+                "classes": classes,
+                "accuracy": acc,
+            }
+        )
         head = [("accuracy", acc)]
     return RichResult(
         title=f"Neural network ({task}, M={M})",

@@ -63,11 +63,8 @@ corruption replaces.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["task_prefix", "span_corruption", "relative_bucket",
-           "parse_prediction", "format_regression"]
+__all__ = ["task_prefix", "span_corruption", "relative_bucket", "parse_prediction", "format_regression"]
 
 _EPS = 1e-12
 
@@ -76,14 +73,13 @@ def task_prefix(task, text):
     r"""Prepend the prefix that tells the model which task this is."""
     t = str(task).strip()
     if not t:
-        raise ValueError("t5enc: the task prefix cannot be empty -- "
-                         "the model has no other signal of which job "
-                         "it is doing")
+        raise ValueError(
+            "t5enc: the task prefix cannot be empty -- the model has no other signal of which job it is doing"
+        )
     return "%s: %s" % (t, str(text))
 
 
-def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0,
-                    sentinel="<extra_id_%d>"):
+def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0, sentinel="<extra_id_%d>"):
     r"""Drop contiguous spans, replace each with one sentinel.
 
     The target is the dropped spans with their sentinels, so it is far
@@ -94,15 +90,13 @@ def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0,
     n = len(toks)
     r = float(rate)
     if not 0.0 < r < 1.0:
-        raise ValueError("t5enc: the corruption rate must lie in "
-                         "(0,1), got %r" % (rate,))
+        raise ValueError("t5enc: the corruption rate must lie in (0,1), got %r" % (rate,))
     if float(mean_span) < 1.0:
         raise ValueError("t5enc: the mean span must be at least 1")
     n_corrupt = max(1, int(round(n * r)))
     n_spans = max(1, int(round(n_corrupt / float(mean_span))))
     rng = np.random.default_rng(seed)
-    starts = sorted(set(int(float(rng.uniform()) * n) % n
-                        for _ in range(n_spans * 3)))[:n_spans]
+    starts = sorted(set(int(float(rng.uniform()) * n) % n for _ in range(n_spans * 3)))[:n_spans]
     spans, used = [], set()
     per = max(1, n_corrupt // max(len(starts), 1))
     for s in starts:
@@ -113,7 +107,7 @@ def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0,
         used |= set(range(s, e))
     spans.sort()
     src, tgt, idx, pos = [], [], 0, 0
-    for (s, e) in spans:
+    for s, e in spans:
         src.extend(toks[pos:s])
         src.append(sentinel % idx)
         tgt.append(sentinel % idx)
@@ -122,16 +116,18 @@ def span_corruption(tokens, rate=0.15, mean_span=3.0, seed=0,
         pos = e
     src.extend(toks[pos:])
     tgt.append(sentinel % idx)
-    return {"input": src, "target": tgt, "n_spans": len(spans),
-            "corrupted_tokens": len(used),
-            "corruption_rate": len(used) / float(n),
-            "target_shorter_by": len(src) - len(tgt),
-            "note": "one sentinel per SPAN, so the target is much "
-                    "shorter than the input"}
+    return {
+        "input": src,
+        "target": tgt,
+        "n_spans": len(spans),
+        "corrupted_tokens": len(used),
+        "corruption_rate": len(used) / float(n),
+        "target_shorter_by": len(src) - len(tgt),
+        "note": "one sentinel per SPAN, so the target is much shorter than the input",
+    }
 
 
-def relative_bucket(relative_position, bidirectional=True,
-                    num_buckets=32, max_distance=128):
+def relative_bucket(relative_position, bidirectional=True, num_buckets=32, max_distance=128):
     r"""Bucket a relative offset, logarithmically for distant pairs.
 
     Nearby offsets get their own bucket; distant ones share, so the
@@ -152,9 +148,7 @@ def relative_bucket(relative_position, bidirectional=True,
     exact = nb // 2
     if rp < exact:
         return ret + rp
-    v = exact + int(
-        math.log(rp / float(exact))
-        / math.log(float(max_distance) / exact) * (nb - exact))
+    v = exact + int(math.log(rp / float(exact)) / math.log(float(max_distance) / exact) * (nb - exact))
     return ret + min(v, nb - 1)
 
 
@@ -179,26 +173,29 @@ def parse_prediction(text, labels=None):
         try:
             return {"value": float(s), "valid": True}
         except ValueError:
-            return {"value": None, "valid": False,
-                    "note": "not a number; counted as wrong"}
+            return {"value": None, "valid": False, "note": "not a number; counted as wrong"}
     ok = s in set(labels)
-    return {"label": s if ok else None, "valid": ok,
-            "note": "an output matching no label is counted as "
-                    "WRONG, not snapped to the nearest one"}
+    return {
+        "label": s if ok else None,
+        "valid": ok,
+        "note": "an output matching no label is counted as WRONG, not snapped to the nearest one",
+    }
 
 
 def cheatsheet():
-    return ("t5enc: EVERY task as text-to-text -- classification emits "
-            "the label TEXT, regression emits a rounded number as a "
-            "string, and a task prefix says which job it is. One "
-            "model, one loss, one decoder, and tasks can be mixed. The "
-            "cost: the decoder can emit something that is not a valid "
-            "label, and that counts as WRONG rather than being snapped "
-            "to the nearest one. Pre-training is SPAN corruption -- "
-            "contiguous spans replaced by ONE sentinel each, so the "
-            "target is far shorter (15%, mean span 3). Positions are "
-            "RELATIVE, log-bucketed, shared across layers; there is no "
-            "absolute position signal.")
+    return (
+        "t5enc: EVERY task as text-to-text -- classification emits "
+        "the label TEXT, regression emits a rounded number as a "
+        "string, and a task prefix says which job it is. One "
+        "model, one loss, one decoder, and tasks can be mixed. The "
+        "cost: the decoder can emit something that is not a valid "
+        "label, and that counts as WRONG rather than being snapped "
+        "to the nearest one. Pre-training is SPAN corruption -- "
+        "contiguous spans replaced by ONE sentinel each, so the "
+        "target is far shorter (15%, mean span 3). Positions are "
+        "RELATIVE, log-bucketed, shared across layers; there is no "
+        "absolute position signal."
+    )
 
 
 # compact alias per ledger/NAMING.md

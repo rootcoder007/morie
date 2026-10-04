@@ -61,9 +61,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
         a = a[None, ...]
         squeeze_batch = True
     if a.ndim != 4:
-        raise ValueError(
-            "x must have 2, 3 or 4 dimensions, got %d." % np.ndim(x)
-        )
+        raise ValueError("x must have 2, 3 or 4 dimensions, got %d." % np.ndim(x))
     kh, kw = (pool_size, pool_size) if np.isscalar(pool_size) else pool_size
     kh, kw = int(kh), int(kw)
     if kh < 1 or kw < 1:
@@ -74,9 +72,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
     if sh < 1 or sw < 1:
         raise ValueError("stride must be positive, got %r." % (stride,))
     if padding not in ("valid", "same"):
-        raise ValueError(
-            "padding must be 'valid' or 'same', got %r." % padding
-        )
+        raise ValueError("padding must be 'valid' or 'same', got %r." % padding)
 
     n, h, w, c = a.shape
     if padding == "same":
@@ -93,9 +89,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
         ow = (w - kw) // sw + 1
         pt = pl = 0
     if oh < 1 or ow < 1:
-        raise ValueError(
-            "pool window %dx%d does not fit in a %dx%d input." % (kh, kw, h, w)
-        )
+        raise ValueError("pool window %dx%d does not fit in a %dx%d input." % (kh, kw, h, w))
     out = np.empty((n, oh, ow, c))
     for i in range(oh):
         r0, r1 = max(i * sh - pt, 0), min(i * sh - pt + kh, h)

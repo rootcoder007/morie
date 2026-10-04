@@ -27,5 +27,3 @@ def test_rgpcgmrm_edge():
         rangayyan_pcg_murmur_detect(_tones([(50, 1.0)], 2048.0, 2048), 2048.0, threshold=1.5)
     with pytest.raises(ValueError, match="Nyquist"):
         rangayyan_pcg_murmur_detect(_tones([(50, 1.0)]), 1000.0)
-
-

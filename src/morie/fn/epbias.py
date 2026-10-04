@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bias correction for exposure misclassification."""
 
-import math
-
 from ._richresult import RichResult
 
 __all__ = ["exposure_misclass_bias"]
@@ -92,19 +90,21 @@ def exposure_misclass_bias(A_obs, Se, Sp, N=None):
 
     oro = _or(a) if g == 2 else float("nan")
     ort = _or(at) if g == 2 else float("nan")
-    return RichResult(payload={
-        "estimate": at[0],
-        "a_true": at,
-        "a_obs": a,
-        "totals": tot,
-        "prevalence": prev,
-        "or_obs": oro,
-        "or_true": ort,
-        "sensitivity": se,
-        "specificity": sp,
-        "n": g,
-        "method": "Bias correction for exposure misclassification",
-    })
+    return RichResult(
+        payload={
+            "estimate": at[0],
+            "a_true": at,
+            "a_obs": a,
+            "totals": tot,
+            "prevalence": prev,
+            "or_obs": oro,
+            "or_true": ort,
+            "sensitivity": se,
+            "specificity": sp,
+            "n": g,
+            "method": "Bias correction for exposure misclassification",
+        }
+    )
 
 
 def cheatsheet():

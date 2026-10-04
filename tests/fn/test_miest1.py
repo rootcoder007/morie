@@ -14,12 +14,12 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-        math.cos(2 * math.pi * r())
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
 
 
 def test_independent_variables_have_mutual_information_near_zero():
@@ -47,10 +47,8 @@ def test_stronger_dependence_gives_more_information():
     r = _lcg(7)
     base = [_gauss(r) for _ in range(400)]
     noise = [_gauss(r) for _ in range(400)]
-    weak = miest1(base, [0.2 * base[i] + noise[i]
-                         for i in range(400)], k=3)["mi"]
-    strong = miest1(base, [3.0 * base[i] + noise[i]
-                           for i in range(400)], k=3)["mi"]
+    weak = miest1(base, [0.2 * base[i] + noise[i] for i in range(400)], k=3)["mi"]
+    strong = miest1(base, [3.0 * base[i] + noise[i] for i in range(400)], k=3)["mi"]
     assert strong > weak
 
 
@@ -72,11 +70,12 @@ def test_both_algorithms_run_and_broadly_agree():
 
 
 def test_validation():
-    for call in (lambda: miest1([1.0], [1.0]),
-                 lambda: miest1([1.0, 2.0], [1.0]),
-                 lambda: miest1([1.0, 2.0, 3.0], [1.0, 2.0, 3.0], k=0),
-                 lambda: miest1([1.0, 2.0, 3.0], [1.0, 2.0, 3.0],
-                                algorithm=3)):
+    for call in (
+        lambda: miest1([1.0], [1.0]),
+        lambda: miest1([1.0, 2.0], [1.0]),
+        lambda: miest1([1.0, 2.0, 3.0], [1.0, 2.0, 3.0], k=0),
+        lambda: miest1([1.0, 2.0, 3.0], [1.0, 2.0, 3.0], algorithm=3),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

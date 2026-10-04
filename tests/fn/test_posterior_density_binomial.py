@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.posterior_density_binomial import (
     posterior_density_binomial,
 )

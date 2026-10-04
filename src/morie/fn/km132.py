@@ -31,19 +31,22 @@ def kamath_ch9_llm_signal_tokens(P_X, F_T, llm=None):
         raise ValueError("llm= must be a callable LLM(P_X, F_T).")
     got = llm(P_X, F_T)
     if not (isinstance(got, tuple) and len(got) == 2):
-        raise ValueError("the LLM must return the 2-tuple (t, S_X) of "
-                         "Eq 9.4; got "
-                         f"{type(got).__name__}.")
+        raise ValueError(f"the LLM must return the 2-tuple (t, S_X) of Eq 9.4; got {type(got).__name__}.")
     t, S_X = got
     try:
         signals = list(S_X)
     except TypeError:
-        raise ValueError("S_X must be a sequence of signal tokens.") \
-            from None
-    return RichResult(payload={
-        "estimate": len(signals), "text": t, "signal_tokens": signals,
-        "generates_modality": bool(signals), "n": len(signals),
-        "method": "LLM text and signal tokens (Kamath Eq 9.4)"})
+        raise ValueError("S_X must be a sequence of signal tokens.") from None
+    return RichResult(
+        payload={
+            "estimate": len(signals),
+            "text": t,
+            "signal_tokens": signals,
+            "generates_modality": bool(signals),
+            "n": len(signals),
+            "method": "LLM text and signal tokens (Kamath Eq 9.4)",
+        }
+    )
 
 
 def cheatsheet():

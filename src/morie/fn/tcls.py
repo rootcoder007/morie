@@ -72,7 +72,6 @@ P2 = {6k,8k,11k} gives 0.167 under ``"ordered"``; the two Disease
 classes give 0.5 and 0.278 under ``"hierarchical"``.
 """
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["t_closeness", "emd_distance", "tcls"]
@@ -89,9 +88,7 @@ def _dist_over(labels, domain):
     p = [0.0] * len(domain)
     for v in labels:
         if v not in idx:
-            raise ValueError(
-                "t_closeness: sensitive value %r is absent from the "
-                "table-wide domain" % (v,))
+            raise ValueError("t_closeness: sensitive value %r is absent from the table-wide domain" % (v,))
         p[idx[v]] += 1.0 / n
     return p
 
@@ -127,9 +124,7 @@ def _emd_hierarchical(p, q, hierarchy, domain):
     is_child = {c for kids in children.values() for c in kids}
     roots = [n for n in named if n not in is_child]
     if len(roots) != 1:
-        raise ValueError(
-            "t_closeness: hierarchy must have exactly one root, found %d"
-            % len(roots))
+        raise ValueError("t_closeness: hierarchy must have exactly one root, found %d" % len(roots))
 
     # Height of a node = edges down to a leaf; H = height of the root.
     def height(n):
@@ -146,9 +141,7 @@ def _emd_hierarchical(p, q, hierarchy, domain):
     def extra(n):
         if n not in children:
             if n not in idx:
-                raise ValueError(
-                    "t_closeness: hierarchy leaf %r is not a domain "
-                    "value" % (n,))
+                raise ValueError("t_closeness: hierarchy leaf %r is not a domain value" % (n,))
             return p[idx[n]] - q[idx[n]]
         kids = [extra(c) for c in children[n]]
         pos = sum(e for e in kids if e > 0)
@@ -168,27 +161,21 @@ def emd_distance(p, q, ground="ordered", hierarchy=None, domain=None):
     """Earth Mover's Distance between two distributions over one domain."""
     g = str(ground).lower()
     if g not in _GROUNDS:
-        raise ValueError(
-            "emd_distance: ground must be one of %s, got %r"
-            % (", ".join(_GROUNDS), ground))
+        raise ValueError("emd_distance: ground must be one of %s, got %r" % (", ".join(_GROUNDS), ground))
     pv = [float(v) for v in p]
     qv = [float(v) for v in q]
     if len(pv) != len(qv):
-        raise ValueError(
-            "emd_distance: P has %d cells but Q has %d" % (len(pv), len(qv)))
+        raise ValueError("emd_distance: P has %d cells but Q has %d" % (len(pv), len(qv)))
     if g == "equal":
         return _emd_equal(pv, qv)
     if g == "ordered":
         return _emd_ordered(pv, qv)
     if hierarchy is None or domain is None:
-        raise ValueError(
-            "emd_distance: ground='hierarchical' needs both hierarchy "
-            "and domain")
+        raise ValueError("emd_distance: ground='hierarchical' needs both hierarchy and domain")
     return _emd_hierarchical(pv, qv, hierarchy, domain)
 
 
-def t_closeness(X, quasi_ids, sensitive, t, ground="ordered",
-                hierarchy=None, domain=None):
+def t_closeness(X, quasi_ids, sensitive, t, ground="ordered", hierarchy=None, domain=None):
     r"""Check t-closeness of a release, per class and overall.
 
     Parameters
@@ -220,19 +207,17 @@ def t_closeness(X, quasi_ids, sensitive, t, ground="ordered",
         whether that is within ``t``.
     """
     n = len(list(X))
-    qs = [tuple(r) if isinstance(r, (list, tuple)) else (r,)
-          for r in quasi_ids]
+    qs = [tuple(r) if isinstance(r, (list, tuple)) else (r,) for r in quasi_ids]
     sv = list(sensitive)
     if len(qs) != n or len(sv) != n:
         raise ValueError(
-            "t_closeness: X, quasi_ids and sensitive must agree in "
-            "length, got %d, %d and %d" % (n, len(qs), len(sv)))
+            "t_closeness: X, quasi_ids and sensitive must agree in length, got %d, %d and %d" % (n, len(qs), len(sv))
+        )
     t = float(t)
     if t < 0.0:
         raise ValueError("t_closeness: t must be non-negative, got %r" % (t,))
 
-    dom = (list(domain) if domain is not None
-           else sorted(set(sv), key=lambda v: (str(type(v)), v)))
+    dom = list(domain) if domain is not None else sorted(set(sv), key=lambda v: (str(type(v)), v))
     q = _dist_over(sv, dom)
 
     blocks = {}
@@ -244,32 +229,35 @@ def t_closeness(X, quasi_ids, sensitive, t, ground="ordered",
     sizes = []
     for k in keys:
         p = _dist_over(blocks[k], dom)
-        dists.append(float(emd_distance(p, q, ground=ground,
-                                        hierarchy=hierarchy, domain=dom)))
+        dists.append(float(emd_distance(p, q, ground=ground, hierarchy=hierarchy, domain=dom)))
         sizes.append(len(blocks[k]))
 
     worst = max(dists) if dists else 0.0
-    return RichResult(payload={
-        "estimate": float(worst),
-        "achieved_t": float(worst),
-        "satisfies": bool(worst <= t),
-        "class_distances": dists,
-        "class_sizes": sizes,
-        "n_classes": len(keys),
-        "min_class_size": int(min(sizes)) if sizes else 0,
-        "overall_distribution": q,
-        "domain": [str(v) for v in dom],
-        "ground": str(ground).lower(),
-        "t": t,
-        "n": int(n),
-        "method": "t-closeness via EMD (Li, Li & Venkatasubramanian 2007)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(worst),
+            "achieved_t": float(worst),
+            "satisfies": bool(worst <= t),
+            "class_distances": dists,
+            "class_sizes": sizes,
+            "n_classes": len(keys),
+            "min_class_size": int(min(sizes)) if sizes else 0,
+            "overall_distribution": q,
+            "domain": [str(v) for v in dom],
+            "ground": str(ground).lower(),
+            "t": t,
+            "n": int(n),
+            "method": "t-closeness via EMD (Li, Li & Venkatasubramanian 2007)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tcls: t-closeness, EMD(class dist, table dist) <= t; grounds "
-            "equal = half variational, ordered = sum|cumsum(p-q)|/(m-1), "
-            "hierarchical = sum_N height(N)/H * min(pos,neg extra).")
+    return (
+        "tcls: t-closeness, EMD(class dist, table dist) <= t; grounds "
+        "equal = half variational, ordered = sum|cumsum(p-q)|/(m-1), "
+        "hierarchical = sum_N height(N)/H * min(pos,neg extra)."
+    )
 
 
 tcls = t_closeness

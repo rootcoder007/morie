@@ -1,7 +1,6 @@
 """Tests for tmlmlt.tmle_multiple_treatments."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlmlt import tmle_multiple_treatments
 
 

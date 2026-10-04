@@ -24,8 +24,7 @@ def test_hmcdt_basic():
     assert sorted(costs).count(min(costs)) == 1
     for i in range(5):
         leaf = y[:k] if i < k else y[k:]
-        assert result["probabilities"][i] == [leaf.count(0) / len(leaf),
-                                              leaf.count(1) / len(leaf)]
+        assert result["probabilities"][i] == [leaf.count(0) / len(leaf), leaf.count(1) / len(leaf)]
     assert result["n_leaves"] == 2
 
 
@@ -50,7 +49,7 @@ import morie.fn.hmcdt as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

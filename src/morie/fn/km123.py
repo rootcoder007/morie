@@ -28,8 +28,7 @@ def kamath_ch8_moverscore_distance(x_i, y_j, E=None):
     """
     if E is not None:
         if not callable(E):
-            raise ValueError("E must be a callable embedding function "
-                             "or None.")
+            raise ValueError("E must be a callable embedding function or None.")
         ex = np.atleast_1d(np.asarray(E(x_i), dtype=float)).ravel()
         ey = np.atleast_1d(np.asarray(E(y_j), dtype=float)).ravel()
     else:
@@ -38,16 +37,18 @@ def kamath_ch8_moverscore_distance(x_i, y_j, E=None):
     if ex.size == 0 or ey.size == 0:
         raise ValueError("an empty embedding has no distance.")
     if ex.size != ey.size:
-        raise ValueError(
-            f"embedding widths differ: {ex.size} vs {ey.size}.")
+        raise ValueError(f"embedding widths differ: {ex.size} vs {ey.size}.")
     if not (np.all(np.isfinite(ex)) and np.all(np.isfinite(ey))):
         raise ValueError("the embeddings contain non-finite values.")
     diff = ex - ey
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(diff)),
-        "difference": [float(v) for v in diff], "n": int(ex.size),
-        "method": "MoverScore Euclidean n-gram distance "
-                  "(Kamath Eq 8.11)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(diff)),
+            "difference": [float(v) for v in diff],
+            "n": int(ex.size),
+            "method": "MoverScore Euclidean n-gram distance (Kamath Eq 8.11)",
+        }
+    )
 
 
 def cheatsheet():

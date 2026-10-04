@@ -120,6 +120,7 @@ _CENTERING = ("newton", "gradient", "none")
 # the barrier itself
 # --------------------------------------------------------------------------
 
+
 def log_barrier(fvals):
     r"""Boyd equation 11.5: :math:`\phi(x) = -\sum_i \log(-f_i(x))`.
 
@@ -219,6 +220,7 @@ def centering_steps(m, eps, t0, mu):
 # derivatives, supplied or differenced
 # --------------------------------------------------------------------------
 
+
 def _num_grad(f, x, h=1e-6):
     out = []
     for j in range(len(x)):
@@ -292,23 +294,25 @@ def _as_fun(spec):
     if callable(spec):
         return _Fun(spec)
     if isinstance(spec, dict):
-        return _Fun(spec["f"], spec.get("grad"), spec.get("hess"),
-                    bool(spec.get("affine", False)))
-    raise ValueError("barerp: a constraint must be a callable or a dict "
-                     "with 'f' and optionally 'grad', 'hess', 'affine'")
+        return _Fun(spec["f"], spec.get("grad"), spec.get("hess"), bool(spec.get("affine", False)))
+    raise ValueError(
+        "barerp: a constraint must be a callable or a dict with 'f' and optionally 'grad', 'hess', 'affine'"
+    )
 
 
 # --------------------------------------------------------------------------
 # the KKT solve for one Newton step
 # --------------------------------------------------------------------------
 
+
 def _solve_kkt(hmat, grad, aeq):
     """Boyd equation 11.14: the Newton step with equality constraints."""
     n = len(grad)
     if not aeq:
-        return [float(v) for v in
-                np.linalg.solve(np.asarray(hmat, dtype=float),
-                                np.asarray([-g for g in grad], dtype=float))]
+        return [
+            float(v)
+            for v in np.linalg.solve(np.asarray(hmat, dtype=float), np.asarray([-g for g in grad], dtype=float))
+        ]
     p = len(aeq)
     big = [[0.0] * (n + p) for _ in range(n + p)]
     for a in range(n):
@@ -319,8 +323,7 @@ def _solve_kkt(hmat, grad, aeq):
             big[n + r][c] = float(aeq[r][c])
             big[c][n + r] = float(aeq[r][c])
     rhs = [-g for g in grad] + [0.0] * p
-    sol = np.linalg.solve(np.asarray(big, dtype=float),
-                          np.asarray(rhs, dtype=float))
+    sol = np.linalg.solve(np.asarray(big, dtype=float), np.asarray(rhs, dtype=float))
     return [float(sol[j]) for j in range(n)]
 
 
@@ -328,9 +331,10 @@ def _solve_kkt(hmat, grad, aeq):
 # centering
 # --------------------------------------------------------------------------
 
-def central_point(f0, cons, x, t, aeq=None, centering="newton",
-                  tol=1e-10, max_iter=200, alpha=0.01, beta=0.5,
-                  step0=1.0):
+
+def central_point(
+    f0, cons, x, t, aeq=None, centering="newton", tol=1e-10, max_iter=200, alpha=0.01, beta=0.5, step0=1.0
+):
     r"""Compute :math:`x^{\star}(t) = \arg\min t f_0 + \phi`.
 
     ``centering="newton"`` uses Newton's method with a backtracking line
@@ -352,8 +356,7 @@ def central_point(f0, cons, x, t, aeq=None, centering="newton",
 
     cur = objective(x)
     if cur == float("inf"):
-        raise ValueError("barerp: the starting point is not strictly "
-                         "feasible")
+        raise ValueError("barerp: the starting point is not strictly feasible")
 
     iters = 0
     decrement = float("inf")
@@ -422,6 +425,7 @@ def _project_null(v, aeq):
 # phase I
 # --------------------------------------------------------------------------
 
+
 def phase1(cons, x0, aeq=None, beq=None, max_outer=60, **kw):
     r"""Boyd section 11.4: minimise :math:`s` subject to
     :math:`f_i(x) \leq s`.
@@ -439,33 +443,44 @@ def phase1(cons, x0, aeq=None, beq=None, max_outer=60, **kw):
     s0 = max(fv) + 1.0
 
     def lift(c):
-        return _Fun(lambda z, _c=c: _c.val(z[:n]) - z[n],
-                    lambda z, _c=c: list(_c.grad(z[:n])) + [-1.0],
-                    None, affine=c.affine)
+        return _Fun(
+            lambda z, _c=c: _c.val(z[:n]) - z[n], lambda z, _c=c: list(_c.grad(z[:n])) + [-1.0], None, affine=c.affine
+        )
 
     lifted = [lift(c) for c in cons]
-    obj = _Fun(lambda z: z[n],
-               lambda z: [0.0] * n + [1.0], None, affine=True)
+    obj = _Fun(lambda z: z[n], lambda z: [0.0] * n + [1.0], None, affine=True)
     aeq2 = None
     if aeq:
         aeq2 = [[float(v) for v in row] + [0.0] for row in aeq]
 
-    res = barrier_method(obj, lifted, list(x0) + [s0], aeq=aeq2, beq=beq,
-                         max_outer=max_outer, **kw)
+    res = barrier_method(obj, lifted, list(x0) + [s0], aeq=aeq2, beq=beq, max_outer=max_outer, **kw)
     z = res["x"]
     s = z[n]
-    return {"x": z[:n], "s": float(s), "feasible": bool(s < 0.0),
-            "outer": res["outer"], "newton": res["newton"]}
+    return {"x": z[:n], "s": float(s), "feasible": bool(s < 0.0), "outer": res["outer"], "newton": res["newton"]}
 
 
 # --------------------------------------------------------------------------
 # Algorithm 11.1
 # --------------------------------------------------------------------------
 
-def barrier_method(f0, constraints, x0, t0=1.0, mu=10.0, eps=1e-8,
-                   aeq=None, beq=None, centering="newton", tol=1e-10,
-                   max_inner=200, max_outer=200, grad=None, hess=None,
-                   affine=False):
+
+def barrier_method(
+    f0,
+    constraints,
+    x0,
+    t0=1.0,
+    mu=10.0,
+    eps=1e-8,
+    aeq=None,
+    beq=None,
+    centering="newton",
+    tol=1e-10,
+    max_inner=200,
+    max_outer=200,
+    grad=None,
+    hess=None,
+    affine=False,
+):
     r"""Boyd Algorithm 11.1, the barrier (path-following) method.
 
     Parameters
@@ -499,48 +514,49 @@ def barrier_method(f0, constraints, x0, t0=1.0, mu=10.0, eps=1e-8,
         and ``newton`` counts, and the per-outer-iteration ``history``.
     """
     if centering not in _CENTERING:
-        raise ValueError("barerp: centering must be one of %s"
-                         % (_CENTERING,))
+        raise ValueError("barerp: centering must be one of %s" % (_CENTERING,))
     if mu <= 1.0:
         raise ValueError("barerp: mu must exceed 1")
     if t0 <= 0.0 or eps <= 0.0:
         raise ValueError("barerp: t0 and eps must be positive")
 
-    f0 = _as_fun(f0 if not callable(f0) or grad is None else
-                 {"f": f0, "grad": grad, "hess": hess, "affine": affine})
+    f0 = _as_fun(f0 if not callable(f0) or grad is None else {"f": f0, "grad": grad, "hess": hess, "affine": affine})
     cons = [_as_fun(c) for c in constraints]
     m = len(cons)
     if m == 0:
-        raise ValueError("barerp: no inequality constraints; this is an "
-                         "unconstrained problem")
+        raise ValueError("barerp: no inequality constraints; this is an unconstrained problem")
     x = [float(v) for v in x0]
     if any(c.val(x) >= 0.0 for c in cons):
-        raise ValueError("barerp: x0 is not strictly feasible; use "
-                         "phase1() to find a starting point")
+        raise ValueError("barerp: x0 is not strictly feasible; use phase1() to find a starting point")
     if aeq:
         aeq = [[float(v) for v in row] for row in aeq]
         if beq is not None:
             for r, row in enumerate(aeq):
                 lhs = sum(row[j] * x[j] for j in range(len(x)))
                 if abs(lhs - float(beq[r])) > 1e-8:
-                    raise ValueError(
-                        "barerp: x0 violates equality row %d by %g"
-                        % (r, lhs - float(beq[r])))
+                    raise ValueError("barerp: x0 violates equality row %d by %g" % (r, lhs - float(beq[r])))
 
     if centering == "none":
         t = m / eps
-        x, it, dec = central_point(f0, cons, x, t, aeq, "newton", tol,
-                                   max_inner)
+        x, it, dec = central_point(f0, cons, x, t, aeq, "newton", tol, max_inner)
         fv = [c.val(x) for c in cons]
-        return RichResult(payload={
-            "x": x, "fun": f0.val(x), "gap": m / t, "t": t,
-            "lambda_": central_path_dual(fv, t), "slack": [-v for v in fv],
-            "outer": 1, "newton": it, "decrement": dec,
-            "history": [(t, m / t, f0.val(x), it)],
-            "centering": "none", "converged": True,
-            "method": ("single centering at t = m/eps, Boyd sec. 11.3 "
-                       "opening -- 'rarely, if ever, used'"),
-        })
+        return RichResult(
+            payload={
+                "x": x,
+                "fun": f0.val(x),
+                "gap": m / t,
+                "t": t,
+                "lambda_": central_path_dual(fv, t),
+                "slack": [-v for v in fv],
+                "outer": 1,
+                "newton": it,
+                "decrement": dec,
+                "history": [(t, m / t, f0.val(x), it)],
+                "centering": "none",
+                "converged": True,
+                "method": ("single centering at t = m/eps, Boyd sec. 11.3 opening -- 'rarely, if ever, used'"),
+            }
+        )
 
     t = float(t0)
     total = 0
@@ -548,8 +564,7 @@ def barrier_method(f0, constraints, x0, t0=1.0, mu=10.0, eps=1e-8,
     outer = 0
     converged = False
     for outer in range(1, max_outer + 1):
-        x, it, dec = central_point(f0, cons, x, t, aeq, centering, tol,
-                                   max_inner)
+        x, it, dec = central_point(f0, cons, x, t, aeq, centering, tol, max_inner)
         total += it
         history.append((t, m / t, f0.val(x), it))
         if m / t < eps:
@@ -558,26 +573,29 @@ def barrier_method(f0, constraints, x0, t0=1.0, mu=10.0, eps=1e-8,
         t *= mu
 
     fv = [c.val(x) for c in cons]
-    return RichResult(payload={
-        "x": x,
-        "fun": f0.val(x),
-        "gap": m / t,
-        "t": t,
-        "lambda_": central_path_dual(fv, t),
-        "slack": [-v for v in fv],
-        "outer": outer,
-        "newton": total,
-        "decrement": dec,
-        "history": history,
-        "centering": centering,
-        "converged": converged,
-        "steps_predicted": centering_steps(m, eps, float(t0), float(mu)),
-        "method": ("Boyd Algorithm 11.1, the logarithmic barrier method "
-                   "of Frisch (1956) eq. 5.1"),
-        "note": ("gap is m/t, the exact duality gap certified by the "
-                 "central point's dual pair (Boyd eq. 11.10-11.12), not "
-                 "an estimate"),
-    })
+    return RichResult(
+        payload={
+            "x": x,
+            "fun": f0.val(x),
+            "gap": m / t,
+            "t": t,
+            "lambda_": central_path_dual(fv, t),
+            "slack": [-v for v in fv],
+            "outer": outer,
+            "newton": total,
+            "decrement": dec,
+            "history": history,
+            "centering": centering,
+            "converged": converged,
+            "steps_predicted": centering_steps(m, eps, float(t0), float(mu)),
+            "method": ("Boyd Algorithm 11.1, the logarithmic barrier method of Frisch (1956) eq. 5.1"),
+            "note": (
+                "gap is m/t, the exact duality gap certified by the "
+                "central point's dual pair (Boyd eq. 11.10-11.12), not "
+                "an estimate"
+            ),
+        }
+    )
 
 
 def barrier_lp(c, A_ub, b_ub, A_eq=None, b_eq=None, x0=None, **kw):
@@ -592,25 +610,25 @@ def barrier_lp(c, A_ub, b_ub, A_eq=None, b_eq=None, x0=None, **kw):
     rows = [[float(v) for v in row] for row in A_ub]
     b = [float(v) for v in b_ub]
     if len(rows) != len(b):
-        raise ValueError("barerp: A_ub has %d rows but b_ub has %d"
-                         % (len(rows), len(b)))
+        raise ValueError("barerp: A_ub has %d rows but b_ub has %d" % (len(rows), len(b)))
     for row in rows:
         if len(row) != n:
             raise ValueError("barerp: A_ub row width does not match c")
 
-    obj = {"f": lambda z: sum(c[j] * z[j] for j in range(n)),
-           "grad": lambda z: list(c), "affine": True}
-    cons = [{"f": (lambda z, _r=row, _bi=bi:
-                   sum(_r[j] * z[j] for j in range(n)) - _bi),
-             "grad": (lambda z, _r=row: list(_r)),
-             "affine": True}
-            for row, bi in zip(rows, b)]
+    obj = {"f": lambda z: sum(c[j] * z[j] for j in range(n)), "grad": lambda z: list(c), "affine": True}
+    cons = [
+        {
+            "f": (lambda z, _r=row, _bi=bi: sum(_r[j] * z[j] for j in range(n)) - _bi),
+            "grad": (lambda z, _r=row: list(_r)),
+            "affine": True,
+        }
+        for row, bi in zip(rows, b)
+    ]
 
     if x0 is None:
         ph = phase1(cons, [0.0] * n, aeq=A_eq, beq=b_eq)
         if not ph["feasible"]:
-            raise ValueError("barerp: no strictly feasible point found; "
-                             "phase1 stopped at s = %g" % ph["s"])
+            raise ValueError("barerp: no strictly feasible point found; phase1 stopped at s = %g" % ph["s"])
         x0 = ph["x"]
     res = barrier_method(obj, cons, x0, aeq=A_eq, beq=b_eq, **kw)
     return res
@@ -621,16 +639,18 @@ barriermethod = barrier_method
 
 
 def cheatsheet():
-    return ("barerp: the logarithmic barrier method. Frisch (1956) "
-            "eq. 5.1 defines the potential as the sum of the logs of "
-            "all the variables -- slacks included -- and moves along a "
-            "compromise between the preference gradient and the "
-            "potential gradient, staying inside the admissible region. "
-            "Boyd ch. 11 is the same path: minimise t f0 + phi with "
-            "phi = -sum log(-f_i), for t growing by mu each outer "
-            "iteration (Algorithm 11.1). The central point carries its "
-            "own certificate -- lambda_i = -1/(t f_i) is dual feasible "
-            "and the duality gap is exactly m/t -- so m/t < eps is a "
-            "guarantee. centering='newton' (default), 'gradient' "
-            "(Frisch's own), or 'none' (single shot at t = m/eps). "
-            "phase1() finds a strictly feasible start.")
+    return (
+        "barerp: the logarithmic barrier method. Frisch (1956) "
+        "eq. 5.1 defines the potential as the sum of the logs of "
+        "all the variables -- slacks included -- and moves along a "
+        "compromise between the preference gradient and the "
+        "potential gradient, staying inside the admissible region. "
+        "Boyd ch. 11 is the same path: minimise t f0 + phi with "
+        "phi = -sum log(-f_i), for t growing by mu each outer "
+        "iteration (Algorithm 11.1). The central point carries its "
+        "own certificate -- lambda_i = -1/(t f_i) is dual feasible "
+        "and the duality gap is exactly m/t -- so m/t < eps is a "
+        "guarantee. centering='newton' (default), 'gradient' "
+        "(Frisch's own), or 'none' (single shot at t = m/eps). "
+        "phase1() finds a strictly feasible start."
+    )

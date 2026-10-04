@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.cvxsoc import boyd_socp
 
-
 I2 = [[1.0, 0.0], [0.0, 1.0]]
 # the SQP solver stops at its 1e-6 constraint tolerance (the same tolr
 # the function uses to flag active cones), so the optimum is checked to

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["soft_voting_classifier", "geron_voting_soft"]
 
 
-def soft_voting_classifier(probabilities, y=None, weights=None,
-                           classes=None):
+def soft_voting_classifier(probabilities, y=None, weights=None, classes=None):
     r"""Average predicted class probabilities across classifiers.
 
     .. math:: \hat p_c = \sum_m w_m p_{mc}, \qquad
@@ -52,9 +51,7 @@ def soft_voting_classifier(probabilities, y=None, weights=None,
     """
     Q = np.asarray(probabilities, dtype=float)
     if Q.ndim != 3:
-        raise ValueError(
-            "probabilities must be (M, n, C), got %d dimensions." % Q.ndim
-        )
+        raise ValueError("probabilities must be (M, n, C), got %d dimensions." % Q.ndim)
     M, n, C = Q.shape
     if M < 2:
         raise ValueError("need at least 2 classifiers, got %d." % M)
@@ -62,12 +59,8 @@ def soft_voting_classifier(probabilities, y=None, weights=None,
         raise ValueError("probabilities must lie in [0, 1].")
     sums = Q.sum(axis=2)
     if not np.allclose(sums, 1.0, atol=1e-6):
-        raise ValueError(
-            "each classifier's probabilities must sum to 1 over classes."
-        )
-    w = np.ones(M) / M if weights is None else np.asarray(
-        weights, dtype=float
-    ).ravel()
+        raise ValueError("each classifier's probabilities must sum to 1 over classes.")
+    w = np.ones(M) / M if weights is None else np.asarray(weights, dtype=float).ravel()
     if w.size != M:
         raise ValueError("weights has %d entries for %d members." % (w.size, M))
     if np.any(w < 0) or w.sum() <= 0:
@@ -80,8 +73,7 @@ def soft_voting_classifier(probabilities, y=None, weights=None,
     proba = np.tensordot(w, Q, axes=(0, 0))
     soft = labs[np.argmax(proba, axis=1)]
     votes = np.argmax(Q, axis=2)
-    hard_counts = np.stack([(votes == c).T.astype(float) @ w
-                            for c in range(C)], axis=1)
+    hard_counts = np.stack([(votes == c).T.astype(float) @ w for c in range(C)], axis=1)
     hard = labs[np.argmax(hard_counts, axis=1)]
 
     payload = {
@@ -106,23 +98,21 @@ def soft_voting_classifier(probabilities, y=None, weights=None,
         yv = np.asarray(y).ravel()
         if yv.size != n:
             raise ValueError("y has %d entries for %d rows." % (yv.size, n))
-        memb = np.array([float(np.mean(labs[votes[m]] != yv))
-                         for m in range(M)])
-        payload.update({
-            "soft_error": float(np.mean(soft != yv)),
-            "hard_error": float(np.mean(hard != yv)),
-            "member_errors": memb,
-            "best_member_error": float(memb.min()),
-            "mean_member_error": float(w @ memb),
-        })
+        memb = np.array([float(np.mean(labs[votes[m]] != yv)) for m in range(M)])
+        payload.update(
+            {
+                "soft_error": float(np.mean(soft != yv)),
+                "hard_error": float(np.mean(hard != yv)),
+                "member_errors": memb,
+                "best_member_error": float(memb.min()),
+                "mean_member_error": float(w @ memb),
+            }
+        )
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return (
-        "hmvts: soft voting with the hard vote alongside, and the "
-        "calibration caveat that decides which is better"
-    )
+    return "hmvts: soft voting with the hard vote alongside, and the calibration caveat that decides which is better"
 
 
 #: Catalogue alias for :func:`soft_voting_classifier`.

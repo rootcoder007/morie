@@ -1,7 +1,6 @@
 """Tests for kmemer.kamath_emergent_abilities."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmemer import kamath_emergent_abilities
 
 

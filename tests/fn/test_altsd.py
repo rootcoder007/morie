@@ -10,5 +10,6 @@ def test_altsd_basic():
 
 def test_altsd_edge():
     import pytest
+
     with pytest.raises(ValueError, match="delete_ratio"):
         alammar_tsdae_objective(["a"], delete_ratio=1.5)

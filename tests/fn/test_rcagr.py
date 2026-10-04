@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcagr -- agreement scores."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rcagr import agreement_scores, rcagr
 
 

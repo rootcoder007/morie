@@ -98,10 +98,7 @@ def gkcov(x, h, n, f=None, boundary=False, c=None, density=None, sample=None, up
     if f is not None:
         s = np.sqrt(h)
         if h >= 0.25:
-            raise ValueError(
-                "Theorem 1.4 needs 1 - 2 sqrt(h) > 0, i.e. h < 1/4; "
-                f"got h = {h}."
-            )
+            raise ValueError(f"Theorem 1.4 needs 1 - 2 sqrt(h) > 0, i.e. h < 1/4; got h = {h}.")
         if boundary:
             if c is None:
                 raise ValueError("the boundary branch of Theorem 1.4 needs c.")
@@ -109,13 +106,13 @@ def gkcov(x, h, n, f=None, boundary=False, c=None, density=None, sample=None, up
             den = 3.0 * cc * s + 5.0
             num1 = cc * s + 1.0
             num2 = 2.0 * cc * s + 4.0
-            power = h ** 0.75
+            power = h**0.75
             form = "boundary"
         else:
             den = 3.0 * x + 5.0 * s
             num1 = x + s
             num2 = 2.0 * x + 4.0 * s
-            power = h ** 0.25
+            power = h**0.25
             form = "interior"
         if den <= 0 or num1 <= 0 or num2 <= 0:
             raise ValueError("Theorem 1.4 needs positive bases; check x, c and h.")

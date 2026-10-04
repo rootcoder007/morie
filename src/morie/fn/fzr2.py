@@ -64,9 +64,7 @@ def kdfr2(a, kernel="gaussian", lo=-8.0, hi=8.0, ngrid=4001):
     elif callable(kernel):
         kfun = lambda t: np.asarray([float(kernel(float(u))) for u in np.atleast_1d(t)], dtype=float)
         base = kfun(y)
-        cum = np.concatenate(
-            ([0.0], np.cumsum(np.diff(y) * (base[:-1] + base[1:]) / 2.0))
-        )
+        cum = np.concatenate(([0.0], np.cumsum(np.diff(y) * (base[:-1] + base[1:]) / 2.0)))
         wfun = lambda t: np.interp(t, y, cum)
     else:
         raise ValueError('kernel must be "gaussian" or a callable K(y).')

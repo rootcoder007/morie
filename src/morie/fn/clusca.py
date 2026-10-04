@@ -63,8 +63,7 @@ def clustering_coefficient(y, A=None, node=None):
         tri += links
         trip += kv * (kv - 1.0) / 2.0
         loc.append(2.0 * links / (kv * (kv - 1.0)) if kv > 1 else 0.0)
-    good = [loc[v] for v in range(n)
-            if len([u for u in range(n) if u != v and W[v][u] != 0.0]) > 1]
+    good = [loc[v] for v in range(n) if len([u for u in range(n) if u != v and W[v][u] != 0.0]) > 1]
     avg = k.mean(good) if good else float("nan")
     trans = tri / trip if trip > 0.0 else float("nan")
     est = loc[int(node)] if node is not None else avg

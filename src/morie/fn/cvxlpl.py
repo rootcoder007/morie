@@ -70,13 +70,10 @@ def boyd_linear_program_dual(A, b, c):
     cv = np.atleast_1d(np.asarray(c, dtype=float)).ravel()
     m, n = Am.shape
     if bv.size != m or cv.size != n:
-        raise ValueError(
-            f"A is ({m}, {n}) but b has {bv.size} and c has {cv.size}")
-    primal = linprog(cv, A_eq=Am, b_eq=bv, bounds=[(0.0, None)] * n,
-                     method="highs")
+        raise ValueError(f"A is ({m}, {n}) but b has {bv.size} and c has {cv.size}")
+    primal = linprog(cv, A_eq=Am, b_eq=bv, bounds=[(0.0, None)] * n, method="highs")
     # max b'y  ==  min -b'y, subject to A'y <= c, y free.
-    dual = linprog(-bv, A_ub=Am.T, b_ub=cv, bounds=[(None, None)] * m,
-                   method="highs")
+    dual = linprog(-bv, A_ub=Am.T, b_ub=cv, bounds=[(None, None)] * m, method="highs")
     p_ok = primal.status == 0
     d_ok = dual.status == 0
     pv = float(primal.fun) if p_ok else float("nan")
@@ -85,13 +82,18 @@ def boyd_linear_program_dual(A, b, c):
     return RichResult(
         title="LP dual",
         summary_lines=[("primal", pv), ("dual", dv), ("gap", gap)],
-        warnings=[] if (p_ok and d_ok) else
-        ["one of the two problems did not solve; for an LP that means "
-         "primal infeasible or unbounded, which the dual mirrors"],
+        warnings=[]
+        if (p_ok and d_ok)
+        else [
+            "one of the two problems did not solve; for an LP that means "
+            "primal infeasible or unbounded, which the dual mirrors"
+        ],
         payload={
             "y": np.asarray(dual.x, dtype=float) if d_ok else np.full(m, np.nan),
             "x": np.asarray(primal.x, dtype=float) if p_ok else np.full(n, np.nan),
-            "dual_value": dv, "primal_value": pv, "gap": gap,
+            "dual_value": dv,
+            "primal_value": pv,
+            "gap": gap,
             "strong_duality": bool(p_ok and d_ok and abs(gap) < 1e-7),
             "shadow_prices": np.asarray(dual.x, dtype=float) if d_ok else None,
             "method": "boyd_linear_program_dual",

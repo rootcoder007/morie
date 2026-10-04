@@ -1,7 +1,6 @@
 """Tests for multinomial_probabilities.multinomial_probabilities."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.multinomial_probabilities import multinomial_probabilities
 
 

@@ -83,8 +83,7 @@ def ripley_g_function(points, window, r):
             if dij < best:
                 best = dij
         nn.append(best)
-    bdist = [min(px[i] - x0, x1 - px[i], py[i] - y0, y1 - py[i])
-             for i in range(n)]
+    bdist = [min(px[i] - x0, x1 - px[i], py[i] - y0, y1 - py[i]) for i in range(n)]
 
     lam = n / ((x1 - x0) * (y1 - y0))
     g, gb, csr = [], [], []

@@ -1,7 +1,6 @@
 """Tests for cvxlpl.boyd_linear_program_dual."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxlpl import boyd_linear_program_dual
 
 
@@ -15,8 +14,7 @@ def test_cvxlpl_basic():
     result = boyd_linear_program_dual(A, b, c)
     assert isinstance(result, dict)
     # Documented payload keys
-    for key in ("y", "dual_value", "primal_value", "gap",
-                "strong_duality", "shadow_prices"):
+    for key in ("y", "dual_value", "primal_value", "gap", "strong_duality", "shadow_prices"):
         assert key in result, f"missing documented key: {key}"
 
 
@@ -24,9 +22,9 @@ def test_cvxlpl_edge():
     """Test edge cases: strong duality and shadow-price interpretation."""
     # Simple, hand-crafted feasible LP so the answer is exactly checkable
     # from the formula in the docstring.
-    A = np.array([[1.0, 1.0]])           # shape (1, 2)
-    b = np.array([4.0])                   # shape (1,)
-    c = np.array([1.0, 2.0])              # shape (2,)
+    A = np.array([[1.0, 1.0]])  # shape (1, 2)
+    b = np.array([4.0])  # shape (1,)
+    c = np.array([1.0, 2.0])  # shape (2,)
     result = boyd_linear_program_dual(A, b, c)
 
     assert isinstance(result, dict)
@@ -36,9 +34,9 @@ def test_cvxlpl_edge():
     # min 1*x1 + 2*x2  s.t.  x1 + x2 == 4,  x1, x2 >= 0.
     # On the constraint x1 + x2 = 4, x2 = 4 - x1; objective = x1 + 2(4 - x1)
     # = 8 - x1, minimized at x1 = 4, x2 = 0, value = 4.
-    expected_primal = 1.0 * 4.0 + 2.0 * 0.0        # == 4.0
+    expected_primal = 1.0 * 4.0 + 2.0 * 0.0  # == 4.0
     # Dual: max 4*y s.t. y <= 1, y <= 2  -> y* = 1, dual value = 4.
-    expected_dual = b[0] * 1.0                     # b'y with y* = min(c)
+    expected_dual = b[0] * 1.0  # b'y with y* = min(c)
     expected_gap = expected_primal - expected_dual
 
     assert abs(result["primal_value"] - expected_primal) < 1e-7

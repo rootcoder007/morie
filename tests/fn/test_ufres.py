@@ -1,7 +1,6 @@
 """Tests for morie.fn.ufres -- unfolding residuals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ufres import ufres, unfolding_residuals
 
 

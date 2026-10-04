@@ -4,8 +4,6 @@ import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e30 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_30,
 )

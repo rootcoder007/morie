@@ -13,8 +13,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["model_identify_estimate_refute", "backdoor_sets",
-           "is_backdoor_admissible"]
+__all__ = ["model_identify_estimate_refute", "backdoor_sets", "is_backdoor_admissible"]
 
 _METHOD = "Model-identify-estimate-refute causal workflow"
 
@@ -122,18 +121,21 @@ def backdoor_sets(adj, treatment, outcome, candidates=None, max_size=None):
     n = A.shape[0]
     t, y = int(treatment), int(outcome)
     desc = _descendants(A, t)
-    pool = ([i for i in range(n) if i not in (t, y) and i not in desc]
-            if candidates is None
-            else [int(c) for c in candidates])
+    pool = (
+        [i for i in range(n) if i not in (t, y) and i not in desc]
+        if candidates is None
+        else [int(c) for c in candidates]
+    )
     lim = len(pool) if max_size is None else int(max_size)
     found = []
     from itertools import combinations
+
     for k in range(0, min(lim, len(pool)) + 1):
         for combo in combinations(pool, k):
             if is_backdoor_admissible(A, t, y, combo):
                 found.append(tuple(sorted(combo)))
         if found and k >= 1:
-            break        # smallest sufficient sets are enough
+            break  # smallest sufficient sets are enough
     return found
 
 
@@ -142,9 +144,9 @@ def _ols(X, y):
     return beta
 
 
-def model_identify_estimate_refute(dag, data, treatment, outcome,
-                                   estimator="backdoor", adjustment=None,
-                                   n_refute=100, seed=0, alpha=0.05):
+def model_identify_estimate_refute(
+    dag, data, treatment, outcome, estimator="backdoor", adjustment=None, n_refute=100, seed=0, alpha=0.05
+):
     r"""Run the four steps and report where the answer came from.
 
     The value of the workflow is not the number at step three. It is
@@ -220,9 +222,7 @@ def model_identify_estimate_refute(dag, data, treatment, outcome,
         if D.shape[0] == p:
             D = D.T
         else:
-            raise ValueError(
-                f"data has {D.shape[1]} columns but the dag has {p} nodes."
-            )
+            raise ValueError(f"data has {D.shape[1]} columns but the dag has {p} nodes.")
     n = D.shape[0]
     t, y = int(treatment), int(outcome)
     if not 0 <= t < p or not 0 <= y < p:
@@ -255,8 +255,7 @@ def model_identify_estimate_refute(dag, data, treatment, outcome,
     mediators = [z for z in Z if z in desc_t]
 
     def fit(dat, tcol, zcols):
-        X = np.column_stack([np.ones(dat.shape[0]), dat[:, tcol]]
-                            + [dat[:, c] for c in zcols])
+        X = np.column_stack([np.ones(dat.shape[0]), dat[:, tcol]] + [dat[:, c] for c in zcols])
         b = _ols(X, dat[:, y])
         resid = dat[:, y] - X @ b
         dof = max(dat.shape[0] - X.shape[1], 1)
@@ -302,15 +301,17 @@ def model_identify_estimate_refute(dag, data, treatment, outcome,
             ("Adjustment set", list(Z)),
             ("Refutations passed", f"{passed} of 3"),
         ],
-        tables=[{
-            "title": "Refutation",
-            "headers": ["Check", "Expected", "Observed", "Passed"],
-            "rows": [
-                ["Placebo treatment", 0.0, placebo_mean, pass_placebo],
-                ["Random common cause", eff, common_mean, pass_common],
-                ["80% subsets (sd)", se, subset_sd, pass_subset],
-            ],
-        }],
+        tables=[
+            {
+                "title": "Refutation",
+                "headers": ["Check", "Expected", "Observed", "Passed"],
+                "rows": [
+                    ["Placebo treatment", 0.0, placebo_mean, pass_placebo],
+                    ["Random common cause", eff, common_mean, pass_common],
+                    ["80% subsets (sd)", se, subset_sd, pass_subset],
+                ],
+            }
+        ],
         payload={
             "estimate": eff,
             "se": se,
@@ -334,10 +335,9 @@ def model_identify_estimate_refute(dag, data, treatment, outcome,
             "method": _METHOD,
         },
         interpretation=(
-            f"Adjusting for {list(Z)} identifies the effect as {eff:.4f}; "
-            f"{passed} of 3 refutations passed."
-            if identified else
-            "No admissible adjustment set exists in this graph, so the "
+            f"Adjusting for {list(Z)} identifies the effect as {eff:.4f}; {passed} of 3 refutations passed."
+            if identified
+            else "No admissible adjustment set exists in this graph, so the "
             "effect is NOT identified and the number below is a regression "
             "coefficient, not a causal effect."
         ),

@@ -3,14 +3,12 @@
 import math
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gpsps import gp_spectral_mixture
 
 
 def _sm_kernel(tau, w, v, m):
     return sum(
-        w_q * math.exp(-2.0 * math.pi ** 2 * tau ** 2 * v_q) * math.cos(2.0 * math.pi * tau * m_q)
+        w_q * math.exp(-2.0 * math.pi**2 * tau**2 * v_q) * math.cos(2.0 * math.pi * tau * m_q)
         for w_q, v_q, m_q in zip(w, v, m)
     )
 
@@ -28,9 +26,7 @@ def test_gpsps_basic():
     m = [0.2, 0.5, 1.0]
     noise = 0.01
 
-    result = gp_spectral_mixture(
-        X, y, X_test, Q=q, weights=w, variances=v, means=m, noise=noise
-    )
+    result = gp_spectral_mixture(X, y, X_test, Q=q, weights=w, variances=v, means=m, noise=noise)
 
     assert isinstance(result, dict)
     assert "estimate" in result

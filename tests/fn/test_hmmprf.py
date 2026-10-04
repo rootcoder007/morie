@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmprf import hmm_profile
 
 
@@ -24,9 +23,13 @@ def _make_profile(rng, L, A):
 
     # transition probabilities
     trans = {
-        "mm": 0.9, "mi": 0.05, "md": 0.05,
-        "im": 0.1, "ii": 0.9,
-        "dm": 0.2, "dd": 0.8,
+        "mm": 0.9,
+        "mi": 0.05,
+        "md": 0.05,
+        "im": 0.1,
+        "ii": 0.9,
+        "dm": 0.2,
+        "dd": 0.8,
     }
 
     return {"match": match, "insert": ins, "trans": trans}

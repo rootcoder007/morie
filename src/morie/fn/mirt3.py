@@ -43,8 +43,9 @@ def mirt_3d_compensatory(y, theta, a, d, D=1.0):
     doi:10.18637/jss.v048.i06, eq. (1) p.3, with gamma = 0.
     """
     if len(C.vec(a)) != 3:
-        raise ValueError("mirt3 is the three-dimensional case; a must have "
-                         "exactly 3 slopes (use mirt2 for other dimensions)")
+        raise ValueError(
+            "mirt3 is the three-dimensional case; a must have exactly 3 slopes (use mirt2 for other dimensions)"
+        )
     return mirt_2d_compensatory(y, theta, a, d, 0.0, D)
 
 

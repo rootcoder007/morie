@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.wvltdb import db_wavelet
 
-
 Y = [math.sin(0.37 * k) + 0.3 * math.cos(1.9 * k) for k in range(16)]
 
 
@@ -16,8 +15,15 @@ def test_wvltdb_basic():
     (energy is preserved across levels) and reconstructs exactly."""
     s3 = math.sqrt(3)
     r = db_wavelet(Y, level=3, wavelet="db2")
-    assert r["h"] == pytest.approx([(1 + s3) / (4 * math.sqrt(2)), (3 + s3) / (4 * math.sqrt(2)),
-                                    (3 - s3) / (4 * math.sqrt(2)), (1 - s3) / (4 * math.sqrt(2))], abs=1e-15)
+    assert r["h"] == pytest.approx(
+        [
+            (1 + s3) / (4 * math.sqrt(2)),
+            (3 + s3) / (4 * math.sqrt(2)),
+            (3 - s3) / (4 * math.sqrt(2)),
+            (1 - s3) / (4 * math.sqrt(2)),
+        ],
+        abs=1e-15,
+    )
     tot = sum(v * v for v in Y)
     assert r["approximation_energy"] + sum(r["energies"]) == pytest.approx(tot, rel=1e-13)
     assert r["reconstruction_error"] < 1e-13
@@ -36,5 +42,3 @@ def test_wvltdb_edge():
         db_wavelet(Y[:12])
     with pytest.raises(ValueError):
         db_wavelet(Y, wavelet="db9")
-
-

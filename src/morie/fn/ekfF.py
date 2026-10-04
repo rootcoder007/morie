@@ -104,10 +104,8 @@ def extended_kalman(y, f, h, F, H, Q, R, x0=None, P0=None):
         xp = _vec(_apply(f, x))
         Fk = _mat(_apply(F, x))
         # P- = F P F' + Q
-        FP = [[sum(Fk[i][k] * P[k][j] for k in range(d)) for j in range(d)]
-              for i in range(d)]
-        Pp = [[sum(FP[i][k] * Fk[j][k] for k in range(d)) + Q[i][j]
-               for j in range(d)] for i in range(d)]
+        FP = [[sum(Fk[i][k] * P[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
+        Pp = [[sum(FP[i][k] * Fk[j][k] for k in range(d)) + Q[i][j] for j in range(d)] for i in range(d)]
         hx = float(_apply(h, xp))
         Hk = _vec(_apply(H, xp))
         if len(Hk) != d:
@@ -119,14 +117,16 @@ def extended_kalman(y, f, h, F, H, Q, R, x0=None, P0=None):
         x = [xp[i] + K[i] * v for i in range(d)]
         P = [[Pp[i][j] - K[i] * S * K[j] for j in range(d)] for i in range(d)]
         loglik += -0.5 * (math.log(2.0 * math.pi * S) + v * v / S)
-    return RichResult(payload={
-        "estimate": x[0],
-        "state": x,
-        "cov": [P[i][j] for i in range(d) for j in range(d)],
-        "loglik": loglik,
-        "n": n,
-        "method": "Extended Kalman filter",
-    })
+    return RichResult(
+        payload={
+            "estimate": x[0],
+            "state": x,
+            "cov": [P[i][j] for i in range(d) for j in range(d)],
+            "loglik": loglik,
+            "n": n,
+            "method": "Extended Kalman filter",
+        }
+    )
 
 
 def cheatsheet():

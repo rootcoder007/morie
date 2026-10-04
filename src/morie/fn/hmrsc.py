@@ -141,7 +141,9 @@ def geron_randomized_search(param_dist, n_iter, X, y, estimator=None, K=3, seed=
         try:
             fit, predict = built
         except (TypeError, ValueError):
-            raise ValueError(f"geron_randomized_search: estimator must return a (fit, predict) pair, got {built!r}") from None
+            raise ValueError(
+                f"geron_randomized_search: estimator must return a (fit, predict) pair, got {built!r}"
+            ) from None
         cv = geron_cross_validation_score(X, y, K=int(K), fit=fit, predict=predict, score=score)
         scores.append(float(cv["cv_score"]))
         del i

@@ -24,10 +24,8 @@ def test_volgvar_reports_the_whole_triple():
     assert out["lr_ind"] == pytest.approx(float(cc["lr_ind"]), rel=1e-12)
     # LR_cc is the sum of the two halves it reports
     assert out["lr_cc"] == pytest.approx(out["lr_uc"] + out["lr_ind"], rel=1e-12)
-    assert out["pvalue_uc"] == pytest.approx(
-        float(stats.chi2.sf(out["lr_uc"], 1)), rel=1e-12)
-    assert out["pvalue_ind"] == pytest.approx(
-        float(stats.chi2.sf(out["lr_ind"], 1)), rel=1e-12)
+    assert out["pvalue_uc"] == pytest.approx(float(stats.chi2.sf(out["lr_uc"], 1)), rel=1e-12)
+    assert out["pvalue_ind"] == pytest.approx(float(stats.chi2.sf(out["lr_ind"], 1)), rel=1e-12)
     assert out["n_obs"] == 12 and out["n_exceedances"] == 5
 
 

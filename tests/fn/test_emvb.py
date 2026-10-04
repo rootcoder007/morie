@@ -1,7 +1,6 @@
 """Tests for morie.fn.emvb -- EM variational Bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.emvb import em_variational_bayes
 
 

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_2 import ghosal_univ_weights
 
 

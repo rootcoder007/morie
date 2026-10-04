@@ -61,33 +61,39 @@ doi:10.1145/192844.192905. The collaborative half; implemented in
 :mod:`ucfR`.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["weighted", "switching", "mixed", "feature_combination",
-           "cascade", "feature_augmentation", "meta_level",
-           "is_order_sensitive", "METHODS"]
+__all__ = [
+    "weighted",
+    "switching",
+    "mixed",
+    "feature_combination",
+    "cascade",
+    "feature_augmentation",
+    "meta_level",
+    "is_order_sensitive",
+    "METHODS",
+]
 
 _EPS = 1e-12
 
-METHODS = ("weighted", "switching", "mixed", "feature_combination",
-           "cascade", "feature_augmentation", "meta_level")
-_ORDER_INSENSITIVE = ("weighted", "switching", "mixed",
-                      "feature_combination")
+METHODS = ("weighted", "switching", "mixed", "feature_combination", "cascade", "feature_augmentation", "meta_level")
+_ORDER_INSENSITIVE = ("weighted", "switching", "mixed", "feature_combination")
 
 
 def is_order_sensitive(method):
     r"""Does swapping the two components give a different system?"""
     m = str(method)
     if m not in METHODS:
-        raise ValueError("hybRC: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
-    return {"method": m, "order_sensitive": m not in
-            _ORDER_INSENSITIVE,
-            "note": "weighted, mixed, switching and feature "
-                    "combination are order-INsensitive; the other "
-                    "three are pipelines"}
+        raise ValueError("hybRC: method must be one of %s, got %r" % (", ".join(METHODS), method))
+    return {
+        "method": m,
+        "order_sensitive": m not in _ORDER_INSENSITIVE,
+        "note": "weighted, mixed, switching and feature "
+        "combination are order-INsensitive; the other "
+        "three are pipelines",
+    }
 
 
 def weighted(scores, weights=None):
@@ -100,22 +106,21 @@ def weighted(scores, weights=None):
     S = [dict(s) for s in scores]
     if not S:
         raise ValueError("hybRC: no component scores given")
-    w = [1.0 / len(S)] * len(S) if weights is None else \
-        [float(v) for v in k.vec(weights)]
+    w = [1.0 / len(S)] * len(S) if weights is None else [float(v) for v in k.vec(weights)]
     if len(w) != len(S):
-        raise ValueError("hybRC: %d weight(s) for %d components"
-                         % (len(w), len(S)))
+        raise ValueError("hybRC: %d weight(s) for %d components" % (len(w), len(S)))
     items = sorted(set().union(*[set(s) for s in S]))
     out, partial = {}, {}
     for it in items:
         present = [c for c in range(len(S)) if it in S[c]]
         out[it] = sum(w[c] * float(S[c][it]) for c in present)
         partial[it] = len(present) < len(S)
-    return {"scores": out, "ranking": sorted(items,
-                                             key=lambda i: -out[i]),
-            "partially_scored": [i for i in items if partial[i]],
-            "note": "an item missing from a component is scored by "
-                    "the rest, which silently favours whoever HAS it"}
+    return {
+        "scores": out,
+        "ranking": sorted(items, key=lambda i: -out[i]),
+        "partially_scored": [i for i in items if partial[i]],
+        "note": "an item missing from a component is scored by the rest, which silently favours whoever HAS it",
+    }
 
 
 def switching(scores, criterion, context=None):
@@ -127,12 +132,13 @@ def switching(scores, criterion, context=None):
     S = [dict(s) for s in scores]
     c = int(criterion(context))
     if c < 0 or c >= len(S):
-        raise ValueError("hybRC: the switching criterion chose "
-                         "component %d of %d" % (c, len(S)))
-    return {"scores": S[c], "chosen": c,
-            "ranking": sorted(S[c], key=lambda i: -S[c][i]),
-            "note": "sensitive to each component's strengths, at the "
-                    "cost of another level of parameterisation"}
+        raise ValueError("hybRC: the switching criterion chose component %d of %d" % (c, len(S)))
+    return {
+        "scores": S[c],
+        "chosen": c,
+        "ranking": sorted(S[c], key=lambda i: -S[c][i]),
+        "note": "sensitive to each component's strengths, at the cost of another level of parameterisation",
+    }
 
 
 def mixed(recommendations, top_k=None):
@@ -146,10 +152,12 @@ def mixed(recommendations, top_k=None):
             if t < len(L[src]):
                 out.append({"item": L[src][t], "source": src})
     if top_k is not None:
-        out = out[:int(top_k)]
-    return {"presented": out, "n_sources": len(L),
-            "note": "no score is combined, so no comparability "
-                    "between components is assumed"}
+        out = out[: int(top_k)]
+    return {
+        "presented": out,
+        "n_sources": len(L),
+        "note": "no score is combined, so no comparability between components is assumed",
+    }
 
 
 def feature_combination(content_features, collaborative_features):
@@ -157,11 +165,13 @@ def feature_combination(content_features, collaborative_features):
     C = [[float(v) for v in r] for r in k.mat(content_features)]
     D = [[float(v) for v in r] for r in k.mat(collaborative_features)]
     if len(C) != len(D):
-        raise ValueError("hybRC: %d content rows but %d "
-                         "collaborative rows" % (len(C), len(D)))
-    return {"features": [C[i] + D[i] for i in range(len(C))],
-            "content_dim": len(C[0]), "collaborative_dim": len(D[0]),
-            "note": "one algorithm, wider input -- not two systems"}
+        raise ValueError("hybRC: %d content rows but %d collaborative rows" % (len(C), len(D)))
+    return {
+        "features": [C[i] + D[i] for i in range(len(C))],
+        "content_dim": len(C[0]),
+        "collaborative_dim": len(D[0]),
+        "note": "one algorithm, wider input -- not two systems",
+    }
 
 
 def cascade(primary, secondary, tol=1e-9):
@@ -173,26 +183,26 @@ def cascade(primary, secondary, tol=1e-9):
     P = dict(primary)
     S = dict(secondary)
     items = sorted(P)
-    order = sorted(items, key=lambda i: (-P[i],
-                                         -S.get(i, 0.0)))
+    order = sorted(items, key=lambda i: (-P[i], -S.get(i, 0.0)))
     ties = {}
     for i in items:
         ties.setdefault(round(P[i] / max(tol, 1e-12)), []).append(i)
     broken = sum(1 for g in ties.values() if len(g) > 1)
-    return {"ranking": order, "tie_groups_broken": broken,
-            "primary_respected": all(
-                P[order[a]] >= P[order[a + 1]] - tol
-                for a in range(len(order) - 1)),
-            "note": "the secondary NEVER overturns a strict "
-                    "preference of the primary"}
+    return {
+        "ranking": order,
+        "tie_groups_broken": broken,
+        "primary_respected": all(P[order[a]] >= P[order[a + 1]] - tol for a in range(len(order) - 1)),
+        "note": "the secondary NEVER overturns a strict preference of the primary",
+    }
 
 
 def feature_augmentation(base_output, consumer):
     r"""One recommender's OUTPUT becomes the next one's input
     feature."""
-    return {"result": consumer(base_output),
-            "note": "a feature, not a model -- the consumer keeps its "
-                    "own learning algorithm"}
+    return {
+        "result": consumer(base_output),
+        "note": "a feature, not a model -- the consumer keeps its own learning algorithm",
+    }
 
 
 def meta_level(model_builder, consumer, data):
@@ -202,28 +212,32 @@ def meta_level(model_builder, consumer, data):
     producer's internal representation, not just its output.
     """
     model = model_builder(data)
-    return RichResult(payload={
-        "estimate": consumer(model), "result": consumer(model),
-        "model": model,
-        "method": "meta-level hybrid; Burke (2002)",
-        "note": "the consumer depends on the producer's internal "
-                "representation, so the two cannot be swapped",
-    })
+    return RichResult(
+        payload={
+            "estimate": consumer(model),
+            "result": consumer(model),
+            "model": model,
+            "method": "meta-level hybrid; Burke (2002)",
+            "note": "the consumer depends on the producer's internal representation, so the two cannot be swapped",
+        }
+    )
 
 
 def cheatsheet():
-    return ("hybRC: collaborative filtering cannot recommend what "
-            "nobody rated; content-based filtering cannot surprise "
-            "anyone. Combining is obvious, HOW is not -- and the seven "
-            "ways are different systems. WEIGHTED (assumes components "
-            "are comparably good everywhere, which is what fails on "
-            "new items), SWITCHING (buys sensitivity, costs a new "
-            "criterion to parameterise), MIXED (side by side, no "
-            "fusion), FEATURE COMBINATION (collaborative data as extra "
-            "features in ONE model), CASCADE (second breaks TIES "
-            "only), FEATURE AUGMENTATION (output feeds the next), "
-            "META-LEVEL (whole MODEL feeds the next). The first four "
-            "are order-insensitive; the last three are pipelines.")
+    return (
+        "hybRC: collaborative filtering cannot recommend what "
+        "nobody rated; content-based filtering cannot surprise "
+        "anyone. Combining is obvious, HOW is not -- and the seven "
+        "ways are different systems. WEIGHTED (assumes components "
+        "are comparably good everywhere, which is what fails on "
+        "new items), SWITCHING (buys sensitivity, costs a new "
+        "criterion to parameterise), MIXED (side by side, no "
+        "fusion), FEATURE COMBINATION (collaborative data as extra "
+        "features in ONE model), CASCADE (second breaks TIES "
+        "only), FEATURE AUGMENTATION (output feeds the next), "
+        "META-LEVEL (whole MODEL feeds the next). The first four "
+        "are order-insensitive; the last three are pipelines."
+    )
 
 
 # compact alias per ledger/NAMING.md

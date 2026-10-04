@@ -10,9 +10,10 @@ from morie.fn.hrzfneps import horowitz_panel_density_estimators
 N, TT = 30, 3
 BETA = [0.7]
 X = [[[math.sin(0.9 * j + 1.3 * t)] for t in range(TT)] for j in range(N)]
-Y = [[BETA[0] * X[j][t][0] + math.cos(2.1 * j) + 0.3 * math.sin(3.7 * j + 5.1 * t) for t in range(TT)]
-     for j in range(N)]
-Wr = [Y[j][t] - BETA[0] * X[j][t][0] for j in range(N) for t in range(TT)]            # (5.21)
+Y = [
+    [BETA[0] * X[j][t][0] + math.cos(2.1 * j) + 0.3 * math.sin(3.7 * j + 5.1 * t) for t in range(TT)] for j in range(N)
+]
+Wr = [Y[j][t] - BETA[0] * X[j][t][0] for j in range(N) for t in range(TT)]  # (5.21)
 ETA = [(Y[j][t] - Y[j][0]) - BETA[0] * (X[j][t][0] - X[j][0][0]) for j in range(N) for t in range(1, TT)]  # (5.22)
 
 
@@ -41,6 +42,7 @@ def _fU(u, nu):
         a, b = _cf(Wr, t)
         c, d = _cf(ETA, t)
         return (a * math.cos(t * u) + b * math.sin(t * u)) * _zeta(nu * t) / math.sqrt(math.hypot(c, d))
+
     return _trap(g, 1 / nu)
 
 
@@ -48,6 +50,7 @@ def _feps(z, nu):
     def g(t):
         c, d = _cf(ETA, t)
         return math.sqrt(math.hypot(c, d)) * _zeta(nu * t) * math.cos(t * z)
+
     return _trap(g, 1 / nu)
 
 

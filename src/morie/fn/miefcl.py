@@ -74,7 +74,7 @@ def miefcl(estimates, variances, nu_com=None):
     if lam <= 0:
         df_old = float("inf")
     else:
-        df_old = (m - 1) / lam ** 2
+        df_old = (m - 1) / lam**2
     if nu_com is None:
         df = df_old
     else:
@@ -86,21 +86,22 @@ def miefcl(estimates, variances, nu_com=None):
             df = min(nu_obs, nc)
         else:
             df = df_old * nu_obs / (df_old + nu_obs)
-    fmi = (riv + 2.0 / (df + 3.0)) / (1.0 + riv) \
-        if not math.isinf(riv) else 1.0
-    return RichResult(payload={
-        "estimate": qbar,
-        "se": math.sqrt(t),
-        "t": t,
-        "ubar": ubar,
-        "b": b,
-        "m": m,
-        "riv": riv,
-        "lambda_": lam,
-        "fmi": fmi,
-        "df": df,
-        "method": "Rubin's rules (Rubin 1987; van Buuren 2018 Sec. 2.3)",
-    })
+    fmi = (riv + 2.0 / (df + 3.0)) / (1.0 + riv) if not math.isinf(riv) else 1.0
+    return RichResult(
+        payload={
+            "estimate": qbar,
+            "se": math.sqrt(t),
+            "t": t,
+            "ubar": ubar,
+            "b": b,
+            "m": m,
+            "riv": riv,
+            "lambda_": lam,
+            "fmi": fmi,
+            "df": df,
+            "method": "Rubin's rules (Rubin 1987; van Buuren 2018 Sec. 2.3)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -109,6 +110,7 @@ mi_rubin_rules = miefcl
 
 def cheatsheet():
     return "miefcl: pool MI estimates, T = Ubar + (1+1/m)B, Barnard-Rubin df"
+
 
 # public names resolved by fn/_lazy_map.json
 multiple_imputation_combine = miefcl

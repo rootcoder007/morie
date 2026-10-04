@@ -33,9 +33,9 @@ def kamath_ch9_simvlm_prefixlm(theta, x, T_p):
     """
     if theta is not None:
         if not callable(theta):
-            raise ValueError("theta must be a callable theta(x) or "
-                             "None when x already holds the true-token "
-                             "probabilities.")
+            raise ValueError(
+                "theta must be a callable theta(x) or None when x already holds the true-token probabilities."
+            )
         x = theta(x)
     P = np.atleast_2d(np.asarray(x, dtype=float))
     if P.size == 0:
@@ -44,18 +44,19 @@ def kamath_ch9_simvlm_prefixlm(theta, x, T_p):
         raise ValueError("token probabilities must lie in [0, 1].")
     tp = int(T_p)
     if tp < 0 or tp >= P.shape[1]:
-        raise ValueError(
-            f"the prefix length {tp} leaves no suffix in a sequence of "
-            f"{P.shape[1]} tokens.")
+        raise ValueError(f"the prefix length {tp} leaves no suffix in a sequence of {P.shape[1]} tokens.")
     with np.errstate(divide="ignore"):
         per_seq = -np.log(P[:, tp:]).sum(axis=1)
-    return RichResult(payload={
-        "estimate": float(per_seq.mean()),
-        "per_sequence": [float(v) for v in per_seq],
-        "prefix_length": tp, "n_suffix_tokens": int(P.shape[1] - tp),
-        "n": int(P.shape[0]),
-        "method": "PrefixLM suffix negative log-likelihood "
-                  "(Kamath Eq 9.11)"})
+    return RichResult(
+        payload={
+            "estimate": float(per_seq.mean()),
+            "per_sequence": [float(v) for v in per_seq],
+            "prefix_length": tp,
+            "n_suffix_tokens": int(P.shape[1] - tp),
+            "n": int(P.shape[0]),
+            "method": "PrefixLM suffix negative log-likelihood (Kamath Eq 9.11)",
+        }
+    )
 
 
 def cheatsheet():

@@ -74,6 +74,10 @@ def test_small_sample_multiplier():
     per-column expected hom becomes 1 - 2*(1/3)*(2/3)*(3/2) = 1/3."""
     res = sample_qc(_hand_case(), small_sample=True)
     # ind2 columns: c = (3/2, 3/2, 3/2, 2) for N = (3,3,3,2)
-    e = (1 - 2 * (1 / 3) * (2 / 3) * 1.5) + (1 - 2 * (2 / 3) * (1 / 3) * 1.5) \
-        + (1 - 2 * 0.5 * 0.5 * 1.5) + (1 - 2 * 0.25 * 0.75 * 2.0)
+    e = (
+        (1 - 2 * (1 / 3) * (2 / 3) * 1.5)
+        + (1 - 2 * (2 / 3) * (1 / 3) * 1.5)
+        + (1 - 2 * 0.5 * 0.5 * 1.5)
+        + (1 - 2 * 0.25 * 0.75 * 2.0)
+    )
     assert abs(res["exp_hom"][2] - e) < 1e-12

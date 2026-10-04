@@ -5,8 +5,6 @@ Implements sec. 13.3.1 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
@@ -26,10 +24,14 @@ def ghosal_bp_discrete(hazards0=(0.1, 0.2, 0.3), c=4.0, seed=42):
         for k, h in enumerate(h0):
             means[k] += float(rng.beta(c * h, c * (1.0 - h))) / n_sim
     gap = max(abs(m - h) for m, h in zip(means, h0))
-    res = RichResult(payload={"estimate": sum(means),
-                              "mean_by_time": means,
-                              "prior_mean_gap": gap,
-                              "method": "discrete beta process (GvdV 2017 sec. 13.3.1)"})
+    res = RichResult(
+        payload={
+            "estimate": sum(means),
+            "mean_by_time": means,
+            "prior_mean_gap": gap,
+            "method": "discrete beta process (GvdV 2017 sec. 13.3.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_4")
 
 

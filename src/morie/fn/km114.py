@@ -28,24 +28,27 @@ def kamath_ch8_bleu_precision(n_grams):
     """
     A = np.atleast_2d(np.asarray(n_grams, dtype=float))
     if A.shape[-1] != 2:
-        raise ValueError("give [clipped_matches, total_generated] per "
-                         "n-gram order; got rows of width "
-                         f"{A.shape[-1]}.")
+        raise ValueError(f"give [clipped_matches, total_generated] per n-gram order; got rows of width {A.shape[-1]}.")
     if np.any(A < 0):
         raise ValueError("n-gram counts cannot be negative.")
     if np.any(A[:, 1] == 0):
-        raise ValueError("an n-gram order with zero generated n-grams "
-                         "has an undefined precision (0/0); the "
-                         "candidate is shorter than n.")
+        raise ValueError(
+            "an n-gram order with zero generated n-grams "
+            "has an undefined precision (0/0); the "
+            "candidate is shorter than n."
+        )
     if np.any(A[:, 0] > A[:, 1]):
-        raise ValueError("clipped matches exceed the generated count; "
-                         "clipping was not applied.")
+        raise ValueError("clipped matches exceed the generated count; clipping was not applied.")
     p = A[:, 0] / A[:, 1]
     est = float(p[0]) if p.size == 1 else [float(v) for v in p]
-    return RichResult(payload={
-        "estimate": est, "p_n": [float(v) for v in p],
-        "n": int(p.size),
-        "method": "BLEU clipped n-gram precision (Kamath Eq 8.2)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "p_n": [float(v) for v in p],
+            "n": int(p.size),
+            "method": "BLEU clipped n-gram precision (Kamath Eq 8.2)",
+        }
+    )
 
 
 def cheatsheet():

@@ -91,13 +91,16 @@ def private_accuracy_tradeoff(sensitivity=1.0, epsilon=1.0, n=100, confidence=0.
     cross = float(2.0 / epsilon**2)
     return RichResult(
         title="Privacy-accuracy trade-off",
-        summary_lines=[("epsilon", epsilon), ("n", n), ("noise sd", sd),
-                       ("crossover n", cross)],
+        summary_lines=[("epsilon", epsilon), ("n", n), ("noise sd", sd), ("crossover n", cross)],
         payload={
-            "noise_scale": float(b), "noise_sd": sd, "half_width": hw,
+            "noise_scale": float(b),
+            "noise_sd": sd,
+            "half_width": hw,
             "relative_error": float(sd / max(abs(sensitivity), 1e-300)),
             "noise_to_signal_n": cross,
-            "epsilon": epsilon, "n": n, "sensitivity": sensitivity,
+            "epsilon": epsilon,
+            "n": n,
+            "sensitivity": sensitivity,
             "confidence": float(confidence),
             "method": "private_accuracy_tradeoff",
         },

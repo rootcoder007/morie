@@ -11,8 +11,7 @@ from ._richresult import RichResult
 __all__ = ["alphafold_invariant_point"]
 
 
-def alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb,
-                              gamma, wo):
+def alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo):
     """Invariant point attention -- Algorithm 22, p. 28.
 
     Attention over residues in which the logit carries, besides the usual
@@ -77,21 +76,17 @@ def alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb,
     nqp = len(wqp[0])
     npv = len(wvp[0])
     scale = 1.0 / math.sqrt(c)
-    wC = math.sqrt(2.0 / (9.0 * nqp))          # line 5
-    wL = math.sqrt(1.0 / 3.0)                  # line 6
+    wC = math.sqrt(2.0 / (9.0 * nqp))  # line 5
+    wL = math.sqrt(1.0 / 3.0)  # line 6
 
     q = [[A.lin(s[i], wq[h]) for i in range(n)] for h in range(nh)]
     k = [[A.lin(s[i], wk[h]) for i in range(n)] for h in range(nh)]
     v = [[A.lin(s[i], wv[h]) for i in range(n)] for h in range(nh)]
     # points are produced in the local frame and then placed globally
-    gq = [[[A.rapply(frames[i], A.lin(s[i], wqp[h][p])) for p in range(nqp)]
-           for i in range(n)] for h in range(nh)]
-    gk = [[[A.rapply(frames[i], A.lin(s[i], wkp[h][p])) for p in range(nqp)]
-           for i in range(n)] for h in range(nh)]
-    gv = [[[A.rapply(frames[i], A.lin(s[i], wvp[h][p])) for p in range(npv)]
-           for i in range(n)] for h in range(nh)]
-    b = [[[A.vdot(wb[h], z[i][j]) for j in range(n)] for i in range(n)]
-         for h in range(nh)]
+    gq = [[[A.rapply(frames[i], A.lin(s[i], wqp[h][p])) for p in range(nqp)] for i in range(n)] for h in range(nh)]
+    gk = [[[A.rapply(frames[i], A.lin(s[i], wkp[h][p])) for p in range(nqp)] for i in range(n)] for h in range(nh)]
+    gv = [[[A.rapply(frames[i], A.lin(s[i], wvp[h][p])) for p in range(npv)] for i in range(n)] for h in range(nh)]
+    b = [[[A.vdot(wb[h], z[i][j]) for j in range(n)] for i in range(n)] for h in range(nh)]
 
     attn, out = [], []
     pts = []
@@ -102,19 +97,15 @@ def alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb,
             for j in range(n):
                 # line 7: scalar term, pair bias, and the squared point
                 # distance measured in the global frame
-                dsq = sum(A.vnorm2(A.vsub(gq[h][i][p], gk[h][j][p]))
-                          for p in range(nqp))
-                logits.append(wL * (scale * A.vdot(q[h][i], k[h][j])
-                                    + b[h][i][j]
-                                    - 0.5 * gamma[h] * wC * dsq))
+                dsq = sum(A.vnorm2(A.vsub(gq[h][i][p], gk[h][j][p])) for p in range(nqp))
+                logits.append(wL * (scale * A.vdot(q[h][i], k[h][j]) + b[h][i][j] - 0.5 * gamma[h] * wC * dsq))
             a = A.smax(logits)
             ah.append(a)
             # line 10: average the globally placed value points, then map
             # back through the inverse of the receiving frame
             row = []
             for p in range(npv):
-                acc = [sum(a[j] * gv[h][j][p][t] for j in range(n))
-                       for t in range(3)]
+                acc = [sum(a[j] * gv[h][j][p][t] for j in range(n)) for t in range(3)]
                 row.append(A.rinvapply(frames[i], acc))
             ph.append(row)
         attn.append(ah)
@@ -125,11 +116,9 @@ def alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb,
         for h in range(nh):
             a = attn[h][i]
             # line 8: pair-weighted sum
-            cat.extend([sum(a[j] * z[i][j][t] for j in range(n))
-                        for t in range(cz)])
+            cat.extend([sum(a[j] * z[i][j][t] for j in range(n)) for t in range(cz)])
             # line 9: value-weighted sum
-            cat.extend([sum(a[j] * v[h][j][t] for j in range(n))
-                        for t in range(c)])
+            cat.extend([sum(a[j] * v[h][j][t] for j in range(n)) for t in range(c)])
             # line 11: the local points and their norms
             for p in range(npv):
                 cat.extend(pts[h][i][p])

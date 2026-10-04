@@ -3407,10 +3407,24 @@ _DT_FORMATS = [
 
 
 _MONTH_NAMES = (
-    "january", "february", "march", "april", "may", "june",
-    "july", "august", "september", "october", "november", "december",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
 )
-_MONTH_NUM = {**{m: i for i, m in enumerate(_MONTH_NAMES, 1)}, **{m[:3]: i for i, m in enumerate(_MONTH_NAMES, 1)}, "sept": 9}
+_MONTH_NUM = {
+    **{m: i for i, m in enumerate(_MONTH_NAMES, 1)},
+    **{m[:3]: i for i, m in enumerate(_MONTH_NAMES, 1)},
+    "sept": 9,
+}
 _MONTH_RE = r"(?P<m>" + "|".join(sorted(_MONTH_NUM, key=len, reverse=True)) + r")\.?"
 _DAY_RE = r"(?P<d>\d{1,2})(?:st|nd|rd|th)?"
 _NAMED_DATE_RES = None

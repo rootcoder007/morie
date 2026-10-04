@@ -102,7 +102,7 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
         b, ls, q = theta[:p], theta[p], theta[p + 1]
         sigma = np.exp(np.clip(ls, -20, 20))
         z = (logt - A @ b) / sigma
-        if abs(q) < 1e-6:                       # log-normal limit
+        if abs(q) < 1e-6:  # log-normal limit
             from ._stats_core import norm
 
             ld, lsv = norm.logpdf(z), norm.logsf(z)
@@ -110,16 +110,14 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
             qi = 1.0 / q**2
             w = q * z
             u = qi * np.exp(np.clip(w, -500, 500))
-            ld = (np.log(abs(q)) - gammaln(qi) + qi * np.log(qi)
-                  + qi * w - u)
+            ld = np.log(abs(q)) - gammaln(qi) + qi * np.log(qi) + qi * w - u
             sf = gamma_dist.sf(u, qi) if q > 0 else gamma_dist.cdf(u, qi)
             lsv = np.log(np.maximum(sf, 1e-300))
         val = -float(np.sum(np.where(e > 0, ld - np.log(sigma), lsv)))
         return val if np.isfinite(val) else 1e12
 
     start = np.r_[np.linalg.lstsq(A, logt, rcond=None)[0], 0.0, 1.0]
-    res = minimize(nll, start, method="Nelder-Mead",
-                   options={"maxiter": max_iter * 20, "xatol": tol, "fatol": tol})
+    res = minimize(nll, start, method="Nelder-Mead", options={"maxiter": max_iter * 20, "xatol": tol, "fatol": tol})
     beta, log_sigma, q = res.x[:p], float(res.x[p]), float(res.x[p + 1])
     ll = float(-res.fun)
 
@@ -128,9 +126,12 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     # the unrestricted point understates the restricted likelihood, inflates
     # the statistic and makes the test reject a correct family.
     def _restricted(q_fixed):
-        r = minimize(lambda th: nll(np.r_[th, q_fixed]),
-                     np.r_[beta, log_sigma], method="Nelder-Mead",
-                     options={"maxiter": max_iter * 20, "xatol": tol, "fatol": tol})
+        r = minimize(
+            lambda th: nll(np.r_[th, q_fixed]),
+            np.r_[beta, log_sigma],
+            method="Nelder-Mead",
+            options={"maxiter": max_iter * 20, "xatol": tol, "fatol": tol},
+        )
         return float(-r.fun)
 
     ll_w = _restricted(1.0)
@@ -139,23 +140,38 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     lr_ln = float(max(2.0 * (ll - ll_ln), 0.0))
     p_w = float(chi2.sf(lr_w, 1))
     p_ln = float(chi2.sf(lr_ln, 1))
-    preferred = ("generalized gamma" if (p_w < 0.05 and p_ln < 0.05)
-                 else "weibull" if lr_w <= lr_ln else "lognormal")
+    preferred = "generalized gamma" if (p_w < 0.05 and p_ln < 0.05) else "weibull" if lr_w <= lr_ln else "lognormal"
     return RichResult(
         title="Generalized gamma AFT",
-        summary_lines=[("n", int(t.size)), ("events", int(e.sum())),
-                       ("q", q), ("loglik", ll), ("preferred", preferred)],
-        warnings=(["q is weakly identified and is estimated from tail "
-                   "behaviour; with few events a family choice made this way "
-                   "is not reliable"]
-                  + ([] if res.success else ["the optimiser did not converge"])),
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events", int(e.sum())),
+            ("q", q),
+            ("loglik", ll),
+            ("preferred", preferred),
+        ],
+        warnings=(
+            [
+                "q is weakly identified and is estimated from tail "
+                "behaviour; with few events a family choice made this way "
+                "is not reliable"
+            ]
+            + ([] if res.success else ["the optimiser did not converge"])
+        ),
         payload={
-            "beta": beta, "sigma": float(np.exp(log_sigma)),
-            "log_sigma": log_sigma, "q": q, "loglik": ll,
-            "lr_vs_weibull": lr_w, "p_vs_weibull": p_w,
-            "lr_vs_lognormal": lr_ln, "p_vs_lognormal": p_ln,
-            "preferred": preferred, "aic": float(2 * (p + 2) - 2 * ll),
-            "n": int(t.size), "converged": bool(res.success),
+            "beta": beta,
+            "sigma": float(np.exp(log_sigma)),
+            "log_sigma": log_sigma,
+            "q": q,
+            "loglik": ll,
+            "lr_vs_weibull": lr_w,
+            "p_vs_weibull": p_w,
+            "lr_vs_lognormal": lr_ln,
+            "p_vs_lognormal": p_ln,
+            "preferred": preferred,
+            "aic": float(2 * (p + 2) - 2 * ll),
+            "n": int(t.size),
+            "converged": bool(res.success),
             "method": "generalized_gamma_aft",
         },
     )

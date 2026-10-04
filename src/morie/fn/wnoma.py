@@ -34,12 +34,10 @@ def _utility_gap(x, zy, zn, beta):
 
 def _loglik(votes, obs, eta):
     p = np.clip(_PHI(np.clip(eta, -8, 8)), _CLIP, 1 - _CLIP)
-    return float(np.sum(obs * (votes * np.log(p)
-                               + (1 - votes) * np.log(1 - p))))
+    return float(np.sum(obs * (votes * np.log(p) + (1 - votes) * np.log(1 - p))))
 
 
-def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
-                          tol=1e-7, seed=0, ridge=1e-3, start="svd"):
+def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250, tol=1e-7, seed=0, ridge=1e-3, start="svd"):
     r"""Recover legislator ideal points and roll-call positions.
 
     Each roll call is a choice between a yea outcome at :math:`z_j^Y`
@@ -139,8 +137,7 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
     n_dropped = V.shape[1] - keep.size
     if keep.size < n_dims + 1:
         raise ValueError(
-            f"only {keep.size} roll calls divide the chamber, which cannot "
-            f"identify a {n_dims}-dimensional space."
+            f"only {keep.size} roll calls divide the chamber, which cannot identify a {n_dims}-dimensional space."
         )
     V = V[:, keep]
     obs = np.isfinite(V)
@@ -174,7 +171,7 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
         x = np.zeros((n, n_dims))
         w = np.zeros((m, n_dims))
         x[:, :k] = U[:, :k]
-        w[:, :k] = (Vt[:k].T * S[:k])
+        w[:, :k] = Vt[:k].T * S[:k]
         sd = np.std(x[:, :k], axis=0)
         x[:, :k] /= np.where(sd > 0, sd, 1.0)
         w[:, :k] *= np.where(sd > 0, sd, 1.0)
@@ -192,9 +189,8 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
         for _ in range(6):
             eta = np.clip(design @ b + off, -8, 8)
             pr = np.clip(_PHI(eta), _CLIP, 1 - _CLIP)
-            ph = np.maximum(np.exp(-0.5 * eta ** 2) / math.sqrt(2 * math.pi),
-                            1e-10)
-            wt = ph ** 2 / (pr * (1 - pr))
+            ph = np.maximum(np.exp(-0.5 * eta**2) / math.sqrt(2 * math.pi), 1e-10)
+            wt = ph**2 / (pr * (1 - pr))
             z = eta - off + (y_row - pr) / ph
             A = (design.T * wt) @ design + ridge * np.eye(design.shape[1])
             g = (design.T * wt) @ z
@@ -242,7 +238,7 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
     centre = x.mean(axis=0)
     a = a + centre @ w.T
     x = x - centre
-    rms = math.sqrt(float(np.mean(np.sum(x ** 2, axis=1))))
+    rms = math.sqrt(float(np.mean(np.sum(x**2, axis=1))))
     if rms > 0:
         x = x / rms
         w = w * rms
@@ -268,7 +264,7 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250,
     modal = 1.0 - modal_err / max(total, 1)
     errors = int(np.sum(obs * (pred != Y)))
     pre = ((modal_err - errors) / modal_err) if modal_err > 0 else float("nan")
-    wnorm = np.sqrt(np.sum(w ** 2, axis=1))
+    wnorm = np.sqrt(np.sum(w**2, axis=1))
     cutpoint = np.where(wnorm > 0, -a / np.maximum(wnorm, 1e-12), np.nan)
 
     out = RichResult(

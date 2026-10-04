@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,9 +19,15 @@ def evt_gev_cdf(x, mu, sigma, xi):
     xs = _ev._flat(x)
     F = [_ev.gev_cdf(v, float(mu), float(sigma), float(xi)) for v in xs]
     out = F[0] if len(F) == 1 else F
-    res = RichResult(payload={"F": out, "mu": float(mu),
-                              "sigma": float(sigma), "xi": float(xi),
-                              "method": "GEV CDF (Coles 2001 eq. 3.2)"})
+    res = RichResult(
+        payload={
+            "F": out,
+            "mu": float(mu),
+            "sigma": float(sigma),
+            "xi": float(xi),
+            "method": "GEV CDF (Coles 2001 eq. 3.2)",
+        }
+    )
     return with_describe_pointer(res, "evgevc")
 
 

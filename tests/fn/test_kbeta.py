@@ -1,8 +1,8 @@
 """Tests for morie.fn.kbeta — beta kernel density."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kbeta import kbeta
 
 

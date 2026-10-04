@@ -1,7 +1,6 @@
 """Tests for medfl -- Median filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.medfl import medfl
 

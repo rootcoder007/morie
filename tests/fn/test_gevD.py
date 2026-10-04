@@ -1,7 +1,6 @@
 """Tests for gevD.gev_distribution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gevD import gev_distribution
 
 
@@ -36,13 +35,9 @@ def test_gevD_basic():
     z = (np.array(x) - mu) / sigma
     t = 1.0 + xi * z
     # Only evaluate where t > 0 (GEV support constraint).
-    expected_F = [math.exp(-(ti ** (-1.0 / xi))) if ti > 0 else float("nan")
-                  for ti in t]
+    expected_F = [math.exp(-(ti ** (-1.0 / xi))) if ti > 0 else float("nan") for ti in t]
     expected_logpdf = [
-        (-math.log(sigma)
-         - (1.0 / xi + 1.0) * math.log(ti)
-         - ti ** (-1.0 / xi))
-        if ti > 0 else float("-inf")
+        (-math.log(sigma) - (1.0 / xi + 1.0) * math.log(ti) - ti ** (-1.0 / xi)) if ti > 0 else float("-inf")
         for ti in t
     ]
 

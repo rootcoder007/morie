@@ -26,10 +26,9 @@ def ca_chapter_11_equation_18(ln_or):
     Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
     ch.11 eq.11.18
     """
-    value = _ca_crim.d_from_log_or(ln_or, 'cox')
+    value = _ca_crim.d_from_log_or(ln_or, "cox")
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.18)"
@@ -41,4 +40,4 @@ def ca_chapter_11_equation_18(ln_or):
 
 
 def cheatsheet():
-    return 'ca11e18: d = ln(OR) / 1.65 [Weisburd et al. 2022, eq. 11.18]'
+    return "ca11e18: d = ln(OR) / 1.65 [Weisburd et al. 2022, eq. 11.18]"

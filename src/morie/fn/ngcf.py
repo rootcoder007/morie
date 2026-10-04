@@ -69,12 +69,10 @@ implemented in :mod:`ncfRS`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["laplacian_coefficient", "message", "propagate",
-           "stack_layers", "score"]
+__all__ = ["laplacian_coefficient", "message", "propagate", "stack_layers", "score"]
 
 _EPS = 1e-12
 
@@ -87,8 +85,7 @@ def laplacian_coefficient(n_u, n_i):
     r""":math:`p_{ui} = 1/\sqrt{|N_u||N_i|}`."""
     a, b = int(n_u), int(n_i)
     if a < 1 or b < 1:
-        raise ValueError("ngcf: both nodes need at least one "
-                         "neighbour, got (%d, %d)" % (a, b))
+        raise ValueError("ngcf: both nodes need at least one neighbour, got (%d, %d)" % (a, b))
     return 1.0 / math.sqrt(float(a * b))
 
 
@@ -117,13 +114,9 @@ def propagate(E, adjacency, W1, W2, affinity=True, slope=0.2):
         nb = adjacency.get(v, [])
         if not nb:
             raise ValueError("ngcf: node %d has no neighbours" % v)
-        acc = message(E[v], E[v], W1, W2,
-                      laplacian_coefficient(deg[v], deg[v]),
-                      affinity)
+        acc = message(E[v], E[v], W1, W2, laplacian_coefficient(deg[v], deg[v]), affinity)
         for w in nb:
-            m = message(E[w], E[v], W1, W2,
-                        laplacian_coefficient(deg[v], deg[w]),
-                        affinity)
+            m = message(E[w], E[v], W1, W2, laplacian_coefficient(deg[v], deg[w]), affinity)
             acc = [acc[o] + m[o] for o in range(len(acc))]
         out.append([_leaky(v_, slope) for v_ in acc])
     return out
@@ -137,19 +130,21 @@ def stack_layers(E0, adjacency, Ws, affinity=True, slope=0.2):
     """
     E = [[float(v) for v in r] for r in k.mat(E0)]
     layers = [E]
-    for (W1, W2) in Ws:
+    for W1, W2 in Ws:
         E = propagate(E, adjacency, W1, W2, affinity, slope)
         layers.append(E)
-    final = [sum((layers[l][v] for l in range(len(layers))), [])
-             for v in range(len(E))]
-    return RichResult(payload={
-        "estimate": final, "final": final, "layers": layers,
-        "n_layers": len(Ws), "affinity": bool(affinity),
-        "method": "embedding propagation; Wang et al. (2019) eqs. "
-                  "(3)-(4) with per-layer concatenation",
-        "note": "2 layers reach user-user behavioural similarity, 3 "
-                "reach a recommendation path",
-    })
+    final = [sum((layers[l][v] for l in range(len(layers))), []) for v in range(len(E))]
+    return RichResult(
+        payload={
+            "estimate": final,
+            "final": final,
+            "layers": layers,
+            "n_layers": len(Ws),
+            "affinity": bool(affinity),
+            "method": "embedding propagation; Wang et al. (2019) eqs. (3)-(4) with per-layer concatenation",
+            "note": "2 layers reach user-user behavioural similarity, 3 reach a recommendation path",
+        }
+    )
 
 
 def score(final, u, i):
@@ -161,15 +156,17 @@ def score(final, u, i):
 
 
 def cheatsheet():
-    return ("ngcf: conventional CF never puts the COLLABORATIVE "
-            "SIGNAL into the embedding -- only into the objective. "
-            "NGCF propagates over the user-item graph: "
-            "m_{u<-i} = p_ui (W1 e_i + W2 (e_i * e_u)), where the "
-            "elementwise AFFINITY term is NGCF's addition and dropping "
-            "it leaves a plain GCN. p_ui = 1/sqrt(|N_u||N_i|) doubles "
-            "as a path-length discount. Two layers reach user-user "
-            "similarity, three reach a recommendation path; all "
-            "layers are concatenated.")
+    return (
+        "ngcf: conventional CF never puts the COLLABORATIVE "
+        "SIGNAL into the embedding -- only into the objective. "
+        "NGCF propagates over the user-item graph: "
+        "m_{u<-i} = p_ui (W1 e_i + W2 (e_i * e_u)), where the "
+        "elementwise AFFINITY term is NGCF's addition and dropping "
+        "it leaves a plain GCN. p_ui = 1/sqrt(|N_u||N_i|) doubles "
+        "as a path-length discount. Two layers reach user-user "
+        "similarity, three reach a recommendation path; all "
+        "layers are concatenated."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -64,10 +64,18 @@ def information_criterion(log_lik_samples):
         den = math.log(sum(math.exp(sm[s] - mm) for s in range(Sn)))
         elpd_loo += num - den
     p_loo = lppd - elpd_loo
-    return RichResult(payload={
-        "estimate": -2.0 * (lppd - pw), "looic": -2.0 * elpd_loo,
-        "elpd_loo": elpd_loo, "p_loo": p_loo, "k_max": max(ks), "S": Sn, "n": n,
-        "method": "WAIC with a PSIS-LOO cross-check"})
+    return RichResult(
+        payload={
+            "estimate": -2.0 * (lppd - pw),
+            "looic": -2.0 * elpd_loo,
+            "elpd_loo": elpd_loo,
+            "p_loo": p_loo,
+            "k_max": max(ks),
+            "S": Sn,
+            "n": n,
+            "method": "WAIC with a PSIS-LOO cross-check",
+        }
+    )
 
 
 def cheatsheet():

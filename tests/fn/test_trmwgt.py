@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.trmwgt import trim_weights
 
-
 W = [1.2, 0.8, 3.5, 1.0, 9.0, 2.2, 0.9, 1.1, 14.0, 1.6]
 
 
@@ -37,5 +36,3 @@ def test_trmwgt_edge():
         trim_weights([1.0, -2.0])
     with pytest.raises(ValueError, match="quantile"):
         trim_weights(W, 0.0)
-
-

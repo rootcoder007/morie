@@ -16,10 +16,10 @@ import math
 import os
 import tempfile
 from collections import Counter
-from itertools import combinations
+
+import pytest
 
 from morie.fn import _array_core as np
-import pytest
 
 # -- modules under test -------------------------------------------------
 from morie.fn.hmrvn import geron_revnet
@@ -44,8 +44,8 @@ from morie.fn.hmsil import geron_silhouette
 from morie.fn.hmspcl import geron_spectral_clustering
 from morie.fn.hmsrnn import geron_simple_rnn
 from morie.fn.hmsrp import geron_sparse_rand_projection
-from morie.fn.hmsslc import geron_semisupervised_cluster
 from morie.fn.hmssg import geron_semantic_segmentation
+from morie.fn.hmsslc import geron_semisupervised_cluster
 from morie.fn.hmstk import geron_stacking
 from morie.fn.hmstr import geron_stratified_sampling
 from morie.fn.hmstr2 import geron_stride
@@ -378,7 +378,7 @@ def test_hmseq2_loss_matches_hand_log_sum():
 
 
 def test_hmt5_span_corruption_is_lossless():
-    toks = "a b c d e f g h i j".split()
+    toks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
     r = geron_t5(toks, noise_density=0.4, mean_span=2, seed=5)
     assert restore(r["encoder_input"], r["decoder_target"]) == toks
     assert int(r["n_masked"]) == sum(l for _, l in r["spans"])
@@ -512,7 +512,12 @@ def test_hmvf_agrees_with_value_iteration():
     # independent route: iterate the Bellman expectation operator to a fixed point
     V = np.zeros(2)
     for _ in range(2000):
-        V = np.array([sum(pi[s, a] * sum(P[s, a, t] * (R[s, a, t] + g * V[t]) for t in range(2)) for a in range(2)) for s in range(2)])
+        V = np.array(
+            [
+                sum(pi[s, a] * sum(P[s, a, t] * (R[s, a, t] + g * V[t]) for t in range(2)) for a in range(2))
+                for s in range(2)
+            ]
+        )
     assert np.allclose(r["V"], V, atol=1e-8)
     assert float(r["residual"]) < 1e-10
 
@@ -788,7 +793,14 @@ def test_hmsae_pretraining_and_finetuning_reduce_error():
 def test_hmvae_gradients_match_finite_differences():
     X = np.array([[0.2, 0.9], [0.7, 0.1], [0.4, 0.4]])
     u = np.asarray(lcg(10, seed=23)) - 0.5
-    params = [u[:2].reshape(2, 1), np.array([0.05]), u[2:4].reshape(2, 1), np.array([-0.02]), u[4:6].reshape(1, 2), np.zeros(2)]
+    params = [
+        u[:2].reshape(2, 1),
+        np.array([0.05]),
+        u[2:4].reshape(2, 1),
+        np.array([-0.02]),
+        u[4:6].reshape(1, 2),
+        np.zeros(2),
+    ]
     eps = (np.asarray(lcg(3, seed=31)) - 0.5).reshape(3, 1)
     _, _, _, grads = vae_loss_and_grads(X, params, eps, 1.0)
     for i in range(6):
@@ -976,6 +988,7 @@ def test_hmtcmp_fusion_is_exact_and_dp_matches_brute_force():
     assert np.allclose(r["output"], x @ A @ B @ C, atol=1e-12)
 
     dims = [7, 3, 11, 2, 5]  # brute force every parenthesisation
+
     def brute(i, j):
         if j == i + 1:
             return 0
@@ -1028,7 +1041,7 @@ def test_hmtsne_rows_hit_the_requested_perplexity():
         w = np.exp(-D2[i, idx] * r["betas"][i])
         p = w / w.sum()
         H = float(-np.sum(p * np.log(p)))
-        assert H == pytest.approx(math.log(perp), abs=1e-4)
+        assert pytest.approx(math.log(perp), abs=1e-4) == H
     assert float(r["P"].sum()) == pytest.approx(1.0, abs=1e-12)
     assert np.allclose(r["P"], r["P"].T, atol=1e-15)
 
@@ -1136,7 +1149,7 @@ def test_hmzsl_calibration_removes_a_constant_bias():
     denom = math.exp(2.0) + 1.0
     assert [float(v) for v in r["probabilities"]] == pytest.approx([math.exp(2.0) / denom, 1 / denom], abs=1e-12)
     assert r["predicted_label"] == "a"
-    f = lambda p: ([1.0, 4.0] if p == "" else [3.0, 6.0])
+    f = lambda p: [1.0, 4.0] if p == "" else [3.0, 6.0]
     rc = geron_zero_shot(f, "x", labels=["u", "v"], null_prompt="")
     assert [float(v) for v in rc["probabilities"]] == pytest.approx([0.5, 0.5], abs=1e-12)
     with pytest.raises(ValueError):
@@ -1170,13 +1183,76 @@ def test_every_module_exposes_a_cheatsheet():
     import importlib
 
     names = [
-        "hmrvn", "hmrwd", "hmsac", "hmsae", "hmsatt", "hmsdp", "hmself", "hmselu", "hmsem", "hmsenet",
-        "hmsent", "hmseq2", "hmsft", "hmsftm", "hmsfts", "hmsgdc", "hmsgdu", "hmsigm", "hmsil", "hmspcl",
-        "hmsrnn", "hmsrp", "hmssg", "hmsslc", "hmstk", "hmstr", "hmstr2", "hmstz", "hmsup", "hmsvdp",
-        "hmsvm2", "hmswi", "hmswin", "hmsymd", "hmt5", "hmtanh", "hmtcmp", "hmtd", "hmtd3", "hmtfl",
-        "hmtfm", "hmtlu", "hmtpp", "hmtrlf", "hmtsc", "hmtsf", "hmtsne", "hmuf", "hmumap", "hmuns",
-        "hmunsp", "hmvae", "hmvbgm", "hmvbrt", "hmvf", "hmvgr", "hmvilb", "hmvit", "hmvqv", "hmvth",
-        "hmwemb", "hmwpt", "hmwrst", "hmxav", "hmxcpt", "hmxgb", "hmxgr", "hmxln", "hmyolo", "hmzsl",
+        "hmrvn",
+        "hmrwd",
+        "hmsac",
+        "hmsae",
+        "hmsatt",
+        "hmsdp",
+        "hmself",
+        "hmselu",
+        "hmsem",
+        "hmsenet",
+        "hmsent",
+        "hmseq2",
+        "hmsft",
+        "hmsftm",
+        "hmsfts",
+        "hmsgdc",
+        "hmsgdu",
+        "hmsigm",
+        "hmsil",
+        "hmspcl",
+        "hmsrnn",
+        "hmsrp",
+        "hmssg",
+        "hmsslc",
+        "hmstk",
+        "hmstr",
+        "hmstr2",
+        "hmstz",
+        "hmsup",
+        "hmsvdp",
+        "hmsvm2",
+        "hmswi",
+        "hmswin",
+        "hmsymd",
+        "hmt5",
+        "hmtanh",
+        "hmtcmp",
+        "hmtd",
+        "hmtd3",
+        "hmtfl",
+        "hmtfm",
+        "hmtlu",
+        "hmtpp",
+        "hmtrlf",
+        "hmtsc",
+        "hmtsf",
+        "hmtsne",
+        "hmuf",
+        "hmumap",
+        "hmuns",
+        "hmunsp",
+        "hmvae",
+        "hmvbgm",
+        "hmvbrt",
+        "hmvf",
+        "hmvgr",
+        "hmvilb",
+        "hmvit",
+        "hmvqv",
+        "hmvth",
+        "hmwemb",
+        "hmwpt",
+        "hmwrst",
+        "hmxav",
+        "hmxcpt",
+        "hmxgb",
+        "hmxgr",
+        "hmxln",
+        "hmyolo",
+        "hmzsl",
     ]
     assert len(names) == 70
     for name in names:

@@ -19,7 +19,6 @@ __all__ = ["fregenv", "mvsml_convolutional_nn_eq_14_13"]
 
 
 def fregenv(y, X, X_E, lam=0.0, P=None):
-
     """y = 1_n mu + X_E beta_E + X beta + e (eq. 14.13), the functional
     regression of the chapter extended with the effects of the
     environments.  X carries the L1 functional scores of (14.4) and

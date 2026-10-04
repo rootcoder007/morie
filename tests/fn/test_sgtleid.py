@@ -1,7 +1,6 @@
 """Tests for sgtleid.sgt_leiden_step."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtleid import sgt_leiden_step
 
 

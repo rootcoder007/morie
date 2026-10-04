@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """AlexNet: deep CNN for ImageNet with ReLU and dropout."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_alexnet"]
@@ -109,9 +108,13 @@ def geron_alexnet(n_classes=1000, input_size=227, in_channels=3, dropout=0.5):
             else:
                 in_units = layers[-1]["filters"]
             params = in_units * units + units
-            layers.append({"kind": "fc", "filters": units, "in": in_units, "out": units, "params": params, "dropout": p_drop})
+            layers.append(
+                {"kind": "fc", "filters": units, "in": in_units, "out": units, "params": params, "dropout": p_drop}
+            )
     last_hidden = layers[-1]["filters"]
-    layers.append({"kind": "fc", "filters": C, "in": last_hidden, "out": C, "params": last_hidden * C + C, "dropout": 0.0})
+    layers.append(
+        {"kind": "fc", "filters": C, "in": last_hidden, "out": C, "params": last_hidden * C + C, "dropout": 0.0}
+    )
 
     total = int(sum(l["params"] for l in layers))
 

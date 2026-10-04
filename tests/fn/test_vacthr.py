@@ -1,7 +1,6 @@
 """Tests for vacthr.vaccination_threshold."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vacthr import vaccination_threshold
 
 

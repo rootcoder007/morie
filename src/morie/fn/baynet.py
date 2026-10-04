@@ -206,11 +206,16 @@ def baynet(graph, cpts, evidence=None, query=None):
     for i in range(1, len(post)):
         if post[i] > post[est] + 1e-15:
             est = i
-    return RichResult(payload={
-        "posterior": post, "states": card[query], "estimate": int(est),
-        "normalizer": float(norm), "query": query,
-        "method": "Variable elimination (Zhang-Poole 1994), lexicographic order",
-    })
+    return RichResult(
+        payload={
+            "posterior": post,
+            "states": card[query],
+            "estimate": int(est),
+            "normalizer": float(norm),
+            "query": query,
+            "method": "Variable elimination (Zhang-Poole 1994), lexicographic order",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -219,6 +224,7 @@ bayes_network = baynet
 
 def cheatsheet():
     return "baynet: discrete BN posterior via sum-product variable elimination"
+
 
 # public names resolved by fn/_lazy_map.json
 bayesnetwork = baynet

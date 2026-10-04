@@ -1,6 +1,5 @@
 """Tests for gb2431 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2431 import gibbons_binomial_beta_link

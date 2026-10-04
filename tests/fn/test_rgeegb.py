@@ -23,20 +23,28 @@ def test_rgeegb_basic():
     """Fraction of |X(k)|^2 in each band over the total, with the book's
     limits: delta [0.5, 4), theta [4, 8), alpha [8, 13], beta (13, fs/2].
     A 4 Hz line is theta, 8 and 13 Hz lines are alpha -- each counted once."""
-    x = [math.sin(2 * math.pi * 4 * t / 100) + 0.5 * math.sin(2 * math.pi * 13 * t / 100)
-         + 0.2 * math.sin(2 * math.pi * 8 * t / 100) + 0.3 * math.sin(2 * math.pi * 20 * t / 100)
-         for t in range(200)]
+    x = [
+        math.sin(2 * math.pi * 4 * t / 100)
+        + 0.5 * math.sin(2 * math.pi * 13 * t / 100)
+        + 0.2 * math.sin(2 * math.pi * 8 * t / 100)
+        + 0.3 * math.sin(2 * math.pi * 20 * t / 100)
+        for t in range(200)
+    ]
     P = _psd(x)
     f = [k * 100 / 200 for k in range(len(P))]
     tot = sum(P)
     r = rangayyan_eeg_rhythms(x, 100)
-    exp = {"delta": sum(p for p, v in zip(P, f) if 0.5 <= v < 4),
-           "theta": sum(p for p, v in zip(P, f) if 4 <= v < 8),
-           "alpha": sum(p for p, v in zip(P, f) if 8 <= v <= 13),
-           "beta": sum(p for p, v in zip(P, f) if v > 13)}
+    exp = {
+        "delta": sum(p for p, v in zip(P, f) if 0.5 <= v < 4),
+        "theta": sum(p for p, v in zip(P, f) if 4 <= v < 8),
+        "alpha": sum(p for p, v in zip(P, f) if 8 <= v <= 13),
+        "beta": sum(p for p, v in zip(P, f) if v > 13),
+    }
     for k, v in exp.items():
         assert r["fraction"][k] == pytest.approx(v / tot, abs=1e-12)
-    assert sum(r["fraction"][k] for k in exp) == pytest.approx(sum(p for p, v in zip(P, f) if v >= 0.5) / tot, abs=1e-12)
+    assert sum(r["fraction"][k] for k in exp) == pytest.approx(
+        sum(p for p, v in zip(P, f) if v >= 0.5) / tot, abs=1e-12
+    )
     assert r["dominant"] == "theta"
 
 

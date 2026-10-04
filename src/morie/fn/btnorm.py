@@ -20,8 +20,6 @@ sd(t*) uses the n-1 divisor, matching stats::sd, which is the anchor.
 
 from __future__ import annotations
 
-import math
-
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core
 from ._richresult import RichResult
@@ -60,7 +58,7 @@ def boot_normal_ci(theta_hat, theta_b, alpha=0.05):
         m3 += d * d * d
     m2 = m2 / n
     m3 = m3 / n
-    skew = m3 / (m2 ** 1.5) if m2 > 0.0 else float("nan")
+    skew = m3 / (m2**1.5) if m2 > 0.0 else float("nan")
     return RichResult(
         title="Normal-approximation bootstrap interval",
         summary_lines=[("lo", centre - z * se), ("hi", centre + z * se)],

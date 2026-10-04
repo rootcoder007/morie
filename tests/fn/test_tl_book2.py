@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """Tests for targeted learning book chapters 11-29 (tranche B)."""
+
 import importlib
-import math
 
 import pytest
 
@@ -31,8 +30,7 @@ def _sate_data(n=6000, seed=2):
         w = float(rng.uniform())
         a = 1.0 if float(rng.uniform()) < 0.5 else 0.0
         m1, m0 = 0.2 + 0.6 * w, 0.2 + 0.1 * w
-        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0
-                                           else m0) else 0.0
+        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0 else m0) else 0.0
         A.append(a)
         Y.append(y)
         Q1.append(m1)
@@ -46,8 +44,7 @@ def test_tlsate_variance_gap_is_the_effect_variance():
     A, Y, Q1, Q0, g = _sate_data()
     psi = sum(Q1[i] - Q0[i] for i in range(len(Q1))) / len(Q1)
     vg = tlsate.variance_gap(A, Y, Q1, Q0, g, psi)
-    assert abs(vg["gap"] - vg["var_conditional_effect"]) < \
-        0.15 * vg["var_conditional_effect"]
+    assert abs(vg["gap"] - vg["var_conditional_effect"]) < 0.15 * vg["var_conditional_effect"]
 
 
 def test_tlsate_sample_interval_is_narrower():
@@ -75,23 +72,19 @@ def test_tlsate_rejects_positivity_violation():
 
 # ------------------------------------------------------------ tlsieve
 def test_tlsieve_incidences_and_survival_close():
-    aj = tlsieve.aalen_johansen([1.0, 1.0, 2.0, 2.0, 3.0, 3.0],
-                                [1, 2, 1, 0, 2, 1],
-                                [1.0, 2.0, 3.0])
+    aj = tlsieve.aalen_johansen([1.0, 1.0, 2.0, 2.0, 3.0, 3.0], [1, 2, 1, 0, 2, 1], [1.0, 2.0, 3.0])
     assert max(abs(v - 1.0) for v in aj["closure"]) < 1e-12
 
 
 def test_tlsieve_incidence_is_monotone():
-    aj = tlsieve.aalen_johansen([1.0, 2.0, 3.0, 3.0], [1, 2, 1, 2],
-                                [1.0, 2.0, 3.0])
+    aj = tlsieve.aalen_johansen([1.0, 2.0, 3.0, 3.0], [1, 2, 1, 2], [1.0, 2.0, 3.0])
     for j in aj["types"]:
         for i in range(1, 3):
             assert aj["F"][j][i] >= aj["F"][j][i - 1] - 1e-12
 
 
 def test_tlsieve_vaccine_efficacy_and_sieve_effect():
-    assert abs(tlsieve.vaccine_efficacy([0.05], [0.10])[0]
-               - 0.5) < 1e-12
+    assert abs(tlsieve.vaccine_efficacy([0.05], [0.10])[0] - 0.5) < 1e-12
     se = tlsieve.sieve_effect([0.02], [0.10], [0.08], [0.10])
     assert abs(se["sieve_effect"][0] - 0.6) < 1e-12
 
@@ -118,20 +111,17 @@ def _shift_setup(n=400, seed=6):
 
 def test_tlstoch_shift_moves_the_mean_by_the_slope():
     A, W = _shift_setup()
-    r = tlstoch.stochastic_estimand(lambda a, w: 0.5 * a + 2.0 * w[0],
-                                    A, W, 1.0)
+    r = tlstoch.stochastic_estimand(lambda a, w: 0.5 * a + 2.0 * w[0], A, W, 1.0)
     assert abs(r["contrast"] - 0.5) < 1e-9
 
 
 def test_tlstoch_large_shift_leaves_the_support():
     A, W = _shift_setup()
-    assert tlstoch.positivity_shift(A, 3.5)["fraction_outside"] > \
-        tlstoch.positivity_shift(A, 0.2)["fraction_outside"]
+    assert tlstoch.positivity_shift(A, 3.5)["fraction_outside"] > tlstoch.positivity_shift(A, 0.2)["fraction_outside"]
 
 
 def test_tlstoch_clever_covariate_is_a_density_ratio():
-    r = tlstoch.density_ratio([1.0, 2.0], [[0.0]] * 2, 0.5,
-                              lambda a, w: 0.25)
+    r = tlstoch.density_ratio([1.0, 2.0], [[0.0]] * 2, 0.5, lambda a, w: 0.25)
     assert all(abs(v - 1.0) < 1e-9 for v in r["H"])
 
 
@@ -143,8 +133,7 @@ def test_tlstoch_truncates_at_the_bounds():
 
 def test_tlstoch_rejects_degenerate_density():
     with pytest.raises(ValueError):
-        tlstoch.density_ratio([1.0], [[0.0]], 0.5,
-                              lambda a, w: 0.0)
+        tlstoch.density_ratio([1.0], [[0.0]], 0.5, lambda a, w: 0.0)
 
 
 # ------------------------------------------------------------ tlclust
@@ -152,12 +141,9 @@ def _clustered(seed=8, J=20, per=10, correlated=True):
     rng = np.random.default_rng(seed)
     ic, cl = [], []
     for j in range(J):
-        shared = (float(rng.uniform()) - 0.5) * 2.0 if correlated \
-            else 0.0
+        shared = (float(rng.uniform()) - 0.5) * 2.0 if correlated else 0.0
         for _ in range(per):
-            ic.append(shared + 0.2 * (float(rng.uniform()) - 0.5)
-                      if correlated
-                      else float(rng.uniform()) - 0.5)
+            ic.append(shared + 0.2 * (float(rng.uniform()) - 0.5) if correlated else float(rng.uniform()) - 0.5)
             cl.append(j)
     return ic, cl
 
@@ -205,9 +191,7 @@ def _mean_alg(past):
 
 def test_tlonsl_sequential_validation_prefers_the_lag_model():
     s = _ar_series()
-    r = tlonsl.online_super_learner(s, {"lag": _lag_alg,
-                                        "mean": _mean_alg},
-                                    burn_in=20)
+    r = tlonsl.online_super_learner(s, {"lag": _lag_alg, "mean": _mean_alg}, burn_in=20)
     assert r["best_member"] == "lag"
     assert r["weights"]["lag"] > r["weights"]["mean"]
 
@@ -236,15 +220,13 @@ def test_tlonsl_rejects_bad_input():
 def test_tlonts_martingale_check_separates_the_two_cases():
     rng = np.random.default_rng(77)
     past = [float(rng.uniform()) for _ in range(400)]
-    D = [(1.0 if i % 2 == 0 else -1.0) * float(rng.uniform())
-         for i in range(400)]
+    D = [(1.0 if i % 2 == 0 else -1.0) * float(rng.uniform()) for i in range(400)]
     assert tlonts.martingale_check(D, past)["is_martingale"]
     assert not tlonts.martingale_check(past, past)["is_martingale"]
 
 
 def test_tlonts_intervention_touches_only_its_nodes():
-    r = tlonts.stochastic_intervention([1.0, 0.0, 1.0, 0.0], [1, 3],
-                                       prob=1.0)
+    r = tlonts.stochastic_intervention([1.0, 0.0, 1.0, 0.0], [1, 3], prob=1.0)
     assert r["intervened"] == [1.0, 1.0, 1.0, 1.0]
     assert r["n_intervened"] == 2
 
@@ -257,8 +239,7 @@ def test_tlonts_variance_is_the_sum_of_squares():
 
 def test_tlonts_rejects_bad_input():
     with pytest.raises(ValueError):
-        tlonts.stochastic_intervention([1.0], [0], shift=1.0,
-                                       prob=0.5)
+        tlonts.stochastic_intervention([1.0], [0], shift=1.0, prob=0.5)
     with pytest.raises(ValueError):
         tlonts.stochastic_intervention([1.0], [5], shift=1.0)
     with pytest.raises(ValueError):
@@ -284,9 +265,7 @@ def test_tlnetlg_connected_pairs_add_covariance():
 
 
 def test_tlnetlg_exposure_summary_is_a_fraction():
-    es = tlnetlg.exposure_summary([1.0, 0.0, 1.0, 0.0],
-                                  {0: [1, 2], 1: [0], 2: [0, 3],
-                                   3: [2]})["summary"]
+    es = tlnetlg.exposure_summary([1.0, 0.0, 1.0, 0.0], {0: [1, 2], 1: [0], 2: [0, 3], 3: [2]})["summary"]
     assert abs(es[0][1] - 0.5) < 1e-12
 
 
@@ -316,10 +295,8 @@ def test_tlnet1_policy_mean_is_a_policy_property():
 
 
 def test_tlnet1_flags_an_asymmetric_edge():
-    assert not tlnet1.check_network_assumption({0: [1],
-                                                1: []})["symmetric"]
-    assert tlnet1.check_network_assumption({0: [1],
-                                            1: [0]})["symmetric"]
+    assert not tlnet1.check_network_assumption({0: [1], 1: []})["symmetric"]
+    assert tlnet1.check_network_assumption({0: [1], 1: [0]})["symmetric"]
 
 
 def test_tlnet1_rejects_bad_input():
@@ -390,19 +367,15 @@ def test_tlbandt_design_stays_in_the_interval():
 def test_tlbandt_inference_costs_regret():
     W, Y1, Y0 = _bandit()
     b = tlbandt.run_bandit(W, Y1, Y0, lambda h: 0.2, seed=3)
-    g = tlbandt.run_bandit(W, Y1, Y0, lambda h: 0.2, seed=3,
-                           greedy=True)
-    assert tlbandt.regret(b["Y"], Y1, Y0)["cumulative_regret"] > \
-        tlbandt.regret(g["Y"], Y1, Y0)["cumulative_regret"]
+    g = tlbandt.run_bandit(W, Y1, Y0, lambda h: 0.2, seed=3, greedy=True)
+    assert tlbandt.regret(b["Y"], Y1, Y0)["cumulative_regret"] > tlbandt.regret(g["Y"], Y1, Y0)["cumulative_regret"]
 
 
 def test_tlbandt_greedy_design_is_rejected_for_inference():
     W, Y1, Y0 = _bandit(100)
-    g = tlbandt.run_bandit(W, Y1, Y0, lambda h: 0.2, seed=3,
-                           greedy=True)
+    g = tlbandt.run_bandit(W, Y1, Y0, lambda h: 0.2, seed=3, greedy=True)
     with pytest.raises(ValueError):
-        tlbandt.martingale_terms(g["A"], g["Y"], g["g"],
-                                 [0.6] * 100, [0.4] * 100, 0.2)
+        tlbandt.martingale_terms(g["A"], g["Y"], g["g"], [0.6] * 100, [0.4] * 100, 0.2)
 
 
 def test_tlbandt_rejects_bad_delta():
@@ -423,8 +396,7 @@ def test_tlcvnp_smoothed_density_recovers_the_truth():
 
 def test_tlcvnp_narrow_bandwidth_costs_variance():
     X = _uniform()
-    assert tlcvnp.smoothed_parameter(X, 0.5, 0.05)["se"] > \
-        tlcvnp.smoothed_parameter(X, 0.5, 0.4)["se"]
+    assert tlcvnp.smoothed_parameter(X, 0.5, 0.05)["se"] > tlcvnp.smoothed_parameter(X, 0.5, 0.4)["se"]
 
 
 def test_tlcvnp_bias_order_is_h_to_the_s():
@@ -434,8 +406,7 @@ def test_tlcvnp_bias_order_is_h_to_the_s():
 
 
 def test_tlcvnp_bandwidth_selected_from_the_data():
-    sel = tlcvnp.select_bandwidth(_uniform(), 0.5,
-                                  [0.05, 0.1, 0.2, 0.4])
+    sel = tlcvnp.select_bandwidth(_uniform(), 0.5, [0.05, 0.1, 0.2, 0.4])
     assert sel["h"] in (0.05, 0.1, 0.2, 0.4)
 
 
@@ -450,24 +421,20 @@ def test_tlcvnp_rejects_bad_input():
 
 # ------------------------------------------------------------ tlhoest
 def test_tlhoest_higher_order_relaxes_the_rate():
-    assert abs(tlhoest.rate_requirement(1)
-               ["required_rate_per_nuisance"] - 0.25) < 1e-12
-    assert abs(tlhoest.rate_requirement(2)
-               ["required_rate_per_nuisance"] - 1 / 6.0) < 1e-12
+    assert abs(tlhoest.rate_requirement(1)["required_rate_per_nuisance"] - 0.25) < 1e-12
+    assert abs(tlhoest.rate_requirement(2)["required_rate_per_nuisance"] - 1 / 6.0) < 1e-12
 
 
 def test_tlhoest_u_statistic_excludes_the_diagonal():
     obs = [1.0, 2.0, 3.0, 4.0]
     a = tlhoest.second_order_term(lambda x, y: x * y, obs)
-    b = tlhoest.second_order_term(lambda x, y: x * y, obs,
-                                  exclude_diagonal=False)
+    b = tlhoest.second_order_term(lambda x, y: x * y, obs, exclude_diagonal=False)
     assert a["n_pairs"] == 12
     assert abs(a["value"] - b["value"]) > 1e-6
 
 
 def test_tlhoest_zero_kernel_reduces_to_first_order():
-    r = tlhoest.higher_order_estimate(0.5, [0.1, -0.1],
-                                      lambda x, y: 0.0, [1.0, 2.0])
+    r = tlhoest.higher_order_estimate(0.5, [0.1, -0.1], lambda x, y: 0.0, [1.0, 2.0])
     assert abs(r["psi"] - r["first_order"]) < 1e-12
 
 
@@ -512,17 +479,13 @@ def test_tlboot_unstable_refitting_inflates_the_spread():
 def test_tlboot_targeted_bootstrap_gets_two_moments():
     rng = np.random.default_rng(53)
     data = [0.3 + (float(rng.uniform()) - 0.5) for _ in range(200)]
-    naive = tlboot.naive_bootstrap(data, lambda s: sum(s) / len(s),
-                                   B=200, seed=2)
+    naive = tlboot.naive_bootstrap(data, lambda s: sum(s) / len(s), B=200, seed=2)
 
     def sampler(r):
         return [0.3 + (float(r.uniform()) - 0.5) for _ in range(200)]
 
-    tb = tlboot.targeted_bootstrap(sampler,
-                                   lambda s: sum(s) / len(s),
-                                   B=200, seed=3)
-    assert tlboot.moment_check(tb["replicates"], 0.3,
-                               naive["se"])["first_two_moments_ok"]
+    tb = tlboot.targeted_bootstrap(sampler, lambda s: sum(s) / len(s), B=200, seed=3)
+    assert tlboot.moment_check(tb["replicates"], 0.3, naive["se"])["first_two_moments_ok"]
 
 
 def test_tlboot_rejects_bad_input():
@@ -540,16 +503,14 @@ def _survey(N=2000):
 
 def test_tlsurvy_inclusion_probabilities_sum_to_n():
     vals, infl, N = _survey()
-    pi = tlsurvy.inclusion_probabilities(vals, 200, "adaptive",
-                                         infl)["pi"]
+    pi = tlsurvy.inclusion_probabilities(vals, 200, "adaptive", infl)["pi"]
     assert abs(sum(pi) - 200) < 1.0
     assert min(pi) > 0.0
 
 
 def test_tlsurvy_horvitz_thompson_is_unbiased():
     vals, infl, N = _survey()
-    pi = tlsurvy.inclusion_probabilities(vals, 200, "adaptive",
-                                         infl)["pi"]
+    pi = tlsurvy.inclusion_probabilities(vals, 200, "adaptive", infl)["pi"]
     s = tlsurvy.draw_sample(pi, seed=5)
     ht = tlsurvy.horvitz_thompson(vals, pi, s["selected"])
     truth = sum(vals) / N
@@ -558,8 +519,7 @@ def test_tlsurvy_horvitz_thompson_is_unbiased():
 
 def test_tlsurvy_adaptive_beats_uniform_when_influence_concentrates():
     vals, infl, N = _survey()
-    assert tlsurvy.design_efficiency(vals, infl, 200,
-                                     seed=7)["ratio"] < 0.9
+    assert tlsurvy.design_efficiency(vals, infl, 200, seed=7)["ratio"] < 0.9
 
 
 def test_tlsurvy_flat_influence_buys_nothing():
@@ -578,7 +538,20 @@ def test_tlsurvy_rejects_bad_input():
 
 
 def test_tl_book2_cheatsheets_are_present():
-    for mod in (tlsate, tlsieve, tlstoch, tlclust, tlonsl, tlonts,
-                tlnetlg, tlnet1, tloilr, tlbandt, tlcvnp, tlhoest,
-                tlboot, tlsurvy):
+    for mod in (
+        tlsate,
+        tlsieve,
+        tlstoch,
+        tlclust,
+        tlonsl,
+        tlonts,
+        tlnetlg,
+        tlnet1,
+        tloilr,
+        tlbandt,
+        tlcvnp,
+        tlhoest,
+        tlboot,
+        tlsurvy,
+    ):
         assert len(mod.cheatsheet()) > 80

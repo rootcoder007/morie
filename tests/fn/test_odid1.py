@@ -1,7 +1,6 @@
 """Tests for morie.fn.odid1 — DiD for policy change."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.odid1 import otis_did_policy
 
 

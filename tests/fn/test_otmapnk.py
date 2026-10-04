@@ -1,7 +1,6 @@
 """Tests for otmapnk.ot_map_neural_kantorovich."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otmapnk import ot_map_neural_kantorovich
 
 

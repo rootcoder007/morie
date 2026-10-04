@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['lints', 'lin_thompson', 'linthompson']
+__all__ = ["lints", "lin_thompson", "linthompson"]
 
 
 def lints(contexts, played, rewards, R=0.5, delta=0.1, horizon=None, z=None):
@@ -68,9 +68,17 @@ def lints(contexts, played, rewards, R=0.5, delta=0.1, horizon=None, z=None):
     mutil = [mu[i] + v * sum(L[i][j] * zz[j] for j in range(d)) for i in range(d)]
     scores = [C.dot(row, mutil) for row in X]
     arm = max(range(len(scores)), key=lambda i: scores[i])
-    return RichResult(payload={
-        "arm": arm, "scores": scores, "mu_hat": mu, "mu_tilde": mutil,
-        "v": v, "d": d, "method": "Linear Thompson sampling (Agrawal-Goyal)"})
+    return RichResult(
+        payload={
+            "arm": arm,
+            "scores": scores,
+            "mu_hat": mu,
+            "mu_tilde": mutil,
+            "v": v,
+            "d": d,
+            "method": "Linear Thompson sampling (Agrawal-Goyal)",
+        }
+    )
 
 
 lin_thompson = lints

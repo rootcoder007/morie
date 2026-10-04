@@ -35,31 +35,31 @@ def scaled_dot_product_attention(Q, K, V, mask=None):
     K = np.atleast_2d(np.asarray(K, dtype=float))
     V = np.atleast_2d(np.asarray(V, dtype=float))
     if Q.shape[1] != K.shape[1]:
-        raise ValueError(
-            f"Q and K must share d_k; got {Q.shape[1]} and {K.shape[1]}.")
+        raise ValueError(f"Q and K must share d_k; got {Q.shape[1]} and {K.shape[1]}.")
     if K.shape[0] != V.shape[0]:
-        raise ValueError(
-            f"K and V must have the same number of rows; got {K.shape[0]} "
-            f"and {V.shape[0]}.")
+        raise ValueError(f"K and V must have the same number of rows; got {K.shape[0]} and {V.shape[0]}.")
     dk = Q.shape[1]
     scores = Q @ K.T / np.sqrt(dk)
     if mask is not None:
         m = np.asarray(mask)
         if m.shape != scores.shape:
-            raise ValueError(
-                f"mask shape {m.shape} does not match scores "
-                f"{scores.shape}.")
+            raise ValueError(f"mask shape {m.shape} does not match scores {scores.shape}.")
         if getattr(m, "_is_mask", False) or m.dtype == bool:
             scores = np.where(m, scores, -np.inf)
         else:
             scores = scores + m
     A = _softmax_rows(scores)
     out = A @ V
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in out],
-        "attention": [[float(v) for v in row] for row in A],
-        "estimate": float(out[0, 0]), "d_k": dk, "n": Q.shape[0],
-        "method": "Scaled dot-product attention (Vaswani et al. 2017)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in out],
+            "attention": [[float(v) for v in row] for row in A],
+            "estimate": float(out[0, 0]),
+            "d_k": dk,
+            "n": Q.shape[0],
+            "method": "Scaled dot-product attention (Vaswani et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():

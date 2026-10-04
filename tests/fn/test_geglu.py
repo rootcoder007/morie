@@ -1,7 +1,6 @@
 """Tests for geglu.geglu_activation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.geglu import geglu_activation
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mtexp -- Matrix exponential."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mtexp import matrix_exp, mtexp
 

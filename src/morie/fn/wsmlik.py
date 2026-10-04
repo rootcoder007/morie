@@ -68,10 +68,15 @@ def wasserman_likelihood(data, f, theta):
     with np.errstate(divide="ignore"):
         ll = float(np.sum(np.log(dens)))
     L = float(np.exp(ll)) if np.isfinite(ll) else 0.0
-    return RichResult(payload={
-        "estimate": L, "log_likelihood": ll, "theta": theta,
-        "n": int(data.size),
-        "method": "L(theta) = prod f(X_i;theta) via log domain"})
+    return RichResult(
+        payload={
+            "estimate": L,
+            "log_likelihood": ll,
+            "theta": theta,
+            "n": int(data.size),
+            "method": "L(theta) = prod f(X_i;theta) via log domain",
+        }
+    )
 
 
 def cheatsheet():

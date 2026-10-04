@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PageRank with a fixed power iteration."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -56,9 +54,9 @@ def pagerank(A, d=0.85, n_iter=100):
             new.append((1.0 - d) / n + d * (s + dangle))
         pr = new
     top = max(range(n), key=lambda i: pr[i])
-    return RichResult(payload={
-        "pr": pr, "estimate": pr[top], "top": top, "n": n,
-        "method": "PageRank by fixed power iteration"})
+    return RichResult(
+        payload={"pr": pr, "estimate": pr[top], "top": top, "n": n, "method": "PageRank by fixed power iteration"}
+    )
 
 
 def cheatsheet():

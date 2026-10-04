@@ -40,6 +40,7 @@ def kosorok_ch2_donsker_uniform_entropy(N_uniform, envelope_sq_mean, F=None, P=N
     Kosorok, M. R. (2008). *Introduction to Empirical Processes and
     Semiparametric Inference*. Springer. Ch. 2 (uniform-entropy Donsker).
     """
+
     def integrand(eps):
         n = float(N_uniform(eps))
         return float(np.sqrt(np.log(n))) if n >= 1 else 0.0
@@ -49,10 +50,14 @@ def kosorok_ch2_donsker_uniform_entropy(N_uniform, envelope_sq_mean, F=None, P=N
     jf = bool(np.isfinite(J) and J < 1e6)
     ef = bool(np.isfinite(e2) and e2 < np.inf)
     return RichResult(
-        payload={"J": float(J), "entropy_integral_finite": jf,
-                 "envelope_sq_integrable": ef,
-                 "conditions_met": bool(jf and ef), "envelope_sq_mean": e2,
-                 "method": "J(1, F, L2) < inf AND P*F^2 < inf => Donsker"}
+        payload={
+            "J": float(J),
+            "entropy_integral_finite": jf,
+            "envelope_sq_integrable": ef,
+            "conditions_met": bool(jf and ef),
+            "envelope_sq_mean": e2,
+            "method": "J(1, F, L2) < inf AND P*F^2 < inf => Donsker",
+        }
     )
 
 

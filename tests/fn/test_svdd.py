@@ -1,7 +1,6 @@
 """Tests for svdd.svdd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svdd import svdd
 
 

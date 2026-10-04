@@ -81,18 +81,26 @@ def tmle_recurrent(time, event, D, X):
     if mu0 == 0.0:
         raise ValueError("tmle_recurrent: the control-arm rate is zero; no rate ratio")
     ic1 = [Dv[i] / g[i] * (rate[i] - Qobs[i] - eps * H[i]) + Q1s[i] - mu1 for i in range(n)]
-    ic0 = [(1.0 - Dv[i]) / (1.0 - g[i]) * (rate[i] - Qobs[i] - eps * H[i]) + Q0s[i] - mu0
-           for i in range(n)]
+    ic0 = [(1.0 - Dv[i]) / (1.0 - g[i]) * (rate[i] - Qobs[i] - eps * H[i]) + Q0s[i] - mu0 for i in range(n)]
     ic = [ic1[i] / mu0 - mu1 * ic0[i] / (mu0 * mu0) for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": mu1 / mu0, "se": se, "mu1": mu1, "mu0": mu0, "eps": eps, "n": n,
-        "method": "TMLE for the marginal recurrent-event rate ratio"})
+    return RichResult(
+        payload={
+            "estimate": mu1 / mu0,
+            "se": se,
+            "mu1": mu1,
+            "mu0": mu0,
+            "eps": eps,
+            "n": n,
+            "method": "TMLE for the marginal recurrent-event rate ratio",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlrec: TMLE for the marginal recurrent-event rate ratio."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlerecurrent = tmle_recurrent

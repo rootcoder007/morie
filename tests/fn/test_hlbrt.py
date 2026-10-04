@@ -1,7 +1,6 @@
 """Test hilbert_envelope_fn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.hlbrt import alias, hilbert_envelope_fn
 

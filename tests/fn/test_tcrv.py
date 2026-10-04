@@ -1,8 +1,8 @@
 """Tests for morie.fn.tcrv — torus curvature."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tcrv import torus_curvature
 
 

@@ -1,7 +1,6 @@
 """Tests for bmtme_conditionals.bmtme_conditionals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bmtme_conditionals import bmtme_conditionals
 
 
@@ -20,21 +19,20 @@ def test_msm076_basic():
     # One genotype (I=1), one environment (J=1) -> a single observation row.
     # 2-D matrices as required by the documented multi-trait shapes.
     Y = rng.normal(0.0, 1.0, (1, 1))
-    Z1 = rng.normal(0.0, 1.0, (1, 1))   # incidence for b1 (genotype main effect)
-    Z2 = rng.normal(0.0, 1.0, (1, 1))   # incidence for b2 (G x E interaction)
+    Z1 = rng.normal(0.0, 1.0, (1, 1))  # incidence for b1 (genotype main effect)
+    Z2 = rng.normal(0.0, 1.0, (1, 1))  # incidence for b2 (G x E interaction)
 
     # Covariance matrices: square, symmetric positive definite (documented constraint).
-    G = np.eye(1)                         # genomic relationship (1 genotype)
-    Sigma_T = np.eye(1)                   # residual covariance across traits (1 trait)
-    Sigma_E = np.eye(1)                   # covariance across environments (1 env)
-    R = np.eye(1)                         # residual variance (1 trait)
+    G = np.eye(1)  # genomic relationship (1 genotype)
+    Sigma_T = np.eye(1)  # residual covariance across traits (1 trait)
+    Sigma_E = np.eye(1)  # covariance across environments (1 env)
+    R = np.eye(1)  # residual variance (1 trait)
 
     # b1 and b2 must be 2-D (matrix-normal layout): columns index traits.
     b1 = rng.normal(0.0, 1.0, (1, 1))
     b2 = rng.normal(0.0, 1.0, (1, 1))
 
-    result = bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R,
-                                b1=b1, b2=b2)
+    result = bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, b1=b1, b2=b2)
 
     # Documented return keys (from the implementation).
     assert isinstance(result, dict)
@@ -70,8 +68,7 @@ def test_msm076_edge():
     b1 = rng.normal(0.0, 1.0, (1, 1))
     b2 = rng.normal(0.0, 1.0, (1, 1))
 
-    result = bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R,
-                                b1=b1, b2=b2)
+    result = bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, b1=b1, b2=b2)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "scale_T" in result

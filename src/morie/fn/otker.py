@@ -16,15 +16,12 @@ def _gram(A, B, kernel, gamma):
     if kernel == "gaussian":
         out = []
         for x in A:
-            out.append([math.exp(-gamma * sum((x[k] - y[k]) ** 2
-                                              for k in range(len(x))))
-                        for y in B])
+            out.append([math.exp(-gamma * sum((x[k] - y[k]) ** 2 for k in range(len(x)))) for y in B])
         return out
     raise ValueError("kernel must be 'gaussian' or 'linear'")
 
 
-def ot_kernel_emd_approx(X, Y, kernel="gaussian", epsilon=0.1, gamma=1.0,
-                         max_iter=200):
+def ot_kernel_emd_approx(X, Y, kernel="gaussian", epsilon=0.1, gamma=1.0, max_iter=200):
     """Transport in a feature space, with the cost read off a kernel.
 
     Once the ground cost is the squared distance in a feature space, it
@@ -72,16 +69,21 @@ def ot_kernel_emd_approx(X, Y, kernel="gaussian", epsilon=0.1, gamma=1.0,
     Kxy = _gram(A, B, kernel, float(gamma))
     kxx = [_gram([A[i]], [A[i]], kernel, float(gamma))[0][0] for i in range(n)]
     kyy = [_gram([B[j]], [B[j]], kernel, float(gamma))[0][0] for j in range(m)]
-    C = [[kxx[i] + kyy[j] - 2.0 * Kxy[i][j] for j in range(m)]
-         for i in range(n)]
+    C = [[kxx[i] + kyy[j] - 2.0 * Kxy[i][j] for j in range(m)] for i in range(n)]
     a = [1.0 / n] * n
     b = [1.0 / m] * m
     T, _, _ = ot.sinkhorn(a, b, C, float(epsilon), max_iter)
     _, exact = ot.emd(a, b, C)
-    return RichResult(payload={
-        "EMD_approx": ot.frob(T, C), "C": C, "exact_cost": exact,
-        "n": n, "m": m,
-        "method": "Kernel-induced transport cost"})
+    return RichResult(
+        payload={
+            "EMD_approx": ot.frob(T, C),
+            "C": C,
+            "exact_cost": exact,
+            "n": n,
+            "m": m,
+            "method": "Kernel-induced transport cost",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for varKf.variational_gp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.varKf import variational_gp
 
 

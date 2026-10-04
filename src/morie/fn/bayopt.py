@@ -95,8 +95,7 @@ def _lengths(ls, d):
     else:
         out = [float(v) for v in ls]
     if len(out) != d:
-        raise ValueError("bayopt: length_scale must be a scalar or one "
-                         "value per dimension")
+        raise ValueError("bayopt: length_scale must be a scalar or one value per dimension")
     if any(v <= 0 for v in out):
         raise ValueError("bayopt: length scales must be positive")
     return out
@@ -143,9 +142,9 @@ def _chol(A):
             s = A[i][j] - sum(L[i][k] * L[j][k] for k in range(j))
             if i == j:
                 if s <= 0:
-                    raise ValueError("bayopt: the covariance matrix is not "
-                                     "positive definite; add noise or "
-                                     "spread the design points")
+                    raise ValueError(
+                        "bayopt: the covariance matrix is not positive definite; add noise or spread the design points"
+                    )
                 L[i][j] = math.sqrt(s)
             else:
                 L[i][j] = s / L[j][j]
@@ -159,13 +158,11 @@ def _chol_solve(L, b):
         y[i] = (b[i] - sum(L[i][k] * y[k] for k in range(i))) / L[i][i]
     x = [0.0] * n
     for i in range(n - 1, -1, -1):
-        x[i] = (y[i] - sum(L[k][i] * x[k] for k in range(i + 1, n))) / \
-            L[i][i]
+        x[i] = (y[i] - sum(L[k][i] * x[k] for k in range(i + 1, n))) / L[i][i]
     return x
 
 
-def gp_posterior(X, y, Xs, kernel="matern52", amplitude=1.0,
-                 length_scale=1.0, noise=1e-8, mean=None):
+def gp_posterior(X, y, Xs, kernel="matern52", amplitude=1.0, length_scale=1.0, noise=1e-8, mean=None):
     """Posterior mean and variance of the GP at each row of ``Xs``."""
     rows = [[float(v) for v in r] for r in X]
     if not rows:
@@ -181,29 +178,26 @@ def gp_posterior(X, y, Xs, kernel="matern52", amplitude=1.0,
     k = _kernel(kernel)
     m = (sum(ys) / len(ys)) if mean is None else float(mean)
     n = len(rows)
-    K = [[k(rows[i], rows[j], amplitude, length_scale) +
-          (noise if i == j else 0.0) for j in range(n)] for i in range(n)]
+    K = [
+        [k(rows[i], rows[j], amplitude, length_scale) + (noise if i == j else 0.0) for j in range(n)] for i in range(n)
+    ]
     L = _chol(K)
     alpha = _chol_solve(L, [v - m for v in ys])
     out_m, out_v = [], []
     for xs in Xs:
         q = [float(v) for v in xs]
         if len(q) != d:
-            raise ValueError("bayopt: a query point has the wrong "
-                             "dimension")
+            raise ValueError("bayopt: a query point has the wrong dimension")
         ks = [k(q, rows[i], amplitude, length_scale) for i in range(n)]
         mu = m + sum(ks[i] * alpha[i] for i in range(n))
         v = _chol_solve(L, ks)
-        var = k(q, q, amplitude, length_scale) - \
-            sum(ks[i] * v[i] for i in range(n))
+        var = k(q, q, amplitude, length_scale) - sum(ks[i] * v[i] for i in range(n))
         out_m.append(mu)
         out_v.append(max(var, 0.0))
-    return {"mean": out_m, "variance": out_v,
-            "sd": [math.sqrt(v) for v in out_v]}
+    return {"mean": out_m, "variance": out_v, "sd": [math.sqrt(v) for v in out_v]}
 
 
-def gp_posterior_gradient(X, y, xs, kernel="matern52", amplitude=1.0,
-                          length_scale=1.0, noise=1e-8, mean=None):
+def gp_posterior_gradient(X, y, xs, kernel="matern52", amplitude=1.0, length_scale=1.0, noise=1e-8, mean=None):
     r"""Gradients of the posterior mean and standard deviation at ``xs``.
 
     Both are closed form. With :math:`\alpha = K^{-1}(y - m)` and
@@ -234,15 +228,15 @@ def gp_posterior_gradient(X, y, xs, kernel="matern52", amplitude=1.0,
     ls = _lengths(length_scale, d)
     m = (sum(ys) / len(ys)) if mean is None else float(mean)
     n = len(rows)
-    K = [[k(rows[i], rows[j], amplitude, length_scale) +
-          (noise if i == j else 0.0) for j in range(n)] for i in range(n)]
+    K = [
+        [k(rows[i], rows[j], amplitude, length_scale) + (noise if i == j else 0.0) for j in range(n)] for i in range(n)
+    ]
     L = _chol(K)
     alpha = _chol_solve(L, [v - m for v in ys])
     ks = [k(q, rows[i], amplitude, length_scale) for i in range(n)]
     v = _chol_solve(L, ks)
     mu = m + sum(ks[i] * alpha[i] for i in range(n))
-    var = max(k(q, q, amplitude, length_scale) -
-              sum(ks[i] * v[i] for i in range(n)), 0.0)
+    var = max(k(q, q, amplitude, length_scale) - sum(ks[i] * v[i] for i in range(n)), 0.0)
     sd = math.sqrt(var)
     gmu, gsd = [0.0] * d, [0.0] * d
     for dd in range(d):
@@ -257,8 +251,7 @@ def gp_posterior_gradient(X, y, xs, kernel="matern52", amplitude=1.0,
     return gmu, gsd, mu, sd
 
 
-def acquisition_gradient(gmu, gsd, mu, sd, best, acq="ei", kappa=2.0,
-                         xi=0.0):
+def acquisition_gradient(gmu, gsd, mu, sd, best, acq="ei", kappa=2.0, xi=0.0):
     r"""Gradient of the acquisition, given the posterior gradients.
 
     For expected improvement the algebra collapses: the two terms in
@@ -273,7 +266,7 @@ def acquisition_gradient(gmu, gsd, mu, sd, best, acq="ei", kappa=2.0,
     if acq not in _ACQ:
         raise ValueError("bayopt: acq must be one of %s" % (_ACQ,))
     d = len(gmu)
-    if acq == "lcb":                       # maximising -LCB
+    if acq == "lcb":  # maximising -LCB
         return [-gmu[i] + kappa * gsd[i] for i in range(d)]
     if sd <= 1e-12:
         return [0.0] * d
@@ -284,10 +277,24 @@ def acquisition_gradient(gmu, gsd, mu, sd, best, acq="ei", kappa=2.0,
     return [_phi(g) * dg[i] for i in range(d)]
 
 
-def maximise_acquisition(X, y, best, box, acq="ei", kernel="matern52",
-                         amplitude=1.0, length_scale=1.0, noise=1e-8,
-                         kappa=2.0, xi=0.0, starts=None, n_starts=8,
-                         max_iter=60, tol=1e-8, rnd=None):
+def maximise_acquisition(
+    X,
+    y,
+    best,
+    box,
+    acq="ei",
+    kernel="matern52",
+    amplitude=1.0,
+    length_scale=1.0,
+    noise=1e-8,
+    kappa=2.0,
+    xi=0.0,
+    starts=None,
+    n_starts=8,
+    max_iter=60,
+    tol=1e-8,
+    rnd=None,
+):
     """Multi-start projected gradient ascent on the acquisition.
 
     This is what the paper's inner loop does -- the acquisition is cheap
@@ -304,14 +311,12 @@ def maximise_acquisition(X, y, best, box, acq="ei", kernel="matern52",
             return st[0] / float(1 << 31)
 
     if starts is None:
-        starts = [[box[i][0] + rnd() * (box[i][1] - box[i][0])
-                   for i in range(d)] for _ in range(int(n_starts))]
+        starts = [[box[i][0] + rnd() * (box[i][1] - box[i][0]) for i in range(d)] for _ in range(int(n_starts))]
     if not starts:
         raise ValueError("bayopt: no starting points")
 
     def score(pt):
-        p = gp_posterior(X, y, [pt], kernel, amplitude, length_scale,
-                         noise)
+        p = gp_posterior(X, y, [pt], kernel, amplitude, length_scale, noise)
         return acquire(p["mean"][0], p["sd"][0], best, acq, kappa, xi)
 
     def clip(pt):
@@ -324,16 +329,14 @@ def maximise_acquisition(X, y, best, box, acq="ei", kernel="matern52",
         evals += 1
         step = max((box[i][1] - box[i][0]) for i in range(d)) * 0.1
         for _ in range(int(max_iter)):
-            gmu, gsd, mu, sd = gp_posterior_gradient(
-                X, y, pt, kernel, amplitude, length_scale, noise)
-            g = acquisition_gradient(gmu, gsd, mu, sd, best, acq, kappa,
-                                     xi)
+            gmu, gsd, mu, sd = gp_posterior_gradient(X, y, pt, kernel, amplitude, length_scale, noise)
+            g = acquisition_gradient(gmu, gsd, mu, sd, best, acq, kappa, xi)
             gn = math.sqrt(sum(v * v for v in g))
             if gn < tol:
                 break
             moved = False
             t = step
-            for _ in range(30):            # backtracking line search
+            for _ in range(30):  # backtracking line search
                 cand = clip([pt[i] + t * g[i] / gn for i in range(d)])
                 cval = score(cand)
                 evals += 1
@@ -345,8 +348,7 @@ def maximise_acquisition(X, y, best, box, acq="ei", kernel="matern52",
                 break
         if val > best_val:
             best_pt, best_val = pt, val
-    return {"x": best_pt, "acq": best_val, "n_starts": len(starts),
-            "evaluations": evals}
+    return {"x": best_pt, "acq": best_val, "n_starts": len(starts), "evaluations": evals}
 
 
 def probability_of_improvement(mu, sd, best, xi=0.0):
@@ -384,10 +386,25 @@ def acquire(mu, sd, best, acq="ei", kappa=2.0, xi=0.0):
     return -lower_confidence_bound(mu, sd, kappa)
 
 
-def bayopt(f, bounds, n_iter=20, n_init=5, acq="ei", kernel="matern52",
-           amplitude=1.0, length_scale=1.0, noise=1e-8, kappa=2.0, xi=0.0,
-           n_candidates=200, seed=0, X0=None, y0=None,
-           inner="gradient", n_starts=8):
+def bayopt(
+    f,
+    bounds,
+    n_iter=20,
+    n_init=5,
+    acq="ei",
+    kernel="matern52",
+    amplitude=1.0,
+    length_scale=1.0,
+    noise=1e-8,
+    kappa=2.0,
+    xi=0.0,
+    n_candidates=200,
+    seed=0,
+    X0=None,
+    y0=None,
+    inner="gradient",
+    n_starts=8,
+):
     """Minimise ``f`` over a box by Bayesian optimisation.
 
     ``bounds`` is a list of ``(lo, hi)`` per dimension.
@@ -412,8 +429,7 @@ def bayopt(f, bounds, n_iter=20, n_init=5, acq="ei", kernel="matern52",
     if any(a >= b for a, b in box):
         raise ValueError("bayopt: each bound must have lo < hi")
     if n_iter < 1 or n_candidates < 1:
-        raise ValueError("bayopt: n_iter and n_candidates must be "
-                         "positive")
+        raise ValueError("bayopt: n_iter and n_candidates must be positive")
     if X0 is None and n_init < 2:
         raise ValueError("bayopt: at least two initial points are needed")
     d = len(box)
@@ -424,8 +440,7 @@ def bayopt(f, bounds, n_iter=20, n_init=5, acq="ei", kernel="matern52",
         return st[0] / float(1 << 31)
 
     def draw():
-        return [box[i][0] + rnd() * (box[i][1] - box[i][0])
-                for i in range(d)]
+        return [box[i][0] + rnd() * (box[i][1] - box[i][0]) for i in range(d)]
 
     if X0 is not None:
         X = [[float(v) for v in r] for r in X0]
@@ -439,55 +454,59 @@ def bayopt(f, bounds, n_iter=20, n_init=5, acq="ei", kernel="matern52",
     for _ in range(int(n_iter)):
         best = min(Y)
         if inner == "gradient":
-            got = maximise_acquisition(X, Y, best, box, acq, kernel,
-                                       amplitude, length_scale, noise,
-                                       kappa, xi, n_starts=n_starts,
-                                       rnd=rnd)
+            got = maximise_acquisition(
+                X, Y, best, box, acq, kernel, amplitude, length_scale, noise, kappa, xi, n_starts=n_starts, rnd=rnd
+            )
             x_new, a_val = got["x"], got["acq"]
         else:
             cand = [draw() for _ in range(int(n_candidates))]
-            post = gp_posterior(X, Y, cand, kernel, amplitude,
-                                length_scale, noise)
-            scores = [acquire(post["mean"][i], post["sd"][i], best, acq,
-                              kappa, xi) for i in range(len(cand))]
+            post = gp_posterior(X, Y, cand, kernel, amplitude, length_scale, noise)
+            scores = [acquire(post["mean"][i], post["sd"][i], best, acq, kappa, xi) for i in range(len(cand))]
             k = max(range(len(cand)), key=lambda i: scores[i])
             x_new, a_val = cand[k], scores[k]
         X.append(x_new)
         Y.append(float(f(x_new)))
-        trace.append({"x": x_new, "y": Y[-1], "acq": a_val,
-                      "best": min(Y)})
+        trace.append({"x": x_new, "y": Y[-1], "acq": a_val, "best": min(Y)})
     b = min(range(len(Y)), key=lambda i: Y[i])
-    return RichResult(payload={
-        "estimate": X[b],
-        "x_best": X[b],
-        "y_best": Y[b],
-        "X": X,
-        "y": Y,
-        "trace": trace,
-        "acq": acq,
-        "kernel": kernel,
-        "inner": inner,
-        "n_eval": len(Y),
-        "method": ("Bayesian optimisation (Mockus 1975; Snoek, "
-                   "Larochelle & Adams 2012) with a %s kernel and the "
-                   "%s acquisition" % (kernel, acq)),
-        "note": ("minimisation throughout, as the paper writes it "
-                 "(x_best = argmin); the acquisition is maximised by "
-                 "multi-start projected gradient ascent on the "
-                 "closed-form gradients, with inner='random' kept as the "
-                 "gradient-free baseline"),
-    })
+    return RichResult(
+        payload={
+            "estimate": X[b],
+            "x_best": X[b],
+            "y_best": Y[b],
+            "X": X,
+            "y": Y,
+            "trace": trace,
+            "acq": acq,
+            "kernel": kernel,
+            "inner": inner,
+            "n_eval": len(Y),
+            "method": (
+                "Bayesian optimisation (Mockus 1975; Snoek, "
+                "Larochelle & Adams 2012) with a %s kernel and the "
+                "%s acquisition" % (kernel, acq)
+            ),
+            "note": (
+                "minimisation throughout, as the paper writes it "
+                "(x_best = argmin); the acquisition is maximised by "
+                "multi-start projected gradient ascent on the "
+                "closed-form gradients, with inner='random' kept as the "
+                "gradient-free baseline"
+            ),
+        }
+    )
 
 
 bayesian_optimization = bayopt
 
 
 def cheatsheet():
-    return ("bayopt: Bayesian optimisation (Mockus 1975; Snoek et al. "
-            "2012). A GP posterior gives mu(x) and sigma(x); with "
-            "gamma = (f(x_best) - mu)/sigma the acquisitions are "
-            "PI = Phi(gamma) (eq.1), EI = sigma[gamma Phi(gamma) + "
-            "phi(gamma)] (eq.2) and LCB = mu - kappa sigma (eq.3). The "
-            "kernel is the ARD Matern 5/2 of eq.5 by default, which the "
-            "paper prefers over the squared exponential of eq.4 because "
-            "the latter's sample paths are unrealistically smooth.")
+    return (
+        "bayopt: Bayesian optimisation (Mockus 1975; Snoek et al. "
+        "2012). A GP posterior gives mu(x) and sigma(x); with "
+        "gamma = (f(x_best) - mu)/sigma the acquisitions are "
+        "PI = Phi(gamma) (eq.1), EI = sigma[gamma Phi(gamma) + "
+        "phi(gamma)] (eq.2) and LCB = mu - kappa sigma (eq.3). The "
+        "kernel is the ARD Matern 5/2 of eq.5 by default, which the "
+        "paper prefers over the squared exponential of eq.4 because "
+        "the latter's sample paths are unrealistically smooth."
+    )

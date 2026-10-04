@@ -44,7 +44,8 @@ def gibbons_ks_onesided_asymp(d, n=None):
         raise ValueError(f"d must be positive, got {d}.")
     payload = {
         "cdf": float(1.0 - np.exp(-2.0 * d**2)),
-        "p_value": float(np.exp(-2.0 * d**2)), "d": d,
+        "p_value": float(np.exp(-2.0 * d**2)),
+        "d": d,
         "method": "P(D+ <= d/sqrt(n)) -> 1 - exp(-2 d^2) (Theorem 4.3.5)",
     }
     if n is not None:

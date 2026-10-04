@@ -8,13 +8,11 @@ from morie.fn.hmcst import geron_contrastive_learning
 
 
 def _cos(a, b):
-    return sum(x * y for x, y in zip(a, b)) / math.sqrt(
-        sum(x * x for x in a) * sum(y * y for y in b))
+    return sum(x * y for x, y in zip(a, b)) / math.sqrt(sum(x * x for x in a) * sum(y * y for y in b))
 
 
 def _emb():
-    return [[1.0, 0.2, -0.5], [0.9, 0.1, -0.4], [-0.3, 1.0, 0.2],
-            [-0.2, 0.8, 0.5], [0.4, -0.6, 1.0]]
+    return [[1.0, 0.2, -0.5], [0.9, 0.1, -0.4], [-0.3, 1.0, 0.2], [-0.2, 0.8, 0.5], [0.4, -0.6, 1.0]]
 
 
 def test_hmcst_basic():
@@ -52,7 +50,7 @@ import morie.fn.hmcst as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

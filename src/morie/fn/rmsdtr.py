@@ -61,10 +61,8 @@ def rmsdtr(P, Q, weights=None):
     X = [[Pv[i][k] - cp[k] for k in range(d)] for i in range(n)]
     Y = [[Qv[i][k] - cq[k] for k in range(d)] for i in range(n)]
     # R_ij = sum_n w_n y_ni x_nj  (Kabsch Eq. 7)
-    Rm = [[sum(w[t] * Y[t][i] * X[t][j] for t in range(n))
-           for j in range(d)] for i in range(d)]
-    RtR = [[sum(Rm[k][i] * Rm[k][j] for k in range(d))
-            for j in range(d)] for i in range(d)]
+    Rm = [[sum(w[t] * Y[t][i] * X[t][j] for t in range(n)) for j in range(d)] for i in range(d)]
+    RtR = [[sum(Rm[k][i] * Rm[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
     mu, A = np.linalg.eigh(np.asarray(RtR))
     mu = [float(v) for v in mu]
     A = [[float(A[i][j]) for j in range(d)] for i in range(d)]
@@ -75,8 +73,7 @@ def rmsdtr(P, Q, weights=None):
     b_vecs = []
     for k in range(d):
         if mu_s[k] > 1e-24:
-            b = [sum(Rm[i][j] * a_vecs[k][j] for j in range(d))
-                 / math.sqrt(mu_s[k]) for i in range(d)]
+            b = [sum(Rm[i][j] * a_vecs[k][j] for j in range(d)) / math.sqrt(mu_s[k]) for i in range(d)]
         else:
             # degenerate direction: complete orthonormally
             b = [0.0] * d
@@ -86,38 +83,39 @@ def rmsdtr(P, Q, weights=None):
         # cross product; d = 2 perpendicular)
         if d == 3:
             u, v = b_vecs[0], b_vecs[1]
-            b_vecs[-1] = [u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2],
-                          u[0]*v[1]-u[1]*v[0]]
+            b_vecs[-1] = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
         elif d == 2:
             b_vecs[-1] = [-b_vecs[0][1], b_vecs[0][0]]
-    U = [[sum(b_vecs[k][i] * a_vecs[k][j] for k in range(d))
-          for j in range(d)] for i in range(d)]
+    U = [[sum(b_vecs[k][i] * a_vecs[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
 
     def _det(m):
         if len(m) == 2:
-            return m[0][0]*m[1][1] - m[0][1]*m[1][0]
-        return (m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])
-                - m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])
-                + m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]))
+            return m[0][0] * m[1][1] - m[0][1] * m[1][0]
+        return (
+            m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+            - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+            + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+        )
 
     if d in (2, 3) and _det(U) < 0:
         # flip the direction of the smallest-eigenvalue pair
         b_vecs[-1] = [-v for v in b_vecs[-1]]
-        U = [[sum(b_vecs[k][i] * a_vecs[k][j] for k in range(d))
-              for j in range(d)] for i in range(d)]
+        U = [[sum(b_vecs[k][i] * a_vecs[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
     sq = 0.0
     for t in range(n):
         ux = [sum(U[i][j] * X[t][j] for j in range(d)) for i in range(d)]
         sq += w[t] * sum((ux[i] - Y[t][i]) ** 2 for i in range(d))
     rmsd = math.sqrt(sq / sw)
-    return RichResult(payload={
-        "estimate": rmsd,
-        "rotation": U,
-        "det": _det(U) if d in (2, 3) else None,
-        "centroids": {"P": cp, "Q": cq},
-        "n": n,
-        "method": "Kabsch (1976) optimal superposition RMSD",
-    })
+    return RichResult(
+        payload={
+            "estimate": rmsd,
+            "rotation": U,
+            "det": _det(U) if d in (2, 3) else None,
+            "centroids": {"P": cp, "Q": cq},
+            "n": n,
+            "method": "Kabsch (1976) optimal superposition RMSD",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -126,6 +124,7 @@ kabsch_rmsd = rmsdtr
 
 def cheatsheet():
     return "rmsdtr: R = sum w y x'; U from R'R eigen; det +1; RMSD after fit"
+
 
 # public names resolved by fn/_lazy_map.json
 rmsd = rmsdtr

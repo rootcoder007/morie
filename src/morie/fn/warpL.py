@@ -59,14 +59,10 @@ ECML 2010 paper above is the one held locally and is the text this
 module follows.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["alpha_weights", "rank_weight", "estimate_rank",
-           "sample_violation", "warp_loss", "warp_step"]
+__all__ = ["alpha_weights", "rank_weight", "estimate_rank", "sample_violation", "warp_loss", "warp_step"]
 
 _EPS = 1e-12
 
@@ -87,11 +83,9 @@ def alpha_weights(n, scheme="reciprocal"):
     elif scheme == "top1":
         a = [1.0] + [0.0] * (N - 1)
     else:
-        raise ValueError("warpL: scheme must be reciprocal, uniform "
-                         "or top1, got %r" % (scheme,))
+        raise ValueError("warpL: scheme must be reciprocal, uniform or top1, got %r" % (scheme,))
     if any(a[j] < a[j + 1] - _EPS for j in range(N - 1)):
-        raise ValueError("warpL: the alpha weights must be "
-                         "non-increasing")
+        raise ValueError("warpL: the alpha weights must be non-increasing")
     return a
 
 
@@ -101,7 +95,7 @@ def rank_weight(rank, alphas):
     r = int(rank)
     if r < 0:
         raise ValueError("warpL: the rank cannot be negative")
-    return sum(alphas[:min(r, len(alphas))])
+    return sum(alphas[: min(r, len(alphas))])
 
 
 def estimate_rank(n_draws, n_labels):
@@ -113,13 +107,11 @@ def estimate_rank(n_draws, n_labels):
     N = int(n_draws)
     Y = int(n_labels)
     if N < 1 or Y < 2:
-        raise ValueError("warpL: need at least one draw and two "
-                         "labels")
+        raise ValueError("warpL: need at least one draw and two labels")
     return int((Y - 1) // N)
 
 
-def sample_violation(score_positive, negative_scorer, n_labels,
-                     rng, margin=1.0, max_draws=None):
+def sample_violation(score_positive, negative_scorer, n_labels, rng, margin=1.0, max_draws=None):
     r"""Draw negatives until one violates the margin.
 
     Reports whether the cap was reached, since "no violation found"
@@ -133,29 +125,34 @@ def sample_violation(score_positive, negative_scorer, n_labels,
         j = int(float(rng.uniform()) * (Y - 1)) % (Y - 1)
         s = float(negative_scorer(j))
         if s > float(score_positive) - float(margin):
-            return {"violated": True, "draws": t, "negative": j,
-                    "negative_score": s,
-                    "estimated_rank": estimate_rank(t, Y),
-                    "capped": False}
-    return {"violated": False, "draws": cap, "negative": None,
-            "estimated_rank": 0, "capped": True,
-            "note": "no violator found within the cap: the positive "
-                    "is already well ranked, which is exactly when "
-                    "sampling is most expensive"}
+            return {
+                "violated": True,
+                "draws": t,
+                "negative": j,
+                "negative_score": s,
+                "estimated_rank": estimate_rank(t, Y),
+                "capped": False,
+            }
+    return {
+        "violated": False,
+        "draws": cap,
+        "negative": None,
+        "estimated_rank": 0,
+        "capped": True,
+        "note": "no violator found within the cap: the positive "
+        "is already well ranked, which is exactly when "
+        "sampling is most expensive",
+    }
 
 
-def warp_loss(score_positive, score_negative, estimated_rank, alphas,
-              margin=1.0):
+def warp_loss(score_positive, score_negative, estimated_rank, alphas, margin=1.0):
     r""":math:`L(\hat r)\,|1 - f(pos) + f(neg)|_+`."""
-    hinge = max(0.0, float(margin) - float(score_positive)
-                + float(score_negative))
+    hinge = max(0.0, float(margin) - float(score_positive) + float(score_negative))
     w = rank_weight(int(estimated_rank), alphas)
-    return {"loss": w * hinge, "hinge": hinge, "rank_weight": w,
-            "estimated_rank": int(estimated_rank)}
+    return {"loss": w * hinge, "hinge": hinge, "rank_weight": w, "estimated_rank": int(estimated_rank)}
 
 
-def warp_step(positive, negatives, embed_user, rng, alphas,
-              lr=0.05, margin=1.0):
+def warp_step(positive, negatives, embed_user, rng, alphas, lr=0.05, margin=1.0):
     r"""One sampled update.
 
     ``negatives`` is the full candidate list; only the drawn one is
@@ -170,44 +167,50 @@ def warp_step(positive, negatives, embed_user, rng, alphas,
         return sum(u[a] * w[a] for a in range(len(u)))
 
     sp = score(P)
-    v = sample_violation(sp, lambda j: score(negatives[j]), Y, rng,
-                         margin)
+    v = sample_violation(sp, lambda j: score(negatives[j]), Y, rng, margin)
     if not v["violated"]:
-        return {"updated": False, "draws": v["draws"],
-                "loss": 0.0, "user": u,
-                "note": "nothing violated the margin, so there is "
-                        "nothing to learn from this positive"}
+        return {
+            "updated": False,
+            "draws": v["draws"],
+            "loss": 0.0,
+            "user": u,
+            "note": "nothing violated the margin, so there is nothing to learn from this positive",
+        }
     neg = [float(x) for x in k.vec(negatives[v["negative"]])]
-    L = warp_loss(sp, score(negatives[v["negative"]]),
-                  v["estimated_rank"], alphas, margin)
+    L = warp_loss(sp, score(negatives[v["negative"]]), v["estimated_rank"], alphas, margin)
     g = L["rank_weight"] * float(lr)
     new_u = [u[a] + g * (P[a] - neg[a]) for a in range(len(u))]
-    return RichResult(payload={
-        "estimate": L["loss"], "updated": True, "loss": L["loss"],
-        "user": new_u, "draws": v["draws"],
-        "estimated_rank": v["estimated_rank"],
-        "rank_weight": L["rank_weight"],
-        "negative": v["negative"],
-        "method": "WARP sampled rank approximation; Weston, Bengio & "
-                  "Usunier (2010)",
-        "note": "the step size scales with L(rank), so an error at "
-                "the top of the list moves the model further",
-    })
+    return RichResult(
+        payload={
+            "estimate": L["loss"],
+            "updated": True,
+            "loss": L["loss"],
+            "user": new_u,
+            "draws": v["draws"],
+            "estimated_rank": v["estimated_rank"],
+            "rank_weight": L["rank_weight"],
+            "negative": v["negative"],
+            "method": "WARP sampled rank approximation; Weston, Bengio & Usunier (2010)",
+            "note": "the step size scales with L(rank), so an error at the top of the list moves the model further",
+        }
+    )
 
 
 def cheatsheet():
-    return ("warpL: with tens of thousands of labels what matters is "
-            "precision at k, but pairwise losses optimise the WHOLE "
-            "ordering and top-targeting losses are costly to train. "
-            "Estimate the rank by SAMPLING: draw negatives until one "
-            "violates the margin, and if it took N draws the rank is "
-            "about (Y-1)/N -- a violation on the first draw means a "
-            "badly ranked positive, many draws means it is already "
-            "near the top. Nothing is sorted. Then WEIGHT by "
-            "L(r) = sum_{j<=r} alpha_j with alpha non-increasing: "
-            "alpha_j = 1/j optimises the top, constant alpha recovers "
-            "the plain pairwise loss. Cap the draws and SAY when the "
-            "cap was hit.")
+    return (
+        "warpL: with tens of thousands of labels what matters is "
+        "precision at k, but pairwise losses optimise the WHOLE "
+        "ordering and top-targeting losses are costly to train. "
+        "Estimate the rank by SAMPLING: draw negatives until one "
+        "violates the margin, and if it took N draws the rank is "
+        "about (Y-1)/N -- a violation on the first draw means a "
+        "badly ranked positive, many draws means it is already "
+        "near the top. Nothing is sorted. Then WEIGHT by "
+        "L(r) = sum_{j<=r} alpha_j with alpha non-increasing: "
+        "alpha_j = 1/j optimises the top, constant alpha recovers "
+        "the plain pairwise loss. Cap the draws and SAY when the "
+        "cap was hit."
+    )
 
 
 # compact alias per ledger/NAMING.md

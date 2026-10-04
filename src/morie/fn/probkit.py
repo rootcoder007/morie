@@ -395,6 +395,7 @@ def cheatsheet() -> str:
         "max_entropy_discrete / bv_logistic_simulate / ddm_drift / king_kinship -> probability and inference toolkit."
     )
 
+
 # alias kept from the retired placeholder of the same name
 evt_bv_evd_sim = bv_logistic_simulate
 

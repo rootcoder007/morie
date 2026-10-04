@@ -98,10 +98,17 @@ def poststratify(y, stratum, Nh):
             for v in vals:
                 ss += (v - mh) * (v - mh)
             var += w * w * (ss / (nh - 1)) / nh
-    return RichResult(payload={
-        "estimate": est, "se": var ** 0.5, "variance": var,
-        "strata": len(order), "N": N, "n": len(y),
-        "method": "Post-stratified mean, sum_h (N_h/N) ybar_h"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": var**0.5,
+            "variance": var,
+            "strata": len(order),
+            "N": N,
+            "n": len(y),
+            "method": "Post-stratified mean, sum_h (N_h/N) ybar_h",
+        }
+    )
 
 
 def cheatsheet():

@@ -12,15 +12,13 @@ def _scores(Yhat, c, name="Yhat"):
     """Validated toxicity scores in [0, 1]; km099/km100 import this."""
     outs = list(Yhat)
     if not outs:
-        raise ValueError(f"{name} is empty; there are no generations to "
-                         "score.")
+        raise ValueError(f"{name} is empty; there are no generations to score.")
     if callable(c):
         vals = [float(c(y)) for y in outs]
     else:
         vals = [float(v) for v in c]
         if len(vals) != len(outs):
-            raise ValueError(
-                f"c holds {len(vals)} scores for {len(outs)} generations.")
+            raise ValueError(f"c holds {len(vals)} scores for {len(outs)} generations.")
     arr = np.asarray(vals, dtype=float)
     if np.any(arr < 0) or np.any(arr > 1):
         raise ValueError("every toxicity score must lie in [0, 1].")
@@ -54,11 +52,16 @@ def kamath_ch6_toxic_fraction(Yhat, c, threshold=0.5):
     0.0
     """
     flags, arr, outs = _flags(Yhat, c, threshold)
-    return RichResult(payload={
-        "estimate": float(flags.mean()), "n_toxic": int(flags.sum()),
-        "scores": [float(v) for v in arr], "threshold": float(threshold),
-        "n": len(outs),
-        "method": "Toxic Fraction (Kamath Eq 6.25)"})
+    return RichResult(
+        payload={
+            "estimate": float(flags.mean()),
+            "n_toxic": int(flags.sum()),
+            "scores": [float(v) for v in arr],
+            "threshold": float(threshold),
+            "n": len(outs),
+            "method": "Toxic Fraction (Kamath Eq 6.25)",
+        }
+    )
 
 
 def cheatsheet():

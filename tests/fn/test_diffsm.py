@@ -1,7 +1,6 @@
 """Tests for diffsm.diffusion_score_matching."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.diffsm import diffusion_score_matching
 
 
@@ -23,7 +22,7 @@ def test_diffsm_basic():
     assert "target_norm" in result
     assert result["sigma"] == sigma
     assert result["per_sample"].shape == (n,)
-    assert result["target_norm"] == 1.0 / sigma ** 2
+    assert result["target_norm"] == 1.0 / sigma**2
 
     # Compute the expected objective independently using the documented formula:
     # J = E_{eps} || s_theta(x + sigma*eps) + (sigma*eps)/sigma^2 ||^2
@@ -36,7 +35,7 @@ def test_diffsm_basic():
         eps = rng2.normal(size=(n, d))
         xt = x + sigma * eps
         s = np.asarray(s_theta(xt))
-        target = -(xt - x) / sigma ** 2
+        target = -(xt - x) / sigma**2
         per += ((s - target) ** 2).sum(axis=1)
     per /= n_noise
     expected_objective = float(per.mean())

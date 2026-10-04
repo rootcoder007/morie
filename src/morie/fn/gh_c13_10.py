@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ntr_consist"]
@@ -37,15 +36,18 @@ def ghosal_ntr_consist(ns=(100, 800, 6400), seed=42):
             if times[i] > 1.0:
                 break
             if events[i] > 0:
-                surv *= (at_risk - 1.0 + 2.0 * math.exp(-times[i])) \
-                    / (at_risk + 2.0 * math.exp(-times[i]))
+                surv *= (at_risk - 1.0 + 2.0 * math.exp(-times[i])) / (at_risk + 2.0 * math.exp(-times[i]))
             at_risk -= 1
         S_hat = surv
         errs.append(abs(S_hat - math.exp(-1.0)))
-    res = RichResult(payload={"estimate": errs[-1],
-                              "err_by_n": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "NTR consistency (GvdV 2017 sec. 13.4.1)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "err_by_n": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "NTR consistency (GvdV 2017 sec. 13.4.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_10")
 
 

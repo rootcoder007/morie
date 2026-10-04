@@ -1,7 +1,6 @@
 """Tests for bndsdo.bound_skewed_outcome."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndsdo import bound_skewed_outcome
 
 

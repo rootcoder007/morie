@@ -58,7 +58,10 @@ def gibbons_spearman_ties(x, y):
     return RichResult(
         payload={
             "r_s": float((base - d2 - Tx - Ty) / denom),
-            "sum_d2": d2, "T_x": Tx, "T_y": Ty, "n": int(n),
+            "sum_d2": d2,
+            "T_x": Tx,
+            "T_y": Ty,
+            "n": int(n),
             "method": "Tie-corrected Spearman r_s (Gibbons Ch. 11.3)",
         }
     )

@@ -9,5 +9,6 @@ def test_b109_basic():
 
 def test_b109_edge():
     import pytest
+
     with pytest.raises(ValueError, match="targets"):
         burkov_lm_ch1_binary_cross_entropy(0.5, 0.3)

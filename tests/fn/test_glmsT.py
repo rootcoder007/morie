@@ -23,7 +23,7 @@ def test_strictly_increasing_series():
 
 
 def test_strictly_decreasing_series():
-    res = linear_trend(T, [-float(i) ** 3 for i in T])
+    res = linear_trend(T, [-(float(i) ** 3) for i in T])
     assert res["tau"] == pytest.approx(-1.0)
     assert res["S"] == -190
     assert res["n_concordant"] == 0

@@ -27,17 +27,16 @@ def polr_parameterization(bj0, etas, xs):
     """
     value = _acd.polr_parameterization(bj0, etas, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.13)"
     return RichResult(
-        title='polr() parameterization logit(P(Y <= j)) = bj0 - eta^T x',
+        title="polr() parameterization logit(P(Y <= j)) = bj0 - eta^T x",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e13: logit(P(Y <= j)) = bj0 - eta1 x1 - ... - etap xp [Bilder & Loughin 2025, eq. 3.13]'
+    return "3e13: logit(P(Y <= j)) = bj0 - eta1 x1 - ... - etap xp [Bilder & Loughin 2025, eq. 3.13]"

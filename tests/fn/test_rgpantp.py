@@ -1,7 +1,6 @@
 """Tests for rgpantp.rangayyan_pan_tompkins."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_pan_tompkins
 
 

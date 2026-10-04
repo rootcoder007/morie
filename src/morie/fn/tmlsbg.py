@@ -77,17 +77,24 @@ def tmle_subgroup(y, D, X, subgroup):
     Q1s = [Q1[i] + eps * Sv[i] / (ps * g[i]) for i in range(n)]
     Q0s = [Q0[i] - eps * Sv[i] / (ps * (1.0 - g[i])) for i in range(n)]
     psi = sum(Sv[i] * (Q1s[i] - Q0s[i]) for i in range(n)) / (ps * n)
-    ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Sv[i] / ps * (Q1s[i] - Q0s[i] - psi)
-          for i in range(n)]
+    ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Sv[i] / ps * (Q1s[i] - Q0s[i] - psi) for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "n_sub": float(sum(Sv)), "n": n,
-        "method": "TMLE for the average treatment effect within a subgroup"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_sub": float(sum(Sv)),
+            "n": n,
+            "method": "TMLE for the average treatment effect within a subgroup",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlsbg: TMLE for a subgroup-conditional treatment effect."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlesubgroup = tmle_subgroup

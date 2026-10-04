@@ -29,8 +29,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_search_horizon"]
 
 
-def alphazero_search_horizon(depth_limit, state, rewards=None, values=None,
-                             gamma=1.0, k_start=0):
+def alphazero_search_horizon(depth_limit, state, rewards=None, values=None, gamma=1.0, k_start=0):
     """Truncated return at a search horizon.
 
     Parameters
@@ -66,7 +65,7 @@ def alphazero_search_horizon(depth_limit, state, rewards=None, values=None,
     part = 0.0
     tau = 0
     while kk + tau < l:
-        part += (g ** tau) * r[kk + tau]
+        part += (g**tau) * r[kk + tau]
         tau += 1
     if v:
         idx = l if l < len(v) else len(v) - 1

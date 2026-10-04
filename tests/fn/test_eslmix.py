@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslmix import esl_gaussian_mixture
 
 
@@ -16,10 +15,7 @@ def test_eslmix_basic():
     result = esl_gaussian_mixture(X, k=2)
     assert isinstance(result, dict)
     # Check that all documented keys are present
-    expected_keys = {
-        "density", "log_density", "pi", "mu", "sigma",
-        "loglik", "aic", "bic", "resp", "labels", "method"
-    }
+    expected_keys = {"density", "log_density", "pi", "mu", "sigma", "loglik", "aic", "bic", "resp", "labels", "method"}
     assert expected_keys.issubset(result.keys())
     # Shapes
     n = 40

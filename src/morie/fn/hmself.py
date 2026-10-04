@@ -97,9 +97,7 @@ def geron_self_supervised(X, pretext="mask", noise=0.1, seed=0):
         if yp.ndim == 1:
             yp = yp.reshape(-1, 1)
         if Xp.shape[0] != yp.shape[0]:
-            raise ValueError(
-                f"geron_self_supervised: pretext returned {Xp.shape[0]} inputs but {yp.shape[0]} targets"
-            )
+            raise ValueError(f"geron_self_supervised: pretext returned {Xp.shape[0]} inputs but {yp.shape[0]} targets")
         preds = np.empty_like(yp)
         losses = np.empty(yp.shape[1])
         for j in range(yp.shape[1]):

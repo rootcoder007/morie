@@ -1,7 +1,6 @@
 """Tests for morie.fn.lufac."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lufac import lu_factorize
 
 

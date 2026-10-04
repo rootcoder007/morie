@@ -43,8 +43,7 @@ def _best_split(X, y, max_features=None, rng=None):
     return best_feat, best_thr, best_mse
 
 
-def _build_tree(X, y, depth, max_depth, min_samples, max_features=None,
-                rng=None):
+def _build_tree(X, y, depth, max_depth, min_samples, max_features=None, rng=None):
     """Grow a regression tree.
 
     ``max_features`` and ``rng`` are threaded down to EVERY node, not
@@ -64,10 +63,8 @@ def _build_tree(X, y, depth, max_depth, min_samples, max_features=None,
         "leaf": False,
         "feature": feat,
         "threshold": thr,
-        "left": _build_tree(X[left_mask], y[left_mask], depth + 1, max_depth,
-                            min_samples, max_features, rng),
-        "right": _build_tree(X[right_mask], y[right_mask], depth + 1, max_depth,
-                             min_samples, max_features, rng),
+        "left": _build_tree(X[left_mask], y[left_mask], depth + 1, max_depth, min_samples, max_features, rng),
+        "right": _build_tree(X[right_mask], y[right_mask], depth + 1, max_depth, min_samples, max_features, rng),
     }
 
 

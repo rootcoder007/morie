@@ -87,8 +87,7 @@ def deepfm(X, y=None, K=4, mlp_h=4, w0=0.0, seed=42, deep_scale=1.0):
     rng = np.random.default_rng(seed)
     w = [float(rng.normal(0.0, 0.1)) for _ in range(p)]
     V = [[float(rng.normal(0.0, 0.1)) for _ in range(K)] for _ in range(p)]
-    W1 = [[float(rng.normal(0.0, 0.1)) for _ in range(h)]
-          for _ in range(p * K)]
+    W1 = [[float(rng.normal(0.0, 0.1)) for _ in range(h)] for _ in range(p * K)]
     b1 = [float(rng.normal(0.0, 0.1)) for _ in range(h)]
     W2 = [float(rng.normal(0.0, 0.1)) for _ in range(h)]
     fm, dp, ph = [], [], []
@@ -114,20 +113,20 @@ def deepfm(X, y=None, K=4, mlp_h=4, w0=0.0, seed=42, deep_scale=1.0):
             raise ValueError("y must have one label per row")
         if any(v not in (0.0, 1.0) for v in yv):
             raise ValueError("y must be binary 0/1")
-        ll = -sum(yv[i] * math.log(ph[i] + 1e-300)
-                  + (1 - yv[i]) * math.log(1 - ph[i] + 1e-300)
-                  for i in range(n)) / n
-    return RichResult(payload={
-        "estimate": sum(ph) / n,
-        "p_hat": ph,
-        "fm_part": fm,
-        "deep_part": dp,
-        "logloss": ll,
-        "n": n,
-        "p": p,
-        "K": K,
-        "method": "DeepFM: factorization machine plus deep network",
-    })
+        ll = -sum(yv[i] * math.log(ph[i] + 1e-300) + (1 - yv[i]) * math.log(1 - ph[i] + 1e-300) for i in range(n)) / n
+    return RichResult(
+        payload={
+            "estimate": sum(ph) / n,
+            "p_hat": ph,
+            "fm_part": fm,
+            "deep_part": dp,
+            "logloss": ll,
+            "n": n,
+            "p": p,
+            "K": K,
+            "method": "DeepFM: factorization machine plus deep network",
+        }
+    )
 
 
 def cheatsheet():

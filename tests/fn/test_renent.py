@@ -1,7 +1,6 @@
 """Tests for renent.renyi_entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.renent import renyi_entropy
 
 

@@ -1,7 +1,6 @@
 """Tests for algnm.party_alignment."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.algnm import party_alignment
 
 

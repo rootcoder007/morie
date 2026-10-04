@@ -79,9 +79,7 @@ def geron_denoising_autoencoder(x, noise, decoded, corruption="additive"):
     try:
         noise_b = np.broadcast_to(noise, x.shape)
     except ValueError as exc:
-        raise ValueError(
-            f"noise of shape {noise.shape} is not broadcastable to x shape {x.shape}."
-        ) from exc
+        raise ValueError(f"noise of shape {noise.shape} is not broadcastable to x shape {x.shape}.") from exc
     if not np.all(np.isfinite(x)) or not np.all(np.isfinite(decoded)) or not np.all(np.isfinite(noise_b)):
         raise ValueError("x, noise and decoded must all be finite.")
 
@@ -92,9 +90,7 @@ def geron_denoising_autoencoder(x, noise, decoded, corruption="additive"):
             raise ValueError("with corruption='dropout', noise must be a 0/1 keep-mask.")
         x_tilde = x * noise_b
     else:
-        raise ValueError(
-            f"corruption must be 'additive' or 'dropout', got {corruption!r}."
-        )
+        raise ValueError(f"corruption must be 'additive' or 'dropout', got {corruption!r}.")
 
     resid = x - decoded
     per_sample = np.sum(resid**2, axis=1)

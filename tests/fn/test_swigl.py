@@ -1,11 +1,11 @@
 """swigl: SwiGLU gated activation (Shazeer 2020).
 
-    SwiGLU(x) = SiLU(xW + b) * (xV + c)
+SwiGLU(x) = SiLU(xW + b) * (xV + c)
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.swigl import swiglu_activation as sg
 
 
@@ -34,9 +34,7 @@ def test_swigl_reports_the_two_halves_separately():
     rng = np.random.default_rng(2311)
     x = rng.standard_normal((3, 4))
     r = sg(x)
-    assert np.asarray(r["tensor"]) == pytest.approx(
-        np.asarray(r["gate"]) * np.asarray(r["up"])
-    )
+    assert np.asarray(r["tensor"]) == pytest.approx(np.asarray(r["gate"]) * np.asarray(r["up"]))
 
 
 def test_swigl_zero_up_projection_kills_the_signal():
@@ -55,9 +53,7 @@ def test_swigl_is_linear_in_the_up_projection():
     x = rng.standard_normal((3, 4))
     W = rng.standard_normal((4, 4))
     V = rng.standard_normal((4, 4))
-    assert np.asarray(sg(x, W=W, V=2 * V)["tensor"]) == pytest.approx(
-        2 * np.asarray(sg(x, W=W, V=V)["tensor"])
-    )
+    assert np.asarray(sg(x, W=W, V=2 * V)["tensor"]) == pytest.approx(2 * np.asarray(sg(x, W=W, V=V)["tensor"]))
 
 
 def test_swigl_is_not_linear_in_the_gate():

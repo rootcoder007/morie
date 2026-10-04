@@ -10,7 +10,7 @@ __all__ = ["geron_fp16_mixed_precision"]
 _METHOD = "FP16 mixed precision with loss scaling"
 
 _FP16_MAX = 65504.0
-_FP16_TINY = 6.103515625e-05      # smallest normal
+_FP16_TINY = 6.103515625e-05  # smallest normal
 _FP16_SUBNORMAL_MIN = 5.960464477539063e-08
 
 

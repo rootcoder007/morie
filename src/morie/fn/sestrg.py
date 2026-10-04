@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """S-estimator regression."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["s_regression_estimator", "s_estimator_regression"]
@@ -58,16 +57,22 @@ def s_regression_estimator(X, y, n_subsets=200, seed=0):
 
     A, yv = prepare_design(X, y)
     beta, scale = s_regression(A, yv, n_subsets=n_subsets, seed=seed)
-    return RichResult(payload={
-        "beta": beta, "scale": scale, "residuals": yv - A @ beta,
-        "breakdown": 0.5, "gaussian_efficiency": 0.287,
-        "c": TUKEY_C_BREAKDOWN, "b": 0.5,
-        "role": "a starting point: seed the MM step for 95% efficiency "
-                "without giving the 50% breakdown back",
-        "n_subsets": int(n_subsets),
-        "n": int(A.shape[0]), "p": int(A.shape[1]),
-        "method": "S-estimator: minimise the residual M-scale "
-                  "(Rousseeuw-Yohai 1984), biweight c = 1.5476, b = 1/2"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "scale": scale,
+            "residuals": yv - A @ beta,
+            "breakdown": 0.5,
+            "gaussian_efficiency": 0.287,
+            "c": TUKEY_C_BREAKDOWN,
+            "b": 0.5,
+            "role": "a starting point: seed the MM step for 95% efficiency without giving the 50% breakdown back",
+            "n_subsets": int(n_subsets),
+            "n": int(A.shape[0]),
+            "p": int(A.shape[1]),
+            "method": "S-estimator: minimise the residual M-scale (Rousseeuw-Yohai 1984), biweight c = 1.5476, b = 1/2",
+        }
+    )
 
 
 def cheatsheet():

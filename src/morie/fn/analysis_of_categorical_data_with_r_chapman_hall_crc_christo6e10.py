@@ -10,7 +10,9 @@ from ._richresult import RichResult
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10(replicate_estimates, full_estimate):
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10(
+    replicate_estimates, full_estimate
+):
     """Jackknife variance of a survey proportion
 
     Formula: Var(pi_i) = ((R-1)/R) sum_r (pi_i^(r) - pi_i)^2
@@ -27,17 +29,16 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
     """
     value = _acd.jackknife_variance(replicate_estimates, full_estimate)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.10)"
     return RichResult(
-        title='Jackknife variance of a survey proportion',
+        title="Jackknife variance of a survey proportion",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e10: Var(pi_i) = ((R-1)/R) sum_r (pi_i^(r) - pi_i)^2 [Bilder & Loughin 2025, eq. 6.10]'
+    return "6e10: Var(pi_i) = ((R-1)/R) sum_r (pi_i^(r) - pi_i)^2 [Bilder & Loughin 2025, eq. 6.10]"

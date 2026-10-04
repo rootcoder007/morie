@@ -55,10 +55,17 @@ def wasserman_char_fn(x, t):
     re = [float(np.mean(np.cos(ti * x))) for ti in t]
     im = [float(np.mean(np.sin(ti * x))) for ti in t]
     mod = [float(np.hypot(a, b)) for a, b in zip(re, im)]
-    return RichResult(payload={
-        "estimate": mod[0], "real": re, "imag": im, "modulus": mod,
-        "t": [float(v) for v in t], "n": int(x.size),
-        "method": "empirical phi(t) = mean cos(tX) + i mean sin(tX)"})
+    return RichResult(
+        payload={
+            "estimate": mod[0],
+            "real": re,
+            "imag": im,
+            "modulus": mod,
+            "t": [float(v) for v in t],
+            "n": int(x.size),
+            "method": "empirical phi(t) = mean cos(tX) + i mean sin(tX)",
+        }
+    )
 
 
 def cheatsheet():

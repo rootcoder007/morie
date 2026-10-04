@@ -209,7 +209,7 @@ def tox_pmr_ratio(central: float, peripheral: float) -> dict[str, Any]:
     cp = central / peripheral
     flag = "minimal" if cp <= 1 else "modest" if cp <= 2 else "significant"
     note = {
-        "minimal": "Central and peripheral agree; central quantitation is a " "reasonable antemortem proxy.",
+        "minimal": "Central and peripheral agree; central quantitation is a reasonable antemortem proxy.",
         "modest": "Some redistribution; prefer the peripheral (femoral) value.",
         "significant": "Marked redistribution; the central value likely "
         "overstates the antemortem concentration -- interpret "

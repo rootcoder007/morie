@@ -2,10 +2,6 @@
 
 import math
 
-import pytest
-
-from morie.fn import _array_core as np
-
 from morie.fn.kpmsmp import km_simultaneous_band
 
 
@@ -33,9 +29,19 @@ def test_kpmsmp_basic():
 
     # Every key documented in the function's return statement must be present.
     for key in (
-        "estimate", "time", "surv", "half_width", "sigma2",
-        "lower", "upper", "h", "alpha", "n_times",
-        "n_risk_start", "n", "method",
+        "estimate",
+        "time",
+        "surv",
+        "half_width",
+        "sigma2",
+        "lower",
+        "upper",
+        "h",
+        "alpha",
+        "n_times",
+        "n_risk_start",
+        "n",
+        "method",
     ):
         assert key in payload, f"missing key: {key}"
 

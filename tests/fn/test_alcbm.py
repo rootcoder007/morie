@@ -11,5 +11,6 @@ def test_alcbm_basic():
 
 def test_alcbm_edge():
     import pytest
+
     with pytest.raises(ValueError, match="positive"):
         alammar_conversation_buffer_memory([], 0)

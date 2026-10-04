@@ -13,8 +13,16 @@ from ._richresult import RichResult
 from ._rng import random_uniform
 from .mdsops import _dist, _pairs, _sq, _torgerson, smacof
 
-__all__ = ["smacof_indiff", "mds_jackknife", "mds_bootstrap", "procrustes_oblique", "mds_reflect", "mds_flip",
-           "mds_polarity", "mds_anisotropy"]
+__all__ = [
+    "smacof_indiff",
+    "mds_jackknife",
+    "mds_bootstrap",
+    "procrustes_oblique",
+    "mds_reflect",
+    "mds_flip",
+    "mds_polarity",
+    "mds_anisotropy",
+]
 
 
 def _mat(X):
@@ -54,8 +62,9 @@ def _vmat(w, n, P):
     return V
 
 
-def smacof_indiff(deltas, ndim: int = 2, *, constraint: str = "indscal", itmax: int = 1000,
-                  eps: float = 1e-6) -> RichResult:
+def smacof_indiff(
+    deltas, ndim: int = 2, *, constraint: str = "indscal", itmax: int = 1000, eps: float = 1e-6
+) -> RichResult:
     r"""Three-way SMACOF for several dissimilarity matrices, as ``smacof::smacofIndDiff`` (ratio MDS).
 
     Each source ``j`` gets the configuration ``X_j = Z C_j`` with the group
@@ -112,8 +121,9 @@ def smacof_indiff(deltas, ndim: int = 2, *, constraint: str = "indscal", itmax: 
     Z = _torgerson(S, p)
     C = [[[1.0 if a == b else 0.0 for b in range(p)] for a in range(p)] for _ in range(m)]
     d0 = _dist(Z)
-    lb = (ssum(w[j][k] * d0[k] * dh[j][k] for j in range(m) for k in range(nn))
-          / ssum(w[j][k] * d0[k] ** 2 for j in range(m) for k in range(nn)))
+    lb = ssum(w[j][k] * d0[k] * dh[j][k] for j in range(m) for k in range(nn)) / ssum(
+        w[j][k] * d0[k] ** 2 for j in range(m) for k in range(nn)
+    )
     Z = [[v * lb for v in r] for r in Z]
     X = [Z for _ in range(m)]
     d = [[v * lb for v in d0] for _ in range(m)]
@@ -138,8 +148,10 @@ def smacof_indiff(deltas, ndim: int = 2, *, constraint: str = "indscal", itmax: 
             aux0 = [[0.0] * p for _ in range(n)]
             for j in range(m):
                 VY, VZ = _mm(V[j], Y[j]), _mm(V[j], Z)
-                c = [ssum(Z[i][s] * VY[i][s] for i in range(n)) / ssum(Z[i][s] * VZ[i][s] for i in range(n))
-                     for s in range(p)]
+                c = [
+                    ssum(Z[i][s] * VY[i][s] for i in range(n)) / ssum(Z[i][s] * VZ[i][s] for i in range(n))
+                    for s in range(p)
+                ]
                 C[j] = [[c[a] if a == b else 0.0 for b in range(p)] for a in range(p)]
                 for i in range(n):
                     for s in range(p):
@@ -196,10 +208,19 @@ def smacof_indiff(deltas, ndim: int = 2, *, constraint: str = "indscal", itmax: 
         spps.append([100.0 * v / tot for v in cm])
         sps.append(ssum(w[j][k] * (dh[j][k] - e[j][k]) ** 2 for k in range(nn)))
     tsps = ssum(sps)
-    return RichResult(payload={
-        "conf": Y, "gspace": Z, "cweights": C, "stress": math.sqrt(snon / m / nn),
-        "sps": [100.0 * v / tsps for v in sps], "spp": [ssum(r[b] for r in spps) / m for b in range(n)],
-        "confdist": confdist, "niter": itel, "constraint": constraint})
+    return RichResult(
+        payload={
+            "conf": Y,
+            "gspace": Z,
+            "cweights": C,
+            "stress": math.sqrt(snon / m / nn),
+            "sps": [100.0 * v / tsps for v in sps],
+            "spp": [ssum(r[b] for r in spps) / m for b in range(n)],
+            "confdist": confdist,
+            "niter": itel,
+            "constraint": constraint,
+        }
+    )
 
 
 def _norm2(M, how):
@@ -208,8 +229,9 @@ def _norm2(M, how):
     return ssum(v * v for r in M for v in r)
 
 
-def mds_jackknife(delta, ndim: int = 2, *, type: str = "ratio", method: str = "standard", eps: float = 1e-6,
-                  itmax: int = 100) -> RichResult:
+def mds_jackknife(
+    delta, ndim: int = 2, *, type: str = "ratio", method: str = "standard", eps: float = 1e-6, itmax: int = 100
+) -> RichResult:
     r"""Jackknife stability of a SMACOF solution (De Leeuw and Meulman 1986), as ``smacof::jackmds``.
 
     Refits the MDS with each object left out (its row set to zero), rotates
@@ -267,11 +289,20 @@ def mds_jackknife(delta, ndim: int = 2, *, type: str = "ratio", method: str = "s
         oloss = nloss
     x0 = _mm(x0, _procrustus(_mm(_t(x0), y0)))
     den = ssum(_norm2(Y, method) for Y in yy)
-    stab = 1.0 - ssum(_norm2([[Y[a][c] - y0[a][c] for c in range(ndim)] for a in range(n)], method)
-                      for Y in yy) / den
+    stab = 1.0 - ssum(_norm2([[Y[a][c] - y0[a][c] for c in range(ndim)] for a in range(n)], method) for Y in yy) / den
     cross = 1.0 - n * _norm2([[x0[a][c] - y0[a][c] for c in range(ndim)] for a in range(n)], method) / den
-    return RichResult(payload={"smacof_conf": x0, "jackknife_conf": yy, "comparison_conf": y0, "stab": stab,
-                               "cross": cross, "disp": 2.0 - (stab + cross), "niter": itel, "loss": nloss})
+    return RichResult(
+        payload={
+            "smacof_conf": x0,
+            "jackknife_conf": yy,
+            "comparison_conf": y0,
+            "stab": stab,
+            "cross": cross,
+            "disp": 2.0 - (stab + cross),
+            "niter": itel,
+            "loss": nloss,
+        }
+    )
 
 
 def _ranks(v):
@@ -303,8 +334,13 @@ def _diss(rows, how):
         mu = ssum(c) / N
         cen.append([v - mu for v in c])
     sd = [math.sqrt(ssum(v * v for v in c)) for c in cen]
-    return [[0.0 if i == j else math.sqrt(max(0.0, 1.0 - ssum(a * b for a, b in zip(cen[i], cen[j])) / (sd[i] * sd[j])))
-             for j in range(n)] for i in range(n)]
+    return [
+        [
+            0.0 if i == j else math.sqrt(max(0.0, 1.0 - ssum(a * b for a, b in zip(cen[i], cen[j])) / (sd[i] * sd[j])))
+            for j in range(n)
+        ]
+        for i in range(n)
+    ]
 
 
 def _quantile7(x, q):
@@ -314,8 +350,18 @@ def _quantile7(x, q):
     return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
 
 
-def mds_bootstrap(data, ndim: int = 2, *, method_dat: str = "pearson", nrep: int = 100, alpha: float = 0.05,
-                  type: str = "ratio", method: str = "standard", seed: int = 1, resamples=None) -> RichResult:
+def mds_bootstrap(
+    data,
+    ndim: int = 2,
+    *,
+    method_dat: str = "pearson",
+    nrep: int = 100,
+    alpha: float = 0.05,
+    type: str = "ratio",
+    method: str = "standard",
+    seed: int = 1,
+    resamples=None,
+) -> RichResult:
     r"""Bootstrap confidence for a SMACOF solution of variables (Jacoby and Armstrong 2014), as ``smacof::bootmds``.
 
     ``data`` is an ``N x n`` matrix whose ``n`` columns are the MDS objects.
@@ -369,14 +415,26 @@ def mds_bootstrap(data, ndim: int = 2, *, method_dat: str = "pearson", nrep: int
     for k in range(n):
         pts = [cd[k] for cd in coord]
         mu = [ssum(p[a] for p in pts) / R for a in range(ndim)]
-        cov.append([[ssum((p[a] - mu[a]) * (p[b] - mu[b]) for p in pts) / (R - 1) for b in range(ndim)]
-                    for a in range(ndim)])
+        cov.append(
+            [[ssum((p[a] - mu[a]) * (p[b] - mu[b]) for p in pts) / (R - 1) for b in range(ndim)] for a in range(ndim)]
+        )
     y0 = [[ssum(cd[i][k] for cd in coord) / R for k in range(ndim)] for i in range(n)]
-    stab = 1.0 - (ssum(_norm2([[cd[i][k] - y0[i][k] for k in range(ndim)] for i in range(n)], method) for cd in coord)
-                  / ssum(_norm2(cd, method) for cd in coord))
-    return RichResult(payload={"conf": X0, "bootconf": coord, "cov": cov, "stressvec": stressvec,
-                               "bootci": [_quantile7(stressvec, alpha / 2), _quantile7(stressvec, 1 - alpha / 2)],
-                               "stab": stab, "nrep": R, "stress": fit0.stress})
+    stab = 1.0 - (
+        ssum(_norm2([[cd[i][k] - y0[i][k] for k in range(ndim)] for i in range(n)], method) for cd in coord)
+        / ssum(_norm2(cd, method) for cd in coord)
+    )
+    return RichResult(
+        payload={
+            "conf": X0,
+            "bootconf": coord,
+            "cov": cov,
+            "stressvec": stressvec,
+            "bootci": [_quantile7(stressvec, alpha / 2), _quantile7(stressvec, 1 - alpha / 2)],
+            "stab": stab,
+            "nrep": R,
+            "stress": fit0.stress,
+        }
+    )
 
 
 def procrustes_oblique(A, target, *, eps: float = 1e-8, maxit: int = 5000, fwindow: int = 10) -> RichResult:
@@ -449,8 +507,9 @@ def procrustes_oblique(A, target, *, eps: float = 1e-8, maxit: int = 5000, fwind
         T_prev, Gp_prev = T, Gp
         T, L, f, G = Tt, Lt, ft, Gt
         it += 1
-    return RichResult(payload={"loadings": L, "Phi": _mm(_t(T), T), "T": T, "f": f, "iterations": it,
-                               "converged": s < eps})
+    return RichResult(
+        payload={"loadings": L, "Phi": _mm(_t(T), T), "T": T, "f": f, "iterations": it, "converged": s < eps}
+    )
 
 
 def mds_reflect(X, target=None) -> RichResult:
@@ -521,10 +580,17 @@ def mds_flip(X, Y) -> RichResult:
         sy = math.sqrt(ssum(r[c] ** 2 for r in Yc))
         cor.append(ssum(Xc[i][c] * Yc[i][c] for i in range(n)) / (sx * sy) if sx > 0 and sy > 0 else 0.0)
     YR = _mm(Yc, R)
-    return RichResult(payload={"rotation": R, "determinant": det, "reflected": det < 0,
-                               "axis_correlations": cor, "flipped_axes": [c for c in range(k) if cor[c] < 0],
-                               "ss_before": ssum((Xc[i][c] - Yc[i][c]) ** 2 for i in range(n) for c in range(k)),
-                               "ss_after": ssum((Xc[i][c] - YR[i][c]) ** 2 for i in range(n) for c in range(k))})
+    return RichResult(
+        payload={
+            "rotation": R,
+            "determinant": det,
+            "reflected": det < 0,
+            "axis_correlations": cor,
+            "flipped_axes": [c for c in range(k) if cor[c] < 0],
+            "ss_before": ssum((Xc[i][c] - Yc[i][c]) ** 2 for i in range(n) for c in range(k)),
+            "ss_after": ssum((Xc[i][c] - YR[i][c]) ** 2 for i in range(n) for c in range(k)),
+        }
+    )
 
 
 def mds_polarity(X, anchors) -> RichResult:
@@ -586,10 +652,18 @@ def mds_anisotropy(X) -> RichResult:
     ang = math.degrees(math.atan2(v1[1], v1[0])) % 180.0 if k > 1 else 0.0
     if ang >= 180.0 - 1e-12:
         ang = 0.0
-    return RichResult(payload={"eigenvalues": w, "ratio": w[0] / w[-1] if w[-1] > 0 else math.inf, "angle": ang,
-                               "eccentricity": math.sqrt(max(0.0, 1.0 - w[-1] / w[0])) if w[0] > 0 else 0.0})
+    return RichResult(
+        payload={
+            "eigenvalues": w,
+            "ratio": w[0] / w[-1] if w[-1] > 0 else math.inf,
+            "angle": ang,
+            "eccentricity": math.sqrt(max(0.0, 1.0 - w[-1] / w[0])) if w[0] > 0 else 0.0,
+        }
+    )
 
 
 def cheatsheet() -> str:
-    return ("smacof_indiff / mds_jackknife / mds_bootstrap / procrustes_oblique / mds_reflect / mds_flip / "
-            "mds_polarity / mds_anisotropy -> three-way MDS, stability and orientation checks.")
+    return (
+        "smacof_indiff / mds_jackknife / mds_bootstrap / procrustes_oblique / mds_reflect / mds_flip / "
+        "mds_polarity / mds_anisotropy -> three-way MDS, stability and orientation checks."
+    )

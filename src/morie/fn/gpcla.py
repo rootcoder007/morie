@@ -101,7 +101,10 @@ def gp_classification(X, y, X_test=None, kernel=None, lengthscale=1.0, variance=
     alpha = core.cholsolve(K, f)
     Ks = _k(Xs, A, ell, var)
     mu = [sum(Ks[j][i] * alpha[i] for i in range(n)) for j in range(len(Xs))]
-    M = [[K[i][j] + (1.0 / w[i] if i == j and w[i] > 0 else (1e12 if i == j else 0.0)) for j in range(n)] for i in range(n)]
+    M = [
+        [K[i][j] + (1.0 / w[i] if i == j and w[i] > 0 else (1e12 if i == j else 0.0)) for j in range(n)]
+        for i in range(n)
+    ]
     sd = []
     for j in range(len(Xs)):
         v = core.cholsolve(M, Ks[j])

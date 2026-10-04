@@ -58,12 +58,10 @@ def _sigmoid(z):
 
 
 def _pairs(states, actions, name):
-    S = [tuple(np.atleast_1d(np.asarray(s, dtype=float)))
-         if not isinstance(s, (int, str)) else (s,) for s in states]
+    S = [tuple(np.atleast_1d(np.asarray(s, dtype=float))) if not isinstance(s, (int, str)) else (s,) for s in states]
     A = list(actions)
     if len(S) != len(A):
-        raise ValueError("gail: %s states and actions must have the same "
-                         "length" % name)
+        raise ValueError("gail: %s states and actions must have the same length" % name)
     if not S:
         raise ValueError("gail: %s must be non-empty" % name)
     return [(S[i], A[i]) for i in range(len(S))]
@@ -83,9 +81,19 @@ def occupancy_measure(states, actions):
     return dict((k, v / n) for k, v in counts.items())
 
 
-def gail(expert_states, expert_actions, policy_states, policy_actions,
-         features=None, lr=0.1, epochs=200, l2=0.0, lam=0.0,
-         policy_entropy=0.0, clip=1e-9):
+def gail(
+    expert_states,
+    expert_actions,
+    policy_states,
+    policy_actions,
+    features=None,
+    lr=0.1,
+    epochs=200,
+    l2=0.0,
+    lam=0.0,
+    policy_entropy=0.0,
+    clip=1e-9,
+):
     r"""Fit the GAIL discriminator and return the cost for the policy step.
 
     Parameters
@@ -135,7 +143,7 @@ def gail(expert_states, expert_actions, policy_states, policy_actions,
         def feat(p):
             v = [0.0] * nf
             v[index[p]] = 1.0
-            v[-1] = 1.0                       # bias
+            v[-1] = 1.0  # bias
             return v
     else:
         if not callable(features):
@@ -143,6 +151,7 @@ def gail(expert_states, expert_actions, policy_states, policy_actions,
 
         def feat(p):
             return [float(x) for x in features(p[0], p[1])] + [1.0]
+
         nf = len(feat(P[0]))
 
     XP = [feat(p) for p in P]
@@ -170,17 +179,17 @@ def gail(expert_states, expert_actions, policy_states, policy_actions,
             w[j] += lr * (g[j] - l2 * w[j])
 
     def D(x):
-        return min(1.0 - clip,
-                   max(clip, _sigmoid(sum(w[j] * x[j] for j in range(nf)))))
+        return min(1.0 - clip, max(clip, _sigmoid(sum(w[j] * x[j] for j in range(nf)))))
 
     dp = [D(x) for x in XP]
     de = [D(x) for x in XE]
-    obj = (sum(math.log(v) for v in dp) / len(dp)
-           + sum(math.log(1.0 - v) for v in de) / len(de)
-           - lam * float(policy_entropy))
+    obj = (
+        sum(math.log(v) for v in dp) / len(dp)
+        + sum(math.log(1.0 - v) for v in de) / len(de)
+        - lam * float(policy_entropy)
+    )
     cost = [math.log(v) for v in dp]
-    acc = (sum(1.0 for v in dp if v > 0.5)
-           + sum(1.0 for v in de if v <= 0.5)) / (len(dp) + len(de))
+    acc = (sum(1.0 for v in dp if v > 0.5) + sum(1.0 for v in de if v <= 0.5)) / (len(dp) + len(de))
 
     # eq. 18's Q(s,a) = E_tau[ log D | s_0 = s, a_0 = a ], estimated by
     # averaging the cost over every occurrence of the pair.
@@ -189,27 +198,31 @@ def gail(expert_states, expert_actions, policy_states, policy_actions,
         q.setdefault(p, []).append(cost[i])
     q = dict((k, sum(v) / len(v)) for k, v in q.items())
 
-    return RichResult(payload={
-        "estimate": cost,
-        "cost": cost,
-        "Q": q,
-        "D_policy": dp,
-        "D_expert": de,
-        "objective": float(obj),
-        "accuracy": float(acc),
-        "weights": w,
-        "occupancy_policy": occupancy_measure(policy_states, policy_actions),
-        "occupancy_expert": occupancy_measure(expert_states, expert_actions),
-        "n_policy": len(P),
-        "n_expert": len(E),
-        "method": "GAIL discriminator (Ho & Ermon 2016, eqs. 16-18)",
-    })
+    return RichResult(
+        payload={
+            "estimate": cost,
+            "cost": cost,
+            "Q": q,
+            "D_policy": dp,
+            "D_expert": de,
+            "objective": float(obj),
+            "accuracy": float(acc),
+            "weights": w,
+            "occupancy_policy": occupancy_measure(policy_states, policy_actions),
+            "occupancy_expert": occupancy_measure(expert_states, expert_actions),
+            "n_policy": len(P),
+            "n_expert": len(E),
+            "method": "GAIL discriminator (Ho & Ermon 2016, eqs. 16-18)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("gail: saddle point of E_pi[log D] + E_piE[log(1-D)] - "
-            "lambda H(pi) (Ho & Ermon 2016 eq. 16). D -> 1 on LEARNER "
-            "data, -> 0 on expert; the policy minimises cost "
-            "c(s,a) = log D. At rho_pi = rho_piE the optimum is "
-            "D == 1/2 and the objective is -2 log 2. Imitation as "
-            "occupancy-measure matching, no reward recovered.")
+    return (
+        "gail: saddle point of E_pi[log D] + E_piE[log(1-D)] - "
+        "lambda H(pi) (Ho & Ermon 2016 eq. 16). D -> 1 on LEARNER "
+        "data, -> 0 on expert; the policy minimises cost "
+        "c(s,a) = log D. At rho_pi = rho_piE the optimum is "
+        "D == 1/2 and the objective is -2 log 2. Imitation as "
+        "occupancy-measure matching, no reward recovered."
+    )

@@ -27,10 +27,9 @@ def _num_grad_hess(fn, x, h=1e-05):
         for j in range(i + 1, n):
             ej = np.zeros(n)
             ej[j] = step[j]
-            H[i, j] = H[j, i] = (
-                fn(x + ei + ej) - fn(x + ei - ej)
-                - fn(x - ei + ej) + fn(x - ei - ej)
-            ) / (4.0 * step[i] * step[j])
+            H[i, j] = H[j, i] = (fn(x + ei + ej) - fn(x + ei - ej) - fn(x - ei + ej) + fn(x - ei - ej)) / (
+                4.0 * step[i] * step[j]
+            )
     return g, H
 
 
@@ -41,8 +40,7 @@ def _centering(f0, fs, x, t, tol=1e-12, max_iter=200):
         vals = np.array([float(fi(z)) for fi in fs]) if fs else np.zeros(0)
         if fs and np.any(vals >= 0):
             return np.inf
-        return float(t * float(f0(z))
-                     - (np.sum(np.log(-vals)) if fs else 0.0))
+        return float(t * float(f0(z)) - (np.sum(np.log(-vals)) if fs else 0.0))
 
     for it in range(int(max_iter)):
         # A fixed difference step stalls the moment the centered point
@@ -75,8 +73,7 @@ def _centering(f0, fs, x, t, tol=1e-12, max_iter=200):
     return x, max_iter, False
 
 
-def boyd_interior_point(f0, f=(), x0=None, t=1.0, mu=10.0, tol=1e-06,
-                        max_outer=100):
+def boyd_interior_point(f0, f=(), x0=None, t=1.0, mu=10.0, tol=1e-06, max_outer=100):
     r"""Barrier method: minimise :math:`f_0` s.t. :math:`f_i(x) \le 0`.
 
     Replaces each inequality with the logarithmic barrier
@@ -199,15 +196,12 @@ def boyd_interior_point(f0, f=(), x0=None, t=1.0, mu=10.0, tol=1e-06,
         if not callable(fi):
             raise TypeError(f"f[{k}] must be callable")
     if x0 is None:
-        raise ValueError("x0 is required: the barrier method needs a "
-                         "strictly feasible start (phase I)")
+        raise ValueError("x0 is required: the barrier method needs a strictly feasible start (phase I)")
     x = np.atleast_1d(np.asarray(x0, dtype=float)).ravel().copy()
     for k, fi in enumerate(fs):
         v = float(fi(x))
         if not (v < 0):
-            raise ValueError(
-                f"x0 is not strictly feasible: constraint {k} has "
-                f"f(x0) = {v:g}")
+            raise ValueError(f"x0 is not strictly feasible: constraint {k} has f(x0) = {v:g}")
     t = float(t)
     if t <= 0:
         raise ValueError(f"t must be positive, got {t}")
@@ -232,18 +226,25 @@ def boyd_interior_point(f0, f=(), x0=None, t=1.0, mu=10.0, tol=1e-06,
     gap = float(m / ts[-1]) if m else 0.0
     return RichResult(
         title="Barrier method",
-        summary_lines=[("n", int(x.size)), ("constraints", int(m)),
-                       ("objective", float(f0(x))),
-                       ("gap bound", gap),
-                       ("outer", len(path))],
+        summary_lines=[
+            ("n", int(x.size)),
+            ("constraints", int(m)),
+            ("objective", float(f0(x))),
+            ("gap bound", gap),
+            ("outer", len(path)),
+        ],
         payload={
-            "x": x, "objective": float(f0(x)),
+            "x": x,
+            "objective": float(f0(x)),
             "gap_bound": gap,
-            "path": np.array(path), "t_values": np.array(ts),
+            "path": np.array(path),
+            "t_values": np.array(ts),
             "constraints": cons,
             "strictly_feasible": bool(np.all(cons < 0)) if m else True,
-            "newton_steps": np.array(steps), "outer": len(path),
-            "t": t, "converged": bool(converged),
+            "newton_steps": np.array(steps),
+            "outer": len(path),
+            "t": t,
+            "converged": bool(converged),
             "method": "boyd_interior_point",
         },
     )

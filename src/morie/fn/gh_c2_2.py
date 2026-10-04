@@ -19,15 +19,13 @@ def ghosal_gp_prior_def(x, length=0.5, var=1.0, seed=42):
     xs = _bnp._flat(x)
     n = len(xs)
     k = _bnp.rbf_kernel(length, var)
-    K = [[k(xs[i], xs[j]) + (1e-10 if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    K = [[k(xs[i], xs[j]) + (1e-10 if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = np.linalg.cholesky(np.marr(K)).tolist()
     rng = np.random.default_rng(seed)
     z = [float(v) for v in rng.normal(0, 1, n)._flat()]
     f = [sum(L[i][j] * z[j] for j in range(i + 1)) for i in range(n)]
     est = sum(f) / n
-    res = RichResult(payload={"estimate": est, "f": f,
-                              "method": "GP prior draw via Cholesky (GvdV 2017 sec. 2.2.1)"})
+    res = RichResult(payload={"estimate": est, "f": f, "method": "GP prior draw via Cholesky (GvdV 2017 sec. 2.2.1)"})
     return with_describe_pointer(res, "gh_c2_2")
 
 

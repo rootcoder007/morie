@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_fs_approx"]
@@ -27,14 +26,18 @@ def ghosal_dp_fs_approx(eps, alpha, seed=42):
     while left > eps and len(W) < 100000:
         V = float(rng.beta(1.0, M))
         W.append(left * V)
-        left *= (1.0 - V)
+        left *= 1.0 - V
     N_eps = len(W)
     expected_terms = 2.0 + M * (-math.log(eps))
-    res = RichResult(payload={"estimate": float(N_eps),
-                              "tv_bound": eps,
-                              "remainder_mass": left,
-                              "expected_support_size": expected_terms,
-                              "method": "eps-Dirichlet process (GvdV 2017 eq. 4.23, Prop 4.20)"})
+    res = RichResult(
+        payload={
+            "estimate": float(N_eps),
+            "tv_bound": eps,
+            "remainder_mass": left,
+            "expected_support_size": expected_terms,
+            "method": "eps-Dirichlet process (GvdV 2017 eq. 4.23, Prop 4.20)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_14")
 
 

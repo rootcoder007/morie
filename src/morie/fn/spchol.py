@@ -52,14 +52,16 @@ def schabenberger_cholesky_sim(mu, cov_matrix, seed=0, stream=0):
     cov = np.atleast_2d(np.asarray(cov_matrix, dtype=float))
     if cov.shape != (mu.size, mu.size):
         raise ValueError("`cov_matrix` must be square and match `mu`")
-    field = simulate_unconditional(mu, cov, method="cholesky",
-                                   seed=seed, stream=stream)
+    field = simulate_unconditional(mu, cov, method="cholesky", seed=seed, stream=stream)
     return RichResult(
         title="Cholesky simulation of a Gaussian random field",
-        summary_lines=[("n", mu.size), ("field mean", float(field.mean())),
-                       ("field sd", float(field.std(ddof=1)))],
-        payload={"field": field, "root": cholesky_root(cov), "n": int(mu.size),
-                 "method": "Cholesky (LU) decomposition"},
+        summary_lines=[("n", mu.size), ("field mean", float(field.mean())), ("field sd", float(field.std(ddof=1)))],
+        payload={
+            "field": field,
+            "root": cholesky_root(cov),
+            "n": int(mu.size),
+            "method": "Cholesky (LU) decomposition",
+        },
     )
 
 

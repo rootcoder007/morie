@@ -58,20 +58,21 @@ def kamath_ch6_lstm_softmax_word(U, f, c_t_1, b):
     h = _hidden(f, c_t_1, "f")
     bv = np.atleast_1d(np.asarray(b, dtype=float))
     if Um.shape[1] != h.shape[0]:
-        raise ValueError(
-            f"U has width {Um.shape[1]} but the hidden vector has "
-            f"{h.shape[0]}.")
+        raise ValueError(f"U has width {Um.shape[1]} but the hidden vector has {h.shape[0]}.")
     if bv.shape[0] != Um.shape[0]:
-        raise ValueError(
-            f"b has {bv.shape[0]} entries but the vocabulary has "
-            f"{Um.shape[0]}.")
+        raise ValueError(f"b has {bv.shape[0]} entries but the vocabulary has {Um.shape[0]}.")
     logits = Um @ h + bv
     p = _softmax_logits(logits)
-    return RichResult(payload={
-        "p": [float(v) for v in p], "logits": [float(v) for v in logits],
-        "argmax": int(np.argmax(p)), "estimate": float(p.max()),
-        "n": int(p.size),
-        "method": "LSTM vocabulary softmax (Kamath Eq 6.27)"})
+    return RichResult(
+        payload={
+            "p": [float(v) for v in p],
+            "logits": [float(v) for v in logits],
+            "argmax": int(np.argmax(p)),
+            "estimate": float(p.max()),
+            "n": int(p.size),
+            "method": "LSTM vocabulary softmax (Kamath Eq 6.27)",
+        }
+    )
 
 
 def cheatsheet():

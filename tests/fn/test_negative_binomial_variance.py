@@ -1,7 +1,5 @@
 """Tests for negative_binomial_variance.negative_binomial_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.negative_binomial_variance import negative_binomial_variance
 
 

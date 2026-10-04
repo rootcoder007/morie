@@ -1,7 +1,6 @@
 """Tests for morie.fn.suffx — sufficient statistic test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.suffx import suffx
 
 

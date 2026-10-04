@@ -33,21 +33,23 @@ def kamath_ch7_faithfulness_metric(facts):
     """
     f = np.atleast_1d(np.asarray(facts))
     if f.size == 0:
-        raise ValueError("the answer contains no facts; faithfulness "
-                         "is 0/0, which is undefined, not 1.")
+        raise ValueError("the answer contains no facts; faithfulness is 0/0, which is undefined, not 1.")
     if f.dtype == bool:
         v = f.astype(float)
     else:
         v = f.astype(float)
         if not np.all((v == 0) | (v == 1)):
-            raise ValueError("facts must be 0/1 (or boolean) support "
-                             "indicators, one per atomic fact.")
+            raise ValueError("facts must be 0/1 (or boolean) support indicators, one per atomic fact.")
     n_sup = int(v.sum())
-    return RichResult(payload={
-        "estimate": float(n_sup / v.size), "n_supported": n_sup,
-        "n_facts": int(v.size), "n": int(v.size),
-        "method": "RAG faithfulness = supported / total facts "
-                  "(Kamath Eq 7.2)"})
+    return RichResult(
+        payload={
+            "estimate": float(n_sup / v.size),
+            "n_supported": n_sup,
+            "n_facts": int(v.size),
+            "n": int(v.size),
+            "method": "RAG faithfulness = supported / total facts (Kamath Eq 7.2)",
+        }
+    )
 
 
 def cheatsheet():

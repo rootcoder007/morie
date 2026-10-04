@@ -9,8 +9,7 @@ def _data(n=30):
     k = range(n)
     x1 = [math.sin(1.3 * i) for i in k]
     x2 = [math.cos(0.7 * i) for i in k]
-    t = [round(math.exp(1 + 0.5 * a - 0.3 * b + 0.8 * math.sin(5.1 * i)), 3) + i * 1e-4
-         for i, a, b in zip(k, x1, x2)]
+    t = [round(math.exp(1 + 0.5 * a - 0.3 * b + 0.8 * math.sin(5.1 * i)), 3) + i * 1e-4 for i, a, b in zip(k, x1, x2)]
     e = [0.0 if i % 4 == 0 else 1.0 for i in k]
     cl = [i // 3 for i in k]
     return t, e, [[a, b] for a, b in zip(x1, x2)], cl
@@ -66,6 +65,7 @@ def _sandwich(V, res, groups=None):
     M = [[sum(r[a] * r[c] for r in res) for c in range(2)] for a in range(2)]
     VM = [[sum(V[a][k] * M[k][c] for k in range(2)) for c in range(2)] for a in range(2)]
     return [[sum(VM[a][k] * V[k][c] for k in range(2)) for c in range(2)] for a in range(2)]
+
 
 from morie.fn.survgen import general_estimating_eq_surv
 

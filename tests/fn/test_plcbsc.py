@@ -2,8 +2,7 @@
 
 import math
 
-from morie.fn.plcbsc import (in_time_placebo, placebo_inference, plcbsc,
-                             simplex_project, synthetic_control)
+from morie.fn.plcbsc import in_time_placebo, placebo_inference, plcbsc, simplex_project, synthetic_control
 
 
 def _lcg(seed):
@@ -12,6 +11,7 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -22,11 +22,9 @@ def _panel(T=20, t0=12, J=15, effect=3.0, seed=17):
     for _ in range(J):
         load = 0.5 + rnd()
         base = 5.0 * rnd()
-        donors.append([base + load * factor[t] + 0.05 * (rnd() - 0.5)
-                       for t in range(T)])
+        donors.append([base + load * factor[t] + 0.05 * (rnd() - 0.5) for t in range(T)])
     mix = [0.5, 0.3, 0.2] + [0.0] * (J - 3)
-    y1 = [sum(donors[j][t] * mix[j] for j in range(J)) +
-          (effect if t >= t0 else 0.0) for t in range(T)]
+    y1 = [sum(donors[j][t] * mix[j] for j in range(J)) + (effect if t >= t0 else 0.0) for t in range(T)]
     return y1, donors, t0
 
 
@@ -60,8 +58,7 @@ def test_effect_and_permutation_pvalue():
     assert abs(r["estimate"] - 3.0) < 0.3
     assert r["rmspe_pre"] < 0.1
     stats = [abs(r["estimate"])] + [abs(v) for v in r["placebo"]]
-    want = (sum(1 for s in stats if s >= abs(r["estimate"]) - 1e-12) /
-            float(len(stats)))
+    want = sum(1 for s in stats if s >= abs(r["estimate"]) - 1e-12) / float(len(stats))
     assert abs(r["pvalue"] - want) < 1e-12
     assert r["pvalue"] >= 1.0 / (len(donors) + 1) - 1e-12
     assert r["rank"] == 1
@@ -91,12 +88,14 @@ def test_in_time_placebo():
 
 def test_validation():
     y1, donors, t0 = _panel()
-    for call in (lambda: plcbsc(y1, [], t0),
-                 lambda: plcbsc(y1, [donors[0][:-1]], t0),
-                 lambda: plcbsc(y1, donors, 0),
-                 lambda: plcbsc(y1, donors, t0, statistic="tstat"),
-                 lambda: in_time_placebo(y1, donors, t0, t0 + 1),
-                 lambda: synthetic_control([1.0, 2.0], [[1.0]])):
+    for call in (
+        lambda: plcbsc(y1, [], t0),
+        lambda: plcbsc(y1, [donors[0][:-1]], t0),
+        lambda: plcbsc(y1, donors, 0),
+        lambda: plcbsc(y1, donors, t0, statistic="tstat"),
+        lambda: in_time_placebo(y1, donors, t0, t0 + 1),
+        lambda: synthetic_control([1.0, 2.0], [[1.0]]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

@@ -1,7 +1,6 @@
 """Tests for refco.py - reflection coefficients."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.refco import refco, reflection_coeff_fn
 
 

@@ -24,15 +24,18 @@ def kamath_ch2_attention_output(b, v):
     b = np.atleast_1d(np.asarray(b, dtype=float))
     V = np.atleast_2d(np.asarray(v, dtype=float))
     if V.shape[0] != len(b):
-        raise ValueError(
-            f"need one value row per weight; got {V.shape[0]} rows for "
-            f"{len(b)} weights.")
+        raise ValueError(f"need one value row per weight; got {V.shape[0]} rows for {len(b)} weights.")
     o = b @ V
     convex = bool(np.all(b >= 0) and abs(float(b.sum()) - 1.0) < 1e-9)
-    return RichResult(payload={
-        "output": [float(x) for x in o], "is_convex_combination": convex,
-        "estimate": float(o[0]), "n": len(b),
-        "method": "Attention output sum b_i v_i (Kamath Eq 2.10)"})
+    return RichResult(
+        payload={
+            "output": [float(x) for x in o],
+            "is_convex_combination": convex,
+            "estimate": float(o[0]),
+            "n": len(b),
+            "method": "Attention output sum b_i v_i (Kamath Eq 2.10)",
+        }
+    )
 
 
 def cheatsheet():

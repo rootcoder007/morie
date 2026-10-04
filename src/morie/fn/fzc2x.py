@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """The c_2 bias coefficient of the boundary-free KDE (Theorem 5.5)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bfc2", "fauzi_c2_coefficient"]
@@ -52,11 +51,7 @@ def bfc2(dg, d2g, d3g, density, fp, fpp):
     Fauzi and Maesono (2023), Theorem 5.5.
     """
     dg = float(dg)
-    val = (
-        float(d3g) * float(density)
-        + 3.0 * float(d2g) * dg * float(fp)
-        + dg ** 3 * float(fpp)
-    )
+    val = float(d3g) * float(density) + 3.0 * float(d2g) * dg * float(fp) + dg**3 * float(fpp)
     if dg == 0.0:
         raise ValueError("g'(g^-1(x)) must be non-zero; the bias divides by it.")
     return RichResult(

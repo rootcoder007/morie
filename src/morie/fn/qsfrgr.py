@@ -60,15 +60,21 @@ References
     than means.
 """
 
-import math
-
 from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["qsfrgr", "quantile_survival_forest", "survival_forest",
-           "forest_weights", "weighted_km", "km_quantile", "logrank",
-           "SPLITS", "cheatsheet"]
+__all__ = [
+    "qsfrgr",
+    "quantile_survival_forest",
+    "survival_forest",
+    "forest_weights",
+    "weighted_km",
+    "km_quantile",
+    "logrank",
+    "SPLITS",
+    "cheatsheet",
+]
 
 SPLITS = ("logrank", "events")
 
@@ -109,8 +115,7 @@ def logrank(time, event, left, right):
             continue
         e1 = d * n1 / float(n)
         o_minus_e.append(d1 - e1)
-        var.append(d * (n1 / float(n)) * (n2 / float(n))
-                   * (n - d) / float(n - 1))
+        var.append(d * (n1 / float(n)) * (n2 / float(n)) * (n - d) / float(n - 1))
     if not var:
         return 0.0
     v = _w.csum(var)
@@ -150,17 +155,14 @@ def _best_split(X, time, event, rows, feats, min_leaf, rule):
                 a = _events_in(event, left)
                 b = _events_in(event, right)
                 score = abs(a / float(len(left)) - b / float(len(right)))
-            if best is None or score > best[2] or (
-                    score == best[2] and (f, thr) < (best[0], best[1])):
+            if best is None or score > best[2] or (score == best[2] and (f, thr) < (best[0], best[1])):
                 best = (f, thr, score)
     return best
 
 
-def _grow(X, time, event, struct_rows, leaf_rows, feats_n, min_leaf,
-          max_depth, depth, rng, rule):
+def _grow(X, time, event, struct_rows, leaf_rows, feats_n, min_leaf, max_depth, depth, rng, rule):
     node = {"leaf": True, "rows": list(leaf_rows)}
-    if (depth >= max_depth or len(struct_rows) < 2 * min_leaf
-            or _events_in(event, struct_rows) < 2):
+    if depth >= max_depth or len(struct_rows) < 2 * min_leaf or _events_in(event, struct_rows) < 2:
         return node
     p = len(X[0])
     feats = []
@@ -185,11 +187,13 @@ def _grow(X, time, event, struct_rows, leaf_rows, feats_n, min_leaf,
     lr = [i for i in leaf_rows if X[i][f] > thr]
     if not ll or not lr:
         return node
-    return {"leaf": False, "f": f, "thr": thr,
-            "l": _grow(X, time, event, sl, ll, feats_n, min_leaf,
-                       max_depth, depth + 1, rng, rule),
-            "r": _grow(X, time, event, sr, lr, feats_n, min_leaf,
-                       max_depth, depth + 1, rng, rule)}
+    return {
+        "leaf": False,
+        "f": f,
+        "thr": thr,
+        "l": _grow(X, time, event, sl, ll, feats_n, min_leaf, max_depth, depth + 1, rng, rule),
+        "r": _grow(X, time, event, sr, lr, feats_n, min_leaf, max_depth, depth + 1, rng, rule),
+    }
 
 
 def _leaf_of(node, x):
@@ -198,8 +202,9 @@ def _leaf_of(node, x):
     return node["rows"]
 
 
-def survival_forest(X, time, event, n_trees=20, mtry=None, min_leaf=3,
-                    max_depth=6, honest=True, seed=0, rule="logrank"):
+def survival_forest(
+    X, time, event, n_trees=20, mtry=None, min_leaf=3, max_depth=6, honest=True, seed=0, rule="logrank"
+):
     """Grow a survival forest and return its trees.
 
     Each tree draws a subsample, splits it in half when honest, grows on
@@ -221,7 +226,7 @@ def survival_forest(X, time, event, n_trees=20, mtry=None, min_leaf=3,
             if j > i:
                 j = i
             idx[i], idx[j] = idx[j], idx[i]
-        take = idx[:max(2 * min_leaf, n // 2)]
+        take = idx[: max(2 * min_leaf, n // 2)]
         if honest:
             h = len(take) // 2
             struct = sorted(take[:h])
@@ -231,8 +236,7 @@ def survival_forest(X, time, event, n_trees=20, mtry=None, min_leaf=3,
             leaf = sorted(take)
         if not struct or not leaf:
             continue
-        trees.append(_grow(X, time, event, struct, leaf, m, min_leaf,
-                           int(max_depth), 0, rng, rule))
+        trees.append(_grow(X, time, event, struct, leaf, m, min_leaf, int(max_depth), 0, rng, rule))
     return trees
 
 
@@ -269,13 +273,11 @@ def weighted_km(time, event, weights, grid=None):
     entire content of "handling censoring".
     """
     n = len(time)
-    ts = sorted(set(time[i] for i in range(n)
-                    if event[i] and weights[i] > 0.0))
+    ts = sorted(set(time[i] for i in range(n) if event[i] and weights[i] > 0.0))
     s = 1.0
     curve = []
     for t in ts:
-        d = _w.csum(weights[i] for i in range(n)
-                    if event[i] and time[i] == t)
+        d = _w.csum(weights[i] for i in range(n) if event[i] and time[i] == t)
         r = _w.csum(weights[i] for i in range(n) if time[i] >= t)
         if r <= 0.0:
             continue
@@ -309,10 +311,21 @@ def km_quantile(curve, q):
     return None
 
 
-def quantile_survival_forest(time, event, X, quantile=0.5, n_trees=20,
-                             mtry=None, min_leaf=3, max_depth=6,
-                             honest=True, seed=0, rule="logrank",
-                             newX=None, grid=None):
+def quantile_survival_forest(
+    time,
+    event,
+    X,
+    quantile=0.5,
+    n_trees=20,
+    mtry=None,
+    min_leaf=3,
+    max_depth=6,
+    honest=True,
+    seed=0,
+    rule="logrank",
+    newX=None,
+    grid=None,
+):
     """Conditional survival quantiles from a forest.
 
     Parameters
@@ -350,11 +363,9 @@ def quantile_survival_forest(time, event, X, quantile=0.5, n_trees=20,
         raise ValueError("need at least four observations")
     if len(e) != n or len(xs) != n:
         raise ValueError("time, event and X must agree in length")
-    trees = survival_forest(xs, t, e, n_trees, mtry, min_leaf, max_depth,
-                            honest, seed, rule)
+    trees = survival_forest(xs, t, e, n_trees, mtry, min_leaf, max_depth, honest, seed, rule)
     if not trees:
-        raise ValueError("no tree could be grown; the sample is too "
-                         "small for the leaf size")
+        raise ValueError("no tree could be grown; the sample is too small for the leaf size")
     qx = xs if newX is None else [[float(v) for v in r] for r in newX]
     if grid is None:
         grid = sorted(set(t))
@@ -375,31 +386,35 @@ def quantile_survival_forest(time, event, X, quantile=0.5, n_trees=20,
         ess.append(1.0 / ss if ss > 0.0 else 0.0)
 
     got = [v for v in quants if v is not None]
-    return RichResult(payload={
-        "quantile_estimate": [float("nan") if v is None else v
-                              for v in quants],
-        "n_unreached": len(quants) - len(got),
-        "curve": curves,
-        "grid": grid,
-        "ess": ess,
-        "mean_ess": _w.csum(ess) / len(ess) if ess else float("nan"),
-        "estimate": _w.csum(got) / len(got) if got else float("nan"),
-        "se": float("nan"),
-        "n_trees": len(trees),
-        "n": n,
-        "n_events": sum(e),
-        "n_censored": n - sum(e),
-        "n_query": len(qx),
-        "quantile": float(quantile),
-        "honest": bool(honest),
-        "rule": rule,
-        "method": "quantile survival forest",
-    })
+    return RichResult(
+        payload={
+            "quantile_estimate": [float("nan") if v is None else v for v in quants],
+            "n_unreached": len(quants) - len(got),
+            "curve": curves,
+            "grid": grid,
+            "ess": ess,
+            "mean_ess": _w.csum(ess) / len(ess) if ess else float("nan"),
+            "estimate": _w.csum(got) / len(got) if got else float("nan"),
+            "se": float("nan"),
+            "n_trees": len(trees),
+            "n": n,
+            "n_events": sum(e),
+            "n_censored": n - sum(e),
+            "n_query": len(qx),
+            "quantile": float(quantile),
+            "honest": bool(honest),
+            "rule": rule,
+            "method": "quantile survival forest",
+        }
+    )
 
 
 qsfrgr = quantile_survival_forest
 
 
 def cheatsheet():
-    return ("qsfrgr: quantile survival forest. splits " + ", ".join(SPLITS)
-            + "; forest weights into a weighted Kaplan-Meier, inverted")
+    return (
+        "qsfrgr: quantile survival forest. splits "
+        + ", ".join(SPLITS)
+        + "; forest weights into a weighted Kaplan-Meier, inverted"
+    )

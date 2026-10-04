@@ -94,13 +94,19 @@ def savage_dickey_ratio(samples, prior, theta0=0.0, bandwidth=None):
     if bandwidth <= 0:
         raise ValueError(f"the KDE bandwidth must be positive; got {bandwidth}.")
     z = (theta0 - samples) / bandwidth
-    post0 = float(np.mean(np.exp(-0.5 * z ** 2)) / (bandwidth * np.sqrt(2.0 * np.pi)))
+    post0 = float(np.mean(np.exp(-0.5 * z**2)) / (bandwidth * np.sqrt(2.0 * np.pi)))
     bf01 = post0 / p0
-    return RichResult(payload={
-        "estimate": float(bf01), "bf10": float(1.0 / bf01) if bf01 > 0 else float("inf"),
-        "posterior_density_at_null": post0, "prior_density_at_null": p0,
-        "bandwidth": bandwidth, "n": int(n),
-        "method": "Savage-Dickey BF01 = KDE posterior(theta0) / prior(theta0)"})
+    return RichResult(
+        payload={
+            "estimate": float(bf01),
+            "bf10": float(1.0 / bf01) if bf01 > 0 else float("inf"),
+            "posterior_density_at_null": post0,
+            "prior_density_at_null": p0,
+            "bandwidth": bandwidth,
+            "n": int(n),
+            "method": "Savage-Dickey BF01 = KDE posterior(theta0) / prior(theta0)",
+        }
+    )
 
 
 def cheatsheet():

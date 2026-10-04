@@ -125,9 +125,7 @@ def mrank(A, B=None):
         rb = _rank(b)[0]
         rp = _rank(_mm(a, b))[0]
         bound = min(rk, rb)
-        payload.update(
-            {"rank_b": rb, "rank_prod": rp, "bound": bound, "bound_holds": rp <= bound}
-        )
+        payload.update({"rank_b": rb, "rank_prod": rp, "bound": bound, "bound_holds": rp <= bound})
         summary.append(("rg(AB) <= min{rg A, rg B}", (rp, bound)))
     return RichResult(
         title="Matrix rank and rank rules (Hedderich eq. 2.44-2.46)",

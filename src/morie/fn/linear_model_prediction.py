@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def linear_model_prediction(beta0, beta1, x):
     """
     value = _brus.linear_model_prediction(beta0, beta1, x)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (16.1)"
     return RichResult(
-        title='Simple linear working model for mapping',
+        title="Simple linear working model for mapping",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r16e1: Z_k = beta0 + beta1 x_k + eps_k [Brus 2022, eq. 16.1]'
+    return "r16e1: Z_k = beta0 + beta1 x_k + eps_k [Brus 2022, eq. 16.1]"

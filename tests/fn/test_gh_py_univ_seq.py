@@ -1,7 +1,6 @@
 """Tests for gh_py_univ_seq.ghosal_py_universal_sequence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_py_univ_seq import ghosal_py_universal_sequence
 
 
@@ -20,9 +19,7 @@ def test_gh_py_univ_seq_basic():
     assert "method" in result
 
     # Independent recomputation of E V_k = (1 - d) / (1 - d + theta + k * d)
-    expected_means = [
-        (1.0 - d) / (1.0 - d + theta + k * d) for k in k_list
-    ]
+    expected_means = [(1.0 - d) / (1.0 - d + theta + k * d) for k in k_list]
 
     # `estimate` is documented as the first mean
     assert result["estimate"] == expected_means[0]

@@ -1,8 +1,8 @@
 """Tests for morie.fn.plmod — Partially linear model (Robinson 1988)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.plmod import plmod
 
 

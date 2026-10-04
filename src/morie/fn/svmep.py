@@ -18,8 +18,6 @@ iteration count and no tolerance-driven early exit, so both language
 arms follow the identical arithmetic path.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -57,8 +55,7 @@ def _svr_dual(K, y, C, eps, n_iter):
     return a, b
 
 
-def svr_epsilon_insensitive(X, y, C, eps, n_iter=4000, kernel="linear",
-                            gamma=None, degree=2, coef0=1.0):
+def svr_epsilon_insensitive(X, y, C, eps, n_iter=4000, kernel="linear", gamma=None, degree=2, coef0=1.0):
     """Epsilon-insensitive support vector regression.
 
     The loss of eq. (4) is |xi|_eps = 0 if |xi| <= eps and |xi| - eps
@@ -96,32 +93,42 @@ def svr_epsilon_insensitive(X, y, C, eps, n_iter=4000, kernel="linear",
     n = len(ys)
     Cv = float(C)
     ev = float(eps)
-    K = _gp.kernel_matrix(Xm, kernel=kernel, gamma=gamma, degree=degree,
-                          coef0=coef0)
+    K = _gp.kernel_matrix(Xm, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
     a, b = _svr_dual(K, ys, Cv, ev, n_iter)
     th = [a[i] - b[i] for i in range(n)]
     p = len(Xm[0])
     w = [sum(th[i] * Xm[i][j] for i in range(n)) for j in range(p)]
     Kt = [sum(K[i][j] * th[j] for j in range(n)) for i in range(n)]
     # eq. (16): b lies between the two bounds; take their midpoint
-    lo = [-ev + ys[i] - Kt[i] for i in range(n)
-          if a[i] < Cv - 1e-12 or b[i] > 1e-12]
-    hi = [ev + ys[i] - Kt[i] for i in range(n)
-          if a[i] > 1e-12 or b[i] < Cv - 1e-12]
+    lo = [-ev + ys[i] - Kt[i] for i in range(n) if a[i] < Cv - 1e-12 or b[i] > 1e-12]
+    hi = [ev + ys[i] - Kt[i] for i in range(n) if a[i] > 1e-12 or b[i] < Cv - 1e-12]
     b0 = 0.5 * ((max(lo) if lo else 0.0) + (min(hi) if hi else 0.0))
     fit = [Kt[i] + b0 for i in range(n)]
     loss = [max(0.0, abs(ys[i] - fit[i]) - ev) for i in range(n)]
-    obj = (-0.5 * sum(th[i] * Kt[i] for i in range(n))
-           - ev * sum(a[i] + b[i] for i in range(n))
-           + sum(ys[i] * th[i] for i in range(n)))
+    obj = (
+        -0.5 * sum(th[i] * Kt[i] for i in range(n))
+        - ev * sum(a[i] + b[i] for i in range(n))
+        + sum(ys[i] * th[i] for i in range(n))
+    )
     sv = [i for i in range(n) if abs(th[i]) > 1e-9]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(loss) / n), "w": w, "b": float(b0),
-        "alpha": a, "alpha_star": b, "theta": th,
-        "support_vectors": sv, "fitted": fit, "loss": loss,
-        "objective": float(obj),
-        "method": "epsilon-insensitive SVR (Smola & Scholkopf 2004 eq. 10)",
-    }), "svmep")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(loss) / n),
+                "w": w,
+                "b": float(b0),
+                "alpha": a,
+                "alpha_star": b,
+                "theta": th,
+                "support_vectors": sv,
+                "fitted": fit,
+                "loss": loss,
+                "objective": float(obj),
+                "method": "epsilon-insensitive SVR (Smola & Scholkopf 2004 eq. 10)",
+            }
+        ),
+        "svmep",
+    )
 
 
 def cheatsheet():

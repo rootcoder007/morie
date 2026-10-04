@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmds -- Non-metric MDS."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import MdsRes
 from morie.fn.nmds import nmds
 

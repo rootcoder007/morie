@@ -1,7 +1,6 @@
 """Tests for medint.mediated_interaction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.medint import mediated_interaction
 
 

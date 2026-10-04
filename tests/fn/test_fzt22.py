@@ -1,7 +1,6 @@
 """Tests for fzt22.fauzi_thm2_2_bias_brdkdfe."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzt22 import fauzi_thm2_2_bias_brdkdfe
 
 
@@ -31,8 +30,8 @@ def test_fzt22_basic():
     # Closed-form reference (Theorem 2.2, Eq. 2.6):
     #   leading = (b2^2 - 2*b4*fx) / (2*fx)
     #   bias    = h^4 * a^2 * leading
-    expected_leading = (b2 ** 2 - 2.0 * b4 * fx) / (2.0 * fx)
-    expected_bias = h ** 4 * a ** 2 * expected_leading
+    expected_leading = (b2**2 - 2.0 * b4 * fx) / (2.0 * fx)
+    expected_bias = h**4 * a**2 * expected_leading
 
     assert abs(result["leading"] - expected_leading) < 1e-12
     assert abs(result["bias"] - expected_bias) < 1e-12
@@ -49,6 +48,6 @@ def test_fzt22_edge():
 
     # fx strictly inside (0, 1) must succeed.
     result = fauzi_thm2_2_bias_brdkdfe(h, a, b2, b4, 0.5)
-    expected_leading = (b2 ** 2 - 2.0 * b4 * 0.5) / (2.0 * 0.5)
+    expected_leading = (b2**2 - 2.0 * b4 * 0.5) / (2.0 * 0.5)
     assert abs(result["leading"] - expected_leading) < 1e-12
-    assert abs(result["bias"] - h ** 4 * a ** 2 * expected_leading) < 1e-12
+    assert abs(result["bias"] - h**4 * a**2 * expected_leading) < 1e-12

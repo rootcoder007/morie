@@ -1,5 +1,7 @@
 """Tests for elmo. Full anchor: ledger/wave3/anchor_nlp_family.py."""
+
 import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.elmo import elmo_mix, elmo_representation, layer_weights
 
@@ -23,8 +25,7 @@ def test_special_cases_of_equation_one():
     assert top[0] == pytest.approx(REPS[2][0], abs=1e-9)
     flat = elmo_mix(REPS, [0.0, 0.0, 0.0])
     for c in range(2):
-        assert flat[0][c] == pytest.approx(
-            sum(REPS[j][0][c] for j in range(3)) / 3.0, abs=1e-15)
+        assert flat[0][c] == pytest.approx(sum(REPS[j][0][c] for j in range(3)) / 3.0, abs=1e-15)
     with pytest.raises(ValueError):
         elmo_mix(REPS, [0.0, 0.0])
 
@@ -38,10 +39,11 @@ def test_layer_zero_is_the_token_vector_duplicated():
 
     def layer(sd):
         r = np.random.default_rng(sd)
-        return ([[r.standard_normal() * 0.3 for _ in range(4 * d)]
-                 for _ in range(d)],
-                [[r.standard_normal() * 0.3 for _ in range(4 * d)]
-                 for _ in range(d)], [0.0] * (4 * d))
+        return (
+            [[r.standard_normal() * 0.3 for _ in range(4 * d)] for _ in range(d)],
+            [[r.standard_normal() * 0.3 for _ in range(4 * d)] for _ in range(d)],
+            [0.0] * (4 * d),
+        )
 
     lay = layer(1) + layer(2)
     r = elmo_representation(X, [lay], raw_weights=[0.0, 0.0])
@@ -51,8 +53,6 @@ def test_layer_zero_is_the_token_vector_duplicated():
             assert r["layers"][0][t][c] == pytest.approx(X[t][c])
             assert r["layers"][0][t][d + c] == pytest.approx(X[t][c])
     # forward and backward halves must differ, or one direction is dead
-    assert any(abs(r["layers"][1][t][c] - r["layers"][1][t][d + c])
-               > 1e-9 for t in range(4) for c in range(d))
+    assert any(abs(r["layers"][1][t][c] - r["layers"][1][t][d + c]) > 1e-9 for t in range(4) for c in range(d))
     with pytest.raises(ValueError):
-        elmo_representation([[1.0, 2.0]] * 4, [lay],
-                            raw_weights=[0.0, 0.0])
+        elmo_representation([[1.0, 2.0]] * 4, [lay], raw_weights=[0.0, 0.0])

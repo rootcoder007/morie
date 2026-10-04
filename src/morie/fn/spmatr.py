@@ -71,14 +71,19 @@ def schabenberger_matern_covariance(h, sigma2=1.0, nu=0.5, a=1.0):
     t = a * h
     c = np.empty_like(t)
     pos = t > 0
-    c[~pos] = sigma2                       # limit at the origin is the variance
+    c[~pos] = sigma2  # limit at the origin is the variance
     tp = t[pos]
     c[pos] = sigma2 * (1.0 / _gammafn(nu)) * (tp / 2.0) ** nu * 2.0 * kv(nu, tp)
     return RichResult(
         title="Matern covariance",
         summary_lines=[("sigma^2", sigma2), ("nu", nu), ("theta", a)],
-        payload={"covariance": c, "semivariogram": sigma2 - c,
-                 "sigma2": float(sigma2), "nu": float(nu), "theta": float(a)},
+        payload={
+            "covariance": c,
+            "semivariogram": sigma2 - c,
+            "sigma2": float(sigma2),
+            "nu": float(nu),
+            "theta": float(a),
+        },
     )
 
 

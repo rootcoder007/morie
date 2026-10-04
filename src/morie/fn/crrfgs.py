@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._surv import cox_fit, prepare
+from ._surv import prepare
 
 __all__ = ["competing_risks_fg"]
 
@@ -135,17 +135,31 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
         z = beta / se
     return RichResult(
         title=f"Fine-Gray subdistribution model (cause {cause})",
-        summary_lines=[("n", int(t.size)), ("events of cause", int(e.sum())),
-                       ("competing", int(competing.sum())), ("loglik", ll)],
-        warnings=["the risk set keeps subjects who already failed from a "
-                  "competing cause; a Fine-Gray hazard ratio is a statement "
-                  "about RISK, not about mechanism"],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events of cause", int(e.sum())),
+            ("competing", int(competing.sum())),
+            ("loglik", ll),
+        ],
+        warnings=[
+            "the risk set keeps subjects who already failed from a "
+            "competing cause; a Fine-Gray hazard ratio is a statement "
+            "about RISK, not about mechanism"
+        ],
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
             "subdistribution_hazard_ratio": np.exp(beta),
-            "hazard_ratio": np.exp(beta), "weights": Gi, "loglik": ll,
-            "n_cause": int(e.sum()), "n_competing": int(competing.sum()),
-            "cause": cause, "n": int(t.size), "converged": conv,
+            "hazard_ratio": np.exp(beta),
+            "weights": Gi,
+            "loglik": ll,
+            "n_cause": int(e.sum()),
+            "n_competing": int(competing.sum()),
+            "cause": cause,
+            "n": int(t.size),
+            "converged": conv,
             "method": "competing_risks_fg",
         },
     )
@@ -168,8 +182,7 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
         for ut in utimes:
             # Weight 1 for those still at risk; G(ut)/G(t_i) for those who
             # already failed from a competing cause; 0 once censored.
-            wt = np.where(t >= ut, 1.0,
-                          np.where(competing & (t < ut), G(ut)[0] / Gi, 0.0))
+            wt = np.where(t >= ut, 1.0, np.where(competing & (t < ut), G(ut)[0] / Gi, 0.0))
             inr = wt > 0
             if not np.any(inr):
                 continue

@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["dp_release_calibration"]
 
 
-def dp_release_calibration(sensitivity=1.0, target_error=None, epsilon=None,
-                           confidence=0.95, n=1):
+def dp_release_calibration(sensitivity=1.0, target_error=None, epsilon=None, confidence=0.95, n=1):
     r"""Solve the privacy-accuracy trade in whichever direction is needed.
 
     Given a target error, return the :math:`\varepsilon` that achieves it;
@@ -110,15 +109,22 @@ def dp_release_calibration(sensitivity=1.0, target_error=None, epsilon=None,
     b = sensitivity / (n * eps)
     return RichResult(
         title="Privacy budget calibration",
-        summary_lines=[("direction", direction), ("epsilon", eps),
-                       ("half-width", w), ("n", n)],
-        warnings=(["epsilon exceeds 10, so the likelihood ratio is above 22000 "
-                   "and the guarantee is close to vacuous"] if eps > 10 else []),
+        summary_lines=[("direction", direction), ("epsilon", eps), ("half-width", w), ("n", n)],
+        warnings=(
+            ["epsilon exceeds 10, so the likelihood ratio is above 22000 and the guarantee is close to vacuous"]
+            if eps > 10
+            else []
+        ),
         payload={
-            "epsilon": eps, "half_width": w, "noise_scale": b,
-            "noise_sd": float(np.sqrt(2.0) * b), "direction": direction,
-            "sensitivity": sensitivity, "confidence": float(confidence),
-            "n": n, "method": "dp_release_calibration",
+            "epsilon": eps,
+            "half_width": w,
+            "noise_scale": b,
+            "noise_sd": float(np.sqrt(2.0) * b),
+            "direction": direction,
+            "sensitivity": sensitivity,
+            "confidence": float(confidence),
+            "n": n,
+            "method": "dp_release_calibration",
         },
     )
 

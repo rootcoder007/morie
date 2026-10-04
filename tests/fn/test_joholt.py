@@ -1,9 +1,10 @@
 """Tests for joholt."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.joholt import joseph_holt_linear
+
 
 def test_joholt_basic():
     y = np.arange(40, dtype=float) * 2.0 + 5.0

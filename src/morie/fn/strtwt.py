@@ -70,11 +70,20 @@ def stratified_weights(A, H=None, S=None):
     uw = [1.0 / den[i] for i in range(n)]
     m = sum(sw) / n
     v = sum((x - m) ** 2 for x in sw) / (n - 1) if n > 1 else 0.0
-    return RichResult(payload={
-        "estimate": float(m), "weights": sw, "unstabilized": uw,
-        "num": num, "den": den, "max": float(max(sw)), "min": float(min(sw)),
-        "sd": float(v ** 0.5), "n": n,
-        "method": "sw = f(A|S) / f(A|H,S), stabilized IPTW [Cole & Hernan 2008]"})
+    return RichResult(
+        payload={
+            "estimate": float(m),
+            "weights": sw,
+            "unstabilized": uw,
+            "num": num,
+            "den": den,
+            "max": float(max(sw)),
+            "min": float(min(sw)),
+            "sd": float(v**0.5),
+            "n": n,
+            "method": "sw = f(A|S) / f(A|H,S), stabilized IPTW [Cole & Hernan 2008]",
+        }
+    )
 
 
 def _cols(X, n, nm):
@@ -88,8 +97,9 @@ def _cols(X, n, nm):
 
 def _fit(Z, a):
     b = core.logit_irls(Z, a, 60)
-    return [min(max(core.sigmoid(sum(Z[i][j] * b[j] for j in range(len(b)))), 1e-12), 1.0 - 1e-12)
-            for i in range(len(Z))]
+    return [
+        min(max(core.sigmoid(sum(Z[i][j] * b[j] for j in range(len(b)))), 1e-12), 1.0 - 1e-12) for i in range(len(Z))
+    ]
 
 
 # CANONICAL TEST

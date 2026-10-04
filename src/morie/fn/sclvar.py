@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["selection_coefficient"]
 
 
-def selection_coefficient(counts, n_total=None, generations=None,
-                          n_e=None, alpha=0.05):
+def selection_coefficient(counts, n_total=None, generations=None, n_e=None, alpha=0.05):
     r"""Detect selection by locus-specific departure from neutral F_ST.
 
     For allele counts across demes, the locus-specific differentiation
@@ -77,11 +76,9 @@ def selection_coefficient(counts, n_total=None, generations=None,
         raise ValueError("need at least 2 demes, got %d." % D)
     if L < 2:
         raise ValueError(
-            "need at least 2 loci: a single locus has no genome-wide "
-            "distribution to be an outlier against."
+            "need at least 2 loci: a single locus has no genome-wide distribution to be an outlier against."
         )
-    N = (np.full_like(C, float(np.max(C)) * 2.0) if n_total is None
-         else np.atleast_2d(np.asarray(n_total, dtype=float)))
+    N = np.full_like(C, float(np.max(C)) * 2.0) if n_total is None else np.atleast_2d(np.asarray(n_total, dtype=float))
     if N.shape != C.shape:
         raise ValueError("n_total must match counts in shape.")
     if np.any(C < 0) or np.any(C > N):
@@ -99,15 +96,14 @@ def selection_coefficient(counts, n_total=None, generations=None,
 
     # locus effect on the logit scale, as in the Foll-Gaggiotti split
     with np.errstate(divide="ignore", invalid="ignore"):
-        lg = np.log(np.clip(fst, 1e-9, 1 - 1e-9)
-                    / (1 - np.clip(fst, 1e-9, 1 - 1e-9)))
+        lg = np.log(np.clip(fst, 1e-9, 1 - 1e-9) / (1 - np.clip(fst, 1e-9, 1 - 1e-9)))
         lbar = float(np.nanmean(lg))
         a_locus = lg - lbar
 
     z = (fst - fbar) / fsd if fsd and fsd > 0 else np.full(L, np.nan)
     import math
-    pv = np.array([math.erfc(abs(v) / math.sqrt(2)) if np.isfinite(v) else np.nan
-                   for v in z])
+
+    pv = np.array([math.erfc(abs(v) / math.sqrt(2)) if np.isfinite(v) else np.nan for v in z])
     # Benjamini-Hochberg, since every locus is tested
     q = np.full(L, np.nan)
     fin = np.isfinite(pv)
@@ -120,8 +116,7 @@ def selection_coefficient(counts, n_total=None, generations=None,
         tmp[idx] = np.clip(ranked, 0, 1)
         q[fin] = tmp
     outlier = np.where(np.isfinite(q), q < alpha, False)
-    stype = np.where(~outlier, "neutral",
-                     np.where(fst > fbar, "diversifying", "balancing"))
+    stype = np.where(~outlier, "neutral", np.where(fst > fbar, "diversifying", "balancing"))
 
     s = drift = None
     if generations is not None and n_e is not None:
@@ -142,8 +137,7 @@ def selection_coefficient(counts, n_total=None, generations=None,
             "fst_sd": fsd,
             "alpha_locus": a_locus,
             "alpha_note": (
-                "locus effect on the logit scale; positive indicates "
-                "diversifying selection, negative balancing"
+                "locus effect on the logit scale; positive indicates diversifying selection, negative balancing"
             ),
             "z": z,
             "p_value": pv,
@@ -160,8 +154,9 @@ def selection_coefficient(counts, n_total=None, generations=None,
             "s": s,
             "drift_dominates": drift,
             "drift_note": (
-                None if drift is None else
-                "the per-generation s assumes monotone deterministic change; "
+                None
+                if drift is None
+                else "the per-generation s assumes monotone deterministic change; "
                 "where the observed shift is within two drift standard "
                 "deviations sqrt(p(1-p)t/2Ne) the number is noise"
             ),

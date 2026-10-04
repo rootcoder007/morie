@@ -137,12 +137,16 @@ def esl_wavelet_smooth(y, wavelet="haar", mode="soft", threshold=None, levels=No
 
     return RichResult(
         title="Wavelet smoothing (Haar)",
-        summary_lines=[("n", n0), ("levels", levels), ("sigma", sigma),
-                       ("threshold", lam)],
+        summary_lines=[("n", n0), ("levels", levels), ("sigma", sigma), ("threshold", lam)],
         payload={
-            "signal": rec[:n0], "threshold": lam, "sigma": sigma,
-            "coefficients": shrunk, "approx": approx,
-            "n_zeroed": zeroed, "levels": int(levels), "mode": mode,
+            "signal": rec[:n0],
+            "threshold": lam,
+            "sigma": sigma,
+            "coefficients": shrunk,
+            "approx": approx,
+            "n_zeroed": zeroed,
+            "levels": int(levels),
+            "mode": mode,
             "method": "esl_wavelet_smooth",
         },
     )

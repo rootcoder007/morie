@@ -59,21 +59,26 @@ def schabenberger_lognormal_kriging(coords, z, target, cov_model=None, mu=None):
     # simple_kriging is vectorised over targets and returns arrays; this
     # module predicts at one location.
     target = np.atleast_2d(np.asarray(target, dtype=float))
-    pred_arr, var_arr = simple_kriging(coords, y, target, cov_model=cov_model,
-                                       mu=mu)[:2]
+    pred_arr, var_arr = simple_kriging(coords, y, target, cov_model=cov_model, mu=mu)[:2]
     pred_y = float(np.asarray(pred_arr).ravel()[0])
     var_y = float(np.asarray(var_arr).ravel()[0])
     naive = float(np.exp(pred_y))
     corrected = float(np.exp(pred_y + 0.5 * var_y))
     return RichResult(
         title="Lognormal kriging",
-        summary_lines=[("prediction", corrected),
-                       ("uncorrected exp(p_sk)", naive),
-                       ("log-scale kriging variance", float(var_y))],
-        payload={"prediction": corrected, "naive_prediction": naive,
-                 "log_prediction": float(pred_y), "log_variance": float(var_y),
-                 "bias_factor": float(np.exp(0.5 * var_y)),
-                 "method": "lognormal (simple) kriging"},
+        summary_lines=[
+            ("prediction", corrected),
+            ("uncorrected exp(p_sk)", naive),
+            ("log-scale kriging variance", float(var_y)),
+        ],
+        payload={
+            "prediction": corrected,
+            "naive_prediction": naive,
+            "log_prediction": float(pred_y),
+            "log_variance": float(var_y),
+            "bias_factor": float(np.exp(0.5 * var_y)),
+            "method": "lognormal (simple) kriging",
+        },
     )
 
 

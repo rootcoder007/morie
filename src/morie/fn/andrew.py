@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['andrewswt', 'andrews_sine', 'andrewssine']
+__all__ = ["andrewswt", "andrews_sine", "andrewssine"]
 
 
 def andrewswt(r, A=1.339):
@@ -49,9 +49,15 @@ def andrewswt(r, A=1.339):
             w.append(1.0)
         else:
             w.append(math.sin(v / A) / (v / A))
-    return RichResult(payload={
-        "weight": w, "rejected": sum(1 for v in r if abs(v) > lim),
-        "A": A, "n": len(r), "method": "Andrews sine IRLS weight"})
+    return RichResult(
+        payload={
+            "weight": w,
+            "rejected": sum(1 for v in r if abs(v) > lim),
+            "A": A,
+            "n": len(r),
+            "method": "Andrews sine IRLS weight",
+        }
+    )
 
 
 andrews_sine = andrewswt

@@ -1,7 +1,6 @@
 """Tests for Ripley's K function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgkfn import sgkfn
 
 

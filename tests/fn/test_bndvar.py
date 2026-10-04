@@ -1,7 +1,6 @@
 """Tests for bndvar.bound_variance_term."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndvar import bound_variance_term
 
 
@@ -56,13 +55,13 @@ def test_bndvar_wide_set_equals_one_sided_z():
     n = 10
     alpha = 0.05
 
-    result = bound_variance_term(lower_hat, upper_hat, se_lower, se_upper,
-                                 n, alpha=alpha)
+    result = bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n, alpha=alpha)
 
     z1 = float(np.sqrt(2) * 0)  # placeholder to be replaced below
     # Recompute z_one_sided independently: z_{1-alpha} = sqrt(2)*erfinv(2*(1-alpha)-1)
     # Implemented here via a closed-form approximation using math only.
     import math
+
     z1_indep = math.sqrt(2) * math.erf(2 * (1 - alpha) - 1) if False else None
 
     # Use a plain arithmetic computation of Phi^{-1}(1 - alpha) via the
@@ -73,6 +72,7 @@ def test_bndvar_wide_set_equals_one_sided_z():
     c = result["c"]
     # Independently compute shift using the documented formula
     shift = math.sqrt(n) * (upper_hat - lower_hat) / max(se_lower, se_upper)
+
     # Independently evaluate Phi via the standard normal CDF closed form
     # using math.erf to confirm the defining equation of c.
     def norm_cdf(x):
@@ -104,8 +104,7 @@ def test_bndvar_edge():
     n = 100
     alpha = 0.05
 
-    result = bound_variance_term(lower_hat, upper_hat, se_lower, se_upper,
-                                 n, alpha=alpha)
+    result = bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n, alpha=alpha)
 
     assert isinstance(result, dict)
     assert result["delta"] == 0.0
@@ -114,6 +113,7 @@ def test_bndvar_edge():
     # Phi(c) - Phi(-c) = 1 - alpha  =>  2*Phi(c) - 1 = 1 - alpha
     # so Phi(c) = 1 - alpha/2, i.e. c = z_{1-alpha/2}.
     import math
+
     def norm_cdf(x):
         return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
 

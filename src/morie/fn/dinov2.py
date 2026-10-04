@@ -11,8 +11,7 @@ from .dinmlt import dino_softmax
 __all__ = ["dino_v2_repr"]
 
 
-def dino_v2_repr(x, student, teacher, tau=0.1, tau_t=0.04, mask=None,
-                 w_ibot=1.0, w_koleo=0.1):
+def dino_v2_repr(x, student, teacher, tau=0.1, tau_t=0.04, mask=None, w_ibot=1.0, w_koleo=0.1):
     """
     DINOv2 representation objective
 
@@ -105,17 +104,19 @@ def dino_v2_repr(x, student, teacher, tau=0.1, tau_t=0.04, mask=None,
         koleo += -math.log(best + 1e-12)
     koleo /= n
     loss = dino + w_ibot * ibot + w_koleo * koleo
-    return RichResult(payload={
-        "estimate": loss,
-        "loss": loss,
-        "dino": dino,
-        "ibot": ibot,
-        "koleo": koleo,
-        "n_masked": nm,
-        "n": n,
-        "d": d,
-        "method": "DINOv2 objective: DINO + iBOT + KoLeo",
-    })
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "dino": dino,
+            "ibot": ibot,
+            "koleo": koleo,
+            "n_masked": nm,
+            "n": n,
+            "d": d,
+            "method": "DINOv2 objective: DINO + iBOT + KoLeo",
+        }
+    )
 
 
 def cheatsheet():

@@ -52,7 +52,7 @@ def fauzi_kernel_quantile(x, p, h=None):
     pv = np.atleast_1d(np.asarray(p, dtype=float)).ravel()
     if np.any((pv <= 0) | (pv >= 1)):
         raise ValueError("probability levels must lie strictly in (0, 1).")
-    hh = float(n ** -0.4) if h is None else float(h)
+    hh = float(n**-0.4) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
     # Weight on the i-th order statistic is the kernel mass of the
@@ -67,15 +67,20 @@ def fauzi_kernel_quantile(x, p, h=None):
     wi = Wl[1:] - Wl[:-1]
     wsum = wi.sum(axis=0)
     q = (wi * xv[:, None]).sum(axis=0) / wsum
-    return RichResult(payload={
-        "p": pv, "quantile": q,
-        "sample_quantile": np.quantile(xv, pv),
-        "bandwidth": hh, "weights_sum": wsum,
-        "smooths_in": "the PROBABILITY argument, not in x",
-        "why": "the sample quantile uses one order statistic and jumps as p "
-               "crosses i/n; the tails are exactly where that hurts",
-        "n": int(n),
-        "method": "Kernel quantile estimator (3.1) as a weighted sum of order statistics"})
+    return RichResult(
+        payload={
+            "p": pv,
+            "quantile": q,
+            "sample_quantile": np.quantile(xv, pv),
+            "bandwidth": hh,
+            "weights_sum": wsum,
+            "smooths_in": "the PROBABILITY argument, not in x",
+            "why": "the sample quantile uses one order statistic and jumps as p "
+            "crosses i/n; the tails are exactly where that hurts",
+            "n": int(n),
+            "method": "Kernel quantile estimator (3.1) as a weighted sum of order statistics",
+        }
+    )
 
 
 def cheatsheet():

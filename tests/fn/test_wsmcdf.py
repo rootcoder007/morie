@@ -1,7 +1,6 @@
 """Tests for wsmcdf.wasserman_empirical_cdf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmcdf import wasserman_empirical_cdf
 
 

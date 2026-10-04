@@ -1,7 +1,6 @@
 """Tests for diripr.dirichlet_multinomial."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.diripr import dirichlet_multinomial
 
 

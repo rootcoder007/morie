@@ -1,7 +1,5 @@
 """Tests for hrzdcrc.horowitz_deconv_rate."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hrzdcrc import horowitz_deconv_rate
 
 

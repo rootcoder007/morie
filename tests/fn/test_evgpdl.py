@@ -28,8 +28,10 @@ def test_evgpdl_basic():
     if abs(x) < 1e-8:
         terms = [-math.log(s) - v / s for v in ys]
     else:
-        terms = [-math.log(s) - (1.0 + 1.0 / x) * math.log(1.0 + x * v / s)
-                 if 1.0 + x * v / s > 0 else float("-inf") for v in ys]
+        terms = [
+            -math.log(s) - (1.0 + 1.0 / x) * math.log(1.0 + x * v / s) if 1.0 + x * v / s > 0 else float("-inf")
+            for v in ys
+        ]
     expected_ll = math.fsum(terms)
     assert result["ll"] == expected_ll
 

@@ -104,7 +104,7 @@ def sir_stochastic(S0, I0, beta, gamma, T, seed=1):
             S -= 1
             I += 1
             n_infections += 1
-            if I > peak_I:
+            if peak_I < I:
                 peak_I = float(I)
                 peak_time = t
         else:

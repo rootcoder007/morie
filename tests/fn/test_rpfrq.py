@@ -1,7 +1,6 @@
 """Tests for rpfrq — repeat placement frequency."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpfrq import rplace_frequency
 
 

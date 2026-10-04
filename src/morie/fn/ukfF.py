@@ -63,9 +63,7 @@ def _ut(pts, w, fun):
     ys = [list(fun(p)) for p in pts]
     m = len(ys[0])
     mean = [sum(wi * y[r] for wi, y in zip(w, ys)) for r in range(m)]
-    cov = [[sum(wi * (y[a] - mean[a]) * (y[b] - mean[b])
-                for wi, y in zip(w, ys)) for b in range(m)]
-           for a in range(m)]
+    cov = [[sum(wi * (y[a] - mean[a]) * (y[b] - mean[b]) for wi, y in zip(w, ys)) for b in range(m)] for a in range(m)]
     return ys, mean, cov
 
 
@@ -146,19 +144,19 @@ def ukfF(f, h, Q, R, x0, P0, measurements, kappa=None):
         for a in range(m):
             for b in range(m):
                 Pzz[a][b] += R[a][b]
-        Pxz = [[sum(wi * (p[a] - xp[a]) * (y[b] - zp[b])
-                    for wi, p, y in zip(w2, pts2, ys))
-                for b in range(m)] for a in range(n)]
+        Pxz = [
+            [sum(wi * (p[a] - xp[a]) * (y[b] - zp[b]) for wi, p, y in zip(w2, pts2, ys)) for b in range(m)]
+            for a in range(n)
+        ]
         # K = Pxz Pzz^{-1}  <=>  solve Pzz K' = Pxz'
-        kt = _solve_mat(Pzz, [[Pxz[a][b] for a in range(n)]
-                              for b in range(m)])
+        kt = _solve_mat(Pzz, [[Pxz[a][b] for a in range(n)] for b in range(m)])
         K = [[kt[b][a] for b in range(m)] for a in range(n)]
         innov = [z[b] - zp[b] for b in range(m)]
-        x = [xp[a] + sum(K[a][b] * innov[b] for b in range(m))
-             for a in range(n)]
-        P = [[Pp[a][b] - sum(K[a][c] * Pzz[c][d] * K[b][d]
-                             for c in range(m) for d in range(m))
-              for b in range(n)] for a in range(n)]
+        x = [xp[a] + sum(K[a][b] * innov[b] for b in range(m)) for a in range(n)]
+        P = [
+            [Pp[a][b] - sum(K[a][c] * Pzz[c][d] * K[b][d] for c in range(m) for d in range(m)) for b in range(n)]
+            for a in range(n)
+        ]
         for a in range(n):
             for b in range(a + 1, n):
                 v = 0.5 * (P[a][b] + P[b][a])
@@ -166,13 +164,15 @@ def ukfF(f, h, Q, R, x0, P0, measurements, kappa=None):
         states.append(list(x))
         covs.append([row[:] for row in P])
         innovs.append(innov)
-    return RichResult(payload={
-        "states": states,
-        "covariances": covs,
-        "innovations": innovs,
-        "kappa": kappa,
-        "method": "unscented Kalman filter (Julier & Uhlmann 1997)",
-    })
+    return RichResult(
+        payload={
+            "states": states,
+            "covariances": covs,
+            "innovations": innovs,
+            "kappa": kappa,
+            "method": "unscented Kalman filter (Julier & Uhlmann 1997)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -181,6 +181,7 @@ unscented_kalman_filter = ukfF
 
 def cheatsheet():
     return "ukfF: 2n+1 sigma points, UT predict + Kalman gain update"
+
 
 # public names resolved by fn/_lazy_map.json
 unscented_kalman = ukfF

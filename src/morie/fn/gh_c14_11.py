@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_py_powerlaw"]
@@ -36,12 +35,15 @@ def ghosal_py_powerlaw(n=5000, d=0.5, theta=1.0, seed=42):
                     break
             else:
                 sizes[-1] += 1.0
-    theory = math.gamma(theta + 1.0) / (d * math.gamma(theta + d)) \
-        * float(n) ** d
-    res = RichResult(payload={"estimate": float(K),
-                              "theory": theory,
-                              "ratio": K / theory,
-                              "method": "PY power law (GvdV 2017 sec. 14.4)"})
+    theory = math.gamma(theta + 1.0) / (d * math.gamma(theta + d)) * float(n) ** d
+    res = RichResult(
+        payload={
+            "estimate": float(K),
+            "theory": theory,
+            "ratio": K / theory,
+            "method": "PY power law (GvdV 2017 sec. 14.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_11")
 
 

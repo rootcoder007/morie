@@ -1,7 +1,6 @@
 """Tests for ctmed.control_median_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ctmed import control_median_test
 
 

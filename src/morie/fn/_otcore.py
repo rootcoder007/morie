@@ -17,9 +17,21 @@ import math
 from . import _s03core as core
 
 __all__ = [
-    "hist", "costmat", "sinkhorn", "sinkhorn_unbalanced", "emd",
-    "partial_plan", "sqrtm_sym", "w2gauss", "wp1d", "quantiles",
-    "directions", "project", "frob", "kl", "gw_cost",
+    "hist",
+    "costmat",
+    "sinkhorn",
+    "sinkhorn_unbalanced",
+    "emd",
+    "partial_plan",
+    "sqrtm_sym",
+    "w2gauss",
+    "wp1d",
+    "quantiles",
+    "directions",
+    "project",
+    "frob",
+    "kl",
+    "gw_cost",
 ]
 
 _NEG_INF = float("-inf")
@@ -54,7 +66,7 @@ def costmat(X, Y, p=2):
         row = []
         for yj in B:
             s = math.sqrt(sum((xi[k] - yj[k]) ** 2 for k in range(d)))
-            row.append(s ** p)
+            row.append(s**p)
         out.append(row)
     return out
 
@@ -95,14 +107,12 @@ def sinkhorn(a, b, C, eps, n_iter=200):
             if la[i] == _NEG_INF:
                 f[i] = _NEG_INF
                 continue
-            f[i] = eps * (la[i] - core.logsumexp(
-                [(g[j] - C[i][j]) / eps for j in range(m)]))
+            f[i] = eps * (la[i] - core.logsumexp([(g[j] - C[i][j]) / eps for j in range(m)]))
         for j in range(m):
             if lb[j] == _NEG_INF:
                 g[j] = _NEG_INF
                 continue
-            g[j] = eps * (lb[j] - core.logsumexp(
-                [(f[i] - C[i][j]) / eps for i in range(n)]))
+            g[j] = eps * (lb[j] - core.logsumexp([(f[i] - C[i][j]) / eps for i in range(n)]))
     T = []
     for i in range(n):
         row = []
@@ -170,7 +180,7 @@ def _find(parent, x):
 def _complete_tree(basis, n, m):
     parent = list(range(n + m))
     edges = []
-    for (i, j) in basis:
+    for i, j in basis:
         ri, rj = _find(parent, i), _find(parent, n + j)
         if ri != rj:
             parent[ri] = rj
@@ -192,7 +202,7 @@ def _complete_tree(basis, n, m):
 
 def _adj(basis, n):
     adj = {}
-    for (i, j) in basis:
+    for i, j in basis:
         adj.setdefault(i, []).append((n + j, i, j))
         adj.setdefault(n + j, []).append((i, i, j))
     return adj
@@ -206,7 +216,7 @@ def _potentials(basis, C, n, m):
     stack = [0]
     while stack:
         node = stack.pop()
-        for (nb, i, j) in adj.get(node, []):
+        for nb, i, j in adj.get(node, []):
             if nb in seen:
                 continue
             seen.add(nb)
@@ -226,7 +236,7 @@ def _tree_path(basis, n, si, sj):
         node, path, seen = stack.pop()
         if node == goal:
             return path
-        for (nb, i, j) in adj.get(node, []):
+        for nb, i, j in adj.get(node, []):
             if nb not in seen:
                 stack.append((nb, path + [(i, j)], seen | {nb}))
     return None
@@ -271,13 +281,13 @@ def emd(a, b, C, max_pivots=20000):
         minus = path[0::2]
         theta = min(T[i][j] for (i, j) in minus)
         leave = None
-        for (i, j) in minus:
+        for i, j in minus:
             if T[i][j] <= theta + 1e-15:
                 leave = (i, j)
                 break
         T[si][sj] += theta
         sign = -1.0
-        for (i, j) in path:
+        for i, j in path:
             T[i][j] += sign * theta
             sign = -sign
         basis = sorted([e for e in basis if e != leave] + [(si, sj)])
@@ -319,10 +329,8 @@ def gw_cost(Cx, Cy, T, a, b):
     n, m = len(a), len(b)
     t1 = sum(Cx[i][k] ** 2 * a[i] * a[k] for i in range(n) for k in range(n))
     t3 = sum(Cy[j][l] ** 2 * b[j] * b[l] for j in range(m) for l in range(m))
-    CT = [[sum(Cx[i][k] * T[k][l] * Cy[l][j] for k in range(n)
-               for l in range(m)) for j in range(m)] for i in range(n)]
-    val = t1 + t3 - 2.0 * sum(CT[i][j] * T[i][j]
-                              for i in range(n) for j in range(m))
+    CT = [[sum(Cx[i][k] * T[k][l] * Cy[l][j] for k in range(n) for l in range(m)) for j in range(m)] for i in range(n)]
+    val = t1 + t3 - 2.0 * sum(CT[i][j] * T[i][j] for i in range(n) for j in range(m))
     return val, CT
 
 
@@ -334,8 +342,7 @@ def sqrtm_sym(S):
     vals, vecs = core.jacobi(S)
     n = len(vals)
     r = [math.sqrt(t) if t > 0.0 else 0.0 for t in vals]
-    return [[sum(vecs[i][k] * r[k] * vecs[j][k] for k in range(n))
-             for j in range(n)] for i in range(n)]
+    return [[sum(vecs[i][k] * r[k] * vecs[j][k] for k in range(n)) for j in range(n)] for i in range(n)]
 
 
 def w2gauss(m1, S1, m2, S2):
@@ -348,8 +355,7 @@ def w2gauss(m1, S1, m2, S2):
     if len(b) != d or len(A) != d or len(B) != d:
         raise ValueError("w2gauss: dimension mismatch")
     R = sqrtm_sym(A)
-    M = [[sum(R[i][k] * B[k][l] * R[l][j] for k in range(d) for l in range(d))
-          for j in range(d)] for i in range(d)]
+    M = [[sum(R[i][k] * B[k][l] * R[l][j] for k in range(d) for l in range(d)) for j in range(d)] for i in range(d)]
     Msq = sqrtm_sym(M)
     bures = sum(A[i][i] + B[i][i] - 2.0 * Msq[i][i] for i in range(d))
     if bures < 0.0:
@@ -393,7 +399,7 @@ def directions(d, n_proj):
     z = core.normdraws(d * int(n_proj))
     out = []
     for k in range(int(n_proj)):
-        row = z[k * d:(k + 1) * d]
+        row = z[k * d : (k + 1) * d]
         nrm = math.sqrt(sum(t * t for t in row))
         if nrm <= 0.0:
             row = [1.0] + [0.0] * (d - 1)

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """History-adjusted marginal structural model."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -75,10 +73,16 @@ def history_adjusted_msm(y, treatment_history, covariate_history, time, regime):
     des = [[1.0, t] for t in times]
     beta, _, _, _ = S.ols(des, means)
     idx0 = [i for i in range(n) if all(abs(A[i][s] - d[s]) < 0.5 for s in range(T))]
-    return RichResult(payload={
-        "estimate": beta[1], "intercept": beta[0], "by_time": means,
-        "n_consistent": len(idx0), "n": n,
-        "method": "History-adjusted marginal structural model"})
+    return RichResult(
+        payload={
+            "estimate": beta[1],
+            "intercept": beta[0],
+            "by_time": means,
+            "n_consistent": len(idx0),
+            "n": n,
+            "method": "History-adjusted marginal structural model",
+        }
+    )
 
 
 def cheatsheet():

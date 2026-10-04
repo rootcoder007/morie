@@ -79,16 +79,26 @@ def bound_logistic(y, D, X):
     lo = odds(p1lo) / odds(p0hi) if odds(p0hi) > 0.0 else 0.0
     hi = odds(p1hi) / odds(p0lo) if odds(p0lo) > 0.0 else float("inf")
     est = (lo * hi) ** 0.5 if (lo > 0.0 and hi < float("inf")) else float("nan")
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo, "estimate": est,
-        "p1_lower": p1lo, "p1_upper": p1hi,
-        "p0_lower": p0lo, "p0_upper": p0hi,
-        "n_strata": len(grp), "n": n,
-        "method": "Logistic odds-ratio bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": est,
+            "p1_lower": p1lo,
+            "p1_upper": p1hi,
+            "p0_lower": p0lo,
+            "p0_upper": p0hi,
+            "n_strata": len(grp),
+            "n": n,
+            "method": "Logistic odds-ratio bound",
+        }
+    )
 
 
 def cheatsheet():
     return "bndlgt: Logistic odds-ratio bound"
+
 
 # public names resolved by fn/_lazy_map.json
 boundlogistic = bound_logistic

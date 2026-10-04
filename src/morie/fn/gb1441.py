@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['fisherex', 'gibbons_fisher_exact']
+__all__ = ["fisherex", "gibbons_fisher_exact"]
 
 
 def _hyper(a, r1, r2, c1):
@@ -13,9 +13,7 @@ def _hyper(a, r1, r2, c1):
     nn = r1 + r2
     if a < max(0, c1 - r2) or a > min(r1, c1):
         return 0.0
-    return (
-        math.comb(r1, a) * math.comb(r2, c1 - a) / math.comb(nn, c1)
-    )
+    return math.comb(r1, a) * math.comb(r2, c1 - a) / math.comb(nn, c1)
 
 
 def fisherex(table, alternative="two-sided"):

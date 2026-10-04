@@ -33,16 +33,14 @@ def kamath_bm25_score(q_terms, doc_terms, idf, avgdl, k1=1.5, b=0.75):
     if len(q) == 0:
         raise ValueError("the query has no terms.")
     if len(d) == 0:
-        raise ValueError("the document has no terms; |d| = 0 makes the "
-                         "length normalization meaningless.")
+        raise ValueError("the document has no terms; |d| = 0 makes the length normalization meaningless.")
     avg = float(avgdl)
     if avg <= 0:
         raise ValueError(f"avgdl must be positive; got {avg}.")
     k1 = float(k1)
     b = float(b)
     if k1 < 0:
-        raise ValueError("k1 is a saturation parameter and cannot be "
-                         "negative.")
+        raise ValueError("k1 is a saturation parameter and cannot be negative.")
     if not (0.0 <= b <= 1.0):
         raise ValueError(f"b must lie in [0, 1]; got {b}.")
     if hasattr(idf, "get"):
@@ -53,19 +51,27 @@ def kamath_bm25_score(q_terms, doc_terms, idf, avgdl, k1=1.5, b=0.75):
     else:
         idfs = [float(v) for v in idf]
         if len(idfs) != len(q):
-            raise ValueError(
-                f"{len(idfs)} IDF values for {len(q)} query terms.")
+            raise ValueError(f"{len(idfs)} IDF values for {len(q)} query terms.")
     tf = Counter(d)
     norm = k1 * (1.0 - b + b * len(d) / avg)
     parts = []
     for t, w in zip(q, idfs):
         f = float(tf[t])
         parts.append(w * f * (k1 + 1.0) / (f + norm) if f > 0 else 0.0)
-    return RichResult(payload={
-        "estimate": float(sum(parts)), "score": float(sum(parts)),
-        "per_term": parts, "term_frequencies": [int(tf[t]) for t in q],
-        "doc_length": len(d), "avgdl": avg, "k1": k1, "b": b,
-        "n": len(q), "method": "BM25 relevance score (Kamath Ch 7)"})
+    return RichResult(
+        payload={
+            "estimate": float(sum(parts)),
+            "score": float(sum(parts)),
+            "per_term": parts,
+            "term_frequencies": [int(tf[t]) for t in q],
+            "doc_length": len(d),
+            "avgdl": avg,
+            "k1": k1,
+            "b": b,
+            "n": len(q),
+            "method": "BM25 relevance score (Kamath Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

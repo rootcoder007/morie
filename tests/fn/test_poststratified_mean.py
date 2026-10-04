@@ -1,7 +1,6 @@
 """Tests for poststratified_mean.poststratified_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.poststratified_mean import (
     poststratified_mean,
 )

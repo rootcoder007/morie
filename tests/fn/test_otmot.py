@@ -1,7 +1,6 @@
 """Tests for otmot.ot_multimarginal_iter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otmot import ot_multimarginal_iter
 
 

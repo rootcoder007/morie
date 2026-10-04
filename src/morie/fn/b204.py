@@ -7,9 +7,7 @@ from ._richresult import RichResult
 __all__ = ["burkov_lm_ch2_trigram_count"]
 
 
-def burkov_lm_ch2_trigram_count(t_i, t_im1, t_im2, counts=None,
-                                bigram_counts=None, vocab_size=None,
-                                smoothing=0.0):
+def burkov_lm_ch2_trigram_count(t_i, t_im1, t_im2, counts=None, bigram_counts=None, vocab_size=None, smoothing=0.0):
     r"""Maximum-likelihood trigram probability from corpus counts.
 
     Burkov equation (2.4), p. 77:
@@ -65,25 +63,18 @@ def burkov_lm_ch2_trigram_count(t_i, t_im1, t_im2, counts=None,
     0.75
     """
     if counts is None:
-        raise ValueError(
-            "counts is required: a trigram probability cannot be formed "
-            "without corpus counts."
-        )
+        raise ValueError("counts is required: a trigram probability cannot be formed without corpus counts.")
     if smoothing < 0:
         raise ValueError("smoothing must be non-negative.")
     if smoothing > 0 and vocab_size is None:
-        raise ValueError(
-            "vocab_size is required when smoothing is non-zero, because the "
-            "denominator gains alpha * V."
-        )
+        raise ValueError("vocab_size is required when smoothing is non-zero, because the denominator gains alpha * V.")
     key = (t_im2, t_im1, t_i)
     ctx = (t_im2, t_im1)
     tri = float(counts.get(key, 0))
     if bigram_counts is not None:
         den = float(bigram_counts.get(ctx, 0))
     else:
-        den = float(sum(v for k, v in counts.items()
-                        if len(k) == 3 and (k[0], k[1]) == ctx))
+        den = float(sum(v for k, v in counts.items() if len(k) == 3 and (k[0], k[1]) == ctx))
     unseen = tri == 0
     if smoothing > 0:
         V = int(vocab_size)
@@ -107,8 +98,9 @@ def burkov_lm_ch2_trigram_count(t_i, t_im1, t_im2, counts=None,
                 "possible trigrams this is the normal case"
             ),
             "smoothing_note": (
-                None if smoothing == 0 else
-                "add-alpha is the crudest remedy and moves a great deal of "
+                None
+                if smoothing == 0
+                else "add-alpha is the crudest remedy and moves a great deal of "
                 "mass onto unseen events; Kneser-Ney and its relatives exist "
                 "because of that"
             ),

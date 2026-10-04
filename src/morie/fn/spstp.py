@@ -10,9 +10,9 @@ __all__ = ["schabenberger_st_point_process"]
 _TYPES = ("earthquake", "explosion", "birth_death", "sampled_in_time")
 
 
-def schabenberger_st_point_process(points, region, time_interval, times=None,
-                                   process_type=None, n_space_bins=3,
-                                   n_time_bins=3):
+def schabenberger_st_point_process(
+    points, region, time_interval, times=None, process_type=None, n_space_bins=3, n_time_bins=3
+):
     """Spatio-temporal point process intensity, Sec. 9.5.
 
     The first-order intensity is eq (9.20),
@@ -81,19 +81,16 @@ def schabenberger_st_point_process(points, region, time_interval, times=None,
     Schabenberger & Gotway (2005), Sec. 9.5, eqs (9.20)-(9.23).
     """
     if times is None:
-        raise ValueError(
-            "`times` is required: a spatio-temporal point process needs an "
-            "event time for every event")
+        raise ValueError("`times` is required: a spatio-temporal point process needs an event time for every event")
     if process_type is not None and process_type not in _TYPES:
         raise ValueError(f"`process_type` must be one of {_TYPES}")
 
     lam = st_intensity(points, times, region, time_interval)
-    marg = st_marginal_intensities(points, times, region, time_interval,
-                                   n_space_bins=n_space_bins,
-                                   n_time_bins=n_time_bins)
+    marg = st_marginal_intensities(
+        points, times, region, time_interval, n_space_bins=n_space_bins, n_time_bins=n_time_bins
+    )
     ref = cstr_reference(lam["area"], lam["duration"], lam["intensity"])
-    test = cstr_test(points, times, region, time_interval,
-                     n_space_bins=n_space_bins, n_time_bins=n_time_bins)
+    test = cstr_test(points, times, region, time_interval, n_space_bins=n_space_bins, n_time_bins=n_time_bins)
 
     payload = {
         "intensity": lam["intensity"],
@@ -112,11 +109,13 @@ def schabenberger_st_point_process(points, region, time_interval, times=None,
         "cell_counts": test["counts"],
         "process_type": process_type,
     }
-    lines = [("events", lam["n"]),
-             ("intensity lambda(s,t)", lam["intensity"]),
-             ("space-time volume |A x T|", lam["volume"]),
-             ("CSTR index of dispersion", test["index_of_dispersion"]),
-             ("CSTR p-value", test["p_value"])]
+    lines = [
+        ("events", lam["n"]),
+        ("intensity lambda(s,t)", lam["intensity"]),
+        ("space-time volume |A x T|", lam["volume"]),
+        ("CSTR index of dispersion", test["index_of_dispersion"]),
+        ("CSTR p-value", test["p_value"]),
+    ]
     if process_type is not None:
         lines.insert(0, ("process type", process_type))
 
@@ -124,24 +123,28 @@ def schabenberger_st_point_process(points, region, time_interval, times=None,
     if n_cells < 20:
         payload["power_note"] = (
             f"only {n_cells} space-time cells: the dispersion test has little "
-            f"power here, and failing to reject CSTR is not evidence for it")
+            f"power here, and failing to reject CSTR is not evidence for it"
+        )
     if process_type in ("birth_death", "sampled_in_time"):
         payload["identifiability_note"] = (
             "a birth-death process observed at fixed times can be "
             "indistinguishable from a pattern sampled in time (Sec. 9.5.1); "
             "an event absent at the next time may be a death or a "
-            "displacement")
+            "displacement"
+        )
     if process_type == "earthquake":
         payload["conditional_note"] = (
             "for an earthquake process the conditional intensities "
             "lambda(s|t) and lambda(t|s) are not meaningful and should be "
             "replaced by intensities on intervals in time or areas in space "
-            "(Rathbun, 1996)")
+            "(Rathbun, 1996)"
+        )
 
-    return RichResult(title="Spatio-temporal point process",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Spatio-temporal point process", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spstp: spatio-temporal point process (Sec. 9.5) -- cylinder "
-            "intensity (9.20), marginals (9.21)-(9.22), CSTR benchmark")
+    return (
+        "spstp: spatio-temporal point process (Sec. 9.5) -- cylinder "
+        "intensity (9.20), marginals (9.21)-(9.22), CSTR benchmark"
+    )

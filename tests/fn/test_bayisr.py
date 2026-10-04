@@ -1,7 +1,6 @@
 """Tests for bayisr.importance_resample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bayisr import importance_resample
 
 
@@ -21,9 +20,7 @@ def test_bayisr_basic():
 
     m = 25
     seed = 7
-    res = importance_resample(
-        proposal_samples, log_target, log_proposal, m, seed
-    )
+    res = importance_resample(proposal_samples, log_target, log_proposal, m, seed)
 
     # The function returns a RichResult (mapping-like), not necessarily a dict.
     assert hasattr(res, "__getitem__")
@@ -85,9 +82,7 @@ def test_bayisr_edge():
         v = float(x)
         return -0.5 * v * v
 
-    res = importance_resample(
-        proposal_samples, log_target, log_proposal, 10, seed=0
-    )
+    res = importance_resample(proposal_samples, log_target, log_proposal, 10, seed=0)
     assert hasattr(res, "__getitem__")
     assert "resample" in res
     assert len(res["resample"]) == 10

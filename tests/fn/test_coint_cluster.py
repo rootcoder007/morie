@@ -3,9 +3,9 @@ vecmod, and the four modules the name scan misfiled here (joholt johw
 johbu mstrn -- Holt-Winters, hierarchical reconciliation and the
 Aalen-Johansen estimator, none of them Johansen cointegration)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._coint import adf_test, johansen
 from morie.fn.egcoin import engle_granger_2step
 from morie.fn.engrgr import engle_granger
@@ -48,9 +48,7 @@ def test_engle_granger_finds_a_real_cointegration_and_not_a_fake_one():
         assert out["beta"][0] == pytest.approx(2.0, abs=0.15)
         # two independent random walks are NOT cointegrated
         z = np.cumsum(rng.standard_normal(300))
-        spurious += engle_granger_2step(z, np.cumsum(rng.standard_normal(300)))[
-            "cointegrated_5pct"
-        ]
+        spurious += engle_granger_2step(z, np.cumsum(rng.standard_normal(300)))["cointegrated_5pct"]
     assert found == 8  # measured 8/8
     assert spurious <= 1  # measured 0/8
 
@@ -91,8 +89,7 @@ def test_johansen_recovers_the_cointegrating_rank():
     for s in range(6):
         rng = np.random.default_rng(100 + s)
         # independent random walks WITH drift (Case 3, as above)
-        Y = np.column_stack([np.cumsum(rng.standard_normal(400) + 0.3),
-                             np.cumsum(rng.standard_normal(400) - 0.2)])
+        Y = np.column_stack([np.cumsum(rng.standard_normal(400) + 0.3), np.cumsum(rng.standard_normal(400) - 0.2)])
         zero += johansen(Y)["rank_5pct"] == 0
     assert zero >= 5  # measured 6/6
     out = johansen(_coint_system())
@@ -124,9 +121,7 @@ def test_holt_extrapolates_a_linear_trend():
     y = np.arange(40, dtype=float) * 2.0 + 5.0
     out = joseph_holt_linear(y, horizon=5)
     # a perfectly linear series must be extrapolated at the same slope
-    assert out["forecast"] == pytest.approx(
-        y[-1] + np.arange(1, 6) * 2.0, rel=0.02
-    )
+    assert out["forecast"] == pytest.approx(y[-1] + np.arange(1, 6) * 2.0, rel=0.02)
     assert out["sse"] < 1e-3
     # damping must flatten the long horizon relative to the plain trend
     plain = joseph_holt_linear(y, horizon=30)["forecast"][-1]
@@ -142,9 +137,7 @@ def test_holt_winters_recovers_a_seasonal_pattern():
     m = 12
     season = np.array([3.0, 1.0, -2.0, -4.0, -1.0, 2.0, 5.0, 4.0, 1.0, -1.0, -3.0, -5.0])
     rng = np.random.default_rng(0)
-    y = np.concatenate(
-        [10 + 0.5 * np.arange(i * m, (i + 1) * m) + season for i in range(8)]
-    ) + rng.normal(0, 0.5, 96)
+    y = np.concatenate([10 + 0.5 * np.arange(i * m, (i + 1) * m) + season for i in range(8)]) + rng.normal(0, 0.5, 96)
     out = joseph_holt_winters(y, m=m, horizon=12)
     # The forecast must reproduce the seasonal shape. It also carries
     # the trend, so the trend has to come out before comparing --
@@ -175,9 +168,7 @@ def test_reconciliation_is_coherent_and_ols_uses_the_aggregates():
     assert rec[0] > 7.0  # the aggregate's information was used, unlike bottom-up
     R = np.random.default_rng(0).standard_normal((50, 3)) * np.array([1.0, 5.0, 0.1])
     wls = joseph_bottom_up_reconciliation(None, S, base=base, method="wls", residuals=R)
-    assert wls["reconciled"][0] == pytest.approx(
-        wls["reconciled"][1] + wls["reconciled"][2]
-    )
+    assert wls["reconciled"][0] == pytest.approx(wls["reconciled"][1] + wls["reconciled"][2])
     with pytest.raises(ValueError):
         joseph_bottom_up_reconciliation(None, S, method="ols")
     with pytest.raises(ValueError):

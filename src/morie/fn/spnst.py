@@ -8,9 +8,9 @@ from ._schab_nonstat import point_source_correlation, practical_range
 __all__ = ["schabenberger_nonstationary_cov"]
 
 
-def schabenberger_nonstationary_cov(coords, z=None, source=None, theta1=1.0,
-                                    theta2=0.0, theta3=0.0, sill=1.0,
-                                    anisotropy=None, source_anisotropy=None):
+def schabenberger_nonstationary_cov(
+    coords, z=None, source=None, theta1=1.0, theta2=0.0, theta3=0.0, sill=1.0, anisotropy=None, source_anisotropy=None
+):
     """The point-source correlation model of Sec. 8.2.1, eq (8.1).
 
     ``Corr[Z(s_i),Z(s_j)] = exp{-theta1 ||s_i-s_j||
@@ -69,9 +69,9 @@ def schabenberger_nonstationary_cov(coords, z=None, source=None, theta1=1.0,
         s = s.reshape(-1, 1)
     if source is None:
         source = s.mean(axis=0)
-    res = point_source_correlation(s, source, theta1, theta2, theta3,
-                                   anisotropy=anisotropy,
-                                   source_anisotropy=source_anisotropy)
+    res = point_source_correlation(
+        s, source, theta1, theta2, theta3, anisotropy=anisotropy, source_anisotropy=source_anisotropy
+    )
     sill = float(sill)
     if sill <= 0:
         raise ValueError("sill must be positive")
@@ -80,14 +80,17 @@ def schabenberger_nonstationary_cov(coords, z=None, source=None, theta1=1.0,
     payload["sill"] = sill
     payload["practical_range"] = practical_range(theta1)
     payload["source"] = np.asarray(source, dtype=float)
-    lines = [("theta", res["theta"]),
-             ("practical range (theta2=theta3=0)", payload["practical_range"]),
-             ("min eigenvalue", res["min_eigenvalue"]),
-             ("positive semi-definite", res["valid"])]
-    return RichResult(title="Point-source non-stationary correlation",
-                      summary_lines=lines, payload=payload)
+    lines = [
+        ("theta", res["theta"]),
+        ("practical range (theta2=theta3=0)", payload["practical_range"]),
+        ("min eigenvalue", res["min_eigenvalue"]),
+        ("positive semi-definite", res["valid"]),
+    ]
+    return RichResult(title="Point-source non-stationary correlation", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spnst: Hughes-Oliver point-source non-stationary correlation "
-            "(Sec. 8.2.1, eq (8.1)) with the required eigenvalue check")
+    return (
+        "spnst: Hughes-Oliver point-source non-stationary correlation "
+        "(Sec. 8.2.1, eq (8.1)) with the required eigenvalue check"
+    )

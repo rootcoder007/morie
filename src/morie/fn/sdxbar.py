@@ -31,7 +31,7 @@ def sdxbar(sigma, N):
     Createspace Independent Publishing. Eq (3.93).
     """
     var_mean = _morin.var_of_sample_mean(sigma, N)
-    value = var_mean ** 0.5
+    value = var_mean**0.5
     if value > float(sigma) + 1e-12:
         raise AssertionError("sd of the mean exceeded sigma")
     payload = {"sd_mean": value, "sigma": float(sigma), "bounded": True}

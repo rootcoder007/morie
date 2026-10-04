@@ -172,11 +172,10 @@ def cluster_batch_counts(R, batches, names=None):
 def harmony_objective(Z, R, Y, batches, sigma=0.1, theta=2.0):
     r"""The full objective: cosine distance, entropy, and the KL penalty."""
     K, N = len(R), len(R[0])
-    fit = sum(R[k][i] * 2.0 * (1.0 - sum(Y[k][j] * Z[i][j]
-                                         for j in range(len(Z[0]))))
-              for k in range(K) for i in range(N))
-    ent = sum(R[k][i] * math.log(max(R[k][i], 1e-300))
-              for k in range(K) for i in range(N))
+    fit = sum(
+        R[k][i] * 2.0 * (1.0 - sum(Y[k][j] * Z[i][j] for j in range(len(Z[0])))) for k in range(K) for i in range(N)
+    )
+    ent = sum(R[k][i] * math.log(max(R[k][i], 1e-300)) for k in range(K) for i in range(N))
     c = cluster_batch_counts(R, batches)
     kl = 0.0
     for k in range(K):
@@ -184,8 +183,7 @@ def harmony_objective(Z, R, Y, batches, sigma=0.1, theta=2.0):
             o, e = c["O"][k][bi], c["E"][k][bi]
             if o > 0 and e > 0:
                 kl += o * math.log(o / e)
-    return {"total": fit + sigma * ent + sigma * theta * kl,
-            "fit": fit, "entropy": ent, "kl": kl}
+    return {"total": fit + sigma * ent + sigma * theta * kl, "fit": fit, "entropy": ent, "kl": kl}
 
 
 def _kmeans_init(Zn, K, seed):
@@ -201,8 +199,7 @@ def _kmeans_init(Zn, K, seed):
     while len(centres) < K:
         d2 = []
         for z in Zn:
-            best = min(1.0 - sum(c[j] * z[j] for j in range(d))
-                       for c in centres)
+            best = min(1.0 - sum(c[j] * z[j] for j in range(d)) for c in centres)
             d2.append(max(best, 0.0) ** 2)
         tot = sum(d2)
         if tot <= 0:
@@ -217,21 +214,19 @@ def _kmeans_init(Zn, K, seed):
     for _ in range(10):
         groups = [[] for _ in range(K)]
         for z in Zn:
-            k = max(range(K), key=lambda k: sum(centres[k][j] * z[j]
-                                                for j in range(d)))
+            k = max(range(K), key=lambda k: sum(centres[k][j] * z[j] for j in range(d)))
             groups[k].append(z)
         for k in range(K):
             if not groups[k]:
                 continue
-            centres[k] = [sum(z[j] for z in groups[k]) / len(groups[k])
-                          for j in range(d)]
+            centres[k] = [sum(z[j] for z in groups[k]) / len(groups[k]) for j in range(d)]
         centres = l2_normalise(centres)
     return centres
 
 
-def maximum_diversity_clustering(Z, batches, K=None, sigma=0.1, theta=2.0,
-                                 max_iter=25, tol=1e-5, seed=0, Y=None,
-                                 diversity="penalise"):
+def maximum_diversity_clustering(
+    Z, batches, K=None, sigma=0.1, theta=2.0, max_iter=25, tol=1e-5, seed=0, Y=None, diversity="penalise"
+):
     r"""Algorithm 2: soft spherical k-means with the diversity penalty.
 
     ``diversity="penalise"`` (default) uses
@@ -256,8 +251,7 @@ def maximum_diversity_clustering(Z, batches, K=None, sigma=0.1, theta=2.0,
     if K < 1 or K > N:
         raise ValueError("scintg: K must be between 1 and the cell count")
     Zn = l2_normalise(rows)
-    centres = l2_normalise([list(y) for y in Y]) if Y is not None \
-        else _kmeans_init(Zn, K, seed)
+    centres = l2_normalise([list(y) for y in Y]) if Y is not None else _kmeans_init(Zn, K, seed)
     if len(centres) != K:
         raise ValueError("scintg: Y must have one row per cluster")
     names = sorted(set(batches), key=lambda v: str(v))
@@ -287,17 +281,12 @@ def maximum_diversity_clustering(Z, batches, K=None, sigma=0.1, theta=2.0,
                 newR[k][i] = ex[k] / s if s > 0 else 1.0 / K
         R = newR
         # Y = Z R^T, then L2 normalise (Dhillon's spherical centroids)
-        centres = l2_normalise(
-            [[sum(R[k][i] * Zn[i][j] for i in range(N)) for j in range(d)]
-             for k in range(K)])
+        centres = l2_normalise([[sum(R[k][i] * Zn[i][j] for i in range(N)) for j in range(d)] for k in range(K)])
         obj = harmony_objective(Zn, R, centres, batches, sigma, theta)
-        if prev is not None and abs(prev - obj["total"]) <= \
-                tol * max(abs(prev), 1e-12):
+        if prev is not None and abs(prev - obj["total"]) <= tol * max(abs(prev), 1e-12):
             break
         prev = obj["total"]
-    return {"R": R, "Y": centres, "K": K,
-            "objective": harmony_objective(Zn, R, centres, batches,
-                                           sigma, theta)}
+    return {"R": R, "Y": centres, "K": K, "objective": harmony_objective(Zn, R, centres, batches, sigma, theta)}
 
 
 def _solve(A, B):
@@ -308,8 +297,7 @@ def _solve(A, B):
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-14:
-            raise ValueError("scintg: the ridge system is singular; raise "
-                             "lambda")
+            raise ValueError("scintg: the ridge system is singular; raise lambda")
         M[c], M[piv] = M[piv], M[c]
         for r in range(n):
             if r == c:
@@ -346,25 +334,33 @@ def correct_batch(Z, R, batches, lam=1.0, reference=None):
     out = [list(r) for r in rows]
     Ws = []
     for k in range(K):
-        A = [[sum(phi[i][a] * R[k][i] * phi[i][b] for i in range(N))
-              for b in range(B + 1)] for a in range(B + 1)]
-        for a in range(1, B + 1):        # lambda_0 = 0, lambda_b = lam
+        A = [[sum(phi[i][a] * R[k][i] * phi[i][b] for i in range(N)) for b in range(B + 1)] for a in range(B + 1)]
+        for a in range(1, B + 1):  # lambda_0 = 0, lambda_b = lam
             A[a][a] += lam
-        rhs = [[sum(phi[i][a] * R[k][i] * rows[i][j] for i in range(N))
-                for j in range(d)] for a in range(B + 1)]
+        rhs = [[sum(phi[i][a] * R[k][i] * rows[i][j] for i in range(N)) for j in range(d)] for a in range(B + 1)]
         W = _solve(A, rhs)
-        W[0] = [0.0] * d                 # keep the intercept: cell type
+        W[0] = [0.0] * d  # keep the intercept: cell type
         Ws.append(W)
         for i in range(N):
             for j in range(d):
-                out[i][j] -= R[k][i] * sum(phi[i][a] * W[a][j]
-                                           for a in range(B + 1))
+                out[i][j] -= R[k][i] * sum(phi[i][a] * W[a][j] for a in range(B + 1))
     return {"Z": out, "W": Ws, "batches": names}
 
 
-def scintg(Z, batches, K=None, sigma=0.1, theta=2.0, lam=1.0,
-           max_iter=10, cluster_iter=25, tol=1e-4, seed=0,
-           reference=None, diversity="penalise"):
+def scintg(
+    Z,
+    batches,
+    K=None,
+    sigma=0.1,
+    theta=2.0,
+    lam=1.0,
+    max_iter=10,
+    cluster_iter=25,
+    tol=1e-4,
+    seed=0,
+    reference=None,
+    diversity="penalise",
+):
     """Integrate ``Z`` across ``batches`` (Korsunsky et al. 2019)."""
     rows, N, d = _matrix(Z)
     if len(batches) != N:
@@ -377,59 +373,67 @@ def scintg(Z, batches, K=None, sigma=0.1, theta=2.0, lam=1.0,
     Y = None
     hist = []
     for _ in range(int(max_iter)):
-        cl = maximum_diversity_clustering(cur, batches, K, sigma, theta,
-                                          cluster_iter, seed=seed, Y=Y,
-                                          diversity=diversity)
+        cl = maximum_diversity_clustering(
+            cur, batches, K, sigma, theta, cluster_iter, seed=seed, Y=Y, diversity=diversity
+        )
         Y = cl["Y"]
         got = correct_batch(cur, cl["R"], batches, lam, reference)
-        shift = max(abs(got["Z"][i][j] - cur[i][j])
-                    for i in range(N) for j in range(d))
+        shift = max(abs(got["Z"][i][j] - cur[i][j]) for i in range(N) for j in range(d))
         cur = got["Z"]
         hist.append(cl["objective"]["total"])
         if shift <= tol:
             break
-    final = maximum_diversity_clustering(cur, batches, K, sigma, theta,
-                                         cluster_iter, seed=seed, Y=Y,
-                                         diversity=diversity)
-    return RichResult(payload={
-        "estimate": cur,
-        "embedding": cur,
-        "R": final["R"],
-        "Y": final["Y"],
-        "K": final["K"],
-        "objective": final["objective"],
-        "history": hist,
-        "n_rounds": len(hist),
-        "theta": float(theta),
-        "sigma": float(sigma),
-        "lam": float(lam),
-        "diversity": diversity,
-        "method": ("Harmony (Korsunsky et al. 2019): maximum diversity "
-                   "clustering (eq. 8) alternated with mixture-of-experts "
-                   "ridge correction (eq. 14)"),
-        "note": ("theta=0 reduces the cluster step to ordinary soft "
-                 "spherical k-means; the intercept row of W_k is zeroed "
-                 "so batch-independent variation is kept, which is why a "
-                 "reference cell (design row [1, 0, ...]) never moves. "
-                 "Equation 8 is printed with (O/E)^+theta, which raises "
-                 "cluster/batch dependence rather than lowering it; "
-                 "diversity='penalise' uses the -theta the stated "
-                 "objective implies, 'as_printed' the literal form"),
-    })
+    final = maximum_diversity_clustering(
+        cur, batches, K, sigma, theta, cluster_iter, seed=seed, Y=Y, diversity=diversity
+    )
+    return RichResult(
+        payload={
+            "estimate": cur,
+            "embedding": cur,
+            "R": final["R"],
+            "Y": final["Y"],
+            "K": final["K"],
+            "objective": final["objective"],
+            "history": hist,
+            "n_rounds": len(hist),
+            "theta": float(theta),
+            "sigma": float(sigma),
+            "lam": float(lam),
+            "diversity": diversity,
+            "method": (
+                "Harmony (Korsunsky et al. 2019): maximum diversity "
+                "clustering (eq. 8) alternated with mixture-of-experts "
+                "ridge correction (eq. 14)"
+            ),
+            "note": (
+                "theta=0 reduces the cluster step to ordinary soft "
+                "spherical k-means; the intercept row of W_k is zeroed "
+                "so batch-independent variation is kept, which is why a "
+                "reference cell (design row [1, 0, ...]) never moves. "
+                "Equation 8 is printed with (O/E)^+theta, which raises "
+                "cluster/batch dependence rather than lowering it; "
+                "diversity='penalise' uses the -theta the stated "
+                "objective implies, 'as_printed' the literal form"
+            ),
+        }
+    )
 
 
 harmony_integrate = scintg
 
 
 def cheatsheet():
-    return ("scintg: Harmony (Korsunsky et al. 2019). Alternates maximum "
-            "diversity clustering -- soft spherical k-means whose "
-            "assignment R_ki is proportional to (O_ki/E_ki)^theta "
-            "exp(-2(1 - Y_k'Z_i)/sigma), with O the observed and E the "
-            "independence-expected cluster/batch mass -- with a "
-            "mixture-of-experts ridge correction W_k = (phi* diag(R_k) "
-            "phi*' + lambda I)^-1 phi* diag(R_k) Z' whose intercept row "
-            "is zeroed, so batch goes and cell type stays.")
+    return (
+        "scintg: Harmony (Korsunsky et al. 2019). Alternates maximum "
+        "diversity clustering -- soft spherical k-means whose "
+        "assignment R_ki is proportional to (O_ki/E_ki)^theta "
+        "exp(-2(1 - Y_k'Z_i)/sigma), with O the observed and E the "
+        "independence-expected cluster/batch mass -- with a "
+        "mixture-of-experts ridge correction W_k = (phi* diag(R_k) "
+        "phi*' + lambda I)^-1 phi* diag(R_k) Z' whose intercept row "
+        "is zeroed, so batch goes and cell type stays."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 singlecell_integration = scintg

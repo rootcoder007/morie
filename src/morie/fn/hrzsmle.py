@@ -48,8 +48,7 @@ def _gauss(u):
     return np.exp(-0.5 * u * u) / np.sqrt(2.0 * np.pi)
 
 
-def spmlebin(x, y, h=None, trim=0.01, floor=1e-4, niter=12, delta=1.0,
-             b0=None):
+def spmlebin(x, y, h=None, trim=0.01, floor=1e-4, niter=12, delta=1.0, b0=None):
     """Klein-Spady semiparametric MLE of beta in a binary-response model.
 
     Parameters
@@ -82,7 +81,7 @@ def spmlebin(x, y, h=None, trim=0.01, floor=1e-4, niter=12, delta=1.0,
     uy = np.unique(yv)
     if bool(np.any((uy != 0.0) & (uy != 1.0))):
         raise ValueError("y must be binary 0/1 for a binary-response model.")
-    hh = float(n ** -0.2) if h is None else float(h)
+    hh = float(n**-0.2) if h is None else float(h)
     fl = float(floor)
 
     def negll(bt, want=False):
@@ -133,10 +132,17 @@ def spmlebin(x, y, h=None, trim=0.01, floor=1e-4, niter=12, delta=1.0,
         se = np.full(d - 1, np.nan)
     return RichResult(
         title="Semiparametric MLE, binary-response index model",
-        payload={"estimate": beta, "se": np.concatenate([np.array([0.0]), se]),
-                 "loglik": -float(val), "ghat": gh, "index": z,
-                 "bandwidth": hh, "ntrim": int(n - np.sum(kf)), "n": n,
-                 "method": "Horowitz (2009) eq. (2.33) and page 28, Klein-Spady"},
+        payload={
+            "estimate": beta,
+            "se": np.concatenate([np.array([0.0]), se]),
+            "loglik": -float(val),
+            "ghat": gh,
+            "index": z,
+            "bandwidth": hh,
+            "ntrim": int(n - np.sum(kf)),
+            "n": n,
+            "method": "Horowitz (2009) eq. (2.33) and page 28, Klein-Spady",
+        },
     )
 
 

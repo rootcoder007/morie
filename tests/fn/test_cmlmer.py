@@ -1,8 +1,6 @@
 """Tests for cmlmer.compressed_lmm."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.cmlmer import compressed_lmm
 
 
@@ -13,6 +11,7 @@ def _to_plain(arr):
         out = arr.tolist()
     else:
         out = list(arr)
+
     # Recursively unwrap
     def _unwrap(x):
         if hasattr(x, "tolist"):
@@ -20,6 +19,7 @@ def _to_plain(arr):
         if isinstance(x, (list, tuple)):
             return [_unwrap(e) for e in x]
         return float(x)
+
     return _unwrap(out)
 
 
@@ -57,8 +57,7 @@ def test_cmlmer_basic():
     assert isinstance(result, dict)
 
     # Documented scalar outputs
-    for key in ("delta", "sigma2_g", "sigma2_e", "h2",
-                "reml_loglik", "n", "n_markers", "p", "n_groups"):
+    for key in ("delta", "sigma2_g", "sigma2_e", "h2", "reml_loglik", "n", "n_markers", "p", "n_groups"):
         assert key in result, f"missing key: {key}"
 
     # Documented per-marker vectors of length n_markers

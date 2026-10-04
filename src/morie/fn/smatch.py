@@ -83,13 +83,11 @@ derivation and for the age-varying case; not implemented here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .sccsno import build_intervals, sccs_fit
+from .sccsno import build_intervals
 
-__all__ = ["poisson_design", "sccs_poisson_fit", "sample_size",
-           "power", "relative_efficiency"]
+__all__ = ["poisson_design", "sccs_poisson_fit", "sample_size", "power", "relative_efficiency"]
 
 _EPS = 1e-12
 
@@ -109,8 +107,7 @@ def poisson_design(cases, risk_periods, age_breaks=()):
         ev = list(c.get("events", ()))
         if not ev:
             continue
-        people.append(build_intervals(c["start"], c["end"],
-                                      c.get("exposure"), ev, rp, ab))
+        people.append(build_intervals(c["start"], c["end"], c.get("exposure"), ev, rp, ab))
     if not people:
         raise ValueError("smatch: no case contributed an event")
     P = len(people)
@@ -129,12 +126,10 @@ def poisson_design(cases, risk_periods, age_breaks=()):
             X.append(row)
             y.append(float(n))
             off.append(math.log(e))
-    return {"y": y, "offset": off, "X": X, "n_risk": n_risk,
-            "n_age": n_age, "n_people": P, "n_rows": len(y)}
+    return {"y": y, "offset": off, "X": X, "n_risk": n_risk, "n_age": n_age, "n_people": P, "n_rows": len(y)}
 
 
-def sccs_poisson_fit(cases, risk_periods, age_breaks=(), iters=200,
-                     tol=1e-12, ridge=1e-9):
+def sccs_poisson_fit(cases, risk_periods, age_breaks=(), iters=200, tol=1e-12, ridge=1e-9):
     r"""Fit the associated Poisson model of Sec. 4 by IRLS.
 
     Returns the same relative incidences the conditional multinomial
@@ -171,28 +166,35 @@ def sccs_poisson_fit(cases, risk_periods, age_breaks=(), iters=200,
         try:
             nb = k.cholsolve(XtWX, XtWz)
         except Exception:
-            raise ValueError("smatch: the Poisson design is singular "
-                             "-- an interval has no exposure time or "
-                             "an individual has no variation")
+            raise ValueError(
+                "smatch: the Poisson design is singular "
+                "-- an interval has no exposure time or "
+                "an individual has no variation"
+            )
         mx = max(abs(nb[a] - beta[a]) for a in range(p))
         beta = nb
         if mx < tol:
             conv = True
             break
     nr = d["n_risk"]
-    return RichResult(payload={
-        "estimate": [math.exp(v) for v in beta[:nr]],
-        "relative_incidence": [math.exp(v) for v in beta[:nr]],
-        "log_ri": beta[:nr],
-        "age_effects": beta[nr:nr + d["n_age"] - 1],
-        "individual_effects": beta[nr + d["n_age"] - 1:],
-        "coef": beta, "converged": conv, "iterations": it,
-        "n_rows": d["n_rows"], "n_people": d["n_people"],
-        "method": "associated Poisson model with a per-individual "
-                  "factor and log-time offset; Whitaker et al. (2006) "
-                  "Sec. 4",
-        "identical_to": "the conditional multinomial fit of sccsno",
-    })
+    return RichResult(
+        payload={
+            "estimate": [math.exp(v) for v in beta[:nr]],
+            "relative_incidence": [math.exp(v) for v in beta[:nr]],
+            "log_ri": beta[:nr],
+            "age_effects": beta[nr : nr + d["n_age"] - 1],
+            "individual_effects": beta[nr + d["n_age"] - 1 :],
+            "coef": beta,
+            "converged": conv,
+            "iterations": it,
+            "n_rows": d["n_rows"],
+            "n_people": d["n_people"],
+            "method": "associated Poisson model with a per-individual "
+            "factor and log-time offset; Whitaker et al. (2006) "
+            "Sec. 4",
+            "identical_to": "the conditional multinomial fit of sccsno",
+        }
+    )
 
 
 def sample_size(log_ri, r, p_exposed, alpha=0.05, power=0.8):
@@ -206,15 +208,15 @@ def sample_size(log_ri, r, p_exposed, alpha=0.05, power=0.8):
     rr = float(r)
     p = float(p_exposed)
     if b == 0.0:
-        raise ValueError("smatch: the sample size is unbounded at a "
-                         "log relative incidence of 0")
+        raise ValueError("smatch: the sample size is unbounded at a log relative incidence of 0")
     if not 0.0 < rr < 1.0:
-        raise ValueError("smatch: r must lie strictly in (0, 1), got "
-                         "%r -- it is the risk period as a fraction "
-                         "of the observation period" % (r,))
+        raise ValueError(
+            "smatch: r must lie strictly in (0, 1), got "
+            "%r -- it is the risk period as a fraction "
+            "of the observation period" % (r,)
+        )
     if not 0.0 < p <= 1.0:
-        raise ValueError("smatch: p_exposed must lie in (0, 1], got "
-                         "%r" % (p_exposed,))
+        raise ValueError("smatch: p_exposed must lie in (0, 1], got %r" % (p_exposed,))
     if not 0.0 < float(alpha) < 1.0:
         raise ValueError("smatch: alpha must lie in (0, 1)")
     if not 0.0 < float(power) < 1.0:
@@ -224,21 +226,27 @@ def sample_size(log_ri, r, p_exposed, alpha=0.05, power=0.8):
     rho = rr * eb / den
     A = 2.0 * (rho * b - math.log(den))
     if A <= _EPS:
-        raise ValueError("smatch: the information A is non-positive "
-                         "(%.3e) -- the design carries no signal here"
-                         % A)
+        raise ValueError("smatch: the information A is non-positive (%.3e) -- the design carries no signal here" % A)
     B = b * b * rho * (1.0 - rho) / A
     C = 1.0 + (1.0 - p) / (p * den)
     za = k.qnorm(1.0 - float(alpha) / 2.0)
     zg = k.qnorm(float(power))
     n = (C / A) * (za + zg * math.sqrt(B)) ** 2
-    return {"n_events": n, "n_events_ceiling": int(math.ceil(n)),
-            "rho": rho, "A": A, "B": B, "C": C,
-            "z_alpha_2": za, "z_power": zg,
-            "log_ri": b, "r": rr, "p_exposed": p,
-            "assumes": "age effects negligible; see Musonda, "
-                       "Farrington & Whitaker (2006) otherwise",
-            "method": "Whitaker et al. (2006) Sec. 7.6"}
+    return {
+        "n_events": n,
+        "n_events_ceiling": int(math.ceil(n)),
+        "rho": rho,
+        "A": A,
+        "B": B,
+        "C": C,
+        "z_alpha_2": za,
+        "z_power": zg,
+        "log_ri": b,
+        "r": rr,
+        "p_exposed": p,
+        "assumes": "age effects negligible; see Musonda, Farrington & Whitaker (2006) otherwise",
+        "method": "Whitaker et al. (2006) Sec. 7.6",
+    }
 
 
 def power(n_events, log_ri, r, p_exposed, alpha=0.05):
@@ -248,8 +256,7 @@ def power(n_events, log_ri, r, p_exposed, alpha=0.05):
     za = s["z_alpha_2"]
     root = math.sqrt(max(float(n_events) * A / C, 0.0))
     zg = (root - za) / math.sqrt(B) if B > _EPS else float("inf")
-    return {"power": k.pnorm(zg), "z_power": zg,
-            "n_events": float(n_events), "A": A, "B": B, "C": C}
+    return {"power": k.pnorm(zg), "z_power": zg, "n_events": float(n_events), "A": A, "B": B, "C": C}
 
 
 def relative_efficiency(r, log_ri):
@@ -267,27 +274,33 @@ def relative_efficiency(r, log_ri):
     eb = math.exp(b)
     den = rr * eb + 1.0 - rr
     rho = rr * eb / den
-    return {"rho": rho, "efficiency": 1.0 - rho,
-            "r": rr, "log_ri": b,
-            "interpretation": "the fraction of cases falling in the "
-                              "risk period is rho; the marginal "
-                              "information lost grows with it, so a "
-                              "SHORT risk period keeps efficiency "
-                              "high (Sec. 7.5)"}
+    return {
+        "rho": rho,
+        "efficiency": 1.0 - rho,
+        "r": rr,
+        "log_ri": b,
+        "interpretation": "the fraction of cases falling in the "
+        "risk period is rho; the marginal "
+        "information lost grows with it, so a "
+        "SHORT risk period keeps efficiency "
+        "high (Sec. 7.5)",
+    }
 
 
 def cheatsheet():
-    return ("smatch: the case series fitted as a POISSON model -- "
-            "counts n_ijk, offset log(e_ijk), factors for age, "
-            "exposure AND one per individual. The individual factors "
-            "force the fitted totals to match the observed ones, "
-            "which IS the conditioning, so this is the same fit as "
-            "the multinomial, not an approximation. Sample size "
-            "(Sec. 7.6): rho = re^b/(re^b+1-r), A = 2{rho b - "
-            "log(re^b+1-r)}, B = b^2 rho(1-rho)/A -> 1 as b -> 0, "
-            "C = 1 + (1-p)/(p(re^b+1-r)), n = (C/A)(z_a2 + z_g sqrt "
-            "B)^2. p is the POPULATION exposed fraction, not the "
-            "cases.")
+    return (
+        "smatch: the case series fitted as a POISSON model -- "
+        "counts n_ijk, offset log(e_ijk), factors for age, "
+        "exposure AND one per individual. The individual factors "
+        "force the fitted totals to match the observed ones, "
+        "which IS the conditioning, so this is the same fit as "
+        "the multinomial, not an approximation. Sample size "
+        "(Sec. 7.6): rho = re^b/(re^b+1-r), A = 2{rho b - "
+        "log(re^b+1-r)}, B = b^2 rho(1-rho)/A -> 1 as b -> 0, "
+        "C = 1 + (1-p)/(p(re^b+1-r)), n = (C/A)(z_a2 + z_g sqrt "
+        "B)^2. p is the POPULATION exposed fraction, not the "
+        "cases."
+    )
 
 
 # compact alias per ledger/NAMING.md

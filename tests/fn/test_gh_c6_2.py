@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_2 import ghosal_strong_consist
 
 
@@ -30,11 +29,16 @@ def test_gh_c6_2_basic():
     for k in range(grid):
         t = (k + 0.5) / grid
         if abs(t - theta0) > eps:
-            expected_mass += math.exp(
-                math.lgamma(a + b) - math.lgamma(a)
-                - math.lgamma(b)
-                + (a - 1.0) * math.log(t)
-                + (b - 1.0) * math.log(1.0 - t)) / grid
+            expected_mass += (
+                math.exp(
+                    math.lgamma(a + b)
+                    - math.lgamma(a)
+                    - math.lgamma(b)
+                    + (a - 1.0) * math.log(t)
+                    + (b - 1.0) * math.log(1.0 - t)
+                )
+                / grid
+            )
 
     assert abs(float(result["estimate"]) - expected_mass) < 1e-12
     # Tail mass outside the eps-ball must be in [0, 1]
@@ -56,8 +60,7 @@ def test_gh_c6_2_edge():
     assert len(result["path_masses"]) == 2
 
     # Final estimate must equal the last entry in path_masses
-    assert abs(float(result["estimate"])
-               - float(result["path_masses"][-1])) < 1e-15
+    assert abs(float(result["estimate"]) - float(result["path_masses"][-1])) < 1e-15
 
     # Independent recomputation for this small case
     theta0 = 0.5
@@ -75,10 +78,15 @@ def test_gh_c6_2_edge():
     for k in range(grid):
         t = (k + 0.5) / grid
         if abs(t - theta0) > eps:
-            expected_mass += math.exp(
-                math.lgamma(a + b) - math.lgamma(a)
-                - math.lgamma(b)
-                + (a - 1.0) * math.log(t)
-                + (b - 1.0) * math.log(1.0 - t)) / grid
+            expected_mass += (
+                math.exp(
+                    math.lgamma(a + b)
+                    - math.lgamma(a)
+                    - math.lgamma(b)
+                    + (a - 1.0) * math.log(t)
+                    + (b - 1.0) * math.log(1.0 - t)
+                )
+                / grid
+            )
 
     assert abs(float(result["estimate"]) - expected_mass) < 1e-12

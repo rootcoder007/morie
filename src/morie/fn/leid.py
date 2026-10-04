@@ -12,8 +12,7 @@ from .scleid import leiden_clustering
 __all__ = ["leiden_communities"]
 
 
-def leiden_communities(y, A, resolution=1.0, quality="modularity",
-                       max_iter=20):
+def leiden_communities(y, A, resolution=1.0, quality="modularity", max_iter=20):
     """Partition a graph into well-connected communities.
 
     Louvain can leave a community internally disconnected -- a node moved

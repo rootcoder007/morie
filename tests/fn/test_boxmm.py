@@ -1,7 +1,6 @@
 """Test boxmm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.boxmm import box_m_test
 
 

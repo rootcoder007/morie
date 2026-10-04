@@ -5,22 +5,20 @@ exported, and asserted an "estimate" key the payload never had. Rewritten
 against the real API, anchored on the paper's closed forms.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.zfmech import (
-    zero_concentrated_dp,
-    sigma_for_rho,
     compose,
     group_privacy,
+    sigma_for_rho,
+    zero_concentrated_dp,
 )
 
 
 def test_rho_is_the_closed_form_of_proposition_1_6():
     """rho = Delta^2 / (2 sigma^2), exactly."""
     for delta, sigma in ((1.0, 1.0), (2.0, 3.0), (0.5, 0.25)):
-        assert zero_concentrated_dp(delta, sigma) == pytest.approx(
-            delta ** 2 / (2 * sigma ** 2))
+        assert zero_concentrated_dp(delta, sigma) == pytest.approx(delta**2 / (2 * sigma**2))
 
 
 def test_sigma_for_rho_inverts_the_mechanism():

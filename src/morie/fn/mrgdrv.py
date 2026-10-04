@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['azuma', 'martingale_concentration']
+__all__ = ["azuma", "martingale_concentration"]
 
 
 def azuma(c, t):
@@ -44,9 +44,16 @@ def azuma(c, t):
     if s <= 0:
         raise ValueError("sum of squared differences must be positive")
     b = math.exp(-t * t / (2.0 * s))
-    return RichResult(payload={
-        "bound": b, "bound_two_sided": min(1.0, 2.0 * b), "sum_c2": s,
-        "t": t, "n": len(c), "method": "Azuma-Hoeffding bound"})
+    return RichResult(
+        payload={
+            "bound": b,
+            "bound_two_sided": min(1.0, 2.0 * b),
+            "sum_c2": s,
+            "t": t,
+            "n": len(c),
+            "method": "Azuma-Hoeffding bound",
+        }
+    )
 
 
 martingale_concentration = azuma

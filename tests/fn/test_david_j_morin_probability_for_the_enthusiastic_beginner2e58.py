@@ -1,12 +1,10 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner2e58.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_58."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner2e58 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_58,
 )
-
-import math
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2e58_basic():

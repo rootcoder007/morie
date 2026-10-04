@@ -10,7 +10,6 @@ import pytest
 
 from morie.fn import _frame_core as pd
 
-
 DATA = {
     "g": ["a", "b", "a", "b", "a", "c"],
     "x": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
@@ -88,8 +87,7 @@ def test_merge_matches():
     assert gl.shape == (2, 3)
     assert gl["v"].tolist() == [1, 2]
     assert gl["u"].tolist() == [10, 20]
-    go = pd.DataFrame(left_d).merge(pd.DataFrame(right_d), on="k",
-                                    how="left")
+    go = pd.DataFrame(left_d).merge(pd.DataFrame(right_d), on="k", how="left")
     assert go.shape == (3, 3)
     assert go["u"].tolist()[:2] == [10, 20]
     assert math.isnan(go["u"].tolist()[2])
@@ -98,8 +96,7 @@ def test_merge_matches():
 def test_concat_matches():
     a = {"x": [1, 2], "y": [3, 4]}
     b = {"x": [5], "y": [6]}
-    gc = pd.concat([pd.DataFrame(a), pd.DataFrame(b)],
-                   ignore_index=True)
+    gc = pd.concat([pd.DataFrame(a), pd.DataFrame(b)], ignore_index=True)
     assert gc["x"].tolist() == [1, 2, 5]
     assert gc["y"].tolist() == [3, 4, 6]
 
@@ -117,11 +114,9 @@ def test_crosstab_matches():
 def test_cut_qcut_match():
     x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
     # right-closed bins (0, 4], (4, 8]
-    assert pd.cut(x, [0, 4, 8], labels=["lo", "hi"]).tolist() == \
-        ["lo", "lo", "lo", "lo", "hi", "hi", "hi", "hi"]
+    assert pd.cut(x, [0, 4, 8], labels=["lo", "hi"]).tolist() == ["lo", "lo", "lo", "lo", "hi", "hi", "hi", "hi"]
     # median split at 4.5
-    assert pd.qcut(x, 2, labels=["l", "h"]).tolist() == \
-        ["l", "l", "l", "l", "h", "h", "h", "h"]
+    assert pd.qcut(x, 2, labels=["l", "h"]).tolist() == ["l", "l", "l", "l", "h", "h", "h", "h"]
 
 
 def test_get_dummies_matches():
@@ -162,8 +157,7 @@ def test_corr_cov_describe():
     # remaining x = [1,3,4,5,6]: var (ddof=1) = 14.8/4 = 3.7
     assert gv["y"].tolist()[0] == pytest.approx(7.4, rel=1e-12)
     gd = g.describe()
-    assert gd["x"].tolist() == pytest.approx(
-        [6.0, 3.5, math.sqrt(3.5), 1.0, 2.25, 3.5, 4.75, 6.0])
+    assert gd["x"].tolist() == pytest.approx([6.0, 3.5, math.sqrt(3.5), 1.0, 2.25, 3.5, 4.75, 6.0])
 
 
 def test_apply_iterrows_pivot():
@@ -171,18 +165,15 @@ def test_apply_iterrows_pivot():
     ga = g.apply(lambda r: r["x"] + 1, axis=1)
     assert ga.tolist() == [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
     rows_g = [(i, r["x"]) for i, r in g.iterrows()]
-    assert rows_g == [(0, 1.0), (1, 2.0), (2, 3.0), (3, 4.0),
-                      (4, 5.0), (5, 6.0)]
-    gp = g.pivot_table(values="x", index="g", columns="g",
-                       aggfunc="sum")
+    assert rows_g == [(0, 1.0), (1, 2.0), (2, 3.0), (3, 4.0), (4, 5.0), (5, 6.0)]
+    gp = g.pivot_table(values="x", index="g", columns="g", aggfunc="sum")
     assert gp["a"].tolist()[0] == 9.0  # 1+3+5
 
 
 def test_str_accessor_and_to_datetime():
     s = ["Foo", "BAR", "baz"]
     assert pd.Series(s).str.lower().tolist() == ["foo", "bar", "baz"]
-    assert pd.Series(s).str.contains("a").tolist() == \
-        [False, False, True]
+    assert pd.Series(s).str.contains("a").tolist() == [False, False, True]
     d = pd.to_datetime(["2024-01-15", "2024-03-02"])
     assert d.dt.year.tolist() == [2024, 2024]
     assert d.dt.month.tolist() == [1, 3]

@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SNP-distance single-linkage sequence clustering."""
 
-from . import _s03core as core
 from ._richresult import RichResult
 
 __all__ = ["sequence_clustering"]
@@ -82,16 +81,18 @@ def sequence_clustering(sequences, snp_threshold=5):
     K = len(roots)
     counts = [sum(1 for v in z if v == c) for c in range(K)]
     mx = max((D[i][j] for i in range(n) for j in range(i + 1, n)), default=0)
-    return RichResult(payload={
-        "estimate": K,
-        "z": z,
-        "counts": counts,
-        "n_clusters": K,
-        "distances": D,
-        "max_distance": float(mx),
-        "n": n,
-        "method": "SNP-distance single-linkage sequence clustering",
-    })
+    return RichResult(
+        payload={
+            "estimate": K,
+            "z": z,
+            "counts": counts,
+            "n_clusters": K,
+            "distances": D,
+            "max_distance": float(mx),
+            "n": n,
+            "method": "SNP-distance single-linkage sequence clustering",
+        }
+    )
 
 
 def cheatsheet():

@@ -53,7 +53,7 @@ def stick_breaking_weights(alpha=1.0, truncation=10, V=None, base=2):
     rest = 1.0
     for i in range(len(Vs)):
         pi.append(Vs[i] * rest)
-        rest *= (1.0 - Vs[i])
+        rest *= 1.0 - Vs[i]
     tot = 0.0
     for x in pi:
         tot += x

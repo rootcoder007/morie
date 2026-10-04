@@ -69,9 +69,18 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["goldsc", "gold_score", "lennard_jones", "split_potential",
-           "vdw_energy", "hbond_energy", "torsion_energy", "POTENTIALS",
-           "VDW_WEIGHT", "cheatsheet"]
+__all__ = [
+    "goldsc",
+    "gold_score",
+    "lennard_jones",
+    "split_potential",
+    "vdw_energy",
+    "hbond_energy",
+    "torsion_energy",
+    "POTENTIALS",
+    "VDW_WEIGHT",
+    "cheatsheet",
+]
 
 # The exponent pairs GOLD parameterises. The first two are the plain
 # potentials; the split ones keep the 4-8 outside the minimum and soften
@@ -82,8 +91,7 @@ POTENTIALS = ("4-8", "6-12", "split_2-4", "split_1-2")
 # Guide 8.3.1. It exists to encourage hydrophobic contact.
 VDW_WEIGHT = 1.375
 
-_EXPONENTS = {"4-8": (4, 8), "6-12": (6, 12), "split_2-4": (4, 8),
-              "split_1-2": (4, 8)}
+_EXPONENTS = {"4-8": (4, 8), "6-12": (6, 12), "split_2-4": (4, 8), "split_1-2": (4, 8)}
 _INNER = {"split_2-4": (2, 4), "split_1-2": (1, 2)}
 
 
@@ -114,11 +122,9 @@ def lennard_jones(r, r0, eps, m=6, n=12):
     if r <= 0.0:
         return float("inf")
     if n <= m:
-        raise ValueError("the repulsive exponent must exceed the "
-                         "attractive one")
+        raise ValueError("the repulsive exponent must exceed the attractive one")
     q = r0 / r
-    return eps * ((float(m) / (n - m)) * _ipow(q, n)
-                  - (float(n) / (n - m)) * _ipow(q, m))
+    return eps * ((float(m) / (n - m)) * _ipow(q, n) - (float(n) / (n - m)) * _ipow(q, m))
 
 
 def split_potential(r, r0, eps, outer=(4, 8), inner=(2, 4)):
@@ -138,8 +144,7 @@ def _pair(r, r0, eps, potential):
     if potential not in POTENTIALS:
         raise ValueError("potential must be one of %r" % (POTENTIALS,))
     if potential in _INNER:
-        return split_potential(r, r0, eps, _EXPONENTS[potential],
-                               _INNER[potential])
+        return split_potential(r, r0, eps, _EXPONENTS[potential], _INNER[potential])
     m, n = _EXPONENTS[potential]
     return lennard_jones(r, r0, eps, m, n)
 
@@ -170,8 +175,7 @@ def vdw_energy(pairs, radii, depths, potential="4-8", cutoff=None):
         if cutoff is not None and float(r) > float(cutoff):
             continue
         r0 = _lookup(radii, ti, "radius") + _lookup(radii, tj, "radius")
-        eps = math.sqrt(_lookup(depths, ti, "well depth")
-                        * _lookup(depths, tj, "well depth"))
+        eps = math.sqrt(_lookup(depths, ti, "well depth") * _lookup(depths, tj, "well depth"))
         terms.append(_pair(r, r0, eps, potential))
         kept += 1
     return (_w.csum(terms) if terms else 0.0), terms, kept
@@ -203,21 +207,28 @@ def torsion_energy(torsions):
     rotatable bond: A (1 + cos(n phi - phi0)), with the angle in degrees
     on the way in.
     """
-    terms = [float(A) * (1.0 + math.cos(float(n) * math.radians(float(p))
-                                        - float(f)))
-             for p, A, n, f in torsions]
+    terms = [float(A) * (1.0 + math.cos(float(n) * math.radians(float(p)) - float(f))) for p, A, n, f in torsions]
     return (_w.csum(terms) if terms else 0.0), terms
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t])
-                             for t in range(3)))
+    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t]) for t in range(3)))
 
 
-def gold_score(receptor, ligand, radii=(), depths=(), hbonds=(),
-               internal=(), torsions=(), potential="4-8",
-               internal_potential="6-12", vdw_weight=VDW_WEIGHT,
-               max_distance=2.5, cutoff=None):
+def gold_score(
+    receptor,
+    ligand,
+    radii=(),
+    depths=(),
+    hbonds=(),
+    internal=(),
+    torsions=(),
+    potential="4-8",
+    internal_potential="6-12",
+    vdw_weight=VDW_WEIGHT,
+    max_distance=2.5,
+    cutoff=None,
+):
     """The GoldScore fitness of a pose.
 
     Parameters
@@ -256,58 +267,58 @@ def gold_score(receptor, ligand, radii=(), depths=(), hbonds=(),
     Jones et al. (1997) J Mol Biol 267(3), 727-748; CCDC GOLD User
     Guide 8.3 and 5.4.
     """
-    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in receptor]
-    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in ligand]
+    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in receptor]
+    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in ligand]
     pairs = []
     for rx, rt in rec:
         for lx, lt in lig:
             pairs.append((_dist(rx, lx), rt, lt))
-    e_ext, ext_terms, n_ext = vdw_energy(pairs, radii, depths, potential,
-                                         cutoff)
-    e_int, int_terms, n_int = vdw_energy(internal, radii, depths,
-                                         internal_potential, cutoff)
+    e_ext, ext_terms, n_ext = vdw_energy(pairs, radii, depths, potential, cutoff)
+    e_int, int_terms, n_int = vdw_energy(internal, radii, depths, internal_potential, cutoff)
     e_hb, hb_terms, n_hb = hbond_energy(hbonds, max_distance)
     e_to, to_terms = torsion_energy(torsions)
 
     w = float(vdw_weight)
     total = e_hb + w * e_ext + e_int + e_to
-    return RichResult(payload={
-        "fitness": -total,
-        "energy": total,
-        "hbond": e_hb,
-        "vdw_external": e_ext,
-        "vdw_external_weighted": w * e_ext,
-        "vdw_internal": e_int,
-        "torsion": e_to,
-        "internal": e_int + e_to,
-        "external_terms": ext_terms,
-        "internal_terms": int_terms,
-        "hbond_terms": hb_terms,
-        "torsion_terms": to_terms,
-        "n_external": n_ext,
-        "n_internal": n_int,
-        "n_hbond": n_hb,
-        "n_receptor": len(rec),
-        "n_ligand": len(lig),
-        "estimate": -total,
-        "se": float("nan"),
-        "vdw_weight": w,
-        "max_distance": float(max_distance),
-        "potential": potential,
-        "internal_potential": internal_potential,
-        "method": "GoldScore genetic-algorithm docking fitness",
-    })
+    return RichResult(
+        payload={
+            "fitness": -total,
+            "energy": total,
+            "hbond": e_hb,
+            "vdw_external": e_ext,
+            "vdw_external_weighted": w * e_ext,
+            "vdw_internal": e_int,
+            "torsion": e_to,
+            "internal": e_int + e_to,
+            "external_terms": ext_terms,
+            "internal_terms": int_terms,
+            "hbond_terms": hb_terms,
+            "torsion_terms": to_terms,
+            "n_external": n_ext,
+            "n_internal": n_int,
+            "n_hbond": n_hb,
+            "n_receptor": len(rec),
+            "n_ligand": len(lig),
+            "estimate": -total,
+            "se": float("nan"),
+            "vdw_weight": w,
+            "max_distance": float(max_distance),
+            "potential": potential,
+            "internal_potential": internal_potential,
+            "method": "GoldScore genetic-algorithm docking fitness",
+        }
+    )
 
 
 goldsc = gold_score
 
 
 def cheatsheet():
-    return ("goldsc: GoldScore docking fitness. potentials "
-            + ", ".join(POTENTIALS)
-            + "; external van der Waals weighted 1.375 (CCDC GOLD)")
+    return (
+        "goldsc: GoldScore docking fitness. potentials "
+        + ", ".join(POTENTIALS)
+        + "; external van der Waals weighted 1.375 (CCDC GOLD)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

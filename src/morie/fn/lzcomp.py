@@ -65,9 +65,15 @@ def lempel_ziv_complexity(y):
                 k = 1
     a = len(set(s))
     norm = c * (math.log(n) / math.log(a)) / n if a > 1 and n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": float(c), "normalized": norm, "alphabet": a, "n": n,
-        "method": "Lempel-Ziv complexity, LZ76 parse"})
+    return RichResult(
+        payload={
+            "estimate": float(c),
+            "normalized": norm,
+            "alphabet": a,
+            "n": n,
+            "method": "Lempel-Ziv complexity, LZ76 parse",
+        }
+    )
 
 
 def cheatsheet():

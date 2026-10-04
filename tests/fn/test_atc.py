@@ -1,9 +1,9 @@
 """Tests for morie.fn.atc — Average Treatment Effect on the Controls."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.atc import estimate_atc
 
 

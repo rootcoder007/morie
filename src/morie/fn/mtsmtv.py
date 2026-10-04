@@ -69,12 +69,21 @@ def mts_mtr_combined(y, D, y_min, y_max, d=None):
     r = mtrbound(yv, z, lev, lo, hi)
     lb = max(s["lower"], r["lower"])
     ub = min(s["upper"], r["upper"])
-    return RichResult(payload={
-        "lower": lb, "upper": ub, "width": ub - lb,
-        "mts_lower": s["lower"], "mts_upper": s["upper"],
-        "mtr_lower": r["lower"], "mtr_upper": r["upper"],
-        "empty": 1.0 if lb > ub else 0.0, "n": len(yv), "d": lev,
-        "method": "Combined MTS+MTR bounds (Manski-Pepper 2000)"})
+    return RichResult(
+        payload={
+            "lower": lb,
+            "upper": ub,
+            "width": ub - lb,
+            "mts_lower": s["lower"],
+            "mts_upper": s["upper"],
+            "mtr_lower": r["lower"],
+            "mtr_upper": r["upper"],
+            "empty": 1.0 if lb > ub else 0.0,
+            "n": len(yv),
+            "d": lev,
+            "method": "Combined MTS+MTR bounds (Manski-Pepper 2000)",
+        }
+    )
 
 
 mtsmtrcombined = mts_mtr_combined

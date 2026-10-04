@@ -54,8 +54,7 @@ def survival_bootstrap_se(time, event, t_grid=None, B=200, seed=0):
     Bn = int(B)
     if Bn < 20:
         raise ValueError(f"need at least 20 replicates, got {Bn}.")
-    g = np.unique(tv) if t_grid is None else \
-        np.atleast_1d(np.asarray(t_grid, dtype=float))
+    g = np.unique(tv) if t_grid is None else np.atleast_1d(np.asarray(t_grid, dtype=float))
 
     def km(t, e, grid):
         out = np.empty(grid.size)
@@ -78,19 +77,27 @@ def survival_bootstrap_se(time, event, t_grid=None, B=200, seed=0):
     rng = np.random.default_rng(int(seed))
     reps = np.empty((Bn, g.size))
     for b in range(Bn):
-        idx = rng.integers(0, n, n)          # SUBJECT-level resampling
+        idx = rng.integers(0, n, n)  # SUBJECT-level resampling
         reps[b], _ = km(tv[idx], ev[idx], g)
     bse = reps.std(axis=0, ddof=1)
     with np.errstate(divide="ignore", invalid="ignore"):
         ratio = np.where(green > 0, bse / green, np.nan)
-    return RichResult(payload={
-        "t_grid": g, "survival": surv, "bootstrap_se": bse,
-        "greenwood_se": green, "se_ratio": ratio, "B": Bn,
-        "resample_level": "subject, which preserves the censoring pattern",
-        "why_both": "Greenwood is a delta-method variance and is known to be "
-                    "poor in the tail, where few remain at risk",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Bootstrap SE for Kaplan-Meier, reported beside Greenwood"})
+    return RichResult(
+        payload={
+            "t_grid": g,
+            "survival": surv,
+            "bootstrap_se": bse,
+            "greenwood_se": green,
+            "se_ratio": ratio,
+            "B": Bn,
+            "resample_level": "subject, which preserves the censoring pattern",
+            "why_both": "Greenwood is a delta-method variance and is known to be "
+            "poor in the tail, where few remain at risk",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Bootstrap SE for Kaplan-Meier, reported beside Greenwood",
+        }
+    )
 
 
 def cheatsheet():

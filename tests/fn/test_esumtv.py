@@ -1,7 +1,5 @@
 """Tests for esumtv.effective_resistance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.esumtv import effective_resistance
 
 
@@ -19,12 +17,14 @@ def _make_graph(weights):
 def test_esumtv_basic():
     """Test basic functionality on a small path graph."""
     # Path graph on 4 nodes: 1 -- 2 -- 3 -- 4, unit conductances.
-    G = _make_graph([
-        [0.0, 1.0, 0.0, 0.0],
-        [1.0, 0.0, 1.0, 0.0],
-        [0.0, 1.0, 0.0, 1.0],
-        [0.0, 0.0, 1.0, 0.0],
-    ])
+    G = _make_graph(
+        [
+            [0.0, 1.0, 0.0, 0.0],
+            [1.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 1.0],
+            [0.0, 0.0, 1.0, 0.0],
+        ]
+    )
     u, v = 0, 3
     result = effective_resistance(G, u, v)
 
@@ -52,11 +52,13 @@ def test_esumtv_basic():
 
 def test_esumtv_edge():
     """Test edge cases: same node pair returns zero resistance."""
-    G = _make_graph([
-        [0.0, 1.0, 0.0],
-        [1.0, 0.0, 1.0],
-        [0.0, 1.0, 0.0],
-    ])
+    G = _make_graph(
+        [
+            [0.0, 1.0, 0.0],
+            [1.0, 0.0, 1.0],
+            [0.0, 1.0, 0.0],
+        ]
+    )
     # u == v must return R = 0 exactly.
     result = effective_resistance(G, 1, 1)
 

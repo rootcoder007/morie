@@ -1,7 +1,6 @@
 """Tests for grteb.geron_transformer_encoder_block."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grteb import geron_transformer_encoder_block
 
 
@@ -20,8 +19,12 @@ def test_grteb_basic():
     gamma1 = np.ones(d_model)
     beta1 = np.zeros(d_model)
     mha_weights = {
-        "WQ": WQ, "WK": WK, "WV": WV, "WO": WO,
-        "gamma": gamma1, "beta": beta1,
+        "WQ": WQ,
+        "WK": WK,
+        "WV": WV,
+        "WO": WO,
+        "gamma": gamma1,
+        "beta": beta1,
     }
 
     W1 = rng.normal(0, 0.1, (d_model, d_ff))
@@ -29,8 +32,10 @@ def test_grteb_basic():
     gamma2 = np.ones(d_model)
     beta2 = np.zeros(d_model)
     ffn_weights = {
-        "W1": W1, "W2": W2,
-        "gamma": gamma2, "beta": beta2,
+        "W1": W1,
+        "W2": W2,
+        "gamma": gamma2,
+        "beta": beta2,
     }
 
     result = geron_transformer_encoder_block(x, mha_weights, ffn_weights)
@@ -93,7 +98,7 @@ import morie.fn.grteb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

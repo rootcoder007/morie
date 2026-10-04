@@ -5,10 +5,6 @@ Implements sec. 13.3.2 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_bp_cont"]
@@ -23,11 +19,15 @@ def ghosal_bp_cont(c=2.0, t_max=1.0, n_grid=2000):
     for i in range(n_grid):
         u = (i + 0.5) / n_grid
         tot += u * c / u * (1.0 - u) ** (c - 1.0) / n_grid
-    expected_mass = tot * t_max            # H0(t) = t
-    res = RichResult(payload={"estimate": expected_mass,
-                              "H0_t_max": t_max,
-                              "gap": abs(expected_mass - t_max),
-                              "method": "BP Levy measure (GvdV 2017 sec. 13.3.2)"})
+    expected_mass = tot * t_max  # H0(t) = t
+    res = RichResult(
+        payload={
+            "estimate": expected_mass,
+            "H0_t_max": t_max,
+            "gap": abs(expected_mass - t_max),
+            "method": "BP Levy measure (GvdV 2017 sec. 13.3.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_5")
 
 

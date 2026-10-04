@@ -1,7 +1,6 @@
 """Tests for msm249.mvsml_reproducing_kernel_eq_10_5."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm249 import mvsml_reproducing_kernel_eq_10_5
 
 

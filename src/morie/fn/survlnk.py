@@ -13,6 +13,7 @@ def _links(link):
         def inv(eta):
             return 1.0 - np.exp(-np.exp(np.clip(eta, -30.0, 30.0)))
     elif link == "logit":
+
         def inv(eta):
             return 1.0 / (1.0 + np.exp(-np.clip(eta, -30.0, 30.0)))
     else:
@@ -20,8 +21,7 @@ def _links(link):
     return inv
 
 
-def link_function_survival(time, event, X, link="cloglog",
-                           max_iter=100, tol=1e-10):
+def link_function_survival(time, event, X, link="cloglog", max_iter=100, tol=1e-10):
     """
     Discrete-time survival regression with a chosen hazard link.
 
@@ -56,7 +56,7 @@ def link_function_survival(time, event, X, link="cloglog",
     if K == 0:
         raise ValueError("no events in the data")
     # person-period expansion
-    rows = []   # (k, i, y)
+    rows = []  # (k, i, y)
     for i in range(n):
         for k, tk in enumerate(etimes):
             if time[i] >= tk:
@@ -72,7 +72,7 @@ def link_function_survival(time, event, X, link="cloglog",
         U = np.zeros(q)
         info = np.zeros((q, q))
         ll = 0.0
-        for (k, i, y) in rows:
+        for k, i, y in rows:
             eta = float(theta[k]) + float(Xa[i] @ theta[K:])
             h = float(inv(np.asarray([eta]))[0])
             h = min(max(h, 1e-12), 1.0 - 1e-12)
@@ -99,16 +99,18 @@ def link_function_survival(time, event, X, link="cloglog",
     dg = [float(cov[K + j, K + j]) for j in range(p)]
     if any(v <= 0.0 or v != v for v in dg):
         raise ValueError("information matrix is singular")
-    return RichResult(payload={
-        "estimate": theta[K:],
-        "se": np.sqrt(np.asarray(dg)),
-        "alpha": theta[:K],
-        "event_times": np.asarray(etimes),
-        "loglik": ll,
-        "n_iter": it + 1,
-        "link": link,
-        "method": "Klein-Moeschberger (2003) sec. 8.4 discrete-time hazard regression",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta[K:],
+            "se": np.sqrt(np.asarray(dg)),
+            "alpha": theta[:K],
+            "event_times": np.asarray(etimes),
+            "loglik": ll,
+            "n_iter": it + 1,
+            "link": link,
+            "method": "Klein-Moeschberger (2003) sec. 8.4 discrete-time hazard regression",
+        }
+    )
 
 
 survlnk = link_function_survival

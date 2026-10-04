@@ -7,9 +7,9 @@ in-text arithmetic.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn import _ca_crim as ca
 
 # Table 2.1 (book p. 19): years in prison (x) vs subsequent arrests (y), n=20.
@@ -42,16 +42,14 @@ class TestCh2OLS:
         assert got["b1"] == pytest.approx(0.9358, abs=2e-4)
         b2_unit = got["b2"]  # with s_2 = 1: b2 = 0.9593 * s_x2 ... invert:
         s_x2 = b2_unit / 0.9593
-        assert ca.ols_two_iv(0.7156, 0.7616, 0.6280, 2.300, 0.9631, s_x2)[
-            "b2"] == pytest.approx(0.9593, rel=1e-9)
+        assert ca.ols_two_iv(0.7156, 0.7616, 0.6280, 2.300, 0.9631, s_x2)["b2"] == pytest.approx(0.9593, rel=1e-9)
 
     def test_variance_partition_identity(self):
         fit = ca.ols_simple(X21, Y21)
         yhat = fit["b0"] + fit["b1"] * X21
         vp = ca.variance_partition(Y21, yhat)
         # SS_total = SS_model + SS_resid for a least-squares fit
-        assert vp["ss_total"] == pytest.approx(vp["ss_model"] + vp["ss_resid"],
-                                               rel=1e-10)
+        assert vp["ss_total"] == pytest.approx(vp["ss_model"] + vp["ss_resid"], rel=1e-10)
         # R^2 = r^2 in simple regression
         assert vp["r2"] == pytest.approx(fit["r"] ** 2, rel=1e-10)
 
@@ -70,8 +68,7 @@ class TestCh2OLS:
 
     def test_nested_f_forms_agree(self):
         rng_y = Y21
-        x2 = np.array([3, 4, 0, 0, 1, 4, 3, 1, 3, 1, 2, 1, 2, 0, 4, 3, 2, 5, 8, 4],
-                      float)
+        x2 = np.array([3, 4, 0, 0, 1, 4, 3, 1, 3, 1, 2, 1, 2, 0, 4, 3, 2, 5, 8, 4], float)
         full = ca.ols_matrix(np.column_stack([X21, x2]), rng_y)
         restricted = ca.ols_matrix(X21, rng_y)
         ss_f = float(np.dot(full["residuals"], full["residuals"]))
@@ -84,21 +81,17 @@ class TestCh2OLS:
         # eq (2.19) with matching df must equal the SS form re-computed at n-k-1
         alt = ((ss_r - ss_f) / 1) / (ss_f / (20 - 2 - 1))
         assert f_r2["f"] == pytest.approx(alt, rel=1e-9)
-        assert f_ss["f"] == pytest.approx(((ss_r - ss_f) / 1) / (ss_f / 18),
-                                          rel=1e-9)
+        assert f_ss["f"] == pytest.approx(((ss_r - ss_f) / 1) / (ss_f / 18), rel=1e-9)
 
     def test_beta_and_dummy_fold(self):
         assert ca.beta_standardized(2.0, 1.5, 3.0) == pytest.approx(1.0)
         # book eqs (2.21)-(2.22): b0=45.15303, b3=-1.72620 -> female intercept
-        folded = ca.dummy_subgroup_equation(
-            45.15303, [-0.07957, 0.46594, -1.72620], 2, 1)
+        folded = ca.dummy_subgroup_equation(45.15303, [-0.07957, 0.46594, -1.72620], 2, 1)
         # 45.15303 - 1.72620 = 43.42683; the book prints 43.41638 (typo --
         # its own eq (2.22) arithmetic gives 43.42683, matching to 3 sf)
-        assert folded["intercept"] == pytest.approx(45.15303 - 1.72620,
-                                                    rel=1e-12)
+        assert folded["intercept"] == pytest.approx(45.15303 - 1.72620, rel=1e-12)
         assert folded["intercept"] == pytest.approx(43.42, abs=1e-2)
-        male = ca.dummy_subgroup_equation(
-            45.15303, [-0.07957, 0.46594, -1.72620], 2, 0)
+        male = ca.dummy_subgroup_equation(45.15303, [-0.07957, 0.46594, -1.72620], 2, 0)
         assert male["intercept"] == pytest.approx(45.15303, abs=1e-9)
 
 
@@ -135,8 +128,7 @@ class TestCh4Logistic:
     def test_wald_book_p171(self):
         # book: (0.805 / 0.332)^2 = 5.879
         assert ca.wald_statistic(0.805, 0.332) == pytest.approx(5.879, abs=1e-3)
-        assert ca.wald_statistic(0.805, 0.332) == pytest.approx(
-            ca.coef_t(0.805, 0.332) ** 2, rel=1e-12)
+        assert ca.wald_statistic(0.805, 0.332) == pytest.approx(ca.coef_t(0.805, 0.332) ** 2, rel=1e-12)
 
     def test_model_chi2_book_p170(self):
         # book: 528.171 - 492.513 = 35.658
@@ -144,15 +136,13 @@ class TestCh4Logistic:
 
     def test_lr_chi2_book_p173(self):
         # book: reduced 499.447, full 492.513 -> 6.934
-        assert ca.likelihood_ratio_chi2(499.447, 492.513) == pytest.approx(
-            6.934, abs=1e-9)
+        assert ca.likelihood_ratio_chi2(499.447, 492.513) == pytest.approx(6.934, abs=1e-9)
 
     def test_cox_snell_book_table_4_12(self):
         # book reports Cox & Snell R^2 = 0.082 with chi2 = 35.658; the survey
         # n solving 1-exp(-35.658/n)=0.082 is ~416.7 -> with n=417 the value
         # rounds to 0.082.  Assert the printed value at the book's rounding.
-        assert ca.cox_snell_r2(528.171, 492.513, 417) == pytest.approx(
-            0.082, abs=5e-4)
+        assert ca.cox_snell_r2(528.171, 492.513, 417) == pytest.approx(0.082, abs=5e-4)
 
     def test_derivative_beta_pct(self):
         assert ca.derivative_at_mean(0.5, 0.8) == pytest.approx(0.2)
@@ -177,8 +167,7 @@ class TestCh5Multinomial:
 
     def test_conditional_or(self):
         # eq (5.4): OR_{m/n} = e^{xb_m}/e^{xb_n}
-        assert ca.multinomial_conditional_or(1.2, -0.4) == pytest.approx(
-            math.exp(1.6), rel=1e-12)
+        assert ca.multinomial_conditional_or(1.2, -0.4) == pytest.approx(math.exp(1.6), rel=1e-12)
 
     def test_cumulative_logits_book_p208(self):
         # book: proportions .15/.30/.35/.20 -> logits -1.735, -0.201, 1.386
@@ -230,19 +219,17 @@ class TestCh7Multilevel:
 
     def test_icc_book_p286(self):
         # book: 0.031 / (0.031 + 0.270) = 0.10
-        assert ca.intraclass_correlation(0.031, 0.270) == pytest.approx(
-            0.103, abs=1e-3)
+        assert ca.intraclass_correlation(0.031, 0.270) == pytest.approx(0.103, abs=1e-3)
 
     def test_lr_chi2_book_p286(self):
         # book: -2[(-1871.73) - (-1777.35)] = 188.76
-        assert ca.lr_test_chi2(-1871.73, -1777.35) == pytest.approx(188.76,
-                                                                    abs=1e-2)
+        assert ca.lr_test_chi2(-1871.73, -1777.35) == pytest.approx(188.76, abs=1e-2)
 
     def test_anova_table_7_3(self):
         # book Table 7.3: SS_between=74.28, df=19 -> MS 3.91; MS_within 0.27,
         # F = 14.48.  Reproduce F from the printed MS values.
-        assert 74.28 / 19 == pytest.approx(3.91, abs=5e-3)
-        assert (74.28 / 19) / 0.27 == pytest.approx(14.48, abs=5e-2)
+        assert pytest.approx(3.91, abs=5e-3) == 74.28 / 19
+        assert pytest.approx(14.48, abs=5e-2) == (74.28 / 19) / 0.27
 
     def test_grand_and_cluster_models(self):
         g1 = [1.0, 2.0, 3.0]
@@ -269,8 +256,7 @@ class TestCh8Power:
     def test_delta_small_medium_large_book_p339(self):
         # book: n1=n2=100, d=0.2/0.5/0.8 -> delta 1.414 / 3.536 / 5.657
         for d, want in [(0.2, 1.414), (0.5, 3.536), (0.8, 5.657)]:
-            assert ca.noncentrality_delta_d(d, 100, 100) == pytest.approx(
-                want, abs=1e-3)
+            assert ca.noncentrality_delta_d(d, 100, 100) == pytest.approx(want, abs=1e-3)
 
     def test_power_small_effect_book_p339(self):
         # book: delta=1.414, one-tailed alpha=.05 (t_cv about 1.653, df=198)
@@ -309,8 +295,9 @@ class TestCh9Experiments:
         got = ca.treatment_b_confounded(-0.25, -0.50, 0.50, 1.0, 1.0)
         assert got == pytest.approx(0.0, abs=1e-12)
         # book eq (9.2): with r_tx = 0 it collapses to r_yt s_y / s_t
-        assert ca.treatment_b_confounded(0.3, 0.9, 0.0, 2.0, 1.0) == \
-            pytest.approx(ca.treatment_b_randomized(0.3, 2.0, 1.0), rel=1e-12)
+        assert ca.treatment_b_confounded(0.3, 0.9, 0.0, 2.0, 1.0) == pytest.approx(
+            ca.treatment_b_randomized(0.3, 2.0, 1.0), rel=1e-12
+        )
 
     def test_independent_t_matches_d(self):
         got = ca.t_independent(127.8, 132.3, 10.4, 9.8, 25, 30)
@@ -366,8 +353,7 @@ class TestCh9Experiments:
 class TestCh10PSM:
     def test_bias_formula(self):
         # symmetric: equal means -> 0
-        assert ca.psm_standardized_bias(0.318, 0.318, 0.186, 0.19) == \
-            pytest.approx(0.0, abs=1e-12)
+        assert ca.psm_standardized_bias(0.318, 0.318, 0.186, 0.19) == pytest.approx(0.0, abs=1e-12)
         got = ca.psm_standardized_bias(0.5, 0.4, 0.2, 0.2)
         assert got == pytest.approx(100 * 0.1 / 0.2, rel=1e-12)
 
@@ -411,31 +397,25 @@ class TestCh11Meta:
         p2 = 55 / 100
         assert ca.or_from_rr(rr, p2) == pytest.approx(or_, rel=1e-9)
         assert ca.rr_from_or(or_, p2) == pytest.approx(rr, rel=1e-9)
-        assert ca.se_log_rr(0.4, 0.55, 100, 100) == pytest.approx(
-            math.sqrt(0.6 / 40 + 0.45 / 55), rel=1e-12)
-        assert ca.se_log_or(a, b, c, d) == pytest.approx(
-            math.sqrt(1 / 40 + 1 / 60 + 1 / 55 + 1 / 45), rel=1e-12)
+        assert ca.se_log_rr(0.4, 0.55, 100, 100) == pytest.approx(math.sqrt(0.6 / 40 + 0.45 / 55), rel=1e-12)
+        assert ca.se_log_or(a, b, c, d) == pytest.approx(math.sqrt(1 / 40 + 1 / 60 + 1 / 55 + 1 / 45), rel=1e-12)
 
     def test_d_r_roundtrip(self):
         d = 0.6
-        r = ca.r_from_d(d)                      # equal-n, eq (11.31)
+        r = ca.r_from_d(d)  # equal-n, eq (11.31)
         assert ca.d_from_r_pointbiserial(r) == pytest.approx(d, rel=1e-9)
         r_un = ca.r_from_d(d, 30, 70)
-        assert abs(r_un) < abs(r)               # unbalanced attenuates r
+        assert abs(r_un) < abs(r)  # unbalanced attenuates r
         # se chain eq (11.32)/(11.33) consistency at n1=n2
-        assert ca.se_r_from_se_d(d, 0.2) == pytest.approx(
-            ca.se_r_from_se_d(d, 0.2, 50, 50), rel=1e-12)
+        assert ca.se_r_from_se_d(d, 0.2) == pytest.approx(ca.se_r_from_se_d(d, 0.2, 50, 50), rel=1e-12)
 
     def test_d_lnor_roundtrip(self):
         d = 0.4
         # 0.606 is the book's rounding of 1/1.65, so the round trip closes
         # only to ~1e-4 relative
-        assert ca.d_from_log_or(ca.log_or_from_d(d, "cox"), "cox") == \
-            pytest.approx(d, rel=1e-3)
-        assert ca.se_log_or_from_se_d(0.15, "logit") == pytest.approx(
-            0.15 / 0.551, rel=1e-12)
-        assert ca.se_d_from_se_log_or(0.3, "cox") == pytest.approx(0.3 / 1.65,
-                                                                   rel=1e-12)
+        assert ca.d_from_log_or(ca.log_or_from_d(d, "cox"), "cox") == pytest.approx(d, rel=1e-3)
+        assert ca.se_log_or_from_se_d(0.15, "logit") == pytest.approx(0.15 / 0.551, rel=1e-12)
+        assert ca.se_d_from_se_log_or(0.3, "cox") == pytest.approx(0.3 / 1.65, rel=1e-12)
 
     def test_exercise_11_4_pooled_analysis(self):
         gs = np.array([-0.23, 0.25, 0.08, 0.10, 0.20, 0.22])
@@ -459,12 +439,11 @@ class TestCh11Meta:
         y1, w1 = [0.1, 0.2, 0.3], [10.0, 12.0, 9.0]
         y2, w2 = [0.5, 0.6], [8.0, 11.0]
         got = ca.q_within_between([y1, y2], [w1, w2])
-        assert got["q_total"] == pytest.approx(
-            got["q_within"] + got["q_between"], rel=1e-9)
+        assert got["q_total"] == pytest.approx(got["q_within"] + got["q_between"], rel=1e-9)
         assert got["q_between"] > 0  # groups genuinely differ
 
     def test_logistic_sd(self):
-        assert ca.LOGISTIC_SD == pytest.approx(1.8138, abs=1e-4)
+        assert pytest.approx(1.8138, abs=1e-4) == ca.LOGISTIC_SD
 
 
 class TestCh12Spatial:
@@ -474,17 +453,17 @@ class TestCh12Spatial:
 
     def test_morans_i_checkerboard_vs_cluster(self):
         # rook-adjacency on a 2x2 grid
-        w = np.array([[0, 1, 1, 0], [1, 0, 0, 1], [1, 0, 0, 1], [0, 1, 1, 0]],
-                     float)
+        w = np.array([[0, 1, 1, 0], [1, 0, 0, 1], [1, 0, 0, 1], [0, 1, 1, 0]], float)
         checker = ca.morans_i(np.array([1.0, -1.0, -1.0, 1.0]), w)
-        assert checker == pytest.approx(-1.0, rel=1e-9)   # perfect dispersion
+        assert checker == pytest.approx(-1.0, rel=1e-9)  # perfect dispersion
         cluster = ca.morans_i(np.array([1.0, 1.0, -1.0, -1.0]), w)
-        assert cluster > ca.morans_i_expected(4)          # clustered > E(I)
+        assert cluster > ca.morans_i_expected(4)  # clustered > E(I)
         # direct double-sum agreement
         x = np.array([2.0, 5.0, 1.0, 4.0])
         xd = x - x.mean()
-        direct = 4 * sum(w[i, j] * xd[i] * xd[j] for i in range(4)
-                         for j in range(4)) / (w.sum() * float(np.dot(xd, xd)))
+        direct = (
+            4 * sum(w[i, j] * xd[i] * xd[j] for i in range(4) for j in range(4)) / (w.sum() * float(np.dot(xd, xd)))
+        )
         assert ca.morans_i(x, w) == pytest.approx(direct, rel=1e-12)
 
     def test_ols_matrix_recovers_simple(self):
@@ -497,7 +476,7 @@ class TestCh12Spatial:
         rng = np.random.default_rng(12)
         n = 6
         w = np.zeros((n, n))
-        for i in range(n):        # ring adjacency, row-standardized
+        for i in range(n):  # ring adjacency, row-standardized
             w[i, (i - 1) % n] = w[i, (i + 1) % n] = 0.5
         xb = rng.normal(0, 1, n)
         e = rng.normal(0, 0.3, n)

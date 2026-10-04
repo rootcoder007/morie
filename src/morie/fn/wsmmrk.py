@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Markov inequality P(X >= a) <= E[X] / a."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["wasserman_markov_ineq"]
@@ -57,10 +56,15 @@ def wasserman_markov_ineq(mean, a):
     if a <= 0:
         raise ValueError(f"Markov's inequality needs a > 0; got {a}.")
     raw = mean / a
-    return RichResult(payload={
-        "estimate": float(min(raw, 1.0)), "raw_bound": float(raw),
-        "mean": mean, "a": a,
-        "method": "Markov bound E[X]/a (capped at 1)"})
+    return RichResult(
+        payload={
+            "estimate": float(min(raw, 1.0)),
+            "raw_bound": float(raw),
+            "mean": mean,
+            "a": a,
+            "method": "Markov bound E[X]/a (capped at 1)",
+        }
+    )
 
 
 def cheatsheet():

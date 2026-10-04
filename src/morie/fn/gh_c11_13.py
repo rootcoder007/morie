@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_gp_adapt_thm"]
@@ -20,9 +19,7 @@ def _chol_solve(K, y):
     return [float(v) for v in x._flat()]
 
 
-def ghosal_gp_adapt_thm(n=60, l_true=0.2,
-                        l_grid=(0.05, 0.2, 0.8), noise=0.1,
-                        seed=42):
+def ghosal_gp_adapt_thm(n=60, l_true=0.2, l_grid=(0.05, 0.2, 0.8), noise=0.1, seed=42):
     """f ~ GP(0, k_l), l ~ Pi_l: the evidence-weighted posterior over
     the length scale concentrates near the scale of the truth,
     adapting the rate to unknown smoothness (sec. 11.6). Exact
@@ -31,10 +28,12 @@ def ghosal_gp_adapt_thm(n=60, l_true=0.2,
     xs = [(i + 0.5) / n for i in range(n)]
     f0 = [math.sin(2.0 * math.pi * x / (5.0 * l_true)) for x in xs]
     ys = [f + noise * float(rng.normal(0, 1)) for f in f0]
+
     def logev(l):
-        K = [[math.exp(-0.5 * ((xs[i] - xs[j]) / l) ** 2)
-              + (noise ** 2 + 1e-8 if i == j else 0.0)
-              for j in range(n)] for i in range(n)]
+        K = [
+            [math.exp(-0.5 * ((xs[i] - xs[j]) / l) ** 2) + (noise**2 + 1e-8 if i == j else 0.0) for j in range(n)]
+            for i in range(n)
+        ]
         alpha = _chol_solve(K, ys)
         quad = sum(a * y for a, y in zip(alpha, ys))
         # log det via elimination
@@ -47,11 +46,12 @@ def ghosal_gp_adapt_thm(n=60, l_true=0.2,
                 for c in range(i, n):
                     m[r][c] -= fmul * m[i][c]
         return -0.5 * quad - 0.5 * ld
+
     evs = [logev(l) for l in l_grid]
     l_hat = l_grid[evs.index(max(evs))]
-    res = RichResult(payload={"estimate": l_hat,
-                              "log_evidence": evs,
-                              "method": "GP length-scale adaptation (GvdV 2017 sec. 11.6)"})
+    res = RichResult(
+        payload={"estimate": l_hat, "log_evidence": evs, "method": "GP length-scale adaptation (GvdV 2017 sec. 11.6)"}
+    )
     return with_describe_pointer(res, "gh_c11_13")
 
 

@@ -1,7 +1,6 @@
 """Tests for winz.winsorized_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.winz import winsorized_mean
 
 

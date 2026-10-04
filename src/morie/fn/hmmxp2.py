@@ -113,7 +113,9 @@ def geron_mixed_precision(model, loss_scale=1024.0, grads=None):
             gts = [np.atleast_1d(np.asarray(grads[k], dtype=float)) for k in keys]
         for t, g in zip(tensors, gts):
             if g.shape != t.shape:
-                raise ValueError(f"geron_mixed_precision: gradient shape {g.shape} does not match weight shape {t.shape}")
+                raise ValueError(
+                    f"geron_mixed_precision: gradient shape {g.shape} does not match weight shape {t.shape}"
+                )
             if not np.all(np.isfinite(g)):
                 raise ValueError("geron_mixed_precision: grads contain non-finite values")
         gmax = max(float(np.max(np.abs(g))) for g in gts)

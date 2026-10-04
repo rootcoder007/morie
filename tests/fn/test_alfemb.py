@@ -1,7 +1,6 @@
 """Tests for alfemb.alphafold_embedding_init."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfemb import alphafold_embedding_init
 
 
@@ -10,10 +9,10 @@ def test_alfemb_basic():
     rng = np.random.default_rng(42)
 
     # Dimensions
-    n = 4   # number of residues
-    ctf = 3 # target feature dim
-    s = 2   # number of MSA sequences
-    cmf = 3 # MSA feature dim
+    n = 4  # number of residues
+    ctf = 3  # target feature dim
+    s = 2  # number of MSA sequences
+    cmf = 3  # MSA feature dim
     cz = 2  # pair representation dim
     cm = 2  # MSA representation dim
 
@@ -29,10 +28,7 @@ def test_alfemb_basic():
     wmsa = rng.normal(0, 1, (cm, cmf)).tolist()
     wtgt = rng.normal(0, 1, (cm, ctf)).tolist()
 
-    result = alphafold_embedding_init(
-        target_feat, residue_index, msa_feat,
-        wa, wb, wrel, wmsa, wtgt
-    )
+    result = alphafold_embedding_init(target_feat, residue_index, msa_feat, wa, wb, wrel, wmsa, wtgt)
 
     # Result is a RichResult; support both dict-like and attribute access
     # Check key presence
@@ -83,10 +79,7 @@ def test_alfemb_edge():
     wmsa = rng.normal(0, 1, (cm, cmf)).tolist()
     wtgt = rng.normal(0, 1, (cm, ctf)).tolist()
 
-    result = alphafold_embedding_init(
-        target_feat, residue_index, msa_feat,
-        wa, wb, wrel, wmsa, wtgt
-    )
+    result = alphafold_embedding_init(target_feat, residue_index, msa_feat, wa, wb, wrel, wmsa, wtgt)
 
     assert "estimate" in result
     assert result["n"] == n

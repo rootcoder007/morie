@@ -126,23 +126,21 @@ def _corr(h, model, phi, kappa):
     if model == "exponential":
         return math.exp(-h / phi)
     if model == "gaussian":
-        return math.exp(-(h / phi) ** 2)
+        return math.exp(-((h / phi) ** 2))
     if model == "spherical":
         if h >= phi:
             return 0.0
         r = h / phi
-        return 1.0 - 1.5 * r + 0.5 * r ** 3
+        return 1.0 - 1.5 * r + 0.5 * r**3
     if model == "matern":
         # Matern with smoothness kappa, through the modified Bessel K
         z = math.sqrt(2.0 * kappa) * h / phi
         if z <= 0.0:
             return 1.0
         lg = k.lgamma(kappa)
-        val = ((2.0 ** (1.0 - kappa)) / math.exp(lg)
-               * (z ** kappa) * k.besselk(kappa, z))
+        val = (2.0 ** (1.0 - kappa)) / math.exp(lg) * (z**kappa) * k.besselk(kappa, z)
         return max(min(val, 1.0), 0.0)
-    raise ValueError("sgflrt: model must be exponential, gaussian, "
-                     "spherical or matern, got %r" % (model,))
+    raise ValueError("sgflrt: model must be exponential, gaussian, spherical or matern, got %r" % (model,))
 
 
 def _family(family, disp=1.0):
@@ -156,34 +154,42 @@ def _family(family, disp=1.0):
     working response is ``eta + (y - mu) / V(mu)`` and nothing else.
     """
     if family == "poisson":
-        return (lambda e: math.exp(max(-500.0, min(500.0, e))),
-                lambda m: max(m, 1e-10),
-                lambda m: max(m, 1e-10),
-                lambda y, m: y * math.log(max(m, 1e-300)) - m
-                - k.lgamma(y + 1.0))
+        return (
+            lambda e: math.exp(max(-500.0, min(500.0, e))),
+            lambda m: max(m, 1e-10),
+            lambda m: max(m, 1e-10),
+            lambda y, m: y * math.log(max(m, 1e-300)) - m - k.lgamma(y + 1.0),
+        )
     if family == "binomial":
+
         def inv(e):
             e = max(-500.0, min(500.0, e))
             return 1.0 / (1.0 + math.exp(-e))
 
         def vf(m):
             return max(m * (1.0 - m), 1e-10)
-        return (inv, vf, vf,
-                lambda y, m: (y * math.log(min(max(m, 1e-12), 1 - 1e-12))
-                              + (1.0 - y)
-                              * math.log(1.0 - min(max(m, 1e-12),
-                                                   1 - 1e-12))))
+
+        return (
+            inv,
+            vf,
+            vf,
+            lambda y, m: (
+                y * math.log(min(max(m, 1e-12), 1 - 1e-12)) + (1.0 - y) * math.log(1.0 - min(max(m, 1e-12), 1 - 1e-12))
+            ),
+        )
     if family == "gaussian":
         # the Gaussian family HAS a dispersion parameter and the others do
         # not. Pinning it at one -- which is what a GLM weight of 1 does --
         # forces the residual variance to be exactly 1 and drives the
         # spatial variance to zero whenever the real residual is smaller.
         d = max(float(disp), 1e-300)
-        return (lambda e: e, lambda m: 1.0, lambda m: 1.0 / d,
-                lambda y, m: -0.5 * (math.log(2.0 * math.pi * d)
-                                     + (y - m) ** 2 / d))
-    raise ValueError("sgflrt: family must be poisson, binomial or gaussian, "
-                     "got %r" % (family,))
+        return (
+            lambda e: e,
+            lambda m: 1.0,
+            lambda m: 1.0 / d,
+            lambda y, m: -0.5 * (math.log(2.0 * math.pi * d) + (y - m) ** 2 / d),
+        )
+    raise ValueError("sgflrt: family must be poisson, binomial or gaussian, got %r" % (family,))
 
 
 def _laplace(y, X, Sig, family, inner_iter, tol, disp=1.0):
@@ -208,8 +214,7 @@ def _laplace(y, X, Sig, family, inner_iter, tol, disp=1.0):
     v = [0.0] * n
     for _ in range(int(inner_iter)):
         u = [sum(L[i][j] * v[j] for j in range(i + 1)) for i in range(n)]
-        eta = [sum(X[i][a] * beta[a] for a in range(p)) + u[i]
-               for i in range(n)]
+        eta = [sum(X[i][a] * beta[a] for a in range(p)) + u[i] for i in range(n)]
         mu = [inv(e) for e in eta]
         w = [wfun(m) for m in mu]
         z = [eta[i] + (y[i] - mu[i]) / vfun(mu[i]) for i in range(n)]
@@ -227,17 +232,14 @@ def _laplace(y, X, Sig, family, inner_iter, tol, disp=1.0):
             for b in range(p):
                 A[p + j][b] = A[b][p + j]
             for j2 in range(n):
-                A[p + j][p + j2] = (sum(L[i][j] * WL[i][j2]
-                                        for i in range(n))
-                                    + (1.0 if j == j2 else 0.0))
+                A[p + j][p + j2] = sum(L[i][j] * WL[i][j2] for i in range(n)) + (1.0 if j == j2 else 0.0)
             rhs[p + j] = sum(L[i][j] * w[i] * z[i] for i in range(n))
         LA = _chol(A)
         if LA is None:
             return None
         sol = _solve(LA, rhs)
         nb, nv = sol[:p], sol[p:]
-        shift = max(max(abs(nb[a] - beta[a]) for a in range(p)),
-                    max(abs(nv[j] - v[j]) for j in range(n)))
+        shift = max(max(abs(nb[a] - beta[a]) for a in range(p)), max(abs(nv[j] - v[j]) for j in range(n)))
         beta, v = nb, nv
         if shift < tol:
             break
@@ -248,9 +250,7 @@ def _laplace(y, X, Sig, family, inner_iter, tol, disp=1.0):
     loglik = sum(ll(y[i], mu[i]) for i in range(n))
     pen = 0.5 * sum(t * t for t in v)
     WL = [[w[i] * L[i][j] for j in range(n)] for i in range(n)]
-    H = [[sum(L[i][j] * WL[i][j2] for i in range(n))
-          + (1.0 if j == j2 else 0.0) for j2 in range(n)]
-         for j in range(n)]
+    H = [[sum(L[i][j] * WL[i][j2] for i in range(n)) + (1.0 if j == j2 else 0.0) for j2 in range(n)] for j in range(n)]
     LH = _chol(H)
     if LH is None:
         return None
@@ -277,10 +277,21 @@ def _golden(f, lo, hi, iters=16):
     return 0.5 * (a + b)
 
 
-def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
-                     sigma2=None, phi=None, kappa=1.5, nugget=0.0,
-                     dispersion=None,
-                     inner_iter=50, outer_cycles=3, tol=1e-10):
+def spatial_glmm_fit(
+    y,
+    X,
+    coords,
+    family="poisson",
+    model="exponential",
+    sigma2=None,
+    phi=None,
+    kappa=1.5,
+    nugget=0.0,
+    dispersion=None,
+    inner_iter=50,
+    outer_cycles=3,
+    tol=1e-10,
+):
     r"""Fit a spatial GLMM by the Laplace approximation.
 
     Parameters
@@ -319,21 +330,19 @@ def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
         raise ValueError("sgflrt: no observations")
     Xm = [[float(v) for v in row] for row in k.mat(X)]
     if len(Xm) != n:
-        raise ValueError("sgflrt: %d responses but %d design rows"
-                         % (n, len(Xm)))
+        raise ValueError("sgflrt: %d responses but %d design rows" % (n, len(Xm)))
     p = len(Xm[0])
     C = [[float(v) for v in row] for row in k.mat(coords)]
     if len(C) != n:
-        raise ValueError("sgflrt: %d responses but %d coordinate rows"
-                         % (n, len(C)))
+        raise ValueError("sgflrt: %d responses but %d coordinate rows" % (n, len(C)))
     d = len(C[0])
     if any(len(r) != d for r in C):
-        raise ValueError("sgflrt: all coordinates must have the same "
-                         "dimension")
+        raise ValueError("sgflrt: all coordinates must have the same dimension")
     _family(family)
     if dispersion is not None and family != "gaussian":
-        raise ValueError("sgflrt: only the gaussian family has a dispersion "
-                         "parameter; poisson and binomial fix it at one")
+        raise ValueError(
+            "sgflrt: only the gaussian family has a dispersion parameter; poisson and binomial fix it at one"
+        )
     disp = 1.0 if dispersion is None else float(dispersion)
     if disp <= 0.0:
         raise ValueError("sgflrt: the dispersion must be positive")
@@ -342,24 +351,18 @@ def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
     if nug < 0.0:
         raise ValueError("sgflrt: the nugget cannot be negative")
     if family == "binomial" and any(v not in (0.0, 1.0) for v in yv):
-        raise ValueError("sgflrt: the binomial family here takes 0/1 "
-                         "responses")
-    if family == "poisson" and any(v < 0.0 or v != math.floor(v)
-                                   for v in yv):
-        raise ValueError("sgflrt: the Poisson family takes non-negative "
-                         "counts")
+        raise ValueError("sgflrt: the binomial family here takes 0/1 responses")
+    if family == "poisson" and any(v < 0.0 or v != math.floor(v) for v in yv):
+        raise ValueError("sgflrt: the Poisson family takes non-negative counts")
 
-    D = [[math.sqrt(sum((C[i][a] - C[j][a]) ** 2 for a in range(d)))
-          for j in range(n)] for i in range(n)]
+    D = [[math.sqrt(sum((C[i][a] - C[j][a]) ** 2 for a in range(d))) for j in range(n)] for i in range(n)]
     dmax = max(max(r) for r in D)
     if dmax <= _EPS:
-        raise ValueError("sgflrt: every location is the same point, so "
-                         "there is no spatial structure to fit")
+        raise ValueError("sgflrt: every location is the same point, so there is no spatial structure to fit")
     dmin = min(D[i][j] for i in range(n) for j in range(n) if i != j)
 
     def corrmat(ph):
-        R = [[_corr(D[i][j], model, ph, float(kappa)) for j in range(n)]
-             for i in range(n)]
+        R = [[_corr(D[i][j], model, ph, float(kappa)) for j in range(n)] for i in range(n)]
         for i in range(n):
             R[i][i] += nug
         return R
@@ -370,8 +373,7 @@ def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
     if sigma2 is not None and float(sigma2) <= _EPS:
         # no random effect: an ordinary GLM, and exactly that
         s2h, phh = 0.0, (float(phi) if phi is not None else dmax / 3.0)
-        Sig = [[1e-10 if i == j else 0.0 for j in range(n)]
-               for i in range(n)]
+        Sig = [[1e-10 if i == j else 0.0 for j in range(n)] for i in range(n)]
         res = _laplace(yv, Xm, Sig, family, inner_iter, tol, disp)
         at_bound = False
     else:
@@ -388,25 +390,26 @@ def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
                 R = corrmat(phh)
 
                 def fs(ls):
-                    r = _laplace(yv, Xm, scaled(R, math.exp(ls)), family,
-                                 inner_iter, tol, disp)
+                    r = _laplace(yv, Xm, scaled(R, math.exp(ls)), family, inner_iter, tol, disp)
                     return -1e300 if r is None else r[0]
+
                 ls_hat = _golden(fs, lo_s, hi_s)
                 s2h = math.exp(ls_hat)
             if phi is None:
+
                 def fp(lp):
-                    r = _laplace(yv, Xm, scaled(corrmat(math.exp(lp)), s2h),
-                                 family, inner_iter, tol, disp)
+                    r = _laplace(yv, Xm, scaled(corrmat(math.exp(lp)), s2h), family, inner_iter, tol, disp)
                     return -1e300 if r is None else r[0]
+
                 phh = math.exp(_golden(fp, lo_p, hi_p))
             if fit_disp:
                 Rd = corrmat(phh)
                 Sd = scaled(Rd, s2h)
 
                 def fdp(ld):
-                    r = _laplace(yv, Xm, Sd, family, inner_iter, tol,
-                                 math.exp(ld))
+                    r = _laplace(yv, Xm, Sd, family, inner_iter, tol, math.exp(ld))
                     return -1e300 if r is None else r[0]
+
                 disp = math.exp(_golden(fdp, math.log(1e-8), math.log(1e4)))
             if sigma2 is not None and phi is not None and not fit_disp:
                 break
@@ -417,86 +420,93 @@ def spatial_glmm_fit(y, X, coords, family="poisson", model="exponential",
         Sig = scaled(corrmat(phh), s2h)
         res = _laplace(yv, Xm, Sig, family, inner_iter, tol, disp)
     if res is None:
-        raise ValueError("sgflrt: the penalised system is not positive "
-                         "definite -- try a positive nugget, or a shorter "
-                         "range")
+        raise ValueError(
+            "sgflrt: the penalised system is not positive definite -- try a positive nugget, or a shorter range"
+        )
     lap, beta, u, mu, eta, loglik, w, Lsig, vlat = res
 
     # standard errors for beta: the curvature after profiling out v, in the
     # same parameterisation the fit used
     WL = [[w[i] * Lsig[i][j] for j in range(n)] for i in range(n)]
-    H = [[sum(Lsig[i][j] * WL[i][j2] for i in range(n))
-          + (1.0 if j == j2 else 0.0) for j2 in range(n)]
-         for j in range(n)]
+    H = [
+        [sum(Lsig[i][j] * WL[i][j2] for i in range(n)) + (1.0 if j == j2 else 0.0) for j2 in range(n)] for j in range(n)
+    ]
     LH = _chol(H)
-    XtWX = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-             for b in range(p)] for a in range(p)]
-    B = [[sum(Xm[i][a] * WL[i][j] for i in range(n)) for j in range(n)]
-         for a in range(p)]
+    XtWX = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
+    B = [[sum(Xm[i][a] * WL[i][j] for i in range(n)) for j in range(n)] for a in range(p)]
     HiB = [_solve(LH, B[a]) for a in range(p)]
-    Ib = [[XtWX[a][b] - sum(B[a][j] * HiB[b][j] for j in range(n))
-           for b in range(p)] for a in range(p)]
+    Ib = [[XtWX[a][b] - sum(B[a][j] * HiB[b][j] for j in range(n)) for b in range(p)] for a in range(p)]
     LIb = _chol(Ib)
-    covb = _inv(LIb) if LIb is not None else [[float("nan")] * p
-                                              for _ in range(p)]
-    se = [math.sqrt(max(covb[a][a], 0.0)) if covb[a][a] == covb[a][a]
-          else float("nan") for a in range(p)]
+    covb = _inv(LIb) if LIb is not None else [[float("nan")] * p for _ in range(p)]
+    se = [math.sqrt(max(covb[a][a], 0.0)) if covb[a][a] == covb[a][a] else float("nan") for a in range(p)]
 
     # the Gaussian identity-link case has a closed form; compute it so the
     # approximation can be compared with the answer rather than trusted
     gls_gap = float("nan")
     if family == "gaussian":
-        V = [[Sig[i][j] + (disp if i == j else 0.0) for j in range(n)]
-             for i in range(n)]
+        V = [[Sig[i][j] + (disp if i == j else 0.0) for j in range(n)] for i in range(n)]
         Lv = _chol(V)
         if Lv is not None:
             Viy = _solve(Lv, yv)
-            ViX = [_solve(Lv, [Xm[i][a] for i in range(n)])
-                   for a in range(p)]
-            A = [[sum(Xm[i][a] * ViX[b][i] for i in range(n))
-                  for b in range(p)] for a in range(p)]
-            rhs = [sum(Xm[i][a] * Viy[i] for i in range(n))
-                   for a in range(p)]
+            ViX = [_solve(Lv, [Xm[i][a] for i in range(n)]) for a in range(p)]
+            A = [[sum(Xm[i][a] * ViX[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
+            rhs = [sum(Xm[i][a] * Viy[i] for i in range(n)) for a in range(p)]
             LA = _chol(A)
             if LA is not None:
                 bg = _solve(LA, rhs)
                 gls_gap = max(abs(bg[a] - beta[a]) for a in range(p))
 
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta, "std_error": se,
-        "z": [beta[a] / se[a] if se[a] > _EPS else float("nan")
-              for a in range(p)],
-        "spatial_effect": u, "fitted": mu, "linear_predictor": eta,
-        "sigma2": s2h, "phi": phh, "dispersion": disp,
-        "sigma2_at_lower_bound": at_bound,
-        "spatial_signal": not at_bound, "kappa": float(kappa), "nugget": nug,
-        "loglik": loglik, "laplace_loglik": lap,
-        "gls_identity_gap": gls_gap,
-        "covariance": covb,
-        "family": family, "model": model,
-        "n": n, "p": p, "d": d,
-        "min_distance": dmin, "max_distance": dmax,
-        "method": "spatial GLMM by the Laplace approximation: penalised "
-                  "IRLS for the joint mode of (beta, u), the variance and "
-                  "range by cycling golden-section searches on the "
-                  "approximated marginal likelihood (Diggle, Tawn & Moyeed "
-                  "1998; Breslow & Clayton 1993)",
-        "note": "the Laplace approximation is exact for the Gaussian "
-                "identity-link case, and gls_identity_gap is how far the "
-                "fit sits from the closed-form GLS answer there; for "
-                "binary data with few observations per correlated unit the "
-                "variance component is biased downward (Breslow & Clayton "
-                "1993) and n is reported so that can be judged; "
-                "sigma2_at_lower_bound means the data carry no spatial "
-                "signal, and phi is then not identified whatever value it "
-                "was left at",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "std_error": se,
+            "z": [beta[a] / se[a] if se[a] > _EPS else float("nan") for a in range(p)],
+            "spatial_effect": u,
+            "fitted": mu,
+            "linear_predictor": eta,
+            "sigma2": s2h,
+            "phi": phh,
+            "dispersion": disp,
+            "sigma2_at_lower_bound": at_bound,
+            "spatial_signal": not at_bound,
+            "kappa": float(kappa),
+            "nugget": nug,
+            "loglik": loglik,
+            "laplace_loglik": lap,
+            "gls_identity_gap": gls_gap,
+            "covariance": covb,
+            "family": family,
+            "model": model,
+            "n": n,
+            "p": p,
+            "d": d,
+            "min_distance": dmin,
+            "max_distance": dmax,
+            "method": "spatial GLMM by the Laplace approximation: penalised "
+            "IRLS for the joint mode of (beta, u), the variance and "
+            "range by cycling golden-section searches on the "
+            "approximated marginal likelihood (Diggle, Tawn & Moyeed "
+            "1998; Breslow & Clayton 1993)",
+            "note": "the Laplace approximation is exact for the Gaussian "
+            "identity-link case, and gls_identity_gap is how far the "
+            "fit sits from the closed-form GLS answer there; for "
+            "binary data with few observations per correlated unit the "
+            "variance component is biased downward (Breslow & Clayton "
+            "1993) and n is reported so that can be judged; "
+            "sigma2_at_lower_bound means the data carry no spatial "
+            "signal, and phi is then not identified whatever value it "
+            "was left at",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sgflrt: spatial_glmm_fit(y, X, coords, family) -> spatial GLMM "
-            "by Laplace, with the spatial random effect returned "
-            "(Diggle, Tawn & Moyeed 1998; Breslow & Clayton 1993)")
+    return (
+        "sgflrt: spatial_glmm_fit(y, X, coords, family) -> spatial GLMM "
+        "by Laplace, with the spatial random effect returned "
+        "(Diggle, Tawn & Moyeed 1998; Breslow & Clayton 1993)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

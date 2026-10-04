@@ -1,7 +1,6 @@
 """Tests for morie.fn.ljung — Ljung-Box test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ljung import ljung, ljung_box
 
 

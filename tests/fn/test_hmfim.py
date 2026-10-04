@@ -4,10 +4,11 @@ import pytest
 
 from morie.fn.hmfim import geron_feature_importance
 
-
-RAW = [[0.30896362200710026, 0.04243386243386245, 0.0382321451886669],
-       [0.29358730158730156, 0.09100529100529102, 0.06556613756613756],
-       [0.2968574635241302, 0.0927877677877678, 0.004585537918871241]]
+RAW = [
+    [0.30896362200710026, 0.04243386243386245, 0.0382321451886669],
+    [0.29358730158730156, 0.09100529100529102, 0.06556613756613756],
+    [0.2968574635241302, 0.0927877677877678, 0.004585537918871241],
+]
 
 
 def test_hmfim_basic():
@@ -48,7 +49,7 @@ import morie.fn.hmfim as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

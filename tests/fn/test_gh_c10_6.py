@@ -1,7 +1,6 @@
 """Tests for gh_c10_6.ghosal_rnd_series_pr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_6 import ghosal_rnd_series_pr
 
 

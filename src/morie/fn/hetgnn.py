@@ -64,12 +64,10 @@ Representation Learning for Heterogeneous Networks", *KDD '17*,
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["metapath_neighbours", "node_attention",
-           "semantic_attention", "han_forward"]
+__all__ = ["metapath_neighbours", "node_attention", "semantic_attention", "han_forward"]
 
 _EPS = 1e-12
 
@@ -95,9 +93,11 @@ def metapath_neighbours(edges, types, metapath):
                         nxt.add(w)
             frontier = nxt
         nb[s] = sorted(frontier - {s})
-    return {"neighbours": nb, "metapath": mp,
-            "note": "the relation between two nodes DEPENDS on the "
-                    "meta-path followed"}
+    return {
+        "neighbours": nb,
+        "metapath": mp,
+        "note": "the relation between two nodes DEPENDS on the meta-path followed",
+    }
 
 
 def node_attention(h_i, neighbours, H, a_vec, W, slope=0.2):
@@ -106,16 +106,14 @@ def node_attention(h_i, neighbours, H, a_vec, W, slope=0.2):
     Within one meta-path, so the semantics are fixed and the question
     is only which neighbours.
     """
+
     def proj(x):
         v = [float(q) for q in k.vec(x)]
-        return [sum(W[o][j] * v[j] for j in range(len(v)))
-                for o in range(len(W))]
+        return [sum(W[o][j] * v[j] for j in range(len(v))) for o in range(len(W))]
 
     hi = proj(h_i)
     if not neighbours:
-        raise ValueError("hetgnn: the node has no meta-path "
-                         "neighbours; the meta-path does not apply "
-                         "here")
+        raise ValueError("hetgnn: the node has no meta-path neighbours; the meta-path does not apply here")
     sc = []
     for j in neighbours:
         hj = proj(H[j])
@@ -129,8 +127,7 @@ def node_attention(h_i, neighbours, H, a_vec, W, slope=0.2):
     d = len(hi)
     # eq. (4): z_i = sigma(sum_j alpha_ij h'_j); sigma is the ELU of GAT
     # and of the authors' HAN code
-    z = [sum(al[t] * proj(H[neighbours[t]])[a]
-             for t in range(len(neighbours))) for a in range(d)]
+    z = [sum(al[t] * proj(H[neighbours[t]])[a] for t in range(len(neighbours))) for a in range(d)]
     z = [v if v > 0 else math.expm1(v) for v in z]
     return {"embedding": z, "alpha": al, "neighbours": neighbours}
 
@@ -149,23 +146,22 @@ def semantic_attention(Z_per_metapath, W, b, q):
         Z = [[float(v) for v in r] for r in k.mat(Z_per_metapath[nm])]
         acc = 0.0
         for i in range(len(Z)):
-            proj = [math.tanh(b[o] + sum(W[o][j] * Z[i][j]
-                                         for j in range(len(Z[i]))))
-                    for o in range(len(W))]
+            proj = [math.tanh(b[o] + sum(W[o][j] * Z[i][j] for j in range(len(Z[i])))) for o in range(len(W))]
             acc += sum(float(q[o]) * proj[o] for o in range(len(q)))
         w.append(acc / len(Z))
     m = max(w)
     e = [math.exp(v - m) for v in w]
     tot = sum(e)
     beta = [v / tot for v in e]
-    return {"beta": dict(zip(names, beta)), "scores":
-            dict(zip(names, w)), "metapaths": names,
-            "note": "averaged over nodes, so the weight describes the "
-                    "META-PATH, not a node"}
+    return {
+        "beta": dict(zip(names, beta)),
+        "scores": dict(zip(names, w)),
+        "metapaths": names,
+        "note": "averaged over nodes, so the weight describes the META-PATH, not a node",
+    }
 
 
-def han_forward(H, edges, types, metapaths, a_vec, W_node, W_sem,
-                b_sem, q_sem, slope=0.2):
+def han_forward(H, edges, types, metapaths, a_vec, W_node, W_sem, b_sem, q_sem, slope=0.2):
     r"""Node-level attention within each meta-path, then semantic
     attention across them."""
     feats = [[float(v) for v in r] for r in k.mat(H)]
@@ -173,8 +169,7 @@ def han_forward(H, edges, types, metapaths, a_vec, W_node, W_sem,
     # is the set of target nodes, and only they get an embedding
     heads = {str(list(mp)[0]) for mp in metapaths.values()}
     if len(heads) != 1:
-        raise ValueError("hetgnn: all meta-paths must start at the same "
-                         "target node type")
+        raise ValueError("hetgnn: all meta-paths must start at the same target node type")
     head = heads.pop()
     target = [i for i in range(len(feats)) if types.get(i) == head]
     if not target:
@@ -183,39 +178,44 @@ def han_forward(H, edges, types, metapaths, a_vec, W_node, W_sem,
     for name, mp in metapaths.items():
         nb = metapath_neighbours(edges, types, mp)["neighbours"]
         # N_i includes i itself (Wang et al. 2019, Sec. 4.1)
-        per[name] = [node_attention(feats[i], sorted(set(nb.get(i, [])) | {i}),
-                                    feats, a_vec, W_node, slope)["embedding"]
-                     for i in target]
+        per[name] = [
+            node_attention(feats[i], sorted(set(nb.get(i, [])) | {i}), feats, a_vec, W_node, slope)["embedding"]
+            for i in target
+        ]
     sem = semantic_attention(per, W_sem, b_sem, q_sem)
     names = sem["metapaths"]
     d = len(per[names[0]][0])
     rows = {i: r for r, i in enumerate(target)}
-    final = [[sum(sem["beta"][nm] * per[nm][rows[i]][a] for nm in names)
-              if i in rows else 0.0
-              for a in range(d)] for i in range(len(feats))]
-    return RichResult(payload={
-        "estimate": final, "embeddings": final,
-        "semantic_weights": sem["beta"],
-        "per_metapath": per,
-        "target_nodes": target,
-        "method": "hierarchical attention on a heterogeneous graph; "
-                  "Wang et al. (2019)",
-        "note": "two attentions answering different questions: which "
-                "NEIGHBOUR, and which META-PATH",
-    })
+    final = [
+        [sum(sem["beta"][nm] * per[nm][rows[i]][a] for nm in names) if i in rows else 0.0 for a in range(d)]
+        for i in range(len(feats))
+    ]
+    return RichResult(
+        payload={
+            "estimate": final,
+            "embeddings": final,
+            "semantic_weights": sem["beta"],
+            "per_metapath": per,
+            "target_nodes": target,
+            "method": "hierarchical attention on a heterogeneous graph; Wang et al. (2019)",
+            "note": "two attentions answering different questions: which NEIGHBOUR, and which META-PATH",
+        }
+    )
 
 
 def cheatsheet():
-    return ("hetgnn: in a heterogeneous graph the relation between two "
-            "nodes depends on the META-PATH -- Movie-Actor-Movie is "
-            "co-actor, Movie-Director-Movie is shared-director, and a "
-            "homogeneous GNN cannot say which it followed. TWO "
-            "attentions in a hierarchy: NODE-level picks which "
-            "meta-path neighbours matter, SEMANTIC-level picks which "
-            "meta-paths matter, averaged OVER NODES so the weight "
-            "describes the relation rather than a node. Collapsing "
-            "them loses the distinction; keeping them makes both "
-            "readable, which is the paper's interpretability claim.")
+    return (
+        "hetgnn: in a heterogeneous graph the relation between two "
+        "nodes depends on the META-PATH -- Movie-Actor-Movie is "
+        "co-actor, Movie-Director-Movie is shared-director, and a "
+        "homogeneous GNN cannot say which it followed. TWO "
+        "attentions in a hierarchy: NODE-level picks which "
+        "meta-path neighbours matter, SEMANTIC-level picks which "
+        "meta-paths matter, averaged OVER NODES so the weight "
+        "describes the relation rather than a node. Collapsing "
+        "them loses the distinction; keeping them makes both "
+        "readable, which is the paper's interpretability claim."
+    )
 
 
 # compact alias per ledger/NAMING.md

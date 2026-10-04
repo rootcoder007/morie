@@ -1,7 +1,6 @@
 """Tests for hrzweib.horowitz_weibull_heterogeneity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzweib import horowitz_weibull_heterogeneity
 
 

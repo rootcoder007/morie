@@ -1,8 +1,8 @@
 """Tests for morie.fn.bmlnr -- Bayesian linear regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bmlnr import bayesian_linear_regression
 
 

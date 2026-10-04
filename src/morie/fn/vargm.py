@@ -8,8 +8,7 @@ from ._schaben import MODELS, fit_variogram_wls, matheron, variogram_model
 __all__ = ["empirical_variogram"]
 
 
-def empirical_variogram(coords, z, lags=None, cutoff=None, model=None,
-                        weights="cressie"):
+def empirical_variogram(coords, z, lags=None, cutoff=None, model=None, weights="cressie"):
     r"""Empirical semivariogram, optionally with a model fitted to it.
 
     .. math::
@@ -81,38 +80,37 @@ def empirical_variogram(coords, z, lags=None, cutoff=None, model=None,
     }
     if model is not None:
         if model not in MODELS:
-            raise ValueError(
-                "model must be one of %s, got %r." % (MODELS, model)
-            )
+            raise ValueError("model must be one of %s, got %r." % (MODELS, model))
         fit = fit_variogram_wls(lag, gam, npair, model, weights)
         rel = fit["nugget"] / fit["sill"] if fit["sill"] > 0 else np.nan
-        payload.update({
-            "nugget": fit["nugget"],
-            "psill": fit["psill"],
-            "range": fit["range"],
-            "sill": fit["sill"],
-            "model": model,
-            "weights": weights,
-            "fitted": variogram_model(lag, model, fit["nugget"],
-                                      fit["psill"], fit["range"]),
-            "objective": fit["objective"],
-            "iterations": fit["iterations"],
-            "relative_nugget": float(rel),
-            "range_note": (
-                "the exponential and Gaussian models use the PRACTICAL "
-                "range, the distance at which correlation has decayed to "
-                "0.05; a scale-parameter convention would differ by a "
-                "factor of 3"
-            ),
-            "weights_note": (
-                "Cressie's weights (4.34) approximate the diagonal of the "
-                "true covariance only; the off-diagonal correlations among "
-                "empirical semivariogram values are appreciable and are what "
-                "actually costs efficiency"
-            ),
-            "method": "Empirical semivariogram with a %s model fitted by %s"
-                      % (model, "WLS" if weights == "cressie" else "OLS"),
-        })
+        payload.update(
+            {
+                "nugget": fit["nugget"],
+                "psill": fit["psill"],
+                "range": fit["range"],
+                "sill": fit["sill"],
+                "model": model,
+                "weights": weights,
+                "fitted": variogram_model(lag, model, fit["nugget"], fit["psill"], fit["range"]),
+                "objective": fit["objective"],
+                "iterations": fit["iterations"],
+                "relative_nugget": float(rel),
+                "range_note": (
+                    "the exponential and Gaussian models use the PRACTICAL "
+                    "range, the distance at which correlation has decayed to "
+                    "0.05; a scale-parameter convention would differ by a "
+                    "factor of 3"
+                ),
+                "weights_note": (
+                    "Cressie's weights (4.34) approximate the diagonal of the "
+                    "true covariance only; the off-diagonal correlations among "
+                    "empirical semivariogram values are appreciable and are what "
+                    "actually costs efficiency"
+                ),
+                "method": "Empirical semivariogram with a %s model fitted by %s"
+                % (model, "WLS" if weights == "cressie" else "OLS"),
+            }
+        )
     return RichResult(payload=payload)
 
 

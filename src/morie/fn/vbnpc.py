@@ -64,8 +64,7 @@ def _lbeta(a, b):
     return core.lgamma(a) + core.lgamma(b) - core.lgamma(a + b)
 
 
-def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0,
-                     s0=10.0, max_iter=100, tol=1e-10):
+def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0, s0=10.0, max_iter=100, tol=1e-10):
     """Truncated stick-breaking mean-field VB for a Gaussian DP mixture.
 
     Parameters
@@ -152,8 +151,7 @@ def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0,
             sc = [0.0] * K
             best = None
             for t in range(K):
-                lp = (-0.5 * math.log(2.0 * math.pi * sigma2)
-                      - ((yv[i] - m[t]) ** 2 + s2[t]) / (2.0 * sigma2))
+                lp = -0.5 * math.log(2.0 * math.pi * sigma2) - ((yv[i] - m[t]) ** 2 + s2[t]) / (2.0 * sigma2)
                 sc[t] = elv[t] + cum[t] + lp
                 if best is None or sc[t] > best:
                     best = sc[t]
@@ -204,18 +202,15 @@ def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0,
         elbo = 0.0
         for t in range(K - 1):
             elbo += math.log(alpha) + (alpha - 1.0) * el1v[t]
-            elbo -= (-_lbeta(g1[t], g2[t]) + (g1[t] - 1.0) * elv[t]
-                     + (g2[t] - 1.0) * el1v[t])
+            elbo -= -_lbeta(g1[t], g2[t]) + (g1[t] - 1.0) * elv[t] + (g2[t] - 1.0) * el1v[t]
         for t in range(K):
-            elbo += (-0.5 * math.log(2.0 * math.pi * s0 * s0)
-                     - ((m[t] - m0) ** 2 + s2[t]) / (2.0 * s0 * s0))
+            elbo += -0.5 * math.log(2.0 * math.pi * s0 * s0) - ((m[t] - m0) ** 2 + s2[t]) / (2.0 * s0 * s0)
             elbo += 0.5 * (math.log(2.0 * math.pi * s2[t]) + 1.0)
         for i in range(n):
             for t in range(K):
                 p = phi[i][t]
                 if p > 0.0:
-                    lp = (-0.5 * math.log(2.0 * math.pi * sigma2)
-                          - ((yv[i] - m[t]) ** 2 + s2[t]) / (2.0 * sigma2))
+                    lp = -0.5 * math.log(2.0 * math.pi * sigma2) - ((yv[i] - m[t]) ** 2 + s2[t]) / (2.0 * sigma2)
                     elbo += p * (elv[t] + cum[t] + lp - math.log(p))
         path.append(elbo)
         if len(path) > 1 and abs(path[-1] - path[-2]) < tol:
@@ -227,7 +222,7 @@ def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0,
     rem = 1.0
     for t in range(K):
         w[t] = ev[t] * rem
-        rem *= (1.0 - ev[t])
+        rem *= 1.0 - ev[t]
     mono = True
     for i in range(1, len(path)):
         if path[i] < path[i - 1] - 1e-8:

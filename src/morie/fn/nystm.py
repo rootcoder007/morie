@@ -4,10 +4,10 @@
 from . import _gp_core as G
 from ._richresult import RichResult
 
-__all__ = ['nystromap', 'nystrom_approximation']
+__all__ = ["nystromap", "nystrom_approximation"]
 
 
-def nystromap(X, m_index, kernel='linear', gamma=None):
+def nystromap(X, m_index, kernel="linear", gamma=None):
     """Nystrom low-rank approximation of a kernel matrix.
 
     Formula: Q = K_nm * K_mm^- * K_nm',  m the retained subset of records
@@ -37,13 +37,13 @@ def nystromap(X, m_index, kernel='linear', gamma=None):
         raise ValueError("m_index is 1-based")
     out = G.nystrom_kernel(X, idx, kernel=kernel, gamma=gamma)
     Q = out["Q"] if isinstance(out, dict) else out
-    return RichResult(payload={
-        "Q": Q, "m": len(idx), "n": len(Q),
-        "method": "Nystrom kernel approximation, MVSML Chap. 8"})
+    return RichResult(
+        payload={"Q": Q, "m": len(idx), "n": len(Q), "method": "Nystrom kernel approximation, MVSML Chap. 8"}
+    )
 
 
 nystrom_approximation = nystromap
 
 
 def cheatsheet():
-    return 'nystm: Nystrom low-rank approximation of a kernel matrix.'
+    return "nystm: Nystrom low-rank approximation of a kernel matrix."

@@ -1,7 +1,6 @@
 """Tests for ols_matrix.ols_matrix."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ols_matrix import ols_matrix
 
 

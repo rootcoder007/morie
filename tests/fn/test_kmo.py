@@ -1,8 +1,8 @@
 """Tests for morie.fn.kmo — Kaiser-Meyer-Olkin sampling adequacy."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn import kmo
 from morie.fn._containers import KmoRes
 

@@ -1,7 +1,6 @@
 """Tests for apen — Approximate entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.apen import approx_entropy
 

@@ -43,8 +43,13 @@ def gibbons_marginal_r1(r1, n1, n2):
         raise ValueError(f"r1 must lie in 1..{n1}, got {r1}.")
     pmf = comb(n1 - 1, r1 - 1) * comb(n2 + 1, r1) / comb(n1 + n2, n1)
     return RichResult(
-        payload={"pmf": float(pmf), "r1": r1, "n1": n1, "n2": n2,
-                 "method": "Marginal runs pmf (Gibbons Corollary 3.2.1)"}
+        payload={
+            "pmf": float(pmf),
+            "r1": r1,
+            "n1": n1,
+            "n2": n2,
+            "method": "Marginal runs pmf (Gibbons Corollary 3.2.1)",
+        }
     )
 
 

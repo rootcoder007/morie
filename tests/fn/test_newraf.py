@@ -1,10 +1,10 @@
 """Tests for newraf.newton_raphson."""
 
-from morie.fn import _array_core as np
-
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.newraf import newton_raphson
 
 
@@ -50,6 +50,7 @@ def test_newraf_basic():
 
 def test_newraf_edge():
     """Test edge case: an empty starting point is rejected by the solver."""
+
     def f(x):
         return sum(v * v for v in x)
 

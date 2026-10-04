@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["betavae", "beta_vae_disentangle"]
 
 
-def betavae(x, xhat, mu, logvar, beta=4.0, capacity=None, gamma=None,
-            noisevar=1.0):
+def betavae(x, xhat, mu, logvar, beta=4.0, capacity=None, gamma=None, noisevar=1.0):
     """Reconstruction term, KL term and the disentangling objective.
 
     The variational objective is the evidence lower bound with the
@@ -82,10 +81,8 @@ def betavae(x, xhat, mu, logvar, beta=4.0, capacity=None, gamma=None,
         raise ValueError("noisevar must be strictly positive")
     d = len(x)
     J = len(m)
-    rec = -sum((x[i] - xh[i]) ** 2 for i in range(d)) / (2.0 * nv) \
-        - 0.5 * d * math.log(2.0 * math.pi * nv)
-    per = [0.5 * (m[j] * m[j] + math.exp(lv[j]) - 1.0 - lv[j])
-           for j in range(J)]
+    rec = -sum((x[i] - xh[i]) ** 2 for i in range(d)) / (2.0 * nv) - 0.5 * d * math.log(2.0 * math.pi * nv)
+    per = [0.5 * (m[j] * m[j] + math.exp(lv[j]) - 1.0 - lv[j]) for j in range(J)]
     kl = sum(per)
     b = float(beta)
     if capacity is None:
@@ -93,10 +90,19 @@ def betavae(x, xhat, mu, logvar, beta=4.0, capacity=None, gamma=None,
     else:
         g = b if gamma is None else float(gamma)
         pen = g * abs(kl - float(capacity))
-    return RichResult(payload={
-        "objective": rec - pen, "recon": rec, "kl": kl, "klper": per,
-        "penalty": pen, "beta": b, "J": J, "d": d,
-        "method": "beta-VAE objective (Higgins et al. 2017)"})
+    return RichResult(
+        payload={
+            "objective": rec - pen,
+            "recon": rec,
+            "kl": kl,
+            "klper": per,
+            "penalty": pen,
+            "beta": b,
+            "J": J,
+            "d": d,
+            "method": "beta-VAE objective (Higgins et al. 2017)",
+        }
+    )
 
 
 beta_vae_disentangle = betavae

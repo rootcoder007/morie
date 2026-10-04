@@ -1,8 +1,8 @@
 """Tests for morie.fn.cv -- coefficient of variation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cv import coefficient_of_variation
 
 

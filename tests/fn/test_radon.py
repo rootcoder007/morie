@@ -1,8 +1,8 @@
 """Tests for indoor radon cancer risk (EPA 2003 / BEIR VI)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.radon import radon, radon_cancer_risk
 
 

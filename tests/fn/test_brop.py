@@ -1,8 +1,8 @@
 """Tests for morie.fn.brop — ROPE analysis."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.brop import bayesian_rope
 
 

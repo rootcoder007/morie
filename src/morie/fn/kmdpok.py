@@ -35,20 +35,17 @@ def kamath_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta):
     >>> out["implicit_reward_w"]
     [1.0]
     """
-    arrays = [np.atleast_1d(np.asarray(v, dtype=float))
-              for v in (logp_w, logp_l, logp_ref_w, logp_ref_l)]
+    arrays = [np.atleast_1d(np.asarray(v, dtype=float)) for v in (logp_w, logp_l, logp_ref_w, logp_ref_l)]
     shapes = {a.shape for a in arrays}
     if len(shapes) != 1:
-        raise ValueError("the four log-probability arrays must line "
-                         f"up; got shapes {sorted(shapes)}.")
+        raise ValueError(f"the four log-probability arrays must line up; got shapes {sorted(shapes)}.")
     if arrays[0].size == 0:
         raise ValueError("no preference pairs were given.")
-    for name, a in zip(("logp_w", "logp_l", "logp_ref_w",
-                        "logp_ref_l"), arrays):
+    for name, a in zip(("logp_w", "logp_l", "logp_ref_w", "logp_ref_l"), arrays):
         if np.any(a > 0):
             raise ValueError(
-                f"{name} holds LOG probabilities; a positive entry "
-                "means a probability was passed instead.")
+                f"{name} holds LOG probabilities; a positive entry means a probability was passed instead."
+            )
     b = float(beta)
     if b <= 0:
         raise ValueError(f"beta must be positive; got {b}.")
@@ -56,14 +53,19 @@ def kamath_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta):
     rew_w = b * (lw - rw)
     rew_l = b * (ll - rl)
     bt = alammar_reward_model_training_bt(rew_w, rew_l)
-    return RichResult(payload={
-        "estimate": bt["estimate"], "loss": bt["estimate"],
-        "per_pair": bt["losses"], "pair_accuracy": bt["pair_accuracy"],
-        "implicit_reward_w": [float(v) for v in rew_w],
-        "implicit_reward_l": [float(v) for v in rew_l],
-        "beta": b, "n": int(lw.size),
-        "method": "DPO loss (Kamath Ch 5; the Bradley-Terry core in "
-                  "alrmt)"})
+    return RichResult(
+        payload={
+            "estimate": bt["estimate"],
+            "loss": bt["estimate"],
+            "per_pair": bt["losses"],
+            "pair_accuracy": bt["pair_accuracy"],
+            "implicit_reward_w": [float(v) for v in rew_w],
+            "implicit_reward_l": [float(v) for v in rew_l],
+            "beta": b,
+            "n": int(lw.size),
+            "method": "DPO loss (Kamath Ch 5; the Bradley-Terry core in alrmt)",
+        }
+    )
 
 
 def cheatsheet():

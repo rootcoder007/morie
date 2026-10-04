@@ -19,11 +19,8 @@ def test_jonhts_edge():
     """Blocks add their forecasts; each sees the previous residual."""
     y = [1.0, 2.0, 3.0, 4.0]
     one = joseph_nhits(y, 2, [2], [0.5], [[[0.5, 0.5]]], [[[1.0, 0.0]]])
-    two = joseph_nhits(y, 2, [2, 2], [0.5, 0.5], [[[0.5, 0.5]], [[0.0, 1.0]]],
-                       [[[1.0, 0.0]], [[0.0, 0.0]]])
+    two = joseph_nhits(y, 2, [2, 2], [0.5, 0.5], [[[0.5, 0.5]], [[0.0, 1.0]]], [[[1.0, 0.0]], [[0.0, 0.0]]])
     # the second block pools the residual (-1, 0, 1, 2) to (0, 2): knot 2
     assert two["forecast"] == [one["forecast"][0] + 2.0, one["forecast"][1] + 2.0]
     with pytest.raises(ValueError, match="line up"):
         joseph_nhits(y, 2, [2], [0.5, 0.5], [[[1.0, 1.0]]], [[[1.0, 1.0]]])
-
-

@@ -28,17 +28,16 @@ def ca_chapter_11_equation_15():
     """
     value = _ca_crim.LOGISTIC_SD
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.15)"
     return RichResult(
-        title='Standard deviation of the logistic distribution sqrt(pi^2/3)',
+        title="Standard deviation of the logistic distribution sqrt(pi^2/3)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e15: sd_logistic = sqrt(pi^2 / 3) = 1.8138 [Weisburd et al. 2022, eq. 11.15]'
+    return "ca11e15: sd_logistic = sqrt(pi^2 / 3) = 1.8138 [Weisburd et al. 2022, eq. 11.15]"

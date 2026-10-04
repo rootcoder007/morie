@@ -29,15 +29,11 @@ def kmer_distribution_from_assignments(assignment_counts):
     col = A.sum(axis=0)
     if np.any(col <= 0):
         bad = np.flatnonzero(col <= 0).tolist()
-        raise ValueError(
-            f"species {bad} have no assigned reads, so their k-mer "
-            "distribution is undefined."
-        )
+        raise ValueError(f"species {bad} have no assigned reads, so their k-mer distribution is undefined.")
     return A / col
 
 
-def abundance_estimation(kraken_output, kmer_distribution, max_iter=1000,
-                         tol=1e-12, threshold=0.0):
+def abundance_estimation(kraken_output, kmer_distribution, max_iter=1000, tol=1e-12, threshold=0.0):
     r"""Push reads stranded at higher taxonomic ranks down to species.
 
     A k-mer classifier assigns each read to the lowest node whose k-mers
@@ -109,10 +105,7 @@ def abundance_estimation(kraken_output, kmer_distribution, max_iter=1000,
         if P.shape[1] == r.size:
             P = P.T
         else:
-            raise ValueError(
-                f"kmer_distribution has shape {P.shape} but there are "
-                f"{r.size} classification nodes."
-            )
+            raise ValueError(f"kmer_distribution has shape {P.shape} but there are {r.size} classification nodes.")
     n_nodes, n_sp = P.shape
     if n_sp < 1:
         raise ValueError("need at least one species.")

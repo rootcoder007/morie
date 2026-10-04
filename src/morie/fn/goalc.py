@@ -31,8 +31,7 @@ from ._richresult import RichResult
 __all__ = ["goal_conditioned"]
 
 
-def goal_conditioned(env, policy=None, goal_dist=None, n_states=None,
-                     gamma=1.0, step_cost=-1.0):
+def goal_conditioned(env, policy=None, goal_dist=None, n_states=None, gamma=1.0, step_cost=-1.0):
     """Goal-conditioned values over a deterministic transition list.
 
     Parameters
@@ -60,8 +59,7 @@ def goal_conditioned(env, policy=None, goal_dist=None, n_states=None,
         reachable     : share of (s, g) pairs that are reachable
     """
     rows = k.mat(env)
-    ns = int(n_states) if n_states is not None else (
-        int(max([max(r[0], r[2]) for r in rows]) + 1) if rows else 0)
+    ns = int(n_states) if n_states is not None else (int(max([max(r[0], r[2]) for r in rows]) + 1) if rows else 0)
     succ = [[] for _ in range(ns)]
     pred = [[] for _ in range(ns)]
     for row in rows:

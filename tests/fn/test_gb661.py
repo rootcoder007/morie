@@ -1,7 +1,6 @@
 """Tests for gb661.gibbons_mannwhitney."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb661 import gibbons_mannwhitney
 
 

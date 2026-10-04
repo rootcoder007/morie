@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,13 +22,16 @@ def mvsml_reproducing_kernel_eq_10_10(X, y, W, activations=None, eta=0.1):
     from (10.11).  Moving the weights down the slope of the loss is
     the whole intuition behind backpropagation. Keys: estimate."""
     g = _gp.ann_backprop_gradients(X, y, W, activations)
-    upd = [[[-eta * v for v in row] for row in G]
-           for G in g["gradients"]]
-    res = RichResult(payload={"estimate": g["loss"],
-                              "gradients": g["gradients"],
-                              "weight_changes": upd,
-                              "loss": g["loss"],
-                              "method": "gradient-descent weight change (MVSML 2022 eq. 10.10-10.11)"})
+    upd = [[[-eta * v for v in row] for row in G] for G in g["gradients"]]
+    res = RichResult(
+        payload={
+            "estimate": g["loss"],
+            "gradients": g["gradients"],
+            "weight_changes": upd,
+            "loss": g["loss"],
+            "method": "gradient-descent weight change (MVSML 2022 eq. 10.10-10.11)",
+        }
+    )
     return with_describe_pointer(res, "msm246")
 
 

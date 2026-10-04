@@ -25,8 +25,10 @@ def _data(n1=40, n2=60):
     n = n1 + n2
     X = [[math.sin(1.3 * k), math.cos(0.7 * k)] for k in range(n)]
     D = [float(k % 2) if k < n1 else (1.0 if X[k][0] > 0 else 0.0) for k in range(n)]
-    y = [0.5 + 1.0 * d + 0.4 * x[0] - 0.2 * x[1] + (0.3 if k >= n1 else 0.0) + 0.25 * math.sin(9.1 * k)
-         for k, (d, x) in enumerate(zip(D, X))]
+    y = [
+        0.5 + 1.0 * d + 0.4 * x[0] - 0.2 * x[1] + (0.3 if k >= n1 else 0.0) + 0.25 * math.sin(9.1 * k)
+        for k, (d, x) in enumerate(zip(D, X))
+    ]
     return y[:n1], y[n1:], D, X
 
 
@@ -40,8 +42,10 @@ def _reference(y1, y2, D, X):
     S = [1.0 if i < n1 else 0.0 for i in range(n)]
     Z = [[D[i], 1.0] + X[i] + [S[i]] for i in range(n)]
     q = len(Z[0])
-    b = _solve([[sum(z[r] * z[c] for z in Z) for c in range(q)] for r in range(q)],
-               [sum(z[r] * t for z, t in zip(Z, y)) for r in range(q)])
+    b = _solve(
+        [[sum(z[r] * z[c] for z in Z) for c in range(q)] for r in range(q)],
+        [sum(z[r] * t for z, t in zip(Z, y)) for r in range(q)],
+    )
     Q1 = [sum(u * v for u, v in zip([1.0] + z[1:], b)) for z in Z]
     Q0 = [sum(u * v for u, v in zip([0.0] + z[1:], b)) for z in Z]
     g = statistics.fmean(D[:n1])

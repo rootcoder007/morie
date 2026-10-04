@@ -20,8 +20,7 @@ normalisation are not comparable without the adjustment on p. 216.
 
 from . import _array_core as np
 
-__all__ = ["normalize_scale", "kernel_K", "kernel_Kz_sixth",
-           "kernel_Kz_sixth_deriv", "SCALE_NOTE"]
+__all__ = ["normalize_scale", "kernel_K", "kernel_Kz_sixth", "kernel_Kz_sixth_deriv", "SCALE_NOTE"]
 
 SCALE_NOTE = "|beta_1| = 1 (scale) and T(y0) = 0 (location); no intercept in X"
 
@@ -35,7 +34,8 @@ def normalize_scale(beta):
         raise ValueError(
             "the first component of beta is zero, so |beta_1| = 1 cannot be "
             "imposed; reorder X so a component with a nonzero coefficient "
-            "and a continuous conditional distribution comes first.")
+            "and a continuous conditional distribution comes first."
+        )
     return b / abs(b[0])
 
 

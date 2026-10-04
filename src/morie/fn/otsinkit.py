@@ -1,6 +1,5 @@
 """Adaptive iteration count for Sinkhorn given tol."""
 
-from . import _array_core as np
 from . import _big2 as _big2
 from ._richresult import RichResult
 

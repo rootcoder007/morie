@@ -28,10 +28,15 @@ def alammar_chain_prompting(x, prompts, model):
         prompt = P(y, x)
         y = str(model(prompt))
         steps.append({"prompt": str(prompt), "output": y})
-    return RichResult(payload={
-        "final_output": y, "steps": steps,
-        "estimate": float(len(steps)), "n": len(steps),
-        "method": "Prompt chaining (Alammar Ch 7)"})
+    return RichResult(
+        payload={
+            "final_output": y,
+            "steps": steps,
+            "estimate": float(len(steps)),
+            "n": len(steps),
+            "method": "Prompt chaining (Alammar Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

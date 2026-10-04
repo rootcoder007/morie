@@ -44,9 +44,7 @@ def gibbons_chi2_yates(table, cdf=None):
     """
     O = np.asarray(table, dtype=float)
     if O.shape != (2, 2):
-        raise ValueError(
-            f"Yates's correction is a 2x2 argument; got shape {O.shape}."
-        )
+        raise ValueError(f"Yates's correction is a 2x2 argument; got shape {O.shape}.")
     if np.any(O < 0):
         raise ValueError("counts must be non-negative.")
     ntot = O.sum()
@@ -59,8 +57,11 @@ def gibbons_chi2_yates(table, cdf=None):
     q0 = float(np.sum((O - E) ** 2 / E))
     return RichResult(
         payload={
-            "chi2_corrected": qc, "chi2_uncorrected": q0, "df": 1,
-            "p_value": float(stats.chi2.sf(qc, 1)), "expected": E,
+            "chi2_corrected": qc,
+            "chi2_uncorrected": q0,
+            "df": 1,
+            "p_value": float(stats.chi2.sf(qc, 1)),
+            "expected": E,
             "method": "Yates Q_c = sum (|O - E| - .5)^2/E, 2x2 only (Ch. 14.2)",
         }
     )

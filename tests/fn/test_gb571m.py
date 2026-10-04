@@ -9,6 +9,8 @@ def test_gb571m_basic():
     result = gibbons_wsrt_mean(n)
     assert isinstance(result, dict)
     assert "mean" in result
+
+
 def test_gb571m_edge():
     """Test edge cases."""
     n = 100

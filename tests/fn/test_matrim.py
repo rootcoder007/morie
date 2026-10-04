@@ -1,7 +1,6 @@
 """Tests for matrim.ma_trim_fill."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.matrim import ma_trim_fill
 
 

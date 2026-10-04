@@ -32,21 +32,23 @@ def kamath_dense_passage_retrieval(q_embed, p_embeds, k):
     if P.size == 0:
         raise ValueError("the passage index is empty.")
     if P.shape[1] != q.size:
-        raise ValueError(
-            f"the query is {q.size}-dimensional but the passages are "
-            f"{P.shape[1]}-dimensional.")
+        raise ValueError(f"the query is {q.size}-dimensional but the passages are {P.shape[1]}-dimensional.")
     kk = int(k)
     if not (1 <= kk <= P.shape[0]):
-        raise ValueError(
-            f"k = {kk} must lie in [1, {P.shape[0]}] for this index.")
+        raise ValueError(f"k = {kk} must lie in [1, {P.shape[0]}] for this index.")
     s = P @ q
     order = np.argsort(-s, kind="stable")[:kk]
-    return RichResult(payload={
-        "estimate": float(s[order[0]]),
-        "top_k_indices": [int(i) for i in order],
-        "top_k_scores": [float(s[i]) for i in order],
-        "scores": [float(v) for v in s], "k": kk, "n": int(P.shape[0]),
-        "method": "dense passage retrieval top-k (Kamath Ch 7)"})
+    return RichResult(
+        payload={
+            "estimate": float(s[order[0]]),
+            "top_k_indices": [int(i) for i in order],
+            "top_k_scores": [float(s[i]) for i in order],
+            "scores": [float(v) for v in s],
+            "k": kk,
+            "n": int(P.shape[0]),
+            "method": "dense passage retrieval top-k (Kamath Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

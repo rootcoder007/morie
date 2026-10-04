@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,12 +26,14 @@ def ghosal_ntr_def(increments, seed=42):
     for v in inc:
         M += v
         F.append(1.0 - math.exp(-M))
-    res = RichResult(payload={"estimate": F[-1],
-                              "F_path": F,
-                              "nondecreasing": all(
-                                  F[i + 1] >= F[i] - 1e-15
-                                  for i in range(len(F) - 1)),
-                              "method": "NTR construction (GvdV 2017 sec. 13.4)"})
+    res = RichResult(
+        payload={
+            "estimate": F[-1],
+            "F_path": F,
+            "nondecreasing": all(F[i + 1] >= F[i] - 1e-15 for i in range(len(F) - 1)),
+            "method": "NTR construction (GvdV 2017 sec. 13.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_8")
 
 

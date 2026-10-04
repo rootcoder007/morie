@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.node2v import alpha_pq, node2vec, transition_probabilities
 
-
 ADJ = {0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: [1]}
 
 
@@ -27,7 +26,6 @@ def test_node2v_edge():
         assert len(w) == 6
         assert all(b in ADJ[a] for a, b in zip(w, w[1:]))
     assert sorted({w[0] for w in r["walks"]}) == [0, 1, 2, 3]
-    assert node2vec(ADJ, num_walks=3, length=6, seed=2)["walks"] == \
-        node2vec(ADJ, num_walks=3, length=6, seed=2)["walks"]
-
-
+    assert (
+        node2vec(ADJ, num_walks=3, length=6, seed=2)["walks"] == node2vec(ADJ, num_walks=3, length=6, seed=2)["walks"]
+    )

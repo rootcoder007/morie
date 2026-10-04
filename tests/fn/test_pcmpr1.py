@@ -1,7 +1,6 @@
 """Tests for pcmpr1.prediction_compression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pcmpr1 import prediction_compression
 
 

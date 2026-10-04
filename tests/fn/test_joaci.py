@@ -1,7 +1,6 @@
 """Tests for joaci.joseph_adaptive_conformal_inference."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.joaci import joseph_adaptive_conformal_inference
 
 

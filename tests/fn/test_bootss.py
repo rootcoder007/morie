@@ -27,11 +27,8 @@ def test_point_estimate_is_the_weighted_total():
 
 def test_a_custom_statistic_is_used_when_given():
     y, w, s, c = _design()
-    mean = bootss(y, w, s, c, B=20, seed=1,
-                  statistic=lambda yy, ww: sum(a * b for a, b in
-                                               zip(yy, ww)) / sum(ww))
-    assert abs(mean["estimate"] -
-               sum(y[i] * w[i] for i in range(len(y))) / sum(w)) < 1e-9
+    mean = bootss(y, w, s, c, B=20, seed=1, statistic=lambda yy, ww: sum(a * b for a, b in zip(yy, ww)) / sum(ww))
+    assert abs(mean["estimate"] - sum(y[i] * w[i] for i in range(len(y))) / sum(w)) < 1e-9
 
 
 def test_variance_is_positive_and_matches_its_replicates():
@@ -60,10 +57,11 @@ def test_the_same_seed_reproduces_the_replicates():
 
 def test_validation():
     y, w, s, c = _design()
-    for call in (lambda: bootss(y[:-1], w, s, c),
-                 lambda: bootss(y, [0.0] * len(y), s, c),
-                 lambda: bootss([1.0, 2.0], [1.0, 1.0], [0, 0],
-                                ["a", "a"])):
+    for call in (
+        lambda: bootss(y[:-1], w, s, c),
+        lambda: bootss(y, [0.0] * len(y), s, c),
+        lambda: bootss([1.0, 2.0], [1.0, 1.0], [0, 0], ["a", "a"]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

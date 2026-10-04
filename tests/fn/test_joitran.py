@@ -13,9 +13,20 @@ def _w(r, c, s):
 
 def _net(x):
     T, D, F, Hh = len(x[0]), 3, 4, 2
-    return joseph_itransformer(x, _w(D, T, 0.1), [0.1, -0.2, 0.05], _w(D, D, 0.2), _w(D, D, 0.3),
-                               _w(D, D, 0.4), _w(F, D, 0.5), [0.0] * F, _w(D, F, 0.6), [0.0] * D,
-                               _w(Hh, D, 0.7), [0.0, 0.1])
+    return joseph_itransformer(
+        x,
+        _w(D, T, 0.1),
+        [0.1, -0.2, 0.05],
+        _w(D, D, 0.2),
+        _w(D, D, 0.3),
+        _w(D, D, 0.4),
+        _w(F, D, 0.5),
+        [0.0] * F,
+        _w(D, F, 0.6),
+        [0.0] * D,
+        _w(Hh, D, 0.7),
+        [0.0, 0.1],
+    )
 
 
 def test_joitran_basic():
@@ -35,5 +46,3 @@ def test_joitran_edge():
     """One variate attends only to itself."""
     r = _net([[1.0, 2.0, 0.5, -1.0]])
     assert r["attn"] == [[1.0]] and r["attndiag"] == 1.0
-
-

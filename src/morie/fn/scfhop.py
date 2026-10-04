@@ -73,8 +73,7 @@ from . import _w3num as _w
 from ._richresult import RichResult
 from .avalon import _adjacency, _bfs_dist, _fnv, implicit_h, parse_smiles
 
-__all__ = ["scaffold_hop", "atom_types", "cats", "murcko_scaffold",
-           "scaffold_signature", "similarity", "cheatsheet"]
+__all__ = ["scaffold_hop", "atom_types", "cats", "murcko_scaffold", "scaffold_signature", "similarity", "cheatsheet"]
 
 # Schneider's five categories, in a fixed order so the vector's layout
 # is a property of the module and not of a dictionary's iteration.
@@ -234,15 +233,13 @@ def similarity(a, b, metric="tanimoto"):
     closer -- and ``cosine`` ignores magnitude entirely.
     """
     if len(a) != len(b):
-        raise ValueError("two descriptors of different lengths cannot "
-                         "be compared")
+        raise ValueError("two descriptors of different lengths cannot be compared")
     if metric == "tanimoto":
         lo = _w.csum(a[i] if a[i] < b[i] else b[i] for i in range(len(a)))
         hi = _w.csum(a[i] if a[i] > b[i] else b[i] for i in range(len(a)))
         return (lo / hi) if hi > 0 else 0.0
     if metric == "euclidean":
-        d = math.sqrt(_w.csum((a[i] - b[i]) * (a[i] - b[i])
-                              for i in range(len(a))))
+        d = math.sqrt(_w.csum((a[i] - b[i]) * (a[i] - b[i]) for i in range(len(a))))
         return 1.0 / (1.0 + d)
     if metric == "cosine":
         num = _w.csum(a[i] * b[i] for i in range(len(a)))
@@ -266,6 +263,7 @@ def murcko_scaffold(smiles):
     el, arom, chg, hexp, bonds, closures = parse_smiles(smiles)
     n = len(el)
     from .avalon import ring_bonds
+
     rings, inring = ring_bonds(n, bonds, closures)
     keep = [True] * n
     changed = True
@@ -311,8 +309,7 @@ def scaffold_signature(smiles, rounds=3):
     for a, b, o in keptb:
         nb[pos[a]].append((pos[b], o))
         nb[pos[b]].append((pos[a], o))
-    col = [_fnv("%s|%d|%d" % (el[atoms[k]], arom[atoms[k]],
-                              chg[atoms[k]])) for k in range(m)]
+    col = [_fnv("%s|%d|%d" % (el[atoms[k]], arom[atoms[k]], chg[atoms[k]])) for k in range(m)]
     for _ in range(int(rounds)):
         nxt = []
         for k in range(m):
@@ -322,8 +319,7 @@ def scaffold_signature(smiles, rounds=3):
     return sorted(col)
 
 
-def scaffold_hop(lead_smiles, scaffold_db, maxdist=9, scaling="type",
-                 metric="tanimoto", rounds=3, threshold=0.0):
+def scaffold_hop(lead_smiles, scaffold_db, maxdist=9, scaling="type", metric="tanimoto", rounds=3, threshold=0.0):
     """Rank candidates by pharmacophore, and say which ones are hops.
 
     Parameters
@@ -366,47 +362,51 @@ def scaffold_hop(lead_smiles, scaffold_db, maxdist=9, scaling="type",
         sig = scaffold_signature(sm, rounds)
         atoms, kb = murcko_scaffold(sm)
         diff = sig != lsig
-        rows.append({
-            "index": q,
-            "smiles": sm,
-            "similarity": s,
-            "scaffold_differs": diff,
-            "scaffold_size": len(atoms),
-            "is_hop": bool(diff and s >= threshold),
-        })
+        rows.append(
+            {
+                "index": q,
+                "smiles": sm,
+                "similarity": s,
+                "scaffold_differs": diff,
+                "scaffold_size": len(atoms),
+                "is_hop": bool(diff and s >= threshold),
+            }
+        )
     # Ranked by similarity, ties broken by the order they were given in,
     # so the ranking is a function of the input and not of a sort's
     # internal state.
-    order = sorted(range(len(rows)),
-                   key=lambda i: (-rows[i]["similarity"], i))
+    order = sorted(range(len(rows)), key=lambda i: (-rows[i]["similarity"], i))
     ranked = [rows[i] for i in order]
-    return RichResult(payload={
-        "lead": lead,
-        "lead_scaffold": latoms,
-        "lead_scaffold_size": len(latoms),
-        "lead_signature": lsig,
-        "ranked": ranked,
-        "similarity": [r["similarity"] for r in ranked],
-        "is_hop": [r["is_hop"] for r in ranked],
-        "order": [r["index"] for r in ranked],
-        "n_candidates": len(rows),
-        "n_hops": sum(1 for r in rows if r["is_hop"]),
-        "n_dim": len(lead),
-        "maxdist": int(maxdist),
-        "scaling": scaling,
-        "metric": metric,
-        "rounds": int(rounds),
-        "threshold": float(threshold),
-        "method": "CATS topological pharmacophore search with a "
-                  "Bemis-Murcko scaffold test",
-    })
+    return RichResult(
+        payload={
+            "lead": lead,
+            "lead_scaffold": latoms,
+            "lead_scaffold_size": len(latoms),
+            "lead_signature": lsig,
+            "ranked": ranked,
+            "similarity": [r["similarity"] for r in ranked],
+            "is_hop": [r["is_hop"] for r in ranked],
+            "order": [r["index"] for r in ranked],
+            "n_candidates": len(rows),
+            "n_hops": sum(1 for r in rows if r["is_hop"]),
+            "n_dim": len(lead),
+            "maxdist": int(maxdist),
+            "scaling": scaling,
+            "metric": metric,
+            "rounds": int(rounds),
+            "threshold": float(threshold),
+            "method": "CATS topological pharmacophore search with a Bemis-Murcko scaffold test",
+        }
+    )
 
 
 def cheatsheet():
-    return ("scfhop: scaffold hopping. CATS pharmacophore correlation "
-            "vector for what to keep, Bemis-Murcko framework for what "
-            "to change; a hop is close by the first and different by "
-            "the second")
+    return (
+        "scfhop: scaffold hopping. CATS pharmacophore correlation "
+        "vector for what to keep, Bemis-Murcko framework for what "
+        "to change; a hop is close by the first and different by "
+        "the second"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

@@ -90,7 +90,7 @@ def _dsigma(d, r, nugget_ratio, rng, model):
     d_xi = -r.copy()
     d_xi[np.diag_indices_from(d_xi)] = 0.0
     flat = semivariogram_jacobian(d.ravel(), 0.0, 1.0, rng, model)[:, 2]
-    dr_da = (-flat).reshape(n, n)     # jacobian column is -sill * dR/da at sill = 1
+    dr_da = (-flat).reshape(n, n)  # jacobian column is -sill * dR/da at sill = 1
     d_a = (1.0 - nugget_ratio) * dr_da
     d_a[np.diag_indices_from(d_a)] = 0.0
     return d_xi, d_a
@@ -129,8 +129,7 @@ def profiled_reml(coords, z, X, nugget_ratio, rng, model):
     sigma2 = rss / dof
     if not np.isfinite(sigma2) or sigma2 <= 0:
         return np.inf, np.zeros(2), np.nan, np.full(k, np.nan)
-    value = (logdet + logdet_xsx + dof * np.log(sigma2)
-             + dof * (np.log(2.0 * np.pi) - 1.0))
+    value = logdet + logdet_xsx + dof * np.log(sigma2) + dof * (np.log(2.0 * np.pi) - 1.0)
 
     # Exact gradient. For each derivative D of Sigma(theta*):
     #   d ln|Sigma|            = tr(Sigma^-1 D)
@@ -147,8 +146,7 @@ def profiled_reml(coords, z, X, nugget_ratio, rng, model):
     return float(value), grad, float(sigma2), beta
 
 
-def fit_reml(coords, z, X, model="exponential", start=(0.1, None),
-             max_iter=200, tol=1e-10):
+def fit_reml(coords, z, X, model="exponential", start=(0.1, None), max_iter=200, tol=1e-10):
     """Quasi-Newton (BFGS) on eq (5.49), driven by the exact gradient.
 
     Sec. 5.5.2 sanctions "Newton-Raphson, Quasi-Newton, or some other
@@ -191,7 +189,7 @@ def fit_reml(coords, z, X, model="exponential", start=(0.1, None),
             break
         direction = -hess_inv @ grad
         slope = float(grad @ direction)
-        if slope >= 0:                       # not a descent direction; reset
+        if slope >= 0:  # not a descent direction; reset
             hess_inv = np.eye(2)
             direction = -grad
             slope = float(grad @ direction)
@@ -209,19 +207,24 @@ def fit_reml(coords, z, X, model="exponential", start=(0.1, None),
         s = trial - x
         y = t_grad - grad
         sy = float(s @ y)
-        if sy > 1e-300:                       # BFGS update, skipped if unstable
+        if sy > 1e-300:  # BFGS update, skipped if unstable
             rho = 1.0 / sy
             eye = np.eye(2)
-            hess_inv = ((eye - rho * np.outer(s, y)) @ hess_inv
-                        @ (eye - rho * np.outer(y, s)) + rho * np.outer(s, s))
+            hess_inv = (eye - rho * np.outer(s, y)) @ hess_inv @ (eye - rho * np.outer(y, s)) + rho * np.outer(s, s)
         x, val, grad, sigma2, beta = trial, t_val, t_grad, t_s2, t_beta
 
     xi = _logistic(x[0])
     a = float(np.exp(x[1]))
-    return {"nugget_ratio": float(xi), "range": a, "sigma2": float(sigma2),
-            "nugget": float(xi * sigma2), "partial_sill": float((1.0 - xi) * sigma2),
-            "beta": beta, "neg2_restricted_loglik": float(val),
-            "converged": bool(np.max(np.abs(grad)) < 1e-6)}
+    return {
+        "nugget_ratio": float(xi),
+        "range": a,
+        "sigma2": float(sigma2),
+        "nugget": float(xi * sigma2),
+        "partial_sill": float((1.0 - xi) * sigma2),
+        "beta": beta,
+        "neg2_restricted_loglik": float(val),
+        "converged": bool(np.max(np.abs(grad)) < 1e-6),
+    }
 
 
 def _default_range(coords):

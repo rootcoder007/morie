@@ -31,36 +31,35 @@ def ghosal_gp_laplace(x=None, y=None, length=0.5, seed=42):
     xs = _bnp._flat(x)
     ys = _bnp._flat(y)
     n = len(xs)
-    K = [[math.exp(-0.5 * ((xs[i] - xs[j]) / length) ** 2)
-          + (1e-8 if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    K = [
+        [math.exp(-0.5 * ((xs[i] - xs[j]) / length) ** 2) + (1e-8 if i == j else 0.0) for j in range(n)]
+        for i in range(n)
+    ]
     f = [0.0] * n
     for _ in range(100):
         p = [1.0 / (1.0 + math.exp(-v)) for v in f]
         grad_data = [yi - pi for yi, pi in zip(ys, p)]
         Kinv_f = _chol_solve(K, f)
-        step = [0.3 * (sum(K[i][j] * grad_data[j]
-                           for j in range(n)) - f[i])
-                for i in range(n)]
+        step = [0.3 * (sum(K[i][j] * grad_data[j] for j in range(n)) - f[i]) for i in range(n)]
         f = [fi + si for fi, si in zip(f, step)]
     p = [1.0 / (1.0 + math.exp(-v)) for v in f]
     W = [pi * (1.0 - pi) for pi in p]
     # Laplace variance at site 0: ((K^{-1} + W)^{-1})_{00} via solve
-    A = [[(1.0 if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    A = [[(1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
     # A = K^{-1} + W: build via solving K columns
-    Kinv_cols = [_chol_solve(K, [1.0 if r == c else 0.0
-                                 for r in range(n)])
-                 for c in range(n)]
-    B = [[Kinv_cols[c][r] + (W[r] if r == c else 0.0)
-          for c in range(n)] for r in range(n)]
+    Kinv_cols = [_chol_solve(K, [1.0 if r == c else 0.0 for r in range(n)]) for c in range(n)]
+    B = [[Kinv_cols[c][r] + (W[r] if r == c else 0.0) for c in range(n)] for r in range(n)]
     e0 = [1.0] + [0.0] * (n - 1)
     var0 = _chol_solve(B, e0)[0]
-    res = RichResult(payload={"estimate": p[-1],
-                              "mode_probs": p,
-                              "laplace_var_site0": var0,
-                              "separates": p[-1] > 0.5 > p[0],
-                              "method": "GP Laplace approximation (GvdV 2017 sec. 11.7.5)"})
+    res = RichResult(
+        payload={
+            "estimate": p[-1],
+            "mode_probs": p,
+            "laplace_var_site0": var0,
+            "separates": p[-1] > 0.5 > p[0],
+            "method": "GP Laplace approximation (GvdV 2017 sec. 11.7.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_14")
 
 

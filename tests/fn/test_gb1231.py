@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb1231 import gibbons_page_test
 
 
@@ -17,8 +16,7 @@ def test_gb1231_basic():
 
     result = gibbons_page_test(data)
     assert isinstance(result, dict)
-    for key in ("statistic", "z", "p_value", "rav",
-                "rank_sums", "k", "n", "method"):
+    for key in ("statistic", "z", "p_value", "rav", "rank_sums", "k", "n", "method"):
         assert key in result
 
     assert result["k"] == 5
@@ -81,11 +79,10 @@ def test_gb1231_weights():
     assert result["statistic"] == pytest.approx(ell_expected)
 
     # z and rav from the docstring formulas.
-    z_expected = (12.0 * (ell_expected - 0.5)
-                  - 3.0 * k * n * (n + 1.0) ** 2) / (
-        n * (n + 1.0) * math.sqrt(k * (n - 1.0)))
-    rav_expected = (12.0 * ell_expected / (k * (float(n) ** 3 - n))
-                    - 3.0 * (n + 1.0) / (n - 1.0))
+    z_expected = (12.0 * (ell_expected - 0.5) - 3.0 * k * n * (n + 1.0) ** 2) / (
+        n * (n + 1.0) * math.sqrt(k * (n - 1.0))
+    )
+    rav_expected = 12.0 * ell_expected / (k * (float(n) ** 3 - n)) - 3.0 * (n + 1.0) / (n - 1.0)
     assert result["z"] == pytest.approx(z_expected)
     assert result["rav"] == pytest.approx(rav_expected)
 
@@ -93,9 +90,7 @@ def test_gb1231_weights():
 def test_gb1231_edge():
     """Test edge cases: monotone increasing data yields large L."""
     # Strictly monotone treatments -> perfect ordering -> large L and z.
-    data = [[1.0, 2.0, 3.0],
-            [1.0, 2.0, 3.0],
-            [1.0, 2.0, 3.0]]
+    data = [[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]]
     result = gibbons_page_test(data)
 
     assert isinstance(result, dict)
@@ -108,10 +103,7 @@ def test_gb1231_edge():
     # Verify edge-case arithmetic on the literature formula.
     ell = result["statistic"]
     k, n = 3, 3
-    z_expected = (12.0 * (ell - 0.5)
-                  - 3.0 * k * n * (n + 1.0) ** 2) / (
-        n * (n + 1.0) * math.sqrt(k * (n - 1.0)))
-    rav_expected = (12.0 * ell / (k * (float(n) ** 3 - n))
-                    - 3.0 * (n + 1.0) / (n - 1.0))
+    z_expected = (12.0 * (ell - 0.5) - 3.0 * k * n * (n + 1.0) ** 2) / (n * (n + 1.0) * math.sqrt(k * (n - 1.0)))
+    rav_expected = 12.0 * ell / (k * (float(n) ** 3 - n)) - 3.0 * (n + 1.0) / (n - 1.0)
     assert result["z"] == pytest.approx(z_expected)
     assert result["rav"] == pytest.approx(rav_expected)

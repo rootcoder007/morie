@@ -1,7 +1,6 @@
 """Test variational_mode (vmd)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.vmd import variational_mode, vmd
 

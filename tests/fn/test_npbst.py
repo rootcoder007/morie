@@ -1,8 +1,8 @@
 """Tests for morie.fn.npbst -- Nonparametric bootstrap inference."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.npbst import npbst
 
 

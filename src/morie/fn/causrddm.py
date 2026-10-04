@@ -22,7 +22,7 @@ def _wls(xs, ys, ws):
 
 def _poly4(mp, val):
     """Degree-4 polynomial fit; returns coefficients and the residual MSE."""
-    X = [[1.0, m, m ** 2, m ** 3, m ** 4] for m in mp]
+    X = [[1.0, m, m**2, m**3, m**4] for m in mp]
     beta, fitted, resid, _ = T.olsfit(X, val)
     dof = len(mp) - 5
     if dof <= 0:
@@ -102,7 +102,7 @@ def causal_rdd_manipulation(x, cutoff=0.0, bw=None, binsize=None):
     rmin, rmax = min(x), max(x)
     if cutoff <= rmin or cutoff >= rmax:
         raise ValueError("cutoff must lie strictly within the range of x")
-    b = float(binsize) if binsize is not None else 2.0 * rsd * rn ** -0.5
+    b = float(binsize) if binsize is not None else 2.0 * rsd * rn**-0.5
     lo = math.floor((rmin - cutoff) / b) * b + b / 2.0 + cutoff
     hi = math.floor((rmax - cutoff) / b) * b + b / 2.0 + cutoff
     j = int(math.floor((rmax - rmin) / b)) + 2

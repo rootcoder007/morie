@@ -41,20 +41,22 @@ def kamath_moe_router_softmax(x, Wr, experts, k):
     W = np.atleast_2d(np.asarray(Wr, dtype=float))
     experts = list(experts)
     if W.shape[1] != len(experts):
-        raise ValueError(
-            f"the router scores {W.shape[1]} experts but "
-            f"{len(experts)} were supplied.")
+        raise ValueError(f"the router scores {W.shape[1]} experts but {len(experts)} were supplied.")
     gate = kamath_ch2_moe_topk_gating(x, W, k=int(k))
     combined = kamath_ch2_moe_output(x, gate["weights"], experts)
-    return RichResult(payload={
-        "output": combined["output"],
-        "gate_weights": gate["weights"],
-        "selected_experts": gate["selected_experts"],
-        "n_active": gate["n_active"],
-        "experts_evaluated": combined["experts_evaluated"],
-        "estimate": combined["estimate"],
-        "k": int(k), "n": len(experts),
-        "method": "Softmax top-k MoE router (delegates to km040 + km039)"})
+    return RichResult(
+        payload={
+            "output": combined["output"],
+            "gate_weights": gate["weights"],
+            "selected_experts": gate["selected_experts"],
+            "n_active": gate["n_active"],
+            "experts_evaluated": combined["experts_evaluated"],
+            "estimate": combined["estimate"],
+            "k": int(k),
+            "n": len(experts),
+            "method": "Softmax top-k MoE router (delegates to km040 + km039)",
+        }
+    )
 
 
 def cheatsheet():

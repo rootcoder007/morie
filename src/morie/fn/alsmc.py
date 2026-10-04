@@ -9,16 +9,16 @@ __all__ = ["alammar_simcse_dropout_aug"]
 
 
 def _cos(a, b):
-    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
-    na = np.linalg.norm(a); nb = np.linalg.norm(b)
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    na = np.linalg.norm(a)
+    nb = np.linalg.norm(b)
     if na == 0 or nb == 0:
-        raise ValueError("a zero vector has no direction; cosine "
-                         "similarity with it is undefined.")
+        raise ValueError("a zero vector has no direction; cosine similarity with it is undefined.")
     return float(np.dot(a, b) / (na * nb))
 
 
-def alammar_simcse_dropout_aug(embeddings_dropout1, embeddings_dropout2,
-                               tau=0.05):
+def alammar_simcse_dropout_aug(embeddings_dropout1, embeddings_dropout2, tau=0.05):
     """Two dropout passes of the SAME sentences are the positive pair;
     the rest of the batch are negatives.
 
@@ -33,17 +33,19 @@ def alammar_simcse_dropout_aug(embeddings_dropout1, embeddings_dropout2,
         raise ValueError("the two dropout passes must align.")
     B = H1.shape[0]
     if B < 2:
-        raise ValueError("need a batch of at least 2 for in-batch "
-                         "negatives.")
-    S = np.array([[_cos(H1[i], H2[j]) / t for j in range(B)]
-                  for i in range(B)])
+        raise ValueError("need a batch of at least 2 for in-batch negatives.")
+    S = np.array([[_cos(H1[i], H2[j]) / t for j in range(B)] for i in range(B)])
     Z = S - S.max(axis=1, keepdims=True)
     logp = Z - np.log(np.exp(Z).sum(axis=1, keepdims=True))
     losses = -np.diag(logp)
-    return RichResult(payload={
-        "estimate": float(losses.mean()),
-        "losses": [float(v) for v in losses], "n": B,
-        "method": "SimCSE with dropout augmentation (Gao et al. 2021)"})
+    return RichResult(
+        payload={
+            "estimate": float(losses.mean()),
+            "losses": [float(v) for v in losses],
+            "n": B,
+            "method": "SimCSE with dropout augmentation (Gao et al. 2021)",
+        }
+    )
 
 
 def cheatsheet():

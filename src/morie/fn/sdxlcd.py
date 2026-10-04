@@ -62,13 +62,17 @@ Probabilistic Models", *NeurIPS 2020*, arXiv:2006.11239.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["fourier_embedding", "size_conditioning",
-           "crop_conditioning", "discarded_fraction",
-           "aspect_ratio_buckets", "condition_vector"]
+__all__ = [
+    "fourier_embedding",
+    "size_conditioning",
+    "crop_conditioning",
+    "discarded_fraction",
+    "aspect_ratio_buckets",
+    "condition_vector",
+]
 
 _EPS = 1e-12
 
@@ -78,11 +82,10 @@ def fourier_embedding(value, dim=8, scale=0.001):
     v = float(value)
     n = int(dim)
     if n < 2 or n % 2:
-        raise ValueError("sdxlcd: the embedding width must be even "
-                         "and at least 2")
+        raise ValueError("sdxlcd: the embedding width must be even and at least 2")
     out = []
     for j in range(n // 2):
-        f = (2.0 ** j) * math.pi * float(scale)
+        f = (2.0**j) * math.pi * float(scale)
         out.append(math.sin(f * v))
         out.append(math.cos(f * v))
     return out
@@ -97,11 +100,11 @@ def size_conditioning(h_original, w_original, dim=8):
     h, w = float(h_original), float(w_original)
     if h <= 0.0 or w <= 0.0:
         raise ValueError("sdxlcd: the original size must be positive")
-    return {"c_size": (h, w),
-            "embedding": fourier_embedding(h, dim)
-            + fourier_embedding(w, dim),
-            "note": "the ORIGINAL size, so no training image has to "
-                    "be thrown away or upscaled"}
+    return {
+        "c_size": (h, w),
+        "embedding": fourier_embedding(h, dim) + fourier_embedding(w, dim),
+        "note": "the ORIGINAL size, so no training image has to be thrown away or upscaled",
+    }
 
 
 def crop_conditioning(c_top=0, c_left=0, dim=8):
@@ -113,11 +116,12 @@ def crop_conditioning(c_top=0, c_left=0, dim=8):
     t, l = float(c_top), float(c_left)
     if t < 0.0 or l < 0.0:
         raise ValueError("sdxlcd: crop offsets cannot be negative")
-    return {"c_crop": (t, l),
-            "embedding": fourier_embedding(t, dim)
-            + fourier_embedding(l, dim),
-            "object_centred": t == 0.0 and l == 0.0,
-            "note": "(0,0) at inference asks for an UNCROPPED image"}
+    return {
+        "c_crop": (t, l),
+        "embedding": fourier_embedding(t, dim) + fourier_embedding(l, dim),
+        "object_centred": t == 0.0 and l == 0.0,
+        "note": "(0,0) at inference asks for an UNCROPPED image",
+    }
 
 
 def sample_crop(height, width, target_h, target_w, rng):
@@ -125,8 +129,7 @@ def sample_crop(height, width, target_h, target_w, rng):
     H, W = int(height), int(width)
     th, tw = int(target_h), int(target_w)
     if th > H or tw > W:
-        raise ValueError("sdxlcd: the target is larger than the "
-                         "image")
+        raise ValueError("sdxlcd: the target is larger than the image")
     t = int(float(rng.uniform()) * (H - th + 1))
     l = int(float(rng.uniform()) * (W - tw + 1))
     return {"c_top": min(t, H - th), "c_left": min(l, W - tw)}
@@ -143,12 +146,14 @@ def discarded_fraction(sizes, minimum=256):
         raise ValueError("sdxlcd: no image sizes given")
     m = float(minimum)
     lost = sum(1 for h, w in S if h < m or w < m)
-    return {"discarded": lost, "total": len(S),
-            "fraction": lost / float(len(S)),
-            "kept_with_conditioning": len(S),
-            "minimum": m,
-            "note": "conditioning keeps every image; filtering does "
-                    "not"}
+    return {
+        "discarded": lost,
+        "total": len(S),
+        "fraction": lost / float(len(S)),
+        "kept_with_conditioning": len(S),
+        "minimum": m,
+        "note": "conditioning keeps every image; filtering does not",
+    }
 
 
 def aspect_ratio_buckets(ratios, pixels=1024 * 1024, multiple=64):
@@ -158,25 +163,29 @@ def aspect_ratio_buckets(ratios, pixels=1024 * 1024, multiple=64):
     for r in ratios:
         a = float(r)
         if a <= 0.0:
-            raise ValueError("sdxlcd: an aspect ratio must be "
-                             "positive")
+            raise ValueError("sdxlcd: an aspect ratio must be positive")
         h = math.sqrt(float(pixels) / a)
         w = a * h
         M = int(multiple)
         hh = max(M, int(round(h / M)) * M)
         ww = max(M, int(round(w / M)) * M)
-        out.append({"aspect": a, "height": hh, "width": ww,
-                    "pixels": hh * ww,
-                    "pixel_error": abs(hh * ww - pixels)
-                    / float(pixels)})
-    return {"buckets": out,
-            "max_pixel_error": max(b["pixel_error"] for b in out),
-            "note": "square output is an unnatural default for "
-                    "landscape and portrait screens"}
+        out.append(
+            {
+                "aspect": a,
+                "height": hh,
+                "width": ww,
+                "pixels": hh * ww,
+                "pixel_error": abs(hh * ww - pixels) / float(pixels),
+            }
+        )
+    return {
+        "buckets": out,
+        "max_pixel_error": max(b["pixel_error"] for b in out),
+        "note": "square output is an unnatural default for landscape and portrait screens",
+    }
 
 
-def condition_vector(h_original, w_original, c_top=0, c_left=0,
-                     timestep_embedding=None, dim=8):
+def condition_vector(h_original, w_original, c_top=0, c_left=0, timestep_embedding=None, dim=8):
     r"""Concatenate the conditionings, then ADD to the timestep
     embedding."""
     s = size_conditioning(h_original, w_original, dim)
@@ -187,31 +196,37 @@ def condition_vector(h_original, w_original, c_top=0, c_left=0,
     else:
         t = [float(v) for v in k.vec(timestep_embedding)]
         if len(t) != len(cat):
-            raise ValueError("sdxlcd: the timestep embedding is %d "
-                             "wide but the conditioning is %d"
-                             % (len(t), len(cat)))
+            raise ValueError(
+                "sdxlcd: the timestep embedding is %d wide but the conditioning is %d" % (len(t), len(cat))
+            )
         vec = [t[i] + cat[i] for i in range(len(cat))]
-    return RichResult(payload={
-        "estimate": vec, "vector": vec, "width": len(vec),
-        "c_size": s["c_size"], "c_crop": c["c_crop"],
-        "method": "SDXL micro-conditioning; Podell et al. (2023)",
-        "note": "concatenated, then ADDED to the timestep embedding "
-                "in the UNet",
-    })
+    return RichResult(
+        payload={
+            "estimate": vec,
+            "vector": vec,
+            "width": len(vec),
+            "c_size": s["c_size"],
+            "c_crop": c["c_crop"],
+            "method": "SDXL micro-conditioning; Podell et al. (2023)",
+            "note": "concatenated, then ADDED to the timestep embedding in the UNet",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sdxlcd: two improvements that add NO supervision -- they "
-            "condition on metadata the pipeline already had and threw "
-            "away. SIZE: filtering below a minimum resolution "
-            "discarded 39% of the data and upscaling bakes in "
-            "artefacts, so give the UNet the ORIGINAL (h,w) as "
-            "Fourier-embedded conditioning added to the timestep "
-            "embedding. CROP: batching forces a random crop that LEAKS "
-            "into samples (cut-off heads), so condition on "
-            "(c_top,c_left) and set (0,0) at inference to ask for an "
-            "uncropped image. Plus multi-aspect buckets at ~1024^2 "
-            "pixels.")
+    return (
+        "sdxlcd: two improvements that add NO supervision -- they "
+        "condition on metadata the pipeline already had and threw "
+        "away. SIZE: filtering below a minimum resolution "
+        "discarded 39% of the data and upscaling bakes in "
+        "artefacts, so give the UNet the ORIGINAL (h,w) as "
+        "Fourier-embedded conditioning added to the timestep "
+        "embedding. CROP: batching forces a random crop that LEAKS "
+        "into samples (cut-off heads), so condition on "
+        "(c_top,c_left) and set (0,0) at inference to ask for an "
+        "uncropped image. Plus multi-aspect buckets at ~1024^2 "
+        "pixels."
+    )
 
 
 # compact alias per ledger/NAMING.md

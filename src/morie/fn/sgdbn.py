@@ -71,16 +71,14 @@ def spatial_durbin_model(
             return np.inf
         return -(-0.5 * n * np.log(2 * np.pi * sigma2) + logdet - 0.5 * n)
 
-    opt = minimize_scalar(neg_ll, bounds=(lo, hi), method="bounded",
-                          options={"xatol": 1e-10 * max(hi - lo, 1.0)})
+    opt = minimize_scalar(neg_ll, bounds=(lo, hi), method="bounded", options={"xatol": 1e-10 * max(hi - lo, 1.0)})
     best_rho = float(opt.x) if np.isfinite(neg_ll(opt.x)) else 0.0
     A = I - best_rho * W
     Zy = A @ Z
     best_coef = np.linalg.lstsq(X_aug, Zy, rcond=None)[0]
     best_resid = Zy - X_aug @ best_coef
     _s, _ld = np.linalg.slogdet(A)
-    best_ll = (-0.5 * n * np.log(2 * np.pi * np.sum(best_resid**2) / n)
-               + _ld - 0.5 * n)
+    best_ll = -0.5 * n * np.log(2 * np.pi * np.sum(best_resid**2) / n) + _ld - 0.5 * n
 
     p = X.shape[1]
     if best_coef is None:

@@ -27,28 +27,27 @@ def kamath_ch9_input_projector(F_X, in_align=None):
     [[7.0]]
     """
     if in_align is None:
-        raise ValueError("in_align= is required: the projector "
-                         "callable or its weight matrix.")
+        raise ValueError("in_align= is required: the projector callable or its weight matrix.")
     F = np.atleast_2d(np.asarray(F_X, dtype=float))
     if callable(in_align):
         P = np.asarray(in_align(F), dtype=float)
     else:
         W = np.atleast_2d(np.asarray(in_align, dtype=float))
         if F.shape[1] != W.shape[0]:
-            raise ValueError(
-                f"F_X is {F.shape} and W is {W.shape}; the inner "
-                "dimensions do not match.")
+            raise ValueError(f"F_X is {F.shape} and W is {W.shape}; the inner dimensions do not match.")
         P = F @ W
     if P.size == 0 or not np.all(np.isfinite(P)):
-        raise ValueError("the projector returned empty or non-finite "
-                         "prompt features.")
+        raise ValueError("the projector returned empty or non-finite prompt features.")
     P2 = np.atleast_2d(P)
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(P)),
-        "prompts": [[float(v) for v in row] for row in P2],
-        "shape": list(P.shape), "n": int(P2.shape[0]),
-        "method": "input projector P_X = IN_ALIGN(F_X) "
-                  "(Kamath Eq 9.3)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(P)),
+            "prompts": [[float(v) for v in row] for row in P2],
+            "shape": list(P.shape),
+            "n": int(P2.shape[0]),
+            "method": "input projector P_X = IN_ALIGN(F_X) (Kamath Eq 9.3)",
+        }
+    )
 
 
 def cheatsheet():

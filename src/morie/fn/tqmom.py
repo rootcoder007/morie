@@ -43,10 +43,16 @@ def turboquant_normal_moment(sigma, l):
     """
     sigma = float(sigma)
     l = float(l)
-    val = sigma ** l * 2.0 ** (l / 2.0) * math.gamma((l + 1.0) / 2.0) / math.sqrt(math.pi)
-    return RichResult(payload={
-        "moment": val, "estimate": val, "sigma": sigma, "l": l,
-        "method": "Absolute moment of a centred normal"})
+    val = sigma**l * 2.0 ** (l / 2.0) * math.gamma((l + 1.0) / 2.0) / math.sqrt(math.pi)
+    return RichResult(
+        payload={
+            "moment": val,
+            "estimate": val,
+            "sigma": sigma,
+            "l": l,
+            "method": "Absolute moment of a centred normal",
+        }
+    )
 
 
 def cheatsheet():

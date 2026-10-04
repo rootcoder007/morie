@@ -1,7 +1,6 @@
 """Test soft_threshold (sthr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sthr import soft_threshold, sthr
 

@@ -21,8 +21,10 @@ def test_spcgme_basic():
     po = sum(w[i][j] for i in range(n) for j in range(n) if x[i] == y[j]) / s0
     rows = [sum(r) for r in w]
     cols = [sum(w[i][j] for i in range(n)) for j in range(n)]
-    pe = sum(sum(rows[i] for i in range(n) if x[i] == c) / s0
-             * sum(cols[j] for j in range(n) if y[j] == c) / s0 for c in (1, 2, 3))
+    pe = sum(
+        sum(rows[i] for i in range(n) if x[i] == c) / s0 * sum(cols[j] for j in range(n) if y[j] == c) / s0
+        for c in (1, 2, 3)
+    )
     r = spatial_concordance_kappa(x, y, w)
     assert r["p_observed"] == pytest.approx(po, abs=1e-15)
     assert r["p_expected"] == pytest.approx(pe, abs=1e-15)

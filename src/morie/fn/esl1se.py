@@ -66,11 +66,17 @@ def esl_one_se_rule(cv_err, cv_se):
     threshold = float(err[i_min] + se[i_min])
     within = np.flatnonzero(err <= threshold)
     chosen = int(within[0])
-    return RichResult(payload={
-        "estimate": chosen, "index_min": i_min, "threshold": threshold,
-        "chosen_error": float(err[chosen]), "min_error": float(err[i_min]),
-        "n_within": int(within.size),
-        "method": "1-SE rule: simplest model within one SE of the CV minimum"})
+    return RichResult(
+        payload={
+            "estimate": chosen,
+            "index_min": i_min,
+            "threshold": threshold,
+            "chosen_error": float(err[chosen]),
+            "min_error": float(err[i_min]),
+            "n_within": int(within.size),
+            "method": "1-SE rule: simplest model within one SE of the CV minimum",
+        }
+    )
 
 
 def cheatsheet():

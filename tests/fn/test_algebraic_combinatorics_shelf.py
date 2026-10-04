@@ -54,8 +54,7 @@ def longest_monotone(w, increasing=True):
     for r in range(1, len(w) + 1):
         for c in itertools.combinations(w, r):
             pairs = zip(c, c[1:])
-            if all(a < b for a, b in pairs) if increasing else \
-                    all(a > b for a, b in zip(c, c[1:])):
+            if all(a < b for a, b in pairs) if increasing else all(a > b for a, b in zip(c, c[1:])):
                 best = max(best, r)
     return best
 
@@ -79,9 +78,9 @@ def rotations(n):
 # Partitions and hooks
 # --------------------------------------------------------------------
 
+
 def test_partitions_of_matches_the_known_counts():
-    assert [len(partitions_of(n)) for n in range(9)] == \
-        [1, 1, 2, 3, 5, 7, 11, 15, 22]
+    assert [len(partitions_of(n)) for n in range(9)] == [1, 1, 2, 3, 5, 7, 11, 15, 22]
 
 
 def test_every_partition_is_weakly_decreasing_and_sums_right():
@@ -117,11 +116,11 @@ def test_hook_lengths_reject_a_non_partition():
 # Hook length formula against brute force
 # --------------------------------------------------------------------
 
+
 def test_the_hook_formula_matches_brute_force_enumeration():
     for n in range(1, 8):
         for shape in partitions_of(n):
-            assert standard_tableaux_count(shape)["count"] == \
-                brute_force_syt(shape)
+            assert standard_tableaux_count(shape)["count"] == brute_force_syt(shape)
 
 
 def test_the_hook_product_always_divides_n_factorial():
@@ -150,6 +149,7 @@ def test_the_hook_formula_on_known_values():
 # RSK: a bijection, so round-trip it
 # --------------------------------------------------------------------
 
+
 def test_rsk_round_trips_every_permutation():
     for n in range(1, 7):
         for w in itertools.permutations(range(1, n + 1)):
@@ -167,8 +167,7 @@ def test_the_rsk_corollary_sum_of_squares_is_n_factorial():
     # every permutation maps to a distinct (P, Q) pair of the same
     # shape, so the squares of the tableau counts must total n!
     for n in range(1, 9):
-        total = sum(standard_tableaux_count(s)["count"] ** 2
-                    for s in partitions_of(n))
+        total = sum(standard_tableaux_count(s)["count"] ** 2 for s in partitions_of(n))
         assert total == math.factorial(n)
 
 
@@ -221,12 +220,12 @@ def test_rsk_validation():
 # Burnside
 # --------------------------------------------------------------------
 
+
 def test_burnside_matches_direct_orbit_enumeration():
     for n in range(1, 7):
         G = rotations(n)
         for k in (2, 3):
-            assert burnside_orbit_count(G, k)["orbits"] == \
-                direct_orbits(G, k, n)
+            assert burnside_orbit_count(G, k)["orbits"] == direct_orbits(G, k, n)
 
 
 def test_dividing_by_the_group_order_is_wrong():
@@ -266,6 +265,7 @@ def test_burnside_rejects_a_non_permutation():
 # Necklaces
 # --------------------------------------------------------------------
 
+
 def test_the_closed_form_agrees_with_direct_burnside():
     for n in range(1, 13):
         for k in (2, 3, 4):
@@ -275,13 +275,11 @@ def test_the_closed_form_agrees_with_direct_burnside():
 
 
 def test_two_colour_necklaces_are_the_known_sequence():
-    assert [cycle_index_necklaces(n, 2)["count"] for n in range(1, 9)] == \
-        [2, 3, 4, 6, 8, 14, 20, 36]
+    assert [cycle_index_necklaces(n, 2)["count"] for n in range(1, 9)] == [2, 3, 4, 6, 8, 14, 20, 36]
 
 
 def test_three_colour_necklaces_are_the_known_sequence():
-    assert [cycle_index_necklaces(n, 3)["count"] for n in range(1, 7)] == \
-        [3, 6, 11, 24, 51, 130]
+    assert [cycle_index_necklaces(n, 3)["count"] for n in range(1, 7)] == [3, 6, 11, 24, 51, 130]
 
 
 def test_the_cyclic_sum_always_divides_by_n():

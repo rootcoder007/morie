@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['gblupeq', 'gblup_equivalence']
+__all__ = ["gblupeq", "gblup_equivalence"]
 
 
 def gblupeq(Z, G, sigma2_g):
@@ -45,14 +45,22 @@ def gblupeq(Z, G, sigma2_g):
     V0 = [[s2 * V0[i][j] for j in range(n)] for i in range(n)]
     V1 = [[s2 * V1[i][j] for j in range(n)] for i in range(n)]
     gap = max(abs(V0[i][j] - V1[i][j]) for i in range(n) for j in range(n))
-    return RichResult(payload={
-        "Zstar": Zs, "L": L, "V_original": V0, "V_reparameterized": V1,
-        "max_gap": gap, "n": n, "q": q,
-        "method": "GBLUP Cholesky re-parameterization, MVSML Chap. 2 p. 46"})
+    return RichResult(
+        payload={
+            "Zstar": Zs,
+            "L": L,
+            "V_original": V0,
+            "V_reparameterized": V1,
+            "max_gap": gap,
+            "n": n,
+            "q": q,
+            "method": "GBLUP Cholesky re-parameterization, MVSML Chap. 2 p. 46",
+        }
+    )
 
 
 gblup_equivalence = gblupeq
 
 
 def cheatsheet():
-    return 'gblpq: Cholesky re-parameterization that makes GBLUP an ordinary mixed model.'
+    return "gblpq: Cholesky re-parameterization that makes GBLUP an ordinary mixed model."

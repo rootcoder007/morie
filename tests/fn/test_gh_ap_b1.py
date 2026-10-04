@@ -1,7 +1,6 @@
 """Tests for gh_ap_b1.ghosal_kl_props."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_b1 import ghosal_kl_props
 
 
@@ -34,5 +33,6 @@ def test_gh_ap_b1_edge():
     """Test edge cases."""
     result = ghosal_kl_props(np.array([42.0]), np.array([42.0]))
     assert result["estimate"] == 0.0
+
 
 import math

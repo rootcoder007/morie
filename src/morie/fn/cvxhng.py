@@ -72,14 +72,21 @@ def boyd_hinge_loss(u, margin=1.0):
     active = loss > 0
     return RichResult(
         title="Hinge loss",
-        summary_lines=[("n", int(uv.size)), ("total", float(loss.sum())),
-                       ("mean", float(loss.mean())),
-                       ("support vectors", int(active.sum()))],
+        summary_lines=[
+            ("n", int(uv.size)),
+            ("total", float(loss.sum())),
+            ("mean", float(loss.mean())),
+            ("support vectors", int(active.sum())),
+        ],
         payload={
-            "loss": loss, "total": float(loss.sum()),
-            "mean": float(loss.mean()), "subgradient": sub,
-            "active": active, "n_support": int(active.sum()),
-            "margin": m, "differentiable": bool(not np.any(uv == m)),
+            "loss": loss,
+            "total": float(loss.sum()),
+            "mean": float(loss.mean()),
+            "subgradient": sub,
+            "active": active,
+            "n_support": int(active.sum()),
+            "margin": m,
+            "differentiable": bool(not np.any(uv == m)),
             "method": "boyd_hinge_loss",
         },
     )

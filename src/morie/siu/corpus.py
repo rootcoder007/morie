@@ -40,9 +40,7 @@ __all__ = [
 
 # ---------------------------------------------------------------- corpus
 
-_CORPUS_URL = (
-    "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/" "inst/extdata/siu_directors_reports.csv.gz"
-)
+_CORPUS_URL = "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/inst/extdata/siu_directors_reports.csv.gz"
 # SHA-256 of the corpus snapshot this build trusts (bricklayer-style pin).
 _CORPUS_SHA256 = "9fc08bb8030723e50e14b29dc6f3b07cb495761f4028906ea6e053f18e5509a9"
 
@@ -190,7 +188,7 @@ def resolve_subject_officials(report_text: str) -> tuple[int | None, str]:
     the_subj = len(_THE_SUBJ.findall(body))
     plural = bool(_ANY_PLURAL.search(body))
     if (the_so + the_subj) >= 1 and not plural:
-        return 1, (f"singular present: 'the SO'x{the_so} " f"'the subject official'x{the_subj}")
+        return 1, (f"singular present: 'the SO'x{the_so} 'the subject official'x{the_subj}")
 
     # 4. Explicitly ZERO (witness-official-only cases; direct assertion only).
     for rx in _ZERO:
@@ -246,7 +244,7 @@ PANEL_FIELDS: tuple[tuple[str, bool, str], ...] = (
     (
         "number_of_subject_officers",
         True,
-        "the count of distinct SUBJECT officers/officials (SO); a " "witness-officer-only investigation is 0",
+        "the count of distinct SUBJECT officers/officials (SO); a witness-officer-only investigation is 0",
     ),
     ("age_affected", False, "the age (or age range) of the affected person/complainant"),
     ("sex_gender_affected", False, "the sex/gender of the affected person/complainant"),
@@ -362,7 +360,7 @@ def siu_panel(
     if isinstance(html, int):
         from .. import siu_fetch as _sf  # legacy fetch engine
 
-        url = "https://www.siu.on.ca/en/directors_report_details.php?" f"drid={int(html)}"
+        url = f"https://www.siu.on.ca/en/directors_report_details.php?drid={int(html)}"
         html = _sf._http_get(url, timeout=int(timeout))
     text = _html_to_text(html) if "<" in html else html
 
@@ -397,15 +395,11 @@ def siu_panel(
             return {
                 name: ask(
                     model,
-                    (
-                        f"{_BASE_RULES}\n\nAnswer ONLY this field:\n"
-                        f"{_field_block(name, cnt, desc)}\n\n"
-                        f"REPORT:\n{text}"
-                    ),
+                    (f"{_BASE_RULES}\n\nAnswer ONLY this field:\n{_field_block(name, cnt, desc)}\n\nREPORT:\n{text}"),
                 )
                 for name, cnt, desc in PANEL_FIELDS
             }
-        return ask(model, f"{_BASE_RULES}\n\nFields:\n{schema_txt}\n\n" f"REPORT:\n{text}")
+        return ask(model, f"{_BASE_RULES}\n\nFields:\n{schema_txt}\n\nREPORT:\n{text}")
 
     # Readers: concurrent up to the cap; the executor join is the barrier.
     cap = 1 if chat is not None else max(1, min(int(reader_concurrency), len(readers)))

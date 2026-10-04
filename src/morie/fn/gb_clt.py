@@ -58,8 +58,10 @@ def gibbons_clt(xbar=None, n=None, mu=0.0, sigma=1.0, x=None):
     z = (float(xbar) - float(mu)) / se
     return RichResult(
         payload={
-            "z": float(z), "p_two_sided": float(2 * stats.norm.sf(abs(z))),
-            "se": float(se), "n": n,
+            "z": float(z),
+            "p_two_sided": float(2 * stats.norm.sf(abs(z))),
+            "se": float(se),
+            "n": n,
             "method": "Z = (xbar - mu)/(sigma/sqrt(n)) -> N(0,1) (Ch. 1.2.6)",
         }
     )

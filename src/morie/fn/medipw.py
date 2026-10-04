@@ -21,8 +21,7 @@ def _binchoice_fit(X, y, link="probit", max_iter=100, tol=1e-09):
         if link == "probit":
             from math import erf, sqrt
 
-            p = np.clip(0.5 * (1.0 + np.vectorize(erf)(eta / sqrt(2.0))),
-                        1e-12, 1 - 1e-12)
+            p = np.clip(0.5 * (1.0 + np.vectorize(erf)(eta / sqrt(2.0))), 1e-12, 1 - 1e-12)
             dens = np.exp(-0.5 * eta**2) / np.sqrt(2.0 * np.pi)
             w = dens**2 / (p * (1.0 - p))
             z = dens * (y - p) / (p * (1.0 - p))
@@ -63,16 +62,19 @@ def _medweight_point(y, d, pm, px):
     theta0 = y10 - y00
     total = y11 - y00
     return {
-        "total_effect": total, "direct_treated": theta1,
+        "total_effect": total,
+        "direct_treated": theta1,
         "direct_control": theta0,
         "indirect_treated": total - theta0,
         "indirect_control": total - theta1,
-        "y11": y11, "y01": y01, "y10": y10, "y00": y00,
+        "y11": y11,
+        "y01": y01,
+        "y10": y10,
+        "y00": y00,
     }
 
 
-def huber_ipw_mediation(y, d, m, x, link="probit", trim=0.0, boot=0,
-                        seed=None):
+def huber_ipw_mediation(y, d, m, x, link="probit", trim=0.0, boot=0, seed=None):
     r"""Split an average treatment effect into direct and indirect parts.
 
     Huber's identification needs two propensity scores,
@@ -182,16 +184,14 @@ def huber_ipw_mediation(y, d, m, x, link="probit", trim=0.0, boot=0,
         x = x.T
     n = y.size
     if d.size != n or m.shape[0] != n or x.shape[0] != n:
-        raise ValueError(
-            f"y, d, m and x must describe the same {n} observations")
+        raise ValueError(f"y, d, m and x must describe the same {n} observations")
     if not np.all(np.isin(d, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1")
     if not (0.0 <= trim < 0.5):
         raise ValueError(f"trim must lie in [0, 0.5), got {trim}")
     if link not in ("probit", "logit"):
         raise ValueError('link must be "probit" or "logit"')
-    if not (np.all(np.isfinite(y)) and np.all(np.isfinite(m))
-            and np.all(np.isfinite(x))):
+    if not (np.all(np.isfinite(y)) and np.all(np.isfinite(m)) and np.all(np.isfinite(x))):
         raise ValueError("y, m and x must be finite")
 
     mx = np.column_stack([m, x])
@@ -199,50 +199,50 @@ def huber_ipw_mediation(y, d, m, x, link="probit", trim=0.0, boot=0,
     def fit(idx):
         px = _binchoice_fit(x[idx], d[idx], link)
         pm = _binchoice_fit(mx[idx], d[idx], link)
-        keep = ((px > trim) & (px < 1 - trim)
-                & (pm > trim) & (pm < 1 - trim))
+        keep = (px > trim) & (px < 1 - trim) & (pm > trim) & (pm < 1 - trim)
         if keep.sum() < 4 or np.unique(d[idx][keep]).size < 2:
             return None
-        return (_medweight_point(y[idx][keep], d[idx][keep],
-                                 pm[keep], px[keep]),
-                int((~keep).sum()))
+        return (_medweight_point(y[idx][keep], d[idx][keep], pm[keep], px[keep]), int((~keep).sum()))
 
     base = fit(np.arange(n))
     if base is None:
-        raise ValueError(
-            "no usable observations survive the common-support "
-            "restriction; lower trim or check overlap")
+        raise ValueError("no usable observations survive the common-support restriction; lower trim or check overlap")
     est, n_trimmed = base
 
     se = None
     if boot > 0:
         rng = np.random.default_rng(seed)
-        keys = ["total_effect", "direct_treated", "direct_control",
-                "indirect_treated", "indirect_control"]
+        keys = ["total_effect", "direct_treated", "direct_control", "indirect_treated", "indirect_control"]
         reps = []
         for _ in range(int(boot)):
             r = fit(rng.integers(0, n, n))
             if r is not None:
                 reps.append([r[0][k] for k in keys])
-        se = (dict(zip(keys, np.std(np.array(reps), axis=0, ddof=1)))
-              if len(reps) > 1 else None)
+        se = dict(zip(keys, np.std(np.array(reps), axis=0, ddof=1))) if len(reps) > 1 else None
 
     scale = max(1.0, abs(est["total_effect"]))
-    holds = (abs(est["direct_treated"] + est["indirect_control"]
-                 - est["total_effect"]) < 1e-08 * scale
-             and abs(est["direct_control"] + est["indirect_treated"]
-                     - est["total_effect"]) < 1e-08 * scale)
+    holds = (
+        abs(est["direct_treated"] + est["indirect_control"] - est["total_effect"]) < 1e-08 * scale
+        and abs(est["direct_control"] + est["indirect_treated"] - est["total_effect"]) < 1e-08 * scale
+    )
     return RichResult(
         title="IPW causal mediation",
-        summary_lines=[("n", int(n)), ("link", link),
-                       ("total", est["total_effect"]),
-                       ("direct(1)", est["direct_treated"]),
-                       ("indirect(0)", est["indirect_control"]),
-                       ("trimmed", n_trimmed)],
-        payload={**est, "n_trimmed": n_trimmed,
-                 "decomposition_holds": bool(holds),
-                 "link": link, "se": se,
-                 "method": "huber_ipw_mediation"},
+        summary_lines=[
+            ("n", int(n)),
+            ("link", link),
+            ("total", est["total_effect"]),
+            ("direct(1)", est["direct_treated"]),
+            ("indirect(0)", est["indirect_control"]),
+            ("trimmed", n_trimmed),
+        ],
+        payload={
+            **est,
+            "n_trimmed": n_trimmed,
+            "decomposition_holds": bool(holds),
+            "link": link,
+            "se": se,
+            "method": "huber_ipw_mediation",
+        },
     )
 
 

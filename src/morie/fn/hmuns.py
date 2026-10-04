@@ -78,9 +78,7 @@ def geron_unsupervised_learning(X, n_clusters=2, bottleneck=1, linkage="average"
         raise ValueError("geron_unsupervised_learning: X contains non-finite values")
     k = int(n_clusters)
     if not (2 <= k < A.shape[0]):
-        raise ValueError(
-            f"geron_unsupervised_learning: n_clusters must lie in 2..{A.shape[0] - 1}, got {k}"
-        )
+        raise ValueError(f"geron_unsupervised_learning: n_clusters must lie in 2..{A.shape[0] - 1}, got {k}")
     bn = int(bottleneck)
     if not (1 <= bn <= A.shape[1]):
         raise ValueError(f"geron_unsupervised_learning: bottleneck must lie in 1..{A.shape[1]}, got {bn}")

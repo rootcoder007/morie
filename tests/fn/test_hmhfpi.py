@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmhfpi import geron_hf_pipelines
 
 
@@ -14,9 +13,7 @@ def test_hmhfpi_basic():
     task = "sentiment-analysis"
     inputs = ["good", "bad"]
     model = lambda xs: [[2.0, 0.0], [0.0, 3.0]]
-    result = geron_hf_pipelines(
-        task, inputs, model, labels=["POSITIVE", "NEGATIVE"]
-    )
+    result = geron_hf_pipelines(task, inputs, model, labels=["POSITIVE", "NEGATIVE"])
     assert isinstance(result, dict)
     assert "predictions" in result
     assert "scores" in result
@@ -59,7 +56,7 @@ import morie.fn.hmhfpi as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

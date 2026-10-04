@@ -1,8 +1,8 @@
 """Tests for morie.fn.odm_t — OTIS demo trend."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn._containers import DescriptiveResult
 from morie.fn.odm_t import otis_demo_trend
 

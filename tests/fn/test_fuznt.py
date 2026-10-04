@@ -1,7 +1,6 @@
 """Tests for fuzzy entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fuznt import fuznt, fuzzy_entropy
 
 

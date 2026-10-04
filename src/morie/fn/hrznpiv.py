@@ -89,8 +89,7 @@ def horowitz_npiv_model(x, y, w, bandwidth=None, grid=25, tol=1e-5):
     w = np.asarray(w, dtype=float).ravel()
     n = int(x.size)
     if y.size != n or w.size != n:
-        raise ValueError(
-            f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
+        raise ValueError(f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
     if n < 3:
         raise ValueError(f"need at least 3 observations, got {n}.")
     h = float(bandwidth) if bandwidth is not None else H.bw01(n)
@@ -170,21 +169,23 @@ def horowitz_npiv_model(x, y, w, bandwidth=None, grid=25, tol=1e-5):
         for k in range(m):
             g_hat[k] += c * (float(vecs[k][j]) / rt[k])
 
-    return RichResult(payload={
-        "g_hat": g_hat,
-        "grid_points": [float(t) for t in z],
-        "r_hat": r_hat,
-        "eigenvalues": lam_s,
-        "trace_T": trace_T,
-        "n_terms": n_terms,
-        "identified": bool(lam_s[m - 1] > cut),
-        "fW": fW,
-        "raw_mass": raw_mass,
-        "bandwidth": h,
-        "n": n,
-        "m": m,
-        "method": "Horowitz (2009) eqs. (5.41)-(5.44), spectral truncation of T",
-    })
+    return RichResult(
+        payload={
+            "g_hat": g_hat,
+            "grid_points": [float(t) for t in z],
+            "r_hat": r_hat,
+            "eigenvalues": lam_s,
+            "trace_T": trace_T,
+            "n_terms": n_terms,
+            "identified": bool(lam_s[m - 1] > cut),
+            "fW": fW,
+            "raw_mass": raw_mass,
+            "bandwidth": h,
+            "n": n,
+            "m": m,
+            "method": "Horowitz (2009) eqs. (5.41)-(5.44), spectral truncation of T",
+        }
+    )
 
 
 def cheatsheet():

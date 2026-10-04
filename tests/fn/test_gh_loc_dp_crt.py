@@ -1,7 +1,6 @@
 """Tests for gh_loc_dp_crt.ghosal_local_dp_rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_loc_dp_crt import ghosal_local_dp_rate
 
 

@@ -15,6 +15,7 @@ def _ridge_learner(alpha=1.0):
         pen[0, 0] = 0.0
         b = np.linalg.solve(Xc.T @ Xc + pen, Xc.T @ ytr)
         return lambda Xn: np.column_stack([np.ones(len(Xn)), Xn]) @ b
+
     return fit
 
 
@@ -101,35 +102,40 @@ def causal_dml_partial_lin(y, D, X, n_folds=5, learner=None, seed=0):
     den = float(dres @ dres)
     if den <= 0:
         raise ValueError(
-            "the residualised treatment has no variation left: X explains D "
-            "completely, so theta is not identified.")
+            "the residualised treatment has no variation left: X explains D completely, so theta is not identified."
+        )
     theta = float(dres @ yres / den)
     eps = yres - theta * dres
-    se = float(np.sqrt(np.sum(dres ** 2 * eps ** 2)) / den)
+    se = float(np.sqrt(np.sum(dres**2 * eps**2)) / den)
 
     # the same estimator WITHOUT cross-fitting, for comparison only
     yr_in = yv - fit(Xm, yv)(Xm)
     dr_in = Dv - fit(Xm, Dv)(Xm)
     din = float(dr_in @ dr_in)
     theta_in = float(dr_in @ yr_in / din) if din > 0 else np.nan
-    return RichResult(payload={
-        "theta": theta, "se": se,
-        "ci": (theta - 1.959963984540054 * se,
-               theta + 1.959963984540054 * se),
-        "y_residual": yres, "d_residual": dres,
-        "theta_in_sample": theta_in,
-        "cross_fitted": True, "n_folds": int(len(fs)),
-        "first_stage_r2": float(1.0 - np.var(dres) / np.var(Dv))
-        if np.var(Dv) > 0 else np.nan,
-        "why_cross_fit": "fitting the nuisances on the data used for the "
-                         "final moment leaves a regularisation bias that "
-                         "does not vanish at root-n; theta_in_sample is "
-                         "reported so the gap is visible",
-        "why_orthogonal": "residualising BOTH Y and D on X makes the score "
-                          "Neyman-orthogonal; residualising only Y is not "
-                          "orthogonal and the bias returns",
-        "n": int(n), "p": int(p),
-        "method": "Double machine learning, partially linear model (Chernozhukov et al. 2018)"})
+    return RichResult(
+        payload={
+            "theta": theta,
+            "se": se,
+            "ci": (theta - 1.959963984540054 * se, theta + 1.959963984540054 * se),
+            "y_residual": yres,
+            "d_residual": dres,
+            "theta_in_sample": theta_in,
+            "cross_fitted": True,
+            "n_folds": int(len(fs)),
+            "first_stage_r2": float(1.0 - np.var(dres) / np.var(Dv)) if np.var(Dv) > 0 else np.nan,
+            "why_cross_fit": "fitting the nuisances on the data used for the "
+            "final moment leaves a regularisation bias that "
+            "does not vanish at root-n; theta_in_sample is "
+            "reported so the gap is visible",
+            "why_orthogonal": "residualising BOTH Y and D on X makes the score "
+            "Neyman-orthogonal; residualising only Y is not "
+            "orthogonal and the bias returns",
+            "n": int(n),
+            "p": int(p),
+            "method": "Double machine learning, partially linear model (Chernozhukov et al. 2018)",
+        }
+    )
 
 
 def cheatsheet():

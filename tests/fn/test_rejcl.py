@@ -1,7 +1,6 @@
 """Test reject_option (rejcl)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rejcl import rejcl, reject_option
 

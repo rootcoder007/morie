@@ -1,7 +1,6 @@
 """Tests for ssintc.interval_censored_survival."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ssintc import interval_censored_survival
 
 

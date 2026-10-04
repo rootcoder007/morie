@@ -51,10 +51,16 @@ def tsallis_entropy(y, q):
     if q == 1.0:
         s = -sum(t * math.log(t) for t in p if t > 0)
     else:
-        s = (1.0 - sum(t ** q for t in p)) / (q - 1.0)
-    return RichResult(payload={
-        "estimate": s, "n_categories": len(p), "n": n, "q": q,
-        "method": "Tsallis q-entropy of the empirical pmf"})
+        s = (1.0 - sum(t**q for t in p)) / (q - 1.0)
+    return RichResult(
+        payload={
+            "estimate": s,
+            "n_categories": len(p),
+            "n": n,
+            "q": q,
+            "method": "Tsallis q-entropy of the empirical pmf",
+        }
+    )
 
 
 tsallisentropy = tsallis_entropy

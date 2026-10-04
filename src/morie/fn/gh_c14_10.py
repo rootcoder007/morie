@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,9 +27,7 @@ def ghosal_py_eppf(block_sizes, d=0.5, theta=1.0):
     for nj in ns:
         for l in range(nj - 1):
             lp += math.log(1.0 - d + l)
-    res = RichResult(payload={"estimate": math.exp(lp),
-                              "log_eppf": lp,
-                              "method": "PY EPPF (GvdV 2017 sec. 14.4)"})
+    res = RichResult(payload={"estimate": math.exp(lp), "log_eppf": lp, "method": "PY EPPF (GvdV 2017 sec. 14.4)"})
     return with_describe_pointer(res, "gh_c14_10")
 
 

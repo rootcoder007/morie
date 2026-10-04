@@ -5,9 +5,9 @@ estimator must satisfy exactly, or a property measured over repeated
 draws. Measured values are recorded in the comments.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._did import add_intercept, ols_fit
 from morie.fn.diffmed import difference_in_coefficients
 from morie.fn.drblr import doubly_robust_ate
@@ -25,10 +25,10 @@ from morie.fn.tqprod import turboquant_qjl_product_estimator
 from morie.fn.tqunb import turboquant_prodqjl_unbiasedness
 from morie.fn.waldr import wald_estimator
 
-
 # --------------------------------------------------------------------
 # pooling and ensembles
 # --------------------------------------------------------------------
+
 
 def test_average_pooling_is_the_window_mean():
     a = np.arange(16.0).reshape(4, 4)
@@ -69,9 +69,7 @@ def test_identical_members_buy_nothing():
 
 
 def test_oob_leave_out_rate_is_one_over_e():
-    out = geron_oob_evaluation([0.0, 1.0],
-                               [[9.0, 1.0], [0.0, 9.0]],
-                               [[True, False], [False, True]])
+    out = geron_oob_evaluation([0.0, 1.0], [[9.0, 1.0], [0.0, 9.0]], [[True, False], [False, True]])
     assert out["expected_oob_fraction"] == pytest.approx(1 / np.e)
     assert out["oob_error"] == pytest.approx(0.0)
 
@@ -79,6 +77,7 @@ def test_oob_leave_out_rate_is_one_over_e():
 # --------------------------------------------------------------------
 # mediation
 # --------------------------------------------------------------------
+
 
 def test_difference_and_product_agree_exactly_for_ols():
     # c - c' = ab is an algebraic identity in every sample, not merely
@@ -113,8 +112,7 @@ def test_indirect_effect_recovers_the_design():
 
 
 def test_bootstrap_interval_is_asymmetric_where_sobel_is_not():
-    out = product_of_coefficients(0.2, 0.2, se_a=0.1, se_b=0.1,
-                                  n_boot=20000, seed=0)
+    out = product_of_coefficients(0.2, 0.2, se_a=0.1, se_b=0.1, n_boot=20000, seed=0)
     lo, hi = out["boot_ci"]
     left = out["indirect"] - lo
     right = hi - out["indirect"]
@@ -132,6 +130,7 @@ def test_proportion_mediated_is_flagged_as_unstable():
 # --------------------------------------------------------------------
 # weighting and doubly robust
 # --------------------------------------------------------------------
+
 
 def confounded(seed=0, n=800, tau=2.0):
     rng = np.random.default_rng(seed)
@@ -155,8 +154,7 @@ def test_hajek_is_shift_invariant_and_horvitz_thompson_is_not():
 
 
 def test_ipw_recovers_the_true_effect_under_confounding():
-    ests = [ipw_ate(*confounded(seed=s)[:2],
-                    X=confounded(seed=s)[2])["estimate"] for s in range(20)]
+    ests = [ipw_ate(*confounded(seed=s)[:2], X=confounded(seed=s)[2])["estimate"] for s in range(20)]
     assert abs(float(np.mean(ests)) - 2.0) < 0.15
 
 
@@ -193,14 +191,13 @@ def test_model_disagreement_is_reported():
 # instrumental variables
 # --------------------------------------------------------------------
 
+
 def test_wald_is_the_ratio_of_the_two_differences():
     y = [0, 0, 0, 0, 0, 1, 1, 1]
     d = [0, 0, 0, 0, 0, 1, 1, 1]
     z = [0, 0, 0, 0, 1, 1, 1, 1]
     out = wald_estimator(y, d, z)
-    assert out["estimate"] == pytest.approx(
-        out["reduced_form"] / out["first_stage"]
-    )
+    assert out["estimate"] == pytest.approx(out["reduced_form"] / out["first_stage"])
     assert out["estimate"] == pytest.approx(1.0)
 
 
@@ -224,6 +221,7 @@ def test_weak_instrument_is_flagged():
 # --------------------------------------------------------------------
 # HAC
 # --------------------------------------------------------------------
+
 
 def test_hac_inflates_under_autocorrelation_and_not_under_white_noise():
     # measured: 1.98 on AR(0.8), 1.09 on white noise
@@ -254,6 +252,7 @@ def test_automatic_lag_rule_matches_the_formula():
 # TurboQuant
 # --------------------------------------------------------------------
 
+
 def test_prodqjl_is_unbiased():
     # measured z at m = 16, 64, 256: 1.56, 1.07, 0.62
     rng = np.random.default_rng(0)
@@ -267,9 +266,7 @@ def test_prodqjl_variance_falls_as_one_over_m():
     rng = np.random.default_rng(0)
     q, k = rng.normal(size=64), rng.normal(size=64)
     scaled = [
-        turboquant_prodqjl_unbiasedness(q, k, m=m, trials=1500,
-                                        seed=1)["variance_scaling"]
-        for m in (16, 64, 256)
+        turboquant_prodqjl_unbiasedness(q, k, m=m, trials=1500, seed=1)["variance_scaling"] for m in (16, 64, 256)
     ]
     # variance * m is constant to within sampling noise; measured
     # 5158, 5108, 5100
@@ -278,22 +275,20 @@ def test_prodqjl_variance_falls_as_one_over_m():
 
 def test_estimator_uses_the_forced_constant():
     S = np.eye(4)
-    out = turboquant_qjl_product_estimator(
-        np.ones(4), [[1, 1, 1, 1]], 1.0, S
-    )
+    out = turboquant_qjl_product_estimator(np.ones(4), [[1, 1, 1, 1]], 1.0, S)
     assert out["constant"] == pytest.approx(np.sqrt(np.pi / 2))
     assert out["compression"] > 1.0
 
 
 def test_sketch_rejects_non_sign_input():
     with pytest.raises(ValueError, match="only -1 and \\+1"):
-        turboquant_qjl_product_estimator(np.ones(2), [[0.5, 1.0]], 1.0,
-                                         np.eye(2))
+        turboquant_qjl_product_estimator(np.ones(2), [[0.5, 1.0]], 1.0, np.eye(2))
 
 
 # --------------------------------------------------------------------
 # survival and density
 # --------------------------------------------------------------------
+
 
 def test_kaplan_meier_matches_the_exponential_truth():
     # measured: median 7.14 against ln(2)*10 = 6.93, S(10) 0.3721
@@ -351,8 +346,7 @@ def test_entropy_shifts_by_log_a_under_rescaling():
 
 def test_distance_concentration_falls_with_dimension():
     rng = np.random.default_rng(0)
-    c = [knn_entropy(rng.normal(size=(800, d)), k=4)["distance_concentration"]
-         for d in (1, 4, 10)]
+    c = [knn_entropy(rng.normal(size=(800, d)), k=4)["distance_concentration"] for d in (1, 4, 10)]
     assert c[0] > c[1] > c[2]
 
 
@@ -383,6 +377,7 @@ def test_silverman_oversmooths_the_same_mixture():
 # reinforcement learning
 # --------------------------------------------------------------------
 
+
 def test_gae_at_lambda_one_is_the_monte_carlo_return():
     r = [1.0, 2.0, 3.0]
     v = [0.0, 0.0, 0.0]
@@ -398,17 +393,14 @@ def test_gae_at_lambda_zero_is_the_one_step_residual():
 
 
 def test_done_flags_cut_the_bootstrap():
-    out = gae([1.0, 1.0], [5.0, 5.0], gamma=1.0, lam=1.0,
-              dones=[1.0, 0.0])
+    out = gae([1.0, 1.0], [5.0, 5.0], gamma=1.0, lam=1.0, dones=[1.0, 0.0])
     # the first step terminates, so its advantage sees no future value
     assert out["advantages"][0] == pytest.approx(1.0 - 5.0)
 
 
 def test_effective_horizon_matches_the_formula():
     out = gae([1.0] * 10, [0.0] * 10, gamma=0.99, lam=0.95)
-    assert out["effective_horizon"] == pytest.approx(
-        1.0 / (1.0 - 0.99 * 0.95)
-    )
+    assert out["effective_horizon"] == pytest.approx(1.0 / (1.0 - 0.99 * 0.95))
     assert out["truncation_bias"]
 
 

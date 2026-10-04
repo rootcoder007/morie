@@ -4,19 +4,19 @@ from morie.fn.aitzlk import compositional_zero_lrda, lrda
 
 # Six three-part compositions; the third part is never censored because
 # its detection limit is zero, so it can serve as the alr denominator.
-X = [[0.20, 1.00, 2.00],
-     [1.50, 0.30, 1.20],
-     [0.90, 1.10, 1.00],
-     [0.10, 0.20, 1.70],
-     [2.00, 2.00, 1.00],
-     [0.35, 1.40, 0.90]]
+X = [
+    [0.20, 1.00, 2.00],
+    [1.50, 0.30, 1.20],
+    [0.90, 1.10, 1.00],
+    [0.10, 0.20, 1.70],
+    [2.00, 2.00, 1.00],
+    [0.35, 1.40, 0.90],
+]
 DL = [0.4, 0.4, 0.0]
 N_ITER = 5
-DRAW = [[0.1 * (i - 2) + 0.05 * t for i in range(len(X))]
-        for t in range(N_ITER)]
+DRAW = [[0.1 * (i - 2) + 0.05 * t for i in range(len(X))] for t in range(N_ITER)]
 
-CENSORED = [(i, j) for i in range(len(X)) for j in range(3)
-            if X[i][j] < DL[j]]
+CENSORED = [(i, j) for i in range(len(X)) for j in range(3) if X[i][j] < DL[j]]
 
 
 def test_aitzlk_basic():
@@ -46,10 +46,8 @@ def test_aitzlk_basic():
 
 def test_aitzlk_edge():
     """The draws are used, and bad arguments are rejected."""
-    lo = compositional_zero_lrda(
-        X, DL, [[-1.5] * len(X) for _ in range(N_ITER)], n_iter=N_ITER)["X"]
-    hi = compositional_zero_lrda(
-        X, DL, [[1.5] * len(X) for _ in range(N_ITER)], n_iter=N_ITER)["X"]
+    lo = compositional_zero_lrda(X, DL, [[-1.5] * len(X) for _ in range(N_ITER)], n_iter=N_ITER)["X"]
+    hi = compositional_zero_lrda(X, DL, [[1.5] * len(X) for _ in range(N_ITER)], n_iter=N_ITER)["X"]
     # a lower normal variate imputes strictly smaller censored parts
     for i, j in CENSORED:
         assert lo[i][j] < hi[i][j]
@@ -59,8 +57,7 @@ def test_aitzlk_edge():
     zero = compositional_zero_lrda(X, DL, DRAW, n_iter=0)["X"]
     for i, j in CENSORED:
         assert abs(zero[i][j] - 0.65 * DL[j]) < 1e-12
-    for i, j in [(i, j) for i in range(len(X)) for j in range(3)
-                 if (i, j) not in CENSORED]:
+    for i, j in [(i, j) for i in range(len(X)) for j in range(3) if (i, j) not in CENSORED]:
         assert zero[i][j] == X[i][j]
     try:
         compositional_zero_lrda(X, DL, [])

@@ -86,8 +86,7 @@ def boot_residual_regression(X, y, B=200, seed=1, alpha=0.05, rescale=False):
     res = [yy[i] - fit[i] for i in range(n)]
     XtXinv = _xtxinv(Xm, n, p)
     if rescale:
-        h = [sum(Xm[i][j] * sum(XtXinv[j][k] * Xm[i][k] for k in range(p)) for j in range(p))
-             for i in range(n)]
+        h = [sum(Xm[i][j] * sum(XtXinv[j][k] * Xm[i][k] for k in range(p)) for j in range(p)) for i in range(n)]
         res = [res[i] / math.sqrt(max(1.0 - h[i], 1e-12)) for i in range(n)]
     rb = core.mean(res)
     res = [u - rb for u in res]

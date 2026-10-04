@@ -43,7 +43,12 @@ def tsregmat(x, lags, horizon=1):
     res = _core.tsregmat(x=x, lags=lags, horizon=horizon)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("nrows", res["nrows"]), ("ncols", res["ncols"]), ("ymean", res["ymean"]), ("xmean", res["xmean"])],
+        summary_lines=[
+            ("nrows", res["nrows"]),
+            ("ncols", res["ncols"]),
+            ("ymean", res["ymean"]),
+            ("xmean", res["xmean"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

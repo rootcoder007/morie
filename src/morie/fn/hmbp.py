@@ -133,9 +133,7 @@ def geron_backpropagation(X, y, weights, activations, loss="mse"):
     if acts[-1] == "softmax" and loss != "ce":
         raise ValueError("geron_backpropagation: softmax output requires loss='ce'")
     if A0.shape[1] != Ws[0].shape[0]:
-        raise ValueError(
-            f"geron_backpropagation: X has {A0.shape[1]} features but layer 0 expects {Ws[0].shape[0]}"
-        )
+        raise ValueError(f"geron_backpropagation: X has {A0.shape[1]} features but layer 0 expects {Ws[0].shape[0]}")
     for i in range(1, L):
         if Ws[i - 1].shape[1] != Ws[i].shape[0]:
             raise ValueError(

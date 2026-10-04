@@ -102,7 +102,7 @@ def _schedule(T, sigma_data, s_max, s_min, rho):
     out = []
     for i in range(int(T)):
         u = a + (i / float(T)) * (b - a)
-        out.append(sigma_data * (u ** rho))
+        out.append(sigma_data * (u**rho))
     out.append(0.0)
     return out
 
@@ -139,11 +139,24 @@ def _fit_linear_denoiser(clean, sigmas, draws, ridge=1e-6):
     return coefs
 
 
-def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
-               sigma_data=_SIGMA_DATA, s_max=_S_MAX, s_min=_S_MIN, rho=_RHO,
-               gamma_0=_GAMMA_0, gamma_min=_GAMMA_MIN,
-               noise_scale=_NOISE_SCALE, step_scale=_STEP_SCALE,
-               noise=None, seed=2, x_init=None, ridge=1e-6):
+def af3_sample(
+    n_atoms=None,
+    denoiser=None,
+    clean=None,
+    steps=20,
+    sigma_data=_SIGMA_DATA,
+    s_max=_S_MAX,
+    s_min=_S_MIN,
+    rho=_RHO,
+    gamma_0=_GAMMA_0,
+    gamma_min=_GAMMA_MIN,
+    noise_scale=_NOISE_SCALE,
+    step_scale=_STEP_SCALE,
+    noise=None,
+    seed=2,
+    x_init=None,
+    ridge=1e-6,
+):
     r"""Run the AlphaFold-3 diffusion sampler.
 
     Parameters
@@ -178,15 +191,13 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
         n = len(ref[0])
         for c in ref:
             if len(c) != n:
-                raise ValueError("alfbnp: the reference structures have "
-                                 "different atom counts")
+                raise ValueError("alfbnp: the reference structures have different atom counts")
         X0 = None
     elif n_atoms is not None:
         n = int(n_atoms)
         X0 = None
     else:
-        raise ValueError("alfbnp: give n_atoms, x_init, or clean so the "
-                         "number of atoms is known")
+        raise ValueError("alfbnp: give n_atoms, x_init, or clean so the number of atoms is known")
     if n < 1:
         raise ValueError("alfbnp: need at least one atom")
     T = int(steps)
@@ -219,8 +230,7 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
 
     need = 3 * n * (T + 2) + (3 * n * len(ref) * (T + 1) if ref else 0)
     if noise is not None:
-        z = [float(v) for v in
-             (noise.tolist() if hasattr(noise, "tolist") else noise)]
+        z = [float(v) for v in (noise.tolist() if hasattr(noise, "tolist") else noise)]
         if not z:
             raise ValueError("alfbnp: noise is empty")
     else:
@@ -234,7 +244,8 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
                 "alfbnp: no denoiser and no `clean` to fit one from. The "
                 "network is not bundled and will not be invented: supply a "
                 "trained denoiser, or reference structures to fit a linear "
-                "one by denoising score matching.")
+                "one by denoising score matching."
+            )
         coefs = _fit_linear_denoiser(ref, sig[:-1], z, ridge=float(ridge))
         route = "fitted a linear denoiser by denoising score matching"
 
@@ -259,7 +270,7 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
 
     trace = []
     for i in range(1, T + 1):
-        X = _centre(X)                       # CentreRandomAugmentation, the
+        X = _centre(X)  # CentreRandomAugmentation, the
         # rotation part is omitted deliberately: it is a training-time
         # augmentation and applying it at sampling only adds an arbitrary
         # frame, which would make the two arms disagree for no gain.
@@ -267,8 +278,7 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
         gamma = float(gamma_0) if sig[i] > float(gamma_min) else 0.0
         t_hat = prev * (gamma + 1.0)
         var = t_hat * t_hat - prev * prev
-        step_noise = (float(noise_scale) * math.sqrt(var)
-                      if var > 0.0 else 0.0)
+        step_noise = float(noise_scale) * math.sqrt(var) if var > 0.0 else 0.0
         Xn = []
         for p in X:
             row = []
@@ -278,12 +288,15 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
             Xn.append(row)
         Xd = denoise(Xn, t_hat)
         if len(Xd) != n:
-            raise ValueError("alfbnp: the denoiser returned %d atoms, not %d"
-                             % (len(Xd), n))
+            raise ValueError("alfbnp: the denoiser returned %d atoms, not %d" % (len(Xd), n))
         dt = sig[i] - t_hat
-        X = [[Xn[j][a] + float(step_scale) * dt
-              * ((Xn[j][a] - Xd[j][a]) / t_hat if t_hat > _EPS else 0.0)
-              for a in range(3)] for j in range(n)]
+        X = [
+            [
+                Xn[j][a] + float(step_scale) * dt * ((Xn[j][a] - Xd[j][a]) / t_hat if t_hat > _EPS else 0.0)
+                for a in range(3)
+            ]
+            for j in range(n)
+        ]
         rms = math.sqrt(sum(v * v for p in X for v in p) / (3 * n))
         trace.append([i, sig[i], t_hat, rms])
 
@@ -291,42 +304,49 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
     if ref is not None:
         best = None
         for R in ref:
-            d = math.sqrt(sum((X[j][a] - R[j][a]) ** 2
-                              for j in range(n) for a in range(3)) / n)
+            d = math.sqrt(sum((X[j][a] - R[j][a]) ** 2 for j in range(n) for a in range(3)) / n)
             if best is None or d < best:
                 best = d
         rmsd_to_ref = best
 
-    return RichResult(payload={
-        "estimate": rmsd_to_ref if rmsd_to_ref is not None else sig[-1],
-        "coords": X,
-        "sigmas": sig,
-        "trace": trace,
-        "denoiser_coefs": coefs,
-        "sigma_data": sd,
-        "steps": T,
-        "rmsd_to_reference": rmsd_to_ref,
-        "n_atoms": n,
-        "route": route,
-        "method": ("AlphaFold-3 SampleDiffusion (Abramson et al. 2024, "
-                   "Algorithm 18) on the Karras sigma schedule, with the "
-                   "Table 6 defaults; the noise stream is the package's "
-                   "deterministic low-discrepancy normal sequence rather "
-                   "than i.i.d. draws, so a run reproduces exactly"),
-        "note": ("route says whether the denoiser was supplied or fitted. "
-                 "The network is not bundled. The rotation half of "
-                 "CentreRandomAugmentation is deliberately not applied: it "
-                 "is a training-time augmentation, and at sampling it only "
-                 "chooses an arbitrary frame, which both costs "
-                 "reproducibility and gains nothing. Pass `noise` to "
-                 "recover genuinely stochastic sampling."),
-    })
+    return RichResult(
+        payload={
+            "estimate": rmsd_to_ref if rmsd_to_ref is not None else sig[-1],
+            "coords": X,
+            "sigmas": sig,
+            "trace": trace,
+            "denoiser_coefs": coefs,
+            "sigma_data": sd,
+            "steps": T,
+            "rmsd_to_reference": rmsd_to_ref,
+            "n_atoms": n,
+            "route": route,
+            "method": (
+                "AlphaFold-3 SampleDiffusion (Abramson et al. 2024, "
+                "Algorithm 18) on the Karras sigma schedule, with the "
+                "Table 6 defaults; the noise stream is the package's "
+                "deterministic low-discrepancy normal sequence rather "
+                "than i.i.d. draws, so a run reproduces exactly"
+            ),
+            "note": (
+                "route says whether the denoiser was supplied or fitted. "
+                "The network is not bundled. The rotation half of "
+                "CentreRandomAugmentation is deliberately not applied: it "
+                "is a training-time augmentation, and at sampling it only "
+                "chooses an arbitrary frame, which both costs "
+                "reproducibility and gains nothing. Pass `noise` to "
+                "recover genuinely stochastic sampling."
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("alfbnp: af3_sample(n_atoms, denoiser=...) or af3_sample("
-            "clean=[...]) -> AlphaFold-3 diffusion sampling (Abramson et "
-            "al. 2024 Nature 630:493, Algorithm 18)")
+    return (
+        "alfbnp: af3_sample(n_atoms, denoiser=...) or af3_sample("
+        "clean=[...]) -> AlphaFold-3 diffusion sampling (Abramson et "
+        "al. 2024 Nature 630:493, Algorithm 18)"
+    )
 
 
 # compact alias per ledger/NAMING.md

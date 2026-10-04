@@ -1,7 +1,6 @@
 """Tests for morie.fn.hrvmt -- HRV metrics."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrvmt import hrvmt
 
 

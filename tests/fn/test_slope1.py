@@ -1,7 +1,6 @@
 """Tests for slope1.slope_one."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.slope1 import slope_one
 
 

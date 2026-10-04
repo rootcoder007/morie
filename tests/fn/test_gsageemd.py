@@ -43,5 +43,6 @@ def test_gsageemd_edge():
         for g, w in zip(got_row, want_row):
             assert g == pytest.approx(w, abs=1e-15)
     from morie.fn import _array_core as np
+
     s = sample_neighbors(ADJ, 1, 5, np.random.default_rng(0))
     assert len(s) == 5 and set(s) <= {0, 2}

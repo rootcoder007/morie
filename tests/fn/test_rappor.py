@@ -11,8 +11,7 @@ import math
 
 import pytest
 
-from morie.fn.rappor import (rappor, rappor_decode, rappor_encode,
-                             rappor_epsilon, rappor_star_probs)
+from morie.fn.rappor import rappor, rappor_decode, rappor_encode, rappor_epsilon, rappor_star_probs
 
 
 def test_epsilon_infinity_matches_theorem_1():
@@ -21,10 +20,8 @@ def test_epsilon_infinity_matches_theorem_1():
     At f = 1/2 the ratio is 3, so eps_inf = 2h ln 3 exactly. Two h
     values pin the linearity as well as the constant.
     """
-    assert rappor_epsilon(1, 0.5)["eps_infinity"] == pytest.approx(
-        2.0 * math.log(3.0))
-    assert rappor_epsilon(2, 0.5)["eps_infinity"] == pytest.approx(
-        4.0 * math.log(3.0))
+    assert rappor_epsilon(1, 0.5)["eps_infinity"] == pytest.approx(2.0 * math.log(3.0))
+    assert rappor_epsilon(2, 0.5)["eps_infinity"] == pytest.approx(4.0 * math.log(3.0))
     # f -> 1 makes the permanent report pure noise, so eps_inf -> 0.
     assert rappor_epsilon(2, 1.0)["eps_infinity"] == pytest.approx(0.0)
     # Smaller f is weaker longitudinal privacy, i.e. larger epsilon.
@@ -52,8 +49,7 @@ def test_epsilon_one_is_zero_when_no_signal_survives():
     assert out["eps_1"] == pytest.approx(0.0)
     # and with the PRR off, eps_1 is h log(q(1-p)/(p(1-q))).
     out0 = rappor_epsilon(3, 1e-12, p=0.25, q=0.75)
-    assert out0["eps_1"] == pytest.approx(
-        3.0 * math.log((0.75 * 0.75) / (0.25 * 0.25)), rel=1e-6)
+    assert out0["eps_1"] == pytest.approx(3.0 * math.log((0.75 * 0.75) / (0.25 * 0.25)), rel=1e-6)
 
 
 def test_decode_is_unbiased_for_the_basic_variant():
@@ -65,11 +61,9 @@ def test_decode_is_unbiased_for_the_basic_variant():
     the per-bit standard error near 1% of N.
     """
     vals = (["a"] * 10000) + (["b"] * 6000) + (["c"] * 4000)
-    enc = rappor_encode(vals, f=0.2, p=0.25, q=0.75,
-                        variant="basic", seed=7)
+    enc = rappor_encode(vals, f=0.2, p=0.25, q=0.75, variant="basic", seed=7)
     assert enc["alphabet"] == ["a", "b", "c"]
-    dec = rappor_decode(enc["counts"], enc["cohort_sizes"],
-                        f=0.2, p=0.25, q=0.75)
+    dec = rappor_decode(enc["counts"], enc["cohort_sizes"], f=0.2, p=0.25, q=0.75)
     est = dec["estimate"][0]
     for got, want in zip(est, (10000.0, 6000.0, 4000.0)):
         assert abs(got - want) < 0.03 * 20000
@@ -78,8 +72,7 @@ def test_decode_is_unbiased_for_the_basic_variant():
 def test_decode_shift_and_denominator_are_the_printed_ones():
     dec = rappor_decode([[0]], [0], f=0.5, p=0.25, q=0.75)
     assert dec["denominator"] == pytest.approx(0.5 * 0.5)
-    assert dec["shift"] == pytest.approx(0.25 + 0.5 * 0.75 / 2
-                                         - 0.5 * 0.25 / 2)
+    assert dec["shift"] == pytest.approx(0.25 + 0.5 * 0.75 / 2 - 0.5 * 0.25 / 2)
 
 
 def test_decode_refuses_a_signal_free_configuration():
@@ -99,36 +92,33 @@ def test_permanent_response_is_memoized_per_client():
     identical reports; a fresh PRR per report would not be identical at
     f = 0.5 over 16 bits.
     """
-    enc = rappor_encode(["x"] * 6, k=16, h=2, f=0.5, variant="one-time",
-                        seed=3, client_ids=["c1"] * 6)
+    enc = rappor_encode(["x"] * 6, k=16, h=2, f=0.5, variant="one-time", seed=3, client_ids=["c1"] * 6)
     reports = enc["reports"]
     assert all(r == reports[0] for r in reports)
 
     # Different clients get independent permanent responses, so at least
     # one of six differs from the first.
-    many = rappor_encode(["x"] * 6, k=16, h=2, f=0.5, variant="one-time",
-                         seed=3, client_ids=["c%d" % i for i in range(6)])
+    many = rappor_encode(
+        ["x"] * 6, k=16, h=2, f=0.5, variant="one-time", seed=3, client_ids=["c%d" % i for i in range(6)]
+    )
     assert any(r != many["reports"][0] for r in many["reports"])
 
     # A client changing its value gets a new B' -- the memo is keyed on
     # the pair, not on the client alone.
-    two = rappor_encode(["x", "y"], k=16, h=2, f=0.5, variant="one-time",
-                        seed=3, client_ids=["c1", "c1"])
+    two = rappor_encode(["x", "y"], k=16, h=2, f=0.5, variant="one-time", seed=3, client_ids=["c1", "c1"])
     assert two["reports"][0] != two["reports"][1]
 
 
 def test_full_variant_rerandomizes_the_instantaneous_report():
     """Step 3 is fresh every time even when B' is memoized -- that is
     what stops a single report from identifying the client."""
-    enc = rappor_encode(["x"] * 20, k=16, h=2, f=0.5, p=0.5, q=0.75,
-                        variant="full", seed=3, client_ids=["c1"] * 20)
+    enc = rappor_encode(["x"] * 20, k=16, h=2, f=0.5, p=0.5, q=0.75, variant="full", seed=3, client_ids=["c1"] * 20)
     assert any(r != enc["reports"][0] for r in enc["reports"])
 
 
 def test_client_keeps_one_cohort():
     """Sec. 3.1: a client is assigned a cohort and keeps it."""
-    enc = rappor_encode(["x"] * 30, k=8, h=2, cohorts=4, seed=5,
-                        client_ids=["c1"] * 15 + ["c2"] * 15)
+    enc = rappor_encode(["x"] * 30, k=8, h=2, cohorts=4, seed=5, client_ids=["c1"] * 15 + ["c2"] * 15)
     per = {}
     for cid, j in zip(enc["client_ids"], enc["cohort_of"]):
         per.setdefault(cid, set()).add(j)
@@ -141,10 +131,8 @@ def test_client_ids_length_is_checked():
 
 
 def test_bloom_positions_are_deterministic_and_cohort_specific():
-    a = rappor_encode(["v"], k=32, h=2, f=1e-12, p=1e-12, q=1.0 - 1e-12,
-                      cohorts=1, seed=1)
-    b = rappor_encode(["v"], k=32, h=2, f=1e-12, p=1e-12, q=1.0 - 1e-12,
-                      cohorts=1, seed=2)
+    a = rappor_encode(["v"], k=32, h=2, f=1e-12, p=1e-12, q=1.0 - 1e-12, cohorts=1, seed=1)
+    b = rappor_encode(["v"], k=32, h=2, f=1e-12, p=1e-12, q=1.0 - 1e-12, cohorts=1, seed=2)
     # Same value, same cohort, negligible noise: the same bits are set.
     assert a["counts"] == b["counts"]
     assert sum(a["counts"][0]) <= 2

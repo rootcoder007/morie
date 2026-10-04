@@ -83,7 +83,7 @@ def geron_voting_hard(models, X, y_true=None):
 
     votes = np.zeros((n, classes.size), dtype=int)
     for j, c in enumerate(classes):
-        votes[:, j] = np.sum(P == c, axis=0)
+        votes[:, j] = np.sum(c == P, axis=0)
     winner = np.argmax(votes, axis=1)  # np.argmax breaks ties towards the first (smallest) class
     pred = classes[winner]
 

@@ -77,14 +77,10 @@ located and the entry came from the generated stub; the implementation
 follows Wager (2025) chapters 2, 3 and 7.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["transport_weights", "balancing_weights", "transport_ate",
-           "transfer_msm"]
+__all__ = ["transport_weights", "balancing_weights", "transport_ate", "transfer_msm"]
 
 _EPS = 1e-12
 _METHODS = ("dr", "ipw", "outcome", "balance")
@@ -94,12 +90,11 @@ def _cohort(S):
     s = [float(v) for v in k.vec(S)]
     for v in s:
         if v not in (0.0, 1.0):
-            raise ValueError("trnsfr: the cohort indicator must be "
-                             "0/1 (1 = source), got %r" % (v,))
+            raise ValueError("trnsfr: the cohort indicator must be 0/1 (1 = source), got %r" % (v,))
     if sum(s) < 2 or len(s) - sum(s) < 2:
-        raise ValueError("trnsfr: both cohorts need at least 2 units "
-                         "(source %d, target %d)"
-                         % (int(sum(s)), int(len(s) - sum(s))))
+        raise ValueError(
+            "trnsfr: both cohorts need at least 2 units (source %d, target %d)" % (int(sum(s)), int(len(s) - sum(s)))
+        )
     return s
 
 
@@ -120,36 +115,37 @@ def transport_weights(X, S, trim=1e-3, ridge=1e-6):
     s = _cohort(S)
     n = len(Xm)
     if len(s) != n:
-        raise ValueError("trnsfr: %d cohort labels for %d rows"
-                         % (len(s), n))
+        raise ValueError("trnsfr: %d cohort labels for %d rows" % (len(s), n))
     D = k.design(Xm, n)
     beta = k.logit_irls(D, s, ridge=ridge)
-    pi = [k.sigmoid(sum(D[i][j] * beta[j] for j in range(len(beta))))
-          for i in range(n)]
+    pi = [k.sigmoid(sum(D[i][j] * beta[j] for j in range(len(beta)))) for i in range(n)]
     lo, hi = float(trim), 1.0 - float(trim)
     bad = [i for i in range(n) if not lo <= pi[i] <= hi]
     if bad:
-        raise ValueError("trnsfr: %d unit(s) have a cohort-membership "
-                         "probability outside [%g, %g] (extreme %.4g) "
-                         "-- there is no overlap there and the "
-                         "transported effect is not identified for "
-                         "them" % (len(bad), lo, hi,
-                                   min(pi[i] for i in bad)
-                                   if pi[bad[0]] < lo
-                                   else max(pi[i] for i in bad)))
-    raw = [((1.0 - pi[i]) / pi[i]) if s[i] == 1.0 else 0.0
-           for i in range(n)]
+        raise ValueError(
+            "trnsfr: %d unit(s) have a cohort-membership "
+            "probability outside [%g, %g] (extreme %.4g) "
+            "-- there is no overlap there and the "
+            "transported effect is not identified for "
+            "them" % (len(bad), lo, hi, min(pi[i] for i in bad) if pi[bad[0]] < lo else max(pi[i] for i in bad))
+        )
+    raw = [((1.0 - pi[i]) / pi[i]) if s[i] == 1.0 else 0.0 for i in range(n)]
     tot = sum(raw)
     if tot <= _EPS:
         raise ValueError("trnsfr: the transport weights are all zero")
     ns = int(sum(s))
     w = [v * ns / tot for v in raw]
     ess = (sum(w) ** 2) / sum(v * v for v in w)
-    return {"weights": w, "pi": pi, "max_weight": max(w),
-            "ess": ess, "ess_fraction": ess / ns, "n_source": ns,
-            "coef": beta,
-            "method": "odds of cohort membership; Wager (2025) "
-                      "Sec. 2.2 applied to S rather than W"}
+    return {
+        "weights": w,
+        "pi": pi,
+        "max_weight": max(w),
+        "ess": ess,
+        "ess_fraction": ess / ns,
+        "n_source": ns,
+        "coef": beta,
+        "method": "odds of cohort membership; Wager (2025) Sec. 2.2 applied to S rather than W",
+    }
 
 
 def balancing_weights(X, S, ridge=1e-8):
@@ -173,19 +169,16 @@ def balancing_weights(X, S, ridge=1e-8):
     s = _cohort(S)
     n = len(Xm)
     if len(s) != n:
-        raise ValueError("trnsfr: %d cohort labels for %d rows"
-                         % (len(s), n))
+        raise ValueError("trnsfr: %d cohort labels for %d rows" % (len(s), n))
     D = k.design(Xm, n)
     p = len(D[0])
     src = [i for i in range(n) if s[i] == 1.0]
     tgt = [i for i in range(n) if s[i] == 0.0]
     if len(src) < p:
-        raise ValueError("trnsfr: %d source units cannot balance %d "
-                         "moments" % (len(src), p))
+        raise ValueError("trnsfr: %d source units cannot balance %d moments" % (len(src), p))
     b = [sum(D[i][j] for i in tgt) / len(tgt) for j in range(p)]
     # G = A A^T with A the p-by-|src| constraint matrix
-    G = [[sum(D[i][a] * D[i][c] for i in src) + (ridge if a == c else 0.0)
-          for c in range(p)] for a in range(p)]
+    G = [[sum(D[i][a] * D[i][c] for i in src) + (ridge if a == c else 0.0) for c in range(p)] for a in range(p)]
     lam = k.cholsolve(G, b)
     w = [0.0] * n
     for i in src:
@@ -193,16 +186,18 @@ def balancing_weights(X, S, ridge=1e-8):
     achieved = [sum(w[i] * D[i][j] for i in src) for j in range(p)]
     err = max(abs(achieved[j] - b[j]) for j in range(p))
     pos = sum(w[i] for i in src if w[i] > 0.0)
-    return {"weights": w, "target_moments": b, "achieved": achieved,
-            "max_imbalance": err, "n_negative":
-            sum(1 for i in src if w[i] < 0.0),
-            "positive_mass": pos,
-            "method": "minimum-variance covariate balancing weights; "
-                      "Wager (2025) Sec. 7.1"}
+    return {
+        "weights": w,
+        "target_moments": b,
+        "achieved": achieved,
+        "max_imbalance": err,
+        "n_negative": sum(1 for i in src if w[i] < 0.0),
+        "positive_mass": pos,
+        "method": "minimum-variance covariate balancing weights; Wager (2025) Sec. 7.1",
+    }
 
 
-def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3,
-                  ridge=1e-6):
+def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3, ridge=1e-6):
     r"""The source-cohort effect, transported to the target cohort.
 
     ``method``
@@ -214,8 +209,7 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3,
         exactly-balancing weights instead of the fitted ones.
     """
     if method not in _METHODS:
-        raise ValueError("trnsfr: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("trnsfr: method must be one of %s, got %r" % (", ".join(_METHODS), method))
     y = [float(v) for v in k.vec(Y)]
     w = [float(v) for v in k.vec(W)]
     Xm = k.mat(X)
@@ -223,34 +217,29 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3,
     n = len(y)
     for nm, v in (("W", w), ("X", Xm), ("S", s)):
         if len(v) != n:
-            raise ValueError("trnsfr: %s has %d rows for %d outcomes"
-                             % (nm, len(v), n))
+            raise ValueError("trnsfr: %s has %d rows for %d outcomes" % (nm, len(v), n))
     for v in w:
         if v not in (0.0, 1.0):
             raise ValueError("trnsfr: W must be 0/1, got %r" % (v,))
     src = [i for i in range(n) if s[i] == 1.0]
     tgt = [i for i in range(n) if s[i] == 0.0]
-    if not any(w[i] == 1.0 for i in src) or \
-            not any(w[i] == 0.0 for i in src):
-        raise ValueError("trnsfr: the source cohort must contain both "
-                         "treated and control units")
-    ps = ([0.5] * n if e is None
-          else ([float(e)] * n if isinstance(e, (int, float))
-                else [float(v) for v in k.vec(e)]))
+    if not any(w[i] == 1.0 for i in src) or not any(w[i] == 0.0 for i in src):
+        raise ValueError("trnsfr: the source cohort must contain both treated and control units")
+    ps = [0.5] * n if e is None else ([float(e)] * n if isinstance(e, (int, float)) else [float(v) for v in k.vec(e)])
     if any(not 0.0 < v < 1.0 for v in ps):
-        raise ValueError("trnsfr: the treatment propensity must lie "
-                         "strictly in (0, 1)")
+        raise ValueError("trnsfr: the treatment propensity must lie strictly in (0, 1)")
 
     # tau(x) fitted in the source by an interacted linear model
     Dx = k.design(Xm, n)
     p = len(Dx[0])
     rows = [Dx[i] + [w[i] * v for v in Dx[i]] for i in src]
     beta = k.lstsq(rows, [y[i] for i in src], 1e-8)
+
     def tau_hat(i):
         return sum(Dx[i][j] * beta[p + j] for j in range(p))
+
     def mu(i, wv):
-        return (sum(Dx[i][j] * beta[j] for j in range(p))
-                + wv * sum(Dx[i][j] * beta[p + j] for j in range(p)))
+        return sum(Dx[i][j] * beta[j] for j in range(p)) + wv * sum(Dx[i][j] * beta[p + j] for j in range(p))
 
     out_part = sum(tau_hat(i) for i in tgt) / len(tgt)
     if method == "outcome":
@@ -274,40 +263,48 @@ def transport_ate(Y, W, X, S, method="dr", e=None, trim=1e-3,
             # match their expectations, and the sampling error in that
             # match is a first-order bias at these sample sizes.
             n1 = sum(tw[i] * w[i] / ps[i] for i in src)
-            n0 = sum(tw[i] * (1.0 - w[i]) / (1.0 - ps[i])
-                     for i in src)
+            n0 = sum(tw[i] * (1.0 - w[i]) / (1.0 - ps[i]) for i in src)
             if abs(n1) <= _EPS or abs(n0) <= _EPS:
-                raise ValueError("trnsfr: one treatment arm carries no "
-                                 "transport weight (treated %.3g, "
-                                 "control %.3g)" % (n1, n0))
-            est = (sum(tw[i] * w[i] * y[i] / ps[i] for i in src) / n1
-                   - sum(tw[i] * (1.0 - w[i]) * y[i] / (1.0 - ps[i])
-                         for i in src) / n0)
-        else:                                   # dr
-            num = sum(tw[i] * (mu(i, 1.0) - mu(i, 0.0)
-                               + w[i] * (y[i] - mu(i, 1.0)) / ps[i]
-                               - (1.0 - w[i]) * (y[i] - mu(i, 0.0))
-                               / (1.0 - ps[i]))
-                      for i in src)
+                raise ValueError(
+                    "trnsfr: one treatment arm carries no transport weight (treated %.3g, control %.3g)" % (n1, n0)
+                )
+            est = (
+                sum(tw[i] * w[i] * y[i] / ps[i] for i in src) / n1
+                - sum(tw[i] * (1.0 - w[i]) * y[i] / (1.0 - ps[i]) for i in src) / n0
+            )
+        else:  # dr
+            num = sum(
+                tw[i]
+                * (
+                    mu(i, 1.0)
+                    - mu(i, 0.0)
+                    + w[i] * (y[i] - mu(i, 1.0)) / ps[i]
+                    - (1.0 - w[i]) * (y[i] - mu(i, 0.0)) / (1.0 - ps[i])
+                )
+                for i in src
+            )
             est = num / norm
         diag = {kk: wd[kk] for kk in wd if kk != "weights"}
-    naive = (sum(y[i] * w[i] for i in src)
-             / max(sum(w[i] for i in src), _EPS)
-             - sum(y[i] * (1.0 - w[i]) for i in src)
-             / max(sum(1.0 - w[i] for i in src), _EPS))
-    return RichResult(payload={
-        "estimate": est, "source_ate": naive,
-        "outcome_route": out_part,
-        "n_source": len(src), "n_target": len(tgt),
-        "method": method, "diagnostics": diag,
-        "assumption": "the conditional effect function is shared "
-                      "across cohorts and the target's covariate "
-                      "support lies inside the source's",
-    })
+    naive = sum(y[i] * w[i] for i in src) / max(sum(w[i] for i in src), _EPS) - sum(
+        y[i] * (1.0 - w[i]) for i in src
+    ) / max(sum(1.0 - w[i] for i in src), _EPS)
+    return RichResult(
+        payload={
+            "estimate": est,
+            "source_ate": naive,
+            "outcome_route": out_part,
+            "n_source": len(src),
+            "n_target": len(tgt),
+            "method": method,
+            "diagnostics": diag,
+            "assumption": "the conditional effect function is shared "
+            "across cohorts and the target's covariate "
+            "support lies inside the source's",
+        }
+    )
 
 
-def transfer_msm(Y, A, H, cohort, target=0, e=None, trim=1e-3,
-                 ridge=1e-6):
+def transfer_msm(Y, A, H, cohort, target=0, e=None, trim=1e-3, ridge=1e-6):
     r"""A marginal structural model fitted with transported weights.
 
     ``A`` is the exposure, ``H`` the history/covariates used both to
@@ -323,30 +320,23 @@ def transfer_msm(Y, A, H, cohort, target=0, e=None, trim=1e-3,
     lab = [str(c) for c in cohort]
     n = len(y)
     if not (len(a) == len(Hm) == len(lab) == n):
-        raise ValueError("trnsfr: Y, A, H and cohort must agree in "
-                         "length (%d, %d, %d, %d)"
-                         % (n, len(a), len(Hm), len(lab)))
+        raise ValueError(
+            "trnsfr: Y, A, H and cohort must agree in length (%d, %d, %d, %d)" % (n, len(a), len(Hm), len(lab))
+        )
     tgt = str(target)
     if tgt not in set(lab):
-        raise ValueError("trnsfr: target cohort %r is not present; "
-                         "cohorts are %s"
-                         % (target, sorted(set(lab))))
+        raise ValueError("trnsfr: target cohort %r is not present; cohorts are %s" % (target, sorted(set(lab))))
     S = [0.0 if c == tgt else 1.0 for c in lab]
     tw = transport_weights(Hm, S, trim=trim, ridge=ridge)["weights"]
     if e is None:
         Dh = k.design(Hm, n)
-        bh = k.logit_irls(Dh, [1.0 if v > 0.0 else 0.0 for v in a],
-                          ridge=ridge)
-        ps = [k.sigmoid(sum(Dh[i][j] * bh[j] for j in range(len(bh))))
-              for i in range(n)]
+        bh = k.logit_irls(Dh, [1.0 if v > 0.0 else 0.0 for v in a], ridge=ridge)
+        ps = [k.sigmoid(sum(Dh[i][j] * bh[j] for j in range(len(bh)))) for i in range(n)]
     else:
-        ps = ([float(e)] * n if isinstance(e, (int, float))
-              else [float(v) for v in k.vec(e)])
+        ps = [float(e)] * n if isinstance(e, (int, float)) else [float(v) for v in k.vec(e)]
     if any(not 0.0 < v < 1.0 for v in ps):
-        raise ValueError("trnsfr: the exposure propensity must lie "
-                         "strictly in (0, 1)")
-    msm_w = [(1.0 / ps[i]) if a[i] > 0.0 else (1.0 / (1.0 - ps[i]))
-             for i in range(n)]
+        raise ValueError("trnsfr: the exposure propensity must lie strictly in (0, 1)")
+    msm_w = [(1.0 / ps[i]) if a[i] > 0.0 else (1.0 / (1.0 - ps[i])) for i in range(n)]
     tot = [tw[i] * msm_w[i] for i in range(n)]
     # Fit on the SOURCE cohort only. The whole point is that the target
     # supplies covariates, not outcomes; pooling the two would return a
@@ -355,31 +345,38 @@ def transfer_msm(Y, A, H, cohort, target=0, e=None, trim=1e-3,
     ys = [y[i] for i in range(n) if S[i] == 1.0]
     ws = [tot[i] for i in range(n) if S[i] == 1.0]
     if len({r[0] for r in rows}) < 2:
-        raise ValueError("trnsfr: the source cohort has no exposure "
-                         "variation, so no MSM coefficient is "
-                         "identified")
+        raise ValueError("trnsfr: the source cohort has no exposure variation, so no MSM coefficient is identified")
     fit = k.wls(rows, ys, ws)
-    return RichResult(payload={
-        "estimate": fit["coef"][1], "intercept": fit["coef"][0],
-        "coef": fit["coef"], "weights": tot,
-        "transport_weights": tw, "msm_weights": msm_w,
-        "target": tgt, "cohorts": sorted(set(lab)), "n": n,
-        "method": "MSM fitted under IPW weights multiplied by "
-                  "cohort-transport weights; Wager (2025) Secs. 2.2 "
-                  "and 7.1",
-    })
+    return RichResult(
+        payload={
+            "estimate": fit["coef"][1],
+            "intercept": fit["coef"][0],
+            "coef": fit["coef"],
+            "weights": tot,
+            "transport_weights": tw,
+            "msm_weights": msm_w,
+            "target": tgt,
+            "cohorts": sorted(set(lab)),
+            "n": n,
+            "method": "MSM fitted under IPW weights multiplied by "
+            "cohort-transport weights; Wager (2025) Secs. 2.2 "
+            "and 7.1",
+        }
+    )
 
 
 def cheatsheet():
-    return ("trnsfr: move an effect between cohorts by reweighting. "
-            "p0(x)/p1(x) = [P(S=0)/P(S=1)] (1-pi(x))/pi(x), so a "
-            "logistic model for COHORT membership gives the weights -- "
-            "no density ratio is modelled. Overlap binds: outside the "
-            "source's support nothing is identified, so extreme pi is "
-            "refused, not trimmed silently. Routes: ipw / outcome / dr "
-            "(default) / balance. Balancing weights match the named "
-            "moments EXACTLY even under misspecification; IPW does "
-            "not.")
+    return (
+        "trnsfr: move an effect between cohorts by reweighting. "
+        "p0(x)/p1(x) = [P(S=0)/P(S=1)] (1-pi(x))/pi(x), so a "
+        "logistic model for COHORT membership gives the weights -- "
+        "no density ratio is modelled. Overlap binds: outside the "
+        "source's support nothing is identified, so extreme pi is "
+        "refused, not trimmed silently. Routes: ipw / outcome / dr "
+        "(default) / balance. Balancing weights match the named "
+        "moments EXACTLY even under misspecification; IPW does "
+        "not."
+    )
 
 
 # compact alias per ledger/NAMING.md

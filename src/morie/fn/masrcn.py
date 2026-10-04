@@ -52,12 +52,9 @@ Real-Time Object Detection with Region Proposal Networks", *NeurIPS
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["roi_pool", "roi_align", "alignment_error", "mask_loss",
-           "multitask_loss"]
+__all__ = ["roi_pool", "roi_align", "alignment_error", "mask_loss", "multitask_loss"]
 
 _EPS = 1e-12
 
@@ -69,10 +66,7 @@ def _bilinear(F, y, x):
     y0, x0 = int(math.floor(y)), int(math.floor(x))
     y1, x1 = min(y0 + 1, h - 1), min(x0 + 1, w - 1)
     dy, dx = y - y0, x - x0
-    return (F[y0][x0] * (1 - dy) * (1 - dx)
-            + F[y1][x0] * dy * (1 - dx)
-            + F[y0][x1] * (1 - dy) * dx
-            + F[y1][x1] * dy * dx)
+    return F[y0][x0] * (1 - dy) * (1 - dx) + F[y1][x0] * dy * (1 - dx) + F[y0][x1] * (1 - dy) * dx + F[y1][x1] * dy * dx
 
 
 def roi_pool(features, box, out_size=2, stride=1.0):
@@ -85,8 +79,7 @@ def roi_pool(features, box, out_size=2, stride=1.0):
     qy0, qx0 = int(math.floor(y0)), int(math.floor(x0))
     qy1, qx1 = int(math.floor(y1)), int(math.floor(x1))
     if qy1 <= qy0 or qx1 <= qx0:
-        raise ValueError("masrcn: the box collapsed under "
-                         "quantisation, which is itself the problem")
+        raise ValueError("masrcn: the box collapsed under quantisation, which is itself the problem")
     n = int(out_size)
     bh = (qy1 - qy0) / float(n)
     bw = (qx1 - qx0) / float(n)
@@ -98,14 +91,15 @@ def roi_pool(features, box, out_size=2, stride=1.0):
             a1 = max(a0 + 1, qy0 + int(math.floor((i + 1) * bh)))
             b0 = qx0 + int(math.floor(j * bw))
             b1 = max(b0 + 1, qx0 + int(math.floor((j + 1) * bw)))
-            vals = [F[a][b] for a in range(a0, min(a1, len(F)))
-                    for b in range(b0, min(b1, len(F[0])))]
+            vals = [F[a][b] for a in range(a0, min(a1, len(F))) for b in range(b0, min(b1, len(F[0])))]
             row.append(max(vals) if vals else 0.0)
         out.append(row)
-    return {"pooled": out, "quantised_box": (qy0, qx0, qy1, qx1),
-            "quantisation_shift": (y0 - qy0, x0 - qx0),
-            "caveat": "the box AND the bins are rounded to the "
-                      "feature grid"}
+    return {
+        "pooled": out,
+        "quantised_box": (qy0, qx0, qy1, qx1),
+        "quantisation_shift": (y0 - qy0, x0 - qx0),
+        "caveat": "the box AND the bins are rounded to the feature grid",
+    }
 
 
 def roi_align(features, box, out_size=2, stride=1.0, samples=2):
@@ -128,9 +122,12 @@ def roi_align(features, box, out_size=2, stride=1.0, samples=2):
                     acc.append(_bilinear(F, yy, xx))
             row.append(sum(acc) / len(acc))
         out.append(row)
-    return {"pooled": out, "exact_box": (y0, x0, y1, x1),
-            "samples_per_bin": s * s,
-            "note": "no quantisation of the box or the bins"}
+    return {
+        "pooled": out,
+        "exact_box": (y0, x0, y1, x1),
+        "samples_per_bin": s * s,
+        "note": "no quantisation of the box or the bins",
+    }
 
 
 def alignment_error(features, box, out_size=2, stride=1.0):
@@ -142,13 +139,12 @@ def alignment_error(features, box, out_size=2, stride=1.0):
     """
     p = roi_pool(features, box, out_size, stride)
     dy, dx = p["quantisation_shift"]
-    return {"feature_shift": (dy, dx),
-            "input_pixel_shift": (dy * float(stride),
-                                  dx * float(stride)),
-            "stride": float(stride),
-            "note": "a sub-pixel error on the feature map is a "
-                    "several-pixel error in the image at stride 16 "
-                    "or 32"}
+    return {
+        "feature_shift": (dy, dx),
+        "input_pixel_shift": (dy * float(stride), dx * float(stride)),
+        "stride": float(stride),
+        "note": "a sub-pixel error on the feature map is a several-pixel error in the image at stride 16 or 32",
+    }
 
 
 def mask_loss(logits, target, decoupled=True):
@@ -161,21 +157,20 @@ def mask_loss(logits, target, decoupled=True):
     L = [[float(v) for v in r] for r in k.mat(logits)]
     T = [[float(v) for v in r] for r in k.mat(target)]
     if len(L) != len(T) or len(L[0]) != len(T[0]):
-        raise ValueError("masrcn: the logits and target differ in "
-                         "shape")
+        raise ValueError("masrcn: the logits and target differ in shape")
     tot, m = 0.0, 0
     if decoupled:
         for i in range(len(L)):
             for j in range(len(L[0])):
-                p = 1.0 / (1.0 + math.exp(-L[i][j])) \
-                    if L[i][j] > -700 else 0.0
+                p = 1.0 / (1.0 + math.exp(-L[i][j])) if L[i][j] > -700 else 0.0
                 p = min(max(p, _EPS), 1.0 - _EPS)
-                tot += -(T[i][j] * math.log(p)
-                         + (1 - T[i][j]) * math.log(1 - p))
+                tot += -(T[i][j] * math.log(p) + (1 - T[i][j]) * math.log(1 - p))
                 m += 1
-        return {"loss": tot / m, "kind": "per-pixel sigmoid",
-                "note": "classes do not compete; the class branch "
-                        "decides the category"}
+        return {
+            "loss": tot / m,
+            "kind": "per-pixel sigmoid",
+            "note": "classes do not compete; the class branch decides the category",
+        }
     flat = [L[i][j] for i in range(len(L)) for j in range(len(L[0]))]
     mx = max(flat)
     z = sum(math.exp(v - mx) for v in flat)
@@ -184,9 +179,11 @@ def mask_loss(logits, target, decoupled=True):
             p = math.exp(L[i][j] - mx) / z
             tot += -T[i][j] * math.log(max(p, _EPS))
             m += 1
-    return {"loss": tot / m, "kind": "per-pixel softmax",
-            "caveat": "classes COMPETE, so a pixel assigned to one is "
-                      "evidence against another"}
+    return {
+        "loss": tot / m,
+        "kind": "per-pixel softmax",
+        "caveat": "classes COMPETE, so a pixel assigned to one is evidence against another",
+    }
 
 
 def multitask_loss(l_cls, l_box, l_mask):
@@ -194,23 +191,28 @@ def multitask_loss(l_cls, l_box, l_mask):
 
     Possible only because the mask loss is decoupled from the class.
     """
-    return {"total": float(l_cls) + float(l_box) + float(l_mask),
-            "cls": float(l_cls), "box": float(l_box),
-            "mask": float(l_mask),
-            "note": "an unweighted sum, which the decoupling permits"}
+    return {
+        "total": float(l_cls) + float(l_box) + float(l_mask),
+        "cls": float(l_cls),
+        "box": float(l_box),
+        "mask": float(l_mask),
+        "note": "an unweighted sum, which the decoupling permits",
+    }
 
 
 def cheatsheet():
-    return ("masrcn: Faster R-CNN plus a THIRD branch predicting a "
-            "binary mask per RoI. Two details carry it. RoIPool "
-            "QUANTISES twice -- box and bins -- which is fine for a "
-            "box and a several-pixel misalignment for a mask at stride "
-            "16 or 32; RoIAlign removes both roundings and samples "
-            "bilinearly. And the mask is DECOUPLED from the class: K "
-            "binary masks with a per-pixel SIGMOID, loss on the "
-            "ground-truth class only, because a per-pixel softmax "
-            "makes classes compete. The decoupling is what lets the "
-            "losses simply add.")
+    return (
+        "masrcn: Faster R-CNN plus a THIRD branch predicting a "
+        "binary mask per RoI. Two details carry it. RoIPool "
+        "QUANTISES twice -- box and bins -- which is fine for a "
+        "box and a several-pixel misalignment for a mask at stride "
+        "16 or 32; RoIAlign removes both roundings and samples "
+        "bilinearly. And the mask is DECOUPLED from the class: K "
+        "binary masks with a per-pixel SIGMOID, loss on the "
+        "ground-truth class only, because a per-pixel softmax "
+        "makes classes compete. The decoupling is what lets the "
+        "losses simply add."
+    )
 
 
 # compact alias per ledger/NAMING.md

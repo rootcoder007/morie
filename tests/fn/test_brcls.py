@@ -1,7 +1,6 @@
 """Tests for brcls.brier_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.brcls import brier_score
 
 
@@ -47,8 +46,7 @@ def test_brcls_basic():
 def test_brcls_edge():
     """Smoke test: valid minimal inputs still return the documented keys."""
     # Two observations, two classes, deterministic.
-    P = [[0.7, 0.3],
-         [0.2, 0.8]]
+    P = [[0.7, 0.3], [0.2, 0.8]]
     y = [1, 2]
 
     result = brier_score(P, y)

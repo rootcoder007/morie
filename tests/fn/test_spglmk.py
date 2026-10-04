@@ -1,8 +1,8 @@
 """spglmk -- spatial prediction in GLMs, Schabenberger Sec. 6.3.6."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spglmk import schabenberger_glm_kriging
 
 
@@ -56,8 +56,7 @@ def test_kriging_variance_is_non_negative():
 
 def test_identity_link_leaves_the_prediction_on_its_own_scale():
     nu, S, s0, X, x0 = _setup()
-    r = schabenberger_glm_kriging(nu, S, s0, X, x0, mu0=2.0,
-                                  link_kind="identity")
+    r = schabenberger_glm_kriging(nu, S, s0, X, x0, mu0=2.0, link_kind="identity")
     assert r["prediction"] == pytest.approx(r["pseudo_scale_prediction"])
     assert r["mspe"] == pytest.approx(r["pseudo_scale_mspe"])
 

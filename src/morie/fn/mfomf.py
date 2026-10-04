@@ -32,8 +32,7 @@ from ._richresult import RichResult
 __all__ = ["model_based_rl"]
 
 
-def model_based_rl(env, model=None, planner="vi", n_states=None,
-                   n_actions=None, gamma=0.95, tol=1e-12, max_iter=1000):
+def model_based_rl(env, model=None, planner="vi", n_states=None, n_actions=None, gamma=0.95, tol=1e-12, max_iter=1000):
     """Fit phat and rhat from transitions, then value-iterate.
 
     Parameters
@@ -64,10 +63,8 @@ def model_based_rl(env, model=None, planner="vi", n_states=None,
     if planner != "vi":
         raise ValueError("only planner='vi' (value iteration) is implemented")
     rows = k.mat(env)
-    ns = int(n_states) if n_states is not None else int(
-        max([max(r[0], r[3]) for r in rows]) + 1) if rows else 0
-    na = int(n_actions) if n_actions is not None else int(
-        max([r[1] for r in rows]) + 1) if rows else 0
+    ns = int(n_states) if n_states is not None else int(max([max(r[0], r[3]) for r in rows]) + 1) if rows else 0
+    na = int(n_actions) if n_actions is not None else int(max([r[1] for r in rows]) + 1) if rows else 0
     cnt = [[0.0] * na for _ in range(ns)]
     rsum = [[0.0] * na for _ in range(ns)]
     trans = [[[0.0] * ns for _ in range(na)] for _ in range(ns)]

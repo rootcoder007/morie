@@ -25,12 +25,19 @@ def burkov_weight_tying(h_last, E):
         raise ValueError(
             f"E is {E.shape[0]} x {E.shape[1]} but the hidden state has "
             f"{len(h)} dimensions; weight tying needs E's columns to "
-            "match the hidden width.")
+            "match the hidden width."
+        )
     logits = E @ h
-    return RichResult(payload={
-        "logits": [float(v) for v in logits], "estimate": float(logits[0]),
-        "vocab_size": E.shape[0], "hidden_size": E.shape[1], "n": len(h),
-        "method": "Weight tying logits = h E^T (Burkov Ch 4)"})
+    return RichResult(
+        payload={
+            "logits": [float(v) for v in logits],
+            "estimate": float(logits[0]),
+            "vocab_size": E.shape[0],
+            "hidden_size": E.shape[1],
+            "n": len(h),
+            "method": "Weight tying logits = h E^T (Burkov Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

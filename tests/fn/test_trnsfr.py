@@ -1,14 +1,15 @@
 """trnsfr -- transporting an effect between cohorts.
 Source: Wager (2025) Causal Inference: A Statistical Learning
 Approach, chs. 2, 3 and 7."""
+
 import pytest
 
-from morie.fn.trnsfr import (balancing_weights, transfer_msm,
-                             transport_ate, transport_weights)
+from morie.fn.trnsfr import balancing_weights, transfer_msm, transport_ate, transport_weights
 
 
 def cohorts(n=200, seed=0):
     from morie.fn import _array_core as np
+
     rng = np.random.default_rng(seed)
     X, S, W, Y = [], [], [], []
     tau = {0: 1.0, 1: 5.0}

@@ -1,7 +1,5 @@
 """Tests for n_for_mean_length.n_for_mean_length."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.n_for_mean_length import (
     n_for_mean_length,
 )

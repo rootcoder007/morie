@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def expected_tau2(cov_theta, dlam_dtheta, a):
     """
     value = _brus.expected_tau2(cov_theta, dlam_dtheta, a)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (24.5)"
     return RichResult(
-        title='Expected squared prediction shift E[tau2]',
+        title="Expected squared prediction shift E[tau2]",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r24e5: E[tau2] = sum_ij Cov(th_i, th_j) dlam^T/dth_i A dlam/dth_j [Brus 2022, eq. 24.5]'
+    return "r24e5: E[tau2] = sum_ij Cov(th_i, th_j) dlam^T/dth_i A dlam/dth_j [Brus 2022, eq. 24.5]"
 
 
 # compact alias per ledger/NAMING.md

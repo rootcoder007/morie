@@ -47,12 +47,10 @@ def sens_slope(y, t=None, alpha=0.05):
     from .theils import theil_sen
 
     yv = np.asarray(y, dtype=float).ravel()
-    tv = np.arange(yv.size, dtype=float) if t is None else \
-        np.asarray(t, dtype=float).ravel()
+    tv = np.arange(yv.size, dtype=float) if t is None else np.asarray(t, dtype=float).ravel()
     out = theil_sen(tv, yv, alpha=alpha)
     lo, hi = out["ci"]
-    trend = "increasing" if lo > 0 else (
-        "decreasing" if hi < 0 else "no trend at this alpha")
+    trend = "increasing" if lo > 0 else ("decreasing" if hi < 0 else "no trend at this alpha")
     payload = dict(out)
     payload["trend"] = trend
     payload["per"] = "time step" if t is None else "unit of t"

@@ -1,7 +1,6 @@
 """Tests for alco — alert co-occurrence."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.alco import alcooc
 
 

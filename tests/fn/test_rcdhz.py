@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcdhz — hazard rate."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rcdhz import recidivism_hazard
 
 

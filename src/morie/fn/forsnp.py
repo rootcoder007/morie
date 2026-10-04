@@ -11,8 +11,7 @@ def _locus_prob(a1, a2, freqs, theta):
         # NRC II Recommendation 4.10a (homozygote), Buckleton Eq.:
         # [2 theta + (1-theta) p][3 theta + (1-theta) p]
         #   / [(1+theta)(1+2theta)]
-        num = (2 * theta + (1 - theta) * p1) * \
-              (3 * theta + (1 - theta) * p1)
+        num = (2 * theta + (1 - theta) * p1) * (3 * theta + (1 - theta) * p1)
         return num / ((1 + theta) * (1 + 2 * theta))
     p2 = float(freqs[a2])
     # NRC II 4.10b (heterozygote):
@@ -80,14 +79,16 @@ def forsnp(genotype, freqs, theta=0.0):
         rmp *= p
     if rmp <= 0:
         raise ValueError("zero match probability")
-    return RichResult(payload={
-        "rmp": rmp,
-        "lr": 1.0 / rmp,
-        "locus_rmp": locus,
-        "n_loci": len(genotype),
-        "theta": theta,
-        "method": "forensic RMP/LR, NRC II 4.10 (Buckleton 2005)",
-    })
+    return RichResult(
+        payload={
+            "rmp": rmp,
+            "lr": 1.0 / rmp,
+            "locus_rmp": locus,
+            "n_loci": len(genotype),
+            "theta": theta,
+            "method": "forensic RMP/LR, NRC II 4.10 (Buckleton 2005)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -96,6 +97,7 @@ forensic_lr = forsnp
 
 def cheatsheet():
     return "forsnp: product-rule RMP with NRC II theta correction; LR = 1/RMP"
+
 
 # public names resolved by fn/_lazy_map.json
 forensiclr = forsnp

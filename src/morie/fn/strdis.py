@@ -63,11 +63,16 @@ def strdis(G1, G2, eps=None):
     S2 = _affinity(A2, d2)
     dist = float(np.sqrt(np.sum((np.sqrt(np.abs(S1)) - np.sqrt(np.abs(S2))) ** 2)))
     sim = 1.0 / (1.0 + dist)
-    return RichResult(payload={
-        "distance": dist, "similarity": sim, "estimate": sim,
-        "eps": eps, "n": int(n),
-        "method": "DeltaCon-0 (FaBP affinities, RootED distance)",
-    })
+    return RichResult(
+        payload={
+            "distance": dist,
+            "similarity": sim,
+            "estimate": sim,
+            "eps": eps,
+            "n": int(n),
+            "method": "DeltaCon-0 (FaBP affinities, RootED distance)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

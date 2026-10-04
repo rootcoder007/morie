@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), Thm 6.27, consistency of tail-free priors.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c6_8 import ghosal_tailfree_con
 
 

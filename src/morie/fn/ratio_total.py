@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def ratio_total(t_pi_z, t_pi_x, t_x_true):
     """
     value = _brus.ratio_total(t_pi_z, t_pi_x, t_x_true)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (10.23)"
     return RichResult(
-        title='Ratio estimator of the total',
+        title="Ratio estimator of the total",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r10e23: t_ratio = (t_pi(z)/t_pi(x)) t(x) [Brus 2022, eq. 10.23]'
+    return "r10e23: t_ratio = (t_pi(z)/t_pi(x)) t(x) [Brus 2022, eq. 10.23]"
 
 
 # compact alias per ledger/NAMING.md

@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['pagel', 'gibbons_page_test']
+__all__ = ["pagel", "gibbons_page_test"]
 
 
 def pagel(data, weights=None):
@@ -54,11 +54,7 @@ def pagel(data, weights=None):
     n = len(rows[0])
     if n < 2:
         raise ValueError("need at least 2 treatments.")
-    w = (
-        [float(i + 1) for i in range(n)]
-        if weights is None
-        else [float(v) for v in weights]
-    )
+    w = [float(i + 1) for i in range(n)] if weights is None else [float(v) for v in weights]
     if len(w) != n:
         raise ValueError("weights must have length n.")
     rsum = [0.0] * n
@@ -79,9 +75,7 @@ def pagel(data, weights=None):
         for j in range(n):
             rsum[j] += rk[j]
     ell = sum(w[j] * rsum[j] for j in range(n))
-    z = (12.0 * (ell - 0.5) - 3.0 * k * n * (n + 1.0) ** 2) / (
-        n * (n + 1.0) * math.sqrt(k * (n - 1.0))
-    )
+    z = (12.0 * (ell - 0.5) - 3.0 * k * n * (n + 1.0) ** 2) / (n * (n + 1.0) * math.sqrt(k * (n - 1.0)))
     rav = 12.0 * ell / (k * (float(n) ** 3 - n)) - 3.0 * (n + 1.0) / (n - 1.0)
     return RichResult(
         payload={

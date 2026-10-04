@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Geometric extrapolation of the expected KDFE (Theorem 2.1)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kdfgeoext", "fauzi_thm2_1_expected_kdfe"]
@@ -60,7 +59,7 @@ def kdfgeoext(jh, jah, a):
         raise ValueError("J_h and J_ah must be positive; the identity takes logs.")
     t1 = a * a / (a * a - 1.0)
     t2 = -1.0 / (a * a - 1.0)
-    est = jh ** t1 * jah ** t2
+    est = jh**t1 * jah**t2
     return RichResult(
         payload={
             "estimate": float(est),

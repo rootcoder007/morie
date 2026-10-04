@@ -1,7 +1,6 @@
 """Tests for morie.fn.adpthr — adaptive threshold detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adpthr import adaptive_threshold_detect, adpthr
 
 

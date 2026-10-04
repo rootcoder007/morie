@@ -4,8 +4,13 @@ import math
 
 import pytest
 
-from morie.fn.tqipb import (bits_required, distortion_constant, tail_probability,
-                           turboquant_inner_product_distortion_bound, variance_bound)
+from morie.fn.tqipb import (
+    bits_required,
+    distortion_constant,
+    tail_probability,
+    turboquant_inner_product_distortion_bound,
+    variance_bound,
+)
 
 
 def test_tqipb_basic():
@@ -13,7 +18,7 @@ def test_tqipb_basic():
     1 / (d 4^b), the b = 1..4 table and the QJL pi / (2 d); the variance
     does not depend on how the d coordinates are split into blocks."""
     d = 128
-    assert distortion_constant(2, d, "panter_dite") == pytest.approx(math.sqrt(3) * math.pi ** 2 / (d * 16), rel=1e-15)
+    assert distortion_constant(2, d, "panter_dite") == pytest.approx(math.sqrt(3) * math.pi**2 / (d * 16), rel=1e-15)
     assert distortion_constant(2, d, "lower_bound") == pytest.approx(1 / (d * 16), rel=1e-15)
     assert distortion_constant(1, d, "table") == pytest.approx(1.57 / d, rel=1e-15)
     assert distortion_constant(3, d, "qjl") == pytest.approx(math.pi / (2 * d), rel=1e-15)
@@ -30,7 +35,8 @@ def test_tqipb_edge():
     v = variance_bound(2, 64)
     assert tail_probability(v, 0.1) == pytest.approx(min(1.0, v / 0.01), rel=1e-15)
     assert tail_probability(v, 0.1, tail="sub_gaussian") == pytest.approx(
-        min(1.0, 2 * math.exp(-0.01 / (2 * v))), rel=1e-15)
+        min(1.0, 2 * math.exp(-0.01 / (2 * v))), rel=1e-15
+    )
     b = bits_required(0.1, 0.05, 256)
     assert tail_probability(variance_bound(b, 256), 0.1) <= 0.05
     assert b == 1 or tail_probability(variance_bound(b - 1, 256), 0.1) > 0.05
@@ -38,5 +44,3 @@ def test_tqipb_edge():
     assert r["bits_needed"] == b
     with pytest.raises(ValueError, match="route"):
         distortion_constant(2, 8, "exact")
-
-

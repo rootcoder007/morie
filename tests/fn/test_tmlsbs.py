@@ -1,7 +1,6 @@
 """Tests for tmlsbs.tmle_subset_selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlsbs import tmle_subset_selection
 
 

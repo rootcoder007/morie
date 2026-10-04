@@ -1,7 +1,6 @@
 """Tests for gh_c8_2.ghosal_ggv_thm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_2 import ghosal_ggv_thm
 
 
@@ -10,15 +9,13 @@ def test_gh_c8_2_basic():
     n = 100
     eps_n = 0.1
     C = 1.0
-    ne2 = n * eps_n ** 2
+    ne2 = n * eps_n**2
 
-    log_prior_mass_B2 = -C * ne2            # boundary: satisfies (i)
-    log_entropy = ne2                       # boundary: satisfies (ii)
+    log_prior_mass_B2 = -C * ne2  # boundary: satisfies (i)
+    log_entropy = ne2  # boundary: satisfies (ii)
     log_sieve_tail_mass = -(C + 4.0) * ne2  # boundary: satisfies (iii)
 
-    result = ghosal_ggv_thm(
-        n, eps_n, log_prior_mass_B2, log_entropy, log_sieve_tail_mass, C=C
-    )
+    result = ghosal_ggv_thm(n, eps_n, log_prior_mass_B2, log_entropy, log_sieve_tail_mass, C=C)
 
     assert "estimate" in result
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
@@ -37,15 +34,13 @@ def test_gh_c8_2_edge():
     n = 50
     eps_n = 0.2
     C = 1.0
-    ne2 = n * eps_n ** 2
+    ne2 = n * eps_n**2
 
     log_prior_mass_B2 = -(C + 10.0) * ne2  # too small: violates (i)
     log_entropy = ne2
     log_sieve_tail_mass = -(C + 4.0) * ne2
 
-    result = ghosal_ggv_thm(
-        n, eps_n, log_prior_mass_B2, log_entropy, log_sieve_tail_mass, C=C
-    )
+    result = ghosal_ggv_thm(n, eps_n, log_prior_mass_B2, log_entropy, log_sieve_tail_mass, C=C)
 
     assert result["estimate"] != result["estimate"]  # NaN check
     assert result["rate_certified"] is False

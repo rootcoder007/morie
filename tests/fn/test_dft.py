@@ -1,7 +1,6 @@
 """Test dft_compute (dft)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dft import dft, dft_compute
 

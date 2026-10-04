@@ -1,7 +1,6 @@
 """Tests for morie.fn.lpflt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lpflt import lpflt
 
 

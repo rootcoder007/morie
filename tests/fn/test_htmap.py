@@ -1,7 +1,6 @@
 """Tests for morie.fn.htmap — heatmap issue weights."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.htmap import htmap
 
 

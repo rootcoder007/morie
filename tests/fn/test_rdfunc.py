@@ -1,7 +1,6 @@
 """Tests for rdfunc.rate_distortion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rdfunc import rate_distortion
 
 

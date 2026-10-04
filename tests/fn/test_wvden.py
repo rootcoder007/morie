@@ -1,7 +1,6 @@
 """Tests for wvden.py - Wavelet denoising."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvden import wavelet_denoise, wvden
 
 

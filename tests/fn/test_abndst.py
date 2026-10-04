@@ -1,7 +1,6 @@
 """Tests for abndst.abundance_estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.abndst import abundance_estimation
 
 
@@ -9,17 +8,22 @@ def test_abndst_basic():
     """Test basic functionality."""
     # kmer_distribution: shape (n_nodes, n_species); columns sum to 1
     # P(i|j): row=node, column=species
-    P = np.array([[0.5, 0.0],
-                  [0.0, 0.5],
-                  [0.5, 0.5]])
+    P = np.array([[0.5, 0.0], [0.0, 0.5], [0.5, 0.5]])
     reads = np.array([100.0, 300.0, 400.0])
     result = abundance_estimation(reads, P)
 
     # Documented return keys
     assert isinstance(result, dict)
-    for key in ("estimate", "fractions", "reads_reassigned",
-                "iterations", "converged", "identifiable",
-                "naive_species_reads", "log_likelihood"):
+    for key in (
+        "estimate",
+        "fractions",
+        "reads_reassigned",
+        "iterations",
+        "converged",
+        "identifiable",
+        "naive_species_reads",
+        "log_likelihood",
+    ):
         assert key in result, f"missing key {key!r}"
 
     # Independent recomputation from the documented formula.
@@ -45,9 +49,7 @@ def test_abndst_edge():
     # Same two-species setup but with a tiny extra species that has
     # a very small column to exercise the threshold path. Use a
     # three-species matrix whose columns each sum to 1.
-    P = np.array([[1.0, 0.0, 0.0],
-                  [0.0, 1.0, 0.0],
-                  [0.0, 0.0, 1.0]])
+    P = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
     reads = np.array([50.0, 50.0, 50.0])
     result = abundance_estimation(reads, P, threshold=10.0)
 

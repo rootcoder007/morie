@@ -1,8 +1,8 @@
 """Tests for rng223 (Rangayyan Eq. 4.51 test signal)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsasig import rangayyan_ch4_test_signal_three_events
 
 

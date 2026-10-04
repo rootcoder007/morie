@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bias of the modified gamma kernel density estimator (Theorem 1.3)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["mgkbias", "fauzi_thm1_3_mise_mgkde"]

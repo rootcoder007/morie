@@ -1,7 +1,6 @@
 """Tests for cvxipm.boyd_interior_point."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxipm import boyd_interior_point
 
 
@@ -50,7 +49,7 @@ def test_cvxipm_basic():
 
     # Expected objective at the optimal x (independent recomputation)
     x_star = float(result["x"][0])
-    expected_obj = 0.5 * x_star ** 2
+    expected_obj = 0.5 * x_star**2
     assert abs(float(result["objective"]) - expected_obj) < 1e-12
 
 
@@ -71,12 +70,12 @@ def test_cvxipm_edge():
 
     # After one outer iteration with t = 1, the centered point solves
     # x^2 - x - 1 = 0, so x is the golden ratio (1 + sqrt(5)) / 2
-    expected_golden = (1.0 + 5.0 ** 0.5) / 2.0
+    expected_golden = (1.0 + 5.0**0.5) / 2.0
     assert abs(float(result["x"][0]) - expected_golden) < 1e-5
 
     # Independent recomputation of objective
     x_c = float(result["x"][0])
-    expected_obj = 0.5 * x_c ** 2
+    expected_obj = 0.5 * x_c**2
     assert abs(float(result["objective"]) - expected_obj) < 1e-12
 
     # gap_bound = m / t = 1 / 1 = 1.0 for the final centered t

@@ -1,8 +1,8 @@
 """Tests for frkst.fork_structure."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.frkst import fork_structure
 
 

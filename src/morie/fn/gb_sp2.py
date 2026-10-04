@@ -38,9 +38,7 @@ def gibbons_spearman_exact(n, rho=None):
     """
     n = int(n)
     if not 2 <= n <= 8:
-        raise ValueError(
-            f"exact enumeration is limited to 2 <= n <= 8, got {n}."
-        )
+        raise ValueError(f"exact enumeration is limited to 2 <= n <= 8, got {n}.")
     ref = np.arange(1, n + 1)
     denom = float(n**3 - n)
     counts = {}
@@ -56,8 +54,12 @@ def gibbons_spearman_exact(n, rho=None):
     mean = float(np.sum(support * pmf))
     var = float(np.sum(support**2 * pmf) - mean**2)
     payload = {
-        "support": support, "pmf": pmf, "mean": mean, "var": var,
-        "n": n, "method": "Exact Spearman null distribution by enumeration",
+        "support": support,
+        "pmf": pmf,
+        "mean": mean,
+        "var": var,
+        "n": n,
+        "method": "Exact Spearman null distribution by enumeration",
     }
     if rho is not None:
         rho = float(rho)

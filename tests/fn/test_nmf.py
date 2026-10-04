@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nmf import nmf
 
 

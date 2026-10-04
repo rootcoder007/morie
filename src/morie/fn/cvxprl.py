@@ -83,8 +83,7 @@ def boyd_perspective(f, x, t):
     bad = np.flatnonzero(tv <= 0)
     if bad.size:
         i = int(bad[0])
-        raise ValueError(
-            f"the perspective needs t > 0 strictly; entry {i} is {tv[i]:g}")
+        raise ValueError(f"the perspective needs t > 0 strictly; entry {i} is {tv[i]:g}")
     ratio = xv / tv
     fr = np.asarray([float(f(v)) for v in ratio], dtype=float)
     val = tv * fr
@@ -94,12 +93,13 @@ def boyd_perspective(f, x, t):
     homo = bool(np.allclose(2 * tv * fr2, 2 * val, rtol=1e-10, atol=1e-12))
     return RichResult(
         title="Perspective function",
-        summary_lines=[("points", int(xv.size)),
-                       ("mean value", float(val.mean())),
-                       ("homogeneous", homo)],
+        summary_lines=[("points", int(xv.size)), ("mean value", float(val.mean())), ("homogeneous", homo)],
         payload={
-            "value": val, "ratio": ratio, "f_ratio": fr,
-            "homogeneous": homo, "method": "boyd_perspective",
+            "value": val,
+            "ratio": ratio,
+            "f_ratio": fr,
+            "homogeneous": homo,
+            "method": "boyd_perspective",
         },
     )
 

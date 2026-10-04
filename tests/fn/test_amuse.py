@@ -1,7 +1,6 @@
 """Test amuse_bss (amuse)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.amuse import amuse, amuse_bss
 

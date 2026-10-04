@@ -9,8 +9,7 @@ from morie.fn.wsmlgr import wasserman_logistic_regression
 
 def _data(n=40):
     X = [[1.0, math.sin(1.3 * k)] for k in range(n)]
-    y = [1 if ((31 * k + 7) % 53 + 0.5) / 53 < 1 / (1 + math.exp(-(0.3 + 1.2 * x[1]))) else 0
-         for k, x in enumerate(X)]
+    y = [1 if ((31 * k + 7) % 53 + 0.5) / 53 < 1 / (1 + math.exp(-(0.3 + 1.2 * x[1]))) else 0 for k, x in enumerate(X)]
     return X, y
 
 
@@ -53,7 +52,7 @@ import morie.fn.wsmlgr as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

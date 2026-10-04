@@ -72,17 +72,23 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["hyperparam_optim_gp", "hyper2", "kernel_matrix",
-           "log_marginal_likelihood", "slice_sample_1d", "KERNELS",
-           "ROUTES", "cheatsheet"]
+__all__ = [
+    "hyperparam_optim_gp",
+    "hyper2",
+    "kernel_matrix",
+    "log_marginal_likelihood",
+    "slice_sample_1d",
+    "KERNELS",
+    "ROUTES",
+    "cheatsheet",
+]
 
 KERNELS = ("squared_exponential", "matern32", "matern52")
 ROUTES = ("marginal", "whitened", "surrogate")
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[k] - b[k]) * (a[k] - b[k])
-                             for k in range(len(a))))
+    return math.sqrt(_w.csum((a[k] - b[k]) * (a[k] - b[k]) for k in range(len(a))))
 
 
 def kernel_matrix(X, Z, log_ls, log_sf, kind="squared_exponential"):
@@ -126,8 +132,7 @@ def kernel_matrix(X, Z, log_ls, log_sf, kind="squared_exponential"):
 
 def _add_jitter(K, v):
     n = len(K)
-    return [[K[i][j] + (v if i == j else 0.0) for j in range(n)]
-            for i in range(n)]
+    return [[K[i][j] + (v if i == j else 0.0) for j in range(n)] for i in range(n)]
 
 
 def log_marginal_likelihood(y, X, log_ls, log_sf, log_sn, kind):
@@ -137,8 +142,7 @@ def log_marginal_likelihood(y, X, log_ls, log_sf, log_sn, kind):
     that never builds an inverse.
     """
     n = len(y)
-    K = _add_jitter(kernel_matrix(X, X, log_ls, log_sf, kind),
-                    math.exp(2.0 * log_sn) + 1e-10)
+    K = _add_jitter(kernel_matrix(X, X, log_ls, log_sf, kind), math.exp(2.0 * log_sn) + 1e-10)
     L = _w.chol(K)
     a = _w.solve_chol(L, list(y))
     quad = _w.dot(y, a)
@@ -154,8 +158,7 @@ def _log_prior(theta):
     rule out an arbitrarily long one, and a sampler will happily wander
     off into that region without ever telling you.
     """
-    return _w.csum(-0.5 * v * v - 0.5 * math.log(2.0 * math.pi)
-                   for v in theta)
+    return _w.csum(-0.5 * v * v - 0.5 * math.log(2.0 * math.pi) for v in theta)
 
 
 def slice_sample_1d(logf, x0, rng, w=1.0, m=10):
@@ -196,7 +199,7 @@ def _elliptical(logl, f, L, rng):
     """
     n = len(f)
     nu = [float(rng.normal()) for _ in range(n)]
-    v = [_w.dot(L[i][:i + 1], nu[:i + 1]) for i in range(n)]
+    v = [_w.dot(L[i][: i + 1], nu[: i + 1]) for i in range(n)]
     ly = logl(f) + math.log(float(rng.uniform()))
     a = 2.0 * math.pi * float(rng.uniform())
     amin = a - 2.0 * math.pi
@@ -215,9 +218,21 @@ def _elliptical(logl, f, L, rng):
     return f
 
 
-def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
-                        route="marginal", n_iter=200, burn=None, thin=1,
-                        seed=1, Xstar=None, w=1.0, m=10, jitter=1e-8):
+def hyperparam_optim_gp(
+    X,
+    y,
+    prior=None,
+    kind="squared_exponential",
+    route="marginal",
+    n_iter=200,
+    burn=None,
+    thin=1,
+    seed=1,
+    Xstar=None,
+    w=1.0,
+    m=10,
+    jitter=1e-8,
+):
     """Posterior over GP hyperparameters, with predictions averaged over it.
 
     Parameters
@@ -273,8 +288,7 @@ def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
         raise ValueError("need at least three points")
     if burn is None:
         burn = int(n_iter) // 2
-    theta = ([0.0, 0.0, -1.0] if prior is None
-             else [float(v) for v in prior])
+    theta = [0.0, 0.0, -1.0] if prior is None else [float(v) for v in prior]
     if len(theta) != 3:
         raise ValueError("prior must hold three starting log values")
     Xs = Xv if Xstar is None else [[float(v) for v in r] for r in Xstar]
@@ -284,48 +298,47 @@ def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
     nu = [0.0] * n
 
     def chol_of(th):
-        return _w.chol(_add_jitter(kernel_matrix(Xv, Xv, th[0], th[1],
-                                                 kind), jitter))
+        return _w.chol(_add_jitter(kernel_matrix(Xv, Xv, th[0], th[1], kind), jitter))
 
     def loglik(fv, sn):
         s2 = math.exp(2.0 * sn)
-        return _w.csum(-0.5 * (yv[i] - fv[i]) * (yv[i] - fv[i]) / s2
-                       - 0.5 * math.log(2.0 * math.pi * s2)
-                       for i in range(n))
+        return _w.csum(
+            -0.5 * (yv[i] - fv[i]) * (yv[i] - fv[i]) / s2 - 0.5 * math.log(2.0 * math.pi * s2) for i in range(n)
+        )
 
     if route != "marginal":
         L = chol_of(theta)
         nu = [float(rng.normal()) for _ in range(n)]
-        f = [_w.dot(L[i][:i + 1], nu[:i + 1]) for i in range(n)]
+        f = [_w.dot(L[i][: i + 1], nu[: i + 1]) for i in range(n)]
 
     draws = []
     lml = []
     for it in range(int(n_iter)):
         if route == "marginal":
             for c in range(3):
+
                 def target(v, c=c):
                     th = list(theta)
                     th[c] = v
-                    return (log_marginal_likelihood(yv, Xv, th[0], th[1],
-                                                    th[2], kind)
-                            + _log_prior(th))
+                    return log_marginal_likelihood(yv, Xv, th[0], th[1], th[2], kind) + _log_prior(th)
+
                 theta[c] = slice_sample_1d(target, theta[c], rng, w, m)
-            cur = log_marginal_likelihood(yv, Xv, theta[0], theta[1],
-                                          theta[2], kind)
+            cur = log_marginal_likelihood(yv, Xv, theta[0], theta[1], theta[2], kind)
         elif route == "whitened":
             # theta moves with nu held fixed, so f = L(theta) nu follows
             # the kernel instead of being stranded by it.
             for c in range(3):
+
                 def target(v, c=c):
                     th = list(theta)
                     th[c] = v
                     Lt = chol_of(th)
-                    ft = [_w.dot(Lt[i][:i + 1], nu[:i + 1])
-                          for i in range(n)]
+                    ft = [_w.dot(Lt[i][: i + 1], nu[: i + 1]) for i in range(n)]
                     return loglik(ft, th[2]) + _log_prior(th)
+
                 theta[c] = slice_sample_1d(target, theta[c], rng, w, m)
             L = chol_of(theta)
-            f = [_w.dot(L[i][:i + 1], nu[:i + 1]) for i in range(n)]
+            f = [_w.dot(L[i][: i + 1], nu[: i + 1]) for i in range(n)]
             f = _elliptical(lambda fv: loglik(fv, theta[2]), f, L, rng)
             # Recover nu from the new f so the next theta move is
             # consistent: nu = L^-1 f, by forward substitution.
@@ -338,49 +351,41 @@ def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
             # stay consistent with. S is the likelihood's own noise,
             # which is the paper's default choice.
             s2 = math.exp(2.0 * theta[2])
-            g = [f[i] + math.sqrt(s2) * float(rng.normal())
-                 for i in range(n)]
+            g = [f[i] + math.sqrt(s2) * float(rng.normal()) for i in range(n)]
 
             def post(th):
-                Kt = _add_jitter(kernel_matrix(Xv, Xv, th[0], th[1],
-                                               kind), jitter)
+                Kt = _add_jitter(kernel_matrix(Xv, Xv, th[0], th[1], kind), jitter)
                 s2t = math.exp(2.0 * th[2])
                 A = _add_jitter(Kt, s2t)
                 La = _w.chol(A)
                 # m = K (K + S)^-1 g and cov = K - K (K + S)^-1 K
                 sol = _w.solve_chol(La, list(g))
                 mvec = [_w.dot(Kt[i], sol) for i in range(n)]
-                cols = [_w.solve_chol(La, [Kt[r][j] for r in range(n)])
-                        for j in range(n)]
-                cov = [[Kt[i][j] - _w.dot(Kt[i], [cols[j][r]
-                                                  for r in range(n)])
-                        for j in range(n)] for i in range(n)]
+                cols = [_w.solve_chol(La, [Kt[r][j] for r in range(n)]) for j in range(n)]
+                cov = [[Kt[i][j] - _w.dot(Kt[i], [cols[j][r] for r in range(n)]) for j in range(n)] for i in range(n)]
                 cov = _add_jitter(cov, jitter)
                 return mvec, _w.chol(cov), La
 
             mvec, R, La = post(theta)
             eta = [0.0] * n
             for i in range(n):
-                eta[i] = (f[i] - mvec[i] - _w.dot(R[i][:i], eta[:i])) \
-                    / R[i][i]
+                eta[i] = (f[i] - mvec[i] - _w.dot(R[i][:i], eta[:i])) / R[i][i]
 
             for c in range(3):
+
                 def target(v, c=c):
                     th = list(theta)
                     th[c] = v
                     mv, Rt, Lat = post(th)
-                    ft = [mv[i] + _w.dot(Rt[i][:i + 1], eta[:i + 1])
-                          for i in range(n)]
+                    ft = [mv[i] + _w.dot(Rt[i][: i + 1], eta[: i + 1]) for i in range(n)]
                     sol = _w.solve_chol(Lat, list(g))
-                    logdet = 2.0 * _w.csum(math.log(Lat[i][i])
-                                           for i in range(n))
-                    lg = (-0.5 * _w.dot(g, sol) - 0.5 * logdet
-                          - 0.5 * n * math.log(2.0 * math.pi))
+                    logdet = 2.0 * _w.csum(math.log(Lat[i][i]) for i in range(n))
+                    lg = -0.5 * _w.dot(g, sol) - 0.5 * logdet - 0.5 * n * math.log(2.0 * math.pi)
                     return loglik(ft, th[2]) + lg + _log_prior(th)
+
                 theta[c] = slice_sample_1d(target, theta[c], rng, w, m)
             mvec, R, La = post(theta)
-            f = [mvec[i] + _w.dot(R[i][:i + 1], eta[:i + 1])
-                 for i in range(n)]
+            f = [mvec[i] + _w.dot(R[i][: i + 1], eta[: i + 1]) for i in range(n)]
             L = chol_of(theta)
             f = _elliptical(lambda fv: loglik(fv, theta[2]), f, L, rng)
             cur = loglik(f, theta[2]) + _log_prior(theta)
@@ -401,8 +406,7 @@ def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
     pv = [0.0] * ns
     pm2 = [0.0] * ns
     for th in draws:
-        Kxx = _add_jitter(kernel_matrix(Xv, Xv, th[0], th[1], kind),
-                          math.exp(2.0 * th[2]) + jitter)
+        Kxx = _add_jitter(kernel_matrix(Xv, Xv, th[0], th[1], kind), math.exp(2.0 * th[2]) + jitter)
         Lx = _w.chol(Kxx)
         alpha = _w.solve_chol(Lx, list(yv))
         Ksx = kernel_matrix(Xs, Xv, th[0], th[1], kind)
@@ -425,39 +429,38 @@ def hyperparam_optim_gp(X, y, prior=None, kind="squared_exponential",
     sds = []
     for c in range(3):
         if M > 1:
-            sds.append(math.sqrt(_w.csum((d[c] - means[c])
-                                         * (d[c] - means[c])
-                                         for d in draws) / (M - 1)))
+            sds.append(math.sqrt(_w.csum((d[c] - means[c]) * (d[c] - means[c]) for d in draws) / (M - 1)))
         else:
             sds.append(0.0)
 
-    return RichResult(payload={
-        "draws": draws,
-        "log_lengthscale": means[0],
-        "log_signal_sd": means[1],
-        "log_noise_sd": means[2],
-        "lengthscale": math.exp(means[0]),
-        "signal_sd": math.exp(means[1]),
-        "noise_sd": math.exp(means[2]),
-        "posterior_sd": sds,
-        "log_target": lml,
-        "mean_log_target": _w.csum(lml) / M,
-        "predict_mean": mean,
-        "predict_sd": sd,
-        "n": n,
-        "n_test": ns,
-        "kept": M,
-        "kind": kind,
-        "route": route,
-        "seed": int(seed),
-        "estimate": means[0],
-        "method": "GP hyperparameter MCMC with the latent integrated out",
-    })
+    return RichResult(
+        payload={
+            "draws": draws,
+            "log_lengthscale": means[0],
+            "log_signal_sd": means[1],
+            "log_noise_sd": means[2],
+            "lengthscale": math.exp(means[0]),
+            "signal_sd": math.exp(means[1]),
+            "noise_sd": math.exp(means[2]),
+            "posterior_sd": sds,
+            "log_target": lml,
+            "mean_log_target": _w.csum(lml) / M,
+            "predict_mean": mean,
+            "predict_sd": sd,
+            "n": n,
+            "n_test": ns,
+            "kept": M,
+            "kind": kind,
+            "route": route,
+            "seed": int(seed),
+            "estimate": means[0],
+            "method": "GP hyperparameter MCMC with the latent integrated out",
+        }
+    )
 
 
 hyper2 = hyperparam_optim_gp
 
 
 def cheatsheet():
-    return ("hyper2: GP hyperparameter MCMC. kernels "
-            + ", ".join(KERNELS) + "; routes " + ", ".join(ROUTES))
+    return "hyper2: GP hyperparameter MCMC. kernels " + ", ".join(KERNELS) + "; routes " + ", ".join(ROUTES)

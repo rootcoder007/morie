@@ -1,4 +1,5 @@
 """Projected gradient descent."""
+
 import importlib
 
 import pytest
@@ -7,10 +8,12 @@ P = importlib.import_module("morie.fn.pgdsdg")
 np = importlib.import_module("morie.fn._array_core")
 
 A = [0.5, 0.9, -0.2]
-PROJ = [("simplex", P.project_simplex),
-        ("nonneg", P.project_nonneg),
-        ("ball", lambda z: P.project_ball(z, 1.0)),
-        ("box", lambda z: P.project_box(z, [-1.0] * 3, [1.0] * 3))]
+PROJ = [
+    ("simplex", P.project_simplex),
+    ("nonneg", P.project_nonneg),
+    ("ball", lambda z: P.project_ball(z, 1.0)),
+    ("box", lambda z: P.project_box(z, [-1.0] * 3, [1.0] * 3)),
+]
 
 
 def d2(a, b):
@@ -67,7 +70,8 @@ def test_an_optimum_outside_the_set_lands_on_the_boundary():
         lambda z: d2(z, [5.0, 5.0, 5.0]),
         lambda z: [2.0 * (z[i] - 5.0) for i in range(3)],
         [0.0, 0.0, 0.0],
-        lambda z: P.project_box(z, [-1.0] * 3, [1.0] * 3))
+        lambda z: P.project_box(z, [-1.0] * 3, [1.0] * 3),
+    )
     assert r["x"] == pytest.approx([1.0, 1.0, 1.0])
 
 
@@ -78,30 +82,29 @@ GA = lambda z: [2.0 * Q[i] * (z[i] - 0.3) for i in range(3)]
 
 def test_fista_is_not_monotone_but_gets_further():
     ball = lambda z: P.project_ball(z, 2.0)
-    nm = P.projected_gradient(FA, GA, [3.0] * 3, ball, rule="fista",
-                              max_iter=300, tol=0.0)
-    mo = P.projected_gradient(FA, GA, [3.0] * 3, ball,
-                              rule="backtracking", max_iter=300,
-                              tol=0.0)
+    nm = P.projected_gradient(FA, GA, [3.0] * 3, ball, rule="fista", max_iter=300, tol=0.0)
+    mo = P.projected_gradient(FA, GA, [3.0] * 3, ball, rule="backtracking", max_iter=300, tol=0.0)
     assert not nm["monotone"]
     assert mo["monotone"]
     assert nm["history"][-1] < mo["history"][-1]
 
 
 def test_the_monotone_flag_matches_the_history():
-    r = P.projected_gradient(FA, GA, [3.0] * 3, P.project_nonneg,
-                             rule="fista", max_iter=100, tol=0.0)
+    r = P.projected_gradient(FA, GA, [3.0] * 3, P.project_nonneg, rule="fista", max_iter=100, tol=0.0)
     h = r["history"]
-    assert r["monotone"] == all(h[i] >= h[i + 1] - 1e-12
-                                for i in range(len(h) - 1))
+    assert r["monotone"] == all(h[i] >= h[i + 1] - 1e-12 for i in range(len(h) - 1))
 
 
 def test_backtracking_finds_a_step_without_knowing_l():
     r = P.projected_gradient(
         lambda z: sum(100.0 * v * v for v in z),
         lambda z: [200.0 * v for v in z],
-        [1.0, 1.0, 1.0], P.project_nonneg, rule="backtracking",
-        max_iter=200, tol=0.0)
+        [1.0, 1.0, 1.0],
+        P.project_nonneg,
+        rule="backtracking",
+        max_iter=200,
+        tol=0.0,
+    )
     assert r["n_backtracks"] > 0
     assert r["history"][-1] < r["history"][0]
 
@@ -109,27 +112,25 @@ def test_backtracking_finds_a_step_without_knowing_l():
 def test_the_entry_point_matches():
     f = lambda z: d2(z, A)
     g = lambda z: [2.0 * (z[i] - A[i]) for i in range(3)]
-    assert P.projected_gradient_descent(f, g, [1.0, 0.0, 0.0],
-                                        P.project_simplex)["x"] \
-        == pytest.approx(P.project_simplex(A), abs=1e-8)
+    assert P.projected_gradient_descent(f, g, [1.0, 0.0, 0.0], P.project_simplex)["x"] == pytest.approx(
+        P.project_simplex(A), abs=1e-8
+    )
 
 
-@pytest.mark.parametrize("call", [
-    lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0] * 3,
-                                 [1.0] * 3, P.project_nonneg,
-                                 rule="adam"),
-    lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0] * 3,
-                                 [1.0] * 3, P.project_nonneg,
-                                 rule="fixed"),
-    lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0],
-                                 [1.0] * 3, P.project_nonneg),
-    lambda: P.project_ball([1.0], radius=0.0),
-    lambda: P.project_ball([1.0, 2.0], centre=[0.0]),
-    lambda: P.project_simplex([]),
-    lambda: P.project_simplex([1.0], total=0.0),
-    lambda: P.project_box([1.0, 2.0], [1.0], [2.0]),
-    lambda: P.project_box([1.0], [2.0], [1.0]),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0] * 3, [1.0] * 3, P.project_nonneg, rule="adam"),
+        lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0] * 3, [1.0] * 3, P.project_nonneg, rule="fixed"),
+        lambda: P.projected_gradient(lambda z: 0.0, lambda z: [0.0], [1.0] * 3, P.project_nonneg),
+        lambda: P.project_ball([1.0], radius=0.0),
+        lambda: P.project_ball([1.0, 2.0], centre=[0.0]),
+        lambda: P.project_simplex([]),
+        lambda: P.project_simplex([1.0], total=0.0),
+        lambda: P.project_box([1.0, 2.0], [1.0], [2.0]),
+        lambda: P.project_box([1.0], [2.0], [1.0]),
+    ],
+)
 def test_bad_input_is_refused(call):
     with pytest.raises(ValueError):
         call()

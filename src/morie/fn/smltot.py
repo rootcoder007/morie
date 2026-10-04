@@ -49,7 +49,7 @@ def srstotal(y, N, level=0.95):
     if n < 2:
         raise ValueError("a variance needs at least two observations")
     N = float(N)
-    if N < n:
+    if n > N:
         raise ValueError("N must be at least n")
     if not 0.0 < float(level) < 1.0:
         raise ValueError("level must lie strictly between 0 and 1")
@@ -60,12 +60,20 @@ def srstotal(y, N, level=0.95):
     se = math.sqrt(var)
     est = N * m
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": est, "se": se, "ci_lower": est - z * se,
-        "ci_upper": est + z * se, "mean": m,
-        "cv": se / est if est != 0 else float("nan"), "fpc": k,
-        "N": N, "n": n,
-        "method": "SRS population total, Yhat = N ybar"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "ci_lower": est - z * se,
+            "ci_upper": est + z * se,
+            "mean": m,
+            "cv": se / est if est != 0 else float("nan"),
+            "fpc": k,
+            "N": N,
+            "n": n,
+            "method": "SRS population total, Yhat = N ybar",
+        }
+    )
 
 
 survey_total = srstotal

@@ -57,8 +57,7 @@ def meta_path(G, node_types=None, metapath=None):
     for step in range(len(mp) - 1):
         a = mp[step]
         b = mp[step + 1]
-        S = [[W[i][j] if (ty[i] == a and ty[j] == b) else 0.0 for j in range(n)]
-             for i in range(n)]
+        S = [[W[i][j] if (ty[i] == a and ty[j] == b) else 0.0 for j in range(n)] for i in range(n)]
         M = k.matmul(M, S)
     ends = [i for i in range(n) if ty[i] == mp[-1]]
     starts = [i for i in range(n) if ty[i] == mp[0]]

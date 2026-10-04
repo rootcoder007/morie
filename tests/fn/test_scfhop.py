@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.scfhop import scaffold_hop
 
 
@@ -15,10 +13,23 @@ def test_scfhop_basic():
     assert isinstance(result, dict)
     # Check that all expected keys are present
     expected_keys = [
-        "lead", "lead_scaffold", "lead_scaffold_size", "lead_signature",
-        "ranked", "similarity", "is_hop", "order", "n_candidates",
-        "n_hops", "n_dim", "maxdist", "scaling", "metric", "rounds",
-        "threshold", "method"
+        "lead",
+        "lead_scaffold",
+        "lead_scaffold_size",
+        "lead_signature",
+        "ranked",
+        "similarity",
+        "is_hop",
+        "order",
+        "n_candidates",
+        "n_hops",
+        "n_dim",
+        "maxdist",
+        "scaling",
+        "metric",
+        "rounds",
+        "threshold",
+        "method",
     ]
     for key in expected_keys:
         assert key in result, f"Missing key: {key}"
@@ -39,7 +50,7 @@ def test_scfhop_basic():
     # Ranking should be sorted by similarity descending (ties broken by original order)
     sims = result["similarity"]
     for i in range(len(sims) - 1):
-        assert sims[i] >= sims[i+1], f"Similarities not non-increasing: {sims[i]} vs {sims[i+1]}"
+        assert sims[i] >= sims[i + 1], f"Similarities not non-increasing: {sims[i]} vs {sims[i + 1]}"
     # Each ranked entry should have the expected keys
     for row in result["ranked"]:
         assert "index" in row

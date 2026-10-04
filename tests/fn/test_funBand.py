@@ -8,8 +8,7 @@ import math
 
 import pytest
 
-from morie.fn.funBand import funBand, influence_matrix, gcv_score
-
+from morie.fn.funBand import funBand, influence_matrix
 
 N = 12
 X = [i / 12.0 for i in range(1, N + 1)]
@@ -39,8 +38,7 @@ def test_influence_matrix_reproduces_straight_lines(lam):
 def test_trace_falls_from_n_to_exactly_two():
     """Tr A is the equivalent degrees of freedom for signal: n when the
     spline interpolates, exactly 2 when it is the least-squares line."""
-    assert sum(influence_matrix(X, 1e-12)[i][i]
-               for i in range(N)) == pytest.approx(float(N), abs=1e-5)
+    assert sum(influence_matrix(X, 1e-12)[i][i] for i in range(N)) == pytest.approx(float(N), abs=1e-5)
     for lam in (1e6, 1e12, 1e18):
         tr = sum(influence_matrix(X, lam)[i][i] for i in range(N))
         assert tr == pytest.approx(2.0, abs=1e-6)
@@ -48,15 +46,13 @@ def test_trace_falls_from_n_to_exactly_two():
 
 def test_influence_matrix_is_symmetric():
     A = influence_matrix(X, 0.5)
-    assert max(abs(A[i][j] - A[j][i])
-               for i in range(N) for j in range(N)) < 1e-12
+    assert max(abs(A[i][j] - A[j][i]) for i in range(N) for j in range(N)) < 1e-12
 
 
 def test_large_lambda_is_the_least_squares_line():
     a, b = _ols_line(X, Y)
     r = funBand(Y, x=X, lam=1e16)
-    assert max(abs(r["fitted"][i] - (a + b * X[i]))
-               for i in range(N)) < 1e-9
+    assert max(abs(r["fitted"][i] - (a + b * X[i])) for i in range(N)) < 1e-9
 
 
 def test_small_lambda_interpolates():
@@ -67,8 +63,7 @@ def test_small_lambda_interpolates():
 def test_degrees_of_freedom_partition_n():
     """Tr A + Tr(I - A) = n identically."""
     r = funBand(Y, x=X)
-    assert r["edf_signal"] + r["edf_error"] == pytest.approx(float(N),
-                                                             abs=1e-10)
+    assert r["edf_signal"] + r["edf_error"] == pytest.approx(float(N), abs=1e-10)
 
 
 def test_sigma2_is_rss_over_residual_edf():
@@ -94,15 +89,13 @@ def test_band_is_the_theorem_1_expression():
     for i in range(N):
         want = r["multiplier"] * r["sigma"] * math.sqrt(r["diag_A"][i])
         assert r["half_width"][i] == pytest.approx(want, rel=1e-12)
-        assert r["upper"][i] - r["lower"][i] == pytest.approx(2.0 * want,
-                                                              rel=1e-12)
+        assert r["upper"][i] - r["lower"][i] == pytest.approx(2.0 * want, rel=1e-12)
 
 
 def test_posterior_variance_is_sigma2_times_diag_A():
     r = funBand(Y, x=X)
     for i in range(N):
-        assert r["posterior_variance"][i] == pytest.approx(
-            r["sigma2"] * r["diag_A"][i], rel=1e-12)
+        assert r["posterior_variance"][i] == pytest.approx(r["sigma2"] * r["diag_A"][i], rel=1e-12)
 
 
 def test_normal_multiplier_is_1_96_at_the_paper_level():
@@ -125,8 +118,7 @@ def test_coverage_is_reported_across_the_function():
     truth = [0.5 * v + 0.2 for v in X]
     r = funBand(Y, x=X, truth=truth)
     assert 0.0 <= r["coverage"] <= 1.0
-    manual = sum(1 for i in range(N)
-                 if r["lower"][i] <= truth[i] <= r["upper"][i]) / float(N)
+    manual = sum(1 for i in range(N) if r["lower"][i] <= truth[i] <= r["upper"][i]) / float(N)
     assert r["coverage"] == pytest.approx(manual, abs=1e-12)
 
 

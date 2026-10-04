@@ -21,15 +21,18 @@ def burkov_lm_ch1_logistic_regression(w, x, b):
     w = np.atleast_1d(np.asarray(w, dtype=float))
     x = np.atleast_1d(np.asarray(x, dtype=float))
     if w.shape != x.shape:
-        raise ValueError(
-            f"w and x must have the same length; got {len(w)} and "
-            f"{len(x)}.")
+        raise ValueError(f"w and x must have the same length; got {len(w)} and {len(x)}.")
     z = float(np.dot(w, x) + float(b))
     p = float(1.0 / (1.0 + np.exp(-z)))
-    return RichResult(payload={
-        "estimate": p, "logit": z, "predicted_class": int(p >= 0.5),
-        "n": len(x),
-        "method": "Logistic regression sigma(w.x + b) (Burkov Eq 1.8)"})
+    return RichResult(
+        payload={
+            "estimate": p,
+            "logit": z,
+            "predicted_class": int(p >= 0.5),
+            "n": len(x),
+            "method": "Logistic regression sigma(w.x + b) (Burkov Eq 1.8)",
+        }
+    )
 
 
 def cheatsheet():

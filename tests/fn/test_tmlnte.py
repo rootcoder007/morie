@@ -1,7 +1,6 @@
 """Tests for tmlnte.tmle_natural_total."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlnte import tmle_natural_total
 
 

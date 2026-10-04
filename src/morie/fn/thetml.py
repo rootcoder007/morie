@@ -121,8 +121,7 @@ def theta_mle(x, a=1.0, b=0.0, c=0.0):
             payload={
                 "theta": t,
                 "se": INF,
-                "loglik": 0.0 if all(cv[i] == 0.0 for i in range(n)) else parts(
-                    _UPPER if r == n else _LOWER)[0],
+                "loglik": 0.0 if all(cv[i] == 0.0 for i in range(n)) else parts(_UPPER if r == n else _LOWER)[0],
                 "score": float("nan"),
                 "information": 0.0,
                 "raw_score": r,

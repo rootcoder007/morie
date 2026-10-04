@@ -14,7 +14,7 @@ from morie.fn.information_theory_mackay28e5 import postgapx
 def test_postgapx_is_the_quadratic_form_and_its_gaussian_ratio():
     dw = [0.5, -0.25]
     a = [[4.0, 0.0], [0.0, 2.0]]
-    quad = 4.0 * 0.5 ** 2 + 2.0 * 0.25 ** 2
+    quad = 4.0 * 0.5**2 + 2.0 * 0.25**2
     res = postgapx(dw, a)
     assert res["quadform"] == pytest.approx(quad, rel=1e-12)
     assert res["logratio"] == pytest.approx(-0.5 * quad, rel=1e-12)

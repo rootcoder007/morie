@@ -9,5 +9,6 @@ def test_b105_basic():
 
 def test_b105_edge():
     import pytest
+
     with pytest.raises(ValueError, match="zero vector"):
         burkov_lm_ch1_cosine_similarity([0.0], [1.0])

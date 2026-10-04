@@ -74,11 +74,19 @@ def bound_no_unobserved_inv(y, D, X, X_inv):
         wgt = len(idx) / float(n)
         lo += wgt * (lo1 - hi0)
         hi += wgt * (hi1 - lo0)
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "n_strata": len(grp),
-        "n_cells": ncells, "refuted": refuted, "n": n,
-        "method": "Bound under no unobserved invariance"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "n_strata": len(grp),
+            "n_cells": ncells,
+            "refuted": refuted,
+            "n": n,
+            "method": "Bound under no unobserved invariance",
+        }
+    )
 
 
 def cheatsheet():

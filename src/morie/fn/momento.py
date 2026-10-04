@@ -65,10 +65,8 @@ import math
 
 from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["harmonise", "mask_patches", "masked_loss",
-           "reconstruction_curve", "task_mask"]
+__all__ = ["harmonise", "mask_patches", "masked_loss", "reconstruction_curve", "task_mask"]
 
 _EPS = 1e-12
 _TASKS = ("forecast", "impute", "classify", "anomaly")
@@ -95,25 +93,26 @@ def harmonise(series_list, patch_len, normalise=True):
         D = len(M[0])
         L = (len(M) // P) * P
         if L < P:
-            raise ValueError("momento: a series has %d points, fewer "
-                             "than one patch of %d" % (len(M), P))
+            raise ValueError("momento: a series has %d points, fewer than one patch of %d" % (len(M), P))
         for d in range(D):
             col = [M[t][d] for t in range(L)]
             if normalise:
                 m = sum(col) / L
-                sd = math.sqrt(sum((v - m) ** 2 for v in col)
-                               / max(L - 1, 1))
-                col = ([0.0] * L if sd <= _EPS
-                       else [(v - m) / sd for v in col])
+                sd = math.sqrt(sum((v - m) ** 2 for v in col) / max(L - 1, 1))
+                col = [0.0] * L if sd <= _EPS else [(v - m) / sd for v in col]
             else:
                 m, sd = 0.0, 1.0
-            out.append([col[i * P:(i + 1) * P] for i in range(L // P)])
+            out.append([col[i * P : (i + 1) * P] for i in range(L // P)])
             meta.append({"mean": m, "sd": sd, "n_patches": L // P})
     n = min(x["n_patches"] for x in meta)
-    return {"batch": [row[:n] for row in out], "meta": meta,
-            "n_series": len(out), "n_patches": n, "patch_len": P,
-            "note": "each channel is its own row, so datasets with "
-                    "different channel counts share a batch"}
+    return {
+        "batch": [row[:n] for row in out],
+        "meta": meta,
+        "n_series": len(out),
+        "n_patches": n,
+        "patch_len": P,
+        "note": "each channel is its own row, so datasets with different channel counts share a batch",
+    }
 
 
 def mask_patches(patches, mask_idx, fill=0.0):
@@ -126,19 +125,19 @@ def mask_patches(patches, mask_idx, fill=0.0):
     n = len(P)
     idx = sorted(set(int(i) for i in mask_idx))
     if any(not 0 <= i < n for i in idx):
-        raise ValueError("momento: a mask index is outside 0..%d"
-                         % (n - 1))
+        raise ValueError("momento: a mask index is outside 0..%d" % (n - 1))
     if not idx:
-        raise ValueError("momento: nothing was masked, so there is "
-                         "nothing to learn from")
+        raise ValueError("momento: nothing was masked, so there is nothing to learn from")
     if len(idx) == n:
-        raise ValueError("momento: every patch was masked, leaving no "
-                         "context to reconstruct from")
-    masked = [([float(fill)] * len(P[i]) if i in idx else list(P[i]))
-              for i in range(n)]
-    return {"masked": masked, "mask": [i in idx for i in range(n)],
-            "mask_idx": idx, "mask_rate": len(idx) / float(n),
-            "n_patches": n}
+        raise ValueError("momento: every patch was masked, leaving no context to reconstruct from")
+    masked = [([float(fill)] * len(P[i]) if i in idx else list(P[i])) for i in range(n)]
+    return {
+        "masked": masked,
+        "mask": [i in idx for i in range(n)],
+        "mask_idx": idx,
+        "mask_rate": len(idx) / float(n),
+        "n_patches": n,
+    }
 
 
 def masked_loss(truth, reconstruction, mask):
@@ -151,25 +150,25 @@ def masked_loss(truth, reconstruction, mask):
     T = [[float(v) for v in p] for p in truth]
     R = [[float(v) for v in p] for p in reconstruction]
     if len(T) != len(R) or len(T) != len(mask):
-        raise ValueError("momento: truth, reconstruction and mask "
-                         "must agree in length (%d, %d, %d)"
-                         % (len(T), len(R), len(mask)))
+        raise ValueError(
+            "momento: truth, reconstruction and mask must agree in length (%d, %d, %d)" % (len(T), len(R), len(mask))
+        )
     tot, cnt = 0.0, 0
     for i in range(len(T)):
         if not mask[i]:
             continue
         if len(T[i]) != len(R[i]):
-            raise ValueError("momento: patch %d differs in length "
-                             "between truth and reconstruction" % i)
+            raise ValueError("momento: patch %d differs in length between truth and reconstruction" % i)
         for j in range(len(T[i])):
             tot += (T[i][j] - R[i][j]) ** 2
             cnt += 1
     if cnt == 0:
-        raise ValueError("momento: no position was masked, so the "
-                         "loss is undefined")
-    return {"mse": tot / cnt, "n_scored": cnt,
-            "scored": "masked positions only -- scoring the visible "
-                      "ones would reward copying"}
+        raise ValueError("momento: no position was masked, so the loss is undefined")
+    return {
+        "mse": tot / cnt,
+        "n_scored": cnt,
+        "scored": "masked positions only -- scoring the visible ones would reward copying",
+    }
 
 
 def task_mask(n_patches, task="forecast", span=1, start=None):
@@ -182,18 +181,15 @@ def task_mask(n_patches, task="forecast", span=1, start=None):
     n = int(n_patches)
     s = int(span)
     if task not in _TASKS:
-        raise ValueError("momento: task must be one of %s, got %r"
-                         % (", ".join(_TASKS), task))
+        raise ValueError("momento: task must be one of %s, got %r" % (", ".join(_TASKS), task))
     if not 1 <= s < n:
-        raise ValueError("momento: the span must lie in 1..%d, got %d"
-                         % (n - 1, s))
+        raise ValueError("momento: the span must lie in 1..%d, got %d" % (n - 1, s))
     if task == "forecast":
         return list(range(n - s, n))
     if task == "impute":
         st = int(start) if start is not None else max(1, (n - s) // 2)
         if st + s > n:
-            raise ValueError("momento: the imputation gap runs past "
-                             "the end")
+            raise ValueError("momento: the imputation gap runs past the end")
         return list(range(st, st + s))
     return list(range(n - s, n))
 
@@ -211,29 +207,27 @@ def reconstruction_curve(patches, reconstructor, rates, seed=0):
     out = []
     for r in rates:
         m = max(1, min(n - 1, int(round(float(r) * n))))
-        idx = sorted(range(n),
-                     key=lambda _i: float(rng.uniform()))[:m]
+        idx = sorted(range(n), key=lambda _i: float(rng.uniform()))[:m]
         mk = mask_patches(P, idx)
         rec = reconstructor(mk["masked"], mk["mask"])
         L = masked_loss(P, rec, mk["mask"])
-        out.append({"rate": mk["mask_rate"], "mse": L["mse"],
-                    "n_masked": m})
-    return {"curve": out, "n_patches": n,
-            "rates": [o["rate"] for o in out],
-            "mse": [o["mse"] for o in out]}
+        out.append({"rate": mk["mask_rate"], "mse": L["mse"], "n_masked": m})
+    return {"curve": out, "n_patches": n, "rates": [o["rate"] for o in out], "mse": [o["mse"] for o in out]}
 
 
 def cheatsheet():
-    return ("momento: masked time-series pretraining. Mask patches "
-            "with ZEROS and reconstruct; the loss counts the MASKED "
-            "positions only, since scoring visible ones rewards "
-            "copying. The hard part is multi-dataset pretraining: "
-            "series differ in resolution, channel count, length and "
-            "amplitude, so harmonise per-series and keep channels "
-            "independent. Mask rate is a real knob -- too low is "
-            "interpolation, too high leaves no context. Task changes "
-            "only WHERE the mask goes: tail for forecasting, interior "
-            "for imputation.")
+    return (
+        "momento: masked time-series pretraining. Mask patches "
+        "with ZEROS and reconstruct; the loss counts the MASKED "
+        "positions only, since scoring visible ones rewards "
+        "copying. The hard part is multi-dataset pretraining: "
+        "series differ in resolution, channel count, length and "
+        "amplitude, so harmonise per-series and keep channels "
+        "independent. Mask rate is a real knob -- too low is "
+        "interpolation, too high leaves no context. Task changes "
+        "only WHERE the mask goes: tail for forecasting, interior "
+        "for imputation."
+    )
 
 
 # compact alias per ledger/NAMING.md

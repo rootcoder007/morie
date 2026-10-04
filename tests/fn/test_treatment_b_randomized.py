@@ -1,7 +1,5 @@
 """Tests for treatment_b_randomized.treatment_b_randomized."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.treatment_b_randomized import treatment_b_randomized
 
 

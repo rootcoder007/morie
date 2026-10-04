@@ -1,7 +1,6 @@
 """Tests for morie.fn.netcl — Node closeness centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netcl import network_closeness
 
 

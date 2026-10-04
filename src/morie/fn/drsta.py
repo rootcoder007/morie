@@ -80,8 +80,7 @@ def dr_staggered_design(y, D, unit, time, cohort, X=None):
         if x not in units:
             units.append(x)
     per = sorted(set(t))
-    cohorts = sorted(set(gof[z] for z in units
-                         if gof[z] > 0.0 and gof[z] != float("inf")))
+    cohorts = sorted(set(gof[z] for z in units if gof[z] > 0.0 and gof[z] != float("inf")))
     if not cohorts:
         raise ValueError("no treated cohort in the panel")
     never = [z for z in units if not (gof[z] > 0.0 and gof[z] != float("inf"))]

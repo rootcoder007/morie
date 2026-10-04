@@ -1,8 +1,8 @@
 """Tests for morie.fn.auc_ -- AUC score."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.auc_ import auc_score
 
 

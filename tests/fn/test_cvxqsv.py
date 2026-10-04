@@ -1,7 +1,6 @@
 """Tests for cvxqsv.boyd_qcqp_relaxation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxqsv import boyd_qcqp_relaxation
 
 
@@ -23,8 +22,7 @@ def test_cvxqsv_basic():
     assert isinstance(result, dict)
 
     # Every documented return key must be present.
-    for key in ("X", "x", "lower_bound", "rank", "eigenvalues",
-                "tight", "residual", "gap_bound", "converged"):
+    for key in ("X", "x", "lower_bound", "rank", "eigenvalues", "tight", "residual", "gap_bound", "converged"):
         assert key in result
 
     # The convex case: relaxation is tight, rank is one, x is the
@@ -61,8 +59,7 @@ def test_cvxqsv_edge():
     result = boyd_qcqp_relaxation(J, q0, P=P, q=q, r=r)
 
     assert isinstance(result, dict)
-    for key in ("X", "x", "lower_bound", "rank", "eigenvalues",
-                "tight", "residual", "gap_bound", "converged"):
+    for key in ("X", "x", "lower_bound", "rank", "eigenvalues", "tight", "residual", "gap_bound", "converged"):
         assert key in result
 
     # Lower bound is -3/2, strictly below the true minimum -1.

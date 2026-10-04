@@ -1,7 +1,5 @@
 """Tests for iid_mean_variance.iid_mean_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.iid_mean_variance import (
     iid_mean_variance,
 )

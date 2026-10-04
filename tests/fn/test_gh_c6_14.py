@@ -1,7 +1,6 @@
 """Tests for gh_c6_14.ghosal_pred_consist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_14 import ghosal_pred_consist
 
 
@@ -50,8 +49,7 @@ def test_gh_c6_14_path_arithmetic():
     expected_path = []
     for i in range(n):
         pred = (1.0 + S) / (2.0 + i)
-        tot_kl += theta0 * math.log(theta0 / pred) \
-            + (1 - theta0) * math.log((1 - theta0) / (1 - pred))
+        tot_kl += theta0 * math.log(theta0 / pred) + (1 - theta0) * math.log((1 - theta0) / (1 - pred))
         if (i + 1) % block == 0:
             expected_path.append(tot_kl / (i + 1))
         u = float(rng.uniform(0, 1))

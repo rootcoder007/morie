@@ -1,4 +1,5 @@
 """Dissimilarity-based compound selection: MaxMin and MaxSum."""
+
 import importlib
 
 import pytest
@@ -12,16 +13,14 @@ C = set(range(200, 220))
 M = set(range(0, 18)) | set(range(100, 118)) | set(range(200, 218))
 X = C - {219}
 POOL = [A, B, C, M, X]
-BIG = POOL + [set(range(300, 320)), set(range(400, 420)),
-              set(range(500, 520)), set(range(0, 19)),
-              set(range(100, 118))]
+BIG = POOL + [set(range(300, 320)), set(range(400, 420)), set(range(500, 520)), set(range(0, 19)), set(range(100, 118))]
 
 
 def test_the_fixture_separates_the_objectives():
     assert 1.0 - S.tanimoto(C, X) == pytest.approx(0.05)
     d = 1.0 - S.tanimoto(A, M)
     assert d == pytest.approx(1.0 - 18.0 / 56.0)
-    assert 2.0 + 0.05 > 3.0 * d
+    assert 3.0 * d < 2.0 + 0.05
 
 
 def test_maxmin_takes_the_compromise_compound():
@@ -48,8 +47,7 @@ def test_the_worst_distance_never_improves_as_k_grows():
 
 
 def test_selecting_everything_returns_everything():
-    assert sorted(N.maxmin_selection(BIG, len(BIG))) \
-        == list(range(len(BIG)))
+    assert sorted(N.maxmin_selection(BIG, len(BIG))) == list(range(len(BIG)))
 
 
 @pytest.mark.parametrize("k", list(range(1, 9)))
@@ -63,8 +61,7 @@ def test_the_seed_is_honoured_and_reported():
 
 
 def test_selection_is_deterministic():
-    assert N.maxmin_selection(BIG, 5, seed=0) \
-        == N.maxmin_selection(BIG, 5, seed=0)
+    assert N.maxmin_selection(BIG, 5, seed=0) == N.maxmin_selection(BIG, 5, seed=0)
 
 
 def test_the_distance_matrix_is_a_distance_matrix():
@@ -81,15 +78,18 @@ def test_the_default_seed_is_the_most_remote_compound():
     assert N.maxmin_selection(BIG, 2)[0] == tot.index(max(tot))
 
 
-@pytest.mark.parametrize("call", [
-    lambda: N.distance_matrix([A]),
-    lambda: N.maxmin_selection(POOL, 0),
-    lambda: N.maxmin_selection(POOL, len(POOL) + 1),
-    lambda: N.maxmin_selection(POOL, 3, seed=999),
-    lambda: N.diversity(POOL, [1]),
-    lambda: N.diversity(POOL, [1, 1]),
-    lambda: N.maxmin_diversity(POOL, 3, "maxavg"),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: N.distance_matrix([A]),
+        lambda: N.maxmin_selection(POOL, 0),
+        lambda: N.maxmin_selection(POOL, len(POOL) + 1),
+        lambda: N.maxmin_selection(POOL, 3, seed=999),
+        lambda: N.diversity(POOL, [1]),
+        lambda: N.diversity(POOL, [1, 1]),
+        lambda: N.maxmin_diversity(POOL, 3, "maxavg"),
+    ],
+)
 def test_bad_input_is_refused(call):
     with pytest.raises(ValueError):
         call()

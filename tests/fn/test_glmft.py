@@ -1,8 +1,8 @@
 """Tests for glmft — Generalized linear model fitting."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import RegressionResult
 from morie.fn.glmft import glm_fit
 

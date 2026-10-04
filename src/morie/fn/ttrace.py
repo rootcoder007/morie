@@ -75,12 +75,15 @@ this model uses.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["negbinom_offspring", "serial_interval_draw",
-           "simulate_outbreak", "probability_of_control",
-           "effective_reproduction_number"]
+__all__ = [
+    "negbinom_offspring",
+    "serial_interval_draw",
+    "simulate_outbreak",
+    "probability_of_control",
+    "effective_reproduction_number",
+]
 
 _EPS = 1e-12
 
@@ -97,11 +100,9 @@ def negbinom_offspring(R0, dispersion, rng):
     r0 = float(R0)
     kk = float(dispersion)
     if r0 < 0.0:
-        raise ValueError("ttrace: R0 must be non-negative, got %r"
-                         % (R0,))
+        raise ValueError("ttrace: R0 must be non-negative, got %r" % (R0,))
     if kk <= 0.0:
-        raise ValueError("ttrace: the dispersion k must be positive, "
-                         "got %r" % (dispersion,))
+        raise ValueError("ttrace: the dispersion k must be positive, got %r" % (dispersion,))
     if r0 <= _EPS:
         return 0
     if kk > 1e6:
@@ -135,8 +136,7 @@ def _poisson_draw(lam, rng):
     if lm <= 0.0:
         return 0
     if lm > 500.0:
-        return max(0, int(round(lm + math.sqrt(lm)
-                                * float(rng.normal()))))
+        return max(0, int(round(lm + math.sqrt(lm) * float(rng.normal()))))
     L = math.exp(-lm)
     n, p = 0, 1.0
     while True:
@@ -157,19 +157,28 @@ def serial_interval_draw(mean, sd, rng, allow_presymptomatic=True):
     """
     m, s = float(mean), float(sd)
     if s <= 0.0:
-        raise ValueError("ttrace: the serial-interval sd must be "
-                         "positive")
+        raise ValueError("ttrace: the serial-interval sd must be positive")
     v = m + s * float(rng.normal())
     if not allow_presymptomatic:
         return max(v, 0.0)
     return v
 
 
-def simulate_outbreak(R0=2.5, dispersion=0.16, n_initial=20,
-                      trace_prob=0.8, delay_mean=3.83, delay_sd=2.4,
-                      si_mean=4.7, si_sd=2.9, subclinical=0.0,
-                      max_cases=5000, max_weeks=12, seed=0,
-                      allow_presymptomatic=True):
+def simulate_outbreak(
+    R0=2.5,
+    dispersion=0.16,
+    n_initial=20,
+    trace_prob=0.8,
+    delay_mean=3.83,
+    delay_sd=2.4,
+    si_mean=4.7,
+    si_sd=2.9,
+    subclinical=0.0,
+    max_cases=5000,
+    max_weeks=12,
+    seed=0,
+    allow_presymptomatic=True,
+):
     r"""One realisation of the branching process.
 
     Returns the weekly incidence, the total, and whether the outbreak
@@ -178,11 +187,9 @@ def simulate_outbreak(R0=2.5, dispersion=0.16, n_initial=20,
     """
     rng = np.random.default_rng(seed)
     if not 0.0 <= float(trace_prob) <= 1.0:
-        raise ValueError("ttrace: trace_prob must lie in [0, 1], got "
-                         "%r" % (trace_prob,))
+        raise ValueError("ttrace: trace_prob must lie in [0, 1], got %r" % (trace_prob,))
     if not 0.0 <= float(subclinical) <= 1.0:
-        raise ValueError("ttrace: subclinical must lie in [0, 1], got "
-                         "%r" % (subclinical,))
+        raise ValueError("ttrace: subclinical must lie in [0, 1], got %r" % (subclinical,))
     if int(n_initial) < 1:
         raise ValueError("ttrace: need at least one initial case")
     horizon = float(max_weeks) * 7.0
@@ -191,9 +198,7 @@ def simulate_outbreak(R0=2.5, dispersion=0.16, n_initial=20,
     active = []
     for _ in range(int(n_initial)):
         sub = float(rng.uniform()) < float(subclinical)
-        iso = (float("inf") if sub
-               else max(0.0, float(delay_mean)
-                        + float(delay_sd) * float(rng.normal())))
+        iso = float("inf") if sub else max(0.0, float(delay_mean) + float(delay_sd) * float(rng.normal()))
         active.append((0.0, iso, sub))
     total = int(n_initial)
     weekly = [0] * (int(max_weeks) + 1)
@@ -205,28 +210,23 @@ def simulate_outbreak(R0=2.5, dispersion=0.16, n_initial=20,
         for t_inf, t_iso, _sub in active:
             n_off = negbinom_offspring(R0, dispersion, rng)
             for _ in range(n_off):
-                si = serial_interval_draw(
-                    si_mean, si_sd, rng,
-                    allow_presymptomatic=allow_presymptomatic)
+                si = serial_interval_draw(si_mean, si_sd, rng, allow_presymptomatic=allow_presymptomatic)
                 t_new = t_inf + si
                 if t_new < t_inf:
                     continue
                 if t_new >= t_iso:
-                    continue          # infector already isolated
+                    continue  # infector already isolated
                 if t_new > horizon:
                     continue
                 sub = float(rng.uniform()) < float(subclinical)
-                traced = (not sub
-                          and float(rng.uniform()) < float(trace_prob))
+                traced = not sub and float(rng.uniform()) < float(trace_prob)
                 if sub:
                     iso_new = float("inf")
                 elif traced:
                     # quarantined when the infector was isolated
                     iso_new = max(t_new, t_iso)
                 else:
-                    iso_new = t_new + max(
-                        0.0, float(delay_mean)
-                        + float(delay_sd) * float(rng.normal()))
+                    iso_new = t_new + max(0.0, float(delay_mean) + float(delay_sd) * float(rng.normal()))
                 nxt.append((t_new, iso_new, sub))
                 total += 1
                 wk = int(t_new // 7.0)
@@ -242,9 +242,7 @@ def simulate_outbreak(R0=2.5, dispersion=0.16, n_initial=20,
         active = nxt
 
     controlled = (not hit_cap) and (not active)
-    return {"controlled": controlled, "total_cases": total,
-            "weekly": weekly, "hit_cap": hit_cap,
-            "extinct": not active}
+    return {"controlled": controlled, "total_cases": total, "weekly": weekly, "hit_cap": hit_cap, "extinct": not active}
 
 
 def probability_of_control(reps=200, seed=0, **kw):
@@ -262,24 +260,25 @@ def probability_of_control(reps=200, seed=0, **kw):
     p = ok / float(reps)
     se = math.sqrt(max(p * (1.0 - p), 0.0) / reps)
     sizes.sort()
-    return RichResult(payload={
-        "estimate": p, "probability_of_control": p, "se": se,
-        "reps": int(reps),
-        "median_size": sizes[len(sizes) // 2],
-        "max_size": sizes[-1],
-        "max_cases": kw.get("max_cases", 5000),
-        "max_weeks": kw.get("max_weeks", 12),
-        "definition": "extinct within max_weeks without exceeding "
-                      "max_cases; both change the answer",
-        "method": "branching-process simulation, Hellewell et al. "
-                  "(2020) Methods",
-    })
+    return RichResult(
+        payload={
+            "estimate": p,
+            "probability_of_control": p,
+            "se": se,
+            "reps": int(reps),
+            "median_size": sizes[len(sizes) // 2],
+            "max_size": sizes[-1],
+            "max_cases": kw.get("max_cases", 5000),
+            "max_weeks": kw.get("max_weeks", 12),
+            "definition": "extinct within max_weeks without exceeding max_cases; both change the answer",
+            "method": "branching-process simulation, Hellewell et al. (2020) Methods",
+        }
+    )
 
 
-def effective_reproduction_number(R0, si_mean, si_sd, delay_mean,
-                                  delay_sd, trace_prob,
-                                  subclinical=0.0, draws=20000,
-                                  seed=0):
+def effective_reproduction_number(
+    R0, si_mean, si_sd, delay_mean, delay_sd, trace_prob, subclinical=0.0, draws=20000, seed=0
+):
     r"""The transmission that survives isolation, measured.
 
     :math:`R_{\text{eff}} = R_0 \cdot P(\text{serial interval} <
@@ -292,34 +291,37 @@ def effective_reproduction_number(R0, si_mean, si_sd, delay_mean,
     hit = 0
     for _ in range(int(draws)):
         if float(rng.uniform()) < float(subclinical):
-            hit += 1                      # never isolated
+            hit += 1  # never isolated
             continue
         traced = float(rng.uniform()) < float(trace_prob)
-        t_iso = (0.0 if traced
-                 else max(0.0, float(delay_mean)
-                          + float(delay_sd) * float(rng.normal())))
+        t_iso = 0.0 if traced else max(0.0, float(delay_mean) + float(delay_sd) * float(rng.normal()))
         si = float(si_mean) + float(si_sd) * float(rng.normal())
         if si < t_iso:
             hit += 1
     frac = hit / float(draws)
-    return {"R_eff": float(R0) * frac, "R0": float(R0),
-            "fraction_before_isolation": frac,
-            "controlled_in_expectation": float(R0) * frac < 1.0,
-            "note": "a traced contact is quarantined when its infector "
-                    "is isolated, so its own transmission window is "
-                    "measured from that point"}
+    return {
+        "R_eff": float(R0) * frac,
+        "R0": float(R0),
+        "fraction_before_isolation": frac,
+        "controlled_in_expectation": float(R0) * frac < 1.0,
+        "note": "a traced contact is quarantined when its infector "
+        "is isolated, so its own transmission window is "
+        "measured from that point",
+    }
 
 
 def cheatsheet():
-    return ("ttrace: branching process. Offspring ~ NegBinom(mean R0, "
-            "dispersion k), variance R0(1 + R0/k) -- overdispersion "
-            "matters because small k means most chains die alone. A "
-            "secondary case exists ONLY if the infector was not yet "
-            "isolated. So the lever is the fraction of the serial "
-            "interval falling before isolation, which is why "
-            "PRESYMPTOMATIC transmission decides feasibility. "
-            "Subclinical cases are never isolated at all -- a hard "
-            "ceiling no amount of tracing clears.")
+    return (
+        "ttrace: branching process. Offspring ~ NegBinom(mean R0, "
+        "dispersion k), variance R0(1 + R0/k) -- overdispersion "
+        "matters because small k means most chains die alone. A "
+        "secondary case exists ONLY if the infector was not yet "
+        "isolated. So the lever is the fraction of the serial "
+        "interval falling before isolation, which is why "
+        "PRESYMPTOMATIC transmission decides feasibility. "
+        "Subclinical cases are never isolated at all -- a hard "
+        "ceiling no amount of tracing clears."
+    )
 
 
 # compact alias per ledger/NAMING.md

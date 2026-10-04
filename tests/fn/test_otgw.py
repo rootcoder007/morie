@@ -1,7 +1,6 @@
 """Tests for otgw.ot_gromov_wasserstein."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otgw import ot_gromov_wasserstein
 
 

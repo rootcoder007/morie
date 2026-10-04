@@ -1,7 +1,6 @@
 """Test cepstral_distance (cepds)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cepds import cepds, cepstral_distance
 

@@ -55,7 +55,7 @@ def hrz_series_quantile(x, y, tau=0.5, K=5, kind="poly", grid=None):
     if x.size != y.size:
         raise ValueError("x and y must have the same length.")
     K = int(K)
-    if K < 1 or K > x.size:
+    if K < 1 or x.size < K:
         raise ValueError(f"K must lie in 1..{x.size}, got {K}.")
     P = sieve_basis(x, K=K, kind=kind)
 
@@ -64,18 +64,23 @@ def hrz_series_quantile(x, y, tau=0.5, K=5, kind="poly", grid=None):
         return float(np.sum(r * (tau - (r < 0))))
 
     a0 = np.linalg.lstsq(P, y, rcond=None)[0]
-    res = optimize.minimize(loss, a0, method="Powell",
-                            options={"maxiter": 20000, "xtol": 1e-8})
+    res = optimize.minimize(loss, a0, method="Powell", options={"maxiter": 20000, "xtol": 1e-8})
     a = res.x
     g = x if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
-    Pg = sieve_basis(np.r_[x, g], K=K, kind=kind)[x.size:]
-    return RichResult(payload={"grid": g, "quantile": Pg @ a,
-                               "coefficients": a, "tau": float(tau), "K": K,
-                               "check_loss": float(res.fun),
-                               "crossing_warning":
-                                   "separate tau fits may cross; not monotone by construction",
-                               "converged": bool(res.success),
-                               "method": "Series check-loss fit; convex but non-differentiable"})
+    Pg = sieve_basis(np.r_[x, g], K=K, kind=kind)[x.size :]
+    return RichResult(
+        payload={
+            "grid": g,
+            "quantile": Pg @ a,
+            "coefficients": a,
+            "tau": float(tau),
+            "K": K,
+            "check_loss": float(res.fun),
+            "crossing_warning": "separate tau fits may cross; not monotone by construction",
+            "converged": bool(res.success),
+            "method": "Series check-loss fit; convex but non-differentiable",
+        }
+    )
 
 
 def cheatsheet():

@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,14 +24,18 @@ def mvsml_categorical_count_eq_8_6(C, K, y, lam=1.0, sigma2_e=1.0):
     positive semi-definite) kernel.  sigma2_beta = 1/lambda reads as
     the variation due to marked additive genomic variation.
     Keys: estimate."""
-    f = _gp.rkhs_mixed_equations(C, K, y, lam=lam,
-                                 sigma2_e=sigma2_e, form="direct")
-    res = RichResult(payload={"estimate": f["theta"][0],
-                              "theta": f["theta"],
-                              "beta": f["beta"], "u": f["u"],
-                              "fitted": f["fitted"],
-                              "sigma2_beta": f["sigma2_beta"],
-                              "method": "RKHS estimating equations (MVSML 2022 eq. 8.6)"})
+    f = _gp.rkhs_mixed_equations(C, K, y, lam=lam, sigma2_e=sigma2_e, form="direct")
+    res = RichResult(
+        payload={
+            "estimate": f["theta"][0],
+            "theta": f["theta"],
+            "beta": f["beta"],
+            "u": f["u"],
+            "fitted": f["fitted"],
+            "sigma2_beta": f["sigma2_beta"],
+            "method": "RKHS estimating equations (MVSML 2022 eq. 8.6)",
+        }
+    )
     return with_describe_pointer(res, "msm135")
 
 

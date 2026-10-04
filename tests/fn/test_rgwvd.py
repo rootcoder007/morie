@@ -1,7 +1,6 @@
 """Tests for rgwvd.rangayyan_wigner_ville."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_wigner_ville
 
 
@@ -12,6 +11,8 @@ def test_rgwvd_basic():
     result = rangayyan_wigner_ville(x, fs)
     assert isinstance(result, dict)
     assert "tfd" in result
+
+
 def test_rgwvd_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

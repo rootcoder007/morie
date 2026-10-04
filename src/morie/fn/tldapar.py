@@ -60,8 +60,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["split_sample", "data_adaptive_parameter", "cv_tmle",
-           "variable_importance", "naive_reuse"]
+__all__ = ["split_sample", "data_adaptive_parameter", "cv_tmle", "variable_importance", "naive_reuse"]
 
 _EPS = 1e-12
 
@@ -70,21 +69,17 @@ def split_sample(n, V=10, seed=0):
     r"""Training splits define the parameter; estimation splits
     estimate it."""
     if int(V) < 2 or int(V) > int(n):
-        raise ValueError("tldapar: V must lie in 2..%d, got %d"
-                         % (n, V))
+        raise ValueError("tldapar: V must lie in 2..%d, got %d" % (n, V))
     rng = np.random.default_rng(seed)
     idx = list(range(int(n)))
     for i in range(len(idx) - 1, 0, -1):
         j = int(float(rng.uniform()) * (i + 1)) % (i + 1)
         idx[i], idx[j] = idx[j], idx[i]
-    est = [sorted(idx[v::int(V)]) for v in range(int(V))]
-    return {"estimation": est,
-            "training": [sorted(set(range(int(n))) - set(e))
-                         for e in est], "V": int(V)}
+    est = [sorted(idx[v :: int(V)]) for v in range(int(V))]
+    return {"estimation": est, "training": [sorted(set(range(int(n))) - set(e)) for e in est], "V": int(V)}
 
 
-def data_adaptive_parameter(define_on_training, estimate_on_holdout,
-                            n, V=10, seed=0):
+def data_adaptive_parameter(define_on_training, estimate_on_holdout, n, V=10, seed=0):
     r"""Define on the training split, estimate on the held-out one.
 
     ``define_on_training(train_idx)`` returns the fold-specific
@@ -102,19 +97,22 @@ def data_adaptive_parameter(define_on_training, estimate_on_holdout,
             ics[i] = float(r["ic"][a])
     psi = sum(ests) / len(ests)
     m = sum(ics) / len(ics)
-    se = math.sqrt(sum((v - m) ** 2 for v in ics)
-                   / (len(ics) - 1) / len(ics))
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "fold_estimates": ests,
-        "fold_parameters": params, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "V": sp["V"],
-        "method": "data-adaptive target parameter with CV-TMLE; van "
-                  "der Laan & Rose (2018) Chap. 9",
-        "note": "the parameter is FIXED conditional on the training "
-                "split, so the reported quantity is the one that was "
-                "estimated",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in ics) / (len(ics) - 1) / len(ics))
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "fold_estimates": ests,
+            "fold_parameters": params,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "V": sp["V"],
+            "method": "data-adaptive target parameter with CV-TMLE; van der Laan & Rose (2018) Chap. 9",
+            "note": "the parameter is FIXED conditional on the training "
+            "split, so the reported quantity is the one that was "
+            "estimated",
+        }
+    )
 
 
 def cv_tmle(fold_estimates, fold_ics, n):
@@ -128,17 +126,18 @@ def cv_tmle(fold_estimates, fold_ics, n):
     for f in fold_ics:
         ic.extend(float(v) for v in k.vec(f))
     if len(ic) != int(n):
-        raise ValueError("tldapar: %d influence-curve values for %d "
-                         "observations" % (len(ic), n))
+        raise ValueError("tldapar: %d influence-curve values for %d observations" % (len(ic), n))
     m = sum(ic) / len(ic)
-    se = math.sqrt(sum((v - m) ** 2 for v in ic)
-                   / (len(ic) - 1) / len(ic))
-    return {"psi": psi, "se": se,
-            "ci": (psi - 1.96 * se, psi + 1.96 * se),
-            "mean_ic": m,
-            "note": "each fold's fit is independent of the data it is "
-                    "evaluated on, which is what removes the Donsker "
-                    "condition"}
+    se = math.sqrt(sum((v - m) ** 2 for v in ic) / (len(ic) - 1) / len(ic))
+    return {
+        "psi": psi,
+        "se": se,
+        "ci": (psi - 1.96 * se, psi + 1.96 * se),
+        "mean_ic": m,
+        "note": "each fold's fit is independent of the data it is "
+        "evaluated on, which is what removes the Donsker "
+        "condition",
+    }
 
 
 def variable_importance(X, Y, screen, effect, V=5, seed=0):
@@ -165,16 +164,16 @@ def variable_importance(X, Y, screen, effect, V=5, seed=0):
         psi = sum(d["est"]) / len(d["est"])
         ic = d["ic"]
         m = sum(ic) / len(ic)
-        se = math.sqrt(sum((q - m) ** 2 for q in ic)
-                       / max(len(ic) - 1, 1) / len(ic))
-        out[j] = {"psi": psi, "se": se,
-                  "ci": (psi - 1.96 * se, psi + 1.96 * se),
-                  "folds_selected": len(d["est"])}
-    return RichResult(payload={
-        "estimate": out, "importance": out, "V": sp["V"],
-        "method": "CV-TMLE variable importance; van der Laan & Rose "
-                  "(2018) Chap. 9, as in varImpact",
-    })
+        se = math.sqrt(sum((q - m) ** 2 for q in ic) / max(len(ic) - 1, 1) / len(ic))
+        out[j] = {"psi": psi, "se": se, "ci": (psi - 1.96 * se, psi + 1.96 * se), "folds_selected": len(d["est"])}
+    return RichResult(
+        payload={
+            "estimate": out,
+            "importance": out,
+            "V": sp["V"],
+            "method": "CV-TMLE variable importance; van der Laan & Rose (2018) Chap. 9, as in varImpact",
+        }
+    )
 
 
 def naive_reuse(define_and_estimate, n, seed=0):
@@ -184,23 +183,27 @@ def naive_reuse(define_and_estimate, n, seed=0):
     the anchor can show the inflation rather than assert it.
     """
     r = define_and_estimate(list(range(int(n))))
-    return {"estimate": float(r["estimate"]),
-            "warning": "the parameter was selected and estimated on "
-                       "the same sample; the reported inference is "
-                       "not valid for the selected parameter"}
+    return {
+        "estimate": float(r["estimate"]),
+        "warning": "the parameter was selected and estimated on "
+        "the same sample; the reported inference is "
+        "not valid for the selected parameter",
+    }
 
 
 def cheatsheet():
-    return ("tldapar: when the QUESTION depends on the data -- which "
-            "levels to contrast, which variable to report -- defining "
-            "and estimating on the same sample invalidates the "
-            "interval, and no estimator fixes that. Split: DEFINE the "
-            "parameter on the training split, ESTIMATE it on the "
-            "held-out one, so conditional on training it is fixed. "
-            "Then CV-TMLE averages the v-specific TMLEs and pools the "
-            "influence curve -- which also removes the Donsker "
-            "condition, since each fit is independent of the data it "
-            "is scored on.")
+    return (
+        "tldapar: when the QUESTION depends on the data -- which "
+        "levels to contrast, which variable to report -- defining "
+        "and estimating on the same sample invalidates the "
+        "interval, and no estimator fixes that. Split: DEFINE the "
+        "parameter on the training split, ESTIMATE it on the "
+        "held-out one, so conditional on training it is fixed. "
+        "Then CV-TMLE averages the v-specific TMLEs and pools the "
+        "influence curve -- which also removes the Donsker "
+        "condition, since each fit is independent of the data it "
+        "is scored on."
+    )
 
 
 # compact alias per ledger/NAMING.md

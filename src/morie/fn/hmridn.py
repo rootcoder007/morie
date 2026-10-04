@@ -83,9 +83,7 @@ def geron_ridge_normal(X, y, alpha, intercept_index=0):
 
     G = A.T @ A + a * np.diag(d)
     if np.linalg.matrix_rank(G) < p:
-        raise ValueError(
-            "geron_ridge_normal: X^T X + alpha A is singular; raise alpha or drop a duplicated column"
-        )
+        raise ValueError("geron_ridge_normal: X^T X + alpha A is singular; raise alpha or drop a duplicated column")
     theta = np.linalg.solve(G, A.T @ yv)
     resid = A @ theta - yv
     # Effective degrees of freedom, trace of the hat matrix X (X^T X + alpha A)^-1 X^T.

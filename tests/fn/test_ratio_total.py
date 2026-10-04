@@ -1,7 +1,5 @@
 """Tests for ratio_total.ratio_total."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ratio_total import (
     ratio_total,
 )

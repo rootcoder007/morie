@@ -1,12 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian online changepoint detection (re-export)."""
 
-import math
-
-from . import _tail1core as C
-from ._richresult import RichResult
-
-__all__ = ['bayesocp', 'bayesian_online_changepoint']
+__all__ = ["bayesocp", "bayesian_online_changepoint"]
 
 
 def bayesocp(y, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
@@ -46,8 +41,8 @@ def bayesocp(y, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
     statistics.  Verified against the paper.
     """
     from .bocpd import bocpd as _bocpd
-    return _bocpd(y, hazard=hazard, mu0=mu0, kappa0=kappa0,
-                  alpha0=alpha0, beta0=beta0)
+
+    return _bocpd(y, hazard=hazard, mu0=mu0, kappa0=kappa0, alpha0=alpha0, beta0=beta0)
 
 
 bayesian_online_changepoint = bayesocp

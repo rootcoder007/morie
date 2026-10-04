@@ -19,8 +19,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["msm_accelerated_failure"]
 
 
-def msm_accelerated_failure(time, event, treatment_history, covariate_history=None,
-         weights=None):
+def msm_accelerated_failure(time, event, treatment_history, covariate_history=None, weights=None):
     """log T(a-bar) = beta_0 + beta_a a-bar + eps, the structural
     accelerated failure time model (Robins and Tsiatis 1991).  Fitted
     on the log scale by weighted least squares over the uncensored
@@ -32,16 +31,17 @@ def msm_accelerated_failure(time, event, treatment_history, covariate_history=No
     idx = [i for i in range(len(ts)) if ev[i] > 0 and ts[i] > 0]
     if not idx:
         raise ValueError("need at least one uncensored positive time")
-    w = None if weights is None else [
-        _gp._flat(weights)[i] for i in idx]
-    f = _gp.msm_weighted_glm([math.log(ts[i]) for i in idx],
-                             [d["X"][i] for i in idx],
-                             weights=w, family="gaussian")
-    res = RichResult(payload={"estimate": f["beta"][1],
-                              "beta": f["beta"],
-                              "time_ratio": math.exp(f["beta"][1]),
-                              "n_uncensored": len(idx),
-                              "method": "structural AFT model (Robins-Tsiatis 1991)"})
+    w = None if weights is None else [_gp._flat(weights)[i] for i in idx]
+    f = _gp.msm_weighted_glm([math.log(ts[i]) for i in idx], [d["X"][i] for i in idx], weights=w, family="gaussian")
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][1],
+            "beta": f["beta"],
+            "time_ratio": math.exp(f["beta"][1]),
+            "n_uncensored": len(idx),
+            "method": "structural AFT model (Robins-Tsiatis 1991)",
+        }
+    )
     return with_describe_pointer(res, "msmaft")
 
 

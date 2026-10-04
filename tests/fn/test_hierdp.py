@@ -33,14 +33,10 @@ def test_hierdp_edge():
         hierarchical_dp_density([rng.normal(0, 1, 1), rng.normal(0, 1, 10)])
     # Non-positive alpha is invalid
     with pytest.raises(ValueError):
-        hierarchical_dp_density(
-            [rng.normal(0, 1, 10), rng.normal(0, 1, 10)], alpha=0.0
-        )
+        hierarchical_dp_density([rng.normal(0, 1, 10), rng.normal(0, 1, 10)], alpha=0.0)
     # Non-positive gamma is invalid
     with pytest.raises(ValueError):
-        hierarchical_dp_density(
-            [rng.normal(0, 1, 10), rng.normal(0, 1, 10)], gamma=-1.0
-        )
+        hierarchical_dp_density([rng.normal(0, 1, 10), rng.normal(0, 1, 10)], gamma=-1.0)
 
 
 # --- appended: the module's own worked example as a gate -----------
@@ -55,7 +51,7 @@ import morie.fn.hierdp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

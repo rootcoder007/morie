@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.alphas import alphazero_self_play
 
 
@@ -24,8 +22,13 @@ def test_alphas_basic():
         return 1.0
 
     result = alphazero_self_play(
-        state, policy, mcts_iter=4, step=step,
-        terminal=terminal, outcome=outcome, max_moves=20,
+        state,
+        policy,
+        mcts_iter=4,
+        step=step,
+        terminal=terminal,
+        outcome=outcome,
+        max_moves=20,
         temp_threshold=10,
     )
 
@@ -61,8 +64,12 @@ def test_alphas_edge():
         return 0.5
 
     result = alphazero_self_play(
-        state, policy, mcts_iter=2, terminal=terminal,
-        outcome=outcome, max_moves=10,
+        state,
+        policy,
+        mcts_iter=2,
+        terminal=terminal,
+        outcome=outcome,
+        max_moves=10,
     )
 
     assert isinstance(result, dict)

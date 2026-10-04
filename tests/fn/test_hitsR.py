@@ -1,7 +1,6 @@
 """Tests for hitsR.hits_at_k."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hitsR import hits_at_k
 
 

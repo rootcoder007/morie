@@ -10,8 +10,9 @@ from morie.fn.sxrhrt import sex_specific_h2
 def _data(n=16, m=6):
     """A GRM from standardised pseudo-random markers, and a phenotype with
     a sex mean difference."""
-    G = [[float(int(((math.sin(12.9898 * (i * m + j) + 7.1) * 43758.5453) % 1) * 3)) for j in range(m)]
-         for i in range(n)]
+    G = [
+        [float(int(((math.sin(12.9898 * (i * m + j) + 7.1) * 43758.5453) % 1) * 3)) for j in range(m)] for i in range(n)
+    ]
     cols = list(zip(*G))
     Z = []
     for c in cols:
@@ -31,8 +32,14 @@ def _reml(th, y, K, male):
     s2gm, s2gf, rg, s2em, s2ef = th
     n = len(y)
     c = rg * math.sqrt(s2gm * s2gf)
-    V = [[(s2gm if male[i] and male[j] else s2gf if not (male[i] or male[j]) else c) * K[i][j]
-          + ((s2em if male[i] else s2ef) if i == j else 0.0) for j in range(n)] for i in range(n)]
+    V = [
+        [
+            (s2gm if male[i] and male[j] else s2gf if not (male[i] or male[j]) else c) * K[i][j]
+            + ((s2em if male[i] else s2ef) if i == j else 0.0)
+            for j in range(n)
+        ]
+        for i in range(n)
+    ]
     X = [[1.0, 0.0] if male[i] else [0.0, 1.0] for i in range(n)]
     M = [V[i][:] + [X[i][0], X[i][1], y[i]] for i in range(n)]
     ld = 0.0
@@ -49,8 +56,10 @@ def _reml(th, y, K, male):
     XtViX = [[sum(X[i][a] * sol[i][b] for i in range(n)) for b in range(2)] for a in range(2)]
     XtViy = [sum(X[i][a] * sol[i][2] for i in range(n)) for a in range(2)]
     det = XtViX[0][0] * XtViX[1][1] - XtViX[0][1] * XtViX[1][0]
-    beta = [(XtViX[1][1] * XtViy[0] - XtViX[0][1] * XtViy[1]) / det,
-            (XtViX[0][0] * XtViy[1] - XtViX[1][0] * XtViy[0]) / det]
+    beta = [
+        (XtViX[1][1] * XtViy[0] - XtViX[0][1] * XtViy[1]) / det,
+        (XtViX[0][0] * XtViy[1] - XtViX[1][0] * XtViy[0]) / det,
+    ]
     r = [y[i] - X[i][0] * beta[0] - X[i][1] * beta[1] for i in range(n)]
     Vir = [sol[i][2] - sol[i][0] * beta[0] - sol[i][1] * beta[1] for i in range(n)]
     return -0.5 * (ld + math.log(det) + sum(a * b for a, b in zip(r, Vir))), beta
@@ -94,5 +103,3 @@ def test_sxrhrt_edge():
     Ka[0][1] += 0.1
     with pytest.raises(ValueError):
         sex_specific_h2(y, sex, Ka)
-
-

@@ -1,7 +1,5 @@
 """Tests for poisson_score_interval.poisson_score_interval."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.poisson_score_interval import (
     poisson_score_interval,
 )

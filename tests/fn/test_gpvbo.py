@@ -1,7 +1,6 @@
 """Tests for gpvbo.gp_variational_bayes_opt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpvbo import gp_variational_bayes_opt
 
 
@@ -17,8 +16,7 @@ def test_gpvbo_basic():
     result = gp_variational_bayes_opt(X, y, X_grid)
     assert isinstance(result, dict)
     # Documented payload keys (per function source).
-    for key in ("estimate", "acquisition", "mean", "sd",
-                "next_index", "next_point", "f_min", "n", "method"):
+    for key in ("estimate", "acquisition", "mean", "sd", "next_index", "next_point", "f_min", "n", "method"):
         assert key in result
     assert isinstance(result["acquisition"], list)
     assert isinstance(result["mean"], list)

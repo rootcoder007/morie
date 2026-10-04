@@ -1,7 +1,6 @@
 """Tests for polkn.polynomial_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.polkn import polynomial_kernel
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zesmr -- Standardized Morbidity Ratio"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zesmr import smr_compute
 
 

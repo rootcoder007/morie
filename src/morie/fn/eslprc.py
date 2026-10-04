@@ -88,11 +88,19 @@ def esl_perceptron(X, y, eta=1.0, max_epoch=1000):
             converged = True
             break
     final_err = int(np.sum(y * (X @ beta) <= 0))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "n_errors": final_err, "epochs": int(ep), "converged": bool(converged),
-        "separable_within_budget": bool(converged), "n": int(n), "p": int(p),
-        "method": "Rosenblatt perceptron, fixed data order; no convergence if not separable"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "n_errors": final_err,
+            "epochs": int(ep),
+            "converged": bool(converged),
+            "separable_within_budget": bool(converged),
+            "n": int(n),
+            "p": int(p),
+            "method": "Rosenblatt perceptron, fixed data order; no convergence if not separable",
+        }
+    )
 
 
 def cheatsheet():

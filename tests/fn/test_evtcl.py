@@ -1,8 +1,8 @@
 """Tests for morie.fn.evtcl — event clustering."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.evtcl import event_cluster, evtcl
 
 

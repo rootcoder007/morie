@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,12 +20,18 @@ def evt_block_maxima_fit(x, block_size):
     b = int(block_size)
     if b < 1 or len(xs) < 2 * b:
         raise ValueError("need at least two full blocks")
-    maxima = [max(xs[i:i + b]) for i in range(0, len(xs) - b + 1, b)]
+    maxima = [max(xs[i : i + b]) for i in range(0, len(xs) - b + 1, b)]
     f = _ev.gev_mle(maxima)
-    res = RichResult(payload={"mu": f["mu"], "sigma": f["sigma"],
-                              "xi": f["xi"], "blocks": maxima,
-                              "ll": f["loglik"],
-                              "method": "block maxima + GEV MLE (Coles 2001 sec. 3.1, 3.3)"})
+    res = RichResult(
+        payload={
+            "mu": f["mu"],
+            "sigma": f["sigma"],
+            "xi": f["xi"],
+            "blocks": maxima,
+            "ll": f["loglik"],
+            "method": "block maxima + GEV MLE (Coles 2001 sec. 3.1, 3.3)",
+        }
+    )
     return with_describe_pointer(res, "evblockm")
 
 

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ksplusdist', 'gibbons_ks_one_sided_dist']
+__all__ = ["ksplusdist", "gibbons_ks_one_sided_dist"]
 
 
 def ksplusdist(c, n):
@@ -45,22 +45,30 @@ def ksplusdist(c, n):
         raise ValueError("n must be at least 1.")
     if c <= 0.0:
         return RichResult(
-            payload={"sf": 1.0, "cdf": 0.0, "terms": 0, "n": n, "c": c,
-                     "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)"}
+            payload={
+                "sf": 1.0,
+                "cdf": 0.0,
+                "terms": 0,
+                "n": n,
+                "c": c,
+                "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)",
+            }
         )
     if c >= 1.0:
         return RichResult(
-            payload={"sf": 0.0, "cdf": 1.0, "terms": 0, "n": n, "c": c,
-                     "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)"}
+            payload={
+                "sf": 0.0,
+                "cdf": 1.0,
+                "terms": 0,
+                "n": n,
+                "c": c,
+                "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)",
+            }
         )
     jmax = int(math.floor(n * (1.0 - c)))
     total = 0.0
     for j in range(jmax + 1):
-        total += (
-            math.comb(n, j)
-            * (c + j / n) ** (j - 1)
-            * (1.0 - c - j / n) ** (n - j)
-        )
+        total += math.comb(n, j) * (c + j / n) ** (j - 1) * (1.0 - c - j / n) ** (n - j)
     sf = min(1.0, max(0.0, c * total))
     return RichResult(
         payload={

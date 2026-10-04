@@ -68,8 +68,7 @@ def wasserman_posterior(data, f, prior):
     if f is None:
         f = lambda x, th: np.exp(-0.5 * (x - th) ** 2) / np.sqrt(2.0 * np.pi)
     with np.errstate(divide="ignore"):
-        ll = np.array([float(np.sum(np.log(np.asarray(f(data, th), dtype=float))))
-                       for th in grid])
+        ll = np.array([float(np.sum(np.log(np.asarray(f(data, th), dtype=float)))) for th in grid])
         logpost = ll + np.log(pd)
     m = np.max(logpost[np.isfinite(logpost)])
     unnorm = np.where(np.isfinite(logpost), np.exp(logpost - m), 0.0)
@@ -80,13 +79,17 @@ def wasserman_posterior(data, f, prior):
     post = unnorm / Z
     tp = grid * post
     pmean = float(0.5 * np.sum(dx * (tp[1:] + tp[:-1])))
-    return RichResult(payload={
-        "estimate": pmean, "posterior": [float(v) for v in post],
-        "theta_grid": [float(v) for v in grid],
-        "evidence": float(Z * np.exp(m)),
-        "map_theta": float(grid[int(np.argmax(post))]),
-        "n": int(data.size),
-        "method": "grid posterior, log-domain likelihood, trapezoid normalisation"})
+    return RichResult(
+        payload={
+            "estimate": pmean,
+            "posterior": [float(v) for v in post],
+            "theta_grid": [float(v) for v in grid],
+            "evidence": float(Z * np.exp(m)),
+            "map_theta": float(grid[int(np.argmax(post))]),
+            "n": int(data.size),
+            "method": "grid posterior, log-domain likelihood, trapezoid normalisation",
+        }
+    )
 
 
 def cheatsheet():

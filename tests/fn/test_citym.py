@@ -1,7 +1,6 @@
 """Tests for morie.fn.citym — City-block spatial model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.citym import citym
 
 

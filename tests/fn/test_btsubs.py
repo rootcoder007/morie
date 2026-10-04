@@ -1,7 +1,6 @@
 """Tests for btsubs.boot_subsampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btsubs import boot_subsampling
 
 

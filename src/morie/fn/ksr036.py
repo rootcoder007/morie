@@ -39,9 +39,11 @@ def kosorok_ch2_donsker_bracketing_theorem(N_bracket, F=None, P=None):
     out = kosorok_ch2_donsker_bracketing_integral(N_bracket, delta=1.0)
     J = out["J"]
     return RichResult(
-        payload={"J_infinity": J,
-                 "sufficient_condition_met": bool(np.isfinite(J) and J < 1e6),
-                 "method": "J_[](inf, F, L2(P)) < inf => P-Donsker (SUFFICIENT only)"}
+        payload={
+            "J_infinity": J,
+            "sufficient_condition_met": bool(np.isfinite(J) and J < 1e6),
+            "method": "J_[](inf, F, L2(P)) < inf => P-Donsker (SUFFICIENT only)",
+        }
     )
 
 

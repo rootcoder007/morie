@@ -9,8 +9,8 @@ from morie.fn.moeswt import moe_switch_routing
 def test_moeswt_basic():
     """Test basic functionality with x overriding y."""
     T = 40  # number of tokens
-    p = 3   # features per token
-    N = 4   # number of experts
+    p = 3  # features per token
+    N = 4  # number of experts
 
     y = np.random.default_rng(43).normal(0, 1, (T, p))
     x = np.random.default_rng(42).normal(0, 1, (T, p))

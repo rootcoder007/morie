@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmlm import geron_masked_lm
 
 
@@ -16,9 +15,18 @@ def test_hmmlm_basic():
     result = geron_masked_lm(X, mask_frac=0.15, vocab_size=vocab_size, seed=42)
     assert isinstance(result, dict)
     # Keys returned by geron_masked_lm (RichResult)
-    for key in ("loss", "baseline_loss", "perplexity", "masked_positions",
-                "targets", "probabilities", "n_masked", "estimate", "n",
-                "method"):
+    for key in (
+        "loss",
+        "baseline_loss",
+        "perplexity",
+        "masked_positions",
+        "targets",
+        "probabilities",
+        "n_masked",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     # Numerical values must be finite
     assert math.isfinite(result["loss"])
@@ -59,7 +67,7 @@ import morie.fn.hmmlm as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

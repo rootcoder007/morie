@@ -3,12 +3,12 @@
 Schabenberger & Gotway (2005), Secs 2.4.2, 2.5, 2.5.3.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.spwkth import schabenberger_wiener_khinchin as wiener_khinchin
-from morie.fn.spspec import schabenberger_spectral_representation as spectral
+from morie.fn import _array_core as np
 from morie.fn.spconv import schabenberger_convolution_representation as convolve
+from morie.fn.spspec import schabenberger_spectral_representation as spectral
+from morie.fn.spwkth import schabenberger_wiener_khinchin as wiener_khinchin
 
 A = 2.0
 EXPO = lambda h: np.exp(-A * np.abs(np.asarray(h, dtype=float)))
@@ -77,8 +77,10 @@ def test_a_boxcar_kernel_convolves_to_a_tent_correlation():
 def test_convolution_always_yields_a_valid_covariance_at_zero():
     """C(0) = sigma^2 int K^2 > 0 for any non-trivial kernel: positive
     definiteness comes free with the construction."""
-    for k in (lambda u: np.exp(-np.asarray(u, float) ** 2),
-              lambda u: (np.abs(np.asarray(u, float)) <= 1).astype(float)):
+    for k in (
+        lambda u: np.exp(-(np.asarray(u, float) ** 2)),
+        lambda u: (np.abs(np.asarray(u, float)) <= 1).astype(float),
+    ):
         r = convolve(kernel=k, h=np.array([0.0, 0.5]))
         assert r["variance"] > 0
         assert r["correlation"][0] == pytest.approx(1.0)

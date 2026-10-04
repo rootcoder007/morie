@@ -137,11 +137,16 @@ def engle_granger(y, X, lags=1):
     k = X.shape[1] + 1
     band, cv = _tau_pvalue(adf["statistic"], k)
     return {
-        "beta": beta[1:], "intercept": float(beta[0]), "residuals": resid,
-        "adf_stat": adf["statistic"], "p_value_band": band,
-        "critical_values": cv, "n_vars": int(k),
+        "beta": beta[1:],
+        "intercept": float(beta[0]),
+        "residuals": resid,
+        "adf_stat": adf["statistic"],
+        "p_value_band": band,
+        "critical_values": cv,
+        "n_vars": int(k),
         "cointegrated_5pct": bool(adf["statistic"] < cv[0.05]),
-        "lags": int(lags), "n": int(y.size),
+        "lags": int(lags),
+        "n": int(y.size),
         "method": "Engle-Granger two-step (MacKinnon 2010 critical values)",
     }
 
@@ -150,8 +155,12 @@ def engle_granger(y, X, lags=1):
 # (constant in the cointegrating relation), by number of common trends
 # n - r. Rows are 90%, 95%, 99%.
 _TRACE_CV = {
-    1: (2.71, 3.84, 6.65), 2: (13.31, 15.34, 19.69), 3: (26.70, 29.38, 35.65),
-    4: (43.84, 47.21, 54.46), 5: (64.74, 68.52, 76.07), 6: (89.37, 94.15, 103.18),
+    1: (2.71, 3.84, 6.65),
+    2: (13.31, 15.34, 19.69),
+    3: (26.70, 29.38, 35.65),
+    4: (43.84, 47.21, 54.46),
+    5: (64.74, 68.52, 76.07),
+    6: (89.37, 94.15, 103.18),
 }
 
 
@@ -188,7 +197,7 @@ def johansen(Y, lags=1):
     lags = int(lags)
     if lags < 1:
         raise ValueError(f"lags must be at least 1, got {lags}.")
-    if T0 < 10 * lags + 20:
+    if 10 * lags + 20 > T0:
         raise ValueError(f"series too short for {lags} lags (T = {T0}).")
     if not np.all(np.isfinite(Y)):
         raise ValueError("Y must be finite.")
@@ -235,9 +244,15 @@ def johansen(Y, lags=1):
             B[:, j] = B[:, j] / B[idx, j]
 
     return {
-        "eigenvalues": ev, "trace_stat": trace, "max_eig_stat": maxeig,
-        "trace_crit_90_95_99": cv, "rank_5pct": int(rank),
-        "beta": B, "n_series": int(n), "T": int(T), "lags": lags,
+        "eigenvalues": ev,
+        "trace_stat": trace,
+        "max_eig_stat": maxeig,
+        "trace_crit_90_95_99": cv,
+        "rank_5pct": int(rank),
+        "beta": B,
+        "n_series": int(n),
+        "T": int(T),
+        "lags": lags,
         "method": "Johansen reduced-rank trace test (Osterwald-Lenum 1992 CVs)",
     }
 
@@ -273,11 +288,18 @@ def vecm_fit(Y, rank=1, lags=1):
     resid = y - X @ coef
 
     return {
-        "alpha": coef[:r].T, "beta": beta, "intercept": coef[r],
+        "alpha": coef[:r].T,
+        "beta": beta,
+        "intercept": coef[r],
         "gamma": [coef[r + 1 + i * n : r + 1 + (i + 1) * n].T for i in range(lags)],
-        "residuals": resid, "sigma": resid.T @ resid / max(T - X.shape[1], 1),
-        "ect": ect, "rank": r, "lags": lags, "T": int(T),
-        "eigenvalues": joh["eigenvalues"], "johansen_rank_5pct": joh["rank_5pct"],
+        "residuals": resid,
+        "sigma": resid.T @ resid / max(T - X.shape[1], 1),
+        "ect": ect,
+        "rank": r,
+        "lags": lags,
+        "T": int(T),
+        "eigenvalues": joh["eigenvalues"],
+        "johansen_rank_5pct": joh["rank_5pct"],
         "method": "VECM: Johansen beta, OLS alpha and Gamma given beta",
     }
 

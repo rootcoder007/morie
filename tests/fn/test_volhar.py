@@ -1,16 +1,17 @@
 """Tests for volhar."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volhar import vol_har_rv
 
 
 def _sim(seed=42, n=500):
     rng = np.random.default_rng(seed)
-    rv = np.empty(n); rv[:22] = 1.0
+    rv = np.empty(n)
+    rv[:22] = 1.0
     for t in range(22, n):
-        m = 0.05 + 0.4 * rv[t-1] + 0.3 * rv[t-5:t].mean() + 0.2 * rv[t-22:t].mean()
+        m = 0.05 + 0.4 * rv[t - 1] + 0.3 * rv[t - 5 : t].mean() + 0.2 * rv[t - 22 : t].mean()
         rv[t] = max(m + rng.normal(scale=0.05), 1e-4)
     return rv
 

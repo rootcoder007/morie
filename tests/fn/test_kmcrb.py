@@ -1,14 +1,12 @@
 """Tests for kmcrb.kamath_cross_encoder_rerank."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmcrb import kamath_cross_encoder_rerank
 
 
 def test_kmcrb_basic():
     """Test basic functionality."""
-    q = 'q'
-    docs = ['aa', 'b', 'cc']
+    q = "q"
+    docs = ["aa", "b", "cc"]
     model = lambda q, d: len(d)
     result = kamath_cross_encoder_rerank(q, docs, model)
     assert isinstance(result, dict)
@@ -17,8 +15,8 @@ def test_kmcrb_basic():
 
 def test_kmcrb_edge():
     """Test edge cases."""
-    q = 'q'
-    docs = ['aa', 'b', 'cc']
+    q = "q"
+    docs = ["aa", "b", "cc"]
     model = lambda q, d: len(d)
     result = kamath_cross_encoder_rerank(q, docs, model)
     assert isinstance(result, dict)
@@ -36,7 +34,7 @@ import morie.fn.kmcrb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -58,9 +58,7 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
     """
     Q = np.asarray(probabilities, dtype=float)
     if Q.ndim != 3:
-        raise ValueError(
-            "probabilities must be (P, n, C), got %d dimensions." % Q.ndim
-        )
+        raise ValueError("probabilities must be (P, n, C), got %d dimensions." % Q.ndim)
     P, n, C = Q.shape
     if P < 2:
         raise ValueError("need at least 2 prompts, got %d." % P)
@@ -70,9 +68,7 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
         raise ValueError("each prompt's probabilities must sum to 1.")
     if method not in ("mean", "logmean"):
         raise ValueError("method must be 'mean' or 'logmean', got %r." % method)
-    w = np.ones(P) / P if weights is None else np.asarray(
-        weights, dtype=float
-    ).ravel()
+    w = np.ones(P) / P if weights is None else np.asarray(weights, dtype=float).ravel()
     if w.size != P:
         raise ValueError("weights has %d entries for %d prompts." % (w.size, P))
     if np.any(w < 0) or w.sum() <= 0:
@@ -97,9 +93,7 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
             "the spread across phrasings is what the ensemble buys; near "
             "zero means the prompts agreed and the ensembling was idle"
         ),
-        "unanimity": float(np.mean(
-            (per_pred == per_pred[0][None, :]).all(axis=0)
-        )),
+        "unanimity": float(np.mean((per_pred == per_pred[0][None, :]).all(axis=0))),
         "method_used": method,
         "logmean_note": (
             "logmean is the geometric mean, so one prompt assigning near-zero "
@@ -114,25 +108,26 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
         if yv.size != n:
             raise ValueError("y has %d entries for %d rows." % (yv.size, n))
         acc = np.array([float(np.mean(per_pred[i] == yv)) for i in range(P)])
-        payload.update({
-            "accuracy": float(np.mean(pred == yv)),
-            "per_prompt_accuracy": acc,
-            "best_prompt_accuracy": float(acc.max()),
-            "worst_prompt_accuracy": float(acc.min()),
-            "spread": float(acc.max() - acc.min()),
-            "spread_note": (
-                "the gap between the best and worst phrasing of the same "
-                "task; tuning the prompt on held-out data to close it is how "
-                "few-shot numbers stop reproducing"
-            ),
-        })
+        payload.update(
+            {
+                "accuracy": float(np.mean(pred == yv)),
+                "per_prompt_accuracy": acc,
+                "best_prompt_accuracy": float(acc.max()),
+                "worst_prompt_accuracy": float(acc.min()),
+                "spread": float(acc.max() - acc.min()),
+                "spread_note": (
+                    "the gap between the best and worst phrasing of the same "
+                    "task; tuning the prompt on held-out data to close it is how "
+                    "few-shot numbers stop reproducing"
+                ),
+            }
+        )
     return RichResult(payload=payload)
 
 
 def cheatsheet():
     return (
-        "kmpens: prompt ensembling by arithmetic or geometric mean, "
-        "reporting the phrasing spread it is averaging out"
+        "kmpens: prompt ensembling by arithmetic or geometric mean, reporting the phrasing spread it is averaging out"
     )
 
 

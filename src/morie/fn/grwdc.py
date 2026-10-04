@@ -11,8 +11,7 @@ __all__ = ["geron_adamw_decoupled_weight_decay"]
 _METHOD = "AdamW (decoupled weight decay)"
 
 
-def geron_adamw_decoupled_weight_decay(theta, grad, m, s, t, eta, b1=0.9, b2=0.999,
-                                       eps=1e-8, lam=0.01):
+def geron_adamw_decoupled_weight_decay(theta, grad, m, s, t, eta, b1=0.9, b2=0.999, eps=1e-8, lam=0.01):
     r"""Adam step plus a decay term that never touches the moments.
 
     .. math::

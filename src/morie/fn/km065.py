@@ -17,8 +17,7 @@ def _bt_loss(margins):
     """
     m = np.atleast_1d(np.asarray(margins, dtype=float))
     if m.size == 0:
-        raise ValueError("no preference pairs; an expectation over an "
-                         "empty dataset is undefined, not 0.")
+        raise ValueError("no preference pairs; an expectation over an empty dataset is undefined, not 0.")
     if not np.all(np.isfinite(m)):
         raise ValueError("a reward margin is not finite.")
     per = np.logaddexp(0.0, -m)
@@ -52,21 +51,23 @@ def kamath_ch5_reward_loss_pairwise(r_theta, x, y_0, y_1, i):
     xs, a, b = list(x), list(y_0), list(y_1)
     ch = [int(v) for v in np.atleast_1d(np.asarray(i)).ravel()]
     if not (len(xs) == len(a) == len(b) == len(ch)):
-        raise ValueError(
-            f"x, y_0, y_1 and i must have equal length; got {len(xs)}, "
-            f"{len(a)}, {len(b)}, {len(ch)}.")
+        raise ValueError(f"x, y_0, y_1 and i must have equal length; got {len(xs)}, {len(a)}, {len(b)}, {len(ch)}.")
     if any(v not in (0, 1) for v in ch):
         raise ValueError("every entry of i must be 0 or 1.")
     margins = []
     for xi, y0, y1, k in zip(xs, a, b, ch):
         chosen, rejected = (y0, y1) if k == 0 else (y1, y0)
-        margins.append(float(r_theta(xi, chosen)) -
-                       float(r_theta(xi, rejected)))
+        margins.append(float(r_theta(xi, chosen)) - float(r_theta(xi, rejected)))
     loss, per = _bt_loss(margins)
-    return RichResult(payload={
-        "estimate": loss, "margins": [float(v) for v in margins],
-        "per_pair": [float(v) for v in per], "n": len(xs),
-        "method": "pairwise reward-model loss (Kamath Eq 5.1)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "margins": [float(v) for v in margins],
+            "per_pair": [float(v) for v in per],
+            "n": len(xs),
+            "method": "pairwise reward-model loss (Kamath Eq 5.1)",
+        }
+    )
 
 
 def cheatsheet():

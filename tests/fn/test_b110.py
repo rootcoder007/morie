@@ -1,7 +1,6 @@
 """Tests for b110.burkov_lm_ch1_dataset_bce."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.b110 import burkov_lm_ch1_dataset_bce
 
 

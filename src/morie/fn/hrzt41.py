@@ -100,11 +100,19 @@ def binidmed(x, beta, ncell=4, nbin=10):
     identified = bool(conda and condb and condscale)
     return RichResult(
         title="Binary-response identification (Theorem 4.1)",
-        payload={"identified": identified, "conda": conda, "condb": condb,
-                 "condscale": condscale, "rank": rank, "dim": d,
-                 "minsv": minsv, "coverage": coverage,
-                 "ncells": int(cells.size), "n": n,
-                 "method": "Horowitz (2009) Theorem 4.1, median independence"},
+        payload={
+            "identified": identified,
+            "conda": conda,
+            "condb": condb,
+            "condscale": condscale,
+            "rank": rank,
+            "dim": d,
+            "minsv": minsv,
+            "coverage": coverage,
+            "ncells": int(cells.size),
+            "n": n,
+            "method": "Horowitz (2009) Theorem 4.1, median independence",
+        },
     )
 
 
@@ -119,11 +127,9 @@ def cheatsheet():
 if __name__ == "__main__":  # pragma: no cover
     m = 40
     g = np.linspace(-3, 3, m)
-    X = np.column_stack([np.tile(g, m),
-                         np.repeat(np.linspace(-1, 1, m), m)])
+    X = np.column_stack([np.tile(g, m), np.repeat(np.linspace(-1, 1, m), m)])
     r = binidmed(X, [1.0, 0.5])
     assert r["conda"] and r["condscale"], r
     assert r["coverage"] == 1.0, r["coverage"]
-    assert not binidmed(np.column_stack([X[:, 0], 2 * X[:, 0]]),
-                        [1.0, 0.5])["conda"]
+    assert not binidmed(np.column_stack([X[:, 0], 2 * X[:, 0]]), [1.0, 0.5])["conda"]
     print("ok", r["coverage"])

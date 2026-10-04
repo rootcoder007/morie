@@ -1,8 +1,8 @@
 """Tests for morie.fn.tarlg -- Threshold AR."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tarlg import tar_fit
 
 

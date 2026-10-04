@@ -37,30 +37,27 @@ def kamath_ch4_lora_forward(W_0, B, A, x):
     if xv.ndim != 1:
         raise ValueError("x must be a vector.")
     if W0.shape[1] != xv.shape[0]:
-        raise ValueError(
-            f"W_0 has {W0.shape[1]} columns but x has {xv.shape[0]} "
-            "entries.")
+        raise ValueError(f"W_0 has {W0.shape[1]} columns but x has {xv.shape[0]} entries.")
     if Am.shape[1] != xv.shape[0]:
-        raise ValueError(
-            f"A has {Am.shape[1]} columns but x has {xv.shape[0]} entries.")
+        raise ValueError(f"A has {Am.shape[1]} columns but x has {xv.shape[0]} entries.")
     if Bm.shape[1] != Am.shape[0]:
-        raise ValueError(
-            f"B is {Bm.shape} and A is {Am.shape}; the rank dimension r "
-            "must match.")
+        raise ValueError(f"B is {Bm.shape} and A is {Am.shape}; the rank dimension r must match.")
     if Bm.shape[0] != W0.shape[0]:
-        raise ValueError(
-            f"B produces {Bm.shape[0]} outputs but W_0 produces "
-            f"{W0.shape[0]}.")
+        raise ValueError(f"B produces {Bm.shape[0]} outputs but W_0 produces {W0.shape[0]}.")
     base = W0 @ xv
     delta = Bm @ (Am @ xv)
-    return RichResult(payload={
-        "h": [float(v) for v in base + delta],
-        "base": [float(v) for v in base],
-        "delta_h": [float(v) for v in delta],
-        "r": int(Bm.shape[1]),
-        "delta_W_rank": int(np.linalg.matrix_rank(Bm @ Am)),
-        "estimate": float((base + delta)[0]), "n": int(xv.shape[0]),
-        "method": "LoRA forward pass (Kamath Eq 4.5)"})
+    return RichResult(
+        payload={
+            "h": [float(v) for v in base + delta],
+            "base": [float(v) for v in base],
+            "delta_h": [float(v) for v in delta],
+            "r": int(Bm.shape[1]),
+            "delta_W_rank": int(np.linalg.matrix_rank(Bm @ Am)),
+            "estimate": float((base + delta)[0]),
+            "n": int(xv.shape[0]),
+            "method": "LoRA forward pass (Kamath Eq 4.5)",
+        }
+    )
 
 
 def cheatsheet():

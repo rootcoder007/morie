@@ -1,8 +1,8 @@
 """Tests for ca7e14.ca_chapter_7_equation_14."""
+
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca7e14 import ca_chapter_7_equation_14
 
 

@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e16 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e16 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16,
+)
 
 
 def test_stars_and_bars_matches_the_closed_form():
@@ -23,17 +25,27 @@ def test_stars_and_bars_matches_the_closed_form():
 
 def test_stars_and_bars_reproduces_the_books_worked_numbers():
     # eq (1.17): ten picks from four types
-    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(10, 4)["count"] == pytest.approx(286.0, rel=1e-12)
+    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(10, 4)[
+        "count"
+    ] == pytest.approx(286.0, rel=1e-12)
     # eq (1.48): two picks from six types
-    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(2, 6)["count"] == pytest.approx(21.0, rel=1e-12)
+    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(2, 6)[
+        "count"
+    ] == pytest.approx(21.0, rel=1e-12)
 
 
 def test_stars_and_bars_special_cases_from_the_book():
     for N in (2, 5, 9):
         # eq (1.49): two picks give N(N+1)/2
-        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(2, N)["count"] == pytest.approx(N * (N + 1) / 2.0, rel=1e-12)
+        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(2, N)[
+            "count"
+        ] == pytest.approx(N * (N + 1) / 2.0, rel=1e-12)
     for n in (0, 1, 7):
         # eq (1.50): two types give n+1
-        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(n, 2)["count"] == pytest.approx(n + 1.0, rel=1e-12)
+        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(n, 2)[
+            "count"
+        ] == pytest.approx(n + 1.0, rel=1e-12)
         # eq (1.53): three types give (n+1)(n+2)/2
-        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(n, 3)["count"] == pytest.approx((n + 1) * (n + 2) / 2.0, rel=1e-12)
+        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_16(n, 3)[
+            "count"
+        ] == pytest.approx((n + 1) * (n + 2) / 2.0, rel=1e-12)

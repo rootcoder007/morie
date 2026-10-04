@@ -115,10 +115,16 @@ def sgt_spectral_clustering_k(A, k=2):
         nrm = math.sqrt(nrm)
         T.append([v / nrm for v in row] if nrm > 0.0 else row)
     lab, _c = _kmeans_det(T, k)
-    return RichResult(payload={
-        "labels": lab, "eigvecs": T, "eigvals": [vals[j] for j in range(k)],
-        "k": k, "n": n,
-        "method": "Ng-Jordan-Weiss k-way spectral clustering"})
+    return RichResult(
+        payload={
+            "labels": lab,
+            "eigvecs": T,
+            "eigvals": [vals[j] for j in range(k)],
+            "k": k,
+            "n": n,
+            "method": "Ng-Jordan-Weiss k-way spectral clustering",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """Tests for cnn2d.conv2d_forward."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cnn2d import conv2d_forward
 
 

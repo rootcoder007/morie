@@ -51,11 +51,9 @@ visual tokens used as targets.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["normalise_bbox", "segment_layout_boxes", "mask_units",
-           "patch_of_box", "word_patch_alignment"]
+__all__ = ["normalise_bbox", "segment_layout_boxes", "mask_units", "patch_of_box", "word_patch_alignment"]
 
 _EPS = 1e-12
 
@@ -65,38 +63,36 @@ def normalise_bbox(box, width, height, scale=1000):
     x0, y0, x1, y1 = [float(v) for v in box]
     W, H = float(width), float(height)
     if W <= 0.0 or H <= 0.0:
-        raise ValueError("ocrwit: the page dimensions must be "
-                         "positive")
+        raise ValueError("ocrwit: the page dimensions must be positive")
     if x1 < x0 or y1 < y0:
         raise ValueError("ocrwit: the box is inverted")
     s = int(scale)
-    return [min(s, max(0, int(round(x0 / W * s)))),
-            min(s, max(0, int(round(y0 / H * s)))),
-            min(s, max(0, int(round(x1 / W * s)))),
-            min(s, max(0, int(round(y1 / H * s))))]
+    return [
+        min(s, max(0, int(round(x0 / W * s)))),
+        min(s, max(0, int(round(y0 / H * s)))),
+        min(s, max(0, int(round(x1 / W * s)))),
+        min(s, max(0, int(round(y1 / H * s)))),
+    ]
 
 
-def segment_layout_boxes(boxes, segment_ids, width, height,
-                         scale=1000):
+def segment_layout_boxes(boxes, segment_ids, width, height, scale=1000):
     r"""SEGMENT-level 2D position: a line's box shared by its words."""
     segs = list(segment_ids)
     B = list(boxes)
     if len(segs) != len(B):
-        raise ValueError("ocrwit: %d boxes but %d segment ids"
-                         % (len(B), len(segs)))
+        raise ValueError("ocrwit: %d boxes but %d segment ids" % (len(B), len(segs)))
     by_seg = {}
     for i in range(len(segs)):
-        by_seg.setdefault(segs[i], []).append(
-            normalise_bbox(B[i], width, height, scale))
+        by_seg.setdefault(segs[i], []).append(normalise_bbox(B[i], width, height, scale))
     seg_box = {}
     for s, bs in by_seg.items():
-        seg_box[s] = [min(b[0] for b in bs), min(b[1] for b in bs),
-                      max(b[2] for b in bs), max(b[3] for b in bs)]
-    return {"segment_boxes": seg_box,
-            "per_token": [seg_box[segs[i]] for i in range(len(segs))],
-            "n_segments": len(seg_box),
-            "note": "one box per segment, cheaper than per word and "
-                    "closer to the document's structure"}
+        seg_box[s] = [min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs)]
+    return {
+        "segment_boxes": seg_box,
+        "per_token": [seg_box[segs[i]] for i in range(len(segs))],
+        "n_segments": len(seg_box),
+        "note": "one box per segment, cheaper than per word and closer to the document's structure",
+    }
 
 
 def mask_units(n_units, rate=0.3, seed=0, block=1):
@@ -117,11 +113,13 @@ def mask_units(n_units, rate=0.3, seed=0, block=1):
         for j in range(s, min(n, s + b)):
             masked.add(j)
         guard += 1
-    return {"masked": sorted(masked),
-            "kept": sorted(set(range(n)) - masked),
-            "rate": len(masked) / float(n), "block": b,
-            "note": "the same recipe for both modalities, which is "
-                    "the unification"}
+    return {
+        "masked": sorted(masked),
+        "kept": sorted(set(range(n)) - masked),
+        "rate": len(masked) / float(n),
+        "block": b,
+        "note": "the same recipe for both modalities, which is the unification",
+    }
 
 
 def patch_of_box(box, width, height, patch_grid=14):
@@ -143,12 +141,11 @@ def patch_of_box(box, width, height, patch_grid=14):
         lo = min(max(int(math.floor(a / size * g)), 0), g - 1)
         hi = min(max(int(math.ceil(b / size * g)) - 1, lo), g - 1)
         return range(lo, hi + 1)
-    return sorted(r * g + c for r in span(by0, by1, H)
-                  for c in span(bx0, bx1, W))
+
+    return sorted(r * g + c for r in span(by0, by1, H) for c in span(bx0, bx1, W))
 
 
-def word_patch_alignment(text_boxes, masked_patches, width, height,
-                         patch_grid=14, masked_text=()):
+def word_patch_alignment(text_boxes, masked_patches, width, height, patch_grid=14, masked_text=()):
     r"""For each UNMASKED word, is its patch masked?
 
     The objective that ties the modalities together, and the reason
@@ -164,30 +161,33 @@ def word_patch_alignment(text_boxes, masked_patches, width, height,
         covered[i] = ps
         labels[i] = 1 if any(p in mp for p in ps) else 0
     if not labels:
-        raise ValueError("ocrwit: every text token is masked, so the "
-                         "alignment objective has no examples")
-    return RichResult(payload={
-        "estimate": labels, "labels": labels, "patches": covered,
-        "n_examples": len(labels),
-        "positive_rate": sum(labels.values()) / float(len(labels)),
-        "method": "word-patch alignment; Huang, Lv, Cui, Lu & Wei "
-                  "(2022)",
-        "note": "unmasked words only -- a masked word would leak its "
-                "own reconstruction target",
-    })
+        raise ValueError("ocrwit: every text token is masked, so the alignment objective has no examples")
+    return RichResult(
+        payload={
+            "estimate": labels,
+            "labels": labels,
+            "patches": covered,
+            "n_examples": len(labels),
+            "positive_rate": sum(labels.values()) / float(len(labels)),
+            "method": "word-patch alignment; Huang, Lv, Cui, Lu & Wei (2022)",
+            "note": "unmasked words only -- a masked word would leak its own reconstruction target",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ocrwit: document models pre-trained text and image with "
-            "DIFFERENT objectives, giving two spaces and a bridge. "
-            "LayoutLMv3 makes them symmetric -- mask and reconstruct "
-            "text tokens, mask and reconstruct image patches as "
-            "DISCRETE tokens -- so one encoder learns one space. "
-            "Linear patch embeddings, so no CNN backbone or detector. "
-            "WORD-PATCH ALIGNMENT binds them: for an UNMASKED word, "
-            "predict whether its patch was masked, which is the only "
-            "objective that forces the model to know where a word "
-            "sits. Layout is SEGMENT-level 2D position.")
+    return (
+        "ocrwit: document models pre-trained text and image with "
+        "DIFFERENT objectives, giving two spaces and a bridge. "
+        "LayoutLMv3 makes them symmetric -- mask and reconstruct "
+        "text tokens, mask and reconstruct image patches as "
+        "DISCRETE tokens -- so one encoder learns one space. "
+        "Linear patch embeddings, so no CNN backbone or detector. "
+        "WORD-PATCH ALIGNMENT binds them: for an UNMASKED word, "
+        "predict whether its patch was masked, which is the only "
+        "objective that forces the model to know where a word "
+        "sits. Layout is SEGMENT-level 2D position."
+    )
 
 
 # compact alias per ledger/NAMING.md

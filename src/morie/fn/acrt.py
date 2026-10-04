@@ -31,9 +31,21 @@ from ._richresult import RichResult
 __all__ = ["actor_critic"]
 
 
-def actor_critic(env, actor=None, critic=None, rewards=None, values=None,
-                 grad_logpi=None, grad_v=None, alpha_theta=0.1, alpha_w=0.1,
-                 gamma=0.99, theta=None, w=None, discount_actor=True):
+def actor_critic(
+    env,
+    actor=None,
+    critic=None,
+    rewards=None,
+    values=None,
+    grad_logpi=None,
+    grad_v=None,
+    alpha_theta=0.1,
+    alpha_w=0.1,
+    gamma=0.99,
+    theta=None,
+    w=None,
+    discount_actor=True,
+):
     """Run the one-step actor-critic updates over a trajectory.
 
     Parameters
@@ -67,8 +79,11 @@ def actor_critic(env, actor=None, critic=None, rewards=None, values=None,
     R = k.vec(rewards if rewards is not None else env)
     V = k.vec(values if values is not None else (critic if critic is not None else []))
     T = len(R)
-    G = k.mat(grad_logpi if grad_logpi is not None else actor) if (
-        grad_logpi is not None or actor is not None) else [[1.0]] * T
+    G = (
+        k.mat(grad_logpi if grad_logpi is not None else actor)
+        if (grad_logpi is not None or actor is not None)
+        else [[1.0]] * T
+    )
     Gv = k.mat(grad_v) if grad_v is not None else [[1.0]] * T
     th = k.vec(theta) if theta is not None else [0.0] * (len(G[0]) if G else 1)
     ww = k.vec(w) if w is not None else [0.0] * (len(Gv[0]) if Gv else 1)

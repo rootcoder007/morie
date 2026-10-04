@@ -21,8 +21,9 @@ def test_hmmis7_basic():
     assert r["kv_cache_saving"] == pytest.approx(4.0, rel=1e-15)
     assert r["effective_context"] == 4096 * 32
     w = geron_mistral7b([1, 2, 3, 4], n_tokens=0, window=2)
-    assert [[int(v) for v in row] for row in w["attention_mask"]] == \
-        [[int(i - 2 < j <= i) for j in range(4)] for i in range(4)]
+    assert [[int(v) for v in row] for row in w["attention_mask"]] == [
+        [int(i - 2 < j <= i) for j in range(4)] for i in range(4)
+    ]
 
 
 def test_hmmis7_edge():

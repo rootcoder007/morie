@@ -1,7 +1,6 @@
 """Tests for gh_c12_9.ghosal_wn_full_bvm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c12_9 import ghosal_wn_full_bvm
 
 

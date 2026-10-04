@@ -1,7 +1,6 @@
 """Tests for bnseff.bound_efficient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnseff import bound_efficient
 
 
@@ -23,8 +22,7 @@ def test_bnseff_basic():
     assert result["bound"] > 0
     assert result["se_bound"] > 0
     # bound should equal outcome term plus heterogeneity term
-    assert np.isclose(result["bound"],
-                      result["outcome_term"] + result["heterogeneity_term"])
+    assert np.isclose(result["bound"], result["outcome_term"] + result["heterogeneity_term"])
     # both components of the bound are non-negative
     assert result["outcome_term"] >= 0
     assert result["heterogeneity_term"] >= 0

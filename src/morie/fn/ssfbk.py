@@ -45,8 +45,7 @@ def state_feedback(A, B, poles, **kwargs) -> DescriptiveResult:
     if B.shape[0] != n:
         raise ValueError(f"B rows ({B.shape[0]}) must match A rows ({n}).")
     if B.shape[1] != 1:
-        raise ValueError("Ackermann's formula is for a single input; B "
-                         f"has {B.shape[1]} columns.")
+        raise ValueError(f"Ackermann's formula is for a single input; B has {B.shape[1]} columns.")
     if len(poles) != n:
         raise ValueError(f"Need {n} poles, got {len(poles)}.")
 

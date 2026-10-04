@@ -11,8 +11,11 @@ def _data(n=14):
     x = [10 * ((k * 0.618034) % 1) for k in range(n)]
     y = [10 * ((k * 0.414214 + 0.3) % 1) for k in range(n)]
     e = [((math.sin(12.9898 * k + 78.233) * 43758.5453) % 1) - 0.5 for k in range(n)]
-    z = [sum(math.exp(-math.dist((x[i], y[i]), (x[j], y[j])) / 1.5) * e[j] for j in range(n))
-         + 0.6 * (((math.sin(3.3 * i) * 1000) % 1) - 0.5) for i in range(n)]
+    z = [
+        sum(math.exp(-math.dist((x[i], y[i]), (x[j], y[j])) / 1.5) * e[j] for j in range(n))
+        + 0.6 * (((math.sin(3.3 * i) * 1000) % 1) - 0.5)
+        for i in range(n)
+    ]
     return [[a, b] for a, b in zip(x, y)], z
 
 
@@ -42,8 +45,9 @@ def _m2ll(co, z, nug, ps, a, reml):
     C(h) = ps exp(-3h/a), C(0) = nug + ps, and the constant mean profiled
     by GLS; REML adds log(1' S^-1 1) and uses n - 1 in the 2 pi term."""
     n = len(z)
-    S = [[(nug + ps) if i == j else ps * math.exp(-3 * math.dist(co[i], co[j]) / a)
-          for j in range(n)] for i in range(n)]
+    S = [
+        [(nug + ps) if i == j else ps * math.exp(-3 * math.dist(co[i], co[j]) / a) for j in range(n)] for i in range(n)
+    ]
     L = _chol(S)
     s1 = _solve_chol(L, [1.0] * n)
     sz = _solve_chol(L, z)
@@ -106,7 +110,7 @@ import morie.fn.spml as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

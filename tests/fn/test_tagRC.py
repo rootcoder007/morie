@@ -4,10 +4,17 @@ import pytest
 
 from morie.fn.tagRC import folkrank, preference_vector, tripartite_graph
 
-
-TRIPLES = [("u1", "python", "r1"), ("u1", "stats", "r2"), ("u2", "python", "r1"),
-           ("u2", "python", "r3"), ("u3", "cooking", "r4"), ("u3", "python", "r4"),
-           ("u4", "stats", "r2"), ("u4", "cooking", "r5"), ("u5", "python", "r3")]
+TRIPLES = [
+    ("u1", "python", "r1"),
+    ("u1", "stats", "r2"),
+    ("u2", "python", "r1"),
+    ("u2", "python", "r3"),
+    ("u3", "cooking", "r4"),
+    ("u3", "python", "r4"),
+    ("u4", "stats", "r2"),
+    ("u4", "cooking", "r5"),
+    ("u5", "python", "r3"),
+]
 
 
 def _solve(A, b):
@@ -33,8 +40,10 @@ def test_tagRC_basic():
     deg = {u: sum(adj[u].values()) for u in N}
     p = preference_vector(N, ["t:cooking"], 0.9)["p"]
     d = 0.7
-    A = [[(1.0 if i == j else 0.0) - d * adj.get(v, {}).get(u, 0.0) / deg[v]
-          for j, v in enumerate(N)] for i, u in enumerate(N)]
+    A = [
+        [(1.0 if i == j else 0.0) - d * adj.get(v, {}).get(u, 0.0) / deg[v] for j, v in enumerate(N)]
+        for i, u in enumerate(N)
+    ]
     w1 = _solve(A, [(1 - d) * p[u] for u in N])
     w0 = [deg[u] / sum(deg.values()) for u in N]
     r = folkrank(TRIPLES, ["t:cooking"], d=d, weight=0.9, iters=2000)

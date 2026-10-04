@@ -5,10 +5,7 @@ from morie.fn.enobj import elastic_net_objective
 
 def test_enobj_basic():
     """Penalized RSS on a design whose fit is exact, so PRSS is the penalty."""
-    X = [[1.0, 0.0, 0.0],
-         [0.0, 1.0, 0.0],
-         [0.0, 0.0, 1.0],
-         [1.0, 1.0, 1.0]]
+    X = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]]
     y = [1.0, 2.0, 3.0, 6.0]
     beta = [0.0, 1.0, 2.0, 3.0]  # intercept 0, then slopes 1, 2, 3
     lam = 0.1
@@ -17,7 +14,7 @@ def test_enobj_basic():
     # Fit is exact: every fitted value equals its observation.
     assert result["rss"] == 0.0
     # Intercept is unpenalized, so only the three slopes enter the penalties.
-    assert result["l2"] == 1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2
+    assert result["l2"] == 1.0**2 + 2.0**2 + 3.0**2
     assert result["l1"] == 1.0 + 2.0 + 3.0
     expected_pen = lam * (0.5 * (1.0 - alpha) * 14.0 + alpha * 6.0)
     assert abs(result["penalty"] - expected_pen) < 1e-12
@@ -30,9 +27,7 @@ def test_enobj_basic():
 
 def test_enobj_edge():
     """alpha endpoints, no intercept, and the documented input checks."""
-    X = [[1.0, 0.0],
-         [0.0, 1.0],
-         [1.0, 1.0]]
+    X = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
     y = [1.0, 1.0, 1.0]
     beta = [2.0, -3.0]
 

@@ -1,9 +1,9 @@
 """Tests for plkt."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.plkt import plackett_copula
+
 
 def test_plkt_basic():
     assert plackett_copula(0.4, 0.6, 1.0)["cdf"] == pytest.approx(0.24)

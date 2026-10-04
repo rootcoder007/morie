@@ -72,18 +72,27 @@ def betabinom(y, n, alpha=1.0, beta=1.0, m=None):
     def lbeta(x, z):
         return math.lgamma(x) + math.lgamma(z) - math.lgamma(x + z)
 
-    lml = (math.lgamma(n + 1.0) - math.lgamma(y + 1.0)
-           - math.lgamma(n - y + 1.0) + lbeta(pa, pb) - lbeta(a, b))
+    lml = math.lgamma(n + 1.0) - math.lgamma(y + 1.0) - math.lgamma(n - y + 1.0) + lbeta(pa, pb) - lbeta(a, b)
     mm = n if m is None else int(m)
     if mm < 0:
         raise ValueError("m must be non-negative")
     predmean = mm * pm
     predvar = mm * pm * (1.0 - pm) * (mm + s) / (s + 1.0)
-    return RichResult(payload={
-        "postalpha": pa, "postbeta": pb, "postmean": pm, "postvar": pv,
-        "postmode": mode, "priormean": a / (a + b), "logmarglik": lml,
-        "predmean": predmean, "predvar": predvar, "m": mm,
-        "method": "Beta-Binomial conjugate updating (Gelman et al. BDA3 Sect. 2.4)"})
+    return RichResult(
+        payload={
+            "postalpha": pa,
+            "postbeta": pb,
+            "postmean": pm,
+            "postvar": pv,
+            "postmode": mode,
+            "priormean": a / (a + b),
+            "logmarglik": lml,
+            "predmean": predmean,
+            "predvar": predvar,
+            "m": mm,
+            "method": "Beta-Binomial conjugate updating (Gelman et al. BDA3 Sect. 2.4)",
+        }
+    )
 
 
 beta_binomial = betabinom

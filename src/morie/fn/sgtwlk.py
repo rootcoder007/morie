@@ -1,9 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weisfeiler-Leman colour refinement."""
 
-import math
-
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -65,9 +62,15 @@ def sgt_weisfeiler_leman_relabel(A, labels0=None, max_iter=3):
                 order.append(kk)
         lab = [order.index(kk) for kk in keys]
         hist.append(len(order))
-    return RichResult(payload={
-        "labels_t": lab, "estimate": float(len(set(lab))), "history": hist,
-        "n": n, "method": "Weisfeiler-Leman colour refinement"})
+    return RichResult(
+        payload={
+            "labels_t": lab,
+            "estimate": float(len(set(lab))),
+            "history": hist,
+            "n": n,
+            "method": "Weisfeiler-Leman colour refinement",
+        }
+    )
 
 
 def cheatsheet():

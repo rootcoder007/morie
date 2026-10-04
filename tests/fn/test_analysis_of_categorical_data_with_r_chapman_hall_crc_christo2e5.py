@@ -2,10 +2,7 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
-
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e5 import (
     analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_5,
 )

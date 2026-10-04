@@ -24,18 +24,27 @@ from . import _evt_core as _ev
 from ._richresult import RichResult
 
 __all__ = [
-    "evchiu", "evchibu", "evdedhm", "evextivl", "evextrun", "evextsld",
-    "evgevlpd", "evgevtrd", "evtailhl", "evhillal", "evpickxi",
-    "evrlvlci", "evrlvlpt",
+    "evchiu",
+    "evchibu",
+    "evdedhm",
+    "evextivl",
+    "evextrun",
+    "evextsld",
+    "evgevlpd",
+    "evgevtrd",
+    "evtailhl",
+    "evhillal",
+    "evpickxi",
+    "evrlvlci",
+    "evrlvlpt",
 ]
 
 
 _BIG = 1.0e35
-_RELTOL = math.sqrt(2.220446049250313e-16)   # R's sqrt(.Machine$double.eps)
+_RELTOL = math.sqrt(2.220446049250313e-16)  # R's sqrt(.Machine$double.eps)
 
 
-def _nmmin(fn, x0, maxit, reltol=_RELTOL, abstol=float("-inf"),
-           alpha=1.0, bet=0.5, gamm=2.0):
+def _nmmin(fn, x0, maxit, reltol=_RELTOL, abstol=float("-inf"), alpha=1.0, bet=0.5, gamm=2.0):
     """R's ``optim(method = "Nelder-Mead")`` simplex, transcribed.
 
     The package's own :func:`morie.fn._sci_core.minimize` Nelder-Mead is
@@ -102,7 +111,7 @@ def _nmmin(fn, x0, maxit, reltol=_RELTOL, abstol=float("-inf"),
                 if f > VH:
                     H = j
                     VH = f
-        if VH <= VL + convtol or VL <= abstol:
+        if VL + convtol >= VH or abstol >= VL:
             break
         for i in range(n):
             temp = -P[i][H - 1]
@@ -155,8 +164,7 @@ def _nmmin(fn, x0, maxit, reltol=_RELTOL, abstol=float("-inf"),
                 for j in range(n1):
                     if j + 1 != L:
                         for i in range(n):
-                            P[i][j] = bet * (P[i][j] - P[i][L - 1]) \
-                                + P[i][L - 1]
+                            P[i][j] = bet * (P[i][j] - P[i][L - 1]) + P[i][L - 1]
                             size += abs(P[i][j] - P[i][L - 1])
                 if size < oldsize:
                     oldsize = size
@@ -170,9 +178,7 @@ def _nmmin(fn, x0, maxit, reltol=_RELTOL, abstol=float("-inf"),
 def _solve_inv(H):
     """Plain LU-with-partial-pivoting inverse, matching R's ``solve``."""
     k = len(H)
-    a = [list(map(float, row)) + [1.0 if i == j else 0.0
-                                  for j in range(k)]
-         for i, row in enumerate(H)]
+    a = [list(map(float, row)) + [1.0 if i == j else 0.0 for j in range(k)] for i, row in enumerate(H)]
     for c in range(k):
         piv = max(range(c, k), key=lambda r: abs(a[r][c]))
         if abs(a[piv][c]) < 1e-300:
@@ -209,16 +215,14 @@ def _gevmle_r(xs):
         return -_ev.gev_loglik(xs, th[0], th[1], th[2])
 
     H = _ev._hessian(nll_nat, [mu, sigma, xi])
-    return {"mu": mu, "sigma": sigma, "xi": xi, "loglik": -val,
-            "cov": _solve_inv(H), "n": n, "converged": ok}
+    return {"mu": mu, "sigma": sigma, "xi": xi, "loglik": -val, "cov": _solve_inv(H), "n": n, "converged": ok}
 
 
 def _pair(x, y):
     xs = _ev._flat(x)
     ys = _ev._flat(y)
     if len(xs) != len(ys):
-        raise ValueError(
-            f"x has {len(xs)} entries and y has {len(ys)}")
+        raise ValueError(f"x has {len(xs)} entries and y has {len(ys)}")
     if len(xs) < 4:
         raise ValueError(f"need at least 4 pairs, got {len(xs)}")
     return xs, ys
@@ -276,9 +280,15 @@ def evchiu(x, y, u=0.95):
     joint = sum(1 for a, b in zip(rx, ry) if a < u and b < u) / n
     joint = min(max(joint, 1.0 / (2 * n)), 1.0 - 1.0 / (2 * n))
     chi = min(max(2.0 - math.log(joint) / math.log(u), 0.0), 1.0)
-    return RichResult(payload={
-        "chi": chi, "joint": joint, "u": u, "n": n,
-        "method": "empirical chi(u) tail dependence (Coles 2001 sec. 8.4)"})
+    return RichResult(
+        payload={
+            "chi": chi,
+            "joint": joint,
+            "u": u,
+            "n": n,
+            "method": "empirical chi(u) tail dependence (Coles 2001 sec. 8.4)",
+        }
+    )
 
 
 def evchibu(x, y, ugrid=None):
@@ -319,9 +329,9 @@ def evchibu(x, y, ugrid=None):
         joint = min(max(joint, 1.0 / (2 * n)), 1.0 - 1.0 / (2 * n))
         cb = 2.0 * math.log(1.0 - u) / math.log(joint) - 1.0
         curve.append(min(max(cb, -1.0), 1.0))
-    return RichResult(payload={
-        "chibar": curve, "ugrid": ugrid, "n": n,
-        "method": "empirical chibar(u) (Coles 2001 sec. 8.4)"})
+    return RichResult(
+        payload={"chibar": curve, "ugrid": ugrid, "n": n, "method": "empirical chibar(u) (Coles 2001 sec. 8.4)"}
+    )
 
 
 # ---------------------------------------------------------------- GEV
@@ -351,12 +361,14 @@ def evgevlpd(x, mu, sigma, xi):
     xi = float(xi)
     lp = [_ev.gev_logpdf(v, mu, sigma, xi) for v in xs]
     ok = [v for v in lp if v != float("-inf")]
-    return RichResult(payload={
-        "logpdf": lp,
-        "loglik": math.fsum(ok) if len(ok) == len(lp)
-                  else float("-inf"),
-        "n_support": len(ok),
-        "method": "GEV log-density (Coles 2001 sec. 3.3.2)"})
+    return RichResult(
+        payload={
+            "logpdf": lp,
+            "loglik": math.fsum(ok) if len(ok) == len(lp) else float("-inf"),
+            "n_support": len(ok),
+            "method": "GEV log-density (Coles 2001 sec. 3.3.2)",
+        }
+    )
 
 
 def evgevtrd(x, t=None):
@@ -396,18 +408,22 @@ def evgevtrd(x, t=None):
 
     def nll(th):
         s = math.exp(th[2])
-        return -sum(_ev.gev_logpdf(xs[i], th[0] + th[1] * tz[i],
-                                   s, th[3]) for i in range(n))
+        return -sum(_ev.gev_logpdf(xs[i], th[0] + th[1] * tz[i], s, th[3]) for i in range(n))
 
-    par, val, _ok = _nmmin(nll, [f0["mu"], 0.0, math.log(f0["sigma"]),
-                                 f0["xi"]], 6000)
+    par, val, _ok = _nmmin(nll, [f0["mu"], 0.0, math.log(f0["sigma"]), f0["xi"]], 6000)
     ll = -val
-    return RichResult(payload={
-        "beta0": par[0], "beta1": par[1] / tsd,
-        "sigma": math.exp(par[2]), "xi": par[3], "loglik": ll,
-        "lr_vs_stationary": 2.0 * (ll - f0["loglik"]), "n": n,
-        "method": "nonstationary GEV, linear trend in location "
-                  "(Coles 2001 sec. 6.2)"})
+    return RichResult(
+        payload={
+            "beta0": par[0],
+            "beta1": par[1] / tsd,
+            "sigma": math.exp(par[2]),
+            "xi": par[3],
+            "loglik": ll,
+            "lr_vs_stationary": 2.0 * (ll - f0["loglik"]),
+            "n": n,
+            "method": "nonstationary GEV, linear trend in location (Coles 2001 sec. 6.2)",
+        }
+    )
 
 
 # ------------------------------------------------------- return levels
@@ -437,19 +453,24 @@ def evrlvlci(x, T, alpha=0.05):
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly in (0, 1)")
     from ._stats_core import norm as _norm
+
     f = _gevmle_r(_ev._flat(x))
     z = _ev.gev_return_level(T, f["mu"], f["sigma"], f["xi"])
     g = _ev.gev_return_level_grad(T, f["mu"], f["sigma"], f["xi"])
     V = f["cov"]
-    var = math.fsum(g[i] * V[i][j] * g[j]
-                    for i in range(3) for j in range(3))
+    var = math.fsum(g[i] * V[i][j] * g[j] for i in range(3) for j in range(3))
     se = math.sqrt(max(var, 0.0))
     zc = float(_norm.ppf(1.0 - alpha / 2.0))
-    return RichResult(payload={
-        "z_T": float(z), "ci_lo": float(z - zc * se),
-        "ci_hi": float(z + zc * se), "se": se, "T": T,
-        "method": "delta-method GEV return-level CI "
-                  "(Coles 2001 sec. 3.3.3)"})
+    return RichResult(
+        payload={
+            "z_T": float(z),
+            "ci_lo": float(z - zc * se),
+            "ci_hi": float(z + zc * se),
+            "se": se,
+            "T": T,
+            "method": "delta-method GEV return-level CI (Coles 2001 sec. 3.3.3)",
+        }
+    )
 
 
 def evrlvlpt(u, sigma, xi, zetau, m):
@@ -485,13 +506,16 @@ def evrlvlpt(u, sigma, xi, zetau, m):
     if not 0.0 < zetau <= 1.0:
         raise ValueError("zetau must lie in (0, 1]")
     if m * zetau <= 1.0:
-        raise ValueError("m * zetau must exceed 1 for a level above "
-                         "the threshold")
-    return RichResult(payload={
-        "z_T": _ev.pot_return_level(m, u, sigma, xi, zetau),
-        "m": m, "u": u, "zeta_u": zetau,
-        "method": "POT m-observation return level "
-                  "(Coles 2001 eq. 4.13)"})
+        raise ValueError("m * zetau must exceed 1 for a level above the threshold")
+    return RichResult(
+        payload={
+            "z_T": _ev.pot_return_level(m, u, sigma, xi, zetau),
+            "m": m,
+            "u": u,
+            "zeta_u": zetau,
+            "method": "POT m-observation return level (Coles 2001 eq. 4.13)",
+        }
+    )
 
 
 # ------------------------------------ tail-index and extremal-index arms
@@ -499,6 +523,7 @@ def evtailhl(x, k=None):
     """Hill (1975) tail-index estimator; see :func:`morie.fn.evhill.ev_hill`,
     which this delegates to so the estimator has one implementation."""
     from .evhill import ev_hill
+
     return ev_hill(x, k=k)
 
 
@@ -506,6 +531,7 @@ def evhillal(x, k=None):
     """Hill estimator, alias entry point; see
     :func:`morie.fn.hillEst.hill_estimator`."""
     from .hillEst import hill_estimator
+
     return hill_estimator(x, k=k)
 
 
@@ -513,6 +539,7 @@ def evpickxi(x, k=None):
     """Pickands (1975) extreme-value index; see
     :func:`morie.fn.evpick.ev_pickands`."""
     from .evpick import ev_pickands
+
     return ev_pickands(x, k=k)
 
 
@@ -520,6 +547,7 @@ def evdedhm(x, k=None):
     """Dekkers-Einmahl-de Haan moment estimator; see
     :func:`morie.fn.evdedh.ev_dedh`."""
     from .evdedh import ev_dedh
+
     return ev_dedh(x, k=k)
 
 
@@ -527,6 +555,7 @@ def evextrun(x, threshold, runlength=1):
     """Runs estimator of the extremal index; see
     :func:`morie.fn.evextidx.ev_extremal_runs`."""
     from .evextidx import ev_extremal_runs
+
     return ev_extremal_runs(x, threshold, run_length=runlength)
 
 
@@ -534,6 +563,7 @@ def evextivl(x, threshold):
     """Ferro-Segers intervals estimator of the extremal index; see
     :func:`morie.fn.evextint.ev_extremal_intervals`."""
     from .evextint import ev_extremal_intervals
+
     return ev_extremal_intervals(x, threshold)
 
 
@@ -541,11 +571,13 @@ def evextsld(x, threshold=None, blocklength=None):
     """Northrop sliding-blocks estimator of the extremal index; see
     :func:`morie.fn.evextsl.ev_extremal_sliding`."""
     from .evextsl import ev_extremal_sliding
-    return ev_extremal_sliding(x, threshold=threshold,
-                               block_length=blocklength)
+
+    return ev_extremal_sliding(x, threshold=threshold, block_length=blocklength)
 
 
 def cheatsheet():
-    return ("evtcol: Coles-shelf entry points -- GEV log-density and "
-            "trend, return levels with CIs, chi/chibar, and the tail- "
-            "and extremal-index estimators")
+    return (
+        "evtcol: Coles-shelf entry points -- GEV log-density and "
+        "trend, return levels with CIs, chi/chibar, and the tail- "
+        "and extremal-index estimators"
+    )

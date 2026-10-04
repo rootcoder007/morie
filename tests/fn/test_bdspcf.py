@@ -1,7 +1,6 @@
 """Tests for bdspcf.bound_specification."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdspcf import bound_specification
 
 
@@ -15,17 +14,15 @@ def test_bdspcf_basic():
     result = bound_specification(estimate, sensitivity, c, se)
     assert isinstance(result, dict)
     # Documented return keys
-    for key in ("bias", "lower", "upper", "halfwidth",
-                "worstgamma", "normsens", "z", "c"):
+    for key in ("bias", "lower", "upper", "halfwidth", "worstgamma", "normsens", "z", "c"):
         assert key in result
 
     # Independent computations from the documented formula
     s = np.asarray(sensitivity).tolist()
     ssq = sum(v * v for v in s)
-    normsens = ssq ** 0.5
+    normsens = ssq**0.5
     bias = c * normsens
     # Two-sided normal quantile at the given confidence level
-    from morie.fn import _array_core as _np  # ensure same shim
     # Compute quantile without relying on scipy/numpy dist; use the
     # documented identity conf = 2 Phi(z) - 1, so z = Phi^{-1}((1+conf)/2).
     # We use a hard-coded tabulated value because the function uses C.qnorm,

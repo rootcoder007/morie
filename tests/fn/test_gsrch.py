@@ -19,8 +19,7 @@ def _ridge_r2(Xtr, ytr, Xte, yte, alpha):
     mx = [sum(r[j] for r in Xtr) / n for j in range(2)]
     my = sum(ytr) / n
     Xc = [[r[j] - mx[j] for j in range(2)] for r in Xtr]
-    A = [[sum(r[i] * r[j] for r in Xc) + (alpha if i == j else 0.0) for j in range(2)]
-         for i in range(2)]
+    A = [[sum(r[i] * r[j] for r in Xc) + (alpha if i == j else 0.0) for j in range(2)] for i in range(2)]
     b = [sum(r[i] * (v - my) for r, v in zip(Xc, ytr)) for i in range(2)]
     det = A[0][0] * A[1][1] - A[0][1] * A[1][0]
     w = [(b[0] * A[1][1] - A[0][1] * b[1]) / det, (A[0][0] * b[1] - b[0] * A[1][0]) / det]
@@ -44,8 +43,7 @@ def test_gsrch_basic():
         for f in range(5):
             te = list(range(8 * f, 8 * f + 8))
             tr = [i for i in range(40) if i not in te]
-            sc.append(_ridge_r2([X[i] for i in tr], [y[i] for i in tr],
-                                [X[i] for i in te], [y[i] for i in te], a))
+            sc.append(_ridge_r2([X[i] for i in tr], [y[i] for i in tr], [X[i] for i in te], [y[i] for i in te], a))
         exp.append(sum(sc) / 5)
     assert result["cv_results_mean_score"] == pytest.approx(exp, rel=1e-10, abs=1e-12)
     k = exp.index(max(exp))

@@ -1,8 +1,8 @@
 """Tests for morie.fn.rocop -- ROC optimal cutoff."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rocop import roc_optimal_cutoff
 
 

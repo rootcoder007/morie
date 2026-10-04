@@ -33,7 +33,7 @@ def _llr_side(dm, ym, w):
     A = XtW @ X
     b = np.linalg.solve(A, XtW @ ym)
     e = ym - X @ b
-    meat = (XtW * (e ** 2)) @ (X * w[:, None])
+    meat = (XtW * (e**2)) @ (X * w[:, None])
     Ainv = np.linalg.inv(A)
     V = Ainv @ meat @ Ainv
     return float(b[0]), float(b[1]), float(V[0, 0])
@@ -113,30 +113,30 @@ def rdd_local_linear(x, y, cutoff=0.0, h=None, kernel="triangular"):
     n_l = int(np.sum(lm.astype(float)))
     n_r = int(np.sum(rm.astype(float)))
     if n_l < 3 or n_r < 3:
-        raise ValueError("fewer than 3 observations with positive "
-                         "kernel weight on one side")
+        raise ValueError("fewer than 3 observations with positive kernel weight on one side")
     al, bl, vl = _llr_side(d[lm], ya[lm], w[lm])
     ar, br, vr = _llr_side(d[rm], ya[rm], w[rm])
     tau = ar - al
     se = float(np.sqrt(vl + vr))
     z = 1.959963984540054
-    return RichResult(payload={
-        "estimate": float(tau),
-        "se": se,
-        "ci": (tau - z * se, tau + z * se),
-        "intercept_left": al,
-        "intercept_right": ar,
-        "slope_left": bl,
-        "slope_right": br,
-        "h": h,
-        "kernel": kernel,
-        "n_left": n_l,
-        "n_right": n_r,
-        "n_used": n_l + n_r,
-        "se_note": ("HC0 sandwich per side, sides independent; "
-                    "rdrobust vce='hc0' convention"),
-        "method": "sharp RDD, one-sided local linear fits at the cutoff",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(tau),
+            "se": se,
+            "ci": (tau - z * se, tau + z * se),
+            "intercept_left": al,
+            "intercept_right": ar,
+            "slope_left": bl,
+            "slope_right": br,
+            "h": h,
+            "kernel": kernel,
+            "n_left": n_l,
+            "n_right": n_r,
+            "n_used": n_l + n_r,
+            "se_note": ("HC0 sandwich per side, sides independent; rdrobust vce='hc0' convention"),
+            "method": "sharp RDD, one-sided local linear fits at the cutoff",
+        }
+    )
 
 
 # primary name = module name; stub-era long name kept as alias.
@@ -145,6 +145,8 @@ causal_rdd_local_lin = rdd_local_linear
 
 
 def cheatsheet():
-    return ("causrdd: sharp RDD tau = alpha_plus - alpha_minus from "
-            "kernel-weighted one-sided linear fits; IK bandwidth by "
-            "default; exact on side-linear data")
+    return (
+        "causrdd: sharp RDD tau = alpha_plus - alpha_minus from "
+        "kernel-weighted one-sided linear fits; IK bandwidth by "
+        "default; exact on side-linear data"
+    )

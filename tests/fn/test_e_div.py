@@ -1,11 +1,8 @@
 """Anchored tests for e_div (Matteson-James 2014 E-divisive)."""
 
-import math
+from morie.fn.e_div import _pairwise_alpha, _prefix2d, _qhat, e_div
 
-from morie.fn.e_div import e_div, _pairwise_alpha, _prefix2d, _qhat
-
-X1 = [0.1, -0.2, 0.05, 0.3, -0.1, 5.2, 4.9, 5.1, 5.3, 4.8,
-      1.9, 2.1, 2.0, 1.8, 2.2]
+X1 = [0.1, -0.2, 0.05, 0.3, -0.1, 5.2, 4.9, 5.1, 5.3, 4.8, 1.9, 2.1, 2.0, 1.8, 2.2]
 
 
 def _qhat_direct(x, a, tau, kappa, alpha=1.0):
@@ -14,22 +11,17 @@ def _qhat_direct(x, a, tau, kappa, alpha=1.0):
     Y = x[tau:kappa]
     n, m = len(X), len(Y)
     between = sum(abs(xi - yj) ** alpha for xi in X for yj in Y)
-    wX = sum(abs(X[i] - X[k]) ** alpha
-             for i in range(n) for k in range(i + 1, n))
-    wY = sum(abs(Y[j] - Y[k]) ** alpha
-             for j in range(m) for k in range(j + 1, m))
-    e = 2.0 * between / (n * m) - wX / (n * (n - 1) / 2.0) \
-        - wY / (m * (m - 1) / 2.0)
+    wX = sum(abs(X[i] - X[k]) ** alpha for i in range(n) for k in range(i + 1, n))
+    wY = sum(abs(Y[j] - Y[k]) ** alpha for j in range(m) for k in range(j + 1, m))
+    e = 2.0 * between / (n * m) - wX / (n * (n - 1) / 2.0) - wY / (m * (m - 1) / 2.0)
     return (n * m / float(n + m)) * e
 
 
 def test_qhat_prefix_route_matches_direct_double_loop():
     D = _pairwise_alpha(X1, 1.0)
     P = _prefix2d(D)
-    for (a, tau, kappa) in [(0, 5, 10), (0, 5, 15), (5, 10, 15),
-                            (0, 7, 12), (2, 6, 14)]:
-        assert abs(_qhat(P, a, tau, kappa)
-                   - _qhat_direct(X1, a, tau, kappa)) < 1e-12
+    for a, tau, kappa in [(0, 5, 10), (0, 5, 15), (5, 10, 15), (0, 7, 12), (2, 6, 14)]:
+        assert abs(_qhat(P, a, tau, kappa) - _qhat_direct(X1, a, tau, kappa)) < 1e-12
 
 
 def test_e_div_matches_ecp_locations():

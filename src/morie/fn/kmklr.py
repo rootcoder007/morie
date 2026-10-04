@@ -38,25 +38,29 @@ def kamath_kl_reward_shaping(r_phi, kl_divergence, beta):
     if kl.size == 1 and r.size > 1:
         kl = np.repeat(kl, r.size)
     if r.size != kl.size:
-        raise ValueError(
-            f"got {r.size} rewards and {kl.size} KL values.")
+        raise ValueError(f"got {r.size} rewards and {kl.size} KL values.")
     if beta < 0:
         raise ValueError(
-            f"beta must be non-negative; got {beta}. A negative "
-            "coefficient turns the penalty into a bonus for drift.")
+            f"beta must be non-negative; got {beta}. A negative coefficient turns the penalty into a bonus for drift."
+        )
     if np.any(kl < 0):
         raise ValueError(
             "a KL divergence is non-negative by definition; a negative "
-            "entry means the log-ratio was passed with the wrong sign.")
+            "entry means the log-ratio was passed with the wrong sign."
+        )
     shaped = r - beta * kl
-    return RichResult(payload={
-        "shaped": [float(v) for v in shaped],
-        "estimate": float(shaped.mean()),
-        "mean_reward": float(r.mean()),
-        "mean_kl": float(kl.mean()),
-        "penalty": float(beta * kl.mean()),
-        "beta": beta, "n": int(r.size),
-        "method": "KL-shaped RLHF reward r - beta * KL"})
+    return RichResult(
+        payload={
+            "shaped": [float(v) for v in shaped],
+            "estimate": float(shaped.mean()),
+            "mean_reward": float(r.mean()),
+            "mean_kl": float(kl.mean()),
+            "penalty": float(beta * kl.mean()),
+            "beta": beta,
+            "n": int(r.size),
+            "method": "KL-shaped RLHF reward r - beta * KL",
+        }
+    )
 
 
 def cheatsheet():

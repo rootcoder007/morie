@@ -1,7 +1,6 @@
 """Tests for morie.fn.impme -- impute missing mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.impme import impme, impute_missing_mean
 
 

@@ -1,7 +1,5 @@
 """Tests for netparf.network_paf."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.netparf import network_paf
 
 

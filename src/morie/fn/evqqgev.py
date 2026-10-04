@@ -6,7 +6,6 @@ Modeling of Extreme Values*, Springer (equation checked against the
 library PDF).
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -18,11 +17,10 @@ def evt_gev_qq_plot(x, mu, sigma, xi):
     GEV (Coles 2001 sec. 3.3.4)."""
     xs = sorted(_ev._flat(x))
     n = len(xs)
-    q_model = [_ev.gev_quantile((i + 1.0) / (n + 1.0), float(mu),
-                                float(sigma), float(xi))
-               for i in range(n)]
-    res = RichResult(payload={"q_emp": xs, "q_model": q_model, "n": n,
-                              "method": "GEV quantile plot (Coles 2001 sec. 3.3.4)"})
+    q_model = [_ev.gev_quantile((i + 1.0) / (n + 1.0), float(mu), float(sigma), float(xi)) for i in range(n)]
+    res = RichResult(
+        payload={"q_emp": xs, "q_model": q_model, "n": n, "method": "GEV quantile plot (Coles 2001 sec. 3.3.4)"}
+    )
     return with_describe_pointer(res, "evqqgev")
 
 

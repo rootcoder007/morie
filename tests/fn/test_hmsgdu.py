@@ -1,7 +1,6 @@
 """Tests for hmsgdu.geron_sgd_update."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsgdu import geron_sgd_update
 
 

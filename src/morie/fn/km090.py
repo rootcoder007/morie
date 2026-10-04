@@ -24,8 +24,8 @@ def _conditional(w, A, name):
     c = counts.get(w, 0.0)
     if c <= 0:
         raise ValueError(
-            f"{w!r} never co-occurs with {name}; log 0 is undefined, so "
-            "the score does not exist for this token.")
+            f"{w!r} never co-occurs with {name}; log 0 is undefined, so the score does not exist for this token."
+        )
     return c / total, c, total
 
 
@@ -52,11 +52,17 @@ def kamath_ch6_co_occurrence_bias(w, A_i, A_j):
     """
     pi, ci, ti = _conditional(w, A_i, "A_i")
     pj, cj, tj = _conditional(w, A_j, "A_j")
-    return RichResult(payload={
-        "estimate": float(np.log(pi / pj)), "p_given_Ai": pi,
-        "p_given_Aj": pj, "count_Ai": ci, "count_Aj": cj,
-        "n": int(ti + tj),
-        "method": "Co-Occurrence Bias Score (Kamath Eq 6.14)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.log(pi / pj)),
+            "p_given_Ai": pi,
+            "p_given_Aj": pj,
+            "count_Ai": ci,
+            "count_Aj": cj,
+            "n": int(ti + tj),
+            "method": "Co-Occurrence Bias Score (Kamath Eq 6.14)",
+        }
+    )
 
 
 def cheatsheet():

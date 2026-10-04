@@ -3,15 +3,12 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb241 import gibbons_order_cdf
 
 
 def _ostatcdf_independent(t, r, n, fx):
     """Independent re-implementation of the documented formula."""
-    return sum(
-        math.comb(n, i) * fx**i * (1.0 - fx) ** (n - i) for i in range(r, n + 1)
-    )
+    return sum(math.comb(n, i) * fx**i * (1.0 - fx) ** (n - i) for i in range(r, n + 1))
 
 
 def test_gb241_basic():

@@ -35,10 +35,14 @@ def kamath_ch2_clm_loss(x):
     p = _validate_probs(x, "x")
     with np.errstate(divide="ignore"):
         losses = -np.log(p)
-    return RichResult(payload={
-        "estimate": float(np.mean(losses)),
-        "per_position": [float(v) for v in losses], "n": len(p),
-        "method": "causal language modelling (CLM) loss (Kamath Eq 2.21)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(losses)),
+            "per_position": [float(v) for v in losses],
+            "n": len(p),
+            "method": "causal language modelling (CLM) loss (Kamath Eq 2.21)",
+        }
+    )
 
 
 def cheatsheet():

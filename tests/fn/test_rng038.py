@@ -1,7 +1,5 @@
 """Tests for rng038.rangayyan_ch3_test_signal_sin_cos."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsasig import rangayyan_ch3_test_signal_sin_cos
 
 

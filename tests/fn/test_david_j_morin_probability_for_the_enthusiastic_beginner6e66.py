@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e66 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_66,
 )
@@ -25,8 +24,8 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner6e66_basic():
         grid_x, density_x, grid_y, density_y, 0.0, 0.2
     )
     assert isinstance(result, dict)
-    assert 'probability' in result
-    prob = float(result['probability'])
+    assert "probability" in result
+    prob = float(result["probability"])
     assert math.isfinite(prob)
     assert 0.0 <= prob <= 1.0
 
@@ -45,7 +44,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner6e66_edge():
         grid_x, density_x, grid_y, density_y, 1.0, 0.5
     )
     assert isinstance(result, dict)
-    assert 'probability' in result
-    prob = float(result['probability'])
+    assert "probability" in result
+    prob = float(result["probability"])
     assert math.isfinite(prob)
     assert 0.0 <= prob <= 1.0

@@ -13,18 +13,61 @@ import math
 
 import pytest
 
-from morie.fn.bsafilt import (bilinear, bilinunit, bilinunwarp, bilinwarp,
-                              blackman, bwanalog, bwander, bwandereq,
-                              bwanderz, bwdigital, bwdirect, bwhp,
-                              bwhpdft, bwlp, bwlpdft, bwpoles, bwsqlap,
-                              bwsqmag, cdiff3, cdiff3mag, cdiff3ph,
-                              cdiff3tf, comb, diff1, diff2, fdiff,
-                              fdifffr, fdiffmag, fdiffph, fdifftf,
-                              freqresp, grpdelay, hamming, hannwin,
-                              intfr, intft, intmag, intph, iirdiffgen,
-                              ma8fr, ma8imp, ma8rec, ma8rectf, ma8sinc,
-                              ma8tf, mfilth, notch, notch60, phaseresp,
-                              runint, runintall, sinckern, windowfn)
+from morie.fn.bsafilt import (
+    bilinear,
+    bilinunit,
+    bilinunwarp,
+    bilinwarp,
+    blackman,
+    bwanalog,
+    bwander,
+    bwandereq,
+    bwanderz,
+    bwdigital,
+    bwdirect,
+    bwhp,
+    bwhpdft,
+    bwlp,
+    bwlpdft,
+    bwpoles,
+    bwsqlap,
+    bwsqmag,
+    cdiff3,
+    cdiff3mag,
+    cdiff3ph,
+    cdiff3tf,
+    comb,
+    diff1,
+    diff2,
+    fdiff,
+    fdifffr,
+    fdiffmag,
+    fdiffph,
+    fdifftf,
+    freqresp,
+    grpdelay,
+    hamming,
+    hannwin,
+    iirdiffgen,
+    intfr,
+    intft,
+    intmag,
+    intph,
+    ma8fr,
+    ma8imp,
+    ma8rec,
+    ma8rectf,
+    ma8sinc,
+    ma8tf,
+    mfilth,
+    notch,
+    notch60,
+    phaseresp,
+    runint,
+    runintall,
+    sinckern,
+    windowfn,
+)
 
 # eqs (3.147)-(3.148): the book's fourth-order Butterworth example.
 # Its poles are printed as (-0.556072 +- j1.342475) and
@@ -34,6 +77,7 @@ BOOK_WC = math.sqrt(2.111456)
 
 
 # --------------------------------------------------- the 8-point average
+
 
 def test_ma8imp_eq3109_is_eight_equal_taps():
     r = ma8imp()
@@ -104,12 +148,13 @@ def test_the_measured_group_delay_of_the_8_point_average_is_seven_halves():
 
 # --------------------------------------------------------- the integrator
 
+
 def test_runint_eq3112_over_a_unit_signal_is_the_window_length():
-    t = [i / 100.0 for i in range(201)]      # 0 .. 2
+    t = [i / 100.0 for i in range(201)]  # 0 .. 2
     x = [1.0] * 201
     r = runint(x, t, 0.5)
     assert r["y"][-1] == pytest.approx(0.5, abs=1e-9)
-    assert r["clipped_windows"] > 0          # the leading windows are short
+    assert r["clipped_windows"] > 0  # the leading windows are short
     with pytest.raises(ValueError):
         runint(x, t, 0.0)
 
@@ -144,11 +189,12 @@ def test_intft_eq3115_returns_the_delta_weight_separately():
     assert r["delta_weight"] == pytest.approx(math.pi * 3.0)
     assert r["at_dc"] is False
     z = intft(2.0, 0.0, X0=3.0)
-    assert z["Y"] is None                    # 1/(jw) is unbounded there
+    assert z["Y"] is None  # 1/(jw) is unbounded there
     assert z["at_dc"] is True
 
 
 # ------------------------------------------------- the difference operators
+
 
 def test_fdiff_eq3123_scales_by_the_sampling_interval():
     a = fdiff([0.0, 1.0, 3.0], T=1.0)["y"]
@@ -182,8 +228,7 @@ def test_fdiffmag_eq3126_and_phase_eq3127():
     for w in (0.4, 1.2, 2.5):
         H = fdifffr(w)["H"]
         assert abs(H) == pytest.approx(fdiffmag(w)["magnitude"], abs=1e-12)
-        assert math.atan2(H.imag, H.real) == pytest.approx(
-            fdiffph(w)["phase"], abs=1e-12)
+        assert math.atan2(H.imag, H.real) == pytest.approx(fdiffph(w)["phase"], abs=1e-12)
 
 
 def test_cdiff3_eq3128_is_the_mean_of_two_first_differences():
@@ -229,6 +274,7 @@ def test_diff1_reports_the_coefficients_of_the_operator():
 
 # ------------------------------------------------ the baseline-wander filter
 
+
 def test_bwander_eq3132_kills_dc_and_passes_the_rest():
     r = bwander(1.0)
     assert abs(r["H"]) == pytest.approx(0.0, abs=1e-15)
@@ -236,8 +282,7 @@ def test_bwander_eq3132_kills_dc_and_passes_the_rest():
     assert r["no_longer_fir"] is True
     # well away from DC the gain is close to unity
     w = math.pi / 2.0
-    assert abs(bwander(complex(math.cos(w), math.sin(w)))["H"]) == \
-        pytest.approx(1.0, abs=0.01)
+    assert abs(bwander(complex(math.cos(w), math.sin(w)))["H"]) == pytest.approx(1.0, abs=0.01)
 
 
 def test_bwander_refuses_a_pole_on_the_unit_circle():
@@ -272,6 +317,7 @@ def test_bwandereq_removes_a_constant_offset():
 
 # ---------------------------------------------------- the Butterworth family
 
+
 def test_bwsqmag_eq3135_is_half_power_at_cutoff_for_every_order():
     for n in (1, 2, 4, 8):
         assert bwsqmag(2.0, 2.0, n)["squared_magnitude"] == pytest.approx(0.5)
@@ -297,10 +343,8 @@ def test_bwsqlap_eq3136_has_2n_poles_half_unusable():
 
 def test_bwpoles_eq3137_reproduces_the_books_worked_example():
     r = bwpoles(BOOK_WC, 4)
-    got = sorted((round(p.real, 6), round(abs(p.imag), 6))
-                 for p in r["left_half_plane"])
-    assert got == [(-1.342475, 0.556072), (-1.342475, 0.556072),
-                   (-0.556072, 1.342475), (-0.556072, 1.342475)]
+    got = sorted((round(p.real, 6), round(abs(p.imag), 6)) for p in r["left_half_plane"])
+    assert got == [(-1.342475, 0.556072), (-1.342475, 0.556072), (-0.556072, 1.342475), (-0.556072, 1.342475)]
     assert r["n_left_half_plane"] == 4
     assert r["none_on_the_imaginary_axis"] is True
 
@@ -334,6 +378,7 @@ def test_bwanalog_is_half_power_at_the_cutoff():
 
 # ------------------------------------------------ the bilinear transformation
 
+
 def test_bilinear_eq3139_maps_dc_and_refuses_the_point_at_infinity():
     assert bilinear(1.0)["s"] == pytest.approx(complex(0.0, 0.0))
     assert bilinear(1.0)["stability_is_preserved"] is True
@@ -346,7 +391,7 @@ def test_bilinear_eq3139_maps_dc_and_refuses_the_point_at_infinity():
 def test_bilinear_maps_the_left_half_plane_inside_the_unit_disc():
     # a stable analog pole must come back inside the circle
     for p in (complex(-0.5, 1.0), complex(-2.0, 0.0), complex(-0.1, 3.0)):
-        z = (2.0 + p) / (2.0 - p)            # T = 1
+        z = (2.0 + p) / (2.0 - p)  # T = 1
         assert abs(z) < 1.0
 
 
@@ -374,6 +419,7 @@ def test_the_warping_is_nonlinear():
 
 
 # ------------------------------------------------------ the digital designs
+
 
 def test_bwdigital_eq3143_puts_every_zero_at_minus_one():
     r = bwdigital(N=4, fc=100.0, fs=1000.0)
@@ -409,8 +455,7 @@ def test_bwhp_is_half_power_at_the_cutoff_and_zero_at_dc():
     z = complex(math.cos(w), math.sin(w))
     hp = bwhp(100.0, order=4, fs=1000.0, z=z)
     assert abs(hp["H"]) == pytest.approx(1.0 / math.sqrt(2.0), abs=1e-9)
-    assert abs(bwhp(100.0, order=4, fs=1000.0, z=1.0)["H"]) == \
-        pytest.approx(0.0, abs=1e-12)
+    assert abs(bwhp(100.0, order=4, fs=1000.0, z=1.0)["H"]) == pytest.approx(0.0, abs=1e-12)
     assert hp["normalized_at_nyquist"] is True
 
 
@@ -419,6 +464,7 @@ def test_a_higher_order_gives_a_sharper_transition():
         w = 2.0 * math.pi * f / 1000.0
         z = complex(math.cos(w), math.sin(w))
         return abs(bwlp(100.0, order=order, fs=1000.0, z=z)["H"])
+
     assert gain(8, 200.0) < gain(2, 200.0)
     assert gain(8, 100.0) == pytest.approx(gain(2, 100.0), abs=1e-6)
 
@@ -426,10 +472,11 @@ def test_a_higher_order_gives_a_sharper_transition():
 def test_iirdiffgen_eq3144_runs_a_designed_filter():
     lp = bwlp(100.0, order=2, fs=1000.0)
     y = iirdiffgen([1.0] * 80, lp["b"], lp["a"][1:])["y"]
-    assert y[-1] == pytest.approx(1.0, abs=1e-6)      # unit DC gain
+    assert y[-1] == pytest.approx(1.0, abs=1e-6)  # unit DC gain
 
 
 # ------------------------------------------------- the DFT-indexed responses
+
 
 def test_bwdirect_eq3145_is_half_power_at_cutoff_and_zero_phase():
     r = bwdirect(1.0, 1.0, 4)
@@ -480,6 +527,7 @@ def test_the_dft_designs_refuse_a_bad_specification():
 
 # --------------------------------------------------- notch, comb, sinc, windows
 
+
 def test_notch60_puts_a_conjugate_pair_of_zeros_on_the_interference():
     r = notch60(1000.0, 60.0)
     assert r["gain_at_the_notch"] == pytest.approx(0.0, abs=1e-12)
@@ -508,8 +556,7 @@ def test_notch_with_poles_is_narrower_than_zeros_alone():
     def g_wide(f):
         w = 2.0 * math.pi * f / fs
         z = complex(math.cos(w), math.sin(w))
-        return abs(sum(wide["b"][k] * z ** -k
-                       for k in range(len(wide["b"]))))
+        return abs(sum(wide["b"][k] * z**-k for k in range(len(wide["b"]))))
 
     def g_narrow(f):
         w = 2.0 * math.pi * f / fs
@@ -537,8 +584,7 @@ def test_notch_needs_exactly_one_of_bandwidth_or_radius():
 
 
 def test_a_narrower_bandwidth_needs_a_pole_closer_to_the_circle():
-    assert notch(60.0, bandwidth=2.0, fs=1000.0)["r"] > \
-        notch(60.0, bandwidth=8.0, fs=1000.0)["r"]
+    assert notch(60.0, bandwidth=2.0, fs=1000.0)["r"] > notch(60.0, bandwidth=8.0, fs=1000.0)["r"]
 
 
 def test_comb_notches_every_harmonic_at_once():
@@ -550,8 +596,7 @@ def test_comb_notches_every_harmonic_at_once():
     for f in (50.0, 100.0, 150.0):
         w = 2.0 * math.pi * f / 1000.0
         z = complex(math.cos(w), math.sin(w))
-        assert abs(comb(20, fs=1000.0, z=z)["H"]) == pytest.approx(
-            0.0, abs=1e-12)
+        assert abs(comb(20, fs=1000.0, z=z)["H"]) == pytest.approx(0.0, abs=1e-12)
 
 
 def test_sinckern_is_symmetric_and_normalized():
@@ -568,7 +613,7 @@ def test_a_window_removes_the_gibbs_ripple_flag_and_lowers_the_sidelobes():
     assert tapered["truncation_causes_gibbs_ripple"] is False
     a = freqresp(plain["h"], fs=1000.0, n_freqs=1024)["magnitude"]
     b = freqresp(tapered["h"], fs=1000.0, n_freqs=1024)["magnitude"]
-    stop = slice(400, 1024)                  # well inside the stopband
+    stop = slice(400, 1024)  # well inside the stopband
     assert max(b[stop]) < max(a[stop])
 
 
@@ -593,8 +638,7 @@ def test_windowfn_dispatches_and_names_the_rectangular_default():
     assert windowfn(9, "hann")["w"] == pytest.approx(hannwin(9)["w"])
     assert windowfn(9, "hamming")["w"] == pytest.approx(hamming(9)["w"])
     assert windowfn(9, "blackman")["w"] == pytest.approx(blackman(9)["w"])
-    assert windowfn(5, "hann")["doing_nothing_is_the_rectangular_window"] \
-        is True
+    assert windowfn(5, "hann")["doing_nothing_is_the_rectangular_window"] is True
     with pytest.raises(ValueError):
         windowfn(5, "bartlett")
     with pytest.raises(ValueError):
@@ -607,6 +651,7 @@ def test_a_single_point_window_is_unity():
 
 
 # ------------------------------------------------ responses and group delay
+
 
 def test_freqresp_runs_dc_to_nyquist_inclusive():
     r = freqresp([0.25, 0.5, 0.25], fs=1000.0, n_freqs=101)
@@ -635,16 +680,12 @@ def test_phaseresp_unwraps_by_default():
     assert r["phase_undefined_where_the_response_vanishes"] is True
     assert r["wrapping_is_an_arctangent_artifact"] is True
     # and the slope is -1 in omega, matching eq. (3.107)
-    w = [2.0 * math.pi * f / 1000.0 for f, ok in zip(r["f"], r["defined"])
-         if ok]
-    assert (good[-1] - good[0]) / (w[-1] - w[0]) == pytest.approx(
-        -1.0, abs=1e-9)
+    w = [2.0 * math.pi * f / 1000.0 for f, ok in zip(r["f"], r["defined"]) if ok]
+    assert (good[-1] - good[0]) / (w[-1] - w[0]) == pytest.approx(-1.0, abs=1e-9)
 
 
 def test_group_delay_of_a_symmetric_fir_is_half_its_order():
-    for taps, want in (([0.25, 0.5, 0.25], 1.0),
-                       ([1 / 3.0] * 3, 1.0),
-                       ([0.125] * 8, 3.5)):
+    for taps, want in (([0.25, 0.5, 0.25], 1.0), ([1 / 3.0] * 3, 1.0), ([0.125] * 8, 3.5)):
         g = grpdelay(taps, fs=1000.0, n_freqs=257)
         assert g["mean"] == pytest.approx(want, abs=1e-9)
 
@@ -660,11 +701,11 @@ def test_group_delay_survives_a_zero_on_the_unit_circle():
 
 def test_an_iir_filter_has_a_frequency_dependent_group_delay():
     lp = bwlp(100.0, order=4, fs=1000.0)
-    assert grpdelay(lp["b"], lp["a"], fs=1000.0)["approximately_constant"] \
-        is False
+    assert grpdelay(lp["b"], lp["a"], fs=1000.0)["approximately_constant"] is False
 
 
 # ---------------------------------------------------------- matched filter
+
 
 def test_mfilth_reverses_the_template():
     r = mfilth([1, 2, 3])
@@ -688,18 +729,18 @@ def test_the_matched_filter_peaks_where_the_template_sits():
     g = [1.0, 2.0, 3.0, 2.0, 1.0]
     h = mfilth(g)["h"]
     x = [0.0] * 8 + g + [0.0] * 8
-    y = [sum(h[k] * x[i - k] for k in range(len(h)) if i - k >= 0)
-         for i in range(len(x))]
+    y = [sum(h[k] * x[i - k] for k in range(len(h)) if i - k >= 0) for i in range(len(x))]
     peak = max(range(len(y)), key=lambda i: y[i])
     assert peak == 8 + len(g) - 1
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsafilt import (rangayyan_butterworth_lp,
-                                  rangayyan_ch3_butterworth_pole_positions,
-                                  rangayyan_hann_window)
-    assert rangayyan_ch3_butterworth_pole_positions(
-        BOOK_WC, 4)["n_left_half_plane"] == 4
-    assert rangayyan_butterworth_lp(100.0, order=4, fs=1000.0)["kind"] == \
-        "lowpass"
+    from morie.fn.bsafilt import (
+        rangayyan_butterworth_lp,
+        rangayyan_ch3_butterworth_pole_positions,
+        rangayyan_hann_window,
+    )
+
+    assert rangayyan_ch3_butterworth_pole_positions(BOOK_WC, 4)["n_left_half_plane"] == 4
+    assert rangayyan_butterworth_lp(100.0, order=4, fs=1000.0)["kind"] == "lowpass"
     assert rangayyan_hann_window(9)["endpoints"] == pytest.approx([0.0, 0.0])

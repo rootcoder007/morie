@@ -177,7 +177,9 @@ def backdoor_criterion(dag, X, Y, Z=()):
             "satisfied": bool(ok),
             "descendant_violations": bad_desc,
             "open_paths": open_paths,
-            "backdoor_paths": [" ".join([str(p[0])] + [f"{dd} {nn}" for dd, nn in zip(d, map(str, p[1:]))]) for p, d in back],
+            "backdoor_paths": [
+                " ".join([str(p[0])] + [f"{dd} {nn}" for dd, nn in zip(d, map(str, p[1:]))]) for p, d in back
+            ],
             "n_backdoor": len(back),
             "adjustment_set": sorted(map(str, Zs)),
             "reason": reason,

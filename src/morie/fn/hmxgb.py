@@ -33,7 +33,7 @@ def _build(X, g, h, depth, max_depth, lam, gamma, min_child_weight):
             if xs[i + 1] == xs[i]:
                 continue
             GR, HR = G - GL, H - HL
-            if HL < min_child_weight or HR < min_child_weight:
+            if min_child_weight > HL or min_child_weight > HR:
                 continue
             gain = _gain(GL, HL, GR, HR, lam, gamma)
             if best is None or gain > best[0]:

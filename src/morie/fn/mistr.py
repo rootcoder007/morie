@@ -74,13 +74,19 @@ attention pattern Mistral adopts.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["rope_angles", "apply_rope", "sliding_window_mask",
-           "grouped_query_attention", "swiglu", "rms_norm",
-           "mistral_block", "attention_span"]
+__all__ = [
+    "rope_angles",
+    "apply_rope",
+    "sliding_window_mask",
+    "grouped_query_attention",
+    "swiglu",
+    "rms_norm",
+    "mistral_block",
+    "attention_span",
+]
 
 _EPS = 1e-12
 
@@ -103,8 +109,7 @@ def rms_norm(x, weight=None, eps=1e-6):
     if weight is None:
         return [v * inv for v in x]
     if len(weight) != d:
-        raise ValueError("mistr: gain has %d entries for %d channels"
-                         % (len(weight), d))
+        raise ValueError("mistr: gain has %d entries for %d channels" % (len(weight), d))
     return [x[i] * inv * weight[i] for i in range(d)]
 
 
@@ -115,22 +120,18 @@ def swiglu(x, W1, W2, W3):
     the :math:`W_1` branch elementwise, so one half decides how much of
     the other half survives.
     """
-    a = [sum(x[i] * W1[i][j] for i in range(len(x)))
-         for j in range(len(W1[0]))]
-    b = [sum(x[i] * W3[i][j] for i in range(len(x)))
-         for j in range(len(W3[0]))]
+    a = [sum(x[i] * W1[i][j] for i in range(len(x))) for j in range(len(W1[0]))]
+    b = [sum(x[i] * W3[i][j] for i in range(len(x))) for j in range(len(W3[0]))]
     if len(a) != len(b):
         raise ValueError("mistr: W1 and W3 must have the same width")
     gated = [k.sigmoid(a[j]) * a[j] * b[j] for j in range(len(a))]
-    return [sum(gated[j] * W2[j][c] for j in range(len(gated)))
-            for c in range(len(W2[0]))]
+    return [sum(gated[j] * W2[j][c] for j in range(len(gated))) for c in range(len(W2[0]))]
 
 
 def rope_angles(d, base=10000.0):
     r""":math:`\theta_i = \mathrm{base}^{-2i/d}` for each channel pair."""
     if d % 2 != 0:
-        raise ValueError("mistr: RoPE needs an even dimension, got %d"
-                         % d)
+        raise ValueError("mistr: RoPE needs an even dimension, got %d" % d)
     return [base ** (-2.0 * i / d) for i in range(d // 2)]
 
 
@@ -145,8 +146,7 @@ def apply_rope(x, pos, theta=None, base=10000.0):
     d = len(x)
     th = rope_angles(d, base) if theta is None else list(theta)
     if len(th) != d // 2:
-        raise ValueError("mistr: %d angles for %d channels"
-                         % (len(th), d))
+        raise ValueError("mistr: %d angles for %d channels" % (len(th), d))
     out = [0.0] * d
     for i in range(d // 2):
         ang = pos * th[i]
@@ -161,8 +161,7 @@ def sliding_window_mask(L, window, causal=True):
     r"""Row :math:`i` may attend to :math:`j` when
     :math:`i - W < j \le i`."""
     if window < 1:
-        raise ValueError("mistr: window must be at least 1, got %d"
-                         % window)
+        raise ValueError("mistr: window must be at least 1, got %d" % window)
     mask = []
     for i in range(L):
         row = []
@@ -179,8 +178,7 @@ def attention_span(window, n_layers):
     return int(window) * int(n_layers)
 
 
-def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None,
-                            positions=None, base=10000.0):
+def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None, positions=None, base=10000.0):
     r"""Attention with :math:`n_{kv}` key-value heads shared across
     :math:`n_h` query heads.
 
@@ -196,53 +194,46 @@ def grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=None,
     if n_heads < 1 or n_kv_heads < 1:
         raise ValueError("mistr: need at least one head of each kind")
     if n_heads % n_kv_heads != 0:
-        raise ValueError("mistr: n_heads (%d) must be a multiple of "
-                         "n_kv_heads (%d)" % (n_heads, n_kv_heads))
+        raise ValueError("mistr: n_heads (%d) must be a multiple of n_kv_heads (%d)" % (n_heads, n_kv_heads))
     if d % n_heads != 0:
-        raise ValueError("mistr: dimension %d is not divisible by %d "
-                         "heads" % (d, n_heads))
+        raise ValueError("mistr: dimension %d is not divisible by %d heads" % (d, n_heads))
     hd = d // n_heads
     # K and V carry n_kv_heads heads of the SAME head dimension as Q --
     # that is where the cache saving comes from, so the width is
     # n_kv_heads*hd and not d.
     dk = len(Km[0])
     if dk != n_kv_heads * hd:
-        raise ValueError("mistr: K and V must be %d wide (n_kv_heads=%d "
-                         "times head_dim=%d), got %d"
-                         % (n_kv_heads * hd, n_kv_heads, hd, dk))
+        raise ValueError(
+            "mistr: K and V must be %d wide (n_kv_heads=%d "
+            "times head_dim=%d), got %d" % (n_kv_heads * hd, n_kv_heads, hd, dk)
+        )
     kd = hd
     group = n_heads // n_kv_heads
     pos = list(range(L)) if positions is None else list(positions)
     out = [[0.0] * d for _ in range(L)]
     for h in range(n_heads):
         g = h // group
-        qs = [Qm[t][h * hd:(h + 1) * hd] for t in range(L)]
-        ks = [Km[t][g * kd:(g + 1) * kd] for t in range(L)]
-        vs = [Vm[t][g * kd:(g + 1) * kd] for t in range(L)]
+        qs = [Qm[t][h * hd : (h + 1) * hd] for t in range(L)]
+        ks = [Km[t][g * kd : (g + 1) * kd] for t in range(L)]
+        vs = [Vm[t][g * kd : (g + 1) * kd] for t in range(L)]
         if positions is not False:
             qs = [apply_rope(qs[t], pos[t], base=base) for t in range(L)]
             ks = [apply_rope(ks[t], pos[t], base=base) for t in range(L)]
         scale = 1.0 / math.sqrt(hd)
         for i in range(L):
-            allowed = [j for j in range(L)
-                       if mask is None or mask[i][j]]
+            allowed = [j for j in range(L) if mask is None or mask[i][j]]
             if not allowed:
-                raise ValueError("mistr: row %d may attend to nothing"
-                                 % i)
-            sc = [scale * sum(qs[i][c] * ks[j][c] for c in range(hd))
-                  for j in allowed]
+                raise ValueError("mistr: row %d may attend to nothing" % i)
+            sc = [scale * sum(qs[i][c] * ks[j][c] for c in range(hd)) for j in allowed]
             mx = max(sc)
             w = [math.exp(v - mx) for v in sc]
             tot = sum(w)
             for c in range(hd):
-                out[i][h * hd + c] = sum(
-                    w[t] * vs[allowed[t]][c]
-                    for t in range(len(allowed))) / tot
+                out[i][h * hd + c] = sum(w[t] * vs[allowed[t]][c] for t in range(len(allowed))) / tot
     return out
 
 
-def mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads,
-                  window, norm1=None, norm2=None, base=10000.0):
+def mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads, window, norm1=None, norm2=None, base=10000.0):
     """One decoder block: RMSNorm, SWA + GQA + RoPE, residual, RMSNorm,
     SwiGLU, residual."""
     Xm = k.mat(X)
@@ -251,37 +242,43 @@ def mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads,
     mask = sliding_window_mask(L, window)
 
     def proj(row, Wm):
-        return [sum(row[i] * Wm[i][j] for i in range(len(row)))
-                for j in range(len(Wm[0]))]
+        return [sum(row[i] * Wm[i][j] for i in range(len(row))) for j in range(len(Wm[0]))]
 
     h = [rms_norm(Xm[t], norm1) for t in range(L)]
     Q = [proj(h[t], Wq) for t in range(L)]
     K = [proj(h[t], Wk) for t in range(L)]
     V = [proj(h[t], Wv) for t in range(L)]
-    a = grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=mask,
-                                base=base)
+    a = grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask=mask, base=base)
     a = [proj(a[t], Wo) for t in range(L)]
     x1 = [[Xm[t][c] + a[t][c] for c in range(d)] for t in range(L)]
     h2 = [rms_norm(x1[t], norm2) for t in range(L)]
     f = [swiglu(h2[t], W1, W2, W3) for t in range(L)]
     out = [[x1[t][c] + f[t][c] for c in range(d)] for t in range(L)]
-    return RichResult(payload={
-        "estimate": out, "output": out, "attention_mask": mask,
-        "L": L, "d": d, "n_heads": n_heads, "n_kv_heads": n_kv_heads,
-        "window": int(window),
-        "kv_cache_entries": min(int(window), L) * n_kv_heads,
-        "method": "Mistral decoder block: SWA + GQA + RoPE + SwiGLU + "
-                  "RMSNorm, Jiang et al. (2023)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "output": out,
+            "attention_mask": mask,
+            "L": L,
+            "d": d,
+            "n_heads": n_heads,
+            "n_kv_heads": n_kv_heads,
+            "window": int(window),
+            "kv_cache_entries": min(int(window), L) * n_kv_heads,
+            "method": "Mistral decoder block: SWA + GQA + RoPE + SwiGLU + RMSNorm, Jiang et al. (2023)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("mistr: SWA -- token i attends to (i-W, i]; span grows to "
-            "k*W over k layers because attention composes. RoPE rotates "
-            "pairs (2i, 2i+1) by pos*theta_i, and <R_m q, R_n k> = "
-            "<R_{m-n} q, k> EXACTLY. GQA shares one kv head across "
-            "n_heads/n_kv query heads. SwiGLU gates; RMSNorm is "
-            "scale-invariant but NOT shift-invariant.")
+    return (
+        "mistr: SWA -- token i attends to (i-W, i]; span grows to "
+        "k*W over k layers because attention composes. RoPE rotates "
+        "pairs (2i, 2i+1) by pos*theta_i, and <R_m q, R_n k> = "
+        "<R_{m-n} q, k> EXACTLY. GQA shares one kv head across "
+        "n_heads/n_kv query heads. SwiGLU gates; RMSNorm is "
+        "scale-invariant but NOT shift-invariant."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -1,10 +1,10 @@
 """Tests for cndent.conditional_entropy."""
 
 import math
+
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.cndent import conditional_entropy
 
 

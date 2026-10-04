@@ -119,12 +119,14 @@ def cox_dfbeta_influence(fit):
     worst = int(np.argmax(np.abs(dfbetas).max(axis=1)))
     return RichResult(
         title="Cox DFBETA influence",
-        summary_lines=[("n", n), ("max |dfbetas|", float(np.nanmax(np.abs(dfbetas)))),
-                       ("most influential", worst)],
+        summary_lines=[("n", n), ("max |dfbetas|", float(np.nanmax(np.abs(dfbetas)))), ("most influential", worst)],
         payload={
-            "dfbeta": dfbeta, "dfbetas": dfbetas, "score_residuals": L,
+            "dfbeta": dfbeta,
+            "dfbetas": dfbetas,
+            "score_residuals": L,
             "max_influence": float(np.nanmax(np.abs(dfbetas))),
-            "most_influential": worst, "method": "cox_dfbeta_influence",
+            "most_influential": worst,
+            "method": "cox_dfbeta_influence",
         },
     )
 

@@ -31,8 +31,7 @@ from ._richresult import RichResult
 __all__ = ["rt_serial_interval"]
 
 
-def rt_serial_interval(incidence, serial_interval, window=7,
-                       a_prior=1.0, b_prior=5.0):
+def rt_serial_interval(incidence, serial_interval, window=7, a_prior=1.0, b_prior=5.0):
     """Cori et al. (2013) instantaneous reproduction number.
 
     Parameters
@@ -88,8 +87,8 @@ def rt_serial_interval(incidence, serial_interval, window=7,
     r_std = []
     for end in range(tau, T):
         start = end - tau + 1
-        a = a_prior + sum(inc[start:end + 1])
-        b = 1.0 / (1.0 / b_prior + sum(lam[start:end + 1]))
+        a = a_prior + sum(inc[start : end + 1])
+        b = 1.0 / (1.0 / b_prior + sum(lam[start : end + 1]))
         t_start.append(start)
         t_end.append(end)
         a_post.append(float(a))
@@ -97,14 +96,23 @@ def rt_serial_interval(incidence, serial_interval, window=7,
         r_mean.append(float(a * b))
         r_std.append(float(math.sqrt(a) * b))
 
-    return RichResult(payload={
-        "r_mean": r_mean, "r_std": r_std,
-        "a_posterior": a_post, "b_posterior": b_post,
-        "lambda": [float(v) for v in lam],
-        "t_start": t_start, "t_end": t_end,
-        "window": tau, "a_prior": float(a_prior), "b_prior": float(b_prior),
-        "n_windows": len(r_mean), "n": T,
-        "method": "Cori et al. (2013) instantaneous R, gamma-Poisson conjugate posterior"})
+    return RichResult(
+        payload={
+            "r_mean": r_mean,
+            "r_std": r_std,
+            "a_posterior": a_post,
+            "b_posterior": b_post,
+            "lambda": [float(v) for v in lam],
+            "t_start": t_start,
+            "t_end": t_end,
+            "window": tau,
+            "a_prior": float(a_prior),
+            "b_prior": float(b_prior),
+            "n_windows": len(r_mean),
+            "n": T,
+            "method": "Cori et al. (2013) instantaneous R, gamma-Poisson conjugate posterior",
+        }
+    )
 
 
 def cheatsheet():

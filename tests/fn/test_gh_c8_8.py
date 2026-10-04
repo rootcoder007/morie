@@ -1,7 +1,5 @@
 """Tests for gh_c8_8.ghosal_gauss_reg_crt."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_8 import ghosal_gauss_reg_crt
 
 

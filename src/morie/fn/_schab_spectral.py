@@ -87,7 +87,7 @@ def sample_covariance_2d(z, centre=True):
             if u1 <= u0 or v1 <= v0:
                 continue
             left = d[u0:u1, v0:v1]
-            right = d[u0 + jj:u1 + jj, v0 + kk:v1 + kk]
+            right = d[u0 + jj : u1 + jj, v0 + kk : v1 + kk]
             out[a, b] = float((left * right).sum()) / (r * c)
     return out, lags_j, lags_k
 
@@ -109,9 +109,9 @@ def periodogram(z, omit_zero_frequency=True):
 
     def _spec(field):
         # exp{-i(w1 u + w2 v)} summed over the lattice, for every (w1, w2)
-        eu = np.exp(-1j * np.outer(w1, u))          # (nw1, r)
-        ev = np.exp(-1j * np.outer(w2, v))          # (nw2, c)
-        amp = eu @ field @ ev.T                     # (nw1, nw2)
+        eu = np.exp(-1j * np.outer(w1, u))  # (nw1, r)
+        ev = np.exp(-1j * np.outer(w2, v))  # (nw2, c)
+        amp = eu @ field @ ev.T  # (nw1, nw2)
         return np.abs(amp) ** 2 / ((2.0 * np.pi) ** 2 * r * c)
 
     inten = _spec(z)
@@ -156,8 +156,7 @@ def periodogram_from_covariance(z):
         for b, o2 in enumerate(w2):
             ang = np.add.outer(o1 * lags_j, o2 * lags_k)
             out[a, b] = float((chat * np.cos(ang)).sum()) / ((2.0 * np.pi) ** 2)
-    return {"periodogram": out, "omega1": w1, "omega2": w2, "covariance": chat,
-            "lags_j": lags_j, "lags_k": lags_k}
+    return {"periodogram": out, "omega1": w1, "omega2": w2, "covariance": chat, "lags_j": lags_j, "lags_k": lags_k}
 
 
 def spectral_density(cov, lags_j, lags_k, omega1, omega2):
@@ -172,7 +171,6 @@ def spectral_density(cov, lags_j, lags_k, omega1, omega2):
     lags_j = np.asarray(lags_j, dtype=float)
     lags_k = np.asarray(lags_k, dtype=float)
     if cov.shape != (lags_j.size, lags_k.size):
-        raise ValueError(
-            f"cov is {cov.shape} but lags are {lags_j.size} x {lags_k.size}")
+        raise ValueError(f"cov is {cov.shape} but lags are {lags_j.size} x {lags_k.size}")
     ang = np.add.outer(float(omega1) * lags_j, float(omega2) * lags_k)
     return float((cov * np.cos(ang)).sum()) / ((2.0 * np.pi) ** 2)

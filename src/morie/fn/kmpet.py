@@ -17,8 +17,7 @@ def _log_softmax(z):
     return z - (m + np.log(np.exp(z - m).sum()))
 
 
-def kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets,
-                    alpha, ignore_index=_IGNORE):
+def kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets, alpha, ignore_index=_IGNORE):
     """L_PET = L_CE(verbalizer, y_true) + alpha * L_MLM(masked tokens).
 
     The auxiliary term is the ordinary masked-LM loss, so it is
@@ -47,8 +46,7 @@ def kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets,
     vz = np.atleast_1d(np.asarray(verbalizer_logits, dtype=float)).ravel()
     alpha = float(alpha)
     if vz.size < 2:
-        raise ValueError(
-            "the verbalizer must score at least two classes.")
+        raise ValueError("the verbalizer must score at least two classes.")
     if not np.all(np.isfinite(vz)):
         raise ValueError("a verbalizer logit is non-finite.")
     y = int(y_true)
@@ -58,34 +56,39 @@ def kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets,
         raise ValueError(
             f"alpha must be non-negative; got {alpha}. A negative "
             "weight rewards the model for being wrong on the masked "
-            "tokens.")
+            "tokens."
+        )
     ce = float(-_log_softmax(vz)[y])
 
     ml = np.atleast_2d(np.asarray(mlm_logits, dtype=float))
     mt = np.atleast_1d(np.asarray(mlm_targets)).ravel().astype(int)
     if mt.size != ml.shape[0]:
-        raise ValueError(
-            f"mlm_targets has {mt.size} entries for {ml.shape[0]} "
-            "positions.")
+        raise ValueError(f"mlm_targets has {mt.size} entries for {ml.shape[0]} positions.")
     masked = np.flatnonzero(mt != ignore_index)
     if masked.size == 0:
         raise ValueError(
             "no position is masked, so there is no MLM term to weight; "
-            "pass alpha = 0 and a real mask, or use the plain CE loss.")
+            "pass alpha = 0 and a real mask, or use the plain CE loss."
+        )
     if np.any((mt[masked] < 0) | (mt[masked] >= ml.shape[1])):
-        raise ValueError(
-            f"a masked target id lies outside [0, {ml.shape[1] - 1}].")
+        raise ValueError(f"a masked target id lies outside [0, {ml.shape[1] - 1}].")
     p_true = np.ones(ml.shape[0])
     for t in masked:
         p_true[t] = float(np.exp(_log_softmax(ml[t])[mt[t]]))
     mlm = kamath_ch2_mlm_loss(p_true, masked)
     total = ce + alpha * float(mlm["estimate"])
-    return RichResult(payload={
-        "estimate": total, "loss": total,
-        "loss_ce": ce, "loss_mlm": float(mlm["estimate"]),
-        "alpha": alpha, "n_masked": int(masked.size),
-        "n": int(ml.shape[0]),
-        "method": "PET loss = verbalizer CE + alpha * MLM (via km022)"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "loss": total,
+            "loss_ce": ce,
+            "loss_mlm": float(mlm["estimate"]),
+            "alpha": alpha,
+            "n_masked": int(masked.size),
+            "n": int(ml.shape[0]),
+            "method": "PET loss = verbalizer CE + alpha * MLM (via km022)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,5 @@
 """Tests for neyman.neyman_allocation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.neyman import neyman_allocation
 
 

@@ -1,7 +1,6 @@
 """Tests for snsc.sn_scale."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.snsc import sn_scale
 
 

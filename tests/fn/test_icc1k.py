@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.icc1k import icc_one_way_average
 
 
@@ -24,8 +23,18 @@ def test_icc1k_basic():
     result = icc_one_way_average(y, cluster)
     # Result should be dict-like with the documented keys
     assert isinstance(result, dict)
-    expected_keys = ("value", "icc_single", "k", "n", "MSR", "MSW",
-                     "case", "design_assumption", "smallest_because", "method")
+    expected_keys = (
+        "value",
+        "icc_single",
+        "k",
+        "n",
+        "MSR",
+        "MSW",
+        "case",
+        "design_assumption",
+        "smallest_because",
+        "method",
+    )
     for key in expected_keys:
         assert key in result
     # The ICC estimates must be finite numbers

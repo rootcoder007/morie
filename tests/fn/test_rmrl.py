@@ -20,9 +20,9 @@ def test_rmrl_basic():
     rm = reward_machine(EDGES, u0=0, terminal=(2, 3))
     assert rm.step(0, {"c"}) == (1, 0.0)
     assert rm.step(0, set()) == (0, 0.0)
-    assert rm.step(0, {"c", "d"}) == (3, 0.0)     # negative literal blocks c
+    assert rm.step(0, {"c", "d"}) == (3, 0.0)  # negative literal blocks c
     assert rm.step(1, {"o"}) == (2, 1.0)
-    assert rm.step(2, {"c"}) == (2, 0.0)          # terminal absorbs
+    assert rm.step(2, {"c"}) == (2, 0.0)  # terminal absorbs
     assert rm.states == {0, 1, 2, 3}
 
 

@@ -17,8 +17,7 @@ def _ar1(phi=0.6, n=300, seed=5):
 
     x, prev = [], 0.0
     for _ in range(n + 100):
-        e = math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-            math.cos(2 * math.pi * r())
+        e = math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
         prev = phi * prev + e
         x.append(prev)
     return x[100:]
@@ -55,9 +54,7 @@ def test_seed_reproducibility():
 
 
 def test_validation():
-    for call in (lambda: btarsv([1.0] * 10),
-                 lambda: btarsv([1.0] * 50),
-                 lambda: btarsv(_ar1(), p=999)):
+    for call in (lambda: btarsv([1.0] * 10), lambda: btarsv([1.0] * 50), lambda: btarsv(_ar1(), p=999)):
         try:
             call()
             raise AssertionError("expected ValueError")

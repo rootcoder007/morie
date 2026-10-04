@@ -62,20 +62,18 @@ def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
     A, yv = prepare_design(X, y)
     n, p = A.shape
     if n <= p:
-        raise ValueError(f"need more observations than parameters, "
-                         f"got n = {n}, p = {p}.")
+        raise ValueError(f"need more observations than parameters, got n = {n}, p = {p}.")
     c1 = float(c1)
     c2 = float(c2)
     # b2 = E_Phi[rho_2], the consistency constant for the tau-scale
-    b2, _ = integrate.quad(lambda u: tukey_rho(u, c2) * stats.norm.pdf(u),
-                           -12, 12)
+    b2, _ = integrate.quad(lambda u: tukey_rho(u, c2) * stats.norm.pdf(u), -12, 12)
 
     def tau_of(beta):
         r = yv - A @ beta
         s = s_scale(r, c=c1, b=0.5)
         if s <= 0:
             return 0.0, 0.0
-        t2 = s ** 2 * float(np.mean(tukey_rho(r / s, c2))) / b2
+        t2 = s**2 * float(np.mean(tukey_rho(r / s, c2))) / b2
         return float(np.sqrt(max(t2, 0.0))), s
 
     rng = np.random.default_rng(seed)
@@ -109,18 +107,25 @@ def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
         if t_new >= tau - 1e-12:
             break
         tau, beta = t_new, beta_new
-    return RichResult(payload={
-        "beta": beta, "tau_scale": float(tau), "m_scale": float(s),
-        "residuals": yv - A @ beta,
-        "breakdown": 0.5, "gaussian_efficiency": 0.95,
-        "c1": c1, "c2": c2,
-        "versus_mm": "MM freezes an S-scale and re-fits beta; the "
-                     "tau-estimator bakes both rhos into ONE objective, and "
-                     "the tau-scale is itself a robust efficient residual "
-                     "scale",
-        "n": int(n), "p": int(p),
-        "method": "Tau-estimator (Yohai-Zamar 1988): minimise the efficient "
-                  "tau-scale, c1 = 1.5476, c2 = 6.08"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "tau_scale": float(tau),
+            "m_scale": float(s),
+            "residuals": yv - A @ beta,
+            "breakdown": 0.5,
+            "gaussian_efficiency": 0.95,
+            "c1": c1,
+            "c2": c2,
+            "versus_mm": "MM freezes an S-scale and re-fits beta; the "
+            "tau-estimator bakes both rhos into ONE objective, and "
+            "the tau-scale is itself a robust efficient residual "
+            "scale",
+            "n": int(n),
+            "p": int(p),
+            "method": "Tau-estimator (Yohai-Zamar 1988): minimise the efficient tau-scale, c1 = 1.5476, c2 = 6.08",
+        }
+    )
 
 
 def cheatsheet():

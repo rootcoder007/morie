@@ -173,9 +173,9 @@ class TestHajekATE:
         frame = _minimal_frame(n=30, seed=2)
         result = run_propensity_ipw_analysis(frame)
         method = result["ipw_results"]["method"].iloc[0]
-        assert (
-            "Hajek" in method or "Hájek" in method or "hajek" in method
-        ), f"Expected Hájek label in method column, got: {method!r}"
+        assert "Hajek" in method or "Hájek" in method or "hajek" in method, (
+            f"Expected Hájek label in method column, got: {method!r}"
+        )
 
     def test_run_propensity_ipw_analysis_returns_hajek_columns(self):
         """Result DataFrame must have y1_hajek and y0_hajek, not y1_ipw/y0_ipw."""
@@ -217,9 +217,9 @@ class TestHajekATE:
         ate_naive = float(y[tm].mean() - y[cm].mean())
 
         # They should differ when there is confounding
-        assert (
-            abs(ate_hajek - ate_naive) > 0.01
-        ), "Hájek ATE and naive ATE are identical — IPW adjustment may not be applied."
+        assert abs(ate_hajek - ate_naive) > 0.01, (
+            "Hájek ATE and naive ATE are identical — IPW adjustment may not be applied."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -237,9 +237,9 @@ class TestIPWCATEInInvestigation:
         frame = _minimal_frame(n=30, seed=5)
         result = run_treatment_effects_analysis(frame)
         methods = set(result["treatment_effects_summary"]["method"])
-        assert any(
-            "Hajek" in m or "Hájek" in m or "hajek" in m for m in methods
-        ), f"Expected Hájek in method labels, got: {methods}"
+        assert any("Hajek" in m or "Hájek" in m or "hajek" in m for m in methods), (
+            f"Expected Hájek in method labels, got: {methods}"
+        )
 
     def test_cate_rows_have_ipw_se_not_zero_when_groups_differ(self):
         """
@@ -318,9 +318,9 @@ class TestCalculateInteractionPower:
         correct_power = calculate_interaction_power(50, alpha=0.05, effect_size=0.2)
         old_fabricated = 1.0 - np.exp(-(50 * 0.2) / 50)  # = 1 - exp(-0.2) ≈ 0.181
         # The correct value must differ from the fabricated value by > 0.01
-        assert (
-            abs(correct_power - old_fabricated) > 0.01
-        ), "Correct power and old fabricated power are suspiciously identical. Possible regression to the old formula."
+        assert abs(correct_power - old_fabricated) > 0.01, (
+            "Correct power and old fabricated power are suspiciously identical. Possible regression to the old formula."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -360,9 +360,9 @@ class TestBootstrapCIReproducibility:
         # With 200 iterations and n=100, different seeds should produce
         # different draws and therefore different CIs with very high probability.
         # If they are identical something is wrong with the seeding.
-        assert not (
-            lower1 == lower2 and upper1 == upper2
-        ), "CI with seed=1 equals CI with seed=99 — seeding may not be working."
+        assert not (lower1 == lower2 and upper1 == upper2), (
+            "CI with seed=1 equals CI with seed=99 — seeding may not be working."
+        )
 
     def test_ci_is_valid_interval(self):
         data = self._make_data()
@@ -385,9 +385,9 @@ class TestBootstrapCIReproducibility:
         large = pd.DataFrame({"x": rng.standard_normal(500)})
         lo_s, hi_s = bootstrap_ci(func, small, n_iterations=500, seed=42)
         lo_l, hi_l = bootstrap_ci(func, large, n_iterations=500, seed=42)
-        assert (hi_l - lo_l) < (
-            hi_s - lo_s
-        ), "Expected narrower CI for larger sample; bootstrap seeding or logic may be broken."
+        assert (hi_l - lo_l) < (hi_s - lo_s), (
+            "Expected narrower CI for larger sample; bootstrap seeding or logic may be broken."
+        )
 
 
 # ---------------------------------------------------------------------------

@@ -51,8 +51,7 @@ def schabenberger_g_function(points, r=None, region=None):
     p = as_points(points)
     nn = nn_distances(p)
     if nn.size == 0:
-        raise ValueError("at least two events are needed for a "
-                         "nearest-neighbour distance")
+        raise ValueError("at least two events are needed for a nearest-neighbour distance")
     reg = as_region(region, p)
     if r is None:
         r = np.linspace(0.0, float(nn.max()), 25)
@@ -61,11 +60,15 @@ def schabenberger_g_function(points, r=None, region=None):
     lam = intensity(p, reg)
     return RichResult(
         title="G-function (nearest-neighbour distance CDF)",
-        summary_lines=[("n events", int(p.shape[0])),
-                       ("mean nn distance", float(nn.mean()))],
-        payload={"r": r, "g": g, "g_csr": 1.0 - np.exp(-lam * np.pi * r**2),
-                 "nn_distances": nn, "mean_nn": float(nn.mean()),
-                 "lambda_est": lam},
+        summary_lines=[("n events", int(p.shape[0])), ("mean nn distance", float(nn.mean()))],
+        payload={
+            "r": r,
+            "g": g,
+            "g_csr": 1.0 - np.exp(-lam * np.pi * r**2),
+            "nn_distances": nn,
+            "mean_nn": float(nn.mean()),
+            "lambda_est": lam,
+        },
     )
 
 

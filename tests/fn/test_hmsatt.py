@@ -1,7 +1,6 @@
 """Tests for hmsatt.geron_self_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsatt import geron_self_attention
 
 

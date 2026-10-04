@@ -51,9 +51,7 @@ def test_a_series_too_short_to_test_returns_one_segment():
 
 
 def test_validation():
-    for call in (lambda: copynm([]),
-                 lambda: copynm([1.0] * 10, alpha=0.0),
-                 lambda: copynm([1.0] * 10, permutations=0)):
+    for call in (lambda: copynm([]), lambda: copynm([1.0] * 10, alpha=0.0), lambda: copynm([1.0] * 10, permutations=0)):
         try:
             call()
             raise AssertionError("expected ValueError")

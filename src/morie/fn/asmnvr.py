@@ -47,11 +47,9 @@ unitigs and says the assembly is ambiguous, rather than picking an
 arbitrary Eulerian path and presenting it as the answer.
 """
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["asmnvr", "de_bruijn_graph", "eulerian_path",
-           "de_novo_assembly"]
+__all__ = ["asmnvr", "de_bruijn_graph", "eulerian_path", "de_novo_assembly"]
 
 
 def de_bruijn_graph(reads, k, multiplicity="set"):
@@ -84,12 +82,10 @@ def de_bruijn_graph(reads, k, multiplicity="set"):
     Returns ``(edges, indeg, outdeg)``.
     """
     if multiplicity not in ("set", "count"):
-        raise ValueError("asmnvr: multiplicity must be 'set' or 'count', "
-                         "got %r" % (multiplicity,))
+        raise ValueError("asmnvr: multiplicity must be 'set' or 'count', got %r" % (multiplicity,))
     k = int(k)
     if k < 2:
-        raise ValueError("asmnvr: k must be >= 2 (a k-mer needs a "
-                         "(k-1)-mer prefix and suffix)")
+        raise ValueError("asmnvr: k must be >= 2 (a k-mer needs a (k-1)-mer prefix and suffix)")
     rs = [str(r) for r in reads]
     if not rs:
         raise ValueError("asmnvr: reads must be non-empty")
@@ -99,7 +95,7 @@ def de_bruijn_graph(reads, k, multiplicity="set"):
         if len(r) < k:
             continue
         for i in range(len(r) - k + 1):
-            kmer = r[i:i + k]
+            kmer = r[i : i + k]
             if multiplicity == "set":
                 if kmer in seen:
                     continue
@@ -126,8 +122,7 @@ def de_bruijn_graph(reads, k, multiplicity="set"):
 
 def _connected(edges, verts):
     """Weak connectivity over vertices that carry at least one edge."""
-    active = [v for v in verts if edges.get(v) or
-              any(v in ws for ws in edges.values())]
+    active = [v for v in verts if edges.get(v) or any(v in ws for ws in edges.values())]
     if not active:
         return True
     adj = {}
@@ -160,8 +155,7 @@ def eulerian_path(edges, indeg, outdeg):
     verts = set(list(indeg) + list(outdeg))
     starts = [v for v in verts if outdeg.get(v, 0) - indeg.get(v, 0) == 1]
     ends = [v for v in verts if indeg.get(v, 0) - outdeg.get(v, 0) == 1]
-    odd = [v for v in verts
-           if abs(indeg.get(v, 0) - outdeg.get(v, 0)) > 1]
+    odd = [v for v in verts if abs(indeg.get(v, 0) - outdeg.get(v, 0)) > 1]
     if odd or len(starts) > 1 or len(ends) > 1 or len(starts) != len(ends):
         return None
     if not _connected(edges, verts):
@@ -186,13 +180,14 @@ def eulerian_path(edges, indeg, outdeg):
     path.reverse()
     total = sum(len(ws) for ws in edges.values())
     if len(path) != total + 1:
-        return None                      # not all edges were used
+        return None  # not all edges were used
     return path
 
 
 def _unitigs(edges, indeg, outdeg):
     """Maximal non-branching paths: the part of the assembly that is
     unambiguous even when the whole graph is not."""
+
     def simple(v):
         return indeg.get(v, 0) == 1 and outdeg.get(v, 0) == 1
 
@@ -303,47 +298,51 @@ def asmnvr(reads, k=None, multiplicity="set"):
     # and the reason its Eulerian-superpath machinery exists. So the
     # length is reported as what it is, a lower bound, rather than
     # guessed at.
-    lower_bound = (multiplicity == "set")
+    lower_bound = multiplicity == "set"
     contigs = [_spell(p) for p in _unitigs(edges, indeg, outdeg)]
     branching = sorted(
-        [v for v in set(list(indeg) + list(outdeg))
-         if outdeg.get(v, 0) > 1 or indeg.get(v, 0) > 1], key=repr)
+        [v for v in set(list(indeg) + list(outdeg)) if outdeg.get(v, 0) > 1 or indeg.get(v, 0) > 1], key=repr
+    )
     n_kmers = sum(len(ws) for ws in edges.values())
-    return RichResult(payload={
-        "estimate": _spell(path) if path else None,
-        "sequence": _spell(path) if path else None,
-        "path": path,
-        "contigs": contigs,
-        "unambiguous": bool(path is not None and not branching),
-        "length_is_lower_bound": bool(lower_bound and path is not None),
-        "branching": branching,
-        "n_kmers": n_kmers,
-        "n_vertices": len(set(list(indeg) + list(outdeg))),
-        "graph": edges,
-        "k": int(k),
-        "multiplicity": multiplicity,
-        "note": "repeat resolution (Eulerian superpaths) and error "
-                "correction are NOT implemented; a branching graph is "
-                "reported as ambiguous rather than resolved. With "
-                "multiplicity='set' a k-mer that repeats in the source "
-                "is one edge and is traversed once, so the assembled "
-                "length is a LOWER BOUND on the truth "
-                "(length_is_lower_bound); the collapse cannot be "
-                "detected from the k-mer set, since read coverage "
-                "repeats k-mers too",
-        "method": "Eulerian-path assembly (Pevzner, Tang & Waterman 2001)",
-    })
+    return RichResult(
+        payload={
+            "estimate": _spell(path) if path else None,
+            "sequence": _spell(path) if path else None,
+            "path": path,
+            "contigs": contigs,
+            "unambiguous": bool(path is not None and not branching),
+            "length_is_lower_bound": bool(lower_bound and path is not None),
+            "branching": branching,
+            "n_kmers": n_kmers,
+            "n_vertices": len(set(list(indeg) + list(outdeg))),
+            "graph": edges,
+            "k": int(k),
+            "multiplicity": multiplicity,
+            "note": "repeat resolution (Eulerian superpaths) and error "
+            "correction are NOT implemented; a branching graph is "
+            "reported as ambiguous rather than resolved. With "
+            "multiplicity='set' a k-mer that repeats in the source "
+            "is one edge and is traversed once, so the assembled "
+            "length is a LOWER BOUND on the truth "
+            "(length_is_lower_bound); the collapse cannot be "
+            "detected from the k-mer set, since read coverage "
+            "repeats k-mers too",
+            "method": "Eulerian-path assembly (Pevzner, Tang & Waterman 2001)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("asmnvr: de Bruijn assembly (Pevzner 2001). Break reads "
-            "into l-tuples; vertices are (l-1)-tuples, each l-tuple is "
-            "an EDGE. Overlap-layout-consensus needs a Hamiltonian "
-            "path (NP-complete); this needs an EULERIAN path (easy). "
-            "Hierholzer, with the exact existence condition. Repeat "
-            "resolution via Eulerian superpaths and error correction "
-            "are NOT here -- branching graphs are reported ambiguous "
-            "and only unitigs are claimed.")
+    return (
+        "asmnvr: de Bruijn assembly (Pevzner 2001). Break reads "
+        "into l-tuples; vertices are (l-1)-tuples, each l-tuple is "
+        "an EDGE. Overlap-layout-consensus needs a Hamiltonian "
+        "path (NP-complete); this needs an EULERIAN path (easy). "
+        "Hierholzer, with the exact existence condition. Repeat "
+        "resolution via Eulerian superpaths and error correction "
+        "are NOT here -- branching graphs are reported ambiguous "
+        "and only unitigs are claimed."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -1,7 +1,5 @@
 """Tests for loglinear_saturated_mean.loglinear_saturated_mean."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.loglinear_saturated_mean import (
     loglinear_saturated_mean,
 )

@@ -11,12 +11,9 @@ from .clipsi import l2_normalize
 __all__ = ["clip_image_encoder"]
 
 _BACKBONES = {
-    "vit-l/14": {"patch": 14, "width": 1024, "layers": 24, "heads": 16,
-                 "embed": 768},
-    "vit-b/32": {"patch": 32, "width": 768, "layers": 12, "heads": 12,
-                 "embed": 512},
-    "vit-b/16": {"patch": 16, "width": 768, "layers": 12, "heads": 12,
-                 "embed": 512},
+    "vit-l/14": {"patch": 14, "width": 1024, "layers": 24, "heads": 16, "embed": 768},
+    "vit-b/32": {"patch": 32, "width": 768, "layers": 12, "heads": 12, "embed": 512},
+    "vit-b/16": {"patch": 16, "width": 768, "layers": 12, "heads": 12, "embed": 512},
 }
 
 
@@ -59,8 +56,7 @@ def clip_image_encoder(image, backbone="vit-l/14", seed=42):
     """
     key = str(backbone).lower()
     if key not in _BACKBONES:
-        raise ValueError("backbone must be one of " +
-                         ", ".join(sorted(_BACKBONES)))
+        raise ValueError("backbone must be one of " + ", ".join(sorted(_BACKBONES)))
     cfg = _BACKBONES[key]
     P = cfg["patch"]
     M = core.mat(image)
@@ -75,12 +71,9 @@ def clip_image_encoder(image, backbone="vit-l/14", seed=42):
     dim = min(cfg["width"], 64)
     out_dim = min(cfg["embed"], 32)
     rng = np.random.default_rng(seed)
-    proj = [[float(rng.normal(0.0, 1.0)) / math.sqrt(P * P)
-             for _ in range(dim)] for _ in range(P * P)]
-    pos = [[float(rng.normal(0.0, 0.02)) for _ in range(dim)]
-           for _ in range(npatch + 1)]
-    head = [[float(rng.normal(0.0, 1.0)) / math.sqrt(dim)
-             for _ in range(out_dim)] for _ in range(dim)]
+    proj = [[float(rng.normal(0.0, 1.0)) / math.sqrt(P * P) for _ in range(dim)] for _ in range(P * P)]
+    pos = [[float(rng.normal(0.0, 0.02)) for _ in range(dim)] for _ in range(npatch + 1)]
+    head = [[float(rng.normal(0.0, 1.0)) / math.sqrt(dim) for _ in range(out_dim)] for _ in range(dim)]
     tokens = [list(pos[0])]
     for a in range(gh):
         for b in range(gw):
@@ -98,8 +91,7 @@ def clip_image_encoder(image, backbone="vit-l/14", seed=42):
     # one attention-free residual pooling stage: the class token reads the
     # mean of the patch tokens, which is the t -> 0 limit of attention
     cls = tokens[0]
-    mean = [sum(tokens[1 + i][k] for i in range(npatch)) / npatch
-            for k in range(dim)]
+    mean = [sum(tokens[1 + i][k] for i in range(npatch)) / npatch for k in range(dim)]
     cls = [cls[k] + mean[k] for k in range(dim)]
     mu = sum(cls) / dim
     sd = math.sqrt(sum((v - mu) ** 2 for v in cls) / dim)
@@ -111,17 +103,19 @@ def clip_image_encoder(image, backbone="vit-l/14", seed=42):
             s += cls[k] * head[k][j]
         emb.append(s)
     emb = l2_normalize(emb)
-    return RichResult(payload={
-        "estimate": emb[0],
-        "embedding": emb,
-        "n_patches": npatch,
-        "grid": [gh, gw],
-        "patch": P,
-        "width": cfg["width"],
-        "embed_dim": cfg["embed"],
-        "norm": math.sqrt(sum(v * v for v in emb)),
-        "method": "CLIP vision-transformer image encoder",
-    })
+    return RichResult(
+        payload={
+            "estimate": emb[0],
+            "embedding": emb,
+            "n_patches": npatch,
+            "grid": [gh, gw],
+            "patch": P,
+            "width": cfg["width"],
+            "embed_dim": cfg["embed"],
+            "norm": math.sqrt(sum(v * v for v in emb)),
+            "method": "CLIP vision-transformer image encoder",
+        }
+    )
 
 
 def cheatsheet():

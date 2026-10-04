@@ -49,14 +49,19 @@ def ot_partial_ot(a, b, C, m):
         raise ValueError("cost matrix does not match the marginals")
     P, cost = ot.partial_plan(aa, bb, Cm, m)
     left_a = [aa[i] - sum(P[i]) for i in range(len(aa))]
-    left_b = [bb[j] - sum(P[i][j] for i in range(len(aa)))
-              for j in range(len(bb))]
-    return RichResult(payload={
-        "T": P, "cost": cost,
-        "mass": sum(P[i][j] for i in range(len(aa)) for j in range(len(bb))),
-        "a_left": left_a, "b_left": left_b,
-        "n": len(aa), "m_bins": len(bb),
-        "method": "Partial optimal transport"})
+    left_b = [bb[j] - sum(P[i][j] for i in range(len(aa))) for j in range(len(bb))]
+    return RichResult(
+        payload={
+            "T": P,
+            "cost": cost,
+            "mass": sum(P[i][j] for i in range(len(aa)) for j in range(len(bb))),
+            "a_left": left_a,
+            "b_left": left_b,
+            "n": len(aa),
+            "m_bins": len(bb),
+            "method": "Partial optimal transport",
+        }
+    )
 
 
 def cheatsheet():

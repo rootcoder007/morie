@@ -1,8 +1,8 @@
 """Tests for kendall_concordance."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kndll import kendall_concordance
 
 

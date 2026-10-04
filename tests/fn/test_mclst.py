@@ -1,7 +1,6 @@
 """Tests for morie.fn.mclst -- Model-based clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mclst import mclst, model_based_cluster
 

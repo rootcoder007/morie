@@ -93,14 +93,16 @@ def linkhae(items_from, items_to, symmetric=False, theta_points=None):
 
     res = minimize(crit, [1.0, 0.0], method="Nelder-Mead")
     A, B = float(res.x[0]), float(res.x[1])
-    return RichResult(payload={
-        "A": A,
-        "B": B,
-        "criterion": float(res.fun),
-        "symmetric": bool(symmetric),
-        "n_common": s,
-        "method": "Haebara characteristic-curve linking (plink Eq. 14)",
-    })
+    return RichResult(
+        payload={
+            "A": A,
+            "B": B,
+            "criterion": float(res.fun),
+            "symmetric": bool(symmetric),
+            "n_common": s,
+            "method": "Haebara characteristic-curve linking (plink Eq. 14)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -109,6 +111,7 @@ irt_linking_haebara = linkhae
 
 def cheatsheet():
     return "linkhae: min sum [P_to - P_from*(A,B)]^2 over item curves"
+
 
 # public names resolved by fn/_lazy_map.json
 linking_haebara = linkhae

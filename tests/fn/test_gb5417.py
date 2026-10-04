@@ -1,7 +1,6 @@
 """Tests for gb5417.gibbons_sign_median_ci."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb5417 import gibbons_sign_median_ci
 
 
@@ -12,6 +11,8 @@ def test_gb5417_basic():
     result = gibbons_sign_median_ci(x, alpha)
     assert isinstance(result, dict)
     assert "lower" in result
+
+
 def test_gb5417_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

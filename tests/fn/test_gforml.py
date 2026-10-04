@@ -1,8 +1,8 @@
 """Tests for gforml.robins_g_formula."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gforml import robins_g_formula
 
 

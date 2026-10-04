@@ -36,13 +36,12 @@ def kamath_ch9_input_alignment_loss(P_X, F_T, t, llm=None, loss_fn=None):
     if not callable(llm):
         raise ValueError("llm= must be a callable LLM(P_X, F_T).")
     if not callable(loss_fn):
-        raise ValueError("loss_fn= must be a callable "
-                         "L_txt-gen(prediction, t).")
+        raise ValueError("loss_fn= must be a callable L_txt-gen(prediction, t).")
     P = np.asarray(P_X, dtype=float)
     if P.ndim not in (2, 3):
-        raise ValueError("P_X must be a 2-D prompt-feature matrix or a "
-                         "3-D stack of candidates; got "
-                         f"{P.ndim} dimensions.")
+        raise ValueError(
+            f"P_X must be a 2-D prompt-feature matrix or a 3-D stack of candidates; got {P.ndim} dimensions."
+        )
     cands = P if P.ndim == 3 else P[None, ...]
     losses = []
     for c in cands:
@@ -51,11 +50,16 @@ def kamath_ch9_input_alignment_loss(P_X, F_T, t, llm=None, loss_fn=None):
             raise ValueError("loss_fn returned a non-finite value.")
         losses.append(L)
     k = int(np.argmin(losses))
-    return RichResult(payload={
-        "estimate": float(losses[k]), "argmin": k, "losses": losses,
-        "n_candidates": len(losses), "n": len(losses),
-        "method": "input-alignment text-generation objective "
-                  "(Kamath Eq 9.2)"})
+    return RichResult(
+        payload={
+            "estimate": float(losses[k]),
+            "argmin": k,
+            "losses": losses,
+            "n_candidates": len(losses),
+            "n": len(losses),
+            "method": "input-alignment text-generation objective (Kamath Eq 9.2)",
+        }
+    )
 
 
 def cheatsheet():

@@ -6,10 +6,9 @@ import pytest
 
 from morie.fn.bsaqrs import rangayyan_vf_detect
 
-
 FS = 250.0
 VF = [math.sin(2 * math.pi * 5 * t / FS) + 0.05 * math.sin(0.37 * t) for t in range(2000)]
-SINUS = [3 * math.exp(-((t % 200) - 100) ** 2 / 8.0) + 0.02 * math.sin(0.3 * t) for t in range(2000)]
+SINUS = [3 * math.exp(-(((t % 200) - 100) ** 2) / 8.0) + 0.02 * math.sin(0.3 * t) for t in range(2000)]
 
 
 def test_rgvf_basic():

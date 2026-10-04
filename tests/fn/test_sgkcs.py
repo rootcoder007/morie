@@ -1,7 +1,6 @@
 """Tests for kriging conditional simulation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgkcs import sgkcs
 
 

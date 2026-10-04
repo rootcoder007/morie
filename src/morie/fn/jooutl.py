@@ -108,14 +108,18 @@ def joseph_ts_outlier_detection(y, W=10, threshold=3.5):
     out = score > threshold
     return RichResult(
         title="Time-series outlier detection",
-        summary_lines=[("n", int(n)), ("window", 2 * W + 1),
-                       ("outliers", int(out.sum()))],
-        warnings=["a run of consecutive outliers longer than half the window "
-                  "becomes the local median and is declared normal"],
+        summary_lines=[("n", int(n)), ("window", 2 * W + 1), ("outliers", int(out.sum()))],
+        warnings=[
+            "a run of consecutive outliers longer than half the window becomes the local median and is declared normal"
+        ],
         payload={
-            "outlier": out, "score": score, "rolling_median": med,
-            "rolling_mad": mad, "n_outliers": int(out.sum()),
-            "W": W, "threshold": float(threshold),
+            "outlier": out,
+            "score": score,
+            "rolling_median": med,
+            "rolling_mad": mad,
+            "n_outliers": int(out.sum()),
+            "W": W,
+            "threshold": float(threshold),
             "method": "joseph_ts_outlier_detection",
         },
     )

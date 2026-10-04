@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmql import geron_q_learning
 
 
@@ -20,8 +19,7 @@ def test_hmql_basic():
     gamma = 0.9
     result = geron_q_learning(Q, s, a, r, s_next, alpha, gamma)
     assert isinstance(result, dict)
-    for key in ("Q", "td_error", "target", "old_value", "new_value",
-                "estimate", "n", "method"):
+    for key in ("Q", "td_error", "target", "old_value", "new_value", "estimate", "n", "method"):
         assert key in result
     # The returned Q table keeps the input shape.
     assert len(result["Q"]) == n_states
@@ -83,7 +81,7 @@ import morie.fn.hmql as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

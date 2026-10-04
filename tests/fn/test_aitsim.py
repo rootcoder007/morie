@@ -1,7 +1,6 @@
 """Tests for aitsim.compositional_simpson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitsim import compositional_simpson
 
 

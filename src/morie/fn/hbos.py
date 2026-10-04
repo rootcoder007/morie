@@ -120,8 +120,12 @@ def hbos(X, bins=10, mode="static"):
         title="HBOS",
         summary_lines=[("n", n), ("d", d), ("bins", bins), ("mode", mode)],
         payload={
-            "score": score, "rank": rank, "densities": dens,
-            "bin_edges": edges_all, "mode": mode, "bins": bins,
+            "score": score,
+            "rank": rank,
+            "densities": dens,
+            "bin_edges": edges_all,
+            "mode": mode,
+            "bins": bins,
             "method": "hbos",
         },
     )

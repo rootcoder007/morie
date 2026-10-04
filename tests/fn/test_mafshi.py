@@ -1,8 +1,8 @@
 """mafshi: inverse Fisher z (Fisher 1921)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mafshi import ma_fishers_z_inverse as z_to_r
 
 
@@ -50,9 +50,7 @@ def test_mafshi_back_transform_is_not_the_mean():
     pins that the function does not quietly average.
     """
     zs = np.array([0.1, 2.0])
-    assert z_to_r(float(zs.mean()))["r"] != pytest.approx(
-        float(np.mean(np.asarray(z_to_r(zs)["r"]))), abs=1e-6
-    )
+    assert z_to_r(float(zs.mean()))["r"] != pytest.approx(float(np.mean(np.asarray(z_to_r(zs)["r"]))), abs=1e-6)
 
 
 def test_mafshi_rejects_non_finite():

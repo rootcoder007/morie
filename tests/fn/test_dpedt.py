@@ -1,7 +1,6 @@
 """Tests for dpedt.dp_exchangeable_distribution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpedt import dp_exchangeable_distribution
 
 

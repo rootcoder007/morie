@@ -62,21 +62,23 @@ def vol_parkinson(high, low, periods_per_year=None):
     const = 1.0 / (4.0 * np.log(2.0))
     var = const * float(np.mean(np.log(H / L) ** 2))
     sig = float(np.sqrt(var))
-    return RichResult(payload={
-        "variance": var, "sigma": sig,
-        "sigma_annualised": (sig * np.sqrt(float(periods_per_year))
-                             if periods_per_year else None),
-        "constant": const,
-        "constant_note": "1/(4 log 2): E[(log range)^2] = 4 log2 sigma^2 "
-                         "for driftless Brownian motion (Parkinson Eq. 4)",
-        "efficiency_vs_close": 4.9,
-        "drift_bias": "drift inflates the range, so trending periods read "
-                      "high; the derivation assumes zero drift",
-        "discreteness_bias": "the observed high/low of a discretely sampled "
-                             "path understate the true extremes, biasing "
-                             "the estimate down for coarse bars",
-        "n": int(n),
-        "method": "Parkinson (1980) range estimator, 1/(4 log 2) mean squared log-range"})
+    return RichResult(
+        payload={
+            "variance": var,
+            "sigma": sig,
+            "sigma_annualised": (sig * np.sqrt(float(periods_per_year)) if periods_per_year else None),
+            "constant": const,
+            "constant_note": "1/(4 log 2): E[(log range)^2] = 4 log2 sigma^2 "
+            "for driftless Brownian motion (Parkinson Eq. 4)",
+            "efficiency_vs_close": 4.9,
+            "drift_bias": "drift inflates the range, so trending periods read high; the derivation assumes zero drift",
+            "discreteness_bias": "the observed high/low of a discretely sampled "
+            "path understate the true extremes, biasing "
+            "the estimate down for coarse bars",
+            "n": int(n),
+            "method": "Parkinson (1980) range estimator, 1/(4 log 2) mean squared log-range",
+        }
+    )
 
 
 def cheatsheet():

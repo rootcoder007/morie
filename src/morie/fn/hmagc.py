@@ -112,7 +112,11 @@ def geron_agglomerative(X, n_clusters=2, linkage="single"):
 
     return RichResult(
         title="Agglomerative hierarchical clustering",
-        summary_lines=[("Clusters", len(active)), ("Linkage", linkage), ("Last merge height", heights[-1] if heights else 0.0)],
+        summary_lines=[
+            ("Clusters", len(active)),
+            ("Linkage", linkage),
+            ("Last merge height", heights[-1] if heights else 0.0),
+        ],
         payload={
             "labels": labels,
             "merges": merges,

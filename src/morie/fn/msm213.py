@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,13 +23,16 @@ def mvsml_ridge_lasso_elastic_eq_9_33(alpha, y, C=None):
     convex problem.  ``C`` adds the soft-margin upper bound.
     Keys: estimate."""
     f = _gp.svm_dual_constraints_ok(alpha, y, C=C)
-    res = RichResult(payload={"estimate": 1.0 if f["feasible"]
-                              else 0.0,
-                              "nonnegative": f["nonnegative"],
-                              "balanced": f["balanced"],
-                              "bounded": f["bounded"],
-                              "feasible": f["feasible"],
-                              "method": "dual constraints (MVSML 2022 eq. 9.33)"})
+    res = RichResult(
+        payload={
+            "estimate": 1.0 if f["feasible"] else 0.0,
+            "nonnegative": f["nonnegative"],
+            "balanced": f["balanced"],
+            "bounded": f["bounded"],
+            "feasible": f["feasible"],
+            "method": "dual constraints (MVSML 2022 eq. 9.33)",
+        }
+    )
     return with_describe_pointer(res, "msm213")
 
 

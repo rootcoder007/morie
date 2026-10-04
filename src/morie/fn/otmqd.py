@@ -66,10 +66,19 @@ def ot_quantization_distortion(X, centroids):
     for k in labels:
         w[k] += 1.0 / n
     _, cost = ot.emd([1.0 / n] * n, w, C)
-    return RichResult(payload={
-        "dist": cost, "dist_assign": dist_assign, "gap": abs(cost - dist_assign),
-        "labels": labels, "weights": w, "n": n, "K": K, "d": d,
-        "method": "Quantization distortion as transport cost"})
+    return RichResult(
+        payload={
+            "dist": cost,
+            "dist_assign": dist_assign,
+            "gap": abs(cost - dist_assign),
+            "labels": labels,
+            "weights": w,
+            "n": n,
+            "K": K,
+            "d": d,
+            "method": "Quantization distortion as transport cost",
+        }
+    )
 
 
 def cheatsheet():

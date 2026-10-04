@@ -1,7 +1,6 @@
 """Tests for adgrad.adagrad."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adgrad import adagrad
 
 
@@ -13,6 +12,8 @@ def test_adgrad_basic():
     result = adagrad(g, lr, eps)
     assert isinstance(result, dict)
     assert "update" in result
+
+
 def test_adgrad_edge():
     """Test edge cases."""
     g = np.random.default_rng(43).normal(0, 1, 100)

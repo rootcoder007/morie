@@ -48,7 +48,7 @@ def em_irt_text(word_freq_matrix, max_iter=200, tol=1e-6, polarity=(0, 1)):
     Y = np.asarray(word_freq_matrix, dtype=float)
     if Y.ndim != 2:
         raise ValueError("word_freq_matrix must be 2-D (documents x words).")
-    if np.any(Y < 0) or np.any(Y != np.floor(Y)):
+    if np.any(Y < 0) or np.any(np.floor(Y) != Y):
         raise ValueError("word_freq_matrix must hold nonnegative counts.")
     n, k = Y.shape
     if n < 3 or k < 3:

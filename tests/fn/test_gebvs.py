@@ -57,7 +57,8 @@ def test_gebvs_edge():
     beta = [0.5, -1.0, 0.25, 2.0]
     r = gebv_selection(M, effects=beta)
     assert [float(v) for v in r["gebv"]] == pytest.approx(
-        [sum(z * b for z, b in zip(row, beta)) for row in Z], rel=1e-12, abs=1e-14)
+        [sum(z * b for z, b in zip(row, beta)) for row in Z], rel=1e-12, abs=1e-14
+    )
     with pytest.raises(ValueError):
         gebv_selection([[0, 3], [1, 1]], effects=[1.0, 1.0])
 
@@ -74,7 +75,7 @@ import morie.fn.gebvs as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

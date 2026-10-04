@@ -84,7 +84,7 @@ def esl_partial_dependence(model, X, S, grid=None, n_grid=20):
     X = np.atleast_2d(np.asarray(X, dtype=float))
     n, p = X.shape
     S = np.atleast_1d(np.asarray(S, dtype=int))
-    if np.any((S < 0) | (S >= p)):
+    if np.any((S < 0) | (p <= S)):
         raise ValueError(f"S contains a column index outside 0..{p - 1}")
     if S.size != np.unique(S).size:
         raise ValueError("S must not repeat a column")
@@ -117,12 +117,14 @@ def esl_partial_dependence(model, X, S, grid=None, n_grid=20):
 
     return RichResult(
         title="Partial dependence",
-        summary_lines=[("n", n), ("variables", list(map(int, S))),
-                       ("grid points", int(G.shape[0]))],
+        summary_lines=[("n", n), ("variables", list(map(int, S))), ("grid points", int(G.shape[0]))],
         payload={
-            "grid": G, "pd": pd, "centered": pd - pd.mean(),
+            "grid": G,
+            "pd": pd,
+            "centered": pd - pd.mean(),
             "extrapolation_warning": warn,
-            "S": S, "n": int(n),
+            "S": S,
+            "n": int(n),
             "method": "esl_partial_dependence",
         },
     )

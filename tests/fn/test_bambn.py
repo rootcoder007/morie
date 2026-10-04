@@ -1,7 +1,6 @@
 """Tests for morie.fn.bambn -- burn-in trimming."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bambn import bambn, bayesian_burnin_trim
 
 

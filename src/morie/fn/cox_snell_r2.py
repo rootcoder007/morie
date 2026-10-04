@@ -28,20 +28,19 @@ def cox_snell_r2(neg2ll_null, neg2ll_full, n):
     """
     value = _ca_crim.cox_snell_r2(neg2ll_null, neg2ll_full, n)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.13)"
     return RichResult(
-        title='Cox and Snell pseudo-R^2',
+        title="Cox and Snell pseudo-R^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e13: 1 - e^-[(-2LLnull) - (-2LLfull)]/n [Weisburd et al. 2022, eq. 4.13]'
+    return "ca4e13: 1 - e^-[(-2LLnull) - (-2LLfull)]/n [Weisburd et al. 2022, eq. 4.13]"
 
 
 # compact alias per ledger/NAMING.md

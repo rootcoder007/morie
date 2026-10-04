@@ -12,8 +12,7 @@ __all__ = ["alphafold_embedding_init"]
 RELPOS_BINS = [float(b) for b in range(-32, 33)]
 
 
-def alphafold_embedding_init(target_feat, residue_index, msa_feat, wa, wb,
-                             wrel, wmsa, wtgt, bins=None):
+def alphafold_embedding_init(target_feat, residue_index, msa_feat, wa, wb, wrel, wmsa, wtgt, bins=None):
     """Embeddings for the initial representations -- Algorithms 3-5, p. 13.
 
     The pair representation starts as an outer sum of two projections of
@@ -87,8 +86,7 @@ def alphafold_embedding_init(target_feat, residue_index, msa_feat, wa, wb,
         z.append(zrow)
 
     s = len(msa_feat)
-    m = [[A.vadd(A.lin(msa_feat[si][i], wmsa), A.lin(target_feat[i], wtgt))
-          for i in range(n)] for si in range(s)]
+    m = [[A.vadd(A.lin(msa_feat[si][i], wmsa), A.lin(target_feat[i], wtgt)) for i in range(n)] for si in range(s)]
 
     flat = [z[i][j][t] for i in range(n) for j in range(n) for t in range(cz)]
     return RichResult(

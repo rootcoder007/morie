@@ -17,8 +17,7 @@ from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["risk_ratio"]
 
-_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054,
-      0.99: 2.5758293035489004}
+_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054, 0.99: 2.5758293035489004}
 
 
 def _zcrit(confidence):
@@ -29,8 +28,7 @@ def _zcrit(confidence):
     raise ValueError("confidence must be one of 0.90, 0.95, 0.99")
 
 
-def risk_ratio(p_exposed, p_unexposed, n_exposed=None,
-               n_unexposed=None, confidence=0.95):
+def risk_ratio(p_exposed, p_unexposed, n_exposed=None, n_unexposed=None, confidence=0.95):
     """Ratio of the risk in the exposed to the risk in the unexposed.
 
     Parameters
@@ -70,13 +68,22 @@ def risk_ratio(p_exposed, p_unexposed, n_exposed=None,
         z = _zcrit(confidence)
         lo = rr * math.exp(-z * se)
         hi = rr * math.exp(z * se)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(rr), "ln_estimate": float(math.log(rr)),
-        "se_ln": se, "ci_lower": lo, "ci_upper": hi,
-        "p_exposed": pe, "p_unexposed": pu,
-        "confidence": float(confidence),
-        "method": "risk ratio (Rothman & Greenland)",
-    }), "riskrt")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(rr),
+                "ln_estimate": float(math.log(rr)),
+                "se_ln": se,
+                "ci_lower": lo,
+                "ci_upper": hi,
+                "p_exposed": pe,
+                "p_unexposed": pu,
+                "confidence": float(confidence),
+                "method": "risk ratio (Rothman & Greenland)",
+            }
+        ),
+        "riskrt",
+    )
 
 
 def cheatsheet():

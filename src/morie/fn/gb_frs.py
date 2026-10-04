@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chi-square approximation for Friedman's statistic."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['friedchi', 'gibbons_friedman_chi2_approp']
+__all__ = ["friedchi", "gibbons_friedman_chi2_approp"]
 
 
 def friedchi(q, k, n):

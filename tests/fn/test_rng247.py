@@ -1,7 +1,5 @@
 """Tests for rng247.rangayyan_ch4_signal_with_echo_output."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_ch4_signal_with_echo_output
 
 

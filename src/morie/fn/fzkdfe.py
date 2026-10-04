@@ -71,20 +71,29 @@ def fauzi_kdfe(x, grid=None, h=None):
     hh = kdfe_bandwidth(xv) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(xv.min() - 3 * hh, xv.max() + 3 * hh, 200) \
-        if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    g = (
+        np.linspace(xv.min() - 3 * hh, xv.max() + 3 * hh, 200)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     F = kernel_W((g[:, None] - xv[None, :]) / hh).sum(axis=1) / n
     emp = np.array([float(np.mean(xv <= v)) for v in g])
-    return RichResult(payload={
-        "grid": g, "F_hat": F, "F_empirical": emp, "bandwidth": hh,
-        "bandwidth_rate": "n^{-1/3} (Azzalini), not the n^{-1/5} density rule",
-        "monotone": bool(np.all(np.diff(F) >= -1e-12)),
-        "bias_term": "h^2 mu_2(K) f'(x)/2 + o(h^2): f PRIME, not f double prime",
-        "uses_integrated_kernel": True,
-        "why_over_edf": "the empirical df is a step function: not continuous, "
-                        "not smoothly invertible, and has no density",
-        "n": int(n),
-        "method": "Nadaraya KDFE (2.2); smooths with W = integral of K, so the bias carries f'"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "F_hat": F,
+            "F_empirical": emp,
+            "bandwidth": hh,
+            "bandwidth_rate": "n^{-1/3} (Azzalini), not the n^{-1/5} density rule",
+            "monotone": bool(np.all(np.diff(F) >= -1e-12)),
+            "bias_term": "h^2 mu_2(K) f'(x)/2 + o(h^2): f PRIME, not f double prime",
+            "uses_integrated_kernel": True,
+            "why_over_edf": "the empirical df is a step function: not continuous, "
+            "not smoothly invertible, and has no density",
+            "n": int(n),
+            "method": "Nadaraya KDFE (2.2); smooths with W = integral of K, so the bias carries f'",
+        }
+    )
 
 
 def cheatsheet():

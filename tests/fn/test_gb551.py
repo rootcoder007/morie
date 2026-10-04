@@ -1,7 +1,6 @@
 """Tests for gb551.gibbons_rank_order_stat."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb551 import gibbons_rank_order_stat
 
 
@@ -11,6 +10,8 @@ def test_gb551_basic():
     result = gibbons_rank_order_stat(differences)
     assert isinstance(result, dict)
     assert "ranks" in result
+
+
 def test_gb551_edge():
     """Test edge cases."""
     differences = np.random.default_rng(42).normal(0, 1, 100)

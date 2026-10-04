@@ -1,7 +1,6 @@
 """Tests for hmsdp.geron_scaled_dot_product."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsdp import geron_scaled_dot_product
 
 

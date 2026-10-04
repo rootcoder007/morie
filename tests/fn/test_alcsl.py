@@ -10,5 +10,6 @@ def test_alcsl_basic():
 
 def test_alcsl_edge():
     import pytest
+
     with pytest.raises(ValueError, match="lie in"):
         alammar_cosine_similarity_loss([[1.0]], [[1.0]], [2.0])

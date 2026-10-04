@@ -1,7 +1,6 @@
 """Tests for morie.fn.dblcn — Double centering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dblcn import dblcn
 
 

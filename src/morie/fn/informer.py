@@ -83,16 +83,21 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sparsity_measure", "kl_from_uniform", "select_queries",
-           "probsparse_attention", "full_attention", "complexity"]
+__all__ = [
+    "sparsity_measure",
+    "kl_from_uniform",
+    "select_queries",
+    "probsparse_attention",
+    "full_attention",
+    "complexity",
+]
 
 _EPS = 1e-12
 _MEASURES = ("exact", "maxmean")
 
 
 def _logits(q, K, scale):
-    return [scale * sum(q[a] * K[j][a] for a in range(len(q)))
-            for j in range(len(K))]
+    return [scale * sum(q[a] * K[j][a] for a in range(len(q))) for j in range(len(K))]
 
 
 def sparsity_measure(q, K, measure="exact", scale=None):
@@ -105,16 +110,14 @@ def sparsity_measure(q, K, measure="exact", scale=None):
     log-sum-exp and is what makes the selection affordable.
     """
     if measure not in _MEASURES:
-        raise ValueError("informer: measure must be exact or maxmean, "
-                         "got %r" % (measure,))
+        raise ValueError("informer: measure must be exact or maxmean, got %r" % (measure,))
     Km = [[float(v) for v in r] for r in k.mat(K)]
     qv = [float(v) for v in k.vec(q)]
     if not Km:
         raise ValueError("informer: the key set is empty")
     d = len(qv)
     if len(Km[0]) != d:
-        raise ValueError("informer: query has %d dimensions but keys "
-                         "have %d" % (d, len(Km[0])))
+        raise ValueError("informer: query has %d dimensions but keys have %d" % (d, len(Km[0])))
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)
     z = _logits(qv, Km, sc)
     mean = sum(z) / len(z)
@@ -131,12 +134,10 @@ def kl_from_uniform(q, K, scale=None):
     shifted version of.
     """
     Km = k.mat(K)
-    return sparsity_measure(q, K, measure="exact",
-                            scale=scale) - math.log(len(Km))
+    return sparsity_measure(q, K, measure="exact", scale=scale) - math.log(len(Km))
 
 
-def select_queries(Q, K, factor=5, measure="maxmean", n_sample=None,
-                   seed=0):
+def select_queries(Q, K, factor=5, measure="maxmean", n_sample=None, seed=0):
     r"""The top-:math:`u` queries, :math:`u = c \ln L_Q`.
 
     ``n_sample`` evaluates the measure against a random subset of keys
@@ -148,23 +149,25 @@ def select_queries(Q, K, factor=5, measure="maxmean", n_sample=None,
     Km = [[float(v) for v in r] for r in k.mat(K)]
     LQ, LK = len(Qm), len(Km)
     if LQ == 0 or LK == 0:
-        raise ValueError("informer: queries and keys must be "
-                         "non-empty")
+        raise ValueError("informer: queries and keys must be non-empty")
     u = max(1, min(LQ, int(float(factor) * math.log(max(LQ, 2)))))
     if n_sample is not None and int(n_sample) < LK:
         rng = np.random.default_rng(seed)
-        idx = sorted(range(LK),
-                     key=lambda _i: float(rng.uniform()))[:int(n_sample)]
+        idx = sorted(range(LK), key=lambda _i: float(rng.uniform()))[: int(n_sample)]
         Ks = [Km[j] for j in idx]
     else:
         Ks = Km
-    scores = [sparsity_measure(Qm[i], Ks, measure=measure)
-              for i in range(LQ)]
+    scores = [sparsity_measure(Qm[i], Ks, measure=measure) for i in range(LQ)]
     order = sorted(range(LQ), key=lambda i: -scores[i])[:u]
-    return {"top": sorted(order), "u": u, "scores": scores,
-            "L_Q": LQ, "L_K": LK,
-            "n_sample": int(n_sample) if n_sample else LK,
-            "measure": measure}
+    return {
+        "top": sorted(order),
+        "u": u,
+        "scores": scores,
+        "L_Q": LQ,
+        "L_K": LK,
+        "n_sample": int(n_sample) if n_sample else LK,
+        "measure": measure,
+    }
 
 
 def full_attention(Q, K, V, scale=None):
@@ -173,20 +176,17 @@ def full_attention(Q, K, V, scale=None):
     Km = [[float(v) for v in r] for r in k.mat(K)]
     Vm = [[float(v) for v in r] for r in k.mat(V)]
     if len(Km) != len(Vm):
-        raise ValueError("informer: keys and values must match in "
-                         "length (%d, %d)" % (len(Km), len(Vm)))
+        raise ValueError("informer: keys and values must match in length (%d, %d)" % (len(Km), len(Vm)))
     d = len(Qm[0])
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)
     out = []
     for q in Qm:
         w = k.softmax(_logits(q, Km, sc))
-        out.append([sum(w[j] * Vm[j][a] for j in range(len(Vm)))
-                    for a in range(len(Vm[0]))])
+        out.append([sum(w[j] * Vm[j][a] for j in range(len(Vm))) for a in range(len(Vm[0]))])
     return out
 
 
-def probsparse_attention(Q, K, V, factor=5, measure="maxmean",
-                         n_sample=None, seed=0, scale=None):
+def probsparse_attention(Q, K, V, factor=5, measure="maxmean", n_sample=None, seed=0, scale=None):
     r"""Eq. (3): attention computed only for the dominant queries.
 
     Queries outside the top-:math:`u` are given the mean of the
@@ -198,54 +198,60 @@ def probsparse_attention(Q, K, V, factor=5, measure="maxmean",
     Km = [[float(v) for v in r] for r in k.mat(K)]
     Vm = [[float(v) for v in r] for r in k.mat(V)]
     if len(Km) != len(Vm):
-        raise ValueError("informer: keys and values must match in "
-                         "length (%d, %d)" % (len(Km), len(Vm)))
-    sel = select_queries(Qm, Km, factor=factor, measure=measure,
-                         n_sample=n_sample, seed=seed)
+        raise ValueError("informer: keys and values must match in length (%d, %d)" % (len(Km), len(Vm)))
+    sel = select_queries(Qm, Km, factor=factor, measure=measure, n_sample=n_sample, seed=seed)
     d = len(Qm[0])
     sc = (1.0 / math.sqrt(d)) if scale is None else float(scale)
     dv = len(Vm[0])
-    vbar = [sum(Vm[j][a] for j in range(len(Vm))) / len(Vm)
-            for a in range(dv)]
+    vbar = [sum(Vm[j][a] for j in range(len(Vm))) / len(Vm) for a in range(dv)]
     out = [list(vbar) for _ in range(len(Qm))]
     for i in sel["top"]:
         w = k.softmax(_logits(Qm[i], Km, sc))
-        out[i] = [sum(w[j] * Vm[j][a] for j in range(len(Vm)))
-                  for a in range(dv)]
-    return RichResult(payload={
-        "estimate": out, "output": out, "selected": sel["top"],
-        "u": sel["u"], "L_Q": sel["L_Q"], "L_K": sel["L_K"],
-        "measure": measure,
-        "complexity": complexity(sel["L_Q"], sel["L_K"], factor),
-        "method": "ProbSparse self-attention, Zhou et al. (2021) "
-                  "eq. (3)",
-        "note": "unselected queries take the mean of V, which is what "
-                "their near-uniform attention would give",
-    })
+        out[i] = [sum(w[j] * Vm[j][a] for j in range(len(Vm))) for a in range(dv)]
+    return RichResult(
+        payload={
+            "estimate": out,
+            "output": out,
+            "selected": sel["top"],
+            "u": sel["u"],
+            "L_Q": sel["L_Q"],
+            "L_K": sel["L_K"],
+            "measure": measure,
+            "complexity": complexity(sel["L_Q"], sel["L_K"], factor),
+            "method": "ProbSparse self-attention, Zhou et al. (2021) eq. (3)",
+            "note": "unselected queries take the mean of V, which is what their near-uniform attention would give",
+        }
+    )
 
 
 def complexity(L_Q, L_K, factor=5):
     r"""Dot-product counts: full attention against ProbSparse."""
     lq, lk = int(L_Q), int(L_K)
     u = max(1, min(lq, int(float(factor) * math.log(max(lq, 2)))))
-    return {"full": lq * lk, "probsparse": u * lk, "u": u,
-            "ratio": (lq * lk) / max(u * lk, 1),
-            "memory_full": lq * lk,
-            "memory_probsparse": lk * max(1, int(math.log(max(lq, 2))))}
+    return {
+        "full": lq * lk,
+        "probsparse": u * lk,
+        "u": u,
+        "ratio": (lq * lk) / max(u * lk, 1),
+        "memory_full": lq * lk,
+        "memory_probsparse": lk * max(1, int(math.log(max(lq, 2)))),
+    }
 
 
 def cheatsheet():
-    return ("informer: ProbSparse. A query whose attention is UNIFORM "
-            "just averages V and is redundant with the residual. "
-            "M(q,K) = logsumexp(z) - mean(z) measures the distance "
-            "from uniform; it is MINIMISED at ln L_K, attained "
-            "exactly when the logits are equal, so M - ln L_K is the "
-            "KL and that is what is zero there. "
-            "Keep only the top u = c ln L_Q queries: O(L ln L) time, "
-            "O(L_K ln L_Q) memory. Computing M exactly would cost the "
-            "O(L^2) being saved, so Lemma 1's max-mean bound on "
-            "sampled keys is used instead. u = L_Q recovers full "
-            "attention exactly.")
+    return (
+        "informer: ProbSparse. A query whose attention is UNIFORM "
+        "just averages V and is redundant with the residual. "
+        "M(q,K) = logsumexp(z) - mean(z) measures the distance "
+        "from uniform; it is MINIMISED at ln L_K, attained "
+        "exactly when the logits are equal, so M - ln L_K is the "
+        "KL and that is what is zero there. "
+        "Keep only the top u = c ln L_Q queries: O(L ln L) time, "
+        "O(L_K ln L_Q) memory. Computing M exactly would cost the "
+        "O(L^2) being saved, so Lemma 1's max-mean bound on "
+        "sampled keys is used instead. u = L_Q recovers full "
+        "attention exactly."
+    )
 
 
 # compact alias per ledger/NAMING.md -- infmer and informer are the

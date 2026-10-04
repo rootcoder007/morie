@@ -112,7 +112,7 @@ def boot_bca_ci(theta_hat, theta_b, x, stat, alpha=0.05):
         lj = (n - 1.0) * (t - tj)
         s2 += lj * lj
         s3 += lj * lj * lj
-    acc = s3 / (6.0 * (s2 ** 1.5)) if s2 > 0.0 else 0.0
+    acc = s3 / (6.0 * (s2**1.5)) if s2 > 0.0 else 0.0
     out = {}
     sv = sorted(v)
     for nm, q in (("lo", a / 2.0), ("hi", 1.0 - a / 2.0)):

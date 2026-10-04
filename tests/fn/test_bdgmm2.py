@@ -1,7 +1,6 @@
 """Tests for bdgmm2.bound_gmm_alt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdgmm2 import bound_gmm_alt
 
 
@@ -39,9 +38,7 @@ def test_bdgmm2_basic():
     t_expected = [math.sqrt(n_f) * m_list[j] / s_list[j] for j in range(J)]
     xi_expected = [t_expected[j] / k for j in range(J)]
     keep_expected = [1 if xi_expected[j] > -1.0 else 0 for j in range(J)]
-    S_expected = sum(
-        max(t_expected[j], 0.0) ** 2 for j in range(J) if keep_expected[j]
-    )
+    S_expected = sum(max(t_expected[j], 0.0) ** 2 for j in range(J) if keep_expected[j])
 
     assert result["n"] == n_f
     assert result["J"] == J

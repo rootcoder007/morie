@@ -37,27 +37,27 @@ def kamath_ch9_clip_image_to_text(V, L, sigma, N=None):
     if s <= 0:
         raise ValueError(f"the temperature must be positive; got {s}.")
     if Vm.shape[0] != Lm.shape[0]:
-        raise ValueError(
-            f"the batch sizes differ: {Vm.shape[0]} image embeddings "
-            f"vs {Lm.shape[0]} text embeddings.")
+        raise ValueError(f"the batch sizes differ: {Vm.shape[0]} image embeddings vs {Lm.shape[0]} text embeddings.")
     if Vm.shape[1] != Lm.shape[1]:
-        raise ValueError(
-            f"embedding widths differ: {Vm.shape[1]} vs {Lm.shape[1]}.")
+        raise ValueError(f"embedding widths differ: {Vm.shape[1]} vs {Lm.shape[1]}.")
     if Vm.shape[0] == 0:
         raise ValueError("the batch is empty.")
     if N is not None and int(N) != Vm.shape[0]:
-        raise ValueError(
-            f"N = {N} contradicts the batch size {Vm.shape[0]}.")
+        raise ValueError(f"N = {N} contradicts the batch size {Vm.shape[0]}.")
     logits = Vm @ Lm.T / s
     m = logits.max(axis=1, keepdims=True)
-    lse = (m.ravel() + np.log(np.exp(logits - m).sum(axis=1)))
+    lse = m.ravel() + np.log(np.exp(logits - m).sum(axis=1))
     per = lse - np.diag(logits)
-    return RichResult(payload={
-        "estimate": float(per.mean()),
-        "per_pair": [float(v) for v in per],
-        "logits": [[float(v) for v in row] for row in logits],
-        "temperature": s, "n": int(Vm.shape[0]),
-        "method": "CLIP image-to-text contrastive loss (Kamath Eq 9.5)"})
+    return RichResult(
+        payload={
+            "estimate": float(per.mean()),
+            "per_pair": [float(v) for v in per],
+            "logits": [[float(v) for v in row] for row in logits],
+            "temperature": s,
+            "n": int(Vm.shape[0]),
+            "method": "CLIP image-to-text contrastive loss (Kamath Eq 9.5)",
+        }
+    )
 
 
 def cheatsheet():

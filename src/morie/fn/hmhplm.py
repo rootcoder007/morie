@@ -10,7 +10,9 @@ __all__ = ["geron_hidden_layers_heuristic"]
 _METHOD = "Depth selection by validation-error plateau"
 
 
-def geron_hidden_layers_heuristic(model, X, y, max_layers=10, min_layers=1, patience=2, tol=1e-4, val_fraction=0.2, seed=0):
+def geron_hidden_layers_heuristic(
+    model, X, y, max_layers=10, min_layers=1, patience=2, tol=1e-4, val_fraction=0.2, seed=0
+):
     """
     Hidden layers guideline: add layers until validation error stops improving.
 
@@ -162,8 +164,13 @@ def geron_hidden_layers_heuristic(model, X, y, max_layers=10, min_layers=1, pati
             ("Depths tried", len(errors)),
             ("Stopped early", stopped),
         ],
-        tables=[{"title": "Validation error by depth", "headers": ["layers", "val_error"],
-                 "rows": [[L, e] for L, e in errors.items()]}],
+        tables=[
+            {
+                "title": "Validation error by depth",
+                "headers": ["layers", "val_error"],
+                "rows": [[L, e] for L, e in errors.items()],
+            }
+        ],
         interpretation=(
             "The reported depth is the best seen, not the last tried; patience above 1 is what lets "
             "the search step past a flat spot without settling in it."

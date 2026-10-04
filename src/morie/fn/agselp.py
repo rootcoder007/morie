@@ -33,8 +33,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_self_play_eval"]
 
 
-def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None,
-                             draws=0, threshold=0.55):
+def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None, draws=0, threshold=0.55):
     """Decide whether a candidate network replaces the current best.
 
     Parameters
@@ -77,8 +76,7 @@ def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None,
         tail = 0.0
         for i in range(kk, dec + 1):
             tail += math.exp(
-                math.lgamma(dec + 1.0) - math.lgamma(i + 1.0)
-                - math.lgamma(dec - i + 1.0) - dec * math.log(2.0)
+                math.lgamma(dec + 1.0) - math.lgamma(i + 1.0) - math.lgamma(dec - i + 1.0) - dec * math.log(2.0)
             )
         p = tail
     return RichResult(
@@ -93,8 +91,9 @@ def alphazero_self_play_eval(new_net, old_net=None, n_games=100, wins=None,
             "draws": d,
             "losses": l,
             "n": n,
-            "method": ("AlphaGo Zero self-play evaluation gate (55%); AlphaZero "
-                       "itself omits this step and updates continually"),
+            "method": (
+                "AlphaGo Zero self-play evaluation gate (55%); AlphaZero itself omits this step and updates continually"
+            ),
         },
     )
 

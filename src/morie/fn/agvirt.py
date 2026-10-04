@@ -63,9 +63,17 @@ def virtloss(W, N, pending, nvl=1):
     Wv = [W[i] - nvl * P[i] for i in range(k)]
     Q = [0.0 if Nv[i] == 0.0 else Wv[i] / Nv[i] for i in range(k)]
     Qc = [0.0 if N[i] == 0.0 else W[i] / N[i] for i in range(k)]
-    return RichResult(payload={
-        "Q": Q, "N": Nv, "W": Wv, "Qclean": Qc, "k": k, "nvl": nvl,
-        "method": "Virtual loss in parallel MCTS (Chaslot et al. 2008 Sect. 3.3)"})
+    return RichResult(
+        payload={
+            "Q": Q,
+            "N": Nv,
+            "W": Wv,
+            "Qclean": Qc,
+            "k": k,
+            "nvl": nvl,
+            "method": "Virtual loss in parallel MCTS (Chaslot et al. 2008 Sect. 3.3)",
+        }
+    )
 
 
 alphazero_virtual_loss = virtloss

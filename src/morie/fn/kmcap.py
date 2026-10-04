@@ -35,22 +35,26 @@ def kamath_expert_capacity_factor(tokens_per_batch, num_experts, C):
     e = int(num_experts)
     c = float(C)
     if t <= 0:
-        raise ValueError("a batch with no tokens has no capacity to "
-                         "allocate.")
+        raise ValueError("a batch with no tokens has no capacity to allocate.")
     if e < 1:
         raise ValueError(f"there must be at least one expert; got {e}.")
     if c <= 0:
-        raise ValueError(f"the capacity factor must be positive; got "
-                         f"{c}.")
+        raise ValueError(f"the capacity factor must be positive; got {c}.")
     cap = c * (t / e)
     slots = int(math.ceil(cap))
-    return RichResult(payload={
-        "estimate": cap, "capacity": cap, "slots": slots,
-        "total_slots": slots * e,
-        "min_dropped": max(0, int(math.ceil(t)) - slots * e),
-        "headroom_per_expert": cap - t / e,
-        "num_experts": e, "n": int(math.ceil(t)),
-        "method": "MoE per-expert capacity (Kamath Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": cap,
+            "capacity": cap,
+            "slots": slots,
+            "total_slots": slots * e,
+            "min_dropped": max(0, int(math.ceil(t)) - slots * e),
+            "headroom_per_expert": cap - t / e,
+            "num_experts": e,
+            "n": int(math.ceil(t)),
+            "method": "MoE per-expert capacity (Kamath Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

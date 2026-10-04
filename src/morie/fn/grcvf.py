@@ -85,13 +85,9 @@ def geron_conv2d_forward(X, W, b=0.0, stride=1, padding=0):
     if W.ndim == 2:
         W = W[None, :, :]
     if X.ndim != 3 or W.ndim != 3:
-        raise ValueError(
-            f"X and W must be 2-D or 3-D, got ndim {X.ndim} and {W.ndim}."
-        )
+        raise ValueError(f"X and W must be 2-D or 3-D, got ndim {X.ndim} and {W.ndim}.")
     if X.shape[0] != W.shape[0]:
-        raise ValueError(
-            f"channel mismatch: X has {X.shape[0]} channels, W has {W.shape[0]}."
-        )
+        raise ValueError(f"channel mismatch: X has {X.shape[0]} channels, W has {W.shape[0]}.")
     if X.size == 0 or W.size == 0:
         raise ValueError("X and W must be non-empty.")
     if not np.all(np.isfinite(X)) or not np.all(np.isfinite(W)):
@@ -113,16 +109,14 @@ def geron_conv2d_forward(X, W, b=0.0, stride=1, padding=0):
     oh = (Hp - kh) // sh + 1
     ow = (Wp - kw) // sw + 1
     if Hp < kh or Wp < kw:
-        raise ValueError(
-            f"filter {kh}x{kw} does not fit the padded input {Hp}x{Wp}."
-        )
+        raise ValueError(f"filter {kh}x{kw} does not fit the padded input {Hp}x{Wp}.")
 
     Y = np.empty((oh, ow), dtype=float)
     for i in range(oh):
         r0 = i * sh
         for j in range(ow):
             c0 = j * sw
-            Y[i, j] = float(np.sum(Xp[:, r0:r0 + kh, c0:c0 + kw] * W)) + b
+            Y[i, j] = float(np.sum(Xp[:, r0 : r0 + kh, c0 : c0 + kw] * W)) + b
 
     return RichResult(
         title="Conv2D forward",

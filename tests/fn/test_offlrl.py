@@ -6,9 +6,13 @@ import pytest
 
 from morie.fn.offlrl import offline_rl_cql
 
-
-D = [("s", "a0", 1.0, "s", True), ("s", "a0", 1.0, "s", True),
-     ("s", "a1", 0.0, "s", True), ("s", "a1", 0.0, "s", True), ("s", "a1", 1.0, "s", True)]
+D = [
+    ("s", "a0", 1.0, "s", True),
+    ("s", "a0", 1.0, "s", True),
+    ("s", "a1", 0.0, "s", True),
+    ("s", "a1", 0.0, "s", True),
+    ("s", "a1", 1.0, "s", True),
+]
 
 
 def test_offlrl_basic():
@@ -28,7 +32,7 @@ def test_offlrl_basic():
     assert r["behavior"] == {("s", "a0"): 0.4, ("s", "a1"): 0.6}
     lse = math.log(sum(math.exp(v) for v in q))
     assert r["penalty"] == pytest.approx(lse - (0.4 * q[0] + 0.6 * q[1]), rel=1e-12)
-    assert q[0] < 1.0      # the better action is pushed down: conservatism
+    assert q[0] < 1.0  # the better action is pushed down: conservatism
     plain = offline_rl_cql(D, alpha=0.0, iters=20000)
     assert [plain["q"][("s", "a0")], plain["q"][("s", "a1")]] == pytest.approx(rbar, abs=1e-10)
     assert plain["greedy"]["s"] == "a0"

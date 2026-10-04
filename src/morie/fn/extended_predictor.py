@@ -6,8 +6,6 @@ Implements eq. (6.6) p.186 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,10 +20,14 @@ def extended_predictor(n, X_E=None, X=None, X_EM=None):
     design is returned together with the block widths.
     Keys: estimate."""
     f = _gp.extended_predictor(int(n), X_E=X_E, X=X, X_EM=X_EM)
-    res = RichResult(payload={"estimate": float(f["n_columns"]),
-                              "design": f["design"],
-                              "widths": f["widths"],
-                              "method": "extended Bayesian predictor (MVSML 2022 eq. 6.6)"})
+    res = RichResult(
+        payload={
+            "estimate": float(f["n_columns"]),
+            "design": f["design"],
+            "widths": f["widths"],
+            "method": "extended Bayesian predictor (MVSML 2022 eq. 6.6)",
+        }
+    )
     return with_describe_pointer(res, "msm061")
 
 

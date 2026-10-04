@@ -1,7 +1,6 @@
 """Tests for adamO.adam_optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adamO import adam_optimizer
 
 
@@ -33,8 +32,8 @@ def test_adamO_basic():
     m = (1.0 - beta1) * g
     v = (1.0 - beta2) * g * g
     t = 1
-    m_hat = m / (1.0 - beta1 ** t)
-    v_hat = v / (1.0 - beta2 ** t)
+    m_hat = m / (1.0 - beta1**t)
+    v_hat = v / (1.0 - beta2**t)
     expected_update = -lr * m_hat / (np.sqrt(v_hat) + eps)
     assert np.allclose(np.asarray(result["update"]), expected_update)
     assert np.allclose(np.asarray(result["m"]), m)

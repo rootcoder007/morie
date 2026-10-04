@@ -1,7 +1,6 @@
 """Tests for calibr.calibration_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.calibr import calibration_estimator
 
 

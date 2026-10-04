@@ -1,7 +1,6 @@
 """Test group_sparse_decompose (grpsp)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.grpsp import group_sparse_decompose, grpsp
 

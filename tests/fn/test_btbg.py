@@ -1,7 +1,6 @@
 """Tests for btbg.boot_bagging_predict."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btbg import boot_bagging_predict
 
 

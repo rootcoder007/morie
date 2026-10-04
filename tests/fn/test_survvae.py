@@ -5,8 +5,6 @@ provide. Rewritten against deep_survival_machines.
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.survvae import deep_survival_machines, log_survival
 
 

@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['evtrecords', 'evt_record_count', 'evtrecordcount']
+__all__ = ["evtrecords", "evt_record_count", "evtrecordcount"]
 
 
 def evtrecords(x):
@@ -42,14 +42,22 @@ def evtrecords(x):
     for i in range(1, n):
         if x[i] > cur:
             cur = x[i]
-            times.append(i); vals.append(x[i])
+            times.append(i)
+            vals.append(x[i])
     ev = sum(1.0 / (i + 1) for i in range(n))
     vv = sum(1.0 / (i + 1) - 1.0 / ((i + 1) ** 2) for i in range(n))
-    return RichResult(payload={
-        "count": len(times), "times": times, "values": vals,
-        "expected": ev, "variance": vv,
-        "z": (len(times) - ev) / math.sqrt(vv) if vv > 0 else float("nan"),
-        "n": n, "method": "Upper record times and counts"})
+    return RichResult(
+        payload={
+            "count": len(times),
+            "times": times,
+            "values": vals,
+            "expected": ev,
+            "variance": vv,
+            "z": (len(times) - ev) / math.sqrt(vv) if vv > 0 else float("nan"),
+            "n": n,
+            "method": "Upper record times and counts",
+        }
+    )
 
 
 evt_record_count = evtrecords

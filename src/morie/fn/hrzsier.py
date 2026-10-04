@@ -46,7 +46,7 @@ def hrz_series_regression(x, y, K=5, kind="poly", grid=None):
     if x.size != y.size:
         raise ValueError("x and y must have the same length.")
     K = int(K)
-    if K < 1 or K > x.size:
+    if K < 1 or x.size < K:
         raise ValueError(f"K must lie in 1..{x.size}, got {K}.")
     P = sieve_basis(x, K=K, kind=kind)
     a, *_ = np.linalg.lstsq(P, y, rcond=None)
@@ -55,12 +55,18 @@ def hrz_series_regression(x, y, K=5, kind="poly", grid=None):
     ss_tot = float(np.sum((y - y.mean()) ** 2))
     g = x if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     # rebuild the basis on the pooled range so the grid maps consistently
-    Pg = sieve_basis(np.r_[x, g], K=K, kind=kind)[x.size:]
-    return RichResult(payload={"grid": g, "fitted": Pg @ a, "coefficients": a,
-                               "K": K, "r_squared": 1 - ss_res / ss_tot
-                               if ss_tot > 0 else np.nan,
-                               "df_ratio": K / x.size,
-                               "method": "Series regression; K must grow with n, like 1/h"})
+    Pg = sieve_basis(np.r_[x, g], K=K, kind=kind)[x.size :]
+    return RichResult(
+        payload={
+            "grid": g,
+            "fitted": Pg @ a,
+            "coefficients": a,
+            "K": K,
+            "r_squared": 1 - ss_res / ss_tot if ss_tot > 0 else np.nan,
+            "df_ratio": K / x.size,
+            "method": "Series regression; K must grow with n, like 1/h",
+        }
+    )
 
 
 def cheatsheet():

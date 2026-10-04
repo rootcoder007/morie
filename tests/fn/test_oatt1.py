@@ -1,7 +1,6 @@
 """Tests for morie.fn.oatt1 — ATT by region via IPW."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.oatt1 import otis_att_region
 
 

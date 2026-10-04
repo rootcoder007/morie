@@ -1,7 +1,6 @@
 """Tests for eslnnk.esl_nadaraya_watson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslnnk import esl_nadaraya_watson
 
 
@@ -36,8 +35,7 @@ def test_eslnnk_basic():
     assert abs(result["estimate"] - expected) < 1e-12
 
     # Documented result keys
-    for key in ("estimate", "values", "effective_n", "n_in_window",
-                "lambda", "kernel", "n", "method"):
+    for key in ("estimate", "values", "effective_n", "n_in_window", "lambda", "kernel", "n", "method"):
         assert key in result
 
     assert result["lambda"] == lambda_

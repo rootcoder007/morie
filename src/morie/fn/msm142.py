@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,9 +23,14 @@ def mvsml_categorical_count_eq_8_9(Z, K, sigma2_u=1.0):
     precomputed and used as the kernel. Keys: estimate."""
     Ks = _gp.kernel_blup_replicated(Z, K, sigma2_u=sigma2_u)
     ok, _ = _gp.is_positive_semidefinite(Ks)
-    res = RichResult(payload={"estimate": Ks[0][0], "K_star": Ks,
-                              "positive_semidefinite": ok,
-                              "method": "replicated kernel BLUP covariance (MVSML 2022 eq. 8.9)"})
+    res = RichResult(
+        payload={
+            "estimate": Ks[0][0],
+            "K_star": Ks,
+            "positive_semidefinite": ok,
+            "method": "replicated kernel BLUP covariance (MVSML 2022 eq. 8.9)",
+        }
+    )
     return with_describe_pointer(res, "msm142")
 
 

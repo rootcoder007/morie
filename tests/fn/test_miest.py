@@ -1,7 +1,6 @@
 """Tests for morie.fn.miest -- MI effect sizes."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.miest import mi_effect_size
 
 

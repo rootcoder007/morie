@@ -1,7 +1,6 @@
 """Tests for gh_c14_20.ghosal_probit_sbp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_20 import ghosal_probit_sbp
 
 
@@ -44,6 +43,7 @@ def test_gh_c14_20_independent_formula():
     # and mu_k, beta_k are iid N(0,1) draws (fixed by `seed`).
 
     import math
+
     from morie.fn import _array_core as _np  # local alias for the shim's RNG
 
     x = 0.4
@@ -54,9 +54,7 @@ def test_gh_c14_20_independent_formula():
     def Phi(v):
         return 0.5 * (1.0 + math.erf(v / math.sqrt(2.0)))
 
-    V = [Phi(float(rng.normal(0, 1))
-             + float(rng.normal(0, 1)) * x)
-         for _ in range(n_terms)]
+    V = [Phi(float(rng.normal(0, 1)) + float(rng.normal(0, 1)) * x) for _ in range(n_terms)]
 
     # Independently compute stick-breaking weights
     remaining = 1.0

@@ -1,7 +1,6 @@
 """Tests for morie.fn.irtdp — distractor analysis."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.irtdp import irt_distractor
 
 

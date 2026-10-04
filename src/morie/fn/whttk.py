@@ -38,11 +38,11 @@ def whittaker_smooth(
     # d-th order difference matrix rows, built as dense lists
     D = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     for _ in range(d):
-        D = [[D[i + 1][j] - D[i][j] for j in range(n)]
-             for i in range(len(D) - 1)]
-    W = [[(1.0 if i == j else 0.0)
-          + lambda_ * sum(D[r][i] * D[r][j] for r in range(len(D)))
-          for j in range(n)] for i in range(n)]
+        D = [[D[i + 1][j] - D[i][j] for j in range(n)] for i in range(len(D) - 1)]
+    W = [
+        [(1.0 if i == j else 0.0) + lambda_ * sum(D[r][i] * D[r][j] for r in range(len(D))) for j in range(n)]
+        for i in range(n)
+    ]
     z = np.linalg.solve(np.asarray(W), y)
 
     residual = y - z

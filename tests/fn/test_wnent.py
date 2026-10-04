@@ -1,7 +1,6 @@
 """Tests for Wiener entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wnent import wiener_entropy, wnent
 
 

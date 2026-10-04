@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet process mixture model."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 from .crpcol import collapsed_sweep, norm_logpdf
@@ -10,8 +8,7 @@ from .crpcol import collapsed_sweep, norm_logpdf
 __all__ = ["dirichlet_process_mixture"]
 
 
-def dirichlet_process_mixture(y, alpha=1.0, base_distribution=None, n_iter=50,
-                              sigma2=1.0, seed=42):
+def dirichlet_process_mixture(y, alpha=1.0, base_distribution=None, n_iter=50, sigma2=1.0, seed=42):
     """
     Dirichlet process mixture model
 
@@ -65,8 +62,7 @@ def dirichlet_process_mixture(y, alpha=1.0, base_distribution=None, n_iter=50,
         mu0, tau2 = b[0], b[1]
     if not (tau2 > 0.0 and sigma2 > 0.0):
         raise ValueError("tau2 and sigma2 must be strictly positive")
-    z, counts, sums = collapsed_sweep(y, alpha, int(n_iter), mu0, tau2,
-                                      sigma2, seed)
+    z, counts, sums = collapsed_sweep(y, alpha, int(n_iter), mu0, tau2, sigma2, seed)
     means, w = [], []
     for c in range(len(counts)):
         prec = 1.0 / tau2 + counts[c] / sigma2
@@ -75,18 +71,20 @@ def dirichlet_process_mixture(y, alpha=1.0, base_distribution=None, n_iter=50,
     w_new = alpha / (n + alpha)
     pred = sum(w[c] * means[c] for c in range(len(counts))) + w_new * mu0
     ll = sum(norm_logpdf(y[i], means[z[i]], sigma2) for i in range(n))
-    return RichResult(payload={
-        "estimate": pred,
-        "n_clusters": len(counts),
-        "z": z,
-        "counts": counts,
-        "cluster_mean": means,
-        "weights": w,
-        "w_new": w_new,
-        "loglik": ll,
-        "n": n,
-        "method": "Dirichlet process mixture, collapsed Gibbs",
-    })
+    return RichResult(
+        payload={
+            "estimate": pred,
+            "n_clusters": len(counts),
+            "z": z,
+            "counts": counts,
+            "cluster_mean": means,
+            "weights": w,
+            "w_new": w_new,
+            "loglik": ll,
+            "n": n,
+            "method": "Dirichlet process mixture, collapsed Gibbs",
+        }
+    )
 
 
 def cheatsheet():

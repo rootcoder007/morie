@@ -1,12 +1,11 @@
 """Tests for hmsac.geron_sac."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmsac import geron_sac
 
 
 class Bandit:
     """Trivial 1-state, 2-action bandit used as a test environment."""
+
     n_states, n_actions = 1, 2
 
     def reset(self):
@@ -62,7 +61,7 @@ import morie.fn.hmsac as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

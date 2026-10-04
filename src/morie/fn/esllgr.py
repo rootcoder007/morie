@@ -100,19 +100,29 @@ def esl_logistic_reg(X, y, newdata=None, threshold=0.5, **kwargs):
         summary_lines=[("n", int(yv.size)), ("loglik", fit["loglik"]), ("accuracy", acc)],
         warnings=list(fit.get("warnings", []) or []),
         payload={
-            "beta": beta, "se": fit["se"], "z": fit["z"], "p_value": fit["p_value"],
+            "beta": beta,
+            "se": fit["se"],
+            "z": fit["z"],
+            "p_value": fit["p_value"],
             "odds_ratio": np.exp(beta),
-            "prob": prob, "class_": cls, "threshold": float(threshold),
-            "accuracy": acc, "confusion": conf,
-            "loglik": fit["loglik"], "deviance": fit["deviance"],
-            "converged": fit["converged"], "separated": fit["separated"],
+            "prob": prob,
+            "class_": cls,
+            "threshold": float(threshold),
+            "accuracy": acc,
+            "confusion": conf,
+            "loglik": fit["loglik"],
+            "deviance": fit["deviance"],
+            "converged": fit["converged"],
+            "separated": fit["separated"],
             "method": "esl_logistic_reg",
         },
     )
 
 
 def cheatsheet():
-    return "esllgr: logistic regression via IRLS; odds_ratio = exp(beta), and 0.5 is a cost assumption not a default truth"
+    return (
+        "esllgr: logistic regression via IRLS; odds_ratio = exp(beta), and 0.5 is a cost assumption not a default truth"
+    )
 
 
 # compact alias per ledger/NAMING.md

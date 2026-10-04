@@ -101,4 +101,3 @@ def weighted_mean_survey(y, weights):
 
 def cheatsheet():
     return "wmeansr: Hajek weighted survey mean with linearised SE"
-

@@ -1,7 +1,6 @@
 """Tests for gh_c14_16.ghosal_ncrm_levy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_16 import ghosal_ncrm_levy
 
 
@@ -13,10 +12,7 @@ def test_gh_c14_16_basic():
 
     # Independent computation of the documented formula:
     #   estimate = exp(-sum_j m_j * (1 - exp(-f_j * u_j)))
-    exponent_expected = sum(
-        m * (1.0 - np.exp(-f * u))
-        for f, m, u in zip(f_vals, nu_masses, u_atoms)
-    )
+    exponent_expected = sum(m * (1.0 - np.exp(-f * u)) for f, m, u in zip(f_vals, nu_masses, u_atoms))
     estimate_expected = np.exp(-exponent_expected)
 
     result = ghosal_ncrm_levy(f_vals, nu_masses, u_atoms)

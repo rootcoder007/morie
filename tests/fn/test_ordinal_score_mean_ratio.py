@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.ordinal_score_mean_ratio import (
     ordinal_score_mean_ratio,
 )

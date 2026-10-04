@@ -1,8 +1,8 @@
 """Tests for causqte.causal_quantile_treatment_effect."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causqte import causal_quantile_treatment_effect
 
 

@@ -109,7 +109,11 @@ def deep_kernel_gp(X, y, X_test=None, nn=None, lengthscale=1.0, variance=1.0, no
         z = core.cholsolve(K, Ks[j])
         sd.append(max(var - sum(Ks[j][i] * z[i] for i in range(n)), 0.0))
     L = core.chol(K)
-    ll = -0.5 * sum(yv[i] * alpha[i] for i in range(n)) - sum(math.log(L[i][i]) for i in range(n)) - 0.5 * n * math.log(2.0 * math.pi)
+    ll = (
+        -0.5 * sum(yv[i] * alpha[i] for i in range(n))
+        - sum(math.log(L[i][i]) for i in range(n))
+        - 0.5 * n * math.log(2.0 * math.pi)
+    )
     return RichResult(
         title="Deep kernel GP",
         summary_lines=[("n", n), ("features", len(GA[0]))],

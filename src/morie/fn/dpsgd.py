@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._dp import check_budget
 from ._richresult import RichResult
 
 __all__ = ["dp_sgd"]
@@ -103,10 +102,7 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
         raise ValueError("sigma must be non-negative")
     G = np.asarray(grads, dtype=float)
     if G.ndim != 2:
-        raise ValueError(
-            "grads must be per-example, shape (B, p); clipping an averaged "
-            "gradient provides no privacy"
-        )
+        raise ValueError("grads must be per-example, shape (B, p); clipping an averaged gradient provides no privacy")
     B, p = G.shape
     norms = np.linalg.norm(G, axis=1)
     factor = np.minimum(1.0, C / np.maximum(norms, 1e-12))
@@ -116,10 +112,14 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
     gbar = (Gc.sum(axis=0) + noise) / B
     update = -lr * gbar
     payload = {
-        "update": update, "private_gradient": gbar,
+        "update": update,
+        "private_gradient": gbar,
         "clipped_fraction": float(np.mean(norms > C)),
-        "noise_sd": float(sigma * C), "C": C, "sigma": float(sigma),
-        "batch_size": int(B), "method": "dp_sgd",
+        "noise_sd": float(sigma * C),
+        "C": C,
+        "sigma": float(sigma),
+        "batch_size": int(B),
+        "method": "dp_sgd",
     }
     if theta is not None:
         th = np.atleast_1d(np.asarray(theta, dtype=float)).ravel()
@@ -128,10 +128,16 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
         payload["theta"] = th + update
     return RichResult(
         title="DP-SGD step",
-        summary_lines=[("batch", int(B)), ("C", C), ("noise sd", float(sigma * C)),
-                       ("clipped", payload["clipped_fraction"])],
-        warnings=["this accounts for ONE step; compose across steps with "
-                  "renyi_dp_composition, and apply subsampling amplification"],
+        summary_lines=[
+            ("batch", int(B)),
+            ("C", C),
+            ("noise sd", float(sigma * C)),
+            ("clipped", payload["clipped_fraction"]),
+        ],
+        warnings=[
+            "this accounts for ONE step; compose across steps with "
+            "renyi_dp_composition, and apply subsampling amplification"
+        ],
         payload=payload,
     )
 

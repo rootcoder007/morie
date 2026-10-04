@@ -28,17 +28,16 @@ def ca_chapter_6_equation_4(b0, b1, x1):
     """
     value = _ca_crim.poisson_loglink_predict(b0, b1, x1)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (6.4)"
     return RichResult(
-        title='Poisson model for rearrests ln(y_i) = b0 + b1 x_i',
+        title="Poisson model for rearrests ln(y_i) = b0 + b1 x_i",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca6e4: ln(y_i) = b0 + b1 x_i (+ e_i) [Weisburd et al. 2022, eq. 6.4]'
+    return "ca6e4: ln(y_i) = b0 + b1 x_i (+ e_i) [Weisburd et al. 2022, eq. 6.4]"

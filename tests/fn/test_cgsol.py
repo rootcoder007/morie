@@ -1,7 +1,6 @@
 """Tests for morie.fn.cgsol -- Conjugate gradient solver."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cgsol import cgsol, conjugate_gradient
 

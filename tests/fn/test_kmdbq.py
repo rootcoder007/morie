@@ -1,7 +1,6 @@
 """Tests for kmdbq.kamath_double_quantization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmdbq import kamath_double_quantization
 
 

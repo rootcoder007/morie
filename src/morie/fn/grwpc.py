@@ -82,9 +82,7 @@ def geron_wordpiece_tokenizer_score(counts, pairs):
         items = []
         for row in pairs:
             if len(row) != 3:
-                raise ValueError(
-                    "sequence form of pairs must hold (A, B, count) triples."
-                )
+                raise ValueError("sequence form of pairs must hold (A, B, count) triples.")
             items.append(((row[0], row[1]), row[2]))
     if not items:
         raise ValueError("pairs is empty; nothing to score.")

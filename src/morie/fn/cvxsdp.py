@@ -107,8 +107,8 @@ def boyd_sdp(c, F, x0=None, tol=1e-09):
     mats = [np.atleast_2d(np.asarray(Fi, dtype=float)) for Fi in F]
     if len(mats) != c.size + 1:
         raise ValueError(
-            f"c has {c.size} entries, so F needs {c.size + 1} matrices "
-            f"(F0 plus one per variable), got {len(mats)}")
+            f"c has {c.size} entries, so F needs {c.size + 1} matrices (F0 plus one per variable), got {len(mats)}"
+        )
     for k, Fi in enumerate(mats):
         if not np.allclose(Fi, Fi.T, atol=1e-10):
             raise ValueError(f"F[{k}] is not symmetric")
@@ -119,13 +119,18 @@ def boyd_sdp(c, F, x0=None, tol=1e-09):
     scale = max(1.0, float(np.abs(ev).max()))
     return RichResult(
         title="Semidefinite program",
-        summary_lines=[("n", int(c.size)), ("block", int(mats[0].shape[0])),
-                       ("objective", info["objective"]),
-                       ("min eigenvalue", float(ev[0])),
-                       ("gap bound", info["gap_bound"])],
+        summary_lines=[
+            ("n", int(c.size)),
+            ("block", int(mats[0].shape[0])),
+            ("objective", info["objective"]),
+            ("min eigenvalue", float(ev[0])),
+            ("gap bound", info["gap_bound"]),
+        ],
         payload={
-            "x": x, "objective": info["objective"],
-            "slack": info["slack"], "eigenvalues": ev,
+            "x": x,
+            "objective": info["objective"],
+            "slack": info["slack"],
+            "eigenvalues": ev,
             "gap_bound": info["gap_bound"],
             "feasible": bool(ev[0] > -1e-08 * scale),
             "strictly_feasible": bool(ev[0] > 1e-06 * scale),

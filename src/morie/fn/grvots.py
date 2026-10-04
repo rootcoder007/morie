@@ -64,9 +64,7 @@ def geron_soft_voting(probabilities, weights=None):
     if A.ndim == 2:
         A = A[:, None, :]
     if A.ndim != 3 or A.size == 0:
-        raise ValueError(
-            f"probabilities must be (L, m, K) or (L, K), got shape {A.shape}."
-        )
+        raise ValueError(f"probabilities must be (L, m, K) or (L, K), got shape {A.shape}.")
     if not np.all(np.isfinite(A)):
         raise ValueError("probabilities contains non-finite values.")
     if np.any(A < 0):

@@ -1,7 +1,6 @@
 """Tests for rkmeans.trimmed_kmeans."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rkmeans import trimmed_kmeans
 
 

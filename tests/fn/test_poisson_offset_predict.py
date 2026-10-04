@@ -1,7 +1,5 @@
 """Tests for poisson_offset_predict.poisson_offset_predict."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.poisson_offset_predict import poisson_offset_predict
 
 

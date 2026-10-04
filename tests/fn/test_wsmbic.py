@@ -1,7 +1,5 @@
 """Tests for wsmbic.wasserman_bic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wsmbic import wasserman_bic
 
 

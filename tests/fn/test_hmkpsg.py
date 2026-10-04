@@ -1,7 +1,6 @@
 """Tests for hmkpsg.geron_kernel_pca_sigmoid."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmkpsg import geron_kernel_pca_sigmoid
 
 

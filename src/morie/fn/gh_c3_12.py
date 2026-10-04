@@ -26,10 +26,15 @@ def ghosal_polya_tree_def(x, depth=8, a_scale=1.0, seed=42):
         a = a_scale * m * m
         V0 = float(rng.beta(a, a))
         mass *= V0 if b == 0 else (1.0 - V0)
-    density = mass * 2.0 ** depth
-    res = RichResult(payload={"estimate": density,
-                              "cell_mass": mass, "depth": depth,
-                              "method": "Polya tree draw (GvdV 2017 sec. 3.7)"})
+    density = mass * 2.0**depth
+    res = RichResult(
+        payload={
+            "estimate": density,
+            "cell_mass": mass,
+            "depth": depth,
+            "method": "Polya tree draw (GvdV 2017 sec. 3.7)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_12")
 
 

@@ -10,5 +10,6 @@ def test_alctf_basic():
 
 def test_alctf_edge():
     import pytest
+
     with pytest.raises(ValueError, match="zero corpus frequency"):
         alammar_c_tfidf([[1.0, 0.0]], corpus_freq=[1.0, 0.0])

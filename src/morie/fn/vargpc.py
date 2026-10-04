@@ -81,9 +81,9 @@ def _ltri(p, M):
     return L
 
 
-def variational_gp_classifier(X, y, X_test=None, m_inducing=4, lengthscale=1.0,
-                              variance=1.0, n_quad=20, steps=40,
-                              step_size=0.1, jitter=1e-8):
+def variational_gp_classifier(
+    X, y, X_test=None, m_inducing=4, lengthscale=1.0, variance=1.0, n_quad=20, steps=40, step_size=0.1, jitter=1e-8
+):
     """Fit an SVGP binary classifier and predict.
 
     Parameters
@@ -139,7 +139,7 @@ def variational_gp_classifier(X, y, X_test=None, m_inducing=4, lengthscale=1.0,
         if v != 0.0 and v != 1.0:
             raise ValueError("variational_gp_classifier: y must be binary 0/1")
     M = int(m_inducing)
-    if M < 1 or M > n:
+    if M < 1 or n < M:
         raise ValueError("variational_gp_classifier: m_inducing must lie in 1 .. n")
     ls = float(lengthscale)
     var = float(variance)
@@ -160,8 +160,7 @@ def variational_gp_classifier(X, y, X_test=None, m_inducing=4, lengthscale=1.0,
     for t in range(M):
         pos = 0 if M == 1 else int(round(t * (n - 1) / (M - 1.0)))
         Z.append(list(A[order[pos]]))
-    Kmm = [[_rbf(Z[i], Z[j], ls, var) + (float(jitter) if i == j else 0.0)
-            for j in range(M)] for i in range(M)]
+    Kmm = [[_rbf(Z[i], Z[j], ls, var) + (float(jitter) if i == j else 0.0) for j in range(M)] for i in range(M)]
     Lk = core.chol(Kmm)
     logdetK = 0.0
     for i in range(M):
@@ -207,8 +206,7 @@ def variational_gp_classifier(X, y, X_test=None, m_inducing=4, lengthscale=1.0,
             for k in range(Q):
                 f = mn + r2 * sd * gx[k]
                 z = -sgn * f
-                acc += gw[k] * (-(z if z > 0.0 else 0.0)
-                                - math.log1p(math.exp(-abs(z))))
+                acc += gw[k] * (-(z if z > 0.0 else 0.0) - math.log1p(math.exp(-abs(z))))
             tot += acc / sq
         tr = 0.0
         for t in range(M):

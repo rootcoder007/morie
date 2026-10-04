@@ -1,7 +1,5 @@
 """Tests for cvxdgp.boyd_dual_problem."""
 
-from morie.fn import _array_core as np
-
 import math
 
 from morie.fn.cvxdgp import boyd_dual_problem
@@ -10,16 +8,24 @@ from morie.fn.cvxdgp import boyd_dual_problem
 def test_cvxdgp_basic():
     """Test basic functionality with the example from the docstring."""
     # Example: g(lam, nu) = -lam[0]^2 + lam[0] - 1.0, n_lambda=1, primal_value=-0.75
-    g = lambda lam, nu: -lam[0] ** 2 + lam[0] - 1.0
+    g = lambda lam, nu: -(lam[0] ** 2) + lam[0] - 1.0
     result = boyd_dual_problem(g, n_lambda=1, primal_value=-0.75, seed=42)
 
     # Assert that result is a dict-like RichResult
     assert isinstance(result, dict)
 
     # Check that required keys are present
-    required_keys = {"lambda_", "nu", "dual_value", "active",
-                      "bound_improves", "duality_gap", "strong_duality",
-                      "concave", "converged"}
+    required_keys = {
+        "lambda_",
+        "nu",
+        "dual_value",
+        "active",
+        "bound_improves",
+        "duality_gap",
+        "strong_duality",
+        "concave",
+        "converged",
+    }
     for key in required_keys:
         assert key in result, f"Missing key {key} in result"
 
@@ -53,7 +59,7 @@ def test_cvxdgp_basic():
 
 def test_cvxdgp_edge():
     """Test edge case where unconstrained optimum is negative, so constraint binds."""
-    g = lambda lam, nu: -lam[0] ** 2 - lam[0] - 1.0
+    g = lambda lam, nu: -(lam[0] ** 2) - lam[0] - 1.0
     result = boyd_dual_problem(g, n_lambda=1, seed=42)
 
     assert isinstance(result, dict)

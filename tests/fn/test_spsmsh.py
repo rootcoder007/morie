@@ -1,7 +1,6 @@
 """Tests for spsmsh.spsm_shifted_intervention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spsmsh import spsm_shifted_intervention
 
 

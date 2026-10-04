@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["random_forest_oob", "rf_oob_error"]
 
 
-def random_forest_oob(y, predictions, in_bag=None, task="regression",
-                      seed=0):
+def random_forest_oob(y, predictions, in_bag=None, task="regression", seed=0):
     r"""OOB error, and the learning curve that says whether to grow more.
 
     Each bootstrap sample omits about :math:`e^{-1} \approx 36.8\,\%`
@@ -62,14 +61,10 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
     P = np.atleast_2d(np.asarray(predictions, dtype=float))
     n = yv.size
     if P.shape[1] != n:
-        raise ValueError(
-            "predictions must be (B, %d), got %s." % (n, P.shape)
-        )
+        raise ValueError("predictions must be (B, %d), got %s." % (n, P.shape))
     B = P.shape[0]
     if task not in ("regression", "classification"):
-        raise ValueError(
-            "task must be 'regression' or 'classification', got %r." % task
-        )
+        raise ValueError("task must be 'regression' or 'classification', got %r." % task)
     if in_bag is None:
         rng = np.random.default_rng(int(seed))
         M = np.zeros((B, n), dtype=bool)
@@ -78,10 +73,7 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
     else:
         M = np.atleast_2d(np.asarray(in_bag)).astype(bool)
         if M.shape != P.shape:
-            raise ValueError(
-                "in_bag must match predictions in shape, got %s and %s."
-                % (M.shape, P.shape)
-            )
+            raise ValueError("in_bag must match predictions in shape, got %s and %s." % (M.shape, P.shape))
     oob = ~M
 
     def _err(upto):
@@ -92,29 +84,24 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
         if not have.any():
             return np.nan, np.full(n, np.nan), have
         pred = np.full(n, np.nan)
-        pred[have] = (np.where(o, p, 0.0).sum(axis=0)[have] / votes[have])
+        pred[have] = np.where(o, p, 0.0).sum(axis=0)[have] / votes[have]
         if task == "classification":
             lab = (pred >= 0.5).astype(float)
             return float(np.mean(lab[have] != yv[have])), pred, have
         return float(np.mean((pred[have] - yv[have]) ** 2)), pred, have
 
     err, pred, have = _err(B)
-    steps = sorted(set(
-        [max(int(round(B * f)), 1) for f in (0.1, 0.25, 0.5, 0.75, 1.0)]
-    ))
+    steps = sorted(set([max(int(round(B * f)), 1) for f in (0.1, 0.25, 0.5, 0.75, 1.0)]))
     curve = np.array([_err(b)[0] for b in steps])
     tail = curve[-2:] if curve.size > 1 else curve
-    conv = bool(curve.size > 1
-                and abs(tail[-1] - tail[0]) <= 0.02 * abs(tail[0] + 1e-12))
+    conv = bool(curve.size > 1 and abs(tail[-1] - tail[0]) <= 0.02 * abs(tail[0] + 1e-12))
     var = float(np.var(yv[have])) if have.any() else np.nan
     return RichResult(
         payload={
             "estimate": err,
             "oob_error": err,
-            "oob_r2": (float(1 - err / var)
-                       if (task == "regression" and var > 0) else np.nan),
-            "oob_accuracy": (float(1 - err)
-                             if task == "classification" else np.nan),
+            "oob_r2": (float(1 - err / var) if (task == "regression" and var > 0) else np.nan),
+            "oob_accuracy": (float(1 - err) if task == "classification" else np.nan),
             "oob_prediction": pred,
             "oob_curve": curve,
             "curve_at": np.asarray(steps),
@@ -140,10 +127,7 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
 
 
 def cheatsheet():
-    return (
-        "rfOOB: OOB error plus the learning curve that says whether growing "
-        "more trees would help"
-    )
+    return "rfOOB: OOB error plus the learning curve that says whether growing more trees would help"
 
 
 #: Catalogue alias for :func:`random_forest_oob`.

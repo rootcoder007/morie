@@ -588,5 +588,6 @@ def viewshed(dem, observer, *, res: float = 1.0, observer_height: float = 1.7, t
 def cheatsheet() -> str:
     return "terrain_indices / d8_flow_direction / flow_accumulation / fill_sinks / stream_order -> DEM analysis."
 
+
 # alias kept from the retired placeholder of the same name
 gradient_spatial = terrain_indices

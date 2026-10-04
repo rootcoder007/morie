@@ -27,8 +27,9 @@ def test_posspr_basic():
     r = posterior_predictive(grid, params, counts, alpha, _k, _g0)
     assert isinstance(r, dict)
     n = sum(counts)
-    exp = [sum(c / (alpha + n) * _k(y, th) for c, th in zip(counts, params))
-           + alpha / (alpha + n) * _g0(y) for y in grid]
+    exp = [
+        sum(c / (alpha + n) * _k(y, th) for c, th in zip(counts, params)) + alpha / (alpha + n) * _g0(y) for y in grid
+    ]
     assert r["density"] == pytest.approx(exp, rel=1e-14)
     assert r["new_cluster_weight"] == pytest.approx(alpha / (alpha + n), rel=1e-15)
 

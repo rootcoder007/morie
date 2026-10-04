@@ -73,12 +73,19 @@ def auglag(f, g, x, lam=None, mu=1.0):
     fv = float(f(x))
     lin = sum(lm[i] * gv[i] for i in range(m))
     pen = 0.5 * mu * sum(v * v for v in gv)
-    return RichResult(payload={
-        "value": fv + lin + pen, "objective": fv, "linear": lin,
-        "penalty": pen, "violation": max((abs(v) for v in gv), default=0.0),
-        "lambda": [lm[i] + mu * gv[i] for i in range(m)], "mu": mu,
-        "m": m,
-        "method": "Augmented Lagrangian (Hestenes 1969; Powell 1969)"})
+    return RichResult(
+        payload={
+            "value": fv + lin + pen,
+            "objective": fv,
+            "linear": lin,
+            "penalty": pen,
+            "violation": max((abs(v) for v in gv), default=0.0),
+            "lambda": [lm[i] + mu * gv[i] for i in range(m)],
+            "mu": mu,
+            "m": m,
+            "method": "Augmented Lagrangian (Hestenes 1969; Powell 1969)",
+        }
+    )
 
 
 augmented_lagrangian = auglag

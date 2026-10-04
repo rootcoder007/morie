@@ -7,8 +7,7 @@ from ._schab_vario import empirical_semivariogram
 __all__ = ["schabenberger_isotropy_condition"]
 
 
-def schabenberger_isotropy_condition(coords, z, n_dir=4, n_bins=10,
-                                     max_dist=None, tol=0.25):
+def schabenberger_isotropy_condition(coords, z, n_dir=4, n_bins=10, max_dist=None, tol=0.25):
     r"""
     Isotropy check by comparing directional semivariograms.
 
@@ -117,10 +116,14 @@ def schabenberger_isotropy_condition(coords, z, n_dir=4, n_bins=10,
     return RichResult(
         title="Isotropy check",
         summary_lines=[("directions", n_dir), ("relative spread", rel)],
-        payload={"is_isotropic": bool(np.isfinite(rel) and rel <= tol),
-                 "relative_spread": rel, "directional_gamma": gam,
-                 "angles": (edges[:-1] + edges[1:]) / 2.0,
-                 "omnidirectional": omni, "tol": float(tol)},
+        payload={
+            "is_isotropic": bool(np.isfinite(rel) and rel <= tol),
+            "relative_spread": rel,
+            "directional_gamma": gam,
+            "angles": (edges[:-1] + edges[1:]) / 2.0,
+            "omnidirectional": omni,
+            "tol": float(tol),
+        },
     )
 
 

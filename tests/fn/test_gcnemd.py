@@ -1,8 +1,6 @@
 """Tests for gcnemd.gcn (Kipf & Welling 2017, eq. 7: the layer before
 the renormalisation trick)."""
 
-import math
-
 import pytest
 
 from morie.fn.gcnemd import gcn
@@ -18,7 +16,7 @@ def test_gcnemd_basic():
     result = gcn(A, X, W)
     assert isinstance(result, dict)
     d = [sum(r) for r in A]
-    s = [0.0 if v == 0 else v ** -0.5 for v in d]
+    s = [0.0 if v == 0 else v**-0.5 for v in d]
     P = [[(1.0 if i == j else 0.0) + s[i] * A[i][j] * s[j] for j in range(5)] for i in range(5)]
     Z = [[sum(P[i][t] * X[t][f] for t in range(5)) for f in range(2)] for i in range(5)]
     Z = [[sum(Z[i][f] * W[f][o] for f in range(2)) for o in range(3)] for i in range(5)]
@@ -26,7 +24,8 @@ def test_gcnemd_basic():
         assert result["preactivation"][i] == pytest.approx(Z[i], rel=1e-14, abs=1e-15)
         assert result["H"][i] == pytest.approx([max(v, 0.0) for v in Z[i]], rel=1e-14, abs=1e-15)
     assert result["preactivation"][4] == pytest.approx(
-        [sum(X[4][f] * W[f][o] for f in range(2)) for o in range(3)], rel=1e-15)
+        [sum(X[4][f] * W[f][o] for f in range(2)) for o in range(3)], rel=1e-15
+    )
 
 
 def test_gcnemd_edge():
@@ -51,7 +50,7 @@ import morie.fn.gcnemd as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

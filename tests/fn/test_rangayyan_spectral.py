@@ -3,16 +3,17 @@
 Anchored on exact spectral identities (Parseval, Wiener-Khinchin, the
 AR spectrum of a known AR process) rather than on self-consistency."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.bsacorr import rangayyan_acf_estimate
-from morie.fn.bsaar import rangayyan_ar_spectrum
-from morie.fn.bsacorr import rangayyan_bandwidth
-from morie.fn.bsacorr import rangayyan_periodogram
-from morie.fn.bsacorr import rangayyan_psd_to_acf
-from morie.fn.bsacorr import rangayyan_welch_psd
-from morie.fn.bsaar import rangayyan_yule_walker
+from morie.fn import _array_core as np
+from morie.fn.bsaar import rangayyan_ar_spectrum, rangayyan_yule_walker
+from morie.fn.bsacorr import (
+    rangayyan_acf_estimate,
+    rangayyan_bandwidth,
+    rangayyan_periodogram,
+    rangayyan_psd_to_acf,
+    rangayyan_welch_psd,
+)
 
 
 def test_acf_lag_zero_is_the_mean_square_and_divisors_differ():
@@ -24,9 +25,7 @@ def test_acf_lag_zero_is_the_mean_square_and_divisors_differ():
     assert out["acf_unbiased"][0] == pytest.approx(np.mean(x**2))
     # they diverge as the lag grows: N/(N-m) inflation
     m = 20
-    assert out["acf_unbiased"][m] == pytest.approx(
-        out["acf_biased"][m] * 500 / (500 - m)
-    )
+    assert out["acf_unbiased"][m] == pytest.approx(out["acf_biased"][m] * 500 / (500 - m))
     # white noise: near-zero correlation away from lag 0
     assert abs(out["acf_unbiased"][1:]).max() < 0.2 * out["acf_unbiased"][0]
     with pytest.raises(ValueError):
@@ -57,8 +56,7 @@ def test_welch_reduces_variance_and_normalises_the_window():
     w = rangayyan_welch_psd(x, fs=1.0, nperseg=256)
     p = rangayyan_periodogram(x, fs=1.0)
     # Welch is far smoother than the periodogram
-    assert np.std(w["psd"][1:]) / np.mean(w["psd"][1:]) < \
-        np.std(p["psd"][1:]) / np.mean(p["psd"][1:])
+    assert np.std(w["psd"][1:]) / np.mean(w["psd"][1:]) < np.std(p["psd"][1:]) / np.mean(p["psd"][1:])
     assert w["n_segments"] > 1
     # the window normalisation keeps the level right: without U the
     # Hann window would bias the estimate low by ~2.7x

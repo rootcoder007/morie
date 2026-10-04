@@ -11,8 +11,9 @@ mean-of-inputs stub cannot satisfy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 
 # --------------------------------------------------------------------------
@@ -148,9 +149,7 @@ def test_hmroc_auc_equals_pairwise_win_rate():
     y = np.array([0, 1, 0, 1, 1])
     s = np.array([0.2, 0.9, 0.4, 0.35, 0.8])
     wins = sum(
-        1.0 if s[i] > s[j] else 0.5 if s[i] == s[j] else 0.0
-        for i in np.where(y == 1)[0]
-        for j in np.where(y == 0)[0]
+        1.0 if s[i] > s[j] else 0.5 if s[i] == s[j] else 0.0 for i in np.where(y == 1)[0] for j in np.where(y == 0)[0]
     )
     want = wins / (int(y.sum()) * int((1 - y).sum()))
     r = geron_roc_curve(y, s)
@@ -738,7 +737,7 @@ def test_hmpas_samples_are_without_replacement():
     for s in r["samples"]:
         assert len(s) == 3 and len(set(s.tolist())) == 3
         assert s.min() >= 0 and s.max() < 8
-    const = lambda Xb, yb: (lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 4.0))
+    const = lambda Xb, yb: lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 4.0)
     c = geron_pasting(X, y, const, 3, sample_size=2, seed=1)
     assert abs(float(c["train_mse"]) - float(np.mean((4.0 - y) ** 2))) < 1e-12
 
@@ -758,7 +757,7 @@ def test_hmrsp_feature_sets_and_usage():
     r = geron_random_subspaces(X, y, n_estimators=12, max_features=2, seed=6)
     assert all(len(s) == 2 and len(set(s.tolist())) == 2 for s in r["feature_sets"])
     assert int(np.sum(r["feature_usage"])) == 12 * 2
-    const = lambda Xb, yb: (lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 1.0))
+    const = lambda Xb, yb: lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 1.0)
     c = geron_random_subspaces(X, y, const, 4, max_features=3, seed=2)
     assert np.allclose(c["predict"](X), 1.0)
 
@@ -926,7 +925,7 @@ def test_hmrnfc_step_is_eta_times_the_gradient():
     from morie.fn.hmrnfc import geron_reinforce
 
     ep = [[(0, 0, 1.0), (1, 1, 2.0)]]
-    g = lambda s, a: (np.array([1.0, 0.0]) if a == 0 else np.array([0.0, 1.0]))
+    g = lambda s, a: np.array([1.0, 0.0]) if a == 0 else np.array([0.0, 1.0])
     base = geron_policy_gradient(ep, g, gamma=0.9, baseline=True)
     r = geron_reinforce(ep, g, gamma=0.9, eta=0.25, theta=[1.0, -1.0])
     assert np.allclose(r["step"], 0.25 * np.asarray(base["gradient"]))
@@ -966,8 +965,7 @@ def test_hmrl_reports_truncation():
 def test_hmppo_learns_the_paying_action_and_respects_the_clip():
     from morie.fn.hmppo import geron_ppo
 
-    r = geron_ppo({"reset": lambda: 0, "step": lambda a: (0, float(a), True)}, [[0.0, 0.0]],
-                  epochs=25, lr=0.5, seed=7)
+    r = geron_ppo({"reset": lambda: 0, "step": lambda a: (0, float(a), True)}, [[0.0, 0.0]], epochs=25, lr=0.5, seed=7)
     p = np.asarray(r["probabilities"])[0]
     assert abs(float(p.sum()) - 1.0) < 1e-12
     assert float(p[1]) > 0.8
@@ -1473,7 +1471,9 @@ def test_no_module_returns_the_mean_of_its_inputs():
 
     y = [1.0, 5.0, 9.0]
     mean = float(np.mean(y))
-    assert abs(float(geron_rmse([0.0, 0.0, 0.0], [6.0, 8.0, 0.0])["estimate"]) - float(np.mean([0, 0, 0, 6, 8, 0]))) > 1.0
+    assert (
+        abs(float(geron_rmse([0.0, 0.0, 0.0], [6.0, 8.0, 0.0])["estimate"]) - float(np.mean([0, 0, 0, 6, 8, 0]))) > 1.0
+    )
     assert abs(float(geron_precision([1, 0, 0, 0], [1, 1, 0, 0])["estimate"]) - float(np.mean([1, 0, 0, 0]))) > 0.2
     assert np.max(np.abs(np.asarray(geron_relu(y)["estimate"]) - mean)) > 1.0
     X = np.column_stack([np.ones(3), [0.0, 1.0, 2.0]])

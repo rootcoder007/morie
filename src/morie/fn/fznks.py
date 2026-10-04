@@ -71,17 +71,13 @@ def kernks(x, cdf, h=None, ngrid=2001, pad=4.0):
     lo = float(np.min(xv)) - float(pad) * h
     hi = float(np.max(xv)) + float(pad) * h
     grid = np.linspace(lo, hi, int(ngrid))
-    khat = np.asarray(
-        [float(np.mean(stats.norm.cdf((float(t) - xv) / h))) for t in grid], dtype=float
-    )
+    khat = np.asarray([float(np.mean(stats.norm.cdf((float(t) - xv) / h))) for t in grid], dtype=float)
     fv = np.asarray([float(cdf(float(t))) for t in grid], dtype=float)
     diff = np.abs(khat - fv)
     k = int(np.argmax(diff))
     stat = float(diff[k])
     lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * stat
-    pval = 2.0 * float(
-        np.sum([(-1) ** (j - 1) * np.exp(-2.0 * j * j * lam * lam) for j in range(1, 101)])
-    )
+    pval = 2.0 * float(np.sum([(-1) ** (j - 1) * np.exp(-2.0 * j * j * lam * lam) for j in range(1, 101)]))
     return RichResult(
         payload={
             "statistic": stat,

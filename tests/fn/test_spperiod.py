@@ -1,8 +1,8 @@
 """spperiod -- the periodogram, Schabenberger & Gotway Sec. 4.7.1."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spperiod import schabenberger_periodogram as per
 
 
@@ -66,8 +66,7 @@ def test_covariance_at_zero_lag_is_the_sample_variance():
     z = _field()
     p = per(z)
     r, c = z.shape
-    assert p["covariance"][r - 1, c - 1] == pytest.approx(
-        ((z - z.mean()) ** 2).sum() / (r * c))
+    assert p["covariance"][r - 1, c - 1] == pytest.approx(((z - z.mean()) ** 2).sum() / (r * c))
 
 
 def test_covariance_is_even_in_its_lags():

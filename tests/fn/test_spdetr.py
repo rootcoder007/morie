@@ -1,7 +1,6 @@
 """Tests for spdetr.spatial_detrending."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spdetr import spatial_detrending
 
 

@@ -40,8 +40,7 @@ def sdavgbin(n=10000, p=1.0 / 6.0):
     if abs(sd_avg - check) > 1e-12:
         raise AssertionError("sigma_tot/n != sigma_single/sqrt(n)")
     payload = {"sd_single": sd_single, "sd_tot": sd_tot, "sd_avg": sd_avg}
-    lines = [("sigma_single", sd_single), ("sigma_tot", sd_tot),
-             ("sigma_avg", sd_avg)]
+    lines = [("sigma_single", sd_single), ("sigma_tot", sd_tot), ("sigma_avg", sd_avg)]
     return RichResult(
         title="sigma of a single trial, of the total, and of the average of n trials.",
         summary_lines=lines,

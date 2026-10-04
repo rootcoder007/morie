@@ -15,8 +15,7 @@ def _apply(T, x_in, y):
         return T(x_in, y)
     if isinstance(T, str):
         return T.format(x=x_in, y=y)
-    raise ValueError("T must be a callable (x_in, y) -> text or a format "
-                     "string using {x} and {y}.")
+    raise ValueError("T must be a callable (x_in, y) -> text or a format string using {x} and {y}.")
 
 
 def kamath_ch3_t5_template_obj(D_train, T, T5):
@@ -44,25 +43,27 @@ def kamath_ch3_t5_template_obj(D_train, T, T5):
     """
     pairs = list(D_train)
     if not pairs:
-        raise ValueError("D_train is empty; a sum over no examples is "
-                         "undefined, not 0.")
+        raise ValueError("D_train is empty; a sum over no examples is undefined, not 0.")
     if not callable(T5):
-        raise ValueError("T5 must be a callable (T, filled_input) -> "
-                         "probability.")
+        raise ValueError("T5 must be a callable (T, filled_input) -> probability.")
     logs, filled = [], []
     for x_in, y in pairs:
         s = _apply(T, x_in, y)
         p = float(T5(T, s))
         if not (0.0 < p <= 1.0):
-            raise ValueError(
-                f"P_T5 returned {p:.6g} for {s!r}; it must lie in (0, 1].")
+            raise ValueError(f"P_T5 returned {p:.6g} for {s!r}; it must lie in (0, 1].")
         filled.append(s)
         logs.append(math.log(p))
     arr = np.asarray(logs, dtype=float)
-    return RichResult(payload={
-        "estimate": float(arr.sum()), "per_example": [float(v) for v in arr],
-        "filled_inputs": filled, "n": len(pairs),
-        "method": "T5 template generation objective (Kamath Eq 3.11)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr.sum()),
+            "per_example": [float(v) for v in arr],
+            "filled_inputs": filled,
+            "n": len(pairs),
+            "method": "T5 template generation objective (Kamath Eq 3.11)",
+        }
+    )
 
 
 def cheatsheet():

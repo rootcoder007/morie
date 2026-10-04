@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -33,12 +32,11 @@ def ghosal_dpm_marg(data, alpha=1.0, tau=1.0, sigma=0.5):
     logp = 0.0
     for i, xi in enumerate(xs):
         fresh = M / (M + i) * _norm_pdf(xi, 0.0, s_marg)
-        old = sum(_norm_pdf(xi, xj, sigma) for xj in xs[:i]) \
-            / (M + i)
+        old = sum(_norm_pdf(xi, xj, sigma) for xj in xs[:i]) / (M + i)
         logp += math.log(fresh + old)
-    res = RichResult(payload={"estimate": logp,
-                              "n": len(xs),
-                              "method": "sequential urn marginal (GvdV 2017 eq. 4.13/5.2)"})
+    res = RichResult(
+        payload={"estimate": logp, "n": len(xs), "method": "sequential urn marginal (GvdV 2017 eq. 4.13/5.2)"}
+    )
     return with_describe_pointer(res, "gh_c5_2")
 
 

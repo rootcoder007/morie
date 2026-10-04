@@ -1,7 +1,6 @@
 """Tests for hrzp1.horowitz_plr_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzp1 import horowitz_plr_estimator
 
 

@@ -25,7 +25,7 @@ def _as_z(h):
         t = math.sqrt(math.log(1.0 / ((1.0 - h) ** 2)))
         sign = 1.0
     num = _C0 + _C1 * t + _C2 * t * t
-    den = 1.0 + _D1 * t + _D2 * t * t + _D3 * t ** 3
+    den = 1.0 + _D1 * t + _D2 * t * t + _D3 * t**3
     return sign * (t - num / den)
 
 
@@ -36,7 +36,7 @@ def _fit_thom(xs):
     pos = [v for v in xs if v > 0]
     n = len(xs)
     m = n - len(pos)
-    q = m / float(n)                        # Thom: q = m/n
+    q = m / float(n)  # Thom: q = m/n
     if len(pos) < 3:
         raise ValueError("need at least three positive totals to fit")
     xbar = sum(pos) / len(pos)
@@ -111,8 +111,7 @@ def droSPI(precip, scale=3, by_month=True):
     scale = int(scale)
     if scale < 1 or n < scale + 5:
         raise ValueError("series too short for this scale")
-    totals = [None] * (scale - 1) + [
-        sum(x[i - scale + 1:i + 1]) for i in range(scale - 1, n)]
+    totals = [None] * (scale - 1) + [sum(x[i - scale + 1 : i + 1]) for i in range(scale - 1, n)]
     groups = {}
     for i, tv in enumerate(totals):
         if tv is None:
@@ -132,14 +131,16 @@ def droSPI(precip, scale=3, by_month=True):
         h = q + (1.0 - q) * g
         h = min(max(h, 1e-9), 1.0 - 1e-9)
         spi[i] = _as_z(h)
-    return RichResult(payload={
-        "spi": spi,
-        "totals": totals,
-        "params": {str(k): list(v) for k, v in params.items()},
-        "scale": scale,
-        "by_month": bool(by_month),
-        "method": "SPI (McKee 1993; Edwards-McKee 1997 Eqs. 3.6-3.18)",
-    })
+    return RichResult(
+        payload={
+            "spi": spi,
+            "totals": totals,
+            "params": {str(k): list(v) for k, v in params.items()},
+            "scale": scale,
+            "by_month": bool(by_month),
+            "method": "SPI (McKee 1993; Edwards-McKee 1997 Eqs. 3.6-3.18)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -148,6 +149,7 @@ standardized_precipitation_index = droSPI
 
 def cheatsheet():
     return "droSPI: gamma-fit totals (Thom MLE), H=q+(1-q)G, A-S normal transform"
+
 
 # public names resolved by fn/_lazy_map.json
 spi = droSPI

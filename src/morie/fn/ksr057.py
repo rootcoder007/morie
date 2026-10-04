@@ -58,13 +58,19 @@ def kosorok_m_normality(m_dot_scores, V=None):
         raise ValueError(f"V must be {p} by {p}, got {Vm.shape}.")
     Vi = np.linalg.pinv(Vm)
     avar = Vi @ Sigma @ Vi
-    return RichResult(payload={
-        "Sigma": Sigma, "V": Vm, "avar": avar,
-        "se": np.sqrt(np.maximum(np.diag(avar), 0.0) / n),
-        "information_equality_assumed": assumed,
-        "information_equality_holds": bool(np.allclose(Vm, Sigma, rtol=1e-6)),
-        "n": int(n), "p": int(p),
-        "method": "M-estimator normality (Thm. 2.13); the limit is a SANDWICH, not V^{-1} alone"})
+    return RichResult(
+        payload={
+            "Sigma": Sigma,
+            "V": Vm,
+            "avar": avar,
+            "se": np.sqrt(np.maximum(np.diag(avar), 0.0) / n),
+            "information_equality_assumed": assumed,
+            "information_equality_holds": bool(np.allclose(Vm, Sigma, rtol=1e-6)),
+            "n": int(n),
+            "p": int(p),
+            "method": "M-estimator normality (Thm. 2.13); the limit is a SANDWICH, not V^{-1} alone",
+        }
+    )
 
 
 def cheatsheet():

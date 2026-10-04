@@ -1,7 +1,6 @@
 """Tests for mrmr_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mirmf import mirmf, mrmr_score
 
 

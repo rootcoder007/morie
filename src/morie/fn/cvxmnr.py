@@ -69,36 +69,41 @@ def boyd_minimax(A, b=None):
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     m, n = Am.shape
-    bv = (np.zeros(m) if b is None
-          else np.atleast_1d(np.asarray(b, dtype=float)).ravel())
+    bv = np.zeros(m) if b is None else np.atleast_1d(np.asarray(b, dtype=float)).ravel()
     if bv.size != m:
         raise ValueError(f"A has {m} rows but b has {bv.size}")
     # Epigraph: min t s.t. a_i'x + b_i <= t.
     c = np.r_[np.zeros(n), 1.0]
     A_ub = np.hstack([Am, -np.ones((m, 1))])
-    res = linprog(c, A_ub=A_ub, b_ub=-bv,
-                  bounds=[(None, None)] * (n + 1), method="highs")
+    res = linprog(c, A_ub=A_ub, b_ub=-bv, bounds=[(None, None)] * (n + 1), method="highs")
     if res.status != 0:
         return RichResult(
             title="Minimax",
             summary_lines=[("status", str(res.message))],
-            warnings=["the minimax LP did not solve; the pointwise maximum "
-                      "may be unbounded below"],
-            payload={"x": np.full(n, np.nan), "value": float("nan"),
-                     "active": np.zeros(m, dtype=bool), "n_active": 0,
-                     "ties": False, "method": "boyd_minimax"})
+            warnings=["the minimax LP did not solve; the pointwise maximum may be unbounded below"],
+            payload={
+                "x": np.full(n, np.nan),
+                "value": float("nan"),
+                "active": np.zeros(m, dtype=bool),
+                "n_active": 0,
+                "ties": False,
+                "method": "boyd_minimax",
+            },
+        )
     x = np.asarray(res.x[:n], dtype=float)
     vals = Am @ x + bv
     t = float(vals.max())
     active = np.abs(vals - t) <= 1e-08 * max(1.0, abs(t))
     return RichResult(
         title="Minimax",
-        summary_lines=[("n", int(n)), ("pieces", int(m)), ("value", t),
-                       ("active pieces", int(active.sum()))],
+        summary_lines=[("n", int(n)), ("pieces", int(m)), ("value", t), ("active pieces", int(active.sum()))],
         payload={
-            "x": x, "value": t, "active": active,
+            "x": x,
+            "value": t,
+            "active": active,
             "n_active": int(active.sum()),
-            "ties": bool(active.sum() > 1), "piece_values": vals,
+            "ties": bool(active.sum() > 1),
+            "piece_values": vals,
             "method": "boyd_minimax",
         },
     )

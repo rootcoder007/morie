@@ -1,7 +1,6 @@
 """Tests for tmlper.tmle_periodic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlper import tmle_periodic
 
 

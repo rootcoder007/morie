@@ -30,37 +30,37 @@ def kamath_ch5_rlhf_optimal_policy(pi_ref, r, beta, Z=None):
     >>> round(out["Z"], 10)
     1.8591409142
     """
-    q = np.atleast_1d(np.asarray(
-        [float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict)
-                            else pi_ref)], dtype=float))
+    q = np.atleast_1d(
+        np.asarray([float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict) else pi_ref)], dtype=float)
+    )
     rv = np.atleast_1d(np.asarray(r, dtype=float))
     if q.size == 0:
         raise ValueError("pi_ref is empty.")
     if np.any(q < 0) or abs(float(q.sum()) - 1.0) > 1e-8:
-        raise ValueError(
-            f"pi_ref must be a distribution; it sums to {float(q.sum()):.6g}.")
+        raise ValueError(f"pi_ref must be a distribution; it sums to {float(q.sum()):.6g}.")
     if rv.shape != q.shape:
-        raise ValueError(
-            f"r has {rv.size} rewards for {q.size} responses.")
+        raise ValueError(f"r has {rv.size} rewards for {q.size} responses.")
     beta = float(beta)
     if beta <= 0:
-        raise ValueError("beta must be strictly positive; exp(r/0) is "
-                         "undefined.")
+        raise ValueError("beta must be strictly positive; exp(r/0) is undefined.")
     w = q * np.exp(rv / beta)
     Z_hat = float(w.sum())
     if Z_hat <= 0:
-        raise ValueError("the partition function is 0; pi_ref places no "
-                         "mass on any response.")
+        raise ValueError("the partition function is 0; pi_ref places no mass on any response.")
     if Z is not None and abs(float(Z) - Z_hat) > 1e-8 * max(1.0, Z_hat):
-        raise ValueError(
-            f"the supplied Z = {float(Z):.6g} does not normalise; the sum "
-            f"is {Z_hat:.6g}.")
+        raise ValueError(f"the supplied Z = {float(Z):.6g} does not normalise; the sum is {Z_hat:.6g}.")
     p = w / Z_hat
-    return RichResult(payload={
-        "pi": [float(v) for v in p], "Z": Z_hat, "beta": beta,
-        "estimate": float(p.max()), "argmax": int(np.argmax(p)),
-        "n": int(p.size),
-        "method": "optimal KL-regularised policy (Kamath Eq 5.6)"})
+    return RichResult(
+        payload={
+            "pi": [float(v) for v in p],
+            "Z": Z_hat,
+            "beta": beta,
+            "estimate": float(p.max()),
+            "argmax": int(np.argmax(p)),
+            "n": int(p.size),
+            "method": "optimal KL-regularised policy (Kamath Eq 5.6)",
+        }
+    )
 
 
 def cheatsheet():

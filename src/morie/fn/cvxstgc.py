@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_strong_convex"]
 
 
-def boyd_strong_convex(f, grad_f, x, m, y_samples=None, n_probe=64,
-                       radius=1.0, seed=0):
+def boyd_strong_convex(f, grad_f, x, m, y_samples=None, n_probe=64, radius=1.0, seed=0):
     r"""Check the strong-convexity inequality at x:
 
     .. math::
@@ -78,9 +77,7 @@ def boyd_strong_convex(f, grad_f, x, m, y_samples=None, n_probe=64,
     xv = np.atleast_1d(np.asarray(x, dtype=float)).ravel()
     m = float(m)
     if m <= 0:
-        raise ValueError(
-            "m must be positive; m = 0 is ordinary convexity, which gives "
-            "no suboptimality bound")
+        raise ValueError("m must be positive; m = 0 is ordinary convexity, which gives no suboptimality bound")
     if y_samples is None:
         rng = np.random.default_rng(seed)
         ys = xv + rng.uniform(-radius, radius, (int(n_probe), xv.size))
@@ -98,15 +95,14 @@ def boyd_strong_convex(f, grad_f, x, m, y_samples=None, n_probe=64,
     bound = float(gx @ gx) / (2.0 * m)
     return RichResult(
         title="Strong convexity check",
-        summary_lines=[("m", m), ("probes", int(ys.shape[0])),
-                       ("violations", viol),
-                       ("suboptimality bound", bound)],
-        warnings=["this samples the inequality locally; it can refute the "
-                  "modulus but not certify it globally"],
+        summary_lines=[("m", m), ("probes", int(ys.shape[0])), ("violations", viol), ("suboptimality bound", bound)],
+        warnings=["this samples the inequality locally; it can refute the modulus but not certify it globally"],
         payload={
-            "holds": bool(viol == 0), "violations": viol,
+            "holds": bool(viol == 0),
+            "violations": viol,
             "worst_gap": float(gaps.min()),
-            "suboptimality_bound": bound, "m": m,
+            "suboptimality_bound": bound,
+            "m": m,
             "grad_norm_sq": float(gx @ gx),
             "method": "boyd_strong_convex",
         },

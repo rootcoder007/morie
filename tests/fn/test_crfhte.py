@@ -1,8 +1,8 @@
 """Tests for crfhte."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.crfath import causal_forest_wager_athey
 from morie.fn.crfhte import causal_forest_hte_test
 

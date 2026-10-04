@@ -89,18 +89,23 @@ def case_control(cases, controls, exposed=None, unexposed=None, conf=0.95):
     else:
         chi = float("nan")
     sig = 1 if (chi == chi and chi > 3.841458820694124) else 0
-    return RichResult(payload={
-        "estimate": orr,
-        "a": a, "b": b, "c": c, "d": d,
-        "log_or": lo,
-        "se_log": se,
-        "ci_low": ci_l,
-        "ci_high": ci_h,
-        "chisq": chi,
-        "significant": sig,
-        "n": n,
-        "method": "unmatched case-control odds ratio",
-    })
+    return RichResult(
+        payload={
+            "estimate": orr,
+            "a": a,
+            "b": b,
+            "c": c,
+            "d": d,
+            "log_or": lo,
+            "se_log": se,
+            "ci_low": ci_l,
+            "ci_high": ci_h,
+            "chisq": chi,
+            "significant": sig,
+            "n": n,
+            "method": "unmatched case-control odds ratio",
+        }
+    )
 
 
 def cheatsheet():

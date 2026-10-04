@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["ptmcmc", "parallel_tempering"]
 
 
-def ptmcmc(log_p, temperatures, x0, n_iter=1000, step=1.0, seed=0,
-           swap_every=1):
+def ptmcmc(log_p, temperatures, x0, n_iter=1000, step=1.0, seed=0, swap_every=1):
     """
     Parallel tempering: K replicas at temperatures T_1 < ... < T_K,
     each running random-walk Metropolis on pi_k(x) proportional to
@@ -96,16 +95,18 @@ def ptmcmc(log_p, temperatures, x0, n_iter=1000, step=1.0, seed=0,
                     lp[k], lp[k + 1] = lp[k + 1], lp[k]
                     swap_acc[k] += 1
         cold.append(x[0])
-    return RichResult(payload={
-        "chain": cold, "chains_last": list(x),
-        "accept_rate": [a / float(n_iter) for a in acc],
-        "swap_accept_rate": [
-            (swap_acc[k] / float(swap_try[k])) if swap_try[k] else np.nan
-            for k in range(K - 1)
-        ],
-        "temperatures": temps, "n_iter": n_iter, "seed": int(seed),
-        "method": "Parallel tempering (Earl-Deem 2005 eq. 4; Hukushima-Nemoto 1996)",
-    })
+    return RichResult(
+        payload={
+            "chain": cold,
+            "chains_last": list(x),
+            "accept_rate": [a / float(n_iter) for a in acc],
+            "swap_accept_rate": [(swap_acc[k] / float(swap_try[k])) if swap_try[k] else np.nan for k in range(K - 1)],
+            "temperatures": temps,
+            "n_iter": n_iter,
+            "seed": int(seed),
+            "method": "Parallel tempering (Earl-Deem 2005 eq. 4; Hukushima-Nemoto 1996)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

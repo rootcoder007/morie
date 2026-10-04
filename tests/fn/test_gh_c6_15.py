@@ -1,7 +1,6 @@
 """Tests for gh_c6_15.ghosal_martg_consist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_15 import ghosal_martg_consist
 
 

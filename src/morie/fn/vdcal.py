@@ -69,8 +69,7 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["vdcal", "volume_of_distribution", "oie_tozer", "fut_from_vss",
-           "HUMAN", "DIRECTIONS", "cheatsheet"]
+__all__ = ["vdcal", "volume_of_distribution", "oie_tozer", "fut_from_vss", "HUMAN", "DIRECTIONS", "cheatsheet"]
 
 DIRECTIONS = ("vss", "fut")
 
@@ -127,14 +126,18 @@ def fut_from_vss(vss, fu, par=None):
     extra = fu * p["Vp"] * (p["Ve"] / p["Vp"] - p["Re_i"])
     rest = float(vss) - plasma - extra
     if rest <= 0.0:
-        raise ValueError("this volume is below what plasma and "
-                         "extracellular water alone account for; no "
-                         "tissue binding can produce it")
+        raise ValueError(
+            "this volume is below what plasma and "
+            "extracellular water alone account for; no "
+            "tissue binding can produce it"
+        )
     fut = p["Vr"] * fu / rest
     if fut > 1.0:
-        raise ValueError("the implied tissue free fraction exceeds one, "
-                         "which would mean the tissue concentrates the "
-                         "drug less than water does")
+        raise ValueError(
+            "the implied tissue free fraction exceeds one, "
+            "which would mean the tissue concentrates the "
+            "drug less than water does"
+        )
     return fut
 
 
@@ -148,26 +151,29 @@ def _fut_from_descriptors(elogd, fi, fu, coefficients):
     measured route.
     """
     if not coefficients:
-        raise ValueError("the descriptor route needs the regression "
-                         "coefficients; they are fitted values from "
-                         "Lombardo et al. and are not shipped here")
+        raise ValueError(
+            "the descriptor route needs the regression "
+            "coefficients; they are fitted values from "
+            "Lombardo et al. and are not shipped here"
+        )
     c = {"a": 0.0, "b": 0.0, "c": 0.0, "d": 0.0}
     c.update(coefficients)
     if not 0.0 < float(fu) <= 1.0:
         raise ValueError("the plasma free fraction must lie in (0, 1]")
-    y = _w.csum((c["a"], c["b"] * float(elogd), c["c"] * float(fi),
-                 c["d"] * math.log(1.0 / float(fu))))
+    y = _w.csum((c["a"], c["b"] * float(elogd), c["c"] * float(fi), c["d"] * math.log(1.0 / float(fu))))
     fut = math.exp(-y)
     if fut <= 0.0 or fut > 1.0:
-        raise ValueError("the fitted tissue free fraction fell outside "
-                         "(0, 1]; the coefficients and the descriptors "
-                         "do not belong to the same model")
+        raise ValueError(
+            "the fitted tissue free fraction fell outside "
+            "(0, 1]; the coefficients and the descriptors "
+            "do not belong to the same model"
+        )
     return fut
 
 
-def volume_of_distribution(smiles, ppb, fut=None, vss=None,
-                           direction="vss", weight=70.0, par=None,
-                           elogd=None, fi=None, coefficients=None):
+def volume_of_distribution(
+    smiles, ppb, fut=None, vss=None, direction="vss", weight=70.0, par=None, elogd=None, fi=None, coefficients=None
+):
     """Volume of distribution at steady state, forwards or backwards.
 
     Parameters
@@ -214,17 +220,14 @@ def volume_of_distribution(smiles, ppb, fut=None, vss=None,
     route = "given"
     if direction == "fut":
         if vss is None:
-            raise ValueError("the inverse direction needs a measured "
-                             "volume")
+            raise ValueError("the inverse direction needs a measured volume")
         ft = fut_from_vss(vss, fu, par)
         route = "inverse"
         total, plasma, extra, tissue = oie_tozer(fu, ft, par)
     else:
         if fut is None:
             if elogd is None or fi is None:
-                raise ValueError("give a tissue free fraction, or the "
-                                 "descriptors and coefficients to fit "
-                                 "one")
+                raise ValueError("give a tissue free fraction, or the descriptors and coefficients to fit one")
             ft = _fut_from_descriptors(elogd, fi, fu, coefficients)
             route = "descriptors"
         else:
@@ -233,33 +236,36 @@ def volume_of_distribution(smiles, ppb, fut=None, vss=None,
     w = float(weight)
     if w <= 0.0:
         raise ValueError("body mass must be positive")
-    return RichResult(payload={
-        "vss": total,
-        "vss_litres": total * w,
-        "estimate": total,
-        "se": float("nan"),
-        "plasma_term": plasma,
-        "extracellular_term": extra,
-        "tissue_term": tissue,
-        "fu": fu,
-        "fut": ft,
-        "binding_ratio": fu / ft,
-        "weight": w,
-        "Vp": p["Vp"],
-        "Ve": p["Ve"],
-        "Vr": p["Vr"],
-        "Re_i": p["Re_i"],
-        "smiles": smiles,
-        "direction": direction,
-        "route": route,
-        "method": "Oie-Tozer steady-state volume of distribution",
-    })
+    return RichResult(
+        payload={
+            "vss": total,
+            "vss_litres": total * w,
+            "estimate": total,
+            "se": float("nan"),
+            "plasma_term": plasma,
+            "extracellular_term": extra,
+            "tissue_term": tissue,
+            "fu": fu,
+            "fut": ft,
+            "binding_ratio": fu / ft,
+            "weight": w,
+            "Vp": p["Vp"],
+            "Ve": p["Ve"],
+            "Vr": p["Vr"],
+            "Re_i": p["Re_i"],
+            "smiles": smiles,
+            "direction": direction,
+            "route": route,
+            "method": "Oie-Tozer steady-state volume of distribution",
+        }
+    )
 
 
 vdcal = volume_of_distribution
 
 
 def cheatsheet():
-    return ("vdcal: Oie-Tozer steady-state volume of distribution. "
-            "directions " + ", ".join(DIRECTIONS)
-            + "; human Vp 0.0436, Ve 0.151, Vr 0.380 l/kg, Re/I 1.4")
+    return (
+        "vdcal: Oie-Tozer steady-state volume of distribution. "
+        "directions " + ", ".join(DIRECTIONS) + "; human Vp 0.0436, Ve 0.151, Vr 0.380 l/kg, Re/I 1.4"
+    )

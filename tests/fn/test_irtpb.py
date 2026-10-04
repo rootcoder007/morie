@@ -1,7 +1,6 @@
 """Tests for morie.fn.irtpb -- IRT probability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.irtpb import irt_probability, irtpb
 
 

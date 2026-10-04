@@ -1,7 +1,6 @@
 """Test calibration_plot (calpl)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.calpl import calibration_plot, calpl
 

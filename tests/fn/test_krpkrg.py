@@ -5,9 +5,9 @@ provide. Rewritten against ordinary_kriging and anchored on exact
 interpolation, the defining property of a kriging predictor with no nugget.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.krpkrg import ordinary_kriging
 
 COORDS = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5]]

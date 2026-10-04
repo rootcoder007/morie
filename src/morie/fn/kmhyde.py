@@ -42,8 +42,7 @@ def kamath_hyde_hypothetical_doc(query, model, embeddings, embed=None, k=3):
         if not embeddings:
             raise ValueError("the document embedding table is empty.")
         ids = list(embeddings.keys())
-        D = np.atleast_2d(np.asarray([embeddings[i] for i in ids],
-                                     dtype=float))
+        D = np.atleast_2d(np.asarray([embeddings[i] for i in ids], dtype=float))
     else:
         D = np.atleast_2d(np.asarray(embeddings, dtype=float))
         ids = list(range(D.shape[0]))
@@ -62,7 +61,8 @@ def kamath_hyde_hypothetical_doc(query, model, embeddings, embed=None, k=3):
         raise ValueError(
             f"the hypothetical embedding has width {q.size} but the "
             f"corpus has {D.shape[1]}; pass embed= if the model "
-            "returns text.")
+            "returns text."
+        )
     k = int(k)
     if not 1 <= k <= D.shape[0]:
         raise ValueError(f"k must lie in [1, {D.shape[0]}].")
@@ -70,18 +70,20 @@ def kamath_hyde_hypothetical_doc(query, model, embeddings, embed=None, k=3):
     nq = np.linalg.norm(q)
     nd = np.linalg.norm(D, axis=1)
     if nq == 0 or np.any(nd == 0):
-        raise ValueError(
-            "a zero embedding has no direction; cosine similarity is "
-            "undefined.")
+        raise ValueError("a zero embedding has no direction; cosine similarity is undefined.")
     sims = (D @ q) / (nd * nq)
     order = np.argsort(-sims, kind="stable")[:k]
-    return RichResult(payload={
-        "retrieved": [ids[i] for i in order],
-        "similarities": [float(sims[i]) for i in order],
-        "hypothetical": hypo,
-        "estimate": float(sims[order[0]]),
-        "k": k, "n": int(D.shape[0]),
-        "method": "HyDE retrieval via a hypothetical document"})
+    return RichResult(
+        payload={
+            "retrieved": [ids[i] for i in order],
+            "similarities": [float(sims[i]) for i in order],
+            "hypothetical": hypo,
+            "estimate": float(sims[order[0]]),
+            "k": k,
+            "n": int(D.shape[0]),
+            "method": "HyDE retrieval via a hypothetical document",
+        }
+    )
 
 
 def cheatsheet():

@@ -86,12 +86,19 @@ def wasserman_logistic_regression(X, y, max_iter=100, tol=1e-10):
     W = mu * (1.0 - mu)
     cov = np.linalg.inv(X.T @ (X * W[:, None]))
     se = np.sqrt(np.diag(cov))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "se": [float(v) for v in se], "log_likelihood": ll,
-        "iterations": int(it), "converged": bool(converged),
-        "n": int(n), "p": int(p),
-        "method": "logistic MLE by Newton-Raphson; separation refused"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "se": [float(v) for v in se],
+            "log_likelihood": ll,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "p": int(p),
+            "method": "logistic MLE by Newton-Raphson; separation refused",
+        }
+    )
 
 
 def cheatsheet():

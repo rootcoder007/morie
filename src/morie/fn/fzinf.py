@@ -88,10 +88,7 @@ def fuzzy_inference(
             )
         missing = {"antecedent", "consequent"} - set(rule)
         if missing:
-            raise ValueError(
-                f"rules[{i}] is missing required key(s) {sorted(missing)}; "
-                f"got keys {sorted(rule)}"
-            )
+            raise ValueError(f"rules[{i}] is missing required key(s) {sorted(missing)}; got keys {sorted(rule)}")
         weight = rule.get("weight", 1.0)
         firing = 1.0
         for inp_idx, mf_type, params in rule["antecedent"]:

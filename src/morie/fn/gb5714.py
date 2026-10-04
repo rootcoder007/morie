@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsrn', 'gibbons_wsrt_sampsize']
+__all__ = ["wsrn", "gibbons_wsrt_sampsize"]
 
 
 def wsrn(p2, alpha=0.05, beta=0.05, twosided=False):

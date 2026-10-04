@@ -1,7 +1,6 @@
 """Tests for causipw.causal_ipw_truncated."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causipw import causal_ipw_truncated
 
 

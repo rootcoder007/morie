@@ -1,7 +1,6 @@
 """Tests for ridge_fit.ridge_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ridge_fit import ridge_fit
 
 

@@ -1,7 +1,6 @@
 """Tests for beta_standardized.beta_standardized."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.beta_standardized import beta_standardized
 
 

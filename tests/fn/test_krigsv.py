@@ -1,7 +1,6 @@
 """Tests for krigsv.variogram_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.krigsv import variogram_fit
 
 

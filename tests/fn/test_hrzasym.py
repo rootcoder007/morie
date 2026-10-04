@@ -1,7 +1,6 @@
 """Tests for hrzasym.horowitz_one_step_efficient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzasym import horowitz_one_step_efficient
 
 

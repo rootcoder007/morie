@@ -1,7 +1,5 @@
 """Tests for propMd.proportion_mediated."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.propMd import proportion_mediated
 
 

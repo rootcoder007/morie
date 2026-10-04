@@ -7,8 +7,7 @@ import pytest
 from morie.fn import _array_core as np
 from morie.fn.kmpens import kamath_prompt_ensemble
 
-Q = [[[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]],
-     [[0.5, 0.4, 0.1], [0.2, 0.2, 0.6], [0.05, 0.9, 0.05]]]
+Q = [[[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], [[0.5, 0.4, 0.1], [0.2, 0.2, 0.6], [0.05, 0.9, 0.05]]]
 
 
 def test_kmpens_basic():
@@ -45,7 +44,7 @@ import morie.fn.kmpens as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

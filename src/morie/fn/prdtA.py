@@ -1,9 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Evaluation of an expression in prefix (Polish) notation."""
 
-import math
-
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["prefixev", "prefix_evaluation"]
@@ -45,19 +42,20 @@ def prefixev(tokens):
     toks = list(tokens)
     if not toks:
         raise ValueError("the expression is empty")
-    ops = {"+": lambda a, b: a + b,
-           "-": lambda a, b: a - b,
-           "*": lambda a, b: a * b,
-           "/": lambda a, b: a / b,
-           "^": lambda a, b: a ** b}
+    ops = {
+        "+": lambda a, b: a + b,
+        "-": lambda a, b: a - b,
+        "*": lambda a, b: a * b,
+        "/": lambda a, b: a / b,
+        "^": lambda a, b: a**b,
+    }
     st = []
     nop = 0
     mx = 0
     for t in reversed(toks):
         if isinstance(t, str) and t in ops:
             if len(st) < 2:
-                raise ValueError(
-                    "operator '%s' has fewer than two operands" % t)
+                raise ValueError("operator '%s' has fewer than two operands" % t)
             a = st.pop()
             b = st.pop()
             if t == "/" and b == 0.0:
@@ -69,13 +67,16 @@ def prefixev(tokens):
         if len(st) > mx:
             mx = len(st)
     if len(st) != 1:
-        raise ValueError(
-            "malformed prefix expression: %d values left on the stack"
-            % len(st))
-    return RichResult(payload={
-        "value": st[0], "n_tokens": float(len(toks)),
-        "n_operators": float(nop), "max_stack": float(mx),
-        "method": "Prefix (Polish) notation evaluation"})
+        raise ValueError("malformed prefix expression: %d values left on the stack" % len(st))
+    return RichResult(
+        payload={
+            "value": st[0],
+            "n_tokens": float(len(toks)),
+            "n_operators": float(nop),
+            "max_stack": float(mx),
+            "method": "Prefix (Polish) notation evaluation",
+        }
+    )
 
 
 prefix_evaluation = prefixev

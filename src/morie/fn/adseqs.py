@@ -86,8 +86,7 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
     else:
         Q = [[float(v) for v in r] for r in Q0]
     if P0 is None:
-        P = [[(2.0 + ((k * J + j) % 7)) / 10.0 for j in range(J)]
-             for k in range(K)]
+        P = [[(2.0 + ((k * J + j) % 7)) / 10.0 for j in range(J)] for k in range(K)]
     else:
         P = [[float(v) for v in r] for r in P0]
 
@@ -123,12 +122,20 @@ def admixq(G, K=2, steps=50, Q0=None, P0=None):
                     num[k][j] += ca
                     den[k][j] += ca + cb
         Q = [[v / (2.0 * J) for v in row] for row in Qn]
-        P = [[(0.5 if den[k][j] == 0.0 else num[k][j] / den[k][j])
-              for j in range(J)] for k in range(K)]
-    return RichResult(payload={
-        "Q": Q, "P": P, "loglik": loglik(Q, P), "loglik0": ll0,
-        "I": I, "J": J, "K": K, "steps": steps,
-        "method": "EM for the ADMIXTURE likelihood (Alexander et al. 2009 eq. 2)"})
+        P = [[(0.5 if den[k][j] == 0.0 else num[k][j] / den[k][j]) for j in range(J)] for k in range(K)]
+    return RichResult(
+        payload={
+            "Q": Q,
+            "P": P,
+            "loglik": loglik(Q, P),
+            "loglik0": ll0,
+            "I": I,
+            "J": J,
+            "K": K,
+            "steps": steps,
+            "method": "EM for the ADMIXTURE likelihood (Alexander et al. 2009 eq. 2)",
+        }
+    )
 
 
 admixture_seq = admixq

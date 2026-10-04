@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxqpdl import boyd_qp_dual
 
 
@@ -24,8 +23,17 @@ def test_cvxqpdl_basic():
     result = boyd_qp_dual(P, q, G, h)
 
     assert isinstance(result, dict)
-    for key in ("lambda_", "dual_value", "x", "primal_value", "gap",
-                "strong_duality", "slack", "active", "complementary_slackness"):
+    for key in (
+        "lambda_",
+        "dual_value",
+        "x",
+        "primal_value",
+        "gap",
+        "strong_duality",
+        "slack",
+        "active",
+        "complementary_slackness",
+    ):
         assert key in result
 
     # Strong duality holds for affine constraints (Slater's condition).
@@ -56,8 +64,17 @@ def test_cvxqpdl_edge():
     result = boyd_qp_dual(P, q, G, h)
 
     assert isinstance(result, dict)
-    for key in ("lambda_", "dual_value", "x", "primal_value", "gap",
-                "strong_duality", "slack", "active", "complementary_slackness"):
+    for key in (
+        "lambda_",
+        "dual_value",
+        "x",
+        "primal_value",
+        "gap",
+        "strong_duality",
+        "slack",
+        "active",
+        "complementary_slackness",
+    ):
         assert key in result
 
     assert bool(result["strong_duality"])

@@ -6,9 +6,8 @@ correctly, so the two must agree exactly.
 """
 
 from morie.fn import _array_core as np
-
-from morie.fn.spcokr import schabenberger_cokriging
 from morie.fn.cokrg import cokriging
+from morie.fn.spcokr import schabenberger_cokriging
 
 
 def _same(a, b):
@@ -30,8 +29,7 @@ def _same(a, b):
         a_arr, b_arr = np.asarray(a, dtype=object), np.asarray(b, dtype=object)
         if a_arr.shape != b_arr.shape:
             return False
-        return bool(np.all([_same(x, y) for x, y in
-                            zip(a_arr.ravel(), b_arr.ravel())])) if a_arr.size else True
+        return bool(np.all([_same(x, y) for x, y in zip(a_arr.ravel(), b_arr.ravel())])) if a_arr.size else True
     if isinstance(a, float) and isinstance(b, float):
         return (np.isnan(a) and np.isnan(b)) or a == b
     return a == b
@@ -49,9 +47,7 @@ def _fixture():
 def test_spcokr_matches_cokrg():
     """The delegation must reproduce the implemented estimator exactly."""
     coords, z1, z2, target = _fixture()
-    got = schabenberger_cokriging(
-        coords, z1, z2, target, {"sill_p": 1.0, "range_p": 0.3}
-    )
+    got = schabenberger_cokriging(coords, z1, z2, target, {"sill_p": 1.0, "range_p": 0.3})
     ref = cokriging(z1, z2, coords, target, sill_p=1.0, range_p=0.3)
     assert _same(got, ref)
     assert dict(got)  # not an empty payload

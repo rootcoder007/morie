@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c7_3 import ghosal_exp_dens_kl
 
 
@@ -32,11 +31,8 @@ def test_gh_c7_3_basic():
     # Independently compute sup_norm_gap over the same grid used by the
     # function (n=200 midpoints on [0,1]) and compare.
     pts = [(i + 0.5) / 200 for i in range(200)]
-    expected_sup = max(
-        abs(_psi(x, list(coefs0)) - _psi(x, list(coefs))) for x in pts
-    )
-    assert math.isclose(float(result["sup_norm_gap"]), expected_sup,
-                        rel_tol=1e-12, abs_tol=1e-12)
+    expected_sup = max(abs(_psi(x, list(coefs0)) - _psi(x, list(coefs))) for x in pts)
+    assert math.isclose(float(result["sup_norm_gap"]), expected_sup, rel_tol=1e-12, abs_tol=1e-12)
 
     # The "kl_small_when_sup_small" boolean must be self-consistent with
     # estimate and sup_norm_gap as documented.
@@ -57,14 +53,10 @@ def test_gh_c7_3_edge():
 
     # When the two expansions coincide, both the sup gap and the (clipped)
     # KL estimate must be (numerically) zero.
-    assert math.isclose(float(result["sup_norm_gap"]), 0.0,
-                        abs_tol=1e-12)
-    assert math.isclose(float(result["estimate"]), 0.0,
-                        abs_tol=1e-6)
+    assert math.isclose(float(result["sup_norm_gap"]), 0.0, abs_tol=1e-12)
+    assert math.isclose(float(result["estimate"]), 0.0, abs_tol=1e-6)
 
     # Independent verification of the trivial sup gap.
     pts = [(i + 0.5) / 200 for i in range(200)]
-    expected_sup = max(
-        abs(_psi(x, list(cs)) - _psi(x, list(cs))) for x in pts
-    )
+    expected_sup = max(abs(_psi(x, list(cs)) - _psi(x, list(cs))) for x in pts)
     assert expected_sup == 0.0

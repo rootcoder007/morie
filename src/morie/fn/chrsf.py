@@ -79,4 +79,6 @@ def chrsf(
 
 
 def cheatsheet() -> str:
-    return "chrsf: chrsf(metric, coords, metric_derivs, h, metric_func) -> Compute Christoffel symbols of the second kind."
+    return (
+        "chrsf: chrsf(metric, coords, metric_derivs, h, metric_func) -> Compute Christoffel symbols of the second kind."
+    )

@@ -1,7 +1,6 @@
 """Tests for hmdqn.geron_dqn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdqn import geron_dqn
 
 
@@ -53,6 +52,7 @@ def test_hmdqn_edge():
     assert len(result["loss_history"]) == 1
     assert len(result["greedy_policy"]) == 1
     import math
+
     assert math.isfinite(result["loss_history"][0])
 
 
@@ -68,7 +68,7 @@ import morie.fn.hmdqn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

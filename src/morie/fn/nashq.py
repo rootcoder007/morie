@@ -56,20 +56,17 @@ equilibrium would quietly break the update rule.
 """
 
 import itertools
-import math
 
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["nashq", "nash_q_learning", "nash_equilibria_bimatrix",
-           "stage_game_type"]
+__all__ = ["nashq", "nash_q_learning", "nash_equilibria_bimatrix", "stage_game_type"]
 
 _SELECTIONS = ("global_optimal", "saddle", "first", "best_for_agent")
 
 
 def _mat(M, name):
-    rows = [[float(v) for v in r]
-            for r in np.atleast_2d(np.asarray(M, dtype=float))]
+    rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(M, dtype=float))]
     if not rows or not rows[0]:
         raise ValueError("nashq: %s must be a non-empty matrix" % name)
     w = len(rows[0])
@@ -149,8 +146,7 @@ def nash_equilibria_bimatrix(A, B, tol=1e-9):
                 Q = [v / sq for v in Q]
                 if not _is_equilibrium(A, B, P, Q, tol):
                     continue
-                key = (tuple(round(v, 9) for v in P),
-                       tuple(round(v, 9) for v in Q))
+                key = (tuple(round(v, 9) for v in P), tuple(round(v, 9) for v in Q))
                 if key in seen:
                     continue
                 seen.add(key)
@@ -230,17 +226,18 @@ def stage_game_type(A, B, tol=1e-9):
             glob.append((p, q))
         if _is_saddle(A, B, p, q, tol):
             sad.append((p, q))
-    return RichResult(payload={
-        "estimate": len(eqs),
-        "equilibria": eqs,
-        "n_equilibria": len(eqs),
-        "has_global_optimal": bool(glob),
-        "has_saddle": bool(sad),
-        "global_optimal": glob,
-        "saddle": sad,
-        "method": "stage game classification (Hu & Wellman 2003 "
-                  "Defs 12-13)",
-    })
+    return RichResult(
+        payload={
+            "estimate": len(eqs),
+            "equilibria": eqs,
+            "n_equilibria": len(eqs),
+            "has_global_optimal": bool(glob),
+            "has_saddle": bool(sad),
+            "global_optimal": glob,
+            "saddle": sad,
+            "method": "stage game classification (Hu & Wellman 2003 Defs 12-13)",
+        }
+    )
 
 
 def _is_saddle(A, B, p, q, tol):
@@ -271,20 +268,32 @@ def _select(A, B, selection, agent, tol):
         ba = max(max(r) for r in A)
         bb = max(max(r) for r in B)
         for p, q in eqs:
-            if (_payoff(A, p, q) >= ba - tol
-                    and _payoff(B, p, q) >= bb - tol):
+            if _payoff(A, p, q) >= ba - tol and _payoff(B, p, q) >= bb - tol:
                 return p, q
         return eqs[0]
-    for p, q in eqs:                       # "saddle"
+    for p, q in eqs:  # "saddle"
         if _is_saddle(A, B, p, q, tol):
             return p, q
     return eqs[0]
 
 
-def nashq(states, actions, step, rewards, gamma=0.9, alpha=0.5,
-          epsilon=0.1, episodes=500, horizon=50, start=None,
-          selection="global_optimal", terminal=(), seed=0, agent=0,
-          tol=1e-9):
+def nashq(
+    states,
+    actions,
+    step,
+    rewards,
+    gamma=0.9,
+    alpha=0.5,
+    epsilon=0.1,
+    episodes=500,
+    horizon=50,
+    start=None,
+    selection="global_optimal",
+    terminal=(),
+    seed=0,
+    agent=0,
+    tol=1e-9,
+):
     r"""Tabular Nash Q-learning for a two-player general-sum stochastic
     game (Table 2 of the paper).
 
@@ -344,21 +353,17 @@ def nashq(states, actions, step, rewards, gamma=0.9, alpha=0.5,
     12-13, eqs. 5-7, Table 2.
     """
     if selection not in _SELECTIONS:
-        raise ValueError("nashq: selection must be one of %r, got %r"
-                         % (_SELECTIONS, selection))
+        raise ValueError("nashq: selection must be one of %r, got %r" % (_SELECTIONS, selection))
     S = list(states)
     if len(actions) != 2:
-        raise ValueError("nashq: this implementation covers two players; "
-                         "pass actions as (A1, A2)")
+        raise ValueError("nashq: this implementation covers two players; pass actions as (A1, A2)")
     A1, A2 = list(actions[0]), list(actions[1])
     if not S or not A1 or not A2:
-        raise ValueError("nashq: states and both action sets must be "
-                         "non-empty")
+        raise ValueError("nashq: states and both action sets must be non-empty")
     if not callable(step) or not callable(rewards):
         raise TypeError("nashq: step and rewards must be callable")
     term = set(terminal)
-    s0 = start if callable(start) else (lambda: S[0] if start is None
-                                        else start)
+    s0 = start if callable(start) else (lambda: S[0] if start is None else start)
     rng = np.random.default_rng(seed)
 
     # Q[(player, state)] is a |A1| x |A2| payoff matrix -- the joint
@@ -391,12 +396,10 @@ def nashq(states, actions, step, rewards, gamma=0.9, alpha=0.5,
                     nv = (0.0, 0.0)
                 else:
                     p, q = eq
-                    nv = (_payoff(Q[(0, s1)], p, q),
-                          _payoff(Q[(1, s1)], p, q))
+                    nv = (_payoff(Q[(0, s1)], p, q), _payoff(Q[(1, s1)], p, q))
             for pl, r in ((0, r1), (1, r2)):
                 cur = Q[(pl, s)][i][j]
-                Q[(pl, s)][i][j] = ((1.0 - alpha) * cur
-                                    + alpha * (r + gamma * nv[pl]))
+                Q[(pl, s)][i][j] = (1.0 - alpha) * cur + alpha * (r + gamma * nv[pl])
             s = s1
         returns.append(tot)
 
@@ -405,31 +408,36 @@ def nashq(states, actions, step, rewards, gamma=0.9, alpha=0.5,
     types = {}
     for s in S:
         cls = stage_game_type(Q[(0, s)], Q[(1, s)], tol)
-        types[s] = ("global_optimal" if cls["has_global_optimal"]
-                    else "saddle" if cls["has_saddle"]
-                    else "neither" if cls["n_equilibria"]
-                    else "none_found")
+        types[s] = (
+            "global_optimal"
+            if cls["has_global_optimal"]
+            else "saddle"
+            if cls["has_saddle"]
+            else "neither"
+            if cls["n_equilibria"]
+            else "none_found"
+        )
         eq = _select(Q[(0, s)], Q[(1, s)], selection, agent, tol)
         if eq is None:
             continue
         p, q = eq
         policy[s] = (p, q)
-        nash_values[s] = (_payoff(Q[(0, s)], p, q),
-                          _payoff(Q[(1, s)], p, q))
+        nash_values[s] = (_payoff(Q[(0, s)], p, q), _payoff(Q[(1, s)], p, q))
 
     tenth = max(1, int(episodes) // 10)
-    return RichResult(payload={
-        "estimate": Q,
-        "q": Q,
-        "policy": policy,
-        "nash_values": nash_values,
-        "stage_game_types": types,
-        "returns": returns,
-        "mean_return_last": [
-            sum(r[pl] for r in returns[-tenth:]) / tenth for pl in (0, 1)],
-        "selection": selection,
-        "method": "Nash Q-learning (Hu & Wellman 2003, Table 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "q": Q,
+            "policy": policy,
+            "nash_values": nash_values,
+            "stage_game_types": types,
+            "returns": returns,
+            "mean_return_last": [sum(r[pl] for r in returns[-tenth:]) / tenth for pl in (0, 1)],
+            "selection": selection,
+            "method": "Nash Q-learning (Hu & Wellman 2003, Table 2)",
+        }
+    )
 
 
 def _pick(M, A, who, epsilon, rng):
@@ -439,21 +447,22 @@ def _pick(M, A, who, epsilon, rng):
     if who == 0:
         vals = [sum(r) / len(r) for r in M]
     else:
-        vals = [sum(M[i][j] for i in range(len(M))) / len(M)
-                for j in range(len(M[0]))]
+        vals = [sum(M[i][j] for i in range(len(M))) / len(M) for j in range(len(M[0]))]
     bv = max(vals)
     best = [k for k, v in enumerate(vals) if v >= bv - 1e-15]
     return best[int(rng.random() * len(best))] if len(best) > 1 else best[0]
 
 
 def cheatsheet():
-    return ("nashq: Q^i over JOINT actions; update with the stage-game "
-            "Nash payoff instead of a max -- Q^i <- (1-a)Q^i + "
-            "a[r^i + beta pi^1...pi^n Q^i(s')] (Hu & Wellman 2003 "
-            "eqs. 6-7). Needs every agent's reward. Equilibrium "
-            "selection changes the update: convergence is proved only "
-            "for global optimal (Def 12) or saddle (Def 13) stage "
-            "games. stage_game_type() reports which you have.")
+    return (
+        "nashq: Q^i over JOINT actions; update with the stage-game "
+        "Nash payoff instead of a max -- Q^i <- (1-a)Q^i + "
+        "a[r^i + beta pi^1...pi^n Q^i(s')] (Hu & Wellman 2003 "
+        "eqs. 6-7). Needs every agent's reward. Equilibrium "
+        "selection changes the update: convergence is proved only "
+        "for global optimal (Def 12) or saddle (Def 13) stage "
+        "games. stage_game_type() reports which you have."
+    )
 
 
 # compact aliases per ledger/NAMING.md

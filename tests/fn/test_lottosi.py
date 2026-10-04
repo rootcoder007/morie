@@ -1,7 +1,6 @@
 """Tests for lottosi.lottery_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lottosi import lottery_sampling
 
 

@@ -91,14 +91,18 @@ def gibbons_balance_incomplete(rankings, lam=None, n=None, k=None):
     denom = lam**2 * nn * (nn**2 - 1) * (m + 1) / (12.0 * (m - 1))
     W_b = S_b / denom
     # Durbin's chi-square statistic for the same design
-    chi2 = 12.0 * (nn - 1) / (r * nn * (m**2 - 1)) * float(
-        np.sum((col - r * (m + 1) / 2.0) ** 2)
-    )
+    chi2 = 12.0 * (nn - 1) / (r * nn * (m**2 - 1)) * float(np.sum((col - r * (m + 1) / 2.0) ** 2))
     return RichResult(
         payload={
-            "W_b": float(min(W_b, 1.0)), "S_b": S_b, "lambda_": lam,
-            "r_per_object": r, "m_per_block": m, "b": int(b), "n": int(nn),
-            "chi2": float(chi2), "df": int(nn - 1),
+            "W_b": float(min(W_b, 1.0)),
+            "S_b": S_b,
+            "lambda_": lam,
+            "r_per_object": r,
+            "m_per_block": m,
+            "b": int(b),
+            "n": int(nn),
+            "chi2": float(chi2),
+            "df": int(nn - 1),
             "p_value": float(stats.chi2.sf(chi2, nn - 1)),
             "method": "BIB concordance with verified design identities (Gibbons Ch. 12.5)",
         }

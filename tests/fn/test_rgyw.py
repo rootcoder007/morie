@@ -1,7 +1,6 @@
 """Tests for rgyw.rangayyan_yule_walker."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaar import rangayyan_yule_walker
 
 

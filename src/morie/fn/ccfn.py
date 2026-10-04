@@ -41,8 +41,7 @@ def ccf_normalized(x, y, maxlag: int | None = None, **kwargs) -> DescriptiveResu
         return DescriptiveResult(name="ccf_normalized", value=0.0, extra={"ccf": np.zeros(maxlag + 1)})
     lags = np.arange(0, maxlag + 1)
     # np.arange yields floats here, which cannot slice; iterate over ints.
-    ccf = np.array([np.sum(x[: N - m] * y[m:]) / norm
-                    for m in range(maxlag + 1)])
+    ccf = np.array([np.sum(x[: N - m] * y[m:]) / norm for m in range(maxlag + 1)])
     return DescriptiveResult(
         name="ccf_normalized",
         value=float(np.max(np.abs(ccf))),

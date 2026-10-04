@@ -5,9 +5,6 @@ Implements sec. 3.7.2 (tail-factor bounds around eq. 3.23) of Ghosal & van der V
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_density_bounds"]
@@ -26,10 +23,16 @@ def ghosal_ch3_polya_tree_density_bounds(n, a_of_level, m, depth):
         a = float(a_of_level(j))
         lo *= max(1.0 - n / (2.0 * a), 0.0)
         hi *= 1.0 + n / a
-    res = RichResult(payload={"estimate": lo, "value": [lo, hi],
-                              "lower": lo, "upper": hi,
-                              "bracket_valid": lo <= 1.0 <= hi,
-                              "method": "PT tail density bounds (GvdV 2017 sec. 3.7.2)"})
+    res = RichResult(
+        payload={
+            "estimate": lo,
+            "value": [lo, hi],
+            "lower": lo,
+            "upper": hi,
+            "bracket_valid": lo <= 1.0 <= hi,
+            "method": "PT tail density bounds (GvdV 2017 sec. 3.7.2)",
+        }
+    )
     return with_describe_pointer(res, "ghs032")
 
 

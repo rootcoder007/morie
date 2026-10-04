@@ -47,9 +47,16 @@ def ot_emd_solver(a, b, C):
     Cm = core.mat(C)
     T, cost = ot.emd(aa, bb, Cm)
     nb = sum(1 for row in T for t in row if t > 1e-15)
-    return RichResult(payload={
-        "T": T, "cost": cost, "n": len(aa), "m": len(bb), "n_basic": nb,
-        "method": "Exact optimal transport (transportation simplex)"})
+    return RichResult(
+        payload={
+            "T": T,
+            "cost": cost,
+            "n": len(aa),
+            "m": len(bb),
+            "n_basic": nb,
+            "method": "Exact optimal transport (transportation simplex)",
+        }
+    )
 
 
 def cheatsheet():

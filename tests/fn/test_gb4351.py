@@ -1,8 +1,8 @@
 """Tests for gb4351 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb4351 import gibbons_ks_chi2_approx
 
 

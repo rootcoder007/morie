@@ -78,10 +78,8 @@ def graphlet_kernel(G1, G2, k_size=3, normalize=True):
     types = []
     c1, t1 = _counts(G1, int(k_size), types)
     c2, t2 = _counts(G2, int(k_size), types)
-    f1 = [(c1.get(s, 0.0) / t1 if (normalize and t1 > 0.0) else c1.get(s, 0.0))
-          for s in types]
-    f2 = [(c2.get(s, 0.0) / t2 if (normalize and t2 > 0.0) else c2.get(s, 0.0))
-          for s in types]
+    f1 = [(c1.get(s, 0.0) / t1 if (normalize and t1 > 0.0) else c1.get(s, 0.0)) for s in types]
+    f2 = [(c2.get(s, 0.0) / t2 if (normalize and t2 > 0.0) else c2.get(s, 0.0)) for s in types]
     dot = 0.0
     for i in range(len(types)):
         dot += f1[i] * f2[i]

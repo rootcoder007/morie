@@ -18,13 +18,11 @@ def test_wald_statistic_and_interval_per_coefficient():
     res = hedderich_chapter_8_equation_56(beta, se, level=0.95)
     for i, (b, s) in enumerate(zip(beta, se)):
         assert res["z"][i] == pytest.approx(b / s, rel=1e-12)
-        assert res["ci_low"][i] == pytest.approx(
-            b - (res["ci_high"][i] - b), rel=1e-10)
+        assert res["ci_low"][i] == pytest.approx(b - (res["ci_high"][i] - b), rel=1e-10)
         half = res["ci_high"][i] - b
         assert half > 0.0
         # the same critical value scales every standard error
-        assert half / s == pytest.approx(
-            (res["ci_high"][0] - beta[0]) / se[0], rel=1e-12)
+        assert half / s == pytest.approx((res["ci_high"][0] - beta[0]) / se[0], rel=1e-12)
 
 
 def test_wald_p_value_is_the_two_sided_normal_tail():
@@ -35,8 +33,7 @@ def test_wald_p_value_is_the_two_sided_normal_tail():
     assert res["pvalue"][0] == pytest.approx(exact, abs=1e-15)
     assert res["reject"][0] is False
     clear = hedderich_chapter_8_equation_56([3.0], [1.0])
-    assert clear["pvalue"][0] == pytest.approx(
-        2.0 * (0.5 * math.erfc(3.0 / math.sqrt(2.0))), abs=1e-12)
+    assert clear["pvalue"][0] == pytest.approx(2.0 * (0.5 * math.erfc(3.0 / math.sqrt(2.0))), abs=1e-12)
     assert clear["reject"][0] is True
     flat = hedderich_chapter_8_equation_56([0.0], [1.0])
     assert flat["pvalue"][0] == pytest.approx(1.0, abs=1e-12)

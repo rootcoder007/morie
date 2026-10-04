@@ -1,9 +1,9 @@
 """Tests for morie.fn.trmwt -- Trimmed weights."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.trmwt import trimmed_weights, trmwt
 
 

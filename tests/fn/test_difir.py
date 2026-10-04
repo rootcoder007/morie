@@ -1,7 +1,6 @@
 """Tests for difir -- IRT-based DIF."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DIFResult
 from morie.fn.difir import dif_irt_based
 

@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def ht_mean(z, pi, n_population):
     """
     value = _brus.ht_mean(z, pi, n_population)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (2.4)"
     return RichResult(
-        title='Horvitz-Thompson estimator of the population mean',
+        title="Horvitz-Thompson estimator of the population mean",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r2e4: zbar_hat_pi = (1/N) sum_{k in S} z_k/pi_k [Brus 2022, eq. 2.4]'
+    return "r2e4: zbar_hat_pi = (1/N) sum_{k in S} z_k/pi_k [Brus 2022, eq. 2.4]"
 
 
 # compact alias per ledger/NAMING.md

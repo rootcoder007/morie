@@ -38,9 +38,13 @@ def gibbons_runs_ud_mean(n):
     if n < 3:
         raise ValueError(f"n must be at least 3, got {n}.")
     return RichResult(
-        payload={"mean": (2.0 * n - 1) / 3.0, "var": (16.0 * n - 29) / 90.0,
-                 "max_runs": n - 1, "n": n,
-                 "method": "E = (2n-1)/3, Var = (16n-29)/90 (Gibbons Ch. 3.4)"}
+        payload={
+            "mean": (2.0 * n - 1) / 3.0,
+            "var": (16.0 * n - 29) / 90.0,
+            "max_runs": n - 1,
+            "n": n,
+            "method": "E = (2n-1)/3, Var = (16n-29)/90 (Gibbons Ch. 3.4)",
+        }
     )
 
 

@@ -1,7 +1,6 @@
 """Tests for gh_c4_15.ghosal_dp_mutual_sing."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c4_15 import ghosal_dp_mutual_sing
 
 
@@ -21,9 +20,7 @@ def test_gh_c4_15_basic():
 
     # Independent computation of the formula:
     # continuous parts differ iff lengths differ or any |u-v| > 1e-12
-    cont_differ = (len(cont_1) != len(cont_2)) or any(
-        abs(float(u) - float(v)) > 1e-12 for u, v in zip(cont_1, cont_2)
-    )
+    cont_differ = (len(cont_1) != len(cont_2)) or any(abs(float(u) - float(v)) > 1e-12 for u, v in zip(cont_1, cont_2))
     # atomic supports differ iff the sets of points are not equal
     atoms_differ = set(float(a) for a in atoms_1) != set(float(a) for a in atoms_2)
     singular = cont_differ or atoms_differ
@@ -45,9 +42,7 @@ def test_gh_c4_15_edge():
     result = ghosal_dp_mutual_sing(cont_1, cont_2, atoms_1, atoms_2)
 
     # Independent computation of the formula:
-    cont_differ = (len(cont_1) != len(cont_2)) or any(
-        abs(float(u) - float(v)) > 1e-12 for u, v in zip(cont_1, cont_2)
-    )
+    cont_differ = (len(cont_1) != len(cont_2)) or any(abs(float(u) - float(v)) > 1e-12 for u, v in zip(cont_1, cont_2))
     atoms_differ = set(float(a) for a in atoms_1) != set(float(a) for a in atoms_2)
     singular = cont_differ or atoms_differ
     expected_estimate = 1.0 if singular else 0.0

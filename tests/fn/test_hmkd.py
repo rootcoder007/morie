@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmkd import geron_knowledge_distillation
 
 
@@ -16,8 +15,7 @@ def test_hmkd_basic():
     y = rng.integers(0, C, m)
     result = geron_knowledge_distillation(teacher, student, y=y, T=2.0, alpha=0.5)
     assert isinstance(result, dict)
-    for key in ("loss", "ce_loss", "kl_loss", "teacher_probs", "student_probs",
-                "agreement", "estimate", "n", "method"):
+    for key in ("loss", "ce_loss", "kl_loss", "teacher_probs", "student_probs", "agreement", "estimate", "n", "method"):
         assert key in result
     assert math.isfinite(result["loss"])
     assert math.isfinite(result["ce_loss"])
@@ -53,7 +51,7 @@ import morie.fn.hmkd as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -100,8 +100,7 @@ def _broadcast(v, n, name):
     if len(vals) == 1:
         return vals * n
     if len(vals) != n:
-        raise ValueError("%s has length %d; expected 1 or %d to match theta"
-                         % (name, len(vals), n))
+        raise ValueError("%s has length %d; expected 1 or %d to match theta" % (name, len(vals), n))
     return vals
 
 
@@ -114,8 +113,7 @@ def _expit(z):
 
 
 def cheatsheet():
-    return ("icrf: item characteristic curve, 3PL "
-            "P(theta) = c + (1-c)/(1+exp(-a(theta-b)))")
+    return "icrf: item characteristic curve, 3PL P(theta) = c + (1-c)/(1+exp(-a(theta-b)))"
 
 
 icrf = item_characteristic_curve

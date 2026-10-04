@@ -27,17 +27,16 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equat
     """
     value = _acd.baseline_logit(bj0, bjs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.10)"
     return RichResult(
-        title='Baseline-category logit for a contingency table',
+        title="Baseline-category logit for a contingency table",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e10: log(pi_j/pi_1) = bj0 + bj2 x2 + ... + bjI xI [Bilder & Loughin 2025, eq. 3.10]'
+    return "3e10: log(pi_j/pi_1) = bj0 + bj2 x2 + ... + bjI xI [Bilder & Loughin 2025, eq. 3.10]"

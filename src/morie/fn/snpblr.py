@@ -106,11 +106,19 @@ def snp_blup(y, M, lam=None, h2=None, freq=None):
     mu = float(sol[0])
     u = sol[1:]
     gebv = Z @ u
-    return RichResult(payload={
-        "estimate": gebv, "u": u, "mu": mu, "lam": lam,
-        "sum2pq": sum2pq, "freq": p, "n": int(n), "m": int(m),
-        "method": "SNP-BLUP (Meuwissen 2001 BLUP; Henderson MME; VanRaden centring)",
-    })
+    return RichResult(
+        payload={
+            "estimate": gebv,
+            "u": u,
+            "mu": mu,
+            "lam": lam,
+            "sum2pq": sum2pq,
+            "freq": p,
+            "n": int(n),
+            "m": int(m),
+            "method": "SNP-BLUP (Meuwissen 2001 BLUP; Henderson MME; VanRaden centring)",
+        }
+    )
 
 
 def cheatsheet():

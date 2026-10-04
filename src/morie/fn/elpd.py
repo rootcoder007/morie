@@ -41,5 +41,6 @@ elpd = expected_log_pred
 def cheatsheet() -> str:
     return "expected_log_pred({}) -> Expected Log Predictive Density."
 
+
 # alias kept from the retired placeholder of the same name
 expected_log_predictive_density = expected_log_pred

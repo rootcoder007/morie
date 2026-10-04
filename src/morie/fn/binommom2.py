@@ -33,7 +33,7 @@ def binommom2(n, p):
     value = _morin.binomial_second_moment(n, p)
     pmf = _morin.binomial_pmf_vector(n, p)
     ks = np.arange(int(n) + 1)
-    series = float(np.sum(ks ** 2 * pmf))
+    series = float(np.sum(ks**2 * pmf))
     if abs(series - value) > 1e-9 * max(1.0, value):
         raise AssertionError("series second moment disagrees")
     payload = {"second_moment": value}

@@ -76,12 +76,18 @@ def deviance_residual_cox(fit):
     d = np.sign(M) * np.sqrt(np.maximum(inner, 0.0))
     return RichResult(
         title="Cox deviance residuals",
-        summary_lines=[("n", int(d.size)), ("mean", float(d.mean())),
-                       ("sd", float(d.std(ddof=1)) if d.size > 1 else float("nan"))],
-        warnings=["symmetry degrades under heavy censoring; a mass of small "
-                  "negative residuals is expected there, not lack of fit"],
+        summary_lines=[
+            ("n", int(d.size)),
+            ("mean", float(d.mean())),
+            ("sd", float(d.std(ddof=1)) if d.size > 1 else float("nan")),
+        ],
+        warnings=[
+            "symmetry degrades under heavy censoring; a mass of small "
+            "negative residuals is expected there, not lack of fit"
+        ],
         payload={
-            "residuals": d, "martingale": M,
+            "residuals": d,
+            "martingale": M,
             "n_extreme": int(np.sum(np.abs(d) > 2.5)),
             "mean": float(d.mean()),
             "sd": float(d.std(ddof=1)) if d.size > 1 else float("nan"),

@@ -76,10 +76,13 @@ def kosorok_ch2_glivenko_cantelli_bracketing(F, X, eps_grid=None, P=None):
         counts.append(n_br)
     counts = np.array(counts)
     return RichResult(
-        payload={"eps_grid": np.array(eps_grid), "bracketing_numbers": counts,
-                 "finite_on_grid": bool(np.all(np.isfinite(counts))),
-                 "monotone": bool(np.all(np.diff(counts) >= 0)),
-                 "method": "N_[](eps, F, L1(P_n)) by greedy bracketing (Kosorok Ch. 2)"}
+        payload={
+            "eps_grid": np.array(eps_grid),
+            "bracketing_numbers": counts,
+            "finite_on_grid": bool(np.all(np.isfinite(counts))),
+            "monotone": bool(np.all(np.diff(counts) >= 0)),
+            "method": "N_[](eps, F, L1(P_n)) by greedy bracketing (Kosorok Ch. 2)",
+        }
     )
 
 

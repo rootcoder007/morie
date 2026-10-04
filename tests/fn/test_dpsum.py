@@ -1,7 +1,6 @@
 """Tests for dpsum.dp_sum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpsum import dp_sum
 
 

@@ -30,11 +30,16 @@ def kamath_ch9_clip_contrastive_total(L_i2t, L_t2i):
     if not (np.isfinite(a) and np.isfinite(b)):
         raise ValueError("both contrastive losses must be finite.")
     if a < 0 or b < 0:
-        raise ValueError("a contrastive cross-entropy cannot be "
-                         f"negative; got {a} and {b}.")
-    return RichResult(payload={
-        "estimate": a + b, "L_i2t": a, "L_t2i": b, "n": 2,
-        "method": "total CLIP contrastive loss (Kamath Eq 9.7)"})
+        raise ValueError(f"a contrastive cross-entropy cannot be negative; got {a} and {b}.")
+    return RichResult(
+        payload={
+            "estimate": a + b,
+            "L_i2t": a,
+            "L_t2i": b,
+            "n": 2,
+            "method": "total CLIP contrastive loss (Kamath Eq 9.7)",
+        }
+    )
 
 
 def cheatsheet():

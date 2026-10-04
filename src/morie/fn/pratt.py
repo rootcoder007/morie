@@ -62,12 +62,10 @@ fixed-query reading of the context vector.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["attention", "sentence_vector", "document_vector",
-           "classify", "attention_entropy"]
+__all__ = ["attention", "sentence_vector", "document_vector", "classify", "attention_entropy"]
 
 _EPS = 1e-12
 
@@ -80,13 +78,9 @@ def attention(H, W, b, u_context):
     uc = [float(v) for v in k.vec(u_context)]
     sc = []
     for h in rows:
-        u = [math.tanh(b[o] + sum(W[o][j] * h[j]
-                                  for j in range(len(h))))
-             for o in range(len(W))]
+        u = [math.tanh(b[o] + sum(W[o][j] * h[j] for j in range(len(h)))) for o in range(len(W))]
         if len(u) != len(uc):
-            raise ValueError("pratt: the context vector is %d-"
-                             "dimensional but the projection is %d"
-                             % (len(uc), len(u)))
+            raise ValueError("pratt: the context vector is %d-dimensional but the projection is %d" % (len(uc), len(u)))
         sc.append(sum(u[o] * uc[o] for o in range(len(u))))
     m = max(sc)
     e = [math.exp(v - m) for v in sc]
@@ -99,9 +93,7 @@ def sentence_vector(H_words, W, b, u_w):
     a = attention(H_words, W, b, u_w)
     rows = [[float(v) for v in r] for r in k.mat(H_words)]
     d = len(rows[0])
-    return {"vector": [sum(a[t] * rows[t][f] for t in range(len(rows)))
-                       for f in range(d)],
-            "alpha": a}
+    return {"vector": [sum(a[t] * rows[t][f] for t in range(len(rows))) for f in range(d)], "alpha": a}
 
 
 def document_vector(H_sentences, W, b, u_s):
@@ -109,9 +101,7 @@ def document_vector(H_sentences, W, b, u_s):
     a = attention(H_sentences, W, b, u_s)
     rows = [[float(v) for v in r] for r in k.mat(H_sentences)]
     d = len(rows[0])
-    return {"vector": [sum(a[i] * rows[i][f] for i in range(len(rows)))
-                       for f in range(d)],
-            "alpha": a}
+    return {"vector": [sum(a[i] * rows[i][f] for i in range(len(rows))) for f in range(d)], "alpha": a}
 
 
 def classify(word_states, Ww, bw, u_w, Ws, bs, u_s, Wc, bc):
@@ -129,24 +119,24 @@ def classify(word_states, Ww, bw, u_w, Ws, bs, u_s, Wc, bc):
         S.append(r["vector"])
         wa.append(r["alpha"])
     dv = document_vector(S, Ws, bs, u_s)
-    z = [bc[o] + sum(Wc[o][j] * dv["vector"][j]
-                     for j in range(len(dv["vector"])))
-         for o in range(len(Wc))]
+    z = [bc[o] + sum(Wc[o][j] * dv["vector"][j] for j in range(len(dv["vector"]))) for o in range(len(Wc))]
     m = max(z)
     e = [math.exp(v - m) for v in z]
     tot = sum(e)
-    return RichResult(payload={
-        "estimate": [v / tot for v in e],
-        "probabilities": [v / tot for v in e],
-        "document_vector": dv["vector"],
-        "sentence_attention": dv["alpha"],
-        "word_attention": wa,
-        "n_sentences": len(S),
-        "method": "hierarchical attention network; Yang et al. (2016)",
-        "note": "both context vectors are randomly initialised and "
-                "learned -- the model discovers what 'informative' "
-                "means",
-    })
+    return RichResult(
+        payload={
+            "estimate": [v / tot for v in e],
+            "probabilities": [v / tot for v in e],
+            "document_vector": dv["vector"],
+            "sentence_attention": dv["alpha"],
+            "word_attention": wa,
+            "n_sentences": len(S),
+            "method": "hierarchical attention network; Yang et al. (2016)",
+            "note": "both context vectors are randomly initialised and "
+            "learned -- the model discovers what 'informative' "
+            "means",
+        }
+    )
 
 
 def attention_entropy(alpha):
@@ -162,22 +152,26 @@ def attention_entropy(alpha):
         raise ValueError("pratt: the attention weights have no mass")
     a = [v / s for v in a]
     h = -sum(v * math.log(max(v, _EPS)) for v in a)
-    return {"entropy": h, "max_entropy": math.log(len(a)),
-            "concentration": 1.0 - h / math.log(len(a))
-            if len(a) > 1 else 1.0}
+    return {
+        "entropy": h,
+        "max_entropy": math.log(len(a)),
+        "concentration": 1.0 - h / math.log(len(a)) if len(a) > 1 else 1.0,
+    }
 
 
 def cheatsheet():
-    return ("pratt: mirror the document's own structure -- words to "
-            "sentences to document -- with attention at BOTH levels, "
-            "because which word matters within a sentence and which "
-            "sentence matters within a document are different "
-            "judgements. At each level: u = tanh(W h + b), then "
-            "softmax of u'u_context, then a weighted sum. The CONTEXT "
-            "VECTOR is a learned fixed query ('what is the informative "
-            "word'), randomly initialised, not supplied. The alphas "
-            "are a distribution over positions, so they read directly "
-            "as the explanation.")
+    return (
+        "pratt: mirror the document's own structure -- words to "
+        "sentences to document -- with attention at BOTH levels, "
+        "because which word matters within a sentence and which "
+        "sentence matters within a document are different "
+        "judgements. At each level: u = tanh(W h + b), then "
+        "softmax of u'u_context, then a weighted sum. The CONTEXT "
+        "VECTOR is a learned fixed query ('what is the informative "
+        "word'), randomly initialised, not supplied. The alphas "
+        "are a distribution over positions, so they read directly "
+        "as the explanation."
+    )
 
 
 # compact alias per ledger/NAMING.md

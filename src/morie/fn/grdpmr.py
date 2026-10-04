@@ -110,8 +110,7 @@ def geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma, z=None, s
         raise ValueError(f"alpha[{t}] must lie in (0, 1], got {at}.")
     if not (0.0 <= abt < 1.0):
         raise ValueError(
-            f"alpha_bar[{t}] must lie in [0, 1); at exactly 1 the noise coefficient "
-            f"divides by zero. Got {abt}."
+            f"alpha_bar[{t}] must lie in [0, 1); at exactly 1 the noise coefficient divides by zero. Got {abt}."
         )
     sigma = float(sigma)
     if not np.isfinite(sigma) or sigma < 0:
@@ -154,6 +153,7 @@ def geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma, z=None, s
 
 def cheatsheet():
     return "grdpmr: x_{t-1} = (x_t - (1-a)/sqrt(1-ab) eps)/sqrt(a) + sigma z; sigma=0 is DDIM"
+
 
 # alias kept from the retired placeholder of the same name
 ddpm_step = geron_ddpm_reverse_step

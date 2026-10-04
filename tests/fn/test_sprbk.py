@@ -1,7 +1,6 @@
 """Tests for morie.fn.sprbk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sprbk import spring_mass
 
 

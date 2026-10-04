@@ -1,8 +1,8 @@
 """Tests for morie.fn.skerr — spatial error model (SEM)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.skerr import spatial_error_model
 
 

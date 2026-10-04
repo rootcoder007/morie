@@ -30,8 +30,7 @@ from ._richresult import RichResult
 __all__ = ["discrete_time_survival"]
 
 
-def discrete_time_survival(time_discrete, event, X=None, max_iter=100,
-                           tol=1e-12, ridge=1e-8):
+def discrete_time_survival(time_discrete, event, X=None, max_iter=100, tol=1e-12, ridge=1e-8):
     """Grouped proportional hazards by complementary log-log regression.
 
     Returns

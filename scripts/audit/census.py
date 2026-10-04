@@ -1,11 +1,20 @@
-import ast, pathlib, re, collections, json
+import ast
+import collections
+import json
+import pathlib
+import re
+
 FN = pathlib.Path("src/morie/fn")
 
-CODE = re.compile(r"cat\(|print\(|<-|%>%|library\(|require\(|function\s*\(|\bdata\.frame\(|"
-                  r"ggplot\(|str\(|head\(|paste0?\(|c\(\s*[\"']|\$<-|::")
+CODE = re.compile(
+    r"cat\(|print\(|<-|%>%|library\(|require\(|function\s*\(|\bdata\.frame\(|"
+    r"ggplot\(|str\(|head\(|paste0?\(|c\(\s*[\"']|\$<-|::"
+)
 LATEX_FAIL = re.compile(r"<LATEX>|\[EQ\]\s*$|\[EQ\]\s*\[EQ\]")
-MATHY = re.compile(r"[=<>]\s*[^=]|\\frac|\\sum|\\int|\\sqrt|\\alpha|\\beta|\\mu|\\sigma|\\theta|"
-                   r"[∑∫√±≤≥≠αβγμσθλπ]|\^|_\{|\bP\(|\bE\[|\bVar\(|\bCov\(")
+MATHY = re.compile(
+    r"[=<>]\s*[^=]|\\frac|\\sum|\\int|\\sqrt|\\alpha|\\beta|\\mu|\\sigma|\\theta|"
+    r"[∑∫√±≤≥≠αβγμσθλπ]|\^|_\{|\bP\(|\bE\[|\bVar\(|\bCov\("
+)
 
 rows = []
 for f in sorted(FN.glob("*.py")):
@@ -19,7 +28,7 @@ for f in sorted(FN.glob("*.py")):
     if "auto-extracted" not in doc:
         continue
     m = re.search(r"^\s*Formula:\s*(.+)$", src, re.M)
-    formula = (m.group(1).strip() if m else "")
+    formula = m.group(1).strip() if m else ""
     ref = ""
     rm = re.search(r"References\n\s*-+\n\s*(.+)", src)
     if rm:
@@ -39,5 +48,5 @@ for f in sorted(FN.glob("*.py")):
 print(f"auto-extracted modules examined: {len(rows)}\n")
 c = collections.Counter(r["cls"] for r in rows)
 for k, v in c.most_common():
-    print(f"  {k:26s} {v:6d}  {100*v/len(rows):5.1f}%")
+    print(f"  {k:26s} {v:6d}  {100 * v / len(rows):5.1f}%")
 json.dump(rows, open("/tmp/census.json", "w"))

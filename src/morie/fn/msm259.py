@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,10 +22,14 @@ def mvsml_deep_learning_eq_13_1(image, kernel, bias=0.0, stride=1):
     196,609 a fully connected layer would need, because the weights
     are shared across positions. Keys: estimate."""
     fm = _gp.conv2d(image, kernel, bias=bias, stride=stride)
-    res = RichResult(payload={"estimate": fm[0][0],
-                              "feature_map": fm,
-                              "output_shape": (len(fm), len(fm[0])),
-                              "method": "convolution (MVSML 2022 eq. 13.1)"})
+    res = RichResult(
+        payload={
+            "estimate": fm[0][0],
+            "feature_map": fm,
+            "output_shape": (len(fm), len(fm[0])),
+            "method": "convolution (MVSML 2022 eq. 13.1)",
+        }
+    )
     return with_describe_pointer(res, "msm259")
 
 

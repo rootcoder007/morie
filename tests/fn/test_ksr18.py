@@ -1,7 +1,6 @@
 """Tests for ksr18.kosorok_nelson_aalen."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr18 import kosorok_nelson_aalen
 
 

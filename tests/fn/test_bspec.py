@@ -1,7 +1,6 @@
 """Tests for bspec -- Bispectrum estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bspec import bspec
 

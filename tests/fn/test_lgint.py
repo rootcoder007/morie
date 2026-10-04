@@ -1,7 +1,6 @@
 """Tests for morie.fn.lgint."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lgint import lagrange_interp
 
 

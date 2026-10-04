@@ -3,15 +3,13 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.otwsg import ot_wasserstein_gauss
 
 
 def _make_psd(rng, d):
     """Build a d x d symmetric positive (semi-)definite matrix L L^T."""
     L = rng.normal(0, 1, (d, d))
-    return [[sum(L[i][k] * L[j][k] for k in range(d)) for j in range(d)]
-            for i in range(d)]
+    return [[sum(L[i][k] * L[j][k] for k in range(d)) for j in range(d)] for i in range(d)]
 
 
 def test_otwsg_basic():

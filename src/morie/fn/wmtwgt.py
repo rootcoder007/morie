@@ -14,8 +14,7 @@ def _dist(a, b):
     return np.sqrt(s)
 
 
-def weights_matrix(coords, method="distance", k_or_threshold=1,
-                   alpha=1.0, row_standardize=True):
+def weights_matrix(coords, method="distance", k_or_threshold=1, alpha=1.0, row_standardize=True):
     """
     Spatial weights matrix construction
 
@@ -105,9 +104,11 @@ def weights_matrix(coords, method="distance", k_or_threshold=1,
         if len(row) != dim:
             raise ValueError("all coordinate rows must have the same length")
     if method not in ("distance", "knn", "inverse"):
-        raise ValueError("method must be 'distance', 'knn' or 'inverse'; "
-                         "rook and queen contiguity need a lattice, see "
-                         "morie.fn.swrook and morie.fn.swqueen")
+        raise ValueError(
+            "method must be 'distance', 'knn' or 'inverse'; "
+            "rook and queen contiguity need a lattice, see "
+            "morie.fn.swrook and morie.fn.swqueen"
+        )
 
     d = [[0.0] * n for _ in range(n)]
     for i in range(n):
@@ -122,8 +123,7 @@ def weights_matrix(coords, method="distance", k_or_threshold=1,
         if k < 1 or k > n - 1:
             raise ValueError("k must lie between 1 and n - 1")
         for i in range(n):
-            order = sorted((j for j in range(n) if j != i),
-                           key=lambda j: (d[i][j], j))
+            order = sorted((j for j in range(n) if j != i), key=lambda j: (d[i][j], j))
             for j in order[:k]:
                 w[i][j] = 1.0
     else:

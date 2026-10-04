@@ -67,9 +67,17 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["vcf_filter", "varqc1", "hard_filter", "fit_mixture",
-           "mixture_logpdf", "DEFAULT_THRESHOLDS", "METHODS",
-           "COVARIANCES", "cheatsheet"]
+__all__ = [
+    "vcf_filter",
+    "varqc1",
+    "hard_filter",
+    "fit_mixture",
+    "mixture_logpdf",
+    "DEFAULT_THRESHOLDS",
+    "METHODS",
+    "COVARIANCES",
+    "cheatsheet",
+]
 
 METHODS = ("hard", "vqsr", "both")
 COVARIANCES = ("full", "diagonal")
@@ -77,12 +85,22 @@ COVARIANCES = ("full", "diagonal")
 # Each entry is (annotation, direction, cutoff). Direction "lt" means a
 # variant FAILS when the value is below the cutoff.
 DEFAULT_THRESHOLDS = {
-    "snp": (("QD", "lt", 2.0), ("QUAL", "lt", 30.0), ("SOR", "gt", 3.0),
-            ("FS", "gt", 60.0), ("MQ", "lt", 40.0),
-            ("MQRankSum", "lt", -12.5), ("ReadPosRankSum", "lt", -8.0)),
-    "indel": (("QD", "lt", 2.0), ("QUAL", "lt", 30.0),
-              ("FS", "gt", 200.0), ("SOR", "gt", 10.0),
-              ("ReadPosRankSum", "lt", -20.0)),
+    "snp": (
+        ("QD", "lt", 2.0),
+        ("QUAL", "lt", 30.0),
+        ("SOR", "gt", 3.0),
+        ("FS", "gt", 60.0),
+        ("MQ", "lt", 40.0),
+        ("MQRankSum", "lt", -12.5),
+        ("ReadPosRankSum", "lt", -8.0),
+    ),
+    "indel": (
+        ("QD", "lt", 2.0),
+        ("QUAL", "lt", 30.0),
+        ("FS", "gt", 200.0),
+        ("SOR", "gt", 10.0),
+        ("ReadPosRankSum", "lt", -20.0),
+    ),
 }
 
 
@@ -102,7 +120,7 @@ def hard_filter(records, fields, thresholds):
     counts = {}
     for rec in records:
         failed = []
-        for (ann, direction, cut) in thresholds:
+        for ann, direction, cut in thresholds:
             if ann not in pos:
                 continue
             v = rec[pos[ann]]
@@ -110,8 +128,7 @@ def hard_filter(records, fields, thresholds):
                 continue
             bad = v < cut if direction == "lt" else v > cut
             if bad:
-                failed.append("%s%s%g" % (ann, "<" if direction == "lt"
-                                          else ">", cut))
+                failed.append("%s%s%g" % (ann, "<" if direction == "lt" else ">", cut))
         if failed:
             out.append(";".join(failed))
         else:
@@ -131,13 +148,13 @@ def mixture_logpdf(x, weights, means, chols):
             z[i] = (x[i] - means[k][i] - _w.dot(L[i][:i], z[:i])) / L[i][i]
         logdet = 2.0 * _w.csum(math.log(L[i][i]) for i in range(d))
         q = _w.csum(v * v for v in z)
-        terms.append(math.log(weights[k]) - 0.5 * q - 0.5 * logdet
-                     - 0.5 * d * math.log(2.0 * math.pi))
+        terms.append(math.log(weights[k]) - 0.5 * q - 0.5 * logdet - 0.5 * d * math.log(2.0 * math.pi))
     return _w.logsumexp(terms)
 
 
-def fit_mixture(X, n_components=2, n_iter=50, seed=1, covariance="full",
-                min_variance=1e-6, jitter=1e-8, shrinkage=0.05):
+def fit_mixture(
+    X, n_components=2, n_iter=50, seed=1, covariance="full", min_variance=1e-6, jitter=1e-8, shrinkage=0.05
+):
     """EM for a Gaussian mixture, returning Cholesky factors.
 
     Initialised by assigning point i to component i mod K -- a
@@ -170,21 +187,21 @@ def fit_mixture(X, n_components=2, n_iter=50, seed=1, covariance="full",
     if K < 1:
         raise ValueError("need at least one component")
     if n < K * (d + 1):
-        raise ValueError("too few training variants for %d components in "
-                         "%d dimensions; use a diagonal covariance or "
-                         "fewer components" % (K, d))
+        raise ValueError(
+            "too few training variants for %d components in "
+            "%d dimensions; use a diagonal covariance or "
+            "fewer components" % (K, d)
+        )
     rng = _core._SplitMix64(seed)
     gmean = [_w.csum(X[i][j] for i in range(n)) / n for j in range(d)]
-    gvar = [_w.csum((X[i][j] - gmean[j]) * (X[i][j] - gmean[j])
-                    for i in range(n)) / n for j in range(d)]
+    gvar = [_w.csum((X[i][j] - gmean[j]) * (X[i][j] - gmean[j]) for i in range(n)) / n for j in range(d)]
     for j in range(d):
         if gvar[j] < min_variance:
             gvar[j] = min_variance
     lam = float(shrinkage)
     if not (0.0 <= lam < 1.0):
         raise ValueError("shrinkage must lie in [0, 1)")
-    resp = [[1.0 if (i % K) == k else 0.0 for k in range(K)]
-            for i in range(n)]
+    resp = [[1.0 if (i % K) == k else 0.0 for k in range(K)] for i in range(n)]
     weights = [1.0 / K] * K
     means = [[0.0] * d for _ in range(K)]
     chols = [[[0.0] * d for _ in range(d)] for _ in range(K)]
@@ -197,26 +214,22 @@ def fit_mixture(X, n_components=2, n_iter=50, seed=1, covariance="full",
                 # A component that lost every point is restarted at a
                 # jittered overall mean rather than left singular.
                 nk = 1e-12
-                means[k] = [_w.csum(X[i][j] for i in range(n)) / n
-                            + 1e-3 * float(rng.normal()) for j in range(d)]
-                cov = [[(gvar[a] if a == b else 0.0) for b in range(d)]
-                       for a in range(d)]
+                means[k] = [_w.csum(X[i][j] for i in range(n)) / n + 1e-3 * float(rng.normal()) for j in range(d)]
+                cov = [[(gvar[a] if a == b else 0.0) for b in range(d)] for a in range(d)]
             else:
-                means[k] = [_w.csum(resp[i][k] * X[i][j]
-                                    for i in range(n)) / nk
-                            for j in range(d)]
+                means[k] = [_w.csum(resp[i][k] * X[i][j] for i in range(n)) / nk for j in range(d)]
                 cov = [[0.0] * d for _ in range(d)]
                 for a in range(d):
                     for b in range(d):
                         if covariance == "diagonal" and a != b:
                             continue
-                        cov[a][b] = _w.csum(
-                            resp[i][k] * (X[i][a] - means[k][a])
-                            * (X[i][b] - means[k][b])
-                            for i in range(n)) / nk
+                        cov[a][b] = (
+                            _w.csum(resp[i][k] * (X[i][a] - means[k][a]) * (X[i][b] - means[k][b]) for i in range(n))
+                            / nk
+                        )
                 for a in range(d):
                     for b in range(d):
-                        cov[a][b] *= (1.0 - lam)
+                        cov[a][b] *= 1.0 - lam
                     cov[a][a] += lam * gvar[a]
                     if cov[a][a] < min_variance:
                         cov[a][a] = min_variance
@@ -230,22 +243,39 @@ def fit_mixture(X, n_components=2, n_iter=50, seed=1, covariance="full",
         for i in range(n):
             lp = []
             for k in range(K):
-                lp.append(mixture_logpdf(X[i], [weights[k]], [means[k]],
-                                         [chols[k]]))
+                lp.append(mixture_logpdf(X[i], [weights[k]], [means[k]], [chols[k]]))
             tot = _w.logsumexp(lp)
             ll += tot
             resp[i] = [math.exp(v - tot) for v in lp]
         ll_trace.append(ll)
-    return {"weights": weights, "means": means, "chols": chols,
-            "loglik": ll_trace[-1], "loglik_trace": ll_trace,
-            "covariance": covariance, "n_components": K}
+    return {
+        "weights": weights,
+        "means": means,
+        "chols": chols,
+        "loglik": ll_trace[-1],
+        "loglik_trace": ll_trace,
+        "covariance": covariance,
+        "n_components": K,
+    }
 
 
-def vcf_filter(vcf, thresholds=None, fields=None, mode="snp",
-               method="hard", positive=None, negative=None,
-               n_components=2, n_iter=50, seed=1, covariance="full",
-               tranches=(90.0, 99.0, 99.9, 100.0), vqsr_fields=None,
-               min_variance=1e-6, shrinkage=0.05):
+def vcf_filter(
+    vcf,
+    thresholds=None,
+    fields=None,
+    mode="snp",
+    method="hard",
+    positive=None,
+    negative=None,
+    n_components=2,
+    n_iter=50,
+    seed=1,
+    covariance="full",
+    tranches=(90.0, 99.0, 99.9, 100.0),
+    vqsr_fields=None,
+    min_variance=1e-6,
+    shrinkage=0.05,
+):
     """Filter variant records by hard thresholds, by VQSR, or by both.
 
     Parameters
@@ -298,46 +328,59 @@ def vcf_filter(vcf, thresholds=None, fields=None, mode="snp",
     n = len(recs)
     if n < 1:
         raise ValueError("no records")
-    thr = DEFAULT_THRESHOLDS[mode] if thresholds is None else \
-        tuple((str(a), str(b), float(c)) for (a, b, c) in thresholds)
+    thr = (
+        DEFAULT_THRESHOLDS[mode]
+        if thresholds is None
+        else tuple((str(a), str(b), float(c)) for (a, b, c) in thresholds)
+    )
 
     hard, counts = hard_filter(recs, fields, thr)
-    res = {"filter": list(hard), "counts": counts,
-           "n": n, "mode": mode, "method": method,
-           "thresholds": [[a, b, c] for (a, b, c) in thr],
-           "n_pass_hard": sum(1 for v in hard if v == "PASS"),
-           "fields": fields,
-           "method_name": "variant quality filtering"}
+    res = {
+        "filter": list(hard),
+        "counts": counts,
+        "n": n,
+        "mode": mode,
+        "method": method,
+        "thresholds": [[a, b, c] for (a, b, c) in thr],
+        "n_pass_hard": sum(1 for v in hard if v == "PASS"),
+        "fields": fields,
+        "method_name": "variant quality filtering",
+    }
 
     if method == "hard":
         res["estimate"] = res["n_pass_hard"] / float(n)
-        res["se"] = math.sqrt(res["estimate"] * (1.0 - res["estimate"])
-                              / n)
+        res["se"] = math.sqrt(res["estimate"] * (1.0 - res["estimate"]) / n)
         return RichResult(payload=res)
 
     if positive is None or negative is None:
-        raise ValueError("the VQSR routes need positive and negative "
-                         "training indices")
+        raise ValueError("the VQSR routes need positive and negative training indices")
     use = fields if vqsr_fields is None else [str(f) for f in vqsr_fields]
     cols = [fields.index(f) for f in use]
     for i in range(n):
         for c in cols:
             if recs[i][c] is None or recs[i][c] != recs[i][c]:
-                raise ValueError("record %d is missing annotation %s, "
-                                 "which the mixture cannot use; drop the "
-                                 "record or the annotation"
-                                 % (i, fields[c]))
+                raise ValueError(
+                    "record %d is missing annotation %s, "
+                    "which the mixture cannot use; drop the "
+                    "record or the annotation" % (i, fields[c])
+                )
     X = [[recs[i][c] for c in cols] for i in range(n)]
-    good = fit_mixture([X[i] for i in positive], n_components, n_iter,
-                       seed, covariance, min_variance, shrinkage=shrinkage)
-    bad = fit_mixture([X[i] for i in negative], n_components, n_iter,
-                      seed, covariance, min_variance, shrinkage=shrinkage)
+    good = fit_mixture(
+        [X[i] for i in positive], n_components, n_iter, seed, covariance, min_variance, shrinkage=shrinkage
+    )
+    bad = fit_mixture(
+        [X[i] for i in negative], n_components, n_iter, seed, covariance, min_variance, shrinkage=shrinkage
+    )
 
     ln10 = math.log(10.0)
-    lod = [(mixture_logpdf(X[i], good["weights"], good["means"],
-                           good["chols"])
-            - mixture_logpdf(X[i], bad["weights"], bad["means"],
-                             bad["chols"])) / ln10 for i in range(n)]
+    lod = [
+        (
+            mixture_logpdf(X[i], good["weights"], good["means"], good["chols"])
+            - mixture_logpdf(X[i], bad["weights"], bad["means"], bad["chols"])
+        )
+        / ln10
+        for i in range(n)
+    ]
 
     # Tranches: the VQSLOD cut that retains the stated percentage of the
     # TRAINING-POSITIVE variants. A tranche is a sensitivity to known
@@ -357,7 +400,7 @@ def vcf_filter(vcf, thresholds=None, fields=None, mode="snp",
     tranche = []
     for i in range(n):
         lab = "FAIL"
-        for (t, c) in cuts:
+        for t, c in cuts:
             if lod[i] >= c:
                 lab = "%.1f" % t
                 break
@@ -366,11 +409,8 @@ def vcf_filter(vcf, thresholds=None, fields=None, mode="snp",
     res["vqslod"] = lod
     res["tranche"] = tranche
     res["tranche_cuts"] = [[t, c] for (t, c) in cuts]
-    res["good_model"] = {"weights": good["weights"],
-                         "means": good["means"],
-                         "loglik": good["loglik"]}
-    res["bad_model"] = {"weights": bad["weights"], "means": bad["means"],
-                        "loglik": bad["loglik"]}
+    res["good_model"] = {"weights": good["weights"], "means": good["means"], "loglik": good["loglik"]}
+    res["bad_model"] = {"weights": bad["weights"], "means": bad["means"], "loglik": bad["loglik"]}
     res["good_loglik_trace"] = good["loglik_trace"]
     res["bad_loglik_trace"] = bad["loglik_trace"]
     res["covariance"] = covariance
@@ -391,8 +431,7 @@ def vcf_filter(vcf, thresholds=None, fields=None, mode="snp",
             cc[v] = cc.get(v, 0) + 1
         res["counts"] = cc
     else:
-        res["filter"] = ["PASS" if tranche[i] != "FAIL" else "VQSRFail"
-                         for i in range(n)]
+        res["filter"] = ["PASS" if tranche[i] != "FAIL" else "VQSRFail" for i in range(n)]
         cc = {}
         for v in res["filter"]:
             cc[v] = cc.get(v, 0) + 1
@@ -408,9 +447,9 @@ varqc1 = vcf_filter
 
 
 def cheatsheet():
-    return ("varqc1: variant quality filtering. methods "
-            + ", ".join(METHODS) + "; covariances "
-            + ", ".join(COVARIANCES))
+    return (
+        "varqc1: variant quality filtering. methods " + ", ".join(METHODS) + "; covariances " + ", ".join(COVARIANCES)
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

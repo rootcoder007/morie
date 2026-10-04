@@ -1,7 +1,6 @@
 """Tests for hmsvdp.geron_svd_pseudoinverse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsvdp import geron_svd_pseudoinverse
 
 

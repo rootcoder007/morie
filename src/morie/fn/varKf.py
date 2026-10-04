@@ -38,8 +38,7 @@ def _rbf(x, y, gamma):
     return math.exp(-gamma * s)
 
 
-def variational_gp(X, y, Z=None, gamma=1.0, sigma2=1e-2, jitter=1e-8,
-                   X_test=None):
+def variational_gp(X, y, Z=None, gamma=1.0, sigma2=1e-2, jitter=1e-8, X_test=None):
     """Titsias's collapsed ELBO and the corresponding predictions.
 
     Returns
@@ -69,8 +68,7 @@ def variational_gp(X, y, Z=None, gamma=1.0, sigma2=1e-2, jitter=1e-8,
                 s += Knm[j][t] * w[t]
             Q[i][j] = s
         trace += 1.0 - Q[i][i]
-    S = [[Q[i][j] + (float(sigma2) if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    S = [[Q[i][j] + (float(sigma2) if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = k.chol(S)
     logdet = 0.0
     for i in range(n):

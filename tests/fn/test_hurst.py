@@ -1,8 +1,8 @@
 """Tests for morie.fn.hurst — Hurst exponent."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hurst import hurst
 
 

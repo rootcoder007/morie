@@ -12,8 +12,7 @@ def _data(n=600):
     W = [math.sin(1.7 * k) for k in range(n)]
     s = [k % 3 for k in range(n)]
     A = [1.0 if ((37 * k + 11) % 97 + 0.5) / 97.0 < 0.4 + 0.2 * (w > 0) else 0.0 for k, w in enumerate(W)]
-    y = [0.3 + 0.1 * w + a * (0.1 + 0.15 * t) + 0.1 * math.sin(13.3 * k)
-         for k, (w, a, t) in enumerate(zip(W, A, s))]
+    y = [0.3 + 0.1 * w + a * (0.1 + 0.15 * t) + 0.1 * math.sin(13.3 * k) for k, (w, a, t) in enumerate(zip(W, A, s))]
     return y, A, W, s
 
 
@@ -27,7 +26,7 @@ def test_tmlhte_basic():
         idx = [i for i in range(len(y)) if s[i] == lab]
         f = tmle_ate([y[i] for i in idx], [A[i] for i in idx], [[W[i]] for i in idx], trunc=0.01)
         fits.append((float(f["ate"]), float(f["se"])))
-    w = [1.0 / se ** 2 for _, se in fits]
+    w = [1.0 / se**2 for _, se in fits]
     pooled = sum(wi * e for wi, (e, _) in zip(w, fits)) / sum(w)
     q = sum(wi * (e - pooled) ** 2 for wi, (e, _) in zip(w, fits))
     r = tmle_heterogeneous(y, A, W, s)
@@ -69,7 +68,7 @@ import morie.fn.tmlhte as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

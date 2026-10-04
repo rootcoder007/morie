@@ -51,12 +51,10 @@ arXiv:1905.10437. The doubly residual stack N-HiTS inherits.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["max_pool", "linear_interpolate", "nhits_block",
-           "nhits_stack", "nhits_forecast", "expressiveness_knots"]
+__all__ = ["max_pool", "linear_interpolate", "nhits_block", "nhits_stack", "nhits_forecast", "expressiveness_knots"]
 
 _EPS = 1e-12
 
@@ -71,15 +69,13 @@ def max_pool(x, kernel, stride=None):
     xv = [float(v) for v in x]
     kk = int(kernel)
     if kk < 1:
-        raise ValueError("nhits: the kernel must be at least 1, got %d"
-                         % kk)
+        raise ValueError("nhits: the kernel must be at least 1, got %d" % kk)
     st = kk if stride is None else int(stride)
     if st < 1:
         raise ValueError("nhits: the stride must be at least 1")
     if kk > len(xv):
-        raise ValueError("nhits: kernel %d exceeds the input length %d"
-                         % (kk, len(xv)))
-    return [max(xv[i:i + kk]) for i in range(0, len(xv) - kk + 1, st)]
+        raise ValueError("nhits: kernel %d exceeds the input length %d" % (kk, len(xv)))
+    return [max(xv[i : i + kk]) for i in range(0, len(xv) - kk + 1, st)]
 
 
 def expressiveness_knots(horizon, ratio):
@@ -87,8 +83,7 @@ def expressiveness_knots(horizon, ratio):
     :math:`\lceil r H\rceil`, at least 2."""
     r = float(ratio)
     if not 0.0 < r <= 1.0:
-        raise ValueError("nhits: the ratio must be in (0, 1], got %r"
-                         % (ratio,))
+        raise ValueError("nhits: the ratio must be in (0, 1], got %r" % (ratio,))
     return max(2, int(math.ceil(r * int(horizon))))
 
 
@@ -119,13 +114,11 @@ def linear_interpolate(knots, horizon):
 
 
 def _fit_basis(y, basis, ridge=1e-8):
-    X = [[basis[p][t] for p in range(len(basis))]
-         for t in range(len(y))]
+    X = [[basis[p][t] for p in range(len(basis))] for t in range(len(y))]
     return k.lstsq(X, list(y), ridge)
 
 
-def nhits_block(window, horizon, kernel=1, ratio=1.0, degree=2,
-                ridge=1e-8):
+def nhits_block(window, horizon, kernel=1, ratio=1.0, degree=2, ridge=1e-8):
     r"""One block: pool the input, fit, predict knots, interpolate.
 
     The backcast is produced at the block's own resolution too, so the
@@ -138,24 +131,20 @@ def nhits_block(window, horizon, kernel=1, ratio=1.0, degree=2,
     pooled = max_pool(w, kernel)
     Lp = len(pooled)
     if Lp < degree + 1:
-        raise ValueError("nhits: pooling by %d leaves %d points, too "
-                         "few for degree %d" % (kernel, Lp, degree))
+        raise ValueError("nhits: pooling by %d leaves %d points, too few for degree %d" % (kernel, Lp, degree))
     # a polynomial basis over the pooled (slow) view
-    bb = [[(t / float(max(Lp - 1, 1))) ** p for t in range(Lp)]
-          for p in range(int(degree) + 1)]
+    bb = [[(t / float(max(Lp - 1, 1))) ** p for t in range(Lp)] for p in range(int(degree) + 1)]
     theta = _fit_basis(pooled, bb, ridge)
     # backcast at pooled resolution, interpolated back to the window
-    back_p = [sum(theta[p] * bb[p][t] for p in range(len(bb)))
-              for t in range(Lp)]
-    backcast = (linear_interpolate(back_p, L) if Lp >= 2
-                else [back_p[0]] * L)
+    back_p = [sum(theta[p] * bb[p][t] for p in range(len(bb))) for t in range(Lp)]
+    backcast = linear_interpolate(back_p, L) if Lp >= 2 else [back_p[0]] * L
     # forecast: predict only ceil(rH) knots, then interpolate up
     n_knots = expressiveness_knots(H, ratio)
-    fb = [[((Lp - 1 + (j + 1) * (Lp - 1) / float(max(n_knots, 1)))
-            / float(max(Lp - 1, 1))) ** p for j in range(n_knots)]
-          for p in range(int(degree) + 1)]
-    knots = [sum(theta[p] * fb[p][j] for p in range(len(fb)))
-             for j in range(n_knots)]
+    fb = [
+        [((Lp - 1 + (j + 1) * (Lp - 1) / float(max(n_knots, 1))) / float(max(Lp - 1, 1))) ** p for j in range(n_knots)]
+        for p in range(int(degree) + 1)
+    ]
+    knots = [sum(theta[p] * fb[p][j] for p in range(len(fb))) for j in range(n_knots)]
     forecast = linear_interpolate(knots, H)
     return backcast, forecast, knots, pooled
 
@@ -170,18 +159,22 @@ def nhits_stack(window, horizon, blocks, ridge=1e-8):
     resid = [float(v) for v in window]
     total = [0.0] * int(horizon)
     trace = []
-    for (kern, ratio, deg) in blocks:
-        bc, fc, knots, pooled = nhits_block(resid, horizon,
-                                            kernel=kern, ratio=ratio,
-                                            degree=deg, ridge=ridge)
+    for kern, ratio, deg in blocks:
+        bc, fc, knots, pooled = nhits_block(resid, horizon, kernel=kern, ratio=ratio, degree=deg, ridge=ridge)
         resid = [resid[t] - bc[t] for t in range(len(resid))]
         total = [total[h] + fc[h] for h in range(len(total))]
-        trace.append({"kernel": kern, "ratio": ratio,
-                      "n_knots": len(knots), "knots": knots,
-                      "pooled_length": len(pooled), "backcast": bc,
-                      "forecast": fc,
-                      "residual_norm": math.sqrt(sum(v * v
-                                                     for v in resid))})
+        trace.append(
+            {
+                "kernel": kern,
+                "ratio": ratio,
+                "n_knots": len(knots),
+                "knots": knots,
+                "pooled_length": len(pooled),
+                "backcast": bc,
+                "forecast": fc,
+                "residual_norm": math.sqrt(sum(v * v for v in resid)),
+            }
+        )
     return total, resid, trace
 
 
@@ -199,29 +192,36 @@ def nhits_forecast(y, horizon, lookback=None, blocks=None, ridge=1e-8):
     lb = min(n, int(lookback) if lookback else min(n, max(16, 4 * H)))
     if lb < 8:
         raise ValueError("nhits: lookback of %d is too short" % lb)
-    blk = ([(4, 0.25, 2), (2, 0.5, 2), (1, 1.0, 2)]
-           if blocks is None else list(blocks))
-    window = yv[n - lb:]
+    blk = [(4, 0.25, 2), (2, 0.5, 2), (1, 1.0, 2)] if blocks is None else list(blocks)
+    window = yv[n - lb :]
     fc, resid, trace = nhits_stack(window, H, blk, ridge=ridge)
-    return RichResult(payload={
-        "estimate": fc, "forecast": fc, "residual": resid,
-        "blocks": trace, "lookback": lb, "horizon": H, "n": n,
-        "total_knots": sum(b["n_knots"] for b in trace),
-        "dense_parameters": H * len(blk),
-        "residual_norm": math.sqrt(sum(v * v for v in resid)),
-        "n_blocks": len(blk),
-        "method": "N-HiTS multi-rate sampling and hierarchical "
-                  "interpolation, Challu et al. (2023)",
-    })
+    return RichResult(
+        payload={
+            "estimate": fc,
+            "forecast": fc,
+            "residual": resid,
+            "blocks": trace,
+            "lookback": lb,
+            "horizon": H,
+            "n": n,
+            "total_knots": sum(b["n_knots"] for b in trace),
+            "dense_parameters": H * len(blk),
+            "residual_norm": math.sqrt(sum(v * v for v in resid)),
+            "n_blocks": len(blk),
+            "method": "N-HiTS multi-rate sampling and hierarchical interpolation, Challu et al. (2023)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("nhits: each block MAX-POOLS its input by kernel k (so it "
-            "sees only frequencies slower than k) and predicts only "
-            "ceil(rH) knots, INTERPOLATED up to H. Large kernel with "
-            "small ratio is coherent -- a smooth view predicted with "
-            "few points; large kernel with r=1 is the waste N-HiTS "
-            "removes. Interpolation is exact at the knots.")
+    return (
+        "nhits: each block MAX-POOLS its input by kernel k (so it "
+        "sees only frequencies slower than k) and predicts only "
+        "ceil(rH) knots, INTERPOLATED up to H. Large kernel with "
+        "small ratio is coherent -- a smooth view predicted with "
+        "few points; large kernel with r=1 is the waste N-HiTS "
+        "removes. Interpolation is exact at the knots."
+    )
 
 
 # compact alias per ledger/NAMING.md

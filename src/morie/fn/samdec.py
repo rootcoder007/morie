@@ -53,12 +53,10 @@ Vaswani, A. et al. (2017) "Attention Is All You Need", *NIPS 2017*,
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["two_way_block", "upsample", "dynamic_mask_head",
-           "focal_loss", "dice_loss", "decode_mask"]
+__all__ = ["two_way_block", "upsample", "dynamic_mask_head", "focal_loss", "dice_loss", "decode_mask"]
 
 _EPS = 1e-12
 
@@ -67,15 +65,13 @@ def _attend(Q, K, V):
     d = len(Q[0])
     out, W = [], []
     for q in Q:
-        sc = [sum(q[a] * kk[a] for a in range(d)) / math.sqrt(d)
-              for kk in K]
+        sc = [sum(q[a] * kk[a] for a in range(d)) / math.sqrt(d) for kk in K]
         m = max(sc)
         e = [math.exp(v - m) for v in sc]
         z = sum(e)
         w = [v / z for v in e]
         W.append(w)
-        out.append([sum(w[j] * V[j][a] for j in range(len(V)))
-                    for a in range(len(V[0]))])
+        out.append([sum(w[j] * V[j][a] for j in range(len(V))) for a in range(len(V[0]))])
     return out, W
 
 
@@ -88,21 +84,20 @@ def two_way_block(prompt_tokens, image_tokens):
     P = [[float(v) for v in r] for r in k.mat(prompt_tokens)]
     I = [[float(v) for v in r] for r in k.mat(image_tokens)]
     if len(P[0]) != len(I[0]):
-        raise ValueError("samdec: prompt tokens are %d-dimensional "
-                         "but image tokens are %d"
-                         % (len(P[0]), len(I[0])))
+        raise ValueError("samdec: prompt tokens are %d-dimensional but image tokens are %d" % (len(P[0]), len(I[0])))
     sa, _ = _attend(P, P, P)
-    P1 = [[P[i][a] + sa[i][a] for a in range(len(P[0]))]
-          for i in range(len(P))]
+    P1 = [[P[i][a] + sa[i][a] for a in range(len(P[0]))] for i in range(len(P))]
     p2i, w_p2i = _attend(P1, I, I)
-    P2 = [[P1[i][a] + p2i[i][a] for a in range(len(P1[0]))]
-          for i in range(len(P1))]
+    P2 = [[P1[i][a] + p2i[i][a] for a in range(len(P1[0]))] for i in range(len(P1))]
     i2p, w_i2p = _attend(I, P2, P2)
-    I2 = [[I[i][a] + i2p[i][a] for a in range(len(I[0]))]
-          for i in range(len(I))]
-    return {"prompt_tokens": P2, "image_tokens": I2,
-            "prompt_to_image": w_p2i, "image_to_prompt": w_i2p,
-            "note": "both directions, so both embeddings move"}
+    I2 = [[I[i][a] + i2p[i][a] for a in range(len(I[0]))] for i in range(len(I))]
+    return {
+        "prompt_tokens": P2,
+        "image_tokens": I2,
+        "prompt_to_image": w_p2i,
+        "image_to_prompt": w_i2p,
+        "note": "both directions, so both embeddings move",
+    }
 
 
 def upsample(grid, factor=2):
@@ -131,17 +126,14 @@ def dynamic_mask_head(output_token, image_grid_vectors, mlp=None):
     H, W = len(G), len(G[0])
     d = len(G[0][0])
     if len(w) != d:
-        raise ValueError("samdec: the dynamic classifier is %d-wide "
-                         "but the spatial vectors are %d"
-                         % (len(w), d))
-    logits = [[sum(w[a] * G[i][j][a] for a in range(d))
-               for j in range(W)] for i in range(H)]
-    return {"logits": logits,
-            "probability": [[1.0 / (1.0 + math.exp(-min(60.0,
-                                                        max(-60.0, v))))
-                             for v in row] for row in logits],
-            "weights": w,
-            "note": "the classifier weights come from the PROMPT"}
+        raise ValueError("samdec: the dynamic classifier is %d-wide but the spatial vectors are %d" % (len(w), d))
+    logits = [[sum(w[a] * G[i][j][a] for a in range(d)) for j in range(W)] for i in range(H)]
+    return {
+        "logits": logits,
+        "probability": [[1.0 / (1.0 + math.exp(-min(60.0, max(-60.0, v)))) for v in row] for row in logits],
+        "weights": w,
+        "note": "the classifier weights come from the PROMPT",
+    }
 
 
 def focal_loss(prob, target, gamma=2.0, alpha=0.25):
@@ -153,8 +145,7 @@ def focal_loss(prob, target, gamma=2.0, alpha=0.25):
     p = [float(v) for v in k.vec(prob)]
     t = [float(v) for v in k.vec(target)]
     if len(p) != len(t):
-        raise ValueError("samdec: the prediction and target differ "
-                         "in size")
+        raise ValueError("samdec: the prediction and target differ in size")
     g, a = float(gamma), float(alpha)
     tot, mods = 0.0, []
     for i in range(len(p)):
@@ -163,9 +154,12 @@ def focal_loss(prob, target, gamma=2.0, alpha=0.25):
         mod = (1.0 - pt) ** g
         mods.append(mod)
         tot += -at * mod * math.log(max(pt, _EPS))
-    return {"loss": tot / len(p), "modulating": mods, "gamma": g,
-            "note": "an easy pixel with p_t = 0.9 keeps only "
-                    "(1-0.9)^gamma of its weight"}
+    return {
+        "loss": tot / len(p),
+        "modulating": mods,
+        "gamma": g,
+        "note": "an easy pixel with p_t = 0.9 keeps only (1-0.9)^gamma of its weight",
+    }
 
 
 def dice_loss(prob, target):
@@ -173,57 +167,58 @@ def dice_loss(prob, target):
     p = [float(v) for v in k.vec(prob)]
     t = [float(v) for v in k.vec(target)]
     if len(p) != len(t):
-        raise ValueError("samdec: the prediction and target differ "
-                         "in size")
+        raise ValueError("samdec: the prediction and target differ in size")
     inter = sum(p[i] * t[i] for i in range(len(p)))
     tot = sum(p) + sum(t)
     if tot <= _EPS:
-        return {"loss": 0.0, "dice": 1.0,
-                "note": "both empty, which is a perfect match"}
+        return {"loss": 0.0, "dice": 1.0, "note": "both empty, which is a perfect match"}
     d = 2.0 * inter / tot
     return {"loss": 1.0 - d, "dice": d}
 
 
-def decode_mask(prompt_tokens, image_tokens, grid_shape,
-                n_blocks=2, upsample_factor=2, output_index=0):
+def decode_mask(prompt_tokens, image_tokens, grid_shape, n_blocks=2, upsample_factor=2, output_index=0):
     r"""Two two-way blocks, upsample, dynamic head."""
     P = [[float(v) for v in r] for r in k.mat(prompt_tokens)]
     I = [[float(v) for v in r] for r in k.mat(image_tokens)]
     H, W = int(grid_shape[0]), int(grid_shape[1])
-    if H * W != len(I):
-        raise ValueError("samdec: %d image tokens do not fill a "
-                         "%dx%d grid" % (len(I), H, W))
+    if len(I) != H * W:
+        raise ValueError("samdec: %d image tokens do not fill a %dx%d grid" % (len(I), H, W))
     for _ in range(int(n_blocks)):
         r = two_way_block(P, I)
         P, I = r["prompt_tokens"], r["image_tokens"]
     f = int(upsample_factor)
     grid = [[I[i * W + j] for j in range(W)] for i in range(H)]
-    big = [[grid[i // f][j // f] for j in range(W * f)]
-           for i in range(H * f)]
+    big = [[grid[i // f][j // f] for j in range(W * f)] for i in range(H * f)]
     head = dynamic_mask_head(P[int(output_index)], big)
-    return RichResult(payload={
-        "estimate": head["probability"], "mask": head["probability"],
-        "logits": head["logits"], "shape": (H * f, W * f),
-        "n_blocks": int(n_blocks),
-        "method": "SAM mask decoder; Kirillov et al. (2023)",
-        "note": "two-way attention updates prompt AND image, then a "
-                "dynamic linear classifier built from the output "
-                "token scores every location",
-    })
+    return RichResult(
+        payload={
+            "estimate": head["probability"],
+            "mask": head["probability"],
+            "logits": head["logits"],
+            "shape": (H * f, W * f),
+            "n_blocks": int(n_blocks),
+            "method": "SAM mask decoder; Kirillov et al. (2023)",
+            "note": "two-way attention updates prompt AND image, then a "
+            "dynamic linear classifier built from the output "
+            "token scores every location",
+        }
+    )
 
 
 def cheatsheet():
-    return ("samdec: image embedding + prompt embeddings + a learned "
-            "OUTPUT TOKEN -> mask. The decoder block does prompt "
-            "self-attention and cross-attention in BOTH directions, so "
-            "both embeddings are updated -- one direction would let "
-            "the prompt read the image without the image knowing what "
-            "was asked. After two blocks the image embedding is "
-            "upsampled and an MLP turns the output token into a "
-            "DYNAMIC linear classifier, so the mask is a dot product "
-            "against weights built from the prompt. Loss is FOCAL + "
-            "DICE, both chosen for the foreground/background "
-            "imbalance.")
+    return (
+        "samdec: image embedding + prompt embeddings + a learned "
+        "OUTPUT TOKEN -> mask. The decoder block does prompt "
+        "self-attention and cross-attention in BOTH directions, so "
+        "both embeddings are updated -- one direction would let "
+        "the prompt read the image without the image knowing what "
+        "was asked. After two blocks the image embedding is "
+        "upsampled and an MLP turns the output token into a "
+        "DYNAMIC linear classifier, so the mask is a dot product "
+        "against weights built from the prompt. Loss is FOCAL + "
+        "DICE, both chosen for the foreground/background "
+        "imbalance."
+    )
 
 
 # compact alias per ledger/NAMING.md

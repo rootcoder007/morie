@@ -68,13 +68,17 @@ a version signature.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tokenize_13a", "tokenize_intl", "ngram_counts",
-           "modified_precision", "brevity_penalty", "bleu",
-           "signature"]
+__all__ = [
+    "tokenize_13a",
+    "tokenize_intl",
+    "ngram_counts",
+    "modified_precision",
+    "brevity_penalty",
+    "bleu",
+    "signature",
+]
 
 _EPS = 1e-12
 _TOKENIZERS = ("13a", "intl", "none")
@@ -120,8 +124,7 @@ def _tok(text, scheme, lowercase):
     if scheme == "none":
         s = str(text).lower() if lowercase else str(text)
         return s.split()
-    raise ValueError("sacrb: tokenizer must be one of %s, got %r"
-                     % (", ".join(_TOKENIZERS), scheme))
+    raise ValueError("sacrb: tokenizer must be one of %s, got %r" % (", ".join(_TOKENIZERS), scheme))
 
 
 def ngram_counts(tokens, n):
@@ -130,7 +133,7 @@ def ngram_counts(tokens, n):
         raise ValueError("sacrb: n must be at least 1")
     c = {}
     for i in range(len(tokens) - int(n) + 1):
-        g = tuple(tokens[i:i + int(n)])
+        g = tuple(tokens[i : i + int(n)])
         c[g] = c.get(g, 0) + 1
     return c
 
@@ -150,8 +153,7 @@ def modified_precision(cand_tokens, refs_tokens, n):
             if v > best.get(g, 0):
                 best[g] = v
     clipped = sum(min(v, best.get(g, 0)) for g, v in cc.items())
-    return {"numerator": clipped, "denominator": total,
-            "precision": clipped / float(total)}
+    return {"numerator": clipped, "denominator": total, "precision": clipped / float(total)}
 
 
 def brevity_penalty(c, r):
@@ -167,8 +169,7 @@ def _best_match(clen, rlens):
     return min(rlens, key=lambda L: (abs(L - clen), L))
 
 
-def bleu(candidates, references, max_n=4, weights=None,
-         tokenizer="13a", lowercase=False):
+def bleu(candidates, references, max_n=4, weights=None, tokenizer="13a", lowercase=False):
     r"""Corpus BLEU, with the brevity penalty over the whole corpus.
 
     ``references`` is one list of reference strings per candidate.
@@ -176,24 +177,19 @@ def bleu(candidates, references, max_n=4, weights=None,
     C = [str(v) for v in candidates]
     R = [[str(x) for x in refs] for refs in references]
     if len(C) != len(R):
-        raise ValueError("sacrb: %d candidates but %d reference sets"
-                         % (len(C), len(R)))
+        raise ValueError("sacrb: %d candidates but %d reference sets" % (len(C), len(R)))
     if not C:
         raise ValueError("sacrb: no candidates given")
     if any(not refs for refs in R):
-        raise ValueError("sacrb: every candidate needs at least one "
-                         "reference")
+        raise ValueError("sacrb: every candidate needs at least one reference")
     N = int(max_n)
     if N < 1:
         raise ValueError("sacrb: max_n must be at least 1")
-    w = ([1.0 / N] * N if weights is None
-         else [float(v) for v in weights])
+    w = [1.0 / N] * N if weights is None else [float(v) for v in weights]
     if len(w) != N:
-        raise ValueError("sacrb: %d weights for max_n = %d"
-                         % (len(w), N))
+        raise ValueError("sacrb: %d weights for max_n = %d" % (len(w), N))
     if abs(sum(w) - 1.0) > 1e-9:
-        raise ValueError("sacrb: the weights must sum to 1, got %.6f"
-                         % sum(w))
+        raise ValueError("sacrb: the weights must sum to 1, got %.6f" % sum(w))
     num = [0] * N
     den = [0] * N
     c_total, r_total = 0, 0
@@ -213,44 +209,54 @@ def bleu(candidates, references, max_n=4, weights=None,
     if any(p <= 0.0 for p in precisions):
         score = 0.0
     else:
-        score = bp * math.exp(sum(w[n] * math.log(precisions[n])
-                                  for n in range(N)))
-    return RichResult(payload={
-        "estimate": score, "bleu": score, "score": 100.0 * score,
-        "precisions": precisions, "bp": bp,
-        "candidate_length": c_total, "reference_length": r_total,
-        "ratio": c_total / float(max(r_total, 1)),
-        "tokenizer": tokenizer, "lowercase": bool(lowercase),
-        "max_n": N,
-        "signature": signature(tokenizer, lowercase, N,
-                               len(R[0])),
-        "method": "corpus BLEU; Papineni et al. (2002) Sec. 2.3, "
-                  "reported with a sacreBLEU-style signature "
-                  "(Post 2018)",
-    })
+        score = bp * math.exp(sum(w[n] * math.log(precisions[n]) for n in range(N)))
+    return RichResult(
+        payload={
+            "estimate": score,
+            "bleu": score,
+            "score": 100.0 * score,
+            "precisions": precisions,
+            "bp": bp,
+            "candidate_length": c_total,
+            "reference_length": r_total,
+            "ratio": c_total / float(max(r_total, 1)),
+            "tokenizer": tokenizer,
+            "lowercase": bool(lowercase),
+            "max_n": N,
+            "signature": signature(tokenizer, lowercase, N, len(R[0])),
+            "method": "corpus BLEU; Papineni et al. (2002) Sec. 2.3, "
+            "reported with a sacreBLEU-style signature "
+            "(Post 2018)",
+        }
+    )
 
 
-def signature(tokenizer="13a", lowercase=False, max_n=4, n_refs=1,
-              version="morie-sacrb-1"):
+def signature(tokenizer="13a", lowercase=False, max_n=4, n_refs=1, version="morie-sacrb-1"):
     r"""The version string that makes two scores comparable.
 
     Post's point: BLEU is a function of the tokenisation, and without
     naming it the number is not comparable to anyone else's.
     """
-    return ("nrefs:%d|case:%s|tok:%s|ngram:%d|version:%s"
-            % (int(n_refs), "lc" if lowercase else "mixed",
-               str(tokenizer), int(max_n), version))
+    return "nrefs:%d|case:%s|tok:%s|ngram:%d|version:%s" % (
+        int(n_refs),
+        "lc" if lowercase else "mixed",
+        str(tokenizer),
+        int(max_n),
+        version,
+    )
 
 
 def cheatsheet():
-    return ("sacrb: BLEU = BP * exp(sum w_n log p_n), with clipped "
-            "n-gram precision and BP = 1 if c > r else exp(1 - r/c). "
-            "The penalty is computed over the WHOLE CORPUS, not per "
-            "sentence, and r uses the CLOSEST reference length, not "
-            "the shortest. Long candidates are not penalised twice -- "
-            "modified precision already handles them. The number "
-            "depends on TOKENISATION, so two BLEU scores are "
-            "comparable only when their signatures match.")
+    return (
+        "sacrb: BLEU = BP * exp(sum w_n log p_n), with clipped "
+        "n-gram precision and BP = 1 if c > r else exp(1 - r/c). "
+        "The penalty is computed over the WHOLE CORPUS, not per "
+        "sentence, and r uses the CLOSEST reference length, not "
+        "the shortest. Long candidates are not penalised twice -- "
+        "modified precision already handles them. The number "
+        "depends on TOKENISATION, so two BLEU scores are "
+        "comparable only when their signatures match."
+    )
 
 
 # compact alias per ledger/NAMING.md

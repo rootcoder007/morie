@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 9.2, contraction of the Dirichlet-process posterior CDF.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c9_2 import ghosal_dp_disc_crt
 
 

@@ -1,7 +1,6 @@
 """Tests for psdwl -- Welch PSD."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.psdwl import psdwl
 

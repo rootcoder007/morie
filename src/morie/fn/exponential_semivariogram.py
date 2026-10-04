@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def exponential_semivariogram(h, c0, c1, phi):
     """
     value = _brus.exponential_semivariogram(h, c0, c1, phi)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (21.13)"
     return RichResult(
-        title='Exponential semivariogram',
+        title="Exponential semivariogram",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r21e13: gamma(h) = 0 at h = 0, else c0 + c1(1 - exp(-h/phi)) (book prose: 95 percent of sill at 3 phi; the printed exp form is a display typo) [Brus 2022, eq. 21.13]'
+    return "r21e13: gamma(h) = 0 at h = 0, else c0 + c1(1 - exp(-h/phi)) (book prose: 95 percent of sill at 3 phi; the printed exp form is a display typo) [Brus 2022, eq. 21.13]"

@@ -1,7 +1,6 @@
 """Tests for aitpca.aitchison_clr_pca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitpca import aitchison_clr_pca
 
 

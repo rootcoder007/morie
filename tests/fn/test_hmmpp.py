@@ -1,7 +1,6 @@
 """Tests for hmmpp.geron_model_parallelism."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmpp import geron_model_parallelism
 
 

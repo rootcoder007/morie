@@ -13,13 +13,13 @@ __all__ = ["cox_martingale_residuals"]
 def _unpack(fit):
     for k in ("time", "event", "X", "beta"):
         if fit.get(k) is None:
-            raise ValueError(
-                f"fit is missing {k!r}; pass a result from efron_tie_correction "
-                "or breslow_tie_correction"
-            )
-    return (np.asarray(fit["time"], dtype=float), np.asarray(fit["event"], dtype=float),
-            np.atleast_2d(np.asarray(fit["X"], dtype=float)),
-            np.asarray(fit["beta"], dtype=float).ravel())
+            raise ValueError(f"fit is missing {k!r}; pass a result from efron_tie_correction or breslow_tie_correction")
+    return (
+        np.asarray(fit["time"], dtype=float),
+        np.asarray(fit["event"], dtype=float),
+        np.atleast_2d(np.asarray(fit["X"], dtype=float)),
+        np.asarray(fit["beta"], dtype=float).ravel(),
+    )
 
 
 def cox_martingale_residuals(fit):
@@ -95,11 +95,14 @@ def cox_martingale_residuals(fit):
     resid = e - expected
     return RichResult(
         title="Cox martingale residuals",
-        summary_lines=[("n", int(t.size)), ("mean", float(resid.mean())),
-                       ("min", float(resid.min()))],
+        summary_lines=[("n", int(t.size)), ("mean", float(resid.mean())), ("min", float(resid.min()))],
         payload={
-            "residuals": resid, "expected": expected, "event": e,
-            "mean": float(resid.mean()), "cumhazard": H, "times": times,
+            "residuals": resid,
+            "expected": expected,
+            "event": e,
+            "mean": float(resid.mean()),
+            "cumhazard": H,
+            "times": times,
             "method": "cox_martingale_residuals",
         },
     )

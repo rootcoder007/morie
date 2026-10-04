@@ -1,7 +1,6 @@
 """Tests for bfgsop.bfgs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bfgsop import bfgs
 
 
@@ -39,8 +38,7 @@ def test_bfgsop_basic():
     # Secant residual should be small (within roundoff tolerance).
     # We don't compare a hard-coded number; we recompute from the returned M.
     M = result["M"]
-    sec = [sum(float(M[i][j]) * float(y[j]) for j in range(len(y)))
-           for i in range(len(y))]
+    sec = [sum(float(M[i][j]) * float(y[j]) for j in range(len(y))) for i in range(len(y))]
     gap = max(abs(sec[i] - float(s[i])) for i in range(len(s)))
     assert gap == result["secant"]
     assert gap < 1e-8
@@ -54,19 +52,14 @@ def test_bfgsop_basic():
     y_arr = [float(y[i]) for i in range(p)]
 
     # L = I - rho * outer(s, y)
-    L = [[(1.0 if i == j else 0.0) - rho * s_arr[i] * y_arr[j]
-          for j in range(p)] for i in range(p)]
+    L = [[(1.0 if i == j else 0.0) - rho * s_arr[i] * y_arr[j] for j in range(p)] for i in range(p)]
     # R = I - rho * outer(y, s)
-    R = [[(1.0 if i == j else 0.0) - rho * y_arr[i] * s_arr[j]
-          for j in range(p)] for i in range(p)]
+    R = [[(1.0 if i == j else 0.0) - rho * y_arr[i] * s_arr[j] for j in range(p)] for i in range(p)]
     # T = L H R
-    LH = [[sum(L[i][k] * H_arr[k][j] for k in range(p))
-           for j in range(p)] for i in range(p)]
-    T = [[sum(LH[i][k] * R[k][j] for k in range(p))
-          for j in range(p)] for i in range(p)]
+    LH = [[sum(L[i][k] * H_arr[k][j] for k in range(p)) for j in range(p)] for i in range(p)]
+    T = [[sum(LH[i][k] * R[k][j] for k in range(p)) for j in range(p)] for i in range(p)]
     # N = T + rho * outer(s, s)
-    expected = [[T[i][j] + rho * s_arr[i] * s_arr[j]
-                 for j in range(p)] for i in range(p)]
+    expected = [[T[i][j] + rho * s_arr[i] * s_arr[j] for j in range(p)] for i in range(p)]
 
     for i in range(p):
         for j in range(p):
@@ -96,8 +89,7 @@ def test_bfgsop_edge():
     ys = sum(y_arr[i] * s_arr[i] for i in range(p))
     Bs = [sum(B[i][j] * s_arr[j] for j in range(p)) for i in range(p)]
     sBs = sum(s_arr[i] * Bs[i] for i in range(p))
-    expected = [[B[i][j] - Bs[i] * Bs[j] / sBs + y_arr[i] * y_arr[j] / ys
-                 for j in range(p)] for i in range(p)]
+    expected = [[B[i][j] - Bs[i] * Bs[j] / sBs + y_arr[i] * y_arr[j] / ys for j in range(p)] for i in range(p)]
     M = result["M"]
     for i in range(p):
         for j in range(p):

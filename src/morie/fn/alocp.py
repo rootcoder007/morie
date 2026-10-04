@@ -28,7 +28,8 @@ def alammar_openclip_contrastive(I_emb, T_emb, tau=0.07):
     nt = np.linalg.norm(T, axis=1, keepdims=True)
     if np.any(ni == 0) or np.any(nt == 0):
         raise ValueError("zero embedding vectors have no direction.")
-    I = I / ni; T = T / nt
+    I = I / ni
+    T = T / nt
     S = I @ T.T / t
 
     def ce_diag(M):
@@ -39,12 +40,16 @@ def alammar_openclip_contrastive(I_emb, T_emb, tau=0.07):
     li = ce_diag(S)
     lt = ce_diag(S.T)
     loss = float((li.mean() + lt.mean()) / 2)
-    return RichResult(payload={
-        "estimate": loss, "image_to_text_loss": float(li.mean()),
-        "text_to_image_loss": float(lt.mean()),
-        "similarity_matrix": [[float(v * t) for v in r] for r in S],
-        "n": I.shape[0],
-        "method": "CLIP symmetric contrastive loss (Radford et al. 2021)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "image_to_text_loss": float(li.mean()),
+            "text_to_image_loss": float(lt.mean()),
+            "similarity_matrix": [[float(v * t) for v in r] for r in S],
+            "n": I.shape[0],
+            "method": "CLIP symmetric contrastive loss (Radford et al. 2021)",
+        }
+    )
 
 
 def cheatsheet():

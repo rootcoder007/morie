@@ -1,7 +1,6 @@
 """Tests for bdmnsl.bound_monot_selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdmnsl import bound_monot_selection
 
 
@@ -18,8 +17,7 @@ def test_bdmnsl_basic():
     result = bound_monot_selection(y, z, d, ymin, ymax)
 
     # Documented return keys
-    for key in ("lower", "upper", "width", "condmean",
-                "pbelow", "pat", "pabove", "n", "d"):
+    for key in ("lower", "upper", "width", "condmean", "pbelow", "pat", "pabove", "n", "d"):
         assert key in result
 
     # Independent recomputation of the documented formula

@@ -1,7 +1,5 @@
 """Tests for wilson_interval.wilson_interval."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wilson_interval import (
     wilson_interval,
 )

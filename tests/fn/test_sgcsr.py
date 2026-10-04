@@ -1,7 +1,6 @@
 """Tests for CSR test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgcsr import sgcsr
 
 

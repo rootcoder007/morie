@@ -1,7 +1,6 @@
 """Tests for bmtme.bmtme_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bmtme import bmtme_model
 
 
@@ -41,8 +40,15 @@ def test_bmtme_basic():
 
     assert isinstance(result, dict)
     expected_keys = (
-        "estimate", "gebv", "b1", "b2", "sigma_g",
-        "Sigma_T", "Sigma_E", "R", "mu",
+        "estimate",
+        "gebv",
+        "b1",
+        "b2",
+        "sigma_g",
+        "Sigma_T",
+        "Sigma_E",
+        "R",
+        "mu",
     )
     for key in expected_keys:
         assert key in result
@@ -69,8 +75,15 @@ def test_bmtme_edge():
 
     assert isinstance(result, dict)
     expected_keys = (
-        "estimate", "gebv", "b1", "b2", "sigma_g",
-        "Sigma_T", "Sigma_E", "R", "mu",
+        "estimate",
+        "gebv",
+        "b1",
+        "b2",
+        "sigma_g",
+        "Sigma_T",
+        "Sigma_E",
+        "R",
+        "mu",
     )
     for key in expected_keys:
         assert key in result

@@ -98,13 +98,20 @@ def svariog(coords, z, breaks=None, nbins=10, cutoff=None):
         ssq[b] += g[t]
         sdi[b] += d[t]
         cnt[b] += 1
-    gam = [ssq[b] / (2.0 * cnt[b]) if cnt[b] else float("nan")
-           for b in range(nb)]
+    gam = [ssq[b] / (2.0 * cnt[b]) if cnt[b] else float("nan") for b in range(nb)]
     dis = [sdi[b] / cnt[b] if cnt[b] else float("nan") for b in range(nb)]
-    return RichResult(payload={
-        "gamma": gam, "np": cnt, "dist": dis, "breaks": br, "cutoff": cut,
-        "n": n, "npair": len(d),
-        "method": "Sample semivariogram (Bivand et al. 2013 eq. 8.4)"})
+    return RichResult(
+        payload={
+            "gamma": gam,
+            "np": cnt,
+            "dist": dis,
+            "breaks": br,
+            "cutoff": cut,
+            "n": n,
+            "npair": len(d),
+            "method": "Sample semivariogram (Bivand et al. 2013 eq. 8.4)",
+        }
+    )
 
 
 bivand2013_chapter_8_equation_4 = svariog

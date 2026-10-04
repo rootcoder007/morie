@@ -1,8 +1,8 @@
 """Tests for scmaba.synthetic_control_method."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.scmaba import synthetic_control_method
 
 

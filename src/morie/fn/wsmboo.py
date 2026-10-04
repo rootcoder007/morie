@@ -73,19 +73,26 @@ def wasserman_bootstrap(data, T, B=1000, seed=0, ddof=1):
     v1 = float(np.var(reps, ddof=1))
     v0 = float(np.var(reps, ddof=0))
     v = v1 if dd == 1 else v0
-    return RichResult(payload={
-        "value": v, "se": float(np.sqrt(v)),
-        "variance_ddof1": v1, "variance_ddof0": v0,
-        "mean_replicate": float(np.mean(reps)),
-        "bias": float(np.mean(reps) - float(T(d))),
-        "replicates": reps, "B": int(Bn), "n": int(n), "ddof": dd,
-        "denominator_note": "ESL (7.53) divides by B - 1, not B; the "
-                            "replicates are centred at their own mean",
-        "what_it_estimates": "the variance of S under sampling from the "
-                             "EMPIRICAL distribution; its bearing on the "
-                             "real one rests on the bootstrap being "
-                             "consistent for this statistic",
-        "method": "Bootstrap variance estimator, ESL (7.53)"})
+    return RichResult(
+        payload={
+            "value": v,
+            "se": float(np.sqrt(v)),
+            "variance_ddof1": v1,
+            "variance_ddof0": v0,
+            "mean_replicate": float(np.mean(reps)),
+            "bias": float(np.mean(reps) - float(T(d))),
+            "replicates": reps,
+            "B": int(Bn),
+            "n": int(n),
+            "ddof": dd,
+            "denominator_note": "ESL (7.53) divides by B - 1, not B; the replicates are centred at their own mean",
+            "what_it_estimates": "the variance of S under sampling from the "
+            "EMPIRICAL distribution; its bearing on the "
+            "real one rests on the bootstrap being "
+            "consistent for this statistic",
+            "method": "Bootstrap variance estimator, ESL (7.53)",
+        }
+    )
 
 
 def cheatsheet():

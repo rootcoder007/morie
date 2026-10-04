@@ -60,11 +60,19 @@ def multiple_mediators(Y, X, M_list, C=None):
     published form and are stated in full.
     """
     r = multi_mediator_causal(X, M_list, Y, C)
-    return RichResult(payload={
-        "indirect": list(r["indirect"]), "indirect_total": r["indirect_total"],
-        "direct": r["direct"], "total": r["total"],
-        "a": list(r["a"]), "b": list(r["b"]), "k": r["k"], "n": r["n"],
-        "method": "Parallel multiple mediators (specific and joint NIE)"})
+    return RichResult(
+        payload={
+            "indirect": list(r["indirect"]),
+            "indirect_total": r["indirect_total"],
+            "direct": r["direct"],
+            "total": r["total"],
+            "a": list(r["a"]),
+            "b": list(r["b"]),
+            "k": r["k"],
+            "n": r["n"],
+            "method": "Parallel multiple mediators (specific and joint NIE)",
+        }
+    )
 
 
 multiplemediators = multiple_mediators

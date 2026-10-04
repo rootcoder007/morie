@@ -13,9 +13,9 @@ Sepp Hochreiter").
     h = o * tanh(c)
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lstmc import lstm_cell as cell
 
 
@@ -65,9 +65,14 @@ def test_lstmc_a_closed_forget_gate_erases_the_past():
     c_prev = np.array([5.0, -3.0, 0.5, 2.0])
     # b is laid out [i; f; g; o] (see the module: W is [W_i; W_f; W_g; W_o]),
     # so block 0 is the INPUT gate and block 1 is the FORGET gate.
-    b_erase = np.concatenate([np.full(H, -50.0),   # i closed
-                              np.full(H, -50.0),   # f closed -> erase
-                              np.zeros(H), np.zeros(H)])
+    b_erase = np.concatenate(
+        [
+            np.full(H, -50.0),  # i closed
+            np.full(H, -50.0),  # f closed -> erase
+            np.zeros(H),
+            np.zeros(H),
+        ]
+    )
     r = cell(np.zeros(3), c_prev=c_prev, hidden_size=H, b=b_erase, seed=1)
     assert np.asarray(r["c"]) == pytest.approx(np.zeros(H), abs=1e-6)
 
@@ -75,9 +80,14 @@ def test_lstmc_a_closed_forget_gate_erases_the_past():
 def test_lstmc_an_open_forget_and_closed_input_carries_state_unchanged():
     H = 4
     c_prev = np.array([5.0, -3.0, 0.5, 2.0])
-    b_carry = np.concatenate([np.full(H, -50.0),   # i closed -> add nothing
-                              np.full(H, 50.0),    # f open   -> keep all
-                              np.zeros(H), np.zeros(H)])
+    b_carry = np.concatenate(
+        [
+            np.full(H, -50.0),  # i closed -> add nothing
+            np.full(H, 50.0),  # f open   -> keep all
+            np.zeros(H),
+            np.zeros(H),
+        ]
+    )
     r = cell(np.zeros(3), c_prev=c_prev, hidden_size=H, b=b_carry, seed=1)
     assert np.asarray(r["c"]) == pytest.approx(c_prev, abs=1e-6)
 

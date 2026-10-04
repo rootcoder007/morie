@@ -87,8 +87,11 @@ def esl_dropout(X, p=0.5, training=True, seed=0):
             title="Dropout (inference)",
             summary_lines=[("p (keep)", float(p)), ("training", bool(training))],
             payload={
-                "output": A, "mask": np.ones_like(A),
-                "kept_fraction": 1.0, "scale": 1.0, "training": bool(training),
+                "output": A,
+                "mask": np.ones_like(A),
+                "kept_fraction": 1.0,
+                "scale": 1.0,
+                "training": bool(training),
                 "method": "esl_dropout",
             },
         )
@@ -98,9 +101,12 @@ def esl_dropout(X, p=0.5, training=True, seed=0):
         title="Dropout (training)",
         summary_lines=[("p (keep)", float(p)), ("kept", float(mask.mean()))],
         payload={
-            "output": A * mask / p, "mask": mask,
-            "kept_fraction": float(mask.mean()), "scale": 1.0 / p,
-            "training": True, "p": float(p),
+            "output": A * mask / p,
+            "mask": mask,
+            "kept_fraction": float(mask.mean()),
+            "scale": 1.0 / p,
+            "training": True,
+            "p": float(p),
             "method": "esl_dropout",
         },
     )

@@ -70,9 +70,16 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["design", "hadamard", "jackknife_weights", "brr_weights",
-           "bootstrap_weights", "replicate_variance",
-           "replicate_weights", "METHODS"]
+__all__ = [
+    "design",
+    "hadamard",
+    "jackknife_weights",
+    "brr_weights",
+    "bootstrap_weights",
+    "replicate_variance",
+    "replicate_weights",
+    "METHODS",
+]
 
 METHODS = ("jk1", "jkn", "brr", "fay", "bootstrap")
 
@@ -86,11 +93,9 @@ def design(weights, strata=None, psu=None):
     if any(x <= 0.0 for x in w):
         raise ValueError("replwt: sampling weights must be positive")
     h = ["1"] * n if strata is None else [str(x) for x in strata]
-    p = [str(i) for i in range(n)] if psu is None else [str(x)
-                                                        for x in psu]
+    p = [str(i) for i in range(n)] if psu is None else [str(x) for x in psu]
     if len(h) != n or len(p) != n:
-        raise ValueError("replwt: strata and psu must have one entry "
-                         "per unit (%d)" % n)
+        raise ValueError("replwt: strata and psu must have one entry per unit (%d)" % n)
     order, groups = [], {}
     for i in range(n):
         key = (h[i], p[i])
@@ -99,18 +104,23 @@ def design(weights, strata=None, psu=None):
             order.append(key)
         groups[key].append(i)
     by_stratum = {}
-    for (hh, pp) in order:
+    for hh, pp in order:
         by_stratum.setdefault(hh, []).append((hh, pp))
     for hh, ps in by_stratum.items():
         if len(ps) < 2:
-            raise ValueError("replwt: stratum %r has a single PSU, so "
-                             "its contribution to the variance is not "
-                             "estimable" % hh)
-    return {"weights": w, "strata": h, "psu": p, "n": n,
-            "psu_order": order, "psu_units": groups,
-            "stratum_psus": by_stratum,
-            "stratum_order": [hh for hh in
-                              dict.fromkeys(h)]}
+            raise ValueError(
+                "replwt: stratum %r has a single PSU, so its contribution to the variance is not estimable" % hh
+            )
+    return {
+        "weights": w,
+        "strata": h,
+        "psu": p,
+        "n": n,
+        "psu_order": order,
+        "psu_units": groups,
+        "stratum_psus": by_stratum,
+        "stratum_order": [hh for hh in dict.fromkeys(h)],
+    }
 
 
 def hadamard(order):
@@ -121,13 +131,10 @@ def hadamard(order):
     """
     k = int(order)
     if k < 1 or (k & (k - 1)) != 0:
-        raise ValueError("replwt: this construction gives Hadamard "
-                         "matrices of order a power of two; %d is "
-                         "not one" % k)
+        raise ValueError("replwt: this construction gives Hadamard matrices of order a power of two; %d is not one" % k)
     H = [[1]]
     while len(H) < k:
-        H = ([r + r for r in H]
-             + [r + [-v for v in r] for r in H])
+        H = [r + r for r in H] + [r + [-v for v in r] for r in H]
     return H
 
 
@@ -143,8 +150,7 @@ def _psu_totals(d, values):
 def jackknife_weights(d, method="jkn"):
     r"""One replicate per PSU: drop it, inflate its stratum."""
     if method not in ("jk1", "jkn"):
-        raise ValueError("replwt: jackknife method must be jk1 or "
-                         "jkn, got %r" % method)
+        raise ValueError("replwt: jackknife method must be jk1 or jkn, got %r" % method)
     reps, drop = [], []
     if method == "jk1":
         m = len(d["psu_order"])
@@ -158,8 +164,7 @@ def jackknife_weights(d, method="jkn"):
                     w[i] *= f
             reps.append(w)
             drop.append(key)
-        return {"weights": reps, "dropped": drop,
-                "scale": [(m - 1) / float(m)] * m, "method": "jk1"}
+        return {"weights": reps, "dropped": drop, "scale": [(m - 1) / float(m)] * m, "method": "jk1"}
     scale = []
     for hh in d["stratum_order"]:
         ps = d["stratum_psus"][hh]
@@ -176,8 +181,7 @@ def jackknife_weights(d, method="jkn"):
             reps.append(w)
             drop.append(key)
             scale.append((nh - 1) / float(nh))
-    return {"weights": reps, "dropped": drop, "scale": scale,
-            "method": "jkn"}
+    return {"weights": reps, "dropped": drop, "scale": scale, "method": "jkn"}
 
 
 def brr_weights(d, fay=0.0):
@@ -189,14 +193,13 @@ def brr_weights(d, fay=0.0):
     """
     rho = float(fay)
     if not 0.0 <= rho < 1.0:
-        raise ValueError("replwt: Fay's rho must lie in [0, 1), got "
-                         "%g" % rho)
+        raise ValueError("replwt: Fay's rho must lie in [0, 1), got %g" % rho)
     strata = d["stratum_order"]
     for hh in strata:
         if len(d["stratum_psus"][hh]) != 2:
-            raise ValueError("replwt: BRR needs exactly two PSUs per "
-                             "stratum; stratum %r has %d"
-                             % (hh, len(d["stratum_psus"][hh])))
+            raise ValueError(
+                "replwt: BRR needs exactly two PSUs per stratum; stratum %r has %d" % (hh, len(d["stratum_psus"][hh]))
+            )
     H = len(strata)
     R = 1
     while R < H + 1:
@@ -217,16 +220,20 @@ def brr_weights(d, fay=0.0):
                 w[i] *= rho
         reps.append(w)
     c = 1.0 / (R * (1.0 - rho) ** 2)
-    return {"weights": reps, "scale": [c] * R, "n_replicates": R,
-            "hadamard_order": R, "fay": rho,
-            "method": "fay" if rho else "brr"}
+    return {
+        "weights": reps,
+        "scale": [c] * R,
+        "n_replicates": R,
+        "hadamard_order": R,
+        "fay": rho,
+        "method": "fay" if rho else "brr",
+    }
 
 
 def bootstrap_weights(d, R=200, seed=1):
     r"""Rao-Wu rescaling bootstrap: resample n_h - 1 PSUs per stratum."""
     if int(R) < 2:
-        raise ValueError("replwt: need at least two bootstrap "
-                         "replicates")
+        raise ValueError("replwt: need at least two bootstrap replicates")
     rng = np.random.default_rng(int(seed))
     reps = []
     for _ in range(int(R)):
@@ -240,14 +247,17 @@ def bootstrap_weights(d, R=200, seed=1):
                 count[ps[int(rng.random() * nh) % nh]] += 1
             root = math.sqrt(mh / float(nh - 1))
             for k in ps:
-                f = (1.0 - root
-                     + root * (nh / float(mh)) * count[k])
+                f = 1.0 - root + root * (nh / float(mh)) * count[k]
                 for i in d["psu_units"][k]:
                     w[i] *= f
         reps.append(w)
-    return {"weights": reps, "scale": [1.0 / int(R)] * int(R),
-            "n_replicates": int(R), "seed": int(seed),
-            "method": "bootstrap"}
+    return {
+        "weights": reps,
+        "scale": [1.0 / int(R)] * int(R),
+        "n_replicates": int(R),
+        "seed": int(seed),
+        "method": "bootstrap",
+    }
 
 
 def replicate_variance(estimator, d, rep, values=None):
@@ -257,46 +267,53 @@ def replicate_variance(estimator, d, rep, values=None):
     ``estimator`` takes a weight vector (and ``values`` if given) and
     returns a number.
     """
+
     def call(w):
-        return (float(estimator(w)) if values is None
-                else float(estimator(w, values)))
+        return float(estimator(w)) if values is None else float(estimator(w, values))
 
     theta = call(d["weights"])
     reps = [call(w) for w in rep["weights"]]
-    v = sum(s * (t - theta) ** 2
-            for s, t in zip(rep["scale"], reps))
-    return RichResult(payload={
-        "estimate": theta, "theta": theta, "variance": v,
-        "std_error": math.sqrt(v) if v >= 0 else float("nan"),
-        "replicates": reps, "n_replicates": len(reps),
-        "method": rep["method"],
-    })
+    v = sum(s * (t - theta) ** 2 for s, t in zip(rep["scale"], reps))
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "theta": theta,
+            "variance": v,
+            "std_error": math.sqrt(v) if v >= 0 else float("nan"),
+            "replicates": reps,
+            "n_replicates": len(reps),
+            "method": rep["method"],
+        }
+    )
 
 
 def replicate_weights(d, method="jkn", R=200, fay=0.0, seed=1):
     r"""Entry point: build a replicate-weight set for a design."""
     if method not in METHODS:
-        raise ValueError("replwt: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
+        raise ValueError("replwt: method must be one of %s, got %r" % (", ".join(METHODS), method))
     if method in ("jk1", "jkn"):
         rep = jackknife_weights(d, method)
     elif method == "brr":
         rep = brr_weights(d, 0.0)
     elif method == "fay":
         if not fay:
-            raise ValueError("replwt: Fay's method needs a non-zero "
-                             "rho; use method='brr' for rho = 0")
+            raise ValueError("replwt: Fay's method needs a non-zero rho; use method='brr' for rho = 0")
         rep = brr_weights(d, fay)
     else:
         rep = bootstrap_weights(d, R, seed)
-    return RichResult(payload={
-        "estimate": rep["weights"], "weights": rep["weights"],
-        "scale": rep["scale"], "n_replicates": len(rep["weights"]),
-        "method": rep["method"],
-        "dropped": rep.get("dropped"),
-        "hadamard_order": rep.get("hadamard_order"),
-        "fay": rep.get("fay"), "seed": rep.get("seed"),
-    })
+    return RichResult(
+        payload={
+            "estimate": rep["weights"],
+            "weights": rep["weights"],
+            "scale": rep["scale"],
+            "n_replicates": len(rep["weights"]),
+            "method": rep["method"],
+            "dropped": rep.get("dropped"),
+            "hadamard_order": rep.get("hadamard_order"),
+            "fay": rep.get("fay"),
+            "seed": rep.get("seed"),
+        }
+    )
 
 
 def cheatsheet() -> str:

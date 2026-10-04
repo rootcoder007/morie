@@ -22,11 +22,11 @@ from morie.fn.topcmb import (
     sperner_lemma_triangle,
 )
 
-TORUS = [tuple(sorted((i % 7, (i + 1) % 7, (i + 3) % 7))) for i in range(7)] \
-    + [tuple(sorted((i % 7, (i + 2) % 7, (i + 3) % 7))) for i in range(7)]
+TORUS = [tuple(sorted((i % 7, (i + 1) % 7, (i + 3) % 7))) for i in range(7)] + [
+    tuple(sorted((i % 7, (i + 2) % 7, (i + 3) % 7))) for i in range(7)
+]
 
-RP2 = [(0, 1, 2), (0, 1, 3), (0, 2, 4), (0, 3, 5), (0, 4, 5),
-       (1, 2, 5), (1, 3, 4), (1, 4, 5), (2, 3, 4), (2, 3, 5)]
+RP2 = [(0, 1, 2), (0, 1, 3), (0, 2, 4), (0, 3, 5), (0, 4, 5), (1, 2, 5), (1, 3, 4), (1, 4, 5), (2, 3, 4), (2, 3, 5)]
 
 SPHERE = [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]
 
@@ -37,6 +37,7 @@ CIRCLE = [(0, 1), (1, 2), (0, 2)]
 # Face closure and Euler characteristic
 # --------------------------------------------------------------------
 
+
 def test_face_closure_of_a_triangle():
     faces = simplicial_complex_faces([(0, 1, 2)])
     assert faces[0] == [(0,), (1,), (2,)]
@@ -45,7 +46,7 @@ def test_face_closure_of_a_triangle():
 
 
 def test_euler_characteristic_of_the_classics():
-    assert euler_characteristic([(0, 1, 2, 3)])["chi"] == 1     # ball
+    assert euler_characteristic([(0, 1, 2, 3)])["chi"] == 1  # ball
     assert euler_characteristic(SPHERE)["chi"] == 2
     assert euler_characteristic(CIRCLE)["chi"] == 0
     assert euler_characteristic(TORUS)["chi"] == 0
@@ -54,7 +55,7 @@ def test_euler_characteristic_of_the_classics():
 
 def test_the_torus_f_vector_is_the_minimal_one():
     out = euler_characteristic(TORUS)
-    assert out["f_vector"] == [7, 21, 14]   # Csaszar: every pair an edge
+    assert out["f_vector"] == [7, 21, 14]  # Csaszar: every pair an edge
 
 
 def test_face_validation():
@@ -67,6 +68,7 @@ def test_face_validation():
 # --------------------------------------------------------------------
 # Betti numbers over F_2
 # --------------------------------------------------------------------
+
 
 def test_betti_numbers_of_the_classical_surfaces():
     assert betti_numbers_gf2(CIRCLE)["betti"] == [1, 1]
@@ -86,8 +88,7 @@ def test_a_contractible_complex_has_trivial_homology():
 
 def test_disconnected_components_add_in_b0():
     assert betti_numbers_gf2([(0, 1), (2, 3)])["betti"][0] == 2
-    assert betti_numbers_gf2(CIRCLE + [(3, 4), (4, 5), (3, 5)])["betti"] \
-        == [2, 2]
+    assert betti_numbers_gf2(CIRCLE + [(3, 4), (4, 5), (3, 5)])["betti"] == [2, 2]
 
 
 def test_a_wedge_of_two_circles_has_b1_of_2():
@@ -103,8 +104,7 @@ def test_the_boundary_map_squares_to_zero_everywhere():
 
 
 def test_the_euler_poincare_identity_holds_on_every_fixture():
-    for cx in (CIRCLE, SPHERE, TORUS, RP2, [(0, 1, 2, 3)],
-               [(0, 1), (2, 3)]):
+    for cx in (CIRCLE, SPHERE, TORUS, RP2, [(0, 1, 2, 3)], [(0, 1), (2, 3)]):
         out = betti_numbers_gf2(cx)
         assert out["euler_poincare_holds"] is True
         assert out["chi_from_faces"] == out["chi_from_betti"]
@@ -120,6 +120,7 @@ def test_the_rp2_fixture_really_is_a_closed_surface():
     # selected for, re-verified here rather than trusted
     from collections import Counter
     from itertools import combinations
+
     edge_count = Counter()
     for t in RP2:
         for e in combinations(t, 2):
@@ -131,6 +132,7 @@ def test_the_rp2_fixture_really_is_a_closed_surface():
 # --------------------------------------------------------------------
 # Sperner's lemma
 # --------------------------------------------------------------------
+
 
 def test_the_rainbow_count_is_odd_at_every_subdivision():
     for k in range(1, 13):
@@ -154,9 +156,10 @@ def test_oddness_survives_200_random_admissible_labellings():
                     allowed.append(1)
                 if j > 0:
                     allowed.append(2)
-                s = (1664525 * s + 1013904223) % 2 ** 32
+                s = (1664525 * s + 1013904223) % 2**32
                 lab[(i, j)] = allowed[s % len(allowed)]
         return lab
+
     for seed in range(200):
         k = 2 + seed % 7
         out = sperner_lemma_triangle(k, lcg_labels(k, seed))
@@ -170,8 +173,7 @@ def test_an_improper_labelling_is_refused_not_computed():
     labels = {}
     for i in range(k + 1):
         for j in range(k + 1 - i):
-            allowed = ([0] if k - i - j > 0 else []) + \
-                ([1] if i > 0 else []) + ([2] if j > 0 else [])
+            allowed = ([0] if k - i - j > 0 else []) + ([1] if i > 0 else []) + ([2] if j > 0 else [])
             labels[(i, j)] = allowed[0]
     labels[(k, 0)] = 0
     with pytest.raises(ValueError, match="not admissible"):

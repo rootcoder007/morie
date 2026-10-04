@@ -73,14 +73,19 @@ def wasserman_pca(X, k):
             vecs[:, j] = -vecs[:, j]
     scores = Xc @ vecs
     total = float(np.trace(S))
-    return RichResult(payload={
-        "estimate": float(vals[0]),
-        "eigenvalues": [float(v) for v in vals],
-        "components": [float(v) for v in vecs.T.ravel()],
-        "explained_ratio": float(np.sum(vals) / total) if total > 0 else float("nan"),
-        "scores": [float(v) for v in scores.ravel()],
-        "n": int(n), "d": int(d), "k": k,
-        "method": "eigh of (n-1)-covariance; sign fixed by max-|coord| positive"})
+    return RichResult(
+        payload={
+            "estimate": float(vals[0]),
+            "eigenvalues": [float(v) for v in vals],
+            "components": [float(v) for v in vecs.T.ravel()],
+            "explained_ratio": float(np.sum(vals) / total) if total > 0 else float("nan"),
+            "scores": [float(v) for v in scores.ravel()],
+            "n": int(n),
+            "d": int(d),
+            "k": k,
+            "method": "eigh of (n-1)-covariance; sign fixed by max-|coord| positive",
+        }
+    )
 
 
 def cheatsheet():

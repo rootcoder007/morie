@@ -124,9 +124,7 @@ def vit_forward(x, patch_size, embed_dim, num_heads, num_layers, w_scale=1.0, ml
             skip += d * dh
             Uv = vc.draw(d, dh, skip, w_scale)
             skip += d * dh
-            sa = vit_self_attention(
-                core.matmul(zn, Uq), core.matmul(zn, Uk), core.matmul(zn, Uv)
-            )
+            sa = vit_self_attention(core.matmul(zn, Uq), core.matmul(zn, Uk), core.matmul(zn, Uv))
             heads.append(sa["output"])
             attn = sa["attn"]
         cat = [[heads[hh][i][c] for hh in range(k) for c in range(dh)] for i in range(ns)]

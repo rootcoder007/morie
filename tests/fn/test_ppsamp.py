@@ -1,7 +1,5 @@
 """Tests for ppsamp.pps_sampling."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ppsamp import pps_sampling
 
 

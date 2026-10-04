@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner5e5 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_5,
 )
@@ -19,8 +18,8 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner5e5_basic():
     with pytest.warns(DeprecationWarning):
         result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_5(x, n)
     assert isinstance(result, dict)
-    assert 'probability' in result
-    prob = result['probability']
+    assert "probability" in result
+    prob = result["probability"]
     assert math.isfinite(prob)
     assert 0.0 <= prob <= 1.0
 
@@ -30,7 +29,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner5e5_edge():
     with pytest.warns(DeprecationWarning):
         result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_5(0, 1)
     assert isinstance(result, dict)
-    assert 'probability' in result
-    prob = result['probability']
+    assert "probability" in result
+    prob = result["probability"]
     assert math.isfinite(prob)
     assert 0.0 <= prob <= 1.0

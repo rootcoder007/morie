@@ -67,8 +67,8 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
         raise ValueError("too few usable thresholds after filtering")
     scores = []
     for i in range(len(us) - window + 1):
-        xw = xis[i:i + window]
-        mw = mods[i:i + window]
+        xw = xis[i : i + window]
+        mw = mods[i : i + window]
         if any(v <= 0.0 for v in mw):
             scores.append(float("inf"))
             continue
@@ -78,17 +78,19 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
     for i in range(1, len(scores)):
         if scores[i] < scores[best]:
             best = i
-    return RichResult(payload={
-        "u_star": us[best],
-        "score": scores[best],
-        "estimate": us[best],
-        "u": us,
-        "scores": scores,
-        "xi": xis,
-        "mod_scale": mods,
-        "n": n,
-        "method": "threshold selection by local variance of GPD estimates",
-    })
+    return RichResult(
+        payload={
+            "u_star": us[best],
+            "score": scores[best],
+            "estimate": us[best],
+            "u": us,
+            "scores": scores,
+            "xi": xis,
+            "mod_scale": mods,
+            "n": n,
+            "method": "threshold selection by local variance of GPD estimates",
+        }
+    )
 
 
 def cheatsheet():

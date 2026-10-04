@@ -16,8 +16,7 @@ def _k(t, kind):
         return math.exp(-0.5 * t * t) / math.sqrt(2 * math.pi)
     if abs(t) > 1:
         return 0.0
-    return {"quadratic": 0.75 * (1 - t * t), "minimum_variance": 0.375 * (3 - 5 * t * t),
-            "uniform": 0.5}[kind]
+    return {"quadratic": 0.75 * (1 - t * t), "minimum_variance": 0.375 * (3 - 5 * t * t), "uniform": 0.5}[kind]
 
 
 def _mass(x, lo, hi, h, kind):
@@ -87,7 +86,7 @@ import morie.fn.spintp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

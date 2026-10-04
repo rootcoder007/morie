@@ -54,9 +54,16 @@ def loo_pareto_smooth(log_lik):
         t = sum(w)
         for s in range(Sn):
             W[s][i] = w[s] / t
-    return RichResult(payload={
-        "estimate": max(ks), "k": ks, "weights": W, "S": Sn, "n": n,
-        "method": "Pareto-smoothed importance weights"})
+    return RichResult(
+        payload={
+            "estimate": max(ks),
+            "k": ks,
+            "weights": W,
+            "S": Sn,
+            "n": n,
+            "method": "Pareto-smoothed importance weights",
+        }
+    )
 
 
 def cheatsheet():

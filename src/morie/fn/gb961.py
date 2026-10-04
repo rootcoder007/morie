@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['pctranksc', 'gibbons_pct_mod_rank_sc']
+__all__ = ["pctranksc", "gibbons_pct_mod_rank_sc"]
 
 
 def pctranksc(x, y, s=0.5, r=None):
@@ -68,9 +68,7 @@ def pctranksc(x, y, s=0.5, r=None):
     for i in range(nn - S + 1, nn + 1):
         a[i - 1] += i - (nn - S) - half
     blower = sum((R - i + 1.0 - half) * z[i - 1] for i in range(1, R + 1))
-    tupper = sum(
-        (i - (nn - S) - half) * z[i - 1] for i in range(nn - S + 1, nn + 1)
-    )
+    tupper = sum((i - (nn - S) - half) * z[i - 1] for i in range(nn - S + 1, nn + 1))
     abar = sum(a) / nn
     ss = sum((v - abar) ** 2 for v in a)
     mean = m * abar
@@ -78,10 +76,7 @@ def pctranksc(x, y, s=0.5, r=None):
     mb = vb = float("nan")
     if nn % 2 == 0 and S == R:
         mb = m * S * S / float(nn)
-        vb = (
-            m * n * S * (4.0 * nn * S * S - nn - 6.0 * S**3)
-            / (6.0 * float(nn) ** 2 * (nn - 1.0))
-        )
+        vb = m * n * S * (4.0 * nn * S * S - nn - 6.0 * S**3) / (6.0 * float(nn) ** 2 * (nn - 1.0))
     stat = tupper + blower
     zz = (stat - mean) / math.sqrt(var) if var > 0 else float("nan")
     return RichResult(

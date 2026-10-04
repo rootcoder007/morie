@@ -16,7 +16,8 @@ def test_dimNet_basic():
     assert b == pytest.approx([math.sqrt(2 / 5) * math.sin(n * math.pi * 1.3 / 5) / 1.3 for n in (1, 2, 3)], rel=1e-14)
     x = math.cos(0.7)
     assert spherical_harmonic_basis(0.7, n_basis=4) == pytest.approx(
-        [1.0, x, (3 * x * x - 1) / 2, (5 * x ** 3 - 3 * x) / 2], rel=1e-14)
+        [1.0, x, (3 * x * x - 1) / 2, (5 * x**3 - 3 * x) / 2], rel=1e-14
+    )
 
 
 def test_dimNet_edge():
@@ -38,7 +39,7 @@ import morie.fn.dimNet as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

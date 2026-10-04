@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moment bound for the H-decomposition projections."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["hdecmom", "fauzi_moment_ineq_ustat"]

@@ -58,46 +58,49 @@ from . import _s03core as k
 from ._richresult import RichResult
 from .prphet import piecewise_trend, prophet_fit
 
-__all__ = ["changepoint_path", "select_changepoints",
-           "simulate_future_trend", "trend_intervals"]
+__all__ = ["changepoint_path", "select_changepoints", "simulate_future_trend", "trend_intervals"]
 
 _EPS = 1e-12
 
 
-def changepoint_path(t, y, taus=None, n_changepoints=15,
-                     changepoint_range=0.8, seasonalities=None, **kw):
+def changepoint_path(t, y, taus=None, n_changepoints=15, changepoint_range=0.8, seasonalities=None, **kw):
     r"""Sweep :math:`\tau` and report what it buys and costs.
 
     Rising :math:`\tau` must lower the training error and raise the
     number of active changepoints -- that trade-off is the paper's
     point about overfitting, and it is measured here.
     """
-    grid = ([0.001, 0.01, 0.05, 0.1, 0.5, 1.0] if taus is None
-            else [float(v) for v in taus])
+    grid = [0.001, 0.01, 0.05, 0.1, 0.5, 1.0] if taus is None else [float(v) for v in taus]
     if len(grid) < 2:
-        raise ValueError("prnFil: need at least 2 tau values, got %d"
-                         % len(grid))
+        raise ValueError("prnFil: need at least 2 tau values, got %d" % len(grid))
     rows = []
     for tau in grid:
-        f = prophet_fit(t, y, n_changepoints=n_changepoints,
-                        changepoint_range=changepoint_range,
-                        changepoint_prior=tau,
-                        seasonalities=seasonalities, **kw)
+        f = prophet_fit(
+            t,
+            y,
+            n_changepoints=n_changepoints,
+            changepoint_range=changepoint_range,
+            changepoint_prior=tau,
+            seasonalities=seasonalities,
+            **kw,
+        )
         d = f["deltas"]
         # exactly zero, not "small": the L1 solution really does zero
         # them, which is the whole point of the Laplace prior
         active = sum(1 for v in d if v != 0.0)
-        rows.append({"tau": tau, "active": active,
-                     "rmse": math.sqrt(k.mean([v * v
-                                               for v in f["residual"]])),
-                     "l1": sum(abs(v) for v in d),
-                     "deltas": d})
+        rows.append(
+            {
+                "tau": tau,
+                "active": active,
+                "rmse": math.sqrt(k.mean([v * v for v in f["residual"]])),
+                "l1": sum(abs(v) for v in d),
+                "deltas": d,
+            }
+        )
     return rows
 
 
-def select_changepoints(t, y, tau=0.05, n_changepoints=15,
-                        changepoint_range=0.8, seasonalities=None,
-                        **kw):
+def select_changepoints(t, y, tau=0.05, n_changepoints=15, changepoint_range=0.8, seasonalities=None, **kw):
     r"""Fit once and report which candidates survived the shrinkage.
 
     Survival means a delta that is EXACTLY zero has been dropped, not
@@ -105,28 +108,37 @@ def select_changepoints(t, y, tau=0.05, n_changepoints=15,
     and a magnitude threshold on a ridge fit would be a different
     method wearing the same name.
     """
-    f = prophet_fit(t, y, n_changepoints=n_changepoints,
-                    changepoint_range=changepoint_range,
-                    changepoint_prior=tau, seasonalities=seasonalities,
-                    **kw)
+    f = prophet_fit(
+        t,
+        y,
+        n_changepoints=n_changepoints,
+        changepoint_range=changepoint_range,
+        changepoint_prior=tau,
+        seasonalities=seasonalities,
+        **kw,
+    )
     d = f["deltas"]
     cps = f["changepoints"]
     keep = [j for j in range(len(d)) if d[j] != 0.0]
     tv = f["t"]
     span = tv[-1] - tv[0]
-    return RichResult(payload={
-        "estimate": [cps[j] for j in keep],
-        "selected": [cps[j] for j in keep],
-        "selected_index": keep, "deltas": d, "candidates": cps,
-        "n_selected": len(keep), "n_candidates": len(cps),
-        "tau": float(tau), "fit": f,
-        "last_candidate_fraction": ((cps[-1] - tv[0]) / span
-                                    if cps and span > 0 else 0.0),
-        "changepoint_range": float(changepoint_range),
-        "rmse": math.sqrt(k.mean([v * v for v in f["residual"]])),
-        "method": "automatic changepoint selection under a Laplace "
-                  "prior, Taylor & Letham (2018) Sec. 3.1.3",
-    })
+    return RichResult(
+        payload={
+            "estimate": [cps[j] for j in keep],
+            "selected": [cps[j] for j in keep],
+            "selected_index": keep,
+            "deltas": d,
+            "candidates": cps,
+            "n_selected": len(keep),
+            "n_candidates": len(cps),
+            "tau": float(tau),
+            "fit": f,
+            "last_candidate_fraction": ((cps[-1] - tv[0]) / span if cps and span > 0 else 0.0),
+            "changepoint_range": float(changepoint_range),
+            "rmse": math.sqrt(k.mean([v * v for v in f["residual"]])),
+            "method": "automatic changepoint selection under a Laplace prior, Taylor & Letham (2018) Sec. 3.1.3",
+        }
+    )
 
 
 def simulate_future_trend(fit, t_future, n_sims=200, seed=0):
@@ -156,11 +168,9 @@ def simulate_future_trend(fit, t_future, n_sims=200, seed=0):
         for tv2 in tf:
             # one Bernoulli per future time step, at the historical
             # changepoint frequency
-            if float(rng.uniform()) < rate * (tf[1] - tf[0]
-                                              if len(tf) > 1 else 1.0):
+            if float(rng.uniform()) < rate * (tf[1] - tf[0] if len(tf) > 1 else 1.0):
                 u = float(rng.uniform()) - 0.5
-                mag = (-lam * math.copysign(1.0, u)
-                       * math.log(1.0 - 2.0 * abs(u)) if lam > 0 else 0.0)
+                mag = -lam * math.copysign(1.0, u) * math.log(1.0 - 2.0 * abs(u)) if lam > 0 else 0.0
                 ncps.append(tv2)
                 nd.append(mag)
         sims.append(piecewise_trend(tf, fit["k"], fit["m"], nd, ncps))
@@ -169,8 +179,7 @@ def simulate_future_trend(fit, t_future, n_sims=200, seed=0):
 
 def trend_intervals(fit, t_future, level=0.8, n_sims=200, seed=0):
     """Quantile bands from the simulated future trends."""
-    sims = simulate_future_trend(fit, t_future, n_sims=n_sims,
-                                 seed=seed)
+    sims = simulate_future_trend(fit, t_future, n_sims=n_sims, seed=seed)
     H = len(t_future)
     lo_q = 0.5 - float(level) / 2.0
     hi_q = 0.5 + float(level) / 2.0
@@ -180,25 +189,32 @@ def trend_intervals(fit, t_future, level=0.8, n_sims=200, seed=0):
         lo.append(k.quantile7(col, lo_q))
         hi.append(k.quantile7(col, hi_q))
         med.append(k.quantile7(col, 0.5))
-    return RichResult(payload={
-        "estimate": med, "median": med, "lower": lo, "upper": hi,
-        "width": [hi[h] - lo[h] for h in range(H)],
-        "level": float(level), "n_sims": int(n_sims),
-        "note": "the paper does not claim exact coverage for these; "
-                "they indicate uncertainty and detect overfitting",
-        "method": "trend forecast uncertainty by simulating future "
-                  "changepoints, Taylor & Letham (2018) Sec. 3.1.4",
-    })
+    return RichResult(
+        payload={
+            "estimate": med,
+            "median": med,
+            "lower": lo,
+            "upper": hi,
+            "width": [hi[h] - lo[h] for h in range(H)],
+            "level": float(level),
+            "n_sims": int(n_sims),
+            "note": "the paper does not claim exact coverage for these; "
+            "they indicate uncertainty and detect overfitting",
+            "method": "trend forecast uncertainty by simulating future changepoints, Taylor & Letham (2018) Sec. 3.1.4",
+        }
+    )
 
 
 def cheatsheet():
-    return ("prnFil: lay down many candidate changepoints, let "
-            "delta_j ~ Laplace(0, tau) decide. Small tau = straight "
-            "trend, large tau = bends everywhere; training error falls "
-            "and forecast intervals WIDEN as tau grows, which is the "
-            "overfitting signal. Candidates only in the first 80 per "
-            "cent: a changepoint near the end has no data after it and "
-            "dominates every forecast.")
+    return (
+        "prnFil: lay down many candidate changepoints, let "
+        "delta_j ~ Laplace(0, tau) decide. Small tau = straight "
+        "trend, large tau = bends everywhere; training error falls "
+        "and forecast intervals WIDEN as tau grows, which is the "
+        "overfitting signal. Candidates only in the first 80 per "
+        "cent: a changepoint near the end has no data after it and "
+        "dominates every forecast."
+    )
 
 
 # compact alias per ledger/NAMING.md

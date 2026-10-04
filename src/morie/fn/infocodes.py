@@ -253,5 +253,6 @@ def cheatsheet() -> str:
         "robust_soliton / code_length_decomposition / mcgill_interaction_information -> MacKay coding results."
     )
 
+
 # alias kept from the retired placeholder of the same name
 interaction_information = mcgill_interaction_information

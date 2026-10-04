@@ -109,9 +109,12 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
             return (len(rows),)
         j = int(rng.choice(wide))
         thr = float(rng.uniform(lo[j], hi[j]))
-        return (j, thr,
-                grow([r for r in rows if r[j] < thr], depth + 1),
-                grow([r for r in rows if r[j] >= thr], depth + 1))
+        return (
+            j,
+            thr,
+            grow([r for r in rows if r[j] < thr], depth + 1),
+            grow([r for r in rows if r[j] >= thr], depth + 1),
+        )
 
     def path(x, node):
         depth = 0
@@ -133,14 +136,19 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
     rank[order] = np.arange(n)
     return RichResult(
         title="Isolation forest",
-        summary_lines=[("n", n), ("trees", n_trees), ("sample", psi),
-                       ("max score", float(score.max()))],
-        warnings=["splits are axis-parallel, so structure at an angle is "
-                  "invisible: points inside a tight diagonal band score as "
-                  "anomalous"],
+        summary_lines=[("n", n), ("trees", n_trees), ("sample", psi), ("max score", float(score.max()))],
+        warnings=[
+            "splits are axis-parallel, so structure at an angle is "
+            "invisible: points inside a tight diagonal band score as "
+            "anomalous"
+        ],
         payload={
-            "score": score, "rank": rank, "path_length": lengths,
-            "threshold": 0.5, "n_trees": n_trees, "sample_size": psi,
+            "score": score,
+            "rank": rank,
+            "path_length": lengths,
+            "threshold": 0.5,
+            "n_trees": n_trees,
+            "sample_size": psi,
             "method": "isolation_forest",
         },
     )

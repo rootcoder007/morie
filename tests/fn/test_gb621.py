@@ -1,7 +1,6 @@
 """Tests for gb621.gibbons_ks2samp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb621 import gibbons_ks2samp
 
 

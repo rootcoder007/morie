@@ -31,9 +31,9 @@ from ._richresult import RichResult
 __all__ = ["alphago_montecarlo"]
 
 
-def alphago_montecarlo(state, rollout_net, horizon=16, step=None,
-                       terminal=None, outcome=None, value_net=None,
-                       lam=0.5, stream=None):
+def alphago_montecarlo(
+    state, rollout_net, horizon=16, step=None, terminal=None, outcome=None, value_net=None, lam=0.5, stream=None
+):
     """Play a fast rollout and mix its outcome with the value network.
 
     Parameters

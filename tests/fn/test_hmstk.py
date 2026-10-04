@@ -1,7 +1,7 @@
 """Tests for hmstk.geron_stacking."""
 
 import math
-import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.hmstk import geron_stacking
 
@@ -51,8 +51,17 @@ def test_hmstk_basic():
     result = geron_stacking(X, y, base_models, k_folds=3)
 
     assert isinstance(result, dict)
-    for key in ["predicted", "meta_features", "oof_mse", "stacked_mse",
-                "best_base_mse", "gain", "estimate", "n", "method"]:
+    for key in [
+        "predicted",
+        "meta_features",
+        "oof_mse",
+        "stacked_mse",
+        "best_base_mse",
+        "gain",
+        "estimate",
+        "n",
+        "method",
+    ]:
         assert key in result, f"Missing key: {key}"
 
     assert len(result["predicted"]) == 40
@@ -102,7 +111,7 @@ import morie.fn.hmstk as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

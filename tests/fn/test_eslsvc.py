@@ -1,8 +1,6 @@
 """Tests for eslsvc.esl_svc."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.eslsvc import esl_svc
 
 
@@ -14,8 +12,7 @@ def test_eslsvc_basic():
     result = esl_svc(X, y, C=1.0)
     assert isinstance(result, dict)
     # Core keys documented in the docstring
-    for key in ("w", "b", "margin", "alpha", "support_",
-                "decision", "class_", "accuracy", "n_violations"):
+    for key in ("w", "b", "margin", "alpha", "support_", "decision", "class_", "accuracy", "n_violations"):
         assert key in result
     # margin is 2 / ||w||, computed independently
     w = np.asarray(result["w"], dtype=float)

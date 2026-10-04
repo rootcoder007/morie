@@ -66,15 +66,14 @@ actually implemented here.
 
 import math
 
-from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["rl_pose_search"]
 
 _EPS = 1e-12
-_BOX = 18.0            # angstroms; the paper's box, and the reward scale
-_TRANS = 0.1           # angstrom per translational step
-_ROT = 1.0             # degree per rotational step
+_BOX = 18.0  # angstroms; the paper's box, and the reward scale
+_TRANS = 0.1  # angstrom per translational step
+_ROT = 1.0  # degree per rotational step
 _MIN_STEPS = 300
 _WINDOW = 50
 _RANGE = 0.3
@@ -153,14 +152,23 @@ def _apply(P, a):
 def _reward(site, before, after):
     r"""Equation of the paper: a difference of exponentials, negatives
     doubled. Positive exactly when the step reduced the distance."""
-    r = (math.exp(-_rmsd(site, after) / _BOX)
-         - math.exp(-_rmsd(site, before) / _BOX))
+    r = math.exp(-_rmsd(site, after) / _BOX) - math.exp(-_rmsd(site, before) / _BOX)
     return 2.0 * r if r < 0.0 else r
 
 
-def rl_pose_search(receptor, ligand, site=None, policy=None, critic=None,
-                   max_steps=_MAX_STEPS, min_steps=_MIN_STEPS,
-                   window=_WINDOW, tol=_RANGE, box=_BOX, seed=2):
+def rl_pose_search(
+    receptor,
+    ligand,
+    site=None,
+    policy=None,
+    critic=None,
+    max_steps=_MAX_STEPS,
+    min_steps=_MIN_STEPS,
+    window=_WINDOW,
+    tol=_RANGE,
+    box=_BOX,
+    seed=2,
+):
     r"""Search a ligand pose by the Wang et al. (2022) docking MDP.
 
     Parameters
@@ -193,20 +201,21 @@ def rl_pose_search(receptor, ligand, site=None, policy=None, critic=None,
     L0 = _coords(ligand, "agalfsy ligand")
     S = _coords(site, "agalfsy site") if site is not None else None
     if S is not None and len(S) != len(L0):
-        raise ValueError("agalfsy: the site pose has %d atoms and the ligand "
-                         "%d -- the reward is an RMSD over matched atoms"
-                         % (len(S), len(L0)))
+        raise ValueError(
+            "agalfsy: the site pose has %d atoms and the ligand "
+            "%d -- the reward is an RMSD over matched atoms" % (len(S), len(L0))
+        )
     if policy is None and S is None:
         raise ValueError(
             "agalfsy: with no policy the search falls back to the greedy "
             "oracle, which maximises the published reward and therefore "
-            "needs `site`. Supply a trained policy to run blind.")
+            "needs `site`. Supply a trained policy to run blind."
+        )
     box = float(box)
     if not box > 0.0:
         raise ValueError("agalfsy: box must be positive")
 
-    kind = ("supplied policy" if policy is not None
-            else "greedy oracle (needs the answer; benchmark only)")
+    kind = "supplied policy" if policy is not None else "greedy oracle (needs the answer; benchmark only)"
     start_c = _centroid(L0)
     L = [list(p) for p in L0]
     traj = []
@@ -218,8 +227,7 @@ def rl_pose_search(receptor, ligand, site=None, policy=None, critic=None,
         if policy is not None:
             a = int(policy(L, R, step))
             if not 0 <= a < 12:
-                raise ValueError("agalfsy: policy returned action %d, the "
-                                 "action space is 0..11" % a)
+                raise ValueError("agalfsy: policy returned action %d, the action space is 0..11" % a)
             nxt = _apply(L, a)
         else:
             best_a, best_r, nxt = 0, None, None
@@ -240,58 +248,62 @@ def rl_pose_search(receptor, ligand, site=None, policy=None, critic=None,
             stop = "left_box"
             break
 
-        cv = (float(critic(L, R, step)) if critic is not None
-              else (_rmsd(S, L) if S is not None else 0.0))
+        cv = float(critic(L, R, step)) if critic is not None else (_rmsd(S, L) if S is not None else 0.0)
         crit_hist.append(cv)
         if step >= int(min_steps) and len(crit_hist) >= int(window):
-            w = crit_hist[-int(window):]
+            w = crit_hist[-int(window) :]
             if (max(w) - min(w)) < float(tol):
                 stop = "critic_stabilised"
                 break
 
     final_rmsd = _rmsd(S, L) if S is not None else float("nan")
     start_rmsd = _rmsd(S, L0) if S is not None else float("nan")
-    dcc = (math.sqrt(sum((_centroid(L)[i] - _centroid(S)[i]) ** 2
-                         for i in range(3))) if S is not None
-           else float("nan"))
-    return RichResult(payload={
-        "estimate": final_rmsd,
-        "pose": L,
-        "rmsd": final_rmsd,
-        "rmsd_start": start_rmsd,
-        "dcc": dcc,
-        "success": bool(dcc < 4.0) if S is not None else None,
-        "improved": (bool(final_rmsd < start_rmsd) if S is not None
-                     else None),
-        "steps": step,
-        "stop_reason": stop,
-        "reward_total": total,
-        "trajectory": traj,
-        "policy_kind": kind,
-        "n_actions": 12,
-        "translation_step": _TRANS,
-        "rotation_step_deg": _ROT,
-        "box": box,
-        "method": ("A3C docking MDP of Wang et al. (2022): 12 discrete "
-                   "actions (six 0.1 A translations, six 1 degree "
-                   "rotations), reward exp(-d/18) differenced and negatives "
-                   "doubled, stopping when the critic range falls below "
-                   "0.3 over 50 steps after at least 300"),
-        "note": ("policy_kind is the first thing to read. The greedy "
-                 "fallback maximises the published reward, which is a "
-                 "function of the true site, so its rmsd is an upper bound "
-                 "on what a trained agent could do and not a docking "
-                 "prediction. Separately, a rigid AlphaFold receptor is a "
-                 "weak basis for screening even when the pose search is "
-                 "exact: Scardino et al. (2022) report a mean enrichment "
-                 "factor at 1% of 8.8 against 20.5 for experimental "
-                 "structures, several targets enriching not at all."),
-    })
+    dcc = math.sqrt(sum((_centroid(L)[i] - _centroid(S)[i]) ** 2 for i in range(3))) if S is not None else float("nan")
+    return RichResult(
+        payload={
+            "estimate": final_rmsd,
+            "pose": L,
+            "rmsd": final_rmsd,
+            "rmsd_start": start_rmsd,
+            "dcc": dcc,
+            "success": bool(dcc < 4.0) if S is not None else None,
+            "improved": (bool(final_rmsd < start_rmsd) if S is not None else None),
+            "steps": step,
+            "stop_reason": stop,
+            "reward_total": total,
+            "trajectory": traj,
+            "policy_kind": kind,
+            "n_actions": 12,
+            "translation_step": _TRANS,
+            "rotation_step_deg": _ROT,
+            "box": box,
+            "method": (
+                "A3C docking MDP of Wang et al. (2022): 12 discrete "
+                "actions (six 0.1 A translations, six 1 degree "
+                "rotations), reward exp(-d/18) differenced and negatives "
+                "doubled, stopping when the critic range falls below "
+                "0.3 over 50 steps after at least 300"
+            ),
+            "note": (
+                "policy_kind is the first thing to read. The greedy "
+                "fallback maximises the published reward, which is a "
+                "function of the true site, so its rmsd is an upper bound "
+                "on what a trained agent could do and not a docking "
+                "prediction. Separately, a rigid AlphaFold receptor is a "
+                "weak basis for screening even when the pose search is "
+                "exact: Scardino et al. (2022) report a mean enrichment "
+                "factor at 1% of 8.8 against 20.5 for experimental "
+                "structures, several targets enriching not at all."
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("agalfsy: rl_pose_search(receptor, ligand, site) -> ligand pose "
-            "by the A3C docking MDP of Wang et al. (2022), BMC Bioinf 23:368")
+    return (
+        "agalfsy: rl_pose_search(receptor, ligand, site) -> ligand pose "
+        "by the A3C docking MDP of Wang et al. (2022), BMC Bioinf 23:368"
+    )
 
 
 # compact alias per ledger/NAMING.md

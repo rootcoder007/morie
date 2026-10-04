@@ -391,6 +391,7 @@ def cheatsheet() -> str:
         "genomic_reliability -> Bayesian regression samplers."
     )
 
+
 # alias kept from the retired placeholder of the same name
 bayes_a_alpha = bayes_a
 

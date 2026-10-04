@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["regime_value", "value_function_eval"]
 
 
-def regime_value(y, d, X, regime, propensity=None, method="aipw",
-                 trunc=0.01):
+def regime_value(y, d, X, regime, propensity=None, method="aipw", trunc=0.01):
     r"""Expected outcome if everyone followed a given decision rule.
 
     .. math::
@@ -95,11 +94,8 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw",
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if method not in ("aipw", "ipw", "regression"):
-        raise ValueError(
-            "method must be aipw, ipw or regression, got %r." % method
-        )
-    g = (np.asarray(regime(Xa), dtype=float).ravel() if callable(regime)
-         else np.asarray(regime, dtype=float).ravel())
+        raise ValueError("method must be aipw, ipw or regression, got %r." % method)
+    g = np.asarray(regime(Xa), dtype=float).ravel() if callable(regime) else np.asarray(regime, dtype=float).ravel()
     if g.size != n:
         raise ValueError("regime has %d entries for %d rows." % (g.size, n))
     if not np.all(np.isin(g, (0.0, 1.0))):

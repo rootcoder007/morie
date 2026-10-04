@@ -28,10 +28,15 @@ def alammar_conversation_buffer_memory(conversation, N):
     if n < 1:
         raise ValueError("N must be positive.")
     kept = turns[-n:]
-    return RichResult(payload={
-        "memory": kept, "turns_forgotten": max(0, len(turns) - n),
-        "estimate": float(len(kept)), "n": len(turns),
-        "method": "Conversation buffer memory (Alammar Ch 7)"})
+    return RichResult(
+        payload={
+            "memory": kept,
+            "turns_forgotten": max(0, len(turns) - n),
+            "estimate": float(len(kept)),
+            "n": len(turns),
+            "method": "Conversation buffer memory (Alammar Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

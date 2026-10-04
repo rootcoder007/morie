@@ -1,7 +1,6 @@
 """Tests for mchfl -- Matched filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.bsacorr import matched_filter
 

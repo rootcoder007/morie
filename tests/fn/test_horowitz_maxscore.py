@@ -1,9 +1,9 @@
 """Horowitz Sec. 4.3.3-4.4 max-score extensions: choice-based samples,
 panel data with fixed effects, ordered response, and the rate."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hrzcbsm import choice_based_optimal_shares, horowitz_choice_based_sms
 from morie.fn.hrzormsc import horowitz_ordered_max_score
 from morie.fn.hrzpanms import horowitz_panel_max_score
@@ -86,8 +86,7 @@ def test_panel_max_score_converges_as_n_grows():
     # n=2000 -> 0.512, n=8000 -> 0.597 against the true 0.6. A single
     # small sample therefore proves nothing about correctness; the
     # trend does.
-    errs = [np.median([abs(_panel_fit(n, s)["beta"][1] - 0.6) for s in range(5)])
-            for n in (600, 8000)]
+    errs = [np.median([abs(_panel_fit(n, s)["beta"][1] - 0.6) for s in range(5)]) for n in (600, 8000)]
     assert errs[1] < errs[0] / 2
 
 
@@ -121,9 +120,11 @@ def test_ordered_max_score_minimises_and_maximising_would_fail():
     # the book prints "maximize" over (4.43); maximising the same
     # objective does NOT recover beta, it runs to the boundary
     W = 1.0 + y.astype(float)
+
     def S(b2):
         v = X @ np.array([1.0, b2])
         return float(np.mean(np.abs(W - (1.0 + np.sum(v[:, None] > alpha, axis=1)))))
+
     grid = np.linspace(-3, 3, 601)
     vals = np.array([S(g) for g in grid])
     assert abs(grid[vals.argmin()] - beta[1]) < 0.1
@@ -138,7 +139,7 @@ def test_ordered_max_score_estimates_unknown_thresholds():
     y = np.searchsorted(np.array([0.0, 1.0]), ystar)
     out = horowitz_ordered_max_score(X, y, n_restarts=4)
     assert out["thresholds_estimated"] is True
-    assert out["thresholds"][0] == 0.0            # Lee's normalisation
+    assert out["thresholds"][0] == 0.0  # Lee's normalisation
     assert np.all(np.diff(out["thresholds"]) > 0)  # stays ordered
     with pytest.raises(ValueError):
         horowitz_ordered_max_score(X, (X[:, 0] > 0).astype(int))  # only 2 categories

@@ -1,7 +1,5 @@
 """Tests for wsmwld.wasserman_wald."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wsmwld import wasserman_wald
 
 

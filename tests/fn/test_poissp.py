@@ -10,16 +10,11 @@ import math
 
 import pytest
 
-from morie.fn.poissp import poissp, car_precision, rho_bounds
-
+from morie.fn.poissp import car_precision, poissp, rho_bounds
 
 Y = [3, 7, 2, 9, 5, 4, 8, 6]
 E = [1.5, 2.0, 0.8, 3.0, 1.2, 1.0, 2.5, 1.8]
-W5 = [[0, 1, 0, 0, 1],
-      [1, 0, 1, 0, 0],
-      [0, 1, 0, 1, 0],
-      [0, 0, 1, 0, 1],
-      [1, 0, 0, 1, 0]]
+W5 = [[0, 1, 0, 0, 1], [1, 0, 1, 0, 0], [0, 1, 0, 1, 0], [0, 0, 1, 0, 1], [1, 0, 0, 1, 0]]
 
 
 def test_intercept_only_matches_the_closed_form():
@@ -103,8 +98,7 @@ def test_offset_is_a_rate_denominator_not_a_free_coefficient():
     -log 2, since the offset enters at coefficient one."""
     r1 = poissp(Y, offset=E)
     r2 = poissp(Y, offset=[2.0 * v for v in E])
-    assert r2["beta"][0] - r1["beta"][0] == pytest.approx(-math.log(2.0),
-                                                          abs=1e-10)
+    assert r2["beta"][0] - r1["beta"][0] == pytest.approx(-math.log(2.0), abs=1e-10)
 
 
 def test_relative_risk_is_exp_eta():

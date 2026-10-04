@@ -85,7 +85,9 @@ def geron_min_max_scaling(X, feature_range=(0.0, 1.0)):
     try:
         low, high = (float(v) for v in feature_range)
     except (TypeError, ValueError):
-        raise ValueError(f"geron_min_max_scaling: feature_range must be a (low, high) pair, got {feature_range!r}") from None
+        raise ValueError(
+            f"geron_min_max_scaling: feature_range must be a (low, high) pair, got {feature_range!r}"
+        ) from None
     if not (low < high):
         raise ValueError(f"geron_min_max_scaling: feature_range must satisfy low < high, got {feature_range!r}")
 

@@ -1,6 +1,5 @@
 """Tests for gb_rng (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_rng import gibbons_range_dist

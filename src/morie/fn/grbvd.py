@@ -53,7 +53,12 @@ def bvdecomp(preds, truth, noisevar=0.0):
     res = _core.bvdecomp(preds=preds, truth=truth, noisevar=noisevar)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("bias2", res["bias2"]), ("variance", res["variance"]), ("total", res["total"]), ("mse", res["mse"])],
+        summary_lines=[
+            ("bias2", res["bias2"]),
+            ("variance", res["variance"]),
+            ("total", res["total"]),
+            ("mse", res["mse"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

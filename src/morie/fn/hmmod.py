@@ -139,8 +139,10 @@ def geron_model_based(X, y, add_bias=True, eta=None, n_iter=1000):
             ("Closed-form vs descent gap", gap),
         ],
         warnings=(
-            [f"gradient descent has not converged to the closed-form solution (gap {gap:.4g}); "
-             f"raise n_iter or check eta."]
+            [
+                f"gradient descent has not converged to the closed-form solution (gap {gap:.4g}); "
+                f"raise n_iter or check eta."
+            ]
             if gap > 1e-4
             else []
         ),

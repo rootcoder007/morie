@@ -41,8 +41,7 @@ from ._richresult import RichResult
 
 __all__ = ["qn_scale"]
 
-_QN_SMALL = [0.399356, 0.99365, 0.51321, 0.84401, 0.61220,
-             0.85877, 0.66993, 0.87344, 0.72014, 0.88906, 0.75743]
+_QN_SMALL = [0.399356, 0.99365, 0.51321, 0.84401, 0.61220, 0.85877, 0.66993, 0.87344, 0.72014, 0.88906, 0.75743]
 
 
 def _qn_finite_c(n):
@@ -93,11 +92,19 @@ def qn_scale(y, constant=2.21914, finite_corr=True):
     else:
         corr = 1.0
     est = est * corr
-    return RichResult(payload={
-        "estimate": float(est), "raw": float(raw), "k": k, "h": h,
-        "n_pairs": n * (n - 1) // 2, "correction": float(corr),
-        "constant": float(constant), "n": n,
-        "method": "Rousseeuw & Croux (1993) Qn, robustbase qnsn.R definition"})
+    return RichResult(
+        payload={
+            "estimate": float(est),
+            "raw": float(raw),
+            "k": k,
+            "h": h,
+            "n_pairs": n * (n - 1) // 2,
+            "correction": float(corr),
+            "constant": float(constant),
+            "n": n,
+            "method": "Rousseeuw & Croux (1993) Qn, robustbase qnsn.R definition",
+        }
+    )
 
 
 def cheatsheet():

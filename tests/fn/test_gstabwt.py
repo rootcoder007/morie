@@ -1,7 +1,6 @@
 """Tests for gstabwt.stabilized_weights."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gstabwt import stabilized_weights
 
 
@@ -34,6 +33,7 @@ def test_gstabwt_basic():
 def test_gstabwt_edge():
     """Test edge cases - numerator_model defaults to None (uniform marginal)."""
     import math
+
     rng = np.random.default_rng(42)
     n = 5
     nt = 2

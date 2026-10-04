@@ -1,7 +1,6 @@
 """Tests for eslpsv.esl_pca_svd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslpsv import esl_pca_svd
 
 

@@ -89,8 +89,7 @@ def geron_randomized_search_cv(X, y, param_dist, n_iter, K, fit_score=None, seed
         raise ValueError(f"X has {A.shape[0]} rows but y has {yv.size} entries.")
     if fit_score is None or not callable(fit_score):
         raise ValueError(
-            "fit_score is required and must be callable: "
-            "fit_score(X_tr, y_tr, X_va, y_va, params) -> float."
+            "fit_score is required and must be callable: fit_score(X_tr, y_tr, X_va, y_va, params) -> float."
         )
     n_iter = int(n_iter)
     K = int(K)
@@ -111,9 +110,7 @@ def geron_randomized_search_cv(X, y, param_dist, n_iter, K, fit_score=None, seed
         u = next(rng)
         if callable(spec):
             return spec(u)
-        if isinstance(spec, tuple) and len(spec) == 2 and all(
-            isinstance(v, (int, float)) for v in spec
-        ):
+        if isinstance(spec, tuple) and len(spec) == 2 and all(isinstance(v, (int, float)) for v in spec):
             lo, hi = float(spec[0]), float(spec[1])
             if not (hi > lo):
                 raise ValueError(f"range ({lo}, {hi}) must have high > low.")
@@ -147,8 +144,7 @@ def geron_randomized_search_cv(X, y, param_dist, n_iter, K, fit_score=None, seed
     best = max(results, key=lambda r: r["mean_score"])
     return RichResult(
         title="Randomized search CV",
-        summary_lines=[("Configurations", n_iter), ("Folds", K),
-                       ("Best score", best["mean_score"])],
+        summary_lines=[("Configurations", n_iter), ("Folds", K), ("Best score", best["mean_score"])],
         payload={
             "best_params": best["params"],
             "best_score": best["mean_score"],

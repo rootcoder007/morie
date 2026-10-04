@@ -402,9 +402,9 @@ class TestToolDispatchNewTools:
 
         tool_names = {t["function"]["name"] for t in _CORE_TOOLS}
         dispatch_names = set(_TOOL_DISPATCH.keys())
-        assert (
-            tool_names == dispatch_names
-        ), f"Mismatch: defined={tool_names - dispatch_names}, dispatch={dispatch_names - tool_names}"
+        assert tool_names == dispatch_names, (
+            f"Mismatch: defined={tool_names - dispatch_names}, dispatch={dispatch_names - tool_names}"
+        )
 
     def test_tool_count_is_20(self):
         from morie.agent import _CORE_TOOLS

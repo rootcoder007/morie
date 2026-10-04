@@ -66,16 +66,13 @@ def _strictly_feasible(F0, Fs, x0, margin):
         if s.size != n:
             continue
         try:
-            minimize(probe, s, method="Nelder-Mead",
-                     options={"maxiter": 4000, "xatol": 1e-10,
-                              "fatol": 1e-12})
+            minimize(probe, s, method="Nelder-Mead", options={"maxiter": 4000, "xatol": 1e-10, "fatol": 1e-12})
         except _Feasible:
             return found[-1]
     return None
 
 
-def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09,
-              max_outer=80, max_newton=80, feas_margin=1e-09):
+def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09, max_outer=80, max_newton=80, feas_margin=1e-09):
     r"""Minimise ``c'x`` subject to ``F0 + sum x_i F_i >= 0`` (Loewner).
 
     Returns ``(x, info)`` with ``info`` carrying the attained objective,
@@ -99,10 +96,13 @@ def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09,
 
     x = _strictly_feasible(F0, Fs, x0, feas_margin)
     if x is None:
-        return None, {"feasible": False, "phase1": False,
-                      "message": "no strictly feasible point found; the "
-                                 "constraint set is empty or has empty "
-                                 "interior (Slater fails)"}
+        return None, {
+            "feasible": False,
+            "phase1": False,
+            "message": "no strictly feasible point found; the "
+            "constraint set is empty or has empty "
+            "interior (Slater fails)",
+        }
 
     t = float(t0)
     converged = False
@@ -114,8 +114,7 @@ def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09,
             # d2/dx_i dx_j       =  tr(F^-1 F_i F^-1 F_j).
             MF = [Minv @ Fi for Fi in Fs]
             grad = t * c - np.array([np.trace(P) for P in MF])
-            H = np.array([[np.trace(MF[i] @ MF[j]) for j in range(n)]
-                          for i in range(n)])
+            H = np.array([[np.trace(MF[i] @ MF[j]) for j in range(n)] for i in range(n)])
             try:
                 step = -np.linalg.solve(H, grad)
             except np.linalg.LinAlgError:
@@ -148,7 +147,12 @@ def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09,
     M = _F(F0, Fs, x)
     ev = np.linalg.eigvalsh(M)
     return x, {
-        "objective": float(c @ x), "slack": M, "eigenvalues": ev,
-        "gap_bound": float(m / t), "feasible": bool(ev[0] > -1e-08),
-        "phase1": True, "converged": bool(converged), "t": float(t),
+        "objective": float(c @ x),
+        "slack": M,
+        "eigenvalues": ev,
+        "gap_bound": float(m / t),
+        "feasible": bool(ev[0] > -1e-08),
+        "phase1": True,
+        "converged": bool(converged),
+        "t": float(t),
     }

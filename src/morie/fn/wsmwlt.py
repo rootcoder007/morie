@@ -103,11 +103,17 @@ def wasserman_wavelet_smooth(y, wavelet="haar", sigma=None):
         total += int(d.size)
         thr.append(np.where(keep, d, 0.0))
     rec = _haar_inverse(approx, thr)
-    return RichResult(payload={
-        "estimate": [float(v) for v in rec], "threshold": float(lam),
-        "sigma_used": sigma, "n_kept": kept, "n_detail": total,
-        "n": int(n),
-        "method": "Haar + hard universal threshold sigma sqrt(2 log n)"})
+    return RichResult(
+        payload={
+            "estimate": [float(v) for v in rec],
+            "threshold": float(lam),
+            "sigma_used": sigma,
+            "n_kept": kept,
+            "n_detail": total,
+            "n": int(n),
+            "method": "Haar + hard universal threshold sigma sqrt(2 log n)",
+        }
+    )
 
 
 def cheatsheet():

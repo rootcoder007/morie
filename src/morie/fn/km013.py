@@ -20,22 +20,24 @@ def kamath_ch2_positional_encoding_sin(i, j, d):
     >>> kamath_ch2_positional_encoding_sin(0, 0, 4)["estimate"]
     0.0
     """
-    i = int(i); j = int(j); d = int(d)
+    i = int(i)
+    j = int(j)
+    d = int(d)
     if d < 1:
         raise ValueError("the model dimension d must be positive.")
     if i < 0 or j < 0:
         raise ValueError("position and index must be non-negative.")
     if 2 * j >= d:
-        raise ValueError(
-            f"2j = {2 * j} must lie below d = {d}; the pair (sin, cos) "
-            "fills dimensions 2j and 2j+1.")
+        raise ValueError(f"2j = {2 * j} must lie below d = {d}; the pair (sin, cos) fills dimensions 2j and 2j+1.")
     val = float(np.sin(i / 10000.0 ** (2.0 * j / d)))
-    return RichResult(payload={
-        "estimate": val, "wavelength": float(2 * np.pi
-                                             * 10000.0 ** (2.0 * j / d)),
-        "n": d,
-        "method": "Sinusoidal positional encoding, even dims "
-                  "(Kamath Eq 2.13)"})
+    return RichResult(
+        payload={
+            "estimate": val,
+            "wavelength": float(2 * np.pi * 10000.0 ** (2.0 * j / d)),
+            "n": d,
+            "method": "Sinusoidal positional encoding, even dims (Kamath Eq 2.13)",
+        }
+    )
 
 
 def cheatsheet():

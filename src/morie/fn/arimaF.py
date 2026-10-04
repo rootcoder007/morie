@@ -96,11 +96,22 @@ def arimacss(y, phi=(), theta=(), d=0, mu=0.0):
     s2 = css / m
     ll = -0.5 * m * (1.0 + math.log(2.0 * math.pi) + math.log(s2))
     k = p + q + 1
-    return RichResult(payload={
-        "css": css, "sigma2": s2, "loglik": ll,
-        "aic": -2.0 * ll + 2.0 * k, "resid": e[p:], "diff": w,
-        "m": m, "p": p, "q": q, "d": d, "n": n,
-        "method": "ARIMA conditional sum of squares (Box-Jenkins 1970)"})
+    return RichResult(
+        payload={
+            "css": css,
+            "sigma2": s2,
+            "loglik": ll,
+            "aic": -2.0 * ll + 2.0 * k,
+            "resid": e[p:],
+            "diff": w,
+            "m": m,
+            "p": p,
+            "q": q,
+            "d": d,
+            "n": n,
+            "method": "ARIMA conditional sum of squares (Box-Jenkins 1970)",
+        }
+    )
 
 
 arima = arimacss

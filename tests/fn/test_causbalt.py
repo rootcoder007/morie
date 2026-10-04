@@ -1,8 +1,8 @@
 """Tests for causbalt.causal_balance_test (Austin 2009)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causbalt import causal_balance_test
 
 
@@ -41,9 +41,9 @@ def test_weighting_can_restore_balance():
     rng = np.random.default_rng(4)
     n = 4000
     x = rng.normal(0, 1, n)
-    ps = 1 / (1 + np.exp(-x))          # treatment depends on x
+    ps = 1 / (1 + np.exp(-x))  # treatment depends on x
     t = (rng.random(n) < ps).astype(int)
-    w = np.where(t == 1, 1 / ps, 1 / (1 - ps))   # inverse probability
+    w = np.where(t == 1, 1 / ps, 1 / (1 - ps))  # inverse probability
     X = x.reshape(-1, 1)
     before = causal_balance_test(X, t)["max_smd"]
     after = causal_balance_test(X, t, weights=w)["max_smd"]
@@ -79,5 +79,6 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="weights must be finite"):
         causal_balance_test(X, t, weights=-np.ones(X.shape[0]))
     with pytest.raises(ValueError, match="X must be finite"):
-        bad = X.copy(); bad[0, 0] = np.nan
+        bad = X.copy()
+        bad[0, 0] = np.nan
         causal_balance_test(bad, t)

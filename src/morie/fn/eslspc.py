@@ -88,8 +88,10 @@ def esl_spectral_cluster(W, k, normalized=True):
         raise ValueError(f"k must lie in [2, {n}]; got {k}.")
     d = W.sum(axis=1)
     if np.any(d <= 0):
-        raise ValueError("every vertex needs at least one positive similarity; "
-                         "an isolated vertex has no defined normalised Laplacian.")
+        raise ValueError(
+            "every vertex needs at least one positive similarity; "
+            "an isolated vertex has no defined normalised Laplacian."
+        )
     if normalized:
         dm = 1.0 / np.sqrt(d)
         L = np.eye(n) - (W * dm[:, None]) * dm[None, :]
@@ -102,13 +104,19 @@ def esl_spectral_cluster(W, k, normalized=True):
         norms[norms == 0] = 1.0
         U = U / norms
     km = wasserman_kmeans(U, k)
-    return RichResult(payload={
-        "estimate": km["estimate"], "labels": km["labels"],
-        "eigenvalues": [float(v) for v in vals[:k]],
-        "n_components": int(np.sum(vals < 1e-8)),
-        "embedding": [float(v) for v in U.ravel()],
-        "normalized": bool(normalized), "n": int(n), "k": k,
-        "method": "spectral clustering on the Laplacian embedding, k-means on rows"})
+    return RichResult(
+        payload={
+            "estimate": km["estimate"],
+            "labels": km["labels"],
+            "eigenvalues": [float(v) for v in vals[:k]],
+            "n_components": int(np.sum(vals < 1e-8)),
+            "embedding": [float(v) for v in U.ravel()],
+            "normalized": bool(normalized),
+            "n": int(n),
+            "k": k,
+            "method": "spectral clustering on the Laplacian embedding, k-means on rows",
+        }
+    )
 
 
 def cheatsheet():

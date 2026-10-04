@@ -1,7 +1,6 @@
 """Tests for agmurt.muzero_reanalyze_target."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agmurt import muzero_reanalyze_target
 
 
@@ -33,9 +32,9 @@ def test_agmurt_basic():
         s = 0.0
         for j in range(n):
             if t + j < T:
-                s += (gamma ** j) * rewards[t + j]
+                s += (gamma**j) * rewards[t + j]
         if t + n < T:
-            s += (gamma ** n) * freshvalues[t + n]
+            s += (gamma**n) * freshvalues[t + n]
         expected_target.append(s)
     for actual, expected in zip(result["target"], expected_target):
         assert abs(actual - expected) < 1e-9

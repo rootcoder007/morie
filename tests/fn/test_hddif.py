@@ -1,8 +1,8 @@
 """Tests for morie.fn.hddif -- Hadamard differentiability check."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hddif import hadamard_differentiability
 
 

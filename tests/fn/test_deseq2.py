@@ -2,9 +2,16 @@
 
 import math
 
-from morie.fn.deseq2 import (benjamini_hochberg, cox_reid_loglik, deseq2,
-                             deseq2_differential, dispersion_trend,
-                             nb_glm_fit, size_factors, trigamma)
+from morie.fn.deseq2 import (
+    benjamini_hochberg,
+    cox_reid_loglik,
+    deseq2,
+    deseq2_differential,
+    dispersion_trend,
+    nb_glm_fit,
+    size_factors,
+    trigamma,
+)
 
 
 def _lcg(seed):
@@ -13,6 +20,7 @@ def _lcg(seed):
     def f():
         state[0] = (1103515245 * state[0] + 12345) % (1 << 31)
         return state[0] / float(1 << 31)
+
     return f
 
 
@@ -31,8 +39,7 @@ def _sim(n_genes=120, n_rep=8, seed=2024, up=15, down=15):
             v = (1.0 + c * z) ** 3
             if v <= 0:
                 continue
-            if math.log(max(rnd(), 1e-12)) < 0.5 * z * z + d - d * v + \
-                    d * math.log(v):
+            if math.log(max(rnd(), 1e-12)) < 0.5 * z * z + d - d * v + d * math.log(v):
                 return d * v
 
     def nb(mu, alpha):
@@ -53,18 +60,17 @@ def _sim(n_genes=120, n_rep=8, seed=2024, up=15, down=15):
         base = math.exp(2.0 + 4.0 * rnd())
         alpha = math.exp(math.log(3.0 / base + 0.08) + 0.5 * normal())
         lfc = 2.0 if g < up else (-2.0 if g < up + down else 0.0)
-        counts.append([nb(base, alpha) for _ in range(n_rep)] +
-                      [nb(base * 2 ** lfc, alpha) for _ in range(n_rep)])
+        counts.append([nb(base, alpha) for _ in range(n_rep)] + [nb(base * 2**lfc, alpha) for _ in range(n_rep)])
         truth.append(lfc != 0.0)
     return counts, truth, ["A"] * n_rep + ["B"] * n_rep
 
 
 def test_trigamma_closed_forms():
-    assert abs(trigamma(1.0) - math.pi ** 2 / 6.0) < 1e-12
-    assert abs(trigamma(0.5) - math.pi ** 2 / 2.0) < 1e-12
-    assert abs(trigamma(2.0) - (math.pi ** 2 / 6.0 - 1.0)) < 1e-12
+    assert abs(trigamma(1.0) - math.pi**2 / 6.0) < 1e-12
+    assert abs(trigamma(0.5) - math.pi**2 / 2.0) < 1e-12
+    assert abs(trigamma(2.0) - (math.pi**2 / 6.0 - 1.0)) < 1e-12
     for x in (0.3, 1.7, 4.2):
-        assert abs(trigamma(x + 1.0) - (trigamma(x) - 1.0 / x ** 2)) < 1e-12
+        assert abs(trigamma(x + 1.0) - (trigamma(x) - 1.0 / x**2)) < 1e-12
 
 
 def test_size_factors_on_proportional_samples():
@@ -83,8 +89,7 @@ def test_nb_glm_satisfies_the_score_equation():
     for alpha in (1e-6, 0.4, 3.0):
         fit = nb_glm_fit(K, X, alpha, s)
         for r in range(2):
-            score = sum(X[j][r] * (K[j] - fit["mu"][j]) /
-                        (1.0 + alpha * fit["mu"][j]) for j in range(6))
+            score = sum(X[j][r] * (K[j] - fit["mu"][j]) / (1.0 + alpha * fit["mu"][j]) for j in range(6))
             assert abs(score) < 1e-6
         # equal size factors collapse it to the group means
         eq = nb_glm_fit(K, X, alpha, [1.0] * 6)
@@ -97,9 +102,14 @@ def test_cox_reid_matches_the_formula():
     mu = nb_glm_fit(K, X, 0.1, [1.0] * 6)["mu"]
     alpha = 0.15
     r = 1.0 / alpha
-    ll = sum(math.lgamma(k + r) - math.lgamma(r) - math.lgamma(k + 1.0) +
-             r * math.log(r / (r + m)) + k * math.log(m / (r + m))
-             for k, m in zip(K, mu))
+    ll = sum(
+        math.lgamma(k + r)
+        - math.lgamma(r)
+        - math.lgamma(k + 1.0)
+        + r * math.log(r / (r + m))
+        + k * math.log(m / (r + m))
+        for k, m in zip(K, mu)
+    )
     W = [1.0 / (1.0 / m + alpha) for m in mu]
     a = sum(W[j] * X[j][0] ** 2 for j in range(6))
     b = sum(W[j] * X[j][0] * X[j][1] for j in range(6))
@@ -109,7 +119,7 @@ def test_cox_reid_matches_the_formula():
 
 
 def test_trend_recovers_its_own_curve():
-    mus = [10.0 * 1.35 ** t for t in range(40)]
+    mus = [10.0 * 1.35**t for t in range(40)]
     tr = dispersion_trend(mus, [3.0 / mu + 0.02 for mu in mus])
     assert abs(tr["a1"] - 3.0) < 1e-6
     assert abs(tr["a0"] - 0.02) < 1e-8
@@ -127,8 +137,7 @@ def test_dispersion_shrinkage_rules():
     counts, _, design = _sim()
     res = deseq2(counts, design)
     n = len(counts)
-    assert abs(res["sigma_d2"] -
-               max(res["s_lr"] ** 2 - trigamma((16 - 2) / 2.0), 0.25)) < 1e-12
+    assert abs(res["sigma_d2"] - max(res["s_lr"] ** 2 - trigamma((16 - 2) / 2.0), 0.25)) < 1e-12
     for i in range(n):
         gw = res["dispersion_gene_wise"][i]
         fit = res["dispersion_fit"][i]
@@ -136,16 +145,14 @@ def test_dispersion_shrinkage_rules():
             assert abs(res["dispersion"][i] - gw) < 1e-12
             assert math.log(gw) > math.log(fit) + 2.0 * res["s_lr"]
         else:
-            assert (min(gw, fit) - 1e-9 <= res["dispersion"][i] <=
-                    max(gw, fit) + 1e-9)
+            assert min(gw, fit) - 1e-9 <= res["dispersion"][i] <= max(gw, fit) + 1e-9
 
 
 def test_lfc_shrinkage_and_testing():
     counts, truth, design = _sim()
     res = deseq2(counts, design)
     n = len(counts)
-    assert all(abs(res["log_fold_change"][i]) <= abs(res["lfc_mle"][i]) + 1e-9
-               for i in range(n))
+    assert all(abs(res["log_fold_change"][i]) <= abs(res["lfc_mle"][i]) + 1e-9 for i in range(n))
     # quantile matching sets the prior width
     vals = sorted(abs(v) * math.log(2.0) for v in res["lfc_mle"])
     pos = 0.95 * (len(vals) - 1)
@@ -155,8 +162,7 @@ def test_lfc_shrinkage_and_testing():
     # Wald test and BH
     for i in range(n):
         if res["lfc_se"][i] > 0:
-            assert abs(res["stat"][i] * res["lfc_se"][i] -
-                       res["log_fold_change"][i]) < 1e-9
+            assert abs(res["stat"][i] * res["lfc_se"][i] - res["log_fold_change"][i]) < 1e-9
         assert res["padj"][i] >= res["pvalue"][i] - 1e-12
     called = [i for i in range(n) if res["padj"][i] < 0.1]
     tp = sum(1 for i in called if truth[i])
@@ -167,18 +173,19 @@ def test_lfc_shrinkage_and_testing():
 def test_beta_prior_off_gives_the_mle():
     counts, _, design = _sim(n_genes=60)
     res = deseq2(counts, design, beta_prior=False)
-    assert all(abs(res["log_fold_change"][i] - res["lfc_mle"][i]) < 1e-12
-               for i in range(60))
+    assert all(abs(res["log_fold_change"][i] - res["lfc_mle"][i]) < 1e-12 for i in range(60))
 
 
 def test_validation():
     counts, _, design = _sim(n_genes=20)
-    for call in (lambda: deseq2([], ["A"]),
-                 lambda: deseq2(counts, ["A"] * 16),
-                 lambda: deseq2(counts, ["A"] * 4 + ["B"] * 4),
-                 lambda: size_factors([[-1.0, 2.0], [3.0, 4.0]]),
-                 lambda: deseq2(counts, design, contrast=[1.0, 0.0, 0.0]),
-                 lambda: deseq2(counts, design, size=[0.0] * 16)):
+    for call in (
+        lambda: deseq2([], ["A"]),
+        lambda: deseq2(counts, ["A"] * 16),
+        lambda: deseq2(counts, ["A"] * 4 + ["B"] * 4),
+        lambda: size_factors([[-1.0, 2.0], [3.0, 4.0]]),
+        lambda: deseq2(counts, design, contrast=[1.0, 0.0, 0.0]),
+        lambda: deseq2(counts, design, size=[0.0] * 16),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

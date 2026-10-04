@@ -16,12 +16,7 @@ def _modularity(A, labels):
     n = len(A)
     k = [sum(A[i]) for i in range(n)]
     two_m = sum(k)
-    return sum(
-        A[i][j] - k[i] * k[j] / two_m
-        for i in range(n)
-        for j in range(n)
-        if labels[i] == labels[j]
-    ) / two_m
+    return sum(A[i][j] - k[i] * k[j] / two_m for i in range(n) for j in range(n) if labels[i] == labels[j]) / two_m
 
 
 def test_sgtmodq_basic():

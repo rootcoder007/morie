@@ -13,7 +13,9 @@ def _pava(y, w=None):
     w = np.ones_like(y) if w is None else np.asarray(w, dtype=float)
     vals, wts, cnts = [], [], []
     for yi, wi in zip(y, w):
-        vals.append(float(yi)); wts.append(float(wi)); cnts.append(1)
+        vals.append(float(yi))
+        wts.append(float(wi))
+        cnts.append(1)
         while len(vals) > 1 and vals[-2] > vals[-1]:
             tot = wts[-2] + wts[-1]
             vals[-2] = (vals[-2] * wts[-2] + vals[-1] * wts[-1]) / tot

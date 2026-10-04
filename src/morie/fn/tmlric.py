@@ -68,9 +68,11 @@ def tmle_rare_outcome(y, D, X, prevalence):
     g = [S.clip(S.expit(C.dot(gdes[i], gb)), 0.01, 0.99) for i in range(n)]
     qdes = [[D[i]] + list(Xm[i]) for i in range(n)]
     qb = S.glmbin(qdes, y)
+
     def qhat(d, i):
         row = [d] + list(Xm[i])
         return S.clip(S.expit(C.dot(row, qb)), 1e-6, 1.0 - 1e-6)
+
     Q = [qhat(D[i], i) for i in range(n)]
     Q1 = [qhat(1.0, i) for i in range(n)]
     Q0 = [qhat(0.0, i) for i in range(n)]
@@ -86,9 +88,9 @@ def tmle_rare_outcome(y, D, X, prevalence):
     ic = [w[i] * (H[i] * (y[i] - Qs[i]) + Q1s[i] - Q0s[i] - psi) / (sw / n) for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "n": n,
-        "method": "Case-control-weighted TMLE, rare outcome"})
+    return RichResult(
+        payload={"estimate": psi, "se": se, "eps": eps, "n": n, "method": "Case-control-weighted TMLE, rare outcome"}
+    )
 
 
 def cheatsheet():

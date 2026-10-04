@@ -1,7 +1,6 @@
 """Tests for morie.fn.birtp — Bayesian IRT posterior summary."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.birtp import birtp
 
 

@@ -12,8 +12,9 @@ satisfy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 # ── deterministic data --------------------------------------------------
 
@@ -1043,9 +1044,12 @@ def test_trainer_selects_the_best_eval_checkpoint():
         r = Xb @ p - yb
         return float(np.mean(r**2)), (2.0 / len(yb)) * (Xb.T @ r)
 
-    out = geron_hf_trainer({"params": np.zeros(2), "loss_and_grad": lg},
-                           {"epochs": 400, "batch_size": 5, "learning_rate": 0.1, "seed": 0},
-                           (X, y), (X, y))
+    out = geron_hf_trainer(
+        {"params": np.zeros(2), "loss_and_grad": lg},
+        {"epochs": 400, "batch_size": 5, "learning_rate": 0.1, "seed": 0},
+        (X, y),
+        (X, y),
+    )
     assert np.allclose(out["params"], [1.0, 2.0], atol=1e-2)
     best = min(h["eval_loss"] for h in out["history"])
     assert out["eval_loss"] == pytest.approx(best)
@@ -1058,8 +1062,11 @@ def test_trainer_enforces_the_gradient_shape_contract():
     X = np.ones((4, 2))
     y = np.zeros(4)
     with pytest.raises(ValueError, match="gradient of shape"):
-        geron_hf_trainer({"params": np.zeros(2), "loss_and_grad": lambda p, a, b: (1.0, np.zeros(5))},
-                         {"epochs": 1, "batch_size": 4}, (X, y))
+        geron_hf_trainer(
+            {"params": np.zeros(2), "loss_and_grad": lambda p, a, b: (1.0, np.zeros(5))},
+            {"epochs": 1, "batch_size": 4},
+            (X, y),
+        )
 
 
 def test_mcp_requires_matching_ids_and_exactly_one_of_result_or_error():
@@ -1327,12 +1334,11 @@ def test_every_module_returns_the_required_payload_keys():
     globbing a sandbox directory layout."""
     import importlib
     import re
+
     # the shelf's modules are the ones this file imports (a list read
     # from a sandbox path on one machine made the test unrunnable)
-    names = sorted(set(re.findall(r"from morie\.fn\.(hm\w+) import",
-                                  open(__file__).read())))
+    names = sorted(set(re.findall(r"from morie\.fn\.(hm\w+) import", open(__file__).read())))
     assert len(names) >= 70
     for n in names:
         m = importlib.import_module(f"morie.fn.{n}")
         assert hasattr(m, "cheatsheet")
-

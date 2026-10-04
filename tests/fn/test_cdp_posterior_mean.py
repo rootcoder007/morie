@@ -1,7 +1,6 @@
 """Tests for cdp_posterior_mean.cdp_posterior_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cdp_posterior_mean import cdp_posterior_mean
 
 

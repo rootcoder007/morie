@@ -4,25 +4,27 @@ import math
 
 import pytest
 
-
 ITEMS = [[1.2, -0.8, 0.0], [0.9, -0.2, 0.1], [1.5, 0.3, 0.2], [0.7, 1.0, 0.0], [1.1, 1.6, 0.15]]
 X = [[1, 1, 0, 1, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [1, 0, 1, 0, 0]]
 
 
 def _logpost(t, y, mu=0.0, sd=1.0):
-    lp = -(t - mu) ** 2 / (2 * sd * sd)
+    lp = -((t - mu) ** 2) / (2 * sd * sd)
     for (a, b, c), r in zip(ITEMS, y):
         p = c + (1 - c) / (1 + math.exp(-a * (t - b)))
         lp += math.log(p) if r else math.log(1 - p)
     return lp
+
 
 from morie.fn.theteap2 import theta_map
 
 
 def _mode(y):
     """Posterior mode by bisection on a central-difference score."""
+
     def d(t):
         return (_logpost(t + 1e-6, y) - _logpost(t - 1e-6, y)) / 2e-6
+
     lo, hi = -6.0, 6.0
     for _ in range(100):
         mid = 0.5 * (lo + hi)
@@ -39,7 +41,7 @@ def test_theteap2_basic():
         t = float(r["theta"][i])
         assert t == pytest.approx(_mode(y), abs=1e-7)
         info = 0.0
-        for (a, b, c) in ITEMS:
+        for a, b, c in ITEMS:
             ps = 1 / (1 + math.exp(-a * (t - b)))
             p = c + (1 - c) * ps
             dp = a * (1 - c) * ps * (1 - ps)

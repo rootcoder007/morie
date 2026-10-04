@@ -4,10 +4,10 @@ The generated test imported `qtl_mapping`, a name that does not exist.
 Rewritten against interval_mapping and anchored on the LOD profile.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rqtmpl import interval_mapping, haldane, inverse_haldane
+from morie.fn import _array_core as np
+from morie.fn.rqtmpl import haldane, interval_mapping, inverse_haldane
 
 
 def test_haldane_and_its_inverse_round_trip():

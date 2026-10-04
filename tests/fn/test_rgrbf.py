@@ -1,7 +1,6 @@
 """Tests for rgrbf.rangayyan_rbf_network."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_rbf_network
 
 

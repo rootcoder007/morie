@@ -1,7 +1,5 @@
 """Tests for discrete_hazard.discrete_hazard."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.discrete_hazard import discrete_hazard
 
 

@@ -80,9 +80,7 @@ def pair_differences(coords, z):
     if P.shape[0] != n:
         P = P.T
     if P.shape[0] != n:
-        raise ValueError(
-            "coords has %d rows for %d values." % (P.shape[0], n)
-        )
+        raise ValueError("coords has %d rows for %d values." % (P.shape[0], n))
     if n < 2:
         raise ValueError("need at least 2 locations, got %d." % n)
     i, j = np.triu_indices(n, k=1)
@@ -157,7 +155,7 @@ def matheron(coords, z, bins=None, cutoff=None, exact=False):
     centres, groups = _grouped(h, d, bins, cutoff, exact)
     gam = np.array([float(np.mean(d[m] ** 2) / 2.0) for m in groups])
     npair = np.array([int(m.sum()) for m in groups])
-    var = np.where(npair > 0, 2.0 * gam ** 2 / np.maximum(npair, 1), np.nan)
+    var = np.where(npair > 0, 2.0 * gam**2 / np.maximum(npair, 1), np.nan)
     return centres, gam, npair, var
 
 
@@ -194,7 +192,7 @@ def cressie_hawkins(coords, z, bins=None, cutoff=None, exact=False):
     for m in groups:
         nh = int(m.sum())
         root = float(np.mean(np.sqrt(np.abs(d[m]))))
-        gam.append(0.5 * root ** 4 / (0.457 + 0.494 / nh))
+        gam.append(0.5 * root**4 / (0.457 + 0.494 / nh))
         npair.append(nh)
     return centres, np.asarray(gam), np.asarray(npair, dtype=int)
 
@@ -217,7 +215,7 @@ def variogram_model(h, model, nugget, psill, rng):
         g = 1.0 - np.exp(-3.0 * (h / a) ** 2)
     elif model == "spherical":
         t = np.clip(h / a, 0.0, 1.0)
-        g = 1.5 * t - 0.5 * t ** 3
+        g = 1.5 * t - 0.5 * t**3
     else:
         g = np.minimum(h / a, 1.0)
     return np.where(h <= 0, 0.0, nugget + psill * g)
@@ -236,16 +234,18 @@ def wls_weights(npair, gamma_model):
     this is an approximation and not the generalised criterion (4.31).
     """
     g = np.maximum(np.asarray(gamma_model, dtype=float), 1e-12)
-    return np.asarray(npair, dtype=float) / (2.0 * g ** 2)
+    return np.asarray(npair, dtype=float) / (2.0 * g**2)
 
 
 def _start(centres, gam):
     sill = float(np.nanmax(gam)) if gam.size else 1.0
-    return np.array([
-        max(float(np.nanmin(gam)), 1e-8),
-        max(sill - float(np.nanmin(gam)), 1e-8),
-        max(float(np.nanmax(centres)) / 2.0, 1e-8),
-    ])
+    return np.array(
+        [
+            max(float(np.nanmin(gam)), 1e-8),
+            max(sill - float(np.nanmin(gam)), 1e-8),
+            max(float(np.nanmax(centres)) / 2.0, 1e-8),
+        ]
+    )
 
 
 def _nelder_mead(fn, x0, max_iter=2000, tol=1e-12):
@@ -284,8 +284,7 @@ def _nelder_mead(fn, x0, max_iter=2000, tol=1e-12):
     return sim[order][0], float(f[order][0])
 
 
-def fit_variogram_wls(centres, gam, npair, model="exponential",
-                      weights="cressie", max_reweight=50, tol=1e-10):
+def fit_variogram_wls(centres, gam, npair, model="exponential", weights="cressie", max_reweight=50, tol=1e-10):
     """Fit a semivariogram model by (iteratively re-weighted) WLS.
 
     ``weights='ols'`` is the :math:`R = \\phi I` simplification of
@@ -300,22 +299,17 @@ def fit_variogram_wls(centres, gam, npair, model="exponential",
     ok = np.isfinite(gam) & (npair > 0)
     centres, gam, npair = centres[ok], gam[ok], npair[ok]
     if centres.size < 3:
-        raise ValueError(
-            "need at least 3 usable lag classes to fit 3 parameters, got %d."
-            % centres.size
-        )
+        raise ValueError("need at least 3 usable lag classes to fit 3 parameters, got %d." % centres.size)
     theta = _start(centres, gam)
     w = np.ones_like(gam) if weights == "ols" else None
     prev = None
     for it in range(int(max_reweight)):
-        ww = w if w is not None else wls_weights(
-            npair, variogram_model(centres, model, *theta)
-        )
+        ww = w if w is not None else wls_weights(npair, variogram_model(centres, model, *theta))
 
         def obj(p, ww=ww):
             t = np.exp(p)
             r = gam - variogram_model(centres, model, t[0], t[1], t[2])
-            return float(np.sum(ww * r ** 2))
+            return float(np.sum(ww * r**2))
 
         best, _ = _nelder_mead(obj, np.log(np.maximum(theta, 1e-10)))
         theta = np.exp(best)
@@ -339,8 +333,7 @@ def fit_variogram_wls(centres, gam, npair, model="exponential",
     }
 
 
-def composite_likelihood_fit(coords, z, model="exponential",
-                             max_iter=60, tol=1e-10):
+def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e-10):
     r"""Composite likelihood, equation (4.44), p. 171.
 
     The estimating equation is
@@ -364,12 +357,14 @@ def composite_likelihood_fit(coords, z, model="exponential",
     no binning decision influences the answer.
     """
     h, d = pair_differences(coords, z)
-    t3 = d ** 2
-    theta = np.array([
-        max(0.1 * float(np.var(z)), 1e-8),
-        max(0.9 * float(np.var(z)), 1e-8),
-        max(float(np.max(h)) / 3.0, 1e-8),
-    ])
+    t3 = d**2
+    theta = np.array(
+        [
+            max(0.1 * float(np.var(z)), 1e-8),
+            max(0.9 * float(np.var(z)), 1e-8),
+            max(float(np.max(h)) / 3.0, 1e-8),
+        ]
+    )
 
     # Equation (4.44) is a SCORE equation, and the book's instruction is
     # to solve it "by (nonlinear) weighted least squares ... with a
@@ -386,10 +381,8 @@ def composite_likelihood_fit(coords, z, model="exponential",
     # iteratively re-weighted one returns a value in line with WLS.
     prev = None
     for it in range(int(max_iter)):
-        g_cur = np.maximum(
-            variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12
-        )
-        w = 1.0 / (8.0 * g_cur ** 2)
+        g_cur = np.maximum(variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12)
+        w = 1.0 / (8.0 * g_cur**2)
 
         def obj(p, w=w):
             t = np.exp(p)
@@ -402,10 +395,8 @@ def composite_likelihood_fit(coords, z, model="exponential",
             break
         prev = theta.copy()
 
-    g_fin = np.maximum(
-        variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12
-    )
-    val = float(np.sum((t3 - 2.0 * g_fin) ** 2 / (8.0 * g_fin ** 2)))
+    g_fin = np.maximum(variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12)
+    val = float(np.sum((t3 - 2.0 * g_fin) ** 2 / (8.0 * g_fin**2)))
     # A bounded model cannot fit an unbounded variogram. Under a linear
     # trend the semivariance keeps climbing (equation 5.35), and the fit
     # answers by pushing the range towards infinity -- observed running
@@ -424,13 +415,13 @@ def composite_likelihood_fit(coords, z, model="exponential",
         "n_pairs": int(h.size),
         "converged": not diverged,
         "diverged_note": (
-            None if not diverged else
-            "the fitted range (%.3g) exceeds ten times the largest "
+            None
+            if not diverged
+            else "the fitted range (%.3g) exceeds ten times the largest "
             "separation in the data (%.3g), which means no bounded sill was "
             "found; the usual cause is a trend in the mean, whose squared "
             "difference is added to the semivariance by equation (5.35). "
-            "Detrend first, or fit the 'linear' model."
-            % (theta[2], hmax)
+            "Detrend first, or fit the 'linear' model." % (theta[2], hmax)
         ),
     }
 
@@ -464,9 +455,7 @@ def gaussian_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
         L = np.linalg.cholesky(C)
     except np.linalg.LinAlgError:
         return np.inf, np.nan
-    Xd = np.ones((n, 1)) if X is None else np.atleast_2d(
-        np.asarray(X, dtype=float)
-    )
+    Xd = np.ones((n, 1)) if X is None else np.atleast_2d(np.asarray(X, dtype=float))
     if Xd.shape[0] != n:
         Xd = Xd.T
     Ci_X = np.linalg.solve(C, Xd)
@@ -498,9 +487,7 @@ def reml_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
     n = zz.size
     C, _ = _cov_matrix(coords, model, nugget, psill, rng)
     C = C + np.eye(n) * 1e-10 * max(float(np.trace(C)) / n, 1e-12)
-    Xd = np.ones((n, 1)) if X is None else np.atleast_2d(
-        np.asarray(X, dtype=float)
-    )
+    Xd = np.ones((n, 1)) if X is None else np.atleast_2d(np.asarray(X, dtype=float))
     if Xd.shape[0] != n:
         Xd = Xd.T
     k = Xd.shape[1]
@@ -517,8 +504,7 @@ def reml_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
     r = zz - Xd @ beta
     quad = float(r @ np.linalg.solve(C, r))
     logdet = 2.0 * float(np.sum(np.log(np.diag(L))))
-    return (logdet + logdet_xcx + quad + (n - k) * np.log(2.0 * np.pi),
-            beta)
+    return (logdet + logdet_xcx + quad + (n - k) * np.log(2.0 * np.pi), beta)
 
 
 def cheatsheet():

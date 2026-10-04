@@ -37,18 +37,22 @@ def kamath_ch8_ngram_weight(x, Z=None):
     if Z is None:
         Z = float(sums.sum())
         if Z <= 0:
-            raise ValueError("every idf value is 0, so Z = 0 and the "
-                             "weights are undefined.")
+            raise ValueError("every idf value is 0, so Z = 0 and the weights are undefined.")
     else:
         Z = float(Z)
         if Z <= 0:
             raise ValueError(f"Z must be positive; got {Z}.")
     w = sums / Z
     est = float(w[0]) if w.size == 1 else [float(v) for v in w]
-    return RichResult(payload={
-        "estimate": est, "weights": [float(v) for v in w],
-        "Z": Z, "n": int(w.size),
-        "method": "MoverScore n-gram weight (Kamath Eq 8.13)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "weights": [float(v) for v in w],
+            "Z": Z,
+            "n": int(w.size),
+            "method": "MoverScore n-gram weight (Kamath Eq 8.13)",
+        }
+    )
 
 
 def cheatsheet():

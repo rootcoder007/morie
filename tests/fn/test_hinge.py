@@ -1,7 +1,6 @@
 """Test hinge loss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hinge import hinge
 
 

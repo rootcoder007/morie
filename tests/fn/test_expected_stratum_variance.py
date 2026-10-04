@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.expected_stratum_variance import (
     expected_stratum_variance,
 )

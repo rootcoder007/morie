@@ -1,7 +1,5 @@
 """Tests for grdlm.geron_dataloader_minibatch."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.grdlm import geron_dataloader_minibatch
 
 

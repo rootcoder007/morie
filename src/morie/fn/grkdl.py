@@ -108,8 +108,8 @@ def geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha, 
     logp_hard = _log_softmax(S)
     ce = float(-logp_hard[np.arange(m), lab].mean())
 
-    logq = _log_softmax(S / Temp)          # student, softened
-    logt = _log_softmax(Tl / Temp)         # teacher, softened
+    logq = _log_softmax(S / Temp)  # student, softened
+    logt = _log_softmax(Tl / Temp)  # teacher, softened
     q, p = np.exp(logq), np.exp(logt)
     kl_st = float(np.sum(q * (logq - logt), axis=1).mean())
     kl_ts = float(np.sum(p * (logt - logq), axis=1).mean())
@@ -119,8 +119,7 @@ def geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha, 
 
     return RichResult(
         title="Knowledge distillation loss",
-        summary_lines=[("Loss", loss), ("CE (hard)", ce),
-                       ("KL (soft, x T^2)", soft), ("T", Temp)],
+        summary_lines=[("Loss", loss), ("CE (hard)", ce), ("KL (soft, x T^2)", soft), ("T", Temp)],
         payload={
             "loss": loss,
             "ce_hard": ce,

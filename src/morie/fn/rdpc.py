@@ -59,10 +59,16 @@ def renyi_dp(alpha, sigma, sensitivity=1.0):
     if sensitivity <= 0.0:
         raise ValueError("sensitivity must be positive")
     eps = alpha * sensitivity * sensitivity / (2.0 * sigma * sigma)
-    return RichResult(payload={
-        "epsilon_rdp": eps, "estimate": eps, "alpha": alpha,
-        "sigma": sigma, "sensitivity": sensitivity,
-        "method": "Gaussian-mechanism RDP (Mironov 2017, Corollary 3)"})
+    return RichResult(
+        payload={
+            "epsilon_rdp": eps,
+            "estimate": eps,
+            "alpha": alpha,
+            "sigma": sigma,
+            "sensitivity": sensitivity,
+            "method": "Gaussian-mechanism RDP (Mironov 2017, Corollary 3)",
+        }
+    )
 
 
 #: Primary name for the module.
@@ -71,6 +77,7 @@ rdpc = renyi_dp
 
 def cheatsheet():
     return "rdpc: Gaussian-mechanism Renyi DP budget (Mironov 2017, Corollary 3)."
+
 
 # public names resolved by fn/_lazy_map.json
 renyidp = renyi_dp

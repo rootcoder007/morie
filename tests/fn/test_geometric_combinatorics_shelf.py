@@ -15,7 +15,6 @@ Matousek (2002) *Lectures on Discrete Geometry*.
 import math
 import random
 from fractions import Fraction
-from itertools import combinations
 
 import pytest
 
@@ -42,15 +41,12 @@ def star_polygon(rng, n_min=3, n_max=12, span=12):
     raw = list(raw)
     cx = Fraction(sum(p[0] for p in raw), len(raw))
     cy = Fraction(sum(p[1] for p in raw), len(raw))
-    pts = sorted(raw, key=lambda p: (math.atan2(p[1] - cy, p[0] - cx),
-                                     (p[0] - cx) ** 2 + (p[1] - cy) ** 2))
+    pts = sorted(raw, key=lambda p: (math.atan2(p[1] - cy, p[0] - cx), (p[0] - cx) ** 2 + (p[1] - cy) ** 2))
     keep, seen = [], set()
     for p in pts:
         dx, dy = p[0] - cx, p[1] - cy
-        g = math.gcd(dx.numerator * dy.denominator,
-                     dy.numerator * dx.denominator) or 1
-        d = (dx.numerator * dy.denominator // g,
-             dy.numerator * dx.denominator // g)
+        g = math.gcd(dx.numerator * dy.denominator, dy.numerator * dx.denominator) or 1
+        d = (dx.numerator * dy.denominator // g, dy.numerator * dx.denominator // g)
         if d not in seen:
             seen.add(d)
             keep.append(p)
@@ -60,6 +56,7 @@ def star_polygon(rng, n_min=3, n_max=12, span=12):
 # --------------------------------------------------------------------
 # Convex hull
 # --------------------------------------------------------------------
+
 
 def test_the_hull_of_a_square_with_an_interior_point():
     out = lattice_convex_hull([(0, 0), (2, 0), (1, 1), (2, 2), (0, 2)])
@@ -77,8 +74,7 @@ def test_collinear_boundary_points_are_dropped():
 def test_the_hull_is_idempotent_and_contains_every_point():
     rng = random.Random(11)
     for _ in range(150):
-        pts = [(rng.randint(-20, 20), rng.randint(-20, 20))
-               for _ in range(30)]
+        pts = [(rng.randint(-20, 20), rng.randint(-20, 20)) for _ in range(30)]
         try:
             hull = lattice_convex_hull(pts)["hull"]
         except ValueError:
@@ -88,10 +84,7 @@ def test_the_hull_is_idempotent_and_contains_every_point():
         # every input point inside or on the hull: all cross products
         # against each directed edge are >= 0 (ccw hull)
         for p in pts:
-            assert all(
-                cross(hull[i], hull[(i + 1) % len(hull)], p) >= 0
-                for i in range(len(hull))
-            )
+            assert all(cross(hull[i], hull[(i + 1) % len(hull)], p) >= 0 for i in range(len(hull)))
 
 
 def test_hull_validation():
@@ -104,6 +97,7 @@ def test_hull_validation():
 # --------------------------------------------------------------------
 # Pick's theorem
 # --------------------------------------------------------------------
+
 
 def test_pick_on_a_rectangle_is_textbook():
     out = pick_theorem([(0, 0), (4, 0), (4, 3), (0, 3)])
@@ -149,11 +143,10 @@ def test_a_self_intersecting_polygon_is_caught_not_passed():
 
 
 def test_the_enumeration_cap_reports_rather_than_passes():
-    out = pick_theorem([(0, 0), (2000, 0), (2000, 2000), (0, 2000)],
-                       enumeration_cap=100)
+    out = pick_theorem([(0, 0), (2000, 0), (2000, 2000), (0, 2000)], enumeration_cap=100)
     assert out["verified"] is None
     assert any("NOT verified" in w for w in out.warnings)
-    assert out["interior"] == 1999 ** 2
+    assert out["interior"] == 1999**2
 
 
 def test_orientation_does_not_matter():
@@ -174,6 +167,7 @@ def test_pick_validation():
 # Erdos-Szekeres
 # --------------------------------------------------------------------
 
+
 def test_monotone_lengths_on_a_worked_sequence():
     out = erdos_szekeres_check([3, 1, 4, 1.5, 5, 9, 2, 6], r=3, s=4)
     assert out["longest_increasing"] == 4
@@ -185,6 +179,7 @@ def test_monotone_lengths_on_a_worked_sequence():
 def test_the_guarantee_holds_on_every_permutation_at_threshold():
     # r = s = 3: every permutation of length 5 has inc 3 or dec 3
     from itertools import permutations
+
     for w in permutations(range(1, 6)):
         out = erdos_szekeres_check(list(w), r=3, s=3)
         assert out["guarantee_met"] is True
@@ -229,9 +224,9 @@ def test_erdos_szekeres_validation():
 # Happy ending
 # --------------------------------------------------------------------
 
+
 def test_a_worked_configuration_yields_a_convex_quadrilateral():
-    out = happy_ending_quadrilateral([(0, 0), (4, 0), (2, 1), (1, 4),
-                                      (3, 5)])
+    out = happy_ending_quadrilateral([(0, 0), (4, 0), (2, 1), (1, 4), (3, 5)])
     assert out["found"] is True
     assert len(out["witness"]) == 4
 
@@ -248,15 +243,14 @@ def test_every_5_subset_of_random_general_position_points():
         try:
             out = happy_ending_quadrilateral(pts)
         except ValueError:
-            continue          # collinear triple; the theorem is silent
+            continue  # collinear triple; the theorem is silent
         checked += 1
         assert out["every_five_subset"] is True
     assert checked > 50
 
 
 def test_the_witness_really_is_convex():
-    out = happy_ending_quadrilateral([(0, 0), (4, 0), (2, 1), (1, 4),
-                                      (3, 5)])
+    out = happy_ending_quadrilateral([(0, 0), (4, 0), (2, 1), (1, 4), (3, 5)])
     w = out["witness"]
     signs = [cross(w[i], w[(i + 1) % 4], w[(i + 2) % 4]) for i in range(4)]
     assert all(s > 0 for s in signs) or all(s < 0 for s in signs)
@@ -266,16 +260,15 @@ def test_happy_ending_validation():
     with pytest.raises(ValueError, match="5 or more"):
         happy_ending_quadrilateral([(0, 0), (1, 0), (0, 1), (1, 1)])
     with pytest.raises(ValueError, match="collinear"):
-        happy_ending_quadrilateral([(0, 0), (1, 1), (2, 2), (5, 0),
-                                    (0, 5)])
+        happy_ending_quadrilateral([(0, 0), (1, 1), (2, 2), (5, 0), (0, 5)])
     with pytest.raises(ValueError, match="distinct"):
-        happy_ending_quadrilateral([(0, 0), (0, 0), (1, 4), (5, 1),
-                                    (3, 3)])
+        happy_ending_quadrilateral([(0, 0), (0, 0), (1, 4), (5, 1), (3, 3)])
 
 
 # --------------------------------------------------------------------
 # Helly on the line
 # --------------------------------------------------------------------
+
 
 def test_pairwise_intersection_forces_a_common_point():
     out = helly_intervals([(0, 3), (1, 5), (2, 4)])

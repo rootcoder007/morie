@@ -75,10 +75,11 @@ def extract(ikm, salt=None):
     MESSAGE -- the way round that is easy to get backwards.
     """
     s = b"\x00" * HASH_LEN if salt is None else h._as_bytes(salt)
-    return {"prk": h.hmac_sha256(s, ikm),
-            "salt_supplied": salt is not None,
-            "note": "the salt is the HMAC KEY; the IKM is the "
-                    "message"}
+    return {
+        "prk": h.hmac_sha256(s, ikm),
+        "salt_supplied": salt is not None,
+        "note": "the salt is the HMAC KEY; the IKM is the message",
+    }
 
 
 def expand(prk, info=b"", length=32):
@@ -86,19 +87,20 @@ def expand(prk, info=b"", length=32):
     \mathrm{HashLen}`."""
     L = int(length)
     if L < 1:
-        raise ValueError("seckdf: the output length must be "
-                         "positive")
+        raise ValueError("seckdf: the output length must be positive")
     if L > MAX_BLOCKS * HASH_LEN:
-        raise ValueError("seckdf: L = %d exceeds 255*HashLen = %d; "
-                         "the counter is a single octet, so this "
-                         "cannot be satisfied"
-                         % (L, MAX_BLOCKS * HASH_LEN))
+        raise ValueError(
+            "seckdf: L = %d exceeds 255*HashLen = %d; "
+            "the counter is a single octet, so this "
+            "cannot be satisfied" % (L, MAX_BLOCKS * HASH_LEN)
+        )
     p = h._as_bytes(prk)
     if len(p) < HASH_LEN:
-        raise ValueError("seckdf: the PRK is %d bytes, shorter than "
-                         "the hash length %d -- Extract was probably "
-                         "skipped on non-uniform input"
-                         % (len(p), HASH_LEN))
+        raise ValueError(
+            "seckdf: the PRK is %d bytes, shorter than "
+            "the hash length %d -- Extract was probably "
+            "skipped on non-uniform input" % (len(p), HASH_LEN)
+        )
     inf = h._as_bytes(info)
     out, t = bytearray(), b""
     i = 1
@@ -124,16 +126,21 @@ def hkdf(ikm, salt=None, info=b"", length=32, skip_extract=False):
         prk = e["prk"]
         salted = e["salt_supplied"]
     r = expand(prk, info, length)
-    return RichResult(payload={
-        "estimate": h.hexlify(r["okm"]), "okm": r["okm"],
-        "okm_hex": h.hexlify(r["okm"]), "prk": prk,
-        "prk_hex": h.hexlify(prk), "length": r["length"],
-        "blocks": r["blocks"], "salt_supplied": salted,
-        "extract_skipped": bool(skip_extract),
-        "method": "HKDF-SHA256; Krawczyk & Eronen (2010) RFC 5869",
-        "note": "info binds the output to a context, so one PRK gives "
-                "independent keys for independent purposes",
-    })
+    return RichResult(
+        payload={
+            "estimate": h.hexlify(r["okm"]),
+            "okm": r["okm"],
+            "okm_hex": h.hexlify(r["okm"]),
+            "prk": prk,
+            "prk_hex": h.hexlify(prk),
+            "length": r["length"],
+            "blocks": r["blocks"],
+            "salt_supplied": salted,
+            "extract_skipped": bool(skip_extract),
+            "method": "HKDF-SHA256; Krawczyk & Eronen (2010) RFC 5869",
+            "note": "info binds the output to a context, so one PRK gives independent keys for independent purposes",
+        }
+    )
 
 
 def derive_context_keys(ikm, contexts, salt=None, length=32):
@@ -149,22 +156,28 @@ def derive_context_keys(ikm, contexts, salt=None, length=32):
         keys[c] = expand(e["prk"], h._as_bytes(c), length)["okm"]
     hexed = {c: h.hexlify(v) for c, v in keys.items()}
     distinct = len(set(hexed.values())) == len(hexed)
-    return {"keys": keys, "hex": hexed, "prk": e["prk"],
-            "all_distinct": distinct,
-            "note": "same PRK, different info, unrelated outputs"}
+    return {
+        "keys": keys,
+        "hex": hexed,
+        "prk": e["prk"],
+        "all_distinct": distinct,
+        "note": "same PRK, different info, unrelated outputs",
+    }
 
 
 def cheatsheet():
-    return ("seckdf: key derivation is TWO steps. EXTRACT concentrates "
-            "a non-uniform secret into a fixed-length PRK: "
-            "PRK = HMAC(salt, IKM) -- the SALT is the HMAC KEY and the "
-            "IKM is the MESSAGE, which is the way round people get "
-            "wrong. The salt is optional, non-secret, and defaults to "
-            "HashLen zeros. EXPAND runs a counter mode: T(i) = "
-            "HMAC(PRK, T(i-1) | info | i), capped at 255*HashLen "
-            "because the counter is ONE octet. INFO binds the key to a "
-            "context, so one PRK safely yields independent keys. Skip "
-            "Extract only when the input is already uniform.")
+    return (
+        "seckdf: key derivation is TWO steps. EXTRACT concentrates "
+        "a non-uniform secret into a fixed-length PRK: "
+        "PRK = HMAC(salt, IKM) -- the SALT is the HMAC KEY and the "
+        "IKM is the MESSAGE, which is the way round people get "
+        "wrong. The salt is optional, non-secret, and defaults to "
+        "HashLen zeros. EXPAND runs a counter mode: T(i) = "
+        "HMAC(PRK, T(i-1) | info | i), capped at 255*HashLen "
+        "because the counter is ONE octet. INFO binds the key to a "
+        "context, so one PRK safely yields independent keys. Skip "
+        "Extract only when the input is already uniform."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -35,7 +35,7 @@ def conditional_p(D2, perplexity, tol=1e-5, max_steps=100):
                 H = float(-np.sum(Pi[Pi > 0] * np.log(Pi[Pi > 0])))
             if abs(H - target) < tol:
                 break
-            if H > target:  # too spread out -> narrow the kernel
+            if target < H:  # too spread out -> narrow the kernel
                 lo = beta
                 beta = beta * 2 if hi == np.inf else (beta + hi) / 2
             else:

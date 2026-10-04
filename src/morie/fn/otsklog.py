@@ -32,8 +32,7 @@ from ._richresult import RichResult
 __all__ = ["ot_sinkhorn_log"]
 
 
-def ot_sinkhorn_log(a, b, C, epsilon=0.1, max_iter=200, tol=1e-13,
-                    f0=None, g0=None):
+def ot_sinkhorn_log(a, b, C, epsilon=0.1, max_iter=200, tol=1e-13, f0=None, g0=None):
     """Entropic OT plan by the log-domain Sinkhorn iteration.
 
     Returns
@@ -60,11 +59,9 @@ def ot_sinkhorn_log(a, b, C, epsilon=0.1, max_iter=200, tol=1e-13,
     err = float("nan")
     for it in range(1, int(max_iter) + 1):
         for i in range(n):
-            f[i] = e * la[i] - e * k.logsumexp(
-                [(g[j] - Cm[i][j]) / e for j in range(m)])
+            f[i] = e * la[i] - e * k.logsumexp([(g[j] - Cm[i][j]) / e for j in range(m)])
         for j in range(m):
-            g[j] = e * lb[j] - e * k.logsumexp(
-                [(f[i] - Cm[i][j]) / e for i in range(n)])
+            g[j] = e * lb[j] - e * k.logsumexp([(f[i] - Cm[i][j]) / e for i in range(n)])
         err = 0.0
         for i in range(n):
             s = 0.0
@@ -73,8 +70,7 @@ def ot_sinkhorn_log(a, b, C, epsilon=0.1, max_iter=200, tol=1e-13,
             err += abs(s - av[i])
         if err < tol:
             break
-    T = [[math.exp((f[i] + g[j] - Cm[i][j]) / e) for j in range(m)]
-         for i in range(n)]
+    T = [[math.exp((f[i] + g[j] - Cm[i][j]) / e) for j in range(m)] for i in range(n)]
     cost = 0.0
     for i in range(n):
         for j in range(m):

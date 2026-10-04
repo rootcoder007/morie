@@ -86,8 +86,7 @@ def geron_sparse_autoencoder(x, hidden, decoded, lam=1e-3):
 
     return RichResult(
         title="Sparse autoencoder",
-        summary_lines=[("Loss", recon + l1), ("Reconstruction", recon),
-                       ("L1 penalty", l1), ("Sparsity", sparsity)],
+        summary_lines=[("Loss", recon + l1), ("Reconstruction", recon), ("L1 penalty", l1), ("Sparsity", sparsity)],
         payload={
             "loss": recon + l1,
             "reconstruction_loss": recon,

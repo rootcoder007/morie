@@ -6,8 +6,6 @@ Implements eq. (4.14) p.136 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,9 +19,9 @@ def mvsml_overfitting_resampling_eq_4_14(probs, y_true, n_classes=None, halved=F
     better. Keys: estimate."""
     bs = _gp.brier_score(probs, y_true, n_classes, halved=halved)
     mll = _gp.mean_log_loss(probs, y_true, n_classes)
-    res = RichResult(payload={"estimate": bs, "brier": bs,
-                              "mean_log_loss": mll,
-                              "method": "Brier score (MVSML 2022 eq. 4.14)"})
+    res = RichResult(
+        payload={"estimate": bs, "brier": bs, "mean_log_loss": mll, "method": "Brier score (MVSML 2022 eq. 4.14)"}
+    )
     return with_describe_pointer(res, "msm009")
 
 

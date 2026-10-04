@@ -1,7 +1,5 @@
 """Tests for fzt42.fauzi_thm4_2_surv2_bias_var."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzt42 import fauzi_thm4_2_surv2_bias_var
 
 
@@ -17,18 +15,16 @@ def test_fzt42_basic():
     density = 0.4
     mu2 = 1.0
 
-    result = fauzi_thm4_2_surv2_bias_var(
-        t, n, h, surv, cumsurv, dg, d2g, density, mu2=mu2
-    )
+    result = fauzi_thm4_2_surv2_bias_var(t, n, h, surv, cumsurv, dg, d2g, density, mu2=mu2)
 
     # Expected values computed independently from the documented formula:
     # b3 = dg^2 * density - d2g * surv
     # bias = (h^2 / 2) * b3 * mu2
     # variance = (2 * cumsurv - surv^2) / n
     # cov = surv * (1 - surv) / n
-    expected_b3 = dg ** 2 * density - d2g * surv
-    expected_bias = (h ** 2 / 2.0) * expected_b3 * mu2
-    expected_var = (2.0 * cumsurv - surv ** 2) / n
+    expected_b3 = dg**2 * density - d2g * surv
+    expected_bias = (h**2 / 2.0) * expected_b3 * mu2
+    expected_var = (2.0 * cumsurv - surv**2) / n
     expected_cov = surv * (1.0 - surv) / n
 
     # The function returns a RichResult (dict-like) with the documented keys.
@@ -57,13 +53,11 @@ def test_fzt42_edge():
     density = 0.8
 
     # Use default mu2 by omitting it.
-    result = fauzi_thm4_2_surv2_bias_var(
-        t, n, h, surv, cumsurv, dg, d2g, density
-    )
+    result = fauzi_thm4_2_surv2_bias_var(t, n, h, surv, cumsurv, dg, d2g, density)
 
-    expected_b3 = dg ** 2 * density - d2g * surv
-    expected_bias = (h ** 2 / 2.0) * expected_b3 * 1.0  # mu2 default
-    expected_var = (2.0 * cumsurv - surv ** 2) / n
+    expected_b3 = dg**2 * density - d2g * surv
+    expected_bias = (h**2 / 2.0) * expected_b3 * 1.0  # mu2 default
+    expected_var = (2.0 * cumsurv - surv**2) / n
     expected_cov = surv * (1.0 - surv) / n
 
     assert hasattr(result, "__getitem__") or isinstance(result, dict)

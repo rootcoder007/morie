@@ -1,7 +1,6 @@
 """Tests for hrztmod.horowitz_transformation_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrztmod import horowitz_transformation_model
 
 

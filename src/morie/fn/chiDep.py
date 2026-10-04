@@ -6,7 +6,6 @@ Modeling of Extreme Values*, Springer (equation checked against the
 library PDF).
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -18,6 +17,7 @@ def chi_dependence(x, y, u=0.95):
     (Coles 2001 sec. 8.4, p. 164), probabilities replaced by observed
     proportions of the rank transforms (p. 165)."""
     import math
+
     xs = _ev._flat(x)
     ys = _ev._flat(y)
     n = len(xs)
@@ -28,9 +28,10 @@ def chi_dependence(x, y, u=0.95):
     joint = sum(1 for a, b in zip(rx, ry) if a < u and b < u) / n
     joint = min(max(joint, 1.0 / (2 * n)), 1.0 - 1.0 / (2 * n))
     chi_u = 2.0 - math.log(joint) / math.log(u)
-    chi_u = min(max(chi_u, 0.0), 1.0)      # property 1, p. 164
-    res = RichResult(payload={"estimate": chi_u, "u": float(u), "n": n,
-                              "method": "empirical chi(u) (Coles 2001 sec. 8.4)"})
+    chi_u = min(max(chi_u, 0.0), 1.0)  # property 1, p. 164
+    res = RichResult(
+        payload={"estimate": chi_u, "u": float(u), "n": n, "method": "empirical chi(u) (Coles 2001 sec. 8.4)"}
+    )
     return with_describe_pointer(res, "chiDep")
 
 

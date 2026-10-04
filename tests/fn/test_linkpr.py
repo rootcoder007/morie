@@ -1,7 +1,5 @@
 """Tests for linkPr.link_prediction."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.linkpr import link_prediction
 
 

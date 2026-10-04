@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaqrs import hsoundid, qrsdetect, rangayyan_pcg_segments
 
-
 FS = 500.0
 
 
@@ -15,11 +14,17 @@ def _g(t, c, w):
 
 
 # 0.8 s beats: QRS at 0.1 s, carotid upstroke peak 0.25 s, dicrotic wave 0.45 s
-ECG = [2.0 * _g((i % 400) / FS, 0.1, 0.008) - 0.3 * _g((i % 400) / FS, 0.12, 0.01)
-       + 0.3 * _g((i % 400) / FS, 0.35, 0.04) for i in range(4000)]
+ECG = [
+    2.0 * _g((i % 400) / FS, 0.1, 0.008) - 0.3 * _g((i % 400) / FS, 0.12, 0.01) + 0.3 * _g((i % 400) / FS, 0.35, 0.04)
+    for i in range(4000)
+]
 CP = [_g((i % 400) / FS, 0.25, 0.05) + 0.5 * _g((i % 400) / FS, 0.45, 0.04) for i in range(4000)]
-PCG = [_g((i % 400) / FS, 0.13, 0.01) * math.sin(0.8 * i) + 0.6 * _g((i % 400) / FS, 0.42, 0.01) * math.sin(1.1 * i)
-       + 0.01 * math.sin(0.37 * i) for i in range(4000)]
+PCG = [
+    _g((i % 400) / FS, 0.13, 0.01) * math.sin(0.8 * i)
+    + 0.6 * _g((i % 400) / FS, 0.42, 0.01) * math.sin(1.1 * i)
+    + 0.01 * math.sin(0.37 * i)
+    for i in range(4000)
+]
 
 
 def test_rgpcg_basic():

@@ -44,7 +44,12 @@ def dirrec(x, lags, horizon):
     res = _core.dirrec(x=x, lags=lags, horizon=horizon)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("first", res["first"]), ("last", res["last"]), ("ncolsfirst", res["ncolsfirst"]), ("ncolslast", res["ncolslast"])],
+        summary_lines=[
+            ("first", res["first"]),
+            ("last", res["last"]),
+            ("ncolsfirst", res["ncolsfirst"]),
+            ("ncolslast", res["ncolslast"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

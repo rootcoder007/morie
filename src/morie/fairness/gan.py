@@ -409,7 +409,7 @@ class CTGANDebiaser:
         if self._gp is None:
             raise RuntimeError("CTGANDebiaser is not fitted; call fit()")
         if privileged not in self._groups:
-            raise ValueError(f"privileged group {privileged!r} not seen in " f"training; groups: {self._groups}")
+            raise ValueError(f"privileged group {privileged!r} not seen in training; groups: {self._groups}")
         target_rate = self._group_fav_rate[privileged]
         rng = np.random.default_rng(self.seed if seed is None else int(seed))
         ng = len(self._groups)

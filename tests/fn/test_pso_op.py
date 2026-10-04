@@ -7,6 +7,7 @@ from morie.fn.pso_op import particle_swarm
 
 def test_pso_op_basic():
     """Test basic functionality."""
+
     def sphere(x):
         return sum(xi * xi for xi in x)
 
@@ -32,6 +33,7 @@ def test_pso_op_basic():
 
 def test_pso_op_edge():
     """Test edge cases."""
+
     def quadratic(x):
         return x[0] * x[0]
 

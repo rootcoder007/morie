@@ -82,16 +82,13 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
         forest = forest.get("forest")
     if forest is None or not getattr(forest, "trees_", None):
         raise ValueError(
-            "pass a fitted causal forest, or the result of causal_forest "
-            "(whose 'forest' entry holds one)."
+            "pass a fitted causal forest, or the result of causal_forest (whose 'forest' entry holds one)."
         )
     B = len(forest.trees_)
     if B < 2:
-        raise ValueError(
-            "the infinitesimal jackknife needs at least 2 trees, got %d." % B
-        )
+        raise ValueError("the infinitesimal jackknife needs at least 2 trees, got %d." % B)
     n = forest._n
-    N = np.array(forest.in_bag_, dtype=float)          # (B, n)
+    N = np.array(forest.in_bag_, dtype=float)  # (B, n)
     s = float(N.sum(axis=1).mean())
     if s >= n:
         raise ValueError(
@@ -103,11 +100,10 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
     if Xq.ndim == 1:
         Xq = Xq[:, None]
     # per-tree predictions at each query point
-    P = np.array([[forest._walk(t, row) for row in Xq]
-                  for t in forest.trees_])             # (B, m)
+    P = np.array([[forest._walk(t, row) for row in Xq] for t in forest.trees_])  # (B, m)
     Pc = P - P.mean(axis=0, keepdims=True)
     Nc = N - N.mean(axis=0, keepdims=True)
-    cov = (Nc.T @ Pc) / B                              # (n, m)
+    cov = (Nc.T @ Pc) / B  # (n, m)
     raw = np.sum(cov**2, axis=0)
     scale = (n - 1.0) / n * (n / (n - s)) ** 2
     raw = scale * raw
@@ -150,8 +146,9 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
             ),
             "reliable": reliable,
             "reliability_note": (
-                None if reliable else
-                "the correction removes most of the raw variance, which "
+                None
+                if reliable
+                else "the correction removes most of the raw variance, which "
                 "means %d trees is too few to estimate it; grow more before "
                 "reading these intervals" % B
             ),

@@ -58,11 +58,14 @@ def kosorok_ch2_lad_lipschitz_bound(theta_1, theta_2, u, x=None):
     with np.errstate(divide="ignore", invalid="ignore"):
         ratio = np.where(rhs > 0, lhs / rhs, 0.0)
     return RichResult(
-        payload={"max_ratio": float(np.max(ratio)),
-                 "bound_holds": bool(np.max(ratio) <= 1.0 + 1e-9),
-                 "lhs_max": float(lhs.max()), "rhs_max": float(rhs.max()),
-                 "n": int(U.shape[0]),
-                 "method": "|m_t1 - m_t2| <= ||t1 - t2|| ||u||, checked pointwise"}
+        payload={
+            "max_ratio": float(np.max(ratio)),
+            "bound_holds": bool(np.max(ratio) <= 1.0 + 1e-9),
+            "lhs_max": float(lhs.max()),
+            "rhs_max": float(rhs.max()),
+            "n": int(U.shape[0]),
+            "method": "|m_t1 - m_t2| <= ||t1 - t2|| ||u||, checked pointwise",
+        }
     )
 
 

@@ -20,8 +20,7 @@ def test_sbert_basic():
 
     pairs = [("a cat", "a dog"), ("a cat", "stocks fell"), ("a dog", "a cat")]
     r = sbert(pairs, embed)
-    cos = lambda u, v: sum(a * b for a, b in zip(u, v)) / math.sqrt(
-        sum(a * a for a in u) * sum(b * b for b in v))
+    cos = lambda u, v: sum(a * b for a, b in zip(u, v)) / math.sqrt(sum(a * a for a in u) * sum(b * b for b in v))
     assert r["scores"] == pytest.approx([cos(VEC[a], VEC[b]) for a, b in pairs], rel=1e-14)
     assert r["embed_calls"] == 3 and sorted(calls) == sorted(VEC)
     assert r["cross_encoder_calls"] == 3

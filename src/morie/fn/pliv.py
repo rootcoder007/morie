@@ -1,11 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partially linear IV model by double/debiased machine learning (native)."""
 
-
-from ._rng import random_uniform
 from . import _frame_core as pd
-
-
+from ._rng import random_uniform
 
 
 def estimate_pliv(
@@ -78,8 +75,11 @@ def estimate_pliv(
     from ._ml_core import RidgeCV
     from ._stats_core import norm as _norm
 
-    X = [[float(df[c].tolist()[i]) for c in covariates]
-         for i in range(n_obs)] if covariates else [[] for _ in range(n_obs)]
+    X = (
+        [[float(df[c].tolist()[i]) for c in covariates] for i in range(n_obs)]
+        if covariates
+        else [[] for _ in range(n_obs)]
+    )
     y = [float(v) for v in df[outcome].tolist()]
     d = [float(v) for v in df[treatment].tolist()]
     z = [float(v) for v in df[instrument].tolist()]
@@ -100,8 +100,7 @@ def estimate_pliv(
             ml_m = RidgeCV().fit(Xtr, [z[i] for i in train])
             ml_r = RidgeCV().fit(Xtr, [d[i] for i in train])
             Xf = [X[i] for i in fold]
-            pl, pm, pr = (ml_l.predict(Xf), ml_m.predict(Xf),
-                          ml_r.predict(Xf))
+            pl, pm, pr = (ml_l.predict(Xf), ml_m.predict(Xf), ml_r.predict(Xf))
             pl = pl.tolist() if hasattr(pl, "tolist") else list(pl)
             pm = pm.tolist() if hasattr(pm, "tolist") else list(pm)
             pr = pr.tolist() if hasattr(pr, "tolist") else list(pr)
@@ -124,14 +123,15 @@ def estimate_pliv(
     v = [d[i] - rhat[i] for i in range(n_obs)]
     wv = sum(a * b for a, b in zip(w, v))
     if wv == 0.0:
-        raise ValueError("instrument residual is orthogonal to the "
-                         "treatment residual; the instrument carries "
-                         "no identifying variation")
+        raise ValueError(
+            "instrument residual is orthogonal to the "
+            "treatment residual; the instrument carries "
+            "no identifying variation"
+        )
     late = sum(a * b for a, b in zip(w, u)) / wv
     psi = [(u[i] - late * v[i]) * w[i] for i in range(n_obs)]
     j0 = wv / n_obs
-    se = ((sum(p_ * p_ for p_ in psi) / n_obs) / (j0 * j0)
-          / n_obs) ** 0.5
+    se = ((sum(p_ * p_ for p_ in psi) / n_obs) / (j0 * j0) / n_obs) ** 0.5
     zstat = late / se if se > 0 else float("inf")
     pval = 2.0 * float(_norm.sf(abs(zstat)))
     zc = 1.959963984540054

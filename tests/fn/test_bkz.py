@@ -1,7 +1,6 @@
 """Test bkz_reduce."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bkz import bkz_reduce
 

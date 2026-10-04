@@ -35,15 +35,19 @@ def kamath_ch9_mm_instr_predict(I, M, theta, f=None):
     elif callable(theta):
         A = theta(I, M)
     else:
-        raise ValueError("give either a callable theta(I, M) or f= "
-                         "with theta as its parameters.")
+        raise ValueError("give either a callable theta(I, M) or f= with theta as its parameters.")
     if A is None:
         raise ValueError("the model returned no answer.")
-    return RichResult(payload={
-        "estimate": A, "answer": A, "instruction": I,
-        "multimodal_input": M, "n": 1,
-        "method": "multimodal instruction-tuned prediction "
-                  "(Kamath Eq 9.16)"})
+    return RichResult(
+        payload={
+            "estimate": A,
+            "answer": A,
+            "instruction": I,
+            "multimodal_input": M,
+            "n": 1,
+            "method": "multimodal instruction-tuned prediction (Kamath Eq 9.16)",
+        }
+    )
 
 
 def cheatsheet():

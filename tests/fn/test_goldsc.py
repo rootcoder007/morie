@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.goldsc import gold_score
 
 
@@ -12,20 +11,8 @@ def test_goldsc_basic():
     rng = np.random.default_rng(42)
 
     # Each atom row: [x, y, z, type]
-    receptor = [
-        [float(rng.normal(0, 1)),
-         float(rng.normal(0, 1)),
-         float(rng.normal(0, 1)),
-         "C"]
-        for _ in range(5)
-    ]
-    ligand = [
-        [float(rng.normal(2, 1)),
-         float(rng.normal(2, 1)),
-         float(rng.normal(2, 1)),
-         "N"]
-        for _ in range(4)
-    ]
+    receptor = [[float(rng.normal(0, 1)), float(rng.normal(0, 1)), float(rng.normal(0, 1)), "C"] for _ in range(5)]
+    ligand = [[float(rng.normal(2, 1)), float(rng.normal(2, 1)), float(rng.normal(2, 1)), "N"] for _ in range(4)]
 
     radii = [("C", 1.7), ("N", 1.55)]
     depths = [("C", 0.1), ("N", 0.1)]

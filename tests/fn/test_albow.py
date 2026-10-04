@@ -11,5 +11,6 @@ def test_albow_basic():
 
 def test_albow_edge():
     import pytest
+
     with pytest.raises(ValueError, match="duplicates"):
         alammar_bag_of_words(["a"], ["a", "a"])

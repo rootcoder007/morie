@@ -1,7 +1,6 @@
 """Tests for morie.fn.paropt -- multi-objective Pareto optimization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.paropt import pareto_optimize, paropt
 

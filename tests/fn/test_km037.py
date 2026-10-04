@@ -13,6 +13,8 @@ def test_km037_doctest():
 
 def test_km037_edge():
     import pytest
+
     from morie.fn.km037 import kamath_ch2_gpt_combined_obj
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_gpt_combined_obj(*([None] * 3))

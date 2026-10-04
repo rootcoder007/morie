@@ -68,7 +68,7 @@ def geron_lasso_cost(X, y, theta, alpha, penalize_intercept=False):
     >>> r2["l1_penalty"]
     0.5
     """
-    fit = geron_linreg_mse_cost(X, y, theta)          # validates shapes
+    fit = geron_linreg_mse_cost(X, y, theta)  # validates shapes
     theta = np.asarray(theta, dtype=float).ravel()
     alpha = float(alpha)
     if not np.isfinite(alpha) or alpha < 0:

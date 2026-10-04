@@ -12,18 +12,17 @@ KERNELS = ("gaussian", "epanechnikov", "biweight", "uniform", "triangular")
 def _k(u, kind):
     a = np.abs(u)
     if kind == "gaussian":
-        return np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        return np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
     if kind == "epanechnikov":
-        return np.where(a <= 1, 0.75 * (1 - u ** 2), 0.0)
+        return np.where(a <= 1, 0.75 * (1 - u**2), 0.0)
     if kind == "biweight":
-        return np.where(a <= 1, (15.0 / 16.0) * (1 - u ** 2) ** 2, 0.0)
+        return np.where(a <= 1, (15.0 / 16.0) * (1 - u**2) ** 2, 0.0)
     if kind == "uniform":
         return np.where(a <= 1, 0.5, 0.0)
     return np.where(a <= 1, 1 - a, 0.0)
 
 
-def kernel_density(x, at=None, bandwidth=None, kernel="gaussian",
-                   bw_method="silverman"):
+def kernel_density(x, at=None, bandwidth=None, kernel="gaussian", bw_method="silverman"):
     r"""Univariate KDE with a bandwidth chosen visibly.
 
     .. math:: \hat f(x) = \frac{1}{nh}\sum_{i=1}^{n}
@@ -84,9 +83,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian",
     if kernel not in KERNELS:
         raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kernel))
     if bw_method not in ("silverman", "scott"):
-        raise ValueError(
-            "bw_method must be 'silverman' or 'scott', got %r." % bw_method
-        )
+        raise ValueError("bw_method must be 'silverman' or 'scott', got %r." % bw_method)
     sd = float(np.std(v, ddof=1))
     iqr = float(np.subtract(*np.percentile(v, [75, 25])))
     if bandwidth is None:
@@ -104,9 +101,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian",
         raise ValueError("bandwidth must be positive, got %r." % bandwidth)
 
     lo, hi = v.min() - 3 * h, v.max() + 3 * h
-    grid = np.linspace(lo, hi, 200) if at is None else np.asarray(
-        at, dtype=float
-    ).ravel()
+    grid = np.linspace(lo, hi, 200) if at is None else np.asarray(at, dtype=float).ravel()
     dens = _k((grid[:, None] - v[None, :]) / h, kernel).sum(axis=1) / (n * h)
     integral = float(np.trapezoid(dens, grid)) if grid.size > 1 else np.nan
 
@@ -155,10 +150,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian",
 
 
 def cheatsheet():
-    return (
-        "kerd: univariate KDE with the bandwidth rule surfaced and the "
-        "boundary-bias region flagged"
-    )
+    return "kerd: univariate KDE with the bandwidth rule surfaced and the boundary-bias region flagged"
 
 
 #: Catalogue alias for :func:`kernel_density`.

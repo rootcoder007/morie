@@ -1,7 +1,6 @@
 """Tests for bayes_gblup_gibbs.bayes_gblup_gibbs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bayes_gblup_gibbs import bayes_gblup_gibbs
 
 

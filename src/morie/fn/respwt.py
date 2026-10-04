@@ -66,22 +66,22 @@ def respwt(weights, responded, classes):
             raise ValueError("class %r has no respondents" % (c,))
         phi[c] = resp[c] / tot[c]
         fac[c] = 1.0 / phi[c]
-    adjusted = [w[i] * fac[classes[i]] if responded[i] else None
-                for i in range(n)]
+    adjusted = [w[i] * fac[classes[i]] if responded[i] else None for i in range(n)]
     # exact balance identity per class
     bal = 0.0
     for c in tot:
-        s = sum(adjusted[i] for i in range(n)
-                if responded[i] and classes[i] == c)
+        s = sum(adjusted[i] for i in range(n) if responded[i] and classes[i] == c)
         bal = max(bal, abs(s - tot[c]))
-    return RichResult(payload={
-        "adjusted": adjusted,
-        "phi_hat": {str(k): v for k, v in phi.items()},
-        "factors": {str(k): v for k, v in fac.items()},
-        "balance_error": bal,
-        "n": n,
-        "method": "weighting-class adjustment (Lohr 2010, Sec. 8.5.1)",
-    })
+    return RichResult(
+        payload={
+            "adjusted": adjusted,
+            "phi_hat": {str(k): v for k, v in phi.items()},
+            "factors": {str(k): v for k, v in fac.items()},
+            "balance_error": bal,
+            "n": n,
+            "method": "weighting-class adjustment (Lohr 2010, Sec. 8.5.1)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -90,6 +90,7 @@ response_weight_adjustment = respwt
 
 def cheatsheet():
     return "respwt: phi_c = sum w_resp / sum w_all; w_adj = w / phi_c"
+
 
 # public names resolved by fn/_lazy_map.json
 response_weight = respwt

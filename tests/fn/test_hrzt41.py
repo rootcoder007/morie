@@ -1,7 +1,6 @@
 """Tests for hrzt41.horowitz_thm4_1_id_median."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzt41 import horowitz_thm4_1_id_median
 
 

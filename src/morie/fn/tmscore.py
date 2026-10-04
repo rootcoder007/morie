@@ -51,9 +51,16 @@ def tm_score(coords1, coords2, l_ref=None):
         d2 = sum((A[i][k] - B[i][k]) ** 2 for k in range(3))
         ss += d2
         tot += 1.0 / (1.0 + d2 / (d0 * d0))
-    return RichResult(payload={
-        "estimate": tot / Lr, "d0": d0, "rmsd": math.sqrt(ss / L),
-        "L": L, "L_ref": Lr, "method": "TM-score structural similarity"})
+    return RichResult(
+        payload={
+            "estimate": tot / Lr,
+            "d0": d0,
+            "rmsd": math.sqrt(ss / L),
+            "L": L,
+            "L_ref": Lr,
+            "method": "TM-score structural similarity",
+        }
+    )
 
 
 tmscore = tm_score

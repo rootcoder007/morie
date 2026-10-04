@@ -82,8 +82,7 @@ def geron_ch4_logistic_regression_prediction(p_hat, threshold=0.5):
         payload={
             "y_hat": est,
             "positive_rate": float(yhat.mean()),
-            "margin": (float((p - threshold).tolist()[0]) if scalar
-                       else (p - threshold).tolist()),
+            "margin": (float((p - threshold).tolist()[0]) if scalar else (p - threshold).tolist()),
             "threshold": threshold,
             "estimate": est,
             "n": int(p.size),

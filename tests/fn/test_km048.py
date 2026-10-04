@@ -4,10 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.7, the cloze prompt template. 
 recomputed in the test body.
 """
 
-import math
-
-import pytest
-
 from morie.fn.km048 import kamath_ch3_cloze_prompt_template
 
 

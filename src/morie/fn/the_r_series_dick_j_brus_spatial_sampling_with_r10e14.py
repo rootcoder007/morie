@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -26,18 +25,17 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_14(e, n
     eq. (10.14).
     """
     payload = dict(_brus.si_regression_variance(e, n, n_population))
-    value = payload['s2_e']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["s2_e"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (10.14)"
     return RichResult(
-        title='Residual variance S2_hat(e) = sum e^2/(n-1)',
+        title="Residual variance S2_hat(e) = sum e^2/(n-1)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r10e14: S2_hat(e) = (1/(n-1)) sum e_k^2 [Brus 2022, eq. 10.14]'
+    return "r10e14: S2_hat(e) = (1/(n-1)) sum e_k^2 [Brus 2022, eq. 10.14]"

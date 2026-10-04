@@ -1,10 +1,11 @@
 """Tests for copgau."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._copula import copula_cdf
 from morie.fn.copgau import gaussian_copula
+
 
 def test_copgau_basic():
     out = gaussian_copula(0.3, 0.7, 0.5)

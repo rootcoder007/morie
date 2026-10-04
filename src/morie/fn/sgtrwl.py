@@ -43,12 +43,17 @@ def rwlap(W):
     if any(v <= 0 for v in d):
         raise ValueError("L_rw needs every vertex to have positive degree")
     P = [[W[i][j] / d[i] for j in range(n)] for i in range(n)]
-    Lrw = [[(1.0 if i == j else 0.0) - P[i][j] for j in range(n)]
-           for i in range(n)]
-    return RichResult(payload={
-        "Lrw": Lrw, "P": P, "degree": d,
-        "rowsum_P": [sum(r) for r in P], "n": n,
-        "method": "Random-walk Laplacian I - T^-1 W"})
+    Lrw = [[(1.0 if i == j else 0.0) - P[i][j] for j in range(n)] for i in range(n)]
+    return RichResult(
+        payload={
+            "Lrw": Lrw,
+            "P": P,
+            "degree": d,
+            "rowsum_P": [sum(r) for r in P],
+            "n": n,
+            "method": "Random-walk Laplacian I - T^-1 W",
+        }
+    )
 
 
 sgt_random_walk_laplacian = rwlap

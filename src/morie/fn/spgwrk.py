@@ -8,8 +8,7 @@ from ._schab_gwr import KERNELS, adaptive_bandwidth, kernel_weights
 __all__ = ["schabenberger_gwr_kernels"]
 
 
-def schabenberger_gwr_kernels(distance, bandwidth, kernel_type="gaussian",
-                              adaptive=False, normalized=False):
+def schabenberger_gwr_kernels(distance, bandwidth, kernel_type="gaussian", adaptive=False, normalized=False):
     """Geographical weights ``w_i(u)`` for a GWR kernel.
 
     The kernel decides how fast an observation's influence on the local fit
@@ -98,13 +97,15 @@ def schabenberger_gwr_kernels(distance, bandwidth, kernel_type="gaussian",
     }
     return RichResult(
         title=f"GWR kernel weights ({kernel_type})",
-        summary_lines=[("kernel", kernel_type), ("bandwidth", h),
-                       ("truncated", truncated),
-                       ("non-zero weights", payload["n_nonzero"])],
+        summary_lines=[
+            ("kernel", kernel_type),
+            ("bandwidth", h),
+            ("truncated", truncated),
+            ("non-zero weights", payload["n_nonzero"]),
+        ],
         payload=payload,
     )
 
 
 def cheatsheet():
-    return ("spgwrk: GWR kernel weights -- " + ", ".join(KERNELS) +
-            "; fixed or adaptive (nearest-neighbour) bandwidth")
+    return "spgwrk: GWR kernel weights -- " + ", ".join(KERNELS) + "; fixed or adaptive (nearest-neighbour) bandwidth"

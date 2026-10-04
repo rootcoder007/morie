@@ -1,7 +1,6 @@
 """Tests for morie.fn.shang -- circular harmonic analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.shang import ring_harmonics, shang
 

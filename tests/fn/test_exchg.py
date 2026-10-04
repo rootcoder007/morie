@@ -1,7 +1,5 @@
 """Tests for exchg.exchangeability_assumption."""
 
-import pytest
-
 from morie.fn.exchg import exchangeability_assumption
 
 DAG = {"U": ["T", "Y"], "T": ["Y"]}

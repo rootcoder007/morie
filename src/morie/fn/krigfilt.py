@@ -46,8 +46,10 @@ def filtered_krige(z, coords, new_coords, model, error_variance, *, X=None, X0=N
     zv = [float(v) for v in z]
     P, Q = _rows(coords), _rows(new_coords)
     n = len(P)
-    C = [[kriging_covariance(math.dist(P[i], P[j]), model) + (error_variance if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    C = [
+        [kriging_covariance(math.dist(P[i], P[j]), model) + (error_variance if i == j else 0.0) for j in range(n)]
+        for i in range(n)
+    ]
     c0 = [[kriging_covariance(math.dist(P[i], q), model) for i in range(n)] for q in Q]
     C00 = [kriging_covariance(0.0, model)] * len(Q)
     Xm = [[float(v) for v in r] for r in X] if X is not None else None
@@ -85,8 +87,11 @@ def indicator_ccdf(z, coords, new_coords, thresholds, models, *, zmin=None, zmax
     T = [float(t) for t in thresholds]
     if any(b <= a for a, b in zip(T, T[1:])):
         raise ValueError("thresholds must increase")
-    ms = list(models) if isinstance(models, (list, tuple)) and len(models) == len(T) and isinstance(models[0], dict) \
+    ms = (
+        list(models)
+        if isinstance(models, (list, tuple)) and len(models) == len(T) and isinstance(models[0], dict)
         else [models] * len(T)
+    )
     lo = min(zv) if zmin is None else float(zmin)
     hi = max(zv) if zmax is None else float(zmax)
     raw = []
@@ -110,8 +115,15 @@ def indicator_ccdf(z, coords, new_coords, thresholds, models, *, zmin=None, zmax
         mu = ssum(a * b for a, b in zip(p, mid))
         mean.append(mu)
         var.append(ssum(a * (b * b + w * w / 12) for a, b, w in zip(p, mid, wid)) - mu * mu)
-    return RichResult(payload={"raw": [[raw[k][q] for k in range(K)] for q in range(M)], "ccdf": ccdf,
-                               "etype": mean, "conditional_variance": var, "thresholds": T})
+    return RichResult(
+        payload={
+            "raw": [[raw[k][q] for k in range(K)] for q in range(M)],
+            "ccdf": ccdf,
+            "etype": mean,
+            "conditional_variance": var,
+            "thresholds": T,
+        }
+    )
 
 
 def kriging_efficiency(z, coords, new_coords, model, *, block=None) -> RichResult:
@@ -147,18 +159,29 @@ def kriging_efficiency(z, coords, new_coords, model, *, block=None) -> RichResul
         bw = [float(v) for v in block["weights"]] if isinstance(block, dict) else [1.0 / len(offs)] * len(offs)
         comps = model if isinstance(model, (list, tuple)) else [model]
         sig = [c for c in comps if c.get("model") != "Nug"]
-        bbv = ssum(wa * wb * ssum(kriging_covariance(math.dist(a, b), {**c, "nugget": 0.0}) for c in sig)
-                   for a, wa in zip(offs, bw) for b, wb in zip(offs, bw))
+        bbv = ssum(
+            wa * wb * ssum(kriging_covariance(math.dist(a, b), {**c, "nugget": 0.0}) for c in sig)
+            for a, wa in zip(offs, bw)
+            for b, wb in zip(offs, bw)
+        )
         bv = [bbv] * len(r["prediction"])
     mu = [abs(float(v[0])) for v in r["lagrange"]]
     ke = [(b - v) / b for b, v in zip(bv, r["variance"])]
     slope = [(b - v + m) / (b - v + 2 * m) for b, v, m in zip(bv, r["variance"], mu)]
-    return RichResult(payload={"efficiency": ke, "slope": slope, "block_variance": bv, "kriging_variance": r["variance"],
-                               "lagrange": mu})
+    return RichResult(
+        payload={
+            "efficiency": ke,
+            "slope": slope,
+            "block_variance": bv,
+            "kriging_variance": r["variance"],
+            "lagrange": mu,
+        }
+    )
 
 
-def collocated_cokriging(z, coords, y0, new_coords, model, rho: float, *, mean_z: float = 0.0, mean_y: float = 0.0,
-                         var_y: float = 1.0) -> RichResult:
+def collocated_cokriging(
+    z, coords, y0, new_coords, model, rho: float, *, mean_z: float = 0.0, mean_y: float = 0.0, var_y: float = 1.0
+) -> RichResult:
     r"""Collocated simple co-kriging of ``Z`` with a secondary variable ``Y`` known at the targets (Markov model 1).
 
     Under Xu et al.'s Markov model ``C_ZY(h) = rho sqrt(C_Z(0) var_y) C_Z(h) /
@@ -207,5 +230,7 @@ def collocated_cokriging(z, coords, y0, new_coords, model, rho: float, *, mean_z
 
 
 def cheatsheet() -> str:
-    return ("filtered_krige / indicator_ccdf / kriging_efficiency / collocated_cokriging -> kriging filters, "
-            "indicator ccdf, efficiency and collocated co-kriging.")
+    return (
+        "filtered_krige / indicator_ccdf / kriging_efficiency / collocated_cokriging -> kriging filters, "
+        "indicator ccdf, efficiency and collocated co-kriging."
+    )

@@ -14,9 +14,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3_basic()
     count_table = rng.integers(0, 10, size=(I, J))
     # Conditional probability table: shape (I, J), each row sums to 1
     cond_prob_table = rng.uniform(0, 1, size=(I, J))
-    cond_prob_table = [
-        [v / sum(row) for v in row] for row in cond_prob_table
-    ]
+    cond_prob_table = [[v / sum(row) for v in row] for row in cond_prob_table]
     result = product_multinomial_pmf(count_table, cond_prob_table)
     assert isinstance(result, dict)
     assert "value" in result
@@ -32,9 +30,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3_edge():
     I, J = 1, 2
     count_table = rng.integers(0, 5, size=(I, J))
     cond_prob_table = rng.uniform(0, 1, size=(I, J))
-    cond_prob_table = [
-        [v / sum(row) for v in row] for row in cond_prob_table
-    ]
+    cond_prob_table = [[v / sum(row) for v in row] for row in cond_prob_table]
     result = product_multinomial_pmf(count_table, cond_prob_table)
     assert isinstance(result, dict)
     assert "value" in result

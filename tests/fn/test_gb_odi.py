@@ -1,7 +1,6 @@
 """Tests for gb_odi.gibbons_odds_ratio."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_odi import gibbons_odds_ratio
 
 
@@ -11,7 +10,7 @@ def test_gb_odi_basic():
     # 2x2 contingency table with positive integer counts
     table = [
         [int(rng.integers(10, 50)), int(rng.integers(10, 50))],
-        [int(rng.integers(10, 50)), int(rng.integers(10, 50))]
+        [int(rng.integers(10, 50)), int(rng.integers(10, 50))],
     ]
     result = gibbons_odds_ratio(table)
     assert isinstance(result, dict)

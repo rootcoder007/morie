@@ -4,22 +4,20 @@
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["co2RF", "radiative_forcing_co2"]
 
 # Table 7.SM.1 coefficients (IPCC AR6 WG1 Chapter 7 Supplementary
 # Material, p. 3; Meinshausen et al. 2020 fit to the Oslo LBL cases)
-_A1 = -2.4785e-7   # W m-2 ppm-2
-_B1 = 7.5906e-4    # W m-2 ppm-1
-_C1 = -2.1492e-3   # W m-2 ppb-1/2 (N2O band-overlap term)
-_D1 = 5.2488       # W m-2
-_C0_FIT = 277.15   # ppm (table reference concentration)
+_A1 = -2.4785e-7  # W m-2 ppm-2
+_B1 = 7.5906e-4  # W m-2 ppm-1
+_C1 = -2.1492e-3  # W m-2 ppb-1/2 (N2O band-overlap term)
+_D1 = 5.2488  # W m-2
+_C0_FIT = 277.15  # ppm (table reference concentration)
 
 
-def radiative_forcing_co2(C, C0=_C0_FIT, N=273.87, method="ar6",
-                          erf_adjustment=False):
+def radiative_forcing_co2(C, C0=_C0_FIT, N=273.87, method="ar6", erf_adjustment=False):
     """
     Stratospheric-temperature-adjusted radiative forcing (SARF) of CO2.
 
@@ -83,7 +81,7 @@ def radiative_forcing_co2(C, C0=_C0_FIT, N=273.87, method="ar6",
         if N < 0:
             raise ValueError("co2RF: N2O concentration must be non-negative")
         c_amax = C0 - _B1 / (2.0 * _A1)
-        if C > c_amax:
+        if c_amax < C:
             alpha = _D1 - _B1 * _B1 / (4.0 * _A1)
         elif C > C0:
             alpha = _D1 + _A1 * (C - C0) ** 2 + _B1 * (C - C0)
@@ -93,17 +91,23 @@ def radiative_forcing_co2(C, C0=_C0_FIT, N=273.87, method="ar6",
     else:
         raise ValueError("co2RF: method must be 'ar6' or 'myhre1998'")
     est = sarf * 1.05 if erf_adjustment else sarf
-    return RichResult(payload={
-        "estimate": est,
-        "sarf": sarf,
-        "alpha_prime": alpha,
-        "method_used": method,
-        "C": C, "C0": C0, "N": N,
-        "erf_adjustment": bool(erf_adjustment),
-        "method": ("CO2 SARF, Meinshausen 2020 / AR6 Table 7.SM.1"
-                   if method == "ar6" else
-                   "CO2 SARF, Myhre 1998 5.35 ln(C/C0)"),
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "sarf": sarf,
+            "alpha_prime": alpha,
+            "method_used": method,
+            "C": C,
+            "C0": C0,
+            "N": N,
+            "erf_adjustment": bool(erf_adjustment),
+            "method": (
+                "CO2 SARF, Meinshausen 2020 / AR6 Table 7.SM.1"
+                if method == "ar6"
+                else "CO2 SARF, Myhre 1998 5.35 ln(C/C0)"
+            ),
+        }
+    )
 
 
 co2RF = radiative_forcing_co2

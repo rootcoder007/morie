@@ -1,14 +1,12 @@
 """Tests for gh_c3_8.ghosal_moment_prior."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_8 import ghosal_moment_prior
 
 
 def test_gh_c3_8_basic():
     """Test basic functionality with a feasible moment sequence (uniform on [0,1])."""
     # Uniform distribution on [0,1] has moments m_k = 1/(k+1)
-    moments = [1.0, 1/2, 1/3, 1/4, 1/5]
+    moments = [1.0, 1 / 2, 1 / 3, 1 / 4, 1 / 5]
     result = ghosal_moment_prior(moments)
     assert isinstance(result, dict)
     for key in ("feasible", "min_difference", "n_violations", "order", "differences"):
@@ -47,5 +45,6 @@ def test_gh_c3_8_edge():
 def test_gh_c3_8_invalid():
     """Test that invalid input (m_0 != 1) raises ValueError."""
     import pytest
+
     with pytest.raises(ValueError, match="m_0"):
         ghosal_moment_prior([0.5, 0.3, 0.2])

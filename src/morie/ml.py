@@ -17,14 +17,10 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            f"{self._name} is no longer bundled; this code path awaits its native " "morie implementation"
-        )
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            f"{self._name} is no longer bundled; this code path awaits its native " "morie implementation"
-        )
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
 
 try:

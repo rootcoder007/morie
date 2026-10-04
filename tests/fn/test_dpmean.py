@@ -1,7 +1,6 @@
 """Tests for dpmean.dp_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpmean import dp_mean
 
 
@@ -52,6 +51,4 @@ def test_dpmean_edge():
     r_priv = dp_mean(x, a, b, epsilon, seed=0, known_n=False, split=0.5)
     assert abs(float(r_priv["epsilon_sum"]) - 0.5) < 1e-12
     assert abs(float(r_priv["epsilon_count"]) - 0.5) < 1e-12
-    assert abs(
-        float(r_priv["epsilon_sum"]) + float(r_priv["epsilon_count"]) - epsilon
-    ) < 1e-12
+    assert abs(float(r_priv["epsilon_sum"]) + float(r_priv["epsilon_count"]) - epsilon) < 1e-12

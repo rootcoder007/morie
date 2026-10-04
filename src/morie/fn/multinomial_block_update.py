@@ -6,8 +6,6 @@ Implements eq. (7.9) p.227 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,14 +20,17 @@ def multinomial_block_update(X, y, beta0, beta, lam=1.0, cls=0, baseline_last=Tr
     weights w_ic = p-tilde_c(1 - p-tilde_c).  D is the identity with a
     zero first entry, so the intercept is unpenalized.
     Keys: estimate."""
-    f = _gp.multinomial_block_update(X, y, beta0, beta, lam, cls,
-                                     baseline_last=baseline_last)
-    res = RichResult(payload={"estimate": f["beta0"],
-                              "beta0": f["beta0"],
-                              "beta": f["beta"],
-                              "weights": f["weights"],
-                              "working_response": f["working_response"],
-                              "method": "multinomial block update (MVSML 2022 eq. 7.9)"})
+    f = _gp.multinomial_block_update(X, y, beta0, beta, lam, cls, baseline_last=baseline_last)
+    res = RichResult(
+        payload={
+            "estimate": f["beta0"],
+            "beta0": f["beta0"],
+            "beta": f["beta"],
+            "weights": f["weights"],
+            "working_response": f["working_response"],
+            "method": "multinomial block update (MVSML 2022 eq. 7.9)",
+        }
+    )
     return with_describe_pointer(res, "msm112")
 
 

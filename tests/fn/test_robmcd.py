@@ -1,7 +1,6 @@
 """Tests for morie.fn.robmcd -- MCD robust covariance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.robmcd import robmcd, robust_covariance_mcd
 

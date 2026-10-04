@@ -51,9 +51,7 @@ def kamath_rwkv_time_mix(k, v, w, u=0.0):
     w = float(w)
     u = float(u)
     if kv.size != vv.size:
-        raise ValueError(
-            f"got {kv.size} keys and {vv.size} values; time-mixing pairs "
-            "them per position.")
+        raise ValueError(f"got {kv.size} keys and {vv.size} values; time-mixing pairs them per position.")
     if kv.size == 0:
         raise ValueError("the sequence is empty.")
     if not (np.all(np.isfinite(kv)) and np.all(np.isfinite(vv))):
@@ -61,7 +59,8 @@ def kamath_rwkv_time_mix(k, v, w, u=0.0):
     if w < 0:
         raise ValueError(
             f"the decay w must be non-negative; got {w}. A negative w "
-            "makes distant tokens matter MORE, which is not a decay.")
+            "makes distant tokens matter MORE, which is not a decay."
+        )
     T = kv.size
     out = np.empty(T)
     # Running (num, den) carried in a shifted exponent so nothing
@@ -82,11 +81,16 @@ def kamath_rwkv_time_mix(k, v, w, u=0.0):
         a = a * f1 + f2 * vv[t]
         b = b * f1 + f2
         p = q2 - w
-    return RichResult(payload={
-        "wkv": [float(x) for x in out],
-        "estimate": float(out[-1]),
-        "w": w, "u": u, "n": T,
-        "method": "RWKV time-mixing (log-space stable scan)"})
+    return RichResult(
+        payload={
+            "wkv": [float(x) for x in out],
+            "estimate": float(out[-1]),
+            "w": w,
+            "u": u,
+            "n": T,
+            "method": "RWKV time-mixing (log-space stable scan)",
+        }
+    )
 
 
 def cheatsheet():

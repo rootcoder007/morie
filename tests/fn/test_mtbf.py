@@ -1,7 +1,6 @@
 """Tests for morie.fn.mtbf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mtbf import mtbf_estimate
 
 

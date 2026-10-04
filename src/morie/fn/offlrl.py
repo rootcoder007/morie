@@ -74,7 +74,6 @@ extensions of Appendix D.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["offlrl", "offline_rl_cql", "conservative_q_learning"]
@@ -95,9 +94,20 @@ def _softmax(v):
     return [x / s for x in e]
 
 
-def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
-           variant="H", backup="max", policy=None, mu=None, lr=0.5,
-           iters=2000, tol=1e-12):
+def offlrl(
+    dataset,
+    states=None,
+    actions=None,
+    alpha=1.0,
+    gamma=0.99,
+    variant="H",
+    backup="max",
+    policy=None,
+    mu=None,
+    lr=0.5,
+    iters=2000,
+    tol=1e-12,
+):
     r"""Fit a conservative Q-function to a fixed offline dataset.
 
     Parameters
@@ -150,11 +160,9 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
     Theorems 3.1-3.2.
     """
     if variant not in _VARIANTS:
-        raise ValueError("offlrl: variant must be one of %r, got %r"
-                         % (_VARIANTS, variant))
+        raise ValueError("offlrl: variant must be one of %r, got %r" % (_VARIANTS, variant))
     if backup not in _BACKUPS:
-        raise ValueError("offlrl: backup must be 'max' or 'pi', got %r"
-                         % (backup,))
+        raise ValueError("offlrl: backup must be 'max' or 'pi', got %r" % (backup,))
     alpha = float(alpha)
     if alpha < 0.0:
         raise ValueError("offlrl: alpha must be >= 0, got %r" % (alpha,))
@@ -167,16 +175,13 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
         elif len(t) == 5:
             s, a, r, s1, done = t
         else:
-            raise ValueError("offlrl: each transition must be (s, a, r, "
-                             "s_next) or (s, a, r, s_next, done)")
+            raise ValueError("offlrl: each transition must be (s, a, r, s_next) or (s, a, r, s_next, done)")
         D.append((s, a, float(r), s1, bool(done)))
     if not D:
         raise ValueError("offlrl: dataset must be non-empty")
 
-    S = list(states) if states is not None else sorted(
-        set([t[0] for t in D] + [t[3] for t in D]), key=repr)
-    A = list(actions) if actions is not None else sorted(
-        set(t[1] for t in D), key=repr)
+    S = list(states) if states is not None else sorted(set([t[0] for t in D] + [t[3] for t in D]), key=repr)
+    A = list(actions) if actions is not None else sorted(set(t[1] for t in D), key=repr)
     if not S or not A:
         raise ValueError("offlrl: states and actions must be non-empty")
     ai = dict((a, i) for i, a in enumerate(A))
@@ -201,8 +206,7 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
     if backup == "pi" and pol is None:
         raise ValueError("offlrl: backup='pi' needs policy(a|s)")
     if variant == "rho" and pol is None:
-        raise ValueError("offlrl: variant='rho' needs policy(a|s) to play "
-                         "the role of pi^{k-1}")
+        raise ValueError("offlrl: variant='rho' needs policy(a|s) to play the role of pi^{k-1}")
 
     Q = dict(((s, a), 0.0) for s in S for a in A)
     data_states = [s for s in S if s in n_s]
@@ -229,15 +233,13 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
             w = n_s[s] / float(len(D))
             qs = [Q[(s, b)] for b in A]
             if variant == "H":
-                push = _softmax(qs)                   # d/dQ logsumexp
+                push = _softmax(qs)  # d/dQ logsumexp
             elif variant == "rho":
                 # mu ∝ rho * exp(Q) with rho = pi^{k-1}
                 m = max(qs)
-                e = [pol[(s, b)] * math.exp(qs[i] - m)
-                     for i, b in enumerate(A)]
+                e = [pol[(s, b)] * math.exp(qs[i] - m) for i, b in enumerate(A)]
                 z = sum(e)
-                push = ([x / z for x in e] if z > 0
-                        else [1.0 / len(A)] * len(A))
+                push = [x / z for x in e] if z > 0 else [1.0 / len(A)] * len(A)
             else:
                 push = [muu[(s, b)] for b in A]
             for i, b in enumerate(A):
@@ -265,8 +267,7 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
             first = _logsumexp(qs)
         elif variant == "rho":
             m = max(qs)
-            first = m + math.log(sum(pol[(s, b)] * math.exp(qs[i] - m)
-                                     for i, b in enumerate(A)))
+            first = m + math.log(sum(pol[(s, b)] * math.exp(qs[i] - m) for i, b in enumerate(A)))
         else:
             first = sum(muu[(s, b)] * Q[(s, b)] for b in A)
         pen += w * (first - sum(behavior[(s, b)] * Q[(s, b)] for b in A))
@@ -282,23 +283,24 @@ def offlrl(dataset, states=None, actions=None, alpha=1.0, gamma=0.99,
         berr += 0.5 * (Q[(s, a)] - t) ** 2
     berr /= len(D)
 
-    return RichResult(payload={
-        "estimate": Q,
-        "q": Q,
-        "value": value,
-        "greedy": greedy,
-        "behavior": behavior,
-        "counts": n_sa,
-        "penalty": float(pen),
-        "bellman_error": float(berr),
-        "objective": float(alpha * pen + berr),
-        "alpha": alpha,
-        "variant": variant,
-        "backup": backup,
-        "n_transitions": len(D),
-        "method": "CQL (Kumar et al. 2020, eq. %s)"
-                  % ("4" if variant in ("H", "rho") else "2"),
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "q": Q,
+            "value": value,
+            "greedy": greedy,
+            "behavior": behavior,
+            "counts": n_sa,
+            "penalty": float(pen),
+            "bellman_error": float(berr),
+            "objective": float(alpha * pen + berr),
+            "alpha": alpha,
+            "variant": variant,
+            "backup": backup,
+            "n_transitions": len(D),
+            "method": "CQL (Kumar et al. 2020, eq. %s)" % ("4" if variant in ("H", "rho") else "2"),
+        }
+    )
 
 
 def _as_dist(d, S, A, name):
@@ -311,19 +313,20 @@ def _as_dist(d, S, A, name):
     for s in S:
         tot = sum(out[(s, a)] for a in A)
         if abs(tot - 1.0) > 1e-6:
-            raise ValueError("offlrl: %s(.|%r) sums to %g, not 1"
-                             % (name, s, tot))
+            raise ValueError("offlrl: %s(.|%r) sums to %g, not 1" % (name, s, tot))
     return out
 
 
 def cheatsheet():
-    return ("offlrl: CQL (Kumar 2020). Fitted Q plus alpha*(push DOWN "
-            "E_mu[Q] - push UP E_pi_beta[Q]) so the Q-function LOWER "
-            "BOUNDS the truth and OOD actions stop being "
-            "over-estimated. variant='H' is eq. 4's logsumexp "
-            "(rho=Unif); 'rho' uses pi^{k-1}; 'mu' is eq. 2 directly. "
-            "Thm 3.2 bounds the EXPECTED value under pi, not "
-            "pointwise. alpha=0 is plain fitted Q.")
+    return (
+        "offlrl: CQL (Kumar 2020). Fitted Q plus alpha*(push DOWN "
+        "E_mu[Q] - push UP E_pi_beta[Q]) so the Q-function LOWER "
+        "BOUNDS the truth and OOD actions stop being "
+        "over-estimated. variant='H' is eq. 4's logsumexp "
+        "(rho=Unif); 'rho' uses pi^{k-1}; 'mu' is eq. 2 directly. "
+        "Thm 3.2 bounds the EXPECTED value under pi, not "
+        "pointwise. alpha=0 is plain fitted Q."
+    )
 
 
 # compact aliases per ledger/NAMING.md

@@ -157,7 +157,7 @@ def geron_td3(
             batch.append((s, a, rew, s2, done))
             total += rew
             s = int(env.reset()) if done else s2
-        for (bs, ba, br, bs2, bd) in batch:
+        for bs, ba, br, bs2, bd in batch:
             a_t = int(mu_t[bs2])
             if _u() < eps:  # target policy smoothing: nudge to a neighbouring action, clipped
                 a_t = min(max(a_t + (1 if _u() < 0.5 else -1), 0), n_a - 1)

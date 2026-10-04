@@ -6,12 +6,9 @@ Springer, ch 9, eqs. 9.46 and 9.47 p.357, the kernel dual. Expected values are r
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm234 import ksvmdual
-
 
 X = [[1.0, 1.0], [-1.0, -1.0]]
 Y = [1, -1]
@@ -21,6 +18,7 @@ def test_the_linear_kernel_reproduces_the_inner_product_dual():
     # the chapter's whole point: the dual touches the data only through
     # x_i . x_j, so a linear kernel must return the same solution
     from morie.fn.msm231 import svmsdual
+
     k = ksvmdual(X, Y, 1.0, kernel="linear")
     p = svmsdual(X, Y, 1.0)
     assert list(k["alpha"]) == pytest.approx(list(p["alpha"]), rel=1e-8)

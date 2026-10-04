@@ -17,8 +17,7 @@ def test_the_posterior_update_is_the_textbook_one():
     assert abs(res["nu_n"] - (nu0 + n)) < 1e-12
     assert abs(res["mu_n"] - (k0 * mu0 + n * ybar) / (k0 + n)) < 1e-12
     ss = sum((v - ybar) ** 2 for v in y)
-    want = (nu0 * s0 + ss +
-            k0 * n * (ybar - mu0) ** 2 / (k0 + n)) / (nu0 + n)
+    want = (nu0 * s0 + ss + k0 * n * (ybar - mu0) ** 2 / (k0 + n)) / (nu0 + n)
     assert abs(res["sigma_n_sq"] - want) < 1e-12
 
 
@@ -48,10 +47,12 @@ def test_more_data_shrinks_the_posterior_scale_of_the_mean():
 
 
 def test_validation():
-    for call in (lambda: nignst([], 0.0, 1.0, 1.0, 1.0),
-                 lambda: nignst([1.0], 0.0, 0.0, 1.0, 1.0),
-                 lambda: nignst([1.0], 0.0, 1.0, -1.0, 1.0),
-                 lambda: nignst([1.0], 0.0, 1.0, 1.0, 0.0)):
+    for call in (
+        lambda: nignst([], 0.0, 1.0, 1.0, 1.0),
+        lambda: nignst([1.0], 0.0, 0.0, 1.0, 1.0),
+        lambda: nignst([1.0], 0.0, 1.0, -1.0, 1.0),
+        lambda: nignst([1.0], 0.0, 1.0, 1.0, 0.0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

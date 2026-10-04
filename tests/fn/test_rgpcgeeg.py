@@ -1,7 +1,6 @@
 """Tests for rgpcgeeg.rangayyan_pcg_eeg_coupling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaphys import rangayyan_pcg_eeg_coupling
 
 

@@ -120,8 +120,11 @@ def esl_sis_screening(X, y, d=None):
         payload={
             "selected": selected,
             "omega": np.where(np.isfinite(omega), omega, np.nan),
-            "rank": rank, "d": int(d),
-            "dropped": order[d:], "n": int(n), "p": int(p),
+            "rank": rank,
+            "d": int(d),
+            "dropped": order[d:],
+            "n": int(n),
+            "p": int(p),
             "method": "esl_sis_screening",
         },
     )

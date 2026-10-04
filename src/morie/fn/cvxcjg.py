@@ -75,8 +75,7 @@ def boyd_conjugate(f, y, x_grid=None):
     """
     if not callable(f):
         raise ValueError("f must be callable")
-    xs = (np.linspace(-50.0, 50.0, 20001) if x_grid is None
-          else np.atleast_1d(np.asarray(x_grid, dtype=float)).ravel())
+    xs = np.linspace(-50.0, 50.0, 20001) if x_grid is None else np.atleast_1d(np.asarray(x_grid, dtype=float)).ravel()
     fx = np.asarray([float(f(x)) for x in xs], dtype=float)
     ys = np.atleast_1d(np.asarray(y, dtype=float)).ravel()
     vals = np.empty(ys.size)
@@ -90,23 +89,25 @@ def boyd_conjugate(f, y, x_grid=None):
         # A supremum attained at a grid endpoint, still climbing, is the
         # signature of an unbounded conjugate: the slope y lies outside
         # the domain of f*.
-        unb[i] = bool(j in (0, xs.size - 1) and xs.size > 2
-                      and obj[j] > obj[1 if j == 0 else -2] + 1e-12)
+        unb[i] = bool(j in (0, xs.size - 1) and xs.size > 2 and obj[j] > obj[1 if j == 0 else -2] + 1e-12)
     scalar = ys.size == 1
     return RichResult(
         title="Convex conjugate",
-        summary_lines=[("slopes", int(ys.size)),
-                       ("value", float(vals[0]) if scalar else float(vals.mean())),
-                       ("unbounded", bool(unb.any()))],
-        warnings=["the supremum is unbounded at one or more slopes; those "
-                  "y lie outside the domain of the conjugate"]
-        if unb.any() else [],
+        summary_lines=[
+            ("slopes", int(ys.size)),
+            ("value", float(vals[0]) if scalar else float(vals.mean())),
+            ("unbounded", bool(unb.any())),
+        ],
+        warnings=["the supremum is unbounded at one or more slopes; those y lie outside the domain of the conjugate"]
+        if unb.any()
+        else [],
         payload={
             "value": float(vals[0]) if scalar else vals,
             "argmax": float(args[0]) if scalar else args,
             "unbounded": bool(unb[0]) if scalar else unb,
             "supporting_intercept": -vals[0] if scalar else -vals,
-            "y": ys, "method": "boyd_conjugate",
+            "y": ys,
+            "method": "boyd_conjugate",
         },
     )
 

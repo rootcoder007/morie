@@ -1,4 +1,5 @@
 """Pitman-Yor, dependent DP, Polya urn, difference boundaries, Polya trees."""
+
 import importlib
 import math
 
@@ -10,10 +11,7 @@ posspr = importlib.import_module("morie.fn.posspr")
 dpgrf = importlib.import_module("morie.fn.dpgrf")
 poltrx = importlib.import_module("morie.fn.poltrx")
 
-W_CHAIN = [[0.0, 1.0, 0.0, 0.0],
-           [1.0, 0.0, 1.0, 0.0],
-           [0.0, 1.0, 0.0, 1.0],
-           [0.0, 0.0, 1.0, 0.0]]
+W_CHAIN = [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]]
 DRAWS = [[0, 0, 1, 1], [0, 0, 1, 1], [0, 1, 1, 1], [0, 0, 1, 1]]
 
 
@@ -23,8 +21,7 @@ def test_dirichlet_process_is_the_alpha_zero_boundary():
     assert not pmpfit.check_parameters(0.25, 1.0)["is_dirichlet"]
 
 
-@pytest.mark.parametrize("alpha,theta", [(1.0, 1.0), (-0.1, 1.0),
-                                         (0.5, -0.5), (0.5, -0.6)])
+@pytest.mark.parametrize("alpha,theta", [(1.0, 1.0), (-0.1, 1.0), (0.5, -0.5), (0.5, -0.6)])
 def test_definition_one_range_is_enforced(alpha, theta):
     with pytest.raises(ValueError):
         pmpfit.check_parameters(alpha, theta)
@@ -40,8 +37,7 @@ def test_predictive_weights_are_a_probability_vector():
 def test_the_discount_taken_from_clusters_funds_the_new_one():
     w = pmpfit.predictive_weights([5.0, 3.0, 1.0], 0.5, 1.0)
     assert w["discount_transferred"] == pytest.approx(1.5 / 10.0)
-    assert w["new"] == pytest.approx(1.0 / 10.0
-                                     + w["discount_transferred"])
+    assert w["new"] == pytest.approx(1.0 / 10.0 + w["discount_transferred"])
 
 
 def test_alpha_zero_reduces_to_the_plain_polya_urn():
@@ -53,8 +49,7 @@ def test_alpha_zero_reduces_to_the_plain_polya_urn():
 def test_expected_clusters_matches_the_digamma_closed_form():
     k = importlib.import_module("morie.fn._s03core")
     got = pmpfit.expected_clusters(1000, 0.0, 1.0)["expected"]
-    assert got == pytest.approx(k.digamma(1001.0) - k.digamma(1.0),
-                                abs=1e-9)
+    assert got == pytest.approx(k.digamma(1001.0) - k.digamma(1.0), abs=1e-9)
 
 
 def test_a_positive_discount_gives_many_more_clusters():
@@ -82,10 +77,8 @@ def test_a_cluster_smaller_than_the_discount_is_refused():
 
 # ------------------------------------------------------------- ddpest
 def test_the_two_constructions_vary_different_ingredients():
-    assert (ddpest.dependence_kind("single_weights")["varies_with_x"]
-            == "atoms")
-    assert (ddpest.dependence_kind("single_atoms")["varies_with_x"]
-            == "weights")
+    assert ddpest.dependence_kind("single_weights")["varies_with_x"] == "atoms"
+    assert ddpest.dependence_kind("single_atoms")["varies_with_x"] == "weights"
 
 
 def test_unknown_construction_is_refused():
@@ -95,51 +88,38 @@ def test_unknown_construction_is_refused():
 
 def test_single_weights_shares_the_stick_breaking_draw():
     xs = [0.0, 1.0, 2.0]
-    r = ddpest.single_weights_ddp(xs, 1.0, 12, lambda x, h: (h, x),
-                                  seed=3)
-    assert all(r["G"][x]["weights"] == r["G"][0.0]["weights"]
-               for x in xs)
+    r = ddpest.single_weights_ddp(xs, 1.0, 12, lambda x, h: (h, x), seed=3)
+    assert all(r["G"][x]["weights"] == r["G"][0.0]["weights"] for x in xs)
     assert r["G"][0.0]["atoms"] != r["G"][1.0]["atoms"]
 
 
 def test_single_atoms_shares_the_support():
     xs = [0.0, 1.0, 2.0]
-    r = ddpest.single_atoms_ddp(xs, 1.0, 5,
-                                lambda x, h: math.exp(-abs(h - x)),
-                                seed=3)
+    r = ddpest.single_atoms_ddp(xs, 1.0, 5, lambda x, h: math.exp(-abs(h - x)), seed=3)
     assert r["G"][0.0]["atoms"] == r["G"][2.0]["atoms"]
     assert r["G"][0.0]["weights"] != r["G"][2.0]["weights"]
 
 
 def test_every_marginal_remains_a_probability_measure():
     xs = [0.0, 1.0]
-    a = ddpest.single_weights_ddp(xs, 1.0, 8, lambda x, h: (h, x),
-                                  seed=1)
-    b = ddpest.single_atoms_ddp(xs, 1.0, 8,
-                                lambda x, h: 1.0 / (1.0 + h + x),
-                                seed=1)
+    a = ddpest.single_weights_ddp(xs, 1.0, 8, lambda x, h: (h, x), seed=1)
+    b = ddpest.single_atoms_ddp(xs, 1.0, 8, lambda x, h: 1.0 / (1.0 + h + x), seed=1)
     assert ddpest.check_marginals(a["G"])["ok"]
     assert ddpest.check_marginals(b["G"])["ok"]
 
 
 def test_dependence_decays_with_covariate_distance():
     xs = [0.0, 1.0, 2.0]
-    r = ddpest.single_atoms_ddp(xs, 1.0, 5,
-                                lambda x, h: math.exp(-abs(h - x)),
-                                seed=3)
+    r = ddpest.single_atoms_ddp(xs, 1.0, 5, lambda x, h: math.exp(-abs(h - x)), seed=3)
     near = ddpest.correlation(r["G"], 0.0, 1.0, lambda a: a < 2)
     far = ddpest.correlation(r["G"], 0.0, 2.0, lambda a: a < 2)
     assert near["abs_difference"] < far["abs_difference"]
-    assert ddpest.correlation(r["G"], 1.0, 1.0,
-                              lambda a: a < 2)["identical"]
+    assert ddpest.correlation(r["G"], 1.0, 1.0, lambda a: a < 2)["identical"]
 
 
 def test_the_predicted_density_mixes_the_atoms_at_that_covariate():
-    r = ddpest.single_atoms_ddp([0.0], 1.0, 5,
-                                lambda x, h: 1.0 / (1.0 + h),
-                                seed=2)
-    d = ddpest.predict_density(r["G"], 0.0, [0.0, 1.0],
-                               lambda y, th: math.exp(-(y - th) ** 2))
+    r = ddpest.single_atoms_ddp([0.0], 1.0, 5, lambda x, h: 1.0 / (1.0 + h), seed=2)
+    d = ddpest.predict_density(r["G"], 0.0, [0.0, 1.0], lambda y, th: math.exp(-((y - th) ** 2)))
     assert d["n_components"] == 5
     assert all(v > 0.0 for v in d["density"])
 
@@ -157,32 +137,27 @@ def test_urn_weights_are_a_probability_vector():
     assert w["existing"] == pytest.approx([0.5, 1.0 / 6.0])
 
 
-@pytest.mark.parametrize("alpha,tie", [(1.0, 0.5), (3.0, 0.25),
-                                       (0.5, 2.0 / 3.0)])
+@pytest.mark.parametrize("alpha,tie", [(1.0, 0.5), (3.0, 0.25), (0.5, 2.0 / 3.0)])
 def test_tie_probability_is_one_over_one_plus_alpha(alpha, tie):
     assert posspr.tie_probability(alpha)["tie"] == pytest.approx(tie)
 
 
 def test_simulation_reproduces_the_tie_probability():
-    ties = sum(1 for s in range(3000)
-               if posspr.sample_urn(2, 1.0, seed=s)["n_clusters"] == 1)
+    ties = sum(1 for s in range(3000) if posspr.sample_urn(2, 1.0, seed=s)["n_clusters"] == 1)
     assert abs(ties / 3000.0 - 0.5) < 0.03
 
 
 def test_expected_clusters_is_the_sum_of_alpha_over_alpha_plus_i():
     got = posspr.expected_clusters(50, 2.0)["expected"]
-    assert got == pytest.approx(sum(2.0 / (2.0 + i)
-                                    for i in range(50)))
+    assert got == pytest.approx(sum(2.0 / (2.0 + i) for i in range(50)))
 
 
 def test_the_predictive_density_is_computed_by_hand():
-    d = posspr.predictive_density([0.0, 1.0], [0.0, 5.0], [3.0, 1.0],
-                                  2.0,
-                                  lambda y, th: math.exp(-(y - th) ** 2),
-                                  lambda y: 0.1)
+    d = posspr.predictive_density(
+        [0.0, 1.0], [0.0, 5.0], [3.0, 1.0], 2.0, lambda y, th: math.exp(-((y - th) ** 2)), lambda y: 0.1
+    )
     assert d["new_cluster_weight"] == pytest.approx(1.0 / 3.0)
-    assert d["density"][0] == pytest.approx(
-        (1.0 / 3.0) * 0.1 + 0.5 + math.exp(-25.0) / 6.0)
+    assert d["density"][0] == pytest.approx((1.0 / 3.0) * 0.1 + 0.5 + math.exp(-25.0) / 6.0)
 
 
 def test_a_non_positive_concentration_is_refused():
@@ -209,8 +184,7 @@ def test_an_asymmetric_adjacency_is_refused():
 
 
 def test_a_continuous_prior_puts_zero_mass_on_ties():
-    assert (dpgrf.continuous_prior_tie_probability()["probability"]
-            == 0.0)
+    assert dpgrf.continuous_prior_tie_probability()["probability"] == 0.0
 
 
 def test_the_intrinsic_car_is_singular_and_reports_it():
@@ -241,8 +215,7 @@ def test_the_threshold_selects_and_does_not_rescale():
     lo = dpgrf.boundary_probabilities(W_CHAIN, DRAWS, threshold=0.2)
     hi = dpgrf.boundary_probabilities(W_CHAIN, DRAWS, threshold=0.99)
     assert lo["n_boundaries"] >= hi["n_boundaries"]
-    assert [d["p_difference"] for d in lo["ranked"]] == \
-        [d["p_difference"] for d in hi["ranked"]]
+    assert [d["p_difference"] for d in lo["ranked"]] == [d["p_difference"] for d in hi["ranked"]]
 
 
 def test_the_dp_prior_produces_ties_among_regions():
@@ -262,8 +235,7 @@ def test_an_unknown_rule_is_refused():
 
 
 def test_the_regimes_are_named():
-    assert (poltrx.continuity_regime("m_squared")["draws"]
-            == "absolutely continuous")
+    assert poltrx.continuity_regime("m_squared")["draws"] == "absolutely continuous"
     assert "DP" in poltrx.continuity_regime("constant")["draws"]
 
 
@@ -287,8 +259,7 @@ def test_the_tree_is_truncated_at_a_stated_level():
 
 def test_the_level_probabilities_sum_to_one():
     t = poltrx.finite_tree(5, c=1.0, seed=3)
-    assert poltrx.tree_density(t)["total"] == pytest.approx(1.0,
-                                                            abs=1e-12)
+    assert poltrx.tree_density(t)["total"] == pytest.approx(1.0, abs=1e-12)
 
 
 def test_a_set_probability_is_the_product_down_its_branch():

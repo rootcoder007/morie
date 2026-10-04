@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import os
 
-from morie.fn import _array_core as np
-
 
 def test_dmt_imaging_root_resolves_or_none():
     from morie.entheo.data import dmt_imaging_root

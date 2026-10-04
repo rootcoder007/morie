@@ -1,7 +1,5 @@
 """Tests for r2_from_f2.r2_from_f2."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.r2_from_f2 import r2_from_f2
 
 

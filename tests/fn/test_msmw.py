@@ -1,9 +1,9 @@
 """Tests for morie.fn.msmw — Marginal structural model weights."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.msmw import marginal_structural
 
 

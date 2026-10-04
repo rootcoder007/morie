@@ -116,15 +116,17 @@ def boot_multinomial_weights(n, B=200, rng=2, exhaustive=False):
     for row in W:
         for e in row:
             tot += e
-    return RichResult(payload={
-        "estimate": tot / (len(W) * n),
-        "W": W,
-        "counts": cs,
-        "B": len(W),
-        "n": n,
-        "exhaustive": bool(exhaustive),
-        "method": "Multinomial bootstrap weights",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / (len(W) * n),
+            "W": W,
+            "counts": cs,
+            "B": len(W),
+            "n": n,
+            "exhaustive": bool(exhaustive),
+            "method": "Multinomial bootstrap weights",
+        }
+    )
 
 
 def cheatsheet():

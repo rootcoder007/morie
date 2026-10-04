@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,12 +21,16 @@ def mvsml_reproducing_kernel_eq_10_13(X, y, W, activations=None, eta=0.1, n_iter
     = w_jk^(l)(t) + eta delta_ij V_ik^(h) (eq. 10.13): the adjustment
     is added to the current estimate to obtain the updated weight.
     Keys: estimate."""
-    f = _gp.ann_train(X, y, W, eta=eta, n_iter=n_iter,
-                      activations=activations)
-    res = RichResult(payload={"estimate": f["loss"],
-                              "W": f["W"], "loss": f["loss"],
-                              "history": f["history"],
-                              "method": "output weight update (MVSML 2022 eq. 10.13)"})
+    f = _gp.ann_train(X, y, W, eta=eta, n_iter=n_iter, activations=activations)
+    res = RichResult(
+        payload={
+            "estimate": f["loss"],
+            "W": f["W"],
+            "loss": f["loss"],
+            "history": f["history"],
+            "method": "output weight update (MVSML 2022 eq. 10.13)",
+        }
+    )
     return with_describe_pointer(res, "msm251")
 
 

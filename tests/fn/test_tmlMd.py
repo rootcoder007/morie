@@ -1,7 +1,6 @@
 """Tests for tmlMd.tmle_mediation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlMd import tmle_mediation
 
 

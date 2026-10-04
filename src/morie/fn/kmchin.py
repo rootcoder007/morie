@@ -9,9 +9,9 @@ from ._richresult import RichResult
 __all__ = ["kamath_chinchilla_compute_optimal"]
 
 
-def kamath_chinchilla_compute_optimal(compute_budget, alpha=0.5,
-                                      beta=0.5, tokens_per_param=20.0,
-                                      flops_per_token_param=6.0):
+def kamath_chinchilla_compute_optimal(
+    compute_budget, alpha=0.5, beta=0.5, tokens_per_param=20.0, flops_per_token_param=6.0
+):
     r"""Split a FLOP budget as C = 6 N D with D / N = 20.
 
     Hoffmann et al.'s finding is that N and D should scale together,
@@ -37,23 +37,27 @@ def kamath_chinchilla_compute_optimal(compute_budget, alpha=0.5,
     if C <= 0:
         raise ValueError("the compute budget must be positive.")
     if ratio <= 0:
-        raise ValueError("the tokens-per-parameter ratio must be "
-                         "positive.")
+        raise ValueError("the tokens-per-parameter ratio must be positive.")
     if kflop <= 0:
-        raise ValueError("the FLOPs-per-token-per-parameter constant "
-                         "must be positive.")
+        raise ValueError("the FLOPs-per-token-per-parameter constant must be positive.")
     if abs(float(alpha) + float(beta) - 1.0) > 1e-9:
-        raise ValueError(
-            f"alpha + beta = {float(alpha) + float(beta)}, but C = "
-            "6ND forces the exponents to sum to 1.")
+        raise ValueError(f"alpha + beta = {float(alpha) + float(beta)}, but C = 6ND forces the exponents to sum to 1.")
     N = math.sqrt(C / (kflop * ratio))
     D = ratio * N
-    return RichResult(payload={
-        "estimate": N, "N_opt": N, "D_opt": D,
-        "tokens_per_param": ratio, "compute_budget": C,
-        "compute_check": kflop * N * D, "alpha": float(alpha),
-        "beta": float(beta), "n": 1,
-        "method": "Chinchilla compute-optimal split (Kamath Ch 1)"})
+    return RichResult(
+        payload={
+            "estimate": N,
+            "N_opt": N,
+            "D_opt": D,
+            "tokens_per_param": ratio,
+            "compute_budget": C,
+            "compute_check": kflop * N * D,
+            "alpha": float(alpha),
+            "beta": float(beta),
+            "n": 1,
+            "method": "Chinchilla compute-optimal split (Kamath Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

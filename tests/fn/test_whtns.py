@@ -1,7 +1,6 @@
 """Test white_noise_gen (whtns)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.whtns import white_noise_gen, whtns
 

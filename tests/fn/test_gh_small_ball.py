@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_small_ball import ghosal_small_ball_prob
 
 
@@ -19,9 +18,7 @@ def test_gh_small_ball_basic():
     assert len(result["phi_by_eps"]) == 3
     # Independently verify the increasing flag from the returned phi_by_eps.
     phis = list(result["phi_by_eps"])
-    expected_increasing = all(
-        phis[i + 1] >= phis[i] - 1e-9 for i in range(len(phis) - 1)
-    )
+    expected_increasing = all(phis[i + 1] >= phis[i] - 1e-9 for i in range(len(phis) - 1))
     assert bool(result["increasing"]) == expected_increasing
 
 

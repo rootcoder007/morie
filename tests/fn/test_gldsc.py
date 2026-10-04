@@ -3,7 +3,6 @@ Tests for golden section search.
 """
 
 from morie.fn import _array_core as np
-
 from morie.fn.gldsc import gldsc
 
 

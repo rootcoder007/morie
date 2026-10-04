@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm246 import mvsml_reproducing_kernel_eq_10_10
 
-
 X = [[1.0, 2.0]]
 Y = [[1.0]]
 W = [[[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]]]
@@ -55,5 +54,4 @@ def test_the_output_gradient_follows_the_chain_rule_of_equation_10_11():
     v, out = _forward()
     res = mvsml_reproducing_kernel_eq_10_10(X, Y, W, eta=0.1)
     expected = [-(1.0 - out) * vj for vj in v]
-    assert list(res["gradients"][1][0]) == pytest.approx(expected,
-                                                          rel=1e-12)
+    assert list(res["gradients"][1][0]) == pytest.approx(expected, rel=1e-12)

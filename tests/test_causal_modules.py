@@ -823,9 +823,9 @@ class TestSurvival:
         df = pd.DataFrame({"time": time, "event": event, "x1": x1})
         res = cox_ph(df, "time", "event", ["x1"])
         # Should recover coefficient roughly
-        assert (
-            abs(res.coefficients[0] - true_beta) < 0.5
-        ), f"Cox PH estimate {res.coefficients[0]:.2f} far from {true_beta}"
+        assert abs(res.coefficients[0] - true_beta) < 0.5, (
+            f"Cox PH estimate {res.coefficients[0]:.2f} far from {true_beta}"
+        )
 
     def test_exponential_model_returns_result(self, rng):
         time, event = self._make_survival_data(rng, lam=0.1)

@@ -1,7 +1,6 @@
 """Tests for phi complexity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.phicx import phi_complexity, phicx
 
 

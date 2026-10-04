@@ -238,4 +238,3 @@ ogp_site_name = "MORIE — multi-domain scientific computing toolkit"
 ogp_description_length = 200
 ogp_enable_meta_description = True
 ogp_type = "website"
-

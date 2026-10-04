@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 5.4, Newton's predictive recursion.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c5_7 import ghosal_pred_rec

@@ -81,27 +81,24 @@ def rdp_sampled_gaussian(alpha, q, sigma):
             "rdp_sampled_gaussian: alpha must be an integer -- the closed "
             "form is the paper's Case I binomial expansion. Fractional "
             "orders are Case II, an infinite series, which is not "
-            "implemented; got %r" % (alpha,))
+            "implemented; got %r" % (alpha,)
+        )
     ai = int(a)
     if ai <= 1:
-        raise ValueError(
-            "rdp_sampled_gaussian: alpha must exceed 1, got %r" % (alpha,))
+        raise ValueError("rdp_sampled_gaussian: alpha must exceed 1, got %r" % (alpha,))
     qq = float(q)
     if not (0.0 < qq <= 1.0):
-        raise ValueError(
-            "rdp_sampled_gaussian: q must lie in (0, 1], got %r" % (q,))
+        raise ValueError("rdp_sampled_gaussian: q must lie in (0, 1], got %r" % (q,))
     s = float(sigma)
     if s <= 0.0:
-        raise ValueError(
-            "rdp_sampled_gaussian: sigma must be positive, got %r" % (s,))
+        raise ValueError("rdp_sampled_gaussian: sigma must be positive, got %r" % (s,))
 
     # A_alpha = sum_k C(a,k) (1-q)^(a-k) q^k exp(k(k-1)/(2 sigma^2)).
     # Summed in log space: the exp term reaches exp(a^2/(2 sigma^2)),
     # which overflows for the large alpha used in tight accounting.
     log_terms = []
     for k in range(ai + 1):
-        lg = (math.lgamma(ai + 1.0) - math.lgamma(k + 1.0)
-              - math.lgamma(ai - k + 1.0))
+        lg = math.lgamma(ai + 1.0) - math.lgamma(k + 1.0) - math.lgamma(ai - k + 1.0)
         if qq == 1.0:
             # log(0) for every k < alpha; only k = alpha survives.
             if k < ai:
@@ -125,8 +122,7 @@ def rdp_compose(alpha, q, sigma, steps=1):
     """Proposition 1: identical mechanisms add their RDP curves."""
     t = int(steps)
     if t < 1:
-        raise ValueError("rdp_compose: steps must be at least 1, got %r"
-                         % (steps,))
+        raise ValueError("rdp_compose: steps must be at least 1, got %r" % (steps,))
     return t * rdp_sampled_gaussian(alpha, q, sigma)
 
 
@@ -175,14 +171,13 @@ def rdpcomp(q, sigma, alpha=None, steps=1, delta=None):
         "sigma": float(sigma),
         "steps": t,
         "method": "RDP of the Sampled Gaussian Mechanism "
-                  "(Mironov, Talwar & Zhang 2019, Thm 4 / Case I); "
-                  "composition by Mironov (2017) Prop 1",
+        "(Mironov, Talwar & Zhang 2019, Thm 4 / Case I); "
+        "composition by Mironov (2017) Prop 1",
     }
     if delta is not None:
         d = float(delta)
         if not (0.0 < d < 1.0):
-            raise ValueError(
-                "rdpcomp: delta must lie strictly in (0, 1), got %r" % (d,))
+            raise ValueError("rdpcomp: delta must lie strictly in (0, 1), got %r" % (d,))
         log_inv = math.log(1.0 / d)
         eps = [e + log_inv / (a - 1.0) for a, e in zip(orders, curve)]
         best = 0
@@ -198,9 +193,12 @@ def rdpcomp(q, sigma, alpha=None, steps=1, delta=None):
 
 
 def cheatsheet():
-    return ("rdpcomp: sampled Gaussian RDP, A_alpha = sum_k C(a,k) "
-            "(1-q)^(a-k) q^k exp(k(k-1)/(2 sigma^2)), eps = log(A)/(a-1) "
-            "(MTZ 2019 Case I); integer alpha only; composes by addition.")
+    return (
+        "rdpcomp: sampled Gaussian RDP, A_alpha = sum_k C(a,k) "
+        "(1-q)^(a-k) q^k exp(k(k-1)/(2 sigma^2)), eps = log(A)/(a-1) "
+        "(MTZ 2019 Case I); integer alpha only; composes by addition."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 rdp_subsampled_composition = rdp_sampled_gaussian

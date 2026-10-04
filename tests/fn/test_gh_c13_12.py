@@ -1,7 +1,6 @@
 """Tests for gh_c13_12.ghosal_smhaz_gp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_12 import ghosal_smhaz_gp
 
 
@@ -48,8 +47,7 @@ def test_gh_c13_12_constant_hazard_recovery():
                 e_[b] += x - lo
                 d_[b] += 1.0
                 break
-    f = [math.log(max((d + 0.5) / (e + 0.5), 1e-6))
-         for d, e in zip(d_, e_)]
+    f = [math.log(max((d + 0.5) / (e + 0.5), 1e-6)) for d, e in zip(d_, e_)]
     haz = [math.exp(v) for v in f]
     expected_err = sum(abs(h - lam0) for h in haz) / k
 

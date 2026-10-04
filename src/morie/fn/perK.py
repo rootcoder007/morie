@@ -66,15 +66,18 @@ def perK(x1, x2=None, period=1.0, lengthscale=1.0, variance=1.0):
             s = math.sin(math.pi * (xa - xb) / p)
             row.append(s2 * math.exp(-2.0 * s * s / (l * l)))
         K.append(row)
-    diag_ok = x2 is None and all(
-        abs(K[i][i] - s2) < 1e-15 for i in range(len(a)))
-    return RichResult(payload={
-        "K": K,
-        "shape": (len(a), len(b)),
-        "period": p, "lengthscale": l, "variance": s2,
-        "diag_is_variance": diag_ok,
-        "method": "periodic kernel (MacKay 1998; R&W 2006 Sec. 4.2.3)",
-    })
+    diag_ok = x2 is None and all(abs(K[i][i] - s2) < 1e-15 for i in range(len(a)))
+    return RichResult(
+        payload={
+            "K": K,
+            "shape": (len(a), len(b)),
+            "period": p,
+            "lengthscale": l,
+            "variance": s2,
+            "diag_is_variance": diag_ok,
+            "method": "periodic kernel (MacKay 1998; R&W 2006 Sec. 4.2.3)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

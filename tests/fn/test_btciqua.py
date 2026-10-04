@@ -1,7 +1,6 @@
 """Tests for btciqua.boot_ci_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btciqua import boot_ci_quantile
 
 

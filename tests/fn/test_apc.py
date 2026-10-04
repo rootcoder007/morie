@@ -1,8 +1,8 @@
 """Tests for morie.fn.apc -- age-period-cohort decomposition."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.apc import age_period_cohort
 
 

@@ -12,11 +12,9 @@ def test_otgws_basic():
     n = 10
     m = 12
     pts_x = rng.normal(0, 1, (n, 2))
-    Cx = [[math.sqrt(sum((pts_x[i][k] - pts_x[j][k]) ** 2 for k in range(2)))
-           for j in range(n)] for i in range(n)]
+    Cx = [[math.sqrt(sum((pts_x[i][k] - pts_x[j][k]) ** 2 for k in range(2))) for j in range(n)] for i in range(n)]
     pts_y = rng.normal(0, 1, (m, 2))
-    Cy = [[math.sqrt(sum((pts_y[i][k] - pts_y[j][k]) ** 2 for k in range(2)))
-           for j in range(m)] for i in range(m)]
+    Cy = [[math.sqrt(sum((pts_y[i][k] - pts_y[j][k]) ** 2 for k in range(2))) for j in range(m)] for i in range(m)]
 
     a = np.abs(rng.normal(0, 1, n))
     b = np.abs(rng.normal(0, 1, m))
@@ -45,11 +43,9 @@ def test_otgws_edge():
     n = 6
     m = 8
     pts_x = rng.normal(0, 1, (n, 2))
-    Cx = [[math.sqrt(sum((pts_x[i][k] - pts_x[j][k]) ** 2 for k in range(2)))
-           for j in range(n)] for i in range(n)]
+    Cx = [[math.sqrt(sum((pts_x[i][k] - pts_x[j][k]) ** 2 for k in range(2))) for j in range(n)] for i in range(n)]
     pts_y = rng.normal(0, 1, (m, 2))
-    Cy = [[math.sqrt(sum((pts_y[i][k] - pts_y[j][k]) ** 2 for k in range(2)))
-           for j in range(m)] for i in range(m)]
+    Cy = [[math.sqrt(sum((pts_y[i][k] - pts_y[j][k]) ** 2 for k in range(2))) for j in range(m)] for i in range(m)]
 
     a = np.abs(rng.normal(0, 1, n))
     b = np.abs(rng.normal(0, 1, m))

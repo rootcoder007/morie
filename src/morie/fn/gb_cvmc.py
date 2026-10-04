@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer-von Mises goodness-of-fit statistic W^2."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['cvmw2', 'gibbons_cramer_von_mises']
+__all__ = ["cvmw2", "gibbons_cramer_von_mises"]
 
 
 def cvmw2(x, cdf):
@@ -43,9 +41,7 @@ def cvmw2(x, cdf):
     if n < 1:
         raise ValueError("x must be non-empty.")
     z = [float(cdf(v)) for v in xs]
-    w2 = 1.0 / (12.0 * n) + sum(
-        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
-    )
+    w2 = 1.0 / (12.0 * n) + sum((z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n))
     return RichResult(
         payload={
             "statistic": float(w2),

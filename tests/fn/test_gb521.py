@@ -1,8 +1,8 @@
 """Tests for gb521.gibbons_quantile_ci."""
 
-from morie.fn import _array_core as np
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.gb521 import gibbons_quantile_ci
 
 
@@ -33,9 +33,7 @@ def test_gb521_basic():
     # Coverage computed independently from the documented formula:
     # sum_{i=r}^{s-1} C(n, i) p^i (1-p)^(n-i)
     n = len(xs)
-    expected_cov = sum(
-        math.comb(n, i) * p ** i * (1.0 - p) ** (n - i) for i in range(r, s)
-    )
+    expected_cov = sum(math.comb(n, i) * p**i * (1.0 - p) ** (n - i) for i in range(r, s))
     assert result["coverage"] == float(expected_cov)
     assert result["alpha"] == float(1.0 - expected_cov)
     assert result["r"] == r

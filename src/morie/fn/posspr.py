@@ -73,8 +73,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["urn_weights", "sample_urn", "predictive_density",
-           "expected_clusters", "tie_probability"]
+__all__ = ["urn_weights", "sample_urn", "predictive_density", "expected_clusters", "tie_probability"]
 
 _EPS = 1e-12
 
@@ -89,17 +88,18 @@ def urn_weights(counts, alpha):
     c = [float(v) for v in k.vec(counts)] if list(counts) else []
     a = float(alpha)
     if a <= 0.0:
-        raise ValueError("posspr: the concentration must be "
-                         "positive")
+        raise ValueError("posspr: the concentration must be positive")
     if any(v <= 0.0 for v in c):
-        raise ValueError("posspr: an occupied cluster must have a "
-                         "positive count")
+        raise ValueError("posspr: an occupied cluster must have a positive count")
     n = sum(c)
-    return {"existing": [v / (a + n) for v in c],
-            "new": a / (a + n), "n": n, "K": len(c),
-            "total": (sum(c) + a) / (a + n),
-            "note": "repeat in proportion to how often it has "
-                    "already appeared; that is the clustering"}
+    return {
+        "existing": [v / (a + n) for v in c],
+        "new": a / (a + n),
+        "n": n,
+        "K": len(c),
+        "total": (sum(c) + a) / (a + n),
+        "note": "repeat in proportion to how often it has already appeared; that is the clustering",
+    }
 
 
 def sample_urn(n, alpha, rng=None, seed=0):
@@ -129,14 +129,16 @@ def sample_urn(n, alpha, rng=None, seed=0):
         else:
             counts[chosen] += 1.0
             labels.append(chosen)
-    return {"labels": labels, "counts": counts,
-            "n_clusters": len(counts), "alpha": a,
-            "note": "ties occur with POSITIVE probability, which is "
-                    "why the DP clusters"}
+    return {
+        "labels": labels,
+        "counts": counts,
+        "n_clusters": len(counts),
+        "alpha": a,
+        "note": "ties occur with POSITIVE probability, which is why the DP clusters",
+    }
 
 
-def predictive_density(grid, cluster_params, counts, alpha, kernel,
-                       base_predictive):
+def predictive_density(grid, cluster_params, counts, alpha, kernel, base_predictive):
     r"""Occupied clusters plus one term for the unseen.
 
     ``base_predictive(y)`` is :math:`\int k(y\mid\theta)dG_0(\theta)`
@@ -148,18 +150,21 @@ def predictive_density(grid, cluster_params, counts, alpha, kernel,
     for y in grid:
         v = new_share * float(base_predictive(y))
         for j in range(len(counts)):
-            v += w["existing"][j] * float(kernel(y,
-                                                 cluster_params[j]))
+            v += w["existing"][j] * float(kernel(y, cluster_params[j]))
         out.append(v)
-    return RichResult(payload={
-        "estimate": out, "density": out, "grid": list(grid),
-        "new_cluster_weight": new_share,
-        "occupied_weights": w["existing"], "K": w["K"], "n": w["n"],
-        "method": "DP mixture posterior predictive; Muller & "
-                  "Quintana (2004)",
-        "note": "the weight on the unseen component is exactly "
-                "alpha/(alpha+n) -- report it rather than bury it",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "density": out,
+            "grid": list(grid),
+            "new_cluster_weight": new_share,
+            "occupied_weights": w["existing"],
+            "K": w["K"],
+            "n": w["n"],
+            "method": "DP mixture posterior predictive; Muller & Quintana (2004)",
+            "note": "the weight on the unseen component is exactly alpha/(alpha+n) -- report it rather than bury it",
+        }
+    )
 
 
 def expected_clusters(n, alpha):
@@ -170,10 +175,13 @@ def expected_clusters(n, alpha):
     if a <= 0.0 or N < 1:
         raise ValueError("posspr: need alpha > 0 and n >= 1")
     e = sum(a / (a + i) for i in range(N))
-    return {"expected": e, "n": N, "alpha": a,
-            "log_approximation": a * math.log(1.0 + N / a),
-            "note": "logarithmic in n, so alpha is not a smoothing "
-                    "knob that scales the cluster count linearly"}
+    return {
+        "expected": e,
+        "n": N,
+        "alpha": a,
+        "log_approximation": a * math.log(1.0 + N / a),
+        "note": "logarithmic in n, so alpha is not a smoothing knob that scales the cluster count linearly",
+    }
 
 
 def tie_probability(alpha):
@@ -184,25 +192,25 @@ def tie_probability(alpha):
     """
     a = float(alpha)
     if a <= 0.0:
-        raise ValueError("posspr: the concentration must be "
-                         "positive")
-    return {"tie": 1.0 / (1.0 + a), "new": a / (1.0 + a),
-            "alpha": a}
+        raise ValueError("posspr: the concentration must be positive")
+    return {"tie": 1.0 / (1.0 + a), "new": a / (1.0 + a), "alpha": a}
 
 
 def cheatsheet():
-    return ("posspr: the DP predictive has NO integral -- "
-            "theta_{n+1} ~ (alpha G_0 + sum delta_{theta_i})/"
-            "(alpha + n). Draw NEW with probability alpha/(alpha+n) or "
-            "REPEAT in proportion to how often a value has already "
-            "appeared, so TIES have positive probability, which is "
-            "exactly why the DP clusters and why continuous data need "
-            "a DP MIXTURE rather than a DP. The predictive density is "
-            "then a weighted sum over occupied clusters plus one "
-            "prior-predictive term whose weight, alpha/(alpha+n), is "
-            "the model's stated probability of something new. Cluster "
-            "count grows like alpha log n; two draws tie with "
-            "probability exactly 1/(1+alpha).")
+    return (
+        "posspr: the DP predictive has NO integral -- "
+        "theta_{n+1} ~ (alpha G_0 + sum delta_{theta_i})/"
+        "(alpha + n). Draw NEW with probability alpha/(alpha+n) or "
+        "REPEAT in proportion to how often a value has already "
+        "appeared, so TIES have positive probability, which is "
+        "exactly why the DP clusters and why continuous data need "
+        "a DP MIXTURE rather than a DP. The predictive density is "
+        "then a weighted sum over occupied clusters plus one "
+        "prior-predictive term whose weight, alpha/(alpha+n), is "
+        "the model's stated probability of something new. Cluster "
+        "count grows like alpha log n; two draws tie with "
+        "probability exactly 1/(1+alpha)."
+    )
 
 
 # compact alias per ledger/NAMING.md

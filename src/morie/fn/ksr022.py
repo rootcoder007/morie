@@ -52,9 +52,7 @@ def kosorok_ch1_multiplicative_intensity(time, event, Z, beta=None, t=None):
         raise ValueError("time and event must match the rows of Z.")
     if not np.all(np.isin(event, (0.0, 1.0))):
         raise ValueError("event must be binary 0/1.")
-    beta = np.zeros(p) if beta is None else np.atleast_1d(
-        np.asarray(beta, dtype=float)
-    )
+    beta = np.zeros(p) if beta is None else np.atleast_1d(np.asarray(beta, dtype=float))
     if beta.size != p:
         raise ValueError(f"beta must have {p} entries.")
 
@@ -73,10 +71,15 @@ def kosorok_ch1_multiplicative_intensity(time, event, Z, beta=None, t=None):
     Lam = np.where(idx >= 0, cum[np.clip(idx, 0, cum.size - 1)], 0.0)
     at_risk = (time[:, None] >= tt[None, :]).astype(float)
     return RichResult(
-        payload={"t": tt, "cumulative_hazard": Lam,
-                 "expected_counts": at_risk * (w[:, None] * Lam[None, :]),
-                 "beta": beta, "n_events": int(event.sum()), "n": int(n),
-                 "method": "Aalen multiplicative intensity; Lambda by Breslow"}
+        payload={
+            "t": tt,
+            "cumulative_hazard": Lam,
+            "expected_counts": at_risk * (w[:, None] * Lam[None, :]),
+            "beta": beta,
+            "n_events": int(event.sum()),
+            "n": int(n),
+            "method": "Aalen multiplicative intensity; Lambda by Breslow",
+        }
     )
 
 

@@ -57,10 +57,17 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["memb", "membership_inference", "logistic_trainer",
-           "knn_trainer",
-           "attack_dataset", "synthesize", "synthesize_marginals",
-           "synthesize_noisy", "precision_recall"]
+__all__ = [
+    "memb",
+    "membership_inference",
+    "logistic_trainer",
+    "knn_trainer",
+    "attack_dataset",
+    "synthesize",
+    "synthesize_marginals",
+    "synthesize_noisy",
+    "precision_recall",
+]
 
 
 def _rng(seed):
@@ -77,6 +84,7 @@ def logistic_trainer(l2=1e-3, epochs=300, lr=0.5, seed=0):
     ``l2`` is what controls how much the model overfits, and therefore how
     much there is for the attack to find.
     """
+
     def train(X, y):
         n = len(X)
         if n == 0:
@@ -91,8 +99,7 @@ def logistic_trainer(l2=1e-3, epochs=300, lr=0.5, seed=0):
             gW = [[0.0] * d for _ in range(C)]
             gb = [0.0] * C
             for i in range(n):
-                z = [sum(W[k][j] * X[i][j] for j in range(d)) + b[k]
-                     for k in range(C)]
+                z = [sum(W[k][j] * X[i][j] for j in range(d)) + b[k] for k in range(C)]
                 mx = max(z)
                 ez = [math.exp(v - mx) for v in z]
                 ssum = sum(ez)
@@ -111,15 +118,16 @@ def logistic_trainer(l2=1e-3, epochs=300, lr=0.5, seed=0):
         def predict(rows):
             out = []
             for x in rows:
-                z = [sum(W[k][j] * x[j] for j in range(d)) + b[k]
-                     for k in range(C)]
+                z = [sum(W[k][j] * x[j] for j in range(d)) + b[k] for k in range(C)]
                 mx = max(z)
                 ez = [math.exp(v - mx) for v in z]
                 ssum = sum(ez)
                 out.append([v / ssum for v in ez])
             return out
+
         predict.classes = classes
         return predict
+
     return train
 
 
@@ -147,17 +155,17 @@ def knn_trainer(k=1, smoothing=1e-3):
         def predict(query):
             out = []
             for q in query:
-                d = sorted(range(len(rows)),
-                           key=lambda i: sum((a - b) ** 2
-                                             for a, b in zip(rows[i], q)))
+                d = sorted(range(len(rows)), key=lambda i: sum((a - b) ** 2 for a, b in zip(rows[i], q)))
                 votes = [smoothing] * len(classes)
                 for i in d[:k]:
                     votes[idx[labs[i]]] += 1.0
                 tot = sum(votes)
                 out.append([v / tot for v in votes])
             return out
+
         predict.classes = classes
         return predict
+
     return train
 
 
@@ -179,9 +187,18 @@ def attack_dataset(model_predict, in_X, in_y, out_X, out_y):
     return rows, lab, cls
 
 
-def synthesize(target_predict, c, n_features, feature_values=None,
-               k_max=None, k_min=1, conf_min=0.8, iter_max=1000,
-               rej_max=10, seed=0):
+def synthesize(
+    target_predict,
+    c,
+    n_features,
+    feature_values=None,
+    k_max=None,
+    k_min=1,
+    conf_min=0.8,
+    iter_max=1000,
+    rej_max=10,
+    seed=0,
+):
     r"""Algorithm 1: synthesise a record the target classifies as ``c``.
 
     Implemented as printed. ``feature_values`` gives the allowed values per
@@ -205,13 +222,11 @@ def synthesize(target_predict, c, n_features, feature_values=None,
     rng = _rng(seed)
     vals = feature_values or [[0.0, 1.0]] * n_features
     if len(vals) != n_features:
-        raise ValueError("memb: feature_values must have one entry per "
-                         "feature")
+        raise ValueError("memb: feature_values must have one entry per feature")
 
     def rand_record(base=None, k=None):
         if base is None:
-            return [vals[j][int(rng.random() * len(vals[j]))]
-                    for j in range(n_features)]
+            return [vals[j][int(rng.random() * len(vals[j]))] for j in range(n_features)]
         x = list(base)
         picks = set()
         while len(picks) < min(k, n_features):
@@ -229,8 +244,7 @@ def synthesize(target_predict, c, n_features, feature_values=None,
     for _ in range(int(iter_max)):
         y = list(target_predict([x])[0])
         if c >= len(y):
-            raise ValueError("memb: class %r is outside the target's output "
-                             "vector" % (c,))
+            raise ValueError("memb: class %r is outside the target's output vector" % (c,))
         yc = y[c]
         if yc >= y_best:
             if yc > conf_min and c == max(range(len(y)), key=lambda t: y[t]):
@@ -258,8 +272,7 @@ def synthesize_marginals(X, n, seed=0):
     cols = [[row[j] for row in X] for j in range(d)]
     out = []
     for _ in range(int(n)):
-        out.append([cols[j][int(rng.random() * len(cols[j]))]
-                    for j in range(d)])
+        out.append([cols[j][int(rng.random() * len(cols[j]))] for j in range(d)])
     return out
 
 
@@ -270,8 +283,7 @@ def synthesize_noisy(X, fraction=0.1, feature_values=None, seed=0):
         raise ValueError("memb: fraction must lie in [0, 1]")
     rng = _rng(seed)
     d = len(X[0])
-    vals = feature_values or [sorted(set(row[j] for row in X))
-                              for j in range(d)]
+    vals = feature_values or [sorted(set(row[j] for row in X)) for j in range(d)]
     out = []
     for row in X:
         x = list(row)
@@ -295,10 +307,15 @@ def precision_recall(pred, truth):
     fn = sum(1 for p, t in zip(pred, truth) if p == 0 and t == 1)
     tn = sum(1 for p, t in zip(pred, truth) if p == 0 and t == 0)
     n = tp + fp + fn + tn
-    return {"precision": tp / float(tp + fp) if tp + fp else float("nan"),
-            "recall": tp / float(tp + fn) if tp + fn else float("nan"),
-            "accuracy": (tp + tn) / float(n) if n else float("nan"),
-            "tp": tp, "fp": fp, "fn": fn, "tn": tn}
+    return {
+        "precision": tp / float(tp + fp) if tp + fp else float("nan"),
+        "recall": tp / float(tp + fn) if tp + fn else float("nan"),
+        "accuracy": (tp + tn) / float(n) if n else float("nan"),
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tn": tn,
+    }
 
 
 def _sorted_features(vec, top=None):
@@ -306,9 +323,17 @@ def _sorted_features(vec, top=None):
     return s if top is None else s[:top]
 
 
-def memb(target_predict, shadow_data, eval_in, eval_out, train_fn=None,
-         attack_train_fn=None, n_shadow=None, sort_features=False,
-         threshold=0.5):
+def memb(
+    target_predict,
+    shadow_data,
+    eval_in,
+    eval_out,
+    train_fn=None,
+    attack_train_fn=None,
+    n_shadow=None,
+    sort_features=False,
+    threshold=0.5,
+):
     r"""Run a shadow-training membership inference attack.
 
     Parameters
@@ -369,7 +394,7 @@ def memb(target_predict, shadow_data, eval_in, eval_out, train_fn=None,
         attack_train_fn = logistic_trainer()
     specs = list(shadow_data)
     if n_shadow is not None:
-        specs = specs[:int(n_shadow)]
+        specs = specs[: int(n_shadow)]
     if not specs:
         raise ValueError("memb: at least one shadow model is needed")
 
@@ -392,13 +417,11 @@ def memb(target_predict, shadow_data, eval_in, eval_out, train_fn=None,
         idx = [t for t in range(len(rows)) if classes[t] == c]
         if len(set(labels[t] for t in idx)) < 2:
             continue
-        feats = [_sorted_features(rows[t]) if sort_features else rows[t]
-                 for t in idx]
+        feats = [_sorted_features(rows[t]) if sort_features else rows[t] for t in idx]
         per_class[c] = attack_train_fn(feats, [labels[t] for t in idx])
 
     if not per_class:
-        raise ValueError("memb: no class had both in and out examples, so no "
-                         "attack model could be trained")
+        raise ValueError("memb: no class had both in and out examples, so no attack model could be trained")
 
     eval_X = list(eval_in[0]) + list(eval_out[0])
     eval_y = list(eval_in[1]) + list(eval_out[1])
@@ -422,38 +445,41 @@ def memb(target_predict, shadow_data, eval_in, eval_out, train_fn=None,
     for c in sorted(set(eval_y)):
         sel = [t for t in range(len(eval_y)) if eval_y[t] == c]
         if sel:
-            by_class[c] = precision_recall([preds[t] for t in sel],
-                                           [truth[t] for t in sel])
-    return RichResult(payload={
-        "estimate": metrics,
-        "metrics": metrics,
-        "per_class": by_class,
-        "predictions": preds,
-        "scores": scores,
-        "truth": truth,
-        "n_shadow": len(specs),
-        "attack_train_size": len(rows),
-        "attack_classes": sorted(per_class),
-        "threshold": float(threshold),
-        "note": "the attack can only find a gap that exists: against a "
-                "target that does not overfit, precision falls to the "
-                "base rate (Shokri et al. 2017, section VII)",
-        "method": "shadow-trained membership inference (Shokri et al. 2017)",
-    })
+            by_class[c] = precision_recall([preds[t] for t in sel], [truth[t] for t in sel])
+    return RichResult(
+        payload={
+            "estimate": metrics,
+            "metrics": metrics,
+            "per_class": by_class,
+            "predictions": preds,
+            "scores": scores,
+            "truth": truth,
+            "n_shadow": len(specs),
+            "attack_train_size": len(rows),
+            "attack_classes": sorted(per_class),
+            "threshold": float(threshold),
+            "note": "the attack can only find a gap that exists: against a "
+            "target that does not overfit, precision falls to the "
+            "base rate (Shokri et al. 2017, section VII)",
+            "method": "shadow-trained membership inference (Shokri et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("memb: membership inference (Shokri et al. 2017). Black-box "
-            "output vector in, member/non-member out. Train k SHADOW "
-            "models on data distributed like the target's, where you DO "
-            "know membership; their outputs on their own training data are "
-            "labelled 'in' and on a disjoint test set 'out'; that labelled "
-            "set trains the attack model -- one per output class, since "
-            "the tell is class-conditional. Shadow data from Algorithm 1 "
-            "synthesis against the target, from feature marginals, or from "
-            "noisy real data. Metrics are precision and recall over "
-            "members. The attack lives on the train/test gap: no "
-            "overfitting, no attack.")
+    return (
+        "memb: membership inference (Shokri et al. 2017). Black-box "
+        "output vector in, member/non-member out. Train k SHADOW "
+        "models on data distributed like the target's, where you DO "
+        "know membership; their outputs on their own training data are "
+        "labelled 'in' and on a disjoint test set 'out'; that labelled "
+        "set trains the attack model -- one per output class, since "
+        "the tell is class-conditional. Shadow data from Algorithm 1 "
+        "synthesis against the target, from feature marginals, or from "
+        "noisy real data. Metrics are precision and recall over "
+        "members. The attack lives on the train/test gap: no "
+        "overfitting, no attack."
+    )
 
 
 # compact alias per ledger/NAMING.md

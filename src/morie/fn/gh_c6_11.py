@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_markov_con"]
@@ -40,13 +39,19 @@ def ghosal_markov_con(a0=0.3, b0=0.6, n=3000, seed=42):
     b_hat = (1.0 + n10) / (2.0 + n10 + n11)
     # stationary KL between truth and posterior-mean chain
     pi0 = b0 / (a0 + b0)
+
     def bkl(p, q):
-        return p * math.log(p / q) + (1 - p) * math.log(
-            (1 - p) / (1 - q))
+        return p * math.log(p / q) + (1 - p) * math.log((1 - p) / (1 - q))
+
     kl = pi0 * bkl(a0, a_hat) + (1 - pi0) * bkl(b0, b_hat)
-    res = RichResult(payload={"estimate": kl,
-                              "a_hat": a_hat, "b_hat": b_hat,
-                              "method": "Markov transition-KL consistency (GvdV 2017 Thm 6.42)"})
+    res = RichResult(
+        payload={
+            "estimate": kl,
+            "a_hat": a_hat,
+            "b_hat": b_hat,
+            "method": "Markov transition-KL consistency (GvdV 2017 Thm 6.42)",
+        }
+    )
     return with_describe_pointer(res, "gh_c6_11")
 
 

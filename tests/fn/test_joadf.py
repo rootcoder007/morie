@@ -1,7 +1,6 @@
 """Tests for joadf.joseph_adf_unit_root_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.joadf import joseph_adf_unit_root_test
 
 

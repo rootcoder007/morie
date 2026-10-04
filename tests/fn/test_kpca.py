@@ -1,7 +1,6 @@
 """Tests for morie.fn.kpca -- Kernel PCA."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import PcaRes
 from morie.fn.kpca import kernel_pca, kpca
 

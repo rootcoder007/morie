@@ -80,9 +80,14 @@ def schabenberger_covariance_function(coords, z, n_bins=15, max_dist=None):
     return RichResult(
         title="Empirical covariance function",
         summary_lines=[("sill C(0)", sill), ("bins", int(n_bins))],
-        payload={"lag": lag, "covariance": cov, "semivariogram": gam,
-                 "implied_semivariogram": sill - cov, "sill": sill,
-                 "n_pairs": cnt},
+        payload={
+            "lag": lag,
+            "covariance": cov,
+            "semivariogram": gam,
+            "implied_semivariogram": sill - cov,
+            "sill": sill,
+            "n_pairs": cnt,
+        },
     )
 
 

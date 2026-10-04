@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.mc_variance_via_residuals import (
     mc_variance_via_residuals,
 )

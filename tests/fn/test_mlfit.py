@@ -1,7 +1,5 @@
 """Tests for mlfit.ml_loglik."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mlfit import ml_loglik
 
 

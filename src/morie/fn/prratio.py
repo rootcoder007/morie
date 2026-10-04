@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['prevratio', 'prevalence_ratio']
+__all__ = ["prevratio", "prevalence_ratio"]
 
 
 def prevratio(prev_exposed, prev_unexposed, n_exposed=None, n_unexposed=None, alpha=0.05):
@@ -43,20 +43,27 @@ def prevratio(prev_exposed, prev_unexposed, n_exposed=None, n_unexposed=None, al
     Methodology 3:21.  Open access; the delta-method standard error for
     log PR used here is the standard binomial one.
     """
-    pe = float(prev_exposed); pu = float(prev_unexposed)
+    pe = float(prev_exposed)
+    pu = float(prev_unexposed)
     if not 0 < pe < 1 or not 0 < pu < 1:
         raise ValueError("prevalences must be strictly between 0 and 1")
     pr = pe / pu
     lo = hi = se = float("nan")
     if n_exposed is not None and n_unexposed is not None:
-        se = math.sqrt((1 - pe) / (pe * float(n_exposed))
-                       + (1 - pu) / (pu * float(n_unexposed)))
+        se = math.sqrt((1 - pe) / (pe * float(n_exposed)) + (1 - pu) / (pu * float(n_unexposed)))
         z = C.qnorm(1.0 - float(alpha) / 2.0)
         lo = math.exp(math.log(pr) - z * se)
         hi = math.exp(math.log(pr) + z * se)
-    return RichResult(payload={
-        "pr": pr, "log_pr": math.log(pr), "se_log": se,
-        "ci_lower": lo, "ci_upper": hi, "method": "Prevalence ratio"})
+    return RichResult(
+        payload={
+            "pr": pr,
+            "log_pr": math.log(pr),
+            "se_log": se,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "method": "Prevalence ratio",
+        }
+    )
 
 
 prevalence_ratio = prevratio

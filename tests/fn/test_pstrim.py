@@ -1,7 +1,6 @@
 """Tests for propensity_trim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pstrim import propensity_trim
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.cstlk — custody lockdown frequency."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cstlk import custody_lockdown_freq
 
 

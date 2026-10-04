@@ -101,12 +101,22 @@ def scanstat(O, E, zones, highonly=True):
         raise ValueError("no candidate zones supplied")
     mx = max(ll)
     bi = ll.index(mx)
-    return RichResult(payload={
-        "loglr": ll, "best": bi, "maxloglr": mx,
-        "bestzone": [int(t) for t in zones[bi]], "Oz": Ozs, "Ez": Ezs,
-        "rrin": rin, "rrout": rout, "Otot": Ot, "Etot": Et,
-        "nzone": len(ll),
-        "method": "Kulldorff spatial scan statistic (Bivand et al. 2013 eq. 10.3)"})
+    return RichResult(
+        payload={
+            "loglr": ll,
+            "best": bi,
+            "maxloglr": mx,
+            "bestzone": [int(t) for t in zones[bi]],
+            "Oz": Ozs,
+            "Ez": Ezs,
+            "rrin": rin,
+            "rrout": rout,
+            "Otot": Ot,
+            "Etot": Et,
+            "nzone": len(ll),
+            "method": "Kulldorff spatial scan statistic (Bivand et al. 2013 eq. 10.3)",
+        }
+    )
 
 
 bivand2013_chapter_10_equation_3 = scanstat

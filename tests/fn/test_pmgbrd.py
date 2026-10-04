@@ -1,8 +1,8 @@
 """Tests for pm_gemm_burden — PAF + attributable deaths via GEMM."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pmgbrd import pm_gemm_burden, pmgbrd
 from morie.fn.pmgemm import pm_gemm_rr
 

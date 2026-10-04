@@ -1,6 +1,6 @@
 """Tests for prsPEG.peg_parser."""
 
-from morie.fn.prsPEG import peg_parser, lit, seq
+from morie.fn.prsPEG import lit, peg_parser, seq
 
 
 def test_prsPEG_basic():

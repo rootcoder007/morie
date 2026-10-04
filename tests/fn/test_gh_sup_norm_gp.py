@@ -1,7 +1,6 @@
 """Tests for gh_sup_norm_gp.ghosal_sup_norm_contraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_sup_norm_gp import ghosal_sup_norm_contraction
 
 
@@ -20,10 +19,7 @@ def test_gh_sup_norm_gp_basic():
 
     # Compute expected rates independently from the documented formula
     # eps_n = n^{-s/(2s+d)} * (log n)^{log_power}.
-    expected_rates = [
-        float(n) ** (-s / (2.0 * s + d)) * np.log(float(n)) ** log_power
-        for n in ns
-    ]
+    expected_rates = [float(n) ** (-s / (2.0 * s + d)) * np.log(float(n)) ** log_power for n in ns]
     expected_estimate = expected_rates[-1]
 
     rate_by_n = result["rate_by_n"]
@@ -49,7 +45,7 @@ def test_gh_sup_norm_gp_edge():
 
     # With default s=1, d=1, log_power=0.5, the single rate is
     # 42^{-1/3} * (log 42)^{0.5}.
-    expected = float(42.0) ** (-1.0 / 3.0) * np.log(42.0) ** 0.5
+    expected = 42.0 ** (-1.0 / 3.0) * np.log(42.0) ** 0.5
     assert np.isclose(float(result["rate_by_n"][0]), float(expected))
     assert np.isclose(float(result["estimate"]), float(expected))
 

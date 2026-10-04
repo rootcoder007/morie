@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE as the ratio of squared efficacies -- Theorem 13.2.2."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['areratio', 'gibbons_are_formula']
+__all__ = ["areratio", "gibbons_are_formula"]
 
 
 def areratio(deriv, var, deriv_star, var_star):

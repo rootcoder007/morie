@@ -1,7 +1,6 @@
 """Tests for manova_one."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.manova import manova_one
 
 

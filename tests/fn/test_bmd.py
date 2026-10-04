@@ -1,7 +1,6 @@
 """Tests for morie.fn.bmd — benchmark dose estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bmd import benchmark_dose
 
 

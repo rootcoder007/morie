@@ -1,7 +1,5 @@
 """Tests for gb651c.gibbons_ctrl_median_curtail."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb651c import gibbons_ctrl_median_curtail
 
 

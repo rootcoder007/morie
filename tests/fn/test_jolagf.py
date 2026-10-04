@@ -18,5 +18,3 @@ def test_jolagf_edge():
         joseph_lag_feature([1.0, 2.0, 3.0], [0])
     with pytest.raises(ValueError, match="too short"):
         joseph_lag_feature([1.0, 2.0], [2])
-
-

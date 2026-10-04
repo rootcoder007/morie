@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.sdpwts import min_eigenvalue_sdp, semidefinite_program
 
-
 F0 = [[0.0, 1.0], [1.0, 0.0]]
 I2 = [[1.0, 0.0], [0.0, 1.0]]
 
@@ -19,7 +18,7 @@ def test_sdpwts_basic():
     assert 0.0 <= r["objective"] - 1.0 <= r["gap"]
     assert r["min_eigenvalue"] > 0.0
     e = min_eigenvalue_sdp([[3.0, 1.0], [1.0, 2.0]])
-    assert e["lambda_min"] == pytest.approx((5 - 5 ** 0.5) / 2, rel=1e-12)
+    assert e["lambda_min"] == pytest.approx((5 - 5**0.5) / 2, rel=1e-12)
     assert e["error"] <= e["gap"]
 
 

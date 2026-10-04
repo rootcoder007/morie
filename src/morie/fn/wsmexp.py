@@ -63,9 +63,9 @@ def wasserman_expectation(x, f):
     xf = x * f
     est = float(0.5 * np.sum(dx * (xf[1:] + xf[:-1])))
     mass = float(0.5 * np.sum(dx * (f[1:] + f[:-1])))
-    return RichResult(payload={
-        "estimate": est, "density_mass": mass, "n": int(x.size),
-        "method": "E[X] = int x f(x) dx (trapezoid)"})
+    return RichResult(
+        payload={"estimate": est, "density_mass": mass, "n": int(x.size), "method": "E[X] = int x f(x) dx (trapezoid)"}
+    )
 
 
 def cheatsheet():

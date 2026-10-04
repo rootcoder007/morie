@@ -95,17 +95,25 @@ def ma_network_node_split(yi, vi, design, edge):
     if pos[e[1]] > 0:
         cvec[pos[e[1]] - 1] += 1.0
     indirect = sum(cvec[j] * beta[j] for j in range(p))
-    v_ind = sum(cvec[r] * cov[r][s] * cvec[s]
-                for r in range(p) for s in range(p))
+    v_ind = sum(cvec[r] * cov[r][s] * cvec[s] for r in range(p) for s in range(p))
     diff = direct - indirect
     sd = math.sqrt(v_dir + v_ind)
     z = diff / sd if sd > 0.0 else float("nan")
     pv = 2.0 * (1.0 - core.pnorm(abs(z))) if sd > 0.0 else float("nan")
-    return RichResult(payload={
-        "direct": direct, "v_direct": v_dir, "indirect": indirect,
-        "v_indirect": v_ind, "diff": diff, "z": z, "p": pv,
-        "k_direct": len(dir_idx), "k_indirect": len(rest),
-        "method": "Node-splitting inconsistency check"})
+    return RichResult(
+        payload={
+            "direct": direct,
+            "v_direct": v_dir,
+            "indirect": indirect,
+            "v_indirect": v_ind,
+            "diff": diff,
+            "z": z,
+            "p": pv,
+            "k_direct": len(dir_idx),
+            "k_indirect": len(rest),
+            "method": "Node-splitting inconsistency check",
+        }
+    )
 
 
 def cheatsheet():

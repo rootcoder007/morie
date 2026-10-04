@@ -112,10 +112,12 @@ def abod(X, k=None):
     rank[order] = np.arange(n)
     return RichResult(
         title="Angle-based outlier detection",
-        summary_lines=[("n", n), ("d", int(X.shape[1])),
-                       ("mode", "approximate" if k else "exact")],
+        summary_lines=[("n", n), ("d", int(X.shape[1])), ("mode", "approximate" if k else "exact")],
         payload={
-            "abof": abof, "score": score, "rank": rank, "k": k,
+            "abof": abof,
+            "score": score,
+            "rank": rank,
+            "k": k,
             "method": "abod",
         },
     )

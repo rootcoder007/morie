@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmisc -- Normalized mutual information."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nmisc import nmi, nmisc
 

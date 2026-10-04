@@ -71,7 +71,7 @@ def geron_shannon_entropy(y, base=2.0):
     p = counts / counts.sum()
     nz = p[p > 0]
     H = float(-np.sum(nz * (np.log(nz) / np.log(base))))
-    H = H + 0.0 if H != 0.0 else 0.0   # a pure node gives -0.0; report plain 0.0
+    H = H + 0.0 if H != 0.0 else 0.0  # a pure node gives -0.0; report plain 0.0
     K = int(classes.size)
 
     return RichResult(

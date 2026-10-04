@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wrs', 'gibbons_wilcoxon_ranksum']
+__all__ = ["wrs", "gibbons_wilcoxon_ranksum"]
 
 
 def wrs(x, y):

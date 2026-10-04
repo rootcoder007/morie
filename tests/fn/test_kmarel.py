@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmarel import kamath_ragas_answer_relevance
 
 
@@ -33,9 +31,7 @@ def test_kmarel_edge():
     # model returns text reverse-questions; embed turns each into a vector.
     model = lambda a: ["reverse_q_1", "reverse_q_2"]
     embed = lambda q: [1.0, 0.0] if q == "reverse_q_1" else [0.0, 1.0]
-    result = kamath_ragas_answer_relevance(
-        answer, original_question, model, embed=embed
-    )
+    result = kamath_ragas_answer_relevance(answer, original_question, model, embed=embed)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert result["n"] == 2
@@ -55,7 +51,7 @@ import morie.fn.kmarel as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

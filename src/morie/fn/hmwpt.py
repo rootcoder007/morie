@@ -93,7 +93,7 @@ def geron_wordpiece_tokenizer(corpus, vocab_size=50):
 
     splits = {w: _split(w) for w in counts}
     alphabet = sorted({p for s in splits.values() for p in s})
-    if V < len(alphabet):
+    if len(alphabet) > V:
         raise ValueError(
             f"geron_wordpiece_tokenizer: vocab_size {V} is smaller than the {len(alphabet)}-piece alphabet; "
             "every character must be representable"

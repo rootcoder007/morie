@@ -1,7 +1,6 @@
 """Tests for snaivf.seasonal_naive."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.snaivf import seasonal_naive
 
 

@@ -62,10 +62,17 @@ def weighted_variance(y, weights=None):
     # design-free standard error of the weighted mean
     sw2 = sum(v * v for v in w)
     se = math.sqrt(s2 * sw2 / (sw * sw)) if s2 == s2 else float("nan")
-    return RichResult(payload={
-        "estimate": float(s2), "mean": float(mu), "sd": float(sd),
-        "se": float(se), "sumw": float(sw), "n": n,
-        "method": "weighted variance, sum(w (y-ybar_w)^2)/(sum(w)-1) [Lohr 2010]"})
+    return RichResult(
+        payload={
+            "estimate": float(s2),
+            "mean": float(mu),
+            "sd": float(sd),
+            "se": float(se),
+            "sumw": float(sw),
+            "n": n,
+            "method": "weighted variance, sum(w (y-ybar_w)^2)/(sum(w)-1) [Lohr 2010]",
+        }
+    )
 
 
 # CANONICAL TEST

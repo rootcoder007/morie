@@ -103,7 +103,7 @@ def dp_covariance(X, C=1.0, epsilon=1.0, delta=1e-5, seed=None, project_psd=True
     sigma = gaussian_sigma(C**2 / n, epsilon, delta)
     rng = np.random.default_rng(seed)
     noise = rng.normal(0.0, sigma, (p, p))
-    noise = np.triu(noise) + np.triu(noise, 1).T   # symmetric: one draw per pair
+    noise = np.triu(noise) + np.triu(noise, 1).T  # symmetric: one draw per pair
     raw = S + noise
 
     w = np.linalg.eigvalsh(raw)
@@ -116,15 +116,25 @@ def dp_covariance(X, C=1.0, epsilon=1.0, delta=1e-5, seed=None, project_psd=True
         out = raw
     return RichResult(
         title="DP covariance",
-        summary_lines=[("epsilon", epsilon), ("p", p), ("sigma", sigma),
-                       ("negative eigenvalues", n_neg)],
-        warnings=([f"{n_neg} of {p} eigenvalues were negative before projection; "
-                   "the budget may be too small for this dimension"]
-                  if n_neg > p // 2 else []),
+        summary_lines=[("epsilon", epsilon), ("p", p), ("sigma", sigma), ("negative eigenvalues", n_neg)],
+        warnings=(
+            [
+                f"{n_neg} of {p} eigenvalues were negative before projection; "
+                "the budget may be too small for this dimension"
+            ]
+            if n_neg > p // 2
+            else []
+        ),
         payload={
-            "release": out, "raw": raw, "sigma": sigma,
-            "clipped_fraction": clipped, "n_negative_eigenvalues": n_neg,
-            "epsilon": epsilon, "delta": delta, "C": C, "n": int(n),
+            "release": out,
+            "raw": raw,
+            "sigma": sigma,
+            "clipped_fraction": clipped,
+            "n_negative_eigenvalues": n_neg,
+            "epsilon": epsilon,
+            "delta": delta,
+            "C": C,
+            "n": int(n),
             "method": "dp_covariance",
         },
     )

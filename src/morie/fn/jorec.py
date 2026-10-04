@@ -45,7 +45,12 @@ def recmulti(x, lags, horizon):
     res = _core.recmulti(x=x, lags=lags, horizon=horizon)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("first", res["first"]), ("last", res["last"]), ("mean", res["mean"]), ("nmodels", res["nmodels"])],
+        summary_lines=[
+            ("first", res["first"]),
+            ("last", res["last"]),
+            ("mean", res["mean"]),
+            ("nmodels", res["nmodels"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

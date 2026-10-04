@@ -1,7 +1,6 @@
 """Tests for gb_hw.gibbons_hodges_wilcoxon."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_hw import gibbons_hodges_wilcoxon
 
 

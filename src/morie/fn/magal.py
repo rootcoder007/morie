@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Galbraith (radial) plot coordinates."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -56,10 +54,17 @@ def ma_galbraith(yi, se_i):
     x = [1.0 / s[i] for i in range(k)]
     slope = sum(z[i] * x[i] for i in range(k)) / sum(t * t for t in x)
     resid = [z[i] - slope * x[i] for i in range(k)]
-    return RichResult(payload={
-        "z": z, "x": x, "slope": slope, "resid": resid,
-        "n_outside_2": sum(1 for t in resid if abs(t) > 2.0), "k": k,
-        "method": "Galbraith (radial) plot"})
+    return RichResult(
+        payload={
+            "z": z,
+            "x": x,
+            "slope": slope,
+            "resid": resid,
+            "n_outside_2": sum(1 for t in resid if abs(t) > 2.0),
+            "k": k,
+            "method": "Galbraith (radial) plot",
+        }
+    )
 
 
 def cheatsheet():

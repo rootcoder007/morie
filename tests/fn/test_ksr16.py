@@ -1,7 +1,6 @@
 """Tests for ksr16.kosorok_influence_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr16 import kosorok_influence_function
 
 

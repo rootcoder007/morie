@@ -1,7 +1,6 @@
 """Tests for posterior_kernel_regression.posterior_kernel_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.posterior_kernel_regression import (
     posterior_kernel_regression,
 )

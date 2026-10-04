@@ -36,24 +36,28 @@ def kamath_ch6_toxicity_probability(Yhat, c, threshold=0.5):
     groups = list(Yhat)
     if not groups:
         raise ValueError("Yhat is empty; there are no draws.")
-    nested = all(not isinstance(g, str) and hasattr(g, "__len__")
-                 for g in groups)
+    nested = all(not isinstance(g, str) and hasattr(g, "__len__") for g in groups)
     draws = groups if nested else [groups]
     if nested and not callable(c):
-        raise ValueError("with nested generations c must be a callable "
-                         "generation -> score.")
+        raise ValueError("with nested generations c must be a callable generation -> score.")
     per, n_gen = [], 0
     for g in draws:
         flags, arr, outs = _flags(g, c, threshold)
         per.append(float(1.0 if flags.sum() >= 1 else 0.0))
         n_gen += len(outs)
     arr = np.asarray(per, dtype=float)
-    return RichResult(payload={
-        "estimate": float(arr.mean()), "per_draw": per,
-        "n_draws": len(per), "n_generations": n_gen,
-        "threshold": float(threshold), "single_draw": not nested,
-        "n": n_gen,
-        "method": "Toxicity Probability (Kamath Eq 6.24)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr.mean()),
+            "per_draw": per,
+            "n_draws": len(per),
+            "n_generations": n_gen,
+            "threshold": float(threshold),
+            "single_draw": not nested,
+            "n": n_gen,
+            "method": "Toxicity Probability (Kamath Eq 6.24)",
+        }
+    )
 
 
 def cheatsheet():

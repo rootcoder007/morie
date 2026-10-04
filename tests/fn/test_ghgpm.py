@@ -1,7 +1,6 @@
 """Tests for ghgpm.ghosal_gp_matern."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghgpm import ghosal_gp_matern
 
 

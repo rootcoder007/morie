@@ -1,7 +1,6 @@
 """Tests for hmkmpp.geron_kmeans_plus_plus."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmkmpp import geron_kmeans_plus_plus
 
 

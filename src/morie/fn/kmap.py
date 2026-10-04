@@ -8,9 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_autoprompt_gradient_search"]
 
 
-def kamath_autoprompt_gradient_search(template, dataset, model,
-                                      vocab=None, grad_fn=None,
-                                      passes=1):
+def kamath_autoprompt_gradient_search(template, dataset, model, vocab=None, grad_fn=None, passes=1):
     r"""Fill each trigger slot with argmax_v of the candidate score.
 
     ``template`` is the prompt as a token list with ``None`` at every
@@ -40,18 +38,15 @@ def kamath_autoprompt_gradient_search(template, dataset, model,
     (['b'], 0.5)
     """
     if not callable(model):
-        raise ValueError("model must be callable model(filled_template,"
-                         " dataset) -> loss.")
+        raise ValueError("model must be callable model(filled_template, dataset) -> loss.")
     if vocab is None or len(list(vocab)) == 0:
-        raise ValueError("vocab= is required and must be non-empty: "
-                         "AutoPrompt searches over a candidate set.")
+        raise ValueError("vocab= is required and must be non-empty: AutoPrompt searches over a candidate set.")
     V = list(vocab)
     filled = list(template)
     slots = [i for i, tok in enumerate(filled) if tok is None]
     if not slots:
-        raise ValueError("the template has no trigger slots; mark them "
-                         "with None.")
-    for i in slots:                      # a starting value to score
+        raise ValueError("the template has no trigger slots; mark them with None.")
+    for i in slots:  # a starting value to score
         filled[i] = V[0]
     if grad_fn is not None and not callable(grad_fn):
         raise ValueError("grad_fn must be callable or None.")
@@ -69,22 +64,25 @@ def kamath_autoprompt_gradient_search(template, dataset, model,
                     scores.append(float(model(trial, dataset)))
                 pick = int(np.argmin(scores))
             else:
-                g = np.atleast_1d(np.asarray(
-                    grad_fn(list(filled), dataset, i), dtype=float))
+                g = np.atleast_1d(np.asarray(grad_fn(list(filled), dataset, i), dtype=float))
                 if g.size != len(V):
-                    raise ValueError(
-                        f"grad_fn returned {g.size} scores for a "
-                        f"vocabulary of {len(V)}.")
+                    raise ValueError(f"grad_fn returned {g.size} scores for a vocabulary of {len(V)}.")
                 pick = int(np.argmax(g))
             filled[i] = V[pick]
             history.append((i, V[pick]))
     final = float(model(list(filled), dataset))
-    return RichResult(payload={
-        "estimate": final, "loss": final,
-        "trigger_tokens": [filled[i] for i in slots],
-        "prompt": list(filled), "positions": slots,
-        "history": history, "n": len(slots),
-        "method": "AutoPrompt trigger search (Kamath Ch 3)"})
+    return RichResult(
+        payload={
+            "estimate": final,
+            "loss": final,
+            "trigger_tokens": [filled[i] for i in slots],
+            "prompt": list(filled),
+            "positions": slots,
+            "history": history,
+            "n": len(slots),
+            "method": "AutoPrompt trigger search (Kamath Ch 3)",
+        }
+    )
 
 
 def cheatsheet():

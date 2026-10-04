@@ -27,17 +27,16 @@ def poisson_rate_mean(b0, bs, xs, exposure):
     """
     value = _acd.poisson_rate_mean(b0, bs, xs, exposure)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.15)"
     return RichResult(
-        title='Poisson rate regression with an offset',
+        title="Poisson rate regression with an offset",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '4e15: log(mu) = log(t) + b0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 4.15]'
+    return "4e15: log(mu) = log(t) + b0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 4.15]"

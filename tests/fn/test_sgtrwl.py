@@ -1,7 +1,6 @@
 """Tests for sgtrwl.sgt_random_walk_laplacian."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtrwl import sgt_random_walk_laplacian
 
 

@@ -1,6 +1,5 @@
 """Tests for ksr026 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr026 import kosorok_ch2_empirical_distribution_function

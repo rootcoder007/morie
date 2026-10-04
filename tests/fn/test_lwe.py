@@ -1,7 +1,6 @@
 """Test lwe_sample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import CryptoResult
 from morie.fn.lwe import lwe_sample
 

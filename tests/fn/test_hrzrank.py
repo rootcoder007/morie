@@ -1,7 +1,6 @@
 """Tests for hrzrank.horowitz_semipar_rank."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzrank import horowitz_semipar_rank
 
 

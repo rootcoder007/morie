@@ -18,8 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["apxkern", "mvsml_categorical_count_eq_8_13"]
 
 
-def apxkern(X, m_index, Z_u1, Z_E, kernel='linear', gamma=None):
-
+def apxkern(X, m_index, Z_u1, Z_E, kernel="linear", gamma=None):
     """y = mu 1 + Z_E beta_E + P_u1 f + P_u2 l + eps (eq. 8.13), the
     approximate-kernel model extended to several environments.  Steps
     1-7 of the summary on p.296 build P = K_{L,m} U S^(-1/2) from m of
@@ -29,8 +28,7 @@ def apxkern(X, m_index, Z_u1, Z_E, kernel='linear', gamma=None):
     ridge.  Keys: P, P_u1, P_u2, design, widths, rank.
     """
 
-    res = RichResult(payload=_gp.approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel=kernel,
-                                 gamma=gamma))
+    res = RichResult(payload=_gp.approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel=kernel, gamma=gamma))
 
     return with_describe_pointer(res, "msm158")
 

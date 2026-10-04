@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chi-square test of independence in an r x c contingency table."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['chiindep', 'gibbons_chisq_contingency']
+__all__ = ["chiindep", "gibbons_chisq_contingency"]
 
 
 def chiindep(table, correct=False):

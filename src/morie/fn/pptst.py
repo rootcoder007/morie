@@ -84,9 +84,14 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     ml = sum(ylag) / n
     mc = sum(ycur) / n
     sxx = sum((v - ml) ** 2 for v in ylag)
-    nan_out = TestResult(test_name="Phillips-Perron", statistic=np.nan,
-                         p_value=np.nan, n=T, method=f"PP Z_tau (lags={lags})",
-                         extra={"critical_values": {}, "lags": lags, "lrvar": np.nan})
+    nan_out = TestResult(
+        test_name="Phillips-Perron",
+        statistic=np.nan,
+        p_value=np.nan,
+        n=T,
+        method=f"PP Z_tau (lags={lags})",
+        extra={"critical_values": {}, "lags": lags, "lrvar": np.nan},
+    )
     if n - 2 <= 0 or sxx <= 0.0:
         return nan_out
     rho = sum((a - ml) * (c - mc) for a, c in zip(ylag, ycur)) / sxx
@@ -100,16 +105,17 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     s = ssr / n
     lrvar = s
     for l in range(1, lags + 1):
-        lrvar += (2.0 / n) * (1.0 - l / (lags + 1.0)) * sum(
-            res[t] * res[t - l] for t in range(l, n))
-    ybar2 = sum((c - mc) ** 2 for c in ycur) / n ** 2
+        lrvar += (2.0 / n) * (1.0 - l / (lags + 1.0)) * sum(res[t] * res[t - l] for t in range(l, n))
+    ybar2 = sum((c - mc) ** 2 for c in ycur) / n**2
     if lrvar <= 0.0 or ybar2 <= 0.0:
         return nan_out
     lam = 0.5 * (lrvar - s) / lrvar
-    z_tau = (s / lrvar) ** 0.5 * t_rho - lam * lrvar ** 0.5 / ybar2 ** 0.5
-    cv = {"1%": -3.4335 - 5.999 / n - 29.25 / n ** 2,
-          "5%": -2.8621 - 2.738 / n - 8.36 / n ** 2,
-          "10%": -2.5671 - 1.438 / n - 4.48 / n ** 2}
+    z_tau = (s / lrvar) ** 0.5 * t_rho - lam * lrvar**0.5 / ybar2**0.5
+    cv = {
+        "1%": -3.4335 - 5.999 / n - 29.25 / n**2,
+        "5%": -2.8621 - 2.738 / n - 8.36 / n**2,
+        "10%": -2.5671 - 1.438 / n - 4.48 / n**2,
+    }
     if z_tau <= cv["1%"]:
         pval = 0.01
     elif z_tau <= cv["5%"]:

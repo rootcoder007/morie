@@ -1,7 +1,6 @@
 """Test split_signal (sgspl)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sgspl import sgspl, split_signal
 

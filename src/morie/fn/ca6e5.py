@@ -28,17 +28,16 @@ def ca_chapter_6_equation_5(neg2ll_null, neg2ll_full):
     """
     value = _ca_crim.model_chi2(neg2ll_null, neg2ll_full)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (6.5)"
     return RichResult(
-        title='Poisson model chi2 = (-2LLnull) - (-2LLfull)',
+        title="Poisson model chi2 = (-2LLnull) - (-2LLfull)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca6e5: Model chi2 = (-2LL_null) - (-2LL_full) [Weisburd et al. 2022, eq. 6.5]'
+    return "ca6e5: Model chi2 = (-2LL_null) - (-2LL_full) [Weisburd et al. 2022, eq. 6.5]"

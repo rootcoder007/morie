@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmclc import geron_classification_localization
 
 
@@ -16,9 +15,20 @@ def test_hmclc_basic():
     result = geron_classification_localization(image, model)
     assert isinstance(result, dict)
     # All keys named in the return statement must be present
-    expected_keys = {"class_probs", "predicted_class", "box", "box_corners",
-                     "iou", "loss", "loss_class", "loss_box", "n_classes",
-                     "estimate", "n", "method"}
+    expected_keys = {
+        "class_probs",
+        "predicted_class",
+        "box",
+        "box_corners",
+        "iou",
+        "loss",
+        "loss_class",
+        "loss_box",
+        "n_classes",
+        "estimate",
+        "n",
+        "method",
+    }
     assert expected_keys.issubset(set(result.keys()))
     # softmax([0, 0]) == [0.5, 0.5] -- derivable
     assert result["class_probs"][0] == [0.5, 0.5]
@@ -37,7 +47,8 @@ def test_hmclc_edge():
     model = lambda img: np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
     # Perfect box match: IoU == 1, loss_box == 0, loss == log(2)
     result = geron_classification_localization(
-        image, model,
+        image,
+        model,
         gt_class=[0],
         gt_box=[[5.0, 5.0, 2.0, 4.0]],
     )
@@ -60,7 +71,7 @@ import morie.fn.hmclc as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,8 +22,9 @@ def mvsml_ridge_lasso_elastic_eq_9_4(X, beta0, beta):
     hyperplane divides p-dimensional space into two halves and the
     sign of the left-hand side identifies the half. Keys: estimate."""
     s = _gp.hyperplane_side(X, beta0, beta)
-    res = RichResult(payload={"estimate": float(s[0]), "side": s,
-                              "method": "hyperplane decision rule (MVSML 2022 eq. 9.4)"})
+    res = RichResult(
+        payload={"estimate": float(s[0]), "side": s, "method": "hyperplane decision rule (MVSML 2022 eq. 9.4)"}
+    )
     return with_describe_pointer(res, "msm171")
 
 

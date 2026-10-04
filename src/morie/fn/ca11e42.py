@@ -28,8 +28,7 @@ def ca_chapter_11_equation_42(q, df):
     """
     value = _ca_crim.i_squared(q, df)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.42)"
@@ -41,4 +40,4 @@ def ca_chapter_11_equation_42(q, df):
 
 
 def cheatsheet():
-    return 'ca11e42: I^2 = ((Q - df) / Q) * 100 [Weisburd et al. 2022, eq. 11.42]'
+    return "ca11e42: I^2 = ((Q - df) / Q) * 100 [Weisburd et al. 2022, eq. 11.42]"

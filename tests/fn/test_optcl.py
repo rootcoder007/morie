@@ -6,9 +6,9 @@ Also Armstrong et al., section 5.4 "Nonparametric Methods - Optimal
 Classification", printed p.156 (NOT a Ch 7-10; that book has six chapters).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.optcl import optimal_classification as oc
 
 
@@ -44,7 +44,8 @@ def test_optcl_a_lopsided_vote_carries_little_information():
     """When almost everyone votes the same way the modal guess is already
     nearly perfect, so PRE is small even though accuracy is high."""
     x = np.linspace(-3, 3, 20)
-    votes = np.ones(20, dtype=int); votes[0] = 0
+    votes = np.ones(20, dtype=int)
+    votes[0] = 0
     r = oc(x, votes)
     assert r["correct_class"] >= 19
     assert r["pre"] <= 1.0

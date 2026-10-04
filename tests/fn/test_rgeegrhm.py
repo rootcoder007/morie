@@ -26,10 +26,7 @@ def test_rgeegrhm_edge():
     # the ACF of a 25 Hz rhythm also peaks at lags 8 and 12, inside the
     # alpha lag range; only the fundamental (lag 4) may be used
     assert rangayyan_eeg_rhythm_detect(x, 100.0)["frequency_hz"] == 25.0
-    mixed = [math.sin(2 * math.pi * 10 * n / 100) + 0.2 * math.sin(2 * math.pi * 25 * n / 100)
-             for n in range(400)]
+    mixed = [math.sin(2 * math.pi * 10 * n / 100) + 0.2 * math.sin(2 * math.pi * 25 * n / 100) for n in range(400)]
     assert rangayyan_eeg_rhythm_detect(mixed, 100.0)["peak_lag"] == 10
     with pytest.raises(ValueError, match="Nyquist"):
         rangayyan_eeg_rhythm_detect(x, 20.0)
-
-

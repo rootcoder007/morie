@@ -1,7 +1,6 @@
 """Tests for evdec.evt_declustering_runs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evdec import evt_declustering_runs
 
 
@@ -35,16 +34,18 @@ def test_evdec_basic():
             gap += 1
     expected_n_clusters = cur
     expected_n_exceed = sum(1 for v in expected_cid if v > 0)
-    expected_theta = (
-        expected_n_clusters / float(expected_n_exceed)
-        if expected_n_exceed else float("nan")
-    )
+    expected_theta = expected_n_clusters / float(expected_n_exceed) if expected_n_exceed else float("nan")
 
     assert isinstance(result, dict)
     # Documented keys must all be present.
     for key in (
-        "cluster_max", "cluster_id", "n_clusters", "theta",
-        "n_exceed", "estimate", "n",
+        "cluster_max",
+        "cluster_id",
+        "n_clusters",
+        "theta",
+        "n_exceed",
+        "estimate",
+        "n",
     ):
         assert key in result
 

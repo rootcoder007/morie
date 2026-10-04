@@ -40,9 +40,9 @@ def compgeo(x):
         raise ValueError("compositions must be strictly positive")
     D = len(x)
     lg = sum(math.log(v) for v in x) / D
-    return RichResult(payload={
-        "geomean": math.exp(lg), "log_geomean": lg, "D": D,
-        "method": "Geometric mean of a composition"})
+    return RichResult(
+        payload={"geomean": math.exp(lg), "log_geomean": lg, "D": D, "method": "Geometric mean of a composition"}
+    )
 
 
 aitchison_geomean = compgeo

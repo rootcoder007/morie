@@ -62,8 +62,7 @@ def linfn(a, b, x=None, a2=None, b2=None):
         "direction": "rising" if b > 0.0 else ("falling" if b < 0.0 else "parallel"),
         "root": (-a / b) if b != 0.0 else None,
     }
-    summary = [("y = a + b x", (a, b)), ("angle (deg)", payload["angle_deg"]),
-               ("direction", payload["direction"])]
+    summary = [("y = a + b x", (a, b)), ("angle (deg)", payload["angle_deg"]), ("direction", payload["direction"])]
     if x is not None:
         if hasattr(x, "__len__"):
             xs = [float(v) for v in x]

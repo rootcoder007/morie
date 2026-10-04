@@ -1,7 +1,6 @@
 """Tests for gh_c3_9.ghosal_quantile_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_9 import ghosal_quantile_prior
 
 

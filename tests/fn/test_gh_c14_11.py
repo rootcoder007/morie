@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_11 import ghosal_py_powerlaw
 
 
@@ -18,9 +17,7 @@ def test_gh_c14_11_basic():
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
     # Documented formula: E K_n ~ (Gamma(theta+1) / (d * Gamma(theta+d))) * n^d
-    expected_theory = (
-        math.gamma(theta + 1.0) / (d * math.gamma(theta + d)) * float(n) ** d
-    )
+    expected_theory = math.gamma(theta + 1.0) / (d * math.gamma(theta + d)) * float(n) ** d
     K = float(result["estimate"])
     assert K > 0.0
     # K_n grows as a power law in n; should be in the same ballpark as theory.

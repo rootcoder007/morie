@@ -61,13 +61,19 @@ def bound_frequentist(lower, upper, alpha=0.05):
         su = 1e-12
     r = bound_variance_term(tl, tu, sl, su, n, alpha)
     ci = r["ci"]
-    return RichResult(payload={
-        "lower": float(ci[0]), "upper": float(ci[1]),
-        "width": float(ci[1]) - float(ci[0]), "c": float(r["c"]),
-        "z_one_sided": float(r["z_one_sided"]),
-        "z_two_sided": float(r["z_two_sided"]),
-        "delta": float(r["delta"]), "n": n,
-        "method": "Frequentist bound with valid coverage"})
+    return RichResult(
+        payload={
+            "lower": float(ci[0]),
+            "upper": float(ci[1]),
+            "width": float(ci[1]) - float(ci[0]),
+            "c": float(r["c"]),
+            "z_one_sided": float(r["z_one_sided"]),
+            "z_two_sided": float(r["z_two_sided"]),
+            "delta": float(r["delta"]),
+            "n": n,
+            "method": "Frequentist bound with valid coverage",
+        }
+    )
 
 
 def cheatsheet():

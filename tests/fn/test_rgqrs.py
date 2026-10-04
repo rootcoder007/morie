@@ -13,9 +13,9 @@ test builds the beats, so the ground truth needs no transcription and no
 appeal to the implementation.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgqrs import rangayyan_qrs_detect
 
 
@@ -34,11 +34,10 @@ def _synthetic_ecg(fs=360.0, bpm=60.0, n_beats=12, noise=0.0, seed=0):
     for b in range(n_beats):
         r = period // 2 + b * period
         peaks.append(r)
-        w = int(round(0.040 * fs))                      # ~40 ms QRS
+        w = int(round(0.040 * fs))  # ~40 ms QRS
         t = np.arange(-w, w + 1)
-        x[r - w : r + w + 1] += 1.6 * np.exp(-((t / (w / 2.2)) ** 2)) \
-                                - 0.4 * np.exp(-(((t - w) / (w / 1.5)) ** 2))
-        tw = int(round(0.16 * fs))                      # broad T wave, later
+        x[r - w : r + w + 1] += 1.6 * np.exp(-((t / (w / 2.2)) ** 2)) - 0.4 * np.exp(-(((t - w) / (w / 1.5)) ** 2))
+        tw = int(round(0.16 * fs))  # broad T wave, later
         ts = r + int(round(0.22 * fs))
         if ts + tw < n:
             u = np.arange(-tw, tw + 1)
@@ -58,8 +57,7 @@ def test_detects_every_beat_in_a_clean_synthetic_ecg():
     assert got.size == true_peaks.size, f"expected {true_peaks.size} beats, got {got.size}"
     # Within 50 ms of truth -- the refinement window the detector itself uses.
     tol = int(round(0.05 * fs))
-    assert np.all(np.abs(got - true_peaks) <= tol), \
-        f"max offset {np.max(np.abs(got - true_peaks))} samples > {tol}"
+    assert np.all(np.abs(got - true_peaks) <= tol), f"max offset {np.max(np.abs(got - true_peaks))} samples > {tol}"
 
 
 def test_ignores_t_waves():

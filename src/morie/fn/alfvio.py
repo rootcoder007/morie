@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-from . import _alfcore as A
 from ._richresult import RichResult
 
 __all__ = ["alphafold_violation"]
@@ -15,9 +14,18 @@ def _flat(x, tol):
     return e if e > 0.0 else 0.0
 
 
-def alphafold_violation(blen=None, blen_lit=None, blen_sigma=None,
-                        cosang=None, cosang_lit=None, cosang_sigma=None,
-                        dnb=None, dnb_lit=None, factor=12.0, clash_tol=1.5):
+def alphafold_violation(
+    blen=None,
+    blen_lit=None,
+    blen_sigma=None,
+    cosang=None,
+    cosang_lit=None,
+    cosang_sigma=None,
+    dnb=None,
+    dnb_lit=None,
+    factor=12.0,
+    clash_tol=1.5,
+):
     """Structural violation loss -- supplement section 1.9.11, equations
     (44)-(47), p. 40.
 
@@ -70,17 +78,14 @@ def alphafold_violation(blen=None, blen_lit=None, blen_sigma=None,
     """
     lb = 0.0
     if blen is not None:
-        lb = sum(_flat(blen[i] - blen_lit[i], factor * blen_sigma[i])
-                 for i in range(len(blen))) / len(blen)
+        lb = sum(_flat(blen[i] - blen_lit[i], factor * blen_sigma[i]) for i in range(len(blen))) / len(blen)
     la = 0.0
     if cosang is not None:
-        la = sum(_flat(cosang[i] - cosang_lit[i], factor * cosang_sigma[i])
-                 for i in range(len(cosang))) / len(cosang)
+        la = sum(_flat(cosang[i] - cosang_lit[i], factor * cosang_sigma[i]) for i in range(len(cosang))) / len(cosang)
     lc = 0.0
     if dnb is not None:
         # one-sided: only distances shorter than the clashing distance
-        lc = sum(max(dnb_lit[i] - clash_tol - dnb[i], 0.0)
-                 for i in range(len(dnb)))
+        lc = sum(max(dnb_lit[i] - clash_tol - dnb[i], 0.0) for i in range(len(dnb)))
 
     return RichResult(
         payload={

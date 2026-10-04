@@ -74,14 +74,16 @@ def geron_hebb_rule(x, y_true, y_pred, w, eta):
     if y_true.size != y_pred.size:
         raise ValueError(f"y_true has {y_true.size} entries but y_pred has {y_pred.size}.")
     if W.shape != (x.size, y_true.size):
-        raise ValueError(
-            f"w must have shape (n_in, n_out) = ({x.size}, {y_true.size}), got {W.shape}."
-        )
+        raise ValueError(f"w must have shape (n_in, n_out) = ({x.size}, {y_true.size}), got {W.shape}.")
     eta = float(eta)
     if not np.isfinite(eta) or eta <= 0:
         raise ValueError(f"eta must be a positive finite float, got {eta}.")
-    if not (np.all(np.isfinite(x)) and np.all(np.isfinite(y_true))
-            and np.all(np.isfinite(y_pred)) and np.all(np.isfinite(W))):
+    if not (
+        np.all(np.isfinite(x))
+        and np.all(np.isfinite(y_true))
+        and np.all(np.isfinite(y_pred))
+        and np.all(np.isfinite(W))
+    ):
         raise ValueError("x, y_true, y_pred and w must all be finite.")
 
     err = y_true - y_pred
@@ -90,8 +92,7 @@ def geron_hebb_rule(x, y_true, y_pred, w, eta):
 
     return RichResult(
         title="Hebb / perceptron update",
-        summary_lines=[("||error||", float(np.linalg.norm(err))),
-                       ("||dW||", float(np.linalg.norm(dW)))],
+        summary_lines=[("||error||", float(np.linalg.norm(err))), ("||dW||", float(np.linalg.norm(dW)))],
         payload={
             "w_new": W_new.tolist(),
             "delta_w": dW.tolist(),

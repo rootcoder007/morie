@@ -20,11 +20,16 @@ def epiarnb(beta0, beta1, i_lag, nb_lag, b1):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Epidemic log-autoregression with neighbours", payload=_c.epiarnb(beta0=beta0, beta1=beta1, i_lag=i_lag, nb_lag=nb_lag, b1=b1))
+    return RichResult(
+        title="Epidemic log-autoregression with neighbours",
+        payload=_c.epiarnb(beta0=beta0, beta1=beta1, i_lag=i_lag, nb_lag=nb_lag, b1=b1),
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_4 = epiarnb
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e4: Epidemic log-autoregression with neighbours"
+    return (
+        "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e4: Epidemic log-autoregression with neighbours"
+    )

@@ -1,7 +1,5 @@
 """Tests for siepid.si_epidemic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.siepid import si_epidemic
 
 

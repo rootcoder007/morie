@@ -6,6 +6,7 @@ the same 5x5 rook lattice.  These are the packages the Bivand,
 Pebesma & Gomez-Rubio examples actually use, so matching them is what
 makes the capability real rather than merely present.
 """
+
 import math
 
 import pytest
@@ -90,8 +91,7 @@ def _sar_fixture():
     x2 = [((i * 5) % 7) - 0.25 * ((i * 2) % 3) for i in range(n)]
     e = [((i * 13) % 17) / 17 - 0.5 for i in range(n)]
     rhs = [2 + 1.5 * x1[i] - 0.8 * x2[i] + e[i] for i in range(n)]
-    A = [[(1.0 if i == j else 0.0) - 0.4 * W25[i][j] for j in range(n)]
-         for i in range(n)]
+    A = [[(1.0 if i == j else 0.0) - 0.4 * W25[i][j] for j in range(n)] for i in range(n)]
     y = rb._solve_local(A, rhs)
     return y, [[x1[i], x2[i]] for i in range(n)]
 
@@ -189,8 +189,7 @@ def test_ripley_k_recovers_pi_r_squared_under_csr():
     for k, rr in zip(out["K"], r):
         assert abs(k - math.pi * rr * rr) / (math.pi * rr * rr) < 0.35
     # K is non-decreasing in r
-    assert all(a <= b + 1e-9
-               for a, b in zip(out["K"], out["K"][1:]))
+    assert all(a <= b + 1e-9 for a, b in zip(out["K"], out["K"][1:]))
 
 
 def test_ripley_k_edge_correction_raises_k_near_the_boundary():
@@ -221,8 +220,7 @@ def test_cokriging_reduces_to_ordinary_kriging_without_cross_structure():
     pts = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
     z1 = [1.0, 2.0, 3.0, 4.0]
     z2 = [9.0, 9.0, 9.0, 9.0]
-    out = rb.cokriging(pts, z1, z2, [0.5, 0.5],
-                       cross_vario=lambda h: 0.0)
+    out = rb.cokriging(pts, z1, z2, [0.5, 0.5], cross_vario=lambda h: 0.0)
     assert abs(sum(out["lambda"]) - 1.0) < 1e-9
     assert max(abs(m) for m in out["mu"]) < 1e-9
     # symmetric configuration and target -> prediction is the mean
@@ -240,8 +238,7 @@ def test_cokriging_weights_satisfy_the_unbiasedness_constraints():
 
 def test_cokriging_rejects_mismatched_lengths():
     with pytest.raises(ValueError):
-        rb.cokriging([[0.0, 0.0], [1.0, 1.0]], [1.0], [1.0, 2.0],
-                     [0.5, 0.5])
+        rb.cokriging([[0.0, 0.0], [1.0, 1.0]], [1.0], [1.0, 2.0], [0.5, 0.5])
 
 
 def test_randomised_response_transition_probabilities():

@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficacy of the Mann-Whitney / Wilcoxon rank-sum test -- eq. (13.3.10)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['effwrs', 'gibbons_wrs_efficacy']
+__all__ = ["effwrs", "gibbons_wrs_efficacy"]
 
 
 def effwrs(m, n, integral):

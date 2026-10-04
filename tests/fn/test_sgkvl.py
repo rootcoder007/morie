@@ -1,7 +1,6 @@
 """Tests for kriging cross-validation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgkvl import sgkvl
 
 

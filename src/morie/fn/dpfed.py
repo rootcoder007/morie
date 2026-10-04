@@ -91,15 +91,19 @@ def dp_fedavg(client_updates, C=1.0, sigma=1.0, seed=None):
     agg = (Uc.sum(axis=0) + noise) / m
     return RichResult(
         title="DP federated averaging",
-        summary_lines=[("clients", int(m)), ("C", C),
-                       ("noise sd / client", float(sigma * C / m))],
-        warnings=["the privacy unit here is the CLIENT; clipping per example "
-                  "inside a client would leave a heavy contributor exposed"],
+        summary_lines=[("clients", int(m)), ("C", C), ("noise sd / client", float(sigma * C / m))],
+        warnings=[
+            "the privacy unit here is the CLIENT; clipping per example "
+            "inside a client would leave a heavy contributor exposed"
+        ],
         payload={
-            "aggregate": agg, "clipped_fraction": float(np.mean(norms > C)),
+            "aggregate": agg,
+            "clipped_fraction": float(np.mean(norms > C)),
             "noise_sd_per_client": float(sigma * C / m),
             "noise_sd_aggregate": float(sigma * C),
-            "n_clients": int(m), "C": C, "sigma": float(sigma),
+            "n_clients": int(m),
+            "C": C,
+            "sigma": float(sigma),
             "method": "dp_fedavg",
         },
     )

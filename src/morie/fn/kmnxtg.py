@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_nextgpt_any2any"]
 
 
-def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders,
-                           output_modalities=None):
+def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders, output_modalities=None):
     """y_m = Decoder_m(LLM([Encoder_in(x_in)])).
 
     Orchestration only: every learned piece is the caller's, and the
@@ -33,14 +32,11 @@ def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders,
     ['image', 'text']
     """
     if not isinstance(inputs_by_modality, dict) or not inputs_by_modality:
-        raise ValueError(
-            "inputs_by_modality must be a non-empty dict "
-            "{modality: input}.")
+        raise ValueError("inputs_by_modality must be a non-empty dict {modality: input}.")
     if not isinstance(encoders, dict):
         raise ValueError("encoders must be a dict {modality: callable}.")
     if not isinstance(decoders, dict) or not decoders:
-        raise ValueError(
-            "decoders must be a non-empty dict {modality: callable}.")
+        raise ValueError("decoders must be a non-empty dict {modality: callable}.")
     if not callable(llm):
         raise ValueError("llm must be callable {modality: features} -> state.")
 
@@ -48,8 +44,8 @@ def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders,
     missing = [m for m in in_mods if m not in encoders]
     if missing:
         raise ValueError(
-            f"no encoder for input modalities {missing}; an any-to-any "
-            "model may not silently drop an input.")
+            f"no encoder for input modalities {missing}; an any-to-any model may not silently drop an input."
+        )
     feats = {}
     for m in in_mods:
         f = encoders[m]
@@ -64,8 +60,7 @@ def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders,
     if state is None:
         raise ValueError("the LLM returned no state to decode.")
 
-    out_mods = sorted(decoders) if output_modalities is None \
-        else list(output_modalities)
+    out_mods = sorted(decoders) if output_modalities is None else list(output_modalities)
     missing_d = [m for m in out_mods if m not in decoders]
     if missing_d:
         raise ValueError(f"no decoder for requested modalities {missing_d}.")
@@ -75,12 +70,18 @@ def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders,
         if not callable(g):
             raise ValueError(f"the decoder for {m!r} is not callable.")
         outputs[m] = g(state)
-    return RichResult(payload={
-        "outputs": outputs, "features": feats, "llm_state": state,
-        "input_modalities": in_mods, "output_modalities": out_mods,
-        "estimate": len(outputs),
-        "n": len(in_mods) + len(out_mods),
-        "method": "NExT-GPT any-to-any encode / LLM / decode pipeline"})
+    return RichResult(
+        payload={
+            "outputs": outputs,
+            "features": feats,
+            "llm_state": state,
+            "input_modalities": in_mods,
+            "output_modalities": out_mods,
+            "estimate": len(outputs),
+            "n": len(in_mods) + len(out_mods),
+            "method": "NExT-GPT any-to-any encode / LLM / decode pipeline",
+        }
+    )
 
 
 def cheatsheet():

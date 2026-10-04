@@ -52,7 +52,8 @@ def kamath_mamba_ssm(x, A, B, C, delta):
         raise ValueError(
             "A must be the diagonal of the state matrix, shape (N,); a "
             "dense (N, N) A needs a matrix exponential, which is not "
-            "the selective-scan parameterisation.")
+            "the selective-scan parameterisation."
+        )
     A = np.atleast_1d(A).ravel()
     T, N = x.size, A.size
     if T == 0:
@@ -67,12 +68,11 @@ def kamath_mamba_ssm(x, A, B, C, delta):
     else:
         d = d.ravel()
         if d.size != T:
-            raise ValueError(
-                f"delta must be scalar or have {T} entries; got {d.size}.")
+            raise ValueError(f"delta must be scalar or have {T} entries; got {d.size}.")
     if np.any(d <= 0):
         raise ValueError(
-            "delta is a step size and must be positive; a non-positive "
-            "step inverts or freezes the discretisation.")
+            "delta is a step size and must be positive; a non-positive step inverts or freezes the discretisation."
+        )
 
     Abar = np.exp(d[:, None] * A[None, :])
     Bbar = d[:, None] * Bm
@@ -82,12 +82,17 @@ def kamath_mamba_ssm(x, A, B, C, delta):
         h = Abar[t] * h + Bbar[t] * x[t]
         hs.append(h.copy())
         ys.append(float(np.dot(Cm[t], h)))
-    return RichResult(payload={
-        "y": ys,
-        "states": [[float(v) for v in row] for row in hs],
-        "A_bar": [[float(v) for v in row] for row in Abar],
-        "estimate": ys[-1], "state_dim": N, "n": T,
-        "method": "Mamba selective SSM scan (ZOH, diagonal A)"})
+    return RichResult(
+        payload={
+            "y": ys,
+            "states": [[float(v) for v in row] for row in hs],
+            "A_bar": [[float(v) for v in row] for row in Abar],
+            "estimate": ys[-1],
+            "state_dim": N,
+            "n": T,
+            "method": "Mamba selective SSM scan (ZOH, diagonal A)",
+        }
+    )
 
 
 def cheatsheet():

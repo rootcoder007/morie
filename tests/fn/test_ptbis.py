@@ -1,8 +1,8 @@
 """Tests for point_biserial."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ptbis import point_biserial
 
 

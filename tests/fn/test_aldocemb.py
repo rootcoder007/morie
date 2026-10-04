@@ -10,5 +10,6 @@ def test_aldocemb_basic():
 
 def test_aldocemb_edge():
     import pytest
+
     with pytest.raises(ValueError, match="all-padding"):
         alammar_document_embedding_pool([[1.0]], [0])

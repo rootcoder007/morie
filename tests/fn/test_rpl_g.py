@@ -1,7 +1,6 @@
 """Tests for rpl_g — placement by gender."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_g import rplace_by_gender
 
 

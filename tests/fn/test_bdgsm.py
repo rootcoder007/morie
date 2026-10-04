@@ -1,7 +1,6 @@
 """Tests for bdgsm.bridge_sampling_marginal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdgsm import bridge_sampling_marginal
 
 

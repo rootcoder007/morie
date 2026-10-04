@@ -1,7 +1,6 @@
 """Tests for fzber.fauzi_berry_esseen_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzber import fauzi_berry_esseen_quantile
 
 
@@ -27,8 +26,8 @@ def test_fzber_basic():
 
     # estimate[i] = 2 * Phi(x[i]) - 1 computed independently.
     from math import erf, sqrt
-    expected_estimate = [2.0 * 0.5 * (1.0 + erf(float(xi) / sqrt(2.0))) - 1.0
-                        for xi in x]
+
+    expected_estimate = [2.0 * 0.5 * (1.0 + erf(float(xi) / sqrt(2.0))) - 1.0 for xi in x]
     assert np.allclose(np.asarray(result["estimate"]), np.asarray(expected_estimate))
 
 

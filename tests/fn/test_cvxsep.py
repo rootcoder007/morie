@@ -1,7 +1,6 @@
 """Tests for cvxsep.boyd_separating_hyperplane."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsep import boyd_separating_hyperplane
 
 
@@ -12,6 +11,8 @@ def test_cvxsep_basic():
     result = boyd_separating_hyperplane(C, D)
     assert isinstance(result, dict)
     assert "a" in result
+
+
 def test_cvxsep_edge():
     """Test edge cases."""
     C = np.random.default_rng(42).normal(0, 1, 100)

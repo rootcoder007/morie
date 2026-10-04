@@ -1,7 +1,5 @@
 """Tests for hrzdimr.horowitz_dimension_reduction."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hrzdimr import horowitz_dimension_reduction
 
 

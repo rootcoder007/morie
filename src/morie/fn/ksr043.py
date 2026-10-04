@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Quantile Hadamard sandwich inequality."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_quantile_hadamard_inequality"]
@@ -70,11 +69,15 @@ def kosorok_ch2_quantile_hadamard_inequality(F, h_n, t_n, p, eps_pn=None):
     lower = Fp(xi - eps)
     upper = Fp(xi)
     return RichResult(
-        payload={"lower": float(lower), "upper": float(upper),
-                 "xi_perturbed": float(xi), "p": p,
-                 "sandwich_holds": bool(lower <= p + 1e-8 <= upper + 1e-8),
-                 "eps_pn": eps,
-                 "method": "(F + t_n h_n)(xi - eps) <= p <= (F + t_n h_n)(xi)"}
+        payload={
+            "lower": float(lower),
+            "upper": float(upper),
+            "xi_perturbed": float(xi),
+            "p": p,
+            "sandwich_holds": bool(lower <= p + 1e-8 <= upper + 1e-8),
+            "eps_pn": eps,
+            "method": "(F + t_n h_n)(xi - eps) <= p <= (F + t_n h_n)(xi)",
+        }
     )
 
 

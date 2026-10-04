@@ -114,9 +114,7 @@ def geron_mode_collapse(samples, reference=None, tol=None):
         if R.ndim != 2 or R.size == 0:
             raise ValueError(f"geron_mode_collapse: reference must be a non-empty 2-D array, got shape {R.shape}")
         if R.shape[1] != S.shape[1]:
-            raise ValueError(
-                f"geron_mode_collapse: reference has {R.shape[1]} features but samples have {S.shape[1]}"
-            )
+            raise ValueError(f"geron_mode_collapse: reference has {R.shape[1]} features but samples have {S.shape[1]}")
         if not np.all(np.isfinite(R)):
             raise ValueError("geron_mode_collapse: reference contains non-finite values")
 

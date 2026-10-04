@@ -15,8 +15,10 @@ def _expit(x):
 def _data(n=40):
     S = [[float(k % 2)] for k in range(n)]
     H = [[math.sin(1.7 * k)] for k in range(n)]
-    A = [1.0 if ((29 * k + 3) % 67 + 0.5) / 67 < _expit(0.3 + 0.8 * h[0] - 0.5 * s[0]) else 0.0
-         for k, (h, s) in enumerate(zip(H, S))]
+    A = [
+        1.0 if ((29 * k + 3) % 67 + 0.5) / 67 < _expit(0.3 + 0.8 * h[0] - 0.5 * s[0]) else 0.0
+        for k, (h, s) in enumerate(zip(H, S))
+    ]
     return A, H, S
 
 

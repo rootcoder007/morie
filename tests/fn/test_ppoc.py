@@ -3,8 +3,6 @@
 from morie.fn import _array_core as np
 from morie.fn.ppoc import ppo
 
-import math
-
 
 def test_ppoc_basic():
     """Test basic functionality with random advantages and ratios."""

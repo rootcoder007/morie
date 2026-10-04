@@ -1,7 +1,6 @@
 """Tests for alnsw.smith_waterman."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alnsw import smith_waterman
 
 

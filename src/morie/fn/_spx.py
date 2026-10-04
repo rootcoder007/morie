@@ -221,8 +221,7 @@ def idftre(re, im):
     out = []
     for i in range(n):
         w = 2.0 * pi * i / n
-        out.append(fsum([re[k] * cos(w * k) - im[k] * sin(w * k)
-                         for k in range(n)]) / n)
+        out.append(fsum([re[k] * cos(w * k) - im[k] * sin(w * k) for k in range(n)]) / n)
     return out
 
 
@@ -248,6 +247,7 @@ def eucdist(a, b):
 def normcdf(z):
     """Phi(z) via erf; used only for the two-sided normal p-values."""
     from math import erf
+
     return 0.5 * (1.0 + erf(z / sqrt(2.0)))
 
 

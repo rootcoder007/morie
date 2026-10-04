@@ -1,7 +1,6 @@
 """Tests for grtop.geron_topk_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grtop import geron_topk_sampling
 
 

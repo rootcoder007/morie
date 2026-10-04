@@ -66,15 +66,23 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["rnacov", "rna_covariance", "mutual_information",
-           "parse_structure", "nussinov", "column_counts", "ALPHABET",
-           "PAIRS", "STRUCTURES", "cheatsheet"]
+__all__ = [
+    "rnacov",
+    "rna_covariance",
+    "mutual_information",
+    "parse_structure",
+    "nussinov",
+    "column_counts",
+    "ALPHABET",
+    "PAIRS",
+    "STRUCTURES",
+    "cheatsheet",
+]
 
 ALPHABET = ("A", "C", "G", "U")
 # Watson-Crick plus the wobble, which is a real pair and leaving it out
 # would score two thirds of a stem as unpaired.
-PAIRS = (("A", "U"), ("U", "A"), ("C", "G"), ("G", "C"), ("G", "U"),
-         ("U", "G"))
+PAIRS = (("A", "U"), ("U", "A"), ("C", "G"), ("G", "C"), ("G", "U"), ("U", "G"))
 STRUCTURES = ("given", "nussinov")
 
 _GAPS = ("-", ".", "~")
@@ -158,15 +166,12 @@ def parse_structure(s):
             stack.append(k)
         elif ch in ")>]}":
             if not stack:
-                raise ValueError("closing bracket at %d has nothing to "
-                                 "close" % k)
+                raise ValueError("closing bracket at %d has nothing to close" % k)
             pairs.append((stack.pop(), k))
         elif ch not in ".:_-,":
-            raise ValueError("character %r at %d is not dot-bracket"
-                             % (ch, k))
+            raise ValueError("character %r at %d is not dot-bracket" % (ch, k))
     if stack:
-        raise ValueError("%d bracket(s) never closed, first at %d"
-                         % (len(stack), stack[0]))
+        raise ValueError("%d bracket(s) never closed, first at %d" % (len(stack), stack[0]))
     pairs.sort()
     return pairs
 
@@ -225,8 +230,7 @@ def nussinov(seq, min_loop=3):
     return pairs, m[0][n - 1] if n else 0
 
 
-def rna_covariance(alignment, structure=None, correction="none",
-                   mode="given", min_loop=3, min_sequences=4):
+def rna_covariance(alignment, structure=None, correction="none", mode="given", min_loop=3, min_sequences=4):
     """Score the covariation supporting a structure in an alignment.
 
     Parameters
@@ -278,8 +282,7 @@ def rna_covariance(alignment, structure=None, correction="none",
 
     for i, j in pairs:
         if i < 0 or j >= L or i >= j:
-            raise ValueError("pair (%d, %d) is outside the alignment"
-                             % (i, j))
+            raise ValueError("pair (%d, %d) is outside the alignment" % (i, j))
 
     mis = []
     sup = []
@@ -293,39 +296,42 @@ def rna_covariance(alignment, structure=None, correction="none",
         if n < int(min_sequences):
             weak += 1
     total = _w.csum(mis) if mis else 0.0
-    strong = [k for k in range(len(pairs))
-              if sup[k] >= int(min_sequences) and mis[k] > 0.0]
-    return RichResult(payload={
-        "pair_i": [p[0] for p in pairs],
-        "pair_j": [p[1] for p in pairs],
-        "mutual_information": mis,
-        "support": sup,
-        "cells_seen": cells,
-        "n_pairs": len(pairs),
-        "n_weak": weak,
-        "n_covarying": len(strong),
-        "covarying": strong,
-        "total": total,
-        "estimate": total / len(pairs) if pairs else float("nan"),
-        "se": float("nan"),
-        "max_mi": max(mis) if mis else float("nan"),
-        "n_sequences": len(seqs),
-        "length": L,
-        "folded_pairs": folded,
-        "correction": correction,
-        "mode": mode,
-        "method": "RNA covariance model scoring",
-    })
+    strong = [k for k in range(len(pairs)) if sup[k] >= int(min_sequences) and mis[k] > 0.0]
+    return RichResult(
+        payload={
+            "pair_i": [p[0] for p in pairs],
+            "pair_j": [p[1] for p in pairs],
+            "mutual_information": mis,
+            "support": sup,
+            "cells_seen": cells,
+            "n_pairs": len(pairs),
+            "n_weak": weak,
+            "n_covarying": len(strong),
+            "covarying": strong,
+            "total": total,
+            "estimate": total / len(pairs) if pairs else float("nan"),
+            "se": float("nan"),
+            "max_mi": max(mis) if mis else float("nan"),
+            "n_sequences": len(seqs),
+            "length": L,
+            "folded_pairs": folded,
+            "correction": correction,
+            "mode": mode,
+            "method": "RNA covariance model scoring",
+        }
+    )
 
 
 rnacov = rna_covariance
 
 
 def cheatsheet():
-    return ("rnacov: RNA covariance model scoring. modes "
-            + ", ".join(STRUCTURES)
-            + "; mutual information in bits, conservation is not "
-              "covariation")
+    return (
+        "rnacov: RNA covariance model scoring. modes "
+        + ", ".join(STRUCTURES)
+        + "; mutual information in bits, conservation is not "
+        "covariation"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

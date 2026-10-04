@@ -50,12 +50,12 @@ def gibbons_range_dist(w, n, f=None, F=None):
     if F is None:
         F = stats.norm.cdf
 
-    val, _ = integrate.quad(
-        lambda t: (F(t + w) - F(t)) ** (n - 1) * f(t), -np.inf, np.inf, limit=200
-    )
+    val, _ = integrate.quad(lambda t: (F(t + w) - F(t)) ** (n - 1) * f(t), -np.inf, np.inf, limit=200)
     return RichResult(
         payload={
-            "cdf": float(min(max(n * val, 0.0), 1.0)), "w": w, "n": n,
+            "cdf": float(min(max(n * val, 0.0), 1.0)),
+            "w": w,
+            "n": n,
             "method": "F_W(w) = n int [F(x+w)-F(x)]^{n-1} f(x) dx (Ch. 2.7.2)",
         }
     )

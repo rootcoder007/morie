@@ -88,8 +88,7 @@ def geron_kfold_cv(n, K, shuffle=False, seed=0):
         raise ValueError(f"n must be at least 2 to split at all, got {n}.")
     if not (2 <= K <= n):
         raise ValueError(
-            f"K must lie in [2, {n}]; K = 1 leaves no validation fold and K > n "
-            f"would create empty folds. Got {K}."
+            f"K must lie in [2, {n}]; K = 1 leaves no validation fold and K > n would create empty folds. Got {K}."
         )
 
     order = _lcg_permutation(n, seed) if shuffle else np.arange(n)
@@ -105,8 +104,7 @@ def geron_kfold_cv(n, K, shuffle=False, seed=0):
 
     return RichResult(
         title="K-fold cross-validation",
-        summary_lines=[("K", K), ("Fold sizes", [len(f) for f in folds]),
-                       ("Shuffled", bool(shuffle))],
+        summary_lines=[("K", K), ("Fold sizes", [len(f) for f in folds]), ("Shuffled", bool(shuffle))],
         payload={
             "splits": splits,
             "val_folds": folds,

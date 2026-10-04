@@ -21,7 +21,10 @@ def menorm(beta0, beta1, x_true, tau):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Measurement-error normal outcome model", payload=_c.menorm(beta0=beta0, beta1=beta1, x_true=x_true, tau=tau))
+    return RichResult(
+        title="Measurement-error normal outcome model",
+        payload=_c.menorm(beta0=beta0, beta1=beta1, x_true=x_true, tau=tau),
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_16_equation_1 = menorm

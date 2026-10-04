@@ -7,9 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_chain_of_thought"]
 
 
-def kamath_chain_of_thought(prompt, model,
-                            trigger="Let's think step by step.",
-                            answer_marker="Answer:", parser=None):
+def kamath_chain_of_thought(prompt, model, trigger="Let's think step by step.", answer_marker="Answer:", parser=None):
     r"""y = parse(LLM(prompt + "Let us think step by step.")).
 
     ``model(prompt)`` is the caller's LLM. The reasoning is split from
@@ -51,13 +49,21 @@ def kamath_chain_of_thought(prompt, model,
             raise ValueError(
                 f"the generation contains no {answer_marker!r}; the "
                 "answer cannot be separated from the reasoning, and "
-                "the whole chain of thought is not an answer.")
+                "the whole chain of thought is not an answer."
+            )
         head, _, tail = text.partition(answer_marker)
         reasoning, answer = head.strip(), tail.strip()
-    return RichResult(payload={
-        "estimate": answer, "answer": answer, "reasoning": reasoning,
-        "prompt": full, "generation": text, "n": 1,
-        "method": "zero-shot chain-of-thought prompting (Kamath Ch 4)"})
+    return RichResult(
+        payload={
+            "estimate": answer,
+            "answer": answer,
+            "reasoning": reasoning,
+            "prompt": full,
+            "generation": text,
+            "n": 1,
+            "method": "zero-shot chain-of-thought prompting (Kamath Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

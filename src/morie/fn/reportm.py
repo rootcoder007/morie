@@ -77,10 +77,17 @@ def report_noisy_max(counts, epsilon, sensitivity=1.0, seed=1):
         if noisy > best:
             best = noisy
             idx = i
-    return RichResult(payload={
-        "index": float(idx), "winner": best, "estimate": float(idx),
-        "epsilon": eps, "scale": b, "n": n,
-        "method": "Report Noisy Max (Dwork-Roth 2014, Claim 3.9)"})
+    return RichResult(
+        payload={
+            "index": float(idx),
+            "winner": best,
+            "estimate": float(idx),
+            "epsilon": eps,
+            "scale": b,
+            "n": n,
+            "method": "Report Noisy Max (Dwork-Roth 2014, Claim 3.9)",
+        }
+    )
 
 
 #: Primary name for the module.
@@ -89,6 +96,7 @@ reportm = report_noisy_max
 
 def cheatsheet():
     return "reportm: Report Noisy Max index selection (Dwork-Roth 2014, Claim 3.9)."
+
 
 # public names resolved by fn/_lazy_map.json
 reportnoisymax = report_noisy_max

@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["alphafold_cropping"]
 
 
-def alphafold_cropping(seqlen, cropsize, start=1, target=None, pair=None,
-                       msa=None, mode="clamped"):
+def alphafold_cropping(seqlen, cropsize, start=1, target=None, pair=None, msa=None, mode="clamped"):
     """Residue cropping -- supplement section 1.2.8, pp. 7-8.
 
     Training crops the residue dimension of every feature to one contiguous
@@ -63,8 +62,7 @@ def alphafold_cropping(seqlen, cropsize, start=1, target=None, pair=None,
     if cropsize > seqlen:
         raise ValueError("cropsize %d exceeds seqlen %d" % (cropsize, seqlen))
     if start < 1 or start + cropsize - 1 > seqlen:
-        raise ValueError("crop [%d, %d] falls outside 1..%d"
-                         % (start, start + cropsize - 1, seqlen))
+        raise ValueError("crop [%d, %d] falls outside 1..%d" % (start, start + cropsize - 1, seqlen))
 
     nn = seqlen - cropsize
     # clamped: Uniform[1, n + 1]; unclamped: Uniform[1, n - x + 1], whose

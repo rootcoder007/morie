@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["testcond", "ghosal_test_cond"]
@@ -87,11 +86,19 @@ def testcond(prior_ball, log_entropy, sieve_mass, eps_bar, eps, n, Cconst):
     c1 = 1.0 if s1 >= 0.0 else 0.0
     c2 = 1.0 if s2 >= 0.0 else 0.0
     c3 = 1.0 if s3 >= 0.0 else 0.0
-    return RichResult(payload={
-        "holds": 1.0 if c1 and c2 and c3 else 0.0, "cond_prior": c1,
-        "cond_entropy": c2, "cond_sieve": c3, "slack_prior": s1,
-        "slack_entropy": s2, "slack_sieve": s3, "n_eps_bar_sq": neb,
-        "method": "Contraction-rate conditions, Ghosal Theorem 8.9"})
+    return RichResult(
+        payload={
+            "holds": 1.0 if c1 and c2 and c3 else 0.0,
+            "cond_prior": c1,
+            "cond_entropy": c2,
+            "cond_sieve": c3,
+            "slack_prior": s1,
+            "slack_entropy": s2,
+            "slack_sieve": s3,
+            "n_eps_bar_sq": neb,
+            "method": "Contraction-rate conditions, Ghosal Theorem 8.9",
+        }
+    )
 
 
 ghosal_test_cond = testcond

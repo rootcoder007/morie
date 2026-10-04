@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """One-sided Fisher exact test for a 2 x 2 table."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['fisherex1', 'gibbons_fisher_one_sided']
+__all__ = ["fisherex1", "gibbons_fisher_one_sided"]
 
 
 def fisherex1(table, alternative="greater"):

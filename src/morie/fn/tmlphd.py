@@ -136,13 +136,22 @@ def tmle_high_dim(y, D, X, lam):
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
     nzq = float(sum(1 for j in range(2, len(qb)) if qb[j] != 0.0))
     nzg = float(sum(1 for j in range(1, len(gb)) if gb[j] != 0.0))
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "nz_q": nzq, "nz_g": nzg, "n": n,
-        "method": "High-dimensional TMLE with L1-penalised nuisance models"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "nz_q": nzq,
+            "nz_g": nzg,
+            "n": n,
+            "method": "High-dimensional TMLE with L1-penalised nuisance models",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlphd: high-dimensional TMLE with lasso nuisance models."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlehighdim = tmle_high_dim

@@ -1,7 +1,6 @@
 """Tests for morie.fn.paapp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.paapp import paapp
 
 

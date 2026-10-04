@@ -1,7 +1,6 @@
 """Tests for gpregb.gp_regression_bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpregb import gp_regression_bayes
 
 
@@ -20,8 +19,13 @@ def test_gpregb_basic():
     X, y, X_test, lengthscales, noises = _grid_inputs(seed=42, n=20, d=3)
 
     result = gp_regression_bayes(
-        X, y, kernel=None, X_test=X_test,
-        lengthscales=lengthscales, noises=noises, variance=1.0,
+        X,
+        y,
+        kernel=None,
+        X_test=X_test,
+        lengthscales=lengthscales,
+        noises=noises,
+        variance=1.0,
     )
 
     assert isinstance(result, dict)

@@ -65,12 +65,21 @@ def sysamp(y, k):
     S2 = C.var(y, 1)
     Vsrs = (1.0 - n / N) * S2 / n
     rho = ((V * n / S2) - 1.0) / (n - 1) if S2 > 0 and n > 1 else float("nan")
-    return RichResult(payload={
-        "means": means, "population_mean": Yb, "variance": V,
-        "se": math.sqrt(V), "srs_variance": Vsrs,
-        "deff": V / Vsrs if Vsrs > 0 else float("nan"), "rho": rho,
-        "N": N, "n": n, "k": k,
-        "method": "Systematic sampling, exact design variance"})
+    return RichResult(
+        payload={
+            "means": means,
+            "population_mean": Yb,
+            "variance": V,
+            "se": math.sqrt(V),
+            "srs_variance": Vsrs,
+            "deff": V / Vsrs if Vsrs > 0 else float("nan"),
+            "rho": rho,
+            "N": N,
+            "n": n,
+            "k": k,
+            "method": "Systematic sampling, exact design variance",
+        }
+    )
 
 
 systematic_sampling = sysamp

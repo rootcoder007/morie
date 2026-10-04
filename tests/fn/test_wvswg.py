@@ -1,7 +1,6 @@
 """Tests for morie.fn.wvswg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvswg import wvswg
 
 

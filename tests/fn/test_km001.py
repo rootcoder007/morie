@@ -13,6 +13,8 @@ def test_km001_doctest():
 
 def test_km001_edge():
     import pytest
+
     from morie.fn.km001 import kamath_ch2_unidirectional_encoder_state
+
     with pytest.raises(ValueError):
         kamath_ch2_unidirectional_encoder_state([1.0], [1.0, 2.0])

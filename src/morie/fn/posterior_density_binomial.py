@@ -27,17 +27,16 @@ def posterior_density_binomial(pi, w, n, a, b):
     """
     value = _acd.posterior_density_binomial(pi, w, n, a, b)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.23)"
     return RichResult(
-        title='Beta posterior for a binomial probability',
+        title="Beta posterior for a binomial probability",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e23: p(pi|w) = Beta(w + a, n - w + b) density [Bilder & Loughin 2025, eq. 6.23]'
+    return "6e23: p(pi|w) = Beta(w + a, n - w + b) density [Bilder & Loughin 2025, eq. 6.23]"

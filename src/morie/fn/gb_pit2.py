@@ -37,7 +37,8 @@ def gibbons_pit_rng(U, F_inv):
     X = np.asarray([F_inv(u) for u in U], dtype=float)
     return RichResult(
         payload={
-            "X": X, "n": int(U.size),
+            "X": X,
+            "n": int(U.size),
             "method": "X = F^{-1}(U), inverse transform sampling (Example 2.5.2)",
         }
     )

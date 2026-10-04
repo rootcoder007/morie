@@ -1,7 +1,6 @@
 """Tests for dppca.dp_pca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dppca import dp_pca
 
 
@@ -13,6 +12,8 @@ def test_dppca_basic():
     result = dp_pca(X, k, epsilon)
     assert isinstance(result, dict)
     assert "components" in result
+
+
 def test_dppca_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

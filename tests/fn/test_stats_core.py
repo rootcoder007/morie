@@ -9,8 +9,7 @@ import pytest
 
 from morie.fn import _stats_core as ms
 
-S = json.loads(pathlib.Path(__file__).with_name(
-    "oracle_anchors.json").read_text())["stats"]
+S = json.loads(pathlib.Path(__file__).with_name("oracle_anchors.json").read_text())["stats"]
 
 
 def eq(a, b, tol=1e-9):

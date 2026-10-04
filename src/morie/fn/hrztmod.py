@@ -115,8 +115,7 @@ def horowitz_transformation_model(x, y, ny=21, nz=21, bandwidth=None):
     hy = float(bandwidth) if bandwidth is not None else HZ.silverman_bw(y)
 
     # beta by density-weighted average derivative, |beta_1| = 1.
-    hb = float(bandwidth) if bandwidth is not None else HZ.silverman_bw(
-        [float(X[i][0]) for i in range(n)])
+    hb = float(bandwidth) if bandwidth is not None else HZ.silverman_bw([float(X[i][0]) for i in range(n)])
     beta = H.index_dir(X, y, hb)
     Z = [0.0] * n
     for i in range(n):
@@ -146,13 +145,12 @@ def horowitz_transformation_model(x, y, ny=21, nz=21, bandwidth=None):
     wz = [dz] * nz
     wz[0] = dz / 2.0
     wz[nz - 1] = dz / 2.0
-    wt = 1.0 / (zb - za)          # w(z) uniform on S_w, satisfies (6.58)
+    wt = 1.0 / (zb - za)  # w(z) uniform on S_w, satisfies (6.58)
 
     inner = [0.0] * ny
     for k in range(ny):
         v = ygrid[k]
-        KY = [np.exp(-0.5 * ((yl[i] - v) / hy) ** 2) / H.SQRT2PI
-              for i in range(n)]
+        KY = [np.exp(-0.5 * ((yl[i] - v) / hy) ** 2) / H.SQRT2PI for i in range(n)]
         acc = 0.0
         for q in range(nz):
             zq = zgrid[q]
@@ -160,7 +158,7 @@ def horowitz_transformation_model(x, y, ny=21, nz=21, bandwidth=None):
             for i in range(n):
                 u = (Z[i] - zq) / hz
                 kk = np.exp(-0.5 * u * u) / H.SQRT2PI
-                dk = (u / hz) * kk            # d/dz K((Z_i - z)/h)
+                dk = (u / hz) * kk  # d/dz K((Z_i - z)/h)
                 ind = 1.0 if yl[i] <= v else 0.0
                 A += ind * kk
                 B += kk
@@ -187,22 +185,24 @@ def horowitz_transformation_model(x, y, ny=21, nz=21, bandwidth=None):
         if T[k] < T[k - 1] - 1e-12:
             monotone = False
 
-    return RichResult(payload={
-        "T_hat": T,
-        "beta_hat": [float(t) for t in beta],
-        "y_grid": ygrid,
-        "y0": y0,
-        "y2": y2,
-        "y1": y1,
-        "index": Z,
-        "i0": i0,
-        "monotone": monotone,
-        "bandwidth_y": hy,
-        "bandwidth_z": hz,
-        "n": n,
-        "d": d,
-        "method": "Horowitz (2009) eq. (6.60), Horowitz (1996) estimator of T",
-    })
+    return RichResult(
+        payload={
+            "T_hat": T,
+            "beta_hat": [float(t) for t in beta],
+            "y_grid": ygrid,
+            "y0": y0,
+            "y2": y2,
+            "y1": y1,
+            "index": Z,
+            "i0": i0,
+            "monotone": monotone,
+            "bandwidth_y": hy,
+            "bandwidth_z": hz,
+            "n": n,
+            "d": d,
+            "method": "Horowitz (2009) eq. (6.60), Horowitz (1996) estimator of T",
+        }
+    )
 
 
 def cheatsheet():

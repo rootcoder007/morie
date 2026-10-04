@@ -33,9 +33,14 @@ def gibbons_mw_var(m, n):
         raise ValueError("m and n must be at least 1.")
     var = m * n * (m + n + 1) / 12.0
     return RichResult(
-        payload={"mean": m * n / 2.0, "var": float(var),
-                 "sd": float(np.sqrt(var)), "m": m, "n": n,
-                 "method": "E(U) = mn/2, Var(U) = mn(m+n+1)/12 (Ch. 6.6)"}
+        payload={
+            "mean": m * n / 2.0,
+            "var": float(var),
+            "sd": float(np.sqrt(var)),
+            "m": m,
+            "n": n,
+            "method": "E(U) = mn/2, Var(U) = mn(m+n+1)/12 (Ch. 6.6)",
+        }
     )
 
 

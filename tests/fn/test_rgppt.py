@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_point_process
 
-
 EV = [0.0, 0.05, 0.09, 0.15, 0.2, 0.24, 0.31]
 
 

@@ -97,8 +97,7 @@ def _betai(a, b, x):
         return 0.0
     if x >= 1.0:
         return 1.0
-    lb = (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
-          + a * math.log(x) + b * math.log1p(-x))
+    lb = math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + a * math.log(x) + b * math.log1p(-x)
     front = math.exp(lb)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
@@ -224,9 +223,7 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
         Xm = np.column_stack([np.ones(Xm.shape[0]), Xm])
     n, p = Xm.shape
     if yv.size != n:
-        raise ValueError(
-            f"y has length {yv.size} but X has {n} rows."
-        )
+        raise ValueError(f"y has length {yv.size} but X has {n} rows.")
     pw = [int(v) for v in powers]
     if not pw:
         raise ValueError("powers must not be empty.")
@@ -237,9 +234,7 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
         )
     q = len(pw)
     if n <= p + q:
-        raise ValueError(
-            f"need more than p + q = {p + q} observations; got {n}."
-        )
+        raise ValueError(f"need more than p + q = {p + q} observations; got {n}.")
 
     beta_r, *_ = np.linalg.lstsq(Xm, yv, rcond=None)
     yhat = Xm @ beta_r
@@ -291,7 +286,8 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
             "n_params": p,
             "conclusion": (
                 "Reject functional form (p < 0.05): consider nonlinear terms."
-                if reject else "No evidence of misspecification."
+                if reject
+                else "No evidence of misspecification."
             ),
             "method": _METHOD,
         },
@@ -300,8 +296,8 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
             "so the conditional mean is not linear in X. The test does not "
             "say which of a missing polynomial term, a missing interaction "
             "or an omitted variable is responsible."
-            if reject else
-            "Powers of the fitted values add nothing significant. This is "
+            if reject
+            else "Powers of the fitted values add nothing significant. This is "
             "consistent with a correctly specified linear mean, but the test "
             "has no power against misspecification orthogonal to the fitted "
             "values."
@@ -316,10 +312,7 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
 
 
 def cheatsheet():
-    return (
-        "rsetf: Ramsey RESET F test for functional-form misspecification, "
-        "regressing on powers of the fitted values"
-    )
+    return "rsetf: Ramsey RESET F test for functional-form misspecification, regressing on powers of the fitted values"
 
 
 # compact alias per ledger/NAMING.md

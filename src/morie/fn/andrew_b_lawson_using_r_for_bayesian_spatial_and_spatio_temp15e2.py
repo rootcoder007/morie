@@ -21,7 +21,10 @@ def mlpois(beta0, beta1, age, race_effect, v, W):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Multilevel Poisson log-rate", payload=_c.mlpois(beta0=beta0, beta1=beta1, age=age, race_effect=race_effect, v=v, W=W))
+    return RichResult(
+        title="Multilevel Poisson log-rate",
+        payload=_c.mlpois(beta0=beta0, beta1=beta1, age=age, race_effect=race_effect, v=v, W=W),
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_15_equation_2 = mlpois

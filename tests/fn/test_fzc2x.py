@@ -1,7 +1,5 @@
 """Tests for fzc2x.fauzi_c2_coefficient."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzc2x import fauzi_c2_coefficient
 
 
@@ -21,7 +19,7 @@ def test_fzc2x_basic():
     assert "scaled" in result
     assert "method" in result
 
-    expected = d3g * density + 3.0 * d2g * dg * fp + dg ** 3 * fpp
+    expected = d3g * density + 3.0 * d2g * dg * fp + dg**3 * fpp
     assert result["estimate"] == expected
     assert result["scaled"] == expected / dg
 

@@ -16,8 +16,11 @@ def _data():
     for i in range(g):
         for j in range(g):
             a = i * g + j
-            nb = [(i + di) * g + (j + dj) for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1))
-                  if 0 <= i + di < g and 0 <= j + dj < g]
+            nb = [
+                (i + di) * g + (j + dj)
+                for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                if 0 <= i + di < g and 0 <= j + dj < g
+            ]
             for b in nb:
                 W[a][b] = 1.0 / len(nb)
     x = [math.sin(1.7 * k) + 0.3 * math.cos(0.4 * k) for k in range(n)]
@@ -28,6 +31,7 @@ def _data():
         for _ in range(200):
             v = [b[i] + rho * sum(W[i][j] * v[j] for j in range(n)) for i in range(n)]
         return v
+
     u = solve(0.4, e)
     y = solve(0.3, [1 + 2 * x[i] + u[i] for i in range(n)])
     return y, [[1.0, v] for v in x], W

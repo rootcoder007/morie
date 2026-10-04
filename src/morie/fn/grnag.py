@@ -98,9 +98,7 @@ def geron_nesterov_accelerated_gradient(theta, grad_fn, v, eta, beta=0.9, n_step
         ahead = th - eta * beta * vv
         g = np.asarray(grad_fn(ahead), dtype=float).ravel()
         if g.shape != th.shape:
-            raise ValueError(
-                f"grad_fn returned shape {g.shape} but theta has shape {th.shape}."
-            )
+            raise ValueError(f"grad_fn returned shape {g.shape} but theta has shape {th.shape}.")
         if not np.all(np.isfinite(g)):
             raise ValueError("grad_fn returned non-finite values.")
         vv = beta * vv + g

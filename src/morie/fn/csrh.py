@@ -86,15 +86,20 @@ def cause_specific_hazard_all(time, cause, X, ties="efron"):
     return RichResult(
         title="Cause-specific hazards (all causes)",
         summary_lines=[("n", int(t.size)), ("causes", int(causes.size))],
-        warnings=["a covariate can raise a cause-specific hazard while "
-                  "lowering that cause's cumulative incidence, if it raises a "
-                  "competing hazard more"],
+        warnings=[
+            "a covariate can raise a cause-specific hazard while "
+            "lowering that cause's cumulative incidence, if it raises a "
+            "competing hazard more"
+        ],
         payload={
-            "causes": causes, "beta": beta, "se": se,
+            "causes": causes,
+            "beta": beta,
+            "se": se,
             "hazard_ratio": np.exp(beta),
             "n_events": np.array([f["n_cause"] for f in fits]),
             "loglik": np.array([f["loglik"] for f in fits]),
-            "fits": fits, "n": int(t.size),
+            "fits": fits,
+            "n": int(t.size),
             "method": "cause_specific_hazard_all",
         },
     )

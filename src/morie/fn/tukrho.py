@@ -54,9 +54,16 @@ def tukey_biweight(r, c=4.685):
             rho.append(cap)
             psi.append(0.0)
             w.append(0.0)
-    return RichResult(payload={
-        "estimate": sum(rho), "rho": rho, "psi": psi, "w": w, "n": len(v),
-        "method": "Tukey biweight rho, psi and weight"})
+    return RichResult(
+        payload={
+            "estimate": sum(rho),
+            "rho": rho,
+            "psi": psi,
+            "w": w,
+            "n": len(v),
+            "method": "Tukey biweight rho, psi and weight",
+        }
+    )
 
 
 def cheatsheet():

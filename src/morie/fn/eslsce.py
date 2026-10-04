@@ -113,7 +113,9 @@ def esl_score_match(score, X, grad_score=None, eps=1e-5):
             "objective": float(per.mean()),
             "trace_term": float(diag.sum(axis=1).mean()),
             "norm_term": float(0.5 * (psi**2).sum(axis=1).mean()),
-            "per_point": per, "n": int(n), "d": int(d),
+            "per_point": per,
+            "n": int(n),
+            "d": int(d),
             "method": "esl_score_match",
         },
     )

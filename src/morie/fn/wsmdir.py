@@ -70,8 +70,7 @@ def wasserman_directed_graph(dag, x):
         parents = list(node["parents"])
         if any(p >= i for p in parents):
             bad = [p for p in parents if p >= i][0]
-            raise ValueError(f"node {i} has parent {bad} not earlier in the ordering; "
-                             "supply a topological order.")
+            raise ValueError(f"node {i} has parent {bad} not earlier in the ordering; supply a topological order.")
         key = tuple(x[p] for p in parents)
         if key not in node["cpt"]:
             raise ValueError(f"node {i}'s CPT lacks the parent configuration {key}.")
@@ -82,11 +81,15 @@ def wasserman_directed_graph(dag, x):
     joint = float(np.prod(factors))
     with np.errstate(divide="ignore"):
         lj = float(np.sum(np.log(factors))) if joint > 0 else float("-inf")
-    return RichResult(payload={
-        "estimate": joint, "log_joint": lj,
-        "factors": [float(v) for v in factors],
-        "n_nodes": len(dag),
-        "method": "DAG factorisation prod p(x_i | pa_i), binary CPTs"})
+    return RichResult(
+        payload={
+            "estimate": joint,
+            "log_joint": lj,
+            "factors": [float(v) for v in factors],
+            "n_nodes": len(dag),
+            "method": "DAG factorisation prod p(x_i | pa_i), binary CPTs",
+        }
+    )
 
 
 def cheatsheet():

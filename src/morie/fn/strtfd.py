@@ -88,8 +88,7 @@ def stratdes(Nh, Sh, n, Ch=None, kind="neyman"):
     # Largest-remainder apportionment, ties on the lowest index, with a
     # floor of one unit per stratum so no stratum is left unsampled.
     while sum(base) > n:
-        i = max((i for i in range(L) if base[i] > 1),
-                key=lambda i: (base[i] - exact[i], -i))
+        i = max((i for i in range(L) if base[i] > 1), key=lambda i: (base[i] - exact[i], -i))
         base[i] -= 1
     order = sorted(range(L), key=lambda i: (-(exact[i] - base[i]), i))
     j = 0
@@ -98,13 +97,22 @@ def stratdes(Nh, Sh, n, Ch=None, kind="neyman"):
         j += 1
     N = sum(Nh)
     W = [v / N for v in Nh]
-    var = sum(W[i] ** 2 * (1.0 - base[i] / Nh[i]) * Sh[i] ** 2 / base[i]
-              for i in range(L))
-    return RichResult(payload={
-        "nh": base, "nh_exact": exact, "weights": w, "variance": var,
-        "se": math.sqrt(var), "Wh": W, "N": N, "n": n, "L": L,
-        "kind": {"prop": 1.0, "neyman": 2.0, "cost": 3.0}[kind],
-        "method": "Stratified allocation and achieved variance"})
+    var = sum(W[i] ** 2 * (1.0 - base[i] / Nh[i]) * Sh[i] ** 2 / base[i] for i in range(L))
+    return RichResult(
+        payload={
+            "nh": base,
+            "nh_exact": exact,
+            "weights": w,
+            "variance": var,
+            "se": math.sqrt(var),
+            "Wh": W,
+            "N": N,
+            "n": n,
+            "L": L,
+            "kind": {"prop": 1.0, "neyman": 2.0, "cost": 3.0}[kind],
+            "method": "Stratified allocation and achieved variance",
+        }
+    )
 
 
 stratified_design = stratdes

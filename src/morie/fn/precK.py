@@ -6,7 +6,6 @@ names no owning source: it is the textbook definition used by every
 evaluation toolkit, and no citation is manufactured for it here.
 """
 
-
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["precision_at_k"]
@@ -37,10 +36,18 @@ def precision_at_k(pred_rank, relevant, k):
     rel = set(relevant)
     top = list(pred_rank)[:kk]
     hits = sum(1 for t in top if t in rel)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(hits) / kk, "hits": hits, "k": kk,
-        "n_relevant": len(rel), "method": "precision at k",
-    }), "precK")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(hits) / kk,
+                "hits": hits,
+                "k": kk,
+                "n_relevant": len(rel),
+                "method": "precision at k",
+            }
+        ),
+        "precK",
+    )
 
 
 def cheatsheet():

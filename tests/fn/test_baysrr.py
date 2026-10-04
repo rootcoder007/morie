@@ -1,7 +1,6 @@
 """Tests for baysrr.bayes_ridge."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.baysrr import bayes_ridge
 
 

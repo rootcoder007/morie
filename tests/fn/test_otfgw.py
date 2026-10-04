@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.otfgw import ot_fused_gromov_wasserstein
 
 
@@ -14,12 +13,10 @@ def test_otfgw_basic():
     M = rng.normal(0, 1, (n, m))
 
     Cx_raw = rng.normal(0, 1, (n, n))
-    Cx = [[(Cx_raw[i][j] + Cx_raw[j][i]) / 2.0 for j in range(n)]
-          for i in range(n)]
+    Cx = [[(Cx_raw[i][j] + Cx_raw[j][i]) / 2.0 for j in range(n)] for i in range(n)]
 
     Cy_raw = rng.normal(0, 1, (m, m))
-    Cy = [[(Cy_raw[i][j] + Cy_raw[j][i]) / 2.0 for j in range(m)]
-          for i in range(m)]
+    Cy = [[(Cy_raw[i][j] + Cy_raw[j][i]) / 2.0 for j in range(m)] for i in range(m)]
 
     a_raw = rng.uniform(0, 1, n)
     sa = sum(a_raw)
@@ -53,12 +50,10 @@ def test_otfgw_edge():
     M = rng.normal(0, 1, (n, m))
 
     Cx_raw = rng.normal(0, 1, (n, n))
-    Cx = [[(Cx_raw[i][j] + Cx_raw[j][i]) / 2.0 for j in range(n)]
-          for i in range(n)]
+    Cx = [[(Cx_raw[i][j] + Cx_raw[j][i]) / 2.0 for j in range(n)] for i in range(n)]
 
     Cy_raw = rng.normal(0, 1, (m, m))
-    Cy = [[(Cy_raw[i][j] + Cy_raw[j][i]) / 2.0 for j in range(m)]
-          for i in range(m)]
+    Cy = [[(Cy_raw[i][j] + Cy_raw[j][i]) / 2.0 for j in range(m)] for i in range(m)]
 
     a_raw = rng.uniform(0, 1, n)
     sa = sum(a_raw)

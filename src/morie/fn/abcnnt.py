@@ -84,8 +84,8 @@ def _rng(seed):
         return st[0] / float(1 << 31)
 
     def normal():
-        return math.sqrt(-2.0 * math.log(max(uni(), 1e-12))) * \
-            math.cos(2 * math.pi * uni())
+        return math.sqrt(-2.0 * math.log(max(uni(), 1e-12))) * math.cos(2 * math.pi * uni())
+
     return uni, normal
 
 
@@ -114,22 +114,30 @@ def made_layer(dim_x, dim_t, hidden, normal, reverse=False):
     deg_h = [i % dim_x for i in range(hidden)]
     s1 = 1.0 / math.sqrt(dim_x + dim_t)
     s2 = 1.0 / math.sqrt(hidden)
-    W1 = [[normal() * s1 for _ in range(dim_x + dim_t)]
-          for _ in range(hidden)]
+    W1 = [[normal() * s1 for _ in range(dim_x + dim_t)] for _ in range(hidden)]
     b1 = [0.0] * hidden
     Wm = [[normal() * s2 for _ in range(hidden)] for _ in range(dim_x)]
     Wa = [[normal() * s2 for _ in range(hidden)] for _ in range(dim_x)]
     bm = [0.0] * dim_x
     ba = [0.0] * dim_x
     # M1[h][j] = 1 if deg_h[h] >= deg_in[j]; theta columns always 1
-    M1 = [[1.0 if deg_h[h] >= deg_in[j] else 0.0
-           for j in range(dim_x)] + [1.0] * dim_t for h in range(hidden)]
+    M1 = [[1.0 if deg_h[h] >= deg_in[j] else 0.0 for j in range(dim_x)] + [1.0] * dim_t for h in range(hidden)]
     # M2[i][h] = 1 if deg_out[i] > deg_h[h]
-    M2 = [[1.0 if deg_out[i] > deg_h[h] else 0.0 for h in range(hidden)]
-          for i in range(dim_x)]
-    return {"W1": W1, "b1": b1, "Wm": Wm, "bm": bm, "Wa": Wa, "ba": ba,
-            "M1": M1, "M2": M2, "dim_x": dim_x, "dim_t": dim_t,
-            "hidden": hidden, "order": order}
+    M2 = [[1.0 if deg_out[i] > deg_h[h] else 0.0 for h in range(hidden)] for i in range(dim_x)]
+    return {
+        "W1": W1,
+        "b1": b1,
+        "Wm": Wm,
+        "bm": bm,
+        "Wa": Wa,
+        "ba": ba,
+        "M1": M1,
+        "M2": M2,
+        "dim_x": dim_x,
+        "dim_t": dim_t,
+        "hidden": hidden,
+        "order": order,
+    }
 
 
 def _layer_stats(layer, x, t):
@@ -138,17 +146,13 @@ def _layer_stats(layer, x, t):
     inp = list(x) + list(t)
     h = []
     for k in range(H):
-        z = layer["b1"][k] + sum(layer["W1"][k][j] * layer["M1"][k][j] *
-                                 inp[j] for j in range(dx + dt))
+        z = layer["b1"][k] + sum(layer["W1"][k][j] * layer["M1"][k][j] * inp[j] for j in range(dx + dt))
         h.append(math.tanh(z))
     mu, al = [], []
     for i in range(dx):
-        mu.append(layer["bm"][i] +
-                  sum(layer["Wm"][i][k] * layer["M2"][i][k] * h[k]
-                      for k in range(H)))
-        a = layer["ba"][i] + sum(layer["Wa"][i][k] * layer["M2"][i][k] *
-                                 h[k] for k in range(H))
-        al.append(max(min(a, 5.0), -5.0))     # keep the scale sane
+        mu.append(layer["bm"][i] + sum(layer["Wm"][i][k] * layer["M2"][i][k] * h[k] for k in range(H)))
+        a = layer["ba"][i] + sum(layer["Wa"][i][k] * layer["M2"][i][k] * h[k] for k in range(H))
+        al.append(max(min(a, 5.0), -5.0))  # keep the scale sane
     return mu, al, h
 
 
@@ -158,8 +162,7 @@ def flow_forward(flow, x, t):
     total = 0.0
     for layer in flow["layers"]:
         mu, al, _h = _layer_stats(layer, u, t)
-        u = [(u[i] - mu[i]) * math.exp(-al[i])
-             for i in range(layer["dim_x"])]
+        u = [(u[i] - mu[i]) * math.exp(-al[i]) for i in range(layer["dim_x"])]
         total += sum(al)
     return u, total
 
@@ -168,8 +171,7 @@ def flow_logprob(flow, x, t):
     r"""Change of variables: :math:`\log N(u; 0, I) - \sum_i \alpha_i`."""
     u, total = flow_forward(flow, x, t)
     d = len(u)
-    return (-0.5 * sum(v * v for v in u) - 0.5 * d * math.log(2 * math.pi)
-            - total)
+    return -0.5 * sum(v * v for v in u) - 0.5 * d * math.log(2 * math.pi) - total
 
 
 def MAF(dim_x, dim_t, n_layers=5, hidden=20, seed=0):
@@ -179,10 +181,11 @@ def MAF(dim_x, dim_t, n_layers=5, hidden=20, seed=0):
     if n_layers < 1 or hidden < 1:
         raise ValueError("abcnnt: n_layers and hidden must be positive")
     _uni, normal = _rng(seed + 17)
-    return {"layers": [made_layer(dim_x, dim_t, hidden, normal,
-                                  reverse=(k % 2 == 1))
-                       for k in range(int(n_layers))],
-            "dim_x": dim_x, "dim_t": dim_t}
+    return {
+        "layers": [made_layer(dim_x, dim_t, hidden, normal, reverse=(k % 2 == 1)) for k in range(int(n_layers))],
+        "dim_x": dim_x,
+        "dim_t": dim_t,
+    }
 
 
 def _params(flow):
@@ -222,8 +225,7 @@ def train_flow(flow, D, epochs=40, lr=0.01, seed=0, batch=None):
     bs = n if batch is None else max(1, min(int(batch), n))
 
     def total(sample):
-        return sum(flow_logprob(flow, x, t) for t, x in sample) / \
-            float(len(sample))
+        return sum(flow_logprob(flow, x, t) for t, x in sample) / float(len(sample))
 
     h = 1e-4
     for _ in range(int(epochs)):
@@ -260,9 +262,22 @@ def mcmc_sample(logpdf, x0, n, burn=100, step=0.5, seed=0):
     return out, acc / float(burn + n)
 
 
-def abcnnt(simulator, x_o, log_prior, theta0, n_rounds=3, n_per_round=50,
-           n_layers=5, hidden=20, epochs=40, lr=0.01, mcmc_burn=100,
-           mcmc_step=0.5, seed=0, n_posterior=200):
+def abcnnt(
+    simulator,
+    x_o,
+    log_prior,
+    theta0,
+    n_rounds=3,
+    n_per_round=50,
+    n_layers=5,
+    hidden=20,
+    epochs=40,
+    lr=0.01,
+    mcmc_burn=100,
+    mcmc_step=0.5,
+    seed=0,
+    n_posterior=200,
+):
     """Algorithm 1: Sequential Neural Likelihood.
 
     ``simulator(theta, rnd)`` returns one simulated ``x``; ``log_prior``
@@ -273,8 +288,7 @@ def abcnnt(simulator, x_o, log_prior, theta0, n_rounds=3, n_per_round=50,
     if not x_o or not theta0:
         raise ValueError("abcnnt: x_o and theta0 must be non-empty")
     if n_rounds < 1 or n_per_round < 1:
-        raise ValueError("abcnnt: n_rounds and n_per_round must be "
-                         "positive")
+        raise ValueError("abcnnt: n_rounds and n_per_round must be positive")
     uni, normal = _rng(seed + 5)
     flow = MAF(len(x_o), len(theta0), n_layers, hidden, seed)
     D = []
@@ -283,8 +297,7 @@ def abcnnt(simulator, x_o, log_prior, theta0, n_rounds=3, n_per_round=50,
     # p_hat_0(theta | x_o) = p(theta)
     logpost = log_prior
     for r in range(int(n_rounds)):
-        draws, rate = mcmc_sample(logpost, theta0, int(n_per_round),
-                                  mcmc_burn, mcmc_step, seed + r)
+        draws, rate = mcmc_sample(logpost, theta0, int(n_per_round), mcmc_burn, mcmc_step, seed + r)
         for th in draws:
             D.append((th, [float(v) for v in simulator(th, normal)]))
         train_flow(flow, D, epochs, lr, seed + r, batch=None)
@@ -295,51 +308,61 @@ def abcnnt(simulator, x_o, log_prior, theta0, n_rounds=3, n_per_round=50,
                 return lp
             return lp + flow_logprob(_f, x_o, th)
 
-        history.append({"round": r + 1, "n_total": len(D),
-                        "acceptance": rate,
-                        "loglik_at_xo": sum(flow_logprob(flow, x_o, t)
-                                            for t, _x in D[-10:]) / 10.0})
-    post, rate = mcmc_sample(logpost, theta0, int(n_posterior), mcmc_burn,
-                             mcmc_step, seed + 999)
+        history.append(
+            {
+                "round": r + 1,
+                "n_total": len(D),
+                "acceptance": rate,
+                "loglik_at_xo": sum(flow_logprob(flow, x_o, t) for t, _x in D[-10:]) / 10.0,
+            }
+        )
+    post, rate = mcmc_sample(logpost, theta0, int(n_posterior), mcmc_burn, mcmc_step, seed + 999)
     d = len(theta0)
     m = [sum(p[i] for p in post) / len(post) for i in range(d)]
-    v = [sum((p[i] - m[i]) ** 2 for p in post) / max(len(post) - 1.0, 1.0)
-         for i in range(d)]
-    return RichResult(payload={
-        "estimate": m,
-        "posterior_mean": m,
-        "posterior_sd": [math.sqrt(x) for x in v],
-        "posterior_samples": post,
-        "flow": flow,
-        "D": D,
-        "n_simulations": len(D),
-        "history": history,
-        "acceptance": rate,
-        "n_rounds": int(n_rounds),
-        "method": ("Sequential Neural Likelihood (Papamakarios, Sterratt "
-                   "& Murray 2019) with a Masked Autoregressive Flow"),
-        "note": ("Algorithm 1 retrains on the whole of D each round, not "
-                 "the newest round, and proposes from the current "
-                 "posterior estimate; round 1 proposes from the prior "
-                 "since p_hat_0 = p(theta). Flow gradients are central "
-                 "differences, which is slow and avoids a hand-rolled "
-                 "backward pass"),
-    })
+    v = [sum((p[i] - m[i]) ** 2 for p in post) / max(len(post) - 1.0, 1.0) for i in range(d)]
+    return RichResult(
+        payload={
+            "estimate": m,
+            "posterior_mean": m,
+            "posterior_sd": [math.sqrt(x) for x in v],
+            "posterior_samples": post,
+            "flow": flow,
+            "D": D,
+            "n_simulations": len(D),
+            "history": history,
+            "acceptance": rate,
+            "n_rounds": int(n_rounds),
+            "method": (
+                "Sequential Neural Likelihood (Papamakarios, Sterratt & Murray 2019) with a Masked Autoregressive Flow"
+            ),
+            "note": (
+                "Algorithm 1 retrains on the whole of D each round, not "
+                "the newest round, and proposes from the current "
+                "posterior estimate; round 1 proposes from the prior "
+                "since p_hat_0 = p(theta). Flow gradients are central "
+                "differences, which is slow and avoids a hand-rolled "
+                "backward pass"
+            ),
+        }
+    )
 
 
 sequential_neural_likelihood = abcnnt
 
 
 def cheatsheet():
-    return ("abcnnt: Sequential Neural Likelihood (Papamakarios, "
-            "Sterratt & Murray 2019). Instead of rejecting simulations "
-            "like ABC, learn the likelihood: each round draws theta from "
-            "the current posterior estimate by MCMC, simulates x, adds "
-            "the pair to D, retrains a Masked Autoregressive Flow "
-            "q(x|theta) on ALL of D, and sets the posterior estimate to "
-            "q(x_o|theta)p(theta). The flow is a stack of affine "
-            "autoregressive transforms, so log q = log N(u;0,I) - sum "
-            "alpha_i by the change of variables.")
+    return (
+        "abcnnt: Sequential Neural Likelihood (Papamakarios, "
+        "Sterratt & Murray 2019). Instead of rejecting simulations "
+        "like ABC, learn the likelihood: each round draws theta from "
+        "the current posterior estimate by MCMC, simulates x, adds "
+        "the pair to D, retrains a Masked Autoregressive Flow "
+        "q(x|theta) on ALL of D, and sets the posterior estimate to "
+        "q(x_o|theta)p(theta). The flow is a stack of affine "
+        "autoregressive transforms, so log q = log N(u;0,I) - sum "
+        "alpha_i by the change of variables."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 abc_neural = abcnnt

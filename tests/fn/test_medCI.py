@@ -1,7 +1,5 @@
 """Tests for medCI.asymmetric_indirect_ci."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.medCI import asymmetric_indirect_ci
 
 

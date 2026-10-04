@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,9 +25,9 @@ def ghosal_kl_diverge(p0, p):
                 kl = float("inf")
                 break
             kl += q * math.log(q / pi)
-    res = RichResult(payload={"estimate": kl,
-                              "nonnegative": kl >= -1e-15,
-                              "method": "KL divergence (GvdV 2017 sec. 6.4)"})
+    res = RichResult(
+        payload={"estimate": kl, "nonnegative": kl >= -1e-15, "method": "KL divergence (GvdV 2017 sec. 6.4)"}
+    )
     return with_describe_pointer(res, "gh_c6_7")
 
 

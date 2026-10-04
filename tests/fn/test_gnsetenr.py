@@ -6,7 +6,7 @@ Hand anchor (Appendix, Enrichment Score ES(S)): ranked r = (3, 2, 1,
 ES = 3/4 at rank 1 (0-based 0).
 """
 
-from morie.fn.gnsetenr import gnsetenr, geneset_enrichment
+from morie.fn.gnsetenr import geneset_enrichment, gnsetenr
 
 
 def test_gnsetenr_hand_running_sum():
@@ -15,8 +15,7 @@ def test_gnsetenr_hand_running_sum():
     res = gnsetenr(r, mem, p=1.0)
     assert abs(res["es"] - 0.75) < 1e-15
     assert res["arg_es"] == 0
-    expect = [3.0 / 4.0, 3.0 / 4.0 - 1.0 / 3.0,
-              3.0 / 4.0 - 1.0 / 3.0 + 1.0 / 4.0, 1.0 / 3.0, 0.0]
+    expect = [3.0 / 4.0, 3.0 / 4.0 - 1.0 / 3.0, 3.0 / 4.0 - 1.0 / 3.0 + 1.0 / 4.0, 1.0 / 3.0, 0.0]
     for a, b in zip(res["running"], expect):
         assert abs(a - b) < 1e-12
     assert res["n_hits"] == 2

@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Coefficient of determination (ESL Ch 3.2)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .eslrss import esl_residual_sum_squares
 from .eslrss2 import esl_total_sum_squares
@@ -54,10 +53,16 @@ def esl_r_squared(X, y, beta):
     rss = esl_residual_sum_squares(X, y, beta)
     tss = esl_total_sum_squares(y)
     r2 = float("nan") if tss["is_degenerate"] else 1.0 - rss["estimate"] / tss["estimate"]
-    return RichResult(payload={
-        "estimate": r2, "rss": rss["estimate"], "tss": tss["estimate"],
-        "n": rss["n"], "p": rss["p"],
-        "method": "R^2 = 1 - RSS/TSS; negative when worse than the mean, nan for constant y"})
+    return RichResult(
+        payload={
+            "estimate": r2,
+            "rss": rss["estimate"],
+            "tss": tss["estimate"],
+            "n": rss["n"],
+            "p": rss["p"],
+            "method": "R^2 = 1 - RSS/TSS; negative when worse than the mean, nan for constant y",
+        }
+    )
 
 
 def cheatsheet():

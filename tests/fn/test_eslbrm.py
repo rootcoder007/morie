@@ -1,7 +1,6 @@
 """Tests for eslbrm.esl_boltzmann."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslbrm import esl_boltzmann
 
 
@@ -19,8 +18,14 @@ def test_eslbrm_basic():
 
     # The documented keys must be present.
     for key in (
-        "W", "a", "b", "hidden_prob", "reconstruction",
-        "reconstruction_error", "error_path", "free_energy",
+        "W",
+        "a",
+        "b",
+        "hidden_prob",
+        "reconstruction",
+        "reconstruction_error",
+        "error_path",
+        "free_energy",
     ):
         assert key in result
 
@@ -49,8 +54,14 @@ def test_eslbrm_edge():
     v = np.array([[0, 0, 0], [1, 1, 1]], dtype=float)
     result = esl_boltzmann(v, h=2, n_epochs=2, seed=0)
     for key in (
-        "W", "a", "b", "hidden_prob", "reconstruction",
-        "reconstruction_error", "error_path", "free_energy",
+        "W",
+        "a",
+        "b",
+        "hidden_prob",
+        "reconstruction",
+        "reconstruction_error",
+        "error_path",
+        "free_energy",
     ):
         assert key in result
     assert result["W"].shape == (3, 2)

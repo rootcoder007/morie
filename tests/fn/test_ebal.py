@@ -1,9 +1,9 @@
 """Tests for morie.fn.ebal -- Entropy balancing."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.ebal import ebal, entropy_balance
 
 

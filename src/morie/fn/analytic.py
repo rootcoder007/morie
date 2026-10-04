@@ -620,6 +620,7 @@ def cheatsheet() -> str:
         "quadratic_roots / functional_norm -> analytic and symbolic-numeric tools."
     )
 
+
 # alias kept from the retired placeholder of the same name
 functional_scale = functional_norm
 

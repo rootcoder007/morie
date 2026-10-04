@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_i2 import ghosal_dudley_entropy
 
 
@@ -25,9 +23,7 @@ def test_gh_ap_i2_basic():
     sigma = 1.0
     a = 1.0
     n_grid = 2000
-    result = ghosal_dudley_entropy(sigma=sigma,
-                                   entropy_exponent=a,
-                                   n_grid=n_grid)
+    result = ghosal_dudley_entropy(sigma=sigma, entropy_exponent=a, n_grid=n_grid)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "finite" in result

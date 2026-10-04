@@ -3,7 +3,6 @@
 
 import math
 
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -49,16 +48,21 @@ def sgt_graph_neural_propagation(A_hat, X, W, activation="relu"):
     n = len(A)
     Ai = [[A[i][j] + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
     d = [sum(Ai[i]) for i in range(n)]
-    An = [[Ai[i][j] / math.sqrt(d[i] * d[j]) if d[i] > 0 and d[j] > 0 else 0.0
-           for j in range(n)] for i in range(n)]
+    An = [[Ai[i][j] / math.sqrt(d[i] * d[j]) if d[i] > 0 and d[j] > 0 else 0.0 for j in range(n)] for i in range(n)]
     Z = C.matmul(C.matmul(An, C.mat(X)), C.mat(W))
     if activation == "relu":
         Z = [[v if v > 0.0 else 0.0 for v in row] for row in Z]
     fo = len(Z[0])
-    return RichResult(payload={
-        "X_next": Z, "estimate": sum(sum(row) for row in Z) / (n * fo),
-        "A_norm": An, "n": n, "f_out": fo,
-        "method": "Symmetric-normalised graph convolution"})
+    return RichResult(
+        payload={
+            "X_next": Z,
+            "estimate": sum(sum(row) for row in Z) / (n * fo),
+            "A_norm": An,
+            "n": n,
+            "f_out": fo,
+            "method": "Symmetric-normalised graph convolution",
+        }
+    )
 
 
 def cheatsheet():

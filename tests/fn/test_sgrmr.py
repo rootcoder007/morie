@@ -1,7 +1,6 @@
 """Tests for Moran residual test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgrmr import sgrmr
 
 

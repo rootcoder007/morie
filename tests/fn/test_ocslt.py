@@ -1,7 +1,6 @@
 """Tests for morie.fn.ocslt — OC scaling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ocslt import ocslt
 
 

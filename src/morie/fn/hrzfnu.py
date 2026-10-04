@@ -58,6 +58,7 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None, kernel="fourfold"):
     Econometrics*. Springer. Sec. 5.2.1, eq. (5.26).
     """
     from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
+
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape
@@ -68,15 +69,25 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None, kernel="fourfold"):
     nU = default_bandwidths(eta, n, kernel, W)[0] if nu_U is None else float(nu_U)
     if nU <= 0:
         raise ValueError(f"nu_U must be positive, got {nU}.")
-    g = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
-        if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    g = (
+        np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     f_U, _ = deconvolve_pair(W, eta, g, g[:1], nU, nU, kernel=kernel)
-    return RichResult(payload={
-        "kernel": kernel,
-        "grid": g, "f_U": f_U, "nu_U": nU, "cutoff": 1.0 / nU,
-        "regularisation_required": True,
-        "n": int(n), "T": int(T),
-        "method": "(5.26): psi_zeta compactly supported, so the ratio is never formed past the cut-off"})
+    return RichResult(
+        payload={
+            "kernel": kernel,
+            "grid": g,
+            "f_U": f_U,
+            "nu_U": nU,
+            "cutoff": 1.0 / nU,
+            "regularisation_required": True,
+            "n": int(n),
+            "T": int(T),
+            "method": "(5.26): psi_zeta compactly supported, so the ratio is never formed past the cut-off",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for km120.kamath_ch8_bertscore_precision."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km120 import kamath_ch8_bertscore_precision
 
 

@@ -26,5 +26,3 @@ def test_unetbk_edge():
         valid_output_size(571)
     with pytest.raises(ValueError, match="smaller"):
         mirror_pad(img, 3)
-
-

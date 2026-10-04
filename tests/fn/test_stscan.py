@@ -1,7 +1,6 @@
 """Tests for morie.fn.stscan."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stscan import st_scan_statistic
 
 

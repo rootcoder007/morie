@@ -74,20 +74,21 @@ def boyd_duality_gap(primal, dual, tol=1e-09):
         raise ValueError("primal and dual must both be finite")
     gap = p - d
     if gap < -abs(tol):
-        raise ValueError(
-            "dual exceeds primal, which violates weak duality: check "
-            "feasibility and the sign of lambda")
+        raise ValueError("dual exceeds primal, which violates weak duality: check feasibility and the sign of lambda")
     gap = max(gap, 0.0)
     rel = gap / max(abs(p), 1e-300)
     closed = bool(gap <= tol)
     return RichResult(
         title="Duality gap",
-        summary_lines=[("primal", p), ("dual", d), ("gap", gap),
-                       ("relative", rel)],
+        summary_lines=[("primal", p), ("dual", d), ("gap", gap), ("relative", rel)],
         payload={
-            "gap": gap, "relative_gap": rel, "closed": closed,
-            "strong_duality": closed, "bracket": (d, p),
-            "primal": p, "dual": d,
+            "gap": gap,
+            "relative_gap": rel,
+            "closed": closed,
+            "strong_duality": closed,
+            "bracket": (d, p),
+            "primal": p,
+            "dual": d,
             "method": "boyd_duality_gap",
         },
     )

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.deepF import deepfm
 
 
@@ -58,8 +57,7 @@ def test_deepF_basic():
 
     assert isinstance(result, dict)
     # Documented keys (per docstring)
-    for key in ("estimate", "p_hat", "fm_part", "deep_part",
-                "logloss", "n", "p", "K"):
+    for key in ("estimate", "p_hat", "fm_part", "deep_part", "logloss", "n", "p", "K"):
         assert key in result, f"missing documented key {key!r}"
     assert result["method"] == "DeepFM: factorization machine plus deep network"
     assert result["n"] == n
@@ -80,11 +78,13 @@ def test_deepF_basic():
     expected_fm = _independent_fm(X_rows, w, V, w0, p, K)
     expected_ph = [1.0 / (1.0 + math.exp(-z)) for z in expected_fm]
     expected_estimate = sum(expected_ph) / n
-    expected_ll = -sum(
-        y[i] * math.log(expected_ph[i] + 1e-300)
-        + (1 - y[i]) * math.log(1 - expected_ph[i] + 1e-300)
-        for i in range(n)
-    ) / n
+    expected_ll = (
+        -sum(
+            y[i] * math.log(expected_ph[i] + 1e-300) + (1 - y[i]) * math.log(1 - expected_ph[i] + 1e-300)
+            for i in range(n)
+        )
+        / n
+    )
 
     for i in range(n):
         assert abs(result["fm_part"][i] - expected_fm[i]) < 1e-9
@@ -114,8 +114,7 @@ def test_deepF_edge():
     result = deepfm(X_rows, y, K, mlp_h, w0, seed, deep_scale)
 
     assert isinstance(result, dict)
-    for key in ("estimate", "p_hat", "fm_part", "deep_part",
-                "logloss", "n", "p", "K", "method"):
+    for key in ("estimate", "p_hat", "fm_part", "deep_part", "logloss", "n", "p", "K", "method"):
         assert key in result
     assert result["n"] == n
     assert result["p"] == p

@@ -1,7 +1,6 @@
 """Tests for ldiff.l_diversity_check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ldiff import l_diversity_check
 
 

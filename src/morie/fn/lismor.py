@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local Moran's I (LISA)."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['localmoran', 'local_morans_i']
+__all__ = ["localmoran", "local_morans_i"]
 
 
 def localmoran(x, W, mlvar=True):
@@ -48,10 +46,17 @@ def localmoran(x, W, mlvar=True):
     lag = [sum(W[i][j] * z[j] for j in range(n)) for i in range(n)]
     loc = [z[i] * lag[i] / m2 for i in range(n)]
     s0 = sum(sum(row) for row in W)
-    return RichResult(payload={
-        "local": loc, "global_i": sum(loc) / s0 if s0 else float("nan"),
-        "m2": m2, "z": z, "lag": lag, "n": n,
-        "method": "Local Moran's I (LISA)"})
+    return RichResult(
+        payload={
+            "local": loc,
+            "global_i": sum(loc) / s0 if s0 else float("nan"),
+            "m2": m2,
+            "z": z,
+            "lag": lag,
+            "n": n,
+            "method": "Local Moran's I (LISA)",
+        }
+    )
 
 
 local_morans_i = localmoran

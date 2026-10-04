@@ -1,7 +1,6 @@
 """Tests for explor.intrinsic_motivation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.explor import intrinsic_motivation
 
 
@@ -15,9 +14,7 @@ def _make_batch(T=20, d=4, n_actions=3, seed=0):
 
 def test_explor_basic():
     """Test basic functionality on a small batch of transitions."""
-    states, actions, next_states, n_actions = _make_batch(
-        T=20, d=4, n_actions=3, seed=0
-    )
+    states, actions, next_states, n_actions = _make_batch(T=20, d=4, n_actions=3, seed=0)
     beta = 0.2
     eta = 1.0
     result = intrinsic_motivation(
@@ -46,16 +43,13 @@ def test_explor_basic():
     got_mean = float(np.mean(rewards))
     assert abs(got_mean - expected_mean) < 1e-9
     # beta is in [0, 1]; the objective is (1-beta) L_I + beta L_F.
-    expected_obj = (1.0 - beta) * float(result["inverse_loss"]) \
-        + beta * float(result["forward_loss"])
+    expected_obj = (1.0 - beta) * float(result["inverse_loss"]) + beta * float(result["forward_loss"])
     assert abs(float(result["objective"]) - expected_obj) < 1e-9
 
 
 def test_explor_edge():
     """Edge case: a minimal two-transition batch with both action classes."""
-    states, actions, next_states, n_actions = _make_batch(
-        T=2, d=4, n_actions=2, seed=1
-    )
+    states, actions, next_states, n_actions = _make_batch(T=2, d=4, n_actions=2, seed=1)
     result = intrinsic_motivation(
         states,
         actions,
@@ -75,6 +69,4 @@ def test_explor_edge():
     assert len(result["estimate"]) == 2
     assert len(result["loss_curve"]) == 1
     # beta=0 means the objective reduces to L_I only.
-    assert abs(
-        float(result["objective"]) - float(result["inverse_loss"])
-    ) < 1e-12
+    assert abs(float(result["objective"]) - float(result["inverse_loss"])) < 1e-12

@@ -1,7 +1,6 @@
 """Tests for gh_c8_13.ghosal_misspec_crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_13 import ghosal_misspec_crt
 
 

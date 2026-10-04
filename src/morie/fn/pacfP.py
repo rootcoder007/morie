@@ -59,8 +59,7 @@ def partial_autocorrelation(y, lag_max):
     if n < 2:
         raise ValueError("need at least 2 observations.")
     if k_max < 1 or k_max >= n:
-        raise ValueError("lag_max must satisfy 1 <= lag_max < len(y); "
-                         "got %r with n=%d" % (lag_max, n))
+        raise ValueError("lag_max must satisfy 1 <= lag_max < len(y); got %r with n=%d" % (lag_max, n))
 
     mean = sum(vals) / n
     dev = [v - mean for v in vals]
@@ -85,11 +84,9 @@ def partial_autocorrelation(y, lag_max):
             num = r[k] - sum(phi_prev[j - 1] * r[k - j] for j in range(1, k))
             den = 1.0 - sum(phi_prev[j - 1] * r[j] for j in range(1, k))
             if abs(den) < 1e-300:
-                raise ValueError("Levinson-Durbin denominator vanished at "
-                                 "lag %d; the series is degenerate." % k)
+                raise ValueError("Levinson-Durbin denominator vanished at lag %d; the series is degenerate." % k)
             phi_kk = num / den
-            phi_cur = [phi_prev[j - 1] - phi_kk * phi_prev[k - j - 1]
-                       for j in range(1, k)]
+            phi_cur = [phi_prev[j - 1] - phi_kk * phi_prev[k - j - 1] for j in range(1, k)]
             phi_cur.append(phi_kk)
         pacf.append(float(phi_kk))
         phi_prev = phi_cur
@@ -109,8 +106,7 @@ def partial_autocorrelation(y, lag_max):
 def cheatsheet():
     return {
         "name": "partial_autocorrelation",
-        "what": "PACF via Levinson-Durbin; phi_kk is the order-k AR "
-                "coefficient at lag k",
+        "what": "PACF via Levinson-Durbin; phi_kk is the order-k AR coefficient at lag k",
         "returns": "pacf, acf, phi, lag_max, n",
         "note": "divide-by-n autocorrelations, matching R's acf/pacf",
     }

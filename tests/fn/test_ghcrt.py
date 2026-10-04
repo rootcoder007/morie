@@ -1,7 +1,6 @@
 """Tests for ghcrt.ghosal_contraction_rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghcrt import ghosal_contraction_rate
 
 

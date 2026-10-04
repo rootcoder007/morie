@@ -1,7 +1,6 @@
 """Tests for derivative_at_mean.derivative_at_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.derivative_at_mean import derivative_at_mean
 
 

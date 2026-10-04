@@ -74,11 +74,19 @@ def bound_subset_inference(theta_full, subset_idx):
         if pos == 0:
             lo0 = lo
             hi0 = hi
-    return RichResult(payload={
-        "lower": lo0, "upper": hi0, "width": hi0 - lo0,
-        "total_width": tot, "max_width": mx, "d_subset": len(idx),
-        "m": m, "d": d,
-        "method": "Subset-inference bound"})
+    return RichResult(
+        payload={
+            "lower": lo0,
+            "upper": hi0,
+            "width": hi0 - lo0,
+            "total_width": tot,
+            "max_width": mx,
+            "d_subset": len(idx),
+            "m": m,
+            "d": d,
+            "method": "Subset-inference bound",
+        }
+    )
 
 
 def cheatsheet():

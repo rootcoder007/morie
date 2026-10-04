@@ -10,14 +10,12 @@ to survive -- and the contamination it is documented NOT to survive.
 Huber's failure under bad leverage is as much a test as MM's success.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
-from morie.fn._sci_core import integrate
 
-from morie.fn._robust import (HUBER_C_95, QN_D, SN_C, TUKEY_C_95,
-                              TUKEY_C_BREAKDOWN, mad_scale, s_scale,
-                              tukey_rho)
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
+from morie.fn._robust import HUBER_C_95, QN_D, TUKEY_C_95, TUKEY_C_BREAKDOWN, mad_scale, s_scale, tukey_rho
+from morie.fn._sci_core import integrate
 from morie.fn.hubrr import huber_regression
 from morie.fn.mestrg import m_regression
 from morie.fn.mmestr import mm_estimator
@@ -29,7 +27,6 @@ from morie.fn.snsc import sn_scale
 from morie.fn.taubrg import tau_regression
 from morie.fn.theils import theil_sen
 
-
 # ------------------------------------------------- the constants
 
 
@@ -39,31 +36,27 @@ def test_the_calibration_constants_solve_their_defining_equations():
     # Huber c = 1.345: 95% efficiency at the normal
     c = HUBER_C_95
     num, _ = integrate.quad(stats.norm.pdf, -c, c)
-    den, _ = integrate.quad(
-        lambda u: np.clip(u, -c, c) ** 2 * stats.norm.pdf(u), -10, 10)
-    assert num ** 2 / den == pytest.approx(0.95, abs=2e-4)
+    den, _ = integrate.quad(lambda u: np.clip(u, -c, c) ** 2 * stats.norm.pdf(u), -10, 10)
+    assert num**2 / den == pytest.approx(0.95, abs=2e-4)
     # biweight c = 1.5476: E_Phi[rho] = 1/2, the 50%-breakdown calibration
-    val, _ = integrate.quad(
-        lambda u: tukey_rho(u, TUKEY_C_BREAKDOWN) * stats.norm.pdf(u),
-        -10, 10)
+    val, _ = integrate.quad(lambda u: tukey_rho(u, TUKEY_C_BREAKDOWN) * stats.norm.pdf(u), -10, 10)
     assert val == pytest.approx(0.5, abs=2e-4)
     # biweight c = 4.685: 95% efficiency
     c = TUKEY_C_95
 
     def psi(u):
         v = u / c
-        return u * (1 - v ** 2) ** 2 if abs(v) < 1 else 0.0
+        return u * (1 - v**2) ** 2 if abs(v) < 1 else 0.0
 
     def dpsi(u):
         v = u / c
-        return (1 - v ** 2) * (1 - 5 * v ** 2) if abs(v) < 1 else 0.0
+        return (1 - v**2) * (1 - 5 * v**2) if abs(v) < 1 else 0.0
 
     num, _ = integrate.quad(lambda u: dpsi(u) * stats.norm.pdf(u), -c, c)
     den, _ = integrate.quad(lambda u: psi(u) ** 2 * stats.norm.pdf(u), -c, c)
-    assert num ** 2 / den == pytest.approx(0.95, abs=2e-4)
+    assert num**2 / den == pytest.approx(0.95, abs=2e-4)
     # Qn d = 1/(sqrt(2) Phi^-1(5/8))
-    assert QN_D == pytest.approx(1 / (np.sqrt(2) * stats.norm.ppf(5 / 8)),
-                                 rel=1e-12)
+    assert pytest.approx(1 / (np.sqrt(2) * stats.norm.ppf(5 / 8)), rel=1e-12) == QN_D
 
 
 # ------------------------------------------------- scales
@@ -72,8 +65,7 @@ def test_the_calibration_constants_solve_their_defining_equations():
 def test_qn_and_sn_are_consistent_for_sigma_at_the_normal():
     rng = np.random.default_rng(3)
     for f in (qn_scale, sn_scale):
-        vals = [f(rng.normal(scale=2.0, size=200))["value"]
-                for _ in range(200)]
+        vals = [f(rng.normal(scale=2.0, size=200))["value"] for _ in range(200)]
         assert np.mean(vals) == pytest.approx(2.0, rel=0.02)
 
 
@@ -121,8 +113,7 @@ def test_the_m_scale_solves_its_defining_equation():
     rng = np.random.default_rng(11)
     r = rng.normal(scale=1.5, size=500)
     s = s_scale(r)
-    assert float(np.mean(tukey_rho(r / s, TUKEY_C_BREAKDOWN))) == \
-        pytest.approx(0.5, abs=1e-6)
+    assert float(np.mean(tukey_rho(r / s, TUKEY_C_BREAKDOWN))) == pytest.approx(0.5, abs=1e-6)
     # and it is consistent for sigma at the normal
     assert s == pytest.approx(1.5, rel=0.1)
 
@@ -143,7 +134,7 @@ def test_huber_recovers_the_line_and_survives_vertical_outliers():
     assert o["beta"] == pytest.approx([2.0, 3.0], abs=0.15)
     assert o["converged"] is True
     y2 = y.copy()
-    y2[:40] += 30.0                       # 20% vertical outliers
+    y2[:40] += 30.0  # 20% vertical outliers
     o2 = huber_regression(x, y2)
     assert o2["beta"][1] == pytest.approx(3.0, abs=0.2)
     # the outliers get downweighted, the clean points do not
@@ -174,7 +165,7 @@ def test_huber_breaks_under_bad_leverage_as_documented():
 def test_s_estimator_has_high_breakdown_and_seeds_mm():
     rng = np.random.default_rng(17)
     x, y = clean_line(seed=17)
-    x[:70] = 8.0 + 0.1 * rng.normal(size=70)   # 35% bad leverage
+    x[:70] = 8.0 + 0.1 * rng.normal(size=70)  # 35% bad leverage
     y[:70] = -20.0
     s = s_regression_estimator(x, y, seed=5)
     assert s["beta"] == pytest.approx([2.0, 3.0], abs=0.3)
@@ -193,10 +184,8 @@ def test_mm_is_more_efficient_than_s_on_clean_data():
     for rep in range(60):
         x = rng.normal(size=80)
         y = 2.0 + 3.0 * x + rng.normal(scale=0.5, size=80)
-        s_err.append(s_regression_estimator(x, y, n_subsets=100,
-                                            seed=rep)["beta"][1] - 3.0)
-        mm_err.append(mm_regression_estimator(x, y, n_subsets=100,
-                                              seed=rep)["beta"][1] - 3.0)
+        s_err.append(s_regression_estimator(x, y, n_subsets=100, seed=rep)["beta"][1] - 3.0)
+        mm_err.append(mm_regression_estimator(x, y, n_subsets=100, seed=rep)["beta"][1] - 3.0)
     assert np.var(mm_err) < 0.7 * np.var(s_err)
 
 
@@ -253,7 +242,7 @@ def test_theil_sen_survives_29_percent_contamination():
     x = rng.normal(size=n)
     y = 2.0 + 3.0 * x + rng.normal(scale=0.3, size=n)
     y_bad = y.copy()
-    y_bad[:50] = 50.0 + 10.0 * x[:50]          # 25% corrupted
+    y_bad[:50] = 50.0 + 10.0 * x[:50]  # 25% corrupted
     assert theil_sen(x, y_bad)["slope"] == pytest.approx(3.0, abs=0.4)
     # 45% corrupted is beyond the 29.3% breakdown, but breakdown is a
     # WORST-CASE statement: this particular contamination must be one
@@ -274,7 +263,7 @@ def test_theil_sen_excludes_tied_x_pairs():
     y = np.array([1.0, 1.2, 2.0, 3.0, 4.0])
     o = theil_sen(x, y)
     assert o["n_tied_x"] == 1
-    assert o["n_pairs"] == 9               # C(5,2) - 1
+    assert o["n_pairs"] == 9  # C(5,2) - 1
     with pytest.raises(ValueError, match="tied"):
         theil_sen(np.ones(5), np.arange(5.0))
 
@@ -305,7 +294,7 @@ def test_sens_ci_covers_the_true_slope():
     reps = 200
     for _ in range(reps):
         t = np.arange(40.0)
-        y = 1.0 + 0.3 * t + rng.standard_t(df=2, size=40)   # heavy tails
+        y = 1.0 + 0.3 * t + rng.standard_t(df=2, size=40)  # heavy tails
         lo, hi = sens_slope(y, t)["ci"]
         hits += int(lo <= 0.3 <= hi)
     assert hits / reps > 0.9

@@ -1,7 +1,6 @@
 """Tests for mainf.ma_influence_diagnostics."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mainf import ma_influence_diagnostics
 
 

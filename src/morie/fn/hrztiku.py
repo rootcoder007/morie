@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_tikhonov_unknown_T"]
 
 
-def horowitz_tikhonov_unknown_T(x, y, w, bandwidth=None, alpha=1e-3,
-                                grid=25):
+def horowitz_tikhonov_unknown_T(x, y, w, bandwidth=None, alpha=1e-3, grid=25):
     r"""Tikhonov regularisation for nonparametric IV when T is unknown.
 
     Horowitz (2009), *Semiparametric and Nonparametric Methods in
@@ -93,14 +92,12 @@ def horowitz_tikhonov_unknown_T(x, y, w, bandwidth=None, alpha=1e-3,
     w = np.asarray(w, dtype=float).ravel()
     n = int(x.size)
     if y.size != n or w.size != n:
-        raise ValueError(
-            f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
+        raise ValueError(f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
     if n < 3:
         raise ValueError(f"need at least 3 observations, got {n}.")
     alpha = float(alpha)
     if alpha <= 0:
-        raise ValueError(
-            f"alpha must be positive; the problem is ill-posed at 0, got {alpha}.")
+        raise ValueError(f"alpha must be positive; the problem is ill-posed at 0, got {alpha}.")
     h = float(bandwidth) if bandwidth is not None else H.bw01(n)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
@@ -142,21 +139,22 @@ def horowitz_tikhonov_unknown_T(x, y, w, bandwidth=None, alpha=1e-3,
     A = [[that[k][l] * float(wq[k]) for k in range(m)] for l in range(m)]
     for k in range(m):
         A[k][k] += alpha
-    g_hat = np.linalg.solve(np.asarray(A, dtype=float),
-                            np.asarray(r_hat, dtype=float))
+    g_hat = np.linalg.solve(np.asarray(A, dtype=float), np.asarray(r_hat, dtype=float))
 
-    return RichResult(payload={
-        "g_hat": [float(t) for t in g_hat],
-        "grid_points": [float(t) for t in z],
-        "r_hat": [float(t) for t in r_hat],
-        "fxw": fxw,
-        "alpha": alpha,
-        "raw_mass": raw_mass,
-        "bandwidth": h,
-        "n": n,
-        "m": m,
-        "method": "Horowitz (2009) eq. (5.72), g = (That + a_n)^{-1} rhat",
-    })
+    return RichResult(
+        payload={
+            "g_hat": [float(t) for t in g_hat],
+            "grid_points": [float(t) for t in z],
+            "r_hat": [float(t) for t in r_hat],
+            "fxw": fxw,
+            "alpha": alpha,
+            "raw_mass": raw_mass,
+            "bandwidth": h,
+            "n": n,
+            "m": m,
+            "method": "Horowitz (2009) eq. (5.72), g = (That + a_n)^{-1} rhat",
+        }
+    )
 
 
 def cheatsheet():

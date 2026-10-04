@@ -144,9 +144,19 @@ def _head_weights(Yc, T, n):
     return [d[0] if t == 0 else d[0] / d[t] for t in range(T)]
 
 
-def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
-                   out_activation="linear", eta=0.1, epochs=200, tol=0.0,
-                   seed=1, init=None):
+def dnn_multitrait(
+    X,
+    Y,
+    layers,
+    heads=None,
+    activation="relu",
+    out_activation="linear",
+    eta=0.1,
+    epochs=200,
+    tol=0.0,
+    seed=1,
+    init=None,
+):
     """Shared-hidden multi-head DNN trained by the Chapter 10 backpropagation.
 
     Parameters
@@ -252,8 +262,9 @@ def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
         Z = []
         A = [[[1.0] + list(Xm[i]) for i in range(n)]]
         for k in range(nlay):
-            zk = [[sum(A[k][i][q] * W[k][q][j] for q in range(dims[k] + 1))
-                   for j in range(dims[k + 1])] for i in range(n)]
+            zk = [
+                [sum(A[k][i][q] * W[k][q][j] for q in range(dims[k] + 1)) for j in range(dims[k + 1])] for i in range(n)
+            ]
             gk = [[_act(acts[k], zk[i][j]) for j in range(dims[k + 1])] for i in range(n)]
             Z.append(zk)
             if k < nlay - 1:
@@ -271,19 +282,28 @@ def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
         if tol > 0.0 and loss <= tol:
             break
         # Step 9, output deltas
-        D = [[wt[t] * (Yc[i][t] - Yhat[i][t]) * _dact(acts[nlay - 1], Z[nlay - 1][i][t], Yhat[i][t])
-              for t in range(T)] for i in range(n)]
+        D = [
+            [wt[t] * (Yc[i][t] - Yhat[i][t]) * _dact(acts[nlay - 1], Z[nlay - 1][i][t], Yhat[i][t]) for t in range(T)]
+            for i in range(n)
+        ]
         # Steps 10-12: all deltas from the OLD weights, then update
         newW = [None] * nlay
         Dk = D
         for k in range(nlay - 1, -1, -1):
-            newW[k] = [[W[k][q][j] + eta * sum(A[k][i][q] * Dk[i][j] for i in range(n))
-                        for j in range(dims[k + 1])] for q in range(dims[k] + 1)]
+            newW[k] = [
+                [W[k][q][j] + eta * sum(A[k][i][q] * Dk[i][j] for i in range(n)) for j in range(dims[k + 1])]
+                for q in range(dims[k] + 1)
+            ]
             if k > 0:
                 # Step 10; row 0 of W[k] is the intercept and is excluded
-                Dk = [[_dact(acts[k - 1], Z[k - 1][i][q], A[k][i][q + 1])
-                       * sum(Dk[i][j] * W[k][q + 1][j] for j in range(dims[k + 1]))
-                       for q in range(dims[k])] for i in range(n)]
+                Dk = [
+                    [
+                        _dact(acts[k - 1], Z[k - 1][i][q], A[k][i][q + 1])
+                        * sum(Dk[i][j] * W[k][q + 1][j] for j in range(dims[k + 1]))
+                        for q in range(dims[k])
+                    ]
+                    for i in range(n)
+                ]
         W = newW
 
     return RichResult(

@@ -1,7 +1,6 @@
 """Tests for hmgcl.geron_gradient_clipping."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmgcl import geron_gradient_clipping
 
 

@@ -1,7 +1,6 @@
 """Tests for dctgls.doubly_censored_gls."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dctgls import doubly_censored_gls
 
 
@@ -21,8 +20,16 @@ def test_dctgls_basic():
     assert isinstance(result, dict)
 
     # Documented return keys
-    for key in ("beta", "se", "weights", "n_left", "n_right",
-                "n_complete", "naive_complete_case", "effective_sample_size"):
+    for key in (
+        "beta",
+        "se",
+        "weights",
+        "n_left",
+        "n_right",
+        "n_complete",
+        "naive_complete_case",
+        "effective_sample_size",
+    ):
         assert key in result, "missing key: %s" % key
 
     beta = np.asarray(result["beta"]).ravel()
@@ -34,7 +41,7 @@ def test_dctgls_basic():
     assert np.all(np.isfinite(np.asarray(result["weights"])))
     # Effective sample size is Kish's formula
     w = np.asarray(result["weights"])
-    ess_expected = float(w.sum() ** 2 / np.sum(w ** 2))
+    ess_expected = float(w.sum() ** 2 / np.sum(w**2))
     assert abs(result["effective_sample_size"] - ess_expected) < 1e-10
 
 

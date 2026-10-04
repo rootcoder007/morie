@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmxl2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svmxl2 import svmxl2
 
 

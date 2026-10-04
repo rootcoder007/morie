@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['perplex', 'perplexity']
+__all__ = ["perplex", "perplexity"]
 
 
 def perplex(log_probs, N=None):
@@ -46,10 +46,15 @@ def perplex(log_probs, N=None):
     if n <= 0:
         raise ValueError("N must be positive")
     h = -sum(lp) / n
-    return RichResult(payload={
-        "perplexity": math.exp(h), "cross_entropy_nats": h,
-        "cross_entropy_bits": h / math.log(2.0), "N": n,
-        "method": "Perplexity"})
+    return RichResult(
+        payload={
+            "perplexity": math.exp(h),
+            "cross_entropy_nats": h,
+            "cross_entropy_bits": h / math.log(2.0),
+            "N": n,
+            "method": "Perplexity",
+        }
+    )
 
 
 perplexity = perplex

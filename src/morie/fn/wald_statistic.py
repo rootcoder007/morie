@@ -28,20 +28,19 @@ def wald_statistic(b, se):
     """
     value = _ca_crim.wald_statistic(b, se)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.15)"
     return RichResult(
-        title='Wald statistic W = (b/se_b)^2',
+        title="Wald statistic W = (b/se_b)^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e15: W = (b / se_b)^2 [Weisburd et al. 2022, eq. 4.15]'
+    return "ca4e15: W = (b / se_b)^2 [Weisburd et al. 2022, eq. 4.15]"
 
 
 # compact alias per ledger/NAMING.md

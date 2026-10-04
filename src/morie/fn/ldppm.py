@@ -11,8 +11,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["local_dp_planar_mechanism"]
 
 
-def local_dp_planar_mechanism(y, truth=None, k=2, epsilon=1.0,
-                             seed=2):
+def local_dp_planar_mechanism(y, truth=None, k=2, epsilon=1.0, seed=2):
     """P(report=v|true=u) = e^eps/(k-1+e^eps) if v=u, else
     1/(k-1+e^eps).
 
@@ -23,13 +22,18 @@ def local_dp_planar_mechanism(y, truth=None, k=2, epsilon=1.0,
     transition matrix. Keys: estimate."""
     values = truth if truth is not None else y
     r = _rc.local_dp_randomised_response(values, k, epsilon, seed=seed)
-    res = RichResult(payload={"estimate": r["estimate"],
-                              "reports": r["reports"],
-                              "observed": r["observed"],
-                              "p_keep": r["p_keep"],
-                              "p_flip": r["p_flip"],
-                              "epsilon": r["epsilon"], "k": r["k"],
-                              "method": r["method"]})
+    res = RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "reports": r["reports"],
+            "observed": r["observed"],
+            "p_keep": r["p_keep"],
+            "p_flip": r["p_flip"],
+            "epsilon": r["epsilon"],
+            "k": r["k"],
+            "method": r["method"],
+        }
+    )
     return with_describe_pointer(res, "ldppm")
 
 

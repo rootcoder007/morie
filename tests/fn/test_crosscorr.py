@@ -1,8 +1,8 @@
 """Test cross_correlation (xcorr)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ccf import cross_correlation
 
@@ -36,23 +36,23 @@ class TestCrossCorrelation:
         from morie.fn.bsacorr import xcorr as raw
 
         assert fn.xcorr is raw
-        assert not hasattr(
-            __import__("morie.fn.ccf", fromlist=["x"]), "xcorr")
+        assert not hasattr(__import__("morie.fn.ccf", fromlist=["x"]), "xcorr")
         # and the two are genuinely different quantities: scaling y scales
         # the raw correlation and leaves the normalized one alone.
         import math
+
         x = [math.sin(i / 6.0) for i in range(50)]
         y = [math.sin((i - 3) / 6.0) for i in range(50)]
         y10 = [10.0 * v for v in y]
 
         r1 = max(raw(x, y, maxlag=5)["ccf"])
         r10 = max(raw(x, y10, maxlag=5)["ccf"])
-        assert abs(r10 - 10.0 * r1) < 1e-9          # raw: scales with y
+        assert abs(r10 - 10.0 * r1) < 1e-9  # raw: scales with y
 
         n1 = cross_correlation(x, y, max_lag=5).extra["correlation"]
         n10 = cross_correlation(x, y10, max_lag=5).extra["correlation"]
-        assert max(abs(a - b) for a, b in zip(n1, n10)) < 1e-9   # invariant
-        assert max(abs(v) for v in n1) <= 1.0 + 1e-12            # bounded
+        assert max(abs(a - b) for a, b in zip(n1, n10)) < 1e-9  # invariant
+        assert max(abs(v) for v in n1) <= 1.0 + 1e-12  # bounded
 
 
 def test_cross_correlation_is_the_ccf_with_the_lag_axis_reversed():

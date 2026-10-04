@@ -86,10 +86,7 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
     elif variant == "goodman":
         var -= va * vb
     if var <= 0:
-        raise ValueError(
-            "non-positive variance for the indirect effect (variant=%r); "
-            "no z statistic exists." % variant
-        )
+        raise ValueError("non-positive variance for the indirect effect (variant=%r); no z statistic exists." % variant)
     se = sqrt(var)
     est = a * b
     z = est / se
@@ -102,7 +99,10 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
             "indirect_effect": float(est),
             "se": float(se),
             "variant": variant,
-            "a": a, "b": b, "se_a": float(se_a), "se_b": float(se_b),
+            "a": a,
+            "b": b,
+            "se_a": float(se_a),
+            "se_b": float(se_b),
             "ci_lower": float(est - 1.959963984540054 * se),
             "ci_upper": float(est + 1.959963984540054 * se),
             "method": "Sobel (1982) delta-method test of a*b (%s variance)" % variant,
@@ -113,6 +113,7 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
 # compact alias -- _lazy_map.json resolves 'sobeltest' to this module, so the
 # name has to exist here or the lookup dies.
 sobeltest = sobel_test
+
 
 def cheatsheet():
     return "sobel: Sobel/Aroian/Goodman test of the indirect effect a*b"

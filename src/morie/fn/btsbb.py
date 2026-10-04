@@ -34,8 +34,6 @@ as n B / n_runs and is stated to be that ratio, not a Geometric mean.
 
 from __future__ import annotations
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 

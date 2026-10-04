@@ -1,7 +1,6 @@
 """Tests for morie.fn.smcub — SMACOF unfolding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.smcub import smcub
 
 

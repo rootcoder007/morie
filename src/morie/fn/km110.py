@@ -31,20 +31,22 @@ def kamath_ch7_rrf_score(r, k=60):
     """
     r = np.atleast_1d(np.asarray(r, dtype=float))
     if r.size == 0:
-        raise ValueError("no ranks given; RRF over an empty ranking "
-                         "list is undefined.")
+        raise ValueError("no ranks given; RRF over an empty ranking list is undefined.")
     if np.any(r < 1):
-        raise ValueError("ranks are 1-based; a rank below 1 is not a "
-                         "search position.")
+        raise ValueError("ranks are 1-based; a rank below 1 is not a search position.")
     if np.any(np.abs(r + k) < 1e-12):
-        raise ValueError(f"r + k = 0 for some rank with k = {k}; the "
-                         "RRF score is a pole there.")
+        raise ValueError(f"r + k = 0 for some rank with k = {k}; the RRF score is a pole there.")
     scores = 1.0 / (r + float(k))
-    return RichResult(payload={
-        "estimate": float(scores.sum()),
-        "scores": [float(v) for v in scores],
-        "ranks": [float(v) for v in r], "k": float(k), "n": int(r.size),
-        "method": "reciprocal rank fusion score (Kamath Eq 7.1)"})
+    return RichResult(
+        payload={
+            "estimate": float(scores.sum()),
+            "scores": [float(v) for v in scores],
+            "ranks": [float(v) for v in r],
+            "k": float(k),
+            "n": int(r.size),
+            "method": "reciprocal rank fusion score (Kamath Eq 7.1)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,10 +1,9 @@
 """randIE -- randomized interventional effects. Source: Didelez, Dawid
 & Geneletti (2006), UAI 2006, 138-146, arXiv:1206.6840."""
+
 import pytest
 
-from morie.fn.randIE import (decompose, interventional_mean,
-                             mediator_distribution,
-                             randomized_interventional_effect)
+from morie.fn.randIE import decompose, interventional_mean, mediator_distribution, randomized_interventional_effect
 
 
 def saturated():

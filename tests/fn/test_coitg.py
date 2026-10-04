@@ -1,8 +1,8 @@
 """Tests for morie.fn.coitg -- Engle-Granger cointegration."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.coitg import eg_coint
 
 

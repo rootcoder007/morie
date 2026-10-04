@@ -1,7 +1,6 @@
 """Test emg_rms_threshold (emgrt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.emgrt import emg_rms_threshold, emgrt
 

@@ -23,8 +23,7 @@ def _act_deriv(name, a):
     return np.ones_like(a)
 
 
-def geron_backpropagation_gradient(activations, weights, y_true,
-                                   activation="sigmoid", output_activation=None):
+def geron_backpropagation_gradient(activations, weights, y_true, activation="sigmoid", output_activation=None):
     r"""Backpropagate a squared-error loss through a stack of dense layers.
 
     .. math::
@@ -90,8 +89,7 @@ def geron_backpropagation_gradient(activations, weights, y_true,
     y = np.atleast_2d(np.asarray(y_true, dtype=float))
     if len(acts) != len(Ws) + 1:
         raise ValueError(
-            f"activations must be one longer than weights (got {len(acts)} "
-            f"activations and {len(Ws)} weight matrices)."
+            f"activations must be one longer than weights (got {len(acts)} activations and {len(Ws)} weight matrices)."
         )
     if not Ws:
         raise ValueError("weights is empty; nothing to differentiate.")
@@ -108,17 +106,11 @@ def geron_backpropagation_gradient(activations, weights, y_true,
             raise ValueError(f"activations[{i}] contains non-finite values.")
     for l, W in enumerate(Ws):
         if W.shape != (acts[l].shape[1], acts[l + 1].shape[1]):
-            raise ValueError(
-                f"weights[{l}] has shape {W.shape}, expected "
-                f"{(acts[l].shape[1], acts[l + 1].shape[1])}."
-            )
+            raise ValueError(f"weights[{l}] has shape {W.shape}, expected {(acts[l].shape[1], acts[l + 1].shape[1])}.")
         if not np.all(np.isfinite(W)):
             raise ValueError(f"weights[{l}] contains non-finite values.")
     if y.shape != acts[-1].shape:
-        raise ValueError(
-            f"y_true shape {y.shape} must match the output activation shape "
-            f"{acts[-1].shape}."
-        )
+        raise ValueError(f"y_true shape {y.shape} must match the output activation shape {acts[-1].shape}.")
 
     L = len(Ws)
     deltas = [None] * L

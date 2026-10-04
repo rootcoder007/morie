@@ -9,7 +9,10 @@ def _beta_inc(a, b, x, m=20000):
     # regularised incomplete beta by the midpoint rule on t = x u (small smooth integrand)
     lb = math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
     h = x / m
-    return sum(math.exp((a - 1) * math.log((i + 0.5) * h) + (b - 1) * math.log(1 - (i + 0.5) * h) - lb) for i in range(m)) * h
+    return (
+        sum(math.exp((a - 1) * math.log((i + 0.5) * h) + (b - 1) * math.log(1 - (i + 0.5) * h) - lb) for i in range(m))
+        * h
+    )
 
 
 def _ncf_sf(crit, d1, d2, ncp):

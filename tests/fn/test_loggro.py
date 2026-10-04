@@ -1,7 +1,6 @@
 """Tests for morie.fn.loggro -- logistic growth model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.loggro import loggro, logistic_growth
 

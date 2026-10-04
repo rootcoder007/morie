@@ -114,9 +114,7 @@ def geron_fcn(image, model, upsample=1, activation="relu"):
         if K.ndim != 4:
             raise ValueError(f"geron_fcn: layer {li} kernels must be 3-D or 4-D, got shape {K.shape}")
         if K.shape[1] != cur.shape[0]:
-            raise ValueError(
-                f"geron_fcn: layer {li} expects {K.shape[1]} input channels but received {cur.shape[0]}"
-            )
+            raise ValueError(f"geron_fcn: layer {li} expects {K.shape[1]} input channels but received {cur.shape[0]}")
         b = np.atleast_1d(np.asarray(bias, dtype=float))
         if b.size == 1:
             b = np.repeat(b, K.shape[0])
@@ -144,7 +142,11 @@ def geron_fcn(image, model, upsample=1, activation="relu"):
 
     return RichResult(
         title="Fully convolutional network",
-        summary_lines=[("Output", tuple(int(v) for v in scores.shape)), ("Classes", int(scores.shape[0])), ("Stride", stride_total)],
+        summary_lines=[
+            ("Output", tuple(int(v) for v in scores.shape)),
+            ("Classes", int(scores.shape[0])),
+            ("Stride", stride_total),
+        ],
         interpretation="A dense layer is a convolution with a full-size kernel, so an FCN runs on any input resolution.",
         payload={
             "class_map": scores.tolist(),

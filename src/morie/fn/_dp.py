@@ -44,10 +44,7 @@ def gaussian_sigma(sensitivity, epsilon, delta):
     and the caller is told rather than silently under-noised.
     """
     if delta <= 0:
-        raise ValueError(
-            "the Gaussian mechanism needs delta > 0; use the Laplace mechanism "
-            "for pure epsilon-DP"
-        )
+        raise ValueError("the Gaussian mechanism needs delta > 0; use the Laplace mechanism for pure epsilon-DP")
     return float(sensitivity) * np.sqrt(2.0 * np.log(1.25 / delta)) / float(epsilon)
 
 

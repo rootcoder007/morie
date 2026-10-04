@@ -58,18 +58,15 @@ implemented in :mod:`mpfn`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["gaussian_expansion", "cosine_cutoff", "cfconv",
-           "forces_from_energy", "invariance_error"]
+__all__ = ["gaussian_expansion", "cosine_cutoff", "cfconv", "forces_from_energy", "invariance_error"]
 
 _EPS = 1e-12
 
 
-def gaussian_expansion(r, mu_min=0.0, mu_max=6.0, n_gaussians=25,
-                       gamma=None):
+def gaussian_expansion(r, mu_min=0.0, mu_max=6.0, n_gaussians=25, gamma=None):
     r"""Expand a distance in a basis of Gaussians.
 
     A raw distance makes the learned filter vary too sharply; the
@@ -83,7 +80,7 @@ def gaussian_expansion(r, mu_min=0.0, mu_max=6.0, n_gaussians=25,
     if hi <= lo:
         raise ValueError("schN: mu_max must exceed mu_min")
     step = (hi - lo) / (n - 1)
-    g = float(gamma) if gamma is not None else 1.0 / (2.0 * step ** 2)
+    g = float(gamma) if gamma is not None else 1.0 / (2.0 * step**2)
     mus = [lo + step * i for i in range(n)]
     return [math.exp(-g * (float(r) - m) ** 2) for m in mus]
 
@@ -113,22 +110,18 @@ def cfconv(X, R, filter_net, cutoff=5.0, **kw):
     pos = [[float(v) for v in r] for r in k.mat(R)]
     n, d = len(feats), len(feats[0])
     if len(pos) != n:
-        raise ValueError("schN: %d feature rows but %d positions"
-                         % (n, len(pos)))
+        raise ValueError("schN: %d feature rows but %d positions" % (n, len(pos)))
     out = []
     for i in range(n):
         acc = [0.0] * d
         for j in range(n):
             if i == j:
                 continue
-            r = math.sqrt(sum((pos[i][a] - pos[j][a]) ** 2
-                              for a in range(len(pos[i]))))
+            r = math.sqrt(sum((pos[i][a] - pos[j][a]) ** 2 for a in range(len(pos[i]))))
             w = filter_net(gaussian_expansion(r, **kw))
             fc = cosine_cutoff(r, cutoff)
             if len(w) != d:
-                raise ValueError("schN: the filter is %d-dimensional "
-                                 "but the features are %d"
-                                 % (len(w), d))
+                raise ValueError("schN: the filter is %d-dimensional but the features are %d" % (len(w), d))
             for a in range(d):
                 acc[a] += feats[j][a] * float(w[a]) * fc
         out.append(acc)
@@ -152,18 +145,17 @@ def forces_from_energy(energy_fn, R, h=1e-5):
             dn = [list(p) for p in pos]
             up[i][a] += h
             dn[i][a] -= h
-            row.append(-(float(energy_fn(up))
-                         - float(energy_fn(dn))) / (2.0 * h))
+            row.append(-(float(energy_fn(up)) - float(energy_fn(dn))) / (2.0 * h))
         F.append(row)
-    return RichResult(payload={
-        "estimate": F, "forces": F,
-        "net_force": [sum(F[i][a] for i in range(n))
-                      for a in range(d)],
-        "method": "forces as the negative gradient of the energy; "
-                  "Schutt et al. (2017)",
-        "note": "conservative and equivariant by construction; a "
-                "separate force head would be neither",
-    })
+    return RichResult(
+        payload={
+            "estimate": F,
+            "forces": F,
+            "net_force": [sum(F[i][a] for i in range(n)) for a in range(d)],
+            "method": "forces as the negative gradient of the energy; Schutt et al. (2017)",
+            "note": "conservative and equivariant by construction; a separate force head would be neither",
+        }
+    )
 
 
 def invariance_error(energy_fn, R, Q, g=None):
@@ -175,33 +167,34 @@ def invariance_error(energy_fn, R, Q, g=None):
     pos = [[float(v) for v in r] for r in k.mat(R)]
     d = len(pos[0])
     gv = [0.0] * d if g is None else [float(v) for v in k.vec(g)]
-    rot = [[sum(Q[a][b] * pos[i][b] for b in range(d)) + gv[a]
-            for a in range(d)] for i in range(len(pos))]
+    rot = [[sum(Q[a][b] * pos[i][b] for b in range(d)) + gv[a] for a in range(d)] for i in range(len(pos))]
     e0, e1 = float(energy_fn(pos)), float(energy_fn(rot))
     F0 = forces_from_energy(energy_fn, pos)["forces"]
     F1 = forces_from_energy(energy_fn, rot)["forces"]
-    want = [[sum(Q[a][b] * F0[i][b] for b in range(d))
-             for a in range(d)] for i in range(len(pos))]
-    fe = max(abs(F1[i][a] - want[i][a])
-             for i in range(len(pos)) for a in range(d))
-    return {"energy_error": abs(e1 - e0), "force_error": fe,
-            "energy_invariant": abs(e1 - e0) < 1e-8,
-            "forces_equivariant": fe < 1e-5,
-            "note": "energy INVARIANT, forces EQUIVARIANT -- two "
-                    "different properties from one design choice"}
+    want = [[sum(Q[a][b] * F0[i][b] for b in range(d)) for a in range(d)] for i in range(len(pos))]
+    fe = max(abs(F1[i][a] - want[i][a]) for i in range(len(pos)) for a in range(d))
+    return {
+        "energy_error": abs(e1 - e0),
+        "force_error": fe,
+        "energy_invariant": abs(e1 - e0) < 1e-8,
+        "forces_equivariant": fe < 1e-5,
+        "note": "energy INVARIANT, forces EQUIVARIANT -- two different properties from one design choice",
+    }
 
 
 def cheatsheet():
-    return ("schN: a convolution needs a grid and atoms have none, so "
-            "make the filter a FUNCTION of interatomic distance -- a "
-            "continuous-filter convolution, generated by a small "
-            "network from the distance. Positions enter only as "
-            "||r_i - r_j||, so the energy is rotationally INVARIANT; "
-            "forces come from -dE/dr, so they are EQUIVARIANT and the "
-            "field is conservative, which a separate force head would "
-            "not be. Expand the distance in GAUSSIANS or the filter "
-            "varies too sharply for molecular dynamics; a cosine "
-            "cutoff keeps neighbourhood changes continuous.")
+    return (
+        "schN: a convolution needs a grid and atoms have none, so "
+        "make the filter a FUNCTION of interatomic distance -- a "
+        "continuous-filter convolution, generated by a small "
+        "network from the distance. Positions enter only as "
+        "||r_i - r_j||, so the energy is rotationally INVARIANT; "
+        "forces come from -dE/dr, so they are EQUIVARIANT and the "
+        "field is conservative, which a separate force head would "
+        "not be. Expand the distance in GAUSSIANS or the filter "
+        "varies too sharply for molecular dynamics; a cosine "
+        "cutoff keeps neighbourhood changes continuous."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -13,6 +13,8 @@ def test_km024_doctest():
 
 def test_km024_edge():
     import pytest
+
     from morie.fn.km024 import kamath_ch2_std_loss
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_std_loss(*([None] * 2))

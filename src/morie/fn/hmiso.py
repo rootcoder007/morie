@@ -149,7 +149,9 @@ def geron_isomap(X, n_components, n_neighbors=5):
 
     mds = geron_mds(G, n_components=n_components, precomputed=True)
 
-    ratio = float(np.mean(G[np.triu_indices(m, 1)] / np.where(D[np.triu_indices(m, 1)] == 0, 1.0, D[np.triu_indices(m, 1)])))
+    ratio = float(
+        np.mean(G[np.triu_indices(m, 1)] / np.where(D[np.triu_indices(m, 1)] == 0, 1.0, D[np.triu_indices(m, 1)]))
+    )
 
     return RichResult(
         title="Isomap",

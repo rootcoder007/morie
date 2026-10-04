@@ -1,7 +1,6 @@
 """Tests for ordinal IRT."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.oirt import oirt
 
 

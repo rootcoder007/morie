@@ -1,7 +1,6 @@
 """Test event_align (evtag)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.evtag import event_align, evtag
 

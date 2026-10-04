@@ -64,14 +64,23 @@ def sc_with_baseline_shift(y, D, X, baseline):
     m0 = [C.dot(V[i], b0) for i in range(n)]
     pi = len(idx1) / n
     psi = sum(m1[i] - m0[i] for i in range(n)) / n
-    ic = [Dv[i] * (yv[i] - m1[i]) / pi - (1.0 - Dv[i]) * (yv[i] - m0[i]) / (1.0 - pi)
-          + m1[i] - m0[i] - psi for i in range(n)]
+    ic = [
+        Dv[i] * (yv[i] - m1[i]) / pi - (1.0 - Dv[i]) * (yv[i] - m0[i]) / (1.0 - pi) + m1[i] - m0[i] - psi
+        for i in range(n)
+    ]
     mic = sum(ic) / n
     se = math.sqrt(sum((v - mic) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
     shift = (sum(bl[i] for i in idx1) / len(idx1)) - (sum(bl[i] for i in idx0) / len(idx0))
-    return RichResult(payload={
-        "estimate": psi, "se": se, "pi": pi, "shift": shift, "n": n,
-        "method": "Tsiatis covariate-adjusted effect with baseline shift"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "pi": pi,
+            "shift": shift,
+            "n": n,
+            "method": "Tsiatis covariate-adjusted effect with baseline shift",
+        }
+    )
 
 
 def cheatsheet():

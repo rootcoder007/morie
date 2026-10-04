@@ -59,8 +59,7 @@ def optimal_overlap_weight(var_a, var_b):
     return vb / (va + vb)
 
 
-def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
-                   weights_a=None, weights_b=None, theta=None, alpha=0.05):
+def sample_overlap(frame_a, frame_b, overlap_a, overlap_b, weights_a=None, weights_b=None, theta=None, alpha=0.05):
     r"""Combine two overlapping sampling frames into one estimate.
 
     Two frames :math:`A` and :math:`B` together cover the population but
@@ -132,22 +131,15 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
     da = np.asarray(overlap_a, dtype=float).ravel()
     db = np.asarray(overlap_b, dtype=float).ravel()
     if da.size != ya.size:
-        raise ValueError(
-            f"overlap_a has length {da.size} but frame_a has {ya.size}."
-        )
+        raise ValueError(f"overlap_a has length {da.size} but frame_a has {ya.size}.")
     if db.size != yb.size:
-        raise ValueError(
-            f"overlap_b has length {db.size} but frame_b has {yb.size}."
-        )
+        raise ValueError(f"overlap_b has length {db.size} but frame_b has {yb.size}.")
     if ya.size < 1 or yb.size < 1:
         raise ValueError("both frames must contribute at least one unit.")
-    if not (np.all(np.isin(da, (0.0, 1.0)))
-            and np.all(np.isin(db, (0.0, 1.0)))):
+    if not (np.all(np.isin(da, (0.0, 1.0))) and np.all(np.isin(db, (0.0, 1.0)))):
         raise ValueError("overlap indicators must be binary 0/1.")
-    wa = (np.ones_like(ya) if weights_a is None
-          else np.asarray(weights_a, dtype=float).ravel())
-    wb = (np.ones_like(yb) if weights_b is None
-          else np.asarray(weights_b, dtype=float).ravel())
+    wa = np.ones_like(ya) if weights_a is None else np.asarray(weights_a, dtype=float).ravel()
+    wb = np.ones_like(yb) if weights_b is None else np.asarray(weights_b, dtype=float).ravel()
     if wa.size != ya.size or wb.size != yb.size:
         raise ValueError("weights must match their frame's length.")
     if np.any(wa <= 0) or np.any(wb <= 0):
@@ -155,10 +147,10 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1); got {alpha}.")
 
-    t_a, v_a = _domain_total(ya, wa, da == 0)         # frame A only
-    t_b, v_b = _domain_total(yb, wb, db == 0)         # frame B only
-    t_ab_a, v_ab_a = _domain_total(ya, wa, da == 1)   # overlap, via A
-    t_ab_b, v_ab_b = _domain_total(yb, wb, db == 1)   # overlap, via B
+    t_a, v_a = _domain_total(ya, wa, da == 0)  # frame A only
+    t_b, v_b = _domain_total(yb, wb, db == 0)  # frame B only
+    t_ab_a, v_ab_a = _domain_total(ya, wa, da == 1)  # overlap, via A
+    t_ab_b, v_ab_b = _domain_total(yb, wb, db == 1)  # overlap, via B
 
     th_opt = optimal_overlap_weight(v_ab_a, v_ab_b)
     if theta is None:
@@ -171,9 +163,8 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
 
     overlap_est = th * t_ab_a + (1.0 - th) * t_ab_b
     est = t_a + overlap_est + t_b
-    var = v_a + v_b + th ** 2 * v_ab_a + (1.0 - th) ** 2 * v_ab_b
-    var_opt = (v_a + v_b + th_opt ** 2 * v_ab_a
-               + (1.0 - th_opt) ** 2 * v_ab_b)
+    var = v_a + v_b + th**2 * v_ab_a + (1.0 - th) ** 2 * v_ab_b
+    var_opt = v_a + v_b + th_opt**2 * v_ab_a + (1.0 - th_opt) ** 2 * v_ab_b
     se = math.sqrt(max(var, 0.0))
 
     naive = t_a + t_ab_a + t_ab_b + t_b
@@ -189,16 +180,18 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
             ("SE", se),
             ("Naive pooled total", naive),
         ],
-        tables=[{
-            "title": "Domain totals",
-            "headers": ["Domain", "Total", "Variance"],
-            "rows": [
-                ["a  (frame A only)", t_a, v_a],
-                ["ab (both, via A)", t_ab_a, v_ab_a],
-                ["ab (both, via B)", t_ab_b, v_ab_b],
-                ["b  (frame B only)", t_b, v_b],
-            ],
-        }],
+        tables=[
+            {
+                "title": "Domain totals",
+                "headers": ["Domain", "Total", "Variance"],
+                "rows": [
+                    ["a  (frame A only)", t_a, v_a],
+                    ["ab (both, via A)", t_ab_a, v_ab_a],
+                    ["ab (both, via B)", t_ab_b, v_ab_b],
+                    ["b  (frame B only)", t_b, v_b],
+                ],
+            }
+        ],
         payload={
             "estimate": est,
             "theta": th,
@@ -207,8 +200,7 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
             "se": se,
             "variance": var,
             "variance_optimal": var_opt,
-            "variance_ratio_vs_optimal": (var / var_opt if var_opt > 0
-                                          else float("nan")),
+            "variance_ratio_vs_optimal": (var / var_opt if var_opt > 0 else float("nan")),
             "ci_lower": est - zc * se,
             "ci_upper": est + zc * se,
             "total_a_only": t_a,
@@ -248,8 +240,7 @@ def sample_overlap(frame_a, frame_b, overlap_a, overlap_b,
 
 def cheatsheet():
     return (
-        "smplep: Hartley dual-frame total, blending the twice-measured "
-        "overlap domain at the variance-minimising weight"
+        "smplep: Hartley dual-frame total, blending the twice-measured overlap domain at the variance-minimising weight"
     )
 
 

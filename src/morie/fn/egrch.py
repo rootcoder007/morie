@@ -50,7 +50,6 @@ def egarch_model(x):
     if n < 20:
         raise ValueError(f"Need at least 20 observations, got {n}.")
 
-
     # Gaussian QMLE ----------------------------------------------------------
     EZ = np.sqrt(2.0 / np.pi)  # E|Z| for standard normal
 

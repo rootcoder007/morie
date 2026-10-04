@@ -43,8 +43,7 @@ def _ba(px, D_mat, beta, iters=500, tol=1e-14):
     Q = [[0.0] * m for _ in range(n)]
     for _ in range(iters):
         for i in range(n):
-            lw = [math.log(q[j] if q[j] > 1e-300 else 1e-300)
-                  - beta * D_mat[i][j] for j in range(m)]
+            lw = [math.log(q[j] if q[j] > 1e-300 else 1e-300) - beta * D_mat[i][j] for j in range(m)]
             z = k.logsumexp(lw)
             for j in range(m):
                 Q[i][j] = math.exp(lw[j] - z)

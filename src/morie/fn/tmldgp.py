@@ -53,12 +53,10 @@ asymptotically linear TMLE.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["lasso_path", "post_lasso", "penalised_tmle",
-           "shrunk_targeting_unsafe"]
+__all__ = ["lasso_path", "post_lasso", "penalised_tmle", "shrunk_targeting_unsafe"]
 
 _EPS = 1e-12
 
@@ -82,8 +80,7 @@ def lasso_path(X, y, lam, iters=500, tol=1e-9):
     t = [float(v) for v in k.vec(y)]
     n, p = len(rows), len(rows[0])
     if len(t) != n:
-        raise ValueError("tmldgp: %d rows but %d outcomes"
-                         % (n, len(t)))
+        raise ValueError("tmldgp: %d rows but %d outcomes" % (n, len(t)))
     if float(lam) < 0.0:
         raise ValueError("tmldgp: lambda cannot be negative")
     b = [0.0] * p
@@ -91,24 +88,17 @@ def lasso_path(X, y, lam, iters=500, tol=1e-9):
     for _ in range(int(iters)):
         big = 0.0
         for j in range(p):
-            r = [t[i] - b0 - sum(rows[i][q] * b[q]
-                                 for q in range(p) if q != j)
-                 for i in range(n)]
+            r = [t[i] - b0 - sum(rows[i][q] * b[q] for q in range(p) if q != j) for i in range(n)]
             zj = sum(rows[i][j] * rows[i][j] for i in range(n))
             if zj < _EPS:
                 continue
-            new = _soft(sum(rows[i][j] * r[i]
-                            for i in range(n)) / n,
-                        float(lam)) / (zj / n)
+            new = _soft(sum(rows[i][j] * r[i] for i in range(n)) / n, float(lam)) / (zj / n)
             big = max(big, abs(new - b[j]))
             b[j] = new
-        b0 = sum(t[i] - sum(rows[i][q] * b[q] for q in range(p))
-                 for i in range(n)) / n
+        b0 = sum(t[i] - sum(rows[i][q] * b[q] for q in range(p)) for i in range(n)) / n
         if big < float(tol):
             break
-    return {"beta": b, "intercept": b0,
-            "support": [j for j in range(p) if abs(b[j]) > 1e-10],
-            "lambda": float(lam)}
+    return {"beta": b, "intercept": b0, "support": [j for j in range(p) if abs(b[j]) > 1e-10], "lambda": float(lam)}
 
 
 def post_lasso(X, y, lam):
@@ -123,9 +113,14 @@ def post_lasso(X, y, lam):
     S = sel["support"]
     if not S:
         m = sum(t) / len(t)
-        return {"support": [], "coef": [], "intercept": m,
-                "predict": (lambda row: m), "selected_by": "lasso",
-                "note": "the lasso selected nothing"}
+        return {
+            "support": [],
+            "coef": [],
+            "intercept": m,
+            "predict": (lambda row: m),
+            "selected_by": "lasso",
+            "note": "the lasso selected nothing",
+        }
     Xs = [[rows[i][j] for j in S] for i in range(len(rows))]
     co = k.wls(Xs, t, [1.0] * len(t), 0.0)["coef"]
 
@@ -133,11 +128,15 @@ def post_lasso(X, y, lam):
         v = [float(q) for q in row]
         return co[0] + sum(co[1 + a] * v[S[a]] for a in range(len(S)))
 
-    return {"support": S, "coef": co, "intercept": co[0],
-            "predict": predict, "lasso_beta": sel["beta"],
-            "selected_by": "lasso, refitted by OLS",
-            "note": "post-lasso removes the shrinkage bias on the "
-                    "selected coefficients"}
+    return {
+        "support": S,
+        "coef": co,
+        "intercept": co[0],
+        "predict": predict,
+        "lasso_beta": sel["beta"],
+        "selected_by": "lasso, refitted by OLS",
+        "note": "post-lasso removes the shrinkage bias on the selected coefficients",
+    }
 
 
 def shrunk_targeting_unsafe(Q, H, Y, ridge=1.0):
@@ -155,19 +154,18 @@ def shrunk_targeting_unsafe(Q, H, Y, ridge=1.0):
     e = 0.0
     for _ in range(60):
         p = [_expit(off[i] + e * h[i]) for i in range(n)]
-        gr = sum(h[i] * (y[i] - p[i]) for i in range(n)) \
-            - float(ridge) * e
-        he = sum(h[i] * h[i] * p[i] * (1 - p[i])
-                 for i in range(n)) + float(ridge)
+        gr = sum(h[i] * (y[i] - p[i]) for i in range(n)) - float(ridge) * e
+        he = sum(h[i] * h[i] * p[i] * (1 - p[i]) for i in range(n)) + float(ridge)
         if he < 1e-12:
             break
         e += gr / he
     upd = [_expit(off[i] + e * h[i]) for i in range(n)]
-    return {"epsilon": e, "Q_star": upd,
-            "score": sum(h[i] * (y[i] - upd[i])
-                         for i in range(n)) / n,
-            "caveat": "the score equation is NOT solved when the "
-                      "fluctuation is penalised"}
+    return {
+        "epsilon": e,
+        "Q_star": upd,
+        "score": sum(h[i] * (y[i] - upd[i]) for i in range(n)) / n,
+        "caveat": "the score equation is NOT solved when the fluctuation is penalised",
+    }
 
 
 def penalised_tmle(y, D, X, penalty=0.05, iters=100):
@@ -184,19 +182,14 @@ def penalised_tmle(y, D, X, penalty=0.05, iters=100):
     if not (len(a) == len(W) == n):
         raise ValueError("tmldgp: the inputs differ in length")
     if any(v < 0.0 or v > 1.0 for v in yv):
-        raise ValueError("tmldgp: the outcome must lie in [0,1]; "
-                         "rescale it first (see tmlcou)")
+        raise ValueError("tmldgp: the outcome must lie in [0,1]; rescale it first (see tmlcou)")
     gfit = post_lasso(W, a, penalty)
-    gg = [min(max(float(gfit["predict"](W[i])), 0.02), 0.98)
-          for i in range(n)]
+    gg = [min(max(float(gfit["predict"](W[i])), 0.02), 0.98) for i in range(n)]
     Xa = [[a[i]] + list(W[i]) for i in range(n)]
     qfit = post_lasso(Xa, yv, penalty)
-    q1 = [min(max(float(qfit["predict"]([1.0] + list(W[i]))),
-                  1e-6), 1 - 1e-6) for i in range(n)]
-    q0 = [min(max(float(qfit["predict"]([0.0] + list(W[i]))),
-                  1e-6), 1 - 1e-6) for i in range(n)]
-    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i])
-         for i in range(n)]
+    q1 = [min(max(float(qfit["predict"]([1.0] + list(W[i]))), 1e-6), 1 - 1e-6) for i in range(n)]
+    q0 = [min(max(float(qfit["predict"]([0.0] + list(W[i]))), 1e-6), 1 - 1e-6) for i in range(n)]
+    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i]) for i in range(n)]
     qa = [q1[i] if a[i] == 1.0 else q0[i] for i in range(n)]
     off = [_logit(v) for v in qa]
     e = 0.0
@@ -218,32 +211,40 @@ def penalised_tmle(y, D, X, penalty=0.05, iters=100):
         qas = q1s[i] if a[i] == 1.0 else q0s[i]
         d.append(H[i] * (yv[i] - qas) + q1s[i] - q0s[i] - psi)
     m = sum(d) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in d) / n ** 2)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "epsilon": e, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "mean_eic": m, "solves_eic": abs(m) < 1e-6,
-        "g_support": gfit["support"], "Q_support": qfit["support"],
-        "penalty": float(penalty),
-        "method": "penalised doubly robust TMLE with post-lasso "
-                  "nuisance fits; Belloni & Chernozhukov (2013), van "
-                  "der Laan & Gruber (2016)",
-        "note": "the PENALTY is on the nuisances only; penalising the "
-                "fluctuation would break the score equation",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in d) / n**2)
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "epsilon": e,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "mean_eic": m,
+            "solves_eic": abs(m) < 1e-6,
+            "g_support": gfit["support"],
+            "Q_support": qfit["support"],
+            "penalty": float(penalty),
+            "method": "penalised doubly robust TMLE with post-lasso "
+            "nuisance fits; Belloni & Chernozhukov (2013), van "
+            "der Laan & Gruber (2016)",
+            "note": "the PENALTY is on the nuisances only; penalising the fluctuation would break the score equation",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tmldgp: in high dimensions regularise the NUISANCES and "
-            "leave the TARGETING alone -- epsilon is one-dimensional "
-            "and its MLE is exactly what makes P_n D* = 0, so "
-            "shrinking it pulls the estimator back to the untargeted "
-            "plug-in. Use POST-LASSO for the nuisance fits: the lasso "
-            "selects and shrinks, refitting by OLS on the selection "
-            "keeps the selection and undoes the shrinkage. Double "
-            "robustness matters MORE under penalisation, since a "
-            "penalised fit is deliberately biased and the remainder is "
-            "a PRODUCT of the two errors.")
+    return (
+        "tmldgp: in high dimensions regularise the NUISANCES and "
+        "leave the TARGETING alone -- epsilon is one-dimensional "
+        "and its MLE is exactly what makes P_n D* = 0, so "
+        "shrinking it pulls the estimator back to the untargeted "
+        "plug-in. Use POST-LASSO for the nuisance fits: the lasso "
+        "selects and shrinks, refitting by OLS on the selection "
+        "keeps the selection and undoes the shrinkage. Double "
+        "robustness matters MORE under penalisation, since a "
+        "penalised fit is deliberately biased and the remainder is "
+        "a PRODUCT of the two errors."
+    )
 
 
 # compact alias per ledger/NAMING.md

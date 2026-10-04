@@ -49,9 +49,16 @@ def tversky_similarity(fp_a, fp_b, alpha=0.5, beta=0.5):
     only_b = sum(1.0 for x, y in zip(a, b) if x == 0.0 and y != 0.0)
     den = common + alpha * only_a + beta * only_b
     s = common / den if den > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": s, "common": common, "only_a": only_a, "only_b": only_b,
-        "n_bits": len(a), "method": "Tversky similarity index"})
+    return RichResult(
+        payload={
+            "estimate": s,
+            "common": common,
+            "only_a": only_a,
+            "only_b": only_b,
+            "n_bits": len(a),
+            "method": "Tversky similarity index",
+        }
+    )
 
 
 def cheatsheet():

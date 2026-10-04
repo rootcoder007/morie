@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["data_subset_refutation"]
 
 
-def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50,
-                           seed=0, tol=0.1):
+def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50, seed=0, tol=0.1):
     r"""Re-estimate on random subsets; the estimate should be stable.
 
     Removing a random fraction of the rows removes no systematic
@@ -117,8 +116,7 @@ def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50,
             "tolerance": float(tol),
             "fraction": float(fraction),
             "implied_se": se_full,
-            "excess_variability": (float(sd / (expected * se_full))
-                                   if se_full and se_full > 0 else np.nan),
+            "excess_variability": (float(sd / (expected * se_full)) if se_full and se_full > 0 else np.nan),
             "variability_note": (
                 "subset spread divided by what subsampling alone implies "
                 "(sqrt(1/f - 1) times the full-sample SE); near 1 is normal, "
@@ -137,7 +135,4 @@ def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50,
 
 
 def cheatsheet():
-    return (
-        "datasb: subset stability against the spread subsampling implies, "
-        "plus leave-one-out influence"
-    )
+    return "datasb: subset stability against the spread subsampling implies, plus leave-one-out influence"

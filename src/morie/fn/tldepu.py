@@ -39,9 +39,14 @@ def upper_tail_dependence(y, copula, theta=0.95):
     Values.  Springer, section 8.4, pp. 163-165.
     """
     r = chi_dependence(y, copula, theta)
-    return RichResult(payload={
-        "estimate": float(r["estimate"]), "u": float(r["u"]), "n": int(r["n"]),
-        "method": "upper tail dependence via empirical chi(u) [Joe 1997; Coles 2001]"})
+    return RichResult(
+        payload={
+            "estimate": float(r["estimate"]),
+            "u": float(r["u"]),
+            "n": int(r["n"]),
+            "method": "upper tail dependence via empirical chi(u) [Joe 1997; Coles 2001]",
+        }
+    )
 
 
 # CANONICAL TEST

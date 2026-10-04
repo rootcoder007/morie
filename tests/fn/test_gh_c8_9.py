@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_9 import ghosal_markov_crt
 
 
@@ -25,13 +24,10 @@ def _expected_rate(a0, b0, ns, seed):
             x = nxt
         s0 = c[0][0] + c[0][1]
         s1 = c[1][0] + c[1][1]
-        va = ((1 + c[0][1]) * (1 + c[0][0])
-              / ((2 + s0) ** 2 * (3 + s0)))
-        vb = ((1 + c[1][1]) * (1 + c[1][0])
-              / ((2 + s1) ** 2 * (3 + s1)))
+        va = (1 + c[0][1]) * (1 + c[0][0]) / ((2 + s0) ** 2 * (3 + s0))
+        vb = (1 + c[1][1]) * (1 + c[1][0]) / ((2 + s1) ** 2 * (3 + s1))
         risks.append(va + vb)
-    rate_hat = math.log(risks[0] / risks[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
+    rate_hat = math.log(risks[0] / risks[-1]) / math.log(float(ns[-1]) / ns[0])
     return rate_hat, risks
 
 

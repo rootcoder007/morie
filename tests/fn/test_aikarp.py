@@ -1,7 +1,6 @@
 """Tests for aikarp.aic_ar_order."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aikarp import aic_ar_order
 
 
@@ -11,6 +10,8 @@ def test_aikarp_basic():
     result = aic_ar_order(x)
     assert isinstance(result, dict)
     assert "p" in result
+
+
 def test_aikarp_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

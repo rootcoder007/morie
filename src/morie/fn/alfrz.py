@@ -33,11 +33,16 @@ def alammar_layer_freezing(n_layers, n_stages=None):
     for s in range(1, S + 1):
         thaw = round(s * L / S)
         masks.append([i >= L - thaw for i in range(L)])
-    return RichResult(payload={
-        "masks": masks, "n_stages": S,
-        "trainable_per_stage": [sum(m) for m in masks],
-        "estimate": float(S), "n": L,
-        "method": "Gradual unfreezing (Howard and Ruder 2018)"})
+    return RichResult(
+        payload={
+            "masks": masks,
+            "n_stages": S,
+            "trainable_per_stage": [sum(m) for m in masks],
+            "estimate": float(S),
+            "n": L,
+            "method": "Gradual unfreezing (Howard and Ruder 2018)",
+        }
+    )
 
 
 def cheatsheet():

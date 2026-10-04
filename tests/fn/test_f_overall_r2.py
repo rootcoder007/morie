@@ -1,7 +1,6 @@
 """Tests for f_overall_r2.f_overall_r2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.f_overall_r2 import f_overall_r2
 
 

@@ -71,8 +71,7 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d observations."
-                         % (Xa.shape[0], n))
+        raise ValueError("X has %d rows for %d observations." % (Xa.shape[0], n))
     p = Xa.shape[1]
 
     if V is None:
@@ -85,12 +84,10 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
         Dm = np.atleast_2d(np.asarray(D, dtype=float))
         if Dm.shape != (q, q):
             raise ValueError("D must be %d by %d, got %s." % (q, q, Dm.shape))
-        Rm = np.eye(n) if R is None else np.atleast_2d(
-            np.asarray(R, dtype=float)
-        )
+        Rm = np.eye(n) if R is None else np.atleast_2d(np.asarray(R, dtype=float))
         if Rm.shape != (n, n):
             raise ValueError("R must be %d by %d, got %s." % (n, n, Rm.shape))
-        Vm = Za @ Dm @ Za.T + Rm          # ZDZ', not Z'DZ
+        Vm = Za @ Dm @ Za.T + Rm  # ZDZ', not Z'DZ
     else:
         Vm = np.atleast_2d(np.asarray(V, dtype=float))
         if Vm.shape != (n, n):
@@ -99,10 +96,7 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
     Vm = 0.5 * (Vm + Vm.T)
     sign, logdet = np.linalg.slogdet(Vm)
     if sign <= 0:
-        raise ValueError(
-            "V is not positive definite; the variance components are "
-            "inadmissible."
-        )
+        raise ValueError("V is not positive definite; the variance components are inadmissible.")
     Vi = np.linalg.inv(Vm)
     ViX = Vi @ Xa
     XtViX = Xa.T @ ViX
@@ -152,17 +146,13 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
             ),
             "n": int(n),
             "p": int(p),
-            "method": "%s log-likelihood of a linear mixed model"
-                      % ("REML" if reml else "ML"),
+            "method": "%s log-likelihood of a linear mixed model" % ("REML" if reml else "ML"),
         }
     )
 
 
 def cheatsheet():
-    return (
-        "lmmll: LMM ML/REML log-likelihood with the ZDZ' correction and the "
-        "likelihood-comparison rule"
-    )
+    return "lmmll: LMM ML/REML log-likelihood with the ZDZ' correction and the likelihood-comparison rule"
 
 
 #: Catalogue alias for :func:`lmm_loglik`.

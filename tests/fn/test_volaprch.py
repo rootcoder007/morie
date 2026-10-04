@@ -1,8 +1,8 @@
 """Tests for volaprch."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volaprch import vol_aparch_fit
 
 

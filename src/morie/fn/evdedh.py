@@ -57,36 +57,44 @@ def ev_dedh(x, k=None):
     if top[-1] <= 0:
         raise ValueError(
             "the threshold order statistic is not positive; the moment "
-            "estimator takes logs, so shift the data above zero first.")
+            "estimator takes logs, so shift the data above zero first."
+        )
     d = np.log(top[:-1]) - np.log(top[-1])
     M1 = float(np.mean(d))
-    M2 = float(np.mean(d ** 2))
+    M2 = float(np.mean(d**2))
     if M2 <= 0:
-        raise ValueError("the top order statistics are tied at the "
-                         "threshold; no tail information remains.")
-    corr = 1.0 - 0.5 / (1.0 - M1 ** 2 / M2)
+        raise ValueError("the top order statistics are tied at the threshold; no tail information remains.")
+    corr = 1.0 - 0.5 / (1.0 - M1**2 / M2)
     xi = M1 + corr
     # asymptotic variance (DEdH Thm 3.1 / de Haan-Ferreira 3.5.4):
     # xi^2 + 1 for xi >= 0; the xi < 0 form is used below it
     if xi >= 0:
-        avar = xi ** 2 + 1.0
+        avar = xi**2 + 1.0
     else:
         omx = 1.0 - xi
-        avar = (omx ** 2 * (1 - 2 * xi)
-                * (4 - 8 * (1 - 2 * xi) / (1 - 3 * xi)
-                   + (5 - 11 * xi) * (1 - 2 * xi)
-                   / ((1 - 3 * xi) * (1 - 4 * xi))))
-    return RichResult(payload={
-        "xi": xi, "hill_part": M1, "correction": corr,
-        "M1": M1, "M2": M2,
-        "se": float(np.sqrt(max(avar, 0.0) / kk)),
-        "k": kk, "threshold": float(top[-1]),
-        "agrees_with_hill_when": "xi > 0: the correction converges to zero "
-                                 "and the first term IS the Hill estimator",
-        "valid_for": "every real xi; the log still needs positive data, "
-                     "a location restriction rather than a tail one",
-        "n": int(n),
-        "method": "Dekkers-Einmahl-de Haan (1989) moment estimator, Eq. (1.7)"})
+        avar = (
+            omx**2
+            * (1 - 2 * xi)
+            * (4 - 8 * (1 - 2 * xi) / (1 - 3 * xi) + (5 - 11 * xi) * (1 - 2 * xi) / ((1 - 3 * xi) * (1 - 4 * xi)))
+        )
+    return RichResult(
+        payload={
+            "xi": xi,
+            "hill_part": M1,
+            "correction": corr,
+            "M1": M1,
+            "M2": M2,
+            "se": float(np.sqrt(max(avar, 0.0) / kk)),
+            "k": kk,
+            "threshold": float(top[-1]),
+            "agrees_with_hill_when": "xi > 0: the correction converges to zero "
+            "and the first term IS the Hill estimator",
+            "valid_for": "every real xi; the log still needs positive data, "
+            "a location restriction rather than a tail one",
+            "n": int(n),
+            "method": "Dekkers-Einmahl-de Haan (1989) moment estimator, Eq. (1.7)",
+        }
+    )
 
 
 def cheatsheet():

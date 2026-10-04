@@ -1,7 +1,6 @@
 """Tests for ga_opt.genetic_algorithm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ga_opt import genetic_algorithm
 
 
@@ -19,8 +18,7 @@ def test_ga_opt_basic():
     assert hasattr(result, "payload") or isinstance(result, dict)
     payload = result.payload if hasattr(result, "payload") else result
     # Documented keys in the payload
-    for key in ("estimate", "best", "best_fitness", "best_path",
-                "generations", "n", "method"):
+    for key in ("estimate", "best", "best_fitness", "best_path", "generations", "n", "method"):
         assert key in payload
     # best_path should have ng+1 entries (one per generation plus the final one)
     assert len(payload["best_path"]) == generations + 1

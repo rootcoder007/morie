@@ -123,9 +123,7 @@ def geron_stochastic_gradient_descent(X, y, theta, eta, n_iter, seed=42, t0=None
         grad = 2.0 * A[i] * (A[i] @ th - yv[i])
         th = th - lr * grad
         if not np.all(np.isfinite(th)):
-            raise ValueError(
-                f"theta diverged at step {t} (eta={lr:g} too large for this data)."
-            )
+            raise ValueError(f"theta diverged at step {t} (eta={lr:g} too large for this data).")
         path.append(th.tolist())
         costs.append(float(np.mean((A @ th - yv) ** 2)))
         rates.append(float(lr))

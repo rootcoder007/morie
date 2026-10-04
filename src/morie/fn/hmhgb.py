@@ -72,7 +72,9 @@ def _predict_tree(node, binned):
     return out
 
 
-def geron_histogram_gradient_boosting(X, y, max_iter=100, learning_rate=0.1, max_bins=255, max_depth=3, min_samples_leaf=1):
+def geron_histogram_gradient_boosting(
+    X, y, max_iter=100, learning_rate=0.1, max_bins=255, max_depth=3, min_samples_leaf=1
+):
     """
     Histogram-based gradient boosting (HistGB): bin features before split search.
 
@@ -162,9 +164,7 @@ def geron_histogram_gradient_boosting(X, y, max_iter=100, learning_rate=0.1, max
         raise ValueError(f"geron_histogram_gradient_boosting: X must be a non-empty 2-D array, got shape {A.shape}")
     yy = np.asarray(y, dtype=float).ravel()
     if yy.size != A.shape[0]:
-        raise ValueError(
-            f"geron_histogram_gradient_boosting: X has {A.shape[0]} rows but y has {yy.size} entries"
-        )
+        raise ValueError(f"geron_histogram_gradient_boosting: X has {A.shape[0]} rows but y has {yy.size} entries")
     if not np.all(np.isfinite(A)) or not np.all(np.isfinite(yy)):
         raise ValueError("geron_histogram_gradient_boosting: X and y must be finite")
     rounds = int(max_iter)
@@ -181,7 +181,9 @@ def geron_histogram_gradient_boosting(X, y, max_iter=100, learning_rate=0.1, max
         raise ValueError(f"geron_histogram_gradient_boosting: max_depth must be at least 1, got {max_depth!r}")
     msl = int(min_samples_leaf)
     if msl < 1:
-        raise ValueError(f"geron_histogram_gradient_boosting: min_samples_leaf must be at least 1, got {min_samples_leaf!r}")
+        raise ValueError(
+            f"geron_histogram_gradient_boosting: min_samples_leaf must be at least 1, got {min_samples_leaf!r}"
+        )
 
     m, n_feat = A.shape
     binned = np.empty((m, n_feat), dtype=np.int64)

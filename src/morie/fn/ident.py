@@ -63,7 +63,7 @@ def identifiability_conditions(dag, X, Y, Z=(), treatment=None, strata=None):
         if not np.all(np.isin(T, (0.0, 1.0))):
             raise ValueError("treatment must be binary 0/1.")
         for s in np.unique(S):
-            arm = T[S == s]
+            arm = T[s == S]
             if arm.min() == arm.max():
                 empty.append(s)
         positivity = len(empty) == 0

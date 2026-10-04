@@ -5,8 +5,6 @@ recomputed in the test body, and the value the docstring quotes is
 asserted as well.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km083 import kamath_ch6_ceat_random_effects

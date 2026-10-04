@@ -1,7 +1,6 @@
 """Tests for convolution representation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgcnv import sgcnv
 
 

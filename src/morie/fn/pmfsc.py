@@ -71,9 +71,18 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["pmfsc", "pmf_potential", "pmf_score", "derive_potential",
-           "shell_volume", "bin_index", "REFERENCES", "CORRECTIONS",
-           "DEFAULT_CUTOFF", "cheatsheet"]
+__all__ = [
+    "pmfsc",
+    "pmf_potential",
+    "pmf_score",
+    "derive_potential",
+    "shell_volume",
+    "bin_index",
+    "REFERENCES",
+    "CORRECTIONS",
+    "DEFAULT_CUTOFF",
+    "cheatsheet",
+]
 
 REFERENCES = ("bulk", "uniform")
 CORRECTIONS = ("none", "excluded_volume")
@@ -122,9 +131,17 @@ def _key(a, b):
     return a + "|" + b
 
 
-def derive_potential(observations, n_complexes=1, r_max=DEFAULT_CUTOFF,
-                     n_bins=24, reference="bulk", correction="none",
-                     occupied=None, kT=1.0, cap=6.0):
+def derive_potential(
+    observations,
+    n_complexes=1,
+    r_max=DEFAULT_CUTOFF,
+    n_bins=24,
+    reference="bulk",
+    correction="none",
+    occupied=None,
+    kT=1.0,
+    cap=6.0,
+):
     """Turn observed contacts into a potential, one curve per type pair.
 
     Parameters
@@ -181,14 +198,11 @@ def derive_potential(observations, n_complexes=1, r_max=DEFAULT_CUTOFF,
     fcorr = [1.0] * n_bins
     if correction == "excluded_volume":
         if occupied is None:
-            raise ValueError("the excluded-volume correction needs the "
-                             "occupied volumes")
+            raise ValueError("the excluded-volume correction needs the occupied volumes")
         for t in range(n_bins):
             free = vol[t] - float(occupied[t])
             if free <= 0.0:
-                raise ValueError("bin %d is entirely occupied by ligand "
-                                 "atoms; the correction is undefined "
-                                 "there" % t)
+                raise ValueError("bin %d is entirely occupied by ligand atoms; the correction is undefined there" % t)
             # The available space is smaller than the shell, so the true
             # density is HIGHER than the raw count suggests, by exactly
             # this ratio.
@@ -225,14 +239,21 @@ def derive_potential(observations, n_complexes=1, r_max=DEFAULT_CUTOFF,
                 capped += 1
             else:
                 a.append(-float(kT) * math.log(x / ref))
-        out[key] = {"counts": c, "density": dens, "reference": ref,
-                    "potential": a, "capped": capped, "n": n_tot,
-                    "edges": edges, "volume": vol, "correction": fcorr}
+        out[key] = {
+            "counts": c,
+            "density": dens,
+            "reference": ref,
+            "potential": a,
+            "capped": capped,
+            "n": n_tot,
+            "edges": edges,
+            "volume": vol,
+            "correction": fcorr,
+        }
     return out
 
 
-def pmf_score(pairs, potential, r_max=DEFAULT_CUTOFF, n_bins=24,
-              missing=0.0):
+def pmf_score(pairs, potential, r_max=DEFAULT_CUTOFF, n_bins=24, missing=0.0):
     """Score a pose against a derived potential.
 
     `pairs` gives (type_i, type_j, separation). A pair whose type
@@ -261,14 +282,24 @@ def pmf_score(pairs, potential, r_max=DEFAULT_CUTOFF, n_bins=24,
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t])
-                             for t in range(3)))
+    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t]) for t in range(3)))
 
 
-def pmf_potential(receptor, ligand, potential=None, observations=None,
-                  n_complexes=1, r_max=DEFAULT_CUTOFF, n_bins=24,
-                  reference="bulk", correction="none", occupied=None,
-                  kT=1.0, cap=6.0, missing=0.0):
+def pmf_potential(
+    receptor,
+    ligand,
+    potential=None,
+    observations=None,
+    n_complexes=1,
+    r_max=DEFAULT_CUTOFF,
+    n_bins=24,
+    reference="bulk",
+    correction="none",
+    occupied=None,
+    kT=1.0,
+    cap=6.0,
+    missing=0.0,
+):
     """Derive a potential if needed, then score the pose.
 
     Parameters
@@ -295,51 +326,50 @@ def pmf_potential(receptor, ligand, potential=None, observations=None,
     """
     if potential is None:
         if observations is None:
-            raise ValueError("give either a derived potential or the "
-                             "observations to derive one from")
-        potential = derive_potential(observations, n_complexes, r_max,
-                                     n_bins, reference, correction,
-                                     occupied, kT, cap)
-    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in receptor]
-    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3]))
-           for a in ligand]
+            raise ValueError("give either a derived potential or the observations to derive one from")
+        potential = derive_potential(observations, n_complexes, r_max, n_bins, reference, correction, occupied, kT, cap)
+    rec = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in receptor]
+    lig = [([float(a[0]), float(a[1]), float(a[2])], str(a[3])) for a in ligand]
     pairs = []
     for rx, rt in rec:
         for lx, lt in lig:
             pairs.append((rt, lt, _dist(rx, lx)))
-    score, used, beyond, unknown = pmf_score(pairs, potential, r_max,
-                                             n_bins, missing)
+    score, used, beyond, unknown = pmf_score(pairs, potential, r_max, n_bins, missing)
     capped = sum(potential[k]["capped"] for k in potential)
-    return RichResult(payload={
-        "score": score,
-        "estimate": score,
-        "se": float("nan"),
-        "n_scored": used,
-        "n_beyond_cutoff": beyond,
-        "n_unparameterised": unknown,
-        "n_pairs": len(pairs),
-        "n_types": len(potential),
-        "n_capped_bins": capped,
-        "potential": potential,
-        "r_max": float(r_max),
-        "n_bins": int(n_bins),
-        "kT": float(kT),
-        "cap": float(cap),
-        "reference": reference,
-        "correction": correction,
-        "method": "knowledge-based PMF scoring",
-    })
+    return RichResult(
+        payload={
+            "score": score,
+            "estimate": score,
+            "se": float("nan"),
+            "n_scored": used,
+            "n_beyond_cutoff": beyond,
+            "n_unparameterised": unknown,
+            "n_pairs": len(pairs),
+            "n_types": len(potential),
+            "n_capped_bins": capped,
+            "potential": potential,
+            "r_max": float(r_max),
+            "n_bins": int(n_bins),
+            "kT": float(kT),
+            "cap": float(cap),
+            "reference": reference,
+            "correction": correction,
+            "method": "knowledge-based PMF scoring",
+        }
+    )
 
 
 pmfsc = pmf_potential
 
 
 def cheatsheet():
-    return ("pmfsc: knowledge-based PMF scoring. references "
-            + ", ".join(REFERENCES) + "; corrections "
-            + ", ".join(CORRECTIONS)
-            + "; the potential is derived, not shipped")
+    return (
+        "pmfsc: knowledge-based PMF scoring. references "
+        + ", ".join(REFERENCES)
+        + "; corrections "
+        + ", ".join(CORRECTIONS)
+        + "; the potential is derived, not shipped"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

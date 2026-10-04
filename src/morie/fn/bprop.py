@@ -100,8 +100,7 @@ def backpropagation_chain_rule(layers, activations, loss_grad, act_fun="sigmoid"
             raise ValueError("backpropagation_chain_rule: layer %d has the wrong number of columns" % l)
     # Step 9, then Step 10 backwards through the layers.
     deltas = [None] * L
-    d = [[Gd[i][j] * _dact(fns[L - 1], A[L][i][j]) for j in range(len(A[L][0]))]
-         for i in range(n)]
+    d = [[Gd[i][j] * _dact(fns[L - 1], A[L][i][j]) for j in range(len(A[L][0]))] for i in range(n)]
     deltas[L - 1] = d
     for l in range(L - 2, -1, -1):
         u = len(A[l + 1][0])

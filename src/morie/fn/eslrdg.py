@@ -92,12 +92,20 @@ def _ridge(X, y, lambda_, penalize_intercept):
         standardised = bool(np.allclose(sd, 1.0, atol=1e-8))
     else:
         standardised = True
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "effective_df": float(np.trace(H)), "rss": float(resid @ resid),
-        "lambda": lam, "intercept_penalised": bool(penalize_intercept),
-        "columns_standardised": standardised, "n": int(n), "p": int(p),
-        "method": "ridge (X'X + lambda P)^-1 X'y; P excludes constant columns"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "effective_df": float(np.trace(H)),
+            "rss": float(resid @ resid),
+            "lambda": lam,
+            "intercept_penalised": bool(penalize_intercept),
+            "columns_standardised": standardised,
+            "n": int(n),
+            "p": int(p),
+            "method": "ridge (X'X + lambda P)^-1 X'y; P excludes constant columns",
+        }
+    )
 
 
 def cheatsheet():

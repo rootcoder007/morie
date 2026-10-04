@@ -74,15 +74,12 @@ Learning* 20(3), 273-297, doi:10.1007/BF00994018. The dual being
 solved.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from . import svmopt as sq
 from ._richresult import RichResult
 
-__all__ = ["error_cache", "violates_kkt", "outer_loop_schedule",
-           "second_choice", "compute_threshold", "smo_platt"]
+__all__ = ["error_cache", "violates_kkt", "outer_loop_schedule", "second_choice", "compute_threshold", "smo_platt"]
 
 _EPS = 1e-12
 
@@ -107,8 +104,7 @@ def violates_kkt(i, alpha, y, E, C, tol=1e-3):
     """
     a = float(alpha[i])
     r = float(y[i]) * float(E[i])
-    return (r < -float(tol) and a < float(C) - _EPS) or \
-        (r > float(tol) and a > _EPS)
+    return (r < -float(tol) and a < float(C) - _EPS) or (r > float(tol) and a > _EPS)
 
 
 def outer_loop_schedule(alpha, C, examine_all):
@@ -120,12 +116,14 @@ def outer_loop_schedule(alpha, C, examine_all):
     """
     a = [float(v) for v in k.vec(alpha)]
     if examine_all:
-        return {"indices": list(range(len(a))), "kind": "all",
-                "note": "a full sweep catches violators at a bound"}
+        return {"indices": list(range(len(a))), "kind": "all", "note": "a full sweep catches violators at a bound"}
     nb = [i for i in range(len(a)) if _EPS < a[i] < float(C) - _EPS]
-    return {"indices": nb, "kind": "non_bound",
-            "n_non_bound": len(nb),
-            "note": "the non-bound set is where the action is"}
+    return {
+        "indices": nb,
+        "kind": "non_bound",
+        "n_non_bound": len(nb),
+        "note": "the non-bound set is where the action is",
+    }
 
 
 def second_choice(i1, alpha, y, E, C, rng, tol=1e-3):
@@ -137,26 +135,24 @@ def second_choice(i1, alpha, y, E, C, rng, tol=1e-3):
     """
     a = [float(v) for v in k.vec(alpha)]
     n = len(a)
-    nb = [i for i in range(n) if _EPS < a[i] < float(C) - _EPS
-          and i != int(i1)]
+    nb = [i for i in range(n) if _EPS < a[i] < float(C) - _EPS and i != int(i1)]
     if len(nb) > 1:
         j = max(nb, key=lambda t: abs(E[int(i1)] - E[t]))
-        return {"index": j, "level": 1,
-                "gap": abs(E[int(i1)] - E[j]),
-                "note": "the analytic step is proportional to "
-                        "|E1 - E2|, so this maximises progress"}
+        return {
+            "index": j,
+            "level": 1,
+            "gap": abs(E[int(i1)] - E[j]),
+            "note": "the analytic step is proportional to |E1 - E2|, so this maximises progress",
+        }
     start = int(float(rng.uniform()) * max(n, 1)) % max(n, 1)
     if nb:
         j = nb[start % len(nb)]
-        return {"index": j, "level": 2,
-                "note": "non-bound examples from a random position"}
+        return {"index": j, "level": 2, "note": "non-bound examples from a random position"}
     for t in range(n):
         j = (start + t) % n
         if j != int(i1):
-            return {"index": j, "level": 3,
-                    "note": "all examples from a random position"}
-    return {"index": None, "level": 4,
-            "note": "no second index available; abandon this i1"}
+            return {"index": j, "level": 3, "note": "all examples from a random position"}
+    return {"index": None, "level": 4, "note": "no second index available; abandon this i1"}
 
 
 def compute_threshold(i1, i2, a1_new, a2_new, alpha, y, E, K, b, C):
@@ -170,24 +166,24 @@ def compute_threshold(i1, i2, a1_new, a2_new, alpha, y, E, K, b, C):
     i, j = int(i1), int(i2)
     d1 = float(a1_new) - a[i]
     d2 = float(a2_new) - a[j]
-    b1 = (float(b) + E[i] + yy[i] * d1 * K[i][i]
-          + yy[j] * d2 * K[i][j])
-    b2 = (float(b) + E[j] + yy[i] * d1 * K[i][j]
-          + yy[j] * d2 * K[j][j])
+    b1 = float(b) + E[i] + yy[i] * d1 * K[i][i] + yy[j] * d2 * K[i][j]
+    b2 = float(b) + E[j] + yy[i] * d1 * K[i][j] + yy[j] * d2 * K[j][j]
     free1 = _EPS < float(a1_new) < float(C) - _EPS
     free2 = _EPS < float(a2_new) < float(C) - _EPS
     if free1:
         return {"b": b1, "from": "i1", "b1": b1, "b2": b2}
     if free2:
         return {"b": b2, "from": "i2", "b1": b1, "b2": b2}
-    return {"b": 0.5 * (b1 + b2), "from": "midpoint",
-            "b1": b1, "b2": b2,
-            "note": "both at a bound, so any value between b1 and b2 "
-                    "satisfies KKT"}
+    return {
+        "b": 0.5 * (b1 + b2),
+        "from": "midpoint",
+        "b1": b1,
+        "b2": b2,
+        "note": "both at a bound, so any value between b1 and b2 satisfies KKT",
+    }
 
 
-def smo_platt(y, K, C=1.0, tol=1e-3, eps=1e-5, max_passes=200,
-              seed=0):
+def smo_platt(y, K, C=1.0, tol=1e-3, eps=1e-5, max_passes=200, seed=0):
     r"""SMO with Platt's own loops.
 
     Returns the multipliers, the threshold and the loop statistics --
@@ -228,12 +224,10 @@ def smo_platt(y, K, C=1.0, tol=1e-3, eps=1e-5, max_passes=200,
                 continue
             a2_new = a[i2] + yy[i2] * (E[i1] - E[i2]) / eta
             a2_new = min(max(a2_new, L), H)
-            if abs(a2_new - a[i2]) < float(eps) * (
-                    a2_new + a[i2] + float(eps)):
+            if abs(a2_new - a[i2]) < float(eps) * (a2_new + a[i2] + float(eps)):
                 continue
             a1_new = a[i1] - yy[i1] * yy[i2] * (a2_new - a[i2])
-            th = compute_threshold(i1, i2, a1_new, a2_new, a, yy, E,
-                                   K, b, C)
+            th = compute_threshold(i1, i2, a1_new, a2_new, a, yy, E, K, b, C)
             a[i1], a[i2] = a1_new, a2_new
             b = th["b"]
             E = error_cache(a, yy, K, b)
@@ -245,40 +239,47 @@ def smo_platt(y, K, C=1.0, tol=1e-3, eps=1e-5, max_passes=200,
             examine_all = True
             if passes > 1:
                 E = error_cache(a, yy, K, b)
-                if not any(violates_kkt(i, a, yy, E, C, tol)
-                           for i in range(n)):
+                if not any(violates_kkt(i, a, yy, E, C, tol) for i in range(n)):
                     break
     E = error_cache(a, yy, K, b)
     sv = [i for i in range(n) if a[i] > _EPS]
-    return RichResult(payload={
-        "estimate": a, "alpha": a, "b": b, "passes": passes,
-        "full_passes": full_passes, "non_bound_passes": nb_passes,
-        "steps": changed_total, "support_vectors": sv,
-        "n_sv": len(sv),
-        "equality_residual": sum(a[i] * yy[i] for i in range(n)),
-        "kkt_violations": sum(1 for i in range(n)
-                              if violates_kkt(i, a, yy, E, C, tol)),
-        "objective": sq.dual_objective(a, yy, K),
-        "method": "SMO with Platt's heuristics; Platt (1998)",
-        "note": "same dual as svmopt, different working-set rule -- "
-                "Platt's needs only the non-bound errors; note b "
-                "follows Platt's f = sum(a y K) - b, the NEGATIVE of "
-                "the LIBSVM convention used in svmopt",
-    })
+    return RichResult(
+        payload={
+            "estimate": a,
+            "alpha": a,
+            "b": b,
+            "passes": passes,
+            "full_passes": full_passes,
+            "non_bound_passes": nb_passes,
+            "steps": changed_total,
+            "support_vectors": sv,
+            "n_sv": len(sv),
+            "equality_residual": sum(a[i] * yy[i] for i in range(n)),
+            "kkt_violations": sum(1 for i in range(n) if violates_kkt(i, a, yy, E, C, tol)),
+            "objective": sq.dual_objective(a, yy, K),
+            "method": "SMO with Platt's heuristics; Platt (1998)",
+            "note": "same dual as svmopt, different working-set rule -- "
+            "Platt's needs only the non-bound errors; note b "
+            "follows Platt's f = sum(a y K) - b, the NEGATIVE of "
+            "the LIBSVM convention used in svmopt",
+        }
+    )
 
 
 def cheatsheet():
-    return ("smoopt: same SVM dual as svmopt, different CHOICE of "
-            "pair. Two multipliers because the equality constraint "
-            "forces them to move together, and at two the QP is "
-            "analytic -- SMO calls NO inner QP solver. Outer loop "
-            "ALTERNATES: one full sweep, then repeated sweeps over the "
-            "NON-BOUND examples until they all satisfy KKT, then a "
-            "full sweep again -- bound examples rarely move, but "
-            "skipping them forever hides a violator sitting at a "
-            "bound. Inner heuristic maximises |E1 - E2|, since the "
-            "analytic step is proportional to it, with a fallback "
-            "hierarchy. b is RECOMPUTED each step, not accumulated.")
+    return (
+        "smoopt: same SVM dual as svmopt, different CHOICE of "
+        "pair. Two multipliers because the equality constraint "
+        "forces them to move together, and at two the QP is "
+        "analytic -- SMO calls NO inner QP solver. Outer loop "
+        "ALTERNATES: one full sweep, then repeated sweeps over the "
+        "NON-BOUND examples until they all satisfy KKT, then a "
+        "full sweep again -- bound examples rarely move, but "
+        "skipping them forever hides a violator sitting at a "
+        "bound. Inner heuristic maximises |E1 - E2|, since the "
+        "analytic step is proportional to it, with a fallback "
+        "hierarchy. b is RECOMPUTED each step, not accumulated."
+    )
 
 
 # compact alias per ledger/NAMING.md

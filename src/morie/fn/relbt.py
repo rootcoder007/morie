@@ -60,7 +60,7 @@ def reliability_metric(r, h2):
         if b <= 0.0 or b > 1.0:
             raise ValueError("reliability_metric: h2 must lie in (0, 1]")
         rel.append(a * a / b)
-        acc.append(a / (b ** 0.5))
+        acc.append(a / (b**0.5))
     return RichResult(
         title="Reliability of genomic prediction",
         summary_lines=[("pairs", n)],

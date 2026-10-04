@@ -1,7 +1,6 @@
 """Tests for hmrlhf.geron_rlhf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrlhf import geron_rlhf
 
 

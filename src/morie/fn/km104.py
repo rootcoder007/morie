@@ -4,7 +4,7 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from .km103 import _hidden, _softmax_logits, kamath_ch6_lstm_softmax_word
+from .km103 import _hidden, _softmax_logits
 
 __all__ = ["kamath_ch6_affect_lm"]
 
@@ -41,27 +41,27 @@ def kamath_ch6_affect_lm(U, V, f, g, c, e, beta, b):
     if not np.isfinite(beta):
         raise ValueError("beta must be finite.")
     if Um.shape[1] != hc.shape[0]:
-        raise ValueError(
-            f"U has width {Um.shape[1]} but f(c) has {hc.shape[0]}.")
+        raise ValueError(f"U has width {Um.shape[1]} but f(c) has {hc.shape[0]}.")
     if Vm.shape[1] != he.shape[0]:
-        raise ValueError(
-            f"V has width {Vm.shape[1]} but g(e) has {he.shape[0]}.")
+        raise ValueError(f"V has width {Vm.shape[1]} but g(e) has {he.shape[0]}.")
     if Vm.shape[0] != Um.shape[0]:
-        raise ValueError(
-            f"V covers {Vm.shape[0]} words but U covers {Um.shape[0]}.")
+        raise ValueError(f"V covers {Vm.shape[0]} words but U covers {Um.shape[0]}.")
     if bv.shape[0] != Um.shape[0]:
-        raise ValueError(
-            f"b has {bv.shape[0]} entries but the vocabulary has "
-            f"{Um.shape[0]}.")
+        raise ValueError(f"b has {bv.shape[0]} entries but the vocabulary has {Um.shape[0]}.")
     base = Um @ hc
     affect = beta * (Vm @ he)
     p = _softmax_logits(base + affect + bv)
-    return RichResult(payload={
-        "p": [float(v) for v in p],
-        "affect_term": [float(v) for v in affect],
-        "argmax": int(np.argmax(p)), "beta": beta,
-        "estimate": float(p.max()), "n": int(p.size),
-        "method": "Affect-LM vocabulary softmax (Kamath Eq 6.28)"})
+    return RichResult(
+        payload={
+            "p": [float(v) for v in p],
+            "affect_term": [float(v) for v in affect],
+            "argmax": int(np.argmax(p)),
+            "beta": beta,
+            "estimate": float(p.max()),
+            "n": int(p.size),
+            "method": "Affect-LM vocabulary softmax (Kamath Eq 6.28)",
+        }
+    )
 
 
 def cheatsheet():

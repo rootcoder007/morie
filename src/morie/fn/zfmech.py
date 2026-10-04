@@ -74,14 +74,20 @@ mechanism itself.
 
 import math
 
-from . import _array_core as np
 from . import survrsf as _rsf
-from ._richresult import RichResult
 
-__all__ = ["renyi_divergence_gaussian", "zcdp_of_gaussian",
-           "sigma_for_rho", "gaussian_mechanism", "compose",
-           "group_privacy", "to_approx_dp", "from_pure_dp",
-           "round_trip", "postprocessing"]
+__all__ = [
+    "renyi_divergence_gaussian",
+    "zcdp_of_gaussian",
+    "sigma_for_rho",
+    "gaussian_mechanism",
+    "compose",
+    "group_privacy",
+    "to_approx_dp",
+    "from_pure_dp",
+    "round_trip",
+    "postprocessing",
+]
 
 
 def _check_rho(rho):
@@ -99,8 +105,7 @@ def renyi_divergence_gaussian(mu0, mu1, sigma, alpha):
     if sigma <= 0.0:
         raise ValueError("zfmech: sigma must be positive")
     if not 1.0 < float(alpha) < float("inf"):
-        raise ValueError("zfmech: alpha must lie in (1, inf), got %r"
-                         % alpha)
+        raise ValueError("zfmech: alpha must lie in (1, inf), got %r" % alpha)
     d = float(mu0) - float(mu1)
     return float(alpha) * d * d / (2.0 * sigma * sigma)
 
@@ -131,11 +136,9 @@ def gaussian_mechanism(value, sensitivity, rho, seed=0, n=1):
     for _ in range(int(n)):
         u1 = max(rng.next(), 1e-12)
         u2 = rng.next()
-        z = math.sqrt(-2.0 * math.log(u1)) * math.cos(
-            2.0 * math.pi * u2)
+        z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2)
         out.append(float(value) + sigma * z)
-    return {"release": out if n > 1 else out[0], "sigma": sigma,
-            "rho": float(rho), "sensitivity": float(sensitivity)}
+    return {"release": out if n > 1 else out[0], "sigma": sigma, "rho": float(rho), "sensitivity": float(sensitivity)}
 
 
 def compose(rhos):
@@ -143,9 +146,7 @@ def compose(rhos):
     rs = [float(v) for v in rhos]
     if any(v < 0.0 for v in rs):
         raise ValueError("zfmech: every rho must be non-negative")
-    return {"rho": sum(rs), "k": len(rs),
-            "note": "additive, with no delta budget and no advanced "
-                    "composition theorem"}
+    return {"rho": sum(rs), "k": len(rs), "note": "additive, with no delta budget and no advanced composition theorem"}
 
 
 def group_privacy(rho, k):
@@ -155,8 +156,7 @@ def group_privacy(rho, k):
     k = int(k)
     if k < 1:
         raise ValueError("zfmech: the group size must be at least 1")
-    return {"rho": float(k) ** 2 * float(rho), "k": k,
-            "growth": "quadratic in k, and exactly tight"}
+    return {"rho": float(k) ** 2 * float(rho), "k": k, "growth": "quadratic in k, and exactly tight"}
 
 
 def to_approx_dp(rho, delta):
@@ -165,8 +165,7 @@ def to_approx_dp(rho, delta):
     _check_rho(rho)
     d = float(delta)
     if not 0.0 < d < 1.0:
-        raise ValueError("zfmech: delta must lie in (0, 1), got %r"
-                         % delta)
+        raise ValueError("zfmech: delta must lie in (0, 1), got %r" % delta)
     eps = float(rho) + 2.0 * math.sqrt(float(rho) * math.log(1.0 / d))
     return {"epsilon": eps, "delta": d, "rho": float(rho)}
 
@@ -189,30 +188,36 @@ def round_trip(epsilon, delta):
     """
     rho = from_pure_dp(epsilon)["rho"]
     back = to_approx_dp(rho, delta) if rho > 0.0 else {"epsilon": 0.0}
-    return {"epsilon_in": float(epsilon), "rho": rho,
-            "epsilon_out": back["epsilon"],
-            "inflation": back["epsilon"] - float(epsilon),
-            "delta": float(delta)}
+    return {
+        "epsilon_in": float(epsilon),
+        "rho": rho,
+        "epsilon_out": back["epsilon"],
+        "inflation": back["epsilon"] - float(epsilon),
+        "delta": float(delta),
+    }
 
 
 def postprocessing(rho):
     r"""Lemma 1.8: any function of the output keeps the same
     :math:`\rho`."""
     _check_rho(rho)
-    return {"rho": float(rho),
-            "note": "invariant -- unlike Dwork and Rothblum's mCDP, "
-                    "which is not closed under post-processing"}
+    return {
+        "rho": float(rho),
+        "note": "invariant -- unlike Dwork and Rothblum's mCDP, which is not closed under post-processing",
+    }
 
 
 def cheatsheet():
-    return ("zfmech: rho-zCDP means D_alpha(M(x)||M(x')) <= rho alpha "
-            "for EVERY alpha > 1. Gaussian mechanism: rho = "
-            "Delta^2/(2 sigma^2), and the bound is exactly tight. "
-            "Composition adds rho; post-processing leaves it alone; "
-            "groups of size k cost k^2 rho, not k rho. Conversions: "
-            "eps-DP -> eps^2/2 zCDP, and rho-zCDP -> (rho + "
-            "2 sqrt(rho log(1/delta)), delta)-DP. Chaining them does "
-            "NOT return the original epsilon.")
+    return (
+        "zfmech: rho-zCDP means D_alpha(M(x)||M(x')) <= rho alpha "
+        "for EVERY alpha > 1. Gaussian mechanism: rho = "
+        "Delta^2/(2 sigma^2), and the bound is exactly tight. "
+        "Composition adds rho; post-processing leaves it alone; "
+        "groups of size k cost k^2 rho, not k rho. Conversions: "
+        "eps-DP -> eps^2/2 zCDP, and rho-zCDP -> (rho + "
+        "2 sqrt(rho log(1/delta)), delta)-DP. Chaining them does "
+        "NOT return the original epsilon."
+    )
 
 
 # compact alias per ledger/NAMING.md

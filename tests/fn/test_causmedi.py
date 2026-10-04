@@ -1,8 +1,8 @@
 """Tests for causmedi.causal_mediation_imai."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causmedi import causal_mediation_imai
 
 

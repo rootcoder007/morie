@@ -1,7 +1,6 @@
 """Tests for hmvbgm.geron_variational_bayes_gmm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmvbgm import geron_variational_bayes_gmm
 
 

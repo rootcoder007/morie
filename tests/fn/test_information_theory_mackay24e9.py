@@ -15,7 +15,7 @@ def test_mupostsg_is_normal_at_the_sample_mean_with_variance_sigma2_over_n():
     xbar, n, sigma = 3.4, 16, 2.0
     res = mupostsg(xbar, n, sigma)
     assert res["mean"] == pytest.approx(xbar, abs=1e-12)
-    assert res["var"] == pytest.approx(sigma ** 2 / n, rel=1e-12)
+    assert res["var"] == pytest.approx(sigma**2 / n, rel=1e-12)
     assert res["se"] == pytest.approx(sigma / math.sqrt(n), rel=1e-12)
 
 

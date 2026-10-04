@@ -1,7 +1,6 @@
 """Tests for rpfst — time to first placement."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpfst import rplace_first
 
 

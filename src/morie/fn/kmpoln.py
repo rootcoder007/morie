@@ -54,21 +54,25 @@ def kamath_post_ln_transformer(x, attn_fn, ffn_fn, eps=1e-5):
         out = np.atleast_2d(np.asarray(f(v), dtype=float))
         if out.shape != v.shape:
             raise ValueError(
-                f"{name} returned {out.shape} for a {v.shape} input; the "
-                "residual connection needs the shape preserved.")
+                f"{name} returned {out.shape} for a {v.shape} input; the residual connection needs the shape preserved."
+            )
         return out
 
     a = _sub(attn_fn, x, "attn_fn")
     y = layer_norm(x + a, eps)
     f = _sub(ffn_fn, y, "ffn_fn")
     z = layer_norm(y + f, eps)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in z],
-        "after_attention": [[float(v) for v in row] for row in y],
-        "estimate": float(z[0, 0]),
-        "placement": "post-LN", "eps": float(eps),
-        "n": int(z.shape[0]),
-        "method": "Post-LayerNorm transformer block"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in z],
+            "after_attention": [[float(v) for v in row] for row in y],
+            "estimate": float(z[0, 0]),
+            "placement": "post-LN",
+            "eps": float(eps),
+            "n": int(z.shape[0]),
+            "method": "Post-LayerNorm transformer block",
+        }
+    )
 
 
 def cheatsheet():

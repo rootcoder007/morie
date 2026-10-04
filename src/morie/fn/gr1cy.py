@@ -78,8 +78,7 @@ def geron_1cycle_schedule(eta_min, eta_max, t, T, mom_max=0.95, mom_min=0.85):
     mom_min = float(mom_min)
     if not (0.0 <= mom_min < mom_max < 1.0):
         raise ValueError(
-            f"momentum bounds must satisfy 0 <= mom_min < mom_max < 1, "
-            f"got mom_min={mom_min}, mom_max={mom_max}."
+            f"momentum bounds must satisfy 0 <= mom_min < mom_max < 1, got mom_min={mom_min}, mom_max={mom_max}."
         )
 
     steps = np.arange(T, dtype=float)

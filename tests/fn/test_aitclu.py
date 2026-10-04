@@ -1,7 +1,6 @@
 """Tests for aitclu.compositional_kmeans."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitclu import compositional_kmeans
 
 

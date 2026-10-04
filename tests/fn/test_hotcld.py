@@ -1,7 +1,6 @@
 """Tests for hotcld.hot_cold_spots."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hotcld import hot_cold_spots
 
 
@@ -27,12 +26,7 @@ def test_hotcld_basic():
     alpha = 0.05
     result = hot_cold_spots(x, W, alpha)
     assert isinstance(result, dict)
-    has_stat = (
-        ("estimate" in result)
-        or ("statistic" in result)
-        or ("z" in result)
-        or ("p_value" in result)
-    )
+    has_stat = ("estimate" in result) or ("statistic" in result) or ("z" in result) or ("p_value" in result)
     assert has_stat
 
 
@@ -45,10 +39,5 @@ def test_hotcld_edge():
     alpha = 0.10
     result = hot_cold_spots(x, W, alpha)
     assert isinstance(result, dict)
-    has_stat = (
-        ("estimate" in result)
-        or ("statistic" in result)
-        or ("z" in result)
-        or ("p_value" in result)
-    )
+    has_stat = ("estimate" in result) or ("statistic" in result) or ("z" in result) or ("p_value" in result)
     assert has_stat

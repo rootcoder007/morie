@@ -1,7 +1,6 @@
 """Tests for isotn.isotonic_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.isotn import isotonic_regression
 
 

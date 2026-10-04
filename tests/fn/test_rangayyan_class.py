@@ -7,32 +7,58 @@ reproduced from the same table.
 """
 
 import math
+from fractions import Fraction
 
 import pytest
 
-from fractions import Fraction
-
-from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, gaussoverlap,
-                               pdfoverlap, chernoff,
-                               hellinger, kld,
-                               divav, divergence, elbow, errbound,
-                               fishcrit, fishlda, hclust, kfoldcv,
-                               kmeans, knn, lindisc, lindsep, logreg,
-                               loocv, mahal, mcnemar, normdist, ppv, qda,
-                               roc, sens, sepindex, spec, svm, svmkern)
+from morie.fn.bsaclass import (
+    accuracy,
+    bayescls,
+    bayesnorm,
+    chernoff,
+    divav,
+    divergence,
+    elbow,
+    errbound,
+    fishcrit,
+    fishlda,
+    gaussoverlap,
+    hclust,
+    hellinger,
+    kfoldcv,
+    kld,
+    kmeans,
+    knn,
+    lindisc,
+    lindsep,
+    logreg,
+    loocv,
+    mahal,
+    mcnemar,
+    normdist,
+    pdfoverlap,
+    ppv,
+    qda,
+    roc,
+    sens,
+    sepindex,
+    spec,
+    svm,
+    svmkern,
+)
 
 # Table 10.4: rows are direct playback, columns sonification, categories
 # normal / indeterminate / abnormal, 18 truly abnormal VAG signals.
 TABLE_10_4 = [[2, 0, 10], [1, 0, 1], [0, 0, 4]]
 
-X2 = [[1, 1], [1.4, 0.8], [0.7, 1.3], [1.1, 1.6],
-      [3, 3], [3.3, 2.7], [2.6, 3.2], [3.1, 3.5]]
+X2 = [[1, 1], [1.4, 0.8], [0.7, 1.3], [1.1, 1.6], [3, 3], [3.3, 2.7], [2.6, 3.2], [3.1, 3.5]]
 Y2 = [0, 0, 0, 0, 1, 1, 1, 1]
 C1 = [[2, 0.3], [0.3, 1]]
 C2 = [[1, -0.2], [-0.2, 3]]
 
 
 # ------------------------------------------------- the accuracy measures
+
 
 def test_sensitivity_eq10100_ignores_false_alarms():
     r = sens(45, 5)
@@ -49,8 +75,7 @@ def test_specificity_eq10101_is_the_mirror():
     assert r["fpf"] == pytest.approx(0.2)
     # the book's identities
     assert r["specificity"] + r["fpf"] == pytest.approx(1.0)
-    assert sens(45, 5)["sensitivity"] + sens(45, 5)["fnf"] == \
-        pytest.approx(1.0)
+    assert sens(45, 5)["sensitivity"] + sens(45, 5)["fnf"] == pytest.approx(1.0)
 
 
 def test_sensitivity_and_specificity_accept_a_table():
@@ -64,8 +89,7 @@ def test_ppv_eq10106_and_its_dependence_on_prevalence():
     assert r["ppv"] == pytest.approx(45 / 55)
     assert r["depends_on_prevalence"] is True
     # the same test on a rare disease has a far worse PPV
-    rare = ppv(45, 10, prevalence=0.001, sensitivity=0.9,
-               specificity=0.8)["ppv_at_prevalence"]
+    rare = ppv(45, 10, prevalence=0.001, sensitivity=0.9, specificity=0.8)["ppv_at_prevalence"]
     assert rare < 0.01
 
 
@@ -82,8 +106,7 @@ def test_accuracy_eq10102_is_prevalence_weighted():
 
 def test_eq10103_is_eq10102_at_the_test_set_prevalence():
     r = accuracy(tp=45, tn=40, fp=10, fn=5)
-    at_test = accuracy(tp=45, tn=40, fp=10, fn=5,
-                       prevalence=r["test_set_prevalence"])
+    at_test = accuracy(tp=45, tn=40, fp=10, fn=5, prevalence=r["test_set_prevalence"])
     assert at_test["accuracy"] == pytest.approx(r["raw_accuracy"])
     assert r["eq_10_103_is_eq_10_102_at_the_test_set_prevalence"] is True
 
@@ -98,6 +121,7 @@ def test_accuracy_refuses_an_empty_class_or_table():
 
 
 # ---------------------------------------------------------------- the ROC
+
 
 def test_roc_area_equals_the_mann_whitney_statistic():
     s = [0.9, 0.75, 0.7, 0.62, 0.55, 0.4, 0.35, 0.2]
@@ -122,6 +146,7 @@ def test_the_roc_needs_both_classes():
 
 
 # ----------------------------------------------- the test of symmetry
+
 
 def test_mcnemar_reproduces_the_books_table_10_4():
     r = mcnemar(TABLE_10_4)
@@ -167,9 +192,10 @@ def test_a_symmetric_table_is_refused_and_a_ragged_one_too():
 
 # ----------------------------------------------- separability of features
 
+
 def test_normdist_eq10112_divides_by_the_sum_of_the_sds():
     r = normdist(0.0, 2.0, 1.0, 1.0)
-    assert r["dn"] == pytest.approx(1.0)          # 2 / (1 + 1)
+    assert r["dn"] == pytest.approx(1.0)  # 2 / (1 + 1)
     assert r["denominator_is_the_sum_not_the_quadrature_sum"] is True
 
 
@@ -199,14 +225,12 @@ def test_divergence_is_additive_over_independent_features():
     # two independent features: the 2-D divergence is the sum of the 1-D
     d1 = divergence([0], [1], [[1]], [[2]])["divergence"]
     d2 = divergence([0], [3], [[1]], [[1]])["divergence"]
-    joint = divergence([0, 0], [1, 3], [[1, 0], [0, 1]],
-                       [[2, 0], [0, 1]])["divergence"]
+    joint = divergence([0, 0], [1, 3], [[1, 0], [0, 1]], [[2, 0], [0, 1]])["divergence"]
     assert joint == pytest.approx(d1 + d2)
 
 
 def test_divav_reports_the_worst_pair_not_only_the_average():
-    r = divav([[0, 0], [0.05, 0], [8, 8]],
-              [[[1, 0], [0, 1]]] * 3)
+    r = divav([[0, 0], [0.05, 0], [8, 8]], [[[1, 0], [0, 1]]] * 3)
     assert r["minimum"] < r["average"]
     assert r["worst_pair"] == (0, 1)
     assert r["average_hides_the_worst_pair"] is True
@@ -220,8 +244,7 @@ def test_bhattacharyya_is_documented_as_not_from_this_book():
     assert r["book_uses_divergence_eq_10_115"] is True
     assert r["bhattacharyya"] > 0
     # identical distributions give zero
-    assert gaussoverlap([1, 2], [1, 2], C1, C1)["bhattacharyya"] == \
-        pytest.approx(0.0, abs=1e-12)
+    assert gaussoverlap([1, 2], [1, 2], C1, C1)["bhattacharyya"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_the_error_bound_pairs_with_bhattacharyya():
@@ -231,7 +254,7 @@ def test_the_error_bound_pairs_with_bhattacharyya():
     assert r["pairs_with_the_overlap_not_with_divergence"] is True
     assert r["tightest_at_equal_priors"] is True
     with pytest.raises(ValueError):
-        errbound(0.3, 0.3, 1.0)          # priors do not sum to 1
+        errbound(0.3, 0.3, 1.0)  # priors do not sum to 1
 
 
 def test_fisher_criterion_is_not_the_books_normalized_distance():
@@ -239,8 +262,7 @@ def test_fisher_criterion_is_not_the_books_normalized_distance():
     assert r["is_not_eq_10_112"] is True
     # they agree in ranking only for equal spread
     equal = fishcrit([1, 2, 3, 4], [5, 6, 7, 8])
-    assert equal["agrees_with_eq_10_112_ranking_only_for_equal_spread"] \
-        is True
+    assert equal["agrees_with_eq_10_112_ranking_only_for_equal_spread"] is True
 
 
 def test_separability_index_grows_as_the_classes_separate():
@@ -249,10 +271,11 @@ def test_separability_index_grows_as_the_classes_separate():
     assert far["j"] > near["j"]
     assert near["ignores_off_diagonal_structure"] is True
     with pytest.raises(ValueError):
-        sepindex([[0, 0], [0, 0]], [0, 0])        # one class
+        sepindex([[0, 0], [0, 0]], [0, 0])  # one class
 
 
 # ------------------------------------------------------ the discriminants
+
 
 def test_fisher_lda_separates_and_is_two_class_only():
     r = fishlda(X2, Y2)
@@ -280,7 +303,7 @@ def test_lindisc_assigns_to_the_largest_discriminant():
 
 def test_mahalanobis_differs_from_euclidean_under_correlation():
     r = mahal([2, 0], [0, 0], [[4, 0], [0, 1]])
-    assert r["distance"] == pytest.approx(1.0)     # 2 / sqrt(4)
+    assert r["distance"] == pytest.approx(1.0)  # 2 / sqrt(4)
     assert r["euclidean"] == pytest.approx(2.0)
     assert r["differs_from_euclidean"] is True
 
@@ -293,11 +316,11 @@ def test_mahalanobis_reduces_to_euclidean_for_the_identity():
 
 # -------------------------------------------------------- the classifiers
 
+
 def test_knn_eq10029_and_the_outlier_warning():
     assert knn(X2, Y2, [1.1, 1.0])["assigned"] == 0
     assert knn(X2, Y2, [3.1, 3.0])["assigned"] == 1
-    assert knn(X2, Y2, [1.1, 1.0])["single_neighbour_may_be_an_outlier"] \
-        is True
+    assert knn(X2, Y2, [1.1, 1.0])["single_neighbour_may_be_an_outlier"] is True
     assert knn(X2, Y2, [1.1, 1.0], k=3)["k"] == 3
 
 
@@ -310,8 +333,7 @@ def test_knn_reports_a_tied_vote_rather_than_hiding_it():
 def test_knn_mahalanobis_needs_the_covariance():
     with pytest.raises(ValueError):
         knn(X2, Y2, [1, 1], metric="mahalanobis")
-    r = knn(X2, Y2, [1.1, 1.0], metric="mahalanobis",
-            C=[[1, 0], [0, 1]])
+    r = knn(X2, Y2, [1.1, 1.0], metric="mahalanobis", C=[[1, 0], [0, 1]])
     assert r["assigned"] == 0
     with pytest.raises(ValueError):
         knn(X2, Y2, [1, 1], k=99)
@@ -333,13 +355,11 @@ def test_bayes_normal_log_form_and_the_dropped_constant():
     for a, b in zip(r["d_full"], r["d_dropped_constant"]):
         assert a == pytest.approx(b - const)
     # dropping it cannot change the ranking
-    assert (max(range(2), key=lambda i: r["d_full"][i])
-            == max(range(2), key=lambda i: r["d_dropped_constant"][i]))
+    assert max(range(2), key=lambda i: r["d_full"][i]) == max(range(2), key=lambda i: r["d_dropped_constant"][i])
 
 
 def test_equal_covariances_make_the_boundary_linear():
-    same = bayesnorm([0.5, 0.5], [[0, 0], [3, 3]],
-                     [[[1, 0], [0, 1]], [[1, 0], [0, 1]]])
+    same = bayesnorm([0.5, 0.5], [[0, 0], [3, 3]], [[[1, 0], [0, 1]], [[1, 0], [0, 1]]])
     assert same["linear_when_covariances_are_equal"] is True
     diff = bayesnorm([0.5, 0.5], [[0, 0], [3, 3]], [C1, C2])
     assert diff["linear_when_covariances_are_equal"] is False
@@ -349,13 +369,12 @@ def test_equal_covariances_make_the_boundary_linear():
 def test_qda_classifies_and_counts_its_own_parameters():
     assert qda(X2, Y2, [1.1, 1.0])["assigned"] == 0
     assert qda(X2, Y2, [3.1, 3.0])["assigned"] == 1
-    assert qda(X2, Y2, [1, 1])["parameters_per_class"] == 3   # p(p+1)/2
+    assert qda(X2, Y2, [1, 1])["parameters_per_class"] == 3  # p(p+1)/2
 
 
 def test_qda_refuses_a_class_with_too_few_samples():
     with pytest.raises(ValueError) as e:
-        qda([[0, 0], [1, 1], [5, 5], [6, 6], [7, 8]],
-            [0, 0, 1, 1, 1], [1, 1])
+        qda([[0, 0], [1, 1], [5, 5], [6, 6], [7, 8]], [0, 0, 1, 1, 1], [1, 1])
     assert "more samples than features" in str(e.value)
 
 
@@ -366,7 +385,7 @@ def test_logistic_regression_separates_and_reports_the_fit():
     assert r["models_the_posterior_directly"] is True
     assert len(r["coefficients"]) == 2
     with pytest.raises(ValueError):
-        logreg(X2, [0, 0, 0, 0, 2, 2, 2, 2])       # not 0/1
+        logreg(X2, [0, 0, 0, 0, 2, 2, 2, 2])  # not 0/1
 
 
 def test_kmeans_finds_the_two_groups_and_is_reproducible():
@@ -444,7 +463,7 @@ def test_svm_uses_only_the_support_vectors():
     assert r["margin"] > 0
     assert r["boundary_set_by_the_support_vectors_only"] is True
     with pytest.raises(ValueError):
-        svm([[1, 1], [2, 2]], [0, 1])              # needs -1/+1
+        svm([[1, 1], [2, 2]], [0, 1])  # needs -1/+1
 
 
 def test_the_kernel_trick_solves_xor_where_the_linear_svm_cannot():
@@ -469,21 +488,22 @@ def test_the_kernel_svm_classifies_a_query_and_flags_the_sigmoid():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsaclass import (rangayyan_accuracy,
-                                   rangayyan_bhattacharyya,
-                                   rangayyan_knn_classifier,
-                                   rangayyan_mcnemar_test)
-    assert rangayyan_accuracy(tp=45, tn=40, fp=10, fn=5)["raw_accuracy"] \
-        == pytest.approx(0.85)
-    assert rangayyan_mcnemar_test(TABLE_10_4)["statistic"] == \
-        pytest.approx(12.0)
+    from morie.fn.bsaclass import (
+        rangayyan_accuracy,
+        rangayyan_bhattacharyya,
+        rangayyan_knn_classifier,
+        rangayyan_mcnemar_test,
+    )
+
+    assert rangayyan_accuracy(tp=45, tn=40, fp=10, fn=5)["raw_accuracy"] == pytest.approx(0.85)
+    assert rangayyan_mcnemar_test(TABLE_10_4)["statistic"] == pytest.approx(12.0)
     assert rangayyan_knn_classifier(X2, Y2, [1.1, 1.0])["assigned"] == 0
     # the pre-policy Bhattacharyya name now reaches the book's divergence
-    assert "divergence" in rangayyan_bhattacharyya(
-        [0, 1], [2, -1], C1, C2)
+    assert "divergence" in rangayyan_bhattacharyya([0, 1], [2, -1], C1, C2)
 
 
 # ------------------------------- the accuracy forms and exact arithmetic
+
 
 def test_accuracy_offers_every_definition_at_once():
     r = accuracy(tp=45, tn=40, fp=10, fn=5, prevalence=0.01)
@@ -531,7 +551,7 @@ def test_exact_arithmetic_avoids_a_representation_error():
     assert r["sensitivity"] == Fraction(1, 3)
     approx = accuracy(tp=1, tn=1, fp=1, fn=2)["sensitivity"]
     assert Fraction(approx) != Fraction(1, 3)
-    assert abs(Fraction(approx) - Fraction(1, 3)) < Fraction(1, 10 ** 15)
+    assert abs(Fraction(approx) - Fraction(1, 3)) < Fraction(1, 10**15)
 
 
 def test_accuracy_refuses_fractional_counts():
@@ -540,6 +560,7 @@ def test_accuracy_refuses_fractional_counts():
 
 
 # ------------------------------------ the book's KLD and the coefficient
+
 
 def test_kld_eq533_is_weighted_by_the_second_pdf():
     p1 = [0.2, 0.3, 0.5]
@@ -597,11 +618,11 @@ def test_the_distance_is_minus_the_log_of_the_coefficient():
 def test_the_error_bound_tightens_as_the_overlap_falls():
     close = pdfoverlap([0.5, 0.5], [0.45, 0.55])["distance"]
     far = pdfoverlap([0.9, 0.1], [0.1, 0.9])["distance"]
-    assert errbound(0.5, 0.5, far)["bound"] < \
-        errbound(0.5, 0.5, close)["bound"]
+    assert errbound(0.5, 0.5, far)["bound"] < errbound(0.5, 0.5, close)["bound"]
 
 
 # ------------------------------- the rest of the divergence family
+
 
 def test_chernoff_at_one_half_is_the_bhattacharyya_coefficient():
     p1 = [0.2, 0.3, 0.5]
@@ -629,13 +650,11 @@ def test_hellinger_squared_is_one_minus_the_coefficient():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
     h = hellinger(p1, p2)
-    assert h["squared"] == pytest.approx(
-        1.0 - pdfoverlap(p1, p2)["coefficient"], abs=1e-12)
+    assert h["squared"] == pytest.approx(1.0 - pdfoverlap(p1, p2)["coefficient"], abs=1e-12)
     assert h["identity_h2_equals_one_minus_bc"] is True
     assert 0.0 <= h["hellinger"] <= 1.0
     assert hellinger(p1, p1)["hellinger"] == pytest.approx(0.0, abs=1e-12)
-    assert hellinger([1.0, 0.0], [0.0, 1.0])["hellinger"] == \
-        pytest.approx(1.0)
+    assert hellinger([1.0, 0.0], [0.0, 1.0])["hellinger"] == pytest.approx(1.0)
 
 
 def test_hellinger_is_a_metric_where_the_bhattacharyya_distance_is_not():
@@ -645,9 +664,8 @@ def test_hellinger_is_a_metric_where_the_bhattacharyya_distance_is_not():
     hab = hellinger(a, b)["hellinger"]
     hbc = hellinger(b, c)["hellinger"]
     hac = hellinger(a, c)["hellinger"]
-    assert hac <= hab + hbc + 1e-12          # the triangle inequality
-    assert hellinger(a, b)["hellinger"] == pytest.approx(
-        hellinger(b, a)["hellinger"])        # symmetric
+    assert hac <= hab + hbc + 1e-12  # the triangle inequality
+    assert hellinger(a, b)["hellinger"] == pytest.approx(hellinger(b, a)["hellinger"])  # symmetric
     assert hellinger(a, b)["is_a_true_metric"] is True
     assert hellinger(a, b)["bhattacharyya_distance_does_not"] is True
 
@@ -655,9 +673,13 @@ def test_hellinger_is_a_metric_where_the_bhattacharyya_distance_is_not():
 def test_every_borrowed_measure_carries_its_primary_citation():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
-    for r in (pdfoverlap(p1, p2), chernoff(p1, p2), hellinger(p1, p2),
-              errbound(0.5, 0.5, 1.0),
-              gaussoverlap([0, 1], [2, -1], C1, C2)):
+    for r in (
+        pdfoverlap(p1, p2),
+        chernoff(p1, p2),
+        hellinger(p1, p2),
+        errbound(0.5, 0.5, 1.0),
+        gaussoverlap([0, 1], [2, -1], C1, C2),
+    ):
         assert r["not_from_this_book"] is True
         assert "reference" in r
         assert len(r["reference"]) > 40

@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,15 +23,20 @@ def mvsml_categorical_count_eq_8_10(Z_u1, K, Z_E, sigma2_u1=1.0, sigma2_u2=1.0):
     K_2 = (Z_u1 K Z_u1') o (Z_E Z_E') the genotype-by-environment
     interaction, where "o" is the Hadamard product (p.285).
     Keys: estimate."""
-    f = _gp.kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=sigma2_u1,
-                            sigma2_u2=sigma2_u2)
+    f = _gp.kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=sigma2_u1, sigma2_u2=sigma2_u2)
     ok1, _ = _gp.is_positive_semidefinite(f["K1"])
     ok2, _ = _gp.is_positive_semidefinite(f["K2"])
-    res = RichResult(payload={"estimate": f["K1"][0][0],
-                              "K1": f["K1"], "K2": f["K2"],
-                              "K_env": f["K_env"],
-                              "K1_psd": ok1, "K2_psd": ok2,
-                              "method": "extended kernel BLUP with G x E (MVSML 2022 eq. 8.10)"})
+    res = RichResult(
+        payload={
+            "estimate": f["K1"][0][0],
+            "K1": f["K1"],
+            "K2": f["K2"],
+            "K_env": f["K_env"],
+            "K1_psd": ok1,
+            "K2_psd": ok2,
+            "method": "extended kernel BLUP with G x E (MVSML 2022 eq. 8.10)",
+        }
+    )
     return with_describe_pointer(res, "msm144")
 
 

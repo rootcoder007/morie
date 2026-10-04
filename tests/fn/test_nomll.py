@@ -1,7 +1,6 @@
 """Tests for morie.fn.nomll — NOMINATE log-likelihood."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nomll import nomll
 
 

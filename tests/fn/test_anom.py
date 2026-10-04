@@ -1,7 +1,6 @@
 """Tests for alpha-NOMINATE."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.anom import anom
 
 

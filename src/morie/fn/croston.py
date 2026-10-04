@@ -103,17 +103,23 @@ def croston(y, alpha=0.1, variant="croston"):
     bias = 1.0 - alpha / 2.0 if variant == "sba" else 1.0
     return RichResult(
         title=f"Croston ({variant})",
-        summary_lines=[("n", int(y.size)), ("nonzero", int(nz.size)),
-                       ("forecast", float(rate * bias))],
-        warnings=(["the plain Croston estimator is biased upward by about "
-                   "1/(1 - alpha/2); consider variant='sba'"]
-                  if variant == "croston" else []),
+        summary_lines=[("n", int(y.size)), ("nonzero", int(nz.size)), ("forecast", float(rate * bias))],
+        warnings=(
+            ["the plain Croston estimator is biased upward by about 1/(1 - alpha/2); consider variant='sba'"]
+            if variant == "croston"
+            else []
+        ),
         payload={
-            "forecast": float(rate * bias), "rate": float(rate),
-            "demand_size": z, "interval": p, "bias_factor": float(bias),
+            "forecast": float(rate * bias),
+            "rate": float(rate),
+            "demand_size": z,
+            "interval": p,
+            "bias_factor": float(bias),
             "n_nonzero": int(nz.size),
             "intermittency": float(1.0 - nz.size / y.size),
-            "alpha": alpha, "variant": variant, "method": "croston",
+            "alpha": alpha,
+            "variant": variant,
+            "method": "croston",
         },
     )
 

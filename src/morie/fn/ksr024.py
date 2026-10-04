@@ -75,10 +75,16 @@ def kosorok_ch1_partly_linear_logistic(Y, Z, U, beta=None, eta=None, df=5):
     par = res.x
     lin = np.clip(X @ par, -30, 30)
     return RichResult(
-        payload={"beta": par[:p], "eta_coef": par[p:],
-                 "eta_fitted": B @ par[p:], "loglik": float(-res.fun),
-                 "converged": bool(res.success), "n": int(n), "df": df,
-                 "method": "Partly linear logistic; eta by spline basis (Kosorok Ch. 1)"}
+        payload={
+            "beta": par[:p],
+            "eta_coef": par[p:],
+            "eta_fitted": B @ par[p:],
+            "loglik": float(-res.fun),
+            "converged": bool(res.success),
+            "n": int(n),
+            "df": df,
+            "method": "Partly linear logistic; eta by spline basis (Kosorok Ch. 1)",
+        }
     )
 
 

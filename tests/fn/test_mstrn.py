@@ -1,8 +1,8 @@
 """Tests for mstrn."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mstrn import multistate_transition_matrix
 
 _TIME = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])

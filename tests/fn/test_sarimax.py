@@ -1,7 +1,6 @@
 """Tests for sarimax.sarimax."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sarimax import sarimax
 
 

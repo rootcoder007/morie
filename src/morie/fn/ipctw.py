@@ -45,6 +45,7 @@ def ipcw(
 
     Xd = np.column_stack([np.ones(len(C)), X])
     from morie.fn._array_core import linalg as _acl
+
     lstsq = _acl.lstsq
 
     beta, _, _, _ = lstsq(Xd, C, rcond=None)

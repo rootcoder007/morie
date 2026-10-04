@@ -68,10 +68,17 @@ def advielbo(mu, omega, eta, logjoint):
         lj.append(float(logjoint(zeta)))
     ent = sum(omega) + 0.5 * K * (1.0 + math.log(2.0 * math.pi))
     mlj = sum(lj) / S
-    return RichResult(payload={
-        "elbo": mlj + ent, "entropy": ent, "meanlogjoint": mlj,
-        "logjoints": lj, "K": K, "S": S,
-        "method": "Mean-field ADVI ELBO (Kucukelbir et al. 2017 eq. 5)"})
+    return RichResult(
+        payload={
+            "elbo": mlj + ent,
+            "entropy": ent,
+            "meanlogjoint": mlj,
+            "logjoints": lj,
+            "K": K,
+            "S": S,
+            "method": "Mean-field ADVI ELBO (Kucukelbir et al. 2017 eq. 5)",
+        }
+    )
 
 
 advi = advielbo

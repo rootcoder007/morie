@@ -1,7 +1,6 @@
 """Tests for km058.kamath_ch4_lora_forward."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km058 import kamath_ch4_lora_forward
 
 

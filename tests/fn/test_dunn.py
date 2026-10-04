@@ -1,7 +1,6 @@
 """Test dunn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dunn import dunn_test
 
 

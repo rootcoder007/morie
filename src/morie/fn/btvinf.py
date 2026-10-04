@@ -62,14 +62,16 @@ def boot_influence_fn(x, stat="mean", eps=1e-3):
         ui = (T(vals, w) - base) / e
         u.append(ui)
         ss += ui * ui
-    return RichResult(payload={
-        "estimate": ss / (n * n),
-        "infl": u,
-        "tf": base,
-        "eps": e,
-        "n": n,
-        "method": "Influence function via numerical perturbation",
-    })
+    return RichResult(
+        payload={
+            "estimate": ss / (n * n),
+            "infl": u,
+            "tf": base,
+            "eps": e,
+            "n": n,
+            "method": "Influence function via numerical perturbation",
+        }
+    )
 
 
 def cheatsheet():

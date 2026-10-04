@@ -1,7 +1,6 @@
 """Tests for dwtA.discrete_wavelet_anomaly."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dwtA import discrete_wavelet_anomaly
 
 
@@ -11,6 +10,8 @@ def test_dwtA_basic():
     result = discrete_wavelet_anomaly(x)
     assert isinstance(result, dict)
     assert "anomaly" in result
+
+
 def test_dwtA_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

@@ -1,7 +1,6 @@
 """Tests for theils.theil_sen."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.theils import theil_sen
 
 

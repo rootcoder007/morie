@@ -13,6 +13,8 @@ def test_km039_doctest():
 
 def test_km039_edge():
     import pytest
+
     from morie.fn.km039 import kamath_ch2_moe_output
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_moe_output(*([None] * 3))

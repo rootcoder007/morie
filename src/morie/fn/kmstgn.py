@@ -11,8 +11,7 @@ from .kmrmloss import kamath_reward_model_training_loss
 __all__ = ["kamath_summarize_from_feedback"]
 
 
-def kamath_summarize_from_feedback(preferences, rewards, pi_logprobs,
-                                   ref_logprobs, beta):
+def kamath_summarize_from_feedback(preferences, rewards, pi_logprobs, ref_logprobs, beta):
     """L_RM over summary preferences, and
     J_RLHF = E[r_phi] - beta * KL(pi || pi_ref).
 
@@ -51,25 +50,26 @@ def kamath_summarize_from_feedback(preferences, rewards, pi_logprobs,
     if not pairs:
         raise ValueError("no summary preference pairs supplied.")
     if any(len(p) != 2 for p in pairs):
-        raise ValueError(
-            "each preference must be (score_chosen, score_rejected).")
+        raise ValueError("each preference must be (score_chosen, score_rejected).")
     w = np.array([p[0] for p in pairs], dtype=float)
     l = np.array([p[1] for p in pairs], dtype=float)
     rm = kamath_reward_model_training_loss(w, l)
     rl = kamath_ppo_rlhf_objective(rewards, pi_logprobs, ref_logprobs, beta)
-    return RichResult(payload={
-        "loss_rm": float(rm["estimate"]),
-        "rm_accuracy": float(rm["accuracy"]),
-        "rm_mean_margin": float(rm["mean_margin"]),
-        "objective": float(rl["estimate"]),
-        "mean_reward": float(rl["mean_reward"]),
-        "kl_estimate": float(rl["kl_estimate"]),
-        "beta": float(beta),
-        "n_preferences": len(pairs),
-        "estimate": float(rl["estimate"]),
-        "n": int(rl["n"]),
-        "method": "Summarisation from human feedback "
-                  "(kmrmloss + kmppok)"})
+    return RichResult(
+        payload={
+            "loss_rm": float(rm["estimate"]),
+            "rm_accuracy": float(rm["accuracy"]),
+            "rm_mean_margin": float(rm["mean_margin"]),
+            "objective": float(rl["estimate"]),
+            "mean_reward": float(rl["mean_reward"]),
+            "kl_estimate": float(rl["kl_estimate"]),
+            "beta": float(beta),
+            "n_preferences": len(pairs),
+            "estimate": float(rl["estimate"]),
+            "n": int(rl["n"]),
+            "method": "Summarisation from human feedback (kmrmloss + kmppok)",
+        }
+    )
 
 
 def cheatsheet():

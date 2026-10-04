@@ -28,17 +28,16 @@ def noncentrality_delta_generic(mean_population, mean_null):
     """
     value = _ca_crim.noncentrality_delta_generic(mean_population, mean_null)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.1)"
     return RichResult(
-        title='Generic noncentrality delta = mean(pop stat) - mean(null stat)',
+        title="Generic noncentrality delta = mean(pop stat) - mean(null stat)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca8e1: delta = mean test statistic (population) - mean (null) [Weisburd et al. 2022, eq. 8.1]'
+    return "ca8e1: delta = mean test statistic (population) - mean (null) [Weisburd et al. 2022, eq. 8.1]"

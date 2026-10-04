@@ -16,8 +16,7 @@ def _log_softmax(Z):
     return Z - np.log(np.exp(Z).sum(axis=1, keepdims=True))
 
 
-def geron_deit_distillation_loss(logits_cls, logits_dist, y, teacher_preds,
-                                 alpha=0.5):
+def geron_deit_distillation_loss(logits_cls, logits_dist, y, teacher_preds, alpha=0.5):
     r"""Combine the ground-truth and teacher-agreement objectives.
 
     .. math::
@@ -83,9 +82,7 @@ def geron_deit_distillation_loss(logits_cls, logits_dist, y, teacher_preds,
     Lc = np.atleast_2d(np.asarray(logits_cls, dtype=float))
     Ld = np.atleast_2d(np.asarray(logits_dist, dtype=float))
     if Lc.shape != Ld.shape:
-        raise ValueError(
-            f"logits_cls shape {Lc.shape} must match logits_dist shape {Ld.shape}."
-        )
+        raise ValueError(f"logits_cls shape {Lc.shape} must match logits_dist shape {Ld.shape}.")
     if Lc.size == 0:
         raise ValueError("logits are empty.")
     if not np.all(np.isfinite(Lc)) or not np.all(np.isfinite(Ld)):
@@ -123,8 +120,7 @@ def geron_deit_distillation_loss(logits_cls, logits_dist, y, teacher_preds,
 
     return RichResult(
         title="DeiT distillation loss",
-        summary_lines=[("Loss", loss), ("CE (class token)", loss_cls),
-                       ("CE (distillation token)", loss_dist)],
+        summary_lines=[("Loss", loss), ("CE (class token)", loss_cls), ("CE (distillation token)", loss_dist)],
         payload={
             "loss": loss,
             "loss_cls": loss_cls,

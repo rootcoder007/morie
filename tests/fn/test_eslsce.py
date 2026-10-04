@@ -1,7 +1,6 @@
 """Tests for eslsce.esl_score_match."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslsce import esl_score_match
 
 
@@ -33,7 +32,7 @@ def test_eslsce_basic():
     psi = -(X - 0.0)
     # For psi(x) = -(x - 0), d psi / d x = -1 on the diagonal -> trace = -d.
     expected_trace = -d
-    expected_norm = 0.5 * float((psi ** 2).mean())
+    expected_norm = 0.5 * float((psi**2).mean())
     expected_objective = expected_trace + expected_norm
 
     assert abs(result["trace_term"] - expected_trace) < 1e-3

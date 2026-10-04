@@ -1,7 +1,6 @@
 """Tests for caustmle.causal_tmle_targeted."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.caustmle import causal_tmle_targeted
 
 

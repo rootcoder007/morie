@@ -106,10 +106,18 @@ def mirt_2d_compensatory(y, theta, a, d, c=0.0, D=1.0):
         p.append(pi)
         ll += math.log(pi) if yv[i] == 1.0 else math.log(1.0 - pi)
     pbar = sum(p) / n
-    return RichResult(payload={
-        "estimate": ll, "loglik": ll, "p": p, "pbar": pbar,
-        "deviance": -2.0 * ll, "n": n, "m": m,
-        "method": "Compensatory multidimensional IRT (Chalmers 2012 eq. 1)"})
+    return RichResult(
+        payload={
+            "estimate": ll,
+            "loglik": ll,
+            "p": p,
+            "pbar": pbar,
+            "deviance": -2.0 * ll,
+            "n": n,
+            "m": m,
+            "method": "Compensatory multidimensional IRT (Chalmers 2012 eq. 1)",
+        }
+    )
 
 
 mirt2dcompensatory = mirt_2d_compensatory

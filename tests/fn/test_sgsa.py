@@ -1,7 +1,6 @@
 """Tests for simulated annealing spatial."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgsa import sgsa
 
 

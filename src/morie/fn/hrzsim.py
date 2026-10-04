@@ -44,8 +44,7 @@ def _gauss(u):
     return np.exp(-0.5 * u * u) / np.sqrt(2.0 * np.pi)
 
 
-def sindex(x, y, h=None, weights=None, trim=0.01, niter=12, delta=1.0,
-           b0=None):
+def sindex(x, y, h=None, weights=None, trim=0.01, niter=12, delta=1.0, b0=None):
     """Ichimura's semiparametric WNLS estimator of beta and G.
 
     Parameters
@@ -80,7 +79,7 @@ def sindex(x, y, h=None, weights=None, trim=0.01, niter=12, delta=1.0,
     n, d = X.shape
     if d < 2:
         raise ValueError("a single-index model needs at least two covariates.")
-    hh = float(n ** -0.2) if h is None else float(h)
+    hh = float(n**-0.2) if h is None else float(h)
     W = np.ones(n) if weights is None else np.asarray(weights, dtype=float).ravel()
 
     def crit(bt, want=False):
@@ -88,9 +87,9 @@ def sindex(x, y, h=None, weights=None, trim=0.01, niter=12, delta=1.0,
         z = X @ b
         u = (z[:, None] - z[None, :]) / hh
         K = _gauss(u) * W[None, :]
-        np.fill_diagonal(K, 0.0)                       # leave one out
-        den = np.sum(K, axis=1) / (n * hh)             # (2.24)
-        num = (K @ yv) / (n * hh)                      # (2.23)
+        np.fill_diagonal(K, 0.0)  # leave one out
+        den = np.sum(K, axis=1) / (n * hh)  # (2.24)
+        num = (K @ yv) / (n * hh)  # (2.23)
         safe = np.where(den > 1e-300, den, 1e-300)
         gh = num / safe
         keep = den > float(trim) * float(np.mean(den))  # J_i
@@ -133,10 +132,17 @@ def sindex(x, y, h=None, weights=None, trim=0.01, niter=12, delta=1.0,
         se = np.full(d - 1, np.nan)
     return RichResult(
         title="Semiparametric WNLS single-index model (eq. 2.25)",
-        payload={"estimate": beta, "se": np.concatenate([np.array([0.0]), se]),
-                 "objective": float(val), "ghat": gh, "index": z,
-                 "bandwidth": hh, "ntrim": int(n - np.sum(kf)), "n": n,
-                 "method": "Horowitz (2009) eq. (2.25), Ichimura semiparametric WNLS"},
+        payload={
+            "estimate": beta,
+            "se": np.concatenate([np.array([0.0]), se]),
+            "objective": float(val),
+            "ghat": gh,
+            "index": z,
+            "bandwidth": hh,
+            "ntrim": int(n - np.sum(kf)),
+            "n": n,
+            "method": "Horowitz (2009) eq. (2.25), Ichimura semiparametric WNLS",
+        },
     )
 
 
@@ -152,7 +158,7 @@ if __name__ == "__main__":  # pragma: no cover
     n = 150
     X = np.column_stack([np.linspace(-2, 2, n), np.cos(np.arange(1, n + 1) * 0.9)])
     z = X @ np.array([1.0, 0.8])
-    y = z / (1.0 + np.abs(z))                    # smooth monotone G
+    y = z / (1.0 + np.abs(z))  # smooth monotone G
     r = sindex(X, y, h=0.35)
     got = float(r["estimate"][1])
     assert abs(got - 0.8) < 0.2, got

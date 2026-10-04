@@ -27,5 +27,3 @@ def test_smplsz_edge():
         sample_size_calc(0.0, 3.0)
     with pytest.raises(ValueError, match="level"):
         sample_size_calc(0.5, 3.0, level=1.0)
-
-

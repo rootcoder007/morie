@@ -85,9 +85,7 @@ def geron_bellman_optimality(Q, transitions, rewards, gamma, max_iter=1000, tol=
     if R.shape == (S, A):
         R = np.repeat(R[:, :, None], S, axis=2)
     elif R.shape != (S, A, S):
-        raise ValueError(
-            f"rewards must have shape {(S, A, S)} or {(S, A)}, got {R.shape}."
-        )
+        raise ValueError(f"rewards must have shape {(S, A, S)} or {(S, A)}, got {R.shape}.")
     if np.any(T < 0):
         raise ValueError("transition probabilities must be non-negative.")
     rowsum = T.sum(axis=2)
@@ -128,10 +126,9 @@ def geron_bellman_optimality(Q, transitions, rewards, gamma, max_iter=1000, tol=
     return RichResult(
         title="Bellman optimality (Q-value iteration)",
         summary_lines=[("Sweeps", it), ("Sup-norm residual", residual)],
-        warnings=[] if converged else [
-            f"did not converge in {max_iter} sweeps (residual {residual:.3g}); "
-            f"gamma={gamma} may be too close to 1."
-        ],
+        warnings=[]
+        if converged
+        else [f"did not converge in {max_iter} sweeps (residual {residual:.3g}); gamma={gamma} may be too close to 1."],
         payload={
             "Q": Q.tolist(),
             "V": V.tolist(),

@@ -1,7 +1,6 @@
 """Tests for esleff.esl_effective_dof."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esleff import esl_effective_dof
 
 
@@ -24,9 +23,7 @@ def test_esleff_basic():
     assert np.allclose(result["estimate"], expected_estimate)
     assert np.allclose(result["trace_ssT"], expected_trace_ssT)
     assert np.allclose(result["df_variance"], expected_df_variance)
-    expected_is_projection = bool(
-        np.allclose(S, S.T) and np.allclose(S @ S, S)
-    )
+    expected_is_projection = bool(np.allclose(S, S.T) and np.allclose(S @ S, S))
     assert result["is_projection"] == expected_is_projection
 
 

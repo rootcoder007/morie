@@ -63,8 +63,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["kernel_smooth", "smoothed_parameter", "smoothing_bias",
-           "select_bandwidth", "cv_tmle_smoothed"]
+__all__ = ["kernel_smooth", "smoothed_parameter", "smoothing_bias", "select_bandwidth", "cv_tmle_smoothed"]
 
 _EPS = 1e-12
 _KERNELS = ("epanechnikov", "gaussian", "uniform")
@@ -73,8 +72,7 @@ _KERNELS = ("epanechnikov", "gaussian", "uniform")
 def kernel_smooth(u, kernel="epanechnikov"):
     r"""Kernel weight at scaled distance :math:`u`."""
     if kernel not in _KERNELS:
-        raise ValueError("tlcvnp: kernel must be one of %s, got %r"
-                         % (", ".join(_KERNELS), kernel))
+        raise ValueError("tlcvnp: kernel must be one of %s, got %r" % (", ".join(_KERNELS), kernel))
     v = float(u)
     if kernel == "epanechnikov":
         return 0.75 * (1.0 - v * v) if abs(v) <= 1.0 else 0.0
@@ -96,16 +94,18 @@ def smoothed_parameter(X, x0, h, kernel="epanechnikov"):
     if hh <= 0.0:
         raise ValueError("tlcvnp: the bandwidth must be positive")
     n = len(v)
-    val = sum(kernel_smooth((v[i] - float(x0)) / hh, kernel)
-              for i in range(n)) / (n * hh)
-    ic = [kernel_smooth((v[i] - float(x0)) / hh, kernel) / hh - val
-          for i in range(n)]
+    val = sum(kernel_smooth((v[i] - float(x0)) / hh, kernel) for i in range(n)) / (n * hh)
+    ic = [kernel_smooth((v[i] - float(x0)) / hh, kernel) / hh - val for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((q - m) ** 2 for q in ic) / (n - 1) / n)
-    return {"psi_h": val, "se": se, "h": hh, "n": n,
-            "influence_curve": ic,
-            "note": "the SMOOTHED parameter is pathwise "
-                    "differentiable; the density at a point is not"}
+    return {
+        "psi_h": val,
+        "se": se,
+        "h": hh,
+        "n": n,
+        "influence_curve": ic,
+        "note": "the SMOOTHED parameter is pathwise differentiable; the density at a point is not",
+    }
 
 
 def smoothing_bias(true_density, x0, h, smoothness=2.0):
@@ -117,16 +117,18 @@ def smoothing_bias(true_density, x0, h, smoothness=2.0):
     """
     hh, s = float(h), float(smoothness)
     if hh <= 0.0 or s <= 0.0:
-        raise ValueError("tlcvnp: bandwidth and smoothness must be "
-                         "positive")
-    return {"bias_order": hh ** s, "h": hh, "smoothness": s,
-            "note": "inference is for the SMOOTHED parameter; it "
-                    "transfers to the target only when the "
-                    "approximation bias is dominated"}
+        raise ValueError("tlcvnp: bandwidth and smoothness must be positive")
+    return {
+        "bias_order": hh**s,
+        "h": hh,
+        "smoothness": s,
+        "note": "inference is for the SMOOTHED parameter; it "
+        "transfers to the target only when the "
+        "approximation bias is dominated",
+    }
 
 
-def select_bandwidth(X, x0, bandwidths, kernel="epanechnikov",
-                     criterion="lepski", C=1.0):
+def select_bandwidth(X, x0, bandwidths, kernel="epanechnikov", criterion="lepski", C=1.0):
     r"""Data-adaptive bandwidth.
 
     The Lepski rule takes the smallest :math:`h` whose estimate stays
@@ -138,8 +140,7 @@ def select_bandwidth(X, x0, bandwidths, kernel="epanechnikov",
     if not hs:
         raise ValueError("tlcvnp: no bandwidths given")
     if criterion not in ("lepski", "smallest_se"):
-        raise ValueError("tlcvnp: criterion must be lepski or "
-                         "smallest_se, got %r" % (criterion,))
+        raise ValueError("tlcvnp: criterion must be lepski or smallest_se, got %r" % (criterion,))
     fits = [smoothed_parameter(X, x0, h, kernel) for h in hs]
     if criterion == "smallest_se":
         j = min(range(len(hs)), key=lambda i: fits[i]["se"])
@@ -148,23 +149,22 @@ def select_bandwidth(X, x0, bandwidths, kernel="epanechnikov",
     for i in range(len(hs)):
         ok = True
         for j in range(i + 1, len(hs)):
-            if abs(fits[i]["psi_h"] - fits[j]["psi_h"]) > \
-                    float(C) * (fits[i]["se"] + fits[j]["se"]):
+            if abs(fits[i]["psi_h"] - fits[j]["psi_h"]) > float(C) * (fits[i]["se"] + fits[j]["se"]):
                 ok = False
                 break
         if ok:
             chosen = i
             break
-    return {"h": hs[chosen], "fit": fits[chosen],
-            "criterion": criterion,
-            "all": [(hs[i], fits[i]["psi_h"], fits[i]["se"])
-                    for i in range(len(hs))],
-            "note": "the smallest bandwidth consistent with every "
-                    "larger one"}
+    return {
+        "h": hs[chosen],
+        "fit": fits[chosen],
+        "criterion": criterion,
+        "all": [(hs[i], fits[i]["psi_h"], fits[i]["se"]) for i in range(len(hs))],
+        "note": "the smallest bandwidth consistent with every larger one",
+    }
 
 
-def cv_tmle_smoothed(X, x0, bandwidths, kernel="epanechnikov",
-                     V=5, seed=0):
+def cv_tmle_smoothed(X, x0, bandwidths, kernel="epanechnikov", V=5, seed=0):
     r"""CV-TMLE of the smoothed parameter at the selected bandwidth.
 
     Selection happens on the training split and estimation on the
@@ -178,42 +178,48 @@ def cv_tmle_smoothed(X, x0, bandwidths, kernel="epanechnikov",
     for i in range(n - 1, 0, -1):
         j = int(float(rng.uniform()) * (i + 1)) % (i + 1)
         idx[i], idx[j] = idx[j], idx[i]
-    folds = [sorted(idx[f::int(V)]) for f in range(int(V))]
+    folds = [sorted(idx[f :: int(V)]) for f in range(int(V))]
     ests, ics, hs = [], [0.0] * n, []
     for f in folds:
         tr = [v[i] for i in range(n) if i not in set(f)]
         sel = select_bandwidth(tr, x0, bandwidths, kernel)
         hs.append(sel["h"])
-        est = smoothed_parameter([v[i] for i in f], x0, sel["h"],
-                                 kernel)
+        est = smoothed_parameter([v[i] for i in f], x0, sel["h"], kernel)
         ests.append(est["psi_h"])
         for a, i in enumerate(f):
             ics[i] = est["influence_curve"][a]
     psi = sum(ests) / len(ests)
     m = sum(ics) / n
     se = math.sqrt(sum((q - m) ** 2 for q in ics) / (n - 1) / n)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "bandwidths": hs, "fold_estimates": ests, "V": int(V),
-        "method": "CV-TMLE for a data-adaptively smoothed nonpathwise "
-                  "parameter; van der Laan & Rose (2018) Chap. 25",
-        "note": "adapts to the unknown smoothness instead of assuming "
-                "it, and still supplies formal inference",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "bandwidths": hs,
+            "fold_estimates": ests,
+            "V": int(V),
+            "method": "CV-TMLE for a data-adaptively smoothed nonpathwise "
+            "parameter; van der Laan & Rose (2018) Chap. 25",
+            "note": "adapts to the unknown smoothness instead of assuming it, and still supplies formal inference",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlcvnp: a density or regression curve AT A POINT is "
-            "NONpathwise differentiable -- no efficient influence "
-            "curve, no root-n estimator. The usual fix picks a "
-            "bandwidth under an assumed smoothness and is beaten by "
-            "anything adaptive. Instead approximate the target by a "
-            "SMOOTHED parameter that IS pathwise differentiable, "
-            "estimate it by CV-TMLE, and choose the bandwidth from the "
-            "data (Lepski). The bias is O(h^s) and the standard error "
-            "O(1/sqrt(nh)): inference is for the smoothed parameter "
-            "and transfers only when the bias is dominated.")
+    return (
+        "tlcvnp: a density or regression curve AT A POINT is "
+        "NONpathwise differentiable -- no efficient influence "
+        "curve, no root-n estimator. The usual fix picks a "
+        "bandwidth under an assumed smoothness and is beaten by "
+        "anything adaptive. Instead approximate the target by a "
+        "SMOOTHED parameter that IS pathwise differentiable, "
+        "estimate it by CV-TMLE, and choose the bandwidth from the "
+        "data (Lepski). The bias is O(h^s) and the standard error "
+        "O(1/sqrt(nh)): inference is for the smoothed parameter "
+        "and transfers only when the bias is dominated."
+    )
 
 
 # compact alias per ledger/NAMING.md

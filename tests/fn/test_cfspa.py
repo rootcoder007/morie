@@ -1,7 +1,6 @@
 """Tests for morie.fn.cfspa."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cfspa import cfspa
 
 

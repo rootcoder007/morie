@@ -76,9 +76,11 @@ def _fit_joinpoint(time, event, taus, n_iter=100):
                 for j in range(p):
                     g[j] -= alpha[j] * i0 + beta[j] * i1
                     for m in range(p):
-                        H[j][m] -= (alpha[j] * alpha[m] * i0
-                                    + (alpha[j] * beta[m] + beta[j] * alpha[m]) * i1
-                                    + beta[j] * beta[m] * i2)
+                        H[j][m] -= (
+                            alpha[j] * alpha[m] * i0
+                            + (alpha[j] * beta[m] + beta[j] * alpha[m]) * i1
+                            + beta[j] * beta[m] * i2
+                        )
         return ll, g, H
 
     ll, g, H = loglik_grad_hess(theta)

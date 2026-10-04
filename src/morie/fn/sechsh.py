@@ -59,8 +59,7 @@ hash; implemented in :mod:`_sha2`.
 from . import _sha2 as h
 from ._richresult import RichResult
 
-__all__ = ["chain_entry", "build_chain", "verify_chain",
-           "merkle_root", "inclusion_proof", "verify_inclusion"]
+__all__ = ["chain_entry", "build_chain", "verify_chain", "merkle_root", "inclusion_proof", "verify_inclusion"]
 
 _LEAF = b"\x00"
 _NODE = b"\x01"
@@ -77,9 +76,11 @@ def chain_entry(previous_hash, entry, key=None):
     e = h._as_bytes(entry)
     if key is None:
         return {"hash": h.sha256(p + e), "keyed": False}
-    return {"hash": h.hmac_sha256(key, p + e), "keyed": True,
-            "note": "forward rewriting now needs the KEY as well as "
-                    "write access"}
+    return {
+        "hash": h.hmac_sha256(key, p + e),
+        "keyed": True,
+        "note": "forward rewriting now needs the KEY as well as write access",
+    }
 
 
 def build_chain(entries, key=None, genesis=GENESIS):
@@ -89,10 +90,13 @@ def build_chain(entries, key=None, genesis=GENESIS):
     for e in entries:
         prev = chain_entry(prev, e, key)["hash"]
         hashes.append(prev)
-    return {"hashes": hashes, "head": prev if hashes else
-            h._as_bytes(genesis), "n": len(hashes),
-            "head_hex": h.hexlify(prev if hashes else genesis),
-            "keyed": key is not None}
+    return {
+        "hashes": hashes,
+        "head": prev if hashes else h._as_bytes(genesis),
+        "n": len(hashes),
+        "head_hex": h.hexlify(prev if hashes else genesis),
+        "keyed": key is not None,
+    }
 
 
 def verify_chain(entries, hashes, key=None, genesis=GENESIS):
@@ -102,9 +106,9 @@ def verify_chain(entries, hashes, key=None, genesis=GENESIS):
     evidence, and everything after it is not.
     """
     if len(entries) != len(hashes):
-        raise ValueError("sechsh: %d entries but %d hashes -- an "
-                         "entry or a hash has been dropped"
-                         % (len(entries), len(hashes)))
+        raise ValueError(
+            "sechsh: %d entries but %d hashes -- an entry or a hash has been dropped" % (len(entries), len(hashes))
+        )
     prev = h._as_bytes(genesis)
     first_bad = None
     for i in range(len(entries)):
@@ -113,18 +117,20 @@ def verify_chain(entries, hashes, key=None, genesis=GENESIS):
             if first_bad is None:
                 first_bad = i
         prev = h._as_bytes(hashes[i])
-    return RichResult(payload={
-        "estimate": first_bad is None, "intact": first_bad is None,
-        "first_bad": first_bad,
-        "verified_through": len(entries) if first_bad is None
-        else first_bad,
-        "n": len(entries),
-        "method": "hash-chained audit log; Schneier & Kelsey (1999)",
-        "note": "tamper-EVIDENT, not tamper-proof: an attacker who "
-                "can rewrite the whole tail recomputes every later "
-                "hash, which is what keying and external anchoring "
-                "are for",
-    })
+    return RichResult(
+        payload={
+            "estimate": first_bad is None,
+            "intact": first_bad is None,
+            "first_bad": first_bad,
+            "verified_through": len(entries) if first_bad is None else first_bad,
+            "n": len(entries),
+            "method": "hash-chained audit log; Schneier & Kelsey (1999)",
+            "note": "tamper-EVIDENT, not tamper-proof: an attacker who "
+            "can rewrite the whole tail recomputes every later "
+            "hash, which is what keying and external anchoring "
+            "are for",
+        }
+    )
 
 
 def merkle_root(leaves):
@@ -150,8 +156,7 @@ def inclusion_proof(leaves, index):
     L = [h._as_bytes(v) for v in leaves]
     m = int(index)
     if m < 0 or m >= len(L):
-        raise ValueError("sechsh: index %d is outside a log of %d"
-                         % (m, len(L)))
+        raise ValueError("sechsh: index %d is outside a log of %d" % (m, len(L)))
     path = []
     lo, hi = 0, len(L)
     while hi - lo > 1:
@@ -159,23 +164,26 @@ def inclusion_proof(leaves, index):
         while k * 2 < hi - lo:
             k *= 2
         if m - lo < k:
-            path.append(merkle_root(L[lo + k:hi]))
+            path.append(merkle_root(L[lo + k : hi]))
             hi = lo + k
         else:
-            path.append(merkle_root(L[lo:lo + k]))
+            path.append(merkle_root(L[lo : lo + k]))
             lo = lo + k
-    return {"path": path, "path_hex": [h.hexlify(v) for v in path],
-            "length": len(path), "index": m, "size": len(L),
-            "note": "log2(n) hashes prove membership against a "
-                    "trusted head"}
+    return {
+        "path": path,
+        "path_hex": [h.hexlify(v) for v in path],
+        "length": len(path),
+        "index": m,
+        "size": len(L),
+        "note": "log2(n) hashes prove membership against a trusted head",
+    }
 
 
 def verify_inclusion(leaf, index, size, path, root):
     r"""Recompute the head from the leaf and the path alone."""
     m, n = int(index), int(size)
     if m < 0 or m >= n:
-        raise ValueError("sechsh: index %d is outside a log of %d"
-                         % (m, n))
+        raise ValueError("sechsh: index %d is outside a log of %d" % (m, n))
     node = h.sha256(_LEAF + h._as_bytes(leaf))
     # The audit path is recorded top-down by inclusion_proof, but the
     # hashing has to run bottom-up from the leaf: collect the descent
@@ -188,8 +196,7 @@ def verify_inclusion(leaf, index, size, path, root):
     p = list(path)
     while hi - lo > 1:
         if used >= len(p):
-            raise ValueError("sechsh: the audit path is too short "
-                             "for a log of %d" % n)
+            raise ValueError("sechsh: the audit path is too short for a log of %d" % n)
         k = 1
         while k * 2 < hi - lo:
             k *= 2
@@ -202,25 +209,24 @@ def verify_inclusion(leaf, index, size, path, root):
             steps.append((sib, False))
             lo = lo + k
     for sib, on_right in reversed(steps):
-        node = (h.sha256(_NODE + node + sib) if on_right
-                else h.sha256(_NODE + sib + node))
-    return {"root": node, "root_hex": h.hexlify(node),
-            "valid": h.constant_time_equal(node, root),
-            "path_used": used}
+        node = h.sha256(_NODE + node + sib) if on_right else h.sha256(_NODE + sib + node)
+    return {"root": node, "root_hex": h.hexlify(node), "valid": h.constant_time_equal(node, root), "path_used": used}
 
 
 def cheatsheet():
-    return ("sechsh: h_i = H(h_{i-1} || entry_i) makes a log "
-            "TAMPER-EVIDENT -- any edit changes every later hash, so "
-            "verification localises the damage and should return the "
-            "FIRST BAD INDEX, not a boolean. It is NOT tamper-proof: "
-            "an attacker who rewrites the whole tail just recomputes "
-            "the hashes. Two defences: KEYED chaining with a key the "
-            "writer does not hold, and ANCHORING the head outside the "
-            "system, which bounds any rewrite to entries after the "
-            "last anchor. Merkle inclusion proves membership in "
-            "log2(n) hashes; prefix 0x00 to leaves and 0x01 to "
-            "interior nodes or a node can be passed off as a leaf.")
+    return (
+        "sechsh: h_i = H(h_{i-1} || entry_i) makes a log "
+        "TAMPER-EVIDENT -- any edit changes every later hash, so "
+        "verification localises the damage and should return the "
+        "FIRST BAD INDEX, not a boolean. It is NOT tamper-proof: "
+        "an attacker who rewrites the whole tail just recomputes "
+        "the hashes. Two defences: KEYED chaining with a key the "
+        "writer does not hold, and ANCHORING the head outside the "
+        "system, which bounds any rewrite to entries after the "
+        "last anchor. Merkle inclusion proves membership in "
+        "log2(n) hashes; prefix 0x00 to leaves and 0x01 to "
+        "interior nodes or a node can be passed off as a leaf."
+    )
 
 
 # compact alias per ledger/NAMING.md

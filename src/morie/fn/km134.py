@@ -28,12 +28,17 @@ def kamath_ch9_clip_text_to_image(L, V, sigma, N=None):
     True
     """
     r = kamath_ch9_clip_image_to_text(L, V, sigma, N)
-    return RichResult(payload={
-        "estimate": r["estimate"], "per_pair": r["per_pair"],
-        "logits": r["logits"], "temperature": r["temperature"],
-        "n": r["n"],
-        "method": "CLIP text-to-image contrastive loss (Kamath Eq 9.6; "
-                  "the Eq 9.5 core in km133, modalities swapped)"})
+    return RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "per_pair": r["per_pair"],
+            "logits": r["logits"],
+            "temperature": r["temperature"],
+            "n": r["n"],
+            "method": "CLIP text-to-image contrastive loss (Kamath Eq 9.6; "
+            "the Eq 9.5 core in km133, modalities swapped)",
+        }
+    )
 
 
 def cheatsheet():

@@ -20,7 +20,7 @@ def test_gb921m_basic():
     N = m + n
     expected_mean = m * (N * N - 1) / 12.0
     expected_var = m * n * (N + 1) * (N * N - 4) / 180.0
-    expected_sd = expected_var ** 0.5
+    expected_sd = expected_var**0.5
 
     assert result["mean"] == expected_mean
     assert result["var"] == expected_var

@@ -6,9 +6,7 @@ Rewritten against survival_xgboost, whose interval-censored inputs
 """
 
 from morie.fn import _array_core as np
-import pytest
-
-from morie.fn.surxgb import survival_xgboost, aft_loss
+from morie.fn.surxgb import aft_loss, survival_xgboost
 
 
 def _intervals(n=40):

@@ -1,6 +1,5 @@
 """Tests for mcnem.mcnem."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mcnem import mcnem

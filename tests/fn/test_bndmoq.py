@@ -1,8 +1,6 @@
 """Tests for bndmoq.bound_moment_qed."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bndmoq import bound_moment_qed
 
 
@@ -22,6 +20,7 @@ def _type1_quantile(sorted_vals, level):
     m = len(sorted_vals)
     # k = ceil(m * level), then take the (k-1)-th element (1-indexed -> 0-indexed).
     import math
+
     k = max(1, math.ceil(m * level))
     return sorted_vals[k - 1]
 
@@ -71,8 +70,7 @@ def test_bndmoq_basic():
 
     # The function returns a RichResult (dict-like); keys are documented.
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "max_width", "n_strata", "p_observed", "n"):
+    for key in ("lower", "upper", "width", "estimate", "max_width", "n_strata", "p_observed", "n"):
         assert key in result, "missing documented key: " + key
 
     # Numeric expectations computed independently from the documented formula.
@@ -104,8 +102,7 @@ def test_bndmoq_edge():
     result = bound_moment_qed(y, D, X, quantile)
 
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "max_width", "n_strata", "p_observed", "n"):
+    for key in ("lower", "upper", "width", "estimate", "max_width", "n_strata", "p_observed", "n"):
         assert key in result, "missing documented key: " + key
 
     # p1 is 1.0 because every unit is observed.

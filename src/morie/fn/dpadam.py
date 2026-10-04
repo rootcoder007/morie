@@ -11,8 +11,7 @@ from .dpsgd import dp_sgd
 __all__ = ["dp_adam"]
 
 
-def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
-            state=None, seed=None):
+def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, state=None, seed=None):
     r"""Adam applied to a differentially private gradient.
 
     The privatised gradient from :func:`~morie.fn.dpsgd.dp_sgd` is fed through
@@ -105,16 +104,27 @@ def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
     snr = float(np.linalg.norm(g) / max(noise_sd * np.sqrt(g.size), 1e-300))
     return RichResult(
         title="DP-Adam step",
-        summary_lines=[("step", int(t)), ("noise sd", noise_sd),
-                       ("signal/noise", snr)],
-        warnings=(["signal-to-noise is below 1, so Adam's second moment is "
-                   "tracking DP noise rather than gradient scale; plain DP-SGD "
-                   "is often better in this regime"] if snr < 1.0 else []),
+        summary_lines=[("step", int(t)), ("noise sd", noise_sd), ("signal/noise", snr)],
+        warnings=(
+            [
+                "signal-to-noise is below 1, so Adam's second moment is "
+                "tracking DP noise rather than gradient scale; plain DP-SGD "
+                "is often better in this regime"
+            ]
+            if snr < 1.0
+            else []
+        ),
         payload={
-            "update": update, "state": st, "m": st["m"], "v": st["v"],
-            "private_gradient": g, "signal_to_noise": snr,
+            "update": update,
+            "state": st,
+            "m": st["m"],
+            "v": st["v"],
+            "private_gradient": g,
+            "signal_to_noise": snr,
             "clipped_fraction": step["clipped_fraction"],
-            "noise_sd": noise_sd, "t": int(t), "method": "dp_adam",
+            "noise_sd": noise_sd,
+            "t": int(t),
+            "method": "dp_adam",
         },
     )
 

@@ -30,8 +30,6 @@ the statistic on the whole sample and the spread is exactly zero.
 
 from __future__ import annotations
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 from .btmbb import block_reps

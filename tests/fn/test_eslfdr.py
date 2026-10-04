@@ -1,7 +1,6 @@
 """Tests for eslfdr.esl_bh_fdr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslfdr import esl_bh_fdr
 
 

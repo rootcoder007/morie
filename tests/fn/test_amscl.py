@@ -1,7 +1,6 @@
 """Tests for morie.fn.amscl — Aldrich-McKelvey scaling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.amscl import amscl
 
 

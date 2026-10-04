@@ -87,13 +87,20 @@ def kosorok_cox_score_process(beta, z, time, event, t_grid=None):
         for i in np.nonzero((tv == s) & (ev == 1.0))[0]:
             contrib[k] += Z[i] - e
     cum = np.cumsum(contrib, axis=0) / n
-    U = np.array([cum[max(np.searchsorted(et, v, side="right") - 1, 0)]
-                  if v >= et[0] else np.zeros(p) for v in tg])
-    return RichResult(payload={
-        "t_grid": tg, "U": U, "U_final": cum[-1], "E_bar": ebar,
-        "is_process": True, "root_defines_estimator": True,
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Cox score process (Eq. 1.4); indexed by t, so its weak convergence is what matters"})
+    U = np.array([cum[max(np.searchsorted(et, v, side="right") - 1, 0)] if v >= et[0] else np.zeros(p) for v in tg])
+    return RichResult(
+        payload={
+            "t_grid": tg,
+            "U": U,
+            "U_final": cum[-1],
+            "E_bar": ebar,
+            "is_process": True,
+            "root_defines_estimator": True,
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Cox score process (Eq. 1.4); indexed by t, so its weak convergence is what matters",
+        }
+    )
 
 
 def cheatsheet():

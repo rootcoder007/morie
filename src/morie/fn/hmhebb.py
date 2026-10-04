@@ -74,9 +74,7 @@ def geron_hebb_rule(X, Y, eta=0.1, W=None):
     if A.size == 0 or B.size == 0:
         raise ValueError("geron_hebb_rule: X and Y must be non-empty")
     if A.shape[0] != B.shape[0]:
-        raise ValueError(
-            f"geron_hebb_rule: X has {A.shape[0]} presentations but Y has {B.shape[0]}"
-        )
+        raise ValueError(f"geron_hebb_rule: X has {A.shape[0]} presentations but Y has {B.shape[0]}")
     if not np.all(np.isfinite(A)) or not np.all(np.isfinite(B)):
         raise ValueError("geron_hebb_rule: X and Y must be finite")
     lr = float(eta)

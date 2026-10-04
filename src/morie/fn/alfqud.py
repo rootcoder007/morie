@@ -77,12 +77,17 @@ References
 
 import math
 
-from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["alphadev_quicksort_disc", "assembly_run", "step",
-           "correctness", "sort_action_space", "program_text",
-           "cheatsheet"]
+__all__ = [
+    "alphadev_quicksort_disc",
+    "assembly_run",
+    "step",
+    "correctness",
+    "sort_action_space",
+    "program_text",
+    "cheatsheet",
+]
 
 _OPS = ("mov", "cmp", "cmovl", "cmovg")
 
@@ -95,11 +100,9 @@ def _read(mem, reg, loc):
         return mem[idx]
     if bank == "R":
         if idx < 0 or idx >= len(reg):
-            raise ValueError("the instruction reads a register that is "
-                             "not there")
+            raise ValueError("the instruction reads a register that is not there")
         return reg[idx]
-    raise ValueError("a location is in memory or in a register, nothing "
-                     "else")
+    raise ValueError("a location is in memory or in a register, nothing else")
 
 
 def _write(mem, reg, loc, v):
@@ -110,12 +113,10 @@ def _write(mem, reg, loc, v):
         mem[idx] = v
     elif bank == "R":
         if idx < 0 or idx >= len(reg):
-            raise ValueError("the instruction writes a register that is "
-                             "not there")
+            raise ValueError("the instruction writes a register that is not there")
         reg[idx] = v
     else:
-        raise ValueError("a location is in memory or in a register, "
-                         "nothing else")
+        raise ValueError("a location is in memory or in a register, nothing else")
 
 
 def step(mem, reg, flag, instr):
@@ -208,23 +209,22 @@ def sort_action_space(n_mem, n_reg):
 
 def program_text(program):
     """A program as one readable line per instruction."""
-    return "\n".join("%s %s%d %s%d" % (i[0], i[1][0], i[1][1],
-                                       i[2][0], i[2][1])
-                     for i in program)
+    return "\n".join("%s %s%d %s%d" % (i[0], i[1][0], i[1][1], i[2][0], i[2][1]) for i in program)
 
 
 def _score(program, inputs, targets, n_reg, latency_weight, reward_fn):
-    c = (correctness(program, inputs, targets, n_reg) if reward_fn is None
-         else float(reward_fn(program, inputs, targets, n_reg)))
+    c = (
+        correctness(program, inputs, targets, n_reg)
+        if reward_fn is None
+        else float(reward_fn(program, inputs, targets, n_reg))
+    )
     return float(c) - float(latency_weight) * len(program), float(c)
 
 
-def _bfs(inputs, targets, action_space, n_reg, max_len, latency_weight,
-         reward_fn):
+def _bfs(inputs, targets, action_space, n_reg, max_len, latency_weight, reward_fn):
     """Every program up to the length limit, in order. The optimum."""
     best = []
-    best_s, best_c = _score([], inputs, targets, n_reg, latency_weight,
-                            reward_fn)
+    best_s, best_c = _score([], inputs, targets, n_reg, latency_weight, reward_fn)
     frontier = [[]]
     seen = 1
     for _ in range(int(max_len)):
@@ -233,8 +233,7 @@ def _bfs(inputs, targets, action_space, n_reg, max_len, latency_weight,
             for act in action_space:
                 cand = prog + [act]
                 seen += 1
-                s, c = _score(cand, inputs, targets, n_reg,
-                              latency_weight, reward_fn)
+                s, c = _score(cand, inputs, targets, n_reg, latency_weight, reward_fn)
                 if s > best_s:
                     best_s, best_c, best = s, c, cand
                 nxt.append(cand)
@@ -242,8 +241,7 @@ def _bfs(inputs, targets, action_space, n_reg, max_len, latency_weight,
     return best, best_s, best_c, seen
 
 
-def _mcts(inputs, targets, action_space, n_reg, max_len, latency_weight,
-          reward_fn, n_sim, c_puct, seed):
+def _mcts(inputs, targets, action_space, n_reg, max_len, latency_weight, reward_fn, n_sim, c_puct, seed):
     """PUCT tree search over programs.
 
     Nodes are keyed by the program that reaches them, so the tree is a
@@ -260,8 +258,7 @@ def _mcts(inputs, targets, action_space, n_reg, max_len, latency_weight,
     N = {}
     W = {}
     best = []
-    best_s, best_c = _score([], inputs, targets, n_reg, latency_weight,
-                            reward_fn)
+    best_s, best_c = _score([], inputs, targets, n_reg, latency_weight, reward_fn)
     for _ in range(int(n_sim)):
         node = root
         path = []
@@ -284,8 +281,7 @@ def _mcts(inputs, targets, action_space, n_reg, max_len, latency_weight,
             N[node] = [0] * a
             W[node] = [0.0] * a
         prog = [action_space[k] for k in node]
-        s, c = _score(prog, inputs, targets, n_reg, latency_weight,
-                      reward_fn)
+        s, c = _score(prog, inputs, targets, n_reg, latency_weight, reward_fn)
         if s > best_s:
             best_s, best_c, best = s, c, prog
         v = (c / full) if full > 0 else 0.0
@@ -295,10 +291,18 @@ def _mcts(inputs, targets, action_space, n_reg, max_len, latency_weight,
     return best, best_s, best_c, len(N)
 
 
-def alphadev_quicksort_disc(target, action_space=None, reward_fn=None,
-                            n_reg=2, max_len=3, latency_weight=0.0,
-                            search="mcts", n_sim=400, c_puct=1.25,
-                            seed=0):
+def alphadev_quicksort_disc(
+    target,
+    action_space=None,
+    reward_fn=None,
+    n_reg=2,
+    max_len=3,
+    latency_weight=0.0,
+    search="mcts",
+    n_sim=400,
+    c_puct=1.25,
+    seed=0,
+):
     """Search for a machine program that sorts the given inputs.
 
     Parameters
@@ -340,8 +344,7 @@ def alphadev_quicksort_disc(target, action_space=None, reward_fn=None,
     """
     inputs = [[float(v) for v in x] for x in target]
     if not inputs:
-        raise ValueError("a search with no test input cannot tell a "
-                         "sorting routine from any other program")
+        raise ValueError("a search with no test input cannot tell a sorting routine from any other program")
     n_mem = len(inputs[0])
     for x in inputs:
         if len(x) != n_mem:
@@ -354,38 +357,41 @@ def alphadev_quicksort_disc(target, action_space=None, reward_fn=None,
     if not action_space:
         raise ValueError("a search with no legal move has nothing to do")
     if search == "bfs":
-        prog, s, c, seen = _bfs(inputs, targets, action_space, n_reg,
-                                max_len, latency_weight, reward_fn)
+        prog, s, c, seen = _bfs(inputs, targets, action_space, n_reg, max_len, latency_weight, reward_fn)
     elif search == "mcts":
-        prog, s, c, seen = _mcts(inputs, targets, action_space, n_reg,
-                                 max_len, latency_weight, reward_fn,
-                                 n_sim, c_puct, seed)
+        prog, s, c, seen = _mcts(
+            inputs, targets, action_space, n_reg, max_len, latency_weight, reward_fn, n_sim, c_puct, seed
+        )
     else:
         raise ValueError("the search is mcts or bfs")
     full = sum(len(t) for t in targets)
     outs = [assembly_run(prog, x, n_reg) for x in inputs]
-    return RichResult(payload={
-        "program": [list(i) for i in prog],
-        "text": program_text(prog),
-        "length": len(prog),
-        "score": s,
-        "correct": c,
-        "max_correct": full,
-        "solved": c == full,
-        "outputs": outs,
-        "targets": targets,
-        "nodes": seen,
-        "n_actions": len(action_space),
-        "n_mem": n_mem,
-        "n_reg": n_reg,
-        "max_len": int(max_len),
-        "latency_weight": float(latency_weight),
-        "search": search,
-        "method": "AlphaDev AssemblyGame instruction search",
-    })
+    return RichResult(
+        payload={
+            "program": [list(i) for i in prog],
+            "text": program_text(prog),
+            "length": len(prog),
+            "score": s,
+            "correct": c,
+            "max_correct": full,
+            "solved": c == full,
+            "outputs": outs,
+            "targets": targets,
+            "nodes": seen,
+            "n_actions": len(action_space),
+            "n_mem": n_mem,
+            "n_reg": n_reg,
+            "max_len": int(max_len),
+            "latency_weight": float(latency_weight),
+            "search": search,
+            "method": "AlphaDev AssemblyGame instruction search",
+        }
+    )
 
 
 def cheatsheet():
-    return ("alfqud: AlphaDev AssemblyGame. Programs of mov/cmp/cmovl/"
-            "cmovg searched by PUCT tree search or exhaustively, scored "
-            "by executing them on test inputs")
+    return (
+        "alfqud: AlphaDev AssemblyGame. Programs of mov/cmp/cmovl/"
+        "cmovg searched by PUCT tree search or exhaustively, scored "
+        "by executing them on test inputs"
+    )

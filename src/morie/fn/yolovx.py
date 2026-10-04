@@ -60,14 +60,10 @@ Convolutional One-Stage Object Detection", *ICCV 2019*, 9627-9636,
 arXiv:1904.01355. Center sampling and the anchor-free parametrisation.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["decoupled_head", "encode_box", "decode_box",
-           "center_sampling", "simota_assign", "box_iou"]
+__all__ = ["decoupled_head", "encode_box", "decode_box", "center_sampling", "simota_assign", "box_iou"]
 
 _EPS = 1e-12
 
@@ -80,21 +76,22 @@ def decoupled_head(channels, reduced=256, n_classes=80):
     """
     c, r = int(channels), int(reduced)
     if c < 1 or r < 1:
-        raise ValueError("yolovx: the channel counts must be "
-                         "positive")
+        raise ValueError("yolovx: the channel counts must be positive")
     n = int(n_classes)
     reduce_p = c * r
     cls_p = r * r * 9 + r * n
     reg_p = r * r * 9 + r * (4 + 1)
     coupled_p = c * (n + 5) * 9
-    return {"reduce_params": reduce_p, "cls_params": cls_p,
-            "reg_params": reg_p,
-            "total": reduce_p + cls_p + reg_p,
-            "coupled_total": coupled_p,
-            "branches": ["classification", "regression+objectness"],
-            "extra_latency_ms": 1.1,
-            "note": "measured cost 11.6 ms against 10.5 ms coupled, "
-                    "for a stated AP gain"}
+    return {
+        "reduce_params": reduce_p,
+        "cls_params": cls_p,
+        "reg_params": reg_p,
+        "total": reduce_p + cls_p + reg_p,
+        "coupled_total": coupled_p,
+        "branches": ["classification", "regression+objectness"],
+        "extra_latency_ms": 1.1,
+        "note": "measured cost 11.6 ms against 10.5 ms coupled, for a stated AP gain",
+    }
 
 
 def encode_box(box, cx, cy, stride=1.0):
@@ -105,11 +102,8 @@ def encode_box(box, cx, cy, stride=1.0):
         raise ValueError("yolovx: the stride must be positive")
     px, py = (float(cx) + 0.5) * s, (float(cy) + 0.5) * s
     if not (x0 <= px <= x1 and y0 <= py <= y1):
-        raise ValueError("yolovx: the location is outside the box, "
-                         "so it cannot be a positive sample")
-    return {"ltrb": [(px - x0) / s, (py - y0) / s,
-                     (x1 - px) / s, (y1 - py) / s],
-            "center": (px, py), "stride": s}
+        raise ValueError("yolovx: the location is outside the box, so it cannot be a positive sample")
+    return {"ltrb": [(px - x0) / s, (py - y0) / s, (x1 - px) / s, (y1 - py) / s], "center": (px, py), "stride": s}
 
 
 def decode_box(ltrb, cx, cy, stride=1.0):
@@ -148,15 +142,17 @@ def center_sampling(box, grid_w, grid_h, stride=1.0, radius=1.5):
             px, py = (i + 0.5) * s, (j + 0.5) * s
             if x0 <= px <= x1 and y0 <= py <= y1:
                 inside.append((i, j))
-            if (abs(px - cx) <= float(radius) * s
-                    and abs(py - cy) <= float(radius) * s):
+            if abs(px - cx) <= float(radius) * s and abs(py - cy) <= float(radius) * s:
                 center.append((i, j))
     cand = sorted(set(inside) | set(center))
-    return {"in_box": inside, "in_center": center,
-            "candidates": cand, "n_candidates": len(cand),
-            "single_center": 1,
-            "note": "one positive per object starves the model of "
-                    "useful gradients"}
+    return {
+        "in_box": inside,
+        "in_center": center,
+        "candidates": cand,
+        "n_candidates": len(cand),
+        "single_center": 1,
+        "note": "one positive per object starves the model of useful gradients",
+    }
 
 
 def simota_assign(costs, ious, top_q=10, max_k=None):
@@ -171,8 +167,7 @@ def simota_assign(costs, ious, top_q=10, max_k=None):
     I = [[float(v) for v in r] for r in k.mat(ious)]
     G, P = len(C), len(C[0])
     if len(I) != G or len(I[0]) != P:
-        raise ValueError("yolovx: the cost and IoU matrices differ "
-                         "in shape")
+        raise ValueError("yolovx: the cost and IoU matrices differ in shape")
     q = min(int(top_q), P)
     assign, ks = {}, []
     for g in range(G):
@@ -191,32 +186,35 @@ def simota_assign(costs, ious, top_q=10, max_k=None):
                 owner[p] = a if C[a][p] <= C[b][p] else b
             else:
                 owner[p] = g
-    final = {g: sorted(p for p in assign[g] if owner[p] == g)
-             for g in range(G)}
-    return RichResult(payload={
-        "estimate": final, "assignment": final, "dynamic_k": ks,
-        "n_positives": sum(len(v) for v in final.values()),
-        "contested": sum(1 for p in owner
-                         if sum(1 for g in range(G)
-                                if p in assign[g]) > 1),
-        "method": "SimOTA dynamic top-k; Ge et al. (2021)",
-        "note": "k is DYNAMIC per ground truth, from the sum of its "
-                "top IoUs -- no Sinkhorn, no extra hyperparameter",
-    })
+    final = {g: sorted(p for p in assign[g] if owner[p] == g) for g in range(G)}
+    return RichResult(
+        payload={
+            "estimate": final,
+            "assignment": final,
+            "dynamic_k": ks,
+            "n_positives": sum(len(v) for v in final.values()),
+            "contested": sum(1 for p in owner if sum(1 for g in range(G) if p in assign[g]) > 1),
+            "method": "SimOTA dynamic top-k; Ge et al. (2021)",
+            "note": "k is DYNAMIC per ground truth, from the sum of its "
+            "top IoUs -- no Sinkhorn, no extra hyperparameter",
+        }
+    )
 
 
 def cheatsheet():
-    return ("yolovx: fold three advances into YOLO. DECOUPLED HEAD -- "
-            "classification and localisation conflict in one branch; "
-            "1x1 reduce then two parallel 3x3 branches, +1.1 ms "
-            "(11.6 vs 10.5) for an AP gain. ANCHOR-FREE -- each "
-            "location predicts (l,t,r,b) with the stride, so "
-            "decode inverts encode exactly and no clustered priors are "
-            "tuned. CENTER SAMPLING -- one positive per object starves "
-            "the model, so the center 3x3 is positive. SIMOTA -- OTA's "
-            "optimal transport costs 25% extra training time, so "
-            "approximate it with DYNAMIC top-k from the sum of top "
-            "IoUs: 45.0 to 47.3 AP with no solver hyperparameters.")
+    return (
+        "yolovx: fold three advances into YOLO. DECOUPLED HEAD -- "
+        "classification and localisation conflict in one branch; "
+        "1x1 reduce then two parallel 3x3 branches, +1.1 ms "
+        "(11.6 vs 10.5) for an AP gain. ANCHOR-FREE -- each "
+        "location predicts (l,t,r,b) with the stride, so "
+        "decode inverts encode exactly and no clustered priors are "
+        "tuned. CENTER SAMPLING -- one positive per object starves "
+        "the model, so the center 3x3 is positive. SIMOTA -- OTA's "
+        "optimal transport costs 25% extra training time, so "
+        "approximate it with DYNAMIC top-k from the sum of top "
+        "IoUs: 45.0 to 47.3 AP with no solver hyperparameters."
+    )
 
 
 # compact alias per ledger/NAMING.md

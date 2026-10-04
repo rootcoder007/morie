@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Tests: crfflt, bigtm, bprMF, caltbR, cdaeRC."""
+
 import importlib
 import math
 
@@ -38,10 +38,8 @@ def test_crfflt_annihilates_a_constant():
 def test_crfflt_symmetric_is_drift_invariant():
     base = [math.sin(2 * math.pi * t / 20.0) for t in range(80)]
     trend = [base[t] + 0.5 * t for t in range(80)]
-    s0 = crfflt.cf_filter(base, 6, 32, method="symmetric",
-                          p=12)["cycle"]
-    s1 = crfflt.cf_filter(trend, 6, 32, method="symmetric",
-                          p=12)["cycle"]
+    s0 = crfflt.cf_filter(base, 6, 32, method="symmetric", p=12)["cycle"]
+    s1 = crfflt.cf_filter(trend, 6, 32, method="symmetric", p=12)["cycle"]
     assert max(abs(s0[t] - s1[t]) for t in range(12, 68)) < 1e-9
     a0 = crfflt.cf_filter(base, 6, 32, drift=False)["cycle"]
     a1 = crfflt.cf_filter(trend, 6, 32, drift=False)["cycle"]
@@ -64,8 +62,7 @@ def test_crfflt_one_sided_ignores_the_future():
         x2[t] += 5.0
     o1 = crfflt.cf_filter(x1, 6, 32, method="one_sided", drift=False)
     o2 = crfflt.cf_filter(x2, 6, 32, method="one_sided", drift=False)
-    assert max(abs(o1["cycle"][t] - o2["cycle"][t])
-               for t in range(2, 150)) < 1e-12
+    assert max(abs(o1["cycle"][t] - o2["cycle"][t]) for t in range(2, 150)) < 1e-12
 
 
 def test_crfflt_rejects_bad_input():
@@ -81,17 +78,14 @@ def test_crfflt_rejects_bad_input():
 
 # -------------------------------------------------------------- bigtm
 def test_bigtm_predictive_equals_the_interpolation():
-    d = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 2.0,
-                                   [0.5, 0.3, 0.2])
+    d = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 2.0, [0.5, 0.3, 0.2])
     for i in range(3):
         assert abs(d["predictive"][i] - d["interpolated"][i]) < 1e-15
 
 
 def test_bigtm_beta_limits():
-    lo = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 1e-9,
-                                    [0.5, 0.3, 0.2])["predictive"]
-    hi = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 1e9,
-                                    [0.5, 0.3, 0.2])["predictive"]
+    lo = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 1e-9, [0.5, 0.3, 0.2])["predictive"]
+    hi = bigtm.dirichlet_predictive([3.0, 1.0, 0.0], 4.0, 1e9, [0.5, 0.3, 0.2])["predictive"]
     assert abs(lo[0] - 0.75) < 1e-6
     assert abs(hi[0] - 0.5) < 1e-6
 
@@ -104,10 +98,8 @@ def test_bigtm_printed_eq15_disagrees_with_eq13():
 
 
 def test_bigtm_context_changes_the_prediction():
-    a = bigtm.bigram_topic_predictive([9.0, 1.0], 10.0, 1.0,
-                                      [0.5, 0.5])["predictive"]
-    b = bigtm.bigram_topic_predictive([1.0, 9.0], 10.0, 1.0,
-                                      [0.5, 0.5])["predictive"]
+    a = bigtm.bigram_topic_predictive([9.0, 1.0], 10.0, 1.0, [0.5, 0.5])["predictive"]
+    b = bigtm.bigram_topic_predictive([1.0, 9.0], 10.0, 1.0, [0.5, 0.5])["predictive"]
     assert abs(a[0] - b[0]) > 0.5
 
 
@@ -115,8 +107,7 @@ def test_bigtm_gibbs_separates_planted_topics():
     """The topic must carry what the previous word does not."""
     A = [[0, 1] * 10] * 8
     B = [[0, 2] * 10] * 8
-    g = bigtm.gibbs_bigram_topic(A + B, 2, 3, alpha=0.5, beta=0.1,
-                                 iters=2000, burn=500, seed=7)
+    g = bigtm.gibbs_bigram_topic(A + B, 2, 3, alpha=0.5, beta=0.1, iters=2000, burn=500, seed=7)
     th = g["theta"]
     ka = th[0].index(max(th[0]))
     kb = th[8].index(max(th[8]))
@@ -131,8 +122,7 @@ def test_bigtm_evidence_prefers_the_truth():
     B = [[0, 2] * 10] * 8
     zt = [[0] * 20 for _ in range(8)] + [[1] * 20 for _ in range(8)]
     zs = [[i % 2 for i in range(20)] for _ in range(16)]
-    assert bigtm.log_evidence(A + B, 2, 3, zt, beta=0.1) > \
-        bigtm.log_evidence(A + B, 2, 3, zs, beta=0.1) + 1.0
+    assert bigtm.log_evidence(A + B, 2, 3, zt, beta=0.1) > bigtm.log_evidence(A + B, 2, 3, zs, beta=0.1) + 1.0
 
 
 def test_bigtm_rejects_bad_input():
@@ -164,8 +154,7 @@ def test_bprMF_auc_extremes():
 
 
 def test_bprMF_triple_count():
-    r = bprMF.bpr_opt([[1.0], [1.0]], [[0.5]] * 4,
-                      {0: [0, 1], 1: [2]}, 4)
+    r = bprMF.bpr_opt([[1.0], [1.0]], [[0.5]] * 4, {0: [0, 1], 1: [2]}, 4)
     assert r["n_triples"] == 2 * 2 + 1 * 3
 
 
@@ -179,17 +168,13 @@ def test_bprMF_sigmoid_and_decomposition():
 
 
 def test_bprMF_learns_the_planted_blocks():
-    fit = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.005,
-                          iters=6000, seed=3)
+    fit = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.005, iters=6000, seed=3)
     assert fit["auc"] > 0.95
 
 
 def test_bprMF_printed_regularizer_sign_diverges():
-    bad = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.5,
-                          iters=6000, seed=3,
-                          regularizer_sign="paper")
-    good = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.5,
-                           iters=6000, seed=3)
+    bad = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.5, iters=6000, seed=3, regularizer_sign="paper")
+    good = bprMF.learn_bpr(POS, 4, 4, k_dim=4, alpha=0.1, lam=0.5, iters=6000, seed=3)
     assert bad["param_norm"] > 100.0 * good["param_norm"]
 
 
@@ -205,14 +190,16 @@ def test_bprMF_rejects_bad_input():
 
 
 # ------------------------------------------------------------- caltbR
-TABLE1 = [((0.6, 0.4), (0.5, 0.5), 0.0197),
-          ((0.6, 0.4), (0.6, 0.4), 0.0),
-          ((0.6, 0.4), (0.7, 0.3), 0.0221),
-          ((0.7, 0.3), (0.6, 0.4), 0.0212),
-          ((0.7, 0.3), (0.7, 0.3), 0.0),
-          ((0.7, 0.3), (0.8, 0.2), 0.0275),
-          ((0.7, 0.3), (0.69, 0.31), 2.31e-4),
-          ((0.7, 0.3), (0.71, 0.29), 2.36e-4)]
+TABLE1 = [
+    ((0.6, 0.4), (0.5, 0.5), 0.0197),
+    ((0.6, 0.4), (0.6, 0.4), 0.0),
+    ((0.6, 0.4), (0.7, 0.3), 0.0221),
+    ((0.7, 0.3), (0.6, 0.4), 0.0212),
+    ((0.7, 0.3), (0.7, 0.3), 0.0),
+    ((0.7, 0.3), (0.8, 0.2), 0.0275),
+    ((0.7, 0.3), (0.69, 0.31), 2.31e-4),
+    ((0.7, 0.3), (0.71, 0.29), 2.36e-4),
+]
 
 
 @pytest.mark.parametrize("p,q,want", TABLE1)
@@ -224,24 +211,19 @@ def test_caltbR_reproduces_steck_table_1(p, q, want):
 def test_caltbR_kl_properties():
     """The three properties Sec. 3 asks a calibration metric to have."""
     assert caltbR.calibration_kl([0.6, 0.4], [0.6, 0.4]) < 1e-12
-    assert caltbR.calibration_kl([0.02, 0.98], [0.01, 0.99]) > \
-        caltbR.calibration_kl([0.50, 0.50], [0.49, 0.51])
-    assert caltbR.calibration_kl([0.3, 0.7], [0.31, 0.69]) < \
-        caltbR.calibration_kl([0.3, 0.7], [0.29, 0.71])
+    assert caltbR.calibration_kl([0.02, 0.98], [0.01, 0.99]) > caltbR.calibration_kl([0.50, 0.50], [0.49, 0.51])
+    assert caltbR.calibration_kl([0.3, 0.7], [0.31, 0.69]) < caltbR.calibration_kl([0.3, 0.7], [0.29, 0.71])
 
 
 def test_caltbR_hellinger_is_defined_at_zeros():
     assert caltbR.calibration_hellinger([0.5, 0.5], [1.0, 0.0]) > 0.0
-    assert abs(caltbR.calibration_hellinger([0.5, 0.5],
-                                            [0.5, 0.5])) < 1e-12
+    assert abs(caltbR.calibration_hellinger([0.5, 0.5], [0.5, 0.5])) < 1e-12
 
 
 def test_caltbR_rerank_restores_the_minority_genre():
     PG = [[1.0, 0.0]] * 20 + [[0.0, 1.0]] * 20
-    scores = [1.0 - 0.01 * i for i in range(20)] + \
-             [0.80 - 0.01 * i for i in range(20)]
-    cal = caltbR.calibrated_rerank(scores, PG, [0.7, 0.3], N=10,
-                                   lam=0.9)
+    scores = [1.0 - 0.01 * i for i in range(20)] + [0.80 - 0.01 * i for i in range(20)]
+    cal = caltbR.calibrated_rerank(scores, PG, [0.7, 0.3], N=10, lam=0.9)
     assert cal["q"][1] >= 0.25
     assert cal["calibration"] < cal["calibration_uncalibrated"]
     assert cal["score"] < cal["score_uncalibrated"]
@@ -249,8 +231,7 @@ def test_caltbR_rerank_restores_the_minority_genre():
 
 def test_caltbR_lambda_zero_is_the_accuracy_ranking():
     PG = [[1.0, 0.0]] * 20 + [[0.0, 1.0]] * 20
-    scores = [1.0 - 0.01 * i for i in range(20)] + \
-             [0.80 - 0.01 * i for i in range(20)]
+    scores = [1.0 - 0.01 * i for i in range(20)] + [0.80 - 0.01 * i for i in range(20)]
     r = caltbR.calibrated_rerank(scores, PG, [0.7, 0.3], N=5, lam=0.0)
     assert r["ranking"] == [0, 1, 2, 3, 4]
 
@@ -283,11 +264,9 @@ def test_cdaeRC_corruption_is_unbiased():
 
 def test_cdaeRC_losses_match_closed_forms():
     assert abs(cdaeRC.loss(1.0, 0.5, "square") - 0.125) < 1e-15
-    assert abs(cdaeRC.loss(1.0, 0.5, "log")
-               - math.log(1 + math.exp(-0.5))) < 1e-15
+    assert abs(cdaeRC.loss(1.0, 0.5, "log") - math.log(1 + math.exp(-0.5))) < 1e-15
     assert abs(cdaeRC.loss(1.0, 0.5, "hinge") - 0.5) < 1e-15
-    assert abs(cdaeRC.loss(1.0, 0.0, "cross_entropy")
-               - math.log(2.0)) < 1e-15
+    assert abs(cdaeRC.loss(1.0, 0.0, "cross_entropy") - math.log(2.0)) < 1e-15
 
 
 def test_cdaeRC_negative_label_must_be_minus_one():
@@ -301,15 +280,13 @@ def test_cdaeRC_negative_label_must_be_minus_one():
 def test_cdaeRC_user_node_separates_identical_inputs():
     W = [[0.5, -0.3] for _ in range(4)]
     z1 = cdaeRC.encode([1.0, 0.0, 1.0, 0.0], W, [0.0, 0.0], [0.0, 0.0])
-    z2 = cdaeRC.encode([1.0, 0.0, 1.0, 0.0], W, [2.0, -2.0],
-                       [0.0, 0.0])
+    z2 = cdaeRC.encode([1.0, 0.0, 1.0, 0.0], W, [2.0, -2.0], [0.0, 0.0])
     assert max(abs(z1[f] - z2[f]) for f in range(2)) > 0.1
 
 
 def test_cdaeRC_training_reduces_error_and_ranks_the_block():
     pos = {0: [0, 1], 1: [0, 1], 2: [2, 3], 3: [2, 3]}
-    m = cdaeRC.fit_cdae(pos, 4, 4, k_dim=4, q=0.2, alpha=0.3,
-                        lam=0.001, iters=200, n_neg=2, seed=5)
+    m = cdaeRC.fit_cdae(pos, 4, 4, k_dim=4, q=0.2, alpha=0.3, lam=0.001, iters=200, n_neg=2, seed=5)
     assert m["loss_history"][-1] < 0.5 * m["loss_history"][0]
     r = cdaeRC.recommend(m, {0: [0]}, 0, 4, top_k=3)
     assert r["ranking"][0][0] == 1

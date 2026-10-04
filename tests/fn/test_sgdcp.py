@@ -1,7 +1,6 @@
 """Tests for spatial data decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgdcp import sgdcp
 
 

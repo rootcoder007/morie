@@ -3,17 +3,17 @@
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 6.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn.gwreg import geographically_weighted_regression
+from morie.fn.sarla import spatial_ar_lag
+from morie.fn.sgcar import conditional_autoregressive
+from morie.fn.spcar import schabenberger_car_model as car
 from morie.fn.spgls import schabenberger_gls_spatial as gls
+from morie.fn.spgwr import schabenberger_gwr as gwr
 from morie.fn.spicar import schabenberger_icar_prior as icar_prior
 from morie.fn.spsar import schabenberger_sar_model as sar
-from morie.fn.sarla import spatial_ar_lag
-from morie.fn.spcar import schabenberger_car_model as car
-from morie.fn.sgcar import conditional_autoregressive
-from morie.fn.spgwr import schabenberger_gwr as gwr
-from morie.fn.gwreg import geographically_weighted_regression
 
 
 def _reg(n=40, seed=0):
@@ -104,8 +104,7 @@ def test_icar_conditional_variance_is_tau2_over_degree():
     tau2 = 2.5
     r = icar_prior(W, tau2=tau2)
     d = W.sum(axis=1)
-    np.testing.assert_allclose(r["conditional_variances"][d > 0],
-                               tau2 / d[d > 0], rtol=1e-12)
+    np.testing.assert_allclose(r["conditional_variances"][d > 0], tau2 / d[d > 0], rtol=1e-12)
 
 
 def test_icar_input_validation():
@@ -140,8 +139,7 @@ def _same(a, b):
     for k in a:
         av, bv = a[k], b[k]
         if isinstance(av, np.ndarray) or isinstance(bv, np.ndarray):
-            if not np.array_equal(np.asarray(av, dtype=object),
-                                  np.asarray(bv, dtype=object)):
+            if not np.array_equal(np.asarray(av, dtype=object), np.asarray(bv, dtype=object)):
                 return False
         elif av != bv:
             return False

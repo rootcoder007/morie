@@ -1,8 +1,8 @@
 """Tests for morie.fn.rf — F-distribution random variates."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rf import rf, rf_dist
 
 

@@ -6,9 +6,9 @@ contract: it returns a real semivariogram, not the placeholder payload
 it used to return.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spsph import schabenberger_spherical_variogram
 
 
@@ -17,8 +17,8 @@ def test_spsph_returns_a_semivariogram():
     r = schabenberger_spherical_variogram(h, nugget=0.0, sill=2.0, range=1.0)
     g = r["gamma"]
     assert g[0] == 0.0
-    assert g[2] == pytest.approx(2.0)       # true range: sill reached AT alpha
-    assert g[3] == pytest.approx(2.0)       # and flat beyond it
+    assert g[2] == pytest.approx(2.0)  # true range: sill reached AT alpha
+    assert g[3] == pytest.approx(2.0)  # and flat beyond it
     assert r["model"] == "spherical"
 
 

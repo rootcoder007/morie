@@ -23,8 +23,7 @@ def _act(z, kind):
     raise ValueError(f"activation must be relu, sigmoid, tanh or linear, got {kind!r}.")
 
 
-def geron_stacked_autoencoder(x, layer_weights, activation="relu", tied=True,
-                              output_activation="linear"):
+def geron_stacked_autoencoder(x, layer_weights, activation="relu", tied=True, output_activation="linear"):
     r"""Push an input down to the code and back up again.
 
     .. math::
@@ -102,8 +101,7 @@ def geron_stacked_autoencoder(x, layer_weights, activation="relu", tied=True,
     else:
         if len(mats) % 2 != 0:
             raise ValueError(
-                f"untied weights need an encoder and a decoder matrix per level, "
-                f"got {len(mats)} matrices."
+                f"untied weights need an encoder and a decoder matrix per level, got {len(mats)} matrices."
             )
         half = len(mats) // 2
         enc, dec = mats[:half], mats[half:]
@@ -111,9 +109,7 @@ def geron_stacked_autoencoder(x, layer_weights, activation="relu", tied=True,
     width = X.shape[1]
     for i, W in enumerate(enc):
         if W.shape[0] != width:
-            raise ValueError(
-                f"encoder layer {i} expects {W.shape[0]} inputs but receives {width}."
-            )
+            raise ValueError(f"encoder layer {i} expects {W.shape[0]} inputs but receives {width}.")
         width = W.shape[1]
     code_width = width
     if code_width >= X.shape[1]:
@@ -123,14 +119,11 @@ def geron_stacked_autoencoder(x, layer_weights, activation="relu", tied=True,
         )
     for i, W in enumerate(dec):
         if W.shape[0] != width:
-            raise ValueError(
-                f"decoder layer {i} expects {W.shape[0]} inputs but receives {width}."
-            )
+            raise ValueError(f"decoder layer {i} expects {W.shape[0]} inputs but receives {width}.")
         width = W.shape[1]
     if width != X.shape[1]:
         raise ValueError(
-            f"the decoder ends at width {width} but the input is {X.shape[1]} wide; "
-            "the tower is not symmetric."
+            f"the decoder ends at width {width} but the input is {X.shape[1]} wide; the tower is not symmetric."
         )
 
     acts = [X]

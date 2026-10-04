@@ -32,8 +32,8 @@ def multi_head_attention(Q, K, V, Wq, Wk, Wv, Wo, heads):
     for name, W in (("Wq", Wq), ("Wk", Wk), ("Wv", Wv)):
         if len(W) != heads:
             raise ValueError(
-                f"{name} has {len(W)} projection matrices but heads = "
-                f"{heads}; one per head, or the heads are copies.")
+                f"{name} has {len(W)} projection matrices but heads = {heads}; one per head, or the heads are copies."
+            )
     Q = np.atleast_2d(np.asarray(Q, dtype=float))
     K = np.atleast_2d(np.asarray(K, dtype=float))
     V = np.atleast_2d(np.asarray(V, dtype=float))
@@ -49,15 +49,18 @@ def multi_head_attention(Q, K, V, Wq, Wk, Wv, Wo, heads):
     concat = np.concatenate(outs, axis=1)
     Wo = np.atleast_2d(np.asarray(Wo, dtype=float))
     if concat.shape[1] != Wo.shape[0]:
-        raise ValueError(
-            f"concatenated heads have width {concat.shape[1]} but Wo has "
-            f"{Wo.shape[0]} rows.")
+        raise ValueError(f"concatenated heads have width {concat.shape[1]} but Wo has {Wo.shape[0]} rows.")
     out = concat @ Wo
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in out],
-        "per_head_attention": attns, "heads": heads,
-        "estimate": float(out[0, 0]), "n": Q.shape[0],
-        "method": "Multi-head attention (Vaswani et al. 2017)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in out],
+            "per_head_attention": attns,
+            "heads": heads,
+            "estimate": float(out[0, 0]),
+            "n": Q.shape[0],
+            "method": "Multi-head attention (Vaswani et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,9 +1,9 @@
 """Tests for ginicop."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ginicop import ginis_gamma_copula
+
 
 def test_ginicop_basic():
     assert ginis_gamma_copula("independence")["gamma"] == pytest.approx(0.0, abs=1e-6)

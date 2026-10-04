@@ -12,7 +12,7 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.snmcox import snmcox, blip_down, gest_score
+from morie.fn.snmcox import blip_down, snmcox
 
 
 def _design(n, psi_true, seed=12345, confounded=False):
@@ -36,19 +36,16 @@ def test_blip_down_never_treated_is_the_identity():
 
 def test_blip_down_always_treated_is_T_exp_psi():
     for psi in (-0.5, 0.0, 0.9):
-        assert blip_down(7.0, [(0.0, 7.0)], psi) == pytest.approx(
-            7.0 * math.exp(psi), rel=1e-14)
+        assert blip_down(7.0, [(0.0, 7.0)], psi) == pytest.approx(7.0 * math.exp(psi), rel=1e-14)
 
 
 def test_blip_down_partial_treatment_splits_the_integral():
-    assert blip_down(10.0, [(0.0, 5.0)], 0.5) == pytest.approx(
-        5.0 + 5.0 * math.exp(0.5), rel=1e-14)
+    assert blip_down(10.0, [(0.0, 5.0)], 0.5) == pytest.approx(5.0 + 5.0 * math.exp(0.5), rel=1e-14)
 
 
 def test_blip_down_clips_treatment_beyond_the_failure_time():
     """Treatment recorded past the event must not contribute."""
-    assert blip_down(4.0, [(0.0, 99.0)], 0.3) == pytest.approx(
-        4.0 * math.exp(0.3), rel=1e-14)
+    assert blip_down(4.0, [(0.0, 99.0)], 0.3) == pytest.approx(4.0 * math.exp(0.3), rel=1e-14)
 
 
 def test_psi_zero_leaves_every_time_unchanged():
@@ -91,10 +88,9 @@ def test_beats_the_naive_analysis_under_confounding():
     T, ev, A, L, _ = _design(4000, 0.5, seed=999, confounded=True)
     treated = [T[i] for i in range(len(T)) if A[i] > 0]
     untreated = [T[i] for i in range(len(T)) if A[i] == 0]
-    naive = (math.log(sum(treated) / len(treated))
-             - math.log(sum(untreated) / len(untreated)))
+    naive = math.log(sum(treated) / len(treated)) - math.log(sum(untreated) / len(untreated))
     r = snmcox(T, ev, A, L)
-    assert naive < 0.0                     # naive says treatment HARMS
+    assert naive < 0.0  # naive says treatment HARMS
     assert abs(r["estimate"] - 0.5) < abs(naive - 0.5)
     assert abs(r["estimate"] - 0.5) < 0.1
 

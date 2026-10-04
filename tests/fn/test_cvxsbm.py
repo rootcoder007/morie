@@ -1,7 +1,6 @@
 """Tests for cvxsbm.boyd_subgrad_method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsbm import boyd_subgrad_method
 
 

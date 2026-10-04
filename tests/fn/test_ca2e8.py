@@ -1,7 +1,5 @@
 """Tests for ca2e8.ca_chapter_2_equation_8."""
 
-
-
 from morie.fn.ca2e8 import ca_chapter_2_equation_8
 
 
@@ -10,7 +8,7 @@ def _expected_b2(r_y1, r_y2, r_12, s_y, s_1, s_2):
 
     b_x2 = ((r_y2 - r_y1 * r_12) / (1 - r_12**2)) * (s_y / s_2)
     """
-    return ((r_y2 - r_y1 * r_12) / (1.0 - r_12 ** 2)) * (s_y / s_2)
+    return ((r_y2 - r_y1 * r_12) / (1.0 - r_12**2)) * (s_y / s_2)
 
 
 def test_ca2e8_basic():

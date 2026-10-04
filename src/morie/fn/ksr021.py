@@ -59,16 +59,20 @@ def kosorok_residual_edf(y, z, beta, t=None):
     if b.size != Z.shape[1]:
         raise ValueError(f"beta has {b.size} entries for {Z.shape[1]} columns.")
     resid = yv - Z @ b
-    tv = np.sort(resid) if t is None else \
-        np.atleast_1d(np.asarray(t, dtype=float))
+    tv = np.sort(resid) if t is None else np.atleast_1d(np.asarray(t, dtype=float))
     F = np.array([float(np.mean(resid <= v)) for v in tv])
-    return RichResult(payload={
-        "t": tv, "F_hat": F, "residuals": resid,
-        "limit_is_brownian_bridge": False,
-        "correction_note": "plugging in beta-hat adds a term to the limit of "
-                           "sqrt(n)(F_hat - F); it is not the standard bridge",
-        "n": int(yv.size),
-        "method": "Residual empirical df (Eq. 1.2); the estimated beta inside the indicator changes the limit"})
+    return RichResult(
+        payload={
+            "t": tv,
+            "F_hat": F,
+            "residuals": resid,
+            "limit_is_brownian_bridge": False,
+            "correction_note": "plugging in beta-hat adds a term to the limit of "
+            "sqrt(n)(F_hat - F); it is not the standard bridge",
+            "n": int(yv.size),
+            "method": "Residual empirical df (Eq. 1.2); the estimated beta inside the indicator changes the limit",
+        }
+    )
 
 
 def cheatsheet():

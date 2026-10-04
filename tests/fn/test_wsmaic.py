@@ -1,7 +1,5 @@
 """Tests for wsmaic.wasserman_aic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wsmaic import wasserman_aic
 
 

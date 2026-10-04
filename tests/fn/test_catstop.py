@@ -1,7 +1,6 @@
 """Tests for catstop.cat_stopping_rule."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.catstop import cat_stopping_rule
 
 
@@ -16,7 +15,7 @@ def _item_info_4pl(theta, a, b, c, d):
     P = c + (d - c) * e / (1.0 + e)
     Q = 1.0 - P
     dP_dtheta = a * (d - c) * e / (1.0 + e) ** 2
-    return (dP_dtheta ** 2) / (P * Q), P
+    return (dP_dtheta**2) / (P * Q), P
 
 
 def test_catstop_basic():
@@ -34,9 +33,7 @@ def test_catstop_basic():
     assert isinstance(result, dict)
 
     # Independently compute total information and SE per catR Eqs. 3-4
-    infos = [
-        _item_info_4pl(theta, ai, bi, 0.0, 1.0)[0] for ai, bi in zip(a, b)
-    ]
+    infos = [_item_info_4pl(theta, ai, bi, 0.0, 1.0)[0] for ai, bi in zip(a, b)]
     total_info = float(sum(infos))
     expected_se = 1.0 / np.sqrt(total_info)
 
@@ -65,9 +62,7 @@ def test_catstop_edge():
     result = cat_stopping_rule(items, theta, se_target)
     assert isinstance(result, dict)
 
-    infos = [
-        _item_info_4pl(theta, ai, bi, 0.0, 1.0)[0] for ai, bi in zip(a, b)
-    ]
+    infos = [_item_info_4pl(theta, ai, bi, 0.0, 1.0)[0] for ai, bi in zip(a, b)]
     total_info = float(sum(infos))
     expected_se = 1.0 / np.sqrt(total_info)
 

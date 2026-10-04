@@ -28,17 +28,16 @@ def ca_chapter_7_equation_3(beta0, u_j, e_ij):
     """
     value = _ca_crim.multilevel_predict(beta0, [], [], [u_j], e_ij)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.3)"
     return RichResult(
-        title='Variance components model y_ij = beta0 + u_j + e_ij',
+        title="Variance components model y_ij = beta0 + u_j + e_ij",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e3: y_ij = beta0 + u_j + e_ij (cluster treated as a random effect) [Weisburd et al. 2022, eq. 7.3]'
+    return "ca7e3: y_ij = beta0 + u_j + e_ij (cluster treated as a random effect) [Weisburd et al. 2022, eq. 7.3]"

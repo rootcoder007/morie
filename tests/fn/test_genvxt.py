@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.genvxt import generalizability_theory
 
-
 X = [[2, 4, 5], [3, 3, 4], [5, 6, 7], [1, 2, 4], [4, 4, 6]]
 
 
@@ -20,8 +19,7 @@ def test_genvxt_basic():
     items = [[row[j] for row in X] for j in range(k)]
     alpha = k / (k - 1) * (1 - sum(_var(c) for c in items) / _var([sum(row) for row in X]))
     assert r["e_rho2"] == pytest.approx(alpha, rel=1e-12)
-    assert r["phi"] == pytest.approx(
-        r["var_p"] / (r["var_p"] + (r["var_i"] + r["var_pi"]) / k), rel=1e-12)
+    assert r["phi"] == pytest.approx(r["var_p"] / (r["var_p"] + (r["var_i"] + r["var_pi"]) / k), rel=1e-12)
     assert (r["var_p"], r["var_i"], r["var_pi"]) == pytest.approx((37 / 20, 71 / 60, 17 / 60), rel=1e-12)
 
 
@@ -48,7 +46,7 @@ import morie.fn.genvxt as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -219,7 +219,9 @@ def build_parser() -> argparse.ArgumentParser:
     parity.add_argument("--epiml-root", required=True, help="Path to the internal reference checkout")
     parity.add_argument("--output", help="Optional CSV path for the audit matrix")
 
-    subparsers.add_parser("list-modules", help="List the analysis modules (CPADS, OTIS, MAPQ, ...) and the files each writes")
+    subparsers.add_parser(
+        "list-modules", help="List the analysis modules (CPADS, OTIS, MAPQ, ...) and the files each writes"
+    )
 
     run_cmd = subparsers.add_parser("run-module", help="Run one MORIE module")
     run_cmd.add_argument("module", help="Module name to run")
@@ -1594,7 +1596,9 @@ def _main_impl() -> int:
                     print("pull --all downloads several GB; no terminal to confirm on: pass -y", file=sys.stderr)
                     return 2
                 try:
-                    ans = input(f"pull --all writes every catalog dataset to {out_dir.resolve()} (several GB). Continue? [y/N] ")
+                    ans = input(
+                        f"pull --all writes every catalog dataset to {out_dir.resolve()} (several GB). Continue? [y/N] "
+                    )
                 except EOFError:
                     ans = ""
                 if ans.strip().lower() not in ("y", "yes"):

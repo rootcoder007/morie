@@ -60,8 +60,7 @@ def spectral_density(Z, coords, n_freq=50):
     for i in range(len(freq_bins) - 1):
         # the last bin is closed on the right, or the highest radial
         # frequencies (the grid corners) fall in no bin at all
-        upper = (radial_freq <= freq_bins[i + 1]) if i == len(freq_bins) - 2 \
-            else (radial_freq < freq_bins[i + 1])
+        upper = (radial_freq <= freq_bins[i + 1]) if i == len(freq_bins) - 2 else (radial_freq < freq_bins[i + 1])
         mask = (radial_freq >= freq_bins[i]) & upper
         if mask.any():
             radial_power[i] = power_shifted[mask].mean()

@@ -3,10 +3,7 @@
 import math
 import warnings
 
-import pytest
-
 from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e65 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_65,
 )
@@ -32,11 +29,11 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner6e65_basic():
         )
 
     assert isinstance(result, dict)
-    assert 'z' in result
-    assert 'density' in result
-    assert result['z'] == z
-    assert math.isfinite(result['density'])
-    assert result['density'] >= 0.0
+    assert "z" in result
+    assert "density" in result
+    assert result["z"] == z
+    assert math.isfinite(result["density"])
+    assert result["density"] >= 0.0
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e65_edge():
@@ -58,8 +55,8 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner6e65_edge():
         )
 
     assert isinstance(result, dict)
-    assert 'z' in result
-    assert 'density' in result
-    assert result['z'] == z
-    assert math.isfinite(result['density'])
-    assert result['density'] >= 0.0
+    assert "z" in result
+    assert "density" in result
+    assert result["z"] == z
+    assert math.isfinite(result["density"])
+    assert result["density"] >= 0.0

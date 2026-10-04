@@ -1,7 +1,5 @@
 """Tests for proportional_odds_logit.proportional_odds_logit."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.proportional_odds_logit import (
     proportional_odds_logit,
 )

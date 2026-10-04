@@ -6,12 +6,14 @@ import pytest
 
 from morie.fn.bsatf import rangayyan_pcg_envelope_avg
 
-
 FS = 1000.0
-ECG = [3 * math.exp(-((t % 800) - 100) ** 2 / 20.0) for t in range(8000)]
-PCG = [math.exp(-((t % 800) - 150) ** 2 / 200.0) * math.sin(0.9 * t)
-       + 0.3 * math.exp(-((t % 800) - 450) ** 2 / 200.0) * math.sin(1.3 * t)
-       + 0.02 * math.sin(7.7 * t) for t in range(8000)]
+ECG = [3 * math.exp(-(((t % 800) - 100) ** 2) / 20.0) for t in range(8000)]
+PCG = [
+    math.exp(-(((t % 800) - 150) ** 2) / 200.0) * math.sin(0.9 * t)
+    + 0.3 * math.exp(-(((t % 800) - 450) ** 2) / 200.0) * math.sin(1.3 * t)
+    + 0.02 * math.sin(7.7 * t)
+    for t in range(8000)
+]
 
 
 def test_rgpcgenl_basic():

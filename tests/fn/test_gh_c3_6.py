@@ -1,7 +1,6 @@
 """Tests for gh_c3_6.ghosal_dense_subset_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_6 import ghosal_dense_subset_prior
 
 

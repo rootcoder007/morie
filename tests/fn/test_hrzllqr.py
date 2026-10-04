@@ -1,7 +1,6 @@
 """Tests for hrzllqr.horowitz_local_linear_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzllqr import horowitz_local_linear_quantile
 
 

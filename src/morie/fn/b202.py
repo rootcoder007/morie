@@ -32,15 +32,19 @@ def burkov_lm_ch2_lm_next_token(t_next, s):
     follow = [seq[i + 1] for i in range(len(seq) - 1) if seq[i] == ctx]
     if not follow:
         raise ValueError(
-            f"the context token {ctx!r} never has a successor in s, so "
-            "the MLE conditional is undefined (0/0).")
+            f"the context token {ctx!r} never has a successor in s, so the MLE conditional is undefined (0/0)."
+        )
     p = follow.count(t_next) / len(follow)
     dist = {t: follow.count(t) / len(follow) for t in sorted(set(follow))}
-    return RichResult(payload={
-        "estimate": float(p), "context": ctx, "distribution": dist,
-        "n": len(seq),
-        "method": "Autoregressive next-token probability, bigram MLE "
-                  "(Burkov Eq 2.2)"})
+    return RichResult(
+        payload={
+            "estimate": float(p),
+            "context": ctx,
+            "distribution": dist,
+            "n": len(seq),
+            "method": "Autoregressive next-token probability, bigram MLE (Burkov Eq 2.2)",
+        }
+    )
 
 
 def cheatsheet():

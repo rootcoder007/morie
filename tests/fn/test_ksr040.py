@@ -1,8 +1,8 @@
 """Tests for ksr040 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr040 import kosorok_ch2_bootstrap_donsker_iff
 
 

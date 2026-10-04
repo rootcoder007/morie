@@ -1,7 +1,6 @@
 """Tests for gbens.gradient_boosting_ensemble."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gbens import gradient_boosting_ensemble
 
 

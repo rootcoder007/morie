@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.mienco import mi_neural_encoder, prior_matching_loss
 
-
 Y = [1.0, -0.5]
 POS = [[0.8, -0.2], [1.2, -0.7], [0.3, 0.1]]
 NEG = [[-0.4, 0.9], [0.2, 0.5]]

@@ -1,11 +1,11 @@
 """attnq: scaled dot-product attention (Vaswani et al. 2017, eq. 1).
 
-    Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V
+Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.attnq import scaled_dot_product_attention as attn
 
 

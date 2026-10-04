@@ -76,9 +76,7 @@ def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
     if np.any(t < 0):
         raise ValueError("time must be non-negative.")
     if conf_type not in ("log-log", "plain"):
-        raise ValueError(
-            "conf_type must be 'log-log' or 'plain', got %r." % conf_type
-        )
+        raise ValueError("conf_type must be 'log-log' or 'plain', got %r." % conf_type)
 
     order = np.argsort(t, kind="mergesort")
     t, e = t[order], e[order]
@@ -90,15 +88,14 @@ def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
         di = int(np.sum((t == u) & (e == 1)))
         if nr <= 0:
             continue
-        S *= (1.0 - di / nr)
+        S *= 1.0 - di / nr
         if nr > di:
             var_sum += di / (nr * (nr - di))
         else:
             var_sum = np.inf
         times.append(float(u))
         surv.append(float(S))
-        ses.append(float(S * np.sqrt(var_sum)) if np.isfinite(var_sum)
-                   else np.nan)
+        ses.append(float(S * np.sqrt(var_sum)) if np.isfinite(var_sum) else np.nan)
         risk.append(nr)
         evs.append(di)
     times = np.asarray(times)
@@ -149,9 +146,7 @@ def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
             "events": evs,
             "median": med,
             "median_note": (
-                None if med == med else
-                "survival never reaches 0.5, so the median is not estimable "
-                "from this follow-up"
+                None if med == med else "survival never reaches 0.5, so the median is not estimable from this follow-up"
             ),
             "rmst": rmst,
             "tail_reliable": (risk >= 10),
@@ -174,10 +169,7 @@ def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
 
 
 def cheatsheet():
-    return (
-        "kpmnsv: Kaplan-Meier with Greenwood variance, log-log intervals "
-        "and a risk-set reliability flag"
-    )
+    return "kpmnsv: Kaplan-Meier with Greenwood variance, log-log intervals and a risk-set reliability flag"
 
 
 #: Catalogue alias for :func:`kaplan_meier`.

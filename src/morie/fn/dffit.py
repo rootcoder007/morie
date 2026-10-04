@@ -28,8 +28,7 @@ def _ols_influence(y, X, intercept=True):
     if n <= p + 1:
         raise ValueError("need n > p + 1 observations for deletion diagnostics")
     XtX = core.crossprod(D)
-    inv = [core.cholsolve(XtX, [1.0 if j == k else 0.0 for j in range(p)])
-           for k in range(p)]
+    inv = [core.cholsolve(XtX, [1.0 if j == k else 0.0 for j in range(p)]) for k in range(p)]
     beta = core.cholsolve(XtX, core.matvec(core.tr(D), y))
     fit = core.matvec(D, beta)
     e = [y[i] - fit[i] for i in range(n)]
@@ -89,16 +88,18 @@ def dffits(y, X, intercept=True):
     thr = 2.0 * math.sqrt(float(p) / n)
     flagged = [1 if (v == v and abs(v) > thr) else 0 for v in out]
     finite = [abs(v) for v in out if v == v]
-    return RichResult(payload={
-        "estimate": max(finite) if finite else float("nan"),
-        "dffits": out,
-        "threshold": thr,
-        "flagged": flagged,
-        "n_influential": sum(flagged),
-        "n": n,
-        "p": p,
-        "method": "DFFITS scaled change in fitted value when obs i deleted",
-    })
+    return RichResult(
+        payload={
+            "estimate": max(finite) if finite else float("nan"),
+            "dffits": out,
+            "threshold": thr,
+            "flagged": flagged,
+            "n_influential": sum(flagged),
+            "n": n,
+            "p": p,
+            "method": "DFFITS scaled change in fitted value when obs i deleted",
+        }
+    )
 
 
 def cheatsheet():

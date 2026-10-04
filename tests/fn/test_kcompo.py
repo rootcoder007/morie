@@ -1,7 +1,6 @@
 """Tests for kcompo.k_step_dp_composition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kcompo import k_step_dp_composition
 
 

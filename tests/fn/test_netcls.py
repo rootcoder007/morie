@@ -1,7 +1,6 @@
 """Tests for netcls.closeness_centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netcls import closeness_centrality
 
 

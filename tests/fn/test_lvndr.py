@@ -1,7 +1,6 @@
 """Tests for lvndr.py - Levinson-Durbin recursion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lvndr import levinson_durbin_fn, lvndr
 
 

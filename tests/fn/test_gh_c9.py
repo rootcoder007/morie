@@ -1,5 +1,4 @@
 """Tests for Ghosal Ch 9 rate-example modules."""
-import math
 
 from morie.fn.gh_c9_1 import ghosal_logspline_crt
 from morie.fn.gh_c9_2 import ghosal_dp_disc_crt
@@ -20,7 +19,7 @@ def test_logspline_normalized_and_sized():
     r = ghosal_logspline_crt()
     assert r["normalization_gap"] < 1e-9
     assert r["K_n"] == max(1, int(round(500 ** (1.0 / 5.0))))
-    assert r["estimate"] > 1.0            # Beta(2,2)-ish peak at 1/2
+    assert r["estimate"] > 1.0  # Beta(2,2)-ish peak at 1/2
 
 
 def test_dp_cdf_half_rate():
@@ -82,10 +81,10 @@ def test_interval_censoring_improves():
 def test_sobolev_prior_norms():
     r = ghosal_sobolev_prior()
     assert r["finite_below_s"] is True
-    assert r["divergent_at_s_partial"] > 7.0   # harmonic partial sum
+    assert r["divergent_at_s_partial"] > 7.0  # harmonic partial sum
 
 
 def test_wn_gauss_posterior_shrinks_small_prior():
     r = ghosal_white_noise_gauss_prior([1.0, 1.0], 100, [10.0, 0.01])
-    assert r["posterior_mean"][0] > 0.99       # wide prior: keep data
-    assert r["posterior_mean"][1] < 0.05       # tight prior: shrink
+    assert r["posterior_mean"][0] > 0.99  # wide prior: keep data
+    assert r["posterior_mean"][1] < 0.05  # tight prior: shrink

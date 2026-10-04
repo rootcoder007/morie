@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from .aiptdd import _logit_fit, _ols_predict
 
 __all__ = ["interventional_psi"]
 
@@ -76,9 +75,7 @@ def interventional_psi(y, x, m, c=None, n_draws=2000, seed=0):
 
     def predict(xv, mv):
         xc = np.full(mv.size, float(xv))
-        rows = np.column_stack(
-            [np.ones(mv.size), xc, mv, xc * mv, np.repeat(C.mean(axis=0)[None, :], mv.size, axis=0)]
-        )
+        rows = np.column_stack([np.ones(mv.size), xc, mv, xc * mv, np.repeat(C.mean(axis=0)[None, :], mv.size, axis=0)])
         return rows @ b
 
     # mediator model per arm; draw G_x from its fitted residual distribution

@@ -4,13 +4,23 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._richresult import RichResult
 
 __all__ = ["zonal_ebm"]
 
 
-def zonal_ebm(S, albedo=0.3, A=203.3, B=2.09, k=3.8, n_zones=9, max_iter=500,
-              tol=1e-8, ice_albedo=0.62, ice_threshold=-10.0, start=15.0):
+def zonal_ebm(
+    S,
+    albedo=0.3,
+    A=203.3,
+    B=2.09,
+    k=3.8,
+    n_zones=9,
+    max_iter=500,
+    tol=1e-8,
+    ice_albedo=0.62,
+    ice_threshold=-10.0,
+    start=15.0,
+):
     r"""Budyko-Sellers zonal energy balance with ice-albedo feedback.
 
     Each latitude band balances absorbed shortwave against outgoing longwave
@@ -113,23 +123,20 @@ def zonal_ebm(S, albedo=0.3, A=203.3, B=2.09, k=3.8, n_zones=9, max_iter=500,
     lat = np.degrees(np.arcsin(x))
     # Second-Legendre insolation profile, mean 1 over equal-area bands.
     prof = 1.0 - 0.482 * (1.5 * x**2 - 0.5)
-    Sarr = (np.atleast_1d(np.asarray(S, dtype=float)).ravel()
-            if np.size(S) > 1 else float(S) * prof)
+    Sarr = np.atleast_1d(np.asarray(S, dtype=float)).ravel() if np.size(S) > 1 else float(S) * prof
     if Sarr.size != n:
         raise ValueError(f"S must be a scalar or have {n} entries")
     Q = 1361.0 / 4.0
 
-    return _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol,
-                  ice_albedo, ice_threshold, start)
+    return _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol, ice_albedo, ice_threshold, start)
 
 
-def _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol, ice_albedo,
-           ice_threshold, start):
+def _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol, ice_albedo, ice_threshold, start):
     n = Sarr.size
     T = np.full(n, float(start))
     conv = False
     for _ in range(int(max_iter)):
-        al = np.where(T < ice_threshold, ice_albedo, albedo)
+        al = np.where(ice_threshold > T, ice_albedo, albedo)
         absorbed = Q * Sarr * (1.0 - al)
         Tbar = float(T.mean())
         # Solve A + B T + k (T - Tbar) = absorbed for T, holding Tbar fixed.
@@ -139,21 +146,26 @@ def _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol, ice_albedo,
             conv = True
             break
         T = 0.5 * T + 0.5 * T_new
-    al = np.where(T < ice_threshold, ice_albedo, albedo)
-    ice = float(np.mean(T < ice_threshold))
+    al = np.where(ice_threshold > T, ice_albedo, albedo)
+    ice = float(np.mean(ice_threshold > T))
     from ._richresult import RichResult as _RR
 
     return _RR(
         title="Zonal energy-balance model",
-        summary_lines=[("zones", int(n)), ("global mean", float(T.mean())),
-                       ("ice fraction", ice)],
-        warnings=["the linearised A + BT outgoing longwave is valid over a "
-                  "narrow temperature range and is not reliable for the "
-                  "snowball state the model predicts"],
+        summary_lines=[("zones", int(n)), ("global mean", float(T.mean())), ("ice fraction", ice)],
+        warnings=[
+            "the linearised A + BT outgoing longwave is valid over a "
+            "narrow temperature range and is not reliable for the "
+            "snowball state the model predicts"
+        ],
         payload={
-            "temperature": T, "global_mean": float(T.mean()),
-            "ice_fraction": ice, "albedo": al, "latitude": lat,
-            "converged": conv, "snowball": bool(ice > 0.95),
+            "temperature": T,
+            "global_mean": float(T.mean()),
+            "ice_fraction": ice,
+            "albedo": al,
+            "latitude": lat,
+            "converged": conv,
+            "snowball": bool(ice > 0.95),
             "method": "zonal_ebm",
         },
     )

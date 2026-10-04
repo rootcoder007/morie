@@ -1,8 +1,7 @@
 """Tests for phmmsr.profile_hmm_search."""
 
 from morie.fn import _array_core as np
-
-from morie.fn.phmmsr import profile_hmm_search, cheatsheet
+from morie.fn.phmmsr import cheatsheet, profile_hmm_search
 
 
 def test_phmmsr_basic():
@@ -10,7 +9,7 @@ def test_phmmsr_basic():
     rng = np.random.default_rng(42)
     profile = cheatsheet()
     db = [list(rng.integers(0, 4, 30)) for _ in range(10)]
-    
+
     result = profile_hmm_search(profile, db)
     assert isinstance(result, dict)
 
@@ -20,6 +19,6 @@ def test_phmmsr_edge():
     rng = np.random.default_rng(42)
     profile = cheatsheet()
     db = [list(rng.integers(0, 4, 15)) for _ in range(5)]
-    
+
     result = profile_hmm_search(profile, db)
     assert isinstance(result, dict)

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.fisher_information_reml import (
     fisher_information_reml,
 )

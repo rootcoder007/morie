@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_dual_problem"]
 
 
-def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
-                      primal_value=None, check_concavity=True, seed=0):
+def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None, primal_value=None, check_concavity=True, seed=0):
     r"""Maximise the dual function: :math:`\max g(\lambda,\nu)` s.t.
     :math:`\lambda \succeq 0`.
 
@@ -119,10 +118,8 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
         raise ValueError("no multipliers: the dual problem is empty")
     if not callable(g):
         raise TypeError("g must be callable as g(lambda_, nu)")
-    lam0 = (np.zeros(n_lambda) if lambda0 is None
-            else np.atleast_1d(np.asarray(lambda0, dtype=float)).ravel())
-    nu_0 = (np.zeros(n_nu) if nu0 is None
-            else np.atleast_1d(np.asarray(nu0, dtype=float)).ravel())
+    lam0 = np.zeros(n_lambda) if lambda0 is None else np.atleast_1d(np.asarray(lambda0, dtype=float)).ravel()
+    nu_0 = np.zeros(n_nu) if nu0 is None else np.atleast_1d(np.asarray(nu0, dtype=float)).ravel()
     if lam0.size != n_lambda or nu_0.size != n_nu:
         raise ValueError("lambda0/nu0 length does not match n_lambda/n_nu")
     if np.any(lam0 < 0):
@@ -151,8 +148,9 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
     bounds = [(0.0, None)] * n_lambda + [(None, None)] * n_nu
     unbounded = False
     try:
-        res = minimize(neg, z0, method="L-BFGS-B", bounds=bounds,
-                       options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000})
+        res = minimize(
+            neg, z0, method="L-BFGS-B", bounds=bounds, options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000}
+        )
         lam, nu = split(np.asarray(res.x, dtype=float))
         lam = np.maximum(lam, 0.0)
         dual_val = float(g(lam, nu))
@@ -170,10 +168,8 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
         ok = True
         scale = max(1.0, float(np.max(np.abs(np.r_[lam, nu]))) * 2.0)
         for _ in range(40):
-            a = np.r_[np.abs(rng.normal(scale=scale, size=n_lambda)),
-                      rng.normal(scale=scale, size=n_nu)]
-            b = np.r_[np.abs(rng.normal(scale=scale, size=n_lambda)),
-                      rng.normal(scale=scale, size=n_nu)]
+            a = np.r_[np.abs(rng.normal(scale=scale, size=n_lambda)), rng.normal(scale=scale, size=n_nu)]
+            b = np.r_[np.abs(rng.normal(scale=scale, size=n_lambda)), rng.normal(scale=scale, size=n_nu)]
             try:
                 va, vb = float(g(*split(a))), float(g(*split(b)))
                 vm = float(g(*split(0.5 * (a + b))))
@@ -189,19 +185,22 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
     gap = None if primal_value is None else float(primal_value) - dual_val
     return RichResult(
         title="Dual problem",
-        summary_lines=[("n_lambda", n_lambda), ("n_nu", n_nu),
-                       ("dual optimum", dual_val),
-                       ("active", int(np.sum(lam > 1e-08))),
-                       ("gap", gap if gap is not None else float("nan"))],
+        summary_lines=[
+            ("n_lambda", n_lambda),
+            ("n_nu", n_nu),
+            ("dual optimum", dual_val),
+            ("active", int(np.sum(lam > 1e-08))),
+            ("gap", gap if gap is not None else float("nan")),
+        ],
         payload={
-            "lambda_": lam, "nu": nu, "dual_value": dual_val,
+            "lambda_": lam,
+            "nu": nu,
+            "dual_value": dual_val,
             "active": lam > 1e-08,
             "trivial_bound": trivial,
             "bound_improves": bool(dual_val > trivial + 1e-09),
             "duality_gap": gap,
-            "strong_duality": (None if gap is None
-                               else bool(abs(gap) < 1e-06
-                                         * max(1.0, abs(dual_val)))),
+            "strong_duality": (None if gap is None else bool(abs(gap) < 1e-06 * max(1.0, abs(dual_val)))),
             "concave": concave,
             "converged": (not unbounded) and bool(res.success),
             "unbounded": unbounded,

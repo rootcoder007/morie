@@ -48,7 +48,7 @@ def ensure_exec_allowed(feature: str = "dynamic code execution") -> None:
     """Raise ExecGuardError if MORIE_NO_EXEC is set."""
     if exec_disabled():
         raise ExecGuardError(
-            f"{feature} is disabled because MORIE_NO_EXEC is set. " "Unset MORIE_NO_EXEC to allow it on this machine."
+            f"{feature} is disabled because MORIE_NO_EXEC is set. Unset MORIE_NO_EXEC to allow it on this machine."
         )
 
 

@@ -72,8 +72,38 @@ from ._richresult import RichResult
 __all__ = ["chained_imputation"]
 
 _EPS = 1e-12
-_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-           59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113]
+_PRIMES = [
+    2,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    31,
+    37,
+    41,
+    43,
+    47,
+    53,
+    59,
+    61,
+    67,
+    71,
+    73,
+    79,
+    83,
+    89,
+    97,
+    101,
+    103,
+    107,
+    109,
+    113,
+]
 
 
 def _is_missing(v):
@@ -83,15 +113,14 @@ def _is_missing(v):
         f = float(v)
     except (TypeError, ValueError):
         return True
-    return f != f                       # NaN is the only value unequal to itself
+    return f != f  # NaN is the only value unequal to itself
 
 
 def _ols(X, y, ridge_rel=1e-8):
     """Least squares with a ridge scaled to the design, plus sigma."""
     n = len(y)
     p = len(X[0])
-    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)]
-         for a in range(p)]
+    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     scale = sum(A[a][a] for a in range(p)) / p
     for a in range(p):
         A[a][a] += ridge_rel * max(scale, _EPS)
@@ -150,18 +179,14 @@ def _cox_breslow(t, e, X, max_iter=100, tol=1e-10):
             for a in range(p):
                 grad[a] -= dk * s1[a] / max(s0, 1e-300)
                 for b in range(p):
-                    info[a][b] += dk * (s2[a][b] / max(s0, 1e-300)
-                                        - s1[a] * s1[b]
-                                        / max(s0 * s0, 1e-300))
-        step = k.cholsolve([[info[a][b] + (1e-10 if a == b else 0.0)
-                             for b in range(p)] for a in range(p)], grad)
+                    info[a][b] += dk * (s2[a][b] / max(s0, 1e-300) - s1[a] * s1[b] / max(s0 * s0, 1e-300))
+        step = k.cholsolve([[info[a][b] + (1e-10 if a == b else 0.0) for b in range(p)] for a in range(p)], grad)
         beta = [beta[a] + step[a] for a in range(p)]
         if max(abs(v) for v in step) < tol:
             converged = True
             break
     cov = [[0.0] * p for _ in range(p)]
-    Ir = [[info[a][b] + (1e-10 if a == b else 0.0) for b in range(p)]
-          for a in range(p)]
+    Ir = [[info[a][b] + (1e-10 if a == b else 0.0) for b in range(p)] for a in range(p)]
     for a in range(p):
         e_a = [0.0] * p
         e_a[a] = 1.0
@@ -176,10 +201,10 @@ def _t_quantile(pq, df):
     z = k.qnorm(pq)
     if df > 1e8:
         return z
-    g1 = (z ** 3 + z) / 4.0
-    g2 = (5.0 * z ** 5 + 16.0 * z ** 3 + 3.0 * z) / 96.0
-    g3 = (3.0 * z ** 7 + 19.0 * z ** 5 + 17.0 * z ** 3 - 15.0 * z) / 384.0
-    return z + g1 / df + g2 / df ** 2 + g3 / df ** 3
+    g1 = (z**3 + z) / 4.0
+    g2 = (5.0 * z**5 + 16.0 * z**3 + 3.0 * z) / 96.0
+    g3 = (3.0 * z**7 + 19.0 * z**5 + 17.0 * z**3 - 15.0 * z) / 384.0
+    return z + g1 / df + g2 / df**2 + g3 / df**3
 
 
 def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
@@ -208,40 +233,36 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
     ev = [float(v) for v in k.vec(event)]
     # NOT k.mat: it coerces to float, and a missing entry is exactly what
     # cannot be coerced -- the rows are kept raw and tested for missingness
-    Xr = [list(row) if isinstance(row, (list, tuple)) else [row]
-          for row in X]
+    Xr = [list(row) if isinstance(row, (list, tuple)) else [row] for row in X]
     n = len(tv)
     if n == 0:
         raise ValueError("sschin: no observations")
     if len(ev) != n or len(Xr) != n:
-        raise ValueError("sschin: time, event and X must agree in length "
-                         "(%d, %d, %d)" % (n, len(ev), len(Xr)))
+        raise ValueError("sschin: time, event and X must agree in length (%d, %d, %d)" % (n, len(ev), len(Xr)))
     p = len(Xr[0])
     if any(len(r) != p for r in Xr):
         raise ValueError("sschin: every row of X must have %d columns" % p)
     m = int(mi_iter)
     if m < 2:
-        raise ValueError("sschin: multiple imputation needs at least two "
-                         "imputations -- the between-imputation variance is "
-                         "undefined for m = 1")
+        raise ValueError(
+            "sschin: multiple imputation needs at least two "
+            "imputations -- the between-imputation variance is "
+            "undefined for m = 1"
+        )
     if m > len(_PRIMES):
         raise ValueError("sschin: at most %d imputations" % len(_PRIMES))
     if ties != "breslow":
-        raise ValueError("sschin: only the Breslow handling of ties is "
-                         "implemented, got %r" % (ties,))
+        raise ValueError("sschin: only the Breslow handling of ties is implemented, got %r" % (ties,))
     if not any(v > 0.5 for v in ev):
         raise ValueError("sschin: no events -- the partial likelihood is flat")
 
     miss = [[_is_missing(Xr[i][a]) for a in range(p)] for i in range(n)]
-    obs = [[0.0 if miss[i][a] else float(Xr[i][a]) for a in range(p)]
-           for i in range(n)]
+    obs = [[0.0 if miss[i][a] else float(Xr[i][a]) for a in range(p)] for i in range(n)]
     n_missing = sum(1 for i in range(n) for a in range(p) if miss[i][a])
-    cols_missing = [a for a in range(p)
-                    if any(miss[i][a] for i in range(n))]
+    cols_missing = [a for a in range(p) if any(miss[i][a] for i in range(n))]
     for a in cols_missing:
         if all(miss[i][a] for i in range(n)):
-            raise ValueError("sschin: column %d is missing for every "
-                             "observation and cannot be imputed" % a)
+            raise ValueError("sschin: column %d is missing for every observation and cannot be imputed" % a)
 
     colmean = []
     for a in range(p):
@@ -254,19 +275,19 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
         # means genuinely different draws, so B is not degenerate
         draws = k.normdraws(max(n_missing * cycles, 1), _PRIMES[ell])
         pos = 0
-        F = [[colmean[a] if miss[i][a] else obs[i][a] for a in range(p)]
-             for i in range(n)]
+        F = [[colmean[a] if miss[i][a] else obs[i][a] for a in range(p)] for i in range(n)]
         for _c in range(int(cycles)):
             for a in cols_missing:
                 rows_obs = [i for i in range(n) if not miss[i][a]]
                 rows_mis = [i for i in range(n) if miss[i][a]]
                 others = [b for b in range(p) if b != a]
+
                 # the outcome belongs in the imputation model: imputing a
                 # covariate without it biases the fitted hazard ratio
                 # towards the null (White & Royston 2009)
                 def row(i):
-                    return ([1.0] + [F[i][b] for b in others]
-                            + [ev[i], math.log(max(tv[i], 1e-12))])
+                    return [1.0] + [F[i][b] for b in others] + [ev[i], math.log(max(tv[i], 1e-12))]
+
                 Xo = [row(i) for i in rows_obs]
                 yo = [F[i][a] for i in rows_obs]
                 if len(rows_obs) <= len(Xo[0]):
@@ -282,13 +303,11 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
         b, v, ll, it, cv = _cox_breslow(tv, ev, F)
         ests.append(b)
         vars_.append(v)
-        per.append({"coefficients": b, "variance": v, "loglik": ll,
-                    "iterations": it, "converged": cv})
+        per.append({"coefficients": b, "variance": v, "loglik": ll, "iterations": it, "converged": cv})
 
     qbar = [sum(ests[ell][a] for ell in range(m)) / m for a in range(p)]
     ubar = [sum(vars_[ell][a] for ell in range(m)) / m for a in range(p)]
-    B = [sum((ests[ell][a] - qbar[a]) ** 2 for ell in range(m)) / (m - 1.0)
-         for a in range(p)]
+    B = [sum((ests[ell][a] - qbar[a]) ** 2 for ell in range(m)) / (m - 1.0) for a in range(p)]
     T = [ubar[a] + (1.0 + 1.0 / m) * B[a] for a in range(p)]
     se = [math.sqrt(max(v, 0.0)) for v in T]
     riv, fmi, df = [], [], []
@@ -312,40 +331,54 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
 
     cc = [i for i in range(n) if not any(miss[i])]
     if len(cc) > p and any(ev[i] > 0.5 for i in cc):
-        cb, cvv, _cl, _ci, _cc = _cox_breslow([tv[i] for i in cc],
-                                              [ev[i] for i in cc],
-                                              [obs[i] for i in cc])
+        cb, cvv, _cl, _ci, _cc = _cox_breslow([tv[i] for i in cc], [ev[i] for i in cc], [obs[i] for i in cc])
         cc_se = [math.sqrt(max(v, 0.0)) for v in cvv]
     else:
         cb, cc_se = [float("nan")] * p, [float("nan")] * p
 
-    return RichResult(payload={
-        "estimate": qbar, "coefficients": qbar,
-        "hazard_ratio": [math.exp(v) for v in qbar],
-        "std_error": se, "total_variance": T,
-        "within_variance": ubar, "between_variance": B,
-        "ci_lower": lo, "ci_upper": hi,
-        "t_quantile": tq, "df": df,
-        "relative_increase_variance": riv, "fraction_missing_info": fmi,
-        "per_imputation": per,
-        "complete_case_coefficients": cb, "complete_case_se": cc_se,
-        "n_complete_cases": len(cc),
-        "n": n, "p": p, "m": m, "cycles": int(cycles),
-        "n_missing": n_missing, "columns_imputed": cols_missing,
-        "n_events": n_events, "df_complete": dfcom,
-        "method": "multiple imputation by chained equations (norm.nob, "
-                  "outcome included in the imputation model), Cox "
-                  "proportional hazards with Breslow ties per imputation, "
-                  "pooled by Rubin's rules with the Barnard-Rubin degrees "
-                  "of freedom (van Buuren 2018 Ch. 3-4; Rubin 1987 Ch. 3)",
-        "note": "between_variance is exactly zero when nothing is missing, "
-                "so the pooled standard error then equals the "
-                "complete-data one; fraction_missing_info is how much of "
-                "the final variance came from not knowing the fills",
-    })
+    return RichResult(
+        payload={
+            "estimate": qbar,
+            "coefficients": qbar,
+            "hazard_ratio": [math.exp(v) for v in qbar],
+            "std_error": se,
+            "total_variance": T,
+            "within_variance": ubar,
+            "between_variance": B,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "t_quantile": tq,
+            "df": df,
+            "relative_increase_variance": riv,
+            "fraction_missing_info": fmi,
+            "per_imputation": per,
+            "complete_case_coefficients": cb,
+            "complete_case_se": cc_se,
+            "n_complete_cases": len(cc),
+            "n": n,
+            "p": p,
+            "m": m,
+            "cycles": int(cycles),
+            "n_missing": n_missing,
+            "columns_imputed": cols_missing,
+            "n_events": n_events,
+            "df_complete": dfcom,
+            "method": "multiple imputation by chained equations (norm.nob, "
+            "outcome included in the imputation model), Cox "
+            "proportional hazards with Breslow ties per imputation, "
+            "pooled by Rubin's rules with the Barnard-Rubin degrees "
+            "of freedom (van Buuren 2018 Ch. 3-4; Rubin 1987 Ch. 3)",
+            "note": "between_variance is exactly zero when nothing is missing, "
+            "so the pooled standard error then equals the "
+            "complete-data one; fraction_missing_info is how much of "
+            "the final variance came from not knowing the fills",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sschin: chained_imputation(time, event, X, mi_iter) -> MICE "
-            "imputation, per-imputation Cox fits and Rubin-pooled hazard "
-            "ratios (van Buuren 2018; Rubin 1987)")
+    return (
+        "sschin: chained_imputation(time, event, X, mi_iter) -> MICE "
+        "imputation, per-imputation Cox fits and Rubin-pooled hazard "
+        "ratios (van Buuren 2018; Rubin 1987)"
+    )

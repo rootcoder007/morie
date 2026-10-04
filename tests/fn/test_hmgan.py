@@ -1,7 +1,6 @@
 """Tests for hmgan.geron_gan."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmgan import geron_gan
 
 

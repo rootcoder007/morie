@@ -1,7 +1,6 @@
 """Tests for hmspcl.geron_spectral_clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmspcl import geron_spectral_clustering
 
 

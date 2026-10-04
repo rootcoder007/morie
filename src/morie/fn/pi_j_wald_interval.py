@@ -26,18 +26,17 @@ def pi_j_wald_interval(pi_hat, var_pi, z):
     eq. (3.8).
     """
     payload = dict(_acd.pi_j_wald_interval(pi_hat, var_pi, z))
-    value = float(payload['lower'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["lower"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.8)"
     return RichResult(
-        title='One-at-a-time Wald interval for pi_j',
+        title="One-at-a-time Wald interval for pi_j",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e8: pi_j_hat +/- z sqrt(Var(pi_j_hat)) [Bilder & Loughin 2025, eq. 3.8]'
+    return "3e8: pi_j_hat +/- z sqrt(Var(pi_j_hat)) [Bilder & Loughin 2025, eq. 3.8]"

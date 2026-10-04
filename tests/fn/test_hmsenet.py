@@ -1,7 +1,6 @@
 """Tests for hmsenet.geron_senet."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsenet import geron_senet
 
 

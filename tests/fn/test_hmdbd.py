@@ -16,8 +16,7 @@ def test_hmdbd_basic():
     result = geron_decision_boundary(theta, X_grid)
     assert isinstance(result, dict)
     # Check keys mentioned in the docstring return description
-    for key in ("scores", "signed_distance", "labels", "probabilities",
-                "on_boundary", "normal", "line"):
+    for key in ("scores", "signed_distance", "labels", "probabilities", "on_boundary", "normal", "line"):
         assert key in result
     # Shape consistency: one entry per grid point
     assert len(result["scores"]) == n

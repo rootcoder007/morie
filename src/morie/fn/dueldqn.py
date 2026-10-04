@@ -58,14 +58,9 @@ Baird, L. C. (1993) "Advantage Updating", Technical Report
 WL-TR-93-1146, Wright Laboratory. The advantage function itself.
 """
 
-import math
-
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["dueling_aggregate", "dueling_q", "double_q_target",
-           "td_error"]
+__all__ = ["dueling_aggregate", "dueling_q", "double_q_target", "td_error"]
 
 _AGG = ("mean", "max", "naive")
 
@@ -78,8 +73,7 @@ def dueling_aggregate(value, advantage, mode="mean"):
     rather than described.
     """
     if mode not in _AGG:
-        raise ValueError("duel: mode must be one of %s, got %r"
-                         % (", ".join(_AGG), mode))
+        raise ValueError("duel: mode must be one of %s, got %r" % (", ".join(_AGG), mode))
     a = [float(v) for v in advantage]
     if not a:
         raise ValueError("duel: no actions")
@@ -96,14 +90,11 @@ def dueling_aggregate(value, advantage, mode="mean"):
 def dueling_q(values, advantages, mode="mean"):
     """Aggregate a batch of states."""
     if len(values) != len(advantages):
-        raise ValueError("duel: %d values but %d advantage rows"
-                         % (len(values), len(advantages)))
-    return [dueling_aggregate(values[i], advantages[i], mode=mode)
-            for i in range(len(values))]
+        raise ValueError("duel: %d values but %d advantage rows" % (len(values), len(advantages)))
+    return [dueling_aggregate(values[i], advantages[i], mode=mode) for i in range(len(values))]
 
 
-def double_q_target(reward, gamma, q_online_next, q_target_next,
-                    done=False):
+def double_q_target(reward, gamma, q_online_next, q_target_next, done=False):
     r"""The Double-DQN target: the ONLINE net picks the action, the
     TARGET net values it.
 
@@ -124,38 +115,52 @@ def td_error(q_sa, target):
     return float(target) - float(q_sa)
 
 
-def dueling_step(value, advantage, action, reward, gamma,
-                 next_value, next_advantage, next_target_value,
-                 next_target_advantage, mode="mean", done=False):
+def dueling_step(
+    value,
+    advantage,
+    action,
+    reward,
+    gamma,
+    next_value,
+    next_advantage,
+    next_target_value,
+    next_target_advantage,
+    mode="mean",
+    done=False,
+):
     """One dueling + double-Q update's worth of quantities."""
     q = dueling_aggregate(value, advantage, mode=mode)
     if not 0 <= action < len(q):
         raise ValueError("duel: action %d out of range" % action)
-    q_next_online = dueling_aggregate(next_value, next_advantage,
-                                      mode=mode)
-    q_next_target = dueling_aggregate(next_target_value,
-                                      next_target_advantage, mode=mode)
-    tgt = double_q_target(reward, gamma, q_next_online, q_next_target,
-                          done=done)
-    return RichResult(payload={
-        "estimate": td_error(q[action], tgt), "td_error":
-            td_error(q[action], tgt),
-        "q": q, "q_taken": q[action], "target": tgt,
-        "greedy_action": max(range(len(q)), key=lambda i: q[i]),
-        "value": float(value), "advantage": list(advantage),
-        "mode": mode, "n_actions": len(q),
-        "method": "dueling aggregation eq. (9) with a Double-DQN "
-                  "target, Wang et al. (2016)",
-    })
+    q_next_online = dueling_aggregate(next_value, next_advantage, mode=mode)
+    q_next_target = dueling_aggregate(next_target_value, next_target_advantage, mode=mode)
+    tgt = double_q_target(reward, gamma, q_next_online, q_next_target, done=done)
+    return RichResult(
+        payload={
+            "estimate": td_error(q[action], tgt),
+            "td_error": td_error(q[action], tgt),
+            "q": q,
+            "q_taken": q[action],
+            "target": tgt,
+            "greedy_action": max(range(len(q)), key=lambda i: q[i]),
+            "value": float(value),
+            "advantage": list(advantage),
+            "mode": mode,
+            "n_actions": len(q),
+            "method": "dueling aggregation eq. (9) with a Double-DQN target, Wang et al. (2016)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dueldqn: Q = V + (A - mean_a A) [eq. 9, default] or "
-            "Q = V + (A - max_a A) [eq. 8]. Q = V + A alone is "
-            "UNIDENTIFIABLE -- add c to V, subtract c from A, Q is "
-            "unchanged and neither stream is pinned down. Under either "
-            "correction a constant shift of the whole advantage stream "
-            "leaves Q exactly unchanged; that is the fix working.")
+    return (
+        "dueldqn: Q = V + (A - mean_a A) [eq. 9, default] or "
+        "Q = V + (A - max_a A) [eq. 8]. Q = V + A alone is "
+        "UNIDENTIFIABLE -- add c to V, subtract c from A, Q is "
+        "unchanged and neither stream is pinned down. Under either "
+        "correction a constant shift of the whole advantage stream "
+        "leaves Q exactly unchanged; that is the fix working."
+    )
 
 
 # compact alias per ledger/NAMING.md

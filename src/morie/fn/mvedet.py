@@ -36,8 +36,6 @@ computed by sorting, not by this search.
 
 from __future__ import annotations
 
-import math
-
 from . import _array_core as np  # noqa: F401
 from . import _rousscore as R
 from . import _s03core as k
@@ -90,7 +88,7 @@ def mve(X, h=None, n_starts=100000):
         order = R.osort(dd)
         m2 = dd[order[hh - 1]]
         dC = R.covdet(C)
-        obj = (m2 ** p) * dC
+        obj = (m2**p) * dC
         if best is None or obj < best[0]:
             best = (obj, m2, mu, C, J, sorted(order[:hh]))
     if best is None:

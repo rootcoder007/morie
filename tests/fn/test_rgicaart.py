@@ -6,18 +6,20 @@ import pytest
 
 from morie.fn.bsaclass import rangayyan_ica_artifact
 
-
 N = 400
 S1 = [math.sin(2 * math.pi * 7 * i / 100) for i in range(N)]
 S2 = [5.0 if i % 97 == 0 else 0.0 for i in range(N)]
-X = [[a + 0.8 * b for a, b in zip(S1, S2)], [0.6 * a + b for a, b in zip(S1, S2)],
-     [0.3 * a - 0.5 * b + 0.1 * math.cos(0.3 * i) for i, (a, b) in enumerate(zip(S1, S2))]]
+X = [
+    [a + 0.8 * b for a, b in zip(S1, S2)],
+    [0.6 * a + b for a, b in zip(S1, S2)],
+    [0.3 * a - 0.5 * b + 0.1 * math.cos(0.3 * i) for i, (a, b) in enumerate(zip(S1, S2))],
+]
 
 
 def _kurt_excess(v):
     m = sum(v) / len(v)
     s2 = sum((x - m) ** 2 for x in v) / len(v)
-    return sum((x - m) ** 4 for x in v) / len(v) / s2 ** 2 - 3.0
+    return sum((x - m) ** 4 for x in v) / len(v) / s2**2 - 3.0
 
 
 def test_rgicaart_basic():

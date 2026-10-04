@@ -167,7 +167,9 @@ def euclid_dist_jit(a, b) -> float:
 def trimmed_ipw_weights_jit(treat, propensity, trim_lo: float = 0.01, trim_hi: float = 0.99) -> np.ndarray:
     """IPW weights with propensity-score clipping at [trim_lo, trim_hi]."""
     if _CORE_AVAILABLE:
-        return np.frombuffer(_c.trimmed_ipw_weights_jit(_buf(treat), _buf(propensity), float(trim_lo), float(trim_hi)), dtype="float64")
+        return np.frombuffer(
+            _c.trimmed_ipw_weights_jit(_buf(treat), _buf(propensity), float(trim_lo), float(trim_hi)), dtype="float64"
+        )
     treat, propensity = _vec(treat), _vec(propensity)
     e = np.clip(propensity, trim_lo, trim_hi)
     return np.where(treat == 1.0, 1.0 / e, 1.0 / (1.0 - e))

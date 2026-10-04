@@ -1,7 +1,6 @@
 """Tests for gprsk.gp_residual_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gprsk import gp_residual_kernel
 
 

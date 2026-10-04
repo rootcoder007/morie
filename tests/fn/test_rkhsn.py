@@ -1,7 +1,6 @@
 """Tests for rkhsn.rkhs_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rkhsn import rkhs_norm
 
 

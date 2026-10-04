@@ -1,8 +1,8 @@
 """Tests for facea.face_smooth."""
 
-from morie.fn import _array_core as np
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.facea import face_smooth
 
 

@@ -68,10 +68,16 @@ def l1_median(X, tol=None, max_iter=200):
         if dist >= 1e-12:
             for j in range(d):
                 sr[j] += (A[i][j] - mu[j]) / dist
-    return RichResult(payload={
-        "estimate": mu, "cost": cost,
-        "spatial_rank_norm": math.sqrt(sum(v * v for v in sr)),
-        "n": n, "d": d, "method": "L1 median with spatial-rank check"})
+    return RichResult(
+        payload={
+            "estimate": mu,
+            "cost": cost,
+            "spatial_rank_norm": math.sqrt(sum(v * v for v in sr)),
+            "n": n,
+            "d": d,
+            "method": "L1 median with spatial-rank check",
+        }
+    )
 
 
 l1median = l1_median

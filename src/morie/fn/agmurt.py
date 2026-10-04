@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["mzreanal", "muzero_reanalyze_target"]
 
 
-def mzreanal(rewards, freshvalues, visits, n=5, gamma=0.997,
-             alpha=1.0, beta=1.0, oldvalues=None):
+def mzreanal(rewards, freshvalues, visits, n=5, gamma=0.997, alpha=1.0, beta=1.0, oldvalues=None):
     """Recompute value and policy targets from a fresh search.
 
     MuZero Reanalyze revisits stored trajectories with the current
@@ -78,9 +77,9 @@ def mzreanal(rewards, freshvalues, visits, n=5, gamma=0.997,
         s = 0.0
         for j in range(n):
             if t + j < T:
-                s += (g ** j) * u[t + j]
+                s += (g**j) * u[t + j]
         if t + n < T:
-            s += (g ** n) * nu[t + n]
+            s += (g**n) * nu[t + n]
         z.append(s)
     pol = []
     for t in range(T):
@@ -91,15 +90,25 @@ def mzreanal(rewards, freshvalues, visits, n=5, gamma=0.997,
         raise ValueError("oldvalues must have length T")
     pr = [abs(ov[t] - z[t]) for t in range(T)]
     a = float(alpha)
-    pa = [v ** a for v in pr]
+    pa = [v**a for v in pr]
     sp = sum(pa)
     prob = [1.0 / T] * T if sp == 0.0 else [v / sp for v in pa]
     b = float(beta)
     w = [(1.0 / (T * prob[t])) ** b for t in range(T)]
-    return RichResult(payload={
-        "target": z, "policy": pol, "priority": pr, "prob": prob,
-        "weight": w, "T": T, "A": A, "n": n, "gamma": g,
-        "method": "MuZero Reanalyze targets (Schrittwieser et al. 2020 App. H)"})
+    return RichResult(
+        payload={
+            "target": z,
+            "policy": pol,
+            "priority": pr,
+            "prob": prob,
+            "weight": w,
+            "T": T,
+            "A": A,
+            "n": n,
+            "gamma": g,
+            "method": "MuZero Reanalyze targets (Schrittwieser et al. 2020 App. H)",
+        }
+    )
 
 
 muzero_reanalyze_target = mzreanal

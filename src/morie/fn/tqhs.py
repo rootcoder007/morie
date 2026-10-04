@@ -48,10 +48,15 @@ def turboquant_qjl_sign_quantizer(k, S_mat):
     Sm = C.mat(S_mat)
     proj = C.matvec(Sm, kv)
     signs = [S.sgn(v) for v in proj]
-    return RichResult(payload={
-        "signs": signs, "m": len(signs), "d": len(kv),
-        "estimate": sum(signs) / len(signs),
-        "method": "QJL sign quantizer H_S(k) = sign(S k)"})
+    return RichResult(
+        payload={
+            "signs": signs,
+            "m": len(signs),
+            "d": len(kv),
+            "estimate": sum(signs) / len(signs),
+            "method": "QJL sign quantizer H_S(k) = sign(S k)",
+        }
+    )
 
 
 def cheatsheet():

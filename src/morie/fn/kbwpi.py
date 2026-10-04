@@ -11,7 +11,6 @@ __all__ = ["kbwpi"]
 
 def _bw_bins(x, nb):
     """R's bw_den: counts of pairwise |i - j| bin distances on nb bins."""
-    import math
     xmin = min(x)
     rang = (max(x) - xmin) * 1.01
     if rang <= 0:
@@ -30,6 +29,7 @@ def _bw_bins(x, nb):
 
 def _phi4(cnt, d, n, h):
     import math
+
     s = 0.0
     for i, c in enumerate(cnt):
         delta = (i * d / h) ** 2
@@ -37,23 +37,23 @@ def _phi4(cnt, d, n, h):
             break
         s += math.exp(-delta / 2) * (delta * delta - 6 * delta + 3) * c
     s = 2 * s + n * 3
-    return s / (n * (n - 1) * h ** 5 * math.sqrt(2 * math.pi))
+    return s / (n * (n - 1) * h**5 * math.sqrt(2 * math.pi))
 
 
 def _phi6(cnt, d, n, h):
     import math
+
     s = 0.0
     for i, c in enumerate(cnt):
         delta = (i * d / h) ** 2
         if delta >= 1000:
             break
-        s += math.exp(-delta / 2) * (delta ** 3 - 15 * delta * delta + 45 * delta - 15) * c
+        s += math.exp(-delta / 2) * (delta**3 - 15 * delta * delta + 45 * delta - 15) * c
     s = 2 * s - 15 * n
-    return s / (n * (n - 1) * h ** 7 * math.sqrt(2 * math.pi))
+    return s / (n * (n - 1) * h**7 * math.sqrt(2 * math.pi))
 
 
-def kbwpi(data: np.ndarray, method: str = "ste", nb: int = 1000,
-          tol: float = 1e-12) -> dict:
+def kbwpi(data: np.ndarray, method: str = "ste", nb: int = 1000, tol: float = 1e-12) -> dict:
     r"""
     Sheather-Jones plug-in bandwidth selector.
 
@@ -94,6 +94,7 @@ def kbwpi(data: np.ndarray, method: str = "ste", nb: int = 1000,
         53(3), 683-690. R Core Team, ``stats::bw.SJ``.
     """
     import math
+
     x = [float(v) for v in np.asarray(data, dtype=float).ravel().tolist()]
     n = len(x)
     if n < 2:

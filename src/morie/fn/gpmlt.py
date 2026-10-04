@@ -94,7 +94,11 @@ def gp_multitask(X, y_tasks, X_test=None, task_cov=None, lengthscale=1.0, varian
             row.append(s)
         mean.append(row)
     L = core.chol(K)
-    ll = -0.5 * sum(yv[i] * alpha[i] for i in range(N)) - sum(math.log(L[i][i]) for i in range(N)) - 0.5 * N * math.log(2.0 * math.pi)
+    ll = (
+        -0.5 * sum(yv[i] * alpha[i] for i in range(N))
+        - sum(math.log(L[i][i]) for i in range(N))
+        - 0.5 * N * math.log(2.0 * math.pi)
+    )
     return RichResult(
         title="Multi-task GP",
         summary_lines=[("tasks", T), ("n", n)],

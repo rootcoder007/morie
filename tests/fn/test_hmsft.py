@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmsft import geron_sft
 
 
@@ -25,8 +23,17 @@ def test_hmsft_basic():
     result = geron_sft(None, instruction_data, epochs, lr)
     assert isinstance(result, dict)
     expected_keys = {
-        "W", "loss", "sum_loss", "loss_curve", "accuracy",
-        "predicted", "vocab", "labels", "estimate", "n", "method",
+        "W",
+        "loss",
+        "sum_loss",
+        "loss_curve",
+        "accuracy",
+        "predicted",
+        "vocab",
+        "labels",
+        "estimate",
+        "n",
+        "method",
     }
     assert expected_keys.issubset(set(result.keys()))
     assert math.isfinite(result["loss"])
@@ -70,7 +77,7 @@ import morie.fn.hmsft as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

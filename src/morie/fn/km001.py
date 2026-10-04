@@ -28,14 +28,19 @@ def kamath_ch2_unidirectional_encoder_state(h_t_1, x_t, f=None):
         if h.shape != x.shape:
             raise ValueError(
                 f"the default cell needs matching shapes; got {h.shape} "
-                f"and {x.shape}. Pass a callable f for projected inputs.")
+                f"and {x.shape}. Pass a callable f for projected inputs."
+            )
         out = np.tanh(h + x)
     else:
         out = np.atleast_1d(np.asarray(f(h, x), dtype=float))
-    return RichResult(payload={
-        "h": [float(v) for v in out], "estimate": float(out[0]),
-        "n": len(out),
-        "method": "Encoder recurrence h_t = f(h_t-1, x_t) (Kamath Eq 2.1)"})
+    return RichResult(
+        payload={
+            "h": [float(v) for v in out],
+            "estimate": float(out[0]),
+            "n": len(out),
+            "method": "Encoder recurrence h_t = f(h_t-1, x_t) (Kamath Eq 2.1)",
+        }
+    )
 
 
 def cheatsheet():

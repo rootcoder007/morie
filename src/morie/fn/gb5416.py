@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['signn', 'gibbons_sign_sampsize']
+__all__ = ["signn", "gibbons_sign_sampsize"]
 
 
 def signn(theta, alpha=0.05, beta=0.10):

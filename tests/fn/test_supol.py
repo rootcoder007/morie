@@ -1,7 +1,6 @@
 """Tests for morie.fn.supol -- polysubstance use."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.supol import polysubstance
 
 

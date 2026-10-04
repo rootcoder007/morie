@@ -1,7 +1,6 @@
 """Tests for grmae.geron_mae."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grmae import geron_mae
 
 

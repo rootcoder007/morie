@@ -84,7 +84,7 @@ def metropolis_hastings(target, x0=0.0, n_iter=1000, u=None, z=None, scale=1.0, 
             px = pp
             accepted += 1
         chain.append(x)
-    keep = chain[int(burn):] if int(burn) < ni else chain
+    keep = chain[int(burn) :] if int(burn) < ni else chain
     arr = np.asarray(keep, dtype=float)
     m = float(np.mean(arr))
     k = int(arr.size)

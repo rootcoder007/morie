@@ -1,8 +1,8 @@
 """Tests for bivcn -- the front-end over anmod."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.anmod import additive_noise_model
 from morie.fn.bivcn import bivariate_causal_test
 

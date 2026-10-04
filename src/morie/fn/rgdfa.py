@@ -80,8 +80,7 @@ def rangayyan_dfa(x, scales=None, order=1):
     too_small = scales[scales < order + 2]
     if too_small.size:
         raise ValueError(
-            f"box sizes {too_small.tolist()} are too small for order={order}: "
-            f"need at least {order + 2} points per box."
+            f"box sizes {too_small.tolist()} are too small for order={order}: need at least {order + 2} points per box."
         )
     y = np.cumsum(x - x.mean())
     F = np.empty(scales.size, dtype=float)

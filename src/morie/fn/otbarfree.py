@@ -86,10 +86,18 @@ def ot_barycenter_free(X_list, weights, n_supp, max_iter=20):
     cost = 0.0
     for _ in range(it):
         Y, cost = _bary_step(Y, clouds, w)
-    return RichResult(payload={
-        "Y": Y, "weights_y": [1.0 / ns] * ns, "cost": cost,
-        "n_supp": ns, "d": d, "K": K, "iters": it,
-        "method": "Free-support Wasserstein barycenter"})
+    return RichResult(
+        payload={
+            "Y": Y,
+            "weights_y": [1.0 / ns] * ns,
+            "cost": cost,
+            "n_supp": ns,
+            "d": d,
+            "K": K,
+            "iters": it,
+            "method": "Free-support Wasserstein barycenter",
+        }
+    )
 
 
 def cheatsheet():

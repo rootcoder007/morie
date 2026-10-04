@@ -4,10 +4,36 @@ import importlib
 import inspect
 
 BNP_MODULES = [
-    "bbstr", "bcntr", "bferg", "bnpht", "bnpqs", "brnst", "bspln", "bwavl",
-    "crppr", "crpst", "dpgen", "dpkde", "dpmdn", "dpmix", "dpprr", "ewens",
-    "gpclf", "gphyp", "gpkrn", "gprgr", "hdprc", "ibprc", "lddst", "neale",
-    "polya", "polyt", "postc", "pyprr", "slcmx", "stbrk",
+    "bbstr",
+    "bcntr",
+    "bferg",
+    "bnpht",
+    "bnpqs",
+    "brnst",
+    "bspln",
+    "bwavl",
+    "crppr",
+    "crpst",
+    "dpgen",
+    "dpkde",
+    "dpmdn",
+    "dpmix",
+    "dpprr",
+    "ewens",
+    "gpclf",
+    "gphyp",
+    "gpkrn",
+    "gprgr",
+    "hdprc",
+    "ibprc",
+    "lddst",
+    "neale",
+    "polya",
+    "polyt",
+    "postc",
+    "pyprr",
+    "slcmx",
+    "stbrk",
 ]
 
 
@@ -48,7 +74,6 @@ def test_the_ewens_sampler_produces_a_valid_partition():
     """Smoke-run one representative end to end: the sampled partition must
     cover {0..n-1} exactly once, and class_sizes must sum to n."""
     from morie.fn import _array_core as np
-
     from morie.fn.ewens import ewens_partition
 
     out = ewens_partition(20, theta=1.5, rng=np.random.default_rng(0))

@@ -73,8 +73,7 @@ def schabenberger_blup(coords, z, target, cov_model=None):
     return RichResult(
         title="BLUP (ordinary kriging)",
         summary_lines=[("n targets", int(pred.size))],
-        payload={"prediction": pred, "variance": np.maximum(var, 0.0),
-                 "weights": lam, "lagrange": m},
+        payload={"prediction": pred, "variance": np.maximum(var, 0.0), "weights": lam, "lagrange": m},
     )
 
 

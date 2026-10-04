@@ -1,6 +1,5 @@
 """Tests for gb2313 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2313 import gibbons_edf_joint_moment

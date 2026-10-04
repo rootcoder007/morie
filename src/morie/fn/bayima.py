@@ -73,27 +73,24 @@ def importance_sampling(log_weights, values=None, normalized=True):
     if np.all(~np.isfinite(lw)):
         raise ValueError("every log weight is non-finite.")
     m = float(np.max(lw[np.isfinite(lw)]))
-    w = np.exp(lw - m)                     # stabilised before exponentiating
+    w = np.exp(lw - m)  # stabilised before exponentiating
     w = np.where(np.isfinite(w), w, 0.0)
     s = float(w.sum())
     if s <= 0:
         raise ValueError("all weights underflowed to zero.")
-    ess = float(s ** 2 / np.sum(w ** 2))
+    ess = float(s**2 / np.sum(w**2))
     log_norm = float(m + np.log(s / n))
 
     if values is None:
         est = float(s / n) * np.exp(m)
-        se = float(np.std(w * np.exp(m), ddof=1) / np.sqrt(n)) if n > 1 \
-            else np.nan
+        se = float(np.std(w * np.exp(m), ddof=1) / np.sqrt(n)) if n > 1 else np.nan
         h = None
     else:
         h = np.asarray(values, dtype=float)
         if h.ndim == 1:
             h = h[:, None]
         if h.shape[0] != n:
-            raise ValueError(
-                "values has %d rows for %d weights." % (h.shape[0], n)
-            )
+            raise ValueError("values has %d rows for %d weights." % (h.shape[0], n))
         if normalized:
             est = (w @ h) / s
             # delta-method variance of a ratio of weighted sums
@@ -101,8 +98,7 @@ def importance_sampling(log_weights, values=None, normalized=True):
             se = np.sqrt(np.sum((w[:, None] * resid) ** 2, axis=0)) / s
         else:
             est = (w @ h) / n * np.exp(m)
-            se = np.std(w[:, None] * h * np.exp(m), axis=0, ddof=1) \
-                / np.sqrt(n)
+            se = np.std(w[:, None] * h * np.exp(m), axis=0, ddof=1) / np.sqrt(n)
         if est.size == 1:
             est = float(est[0])
             se = float(se[0])
@@ -118,8 +114,9 @@ def importance_sampling(log_weights, values=None, normalized=True):
             "max_weight_share": float(w.max() / s),
             "reliable": reliable,
             "reliability_note": (
-                None if reliable else
-                "the effective sample size is %.1f out of %d draws, so the "
+                None
+                if reliable
+                else "the effective sample size is %.1f out of %d draws, so the "
                 "answer rests on a handful of points; the standard error "
                 "will look fine regardless" % (ess, n)
             ),
@@ -136,14 +133,12 @@ def importance_sampling(log_weights, values=None, normalized=True):
                 "under- or overflow silently"
             ),
             "n": int(n),
-            "method": "Importance sampling (%s)"
-                      % ("self-normalised" if normalized else "unnormalised"),
+            "method": "Importance sampling (%s)" % ("self-normalised" if normalized else "unnormalised"),
         }
     )
 
 
 def cheatsheet():
     return (
-        "bayima: log-stabilised importance sampling with the effective "
-        "sample size that decides whether to believe it"
+        "bayima: log-stabilised importance sampling with the effective sample size that decides whether to believe it"
     )

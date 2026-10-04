@@ -64,8 +64,13 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["friend_summary", "policy_mean", "decompose_effects",
-           "network_influence_variance", "check_network_assumption"]
+__all__ = [
+    "friend_summary",
+    "policy_mean",
+    "decompose_effects",
+    "network_influence_variance",
+    "check_network_assumption",
+]
 
 _EPS = 1e-12
 
@@ -75,8 +80,7 @@ def friend_summary(values, friends, kind="fraction"):
     v = [float(q) for q in k.vec(values)]
     N = len(v)
     if len(friends) != N:
-        raise ValueError("tlnet1: %d values but %d friend sets"
-                         % (N, len(friends)))
+        raise ValueError("tlnet1: %d values but %d friend sets" % (N, len(friends)))
     out = []
     for i in range(N):
         f = sorted(set(friends[i]) - {i})
@@ -87,8 +91,7 @@ def friend_summary(values, friends, kind="fraction"):
         elif kind == "count":
             out.append(float(sum(v[j] for j in f)))
         else:
-            raise ValueError("tlnet1: kind must be fraction or count, "
-                             "got %r" % (kind,))
+            raise ValueError("tlnet1: kind must be fraction or count, got %r" % (kind,))
     return out
 
 
@@ -106,13 +109,16 @@ def check_network_assumption(friends, N=None):
         for j in set(friends[i]) - {i}:
             if i not in set(friends[j]):
                 asym.append((i, j))
-    return {"max_degree": max(deg) if deg else 0,
-            "max_share": (max(deg) / float(n)) if deg else 0.0,
-            "sparse": (max(deg) / float(n) < 0.25) if deg else True,
-            "asymmetric_edges": asym, "symmetric": not asym,
-            "note": "all dependence is assumed described by the KNOWN "
-                    "network; an unobserved edge is indistinguishable "
-                    "from unmeasured confounding"}
+    return {
+        "max_degree": max(deg) if deg else 0,
+        "max_share": (max(deg) / float(n)) if deg else 0.0,
+        "sparse": (max(deg) / float(n) < 0.25) if deg else True,
+        "asymmetric_edges": asym,
+        "symmetric": not asym,
+        "note": "all dependence is assumed described by the KNOWN "
+        "network; an unobserved edge is indistinguishable "
+        "from unmeasured confounding",
+    }
 
 
 def policy_mean(Q_fn, W, friends, own_prob, seed=0, draws=200):
@@ -127,22 +133,17 @@ def policy_mean(Q_fn, W, friends, own_prob, seed=0, draws=200):
     N = len(rows)
     p = float(own_prob)
     if not 0.0 <= p <= 1.0:
-        raise ValueError("tlnet1: the policy probability must lie in "
-                         "[0,1], got %r" % (own_prob,))
+        raise ValueError("tlnet1: the policy probability must lie in [0,1], got %r" % (own_prob,))
     rng = np.random.default_rng(seed)
     tot = 0.0
     for _ in range(int(draws)):
-        a = [1.0 if float(rng.uniform()) < p else 0.0
-             for _ in range(N)]
+        a = [1.0 if float(rng.uniform()) < p else 0.0 for _ in range(N)]
         fs = friend_summary(a, friends)
-        tot += sum(float(Q_fn(a[i], fs[i], rows[i]))
-                   for i in range(N)) / N
-    return {"psi": tot / int(draws), "policy_prob": p,
-            "draws": int(draws), "N": N}
+        tot += sum(float(Q_fn(a[i], fs[i], rows[i])) for i in range(N)) / N
+    return {"psi": tot / int(draws), "policy_prob": p, "draws": int(draws), "N": N}
 
 
-def decompose_effects(Q_fn, W, friends, p_high=1.0, p_low=0.0,
-                      seed=0, draws=200):
+def decompose_effects(Q_fn, W, friends, p_high=1.0, p_low=0.0, seed=0, draws=200):
     r"""Direct and spillover effects, separately.
 
     Direct: own exposure varies with the neighbourhood held at
@@ -157,25 +158,27 @@ def decompose_effects(Q_fn, W, friends, p_high=1.0, p_low=0.0,
     def mean_with(own, neigh_p):
         tot = 0.0
         for _ in range(int(draws)):
-            a = [1.0 if float(rng.uniform()) < neigh_p else 0.0
-                 for _ in range(N)]
+            a = [1.0 if float(rng.uniform()) < neigh_p else 0.0 for _ in range(N)]
             fs = friend_summary(a, friends)
-            tot += sum(float(Q_fn(own, fs[i], rows[i]))
-                       for i in range(N)) / N
+            tot += sum(float(Q_fn(own, fs[i], rows[i])) for i in range(N)) / N
         return tot / int(draws)
 
     d = mean_with(1.0, p_low) - mean_with(0.0, p_low)
     s = mean_with(0.0, p_high) - mean_with(0.0, p_low)
     tot = mean_with(1.0, p_high) - mean_with(0.0, p_low)
-    return RichResult(payload={
-        "estimate": {"direct": d, "spillover": s, "total": tot},
-        "direct": d, "spillover": s, "total": tot,
-        "method": "direct and spillover decomposition under network "
-                  "interference; van der Laan & Rose (2018) Chap. 21",
-        "note": "under interference the estimand is a POLICY; 'the "
-                "effect of treatment' is undefined until the whole "
-                "assignment is specified",
-    })
+    return RichResult(
+        payload={
+            "estimate": {"direct": d, "spillover": s, "total": tot},
+            "direct": d,
+            "spillover": s,
+            "total": tot,
+            "method": "direct and spillover decomposition under network "
+            "interference; van der Laan & Rose (2018) Chap. 21",
+            "note": "under interference the estimand is a POLICY; 'the "
+            "effect of treatment' is undefined until the whole "
+            "assignment is specified",
+        }
+    )
 
 
 def network_influence_variance(ic, friends):
@@ -183,31 +186,32 @@ def network_influence_variance(ic, friends):
     v = [float(q) for q in k.vec(ic)]
     N = len(v)
     if len(friends) != N:
-        raise ValueError("tlnet1: %d influence values but %d friend "
-                         "sets" % (N, len(friends)))
+        raise ValueError("tlnet1: %d influence values but %d friend sets" % (N, len(friends)))
     m = sum(v) / N
     var = sum((q - m) ** 2 for q in v) / N
-    cov = sum((v[i] - m) * (v[j] - m) for i in range(N)
-              for j in set(friends[i]) - {i})
+    cov = sum((v[i] - m) * (v[j] - m) for i in range(N) for j in set(friends[i]) - {i})
     tot = max((var + cov / N) / N, 0.0)
-    return {"se": math.sqrt(tot),
-            "se_independent": math.sqrt(var / N),
-            "edges_counted": sum(len(set(friends[i]) - {i})
-                                 for i in range(N)),
-            "note": "correlation exists exactly along edges"}
+    return {
+        "se": math.sqrt(tot),
+        "se_independent": math.sqrt(var / N),
+        "edges_counted": sum(len(set(friends[i]) - {i}) for i in range(N)),
+        "note": "correlation exists exactly along edges",
+    }
 
 
 def cheatsheet():
-    return ("tlnet1: N units on a known social network, F_i = i's "
-            "friends, |F_i|/N -> 0. Two dependencies allowed: exposure "
-            "on own and friends' covariates, outcome on own and "
-            "friends' covariates and exposures -- and ALL dependence "
-            "is assumed described by the KNOWN network, which is the "
-            "assumption most likely to fail, since an unobserved edge "
-            "looks exactly like unmeasured confounding. Under "
-            "interference the estimand must be a POLICY; direct "
-            "(own exposure varies) and SPILLOVER (neighbours' varies) "
-            "effects are reported separately.")
+    return (
+        "tlnet1: N units on a known social network, F_i = i's "
+        "friends, |F_i|/N -> 0. Two dependencies allowed: exposure "
+        "on own and friends' covariates, outcome on own and "
+        "friends' covariates and exposures -- and ALL dependence "
+        "is assumed described by the KNOWN network, which is the "
+        "assumption most likely to fail, since an unobserved edge "
+        "looks exactly like unmeasured confounding. Under "
+        "interference the estimand must be a POLICY; direct "
+        "(own exposure varies) and SPILLOVER (neighbours' varies) "
+        "effects are reported separately."
+    )
 
 
 # compact alias per ledger/NAMING.md

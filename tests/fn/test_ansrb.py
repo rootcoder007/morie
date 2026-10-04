@@ -1,7 +1,6 @@
 """Tests for ansari_bradley."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ansrb import ansari_bradley
 
 

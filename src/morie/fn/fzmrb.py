@@ -25,6 +25,7 @@ def _silverman_h(x):
     book's (2.3), (2.4) and Sec. 5.3.2.
     """
     from ._fauzi import kdfe_bandwidth
+
     return kdfe_bandwidth(x)
 
 

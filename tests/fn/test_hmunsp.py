@@ -1,7 +1,6 @@
 """Tests for hmunsp.geron_unsupervised_pretraining."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmunsp import geron_unsupervised_pretraining
 
 

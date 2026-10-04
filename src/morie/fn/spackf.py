@@ -57,8 +57,7 @@ def schabenberger_autocorrelation_function(coords, z, bins=None, cutoff=None):
     cc = mat(coords, "coords")
     n = len(zz)
     if len(cc) != n:
-        raise ValueError("`coords` has %d rows but `z` has %d values"
-                         % (len(cc), n))
+        raise ValueError("`coords` has %d rows but `z` has %d values" % (len(cc), n))
     if n < 3:
         raise ValueError("at least 3 sites are needed for a lag class")
     d = [t - mean(zz) for t in zz]
@@ -106,18 +105,22 @@ def schabenberger_autocorrelation_function(coords, z, bins=None, cutoff=None):
             acf.append(float("nan"))
         lo = e
 
-    return RichResult(payload={
-        "lags": edges,
-        "centres": centres,
-        "cov": cov,
-        "acf": acf,
-        "c0": c0,
-        "npairs": npairs,
-        "n": n,
-        "incomplete_description_of_second_order_structure": True,
-        "method": ("Empirical correlogram R(h)=C(h)/C(0); Schabenberger & "
-                   "Gotway (2005) Sec. 1.4.2 and Chapter problem 1.14"),
-    })
+    return RichResult(
+        payload={
+            "lags": edges,
+            "centres": centres,
+            "cov": cov,
+            "acf": acf,
+            "c0": c0,
+            "npairs": npairs,
+            "n": n,
+            "incomplete_description_of_second_order_structure": True,
+            "method": (
+                "Empirical correlogram R(h)=C(h)/C(0); Schabenberger & "
+                "Gotway (2005) Sec. 1.4.2 and Chapter problem 1.14"
+            ),
+        }
+    )
 
 
 def cheatsheet():

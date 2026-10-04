@@ -17,6 +17,7 @@ def test_gb5712_basic():
     assert "sd0" in result
     # Independent computation of the formula
     import math
+
     N = n
     shift = N * (p1 - 0.5) + N * (N - 1.0) * (p2 - 0.5) / 2.0
     sd0 = math.sqrt(N * (N + 1.0) * (2.0 * N + 1.0) / 24.0)
@@ -25,6 +26,7 @@ def test_gb5712_basic():
     z_beta_expected = shift / sd0 - z_alpha
     # Phi(z_beta) computed by independent expression using erf
     from math import erf, sqrt
+
     power_expected = 0.5 * (1.0 + erf(z_beta_expected / sqrt(2.0)))
     assert abs(result["power"] - power_expected) < 1e-9
     assert abs(result["z_beta"] - z_beta_expected) < 1e-9
@@ -48,6 +50,7 @@ def test_gb5712_edge():
     # Actually, since shift=0, z_beta = -z_alpha, power = Phi(-z_alpha) = alpha
     import math
     from math import erf, sqrt
+
     N = n
     shift = N * (p1 - 0.5) + N * (N - 1.0) * (p2 - 0.5) / 2.0
     sd0 = math.sqrt(N * (N + 1.0) * (2.0 * N + 1.0) / 24.0)

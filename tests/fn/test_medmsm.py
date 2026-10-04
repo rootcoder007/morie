@@ -1,7 +1,6 @@
 """Tests for medmsm.msm_mediation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.medmsm import msm_mediation
 
 

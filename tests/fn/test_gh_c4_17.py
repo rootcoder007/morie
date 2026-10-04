@@ -1,7 +1,6 @@
 """Tests for gh_c4_17.ghosal_dp_median."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c4_17 import ghosal_dp_median
 
 
@@ -25,7 +24,7 @@ def test_gh_c4_17_basic_formula():
     # H(x) = sum_{i=0}^{n_grid-1} be(u; a, b) * h, with u = 1/2 + (i+0.5)*h.
     # We compute the integrand with plain arithmetic using the Beta PDF,
     # B(a,b) = Gamma(a)Gamma(b)/Gamma(a+b), be(u;a,b) = u^{a-1}(1-u)^{b-1}/B(a,b).
-    from math import lgamma, exp
+    from math import exp, lgamma
 
     def _beta_pdf(u, a, b):
         if u <= 0.0 or u >= 1.0:

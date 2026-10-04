@@ -1,7 +1,6 @@
 """Test wiener_filter (wienr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.wienr import wiener_filter, wienr
 

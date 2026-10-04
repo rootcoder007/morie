@@ -1,7 +1,6 @@
 """Tests for truncated_power_spline.truncated_power_spline."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.truncated_power_spline import (
     truncated_power_spline,
 )

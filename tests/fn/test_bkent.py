@@ -1,8 +1,8 @@
 """Tests for morie.fn.bkent -- Bekenstein-Hawking entropy."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bkent import bkent
 
 

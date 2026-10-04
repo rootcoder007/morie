@@ -1004,8 +1004,7 @@ _PY_FALLBACK_MODULES = frozenset(
 
 
 _R_INSTALL_HINT = (
-    "install R, then `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) "
-    "and run the module again"
+    "install R, then `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"
 )
 
 
@@ -1041,9 +1040,7 @@ def _r_route_ready() -> None:
     )
     found = [ln.split()[:2] for ln in probe.stdout.splitlines() if len(ln.split()) >= 2]
     if not found:
-        raise RuntimeError(
-            "No R package for the R-backed modules is installed (install rmorie, or morie's R package)"
-        )
+        raise RuntimeError("No R package for the R-backed modules is installed (install rmorie, or morie's R package)")
     from . import __version__ as py_version
 
     match = next((pkg for pkg, ver in found if ver == py_version), None)

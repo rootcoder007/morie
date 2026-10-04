@@ -82,7 +82,7 @@ def item_cf(R, u=0, i=0, k_nn=2, similarity="adjusted"):
     cand = [j for j in range(ni) if j != ii and M[uu][j] == M[uu][j]]
     sims = [sim(ii, j) for j in cand]
     order = sorted(range(len(cand)), key=lambda t: (-abs(sims[t]), cand[t]))
-    take = order[:int(k_nn)]
+    take = order[: int(k_nn)]
     num = 0.0
     den = 0.0
     for t in take:

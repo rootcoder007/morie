@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.12: the Context Association Test score."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km086 import _log_probs
 
@@ -33,19 +32,21 @@ def kamath_ch6_cat_metric(M, U, theta=None):
     """
     ctx = list(U)
     if not ctx:
-        raise ValueError("U is empty; CAT conditions on the unmodified "
-                         "context, so there must be at least one token.")
+        raise ValueError("U is empty; CAT conditions on the unmodified context, so there must be at least one token.")
     if theta is not None and not callable(theta):
-        raise ValueError("theta must be a callable (M, U, i) -> "
-                         "probability, or None.")
+        raise ValueError("theta must be a callable (M, U, i) -> probability, or None.")
     toks = list(M)
     scorer = None if theta is None else (lambda i: theta(toks, ctx, i))
     logs, seq = _log_probs(toks, scorer, "M")
-    return RichResult(payload={
-        "estimate": float(logs.mean()),
-        "per_token": [float(v) for v in logs],
-        "n_context": len(ctx), "n": len(seq),
-        "method": "Context Association Test score (Kamath Eq 6.12)"})
+    return RichResult(
+        payload={
+            "estimate": float(logs.mean()),
+            "per_token": [float(v) for v in logs],
+            "n_context": len(ctx),
+            "n": len(seq),
+            "method": "Context Association Test score (Kamath Eq 6.12)",
+        }
+    )
 
 
 def cheatsheet():

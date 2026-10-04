@@ -12,8 +12,7 @@ def _weighted_mean_over_models(P, w):
     rows = np.asarray(P, dtype=float).tolist()
     wl = [float(v) for v in w]
     return np.asarray(
-        [sum(wl[i] * rows[i][j] for i in range(len(wl)))
-         for j in range(len(rows[0]))],
+        [sum(wl[i] * rows[i][j] for i in range(len(wl))) for j in range(len(rows[0]))],
         dtype=float,
     )
 

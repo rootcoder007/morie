@@ -79,8 +79,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["prgrl", "curriculum_schedule", "is_curriculum",
-           "entropy", "easy_only_fit"]
+__all__ = ["prgrl", "curriculum_schedule", "is_curriculum", "entropy", "easy_only_fit"]
 
 
 def _rng(seed):
@@ -89,12 +88,12 @@ def _rng(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2.0 * math.log(max(r(), 1e-12))) * \
-        math.cos(2.0 * math.pi * r())
+    return math.sqrt(-2.0 * math.log(max(r(), 1e-12))) * math.cos(2.0 * math.pi * r())
 
 
 def entropy(q):
@@ -118,8 +117,7 @@ def curriculum_schedule(difficulty, n_steps=5, hard_first=False):
     the :math:`\lambda` quantile has weight 1 and the rest weight 0, so
     :math:`W` is monotone by construction and :math:`W_1 \equiv 1`.
     """
-    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty,
-                                                    dtype=float))]
+    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty, dtype=float))]
     n = len(d)
     if n < 2:
         raise ValueError("prgrl: need at least two examples")
@@ -164,19 +162,19 @@ def is_curriculum(weights, p=None, tol=1e-12):
             for i in range(n):
                 if w[i] < weights[k - 1][i] - tol:
                     monotone = False
-    increasing = all(ents[k] < ents[k + 1] + tol
-                     for k in range(len(ents) - 1))
-    strictly = all(ents[k] < ents[k + 1] - 1e-12
-                   for k in range(len(ents) - 1))
+    increasing = all(ents[k] < ents[k + 1] + tol for k in range(len(ents) - 1))
+    strictly = all(ents[k] < ents[k + 1] - 1e-12 for k in range(len(ents) - 1))
     for v in weights[-1]:
         if abs(v - 1.0) > tol:
             final_ones = False
-    return {"is_curriculum": bool(increasing and monotone),
-            "entropy_increasing": bool(increasing),
-            "strictly_increasing": bool(strictly),
-            "weights_monotone": bool(monotone),
-            "final_step_is_p": bool(final_ones),
-            "entropies": ents}
+    return {
+        "is_curriculum": bool(increasing and monotone),
+        "entropy_increasing": bool(increasing),
+        "strictly_increasing": bool(strictly),
+        "weights_monotone": bool(monotone),
+        "final_step_is_p": bool(final_ones),
+        "entropies": ents,
+    }
 
 
 def _perceptron(X, y, order, updates, w0):
@@ -205,8 +203,7 @@ def _error(X, y, w):
     return bad / float(len(X))
 
 
-def prgrl(X, y, difficulty, X_test=None, y_test=None, updates=200,
-          n_steps=5, seed=0, n_repeats=50, order="sampled"):
+def prgrl(X, y, difficulty, X_test=None, y_test=None, updates=200, n_steps=5, seed=0, n_repeats=50, order="sampled"):
     r"""The paper's Section 4.2 comparison.
 
     Trains an online Perceptron for a fixed budget of ``updates``, once
@@ -230,20 +227,15 @@ def prgrl(X, y, difficulty, X_test=None, y_test=None, updates=200,
         raise ValueError("prgrl: updates must be at least 1")
     for v in yv:
         if v not in (-1.0, 1.0):
-            raise ValueError("prgrl: y must be -1/+1 for the "
-                             "Perceptron of Section 4.2")
-    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty,
-                                                    dtype=float))]
+            raise ValueError("prgrl: y must be -1/+1 for the Perceptron of Section 4.2")
+    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty, dtype=float))]
     if len(d) != n:
-        raise ValueError("prgrl: difficulty must have one score per "
-                         "example")
+        raise ValueError("prgrl: difficulty must have one score per example")
     if X_test is None:
         Xe, ye, held_out = Xr, yv, False
     else:
-        Xe = [[float(v) for v in r] for r in np.asarray(X_test,
-                                                        dtype=float)]
-        ye = [float(v) for v in np.atleast_1d(np.asarray(y_test,
-                                                         dtype=float))]
+        Xe = [[float(v) for v in r] for r in np.asarray(X_test, dtype=float)]
+        ye = [float(v) for v in np.atleast_1d(np.asarray(y_test, dtype=float))]
         if len(Xe) != len(ye):
             raise ValueError("prgrl: X_test and y_test must match")
         held_out = True
@@ -274,102 +266,103 @@ def prgrl(X, y, difficulty, X_test=None, y_test=None, updates=200,
         for i in range(n - 1, 0, -1):
             j = int(rnd() * (i + 1))
             shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
-        cur_errs.append(_error(Xe, ye,
-                               _perceptron(Xr, yv,
-                                           curriculum_order(rnd),
-                                           updates, w0)))
-        base_errs.append(_error(Xe, ye,
-                                _perceptron(Xr, yv, shuffled, updates,
-                                            w0)))
+        cur_errs.append(_error(Xe, ye, _perceptron(Xr, yv, curriculum_order(rnd), updates, w0)))
+        base_errs.append(_error(Xe, ye, _perceptron(Xr, yv, shuffled, updates, w0)))
     cur = sum(cur_errs) / len(cur_errs)
     base = sum(base_errs) / len(base_errs)
-    return RichResult(payload={
-        "estimate": cur,
-        "curriculum_error": cur,
-        "baseline_error": base,
-        "improvement": base - cur,
-        "curriculum_errors": cur_errs,
-        "baseline_errors": base_errs,
-        "held_out": held_out,
-        "updates": int(updates),
-        "order": order,
-        "n_repeats": int(n_repeats),
-        "lambdas": lam,
-        "weights": weights,
-        "entropies": chk["entropies"],
-        "is_curriculum": chk["is_curriculum"],
-        "n": n,
-        "method": ("curriculum learning (Bengio, Louradour, Collobert & "
-                   "Weston 2009), Section 4.2: online Perceptron, fixed "
-                   "update budget, generalization error"),
-        "note": ("the comparison is held-out error under a FIXED update "
-                 "budget, which is what the paper measures. Training "
-                 "loss at convergence on a convex criterion cannot "
-                 "differ between orderings and says nothing"
-                 if held_out else
-                 "no test set was given, so this scored on the training "
-                 "set; pass X_test and y_test for the paper's "
-                 "comparison"),
-    })
+    return RichResult(
+        payload={
+            "estimate": cur,
+            "curriculum_error": cur,
+            "baseline_error": base,
+            "improvement": base - cur,
+            "curriculum_errors": cur_errs,
+            "baseline_errors": base_errs,
+            "held_out": held_out,
+            "updates": int(updates),
+            "order": order,
+            "n_repeats": int(n_repeats),
+            "lambdas": lam,
+            "weights": weights,
+            "entropies": chk["entropies"],
+            "is_curriculum": chk["is_curriculum"],
+            "n": n,
+            "method": (
+                "curriculum learning (Bengio, Louradour, Collobert & "
+                "Weston 2009), Section 4.2: online Perceptron, fixed "
+                "update budget, generalization error"
+            ),
+            "note": (
+                "the comparison is held-out error under a FIXED update "
+                "budget, which is what the paper measures. Training "
+                "loss at convergence on a convex criterion cannot "
+                "differ between orderings and says nothing"
+                if held_out
+                else "no test set was given, so this scored on the training "
+                "set; pass X_test and y_test for the paper's "
+                "comparison"
+            ),
+        }
+    )
 
 
-def easy_only_fit(X, y, difficulty, X_test, y_test, quantile=0.5,
-                  updates=200, seed=0, n_repeats=50):
+def easy_only_fit(X, y, difficulty, X_test, y_test, quantile=0.5, updates=200, seed=0, n_repeats=50):
     r"""Section 4.1: train on the easy examples only, and compare
     generalization against training on everything."""
     Xr = [[float(v) for v in r] for r in np.asarray(X, dtype=float)]
     yv = [float(v) for v in np.atleast_1d(np.asarray(y, dtype=float))]
-    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty,
-                                                    dtype=float))]
+    d = [float(v) for v in np.atleast_1d(np.asarray(difficulty, dtype=float))]
     n = len(Xr)
     if not 0.0 < quantile <= 1.0:
         raise ValueError("prgrl: quantile must lie in (0, 1]")
-    Xe = [[float(v) for v in r] for r in np.asarray(X_test,
-                                                    dtype=float)]
-    ye = [float(v) for v in np.atleast_1d(np.asarray(y_test,
-                                                     dtype=float))]
+    Xe = [[float(v) for v in r] for r in np.asarray(X_test, dtype=float)]
+    ye = [float(v) for v in np.atleast_1d(np.asarray(y_test, dtype=float))]
     order = sorted(range(n), key=lambda i: d[i])
-    keep = order[:max(1, int(round(quantile * n)))]
+    keep = order[: max(1, int(round(quantile * n)))]
     rnd = _rng(seed)
     easy_errs, all_errs = [], []
     for _ in range(int(n_repeats)):
         w0 = [_gauss(rnd) for _ in range(len(Xr[0]))]
-        easy_errs.append(_error(Xe, ye,
-                                _perceptron(Xr, yv, keep, updates, w0)))
+        easy_errs.append(_error(Xe, ye, _perceptron(Xr, yv, keep, updates, w0)))
         allo = list(range(n))
         for i in range(n - 1, 0, -1):
             j = int(rnd() * (i + 1))
             allo[i], allo[j] = allo[j], allo[i]
-        all_errs.append(_error(Xe, ye,
-                               _perceptron(Xr, yv, allo, updates, w0)))
+        all_errs.append(_error(Xe, ye, _perceptron(Xr, yv, allo, updates, w0)))
     e_easy = sum(easy_errs) / len(easy_errs)
     e_all = sum(all_errs) / len(all_errs)
-    return RichResult(payload={
-        "estimate": e_easy,
-        "easy_only_error": e_easy,
-        "all_examples_error": e_all,
-        "improvement": e_all - e_easy,
-        "n_kept": len(keep),
-        "n": n,
-        "method": ("curriculum learning (Bengio et al. 2009), Section "
-                   "4.1: train on the clean examples only"),
-        "note": ("the paper reports 16.3% against 17.1% for a linear "
-                 "SVM on two Gaussians; the direction is the claim, "
-                 "and noisy examples are the ones on the wrong side of "
-                 "the Bayes boundary"),
-    })
+    return RichResult(
+        payload={
+            "estimate": e_easy,
+            "easy_only_error": e_easy,
+            "all_examples_error": e_all,
+            "improvement": e_all - e_easy,
+            "n_kept": len(keep),
+            "n": n,
+            "method": ("curriculum learning (Bengio et al. 2009), Section 4.1: train on the clean examples only"),
+            "note": (
+                "the paper reports 16.3% against 17.1% for a linear "
+                "SVM on two Gaussians; the direction is the claim, "
+                "and noisy examples are the ones on the wrong side of "
+                "the Bayes boundary"
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("prgrl: curriculum learning (Bengio et al. 2009). "
-            "Q_lambda(z) proportional to W_lambda(z) P(z) with "
-            "W_1 = 1; it is a curriculum only if H(Q_lambda) increases "
-            "and W_lambda(z) never falls as lambda grows (eqns 3-4), "
-            "which is checkable and is checked. prgrl trains the same "
-            "learner on the schedule and on the shuffled data and "
-            "compares HELD-OUT error under a fixed update budget, "
-            "which is Section 4.2's experiment; easy_only_fit is "
-            "Section 4.1's.")
+    return (
+        "prgrl: curriculum learning (Bengio et al. 2009). "
+        "Q_lambda(z) proportional to W_lambda(z) P(z) with "
+        "W_1 = 1; it is a curriculum only if H(Q_lambda) increases "
+        "and W_lambda(z) never falls as lambda grows (eqns 3-4), "
+        "which is checkable and is checked. prgrl trains the same "
+        "learner on the schedule and on the shuffled data and "
+        "compares HELD-OUT error under a fixed update budget, "
+        "which is Section 4.2's experiment; easy_only_fit is "
+        "Section 4.1's."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 prog_rl = entropy

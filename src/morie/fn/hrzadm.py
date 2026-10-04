@@ -69,17 +69,18 @@ def npaddreg(x, y, h1=None, h2=None, ngrid=25, grids=None):
     n, d = X.shape
     if d < 2:
         raise ValueError("an additive model needs at least two covariates.")
-    a1 = float(n ** -0.2) if h1 is None else float(h1)
+    a1 = float(n**-0.2) if h1 is None else float(h1)
     a2 = float(n ** (-1.0 / (d + 3.0))) if h2 is None else float(h2)
-    mu = float(np.mean(yv))                                     # (3.7)
+    mu = float(np.mean(yv))  # (3.7)
 
     gs = []
     comps = []
     for j in range(d):
-        g = (np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])),
-                         int(ngrid))
-             if grids is None else
-             np.atleast_1d(np.asarray(grids[j], dtype=float)))
+        g = (
+            np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])), int(ngrid))
+            if grids is None
+            else np.atleast_1d(np.asarray(grids[j], dtype=float))
+        )
         gs.append(g)
         # product kernel weights in the other directions, evaluated at
         # each sample point: W2[i, l] = prod_{k != j} K((X_i^k - X_l^k)/h2)
@@ -92,12 +93,12 @@ def npaddreg(x, y, h1=None, h2=None, ngrid=25, grids=None):
         K1 = _gauss((g[:, None] - X[:, j][None, :]) / a1)
         mj = np.zeros(g.size)
         for t in range(int(g.size)):
-            Wt = W2 * K1[t][None, :]                            # (3.9)
+            Wt = W2 * K1[t][None, :]  # (3.9)
             den = np.sum(Wt, axis=1)
             den = np.where(den > 1e-300, den, 1e-300)
             ghat = (Wt @ yv) / den
-            mj[t] = float(np.mean(ghat))                        # (3.8)
-        comps.append(mj - float(np.mean(mj)))                   # (3.6)
+            mj[t] = float(np.mean(ghat))  # (3.8)
+        comps.append(mj - float(np.mean(mj)))  # (3.6)
 
     fit = np.full(n, mu)
     for j in range(d):
@@ -105,10 +106,19 @@ def npaddreg(x, y, h1=None, h2=None, ngrid=25, grids=None):
     r = yv - fit
     return RichResult(
         title="Nonparametric additive model by marginal integration",
-        payload={"mu": mu, "grids": gs, "components": comps,
-                 "fitted": fit, "resid": r, "rss": float(np.sum(r * r)),
-                 "h1": a1, "h2": a2, "d": d, "n": n,
-                 "method": "Horowitz (2009) eq. (3.6)-(3.9) marginal integration"},
+        payload={
+            "mu": mu,
+            "grids": gs,
+            "components": comps,
+            "fitted": fit,
+            "resid": r,
+            "rss": float(np.sum(r * r)),
+            "h1": a1,
+            "h2": a2,
+            "d": d,
+            "n": n,
+            "method": "Horowitz (2009) eq. (3.6)-(3.9) marginal integration",
+        },
     )
 
 
@@ -124,7 +134,7 @@ if __name__ == "__main__":  # pragma: no cover
     n = 150
     x1 = np.linspace(-2, 2, n)
     x2 = np.cos(np.arange(1, n + 1) * 0.9) * 2.0
-    y = 1.0 + x1 + 0.5 * x2 ** 2
+    y = 1.0 + x1 + 0.5 * x2**2
     r = npaddreg(np.column_stack([x1, x2]), y, h1=0.4, h2=0.5)
     assert abs(r["mu"] - float(np.mean(y))) < 1e-12
     # component 1 must be increasing in x1 and centred

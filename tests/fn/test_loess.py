@@ -1,7 +1,6 @@
 """Tests for loess.loess."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.loess import loess
 
 

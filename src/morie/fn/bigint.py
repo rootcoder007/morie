@@ -37,7 +37,7 @@ __all__ = [
     "exact_or_flag",
 ]
 
-_DOUBLE_EXACT = 2 ** 53
+_DOUBLE_EXACT = 2**53
 
 
 def big_factorial(n):

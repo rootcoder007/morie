@@ -94,16 +94,23 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     flagged = int(np.sum(p < 0.05))
     return RichResult(
         title="Dependent-censoring diagnostic",
-        summary_lines=[("n", int(t.size)), ("censored", int(cen.sum())),
-                       ("covariates predicting censoring", flagged)],
-        warnings=["censoring that depends on the unobserved event time is "
-                  "undetectable by any diagnostic; a null result here does not "
-                  "establish independent censoring"],
+        summary_lines=[("n", int(t.size)), ("censored", int(cen.sum())), ("covariates predicting censoring", flagged)],
+        warnings=[
+            "censoring that depends on the unobserved event time is "
+            "undetectable by any diagnostic; a null result here does not "
+            "establish independent censoring"
+        ],
         payload={
-            "beta_censoring": b_c, "se": se, "z": z, "p_value": p,
-            "beta_event": b_ev, "dependent": bool(flagged > 0),
-            "n_flagged": flagged, "n_censored": int(cen.sum()),
-            "converged": conv, "method": "dependent_censoring_hazard",
+            "beta_censoring": b_c,
+            "se": se,
+            "z": z,
+            "p_value": p,
+            "beta_event": b_ev,
+            "dependent": bool(flagged > 0),
+            "n_flagged": flagged,
+            "n_censored": int(cen.sum()),
+            "converged": conv,
+            "method": "dependent_censoring_hazard",
         },
     )
 

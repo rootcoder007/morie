@@ -1,4 +1,5 @@
 """Tests for Ghosal Ch 6-7 consistency modules."""
+
 import math
 
 from morie.fn.gh_c6_1 import ghosal_weak_consist
@@ -21,10 +22,10 @@ from morie.fn.gh_c7_5 import ghosal_dpm_gen_con
 from morie.fn.gh_c7_8 import ghosal_loc_semipara
 from morie.fn.gh_c7_9 import ghosal_linreg_unk_err
 from morie.fn.gh_c7_10 import ghosal_mono_reg_con
-from morie.fn.gh_iid_consist import ghosal_iid_posterior_consistency
 from morie.fn.gh_dp_kl_nbhd import ghosal_dp_kl_nbhd_mass
-from morie.fn.gh_ppt_consist import ghosal_polya_tree_consist_rate
 from morie.fn.gh_dp_reg_post import ghosal_dp_regression_posterior
+from morie.fn.gh_iid_consist import ghosal_iid_posterior_consistency
+from morie.fn.gh_ppt_consist import ghosal_polya_tree_consist_rate
 
 
 def test_weak_consistency_mass_vanishes():
@@ -60,8 +61,7 @@ def test_kl_divergence_exact():
     r = ghosal_kl_diverge([0.5, 0.5], [0.25, 0.75])
     expect = 0.5 * math.log(2.0) + 0.5 * math.log(2.0 / 3.0)
     assert abs(r["estimate"] - expect) < 1e-12
-    assert ghosal_kl_diverge([0.3, 0.7], [0.3, 0.7])["estimate"] \
-        < 1e-12
+    assert ghosal_kl_diverge([0.3, 0.7], [0.3, 0.7])["estimate"] < 1e-12
 
 
 def test_tailfree_multinomial_consistency():
@@ -71,8 +71,7 @@ def test_tailfree_multinomial_consistency():
 
 
 def test_kl_additivity_products():
-    r = ghosal_kl_perm([0.5, 0.5], [0.3, 0.7],
-                       [0.4, 0.6], [0.35, 0.65])
+    r = ghosal_kl_perm([0.5, 0.5], [0.3, 0.7], [0.4, 0.6], [0.35, 0.65])
     assert r["additivity_gap"] < 1e-12
     assert abs(r["estimate"] - sum(r["kl_marginals"])) < 1e-12
 
@@ -110,7 +109,7 @@ def test_alpha_posterior_exact_and_wider():
 def test_pt_kl_series():
     ok = ghosal_pt_kl_prop(2.0)
     assert ok["kl_property"] is True
-    assert ok["estimate"] < 2.0            # sum 1/m^2 < pi^2/6
+    assert ok["estimate"] < 2.0  # sum 1/m^2 < pi^2/6
     bad = ghosal_pt_kl_prop(1.0)
     assert bad["kl_property"] is False
 

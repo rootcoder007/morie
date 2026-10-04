@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner2e29 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_29,
 )
@@ -16,9 +15,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner2e29_basic():
     raw = rng.uniform(0.0, 1.0, n)
     priors = [r / np.sum(raw) for r in raw]
     likelihoods = rng.uniform(0.0, 1.0, n)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_29(
-        priors, likelihoods
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_29(priors, likelihoods)
     assert isinstance(result, dict)
     assert "p_total" in result
     assert math.isfinite(result["p_total"])
@@ -32,9 +29,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner2e29_edge():
     raw = rng.uniform(0.0, 1.0, n)
     priors = [r / np.sum(raw) for r in raw]
     likelihoods = rng.uniform(0.0, 1.0, n)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_29(
-        priors, likelihoods
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_29(priors, likelihoods)
     assert isinstance(result, dict)
     assert "p_total" in result
     assert math.isfinite(result["p_total"])

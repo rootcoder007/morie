@@ -42,6 +42,7 @@ def _softmax(row):
 
 # --- ch. 4, p. 158: the bias/variance trade-off ------------------------
 
+
 def bvdecomp(preds, truth, noisevar=0.0):
     """Squared-error decomposition into bias, variance and noise.
 
@@ -71,12 +72,8 @@ def bvdecomp(preds, truth, noisevar=0.0):
         raise ValueError("truth must have one entry per test point")
     means = [sum(rows[j][i] for j in range(b)) / b for i in range(n)]
     bias2 = sum((means[i] - y[i]) ** 2 for i in range(n)) / n
-    var = sum(
-        sum((rows[j][i] - means[i]) ** 2 for j in range(b)) / b for i in range(n)
-    ) / n
-    mse = sum(
-        sum((rows[j][i] - y[i]) ** 2 for j in range(b)) / b for i in range(n)
-    ) / n
+    var = sum(sum((rows[j][i] - means[i]) ** 2 for j in range(b)) / b for i in range(n)) / n
+    mse = sum(sum((rows[j][i] - y[i]) ** 2 for j in range(b)) / b for i in range(n)) / n
     noisevar = float(noisevar)
     return {
         "bias2": bias2,
@@ -91,6 +88,7 @@ def bvdecomp(preds, truth, noisevar=0.0):
 
 
 # --- ch. 11, p. 410: Monte Carlo dropout -------------------------------
+
 
 def mcdrop(logits):
     """Average the softmax over repeated stochastic forward passes.
@@ -117,10 +115,7 @@ def mcdrop(logits):
         if any(len(p) != k for p in passes):
             raise ValueError("every pass needs the same number of classes")
         mean = [sum(p[c] for p in passes) / t for c in range(k)]
-        sd = [
-            math.sqrt(sum((p[c] - mean[c]) ** 2 for p in passes) / t)
-            for c in range(k)
-        ]
+        sd = [math.sqrt(sum((p[c] - mean[c]) ** 2 for p in passes) / t) for c in range(k)]
         probs.append(mean)
         stds.append(sd)
         ents.append(-sum(v * math.log(v) for v in mean if v > 0.0))
@@ -140,6 +135,7 @@ def mcdrop(logits):
 
 # --- ch. 2, pp. 58-61: splitting off a test set ------------------------
 
+
 def ttsplit(ids, testratio=0.2):
     """Stable train/test split by identifier hash, p. 58.
 
@@ -151,12 +147,12 @@ def ttsplit(ids, testratio=0.2):
     ids = [int(v) for v in ids]
     if not ids:
         raise ValueError("ids must be non-empty")
-    if any(v < 0 or v >= 2 ** 53 for v in ids):
+    if any(v < 0 or v >= 2**53 for v in ids):
         raise ValueError("ids must be non-negative and below 2**53")
     testratio = float(testratio)
     if not 0.0 < testratio < 1.0:
         raise ValueError("testratio must lie strictly in (0, 1)")
-    cut = testratio * 2.0 ** 32
+    cut = testratio * 2.0**32
     test = [i for i, v in enumerate(ids) if _crc32_int64(v) < cut]
     n = len(ids)
     return {
@@ -182,7 +178,7 @@ def tvtsplit(ids, valratio=0.2, testratio=0.2):
     ids = [int(v) for v in ids]
     if not ids:
         raise ValueError("ids must be non-empty")
-    if any(v < 0 or v >= 2 ** 53 for v in ids):
+    if any(v < 0 or v >= 2**53 for v in ids):
         raise ValueError("ids must be non-negative and below 2**53")
     valratio = float(valratio)
     testratio = float(testratio)
@@ -190,7 +186,7 @@ def tvtsplit(ids, valratio=0.2, testratio=0.2):
         raise ValueError("valratio and testratio must be positive and sum below 1")
     test, val, train = [], [], []
     for i, v in enumerate(ids):
-        h = _crc32_int64(v) / 2.0 ** 32
+        h = _crc32_int64(v) / 2.0**32
         if h < testratio:
             test.append(i)
         elif h < testratio + valratio:
@@ -253,6 +249,7 @@ def stratsplt(strata, testratio=0.2):
 
 
 # --- ch. 12, p. 423: Equation 12-1, the convolutional layer ------------
+
 
 def convlayer(x, kernel, bias=None, stride=(1, 1), padding=(0, 0)):
     """Equation 12-1, p. 423 -- output of a convolutional layer.
@@ -322,6 +319,7 @@ def convlayer(x, kernel, bias=None, stride=(1, 1), padding=(0, 0)):
 
 # --- ch. 12, p. 476: object tracking -----------------------------------
 
+
 def trkassign(posdist, appdist=None, weight=0.5, maxn=8):
     """Minimum-cost detection-to-track assignment, p. 476.
 
@@ -359,10 +357,7 @@ def trkassign(posdist, appdist=None, weight=0.5, maxn=8):
         app = [[float(v) for v in r] for r in appdist]
         if len(app) != nt or any(len(r) != nd for r in app):
             raise ValueError("appdist must match the shape of posdist")
-    cost = [
-        [(1.0 - weight) * pos[i][j] + weight * app[i][j] for j in range(nd)]
-        for i in range(nt)
-    ]
+    cost = [[(1.0 - weight) * pos[i][j] + weight * app[i][j] for j in range(nd)] for i in range(nt)]
     m = min(nt, nd)
     best = None
     bestcost = float("inf")
@@ -388,7 +383,7 @@ def _combos(seq, k):
         yield []
         return
     for i in range(len(seq) - k + 1):
-        for rest in _combos(seq[i + 1:], k - 1):
+        for rest in _combos(seq[i + 1 :], k - 1):
             yield [seq[i]] + rest
 
 
@@ -398,11 +393,12 @@ def _perms(seq, k):
         yield []
         return
     for i in range(len(seq)):
-        for rest in _perms(seq[:i] + seq[i + 1:], k - 1):
+        for rest in _perms(seq[:i] + seq[i + 1 :], k - 1):
             yield [seq[i]] + rest
 
 
 # --- ch. 12, pp. 458-459: using a pretrained model ---------------------
+
 
 def pretprep(image, size, mean, sd, logits=None, topk=1):
     """Preprocess an image for a pretrained model, pp. 458-459.

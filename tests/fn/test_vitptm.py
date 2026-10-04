@@ -4,16 +4,10 @@ import pytest
 
 from morie.fn.vitptm import vit_patch_embed
 
-IMG = [[1.0, 2.0, 3.0, 4.0],
-       [5.0, 6.0, 7.0, 8.0],
-       [9.0, 10.0, 11.0, 12.0],
-       [13.0, 14.0, 15.0, 16.0]]
+IMG = [[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0], [9.0, 10.0, 11.0, 12.0], [13.0, 14.0, 15.0, 16.0]]
 
 # raster order over the 2x2 patch grid; row-then-column inside a patch
-PATCHES = [[1.0, 2.0, 5.0, 6.0],
-           [3.0, 4.0, 7.0, 8.0],
-           [9.0, 10.0, 13.0, 14.0],
-           [11.0, 12.0, 15.0, 16.0]]
+PATCHES = [[1.0, 2.0, 5.0, 6.0], [3.0, 4.0, 7.0, 8.0], [9.0, 10.0, 13.0, 14.0], [11.0, 12.0, 15.0, 16.0]]
 
 
 def test_vitptm_reshape_is_the_flattened_patch_sequence():
@@ -27,8 +21,7 @@ def test_vitptm_reshape_is_the_flattened_patch_sequence():
     assert out["n_channels"] == 1
     assert out["patches"] == PATCHES
     # every pixel appears exactly once across the patches
-    assert sorted(v for row in out["patches"] for v in row) == [
-        float(i) for i in range(1, 17)]
+    assert sorted(v for row in out["patches"] for v in row) == [float(i) for i in range(1, 17)]
 
 
 def test_vitptm_embeddings_are_the_patch_times_projection_product():
@@ -56,10 +49,8 @@ def test_vitptm_w_scale_is_linear_in_the_projection():
     two = vit_patch_embed(IMG, 2, 3, w_scale=2.0)
     for i in range(4):
         for j in range(3):
-            assert two["projection"][i][j] == pytest.approx(
-                2.0 * one["projection"][i][j], rel=1e-12)
-            assert two["embeddings"][i][j] == pytest.approx(
-                2.0 * one["embeddings"][i][j], rel=1e-12)
+            assert two["projection"][i][j] == pytest.approx(2.0 * one["projection"][i][j], rel=1e-12)
+            assert two["embeddings"][i][j] == pytest.approx(2.0 * one["embeddings"][i][j], rel=1e-12)
 
 
 def test_vitptm_skip_slides_along_the_single_shared_stream():

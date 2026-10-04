@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["burkov_kneser_ney"]
 
 
-def burkov_kneser_ney(counts_ngram, counts_prefix, continuation_counts,
-                      d=0.75):
+def burkov_kneser_ney(counts_ngram, counts_prefix, continuation_counts, d=0.75):
     """P_KN = max(c - d, 0)/prefix + lambda * P_continuation.
 
     ``continuation_counts`` is ``(n_types_after_prefix,
@@ -27,7 +26,9 @@ def burkov_kneser_ney(counts_ngram, counts_prefix, continuation_counts,
     >>> round(out["estimate"], 10)
     0.425
     """
-    c = float(counts_ngram); p = float(counts_prefix); dd = float(d)
+    c = float(counts_ngram)
+    p = float(counts_prefix)
+    dd = float(d)
     if c < 0 or p <= 0:
         raise ValueError("need non-negative count and positive prefix.")
     if c > p:
@@ -36,18 +37,22 @@ def burkov_kneser_ney(counts_ngram, counts_prefix, continuation_counts,
         raise ValueError(f"the discount d must lie in (0, 1); got {d}.")
     n_after, cont_w, total_types = (float(v) for v in continuation_counts)
     if total_types <= 0 or cont_w < 0 or n_after < 0:
-        raise ValueError("continuation counts must be non-negative with "
-                         "positive total bigram types.")
+        raise ValueError("continuation counts must be non-negative with positive total bigram types.")
     if cont_w > total_types:
-        raise ValueError("a word cannot appear in more contexts than "
-                         "there are bigram types.")
+        raise ValueError("a word cannot appear in more contexts than there are bigram types.")
     lam = dd * n_after / p
     p_cont = cont_w / total_types
     est = max(c - dd, 0.0) / p + lam * p_cont
-    return RichResult(payload={
-        "estimate": est, "discounted_mle": max(c - dd, 0.0) / p,
-        "lambda": lam, "p_continuation": p_cont, "n": int(p),
-        "method": "Kneser-Ney smoothing (Burkov Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "discounted_mle": max(c - dd, 0.0) / p,
+            "lambda": lam,
+            "p_continuation": p_cont,
+            "n": int(p),
+            "method": "Kneser-Ney smoothing (Burkov Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

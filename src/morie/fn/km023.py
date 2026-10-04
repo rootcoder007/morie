@@ -46,11 +46,15 @@ def kamath_ch2_rtd_loss(xhat, d):
     scored = np.where(d == 1, p, 1.0 - p)
     with np.errstate(divide="ignore"):
         losses = -np.log(scored)
-    return RichResult(payload={
-        "estimate": float(np.mean(losses)),
-        "per_token": [float(v) for v in losses],
-        "accuracy": float(np.mean((p >= 0.5) == (d == 1))), "n": len(p),
-        "method": "replaced token detection (RTD) loss (Kamath Eq 2.23)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(losses)),
+            "per_token": [float(v) for v in losses],
+            "accuracy": float(np.mean((p >= 0.5) == (d == 1))),
+            "n": len(p),
+            "method": "replaced token detection (RTD) loss (Kamath Eq 2.23)",
+        }
+    )
 
 
 def cheatsheet():

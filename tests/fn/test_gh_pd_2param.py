@@ -26,8 +26,6 @@ def test_gh_pd_2param_edge():
     v21 = poisdir(s, M, 1, n=2)["Vnk"]
     v22 = poisdir(s, M, 2, n=2)["Vnk"]
     assert v21 * (1 - s) + v22 == pytest.approx(1.0, rel=1e-14)
-    assert poisdir(0.0, 2.0, 3, n=4)["Vnk"] == pytest.approx(2.0 ** 2 / (3 * 4 * 5), rel=1e-14)
+    assert poisdir(0.0, 2.0, 3, n=4)["Vnk"] == pytest.approx(2.0**2 / (3 * 4 * 5), rel=1e-14)
     with pytest.raises(ValueError, match="sigma"):
         poisdir(1.0, 2.0, 3)
-
-

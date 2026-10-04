@@ -1,7 +1,6 @@
 """Tests for aitzmu.compositional_zero_multreplace."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitzmu import compositional_zero_multreplace
 
 

@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["trimmed_causal_effect", "truncated_cf_estimator"]
 
 
-def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
-                          rule="crump"):
+def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None, rule="crump"):
     r"""Trim on the propensity, and say what estimand survives.
 
     Crump, Hotz, Imbens and Mitnik show that the variance-minimising
@@ -93,8 +92,7 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
     else:
         e = np.asarray(propensity, dtype=float).ravel()
         if e.size != n:
-            raise ValueError("propensity has %d entries for %d rows."
-                             % (e.size, n))
+            raise ValueError("propensity has %d entries for %d rows." % (e.size, n))
     e = np.clip(e, 1e-6, 1 - 1e-6)
     inv = 1.0 / (e * (1 - e))
 
@@ -133,9 +131,7 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
 
     keep = (e >= a) & (e <= 1 - a)
     if keep.sum() < 4 or dv[keep].sum() < 2 or (1 - dv[keep]).sum() < 2:
-        raise ValueError(
-            "trimming at alpha = %.3f leaves too few units in one arm." % a
-        )
+        raise ValueError("trimming at alpha = %.3f leaves too few units in one arm." % a)
 
     def ate(mask):
         ee = e[mask]
@@ -146,23 +142,19 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
 
     est = ate(keep)
     untrimmed = ate(np.ones(n, dtype=bool))
-    psi = np.where(keep,
-                   dv * yv / e - (1 - dv) * yv / (1 - e) - est, 0.0)
+    psi = np.where(keep, dv * yv / e - (1 - dv) * yv / (1 - e) - est, 0.0)
     se = float(np.std(psi[keep], ddof=1) / np.sqrt(keep.sum()))
 
     shift = np.nan
     if Xa is not None and (~keep).any() and keep.any():
         sd = Xa.std(axis=0)
         sd = np.where(sd > 0, sd, 1.0)
-        shift = float(np.max(np.abs(
-            (Xa[~keep].mean(axis=0) - Xa[keep].mean(axis=0)) / sd
-        )))
+        shift = float(np.max(np.abs((Xa[~keep].mean(axis=0) - Xa[keep].mean(axis=0)) / sd)))
     return RichResult(
         payload={
             "estimate": est,
             "se": se,
-            "ci": (est - 1.959963984540054 * se,
-                   est + 1.959963984540054 * se),
+            "ci": (est - 1.959963984540054 * se, est + 1.959963984540054 * se),
             "untrimmed_estimate": untrimmed,
             "alpha": float(a),
             "rule": rule,
@@ -176,11 +168,9 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
                 "of substantive interest, and possibly not the population "
                 "any decision concerns" % (a, 1 - a)
             ),
-            "variance_reduction": (float(np.mean(inv) / np.mean(inv[keep]))
-                                   if keep.any() else np.nan),
+            "variance_reduction": (float(np.mean(inv) / np.mean(inv[keep])) if keep.any() else np.nan),
             "variance_note": (
-                "ratio of the untrimmed to trimmed E[1/(e(1-e))], which is "
-                "the precision actually bought"
+                "ratio of the untrimmed to trimmed E[1/(e(1-e))], which is the precision actually bought"
             ),
             "dropped_covariate_shift": shift,
             "shift_note": (
@@ -196,10 +186,7 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
 
 
 def cheatsheet():
-    return (
-        "trncfg: Crump-optimal propensity trimming, reporting the precision "
-        "gained and the estimand given up"
-    )
+    return "trncfg: Crump-optimal propensity trimming, reporting the precision gained and the estimand given up"
 
 
 #: Catalogue alias for :func:`trimmed_causal_effect`.

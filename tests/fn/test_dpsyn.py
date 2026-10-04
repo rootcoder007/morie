@@ -1,7 +1,6 @@
 """Tests for dpsyn.dp_synthetic_data."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpsyn import dp_synthetic_data
 
 
@@ -12,6 +11,8 @@ def test_dpsyn_basic():
     result = dp_synthetic_data(X, epsilon)
     assert isinstance(result, dict)
     assert "synthetic" in result
+
+
 def test_dpsyn_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

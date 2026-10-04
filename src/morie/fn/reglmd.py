@@ -51,8 +51,7 @@ def regression_estimator_multi(y, x, X_mean, weights=None):
         raise ValueError("x must have one row per entry of y.")
     n, p = X.shape
     if n <= p + 1:
-        raise ValueError(f"need more observations than auxiliaries, got "
-                         f"{n} and {p}.")
+        raise ValueError(f"need more observations than auxiliaries, got {n} and {p}.")
     Xm = np.atleast_1d(np.asarray(X_mean, dtype=float)).ravel()
     if Xm.size != p:
         raise ValueError(f"X_mean has {Xm.size} entries for {p} auxiliaries.")
@@ -65,18 +64,23 @@ def regression_estimator_multi(y, x, X_mean, weights=None):
     A = (w[:, None] * Xc).T @ Xc
     b = np.linalg.pinv(A) @ ((w[:, None] * Xc).T @ yc)
     fit = Xc @ b
-    ss_tot = float(np.sum(w * yc ** 2))
-    r2 = float(np.sum(w * fit ** 2) / ss_tot) if ss_tot > 0 else 0.0
-    return RichResult(payload={
-        "mean": ybar + float(b @ (Xm - xbar)),
-        "coefficients": b, "R2": r2,
-        "variance_ratio_to_simple_mean": float(1.0 - r2),
-        "p_over_n": float(p) / float(n),
-        "adjustment": float(b @ (Xm - xbar)),
-        "tradeoff": "gain is (1 - R^2); cost grows with p/n, so weak extra "
-                    "auxiliaries can make the estimator worse",
-        "n": int(n), "p": int(p),
-        "method": "Multivariate regression estimator; more auxiliaries is not automatically better"})
+    ss_tot = float(np.sum(w * yc**2))
+    r2 = float(np.sum(w * fit**2) / ss_tot) if ss_tot > 0 else 0.0
+    return RichResult(
+        payload={
+            "mean": ybar + float(b @ (Xm - xbar)),
+            "coefficients": b,
+            "R2": r2,
+            "variance_ratio_to_simple_mean": float(1.0 - r2),
+            "p_over_n": float(p) / float(n),
+            "adjustment": float(b @ (Xm - xbar)),
+            "tradeoff": "gain is (1 - R^2); cost grows with p/n, so weak extra "
+            "auxiliaries can make the estimator worse",
+            "n": int(n),
+            "p": int(p),
+            "method": "Multivariate regression estimator; more auxiliaries is not automatically better",
+        }
+    )
 
 
 def cheatsheet():

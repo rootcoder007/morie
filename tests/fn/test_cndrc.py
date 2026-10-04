@@ -1,7 +1,6 @@
 """Tests for morie.fn.cndrc — Condorcet winner."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cndrc import cndrc
 
 

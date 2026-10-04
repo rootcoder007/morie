@@ -60,9 +60,7 @@ def seira_asymptomatic(S, E, I, A, R, params, t_max=160.0, dt=0.1):
     """
     pr = [float(v) for v in np.atleast_1d(np.asarray(params, dtype=float)).tolist()]
     if len(pr) != 6:
-        raise ValueError(
-            "seira_asymptomatic: params must be (beta, sigma, gamma, p, kappa, gamma_a)"
-        )
+        raise ValueError("seira_asymptomatic: params must be (beta, sigma, gamma, p, kappa, gamma_a)")
     beta, sigma, gamma, p, kappa, gamma_a = pr
     if beta < 0.0 or sigma < 0.0 or gamma < 0.0 or kappa < 0.0 or gamma_a < 0.0:
         raise ValueError("seira_asymptomatic: rates must be non-negative")

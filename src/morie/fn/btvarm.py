@@ -74,20 +74,23 @@ def boot_var_mean(x, B=200, rng=2, exhaustive=False):
     for e in mb:
         vv += (e - mm) * (e - mm)
     vv /= nb
-    return RichResult(payload={
-        "estimate": vv,
-        "var_b": vv,
-        "mean_b": mb,
-        "grand_mean": mm,
-        "B": nb,
-        "n": n,
-        "exhaustive": bool(exhaustive),
-        "method": "Bootstrap variance of the sample mean",
-    })
+    return RichResult(
+        payload={
+            "estimate": vv,
+            "var_b": vv,
+            "mean_b": mb,
+            "grand_mean": mm,
+            "B": nb,
+            "n": n,
+            "exhaustive": bool(exhaustive),
+            "method": "Bootstrap variance of the sample mean",
+        }
+    )
 
 
 def cheatsheet():
     return "btvarm: Bootstrap variance of the sample mean"
+
 
 # public names resolved by fn/_lazy_map.json
 bootvarmean = boot_var_mean

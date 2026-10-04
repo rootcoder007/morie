@@ -3,7 +3,6 @@
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmqlor import kamath_qlora_4bit
 
 
@@ -21,8 +20,19 @@ def test_kmqlor_basic():
     x = rng.normal(0, 1, in_dim)
     result = kamath_qlora_4bit(W0_nf4, A, B, alpha, r, x)
     assert isinstance(result, dict)
-    for key in ("h", "base", "delta", "W0_dequantized", "scaling", "rank",
-                "n_trainable", "n_frozen_4bit", "estimate", "n", "method"):
+    for key in (
+        "h",
+        "base",
+        "delta",
+        "W0_dequantized",
+        "scaling",
+        "rank",
+        "n_trainable",
+        "n_frozen_4bit",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     h = result["h"]
     assert len(h) == out_dim

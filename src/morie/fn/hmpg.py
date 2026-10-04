@@ -124,7 +124,9 @@ def geron_policy_gradient(trajectories, policy, gamma=0.99, baseline=False):
             out = out[1]
         gv = np.atleast_1d(np.asarray(out, dtype=float)).ravel()
         if not np.all(np.isfinite(gv)):
-            raise ValueError(f"geron_policy_gradient: policy returned a non-finite gradient at state {s!r}, action {a!r}")
+            raise ValueError(
+                f"geron_policy_gradient: policy returned a non-finite gradient at state {s!r}, action {a!r}"
+            )
         if grad is None:
             grad = np.zeros_like(gv)
         elif gv.shape != grad.shape:

@@ -64,9 +64,11 @@ def alphazero_dirichlet_concentration(avg_legal, scale=10.0):
             "published_alpha": pub,
             "scale": s,
             "avg_legal": b,
-            "method": ("Dirichlet concentration alpha = scale / avg legal moves; "
-                       "the inverse-proportionality rule is the paper's, the "
-                       "scale of 10 is inferred from its three printed values"),
+            "method": (
+                "Dirichlet concentration alpha = scale / avg legal moves; "
+                "the inverse-proportionality rule is the paper's, the "
+                "scale of 10 is inferred from its three printed values"
+            ),
         },
     )
 

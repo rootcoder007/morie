@@ -11,15 +11,14 @@ the CHT criterion is exactly zero on the identified set, and the LP
 bounds land on the vertices they must land on.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bndcvx import bound_convex_estimator
 from morie.fn.bndest import bound_estimation
 from morie.fn.bndnln import bound_nonlinear
 from morie.fn.bndpl import bnp_density_pl
 from morie.fn.bndvar import bound_variance_term
-
 
 # --------------------------------------------------- Manski bounds
 
@@ -98,8 +97,7 @@ def test_imbens_manski_c_hits_both_limits_exactly():
     mid = bound_variance_term(0.5, 0.55, 1.0, 1.0, 400)
     assert wide["c"] < mid["c"] < point["c"]
     # and c is monotone decreasing in the set's width
-    cs = [bound_variance_term(0.5, 0.5 + d, 1.0, 1.0, 400)["c"]
-          for d in (0.0, 0.02, 0.05, 0.2)]
+    cs = [bound_variance_term(0.5, 0.5 + d, 1.0, 1.0, 400)["c"] for d in (0.0, 0.02, 0.05, 0.2)]
     assert cs[0] > cs[1] > cs[2] > cs[3]
 
 
@@ -109,7 +107,7 @@ def test_imbens_manski_interval_covers_the_parameter():
     case for a parameter-covering interval."""
     rng = np.random.default_rng(7)
     n = 400
-    theta = 0.3            # true parameter AT the lower bound
+    theta = 0.3  # true parameter AT the lower bound
     width = 0.2
     hits = 0
     reps = 300
@@ -215,18 +213,16 @@ def test_lp_bounds_tighten_as_restrictions_accumulate():
     monotonicity of identification in the maintained restrictions,
     which is the logic the MST framework runs on."""
     free = bound_convex_estimator([1.0, 1.0, 1.0])
-    eq = bound_convex_estimator([1.0, 1.0, 1.0],
-                                A_eq=[[1.0, 1.0, 0.0]], b_eq=[0.8])
-    both = bound_convex_estimator([1.0, 1.0, 1.0],
-                                  A_eq=[[1.0, 1.0, 0.0]], b_eq=[0.8],
-                                  A_ub=[[0.0, 0.0, 1.0]], b_ub=[0.3])
+    eq = bound_convex_estimator([1.0, 1.0, 1.0], A_eq=[[1.0, 1.0, 0.0]], b_eq=[0.8])
+    both = bound_convex_estimator(
+        [1.0, 1.0, 1.0], A_eq=[[1.0, 1.0, 0.0]], b_eq=[0.8], A_ub=[[0.0, 0.0, 1.0]], b_ub=[0.3]
+    )
     assert free["width"] >= eq["width"] >= both["width"]
     assert both["upper"] == pytest.approx(0.8 + 0.3, rel=1e-9)
 
 
 def test_lp_infeasibility_is_a_specification_rejection():
-    o = bound_convex_estimator([1.0], A_eq=[[1.0]], b_eq=[2.0],
-                               bounds=[(0.0, 1.0)])
+    o = bound_convex_estimator([1.0], A_eq=[[1.0]], b_eq=[2.0], bounds=[(0.0, 1.0)])
     assert o["feasible"] is False
     assert np.isnan(o["lower"]) and np.isnan(o["upper"])
     # and an unbounded direction is reported as such, not as a number
@@ -247,12 +243,11 @@ def test_lp_validates_shapes():
 def test_polya_tree_is_a_density_that_tracks_the_sample():
     rng = np.random.default_rng(11)
     x = rng.normal(size=1500)
-    o = bnp_density_pl(x, grid=np.linspace(-4, 4, 400), tree_depth=7,
-                       lo=-5, hi=5)
+    o = bnp_density_pl(x, grid=np.linspace(-4, 4, 400), tree_depth=7, lo=-5, hi=5)
     assert o["mass"] == pytest.approx(1.0, abs=0.02)
     assert np.all(o["density"] >= 0)
     g = o["grid"]
-    truth = np.exp(-0.5 * g ** 2) / np.sqrt(2 * np.pi)
+    truth = np.exp(-0.5 * g**2) / np.sqrt(2 * np.pi)
     assert np.mean(np.abs(o["density"] - truth)) < 0.05
 
 
@@ -264,7 +259,7 @@ def test_polya_tree_alpha_interpolates_base_and_histogram():
     g = np.linspace(-2, 2, 200)
     tight = bnp_density_pl(x, grid=g, alpha=0.01, lo=-3, hi=3)
     loose = bnp_density_pl(x, grid=g, alpha=1e4, lo=-3, hi=3)
-    base = 1.0 / 6.0                      # uniform on [-3, 3]
+    base = 1.0 / 6.0  # uniform on [-3, 3]
     # huge alpha: essentially the base measure everywhere
     assert np.max(np.abs(loose["density"] - base)) < 0.02
     # small alpha: peaked where the data are

@@ -72,9 +72,7 @@ def geron_precision(y_true, y_pred, positive=1, average=None):
         if not (0 <= pos < n_classes):
             raise ValueError(f"positive class {pos} not in [0, {n_classes - 1}].")
         if predicted[pos] == 0:
-            raise ValueError(
-                f"class {pos} was never predicted, so TP+FP = 0 and precision is undefined."
-            )
+            raise ValueError(f"class {pos} was never predicted, so TP+FP = 0 and precision is undefined.")
         tp = int(M[pos, pos])
         fp = int(predicted[pos] - M[pos, pos])
         val = tp / (tp + fp)

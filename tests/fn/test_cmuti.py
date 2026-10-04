@@ -1,7 +1,6 @@
 """Tests for cmuti.copula_mutual_information."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmuti import copula_mutual_information
 
 

@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_speech_features
 
-
 FS = 8000.0
 # a 125 Hz harmonic series: period 64 samples exactly
 V = [sum(math.sin(2 * math.pi * k * 125 * t / FS) / k for k in range(1, 15)) for t in range(1024)]

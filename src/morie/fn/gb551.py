@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rank-order statistics: midranks of the absolute differences."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['absrank', 'gibbons_rank_order_stat']
+__all__ = ["absrank", "gibbons_rank_order_stat"]
 
 
 def absrank(d):

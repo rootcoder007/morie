@@ -1,7 +1,6 @@
 """Tests for cooks_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cooks import cooks_distance
 
 

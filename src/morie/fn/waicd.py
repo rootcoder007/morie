@@ -3,7 +3,6 @@
 
 import math
 
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -59,10 +58,18 @@ def waic_diagnostic(log_lik):
         pw += v
         if v > 0.4:
             high += 1
-    return RichResult(payload={
-        "estimate": -2.0 * (lppd - pw), "lppd": lppd, "p_waic": pw,
-        "elpd": lppd - pw, "n_high_var": high, "S": Sn, "n": n,
-        "method": "WAIC with effective parameter count"})
+    return RichResult(
+        payload={
+            "estimate": -2.0 * (lppd - pw),
+            "lppd": lppd,
+            "p_waic": pw,
+            "elpd": lppd - pw,
+            "n_high_var": high,
+            "S": Sn,
+            "n": n,
+            "method": "WAIC with effective parameter count",
+        }
+    )
 
 
 waicdiagnostic = waic_diagnostic

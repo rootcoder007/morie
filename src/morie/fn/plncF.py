@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["plncF", "planck_function"]
 
 
-def planck_function(lam, T, h=6.62607015e-34, c=299792458.0,
-                    kB=1.380649e-23):
+def planck_function(lam, T, h=6.62607015e-34, c=299792458.0, kB=1.380649e-23):
     """
     Planck spectral radiance in the WAVELENGTH form,
 
@@ -61,29 +60,34 @@ def planck_function(lam, T, h=6.62607015e-34, c=299792458.0,
             raise ValueError("plncF: wavelengths must be > 0")
         x = h * c / (l * kB * T)
         x = min(x, 700.0)
-        B = (2.0 * h * c * c / l ** 5) / (math.exp(x) - 1.0 + 1e-300)
+        B = (2.0 * h * c * c / l**5) / (math.exp(x) - 1.0 + 1e-300)
         vals.append(B)
     # Wien displacement: lam_max = b / T, b = hc / (kB x*) with
     # x* = 4.965114231744276 the root of (x-5)e^x + 5 = 0
     xstar = 4.965114231744276
     b_wien = h * c / (kB * xstar)
     lam_peak = b_wien / T
-    sigma = 2.0 * math.pi ** 5 * kB ** 4 / (15.0 * h ** 3 * c ** 2)
-    return RichResult(payload={
-        "estimate": vals,
-        "peak_wavelength": lam_peak,
-        "wien_constant": b_wien,
-        "total_power": sigma * T ** 4,
-        "T": T,
-        "method": "Planck spectral radiance, wavelength form B(lam,T) = 2hc^2/lam^5 / (exp(hc/lam kB T)-1)",
-    })
+    sigma = 2.0 * math.pi**5 * kB**4 / (15.0 * h**3 * c**2)
+    return RichResult(
+        payload={
+            "estimate": vals,
+            "peak_wavelength": lam_peak,
+            "wien_constant": b_wien,
+            "total_power": sigma * T**4,
+            "T": T,
+            "method": "Planck spectral radiance, wavelength form B(lam,T) = 2hc^2/lam^5 / (exp(hc/lam kB T)-1)",
+        }
+    )
 
 
 plncF = planck_function
 
 
 def cheatsheet():
-    return "plncF(lam, T) -> Planck B(lam,T); Wien peak b/T; consistent with plank (frequency form) via c/lam^2 Jacobian"
+    return (
+        "plncF(lam, T) -> Planck B(lam,T); Wien peak b/T; consistent with plank (frequency form) via c/lam^2 Jacobian"
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 planckfunction = planck_function

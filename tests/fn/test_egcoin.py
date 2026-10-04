@@ -1,9 +1,10 @@
 """Tests for egcoin."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.egcoin import engle_granger_2step
+
 
 def test_egcoin_basic():
     rng = np.random.default_rng(0)

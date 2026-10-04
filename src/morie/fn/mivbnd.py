@@ -76,8 +76,8 @@ def monotone_iv_bounds(y, D, Z, y_min=None, y_max=None):
     def level_bounds(d):
         lb, ub, wt = [], [], []
         for v in levels:
-            sel = Z == v
-            arm = sel & (D == d)
+            sel = v == Z
+            arm = sel & (d == D)
             p = arm.sum() / sel.sum()
             mean = y[arm].mean() if arm.any() else 0.0
             lb.append(mean * p + lo_y * (1 - p))

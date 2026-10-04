@@ -133,17 +133,24 @@ def meta1l(y, w, X, ps=None):
     br = _ols(Dr, ry)
     cate_r = D @ br
 
-    return RichResult(payload={
-        "estimate": {
-            "s": float(np.mean(cate_s)), "t": float(np.mean(cate_t)),
-            "x": float(np.mean(cate_x)), "r": float(np.mean(cate_r)),
-        },
-        "cate_s": cate_s, "cate_t": cate_t,
-        "cate_x": cate_x, "cate_r": cate_r,
-        "coef_r": br,
-        "n": n, "n_treat": len(i1),
-        "method": "S/T/X (Kunzel et al. 2019) + R (Nie-Wager 2021) metalearners, OLS base learners",
-    })
+    return RichResult(
+        payload={
+            "estimate": {
+                "s": float(np.mean(cate_s)),
+                "t": float(np.mean(cate_t)),
+                "x": float(np.mean(cate_x)),
+                "r": float(np.mean(cate_r)),
+            },
+            "cate_s": cate_s,
+            "cate_t": cate_t,
+            "cate_x": cate_x,
+            "cate_r": cate_r,
+            "coef_r": br,
+            "n": n,
+            "n_treat": len(i1),
+            "method": "S/T/X (Kunzel et al. 2019) + R (Nie-Wager 2021) metalearners, OLS base learners",
+        }
+    )
 
 
 metalearner_ensemble = meta1l
@@ -151,6 +158,7 @@ metalearner_ensemble = meta1l
 
 def cheatsheet():
     return "meta1l(y, w, X, ps) -> S/T/X/R metalearner CATEs with OLS base learners."
+
 
 # public names resolved by fn/_lazy_map.json
 meta_learner_ensemble = meta1l

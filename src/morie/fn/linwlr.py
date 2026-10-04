@@ -59,7 +59,6 @@ Hernan, M. A. & Robins, J. M. (2020) *Causal Inference: What If*,
 Chapman & Hall/CRC, Ch. 14 (g-estimation of structural nested models).
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -79,9 +78,7 @@ def blip(a, w, psi):
     return out
 
 
-def linear_weighted_learner(y, A, W, propensity=None, method="gest",
-                            baseline=None, pi_covariates=None,
-                            ridge=1e-10):
+def linear_weighted_learner(y, A, W, propensity=None, method="gest", baseline=None, pi_covariates=None, ridge=1e-10):
     r"""Estimate a linear blip function.
 
     Parameters
@@ -122,18 +119,15 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest",
         r["estimate"]
     """
     if method not in _METHODS:
-        raise ValueError("linear_weighted_learner: method must be 'gest' "
-                         "or 'wls', got %r" % (method,))
+        raise ValueError("linear_weighted_learner: method must be 'gest' or 'wls', got %r" % (method,))
     yv = k.vec(y)
     av = k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("linear_weighted_learner: %d outcomes but %d "
-                         "treatments" % (n, len(av)))
+        raise ValueError("linear_weighted_learner: %d outcomes but %d treatments" % (n, len(av)))
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("linear_weighted_learner: %d outcomes but %d "
-                         "history rows" % (n, len(Wm)))
+        raise ValueError("linear_weighted_learner: %d outcomes but %d history rows" % (n, len(Wm)))
     binary = all(v in (0.0, 1.0) for v in av)
 
     if propensity is None:
@@ -141,25 +135,23 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest",
             Zsrc = k.mat(pi_covariates)
             if len(Zsrc) != n:
                 raise ValueError(
-                    "linear_weighted_learner: %d propensity covariate "
-                    "rows for %d observations" % (len(Zsrc), n))
+                    "linear_weighted_learner: %d propensity covariate rows for %d observations" % (len(Zsrc), n)
+                )
         else:
             Zsrc = Wm if Wm and Wm[0] else None
         Z = k.design(Zsrc, n)
         if binary:
-            pi = [k.sigmoid(v) for v in k.matvec(Z, k.logit_irls(Z, av, 60,
-                                                                 ridge))]
+            pi = [k.sigmoid(v) for v in k.matvec(Z, k.logit_irls(Z, av, 60, ridge))]
         else:
             pi = k.matvec(Z, k.lstsq(Z, av, ridge))
     else:
         pi = [float(v) for v in k.vec(propensity)]
         if len(pi) != n:
-            raise ValueError("linear_weighted_learner: %d propensities "
-                             "for %d observations" % (len(pi), n))
+            raise ValueError("linear_weighted_learner: %d propensities for %d observations" % (len(pi), n))
     if binary and any(p <= 0.0 or p >= 1.0 for p in pi):
-        raise ValueError("linear_weighted_learner: a propensity of 0 or 1 "
-                         "violates positivity and makes the blip "
-                         "unidentified there")
+        raise ValueError(
+            "linear_weighted_learner: a propensity of 0 or 1 violates positivity and makes the blip unidentified there"
+        )
 
     ytilde = list(yv)
     if baseline is not None:
@@ -194,51 +186,53 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest",
         basis = [[1.0] + list(Wm[i]) for i in range(n)]
         cen = [av[i] - pi[i] for i in range(n)]
         q = p + 1
-        M = [[sum(cen[i] * basis[i][a] * av[i] * basis[i][b]
-                  for i in range(n)) for b in range(q)] for a in range(q)]
-        rhs = [sum(cen[i] * basis[i][a] * ytilde[i] for i in range(n))
-               for a in range(q)]
+        M = [[sum(cen[i] * basis[i][a] * av[i] * basis[i][b] for i in range(n)) for b in range(q)] for a in range(q)]
+        rhs = [sum(cen[i] * basis[i][a] * ytilde[i] for i in range(n)) for a in range(q)]
         for a in range(q):
             M[a][a] += ridge
         psi = k.ridgesolve(M, rhs, ridge)
-        resid = [ytilde[i] - av[i] * sum(psi[j] * basis[i][j]
-                                         for j in range(q))
-                 for i in range(n)]
+        resid = [ytilde[i] - av[i] * sum(psi[j] * basis[i][j] for j in range(q)) for i in range(n)]
         # sandwich variance for the linear estimating equation
-        bread = [[sum(cen[i] * basis[i][a] * av[i] * basis[i][b]
-                      for i in range(n)) / n for b in range(q)]
-                 for a in range(q)]
-        meat = [[sum((cen[i] * basis[i][a] * resid[i])
-                     * (cen[i] * basis[i][b] * resid[i])
-                     for i in range(n)) / n for b in range(q)]
-                for a in range(q)]
+        bread = [
+            [sum(cen[i] * basis[i][a] * av[i] * basis[i][b] for i in range(n)) / n for b in range(q)] for a in range(q)
+        ]
+        meat = [
+            [
+                sum((cen[i] * basis[i][a] * resid[i]) * (cen[i] * basis[i][b] * resid[i]) for i in range(n)) / n
+                for b in range(q)
+            ]
+            for a in range(q)
+        ]
         se = _sandwich_se(bread, meat, n, ridge)
     else:
-        w = [1.0 / pi[i] if av[i] > 0.5 else 1.0 / (1.0 - pi[i])
-             for i in range(n)] if binary else [1.0] * n
-        X = [[av[i]] + [av[i] * Wm[i][j] for j in range(p)]
-             + list(Wm[i]) for i in range(n)]
+        w = [1.0 / pi[i] if av[i] > 0.5 else 1.0 / (1.0 - pi[i]) for i in range(n)] if binary else [1.0] * n
+        X = [[av[i]] + [av[i] * Wm[i][j] for j in range(p)] + list(Wm[i]) for i in range(n)]
         fit = k.wls(X, ytilde, w)
         psi = [fit["coef"][1]] + [fit["coef"][2 + j] for j in range(p)]
         se = [fit["se"][1]] + [fit["se"][2 + j] for j in range(p)]
         resid = fit["resid"]
 
-    return RichResult(payload={
-        "estimate": psi[0], "se": se[0] if se else float("nan"),
-        "psi": psi, "psi_se": se,
-        "propensity": pi, "residual": resid,
-        "blip": blip(av, Wm if p else None, psi),
-        "binary_treatment": binary, "method_used": method, "n": n,
-        "method": "linear blip by %s, Robins (2004) optimal structural "
-                  "nested models" % ("g-estimation" if method == "gest"
-                                     else "weighted least squares"),
-    })
+    return RichResult(
+        payload={
+            "estimate": psi[0],
+            "se": se[0] if se else float("nan"),
+            "psi": psi,
+            "psi_se": se,
+            "propensity": pi,
+            "residual": resid,
+            "blip": blip(av, Wm if p else None, psi),
+            "binary_treatment": binary,
+            "method_used": method,
+            "n": n,
+            "method": "linear blip by %s, Robins (2004) optimal structural "
+            "nested models" % ("g-estimation" if method == "gest" else "weighted least squares"),
+        }
+    )
 
 
 def _sandwich_se(bread, meat, n, ridge):
     q = len(bread)
-    inv = [k.ridgesolve(bread, [1.0 if j == a else 0.0 for j in range(q)],
-                        ridge) for a in range(q)]
+    inv = [k.ridgesolve(bread, [1.0 if j == a else 0.0 for j in range(q)], ridge) for a in range(q)]
     out = []
     for a in range(q):
         t = 0.0
@@ -250,10 +244,12 @@ def _sandwich_se(bread, meat, n, ridge):
 
 
 def cheatsheet():
-    return ("linwlr: linear blip gamma(a,w) = a(psi0 + psi1'w) by "
-            "g-estimation on A - E[A|W] (Robins 2004), or by IP-weighted "
-            "least squares. Consistent if the PROPENSITY is right; no "
-            "double-robustness claimed without an outcome model.")
+    return (
+        "linwlr: linear blip gamma(a,w) = a(psi0 + psi1'w) by "
+        "g-estimation on A - E[A|W] (Robins 2004), or by IP-weighted "
+        "least squares. Consistent if the PROPENSITY is right; no "
+        "double-robustness claimed without an outcome model."
+    )
 
 
 # compact alias per ledger/NAMING.md

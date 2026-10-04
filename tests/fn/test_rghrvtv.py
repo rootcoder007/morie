@@ -6,9 +6,10 @@ import pytest
 
 from morie.fn.bsatf import rangayyan_hrv_time_varying
 
-
-RR = [0.8 + 0.05 * math.sin(2 * math.pi * 0.1 * 0.8 * k) + 0.02 * math.sin(2 * math.pi * 0.3 * 0.8 * k)
-      for k in range(400)]
+RR = [
+    0.8 + 0.05 * math.sin(2 * math.pi * 0.1 * 0.8 * k) + 0.02 * math.sin(2 * math.pi * 0.3 * 0.8 * k)
+    for k in range(400)
+]
 
 
 def test_rghrvtv_basic():

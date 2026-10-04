@@ -84,17 +84,18 @@ def kosorok_ch2_frechet_differentiability(phi, theta, h_n, derivative=None):
 
     ratios = []
     for h, nrm in zip(seq, norms):
-        num = np.asarray(phi(th + h), dtype=float) - base - np.asarray(
-            derivative(h), dtype=float
-        )
+        num = np.asarray(phi(th + h), dtype=float) - base - np.asarray(derivative(h), dtype=float)
         ratios.append(float(np.linalg.norm(num) / nrm))
     ratios = np.array(ratios)
     order = np.argsort(-norms)  # largest perturbation first
     r_sorted = ratios[order]
     return RichResult(
-        payload={"ratios": ratios, "norms": norms,
-                 "ratio_shrinking": bool(r_sorted[-1] <= r_sorted[0] + 1e-12),
-                 "method": "||phi(th+h) - phi(th) - phi'(h)|| / ||h|| along h_n"}
+        payload={
+            "ratios": ratios,
+            "norms": norms,
+            "ratio_shrinking": bool(r_sorted[-1] <= r_sorted[0] + 1e-12),
+            "method": "||phi(th+h) - phi(th) - phi'(h)|| / ||h|| along h_n",
+        }
     )
 
 

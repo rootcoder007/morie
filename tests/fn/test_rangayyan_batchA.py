@@ -9,31 +9,24 @@ import math
 
 import pytest
 
-from morie.fn.bsastat import pdfmean
-from morie.fn.bsastat import pdfms
-from morie.fn.bsastat import pdfvar
-from morie.fn.bsastat import pdfskew
-from morie.fn.bsastat import pdfkurt
-from morie.fn.bsastat import diffent
-from morie.fn.bsastat import smean
-from morie.fn.bsastat import srms
-from morie.fn.bsafilt import shannon
-from morie.fn.bsastat import noisemodel
-from morie.fn.bsastat import meansum
-from morie.fn.bsastat import ensmean
 from morie.fn.bsacorr import ensavg
-from morie.fn.bsastat import covxy
-from morie.fn.bsasig import diracdelta
-from morie.fn.bsasig import deltaarea
-from morie.fn.bsasig import deltalim
-from morie.fn.bsasig import ustep
-from morie.fn.bsasig import sifting
+from morie.fn.bsafilt import rampfilt, shannon
 from morie.fn.bsaphys import deltadecomp
-from morie.fn.bsasig import contconv
-from morie.fn.bsasig import contconvalt
-from morie.fn.bsasig import kdelta
-from morie.fn.bsasig import stepseq
-from morie.fn.bsafilt import rampfilt
+from morie.fn.bsasig import contconv, contconvalt, deltaarea, deltalim, diracdelta, kdelta, sifting, stepseq, ustep
+from morie.fn.bsastat import (
+    covxy,
+    diffent,
+    ensmean,
+    meansum,
+    noisemodel,
+    pdfkurt,
+    pdfmean,
+    pdfms,
+    pdfskew,
+    pdfvar,
+    smean,
+    srms,
+)
 
 
 def gauss(mu=0.0, sd=1.0):
@@ -49,6 +42,7 @@ UGRID = [i / 4000.0 for i in range(4001)]
 
 
 # ------------------------------------------------------------- eqs 3.1-3.6
+
 
 def test_pdfmean_eq31_gaussian():
     # first-order moment of N(2, 1.5) is its mean
@@ -86,8 +80,7 @@ def test_pdfvar_cv_is_none_at_zero_mean():
 
 def test_pdfskew_eq34_zero_for_symmetric():
     g = [i / 1000.0 - 8.0 for i in range(16001)]
-    assert pdfskew(gauss(0.0, 1.0), x=g)["skewness"] == pytest.approx(
-        0.0, abs=1e-8)
+    assert pdfskew(gauss(0.0, 1.0), x=g)["skewness"] == pytest.approx(0.0, abs=1e-8)
 
 
 def test_pdfskew_eq34_exponential_is_two():
@@ -115,8 +108,7 @@ def test_diffent_eq36_gaussian_closed_form():
     sd = 2.0
     want = 0.5 * math.log2(2 * math.pi * math.e * sd * sd)
     g = [i / 500.0 - 24.0 for i in range(24001)]
-    assert diffent(gauss(0.0, sd), x=g)["entropy"] == pytest.approx(
-        want, abs=1e-6)
+    assert diffent(gauss(0.0, sd), x=g)["entropy"] == pytest.approx(want, abs=1e-6)
 
 
 def test_diffent_eq36_can_be_negative():
@@ -127,6 +119,7 @@ def test_diffent_eq36_can_be_negative():
 
 
 # ----------------------------------------------------------- eqs 3.7-3.11
+
 
 def test_smean_eq37():
     assert smean([1.0, 2.0, 6.0])["mean"] == pytest.approx(3.0)
@@ -141,9 +134,9 @@ def test_smean_rejects_empty():
 def test_srms_eqs38_310_divisor_is_N():
     x = [3.0, 4.0]
     r = srms(x)
-    assert r["ms"] == pytest.approx(12.5)             # (9 + 16) / 2
+    assert r["ms"] == pytest.approx(12.5)  # (9 + 16) / 2
     assert r["rms"] == pytest.approx(math.sqrt(12.5))
-    assert r["sd"] == pytest.approx(0.5)              # N, not N-1
+    assert r["sd"] == pytest.approx(0.5)  # N, not N-1
     assert r["ddof"] == 0
 
 
@@ -170,6 +163,7 @@ def test_shannon_normalizes_unnormalized_counts():
 
 # ---------------------------------------------------------- eqs 3.12-3.22
 
+
 def test_noisemodel_eq312_and_313():
     x = [1.0, 2.0, 3.0, 4.0]
     e = [0.5, -0.5, 0.5, -0.5]
@@ -183,8 +177,7 @@ def test_noisemodel_eq314_reports_the_gap_when_correlated():
     x = [1.0, 2.0, 3.0, 4.0]
     r = noisemodel(x, x)
     assert r["correlation"] == pytest.approx(1.0)
-    assert r["variance_observed"] == pytest.approx(4.0 * r["variance_additive"]
-                                                   / 2.0)
+    assert r["variance_observed"] == pytest.approx(4.0 * r["variance_additive"] / 2.0)
 
 
 def test_noisemodel_eq314_holds_when_orthogonal():
@@ -247,8 +240,7 @@ def test_covxy_ddof_one_matches_unbiased():
     x = [1.0, 2.0, 3.0, 4.0]
     y = [4.0, 1.0, 3.0, 2.0]
     n = len(x)
-    assert covxy(x, y, ddof=1)["covariance"] == pytest.approx(
-        covxy(x, y)["covariance"] * n / (n - 1))
+    assert covxy(x, y, ddof=1)["covariance"] == pytest.approx(covxy(x, y)["covariance"] * n / (n - 1))
 
 
 def test_covxy_correlation_none_for_constant():
@@ -256,6 +248,7 @@ def test_covxy_correlation_none_for_constant():
 
 
 # ---------------------------------------------------------- eqs 3.24-3.35
+
 
 def test_diracdelta_eq324_is_undefined_at_origin():
     r = diracdelta([-1.0, 0.0, 1.0])
@@ -277,9 +270,9 @@ def test_deltaarea_eq325_invariant_to_width():
 
 def test_deltaarea_eq325_flags_a_non_delta():
     grid = [i / 100.0 - 1.0 for i in range(201)]
-    vals = [0.5 if abs(v) <= 1.0 else 0.0 for v in grid]   # area 1.0
+    vals = [0.5 if abs(v) <= 1.0 else 0.0 for v in grid]  # area 1.0
     assert deltaarea(t=grid, values=vals)["unit_area"] is True
-    vals2 = [v * 2 for v in vals]                          # area 2.0
+    vals2 = [v * 2 for v in vals]  # area 2.0
     assert deltaarea(t=grid, values=vals2)["unit_area"] is False
 
 
@@ -296,10 +289,9 @@ def test_deltalim_eq326_diverges_at_origin():
 
 def test_deltalim_area_tends_to_one():
     # integral over [-L, L] is L^a -> 1 as a -> 0
-    areas = [deltalim([-3.0, 3.0], a)["area_symmetric"]
-             for a in (0.8, 0.4, 0.2, 0.05)]
+    areas = [deltalim([-3.0, 3.0], a)["area_symmetric"] for a in (0.8, 0.4, 0.2, 0.05)]
     assert areas == sorted(areas, reverse=True)
-    assert areas[-1] == pytest.approx(3.0 ** 0.05)
+    assert areas[-1] == pytest.approx(3.0**0.05)
 
 
 def test_ustep_eq327_is_zero_at_origin():
@@ -312,7 +304,7 @@ def test_ustep_shift():
 
 
 def test_sifting_eq328_selects_the_value():
-    r = sifting(lambda t: t ** 2 + 1.0, 2.0, 0.0, 5.0)
+    r = sifting(lambda t: t**2 + 1.0, 2.0, 0.0, 5.0)
     assert r["value"] == pytest.approx(5.0)
     assert r["inside"] is True
 
@@ -359,8 +351,7 @@ def test_contconvalt_eq331_commutes_with_eq330():
 def test_kdelta_eq334():
     r = kdelta(5)
     assert r["delta"] == [1.0, 0.0, 0.0, 0.0, 0.0]
-    assert kdelta(5, shift=2, amplitude=1.5)["delta"] == [
-        0.0, 0.0, 1.5, 0.0, 0.0]
+    assert kdelta(5, shift=2, amplitude=1.5)["delta"] == [0.0, 0.0, 1.5, 0.0, 0.0]
 
 
 def test_stepseq_eq335_is_one_at_origin():
@@ -383,8 +374,8 @@ def test_continuous_and_discrete_steps_disagree_at_the_origin():
 
 def test_rampfilt_eq342_taps_and_gain():
     r = rampfilt()
-    assert r["n_taps"] == 501                      # 0.25 s at 2 kHz, plus t=0
-    assert r["h"][0] == pytest.approx(2.5)         # 10 * 0.25
+    assert r["n_taps"] == 501  # 0.25 s at 2 kHz, plus t=0
+    assert r["h"][0] == pytest.approx(2.5)  # 10 * 0.25
     assert r["h"][-1] == pytest.approx(0.0, abs=1e-12)
     # sum_{i=0}^{500} 10 (0.25 - i/2000) = 10 (125.25 - 62.625)
     assert r["gain"] == pytest.approx(626.25)

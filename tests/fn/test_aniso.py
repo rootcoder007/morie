@@ -1,7 +1,6 @@
 """Tests for aniso.anisotropy_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aniso import anisotropy_test
 
 

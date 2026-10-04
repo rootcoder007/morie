@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Le Cam's posterior inequality."""
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["lecam", "ghosal_lecam_lemma"]
@@ -62,10 +61,16 @@ def lecam(dtv, p0_phi, prior_mass, integral):
         raise ValueError("the integral must be non-negative")
     t3 = it / pm
     b = dtv + p0 + t3
-    return RichResult(payload={
-        "bound": b, "term_tv": dtv, "term_test": p0, "term_prior": t3,
-        "informative": 1.0 if b < 1.0 else 0.0,
-        "method": "Le Cam posterior inequality, Ghosal Lemma 6.46"})
+    return RichResult(
+        payload={
+            "bound": b,
+            "term_tv": dtv,
+            "term_test": p0,
+            "term_prior": t3,
+            "informative": 1.0 if b < 1.0 else 0.0,
+            "method": "Le Cam posterior inequality, Ghosal Lemma 6.46",
+        }
+    )
 
 
 ghosal_lecam_lemma = lecam

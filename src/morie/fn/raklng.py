@@ -91,8 +91,7 @@ def raking_ratio(y, weights, margins, tol=1e-12, max_iter=200):
                         cur += w[i]
                 if cur <= 0.0:
                     if tt[k] > 0.0:
-                        raise ValueError("raking_ratio: level " + k +
-                                         " has no sampled unit but a positive target")
+                        raise ValueError("raking_ratio: level " + k + " has no sampled unit but a positive target")
                     continue
                 f = tt[k] / cur
                 for i in range(len(y)):
@@ -115,14 +114,22 @@ def raking_ratio(y, weights, margins, tol=1e-12, max_iter=200):
     for i in range(len(y)):
         sw += w[i]
         swy += w[i] * y[i]
-    return RichResult(payload={
-        "estimate": swy / sw, "weights": w, "iterations": it,
-        "max_margin_error": err, "N": sw, "n": len(y),
-        "method": "Raking ratio / iterative proportional fitting"})
+    return RichResult(
+        payload={
+            "estimate": swy / sw,
+            "weights": w,
+            "iterations": it,
+            "max_margin_error": err,
+            "N": sw,
+            "n": len(y),
+            "method": "Raking ratio / iterative proportional fitting",
+        }
+    )
 
 
 def cheatsheet():
     return "raklng: Raking ratio post-stratification"
+
 
 # public names resolved by fn/_lazy_map.json
 rakingratio = raking_ratio

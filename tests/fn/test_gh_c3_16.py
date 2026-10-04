@@ -1,7 +1,6 @@
 """Tests for gh_c3_16.ghosal_evsplit_pt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_16 import ghosal_evsplit_pt
 
 

@@ -1,7 +1,5 @@
 """Tests for b204.burkov_lm_ch2_trigram_count."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.b204 import burkov_lm_ch2_trigram_count
 
 
@@ -40,9 +38,7 @@ def test_b204_edge():
         ("a", "b", "e"): 2,
     }
     # --- Unseen trigram: zero probability under MLE (den > 0). ---
-    result_unseen = burkov_lm_ch2_trigram_count(
-        "z", "b", "a", counts=counts
-    )
+    result_unseen = burkov_lm_ch2_trigram_count("z", "b", "a", counts=counts)
     assert isinstance(result_unseen, dict)
     assert result_unseen["probability"] == 0.0
     assert result_unseen["trigram_count"] == 0
@@ -52,9 +48,7 @@ def test_b204_edge():
 
     # --- Smoothing with add-alpha (Laplace, alpha=1), V=4. ---
     # numerator = 0 + 1, denominator = 6 + 1*4 = 10.
-    result_smoothed = burkov_lm_ch2_trigram_count(
-        "z", "b", "a", counts=counts, vocab_size=4, smoothing=1.0
-    )
+    result_smoothed = burkov_lm_ch2_trigram_count("z", "b", "a", counts=counts, vocab_size=4, smoothing=1.0)
     assert isinstance(result_smoothed, dict)
     expected_smoothed = (0.0 + 1.0) / (6.0 + 1.0 * 4)
     assert result_smoothed["probability"] == expected_smoothed

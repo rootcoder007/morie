@@ -81,25 +81,29 @@ def wasserman_mle(data, f, theta0, bounds=None, se=True):
 
     if not np.isfinite(negll(t0)):
         raise ValueError(
-            "the log-likelihood is not finite at theta0; the density is zero "
-            "or negative at some observation there.")
-    r = optimize.minimize(negll, t0, method="Nelder-Mead", bounds=bounds,
-                          options={"maxiter": 20000, "fatol": 1e-12,
-                                   "xatol": 1e-10})
+            "the log-likelihood is not finite at theta0; the density is zero or negative at some observation there."
+        )
+    r = optimize.minimize(
+        negll, t0, method="Nelder-Mead", bounds=bounds, options={"maxiter": 20000, "fatol": 1e-12, "xatol": 1e-10}
+    )
     th = np.asarray(r.x, dtype=float).ravel()
     ll = -float(r.fun)
-    out = {"estimate": th if th.size > 1 else float(th[0]),
-           "loglik": ll, "converged": bool(r.success),
-           "n_params": int(th.size), "n": int(n),
-           "information_used": "observed, -d2 loglik/dtheta2 at theta_hat, by "
-                               "central differences; the expected (Fisher) "
-                               "information would need an expectation this "
-                               "function cannot take",
-           "m_estimator_note": "MLE is the M-estimator with criterion "
-                               "log f(x; theta); consistency needs a "
-                               "WELL-SEPARATED maximum, not just a stationary "
-                               "point",
-           "method": "Maximum likelihood as an M-estimator (Kosorok Ch. 14)"}
+    out = {
+        "estimate": th if th.size > 1 else float(th[0]),
+        "loglik": ll,
+        "converged": bool(r.success),
+        "n_params": int(th.size),
+        "n": int(n),
+        "information_used": "observed, -d2 loglik/dtheta2 at theta_hat, by "
+        "central differences; the expected (Fisher) "
+        "information would need an expectation this "
+        "function cannot take",
+        "m_estimator_note": "MLE is the M-estimator with criterion "
+        "log f(x; theta); consistency needs a "
+        "WELL-SEPARATED maximum, not just a stationary "
+        "point",
+        "method": "Maximum likelihood as an M-estimator (Kosorok Ch. 14)",
+    }
     if not se:
         out["se"] = None
         out["is_maximum"] = None
@@ -110,12 +114,14 @@ def wasserman_mle(data, f, theta0, bounds=None, se=True):
     H = np.empty((k, k))
     for i in range(k):
         for j in range(k):
-            ei = np.zeros(k); ei[i] = step[i]
-            ej = np.zeros(k); ej[j] = step[j]
-            H[i, j] = ((negll(th + ei + ej) - negll(th + ei - ej)
-                        - negll(th - ei + ej) + negll(th - ei - ej))
-                       / (4 * step[i] * step[j]))
-    H = (H + H.T) / 2.0                       # Hessian of the NEGATIVE loglik
+            ei = np.zeros(k)
+            ei[i] = step[i]
+            ej = np.zeros(k)
+            ej[j] = step[j]
+            H[i, j] = (negll(th + ei + ej) - negll(th + ei - ej) - negll(th - ei + ej) + negll(th - ei - ej)) / (
+                4 * step[i] * step[j]
+            )
+    H = (H + H.T) / 2.0  # Hessian of the NEGATIVE loglik
     eig = np.linalg.eigvalsh(H)
     is_max = bool(np.all(eig > 0) and np.all(np.isfinite(eig)))
     out["observed_information"] = H
@@ -129,7 +135,8 @@ def wasserman_mle(data, f, theta0, bounds=None, se=True):
         out["se"] = None
         out["not_a_maximum_note"] = (
             "the observed information is not positive definite, so the point "
-            "found is not a maximum and no standard error is reported")
+            "found is not a maximum and no standard error is reported"
+        )
     return RichResult(payload=out)
 
 

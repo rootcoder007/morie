@@ -1,7 +1,6 @@
 """Tests for depvln.dependent_violation_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.depvln import dependent_violation_test
 
 

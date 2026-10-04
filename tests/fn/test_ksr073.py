@@ -1,7 +1,6 @@
 """Tests for ksr073.kosorok_ch3_max_likelihood_efficiency_corollary."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr073 import kosorok_ch3_max_likelihood_efficiency_corollary
 
 

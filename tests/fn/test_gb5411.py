@@ -1,7 +1,5 @@
 """Tests for gb5411.gibbons_sign_pvalue."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb5411 import gibbons_sign_pvalue
 
 

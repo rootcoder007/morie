@@ -74,9 +74,7 @@ def geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma, done=None):
     Qo = np.atleast_2d(np.asarray(Q_online, dtype=float))
     Qt = np.atleast_2d(np.asarray(Q_target, dtype=float))
     if Qo.shape != Qt.shape:
-        raise ValueError(
-            f"Q_online shape {Qo.shape} must match Q_target shape {Qt.shape}."
-        )
+        raise ValueError(f"Q_online shape {Qo.shape} must match Q_target shape {Qt.shape}.")
     if Qo.size == 0:
         raise ValueError("Q tables are empty.")
     if not np.all(np.isfinite(Qo)) or not np.all(np.isfinite(Qt)):
@@ -85,9 +83,7 @@ def geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma, done=None):
     sn = np.asarray(s_next).ravel()
     rew = np.asarray(r, dtype=float).ravel()
     if sn.size != rew.size:
-        raise ValueError(
-            f"s_next and r must have equal length, got {sn.size} and {rew.size}."
-        )
+        raise ValueError(f"s_next and r must have equal length, got {sn.size} and {rew.size}.")
     if sn.size == 0:
         raise ValueError("no transitions supplied.")
     sn = sn.astype(int)
@@ -103,9 +99,7 @@ def geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma, done=None):
     else:
         d = np.asarray(done).ravel()
         if d.size != sn.size:
-            raise ValueError(
-                f"done must have one flag per transition ({sn.size}), got {d.size}."
-            )
+            raise ValueError(f"done must have one flag per transition ({sn.size}), got {d.size}.")
         cont = 1.0 - d.astype(bool).astype(float)
 
     a_star = Qo[sn].argmax(axis=1)
@@ -115,8 +109,10 @@ def geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma, done=None):
 
     return RichResult(
         title="Double DQN target",
-        summary_lines=[("Mean target", float(target.mean())),
-                       ("Mean overestimation removed", float((vanilla - target).mean()))],
+        summary_lines=[
+            ("Mean target", float(target.mean())),
+            ("Mean overestimation removed", float((vanilla - target).mean())),
+        ],
         payload={
             "target": target.tolist(),
             "selected_action": a_star.tolist(),

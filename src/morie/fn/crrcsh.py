@@ -105,18 +105,30 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
         z = beta / se
     return RichResult(
         title=f"Cause-specific hazard (cause {cause})",
-        summary_lines=[("n", int(t.size)), ("events of cause", int(e.sum())),
-                       ("competing", int(np.sum((d != 0) & (d != cause)))),
-                       ("loglik", ll)],
-        warnings=["competing events are censored here, so 1 - exp(-Lambda) "
-                  "OVERSTATES incidence; use the Fine-Gray model for actual risk"],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events of cause", int(e.sum())),
+            ("competing", int(np.sum((d != 0) & (d != cause)))),
+            ("loglik", ll),
+        ],
+        warnings=[
+            "competing events are censored here, so 1 - exp(-Lambda) "
+            "OVERSTATES incidence; use the Fine-Gray model for actual risk"
+        ],
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(beta), "loglik": ll, "information": I,
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
+            "hazard_ratio": np.exp(beta),
+            "loglik": ll,
+            "information": I,
             "n_cause": int(e.sum()),
             "n_competing": int(np.sum((d != 0) & (d != cause))),
-            "n_censored": int(np.sum(d == 0)), "cause": cause,
-            "n": int(t.size), "converged": conv,
+            "n_censored": int(np.sum(d == 0)),
+            "cause": cause,
+            "n": int(t.size),
+            "converged": conv,
             "method": "cause_specific_hazard",
         },
     )

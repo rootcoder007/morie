@@ -19,7 +19,6 @@ __all__ = ["svmkkt", "mvsml_ridge_lasso_elastic_eq_9_38"]
 
 
 def svmkkt(X, y, beta0, beta, alpha, delta, zeta, T):
-
     """The Wolfe primal of the soft margin problem,
     L = (1/2)||beta||^2 + T sum_i zeta_i
     - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ]

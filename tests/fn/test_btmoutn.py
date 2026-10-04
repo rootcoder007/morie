@@ -1,7 +1,6 @@
 """Tests for btmoutn.boot_m_out_of_n."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btmoutn import boot_m_out_of_n
 
 

@@ -82,29 +82,22 @@ def geron_bahdanau_attention(decoder_state, encoder_states, Wh, Ws, v):
     if S.shape[0] == 0:
         raise ValueError("encoder_states is empty.")
     if Wh.shape[1] != h.size:
-        raise ValueError(
-            f"Wh has {Wh.shape[1]} columns but decoder_state has {h.size} entries."
-        )
+        raise ValueError(f"Wh has {Wh.shape[1]} columns but decoder_state has {h.size} entries.")
     if Ws.shape[1] != S.shape[1]:
-        raise ValueError(
-            f"Ws has {Ws.shape[1]} columns but encoder states have width {S.shape[1]}."
-        )
+        raise ValueError(f"Ws has {Ws.shape[1]} columns but encoder states have width {S.shape[1]}.")
     if Wh.shape[0] != Ws.shape[0]:
         raise ValueError(
-            f"Wh and Ws must project into the same alignment space, got "
-            f"{Wh.shape[0]} and {Ws.shape[0]} rows."
+            f"Wh and Ws must project into the same alignment space, got {Wh.shape[0]} and {Ws.shape[0]} rows."
         )
     if v.size != Wh.shape[0]:
-        raise ValueError(
-            f"v has {v.size} entries but the alignment space is {Wh.shape[0]}-dimensional."
-        )
+        raise ValueError(f"v has {v.size} entries but the alignment space is {Wh.shape[0]}-dimensional.")
     for name, arr in (("decoder_state", h), ("encoder_states", S), ("Wh", Wh), ("Ws", Ws), ("v", v)):
         if not np.all(np.isfinite(arr)):
             raise ValueError(f"{name} contains non-finite values.")
 
-    proj_h = Wh @ h                       # (a,)
-    proj_s = S @ Ws.T                     # (T, a)
-    scores = np.tanh(proj_h[None, :] + proj_s) @ v   # (T,)
+    proj_h = Wh @ h  # (a,)
+    proj_s = S @ Ws.T  # (T, a)
+    scores = np.tanh(proj_h[None, :] + proj_s) @ v  # (T,)
     alpha = _softmax(scores)
     context = alpha @ S
 

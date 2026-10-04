@@ -70,8 +70,7 @@ def specclus(W, k=2, normalized=True, max_iter=50):
     if not 2 <= k <= n:
         raise ValueError("k must satisfy 2 <= k <= n")
     d = [sum(W[i]) for i in range(n)]
-    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)]
-         for i in range(n)]
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)] for i in range(n)]
     if normalized:
         s = [0.0 if d[i] == 0.0 else d[i] ** -0.5 for i in range(n)]
         L = [[s[i] * L[i][j] * s[j] for j in range(n)] for i in range(n)]
@@ -106,18 +105,25 @@ def specclus(W, k=2, normalized=True, max_iter=50):
         for c in range(k):
             mem = [i for i in range(n) if lab[i] == c]
             if mem:
-                cen[c] = [sum(U[i][j] for i in mem) / len(mem)
-                          for j in range(k)]
+                cen[c] = [sum(U[i][j] for i in mem) / len(mem) for j in range(k)]
         if not moved:
             break
     wss = 0.0
     for i in range(n):
         wss += sum((U[i][j] - cen[lab[i]][j]) ** 2 for j in range(k))
-    return RichResult(payload={
-        "cluster": [v + 1 for v in lab], "embedding": U,
-        "values": lam[:k], "centers": cen, "tot_withinss": wss,
-        "iterations": float(it), "n": float(n), "k": float(k),
-        "method": "Spectral clustering, von Luxburg (2007)"})
+    return RichResult(
+        payload={
+            "cluster": [v + 1 for v in lab],
+            "embedding": U,
+            "values": lam[:k],
+            "centers": cen,
+            "tot_withinss": wss,
+            "iterations": float(it),
+            "n": float(n),
+            "k": float(k),
+            "method": "Spectral clustering, von Luxburg (2007)",
+        }
+    )
 
 
 spectral_clustering = specclus

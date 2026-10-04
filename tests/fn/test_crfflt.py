@@ -1,7 +1,6 @@
 """Tests for crfflt.christiano_fitzgerald."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crfflt import christiano_fitzgerald
 
 

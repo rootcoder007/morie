@@ -75,29 +75,35 @@ def siegel_repeated(x, y):
         raise ValueError("siegel_repeated: need at least two points")
     inner = []
     for i in range(n):
-        s = [(yv[j] - yv[i]) / (xv[j] - xv[i])
-             for j in range(n) if xv[j] != xv[i]]
+        s = [(yv[j] - yv[i]) / (xv[j] - xv[i]) for j in range(n) if xv[j] != xv[i]]
         if s:
             inner.append(core.median(s))
     if not inner:
-        raise ValueError(
-            "siegel_repeated: every x is identical, so no pairwise slope "
-            "exists and no line is defined")
+        raise ValueError("siegel_repeated: every x is identical, so no pairwise slope exists and no line is defined")
     slope = core.median(inner)
     intercept = core.median([yv[i] - slope * xv[i] for i in range(n)])
     fitted = [intercept + slope * v for v in xv]
     resid = [yv[i] - fitted[i] for i in range(n)]
-    return RichResult(payload={
-        "estimate": slope, "slope": slope, "intercept": intercept,
-        "fitted": fitted, "residuals": resid,
-        "n": int(n), "n_used": int(len(inner)),
-        "breakdown_point": (n // 2) / n,
-        "method": "Siegel (1982) repeated-median line, breakdown floor(n/2)/n"})
+    return RichResult(
+        payload={
+            "estimate": slope,
+            "slope": slope,
+            "intercept": intercept,
+            "fitted": fitted,
+            "residuals": resid,
+            "n": int(n),
+            "n_used": int(len(inner)),
+            "breakdown_point": (n // 2) / n,
+            "method": "Siegel (1982) repeated-median line, breakdown floor(n/2)/n",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sieg: two nested medians, not one -- half the sample can be "
-            "nonsense and the line still holds; Theil-Sen breaks at 29%")
+    return (
+        "sieg: two nested medians, not one -- half the sample can be "
+        "nonsense and the line still holds; Theil-Sen breaks at 29%"
+    )
 
 
 # compact alias per ledger/NAMING.md

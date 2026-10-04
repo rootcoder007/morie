@@ -69,13 +69,21 @@ def sgt_mixing_time(A, epsilon=0.01):
             slem = a
     gap = 1.0 - slem
     tau = math.log(1.0 / eps) / gap if gap > 0.0 else float("inf")
-    return RichResult(payload={
-        "tau_mix": tau, "estimate": tau, "gap": gap, "slem": slem, "n": n,
-        "method": "Relaxation-time mixing bound, log(1/eps)/gamma*"})
+    return RichResult(
+        payload={
+            "tau_mix": tau,
+            "estimate": tau,
+            "gap": gap,
+            "slem": slem,
+            "n": n,
+            "method": "Relaxation-time mixing bound, log(1/eps)/gamma*",
+        }
+    )
 
 
 def cheatsheet():
     return "sgtmix: Mixing time from the absolute spectral gap"
+
 
 # public names resolved by fn/_lazy_map.json
 sgtmixingtime = sgt_mixing_time

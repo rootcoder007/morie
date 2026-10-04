@@ -82,12 +82,22 @@ def normalized_random_measure(y, alpha=1.0, tau=1.0, mu0=0.0, sigma0=1.0):
     s2_post = m2 - post_mean * post_mean
     if s2_post < 0.0:
         s2_post = 0.0
-    return RichResult(payload={
-        "estimate": post_mean, "prior_mean": prior_mean, "prior_var": prior_var,
-        "post_mean": post_mean, "post_var": s2_post / (mass + 1.0),
-        "post_base_var": s2_post, "post_mass": mass, "total_mass": a * t,
-        "alpha": a, "tau": t, "n": n,
-        "method": "Mean functional of a normalized random measure"})
+    return RichResult(
+        payload={
+            "estimate": post_mean,
+            "prior_mean": prior_mean,
+            "prior_var": prior_var,
+            "post_mean": post_mean,
+            "post_var": s2_post / (mass + 1.0),
+            "post_base_var": s2_post,
+            "post_mass": mass,
+            "total_mass": a * t,
+            "alpha": a,
+            "tau": t,
+            "n": n,
+            "method": "Mean functional of a normalized random measure",
+        }
+    )
 
 
 def cheatsheet():

@@ -108,12 +108,14 @@ def icc_two_way_random(y, subject, rater):
     if den == 0.0:
         raise ValueError("icc_two_way_random: the ratings carry no variance")
     out = dict(ms)
-    out.update({
-        "estimate": (ms["bms"] - ms["ems"]) / den,
-        "n": n,
-        "k": k,
-        "method": "ICC(2,1) two-way random single rater",
-    })
+    out.update(
+        {
+            "estimate": (ms["bms"] - ms["ems"]) / den,
+            "n": n,
+            "k": k,
+            "method": "ICC(2,1) two-way random single rater",
+        }
+    )
     return RichResult(payload=out)
 
 

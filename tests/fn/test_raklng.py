@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.raklng import raking_ratio
 
 
@@ -16,11 +15,11 @@ def test_raklng_basic():
     weights = [abs(v) + 0.1 for v in w_raw]
 
     # Two consistent margins (both sum to 100)
-    margin1_labels = ['A' if i < 50 else 'B' for i in range(n)]
-    margin1_targets = {'A': 30.0, 'B': 70.0}
+    margin1_labels = ["A" if i < 50 else "B" for i in range(n)]
+    margin1_targets = {"A": 30.0, "B": 70.0}
 
-    margin2_labels = ['X' if i < 60 else 'Y' for i in range(n)]
-    margin2_targets = {'X': 55.0, 'Y': 45.0}
+    margin2_labels = ["X" if i < 60 else "Y" for i in range(n)]
+    margin2_targets = {"X": 55.0, "Y": 45.0}
 
     margins = [(margin1_labels, margin1_targets), (margin2_labels, margin2_targets)]
 
@@ -43,8 +42,8 @@ def test_raklng_edge():
     weights = [0.1, 0.2, 0.3, 0.4]
 
     # Single margin with minimal data
-    labels = ['A', 'A', 'B', 'B']
-    targets = {'A': 10.0, 'B': 20.0}
+    labels = ["A", "A", "B", "B"]
+    targets = {"A": 10.0, "B": 20.0}
 
     margins = [(labels, targets)]
 

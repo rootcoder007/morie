@@ -65,10 +65,18 @@ def msm_mediation(y, A, M, H):
     beta, _, _, _ = S.ols(XM, [sw[i] * Mv[i] for i in range(n)])
     nde = theta[1] + theta[3] * beta[0]
     nie = beta[1] * (theta[2] + theta[3])
-    return RichResult(payload={
-        "estimate": nde, "nie": nie, "total": nde + nie, "theta": theta,
-        "beta": beta, "w_mean": sum(w) / n, "n": n,
-        "method": "Marginal structural mediation by IPTW"})
+    return RichResult(
+        payload={
+            "estimate": nde,
+            "nie": nie,
+            "total": nde + nie,
+            "theta": theta,
+            "beta": beta,
+            "w_mean": sum(w) / n,
+            "n": n,
+            "method": "Marginal structural mediation by IPTW",
+        }
+    )
 
 
 msmmediation = msm_mediation

@@ -1,7 +1,6 @@
 """Tests for hmmom.geron_momentum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmom import geron_momentum
 
 

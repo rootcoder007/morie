@@ -1,7 +1,6 @@
 """Tests for ghgps.ghosal_gp_squared_exponential."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghgps import ghosal_gp_squared_exponential
 
 

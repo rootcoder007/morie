@@ -10,16 +10,41 @@ import math
 
 import pytest
 
-from morie.fn.bsaxfrm import (circconv, clogsum, ctft, ctftf, dft, dftconv,
-                              dftk, dftri, dfttw, dftx, dtft, dtftz, euler,
-                              evenodd, evenpart, fourier, ftconv, ictft,
-                              idftri,
-                              logft, logmaxph, logminph, logseries, oddpart,
-                              twidconj, twidcs, twiddle, twidper, ztconv,
-                              ztrans)
-
+from morie.fn.bsaxfrm import (
+    circconv,
+    clogsum,
+    ctft,
+    ctftf,
+    dft,
+    dftconv,
+    dftk,
+    dftri,
+    dfttw,
+    dftx,
+    dtft,
+    dtftz,
+    euler,
+    evenodd,
+    evenpart,
+    fourier,
+    ftconv,
+    ictft,
+    idftri,
+    logft,
+    logmaxph,
+    logminph,
+    logseries,
+    oddpart,
+    twidconj,
+    twidcs,
+    twiddle,
+    twidper,
+    ztconv,
+    ztrans,
+)
 
 # --------------------------------------------------------- z-transform
+
 
 def test_ztrans_eq354_is_the_polynomial_in_z_inverse():
     # X(z) = 1 + 2 z^-1 + 3 z^-2 at z = 2  ->  1 + 1 + 0.75
@@ -54,20 +79,20 @@ def test_ztconv_eq356_holds():
 def test_dtftz_eq366_lands_on_the_unit_circle():
     r = dtftz([1.0, 2.0, 3.0], omega=0.7)
     assert r["on_unit_circle"] is True
-    want = sum(v * cmath.exp(-1j * 0.7 * n)
-               for n, v in enumerate([1.0, 2.0, 3.0]))
+    want = sum(v * cmath.exp(-1j * 0.7 * n) for n, v in enumerate([1.0, 2.0, 3.0]))
     assert r["X"] == pytest.approx(want)
 
 
 def test_dtftz_uses_T_when_fs_is_given():
     x = [1.0, 2.0]
-    r = dtftz(x, omega=2.0, fs=4.0)          # T = 0.25
+    r = dtftz(x, omega=2.0, fs=4.0)  # T = 0.25
     want = 1.0 + 2.0 * cmath.exp(-1j * 2.0 * 0.25)
     assert r["X"] == pytest.approx(want)
     assert r["T"] == pytest.approx(0.25)
 
 
 # ------------------------------------------------- Fourier, eqs 3.74-3.78
+
 
 def test_euler_eq374():
     r = euler(math.pi, 1.0)
@@ -266,6 +291,7 @@ def test_twidper_eq389():
 
 # ------------------------------------------------- even/odd, eqs 3.92-3.94
 
+
 def test_evenodd_eqs392_to_394():
     x = [1.0, 2.0, 3.0]
     n = [-1, 0, 1]
@@ -304,6 +330,7 @@ def test_evenodd_refuses_an_asymmetric_grid():
 
 # ------------------------------------------ homomorphic, eqs 4.58-4.71
 
+
 def test_logft_eqs458_460_log_spectra_add():
     x = [1.0, 2.0, 3.0, 2.0, 1.0]
     p = [2.0, 2.0, 4.0, 4.0, 8.0]
@@ -339,7 +366,7 @@ def test_clogsum_reports_an_integer_branch_offset():
 
 def test_clogsum_rejects_a_zero_transform():
     with pytest.raises(ValueError):
-        clogsum([1.0, -1.0], [1.0], z=1.0)      # X(1) = 0
+        clogsum([1.0, -1.0], [1.0], z=1.0)  # X(1) = 0
 
 
 def test_logseries_eq469_converges_to_the_logarithm():
@@ -365,7 +392,7 @@ def test_logminph_eq470_is_causal_and_sums_to_the_closed_form():
     assert r["causal"] is True
     assert r["quefrency"][0] == 1
     assert r["coefficients"][0] == pytest.approx(-0.5)
-    assert r["coefficients"][1] == pytest.approx(-0.125)   # -alpha^2/2
+    assert r["coefficients"][1] == pytest.approx(-0.125)  # -alpha^2/2
     assert r["error"] < 1e-12
 
 
@@ -388,12 +415,8 @@ def test_logmaxph_needs_z_inside_one_over_beta():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsaxfrm import (rangayyan_ch3_dft_definition,
-                                  rangayyan_ch3_even_part,
-                                  rangayyan_circular_conv_dft)
-    assert rangayyan_ch3_dft_definition(FOUR)["X"] == pytest.approx(
-        FOUR_DFT, abs=1e-12)
-    assert rangayyan_circular_conv_dft([1.0, 2.0], [3.0, 4.0])["y"] == \
-        pytest.approx([11.0, 10.0])
-    assert rangayyan_ch3_even_part([3.0, 5.0, 3.0], n=[-1, 0, 1])["odd"] == \
-        pytest.approx([0.0, 0.0, 0.0])
+    from morie.fn.bsaxfrm import rangayyan_ch3_dft_definition, rangayyan_ch3_even_part, rangayyan_circular_conv_dft
+
+    assert rangayyan_ch3_dft_definition(FOUR)["X"] == pytest.approx(FOUR_DFT, abs=1e-12)
+    assert rangayyan_circular_conv_dft([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx([11.0, 10.0])
+    assert rangayyan_ch3_even_part([3.0, 5.0, 3.0], n=[-1, 0, 1])["odd"] == pytest.approx([0.0, 0.0, 0.0])

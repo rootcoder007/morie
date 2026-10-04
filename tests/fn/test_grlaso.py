@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.grlaso import geron_lasso_cost
 
 
@@ -27,8 +26,7 @@ def test_grlaso_basic():
     result = geron_lasso_cost(X, y, theta, alpha)
     assert isinstance(result, dict)
     # Keys promised by the docstring.
-    for key in ("cost", "mse", "l1_penalty", "l1_norm", "n_zero",
-                "estimate", "n", "method"):
+    for key in ("cost", "mse", "l1_penalty", "l1_norm", "n_zero", "estimate", "n", "method"):
         assert key in result
     # Scalar outputs must be finite.
     assert math.isfinite(result["cost"])
@@ -69,7 +67,7 @@ import morie.fn.grlaso as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

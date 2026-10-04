@@ -110,11 +110,13 @@ def esl_cv_score(X, y, model=None, k=5, loss="mse", stratify=False, seed=0):
         idx = rng.permutation(n)
         fold[idx] = np.arange(n) % k
 
-    losses = {"mse": lambda a, b: (a - b) ** 2,
-              "mae": lambda a, b: np.abs(a - b),
-              "01": lambda a, b: (a != b).astype(float)}
+    losses = {
+        "mse": lambda a, b: (a - b) ** 2,
+        "mae": lambda a, b: np.abs(a - b),
+        "01": lambda a, b: (a != b).astype(float),
+    }
     if loss not in losses:
-        raise ValueError(f'loss must be one of {sorted(losses)}, got {loss!r}')
+        raise ValueError(f"loss must be one of {sorted(losses)}, got {loss!r}")
     lf = losses[loss]
 
     pred = np.full(n, np.nan)
@@ -133,8 +135,12 @@ def esl_cv_score(X, y, model=None, k=5, loss="mse", stratify=False, seed=0):
         payload={
             "cv": float(np.mean(lf(y, pred))),
             "se": float(np.std(scores, ddof=1) / np.sqrt(k)) if k > 1 else np.nan,
-            "fold_scores": scores, "predictions": pred, "fold_id": fold,
-            "k": k, "loss": loss, "n": int(n),
+            "fold_scores": scores,
+            "predictions": pred,
+            "fold_id": fold,
+            "k": k,
+            "loss": loss,
+            "n": int(n),
             "method": "esl_cv_score",
         },
     )

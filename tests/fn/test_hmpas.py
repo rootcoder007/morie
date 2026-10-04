@@ -1,7 +1,6 @@
 """Tests for hmpas.geron_pasting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmpas import geron_pasting
 
 

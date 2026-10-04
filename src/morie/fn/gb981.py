@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['scaleci', 'gibbons_scale_ci']
+__all__ = ["scaleci", "gibbons_scale_ci"]
 
 
 def scaleci(x, y, alpha=0.05, k=None):
@@ -60,9 +60,7 @@ def scaleci(x, y, alpha=0.05, k=None):
         raise ValueError("both samples must be non-empty.")
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly inside (0, 1).")
-    ratios = sorted(
-        xi / yj for xi in xs for yj in ys if yj != 0.0 and xi / yj > 0.0
-    )
+    ratios = sorted(xi / yj for xi in xs for yj in ys if yj != 0.0 and xi / yj > 0.0)
     npos = len(ratios)
     if npos < 2:
         raise ValueError("need at least 2 positive ratios x_i / y_j.")
@@ -75,9 +73,7 @@ def scaleci(x, y, alpha=0.05, k=None):
     kp = max(1, min(npos, kp))
     lo, hi = sorted((kk, kp))
     mid = npos // 2
-    est = (
-        ratios[mid] if npos % 2 else (ratios[mid - 1] + ratios[mid]) / 2.0
-    )
+    est = ratios[mid] if npos % 2 else (ratios[mid - 1] + ratios[mid]) / 2.0
     return RichResult(
         payload={
             "lower": float(ratios[lo - 1]),

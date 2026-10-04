@@ -1,7 +1,6 @@
 """Tests for causdidev.causal_did_eventstudy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causdidev import causal_did_eventstudy
 
 

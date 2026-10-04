@@ -19,8 +19,7 @@ def dino_softmax(v, tau, center=None):
     return [t / s for t in e]
 
 
-def dino_multicrop(image, global_size=2, local_size=8, tau_s=0.1, tau_t=0.04,
-                   center=None):
+def dino_multicrop(image, global_size=2, local_size=8, tau_s=0.1, tau_t=0.04, center=None):
     """
     DINO multi-crop consistency
 
@@ -86,22 +85,22 @@ def dino_multicrop(image, global_size=2, local_size=8, tau_s=0.1, tau_t=0.04,
         for v in range(V):
             if v == g:
                 continue
-            tot += -sum(teach[g][k] * math.log(stud[v][k] + 1e-300)
-                        for k in range(d))
+            tot += -sum(teach[g][k] * math.log(stud[v][k] + 1e-300) for k in range(d))
             npair += 1
     loss = tot / npair if npair else float("nan")
-    ent = -sum(sum(p * math.log(p + 1e-300) for p in stud[v])
-               for v in range(V)) / V
-    return RichResult(payload={
-        "estimate": loss,
-        "loss": loss,
-        "n_pairs": npair,
-        "teacher": teach,
-        "student_entropy": ent,
-        "V": V,
-        "d": d,
-        "method": "DINO multi-crop student-teacher consistency",
-    })
+    ent = -sum(sum(p * math.log(p + 1e-300) for p in stud[v]) for v in range(V)) / V
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "n_pairs": npair,
+            "teacher": teach,
+            "student_entropy": ent,
+            "V": V,
+            "d": d,
+            "method": "DINO multi-crop student-teacher consistency",
+        }
+    )
 
 
 def cheatsheet():

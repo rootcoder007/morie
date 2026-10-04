@@ -1,7 +1,6 @@
 """Tests for gcvgn.genomic_cross_validation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gcvgn import genomic_cross_validation
 
 

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ichimura estimator (front-end)."""
 
-from . import _array_core as np
-from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
 __all__ = ["hrz_ichimura", "horowitz_ichimura_estimator"]
@@ -43,10 +41,17 @@ def hrz_ichimura(X, y, h=None, kernel_name="gaussian"):
     Econometrics*. Springer. Ch. 2 (Ichimura 1993).
     """
     out = hrz_semiparametric_ls(X, y, h=h, kernel_name=kernel_name)
-    return RichResult(payload={"beta": out["beta"], "sse": out["sse"],
-                               "converged": out["converged"], "root_n": True,
-                               "n": out["n"], "d": out["d"],
-                               "method": "Ichimura SLS; beta root-n despite nonparametric G"})
+    return RichResult(
+        payload={
+            "beta": out["beta"],
+            "sse": out["sse"],
+            "converged": out["converged"],
+            "root_n": True,
+            "n": out["n"],
+            "d": out["d"],
+            "method": "Ichimura SLS; beta root-n despite nonparametric G",
+        }
+    )
 
 
 def cheatsheet():

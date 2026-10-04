@@ -1,7 +1,6 @@
 """Tests for morie.fn.combn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.combn import combn
 
 

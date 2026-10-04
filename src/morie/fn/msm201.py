@@ -19,7 +19,6 @@ __all__ = ["svmlagr", "mvsml_ridge_lasso_elastic_eq_9_27"]
 
 
 def svmlagr(X, y, beta0, beta, alpha):
-
     """L(beta, beta_0, alpha) = (1/2)||beta||^2
     - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 ] (eq. 9.27), where
     the alpha_i are nonnegative Lagrange multipliers.  Setting the

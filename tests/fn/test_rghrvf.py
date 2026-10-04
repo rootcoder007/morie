@@ -6,9 +6,10 @@ import pytest
 
 from morie.fn.bsaqrs import rangayyan_hrv_freq_domain
 
-
-RR = [0.8 + 0.05 * math.sin(2 * math.pi * 0.1 * 0.8 * k) + 0.02 * math.sin(2 * math.pi * 0.3 * 0.8 * k)
-      for k in range(400)]
+RR = [
+    0.8 + 0.05 * math.sin(2 * math.pi * 0.1 * 0.8 * k) + 0.02 * math.sin(2 * math.pi * 0.3 * 0.8 * k)
+    for k in range(400)
+]
 
 
 def test_rghrvf_basic():

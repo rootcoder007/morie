@@ -1,15 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Targeted maximum likelihood estimation for right-censored survival."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._survtmle import survival_tmle
 
 __all__ = ["tmle_survival"]
 
 
-def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None,
-                  trunc=0.025, max_iter=100):
+def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None, trunc=0.025, max_iter=100):
     r"""Treatment-specific survival at a horizon, by hazard-based TMLE.
 
     The estimand is :math:`\Psi_a(t_0) = E_W[S(t_0 \mid A = a, W)]`, the
@@ -118,8 +116,14 @@ def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None,
     True
     """
     res = survival_tmle(
-        time, event, treatment, covariates, t0=tau, n_bins=n_bins,
-        trunc=trunc, max_iter=max_iter,
+        time,
+        event,
+        treatment,
+        covariates,
+        t0=tau,
+        n_bins=n_bins,
+        trunc=trunc,
+        max_iter=max_iter,
     )
     z = 1.959963984540054
     est, se = res["estimate"], res["se"]
@@ -149,8 +153,9 @@ def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None,
             "iterations": res["iterations"],
             "converged": res["converged"],
             "convergence_note": (
-                None if res["converged"] else
-                "targeting stopped at the iteration cap with |P_n D*| still "
+                None
+                if res["converged"]
+                else "targeting stopped at the iteration cap with |P_n D*| still "
                 "above 1/n; the standard error is not trustworthy here"
             ),
             "propensity": g,
@@ -158,18 +163,14 @@ def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None,
             "n_truncated": res["n_truncated"],
             "positivity_note": (
                 "propensities were truncated for %d of %d subjects; a large "
-                "share means the contrast is extrapolated, not estimated"
-                % (res["n_truncated"], res["n"])
+                "share means the contrast is extrapolated, not estimated" % (res["n_truncated"], res["n"])
             ),
             "separated": res["separated"],
             "n_events": res["n_events"],
             "n_censored": res["n_censored"],
             "n_bins": res["tmax"],
             "n": res["n"],
-            "method": (
-                "Hazard-based TMLE of the treatment-specific survival "
-                "difference"
-            ),
+            "method": ("Hazard-based TMLE of the treatment-specific survival difference"),
         }
     )
 

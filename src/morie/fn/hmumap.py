@@ -159,7 +159,7 @@ def geron_umap(X, n_components=2, n_neighbors=3, min_dist=0.1, seed=0, n_iter=30
     flat = np.empty(n * m)
     for i in range(n * m):
         s0 = (1664525 * s0 + 1013904223) % 2**32
-        flat[i] = (2.0 * ((s0 + 0.5) / 2**32) - 1.0)
+        flat[i] = 2.0 * ((s0 + 0.5) / 2**32) - 1.0
     Y = flat.reshape(n, m)
 
     eps = 1e-9

@@ -15,7 +15,6 @@ enumeration of the objects themselves. Where a count exceeds
 """
 
 import math
-from itertools import combinations, permutations, product
 
 from ._richresult import RichResult
 
@@ -262,8 +261,7 @@ def derangements(n):
     return d
 
 
-def twelvefold_way(n, k, balls="labelled", boxes="labelled",
-                   condition="any"):
+def twelvefold_way(n, k, balls="labelled", boxes="labelled", condition="any"):
     r"""The twelvefold way: functions from an :math:`n`-set to a
     :math:`k`-set, counted under every combination of labelling and
     restriction.
@@ -311,15 +309,13 @@ def twelvefold_way(n, k, balls="labelled", boxes="labelled",
     if boxes not in ("labelled", "unlabelled"):
         raise ValueError('boxes must be "labelled" or "unlabelled".')
     if condition not in ("any", "injective", "surjective"):
-        raise ValueError(
-            'condition must be "any", "injective" or "surjective".'
-        )
+        raise ValueError('condition must be "any", "injective" or "surjective".')
 
     lb = balls == "labelled"
     lx = boxes == "labelled"
     if lb and lx:
         if condition == "any":
-            cnt, f = k ** n, "k^n"
+            cnt, f = k**n, "k^n"
         elif condition == "injective":
             cnt = math.perm(k, n) if n <= k else 0
             f = "k falling factorial n"

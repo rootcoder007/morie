@@ -1,7 +1,6 @@
 """Tests for morie.fn.gwrtvl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gwrtvl import gwrtvl
 
 

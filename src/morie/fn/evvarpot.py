@@ -52,8 +52,7 @@ def evt_pot_var(u, sigma, xi, zeta_u, p):
     if not (0.0 < p < 1.0):
         raise ValueError("p must lie strictly in (0, 1)")
     if 1.0 - p > zeta_u:
-        raise ValueError("p is below the threshold exceedance rate; "
-                         "the GPD tail says nothing there")
+        raise ValueError("p is below the threshold exceedance rate; the GPD tail says nothing there")
     r = (1.0 - p) / zeta_u
     if abs(xi) < 1e-12:
         var = u + sigma * math.log(1.0 / r)
@@ -65,13 +64,15 @@ def evt_pot_var(u, sigma, xi, zeta_u, p):
         tail = zeta_u * math.exp(-(var - u) / sigma)
     else:
         tail = zeta_u * z ** (-1.0 / xi) if z > 0.0 else 0.0
-    return RichResult(payload={
-        "VaR": var,
-        "estimate": var,
-        "tail_prob": tail,
-        "p": p,
-        "method": "GPD value-at-risk above a POT threshold",
-    })
+    return RichResult(
+        payload={
+            "VaR": var,
+            "estimate": var,
+            "tail_prob": tail,
+            "p": p,
+            "method": "GPD value-at-risk above a POT threshold",
+        }
+    )
 
 
 def cheatsheet():

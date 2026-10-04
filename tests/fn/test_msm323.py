@@ -23,8 +23,7 @@ def test_the_count_link_is_inverted_by_exponentiating():
 def test_the_zero_link_is_inverted_by_the_logistic_function():
     # log(theta / (1 - theta)) = f_theta(x)
     res = mvsml_functional_regression_eq_15_1(2.0, 0.25)
-    assert res["theta"] == pytest.approx(
-        1.0 / (1.0 + math.exp(-0.25)), rel=1e-12)
+    assert res["theta"] == pytest.approx(1.0 / (1.0 + math.exp(-0.25)), rel=1e-12)
 
 
 def test_a_zero_linear_predictor_gives_a_unit_mean_and_an_even_chance():

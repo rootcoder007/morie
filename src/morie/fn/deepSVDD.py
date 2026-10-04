@@ -14,8 +14,7 @@ def _kernel(a, b, kern, gamma):
     return math.exp(-gamma * d2)
 
 
-def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10,
-         max_sweeps=500):
+def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10, max_sweeps=500):
     """
     Support vector data description: minimal enclosing hypersphere.
 
@@ -63,13 +62,12 @@ def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10,
     if n < 2:
         raise ValueError("need at least two objects")
     C = float(C)
-    if C < 1.0 / n:
+    if 1.0 / n > C:
         raise ValueError("need C >= 1/n for a feasible dual")
     kern = str(kernel).lower()
     if kern not in ("linear", "rbf"):
         raise ValueError("kernel must be 'linear' or 'rbf'")
-    K = [[_kernel(Xv[i], Xv[j], kern, gamma) for j in range(n)]
-         for i in range(n)]
+    K = [[_kernel(Xv[i], Xv[j], kern, gamma) for j in range(n)] for i in range(n)]
     alpha = [1.0 / n] * n
 
     def _grad(i):
@@ -108,10 +106,11 @@ def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10,
 
     def _dist2(i):
         # |x_i - a|^2 in kernel space (Eq. 14 with z = x_i)
-        return (K[i][i]
-                - 2.0 * sum(alpha[j] * K[i][j] for j in range(n))
-                + sum(alpha[a_] * alpha[b_] * K[a_][b_]
-                      for a_ in sup for b_ in sup))
+        return (
+            K[i][i]
+            - 2.0 * sum(alpha[j] * K[i][j] for j in range(n))
+            + sum(alpha[a_] * alpha[b_] * K[a_][b_] for a_ in sup for b_ in sup)
+        )
 
     if boundary:
         r2s = [_dist2(i) for i in boundary]
@@ -131,19 +130,20 @@ def svdd(X, C=1.0, kernel="linear", gamma=1.0, tol=1e-10,
     center = None
     if kern == "linear":
         d = len(Xv[0])
-        center = [sum(alpha[i] * Xv[i][k] for i in range(n))
-                  for k in range(d)]
-    return RichResult(payload={
-        "alpha": alpha,
-        "center": center,
-        "radius2": radius2,
-        "support": sup,
-        "outliers": out,
-        "kkt_violation": viol,
-        "kernel": kern,
-        "C": C,
-        "method": "SVDD (Tax & Duin 2004, Eqs. 6-14)",
-    })
+        center = [sum(alpha[i] * Xv[i][k] for i in range(n)) for k in range(d)]
+    return RichResult(
+        payload={
+            "alpha": alpha,
+            "center": center,
+            "radius2": radius2,
+            "support": sup,
+            "outliers": out,
+            "kkt_violation": viol,
+            "kernel": kern,
+            "C": C,
+            "method": "SVDD (Tax & Duin 2004, Eqs. 6-14)",
+        }
+    )
 
 
 # stub-era and worklist names
@@ -153,6 +153,7 @@ support_vector_data_description = svdd
 
 def cheatsheet():
     return "svdd: max sum a K_ii - aa'K, sum a=1, 0<=a<=C; a = center weights"
+
 
 # public names resolved by fn/_lazy_map.json
 deep_svdd = svdd

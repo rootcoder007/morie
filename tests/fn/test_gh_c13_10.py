@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_10 import ghosal_ntr_consist
 
 
@@ -64,6 +63,4 @@ def test_gh_c13_10_edge():
         float(result["err_by_n"][-1]),
     )
     assert len(result["err_by_n"]) == len(ns)
-    assert result["improving"] == (
-        result["err_by_n"][-1] < result["err_by_n"][0]
-    )
+    assert result["improving"] == (result["err_by_n"][-1] < result["err_by_n"][0])

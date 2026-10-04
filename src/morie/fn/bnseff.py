@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["efficiency_bound", "bound_efficient"]
 
 
-def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
-                     estimand="ate", trunc=0.01):
+def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None, estimand="ate", trunc=0.01):
     r"""The variance no regular estimator can beat.
 
     For the ATE under unconfoundedness the semiparametric efficiency
@@ -93,6 +92,7 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
         if X is None:
             raise ValueError("supply X or propensity.")
         from ._did import add_intercept, logit_fit, logit_predict
+
         Xa = np.atleast_2d(np.asarray(X, dtype=float))
         if Xa.shape[0] != n:
             Xa = Xa.T
@@ -106,12 +106,12 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
 
     if mu1 is None or mu0 is None:
         from ._did import add_intercept, ols_fit
+
         if X is None:
             m1 = np.full(n, float(yv[dv == 1].mean()))
             m0 = np.full(n, float(yv[dv == 0].mean()))
         else:
-            B = add_intercept(np.atleast_2d(np.asarray(X, dtype=float))
-                              if Xa is None else Xa)
+            B = add_intercept(np.atleast_2d(np.asarray(X, dtype=float)) if Xa is None else Xa)
             m1 = B @ ols_fit(B[dv == 1], yv[dv == 1])
             m0 = B @ ols_fit(B[dv == 0], yv[dv == 0])
     else:
@@ -132,9 +132,7 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
     penalty = float(outcome - flat)
 
     # IPW's asymptotic variance for comparison
-    ipw_var = float(np.mean(
-        (dv * yv / e - (1 - dv) * yv / (1 - e) - tau) ** 2
-    ))
+    ipw_var = float(np.mean((dv * yv / e - (1 - dv) * yv / (1 - e) - tau) ** 2))
     return RichResult(
         payload={
             "estimate": bound,
@@ -154,8 +152,7 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
                 "fix is a different estimand or better data"
             ),
             "ipw_variance": ipw_var,
-            "ipw_relative_efficiency": (float(bound / ipw_var)
-                                        if ipw_var > 0 else np.nan),
+            "ipw_relative_efficiency": (float(bound / ipw_var) if ipw_var > 0 else np.nan),
             "efficiency_note": (
                 "AIPW and TMLE attain this bound; IPW alone does not, and "
                 "the ratio says how much is lost. It cannot exceed 1 in "
@@ -165,15 +162,14 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
             ),
             "ratio_valid": bool(ipw_var > 0 and bound / ipw_var <= 1.0 + 1e-9),
             "ratio_warning": (
-                None if not (ipw_var > 0 and bound / ipw_var > 1.0 + 1e-9)
+                None
+                if not (ipw_var > 0 and bound / ipw_var > 1.0 + 1e-9)
                 else "the ratio came out at %.3f, above the 1 it cannot "
-                     "exceed in population. Both quantities were formed with "
-                     "the SAME truncated propensity, so under poor overlap "
-                     "neither is the asymptotic object and the comparison "
-                     "does not hold. Measured on a design with %d of %d "
-                     "propensities truncated"
-                     % (bound / ipw_var,
-                        int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))), n)
+                "exceed in population. Both quantities were formed with "
+                "the SAME truncated propensity, so under poor overlap "
+                "neither is the asymptotic object and the comparison "
+                "does not hold. Measured on a design with %d of %d "
+                "propensities truncated" % (bound / ipw_var, int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))), n)
             ),
             "n_truncated": int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc))),
             "below_bound_note": (

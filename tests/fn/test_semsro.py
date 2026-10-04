@@ -59,10 +59,8 @@ def test_semsro_basic():
 def test_semsro_edge():
     """Test that a non-symmetric sample_cov raises ValueError as documented."""
     # Non-symmetric 2x2 matrix
-    sample_cov = [[1.0, 0.5],
-                  [0.6, 1.0]]
-    fitted_cov = [[1.0, 0.0],
-                  [0.0, 1.0]]
+    sample_cov = [[1.0, 0.5], [0.6, 1.0]]
+    fitted_cov = [[1.0, 0.0], [0.0, 1.0]]
 
     with pytest.raises(ValueError):
         sem_residual(sample_cov, fitted_cov)

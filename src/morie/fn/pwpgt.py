@@ -32,17 +32,18 @@ def pwp_gap_time(start, stop, event, X, occurrence, max_iter=50, tol=1e-9):
     stop = np.asarray(stop, dtype=float)
     gap = stop - start
     zeros = np.zeros(gap.shape[0])
-    fit = cox_counting_process(zeros, gap, event, X, strata=occurrence,
-                               max_iter=max_iter, tol=tol)
-    return RichResult(payload={
-        "estimate": fit["beta"],
-        "se": fit["se"],
-        "cov": fit["cov"],
-        "loglik": fit["loglik"],
-        "n_iter": fit["n_iter"],
-        "n_events": fit["n_events"],
-        "method": "Prentice-Williams-Peterson (1981) gap-time stratified Cox, Breslow ties",
-    })
+    fit = cox_counting_process(zeros, gap, event, X, strata=occurrence, max_iter=max_iter, tol=tol)
+    return RichResult(
+        payload={
+            "estimate": fit["beta"],
+            "se": fit["se"],
+            "cov": fit["cov"],
+            "loglik": fit["loglik"],
+            "n_iter": fit["n_iter"],
+            "n_events": fit["n_events"],
+            "method": "Prentice-Williams-Peterson (1981) gap-time stratified Cox, Breslow ties",
+        }
+    )
 
 
 def cheatsheet():

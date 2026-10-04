@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,13 +18,11 @@ def ghosal_kl_variation(p, q, k=2):
     Keys: estimate."""
     p = _bnp.normalize_weights(p)
     q = _bnp.normalize_weights(q)
-    Vk = sum(a * abs(math.log(a / max(b, 1e-300))) ** k
-             for a, b in zip(p, q) if a > 0)
-    kl = sum(a * math.log(a / max(b, 1e-300))
-             for a, b in zip(p, q) if a > 0)
-    res = RichResult(payload={"estimate": Vk, "kl": kl,
-                              "dominates_kl": Vk >= 0,
-                              "method": "KL variation (GvdV 2017 App B)"})
+    Vk = sum(a * abs(math.log(a / max(b, 1e-300))) ** k for a, b in zip(p, q) if a > 0)
+    kl = sum(a * math.log(a / max(b, 1e-300)) for a, b in zip(p, q) if a > 0)
+    res = RichResult(
+        payload={"estimate": Vk, "kl": kl, "dominates_kl": Vk >= 0, "method": "KL variation (GvdV 2017 App B)"}
+    )
     return with_describe_pointer(res, "gh_ap_b2")
 
 

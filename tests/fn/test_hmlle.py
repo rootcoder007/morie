@@ -1,7 +1,6 @@
 """Tests for hmlle.geron_locally_linear_embedding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlle import geron_locally_linear_embedding
 
 

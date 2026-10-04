@@ -1,6 +1,6 @@
 """Tests for setT (Set Transformer PMA pooling)."""
 
-from morie.fn.setT import setT, set_transformer
+from morie.fn.setT import set_transformer, setT
 
 Z = [[1.0, 0.0], [0.0, 2.0], [0.5, 0.5], [2.0, 1.0]]
 S1 = [[0.3, 0.7]]

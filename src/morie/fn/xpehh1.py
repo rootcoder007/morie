@@ -10,8 +10,7 @@ from .ihstst import _ihh_one_side
 __all__ = ["xp_ehh"]
 
 
-def xp_ehh(hapA, hapB, core, positions=None, min_ehh=0.05,
-           standardize=None):
+def xp_ehh(hapA, hapB, core, positions=None, min_ehh=0.05, standardize=None):
     """Cross-population extended haplotype homozygosity test.
 
     Sabeti et al. (2007, Methods p. 6): EHH between the core SNP and a
@@ -87,13 +86,19 @@ def xp_ehh(hapA, hapB, core, positions=None, min_ehh=0.05,
     else:
         est = u
         std = False
-    return RichResult(payload={
-        "estimate": est, "xpehh_unstandardized": u,
-        "I_A": IA, "I_B": IB,
-        "truncated_a": bool(tAl or tAr), "truncated_b": bool(tBl or tBr),
-        "standardized": std, "core": int(decA["core"]),
-        "method": "XP-EHH (Sabeti 2007): ln(I_A/I_B) of integrated site-EHH",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "xpehh_unstandardized": u,
+            "I_A": IA,
+            "I_B": IB,
+            "truncated_a": bool(tAl or tAr),
+            "truncated_b": bool(tBl or tBr),
+            "standardized": std,
+            "core": int(decA["core"]),
+            "method": "XP-EHH (Sabeti 2007): ln(I_A/I_B) of integrated site-EHH",
+        }
+    )
 
 
 def cheatsheet():

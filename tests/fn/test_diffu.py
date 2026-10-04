@@ -1,7 +1,6 @@
 """Tests for morie.fn.diffu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.diffu import heat_diffusion
 
 

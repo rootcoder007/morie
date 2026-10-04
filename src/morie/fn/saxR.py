@@ -30,10 +30,9 @@ def _paa(z, w):
     # eq (1): cbar_i = (w/n) sum_{j = n/w (i-1)+1}^{n/w i} c_j
     n = len(z)
     if n % w != 0:
-        raise ValueError("word length must divide the series length "
-                         "(eq 1 of Lin et al. 2003 uses equal frames)")
+        raise ValueError("word length must divide the series length (eq 1 of Lin et al. 2003 uses equal frames)")
     f = n // w
-    return [sum(z[i * f:(i + 1) * f]) / f for i in range(w)]
+    return [sum(z[i * f : (i + 1) * f]) / f for i in range(w)]
 
 
 def saxR(x, window, alphabet, eps=1e-8):
@@ -105,17 +104,19 @@ def saxR(x, window, alphabet, eps=1e-8):
                     j += 1
             syms.append(j)
     word = "".join(_LETTERS[s] for s in syms)
-    return RichResult(payload={
-        "word": word,
-        "symbols": syms,
-        "paa": paa,
-        "breakpoints": bps,
-        "mean": mu,
-        "sd": sd,
-        "estimate": word,
-        "n": n,
-        "method": "SAX (Lin-Keogh-Lonardi-Chiu 2003)",
-    })
+    return RichResult(
+        payload={
+            "word": word,
+            "symbols": syms,
+            "paa": paa,
+            "breakpoints": bps,
+            "mean": mu,
+            "sd": sd,
+            "estimate": word,
+            "n": n,
+            "method": "SAX (Lin-Keogh-Lonardi-Chiu 2003)",
+        }
+    )
 
 
 def sax_mindist(word1, word2, n, alphabet):

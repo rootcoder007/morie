@@ -2,9 +2,9 @@
 volrs volyz volhar volhar1 volharj volraq voldoc voltsr voljr volpow
 volmuk volopn volsk volrls volrlmt."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volbpv import vol_bipower_variation
 from morie.fn.voldoc import vol_decomposed_realised
 from morie.fn.volhar import vol_har_rv
@@ -12,7 +12,7 @@ from morie.fn.volhar1 import vol_har_q
 from morie.fn.volharj import vol_har_rv_jump
 from morie.fn.voljr import vol_jump_robust_var
 from morie.fn.volmuk import vol_multi_kernel_rk
-from morie.fn.volopn import vol_implied_volatility_bs, _bs_price
+from morie.fn.volopn import _bs_price, vol_implied_volatility_bs
 from morie.fn.volpow import vol_power_variation
 from morie.fn.volraq import vol_realised_quadratic_var
 from morie.fn.volrk import vol_realised_kernel
@@ -153,7 +153,10 @@ def test_volyz_recovers_sigma():
     rng = np.random.default_rng(4)
     n, steps = 300, 50
     sig_step = 0.02 / np.sqrt(steps)
-    o = np.empty(n); h = np.empty(n); l = np.empty(n); c = np.empty(n)
+    o = np.empty(n)
+    h = np.empty(n)
+    l = np.empty(n)
+    c = np.empty(n)
     price = 0.0
     for d in range(n):
         o[d] = price
@@ -248,10 +251,12 @@ def test_volopn_round_trip():
 
 def test_volsk_tracks_a_regime_shift():
     rng = np.random.default_rng(7)
-    r = np.concatenate([
-        rng.normal(scale=0.01, size=300),
-        rng.normal(scale=0.04, size=300),
-    ])
+    r = np.concatenate(
+        [
+            rng.normal(scale=0.01, size=300),
+            rng.normal(scale=0.04, size=300),
+        ]
+    )
     out = vol_stochastic_kalman(r)
     assert out["sigma"][350:].mean() > 2.0 * out["sigma"][:250].mean()
     with pytest.raises(ValueError):

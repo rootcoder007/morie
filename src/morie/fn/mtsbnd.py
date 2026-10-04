@@ -70,11 +70,20 @@ def mts_bounds(Y, X, monotone=True, d=None, ymin=None, ymax=None):
     if monotone:
         return mtsbound(y, x, lev, lo, hi)
     r = mtsbound([-v for v in y], x, lev, -hi, -lo)
-    return type(r)(payload={
-        "lower": -r["upper"], "upper": -r["lower"], "width": r["width"],
-        "condmean": -r["condmean"], "pbelow": r["pbelow"], "pat": r["pat"],
-        "pabove": r["pabove"], "n": r["n"], "d": r["d"],
-        "method": "Monotone treatment selection bounds (Manski-Pepper 2000)"})
+    return type(r)(
+        payload={
+            "lower": -r["upper"],
+            "upper": -r["lower"],
+            "width": r["width"],
+            "condmean": -r["condmean"],
+            "pbelow": r["pbelow"],
+            "pat": r["pat"],
+            "pabove": r["pabove"],
+            "n": r["n"],
+            "d": r["d"],
+            "method": "Monotone treatment selection bounds (Manski-Pepper 2000)",
+        }
+    )
 
 
 mtsbounds = mts_bounds

@@ -7,8 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_bernstein_poly"]
@@ -25,14 +23,17 @@ def ghosal_bernstein_poly(K_list=(5, 20, 80)):
         err = 0.0
         for j in range(21):
             x = j / 20.0
-            bk = sum(f(k / K) * math.comb(K, k) * x ** k
-                     * (1.0 - x) ** (K - k) for k in range(K + 1))
+            bk = sum(f(k / K) * math.comb(K, k) * x**k * (1.0 - x) ** (K - k) for k in range(K + 1))
             err = max(err, abs(bk - f(x)))
         errs.append(err)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "err_by_K": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "Bernstein approximation (GvdV 2017 App E)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "err_by_K": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "Bernstein approximation (GvdV 2017 App E)",
+        }
+    )
     return with_describe_pointer(res, "gh_ap_e1")
 
 

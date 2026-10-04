@@ -1,7 +1,6 @@
 """Tests for bayes_estimate_binomial.bayes_estimate_binomial."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bayes_estimate_binomial import (
     bayes_estimate_binomial,
 )
@@ -18,6 +17,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24_basic(
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
     assert 0.0 <= result["value"] <= 1.0
 
@@ -33,5 +33,6 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24_edge()
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
     assert 0.0 <= result["value"] <= 1.0

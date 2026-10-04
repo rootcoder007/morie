@@ -64,14 +64,18 @@ def gibbons_large_sample_moments(r, n, f=None, F_inv=None, f_prime=None):
     if fq <= 0:
         raise ValueError("density is zero at the quantile.")
     h = 1e-6
-    fpq = (float(f(xq + h)) - float(f(xq - h))) / (2 * h) if f_prime is None \
-        else float(f_prime(xq))
+    fpq = (float(f(xq + h)) - float(f(xq - h))) / (2 * h) if f_prime is None else float(f_prime(xq))
     mean = xq + p * q / (2.0 * (n + 2)) * (-fpq / fq**3)
     var = p * q / ((n + 2.0) * fq**2)
     return RichResult(
         payload={
-            "mean": float(mean), "var": float(var), "sd": float(np.sqrt(var)),
-            "p": p, "first_order_mean": xq, "r": r, "n": n,
+            "mean": float(mean),
+            "var": float(var),
+            "sd": float(np.sqrt(var)),
+            "p": p,
+            "first_order_mean": xq,
+            "r": r,
+            "n": n,
             "method": "David-Johnson large-sample moments (Gibbons Ch. 2.9)",
         }
     )

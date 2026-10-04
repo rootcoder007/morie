@@ -1,7 +1,6 @@
 """Tests for morie.fn.havsn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.havsn import havsn
 
 

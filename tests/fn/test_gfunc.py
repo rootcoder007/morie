@@ -1,7 +1,6 @@
 """Tests for morie.fn.gfunc — pair correlation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gfunc import pair_correlation
 
 

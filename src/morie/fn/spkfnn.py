@@ -58,20 +58,26 @@ def schabenberger_cross_validation_kriging(coords, z, cov_model=None, mu=None):
     sd = np.empty(n)
     for i in range(n):
         keep = np.arange(n) != i
-        p, v, _ = simple_kriging(coords[keep], z[keep], coords[i:i + 1],
-                                 cov_model, mu)
+        p, v, _ = simple_kriging(coords[keep], z[keep], coords[i : i + 1], cov_model, mu)
         resid[i] = z[i] - float(p[0])
         sd[i] = np.sqrt(max(float(v[0]), 1e-300))
     std = resid / sd
     return RichResult(
         title="Leave-one-out cross-validation of kriging",
-        summary_lines=[("MSPE", float(np.mean(resid**2))),
-                       ("mean error", float(np.mean(resid))),
-                       ("var of standardised residuals", float(np.var(std)))],
-        payload={"mspe": float(np.mean(resid**2)),
-                 "rmspe": float(np.sqrt(np.mean(resid**2))),
-                 "me": float(np.mean(resid)), "residuals": resid,
-                 "standardised": std, "std_variance": float(np.var(std)), "n": n},
+        summary_lines=[
+            ("MSPE", float(np.mean(resid**2))),
+            ("mean error", float(np.mean(resid))),
+            ("var of standardised residuals", float(np.var(std))),
+        ],
+        payload={
+            "mspe": float(np.mean(resid**2)),
+            "rmspe": float(np.sqrt(np.mean(resid**2))),
+            "me": float(np.mean(resid)),
+            "residuals": resid,
+            "standardised": std,
+            "std_variance": float(np.var(std)),
+            "n": n,
+        },
     )
 
 

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmiseg import geron_image_segmentation
 
 
@@ -15,8 +14,7 @@ def test_hmiseg_basic():
     seed = 42
     result = geron_image_segmentation(image, n_clusters, seed)
     assert isinstance(result, dict)
-    for key in ("segmented", "labels", "palette", "inertia",
-                "compression_ratio", "estimate", "n", "method"):
+    for key in ("segmented", "labels", "palette", "inertia", "compression_ratio", "estimate", "n", "method"):
         assert key in result
     assert result["segmented"].shape == (4, 4, 3)
     assert result["labels"].shape == (4, 4)
@@ -34,8 +32,7 @@ def test_hmiseg_edge():
     seed = 0
     result = geron_image_segmentation(image, n_clusters, seed)
     assert isinstance(result, dict)
-    for key in ("segmented", "labels", "palette", "inertia",
-                "compression_ratio", "estimate", "n", "method"):
+    for key in ("segmented", "labels", "palette", "inertia", "compression_ratio", "estimate", "n", "method"):
         assert key in result
     assert result["segmented"].shape == (2, 3, 1)
     assert result["palette"].shape == (1, 1)
@@ -56,7 +53,7 @@ import morie.fn.hmiseg as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

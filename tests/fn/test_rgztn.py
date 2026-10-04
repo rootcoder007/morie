@@ -1,7 +1,6 @@
 """Tests for rgztn.regularization_path."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rgztn import regularization_path
 
 

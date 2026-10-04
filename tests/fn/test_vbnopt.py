@@ -1,11 +1,8 @@
 """Tests for vbnopt.variational_inference (mean-field Normal-Gamma VI)."""
 
-import math
-
 import pytest
 
 from morie.fn.vbnopt import variational_inference
-
 
 X = [2.1, 1.4, 3.3, 2.8, 1.9, 2.5, 3.0, 1.2, 2.2, 2.7]
 
@@ -47,5 +44,3 @@ def test_vbnopt_edge():
         variational_inference(x=[1.0])
     with pytest.raises(ValueError):
         variational_inference(x=X, b0=-1.0)
-
-

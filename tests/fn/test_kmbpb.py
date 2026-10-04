@@ -35,8 +35,7 @@ def test_a_byte_total_and_a_per_token_rate_agree():
     log_probs = [math.log(0.25), math.log(0.5), math.log(0.125)]
     by_total = kamath_bits_per_byte(log_probs, n_bytes=6.0)
     by_rate = kamath_bits_per_byte(log_probs, bytes_per_token=2.0)
-    assert by_total["bits_per_byte"] == pytest.approx(
-        by_rate["bits_per_byte"], rel=1e-12)
+    assert by_total["bits_per_byte"] == pytest.approx(by_rate["bits_per_byte"], rel=1e-12)
 
 
 def test_cross_entropy_is_the_mean_negative_log_probability():
@@ -52,8 +51,7 @@ def test_base_two_input_is_read_as_bits():
     # the same distribution given in bits must give the same answer
     in_nats = kamath_bits_per_byte([math.log(0.5)] * 3, bytes_per_token=1.0)
     in_bits = kamath_bits_per_byte([-1.0] * 3, bytes_per_token=1.0, base="2")
-    assert in_bits["bits_per_byte"] == pytest.approx(
-        in_nats["bits_per_byte"], rel=1e-12)
+    assert in_bits["bits_per_byte"] == pytest.approx(in_nats["bits_per_byte"], rel=1e-12)
 
 
 def test_a_positive_log_probability_is_refused():
@@ -84,7 +82,7 @@ import morie.fn.kmbpb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

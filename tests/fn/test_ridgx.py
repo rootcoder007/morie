@@ -1,7 +1,6 @@
 """Tests for ridgx.py - Ridge extraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ridgx import ridge_extract, ridgx
 
 

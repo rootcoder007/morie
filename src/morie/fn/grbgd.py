@@ -72,13 +72,9 @@ def geron_batch_gradient_descent(X, y, theta, eta, n_iter):
     y = np.asarray(y, dtype=float).ravel()
     theta = np.asarray(theta, dtype=float).ravel()
     if X.shape[0] != y.size:
-        raise ValueError(
-            f"X has {X.shape[0]} rows but y has {y.size} entries."
-        )
+        raise ValueError(f"X has {X.shape[0]} rows but y has {y.size} entries.")
     if X.shape[1] != theta.size:
-        raise ValueError(
-            f"X has {X.shape[1]} columns but theta has {theta.size} entries."
-        )
+        raise ValueError(f"X has {X.shape[1]} columns but theta has {theta.size} entries.")
     if X.size == 0:
         raise ValueError("X is empty.")
     if not np.all(np.isfinite(X)) or not np.all(np.isfinite(y)) or not np.all(np.isfinite(theta)):
@@ -106,10 +102,7 @@ def geron_batch_gradient_descent(X, y, theta, eta, n_iter):
         grad = (2.0 / m) * (X.T @ (X @ theta - y))
         theta = theta - eta * grad
         if not np.all(np.isfinite(theta)):
-            raise ValueError(
-                f"gradient descent diverged; eta={eta} exceeds the stability "
-                f"bound {eta_max:.6g}."
-            )
+            raise ValueError(f"gradient descent diverged; eta={eta} exceeds the stability bound {eta_max:.6g}.")
         path.append(theta.tolist())
         losses.append(mse(theta))
 

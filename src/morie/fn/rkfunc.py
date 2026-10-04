@@ -18,13 +18,18 @@ def ripley_k(coords, r_grid, area=None, edge_correction=True):
     indicates clustering and below it regularity.  ``L`` in the result
     is the variance-stabilising sqrt(K/pi), which is flat under CSR and
     easier to read. Keys: estimate."""
-    r = _rc.ripley_k(coords, r_grid, area=area,
-                     edge_correction=edge_correction)
-    res = RichResult(payload={"estimate": r["K"], "r": r["r"],
-                              "K": r["K"], "L": r["L"],
-                              "csr_K": r["csr_K"],
-                              "intensity": r["intensity"],
-                              "method": r["method"]})
+    r = _rc.ripley_k(coords, r_grid, area=area, edge_correction=edge_correction)
+    res = RichResult(
+        payload={
+            "estimate": r["K"],
+            "r": r["r"],
+            "K": r["K"],
+            "L": r["L"],
+            "csr_K": r["csr_K"],
+            "intensity": r["intensity"],
+            "method": r["method"],
+        }
+    )
     return with_describe_pointer(res, "rkfunc")
 
 

@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.15: Demographic Representation."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_demographic_representation"]
@@ -40,18 +39,23 @@ def kamath_ch6_demographic_representation(G_i, A_i, Yhat):
     words = list(A_i)
     outs = list(Yhat)
     if not words:
-        raise ValueError("A_i is empty; a group with no attribute words "
-                         "cannot be counted.")
+        raise ValueError("A_i is empty; a group with no attribute words cannot be counted.")
     if not outs:
         raise ValueError("Yhat is empty; there is nothing to count in.")
     per = {a: int(_count(a, outs)) for a in words}
     total = float(sum(per.values()))
     n_tokens = int(sum(len(_tokens(Y)) for Y in outs))
-    return RichResult(payload={
-        "estimate": total, "group": G_i, "per_word": per,
-        "share_of_tokens": (total / n_tokens) if n_tokens else 0.0,
-        "n_outputs": len(outs), "n": n_tokens,
-        "method": "Demographic Representation count (Kamath Eq 6.15)"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "group": G_i,
+            "per_word": per,
+            "share_of_tokens": (total / n_tokens) if n_tokens else 0.0,
+            "n_outputs": len(outs),
+            "n": n_tokens,
+            "method": "Demographic Representation count (Kamath Eq 6.15)",
+        }
+    )
 
 
 def cheatsheet():

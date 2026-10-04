@@ -1,8 +1,8 @@
 """spglmm -- conditional GLMM specification, Schabenberger Sec. 6.3.4."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spglmm import schabenberger_glmm_conditional
 
 
@@ -33,8 +33,7 @@ def test_marginal_mean_is_not_the_inverse_link_at_x_beta():
     assert not np.allclose(r["marginal_mean"], r["naive_marginal_mean"])
     # and the discrepancy is exactly exp(sigma_S^2 / 2)
     assert r["marginal_ratio"] == pytest.approx(np.exp(r["sigma2_S"] / 2))
-    assert np.allclose(r["marginal_mean"] / r["naive_marginal_mean"],
-                       r["marginal_ratio"])
+    assert np.allclose(r["marginal_mean"] / r["naive_marginal_mean"], r["marginal_ratio"])
 
 
 def test_the_gap_grows_with_the_latent_variance():
@@ -56,13 +55,11 @@ def test_marginal_covariance_matches_the_variance_on_the_diagonal():
     """The book's Cov expression must reduce to Var at i = j."""
     X, beta, S = _design()
     n = X.shape[0]
-    r = schabenberger_glmm_conditional(X, beta, S, family="poisson",
-                                       correlation=np.eye(n))
+    r = schabenberger_glmm_conditional(X, beta, S, family="poisson", correlation=np.eye(n))
     # Var[Z] = E[Var(Z|S)] + Var(E[Z|S]); the second part is the diagonal of
     # the covariance, and at sigma^2 = 1 the first is m exp(sigma_S^2/2),
     # which is the marginal mean itself.
-    assert np.allclose(r["marginal_variance"],
-                       np.diag(r["marginal_covariance"]) + r["marginal_mean"])
+    assert np.allclose(r["marginal_variance"], np.diag(r["marginal_covariance"]) + r["marginal_mean"])
 
 
 def test_non_log_link_says_there_is_no_closed_form():

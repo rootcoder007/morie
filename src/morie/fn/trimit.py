@@ -78,12 +78,21 @@ def weight_trimming(y, weights, threshold):
     ntr = sum(1 for i in range(n) if w[i] > thr)
     s1 = sum(cur)
     mu1 = sum(cur[i] * yy[i] for i in range(n)) / s1
-    return RichResult(payload={
-        "estimate": float(mu1), "mean_before": float(mu0), "weights": cur,
-        "n_trimmed": int(ntr), "iterations": int(it), "sumw": float(s1),
-        "max_weight": float(max(cur)),
-        "deff_before": _deff(w), "deff_after": _deff(cur), "n": n,
-        "method": "cap at w_max then redistribute the excess [Potter 1990]"})
+    return RichResult(
+        payload={
+            "estimate": float(mu1),
+            "mean_before": float(mu0),
+            "weights": cur,
+            "n_trimmed": int(ntr),
+            "iterations": int(it),
+            "sumw": float(s1),
+            "max_weight": float(max(cur)),
+            "deff_before": _deff(w),
+            "deff_after": _deff(cur),
+            "n": n,
+            "method": "cap at w_max then redistribute the excess [Potter 1990]",
+        }
+    )
 
 
 def _deff(w):
@@ -106,6 +115,7 @@ def _deff(w):
 
 def cheatsheet():
     return "trimit(y, weights, threshold): cap weights, redistribute the excess."
+
 
 # public names resolved by fn/_lazy_map.json
 weighttrimming = weight_trimming

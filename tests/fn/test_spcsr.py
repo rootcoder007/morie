@@ -32,8 +32,5 @@ def test_spcsr_edge():
     r = schabenberger_csr_def(pts, (0.0, 0.0, 1.0, 1.0))
     c = [float(v) for v in r["quadrat_counts"].tolist()]
     m = sum(c) / len(c)
-    assert r["index_of_dispersion"] == pytest.approx(
-        sum((v - m) ** 2 for v in c) / (len(c) - 1) / m, rel=1e-12)
+    assert r["index_of_dispersion"] == pytest.approx(sum((v - m) ** 2 for v in c) / (len(c) - 1) / m, rel=1e-12)
     assert r["index_of_dispersion"] > 1 and r["clark_evans"] < 1
-
-

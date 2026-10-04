@@ -1,7 +1,6 @@
 """Tests for gb_kcp.gibbons_ks_conf_band."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_kcp import gibbons_ks_conf_band
 
 
@@ -12,6 +11,8 @@ def test_gb_kcp_basic():
     result = gibbons_ks_conf_band(x, alpha)
     assert isinstance(result, dict)
     assert "at" in result
+
+
 def test_gb_kcp_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

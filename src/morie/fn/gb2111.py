@@ -2,7 +2,6 @@
 """Distribution-free tolerance intervals from order statistics."""
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._richresult import RichResult
 from ._sci_core import special
 
@@ -71,8 +70,13 @@ def gibbons_tolerance_beta(x=None, r=1, s=None, p=0.9, gamma=None, n=None):
             if 1.0 - special.betainc(m - 1, 2, p) >= gamma:
                 return RichResult(
                     payload={
-                        "n_required": int(m), "gamma": float(gamma), "p": float(p),
-                        "r": 1, "s": m, "n": None, "coverage_dist": (m - 1, 2),
+                        "n_required": int(m),
+                        "gamma": float(gamma),
+                        "p": float(p),
+                        "r": 1,
+                        "s": m,
+                        "n": None,
+                        "coverage_dist": (m - 1, 2),
                         "endpoints": None,
                         "method": "Smallest n for (X(1), X(n)) tolerance (Thm 2.11.1)",
                     }
@@ -92,8 +96,14 @@ def gibbons_tolerance_beta(x=None, r=1, s=None, p=0.9, gamma=None, n=None):
         endpoints = (float(x[r - 1]), float(x[s - 1]))
     return RichResult(
         payload={
-            "gamma": float(g), "coverage_dist": (a, b), "endpoints": endpoints,
-            "n_required": None, "r": r, "s": s, "p": float(p), "n": n,
+            "gamma": float(g),
+            "coverage_dist": (a, b),
+            "endpoints": endpoints,
+            "n_required": None,
+            "r": r,
+            "s": s,
+            "p": float(p),
+            "n": n,
             "method": "Coverage ~ Beta(s-r, n-s+r+1) (Gibbons Theorem 2.11.1)",
         }
     )

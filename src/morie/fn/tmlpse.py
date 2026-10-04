@@ -88,8 +88,7 @@ def tmle_path_specific(y, D, M_chain, X, path):
         (X'X/n)^{-1} x_i e_i, one row per subject."""
         beta, _, resid, xtxinv = S.ols(des, t)
         q = len(beta)
-        inf = [[n * sum(xtxinv[r][c] * des[i][c] for c in range(q)) * resid[i]
-                for r in range(q)] for i in range(n)]
+        inf = [[n * sum(xtxinv[r][c] * des[i][c] for c in range(q)) * resid[i] for r in range(q)] for i in range(n)]
         return beta, inf
 
     # mediator k on (D, 1, X, M_1..M_{k-1}); outcome on (D, 1, X, M)
@@ -108,8 +107,7 @@ def tmle_path_specific(y, D, M_chain, X, path):
     # delta_k = asg_k a_k + sum_{j<k} c_kj delta_j.
     delta = []
     for k in range(K):
-        delta.append(asg[k] * mb[k][0]
-                     + sum(mb[k][1 + p1 + j] * delta[j] for j in range(k)))
+        delta.append(asg[k] * mb[k][0] + sum(mb[k][1 + p1 + j] * delta[j] for j in range(k)))
     psi = qb[0] + sum(qb[1 + p1 + k] * delta[k] for k in range(K))
     # adjoint lam_k = d psi / d delta_k (reverse sweep), then the
     # delta-method influence curve from the stacked OLS influence
@@ -127,9 +125,16 @@ def tmle_path_specific(y, D, M_chain, X, path):
     eps = 0.0
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "n_path": float(sum(pv)), "n": n,
-        "method": "Path-specific effect under linear structural models, delta-method influence curve"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_path": float(sum(pv)),
+            "n": n,
+            "method": "Path-specific effect under linear structural models, delta-method influence curve",
+        }
+    )
 
 
 def cheatsheet():

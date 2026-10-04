@@ -55,20 +55,21 @@ def evt_husler_reiss_dep(x, y, lam):
     for i in range(len(xs)):
         a = xs[i]
         b = ys[i]
-        v = a * core.pnorm(lam + math.log(b / a) / (2.0 * lam)) \
-            + b * core.pnorm(lam + math.log(a / b) / (2.0 * lam))
+        v = a * core.pnorm(lam + math.log(b / a) / (2.0 * lam)) + b * core.pnorm(lam + math.log(a / b) / (2.0 * lam))
         V.append(v)
         F.append(math.exp(-v))
     a_half = core.pnorm(lam)
-    return RichResult(payload={
-        "F": F,
-        "estimate": F[0],
-        "V": V,
-        "A_half": a_half,
-        "chi": 2.0 - 2.0 * core.pnorm(lam),
-        "n": len(xs),
-        "method": "Husler-Reiss bivariate extreme-value dependence",
-    })
+    return RichResult(
+        payload={
+            "F": F,
+            "estimate": F[0],
+            "V": V,
+            "A_half": a_half,
+            "chi": 2.0 - 2.0 * core.pnorm(lam),
+            "n": len(xs),
+            "method": "Husler-Reiss bivariate extreme-value dependence",
+        }
+    )
 
 
 def cheatsheet():

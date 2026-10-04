@@ -6,9 +6,9 @@ body text. The module previously cited "Armstrong Ch 7"; that book has six
 chapters.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mdspl import mds_spatial_map as mds
 
 

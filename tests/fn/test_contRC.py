@@ -1,7 +1,6 @@
 """Tests for contRC.content_based."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.contRC import content_based
 
 

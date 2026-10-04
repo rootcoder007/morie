@@ -28,8 +28,9 @@ def _lcg_cols(d, k, seed):
     return np.sort(pool[:k])
 
 
-def geron_random_forest(X, y, n_estimators=10, max_features="sqrt", seed=0, max_depth=4,
-                        min_samples_leaf=1, task="auto"):
+def geron_random_forest(
+    X, y, n_estimators=10, max_features="sqrt", seed=0, max_depth=4, min_samples_leaf=1, task="auto"
+):
     """
     Random forest: bagging of decision trees with random feature splits.
 
@@ -111,7 +112,9 @@ def geron_random_forest(X, y, n_estimators=10, max_features="sqrt", seed=0, max_
         raise ValueError(f"geron_random_forest: n_estimators must be >= 1, got {n_estimators!r}")
     if task not in ("auto", "classification", "regression"):
         raise ValueError(f"geron_random_forest: task must be auto, classification or regression, got {task!r}")
-    classify = task == "classification" or (task == "auto" and np.unique(yv).size <= max(2, int(np.sqrt(n))) and np.all(yv == np.round(yv)))
+    classify = task == "classification" or (
+        task == "auto" and np.unique(yv).size <= max(2, int(np.sqrt(n))) and np.all(yv == np.round(yv))
+    )
 
     if isinstance(max_features, str):
         if max_features == "sqrt":
@@ -121,7 +124,9 @@ def geron_random_forest(X, y, n_estimators=10, max_features="sqrt", seed=0, max_
         elif max_features == "all":
             k = d
         else:
-            raise ValueError(f"geron_random_forest: max_features must be sqrt, log2, all, an int or a fraction, got {max_features!r}")
+            raise ValueError(
+                f"geron_random_forest: max_features must be sqrt, log2, all, an int or a fraction, got {max_features!r}"
+            )
     elif isinstance(max_features, float):
         k = max(1, int(round(max_features * d)))
     else:

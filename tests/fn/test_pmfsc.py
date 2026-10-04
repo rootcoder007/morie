@@ -1,10 +1,11 @@
 """Tests for pmfsc.pmf_potential."""
 
 import math
+
 import pytest
 
-from morie.fn import _array_core as np
 import morie.fn.pmfsc as pmfsc
+from morie.fn import _array_core as np
 
 
 def test_pmfsc_basic():

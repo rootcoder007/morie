@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.vitfsv import vit_finetune
 
-
 X = [[math.sin(0.9 * i + 0.4 * j) + (1.5 if (i % 3) == j else 0.0) for j in range(3)] for i in range(12)]
 Y = [(i % 3) + 1 for i in range(12)]
 

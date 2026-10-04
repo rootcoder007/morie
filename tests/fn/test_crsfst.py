@@ -1,7 +1,6 @@
 """Tests for crsfst.crs_forest."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crsfst import crs_forest
 
 

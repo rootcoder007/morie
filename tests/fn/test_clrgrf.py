@@ -1,6 +1,9 @@
 """Tests for clrgrf. Full anchor: ledger/wave3/anchor_grf_family.py."""
+
 import pytest
+
 from morie.fn.clrgrf import cluster_forest, cluster_index
+
 from ._grf_fixture import clustered
 
 
@@ -19,11 +22,10 @@ def test_cluster_sampling_widens_the_interval(d):
     """Row-level sampling splits clusters across the split and estimate
     halves, violating honesty THROUGH the cluster while the interval
     still looks respectable."""
-    cl = cluster_forest(d["y"], d["X"], d["cluster"], at=[[0.0, 0.0]],
-                        n_trees=100, min_leaf=5, seed=7)
-    row = cluster_forest(d["y"], d["X"], d["cluster"], at=[[0.0, 0.0]],
-                         n_trees=100, min_leaf=5, seed=7,
-                         cluster_sampling=False)
+    cl = cluster_forest(d["y"], d["X"], d["cluster"], at=[[0.0, 0.0]], n_trees=100, min_leaf=5, seed=7)
+    row = cluster_forest(
+        d["y"], d["X"], d["cluster"], at=[[0.0, 0.0]], n_trees=100, min_leaf=5, seed=7, cluster_sampling=False
+    )
     assert cl["se"][0] > row["se"][0]
     assert cl["n_clusters"] == 20
     assert sum(cl["cluster_sizes"]) == d["n"]

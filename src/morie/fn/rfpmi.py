@@ -45,8 +45,7 @@ from ._richresult import RichResult
 __all__ = ["rf_permutation_importance"]
 
 
-def rf_permutation_importance(forest, X, y, mtry=None, nodesize=5,
-                              normalise=True):
+def rf_permutation_importance(forest, X, y, mtry=None, nodesize=5, normalise=True):
     """Out-of-bag permutation VIM of Chapter 15 pp. 642-643.
 
     Parameters
@@ -84,8 +83,7 @@ def rf_permutation_importance(forest, X, y, mtry=None, nodesize=5,
         raise ValueError("rf_permutation_importance: nodesize must be at least 1")
     m = rf.default_mtry(p) if mtry is None else int(mtry)
     if m < 1 or m > p:
-        raise ValueError("rf_permutation_importance: mtry must lie between 1 and "
-                         "the number of columns of X")
+        raise ValueError("rf_permutation_importance: mtry must lie between 1 and the number of columns of X")
     Ys = rf.standardize(YY, n, q)
     trees, oob = rf.build_forest(XX, Ys, B, ns, m, q)
     imp = rf.perm_importance(trees, oob, XX, Ys, q, normalise)
@@ -100,8 +98,7 @@ def rf_permutation_importance(forest, X, y, mtry=None, nodesize=5,
             "oob_size": [len(o) for o in oob],
             "mtry": m,
             "n": n,
-            "method": "OOB permutation VIM of Chapter 15 pp. 642-643, prose only -- "
-                      "the book states no equation for it",
+            "method": "OOB permutation VIM of Chapter 15 pp. 642-643, prose only -- the book states no equation for it",
         },
     )
 

@@ -1,7 +1,6 @@
 """Tests for d_from_t.d_from_t."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.d_from_t import d_from_t
 
 

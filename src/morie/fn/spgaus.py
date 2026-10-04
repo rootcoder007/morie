@@ -1,6 +1,5 @@
 """Gaussian semivariogram model."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._schab_vario import semivariogram
 
@@ -47,10 +46,8 @@ def schabenberger_gaussian_variogram(h, nugget=0.0, sill=1.0, range=1.0):
     g = semivariogram(h, nugget, sill, range, "gaussian")
     return RichResult(
         title="Gaussian semivariogram model",
-        summary_lines=[("nugget", nugget), ("partial sill", sill),
-                       ("practical range", range)],
-        payload={"gamma": g, "nugget": float(nugget), "sill": float(sill),
-                 "range": float(range), "model": "gaussian"},
+        summary_lines=[("nugget", nugget), ("partial sill", sill), ("practical range", range)],
+        payload={"gamma": g, "nugget": float(nugget), "sill": float(sill), "range": float(range), "model": "gaussian"},
     )
 
 

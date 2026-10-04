@@ -109,11 +109,19 @@ def np_bayes_clustering(y, alpha=1.0, sigma=1.0, m0=None, tau0=10.0):
     for c in range(len(counts)):
         prec = p0 + counts[c] / s2
         means.append((mu0 * p0 + sums[c] / s2) / prec)
-    return RichResult(payload={
-        "labels": labels, "estimate": float(len(counts)),
-        "n_clusters": len(counts), "sizes": [float(x) for x in counts],
-        "means": means, "log_score": total, "alpha": a, "n": n,
-        "method": "DP-mixture MAP partition (Quintana 2006)"})
+    return RichResult(
+        payload={
+            "labels": labels,
+            "estimate": float(len(counts)),
+            "n_clusters": len(counts),
+            "sizes": [float(x) for x in counts],
+            "means": means,
+            "log_score": total,
+            "alpha": a,
+            "n": n,
+            "method": "DP-mixture MAP partition (Quintana 2006)",
+        }
+    )
 
 
 def cheatsheet():

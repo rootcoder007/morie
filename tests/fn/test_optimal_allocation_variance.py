@@ -1,7 +1,5 @@
 """Tests for optimal_allocation_variance.optimal_allocation_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.optimal_allocation_variance import (
     optimal_allocation_variance,
 )

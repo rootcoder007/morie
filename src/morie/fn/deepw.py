@@ -41,8 +41,7 @@ def uniform_walk(nb, start, length, rng):
 
 def skipgram(walks, n, dim, window, epochs, lr, neg, rng):
     """Skip-gram with negative sampling, plain SGD, fixed schedule."""
-    W = [[float(rng.uniform(-0.5, 0.5)) / dim for _ in range(dim)]
-         for _ in range(n)]
+    W = [[float(rng.uniform(-0.5, 0.5)) / dim for _ in range(dim)] for _ in range(n)]
     C = [[0.0] * dim for _ in range(n)]
     for _ in range(epochs):
         for w in walks:
@@ -58,7 +57,7 @@ def skipgram(walks, n, dim, window, epochs, lr, neg, rng):
                         if k >= n:
                             k = n - 1
                         pairs.append((k, 0.0))
-                    for (c, lab) in pairs:
+                    for c, lab in pairs:
                         s = sum(W[tgt][d] * C[c][d] for d in range(dim))
                         g = (core.sigmoid(s) - lab) * lr
                         for d in range(dim):
@@ -68,8 +67,7 @@ def skipgram(walks, n, dim, window, epochs, lr, neg, rng):
     return W, C
 
 
-def deepwalk(G, walk_len=10, dim=8, n_walks=4, window=3, epochs=1, lr=0.05,
-             neg=2, seed=42):
+def deepwalk(G, walk_len=10, dim=8, n_walks=4, window=3, epochs=1, lr=0.05, neg=2, seed=42):
     """
     DeepWalk node embeddings
 
@@ -127,8 +125,7 @@ def deepwalk(G, walk_len=10, dim=8, n_walks=4, window=3, epochs=1, lr=0.05,
     for _ in range(int(n_walks)):
         for v in range(n):
             walks.append(uniform_walk(nb, v, walk_len, rng))
-    W, _C = skipgram(walks, n, dim, int(window), int(epochs), float(lr),
-                     int(neg), rng)
+    W, _C = skipgram(walks, n, dim, int(window), int(epochs), float(lr), int(neg), rng)
     tot = 0.0
     cnt = 0
     for i in range(n):
@@ -138,16 +135,18 @@ def deepwalk(G, walk_len=10, dim=8, n_walks=4, window=3, epochs=1, lr=0.05,
             if a > 0.0 and b > 0.0:
                 tot += sum(W[i][d] * W[j][d] for d in range(dim)) / (a * b)
                 cnt += 1
-    return RichResult(payload={
-        "estimate": tot / cnt if cnt else float("nan"),
-        "embedding": W,
-        "walks": walks,
-        "n_walks_total": len(walks),
-        "degree": [len(nb[i]) for i in range(n)],
-        "n": n,
-        "dim": dim,
-        "method": "DeepWalk node embeddings",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / cnt if cnt else float("nan"),
+            "embedding": W,
+            "walks": walks,
+            "n_walks_total": len(walks),
+            "degree": [len(nb[i]) for i in range(n)],
+            "n": n,
+            "dim": dim,
+            "method": "DeepWalk node embeddings",
+        }
+    )
 
 
 def cheatsheet():

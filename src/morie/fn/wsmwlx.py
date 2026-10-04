@@ -72,7 +72,7 @@ def ranksum(x, y, correct=True):
         tcount = j - i
         if tcount > 1:
             groups += 1
-            tiesum += tcount ** 3 - tcount
+            tiesum += tcount**3 - tcount
         i = j
     W = sum(rank[:n1])
     E = n1 * (N + 1) / 2.0
@@ -87,12 +87,20 @@ def ranksum(x, y, correct=True):
         z = (d + cc) / math.sqrt(V)
     else:
         z = 0.0
-    return RichResult(payload={
-        "statistic": W, "U": W - n1 * (n1 + 1) / 2.0, "z": z,
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(z))), "expected": E,
-        "variance": V, "n1": float(n1), "n2": float(n2),
-        "n_tied_groups": float(groups),
-        "method": "Wilcoxon rank-sum, normal approximation with tie correction"})
+    return RichResult(
+        payload={
+            "statistic": W,
+            "U": W - n1 * (n1 + 1) / 2.0,
+            "z": z,
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(z))),
+            "expected": E,
+            "variance": V,
+            "n1": float(n1),
+            "n2": float(n2),
+            "n_tied_groups": float(groups),
+            "method": "Wilcoxon rank-sum, normal approximation with tie correction",
+        }
+    )
 
 
 wasserman_wilcoxon = ranksum

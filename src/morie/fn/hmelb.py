@@ -104,7 +104,9 @@ def geron_elbo(x, mu, log_sigma, x_recon=None, likelihood="gaussian", sigma_x=1.
     kl_i = -0.5 * np.sum(1.0 + 2.0 * LS - M**2 - var, axis=1)
 
     if likelihood == "gaussian":
-        rec_i = -0.5 * np.sum((X - R) ** 2, axis=1) / (sx * sx) - X.shape[1] * (math.log(2 * math.pi) / 2 + math.log(sx))
+        rec_i = -0.5 * np.sum((X - R) ** 2, axis=1) / (sx * sx) - X.shape[1] * (
+            math.log(2 * math.pi) / 2 + math.log(sx)
+        )
     else:
         if np.any(X < 0) or np.any(X > 1) or np.any(R < 0) or np.any(R > 1):
             raise ValueError("geron_elbo: Bernoulli likelihood requires x and x_recon in [0, 1]")

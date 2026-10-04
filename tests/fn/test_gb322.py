@@ -1,6 +1,5 @@
 """Tests for gb322 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb322 import gibbons_total_runs_dist

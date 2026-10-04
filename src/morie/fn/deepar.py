@@ -61,9 +61,15 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["scale_factor", "negative_binomial_loglik",
-           "gaussian_loglik", "sample_negative_binomial",
-           "deepar_fit", "deepar_sample", "deepar_forecast"]
+__all__ = [
+    "scale_factor",
+    "negative_binomial_loglik",
+    "gaussian_loglik",
+    "sample_negative_binomial",
+    "deepar_fit",
+    "deepar_sample",
+    "deepar_forecast",
+]
 
 _EPS = 1e-12
 
@@ -84,8 +90,7 @@ def scale_factor(z, t0=None):
 def gaussian_loglik(z, mu, sigma):
     """For real-valued series."""
     s = max(float(sigma), _EPS)
-    return (-math.log(s) - 0.5 * math.log(2.0 * math.pi)
-            - 0.5 * ((float(z) - float(mu)) / s) ** 2)
+    return -math.log(s) - 0.5 * math.log(2.0 * math.pi) - 0.5 * ((float(z) - float(mu)) / s) ** 2
 
 
 def negative_binomial_loglik(z, mu, alpha):
@@ -98,16 +103,13 @@ def negative_binomial_loglik(z, mu, alpha):
     m = max(float(mu), _EPS)
     a = float(alpha)
     if zz < 0.0:
-        raise ValueError("deepar: the negative binomial needs a "
-                         "non-negative count, got %r" % (z,))
+        raise ValueError("deepar: the negative binomial needs a non-negative count, got %r" % (z,))
     if a < 0.0:
-        raise ValueError("deepar: alpha must be non-negative, got %r"
-                         % (alpha,))
-    if a < 1e-10:                      # Poisson limit
+        raise ValueError("deepar: alpha must be non-negative, got %r" % (alpha,))
+    if a < 1e-10:  # Poisson limit
         return zz * math.log(m) - m - k.lgamma(zz + 1.0)
     r = 1.0 / a
-    return (k.lgamma(zz + r) - k.lgamma(r) - k.lgamma(zz + 1.0)
-            + r * math.log(r / (r + m)) + zz * math.log(m / (r + m)))
+    return k.lgamma(zz + r) - k.lgamma(r) - k.lgamma(zz + 1.0) + r * math.log(r / (r + m)) + zz * math.log(m / (r + m))
 
 
 def sample_negative_binomial(mu, alpha, rng):
@@ -156,8 +158,7 @@ def _gamma(shape, scale, rng):
             return d * v * scale
 
 
-def deepar_fit(z, n_lags=2, likelihood="negative-binomial",
-               ridge=1e-6):
+def deepar_fit(z, n_lags=2, likelihood="negative-binomial", ridge=1e-6):
     r"""Fit the conditional mean by a scaled autoregression.
 
     A linear autoregression stands in for the recurrent network: the
@@ -165,23 +166,18 @@ def deepar_fit(z, n_lags=2, likelihood="negative-binomial",
     about, and they are identical either way.
     """
     if likelihood not in ("negative-binomial", "gaussian"):
-        raise ValueError("deepar: likelihood must be "
-                         "negative-binomial or gaussian, got %r"
-                         % (likelihood,))
+        raise ValueError("deepar: likelihood must be negative-binomial or gaussian, got %r" % (likelihood,))
     zv = [float(v) for v in k.vec(z)]
     n = len(zv)
     p = int(n_lags)
     if n < p + 4:
-        raise ValueError("deepar: %d observations is too few for %d "
-                         "lags" % (n, p))
+        raise ValueError("deepar: %d observations is too few for %d lags" % (n, p))
     nu = scale_factor(zv)
-    zs = [v / nu for v in zv]                 # scaled to a common range
-    X = [[1.0] + [zs[t - j - 1] for j in range(p)]
-         for t in range(p, n)]
+    zs = [v / nu for v in zv]  # scaled to a common range
+    X = [[1.0] + [zs[t - j - 1] for j in range(p)] for t in range(p, n)]
     yv = [zs[t] for t in range(p, n)]
     beta = k.lstsq(X, yv, ridge)
-    fitted = [max(sum(X[i][a] * beta[a] for a in range(len(beta))),
-                  0.0) for i in range(len(X))]
+    fitted = [max(sum(X[i][a] * beta[a] for a in range(len(beta))), 0.0) for i in range(len(X))]
     resid = [yv[i] - fitted[i] for i in range(len(yv))]
     if likelihood == "negative-binomial":
         # method-of-moments alpha from Var = mu(1 + mu*alpha)
@@ -190,14 +186,22 @@ def deepar_fit(z, n_lags=2, likelihood="negative-binomial",
         alpha = max((vbar - mbar) / (mbar * mbar), 1e-8)
     else:
         alpha = max(k.sd(resid), _EPS) if len(resid) > 1 else 1.0
-    return RichResult(payload={
-        "estimate": beta, "beta": beta, "nu": nu, "n_lags": p,
-        "likelihood": likelihood, "alpha": alpha,
-        "fitted_scaled": fitted, "residual": resid,
-        "scaled": zs, "n": n,
-        "method": "DeepAR autoregressive probabilistic forecaster, "
-                  "Salinas, Flunkert, Gasthaus & Januschowski (2020)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "beta": beta,
+            "nu": nu,
+            "n_lags": p,
+            "likelihood": likelihood,
+            "alpha": alpha,
+            "fitted_scaled": fitted,
+            "residual": resid,
+            "scaled": zs,
+            "n": n,
+            "method": "DeepAR autoregressive probabilistic forecaster, "
+            "Salinas, Flunkert, Gasthaus & Januschowski (2020)",
+        }
+    )
 
 
 def deepar_sample(fit, z_history, horizon, n_samples=200, seed=0):
@@ -214,64 +218,66 @@ def deepar_sample(fit, z_history, horizon, n_samples=200, seed=0):
     H = int(horizon)
     hist = [float(v) / nu for v in k.vec(z_history)][-p:]
     if len(hist) < p:
-        raise ValueError("deepar: need at least %d history points, got "
-                         "%d" % (p, len(hist)))
+        raise ValueError("deepar: need at least %d history points, got %d" % (p, len(hist)))
     rng = np.random.default_rng(seed)
     paths = []
     for _ in range(int(n_samples)):
         st = list(hist)
         path = []
         for _h in range(H):
-            mu_s = beta[0] + sum(beta[j + 1] * st[-j - 1]
-                                 for j in range(p))
+            mu_s = beta[0] + sum(beta[j + 1] * st[-j - 1] for j in range(p))
             mu_s = max(mu_s, 0.0)
             if fit["likelihood"] == "negative-binomial":
-                draw = sample_negative_binomial(mu_s * nu, alpha,
-                                                rng) / nu
+                draw = sample_negative_binomial(mu_s * nu, alpha, rng) / nu
             else:
                 draw = mu_s + (alpha / nu) * rng.standard_normal()
             st.append(draw)
-            path.append(draw * nu)          # back to the real scale
+            path.append(draw * nu)  # back to the real scale
         paths.append(path)
     return paths
 
 
-def deepar_forecast(z, horizon, n_lags=2,
-                    likelihood="negative-binomial", n_samples=300,
-                    quantiles=(0.1, 0.5, 0.9), seed=0):
+def deepar_forecast(
+    z, horizon, n_lags=2, likelihood="negative-binomial", n_samples=300, quantiles=(0.1, 0.5, 0.9), seed=0
+):
     """Fit, sample, and read the quantiles off the trajectories."""
     fit = deepar_fit(z, n_lags=n_lags, likelihood=likelihood)
-    paths = deepar_sample(fit, z, horizon, n_samples=n_samples,
-                          seed=seed)
+    paths = deepar_sample(fit, z, horizon, n_samples=n_samples, seed=seed)
     H = int(horizon)
     qs = {}
     for q in quantiles:
         if not 0.0 < float(q) < 1.0:
-            raise ValueError("deepar: quantiles must be in (0, 1), got "
-                             "%r" % (q,))
-        qs[float(q)] = [k.quantile7(sorted(pp[h] for pp in paths),
-                                    float(q)) for h in range(H)]
+            raise ValueError("deepar: quantiles must be in (0, 1), got %r" % (q,))
+        qs[float(q)] = [k.quantile7(sorted(pp[h] for pp in paths), float(q)) for h in range(H)]
     mean = [k.mean([pp[h] for pp in paths]) for h in range(H)]
-    width = [qs[max(quantiles)][h] - qs[min(quantiles)][h]
-             for h in range(H)]
-    return RichResult(payload={
-        "estimate": mean, "mean": mean, "quantiles": qs,
-        "paths": paths, "width": width, "horizon": H,
-        "nu": fit["nu"], "alpha": fit["alpha"],
-        "likelihood": likelihood, "n_samples": int(n_samples),
-        "method": "DeepAR probabilistic forecast by ancestral "
-                  "sampling, Salinas et al. (2020)",
-    })
+    width = [qs[max(quantiles)][h] - qs[min(quantiles)][h] for h in range(H)]
+    return RichResult(
+        payload={
+            "estimate": mean,
+            "mean": mean,
+            "quantiles": qs,
+            "paths": paths,
+            "width": width,
+            "horizon": H,
+            "nu": fit["nu"],
+            "alpha": fit["alpha"],
+            "likelihood": likelihood,
+            "n_samples": int(n_samples),
+            "method": "DeepAR probabilistic forecast by ancestral sampling, Salinas et al. (2020)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("deepar: emit LIKELIHOOD PARAMETERS per step, not a point. "
-            "Negative binomial with Var = mu(1 + mu*alpha) -- alpha IS "
-            "the overdispersion and alpha->0 is Poisson. Scale each "
-            "series by nu = 1 + mean(z) (the +1 protects an all-zero "
-            "series) or the loss is dominated by the largest series. "
-            "Forecast by ancestral SAMPLING; that is why intervals "
-            "widen with horizon.")
+    return (
+        "deepar: emit LIKELIHOOD PARAMETERS per step, not a point. "
+        "Negative binomial with Var = mu(1 + mu*alpha) -- alpha IS "
+        "the overdispersion and alpha->0 is Poisson. Scale each "
+        "series by nu = 1 + mean(z) (the +1 protects an all-zero "
+        "series) or the loss is dominated by the largest series. "
+        "Forecast by ancestral SAMPLING; that is why intervals "
+        "widen with horizon."
+    )
 
 
 # compact alias per ledger/NAMING.md

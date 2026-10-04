@@ -1,7 +1,6 @@
 """Test confusion_plot (cmxpl)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cmxpl import cmxpl, confusion_plot
 

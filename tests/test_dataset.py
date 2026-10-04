@@ -1,7 +1,5 @@
 """Tests for morie.dataset — dataset-agnostic profiling and analysis engine."""
 
-import tempfile
-
 import pytest
 
 from morie.dataset import (

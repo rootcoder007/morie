@@ -1,9 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Jaro-Winkler string similarity."""
 
-import math
-
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["jaro_winkler"]
@@ -50,9 +47,16 @@ def jaro_winkler(s1, s2, p=0.1, max_prefix=4):
     a, b = str(s1), str(s2)
     la, lb = len(a), len(b)
     if la == 0 or lb == 0:
-        return RichResult(payload={"estimate": 0.0, "jaro": 0.0, "matches": 0,
-                                   "transpositions": 0, "prefix": 0,
-                                   "method": "Jaro-Winkler string similarity"})
+        return RichResult(
+            payload={
+                "estimate": 0.0,
+                "jaro": 0.0,
+                "matches": 0,
+                "transpositions": 0,
+                "prefix": 0,
+                "method": "Jaro-Winkler string similarity",
+            }
+        )
     win = max(la, lb) // 2 - 1
     if win < 0:
         win = 0
@@ -68,9 +72,16 @@ def jaro_winkler(s1, s2, p=0.1, max_prefix=4):
                 m += 1
                 break
     if m == 0:
-        return RichResult(payload={"estimate": 0.0, "jaro": 0.0, "matches": 0,
-                                   "transpositions": 0, "prefix": 0,
-                                   "method": "Jaro-Winkler string similarity"})
+        return RichResult(
+            payload={
+                "estimate": 0.0,
+                "jaro": 0.0,
+                "matches": 0,
+                "transpositions": 0,
+                "prefix": 0,
+                "method": "Jaro-Winkler string similarity",
+            }
+        )
     ka = [a[i] for i in range(la) if fa[i]]
     kb = [b[j] for j in range(lb) if fb[j]]
     t = sum(1 for i in range(m) if ka[i] != kb[i]) / 2.0
@@ -81,10 +92,16 @@ def jaro_winkler(s1, s2, p=0.1, max_prefix=4):
             l += 1
         else:
             break
-    return RichResult(payload={
-        "estimate": jaro + l * p * (1.0 - jaro), "jaro": jaro, "matches": m,
-        "transpositions": t, "prefix": l,
-        "method": "Jaro-Winkler string similarity"})
+    return RichResult(
+        payload={
+            "estimate": jaro + l * p * (1.0 - jaro),
+            "jaro": jaro,
+            "matches": m,
+            "transpositions": t,
+            "prefix": l,
+            "method": "Jaro-Winkler string similarity",
+        }
+    )
 
 
 jarowinkler = jaro_winkler

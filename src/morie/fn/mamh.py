@@ -59,8 +59,7 @@ def ma_mantel_haenszel(a, b, c, d, confidence=0.95):
     D = [float(t) for t in core.vec(d)]
     if not (len(B) == len(C) == len(D) == len(A)):
         raise ValueError("the four cell vectors must have equal length")
-    return mantel_haenszel_or([(A[i], B[i], C[i], D[i])
-                               for i in range(len(A))], confidence)
+    return mantel_haenszel_or([(A[i], B[i], C[i], D[i]) for i in range(len(A))], confidence)
 
 
 def cheatsheet():

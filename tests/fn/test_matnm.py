@@ -1,7 +1,6 @@
 """Tests for morie.fn.matnm -- Matrix norms."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.matnm import matnm, matrix_norms
 

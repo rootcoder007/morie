@@ -1,7 +1,6 @@
 """Test overlap_save (olsav)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.olsav import olsav, overlap_save
 

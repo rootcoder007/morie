@@ -59,8 +59,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["personalise", "sse_replace", "expected_replacement",
-           "parameter_count", "predict_next"]
+__all__ = ["personalise", "sse_replace", "expected_replacement", "parameter_count", "predict_next"]
 
 _EPS = 1e-12
 
@@ -75,11 +74,14 @@ def personalise(item_embeddings, user_embedding):
     u = [float(v) for v in k.vec(user_embedding)]
     if not I:
         raise ValueError("sse4r: the sequence is empty")
-    return {"sequence": [list(row) + list(u) for row in I],
-            "item_dim": len(I[0]), "user_dim": len(u),
-            "width": len(I[0]) + len(u), "length": len(I),
-            "note": "every position carries the user, so two users "
-                    "with the same history diverge"}
+    return {
+        "sequence": [list(row) + list(u) for row in I],
+        "item_dim": len(I[0]),
+        "user_dim": len(u),
+        "width": len(I[0]) + len(u),
+        "length": len(I),
+        "note": "every position carries the user, so two users with the same history diverge",
+    }
 
 
 def sse_replace(indices, table_size, p=0.0, seed=0):
@@ -98,9 +100,7 @@ def sse_replace(indices, table_size, p=0.0, seed=0):
     if any(v < 0 or v >= n for v in idx):
         raise ValueError("sse4r: an index is outside the table")
     if pr == 0.0:
-        return {"indices": list(idx), "replaced": [], "p": 0.0,
-                "rate": 0.0,
-                "note": "p = 0 is exactly the identity"}
+        return {"indices": list(idx), "replaced": [], "p": 0.0, "rate": 0.0, "note": "p = 0 is exactly the identity"}
     rng = np.random.default_rng(seed)
     out, rep = [], []
     for i, v in enumerate(idx):
@@ -111,10 +111,13 @@ def sse_replace(indices, table_size, p=0.0, seed=0):
                 rep.append((i, v, j))
         else:
             out.append(v)
-    return {"indices": out, "replaced": rep, "p": pr,
-            "rate": sum(1 for a in range(len(idx))
-                        if out[a] != idx[a]) / float(len(idx)),
-            "note": "the replacement is drawn from the SAME table"}
+    return {
+        "indices": out,
+        "replaced": rep,
+        "p": pr,
+        "rate": sum(1 for a in range(len(idx)) if out[a] != idx[a]) / float(len(idx)),
+        "note": "the replacement is drawn from the SAME table",
+    }
 
 
 def expected_replacement(p, table_size):
@@ -127,10 +130,12 @@ def expected_replacement(p, table_size):
     pr, n = float(p), int(table_size)
     if n < 1:
         raise ValueError("sse4r: the table is empty")
-    return {"expected_rate": pr * (1.0 - 1.0 / n), "p": pr,
-            "table_size": n,
-            "note": "self-replacement is invisible, so the observed "
-                    "rate is below p"}
+    return {
+        "expected_rate": pr * (1.0 - 1.0 / n),
+        "p": pr,
+        "table_size": n,
+        "note": "self-replacement is invisible, so the observed rate is below p",
+    }
 
 
 def parameter_count(n_users, n_items, user_dim, item_dim):
@@ -140,15 +145,16 @@ def parameter_count(n_users, n_items, user_dim, item_dim):
     if min(nu, ni, du, di) < 1:
         raise ValueError("sse4r: every count must be positive")
     up, ip = nu * du, ni * di
-    return {"user_params": up, "item_params": ip,
-            "total": up + ip,
-            "user_share": up / float(up + ip),
-            "note": "one row per user with few sequences each -- which "
-                    "is why SSE is needed rather than optional"}
+    return {
+        "user_params": up,
+        "item_params": ip,
+        "total": up + ip,
+        "user_share": up / float(up + ip),
+        "note": "one row per user with few sequences each -- which is why SSE is needed rather than optional",
+    }
 
 
-def predict_next(sequence, user_embedding, item_table, attend=None,
-                 top_k=3):
+def predict_next(sequence, user_embedding, item_table, attend=None, top_k=3):
     r"""Score every item for this user and this history.
 
     The user term in the final dot product is the same for every
@@ -174,51 +180,53 @@ def predict_next(sequence, user_embedding, item_table, attend=None,
         # vector and its negation would be indistinguishable and the
         # model would be unpersonalised in disguise.
         m = min(len(u), di)
-        sc = [(sum(qy[a] * seq[t][a] for a in range(di))
-               + sum(u[a] * seq[t][a] for a in range(m)))
-              / math.sqrt(d) for t in range(len(seq))]
+        sc = [
+            (sum(qy[a] * seq[t][a] for a in range(di)) + sum(u[a] * seq[t][a] for a in range(m))) / math.sqrt(d)
+            for t in range(len(seq))
+        ]
         m = max(sc)
         e = [math.exp(v - m) for v in sc]
         z = sum(e)
         w = [v / z for v in e]
-        ctx = [sum(w[t] * seq[t][a] for t in range(len(seq)))
-               for a in range(d)]
+        ctx = [sum(w[t] * seq[t][a] for t in range(len(seq))) for a in range(d)]
     else:
         ctx = [float(v) for v in k.vec(attend(seq))]
     di = len(ctx) - len(u)
     scores = []
     for row in T:
         if len(row) != di:
-            raise ValueError("sse4r: the item table is %d-wide but "
-                             "the item part of the context is %d"
-                             % (len(row), di))
-        scores.append(sum(ctx[a] * row[a] for a in range(di))
-                      + sum(ctx[di + a] * u[a] for a in range(len(u))))
+            raise ValueError("sse4r: the item table is %d-wide but the item part of the context is %d" % (len(row), di))
+        scores.append(sum(ctx[a] * row[a] for a in range(di)) + sum(ctx[di + a] * u[a] for a in range(len(u))))
     order = sorted(range(len(scores)), key=lambda j: -scores[j])
     kk = min(int(top_k), len(order))
-    return RichResult(payload={
-        "estimate": order[:kk], "top_k": order[:kk],
-        "scores": scores, "context": ctx,
-        "method": "personalised Transformer recommendation; Wu, Li, "
-                  "Hsieh & Sharpnack (2020)",
-        "note": "the user term is present at every position, so the "
-                "same history gives different users different "
-                "answers",
-    })
+    return RichResult(
+        payload={
+            "estimate": order[:kk],
+            "top_k": order[:kk],
+            "scores": scores,
+            "context": ctx,
+            "method": "personalised Transformer recommendation; Wu, Li, Hsieh & Sharpnack (2020)",
+            "note": "the user term is present at every position, so the "
+            "same history gives different users different "
+            "answers",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sse4r: a self-attentive sequential recommender models WHAT "
-            "was clicked and ignores WHO clicked, so two users with the "
-            "same recent items get the same answer. Fix it by "
-            "CONCATENATING a user embedding to EVERY item in the "
-            "sequence -- appended once at the end, attention could "
-            "ignore it. That adds one row per user, each with few "
-            "sequences, so it memorises; SSE regularises by REPLACING "
-            "an embedding with another from the SAME table with "
-            "probability p. Not zeroing (that is dropout) -- exchanging, "
-            "which keeps different rows mutually compatible. The "
-            "observed rate is p(1-1/n), not p.")
+    return (
+        "sse4r: a self-attentive sequential recommender models WHAT "
+        "was clicked and ignores WHO clicked, so two users with the "
+        "same recent items get the same answer. Fix it by "
+        "CONCATENATING a user embedding to EVERY item in the "
+        "sequence -- appended once at the end, attention could "
+        "ignore it. That adds one row per user, each with few "
+        "sequences, so it memorises; SSE regularises by REPLACING "
+        "an embedding with another from the SAME table with "
+        "probability p. Not zeroing (that is dropout) -- exchanging, "
+        "which keeps different rows mutually compatible. The "
+        "observed rate is p(1-1/n), not p."
+    )
 
 
 # compact alias per ledger/NAMING.md

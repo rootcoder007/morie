@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["causal_did_sun_abraham"]
 
 
-def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None,
-                           control="never"):
+def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None, control="never"):
     r"""The interaction-weighted estimator of Sun and Abraham (2021).
 
     The problem it solves is specific. The usual two-way
@@ -83,15 +82,13 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None,
         raise ValueError("control must be 'never' or 'notyet'.")
     never = ~np.isfinite(G)
     if control == "never" and not never.any():
-        raise ValueError(
-            "no never-treated units, so there is no clean control group; "
-            "use control='notyet'.")
+        raise ValueError("no never-treated units, so there is no clean control group; use control='notyet'.")
     cohorts = np.unique(G[np.isfinite(G)])
     cohorts = cohorts[(cohorts >= 1) & (cohorts <= T - 1)]
     if cohorts.size == 0:
         raise ValueError(
-            "no cohort is treated at a period with both a pre-period and a "
-            "post-period, so no effect is estimable.")
+            "no cohort is treated at a period with both a pre-period and a post-period, so no effect is estimable."
+        )
     if rel_periods is None:
         lo = int(-min(cohorts))
         hi = int(T - 1 - min(cohorts))
@@ -102,7 +99,7 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None,
     wts = np.zeros((cohorts.size, len(rel)))
     for ci, e in enumerate(cohorts):
         ei = int(e)
-        treated = G == e
+        treated = e == G
         for li, l in enumerate(rel):
             t = ei + l
             if t < 0 or t >= T or ei - 1 < 0:
@@ -111,22 +108,25 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None,
                 ctrl = never
             else:
                 # not yet treated AT PERIOD t (never-treated included)
-                ctrl = (G > t) | never
+                ctrl = (t < G) | never
                 ctrl = ctrl & ~treated
             if not ctrl.any() or not treated.any():
                 continue
-            catt[ci, li] = ((Y[treated, t].mean() - Y[treated, ei - 1].mean())
-                            - (Y[ctrl, t].mean() - Y[ctrl, ei - 1].mean()))
+            catt[ci, li] = (Y[treated, t].mean() - Y[treated, ei - 1].mean()) - (
+                Y[ctrl, t].mean() - Y[ctrl, ei - 1].mean()
+            )
             wts[ci, li] = float(treated.sum())
     # shares among the cohorts that actually contribute at each l
     with np.errstate(invalid="ignore"):
         wts = np.where(np.isnan(catt), 0.0, wts)
         col = wts.sum(axis=0)
         wts = np.divide(wts, col, out=np.zeros_like(wts), where=col > 0)
-    mu = np.array([
-        float(np.nansum(wts[:, li] * np.nan_to_num(catt[:, li])))
-        if wts[:, li].sum() > 0 else np.nan
-        for li in range(len(rel))])
+    mu = np.array(
+        [
+            float(np.nansum(wts[:, li] * np.nan_to_num(catt[:, li]))) if wts[:, li].sum() > 0 else np.nan
+            for li in range(len(rel))
+        ]
+    )
 
     # the naive two-way fixed-effects event study, for contrast
     ever = np.isfinite(G)
@@ -143,23 +143,29 @@ def causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=None,
             if 0 <= t < T:
                 cells.append(Yd[i, t])
         naive.append(float(np.mean(cells)) if cells else np.nan)
-    return RichResult(payload={
-        "rel_periods": np.array(rel), "mu": mu,
-        "catt": catt, "weights": wts, "cohorts": cohorts,
-        "naive_twfe": np.array(naive),
-        "weights_nonnegative": bool(np.all(wts >= -1e-12)),
-        "weights_sum_to_one": bool(np.all(
-            np.isclose(wts.sum(axis=0)[wts.sum(axis=0) > 0], 1.0))),
-        "reference_period": -1,
-        "n_never_treated": int(never.sum()),
-        "control_group": control,
-        "why_not_twfe": "a two-way fixed-effects event-study coefficient is "
-                        "a weighted sum of cohort effects at MANY relative "
-                        "times with possibly NEGATIVE weights, so under "
-                        "heterogeneity it can carry the wrong sign; the "
-                        "interaction weights are shares and cannot",
-        "n_units": int(n), "n_periods": int(T),
-        "method": "Sun-Abraham interaction-weighted event study (2021)"})
+    return RichResult(
+        payload={
+            "rel_periods": np.array(rel),
+            "mu": mu,
+            "catt": catt,
+            "weights": wts,
+            "cohorts": cohorts,
+            "naive_twfe": np.array(naive),
+            "weights_nonnegative": bool(np.all(wts >= -1e-12)),
+            "weights_sum_to_one": bool(np.all(np.isclose(wts.sum(axis=0)[wts.sum(axis=0) > 0], 1.0))),
+            "reference_period": -1,
+            "n_never_treated": int(never.sum()),
+            "control_group": control,
+            "why_not_twfe": "a two-way fixed-effects event-study coefficient is "
+            "a weighted sum of cohort effects at MANY relative "
+            "times with possibly NEGATIVE weights, so under "
+            "heterogeneity it can carry the wrong sign; the "
+            "interaction weights are shares and cannot",
+            "n_units": int(n),
+            "n_periods": int(T),
+            "method": "Sun-Abraham interaction-weighted event study (2021)",
+        }
+    )
 
 
 def cheatsheet():

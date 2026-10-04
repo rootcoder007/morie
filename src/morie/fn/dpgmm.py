@@ -32,8 +32,7 @@ from .dpsbw import stick_breaking_weights
 __all__ = ["dp_gaussian_mixture"]
 
 
-def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0,
-                        truncation=5, max_iter=200, tol=1e-13):
+def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0, truncation=5, max_iter=200, tol=1e-13):
     """Truncated DP mixture of univariate normals, fitted by EM.
 
     Returns
@@ -64,9 +63,12 @@ def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0,
             lp = []
             for c in range(K):
                 z = (v[i] - mu[c]) / sd[c]
-                lp.append(math.log(w[c] if w[c] > 1e-300 else 1e-300)
-                          - 0.5 * z * z - math.log(sd[c])
-                          - 0.5 * math.log(2.0 * math.pi))
+                lp.append(
+                    math.log(w[c] if w[c] > 1e-300 else 1e-300)
+                    - 0.5 * z * z
+                    - math.log(sd[c])
+                    - 0.5 * math.log(2.0 * math.pi)
+                )
             m = k.logsumexp(lp)
             newll += m
             for c in range(K):
@@ -81,8 +83,7 @@ def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0,
             s = 0.0
             for i in range(n):
                 s += R[i][c] * v[i]
-            mu[c] = ((s + float(alpha) * prior[c] * float(prior_mu))
-                     / eff if eff > 0.0 else float(prior_mu))
+            mu[c] = (s + float(alpha) * prior[c] * float(prior_mu)) / eff if eff > 0.0 else float(prior_mu)
             q = 0.0
             for i in range(n):
                 q += R[i][c] * (v[i] - mu[c]) ** 2
@@ -120,6 +121,7 @@ def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0,
 
 def cheatsheet():
     return "dpgmm: DP Gaussian mixture with stick-breaking representation"
+
 
 # alias kept from the retired placeholder of the same name
 dirichlet_proc_sp = dp_gaussian_mixture

@@ -36,8 +36,7 @@ def test_the_two_estimators_differ_by_exactly_the_divisor_ratio():
     n = len(x)
     u = rangayyan_acf_estimate(x, max_lag=10)
     b = rangayyan_acf_estimate(x, max_lag=10, biased=True)
-    for lag, uv, bv in zip(list(u["lags"]), list(u["acf"]),
-                           list(b["acf"])):
+    for lag, uv, bv in zip(list(u["lags"]), list(u["acf"]), list(b["acf"])):
         if abs(uv) < 1e-14:
             continue
         assert bv / uv == pytest.approx((n - abs(lag)) / n, abs=1e-12)
@@ -53,8 +52,7 @@ def test_both_estimator_variants_are_returned_and_acf_selects_one():
     assert list(u["acf"]) == list(u["acf_unbiased"])
     assert list(b["acf"]) == list(b["acf_biased"])
     # and the pair is the same in both calls -- only the selection moves
-    assert list(u["acf_biased"]) == pytest.approx(list(b["acf_biased"]),
-                                                  abs=1e-12)
+    assert list(u["acf_biased"]) == pytest.approx(list(b["acf_biased"]), abs=1e-12)
 
 
 def test_acf_recovers_a_known_period():

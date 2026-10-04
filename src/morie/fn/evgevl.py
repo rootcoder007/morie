@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,8 +19,7 @@ def evt_gev_loglik(x, mu, sigma, xi):
     1 + xi (x - mu)/sigma > 0 (the sec. 3.3.2 warning)."""
     ll = _ev.gev_loglik(x, float(mu), float(sigma), float(xi))
     n = len(_ev._flat(x))
-    res = RichResult(payload={"ll": float(ll), "n": n,
-                              "method": "GEV log-likelihood (Coles 2001 eq. 3.7)"})
+    res = RichResult(payload={"ll": float(ll), "n": n, "method": "GEV log-likelihood (Coles 2001 eq. 3.7)"})
     return with_describe_pointer(res, "evgevl")
 
 

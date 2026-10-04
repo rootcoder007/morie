@@ -1,7 +1,5 @@
 """Tests for linear_model_prediction.linear_model_prediction."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.linear_model_prediction import (
     linear_model_prediction,
 )

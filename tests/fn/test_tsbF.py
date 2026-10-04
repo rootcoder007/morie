@@ -1,10 +1,10 @@
 """Tests for tsbF. Full anchor: wave3/anchor_intermittent.py."""
+
 import pytest
+
 from morie.fn import _array_core as np
 from morie.fn import _s03core as k
-from morie.fn.tsbF import (croston_forecast, demand_classification,
-                           intermittent_forecast, sba_forecast,
-                           tsb_forecast)
+from morie.fn.tsbF import croston_forecast, demand_classification, intermittent_forecast, sba_forecast, tsb_forecast
 
 P_TRUE, MU_TRUE, N = 0.3, 10.0, 3000
 
@@ -12,9 +12,7 @@ P_TRUE, MU_TRUE, N = 0.3, 10.0, 3000
 @pytest.fixture(scope="module")
 def series():
     rng = np.random.default_rng(17)
-    return [max(0.0, MU_TRUE + 2.0 * rng.standard_normal())
-            if float(rng.uniform()) < P_TRUE else 0.0
-            for _ in range(N)]
+    return [max(0.0, MU_TRUE + 2.0 * rng.standard_normal()) if float(rng.uniform()) < P_TRUE else 0.0 for _ in range(N)]
 
 
 def test_tsb_is_unbiased_where_crostons_ratio_is_not():
@@ -26,16 +24,16 @@ def test_tsb_is_unbiased_where_crostons_ratio_is_not():
     its mean carries more Monte Carlo error than its length suggests.
     """
     import math
+
     truth = P_TRUE * MU_TRUE
     reps = 30
     t_f, c_f, s_f = [], [], []
     for rep in range(reps):
         r = np.random.default_rng(900 + rep)
-        ss = [max(0.0, MU_TRUE + 2.0 * r.standard_normal())
-              if float(r.uniform()) < P_TRUE else 0.0
-              for _ in range(1500)]
-        t_f.append(tsb_forecast(ss, alpha=0.05,
-                                beta=0.05)["forecast"][0])
+        ss = [
+            max(0.0, MU_TRUE + 2.0 * r.standard_normal()) if float(r.uniform()) < P_TRUE else 0.0 for _ in range(1500)
+        ]
+        t_f.append(tsb_forecast(ss, alpha=0.05, beta=0.05)["forecast"][0])
         c_f.append(croston_forecast(ss, alpha=0.05)["forecast"][0])
         s_f.append(sba_forecast(ss, alpha=0.05)["forecast"][0])
     t_m, c_m, s_m = k.mean(t_f), k.mean(c_f), k.mean(s_f)
@@ -65,8 +63,7 @@ def test_the_sba_deflator_is_one_minus_alpha_over_two():
 def test_obsolescence_tsb_decays_and_croston_does_not():
     """The failure TSB exists to fix: nothing updates on a zero, so an
     obsolete item keeps its Croston forecast forever."""
-    obs = [10.0 if (i < 100 and i % 3 == 0) else 0.0
-           for i in range(200)]
+    obs = [10.0 if (i < 100 and i % 3 == 0) else 0.0 for i in range(200)]
     t = tsb_forecast(obs, alpha=0.1, beta=0.1)
     c = croston_forecast(obs, alpha=0.1)
     assert t["fitted"][-1] < 0.2 * t["fitted"][100]

@@ -1,7 +1,8 @@
 """Tests for morie.fn.holo_a -- ACF/PACF plot."""
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 plt = pytest.importorskip("matplotlib.pyplot")
 

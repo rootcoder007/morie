@@ -22,7 +22,7 @@ def test_the_msp_is_the_best_local_segment():
     s = "YYYYACDEFGYYYY"
     res = blastp(q, s, match=1.0, mismatch=-1.0)
     assert res["score"] == 6.0
-    assert q[res["q_start"]:res["q_start"] + res["length"]] == "ACDEFG"
+    assert q[res["q_start"] : res["q_start"] + res["length"]] == "ACDEFG"
 
 
 def test_e_value_follows_karlin_altschul():
@@ -47,8 +47,7 @@ def test_mismatch_penalty_is_used():
 
 
 def test_validation():
-    for call in (lambda: blastp("", "ACDE"),
-                 lambda: blastp("ACDE", "")):
+    for call in (lambda: blastp("", "ACDE"), lambda: blastp("ACDE", "")):
         try:
             call()
             raise AssertionError("expected ValueError")

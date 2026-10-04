@@ -1,7 +1,6 @@
 """Tests for morie.fn.jaccr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jaccr import jaccr
 
 

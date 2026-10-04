@@ -111,14 +111,15 @@ def joseph_mint_reconciliation(y_hat, S, W=None, method="ols"):
     resid = y - S @ np.linalg.pinv(S) @ y
     return RichResult(
         title=f"MinT reconciliation ({method})",
-        summary_lines=[("nodes", int(n)), ("bottom", int(m)),
-                       ("incoherence before", float(np.linalg.norm(resid)))],
+        summary_lines=[("nodes", int(n)), ("bottom", int(m)), ("incoherence before", float(np.linalg.norm(resid)))],
         payload={
-            "reconciled": rec, "bottom": bottom,
+            "reconciled": rec,
+            "bottom": bottom,
             "coherent": bool(np.allclose(rec, S @ bottom)),
             "adjustment": rec - y,
             "incoherence_before": float(np.linalg.norm(resid)),
-            "G": G, "method_used": method,
+            "G": G,
+            "method_used": method,
             "method": "joseph_mint_reconciliation",
         },
     )

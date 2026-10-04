@@ -1,7 +1,5 @@
 """Tests for euclP.polynomial_gcd."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.euclP import polynomial_gcd
 
 

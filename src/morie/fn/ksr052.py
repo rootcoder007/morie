@@ -56,17 +56,18 @@ def kosorok_ch2_kaplan_meier_derivative(S_0, L, G, h, t):
             hu = np.array([float(h(u)) for u in grid])
             Gu = np.array([float(G(u)) for u in grid])
             integrand = float(S_0(ti)) * hu / Su
-            ints.append(float(np.sum(0.5 * (integrand[1:] + integrand[:-1])
-                                     * np.diff(Gu))))
+            ints.append(float(np.sum(0.5 * (integrand[1:] + integrand[:-1]) * np.diff(Gu))))
         bnds.append(float(L(ti)) * float(h(ti)))
         out.append(-ints[-1] - bnds[-1])
     scalar = np.ndim(t) == 0
     return RichResult(
-        payload={"derivative": out[0] if scalar else np.array(out),
-                 "integral_term": ints[0] if scalar else np.array(ints),
-                 "boundary_term": bnds[0] if scalar else np.array(bnds),
-                 "t": t,
-                 "method": "Psi-dot(h)(t) = -int_0^t S0(t)h(u)/S0(u) dG(u) - L(t)h(t)"}
+        payload={
+            "derivative": out[0] if scalar else np.array(out),
+            "integral_term": ints[0] if scalar else np.array(ints),
+            "boundary_term": bnds[0] if scalar else np.array(bnds),
+            "t": t,
+            "method": "Psi-dot(h)(t) = -int_0^t S0(t)h(u)/S0(u) dG(u) - L(t)h(t)",
+        }
     )
 
 

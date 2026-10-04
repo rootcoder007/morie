@@ -1,7 +1,6 @@
 """Tests for gcnL.gcn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gcnL import gcn
 
 
@@ -28,10 +27,10 @@ def test_gcnL_basic():
     count = 0
     for i in range(10):
         At_i_d = sum(A[i][j] for j in range(10)) + (1.0)
-        s_i = At_i_d ** -0.5 if At_i_d > 0 else 0.0
+        s_i = At_i_d**-0.5 if At_i_d > 0 else 0.0
         for j in range(10):
             d_j = sum(A[k][j] for k in range(10)) + (1.0 if j == j else 0.0)
-            s_j = d_j ** -0.5 if d_j > 0 else 0.0
+            s_j = d_j**-0.5 if d_j > 0 else 0.0
             row_An_ij = s_i * (A[i][j] + (1.0 if i == j else 0.0)) * s_j
             for k in range(5):
                 z = 0.0

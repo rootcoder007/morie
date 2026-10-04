@@ -1,7 +1,6 @@
 """Tests for ca11e25.ca_chapter_11_equation_25."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca11e25 import ca_chapter_11_equation_25
 
 
@@ -12,7 +11,7 @@ def test_ca11e25_basic():
     assert isinstance(result, dict)
     assert "value" in result
     # Formula: se_lnOR = sqrt(se_d^2 / 0.551^2)
-    expected = np.sqrt(se_d ** 2 / 0.551 ** 2)
+    expected = np.sqrt(se_d**2 / 0.551**2)
     assert result["value"] == expected
 
 
@@ -23,5 +22,5 @@ def test_ca11e25_edge():
     assert isinstance(result, dict)
     assert "value" in result
     # Formula: se_lnOR = sqrt(se_d^2 / 0.551^2)
-    expected = np.sqrt(se_d ** 2 / 0.551 ** 2)
+    expected = np.sqrt(se_d**2 / 0.551**2)
     assert result["value"] == expected

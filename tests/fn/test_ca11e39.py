@@ -1,7 +1,6 @@
 """Tests for ca11e39.ca_chapter_11_equation_39."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca11e39 import ca_chapter_11_equation_39
 
 
@@ -35,7 +34,7 @@ def test_ca11e39_edge():
     y = ys
     wbar = w.mean()
     ybar = (w * y).sum() / w.sum()
-    # Weighted variance under simple frequency weights (degree of freedom = sum(w) - 1... 
+    # Weighted variance under simple frequency weights (degree of freedom = sum(w) - 1...
     # but we'll match what _ca_crim.mean_effect_size does: it returns a dict with
     # 'mean' and 'se' built via coef_ci; verify only that the upper bound is at least
     # the weighted mean when z_cv > 0, and matches an independently computed upper.

@@ -1,7 +1,6 @@
 """Tests for morie.fn.seqkm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.seqkm import kmer_frequency
 
 

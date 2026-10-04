@@ -59,10 +59,18 @@ def ot_max_sliced_w(X, Y, p=2, n_proj=32):
     for k in range(1, L):
         if per[k] > per[best]:
             best = k
-    return RichResult(payload={
-        "MSW": per[best], "theta_star": TH[best], "idx_star": best,
-        "per_proj": per, "n": len(A), "d": d, "n_proj": L,
-        "method": "Max-sliced Wasserstein distance"})
+    return RichResult(
+        payload={
+            "MSW": per[best],
+            "theta_star": TH[best],
+            "idx_star": best,
+            "per_proj": per,
+            "n": len(A),
+            "d": d,
+            "n_proj": L,
+            "method": "Max-sliced Wasserstein distance",
+        }
+    )
 
 
 def cheatsheet():

@@ -26,6 +26,7 @@ def _lr_ind(h):
     pi0 = n01 / (n00 + n01) if (n00 + n01) else 0.0
     pi1 = n11 / (n10 + n11) if (n10 + n11) else 0.0
     pi = (n01 + n11) / total
+
     # log form throughout: an empty transition class contributes 0, and
     # a degenerate chain (pi0 == pi1) gives LR_ind == 0 as it should.
     def _t(k, q):
@@ -34,8 +35,7 @@ def _lr_ind(h):
     ll_null = _t(n00 + n10, 1.0 - pi) + _t(n01 + n11, pi)
     ll_alt = _t(n00, 1.0 - pi0) + _t(n01, pi0) + _t(n10, 1.0 - pi1) + _t(n11, pi1)
     stat = -2.0 * (ll_null - ll_alt)
-    return stat, {"n00": n00, "n01": n01, "n10": n10, "n11": n11,
-                  "pi01": pi0, "pi11": pi1, "pi": pi}
+    return stat, {"n00": n00, "n01": n01, "n10": n10, "n11": n11, "pi01": pi0, "pi11": pi1, "pi": pi}
 
 
 def vol_christoffersen_cc(hits, alpha=0.05):

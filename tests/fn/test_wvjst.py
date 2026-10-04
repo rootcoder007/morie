@@ -1,7 +1,6 @@
 """Tests for morie.fn.wvjst."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvjst import wvjst
 
 

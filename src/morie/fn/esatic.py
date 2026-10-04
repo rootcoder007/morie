@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["eapinfo", "eap_information"]
 
 
-def eapinfo(items, x, D=1.0, prior_mean=0.0, prior_sd=1.0,
-            lower=-4.0, upper=4.0, nqp=33):
+def eapinfo(items, x, D=1.0, prior_mean=0.0, prior_sd=1.0, lower=-4.0, upper=4.0, nqp=33):
     """EAP ability estimate with its posterior sd and Fisher information.
 
     Two different "standard errors" live here and they are not the
@@ -126,13 +125,19 @@ def eapinfo(items, x, D=1.0, prior_mean=0.0, prior_sd=1.0,
         dp = D * a * e * (d - c) / (1.0 + e) ** 2
         info.append(dp * dp / (p[j] * (1.0 - p[j])))
     tot = sum(info)
-    return RichResult(payload={
-        "estimate": eap, "se": math.sqrt(var) if var > 0 else 0.0,
-        "information": tot,
-        "se_ml": 1.0 / math.sqrt(tot) if tot > 0 else float("inf"),
-        "item_information": info, "prob": p, "J": float(J),
-        "nqp": float(nq),
-        "method": "EAP with posterior sd and test information"})
+    return RichResult(
+        payload={
+            "estimate": eap,
+            "se": math.sqrt(var) if var > 0 else 0.0,
+            "information": tot,
+            "se_ml": 1.0 / math.sqrt(tot) if tot > 0 else float("inf"),
+            "item_information": info,
+            "prob": p,
+            "J": float(J),
+            "nqp": float(nq),
+            "method": "EAP with posterior sd and test information",
+        }
+    )
 
 
 eap_information = eapinfo

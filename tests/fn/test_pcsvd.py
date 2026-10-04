@@ -1,7 +1,6 @@
 """Tests for morie.fn.pcsvd -- PCA via SVD."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import PcaRes
 from morie.fn.pcsvd import pca_svd, pcsvd
 

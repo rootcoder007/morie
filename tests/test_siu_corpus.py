@@ -58,7 +58,7 @@ def test_ordinals_case_strict_hash_required_roster_anchored():
     # 'also 59' must not read as SO 59
     assert count("The pursuit also 59 seconds later ended. The SO stopped the car.") == 1
     # lone narrative ordinal without the #1 anchor is another force's shorthand
-    assert count("WO #6 and SO #7 of the neighbouring service stopped a Jeep. " "The SO was interviewed.") == 1
+    assert count("WO #6 and SO #7 of the neighbouring service stopped a Jeep. The SO was interviewed.") == 1
     # a real roster anchors at #1
     assert count("SO #1 and SO #2 were interviewed.") == 2
 
@@ -73,7 +73,7 @@ def test_team_section_beats_narrative_and_tolerates_mislabelled_roster():
 
 
 def test_nbsp_does_not_blind_the_scanners():
-    txt = "Subject Officers SO #1 Declined interview. " "SO #2 Declined interview."
+    txt = "Subject Officers SO #1 Declined interview. SO #2 Declined interview."
     assert count(txt) == 2
 
 

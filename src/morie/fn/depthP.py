@@ -58,8 +58,7 @@ def projection_depth(x, X, n_dir=180):
         nd = int(n_dir)
         if nd < 2:
             raise ValueError("n_dir must be at least 2")
-        dirs = [[math.cos(math.pi * t / nd), math.sin(math.pi * t / nd)]
-                for t in range(nd)]
+        dirs = [[math.cos(math.pi * t / nd), math.sin(math.pi * t / nd)] for t in range(nd)]
     else:
         raise ValueError("projection depth here supports d = 1 or 2")
     worst = 0.0
@@ -80,17 +79,19 @@ def projection_depth(x, X, n_dir=180):
             wmad = mad
             wdir = q
     depth = 1.0 / (1.0 + worst)
-    return RichResult(payload={
-        "estimate": depth,
-        "depth": depth,
-        "outlyingness": worst,
-        "med": wmed,
-        "mad": wmad,
-        "worst_dir": wdir,
-        "n": n,
-        "d": d,
-        "method": "Stahel-Donoho projection depth",
-    })
+    return RichResult(
+        payload={
+            "estimate": depth,
+            "depth": depth,
+            "outlyingness": worst,
+            "med": wmed,
+            "mad": wmad,
+            "worst_dir": wdir,
+            "n": n,
+            "d": d,
+            "method": "Stahel-Donoho projection depth",
+        }
+    )
 
 
 def cheatsheet():

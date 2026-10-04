@@ -1,7 +1,5 @@
 """Tests for hrzsmsrc.horowitz_sms_rate."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hrzsmsrc import horowitz_sms_rate
 
 

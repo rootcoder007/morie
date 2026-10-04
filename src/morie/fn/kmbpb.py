@@ -81,15 +81,13 @@ def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
     else:
         b = np.asarray(bytes_per_token, dtype=float).ravel()
         if b.size not in (1, T):
-            raise ValueError(
-                "bytes_per_token must be a scalar or one value per token."
-            )
+            raise ValueError("bytes_per_token must be a scalar or one value per token.")
         if np.any(b <= 0):
             raise ValueError("bytes_per_token must be positive.")
         bpt = float(np.mean(b))
         nb = bpt * T
 
-    ce = float(-np.sum(lp))            # total nats
+    ce = float(-np.sum(lp))  # total nats
     bits = ce / np.log(2.0)
     return RichResult(
         payload={
@@ -101,8 +99,7 @@ def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
             "bytes_per_token": float(bpt),
             "compression_ratio": float(8.0 * nb / bits) if bits > 0 else np.inf,
             "compression_note": (
-                "how many times smaller than raw 8-bit bytes an arithmetic "
-                "coder using this model would make the text"
+                "how many times smaller than raw 8-bit bytes an arithmetic coder using this model would make the text"
             ),
             "comparability_note": (
                 "perplexity rewards a larger vocabulary, which packs more "
@@ -118,10 +115,7 @@ def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
 
 
 def cheatsheet():
-    return (
-        "kmbpb: bits-per-byte, the tokeniser-independent counterpart of "
-        "perplexity"
-    )
+    return "kmbpb: bits-per-byte, the tokeniser-independent counterpart of perplexity"
 
 
 #: Catalogue alias for :func:`bits_per_byte`.

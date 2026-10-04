@@ -1,14 +1,13 @@
 """Tests for wsmmle.wasserman_mle."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmmle import wasserman_mle
 
 
 def test_wsmmle_basic():
     """Test basic functionality."""
     data = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    f = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    f = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
     theta0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = wasserman_mle(data, f, theta0)
     assert isinstance(result, dict)
@@ -18,7 +17,7 @@ def test_wsmmle_basic():
 def test_wsmmle_edge():
     """Test edge cases."""
     data = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    f = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    f = lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2))
     theta0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = wasserman_mle(data, f, theta0)
     assert isinstance(result, dict)

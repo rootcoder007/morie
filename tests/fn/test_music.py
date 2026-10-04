@@ -1,7 +1,6 @@
 """Tests for music.py - MUSIC spectral estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.music import music, music_spectrum_fn
 
 

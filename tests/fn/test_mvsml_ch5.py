@@ -7,6 +7,7 @@ components, and the multi-trait models of eq. (5.5)/(5.6) reduce to
 separate univariate GBLUP fits when the covariance matrices are
 diagonal (pp.153, 155).
 """
+
 import math
 
 from morie.fn import _gp_core as gp
@@ -19,8 +20,7 @@ from morie.fn.msm028 import mvsml_linear_mixed_models_eq_5_5a
 from morie.fn.msm032 import mvsml_linear_mixed_models_eq_5_6
 
 X6 = [[1.0]] * 6
-Z6 = [[1.0, 0.0], [1.0, 0.0], [1.0, 0.0],
-      [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]]
+Z6 = [[1.0, 0.0], [1.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]]
 Y6 = [5.0, 5.2, 4.8, 6.4, 6.6, 6.2]
 D2 = [[0.5, 0.0], [0.0, 0.5]]
 I2 = [[1.0, 0.0], [0.0, 1.0]]
@@ -51,19 +51,14 @@ def test_eq_5_1_matches_the_mme_solution():
 
 def test_eq_5_2_likelihood_and_reml_relation():
     ml = mvsml_linear_mixed_models_eq_5_2(X6, Z6, Y6, D2)
-    re = mvsml_linear_mixed_models_eq_5_2(X6, Z6, Y6, D2,
-                                          restricted=True)
+    re = mvsml_linear_mixed_models_eq_5_2(X6, Z6, Y6, D2, restricted=True)
     # REML = ML - 1/2 log|X'V^-1X| (p.146)
     V = gp.lmm_marginal_v(Z6, D2)
     Vi = gp._inv(V)
     A = gp._mm(gp._mm(gp._t(X6), Vi), X6)
-    assert abs(re["loglik"] - (ml["loglik"]
-                               + 0.5 * len(Y6)
-                               * math.log(2.0 * math.pi)
-                               - 0.5 * gp._logdet(A))) < 1e-9
+    assert abs(re["loglik"] - (ml["loglik"] + 0.5 * len(Y6) * math.log(2.0 * math.pi) - 0.5 * gp._logdet(A))) < 1e-9
     # the likelihood is maximized at the GLS beta
-    worse = mvsml_linear_mixed_models_eq_5_2(X6, Z6, Y6, D2,
-                                             beta=[0.0])
+    worse = mvsml_linear_mixed_models_eq_5_2(X6, Z6, Y6, D2, beta=[0.0])
     assert worse["loglik"] < ml["loglik"]
 
 
@@ -78,9 +73,9 @@ def test_em_recovers_the_ml_variance_components():
     ll_prev = None
     for it in (1, 5, 20, 200):
         f = gp.em_lmm(X6, Z6, Y6, n_iter=it)
-        ll, _ = gp.lmm_loglik(X6, Z6, Y6, f["D"], R=[
-            [f["sigma2"] if i == j else 0.0 for j in range(6)]
-            for i in range(6)])
+        ll, _ = gp.lmm_loglik(
+            X6, Z6, Y6, f["D"], R=[[f["sigma2"] if i == j else 0.0 for j in range(6)] for i in range(6)]
+        )
         if ll_prev is not None:
             assert ll >= ll_prev - 1e-6
         ll_prev = ll
@@ -88,8 +83,7 @@ def test_em_recovers_the_ml_variance_components():
 
 def test_eq_5_3_gblup_uses_the_relationship_matrix():
     # three lines, two replicates each
-    Z = [[1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0],
-         [0, 0, 1], [0, 0, 1]]
+    Z = [[1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0], [0, 0, 1], [0, 0, 1]]
     y = [5.1, 4.9, 6.0, 6.2, 5.5, 5.7]
     G = [[1.0, 0.5, 0.0], [0.5, 1.0, 0.0], [0.0, 0.0, 1.0]]
     r = mvsml_linear_mixed_models_eq_5_3(y, Z, G, sigma2_g=0.5)
@@ -106,15 +100,12 @@ def test_eq_5_3_gblup_uses_the_relationship_matrix():
 def test_eq_5_4_gxe_splits_line_and_interaction_effects():
     # two environments x two lines, one replicate each
     y = [5.0, 6.0, 5.4, 6.8]
-    X_E = [[0.0], [0.0], [1.0], [1.0]]        # environment 2 dummy
+    X_E = [[0.0], [0.0], [1.0], [1.0]]  # environment 2 dummy
     Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
-    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0],
-            [0, 0, 1, 0], [0, 0, 0, 1]]
+    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
     G = [[1.0, 0.0], [0.0, 1.0]]
     Sigma_E = [[0.3, 0.0], [0.0, 0.3]]
-    r = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G,
-                                         sigma2_g=0.5,
-                                         Sigma_E=Sigma_E)
+    r = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g=0.5, Sigma_E=Sigma_E)
     assert len(r["b_lines"]) == 2
     assert len(r["b_gxe"]) == 4
     # line 2 outperforms line 1 in both environments
@@ -144,10 +135,8 @@ def test_eq_5_5_correlated_traits_differ_from_separate_fits():
     Y = [[5.0, 2.0], [6.0, 3.0], [5.5, 2.4]]
     Z = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     G = [[1.0, 0.2, 0.0], [0.2, 1.0, 0.0], [0.0, 0.0, 1.0]]
-    diag = mvsml_linear_mixed_models_eq_5_5(
-        Y, Z, G, [[0.4, 0.0], [0.0, 0.9]], [[1.0, 0.0], [0.0, 2.0]])
-    corr = mvsml_linear_mixed_models_eq_5_5(
-        Y, Z, G, [[0.4, 0.3], [0.3, 0.9]], [[1.0, 0.0], [0.0, 2.0]])
+    diag = mvsml_linear_mixed_models_eq_5_5(Y, Z, G, [[0.4, 0.0], [0.0, 0.9]], [[1.0, 0.0], [0.0, 2.0]])
+    corr = mvsml_linear_mixed_models_eq_5_5(Y, Z, G, [[0.4, 0.3], [0.3, 0.9]], [[1.0, 0.0], [0.0, 2.0]])
     assert abs(corr["b"][0] - diag["b"][0]) > 1e-6
 
 
@@ -158,11 +147,10 @@ def test_eq_5_5a_adds_fixed_effects():
     Sigma_T = [[0.4, 0.0], [0.0, 0.9]]
     R_T = [[1.0, 0.0], [0.0, 2.0]]
     Xf = [[0.0], [0.0], [1.0], [1.0], [0.0], [0.0]]
-    r = mvsml_linear_mixed_models_eq_5_5a(Y, Z, G, Sigma_T, R_T,
-                                          X=Xf)
+    r = mvsml_linear_mixed_models_eq_5_5a(Y, Z, G, Sigma_T, R_T, X=Xf)
     plain = mvsml_linear_mixed_models_eq_5_5(Y, Z, G, Sigma_T, R_T)
     assert len(r["beta"]) == len(plain["mu"]) + 1
-    assert abs(r["beta"][-1]) > 1e-9        # the covariate is used
+    assert abs(r["beta"][-1]) > 1e-9  # the covariate is used
 
 
 def test_eq_5_6_reduces_to_univariate_when_all_diagonal():
@@ -170,23 +158,18 @@ def test_eq_5_6_reduces_to_univariate_when_all_diagonal():
     # G x E multi-trait model equivalent to per-trait univariate fits
     Y = [[5.0, 2.0], [6.0, 3.0], [5.4, 2.2], [6.6, 3.4]]
     Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
-    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0],
-            [0, 0, 1, 0], [0, 0, 0, 1]]
+    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
     G = [[1.0, 0.0], [0.0, 1.0]]
     Sigma_T = [[0.4, 0.0], [0.0, 0.9]]
     Sigma_2T = [[0.2, 0.0], [0.0, 0.5]]
     Sigma_E = [[1.0, 0.0], [0.0, 1.0]]
     R_T = [[1.0, 0.0], [0.0, 2.0]]
-    r = mvsml_linear_mixed_models_eq_5_6(Y, Z_L, Z_EL, G, Sigma_T,
-                                         Sigma_E, Sigma_2T, R_T)
-    for t, (s2g, s2ge, s2e) in enumerate([(0.4, 0.2, 1.0),
-                                          (0.9, 0.5, 2.0)]):
+    r = mvsml_linear_mixed_models_eq_5_6(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T)
+    for t, (s2g, s2ge, s2e) in enumerate([(0.4, 0.2, 1.0), (0.9, 0.5, 2.0)]):
         yt = [row[t] for row in Y]
         # intercept only: an all-zero covariate column would make
         # X'V^-1X singular
-        uni = gp.gxe_blup_model(yt, [[] for _ in range(4)], Z_L,
-                                Z_EL, G, s2g,
-                                [[s2ge, 0.0], [0.0, s2ge]], s2e)
+        uni = gp.gxe_blup_model(yt, [[] for _ in range(4)], Z_L, Z_EL, G, s2g, [[s2ge, 0.0], [0.0, s2ge]], s2e)
         assert abs(r["b_lines"][t] - uni["b_lines"][0]) < 1e-7
         assert abs(r["b_lines"][2 + t] - uni["b_lines"][1]) < 1e-7
 

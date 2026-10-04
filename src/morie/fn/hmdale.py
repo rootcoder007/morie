@@ -120,9 +120,7 @@ def geron_dalle(text, model, n_image_tokens=4, temperature=1.0, top_k=None, imag
             )
         if not np.all(np.isfinite(logits)):
             raise ValueError(f"geron_dalle: model returned non-finite logits at step {step}")
-        step_res = geron_dalle_autoregressive_token(
-            prompt, tokens, model, temperature=temperature, top_k=top_k
-        )
+        step_res = geron_dalle_autoregressive_token(prompt, tokens, model, temperature=temperature, top_k=top_k)
         probs = np.asarray(step_res["next_token_probs"], dtype=float)
         nxt = int(np.argmax(probs))
         # Score at temperature 1, as the likelihood always is.

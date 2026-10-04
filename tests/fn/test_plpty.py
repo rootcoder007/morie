@@ -1,7 +1,6 @@
 """Tests for morie.fn.plpty -- plot by party."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.plpty import plot_by_party, plpty
 
 

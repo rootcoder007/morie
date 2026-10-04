@@ -1,7 +1,6 @@
 """Tests for intmd4.interaction_mediation_4way."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.intmd4 import interaction_mediation_4way
 
 

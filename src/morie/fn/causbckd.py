@@ -72,9 +72,7 @@ def causbckd(y, x, z):
         i0 = [i for i in range(n) if zl[i] == k and xv[i] == 0.0]
         nz = len(i1) + len(i0)
         if not i1 or not i0:
-            raise ValueError(
-                "stratum %r has an empty treatment or control arm "
-                "(positivity violation)" % (k,))
+            raise ValueError("stratum %r has an empty treatment or control arm (positivity violation)" % (k,))
         y1 = np.asarray([y[i] for i in i1])
         y0 = np.asarray([y[i] for i in i0])
         d = float(np.mean(y1)) - float(np.mean(y0))
@@ -83,15 +81,16 @@ def causbckd(y, x, z):
         v1 = float(np.var(y1, ddof=1)) / len(i1) if len(i1) > 1 else 0.0
         v0 = float(np.var(y0, ddof=1)) / len(i0) if len(i0) > 1 else 0.0
         var += w * w * (v1 + v0)
-        strata[k] = {"share": w, "effect": d,
-                     "n1": len(i1), "n0": len(i0)}
-    return RichResult(payload={
-        "estimate": ate,
-        "se": float(np.sqrt(var)),
-        "strata": strata,
-        "n": n,
-        "method": "Pearl (2009) Eq. 25 backdoor adjustment, stratified plug-in",
-    })
+        strata[k] = {"share": w, "effect": d, "n1": len(i1), "n0": len(i0)}
+    return RichResult(
+        payload={
+            "estimate": ate,
+            "se": float(np.sqrt(var)),
+            "strata": strata,
+            "n": n,
+            "method": "Pearl (2009) Eq. 25 backdoor adjustment, stratified plug-in",
+        }
+    )
 
 
 causal_backdoor_estimate = causbckd

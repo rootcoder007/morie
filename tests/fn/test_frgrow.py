@@ -1,7 +1,5 @@
 """Tests for frgrow.fragment_growing."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.frgrow import fragment_growing
 
 
@@ -34,11 +32,8 @@ def test_frgrow_basic():
     # rule rests on).
     parent_le = result["parent_le"]
     for le, ge, d_hac, hac, le_from_blend in zip(
-            result["le"],
-            result["group_efficiency"],
-            result["d_hac"],
-            result["hac"],
-            result["le_from_blend"]):
+        result["le"], result["group_efficiency"], result["d_hac"], result["hac"], result["le_from_blend"]
+    ):
         expected_blend = (parent_le * (hac - d_hac) + ge * d_hac) / hac
         assert le == expected_blend
         assert le_from_blend == expected_blend
@@ -46,9 +41,7 @@ def test_frgrow_basic():
     # 'improved' lists indices whose group efficiency exceeds parent LE.
     parent_hac = fragment[1]
     expected_improved = [
-        i for i, (ge, hac) in enumerate(
-            zip(result["group_efficiency"], result["hac"]))
-        if ge > result["parent_le"]
+        i for i, (ge, hac) in enumerate(zip(result["group_efficiency"], result["hac"])) if ge > result["parent_le"]
     ]
     assert result["improved"] == expected_improved
     assert result["n_improved"] == len(expected_improved)

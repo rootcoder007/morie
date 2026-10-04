@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rate of convergence of smoothed maximum-score estimator."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["horowitz_sms_rate"]
@@ -62,18 +61,22 @@ def horowitz_sms_rate(n, smoothness_order=2):
         raise ValueError(f"n must be at least 2, got {nn}.")
     s = int(smoothness_order)
     if s < 2:
-        raise ValueError(
-            f"the theorem requires a smoothness order of at least 2, got {s}.")
+        raise ValueError(f"the theorem requires a smoothness order of at least 2, got {s}.")
     expo = -s / (2.0 * s + 1.0)
-    return RichResult(payload={
-        "rate": float(nn ** expo), "exponent": float(expo),
-        "bandwidth_exponent": float(-1.0 / (2.0 * s + 1.0)),
-        "unsmoothed_rate": float(nn ** (-1.0 / 3.0)),
-        "unsmoothed_exponent": -1.0 / 3.0,
-        "ratio_to_unsmoothed": float(nn ** expo / nn ** (-1.0 / 3.0)),
-        "attains_root_n": False,
-        "smoothness_order": s, "n": nn,
-        "method": "n^{-s/(2s+1)} from (n h_n)^{1/2} with n h_n^{2s+1} -> lambda"})
+    return RichResult(
+        payload={
+            "rate": float(nn**expo),
+            "exponent": float(expo),
+            "bandwidth_exponent": float(-1.0 / (2.0 * s + 1.0)),
+            "unsmoothed_rate": float(nn ** (-1.0 / 3.0)),
+            "unsmoothed_exponent": -1.0 / 3.0,
+            "ratio_to_unsmoothed": float(nn**expo / nn ** (-1.0 / 3.0)),
+            "attains_root_n": False,
+            "smoothness_order": s,
+            "n": nn,
+            "method": "n^{-s/(2s+1)} from (n h_n)^{1/2} with n h_n^{2s+1} -> lambda",
+        }
+    )
 
 
 def cheatsheet():

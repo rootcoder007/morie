@@ -157,10 +157,25 @@ def _baseline_series(rewards, baseline, gamma):
     return out
 
 
-def reinfc(reward_fn, x=None, w=None, p=None, mu=0.0, sigma=1.0,
-           unit="bernoulli-logistic", baseline="comparison", mode="immediate",
-           alpha=0.1, gamma=0.9, rho=0.1, episode_length=1, trials=100,
-           eligibility="p", rate_scaling="sigma2", seed=0):
+def reinfc(
+    reward_fn,
+    x=None,
+    w=None,
+    p=None,
+    mu=0.0,
+    sigma=1.0,
+    unit="bernoulli-logistic",
+    baseline="comparison",
+    mode="immediate",
+    alpha=0.1,
+    gamma=0.9,
+    rho=0.1,
+    episode_length=1,
+    trials=100,
+    eligibility="p",
+    rate_scaling="sigma2",
+    seed=0,
+):
     r"""Run a REINFORCE algorithm and return its parameter trajectory.
 
     Parameters
@@ -228,17 +243,13 @@ def reinfc(reward_fn, x=None, w=None, p=None, mu=0.0, sigma=1.0,
     8, 9, 10, 13, 14 and Theorems 1-2.
     """
     if unit not in _UNITS:
-        raise ValueError("reinfc: unit must be one of %r, got %r"
-                         % (_UNITS, unit))
+        raise ValueError("reinfc: unit must be one of %r, got %r" % (_UNITS, unit))
     if baseline not in _BASELINES:
-        raise ValueError("reinfc: baseline must be one of %r, got %r"
-                         % (_BASELINES, baseline))
+        raise ValueError("reinfc: baseline must be one of %r, got %r" % (_BASELINES, baseline))
     if mode not in _MODES:
-        raise ValueError("reinfc: mode must be one of %r, got %r"
-                         % (_MODES, mode))
+        raise ValueError("reinfc: mode must be one of %r, got %r" % (_MODES, mode))
     if eligibility not in ("p", "ybar"):
-        raise ValueError("reinfc: eligibility must be 'p' or 'ybar', got %r"
-                         % (eligibility,))
+        raise ValueError("reinfc: eligibility must be 'p' or 'ybar', got %r" % (eligibility,))
     if not callable(reward_fn):
         raise TypeError("reinfc: reward_fn must be callable")
     trials = int(trials)
@@ -255,18 +266,16 @@ def reinfc(reward_fn, x=None, w=None, p=None, mu=0.0, sigma=1.0,
     if unit == "gaussian":
         if float(sigma) <= 0.0:
             raise ValueError("reinfc: sigma must be > 0")
-        return _run_gaussian(reward_fn, float(mu), float(sigma), baseline,
-                             mode, float(alpha), float(gamma), k, trials,
-                             rate_scaling, rng)
+        return _run_gaussian(
+            reward_fn, float(mu), float(sigma), baseline, mode, float(alpha), float(gamma), k, trials, rate_scaling, rng
+        )
 
     if unit == "bernoulli":
-        pv = [0.5] if p is None else [float(v) for v in np.atleast_1d(
-            np.asarray(p, dtype=float))]
+        pv = [0.5] if p is None else [float(v) for v in np.atleast_1d(np.asarray(p, dtype=float))]
         for v in pv:
             if not 0.0 < v < 1.0:
                 raise ValueError("reinfc: p must lie strictly in (0, 1)")
-        return _run_bernoulli(reward_fn, pv, baseline, mode, float(rho),
-                              float(gamma), k, trials, rng)
+        return _run_bernoulli(reward_fn, pv, baseline, mode, float(rho), float(gamma), k, trials, rng)
 
     xs = [[1.0]] if x is None else _as_matrix(x, "x")
     n_in = len(xs[0])
@@ -275,25 +284,25 @@ def reinfc(reward_fn, x=None, w=None, p=None, mu=0.0, sigma=1.0,
     else:
         wm = _as_matrix(w, "w")
         if len(wm[0]) != n_in:
-            raise ValueError("reinfc: w has %d columns but x has %d"
-                             % (len(wm[0]), n_in))
-    return _run_logistic(reward_fn, xs, wm, baseline, mode, float(alpha),
-                         float(gamma), k, trials, eligibility, rng)
+            raise ValueError("reinfc: w has %d columns but x has %d" % (len(wm[0]), n_in))
+    return _run_logistic(reward_fn, xs, wm, baseline, mode, float(alpha), float(gamma), k, trials, eligibility, rng)
 
 
 def _finish(param, rewards, bs, traj):
     n = len(rewards)
     tenth = max(1, n // 10)
-    return RichResult(payload={
-        "estimate": list(param),
-        "rewards": list(rewards),
-        "baseline": list(bs),
-        "trajectory": traj,
-        "n_trials": n,
-        "mean_reward_first": float(sum(rewards[:tenth]) / tenth),
-        "mean_reward_last": float(sum(rewards[-tenth:]) / tenth),
-        "method": "REINFORCE (Williams 1992)",
-    })
+    return RichResult(
+        payload={
+            "estimate": list(param),
+            "rewards": list(rewards),
+            "baseline": list(bs),
+            "trajectory": traj,
+            "n_trials": n,
+            "mean_reward_first": float(sum(rewards[:tenth]) / tenth),
+            "mean_reward_last": float(sum(rewards[-tenth:]) / tenth),
+            "method": "REINFORCE (Williams 1992)",
+        }
+    )
 
 
 def _running_baseline(state, baseline, gamma):
@@ -345,8 +354,7 @@ def _run_bernoulli(reward_fn, pv, baseline, mode, rho, gamma, k, trials, rng):
     return _finish(p, rewards, bs, traj)
 
 
-def _run_logistic(reward_fn, xs, wm, baseline, mode, alpha, gamma, k, trials,
-                  eligibility, rng):
+def _run_logistic(reward_fn, xs, wm, baseline, mode, alpha, gamma, k, trials, eligibility, rng):
     r"""Eqs. 7-9: Delta w_ij = alpha (r - b) (y_i - p_i) x_j."""
     n_units = len(wm)
     n_in = len(wm[0])
@@ -373,8 +381,7 @@ def _run_logistic(reward_fn, xs, wm, baseline, mode, alpha, gamma, k, trials,
                 for j in range(n_in):
                     elig[i][j] += (yi - ref) * xrow[j]
             ys.append(y)
-        r = float(reward_fn(ys if mode == "episodic" else ys[0],
-                            xs[(t * k) % len(xs)]))
+        r = float(reward_fn(ys if mode == "episodic" else ys[0], xs[(t * k) % len(xs)]))
         b = _running_baseline(state, baseline, gamma)
         for i in range(n_units):
             for j in range(n_in):
@@ -393,8 +400,7 @@ def _run_logistic(reward_fn, xs, wm, baseline, mode, alpha, gamma, k, trials,
     return res
 
 
-def _run_gaussian(reward_fn, mu, sigma, baseline, mode, alpha, gamma, k,
-                  trials, rate_scaling, rng):
+def _run_gaussian(reward_fn, mu, sigma, baseline, mode, alpha, gamma, k, trials, rate_scaling, rng):
     r"""Eqs. 13-14 with the paper's alpha_mu = alpha_sigma = alpha sigma^2."""
     if rate_scaling not in ("sigma2", "none"):
         raise ValueError("reinfc: rate_scaling must be 'sigma2' or 'none'")
@@ -410,7 +416,7 @@ def _run_gaussian(reward_fn, mu, sigma, baseline, mode, alpha, gamma, k,
             y = mu + sigma * rng.standard_normal()
             ys.append(y)
             e_mu += (y - mu) / (sigma * sigma)
-            e_sig += ((y - mu) ** 2 - sigma * sigma) / (sigma ** 3)
+            e_sig += ((y - mu) ** 2 - sigma * sigma) / (sigma**3)
         r = float(reward_fn(ys if mode == "episodic" else ys[0], None))
         b = _running_baseline(state, baseline, gamma)
         rate = alpha * sigma * sigma if rate_scaling == "sigma2" else alpha
@@ -441,19 +447,20 @@ def expected_update(p, r0, r1, alpha=1.0, b=0.0):
     p = float(p)
     if not 0.0 < p < 1.0:
         raise ValueError("expected_update: p must lie strictly in (0, 1)")
-    upd = alpha * ((1.0 - p) * (r0 - b) * (0.0 - p)
-                   + p * (r1 - b) * (1.0 - p))
+    upd = alpha * ((1.0 - p) * (r0 - b) * (0.0 - p) + p * (r1 - b) * (1.0 - p))
     grad = alpha * p * (1.0 - p) * (r1 - r0)
     return float(upd), float(grad)
 
 
 def cheatsheet():
-    return ("reinfc: REINFORCE, Delta w = alpha (r - b) dln g/dw "
-            "(Williams 1992 eq. 2). Units bernoulli (eq. 5, L_R-I), "
-            "bernoulli-logistic (eqs. 7-9), gaussian (eqs. 13-14); "
-            "baselines none/comparison (eq. 10)/mean; modes immediate "
-            "(Thm 1) and episodic (Thm 2, eligibilities summed over the "
-            "episode). E{dW}'grad E{r} >= 0 for every baseline.")
+    return (
+        "reinfc: REINFORCE, Delta w = alpha (r - b) dln g/dw "
+        "(Williams 1992 eq. 2). Units bernoulli (eq. 5, L_R-I), "
+        "bernoulli-logistic (eqs. 7-9), gaussian (eqs. 13-14); "
+        "baselines none/comparison (eq. 10)/mean; modes immediate "
+        "(Thm 1) and episodic (Thm 2, eligibilities summed over the "
+        "episode). E{dW}'grad E{r} >= 0 for every baseline."
+    )
 
 
 # compact alias per ledger/NAMING.md

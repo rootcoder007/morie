@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,11 +18,18 @@ def evt_gev_mle(x):
     eq. (3.7) by Nelder-Mead; covariance from the observed information
     (sec. 2.6.4)."""
     f = _ev.gev_mle(x)
-    res = RichResult(payload={"mu": f["mu"], "sigma": f["sigma"],
-                              "xi": f["xi"], "ll": f["loglik"],
-                              "cov": f["cov"], "n": f["n"],
-                              "converged": f["converged"],
-                              "method": "GEV MLE (Coles 2001 sec. 3.3.2)"})
+    res = RichResult(
+        payload={
+            "mu": f["mu"],
+            "sigma": f["sigma"],
+            "xi": f["xi"],
+            "ll": f["loglik"],
+            "cov": f["cov"],
+            "n": f["n"],
+            "converged": f["converged"],
+            "method": "GEV MLE (Coles 2001 sec. 3.3.2)",
+        }
+    )
     return with_describe_pointer(res, "evgevm")
 
 

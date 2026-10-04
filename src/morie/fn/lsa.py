@@ -66,8 +66,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["term_weighting", "lsa_decompose", "fold_in",
-           "cosine_ranking", "reconstruct"]
+__all__ = ["term_weighting", "lsa_decompose", "fold_in", "cosine_ranking", "reconstruct"]
 
 _EPS = 1e-12
 _WEIGHTS = ("raw", "log_entropy", "tfidf")
@@ -76,8 +75,7 @@ _WEIGHTS = ("raw", "log_entropy", "tfidf")
 def term_weighting(X, how="log_entropy"):
     r"""Raw counts, log-entropy, or TF-IDF."""
     if how not in _WEIGHTS:
-        raise ValueError("lsa: weighting must be one of %s, got %r"
-                         % (", ".join(_WEIGHTS), how))
+        raise ValueError("lsa: weighting must be one of %s, got %r" % (", ".join(_WEIGHTS), how))
     A = [[float(v) for v in r] for r in k.mat(X)]
     t, d = len(A), len(A[0])
     if how == "raw":
@@ -112,26 +110,27 @@ def lsa_decompose(X, k_dim=None, how="log_entropy"):
     full = len(S)
     kk = full if k_dim is None else int(k_dim)
     if kk < 1 or kk > full:
-        raise ValueError("lsa: k must lie in 1..%d, got %d"
-                         % (full, kk))
-    return RichResult(payload={
-        "estimate": [list(r[:kk]) for r in T], "T": [list(r[:kk])
-                                                     for r in T],
-        "S": [float(v) for v in S[:kk]],
-        "D": [[Dt[q][j] for q in range(kk)] for j in range(len(Dt[0]))],
-        "k": kk, "full_rank": full, "weighting": how,
-        "method": "truncated SVD of the term-document matrix; "
-                  "Deerwester et al. (1990)",
-        "note": "k = full rank reproduces X exactly, which is plain "
-                "term matching -- the TRUNCATION is what generalises",
-    })
+        raise ValueError("lsa: k must lie in 1..%d, got %d" % (full, kk))
+    return RichResult(
+        payload={
+            "estimate": [list(r[:kk]) for r in T],
+            "T": [list(r[:kk]) for r in T],
+            "S": [float(v) for v in S[:kk]],
+            "D": [[Dt[q][j] for q in range(kk)] for j in range(len(Dt[0]))],
+            "k": kk,
+            "full_rank": full,
+            "weighting": how,
+            "method": "truncated SVD of the term-document matrix; Deerwester et al. (1990)",
+            "note": "k = full rank reproduces X exactly, which is plain "
+            "term matching -- the TRUNCATION is what generalises",
+        }
+    )
 
 
 def reconstruct(model):
     r""":math:`\hat X = TSD^\top`."""
     T, S, D = model["T"], model["S"], model["D"]
-    return [[sum(T[i][q] * S[q] * D[j][q] for q in range(len(S)))
-             for j in range(len(D))] for i in range(len(T))]
+    return [[sum(T[i][q] * S[q] * D[j][q] for q in range(len(S))) for j in range(len(D))] for i in range(len(T))]
 
 
 def fold_in(query, model):
@@ -143,10 +142,8 @@ def fold_in(query, model):
     q = [float(v) for v in k.vec(query)]
     T, S = model["T"], model["S"]
     if len(q) != len(T):
-        raise ValueError("lsa: the query has %d terms but the model "
-                         "has %d" % (len(q), len(T)))
-    return [sum(q[i] * T[i][f] for i in range(len(q)))
-            / max(S[f], _EPS) for f in range(len(S))]
+        raise ValueError("lsa: the query has %d terms but the model has %d" % (len(q), len(T)))
+    return [sum(q[i] * T[i][f] for i in range(len(q))) / max(S[f], _EPS) for f in range(len(S))]
 
 
 def cosine_ranking(q_hat, model, top_k=5):
@@ -160,22 +157,23 @@ def cosine_ranking(q_hat, model, top_k=5):
         if na <= _EPS or nb <= _EPS:
             out.append((j, 0.0))
             continue
-        out.append((j, sum(q_hat[f] * dv[f]
-                           for f in range(len(S))) / (na * nb)))
+        out.append((j, sum(q_hat[f] * dv[f] for f in range(len(S))) / (na * nb)))
     out.sort(key=lambda t: -t[1])
-    return {"ranking": out[:int(top_k)], "n_documents": len(D)}
+    return {"ranking": out[: int(top_k)], "n_documents": len(D)}
 
 
 def cheatsheet():
-    return ("lsa: literal term matching fails through SYNONYMY (the "
-            "right document uses other words) and POLYSEMY (the wrong "
-            "one shares a word). Take the SVD of the term-document "
-            "matrix and keep ~100 factors: the TRUNCATION is the "
-            "method, since k = full rank reproduces X exactly and "
-            "generalises nothing. Queries are FOLDED IN as "
-            "pseudo-documents, q' T S^-1, then ranked by cosine -- no "
-            "re-decomposition, but new documents do not reshape the "
-            "space. Weight the counts first; log-entropy is standard.")
+    return (
+        "lsa: literal term matching fails through SYNONYMY (the "
+        "right document uses other words) and POLYSEMY (the wrong "
+        "one shares a word). Take the SVD of the term-document "
+        "matrix and keep ~100 factors: the TRUNCATION is the "
+        "method, since k = full rank reproduces X exactly and "
+        "generalises nothing. Queries are FOLDED IN as "
+        "pseudo-documents, q' T S^-1, then ranked by cosine -- no "
+        "re-decomposition, but new documents do not reshape the "
+        "space. Weight the counts first; log-entropy is standard."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -69,10 +69,11 @@ def test_seed_reproducibility():
 
 
 def test_validation():
-    for call in (lambda: miord2([[1.0, 2.0], [3.0, 4.0]]),
-                 lambda: miord2([[1.0, 2.0], [3.0], [1.0, 2.0]]),
-                 lambda: miord2([[None, 1.0], [None, 2.0],
-                                 [None, 3.0]])):
+    for call in (
+        lambda: miord2([[1.0, 2.0], [3.0, 4.0]]),
+        lambda: miord2([[1.0, 2.0], [3.0], [1.0, 2.0]]),
+        lambda: miord2([[None, 1.0], [None, 2.0], [None, 3.0]]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

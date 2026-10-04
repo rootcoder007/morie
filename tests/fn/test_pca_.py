@@ -1,7 +1,6 @@
 """Tests for morie.fn.pca_ — PCA."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pca_ import pca_simple
 
 

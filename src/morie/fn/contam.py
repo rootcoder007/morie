@@ -18,8 +18,7 @@ def _huber_k(eps):
     target = eps / (1.0 - eps)
 
     def g(k):
-        return 2.0 * math.exp(-0.5 * k * k) / math.sqrt(2.0 * math.pi) / k \
-            - 2.0 * core.pnorm(-k)
+        return 2.0 * math.exp(-0.5 * k * k) / math.sqrt(2.0 * math.pi) / k - 2.0 * core.pnorm(-k)
 
     lo, hi = 1e-8, 40.0
     for _ in range(300):
@@ -88,16 +87,18 @@ def epsilon_contamination(epsilon, H, x=None):
     mean = eps * mh
     var = (1.0 - eps) * 1.0 + eps * (vh + mh * mh) - mean * mean
     k = _huber_k(eps)
-    return RichResult(payload={
-        "estimate": k,
-        "k": k,
-        "F": F,
-        "mean": mean,
-        "var": var,
-        "eps": eps,
-        "n_H": m,
-        "method": "Huber epsilon-contamination neighbourhood",
-    })
+    return RichResult(
+        payload={
+            "estimate": k,
+            "k": k,
+            "F": F,
+            "mean": mean,
+            "var": var,
+            "eps": eps,
+            "n_H": m,
+            "method": "Huber epsilon-contamination neighbourhood",
+        }
+    )
 
 
 def cheatsheet():

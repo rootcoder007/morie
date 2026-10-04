@@ -1,7 +1,5 @@
 """Tests for ghs006.ghosal_ch2_feller_density_approximation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ghs006 import ghosal_ch2_feller_density_approximation
 
 

@@ -72,15 +72,21 @@ def wasserman_parametric_boot(data, f, T, B, seed=13):
         f = lambda theta, u: -np.log(1.0 - u) * theta
     theta_hat = float(T(data))
     u = _lcg_uniforms(B * n, seed).reshape(B, n)
-    reps = np.array([float(T(np.asarray(f(theta_hat, u[b]), dtype=float)))
-                     for b in range(B)])
+    reps = np.array([float(T(np.asarray(f(theta_hat, u[b]), dtype=float))) for b in range(B)])
     rbar = float(np.mean(reps))
     se_b = float(np.sqrt(np.mean((reps - rbar) ** 2)))
     se_u = float(np.sqrt(np.sum((reps - rbar) ** 2) / (B - 1)))
-    return RichResult(payload={
-        "estimate": theta_hat, "se": se_b, "se_unbiased": se_u,
-        "replicates_mean": rbar, "B": B, "n": int(n),
-        "method": "parametric bootstrap, inversion sampler f(theta,u), LCG"})
+    return RichResult(
+        payload={
+            "estimate": theta_hat,
+            "se": se_b,
+            "se_unbiased": se_u,
+            "replicates_mean": rbar,
+            "B": B,
+            "n": int(n),
+            "method": "parametric bootstrap, inversion sampler f(theta,u), LCG",
+        }
+    )
 
 
 def cheatsheet():

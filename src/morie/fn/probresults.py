@@ -29,6 +29,7 @@ __all__ = [
     "ma_autocorrelation",
 ]
 
+
 def erlang_renewal_function(t: float, lam: float, k: int = 2) -> float:
     r"""Renewal function ``m(t) = E N(t)`` for Erlang (gamma ``(lam, k)``, integer ``k``) interarrival times.
 
@@ -109,7 +110,9 @@ def bivariate_normal_dependence(rho: float) -> RichResult:
     """
     if not -1 < rho < 1:
         raise ValueError("rho must lie in (-1, 1)")
-    return RichResult(payload={"phi2": rho * rho / (1 - rho * rho), "mutual_information": -0.5 * math.log(1 - rho * rho)})
+    return RichResult(
+        payload={"phi2": rho * rho / (1 - rho * rho), "mutual_information": -0.5 * math.log(1 - rho * rho)}
+    )
 
 
 def maximal_correlation(table) -> RichResult:

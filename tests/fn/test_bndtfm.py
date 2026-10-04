@@ -1,8 +1,8 @@
 """Tests for bndtfm.bound_transform."""
 
-from morie.fn import _array_core as np
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.bndtfm import bound_transform
 
 

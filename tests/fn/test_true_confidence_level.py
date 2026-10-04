@@ -17,8 +17,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e6_basic()
     """C(pi) = sum over w of I(pi in interval(w)) C(n,w) pi^w (1-pi)^(n-w),
     summed here directly for the Wald interval at n = 40, pi = 0.157."""
     n, p = 40, 0.157
-    c = sum(math.comb(n, w) * p ** w * (1 - p) ** (n - w)
-            for w in range(n + 1) if _wald(w, n)[0] <= p <= _wald(w, n)[1])
+    c = sum(math.comb(n, w) * p**w * (1 - p) ** (n - w) for w in range(n + 1) if _wald(w, n)[0] <= p <= _wald(w, n)[1])
     assert true_confidence_level(n, p, _wald)["value"] == pytest.approx(c, abs=1e-14)
 
 

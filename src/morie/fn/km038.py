@@ -27,22 +27,33 @@ def kamath_ch2_gpt2_task_conditioning(input, task, model=None):
     """
     prompt = f"{task}: {input}"
     if model is None:
-        return RichResult(payload={
-            "prompt": prompt, "output": None, "estimate": 0.0, "n": 0,
-            "method": "GPT-2 task conditioning (Kamath Eq 2.38)"})
+        return RichResult(
+            payload={
+                "prompt": prompt,
+                "output": None,
+                "estimate": 0.0,
+                "n": 0,
+                "method": "GPT-2 task conditioning (Kamath Eq 2.38)",
+            }
+        )
     dist = model(input, task)
     p = np.array([float(v) for v in dist.values()])
     if np.any(p < 0) or abs(float(p.sum()) - 1.0) > 1e-8:
         raise ValueError(
-            "the model's output distribution must be non-negative and "
-            f"sum to 1; it sums to {float(p.sum()):.6g}.")
+            f"the model's output distribution must be non-negative and sum to 1; it sums to {float(p.sum()):.6g}."
+        )
     keys = list(dist.keys())
     best = int(np.argmax(p))
-    return RichResult(payload={
-        "prompt": prompt, "output": keys[best],
-        "distribution": {k: float(v) for k, v in dist.items()},
-        "estimate": float(p[best]), "n": len(keys),
-        "method": "GPT-2 task conditioning (Kamath Eq 2.38)"})
+    return RichResult(
+        payload={
+            "prompt": prompt,
+            "output": keys[best],
+            "distribution": {k: float(v) for k, v in dist.items()},
+            "estimate": float(p[best]),
+            "n": len(keys),
+            "method": "GPT-2 task conditioning (Kamath Eq 2.38)",
+        }
+    )
 
 
 def cheatsheet():

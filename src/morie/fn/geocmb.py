@@ -55,9 +55,8 @@ def lattice_convex_hull(points):
     """
     pts = sorted({(int(x), int(y)) for x, y in points})
     if len(pts) < 3:
-        raise ValueError(
-            f"need at least 3 distinct points; got {len(pts)}."
-        )
+        raise ValueError(f"need at least 3 distinct points; got {len(pts)}.")
+
     def half(seq):
         h = []
         for p in seq:
@@ -65,12 +64,12 @@ def lattice_convex_hull(points):
                 h.pop()
             h.append(p)
         return h
+
     lower = half(pts)
     upper = half(reversed(pts))
     hull = lower[:-1] + upper[:-1]
     if len(hull) < 3:
-        raise ValueError("all points are collinear; the hull is a segment "
-                         "and has no interior.")
+        raise ValueError("all points are collinear; the hull is a segment and has no interior.")
     # twice the area by the shoelace formula -- an exact integer
     twice = 0
     for i, (x1, y1) in enumerate(hull):
@@ -94,7 +93,7 @@ def lattice_convex_hull(points):
     )
 
 
-def pick_theorem(vertices, verify_by_enumeration=True, enumeration_cap=10 ** 6):
+def pick_theorem(vertices, verify_by_enumeration=True, enumeration_cap=10**6):
     r"""Pick's theorem for a simple lattice polygon:
     :math:`A = I + B/2 - 1`.
 
@@ -137,8 +136,7 @@ def pick_theorem(vertices, verify_by_enumeration=True, enumeration_cap=10 ** 6):
     def on_segment(p, a, b):
         if _cross(a, b, p) != 0:
             return False
-        return (min(a[0], b[0]) <= p[0] <= max(a[0], b[0])
-                and min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
+        return min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and min(a[1], b[1]) <= p[1] <= max(a[1], b[1])
 
     def strictly_inside(p):
         # ray cast to the right with exact integer predicates
@@ -238,8 +236,7 @@ def erdos_szekeres_check(sequence, r=None, s=None):
     if n == 0:
         raise ValueError("the sequence is empty.")
     if len(set(w)) != n:
-        raise ValueError("the theorem needs distinct values; ties were "
-                         "supplied.")
+        raise ValueError("the theorem needs distinct values; ties were supplied.")
     inc = [1] * n
     dec = [1] * n
     for i in range(n):
@@ -299,21 +296,18 @@ def happy_ending_quadrilateral(points):
     """
     pts = [(int(x), int(y)) for x, y in points]
     if len(pts) < 5:
-        raise ValueError(f"the theorem is about 5 or more points; got "
-                         f"{len(pts)}.")
+        raise ValueError(f"the theorem is about 5 or more points; got {len(pts)}.")
     if len(set(pts)) != len(pts):
         raise ValueError("points must be distinct.")
     for a, b, c in combinations(pts, 3):
         if _cross(a, b, c) == 0:
-            raise ValueError(
-                f"points {a}, {b}, {c} are collinear; the theorem "
-                "assumes general position."
-            )
+            raise ValueError(f"points {a}, {b}, {c} are collinear; the theorem assumes general position.")
 
     def convex_quad(q):
         # q convex in SOME order iff its hull has 4 vertices; test the
         # cyclic order of the hull directly
         s = sorted(q)
+
         def halfh(seq):
             h = []
             for p in seq:
@@ -321,6 +315,7 @@ def happy_ending_quadrilateral(points):
                     h.pop()
                 h.append(p)
             return h
+
         hull = halfh(s)[:-1] + halfh(reversed(s))[:-1]
         return len(hull) == 4, hull
 

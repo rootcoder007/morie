@@ -25,9 +25,23 @@ from . import _bnp_core as _bnp
 from ._richresult import RichResult
 
 __all__ = [
-    "ghcrmlg", "ghdirmom", "ghdpmedc", "ghdpnk", "ghdppost", "ghdppred",
-    "ghdptrn", "ghewensl", "ghhell2", "ghibpk", "ghkldiv", "ghncrmlap",
-    "ghptbits", "ghptdens", "ghpyeppf", "ghrenyi", "ghwnpost",
+    "ghcrmlg",
+    "ghdirmom",
+    "ghdpmedc",
+    "ghdpnk",
+    "ghdppost",
+    "ghdppred",
+    "ghdptrn",
+    "ghewensl",
+    "ghhell2",
+    "ghibpk",
+    "ghkldiv",
+    "ghncrmlap",
+    "ghptbits",
+    "ghptdens",
+    "ghpyeppf",
+    "ghrenyi",
+    "ghwnpost",
 ]
 
 
@@ -78,11 +92,14 @@ def ghcrmlg(f, a):
         raise ValueError("f must exceed -1 for log(1 + f) to be finite")
     a = float(a)
     ex = [a * math.log(1.0 + v) for v in fs]
-    return RichResult(payload={
-        "exponent": ex, "laplace": [math.exp(-v) for v in ex],
-        "a": a,
-        "method": "gamma CRM Laplace exponent a log(1 + f) "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "exponent": ex,
+            "laplace": [math.exp(-v) for v in ex],
+            "a": a,
+            "method": "gamma CRM Laplace exponent a log(1 + f) (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghncrmlap(f, m, u):
@@ -112,17 +129,18 @@ def ghncrmlap(f, m, u):
     fs = _vec(f, "f")
     ms = _vec(m, "m")
     if len(fs) != len(ms):
-        raise ValueError(
-            f"f has {len(fs)} entries and m has {len(ms)}; "
-            "they must align (R would recycle silently)")
+        raise ValueError(f"f has {len(fs)} entries and m has {len(ms)}; they must align (R would recycle silently)")
     u = float(u)
-    ex = math.fsum(mi * (1.0 - math.exp(-fi * u))
-                   for fi, mi in zip(fs, ms))
-    return RichResult(payload={
-        "laplace": math.exp(-ex), "exponent": ex,
-        "n_atoms": len(fs), "u": u,
-        "method": "discretised CRM Laplace transform "
-                  "(Ghosal & van der Vaart 2017)"})
+    ex = math.fsum(mi * (1.0 - math.exp(-fi * u)) for fi, mi in zip(fs, ms))
+    return RichResult(
+        payload={
+            "laplace": math.exp(-ex),
+            "exponent": ex,
+            "n_atoms": len(fs),
+            "u": u,
+            "method": "discretised CRM Laplace transform (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 # -------------------------------------------------- Dirichlet process
@@ -162,11 +180,14 @@ def ghdppost(g0a, alpha, nina, n):
         raise ValueError("need 0 <= nina <= n")
     pn = nina / n if n > 0 else 0.0
     m = alpha / (alpha + n) * g0a + n / (alpha + n) * pn
-    return RichResult(payload={
-        "mean": m, "var": m * (1.0 - m) / (1.0 + alpha + n),
-        "precision": alpha + n,
-        "method": "Dirichlet-process posterior for one set "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "mean": m,
+            "var": m * (1.0 - m) / (1.0 + alpha + n),
+            "precision": alpha + n,
+            "method": "Dirichlet-process posterior for one set (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghdpnk(n, alpha):
@@ -194,12 +215,16 @@ def ghdpnk(n, alpha):
     if alpha <= 0:
         raise ValueError("alpha must be positive")
     mean = math.fsum(alpha / (alpha + i - 1) for i in range(1, n + 1))
-    var = math.fsum(alpha * (i - 1) / (alpha + i - 1) ** 2
-                    for i in range(1, n + 1))
-    return RichResult(payload={
-        "mean": mean, "var": var, "n": n, "alpha": alpha,
-        "method": "expected distinct values in a DP sample "
-                  "(Ghosal & van der Vaart 2017)"})
+    var = math.fsum(alpha * (i - 1) / (alpha + i - 1) ** 2 for i in range(1, n + 1))
+    return RichResult(
+        payload={
+            "mean": mean,
+            "var": var,
+            "n": n,
+            "alpha": alpha,
+            "method": "expected distinct values in a DP sample (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghdppred(alpha, n):
@@ -225,11 +250,13 @@ def ghdppred(alpha, n):
         raise ValueError("alpha must be positive")
     if n < 0:
         raise ValueError("n must be non-negative")
-    return RichResult(payload={
-        "weight_fresh": alpha / (alpha + n),
-        "weight_per_obs": 1.0 / (alpha + n),
-        "method": "Polya-urn predictive weights of a Dirichlet process "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "weight_fresh": alpha / (alpha + n),
+            "weight_per_obs": 1.0 / (alpha + n),
+            "method": "Polya-urn predictive weights of a Dirichlet process (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghdptrn(eps, alpha):
@@ -254,11 +281,14 @@ def ghdptrn(eps, alpha):
         raise ValueError("eps must lie in (0, 1)")
     if alpha <= 0:
         raise ValueError("alpha must be positive")
-    return RichResult(payload={
-        "level": 2.0 + alpha * (-math.log(eps)),
-        "eps": eps, "alpha": alpha,
-        "method": "stick-breaking truncation level "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "level": 2.0 + alpha * (-math.log(eps)),
+            "eps": eps,
+            "alpha": alpha,
+            "method": "stick-breaking truncation level (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghdpmedc(gx, alpha, ngrid=4000):
@@ -302,12 +332,16 @@ def ghdpmedc(gx, alpha, ngrid=4000):
         u = 0.5 + (i + 0.5) * h
         if u >= 1.0:
             continue
-        terms.append(math.exp(lognorm + (a - 1.0) * math.log(u)
-                              + (b - 1.0) * math.log(1.0 - u)))
-    return RichResult(payload={
-        "prob": math.fsum(terms) * h, "a": a, "b": b, "ngrid": ngrid,
-        "method": "midpoint beta-tail rule for the DP median CDF "
-                  "(Ghosal & van der Vaart 2017)"})
+        terms.append(math.exp(lognorm + (a - 1.0) * math.log(u) + (b - 1.0) * math.log(1.0 - u)))
+    return RichResult(
+        payload={
+            "prob": math.fsum(terms) * h,
+            "a": a,
+            "b": b,
+            "ngrid": ngrid,
+            "method": "midpoint beta-tail rule for the DP median CDF (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghdirmom(alpha, j, jp):
@@ -347,10 +381,15 @@ def ghdirmom(alpha, j, jp):
     A = math.fsum(a)
     vr = a[j] * (A - a[j]) / (A * A * (A + 1.0))
     cv = vr if j == jp else -a[j] * a[jp] / (A * A * (A + 1.0))
-    return RichResult(payload={
-        "mean": a[j] / A, "var": vr, "cov": cv, "total": A,
-        "method": "Dirichlet first two moments "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "mean": a[j] / A,
+            "var": vr,
+            "cov": cv,
+            "total": A,
+            "method": "Dirichlet first two moments (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 # ------------------------------------------------------ partitions
@@ -385,14 +424,16 @@ def ghewensl(mult, alpha):
     n = int(round(math.fsum((i + 1) * m for i, m in enumerate(ms))))
     if n < 1:
         raise ValueError("the multiplicities describe an empty partition")
-    lp = math.lgamma(n + 1.0) \
-        - math.fsum(math.log(alpha + i) for i in range(n))
-    lp += math.fsum(m * math.log(alpha) - m * math.log(i + 1)
-                    - math.lgamma(m + 1.0) for i, m in enumerate(ms))
-    return RichResult(payload={
-        "logprob": lp, "prob": math.exp(lp), "n": n,
-        "method": "log Ewens sampling formula "
-                  "(Ghosal & van der Vaart 2017)"})
+    lp = math.lgamma(n + 1.0) - math.fsum(math.log(alpha + i) for i in range(n))
+    lp += math.fsum(m * math.log(alpha) - m * math.log(i + 1) - math.lgamma(m + 1.0) for i, m in enumerate(ms))
+    return RichResult(
+        payload={
+            "logprob": lp,
+            "prob": math.exp(lp),
+            "n": n,
+            "method": "log Ewens sampling formula (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghpyeppf(sizes, d, theta):
@@ -443,10 +484,15 @@ def ghpyeppf(sizes, d, theta):
             if arg <= 0:
                 raise ValueError("1 - d + l must stay positive")
             lp += math.log(arg)
-    return RichResult(payload={
-        "logprob": lp, "prob": math.exp(lp), "n": n, "k": k,
-        "method": "log Pitman-Yor EPPF "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "logprob": lp,
+            "prob": math.exp(lp),
+            "n": n,
+            "k": k,
+            "method": "log Pitman-Yor EPPF (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def ghibpk(n, alpha):
@@ -472,10 +518,15 @@ def ghibpk(n, alpha):
     if alpha <= 0:
         raise ValueError("alpha must be positive")
     hn = math.fsum(1.0 / i for i in range(1, n + 1))
-    return RichResult(payload={
-        "expected": alpha * hn, "harmonic": hn, "n": n, "alpha": alpha,
-        "method": "expected Indian-buffet features alpha H_n "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "expected": alpha * hn,
+            "harmonic": hn,
+            "n": n,
+            "alpha": alpha,
+            "method": "expected Indian-buffet features alpha H_n (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 # ------------------------------------------------------ Polya trees
@@ -504,11 +555,14 @@ def ghptbits(x, depth):
     depth = int(depth)
     if depth < 1:
         raise ValueError("depth must be a positive integer")
-    return RichResult(payload={
-        "bits": _bnp._bits(x, depth), "depth": depth,
-        "clamped": not 0.0 <= x < 1.0,
-        "method": "dyadic Polya-tree path bits "
-                  "(no book citation: a plain binary expansion)"})
+    return RichResult(
+        payload={
+            "bits": _bnp._bits(x, depth),
+            "depth": depth,
+            "clamped": not 0.0 <= x < 1.0,
+            "method": "dyadic Polya-tree path bits (no book citation: a plain binary expansion)",
+        }
+    )
 
 
 def ghptdens(x, data, depth=4):
@@ -546,11 +600,16 @@ def ghptdens(x, data, depth=4):
     n = len(ds)
     counts = _bnp.pt_path_counts(x, ds, depth)
     dens = _bnp.pt_density_posterior(x, lambda m: m * m, counts, n, depth)
-    return RichResult(payload={
-        "density": dens, "counts": counts,
-        "bits": _bnp._bits(x, depth), "depth": depth, "n": n,
-        "method": "Polya-tree posterior density, level weights a_m = m^2 "
-                  "(Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "density": dens,
+            "counts": counts,
+            "bits": _bnp._bits(x, depth),
+            "depth": depth,
+            "n": n,
+            "method": "Polya-tree posterior density, level weights a_m = m^2 (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 # --------------------------------------------- information quantities
@@ -580,15 +639,19 @@ def ghhell2(p, q):
     ps = _probs(p, "p")
     qs = _probs(q, "q")
     if len(ps) != len(qs):
-        raise ValueError(
-            f"p has {len(ps)} entries and q has {len(qs)}")
+        raise ValueError(f"p has {len(ps)} entries and q has {len(qs)}")
     rho = math.fsum(math.sqrt(a * b) for a, b in zip(ps, qs))
     half = 1.0 - rho
-    return RichResult(payload={
-        "half_h2": half, "h2": 2.0 * half, "affinity": rho,
-        "method": "1 - Bhattacharyya affinity = half the squared "
-                  "Hellinger distance (no book citation: a generic "
-                  "information-theory quantity)"})
+    return RichResult(
+        payload={
+            "half_h2": half,
+            "h2": 2.0 * half,
+            "affinity": rho,
+            "method": "1 - Bhattacharyya affinity = half the squared "
+            "Hellinger distance (no book citation: a generic "
+            "information-theory quantity)",
+        }
+    )
 
 
 def ghkldiv(p, q):
@@ -614,17 +677,20 @@ def ghkldiv(p, q):
     ps = _probs(p, "p")
     qs = _probs(q, "q")
     if len(ps) != len(qs):
-        raise ValueError(
-            f"p has {len(ps)} entries and q has {len(qs)}")
+        raise ValueError(f"p has {len(ps)} entries and q has {len(qs)}")
     keep = [i for i, v in enumerate(ps) if v > 0]
     floored = sum(1 for i in keep if qs[i] < 1e-300)
-    kl = math.fsum(ps[i] * math.log(ps[i] / max(qs[i], 1e-300))
-                   for i in keep)
-    return RichResult(payload={
-        "kl": kl, "support": len(keep), "floored": floored,
-        "method": "Kullback-Leibler divergence in nats, q floored at "
-                  "1e-300 (no book citation: a generic "
-                  "information-theory quantity)"})
+    kl = math.fsum(ps[i] * math.log(ps[i] / max(qs[i], 1e-300)) for i in keep)
+    return RichResult(
+        payload={
+            "kl": kl,
+            "support": len(keep),
+            "floored": floored,
+            "method": "Kullback-Leibler divergence in nats, q floored at "
+            "1e-300 (no book citation: a generic "
+            "information-theory quantity)",
+        }
+    )
 
 
 def ghrenyi(p, q, alpha=0.5):
@@ -648,21 +714,21 @@ def ghrenyi(p, q, alpha=0.5):
     ps = _probs(p, "p")
     qs = _probs(q, "q")
     if len(ps) != len(qs):
-        raise ValueError(
-            f"p has {len(ps)} entries and q has {len(qs)}")
+        raise ValueError(f"p has {len(ps)} entries and q has {len(qs)}")
     alpha = float(alpha)
     if abs(alpha - 1.0) < 1e-15:
-        raise ValueError("alpha must differ from 1; use ghkldiv for the "
-                         "alpha -> 1 limit")
-    rho = math.fsum(a ** alpha * b ** (1.0 - alpha)
-                    for a, b in zip(ps, qs))
+        raise ValueError("alpha must differ from 1; use ghkldiv for the alpha -> 1 limit")
+    rho = math.fsum(a**alpha * b ** (1.0 - alpha) for a, b in zip(ps, qs))
     if rho <= 0:
         raise ValueError("p and q have disjoint support")
-    return RichResult(payload={
-        "divergence": math.log(rho) / (alpha - 1.0), "alpha": alpha,
-        "chernoff": rho,
-        "method": "Renyi divergence of order alpha (no book citation: a "
-                  "generic information-theory quantity)"})
+    return RichResult(
+        payload={
+            "divergence": math.log(rho) / (alpha - 1.0),
+            "alpha": alpha,
+            "chernoff": rho,
+            "method": "Renyi divergence of order alpha (no book citation: a generic information-theory quantity)",
+        }
+    )
 
 
 # ----------------------------------------------------- white noise
@@ -699,13 +765,20 @@ def ghwnpost(x, n, priorvar):
     if lam <= 0:
         raise ValueError("priorvar must be positive")
     prec = n + 1.0 / lam
-    return RichResult(payload={
-        "mean": n * x / prec, "var": 1.0 / prec, "shrinkage": n / prec,
-        "method": "conjugate white-noise coordinate posterior, unit noise "
-                  "variance assumed (Ghosal & van der Vaart 2017)"})
+    return RichResult(
+        payload={
+            "mean": n * x / prec,
+            "var": 1.0 / prec,
+            "shrinkage": n / prec,
+            "method": "conjugate white-noise coordinate posterior, unit noise "
+            "variance assumed (Ghosal & van der Vaart 2017)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bnpgh: Ghosal-van der Vaart scalar formulas -- DP posterior, "
-            "Ewens/PY partitions, Polya trees, CRM Laplace transforms, "
-            "Hellinger/KL/Renyi")
+    return (
+        "bnpgh: Ghosal-van der Vaart scalar formulas -- DP posterior, "
+        "Ewens/PY partitions, Polya trees, CRM Laplace transforms, "
+        "Hellinger/KL/Renyi"
+    )

@@ -1,7 +1,6 @@
 """Tests for alfcnf.alphafold_confidence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfcnf import alphafold_confidence
 
 

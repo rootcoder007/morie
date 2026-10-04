@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.glides import glide_score_proxy
 
 
@@ -27,9 +25,13 @@ def test_glides_basic():
     hbonds = []
 
     result = glide_score_proxy(
-        receptor, ligand_pose,
-        radii=radii, depths=depths, charges=charges,
-        lipophilic=lipophilic, hbonds=hbonds,
+        receptor,
+        ligand_pose,
+        radii=radii,
+        depths=depths,
+        charges=charges,
+        lipophilic=lipophilic,
+        hbonds=hbonds,
     )
 
     assert isinstance(result, dict)
@@ -45,10 +47,15 @@ def test_glides_basic():
     # Independent numerical sanity check on the rotatable-bond penalty.
     e_rot = 0.35 * 0
     result_rot = glide_score_proxy(
-        receptor, ligand_pose,
-        radii=radii, depths=depths, charges=charges,
-        lipophilic=lipophilic, hbonds=hbonds,
-        n_rot=0, rot_penalty=0.35,
+        receptor,
+        ligand_pose,
+        radii=radii,
+        depths=depths,
+        charges=charges,
+        lipophilic=lipophilic,
+        hbonds=hbonds,
+        n_rot=0,
+        rot_penalty=0.35,
     )
     assert result_rot["rot_penalty"] == e_rot
 
@@ -56,10 +63,15 @@ def test_glides_basic():
     # rot_penalty * n_rot, raised positively.
     e_rot_nonzero = 0.35 * 2
     result_flex = glide_score_proxy(
-        receptor, ligand_pose,
-        radii=radii, depths=depths, charges=charges,
-        lipophilic=lipophilic, hbonds=hbonds,
-        n_rot=2, rot_penalty=0.35,
+        receptor,
+        ligand_pose,
+        radii=radii,
+        depths=depths,
+        charges=charges,
+        lipophilic=lipophilic,
+        hbonds=hbonds,
+        n_rot=2,
+        rot_penalty=0.35,
     )
     assert result_flex["rot_penalty"] == e_rot_nonzero
 
@@ -76,8 +88,11 @@ def test_glides_edge():
     charges = [("C", 0.0), ("O", -0.4)]
 
     result = glide_score_proxy(
-        receptor, ligand_pose,
-        radii=radii, depths=depths, charges=charges,
+        receptor,
+        ligand_pose,
+        radii=radii,
+        depths=depths,
+        charges=charges,
     )
     assert isinstance(result, dict)
     assert result["n_contacts"] == 0

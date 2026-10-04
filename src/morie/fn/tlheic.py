@@ -60,14 +60,10 @@ Targeted Loss-Based Estimation", in *Targeted Learning in Data
 Science*, Springer, 483-510, doi:10.1007/978-3-319-65304-4_26.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["numerical_derivative", "gradient_inner_product",
-           "estimate_eic", "verify_gradient"]
+__all__ = ["numerical_derivative", "gradient_inner_product", "estimate_eic", "verify_gradient"]
 
 _EPS = 1e-12
 
@@ -82,15 +78,13 @@ def numerical_derivative(psi_of_P, weights, score, h=1e-5):
     w = [float(v) for v in k.vec(weights)]
     s = [float(v) for v in k.vec(score)]
     if len(w) != len(s):
-        raise ValueError("tlheic: %d weights but %d score values"
-                         % (len(w), len(s)))
+        raise ValueError("tlheic: %d weights but %d score values" % (len(w), len(s)))
     m = sum(w[i] * s[i] for i in range(len(w))) / sum(w)
 
     def tilt(e):
         v = [w[i] * (1.0 + e * (s[i] - m)) for i in range(len(w))]
         if any(x <= 0.0 for x in v):
-            raise ValueError("tlheic: the perturbation left the "
-                             "simplex; use a smaller h")
+            raise ValueError("tlheic: the perturbation left the simplex; use a smaller h")
         t = sum(v)
         return [x / t for x in v]
 
@@ -102,10 +96,8 @@ def gradient_inner_product(D, score, weights=None):
     d = [float(v) for v in k.vec(D)]
     s = [float(v) for v in k.vec(score)]
     if len(d) != len(s):
-        raise ValueError("tlheic: %d gradient values but %d score "
-                         "values" % (len(d), len(s)))
-    w = [1.0 / len(d)] * len(d) if weights is None \
-        else [float(v) for v in k.vec(weights)]
+        raise ValueError("tlheic: %d gradient values but %d score values" % (len(d), len(s)))
+    w = [1.0 / len(d)] * len(d) if weights is None else [float(v) for v in k.vec(weights)]
     t = sum(w)
     return sum(w[i] * d[i] * s[i] for i in range(len(d))) / t
 
@@ -121,8 +113,7 @@ def estimate_eic(psi_of_P, basis, weights=None, h=1e-5, ridge=1e-8):
     B = [[float(v) for v in r] for r in k.mat(basis)]
     n = len(B)
     p = len(B[0])
-    w = [1.0 / n] * n if weights is None \
-        else [float(v) for v in k.vec(weights)]
+    w = [1.0 / n] * n if weights is None else [float(v) for v in k.vec(weights)]
     tot = sum(w)
     w = [v / tot for v in w]
     C = []
@@ -130,25 +121,25 @@ def estimate_eic(psi_of_P, basis, weights=None, h=1e-5, ridge=1e-8):
         col = [B[i][j] for i in range(n)]
         m = sum(w[i] * col[i] for i in range(n))
         C.append([col[i] - m for i in range(n)])
-    rhs = [numerical_derivative(psi_of_P, w, C[j], h)
-           for j in range(p)]
-    G = [[sum(w[i] * C[a][i] * C[b][i] for i in range(n))
-          for b in range(p)] for a in range(p)]
+    rhs = [numerical_derivative(psi_of_P, w, C[j], h) for j in range(p)]
+    G = [[sum(w[i] * C[a][i] * C[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
     for a in range(p):
         G[a][a] += float(ridge)
     coef = _solve(G, rhs)
     D = [sum(coef[j] * C[j][i] for j in range(p)) for i in range(n)]
     m = sum(w[i] * D[i] for i in range(n))
     D = [v - m for v in D]
-    return RichResult(payload={
-        "estimate": D, "D": D, "coefficients": coef,
-        "n_directions": p, "mean": sum(w[i] * D[i]
-                                       for i in range(n)),
-        "method": "numerical estimation of the efficient influence "
-                  "curve; van der Laan & Rose (2018) Chap. 8",
-        "note": "no analytic derivation: the gradient is identified "
-                "by how the parameter MOVES under perturbation",
-    })
+    return RichResult(
+        payload={
+            "estimate": D,
+            "D": D,
+            "coefficients": coef,
+            "n_directions": p,
+            "mean": sum(w[i] * D[i] for i in range(n)),
+            "method": "numerical estimation of the efficient influence curve; van der Laan & Rose (2018) Chap. 8",
+            "note": "no analytic derivation: the gradient is identified by how the parameter MOVES under perturbation",
+        }
+    )
 
 
 def _solve(A, b):
@@ -157,8 +148,7 @@ def _solve(A, b):
     for c in range(n):
         p = max(range(c, n), key=lambda i: abs(M[i][c]))
         if abs(M[p][c]) < 1e-14:
-            raise ValueError("tlheic: the direction system is "
-                             "singular; the basis is degenerate")
+            raise ValueError("tlheic: the direction system is singular; the basis is degenerate")
         M[c], M[p] = M[p], M[c]
         d = M[c][c]
         M[c] = [v / d for v in M[c]]
@@ -169,8 +159,7 @@ def _solve(A, b):
     return [M[i][n] for i in range(n)]
 
 
-def verify_gradient(psi_of_P, D, score, weights=None, h=1e-5,
-                    tol=1e-4):
+def verify_gradient(psi_of_P, D, score, weights=None, h=1e-5, tol=1e-4):
     r"""Check the derivative identity along a HELD-OUT direction.
 
     A gradient fitted to some directions will satisfy the identity
@@ -178,28 +167,31 @@ def verify_gradient(psi_of_P, D, score, weights=None, h=1e-5,
     direction that was not used.
     """
     n = len(k.vec(D))
-    w = [1.0 / n] * n if weights is None \
-        else [float(v) for v in k.vec(weights)]
+    w = [1.0 / n] * n if weights is None else [float(v) for v in k.vec(weights)]
     lhs = numerical_derivative(psi_of_P, w, score, h)
     rhs = gradient_inner_product(D, score, w)
-    return {"derivative": lhs, "inner_product": rhs,
-            "difference": abs(lhs - rhs),
-            "verified": abs(lhs - rhs) < float(tol),
-            "note": "must hold along ANY path, including ones not "
-                    "used to fit the gradient"}
+    return {
+        "derivative": lhs,
+        "inner_product": rhs,
+        "difference": abs(lhs - rhs),
+        "verified": abs(lhs - rhs) < float(tol),
+        "note": "must hold along ANY path, including ones not used to fit the gradient",
+    }
 
 
 def cheatsheet():
-    return ("tlheic: for many parameters the efficient influence curve "
-            "exists only IMPLICITLY and deriving it is what stops the "
-            "method being used. Estimate it from the DEFINITION "
-            "instead: d/d_eps Psi(P_eps) = E[D* s], so perturbing "
-            "along directions and reading off how the parameter moves "
-            "identifies D*. Represent it in the HAL indicator basis "
-            "with a variation-norm bound, and the tangent-space "
-            "projection becomes a numerical regression. Verify on a "
-            "HELD-OUT direction -- the fitted ones satisfy it by "
-            "construction.")
+    return (
+        "tlheic: for many parameters the efficient influence curve "
+        "exists only IMPLICITLY and deriving it is what stops the "
+        "method being used. Estimate it from the DEFINITION "
+        "instead: d/d_eps Psi(P_eps) = E[D* s], so perturbing "
+        "along directions and reading off how the parameter moves "
+        "identifies D*. Represent it in the HAL indicator basis "
+        "with a variation-norm bound, and the tangent-space "
+        "projection becomes a numerical regression. Verify on a "
+        "HELD-OUT direction -- the fitted ones satisfy it by "
+        "construction."
+    )
 
 
 # compact alias per ledger/NAMING.md

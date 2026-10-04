@@ -5,9 +5,9 @@ exist. Rewritten against penalized_spline and anchored on how the
 roughness penalty is supposed to behave.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.smfd import penalized_spline
 
 X = [i / 20.0 for i in range(21)]

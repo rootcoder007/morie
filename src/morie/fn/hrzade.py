@@ -80,12 +80,18 @@ def hrz_average_derivative(X, y, h=None, weighted=True):
         delta[j] = float(contrib.mean())
         infl[:, j] = contrib - delta[j]
     se = np.sqrt((infl**2).sum(axis=0)) / n
-    return RichResult(payload={"delta": delta if d > 1 else float(delta[0]),
-                               "se": se if d > 1 else float(se[0]),
-                               "root_n": True, "proportional_to_beta": True,
-                               "bandwidth": hs if d > 1 else float(hs[0]),
-                               "n": int(n), "d": int(d),
-                               "method": "Density-weighted average derivative; root-n by parts"})
+    return RichResult(
+        payload={
+            "delta": delta if d > 1 else float(delta[0]),
+            "se": se if d > 1 else float(se[0]),
+            "root_n": True,
+            "proportional_to_beta": True,
+            "bandwidth": hs if d > 1 else float(hs[0]),
+            "n": int(n),
+            "d": int(d),
+            "method": "Density-weighted average derivative; root-n by parts",
+        }
+    )
 
 
 def cheatsheet():

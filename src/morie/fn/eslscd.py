@@ -131,15 +131,22 @@ def esl_sparse_pca(X, k=2, lambda_=0.1, max_iter=500, tol=1e-8, center=True, sca
     total = float(np.trace(S))
     return RichResult(
         title="Sparse PCA",
-        summary_lines=[("n", n), ("p", p), ("k", k), ("lambda", float(lambda_)),
-                       ("sparsity", float(np.mean(loadings == 0)))],
+        summary_lines=[
+            ("n", n),
+            ("p", p),
+            ("k", k),
+            ("lambda", float(lambda_)),
+            ("sparsity", float(np.mean(loadings == 0))),
+        ],
         payload={
-            "loadings": loadings, "scores": scores,
+            "loadings": loadings,
+            "scores": scores,
             "sparsity": float(np.mean(loadings == 0)),
             "adjusted_variance": adj,
             "explained": adj / total if total > 0 else np.full(k, np.nan),
             "total_variance": total,
-            "lambda_": float(lambda_), "n_iter": np.array(iters),
+            "lambda_": float(lambda_),
+            "n_iter": np.array(iters),
             "method": "esl_sparse_pca",
         },
     )

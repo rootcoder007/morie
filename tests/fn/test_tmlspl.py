@@ -1,7 +1,5 @@
 """Tests for tmlspl.tmle_spillover."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.tmlspl import tmle_spillover
 
 

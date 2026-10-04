@@ -1,7 +1,6 @@
 """Tests for morie.fn.lyapn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lyapn import lyapn
 
 

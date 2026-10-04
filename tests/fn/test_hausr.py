@@ -1,7 +1,6 @@
 """Tests for morie.fn.hausr — Hausman test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hausr import hausman_test
 
 

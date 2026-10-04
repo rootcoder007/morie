@@ -1,8 +1,8 @@
 """Tests for gb232 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb232 import gibbons_glivenko_cantelli
 
 

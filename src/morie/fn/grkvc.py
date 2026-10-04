@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """KV-cache size and compression."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_kv_cache_compression"]
@@ -10,8 +9,7 @@ __all__ = ["geron_kv_cache_compression"]
 _METHOD = "KV-cache memory footprint"
 
 
-def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits=16,
-                               batch_size=1, baseline_bits=16):
+def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits=16, batch_size=1, baseline_bits=16):
     r"""How much memory the key/value cache eats.
 
     .. math::
@@ -73,8 +71,7 @@ def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits=16,
     >>> r["bytes_per_token"]
     524288
     """
-    vals = {"seq_len": seq_len, "num_layers": num_layers,
-            "num_heads": num_heads, "d_head": d_head}
+    vals = {"seq_len": seq_len, "num_layers": num_layers, "num_heads": num_heads, "d_head": d_head}
     ints = {}
     for name, v in vals.items():
         iv = int(v)
@@ -91,8 +88,7 @@ def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits=16,
     if bs < 1:
         raise ValueError(f"batch_size must be a positive integer, got {bs}.")
 
-    n_values = (ints["seq_len"] * ints["num_layers"] * ints["num_heads"]
-                * ints["d_head"] * 2 * bs)
+    n_values = ints["seq_len"] * ints["num_layers"] * ints["num_heads"] * ints["d_head"] * 2 * bs
     nbytes = n_values * bits // 8
     if n_values * bits % 8:
         nbytes += 1
@@ -100,8 +96,7 @@ def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits=16,
 
     return RichResult(
         title="KV-cache footprint",
-        summary_lines=[("Bytes", int(nbytes)), ("MB", nbytes / 2**20),
-                       ("bits", bits)],
+        summary_lines=[("Bytes", int(nbytes)), ("MB", nbytes / 2**20), ("bits", bits)],
         payload={
             "cache_bytes": int(nbytes),
             "megabytes": float(nbytes) / 2**20,

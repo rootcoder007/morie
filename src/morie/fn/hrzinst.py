@@ -76,13 +76,18 @@ def hrz_instrument_check(X, Z, U=None, y=None):
         b2, *_ = np.linalg.lstsq(np.column_stack([np.ones(n), fit]), yy, rcond=None)
         u = yy - np.column_stack([np.ones(n), x1]) @ b2
         corr = float(np.corrcoef(u, Z[:, 0])[0, 1])
-    return RichResult(payload={"first_stage_r2": float(r2),
-                               "first_stage_F": float(F),
-                               "relevant": bool(F > 10.0),  # the usual rule of thumb
-                               "corr_U_Z": corr,
-                               "exogeneity_testable": False,
-                               "n": int(n), "n_instruments": int(q),
-                               "method": "Relevance is testable; exogeneity is NOT, and is not claimed"})
+    return RichResult(
+        payload={
+            "first_stage_r2": float(r2),
+            "first_stage_F": float(F),
+            "relevant": bool(F > 10.0),  # the usual rule of thumb
+            "corr_U_Z": corr,
+            "exogeneity_testable": False,
+            "n": int(n),
+            "n_instruments": int(q),
+            "method": "Relevance is testable; exogeneity is NOT, and is not claimed",
+        }
+    )
 
 
 def cheatsheet():

@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['ridgeobj', 'ridge_objective', 'ridgeobjective']
+__all__ = ["ridgeobj", "ridge_objective", "ridgeobjective"]
 
 
 def ridgeobj(X, y, beta, lam, add_intercept=True):
@@ -47,14 +47,20 @@ def ridgeobj(X, y, beta, lam, add_intercept=True):
         raise ValueError("beta must have one entry per column of the design")
     if lam < 0.0:
         raise ValueError("lambda must be non-negative")
-    rss = sum((y[i] - sum(Xm[i][j] * b[j] for j in range(p))) ** 2
-              for i in range(n))
+    rss = sum((y[i] - sum(Xm[i][j] * b[j] for j in range(p))) ** 2 for i in range(n))
     start = 1 if add_intercept else 0
     pen = lam * sum(b[j] * b[j] for j in range(start, p))
-    return RichResult(payload={
-        "prss": rss + pen, "rss": rss, "penalty": pen, "lambda": lam,
-        "n": n, "p": p,
-        "method": "Ridge penalized RSS, MVSML Sect. 3.6.1"})
+    return RichResult(
+        payload={
+            "prss": rss + pen,
+            "rss": rss,
+            "penalty": pen,
+            "lambda": lam,
+            "n": n,
+            "p": p,
+            "method": "Ridge penalized RSS, MVSML Sect. 3.6.1",
+        }
+    )
 
 
 ridge_objective = ridgeobj
@@ -62,4 +68,4 @@ ridgeobjective = ridgeobj
 
 
 def cheatsheet():
-    return 'ridgj: Penalized residual sum of squares of ridge regression.'
+    return "ridgj: Penalized residual sum of squares of ridge regression."

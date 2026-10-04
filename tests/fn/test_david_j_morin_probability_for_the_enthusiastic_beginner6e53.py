@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e53 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_53
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e53 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_53,
+)
 
 
 def test_the_product_of_the_two_regression_slopes_is_r_squared():
@@ -29,4 +31,6 @@ def test_the_product_of_the_two_regression_slopes_is_r_squared():
 def test_collinear_data_has_slope_product_one():
     x = [0.0, 1.0, 2.0, 3.0]
     y = [1.0, 3.0, 5.0, 7.0]
-    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_53(x, y)["slope_product_AC"] == pytest.approx(1.0, rel=1e-12)
+    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_53(x, y)[
+        "slope_product_AC"
+    ] == pytest.approx(1.0, rel=1e-12)

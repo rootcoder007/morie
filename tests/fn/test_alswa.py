@@ -12,5 +12,6 @@ def test_alswa_basic():
 
 def test_alswa_edge():
     import pytest
+
     with pytest.raises(ValueError, match="positive"):
         alammar_sliding_window_attention([[1.0]], [[1.0]], [[1.0]], 0)

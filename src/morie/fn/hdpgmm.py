@@ -30,8 +30,7 @@ from .dpsbw import stick_breaking_weights
 __all__ = ["hdp_gaussian_mixture"]
 
 
-def hdp_gaussian_mixture(y, groups=None, gamma=1.0, alpha=1.0, truncation=4,
-                         max_iter=200, tol=1e-13):
+def hdp_gaussian_mixture(y, groups=None, gamma=1.0, alpha=1.0, truncation=4, max_iter=200, tol=1e-13):
     """HDP mixture of univariate normals with shared component locations.
 
     Returns
@@ -70,9 +69,12 @@ def hdp_gaussian_mixture(y, groups=None, gamma=1.0, alpha=1.0, truncation=4,
             for t in range(K):
                 w = pi[gi[i]][t]
                 z = (v[i] - mu[t]) / sd[t]
-                lp.append(math.log(w if w > 1e-300 else 1e-300)
-                          - 0.5 * z * z - math.log(sd[t])
-                          - 0.5 * math.log(2.0 * math.pi))
+                lp.append(
+                    math.log(w if w > 1e-300 else 1e-300)
+                    - 0.5 * z * z
+                    - math.log(sd[t])
+                    - 0.5 * math.log(2.0 * math.pi)
+                )
             m = k.logsumexp(lp)
             newll += m
             for t in range(K):
@@ -85,8 +87,7 @@ def hdp_gaussian_mixture(y, groups=None, gamma=1.0, alpha=1.0, truncation=4,
                     for t in range(K):
                         row[t] += R[i][t]
                     nj += 1.0
-            pi[j] = [(float(alpha) * beta[t] + row[t]) / (float(alpha) + nj)
-                     for t in range(K)]
+            pi[j] = [(float(alpha) * beta[t] + row[t]) / (float(alpha) + nj) for t in range(K)]
         for t in range(K):
             nk = 0.0
             s = 0.0

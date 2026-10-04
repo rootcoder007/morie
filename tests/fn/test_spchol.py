@@ -10,13 +10,17 @@ the same matrix, and the tests below say so explicitly rather than expecting
 them to agree pointwise.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_fit import covariance_matrix
-from morie.fn._schab_sim import (cholesky_root, simple_kriging_variance,
-                                 simulate_conditional, simulate_unconditional,
-                                 spectral_root)
+from morie.fn._schab_sim import (
+    cholesky_root,
+    simple_kriging_variance,
+    simulate_conditional,
+    simulate_unconditional,
+    spectral_root,
+)
 from morie.fn.spchol import schabenberger_cholesky_sim as spchol
 from morie.fn.spcnds import schabenberger_conditional_sim as spcnds
 from morie.fn.spspec2 import schabenberger_spectral_sim as spspec2
@@ -67,9 +71,7 @@ def test_both_methods_reproduce_the_target_covariance(method):
     """The property that makes either root correct."""
     cov = _cov(_grid(4))
     n = cov.shape[0]
-    draws = np.array([simulate_unconditional(np.zeros(n), cov, method=method,
-                                             seed=11, stream=s)
-                      for s in range(6000)])
+    draws = np.array([simulate_unconditional(np.zeros(n), cov, method=method, seed=11, stream=s) for s in range(6000)])
     assert np.abs(np.cov(draws, rowvar=False) - cov).max() < 0.15
     assert np.abs(draws.mean(axis=0)).max() < 0.12
 
@@ -77,8 +79,7 @@ def test_both_methods_reproduce_the_target_covariance(method):
 def test_the_mean_is_carried_through():
     cov = _cov(_grid(4))
     mu = np.linspace(-3.0, 3.0, cov.shape[0])
-    draws = np.array([simulate_unconditional(mu, cov, seed=3, stream=s)
-                      for s in range(3000)])
+    draws = np.array([simulate_unconditional(mu, cov, seed=3, stream=s) for s in range(3000)])
     assert np.abs(draws.mean(axis=0) - mu).max() < 0.15
 
 
@@ -99,9 +100,7 @@ def test_conditional_simulation_reproduces_the_covariance():
     n = cov.shape[0]
     m = 6
     truth = simulate_unconditional(np.zeros(n), cov, seed=99)
-    draws = np.array([simulate_conditional(cov, truth[:m], m, mean=0.0,
-                                           seed=1, stream=s)
-                      for s in range(6000)])
+    draws = np.array([simulate_conditional(cov, truth[:m], m, mean=0.0, seed=1, stream=s) for s in range(6000)])
     assert np.abs(np.cov(draws[:, m:], rowvar=False) - cov[m:, m:]).max() < 0.2
 
 
@@ -118,15 +117,14 @@ def test_conditional_simulation_satisfies_the_two_sigma_sk_identity():
     reps = 6000
     for r in range(reps):
         truth = simulate_unconditional(np.zeros(n), cov, seed=4242, stream=2 * r)
-        zc = simulate_conditional(cov, truth[:m], m, mean=0.0,
-                                  seed=4242, stream=2 * r + 1)
+        zc = simulate_conditional(cov, truth[:m], m, mean=0.0, seed=4242, stream=2 * r + 1)
         acc += (zc[m:] - truth[m:]) ** 2
     ratio = (acc / reps) / (2.0 * sk)
     assert ratio.mean() == pytest.approx(1.0, abs=0.06)
 
 
 def test_conditional_is_more_variable_than_the_kriging_predictor():
-    """"A conditional simulation of a random field will exhibit more
+    """ "A conditional simulation of a random field will exhibit more
     variability between the observed points than the kriging predictor" --
     the kriging predictor is the mean of the conditional draws, so the draws
     must scatter about it."""
@@ -134,9 +132,7 @@ def test_conditional_is_more_variable_than_the_kriging_predictor():
     n = cov.shape[0]
     m = 6
     truth = simulate_unconditional(np.zeros(n), cov, seed=99)
-    draws = np.array([simulate_conditional(cov, truth[:m], m, mean=0.0,
-                                           seed=1, stream=s)
-                      for s in range(2000)])
+    draws = np.array([simulate_conditional(cov, truth[:m], m, mean=0.0, seed=1, stream=s) for s in range(2000)])
     predictor = draws.mean(axis=0)
     assert draws[:, m:].var(axis=0).min() > 0.0
     assert np.var(draws[:, m:], axis=0).mean() > np.var(predictor[m:]) * 0.1

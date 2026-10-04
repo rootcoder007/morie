@@ -70,10 +70,17 @@ def tmle_federated(y, D, X, site):
         ws.append(len(idx) / v if v > 0 else 0.0)
     sw = sum(ws)
     psi = sum(ws[k] * psis[k] for k in range(len(labs))) / sw if sw > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": math.sqrt(1.0 / sw) if sw > 0 else float("nan"),
-        "site_psi": psis, "site_n": ns, "n_sites": len(labs), "n": len(yv),
-        "method": "Federated TMLE, influence-curve-weighted pooling"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": math.sqrt(1.0 / sw) if sw > 0 else float("nan"),
+            "site_psi": psis,
+            "site_n": ns,
+            "n_sites": len(labs),
+            "n": len(yv),
+            "method": "Federated TMLE, influence-curve-weighted pooling",
+        }
+    )
 
 
 tmlefederated = tmle_federated

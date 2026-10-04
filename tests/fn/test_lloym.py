@@ -1,7 +1,6 @@
 """Tests for morie.fn.lloym — Lloyd-Max optimal quantizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lloym import lloyd_max
 
 

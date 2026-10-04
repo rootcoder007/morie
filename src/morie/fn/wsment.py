@@ -72,9 +72,15 @@ def wasserman_entropy(p, x_grid=None):
         H = float(0.5 * np.sum(dx * (integ[1:] + integ[:-1])))
         form = "differential"
         n = int(x.size)
-    return RichResult(payload={
-        "estimate": H, "bits": float(H / np.log(2.0)), "form": form,
-        "n": n, "method": f"{form} entropy, nats, 0 log 0 = 0"})
+    return RichResult(
+        payload={
+            "estimate": H,
+            "bits": float(H / np.log(2.0)),
+            "form": form,
+            "n": n,
+            "method": f"{form} entropy, nats, 0 log 0 = 0",
+        }
+    )
 
 
 def cheatsheet():

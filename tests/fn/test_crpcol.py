@@ -1,7 +1,6 @@
 """Tests for crpcol.crp_collapsed."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crpcol import crp_collapsed
 
 

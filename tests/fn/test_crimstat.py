@@ -6,9 +6,9 @@ stats books (Wooditch 2021, Weisburd et al 2022).
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn import cohend, gkgam, kentau, mcfadr, s2var, somerd, spearm, xbar
 
 # ── xbar ────────────────────────────────────────────────────────────────────

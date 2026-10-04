@@ -134,29 +134,33 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
         )
 
     kern = 4
-    gen = [{
-        "kind": "project",
-        "in": k,
-        "out": h0,
-        "channels": f * st ** (L - 1),
-        "params": int(k * (h0 * w0 * f * st ** (L - 1)) + h0 * w0 * f * st ** (L - 1)),
-    }]
+    gen = [
+        {
+            "kind": "project",
+            "in": k,
+            "out": h0,
+            "channels": f * st ** (L - 1),
+            "params": int(k * (h0 * w0 * f * st ** (L - 1)) + h0 * w0 * f * st ** (L - 1)),
+        }
+    ]
     size = h0
     ch = f * st ** (L - 1)
     for i in range(L):
         out_ch = 1 if i == L - 1 else ch // st
         size *= st
-        gen.append({
-            "kind": "deconv",
-            "in_channels": ch,
-            "channels": out_ch,
-            "kernel": kern,
-            "stride": st,
-            "out": int(size),
-            "params": int(out_ch * (kern * kern * ch) + out_ch),
-            "batch_norm": i < L - 1,
-            "activation": "tanh" if i == L - 1 else "relu",
-        })
+        gen.append(
+            {
+                "kind": "deconv",
+                "in_channels": ch,
+                "channels": out_ch,
+                "kernel": kern,
+                "stride": st,
+                "out": int(size),
+                "params": int(out_ch * (kern * kern * ch) + out_ch),
+                "batch_norm": i < L - 1,
+                "activation": "tanh" if i == L - 1 else "relu",
+            }
+        )
         ch = out_ch
 
     dis = []
@@ -165,17 +169,19 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
     for i in range(L):
         out_ch = f if i == 0 else ch * st
         size //= st
-        dis.append({
-            "kind": "conv",
-            "in_channels": ch,
-            "channels": out_ch,
-            "kernel": kern,
-            "stride": st,
-            "out": int(size),
-            "params": int(out_ch * (kern * kern * ch) + out_ch),
-            "batch_norm": i > 0,
-            "activation": "leaky_relu",
-        })
+        dis.append(
+            {
+                "kind": "conv",
+                "in_channels": ch,
+                "channels": out_ch,
+                "kernel": kern,
+                "stride": st,
+                "out": int(size),
+                "params": int(out_ch * (kern * kern * ch) + out_ch),
+                "batch_norm": i > 0,
+                "activation": "leaky_relu",
+            }
+        )
         ch = out_ch
     flat = int(size * size * ch)
     dis.append({"kind": "fc", "in": flat, "out": 1, "params": flat + 1, "activation": "sigmoid"})
@@ -191,11 +197,13 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
     return RichResult(
         title="DCGAN architecture",
         summary_lines=[("Image", (H, W)), ("Generator params", g_params), ("Discriminator params", d_params)],
-        tables=[{
-            "title": "Generator",
-            "headers": ["kind", "channels", "out", "params"],
-            "rows": [[l["kind"], l.get("channels"), l["out"], l["params"]] for l in gen],
-        }],
+        tables=[
+            {
+                "title": "Generator",
+                "headers": ["kind", "channels", "out", "params"],
+                "rows": [[l["kind"], l.get("channels"), l["out"], l["params"]] for l in gen],
+            }
+        ],
         interpretation="Both nets are pure convolution: no pooling, no fully-connected hidden layers, which is DCGAN's rule.",
         payload={
             "generator_layers": gen,

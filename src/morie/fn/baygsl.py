@@ -74,8 +74,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["slice_sample_1d", "slice_chain", "gibbs_slice",
-           "effective_sample_size", "hybrid_gibbs_slice"]
+__all__ = ["slice_sample_1d", "slice_chain", "gibbs_slice", "effective_sample_size", "hybrid_gibbs_slice"]
 
 
 def _rng(seed):
@@ -90,8 +89,7 @@ def _expo(rng):
     return -math.log(u)
 
 
-def slice_sample_1d(logf, x0, rng, w=1.0, max_steps=50,
-                    lower=float("-inf"), upper=float("inf")):
+def slice_sample_1d(logf, x0, rng, w=1.0, max_steps=50, lower=float("-inf"), upper=float("inf")):
     r"""One univariate slice transition. Returns the draw and the cost.
 
     ``logf`` is the log of an unnormalised density. ``lower``/``upper``
@@ -102,23 +100,22 @@ def slice_sample_1d(logf, x0, rng, w=1.0, max_steps=50,
         raise ValueError("baygsl: the slice width must be positive")
     fx = logf(x0)
     if not (fx == fx) or fx == float("-inf"):
-        raise ValueError("baygsl: the chain is at a point of zero "
-                         "density, so no slice exists there")
+        raise ValueError("baygsl: the chain is at a point of zero density, so no slice exists there")
     n_eval = 1
-    logu = fx - _expo(rng)          # u ~ U(0, f(x)) on the log scale
+    logu = fx - _expo(rng)  # u ~ U(0, f(x)) on the log scale
     # stepping out
     r = rng.random()
     L = x0 - r * w
     R = L + w
     j = int(max_steps * rng.random())
     k = int(max_steps) - 1 - j
-    while j > 0 and L > lower:
+    while j > 0 and lower < L:
         n_eval += 1
         if logf(L) <= logu:
             break
         L -= w
         j -= 1
-    while k > 0 and R < upper:
+    while k > 0 and upper > R:
         n_eval += 1
         if logf(R) <= logu:
             break
@@ -138,12 +135,10 @@ def slice_sample_1d(logf, x0, rng, w=1.0, max_steps=50,
             R = x1
         if R - L < 1e-15:
             return {"x": x0, "n_eval": n_eval, "interval": (L, R)}
-    raise ValueError("baygsl: the shrinkage loop did not terminate; "
-                     "is logf returning a constant or NaN?")
+    raise ValueError("baygsl: the shrinkage loop did not terminate; is logf returning a constant or NaN?")
 
 
-def slice_chain(logf, x0, n=2000, w=1.0, burn=0, seed=1,
-                lower=float("-inf"), upper=float("inf"), thin=1):
+def slice_chain(logf, x0, n=2000, w=1.0, burn=0, seed=1, lower=float("-inf"), upper=float("inf"), thin=1):
     r"""A univariate slice-sampling chain."""
     if int(n) < 1:
         raise ValueError("baygsl: need at least one draw")
@@ -159,8 +154,7 @@ def slice_chain(logf, x0, n=2000, w=1.0, burn=0, seed=1,
         evals += st["n_eval"]
         if i >= int(burn) and (i - int(burn)) % int(thin) == 0:
             out.append(x)
-    return {"draws": out, "n_eval": evals, "w": float(w),
-            "evals_per_draw": evals / float(len(out))}
+    return {"draws": out, "n_eval": evals, "w": float(w), "evals_per_draw": evals / float(len(out))}
 
 
 def effective_sample_size(x):
@@ -184,8 +178,7 @@ def effective_sample_size(x):
     return n / (1.0 + 2.0 * s)
 
 
-def gibbs_slice(log_conditionals, x0, n=2000, w=None, burn=0, seed=1,
-                bounds=None):
+def gibbs_slice(log_conditionals, x0, n=2000, w=None, burn=0, seed=1, bounds=None):
     r"""A Gibbs sweep in which every coordinate is drawn by slice.
 
     ``log_conditionals[k](value, state)`` returns the log of the
@@ -193,40 +186,39 @@ def gibbs_slice(log_conditionals, x0, n=2000, w=None, burn=0, seed=1,
     """
     p = len(x0)
     if len(log_conditionals) != p:
-        raise ValueError("baygsl: %d conditionals for %d coordinates"
-                         % (len(log_conditionals), p))
+        raise ValueError("baygsl: %d conditionals for %d coordinates" % (len(log_conditionals), p))
     if p == 0:
         raise ValueError("baygsl: no coordinates to sample")
-    ws = [1.0] * p if w is None else ([float(w)] * p
-                                      if not isinstance(w, (list,
-                                                            tuple))
-                                      else [float(t) for t in w])
-    bd = [(float("-inf"), float("inf"))] * p if bounds is None \
-        else [(float(a), float(b)) for a, b in bounds]
+    ws = [1.0] * p if w is None else ([float(w)] * p if not isinstance(w, (list, tuple)) else [float(t) for t in w])
+    bd = [(float("-inf"), float("inf"))] * p if bounds is None else [(float(a), float(b)) for a, b in bounds]
     rng = _rng(seed)
     state = [float(t) for t in x0]
     keep, evals = [], 0
     for i in range(int(burn) + int(n)):
         for k in range(p):
+
             def lf(v, k=k):
                 s = list(state)
                 s[k] = v
                 return log_conditionals[k](v, s)
-            st = slice_sample_1d(lf, state[k], rng, ws[k],
-                                 lower=bd[k][0], upper=bd[k][1])
+
+            st = slice_sample_1d(lf, state[k], rng, ws[k], lower=bd[k][0], upper=bd[k][1])
             state[k] = st["x"]
             evals += st["n_eval"]
         if i >= int(burn):
             keep.append(list(state))
     means = [sum(r[k] for r in keep) / len(keep) for k in range(p)]
-    return RichResult(payload={
-        "estimate": means, "draws": keep, "mean": means,
-        "n_draws": len(keep), "n_eval": evals,
-        "ess": [effective_sample_size([r[k] for r in keep])
-                for k in range(p)],
-        "method": "Gibbs sweep with a slice update per coordinate "
-                  "(Damien, Wakefield & Walker 1999; Neal 2003)",
-    })
+    return RichResult(
+        payload={
+            "estimate": means,
+            "draws": keep,
+            "mean": means,
+            "n_draws": len(keep),
+            "n_eval": evals,
+            "ess": [effective_sample_size([r[k] for r in keep]) for k in range(p)],
+            "method": "Gibbs sweep with a slice update per coordinate (Damien, Wakefield & Walker 1999; Neal 2003)",
+        }
+    )
 
 
 def hybrid_gibbs_slice(log_conditionals, x0, n=2000, **kw):

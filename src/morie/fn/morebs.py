@@ -77,11 +77,20 @@ def morebs(cases, population, W):
     zt = z - float(np.mean(z))
     lz = W @ zt
     ebi = (m / S0) * float(np.sum(zt * lz)) / float(np.sum(zt**2))
-    return RichResult(payload={
-        "statistic": float(ebi), "z": z, "rates": p, "eb_rates": eb_rates,
-        "a": float(a), "b": b, "s2": s2, "S0": S0, "n": int(m),
-        "method": "Assuncao-Reis EB-standardized Moran I",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(ebi),
+            "z": z,
+            "rates": p,
+            "eb_rates": eb_rates,
+            "a": float(a),
+            "b": b,
+            "s2": s2,
+            "S0": S0,
+            "n": int(m),
+            "method": "Assuncao-Reis EB-standardized Moran I",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

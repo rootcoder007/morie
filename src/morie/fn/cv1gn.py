@@ -62,7 +62,7 @@ def cv1_genomic(y, markers, n_folds, lam=1.0):
         raise ValueError("cv1_genomic: markers has a different number of rows than y")
     p = len(X[0])
     K = int(n_folds)
-    if K < 2 or K > n:
+    if K < 2 or n < K:
         raise ValueError("cv1_genomic: n_folds must lie between 2 and the number of lines")
     lam = float(lam)
     if lam < 0.0:
@@ -97,8 +97,7 @@ def cv1_genomic(y, markers, n_folds, lam=1.0):
     pa_fold = []
     for f in range(K):
         te = [i for i in range(n) if fold[i] == f]
-        pa_fold.append(core.corr([yy[i] for i in te], [yhat[i] for i in te])
-                       if len(te) > 1 else float("nan"))
+        pa_fold.append(core.corr([yy[i] for i in te], [yhat[i] for i in te]) if len(te) > 1 else float("nan"))
     s = 0.0
     for i in range(n):
         d = yy[i] - yhat[i]

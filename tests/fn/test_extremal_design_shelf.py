@@ -33,8 +33,7 @@ from morie.fn.extrgt import (
     turan_number,
 )
 
-FANO = [[0, 1, 2], [0, 3, 4], [0, 5, 6], [1, 3, 5], [1, 4, 6], [2, 3, 6],
-        [2, 4, 5]]
+FANO = [[0, 1, 2], [0, 3, 4], [0, 5, 6], [1, 3, 5], [1, 4, 6], [2, 3, 6], [2, 4, 5]]
 
 
 def all_graphs(n):
@@ -51,11 +50,11 @@ def all_graphs(n):
 # Turan and Mantel
 # --------------------------------------------------------------------
 
+
 def test_turan_matches_exhaustive_search_over_all_graphs():
     for n in range(2, 7):
         for r in (2, 3):
-            best = max(count_edges(A) for A in all_graphs(n)
-                       if has_clique(A, r + 1) is None)
+            best = max(count_edges(A) for A in all_graphs(n) if has_clique(A, r + 1) is None)
             assert turan_number(n, r)["count"] == best
 
 
@@ -104,6 +103,7 @@ def test_turan_validation():
 # Sperner and Erdos-Ko-Rado
 # --------------------------------------------------------------------
 
+
 def test_sperner_width_is_the_middle_binomial():
     for n in range(12):
         assert sperner_width(n)["count"] == math.comb(n, n // 2)
@@ -111,8 +111,7 @@ def test_sperner_width_is_the_middle_binomial():
 
 def test_the_middle_layer_really_is_an_antichain():
     for n in range(2, 8):
-        layer = [frozenset(c) for c in
-                 itertools.combinations(range(n), n // 2)]
+        layer = [frozenset(c) for c in itertools.combinations(range(n), n // 2)]
         assert len(layer) == sperner_width(n)["count"]
         for a, b in itertools.combinations(layer, 2):
             assert not (a < b or b < a)
@@ -167,6 +166,7 @@ def test_ekr_validation():
 # Dilworth
 # --------------------------------------------------------------------
 
+
 def divisibility_poset(n):
     return [[(j + 1) % (i + 1) == 0 for j in range(n)] for i in range(n)]
 
@@ -206,14 +206,14 @@ def test_dilworth_rejects_a_relation_that_is_not_a_partial_order():
     with pytest.raises(ValueError, match="antisymmetric"):
         dilworth_decomposition([[True, True], [True, True]])
     with pytest.raises(ValueError, match="transitive"):
-        leq = [[True, True, False], [False, True, True],
-               [False, False, True]]
+        leq = [[True, True, False], [False, True, True], [False, False, True]]
         dilworth_decomposition(leq)
 
 
 # --------------------------------------------------------------------
 # BIBD
 # --------------------------------------------------------------------
+
 
 def test_the_fano_plane_verifies_as_a_bibd():
     c = incidence_matrix_check(FANO, 7)
@@ -273,6 +273,7 @@ def test_uneven_block_sizes_are_rejected():
 # Steiner triple systems
 # --------------------------------------------------------------------
 
+
 def test_existence_follows_v_mod_six():
     for v in range(3, 40):
         expected = v % 6 in (1, 3)
@@ -313,6 +314,7 @@ def test_the_steiner_condition_is_sufficient_unlike_the_general_case():
 # Latin squares
 # --------------------------------------------------------------------
 
+
 def test_the_cyclic_construction_is_latin_at_every_order():
     for n in range(1, 12):
         assert latin_square(n)["valid"] is True
@@ -348,20 +350,18 @@ def test_a_genuine_orthogonal_pair_is_recognised():
 def test_no_orthogonal_pair_exists_at_order_two():
     # Euler was right here, by exhaustion over both Latin squares
     squares = []
-    for rows in itertools.product(list(itertools.permutations(range(2))),
-                                  repeat=2):
+    for rows in itertools.product(list(itertools.permutations(range(2))), repeat=2):
         L = [list(r) for r in rows]
         if is_latin_square(L)["valid"]:
             squares.append(L)
     assert len(squares) == 2
-    assert not any(are_orthogonal(a, b)["orthogonal"]
-                   for a in squares for b in squares)
+    assert not any(are_orthogonal(a, b)["orthogonal"] for a in squares for b in squares)
 
 
 def test_latin_square_validation():
     with pytest.raises(ValueError, match="at least 1"):
         latin_square(0)
-    with pytest.raises(ValueError, match='method must be'):
+    with pytest.raises(ValueError, match="method must be"):
         latin_square(4, method="magic")
     with pytest.raises(ValueError, match="same order"):
         are_orthogonal([[0, 1], [1, 0]], [[0]])
@@ -370,6 +370,7 @@ def test_latin_square_validation():
 # --------------------------------------------------------------------
 # Coding bounds
 # --------------------------------------------------------------------
+
 
 def test_the_hamming_bound_on_the_classical_perfect_codes():
     # the [7,4] Hamming code has 2^4 = 16 words and meets the bound
@@ -395,7 +396,7 @@ def test_a_non_perfect_case_is_flagged_as_such():
 
 
 def test_the_singleton_bound_and_which_is_tighter():
-    assert singleton_bound(7, 3)["bound"] == 2 ** 5
+    assert singleton_bound(7, 3)["bound"] == 2**5
     out = singleton_bound(23, 7)
     assert out["hamming_is_tighter"] is True
     assert out["tighter"] == out["hamming_bound"]

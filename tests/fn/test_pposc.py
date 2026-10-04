@@ -1,7 +1,6 @@
 """Tests for pposc.posterior_predictive_check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pposc import posterior_predictive_check
 
 

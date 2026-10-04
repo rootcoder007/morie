@@ -73,11 +73,22 @@ def clus1(Y, M=float("inf"), level=0.95):
     deff = var / vsrs if vsrs > 0 else float("nan")
     rho = (deff - 1.0) / (k - 1) if k > 1 else float("nan")
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": est, "se": se, "ci_lower": est - z * se,
-        "ci_upper": est + z * se, "cluster_mean": cm, "between_var": sb2,
-        "within_var": within, "deff": deff, "rho": rho, "m": m, "k": k,
-        "method": "One-stage cluster sampling, equal cluster sizes"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "ci_lower": est - z * se,
+            "ci_upper": est + z * se,
+            "cluster_mean": cm,
+            "between_var": sb2,
+            "within_var": within,
+            "deff": deff,
+            "rho": rho,
+            "m": m,
+            "k": k,
+            "method": "One-stage cluster sampling, equal cluster sizes",
+        }
+    )
 
 
 one_stage_cluster = clus1

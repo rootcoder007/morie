@@ -64,8 +64,7 @@ def geron_ch4_lasso_regression_cost_function(X, y, theta, alpha, penalize_interc
 
     return RichResult(
         title="Lasso cost (Eq 4-11)",
-        summary_lines=[("Cost", inner["cost"]), ("MSE", inner["mse"]),
-                       ("2*alpha*L1", inner["l1_penalty"])],
+        summary_lines=[("Cost", inner["cost"]), ("MSE", inner["mse"]), ("2*alpha*L1", inner["l1_penalty"])],
         payload={
             "cost": inner["cost"],
             "mse": inner["mse"],

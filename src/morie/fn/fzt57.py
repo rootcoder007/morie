@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Equivalence of the boundary-free and empirical CvM statistics (Theorem 5.7)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bfcvmeq", "fauzi_thm5_7_bdfree_cvm_equiv"]

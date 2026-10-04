@@ -13,9 +13,9 @@ control, 0.61 for the correlated one). Those anchors are what the identity
 tests below pin, alongside a re-derivation of F_d(l) from the definition.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgdfa import rangayyan_dfa
 
 
@@ -62,7 +62,7 @@ def test_it_is_the_root_mean_variance_not_the_mean_root():
         seg = y[k * n : (k + 1) * n]
         t = np.arange(n)
         v.append(np.mean((seg - np.polyval(np.polyfit(t, seg, 1), t)) ** 2))
-    assert np.sqrt(np.mean(v)) > np.mean(np.sqrt(v))          # Jensen
+    assert np.sqrt(np.mean(v)) > np.mean(np.sqrt(v))  # Jensen
     # Two scales, because a slope needs two points; only the n-box F is
     # compared here.
     res = rangayyan_dfa(x, scales=[n, 2 * n])

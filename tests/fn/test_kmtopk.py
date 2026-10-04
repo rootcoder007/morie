@@ -1,7 +1,6 @@
 """Tests for kmtopk.kamath_moe_top_k_gating."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmtopk import kamath_moe_top_k_gating
 
 
@@ -13,8 +12,7 @@ def test_kmtopk_basic():
     k = 5
     result = kamath_moe_top_k_gating(gates, k)
     assert isinstance(result, dict)
-    for key in ("weights", "selected_experts", "kept_mass", "n_active",
-                "estimate", "k", "n", "method"):
+    for key in ("weights", "selected_experts", "kept_mass", "n_active", "estimate", "k", "n", "method"):
         assert key in result
     assert len(result["weights"]) == n
     assert len(result["selected_experts"]) == k
@@ -57,7 +55,7 @@ import morie.fn.kmtopk as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

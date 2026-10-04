@@ -1,7 +1,6 @@
 """Tests for rng019.rangayyan_ch3_time_average_mean."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsastat import rangayyan_ch3_time_average_mean
 
 

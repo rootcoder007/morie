@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def twostage_optimal_m(s_w, s_b, c1, c2):
     """
     value = _brus.twostage_optimal_m(s_w, s_b, c1, c2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (7.10)"
     return RichResult(
-        title='Optimal number of SSUs per PSU',
+        title="Optimal number of SSUs per PSU",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r7e10: m = (S_w/S_b) sqrt(c1/c2) [Brus 2022, eq. 7.10]'
+    return "r7e10: m = (S_w/S_b) sqrt(c1/c2) [Brus 2022, eq. 7.10]"

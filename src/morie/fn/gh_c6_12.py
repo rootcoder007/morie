@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["sepcons", "ghosal_sep_consist"]
@@ -60,10 +59,17 @@ def sepcons(delta, k, n):
     if n < 1:
         raise ValueError("n must be at least 1")
     rate = -math.log(d) / k
-    return RichResult(payload={
-        "bound": math.exp(-rate * n), "rate": rate, "exponent": -rate * n,
-        "delta": d, "k": float(k), "n": float(n),
-        "method": "Strong separation bound, Ghosal Lemma 6.44"})
+    return RichResult(
+        payload={
+            "bound": math.exp(-rate * n),
+            "rate": rate,
+            "exponent": -rate * n,
+            "delta": d,
+            "k": float(k),
+            "n": float(n),
+            "method": "Strong separation bound, Ghosal Lemma 6.44",
+        }
+    )
 
 
 ghosal_sep_consist = sepcons

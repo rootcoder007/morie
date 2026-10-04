@@ -87,8 +87,7 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
     G = np.asarray(graph)
     if G.ndim == 2 and G.shape[0] == G.shape[1] and G.shape[0] > 1 and G.dtype != object:
         if set(np.unique(G).tolist()) <= {0, 1} and np.array_equal(G, G.T):
-            edges = [(int(i), int(j)) for i in range(G.shape[0])
-                     for j in range(i + 1, G.shape[0]) if G[i, j]]
+            edges = [(int(i), int(j)) for i in range(G.shape[0]) for j in range(i + 1, G.shape[0]) if G[i, j]]
             V = G.shape[0]
         else:
             edges = [(int(a), int(b)) for a, b in G]
@@ -102,9 +101,7 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
         raise ValueError("states must be at least 2")
     total = s**V
     if total > 2**22:
-        raise ValueError(
-            f"exact enumeration needs {s}^{V} configurations; the cap is 2^22"
-        )
+        raise ValueError(f"exact enumeration needs {s}^{V} configurations; the cap is 2^22")
 
     psi = dict(psi or {})
     default = np.where(np.eye(s, dtype=bool), np.exp(1.0), np.exp(-1.0))
@@ -131,13 +128,16 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
 
     return RichResult(
         title="Markov random field",
-        summary_lines=[("nodes", V), ("edges", len(edges)),
-                       ("states", s), ("log Z", logZ)],
+        summary_lines=[("nodes", V), ("edges", len(edges)), ("states", s), ("log Z", logZ)],
         payload={
-            "log_Z": logZ, "marginals": marg,
-            "configurations": cfgs, "probabilities": prob,
+            "log_Z": logZ,
+            "marginals": marg,
+            "configurations": cfgs,
+            "probabilities": prob,
             "mode": cfgs[int(np.argmax(prob))],
-            "edges": edges, "n_edges": len(edges), "n_nodes": V,
+            "edges": edges,
+            "n_edges": len(edges),
+            "n_nodes": V,
             "method": "esl_markov_rf",
         },
     )

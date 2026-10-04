@@ -77,9 +77,7 @@ def geron_layer_normalization(X, gamma=1.0, beta=0.0, eps=1e-5):
     if A.ndim != 2:
         raise ValueError(f"X must be 1-D or 2-D, got ndim {A.ndim}.")
     if A.shape[1] < 2:
-        raise ValueError(
-            f"layer norm needs at least 2 features to have a spread, got {A.shape[1]}."
-        )
+        raise ValueError(f"layer norm needs at least 2 features to have a spread, got {A.shape[1]}.")
     if not np.all(np.isfinite(A)):
         raise ValueError("X must be finite.")
     eps = float(eps)
@@ -101,8 +99,7 @@ def geron_layer_normalization(X, gamma=1.0, beta=0.0, eps=1e-5):
     if np.any(denom == 0):
         bad = np.flatnonzero(denom.ravel() == 0).tolist()
         raise ValueError(
-            f"rows {bad} are constant and eps is 0, so the normaliser divides by "
-            f"zero; pass a positive eps."
+            f"rows {bad} are constant and eps is 0, so the normaliser divides by zero; pass a positive eps."
         )
     Xh = (A - mu) / denom
     Y = g * Xh + b

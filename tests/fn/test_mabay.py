@@ -1,7 +1,6 @@
 """Tests for mabay.ma_bayes_random_effects."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mabay import ma_bayes_random_effects
 
 

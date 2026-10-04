@@ -1,7 +1,6 @@
 """Tests for hellie.hellinger_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hellie import hellinger_distance
 
 

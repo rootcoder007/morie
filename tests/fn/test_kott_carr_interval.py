@@ -1,7 +1,5 @@
 """Tests for kott_carr_interval.kott_carr_interval."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kott_carr_interval import (
     kott_carr_interval,
 )

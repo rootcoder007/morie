@@ -1,8 +1,8 @@
 """Tests for morie.fn.bcxgm — Box-Cox transformation model via GMM."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bcxgm import bcxgm
 
 

@@ -4,9 +4,9 @@ Book identities for the point-pattern family live in
 test_schab_point_pattern.py. This pins the module's own contract.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spkfun import schabenberger_k_function
 
 REGION = (0.0, 0.0, 10.0, 10.0)
@@ -21,7 +21,7 @@ def test_spkfun_returns_a_real_estimate():
     out = schabenberger_k_function(_pattern(), r=r, region=REGION)
     assert out["k"].shape == r.shape
     np.testing.assert_allclose(out["k_csr"], np.pi * r**2, rtol=1e-12)
-    assert np.all(np.diff(out["k"]) > 0)          # K is increasing
+    assert np.all(np.diff(out["k"]) > 0)  # K is increasing
     assert out["lambda_est"] == pytest.approx(3.0)
 
 

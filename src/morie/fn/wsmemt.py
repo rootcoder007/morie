@@ -88,19 +88,30 @@ def wasserman_em_algorithm(X, theta0, max_iter=200, tol=1e-8):
             converged = True
             break
         ll_old = ll
-        w2 = float(np.sum(gamma)); w1 = n - w2
+        w2 = float(np.sum(gamma))
+        w1 = n - w2
         pi = w2 / n
         mu1 = float(np.sum((1 - gamma) * X) / w1)
         mu2 = float(np.sum(gamma * X) / w2)
         sd1 = float(np.sqrt(np.sum((1 - gamma) * (X - mu1) ** 2) / w1))
         sd2 = float(np.sqrt(np.sum(gamma * (X - mu2) ** 2) / w2))
-        sd1 = max(sd1, 1e-12); sd2 = max(sd2, 1e-12)
-    return RichResult(payload={
-        "estimate": float(pi), "pi": float(pi),
-        "mu1": mu1, "mu2": mu2, "sd1": sd1, "sd2": sd2,
-        "log_likelihood": float(ll), "iterations": int(it),
-        "converged": bool(converged), "n": int(n),
-        "method": "EM 2-component normal mixture, closed-form M-step"})
+        sd1 = max(sd1, 1e-12)
+        sd2 = max(sd2, 1e-12)
+    return RichResult(
+        payload={
+            "estimate": float(pi),
+            "pi": float(pi),
+            "mu1": mu1,
+            "mu2": mu2,
+            "sd1": sd1,
+            "sd2": sd2,
+            "log_likelihood": float(ll),
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "method": "EM 2-component normal mixture, closed-form M-step",
+        }
+    )
 
 
 def cheatsheet():

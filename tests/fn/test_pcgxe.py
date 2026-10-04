@@ -1,7 +1,6 @@
 """Tests for pcgxe.pc_gxe_reduction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pcgxe import pc_gxe_reduction
 
 

@@ -89,7 +89,7 @@ def geron_one_class_svm(X, nu=0.5, gamma=1.0, max_iter=2000, tol=1e-9):
     if not (0.0 < v <= 1.0):
         raise ValueError(f"geron_one_class_svm: nu must lie in (0, 1], got {nu!r}")
     C = 1.0 / (v * n)
-    if C < 1.0 / n - 1e-12:
+    if 1.0 / n - 1e-12 > C:
         raise ValueError(f"geron_one_class_svm: nu*n = {v * n} must be at least 1 for the constraints to be feasible")
     g = float(gamma)
     if not np.isfinite(g) or g <= 0:
@@ -159,7 +159,11 @@ def geron_one_class_svm(X, nu=0.5, gamma=1.0, max_iter=2000, tol=1e-9):
 
     return RichResult(
         title="One-class SVM",
-        summary_lines=[("nu", v), ("Support vectors", int(np.sum(alpha > 1e-9))), ("Outlier fraction", float(np.mean(outlier)))],
+        summary_lines=[
+            ("nu", v),
+            ("Support vectors", int(np.sum(alpha > 1e-9))),
+            ("Outlier fraction", float(np.mean(outlier))),
+        ],
         interpretation="nu bounds the outlier fraction above and the support-vector fraction below.",
         payload={
             "alpha": alpha,

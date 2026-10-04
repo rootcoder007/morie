@@ -1,7 +1,6 @@
 """Tests for bnsadt.bound_adversarial."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnsadt import bound_adversarial
 
 

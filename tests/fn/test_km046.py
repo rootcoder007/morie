@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.5, the prefix prompt template.
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km046 import kamath_ch3_prefix_prompt_template

@@ -4,8 +4,6 @@ Hedderich, eq (8.38) -- the adjusted coefficient of determination. Every expecte
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.hedderich8e38 import hedderich_chapter_8_equation_38
@@ -15,8 +13,7 @@ def test_adjusted_r2_matches_the_formula():
     # (8.38): 1 - (n-1)/(n-p-1) (1 - R^2)
     for n, p, r2 in ((50, 3, 0.6), (20, 1, 0.9), (100, 10, 0.25)):
         res = hedderich_chapter_8_equation_38(n, p, r2=r2)
-        assert res["radj"] == pytest.approx(
-            1.0 - (n - 1.0) / (n - p - 1.0) * (1.0 - r2), rel=1e-12)
+        assert res["radj"] == pytest.approx(1.0 - (n - 1.0) / (n - p - 1.0) * (1.0 - r2), rel=1e-12)
         assert res["df_resid"] == n - (p + 1)
 
 

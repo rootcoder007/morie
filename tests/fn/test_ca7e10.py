@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca7e10 import ca_chapter_7_equation_10
 
 

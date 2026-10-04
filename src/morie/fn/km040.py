@@ -28,9 +28,7 @@ def kamath_ch2_moe_topk_gating(x, W_g, k=2):
     x = np.atleast_1d(np.asarray(x, dtype=float))
     W = np.atleast_2d(np.asarray(W_g, dtype=float))
     if W.shape[0] != len(x):
-        raise ValueError(
-            f"W_g has {W.shape[0]} rows but x has {len(x)} "
-            "dimensions.")
+        raise ValueError(f"W_g has {W.shape[0]} rows but x has {len(x)} dimensions.")
     k = int(k)
     n = W.shape[1]
     if not 1 <= k <= n:
@@ -43,12 +41,16 @@ def kamath_ch2_moe_topk_gating(x, W_g, k=2):
     with np.errstate(invalid="ignore"):
         e = np.exp(z)
     w = e / e.sum()
-    return RichResult(payload={
-        "weights": [float(v) for v in w],
-        "selected_experts": [int(i) for i in sorted(order[:k])],
-        "n_active": int(np.sum(w > 0)),
-        "estimate": float(w.max()), "n": n,
-        "method": "Top-k expert gating (Kamath Eq 2.40)"})
+    return RichResult(
+        payload={
+            "weights": [float(v) for v in w],
+            "selected_experts": [int(i) for i in sorted(order[:k])],
+            "n_active": int(np.sum(w > 0)),
+            "estimate": float(w.max()),
+            "n": n,
+            "method": "Top-k expert gating (Kamath Eq 2.40)",
+        }
+    )
 
 
 def cheatsheet():

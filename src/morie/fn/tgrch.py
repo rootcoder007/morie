@@ -42,7 +42,6 @@ def tgarch_model(x):
     if n < 20:
         raise ValueError(f"Need at least 20 observations, got {n}.")
 
-
     def neg_ll(p):
         omega, alpha, gamma, beta = p
         if omega <= 0 or alpha < 0 or beta < 0 or alpha + 0.5 * gamma + beta >= 1:

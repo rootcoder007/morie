@@ -1,7 +1,6 @@
 """Tests for rgknn.rangayyan_knn_classifier."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_knn_classifier
 
 

@@ -27,21 +27,20 @@ def chi2_2x2(a, b, c, d):
     ch.9 eq.9.4
     """
     payload = dict(_ca_crim.chi2_2x2(a, b, c, d))
-    value = payload['chi2']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["chi2"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.4)"
     return RichResult(
-        title='Chi-square for a 2x2 frequency table',
+        title="Chi-square for a 2x2 frequency table",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e4: chi2 = (ad-bc)^2 (a+b+c+d) / [(a+b)(c+d)(a+c)(b+d)] [Weisburd et al. 2022, eq. 9.4]'
+    return "ca9e4: chi2 = (ad-bc)^2 (a+b+c+d) / [(a+b)(c+d)(a+c)(b+d)] [Weisburd et al. 2022, eq. 9.4]"
 
 
 # compact alias per ledger/NAMING.md

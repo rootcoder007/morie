@@ -10,13 +10,10 @@ match the book's chapter title; the chapter and equation numbers do
 match, and the PDF is the authority followed here.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
-__all__ = ["mvsml_preprocessing_eq_2_22",
-           "mvsml_elements_lin_reg_expected_prediction_error"]
+__all__ = ["mvsml_preprocessing_eq_2_22", "mvsml_elements_lin_reg_expected_prediction_error"]
 
 
 def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
@@ -25,10 +22,14 @@ def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
     dependent features drive some lambda_j toward zero and blow the
     prediction error up. Keys: estimate."""
     v = _gp.expected_prediction_error(sigma2, x_star, eigenvalues)
-    res = RichResult(payload={"estimate": v,
-                              "irreducible": float(sigma2),
-                              "variance_inflation": v / float(sigma2),
-                              "method": "expected prediction error (MVSML 2022 p.80)"})
+    res = RichResult(
+        payload={
+            "estimate": v,
+            "irreducible": float(sigma2),
+            "variance_inflation": v / float(sigma2),
+            "method": "expected prediction error (MVSML 2022 p.80)",
+        }
+    )
     return with_describe_pointer(res, "msm334")
 
 
@@ -36,8 +37,7 @@ def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
 # equation it carries is the expected prediction error of sec. 3.5
 # (p.80).  Both names resolve to the same function; the canonical one
 # is preferred in new code.
-mvsml_elements_lin_reg_expected_prediction_error = \
-    mvsml_preprocessing_eq_2_22
+mvsml_elements_lin_reg_expected_prediction_error = mvsml_preprocessing_eq_2_22
 
 
 def cheatsheet():

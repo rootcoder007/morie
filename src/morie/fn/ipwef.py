@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["ipw_ate", "ipw_estimator"]
 
 
-def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
-            estimand="ate"):
+def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True, estimand="ate"):
     r"""ATE or ATT by inverse probability weighting.
 
     .. math::
@@ -72,8 +71,7 @@ def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
     dv = np.asarray(d, dtype=float).ravel()
     n = yv.size
     if dv.size != n:
-        raise ValueError("y and d must agree in length, got %d and %d."
-                         % (n, dv.size))
+        raise ValueError("y and d must agree in length, got %d and %d." % (n, dv.size))
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if estimand not in ("ate", "att"):
@@ -90,8 +88,7 @@ def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
         e_raw = np.asarray(propensity, dtype=float).ravel()
         sep = False
         if e_raw.size != n:
-            raise ValueError("propensity has %d entries for %d rows."
-                             % (e_raw.size, n))
+            raise ValueError("propensity has %d entries for %d rows." % (e_raw.size, n))
     n_tr = int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc)))
     e = np.clip(e_raw, trunc, 1 - trunc)
 
@@ -125,7 +122,7 @@ def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
     est = m1 - m0
     se = float(np.sqrt(np.mean((psi - psi.mean()) ** 2) / n))
     z = 1.959963984540054
-    ess = float(w.sum() ** 2 / np.sum(w ** 2))
+    ess = float(w.sum() ** 2 / np.sum(w**2))
     return RichResult(
         payload={
             "estimate": est,
@@ -164,8 +161,7 @@ def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
 
 def cheatsheet():
     return (
-        "ipwef: IPW ATE/ATT with stabilised weights, effective sample size "
-        "and the single-observation dominance check"
+        "ipwef: IPW ATE/ATT with stabilised weights, effective sample size and the single-observation dominance check"
     )
 
 

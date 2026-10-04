@@ -1,8 +1,8 @@
 """Tests for ksr063 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr063 import kosorok_ch3_cox_efficient_score_beta
 
 
@@ -11,8 +11,7 @@ def test_ksr063_basic():
     Z = rng.standard_normal((200, 1))
     T = rng.exponential(1.0 / np.exp(Z[:, 0] * 0.5))
     C = rng.exponential(2.0, 200)
-    out = kosorok_ch3_cox_efficient_score_beta(Z, time=np.minimum(T, C),
-                                               event=(T <= C).astype(float))
+    out = kosorok_ch3_cox_efficient_score_beta(Z, time=np.minimum(T, C), event=(T <= C).astype(float))
     assert out["efficient_information"][0, 0] > 0
 
 

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ksn', 'gibbons_ks_sample_size']
+__all__ = ["ksn", "gibbons_ks_sample_size"]
 
 
 def ksn(c, alpha=0.05):

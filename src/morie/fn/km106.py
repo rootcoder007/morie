@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.30: the self-diagnosis probability."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_self_diagnosis_prob"]
@@ -38,8 +37,7 @@ def kamath_ch6_self_diagnosis_prob(x, y, M, sdg=None):
     True
     """
     if not callable(M):
-        raise ValueError("M must be a callable prompt -> "
-                         "{'Yes': p, 'No': p}.")
+        raise ValueError("M must be a callable prompt -> {'Yes': p, 'No': p}.")
     template = _default_sdg if sdg is None else sdg
     if not callable(template):
         raise ValueError("sdg must be a callable (x, y) -> prompt.")
@@ -55,12 +53,19 @@ def kamath_ch6_self_diagnosis_prob(x, y, M, sdg=None):
         raise ValueError("the Yes/No probabilities must lie in [0, 1].")
     tot = py + pn
     if tot <= 0:
-        raise ValueError("the model puts no mass on either Yes or No; the "
-                         "renormalised probability is undefined.")
-    return RichResult(payload={
-        "estimate": py / tot, "p_yes": py, "p_no": pn,
-        "mass_on_yes_no": tot, "prompt": prompt, "attribute": y, "n": 2,
-        "method": "self-diagnosis probability (Kamath Eq 6.30)"})
+        raise ValueError("the model puts no mass on either Yes or No; the renormalised probability is undefined.")
+    return RichResult(
+        payload={
+            "estimate": py / tot,
+            "p_yes": py,
+            "p_no": pn,
+            "mass_on_yes_no": tot,
+            "prompt": prompt,
+            "attribute": y,
+            "n": 2,
+            "method": "self-diagnosis probability (Kamath Eq 6.30)",
+        }
+    )
 
 
 def cheatsheet():

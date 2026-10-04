@@ -30,9 +30,9 @@ from ._richresult import RichResult
 __all__ = ["prioritized_experience_replay"]
 
 
-def prioritized_experience_replay(buffer, alpha=0.6, beta=0.4, eps=1e-6,
-                                  variant="proportional", t=None, T=None,
-                                  n_sample=None):
+def prioritized_experience_replay(
+    buffer, alpha=0.6, beta=0.4, eps=1e-6, variant="proportional", t=None, T=None, n_sample=None
+):
     """Sampling distribution, importance weights, and a deterministic draw.
 
     Parameters

@@ -18,22 +18,21 @@ def _cov_or_S(X, p=None):
     if not M:
         raise ValueError("empty input: X has no rows")
     q = len(M[0])
-    if len(M) == q and q > 1 and all(
-            abs(M[i][j] - M[j][i]) < 1e-12 for i in range(q) for j in range(q)):
+    if len(M) == q and q > 1 and all(abs(M[i][j] - M[j][i]) < 1e-12 for i in range(q) for j in range(q)):
         return [[float(v) for v in r] for r in M]
     n = len(M)
     if n < 2:
         raise ValueError("need at least two observations to form a covariance")
     mu = [sum(M[i][j] for i in range(n)) / n for j in range(q)]
-    return [[sum((M[i][a] - mu[a]) * (M[i][b] - mu[b]) for i in range(n)) / (n - 1)
-             for b in range(q)] for a in range(q)]
+    return [
+        [sum((M[i][a] - mu[a]) * (M[i][b] - mu[b]) for i in range(n)) / (n - 1) for b in range(q)] for a in range(q)
+    ]
 
 
 def _inv(A):
     """Inverse of a symmetric positive-definite matrix, column by column."""
     m = len(A)
-    cols = [core.cholsolve(A, [1.0 if j == k else 0.0 for j in range(m)])
-            for k in range(m)]
+    cols = [core.cholsolve(A, [1.0 if j == k else 0.0 for j in range(m)]) for k in range(m)]
     return [[cols[b][a] for b in range(m)] for a in range(m)]
 
 
@@ -65,19 +64,24 @@ def _fa_em(S, mask):
         psi.append(v if v > 1e-6 else 1e-6)
     it = 0
     for it in range(1, _MAXIT + 1):
-        Sig = [[sum(lam[a][j] * lam[b][j] for j in range(k)) + (psi[a] if a == b else 0.0)
-                for b in range(p)] for a in range(p)]
+        Sig = [
+            [sum(lam[a][j] * lam[b][j] for j in range(k)) + (psi[a] if a == b else 0.0) for b in range(p)]
+            for a in range(p)
+        ]
         Si = _inv(Sig)
         # beta = Lambda' Sigma^-1   (k x p)
-        beta = [[sum(lam[a][j] * Si[a][b] for a in range(p)) for b in range(p)]
-                for j in range(k)]
+        beta = [[sum(lam[a][j] * Si[a][b] for a in range(p)) for b in range(p)] for j in range(k)]
         # Czz = I - beta Lambda + beta S beta'
-        bS = [[sum(beta[j][a] * S[a][b] for a in range(p)) for b in range(p)]
-              for j in range(k)]
-        Czz = [[(1.0 if u == v else 0.0)
+        bS = [[sum(beta[j][a] * S[a][b] for a in range(p)) for b in range(p)] for j in range(k)]
+        Czz = [
+            [
+                (1.0 if u == v else 0.0)
                 - sum(beta[u][a] * lam[a][v] for a in range(p))
                 + sum(bS[u][a] * beta[v][a] for a in range(p))
-                for v in range(k)] for u in range(k)]
+                for v in range(k)
+            ]
+            for u in range(k)
+        ]
         Cxz = [[bS[j][i] for j in range(k)] for i in range(p)]
         delta = 0.0
         for i in range(p):
@@ -89,20 +93,22 @@ def _fa_em(S, mask):
                 sol = core.ridgesolve(A, b, 1e-12)
                 for t, j in enumerate(act):
                     new[j] = sol[t]
-            q = S[i][i] - 2.0 * sum(new[j] * Cxz[i][j] for j in range(k)) + sum(
-                new[u] * Czz[u][v] * new[v] for u in range(k) for v in range(k))
+            q = (
+                S[i][i]
+                - 2.0 * sum(new[j] * Cxz[i][j] for j in range(k))
+                + sum(new[u] * Czz[u][v] * new[v] for u in range(k) for v in range(k))
+            )
             q = q if q > 1e-8 else 1e-8
-            delta = max(delta, abs(q - psi[i]),
-                        max(abs(new[j] - lam[i][j]) for j in range(k)))
+            delta = max(delta, abs(q - psi[i]), max(abs(new[j] - lam[i][j]) for j in range(k)))
             lam[i] = new
             psi[i] = q
         if delta < _TOL:
             break
-    Sig = [[sum(lam[a][j] * lam[b][j] for j in range(k)) + (psi[a] if a == b else 0.0)
-            for b in range(p)] for a in range(p)]
+    Sig = [
+        [sum(lam[a][j] * lam[b][j] for j in range(k)) + (psi[a] if a == b else 0.0) for b in range(p)] for a in range(p)
+    ]
     Si = _inv(Sig)
-    fml = _logdet(Sig) - _logdet(S) + sum(
-        S[a][b] * Si[b][a] for a in range(p) for b in range(p)) - p
+    fml = _logdet(Sig) - _logdet(S) + sum(S[a][b] * Si[b][a] for a in range(p) for b in range(p)) - p
     resid = max(abs(S[a][b] - Sig[a][b]) for a in range(p) for b in range(p))
     return lam, psi, fml, resid, it
 
@@ -154,18 +160,20 @@ def cfa_multifactor(X, factor_pattern):
     lam, psi, fml, resid, it = _fa_em(S, mask)
     comm = [sum(lam[i][j] ** 2 for j in range(k)) for i in range(p)]
     tr = sum(S[i][i] for i in range(p))
-    return RichResult(payload={
-        "estimate": sum(comm) / tr,
-        "loadings": lam,
-        "uniquenesses": psi,
-        "fml": fml,
-        "max_resid": resid,
-        "communality": comm,
-        "n_iter": it,
-        "p": p,
-        "k": k,
-        "method": "CFA multi-factor with cross-loadings allowed",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(comm) / tr,
+            "loadings": lam,
+            "uniquenesses": psi,
+            "fml": fml,
+            "max_resid": resid,
+            "communality": comm,
+            "n_iter": it,
+            "p": p,
+            "k": k,
+            "method": "CFA multi-factor with cross-loadings allowed",
+        }
+    )
 
 
 def cheatsheet():

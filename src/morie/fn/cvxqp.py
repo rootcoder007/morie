@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_quadratic_program"]
 
 
-def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None,
-                           max_iter=200, tol=1e-10):
+def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None, max_iter=200, tol=1e-10):
     r"""Solve :math:`\min \tfrac12 x^\top Px + q^\top x` subject to
     :math:`Gx \le h` and :math:`Ax = b`.
 
@@ -91,9 +90,7 @@ def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None,
     Pm = 0.5 * (Pm + Pm.T)
     w = np.linalg.eigvalsh(Pm)
     if w.min() < -1e-08 * max(1.0, abs(w).max()):
-        raise ValueError(
-            "P must be positive semi-definite for a convex QP; its "
-            f"smallest eigenvalue is {w.min():g}")
+        raise ValueError(f"P must be positive semi-definite for a convex QP; its smallest eigenvalue is {w.min():g}")
     Am = np.atleast_2d(np.asarray(A, dtype=float)) if A is not None else np.zeros((0, n))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel() if b is not None else np.zeros(0)
     Gm = np.atleast_2d(np.asarray(G, dtype=float)) if G is not None else np.zeros((0, n))
@@ -122,28 +119,36 @@ def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None,
             continue
         # Drop any active constraint whose multiplier has gone negative:
         # it is pulling the wrong way and does not belong in the set.
-        lam = mult[Am.shape[0]:] if active.size else np.zeros(0)
+        lam = mult[Am.shape[0] :] if active.size else np.zeros(0)
         if lam.size and lam.min() < -tol:
             active = np.delete(active, int(np.argmin(lam)))
             continue
         conv = True
         break
     x, mult = kkt(active)
-    nu = mult[:Am.shape[0]] if Am.shape[0] else np.zeros(0)
+    nu = mult[: Am.shape[0]] if Am.shape[0] else np.zeros(0)
     lam_full = np.zeros(Gm.shape[0])
     if active.size:
-        lam_full[active] = mult[Am.shape[0]:]
+        lam_full[active] = mult[Am.shape[0] :]
     return RichResult(
         title="Quadratic program",
-        summary_lines=[("n", int(n)), ("active", int(active.size)),
-                       ("value", float(0.5 * x @ Pm @ x + qv @ x)),
-                       ("converged", conv)],
+        summary_lines=[
+            ("n", int(n)),
+            ("active", int(active.size)),
+            ("value", float(0.5 * x @ Pm @ x + qv @ x)),
+            ("converged", conv),
+        ],
         warnings=[] if conv else ["the active-set loop did not settle"],
         payload={
-            "x": x, "value": float(0.5 * x @ Pm @ x + qv @ x),
-            "nu": nu, "lambda": lam_full, "active_set": active,
-            "psd": True, "min_eigenvalue": float(w.min()),
-            "converged": conv, "method": "boyd_quadratic_program",
+            "x": x,
+            "value": float(0.5 * x @ Pm @ x + qv @ x),
+            "nu": nu,
+            "lambda": lam_full,
+            "active_set": active,
+            "psd": True,
+            "min_eigenvalue": float(w.min()),
+            "converged": conv,
+            "method": "boyd_quadratic_program",
         },
     )
 

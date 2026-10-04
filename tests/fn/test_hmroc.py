@@ -1,7 +1,6 @@
 """Tests for hmroc.geron_roc_curve."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmroc import geron_roc_curve
 
 

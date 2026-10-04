@@ -78,12 +78,10 @@ backward-induction OWL whose discarding of subjects AOL removes.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["owl_weights", "aol_weights", "weighted_rule",
-           "fit_aol", "fit_stages", "regimen_value"]
+__all__ = ["owl_weights", "aol_weights", "weighted_rule", "fit_aol", "fit_stages", "regimen_value"]
 
 _EPS = 1e-12
 _METHODS = ("aol", "owl")
@@ -95,25 +93,23 @@ def _check(R, A, H, propensity):
     Hm = [[float(v) for v in row] for row in k.mat(H)]
     n = len(r)
     if not (len(a) == len(Hm) == n):
-        raise ValueError("awltrn: R, A and H must agree in length "
-                         "(%d, %d, %d)" % (n, len(a), len(Hm)))
+        raise ValueError("awltrn: R, A and H must agree in length (%d, %d, %d)" % (n, len(a), len(Hm)))
     if n < 4:
-        raise ValueError("awltrn: need at least 4 subjects, got %d"
-                         % n)
+        raise ValueError("awltrn: need at least 4 subjects, got %d" % n)
     for v in a:
         if v not in (-1, 1):
-            raise ValueError("awltrn: treatments must be coded -1/+1, "
-                             "got %r" % (v,))
-    p = ([0.5] * n if propensity is None
-         else ([float(propensity)] * n
-               if isinstance(propensity, (int, float))
-               else [float(v) for v in k.vec(propensity)]))
+            raise ValueError("awltrn: treatments must be coded -1/+1, got %r" % (v,))
+    p = (
+        [0.5] * n
+        if propensity is None
+        else (
+            [float(propensity)] * n if isinstance(propensity, (int, float)) else [float(v) for v in k.vec(propensity)]
+        )
+    )
     if len(p) != n:
-        raise ValueError("awltrn: %d propensities for %d subjects"
-                         % (len(p), n))
+        raise ValueError("awltrn: %d propensities for %d subjects" % (len(p), n))
     if any(not 0.0 < v < 1.0 for v in p):
-        raise ValueError("awltrn: randomisation probabilities must "
-                         "lie strictly in (0, 1)")
+        raise ValueError("awltrn: randomisation probabilities must lie strictly in (0, 1)")
     return r, a, Hm, p, n
 
 
@@ -126,25 +122,25 @@ def owl_weights(R, A, H, propensity=None, shift=None):
     consequential, not a formality, so the value used is reported.
     """
     r, a, Hm, p, n = _check(R, A, H, propensity)
-    c = (0.0 if min(r) >= 0.0 else -min(r)) if shift is None \
-        else float(shift)
+    c = (0.0 if min(r) >= 0.0 else -min(r)) if shift is None else float(shift)
     w = [(r[i] + c) / p[i] for i in range(n)]
     if any(v < 0.0 for v in w):
-        raise ValueError("awltrn: OWL weights must be non-negative; "
-                         "increase shift (smallest weight %.4g)"
-                         % min(w))
+        raise ValueError("awltrn: OWL weights must be non-negative; increase shift (smallest weight %.4g)" % min(w))
     lab = list(a)
     m = sum(w) / n
     sd = math.sqrt(sum((v - m) ** 2 for v in w) / max(n - 1, 1))
-    return {"weights": w, "labels": lab, "shift": c,
-            "cv": sd / m if m > _EPS else float("inf"),
-            "note": "the additive constant changes the RELATIVE "
-                    "weights; a large one flattens them toward "
-                    "equality and discards signal"}
+    return {
+        "weights": w,
+        "labels": lab,
+        "shift": c,
+        "cv": sd / m if m > _EPS else float("inf"),
+        "note": "the additive constant changes the RELATIVE "
+        "weights; a large one flattens them toward "
+        "equality and discards signal",
+    }
 
 
-def aol_weights(R, A, H, propensity=None, prognostic=None,
-                ridge=1e-8):
+def aol_weights(R, A, H, propensity=None, prognostic=None, ridge=1e-8):
     r"""AOL weights :math:`(R_i - m(H_i))/\pi_i`.
 
     ``prognostic`` is :math:`m(H)`; if omitted it is fitted by least
@@ -157,25 +153,27 @@ def aol_weights(R, A, H, propensity=None, prognostic=None,
     if prognostic is None:
         D = k.design(Hm, n)
         beta = k.lstsq(D, r, ridge)
-        m = [sum(D[i][j] * beta[j] for j in range(len(beta)))
-             for i in range(n)]
+        m = [sum(D[i][j] * beta[j] for j in range(len(beta))) for i in range(n)]
     else:
         m = [float(v) for v in k.vec(prognostic)]
         if len(m) != n:
-            raise ValueError("awltrn: %d prognostic values for %d "
-                             "subjects" % (len(m), n))
+            raise ValueError("awltrn: %d prognostic values for %d subjects" % (len(m), n))
     resid = [r[i] - m[i] for i in range(n)]
     w = [abs(resid[i]) / p[i] for i in range(n)]
     lab = [a[i] if resid[i] >= 0.0 else -a[i] for i in range(n)]
     mw = sum(w) / n
     sd = math.sqrt(sum((v - mw) ** 2 for v in w) / max(n - 1, 1))
-    return {"weights": w, "labels": lab, "residual": resid,
-            "prognostic": m, "n_flipped": sum(1 for i in range(n)
-                                              if resid[i] < 0.0),
-            "cv": sd / mw if mw > _EPS else float("inf"),
-            "note": "a negative residual FLIPS the label -- doing "
-                    "worse than predicted under the arm received is "
-                    "evidence for the other arm"}
+    return {
+        "weights": w,
+        "labels": lab,
+        "residual": resid,
+        "prognostic": m,
+        "n_flipped": sum(1 for i in range(n) if resid[i] < 0.0),
+        "cv": sd / mw if mw > _EPS else float("inf"),
+        "note": "a negative residual FLIPS the label -- doing "
+        "worse than predicted under the arm received is "
+        "evidence for the other arm",
+    }
 
 
 def weighted_rule(H, labels, weights, ridge=1e-6):
@@ -188,18 +186,15 @@ def weighted_rule(H, labels, weights, ridge=1e-6):
     Hm = [[float(v) for v in row] for row in k.mat(H)]
     n = len(Hm)
     if not (len(labels) == len(weights) == n):
-        raise ValueError("awltrn: H, labels and weights must agree in "
-                         "length")
+        raise ValueError("awltrn: H, labels and weights must agree in length")
     if any(float(v) < 0.0 for v in weights):
         raise ValueError("awltrn: weights must be non-negative")
     D = k.design(Hm, n)
-    fit = k.wls(Hm, [float(v) for v in labels],
-                [float(v) for v in weights], ridge=ridge)
+    fit = k.wls(Hm, [float(v) for v in labels], [float(v) for v in weights], ridge=ridge)
     b = fit["coef"]
 
     def rule(x):
-        s = b[0] + sum(float(x[j]) * b[j + 1]
-                       for j in range(len(b) - 1))
+        s = b[0] + sum(float(x[j]) * b[j + 1] for j in range(len(b) - 1))
         return 1 if s >= 0.0 else -1
 
     return {"rule": rule, "coef": b}
@@ -208,38 +203,39 @@ def weighted_rule(H, labels, weights, ridge=1e-6):
 def regimen_value(R, A, H, rule, propensity=None):
     r"""Inverse-probability value of a single-stage rule."""
     r, a, Hm, p, n = _check(R, A, H, propensity)
-    num = sum(r[i] * (1.0 if rule(Hm[i]) == a[i] else 0.0) / p[i]
-              for i in range(n))
-    den = sum((1.0 if rule(Hm[i]) == a[i] else 0.0) / p[i]
-              for i in range(n))
+    num = sum(r[i] * (1.0 if rule(Hm[i]) == a[i] else 0.0) / p[i] for i in range(n))
+    den = sum((1.0 if rule(Hm[i]) == a[i] else 0.0) / p[i] for i in range(n))
     if den <= _EPS:
-        raise ValueError("awltrn: no subject's observed treatment "
-                         "agrees with the rule")
+        raise ValueError("awltrn: no subject's observed treatment agrees with the rule")
     return num / den
 
 
-def fit_aol(R, A, H, propensity=None, method="aol", prognostic=None,
-            shift=None, ridge=1e-6):
+def fit_aol(R, A, H, propensity=None, method="aol", prognostic=None, shift=None, ridge=1e-6):
     r"""Single-stage AOL (or plain OWL, for comparison)."""
     if method not in _METHODS:
-        raise ValueError("awltrn: method must be aol or owl, got %r"
-                         % (method,))
+        raise ValueError("awltrn: method must be aol or owl, got %r" % (method,))
     if method == "aol":
-        w = aol_weights(R, A, H, propensity=propensity,
-                        prognostic=prognostic)
+        w = aol_weights(R, A, H, propensity=propensity, prognostic=prognostic)
     else:
         w = owl_weights(R, A, H, propensity=propensity, shift=shift)
     cl = weighted_rule(H, w["labels"], w["weights"], ridge=ridge)
     v = regimen_value(R, A, H, cl["rule"], propensity=propensity)
-    return RichResult(payload={
-        "estimate": v, "value": v, "rule": cl["rule"],
-        "coef": cl["coef"], "weights": w["weights"],
-        "labels": w["labels"], "weight_cv": w["cv"],
-        "method": method, "n": len(w["weights"]),
-        "n_flipped": w.get("n_flipped"),
-        "shift": w.get("shift"),
-        "reference": "Liu, Wang, Kosorok, Zhao & Zeng (2018)",
-    })
+    return RichResult(
+        payload={
+            "estimate": v,
+            "value": v,
+            "rule": cl["rule"],
+            "coef": cl["coef"],
+            "weights": w["weights"],
+            "labels": w["labels"],
+            "weight_cv": w["cv"],
+            "method": method,
+            "n": len(w["weights"]),
+            "n_flipped": w.get("n_flipped"),
+            "shift": w.get("shift"),
+            "reference": "Liu, Wang, Kosorok, Zhao & Zeng (2018)",
+        }
+    )
 
 
 def fit_stages(stages, propensity=None, ridge=1e-6):
@@ -258,48 +254,50 @@ def fit_stages(stages, propensity=None, ridge=1e-6):
     K = len(stages)
     n = len(k.vec(stages[0][0]))
     for j, (Rk, Ak, Hk) in enumerate(stages):
-        if len(k.vec(Rk)) != n or len(k.vec(Ak)) != n \
-                or len(k.mat(Hk)) != n:
-            raise ValueError("awltrn: stage %d has a different number "
-                             "of subjects" % j)
+        if len(k.vec(Rk)) != n or len(k.vec(Ak)) != n or len(k.mat(Hk)) != n:
+            raise ValueError("awltrn: stage %d has a different number of subjects" % j)
     future = [0.0] * n
     rules, used = [], []
     for j in range(K - 1, -1, -1):
         Rk, Ak, Hk = stages[j]
         rv = [float(v) for v in k.vec(Rk)]
         pseudo = [rv[i] + future[i] for i in range(n)]
-        fit = fit_aol(pseudo, Ak, Hk, propensity=propensity,
-                      method="aol", ridge=ridge)
+        fit = fit_aol(pseudo, Ak, Hk, propensity=propensity, method="aol", ridge=ridge)
         rules.insert(0, fit["rule"])
-        used.insert(0, n)          # every subject contributes
+        used.insert(0, n)  # every subject contributes
         Hm = k.mat(Hk)
         av = [int(v) for v in k.vec(Ak)]
         # augmentation: observed future for concordant subjects, the
         # fitted prognostic prediction for the rest
         aw = aol_weights(pseudo, Ak, Hk, propensity=propensity)
-        future = [pseudo[i] if fit["rule"](Hm[i]) == av[i]
-                  else aw["prognostic"][i] for i in range(n)]
-    return RichResult(payload={
-        "estimate": sum(future) / n, "rules": rules,
-        "n_stages": K, "n_used_per_stage": used, "n": n,
-        "method": "augmented backward induction; Liu et al. (2018) "
-                  "Sec. 2",
-        "note": "every subject contributes at every stage -- OWL's "
-                "backward induction keeps only those whose later "
-                "treatments were optimal",
-    })
+        future = [pseudo[i] if fit["rule"](Hm[i]) == av[i] else aw["prognostic"][i] for i in range(n)]
+    return RichResult(
+        payload={
+            "estimate": sum(future) / n,
+            "rules": rules,
+            "n_stages": K,
+            "n_used_per_stage": used,
+            "n": n,
+            "method": "augmented backward induction; Liu et al. (2018) Sec. 2",
+            "note": "every subject contributes at every stage -- OWL's "
+            "backward induction keeps only those whose later "
+            "treatments were optimal",
+        }
+    )
 
 
 def cheatsheet():
-    return ("awltrn: AOL. OWL weights R/pi and needs R >= 0, so it "
-            "ADDS A CONSTANT -- which changes the relative weights "
-            "and flattens them. AOL weights |R - m(H)|/pi and lets a "
-            "negative residual FLIP THE LABEL instead. Removing the "
-            "prognostic part cuts weight variance without changing "
-            "the asymptotic bias, and stays correct even if m is "
-            "misspecified. Multi-stage: augmentation keeps ALL "
-            "subjects at every stage rather than discarding those "
-            "whose later treatments were not optimal.")
+    return (
+        "awltrn: AOL. OWL weights R/pi and needs R >= 0, so it "
+        "ADDS A CONSTANT -- which changes the relative weights "
+        "and flattens them. AOL weights |R - m(H)|/pi and lets a "
+        "negative residual FLIP THE LABEL instead. Removing the "
+        "prognostic part cuts weight variance without changing "
+        "the asymptotic bias, and stays correct even if m is "
+        "misspecified. Multi-stage: augmentation keeps ALL "
+        "subjects at every stage rather than discarding those "
+        "whose later treatments were not optimal."
+    )
 
 
 # compact alias per ledger/NAMING.md

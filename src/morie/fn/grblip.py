@@ -21,9 +21,9 @@ def _softplus(z):
     return np.maximum(z, 0.0) + np.log1p(np.exp(-np.abs(z)))
 
 
-def geron_blip_itm_itc(image_emb, text_emb, caption_logits, caption_targets,
-                       tau=0.07, lam_itc=1.0, lam_itm=1.0, lam_lm=1.0,
-                       normalize=True):
+def geron_blip_itm_itc(
+    image_emb, text_emb, caption_logits, caption_targets, tau=0.07, lam_itc=1.0, lam_itm=1.0, lam_lm=1.0, normalize=True
+):
     r"""BLIP's three heads combined into one loss.
 
     .. math::
@@ -93,9 +93,7 @@ def geron_blip_itm_itc(image_emb, text_emb, caption_logits, caption_targets,
     I = np.atleast_2d(np.asarray(image_emb, dtype=float))
     T = np.atleast_2d(np.asarray(text_emb, dtype=float))
     if I.shape != T.shape:
-        raise ValueError(
-            f"image_emb shape {I.shape} must match text_emb shape {T.shape}."
-        )
+        raise ValueError(f"image_emb shape {I.shape} must match text_emb shape {T.shape}.")
     if I.size == 0:
         raise ValueError("embeddings are empty.")
     if not np.all(np.isfinite(I)) or not np.all(np.isfinite(T)):
@@ -106,16 +104,12 @@ def geron_blip_itm_itc(image_emb, text_emb, caption_logits, caption_targets,
     if CL.ndim != 3:
         raise ValueError(f"caption_logits must be 3-D (B, L, V), got ndim={CL.ndim}.")
     if CL.shape[0] != B:
-        raise ValueError(
-            f"caption_logits has batch {CL.shape[0]} but embeddings have {B}."
-        )
+        raise ValueError(f"caption_logits has batch {CL.shape[0]} but embeddings have {B}.")
     if not np.all(np.isfinite(CL)):
         raise ValueError("caption_logits contains non-finite values.")
     tgt = np.atleast_2d(np.asarray(caption_targets)).astype(int)
     if tgt.shape != CL.shape[:2]:
-        raise ValueError(
-            f"caption_targets must have shape {CL.shape[:2]}, got {tgt.shape}."
-        )
+        raise ValueError(f"caption_targets must have shape {CL.shape[:2]}, got {tgt.shape}.")
     V = CL.shape[2]
     if np.any(tgt >= V):
         raise ValueError(f"caption target indices must be below the vocabulary size {V}.")
@@ -142,8 +136,7 @@ def geron_blip_itm_itc(image_emb, text_emb, caption_logits, caption_targets,
 
     # ITC -- symmetric InfoNCE.
     itc = 0.5 * (
-        float(-_log_softmax_rows(logits)[idx, idx].mean())
-        + float(-_log_softmax_rows(logits.T)[idx, idx].mean())
+        float(-_log_softmax_rows(logits)[idx, idx].mean()) + float(-_log_softmax_rows(logits.T)[idx, idx].mean())
     )
 
     # ITM -- binary cross-entropy over every pair, diagonal = match.

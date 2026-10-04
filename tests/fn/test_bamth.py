@@ -1,7 +1,6 @@
 """Tests for morie.fn.bamth -- chain thinning."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bamth import bamth, bayesian_thinning
 
 

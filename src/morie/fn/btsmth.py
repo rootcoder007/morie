@@ -36,8 +36,6 @@ interleaved in a fixed order, so both arms perturb identically.
 
 from __future__ import annotations
 
-import math
-
 from . import _s03core as core
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -124,6 +122,7 @@ def boot_smoothed(x, stat=None, h=None, B=200, seed=1, alpha=0.05):
 
 def cheatsheet():
     return "btsmth: x* = x_I + h*eps; for the mean this only ADDS h^2/n to the variance"
+
 
 # public names resolved by fn/_lazy_map.json
 bootsmoothed = boot_smoothed

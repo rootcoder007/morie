@@ -109,8 +109,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["motfsr", "motif_meme", "mm_fit", "log_odds_matrix",
-           "bayes_threshold", "score_sequence"]
+__all__ = ["motfsr", "motif_meme", "mm_fit", "log_odds_matrix", "bayes_threshold", "score_sequence"]
 
 _NEG_INF = float("-inf")
 
@@ -143,12 +142,10 @@ def _prepare(sequences, w, alphabet):
         row = []
         for ch in s:
             if ch not in idx:
-                raise ValueError("motfsr: letter %r is not in the alphabet %r"
-                                 % (ch, "".join(alpha)))
+                raise ValueError("motfsr: letter %r is not in the alphabet %r" % (ch, "".join(alpha)))
             row.append(idx[ch])
         coded.append(row)
-    starts = [(i, j) for i, row in enumerate(coded)
-              for j in range(len(row) - w + 1)]
+    starts = [(i, j) for i, row in enumerate(coded) for j in range(len(row) - w + 1)]
     if not starts:
         raise ValueError("motfsr: no sequence is at least w = %d long" % w)
     return coded, alpha, starts
@@ -234,9 +231,19 @@ def _normalise_windows(z, w, max_sweeps=100):
     return z
 
 
-def mm_fit(sequences, w, alphabet=None, theta0=None, lambda0=None,
-           beta=0.01, erasing=None, max_iter=1000, tol=1e-6,
-           normalize_overlaps=True, erase_by="letter"):
+def mm_fit(
+    sequences,
+    w,
+    alphabet=None,
+    theta0=None,
+    lambda0=None,
+    beta=0.01,
+    erasing=None,
+    max_iter=1000,
+    tol=1e-6,
+    normalize_overlaps=True,
+    erase_by="letter",
+):
     r"""One pass of MM: fit the two-component mixture by EM.
 
     Parameters
@@ -306,8 +313,7 @@ def mm_fit(sequences, w, alphabet=None, theta0=None, lambda0=None,
     mu = _mu(coded, L)
 
     if theta0 is None:
-        theta = _theta_from_subsequence(coded, starts[0][0], starts[0][1],
-                                        w, L, mu, 0.5)
+        theta = _theta_from_subsequence(coded, starts[0][0], starts[0][1], w, L, mu, 0.5)
     else:
         theta = [list(map(float, row)) for row in theta0]
         if len(theta) != w + 1 or any(len(r) != L for r in theta):
@@ -333,7 +339,7 @@ def mm_fit(sequences, w, alphabet=None, theta0=None, lambda0=None,
         loglik = 0.0
         log_l1 = math.log(lam1)
         log_l2 = math.log(1.0 - lam1)
-        for (i, j) in starts:
+        for i, j in starts:
             a = log_l1 + _log_component(theta, coded, i, j, w, 1)
             b = log_l2 + _log_component(theta, coded, i, j, w, 2)
             m = a if a > b else b
@@ -355,11 +361,10 @@ def mm_fit(sequences, w, alphabet=None, theta0=None, lambda0=None,
         lam1 = min(max(lam1, 1e-12), 1.0 - 1e-12)
         # equations 9 and 10; erasing scales the MOTIF counts only
         c = [[0.0] * L for _ in range(w + 1)]
-        for (i, j) in starts:
+        for i, j in starts:
             z1 = z_by_seq[i][j]
             z2 = 1.0 - z1
-            e = 1.0 if eps is None else (
-                eps[i][j] if erase_by == "start" else None)
+            e = 1.0 if eps is None else (eps[i][j] if erase_by == "start" else None)
             for t in range(w):
                 k = coded[i][j + t]
                 if eps is not None and erase_by == "letter":
@@ -374,8 +379,7 @@ def mm_fit(sequences, w, alphabet=None, theta0=None, lambda0=None,
                 new.append(list(mu))
                 continue
             new.append([(row[k] + beta * mu[k]) / denom for k in range(L)])
-        delta = math.sqrt(sum((new[r][k] - theta[r][k]) ** 2
-                              for r in range(w + 1) for k in range(L)))
+        delta = math.sqrt(sum((new[r][k] - theta[r][k]) ** 2 for r in range(w + 1) for k in range(L)))
         theta = new
         if delta < tol:
             converged = True
@@ -435,8 +439,7 @@ def bayes_threshold(lambda1, loss=None):
     num = float(r12) - float(r22)
     den = float(r21) - float(r11)
     if num <= 0.0 or den <= 0.0:
-        raise ValueError("motfsr: the loss matrix must have r12 > r22 and "
-                         "r21 > r11 for the threshold to be defined")
+        raise ValueError("motfsr: the loss matrix must have r12 > r22 and r21 > r11 for the threshold to be defined")
     return t + math.log(num / den)
 
 
@@ -456,8 +459,7 @@ def score_sequence(spec, sequence, alphabet, threshold=None):
         for t in range(w):
             ch = s[j + t]
             if ch not in idx:
-                raise ValueError("motfsr: letter %r is not in the alphabet"
-                                 % (ch,))
+                raise ValueError("motfsr: letter %r is not in the alphabet" % (ch,))
             tot += spec[t][idx[ch]]
         scores.append(tot)
     if threshold is None:
@@ -487,10 +489,23 @@ def _lambda_grid(n_starts_total, n_seqs, w, lambda0):
     return out
 
 
-def motfsr(sequences, w, alphabet=None, n_motifs=1, beta=0.01, lambda0=None,
-           max_iter=1000, tol=1e-6, normalize_overlaps=True,
-           starts="subsequences", start_weight=0.5, max_starts=200,
-           start_scoring="one_step", erase_by="letter", loss=None):
+def motfsr(
+    sequences,
+    w,
+    alphabet=None,
+    n_motifs=1,
+    beta=0.01,
+    lambda0=None,
+    max_iter=1000,
+    tol=1e-6,
+    normalize_overlaps=True,
+    starts="subsequences",
+    start_weight=0.5,
+    max_starts=200,
+    start_scoring="one_step",
+    erase_by="letter",
+    loss=None,
+):
     r"""Discover motifs by fitting the MM mixture model (Bailey & Elkan 1994).
 
     Runs one MM pass per motif, and between passes erases the occurrences of
@@ -595,8 +610,7 @@ def motfsr(sequences, w, alphabet=None, n_motifs=1, beta=0.01, lambda0=None,
         cand = [_uniform_theta(w, L, mu)]
     else:
         step = max(1, int(math.ceil(n / float(max(1, int(max_starts))))))
-        cand = [_theta_from_subsequence(coded, i, j, w, L, mu, start_weight)
-                for (i, j) in all_starts[::step]]
+        cand = [_theta_from_subsequence(coded, i, j, w, L, mu, start_weight) for (i, j) in all_starts[::step]]
     lam_grid = _lambda_grid(n, len(coded), w, lambda0)
 
     motifs = []
@@ -605,20 +619,20 @@ def motfsr(sequences, w, alphabet=None, n_motifs=1, beta=0.01, lambda0=None,
         for th0 in cand:
             for lam in lam_grid:
                 if start_scoring == "one_step":
-                    probe = mm_fit(sequences, w, alpha, th0, lam, beta,
-                                   erasing, 1, tol, normalize_overlaps,
-                                   erase_by)
+                    probe = mm_fit(sequences, w, alpha, th0, lam, beta, erasing, 1, tol, normalize_overlaps, erase_by)
                 else:
-                    probe = mm_fit(sequences, w, alpha, th0, lam, beta,
-                                   erasing, max_iter, tol,
-                                   normalize_overlaps, erase_by)
+                    probe = mm_fit(
+                        sequences, w, alpha, th0, lam, beta, erasing, max_iter, tol, normalize_overlaps, erase_by
+                    )
                 key = probe["log_likelihood"]
                 if best is None or key > best[0]:
                     best = (key, th0, lam, probe)
         _, th0, lam, probe = best
-        fit = (probe if start_scoring == "none" else
-               mm_fit(sequences, w, alpha, th0, lam, beta, erasing,
-                      max_iter, tol, normalize_overlaps, erase_by))
+        fit = (
+            probe
+            if start_scoring == "none"
+            else mm_fit(sequences, w, alpha, th0, lam, beta, erasing, max_iter, tol, normalize_overlaps, erase_by)
+        )
 
         spec = log_odds_matrix(fit["motif"], fit["background"])
         t = bayes_threshold(fit["lambda1"], loss)
@@ -631,22 +645,23 @@ def motfsr(sequences, w, alphabet=None, n_motifs=1, beta=0.01, lambda0=None,
                 if s >= t:
                     sites.append((i, j, s))
         sites.sort(key=lambda r: -r[2])
-        consensus = "".join(
-            alpha[max(range(L), key=lambda k: row[k])] for row in fit["motif"])
-        motifs.append({
-            "motif": fit["motif"],
-            "background": fit["background"],
-            "lambda1": fit["lambda1"],
-            "log_odds": spec,
-            "threshold": t,
-            "sites": sites,
-            "n_sites": len(sites),
-            "consensus": consensus,
-            "log_likelihood": fit["log_likelihood"],
-            "n_iter": fit["n_iter"],
-            "converged": fit["converged"],
-            "z": fit["z"],
-        })
+        consensus = "".join(alpha[max(range(L), key=lambda k: row[k])] for row in fit["motif"])
+        motifs.append(
+            {
+                "motif": fit["motif"],
+                "background": fit["background"],
+                "lambda1": fit["lambda1"],
+                "log_odds": spec,
+                "threshold": t,
+                "sites": sites,
+                "n_sites": len(sites),
+                "consensus": consensus,
+                "log_likelihood": fit["log_likelihood"],
+                "n_iter": fit["n_iter"],
+                "converged": fit["converged"],
+                "z": fit["z"],
+            }
+        )
 
         if _pass + 1 < n_motifs:
             # erasing (section 4): e_ij^(t) = e_ij^(t-1) prod_{k=j-W+1}^{j}
@@ -656,32 +671,36 @@ def motfsr(sequences, w, alphabet=None, n_motifs=1, beta=0.01, lambda0=None,
                 for j in range(len(row)):
                     f = 1.0
                     for k in range(max(0, j - w + 1), min(j + 1, len(z[i]))):
-                        f *= (1.0 - z[i][k])
+                        f *= 1.0 - z[i][k]
                     erasing[i][j] = row[j] * f
 
-    return RichResult(payload={
-        "estimate": motifs,
-        "motifs": motifs,
-        "alphabet": alpha,
-        "w": w,
-        "n_subsequences": n,
-        "erasing": erasing,
-        "method": "MM two-component mixture EM (Bailey & Elkan 1994)",
-    })
+    return RichResult(
+        payload={
+            "estimate": motifs,
+            "motifs": motifs,
+            "alphabet": alpha,
+            "w": w,
+            "n_subsequences": n,
+            "erasing": erasing,
+            "method": "MM two-component mixture EM (Bailey & Elkan 1994)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break "
-            "the sequences into ALL overlapping W-mers and fit a "
-            "two-component mixture -- motif vs background -- by EM, so a "
-            "sequence may contain zero, one or many occurrences and "
-            "lambda1 estimates how often. E-step eq.4; M-step eq.5 for "
-            "lambda and eq.13 for the letter frequencies, whose "
-            "pseudo-counts exist because a frequency that hits 0 can never "
-            "leave. z is normalised to sum to <= 1 over any W-window or EM "
-            "collapses onto 'AAAAAA'. Multiple motifs come from erasing. "
-            "Output is a Bayes-optimal classifier: log-odds matrix plus "
-            "t = log((1 - lambda1)/lambda1).")
+    return (
+        "motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break "
+        "the sequences into ALL overlapping W-mers and fit a "
+        "two-component mixture -- motif vs background -- by EM, so a "
+        "sequence may contain zero, one or many occurrences and "
+        "lambda1 estimates how often. E-step eq.4; M-step eq.5 for "
+        "lambda and eq.13 for the letter frequencies, whose "
+        "pseudo-counts exist because a frequency that hits 0 can never "
+        "leave. z is normalised to sum to <= 1 over any W-window or EM "
+        "collapses onto 'AAAAAA'. Multiple motifs come from erasing. "
+        "Output is a Bayes-optimal classifier: log-odds matrix plus "
+        "t = log((1 - lambda1)/lambda1)."
+    )
 
 
 # compact alias per ledger/NAMING.md

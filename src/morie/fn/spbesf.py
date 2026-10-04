@@ -36,7 +36,7 @@ def _bessel_i(nu, t, terms=_SERIES_TERMS):
         for k in range(terms):
             g = nu + k + 1
             if abs(g - round(g)) < 1e-12 and g <= 0:
-                continue                      # 1/Gamma(non-positive integer) = 0
+                continue  # 1/Gamma(non-positive integer) = 0
             log_term = (2 * k + nu) * log_half - lgamma(k + 1) - lgamma(g)
             out = out + _gamma_sign(g) * np.exp(log_term)
     return np.where(t > 0, out, np.inf if nu < 0 else (1.0 if nu == 0 else 0.0))

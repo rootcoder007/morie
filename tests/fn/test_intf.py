@@ -1,7 +1,6 @@
 """Tests for intf.integrate_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.intf import integrate_function
 
 

@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["clusdes", "cluster_design"]
@@ -82,11 +81,18 @@ def clusdes(rho, S2, c1, c2, budget):
     vhi = V(hi)[0]
     k = lo if vlo <= vhi else hi
     var, m = V(k)
-    return RichResult(payload={
-        "k_opt": kopt, "k": float(k), "m": m, "variance": var,
-        "deff": 1.0 + (k - 1.0) * rho, "cost": m * (c1 + c2 * k),
-        "elements": m * k,
-        "method": "Optimal cluster size under a linear cost function"})
+    return RichResult(
+        payload={
+            "k_opt": kopt,
+            "k": float(k),
+            "m": m,
+            "variance": var,
+            "deff": 1.0 + (k - 1.0) * rho,
+            "cost": m * (c1 + c2 * k),
+            "elements": m * k,
+            "method": "Optimal cluster size under a linear cost function",
+        }
+    )
 
 
 cluster_design = clusdes

@@ -78,11 +78,19 @@ def adwin(x, delta=0.05):
                     shrunk = True
                     break
     n = len(W)
-    return RichResult(payload={
-        "mean": sum(W) / n if n else float("nan"), "width": n,
-        "window": W, "ndrops": drops, "lastcut": last,
-        "changepoints": cuts, "n": len(x), "delta": delta,
-        "method": "ADWIN adaptive windowing (Bifet-Gavalda 2007 Sect. 3)"})
+    return RichResult(
+        payload={
+            "mean": sum(W) / n if n else float("nan"),
+            "width": n,
+            "window": W,
+            "ndrops": drops,
+            "lastcut": last,
+            "changepoints": cuts,
+            "n": len(x),
+            "delta": delta,
+            "method": "ADWIN adaptive windowing (Bifet-Gavalda 2007 Sect. 3)",
+        }
+    )
 
 
 def cheatsheet():

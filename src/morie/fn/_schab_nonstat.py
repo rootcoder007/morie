@@ -123,12 +123,10 @@ def practical_range(theta1, theta2=0.0, theta3=0.0, ci=None, cj=None):
         return 3.0 / float(theta1)
     ci = np.asarray(ci, dtype=float)
     cj = np.asarray(cj, dtype=float)
-    return 3.0 * np.exp(-float(theta2) * np.abs(ci - cj)
-                        - float(theta3) * np.minimum(ci, cj)) / float(theta1)
+    return 3.0 * np.exp(-float(theta2) * np.abs(ci - cj) - float(theta3) * np.minimum(ci, cj)) / float(theta1)
 
 
-def point_source_correlation(coords, source, theta1, theta2=0.0, theta3=0.0,
-                             anisotropy=None, source_anisotropy=None):
+def point_source_correlation(coords, source, theta1, theta2=0.0, theta3=0.0, anisotropy=None, source_anisotropy=None):
     """eq (8.1): the Hughes-Oliver point-source correlation matrix.
 
     Parameters
@@ -169,8 +167,9 @@ def point_source_correlation(coords, source, theta1, theta2=0.0, theta3=0.0,
         Ac = np.asarray(source_anisotropy, dtype=float)
         ci = np.linalg.norm(dc @ Ac.T, axis=-1)
 
-    inflate = np.exp(float(theta2) * np.abs(ci[:, None] - ci[None, :])
-                     + float(theta3) * np.minimum(ci[:, None], ci[None, :]))
+    inflate = np.exp(
+        float(theta2) * np.abs(ci[:, None] - ci[None, :]) + float(theta3) * np.minimum(ci[:, None], ci[None, :])
+    )
     corr = np.exp(-float(theta1) * h * inflate)
     np.fill_diagonal(corr, 1.0)
 
@@ -189,12 +188,12 @@ def point_source_correlation(coords, source, theta1, theta2=0.0, theta3=0.0,
             f"eigenvalue {eig:.3e}). Sec. 8.2.1 notes that theta1 > 0 and "
             "theta2, theta3 >= 0 are necessary but not sufficient, and that "
             "the eigenvalues must be examined to confirm the estimated model "
-            "is valid")
+            "is valid"
+        )
     return out
 
 
-def haas_window(coords, target, min_sites=35, step=5, lag_classes=None,
-                max_sites=None):
+def haas_window(coords, target, min_sites=35, step=5, lag_classes=None, max_sites=None):
     """Haas's window rule, p. 426.
 
     Enlarge a circle about ``target`` until at least ``min_sites`` sites are
@@ -307,8 +306,7 @@ def _krige_at(coords, z, target, sill, rng, mu):
     return float(mu + c0 @ sol)
 
 
-def local_krige(coords, z, targets, sill, rng, min_sites=35, step=5,
-                local_mean=False):
+def local_krige(coords, z, targets, sill, rng, min_sites=35, step=5, local_mean=False):
     """Local ordinary kriging with a GLOBAL covariance model, p. 425.
 
     ``theta = (sill, range)`` is supplied once and used in every window;
@@ -334,8 +332,7 @@ def local_krige(coords, z, targets, sill, rng, min_sites=35, step=5,
     }
 
 
-def moving_window_krige(coords, z, targets, min_sites=35, step=5, n_lags=10,
-                        local_mean=False, local_variogram=True):
+def moving_window_krige(coords, z, targets, min_sites=35, step=5, n_lags=10, local_mean=False, local_variogram=True):
     """Haas's moving-window kriging, p. 426.
 
     With ``local_variogram=True`` the semivariogram is re-estimated inside
@@ -387,5 +384,6 @@ def moving_window_krige(coords, z, targets, min_sites=35, step=5, n_lags=10,
         "caveats": (
             "a predictor that excludes observed sites is no longer best; "
             "windows that change with prediction location can introduce "
-            "spurious discontinuities (Sec. 8.3.1)"),
+            "spurious discontinuities (Sec. 8.3.1)"
+        ),
     }

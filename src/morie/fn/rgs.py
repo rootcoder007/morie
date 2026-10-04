@@ -56,7 +56,6 @@ truncation level cannot be chosen independently of the eigenvalue decay.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -108,8 +107,7 @@ def functional_regression(X, Y, basis=None):
     if any(len(r) != T for r in Xm):
         raise ValueError("rgs: every curve must lie on the same grid")
     if n < 2:
-        raise ValueError("rgs: the covariance operator needs at least two "
-                         "curves")
+        raise ValueError("rgs: the covariance operator needs at least two curves")
     w = _grid_weights(T)
 
     # optional basis projection -- the spline route of the same paper
@@ -118,8 +116,7 @@ def functional_regression(X, Y, basis=None):
     if basis is not None and not isinstance(basis, (int, float, bool)):
         B = [[float(v) for v in row] for row in k.mat(basis)]
         if len(B) != T:
-            raise ValueError("rgs: the basis has %d rows for a grid of %d"
-                             % (len(B), T))
+            raise ValueError("rgs: the basis has %d rows for a grid of %d" % (len(B), T))
     elif basis is not None:
         kk = int(basis)
         if kk < 1:
@@ -131,15 +128,13 @@ def functional_regression(X, Y, basis=None):
     # Empirical covariance operator, discretised with the grid weights so
     # the eigenproblem is the one for the integral operator rather than
     # for the raw matrix.
-    C = [[sum(Xc[i][s] * Xc[i][t] for i in range(n)) / n
-          for t in range(T)] for s in range(T)]
+    C = [[sum(Xc[i][s] * Xc[i][t] for i in range(n)) / n for t in range(T)] for s in range(T)]
     rw = [math.sqrt(v) for v in w]
     Cw = [[rw[s] * C[s][t] * rw[t] for t in range(T)] for s in range(T)]
-    lam, U = k.jacobi(Cw)                     # eigenvectors are COLUMNS
+    lam, U = k.jacobi(Cw)  # eigenvectors are COLUMNS
     order = sorted(range(T), key=lambda j: -lam[j])
     lam = [max(lam[j], 0.0) for j in order]
-    phi = [[U[s][j] / (rw[s] if rw[s] > _EPS else 1.0) for s in range(T)]
-           for j in order]                    # phi[j] is an eigenfunction
+    phi = [[U[s][j] / (rw[s] if rw[s] > _EPS else 1.0) for s in range(T)] for j in order]  # phi[j] is an eigenfunction
     # An eigenvector is defined only up to sign, so the SCORES would be
     # reported with an arbitrary sign unless it is pinned. Make the entry of
     # largest magnitude positive; beta and fitted are unaffected either way
@@ -167,8 +162,7 @@ def functional_regression(X, Y, basis=None):
     # a component with no variance cannot be divided by
     kk = max(1, len([j for j in range(kk) if lam[j] > _EPS * total]))
 
-    scores = [[sum(Xc[i][t] * phi[j][t] * w[t] for t in range(T))
-               for j in range(kk)] for i in range(n)]
+    scores = [[sum(Xc[i][t] * phi[j][t] * w[t] for t in range(T)) for j in range(kk)] for i in range(n)]
     ybar = sum(y) / n
     b = []
     for j in range(kk):
@@ -176,36 +170,38 @@ def functional_regression(X, Y, basis=None):
         b.append(cov / lam[j])
     beta = [sum(b[j] * phi[j][t] for j in range(kk)) for t in range(T)]
 
-    fitted = [ybar + sum(b[j] * scores[i][j] for j in range(kk))
-              for i in range(n)]
+    fitted = [ybar + sum(b[j] * scores[i][j] for j in range(kk)) for i in range(n)]
     resid = [y[i] - fitted[i] for i in range(n)]
     sst = sum((v - ybar) ** 2 for v in y)
     sse = sum(v * v for v in resid)
     r2 = 1.0 - sse / sst if sst > _EPS else 0.0
 
-    return RichResult(payload={
-        "estimate": beta,
-        "beta": beta,
-        "fitted": fitted,
-        "residuals": resid,
-        "k": int(kk),
-        "eigenvalues": lam[:kk],
-        "explained": explained[:kk],
-        "scores": scores,
-        "mean_curve": xbar,
-        "r_squared": r2,
-        "n": n,
-        "n_grid": T,
-        "method": "functional linear model by principal-component "
-                  "truncation (Cardot, Ferraty & Sarda 1999)",
-        "note": "beta is divided by the eigenvalues, so each extra "
-                "component amplifies a direction the data constrain "
-                "less -- k is the estimator, not a detail",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "beta": beta,
+            "fitted": fitted,
+            "residuals": resid,
+            "k": int(kk),
+            "eigenvalues": lam[:kk],
+            "explained": explained[:kk],
+            "scores": scores,
+            "mean_curve": xbar,
+            "r_squared": r2,
+            "n": n,
+            "n_grid": T,
+            "method": "functional linear model by principal-component truncation (Cardot, Ferraty & Sarda 1999)",
+            "note": "beta is divided by the eigenvalues, so each extra "
+            "component amplifies a direction the data constrain "
+            "less -- k is the estimator, not a detail",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rgs: functional_regression(X, Y, basis) -> the functional "
-            "linear model Y = int beta(t) X(t) dt by FPC truncation "
-            "(Cardot, Ferraty & Sarda 1999, Stat. Probab. Lett. 45(1), "
-            "11-22)")
+    return (
+        "rgs: functional_regression(X, Y, basis) -> the functional "
+        "linear model Y = int beta(t) X(t) dt by FPC truncation "
+        "(Cardot, Ferraty & Sarda 1999, Stat. Probab. Lett. 45(1), "
+        "11-22)"
+    )

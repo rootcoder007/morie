@@ -1,7 +1,6 @@
 """Tests for eslnmf.esl_nmf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslnmf import esl_nmf
 
 
@@ -12,8 +11,19 @@ def test_eslnmf_basic():
     k = 5
     result = esl_nmf(X, k)
     assert isinstance(result, dict)
-    for key in ("estimate", "W", "H", "frobenius_error", "relative_error",
-                "iterations", "converged", "n", "p", "k", "method"):
+    for key in (
+        "estimate",
+        "W",
+        "H",
+        "frobenius_error",
+        "relative_error",
+        "iterations",
+        "converged",
+        "n",
+        "p",
+        "k",
+        "method",
+    ):
         assert key in result
     # W and H must be non-negative (multiplicative updates preserve this)
     assert min(result["W"]) >= 0.0

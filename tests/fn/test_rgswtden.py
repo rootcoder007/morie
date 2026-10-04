@@ -1,7 +1,6 @@
 """Tests for rgswtden.rangayyan_swt_denoise."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_swt_denoise
 
 

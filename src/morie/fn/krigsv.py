@@ -12,8 +12,7 @@ __all__ = ["variogram_fit"]
 _NGRID = 200
 
 
-def variogram_fit(coords, values, model="exponential", n_bins=15,
-                  max_dist=None):
+def variogram_fit(coords, values, model="exponential", n_bins=15, max_dist=None):
     r"""Fit :math:`\gamma(h) = c_0 + c\,\rho(h/a)` to an empirical semivariogram.
 
     The empirical semivariogram is Matheron's method-of-moments estimator
@@ -98,8 +97,7 @@ def variogram_fit(coords, values, model="exponential", n_bins=15,
     cnt = [int(v) for v in cnt]
     use = [i for i in range(len(lag)) if cnt[i] > 0 and lag[i] == lag[i]]
     if len(use) < 3:
-        raise ValueError("fewer than three non-empty lag classes; "
-                         "cannot fit three parameters")
+        raise ValueError("fewer than three non-empty lag classes; cannot fit three parameters")
     hs = [lag[i] for i in use]
     gs = [gam[i] for i in use]
     ws = [float(cnt[i]) for i in use]
@@ -117,8 +115,7 @@ def variogram_fit(coords, values, model="exponential", n_bins=15,
     a, c0, c, wss = best
     lo_a = math.exp(lo)
     hi_a = math.exp(hi)
-    range_at_bound = (abs(a - lo_a) <= 1e-12 * lo_a
-                      or abs(a - hi_a) <= 1e-12 * hi_a)
+    range_at_bound = abs(a - lo_a) <= 1e-12 * lo_a or abs(a - hi_a) <= 1e-12 * hi_a
 
     fitted = [c0 + c * (1.0 - _rho(h / a, model)) for h in hs]
     return RichResult(
@@ -137,8 +134,7 @@ def variogram_fit(coords, values, model="exponential", n_bins=15,
             "grid_lo": lo_a,
             "grid_hi": hi_a,
             "n_bins_used": len(use),
-            "method": "Weighted least squares variogram fit, |N(h)| weights, "
-                      "range profiled on a fixed grid",
+            "method": "Weighted least squares variogram fit, |N(h)| weights, range profiled on a fixed grid",
         }
     )
 
@@ -152,9 +148,8 @@ def _rho(u, model):
     if model == "spherical":
         if u >= 1.0:
             return 0.0
-        return 1.0 - 1.5 * u + 0.5 * u ** 3
-    raise ValueError("unknown model %r; expected exponential, gaussian or "
-                     "spherical" % (model,))
+        return 1.0 - 1.5 * u + 0.5 * u**3
+    raise ValueError("unknown model %r; expected exponential, gaussian or spherical" % (model,))
 
 
 def _wls2(x, y, w):
@@ -188,8 +183,11 @@ def _wls2(x, y, w):
 
 
 def cheatsheet():
-    return ("krigsv: fit c0, c, a of gamma(h) = c0 + c(1 - rho(h/a)) by "
-            "weighted least squares on the binned empirical semivariogram")
+    return (
+        "krigsv: fit c0, c, a of gamma(h) = c0 + c(1 - rho(h/a)) by "
+        "weighted least squares on the binned empirical semivariogram"
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 variogramfit = variogram_fit

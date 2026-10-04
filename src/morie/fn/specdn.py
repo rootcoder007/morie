@@ -76,8 +76,7 @@ def spectral_density(y):
         im = fsum([-d[u] * sin(w * (u + 1)) for u in range(r)])
         direct.append((re * re + im * im) / (2.0 * pi * r))
 
-    acov = [fsum([d[u - k] * d[u] for u in range(k, r)]) / r
-            for k in range(r)]
+    acov = [fsum([d[u - k] * d[u] for u in range(k, r)]) / r for k in range(r)]
     viacov = []
     for w in omega:
         s = acov[0] + 2.0 * fsum([cos(w * k) * acov[k] for k in range(1, r)])
@@ -85,18 +84,22 @@ def spectral_density(y):
 
     gap = max([abs(direct[i] - viacov[i]) for i in range(len(omega))])
 
-    return RichResult(payload={
-        "omega": omega,
-        "periodogram": direct,
-        "from_covariance": viacov,
-        "max_difference": gap,
-        "acov": acov,
-        "zero_frequency_excluded": True,
-        "n": r,
-        "method": ("Periodogram, Schabenberger & Gotway (2005) eq (4.57) "
-                   "specialised to R^1 in Sec. 4.7.1.1, checked against "
-                   "eq (4.58)"),
-    })
+    return RichResult(
+        payload={
+            "omega": omega,
+            "periodogram": direct,
+            "from_covariance": viacov,
+            "max_difference": gap,
+            "acov": acov,
+            "zero_frequency_excluded": True,
+            "n": r,
+            "method": (
+                "Periodogram, Schabenberger & Gotway (2005) eq (4.57) "
+                "specialised to R^1 in Sec. 4.7.1.1, checked against "
+                "eq (4.58)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

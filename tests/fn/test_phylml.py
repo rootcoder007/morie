@@ -5,8 +5,7 @@ Replaces the generated stub, which imported a name the module never had.
 
 import math
 
-from morie.fn.phylml import (optimise_branch, phylml, site_likelihood,
-                             substitution_matrix)
+from morie.fn.phylml import optimise_branch, phylml, site_likelihood, substitution_matrix
 
 
 def test_the_f81_matrix_is_the_printed_formula():
@@ -45,17 +44,14 @@ def test_the_documented_two_taxon_example_runs():
 
 
 def test_identical_sequences_are_likelier_than_different_ones():
-    same = phylml(("a", 0.1, "b", 0.1),
-                  {"a": "ACGT", "b": "ACGT"})["log_likelihood"]
-    diff = phylml(("a", 0.1, "b", 0.1),
-                  {"a": "ACGT", "b": "TGCA"})["log_likelihood"]
+    same = phylml(("a", 0.1, "b", 0.1), {"a": "ACGT", "b": "ACGT"})["log_likelihood"]
+    diff = phylml(("a", 0.1, "b", 0.1), {"a": "ACGT", "b": "TGCA"})["log_likelihood"]
     assert same > diff
 
 
 def test_the_total_is_the_sum_over_sites():
     res = phylml(("a", 0.2, "b", 0.3), {"a": "ACGT", "b": "ACGA"})
-    assert abs(res["log_likelihood"] -
-               sum(res["site_log_likelihoods"])) < 1e-9
+    assert abs(res["log_likelihood"] - sum(res["site_log_likelihoods"])) < 1e-9
     for i, lk in enumerate(res["site_likelihoods"]):
         assert abs(math.log(lk) - res["site_log_likelihoods"][i]) < 1e-9
 
@@ -71,27 +67,24 @@ def test_a_single_site_matches_the_whole_alignment_of_that_site():
 def test_optimising_a_branch_finds_a_short_one_for_identical_sequences():
     seqs = {"a": "ACGTACGTAC", "b": "ACGTACGTAC"}
     res = optimise_branch(lambda t: ("a", t, "b", t), seqs)
-    assert res["length"] < 0.05                 # nearly no divergence
-    assert res["log_likelihood"] > phylml(("a", 1.0, "b", 1.0),
-                                          seqs)["log_likelihood"]
+    assert res["length"] < 0.05  # nearly no divergence
+    assert res["log_likelihood"] > phylml(("a", 1.0, "b", 1.0), seqs)["log_likelihood"]
 
 
 def test_optimising_finds_a_longer_branch_for_divergent_sequences():
-    near = optimise_branch(lambda t: ("a", t, "b", t),
-                           {"a": "ACGTACGTAC", "b": "ACGTACGTAG"})
-    far = optimise_branch(lambda t: ("a", t, "b", t),
-                          {"a": "ACGTACGTAC", "b": "TGCATGCATG"})
+    near = optimise_branch(lambda t: ("a", t, "b", t), {"a": "ACGTACGTAC", "b": "ACGTACGTAG"})
+    far = optimise_branch(lambda t: ("a", t, "b", t), {"a": "ACGTACGTAC", "b": "TGCATGCATG"})
     assert far["length"] > near["length"]
 
 
 def test_validation():
     seqs = {"a": "ACGT", "b": "ACGT"}
-    for call in (lambda: phylml(("a", 0.1, "b", 0.1), seqs, pi=[0.5, 0.5]),
-                 lambda: phylml(("a", 0.1, "b", 0.1), seqs,
-                                pi=[-0.1, 0.4, 0.4, 0.3]),
-                 lambda: phylml(("a", 0.1, "b", 0.1), seqs,
-                                pi=[0.5, 0.4, 0.4, 0.3]),
-                 lambda: phylml(("a", -0.1, "b", 0.1), seqs)):
+    for call in (
+        lambda: phylml(("a", 0.1, "b", 0.1), seqs, pi=[0.5, 0.5]),
+        lambda: phylml(("a", 0.1, "b", 0.1), seqs, pi=[-0.1, 0.4, 0.4, 0.3]),
+        lambda: phylml(("a", 0.1, "b", 0.1), seqs, pi=[0.5, 0.4, 0.4, 0.3]),
+        lambda: phylml(("a", -0.1, "b", 0.1), seqs),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

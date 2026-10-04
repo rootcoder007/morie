@@ -3,8 +3,6 @@
 Replaces the generated stub, which imported ``vol_sabr_implied``.
 """
 
-import math
-
 from morie.fn.volsabr import volsabr
 
 
@@ -13,8 +11,7 @@ def test_the_at_the_money_formula_at_beta_one():
     # (1 + [...] T) correction
     f, T, alpha, rho, nu = 100.0, 1.0, 0.2, -0.3, 0.4
     res = volsabr(f, f, T, alpha, 1.0, rho, nu)
-    corr = 1.0 + (0.25 * rho * nu * alpha +
-                  (2.0 - 3.0 * rho ** 2) / 24.0 * nu ** 2) * T
+    corr = 1.0 + (0.25 * rho * nu * alpha + (2.0 - 3.0 * rho**2) / 24.0 * nu**2) * T
     assert abs(res["estimate"] - alpha * corr) < 1e-9
     assert abs(res["atm"] - res["estimate"]) < 1e-12
 
@@ -56,13 +53,15 @@ def test_the_volatility_is_positive_across_a_range_of_strikes():
 
 
 def test_validation():
-    for call in (lambda: volsabr(0.0, 100.0, 1.0, 0.2, 1.0, 0.0, 0.3),
-                 lambda: volsabr(100.0, 0.0, 1.0, 0.2, 1.0, 0.0, 0.3),
-                 lambda: volsabr(100.0, 100.0, -1.0, 0.2, 1.0, 0.0, 0.3),
-                 lambda: volsabr(100.0, 100.0, 1.0, 0.0, 1.0, 0.0, 0.3),
-                 lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.5, 0.0, 0.3),
-                 lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.0, 1.5, 0.3),
-                 lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.0, 0.0, -0.1)):
+    for call in (
+        lambda: volsabr(0.0, 100.0, 1.0, 0.2, 1.0, 0.0, 0.3),
+        lambda: volsabr(100.0, 0.0, 1.0, 0.2, 1.0, 0.0, 0.3),
+        lambda: volsabr(100.0, 100.0, -1.0, 0.2, 1.0, 0.0, 0.3),
+        lambda: volsabr(100.0, 100.0, 1.0, 0.0, 1.0, 0.0, 0.3),
+        lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.5, 0.0, 0.3),
+        lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.0, 1.5, 0.3),
+        lambda: volsabr(100.0, 100.0, 1.0, 0.2, 1.0, 0.0, -0.1),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

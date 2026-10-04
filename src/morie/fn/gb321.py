@@ -45,16 +45,30 @@ def gibbons_runs_joint_dist(r1, r2, n1, n2):
     if abs(r1 - r2) > 1:
         # alternation makes this arrangement impossible, not merely rare
         return RichResult(
-            payload={"pmf": 0.0, "c": 0, "feasible": False, "r1": r1,
-                     "r2": r2, "n1": n1, "n2": n2,
-                     "method": "Runs joint pmf (Gibbons Theorem 3.2.1)"}
+            payload={
+                "pmf": 0.0,
+                "c": 0,
+                "feasible": False,
+                "r1": r1,
+                "r2": r2,
+                "n1": n1,
+                "n2": n2,
+                "method": "Runs joint pmf (Gibbons Theorem 3.2.1)",
+            }
         )
     c = 2 if r1 == r2 else 1
     pmf = c * comb(n1 - 1, r1 - 1) * comb(n2 - 1, r2 - 1) / comb(n1 + n2, n1)
     return RichResult(
-        payload={"pmf": float(pmf), "c": c, "feasible": True, "r1": r1,
-                 "r2": r2, "n1": n1, "n2": n2,
-                 "method": "Runs joint pmf (Gibbons Theorem 3.2.1)"}
+        payload={
+            "pmf": float(pmf),
+            "c": c,
+            "feasible": True,
+            "r1": r1,
+            "r2": r2,
+            "n1": n1,
+            "n2": n2,
+            "method": "Runs joint pmf (Gibbons Theorem 3.2.1)",
+        }
     )
 
 

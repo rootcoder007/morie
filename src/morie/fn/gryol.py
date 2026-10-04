@@ -79,9 +79,7 @@ def geron_yolo_grid_loss(predictions, targets, lam_coord=5.0, lam_noobj=0.5):
     P = np.asarray(predictions, dtype=float)
     T = np.asarray(targets, dtype=float)
     if P.ndim != 3 or P.shape[2] < 5:
-        raise ValueError(
-            f"predictions must be (S, S, 5 + C) with C >= 0, got shape {P.shape}."
-        )
+        raise ValueError(f"predictions must be (S, S, 5 + C) with C >= 0, got shape {P.shape}.")
     if P.shape != T.shape:
         raise ValueError(f"targets has shape {T.shape} but predictions has {P.shape}.")
     if not np.all(np.isfinite(P)) or not np.all(np.isfinite(T)):
@@ -89,9 +87,7 @@ def geron_yolo_grid_loss(predictions, targets, lam_coord=5.0, lam_noobj=0.5):
     lam_coord = float(lam_coord)
     lam_noobj = float(lam_noobj)
     if lam_coord < 0 or lam_noobj < 0:
-        raise ValueError(
-            f"lam_coord and lam_noobj must be non-negative, got {lam_coord} and {lam_noobj}."
-        )
+        raise ValueError(f"lam_coord and lam_noobj must be non-negative, got {lam_coord} and {lam_noobj}.")
     if np.any(P[..., 2:4] < 0) or np.any(T[..., 2:4] < 0):
         raise ValueError("box width and height must be non-negative; sqrt is taken of them.")
     conf_t = T[..., 4]

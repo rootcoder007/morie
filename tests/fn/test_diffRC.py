@@ -1,7 +1,6 @@
 """Tests for diffRC.diffusion_rec."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.diffRC import diffusion_rec
 
 
@@ -18,7 +17,7 @@ def test_diffRC_basic():
     alpha_bar = []
     prod = 1.0
     for b in beta:
-        prod *= (1.0 - b)
+        prod *= 1.0 - b
         alpha_bar.append(prod)
     schedule = {
         "alpha_bar": alpha_bar,
@@ -56,7 +55,7 @@ def test_diffRC_edge():
     alpha_bar = []
     prod = 1.0
     for b in beta:
-        prod *= (1.0 - b)
+        prod *= 1.0 - b
         alpha_bar.append(prod)
     schedule = {
         "alpha_bar": alpha_bar,

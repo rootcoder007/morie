@@ -3,17 +3,18 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmhftn import geron_hf_trainer
 
 
 def _make_lg():
     """Build a least-squares loss_and_grad function."""
+
     def lg(params, Xb, yb):
         r = Xb @ params - yb
-        loss = float(np.mean(r ** 2))
+        loss = float(np.mean(r**2))
         grad = (2.0 / len(yb)) * (Xb.T @ r)
         return loss, grad
+
     return lg
 
 
@@ -32,8 +33,17 @@ def test_hmhftn_basic():
 
     result = geron_hf_trainer(model, args, train_ds, eval_ds)
     assert isinstance(result, dict)
-    expected_keys = {"params", "best_params", "train_loss", "eval_loss",
-                     "history", "best_epoch", "estimate", "n", "method"}
+    expected_keys = {
+        "params",
+        "best_params",
+        "train_loss",
+        "eval_loss",
+        "history",
+        "best_epoch",
+        "estimate",
+        "n",
+        "method",
+    }
     assert expected_keys.issubset(set(result.keys()))
     assert math.isfinite(result["train_loss"])
     assert math.isfinite(result["eval_loss"])
@@ -73,7 +83,7 @@ import morie.fn.hmhftn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

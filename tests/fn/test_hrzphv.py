@@ -1,7 +1,6 @@
 """Tests for hrzphv.horowitz_ph_heterogeneity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzphv import horowitz_ph_heterogeneity
 
 

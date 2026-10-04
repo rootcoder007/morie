@@ -55,9 +55,9 @@ def compvar(X):
             tau[i][j] = v
             tau[j][i] = v
             tot += v
-    return RichResult(payload={
-        "variation": tau, "totvar": tot / D, "n": n, "D": D,
-        "method": "Compositional variation matrix"})
+    return RichResult(
+        payload={"variation": tau, "totvar": tot / D, "n": n, "D": D, "method": "Compositional variation matrix"}
+    )
 
 
 aitchison_variation = compvar

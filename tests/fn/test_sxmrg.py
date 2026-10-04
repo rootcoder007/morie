@@ -1,8 +1,8 @@
 """Tests for morie.fn.sxmrg -- Sex-stratified meta-regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sxmrg import sxmrg
 
 

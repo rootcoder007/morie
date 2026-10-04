@@ -36,5 +36,4 @@ def schabenberger_trend_surface(coords, z, poly_degree=2):
 
 
 def cheatsheet():
-    return ("sptrs: polynomial trend surface; delegates to "
-            "spatial_trend_surface (sptrn).")
+    return "sptrs: polynomial trend surface; delegates to spatial_trend_surface (sptrn)."

@@ -88,9 +88,7 @@ def geron_cross_attention(X_dec, X_enc, WQ, WK, WV, mask=None):
     if Xe.shape[1] != WV.shape[0]:
         raise ValueError(f"X_enc width {Xe.shape[1]} != WV rows {WV.shape[0]}.")
     if WQ.shape[1] != WK.shape[1]:
-        raise ValueError(
-            f"WQ and WK must map into the same d_k, got {WQ.shape[1]} and {WK.shape[1]}."
-        )
+        raise ValueError(f"WQ and WK must map into the same d_k, got {WQ.shape[1]} and {WK.shape[1]}.")
     for name, arr in (("X_dec", Xd), ("X_enc", Xe), ("WQ", WQ), ("WK", WK), ("WV", WV)):
         if not np.all(np.isfinite(arr)):
             raise ValueError(f"{name} contains non-finite values.")
@@ -113,9 +111,7 @@ def geron_cross_attention(X_dec, X_enc, WQ, WK, WV, mask=None):
 
     return RichResult(
         title="Cross-attention",
-        summary_lines=[("Decoder length", int(Xd.shape[0])),
-                       ("Encoder length", int(Xe.shape[0])),
-                       ("d_k", int(d_k))],
+        summary_lines=[("Decoder length", int(Xd.shape[0])), ("Encoder length", int(Xe.shape[0])), ("d_k", int(d_k))],
         payload={
             "output": out.tolist(),
             "attention_weights": A.tolist(),

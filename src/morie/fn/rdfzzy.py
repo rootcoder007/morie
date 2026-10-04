@@ -79,18 +79,28 @@ def fuzzy_rdd(y, x, D, cutoff=0.0, bandwidth=1.0):
     # delta method for a ratio, treating numerator and denominator as
     # uncorrelated: the covariance term needs the joint influence
     # function, which a per-side fit does not carry.
-    se = math.sqrt(vn / (den * den) + (num * num) * vd / (den ** 4))
-    return RichResult(payload={
-        "estimate": tau, "tau": tau, "se": se,
-        "z": tau / se if se > 0.0 else float("nan"),
-        "reduced_form": num, "first_stage": den,
-        "se_reduced_form": math.sqrt(vn), "se_first_stage": math.sqrt(vd),
-        "n_right": nR, "n_left": nL, "bandwidth": h,
-        "method": "Fuzzy RDD, Wald ratio of local linear intercepts"})
+    se = math.sqrt(vn / (den * den) + (num * num) * vd / (den**4))
+    return RichResult(
+        payload={
+            "estimate": tau,
+            "tau": tau,
+            "se": se,
+            "z": tau / se if se > 0.0 else float("nan"),
+            "reduced_form": num,
+            "first_stage": den,
+            "se_reduced_form": math.sqrt(vn),
+            "se_first_stage": math.sqrt(vd),
+            "n_right": nR,
+            "n_left": nL,
+            "bandwidth": h,
+            "method": "Fuzzy RDD, Wald ratio of local linear intercepts",
+        }
+    )
 
 
 def cheatsheet():
     return "rdfzzy: Fuzzy RDD (incomplete compliance at the cutoff)"
+
 
 # public names resolved by fn/_lazy_map.json
 fuzzyrdd = fuzzy_rdd

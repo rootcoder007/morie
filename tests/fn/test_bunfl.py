@@ -1,7 +1,6 @@
 """Tests for morie.fn.bunfl — Bayesian unfolding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bunfl import bunfl
 
 

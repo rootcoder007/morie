@@ -13,7 +13,7 @@ def test_wsmpst1_basic():
     Trapezoid error is O(h^2 f'') ~ 1e-10 at h = 1e-5, below the 1e-8
     tolerance; renormalising by the trapezoid mass cancels the constant."""
     g = [k / 100000 for k in range(100001)]
-    dens = [7.3 * t * t * (1 - t) for t in g]      # unnormalised
+    dens = [7.3 * t * t * (1 - t) for t in g]  # unnormalised
     r = wasserman_posterior_mean((np.asarray(g), np.asarray(dens)))
     assert r["estimate"] == pytest.approx(0.6, abs=1e-8)
     assert r["posterior_sd"] == pytest.approx(math.sqrt(3 * 2 / (25 * 6)), abs=1e-8)
@@ -38,7 +38,7 @@ import morie.fn.wsmpst1 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

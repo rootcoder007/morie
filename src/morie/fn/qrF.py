@@ -54,14 +54,16 @@ def qrF(y_true, y_pred, theta=0.5):
         u = a - b
         losses.append(theta * u if u >= 0 else (theta - 1.0) * u)
     tot = sum(losses)
-    return RichResult(payload={
-        "estimate": tot / n,
-        "total": tot,
-        "losses": losses,
-        "theta": theta,
-        "n": n,
-        "method": "quantile/pinball loss (Koenker-Bassett 1978)",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / n,
+            "total": tot,
+            "losses": losses,
+            "theta": theta,
+            "n": n,
+            "method": "quantile/pinball loss (Koenker-Bassett 1978)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -70,6 +72,7 @@ pinball_loss = qrF
 
 def cheatsheet():
     return "qrF: rho_theta(u) = u(theta - 1[u<0]); minimized by theta-quantile"
+
 
 # public names resolved by fn/_lazy_map.json
 quantile_forecast = qrF

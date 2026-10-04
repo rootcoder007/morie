@@ -1,6 +1,7 @@
 """Tests for ipfsfa.ipopt_solver."""
 
 import math
+
 import pytest
 
 from morie.fn import _array_core as np

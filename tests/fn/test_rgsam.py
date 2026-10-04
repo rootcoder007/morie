@@ -9,9 +9,9 @@ No transcribable worked example exists in the library, so the checks here are
 a direct re-derivation of the definition plus its analytic limits.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgapn import rangayyan_approximate_entropy
 from morie.fn.rgsam import rangayyan_sample_entropy
 
@@ -25,13 +25,15 @@ def _sampen_reference(x, m, r):
     x = np.asarray(x, float)
     N = x.size
     nT = N - m
+
     def count(mm):
         c = 0
         for i in range(nT):
             for j in range(i + 1, nT):
-                if np.max(np.abs(x[i:i+mm] - x[j:j+mm])) <= r:
+                if np.max(np.abs(x[i : i + mm] - x[j : j + mm])) <= r:
                     c += 1
         return c
+
     return -np.log(count(m + 1) / count(m))
 
 
@@ -97,8 +99,7 @@ def test_identity_noise_is_less_regular_than_a_sine():
     t = np.linspace(0, 20 * np.pi, 600)
     sine = np.sin(t)
     noise = np.random.default_rng(5).standard_normal(600)
-    assert (rangayyan_sample_entropy(sine, m=2)["SampEn"]
-            < rangayyan_sample_entropy(noise, m=2)["SampEn"])
+    assert rangayyan_sample_entropy(sine, m=2)["SampEn"] < rangayyan_sample_entropy(noise, m=2)["SampEn"]
 
 
 def test_identity_scale_invariance_with_relative_tolerance():
@@ -107,8 +108,7 @@ def test_identity_scale_invariance_with_relative_tolerance():
     x = np.random.default_rng(9).standard_normal(300)
     base = rangayyan_sample_entropy(x, m=2)["SampEn"]
     for a, b in ((100.0, 0.0), (0.01, 0.0), (1.0, -50.0), (-2.0, 7.0)):
-        assert np.isclose(rangayyan_sample_entropy(a * x + b, m=2)["SampEn"], base,
-                          rtol=1e-9, atol=1e-9)
+        assert np.isclose(rangayyan_sample_entropy(a * x + b, m=2)["SampEn"], base, rtol=1e-9, atol=1e-9)
 
 
 def test_differs_from_apen_in_the_two_documented_ways():

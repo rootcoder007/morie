@@ -16,13 +16,13 @@ M = importlib.import_module("morie.fn.bats")
 # equation 3a
 # --------------------------------------------------------------------------
 
+
 def test_box_cox_is_the_printed_transform():
     y = [3.0, 7.5, 1.25, 10.0]
     for i, v in enumerate(y):
         assert M.box_cox(y, 1.0)[i] == pytest.approx(v - 1.0, abs=1e-14)
         assert M.box_cox(y, 0.0)[i] == pytest.approx(math.log(v), abs=1e-14)
-        assert M.box_cox(y, 0.5)[i] == pytest.approx(
-            (v ** 0.5 - 1.0) / 0.5, abs=1e-14)
+        assert M.box_cox(y, 0.5)[i] == pytest.approx((v**0.5 - 1.0) / 0.5, abs=1e-14)
 
 
 @pytest.mark.parametrize("w", [0.0, 0.3, 1.0, 1.4])
@@ -112,6 +112,7 @@ def test_the_filter_recovers_the_generating_innovations():
 # the trigonometric seasonal, equations 4a-4c
 # --------------------------------------------------------------------------
 
+
 @pytest.mark.parametrize("m,k", [(4, 2), (7, 3), (12, 6)])
 def test_the_index_equivalent_harmonic_count(m, k):
     """m/2 for even m, (m-1)/2 for odd -- the paper's equivalence."""
@@ -135,13 +136,11 @@ def test_zero_gamma_makes_the_seasonal_recursion_a_rotation():
     lam = M.seasonal_harmonics(m)
     nh = len(lam)
     sp = M.BatsSpec([m], [nh], use_trend=False)
-    seed = [0.0] + [0.7, -0.2, 1.1, 0.4, -0.9, 0.25] \
-        + [0.1, 0.6, -0.3, 0.8, 0.05, -0.45]
+    seed = [0.0] + [0.7, -0.2, 1.1, 0.4, -0.9, 0.25] + [0.1, 0.6, -0.3, 0.8, 0.05, -0.45]
     _, _, carry = M.bats_filter([0.0] * m, sp, [0.0, 0.0, 0.0], seed)
     for j in range(nh):
         assert carry["s"][0][j] == pytest.approx(seed[1 + j], abs=1e-11)
-        assert carry["sstar"][0][j] == pytest.approx(seed[1 + nh + j],
-                                                     abs=1e-11)
+        assert carry["sstar"][0][j] == pytest.approx(seed[1 + nh + j], abs=1e-11)
     _, _, half = M.bats_filter([0.0] * (m // 2), sp, [0.0, 0.0, 0.0], seed)
     assert half["s"][0][0] == pytest.approx(-seed[1], abs=1e-11)
 
@@ -168,6 +167,7 @@ def test_harmonics_above_half_the_period_are_refused():
 # the seed state and the likelihood
 # --------------------------------------------------------------------------
 
+
 def test_the_seed_state_minimises_the_sum_of_squares():
     seed = M.fit_seed_state(Z, SPEC, THETA)
     r0, _, _ = M.bats_filter(Z, SPEC, THETA, seed)
@@ -188,8 +188,7 @@ def test_the_likelihood_carries_the_box_cox_jacobian():
     base = M.concentrated_loglik(y, r, 1.0)
     assert base == pytest.approx(-0.5 * 4 * math.log(sum(v * v for v in r)))
     got = M.concentrated_loglik(y, r, 0.5)
-    assert got - base == pytest.approx(-0.5 * sum(math.log(v) for v in y),
-                                       abs=1e-12)
+    assert got - base == pytest.approx(-0.5 * sum(math.log(v) for v in y), abs=1e-12)
     worse = M.concentrated_loglik(y, [2 * v for v in r], 1.0)
     assert worse < base
 
@@ -197,6 +196,7 @@ def test_the_likelihood_carries_the_box_cox_jacobian():
 # --------------------------------------------------------------------------
 # the forecastability region
 # --------------------------------------------------------------------------
+
 
 def test_the_structural_unit_root_is_excluded_but_the_rest_is_not():
     sp = M.BatsSpec([12], None, use_trend=True, damped=False)
@@ -215,14 +215,14 @@ def test_the_measurement_and_transition_matrices_reproduce_the_filter():
     w, fmat, g = M.state_matrices(SPEC, THETA)
     # w' x_0 must be the first one-step prediction
     _, fit, _ = M.bats_filter(Z, SPEC, THETA, X0)
-    assert sum(w[j] * X0[j] for j in range(len(w))) == pytest.approx(
-        fit[0], abs=1e-12)
+    assert sum(w[j] * X0[j] for j in range(len(w))) == pytest.approx(fit[0], abs=1e-12)
     assert len(fmat) == len(g) == SPEC.n_states()
 
 
 # --------------------------------------------------------------------------
 # fitting and forecasting
 # --------------------------------------------------------------------------
+
 
 def _generate(gamma_true, n=200, sigma=1.5, seed=13):
     eps = [sigma * float(v) for v in random_normal(n, seed=seed, stream=3)]
@@ -244,9 +244,7 @@ def test_a_fit_recovers_sigma_and_alpha_and_stays_forecastable():
     # likelihood, so on a short series the residual sd is biased down by
     # roughly sqrt(1 - k/n) and 200 points is not a fair sample to ask
     # recovery of.
-    fit = M.bats(_generate(0.1, n=400), [12], use_box_cox=False,
-                 use_trend=True,
-                 damped=False, h=24)
+    fit = M.bats(_generate(0.1, n=400), [12], use_box_cox=False, use_trend=True, damped=False, h=24)
     assert math.sqrt(fit["sigma2"]) == pytest.approx(1.5, abs=0.2)
     assert fit["alpha"] == pytest.approx(0.20, abs=0.1)
     assert fit["forecastable"]
@@ -262,16 +260,14 @@ def test_gamma_responds_to_the_generating_gamma():
     alpha and beta, so asserting recovery there would assert something
     false. What must hold is that the estimate moves with the truth.
     """
-    got = [M.bats(_generate(g), [12], use_box_cox=False, use_trend=True,
-                  damped=False)["gamma"][0] for g in (0.0, 0.5)]
+    got = [M.bats(_generate(g), [12], use_box_cox=False, use_trend=True, damped=False)["gamma"][0] for g in (0.0, 0.5)]
     assert got[0] < got[1]
     assert got[1] - got[0] > 0.05
 
 
 def test_a_frozen_state_forecasts_exactly_periodically():
     sp = M.BatsSpec([4], None, use_trend=False)
-    fc = M._forecast(sp, [0.0, 0.0], [5.0, 1.0, -2.0, 0.5, 1.5],
-                     [0.0] * 8, 8)
+    fc = M._forecast(sp, [0.0, 0.0], [5.0, 1.0, -2.0, 0.5, 1.5], [0.0] * 8, 8)
     for i in range(4):
         assert fc[i] == pytest.approx(fc[i + 4], abs=1e-12)
     assert fc[0] == pytest.approx(6.0, abs=1e-12)

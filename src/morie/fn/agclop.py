@@ -30,8 +30,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_optimizer"]
 
 
-def alphazero_optimizer(theta, grad, momentum=0.9, weight_decay=1e-4,
-                        lr=0.2, buf=None):
+def alphazero_optimizer(theta, grad, momentum=0.9, weight_decay=1e-4, lr=0.2, buf=None):
     """A single SGD-with-momentum step under an L2 penalty.
 
     Parameters
@@ -78,7 +77,7 @@ def alphazero_optimizer(theta, grad, momentum=0.9, weight_decay=1e-4,
             "estimate": nt[0] if nt else float("nan"),
             "theta_new": nt,
             "buf": nb,
-            "step_norm": s2 ** 0.5,
+            "step_norm": s2**0.5,
             "method": "SGD with momentum and L2 weight decay (AlphaZero training)",
         },
     )

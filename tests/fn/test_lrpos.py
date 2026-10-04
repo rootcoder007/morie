@@ -1,7 +1,6 @@
 """Tests for morie.fn.lrpos."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lrpos import lrpos
 
 

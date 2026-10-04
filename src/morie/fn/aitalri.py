@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['alrinv', 'aitchison_alr_inverse']
+__all__ = ["alrinv", "aitchison_alr_inverse"]
 
 
 def alrinv(y, ref=None, total=1.0):
@@ -47,13 +47,19 @@ def alrinv(y, ref=None, total=1.0):
     e = [math.exp(v - m) for v in full]
     s = sum(e)
     t = float(total)
-    return RichResult(payload={
-        "composition": [t * v / s for v in e], "ref": k, "total": t, "D": D,
-        "method": "Inverse additive log-ratio transform"})
+    return RichResult(
+        payload={
+            "composition": [t * v / s for v in e],
+            "ref": k,
+            "total": t,
+            "D": D,
+            "method": "Inverse additive log-ratio transform",
+        }
+    )
 
 
 aitchison_alr_inverse = alrinv
 
 
 def cheatsheet():
-    return 'aitalri: Inverse additive log-ratio transform.'
+    return "aitalri: Inverse additive log-ratio transform."

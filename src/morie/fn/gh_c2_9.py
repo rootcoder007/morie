@@ -19,12 +19,12 @@ def ghosal_np_binary_reg(x, y, length=0.7, var=2.0):
     import math
 
     from ._stats_core import norm as _norm
+
     xs = _bnp._flat(x)
     ys = _bnp._flat(y)
     n = len(xs)
     k = _bnp.rbf_kernel(length, var)
-    K = [[k(xs[i], xs[j]) + (1e-8 if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    K = [[k(xs[i], xs[j]) + (1e-8 if i == j else 0.0) for j in range(n)] for i in range(n)]
     Ki = np.linalg.pinv(np.marr(K)).tolist()
     f = [0.0] * n
     for _ in range(50):
@@ -38,10 +38,8 @@ def ghosal_np_binary_reg(x, y, length=0.7, var=2.0):
             grad.append(s)
             Wd.append(s * (s + f[i]) if True else 0.0)
         # Newton step on log posterior: (K^-1 + W) df = grad - K^-1 f
-        A = [[Ki[i][j] + (Wd[i] if i == j else 0.0)
-              for j in range(n)] for i in range(n)]
-        b = [grad[i] - sum(Ki[i][j] * f[j] for j in range(n))
-             for i in range(n)]
+        A = [[Ki[i][j] + (Wd[i] if i == j else 0.0) for j in range(n)] for i in range(n)]
+        b = [grad[i] - sum(Ki[i][j] * f[j] for j in range(n)) for i in range(n)]
         try:
             step = np.linalg.solve(np.marr(A), np.marr(b))
         except Exception:
@@ -51,9 +49,14 @@ def ghosal_np_binary_reg(x, y, length=0.7, var=2.0):
         if max(abs(v) for v in sl) < 1e-8:
             break
     p = [float(_norm.cdf(v)) for v in f]
-    res = RichResult(payload={"estimate": sum(p) / n, "prob": p,
-                              "f": f,
-                              "method": "probit-GP binary regression, Laplace MAP (GvdV 2017 sec. 2.5)"})
+    res = RichResult(
+        payload={
+            "estimate": sum(p) / n,
+            "prob": p,
+            "f": f,
+            "method": "probit-GP binary regression, Laplace MAP (GvdV 2017 sec. 2.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c2_9")
 
 

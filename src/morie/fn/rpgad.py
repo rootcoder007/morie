@@ -69,19 +69,16 @@ def rdp_gaussian(alpha, sigma, sensitivity=1.0):
     if s <= 0.0:
         raise ValueError("rdp_gaussian: sigma must be positive, got %r" % (s,))
     if d < 0.0:
-        raise ValueError(
-            "rdp_gaussian: sensitivity must be non-negative, got %r" % (d,))
+        raise ValueError("rdp_gaussian: sensitivity must be non-negative, got %r" % (d,))
     return a * d * d / (2.0 * s * s)
 
 
 def rdp_laplace(alpha, lam, sensitivity=1.0):
     r"""Corollary 2, the Laplace RDP curve at order ``alpha``."""
     a = float(alpha)
-    lm = float(lam) / float(sensitivity) if float(sensitivity) != 0 else \
-        float("inf")
+    lm = float(lam) / float(sensitivity) if float(sensitivity) != 0 else float("inf")
     if a <= 1.0:
-        raise ValueError(
-            "rdp_laplace: alpha must exceed 1, got %r" % (alpha,))
+        raise ValueError("rdp_laplace: alpha must exceed 1, got %r" % (alpha,))
     if lm <= 0.0:
         raise ValueError("rdp_laplace: lambda must be positive, got %r" % (lam,))
     # Evaluated in log space. The first term carries exp((a-1)/lam),
@@ -96,9 +93,9 @@ def rdp_laplace(alpha, lam, sensitivity=1.0):
     return (hi + math.log1p(math.exp(lo - hi))) / (a - 1.0)
 
 
-def rdp_to_eps_delta(alpha, epsilon_R=None, delta=1e-5, mechanism=None,
-                     sigma=None, lam=None, sensitivity=1.0,
-                     n_compositions=1):
+def rdp_to_eps_delta(
+    alpha, epsilon_R=None, delta=1e-5, mechanism=None, sigma=None, lam=None, sensitivity=1.0, n_compositions=1
+):
     r"""Convert an RDP curve to :math:`(\varepsilon, \delta)`-DP.
 
     Parameters
@@ -136,18 +133,14 @@ def rdp_to_eps_delta(alpha, epsilon_R=None, delta=1e-5, mechanism=None,
     for a in orders:
         if a <= 1.0:
             raise ValueError(
-                "rdp_to_eps_delta: every alpha must exceed 1 (Proposition 3 "
-                "divides by alpha - 1), got %r" % (a,))
+                "rdp_to_eps_delta: every alpha must exceed 1 (Proposition 3 divides by alpha - 1), got %r" % (a,)
+            )
     d = float(delta)
     if not (0.0 < d < 1.0):
-        raise ValueError(
-            "rdp_to_eps_delta: delta must lie strictly in (0, 1), got %r"
-            % (d,))
+        raise ValueError("rdp_to_eps_delta: delta must lie strictly in (0, 1), got %r" % (d,))
     k = int(n_compositions)
     if k < 1:
-        raise ValueError(
-            "rdp_to_eps_delta: n_compositions must be at least 1, got %r"
-            % (n_compositions,))
+        raise ValueError("rdp_to_eps_delta: n_compositions must be at least 1, got %r" % (n_compositions,))
 
     if epsilon_R is not None:
         ev = np.atleast_1d(np.asarray(epsilon_R, dtype=float))
@@ -155,28 +148,23 @@ def rdp_to_eps_delta(alpha, epsilon_R=None, delta=1e-5, mechanism=None,
         if len(eps_r) == 1 and len(orders) > 1:
             eps_r = eps_r * len(orders)
         if len(eps_r) != len(orders):
-            raise ValueError(
-                "rdp_to_eps_delta: got %d alpha but %d epsilon_R"
-                % (len(orders), len(eps_r)))
+            raise ValueError("rdp_to_eps_delta: got %d alpha but %d epsilon_R" % (len(orders), len(eps_r)))
         mech = "supplied"
     else:
         if mechanism is None:
-            raise ValueError(
-                "rdp_to_eps_delta: give either epsilon_R or a mechanism")
+            raise ValueError("rdp_to_eps_delta: give either epsilon_R or a mechanism")
         mech = str(mechanism).lower()
         if mech not in _MECHANISMS:
             raise ValueError(
-                "rdp_to_eps_delta: mechanism must be one of %s, got %r"
-                % (", ".join(_MECHANISMS), mechanism))
+                "rdp_to_eps_delta: mechanism must be one of %s, got %r" % (", ".join(_MECHANISMS), mechanism)
+            )
         if mech == "gaussian":
             if sigma is None:
-                raise ValueError(
-                    "rdp_to_eps_delta: mechanism='gaussian' needs sigma")
+                raise ValueError("rdp_to_eps_delta: mechanism='gaussian' needs sigma")
             eps_r = [rdp_gaussian(a, sigma, sensitivity) for a in orders]
         else:
             if lam is None:
-                raise ValueError(
-                    "rdp_to_eps_delta: mechanism='laplace' needs lam")
+                raise ValueError("rdp_to_eps_delta: mechanism='laplace' needs lam")
             eps_r = [rdp_laplace(a, lam, sensitivity) for a in orders]
 
     # Proposition 1: composing k identical mechanisms adds their curves.
@@ -190,25 +178,29 @@ def rdp_to_eps_delta(alpha, epsilon_R=None, delta=1e-5, mechanism=None,
         if eps[i] < eps[best]:
             best = i
 
-    return RichResult(payload={
-        "estimate": float(eps[best]),
-        "epsilon": float(eps[best]),
-        "best_alpha": float(orders[best]),
-        "epsilons": eps,
-        "alphas": orders,
-        "rdp_epsilons": eps_r,
-        "delta": d,
-        "mechanism": mech,
-        "sensitivity": float(sensitivity),
-        "n_compositions": k,
-        "method": "RDP -> (eps, delta)-DP, Mironov (2017) Proposition 3",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(eps[best]),
+            "epsilon": float(eps[best]),
+            "best_alpha": float(orders[best]),
+            "epsilons": eps,
+            "alphas": orders,
+            "rdp_epsilons": eps_r,
+            "delta": d,
+            "mechanism": mech,
+            "sensitivity": float(sensitivity),
+            "n_compositions": k,
+            "method": "RDP -> (eps, delta)-DP, Mironov (2017) Proposition 3",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rpgad: Mironov 2017 Prop 3, eps = eps_R + log(1/delta)/(alpha-1), "
-            "minimised over alpha; curves gaussian a*D^2/(2 sigma^2) (Cor 3) "
-            "and laplace (Cor 2); composition adds curves (Prop 1).")
+    return (
+        "rpgad: Mironov 2017 Prop 3, eps = eps_R + log(1/delta)/(alpha-1), "
+        "minimised over alpha; curves gaussian a*D^2/(2 sigma^2) (Cor 3) "
+        "and laplace (Cor 2); composition adds curves (Prop 1)."
+    )
 
 
 rpgad = rdp_to_eps_delta

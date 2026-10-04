@@ -9,8 +9,7 @@ __all__ = ["hlmgr", "hlm_tau_matrix"]
 
 def _inv(a):
     k = len(a)
-    m = [row[:] + [1.0 if i == j else 0.0 for j in range(k)]
-         for i, row in enumerate(a)]
+    m = [row[:] + [1.0 if i == j else 0.0 for j in range(k)] for i, row in enumerate(a)]
     for c in range(k):
         piv = max(range(c, k), key=lambda r: abs(m[r][c]))
         if abs(m[piv][c]) < 1e-300:
@@ -33,8 +32,7 @@ def _eig_clip_psd(a):
     v = [[1.0 if i == j else 0.0 for j in range(k)] for i in range(k)]
     m = [row[:] for row in a]
     for _sweep in range(100):
-        off = max((abs(m[p][q]), p, q) for p in range(k)
-                  for q in range(p + 1, k)) if k > 1 else (0.0, 0, 0)
+        off = max((abs(m[p][q]), p, q) for p in range(k) for q in range(p + 1, k)) if k > 1 else (0.0, 0, 0)
         if off[0] < 1e-14:
             break
         p, q = off[1], off[2]
@@ -53,8 +51,7 @@ def _eig_clip_psd(a):
             v[i][p] = c * vp - s * vq
             v[i][q] = s * vp + c * vq
     lam = [max(m[i][i], 0.0) for i in range(k)]
-    return [[sum(v[i][t] * lam[t] * v[j][t] for t in range(k))
-             for j in range(k)] for i in range(k)]
+    return [[sum(v[i][t] * lam[t] * v[j][t] for t in range(k)) for j in range(k)] for i in range(k)]
 
 
 def hlmgr(betas, V=None):
@@ -114,35 +111,36 @@ def hlmgr(betas, V=None):
         if len(Vs) != J:
             raise ValueError("need one V_j per group")
     gamma = [sum(B[j][a] for j in range(J)) / J for a in range(q)]
-    S = [[sum((B[j][a] - gamma[a]) * (B[j][b] - gamma[b])
-              for j in range(J)) / (J - 1) for b in range(q)]
-         for a in range(q)]
-    vbar = [[sum(Vs[j][a][b] for j in range(J)) / J for b in range(q)]
-            for a in range(q)]
+    S = [
+        [sum((B[j][a] - gamma[a]) * (B[j][b] - gamma[b]) for j in range(J)) / (J - 1) for b in range(q)]
+        for a in range(q)
+    ]
+    vbar = [[sum(Vs[j][a][b] for j in range(J)) / J for b in range(q)] for a in range(q)]
     raw = [[S[a][b] - vbar[a][b] for b in range(q)] for a in range(q)]
     tau = _eig_clip_psd(raw)
     lams = []
     shrunk = []
     for j in range(J):
-        tv = [[tau[a][b] + Vs[j][a][b] for b in range(q)]
-              for a in range(q)]
+        tv = [[tau[a][b] + Vs[j][a][b] for b in range(q)] for a in range(q)]
         tvi = _inv(tv)
-        lam = [[sum(tau[a][t] * tvi[t][b] for t in range(q))
-                for b in range(q)] for a in range(q)]
+        lam = [[sum(tau[a][t] * tvi[t][b] for t in range(q)) for b in range(q)] for a in range(q)]
         lams.append(lam)
-        bs = [sum(lam[a][t] * B[j][t] for t in range(q))
-              + gamma[a] - sum(lam[a][t] * gamma[t] for t in range(q))
-              for a in range(q)]
+        bs = [
+            sum(lam[a][t] * B[j][t] for t in range(q)) + gamma[a] - sum(lam[a][t] * gamma[t] for t in range(q))
+            for a in range(q)
+        ]
         shrunk.append(bs)
-    return RichResult(payload={
-        "tau": tau,
-        "gamma": gamma,
-        "reliabilities": lams,
-        "shrunken": shrunk,
-        "s_total": S,
-        "J": J,
-        "method": "HLM T matrix, MoM (R&B 2002 Eqs. 3.28, 3.57)",
-    })
+    return RichResult(
+        payload={
+            "tau": tau,
+            "gamma": gamma,
+            "reliabilities": lams,
+            "shrunken": shrunk,
+            "s_total": S,
+            "J": J,
+            "method": "HLM T matrix, MoM (R&B 2002 Eqs. 3.28, 3.57)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -151,6 +149,7 @@ hlm_tau_matrix = hlmgr
 
 def cheatsheet():
     return "hlmgr: T = S - Vbar (PSD-clipped); Lambda = T(T+V)^-1; EB shrinkage"
+
 
 # public names resolved by fn/_lazy_map.json
 hlm_gamma_matrix = hlmgr

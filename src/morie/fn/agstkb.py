@@ -66,8 +66,7 @@ def alphazero_stockfish_baseline(games, ladder, base="e", c_elo=1.0 / 400.0):
         scores.append(s)
         if 0.0 < s < 1.0:
             odds = math.log(s / (1.0 - s))
-            r = anchors[i] + (odds / c_elo if base == "e"
-                              else odds / (math.log(10.0) * c_elo))
+            r = anchors[i] + (odds / c_elo if base == "e" else odds / (math.log(10.0) * c_elo))
         else:
             r = float("-inf") if s <= 0.0 else float("inf")
         per.append(r)

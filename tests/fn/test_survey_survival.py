@@ -1,8 +1,8 @@
 """Survival estimation in the survey/design family."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.smplts import sample_lifetable
 from morie.fn.surdrl import survey_dr_estimator
 from morie.fn.survbs import survival_bootstrap_se
@@ -63,8 +63,7 @@ def test_bootstrap_se_is_reported_beside_greenwood():
     assert np.all(out["greenwood_se"] >= 0)
     # in the body of the distribution the two should be comparable
     finite = np.isfinite(out["se_ratio"])
-    assert np.all((out["se_ratio"][finite] > 0.3) &
-                  (out["se_ratio"][finite] < 3.0))
+    assert np.all((out["se_ratio"][finite] > 0.3) & (out["se_ratio"][finite] < 3.0))
     assert "subject" in out["resample_level"]
     assert np.all(np.diff(out["survival"]) <= 1e-12)
     with pytest.raises(ValueError):
@@ -79,8 +78,7 @@ def test_smoothed_life_table_gives_up_the_npmle():
     assert np.all(np.isfinite(out["survival_smooth"]))
     # the smooth curve tracks Kaplan-Meier
     ok = np.isfinite(out["survival_smooth"])
-    assert np.corrcoef(out["survival_smooth"][ok],
-                       out["survival_km"][ok])[0, 1] > 0.95
+    assert np.corrcoef(out["survival_smooth"][ok], out["survival_km"][ok])[0, 1] > 0.95
     with pytest.raises(ValueError):
         life_table_smoothed(t, ev, bandwidth=-1.0)
 
@@ -123,7 +121,7 @@ def test_nls_fits_the_curve_but_is_not_for_inference():
 def test_gee_survival_inflates_the_se_only_when_clusters_are_informative():
     rng = np.random.default_rng(5)
     n_clu, m = 40, 8
-    frail = rng.standard_normal(n_clu) * 1.2      # strong shared frailty
+    frail = rng.standard_normal(n_clu) * 1.2  # strong shared frailty
     z = rng.standard_normal(n_clu * m)
     cl = np.repeat(np.arange(n_clu), m)
     t = rng.exponential(1.0, n_clu * m) / np.exp(0.6 * z + frail[cl])

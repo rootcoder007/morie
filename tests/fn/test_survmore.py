@@ -9,10 +9,23 @@ import math
 
 import pytest
 
-from morie.fn.survmore import (aftfit, cif, coxsnell, devresid, finegray,
-                               hazratio, landmark, ltkm, martingale,
-                               paracompare, parasurv, rmst, rmstdiff,
-                               schoenfeld, turnbull)
+from morie.fn.survmore import (
+    aftfit,
+    cif,
+    coxsnell,
+    devresid,
+    finegray,
+    hazratio,
+    landmark,
+    ltkm,
+    martingale,
+    paracompare,
+    parasurv,
+    rmst,
+    rmstdiff,
+    schoenfeld,
+    turnbull,
+)
 
 T = [5, 6, 6, 2.5, 4, 4, 3, 3, 1, 2, 2, 3, 7, 8, 9, 10]
 E = [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1]
@@ -22,8 +35,7 @@ C = [1, 0, 2, 1, 1, 0, 2, 1, 1, 1, 0, 2, 1, 0, 1, 2]
 
 def test_rmst_of_an_uncensored_sample_is_the_stepwise_area():
     # S steps 0.75, 0.5, 0.25, 0; area to tau = 4 is 1 + .75 + .5 + .25
-    assert rmst([1, 2, 3, 4], [1, 1, 1, 1], tau=4)["rmst"] == \
-        pytest.approx(2.5)
+    assert rmst([1, 2, 3, 4], [1, 1, 1, 1], tau=4)["rmst"] == pytest.approx(2.5)
 
 
 def test_rmst_interval_brackets_the_estimate():
@@ -45,8 +57,7 @@ def test_rmstdiff_adds_variances_over_a_common_horizon():
     a = rmst(T[:8], E[:8], tau=r["tau"])
     b = rmst(T[8:], E[8:], tau=r["tau"])
     assert r["difference"] == pytest.approx(a["rmst"] - b["rmst"])
-    assert r["se"] == pytest.approx(
-        math.sqrt(a["variance"] + b["variance"]))
+    assert r["se"] == pytest.approx(math.sqrt(a["variance"] + b["variance"]))
     assert rmstdiff(T, E, g, tau=99)["tau_capped"] is True
 
 
@@ -81,15 +92,14 @@ def test_devresid_is_the_symmetrized_martingale():
         mu = sum(v) / n
         m2 = sum((x - mu) ** 2 for x in v) / n
         m3 = sum((x - mu) ** 3 for x in v) / n
-        return abs(m3) / m2 ** 1.5
+        return abs(m3) / m2**1.5
 
     assert skew(d["residuals"]) < skew(m)
 
 
 def test_schoenfeld_returns_one_residual_per_event_time():
     s = schoenfeld(T, E, X, [0.3], vcov=[[0.25]])
-    assert len(s["residuals"]) == len(set(T[i] for i in range(len(T))
-                                          if E[i] == 1))
+    assert len(s["residuals"]) == len(set(T[i] for i in range(len(T)) if E[i] == 1))
     assert len(s["time"]) == len(s["residuals"])
     assert abs(s["ph_test"][0]["rho"]) <= 1.0
 
@@ -102,8 +112,7 @@ def test_schoenfeld_scaling_needs_the_covariance():
 
 def test_hazratio_interval_is_asymmetric_and_positive():
     r = hazratio([0.5, -0.2], [0.2, 0.1])
-    assert r["hazard_ratio"] == pytest.approx([math.exp(0.5),
-                                               math.exp(-0.2)])
+    assert r["hazard_ratio"] == pytest.approx([math.exp(0.5), math.exp(-0.2)])
     assert all(v > 0 for v in r["lower"])
     lo_gap = r["hazard_ratio"][0] - r["lower"][0]
     hi_gap = r["upper"][0] - r["hazard_ratio"][0]
@@ -127,8 +136,7 @@ def test_cif_is_below_the_naive_one_minus_km():
 def test_cifs_over_all_causes_sum_to_one_minus_survival():
     a = cif(T, C, code=1)
     b = cif(T, C, code=2)
-    assert a["cif"][-1] + b["cif"][-1] == pytest.approx(
-        1.0 - a["overall_survival_at_end"], abs=1e-9)
+    assert a["cif"][-1] + b["cif"][-1] == pytest.approx(1.0 - a["overall_survival_at_end"], abs=1e-9)
 
 
 def test_cif_rejects_the_censoring_code():
@@ -141,8 +149,7 @@ def test_cif_rejects_the_censoring_code():
 def test_finegray_fits_the_subdistribution_hazard():
     r = finegray(T, C, X, code=1)
     assert len(r["coef"]) == 1
-    assert r["subdistribution_hazard_ratio"] == pytest.approx(
-        [math.exp(r["coef"][0])])
+    assert r["subdistribution_hazard_ratio"] == pytest.approx([math.exp(r["coef"][0])])
     assert r["n_competing"] > 0
     assert r["differs_from_cause_specific"] is True
 
@@ -197,8 +204,7 @@ def test_parasurv_exponential_is_nested_in_weibull():
     w = parasurv(T, E, "weibull")
     ex = parasurv(T, E, "exponential")
     assert w["loglik"] >= ex["loglik"] - 1e-6
-    assert w["lr_vs_exponential"] == pytest.approx(
-        2.0 * (w["loglik"] - ex["loglik"]), abs=1e-6)
+    assert w["lr_vs_exponential"] == pytest.approx(2.0 * (w["loglik"] - ex["loglik"]), abs=1e-6)
     assert ex["fixed_scale"] is True
     assert w["fixed_scale"] is False
 
@@ -210,11 +216,9 @@ def test_parasurv_rejects_an_unknown_family():
 
 def test_aft_time_ratio_and_hazard_ratio_point_opposite_ways():
     a = aftfit(T, E, X, "weibull")
-    assert a["time_ratio"] == pytest.approx(
-        [math.exp(v) for v in a["beta"]])
+    assert a["time_ratio"] == pytest.approx([math.exp(v) for v in a["beta"]])
     assert a["ph_equivalent"] is True
-    assert a["hazard_ratio"] == pytest.approx(
-        [math.exp(-v / a["scale"]) for v in a["beta"]])
+    assert a["hazard_ratio"] == pytest.approx([math.exp(-v / a["scale"]) for v in a["beta"]])
     assert (a["time_ratio"][0] > 1) == (a["hazard_ratio"][0] < 1)
 
 
@@ -227,8 +231,7 @@ def test_aft_lognormal_has_no_ph_equivalent():
 def test_paracompare_ranks_by_aic_and_reports_failures():
     r = paracompare(T, E)
     assert len(r["table"]) == 4
-    assert [row["aic"] for row in r["table"]] == sorted(
-        row["aic"] for row in r["table"])
+    assert [row["aic"] for row in r["table"]] == sorted(row["aic"] for row in r["table"])
     assert r["best_aic"] in [row["dist"] for row in r["table"]]
     assert r["families_not_nested"] is True
     assert r["failed"] == {}

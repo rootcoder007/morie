@@ -5,14 +5,18 @@ and against Parseval, not against its own output. IDW is checked against the
 three properties its source states in prose.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._schab_hermite import (disjunctive_kriging, gauss_hermite,
-                                     hermite_coefficients, hermite_e,
-                                     hermite_orthonormal,
-                                     indicator_coefficients,
-                                     standard_normal_cdf)
+from morie.fn import _array_core as np
+from morie.fn._schab_hermite import (
+    disjunctive_kriging,
+    gauss_hermite,
+    hermite_coefficients,
+    hermite_e,
+    hermite_orthonormal,
+    indicator_coefficients,
+    standard_normal_cdf,
+)
 from morie.fn.spdjkr import schabenberger_disjunctive_kriging as spdjkr
 from morie.fn.spmidw import schabenberger_idw as spmidw
 
@@ -70,7 +74,7 @@ def test_indicator_coefficients_use_the_closed_form_not_quadrature():
     exact = indicator_coefficients(z_k, 6)
     assert exact[0] == pytest.approx(float(standard_normal_cdf(z_k)), abs=1e-14)
     quad = hermite_coefficients(lambda v: (v <= z_k).astype(float), 6)
-    assert abs(quad[0] - exact[0]) > 1e-3       # the failure being guarded
+    assert abs(quad[0] - exact[0]) > 1e-3  # the failure being guarded
 
 
 def test_indicator_coefficients_satisfy_parseval():
@@ -79,8 +83,7 @@ def test_indicator_coefficients_satisfy_parseval():
     Hermite expansion, which is why the text advises only a few terms."""
     z_k = 0.7
     target = float(standard_normal_cdf(z_k))
-    sums = [float((indicator_coefficients(z_k, p) ** 2).sum())
-            for p in (6, 14, 40, 120)]
+    sums = [float((indicator_coefficients(z_k, p) ** 2).sum()) for p in (6, 14, 40, 120)]
     assert all(s < target for s in sums)
     assert sums == sorted(sums)
     assert sums[-1] > 0.98 * sums[0]
@@ -98,9 +101,7 @@ def test_disjunctive_component_variances_are_bounded():
     """eq (5.69): sigma^2_eta = 1 - lambda'rho. Since eta_p has unit
     variance, every component variance must lie in [0, 1]."""
     coords = _sites()
-    _, _, _, comp = disjunctive_kriging(coords, _y(coords),
-                                        np.array([2.3, 1.7]), _rho,
-                                        lambda v: v, degree=6)
+    _, _, _, comp = disjunctive_kriging(coords, _y(coords), np.array([2.3, 1.7]), _rho, lambda v: v, degree=6)
     assert np.all(comp[1:] >= -1e-12)
     assert np.all(comp[1:] <= 1.0 + 1e-12)
 
@@ -109,15 +110,14 @@ def test_disjunctive_kriging_runs_for_both_targets():
     coords = _sites()
     y = _y(coords)
     a = spdjkr(coords, y, np.array([2.3, 1.7]), cov_model=_rho, degree=8)
-    b = spdjkr(coords, y, np.array([2.3, 1.7]), cov_model=_rho, degree=8,
-               indicator_threshold=0.7)
+    b = spdjkr(coords, y, np.array([2.3, 1.7]), cov_model=_rho, degree=8, indicator_threshold=0.7)
     assert np.isfinite(a["prediction"]) and a["variance"] >= 0.0
-    assert b["coefficients"][0] == pytest.approx(
-        float(standard_normal_cdf(0.7)), abs=1e-14)
+    assert b["coefficients"][0] == pytest.approx(float(standard_normal_cdf(0.7)), abs=1e-14)
     assert 0.0 <= b["prediction"] <= 1.5
 
 
 # ------------------------------------------------------------------- IDW ---
+
 
 def test_idw_is_exact_at_an_observation():
     """Bivand Sec 8.3.1: "If s0 coincides with an observation location, the
@@ -138,26 +138,24 @@ def test_idw_weights_are_normalised():
 
 
 def test_idw_converges_to_nearest_neighbour_for_large_power():
-    """"for large values IDW converges to the one-nearest-neighbour
+    """ "for large values IDW converges to the one-nearest-neighbour
     interpolation"."""
     coords = _sites()
     z = np.exp(_y(coords))
     target = np.array([2.3, 1.7])
     nearest = z[int(np.argmin(np.linalg.norm(coords - target, axis=1)))]
-    assert spmidw(coords, z, target, power=60.0)["prediction"] == \
-        pytest.approx(nearest, rel=1e-8)
+    assert spmidw(coords, z, target, power=60.0)["prediction"] == pytest.approx(nearest, rel=1e-8)
 
 
 def test_idw_with_zero_power_is_the_unweighted_mean():
     """p = 0 makes every weight 1; the correct limit, not a special case."""
     coords = _sites()
     z = np.exp(_y(coords))
-    assert spmidw(coords, z, np.array([2.3, 1.7]), power=0.0)["prediction"] == \
-        pytest.approx(z.mean(), abs=1e-12)
+    assert spmidw(coords, z, np.array([2.3, 1.7]), power=0.0)["prediction"] == pytest.approx(z.mean(), abs=1e-12)
 
 
 def test_idw_reports_no_prediction_variance():
-    """"inverse distance does not provide prediction error variances" -- the
+    """ "inverse distance does not provide prediction error variances" -- the
     reference implementation returns NA. Returning None is honest; inventing
     a number would not be."""
     coords = _sites()

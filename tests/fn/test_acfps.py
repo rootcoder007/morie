@@ -1,7 +1,6 @@
 """Tests for acfps.py - ACF from PSD."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.acfps import acf_from_psd_fn, acfps
 
 

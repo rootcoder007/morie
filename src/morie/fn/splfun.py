@@ -7,8 +7,7 @@ from ._schab_pp import as_region
 __all__ = ["schabenberger_l_function"]
 
 
-def schabenberger_l_function(points, lambda_est=None, r=None, region=None,
-                             correction="border"):
+def schabenberger_l_function(points, lambda_est=None, r=None, region=None, correction="border"):
     r"""
     L-function, the variance-stabilised K-function.
 
@@ -56,8 +55,7 @@ def schabenberger_l_function(points, lambda_est=None, r=None, region=None,
     return RichResult(
         title="L-function (variance-stabilised K)",
         summary_lines=[("lambda", kr["lambda_est"]), ("correction", correction)],
-        payload={"r": rr, "l": ell, "l_minus_r": ell - rr, "k": k,
-                 "lambda_est": kr["lambda_est"]},
+        payload={"r": rr, "l": ell, "l_minus_r": ell - rr, "k": k, "lambda_est": kr["lambda_est"]},
     )
 
 

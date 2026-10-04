@@ -1,7 +1,6 @@
 """Tests for morie.fn.bmlm -- Bayesian multilevel model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bmlm import bayesian_multilevel
 
 

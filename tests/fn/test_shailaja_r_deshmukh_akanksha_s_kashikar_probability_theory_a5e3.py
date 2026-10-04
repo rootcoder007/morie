@@ -18,7 +18,9 @@ def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e3_basic()
     assert r["independent"] is True
     d = indrv2([[0.17, 0.23], [0.13, 0.47]])
     rows, cols = [0.4, 0.6], [0.3, 0.7]
-    want = max(abs(v - rows[i] * cols[j]) for i, row in enumerate([[0.17, 0.23], [0.13, 0.47]]) for j, v in enumerate(row))
+    want = max(
+        abs(v - rows[i] * cols[j]) for i, row in enumerate([[0.17, 0.23], [0.13, 0.47]]) for j, v in enumerate(row)
+    )
     assert d["max_deviation"] == pytest.approx(want, abs=1e-15)
     assert d["independent"] is False
 

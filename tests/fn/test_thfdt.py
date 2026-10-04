@@ -1,7 +1,6 @@
 """Tests for thfdt.terry_hoeffding_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.thfdt import terry_hoeffding_test
 
 

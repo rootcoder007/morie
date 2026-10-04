@@ -1,7 +1,5 @@
 """Tests for loglinear_odds_ratio.loglinear_odds_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.loglinear_odds_ratio import (
     loglinear_odds_ratio,
 )

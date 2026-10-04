@@ -1,7 +1,6 @@
 """Tests for hmcatt.geron_cross_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmcatt import geron_cross_attention
 
 

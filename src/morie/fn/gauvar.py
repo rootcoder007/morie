@@ -77,8 +77,7 @@ def gaussian_variogram_model(h, c0=0.0, c=1.0, a=1.0):
     if not (a > 0.0):
         raise ValueError("a (range parameter) must be > 0")
 
-    gamma = [0.0 if v == 0.0 else c0 + c * (1.0 - math.exp(-((v / a) ** 2)))
-             for v in hs]
+    gamma = [0.0 if v == 0.0 else c0 + c * (1.0 - math.exp(-((v / a) ** 2))) for v in hs]
     cov = [c0 + c if v == 0.0 else c * math.exp(-((v / a) ** 2)) for v in hs]
 
     return RichResult(

@@ -1,7 +1,5 @@
 """Tests for joexw.joseph_expanding_window_cv."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.joexw import joseph_expanding_window_cv
 
 

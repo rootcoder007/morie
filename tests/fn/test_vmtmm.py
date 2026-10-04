@@ -1,8 +1,8 @@
 """Tests for morie.fn.vmtmm — MTMM matrix analysis."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn.vmtmm import validity_mtmm
 
 

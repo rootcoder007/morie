@@ -27,20 +27,19 @@ def bayes_rule(p_a_given_b, p_b, p_a_given_notb):
     """
     value = _acd.bayes_rule(p_a_given_b, p_b, p_a_given_notb)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.22)"
     return RichResult(
-        title='Bayes rule P(B|A) = P(A|B)P(B)/P(A)',
+        title="Bayes rule P(B|A) = P(A|B)P(B)/P(A)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e22: P(B|A) = P(A|B)P(B)/(P(A|B)P(B) + P(A|~B)P(~B)) [Bilder & Loughin 2025, eq. 6.22]'
+    return "6e22: P(B|A) = P(A|B)P(B)/(P(A|B)P(B) + P(A|~B)P(~B)) [Bilder & Loughin 2025, eq. 6.22]"
 
 
 # compact alias per ledger/NAMING.md

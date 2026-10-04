@@ -1,7 +1,6 @@
 """Tests for anchoring vignettes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.avign import avign
 
 

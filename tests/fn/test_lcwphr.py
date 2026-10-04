@@ -1,9 +1,10 @@
 """Tests for lcwphr.latent_class_weighted."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lcwphr import latent_class_weighted
 
 

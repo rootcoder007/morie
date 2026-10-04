@@ -1,7 +1,6 @@
 """Tests for morie.fn.sthet."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sthet import sthet
 
 

@@ -49,11 +49,16 @@ def wasserman_graphical_model(graph, psi):
     n = core["n_nodes"]
     best = max(range(len(probs)), key=lambda i: probs[i])
     mode = [(best >> (n - 1 - j)) & 1 for j in range(n)]
-    return RichResult(payload={
-        "estimate": float(probs[best]), "mode": mode,
-        "partition_function": core["estimate"],
-        "probabilities": probs, "n_nodes": n,
-        "method": "clique-potential joint via wsmund; mode decoded (ties -> lowest index)"})
+    return RichResult(
+        payload={
+            "estimate": float(probs[best]),
+            "mode": mode,
+            "partition_function": core["estimate"],
+            "probabilities": probs,
+            "n_nodes": n,
+            "method": "clique-potential joint via wsmund; mode decoded (ties -> lowest index)",
+        }
+    )
 
 
 def cheatsheet():

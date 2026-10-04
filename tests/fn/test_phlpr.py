@@ -1,7 +1,6 @@
 """Tests for phlpr.phillips_perron."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.phlpr import phillips_perron
 
 

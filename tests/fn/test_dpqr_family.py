@@ -105,6 +105,7 @@ def test_draws_are_reproducible_and_stream_stable():
 
 def test_parameters_are_validated():
     import pytest
+
     with pytest.raises(ValueError):
         R.dnorm(0, sd=0)
     with pytest.raises(ValueError):

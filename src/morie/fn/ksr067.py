@@ -56,16 +56,21 @@ def kosorok_eff_score_consistency(scores_est, scores_true):
     if n < 2:
         raise ValueError(f"need at least 2 observations, got {n}.")
     msd = float(np.mean(np.sum((A - B) ** 2, axis=1)))
-    sm = float(np.mean(np.sum(A ** 2, axis=1)))
-    return RichResult(payload={
-        "mean_square_difference": msd, "second_moment": sm,
-        "converges": bool(msd < 1.0),
-        "bounded": bool(np.isfinite(sm)),
-        "both_hold": bool(msd < 1.0 and np.isfinite(sm)),
-        "roles": "the first makes the estimating equation asymptotically correct; "
-                 "the second rules out exploding second moments under the estimated law",
-        "n": int(n), "p": int(p),
-        "method": "Efficient-score regularity (Eq. 3.7); convergence AND boundedness, separately"})
+    sm = float(np.mean(np.sum(A**2, axis=1)))
+    return RichResult(
+        payload={
+            "mean_square_difference": msd,
+            "second_moment": sm,
+            "converges": bool(msd < 1.0),
+            "bounded": bool(np.isfinite(sm)),
+            "both_hold": bool(msd < 1.0 and np.isfinite(sm)),
+            "roles": "the first makes the estimating equation asymptotically correct; "
+            "the second rules out exploding second moments under the estimated law",
+            "n": int(n),
+            "p": int(p),
+            "method": "Efficient-score regularity (Eq. 3.7); convergence AND boundedness, separately",
+        }
+    )
 
 
 def cheatsheet():

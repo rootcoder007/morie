@@ -1,21 +1,24 @@
 """Tests for epsig1.em_algorithm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.epsig1 import em_algorithm
 
 
 def _constant_log_lik(value):
     """Return a log_lik callable that ignores its argument."""
+
     def _ll(theta):
         return float(value)
+
     return _ll
 
 
 def _identity_Q():
     """Return a Q callable that returns its input (a list) unchanged."""
+
     def _q(theta):
         return [float(v) for v in theta]
+
     return _q
 
 

@@ -83,18 +83,17 @@ def approx_dp(mech, D, D_prime, epsilon=1.0, n_samples=20000, bins=50, seed=None
     True
     """
     rng = np.random.default_rng(seed)
-    a = np.asarray([np.ravel(mech(np.asarray(D, dtype=float), rng))[0]
-                    for _ in range(int(n_samples))], dtype=float)
-    b = np.asarray([np.ravel(mech(np.asarray(D_prime, dtype=float), rng))[0]
-                    for _ in range(int(n_samples))], dtype=float)
+    a = np.asarray([np.ravel(mech(np.asarray(D, dtype=float), rng))[0] for _ in range(int(n_samples))], dtype=float)
+    b = np.asarray(
+        [np.ravel(mech(np.asarray(D_prime, dtype=float), rng))[0] for _ in range(int(n_samples))], dtype=float
+    )
     lo, hi = min(a.min(), b.min()), max(a.max(), b.max())
     if lo == hi:
         return RichResult(
             title="Empirical delta",
             summary_lines=[("delta (empirical)", 1.0)],
             warnings=["the mechanism is deterministic; it provides no privacy"],
-            payload={"delta_empirical": 1.0, "epsilon": float(epsilon),
-                     "n_violating_bins": 0, "method": "approx_dp"},
+            payload={"delta_empirical": 1.0, "epsilon": float(epsilon), "n_violating_bins": 0, "method": "approx_dp"},
         )
     edges = np.linspace(lo, hi, int(bins) + 1)
     ca, _ = np.histogram(a, bins=edges)
@@ -106,14 +105,17 @@ def approx_dp(mech, D, D_prime, epsilon=1.0, n_samples=20000, bins=50, seed=None
     delta = float(np.sum(np.maximum(pa[viol] - np.exp(epsilon) * pb[viol], 0.0)))
     return RichResult(
         title="Empirical delta",
-        summary_lines=[("epsilon", float(epsilon)), ("delta (empirical)", delta),
-                       ("violating bins", int(viol.sum()))],
-        warnings=["a lower bound from one dataset pair; and note that delta is "
-                  "not slack -- at delta = 1/n a per-record leak is permitted"],
+        summary_lines=[("epsilon", float(epsilon)), ("delta (empirical)", delta), ("violating bins", int(viol.sum()))],
+        warnings=[
+            "a lower bound from one dataset pair; and note that delta is "
+            "not slack -- at delta = 1/n a per-record leak is permitted"
+        ],
         payload={
-            "delta_empirical": delta, "epsilon": float(epsilon),
+            "delta_empirical": delta,
+            "epsilon": float(epsilon),
             "n_violating_bins": int(viol.sum()),
-            "n_samples": int(n_samples), "method": "approx_dp",
+            "n_samples": int(n_samples),
+            "method": "approx_dp",
         },
     )
 

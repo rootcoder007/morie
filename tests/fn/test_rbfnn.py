@@ -1,7 +1,6 @@
 """Tests for rbfnn.py - RBF network."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rbfnn import rbfnn, rbfnn_fn
 
 

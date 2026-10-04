@@ -10,5 +10,6 @@ def test_alrmt_basic():
 
 def test_alrmt_edge():
     import pytest
+
     with pytest.raises(ValueError, match="loser score"):
         alammar_reward_model_training_bt([1.0, 2.0], [0.0])

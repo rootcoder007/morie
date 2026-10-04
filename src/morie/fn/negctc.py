@@ -92,20 +92,28 @@ def negative_control_outcome(y_neg, D, X=None, alpha=0.05):
     se = math.sqrt(var) if var > 0.0 else 0.0
     b = float(beta[1])
     if se <= 0.0:
-        raise ValueError("the exposure is collinear with the adjustment set; "
-                         "its coefficient has no standard error")
+        raise ValueError("the exposure is collinear with the adjustment set; its coefficient has no standard error")
     # The verdict is negct's, not a second implementation of it.
     t = negative_control(b, b, se_estimate=se, se_negative=se)
     z = float(t.statistic)
     pv = float(t.p_value)
     zc = _qnorm_upper(a / 2.0)
-    return RichResult(payload={
-        "estimate": b, "se": se, "z": z, "p_value": pv,
-        "confounding_suspected": 1.0 if pv < a else 0.0,
-        "negct_verdict_at_5pct": 1.0 if t.extra["confounding_suspected"] else 0.0,
-        "ci_lower": b - zc * se, "ci_upper": b + zc * se,
-        "alpha": a, "n": n, "p": p,
-        "method": "Negative control outcome (Wald test of a known null)"})
+    return RichResult(
+        payload={
+            "estimate": b,
+            "se": se,
+            "z": z,
+            "p_value": pv,
+            "confounding_suspected": 1.0 if pv < a else 0.0,
+            "negct_verdict_at_5pct": 1.0 if t.extra["confounding_suspected"] else 0.0,
+            "ci_lower": b - zc * se,
+            "ci_upper": b + zc * se,
+            "alpha": a,
+            "n": n,
+            "p": p,
+            "method": "Negative control outcome (Wald test of a known null)",
+        }
+    )
 
 
 def _qnorm_upper(q):

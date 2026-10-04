@@ -12,11 +12,11 @@ _OPS = {
     "add": (lambda a, b: a + b, lambda a, b, g: (g, g)),
     "sub": (lambda a, b: a - b, lambda a, b, g: (g, -g)),
     "mul": (lambda a, b: a * b, lambda a, b, g: (g * b, g * a)),
-    "tanh": (lambda a: math.tanh(a),
-             lambda a, g: (g * (1.0 - math.tanh(a) ** 2),)),
-    "sigmoid": (lambda a: 1.0 / (1.0 + math.exp(-a)),
-                lambda a, g: (g * (1.0 / (1.0 + math.exp(-a)))
-                              * (1.0 - 1.0 / (1.0 + math.exp(-a))),)),
+    "tanh": (lambda a: math.tanh(a), lambda a, g: (g * (1.0 - math.tanh(a) ** 2),)),
+    "sigmoid": (
+        lambda a: 1.0 / (1.0 + math.exp(-a)),
+        lambda a, g: (g * (1.0 / (1.0 + math.exp(-a))) * (1.0 - 1.0 / (1.0 + math.exp(-a))),),
+    ),
     "relu": (lambda a: max(a, 0.0), lambda a, g: (g if a > 0 else 0.0,)),
     "square": (lambda a: a * a, lambda a, g: (2.0 * a * g,)),
     "log": (lambda a: math.log(a), lambda a, g: (g / a,)),
@@ -50,31 +50,38 @@ def burkov_computational_graph(graph, inputs):
     for node in graph:
         op = node["op"]
         if op not in _OPS:
-            raise ValueError(
-                f"unknown op {op!r}; supported: {sorted(_OPS)}.")
+            raise ValueError(f"unknown op {op!r}; supported: {sorted(_OPS)}.")
         args = node["args"]
         fwd = _OPS[op][0]
         missing = [a for a in args if a not in values]
         if missing:
             raise ValueError(
                 f"node {node['name']!r} needs {missing} before they are "
-                "computed; the graph must be topologically ordered.")
+                "computed; the graph must be topologically ordered."
+            )
         values[node["name"]] = fwd(*(values[a] for a in args))
     out_name = graph[-1]["name"]
     grads = {name: 0.0 for name in values}
     grads[out_name] = 1.0
     for node in reversed(graph):
-        op = node["op"]; args = node["args"]
+        op = node["op"]
+        args = node["args"]
         bwd = _OPS[op][1]
         g = grads[node["name"]]
         local = bwd(*[values[a] for a in args], g)
         for a, ga in zip(args, local):
             grads[a] += ga
     leaf_grads = {k: grads[k] for k in inputs}
-    return RichResult(payload={
-        "output": values[out_name], "estimate": values[out_name],
-        "gradients": leaf_grads, "values": values, "n": len(graph),
-        "method": "Computational-graph autodiff (Burkov Ch 1)"})
+    return RichResult(
+        payload={
+            "output": values[out_name],
+            "estimate": values[out_name],
+            "gradients": leaf_grads,
+            "values": values,
+            "n": len(graph),
+            "method": "Computational-graph autodiff (Burkov Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

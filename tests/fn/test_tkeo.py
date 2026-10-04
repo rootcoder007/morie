@@ -1,7 +1,6 @@
 """Test teager_energy (tkeo)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.tkeo import teager_energy, tkeo
 

@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e73 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73,
 )
@@ -11,9 +9,7 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e73 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e73_basic():
     """Test basic functionality."""
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(
-        k=5, n=10, p=0.5, N=20
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(k=5, n=10, p=0.5, N=20)
     assert isinstance(result, dict)
     assert "hypergeometric" in result.payload
     assert "binomial" in result.payload
@@ -28,9 +24,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner4e73_basic():
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e73_edge():
     """Test edge cases."""
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(
-        k=1, n=1, p=0.5, N=2
-    )
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(k=1, n=1, p=0.5, N=2)
     assert isinstance(result, dict)
     assert "hypergeometric" in result.payload
     assert "binomial" in result.payload

@@ -127,8 +127,7 @@ def np_bayes_cox(time, event, X, c=1.0, lam0=None, n_iter=50, tol=1e-12):
     # come back NaN and the estimates stand.
     try:
         cov = C.inv(Hm)
-        se = [math.sqrt(cov[k][k]) if cov[k][k] > 0.0 else float("nan")
-              for k in range(p)]
+        se = [math.sqrt(cov[k][k]) if cov[k][k] > 0.0 else float("nan") for k in range(p)]
     except ValueError:
         se = [float("nan")] * p
 
@@ -152,13 +151,26 @@ def np_bayes_cox(time, event, X, c=1.0, lam0=None, n_iter=50, tol=1e-12):
             f = 1e-15
         surv *= f
         S.append(surv)
-    return RichResult(payload={
-        "beta": beta, "se": se, "estimate": beta[0], "loglik": ll,
-        "times": ev, "dH": dH, "H": Hcum, "S": S,
-        "grad_norm": gn, "iterations": it,
-        "converged": 1.0 if gn <= float(tol) else 0.0,
-        "n": n, "n_events": int(sum(d)), "c": cc, "lam0": l0,
-        "method": "Cox model with a gamma-process baseline (Kalbfleisch 1978)"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "estimate": beta[0],
+            "loglik": ll,
+            "times": ev,
+            "dH": dH,
+            "H": Hcum,
+            "S": S,
+            "grad_norm": gn,
+            "iterations": it,
+            "converged": 1.0 if gn <= float(tol) else 0.0,
+            "n": n,
+            "n_events": int(sum(d)),
+            "c": cc,
+            "lam0": l0,
+            "method": "Cox model with a gamma-process baseline (Kalbfleisch 1978)",
+        }
+    )
 
 
 def cheatsheet():

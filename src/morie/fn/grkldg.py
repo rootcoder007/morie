@@ -79,9 +79,7 @@ def geron_kl_divergence_gaussian(mu, logvar):
     if not np.all(np.isfinite(m_arr)) or not np.all(np.isfinite(lv)):
         raise ValueError("mu and logvar must be finite.")
     if np.any(lv > 80.0):
-        raise ValueError(
-            f"logvar up to {lv.max()} would overflow exp(); the encoder has diverged."
-        )
+        raise ValueError(f"logvar up to {lv.max()} would overflow exp(); the encoder has diverged.")
 
     var = np.exp(lv)
     per_dim = -0.5 * (1.0 + lv - m_arr**2 - var)

@@ -21,8 +21,9 @@ def test_rgmurm_basic():
         r = rangayyan_murmur_analysis(_tones([(50, 1.0), (100, a)], 1024.0, 1024), 1024.0)
         assert r["pa_over_ca"] == pytest.approx(a, rel=1e-4)
     x = _tones([(50, 1.0), (100, 0.4)], 1024.0, 1024)
-    assert rangayyan_murmur_analysis([7.0 * v for v in x], 1024.0)["pa_over_ca"] == \
-        pytest.approx(rangayyan_murmur_analysis(x, 1024.0)["pa_over_ca"], rel=1e-12)
+    assert rangayyan_murmur_analysis([7.0 * v for v in x], 1024.0)["pa_over_ca"] == pytest.approx(
+        rangayyan_murmur_analysis(x, 1024.0)["pa_over_ca"], rel=1e-12
+    )
     assert r["dominant_freq_hz"] == 100.0
 
 
@@ -33,5 +34,3 @@ def test_rgmurm_edge():
         rangayyan_murmur_analysis(_tones([(50, 1.0)]), 250.0)
     with pytest.raises(ValueError, match="no energy"):
         rangayyan_murmur_analysis([0.0] * 256, 1000.0)
-
-

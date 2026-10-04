@@ -155,13 +155,21 @@ def optimal_tree_regime(y, A, W, pi=None, max_depth=2, min_leaf=1):
                 den += 1.0 / pv[i]
         return num / den if den > 0.0 else float("nan")
 
-    return RichResult(payload={
-        "estimate": value(rule), "value": value(rule),
-        "value_all_treated": value([1.0] * n),
-        "value_all_control": value([0.0] * n), "rule": rule,
-        "split_var": float(root["var"]), "split_point": root["point"],
-        "n_leaves": float(n_leaves), "depth": float(depth_used[0]), "n": n,
-        "method": "Value-search treatment regime tree (Laber & Zhao 2015)"})
+    return RichResult(
+        payload={
+            "estimate": value(rule),
+            "value": value(rule),
+            "value_all_treated": value([1.0] * n),
+            "value_all_control": value([0.0] * n),
+            "rule": rule,
+            "split_var": float(root["var"]),
+            "split_point": root["point"],
+            "n_leaves": float(n_leaves),
+            "depth": float(depth_used[0]),
+            "n": n,
+            "method": "Value-search treatment regime tree (Laber & Zhao 2015)",
+        }
+    )
 
 
 def cheatsheet():

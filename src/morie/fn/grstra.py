@@ -46,7 +46,12 @@ def stratsplt(strata, testratio=0.2):
     res = _core.stratsplt(strata=strata, testratio=testratio)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("ntest", res["ntest"]), ("ntrain", res["ntrain"]), ("maxdev", res["maxdev"]), ("nstrata", res["nstrata"])],
+        summary_lines=[
+            ("ntest", res["ntest"]),
+            ("ntrain", res["ntrain"]),
+            ("maxdev", res["maxdev"]),
+            ("nstrata", res["nstrata"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

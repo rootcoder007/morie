@@ -1,7 +1,6 @@
 """Tests for morie.fn.nobll -- bill outcome positions."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nobll import nobll, nominate_bill_params
 
 

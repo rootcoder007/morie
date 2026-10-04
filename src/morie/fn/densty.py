@@ -64,10 +64,15 @@ def density(G):
         raise ValueError("the adjacency matrix must be binary.")
     edges = int(np.sum(A) // 2)
     possible = n * (n - 1) // 2
-    return RichResult(payload={
-        "estimate": float(edges / possible), "n_edges": edges,
-        "n_possible": int(possible), "n": int(n),
-        "method": "density |E| / C(n,2), undirected simple graph"})
+    return RichResult(
+        payload={
+            "estimate": float(edges / possible),
+            "n_edges": edges,
+            "n_possible": int(possible),
+            "n": int(n),
+            "method": "density |E| / C(n,2), undirected simple graph",
+        }
+    )
 
 
 def cheatsheet():

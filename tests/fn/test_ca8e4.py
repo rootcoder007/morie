@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca8e4 import ca_chapter_8_equation_4
 
 

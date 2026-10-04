@@ -93,20 +93,22 @@ def erdos_renyi_gnp(n, p):
                     q.append(w)
         comps.append(size)
     dens = edges / m if m > 0 else 0.0
-    return RichResult(payload={
-        "estimate": dens,
-        "edges": edges,
-        "density": dens,
-        "expected_edges": m * p,
-        "mean_degree": sum(deg) / n,
-        "expected_degree": (n - 1) * p,
-        "n_components": len(comps),
-        "largest_component": max(comps),
-        "giant_threshold": 1.0 / n,
-        "connectivity_threshold": math.log(n) / n if n > 1 else 0.0,
-        "n": n,
-        "method": "Erdos-Renyi G(n,p)",
-    })
+    return RichResult(
+        payload={
+            "estimate": dens,
+            "edges": edges,
+            "density": dens,
+            "expected_edges": m * p,
+            "mean_degree": sum(deg) / n,
+            "expected_degree": (n - 1) * p,
+            "n_components": len(comps),
+            "largest_component": max(comps),
+            "giant_threshold": 1.0 / n,
+            "connectivity_threshold": math.log(n) / n if n > 1 else 0.0,
+            "n": n,
+            "method": "Erdos-Renyi G(n,p)",
+        }
+    )
 
 
 def cheatsheet():

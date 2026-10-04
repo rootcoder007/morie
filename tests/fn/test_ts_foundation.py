@@ -3,20 +3,25 @@
 Sources: Ansari, A. F. et al. (2024) TMLR, arXiv:2403.07815; Das, A.,
 Kong, W., Sen, R. & Zhou, Y. (2024) ICML PMLR 235, arXiv:2310.10688;
 Goswami, M. et al. (2024) ICML PMLR 235, arXiv:2402.03885."""
+
 import math
 
 import pytest
 
 from morie.fn import _array_core as np
 from morie.fn import timesf
-from morie.fn.chronos import (dequantize, detokenize,
-                              forecast_summary, mean_scale,
-                              quantile_bins, quantize, tokenize,
-                              uniform_bins)
-from morie.fn.momento import (harmonise, mask_patches, masked_loss,
-                              reconstruction_curve, task_mask)
-from morie.fn.timesfm import (causal_mask, horizon_plan,
-                              input_patches, rollout, rollout_steps)
+from morie.fn.chronos import (
+    dequantize,
+    detokenize,
+    forecast_summary,
+    mean_scale,
+    quantile_bins,
+    quantize,
+    tokenize,
+    uniform_bins,
+)
+from morie.fn.momento import harmonise, mask_patches, masked_loss, reconstruction_curve, task_mask
+from morie.fn.timesfm import causal_mask, horizon_plan, input_patches, rollout, rollout_steps
 
 B = uniform_bins(-5.0, 5.0, n_bins=21)
 
@@ -37,8 +42,7 @@ def test_an_all_zero_context_is_flagged_degenerate():
 
 def test_bin_edges_are_midway_between_centres():
     for i in range(len(B["edges"])):
-        assert B["edges"][i] == pytest.approx(
-            0.5 * (B["centers"][i] + B["centers"][i + 1]), abs=1e-12)
+        assert B["edges"][i] == pytest.approx(0.5 * (B["centers"][i] + B["centers"][i + 1]), abs=1e-12)
 
 
 def test_a_bin_centre_round_trips_exactly():
@@ -166,8 +170,7 @@ def test_each_channel_becomes_its_own_row():
 
 def test_series_of_differing_channel_counts_share_a_batch():
     a = [[float(i)] for i in range(32)]
-    b = [[float(i), float(i) * 2.0, float(i) * 3.0]
-         for i in range(32)]
+    b = [[float(i), float(i) * 2.0, float(i) * 3.0] for i in range(32)]
     h = harmonise([a, b], patch_len=8)
     assert h["n_series"] == 4
 
@@ -235,8 +238,7 @@ def test_a_span_covering_everything_is_refused():
 
 def test_the_reconstruction_curve_reports_one_point_per_rate():
     P = batch()["batch"][0]
-    c = reconstruction_curve(
-        P, lambda mk, mask: [list(p) for p in mk], [0.25, 0.5])
+    c = reconstruction_curve(P, lambda mk, mask: [list(p) for p in mk], [0.25, 0.5])
     assert len(c["curve"]) == 2
 
 

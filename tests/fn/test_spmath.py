@@ -1,7 +1,6 @@
 """Tests for spmath.schabenberger_matheron_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spmath import schabenberger_matheron_estimator
 
 

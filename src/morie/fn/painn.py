@@ -66,12 +66,9 @@ arXiv:2102.09844. Implemented in :mod:`egnnL`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["scalar_vector_message", "gated_update", "vector_norm",
-           "equivariance_error", "dipole_moment"]
+__all__ = ["scalar_vector_message", "gated_update", "vector_norm", "equivariance_error", "dipole_moment"]
 
 _EPS = 1e-12
 
@@ -79,8 +76,7 @@ _EPS = 1e-12
 def vector_norm(v):
     r""":math:`\|\vec v\|` -- an invariant built from an equivariant."""
     a = [[float(q) for q in r] for r in k.mat(v)]
-    return [math.sqrt(sum(a[d][f] ** 2 for d in range(len(a))))
-            for f in range(len(a[0]))]
+    return [math.sqrt(sum(a[d][f] ** 2 for d in range(len(a)))) for f in range(len(a[0]))]
 
 
 def scalar_vector_message(s_j, v_j, r_ij, phi_s, phi_v, W_rbf):
@@ -102,14 +98,9 @@ def scalar_vector_message(s_j, v_j, r_ij, phi_s, phi_v, W_rbf):
     dv_scale = [float(q) for q in phi_v(s, w)]
     F = len(s)
     if len(ds) != F or len(dv_scale) != 2 * F:
-        raise ValueError("painn: the message networks are mis-sized "
-                         "(need F scalars and 2F vector gates)")
-    dv = [[dv_scale[f] * V[a][f]
-           + dv_scale[F + f] * hat[a] for f in range(F)]
-          for a in range(len(hat))]
-    return {"ds": ds, "dv": dv,
-            "note": "scalar*vector and s*r_hat give VECTORS; nothing "
-                    "mixes the types"}
+        raise ValueError("painn: the message networks are mis-sized (need F scalars and 2F vector gates)")
+    dv = [[dv_scale[f] * V[a][f] + dv_scale[F + f] * hat[a] for f in range(F)] for a in range(len(hat))]
+    return {"ds": ds, "dv": dv, "note": "scalar*vector and s*r_hat give VECTORS; nothing mixes the types"}
 
 
 def gated_update(s, v, U, V, phi):
@@ -124,12 +115,9 @@ def gated_update(s, v, U, V, phi):
     sv = [float(q) for q in k.vec(s)]
     Vv = [[float(q) for q in r] for r in k.mat(v)]
     D, F = len(Vv), len(Vv[0])
-    Uv = [[sum(U[f][g] * Vv[a][g] for g in range(F))
-           for f in range(F)] for a in range(D)]
-    Vw = [[sum(V[f][g] * Vv[a][g] for g in range(F))
-           for f in range(F)] for a in range(D)]
-    dot = [sum(Uv[a][f] * Vw[a][f] for a in range(D))
-           for f in range(F)]
+    Uv = [[sum(U[f][g] * Vv[a][g] for g in range(F)) for f in range(F)] for a in range(D)]
+    Vw = [[sum(V[f][g] * Vv[a][g] for g in range(F)) for f in range(F)] for a in range(D)]
+    dot = [sum(Uv[a][f] * Vw[a][f] for a in range(D)) for f in range(F)]
     nrm = vector_norm(Vw)
     out = phi(sv, dot, nrm)
     ds = [float(q) for q in out["ds"]]
@@ -137,9 +125,12 @@ def gated_update(s, v, U, V, phi):
     if len(ds) != F or len(gate) != F:
         raise ValueError("painn: the update network is mis-sized")
     dv = [[gate[f] * Uv[a][f] for f in range(F)] for a in range(D)]
-    return {"ds": ds, "dv": dv, "scalar_from_vectors": dot,
-            "note": "the vector-vector inner product is the ONLY path "
-                    "back to the scalar channel, and it is invariant"}
+    return {
+        "ds": ds,
+        "dv": dv,
+        "scalar_from_vectors": dot,
+        "note": "the vector-vector inner product is the ONLY path back to the scalar channel, and it is invariant",
+    }
 
 
 def dipole_moment(charges, R, centre=None):
@@ -151,17 +142,15 @@ def dipole_moment(charges, R, centre=None):
     q = [float(v) for v in k.vec(charges)]
     pos = [[float(v) for v in r] for r in k.mat(R)]
     if len(q) != len(pos):
-        raise ValueError("painn: %d charges but %d positions"
-                         % (len(q), len(pos)))
+        raise ValueError("painn: %d charges but %d positions" % (len(q), len(pos)))
     d = len(pos[0])
-    c = [sum(p[a] for p in pos) / len(pos) for a in range(d)] \
-        if centre is None else [float(v) for v in k.vec(centre)]
-    mu = [sum(q[i] * (pos[i][a] - c[a]) for i in range(len(q)))
-          for a in range(d)]
-    return {"dipole": mu,
-            "magnitude": math.sqrt(sum(v * v for v in mu)),
-            "note": "a VECTOR property; an invariant network cannot "
-                    "produce one without a separate head"}
+    c = [sum(p[a] for p in pos) / len(pos) for a in range(d)] if centre is None else [float(v) for v in k.vec(centre)]
+    mu = [sum(q[i] * (pos[i][a] - c[a]) for i in range(len(q))) for a in range(d)]
+    return {
+        "dipole": mu,
+        "magnitude": math.sqrt(sum(v * v for v in mu)),
+        "note": "a VECTOR property; an invariant network cannot produce one without a separate head",
+    }
 
 
 def equivariance_error(model, s, v, R, Q, tol=1e-9):
@@ -172,37 +161,38 @@ def equivariance_error(model, s, v, R, Q, tol=1e-9):
     """
     pos = [[float(q) for q in r] for r in k.mat(R)]
     d = len(pos[0])
-    rot_R = [[sum(Q[a][b] * pos[i][b] for b in range(d))
-              for a in range(d)] for i in range(len(pos))]
+    rot_R = [[sum(Q[a][b] * pos[i][b] for b in range(d)) for a in range(d)] for i in range(len(pos))]
     V = [[float(q) for q in r] for r in k.mat(v)]
-    rot_v = [[sum(Q[a][b] * V[b][f] for b in range(d))
-              for f in range(len(V[0]))] for a in range(d)]
+    rot_v = [[sum(Q[a][b] * V[b][f] for b in range(d)) for f in range(len(V[0]))] for a in range(d)]
     base = model(s, V, pos)
     other = model(s, rot_v, rot_R)
-    se = max(abs(float(base["s"][f]) - float(other["s"][f]))
-             for f in range(len(base["s"])))
-    want = [[sum(Q[a][b] * float(base["v"][b][f]) for b in range(d))
-             for f in range(len(base["v"][0]))] for a in range(d)]
-    ve = max(abs(float(other["v"][a][f]) - want[a][f])
-             for a in range(d) for f in range(len(want[0])))
-    return {"scalar_error": se, "vector_error": ve,
-            "scalars_invariant": se < float(tol),
-            "vectors_equivariant": ve < float(tol),
-            "note": "both must hold; checking only the scalars passes "
-                    "a model that has lost its vectors"}
+    se = max(abs(float(base["s"][f]) - float(other["s"][f])) for f in range(len(base["s"])))
+    want = [
+        [sum(Q[a][b] * float(base["v"][b][f]) for b in range(d)) for f in range(len(base["v"][0]))] for a in range(d)
+    ]
+    ve = max(abs(float(other["v"][a][f]) - want[a][f]) for a in range(d) for f in range(len(want[0])))
+    return {
+        "scalar_error": se,
+        "vector_error": ve,
+        "scalars_invariant": se < float(tol),
+        "vectors_equivariant": ve < float(tol),
+        "note": "both must hold; checking only the scalars passes a model that has lost its vectors",
+    }
 
 
 def cheatsheet():
-    return ("painn: message passing was LESS DATA EFFICIENT than "
-            "kernel methods, and the diagnosis is INVARIANT "
-            "representations -- a network of scalars can only combine "
-            "distances and cannot emit a tensor at all. Carry BOTH a "
-            "scalar and a VECTOR feature per atom and preserve type: "
-            "s*s and ||v|| give scalars, s*v and s*r_hat give vectors, "
-            "and v1.v2 is the ONLY route back from vectors to scalars "
-            "-- invariant, so the energy stays invariant while "
-            "direction is used. Tensorial properties are read off "
-            "directly, and the model is SMALLER, not larger.")
+    return (
+        "painn: message passing was LESS DATA EFFICIENT than "
+        "kernel methods, and the diagnosis is INVARIANT "
+        "representations -- a network of scalars can only combine "
+        "distances and cannot emit a tensor at all. Carry BOTH a "
+        "scalar and a VECTOR feature per atom and preserve type: "
+        "s*s and ||v|| give scalars, s*v and s*r_hat give vectors, "
+        "and v1.v2 is the ONLY route back from vectors to scalars "
+        "-- invariant, so the energy stays invariant while "
+        "direction is used. Tensorial properties are read off "
+        "directly, and the model is SMALLER, not larger."
+    )
 
 
 # compact alias per ledger/NAMING.md

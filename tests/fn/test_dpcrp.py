@@ -10,6 +10,8 @@ def test_dpcrp_basic():
     result = chinese_restaurant_process(n, alpha)
     assert isinstance(result, dict)
     assert "table" in result
+
+
 def test_dpcrp_edge():
     """Test edge cases."""
     n = 100

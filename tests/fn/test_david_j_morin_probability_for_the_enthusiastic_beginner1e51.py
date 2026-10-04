@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e51 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e51 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51,
+)
 
 
 def test_recursion_equals_the_stars_and_bars_closed_form():

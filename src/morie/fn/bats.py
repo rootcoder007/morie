@@ -109,15 +109,15 @@ __all__ = [
 # the Box-Cox transform
 # --------------------------------------------------------------------------
 
+
 def box_cox(y, omega):
     r"""Equation 3a. ``omega == 0`` is the log, exactly, not a limit."""
     y = [float(v) for v in y]
     if any(v <= 0.0 for v in y):
-        raise ValueError("bats: the Box-Cox transform needs a strictly "
-                         "positive series")
+        raise ValueError("bats: the Box-Cox transform needs a strictly positive series")
     if omega == 0.0:
         return [math.log(v) for v in y]
-    return [(v ** omega - 1.0) / omega for v in y]
+    return [(v**omega - 1.0) / omega for v in y]
 
 
 def inv_box_cox(z, omega):
@@ -129,8 +129,7 @@ def inv_box_cox(z, omega):
     for v in z:
         base = omega * v + 1.0
         if base <= 0.0:
-            raise ValueError("bats: the inverse Box-Cox transform is "
-                             "undefined here (omega*z + 1 <= 0)")
+            raise ValueError("bats: the inverse Box-Cox transform is undefined here (omega*z + 1 <= 0)")
         out.append(base ** (1.0 / omega))
     return out
 
@@ -154,17 +153,18 @@ def seasonal_harmonics(m, k=None):
             k = int(math.floor(m / 2.0))
     k = int(k)
     if k < 1:
-        raise ValueError("bats: a seasonal component needs at least one "
-                         "harmonic")
+        raise ValueError("bats: a seasonal component needs at least one harmonic")
     if k > m / 2.0 + 1e-9:
-        raise ValueError("bats: k = %d exceeds m/2 = %g; the harmonics "
-                         "above m/2 are aliases of those below" % (k, m / 2.0))
+        raise ValueError(
+            "bats: k = %d exceeds m/2 = %g; the harmonics above m/2 are aliases of those below" % (k, m / 2.0)
+        )
     return [2.0 * math.pi * (j + 1) / m for j in range(k)]
 
 
 # --------------------------------------------------------------------------
 # the model specification
 # --------------------------------------------------------------------------
+
 
 class BatsSpec:
     r"""``BATS(omega, phi, p, q, m1, ..., mT)`` or its TBATS form.
@@ -173,8 +173,7 @@ class BatsSpec:
     a list of :math:`k_i` for the trigonometric seasonal of 4a-4c.
     """
 
-    def __init__(self, periods=(), harmonics=None, use_box_cox=False,
-                 use_trend=True, damped=False, p=0, q=0):
+    def __init__(self, periods=(), harmonics=None, use_box_cox=False, use_trend=True, damped=False, p=0, q=0):
         self.periods = [float(v) for v in periods]
         for m in self.periods:
             if m <= 1.0:
@@ -186,14 +185,12 @@ class BatsSpec:
                     raise ValueError(
                         "bats: the index seasonal of eq. 3e needs integer "
                         "periods; m = %g is not one. Use the trigonometric "
-                        "seasonal (harmonics=...) for a fractional period."
-                        % m)
+                        "seasonal (harmonics=...) for a fractional period." % m
+                    )
         else:
             if len(harmonics) != len(self.periods):
-                raise ValueError("bats: %d harmonic counts for %d periods"
-                                 % (len(harmonics), len(self.periods)))
-            self.harmonics = [len(seasonal_harmonics(m, k))
-                              for m, k in zip(self.periods, harmonics)]
+                raise ValueError("bats: %d harmonic counts for %d periods" % (len(harmonics), len(self.periods)))
+            self.harmonics = [len(seasonal_harmonics(m, k)) for m, k in zip(self.periods, harmonics)]
         self.use_box_cox = bool(use_box_cox)
         self.use_trend = bool(use_trend)
         self.damped = bool(damped) and self.use_trend
@@ -217,15 +214,15 @@ class BatsSpec:
 
     def n_free(self):
         """The parameters the optimiser searches."""
-        n = 1                                   # alpha
+        n = 1  # alpha
         if self.use_trend:
-            n += 1                              # beta
+            n += 1  # beta
             if self.damped:
-                n += 1                          # phi
+                n += 1  # phi
         if self.trigonometric:
-            n += 2 * len(self.periods)          # gamma_1, gamma_2 each
+            n += 2 * len(self.periods)  # gamma_1, gamma_2 each
         else:
-            n += len(self.periods)              # gamma_i
+            n += len(self.periods)  # gamma_i
         n += self.p + self.q
         if self.use_box_cox:
             n += 1
@@ -236,18 +233,17 @@ class BatsSpec:
         omega = "omega" if self.use_box_cox else "1"
         phi = "phi" if self.damped else "1"
         if self.trigonometric:
-            seas = ", ".join("{%g, %d}" % (m, k) for m, k
-                             in zip(self.periods, self.harmonics))
+            seas = ", ".join("{%g, %d}" % (m, k) for m, k in zip(self.periods, self.harmonics))
         else:
             seas = ", ".join("%g" % m for m in self.periods)
         parts = [omega, phi, str(self.p), str(self.q)]
-        return "%s(%s%s)" % (head, ", ".join(parts),
-                             (", " + seas) if seas else "")
+        return "%s(%s%s)" % (head, ", ".join(parts), (", " + seas) if seas else "")
 
 
 # --------------------------------------------------------------------------
 # the recursion
 # --------------------------------------------------------------------------
+
 
 def _unpack(spec, theta):
     """Split the free vector into named parameters."""
@@ -304,8 +300,7 @@ def bats_filter(z, spec, theta, x0, long_run_b=0.0):
         i += 1
 
     if spec.trigonometric:
-        lam = [seasonal_harmonics(m, k)
-               for m, k in zip(spec.periods, spec.harmonics)]
+        lam = [seasonal_harmonics(m, k) for m, k in zip(spec.periods, spec.harmonics)]
         s = []
         sstar = []
         for ki in spec.harmonics:
@@ -334,8 +329,7 @@ def bats_filter(z, spec, theta, x0, long_run_b=0.0):
             seas = sum(buf[a][0] for a in range(len(spec.periods)))
         # w' x_{t-1} plus the ARMA part of d_t that is already known
         base = lev + phi * trend + seas
-        darma = (sum(ar[j] * dlag[j] for j in range(spec.p))
-                 + sum(ma[j] * elag[j] for j in range(spec.q)))
+        darma = sum(ar[j] * dlag[j] for j in range(spec.p)) + sum(ma[j] * elag[j] for j in range(spec.q))
         pred = base + darma
         eps = z[t] - pred
         d = darma + eps
@@ -343,8 +337,7 @@ def bats_filter(z, spec, theta, x0, long_run_b=0.0):
         resid.append(eps)
 
         new_lev = lev + phi * trend + alpha * d
-        new_trend = ((1.0 - phi) * long_run_b + phi * trend + beta * d
-                     if spec.use_trend else 0.0)
+        new_trend = (1.0 - phi) * long_run_b + phi * trend + beta * d if spec.use_trend else 0.0
         if spec.trigonometric:
             for a in range(len(spec.periods)):
                 g1 = gam[0][a]
@@ -398,14 +391,14 @@ def fit_seed_state(z, spec, theta, long_run_b=0.0):
         cols.append(col)
     # residual(x0) = base + sum_j x0_j * col_j ; minimise its norm
     design = [[-cols[j][t] for j in range(ns)] for t in range(n)]
-    sol = np.linalg.lstsq(np.asarray(design, dtype=float),
-                          np.asarray(base, dtype=float), rcond=None)[0]
+    sol = np.linalg.lstsq(np.asarray(design, dtype=float), np.asarray(base, dtype=float), rcond=None)[0]
     return [float(sol[j]) for j in range(ns)]
 
 
 # --------------------------------------------------------------------------
 # the forecastability region
 # --------------------------------------------------------------------------
+
 
 def _flatten_carry(spec, carry):
     """The state vector in the same layout as ``x0``."""
@@ -476,8 +469,7 @@ def spectral_radius(spec, theta, tol=1e-6):
     w, fmat, g = state_matrices(spec, theta)
     ns = len(w)
     d = [[fmat[i][j] - g[i] * w[j] for j in range(ns)] for i in range(ns)]
-    ev = [abs(complex(v))
-          for v in np.linalg.eigvals(np.asarray(d, dtype=float))]
+    ev = [abs(complex(v)) for v in np.linalg.eigvals(np.asarray(d, dtype=float))]
     rest = [v for v in ev if abs(v - 1.0) >= tol]
     return max(rest) if rest else 0.0
 
@@ -487,9 +479,7 @@ def all_eigenvalues(spec, theta):
     w, fmat, g = state_matrices(spec, theta)
     ns = len(w)
     d = [[fmat[i][j] - g[i] * w[j] for j in range(ns)] for i in range(ns)]
-    return sorted((abs(complex(v)) for v
-                   in np.linalg.eigvals(np.asarray(d, dtype=float))),
-                  reverse=True)
+    return sorted((abs(complex(v)) for v in np.linalg.eigvals(np.asarray(d, dtype=float))), reverse=True)
 
 
 def is_forecastable(spec, theta, tol=1e-8):
@@ -517,6 +507,7 @@ def concentrated_loglik(y, resid, omega):
 # --------------------------------------------------------------------------
 # fitting
 # --------------------------------------------------------------------------
+
 
 def _bounds(spec):
     lo = [0.0]
@@ -557,8 +548,7 @@ def _starts(spec):
                 x.append(min(0.5 * a, 0.05))
                 if spec.damped:
                     x.append(0.98)
-            ns = (2 * len(spec.periods) if spec.trigonometric
-                  else len(spec.periods))
+            ns = 2 * len(spec.periods) if spec.trigonometric else len(spec.periods)
             x += [gseed] * ns
             x += [0.0] * (spec.p + spec.q)
             if spec.use_box_cox:
@@ -611,9 +601,16 @@ def _fit_spec(y, spec, long_run_b=0.0, maxiter=2000):
     resid, fitted, _ = bats_filter(z, spec, th, x0, long_run_b)
     ll = concentrated_loglik(y, resid, omega)
     k = spec.n_free() + spec.n_states()
-    return {"theta": th, "x0": x0, "resid": resid, "fitted": fitted,
-            "loglik": ll, "omega": omega,
-            "aic": -2.0 * ll + 2.0 * k, "n_par": k}
+    return {
+        "theta": th,
+        "x0": x0,
+        "resid": resid,
+        "fitted": fitted,
+        "loglik": ll,
+        "omega": omega,
+        "aic": -2.0 * ll + 2.0 * k,
+        "n_par": k,
+    }
 
 
 def _forecast(spec, theta, x0, z, h, long_run_b=0.0):
@@ -647,13 +644,11 @@ def _forecast(spec, theta, x0, z, h, long_run_b=0.0):
             seas = sum(sum(s[a]) for a in range(len(spec.periods)))
         else:
             seas = sum(buf[a][0] for a in range(len(spec.periods)))
-        d = (sum(ar[j] * dlag[j] for j in range(spec.p))
-             + sum(ma[j] * elag[j] for j in range(spec.q)))
+        d = sum(ar[j] * dlag[j] for j in range(spec.p)) + sum(ma[j] * elag[j] for j in range(spec.q))
         out.append(lev + phi * trend + seas + d)
 
         new_lev = lev + phi * trend + alpha * d
-        new_trend = ((1.0 - phi) * long_run_b + phi * trend + beta * d
-                     if spec.use_trend else 0.0)
+        new_trend = (1.0 - phi) * long_run_b + phi * trend + beta * d if spec.use_trend else 0.0
         if spec.trigonometric:
             for a in range(len(spec.periods)):
                 g1 = gam[0][a]
@@ -674,12 +669,13 @@ def _forecast(spec, theta, x0, z, h, long_run_b=0.0):
         if spec.p:
             dlag = [d] + dlag[:-1]
         if spec.q:
-            elag = [0.0] + elag[:-1]     # future innovations are zero
+            elag = [0.0] + elag[:-1]  # future innovations are zero
     return out
 
 
-def bats(y, seasonal_periods=(), use_box_cox=None, use_trend=None,
-         damped=None, p=0, q=0, long_run_b=0.0, h=0, maxiter=2000):
+def bats(
+    y, seasonal_periods=(), use_box_cox=None, use_trend=None, damped=None, p=0, q=0, long_run_b=0.0, h=0, maxiter=2000
+):
     r"""Fit a BATS model, equations 3a-3f.
 
     ``use_box_cox``, ``use_trend`` and ``damped`` may each be ``True``,
@@ -691,15 +687,23 @@ def bats(y, seasonal_periods=(), use_box_cox=None, use_trend=None,
         raise ValueError("bats: the series is too short")
     periods = [float(v) for v in seasonal_periods]
     if any(len(y) <= 2 * m for m in periods):
-        raise ValueError("bats: the series is shorter than two full "
-                         "cycles of a seasonal period")
-    return _select(y, periods, None, use_box_cox, use_trend, damped,
-                   p, q, long_run_b, h, maxiter)
+        raise ValueError("bats: the series is shorter than two full cycles of a seasonal period")
+    return _select(y, periods, None, use_box_cox, use_trend, damped, p, q, long_run_b, h, maxiter)
 
 
-def tbats(y, seasonal_periods=(), harmonics=None, use_box_cox=None,
-          use_trend=None, damped=None, p=0, q=0, long_run_b=0.0, h=0,
-          maxiter=2000):
+def tbats(
+    y,
+    seasonal_periods=(),
+    harmonics=None,
+    use_box_cox=None,
+    use_trend=None,
+    damped=None,
+    p=0,
+    q=0,
+    long_run_b=0.0,
+    h=0,
+    maxiter=2000,
+):
     r"""Fit a TBATS model, equations 4a-4c for the seasonal part.
 
     ``harmonics`` defaults to the index-equivalent :math:`k_i`
@@ -712,20 +716,17 @@ def tbats(y, seasonal_periods=(), harmonics=None, use_box_cox=None,
     periods = [float(v) for v in seasonal_periods]
     if harmonics is None:
         harmonics = [len(seasonal_harmonics(m)) for m in periods]
-    return _select(y, periods, list(harmonics), use_box_cox, use_trend,
-                   damped, p, q, long_run_b, h, maxiter)
+    return _select(y, periods, list(harmonics), use_box_cox, use_trend, damped, p, q, long_run_b, h, maxiter)
 
 
-def _select(y, periods, harmonics, use_box_cox, use_trend, damped,
-            p, q, long_run_b, h, maxiter):
+def _select(y, periods, harmonics, use_box_cox, use_trend, damped, p, q, long_run_b, h, maxiter):
     bc = [True, False] if use_box_cox is None else [bool(use_box_cox)]
     tr = [True, False] if use_trend is None else [bool(use_trend)]
     best = None
     tried = []
     for b in bc:
         for t in tr:
-            dm = ([True, False] if (damped is None and t)
-                  else [bool(damped) and t])
+            dm = [True, False] if (damped is None and t) else [bool(damped) and t]
             for d in dm:
                 spec = BatsSpec(periods, harmonics, b, t, d, p, q)
                 fit = _fit_spec(y, spec, long_run_b, maxiter)
@@ -734,52 +735,58 @@ def _select(y, periods, harmonics, use_box_cox, use_trend, damped,
                     best = (spec, fit)
     spec, fit = best
     z = box_cox(y, fit["omega"])
-    fc = _forecast(spec, fit["theta"], fit["x0"], z, int(h), long_run_b) \
-        if h else []
+    fc = _forecast(spec, fit["theta"], fit["x0"], z, int(h), long_run_b) if h else []
     alpha, beta, phi, gam, ar, ma, omega = _unpack(spec, fit["theta"])
-    return RichResult(payload={
-        "model": spec.label(),
-        "omega": omega,
-        "phi": phi,
-        "alpha": alpha,
-        "beta": beta,
-        "gamma": gam,
-        "ar": ar,
-        "ma": ma,
-        "seed_state": fit["x0"],
-        "fitted": inv_box_cox(fit["fitted"], omega),
-        "fitted_transformed": fit["fitted"],
-        "residuals": fit["resid"],
-        "loglik": fit["loglik"],
-        "aic": fit["aic"],
-        "n_par": fit["n_par"],
-        "sigma2": sum(v * v for v in fit["resid"]) / len(fit["resid"]),
-        "spectral_radius": spectral_radius(spec, fit["theta"]),
-        "forecastable": is_forecastable(spec, fit["theta"]),
-        "forecast": inv_box_cox(fc, omega) if fc else [],
-        "forecast_transformed": fc,
-        "candidates": tried,
-        "spec": spec,
-        "method": ("De Livera, Hyndman & Snyder (2010) eq. 3a-3f"
-                   + (" with the trigonometric seasonal of eq. 4a-4c"
-                      if spec.trigonometric else "")),
-        "note": ("the seed state is concentrated out by least squares, "
-                 "not searched; the likelihood carries the Box-Cox "
-                 "Jacobian (omega-1) sum log y_t so that fits at "
-                 "different omega are comparable"),
-    })
+    return RichResult(
+        payload={
+            "model": spec.label(),
+            "omega": omega,
+            "phi": phi,
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gam,
+            "ar": ar,
+            "ma": ma,
+            "seed_state": fit["x0"],
+            "fitted": inv_box_cox(fit["fitted"], omega),
+            "fitted_transformed": fit["fitted"],
+            "residuals": fit["resid"],
+            "loglik": fit["loglik"],
+            "aic": fit["aic"],
+            "n_par": fit["n_par"],
+            "sigma2": sum(v * v for v in fit["resid"]) / len(fit["resid"]),
+            "spectral_radius": spectral_radius(spec, fit["theta"]),
+            "forecastable": is_forecastable(spec, fit["theta"]),
+            "forecast": inv_box_cox(fc, omega) if fc else [],
+            "forecast_transformed": fc,
+            "candidates": tried,
+            "spec": spec,
+            "method": (
+                "De Livera, Hyndman & Snyder (2010) eq. 3a-3f"
+                + (" with the trigonometric seasonal of eq. 4a-4c" if spec.trigonometric else "")
+            ),
+            "note": (
+                "the seed state is concentrated out by least squares, "
+                "not searched; the likelihood carries the Box-Cox "
+                "Jacobian (omega-1) sum log y_t so that fits at "
+                "different omega are comparable"
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("bats: De Livera, Hyndman & Snyder (2010). BATS = Box-Cox "
-            "transform, ARMA errors, Trend, Seasonal -- an innovations "
-            "state space model with one seasonal index per period "
-            "(eq. 3a-3f), a damped trend that converges to a long-run "
-            "trend b rather than to zero, and ARMA(p, q) errors. TBATS "
-            "swaps the seasonal index for a trigonometric one "
-            "(eq. 4a-4c), which needs 2*sum(k_i) seeds instead of "
-            "sum(m_i), handles NON-INTEGER periods such as 365.25/7, "
-            "and gives deterministic seasonality when the smoothing "
-            "parameters are zero. k_i = m_i/2 (even) or (m_i-1)/2 (odd) "
-            "reproduces the index form exactly. The seed state is "
-            "concentrated out by least squares.")
+    return (
+        "bats: De Livera, Hyndman & Snyder (2010). BATS = Box-Cox "
+        "transform, ARMA errors, Trend, Seasonal -- an innovations "
+        "state space model with one seasonal index per period "
+        "(eq. 3a-3f), a damped trend that converges to a long-run "
+        "trend b rather than to zero, and ARMA(p, q) errors. TBATS "
+        "swaps the seasonal index for a trigonometric one "
+        "(eq. 4a-4c), which needs 2*sum(k_i) seeds instead of "
+        "sum(m_i), handles NON-INTEGER periods such as 365.25/7, "
+        "and gives deterministic seasonality when the smoothing "
+        "parameters are zero. k_i = m_i/2 (even) or (m_i-1)/2 (odd) "
+        "reproduces the index form exactly. The seed state is "
+        "concentrated out by least squares."
+    )

@@ -1,7 +1,5 @@
 """Tests for agscho.alphazero_search_horizon."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.agscho import alphazero_search_horizon
 
 
@@ -13,9 +11,7 @@ def test_agscho_basic():
     state = "root_state"
     gamma = 0.5
     k_start = 0
-    result = alphazero_search_horizon(
-        depth_limit, state, rewards=rewards, values=values, gamma=gamma, k_start=k_start
-    )
+    result = alphazero_search_horizon(depth_limit, state, rewards=rewards, values=values, gamma=gamma, k_start=k_start)
     # Independent recomputation of the documented formula:
     l = depth_limit
     g = gamma
@@ -23,7 +19,7 @@ def test_agscho_basic():
     part = 0.0
     tau = 0
     while kk + tau < l:
-        part += (g ** tau) * rewards[kk + tau]
+        part += (g**tau) * rewards[kk + tau]
         tau += 1
     idx = l if l < len(values) else len(values) - 1
     boot = (g ** (l - kk)) * values[idx]
@@ -50,9 +46,7 @@ def test_agscho_edge():
     state = "root_state"
     gamma = 1.0
     k_start = 1
-    result = alphazero_search_horizon(
-        depth_limit, state, rewards=rewards, values=None, gamma=gamma, k_start=k_start
-    )
+    result = alphazero_search_horizon(depth_limit, state, rewards=rewards, values=None, gamma=gamma, k_start=k_start)
     # Independent recomputation: no bootstrap since values is None.
     l = depth_limit
     g = gamma
@@ -60,7 +54,7 @@ def test_agscho_edge():
     part = 0.0
     tau = 0
     while kk + tau < l:
-        part += (g ** tau) * rewards[kk + tau]
+        part += (g**tau) * rewards[kk + tau]
         tau += 1
     expected_reward_part = part
     expected_bootstrap = 0.0

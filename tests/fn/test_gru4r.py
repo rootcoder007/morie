@@ -1,7 +1,6 @@
 """Tests for gru4r.gru4rec."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gru4r import gru4rec
 
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.crisk — competing risks CIF."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.crisk import crisk
 
 

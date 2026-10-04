@@ -83,7 +83,7 @@ def geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed=0):
     A = np.atleast_2d(np.asarray(X, dtype=float))
     y_arr = np.asarray(y, dtype=float).ravel()
     th = np.asarray(theta, dtype=float).ravel().copy()
-    start = geron_linreg_mse_cost(A, y_arr, th)      # validates shapes
+    start = geron_linreg_mse_cost(A, y_arr, th)  # validates shapes
     m = A.shape[0]
     b = int(b)
     if not (1 <= b <= m):
@@ -101,8 +101,7 @@ def geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed=0):
     queue = []
     for _ in range(n_iter):
         if not queue:
-            queue = list(geron_dataloader_minibatch(m, b, shuffle=True,
-                                                    seed=int(seed) + epoch)["batches"])
+            queue = list(geron_dataloader_minibatch(m, b, shuffle=True, seed=int(seed) + epoch)["batches"])
             epoch += 1
         idx = queue.pop(0)
         g = geron_ch4_mse_gradient_vector(A[idx], y_arr[idx], th)["gradient"]
@@ -117,8 +116,7 @@ def geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed=0):
 
     return RichResult(
         title="Mini-batch gradient descent",
-        summary_lines=[("Steps", n_iter), ("Batch size", b),
-                       ("Cost", costs[-1])],
+        summary_lines=[("Steps", n_iter), ("Batch size", b), ("Cost", costs[-1])],
         payload={
             "theta": th.tolist(),
             "cost_history": costs,

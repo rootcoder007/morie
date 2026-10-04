@@ -1,7 +1,6 @@
 """Tests for brdgf.bayes_ridge_gibbs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.brdgf import bayes_ridge_gibbs
 
 

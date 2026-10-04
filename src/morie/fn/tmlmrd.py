@@ -63,8 +63,7 @@ def tmlerd(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025, level=0.95):
     Y = C.vec(Y)
     A = C.vec(A)
     n = len(Y)
-    for v, nm in ((A, "A"), (QAW, "QAW"), (Q1W, "Q1W"), (Q0W, "Q0W"),
-                  (g1W, "g1W")):
+    for v, nm in ((A, "A"), (QAW, "QAW"), (Q1W, "Q1W"), (Q0W, "Q0W"), (g1W, "g1W")):
         if len(C.vec(v)) != n:
             raise ValueError("%s must have one entry per observation" % nm)
     if any(v not in (0.0, 1.0) for v in A):
@@ -84,13 +83,22 @@ def tmlerd(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025, level=0.95):
     se = math.sqrt(C.var(ic, 1) / n)
     z = C.qnorm((1.0 + float(level)) / 2.0)
     init = sum(Q1W) / n - sum(Q0W) / n
-    return RichResult(payload={
-        "estimate": psi, "se": se, "ci_lower": psi - z * se,
-        "ci_upper": psi + z * se,
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(psi / se))) if se > 0 else 0.0,
-        "mu1": mu1, "mu0": mu0, "psi_init": init,
-        "epsilon": fit["epsilon"], "ic_mean": sum(ic) / n, "n": float(n),
-        "method": "TMLE marginal risk difference"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "ci_lower": psi - z * se,
+            "ci_upper": psi + z * se,
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(psi / se))) if se > 0 else 0.0,
+            "mu1": mu1,
+            "mu0": mu0,
+            "psi_init": init,
+            "epsilon": fit["epsilon"],
+            "ic_mean": sum(ic) / n,
+            "n": float(n),
+            "method": "TMLE marginal risk difference",
+        }
+    )
 
 
 tmle_marginal_rd = tmlerd

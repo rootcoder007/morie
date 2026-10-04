@@ -1,7 +1,6 @@
 """Tests for hrzhot.horowitz_T_F_estimators."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzhot import horowitz_T_F_estimators
 
 
@@ -37,9 +36,7 @@ def test_hrzhot_edge():
     u_grid = np.linspace(-2.0, 2.0, 10)
     y1 = 1.0
     y2 = -1.0
-    result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat,
-                                     y_grid=y_grid, u_grid=u_grid,
-                                     y1=y1, y2=y2)
+    result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y_grid=y_grid, u_grid=u_grid, y1=y1, y2=y2)
     assert isinstance(result, dict)
     assert "y_grid" in result
     assert "T_hat" in result

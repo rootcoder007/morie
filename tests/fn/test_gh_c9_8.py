@@ -1,7 +1,6 @@
 """Tests for gh_c9_8.ghosal_nlar_crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c9_8 import ghosal_nlar_crt
 
 
@@ -44,8 +43,7 @@ def test_gh_c9_8_basic():
     assert np.isclose(float(estimate), ref_errs[-1])
 
     # Per-n errors should match the reference computation for every n.
-    assert np.allclose(np.asarray(result["err_by_n"], dtype=float),
-                       np.asarray(ref_errs, dtype=float))
+    assert np.allclose(np.asarray(result["err_by_n"], dtype=float), np.asarray(ref_errs, dtype=float))
 
     # The error should contract as n grows (errs[-1] < errs[0]) when seeded.
     assert bool(result["improving"]) is (ref_errs[-1] < ref_errs[0])

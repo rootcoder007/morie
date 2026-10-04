@@ -2,18 +2,19 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
 from morie.fn.eslrft import esl_random_forest
-
 
 # The implementation calls np.setdiff1d with an ``assume_unique`` keyword
 # that the pure-Python _array_core stub does not accept. Patch it on the
 # module so the source-level call succeeds.
 _orig_setdiff1d = np.setdiff1d
+
+
 def _patched_setdiff1d(ar1, ar2, assume_unique=False):
     return _orig_setdiff1d(ar1, ar2)
+
+
 np.setdiff1d = _patched_setdiff1d
 
 
@@ -52,8 +53,7 @@ def test_eslrft_edge():
     rng_y = np.random.default_rng(43)
     X = rng_x.normal(0, 1, (40, 3))
     y = rng_y.normal(0, 1, 40)
-    result = esl_random_forest(X, y, B=2, mtry=1, max_depth=3,
-                               min_node=2, seed=1)
+    result = esl_random_forest(X, y, B=2, mtry=1, max_depth=3, min_node=2, seed=1)
     assert isinstance(result, dict)
     assert "prediction" in result
     assert result["mtry"] == 1

@@ -44,7 +44,7 @@ def robustness_value(t, df, q=1.0, alpha=1.0):
     fcrit = abs(t) / math.sqrt(df)
     if alpha < 1.0:
         fq = q * (abs(t) / math.sqrt(df))
-    rv = 0.5 * (math.sqrt(fq ** 4 + 4.0 * fq ** 2) - fq ** 2)
+    rv = 0.5 * (math.sqrt(fq**4 + 4.0 * fq**2) - fq**2)
     return min(max(rv, 0.0), 1.0), fcrit
 
 
@@ -108,24 +108,25 @@ def cinelli_hazlett(model, treat=None, cov=None, R2_yu=0.0, R2_du=0.0, q=1.0):
     t = tau / se if se > 0.0 else float("nan")
     bias = se * math.sqrt(df) * math.sqrt(R2_yu * R2_du / (1.0 - R2_du))
     adj = tau - bias if tau >= 0.0 else tau + bias
-    adj_se = se * math.sqrt((1.0 - R2_yu) / (1.0 - R2_du)) * \
-        math.sqrt(df / (df - 1.0)) if df > 1 else float("nan")
+    adj_se = se * math.sqrt((1.0 - R2_yu) / (1.0 - R2_du)) * math.sqrt(df / (df - 1.0)) if df > 1 else float("nan")
     rv, _f = robustness_value(t, df, q)
     r2_yd = t * t / (t * t + df)
-    return RichResult(payload={
-        "estimate": adj,
-        "tau": tau,
-        "se": se,
-        "t": t,
-        "df": df,
-        "bias": bias,
-        "adjusted_se": adj_se,
-        "rv_q": rv,
-        "r2_yd_x": r2_yd,
-        "robust": 1 if (adj * tau > 0.0) else 0,
-        "n": n,
-        "method": "Cinelli-Hazlett omitted-variable-bias sensitivity",
-    })
+    return RichResult(
+        payload={
+            "estimate": adj,
+            "tau": tau,
+            "se": se,
+            "t": t,
+            "df": df,
+            "bias": bias,
+            "adjusted_se": adj_se,
+            "rv_q": rv,
+            "r2_yd_x": r2_yd,
+            "robust": 1 if (adj * tau > 0.0) else 0,
+            "n": n,
+            "method": "Cinelli-Hazlett omitted-variable-bias sensitivity",
+        }
+    )
 
 
 def cheatsheet():

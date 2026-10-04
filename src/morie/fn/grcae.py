@@ -14,15 +14,13 @@ def _conv2d_valid(Z, K, s):
     kh, kw = K.shape
     h, w = Z.shape
     if h < kh or w < kw:
-        raise ValueError(
-            f"encoder kernel {kh}x{kw} does not fit the {h}x{w} feature map."
-        )
+        raise ValueError(f"encoder kernel {kh}x{kw} does not fit the {h}x{w} feature map.")
     oh = (h - kh) // s + 1
     ow = (w - kw) // s + 1
     out = np.empty((oh, ow), dtype=float)
     for i in range(oh):
         for j in range(ow):
-            out[i, j] = float(np.sum(Z[i * s:i * s + kh, j * s:j * s + kw] * K))
+            out[i, j] = float(np.sum(Z[i * s : i * s + kh, j * s : j * s + kw] * K))
     return out
 
 
@@ -32,16 +30,14 @@ def _conv_transpose2d(Z, K, s):
     out = np.zeros(((h - 1) * s + kh, (w - 1) * s + kw), dtype=float)
     for i in range(h):
         for j in range(w):
-            out[i * s:i * s + kh, j * s:j * s + kw] += Z[i, j] * K
+            out[i * s : i * s + kh, j * s : j * s + kw] += Z[i, j] * K
     return out
 
 
-_OUT_ACTS = {"identity": lambda a: a, "tanh": np.tanh,
-             "sigmoid": lambda a: 1.0 / (1.0 + np.exp(-a))}
+_OUT_ACTS = {"identity": lambda a: a, "tanh": np.tanh, "sigmoid": lambda a: 1.0 / (1.0 + np.exp(-a))}
 
 
-def geron_convolutional_autoencoder(x, encoder_weights, decoder_weights,
-                                    stride=2, output_activation="identity"):
+def geron_convolutional_autoencoder(x, encoder_weights, decoder_weights, stride=2, output_activation="identity"):
     r"""Encode an image with strided convolutions and decode it back.
 
     .. math::
@@ -121,10 +117,7 @@ def geron_convolutional_autoencoder(x, encoder_weights, decoder_weights,
     if stride < 1:
         raise ValueError(f"stride must be positive, got {stride}.")
     if output_activation not in _OUT_ACTS:
-        raise ValueError(
-            f"output_activation must be one of {sorted(_OUT_ACTS)}, got "
-            f"{output_activation!r}."
-        )
+        raise ValueError(f"output_activation must be one of {sorted(_OUT_ACTS)}, got {output_activation!r}.")
 
     z = x
     for K in enc:

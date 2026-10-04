@@ -44,8 +44,8 @@ def kamath_nucleus_sampling(logits, p, T=1.0):
         raise ValueError(f"p must lie in (0, 1]; got {p}.")
     if float(T) <= 0:
         raise ValueError(
-            f"the temperature must be positive; got {T}. T -> 0 is "
-            "greedy decoding, which is a different function.")
+            f"the temperature must be positive; got {T}. T -> 0 is greedy decoding, which is a different function."
+        )
     base = top_p_nucleus(z, p=float(p), T=float(T))
     keep = np.asarray(base["keep_mask"], dtype=bool)
     probs = np.asarray(base["tensor"], dtype=float)
@@ -54,14 +54,19 @@ def kamath_nucleus_sampling(logits, p, T=1.0):
     zz = zz - zz.max()
     raw = np.exp(zz)
     raw = raw / raw.sum()
-    return RichResult(payload={
-        "probabilities": [float(v) for v in probs],
-        "kept": [int(i) for i in np.flatnonzero(keep)],
-        "n_kept": int(base["n_kept"]),
-        "kept_mass": float(raw[keep].sum()),
-        "estimate": float(probs.max()),
-        "p": float(p), "temperature": float(T), "n": int(z.size),
-        "method": "Nucleus (top-p) truncation (delegates to toppd)"})
+    return RichResult(
+        payload={
+            "probabilities": [float(v) for v in probs],
+            "kept": [int(i) for i in np.flatnonzero(keep)],
+            "n_kept": int(base["n_kept"]),
+            "kept_mass": float(raw[keep].sum()),
+            "estimate": float(probs.max()),
+            "p": float(p),
+            "temperature": float(T),
+            "n": int(z.size),
+            "method": "Nucleus (top-p) truncation (delegates to toppd)",
+        }
+    )
 
 
 def cheatsheet():

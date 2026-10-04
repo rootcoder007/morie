@@ -1,7 +1,6 @@
 """Tests for morie.fn.gates."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gates import logic_gates
 
 

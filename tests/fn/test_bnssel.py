@@ -1,7 +1,6 @@
 """Tests for bnssel.bound_selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnssel import bound_selection
 
 
@@ -16,8 +15,7 @@ def test_bnssel_basic():
 
     # Selection indicator must be coded 0/1, with rates that vary by stratum.
     base_p = {0: 0.9, 1: 0.7, 2: 0.5, 3: 0.3}
-    D = np.array([1.0 if rng.random() < base_p[int(x)] else 0.0
-                  for x in X])
+    D = np.array([1.0 if rng.random() < base_p[int(x)] else 0.0 for x in X])
 
     # Outcome; the recorded value for D == 0 is ignored by the function.
     y = rng_y.normal(0.0, 1.0, n)
@@ -26,8 +24,7 @@ def test_bnssel_basic():
 
     # The implementation returns a RichResult (mapping-like) dict.
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "p_observed", "n_strata", "n"):
+    for key in ("lower", "upper", "width", "estimate", "p_observed", "n_strata", "n"):
         assert key in result
 
     # Independent recomputation of the worst-case bound per the docstring
@@ -78,8 +75,7 @@ def test_bnssel_edge():
     result = bound_selection(y, D, X)
 
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "p_observed", "n_strata", "n"):
+    for key in ("lower", "upper", "width", "estimate", "p_observed", "n_strata", "n"):
         assert key in result
 
     # Independent pooled-bound computation (single stratum).

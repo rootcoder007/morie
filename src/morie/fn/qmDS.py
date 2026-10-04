@@ -102,13 +102,15 @@ def quantile_mapping(x_mod, obs, mod):
         p = _ecdf_val(md, v)
         probs.append(p)
         out.append(_quantile_interp(ob, p))
-    return RichResult(payload={
-        "estimate": out,
-        "probs": probs,
-        "n_obs": len(ob),
-        "n_mod": n,
-        "method": "empirical quantile mapping x' = F_obs^-1(F_mod(x)) (Gudmundsson 2012 Eq. 2, QUANT)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "probs": probs,
+            "n_obs": len(ob),
+            "n_mod": n,
+            "method": "empirical quantile mapping x' = F_obs^-1(F_mod(x)) (Gudmundsson 2012 Eq. 2, QUANT)",
+        }
+    )
 
 
 qmDS = quantile_mapping

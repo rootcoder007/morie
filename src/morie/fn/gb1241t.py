@@ -54,9 +54,14 @@ def gibbons_concordance_w_ties(rankings):
     chi2 = k * (n - 1) * W
     return RichResult(
         payload={
-            "W": float(W), "S": S, "tie_sum": T, "chi2": float(chi2),
-            "df": int(n - 1), "p_value": float(stats.chi2.sf(chi2, n - 1)),
-            "k": int(k), "n": int(n),
+            "W": float(W),
+            "S": S,
+            "tie_sum": T,
+            "chi2": float(chi2),
+            "df": int(n - 1),
+            "p_value": float(stats.chi2.sf(chi2, n - 1)),
+            "k": int(k),
+            "n": int(n),
             "method": "Tie-corrected W = S/(k^2(n^3-n)/12 - k sum T_i)",
         }
     )

@@ -1,7 +1,6 @@
 """Test willison_amp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.wlamp import alias, willison_amp
 

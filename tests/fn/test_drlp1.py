@@ -1,7 +1,6 @@
 """Tests for drlp1.dr_lp_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drlp1 import dr_lp_did
 
 

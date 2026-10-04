@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixture of Gaussian process experts (Tresp)."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -91,9 +89,17 @@ def gp_mixture_of_experts(X, y, X_test, K, ell=1.0, noise=1e-6):
         vj = sum(pi[k] * (var_k[k][j] + mu_k[k][j] ** 2) for k in range(K)) - mj * mj
         mean.append(mj)
         var.append(vj)
-    return RichResult(payload={
-        "estimate": sum(mean) / m, "mean": mean, "var": var, "gate": gate,
-        "n": n, "K": K, "method": "Mixture of GP experts (Tresp)"})
+    return RichResult(
+        payload={
+            "estimate": sum(mean) / m,
+            "mean": mean,
+            "var": var,
+            "gate": gate,
+            "n": n,
+            "K": K,
+            "method": "Mixture of GP experts (Tresp)",
+        }
+    )
 
 
 def cheatsheet():

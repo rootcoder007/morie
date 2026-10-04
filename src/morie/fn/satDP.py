@@ -143,8 +143,7 @@ def dpll(cnf):
             "decisions": stats["decisions"],
             "propagations": stats["propagations"],
             "pure_literals": stats["pure"],
-            "method": "DPLL: unit propagation, pure literal, split on the "
-                      "lowest-indexed variable, True first",
+            "method": "DPLL: unit propagation, pure literal, split on the lowest-indexed variable, True first",
         }
     )
 

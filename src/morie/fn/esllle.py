@@ -92,7 +92,7 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
         raise ValueError(f"neighbors must be between 1 and {n - 1}")
 
     D = ((X[:, None] - X[None, :]) ** 2).sum(-1)
-    idx = np.argsort(D, axis=1)[:, 1: m + 1]
+    idx = np.argsort(D, axis=1)[:, 1 : m + 1]
 
     W = np.zeros((n, n))
     err = 0.0
@@ -110,13 +110,13 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
     w_eig, V = np.linalg.eigh((M + M.T) / 2)
     # Skip the first eigenvector: it is constant with eigenvalue ~0 and
     # carries no embedding information.
-    emb = V[:, 1: k + 1]
+    emb = V[:, 1 : k + 1]
     return RichResult(
         title="Locally linear embedding",
-        summary_lines=[("n", n), ("k", k), ("neighbors", m),
-                       ("reconstruction error", err / n)],
+        summary_lines=[("n", n), ("k", k), ("neighbors", m), ("reconstruction error", err / n)],
         payload={
-            "embedding": emb * np.sqrt(n), "weights": W,
+            "embedding": emb * np.sqrt(n),
+            "weights": W,
             "eigenvalues": w_eig[: k + 1],
             "reconstruction_error": float(err / n),
             "neighbors": m,

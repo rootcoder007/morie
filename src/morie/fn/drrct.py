@@ -83,8 +83,7 @@ def dr_rct_assisted_did(y_obs, y_rct, D, X=None, G=None):
         ie = [i for i in range(n) if gv[i] >= 0.5]
         io = [i for i in range(n) if gv[i] < 0.5]
         if not ie or not io:
-            raise ValueError("G must mark both an experimental and an "
-                             "observational subsample")
+            raise ValueError("G must mark both an experimental and an observational subsample")
     for idx, nm in ((ie, "experimental"), (io, "observational")):
         s = sum(dv[i] for i in idx)
         if s <= 0.0 or s >= float(len(idx)):

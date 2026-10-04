@@ -45,8 +45,7 @@ def aslistc(x):
     if hasattr(x, "tolist"):
         x = x.tolist()
     try:
-        return [v if isinstance(v, complex) else complex(float(v))
-                for v in x]
+        return [v if isinstance(v, complex) else complex(float(v)) for v in x]
     except TypeError:
         try:
             iter(x)

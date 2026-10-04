@@ -21,33 +21,34 @@ def _ffmc_day(f0, t, h, w, r):
     wmo = 147.2 * (101.0 - f0) / (59.5 + f0)
     if r > 0.5:
         ra = r - 0.5
-        dm = 42.5 * ra * math.exp(-100.0 / (251.0 - wmo)) \
-            * (1.0 - math.exp(-6.93 / ra))
+        dm = 42.5 * ra * math.exp(-100.0 / (251.0 - wmo)) * (1.0 - math.exp(-6.93 / ra))
         if wmo > 150.0:
             wmo = wmo + dm + 0.0015 * (wmo - 150.0) ** 2 * math.sqrt(ra)
         else:
             wmo = wmo + dm
         if wmo > 250.0:
             wmo = 250.0
-    ed = 0.942 * h ** 0.679 + 11.0 * math.exp((h - 100.0) / 10.0) \
-        + 0.18 * (21.1 - t) * (1.0 - 1.0 / math.exp(0.115 * h))
+    ed = 0.942 * h**0.679 + 11.0 * math.exp((h - 100.0) / 10.0) + 0.18 * (21.1 - t) * (1.0 - 1.0 / math.exp(0.115 * h))
     if wmo < ed:
-        ew = 0.618 * h ** 0.753 + 10.0 * math.exp((h - 100.0) / 10.0) \
+        ew = (
+            0.618 * h**0.753
+            + 10.0 * math.exp((h - 100.0) / 10.0)
             + 0.18 * (21.1 - t) * (1.0 - 1.0 / math.exp(0.115 * h))
+        )
         if wmo < ew:
-            z = 0.424 * (1.0 - ((100.0 - h) / 100.0) ** 1.7) \
-                + 0.0694 * math.sqrt(w) * (1.0 - ((100.0 - h) / 100.0) ** 8)
+            z = 0.424 * (1.0 - ((100.0 - h) / 100.0) ** 1.7) + 0.0694 * math.sqrt(w) * (
+                1.0 - ((100.0 - h) / 100.0) ** 8
+            )
             x = z * 0.581 * math.exp(0.0365 * t)
-            wm = ew - (ew - wmo) / 10.0 ** x
+            wm = ew - (ew - wmo) / 10.0**x
         else:
             wm = wmo
     elif wmo == ed:
         wm = wmo
     else:
-        z = 0.424 * (1.0 - (h / 100.0) ** 1.7) \
-            + 0.0694 * math.sqrt(w) * (1.0 - (h / 100.0) ** 8)
+        z = 0.424 * (1.0 - (h / 100.0) ** 1.7) + 0.0694 * math.sqrt(w) * (1.0 - (h / 100.0) ** 8)
         x = z * 0.581 * math.exp(0.0365 * t)
-        wm = ed + (wmo - ed) / 10.0 ** x
+        wm = ed + (wmo - ed) / 10.0**x
     ffm = 59.5 * (250.0 - wm) / (147.2 + wm)
     if ffm > 101.0:
         ffm = 101.0
@@ -101,7 +102,7 @@ def _dc_day(d0, t, r, month):
 def _isi_bui_fwi(ffm, dmc, dc, w):
     # ISI, BUI, FWI, DSR, statements 235-280.
     fm = 147.2 * (101.0 - ffm) / (59.5 + ffm)
-    sf = 19.115 * math.exp(fm * -0.1386) * (1.0 + fm ** 5.31 / 4.93e7)
+    sf = 19.115 * math.exp(fm * -0.1386) * (1.0 + fm**5.31 / 4.93e7)
     isi = sf * math.exp(0.05039 * w)
     if dmc == 0.0 and dc == 0.0:
         bui = 0.0
@@ -116,17 +117,16 @@ def _isi_bui_fwi(ffm, dmc, dc, w):
     if bui > 80.0:
         bb = 0.1 * isi * (1000.0 / (25.0 + 108.64 / math.exp(0.023 * bui)))
     else:
-        bb = 0.1 * isi * (0.626 * bui ** 0.809 + 2.0)
+        bb = 0.1 * isi * (0.626 * bui**0.809 + 2.0)
     if bb <= 1.0:
         fwi = bb
     else:
         fwi = math.exp(2.72 * (0.434 * math.log(bb)) ** 0.647)
-    dsr = 0.0272 * fwi ** 1.77
+    dsr = 0.0272 * fwi**1.77
     return isi, bui, fwi, dsr
 
 
-def fwxF(temp, rh, wind, rain, month, ffmc_init=85.0, dmc_init=6.0,
-         dc_init=15.0):
+def fwxF(temp, rh, wind, rain, month, ffmc_init=85.0, dmc_init=6.0, dc_init=15.0):
     """
     Canadian Forest Fire Weather Index (FWI) System, daily codes.
 
@@ -202,8 +202,7 @@ def fwxF(temp, rh, wind, rain, month, ffmc_init=85.0, dmc_init=6.0,
         out["bui"].append(bui)
         out["fwi"].append(fwi)
         out["dsr"].append(dsr)
-    out.update(n_days=n,
-               method="Canadian FWI System (Van Wagner & Pickett 1985)")
+    out.update(n_days=n, method="Canadian FWI System (Van Wagner & Pickett 1985)")
     return RichResult(payload=out)
 
 

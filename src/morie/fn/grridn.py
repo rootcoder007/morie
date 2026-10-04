@@ -82,9 +82,7 @@ def geron_ridge_normal_equation(X, y, alpha, intercept=True):
         Amat[0, 0] = 0.0
     G = A.T @ A + alpha * Amat
     if np.linalg.matrix_rank(G) < n:
-        raise ValueError(
-            "X^T X + alpha*A is singular; increase alpha or drop the duplicated bias column."
-        )
+        raise ValueError("X^T X + alpha*A is singular; increase alpha or drop the duplicated bias column.")
     theta = np.linalg.solve(G, A.T @ yv)
     fitted = A @ theta
     res = yv - fitted

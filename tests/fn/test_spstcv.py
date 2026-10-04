@@ -1,12 +1,12 @@
 """spstcv -- separable spatio-temporal covariance, Schabenberger & Gotway Sec. 9.2."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spstcv import schabenberger_st_cov_separable
 
-CS = lambda h: 2.0 * np.exp(-h / 3.0)          # noqa: E731  sill 2, range 3
-CT = lambda k: 1.5 * np.exp(-k / 2.0)          # noqa: E731  sill 1.5, range 2
+CS = lambda h: 2.0 * np.exp(-h / 3.0)  # noqa: E731  sill 2, range 3
+CT = lambda k: 1.5 * np.exp(-k / 2.0)  # noqa: E731  sill 1.5, range 2
 
 H = np.array([0.0, 1.0, 2.0, 5.0])
 K = np.array([0.0, 1.0, 2.0, 4.0])

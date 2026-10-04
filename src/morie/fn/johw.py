@@ -18,8 +18,7 @@ def _squash(x):
 __all__ = ["joseph_holt_winters"]
 
 
-def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
-                        seasonal="additive"):
+def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1, seasonal="additive"):
     r"""Holt-Winters seasonal method.
 
     Additive form:
@@ -143,14 +142,14 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
         return lev, tr, se, fit
 
     if alpha is None or beta is None or gamma is None:
+
         def sse(x):
             a, b, g = _squash(x)
             _, _, _, f = run(a, b, g)
             r = y[m:] - f[m:]
             return float(np.sum(r**2)) if np.all(np.isfinite(f)) else 1e18
 
-        res = optimize.minimize(sse, [0.0, -2.0, -1.0], method="Nelder-Mead",
-                                options={"maxiter": 800})
+        res = optimize.minimize(sse, [0.0, -2.0, -1.0], method="Nelder-Mead", options={"maxiter": 800})
         ah, bh, gh = _squash(res.x)
         alpha = ah if alpha is None else float(alpha)
         beta = bh if beta is None else float(beta)
@@ -170,10 +169,18 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
     return RichResult(
         payload={
             "forecast": base * sf if mult else base + sf,
-            "level": lev, "trend": tr, "season": se[:n], "fitted": fit,
-            "residuals": y - fit, "sse": float(np.sum((y[m:] - fit[m:]) ** 2)),
-            "alpha": alpha, "beta": beta, "gamma": gamma, "m": m,
-            "seasonal": seasonal, "n": int(n),
+            "level": lev,
+            "trend": tr,
+            "season": se[:n],
+            "fitted": fit,
+            "residuals": y - fit,
+            "sse": float(np.sum((y[m:] - fit[m:]) ** 2)),
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gamma,
+            "m": m,
+            "seasonal": seasonal,
+            "n": int(n),
             "method": f"Holt-Winters {seasonal} seasonal method (m = {m})",
         }
     )

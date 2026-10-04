@@ -60,11 +60,17 @@ def eigengap(values, kmax=None):
         raise ValueError("kmax must satisfy 1 <= kmax <= len(values) - 1")
     gaps = [abs(v[k] - v[k - 1]) for k in range(1, km + 1)]
     best = max(range(km), key=lambda i: (gaps[i], -i))
-    return RichResult(payload={
-        "k": float(best + 1), "gap": gaps[best], "gaps": gaps,
-        "values": v, "n_zero": float(sum(1 for x in v if x < 1e-10)),
-        "kmax": float(km),
-        "method": "Eigengap heuristic, von Luxburg (2007) Section 8.3"})
+    return RichResult(
+        payload={
+            "k": float(best + 1),
+            "gap": gaps[best],
+            "gaps": gaps,
+            "values": v,
+            "n_zero": float(sum(1 for x in v if x < 1e-10)),
+            "kmax": float(km),
+            "method": "Eigengap heuristic, von Luxburg (2007) Section 8.3",
+        }
+    )
 
 
 sgt_eigengap_heuristic = eigengap

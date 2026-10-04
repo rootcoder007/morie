@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['mwu', 'gibbons_mannwhitney']
+__all__ = ["mwu", "gibbons_mannwhitney"]
 
 
 def mwu(x, y):
@@ -69,7 +69,7 @@ def mwu(x, y):
     pmf = [c / denom for c in counts]
     ui = int(round(u))
     lower = sum(pmf[: min(ui, total) + 1])
-    upper = sum(pmf[min(ui, total):])
+    upper = sum(pmf[min(ui, total) :])
     mean = m * n / 2.0
     var = m * n * (m + n + 1.0) / 12.0
     z = (u - mean) / math.sqrt(var)

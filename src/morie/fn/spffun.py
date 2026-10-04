@@ -62,10 +62,14 @@ def schabenberger_f_function(points, region=None, r=None, n_grid=40):
     lam = intensity(p, (xmin, ymin, xmax, ymax))
     return RichResult(
         title="F-function (empty space)",
-        summary_lines=[("grid points", int(d.size)),
-                       ("mean empty-space distance", float(d.mean()))],
-        payload={"r": r, "f": f, "f_csr": 1.0 - np.exp(-lam * np.pi * r**2),
-                 "empty_space_distances": d, "lambda_est": lam},
+        summary_lines=[("grid points", int(d.size)), ("mean empty-space distance", float(d.mean()))],
+        payload={
+            "r": r,
+            "f": f,
+            "f_csr": 1.0 - np.exp(-lam * np.pi * r**2),
+            "empty_space_distances": d,
+            "lambda_est": lam,
+        },
     )
 
 

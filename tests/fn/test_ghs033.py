@@ -1,7 +1,6 @@
 """Tests for ghs033.ghosal_ch3_polya_tree_mixture_second_kind."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs033 import ghosal_ch3_polya_tree_mixture_second_kind
 
 
@@ -31,9 +30,7 @@ def test_ghs033_basic():
     alpha_path_of_theta = _alpha_path_factory(paths)
     x = float(rng.normal(0, 1))  # x is scalar per the docstring
 
-    result = ghosal_ch3_polya_tree_mixture_second_kind(
-        x, alpha_path_of_theta, thetas
-    )
+    result = ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta, thetas)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "distribution" in result
@@ -61,9 +58,7 @@ def test_ghs033_edge():
     x = 0.5  # scalar x per the docstring
 
     weights = [0.25, 0.75]
-    result = ghosal_ch3_polya_tree_mixture_second_kind(
-        x, alpha_path_of_theta, thetas, weights=weights
-    )
+    result = ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta, thetas, weights=weights)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "per_theta" in result

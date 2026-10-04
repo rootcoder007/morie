@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_ttd import gibbons_total_runs_dist_table
 
 
@@ -51,10 +49,7 @@ def test_gb_ttd_basic():
             p = 2.0 * math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k)
-                + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
-            )
+            p = math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k) + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
         pmf_indep.append(p / den)
 
     for got, expected in zip(result["pmf"], pmf_indep):
@@ -99,10 +94,7 @@ def test_gb_ttd_at_r():
             val = 2.0 * math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            val = (
-                math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k)
-                + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
-            )
+            val = math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k) + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
         pmf.append(val / den)
     idx = r - 2
     cdf_indep = []

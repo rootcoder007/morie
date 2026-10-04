@@ -1,7 +1,6 @@
 """Tests for bndvld.bound_validity_check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndvld import bound_validity_check
 
 
@@ -12,7 +11,7 @@ def test_bndvld_basic():
     # Make sure each upper >= lower so the bounds are individually valid
     upper = upper + np.abs(lower) + 1.0
     theta_0 = 0.0  # scalar, as the function expects
-    H0 = 1.0       # scalar
+    H0 = 1.0  # scalar
     result = bound_validity_check(lower, upper, theta_0, H0)
 
     assert isinstance(result, dict)

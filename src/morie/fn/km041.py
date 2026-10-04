@@ -42,9 +42,8 @@ def kamath_ch2_mixtral_swiglu_moe(x, W_g, expert_weights=None):
         experts = [(lambda xv: xv) for _ in range(n)]
     else:
         if len(expert_weights) != n:
-            raise ValueError(
-                f"need one (W1, W3, W2) triple per expert; got "
-                f"{len(expert_weights)} for {n}.")
+            raise ValueError(f"need one (W1, W3, W2) triple per expert; got {len(expert_weights)} for {n}.")
+
         def make(ws):
             W1 = np.atleast_2d(np.asarray(ws[0], dtype=float))
             W3 = np.atleast_2d(np.asarray(ws[1], dtype=float))
@@ -54,13 +53,19 @@ def kamath_ch2_mixtral_swiglu_moe(x, W_g, expert_weights=None):
             if W1.shape[1] != W2.shape[0]:
                 raise ValueError("W2's rows must match W1's columns.")
             return lambda xv: _swiglu(xv, W1, W3, W2)
+
         experts = [make(ws) for ws in expert_weights]
     combined = kamath_ch2_moe_output(x, gate["weights"], experts)
-    return RichResult(payload={
-        "output": combined["output"], "gate": gate.payload,
-        "experts_evaluated": combined["experts_evaluated"],
-        "estimate": combined["estimate"], "n": n,
-        "method": "Mixtral top-2 SwiGLU MoE (Kamath Eq 2.41)"})
+    return RichResult(
+        payload={
+            "output": combined["output"],
+            "gate": gate.payload,
+            "experts_evaluated": combined["experts_evaluated"],
+            "estimate": combined["estimate"],
+            "n": n,
+            "method": "Mixtral top-2 SwiGLU MoE (Kamath Eq 2.41)",
+        }
+    )
 
 
 def cheatsheet():

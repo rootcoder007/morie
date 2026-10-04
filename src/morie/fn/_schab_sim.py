@@ -90,8 +90,7 @@ def simulate_unconditional(mean, cov, method="cholesky", seed=0, stream=0):
     return mean + root @ random_normal(n, seed=seed, stream=stream)
 
 
-def simulate_conditional(cov_all, z_obs, n_obs, mean=0.0, method="cholesky",
-                         seed=0, stream=0):
+def simulate_conditional(cov_all, z_obs, n_obs, mean=0.0, method="cholesky", seed=0, stream=0):
     """Conditioning an unconditional simulation by kriging, eq (7.1).
 
         Zc(s) = S(s) + c' Sigma^-1 (Z - Sm)
@@ -119,10 +118,9 @@ def simulate_conditional(cov_all, z_obs, n_obs, mean=0.0, method="cholesky",
         raise ValueError("`n_obs` must leave at least one target location")
 
     mu = np.full(n, float(mean)) if np.isscalar(mean) else np.asarray(mean, float)
-    sim = simulate_unconditional(np.zeros(n), cov_all, method=method,
-                                 seed=seed, stream=stream)
+    sim = simulate_unconditional(np.zeros(n), cov_all, method=method, seed=seed, stream=stream)
     sigma_obs = cov_all[:n_obs, :n_obs]
-    c = cov_all[:, :n_obs]                       # Cov(all, observed)
+    c = cov_all[:, :n_obs]  # Cov(all, observed)
     resid = (z_obs - mu[:n_obs]) - sim[:n_obs]
     correction = c @ np.linalg.solve(sigma_obs, resid)
     return mu + sim + correction

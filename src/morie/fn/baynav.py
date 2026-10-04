@@ -63,12 +63,10 @@ doi:10.1080/01621459.2017.1285773.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["planar_flow", "flow_log_density", "enforce_invertibility",
-           "transform_to_real", "elbo"]
+__all__ = ["planar_flow", "flow_log_density", "enforce_invertibility", "transform_to_real", "elbo"]
 
 _EPS = 1e-12
 
@@ -90,13 +88,15 @@ def enforce_invertibility(u, w):
     m = -1.0 + math.log1p(math.exp(uw))
     nw = sum(v * v for v in wv)
     if nw <= _EPS:
-        raise ValueError("baynav: w is zero, so the flow is "
-                         "degenerate")
+        raise ValueError("baynav: w is zero, so the flow is degenerate")
     out = [uv[i] + (m - uw) * wv[i] / nw for i in range(len(uv))]
-    return {"u": out, "adjusted": True, "u_dot_w": uw,
-            "u_dot_w_after": sum(out[i] * wv[i]
-                                 for i in range(len(out))),
-            "note": "u'w >= -1 is required for invertibility"}
+    return {
+        "u": out,
+        "adjusted": True,
+        "u_dot_w": uw,
+        "u_dot_w_after": sum(out[i] * wv[i] for i in range(len(out))),
+        "note": "u'w >= -1 is required for invertibility",
+    }
 
 
 def planar_flow(z, u, w, b):
@@ -117,9 +117,13 @@ def planar_flow(z, u, w, b):
     dt = 1.0 - t * t
     psi = [dt * wv[i] for i in range(len(wv))]
     det = 1.0 + sum(uv[i] * psi[i] for i in range(len(uv)))
-    return {"z": out, "log_det": math.log(max(abs(det), _EPS)),
-            "det": det, "invertibility_adjusted": fixed["adjusted"],
-            "note": "rank-one Jacobian, so the determinant is O(d)"}
+    return {
+        "z": out,
+        "log_det": math.log(max(abs(det), _EPS)),
+        "det": det,
+        "invertibility_adjusted": fixed["adjusted"],
+        "note": "rank-one Jacobian, so the determinant is O(d)",
+    }
 
 
 def flow_log_density(z0, log_q0, layers):
@@ -131,18 +135,22 @@ def flow_log_density(z0, log_q0, layers):
     z = [float(v) for v in k.vec(z0)]
     lq = float(log_q0)
     dets = []
-    for (u, w, b) in layers:
+    for u, w, b in layers:
         r = planar_flow(z, u, w, b)
         z = r["z"]
         dets.append(r["log_det"])
         lq -= r["log_det"]
-    return RichResult(payload={
-        "estimate": lq, "log_q": lq, "z": z,
-        "log_dets": dets, "depth": len(layers),
-        "method": "normalizing flow; Rezende & Mohamed (2015)",
-        "note": "depth 0 leaves the density untouched, which is the "
-                "mean-field case",
-    })
+    return RichResult(
+        payload={
+            "estimate": lq,
+            "log_q": lq,
+            "z": z,
+            "log_dets": dets,
+            "depth": len(layers),
+            "method": "normalizing flow; Rezende & Mohamed (2015)",
+            "note": "depth 0 leaves the density untouched, which is the mean-field case",
+        }
+    )
 
 
 def transform_to_real(value, support="positive", eps=1e-10):
@@ -155,22 +163,16 @@ def transform_to_real(value, support="positive", eps=1e-10):
     v = float(value)
     if support == "positive":
         if v <= 0.0:
-            raise ValueError("baynav: a positive parameter must be "
-                             "positive, got %r" % (value,))
-        return {"real": math.log(v), "log_jacobian": -math.log(v),
-                "inverse": math.exp(math.log(v))}
+            raise ValueError("baynav: a positive parameter must be positive, got %r" % (value,))
+        return {"real": math.log(v), "log_jacobian": -math.log(v), "inverse": math.exp(math.log(v))}
     if support == "unit":
         if not 0.0 < v < 1.0:
-            raise ValueError("baynav: a unit parameter must lie in "
-                             "(0,1), got %r" % (value,))
+            raise ValueError("baynav: a unit parameter must lie in (0,1), got %r" % (value,))
         z = math.log(v / (1.0 - v))
-        return {"real": z,
-                "log_jacobian": -math.log(v) - math.log(1.0 - v),
-                "inverse": 1.0 / (1.0 + math.exp(-z))}
+        return {"real": z, "log_jacobian": -math.log(v) - math.log(1.0 - v), "inverse": 1.0 / (1.0 + math.exp(-z))}
     if support == "real":
         return {"real": v, "log_jacobian": 0.0, "inverse": v}
-    raise ValueError("baynav: support must be positive, unit or real, "
-                     "got %r" % (support,))
+    raise ValueError("baynav: support must be positive, unit or real, got %r" % (support,))
 
 
 def elbo(log_joint, log_q, samples):
@@ -184,23 +186,27 @@ def elbo(log_joint, log_q, samples):
     vals = [float(log_joint(s)) - float(log_q(s)) for s in samples]
     m = sum(vals) / len(vals)
     var = sum((v - m) ** 2 for v in vals) / max(len(vals) - 1, 1)
-    return {"elbo": m, "se": math.sqrt(var / len(vals)),
-            "n_samples": len(vals),
-            "note": "a lower bound on the log evidence; enriching the "
-                    "family can only raise it"}
+    return {
+        "elbo": m,
+        "se": math.sqrt(var / len(vals)),
+        "n_samples": len(vals),
+        "note": "a lower bound on the log evidence; enriching the family can only raise it",
+    }
 
 
 def cheatsheet():
-    return ("baynav: variational accuracy is capped by the FAMILY. Two "
-            "fixes. NORMALIZING FLOWS enrich it: push q0 through "
-            "invertible maps and subtract the log-determinants. The "
-            "determinant is the design problem -- a planar flow's "
-            "Jacobian is RANK ONE, so the lemma gives it in O(d) "
-            "instead of O(d^3), and cheap determinants buy depth. "
-            "Invertibility needs u'w >= -1, or the formula is simply "
-            "wrong. ADVI instead makes it AUTOMATIC: map constrained "
-            "parameters to R^K, fit a Gaussian there, correct by the "
-            "Jacobian; the user writes only the model.")
+    return (
+        "baynav: variational accuracy is capped by the FAMILY. Two "
+        "fixes. NORMALIZING FLOWS enrich it: push q0 through "
+        "invertible maps and subtract the log-determinants. The "
+        "determinant is the design problem -- a planar flow's "
+        "Jacobian is RANK ONE, so the lemma gives it in O(d) "
+        "instead of O(d^3), and cheap determinants buy depth. "
+        "Invertibility needs u'w >= -1, or the formula is simply "
+        "wrong. ADVI instead makes it AUTOMATIC: map constrained "
+        "parameters to R^K, fit a Gaussian there, correct by the "
+        "Jacobian; the user writes only the model."
+    )
 
 
 # compact alias per ledger/NAMING.md

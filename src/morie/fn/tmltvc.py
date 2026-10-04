@@ -86,9 +86,9 @@ def tmle_time_varying_confound(y, A, L, regime=1.0, trunc=0.01):
             gs[:, t] = np.clip(A[:, t].mean() if A[:, t].mean() > 0 else 1.0, trunc, 1 - trunc)
         else:
             gs[:, t] = np.clip(_logit_fit(past, A[:, t]), trunc, 1 - trunc)
-    p_follow = np.where(A == reg[None, :], gs, 1 - gs)
+    p_follow = np.where(reg[None, :] == A, gs, 1 - gs)
     cum_g = np.cumprod(p_follow, axis=1)
-    follows = np.cumprod((A == reg[None, :]).astype(float), axis=1)
+    follows = np.cumprod((reg[None, :] == A).astype(float), axis=1)
 
     lo, hi = float(y.min()), float(y.max())
     span = hi - lo
@@ -106,9 +106,7 @@ def tmle_time_varying_confound(y, A, L, regime=1.0, trunc=0.01):
         den = float(np.sum(H**2 * q_obs * (1 - q_obs)))
         eps = num / den if den > 1e-14 else 0.0
         eps_all.append(float(eps))
-        Xa = np.column_stack(
-            [np.ones(n), A[:, :t], np.full(n, reg[t]), L[:, : t + 1]]
-        )
+        Xa = np.column_stack([np.ones(n), A[:, :t], np.full(n, reg[t]), L[:, : t + 1]])
         q_reg = np.clip(Xa @ b, 1e-6, 1 - 1e-6)
         Q = _expit(_logit(q_reg) + eps * (1.0 / cum_g[:, t]))
 

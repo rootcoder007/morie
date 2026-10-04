@@ -1,7 +1,5 @@
 """Tests for jofrr.joseph_fourier_features."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.jofrr import joseph_fourier_features
 
 

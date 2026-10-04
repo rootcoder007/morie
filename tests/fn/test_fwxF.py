@@ -1,7 +1,6 @@
 """Tests for fwxF.fire_weather_index."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fwxF import fire_weather_index
 
 
@@ -31,7 +30,7 @@ def test_fwxF_basic():
     fwi_vals = result["fwi"]
     dsr_vals = result["dsr"]
     for fwi, dsr in zip(fwi_vals, dsr_vals):
-        expected_dsr = 0.0272 * (fwi ** 1.77)
+        expected_dsr = 0.0272 * (fwi**1.77)
         assert abs(dsr - expected_dsr) < 1e-9
 
 

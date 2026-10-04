@@ -28,8 +28,7 @@ def cohens_d_population(mu1, mu2, sigma):
     """
     value = _ca_crim.cohens_d_population(mu1, mu2, sigma)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.2)"
@@ -41,4 +40,4 @@ def cohens_d_population(mu1, mu2, sigma):
 
 
 def cheatsheet():
-    return 'ca8e2: d = (mu_1 - mu_2) / sigma [Weisburd et al. 2022, eq. 8.2]'
+    return "ca8e2: d = (mu_1 - mu_2) / sigma [Weisburd et al. 2022, eq. 8.2]"

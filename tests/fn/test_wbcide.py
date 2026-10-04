@@ -36,8 +36,7 @@ def test_wbcide_basic():
     def tau(gv, t):
         return 1.0 + 0.5 * (t - gv)
 
-    y = [0.3 * u + 0.2 * t + (tau(gv, t) if d else 0.0)
-         for u, t, gv, d in zip(unit, time, g, D)]
+    y = [0.3 * u + 0.2 * t + (tau(gv, t) if d else 0.0) for u, t, gv, d in zip(unit, time, g, D)]
 
     res = wooldridge_bjs_estimator(y, D, unit, time)
 
@@ -73,10 +72,8 @@ def test_wbcide_basic():
     # exact fit, so no residual variation and no sampling error
     assert res["se"] == pytest.approx(0.0, abs=1e-8)
     lo, hi = res["ci"]
-    assert lo == pytest.approx(res["estimate"] - 1.959963984540054 * res["se"],
-                               abs=1e-12)
-    assert hi == pytest.approx(res["estimate"] + 1.959963984540054 * res["se"],
-                               abs=1e-12)
+    assert lo == pytest.approx(res["estimate"] - 1.959963984540054 * res["se"], abs=1e-12)
+    assert hi == pytest.approx(res["estimate"] + 1.959963984540054 * res["se"], abs=1e-12)
 
     # with no covariates it is numerically the imputation estimator
     assert res["matches_imputation"] == pytest.approx(0.0, abs=1e-8)
@@ -87,8 +84,7 @@ def test_wbcide_with_covariates_recovers_the_common_slope():
     unit, time, g, D = _panel()
     x = [0.1 * ((7 * u + 3 * t) % 5) for u, t in zip(unit, time)]
     gamma = 1.5
-    y = [0.3 * u + 0.2 * t + 2.0 * d + gamma * xv
-         for u, t, d, xv in zip(unit, time, D, x)]
+    y = [0.3 * u + 0.2 * t + 2.0 * d + gamma * xv for u, t, d, xv in zip(unit, time, D, x)]
 
     res = wooldridge_bjs_estimator(y, D, unit, time, [[v] for v in x])
 
@@ -125,7 +121,7 @@ def test_wbcide_edge():
             D2.append(d)
             y2.append(1.0 * i - 0.5 * t + 3.0 * d)
     r2 = wooldridge_bjs_estimator(y2, D2, unit2, time2)
-    assert r2["n_interactions"] == 2          # t = 2 and t = 3
+    assert r2["n_interactions"] == 2  # t = 2 and t = 3
     assert r2["estimate"] == pytest.approx(3.0, abs=1e-9)
     assert set(r2["cohort_att"]) == {2.0}
 
@@ -146,7 +142,7 @@ import morie.fn.wbcide as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

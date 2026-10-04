@@ -149,8 +149,7 @@ def taphonomy_preservation_delta(
             raise TypeError("`data` must be a pandas DataFrame")
     if len(data) == 0:
         raise ValueError(
-            "`data` is empty. Fill taphonomy_schema() with real comparanda; "
-            "this module never fabricates burial rows."
+            "`data` is empty. Fill taphonomy_schema() with real comparanda; this module never fabricates burial rows."
         )
     for col in (treatment, outcome):
         if col not in data.columns:
@@ -162,12 +161,12 @@ def taphonomy_preservation_delta(
     covariates = [c for c in covariates if c not in (treatment, outcome)]
     if not covariates:
         raise ValueError(
-            "no covariates available; supply environment/handling/measurement " "columns (see taphonomy_schema())"
+            "no covariates available; supply environment/handling/measurement columns (see taphonomy_schema())"
         )
 
     warnings: list[str] = []
     if data[treatment].dropna().nunique() < 2:
-        warnings.append("treatment has no contrast (all treated or all control) -- " "the effect is not identified.")
+        warnings.append("treatment has no contrast (all treated or all control) -- the effect is not identified.")
 
     # Normalise each estimator's output to a common summary. estimate_irm
     # returns a dict (cross-fit ATE + orthogonal SE); estimate_cate returns a
@@ -267,8 +266,7 @@ def taphonomy_preservation_delta(
     lo = float("nan") if ci_lower is None else ci_lower
     hi = float("nan") if ci_upper is None else ci_upper
     interpretation = (
-        f"Preservation delta (ATE of {treatment} on {outcome}) = {ate:.3f} "
-        f"[{lo:.3f}, {hi:.3f}], n={n}, via {method}. "
+        f"Preservation delta (ATE of {treatment} on {outcome}) = {ate:.3f} [{lo:.3f}, {hi:.3f}], n={n}, via {method}. "
     )
     if e_point is not None:
         interpretation += (
@@ -711,7 +709,7 @@ def taphonomy_bhm(
     lrow = coefficients.loc[coefficients["term"] == lime_terms[0]].iloc[0]
     interp = (
         f"Bayesian preservation model (n={n}, conjugate Gaussian, EB noise "
-        f"sd={sigma2 ** 0.5:.3f}). Posterior effect of '{lrow['term']}' = "
+        f"sd={sigma2**0.5:.3f}). Posterior effect of '{lrow['term']}' = "
         f"{lrow['post_mean']:.3f} [{lrow['ci_lower']:.3f}, {lrow['ci_upper']:.3f}], "
         f"P(effect>0)={lrow['prob_positive']:.3f}. Priors update to posteriors: "
         "an informative lime prior encodes the desiccant belief, the data "
@@ -1155,7 +1153,7 @@ def taphonomy_morphosource_fetch(
     except urllib.error.HTTPError as e:  # noqa: F821
         if e.code == 403:
             raise PermissionError(
-                f"Restricted media {media_id}: request download permission at " "https://www.morphosource.org"
+                f"Restricted media {media_id}: request download permission at https://www.morphosource.org"
             ) from e
         raise
     dest = Path(dest) if dest is not None else Path(tempfile.gettempdir())

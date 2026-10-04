@@ -1,7 +1,6 @@
 """Tests for gh_wn_gauss_pr.ghosal_white_noise_gauss_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_wn_gauss_pr import ghosal_white_noise_gauss_prior
 
 

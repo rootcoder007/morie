@@ -75,9 +75,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["check_parameters", "stick_breaking_py",
-           "predictive_weights", "expected_clusters",
-           "tail_comparison"]
+__all__ = ["check_parameters", "stick_breaking_py", "predictive_weights", "expected_clusters", "tail_comparison"]
 
 _EPS = 1e-12
 
@@ -92,17 +90,15 @@ def check_parameters(alpha, theta):
     """
     a, t = float(alpha), float(theta)
     if not 0.0 <= a < 1.0:
-        raise ValueError("pmpfit: the discount must satisfy "
-                         "0 <= alpha < 1, got %r" % (alpha,))
+        raise ValueError("pmpfit: the discount must satisfy 0 <= alpha < 1, got %r" % (alpha,))
     if t <= -a:
-        raise ValueError("pmpfit: the concentration must satisfy "
-                         "theta > -alpha = %r, got %r" % (-a, theta))
-    return {"alpha": a, "theta": t, "is_dirichlet": a == 0.0,
-            "note": "alpha = 0 is exactly the Dirichlet process"}
+        raise ValueError("pmpfit: the concentration must satisfy theta > -alpha = %r, got %r" % (-a, theta))
+    return {"alpha": a, "theta": t, "is_dirichlet": a == 0.0, "note": "alpha = 0 is exactly the Dirichlet process"}
 
 
 def _beta(rng, a, b):
     r"""Beta(a, b) by the ratio of two gamma draws."""
+
     def gamma(shape):
         if shape < 1.0:
             u = max(float(rng.uniform()), 1e-15)
@@ -112,14 +108,14 @@ def _beta(rng, a, b):
         while True:
             u1 = min(max(float(rng.uniform()), 1e-12), 1 - 1e-12)
             u2 = min(max(float(rng.uniform()), 1e-12), 1 - 1e-12)
-            z = math.sqrt(-2.0 * math.log(u1)) * math.cos(
-                2.0 * math.pi * u2)
+            z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2)
             v = (1.0 + c * z) ** 3
             if v <= 0.0:
                 continue
             u = max(float(rng.uniform()), 1e-15)
             if math.log(u) < 0.5 * z * z + d - d * v + d * math.log(v):
                 return d * v
+
     g1 = gamma(a)
     g2 = gamma(b)
     return g1 / (g1 + g2) if (g1 + g2) > _EPS else 0.5
@@ -139,15 +135,19 @@ def stick_breaking_py(alpha, theta, K, rng=None, seed=0):
     r = rng if rng is not None else np.random.default_rng(seed)
     w, rest, Ys = [], 1.0, []
     for kk in range(1, n + 1):
-        y = _beta(r, 1.0 - a, t + kk * a) if a > 0.0 else \
-            1.0 - max(float(r.uniform()), 1e-15) ** (1.0 / t)
+        y = _beta(r, 1.0 - a, t + kk * a) if a > 0.0 else 1.0 - max(float(r.uniform()), 1e-15) ** (1.0 / t)
         Ys.append(y)
         w.append(y * rest)
-        rest *= (1.0 - y)
-    return {"weights": w, "Y": Ys, "remaining": rest,
-            "kept_mass": sum(w), "alpha": a, "theta": t,
-            "note": "Beta(1-alpha, theta + n alpha): the parameters "
-                    "DRIFT with n, which is what fattens the tail"}
+        rest *= 1.0 - y
+    return {
+        "weights": w,
+        "Y": Ys,
+        "remaining": rest,
+        "kept_mass": sum(w),
+        "alpha": a,
+        "theta": t,
+        "note": "Beta(1-alpha, theta + n alpha): the parameters DRIFT with n, which is what fattens the tail",
+    }
 
 
 def predictive_weights(counts, alpha, theta):
@@ -161,21 +161,26 @@ def predictive_weights(counts, alpha, theta):
     p = check_parameters(alpha, theta)
     a, t = p["alpha"], p["theta"]
     if any(v <= 0.0 for v in c):
-        raise ValueError("pmpfit: an occupied cluster must have a "
-                         "positive count")
+        raise ValueError("pmpfit: an occupied cluster must have a positive count")
     n = sum(c)
     K = len(c)
     if any(v <= a for v in c) and a > 0.0:
-        raise ValueError("pmpfit: a cluster of size <= alpha would "
-                         "get a negative weight; alpha must be "
-                         "smaller than every cluster size")
+        raise ValueError(
+            "pmpfit: a cluster of size <= alpha would "
+            "get a negative weight; alpha must be "
+            "smaller than every cluster size"
+        )
     occ = [(v - a) / (t + n) for v in c]
     new = (t + K * a) / (t + n)
-    return {"occupied": occ, "new": new,
-            "total": sum(occ) + new, "n": n, "K": K,
-            "discount_transferred": K * a / (t + n),
-            "note": "each existing cluster is discounted by alpha, "
-                    "and the removed mass funds the new cluster"}
+    return {
+        "occupied": occ,
+        "new": new,
+        "total": sum(occ) + new,
+        "n": n,
+        "K": K,
+        "discount_transferred": K * a / (t + n),
+        "note": "each existing cluster is discounted by alpha, and the removed mass funds the new cluster",
+    }
 
 
 def expected_clusters(n, alpha, theta):
@@ -194,11 +199,14 @@ def expected_clusters(n, alpha, theta):
     ek = 0.0
     for i in range(N):
         ek += (t + ek * a) / (t + i)
-    return {"expected": ek, "n": N, "alpha": a, "theta": t,
-            "regime": "power law n^alpha" if a > 0.0
-            else "logarithmic theta log n",
-            "note": "the DP's count grows like theta log n; a "
-                    "positive discount makes it grow like n^alpha"}
+    return {
+        "expected": ek,
+        "n": N,
+        "alpha": a,
+        "theta": t,
+        "regime": "power law n^alpha" if a > 0.0 else "logarithmic theta log n",
+        "note": "the DP's count grows like theta log n; a positive discount makes it grow like n^alpha",
+    }
 
 
 def tail_comparison(n, theta=1.0, alphas=(0.0, 0.3, 0.6)):
@@ -208,31 +216,35 @@ def tail_comparison(n, theta=1.0, alphas=(0.0, 0.3, 0.6)):
     for a in alphas:
         out[float(a)] = expected_clusters(n, a, theta)["expected"]
     keys = sorted(out)
-    return RichResult(payload={
-        "estimate": out, "expected_clusters": out, "n": int(n),
-        "theta": float(theta),
-        "monotone_in_alpha": all(out[keys[i]] <= out[keys[i + 1]]
-                                 for i in range(len(keys) - 1)),
-        "method": "two-parameter Poisson-Dirichlet; Pitman & Yor "
-                  "(1997) Definition 1",
-        "note": "more discount, more distinct types at the same n -- "
-                "which is why vocabulary-like data want alpha > 0",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "expected_clusters": out,
+            "n": int(n),
+            "theta": float(theta),
+            "monotone_in_alpha": all(out[keys[i]] <= out[keys[i + 1]] for i in range(len(keys) - 1)),
+            "method": "two-parameter Poisson-Dirichlet; Pitman & Yor (1997) Definition 1",
+            "note": "more discount, more distinct types at the same n -- "
+            "which is why vocabulary-like data want alpha > 0",
+        }
+    )
 
 
 def cheatsheet():
-    return ("pmpfit: the DP breaks its stick with Beta(1, theta) at "
-            "EVERY index; Pitman-Yor lets the parameters DRIFT -- "
-            "Y_n ~ Beta(1 - alpha, theta + n alpha) for 0 <= alpha < 1 "
-            "and theta > -alpha, with alpha = 0 recovering the DP "
-            "exactly. The form is FORCED: Proposition 4 says a "
-            "size-biased permutation has independent residual factors "
-            "iff the betas take this form. The payoff is the TAIL: "
-            "geometric decay becomes polynomial, so the distinct-type "
-            "count grows like n^alpha instead of theta log n -- which "
-            "is why vocabularies and species counts want alpha > 0. "
-            "Predictively, each cluster is discounted by alpha and the "
-            "removed mass funds the new-cluster term.")
+    return (
+        "pmpfit: the DP breaks its stick with Beta(1, theta) at "
+        "EVERY index; Pitman-Yor lets the parameters DRIFT -- "
+        "Y_n ~ Beta(1 - alpha, theta + n alpha) for 0 <= alpha < 1 "
+        "and theta > -alpha, with alpha = 0 recovering the DP "
+        "exactly. The form is FORCED: Proposition 4 says a "
+        "size-biased permutation has independent residual factors "
+        "iff the betas take this form. The payoff is the TAIL: "
+        "geometric decay becomes polynomial, so the distinct-type "
+        "count grows like n^alpha instead of theta log n -- which "
+        "is why vocabularies and species counts want alpha > 0. "
+        "Predictively, each cluster is discounted by alpha and the "
+        "removed mass funds the new-cluster term."
+    )
 
 
 # compact alias per ledger/NAMING.md

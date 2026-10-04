@@ -1,7 +1,6 @@
 """Tests for morie.fn.thmss -- record linkage."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.thmss import record_linkage, thmss
 

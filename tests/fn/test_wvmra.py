@@ -1,7 +1,6 @@
 """Tests for wvmra.py - Wavelet multiresolution analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvmra import wavelet_mra, wvmra
 
 

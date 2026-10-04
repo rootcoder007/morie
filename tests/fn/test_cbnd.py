@@ -1,8 +1,8 @@
 """Tests for morie.fn.cbnd — causal bounds (Manski)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cbnd import causal_bounds
 
 

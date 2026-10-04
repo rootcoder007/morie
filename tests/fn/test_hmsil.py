@@ -1,7 +1,6 @@
 """Tests for hmsil.geron_silhouette."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsil import geron_silhouette
 
 

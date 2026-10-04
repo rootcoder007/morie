@@ -101,23 +101,27 @@ def autocorrelation(y, lag_max=None, ci=0.95):
     denom = float(np.sum(yc**2))
     # Same denominator at every lag: biased toward zero, but guarantees a
     # positive semi-definite sequence, which the unbiased version does not.
-    acf = np.array([1.0] + [float(np.sum(yc[k:] * yc[:-k]) / denom)
-                            for k in range(1, lag_max + 1)])
+    acf = np.array([1.0] + [float(np.sum(yc[k:] * yc[:-k]) / denom) for k in range(1, lag_max + 1)])
     bound = float(norm.ppf(0.5 + ci / 2.0) / np.sqrt(n))
     lb = float(n * (n + 2) * np.sum(acf[1:] ** 2 / (n - np.arange(1, lag_max + 1))))
     return RichResult(
         title="Autocorrelation function",
-        summary_lines=[("n", int(n)), ("max lag", lag_max),
-                       ("Ljung-Box p", float(chi2.sf(lb, lag_max)))],
-        warnings=["the bands assume white noise; after fitting a model, "
-                  "subtract the degrees of freedom it consumed before reading "
-                  "them"],
+        summary_lines=[("n", int(n)), ("max lag", lag_max), ("Ljung-Box p", float(chi2.sf(lb, lag_max)))],
+        warnings=[
+            "the bands assume white noise; after fitting a model, "
+            "subtract the degrees of freedom it consumed before reading "
+            "them"
+        ],
         payload={
-            "acf": acf, "lags": np.arange(lag_max + 1), "ci_bound": bound,
+            "acf": acf,
+            "lags": np.arange(lag_max + 1),
+            "ci_bound": bound,
             "significant": np.abs(acf[1:]) > bound,
             "n_significant": int(np.sum(np.abs(acf[1:]) > bound)),
-            "ljung_box": lb, "ljung_box_p": float(chi2.sf(lb, lag_max)),
-            "n": int(n), "method": "autocorrelation",
+            "ljung_box": lb,
+            "ljung_box_p": float(chi2.sf(lb, lag_max)),
+            "n": int(n),
+            "method": "autocorrelation",
         },
     )
 

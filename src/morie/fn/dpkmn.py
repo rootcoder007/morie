@@ -98,8 +98,7 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
         raise ValueError("n_iter must be at least 1")
     if bounds is None:
         lo, hi = float(X.min()), float(X.max())
-        warn = ["bounds were taken from the data, which is a non-private "
-                "query; supply `bounds` from outside the data"]
+        warn = ["bounds were taken from the data, which is a non-private query; supply `bounds` from outside the data"]
     else:
         lo, hi = float(bounds[0]), float(bounds[1])
         warn = []
@@ -111,8 +110,7 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
     # Centres start (and restart) at data-INDEPENDENT uniform points in
     # the clipping box: drawing them from the rows would publish a record
     # verbatim whenever a centre is re-initialised on the last pass.
-    centers = np.asarray([[lo + (hi - lo) * float(rng.uniform()) for _ in range(p)]
-                          for _ in range(k)])
+    centers = np.asarray([[lo + (hi - lo) * float(rng.uniform()) for _ in range(p)] for _ in range(k)])
     # Neighbouring data sets differ by one record (add/remove).  A count
     # changes by 1; a p-dimensional sum by the record's L1 norm, at most
     # p * max(|lo|, |hi|) after clipping -- per-coordinate (hi - lo)
@@ -127,11 +125,9 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
         for j in range(k):
             m = labels == j
             noisy_count = m.sum() + rng.laplace(0.0, 1.0 / eps_iter)
-            noisy_sum = (Xc[m].sum(axis=0) if m.any() else np.zeros(p)) + \
-                rng.laplace(0.0, sens_sum / eps_iter, p)
+            noisy_sum = (Xc[m].sum(axis=0) if m.any() else np.zeros(p)) + rng.laplace(0.0, sens_sum / eps_iter, p)
             if noisy_count < 1.0:
-                centers[j] = np.asarray([lo + (hi - lo) * float(rng.uniform())
-                                         for _ in range(p)])
+                centers[j] = np.asarray([lo + (hi - lo) * float(rng.uniform()) for _ in range(p)])
                 reinit += 1
             else:
                 centers[j] = noisy_sum / noisy_count
@@ -139,21 +135,26 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
     labels = np.argmin(d2, axis=1)
     return RichResult(
         title="DP k-means",
-        summary_lines=[("epsilon", epsilon), ("k", k), ("iterations", n_iter),
-                       ("epsilon/iteration", float(eps_iter))],
-        warnings=warn + (["clusters were reinitialised from noisy counts below 1; "
-                          "the budget is thin for this k"] if reinit else []),
+        summary_lines=[("epsilon", epsilon), ("k", k), ("iterations", n_iter), ("epsilon/iteration", float(eps_iter))],
+        warnings=warn
+        + (["clusters were reinitialised from noisy counts below 1; the budget is thin for this k"] if reinit else []),
         payload={
-            "centers": centers, "labels": labels,
+            "centers": centers,
+            "labels": labels,
             "epsilon_per_iteration": float(eps_iter),
             "n_reinitialised": int(reinit),
             "inertia": float(np.sum(d2[np.arange(n), labels])),
-            "epsilon": epsilon, "k": k, "n_iter": n_iter,
-            "bounds": (lo, hi), "method": "dp_kmeans",
+            "epsilon": epsilon,
+            "k": k,
+            "n_iter": n_iter,
+            "bounds": (lo, hi),
+            "method": "dp_kmeans",
             "private_outputs": ("centers",),
-            "privacy_note": ("only `centers` is the differentially private "
-                             "release; `labels` and `inertia` are computed "
-                             "on the raw records and must not be published"),
+            "privacy_note": (
+                "only `centers` is the differentially private "
+                "release; `labels` and `inertia` are computed "
+                "on the raw records and must not be published"
+            ),
         },
     )
 

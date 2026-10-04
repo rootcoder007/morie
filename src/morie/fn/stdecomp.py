@@ -508,6 +508,7 @@ def cheatsheet() -> str:
         "wavelet_detrend / harmonic_regression -> space-time decompositions."
     )
 
+
 # alias kept from the retired placeholder of the same name
 tensor_3way_sp = cp_als
 

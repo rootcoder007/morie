@@ -5,9 +5,9 @@ spgwr R/gwr.gauss.R, R/gwr.bisquare.R, R/tricube.R; GWmodel R/gw.weight.r
 (all four, incl. the boxcar); Schabenberger & Gotway Sec. 5.3.2 pp. 240-241.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spgwrk import schabenberger_gwr_kernels as kern
 
 H = 2.0

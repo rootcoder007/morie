@@ -1,7 +1,6 @@
 """Tests for ridgs.ridge_solution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ridgs import ridge_solution
 
 

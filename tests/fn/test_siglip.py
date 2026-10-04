@@ -1,7 +1,6 @@
 """Tests for siglip.siglip_pairwise."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.siglip import siglip_pairwise
 
 

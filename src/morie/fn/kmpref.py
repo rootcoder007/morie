@@ -46,20 +46,16 @@ def kamath_prefix_tuning(prefix_K, prefix_V, K_input, V_input, Q=None):
     if PK.shape[0] != PV.shape[0]:
         raise ValueError(
             f"the key prefix has {PK.shape[0]} rows and the value "
-            f"prefix {PV.shape[0]}; they are the same virtual tokens.")
+            f"prefix {PV.shape[0]}; they are the same virtual tokens."
+        )
     if PK.shape[0] == 0:
         raise ValueError("an empty prefix tunes nothing.")
     if K.shape[0] != V.shape[0]:
-        raise ValueError(
-            f"{K.shape[0]} input keys but {V.shape[0]} input values.")
+        raise ValueError(f"{K.shape[0]} input keys but {V.shape[0]} input values.")
     if PK.shape[1] != K.shape[1]:
-        raise ValueError(
-            f"key prefix width {PK.shape[1]} != input key width "
-            f"{K.shape[1]}.")
+        raise ValueError(f"key prefix width {PK.shape[1]} != input key width {K.shape[1]}.")
     if PV.shape[1] != V.shape[1]:
-        raise ValueError(
-            f"value prefix width {PV.shape[1]} != input value width "
-            f"{V.shape[1]}.")
+        raise ValueError(f"value prefix width {PV.shape[1]} != input value width {V.shape[1]}.")
     Kf = np.vstack([PK, K])
     Vf = np.vstack([PV, V])
     payload = {
@@ -70,13 +66,13 @@ def kamath_prefix_tuning(prefix_K, prefix_V, K_input, V_input, Q=None):
         "n_trainable": int(PK.size + PV.size),
         "estimate": int(PK.shape[0]),
         "n": int(Kf.shape[0]),
-        "method": "Prefix tuning key/value concatenation"}
+        "method": "Prefix tuning key/value concatenation",
+    }
     if Q is not None:
         att = scaled_dot_product_attention(Q, Kf, Vf)
         payload["attention_output"] = att["output"]
         payload["attention_weights"] = att["attention"]
-        payload["prefix_attention_mass"] = [
-            float(sum(row[:PK.shape[0]])) for row in att["attention"]]
+        payload["prefix_attention_mass"] = [float(sum(row[: PK.shape[0]])) for row in att["attention"]]
         payload["estimate"] = float(att["estimate"])
         payload["method"] += " + attsdp attention"
     return RichResult(payload=payload)

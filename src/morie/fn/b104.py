@@ -21,13 +21,17 @@ def burkov_lm_ch1_linear_vector(w, x, b):
     w = np.atleast_1d(np.asarray(w, dtype=float))
     x = np.atleast_1d(np.asarray(x, dtype=float))
     if w.shape != x.shape:
-        raise ValueError(
-            f"w and x must have the same length; got {len(w)} and "
-            f"{len(x)}.")
+        raise ValueError(f"w and x must have the same length; got {len(w)} and {len(x)}.")
     y = float(np.dot(w, x) + float(b))
-    return RichResult(payload={
-        "estimate": y, "dot": float(np.dot(w, x)), "b": float(b),
-        "n": len(x), "method": "Linear model y = w.x + b (Burkov Eq 1.4)"})
+    return RichResult(
+        payload={
+            "estimate": y,
+            "dot": float(np.dot(w, x)),
+            "b": float(b),
+            "n": len(x),
+            "method": "Linear model y = w.x + b (Burkov Eq 1.4)",
+        }
+    )
 
 
 def cheatsheet():

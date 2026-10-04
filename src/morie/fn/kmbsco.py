@@ -44,25 +44,18 @@ def kamath_bertscore(hypothesis_tokens, reference_tokens, embed_fn):
             missing = [t for t in tokens if t not in embed_fn]
             if missing:
                 raise ValueError(f"no embedding for {missing!r}.")
-            M = np.array([np.asarray(embed_fn[t], dtype=float).ravel()
-                          for t in tokens])
+            M = np.array([np.asarray(embed_fn[t], dtype=float).ravel() for t in tokens])
         else:
             if not callable(embed_fn):
-                raise ValueError("embed_fn must be callable or a "
-                                 "token -> vector mapping.")
+                raise ValueError("embed_fn must be callable or a token -> vector mapping.")
             try:
-                M = np.atleast_2d(np.asarray(embed_fn(tokens),
-                                             dtype=float))
+                M = np.atleast_2d(np.asarray(embed_fn(tokens), dtype=float))
                 if M.shape[0] != len(tokens):
                     raise ValueError
             except Exception:
-                M = np.array([np.asarray(embed_fn(t),
-                                         dtype=float).ravel()
-                              for t in tokens])
+                M = np.array([np.asarray(embed_fn(t), dtype=float).ravel() for t in tokens])
         if M.shape[0] != len(tokens):
-            raise ValueError("embed_fn returned "
-                             f"{M.shape[0]} vectors for "
-                             f"{len(tokens)} tokens.")
+            raise ValueError(f"embed_fn returned {M.shape[0]} vectors for {len(tokens)} tokens.")
         return M
 
     H = embed(hyp)
@@ -70,13 +63,18 @@ def kamath_bertscore(hypothesis_tokens, reference_tokens, embed_fn):
     rec = kamath_ch8_bertscore_recall(R, H, normalize=True)
     pre = kamath_ch8_bertscore_precision(R, H, normalize=True)
     f1 = kamath_ch8_bertscore_f1(pre["estimate"], rec["estimate"])
-    return RichResult(payload={
-        "estimate": f1["estimate"], "f1": f1["estimate"],
-        "precision": pre["estimate"], "recall": rec["estimate"],
-        "candidate_match": pre["greedy_match"],
-        "reference_match": rec["greedy_match"],
-        "n": len(hyp),
-        "method": "BERTScore (Kamath Ch 8; km119/km120/km121 cores)"})
+    return RichResult(
+        payload={
+            "estimate": f1["estimate"],
+            "f1": f1["estimate"],
+            "precision": pre["estimate"],
+            "recall": rec["estimate"],
+            "candidate_match": pre["greedy_match"],
+            "reference_match": rec["greedy_match"],
+            "n": len(hyp),
+            "method": "BERTScore (Kamath Ch 8; km119/km120/km121 cores)",
+        }
+    )
 
 
 def cheatsheet():

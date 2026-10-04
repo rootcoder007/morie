@@ -73,14 +73,23 @@ def boyd_least_squares(A, b, rcond=None):
     under = bool(rank < Am.shape[1])
     return RichResult(
         title="Least squares",
-        summary_lines=[("m", int(Am.shape[0])), ("n", int(Am.shape[1])),
-                       ("rss", float(resid @ resid)), ("rank", int(rank))],
-        warnings=["A is rank deficient; lstsq returns the minimum-norm "
-                  "solution, which is one of infinitely many"] if under else [],
+        summary_lines=[
+            ("m", int(Am.shape[0])),
+            ("n", int(Am.shape[1])),
+            ("rss", float(resid @ resid)),
+            ("rank", int(rank)),
+        ],
+        warnings=["A is rank deficient; lstsq returns the minimum-norm solution, which is one of infinitely many"]
+        if under
+        else [],
         payload={
-            "x": x, "residual": resid, "rss": float(resid @ resid),
-            "rank": int(rank), "singular_values": sv,
-            "condition_number": cond, "underdetermined": under,
+            "x": x,
+            "residual": resid,
+            "rss": float(resid @ resid),
+            "rank": int(rank),
+            "singular_values": sv,
+            "condition_number": cond,
+            "underdetermined": under,
             "method": "boyd_least_squares",
         },
     )

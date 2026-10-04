@@ -9,5 +9,6 @@ def test_b107_basic():
 
 def test_b107_edge():
     import pytest
+
     with pytest.raises(ValueError, match="weights"):
         burkov_lm_ch1_layer2_output([1.0], [1.0, 2.0], 0.0)

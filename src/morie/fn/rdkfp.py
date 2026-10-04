@@ -79,8 +79,7 @@ def _subgraphs(a, bonds, minpath, maxpath, branched):
     return out
 
 
-def rdkfp(adjacency, atomnum, aromatic=None, nbits=2048, minpath=1, maxpath=7,
-          branched=True, use_bond_order=True):
+def rdkfp(adjacency, atomnum, aromatic=None, nbits=2048, minpath=1, maxpath=7, branched=True, use_bond_order=True):
     """RDKit path-based (subgraph) topological fingerprint.
 
     Every connected subgraph of between ``minpath`` and ``maxpath`` bonds
@@ -227,11 +226,21 @@ def rdkfp(adjacency, atomnum, aromatic=None, nbits=2048, minpath=1, maxpath=7,
         cnt[b] += 1
 
     uniq = sorted(set(feats))
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits),
-        "features": uniq, "nfeature": len(uniq), "nsubgraph": len(subs),
-        "a": a, "nbits": nbits, "minpath": minpath, "maxpath": maxpath,
-        "method": "RDKit path-based topological fingerprint"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "features": uniq,
+            "nfeature": len(uniq),
+            "nsubgraph": len(subs),
+            "a": a,
+            "nbits": nbits,
+            "minpath": minpath,
+            "maxpath": maxpath,
+            "method": "RDKit path-based topological fingerprint",
+        }
+    )
 
 
 rdkit_path_fp = rdkfp

@@ -1,7 +1,6 @@
 """Tests for esatic.eap_information."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esatic import eap_information
 
 
@@ -11,12 +10,10 @@ def test_esatic_basic():
     # discrimination 1 and difficulty 0.  Response is 1 (correct).
     items = np.array([[1.0, 0.0, 0.0, 1.0]])
     x = np.array([1.0])
-    result = eap_information(items, x, D=1.0, prior_mean=0.0, prior_sd=1.0,
-                            lower=-4.0, upper=4.0, nqp=33)
+    result = eap_information(items, x, D=1.0, prior_mean=0.0, prior_sd=1.0, lower=-4.0, upper=4.0, nqp=33)
     # The function returns a RichResult, not a dict.
     # Verify the documented return keys are present.
-    for key in ("estimate", "se", "information", "se_ml",
-                "item_information", "prob", "J", "nqp"):
+    for key in ("estimate", "se", "information", "se_ml", "item_information", "prob", "J", "nqp"):
         assert key in result, f"missing key: {key}"
 
     # Documented shapes/values.
@@ -39,16 +36,17 @@ def test_esatic_edge():
     """Test edge cases: responses all incorrect, still well-defined."""
     # Three 2PL items at various difficulties, all answered incorrectly.
     # The EAP should be negative (likelihood peaks below zero) and finite.
-    items = np.array([
-        [1.0, -1.0, 0.0, 1.0],
-        [1.0,  0.0, 0.0, 1.0],
-        [1.0,  1.0, 0.0, 1.0],
-    ])
+    items = np.array(
+        [
+            [1.0, -1.0, 0.0, 1.0],
+            [1.0, 0.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0, 1.0],
+        ]
+    )
     x = np.array([0.0, 0.0, 0.0])
     result = eap_information(items, x)
 
-    for key in ("estimate", "se", "information", "se_ml",
-                "item_information", "prob", "J", "nqp"):
+    for key in ("estimate", "se", "information", "se_ml", "item_information", "prob", "J", "nqp"):
         assert key in result, f"missing key: {key}"
 
     assert result["J"] == 3.0

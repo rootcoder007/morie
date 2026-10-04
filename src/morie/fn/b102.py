@@ -21,13 +21,16 @@ def burkov_lm_ch1_squared_error(y_hat_i, y_i):
     yh = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
     y = np.atleast_1d(np.asarray(y_i, dtype=float))
     if yh.shape != y.shape:
-        raise ValueError(
-            f"y_hat and y must have the same shape; got {yh.shape} and "
-            f"{y.shape}.")
+        raise ValueError(f"y_hat and y must have the same shape; got {yh.shape} and {y.shape}.")
     err = (yh - y) ** 2
-    return RichResult(payload={
-        "errors": [float(v) for v in err], "estimate": float(err[0]),
-        "n": len(y), "method": "Squared error (Burkov Eq 1.2)"})
+    return RichResult(
+        payload={
+            "errors": [float(v) for v in err],
+            "estimate": float(err[0]),
+            "n": len(y),
+            "method": "Squared error (Burkov Eq 1.2)",
+        }
+    )
 
 
 def cheatsheet():

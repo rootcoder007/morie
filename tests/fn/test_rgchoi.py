@@ -1,7 +1,6 @@
 """Tests for rgchoi.rangayyan_choi_williams."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_choi_williams
 
 

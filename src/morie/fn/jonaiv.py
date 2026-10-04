@@ -96,11 +96,14 @@ def joseph_naive_forecast(y, horizon=1, season=None):
         denom = float(np.mean(np.abs(y[m:] - y[:-m]))) if y.size > m else np.nan
     return RichResult(
         title=f"Naive forecast ({name})",
-        summary_lines=[("n", int(y.size)), ("horizon", horizon),
-                       ("method", name)],
+        summary_lines=[("n", int(y.size)), ("horizon", horizon), ("method", name)],
         payload={
-            "forecast": fc, "method_used": name, "last_value": float(y[-1]),
-            "in_sample_mae": denom, "horizon": horizon, "season": season,
+            "forecast": fc,
+            "method_used": name,
+            "last_value": float(y[-1]),
+            "in_sample_mae": denom,
+            "horizon": horizon,
+            "season": season,
             "method": "joseph_naive_forecast",
         },
     )

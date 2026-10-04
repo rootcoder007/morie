@@ -40,7 +40,9 @@ def test_straprp_edge():
     W = [0.32, 0.2, 0.48]
     ph = [4 / 6, 1 / 5, 5 / 7]
     r = stratified_proportion(y, h, weights=W)
-    assert r["variance"] == pytest.approx(sum(w * w * q * (1 - q) / (n - 1) for w, q, n in zip(W, ph, [6, 5, 7])), rel=1e-13)
+    assert r["variance"] == pytest.approx(
+        sum(w * w * q * (1 - q) / (n - 1) for w, q, n in zip(W, ph, [6, 5, 7])), rel=1e-13
+    )
     r0 = stratified_proportion(y, h)
     assert r0["proportion"] == pytest.approx(sum(y) / len(y), abs=1e-15)
     assert r0["weights_are_population_shares"] is False

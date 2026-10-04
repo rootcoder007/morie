@@ -1,7 +1,6 @@
 """Tests for kmrmloss.kamath_reward_model_training_loss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmrmloss import kamath_reward_model_training_loss
 
 

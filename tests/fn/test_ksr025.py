@@ -1,14 +1,13 @@
 """Tests for ksr025 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr025 import kosorok_ch1_penalized_loglikelihood
 
 
 def test_ksr025_basic():
-    out = kosorok_ch1_penalized_loglikelihood(np.full(50, -1.0), J_eta=2.0,
-                                              lambda_n=0.5)
+    out = kosorok_ch1_penalized_loglikelihood(np.full(50, -1.0), J_eta=2.0, lambda_n=0.5)
     assert out["penalty"] == pytest.approx(0.25 * 4.0)  # lambda^2 J^2
 
 

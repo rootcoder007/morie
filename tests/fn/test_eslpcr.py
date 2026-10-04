@@ -1,7 +1,6 @@
 """Tests for eslpcr.esl_pcr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslpcr import esl_pcr
 
 
@@ -47,7 +46,7 @@ def test_eslpcr_basic():
     expected_intercept = ybar - float(xbar @ beta_manual)
     assert result["intercept"] == expected_intercept
     # Verify variance explained
-    total = float(np.sum(S ** 2))
+    total = float(np.sum(S**2))
     expected_ve = float(np.sum(S[:M] ** 2) / total)
     assert result["variance_explained"] == expected_ve
 

@@ -126,9 +126,9 @@ def test_otis_unique_individual_id_is_cross_year_unsafe():
     )
     for dataset_id in ("b01", "a01"):
         t = classify_variable(spec, dataset_name=dataset_id)
-        assert (
-            t.cross_year_safe is False
-        ), f"OTIS {dataset_id}/UniqueIndividual_ID must be cross_year_safe=False — see data dictionary."
+        assert t.cross_year_safe is False, (
+            f"OTIS {dataset_id}/UniqueIndividual_ID must be cross_year_safe=False — see data dictionary."
+        )
         assert t.role == Role.IDENTIFIER
         # The notes may say "fiscal year" or "fiscal-year"; either is fine.
         notes_lc = (t.notes or "").lower()

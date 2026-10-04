@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['ldphr', 'hadamard_response']
+__all__ = ["ldphr", "hadamard_response"]
 
 
 def ldphr(counts, epsilon, n=None):
@@ -49,10 +49,17 @@ def ldphr(counts, epsilon, n=None):
     scale = 2.0 * (e + 1.0) / (e - 1.0)
     pset = [c / total for c in counts]
     p = [scale * (v - 0.5) for v in pset]
-    return RichResult(payload={
-        "p": p, "p_set": pset, "scale": scale, "epsilon": eps,
-        "n": total, "k": len(counts),
-        "method": "Hadamard response LDP distribution estimator"})
+    return RichResult(
+        payload={
+            "p": p,
+            "p_set": pset,
+            "scale": scale,
+            "epsilon": eps,
+            "n": total,
+            "k": len(counts),
+            "method": "Hadamard response LDP distribution estimator",
+        }
+    )
 
 
 hadamard_response = ldphr

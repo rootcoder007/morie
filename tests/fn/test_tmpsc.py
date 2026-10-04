@@ -1,8 +1,8 @@
 """tmpsc: temperature scaling of logits (Hinton et al. 2015).  softmax(z / T)"""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tmpsc import temperature_scaling as ts
 
 

@@ -1,7 +1,6 @@
 """Test teager_energy_fn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.teagr import alias, teager_energy_fn
 

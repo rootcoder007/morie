@@ -103,12 +103,10 @@ compares against.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tmle_data_adaptive", "discover_levels", "variable_importance",
-           "split_specific_tmle"]
+__all__ = ["tmle_data_adaptive", "discover_levels", "variable_importance", "split_specific_tmle"]
 
 _METHODS = ("cv-tmle", "sample-split", "naive")
 _EPS = 1e-9
@@ -127,8 +125,7 @@ def _levels(A, candidate_strata):
     else:
         lv = sorted(set(float(v) for v in A))
     if len(lv) < 2:
-        raise ValueError("tmldta: need at least 2 exposure levels, got "
-                         "%d" % len(lv))
+        raise ValueError("tmldta: need at least 2 exposure levels, got %d" % len(lv))
     return lv
 
 
@@ -173,8 +170,7 @@ def _fit_g(A, W, aL, aH, rows, ridge, trim):
     Xr = [X[i] for i in rows]
 
     def cat(mask):
-        b = k.logit_irls(Xr, [mask[i] for i in rows],
-                         ridge=max(ridge, 1e-10))
+        b = k.logit_irls(Xr, [mask[i] for i in rows], ridge=max(ridge, 1e-10))
         return [k.sigmoid(v) for v in k.matvec(X, b)]
 
     pH = cat([1.0 if A[i] == aH else 0.0 for i in range(n)])
@@ -192,8 +188,7 @@ def _fit_g(A, W, aL, aH, rows, ridge, trim):
     return gH, gL
 
 
-def discover_levels(y, A, W, levels, rows=None, eval_rows=None,
-                    ridge=1e-8):
+def discover_levels(y, A, W, levels, rows=None, eval_rows=None, ridge=1e-8):
     r"""Eq. (9.2)-(9.3): the levels that minimise and maximise the mean
     predicted outcome.
 
@@ -213,8 +208,7 @@ def discover_levels(y, A, W, levels, rows=None, eval_rows=None,
     return aL, aH, {"means": means, "spread": means[aH] - means[aL]}
 
 
-def split_specific_tmle(y, A, W, levels, aL, aH, fit_rows, est_rows,
-                        ridge=1e-8, trim=0.01, target=True):
+def split_specific_tmle(y, A, W, levels, aL, aH, fit_rows, est_rows, ridge=1e-8, trim=0.01, target=True):
     r"""Eq. (9.9)-(9.13): one split's TMLE at fixed levels.
 
     ``fit_rows`` fits Q and g; ``est_rows`` fits the fluctuation and
@@ -225,11 +219,9 @@ def split_specific_tmle(y, A, W, levels, aL, aH, fit_rows, est_rows,
     n = len(y)
     q, _ = _fit_q(y, A, W, levels, fit_rows, ridge)
     gH, gL = _fit_g(A, W, aL, aH, fit_rows, ridge, trim)
-    H = [(1.0 / gH[i] if A[i] == aH else 0.0)
-         - (1.0 / gL[i] if A[i] == aL else 0.0) for i in range(n)]
+    H = [(1.0 / gH[i] if A[i] == aH else 0.0) - (1.0 / gL[i] if A[i] == aL else 0.0) for i in range(n)]
     off = [_logit(q(A[i], i)) for i in range(n)]
-    eps = (k.logistic_fluctuation(y, off, H, est_rows) if target
-           else 0.0)
+    eps = k.logistic_fluctuation(y, off, H, est_rows) if target else 0.0
 
     def qstar(a, i):
         h = (1.0 / gH[i]) if a == aH else (-1.0 / gL[i])
@@ -240,10 +232,8 @@ def split_specific_tmle(y, A, W, levels, aL, aH, fit_rows, est_rows,
     D = {}
     for i in est_rows:
         resid = k.sigmoid(off[i] + eps * H[i])
-        D[i] = (H[i] * (y[i] - resid)
-                + qstar(aH, i) - qstar(aL, i) - psi)
-    return psi, D, {"eps": eps, "max_weight": max(
-        max(1.0 / gH[i], 1.0 / gL[i]) for i in est_rows)}
+        D[i] = H[i] * (y[i] - resid) + qstar(aH, i) - qstar(aL, i) - psi
+    return psi, D, {"eps": eps, "max_weight": max(max(1.0 / gH[i], 1.0 / gL[i]) for i in est_rows)}
 
 
 def _folds(n, n_folds):
@@ -251,9 +241,9 @@ def _folds(n, n_folds):
     return [[i for i in range(n) if i % V == v] for v in range(V)]
 
 
-def tmle_data_adaptive(y, D, X, candidate_strata=None,
-                       method="cv-tmle", n_folds=10, trim=0.01,
-                       ridge=1e-8, level=0.95, bounds=None):
+def tmle_data_adaptive(
+    y, D, X, candidate_strata=None, method="cv-tmle", n_folds=10, trim=0.01, ridge=1e-8, level=0.95, bounds=None
+):
     r"""Contrast between data-discovered exposure levels, done honestly.
 
     Parameters
@@ -293,31 +283,24 @@ def tmle_data_adaptive(y, D, X, candidate_strata=None,
         r["estimate"], r["ci"], r["levels_by_split"]
     """
     if method not in _METHODS:
-        raise ValueError("tmldta: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("tmldta: method must be one of %s, got %r" % (", ".join(_METHODS), method))
     yv, Av = k.vec(y), k.vec(D)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("tmldta: %d outcomes but %d exposures"
-                         % (n, len(Av)))
+        raise ValueError("tmldta: %d outcomes but %d exposures" % (n, len(Av)))
     Wm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("tmldta: %d covariate rows for %d outcomes"
-                         % (len(Wm), n))
+        raise ValueError("tmldta: %d covariate rows for %d outcomes" % (len(Wm), n))
     if not 0.0 < float(trim) < 0.5:
-        raise ValueError("tmldta: trim must be in (0, 0.5), got %r"
-                         % (trim,))
+        raise ValueError("tmldta: trim must be in (0, 0.5), got %r" % (trim,))
     if n < 8:
-        raise ValueError("tmldta: need at least 8 observations, got %d"
-                         % n)
+        raise ValueError("tmldta: need at least 8 observations, got %d" % n)
     lv = _levels(Av, candidate_strata)
     missing = [a for a in lv if not any(v == a for v in Av)]
     if missing:
-        raise ValueError("tmldta: candidate levels %s never occur"
-                         % (missing,))
+        raise ValueError("tmldta: candidate levels %s never occur" % (missing,))
 
-    lo, hi = (min(yv), max(yv)) if bounds is None else (float(bounds[0]),
-                                                        float(bounds[1]))
+    lo, hi = (min(yv), max(yv)) if bounds is None else (float(bounds[0]), float(bounds[1]))
     rng = hi - lo
     if rng <= 0.0:
         raise ValueError("tmldta: the outcome has no range")
@@ -329,13 +312,9 @@ def tmle_data_adaptive(y, D, X, candidate_strata=None,
     if method == "naive":
         # eq. (9.5): the same rows choose the levels AND estimate the
         # contrast. Structurally >= 0 under the null.
-        aL, aH, dinfo = discover_levels(ys, Av, Wm, lv, all_rows,
-                                        ridge=ridge)
-        psi, Dic, info = split_specific_tmle(ys, Av, Wm, lv, aL, aH,
-                                             all_rows, all_rows, ridge,
-                                             trim, target=False)
-        splits = [{"aL": aL, "aH": aH, "estimate": rng * psi,
-                   "n_est": n}]
+        aL, aH, dinfo = discover_levels(ys, Av, Wm, lv, all_rows, ridge=ridge)
+        psi, Dic, info = split_specific_tmle(ys, Av, Wm, lv, aL, aH, all_rows, all_rows, ridge, trim, target=False)
+        splits = [{"aL": aL, "aH": aH, "estimate": rng * psi, "n_est": n}]
         sigma2 = sum(v * v for v in Dic.values()) / n
         psi_hat, eps_all = psi, [0.0]
     else:
@@ -346,22 +325,18 @@ def tmle_data_adaptive(y, D, X, candidate_strata=None,
             if not gen or not est:
                 continue
             # the levels come from the parameter-generating sample only
-            aL, aH, _ = discover_levels(ys, Av, Wm, lv, gen,
-                                        ridge=ridge)
+            aL, aH, _ = discover_levels(ys, Av, Wm, lv, gen, ridge=ridge)
             fit = gen if method == "cv-tmle" else est
-            psi_v, D_v, info_v = split_specific_tmle(
-                ys, Av, Wm, lv, aL, aH, fit, est, ridge, trim)
+            psi_v, D_v, info_v = split_specific_tmle(ys, Av, Wm, lv, aL, aH, fit, est, ridge, trim)
             per_split.append(psi_v)
             eps_all.append(info_v["eps"])
             ics.append([D_v[i] for i in est])
-            splits.append({"aL": aL, "aH": aH,
-                           "estimate": rng * psi_v, "n_est": len(est)})
+            splits.append({"aL": aL, "aH": aH, "estimate": rng * psi_v, "n_est": len(est)})
         if not per_split:
             raise ValueError("tmldta: no usable splits")
-        psi_hat = sum(per_split) / len(per_split)          # eq. (9.14)
+        psi_hat = sum(per_split) / len(per_split)  # eq. (9.14)
         # eq. (9.15): average of the split-specific IC variances
-        sigma2 = sum(sum(v * v for v in ic) / len(ic)
-                     for ic in ics) / len(ics)
+        sigma2 = sum(sum(v * v for v in ic) / len(ic) for ic in ics) / len(ics)
 
     psi = rng * psi_hat
     se = rng * math.sqrt(sigma2 / n)
@@ -377,34 +352,37 @@ def tmle_data_adaptive(y, D, X, candidate_strata=None,
     # absolute cut: under a true tie the ESTIMATED gap is sampling noise
     # of order 1/sqrt(n), so any fixed threshold fires at one sample
     # size and not another.
-    _, _, sep_info = discover_levels(ys, Av, Wm, lv, all_rows,
-                                     ridge=ridge)
+    _, _, sep_info = discover_levels(ys, Av, Wm, lv, all_rows, ridge=ridge)
     ordered = sorted(sep_info["means"].values())
-    separation = min(ordered[1] - ordered[0],
-                     ordered[-1] - ordered[-2]) * rng
+    separation = min(ordered[1] - ordered[0], ordered[-1] - ordered[-2]) * rng
 
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n": n,
-        "ci": (psi - z * se, psi + z * se), "level": float(level),
-        "levels_by_split": [(sp["aL"], sp["aH"]) for sp in splits],
-        "level_counts": chosen,
-        "modal_levels": modal,
-        "level_agreement": agreement,
-        "separation": separation,
-        "near_tie": separation < 2.0 * se or agreement < 0.6,
-        "level_means": {a: rng * v + lo
-                        for a, v in sep_info["means"].items()},
-        "split_estimates": [sp["estimate"] for sp in splits],
-        "n_splits": len(splits), "epsilon": eps_all,
-        "candidate_levels": lv, "method": method,
-        "sigma": math.sqrt(sigma2) * rng,
-        "algorithm": "data-adaptive target parameter, Hubbard, Kennedy "
-                     "& van der Laan (2018) Ch. 9 eq. (9.2)-(9.16)",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n": n,
+            "ci": (psi - z * se, psi + z * se),
+            "level": float(level),
+            "levels_by_split": [(sp["aL"], sp["aH"]) for sp in splits],
+            "level_counts": chosen,
+            "modal_levels": modal,
+            "level_agreement": agreement,
+            "separation": separation,
+            "near_tie": separation < 2.0 * se or agreement < 0.6,
+            "level_means": {a: rng * v + lo for a, v in sep_info["means"].items()},
+            "split_estimates": [sp["estimate"] for sp in splits],
+            "n_splits": len(splits),
+            "epsilon": eps_all,
+            "candidate_levels": lv,
+            "method": method,
+            "sigma": math.sqrt(sigma2) * rng,
+            "algorithm": "data-adaptive target parameter, Hubbard, Kennedy "
+            "& van der Laan (2018) Ch. 9 eq. (9.2)-(9.16)",
+        }
+    )
 
 
-def variable_importance(y, X, candidate_strata=None, method="cv-tmle",
-                        n_folds=10, names=None, **kw):
+def variable_importance(y, X, candidate_strata=None, method="cv-tmle", n_folds=10, names=None, **kw):
     r"""Loop the contrast over every column of ``X`` in turn.
 
     For each variable the chapter's construction is applied with that
@@ -416,22 +394,25 @@ def variable_importance(y, X, candidate_strata=None, method="cv-tmle",
     n = len(Xm)
     p = len(Xm[0]) if n else 0
     if p < 2:
-        raise ValueError("variable_importance: need at least 2 columns,"
-                         " got %d" % p)
-    nm = (list(names) if names is not None
-          else ["X%d" % (j + 1) for j in range(p)])
+        raise ValueError("variable_importance: need at least 2 columns, got %d" % p)
+    nm = list(names) if names is not None else ["X%d" % (j + 1) for j in range(p)]
     if len(nm) != p:
-        raise ValueError("variable_importance: %d names for %d columns"
-                         % (len(nm), p))
+        raise ValueError("variable_importance: %d names for %d columns" % (len(nm), p))
     out = []
     for j in range(p):
         A = [Xm[i][j] for i in range(n)]
         W = [[Xm[i][c] for c in range(p) if c != j] for i in range(n)]
-        r = tmle_data_adaptive(y, A, W, candidate_strata=candidate_strata,
-                               method=method, n_folds=n_folds, **kw)
-        out.append({"variable": nm[j], "index": j,
-                    "estimate": r["estimate"], "se": r["se"],
-                    "ci": r["ci"], "levels": r["modal_levels"]})
+        r = tmle_data_adaptive(y, A, W, candidate_strata=candidate_strata, method=method, n_folds=n_folds, **kw)
+        out.append(
+            {
+                "variable": nm[j],
+                "index": j,
+                "estimate": r["estimate"],
+                "se": r["se"],
+                "ci": r["ci"],
+                "levels": r["modal_levels"],
+            }
+        )
     out.sort(key=lambda d: -abs(d["estimate"]))
     for rank, d in enumerate(out):
         d["rank"] = rank + 1
@@ -439,13 +420,15 @@ def variable_importance(y, X, candidate_strata=None, method="cv-tmle",
 
 
 def cheatsheet():
-    return ("tmldta: levels found in the data (aL = argmin, aH = argmax "
-            "of mean Q(a,W)) then the contrast estimated -- but NOT on "
-            "the same rows. Naive reuse is structurally >= 0 under the "
-            "null. cv-tmle fits Q and g on the parameter-generating "
-            "split and only epsilon on the estimation split; average "
-            "the split estimates (9.14), variance from the average of "
-            "the split influence curves (9.15).")
+    return (
+        "tmldta: levels found in the data (aL = argmin, aH = argmax "
+        "of mean Q(a,W)) then the contrast estimated -- but NOT on "
+        "the same rows. Naive reuse is structurally >= 0 under the "
+        "null. cv-tmle fits Q and g on the parameter-generating "
+        "split and only epsilon on the estimation split; average "
+        "the split estimates (9.14), variance from the average of "
+        "the split influence curves (9.15)."
+    )
 
 
 # compact alias per ledger/NAMING.md

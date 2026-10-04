@@ -1,8 +1,8 @@
 """Tests for mm_estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mmslt import mm_estimator
 
 

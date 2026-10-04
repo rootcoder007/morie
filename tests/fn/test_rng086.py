@@ -1,7 +1,6 @@
 """Tests for rng086.rangayyan_ch3_normalized_cross_correlation_template."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsacorr import rangayyan_ch3_normalized_cross_correlation_template
 
 

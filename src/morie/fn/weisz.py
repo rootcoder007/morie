@@ -60,9 +60,9 @@ def weiszfeld(X, tol=None, max_iter=200):
         if den > 0.0:
             mu = [num[j] / den for j in range(d)]
     cost = sum(math.sqrt(sum((A[i][j] - mu[j]) ** 2 for j in range(d))) for i in range(n))
-    return RichResult(payload={
-        "estimate": mu, "cost": cost, "n": n, "d": d,
-        "method": "Weiszfeld iteration, geometric median"})
+    return RichResult(
+        payload={"estimate": mu, "cost": cost, "n": n, "d": d, "method": "Weiszfeld iteration, geometric median"}
+    )
 
 
 def cheatsheet():

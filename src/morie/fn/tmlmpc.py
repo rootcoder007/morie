@@ -85,8 +85,7 @@ def tmle_multi_state_phc(time, state, D, X):
                 rows.append([1.0, grid[k], Dv[i]] + list(Xm[i]))
     hb = {}
     for c in causes:
-        hb[c] = S.glmbin(rows, [1.0 if (abs(sv[i] - c) < 1e-9 and grid[k] == tv[i]) else 0.0
-                                for (i, k) in idx])
+        hb[c] = S.glmbin(rows, [1.0 if (abs(sv[i] - c) < 1e-9 and grid[k] == tv[i]) else 0.0 for (i, k) in idx])
     cb = S.glmbin(rows, [1.0 if (sv[i] < 0.5 and grid[k] == tv[i]) else 0.0 for (i, k) in idx])
 
     def hz(b, i, k, a):
@@ -107,10 +106,10 @@ def tmle_multi_state_phc(time, state, D, X):
 
     def arm(a, Rp):
         ga = [g[i] if a > 0.5 else 1.0 - g[i] for i in range(n)]
-        Hf = [[(1.0 if abs(Dv[i] - a) < 0.5 else 0.0) / ga[i] / max(Rp[i][k], 1e-8)
-               for k in range(K)] for i in range(n)]
-        ybin = [1.0 if (abs(sv[i] - target) < 1e-9 and grid[k] == tv[i]) else 0.0
-                for (i, k) in idx]
+        Hf = [
+            [(1.0 if abs(Dv[i] - a) < 0.5 else 0.0) / ga[i] / max(Rp[i][k], 1e-8) for k in range(K)] for i in range(n)
+        ]
+        ybin = [1.0 if (abs(sv[i] - target) < 1e-9 and grid[k] == tv[i]) else 0.0 for (i, k) in idx]
         eps = 0.0
         for _ in range(30):
             score = 0.0
@@ -149,10 +148,19 @@ def tmle_multi_state_phc(time, state, D, X):
     ic = [ic1[i] - ic0[i] for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": est, "se": se, "lam1": lam1, "lam0": lam0,
-        "eps1": eps1, "eps0": eps0, "t0": t0, "n": n,
-        "method": "TMLE for a cause-specific cumulative hazard contrast"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "lam1": lam1,
+            "lam0": lam0,
+            "eps1": eps1,
+            "eps0": eps0,
+            "t0": t0,
+            "n": n,
+            "method": "TMLE for a cause-specific cumulative hazard contrast",
+        }
+    )
 
 
 def cheatsheet():

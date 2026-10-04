@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dual of entropically regularised optimal transport."""
 
-import math
-
 from . import _otcore as ot
 from . import _s03core as core
 from ._richresult import RichResult
@@ -54,13 +52,22 @@ def ot_regularised_dual(a, b, C, epsilon, max_iter=200):
         raise ValueError("cost matrix does not match the marginals")
     T, f, g = ot.sinkhorn(aa, bb, Cm, float(epsilon), max_iter)
     tot = sum(T[i][j] for i in range(n) for j in range(m))
-    dual = (sum(aa[i] * f[i] for i in range(n) if aa[i] > 0.0)
-            + sum(bb[j] * g[j] for j in range(m) if bb[j] > 0.0)
-            - float(epsilon) * tot)
-    return RichResult(payload={
-        "f": f, "g": g, "dual_value": dual,
-        "primal_cost": ot.frob(T, Cm), "n": n, "m": m,
-        "method": "Entropic optimal transport dual"})
+    dual = (
+        sum(aa[i] * f[i] for i in range(n) if aa[i] > 0.0)
+        + sum(bb[j] * g[j] for j in range(m) if bb[j] > 0.0)
+        - float(epsilon) * tot
+    )
+    return RichResult(
+        payload={
+            "f": f,
+            "g": g,
+            "dual_value": dual,
+            "primal_cost": ot.frob(T, Cm),
+            "n": n,
+            "m": m,
+            "method": "Entropic optimal transport dual",
+        }
+    )
 
 
 def cheatsheet():

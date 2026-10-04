@@ -1,7 +1,6 @@
 """Tests for bookadvanced_elementsofstatisticallearning2e32.bookadvanced_elementsofstatisticallearning_chapter_2_equation_32."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bookadvanced_elementsofstatisticallearning2e32 import (
     bookadvanced_elementsofstatisticallearning_chapter_2_equation_32,
 )
@@ -17,11 +16,7 @@ def test_bookadvanced_elementsofstatisticallearning2e32_basic():
     result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_32(x, y)
     assert isinstance(result, dict)
     assert (
-        "coef" in result
-        or "coefficients" in result
-        or "beta" in result
-        or "params" in result
-        or "intercept" in result
+        "coef" in result or "coefficients" in result or "beta" in result or "params" in result or "intercept" in result
     )
 
 
@@ -34,9 +29,5 @@ def test_bookadvanced_elementsofstatisticallearning2e32_edge():
     result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_32(x, y)
     assert isinstance(result, dict)
     assert (
-        "coef" in result
-        or "coefficients" in result
-        or "beta" in result
-        or "params" in result
-        or "intercept" in result
+        "coef" in result or "coefficients" in result or "beta" in result or "params" in result or "intercept" in result
     )

@@ -1,7 +1,6 @@
 """Tests for morie.fn.coint — cointegration test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coint import cointegration_test
 
 

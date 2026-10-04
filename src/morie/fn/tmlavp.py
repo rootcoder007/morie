@@ -8,9 +8,9 @@ from ._vimp import MEASURES, vim
 __all__ = ["tmle_average_predictiveness"]
 
 
-def tmle_average_predictiveness(y, D, X, f=None, loss="r_squared",
-                                n_folds=5, sample_split=True, alpha=0.05,
-                                seed=0, **learner):
+def tmle_average_predictiveness(
+    y, D, X, f=None, loss="r_squared", n_folds=5, sample_split=True, alpha=0.05, seed=0, **learner
+):
     r"""Importance of a variable group, measured as lost predictiveness.
 
     .. math::
@@ -110,13 +110,8 @@ def tmle_average_predictiveness(y, D, X, f=None, loss="r_squared",
     True
     """
     if loss not in MEASURES:
-        raise ValueError(
-            "loss must be one of %s, got %r." % (MEASURES, loss)
-        )
-    res = vim(
-        y, X, D, measure=loss, f=f, n_folds=n_folds,
-        sample_split=sample_split, alpha=alpha, seed=seed, **learner
-    )
+        raise ValueError("loss must be one of %s, got %r." % (MEASURES, loss))
+    res = vim(y, X, D, measure=loss, f=f, n_folds=n_folds, sample_split=sample_split, alpha=alpha, seed=seed, **learner)
     return RichResult(
         payload={
             "estimate": res["estimate"],
@@ -147,8 +142,9 @@ def tmle_average_predictiveness(y, D, X, f=None, loss="r_squared",
             "sample_split": res["sample_split"],
             "null_inference_valid": res["sample_split"],
             "null_note": (
-                None if res["sample_split"] else
-                "without sample-splitting the estimator is degenerate under "
+                None
+                if res["sample_split"]
+                else "without sample-splitting the estimator is degenerate under "
                 "psi = 0, so this interval does NOT have its nominal "
                 "coverage when the group is truly unimportant"
             ),
@@ -156,10 +152,7 @@ def tmle_average_predictiveness(y, D, X, f=None, loss="r_squared",
             "n_reduced": res["n_reduced"],
             "binary_outcome": res["binary_outcome"],
             "n": res["n"],
-            "method": (
-                "Algorithm-agnostic variable importance from %s "
-                "predictiveness" % res["measure"]
-            ),
+            "method": ("Algorithm-agnostic variable importance from %s predictiveness" % res["measure"]),
         }
     )
 

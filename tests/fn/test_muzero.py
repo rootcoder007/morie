@@ -50,5 +50,3 @@ def test_muzero_edge():
     r3 = muzero(None, ["L", "R"], _rep, _dyn, _pred, simulations=12, temperature=1.0)
     tot = sum(r3["visits"].values())
     assert list(r3["policy"]) == pytest.approx([r3["visits"]["L"] / tot, r3["visits"]["R"] / tot], rel=1e-15)
-
-

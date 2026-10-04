@@ -42,7 +42,10 @@ def gibbons_edf_mean_var(F_x, n):
         raise ValueError(f"n must be at least 1, got {n}.")
     return RichResult(
         payload={
-            "mean": F, "var": F * (1 - F) / n, "binomial_n": n, "n": n,
+            "mean": F,
+            "var": F * (1 - F) / n,
+            "binomial_n": n,
+            "n": n,
             "method": "n S_n(x) ~ Bin(n, F(x)) (Gibbons Corollary 2.3.1.1)",
         }
     )

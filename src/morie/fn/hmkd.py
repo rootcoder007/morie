@@ -150,7 +150,9 @@ def geron_knowledge_distillation(teacher, student, X=None, y=None, T=2.0, alpha=
         if yy.size != m:
             raise ValueError(f"geron_knowledge_distillation: y has {yy.size} entries but there are {m} rows")
         if np.any(yy < 0) or np.any(yy >= C):
-            raise ValueError(f"geron_knowledge_distillation: labels must lie in 0..{C - 1}, got {np.unique(yy).tolist()}")
+            raise ValueError(
+                f"geron_knowledge_distillation: labels must lie in 0..{C - 1}, got {np.unique(yy).tolist()}"
+            )
         p_hard = _softmax(sl, 1.0)
         ce = float(np.mean(-np.log(np.clip(p_hard[np.arange(m), yy.astype(int)], 1e-300, None))))
 

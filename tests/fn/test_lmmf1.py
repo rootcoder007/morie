@@ -29,5 +29,3 @@ def test_lmmf1_edge():
     r = lmm_form_eq2_1([[1.0]], [1.0], [[1.0]], [0.0], [[2.0]], R=[[0.5]])
     V = r["V"].tolist() if hasattr(r["V"], "tolist") else r["V"]
     assert V[0][0] == pytest.approx(2.5, rel=1e-15)
-
-

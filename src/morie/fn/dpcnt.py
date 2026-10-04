@@ -94,11 +94,14 @@ def dp_count(D, epsilon=1.0, predicate=None, seed=None, nonneg=True):
     rel = max(raw, 0.0) if nonneg else raw
     return RichResult(
         title="DP count",
-        summary_lines=[("epsilon", epsilon), ("noise scale", b),
-                       ("release", rel)],
+        summary_lines=[("epsilon", epsilon), ("noise scale", b), ("release", rel)],
         payload={
-            "release": rel, "raw": raw, "true_count": true_count,
-            "noise_scale": b, "sensitivity": 1.0, "epsilon": epsilon,
+            "release": rel,
+            "raw": raw,
+            "true_count": true_count,
+            "noise_scale": b,
+            "sensitivity": 1.0,
+            "epsilon": epsilon,
             "clamped": bool(nonneg and raw < 0),
             "method": "dp_count",
         },

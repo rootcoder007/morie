@@ -1,7 +1,6 @@
 """Tests for hrzsiqm.horowitz_sim_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzsiqm import horowitz_sim_quantile
 
 

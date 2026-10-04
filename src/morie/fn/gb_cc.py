@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Continuity correction for integer-valued statistics."""
 
-from . import _array_core as np
 from . import _stats_core as stats
 from ._richresult import RichResult
 
@@ -47,7 +46,8 @@ def gibbons_continuity_corr(T, mu, sigma, cdf=None):
     zc = max(abs(T - mu) - 0.5, 0.0) / sigma
     return RichResult(
         payload={
-            "z_corrected": float(zc), "z_uncorrected": float(z0),
+            "z_corrected": float(zc),
+            "z_uncorrected": float(z0),
             "p_two_sided": float(2 * stats.norm.sf(zc)),
             "p_uncorrected": float(2 * stats.norm.sf(abs(z0))),
             "method": "Z_cc = (|T - mu| - 0.5)/sigma (Gibbons Ch. 1.2.13)",

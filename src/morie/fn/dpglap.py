@@ -88,13 +88,16 @@ def dp_laplace_mechanism(y, sensitivity=1.0, epsilon=1.0, seed=None):
     rel = y + rng.laplace(0.0, b, y.shape)
     return RichResult(
         title="Laplace mechanism",
-        summary_lines=[("epsilon", epsilon), ("sensitivity", sensitivity),
-                       ("noise scale", b)],
+        summary_lines=[("epsilon", epsilon), ("sensitivity", sensitivity), ("noise scale", b)],
         payload={
             "release": rel if rel.ndim else float(rel),
-            "noise_scale": b, "noise_sd": float(np.sqrt(2.0) * b),
-            "epsilon": epsilon, "delta": 0.0, "sensitivity": sensitivity,
-            "mechanism": "laplace", "method": "dp_laplace_mechanism",
+            "noise_scale": b,
+            "noise_sd": float(np.sqrt(2.0) * b),
+            "epsilon": epsilon,
+            "delta": 0.0,
+            "sensitivity": sensitivity,
+            "mechanism": "laplace",
+            "method": "dp_laplace_mechanism",
         },
     )
 

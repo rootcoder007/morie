@@ -33,9 +33,15 @@ depends on assumptions that the arithmetic cannot see.
 
 from . import _array_core as np
 
-__all__ = ["anova_two_way", "logistic_3pl", "logistic_3pl_deriv",
-           "gauss_hermite", "dersimonian_laird", "fixed_effect_pool",
-           "spearman_brown"]
+__all__ = [
+    "anova_two_way",
+    "logistic_3pl",
+    "logistic_3pl_deriv",
+    "gauss_hermite",
+    "dersimonian_laird",
+    "fixed_effect_pool",
+    "spearman_brown",
+]
 
 
 def anova_two_way(y, subject, rater):
@@ -59,14 +65,14 @@ def anova_two_way(y, subject, rater):
     rats = np.unique(r)
     n, k = subs.size, rats.size
     if n < 2 or k < 2:
-        raise ValueError(
-            f"need at least 2 subjects and 2 raters, got {n} and {k}.")
+        raise ValueError(f"need at least 2 subjects and 2 raters, got {n} and {k}.")
     if y.size != n * k:
         raise ValueError(
             f"the design must be complete and crossed: {n} subjects x {k} "
             f"raters needs {n * k} observations, got {y.size}. An unbalanced "
             "table makes the mean squares non-orthogonal and every ICC "
-            "ill-defined.")
+            "ill-defined."
+        )
     M = np.full((n, k), np.nan)
     si = {v: i for i, v in enumerate(subs)}
     ri = {v: j for j, v in enumerate(rats)}
@@ -87,7 +93,9 @@ def anova_two_way(y, subject, rater):
         "MSC": ss_c / (k - 1),
         "MSE": ss_e / ((n - 1) * (k - 1)),
         "MSW": ss_w / (n * (k - 1)),
-        "n": int(n), "k": int(k), "matrix": M,
+        "n": int(n),
+        "k": int(k),
+        "matrix": M,
     }
 
 
@@ -143,6 +151,7 @@ def theta_score(t, y, a, b, c, weighted=False):
     I' = sum [2 P' P'' / (P Q) - P'^3 (1 - 2 P) / (P Q)^2].
     """
     import math
+
     sc = 0.0
     inf = 0.0
     dinf = 0.0
@@ -155,7 +164,7 @@ def theta_score(t, y, a, b, c, weighted=False):
         d2 = aj * (1.0 - 2.0 * s_) * d1
         sc += (yj - P) * d1 / pq
         inf += d1 * d1 / pq
-        dinf += 2.0 * d1 * d2 / pq - d1 ** 3 * (1.0 - 2.0 * P) / pq ** 2
+        dinf += 2.0 * d1 * d2 / pq - d1**3 * (1.0 - 2.0 * P) / pq**2
     if weighted and inf > 0:
         sc += dinf / (2.0 * inf)
     return sc
@@ -224,12 +233,14 @@ def dersimonian_laird(yi, vi):
     """
     mu, _, Q, w = fixed_effect_pool(yi, vi)
     k = np.asarray(yi).size
-    denom = float(np.sum(w) - np.sum(w ** 2) / np.sum(w))
+    denom = float(np.sum(w) - np.sum(w**2) / np.sum(w))
     if denom <= 0:
         return 0.0
     return max(0.0, (Q - (k - 1)) / denom)
 
 
 def cheatsheet():
-    return ("_psycho: the ICC case, the IRT estimator and the tau^2 method "
-            "are all part of the answer, not implementation details")
+    return (
+        "_psycho: the ICC case, the IRT estimator and the tau^2 method "
+        "are all part of the answer, not implementation details"
+    )

@@ -91,8 +91,7 @@ def prox_method(f, grad_f, prox_g, x0, lr, n_iter=200, relaxation=1.0):
             "lr": lr,
             "relaxation": relaxation,
             "step_norm": step_norm,
-            "method": "forward-backward splitting, Combettes & Pesquet "
-                      "(2011) Algorithm 3.4",
+            "method": "forward-backward splitting, Combettes & Pesquet (2011) Algorithm 3.4",
         }
     )
 

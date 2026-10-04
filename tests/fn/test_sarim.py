@@ -1,8 +1,8 @@
 """Tests for morie.fn.sarim -- Seasonal ARIMA."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sarim import sarima_fit
 
 

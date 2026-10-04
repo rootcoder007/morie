@@ -1,7 +1,6 @@
 """Tests for dbscl.dbscan_clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dbscl import dbscan_clustering
 
 

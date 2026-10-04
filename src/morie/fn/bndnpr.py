@@ -86,10 +86,17 @@ def bound_nonparam_regr(y, D, X, bw):
         shi += a1[1] - a0[0]
     lo = slo / n
     hi = shi / n
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "bw": h, "n": n,
-        "method": "Nonparametric regression bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "bw": h,
+            "n": n,
+            "method": "Nonparametric regression bound",
+        }
+    )
 
 
 def cheatsheet():

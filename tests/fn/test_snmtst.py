@@ -1,11 +1,11 @@
 """snmtst -- honest DiD sensitivity. Source: Rambachan & Roth (2023)
 Review of Economic Studies 90(5), 2555-2591."""
+
 import pytest
 
-from morie.fn.snmtst import (breakdown_value, fixed_length_ci,
-                             identified_set, sensitivity_curve)
+from morie.fn.snmtst import breakdown_value, fixed_length_ci, identified_set, sensitivity_curve
 
-BETA = [-0.4, -0.2, 0.0, 1.0, 1.2]      # 3 pre, 2 post
+BETA = [-0.4, -0.2, 0.0, 1.0, 1.2]  # 3 pre, 2 post
 
 
 def test_sd_at_zero_is_a_point():
@@ -19,10 +19,8 @@ def test_sd_at_zero_is_linear_extrapolation():
 
 
 def test_sd_closed_form_matches_the_brute_force_recursion():
-    a = identified_set(BETA, 3, 2, M=0.3, family="SD",
-                       l_vec=[1.0, -1.0])
-    b = identified_set(BETA, 3, 2, M=0.3, family="SD",
-                       l_vec=[1.0, -1.0], grid=31)
+    a = identified_set(BETA, 3, 2, M=0.3, family="SD", l_vec=[1.0, -1.0])
+    b = identified_set(BETA, 3, 2, M=0.3, family="SD", l_vec=[1.0, -1.0], grid=31)
     assert a["lower"] == pytest.approx(b["lower"], abs=1e-9)
     assert a["upper"] == pytest.approx(b["upper"], abs=1e-9)
 
@@ -38,8 +36,7 @@ def test_width_is_monotone_in_M():
 
 
 def test_rm_half_width_is_M_times_the_largest_pre_change():
-    s = identified_set(BETA, 3, 2, M=1.0, family="RM",
-                       l_vec=[1.0, 0.0])
+    s = identified_set(BETA, 3, 2, M=1.0, family="RM", l_vec=[1.0, 0.0])
     assert s["width"] / 2.0 == pytest.approx(0.2, abs=1e-12)
 
 

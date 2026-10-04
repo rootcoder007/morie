@@ -1,7 +1,6 @@
 """Tests for fzb5t.fauzi_b5_coefficient_mrl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzb5t import fauzi_b5_coefficient_mrl
 
 
@@ -16,7 +15,7 @@ def test_fzb5t_basic():
     assert "estimate" in result
     assert "varterm" in result
     assert "method" in result
-    expected_estimate = dg * density * mrl ** 2
+    expected_estimate = dg * density * mrl**2
     expected_varterm = expected_estimate / (surv * surv)
     assert result["estimate"] == expected_estimate
     assert result["varterm"] == expected_varterm
@@ -32,7 +31,7 @@ def test_fzb5t_no_surv():
     assert "estimate" in result
     assert "varterm" in result
     assert "method" in result
-    expected_estimate = dg * density * mrl ** 2
+    expected_estimate = dg * density * mrl**2
     assert result["estimate"] == expected_estimate
     assert np.isnan(result["varterm"])
 

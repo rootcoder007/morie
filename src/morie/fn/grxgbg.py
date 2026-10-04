@@ -75,12 +75,10 @@ def geron_xgboost_gain(GL, HL, GR, HR, lam=1.0, gamma=0.0):
     gamma = float(gamma)
     if lam < 0 or gamma < 0:
         raise ValueError(f"lam and gamma must be non-negative, got {lam} and {gamma}.")
-    for label, denom in (("left", HL + lam), ("right", HR + lam),
-                         ("parent", HL + HR + lam)):
+    for label, denom in (("left", HL + lam), ("right", HR + lam), ("parent", HL + HR + lam)):
         if denom <= 0:
             raise ValueError(
-                f"the {label} denominator H + lambda is {denom}; raise lam above 0 "
-                "when a child has zero Hessian."
+                f"the {label} denominator H + lambda is {denom}; raise lam above 0 when a child has zero Hessian."
             )
 
     left = GL**2 / (HL + lam)

@@ -76,9 +76,7 @@ def geron_contrastive_learning(embeddings, positives, tau=0.1, normalize=True):
         raise ValueError("geron_contrastive_learning: embeddings contains non-finite values")
     B = E.shape[0]
     if B < 3:
-        raise ValueError(
-            f"geron_contrastive_learning: in-batch negatives need at least 3 embeddings, got {B}"
-        )
+        raise ValueError(f"geron_contrastive_learning: in-batch negatives need at least 3 embeddings, got {B}")
     pos = np.asarray(positives).ravel()
     if pos.size != B:
         raise ValueError(f"geron_contrastive_learning: positives has {pos.size} entries but the batch has {B} rows")

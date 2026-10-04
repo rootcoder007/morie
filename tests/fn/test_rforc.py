@@ -1,8 +1,8 @@
 """Tests for morie.fn.rforc -- Random forest classifier."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rforc import random_forest
 
 

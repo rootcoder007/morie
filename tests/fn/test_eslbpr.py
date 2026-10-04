@@ -1,7 +1,6 @@
 """Tests for eslbpr.esl_backprop."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslbpr import esl_backprop
 
 
@@ -26,8 +25,13 @@ def test_eslbpr_basic():
 
     # RichResult behaves like a dict; check documented keys are present.
     for key in (
-        "grad_alpha", "grad_alpha0", "grad_beta", "grad_beta0",
-        "delta", "hidden", "loss",
+        "grad_alpha",
+        "grad_alpha0",
+        "grad_beta",
+        "grad_beta0",
+        "delta",
+        "hidden",
+        "loss",
     ):
         assert key in result, f"missing key {key!r} in result"
 
@@ -59,18 +63,21 @@ def test_eslbpr_basic():
     assert result["grad_alpha0"].shape == expected_grad_alpha0.shape
     # elementwise agreement
     diff_b = float(np.max(np.abs(result["grad_beta"] - expected_grad_beta)))
-    diff_a0 = float(np.max(np.abs(result["grad_alpha0"] - expected_grad_a0))) \
-        if False else float(np.max(np.abs(result["grad_alpha0"] - expected_grad_alpha0)))
+    diff_a0 = (
+        float(np.max(np.abs(result["grad_alpha0"] - expected_grad_a0)))
+        if False
+        else float(np.max(np.abs(result["grad_alpha0"] - expected_grad_alpha0)))
+    )
     assert diff_b < 1e-10
     assert diff_a0 < 1e-10
 
     # A small gradient step must reduce the loss.
     step = 0.05
     W2 = {
-        "alpha":  W["alpha"]  - step * result["grad_alpha"],
+        "alpha": W["alpha"] - step * result["grad_alpha"],
         "alpha0": W["alpha0"] - step * result["grad_alpha0"],
-        "beta":   W["beta"]   - step * result["grad_beta"],
-        "beta0":  W["beta0"]  - step * result["grad_beta0"],
+        "beta": W["beta"] - step * result["grad_beta"],
+        "beta0": W["beta0"] - step * result["grad_beta0"],
     }
     assert esl_backprop(X, y, W2)["loss"] < result["loss"]
 
@@ -86,8 +93,13 @@ def test_eslbpr_edge():
     result = esl_backprop(X, y, W)
 
     for key in (
-        "grad_alpha", "grad_alpha0", "grad_beta", "grad_beta0",
-        "delta", "hidden", "loss",
+        "grad_alpha",
+        "grad_alpha0",
+        "grad_beta",
+        "grad_beta0",
+        "delta",
+        "hidden",
+        "loss",
     ):
         assert key in result, f"missing key {key!r} in result"
 

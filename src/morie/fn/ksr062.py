@@ -59,11 +59,14 @@ def kosorok_ch3_pathwise_derivative(psi_values, scores, weights=None):
     mean = float(w @ psi)
     var = float(w @ (psi - mean) ** 2)
     return RichResult(
-        payload={"derivative": (w[:, None] * psi[:, None] * S).sum(axis=0),
-                 "influence_mean": mean, "influence_var": var,
-                 "mean_zero": bool(abs(mean) < 1e-6 * max(1.0, np.sqrt(var))),
-                 "n": int(n),
-                 "method": "d psi(P_t)/dt = P[psi-tilde * score]; the representation IS the point"}
+        payload={
+            "derivative": (w[:, None] * psi[:, None] * S).sum(axis=0),
+            "influence_mean": mean,
+            "influence_var": var,
+            "mean_zero": bool(abs(mean) < 1e-6 * max(1.0, np.sqrt(var))),
+            "n": int(n),
+            "method": "d psi(P_t)/dt = P[psi-tilde * score]; the representation IS the point",
+        }
     )
 
 

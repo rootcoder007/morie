@@ -66,7 +66,7 @@ def average_forecast(y, horizon=1, window=None, seasonal_period=None):
     h = int(horizon)
     if h < 1:
         raise ValueError("horizon must be at least 1, got %d." % h)
-    use = v if window is None else v[-int(window):]
+    use = v if window is None else v[-int(window) :]
     if use.size < 2:
         raise ValueError("window leaves fewer than 2 observations.")
 
@@ -83,16 +83,12 @@ def average_forecast(y, horizon=1, window=None, seasonal_period=None):
     if seasonal_period:
         m = int(seasonal_period)
         if m < 1 or m > T:
-            raise ValueError(
-                "seasonal_period must lie between 1 and the series length."
-            )
+            raise ValueError("seasonal_period must lie between 1 and the series length.")
         seas = np.array([v[-m + ((i) % m)] for i in range(h)])
 
     diffs = np.diff(v)
-    ac1 = (float(np.corrcoef(v[:-1], v[1:])[0, 1]) if T > 2 else np.nan)
-    trending = abs(float(np.mean(diffs))) > 0.5 * float(
-        np.std(diffs) / np.sqrt(max(T - 1, 1))
-    ) * 2.0
+    ac1 = float(np.corrcoef(v[:-1], v[1:])[0, 1]) if T > 2 else np.nan
+    trending = abs(float(np.mean(diffs))) > 0.5 * float(np.std(diffs) / np.sqrt(max(T - 1, 1))) * 2.0
     rec = "naive or drift" if (ac1 > 0.9 or trending) else "average"
     return RichResult(
         payload={
@@ -116,8 +112,9 @@ def average_forecast(y, horizon=1, window=None, seasonal_period=None):
             "recommendation_note": (
                 "the mean forecast is optimal under stationarity and "
                 "arbitrarily bad under a trend or unit root; lag-1 "
-                "autocorrelation of %.2f suggests the %s baseline"
-                % (ac1, rec) if ac1 == ac1 else None
+                "autocorrelation of %.2f suggests the %s baseline" % (ac1, rec)
+                if ac1 == ac1
+                else None
             ),
             "baseline_note": (
                 "a method that cannot beat this on a series is not modelling "

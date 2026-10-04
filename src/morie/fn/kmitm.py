@@ -55,17 +55,21 @@ def kamath_image_text_matching(image_emb, text_emb, W, b, fuse=None):
         how = "caller-supplied fusion"
     w = np.atleast_1d(np.asarray(W, dtype=float)).ravel()
     if w.size != fused.size:
-        raise ValueError(
-            f"W has {w.size} weights but the fused embedding has "
-            f"{fused.size} dimensions ({how}).")
+        raise ValueError(f"W has {w.size} weights but the fused embedding has {fused.size} dimensions ({how}).")
     z = float(np.dot(w, fused) + float(b))
     p = float(_sigmoid(np.array([z]))[0])
-    return RichResult(payload={
-        "estimate": p, "probability": p, "logit": z,
-        "match": bool(p >= 0.5),
-        "fused": [float(v) for v in fused], "fusion": how,
-        "n": int(fused.size),
-        "method": "Image-text matching head p = sigmoid(w.fused + b)"})
+    return RichResult(
+        payload={
+            "estimate": p,
+            "probability": p,
+            "logit": z,
+            "match": bool(p >= 0.5),
+            "fused": [float(v) for v in fused],
+            "fusion": how,
+            "n": int(fused.size),
+            "method": "Image-text matching head p = sigmoid(w.fused + b)",
+        }
+    )
 
 
 def cheatsheet():

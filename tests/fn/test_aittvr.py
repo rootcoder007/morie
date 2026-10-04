@@ -1,7 +1,6 @@
 """Tests for aittvr.aitchison_total_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aittvr import aitchison_total_variance
 
 

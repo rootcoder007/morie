@@ -15,16 +15,15 @@ def test_wsmfis_basic():
         out = wasserman_fisher_info(None, theta, x_grid=g)
         assert out["theta"] == theta
         assert out["grid_points"] == 5001
-        assert abs(out["estimate"] - 1.0 / theta ** 2) < 1e-4
+        assert abs(out["estimate"] - 1.0 / theta**2) < 1e-4
         # se for a single observation is 1/sqrt(I) = theta here.
-        assert out["se_one_obs"] == pytest.approx(
-            1.0 / math.sqrt(out["estimate"]), rel=1e-12
-        )
+        assert out["se_one_obs"] == pytest.approx(1.0 / math.sqrt(out["estimate"]), rel=1e-12)
         assert abs(out["se_one_obs"] - theta) < 1e-3
 
 
 def test_wsmfis_custom_normal_density():
     """N(theta, 1) has I(theta) = 1 at every theta."""
+
     def normal(x, th):
         return np.exp(-0.5 * (x - th) ** 2) / math.sqrt(2.0 * math.pi)
 
@@ -37,8 +36,7 @@ def test_wsmfis_custom_normal_density():
         # trapezoid rule, measured at about 7e-8 across these thetas.
         exact_info = 1.0
         assert out["estimate"] == pytest.approx(exact_info, abs=1e-6)
-        assert out["se_one_obs"] == pytest.approx(
-            1.0 / math.sqrt(exact_info), abs=1e-6)
+        assert out["se_one_obs"] == pytest.approx(1.0 / math.sqrt(exact_info), abs=1e-6)
 
 
 def test_wsmfis_edge():
@@ -68,7 +66,7 @@ import morie.fn.wsmfis as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

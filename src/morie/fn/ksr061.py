@@ -8,8 +8,7 @@ from ._sci_core import integrate
 __all__ = ["kosorok_ch3_differentiable_quadratic_mean"]
 
 
-def kosorok_ch3_differentiable_quadratic_mean(density, score, t_grid=None,
-                                              support=(-np.inf, np.inf), theta=0.0):
+def kosorok_ch3_differentiable_quadratic_mean(density, score, t_grid=None, support=(-np.inf, np.inf), theta=0.0):
     r"""Differentiability in quadratic mean (DQM), Kosorok Ch. 3:
 
     .. math:: \int \Big[\frac{\sqrt{dP_t} - \sqrt{dP}}{t}
@@ -58,6 +57,7 @@ def kosorok_ch3_differentiable_quadratic_mean(density, score, t_grid=None,
 
     vals = []
     for t in t_grid:
+
         def integrand(x, t=t):
             p0 = max(float(density(x, theta)), 0.0)
             pt = max(float(density(x, theta + t)), 0.0)
@@ -70,14 +70,19 @@ def kosorok_ch3_differentiable_quadratic_mean(density, score, t_grid=None,
 
     # the score must integrate to zero against the base density
     sm, _ = integrate.quad(
-        lambda x: float(score(x)) * max(float(density(x, theta)), 0.0), lo, hi,
+        lambda x: float(score(x)) * max(float(density(x, theta)), 0.0),
+        lo,
+        hi,
         limit=200,
     )
     return RichResult(
-        payload={"t_grid": np.array(t_grid), "dqm_integrals": vals,
-                 "shrinking": bool(vals[-1] <= vals[0] + 1e-12),
-                 "score_mean": float(sm),
-                 "method": "DQM on sqrt(density); covers non-differentiable densities"}
+        payload={
+            "t_grid": np.array(t_grid),
+            "dqm_integrals": vals,
+            "shrinking": bool(vals[-1] <= vals[0] + 1e-12),
+            "score_mean": float(sm),
+            "method": "DQM on sqrt(density); covers non-differentiable densities",
+        }
     )
 
 

@@ -1,7 +1,6 @@
 """Tests for qnsc.qn_scale."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.qnsc import qn_scale
 
 

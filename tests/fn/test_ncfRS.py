@@ -1,7 +1,6 @@
 """Tests for ncfRS.ncf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ncfRS import ncf
 
 

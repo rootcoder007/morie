@@ -1,7 +1,6 @@
 """Tests for network_degree."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netdg import network_degree
 
 

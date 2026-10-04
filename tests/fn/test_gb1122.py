@@ -9,6 +9,8 @@ def test_gb1122_basic():
     result = gibbons_kendall_null(n)
     assert isinstance(result, dict)
     assert "support" in result
+
+
 def test_gb1122_edge():
     """Test edge cases."""
     n = 100

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["bayes_c_pi", "bayes_cpi_prior"]
 
 
-def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
-               seed=0, nu=4.0, s2=None):
+def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0, seed=0, nu=4.0, s2=None):
     r"""Gibbs sampler for the BayesC:math:`\pi` model.
 
     .. math::
@@ -77,8 +76,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d phenotypes."
-                         % (Xa.shape[0], n))
+        raise ValueError("X has %d rows for %d phenotypes." % (Xa.shape[0], n))
     m = Xa.shape[1]
     n_iter, burn_in = int(n_iter), int(burn_in)
     if burn_in >= n_iter:
@@ -88,7 +86,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
 
     rng = np.random.default_rng(int(seed))
     yc = yv - yv.mean()
-    xtx = np.sum(Xa ** 2, axis=0)
+    xtx = np.sum(Xa**2, axis=0)
     xtx = np.where(xtx > 0, xtx, 1e-12)
     vy = float(np.var(yc, ddof=1)) or 1.0
     s2 = 0.5 * vy if s2 is None else float(s2)
@@ -114,11 +112,8 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
             v = xtx[j] + s2e / s2b
             bhat = rhs / v
             # log odds of inclusion, on the log scale for stability
-            log_bf = (0.5 * np.log(s2e / (s2b * v))
-                      + 0.5 * rhs ** 2 / (s2e * v))
-            odds = (1.0 - pi) / max(pi, 1e-12) * np.exp(
-                np.clip(log_bf, -700, 700)
-            )
+            log_bf = 0.5 * np.log(s2e / (s2b * v)) + 0.5 * rhs**2 / (s2e * v)
+            odds = (1.0 - pi) / max(pi, 1e-12) * np.exp(np.clip(log_bf, -700, 700))
             prob = odds / (1.0 + odds)
             if rng.uniform() < prob:
                 delta[j] = True
@@ -150,8 +145,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
         mu1, mu2 = pis[:half].mean(), pis[half:ki].mean()
         W = 0.5 * (v1 + v2)
         B = half * ((mu1 - mu2) ** 2) / 2.0
-        rhat = float(np.sqrt(((half - 1) / half * W + B / half) / W)) \
-            if W > 0 else np.nan
+        rhat = float(np.sqrt(((half - 1) / half * W + B / half) / W)) if W > 0 else np.nan
     pip = d_sum / max(ki, 1)
     return RichResult(
         payload={
@@ -167,9 +161,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
             ),
             "sigma2_b": float(s2b_s[:ki].mean()) if ki else np.nan,
             "sigma2_e": float(s2e_s[:ki].mean()) if ki else np.nan,
-            "heritability": (float(np.mean(s2b_s[:ki] * m
-                                           / (s2b_s[:ki] * m + s2e_s[:ki])))
-                             if ki else np.nan),
+            "heritability": (float(np.mean(s2b_s[:ki] * m / (s2b_s[:ki] * m + s2e_s[:ki]))) if ki else np.nan),
             "n_selected": float(pip.sum()),
             "top_markers": np.argsort(pip)[::-1][:10],
             "pip_note": (

@@ -88,12 +88,10 @@ generalises, and the source of the non-negativity constraint.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["super_learner", "flexible_iptw", "iptw_ate",
-           "default_learners", "cv_risk"]
+__all__ = ["super_learner", "flexible_iptw", "iptw_ate", "default_learners", "cv_risk"]
 
 _METAS = ("nnls", "discrete", "ols")
 _EPS = 1e-9
@@ -135,16 +133,16 @@ def default_learners(p, ridge_penalties=(0.0, 1.0, 10.0)):
     intercept-only learner is always present so the ensemble can fall
     back on the marginal when nothing predicts.
     """
-    lib = [{"name": "intercept", "kind": "intercept", "penalty": 0.0},
-           {"name": "main", "kind": "main", "penalty": 0.0},
-           {"name": "quadratic", "kind": "quadratic", "penalty": 0.0}]
+    lib = [
+        {"name": "intercept", "kind": "intercept", "penalty": 0.0},
+        {"name": "main", "kind": "main", "penalty": 0.0},
+        {"name": "quadratic", "kind": "quadratic", "penalty": 0.0},
+    ]
     if p >= 2:
-        lib.append({"name": "interaction", "kind": "interaction",
-                    "penalty": 0.0})
+        lib.append({"name": "interaction", "kind": "interaction", "penalty": 0.0})
         for pen in ridge_penalties:
             if pen > 0.0:
-                lib.append({"name": "interaction+ridge%g" % pen,
-                            "kind": "interaction", "penalty": pen})
+                lib.append({"name": "interaction+ridge%g" % pen, "kind": "interaction", "penalty": pen})
     return lib
 
 
@@ -154,8 +152,7 @@ def _fit_learner(y, W, spec, rows, binary, ridge):
     Xr = [X[i] for i in rows]
     yr = [y[i] for i in rows]
     if binary:
-        b = k.logit_irls(Xr, yr, ridge=max(ridge, 1e-10),
-                         penalty=spec.get("penalty", 0.0))
+        b = k.logit_irls(Xr, yr, ridge=max(ridge, 1e-10), penalty=spec.get("penalty", 0.0))
         return [k.sigmoid(v) for v in k.matvec(X, b)], b
     pen = spec.get("penalty", 0.0)
     b = k.lstsq(Xr, yr, max(ridge, 1e-10) + pen)
@@ -214,8 +211,7 @@ def _nnls_simplex(Z, y, iters=8000, tol=1e-14):
         return []
     if J == 1:
         return [1.0]
-    G = [[sum(Z[i][a] * Z[i][b] for i in range(n)) / n
-          for b in range(J)] for a in range(J)]
+    G = [[sum(Z[i][a] * Z[i][b] for i in range(n)) / n for b in range(J)] for a in range(J)]
     c = [sum(Z[i][a] * y[i] for i in range(n)) / n for a in range(J)]
 
     # power iteration for the largest eigenvalue of G
@@ -234,16 +230,15 @@ def _nnls_simplex(Z, y, iters=8000, tol=1e-14):
     step = 1.0 / lam if lam > 0.0 else 1.0
 
     def obj(a):
-        return (sum(a[t] * sum(G[t][b] * a[b] for b in range(J))
-                    for t in range(J))
-                - 2.0 * sum(c[t] * a[t] for t in range(J)))
+        return sum(a[t] * sum(G[t][b] * a[b] for b in range(J)) for t in range(J)) - 2.0 * sum(
+            c[t] * a[t] for t in range(J)
+        )
 
     a = [1.0 / J] * J
     z = list(a)
     tk = 1.0
     for _ in range(iters):
-        grad = [sum(G[t][b] * z[b] for b in range(J)) - c[t]
-                for t in range(J)]
+        grad = [sum(G[t][b] * z[b] for b in range(J)) - c[t] for t in range(J)]
         nxt = _project_simplex([z[t] - step * grad[t] for t in range(J)])
         tn = 0.5 * (1.0 + math.sqrt(1.0 + 4.0 * tk * tk))
         mom = (tk - 1.0) / tn
@@ -273,14 +268,13 @@ def cv_risk(y, Z, loss="l2"):
                 tot -= y[i] * math.log(p) + (1 - y[i]) * math.log(1 - p)
             out.append(tot / n)
         else:
-            raise ValueError("flxipt: loss must be l2 or nll, got %r"
-                             % (loss,))
+            raise ValueError("flxipt: loss must be l2 or nll, got %r" % (loss,))
     return out
 
 
-def super_learner(y, X, library=None, n_folds=10, meta="nnls",
-                  binary=None, loss="l2", ridge=1e-8,
-                  honest_level_one=True):
+def super_learner(
+    y, X, library=None, n_folds=10, meta="nnls", binary=None, loss="l2", ridge=1e-8, honest_level_one=True
+):
     r"""Sec. 2 of van der Laan, Polley & Hubbard (2007).
 
     Parameters
@@ -307,17 +301,14 @@ def super_learner(y, X, library=None, n_folds=10, meta="nnls",
         each candidate's ``cv_risk``, and the ensemble's own.
     """
     if meta not in _METAS:
-        raise ValueError("flxipt: meta must be one of %s, got %r"
-                         % (", ".join(_METAS), meta))
+        raise ValueError("flxipt: meta must be one of %s, got %r" % (", ".join(_METAS), meta))
     yv = k.vec(y)
     n = len(yv)
     Wm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Wm) != n:
-        raise ValueError("flxipt: %d covariate rows for %d outcomes"
-                         % (len(Wm), n))
+        raise ValueError("flxipt: %d covariate rows for %d outcomes" % (len(Wm), n))
     if n < 8:
-        raise ValueError("flxipt: need at least 8 observations, got %d"
-                         % n)
+        raise ValueError("flxipt: need at least 8 observations, got %d" % n)
     p = len(Wm[0]) if Wm and Wm[0] else 0
     lib = default_learners(p) if library is None else list(library)
     if not lib:
@@ -353,11 +344,9 @@ def super_learner(y, X, library=None, n_folds=10, meta="nnls",
     # came from the held-out predictions
     full = []
     for spec in lib:
-        pred, _ = _fit_learner(yv, Wm, spec, list(range(n)), binary,
-                               ridge)
+        pred, _ = _fit_learner(yv, Wm, spec, list(range(n)), binary, ridge)
         full.append(pred)
-    fitted = [sum(weights[j] * full[j][i] for j in range(J))
-              for i in range(n)]
+    fitted = [sum(weights[j] * full[j][i] for j in range(J)) for i in range(n)]
     if binary:
         fitted = [min(max(v, 0.0), 1.0) for v in fitted]
 
@@ -366,26 +355,32 @@ def super_learner(y, X, library=None, n_folds=10, meta="nnls",
         ens = [[min(max(r[0], _EPS), 1.0 - _EPS)] for r in ens]
     ens_risk = cv_risk(yv, ens, loss)[0]
 
-    return RichResult(payload={
-        "fitted": fitted, "estimate": ens_risk,
-        "weights": {lib[j]["name"]: weights[j] for j in range(J)},
-        "weight_vector": weights,
-        "cv_risk": {lib[j]["name"]: risks[j] for j in range(J)},
-        "cv_risk_ensemble": ens_risk,
-        "best_candidate": lib[best]["name"],
-        "best_candidate_risk": risks[best],
-        "discrete_choice": lib[best]["name"],
-        "level_one": Z, "candidate_fits": full,
-        "library": [s["name"] for s in lib], "n": n, "n_folds": len(folds),
-        "meta": meta, "loss": loss, "binary": bool(binary),
-        "honest_level_one": bool(honest_level_one),
-        "method": "Super Learner, van der Laan, Polley & Hubbard (2007) "
-                  "Sec. 2 eq. (1)",
-    })
+    return RichResult(
+        payload={
+            "fitted": fitted,
+            "estimate": ens_risk,
+            "weights": {lib[j]["name"]: weights[j] for j in range(J)},
+            "weight_vector": weights,
+            "cv_risk": {lib[j]["name"]: risks[j] for j in range(J)},
+            "cv_risk_ensemble": ens_risk,
+            "best_candidate": lib[best]["name"],
+            "best_candidate_risk": risks[best],
+            "discrete_choice": lib[best]["name"],
+            "level_one": Z,
+            "candidate_fits": full,
+            "library": [s["name"] for s in lib],
+            "n": n,
+            "n_folds": len(folds),
+            "meta": meta,
+            "loss": loss,
+            "binary": bool(binary),
+            "honest_level_one": bool(honest_level_one),
+            "method": "Super Learner, van der Laan, Polley & Hubbard (2007) Sec. 2 eq. (1)",
+        }
+    )
 
 
-def flexible_iptw(A, H, library=None, n_folds=10, meta="nnls",
-                  trim=0.01, ridge=1e-8, stabilize=False):
+def flexible_iptw(A, H, library=None, n_folds=10, meta="nnls", trim=0.01, ridge=1e-8, stabilize=False):
     r"""Propensity score by Super Learner, and the IPTW weights.
 
     ``A`` is the binary treatment and ``H`` the history it may depend
@@ -401,37 +396,38 @@ def flexible_iptw(A, H, library=None, n_folds=10, meta="nnls",
         raise ValueError("flxipt: both treatment arms must be non-empty")
     t = float(trim)
     if not 0.0 <= t < 0.5:
-        raise ValueError("flxipt: trim must be in [0, 0.5), got %r"
-                         % (trim,))
-    sl = super_learner(Av, H, library=library, n_folds=n_folds,
-                       meta=meta, binary=True, loss="l2", ridge=ridge)
-    g = [min(max(v, max(t, _EPS)), 1.0 - max(t, _EPS))
-         for v in sl["fitted"]]
+        raise ValueError("flxipt: trim must be in [0, 0.5), got %r" % (trim,))
+    sl = super_learner(Av, H, library=library, n_folds=n_folds, meta=meta, binary=True, loss="l2", ridge=ridge)
+    g = [min(max(v, max(t, _EPS)), 1.0 - max(t, _EPS)) for v in sl["fitted"]]
     if stabilize:
         # SW = P(A = a) / g(a | W): the marginal in the numerator, which
         # leaves the weights centred near 1 instead of near 1/g
         pa = sum(Av) / n
-        w = [Av[i] * pa / g[i]
-             + (1.0 - Av[i]) * (1.0 - pa) / (1.0 - g[i])
-             for i in range(n)]
+        w = [Av[i] * pa / g[i] + (1.0 - Av[i]) * (1.0 - pa) / (1.0 - g[i]) for i in range(n)]
     else:
-        w = [Av[i] / g[i] + (1.0 - Av[i]) / (1.0 - g[i])
-             for i in range(n)]
-    return RichResult(payload={
-        "propensity": g, "weights": w, "estimate": sum(w) / n,
-        "sl_weights": sl["weights"], "cv_risk": sl["cv_risk"],
-        "cv_risk_ensemble": sl["cv_risk_ensemble"],
-        "best_candidate": sl["best_candidate"],
-        "max_weight": max(w), "min_propensity": min(g),
-        "max_propensity": max(g), "n": n, "trim": t,
-        "stabilized": bool(stabilize), "library": sl["library"],
-        "method": "IPTW with a Super Learner propensity score, "
-                  "Pirracchio, Petersen & van der Laan (2015) eq. (3)",
-    })
+        w = [Av[i] / g[i] + (1.0 - Av[i]) / (1.0 - g[i]) for i in range(n)]
+    return RichResult(
+        payload={
+            "propensity": g,
+            "weights": w,
+            "estimate": sum(w) / n,
+            "sl_weights": sl["weights"],
+            "cv_risk": sl["cv_risk"],
+            "cv_risk_ensemble": sl["cv_risk_ensemble"],
+            "best_candidate": sl["best_candidate"],
+            "max_weight": max(w),
+            "min_propensity": min(g),
+            "max_propensity": max(g),
+            "n": n,
+            "trim": t,
+            "stabilized": bool(stabilize),
+            "library": sl["library"],
+            "method": "IPTW with a Super Learner propensity score, Pirracchio, Petersen & van der Laan (2015) eq. (3)",
+        }
+    )
 
 
-def iptw_ate(y, A, H, library=None, n_folds=10, meta="nnls",
-             trim=0.01, ridge=1e-8, level=0.95):
+def iptw_ate(y, A, H, library=None, n_folds=10, meta="nnls", trim=0.01, ridge=1e-8, level=0.95):
     """ATE by a weighted regression of Y on A, Pirracchio et al.
 
     The Hajek form is used -- each arm's weighted mean divides by its
@@ -441,10 +437,8 @@ def iptw_ate(y, A, H, library=None, n_folds=10, meta="nnls",
     yv, Av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(Av) != n:
-        raise ValueError("flxipt: %d outcomes but %d treatments"
-                         % (n, len(Av)))
-    r = flexible_iptw(Av, H, library=library, n_folds=n_folds,
-                      meta=meta, trim=trim, ridge=ridge)
+        raise ValueError("flxipt: %d outcomes but %d treatments" % (n, len(Av)))
+    r = flexible_iptw(Av, H, library=library, n_folds=n_folds, meta=meta, trim=trim, ridge=ridge)
     w = r["weights"]
     w1 = sum(w[i] for i in range(n) if Av[i] == 1.0)
     w0 = sum(w[i] for i in range(n) if Av[i] == 0.0)
@@ -462,27 +456,36 @@ def iptw_ate(y, A, H, library=None, n_folds=10, meta="nnls",
             ic.append(-w[i] * (yv[i] - m0) * n / w0)
     se = k.sd(ic) / math.sqrt(n)
     z = k.qnorm(0.5 + 0.5 * float(level))
-    return RichResult(payload={
-        "estimate": psi, "se": se, "ci": (psi - z * se, psi + z * se),
-        "mean_treated": m1, "mean_control": m0,
-        "propensity": r["propensity"], "weights": w,
-        "sl_weights": r["sl_weights"], "cv_risk": r["cv_risk"],
-        "best_candidate": r["best_candidate"],
-        "max_weight": r["max_weight"],
-        "min_propensity": r["min_propensity"], "n": n,
-        "level": float(level),
-        "method": "IPTW ATE with a Super Learner propensity score, "
-                  "Pirracchio, Petersen & van der Laan (2015)",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "ci": (psi - z * se, psi + z * se),
+            "mean_treated": m1,
+            "mean_control": m0,
+            "propensity": r["propensity"],
+            "weights": w,
+            "sl_weights": r["sl_weights"],
+            "cv_risk": r["cv_risk"],
+            "best_candidate": r["best_candidate"],
+            "max_weight": r["max_weight"],
+            "min_propensity": r["min_propensity"],
+            "n": n,
+            "level": float(level),
+            "method": "IPTW ATE with a Super Learner propensity score, Pirracchio, Petersen & van der Laan (2015)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("flxipt: Super Learner. Z[i][j] = candidate j's HELD-OUT "
-            "prediction for i; fit the meta-learner of y on Z (nnls "
-            "convex combination, or discrete = the CV selector); apply "
-            "it to the candidates refitted on all the data (vdL-Polley-"
-            "Hubbard 2007 eq. 1). Then IPTW weights A/g + (1-A)/(1-g) "
-            "with g from the ensemble (Pirracchio 2015 eq. 3).")
+    return (
+        "flxipt: Super Learner. Z[i][j] = candidate j's HELD-OUT "
+        "prediction for i; fit the meta-learner of y on Z (nnls "
+        "convex combination, or discrete = the CV selector); apply "
+        "it to the candidates refitted on all the data (vdL-Polley-"
+        "Hubbard 2007 eq. 1). Then IPTW weights A/g + (1-A)/(1-g) "
+        "with g from the ensemble (Pirracchio 2015 eq. 3)."
+    )
 
 
 # compact alias per ledger/NAMING.md

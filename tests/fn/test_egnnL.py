@@ -10,8 +10,7 @@ import math
 
 import pytest
 
-from morie.fn.egnnL import (coord_update, edge_message, egcl, egnn_layer,
-                            equivariance_error, run_egnn)
+from morie.fn.egnnL import coord_update, edge_message, egcl, egnn_layer, equivariance_error, run_egnn
 
 
 def phi_e(hi, hj, d2, a):
@@ -32,19 +31,16 @@ X = [[0.0, 0.0, 0.0], [1.0, 0.2, -0.5], [0.3, 1.1, 0.4], [-0.8, 0.5, 0.9]]
 
 def _rot(a, b, c):
     """A proper rotation from three Euler angles."""
-    ca, sa, cb, sb, cc, sc = (math.cos(a), math.sin(a), math.cos(b),
-                              math.sin(b), math.cos(c), math.sin(c))
+    ca, sa, cb, sb, cc, sc = (math.cos(a), math.sin(a), math.cos(b), math.sin(b), math.cos(c), math.sin(c))
     Rz = [[ca, -sa, 0], [sa, ca, 0], [0, 0, 1]]
     Ry = [[cb, 0, sb], [0, 1, 0], [-sb, 0, cb]]
     Rx = [[1, 0, 0], [0, cc, -sc], [0, sc, cc]]
-    mm = lambda A, B: [[sum(A[i][k] * B[k][j] for k in range(3))
-                        for j in range(3)] for i in range(3)]
+    mm = lambda A, B: [[sum(A[i][k] * B[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
     return mm(mm(Rz, Ry), Rx)
 
 
 def _apply(Q, g, P):
-    return [[sum(Q[a][b] * p[b] for b in range(3)) + g[a] for a in range(3)]
-            for p in P]
+    return [[sum(Q[a][b] * p[b] for b in range(3)) + g[a] for a in range(3)] for p in P]
 
 
 def test_egnnL_basic():
@@ -58,13 +54,11 @@ def test_egnnL_basic():
 
 
 def test_coordinate_update_is_equation_4():
-    M = [[None if i == j else phi_e(H[i], H[j], 0.0, None) for j in range(4)]
-         for i in range(4)]
+    M = [[None if i == j else phi_e(H[i], H[j], 0.0, None) for j in range(4)] for i in range(4)]
     out = coord_update(X, M, phi_x)
     C = 1.0 / 3.0
     for i in range(4):
-        want = [X[i][d] + C * sum((X[i][d] - X[j][d]) * phi_x(M[i][j])
-                                  for j in range(4) if j != i) for d in range(3)]
+        want = [X[i][d] + C * sum((X[i][d] - X[j][d]) * phi_x(M[i][j]) for j in range(4) if j != i) for d in range(3)]
         assert out[i] == pytest.approx(want, rel=1e-14)
 
 
@@ -89,8 +83,7 @@ def test_momentum_variant_is_equivariant_too():
     base = egcl(H, X, phi_e, phi_x, phi_h, V=V, mode="momentum", phi_v=phi_v)
     Q, g = _rot(0.9, 0.1, -1.4), [0.0, 5.0, -1.0]
     Vt = [[sum(Q[a][b] * v[b] for b in range(3)) for a in range(3)] for v in V]
-    moved = egcl(H, _apply(Q, g, X), phi_e, phi_x, phi_h, V=Vt,
-                 mode="momentum", phi_v=phi_v)
+    moved = egcl(H, _apply(Q, g, X), phi_e, phi_x, phi_h, V=Vt, mode="momentum", phi_v=phi_v)
     want = _apply(Q, g, base["X"])
     for i in range(4):
         assert moved["X"][i] == pytest.approx(want[i], abs=1e-10)

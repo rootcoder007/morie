@@ -57,8 +57,7 @@ def _gram(z, kernel, bandwidth):
     raise ValueError("kernel must be 'linear' or 'gaussian'")
 
 
-def kcusum(x, kernel="gaussian", threshold=None, gamma=0.1,
-           bandwidth=None, kmin=2, kmax=None):
+def kcusum(x, kernel="gaussian", threshold=None, gamma=0.1, bandwidth=None, kmin=2, kmax=None):
     """
     Kernel change-point analysis (KCpA) running-maximum scan.
 

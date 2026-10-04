@@ -1,9 +1,9 @@
 """Graph/identification checker cluster: cmark, exchg, ivcrt, frkst,
 chstr, ident, scmdf, ctcfl, potef (+ _dsep helper)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._dsep import d_separated
 from morie.fn.chstr import chain_structure
 from morie.fn.cmark import causal_markov_condition

@@ -6,15 +6,12 @@ import pytest
 
 from morie.fn.semmod import spatial_error_model
 
-
 N, NC = 20, 4
-W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0 for j in range(N)]
-     for i in range(N)]
-W = [[v / sum(r) for v in r] for r in W]          # row-standardised rook grid
+W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0 for j in range(N)] for i in range(N)]
+W = [[v / sum(r) for v in r] for r in W]  # row-standardised rook grid
 X1 = [float((i * 5) % 9) for i in range(N)]
 X2 = [math.cos(i) for i in range(N)]
-Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC)
-     for i, (a, b) in enumerate(zip(X1, X2))]
+Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC) for i, (a, b) in enumerate(zip(X1, X2))]
 X = [[a, b] for a, b in zip(X1, X2)]
 XI = [[1.0, a, b] for a, b in zip(X1, X2)]
 
@@ -34,8 +31,7 @@ def _logdet(rho):
 
 def _ols(Xm, y):
     k = len(Xm[0])
-    G = [[sum(r[a] * r[b] for r in Xm) for b in range(k)] + [sum(r[a] * v for r, v in zip(Xm, y))]
-         for a in range(k)]
+    G = [[sum(r[a] * r[b] for r in Xm) for b in range(k)] + [sum(r[a] * v for r, v in zip(Xm, y))] for a in range(k)]
     for c in range(k):
         for r in range(k):
             if r != c:
@@ -75,5 +71,3 @@ def test_semmod_edge():
     assert r["beta"] == pytest.approx(_ll_err(lam)[1], rel=1e-10)
     with pytest.raises(ValueError, match="W must be"):
         spatial_error_model(Y, X, [1.0] * N)
-
-

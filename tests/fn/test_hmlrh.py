@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmlrh import geron_learning_rate_heuristic
 
 
@@ -18,8 +16,7 @@ def test_hmlrh_basic():
     lr_curve = list(zip(lrs, losses))
     result = geron_learning_rate_heuristic(lr_curve)
     assert isinstance(result, dict)
-    for key in ("lr", "lr_diverge", "lr_min_loss", "min_loss",
-                "diverged", "estimate", "n", "method"):
+    for key in ("lr", "lr_diverge", "lr_min_loss", "min_loss", "diverged", "estimate", "n", "method"):
         assert key in result
     assert result["n"] == n
     # Loss blows up so the sweep must be flagged as diverged
@@ -27,9 +24,7 @@ def test_hmlrh_basic():
     for key in ("lr", "lr_diverge", "lr_min_loss", "min_loss"):
         assert math.isfinite(float(result[key]))
     # Per docstring: recommendation = lr_diverge / safety (safety=10 default)
-    assert math.isclose(float(result["lr"]),
-                        float(result["lr_diverge"]) / 10.0,
-                        rel_tol=1e-12, abs_tol=1e-12)
+    assert math.isclose(float(result["lr"]), float(result["lr_diverge"]) / 10.0, rel_tol=1e-12, abs_tol=1e-12)
     # Recommendation is strictly below the divergence point
     assert float(result["lr"]) < float(result["lr_diverge"])
 
@@ -43,8 +38,7 @@ def test_hmlrh_edge():
     lr_curve = {lr: loss for lr, loss in zip(lrs, losses)}
     result = geron_learning_rate_heuristic(lr_curve)
     assert isinstance(result, dict)
-    for key in ("lr", "lr_diverge", "lr_min_loss", "min_loss",
-                "diverged", "estimate", "n", "method"):
+    for key in ("lr", "lr_diverge", "lr_min_loss", "min_loss", "diverged", "estimate", "n", "method"):
         assert key in result
     assert result["n"] == n
     # No spike => no divergence
@@ -65,7 +59,7 @@ import morie.fn.hmlrh as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

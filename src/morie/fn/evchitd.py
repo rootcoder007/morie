@@ -6,7 +6,6 @@ Modeling of Extreme Values*, Springer (equation checked against the
 library PDF).
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,16 +22,17 @@ def evt_chi_tail_dependence(x, y, u=0.95):
     if n != len(ys) or n < 4:
         raise ValueError("x and y must be equal-length, n >= 4")
     from .chiDep import _ranks01
+
     rx = _ranks01(xs)
     ry = _ranks01(ys)
     nx = sum(1 for a in rx if a > u)
     if nx == 0:
         chi = 0.0
     else:
-        chi = sum(1 for a, b in zip(rx, ry)
-                  if a > u and b > u) / nx
-    res = RichResult(payload={"chi": float(chi), "u": float(u), "n": n,
-                              "method": "conditional exceedance chi (Coles 2001 p. 163)"})
+        chi = sum(1 for a, b in zip(rx, ry) if a > u and b > u) / nx
+    res = RichResult(
+        payload={"chi": float(chi), "u": float(u), "n": n, "method": "conditional exceedance chi (Coles 2001 p. 163)"}
+    )
     return with_describe_pointer(res, "evchitd")
 
 

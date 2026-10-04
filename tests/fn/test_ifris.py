@@ -1,8 +1,8 @@
 """Tests for morie.fn.ifris -- infection fatality rate."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ifris import infection_fatality_rate
 
 

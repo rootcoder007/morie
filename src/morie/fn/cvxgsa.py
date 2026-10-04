@@ -111,15 +111,17 @@ def boyd_generalized_p(x, y, K="nonneg", tol=1e-09):
         raise ValueError('K must be "nonneg", "soc" or "psd"')
     return RichResult(
         title=f"Generalized inequality ({K})",
-        summary_lines=[("cone", K), ("x <= y", prec), ("y <= x", succ),
-                       ("comparable", bool(prec or succ))],
+        summary_lines=[("cone", K), ("x <= y", prec), ("y <= x", succ), ("comparable", bool(prec or succ))],
         payload={
-            "precedes": prec, "succeeds": succ,
-            "comparable": bool(prec or succ), "strict": strict,
-            "margin": margin, "cone": K,
+            "precedes": prec,
+            "succeeds": succ,
+            "comparable": bool(prec or succ),
+            "strict": strict,
+            "margin": margin,
+            "cone": K,
             "partial_order_note": "incomparable pairs are why vector "
-                                  "problems have a Pareto frontier rather "
-                                  "than a single optimum",
+            "problems have a Pareto frontier rather "
+            "than a single optimum",
             "method": "boyd_generalized_p",
         },
     )

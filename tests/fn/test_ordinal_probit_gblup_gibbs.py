@@ -1,7 +1,6 @@
 """Tests for ordinal_probit_gblup_gibbs.ordinal_probit_gblup_gibbs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ordinal_probit_gblup_gibbs import ordinal_probit_gblup_gibbs
 
 

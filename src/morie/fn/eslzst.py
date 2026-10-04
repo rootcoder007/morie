@@ -70,6 +70,7 @@ def esl_z_score(X, y, beta):
     def _t_sf(t, k):
         """Two-sided t tail via the regularised incomplete beta (stdlib-only)."""
         import math
+
         if not np.isfinite(t):
             return 0.0
         x = k / (k + t * t)
@@ -101,13 +102,22 @@ def esl_z_score(X, y, beta):
         return front * (f - 1.0)
 
     import math
+
     p_norm = [float(math.erfc(abs(v) / math.sqrt(2.0))) if np.isfinite(v) else 0.0 for v in z]
     p_t = [float(_t_sf(v, df)) for v in z]
-    return RichResult(payload={
-        "estimate": float(z[0]), "z": [float(v) for v in z],
-        "se": [float(v) for v in se], "p_normal": p_norm, "p_t": p_t,
-        "df": int(df), "n": fit["n"], "p": fit["p"],
-        "method": "z_j = beta_j/se(beta_j); t_{n-p} and normal tails both reported"})
+    return RichResult(
+        payload={
+            "estimate": float(z[0]),
+            "z": [float(v) for v in z],
+            "se": [float(v) for v in se],
+            "p_normal": p_norm,
+            "p_t": p_t,
+            "df": int(df),
+            "n": fit["n"],
+            "p": fit["p"],
+            "method": "z_j = beta_j/se(beta_j); t_{n-p} and normal tails both reported",
+        }
+    )
 
 
 def cheatsheet():

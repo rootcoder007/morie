@@ -51,7 +51,7 @@ def _toks(x):
 
 
 def _ngrams(toks, n):
-    return [tuple(toks[i:i + n]) for i in range(len(toks) - n + 1)]
+    return [tuple(toks[i : i + n]) for i in range(len(toks) - n + 1)]
 
 
 def _counts(seq):
@@ -78,12 +78,17 @@ def rouge_n(candidate, reference, n=1, beta=1.0):
     if n < 1:
         raise ValueError("rouge_n: n must be at least 1, got %r" % (n,))
     c = _ngrams(_toks(candidate), n)
-    refs = reference if (isinstance(reference, (list, tuple))
-                         and reference and not isinstance(reference[0], str)
-                         ) else [reference]
-    if isinstance(reference, (list, tuple)) and reference and \
-            isinstance(reference[0], str) and \
-            all(" " in r or len(_toks(r)) > 1 for r in reference):
+    refs = (
+        reference
+        if (isinstance(reference, (list, tuple)) and reference and not isinstance(reference[0], str))
+        else [reference]
+    )
+    if (
+        isinstance(reference, (list, tuple))
+        and reference
+        and isinstance(reference[0], str)
+        and all(" " in r or len(_toks(r)) > 1 for r in reference)
+    ):
         refs = list(reference)
     best = None
     for ref in refs:
@@ -92,11 +97,10 @@ def rouge_n(candidate, reference, n=1, beta=1.0):
         # CLIPPED: min of the two counts, per Sec. 2.
         match = sum(min(v, rc.get(g, 0)) for g, v in cc.items())
         p, r, f = _prf(match, len(c), len(rg), beta)
-        cand = {"precision": p, "recall": r, "f1": f, "matches": match,
-                "n_candidate": len(c), "n_reference": len(rg)}
+        cand = {"precision": p, "recall": r, "f1": f, "matches": match, "n_candidate": len(c), "n_reference": len(rg)}
         if best is None or cand["f1"] > best["f1"]:
             best = cand
-    best["estimate"] = best["recall"]        # ROUGE-N is recall-oriented
+    best["estimate"] = best["recall"]  # ROUGE-N is recall-oriented
     best["n"] = n
     best["method"] = "ROUGE-N, clipped n-gram recall (Lin 2004, Sec. 2)"
     return RichResult(payload=best)
@@ -127,8 +131,7 @@ def rouge_l(candidate, reference, beta=1.0):
         rt = _toks(ref)
         l = lcs_length(c, rt)
         p, r, f = _prf(l, len(c), len(rt), beta)
-        cand = {"precision": p, "recall": r, "f1": f, "lcs": l,
-                "n_candidate": len(c), "n_reference": len(rt)}
+        cand = {"precision": p, "recall": r, "f1": f, "lcs": l, "n_candidate": len(c), "n_reference": len(rt)}
         if best is None or cand["f1"] > best["f1"]:
             best = cand
     best["estimate"] = best["f1"]
@@ -141,7 +144,7 @@ def _wlcs(a, b, alpha):
     """Weighted LCS: a run of k consecutive matches scores k^alpha."""
     m, n = len(a), len(b)
     c = [[0.0] * (n + 1) for _ in range(m + 1)]
-    w = [[0] * (n + 1) for _ in range(m + 1)]   # current run length
+    w = [[0] * (n + 1) for _ in range(m + 1)]  # current run length
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             if a[i - 1] == b[j - 1]:
@@ -149,8 +152,7 @@ def _wlcs(a, b, alpha):
                 # Extending a run of k to k+1 adds f(k+1) - f(k), so a
                 # long consecutive block is worth more than the same
                 # number of scattered matches.
-                c[i][j] = c[i - 1][j - 1] + ((k + 1.0) ** alpha
-                                             - float(k) ** alpha)
+                c[i][j] = c[i - 1][j - 1] + ((k + 1.0) ** alpha - float(k) ** alpha)
                 w[i][j] = k + 1
             else:
                 if c[i - 1][j] >= c[i][j - 1]:
@@ -165,9 +167,7 @@ def rouge_w(candidate, reference, alpha=1.2, beta=1.0):
     r"""ROUGE-W, weighted LCS favouring consecutive matches (Sec. 4)."""
     alpha = float(alpha)
     if alpha < 1.0:
-        raise ValueError(
-            "rouge_w: alpha must be at least 1 for consecutive matches to "
-            "be preferred, got %r" % (alpha,))
+        raise ValueError("rouge_w: alpha must be at least 1 for consecutive matches to be preferred, got %r" % (alpha,))
     c = _toks(candidate)
     refs = [reference] if isinstance(reference, str) else list(reference)
     best = None
@@ -183,8 +183,7 @@ def rouge_w(candidate, reference, alpha=1.2, beta=1.0):
         else:
             b2 = beta * beta
             f = (1.0 + b2) * p * r / (r + b2 * p)
-        cand = {"precision": p, "recall": r, "f1": f, "wlcs": wl,
-                "n_candidate": len(c), "n_reference": len(rt)}
+        cand = {"precision": p, "recall": r, "f1": f, "wlcs": wl, "n_candidate": len(c), "n_reference": len(rt)}
         if best is None or cand["f1"] > best["f1"]:
             best = cand
     best["estimate"] = best["f1"]
@@ -206,6 +205,8 @@ def rouge(candidate, reference, variant="L", n=1, alpha=1.2, beta=1.0):
 
 
 def cheatsheet():
-    return ("rouge: ROUGE-N clipped n-gram recall; ROUGE-L LCS F with "
-            "R=LCS/m, P=LCS/n; ROUGE-W weighted LCS f(k)=k^alpha with "
-            "f^-1 before the ratios; best over multiple references.")
+    return (
+        "rouge: ROUGE-N clipped n-gram recall; ROUGE-L LCS F with "
+        "R=LCS/m, P=LCS/n; ROUGE-W weighted LCS f(k)=k^alpha with "
+        "f^-1 before the ratios; best over multiple references."
+    )

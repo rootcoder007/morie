@@ -71,10 +71,19 @@ def hrz_partially_linear(X, Z, y, h=None, kernel_name="gaussian"):
     s2 = float(resid @ resid) / max(ok.sum() - p, 1)
     se = np.sqrt(np.diag(s2 * np.linalg.inv(A)))
     g_fit = y - X @ beta
-    return RichResult(payload={"beta": beta, "se": se, "residuals": resid,
-                               "g_fitted": g_fit, "bandwidth": h,
-                               "root_n": True, "n": int(n), "p": int(p),
-                               "method": "Robinson partialling-out; beta root-n despite slow g"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "residuals": resid,
+            "g_fitted": g_fit,
+            "bandwidth": h,
+            "root_n": True,
+            "n": int(n),
+            "p": int(p),
+            "method": "Robinson partialling-out; beta root-n despite slow g",
+        }
+    )
 
 
 def cheatsheet():

@@ -9,5 +9,6 @@ def test_b104_basic():
 
 def test_b104_edge():
     import pytest
+
     with pytest.raises(ValueError, match="same length"):
         burkov_lm_ch1_linear_vector([1.0], [1.0, 2.0], 0.0)

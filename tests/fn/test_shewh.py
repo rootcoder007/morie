@@ -58,10 +58,8 @@ def test_limits_and_boundary():
 
 def test_tighter_limits_flag_at_least_as_much():
     x = IC + OC
-    assert (shewhart(x, 0.0, 1.0, 2.0)["n_alerts"]
-            >= shewhart(x, 0.0, 1.0, 3.0)["n_alerts"])
-    assert (shewhart(x, 0.0, 1.0, 2.0)["false_alarm_prob"]
-            > shewhart(x, 0.0, 1.0, 3.0)["false_alarm_prob"])
+    assert shewhart(x, 0.0, 1.0, 2.0)["n_alerts"] >= shewhart(x, 0.0, 1.0, 3.0)["n_alerts"]
+    assert shewhart(x, 0.0, 1.0, 2.0)["false_alarm_prob"] > shewhart(x, 0.0, 1.0, 3.0)["false_alarm_prob"]
 
 
 def test_error_paths():

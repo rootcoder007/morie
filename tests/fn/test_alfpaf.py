@@ -1,8 +1,6 @@
 """Tests for alfpaf.alphafold_pair_repr."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.alfpaf import alphafold_pair_repr
 
 
@@ -53,10 +51,7 @@ def test_alfpaf_edge():
     assert "z" in result.keys()
     assert "o" in result.keys()
     # o[i][j] should be mean over s of m[si][i][0] * m[si][j][0]
-    expected_o = [[
-        sum(m[si][i][0] * m[si][j][0] for si in range(s)) / s
-        for j in range(n)
-    ] for i in range(n)]
+    expected_o = [[sum(m[si][i][0] * m[si][j][0] for si in range(s)) / s for j in range(n)] for i in range(n)]
     for i in range(n):
         for j in range(n):
             assert abs(result["o"][i][j][0] - expected_o[i][j]) < 1e-9

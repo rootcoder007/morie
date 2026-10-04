@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def infinite_total(zbar_hat, area, sample_area):
     """
     value = _brus.infinite_total(zbar_hat, area, sample_area)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (3.18)"
     return RichResult(
-        title='Total of an infinite population t_hat = (A/a) zbar_hat',
+        title="Total of an infinite population t_hat = (A/a) zbar_hat",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r3e18: t_hat(z) = (A/a) zbar_hat [Brus 2022, eq. 3.18]'
+    return "r3e18: t_hat(z) = (A/a) zbar_hat [Brus 2022, eq. 3.18]"
 
 
 # compact alias per ledger/NAMING.md

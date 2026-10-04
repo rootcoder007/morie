@@ -1,7 +1,6 @@
 """Tests for causrddh.causal_rdd_imbens_kalyanaraman."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causrddh import causal_rdd_imbens_kalyanaraman
 
 

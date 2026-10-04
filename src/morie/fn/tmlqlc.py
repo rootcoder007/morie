@@ -100,13 +100,21 @@ def tmle_qlearning(state, action, reward, time):
     ic = [ic[k] + V[k] - psi for k in range(m)]
     mu = sum(ic) / m
     se = math.sqrt(sum((v - mu) ** 2 for v in ic) / (m - 1) / m) if m > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n_stages": float(T), "n_subj": float(m), "n": n,
-        "method": "Backward-targeted Q-learning for a multi-stage regime"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n_stages": float(T),
+            "n_subj": float(m),
+            "n": n,
+            "method": "Backward-targeted Q-learning for a multi-stage regime",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlqlc: stagewise-targeted Q-learning for a dynamic regime."
+
 
 # public names resolved by fn/_lazy_map.json
 tmleqlearning = tmle_qlearning

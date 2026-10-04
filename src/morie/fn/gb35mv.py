@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['rvnmom', 'gibbons_rvn_moments']
+__all__ = ["rvnmom", "gibbons_rvn_moments"]
 
 
 def rvnmom(n):
@@ -37,10 +37,7 @@ def rvnmom(n):
     n = int(n)
     if n < 3:
         raise ValueError("n must be at least 3.")
-    var = (
-        4.0 * (n - 2.0) * (5.0 * n * n - 2.0 * n - 9.0)
-        / (5.0 * n * (n + 1.0) * (n - 1.0) ** 2)
-    )
+    var = 4.0 * (n - 2.0) * (5.0 * n * n - 2.0 * n - 9.0) / (5.0 * n * (n + 1.0) * (n - 1.0) ** 2)
     return RichResult(
         payload={
             "mean": 2.0,

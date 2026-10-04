@@ -1,7 +1,6 @@
 """Tests for kmalbi.kamath_alibi_bias."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmalbi import kamath_alibi_bias
 
 

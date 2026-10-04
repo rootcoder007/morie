@@ -1,8 +1,6 @@
 """Tests for f_nested_r2.f_nested_r2."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.f_nested_r2 import f_nested_r2
 
 
@@ -16,8 +14,7 @@ def test_ca2e19_basic():
     k_restricted = 3
     n = 100
 
-    expected_f = ((r2_full - r2_restricted) / (k_full - k_restricted)) \
-        / ((1 - r2_full) / (n - k_full - 1))
+    expected_f = ((r2_full - r2_restricted) / (k_full - k_restricted)) / ((1 - r2_full) / (n - k_full - 1))
 
     result = f_nested_r2(r2_full, r2_restricted, k_full, k_restricted, n)
 
@@ -37,8 +34,7 @@ def test_ca2e19_edge():
     k_restricted = 2
     n = 50
 
-    expected_f = ((r2_full - r2_restricted) / (k_full - k_restricted)) \
-        / ((1 - r2_full) / (n - k_full - 1))
+    expected_f = ((r2_full - r2_restricted) / (k_full - k_restricted)) / ((1 - r2_full) / (n - k_full - 1))
 
     result = f_nested_r2(r2_full, r2_restricted, k_full, k_restricted, n)
 

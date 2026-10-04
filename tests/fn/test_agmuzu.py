@@ -1,7 +1,6 @@
 """Tests for agmuzu.muzero_world_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agmuzu import muzero_world_model
 
 

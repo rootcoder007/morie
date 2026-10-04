@@ -1,7 +1,6 @@
 """Tests for alfsdc.alphafold_sidechain."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfsdc import alphafold_sidechain
 
 
@@ -58,6 +57,7 @@ def test_alfsdc_basic():
     #   tf = Rb Rl  then  * rotx(theta),  translation  Rb (Rl x_t + tl) + tb
     # Atom: tf applied to litx = [1.5, 0, 0].
     import math
+
     theta = math.atan2(sin_a, cos_a)
     cx, sx = math.cos(theta), math.sin(theta)
 

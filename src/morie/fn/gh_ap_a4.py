@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,13 +22,14 @@ def ghosal_hellinger_dist(p, q):
     h2 = 1.0 - rho
     tv = 0.5 * sum(abs(a - b) for a, b in zip(p, q))
     h = math.sqrt(max(h2, 0.0))
-    res = RichResult(payload={"estimate": h2,
-                              "affinity": rho,
-                              "inequalities_hold":
-                                  h2 <= tv + 1e-12 and
-                                  tv <= h * math.sqrt(2.0 - h2)
-                                  + 1e-12,
-                              "method": "Hellinger distance (GvdV 2017 App B)"})
+    res = RichResult(
+        payload={
+            "estimate": h2,
+            "affinity": rho,
+            "inequalities_hold": h2 <= tv + 1e-12 and tv <= h * math.sqrt(2.0 - h2) + 1e-12,
+            "method": "Hellinger distance (GvdV 2017 App B)",
+        }
+    )
     return with_describe_pointer(res, "gh_ap_a4")
 
 

@@ -1,7 +1,6 @@
 """Tests for gpdsh.gp_density_shift."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpdsh import gp_density_shift
 
 

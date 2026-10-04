@@ -61,10 +61,16 @@ def wasserman_cramer_rao(theta, n, I):
     if I <= 0:
         raise ValueError(f"the Cramer-Rao bound needs I(theta) > 0; got {I}.")
     bound = 1.0 / (n * I)
-    return RichResult(payload={
-        "estimate": float(bound), "se_bound": float(bound ** 0.5),
-        "theta": theta, "n": n, "information": I,
-        "method": "Cramer-Rao Var(T) >= 1/(n I(theta))"})
+    return RichResult(
+        payload={
+            "estimate": float(bound),
+            "se_bound": float(bound**0.5),
+            "theta": theta,
+            "n": n,
+            "information": I,
+            "method": "Cramer-Rao Var(T) >= 1/(n I(theta))",
+        }
+    )
 
 
 def cheatsheet():

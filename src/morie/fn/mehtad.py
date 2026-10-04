@@ -72,12 +72,10 @@ primal-dual framework and the residual formulation.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["residuals", "max_step", "centering_parameter",
-           "newton_direction", "solve_lp"]
+__all__ = ["residuals", "max_step", "centering_parameter", "newton_direction", "solve_lp"]
 
 _EPS = 1e-12
 
@@ -95,16 +93,17 @@ def residuals(A, b, c, x, y, s):
     sv = [float(v) for v in k.vec(s)]
     bv = [float(v) for v in k.vec(b)]
     cv = [float(v) for v in k.vec(c)]
-    rp = [sum(M[i][j] * xv[j] for j in range(n)) - bv[i]
-          for i in range(m)]
-    rd = [sum(M[i][j] * yv[i] for i in range(m)) + sv[j] - cv[j]
-          for j in range(n)]
+    rp = [sum(M[i][j] * xv[j] for j in range(n)) - bv[i] for i in range(m)]
+    rd = [sum(M[i][j] * yv[i] for i in range(m)) + sv[j] - cv[j] for j in range(n)]
     mu = sum(xv[j] * sv[j] for j in range(n)) / n
-    return {"primal": rp, "dual": rd, "mu": mu,
-            "primal_norm": math.sqrt(sum(v * v for v in rp)),
-            "dual_norm": math.sqrt(sum(v * v for v in rd)),
-            "note": "an infeasible start is allowed; the residuals "
-                    "are driven to zero alongside mu"}
+    return {
+        "primal": rp,
+        "dual": rd,
+        "mu": mu,
+        "primal_norm": math.sqrt(sum(v * v for v in rp)),
+        "dual_norm": math.sqrt(sum(v * v for v in rd)),
+        "note": "an infeasible start is allowed; the residuals are driven to zero alongside mu",
+    }
 
 
 def max_step(v, dv, eta=0.9995):
@@ -128,21 +127,21 @@ def centering_parameter(mu, mu_affine, nu=3.0):
     if ma < 0.0:
         raise ValueError("mehtad: the affine mu cannot be negative")
     if not 1.0 <= float(nu) <= 6.0:
-        raise ValueError("mehtad: nu outside the range the paper "
-                         "examined; it tabulates 2 to 4")
+        raise ValueError("mehtad: nu outside the range the paper examined; it tabulates 2 to 4")
     ratio = ma / m
-    return {"sigma": ratio ** float(nu), "ratio": ratio,
-            "nu": float(nu),
-            "approximation": "poor" if ratio > 0.5 else "good",
-            "note": "ratio near 1 means the affine trajectory is "
-                    "badly approximated locally, so centre more"}
+    return {
+        "sigma": ratio ** float(nu),
+        "ratio": ratio,
+        "nu": float(nu),
+        "approximation": "poor" if ratio > 0.5 else "good",
+        "note": "ratio near 1 means the affine trajectory is badly approximated locally, so centre more",
+    }
 
 
 def _solve_normal(A, d, rhs, ridge=1e-11):
     M = [[float(v) for v in r] for r in k.mat(A)]
     m, n = len(M), len(M[0])
-    N = [[sum(M[i][t] * d[t] * M[j][t] for t in range(n))
-          for j in range(m)] for i in range(m)]
+    N = [[sum(M[i][t] * d[t] * M[j][t] for t in range(n)) for j in range(m)] for i in range(m)]
     for i in range(m):
         N[i][i] += ridge
     return k.cholsolve(N, [float(v) for v in rhs])
@@ -157,25 +156,20 @@ def newton_direction(A, x, s, rp, rd, rc):
     M = [[float(v) for v in r] for r in k.mat(A)]
     m, n = len(M), len(M[0])
     d = [float(x[j]) / float(s[j]) for j in range(n)]
-    t = [(-float(rc[j]) / float(s[j])) + d[j] * float(rd[j])
-         for j in range(n)]
-    rhs = [-float(rp[i]) - sum(M[i][j] * t[j] for j in range(n))
-           for i in range(m)]
+    t = [(-float(rc[j]) / float(s[j])) + d[j] * float(rd[j]) for j in range(n)]
+    rhs = [-float(rp[i]) - sum(M[i][j] * t[j] for j in range(n)) for i in range(m)]
     dy = _solve_normal(M, d, rhs)
     # ds = -(rd + A' dy): both terms are subtracted. Getting the
     # sign of the A' dy term wrong still produces a direction, and
     # the iterate then wanders until the normal matrix goes singular
     # -- a failure that surfaces several iterations away from its
     # cause.
-    ds = [-(float(rd[j]) + sum(M[i][j] * dy[i] for i in range(m)))
-          for j in range(n)]
-    dx = [(-float(rc[j]) - float(x[j]) * ds[j]) / float(s[j])
-          for j in range(n)]
+    ds = [-(float(rd[j]) + sum(M[i][j] * dy[i] for i in range(m))) for j in range(n)]
+    dx = [(-float(rc[j]) - float(x[j]) * ds[j]) / float(s[j]) for j in range(n)]
     return {"dx": dx, "dy": dy, "ds": ds}
 
 
-def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995,
-             corrector=True):
+def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995, corrector=True):
     r"""Standard-form LP by the predictor-corrector method.
 
     ``corrector=False`` runs the plain affine-scaling-with-centring
@@ -187,8 +181,7 @@ def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995,
     bv = [float(v) for v in k.vec(b)]
     cv = [float(v) for v in k.vec(c)]
     if len(bv) != m or len(cv) != n:
-        raise ValueError("mehtad: A is %dx%d but b has %d and c has "
-                         "%d" % (m, n, len(bv), len(cv)))
+        raise ValueError("mehtad: A is %dx%d but b has %d and c has %d" % (m, n, len(bv), len(cv)))
     x = [1.0] * n
     s = [1.0] * n
     y = [0.0] * m
@@ -197,20 +190,16 @@ def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995,
         r = residuals(M, bv, cv, x, y, s)
         mu = r["mu"]
         gap = mu
-        if (mu < float(tol) and r["primal_norm"] < float(tol)
-                and r["dual_norm"] < float(tol)):
+        if mu < float(tol) and r["primal_norm"] < float(tol) and r["dual_norm"] < float(tol):
             break
         rc = [x[j] * s[j] for j in range(n)]
         aff = newton_direction(M, x, s, r["primal"], r["dual"], rc)
         ap = max_step(x, aff["dx"], eta)
         ad = max_step(s, aff["ds"], eta)
-        mu_aff = sum((x[j] + ap * aff["dx"][j])
-                     * (s[j] + ad * aff["ds"][j])
-                     for j in range(n)) / n
+        mu_aff = sum((x[j] + ap * aff["dx"][j]) * (s[j] + ad * aff["ds"][j]) for j in range(n)) / n
         sig = centering_parameter(mu, mu_aff, nu)["sigma"]
         if corrector:
-            rc2 = [x[j] * s[j] + aff["dx"][j] * aff["ds"][j]
-                   - sig * mu for j in range(n)]
+            rc2 = [x[j] * s[j] + aff["dx"][j] * aff["ds"][j] - sig * mu for j in range(n)]
         else:
             rc2 = [x[j] * s[j] - sig * mu for j in range(n)]
         d = newton_direction(M, x, s, r["primal"], r["dual"], rc2)
@@ -220,40 +209,48 @@ def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995,
         s = [s[j] + ad * d["ds"][j] for j in range(n)]
         y = [y[i] + ad * d["dy"][i] for i in range(m)]
         if min(min(x), min(s)) <= 0.0:
-            raise ValueError("mehtad: an iterate left the positive "
-                             "orthant, which the fraction-to-"
-                             "boundary rule exists to prevent")
+            raise ValueError(
+                "mehtad: an iterate left the positive orthant, which the fraction-to-boundary rule exists to prevent"
+            )
     rf = residuals(M, bv, cv, x, y, s)
-    return RichResult(payload={
-        "estimate": x, "x": x, "y": y, "s": s, "mu": rf["mu"],
-        "objective": sum(cv[j] * x[j] for j in range(n)),
-        "dual_objective": sum(bv[i] * y[i] for i in range(m)),
-        "iterations": it, "corrector": bool(corrector),
-        "primal_residual": rf["primal_norm"],
-        "dual_residual": rf["dual_norm"],
-        "converged": (rf["mu"] < float(tol)
-                      and rf["primal_norm"] < float(tol)),
-        "method": "Mehrotra predictor-corrector; Mehrotra (1992)",
-        "note": "the corrector reuses the predictor's factorisation, "
-                "so the second-order term costs a right-hand side "
-                "rather than an iteration",
-    })
+    return RichResult(
+        payload={
+            "estimate": x,
+            "x": x,
+            "y": y,
+            "s": s,
+            "mu": rf["mu"],
+            "objective": sum(cv[j] * x[j] for j in range(n)),
+            "dual_objective": sum(bv[i] * y[i] for i in range(m)),
+            "iterations": it,
+            "corrector": bool(corrector),
+            "primal_residual": rf["primal_norm"],
+            "dual_residual": rf["dual_norm"],
+            "converged": (rf["mu"] < float(tol) and rf["primal_norm"] < float(tol)),
+            "method": "Mehrotra predictor-corrector; Mehrotra (1992)",
+            "note": "the corrector reuses the predictor's factorisation, "
+            "so the second-order term costs a right-hand side "
+            "rather than an iteration",
+        }
+    )
 
 
 def cheatsheet():
-    return ("mehtad: the expensive part of an interior-point iteration "
-            "is ONE factorisation of A D A'; a second right-hand side "
-            "is nearly free, so spend it on information. PREDICTOR: "
-            "the pure Newton (affine) step, too aggressive to take "
-            "whole but exactly the diagnostic needed. CENTERING: "
-            "sigma = (mu_aff/mu)^nu -- a good affine step asks for "
-            "little centring, a bad one for a lot; the ratio says how "
-            "well the trajectory is locally approximated, and nu in "
-            "[2,4] barely matters. CORRECTOR: subtract the "
-            "second-order cross term dX_aff dS_aff e together with the "
-            "centring target. FRACTION-TO-BOUNDARY keeps x, s strictly "
-            "positive. About 40% fewer iterations, mostly from the "
-            "second derivative.")
+    return (
+        "mehtad: the expensive part of an interior-point iteration "
+        "is ONE factorisation of A D A'; a second right-hand side "
+        "is nearly free, so spend it on information. PREDICTOR: "
+        "the pure Newton (affine) step, too aggressive to take "
+        "whole but exactly the diagnostic needed. CENTERING: "
+        "sigma = (mu_aff/mu)^nu -- a good affine step asks for "
+        "little centring, a bad one for a lot; the ratio says how "
+        "well the trajectory is locally approximated, and nu in "
+        "[2,4] barely matters. CORRECTOR: subtract the "
+        "second-order cross term dX_aff dS_aff e together with the "
+        "centring target. FRACTION-TO-BOUNDARY keeps x, s strictly "
+        "positive. About 40% fewer iterations, mostly from the "
+        "second derivative."
+    )
 
 
 # compact alias per ledger/NAMING.md

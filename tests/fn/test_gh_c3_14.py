@@ -1,7 +1,6 @@
 """Tests for gh_c3_14.ghosal_mpt_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_14 import ghosal_mpt_prior
 
 
@@ -38,5 +37,6 @@ def test_gh_c3_14_edge():
     """Test edge cases."""
     # The docstring requires at least 4 observations; 1 must raise.
     import pytest
+
     with pytest.raises(ValueError):
         ghosal_mpt_prior(np.array([42.0]))

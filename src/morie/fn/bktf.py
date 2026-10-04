@@ -25,10 +25,16 @@ def burkov_term_frequency(term, document, normalise=False):
         raise ValueError("the document is empty.")
     c = doc.count(str(term))
     est = c / len(doc) if normalise else float(c)
-    return RichResult(payload={
-        "estimate": float(est), "count": c, "doc_length": len(doc),
-        "normalised": bool(normalise), "n": len(doc),
-        "method": "Term frequency (Burkov Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": float(est),
+            "count": c,
+            "doc_length": len(doc),
+            "normalised": bool(normalise),
+            "n": len(doc),
+            "method": "Term frequency (Burkov Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

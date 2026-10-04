@@ -34,13 +34,17 @@ def alammar_sbert_triplet_loss(anchor, positive, negative, margin=1.0):
     dp = np.linalg.norm(A - P, axis=1)
     dn = np.linalg.norm(A - N, axis=1)
     losses = np.maximum(0.0, dp - dn + m)
-    return RichResult(payload={
-        "estimate": float(losses.mean()),
-        "losses": [float(v) for v in losses],
-        "active": [bool(v > 0) for v in losses],
-        "d_positive": [float(v) for v in dp],
-        "d_negative": [float(v) for v in dn], "n": A.shape[0],
-        "method": "Triplet loss (Schroff et al. 2015)"})
+    return RichResult(
+        payload={
+            "estimate": float(losses.mean()),
+            "losses": [float(v) for v in losses],
+            "active": [bool(v > 0) for v in losses],
+            "d_positive": [float(v) for v in dp],
+            "d_negative": [float(v) for v in dn],
+            "n": A.shape[0],
+            "method": "Triplet loss (Schroff et al. 2015)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for gh_c11_4.ghosal_gp_dens_crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_4 import ghosal_gp_dens_crt
 
 
@@ -21,5 +20,6 @@ def test_gh_c11_4_basic():
 def test_gh_c11_4_edge():
     """Test edge cases."""
     import pytest
+
     with pytest.raises(ValueError):
         ghosal_gp_dens_crt(np.array([42.0]))

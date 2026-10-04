@@ -3,11 +3,17 @@
 import math
 
 from morie.fn import _array_core as np
-
-from morie.fn.pate import (epsilon_data_independent, lemma4_bound,
-                           moments_accountant, noisy_argmax, pate,
-                           pate_aggregate, private_aggregation,
-                           teacher_votes, theorem3_moment)
+from morie.fn.pate import (
+    epsilon_data_independent,
+    lemma4_bound,
+    moments_accountant,
+    noisy_argmax,
+    pate,
+    pate_aggregate,
+    private_aggregation,
+    teacher_votes,
+    theorem3_moment,
+)
 
 
 def test_printed_epsilon_values():
@@ -18,8 +24,7 @@ def test_printed_epsilon_values():
 
 def test_epsilon_formula():
     for T, g, d in ((1000, 0.05, 1e-6), (37, 0.2, 1e-3)):
-        want = 4.0 * T * g ** 2 + 2.0 * g * math.sqrt(2.0 * T *
-                                                      math.log(1.0 / d))
+        want = 4.0 * T * g**2 + 2.0 * g * math.sqrt(2.0 * T * math.log(1.0 / d))
         assert abs(epsilon_data_independent(T, g, d) - want) < 1e-12
     assert epsilon_data_independent(0, 0.05, 1e-5) == 0.0
 
@@ -29,8 +34,7 @@ def test_lemma4_bounds_the_miss_probability():
     for counts, gamma in (([100, 2, 1], 0.05), ([30, 28, 25], 0.2)):
         js = max(range(len(counts)), key=lambda t: counts[t])
         n = 2000
-        miss = sum(1 for _ in range(n)
-                   if noisy_argmax(counts, gamma, rng) != js)
+        miss = sum(1 for _ in range(n) if noisy_argmax(counts, gamma, rng) != js)
         assert miss / float(n) <= lemma4_bound(counts, gamma)[0] + 0.03
 
 
@@ -47,8 +51,7 @@ def test_theorem3_condition_and_formula():
     limit = (math.exp(2 * gamma) - 1) / (math.exp(4 * gamma) - 1)
     assert theorem3_moment(limit, gamma, 3) is None
     q, l = 0.01, 4
-    want = math.log((1 - q) * ((1 - q) / (1 - math.exp(2 * gamma) * q)) ** l
-                    + q * math.exp(2 * gamma * l))
+    want = math.log((1 - q) * ((1 - q) / (1 - math.exp(2 * gamma) * q)) ** l + q * math.exp(2 * gamma * l))
     assert abs(theorem3_moment(q, gamma, l) - want) < 1e-12
     assert theorem3_moment(0.0, gamma, 5) == 0.0
 
@@ -59,10 +62,8 @@ def test_accountant_composes_and_inverts_the_tail_bound():
     for l in one["alpha"]:
         assert abs(ten["alpha"][l] - 10.0 * one["alpha"][l]) < 1e-12
     lam = ten["lambda"]
-    assert abs(ten["epsilon"] -
-               (ten["alpha"][lam] + math.log(1e5)) / lam) < 1e-12
-    assert abs(math.exp(ten["alpha"][lam] - lam * ten["epsilon"]) -
-               1e-5) < 1e-12
+    assert abs(ten["epsilon"] - (ten["alpha"][lam] + math.log(1e5)) / lam) < 1e-12
+    assert abs(math.exp(ten["alpha"][lam] - lam * ten["epsilon"]) - 1e-5) < 1e-12
 
 
 def test_strong_quorum_is_cheaper_than_a_split_vote():
@@ -81,7 +82,9 @@ def _teachers(n=25, flip=1):
                 true = 1 if sum(x) >= 2 else 0
                 out.append(1 - true if (i * 7 + bias) % 10 < flip else true)
             return out
+
         return predict
+
     return [make(b) for b in range(n)]
 
 
@@ -99,13 +102,14 @@ def test_end_to_end():
 
 def test_validation():
     rows = [[1, 0, 1]]
-    for call in (lambda: noisy_argmax([1, 2], 0.0),
-                 lambda: epsilon_data_independent(10, 0.05, 1.0),
-                 lambda: teacher_votes([], rows),
-                 lambda: pate(_teachers(), []),
-                 lambda: lemma4_bound([], 0.1),
-                 lambda: moments_accountant([[5, 1]], 0.05, 1e-5,
-                                            lambdas=[0])):
+    for call in (
+        lambda: noisy_argmax([1, 2], 0.0),
+        lambda: epsilon_data_independent(10, 0.05, 1.0),
+        lambda: teacher_votes([], rows),
+        lambda: pate(_teachers(), []),
+        lambda: lemma4_bound([], 0.1),
+        lambda: moments_accountant([[5, 1]], 0.05, 1e-5, lambdas=[0]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

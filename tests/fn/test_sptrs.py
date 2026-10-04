@@ -6,9 +6,8 @@ correctly, so the two must agree exactly.
 """
 
 from morie.fn import _array_core as np
-
-from morie.fn.sptrs import schabenberger_trend_surface
 from morie.fn.sptrn import spatial_trend_surface
+from morie.fn.sptrs import schabenberger_trend_surface
 
 
 def _same(a, b):
@@ -30,8 +29,7 @@ def _same(a, b):
         a_arr, b_arr = np.asarray(a, dtype=object), np.asarray(b, dtype=object)
         if a_arr.shape != b_arr.shape:
             return False
-        return bool(np.all([_same(x, y) for x, y in
-                            zip(a_arr.ravel(), b_arr.ravel())])) if a_arr.size else True
+        return bool(np.all([_same(x, y) for x, y in zip(a_arr.ravel(), b_arr.ravel())])) if a_arr.size else True
     if isinstance(a, float) and isinstance(b, float):
         return (np.isnan(a) and np.isnan(b)) or a == b
     return a == b

@@ -81,12 +81,12 @@ def gibbons_concordance_preference(rankings):
     Rk = np.vstack([_rank(row) for row in R])
 
     sums = Rk.sum(axis=0)
-    pref = _rank(sums)                       # small rank total = preferred
+    pref = _rank(sums)  # small rank total = preferred
     order = np.argsort(sums, kind="mergesort")
 
     mu = k * (n + 1) / 2.0
     S = float(np.sum((sums - mu) ** 2))
-    denom = k ** 2 * (n ** 3 - n) / 12.0
+    denom = k**2 * (n**3 - n) / 12.0
     W = S / denom if denom > 0 else np.nan
 
     rho_pairs = []
@@ -112,10 +112,7 @@ def gibbons_concordance_preference(rankings):
                 "rankings; no other ordering does better"
             ),
             "expected_W_under_independence": 1.0 / k,
-            "W_note": (
-                "under independence E[W] = 1/k, not 0, so a small positive W "
-                "is what disagreement looks like"
-            ),
+            "W_note": ("under independence E[W] = 1/k, not 0, so a small positive W is what disagreement looks like"),
             "k": int(k),
             "n": int(n),
             "method": "Estimated true preferential ordering from k rankings",

@@ -52,6 +52,7 @@ def bertscore(reference, candidate, idf=None):
     arXiv source.
     """
     import math
+
     X = C.mat(reference)
     Y = C.mat(candidate)
     k, d = len(X), len(X[0])
@@ -67,8 +68,7 @@ def bertscore(reference, candidate, idf=None):
 
     Xn = [unit(r) for r in X]
     Yn = [unit(r) for r in Y]
-    Sim = [[sum(Xn[i][t] * Yn[j][t] for t in range(d)) for j in range(l)]
-           for i in range(k)]
+    Sim = [[sum(Xn[i][t] * Yn[j][t] for t in range(d)) for j in range(l)] for i in range(k)]
     rm = [max(Sim[i]) for i in range(k)]
     pm = [max(Sim[i][j] for i in range(k)) for j in range(l)]
     if idf is None:
@@ -82,10 +82,19 @@ def bertscore(reference, candidate, idf=None):
     R = sum(w[i] * rm[i] for i in range(k)) / sum(w)
     P = sum(pm) / l
     Fv = 0.0 if P + R == 0.0 else 2.0 * P * R / (P + R)
-    return RichResult(payload={
-        "P": P, "R": R, "F": Fv, "recallmatch": rm, "precmatch": pm,
-        "k": k, "l": l, "d": d,
-        "method": "BERTScore greedy cosine matching (Zhang et al. 2020)"})
+    return RichResult(
+        payload={
+            "P": P,
+            "R": R,
+            "F": Fv,
+            "recallmatch": rm,
+            "precmatch": pm,
+            "k": k,
+            "l": l,
+            "d": d,
+            "method": "BERTScore greedy cosine matching (Zhang et al. 2020)",
+        }
+    )
 
 
 def cheatsheet():

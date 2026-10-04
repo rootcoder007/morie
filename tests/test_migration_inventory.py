@@ -18,9 +18,9 @@ def test_all_mapped_modules_exist_in_specs():
     from morie.modules import MODULE_SPECS
 
     for script, module_name in LEGACY_TO_MODULE.items():
-        assert (
-            module_name in MODULE_SPECS
-        ), f"Legacy script '{script}' maps to module '{module_name}' which is not in MODULE_SPECS"
+        assert module_name in MODULE_SPECS, (
+            f"Legacy script '{script}' maps to module '{module_name}' which is not in MODULE_SPECS"
+        )
 
 
 def test_all_21_modules_mapped():

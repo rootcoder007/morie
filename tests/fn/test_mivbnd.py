@@ -1,8 +1,8 @@
 """Tests for mivbnd.monotone_iv_bounds."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mivbnd import monotone_iv_bounds
 
 

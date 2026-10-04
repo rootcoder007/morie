@@ -93,8 +93,7 @@ def geron_lr_exponential_schedule(eta0, gamma, t):
 
     return RichResult(
         title="Exponential LR schedule",
-        summary_lines=[("eta(t)", float(curve[t])), ("gamma", gamma),
-                       ("Half-life (steps)", half)],
+        summary_lines=[("eta(t)", float(curve[t])), ("gamma", gamma), ("Half-life (steps)", half)],
         payload={
             "eta": float(curve[t]),
             "schedule": curve.tolist(),

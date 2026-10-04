@@ -4,7 +4,14 @@ from morie.fn.comgir import girvan_newman
 
 
 def test_comgir_splits_at_the_bridge():
-    A = [[0, 1, 1, 0, 0, 0], [1, 0, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 1], [0, 0, 0, 1, 0, 1], [0, 0, 0, 1, 1, 0]]
+    A = [
+        [0, 1, 1, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0],
+        [1, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 1],
+        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 1, 0],
+    ]
     r = girvan_newman(A)
     assert r["removed"][0] == (2, 3)
     assert r["labels"] == [0, 0, 0, 1, 1, 1]

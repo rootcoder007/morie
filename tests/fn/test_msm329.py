@@ -6,8 +6,6 @@ Springer, ch 15, eq. 15.4 p.498, the thresholded prediction. Expected values are
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm329 import mvsml_functional_regression_eq_15_4

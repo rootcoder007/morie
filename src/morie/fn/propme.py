@@ -81,14 +81,10 @@ def propme(a, b, c_prime, se_a=None, se_b=None, se_c_prime=None):
         sa2 = float(se_a) ** 2
         sb2 = float(se_b) ** 2
         sc2 = float(se_c_prime) ** 2
-        var_pm = (b * b * c_prime * c_prime * sa2
-                  + a * a * c_prime * c_prime * sb2
-                  + a * a * b * b * sc2) / total ** 4
+        var_pm = (b * b * c_prime * c_prime * sa2 + a * a * c_prime * c_prime * sb2 + a * a * b * b * sc2) / total**4
         payload["se"] = float(np.sqrt(var_pm))
         if c_prime != 0.0:
-            var_r = ((b * b / c_prime ** 2) * sa2
-                     + (a * a / c_prime ** 2) * sb2
-                     + (a * a * b * b / c_prime ** 4) * sc2)
+            var_r = (b * b / c_prime**2) * sa2 + (a * a / c_prime**2) * sb2 + (a * a * b * b / c_prime**4) * sc2
             payload["se_ratio"] = float(np.sqrt(var_r))
         else:
             payload["se_ratio"] = np.nan

@@ -71,8 +71,7 @@ def boyd_newton_decrement(grad, hess):
         raise ValueError("hess is singular; the Newton decrement is undefined") from exc
     if quad < 0:
         raise ValueError(
-            "grad' H^-1 grad is negative, so hess is not positive definite and "
-            "the decrement is not defined"
+            "grad' H^-1 grad is negative, so hess is not positive definite and the decrement is not defined"
         )
     lam = float(np.sqrt(quad))
     return RichResult(

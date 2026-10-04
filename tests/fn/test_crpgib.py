@@ -1,7 +1,6 @@
 """Tests for crpgib.crp_gibbs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crpgib import crp_gibbs
 
 

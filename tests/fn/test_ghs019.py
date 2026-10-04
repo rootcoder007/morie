@@ -1,7 +1,6 @@
 """Tests for ghs019.ghosal_ch3_tree_set_probability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs019 import ghosal_ch3_tree_set_probability
 
 

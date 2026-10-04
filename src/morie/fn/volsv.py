@@ -20,19 +20,19 @@ def _kalman_qll(y, mu, phi, sig2):
     if not (-0.999999 < phi < 0.999999) or sig2 <= 0.0:
         return -1e300
     a = 0.0
-    p = sig2 / (1.0 - phi * phi)      # stationary prior on h*
+    p = sig2 / (1.0 - phi * phi)  # stationary prior on h*
     c = mu + _LOGCHI2_MEAN
     ll = 0.0
     for t in range(n):
-        v = y[t] - c - a              # innovation
-        f = p + _LOGCHI2_VAR          # innovation variance
+        v = y[t] - c - a  # innovation
+        f = p + _LOGCHI2_VAR  # innovation variance
         if f <= 0.0:
             return -1e300
         ll += -0.5 * (np.log(2.0 * 3.141592653589793 * f) + v * v / f)
         k = p / f
         a = a + k * v
         p = p - k * p
-        a = phi * a                   # transition
+        a = phi * a  # transition
         p = phi * phi * p + sig2
     return ll
 
@@ -143,7 +143,7 @@ def vol_sv_quasi_lik(r, init=None, sweeps=25, offset=1e-8):
         s2 = 0.0
         for v in y:
             s2 += (v - ybar) ** 2
-        s2 /= (n - 1)
+        s2 /= n - 1
         vh = s2 - _LOGCHI2_VAR
         if vh <= 0.0:
             vh = 0.05
@@ -163,12 +163,9 @@ def vol_sv_quasi_lik(r, init=None, sweeps=25, offset=1e-8):
     if sweeps < 1:
         raise ValueError("sweeps must be at least 1")
     for _s in range(sweeps):
-        mu = _golden(lambda v: _kalman_qll(y, v, phi, np.exp(2.0 * lsig)),
-                     mu - 5.0, mu + 5.0)
-        phi = _golden(lambda v: _kalman_qll(y, mu, v, np.exp(2.0 * lsig)),
-                      -0.999, 0.999)
-        lsig = _golden(lambda v: _kalman_qll(y, mu, phi, np.exp(2.0 * v)),
-                       lsig - 3.0, lsig + 3.0)
+        mu = _golden(lambda v: _kalman_qll(y, v, phi, np.exp(2.0 * lsig)), mu - 5.0, mu + 5.0)
+        phi = _golden(lambda v: _kalman_qll(y, mu, v, np.exp(2.0 * lsig)), -0.999, 0.999)
+        lsig = _golden(lambda v: _kalman_qll(y, mu, phi, np.exp(2.0 * v)), lsig - 3.0, lsig + 3.0)
 
     sig = np.exp(lsig)
     ll = _kalman_qll(y, mu, phi, sig * sig)

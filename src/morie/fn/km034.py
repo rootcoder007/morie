@@ -35,11 +35,15 @@ def kamath_ch2_gpt_unsupervised_obj(U, k=None, Theta=None):
         raise ValueError("the context size k must be positive.")
     with np.errstate(divide="ignore"):
         logs = np.log(p)
-    return RichResult(payload={
-        "estimate": float(logs.sum()),
-        "cross_entropy": float(-logs.mean()),
-        "context_size": None if k is None else int(k), "n": len(p),
-        "method": "GPT unsupervised objective L1 (Kamath Eq 2.34)"})
+    return RichResult(
+        payload={
+            "estimate": float(logs.sum()),
+            "cross_entropy": float(-logs.mean()),
+            "context_size": None if k is None else int(k),
+            "n": len(p),
+            "method": "GPT unsupervised objective L1 (Kamath Eq 2.34)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for km100.kamath_ch6_toxicity_probability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km100 import kamath_ch6_toxicity_probability
 
 

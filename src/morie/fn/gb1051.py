@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """General k-sample rank statistic with arbitrary scores."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['krankstat', 'gibbons_k_rank_alt']
+__all__ = ["krankstat", "gibbons_k_rank_alt"]
 
 
 def krankstat(samples, scores=None):

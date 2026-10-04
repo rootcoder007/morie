@@ -1,7 +1,6 @@
 """Tests for msm009.mvsml_overfitting_resampling_eq_4_14."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm009 import mvsml_overfitting_resampling_eq_4_14
 
 

@@ -1,7 +1,6 @@
 """Tests for ca12e1.ca_chapter_12_equation_1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca12e1 import ca_chapter_12_equation_1
 
 
@@ -41,7 +40,7 @@ def test_ca12e1_basic():
     # with W = sum_ij w_ij. For a row-standardized W, sum_ij w_ij = n.
     xbar = x.mean()
     dx = x - xbar
-    s2 = float((dx ** 2).sum())
+    s2 = float((dx**2).sum())
     # numerator: n * x' (W @ x), but subtract xbar terms carefully via dx.
     # n * sum_ij w_ij dx_i dx_j  ==  n * dx . (W @ dx)
     Wdx = w @ dx

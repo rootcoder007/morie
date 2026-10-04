@@ -56,8 +56,7 @@ def regression_estimator(y, x, weights=None, X_mean=None):
     if n < 3:
         raise ValueError(f"need at least 3 observations, got {n}.")
     if X_mean is None:
-        raise ValueError("the regression estimator needs the known population "
-                         "mean of x.")
+        raise ValueError("the regression estimator needs the known population mean of x.")
     w = np.ones(n) if weights is None else check_weights(weights, n)
     sw = float(w.sum())
     xbar = float(np.sum(w * xv) / sw)
@@ -67,15 +66,18 @@ def regression_estimator(y, x, weights=None, X_mean=None):
         raise ValueError("the auxiliary has no weighted variation.")
     b = float(np.sum(w * (xv - xbar) * (yv - ybar)) / sxx)
     rho = float(np.corrcoef(xv, yv)[0, 1])
-    return RichResult(payload={
-        "mean": ybar + b * (float(X_mean) - xbar),
-        "slope": b, "intercept": ybar - b * xbar,
-        "correlation": rho,
-        "variance_ratio_to_simple_mean": float(1.0 - rho ** 2),
-        "passes_through_origin": bool(abs(ybar - b * xbar) <
-                                      1e-8 * max(abs(ybar), 1.0)),
-        "n": int(n),
-        "method": "Regression estimator; fits an intercept, so no origin assumption, variance (1 - rho^2) times simple"})
+    return RichResult(
+        payload={
+            "mean": ybar + b * (float(X_mean) - xbar),
+            "slope": b,
+            "intercept": ybar - b * xbar,
+            "correlation": rho,
+            "variance_ratio_to_simple_mean": float(1.0 - rho**2),
+            "passes_through_origin": bool(abs(ybar - b * xbar) < 1e-8 * max(abs(ybar), 1.0)),
+            "n": int(n),
+            "method": "Regression estimator; fits an intercept, so no origin assumption, variance (1 - rho^2) times simple",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for irtnrm.nominal_response."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.irtnrm import nominal_response
 
 

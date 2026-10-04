@@ -4,8 +4,6 @@ The expected values are recomputed from MacKay (2003) eq. (1.18) p. 9 in the tes
 drift in the implementation fails the test.
 """
 
-import math
-
 import pytest
 
 from morie.fn.information_theory_mackay1e18 import r3post

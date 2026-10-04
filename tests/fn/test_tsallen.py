@@ -1,7 +1,6 @@
 """Tests for tsallen.tsallis_entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tsallen import tsallis_entropy
 
 

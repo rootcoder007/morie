@@ -1,7 +1,6 @@
 """Tests for depthM.mahalanobis_depth."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.depthM import mahalanobis_depth
 
 

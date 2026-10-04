@@ -137,8 +137,8 @@ def function_on_function(X, Y, basis_X, basis_Y, s=None, t=None):
     for c in range(K2):
         for d in range(K2):
             J[c][d] = _trapz(tt, [Et[b][c] * Et[b][d] for b in range(nt)])
-    A = k.crossprod(Z)          # Z*' Z*,  K1 by K1
-    R = k.matmul(k.tr(Z), M)    # Z*' M,   K1 by K2
+    A = k.crossprod(Z)  # Z*' Z*,  K1 by K1
+    R = k.matmul(k.tr(Z), M)  # Z*' M,   K1 by K2
     # solve A W = R column by column, then W = B J so B J = W
     W = []
     for c in range(K2):

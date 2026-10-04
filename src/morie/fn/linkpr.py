@@ -72,8 +72,13 @@ def linkpr(G, u, v, method="all"):
         # degree-1 common neighbour is impossible (z touches both u and v)
         ra += 1.0 / float(deg[z])
     scores = {"cn": cn, "aa": float(aa), "ra": float(ra)}
-    payload = {"common_neighbours": common, "u": u, "v": v, "n": int(n),
-               "method": "Liben-Nowell-Kleinberg CN/AA + Zhou RA link prediction"}
+    payload = {
+        "common_neighbours": common,
+        "u": u,
+        "v": v,
+        "n": int(n),
+        "method": "Liben-Nowell-Kleinberg CN/AA + Zhou RA link prediction",
+    }
     if method == "all":
         payload.update(scores)
         payload["estimate"] = cn
@@ -89,6 +94,7 @@ link_prediction = linkpr
 
 def cheatsheet():
     return "linkpr: CN / Adamic-Adar / resource-allocation link prediction scores"
+
 
 # public names resolved by fn/_lazy_map.json
 linkprediction = linkpr

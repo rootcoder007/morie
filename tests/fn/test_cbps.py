@@ -1,7 +1,6 @@
 """Tests for covariate_balance_ps."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cbps import covariate_balance_ps
 
 

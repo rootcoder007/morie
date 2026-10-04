@@ -42,13 +42,12 @@ import math
 from . import _array_core as np
 from . import _sci_core as sci
 
-_XI_TINY = 1e-8      # |xi| below this uses the Gumbel/exponential limit
+_XI_TINY = 1e-8  # |xi| below this uses the Gumbel/exponential limit
 
 
 def _flat(x):
     a = np.asarray(x, dtype=float)
-    return [float(v) for v in a.ravel()._flat()] \
-        if hasattr(a, "ravel") else [float(v) for v in a._flat()]
+    return [float(v) for v in a.ravel()._flat()] if hasattr(a, "ravel") else [float(v) for v in a._flat()]
 
 
 # ------------------------------------------------------------- GEV
@@ -59,7 +58,7 @@ def gev_cdf(z, mu, sigma, xi):
     arg = 1.0 + xi * t
     if arg <= 0.0:
         return 0.0 if xi > 0 else 1.0
-    return math.exp(-arg ** (-1.0 / xi))
+    return math.exp(-(arg ** (-1.0 / xi)))
 
 
 def gev_logpdf(z, mu, sigma, xi):
@@ -71,8 +70,7 @@ def gev_logpdf(z, mu, sigma, xi):
     arg = 1.0 + xi * t
     if arg <= 0.0:
         return float("-inf")
-    return (-math.log(sigma) - (1.0 + 1.0 / xi) * math.log(arg)
-            - arg ** (-1.0 / xi))
+    return -math.log(sigma) - (1.0 + 1.0 / xi) * math.log(arg) - arg ** (-1.0 / xi)
 
 
 def gev_loglik(x, mu, sigma, xi):
@@ -132,8 +130,7 @@ def gpd_quantile(p, sigma, xi):
 
 
 def gpd_sample(n, sigma, xi, rng):
-    return [gpd_quantile(float(u), sigma, xi)
-            for u in rng.uniform(0.0, 1.0, int(n))._flat()]
+    return [gpd_quantile(float(u), sigma, xi) for u in rng.uniform(0.0, 1.0, int(n))._flat()]
 
 
 # ---------------------------------------------------------- fitting
@@ -157,8 +154,7 @@ def _hessian(f, theta, h=1e-4):
             tmp[j] += hj
             tmm[i] -= hi
             tmm[j] -= hj
-            H[i][j] = H[j][i] = (f(tpp) - f(tpm) - f(tmp) + f(tmm)) \
-                / (4.0 * hi * hj)
+            H[i][j] = H[j][i] = (f(tpp) - f(tpm) - f(tmp) + f(tmm)) / (4.0 * hi * hj)
     del f0
     return H
 
@@ -187,9 +183,7 @@ def gev_mle(x):
         mu, logs, xi = th
         return -gev_loglik(xs, mu, math.exp(logs), xi)
 
-    res = sci.minimize(nll, [mu0, math.log(sigma0), 0.1],
-                       method="Nelder-Mead",
-                       options={"maxiter": 4000})
+    res = sci.minimize(nll, [mu0, math.log(sigma0), 0.1], method="Nelder-Mead", options={"maxiter": 4000})
     mu, logs, xi = [float(v) for v in res.x]
     sigma = math.exp(logs)
 
@@ -198,9 +192,15 @@ def gev_mle(x):
 
     H = _hessian(nll_nat, [mu, sigma, xi])
     cov = _inv(H)
-    return {"mu": mu, "sigma": sigma, "xi": xi,
-            "loglik": -float(res.fun), "cov": cov, "n": n,
-            "converged": bool(getattr(res, "success", True))}
+    return {
+        "mu": mu,
+        "sigma": sigma,
+        "xi": xi,
+        "loglik": -float(res.fun),
+        "cov": cov,
+        "n": n,
+        "converged": bool(getattr(res, "success", True)),
+    }
 
 
 def gpd_mle(y):
@@ -220,10 +220,9 @@ def gpd_mle(y):
         logs, xi = th
         return -gpd_loglik(ys, math.exp(logs), xi)
 
-    res = sci.minimize(nll, [math.log(sigma0), xi0 if abs(xi0) < 0.9
-                             else 0.1],
-                       method="Nelder-Mead",
-                       options={"maxiter": 4000})
+    res = sci.minimize(
+        nll, [math.log(sigma0), xi0 if abs(xi0) < 0.9 else 0.1], method="Nelder-Mead", options={"maxiter": 4000}
+    )
     logs, xi = [float(v) for v in res.x]
     sigma = math.exp(logs)
 
@@ -232,9 +231,14 @@ def gpd_mle(y):
 
     H = _hessian(nll_nat, [sigma, xi])
     cov = _inv(H)
-    return {"sigma": sigma, "xi": xi, "loglik": -float(res.fun),
-            "cov": cov, "n": n,
-            "converged": bool(getattr(res, "success", True))}
+    return {
+        "sigma": sigma,
+        "xi": xi,
+        "loglik": -float(res.fun),
+        "cov": cov,
+        "n": n,
+        "converged": bool(getattr(res, "success", True)),
+    }
 
 
 # ----------------------------------------------------- return levels
@@ -253,8 +257,7 @@ def gev_return_level_grad(T, mu, sigma, xi):
         return [1.0, -math.log(yp), 0.0]
     d_mu = 1.0
     d_sigma = (yp ** (-xi) - 1.0) / xi
-    d_xi = (-sigma / (xi * xi)) * (yp ** (-xi) - 1.0) \
-        - (sigma / xi) * (yp ** (-xi)) * math.log(yp)
+    d_xi = (-sigma / (xi * xi)) * (yp ** (-xi) - 1.0) - (sigma / xi) * (yp ** (-xi)) * math.log(yp)
     return [d_mu, d_sigma, d_xi]
 
 
@@ -262,8 +265,7 @@ def pot_return_level(m, u, sigma, xi, zeta_u):
     """m-observation return level under POT, Coles eq. (4.12)-(4.13):
     x_m = u + (sigma/xi)[(m zeta_u)^xi - 1] (log form as xi -> 0)."""
     if m * zeta_u <= 1.0:
-        raise ValueError("m * zeta_u must exceed 1 for a level above "
-                         "the threshold")
+        raise ValueError("m * zeta_u must exceed 1 for a level above the threshold")
     if abs(xi) < _XI_TINY:
         return u + sigma * math.log(m * zeta_u)
     return u + (sigma / xi) * ((m * zeta_u) ** xi - 1.0)

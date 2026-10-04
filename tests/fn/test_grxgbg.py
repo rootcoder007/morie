@@ -1,7 +1,6 @@
 """Tests for grxgbg.geron_xgboost_gain."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grxgbg import geron_xgboost_gain
 
 
@@ -16,11 +15,21 @@ def test_grxgbg_basic():
     gamma = 1.0
     result = geron_xgboost_gain(GL, HL, GR, HR, lam, gamma)
     assert isinstance(result, dict)
-    for key in ("gain", "left_score", "right_score", "parent_score",
-                "left_weight", "right_weight", "should_split",
-                "estimate", "n", "method"):
+    for key in (
+        "gain",
+        "left_score",
+        "right_score",
+        "parent_score",
+        "left_weight",
+        "right_weight",
+        "should_split",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     import math
+
     assert math.isfinite(result["gain"])
 
 
@@ -30,6 +39,7 @@ def test_grxgbg_edge():
     result = geron_xgboost_gain(-2.0, 2.0, 2.0, 2.0, lam=1.0, gamma=2.0)
     assert isinstance(result, dict)
     import math
+
     assert math.isfinite(result["gain"])
     assert result["should_split"] is False
     assert result["gain"] < 0
@@ -47,7 +57,7 @@ import morie.fn.grxgbg as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

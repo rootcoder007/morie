@@ -1,8 +1,8 @@
 """Granger/info-flow cluster: ggrcst, granci, trnfen."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ggrcst import granger_causality
 from morie.fn.granci import granger_causality_info
 from morie.fn.trnfen import transfer_entropy

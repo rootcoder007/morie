@@ -50,12 +50,21 @@ def continued_fraction_pi(n):
         km2, km1 = km1, k
     h, k = conv[-1]
     val = h / float(k)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": val, "terms": terms, "convergents": conv,
-        "numerator": h, "denominator": k,
-        "error": val - 3.141592653589793, "n": nn,
-        "method": "continued fraction convergents of pi",
-    }), "conti")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": val,
+                "terms": terms,
+                "convergents": conv,
+                "numerator": h,
+                "denominator": k,
+                "error": val - 3.141592653589793,
+                "n": nn,
+                "method": "continued fraction convergents of pi",
+            }
+        ),
+        "conti",
+    )
 
 
 def cheatsheet():

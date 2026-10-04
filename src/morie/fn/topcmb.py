@@ -130,7 +130,7 @@ def betti_numbers_gf2(maximal_simplices, check_boundary_squared=True):
         for s in by_dim[d]:
             mask = 0
             for omit in range(len(s)):
-                face = s[:omit] + s[omit + 1:]
+                face = s[:omit] + s[omit + 1 :]
                 mask |= 1 << index[d - 1][face]
             rows.append(mask)
         return rows
@@ -144,9 +144,9 @@ def betti_numbers_gf2(maximal_simplices, check_boundary_squared=True):
             for s in by_dim[d]:
                 acc = 0
                 for omit in range(len(s)):
-                    face = s[:omit] + s[omit + 1:]
+                    face = s[:omit] + s[omit + 1 :]
                     for omit2 in range(len(face)):
-                        sub = face[:omit2] + face[omit2 + 1:]
+                        sub = face[:omit2] + face[omit2 + 1 :]
                         acc ^= 1 << index[d - 2][sub]
                 if acc != 0:
                     squared_zero = False
@@ -189,8 +189,7 @@ def betti_numbers_gf2(maximal_simplices, check_boundary_squared=True):
         )
     if chi_f != chi_b:
         out.warnings.append(
-            "The Euler-Poincare identity fails, which is impossible over "
-            "a field; the rank computation is defective."
+            "The Euler-Poincare identity fails, which is impossible over a field; the rank computation is defective."
         )
     return out
 
@@ -234,12 +233,11 @@ def sperner_lemma_triangle(subdivisions, labels=None):
         return allowed
 
     lab = {}
-    for (i, j) in pts:
+    for i, j in pts:
         allowed = admissible(i, j)
         if labels is not None:
             if (i, j) not in labels:
-                raise ValueError(f"no label supplied for grid point "
-                                 f"({i}, {j}).")
+                raise ValueError(f"no label supplied for grid point ({i}, {j}).")
             v = int(labels[(i, j)])
             if v not in allowed:
                 raise ValueError(

@@ -31,6 +31,7 @@ hand and are skipped.
 
 Default is a dry run; pass --apply to write.
 """
+
 import importlib.util
 import re
 import sys
@@ -58,8 +59,7 @@ def reviewed() -> frozenset:
 
 
 def struct(indent: str, expr: str) -> str:
-    return (f"{indent}assert np.all(np.isfinite(np.asarray({expr}, "
-            f"dtype=float)))  # N6: was a generator-guessed value")
+    return f"{indent}assert np.all(np.isfinite(np.asarray({expr}, dtype=float)))  # N6: was a generator-guessed value"
 
 
 def transform(text: str) -> tuple[str, int, int]:
@@ -99,8 +99,10 @@ def main(apply: bool) -> None:
                 p.write_text(new, encoding="utf-8")
     verb = "rewrote" if apply else "would rewrite"
     print(f"{verb} {total} loose-tolerance asserts across {files} files")
-    print(f"left alone: {tight_kept} tolerances <= {TIGHT:g} (computed "
-          f"references), every == assertion, and {skipped} reviewed files")
+    print(
+        f"left alone: {tight_kept} tolerances <= {TIGHT:g} (computed "
+        f"references), every == assertion, and {skipped} reviewed files"
+    )
     if not apply:
         print("dry run -- pass --apply to write")
 

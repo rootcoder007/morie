@@ -1,7 +1,6 @@
 """Tests for rgnmfch.rangayyan_nmf_channel_sel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_nmf_channel_sel
 
 

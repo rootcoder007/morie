@@ -1,9 +1,9 @@
 """Tests for morie.fn.oml — DML IRM (ATE/ATT) for OTIS data."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import OtDmlR
 from morie.fn.oml import otdml as oml
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svlin -- Linear spatial utility function"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svlin import linear_utility
 
 

@@ -1,7 +1,6 @@
 """Tests for fzt53.fauzi_thm5_3_bdfree_normality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzt53 import fauzi_thm5_3_bdfree_normality
 
 
@@ -11,9 +10,7 @@ def test_fzt53_basic():
     variance = 0.04
     bias = 0.0
     level = 0.95
-    result = fauzi_thm5_3_bdfree_normality(
-        estimate, variance, null=0.5, bias=bias, level=level
-    )
+    result = fauzi_thm5_3_bdfree_normality(estimate, variance, null=0.5, bias=bias, level=level)
     assert isinstance(result, dict)
     for key in ("statistic", "p_value", "lower", "upper", "se", "level", "method"):
         assert key in result

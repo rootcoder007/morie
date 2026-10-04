@@ -1,7 +1,5 @@
 """Tests for flowmin.min_cut."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.flowmin import min_cut
 
 
@@ -39,10 +37,7 @@ def test_flowmin_basic():
     # 0-1 (2) + 0-2 (3) + 2-3 (4) = 9.
     # So global min cut weight = 3, isolating vertex 1.
     n = 4
-    A = [[0, 2, 3, 0],
-         [2, 0, 1, 0],
-         [3, 1, 0, 4],
-         [0, 0, 4, 0]]
+    A = [[0, 2, 3, 0], [2, 0, 1, 0], [3, 1, 0, 4], [0, 0, 4, 0]]
 
     result = min_cut(A)
 
@@ -60,7 +55,7 @@ def test_flowmin_basic():
         s = [i for i in range(n) if mask & (1 << i)]
         t = [i for i in range(n) if not (mask & (1 << i))]
         cut_weight = 0.0
-        for (u, v, w) in edges:
+        for u, v, w in edges:
             if (u in s and v in t) or (u in t and v in s):
                 cut_weight += w
         if expected_min is None or cut_weight < expected_min:
@@ -72,10 +67,7 @@ def test_flowmin_basic():
 def test_flowmin_edge():
     """Test edge cases."""
     n = 4
-    A = [[0, 2, 3, 0],
-         [2, 0, 1, 0],
-         [3, 1, 0, 4],
-         [0, 0, 4, 0]]
+    A = [[0, 2, 3, 0], [2, 0, 1, 0], [3, 1, 0, 4], [0, 0, 4, 0]]
 
     result = min_cut(A)
     assert "estimate" in result

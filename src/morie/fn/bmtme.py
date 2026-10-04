@@ -71,8 +71,7 @@ from .rkhsmt import _inv, _kron, _unvec, _vec
 __all__ = ["bmtme_model"]
 
 
-def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
-                S_E=None, v_R=None, S_R=None, tol=1e-12):
+def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None, S_E=None, v_R=None, S_R=None, tol=1e-12):
     """BMTME of eq. (6.11), every Gibbs step at its conditional mean.
 
     Parameters
@@ -227,25 +226,26 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
         Gb = [[sum(Ginv[i][k] * b1[k][t] for k in range(J)) for t in range(nT)] for i in range(J)]
         SEG = _kron(SEinv, Ginv)
         Wb = [[sum(SEG[i][k] * b2[k][t] for k in range(N)) for t in range(nT)] for i in range(N)]
-        SS = [[sum(b1[i][s] * Gb[i][t] for i in range(J))
-               + sum(b2[i][s] * Wb[i][t] for i in range(N)) + ST[s][t]
-               for t in range(nT)] for s in range(nT)]
+        SS = [
+            [
+                sum(b1[i][s] * Gb[i][t] for i in range(J)) + sum(b2[i][s] * Wb[i][t] for i in range(N)) + ST[s][t]
+                for t in range(nT)
+            ]
+            for s in range(nT)
+        ]
         den = vT + J + N - nT - 1.0
         SigT = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         # step 6: Sigma_E, through the b_2* reshaping
         STinv = _inv(SigT)
         b2s = [[b2[e * J + j][t] for e in range(I)] for j in range(J) for t in range(nT)]
         GS = _kron(Ginv, STinv)
-        Ab = [[sum(GS[r][k] * b2s[k][e] for k in range(J * nT)) for e in range(I)]
-              for r in range(J * nT)]
-        SS = [[sum(b2s[r][a] * Ab[r][b] for r in range(J * nT)) + SE[a][b] for b in range(I)]
-              for a in range(I)]
+        Ab = [[sum(GS[r][k] * b2s[k][e] for k in range(J * nT)) for e in range(I)] for r in range(J * nT)]
+        SS = [[sum(b2s[r][a] * Ab[r][b] for r in range(J * nT)) + SE[a][b] for b in range(I)] for a in range(I)]
         den = vE + J * nT - I - 1.0
         SigE = [[SS[a][b] / den for b in range(I)] for a in range(I)]
         # step 7: R, with S_R and not the book's misprinted S_T
         E = resid()
-        SS = [[sum(E[i][s] * E[i][t] for i in range(N)) + SR[s][t] for t in range(nT)]
-              for s in range(nT)]
+        SS = [[sum(E[i][s] * E[i][t] for i in range(N)) + SR[s][t] for t in range(nT)] for s in range(nT)]
         den = vR + N - nT - 1.0
         Rm = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         d = 0.0
@@ -274,8 +274,7 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
             "mu": mu,
             "beta": beta,
             "n": N,
-            "method": "Chapter 6 eq. (6.11) BMTME, the eight-step p.196 sampler taken at "
-                      "its conditional means",
+            "method": "Chapter 6 eq. (6.11) BMTME, the eight-step p.196 sampler taken at its conditional means",
         },
     )
 

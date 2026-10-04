@@ -2,9 +2,9 @@
 qbcfgr, htgcrf, drlnr, ipsiMed, tmlpoy, tmltrt, tmlsen, tmlqct, tmlmed,
 tmlivc, tmltvc, tmllng, npstm."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._tmle import tmle_ate
 from morie.fn.crfath import causal_forest_wager_athey
 from morie.fn.crfboot import causal_forest_bootstrap

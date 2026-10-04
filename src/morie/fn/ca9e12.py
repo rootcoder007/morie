@@ -27,18 +27,17 @@ def ca_chapter_9_equation_12(groups):
     ch.9 eq.9.12
     """
     payload = dict(_ca_crim.anova_oneway(groups))
-    value = payload['f']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["f"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.12)"
     return RichResult(
-        title='Naive randomized experiment ANOVA y = mu + alpha_j + e',
+        title="Naive randomized experiment ANOVA y = mu + alpha_j + e",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e12: y_ij = mu + alpha_j + e_ij [Weisburd et al. 2022, eq. 9.12]'
+    return "ca9e12: y_ij = mu + alpha_j + e_ij [Weisburd et al. 2022, eq. 9.12]"

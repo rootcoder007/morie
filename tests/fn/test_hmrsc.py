@@ -3,9 +3,7 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrsc import geron_randomized_search
-
 
 # Workaround: geron_cross_validation_score (called internally) passes
 # `assume_unique=False` to np.setdiff1d, but the pure-Python _array_core

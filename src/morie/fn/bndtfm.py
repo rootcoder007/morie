@@ -85,11 +85,18 @@ def bound_transform(y, D, X, transform):
         for lev in (1.0 - 0.5 / p1, 0.5 / p1):
             if 0.0 < lev <= 1.0:
                 gap += abs(_apply(yv, tv, B.q1(obs_y, lev)) - B.q1(obs_t, lev))
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "gap": gap,
-        "n_strata": len(grp), "n": n,
-        "method": "Bound under outcome transformation"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "gap": gap,
+            "n_strata": len(grp),
+            "n": n,
+            "method": "Bound under outcome transformation",
+        }
+    )
 
 
 def _apply(yv, tv, value):
@@ -102,6 +109,7 @@ def _apply(yv, tv, value):
 
 def cheatsheet():
     return "bndtfm: Bound under outcome transformation"
+
 
 # public names resolved by fn/_lazy_map.json
 boundtransform = bound_transform

@@ -27,17 +27,16 @@ def nonproportional_odds_logit(bj0, bjs, xs):
     """
     value = _acd.nonproportional_odds_logit(bj0, bjs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.16)"
     return RichResult(
-        title='Non-proportional odds model',
+        title="Non-proportional odds model",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e16: logit(P(Y <= j)) = bj0 + bj1 x1 + ... + bjp xp [Bilder & Loughin 2025, eq. 3.16]'
+    return "3e16: logit(P(Y <= j)) = bj0 + bj1 x1 + ... + bjp xp [Bilder & Loughin 2025, eq. 3.16]"

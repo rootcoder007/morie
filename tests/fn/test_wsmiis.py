@@ -36,5 +36,3 @@ def test_wsmiis_edge():
     assert r["effective_sample_size"] == pytest.approx(3.0, abs=1e-12)
     with pytest.raises(ValueError):
         wasserman_importance_sampling(lambda x: x, one, one)
-
-

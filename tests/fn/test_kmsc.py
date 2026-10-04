@@ -1,7 +1,6 @@
 """Tests for kmsc.kamath_self_consistency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmsc import kamath_self_consistency
 
 

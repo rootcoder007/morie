@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Critical vaccination threshold for herd immunity."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['vaccthresh', 'vaccination_threshold']
+__all__ = ["vaccthresh", "vaccination_threshold"]
 
 
 def vaccthresh(R0, efficacy=1.0):
@@ -44,12 +42,16 @@ def vaccthresh(R0, efficacy=1.0):
         raise ValueError("R0 must be positive")
     pc = [1.0 - 1.0 / v for v in r0]
     cov = [p / e for p in pc]
-    return RichResult(payload={
-        "threshold": pc if len(pc) > 1 else pc[0],
-        "coverage": cov if len(cov) > 1 else cov[0],
-        "feasible": [c <= 1.0 for c in cov] if len(cov) > 1 else cov[0] <= 1.0,
-        "R0": r0 if len(r0) > 1 else r0[0], "efficacy": e,
-        "method": "Critical vaccination threshold"})
+    return RichResult(
+        payload={
+            "threshold": pc if len(pc) > 1 else pc[0],
+            "coverage": cov if len(cov) > 1 else cov[0],
+            "feasible": [c <= 1.0 for c in cov] if len(cov) > 1 else cov[0] <= 1.0,
+            "R0": r0 if len(r0) > 1 else r0[0],
+            "efficacy": e,
+            "method": "Critical vaccination threshold",
+        }
+    )
 
 
 vaccination_threshold = vaccthresh

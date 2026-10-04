@@ -1,8 +1,8 @@
 """Tests for morie.fn.mkrsl -- Marker selection."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mkrsl import mkrsl
 
 

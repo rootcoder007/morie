@@ -42,7 +42,9 @@ def gibbons_distributing_objects(n, r):
         raise ValueError(f"r must lie in 1..{n}, got {r}.")
     return RichResult(
         payload={
-            "count": comb(n - 1, r - 1), "n": n, "r": r,
+            "count": comb(n - 1, r - 1),
+            "n": n,
+            "r": r,
             "method": "C(n-1, r-1) non-empty distributions (Gibbons Lemma 3.2.1)",
         }
     )

@@ -16,9 +16,7 @@ Y = [0.12, 0.35, 0.61, 0.94, 1.28, 1.77, 2.40, 3.31, 4.62, 6.90]
 
 def test_zero_shape_is_the_exponential():
     for y in (0.25, 1.0, 2.0, 5.0):
-        assert float(gpd_cdf([y], 2.0, 0.0)[0]) == pytest.approx(
-            1.0 - math.exp(-y / 2.0), abs=1e-15
-        )
+        assert float(gpd_cdf([y], 2.0, 0.0)[0]) == pytest.approx(1.0 - math.exp(-y / 2.0), abs=1e-15)
 
 
 def test_cdf_is_monotone_and_in_the_unit_interval():

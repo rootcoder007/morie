@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact moments of S and Q for a small number of blocks."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['friedvar', 'gibbons_friedman_variance']
+__all__ = ["friedvar", "gibbons_friedman_variance"]
 
 
 def friedvar(k, n):

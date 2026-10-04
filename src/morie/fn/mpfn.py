@@ -58,12 +58,9 @@ readout.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["message", "update_gru", "message_passing", "readout",
-           "is_permutation_invariant"]
+__all__ = ["message", "update_gru", "message_passing", "readout", "is_permutation_invariant"]
 
 _EPS = 1e-12
 _READOUTS = ("sum", "mean", "gated")
@@ -83,12 +80,10 @@ def message(h_v, h_w, e_vw, A=None):
     """
     hw = [float(v) for v in k.vec(h_w)]
     if A is None:
-        e = float(e_vw) if not isinstance(e_vw, (list, tuple)) \
-            else float(k.vec(e_vw)[0])
+        e = float(e_vw) if not isinstance(e_vw, (list, tuple)) else float(k.vec(e_vw)[0])
         return [e * v for v in hw]
     M = A(e_vw)
-    return [sum(M[o][j] * hw[j] for j in range(len(hw)))
-            for o in range(len(M))]
+    return [sum(M[o][j] * hw[j] for j in range(len(hw))) for o in range(len(M))]
 
 
 def update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh):
@@ -96,19 +91,17 @@ def update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh):
     n = len(h)
 
     def lin(W, U, a, b):
-        return [sum(W[o][j] * a[j] for j in range(len(a)))
-                + sum(U[o][j] * b[j] for j in range(len(b)))
-                for o in range(n)]
+        return [
+            sum(W[o][j] * a[j] for j in range(len(a))) + sum(U[o][j] * b[j] for j in range(len(b))) for o in range(n)
+        ]
 
     z = [_sig(v) for v in lin(Wz, Uz, m, h)]
     r = [_sig(v) for v in lin(Wr, Ur, m, h)]
-    hh = [math.tanh(v) for v in
-          lin(Wh, Uh, m, [r[i] * h[i] for i in range(n)])]
+    hh = [math.tanh(v) for v in lin(Wh, Uh, m, [r[i] * h[i] for i in range(n)])]
     return [(1.0 - z[i]) * h[i] + z[i] * hh[i] for i in range(n)]
 
 
-def message_passing(H0, adj, edge_features, T=3, A=None,
-                    update=None):
+def message_passing(H0, adj, edge_features, T=3, A=None, update=None):
     r"""T rounds of eq. (1).
 
     ``update=None`` uses :math:`h^{t+1}_v = h^t_v + m^{t+1}_v`, which
@@ -123,12 +116,10 @@ def message_passing(H0, adj, edge_features, T=3, A=None,
             nb = sorted(adj.get(v, ()))
             m = [0.0] * len(H[v])
             for w in nb:
-                e = edge_features.get((v, w),
-                                      edge_features.get((w, v), 1.0))
+                e = edge_features.get((v, w), edge_features.get((w, v), 1.0))
                 mm = message(H[v], H[w], e, A)
                 m = [m[i] + mm[i] for i in range(len(m))]
-            new.append(update(H[v], m) if update is not None
-                       else [H[v][i] + m[i] for i in range(len(m))])
+            new.append(update(H[v], m) if update is not None else [H[v][i] + m[i] for i in range(len(m))])
         H = new
     return H
 
@@ -141,19 +132,15 @@ def readout(H, how="sum", H0=None, i_fn=None, j_fn=None):
     that changed from one that did not.
     """
     if how not in _READOUTS:
-        raise ValueError("mpfn: readout must be one of %s, got %r"
-                         % (", ".join(_READOUTS), how))
+        raise ValueError("mpfn: readout must be one of %s, got %r" % (", ".join(_READOUTS), how))
     rows = [[float(v) for v in r] for r in k.mat(H)]
     d = len(rows[0])
     if how == "sum":
-        return [sum(rows[v][f] for v in range(len(rows)))
-                for f in range(d)]
+        return [sum(rows[v][f] for v in range(len(rows))) for f in range(d)]
     if how == "mean":
-        return [sum(rows[v][f] for v in range(len(rows))) / len(rows)
-                for f in range(d)]
+        return [sum(rows[v][f] for v in range(len(rows))) / len(rows) for f in range(d)]
     if H0 is None or i_fn is None or j_fn is None:
-        raise ValueError("mpfn: the gated readout needs H0, i_fn and "
-                         "j_fn")
+        raise ValueError("mpfn: the gated readout needs H0, i_fn and j_fn")
     acc = [0.0] * d
     for v in range(len(rows)):
         g = i_fn(rows[v], H0[v])
@@ -162,8 +149,7 @@ def readout(H, how="sum", H0=None, i_fn=None, j_fn=None):
     return acc
 
 
-def is_permutation_invariant(H, adj, edge_features, perm, T=3,
-                             how="sum", tol=1e-9):
+def is_permutation_invariant(H, adj, edge_features, perm, T=3, how="sum", tol=1e-9):
     r"""Relabel the nodes and check the readout is unchanged.
 
     A graph-level prediction that moves under relabelling is not
@@ -175,27 +161,27 @@ def is_permutation_invariant(H, adj, edge_features, perm, T=3,
     for i in range(n):
         inv[perm[i]] = i
     Hp = [H[inv[i]] for i in range(n)]
-    adjp = {perm[v]: sorted(perm[w] for w in adj.get(v, ()))
-            for v in adj}
+    adjp = {perm[v]: sorted(perm[w] for w in adj.get(v, ())) for v in adj}
     efp = {}
     for (a, b), e in edge_features.items():
         efp[(perm[a], perm[b])] = e
     other = readout(message_passing(Hp, adjp, efp, T), how)
     dev = max(abs(base[f] - other[f]) for f in range(len(base)))
-    return {"invariant": dev < float(tol), "max_deviation": dev,
-            "readout": base}
+    return {"invariant": dev < float(tol), "max_deviation": dev, "readout": base}
 
 
 def cheatsheet():
-    return ("mpfn: at least EIGHT published graph models are the same "
-            "algorithm with different M_t, U_t and R. Message phase: "
-            "m_v = sum_{w in N(v)} M_t(h_v, h_w, e_vw), then "
-            "h_v <- U_t(h_v, m_v); readout R over the final states. "
-            "The sum makes messages permutation-invariant and the "
-            "READOUT MUST BE TOO, or the graph prediction changes when "
-            "atoms are renumbered. Edge features carry bond type -- "
-            "without them a single and a double bond between the same "
-            "atoms are identical.")
+    return (
+        "mpfn: at least EIGHT published graph models are the same "
+        "algorithm with different M_t, U_t and R. Message phase: "
+        "m_v = sum_{w in N(v)} M_t(h_v, h_w, e_vw), then "
+        "h_v <- U_t(h_v, m_v); readout R over the final states. "
+        "The sum makes messages permutation-invariant and the "
+        "READOUT MUST BE TOO, or the graph prediction changes when "
+        "atoms are renumbered. Edge features carry bond type -- "
+        "without them a single and a double bond between the same "
+        "atoms are identical."
+    )
 
 
 # compact alias per ledger/NAMING.md

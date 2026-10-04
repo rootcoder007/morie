@@ -43,8 +43,7 @@ def test_eslprq_basic():
 def test_eslprq_edge():
     """newdata classification and the documented input checks."""
     X, y = _two_clusters()
-    result = esl_prototype_lvq(X, y, n_prototypes=1, seed=1,
-                               newdata=[[-5.0, -5.0], [5.0, 5.0], [-2.5, -2.5]])
+    result = esl_prototype_lvq(X, y, n_prototypes=1, seed=1, newdata=[[-5.0, -5.0], [5.0, 5.0], [-2.5, -2.5]])
     assert [int(c) for c in result["class_"]] == [0, 1, 0]
     assert result["prototypes"].shape == (2, 2)
 

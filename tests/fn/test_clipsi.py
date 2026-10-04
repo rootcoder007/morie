@@ -1,7 +1,6 @@
 """Tests for clipsi.clip_similarity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clipsi import clip_similarity
 
 

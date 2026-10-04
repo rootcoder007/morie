@@ -4,7 +4,7 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from .hmcart import geron_cart_algorithm, predict_tree
+from .hmcart import geron_cart_algorithm
 
 __all__ = ["geron_tree_sensitivity_scale"]
 
@@ -86,7 +86,9 @@ def geron_tree_sensitivity_scale(X, y, a=100.0, b=-7.0, feature=None, criterion=
         raise ValueError(f"geron_tree_sensitivity_scale: y has {ya.size} entries but X has {Xa.shape[0]} rows")
     af, bf = float(a), float(b)
     if not np.isfinite(af) or af <= 0:
-        raise ValueError(f"geron_tree_sensitivity_scale: a must be positive and finite, got {a!r} (a < 0 mirrors the axis)")
+        raise ValueError(
+            f"geron_tree_sensitivity_scale: a must be positive and finite, got {a!r} (a < 0 mirrors the axis)"
+        )
     if not np.isfinite(bf):
         raise ValueError(f"geron_tree_sensitivity_scale: b must be finite, got {b!r}")
 
@@ -131,7 +133,11 @@ def geron_tree_sensitivity_scale(X, y, a=100.0, b=-7.0, feature=None, criterion=
 
     return RichResult(
         title="Tree scale invariance",
-        summary_lines=[("Predictions match", p_match), ("Thresholds match", t_match), ("1-NN match", list(k0) == list(k1))],
+        summary_lines=[
+            ("Predictions match", p_match),
+            ("Thresholds match", t_match),
+            ("1-NN match", list(k0) == list(k1)),
+        ],
         interpretation="Axis-aligned splits depend only on the ordering of a feature, which an increasing affine map preserves.",
         payload={
             "predictions_match": bool(p_match),

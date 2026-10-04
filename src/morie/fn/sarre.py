@@ -64,7 +64,9 @@ def spatial_ar_error(x, y, w):
     # Search lambda inside (1/min_eig, 1/max_eig) -- approximate via (-0.99, 0.99)
     lo, hi = safe_search_interval(W, "identity")
     res = optimize.minimize_scalar(
-        neg_ll, bounds=(lo, hi), method="bounded",
+        neg_ll,
+        bounds=(lo, hi),
+        method="bounded",
         options={"xatol": 1e-10 * max(hi - lo, 1.0)},
     )
     lam = float(res.x)

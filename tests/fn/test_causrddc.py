@@ -2,8 +2,7 @@
 
 import math
 
-from morie.fn.causrddc import (causrddc, kernel_constants, local_poly_weights,
-                               rd_bandwidth, rdrobust)
+from morie.fn.causrddc import causrddc, kernel_constants, local_poly_weights, rd_bandwidth, rdrobust
 
 
 def _lcg(seed):
@@ -12,6 +11,7 @@ def _lcg(seed):
     def f():
         state[0] = (1103515245 * state[0] + 12345) % (1 << 31)
         return state[0] / float(1 << 31)
+
     return f
 
 
@@ -25,7 +25,7 @@ def _make(n, seed, tau=1.0, noise=0.3, cubic=False):
     x, y = [], []
     for _ in range(n):
         xi = 2.0 * rnd() - 1.0
-        mu = 0.5 * xi + 0.8 * xi * xi + (0.4 * xi ** 3 if cubic else 0.0)
+        mu = 0.5 * xi + 0.8 * xi * xi + (0.4 * xi**3 if cubic else 0.0)
         x.append(xi)
         y.append(mu + (tau if xi >= 0 else 0.0) + noise * _normal(rnd))
     return x, y
@@ -45,8 +45,7 @@ def test_local_polynomial_weights_are_exact_on_polynomials():
     for nu, p in ((0, 1), (0, 2), (1, 2)):
         w, _ = local_poly_weights(x, 0.5, p, nu, "triangular", +1)
         for t in range(p + 1):
-            got = sum(w[i] * x[i] ** t / math.factorial(t)
-                      for i in range(len(x)))
+            got = sum(w[i] * x[i] ** t / math.factorial(t) for i in range(len(x)))
             assert abs(got - (1.0 if t == nu else 0.0)) < 1e-8
         assert all(w[i] == 0.0 for i in range(len(x)) if x[i] < 0.0)
 
@@ -91,11 +90,8 @@ def test_bandwidth_formula():
     x, y = _make(1500, 5150, tau=1.0, noise=0.25)
     for nu, p in ((0, 1), (0, 2)):
         bw = rd_bandwidth(x, y, nu, p)
-        assert abs(bw["h_unclamped"] -
-                   bw["C"] * len(x) ** (-1.0 / (2.0 * p + 3.0))) < 1e-12
-        want = ((1.0 + 2.0 * nu) * bw["V"] /
-                (2.0 * (p + 1.0 - nu) * bw["B"] ** 2)) ** (1.0 /
-                                                           (2.0 * p + 3.0))
+        assert abs(bw["h_unclamped"] - bw["C"] * len(x) ** (-1.0 / (2.0 * p + 3.0))) < 1e-12
+        want = ((1.0 + 2.0 * nu) * bw["V"] / (2.0 * (p + 1.0 - nu) * bw["B"] ** 2)) ** (1.0 / (2.0 * p + 3.0))
         assert abs(bw["C"] - want) < 1e-12
         assert bw["h"] <= max(abs(v) for v in x) + 1e-12
 
@@ -120,14 +116,16 @@ def test_variance_routes_agree_on_the_point_estimate():
 
 def test_validation():
     x, y = _make(400, 3)
-    for call in (lambda: causrddc(y, x, p=2, q=2),
-                 lambda: causrddc(y, x, nu=2, p=1),
-                 lambda: causrddc(y, x, h=-1.0),
-                 lambda: causrddc(y, x, kernel="gaussian"),
-                 lambda: causrddc(y, x, vce="boot"),
-                 lambda: causrddc(y, x, alpha=1.5),
-                 lambda: causrddc(y[:-1], x),
-                 lambda: causrddc(y, x, [1.0] * len(x), h=0.5, b=0.5)):
+    for call in (
+        lambda: causrddc(y, x, p=2, q=2),
+        lambda: causrddc(y, x, nu=2, p=1),
+        lambda: causrddc(y, x, h=-1.0),
+        lambda: causrddc(y, x, kernel="gaussian"),
+        lambda: causrddc(y, x, vce="boot"),
+        lambda: causrddc(y, x, alpha=1.5),
+        lambda: causrddc(y[:-1], x),
+        lambda: causrddc(y, x, [1.0] * len(x), h=0.5, b=0.5),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

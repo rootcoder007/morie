@@ -96,8 +96,8 @@ def degree_assortativity(y=None, A=None, excess=True):
     sj2 = 0.0
     sk2 = 0.0
     # each undirected edge enters twice, once in each orientation
-    for (u, v) in edges:
-        for (p, q) in ((u, v), (v, u)):
+    for u, v in edges:
+        for p, q in ((u, v), (v, u)):
             jj = deg[p] - off
             kk = deg[q] - off
             sjk += jj * kk

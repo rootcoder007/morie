@@ -106,10 +106,10 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
     if fun == "logcosh":
         g, gp = lambda u: np.tanh(u), lambda u: 1.0 - np.tanh(u) ** 2  # noqa: E731
     elif fun == "exp":
-        g = lambda u: u * np.exp(-(u**2) / 2)                          # noqa: E731
-        gp = lambda u: (1 - u**2) * np.exp(-(u**2) / 2)                # noqa: E731
+        g = lambda u: u * np.exp(-(u**2) / 2)  # noqa: E731
+        gp = lambda u: (1 - u**2) * np.exp(-(u**2) / 2)  # noqa: E731
     elif fun == "cube":
-        g, gp = lambda u: u**3, lambda u: 3 * u**2                     # noqa: E731
+        g, gp = lambda u: u**3, lambda u: 3 * u**2  # noqa: E731
     else:
         raise ValueError('fun must be "logcosh", "exp" or "cube"')
 
@@ -123,7 +123,7 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
         for it in range(1, max_iter + 1):
             wx = Z @ w
             new = (Z * g(wx)[:, None]).mean(axis=0) - gp(wx).mean() * w
-            new -= W[:j].T @ (W[:j] @ new)          # deflation
+            new -= W[:j].T @ (W[:j] @ new)  # deflation
             nrm = np.linalg.norm(new)
             if nrm < 1e-12:
                 break
@@ -146,9 +146,14 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
         summary_lines=[("n", n), ("p", p), ("k", k), ("contrast", fun)],
         warnings=[] if converged else [f"some components did not converge in {max_iter} iterations"],
         payload={
-            "sources": S, "unmixing": unmix,
-            "mixing": np.linalg.pinv(unmix), "whitening": K, "mean": mean,
-            "n_iter": np.array(iters), "converged": bool(converged), "fun": fun,
+            "sources": S,
+            "unmixing": unmix,
+            "mixing": np.linalg.pinv(unmix),
+            "whitening": K,
+            "mean": mean,
+            "n_iter": np.array(iters),
+            "converged": bool(converged),
+            "fun": fun,
             "method": "esl_ica",
         },
     )

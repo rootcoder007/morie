@@ -1,7 +1,6 @@
 """Tests for frtaxd.forest_taxon_diversity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.frtaxd import forest_taxon_diversity
 
 
@@ -12,6 +11,8 @@ def test_frtaxd_basic():
     result = forest_taxon_diversity(coords, species)
     assert isinstance(result, dict)
     assert "H" in result
+
+
 def test_frtaxd_edge():
     """Test edge cases."""
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))

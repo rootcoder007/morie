@@ -4,11 +4,11 @@ Brus (2022), Spatial Sampling with R, eq. (10.6), the sample-weighted generalise
 recomputed from the formula in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e6 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_6
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e6 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_6,
+)
 
 
 def test_gls_slope_matches_the_weighted_normal_equations():

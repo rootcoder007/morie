@@ -1,8 +1,8 @@
 """Tests for mrkcsr.csr_test (Ripley's K with Monte Carlo envelopes)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mrkcsr import _ripley_k, csr_test
 
 
@@ -70,7 +70,8 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="at least 3 events"):
         csr_test(P[:2])
     with pytest.raises(ValueError, match="must be finite"):
-        bad = P.copy(); bad[0, 0] = np.inf
+        bad = P.copy()
+        bad[0, 0] = np.inf
         csr_test(bad)
     with pytest.raises(ValueError, match="upper bounds must exceed"):
         csr_test(P, window=[1, 0, 1, 0])

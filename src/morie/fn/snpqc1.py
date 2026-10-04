@@ -91,19 +91,29 @@ call.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["snpqc1", "snp_quality_control", "snp_qc", "call_rates", "maf",
-           "hwe_pvalue", "heterozygosity", "kinship_matrix", "ld_prune",
-           "sex_check", "ibd_moments", "pihat_matrix", "ibs_given_ibd"]
+__all__ = [
+    "snpqc1",
+    "snp_quality_control",
+    "snp_qc",
+    "call_rates",
+    "maf",
+    "hwe_pvalue",
+    "heterozygosity",
+    "kinship_matrix",
+    "ld_prune",
+    "sex_check",
+    "ibd_moments",
+    "pihat_matrix",
+    "ibs_given_ibd",
+]
 
 
 def _check(genotypes):
     G = [list(row) for row in genotypes]
     if not G or not G[0]:
-        raise ValueError("snpqc1: genotypes must be a non-empty "
-                         "individual x SNP matrix")
+        raise ValueError("snpqc1: genotypes must be a non-empty individual x SNP matrix")
     m = len(G[0])
     for row in G:
         if len(row) != m:
@@ -117,10 +127,8 @@ def _check(genotypes):
 def call_rates(genotypes):
     """Per-SNP and per-individual call rates."""
     G, n, m = _check(genotypes)
-    per_snp = [sum(1 for i in range(n) if G[i][j] is not None) / float(n)
-               for j in range(m)]
-    per_ind = [sum(1 for j in range(m) if G[i][j] is not None) / float(m)
-               for i in range(n)]
+    per_snp = [sum(1 for i in range(n) if G[i][j] is not None) / float(n) for j in range(m)]
+    per_ind = [sum(1 for j in range(m) if G[i][j] is not None) / float(m) for i in range(n)]
     return per_snp, per_ind
 
 
@@ -184,18 +192,15 @@ def hwe_pvalue(n_hom_minor, n_het, n_hom_major, test="exact"):
     for het in range(n_minor % 2, min(n_minor, n_major) + 1, 2):
         hom_a = (n_minor - het) // 2
         hom_b = (n_major - het) // 2
-        lp = (_log_fact(n) - _log_fact(hom_a) - _log_fact(het) -
-              _log_fact(hom_b) + het * math.log(2.0))
+        lp = _log_fact(n) - _log_fact(hom_a) - _log_fact(het) - _log_fact(hom_b) + het * math.log(2.0)
         probs[het] = lp
         lognorm = lp if lognorm is None else max(lognorm, lp)
     tot = sum(math.exp(v - lognorm) for v in probs.values())
     obs_lp = probs.get(h)
     if obs_lp is None:
-        raise ValueError("snpqc1: the observed heterozygote count is "
-                         "impossible given the allele counts")
+        raise ValueError("snpqc1: the observed heterozygote count is impossible given the allele counts")
     thresh = math.exp(obs_lp - lognorm) * (1.0 + 1e-9)
-    p = sum(math.exp(v - lognorm) for v in probs.values()
-            if math.exp(v - lognorm) <= thresh) / tot
+    p = sum(math.exp(v - lognorm) for v in probs.values() if math.exp(v - lognorm) <= thresh) / tot
     return min(max(p, 0.0), 1.0)
 
 
@@ -205,8 +210,7 @@ def heterozygosity(genotypes):
     out = []
     for i in range(n):
         called = [g for g in G[i] if g is not None]
-        out.append(sum(1 for g in called if g == 1) / float(len(called))
-                   if called else 0.0)
+        out.append(sum(1 for g in called if g == 1) / float(len(called)) if called else 0.0)
     return out
 
 
@@ -232,17 +236,14 @@ def sex_check(x_genotypes, reported_sex=None, male_min=0.8, female_max=0.2):
             obs_hom += 1.0 if g != 1 else 0.0
             exp_hom += 1.0 - 2.0 * p * (1.0 - p)
         denom = sum(1 for j in range(m) if G[i][j] is not None) - exp_hom
-        out.append((obs_hom - exp_hom) / denom if abs(denom) > 1e-12
-                   else float("nan"))
-    called = [1 if f > male_min else (2 if f < female_max else 0)
-              for f in out]
+        out.append((obs_hom - exp_hom) / denom if abs(denom) > 1e-12 else float("nan"))
+    called = [1 if f > male_min else (2 if f < female_max else 0) for f in out]
     res = {"F": out, "inferred_sex": called}
     if reported_sex is not None:
         rep = [int(v) for v in reported_sex]
         if len(rep) != n:
             raise ValueError("snpqc1: one reported sex per individual")
-        res["discrepant"] = [i for i in range(n)
-                             if called[i] != 0 and called[i] != rep[i]]
+        res["discrepant"] = [i for i in range(n) if called[i] != 0 and called[i] != rep[i]]
         res["undetermined"] = [i for i in range(n) if called[i] == 0]
     return res
 
@@ -269,9 +270,7 @@ def ibs_given_ibd(x_count, y_count, correction=True):
     if not correction or T < 5 or X < 4 or Y < 4:
         # textbook forms; also the fallback when the corrected factors
         # would divide by a count too small to support them
-        z0 = [2 * p * p * q * q,
-              4 * p ** 3 * q + 4 * p * q ** 3,
-              p ** 4 + q ** 4 + 4 * p * p * q * q]
+        z0 = [2 * p * p * q * q, 4 * p**3 * q + 4 * p * q**3, p**4 + q**4 + 4 * p * p * q * q]
         z1 = [0.0, 2 * p * q, 1.0 - 2 * p * q]
         return [z0, z1, [0.0, 0.0, 1.0]]
 
@@ -280,14 +279,14 @@ def ibs_given_ibd(x_count, y_count, correction=True):
     ya, yb, yc = (Y - 1.0) / Y, (Y - 2.0) / Y, (Y - 3.0) / Y
 
     i0z0 = 2 * p * p * q * q * xa * ya * t1 * t2 * t3
-    i1z0 = (4 * p ** 3 * q * xa * xb * t1 * t2 * t3 +
-            4 * p * q ** 3 * ya * yb * t1 * t2 * t3)
-    i2z0 = (p ** 4 * xa * xb * xc * t1 * t2 * t3 +
-            q ** 4 * ya * yb * yc * t1 * t2 * t3 +
-            4 * p * p * q * q * xa * ya * t1 * t2 * t3)
-    i1z1 = (2 * p * p * q * xa * t1 * t2 + 2 * p * q * q * ya * t1 * t2)
-    i2z1 = (p ** 3 * xa * xb * t1 * t2 + q ** 3 * ya * yb * t1 * t2 +
-            p * p * q * xa * t1 * t2 + p * q * q * ya * t1 * t2)
+    i1z0 = 4 * p**3 * q * xa * xb * t1 * t2 * t3 + 4 * p * q**3 * ya * yb * t1 * t2 * t3
+    i2z0 = (
+        p**4 * xa * xb * xc * t1 * t2 * t3
+        + q**4 * ya * yb * yc * t1 * t2 * t3
+        + 4 * p * p * q * q * xa * ya * t1 * t2 * t3
+    )
+    i1z1 = 2 * p * p * q * xa * t1 * t2 + 2 * p * q * q * ya * t1 * t2
+    i2z1 = p**3 * xa * xb * t1 * t2 + q**3 * ya * yb * t1 * t2 + p * p * q * xa * t1 * t2 + p * q * q * ya * t1 * t2
     return [[i0z0, i1z0, i2z0], [0.0, i1z1, i2z1], [0.0, 0.0, 1.0]]
 
 
@@ -305,10 +304,10 @@ def ibd_moments(genotypes, correction=True):
         if not called:
             tables.append(None)
             continue
-        X = sum(called)                       # copies of the minor allele
+        X = sum(called)  # copies of the minor allele
         Y = 2 * len(called) - X
         if X <= 0 or Y <= 0:
-            tables.append(None)               # monomorphic: uninformative
+            tables.append(None)  # monomorphic: uninformative
             continue
         tables.append(ibs_given_ibd(X, Y, correction))
 
@@ -335,10 +334,8 @@ def ibd_moments(genotypes, correction=True):
                 Z[i][k] = Z[k][i] = (1.0, 0.0, 0.0)
                 continue
             z0 = obs[0] / exp[0][0]
-            z1 = ((obs[1] - z0 * exp[0][1]) / exp[1][1]
-                  if exp[1][1] > 0 else 0.0)
-            z2 = ((obs[2] - z0 * exp[0][2] - z1 * exp[1][2]) / exp[2][2]
-                  if exp[2][2] > 0 else 0.0)
+            z1 = (obs[1] - z0 * exp[0][1]) / exp[1][1] if exp[1][1] > 0 else 0.0
+            z2 = (obs[2] - z0 * exp[0][2] - z1 * exp[1][2]) / exp[2][2] if exp[2][2] > 0 else 0.0
             # the paper's bounding rules, as printed
             if z0 > 1.0:
                 z0, z1, z2 = 1.0, 0.0, 0.0
@@ -394,8 +391,7 @@ def kinship_matrix(genotypes):
                 if gi is None or gk is None:
                     continue
                 p = freqs[j]
-                tot += ((gi - 2 * p) * (gk - 2 * p) /
-                        (2.0 * p * (1.0 - p)))
+                tot += (gi - 2 * p) * (gk - 2 * p) / (2.0 * p * (1.0 - p))
                 cnt += 1
             v = tot / cnt if cnt else 0.0
             K[i][k] = K[k][i] = v
@@ -410,8 +406,7 @@ def ld_prune(genotypes, window=50, step=5, r2=0.2):
     keep = list(range(m))
 
     def corr2(j, k):
-        pairs = [(G[i][j], G[i][k]) for i in range(n)
-                 if G[i][j] is not None and G[i][k] is not None]
+        pairs = [(G[i][j], G[i][k]) for i in range(n) if G[i][j] is not None and G[i][k] is not None]
         if len(pairs) < 3:
             return 0.0
         mj = sum(a for a, _ in pairs) / len(pairs)
@@ -425,7 +420,7 @@ def ld_prune(genotypes, window=50, step=5, r2=0.2):
 
     start = 0
     while start < len(keep):
-        block = keep[start:start + window]
+        block = keep[start : start + window]
         drop = set()
         for a in range(len(block)):
             if block[a] in drop:
@@ -440,11 +435,26 @@ def ld_prune(genotypes, window=50, step=5, r2=0.2):
     return keep
 
 
-def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
-           mind_relaxed=0.2, geno=0.02, mind=0.02, maf_threshold=0.01,
-           hwe_case=1e-10, hwe_control=1e-6, hwe_quantitative=1e-6,
-           het_sd=3.0, pihat=0.2, hwe_test="exact", x_genotypes=None,
-           reported_sex=None, relatedness="pihat", ibd_correction=True):
+def snpqc1(
+    genotypes,
+    phenotype=None,
+    trait="binary",
+    geno_relaxed=0.2,
+    mind_relaxed=0.2,
+    geno=0.02,
+    mind=0.02,
+    maf_threshold=0.01,
+    hwe_case=1e-10,
+    hwe_control=1e-6,
+    hwe_quantitative=1e-6,
+    het_sd=3.0,
+    pihat=0.2,
+    hwe_test="exact",
+    x_genotypes=None,
+    reported_sex=None,
+    relatedness="pihat",
+    ibd_correction=True,
+):
     r"""Run the tutorial's QC steps and report what each one removes.
 
     Defaults are the tutorial's own thresholds. ``trait`` selects the HWE
@@ -477,9 +487,7 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
     G, n, m = _check(genotypes)
     if trait not in ("binary", "quantitative"):
         raise ValueError("snpqc1: trait must be 'binary' or 'quantitative'")
-    for name, v in (("geno", geno), ("mind", mind),
-                    ("geno_relaxed", geno_relaxed),
-                    ("mind_relaxed", mind_relaxed)):
+    for name, v in (("geno", geno), ("mind", mind), ("geno_relaxed", geno_relaxed), ("mind_relaxed", mind_relaxed)):
         if not 0.0 <= float(v) <= 1.0:
             raise ValueError("snpqc1: %s must lie in [0, 1]" % name)
     if not 0.0 <= float(maf_threshold) < 0.5:
@@ -487,27 +495,34 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
 
     snps = list(range(m))
     inds = list(range(n))
-    removed = {"geno_relaxed": [], "mind_relaxed": [], "geno": [],
-               "mind": [], "maf": [], "hwe": [], "heterozygosity": [],
-               "relatedness": [], "sex": []}
+    removed = {
+        "geno_relaxed": [],
+        "mind_relaxed": [],
+        "geno": [],
+        "mind": [],
+        "maf": [],
+        "hwe": [],
+        "heterozygosity": [],
+        "relatedness": [],
+        "sex": [],
+    }
 
     def sub():
         return [[G[i][j] for j in snps] for i in inds]
 
     # step 1, relaxed then stringent, SNPs before individuals each time
-    for gthr, mthr, gkey, mkey in ((geno_relaxed, mind_relaxed,
-                                    "geno_relaxed", "mind_relaxed"),
-                                   (geno, mind, "geno", "mind")):
+    for gthr, mthr, gkey, mkey in (
+        (geno_relaxed, mind_relaxed, "geno_relaxed", "mind_relaxed"),
+        (geno, mind, "geno", "mind"),
+    ):
         cr_snp, _ = call_rates(sub())
-        drop = [snps[t] for t in range(len(snps))
-                if 1.0 - cr_snp[t] > gthr]
+        drop = [snps[t] for t in range(len(snps)) if 1.0 - cr_snp[t] > gthr]
         removed[gkey] = drop
         snps = [j for j in snps if j not in set(drop)]
         if not snps:
             break
         _, cr_ind = call_rates(sub())
-        dropi = [inds[t] for t in range(len(inds))
-                 if 1.0 - cr_ind[t] > mthr]
+        dropi = [inds[t] for t in range(len(inds)) if 1.0 - cr_ind[t] > mthr]
         removed[mkey] = dropi
         inds = [i for i in inds if i not in set(dropi)]
         if not inds:
@@ -517,10 +532,10 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
 
     # step 2, sex discrepancy
     if x_genotypes is not None:
-        sx = sex_check([[x_genotypes[i][j]
-                         for j in range(len(x_genotypes[0]))]
-                        for i in inds], None if reported_sex is None
-                       else [reported_sex[i] for i in inds])
+        sx = sex_check(
+            [[x_genotypes[i][j] for j in range(len(x_genotypes[0]))] for i in inds],
+            None if reported_sex is None else [reported_sex[i] for i in inds],
+        )
         if reported_sex is not None:
             bad = [inds[t] for t in sx["discrepant"]]
             removed["sex"] = bad
@@ -539,6 +554,7 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
     hwe_p = []
     drop = []
     for t, j in enumerate(snps):
+
         def counts(rows):
             a = h = b = 0
             for i in rows:
@@ -552,6 +568,7 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
                 else:
                     b += 1
             return a, h, b
+
         if trait == "quantitative" or pheno is None:
             a, h, b = counts(inds)
             p = hwe_pvalue(a, h, b, hwe_test)
@@ -574,17 +591,15 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
     # step 5, heterozygosity, +- het_sd SD from the mean
     het = heterozygosity(sub())
     mean = sum(het) / len(het)
-    var = (sum((v - mean) ** 2 for v in het) / max(1, len(het) - 1))
+    var = sum((v - mean) ** 2 for v in het) / max(1, len(het) - 1)
     sd = math.sqrt(var)
-    drop = [inds[t] for t in range(len(inds))
-            if sd > 0 and abs(het[t] - mean) > het_sd * sd]
+    drop = [inds[t] for t in range(len(inds)) if sd > 0 and abs(het[t] - mean) > het_sd * sd]
     removed["heterozygosity"] = drop
     inds = [i for i in inds if i not in set(drop)]
 
     # step 6, relatedness on pruned SNPs
     if relatedness not in ("pihat", "kinship"):
-        raise ValueError("snpqc1: relatedness must be 'pihat' (PLINK's "
-                         "method-of-moments IBD) or 'kinship'")
+        raise ValueError("snpqc1: relatedness must be 'pihat' (PLINK's method-of-moments IBD) or 'kinship'")
     pruned = ld_prune(sub())
     pruned_geno = [[G[i][snps[t]] for t in pruned] for i in inds]
     if relatedness == "pihat":
@@ -599,56 +614,67 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
     removed["relatedness"] = drop
     inds = [i for i in inds if i not in set(drop)]
 
-    return RichResult(payload={
-        "estimate": snps,
-        "keep_snps": snps,
-        "keep_individuals": inds,
-        "removed": removed,
-        "n_snps_kept": len(snps),
-        "n_individuals_kept": len(inds),
-        "call_rate_snp": call_rates(genotypes)[0],
-        "call_rate_ind": call_rates(genotypes)[1],
-        "maf": freqs,
-        "hwe_p": hwe_p,
-        "heterozygosity": het,
-        "relatedness_matrix": K,
-        "kinship": K,
-        "ibd_states": Zstates,
-        "relatedness": relatedness,
-        "pruned_snps": [snps[t] for t in pruned],
-        "thresholds": {"geno_relaxed": geno_relaxed,
-                       "mind_relaxed": mind_relaxed, "geno": geno,
-                       "mind": mind, "maf": maf_threshold,
-                       "hwe_case": hwe_case, "hwe_control": hwe_control,
-                       "hwe_quantitative": hwe_quantitative,
-                       "het_sd": het_sd, "pihat": pihat},
-        "trait": trait,
-        "hwe_test": hwe_test,
-        "note": ("relatedness by PLINK's method-of-moments IBD (Purcell "
-                 "et al. 2007), pi-hat = P(Z=2) + P(Z=1)/2"
-                 if relatedness == "pihat" else
-                 "relatedness by genomic kinship, NOT PLINK's pi-hat; "
-                 "pass relatedness='pihat' for the IBD estimator") +
-                "; the 0.2 cutoff is the tutorial's",
-        "method": "GWAS quality control (Marees et al. 2018, Table 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": snps,
+            "keep_snps": snps,
+            "keep_individuals": inds,
+            "removed": removed,
+            "n_snps_kept": len(snps),
+            "n_individuals_kept": len(inds),
+            "call_rate_snp": call_rates(genotypes)[0],
+            "call_rate_ind": call_rates(genotypes)[1],
+            "maf": freqs,
+            "hwe_p": hwe_p,
+            "heterozygosity": het,
+            "relatedness_matrix": K,
+            "kinship": K,
+            "ibd_states": Zstates,
+            "relatedness": relatedness,
+            "pruned_snps": [snps[t] for t in pruned],
+            "thresholds": {
+                "geno_relaxed": geno_relaxed,
+                "mind_relaxed": mind_relaxed,
+                "geno": geno,
+                "mind": mind,
+                "maf": maf_threshold,
+                "hwe_case": hwe_case,
+                "hwe_control": hwe_control,
+                "hwe_quantitative": hwe_quantitative,
+                "het_sd": het_sd,
+                "pihat": pihat,
+            },
+            "trait": trait,
+            "hwe_test": hwe_test,
+            "note": (
+                "relatedness by PLINK's method-of-moments IBD (Purcell et al. 2007), pi-hat = P(Z=2) + P(Z=1)/2"
+                if relatedness == "pihat"
+                else "relatedness by genomic kinship, NOT PLINK's pi-hat; "
+                "pass relatedness='pihat' for the IBD estimator"
+            )
+            + "; the 0.2 cutoff is the tutorial's",
+            "method": "GWAS quality control (Marees et al. 2018, Table 1)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("snpqc1: GWAS QC (Marees et al. 2018, Table 1). Seven steps "
-            "with the tutorial's own thresholds: missingness in TWO passes "
-            "(0.2 relaxed, then 0.02) and SNPs BEFORE individuals each "
-            "time; sex check on X homozygosity (>0.8 male, <0.2 female); "
-            "MAF 0.01 large samples / 0.05 moderate; HWE 1e-10 in cases "
-            "and 1e-6 in controls for binary traits, 1e-6 for "
-            "quantitative; heterozygosity +-3 SD from the mean; "
-            "relatedness above 0.2 after LD pruning. HWE by exact "
-            "conditional test or chi-square. Relatedness has TWO routes: "
-            "PLINK's method-of-moments IBD (Purcell 2007) giving "
-            "pi-hat = P(Z=2) + P(Z=1)/2 with the paper's bounding rules "
-            "and ascertainment correction, which is the default and the "
-            "statistic the 0.2 cutoff was written for, or a genomic "
-            "kinship on the same scale.")
+    return (
+        "snpqc1: GWAS QC (Marees et al. 2018, Table 1). Seven steps "
+        "with the tutorial's own thresholds: missingness in TWO passes "
+        "(0.2 relaxed, then 0.02) and SNPs BEFORE individuals each "
+        "time; sex check on X homozygosity (>0.8 male, <0.2 female); "
+        "MAF 0.01 large samples / 0.05 moderate; HWE 1e-10 in cases "
+        "and 1e-6 in controls for binary traits, 1e-6 for "
+        "quantitative; heterozygosity +-3 SD from the mean; "
+        "relatedness above 0.2 after LD pruning. HWE by exact "
+        "conditional test or chi-square. Relatedness has TWO routes: "
+        "PLINK's method-of-moments IBD (Purcell 2007) giving "
+        "pi-hat = P(Z=2) + P(Z=1)/2 with the paper's bounding rules "
+        "and ascertainment correction, which is the default and the "
+        "statistic the 0.2 cutoff was written for, or a genomic "
+        "kinship on the same scale."
+    )
 
 
 # compact aliases

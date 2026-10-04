@@ -1,7 +1,6 @@
 """Tests for morie.fn.rf_ — random forest."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rf_ import random_forest_simple
 
 

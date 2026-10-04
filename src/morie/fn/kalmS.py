@@ -51,7 +51,11 @@ def _fwd(Y, F, H, Q, R, x, P):
         P = [[Ppred[i][j] - sum(KH[i][k] * Ppred[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
         sv = core.cholsolve(S, v)
         L = core.chol(S)
-        ll += -0.5 * (m * math.log(2.0 * math.pi) + 2.0 * sum(math.log(L[i][i]) for i in range(m)) + sum(v[i] * sv[i] for i in range(m)))
+        ll += -0.5 * (
+            m * math.log(2.0 * math.pi)
+            + 2.0 * sum(math.log(L[i][i]) for i in range(m))
+            + sum(v[i] * sv[i] for i in range(m))
+        )
         xs.append(list(x))
         Ps.append([r[:] for r in P])
         xp.append(list(xpred))

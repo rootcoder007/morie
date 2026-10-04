@@ -3,20 +3,20 @@
 Truth oracles: Monte Carlo with measured rates, scipy beta/binomial
 identities, and the PDF-verified Theorem 2.11.1."""
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.gb221 import gibbons_quantile_deriv
+from morie.fn.gb232 import gibbons_glivenko_cantelli
+from morie.fn.gb233 import gibbons_edf_asymp_normal
+from morie.fn.gb251 import gibbons_pit
 from morie.fn.gb2111 import gibbons_tolerance_beta
 from morie.fn.gb2111c import gibbons_elementary_coverage_beta
 from morie.fn.gb2112 import gibbons_block_freq_dist
 from morie.fn.gb2311 import gibbons_edf_mean_var
 from morie.fn.gb2313 import gibbons_edf_joint_moment
-from morie.fn.gb232 import gibbons_glivenko_cantelli
-from morie.fn.gb233 import gibbons_edf_asymp_normal
 from morie.fn.gb2431 import gibbons_binomial_beta_link
-from morie.fn.gb251 import gibbons_pit
 from morie.fn.gb_eqf import gibbons_emp_quantile
 from morie.fn.gb_lsm import gibbons_large_sample_moments
 from morie.fn.gb_med import gibbons_median_dist
@@ -73,9 +73,7 @@ def test_quantile_derivative_identity_and_lsm():
     z = stats.norm.ppf(0.8)
     assert out["Q_prime"] == pytest.approx(1.0 / stats.norm.pdf(z), rel=1e-8)
     # Q'' = -f'/f^3 with f'(z) = -z phi(z)
-    assert out["Q_double_prime"] == pytest.approx(
-        z * stats.norm.pdf(z) / stats.norm.pdf(z) ** 3, rel=1e-4
-    )
+    assert out["Q_double_prime"] == pytest.approx(z * stats.norm.pdf(z) / stats.norm.pdf(z) ** 3, rel=1e-4)
     # large-sample moments vs Monte Carlo for the normal median-ish stat
     r, n = 15, 29
     approx = gibbons_large_sample_moments(r, n)
@@ -170,15 +168,11 @@ def test_rank_identity_and_median_range_distributions():
     # and matches Monte Carlo elsewhere
     rng = np.random.default_rng(6)
     sims = np.median(rng.standard_normal((6000, 11)), axis=1)
-    assert gibbons_median_dist(0.3, 11)["cdf"] == pytest.approx(
-        (sims <= 0.3).mean(), abs=0.02
-    )
+    assert gibbons_median_dist(0.3, 11)["cdf"] == pytest.approx((sims <= 0.3).mean(), abs=0.02)
     with pytest.raises(ValueError):
         gibbons_median_dist(0.0, 10)  # even n refused
     # range CDF vs Monte Carlo
     sims_w = np.ptp(rng.standard_normal((5000, 8)), axis=1)
-    assert gibbons_range_dist(3.0, 8)["cdf"] == pytest.approx(
-        (sims_w <= 3.0).mean(), abs=0.02
-    )
+    assert gibbons_range_dist(3.0, 8)["cdf"] == pytest.approx((sims_w <= 3.0).mean(), abs=0.02)
     with pytest.raises(ValueError):
         gibbons_range_dist(-1.0, 8)

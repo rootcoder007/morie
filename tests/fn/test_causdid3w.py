@@ -1,7 +1,6 @@
 """Tests for causdid3w.causal_did_three_way."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causdid3w import causal_did_three_way
 
 
@@ -24,8 +23,7 @@ def test_causdid3w_basic():
                 cells[(g, t, p)] = float(y[mask].mean())
 
     def did(g):
-        return ((cells[(g, 1, 1)] - cells[(g, 1, 0)])
-                - (cells[(g, 0, 1)] - cells[(g, 0, 0)]))
+        return (cells[(g, 1, 1)] - cells[(g, 1, 0)]) - (cells[(g, 0, 1)] - cells[(g, 0, 0)])
 
     expected_did_eligible = did(1)
     expected_did_placebo = did(0)
@@ -40,8 +38,7 @@ def test_causdid3w_basic():
     assert abs(result["ddd"] - expected_ddd) < 1e-12
     assert abs(result["did_eligible"] - expected_did_eligible) < 1e-12
     assert abs(result["did_placebo"] - expected_did_placebo) < 1e-12
-    for key in [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
-                (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]:
+    for key in [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]:
         assert abs(result["cell_means"][key] - cells[key]) < 1e-12
     assert result["se"] >= 0.0
 
@@ -65,8 +62,7 @@ def test_causdid3w_edge():
                 cells[(g, t, p)] = float(y[mask].mean())
 
     def did(g):
-        return ((cells[(g, 1, 1)] - cells[(g, 1, 0)])
-                - (cells[(g, 0, 1)] - cells[(g, 0, 0)]))
+        return (cells[(g, 1, 1)] - cells[(g, 1, 0)]) - (cells[(g, 0, 1)] - cells[(g, 0, 0)])
 
     expected_did_eligible = did(1)
     expected_did_placebo = did(0)
@@ -81,6 +77,5 @@ def test_causdid3w_edge():
     assert abs(result["ddd"] - expected_ddd) < 1e-12
     assert abs(result["did_eligible"] - expected_did_eligible) < 1e-12
     assert abs(result["did_placebo"] - expected_did_placebo) < 1e-12
-    for key in [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
-                (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]:
+    for key in [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]:
         assert abs(result["cell_means"][key] - cells[key]) < 1e-12

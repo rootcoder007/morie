@@ -1,8 +1,8 @@
 """Tests for morie.fn.thopf — Hopf fibration."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.thopf import hopf_fibration
 
 

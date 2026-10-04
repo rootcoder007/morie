@@ -1,7 +1,6 @@
 """Tests for ghs027.ghosal_ch3_tailfree_strong_support_event."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs027 import ghosal_ch3_tailfree_strong_support_event
 
 

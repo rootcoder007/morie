@@ -80,8 +80,7 @@ def deit_distill(x, teacher=None, y=None, mode="hard", lam=0.5, tau=1.0):
         kl = 0.0
         for i in range(len(ptt)):
             if ptt[i] > 0.0:
-                kl += ptt[i] * (math.log(ptt[i])
-                                - math.log(pst[i] if pst[i] > _EPS else _EPS))
+                kl += ptt[i] * (math.log(ptt[i]) - math.log(pst[i] if pst[i] > _EPS else _EPS))
         kd = float(lam) * t * t * kl
         total = (1.0 - float(lam)) * ce + kd
     else:

@@ -90,14 +90,13 @@ def geron_max_pooling(X, k=2, stride=None):
     arg = np.empty((out_h, out_w), dtype=int)
     for i in range(out_h):
         for j in range(out_w):
-            win = A[i * s:i * s + k, j * s:j * s + k]
+            win = A[i * s : i * s + k, j * s : j * s + k]
             Y[i, j] = win.max()
             arg[i, j] = int(win.argmax())
 
     return RichResult(
         title="Max pooling",
-        summary_lines=[("Input", (H, W)), ("Output", (out_h, out_w)),
-                       ("k / stride", f"{k} / {s}")],
+        summary_lines=[("Input", (H, W)), ("Output", (out_h, out_w)), ("k / stride", f"{k} / {s}")],
         payload={
             "output": Y.tolist(),
             "output_shape": (int(out_h), int(out_w)),

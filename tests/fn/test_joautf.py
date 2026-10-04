@@ -1,7 +1,6 @@
 """Tests for joautf.joseph_autoformer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.joautf import joseph_autoformer
 
 

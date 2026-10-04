@@ -1,9 +1,10 @@
 """Tests for zxcpc."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.zxcpc import copula_clayton_sp
+
 
 def test_zxcpc_basic():
     rng = np.random.default_rng(42)

@@ -76,19 +76,14 @@ def geron_resnet_skip(x, Fx, projection=None):
     if fa.shape != xa.shape:
         if projection is None:
             raise ValueError(
-                f"F(x) has shape {fa.shape} but x has shape {xa.shape}; "
-                "supply projection= for a shape-changing block."
+                f"F(x) has shape {fa.shape} but x has shape {xa.shape}; supply projection= for a shape-changing block."
             )
         P = np.atleast_2d(np.asarray(projection, dtype=float))
         if P.ndim != 2 or P.shape[0] != xa.shape[-1]:
-            raise ValueError(
-                f"projection must be (d_in={xa.shape[-1]}, d_out), got shape {P.shape}."
-            )
+            raise ValueError(f"projection must be (d_in={xa.shape[-1]}, d_out), got shape {P.shape}.")
         short = xa @ P
         if short.shape != fa.shape:
-            raise ValueError(
-                f"projected shortcut has shape {short.shape} but F(x) has {fa.shape}."
-            )
+            raise ValueError(f"projected shortcut has shape {short.shape} but F(x) has {fa.shape}.")
 
     out = fa + short
     fn = float(np.linalg.norm(fa))

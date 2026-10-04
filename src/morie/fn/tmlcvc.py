@@ -26,7 +26,10 @@ def cvtmle(y, a, q0, q1, g, fold, n_newton=50):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Cross-validated TMLE of the ATE", payload=_c.cvtmle(y=y, a=a, q0=q0, q1=q1, g=g, fold=fold, n_newton=n_newton))
+    return RichResult(
+        title="Cross-validated TMLE of the ATE",
+        payload=_c.cvtmle(y=y, a=a, q0=q0, q1=q1, g=g, fold=fold, n_newton=n_newton),
+    )
 
 
 tmle_cv_targeting = cvtmle

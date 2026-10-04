@@ -1,7 +1,6 @@
 """Tests for elasrg.elastic_net_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.elasrg import elastic_net_regression
 
 
@@ -17,10 +16,19 @@ def test_elasrg_basic():
 
     # Verify the documented return-key names are present.
     expected_keys = {
-        "estimate", "beta", "n_nonzero", "objective",
-        "lambda1", "lambda2", "equivalent_lambda",
-        "equivalent_alpha", "iterations", "converged",
-        "n", "p", "method",
+        "estimate",
+        "beta",
+        "n_nonzero",
+        "objective",
+        "lambda1",
+        "lambda2",
+        "equivalent_lambda",
+        "equivalent_alpha",
+        "iterations",
+        "converged",
+        "n",
+        "p",
+        "method",
     }
     for key in expected_keys:
         assert key in result, f"missing key: {key}"
@@ -43,6 +51,7 @@ def test_elasrg_basic():
         assert abs(result["equivalent_alpha"] - lam1 / total) < 1e-12
     else:
         import math
+
         assert math.isnan(result["equivalent_alpha"])
 
     # Convergence is documented as a boolean.
@@ -81,5 +90,6 @@ def test_elasrg_edge():
 
     # equivalent_alpha is undefined (0/0) when both penalties are 0.
     import math
+
     assert math.isnan(result["equivalent_alpha"])
     assert result["equivalent_lambda"] == 0.0

@@ -27,18 +27,17 @@ def ca_chapter_11_equation_37(ys, ws):
     ch.11 eq.11.37
     """
     payload = dict(_ca_crim.mean_effect_size(ys, ws))
-    value = payload['z']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["z"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.37)"
     return RichResult(
-        title='z-test for the mean effect size z = ybar / se',
+        title="z-test for the mean effect size z = ybar / se",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e37: z = ybar / se_ybar [Weisburd et al. 2022, eq. 11.37]'
+    return "ca11e37: z = ybar / se_ybar [Weisburd et al. 2022, eq. 11.37]"

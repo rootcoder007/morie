@@ -18,8 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["basexp", "mvsml_convolutional_nn_eq_14_2"]
 
 
-def basexp(t, beta_coef, kind='fourier', period=None):
-
+def basexp(t, beta_coef, kind="fourier", period=None):
     """beta(t) = sum_{l=1}^{L1} beta_l phi_l(t) (eq. 14.2), where the
     phi_l are the first L1 elements of a basis for a function space
     (Fourier, B-spline, polynomial) and the beta_l are constants.
@@ -31,8 +30,7 @@ def basexp(t, beta_coef, kind='fourier', period=None):
 
     coefs = list(beta_coef)
     vals = _gp.fda_beta_function(t, coefs, len(coefs), kind=kind)
-    res = RichResult(payload={"beta_t": vals, "t": list(t),
-                              "n_basis": len(coefs)})
+    res = RichResult(payload={"beta_t": vals, "t": list(t), "n_basis": len(coefs)})
 
     return with_describe_pointer(res, "msm262")
 

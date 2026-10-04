@@ -60,11 +60,16 @@ def schabenberger_icar_prior(w, tau2=1.0):
         cond_var = np.where(d > 0, float(tau2) / np.where(d > 0, d, 1.0), np.inf)
     return RichResult(
         title="Intrinsic CAR (ICAR) prior",
-        summary_lines=[("n", n), ("rank", rank),
-                       ("rank deficiency", n - rank)],
-        payload={"Q": Q, "D": D, "rank": rank, "n_components": n - rank,
-                 "is_improper": rank < n,
-                 "conditional_variances": cond_var, "tau2": float(tau2)},
+        summary_lines=[("n", n), ("rank", rank), ("rank deficiency", n - rank)],
+        payload={
+            "Q": Q,
+            "D": D,
+            "rank": rank,
+            "n_components": n - rank,
+            "is_improper": rank < n,
+            "conditional_variances": cond_var,
+            "tau2": float(tau2),
+        },
     )
 
 

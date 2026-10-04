@@ -29,13 +29,18 @@ def burkov_lm_ch2_categorical_cross_entropy(y_hat, c):
         raise ValueError(f"class {c} is out of range for {len(p)} classes.")
     if np.any(p < 0) or abs(float(p.sum()) - 1.0) > 1e-8:
         raise ValueError(
-            "y_hat must be a probability distribution (non-negative, "
-            f"summing to 1); it sums to {float(p.sum()):.6g}.")
+            f"y_hat must be a probability distribution (non-negative, summing to 1); it sums to {float(p.sum()):.6g}."
+        )
     loss = float(-np.log(p[c])) if p[c] > 0 else float("inf")
-    return RichResult(payload={
-        "estimate": loss, "p_correct": float(p[c]), "n_classes": len(p),
-        "n": len(p),
-        "method": "Categorical cross-entropy -log p_c (Burkov Eq 2.1)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "p_correct": float(p[c]),
+            "n_classes": len(p),
+            "n": len(p),
+            "method": "Categorical cross-entropy -log p_c (Burkov Eq 2.1)",
+        }
+    )
 
 
 def cheatsheet():

@@ -31,9 +31,7 @@ def test_hrzcbsm_edge():
     x = rng.normal(0, 1, (n, d))
     y = [0.0] * (n // 2) + [1.0] * (n - n // 2)
     sampling_weights = [0.6, 0.4]
-    result = horowitz_choice_based_sms(
-        x, y, sampling_weights, smoothed=False, n_restarts=2, seed=7
-    )
+    result = horowitz_choice_based_sms(x, y, sampling_weights, smoothed=False, n_restarts=2, seed=7)
     assert isinstance(result, dict)
     assert "beta" in result
     assert "method" in result

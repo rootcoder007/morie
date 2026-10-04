@@ -142,8 +142,7 @@ def _is_guess(match) -> bool:
 
 @pytest.mark.skipif(
     sys.platform == "win32",
-    reason="repo-content check; identical on every platform, and a 36k-file "
-    "walk is pathologically slow on Windows I/O",
+    reason="repo-content check; identical on every platform, and a 36k-file walk is pathologically slow on Windows I/O",
 )
 def test_no_generator_guessed_value_asserts():
     offenders = []

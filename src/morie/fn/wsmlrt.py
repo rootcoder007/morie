@@ -52,11 +52,18 @@ def lrtest(loglik_full, loglik_null, df):
     if lam < 0:
         raise ValueError(
             "the unrestricted log-likelihood is below the restricted one; "
-            "the models are not nested or one did not converge")
-    return RichResult(payload={
-        "statistic": lam, "p_value": 1.0 - C.pchisq(lam, df),
-        "df": float(df), "loglik_full": lf, "loglik_null": ln,
-        "method": "Likelihood ratio test, Wasserman Theorem 10.22"})
+            "the models are not nested or one did not converge"
+        )
+    return RichResult(
+        payload={
+            "statistic": lam,
+            "p_value": 1.0 - C.pchisq(lam, df),
+            "df": float(df),
+            "loglik_full": lf,
+            "loglik_null": ln,
+            "method": "Likelihood ratio test, Wasserman Theorem 10.22",
+        }
+    )
 
 
 wasserman_lrt = lrtest

@@ -6,7 +6,7 @@ import pytest
 
 from morie.fn.ocrwit import ocr_wit_layout, patch_of_box
 
-W, H, G = 280.0, 140.0, 14   # patches are 20 x 10 page units
+W, H, G = 280.0, 140.0, 14  # patches are 20 x 10 page units
 
 
 def _cells(box):
@@ -16,10 +16,12 @@ def _cells(box):
     return sorted(r * G + c for r in rs for c in cs)
 
 
-BOXES = [(12.0, 3.0, 18.0, 8.0),      # right half of patch (0, 0)
-         (35.0, 12.0, 65.0, 18.0),    # row 1, columns 1..3
-         (100.0, 50.0, 100.0, 50.0),  # a point on the corner of cells
-         (270.0, 131.0, 280.0, 140.0)]
+BOXES = [
+    (12.0, 3.0, 18.0, 8.0),  # right half of patch (0, 0)
+    (35.0, 12.0, 65.0, 18.0),  # row 1, columns 1..3
+    (100.0, 50.0, 100.0, 50.0),  # a point on the corner of cells
+    (270.0, 131.0, 280.0, 140.0),
+]
 
 
 def test_ocrwit_basic():

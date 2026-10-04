@@ -1,7 +1,6 @@
 """Tests for normal vector projection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nvect import nvect
 
 

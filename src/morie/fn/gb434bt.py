@@ -53,7 +53,10 @@ def gibbons_ks_bt_formula(c, n):
     p = min(max(p, 0.0), 1.0)
     return RichResult(
         payload={
-            "p_exceed": float(p), "cdf": float(1.0 - p), "c": c, "n": n,
+            "p_exceed": float(p),
+            "cdf": float(1.0 - p),
+            "c": c,
+            "n": n,
             "method": "Birnbaum-Tingey exact P(D+_n > c) (Gibbons eq. 4.3.5)",
         }
     )

@@ -1,8 +1,8 @@
 """Tests for morie.fn.sespn -- Simple exponential smoothing."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sespn import ses
 
 

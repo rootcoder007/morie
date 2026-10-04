@@ -31,9 +31,20 @@ from ._richresult import RichResult
 __all__ = ["ppo"]
 
 
-def ppo(env, policy=None, clip_eps=0.2, ratio=None, adv=None, logp_new=None,
-        logp_old=None, v_pred=None, v_targ=None, entropy=None,
-        c1=0.5, c2=0.01):
+def ppo(
+    env,
+    policy=None,
+    clip_eps=0.2,
+    ratio=None,
+    adv=None,
+    logp_new=None,
+    logp_old=None,
+    v_pred=None,
+    v_targ=None,
+    entropy=None,
+    c1=0.5,
+    c2=0.01,
+):
     """The clipped surrogate, and optionally the full PPO objective.
 
     Parameters

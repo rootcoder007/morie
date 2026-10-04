@@ -27,17 +27,16 @@ def spline_odds_ratio(betas, basis_fns, a, b_pt):
     """
     value = _acd.spline_odds_ratio(betas, basis_fns, a, b_pt)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.37)"
     return RichResult(
-        title='Spline odds ratio from basis differences',
+        title="Spline odds ratio from basis differences",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e37: exp(f(a) - f(b)) = exp(sum b_j (h_j(a) - h_j(b))) [Bilder & Loughin 2025, eq. 6.37]'
+    return "6e37: exp(f(a) - f(b)) = exp(sum b_j (h_j(a) - h_j(b))) [Bilder & Loughin 2025, eq. 6.37]"

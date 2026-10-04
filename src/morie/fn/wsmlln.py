@@ -51,11 +51,15 @@ def wasserman_lln(data):
         raise ValueError("the running mean of an empty sample is undefined.")
     running = np.cumsum(data) / np.arange(1, n + 1)
     gap = float(abs(running[-1] - running[-2])) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": float(running[-1]),
-        "running_means": [float(v) for v in running],
-        "last_gap": gap, "n": int(n),
-        "method": "LLN running means X_bar_1..X_bar_n"})
+    return RichResult(
+        payload={
+            "estimate": float(running[-1]),
+            "running_means": [float(v) for v in running],
+            "last_gap": gap,
+            "n": int(n),
+            "method": "LLN running means X_bar_1..X_bar_n",
+        }
+    )
 
 
 def cheatsheet():

@@ -10,8 +10,7 @@ here takes ``pi`` or weights rather than a distributional assumption.
 
 from . import _array_core as np
 
-__all__ = ["check_weights", "ht_total", "hajek_mean", "linearise",
-           "srs_variance"]
+__all__ = ["check_weights", "ht_total", "hajek_mean", "linearise", "srs_variance"]
 
 
 def check_weights(w, n, name="weights"):

@@ -1,7 +1,6 @@
 """Tests for morie.fn.rbfin."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rbfin import rbf_interp
 
 

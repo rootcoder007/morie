@@ -30,8 +30,7 @@ def kamath_ch8_pass_at_k(n, c, k):
     """
     n_i, c_i, k_i = int(n), int(c), int(k)
     if n_i != n or c_i != c or k_i != k:
-        raise ValueError("n, c and k are sample counts and must be "
-                         "integers.")
+        raise ValueError("n, c and k are sample counts and must be integers.")
     if n_i < 1:
         raise ValueError("at least one sample must be generated.")
     if not (0 <= c_i <= n_i):
@@ -44,10 +43,17 @@ def kamath_ch8_pass_at_k(n, c, k):
         ratio = 1.0
         for i in range(k_i):
             ratio *= (n_i - c_i - i) / (n_i - i)
-    return RichResult(payload={
-        "estimate": 1.0 - ratio, "fail_probability": ratio,
-        "n_samples": n_i, "n_correct": c_i, "k": k_i, "n": n_i,
-        "method": "unbiased pass@k (Kamath Eq 8.16)"})
+    return RichResult(
+        payload={
+            "estimate": 1.0 - ratio,
+            "fail_probability": ratio,
+            "n_samples": n_i,
+            "n_correct": c_i,
+            "k": k_i,
+            "n": n_i,
+            "method": "unbiased pass@k (Kamath Eq 8.16)",
+        }
+    )
 
 
 def cheatsheet():

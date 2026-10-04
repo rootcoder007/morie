@@ -85,19 +85,21 @@ def final_epidemic_size(R0, s0=1.0, i0=None, tol=1e-14, max_iter=200):
             if hi - lo < tol:
                 break
         Z = 0.5 * (lo + hi)
-    return RichResult(payload={
-        "estimate": Z,
-        "final_size": Z,
-        "s_inf": s0 - Z,
-        "attack_rate": Z / s0,
-        "R0": R0,
-        "s0": s0,
-        "i0": i0,
-        "residual": resid(Z),
-        "iters": it,
-        "n": 1,
-        "method": "Final epidemic size (Kermack-McKendrick)",
-    })
+    return RichResult(
+        payload={
+            "estimate": Z,
+            "final_size": Z,
+            "s_inf": s0 - Z,
+            "attack_rate": Z / s0,
+            "R0": R0,
+            "s0": s0,
+            "i0": i0,
+            "residual": resid(Z),
+            "iters": it,
+            "n": 1,
+            "method": "Final epidemic size (Kermack-McKendrick)",
+        }
+    )
 
 
 def cheatsheet():

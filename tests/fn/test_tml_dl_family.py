@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Tests: the 5 TMLE rows and the 10 deep-learning modules."""
+
 import importlib
 import math
 
@@ -34,8 +34,7 @@ def _count_data(n=800, seed=3):
         lam = m1 if a == 1.0 else m0
         A.append(a)
         W.append([w])
-        Y.append(max(float(int(lam + 2.0 * (float(rng.uniform())
-                                            - 0.5))), 0.0))
+        Y.append(max(float(int(lam + 2.0 * (float(rng.uniform()) - 0.5))), 0.0))
         Q1.append(m1)
         Q0.append(m0)
         g.append(p)
@@ -69,14 +68,12 @@ def test_tmlcou_linear_fluctuation_escapes_the_range():
 def test_tmlcou_rescale_is_invertible():
     r = tmlcou.rescale([2.0, 4.0, 6.0])
     assert r["scaled"] == [0.0, 0.5, 1.0]
-    assert abs(tmlcou.unscale(0.5, r["lower"], r["upper"])
-               - 4.0) < 1e-12
+    assert abs(tmlcou.unscale(0.5, r["lower"], r["upper"]) - 4.0) < 1e-12
 
 
 def test_tmlcou_rejects_bad_input():
     with pytest.raises(ValueError):
-        tmlcou.tmle_count_outcome([-1.0, 2.0], [1.0, 0.0],
-                                  [[0.0], [1.0]])
+        tmlcou.tmle_count_outcome([-1.0, 2.0], [1.0, 0.0], [[0.0], [1.0]])
     with pytest.raises(ValueError):
         tmlcou.rescale([1.0, 1.0])
     with pytest.raises(ValueError):
@@ -124,8 +121,7 @@ def _sparse(n=400, seed=21):
     for _ in range(n):
         row = [float(rng.uniform()) - 0.5 for _ in range(12)]
         X.append(row)
-        y.append(2.0 * row[0] - 1.5 * row[1]
-                 + 0.3 * (float(rng.uniform()) - 0.5))
+        y.append(2.0 * row[0] - 1.5 * row[1] + 0.3 * (float(rng.uniform()) - 0.5))
     return X, y
 
 
@@ -152,9 +148,7 @@ def test_tmldgp_penalised_nuisances_still_solve_the_score():
 
 
 def test_tmldgp_penalising_the_fluctuation_breaks_it():
-    r = tmldgp.shrunk_targeting_unsafe([0.4] * 200, [1.0] * 200,
-                                       [1.0] * 60 + [0.0] * 140,
-                                       ridge=50.0)
+    r = tmldgp.shrunk_targeting_unsafe([0.4] * 200, [1.0] * 200, [1.0] * 60 + [0.0] * 140, ridge=50.0)
     assert abs(r["score"]) > 1e-3
 
 
@@ -163,8 +157,7 @@ def test_tmldgp_rejects_bad_input():
     with pytest.raises(ValueError):
         tmldgp.lasso_path(X, y, -1.0)
     with pytest.raises(ValueError):
-        tmldgp.penalised_tmle([2.0, 0.0], [1.0, 0.0],
-                              [[0.0], [1.0]])
+        tmldgp.penalised_tmle([2.0, 0.0], [1.0, 0.0], [[0.0], [1.0]])
 
 
 # ------------------------------------------------------------- tmldyk
@@ -192,8 +185,7 @@ def test_tmldyk_private_interval_is_wider():
 
 
 def test_tmldyk_composition_adds():
-    assert tmldyk.composition_budget([0.1, 0.2,
-                                      0.3])["total_epsilon"] == 0.6
+    assert tmldyk.composition_budget([0.1, 0.2, 0.3])["total_epsilon"] == 0.6
 
 
 def test_tmldyk_rejects_bad_input():
@@ -278,10 +270,7 @@ def test_unetbk_tiles_abut_on_output():
 
 
 def test_unetbk_skip_connection_centre_crops():
-    r = unetbk.skip_concat([[1.0, 2.0]],
-                           [[0.0, 0.0, 0.0, 0.0],
-                            [0.0, 9.0, 9.0, 0.0],
-                            [0.0, 0.0, 0.0, 0.0]])
+    r = unetbk.skip_concat([[1.0, 2.0]], [[0.0, 0.0, 0.0, 0.0], [0.0, 9.0, 9.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     assert r["crop_offset"] == (1, 1)
 
 
@@ -313,20 +302,17 @@ def test_masrcn_roipool_quantisation_is_pixels():
 def test_masrcn_align_and_pool_disagree():
     a = masrcn.roi_pool(FEAT, BOX, 2, stride=16.0)["pooled"]
     b = masrcn.roi_align(FEAT, BOX, 2, stride=16.0)["pooled"]
-    assert max(abs(a[i][j] - b[i][j])
-               for i in range(2) for j in range(2)) > 0.5
+    assert max(abs(a[i][j] - b[i][j]) for i in range(2) for j in range(2)) > 0.5
 
 
 def test_masrcn_sigmoid_and_softmax_are_different_losses():
     lg = [[3.0, -3.0], [-3.0, 3.0]]
     tg = [[1.0, 0.0], [0.0, 1.0]]
-    assert abs(masrcn.mask_loss(lg, tg, True)["loss"]
-               - masrcn.mask_loss(lg, tg, False)["loss"]) > 0.1
+    assert abs(masrcn.mask_loss(lg, tg, True)["loss"] - masrcn.mask_loss(lg, tg, False)["loss"]) > 0.1
 
 
 def test_masrcn_multitask_loss_is_a_sum():
-    assert abs(masrcn.multitask_loss(0.1, 0.2, 0.3)["total"]
-               - 0.6) < 1e-12
+    assert abs(masrcn.multitask_loss(0.1, 0.2, 0.3)["total"] - 0.6) < 1e-12
 
 
 def test_masrcn_rejects_a_degenerate_box():
@@ -339,8 +325,7 @@ def _energy(pos):
     e = 0.0
     for i in range(len(pos)):
         for j in range(i + 1, len(pos)):
-            d = math.sqrt(sum((pos[i][a] - pos[j][a]) ** 2
-                              for a in range(3)))
+            d = math.sqrt(sum((pos[i][a] - pos[j][a]) ** 2 for a in range(3)))
             e += math.exp(-d) * schN.cosine_cutoff(d, 5.0)
     return e
 
@@ -350,8 +335,7 @@ R3 = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.2, 0.0]]
 
 def test_schN_energy_invariant_forces_equivariant():
     th = 0.6
-    Q = [[math.cos(th), -math.sin(th), 0.0],
-         [math.sin(th), math.cos(th), 0.0], [0.0, 0.0, 1.0]]
+    Q = [[math.cos(th), -math.sin(th), 0.0], [math.sin(th), math.cos(th), 0.0], [0.0, 0.0, 1.0]]
     r = schN.invariance_error(_energy, R3, Q, [1.0, -2.0, 0.5])
     assert r["energy_invariant"]
     assert r["forces_equivariant"]
@@ -391,8 +375,7 @@ def test_t5enc_relative_buckets_share_at_distance():
 
 
 def test_t5enc_invalid_label_is_wrong():
-    assert not t5enc.parse_prediction("purple",
-                                      ["yes", "no"])["valid"]
+    assert not t5enc.parse_prediction("purple", ["yes", "no"])["valid"]
     assert t5enc.parse_prediction("yes", ["yes", "no"])["valid"]
     assert not t5enc.parse_prediction("abc")["valid"]
 
@@ -417,17 +400,14 @@ I2 = [[1.0, 0.0], [0.0, 1.0]]
 
 def test_sasRec_causal_mask():
     m = sasRec.causal_mask(4)
-    assert all(m[i][j] == 0.0 for i in range(4) for j in range(4)
-               if j > i)
+    assert all(m[i][j] == 0.0 for i in range(4) for j in range(4) if j > i)
 
 
 def test_sasRec_span_adapts_to_the_signal():
     recent = [[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [3.0, 0.0]]
     distant = [[3.0, 0.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]]
-    a = sasRec.attention_span(
-        sasRec.self_attention(recent, I2, I2, I2)["weights"])
-    b = sasRec.attention_span(
-        sasRec.self_attention(distant, I2, I2, I2)["weights"])
+    a = sasRec.attention_span(sasRec.self_attention(recent, I2, I2, I2)["weights"])
+    b = sasRec.attention_span(sasRec.self_attention(distant, I2, I2, I2)["weights"])
     assert b["mean_lookback"] > a["mean_lookback"] + 0.5
 
 
@@ -468,8 +448,7 @@ def test_xdeep_degree_is_explicit():
 
 # ------------------------------------------------------------- dits16
 def test_dits16_patch_halving_quadruples_tokens():
-    assert dits16.patch_grid(32, 2)["tokens"] == \
-        4 * dits16.patch_grid(32, 4)["tokens"]
+    assert dits16.patch_grid(32, 2)["tokens"] == 4 * dits16.patch_grid(32, 4)["tokens"]
 
 
 def test_dits16_tokens_move_gflops():
@@ -502,8 +481,7 @@ def test_sortP_sorts_and_fixes_the_size():
 
 
 def test_sortP_order_is_graph_determined():
-    assert sortP.order_is_graph_determined(FEATS, {}, [2, 0, 3, 1],
-                                           3)["invariant"]
+    assert sortP.order_is_graph_determined(FEATS, {}, [2, 0, 3, 1], 3)["invariant"]
 
 
 def test_sortP_pads_short_graphs():
@@ -548,17 +526,17 @@ def test_dimNet_cost_is_in_triplets():
 
 
 def test_dimNet_bessel_basis_is_orthogonal():
-    ip = sum(dimNet.bessel_basis(0.01 + 5.0 * i / 4000.0, 5.0, 8)[0]
-             * dimNet.bessel_basis(0.01 + 5.0 * i / 4000.0,
-                                   5.0, 8)[1]
-             * (0.01 + 5.0 * i / 4000.0) ** 2
-             for i in range(4000)) * (5.0 / 4000.0)
+    ip = sum(
+        dimNet.bessel_basis(0.01 + 5.0 * i / 4000.0, 5.0, 8)[0]
+        * dimNet.bessel_basis(0.01 + 5.0 * i / 4000.0, 5.0, 8)[1]
+        * (0.01 + 5.0 * i / 4000.0) ** 2
+        for i in range(4000)
+    ) * (5.0 / 4000.0)
     assert abs(ip) < 0.02
 
 
 def test_dimNet_legendre_at_one():
-    assert all(abs(v - 1.0) < 1e-12
-               for v in dimNet.spherical_harmonic_basis(0.0, 4))
+    assert all(abs(v - 1.0) < 1e-12 for v in dimNet.spherical_harmonic_basis(0.0, 4))
 
 
 def test_dimNet_rejects_bad_input():
@@ -571,20 +549,18 @@ def test_dimNet_rejects_bad_input():
 # -------------------------------------------------------------- painn
 def _toy(s, v, R):
     nrm = painn.vector_norm(v)
-    return {"s": [s[f] + nrm[f] for f in range(len(s))],
-            "v": [[2.0 * v[a][f] for f in range(len(v[0]))]
-                  for a in range(len(v))]}
+    return {
+        "s": [s[f] + nrm[f] for f in range(len(s))],
+        "v": [[2.0 * v[a][f] for f in range(len(v[0]))] for a in range(len(v))],
+    }
 
 
 def test_painn_scalars_invariant_vectors_equivariant():
     th = 0.9
-    Q = [[math.cos(th), -math.sin(th), 0.0],
-         [math.sin(th), math.cos(th), 0.0], [0.0, 0.0, 1.0]]
-    r = painn.equivariance_error(_toy, [0.5, -0.2],
-                                 [[1.0, 0.0], [0.0, 2.0],
-                                  [0.5, 0.5]],
-                                 [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]],
-                                 Q)
+    Q = [[math.cos(th), -math.sin(th), 0.0], [math.sin(th), math.cos(th), 0.0], [0.0, 0.0, 1.0]]
+    r = painn.equivariance_error(
+        _toy, [0.5, -0.2], [[1.0, 0.0], [0.0, 2.0], [0.5, 0.5]], [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], Q
+    )
     assert r["scalars_invariant"]
     assert r["vectors_equivariant"]
 
@@ -595,20 +571,32 @@ def test_painn_norm_is_the_invariant_channel():
 
 
 def test_painn_dipole_is_a_vector_property():
-    d = painn.dipole_moment([1.0, -1.0], [[1.0, 0.0, 0.0],
-                                          [-1.0, 0.0, 0.0]])
+    d = painn.dipole_moment([1.0, -1.0], [[1.0, 0.0, 0.0], [-1.0, 0.0, 0.0]])
     assert abs(d["magnitude"] - 2.0) < 1e-12
     assert len(d["dipole"]) == 3
 
 
 def test_painn_rejects_bad_input():
     with pytest.raises(ValueError):
-        painn.dipole_moment([1.0], [[0.0, 0.0, 0.0],
-                                    [1.0, 0.0, 0.0]])
+        painn.dipole_moment([1.0], [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
 
 
 def test_tml_dl_cheatsheets_are_present():
-    for mod in (tmlcou, tmlcmp, tmldgp, tmldyk, tmlcll, unetbk,
-                masrcn, schN, t5enc, sasRec, xdeep, dits16, sortP,
-                dimNet, painn):
+    for mod in (
+        tmlcou,
+        tmlcmp,
+        tmldgp,
+        tmldyk,
+        tmlcll,
+        unetbk,
+        masrcn,
+        schN,
+        t5enc,
+        sasRec,
+        xdeep,
+        dits16,
+        sortP,
+        dimNet,
+        painn,
+    ):
         assert len(mod.cheatsheet()) > 80

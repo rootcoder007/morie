@@ -51,17 +51,22 @@ def fauzi_order_m_kernel(u, m=4):
     K = muller_order_m(uv, mm)
     grid = np.linspace(-10, 10, 4001)
     Kg = muller_order_m(grid, mm)
-    moments = {j: float(np.trapezoid(grid ** j * Kg, grid))
-               for j in range(0, mm + 1)}
-    return RichResult(payload={
-        "u": uv, "K": K, "order": mm, "moments": moments,
-        "takes_negative_values": bool(np.any(Kg < -1e-12)),
-        "bias_order": f"O(h^{mm})",
-        "tradeoff": "a vanishing second moment forces negative values, so the "
-                    "density can go negative and the distribution "
-                    "non-monotone; acceptable for quantiles, not for a "
-                    "density to be plotted",
-        "method": f"Order-{mm} kernel; moments 1..{mm - 1} vanish, pushing the bias to O(h^{mm})"})
+    moments = {j: float(np.trapezoid(grid**j * Kg, grid)) for j in range(0, mm + 1)}
+    return RichResult(
+        payload={
+            "u": uv,
+            "K": K,
+            "order": mm,
+            "moments": moments,
+            "takes_negative_values": bool(np.any(Kg < -1e-12)),
+            "bias_order": f"O(h^{mm})",
+            "tradeoff": "a vanishing second moment forces negative values, so the "
+            "density can go negative and the distribution "
+            "non-monotone; acceptable for quantiles, not for a "
+            "density to be plotted",
+            "method": f"Order-{mm} kernel; moments 1..{mm - 1} vanish, pushing the bias to O(h^{mm})",
+        }
+    )
 
 
 def cheatsheet():

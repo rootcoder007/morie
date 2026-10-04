@@ -1,7 +1,6 @@
 """Tests for evgpdq.evt_gpd_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evgpdq import evt_gpd_quantile
 
 

@@ -195,9 +195,7 @@ def geron_hf_trainer(model, args, train_ds, eval_ds=None):
             ("Best eval loss", best_loss),
             ("Best epoch", best_epoch),
         ],
-        warnings=(
-            [] if have_eval else ["no eval_ds was supplied, so the checkpoint criterion is the training loss."]
-        ),
+        warnings=([] if have_eval else ["no eval_ds was supplied, so the checkpoint criterion is the training loss."]),
         interpretation=(
             "best_params is the lowest-evaluation-loss checkpoint, not the final weights; "
             "returning the last epoch is how a loop hands back an overfitted model."

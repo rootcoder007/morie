@@ -1,7 +1,6 @@
 """Tests for specdn.spectral_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.specdn import spectral_density
 
 

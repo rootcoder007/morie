@@ -1,7 +1,6 @@
 """Tests for hmencox.geron_encoder_only."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmencox import geron_encoder_only
 
 

@@ -1,7 +1,6 @@
 """Tests for hmplf.geron_polynomial_features."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmplf import geron_polynomial_features
 
 

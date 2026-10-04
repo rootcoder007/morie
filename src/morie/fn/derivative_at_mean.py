@@ -28,17 +28,16 @@ def derivative_at_mean(ybar, b):
     """
     value = _ca_crim.derivative_at_mean(ybar, b)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.9)"
     return RichResult(
-        title='Derivative at mean DM = ybar (1 - ybar) b',
+        title="Derivative at mean DM = ybar (1 - ybar) b",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e9: DM_i = ybar (1 - ybar) b_i [Weisburd et al. 2022, eq. 4.9]'
+    return "ca4e9: DM_i = ybar (1 - ybar) b_i [Weisburd et al. 2022, eq. 4.9]"

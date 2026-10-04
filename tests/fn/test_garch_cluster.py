@@ -5,9 +5,9 @@ Ch. 3, read in the PDF: GARCH Sec 3.5 p.131, IGARCH Sec 3.6 p.140,
 GARCH-M Sec 3.7 p.142 eq.(3.23), EGARCH Sec 3.8 p.143 eq.(3.24)-(3.25),
 TGARCH Sec 3.9 p.149 eq.(3.34)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._garch import SPECS, garch_fit, garch_forecast, garch_recursion
 
 
@@ -38,15 +38,11 @@ def test_recursion_matches_the_tsay_equations_by_hand():
     i2 = garch_recursion(e, {"omega": 0.01, "beta": 0.9}, "igarch")
     assert i2[1] == pytest.approx(0.01 + 0.9 * v + 0.1 * 0.25)
     # GJR/TGARCH eq.(3.34): gamma loads only on the negative shock
-    g2 = garch_recursion(
-        e, {"omega": 0.05, "alpha": 0.05, "gamma": 0.1, "beta": 0.85}, "gjr"
-    )
+    g2 = garch_recursion(e, {"omega": 0.05, "alpha": 0.05, "gamma": 0.1, "beta": 0.85}, "gjr")
     assert g2[1] == pytest.approx(0.05 + 0.05 * 0.25 + 0.85 * v)  # e[0] > 0
     assert g2[2] == pytest.approx(0.05 + (0.05 + 0.1) * 1.44 + 0.85 * g2[1])  # e[1] < 0
     # EGARCH eq.(3.24): E|z| = sqrt(2/pi) for a Gaussian (p.143 Remark)
-    ls = garch_recursion(
-        e, {"omega": -0.1, "alpha": 0.2, "gamma": -0.05, "beta": 0.9}, "egarch"
-    )
+    ls = garch_recursion(e, {"omega": -0.1, "alpha": 0.2, "gamma": -0.05, "beta": 0.9}, "egarch")
     z0 = e[0] / np.sqrt(v)
     want = -0.1 + 0.9 * np.log(v) + 0.2 * (abs(z0) - np.sqrt(2 / np.pi)) - 0.05 * z0
     assert np.log(ls[1]) == pytest.approx(want)
@@ -58,9 +54,7 @@ def test_garch_recovers_its_parameters():
         e = simulate_garch(seed=seed)
         f = garch_fit(e, "garch")
         # true alpha 0.1, beta 0.85, unconditional variance 1.0
-        hits += abs(f["params"]["alpha"] - 0.1) < 0.05 and abs(
-            f["params"]["beta"] - 0.85
-        ) < 0.07
+        hits += abs(f["params"]["alpha"] - 0.1) < 0.05 and abs(f["params"]["beta"] - 0.85) < 0.07
         assert f["persistence"] < 1  # covariance stationary
         assert np.mean(f["sigma2"]) == pytest.approx(1.0, rel=0.35)
     assert hits >= 5  # measured 6/6
@@ -76,9 +70,7 @@ def test_fitted_model_beats_a_constant_variance():
 
     def arch_lm(x, lags=5):
         x2 = x**2
-        X = np.column_stack([x2[lags - 1 - i : -1 - i] for i in range(lags)] + [
-            np.ones(x2.size - lags)
-        ])
+        X = np.column_stack([x2[lags - 1 - i : -1 - i] for i in range(lags)] + [np.ones(x2.size - lags)])
         y = x2[lags:]
         b, *_ = np.linalg.lstsq(X, y, rcond=None)
         r2 = 1 - np.sum((y - X @ b) ** 2) / np.sum((y - y.mean()) ** 2)
@@ -152,7 +144,8 @@ def test_aparch_nests_gjr_at_delta_two():
     e = np.array([0.5, -1.2, 0.3, 0.8, -0.4, 1.1, -0.9, 0.2, 0.6, -0.7])
     # APARCH with delta = 2 and gamma = 0 is a plain GARCH(1,1)
     ap = garch_recursion(
-        e, {"omega": 0.05, "alpha": 0.1, "gamma": 0.0, "beta": 0.85, "delta": 2.0},
+        e,
+        {"omega": 0.05, "alpha": 0.1, "gamma": 0.0, "beta": 0.85, "delta": 2.0},
         "aparch",
     )
     ga = garch_recursion(e, {"omega": 0.05, "alpha": 0.1, "beta": 0.85}, "garch")
@@ -192,9 +185,7 @@ def test_input_validation():
         garch_fit(np.ones(100))  # zero variance
     with pytest.raises(ValueError):
         garch_recursion(e[:3], {"omega": 1, "alpha": 0.1, "beta": 0.8}, "garch")
-    assert set(SPECS) == {
-        "garch", "igarch", "egarch", "gjr", "tgarch", "aparch", "cgarch", "figarch"
-    }
+    assert set(SPECS) == {"garch", "igarch", "egarch", "gjr", "tgarch", "aparch", "cgarch", "figarch"}
 
 
 # ---------------------------------------------------------------- front-ends
@@ -224,9 +215,16 @@ def test_univariate_front_ends_return_fitted_models():
         assert np.isfinite(out["loglik"])
         assert out["forecast"] > 0
     for f in (
-        vol_garch11_fit, vol_egarch_fit, vol_gjr_garch, vol_tgarch_fit,
-        vol_aparch_fit, vol_cgarch_fit, vol_figarch_fit, vol_garch_t,
-        vol_garch_ged, vol_igarch_fit,
+        vol_garch11_fit,
+        vol_egarch_fit,
+        vol_gjr_garch,
+        vol_tgarch_fit,
+        vol_aparch_fit,
+        vol_cgarch_fit,
+        vol_figarch_fit,
+        vol_garch_t,
+        vol_garch_ged,
+        vol_igarch_fit,
     ):
         out = f(e)
         assert np.all(out["sigma2"] > 0), f.__name__
@@ -289,9 +287,7 @@ def test_orthogonal_garch_reconstructs_a_symmetric_covariance():
     assert full["full_rank"] is True
     assert np.allclose(full["H"][100], full["H"][100].T)
     assert np.all(np.linalg.eigvalsh(full["H"][100]) > 0)
-    assert full["explained_variance_ratio"].sum() == pytest.approx(
-        full["explained_variance_ratio"].sum()
-    )
+    assert full["explained_variance_ratio"].sum() == pytest.approx(full["explained_variance_ratio"].sum())
     # truncating to k < d gives a singular H, and says so
     red = vol_garch_orthogonal(R, k=1)
     assert red["full_rank"] is False

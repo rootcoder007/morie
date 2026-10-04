@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,16 +24,19 @@ def mvsml_categorical_count_eq_8_7(C, K, y, lam=1.0, sigma2_e=1.0, K_star=None):
     two parameterizations give the same solution.  With ``K_star`` the
     breeding values of new genotyped individuals follow from the single
     product u_new = K_s beta. Keys: estimate."""
-    f = _gp.rkhs_mixed_equations(C, K, y, lam=lam,
-                                 sigma2_e=sigma2_e, form="reduced")
-    u_new = _gp.rkhs_predict_new(K_star, f["beta"]) \
-        if K_star is not None else None
-    res = RichResult(payload={"estimate": f["theta"][0],
-                              "theta": f["theta"],
-                              "beta": f["beta"], "u": f["u"],
-                              "fitted": f["fitted"],
-                              "u_new": u_new,
-                              "method": "reduced RKHS estimating equations (MVSML 2022 eq. 8.7)"})
+    f = _gp.rkhs_mixed_equations(C, K, y, lam=lam, sigma2_e=sigma2_e, form="reduced")
+    u_new = _gp.rkhs_predict_new(K_star, f["beta"]) if K_star is not None else None
+    res = RichResult(
+        payload={
+            "estimate": f["theta"][0],
+            "theta": f["theta"],
+            "beta": f["beta"],
+            "u": f["u"],
+            "fitted": f["fitted"],
+            "u_new": u_new,
+            "method": "reduced RKHS estimating equations (MVSML 2022 eq. 8.7)",
+        }
+    )
     return with_describe_pointer(res, "msm137")
 
 

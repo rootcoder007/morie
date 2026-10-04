@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Block coordinate descent on a convex quadratic."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -60,8 +58,10 @@ def block_coordinate_descent(Q, b, blocks, x0=None, n_iter=20):
     p = len(bv)
     x = list(C.vec(x0)) if x0 is not None else [0.0] * p
     blocks = [[int(j) for j in blk] for blk in blocks]
+
     def obj(v):
         return 0.5 * sum(v[i] * Qm[i][j] * v[j] for i in range(p) for j in range(p)) - C.dot(bv, v)
+
     trace = [obj(x)]
     for _ in range(int(n_iter)):
         for blk in blocks:
@@ -72,9 +72,15 @@ def block_coordinate_descent(Q, b, blocks, x0=None, n_iter=20):
             for t, i in enumerate(blk):
                 x[i] = sol[t]
         trace.append(obj(x))
-    return RichResult(payload={
-        "estimate": trace[-1], "x": x, "obj_trace": trace, "n_iter": int(n_iter),
-        "method": "Block coordinate descent, exact quadratic blocks"})
+    return RichResult(
+        payload={
+            "estimate": trace[-1],
+            "x": x,
+            "obj_trace": trace,
+            "n_iter": int(n_iter),
+            "method": "Block coordinate descent, exact quadratic blocks",
+        }
+    )
 
 
 def cheatsheet():

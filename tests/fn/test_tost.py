@@ -1,7 +1,6 @@
 """Tests for morie.fn.tost — TOST equivalence test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tost import tost_test
 
 

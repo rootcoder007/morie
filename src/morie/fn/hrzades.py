@@ -54,10 +54,16 @@ def hrz_average_derivative_hat(X, y, h=None):
         # undersmooth: n^{-1/5} * n^{-1/20} shrinks the bias faster
         h = float(silverman_bw(Xa[:, 0]) * n ** (-0.05))
     out = hrz_average_derivative(Xa, ya, h=h)
-    return RichResult(payload={"delta_hat": out["delta"], "se": out["se"],
-                               "bandwidth": out["bandwidth"],
-                               "undersmoothed": True, "n": out["n"],
-                               "method": "Sample average derivative; LOO and undersmoothing are required"})
+    return RichResult(
+        payload={
+            "delta_hat": out["delta"],
+            "se": out["se"],
+            "bandwidth": out["bandwidth"],
+            "undersmoothed": True,
+            "n": out["n"],
+            "method": "Sample average derivative; LOO and undersmoothing are required",
+        }
+    )
 
 
 def cheatsheet():

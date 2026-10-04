@@ -1,8 +1,6 @@
 """Tests for bndest.bound_estimation."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bndest import bound_estimation
 
 
@@ -23,8 +21,7 @@ def test_bndest_basic():
     assert isinstance(result, dict)
 
     # Documented keys for the no-treatment branch.
-    for key in ("lower", "upper", "width", "p_observed",
-                "identified", "n", "method"):
+    for key in ("lower", "upper", "width", "p_observed", "identified", "n", "method"):
         assert key in result, f"missing key {key!r} in result"
 
     # Compute the expected quantities independently from the documented
@@ -52,7 +49,7 @@ def test_bndest_basic():
 
     # Bounds are ordered (lower <= upper) and contained within support.
     assert result["lower"] <= result["upper"]
-    assert K0 <= result["lower"]
+    assert result["lower"] >= K0
     assert result["upper"] <= K1
 
     # Nothing is missing only when p == 1, in which case the bounds
@@ -81,9 +78,17 @@ def test_bndest_edge():
     assert isinstance(result, dict)
 
     # Documented keys for the treatment branch.
-    for key in ("ate_lower", "ate_upper", "ate_width",
-                "y1_bounds", "y0_bounds", "p_treated",
-                "contains_zero", "n", "method"):
+    for key in (
+        "ate_lower",
+        "ate_upper",
+        "ate_width",
+        "y1_bounds",
+        "y0_bounds",
+        "p_treated",
+        "contains_zero",
+        "n",
+        "method",
+    ):
         assert key in result, f"missing key {key!r} in result"
 
     # Independent computation of the ATE bounds from the documented

@@ -1,8 +1,6 @@
 """Tests for ksr051 (Kosorok shelf)."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.ksr051 import kosorok_ch2_continuous_invertibility
 
 
@@ -14,5 +12,4 @@ def test_ksr051_basic():
 
 def test_ksr051_edge():
     B = np.array([[1.0, 1.0], [1.0, 1.0]])  # rank deficient
-    assert kosorok_ch2_continuous_invertibility(lambda th: B @ th,
-                                                np.zeros(2))["c_estimate"] < 0.5
+    assert kosorok_ch2_continuous_invertibility(lambda th: B @ th, np.zeros(2))["c_estimate"] < 0.5

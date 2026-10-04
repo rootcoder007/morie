@@ -11,8 +11,7 @@ from ._richresult import RichResult
 __all__ = ["alphafold_msa_attention"]
 
 
-def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None,
-                            mode="row"):
+def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None, mode="row"):
     """MSA gated self-attention -- Algorithms 7 and 8, pp. 15-16.
 
     The MSA stack alternates attention along the two axes.  The row-wise
@@ -66,18 +65,13 @@ def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None,
     scale = 1.0 / math.sqrt(c)
 
     mn = [[A.lnorm(m[si][i]) for i in range(n)] for si in range(s)]
-    q = [[[A.lin(mn[si][i], wq[h]) for i in range(n)] for si in range(s)]
-         for h in range(nh)]
-    k = [[[A.lin(mn[si][i], wk[h]) for i in range(n)] for si in range(s)]
-         for h in range(nh)]
-    v = [[[A.lin(mn[si][i], wv[h]) for i in range(n)] for si in range(s)]
-         for h in range(nh)]
-    g = [[[[A.sigm(x) for x in A.lin(mn[si][i], wg[h])] for i in range(n)]
-          for si in range(s)] for h in range(nh)]
+    q = [[[A.lin(mn[si][i], wq[h]) for i in range(n)] for si in range(s)] for h in range(nh)]
+    k = [[[A.lin(mn[si][i], wk[h]) for i in range(n)] for si in range(s)] for h in range(nh)]
+    v = [[[A.lin(mn[si][i], wv[h]) for i in range(n)] for si in range(s)] for h in range(nh)]
+    g = [[[[A.sigm(x) for x in A.lin(mn[si][i], wg[h])] for i in range(n)] for si in range(s)] for h in range(nh)]
     if mode == "row":
         zn = [[A.lnorm(z[i][j]) for j in range(n)] for i in range(n)]
-        bias = [[[A.vdot(wb[h], zn[i][j]) for j in range(n)] for i in range(n)]
-                for h in range(nh)]
+        bias = [[[A.vdot(wb[h], zn[i][j]) for j in range(n)] for i in range(n)] for h in range(nh)]
 
     attn, o = [], []
     for h in range(nh):
@@ -86,17 +80,13 @@ def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None,
             arow, orow = [], []
             for i in range(n):
                 if mode == "row":
-                    logits = [scale * A.vdot(q[h][si][i], k[h][si][j]) + bias[h][i][j]
-                              for j in range(n)]
+                    logits = [scale * A.vdot(q[h][si][i], k[h][si][j]) + bias[h][i][j] for j in range(n)]
                     a = A.smax(logits)
-                    ov = [sum(a[j] * v[h][si][j][t] for j in range(n))
-                          for t in range(c)]
+                    ov = [sum(a[j] * v[h][si][j][t] for j in range(n)) for t in range(c)]
                 else:
-                    logits = [scale * A.vdot(q[h][si][i], k[h][t2][i])
-                              for t2 in range(s)]
+                    logits = [scale * A.vdot(q[h][si][i], k[h][t2][i]) for t2 in range(s)]
                     a = A.smax(logits)
-                    ov = [sum(a[t2] * v[h][t2][i][t] for t2 in range(s))
-                          for t in range(c)]
+                    ov = [sum(a[t2] * v[h][t2][i][t] for t2 in range(s)) for t in range(c)]
                 arow.append(a)
                 orow.append([g[h][si][i][t] * ov[t] for t in range(c)])
             ah.append(arow)
@@ -115,8 +105,7 @@ def alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=None, wb=None,
         out.append(row)
 
     cm = len(out[0][0])
-    flat = [out[si][i][t] for si in range(s) for i in range(n)
-            for t in range(cm)]
+    flat = [out[si][i][t] for si in range(s) for i in range(n) for t in range(cm)]
     return RichResult(
         payload={
             "m": out,

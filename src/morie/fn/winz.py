@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Winsorized mean."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -48,9 +46,16 @@ def winsorized_mean(x, alpha=0.1):
     hi = S.quantile7(v, 1.0 - alpha)
     w = [lo if t < lo else (hi if t > hi else t) for t in v]
     changed = sum(1 for i in range(n) if w[i] != v[i])
-    return RichResult(payload={
-        "estimate": sum(w) / n, "lower": lo, "upper": hi,
-        "n_changed": changed, "n": n, "method": "Winsorized mean"})
+    return RichResult(
+        payload={
+            "estimate": sum(w) / n,
+            "lower": lo,
+            "upper": hi,
+            "n_changed": changed,
+            "n": n,
+            "method": "Winsorized mean",
+        }
+    )
 
 
 def cheatsheet():

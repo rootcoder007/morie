@@ -18,8 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ksvmdual", "mvsml_ridge_lasso_elastic_eq_9_46"]
 
 
-def ksvmdual(X, y, T, kernel='linear', gamma=None, K=None):
-
+def ksvmdual(X, y, T, kernel="linear", gamma=None, K=None):
     """maximize L(alpha) = sum_i alpha_i
     - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j K(x_i, x_j)
     (eq. 9.46) subject to 0 <= alpha_i <= T and sum_i alpha_i y_i = 0

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mlsit -- MLSMU6 single iteration."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mlsit import mlsit, mlsmu6_single_iteration
 
 

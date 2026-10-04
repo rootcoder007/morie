@@ -1,7 +1,5 @@
 """Tests for fzt51.fauzi_thm5_1_naive_kernel_equiv."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzt51 import fauzi_thm5_1_naive_kernel_equiv
 
 
@@ -41,9 +39,7 @@ def test_fzt51_edge():
     cvm_kernel = 0.20
     tol = 0.05
 
-    result = fauzi_thm5_1_naive_kernel_equiv(
-        ks_emp, ks_kernel, cvm_emp, cvm_kernel, tol=tol
-    )
+    result = fauzi_thm5_1_naive_kernel_equiv(ks_emp, ks_kernel, cvm_emp, cvm_kernel, tol=tol)
 
     assert isinstance(result, dict)
 

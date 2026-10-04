@@ -110,14 +110,20 @@ def ihs_test(hap, core, positions=None, min_ehh=0.05, standardize=None):
     else:
         est = u
         std = False
-    return RichResult(payload={
-        "estimate": est, "ihs_unstandardized": u,
-        "ihh_a": ihh_a, "ihh_d": ihh_d,
-        "daf": dec["n1"] / dec["n"],
-        "truncated_a": bool(tAl or tAr), "truncated_d": bool(tDl or tDr),
-        "standardized": std, "core": dec["core"],
-        "method": "iHS (Voight 2006 eq. 1): ln(iHH_A/iHH_D), trapezoid EHH to < min_ehh",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "ihs_unstandardized": u,
+            "ihh_a": ihh_a,
+            "ihh_d": ihh_d,
+            "daf": dec["n1"] / dec["n"],
+            "truncated_a": bool(tAl or tAr),
+            "truncated_d": bool(tDl or tDr),
+            "standardized": std,
+            "core": dec["core"],
+            "method": "iHS (Voight 2006 eq. 1): ln(iHH_A/iHH_D), trapezoid EHH to < min_ehh",
+        }
+    )
 
 
 def cheatsheet():

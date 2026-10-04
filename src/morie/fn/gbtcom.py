@@ -113,10 +113,7 @@ def gbtcom(y, D, unit, time):
                 "large forbidden_weight with dynamic effects is how TWFE "
                 "lands below every clean comparison"
             ),
-            "method": (
-                "Goodman-Bacon (2021) three-way composition of the TWFE "
-                "DiD coefficient"
-            ),
+            "method": ("Goodman-Bacon (2021) three-way composition of the TWFE DiD coefficient"),
         }
     )
 

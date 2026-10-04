@@ -1,7 +1,6 @@
 """Tests for fzt55.fauzi_thm5_5_bdfree_kde_bv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzt55 import fauzi_thm5_5_bdfree_kde_bv
 
 
@@ -10,8 +9,8 @@ def test_fzt55_basic():
     n = 100
     h = 0.3
     density = 0.4  # f_X(x)
-    c2 = 1.5       # Theorem 5.5 coefficient
-    dg = 2.0       # g'(g^{-1}(x)), strictly positive
+    c2 = 1.5  # Theorem 5.5 coefficient
+    dg = 2.0  # g'(g^{-1}(x)), strictly positive
     mu2 = 1.0
     rk = 1.0 / (2.0 * np.sqrt(np.pi))
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.plcmb -- Coombs mesh visualization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.plcmb import plcmb, plot_coombs_data
 
 

@@ -11,5 +11,6 @@ def test_alsmc_basic():
 
 def test_alsmc_edge():
     import pytest
+
     with pytest.raises(ValueError, match="align"):
         alammar_simcse_dropout_aug([[1.0]], [[1.0], [2.0]])

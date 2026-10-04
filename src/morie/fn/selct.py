@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['predacc', 'genomic_selection_accuracy']
+__all__ = ["predacc", "genomic_selection_accuracy"]
 
 
 def predacc(y, yhat):
@@ -44,13 +44,13 @@ def predacc(y, yhat):
     if dy <= 0.0 or dh <= 0.0:
         raise ValueError("observed and predicted must both vary")
     r = num / math.sqrt(dh * dy)
-    return RichResult(payload={
-        "accuracy": r, "r2": r * r, "n": n,
-        "method": "Pearson prediction accuracy, MVSML Eq. (4.2)"})
+    return RichResult(
+        payload={"accuracy": r, "r2": r * r, "n": n, "method": "Pearson prediction accuracy, MVSML Eq. (4.2)"}
+    )
 
 
 genomic_selection_accuracy = predacc
 
 
 def cheatsheet():
-    return 'selct: Genomic selection accuracy: Pearson correlation of observed and predicted.'
+    return "selct: Genomic selection accuracy: Pearson correlation of observed and predicted."

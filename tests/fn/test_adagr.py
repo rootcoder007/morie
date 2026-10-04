@@ -1,7 +1,6 @@
 """Tests for morie.fn.adagr -- Adagrad optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adagr import adagr
 
 

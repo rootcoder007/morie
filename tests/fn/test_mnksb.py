@@ -1,8 +1,8 @@
 """Tests for morie.fn.mnksb — Manski bounds."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mnksb import mnksb
 
 

@@ -15,8 +15,7 @@ def test_ripk_basic():
     r = np.linspace(0.5, 5.0, 10)
     result = ripley_k_function(points, window, r)
     assert isinstance(result, dict)
-    for key in ("r", "k", "k_border", "l", "csr",
-                "lambda_hat", "area", "n", "method"):
+    for key in ("r", "k", "k_border", "l", "csr", "lambda_hat", "area", "n", "method"):
         assert key in result
     assert len(result["r"]) == 10
     assert result["n"] == n

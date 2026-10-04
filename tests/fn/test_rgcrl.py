@@ -13,9 +13,9 @@ re-derivation of the correlation sum plus the dimensions the estimator is
 defined to recover for signals whose attractor dimension is known a priori.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgcrl import rangayyan_correlation_dimension
 
 
@@ -45,7 +45,7 @@ def test_correlation_sum_matches_the_definition():
     for r in rs:
         n_pairs = int(np.count_nonzero(dist <= r))
         if n_pairs < 10:
-            continue                      # below the function's usable floor
+            continue  # below the function's usable floor
         want = 2.0 * n_pairs / (M * (M - 1))
         idx = int(np.argmin(np.abs(res["log_r"] - np.log(r))))
         assert np.isclose(np.exp(res["log_C"][idx]), want, rtol=1e-12)
@@ -58,8 +58,7 @@ def test_identity_white_noise_fills_the_embedding_space():
     trend rather than a value: D2 must rise with m, not saturate.
     """
     x = np.random.default_rng(37).standard_normal(1500)
-    d2 = [rangayyan_correlation_dimension(x, m=m, tau=1, n_r=25)["D2"]
-          for m in (2, 4, 6)]
+    d2 = [rangayyan_correlation_dimension(x, m=m, tau=1, n_r=25)["D2"] for m in (2, 4, 6)]
     assert d2[0] < d2[1] < d2[2], f"D2 should grow with m for noise, got {d2}"
 
 
@@ -113,8 +112,7 @@ def test_rejects_series_too_short_to_embed():
 
 
 def test_returns_documented_keys():
-    res = rangayyan_correlation_dimension(
-        np.random.default_rng(43).standard_normal(200), m=3, tau=1, n_r=15)
+    res = rangayyan_correlation_dimension(np.random.default_rng(43).standard_normal(200), m=3, tau=1, n_r=15)
     for key in ("D2", "log_r", "log_C", "m", "tau"):
         assert key in res
     assert np.isfinite(res["D2"])

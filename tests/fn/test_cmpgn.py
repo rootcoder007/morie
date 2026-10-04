@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmpgn — compliance by gender."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cmpgn import compliance_by_gender
 
 

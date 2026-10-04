@@ -56,10 +56,17 @@ def areratio(var1, var2, n1=1.0, n2=1.0):
     if m1 <= 0.0 or m2 <= 0.0:
         raise ValueError("sample sizes must be strictly positive")
     are = (v1 / m1) / (v2 / m2)
-    return RichResult(payload={
-        "are": are, "logare": math.log(are), "var1": v1, "var2": v2,
-        "normalmedian": 2.0 / math.pi, "normalhl": 3.0 / math.pi,
-        "method": "Asymptotic relative efficiency (Hodges-Lehmann 1956)"})
+    return RichResult(
+        payload={
+            "are": are,
+            "logare": math.log(are),
+            "var1": v1,
+            "var2": v2,
+            "normalmedian": 2.0 / math.pi,
+            "normalhl": 3.0 / math.pi,
+            "method": "Asymptotic relative efficiency (Hodges-Lehmann 1956)",
+        }
+    )
 
 
 asymptotic_relative_efficiency = areratio

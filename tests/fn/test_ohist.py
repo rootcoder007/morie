@@ -1,7 +1,6 @@
 """Tests for morie.fn.ohist — Histogram bin counts."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.ohist import otis_histogram_data
 
 

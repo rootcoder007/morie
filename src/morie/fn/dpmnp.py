@@ -80,8 +80,7 @@ def dp_minmax(x, epsilon=1.0, a=None, b=None, alpha=0.01, seed=None):
     v = np.atleast_1d(np.asarray(x, dtype=float)).ravel()
     half = float(epsilon) / 2.0
     lo = dp_quantile(v, q=alpha, epsilon=half, a=a, b=b, seed=seed)
-    hi = dp_quantile(v, q=1.0 - alpha, epsilon=half, a=a, b=b,
-                     seed=None if seed is None else seed + 1)
+    hi = dp_quantile(v, q=1.0 - alpha, epsilon=half, a=a, b=b, seed=None if seed is None else seed + 1)
     warn = list(lo.warnings)
     warn.append(
         "these are the alpha and 1-alpha quantiles, NOT the minimum and "
@@ -90,14 +89,21 @@ def dp_minmax(x, epsilon=1.0, a=None, b=None, alpha=0.01, seed=None):
     )
     return RichResult(
         title="DP range (inner quantiles)",
-        summary_lines=[("epsilon", float(epsilon)), ("alpha", float(alpha)),
-                       ("lower", lo["release"]), ("upper", hi["release"])],
+        summary_lines=[
+            ("epsilon", float(epsilon)),
+            ("alpha", float(alpha)),
+            ("lower", lo["release"]),
+            ("upper", hi["release"]),
+        ],
         warnings=warn,
         payload={
-            "lower": lo["release"], "upper": hi["release"],
-            "alpha": float(alpha), "epsilon": float(epsilon),
+            "lower": lo["release"],
+            "upper": hi["release"],
+            "alpha": float(alpha),
+            "epsilon": float(epsilon),
             "epsilon_each": half,
-            "true_min": float(v.min()), "true_max": float(v.max()),
+            "true_min": float(v.min()),
+            "true_max": float(v.max()),
             "method": "dp_minmax",
         },
     )

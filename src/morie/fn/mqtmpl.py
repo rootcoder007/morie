@@ -90,48 +90,48 @@ quantitative trait loci in line crosses using flanking markers",
 
 import math
 
-from . import _array_core as np
 from . import cqtmpl as _cim
 from . import rqtmpl as _im
 from . import survrsf as _rsf
 from ._richresult import RichResult
 
-__all__ = ["METHODS", "method_status", "hmm_genotype_probabilities",
-           "sample_genotypes", "imputation_weights",
-           "scanone", "permutation_threshold", "lod_support_interval"]
+__all__ = [
+    "METHODS",
+    "method_status",
+    "hmm_genotype_probabilities",
+    "sample_genotypes",
+    "imputation_weights",
+    "scanone",
+    "permutation_threshold",
+    "lod_support_interval",
+]
 
 METHODS = ("em", "mr", "hk", "imp")
 _AVAILABLE = ("em", "mr", "imp")
 _UNSOURCED = {
     "hk": "Haley-Knott regression is named but not defined in Broman "
-          "et al. (2003); the primary source, Haley, C. S. & Knott, "
-          "S. A. (1992) 'A simple regression method for mapping "
-          "quantitative trait loci in line crosses using flanking "
-          "markers', Heredity 69(4), 315-324, "
-          "doi:10.1038/hdy.1992.131, is not in the corpus",
+    "et al. (2003); the primary source, Haley, C. S. & Knott, "
+    "S. A. (1992) 'A simple regression method for mapping "
+    "quantitative trait loci in line crosses using flanking "
+    "markers', Heredity 69(4), 315-324, "
+    "doi:10.1038/hdy.1992.131, is not in the corpus",
 }
 
 
 def method_status(method=None):
     r"""Which of the paper's four scan methods are implemented."""
     if method is None:
-        return {"methods": METHODS, "available": _AVAILABLE,
-                "unavailable": dict(_UNSOURCED)}
+        return {"methods": METHODS, "available": _AVAILABLE, "unavailable": dict(_UNSOURCED)}
     if method not in METHODS:
-        raise ValueError("mqtmpl: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
-    return {"method": method, "available": method in _AVAILABLE,
-            "reason": _UNSOURCED.get(method, "")}
+        raise ValueError("mqtmpl: method must be one of %s, got %r" % (", ".join(METHODS), method))
+    return {"method": method, "available": method in _AVAILABLE, "reason": _UNSOURCED.get(method, "")}
 
 
 def _check_method(method):
     if method not in METHODS:
-        raise ValueError("mqtmpl: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
+        raise ValueError("mqtmpl: method must be one of %s, got %r" % (", ".join(METHODS), method))
     if method not in _AVAILABLE:
-        raise ValueError("mqtmpl: the %r scan method is not "
-                         "implemented -- %s" % (method,
-                                                _UNSOURCED[method]))
+        raise ValueError("mqtmpl: the %r scan method is not implemented -- %s" % (method, _UNSOURCED[method]))
 
 
 def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
@@ -142,12 +142,10 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
     """
     e = float(error_rate)
     if not 0.0 <= e < 0.5:
-        raise ValueError("mqtmpl: the genotyping error rate must lie "
-                         "in [0, 0.5), got %r" % error_rate)
+        raise ValueError("mqtmpl: the genotyping error rate must lie in [0, 0.5), got %r" % error_rate)
     m = len(positions)
     if any(len(row) != m for row in genotypes):
-        raise ValueError("mqtmpl: every individual needs one call per "
-                         "marker")
+        raise ValueError("mqtmpl: every individual needs one call per marker")
     trans = []
     for j in range(m - 1):
         d = float(positions[j + 1]) - float(positions[j])
@@ -156,29 +154,27 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
         trans.append(_im.haldane(d / 100.0))  # cM -> Morgans
     out = []
     for row in genotypes:
+
         def emit(j, state):
             if row[j] is None:
                 return 1.0
             return (1.0 - e) if int(row[j]) == state else e
+
         f = [[0.0, 0.0] for _ in range(m)]
         f[0] = [0.5 * emit(0, 0), 0.5 * emit(0, 1)]
         for j in range(1, m):
             r = trans[j - 1]
             for s in (0, 1):
-                f[j][s] = emit(j, s) * (
-                    f[j - 1][s] * (1.0 - r) + f[j - 1][1 - s] * r)
+                f[j][s] = emit(j, s) * (f[j - 1][s] * (1.0 - r) + f[j - 1][1 - s] * r)
             tot = f[j][0] + f[j][1]
             if tot <= 0.0:
-                raise ValueError("mqtmpl: an individual's marker data "
-                                 "have probability zero; raise the "
-                                 "error rate")
+                raise ValueError("mqtmpl: an individual's marker data have probability zero; raise the error rate")
             f[j] = [f[j][0] / tot, f[j][1] / tot]
         b = [[1.0, 1.0] for _ in range(m)]
         for j in range(m - 2, -1, -1):
             r = trans[j]
             for s in (0, 1):
-                b[j][s] = (b[j + 1][s] * (1.0 - r) * emit(j + 1, s)
-                           + b[j + 1][1 - s] * r * emit(j + 1, 1 - s))
+                b[j][s] = b[j + 1][s] * (1.0 - r) * emit(j + 1, s) + b[j + 1][1 - s] * r * emit(j + 1, 1 - s)
             tot = b[j][0] + b[j][1]
             if tot > 0.0:
                 b[j] = [b[j][0] / tot, b[j][1] / tot]
@@ -191,8 +187,7 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
     return out
 
 
-def sample_genotypes(genotypes, positions, grid, n_imp=16,
-                     error_rate=0.0, seed=0):
+def sample_genotypes(genotypes, positions, grid, n_imp=16, error_rate=0.0, seed=0):
     r"""Draw pseudomarker genotypes from :math:`p(g \mid m)`.
 
     Forward-filter, backward-sample down the chromosome, which is the
@@ -205,8 +200,7 @@ def sample_genotypes(genotypes, positions, grid, n_imp=16,
     m = len(positions)
     n = len(genotypes)
     rng = _rsf._Rng(seed)
-    post = hmm_genotype_probabilities(genotypes, positions,
-                                      error_rate)
+    post = hmm_genotype_probabilities(genotypes, positions, error_rate)
     out = []
     for _ in range(int(n_imp)):
         draw = []
@@ -215,26 +209,22 @@ def sample_genotypes(genotypes, positions, grid, n_imp=16,
             states = [0] * m
             states[m - 1] = 1 if rng.next() < post[i][m - 1][1] else 0
             for j in range(m - 2, -1, -1):
-                r = _im.haldane((float(positions[j + 1])
-                                 - float(positions[j])) / 100.0)
-                w = [post[i][j][k]
-                     * (1.0 - r if k == states[j + 1] else r)
-                     for k in (0, 1)]
+                r = _im.haldane((float(positions[j + 1]) - float(positions[j])) / 100.0)
+                w = [post[i][j][k] * (1.0 - r if k == states[j + 1] else r) for k in (0, 1)]
                 tot = w[0] + w[1]
                 states[j] = 1 if rng.next() < w[1] / tot else 0
             # then interpolate each grid position between its flanks
             row = []
             for g in grid:
-                j = max(k for k in range(m)
-                        if float(positions[k]) <= g + 1e-12)
+                j = max(k for k in range(m) if float(positions[k]) <= g + 1e-12)
                 if j == m - 1:
                     row.append(states[j])
                     continue
                 d1 = max(g - float(positions[j]), 0.0)
                 d2 = max(float(positions[j + 1]) - g, 0.0)
                 pr = _im.genotype_probabilities(
-                    states[j], states[j + 1], _im.haldane(d1 / 100.0),
-                    _im.haldane(d2 / 100.0))
+                    states[j], states[j + 1], _im.haldane(d1 / 100.0), _im.haldane(d2 / 100.0)
+                )
                 row.append(1 if rng.next() < pr[1] else 0)
             draw.append(row)
         out.append(draw)
@@ -264,8 +254,7 @@ def imputation_weights(y, genotype_column, model_dimension=2):
         a = my - b * mg
         rss = sum((y[i] - (a + b * g[i])) ** 2 for i in range(n))
     rss = max(rss, 1e-300)
-    return (-0.5 * float(model_dimension) * math.log(n)
-            - 0.5 * n * math.log(rss))
+    return -0.5 * float(model_dimension) * math.log(n) - 0.5 * n * math.log(rss)
 
 
 def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
@@ -277,73 +266,72 @@ def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
     while g <= end + 1e-12:
         grid.append(g)
         g += float(step)
-    geno = [[markers[j][i] for j in range(len(markers))]
-            for i in range(n)]
-    draws = sample_genotypes(geno, positions, grid, n_imp,
-                             error_rate, seed)
+    geno = [[markers[j][i] for j in range(len(markers))] for i in range(n)]
+    draws = sample_genotypes(geno, positions, grid, n_imp, error_rate, seed)
     null = imputation_weights(y, [0.0] * n, model_dimension=1)
     lods = []
     for gi in range(len(grid)):
-        ws = [imputation_weights(y, [draws[k][i][gi] for i in range(n)])
-              for k in range(len(draws))]
+        ws = [imputation_weights(y, [draws[k][i][gi] for i in range(n)]) for k in range(len(draws))]
         top = max(ws)
-        avg = top + math.log(sum(math.exp(w - top) for w in ws)
-                             / len(ws))
+        avg = top + math.log(sum(math.exp(w - top) for w in ws) / len(ws))
         lods.append((avg - null) * _im.LOG10E)
     k = max(range(len(lods)), key=lambda i: lods[i])
-    return RichResult(payload={
-        "estimate": lods[k], "peak_lod": lods[k],
-        "peak_position": grid[k], "position": grid, "lod": lods,
-        "method_used": "imp", "n_imputations": int(n_imp),
-        "note": "weights are n^(-v/2) RSS^(-n/2) on the log scale; "
-                "the draws depend on the markers only, so a new model "
-                "reuses them and only the weights change",
-        "method": "multiple-imputation scan; Sen & Churchill (2001) "
-                  "eqs (3)-(4)",
-    })
+    return RichResult(
+        payload={
+            "estimate": lods[k],
+            "peak_lod": lods[k],
+            "peak_position": grid[k],
+            "position": grid,
+            "lod": lods,
+            "method_used": "imp",
+            "n_imputations": int(n_imp),
+            "note": "weights are n^(-v/2) RSS^(-n/2) on the log scale; "
+            "the draws depend on the markers only, so a new model "
+            "reuses them and only the weights change",
+            "method": "multiple-imputation scan; Sen & Churchill (2001) eqs (3)-(4)",
+        }
+    )
 
 
 def kw_n_imp(covariates):
     """Number of imputations; covariates are not yet supported here."""
     if covariates:
-        raise ValueError("mqtmpl: covariates are not implemented for "
-                         "the imputation scan")
+        raise ValueError("mqtmpl: covariates are not implemented for the imputation scan")
     return 64
 
 
-def scanone(y, markers, positions, method="em", step=0.02,
-            covariates=(), error_rate=0.0):
+def scanone(y, markers, positions, method="em", step=0.02, covariates=(), error_rate=0.0):
     r"""Single-QTL genome scan."""
     _check_method(method)
     n = len(y)
     if any(len(c) != n for c in markers):
-        raise ValueError("mqtmpl: every marker must be typed on all "
-                         "%d individuals" % n)
+        raise ValueError("mqtmpl: every marker must be typed on all %d individuals" % n)
     if method == "imp":
-        return _scan_imp(y, markers, positions, step,
-                         kw_n_imp(covariates), error_rate, 0)
+        return _scan_imp(y, markers, positions, step, kw_n_imp(covariates), error_rate, 0)
     if method == "mr":
         out_pos, out_lod = [], []
         for j in range(len(markers)):
             typed = [i for i in range(n) if markers[j][i] is not None]
             if len(typed) < 3:
                 continue
-            sm = _im.single_marker([y[i] for i in typed],
-                                   [markers[j][i] for i in typed])
+            sm = _im.single_marker([y[i] for i in typed], [markers[j][i] for i in typed])
             out_pos.append(float(positions[j]))
             out_lod.append(sm["lod"])
         if not out_lod:
-            raise ValueError("mqtmpl: no marker has enough typed "
-                             "individuals")
+            raise ValueError("mqtmpl: no marker has enough typed individuals")
         k = max(range(len(out_lod)), key=lambda i: out_lod[i])
-        return RichResult(payload={
-            "estimate": out_lod[k], "peak_lod": out_lod[k],
-            "peak_position": out_pos[k], "position": out_pos,
-            "lod": out_lod, "method_used": "mr",
-            "note": "marker regression reports LOD at markers only, "
-                    "and drops individuals not typed there",
-            "method": "marker regression scan; Broman et al. (2003)",
-        })
+        return RichResult(
+            payload={
+                "estimate": out_lod[k],
+                "peak_lod": out_lod[k],
+                "peak_position": out_pos[k],
+                "position": out_pos,
+                "lod": out_lod,
+                "method_used": "mr",
+                "note": "marker regression reports LOD at markers only, and drops individuals not typed there",
+                "method": "marker regression scan; Broman et al. (2003)",
+            }
+        )
     cof = [list(c) for c in covariates]
     res = None
     if True:  # one loop for both cases: positions are cM, haldane wants Morgans
@@ -353,37 +341,45 @@ def scanone(y, markers, positions, method="em", step=0.02,
             span = float(positions[j + 1]) - float(positions[j])
             d = 0.0
             while d <= span + 1e-12:
-                f = _cim.cim(y,
-                             [0 if v is None else int(v)
-                              for v in markers[j]],
-                             [0 if v is None else int(v)
-                              for v in markers[j + 1]],
-                             _im.haldane(min(d, span) / 100.0),
-                             _im.haldane(max(span - d, 0.0) / 100.0), cof)
+                f = _cim.cim(
+                    y,
+                    [0 if v is None else int(v) for v in markers[j]],
+                    [0 if v is None else int(v) for v in markers[j + 1]],
+                    _im.haldane(min(d, span) / 100.0),
+                    _im.haldane(max(span - d, 0.0) / 100.0),
+                    cof,
+                )
                 out_pos.append(float(positions[j]) + d)
                 out_lod.append(f["lod"])
                 fits.append(f)
                 d += float(step)
         k = max(range(len(out_lod)), key=lambda i: out_lod[i])
-        res = RichResult(payload={
-            "estimate": out_lod[k], "peak_lod": out_lod[k],
-            "peak_position": out_pos[k], "position": out_pos,
-            "lod": out_lod, "fit": fits[k],
-        })
-    return RichResult(payload={
-        "estimate": res["peak_lod"], "peak_lod": res["peak_lod"],
-        "peak_position": res["peak_position"],
-        "position": res["position"], "lod": res["lod"],
-        "method_used": "em", "n_covariates": len(cof),
-        "error_rate": float(error_rate),
-        "method": "EM genome scan; Lander & Botstein (1989) via "
-                  "Broman et al. (2003)",
-    })
+        res = RichResult(
+            payload={
+                "estimate": out_lod[k],
+                "peak_lod": out_lod[k],
+                "peak_position": out_pos[k],
+                "position": out_pos,
+                "lod": out_lod,
+                "fit": fits[k],
+            }
+        )
+    return RichResult(
+        payload={
+            "estimate": res["peak_lod"],
+            "peak_lod": res["peak_lod"],
+            "peak_position": res["peak_position"],
+            "position": res["position"],
+            "lod": res["lod"],
+            "method_used": "em",
+            "n_covariates": len(cof),
+            "error_rate": float(error_rate),
+            "method": "EM genome scan; Lander & Botstein (1989) via Broman et al. (2003)",
+        }
+    )
 
 
-def permutation_threshold(y, markers, positions, n_perm=100,
-                          alpha=0.05, method="em", step=0.05, seed=0,
-                          **kw):
+def permutation_threshold(y, markers, positions, n_perm=100, alpha=0.05, method="em", step=0.05, seed=0, **kw):
     r"""Churchill-Doerge: the null distribution of the *maximum* LOD.
 
     Permuting the phenotypes against the genotypes leaves the marker
@@ -402,18 +398,20 @@ def permutation_threshold(y, markers, positions, n_perm=100,
         for i in range(len(perm) - 1, 0, -1):
             j = rng.randint(i + 1)
             perm[i], perm[j] = perm[j], perm[i]
-        maxima.append(scanone(perm, markers, positions, method, step,
-                              **kw)["peak_lod"])
+        maxima.append(scanone(perm, markers, positions, method, step, **kw)["peak_lod"])
     maxima.sort()
-    idx = min(len(maxima) - 1,
-              max(0, int(math.ceil((1.0 - a) * len(maxima))) - 1))
-    return RichResult(payload={
-        "estimate": maxima[idx], "threshold": maxima[idx],
-        "alpha": a, "n_perm": int(n_perm), "null_maxima": maxima,
-        "median_null": maxima[len(maxima) // 2],
-        "method": "permutation threshold; Churchill & Doerge (1994) "
-                  "via Broman et al. (2003)",
-    })
+    idx = min(len(maxima) - 1, max(0, int(math.ceil((1.0 - a) * len(maxima))) - 1))
+    return RichResult(
+        payload={
+            "estimate": maxima[idx],
+            "threshold": maxima[idx],
+            "alpha": a,
+            "n_perm": int(n_perm),
+            "null_maxima": maxima,
+            "median_null": maxima[len(maxima) // 2],
+            "method": "permutation threshold; Churchill & Doerge (1994) via Broman et al. (2003)",
+        }
+    )
 
 
 def lod_support_interval(scan_result, drop=1.5):
@@ -428,20 +426,21 @@ def lod_support_interval(scan_result, drop=1.5):
     hi = k
     while hi < len(lod) - 1 and lod[hi + 1] >= cut:
         hi += 1
-    return {"peak": pos[k], "lower": pos[lo], "upper": pos[hi],
-            "drop": float(drop), "peak_lod": lod[k]}
+    return {"peak": pos[k], "lower": pos[lo], "upper": pos[hi], "drop": float(drop), "peak_lod": lod[k]}
 
 
 def cheatsheet():
-    return ("mqtmpl: the scanning layer. Genotypes come from a "
-            "forward-backward HMM that tolerates missing calls and a "
-            "genotyping error rate, and collapses to the "
-            "flanking-marker formula when both are absent. Scans by "
-            "EM or marker regression; Haley-Knott and multiple "
-            "imputation are named and REFUSED, with citations. "
-            "Genome-wide significance is a permutation threshold, "
-            "because the maximum over correlated positions is not "
-            "chi-squared anything.")
+    return (
+        "mqtmpl: the scanning layer. Genotypes come from a "
+        "forward-backward HMM that tolerates missing calls and a "
+        "genotyping error rate, and collapses to the "
+        "flanking-marker formula when both are absent. Scans by "
+        "EM or marker regression; Haley-Knott and multiple "
+        "imputation are named and REFUSED, with citations. "
+        "Genome-wide significance is a permutation threshold, "
+        "because the maximum over correlated positions is not "
+        "chi-squared anything."
+    )
 
 
 # compact alias per ledger/NAMING.md

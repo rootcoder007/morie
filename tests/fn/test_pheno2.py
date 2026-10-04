@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.pheno2 import phenotype_qc
 
 
@@ -13,10 +12,7 @@ def test_pheno2_basic():
     y = rng.uniform(0.1, 10.0, 100)
     result = phenotype_qc(y)
     assert isinstance(result, dict)
-    expected_keys = {
-        "estimate", "loglik", "n_out", "flags", "lower",
-        "upper", "transformed", "n", "method"
-    }
+    expected_keys = {"estimate", "loglik", "n_out", "flags", "lower", "upper", "transformed", "n", "method"}
     for key in expected_keys:
         assert key in result
     n = len(y)

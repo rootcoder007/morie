@@ -41,9 +41,9 @@ def ot_wasserstein_p_1d(x, y, p=2):
     """
     w = ot.wp1d(x, y, float(p))
     n = len(core.vec(x))
-    return RichResult(payload={
-        "Wp": w, "Wp_p": w ** float(p), "n": n, "p": float(p),
-        "method": "Univariate Wasserstein distance"})
+    return RichResult(
+        payload={"Wp": w, "Wp_p": w ** float(p), "n": n, "p": float(p), "method": "Univariate Wasserstein distance"}
+    )
 
 
 def cheatsheet():

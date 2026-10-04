@@ -79,14 +79,21 @@ def effective_sample_size_weights(weights):
     cv = float(np.std(w, ddof=1) / np.mean(w)) if w.size > 1 else 0.0
     return RichResult(
         title="Effective sample size (Kish)",
-        summary_lines=[("n", int(w.size)), ("ESS", ess),
-                       ("efficiency", ess / w.size), ("max share", share)],
-        warnings=([f"one observation carries {share:.1%} of the total weight; "
-                   "the estimate rests on a handful of points however large n is"]
-                  if share > 0.1 else []),
+        summary_lines=[("n", int(w.size)), ("ESS", ess), ("efficiency", ess / w.size), ("max share", share)],
+        warnings=(
+            [
+                f"one observation carries {share:.1%} of the total weight; "
+                "the estimate rests on a handful of points however large n is"
+            ]
+            if share > 0.1
+            else []
+        ),
         payload={
-            "ess": ess, "n": int(w.size), "efficiency": float(ess / w.size),
-            "max_share": share, "cv": cv,
+            "ess": ess,
+            "n": int(w.size),
+            "efficiency": float(ess / w.size),
+            "max_share": share,
+            "cv": cv,
             "method": "effective_sample_size_weights",
         },
     )

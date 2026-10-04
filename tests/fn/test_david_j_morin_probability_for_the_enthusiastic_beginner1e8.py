@@ -12,11 +12,11 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner1e8_basic():
     N, n = 10, 3
     result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_8(N, n)
     assert isinstance(result, dict)
-    expected_keys = {'n_objects', 'n_picks', 'count', 'ordered_count', 'forms_agree'}
+    expected_keys = {"n_objects", "n_picks", "count", "ordered_count", "forms_agree"}
     assert expected_keys.issubset(result.keys())
-    assert result['n_objects'] == N
-    assert result['n_picks'] == n
-    assert result['count'] == math.comb(N, n)
+    assert result["n_objects"] == N
+    assert result["n_picks"] == n
+    assert result["count"] == math.comb(N, n)
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e8_edge():
@@ -24,8 +24,8 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner1e8_edge():
     N, n = 5, 2
     result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_8(N, n)
     assert isinstance(result, dict)
-    expected_keys = {'n_objects', 'n_picks', 'count', 'ordered_count', 'forms_agree'}
+    expected_keys = {"n_objects", "n_picks", "count", "ordered_count", "forms_agree"}
     assert expected_keys.issubset(result.keys())
-    assert result['n_objects'] == N
-    assert result['n_picks'] == n
-    assert result['count'] == math.comb(N, n)
+    assert result["n_objects"] == N
+    assert result["n_picks"] == n
+    assert result["count"] == math.comb(N, n)

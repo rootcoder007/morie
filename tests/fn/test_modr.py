@@ -1,7 +1,6 @@
 """Tests for morie.fn.modr — moderation analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.modr import moderation_analysis
 
 

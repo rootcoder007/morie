@@ -1,7 +1,6 @@
 """Tests for wsmmtl.wasserman_mutual_info."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmmtl import wasserman_mutual_info
 
 

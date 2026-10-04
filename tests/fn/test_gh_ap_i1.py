@@ -1,7 +1,6 @@
 """Tests for gh_ap_i1.ghosal_gp_sample_cont."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_i1 import ghosal_gp_sample_cont
 
 

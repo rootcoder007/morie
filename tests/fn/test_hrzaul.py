@@ -1,7 +1,6 @@
 """Tests for hrzaul.horowitz_additive_unknown_link."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzaul import horowitz_additive_unknown_link
 
 

@@ -1,7 +1,6 @@
 """Tests for hrzsicd.horowitz_sim_id_discrete_x."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzsicd import horowitz_sim_id_discrete_x
 
 

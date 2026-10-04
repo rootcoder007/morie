@@ -1,8 +1,8 @@
 """Tests for morie.fn.lgrst -- Log-rank test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lgrst import lgrst
 
 

@@ -9,5 +9,6 @@ def test_bkunit_basic():
 
 def test_bkunit_edge():
     import pytest
+
     with pytest.raises(ValueError, match="zero vector"):
         burkov_unit_vector([0.0, 0.0])

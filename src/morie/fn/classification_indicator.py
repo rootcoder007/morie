@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def classification_indicator(c_hat, c_true, u):
     """
     value = _brus.classification_indicator(c_hat, c_true, u)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (25.8)"
     return RichResult(
-        title='Map-unit classification agreement indicator',
+        title="Map-unit classification agreement indicator",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r25e8: y_k = 1 if chat_k = c_k = u else 0 [Brus 2022, eq. 25.8]'
+    return "r25e8: y_k = 1 if chat_k = c_k = u else 0 [Brus 2022, eq. 25.8]"

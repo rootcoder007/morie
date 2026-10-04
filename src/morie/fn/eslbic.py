@@ -60,12 +60,18 @@ def esl_bic_score(loglik, d, N):
     if N < 2:
         raise ValueError(f"BIC needs N >= 2; got {N}.")
     penalty = d * math.log(N)
-    return RichResult(payload={
-        "estimate": -2.0 * loglik + penalty, "penalty": penalty,
-        "aic_penalty": 2.0 * d,
-        "penalises_more_than_aic": bool(penalty > 2.0 * d),
-        "loglik": loglik, "d": d, "N": N,
-        "method": "BIC = -2 log L + d log N"})
+    return RichResult(
+        payload={
+            "estimate": -2.0 * loglik + penalty,
+            "penalty": penalty,
+            "aic_penalty": 2.0 * d,
+            "penalises_more_than_aic": bool(penalty > 2.0 * d),
+            "loglik": loglik,
+            "d": d,
+            "N": N,
+            "method": "BIC = -2 log L + d log N",
+        }
+    )
 
 
 def cheatsheet():

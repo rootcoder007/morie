@@ -1,7 +1,6 @@
 """Tests for coxres.cox_schoenfeld_residuals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxres import cox_schoenfeld_residuals
 
 

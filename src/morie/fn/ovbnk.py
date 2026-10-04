@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["oster_omitted_bias_bound"]
 
 
-def oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long,
-                             R_max=1.0, delta=1.0):
+def oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long, R_max=1.0, delta=1.0):
     """Bias-adjusted treatment effect under proportional selection.
 
     Coefficient stability alone is not evidence: a coefficient that
@@ -77,11 +76,18 @@ def oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long,
     denom = (bs - bl) * (rm - rl)
     delta_star = bl * (rl - rs) / denom if denom != 0.0 else float("inf")
     lo, hi = (beta_star, bl) if beta_star <= bl else (bl, beta_star)
-    return RichResult(payload={
-        "estimate": beta_star, "beta_star": beta_star, "bias": bias,
-        "delta_star": delta_star, "bound_lower": lo, "bound_upper": hi,
-        "sign_stable": 1.0 if lo * hi > 0.0 else 0.0,
-        "method": "Oster (2019) proportional-selection bias bound"})
+    return RichResult(
+        payload={
+            "estimate": beta_star,
+            "beta_star": beta_star,
+            "bias": bias,
+            "delta_star": delta_star,
+            "bound_lower": lo,
+            "bound_upper": hi,
+            "sign_stable": 1.0 if lo * hi > 0.0 else 0.0,
+            "method": "Oster (2019) proportional-selection bias bound",
+        }
+    )
 
 
 def cheatsheet():

@@ -53,7 +53,12 @@ def docalc(dag, y, z, x=(), w=()):
     res = _core.docalc(dag=dag, y=y, z=z, x=x, w=w)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("rule1", res["rule1"]), ("rule2", res["rule2"]), ("rule3", res["rule3"]), ("nrules", res["nrules"])],
+        summary_lines=[
+            ("rule1", res["rule1"]),
+            ("rule2", res["rule2"]),
+            ("rule3", res["rule3"]),
+            ("nrules", res["nrules"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

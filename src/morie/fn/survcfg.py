@@ -13,9 +13,7 @@ def causal_survival_forest_grf(time, event, D, X, horizon=None, n_trees=200, min
     Same IPCW-RMST honest forest (Cui et al. 2023, *JRSS-B* 85(2),
     179-211); kept as a separate entry point matching the grf naming.
     """
-    out = causal_survival_forest(
-        time, event, D, X, horizon=horizon, n_trees=n_trees, min_leaf=min_leaf, seed=seed
-    )
+    out = causal_survival_forest(time, event, D, X, horizon=horizon, n_trees=n_trees, min_leaf=min_leaf, seed=seed)
     payload = dict(out)
     payload["method"] = "Causal survival forest (grf-style front-end)"
     return RichResult(payload=payload)

@@ -1,7 +1,6 @@
 """Tests for cookd.cooks_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cookd import cooks_distance
 
 
@@ -12,6 +11,8 @@ def test_cookd_basic():
     result = cooks_distance(y, X)
     assert isinstance(result, dict)
     assert "d" in result
+
+
 def test_cookd_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

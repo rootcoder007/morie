@@ -10,6 +10,7 @@ This is a cross-language known-answer test against the reference
 implementation, which is a stronger check than any self-consistency
 assertion.
 """
+
 import math
 
 import pytest
@@ -65,10 +66,9 @@ def test_theil_sen_is_unmoved_by_an_outlier_that_wrecks_least_squares():
     n = len(XS)
     mx = sum(XS) / n
     my = sum(bad) / n
-    ols = (sum((XS[i] - mx) * (bad[i] - my) for i in range(n))
-           / sum((t - mx) ** 2 for t in XS))
-    assert abs(ts - 2.0) < 0.6         # barely moves
-    assert ols > 6.0                   # least squares is dragged away
+    ols = sum((XS[i] - mx) * (bad[i] - my) for i in range(n)) / sum((t - mx) ** 2 for t in XS)
+    assert abs(ts - 2.0) < 0.6  # barely moves
+    assert ols > 6.0  # least squares is dragged away
 
 
 def test_percentage_bend_correlation_matches_wrs_pbcor():
@@ -100,8 +100,7 @@ def test_cliff_delta_probabilities_sum_to_one():
     total = c["P_x_less_y"] + c["P_equal"] + c["P_x_greater_y"]
     assert abs(total - 1.0) < 1e-12
     # delta = P(X>Y) - P(X<Y)
-    assert abs(c["delta"]
-               - (c["P_x_greater_y"] - c["P_x_less_y"])) < 1e-12
+    assert abs(c["delta"] - (c["P_x_greater_y"] - c["P_x_less_y"])) < 1e-12
 
 
 def test_brunner_munzel_matches_wrs_bmp():
@@ -147,8 +146,7 @@ def test_percentile_bootstrap_is_deterministic_and_brackets_the_estimate():
 def test_percentile_bootstrap_with_the_mean_recovers_a_clear_difference():
     a = [1.0] * 20
     b = [11.0] * 20
-    r = rb.percentile_bootstrap_2group(
-        a, b, est=lambda v, **k: sum(v) / len(v), nboot=200, seed=3)
+    r = rb.percentile_bootstrap_2group(a, b, est=lambda v, **k: sum(v) / len(v), nboot=200, seed=3)
     assert abs(r["est_diff"] - (-10.0)) < 1e-12
     assert r["ci"] == (-10.0, -10.0)
 
@@ -166,8 +164,7 @@ def test_the_two_mad_constants_are_distinct_and_named():
 def test_madn_is_exactly_mad_rescaled_with_the_book_constant():
     # one source of truth: madn must not drift from mad_rescaled
     for v in ([2, 4, 4, 4, 5, 5, 7, 9], X, GX):
-        assert abs(rb.madn(v)
-                   - rb.mad_rescaled(v, rb.BOOK_MADN_CONSTANT)) < 1e-13
+        assert abs(rb.madn(v) - rb.mad_rescaled(v, rb.BOOK_MADN_CONSTANT)) < 1e-13
 
 
 def test_estimators_default_to_the_wrs_constant_and_accept_the_books():
@@ -179,10 +176,8 @@ def test_estimators_default_to_the_wrs_constant_and_accept_the_books():
     assert abs(book - 50.9176160000) > 1e-6
     assert abs(book - 50.9175315) < 1e-5
     # explicitly passing the R constant is the same as the default
-    assert abs(rb.one_step_m_estimator(X, constant=rb.R_MAD_CONSTANT)
-               - rb.one_step_m_estimator(X)) < 1e-15
-    assert abs(rb.mom_estimator(X, constant=rb.R_MAD_CONSTANT)
-               - rb.mom_estimator(X)) < 1e-15
+    assert abs(rb.one_step_m_estimator(X, constant=rb.R_MAD_CONSTANT) - rb.one_step_m_estimator(X)) < 1e-15
+    assert abs(rb.mom_estimator(X, constant=rb.R_MAD_CONSTANT) - rb.mom_estimator(X)) < 1e-15
 
 
 def test_mad_median_rule_keeps_the_books_constant():
@@ -203,7 +198,7 @@ def test_norm_quantile_against_known_values():
 
 def test_degenerate_inputs_raise_rather_than_return_nonsense():
     with pytest.raises(ValueError):
-        rb.theil_sen([1, 1, 1], [1, 2, 3])       # no distinct x
+        rb.theil_sen([1, 1, 1], [1, 2, 3])  # no distinct x
     with pytest.raises(ValueError):
         rb.harrell_davis([1, 2, 3], q=0.0)
     with pytest.raises(ValueError):
@@ -230,8 +225,7 @@ def test_trimmed_mean_ci_matches_wrs_trimci():
 def test_trimmed_mean_ci_uses_the_tukey_mclaughlin_se():
     # se = sqrt(winvar) / ((1 - 2 tr) sqrt(n)), not the ordinary sd/sqrt(n)
     n = len(X)
-    hand = (math.sqrt(rb.winsorized_variance(X, 0.2))
-            / ((1 - 2 * 0.2) * math.sqrt(n)))
+    hand = math.sqrt(rb.winsorized_variance(X, 0.2)) / ((1 - 2 * 0.2) * math.sqrt(n))
     assert abs(rb.trimmed_mean_se(X) - hand) < 1e-12
     assert abs(rb.trimmed_mean_ci(X)["se"] - hand) < 1e-12
 
@@ -338,7 +332,7 @@ def test_trimmed_mean_anova_rejects_medians_and_tiny_groups():
         rb.trimmed_mean_anova([G1, G2], tr=0.5)
     with pytest.raises(ValueError):
         rb.trimmed_mean_anova([G1])
-    with pytest.raises(ValueError):      # zero Winsorized variance
+    with pytest.raises(ValueError):  # zero Winsorized variance
         rb.trimmed_mean_anova([[1, 1, 1, 1, 1, 1], G1])
 
 
@@ -365,8 +359,7 @@ def test_carling_centres_on_the_median_not_the_quartiles():
     # the plain rule is centred on the midpoint of the fourths instead
     b = rb.boxplot_outliers(X)
     f = rb.ideal_fourths(X)
-    assert abs((b["lower"] + b["upper"]) / 2
-               - (f["q1"] + f["q2"]) / 2) < 1e-9
+    assert abs((b["lower"] + b["upper"]) / 2 - (f["q1"] + f["q2"]) / 2) < 1e-9
 
 
 def test_akp_effect_size_matches_r_integrate_not_mass_area():
@@ -389,10 +382,9 @@ def test_adaptive_quadrature_matches_r_integrate_to_machine_precision():
         return u * u * math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
 
     # R: integrate(function(u) u^2*dnorm(u), qnorm(.2), qnorm(.8))
-    assert abs(rb._adaptive_quad(f, lo, hi)
-               - 0.12875620638587673) < 1e-15
+    assert abs(rb._adaptive_quad(f, lo, hi) - 0.12875620638587673) < 1e-15
     # a polynomial the rule must integrate exactly
-    assert abs(rb._adaptive_quad(lambda u: u ** 3, 0.0, 2.0) - 4.0) < 1e-12
+    assert abs(rb._adaptive_quad(lambda u: u**3, 0.0, 2.0) - 4.0) < 1e-12
 
 
 def test_akp_cterm_is_one_without_trimming_and_recovers_cohens_d():
@@ -403,8 +395,7 @@ def test_akp_cterm_is_one_without_trimming_and_recovers_cohens_d():
     n1, n2 = len(G1), len(G2)
     m1 = sum(G1) / n1
     m2 = sum(G2) / n2
-    sp = math.sqrt(((n1 - 1) * rb.variance(G1)
-                    + (n2 - 1) * rb.variance(G2)) / (n1 + n2 - 2))
+    sp = math.sqrt(((n1 - 1) * rb.variance(G1) + (n2 - 1) * rb.variance(G2)) / (n1 + n2 - 2))
     assert abs(r["effect_size"] - (m1 - m2) / sp) < 1e-12
 
 
@@ -412,7 +403,7 @@ def test_akp_unequal_variance_returns_one_value_per_group():
     r = rb.akp_effect_size(G1, G2, equal_variance=False)
     assert isinstance(r["effect_size"], tuple)
     assert len(r["effect_size"]) == 2
-    assert all(v < 0 for v in r["effect_size"])   # G1 sits below G2
+    assert all(v < 0 for v in r["effect_size"])  # G1 sits below G2
 
 
 def test_f_cdf_against_known_values():
@@ -421,8 +412,7 @@ def test_f_cdf_against_known_values():
         assert abs(rb._f_cdf(1.0, df, df) - 0.5) < 1e-9
     assert rb._f_cdf(0.0, 3, 7) == 0.0
     # an F with df1 = 1 is a squared t
-    assert abs(rb._f_cdf(4.0, 1, 12)
-               - (2 * rb._student_t_cdf(2.0, 12) - 1)) < 1e-9
+    assert abs(rb._f_cdf(4.0, 1, 12) - (2 * rb._student_t_cdf(2.0, 12) - 1)) < 1e-9
 
 
 def test_trimmed_mean_bootstrap_covers_the_trimmed_mean():
@@ -434,10 +424,8 @@ def test_trimmed_mean_bootstrap_covers_the_trimmed_mean():
 
 # --- median standard error and Winsorized regression (WRS-anchored) --
 def test_median_se_matches_wrs_msmedse():
-    assert abs(rb.median_se(X, warn_ties=False)["se"]
-               - 23.293468987767866) < 1e-12
-    assert abs(rb.median_se(G1, warn_ties=False)["se"]
-               - 1.2423183460142859) < 1e-12
+    assert abs(rb.median_se(X, warn_ties=False)["se"] - 23.293468987767866) < 1e-12
+    assert abs(rb.median_se(G1, warn_ties=False)["se"] - 1.2423183460142859) < 1e-12
 
 
 def test_median_se_follows_the_mckean_shrader_order_statistics():
@@ -483,10 +471,9 @@ def test_winsorized_regression_resists_a_y_outlier():
     n = len(XS)
     mx = sum(XS) / n
     my = sum(bad) / n
-    ols = (sum((XS[i] - mx) * (bad[i] - my) for i in range(n))
-           / sum((t - mx) ** 2 for t in XS))
-    assert abs(wr - 2.0) < 1.0        # stays near the true slope
-    assert ols > 6.0                  # least squares is dragged away
+    ols = sum((XS[i] - mx) * (bad[i] - my) for i in range(n)) / sum((t - mx) ** 2 for t in XS)
+    assert abs(wr - 2.0) < 1.0  # stays near the true slope
+    assert ols > 6.0  # least squares is dragged away
 
 
 def test_winsorized_regression_accepts_multiple_predictors():
@@ -495,9 +482,7 @@ def test_winsorized_regression_accepts_multiple_predictors():
     w = rb.winsorized_regression(rows, y)
     assert len(w["slope"]) == 2
     assert len(w["coef"]) == 3
-    fitted = [w["intercept"] + sum(w["slope"][j] * rows[i][j]
-                                   for j in range(2))
-              for i in range(len(rows))]
+    fitted = [w["intercept"] + sum(w["slope"][j] * rows[i][j] for j in range(2)) for i in range(len(rows))]
     assert max(abs(fitted[i] - y[i]) for i in range(len(y))) < 1e-6
 
 
@@ -519,9 +504,7 @@ def test_correlation_bootstrap_matches_wrs_corb_exactly():
 
 
 def test_correlation_bootstrap_wraps_the_anchored_estimator():
-    w = rb.correlation_bootstrap_ci(XS, YS,
-                                    corfun=rb.winsorized_correlation,
-                                    nboot=299)
+    w = rb.correlation_bootstrap_ci(XS, YS, corfun=rb.winsorized_correlation, nboot=299)
     assert abs(w["estimate"] - 0.99358336180582918) < 1e-12
 
 
@@ -550,10 +533,10 @@ def test_correlation_bootstrap_rejects_mismatched_lengths():
 # --- R-compatible RNG ------------------------------------------------
 def test_rrng_reproduces_r_runif():
     from morie.fn import _rrng_core as rr
+
     # R: set.seed(2); runif(5)
     got = rr.RRandom(2).runif(5)
-    want = [0.1848822599, 0.7023740360, 0.5733263348,
-            0.1680519204, 0.9438393388]
+    want = [0.1848822599, 0.7023740360, 0.5733263348, 0.1680519204, 0.9438393388]
     for a, b in zip(got, want):
         assert abs(a - b) < 1e-10
     # R: set.seed(42); runif(3)
@@ -565,15 +548,16 @@ def test_rrng_reproduces_r_runif():
 
 def test_rrng_reproduces_r_sample():
     from morie.fn import _rrng_core as rr
+
     # R: set.seed(2); sample.int(10, 10, replace = TRUE)
-    assert rr.RRandom(2).sample_int(10, 10, replace=True) == \
-        [5, 6, 6, 8, 1, 1, 9, 2, 1, 3]
+    assert rr.RRandom(2).sample_int(10, 10, replace=True) == [5, 6, 6, 8, 1, 1, 9, 2, 1, 3]
     # R: set.seed(1); sample.int(10, 5)
     assert rr.RRandom(1).sample_int(10, 5) == [9, 4, 7, 1, 2]
 
 
 def test_rrng_sample_without_replacement_is_a_permutation():
     from morie.fn import _rrng_core as rr
+
     out = rr.RRandom(7).sample_int(20, 20)
     assert sorted(out) == list(range(1, 21))
     with pytest.raises(ValueError):
@@ -582,10 +566,11 @@ def test_rrng_sample_without_replacement_is_a_permutation():
 
 def test_rrng_stream_is_reproducible_and_advances():
     from morie.fn import _rrng_core as rr
+
     a = rr.RRandom(99).runif(4)
     b = rr.RRandom(99).runif(4)
     assert a == b
     g = rr.RRandom(99)
     first, second = g.runif(2), g.runif(2)
-    assert first != second          # the stream advances
+    assert first != second  # the stream advances
     assert all(0.0 < v < 1.0 for v in a + first + second)

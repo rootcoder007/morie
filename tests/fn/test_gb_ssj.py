@@ -20,7 +20,8 @@ def test_gb_ssj_basic():
 def test_gb_ssj_edge():
     """Symmetric in theta about 1/2; theta = 1/2 has no finite N."""
     assert gibbons_sign_sample_size_2(0.25)["n_raw"] == pytest.approx(
-        gibbons_sign_sample_size_2(0.75)["n_raw"], rel=1e-14)
+        gibbons_sign_sample_size_2(0.75)["n_raw"], rel=1e-14
+    )
     with pytest.raises(ValueError, match="differ"):
         gibbons_sign_sample_size_2(0.5)
 
@@ -37,7 +38,7 @@ import morie.fn.gb_ssj as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

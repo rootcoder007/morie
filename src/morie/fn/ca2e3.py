@@ -27,18 +27,17 @@ def ca_chapter_2_equation_3(x, y):
     ch.2 eq.2.3
     """
     payload = dict(_ca_crim.ols_simple(x, y))
-    value = payload['b0']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["b0"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.3)"
     return RichResult(
-        title='OLS intercept b0 = ybar - b1 xbar',
+        title="OLS intercept b0 = ybar - b1 xbar",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e3: b0 = ybar - b1 xbar [Weisburd et al. 2022, eq. 2.3]'
+    return "ca2e3: b0 = ybar - b1 xbar [Weisburd et al. 2022, eq. 2.3]"

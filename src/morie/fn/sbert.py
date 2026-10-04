@@ -68,12 +68,10 @@ Understanding", *NAACL-HLT 2019*, 4171-4186, arXiv:1810.04805.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["pool", "cosine_similarity", "classification_features",
-           "pair_cost", "rank_by_similarity", "sts_score"]
+__all__ = ["pool", "cosine_similarity", "classification_features", "pair_cost", "rank_by_similarity", "sts_score"]
 
 _EPS = 1e-12
 _POOLING = ("mean", "cls", "max")
@@ -87,16 +85,14 @@ def pool(token_vectors, mode="mean", mask=None):
     vector.
     """
     if mode not in _POOLING:
-        raise ValueError("sbert: pooling must be one of %s, got %r"
-                         % (", ".join(_POOLING), mode))
+        raise ValueError("sbert: pooling must be one of %s, got %r" % (", ".join(_POOLING), mode))
     T = [[float(v) for v in r] for r in k.mat(token_vectors)]
     if not T:
         raise ValueError("sbert: no token vectors given")
     d = len(T[0])
     m = [True] * len(T) if mask is None else [bool(v) for v in mask]
     if len(m) != len(T):
-        raise ValueError("sbert: %d mask entries for %d tokens"
-                         % (len(m), len(T)))
+        raise ValueError("sbert: %d mask entries for %d tokens" % (len(m), len(T)))
     keep = [i for i in range(len(T)) if m[i]]
     if not keep:
         raise ValueError("sbert: the mask excludes every token")
@@ -112,13 +108,11 @@ def cosine_similarity(u, v):
     a = [float(x) for x in k.vec(u)]
     b = [float(x) for x in k.vec(v)]
     if len(a) != len(b):
-        raise ValueError("sbert: vectors differ in length (%d, %d)"
-                         % (len(a), len(b)))
+        raise ValueError("sbert: vectors differ in length (%d, %d)" % (len(a), len(b)))
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(x * x for x in b))
     if na <= _EPS or nb <= _EPS:
-        raise ValueError("sbert: cosine similarity is undefined for a "
-                         "zero vector")
+        raise ValueError("sbert: cosine similarity is undefined for a zero vector")
     return sum(a[i] * b[i] for i in range(len(a))) / (na * nb)
 
 
@@ -131,12 +125,16 @@ def classification_features(u, v):
     a = [float(x) for x in k.vec(u)]
     b = [float(x) for x in k.vec(v)]
     if len(a) != len(b):
-        raise ValueError("sbert: vectors differ in length (%d, %d)"
-                         % (len(a), len(b)))
+        raise ValueError("sbert: vectors differ in length (%d, %d)" % (len(a), len(b)))
     diff = [abs(a[i] - b[i]) for i in range(len(a))]
-    return {"features": a + b + diff, "u": a, "v": b,
-            "abs_diff": diff, "dim": 3 * len(a),
-            "note": "|u - v| is the term neither u nor v supplies"}
+    return {
+        "features": a + b + diff,
+        "u": a,
+        "v": b,
+        "abs_diff": diff,
+        "dim": 3 * len(a),
+        "note": "|u - v| is the term neither u nor v supplies",
+    }
 
 
 def pair_cost(n, mode="cross-encoder"):
@@ -149,14 +147,16 @@ def pair_cost(n, mode="cross-encoder"):
     if N < 2:
         raise ValueError("sbert: need at least 2 sentences")
     if mode not in ("cross-encoder", "bi-encoder"):
-        raise ValueError("sbert: mode must be cross-encoder or "
-                         "bi-encoder, got %r" % (mode,))
+        raise ValueError("sbert: mode must be cross-encoder or bi-encoder, got %r" % (mode,))
     cross = N * (N - 1) // 2
-    return {"forward_passes": cross if mode == "cross-encoder" else N,
-            "cross_encoder": cross, "bi_encoder": N,
-            "speedup": cross / float(N), "n": N,
-            "note": "the bi-encoder also does O(n^2) dot products, "
-                    "but those are arithmetic, not network passes"}
+    return {
+        "forward_passes": cross if mode == "cross-encoder" else N,
+        "cross_encoder": cross,
+        "bi_encoder": N,
+        "speedup": cross / float(N),
+        "n": N,
+        "note": "the bi-encoder also does O(n^2) dot products, but those are arithmetic, not network passes",
+    }
 
 
 def rank_by_similarity(query, corpus_embeddings, top_k=5):
@@ -165,13 +165,14 @@ def rank_by_similarity(query, corpus_embeddings, top_k=5):
     E = [[float(v) for v in r] for r in k.mat(corpus_embeddings)]
     if not E:
         raise ValueError("sbert: the corpus is empty")
-    scores = [(i, cosine_similarity(query, E[i]))
-              for i in range(len(E))]
+    scores = [(i, cosine_similarity(query, E[i])) for i in range(len(E))]
     scores.sort(key=lambda t: -t[1])
-    return {"ranking": scores[:int(top_k)], "n_corpus": len(E),
-            "forward_passes": 0,
-            "note": "no network passes at query time -- the corpus "
-                    "was embedded once"}
+    return {
+        "ranking": scores[: int(top_k)],
+        "n_corpus": len(E),
+        "forward_passes": 0,
+        "note": "no network passes at query time -- the corpus was embedded once",
+    }
 
 
 def sts_score(pairs, embed):
@@ -187,25 +188,30 @@ def sts_score(pairs, embed):
                 cache[s] = [float(v) for v in k.vec(embed(s))]
                 calls += 1
         out.append(cosine_similarity(cache[a], cache[b]))
-    return RichResult(payload={
-        "estimate": out, "scores": out, "embed_calls": calls,
-        "n_pairs": len(pairs),
-        "cross_encoder_calls": len(pairs),
-        "method": "siamese bi-encoder scored by cosine; Reimers & "
-                  "Gurevych (2019)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "scores": out,
+            "embed_calls": calls,
+            "n_pairs": len(pairs),
+            "cross_encoder_calls": len(pairs),
+            "method": "siamese bi-encoder scored by cosine; Reimers & Gurevych (2019)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sbert: BERT scores a PAIR, so comparing n sentences needs "
-            "C(n,2) forward passes -- 10k sentences is ~50M. A "
-            "SIAMESE network embeds each sentence ONCE with shared "
-            "weights, so it is n passes plus dot products. "
-            "Classification objective: softmax over (u, v, |u-v|) -- "
-            "the difference term is what locates the disagreement. "
-            "Regression objective: cosine directly, and only that one "
-            "trains the cosine geometry. Pooling (mean/CLS/max) is a "
-            "real choice, all three ablated.")
+    return (
+        "sbert: BERT scores a PAIR, so comparing n sentences needs "
+        "C(n,2) forward passes -- 10k sentences is ~50M. A "
+        "SIAMESE network embeds each sentence ONCE with shared "
+        "weights, so it is n passes plus dot products. "
+        "Classification objective: softmax over (u, v, |u-v|) -- "
+        "the difference term is what locates the disagreement. "
+        "Regression objective: cosine directly, and only that one "
+        "trains the cosine geometry. Pooling (mean/CLS/max) is a "
+        "real choice, all three ablated."
+    )
 
 
 # compact alias per ledger/NAMING.md

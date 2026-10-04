@@ -55,7 +55,7 @@ def kronecker_graph(seed, k):
     kk = int(k)
     if kk < 1:
         raise ValueError("kronecker_graph: k must be at least 1")
-    N = n0 ** kk
+    N = n0**kk
     if N > 4096:
         raise ValueError("kronecker_graph: n0^k exceeds 4096 nodes")
     P = [[1.0] * N for _ in range(N)]

@@ -1,7 +1,6 @@
 """Tests for otreg.ot_regularised_dual."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otreg import ot_regularised_dual
 
 

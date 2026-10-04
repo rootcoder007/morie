@@ -1,7 +1,6 @@
 """Tests for smltrt.survey_ratio."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.smltrt import survey_ratio
 
 

@@ -1,7 +1,5 @@
 """Tests for kmstb.kamath_step_back_prompting."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmstb import kamath_step_back_prompting
 
 
@@ -9,9 +7,11 @@ def test_kmstb_basic():
     """Test basic functionality."""
     docs = {"physics": ["d1", "d2"], "which force": ["d2", "d3"]}
     result = kamath_step_back_prompting(
-        "which force", lambda q: "physics",
+        "which force",
+        lambda q: "physics",
         retrieve=lambda q: docs[q],
-        answer=lambda q, ctx: "gravity, per " + ",".join(ctx))
+        answer=lambda q, ctx: "gravity, per " + ",".join(ctx),
+    )
     assert isinstance(result, dict)
     assert result["step_back_query"] == "physics"
     assert result["query"] == "which force"
@@ -46,7 +46,7 @@ import morie.fn.kmstb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

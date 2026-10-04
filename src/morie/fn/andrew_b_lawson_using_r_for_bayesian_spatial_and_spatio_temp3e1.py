@@ -27,4 +27,6 @@ andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1: Joint likelihood of independent observations"
+    return (
+        "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1: Joint likelihood of independent observations"
+    )

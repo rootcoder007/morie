@@ -57,12 +57,9 @@ Graph Convolutional Networks", *ICLR 2017*, arXiv:1609.02907.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["sort_pooling", "choose_k", "wl_colours",
-           "order_is_graph_determined"]
+__all__ = ["sort_pooling", "choose_k", "wl_colours", "order_is_graph_determined"]
 
 _EPS = 1e-12
 
@@ -74,11 +71,9 @@ def wl_colours(adj, n, rounds=2, initial=None):
     its neighbours' -- so vertices with the same structural role
     converge, which is what makes a sort by that value meaningful.
     """
-    c = [1.0] * int(n) if initial is None else \
-        [float(v) for v in k.vec(initial)]
+    c = [1.0] * int(n) if initial is None else [float(v) for v in k.vec(initial)]
     if len(c) != int(n):
-        raise ValueError("sortP: %d initial colours for %d vertices"
-                         % (len(c), n))
+        raise ValueError("sortP: %d initial colours for %d vertices" % (len(c), n))
     for _ in range(int(rounds)):
         nc = []
         for v in range(int(n)):
@@ -112,11 +107,15 @@ def sort_pooling(features, k_keep, sort_channel=-1):
     while len(out) < kk:
         out.append([0.0] * d)
         pad += 1
-    return {"pooled": out, "order": kept, "n_truncated":
-            max(0, n - kk), "n_padded": pad, "k": kk,
-            "sort_channel": ch,
-            "note": "a fixed-size, ordered representation, so an "
-                    "ordinary CNN can read it"}
+    return {
+        "pooled": out,
+        "order": kept,
+        "n_truncated": max(0, n - kk),
+        "n_padded": pad,
+        "k": kk,
+        "sort_channel": ch,
+        "note": "a fixed-size, ordered representation, so an ordinary CNN can read it",
+    }
 
 
 def choose_k(graph_sizes, coverage=0.6):
@@ -129,21 +128,20 @@ def choose_k(graph_sizes, coverage=0.6):
     s = sorted(int(v) for v in graph_sizes)
     c = float(coverage)
     if not 0.0 < c <= 1.0:
-        raise ValueError("sortP: the coverage must lie in (0,1], got "
-                         "%r" % (coverage,))
+        raise ValueError("sortP: the coverage must lie in (0,1], got %r" % (coverage,))
     if not s:
         raise ValueError("sortP: no graph sizes given")
     idx = min(len(s) - 1, int(math.ceil(c * len(s))) - 1)
     kk = s[max(idx, 0)]
-    return {"k": kk, "coverage": c,
-            "fraction_untruncated": sum(1 for v in s if v <= kk)
-            / float(len(s)),
-            "note": "k is the coverage quantile of the size "
-                    "distribution"}
+    return {
+        "k": kk,
+        "coverage": c,
+        "fraction_untruncated": sum(1 for v in s if v <= kk) / float(len(s)),
+        "note": "k is the coverage quantile of the size distribution",
+    }
 
 
-def order_is_graph_determined(features, adj, perm, k_keep,
-                              tol=1e-9):
+def order_is_graph_determined(features, adj, perm, k_keep, tol=1e-9):
     r"""Relabel the vertices; the sorted output must not move.
 
     If it does, the ordering came from the input file rather than
@@ -157,24 +155,27 @@ def order_is_graph_determined(features, adj, perm, k_keep,
         inv[perm[i]] = i
     Xp = [X[inv[i]] for i in range(n)]
     other = sort_pooling(Xp, k_keep)["pooled"]
-    dev = max(abs(base[i][j] - other[i][j])
-              for i in range(len(base)) for j in range(len(base[0])))
-    return {"max_deviation": dev, "invariant": dev < float(tol),
-            "note": "the sort key must be a function of the GRAPH, "
-                    "not of the vertex listing"}
+    dev = max(abs(base[i][j] - other[i][j]) for i in range(len(base)) for j in range(len(base[0])))
+    return {
+        "max_deviation": dev,
+        "invariant": dev < float(tol),
+        "note": "the sort key must be a function of the GRAPH, not of the vertex listing",
+    }
 
 
 def cheatsheet():
-    return ("sortP: the under-stated problem in graph classification is "
-            "how to read vertices in a MEANINGFUL AND CONSISTENT "
-            "order so an ordinary network can be trained on graphs. "
-            "Summing is invariant and forgets who contributed what; "
-            "SortPooling ARRANGES vertices instead, sorting by the "
-            "last convolution channel -- a continuous WL colour, so "
-            "the order comes from the GRAPH, not the input file -- "
-            "then truncates or pads to a fixed k. Relabel the vertices "
-            "and the output must not move. k is chosen for coverage of "
-            "the size distribution.")
+    return (
+        "sortP: the under-stated problem in graph classification is "
+        "how to read vertices in a MEANINGFUL AND CONSISTENT "
+        "order so an ordinary network can be trained on graphs. "
+        "Summing is invariant and forgets who contributed what; "
+        "SortPooling ARRANGES vertices instead, sorting by the "
+        "last convolution channel -- a continuous WL colour, so "
+        "the order comes from the GRAPH, not the input file -- "
+        "then truncates or pads to a fixed k. Relabel the vertices "
+        "and the output must not move. k is chosen for coverage of "
+        "the size distribution."
+    )
 
 
 # compact alias per ledger/NAMING.md

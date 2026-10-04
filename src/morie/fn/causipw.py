@@ -104,8 +104,7 @@ def causipw(treat, y, ps, alpha=0.1):
     alpha = float(alpha)
     if not 0.0 <= alpha < 0.5:
         raise ValueError("alpha must lie in [0, 0.5)")
-    keep = [i for i in range(n)
-            if alpha <= float(e[i]) <= 1.0 - alpha]
+    keep = [i for i in range(n) if alpha <= float(e[i]) <= 1.0 - alpha]
     k1 = [i for i in keep if t[i] == 1.0]
     k0 = [i for i in keep if t[i] == 0.0]
     if not k1 or not k0:
@@ -114,17 +113,19 @@ def causipw(treat, y, ps, alpha=0.1):
     w0 = [1.0 / (1.0 - float(e[i])) for i in k0]
     mu1 = sum(w * float(yv[i]) for w, i in zip(w1, k1)) / sum(w1)
     mu0 = sum(w * float(yv[i]) for w, i in zip(w0, k0)) / sum(w0)
-    return RichResult(payload={
-        "estimate": mu1 - mu0,
-        "alpha": alpha,
-        "n": n,
-        "n_kept": len(keep),
-        "n_treat_kept": len(k1),
-        "n_control_kept": len(k0),
-        "mean_treated": mu1,
-        "mean_control": mu0,
-        "method": "Crump et al. (2009) overlap trimming + Hajek IPW",
-    })
+    return RichResult(
+        payload={
+            "estimate": mu1 - mu0,
+            "alpha": alpha,
+            "n": n,
+            "n_kept": len(keep),
+            "n_treat_kept": len(k1),
+            "n_control_kept": len(k0),
+            "mean_treated": mu1,
+            "mean_control": mu0,
+            "method": "Crump et al. (2009) overlap trimming + Hajek IPW",
+        }
+    )
 
 
 causal_ipw_truncated = causipw

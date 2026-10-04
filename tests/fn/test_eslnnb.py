@@ -1,7 +1,6 @@
 """Tests for eslnnb.esl_naive_bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslnnb import esl_naive_bayes
 
 

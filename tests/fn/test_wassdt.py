@@ -1,7 +1,6 @@
 """Tests for wassdt.wasserstein_1d."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wassdt import wasserstein_1d
 
 

@@ -29,8 +29,7 @@ def test_morebs_basic():
     zb = sum(z) / m
     zt = [v - zb for v in z]
     s0 = sum(map(sum, W))
-    ebi = m / s0 * sum(zt[i] * sum(W[i][j] * zt[j] for j in range(m)) for i in range(m)) \
-        / sum(v * v for v in zt)
+    ebi = m / s0 * sum(zt[i] * sum(W[i][j] * zt[j] for j in range(m)) for i in range(m)) / sum(v * v for v in zt)
     assert r["statistic"] == pytest.approx(ebi, rel=1e-13)
     assert r["statistic"] == pytest.approx(-0.68815535981680098, rel=1e-13)
 

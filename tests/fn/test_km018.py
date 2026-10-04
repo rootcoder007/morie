@@ -13,6 +13,8 @@ def test_km018_doctest():
 
 def test_km018_edge():
     import pytest
+
     from morie.fn.km018 import kamath_ch2_layer_norm
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_layer_norm(*([None] * 5))

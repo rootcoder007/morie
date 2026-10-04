@@ -60,8 +60,7 @@ def quantize_angles(theta, bits=4):
     """
     b = int(bits)
     if not (1 <= b <= 30):
-        raise ValueError("quantize_angles: bits must lie in 1..30, got %r"
-                         % (bits,))
+        raise ValueError("quantize_angles: bits must lie in 1..30, got %r" % (bits,))
     n_levels = 1 << b
     delta = TWO_PI / n_levels
 
@@ -81,27 +80,30 @@ def quantize_angles(theta, bits=4):
         err.append(angular_difference(w, rec))
 
     mse = sum(e * e for e in err) / float(len(err)) if err else 0.0
-    return RichResult(payload={
-        "estimate": val,
-        "indices": idx,
-        "values": val,
-        "errors": err,
-        "mse": float(mse),
-        "max_abs_error": float(max((abs(e) for e in err), default=0.0)),
-        "delta": delta,
-        "half_delta": 0.5 * delta,
-        "mse_bound": delta * delta / 12.0,
-        "bits": b,
-        "levels": n_levels,
-        "method": "Uniform angle quantisation on [-pi, pi), midpoint "
-                  "reconstruction, wrapped error",
-    })
+    return RichResult(
+        payload={
+            "estimate": val,
+            "indices": idx,
+            "values": val,
+            "errors": err,
+            "mse": float(mse),
+            "max_abs_error": float(max((abs(e) for e in err), default=0.0)),
+            "delta": delta,
+            "half_delta": 0.5 * delta,
+            "mse_bound": delta * delta / 12.0,
+            "bits": b,
+            "levels": n_levels,
+            "method": "Uniform angle quantisation on [-pi, pi), midpoint reconstruction, wrapped error",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tqang: 2^b equal sectors, delta = 2pi/2^b, codeword "
-            "-pi + (k+0.5) delta; |err| <= delta/2, MSE -> delta^2/12; "
-            "all errors use the WRAPPED difference.")
+    return (
+        "tqang: 2^b equal sectors, delta = 2pi/2^b, codeword "
+        "-pi + (k+0.5) delta; |err| <= delta/2, MSE -> delta^2/12; "
+        "all errors use the WRAPPED difference."
+    )
 
 
 tqang = quantize_angles

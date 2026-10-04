@@ -71,10 +71,17 @@ def post_stratification(y, weights, stratum, N_h):
     for i in range(len(y)):
         sw += wa[i]
         swy += wa[i] * y[i]
-    return RichResult(payload={
-        "estimate": swy / sw, "weights": wa, "factors": fac,
-        "N": sw, "n": len(y), "strata": len(order),
-        "method": "Post-stratification weight adjustment w_i N_h / sum_h w"})
+    return RichResult(
+        payload={
+            "estimate": swy / sw,
+            "weights": wa,
+            "factors": fac,
+            "N": sw,
+            "n": len(y),
+            "strata": len(order),
+            "method": "Post-stratification weight adjustment w_i N_h / sum_h w",
+        }
+    )
 
 
 def cheatsheet():

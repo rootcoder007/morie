@@ -97,9 +97,7 @@ def geron_kernel_pca_poly(X, n_components, degree=3, gamma=None, coef0=1.0):
 
     K = (g * (A @ A.T) + c0) ** deg
     if not np.all(np.isfinite(K)):
-        raise ValueError(
-            f"geron_kernel_pca_poly: the degree-{deg} kernel overflowed; rescale X or lower gamma/degree"
-        )
+        raise ValueError(f"geron_kernel_pca_poly: the degree-{deg} kernel overflowed; rescale X or lower gamma/degree")
     proj, vals, alphas, Kc = kernel_pca_from_gram(K, n_components)
 
     # dim of the space of monomials of degree <= deg in n_feat variables

@@ -43,8 +43,6 @@ they are called: duplicating them is how the two copies drift apart.
 
 from __future__ import annotations
 
-from math import sqrt
-
 from . import _array_core as np  # noqa: F401
 from ._richresult import RichResult
 
@@ -118,7 +116,7 @@ def _intervals(force):
         else:
             i += 1
     fine = []
-    for (a, b) in coarse:
+    for a, b in coarse:
         seg = force[a:b]
         t2 = _REFINE_FRACTION * max(seg)
         # the LONGEST run inside the interval over which the force stays
@@ -198,7 +196,7 @@ def rangayyan_emg_force(emg, force, fs, window=None, turn_threshold=100.0):
     rv = []
     zv = []
     tv = []
-    for (a, b) in ivs:
+    for a, b in ivs:
         seg_f = f[a:b]
         seg_e = e[a:b]
         lev.append(sum(seg_f) / len(seg_f))

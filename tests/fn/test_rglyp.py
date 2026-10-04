@@ -16,14 +16,12 @@ tests/fn/fixtures/rglyp.json, at the tolerance the paper states for itself:
 import json
 import pathlib
 
-_FIX = json.loads(
-    (pathlib.Path(__file__).parent / "fixtures" / "rglyp.json").read_text()
-)
+_FIX = json.loads((pathlib.Path(__file__).parent / "fixtures" / "rglyp.json").read_text())
 _EXPECT = {s["name"]: s for s in _FIX["systems"]}
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rglyp import rangayyan_lyapunov
 
 
@@ -109,8 +107,7 @@ def test_identity_periodic_signal_gives_a_vanishing_exponent():
 def test_identity_chaos_exceeds_periodicity():
     """The ordering is the claim the statistic actually makes."""
     chaotic = rangayyan_lyapunov(_logistic(4000), m=3, tau=1, max_t=30)["lyapunov"]
-    periodic = rangayyan_lyapunov(
-        np.sin(np.linspace(0, 80 * np.pi, 4000)), m=4, tau=8, max_t=30)["lyapunov"]
+    periodic = rangayyan_lyapunov(np.sin(np.linspace(0, 80 * np.pi, 4000)), m=4, tau=8, max_t=30)["lyapunov"]
     assert chaotic > periodic
 
 

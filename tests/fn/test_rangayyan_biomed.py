@@ -1,23 +1,23 @@
 """Rangayyan biomedical template-B repairs."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsaar import rangayyan_burg_method
 from morie.fn.bsacep import rangayyan_cepstrum_pitch
-from morie.fn.bsacorr import rangayyan_eeg_spectral
-from morie.fn.bsaphys import rangayyan_heart_elasticity
-from morie.fn.bsatf import rangayyan_envelogram
-from morie.fn.bsastat import rangayyan_pdf_estimate
-from morie.fn.bsastat import rangayyan_rms_noise
-from morie.fn.bsafilt import rangayyan_transfer_func_est
-from morie.fn.bsaqrs import rangayyan_twa_spectral_mx
-from morie.fn.bsacorr import rangayyan_ch3_acf_ensemble_estimate
-from morie.fn.bsacorr import rangayyan_ch3_ensemble_average_function
-from morie.fn.bsastat import rangayyan_ch3_time_average_mean
-from morie.fn.bsacorr import rangayyan_ch3_time_averaged_acf
 from morie.fn.bsaclass import rangayyan_ch4_pan_tompkins_peak_classification
-from morie.fn.bsacorr import rangayyan_ch4_average_output_noise_power
+from morie.fn.bsacorr import (
+    rangayyan_ch3_acf_ensemble_estimate,
+    rangayyan_ch3_ensemble_average_function,
+    rangayyan_ch3_time_averaged_acf,
+    rangayyan_ch4_average_output_noise_power,
+    rangayyan_eeg_spectral,
+)
+from morie.fn.bsafilt import rangayyan_transfer_func_est
+from morie.fn.bsaphys import rangayyan_heart_elasticity
+from morie.fn.bsaqrs import rangayyan_twa_spectral_mx
+from morie.fn.bsastat import rangayyan_ch3_time_average_mean, rangayyan_pdf_estimate, rangayyan_rms_noise
+from morie.fn.bsatf import rangayyan_envelogram
 
 
 def test_ensemble_averaging_improves_snr_by_sqrt_M():
@@ -54,9 +54,7 @@ def test_ensemble_and_time_averages_agree_only_under_ergodicity():
     # ensemble ACF at lag 0 is the mean square at that time
     a = rangayyan_ch3_acf_ensemble_estimate(erg, t1=10, tau=0)
     assert a["acf"] == pytest.approx(np.mean(erg[:, 10] ** 2))
-    assert rangayyan_ch3_time_averaged_acf(erg[0], tau=0)["acf"] == pytest.approx(
-        np.mean(erg[0] ** 2)
-    )
+    assert rangayyan_ch3_time_averaged_acf(erg[0], tau=0)["acf"] == pytest.approx(np.mean(erg[0] ** 2))
     with pytest.raises(ValueError):
         rangayyan_ch3_acf_ensemble_estimate(erg, t1=10, tau=1000)
 
@@ -125,8 +123,7 @@ def test_transfer_function_recovers_a_known_filter_with_high_coherence():
     Htrue = np.abs(np.fft.rfft(b, n=512))
     assert np.median(np.abs(out["magnitude"] - Htrue)) < 0.05
     # adding independent noise to y drops the coherence
-    noisy = rangayyan_transfer_func_est(x, y + rng.standard_normal(x.size) * 2.0,
-                                        nperseg=512)
+    noisy = rangayyan_transfer_func_est(x, y + rng.standard_normal(x.size) * 2.0, nperseg=512)
     assert np.median(noisy["coherence"]) < np.median(out["coherence"])
     # a single segment would give coherence == 1 vacuously
     with pytest.raises(ValueError):
@@ -135,19 +132,13 @@ def test_transfer_function_recovers_a_known_filter_with_high_coherence():
 
 def test_pan_tompkins_trackers_and_threshold_adapt():
     # a run of large peaks pulls SPKI up; small ones pull NPKI up
-    out = rangayyan_ch4_pan_tompkins_peak_classification(
-        [1.0] * 5 + [0.05] * 5, SPKI=1.0, NPKI=0.05
-    )
+    out = rangayyan_ch4_pan_tompkins_peak_classification([1.0] * 5 + [0.05] * 5, SPKI=1.0, NPKI=0.05)
     assert out["SPKI"] > out["NPKI"]
     assert out["NPKI"] < out["threshold"] < out["SPKI"]
     # the 1/8 coefficient is exact
-    one = rangayyan_ch4_pan_tompkins_peak_classification(
-        [2.0], SPKI=1.0, NPKI=0.0, is_signal=[True]
-    )
+    one = rangayyan_ch4_pan_tompkins_peak_classification([2.0], SPKI=1.0, NPKI=0.0, is_signal=[True])
     assert one["SPKI"] == pytest.approx(0.125 * 2.0 + 0.875 * 1.0)
-    noise = rangayyan_ch4_pan_tompkins_peak_classification(
-        [2.0], SPKI=1.0, NPKI=0.4, is_signal=[False]
-    )
+    noise = rangayyan_ch4_pan_tompkins_peak_classification([2.0], SPKI=1.0, NPKI=0.4, is_signal=[False])
     assert noise["NPKI"] == pytest.approx(0.125 * 2.0 + 0.875 * 0.4)
     with pytest.raises(ValueError):
         rangayyan_ch4_pan_tompkins_peak_classification([-1.0])

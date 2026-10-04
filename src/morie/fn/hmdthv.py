@@ -131,7 +131,7 @@ def geron_tree_high_variance(X, y, n_resamples=20, seed=0, criterion="gini", max
         single = float(full["train_mse"])
     else:
         classes = np.unique(ya)
-        counts = np.stack([(P == c).sum(axis=0) for c in classes], axis=1)
+        counts = np.stack([(c == P).sum(axis=0) for c in classes], axis=1)
         maj = classes[counts.argmax(axis=1)]
         per_var = 1.0 - counts.max(axis=1) / B
         bias2 = float(np.mean((maj != ya).astype(float)))

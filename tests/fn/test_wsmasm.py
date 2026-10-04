@@ -31,24 +31,18 @@ def test_wsmasm_basic():
 
     # The plug-in information is exactly what the sibling that computes
     # it returns, and close to the analytic 1/theta^2.
-    assert out["information"] == pytest.approx(
-        wasserman_fisher_info(None, theta_hat, x_grid=g)["estimate"], rel=1e-12
-    )
-    assert abs(out["information"] - 1.0 / theta_hat ** 2) < 1e-4
+    assert out["information"] == pytest.approx(wasserman_fisher_info(None, theta_hat, x_grid=g)["estimate"], rel=1e-12)
+    assert abs(out["information"] - 1.0 / theta_hat**2) < 1e-4
 
     # se = 1/sqrt(n I), which for this model is theta/sqrt(n).
-    assert out["se"] == pytest.approx(
-        1.0 / math.sqrt(n * out["information"]), rel=1e-12
-    )
+    assert out["se"] == pytest.approx(1.0 / math.sqrt(n * out["information"]), rel=1e-12)
     assert abs(out["se"] - theta_hat / math.sqrt(n)) < 1e-4
 
     # The Wald interval is symmetric about the estimate, half-width z*se.
     assert out["ci_lower"] == pytest.approx(theta_hat - _Z * out["se"], rel=1e-12)
     assert out["ci_upper"] == pytest.approx(theta_hat + _Z * out["se"], rel=1e-12)
     assert out["ci_lower"] < theta_hat < out["ci_upper"]
-    assert out["ci_upper"] - out["ci_lower"] == pytest.approx(
-        2.0 * _Z * out["se"], rel=1e-12
-    )
+    assert out["ci_upper"] - out["ci_lower"] == pytest.approx(2.0 * _Z * out["se"], rel=1e-12)
 
 
 def test_wsmasm_edge():
@@ -57,9 +51,7 @@ def test_wsmasm_edge():
     g3 = _grid(theta_hat)
     one = wasserman_mle_asymptotic([0.0], None, theta_hat, x_grid=g3)
     assert one["n"] == 1
-    assert one["se"] == pytest.approx(
-        1.0 / math.sqrt(one["information"]), rel=1e-12
-    )
+    assert one["se"] == pytest.approx(1.0 / math.sqrt(one["information"]), rel=1e-12)
     assert abs(one["se"] - theta_hat / math.sqrt(1)) < 1e-3
 
     # Quadrupling n halves the standard error at a fixed theta_hat.
@@ -69,9 +61,7 @@ def test_wsmasm_edge():
     assert small["se"] / large["se"] == pytest.approx(2.0, rel=1e-12)
 
     # Only the sample size enters the se, not the sample values.
-    shifted = wasserman_mle_asymptotic(
-        [1e6 + i for i in range(100)], None, 1.5, x_grid=g15
-    )
+    shifted = wasserman_mle_asymptotic([1e6 + i for i in range(100)], None, 1.5, x_grid=g15)
     assert shifted["se"] == pytest.approx(large["se"], rel=1e-12)
 
     with pytest.raises(ValueError):
@@ -93,7 +83,7 @@ import morie.fn.wsmasm as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

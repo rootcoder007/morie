@@ -41,18 +41,18 @@ def kamath_retnet_retention(Q, K, V, gamma):
     V = np.atleast_2d(np.asarray(V, dtype=float))
     gamma = float(gamma)
     if Q.shape[1] != K.shape[1]:
-        raise ValueError(
-            f"Q and K must share a width; got {Q.shape[1]} and "
-            f"{K.shape[1]}.")
+        raise ValueError(f"Q and K must share a width; got {Q.shape[1]} and {K.shape[1]}.")
     if Q.shape[0] != K.shape[0] or K.shape[0] != V.shape[0]:
         raise ValueError(
             "retention is causal within one sequence: Q, K and V must "
             f"have the same length; got {Q.shape[0]}, {K.shape[0]}, "
-            f"{V.shape[0]}.")
+            f"{V.shape[0]}."
+        )
     if not 0.0 < gamma <= 1.0:
         raise ValueError(
             f"gamma must lie in (0, 1]; got {gamma}. Outside that range "
-            "the decay grows with distance instead of shrinking.")
+            "the decay grows with distance instead of shrinking."
+        )
     T = Q.shape[0]
     i = np.arange(T)[:, None]
     j = np.arange(T)[None, :]
@@ -65,13 +65,17 @@ def kamath_retnet_retention(Q, K, V, gamma):
     for t in range(T):
         S = gamma * S + np.outer(K[t], V[t])
         rec.append(Q[t] @ S)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in out],
-        "decay": [[float(v) for v in row] for row in D],
-        "recurrent_output": [[float(v) for v in row] for row in rec],
-        "estimate": float(out[-1, 0]),
-        "gamma": gamma, "n": T,
-        "method": "RetNet retention ((QK^T) .* D) V"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in out],
+            "decay": [[float(v) for v in row] for row in D],
+            "recurrent_output": [[float(v) for v in row] for row in rec],
+            "estimate": float(out[-1, 0]),
+            "gamma": gamma,
+            "n": T,
+            "method": "RetNet retention ((QK^T) .* D) V",
+        }
+    )
 
 
 def cheatsheet():

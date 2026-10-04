@@ -71,23 +71,29 @@ assumed to be equal to 1 for a basic or neutral compound and 0.55
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["clrnt", "hepatic_clearance_prediction", "clearance_intrinsic", "fu_microsomes",
-           "fu_hepatocytes", "scale_to_liver", "observed_clint_u",
-           "prediction_accuracy", "blood_from_plasma"]
+__all__ = [
+    "clrnt",
+    "hepatic_clearance_prediction",
+    "clearance_intrinsic",
+    "fu_microsomes",
+    "fu_hepatocytes",
+    "scale_to_liver",
+    "observed_clint_u",
+    "prediction_accuracy",
+    "blood_from_plasma",
+]
 
 #: The paper's physiological scaling constants, by species and system.
 CONSTANTS = {
-    "human": {"microsomes_pbsf": 40.0,      # mg microsomal protein / g liver
-              "hepatocytes_pbsf": 120e6,    # cells / g liver
-              "liver_weight": 21.4,         # g liver / kg body weight
-              "qh": 20.7},                  # ml/min/kg
-    "rat": {"microsomes_pbsf": 60.0,
-            "hepatocytes_pbsf": 120e6,
-            "liver_weight": 40.0,
-            "qh": 100.0},
+    "human": {
+        "microsomes_pbsf": 40.0,  # mg microsomal protein / g liver
+        "hepatocytes_pbsf": 120e6,  # cells / g liver
+        "liver_weight": 21.4,  # g liver / kg body weight
+        "qh": 20.7,
+    },  # ml/min/kg
+    "rat": {"microsomes_pbsf": 60.0, "hepatocytes_pbsf": 120e6, "liver_weight": 40.0, "qh": 100.0},
 }
 
 
@@ -104,8 +110,7 @@ def fu_microsomes(log_pd, protein=1.0):
     ``protein`` is the microsomal protein concentration in mg/ml.
     """
     if protein <= 0:
-        raise ValueError("clrnt: microsomal protein concentration must be "
-                         "positive")
+        raise ValueError("clrnt: microsomal protein concentration must be positive")
     return 1.0 / (1.0 + float(protein) * _binding_term(log_pd))
 
 
@@ -118,12 +123,10 @@ def fu_hepatocytes(log_pd, volume_ratio=0.005):
     """
     if volume_ratio <= 0:
         raise ValueError("clrnt: the volume ratio must be positive")
-    return 1.0 / (1.0 + 125.0 * float(volume_ratio) *
-                  _binding_term(log_pd))
+    return 1.0 / (1.0 + 125.0 * float(volume_ratio) * _binding_term(log_pd))
 
 
-def blood_from_plasma(cl_plasma, fu_plasma, blood_plasma_ratio=None,
-                      charge="neutral"):
+def blood_from_plasma(cl_plasma, fu_plasma, blood_plasma_ratio=None, charge="neutral"):
     r"""Blood clearance and unbound fraction from the plasma versions.
 
     :math:`CL_b = CL_{plasma}/R_b`, :math:`f_{u,b} = f_{u,p}/R_b`, with
@@ -132,15 +135,13 @@ def blood_from_plasma(cl_plasma, fu_plasma, blood_plasma_ratio=None,
     """
     if charge not in ("acidic", "basic", "neutral"):
         raise ValueError("clrnt: charge must be acidic, basic or neutral")
-    rb = (float(blood_plasma_ratio) if blood_plasma_ratio is not None
-          else (0.55 if charge == "acidic" else 1.0))
+    rb = float(blood_plasma_ratio) if blood_plasma_ratio is not None else (0.55 if charge == "acidic" else 1.0)
     if rb <= 0:
         raise ValueError("clrnt: the blood/plasma ratio must be positive")
     return float(cl_plasma) / rb, float(fu_plasma) / rb, rb
 
 
-def scale_to_liver(clint_in_vitro, fu_incubation, system="hepatocytes",
-                   species="human", pbsf=None, liver_weight=None):
+def scale_to_liver(clint_in_vitro, fu_incubation, system="hepatocytes", species="human", pbsf=None, liver_weight=None):
     r"""Equation 3: scale in vitro :math:`CL_{int}` to predicted in vivo
     :math:`CL_{int,u}`.
 
@@ -151,22 +152,18 @@ def scale_to_liver(clint_in_vitro, fu_incubation, system="hepatocytes",
     if species not in CONSTANTS:
         raise ValueError("clrnt: species must be 'human' or 'rat'")
     if system not in ("hepatocytes", "microsomes"):
-        raise ValueError("clrnt: system must be 'hepatocytes' or "
-                         "'microsomes'")
+        raise ValueError("clrnt: system must be 'hepatocytes' or 'microsomes'")
     if not 0.0 < float(fu_incubation) <= 1.0:
-        raise ValueError("clrnt: the incubational unbound fraction must lie "
-                         "in (0, 1]")
+        raise ValueError("clrnt: the incubational unbound fraction must lie in (0, 1]")
     c = CONSTANTS[species]
-    p = (c["hepatocytes_pbsf"] if system == "hepatocytes"
-         else c["microsomes_pbsf"]) if pbsf is None else float(pbsf)
+    p = (c["hepatocytes_pbsf"] if system == "hepatocytes" else c["microsomes_pbsf"]) if pbsf is None else float(pbsf)
     lw = c["liver_weight"] if liver_weight is None else float(liver_weight)
     if system == "hepatocytes":
-        p = p / 1e6            # CLint is quoted per 10^6 cells
+        p = p / 1e6  # CLint is quoted per 10^6 cells
     return float(clint_in_vitro) * p * lw / float(fu_incubation)
 
 
-def observed_clint_u(cl_h, fu_blood, species="human", qh=None,
-                     liver_model="well_stirred"):
+def observed_clint_u(cl_h, fu_blood, species="human", qh=None, liver_model="well_stirred"):
     r"""Equation 4 and its parallel-tube counterpart.
 
     Well-stirred: :math:`CL_{int,u} = CL_h/(f_{u,b}[1 - CL_h/Q_h])`.
@@ -177,8 +174,7 @@ def observed_clint_u(cl_h, fu_blood, species="human", qh=None,
     if species not in CONSTANTS:
         raise ValueError("clrnt: species must be 'human' or 'rat'")
     if liver_model not in ("well_stirred", "parallel_tube"):
-        raise ValueError("clrnt: liver_model must be 'well_stirred' or "
-                         "'parallel_tube'")
+        raise ValueError("clrnt: liver_model must be 'well_stirred' or 'parallel_tube'")
     q = CONSTANTS[species]["qh"] if qh is None else float(qh)
     cl = float(cl_h)
     fu = float(fu_blood)
@@ -187,9 +183,9 @@ def observed_clint_u(cl_h, fu_blood, species="human", qh=None,
     if cl <= 0:
         raise ValueError("clrnt: hepatic clearance must be positive")
     if cl >= q:
-        raise ValueError("clrnt: hepatic clearance cannot reach or exceed "
-                         "hepatic blood flow (%.4g >= %.4g ml/min/kg)"
-                         % (cl, q))
+        raise ValueError(
+            "clrnt: hepatic clearance cannot reach or exceed hepatic blood flow (%.4g >= %.4g ml/min/kg)" % (cl, q)
+        )
     if liver_model == "well_stirred":
         return cl / (fu * (1.0 - cl / q))
     return -q * math.log(1.0 - cl / q) / fu
@@ -214,19 +210,37 @@ def prediction_accuracy(predicted, observed, fold=2.0):
     rmse = math.sqrt(sum((p[i] - o[i]) ** 2 for i in range(n)) / n)
     esf = [o[i] / p[i] for i in range(n)]
     avg_esf = 10.0 ** (sum(math.log10(o[i] / p[i]) for i in range(n)) / n)
-    within = sum(1 for i in range(n)
-                 if 1.0 / fold <= p[i] / o[i] <= fold) / float(n)
-    return {"afe": afe, "fold_underprediction": 1.0 / afe, "rmse": rmse,
-            "esf": esf, "average_esf": avg_esf,
-            "within_fold": within, "beyond_fold": 1.0 - within,
-            "n": n, "fold": float(fold)}
+    within = sum(1 for i in range(n) if 1.0 / fold <= p[i] / o[i] <= fold) / float(n)
+    return {
+        "afe": afe,
+        "fold_underprediction": 1.0 / afe,
+        "rmse": rmse,
+        "esf": esf,
+        "average_esf": avg_esf,
+        "within_fold": within,
+        "beyond_fold": 1.0 - within,
+        "n": n,
+        "fold": float(fold),
+    }
 
 
-def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
-          fu_incubation=None, system="hepatocytes", species="human",
-          liver_model="well_stirred", protein=1.0, volume_ratio=0.005,
-          cl_plasma=None, fu_plasma=None, blood_plasma_ratio=None,
-          charge="neutral", fold=2.0):
+def clrnt(
+    clint_in_vitro,
+    cl_h=None,
+    fu_blood=None,
+    log_pd=None,
+    fu_incubation=None,
+    system="hepatocytes",
+    species="human",
+    liver_model="well_stirred",
+    protein=1.0,
+    volume_ratio=0.005,
+    cl_plasma=None,
+    fu_plasma=None,
+    blood_plasma_ratio=None,
+    charge="neutral",
+    fold=2.0,
+):
     r"""Predict in vivo unbound intrinsic clearance and, given observations,
     score the prediction.
 
@@ -272,8 +286,7 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
     equations 1-8 and the physiological scaling constants of its Methods.
     """
     single = not isinstance(clint_in_vitro, (list, tuple))
-    cl_in = [float(clint_in_vitro)] if single else \
-        [float(v) for v in clint_in_vitro]
+    cl_in = [float(clint_in_vitro)] if single else [float(v) for v in clint_in_vitro]
     n = len(cl_in)
 
     def spread(v, name):
@@ -282,8 +295,7 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
         if not isinstance(v, (list, tuple)):
             return [float(v)] * n
         if len(v) != n:
-            raise ValueError("clrnt: %s must have one entry per compound"
-                             % name)
+            raise ValueError("clrnt: %s must have one entry per compound" % name)
         return [float(t) for t in v]
 
     lp = spread(log_pd, "log_pd")
@@ -299,9 +311,7 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
             raise ValueError("clrnt: plasma clearance needs fu_plasma too")
         clh, fub, rb_used = [], [], []
         for i in range(n):
-            a, b, r = blood_from_plasma(clp[i], fup[i],
-                                        None if rbs is None else rbs[i],
-                                        charge)
+            a, b, r = blood_from_plasma(clp[i], fup[i], None if rbs is None else rbs[i], charge)
             clh.append(a)
             fub.append(b)
             rb_used.append(r)
@@ -310,14 +320,13 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
 
     if fu_inc is None:
         if lp is None:
-            raise ValueError("clrnt: give either fu_incubation or log_pd "
-                             "so equations 1-2 can estimate it")
-        fu_inc = [fu_microsomes(lp[i], protein) if system == "microsomes"
-                  else fu_hepatocytes(lp[i], volume_ratio)
-                  for i in range(n)]
+            raise ValueError("clrnt: give either fu_incubation or log_pd so equations 1-2 can estimate it")
+        fu_inc = [
+            fu_microsomes(lp[i], protein) if system == "microsomes" else fu_hepatocytes(lp[i], volume_ratio)
+            for i in range(n)
+        ]
 
-    predicted = [scale_to_liver(cl_in[i], fu_inc[i], system, species)
-                 for i in range(n)]
+    predicted = [scale_to_liver(cl_in[i], fu_inc[i], system, species) for i in range(n)]
 
     payload = {
         "estimate": predicted[0] if single else predicted,
@@ -329,15 +338,13 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
         "constants": dict(CONSTANTS[species]),
         "blood_plasma_ratio": rb_used,
         "note": "predictions of this kind are systematically LOW and the "
-                "shortfall grows with in vivo clearance (Wood, Houston & "
-                "Hallifax 2017); the accuracy block is how you measure it "
-                "on your own data",
-        "method": "in vitro to in vivo CLint,u prediction (Wood, Houston & "
-                  "Hallifax 2017)",
+        "shortfall grows with in vivo clearance (Wood, Houston & "
+        "Hallifax 2017); the accuracy block is how you measure it "
+        "on your own data",
+        "method": "in vitro to in vivo CLint,u prediction (Wood, Houston & Hallifax 2017)",
     }
     if clh is not None and fub is not None:
-        obs = [observed_clint_u(clh[i], fub[i], species, None, liver_model)
-               for i in range(n)]
+        obs = [observed_clint_u(clh[i], fub[i], species, None, liver_model) for i in range(n)]
         payload["observed"] = obs[0] if single else obs
         payload["cl_h"] = clh[0] if single else clh
         payload["fu_blood"] = fub[0] if single else fub
@@ -346,18 +353,20 @@ def clrnt(clint_in_vitro, cl_h=None, fu_blood=None, log_pd=None,
 
 
 def cheatsheet():
-    return ("clrnt: in vitro to in vivo CLint,u (Wood, Houston & Hallifax "
-            "2017). fu in the incubation from eq.1 (microsomes) or eq.2 "
-            "(hepatocytes) when unmeasured; scale by PBSF x liver weight "
-            "over fu (eq.3) -- 40 mg/g human microsomes, 60 rat, 120e6 "
-            "cells/g both, 21.4 g/kg human liver, 40 g/kg rat; observed "
-            "from CLh/(fub[1 - CLh/Qh]) (eq.4, well-stirred; parallel tube "
-            "also available), Qh 20.7 human, 100 rat. Accuracy by AFE "
-            "(eq.5), RMSE (eq.6), ESF = observed/predicted (eq.7) and its "
-            "log average (eq.8), plus the 2-fold count. The paper's "
-            "finding is that this pipeline UNDERPREDICTS, worse as "
-            "clearance rises. The ledger's second citation, Pirmohamed "
-            "2019, does not exist.")
+    return (
+        "clrnt: in vitro to in vivo CLint,u (Wood, Houston & Hallifax "
+        "2017). fu in the incubation from eq.1 (microsomes) or eq.2 "
+        "(hepatocytes) when unmeasured; scale by PBSF x liver weight "
+        "over fu (eq.3) -- 40 mg/g human microsomes, 60 rat, 120e6 "
+        "cells/g both, 21.4 g/kg human liver, 40 g/kg rat; observed "
+        "from CLh/(fub[1 - CLh/Qh]) (eq.4, well-stirred; parallel tube "
+        "also available), Qh 20.7 human, 100 rat. Accuracy by AFE "
+        "(eq.5), RMSE (eq.6), ESF = observed/predicted (eq.7) and its "
+        "log average (eq.8), plus the 2-fold count. The paper's "
+        "finding is that this pipeline UNDERPREDICTS, worse as "
+        "clearance rises. The ledger's second citation, Pirmohamed "
+        "2019, does not exist."
+    )
 
 
 # compact aliases

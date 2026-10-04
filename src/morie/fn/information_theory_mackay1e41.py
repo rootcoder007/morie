@@ -52,4 +52,6 @@ information_theory_mackay_chapter_1_equation_41 = binsumga
 
 
 def cheatsheet():
-    return "binsumga: Gaussian sum identity behind the central binomial approximation -- MacKay (2003) eq. (1.41), p. 17"
+    return (
+        "binsumga: Gaussian sum identity behind the central binomial approximation -- MacKay (2003) eq. (1.41), p. 17"
+    )

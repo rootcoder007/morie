@@ -54,37 +54,35 @@ def kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max=100.0, alpha=0.75):
         raise ValueError("co-occurrence counts must be non-negative.")
     V, C = X.shape
     if W.shape[0] != V or Wt.shape[0] != C:
-        raise ValueError(
-            f"X is {V}x{C} but W has {W.shape[0]} rows and W_tilde "
-            f"{Wt.shape[0]}.")
+        raise ValueError(f"X is {V}x{C} but W has {W.shape[0]} rows and W_tilde {Wt.shape[0]}.")
     if W.shape[1] != Wt.shape[1]:
-        raise ValueError(
-            f"word and context vectors differ in width: {W.shape[1]} "
-            f"vs {Wt.shape[1]}.")
+        raise ValueError(f"word and context vectors differ in width: {W.shape[1]} vs {Wt.shape[1]}.")
     if b.size != V or bt.size != C:
-        raise ValueError(
-            f"need {V} word biases and {C} context biases; got "
-            f"{b.size} and {bt.size}.")
+        raise ValueError(f"need {V} word biases and {C} context biases; got {b.size} and {bt.size}.")
 
     nz = X > 0
     if not nz.any():
         raise ValueError(
-            "every co-occurrence count is 0; the GloVe objective sums "
-            "over the non-zero entries and there are none.")
+            "every co-occurrence count is 0; the GloVe objective sums over the non-zero entries and there are none."
+        )
     pred = W @ Wt.T + b[:, None] + bt[None, :]
     resid = np.zeros_like(pred)
     resid[nz] = pred[nz] - np.log(X[nz])
     f = np.zeros_like(pred)
     f[nz] = glove_weight(X[nz], x_max, alpha)
-    terms = f * resid ** 2
+    terms = f * resid**2
     J = float(terms.sum())
-    return RichResult(payload={
-        "estimate": J, "cost": J,
-        "weights": [[float(v) for v in row] for row in f],
-        "residuals": [[float(v) for v in row] for row in resid],
-        "n_nonzero": int(nz.sum()),
-        "n": V * C,
-        "method": "GloVe weighted least-squares cost"})
+    return RichResult(
+        payload={
+            "estimate": J,
+            "cost": J,
+            "weights": [[float(v) for v in row] for row in f],
+            "residuals": [[float(v) for v in row] for row in resid],
+            "n_nonzero": int(nz.sum()),
+            "n": V * C,
+            "method": "GloVe weighted least-squares cost",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """Tests for rhomed.rho_critical_mediation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rhomed import rho_critical_mediation
 from morie.fn.sensIM import imai_sensitivity_rho
 

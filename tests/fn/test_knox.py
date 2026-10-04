@@ -1,7 +1,6 @@
 """Tests for morie.fn.knox — Knox test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.knox import knox_test
 
 

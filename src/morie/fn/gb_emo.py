@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moments of the r-th order statistic from a Uniform(0,1) parent."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['ostatmom', 'gibbons_order_moments']
+__all__ = ["ostatmom", "gibbons_order_moments"]
 
 
 def ostatmom(r, n, k=1):

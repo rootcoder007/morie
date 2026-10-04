@@ -55,14 +55,10 @@ doi:10.1007/978-3-319-65304-4, Ch. 12 "Optimal Individualized
 Treatments Under Limited Resources".
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["threshold_treatment_msm", "blip_function", "rc_threshold",
-           "rc_rule", "rule_value"]
+__all__ = ["threshold_treatment_msm", "blip_function", "rc_threshold", "rc_rule", "rule_value"]
 
 _RULES = ("deterministic", "stochastic")
 
@@ -77,35 +73,33 @@ def blip_function(y, A, W, V=None, ridge=1e-8):
     yv, av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("blip_function: %d outcomes but %d treatments"
-                         % (n, len(av)))
+        raise ValueError("blip_function: %d outcomes but %d treatments" % (n, len(av)))
     if any(v not in (0.0, 1.0) for v in av):
         raise ValueError("blip_function: treatment must be binary 0/1")
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     p = len(Wm[0]) if Wm and Wm[0] else 0
-    Z = k.design([[av[i]] + list(Wm[i])
-                  + [av[i] * Wm[i][j] for j in range(p)]
-                  for i in range(n)], n)
+    Z = k.design([[av[i]] + list(Wm[i]) + [av[i] * Wm[i][j] for j in range(p)] for i in range(n)], n)
     b = k.lstsq(Z, yv, ridge)
 
     def q_at(a, i):
-        row = ([1.0, a] + list(Wm[i])
-               + [a * Wm[i][j] for j in range(p)])
+        row = [1.0, a] + list(Wm[i]) + [a * Wm[i][j] for j in range(p)]
         return sum(b[t] * row[t] for t in range(len(b)))
 
     blip_w = [q_at(1.0, i) - q_at(0.0, i) for i in range(n)]
     if V is None:
-        return blip_w, {"coef": b, "q1": [q_at(1.0, i) for i in range(n)],
-                        "q0": [q_at(0.0, i) for i in range(n)]}
+        return blip_w, {"coef": b, "q1": [q_at(1.0, i) for i in range(n)], "q0": [q_at(0.0, i) for i in range(n)]}
     # E[blip | V]: regress the blip on the summary V
     Vm = k.mat(V)
     Zv = k.design(Vm, n)
     bv = k.lstsq(Zv, blip_w, ridge)
     proj = k.matvec(Zv, bv)
-    return list(proj), {"coef": b, "v_coef": bv,
-                        "blip_w": blip_w,
-                        "q1": [q_at(1.0, i) for i in range(n)],
-                        "q0": [q_at(0.0, i) for i in range(n)]}
+    return list(proj), {
+        "coef": b,
+        "v_coef": bv,
+        "blip_w": blip_w,
+        "q1": [q_at(1.0, i) for i in range(n)],
+        "q0": [q_at(0.0, i) for i in range(n)],
+    }
 
 
 def rc_threshold(blip, kappa):
@@ -117,8 +111,7 @@ def rc_threshold(blip, kappa):
     """
     kap = float(kappa)
     if not 0.0 < kap < 1.0:
-        raise ValueError("rc_threshold: kappa must be in (0,1), got %r"
-                         % (kappa,))
+        raise ValueError("rc_threshold: kappa must be in (0,1), got %r" % (kappa,))
     b = sorted(float(v) for v in blip)
     n = len(b)
     if n == 0:
@@ -135,8 +128,7 @@ def rc_threshold(blip, kappa):
             eta = v
             break
     tau = max(eta, 0.0)
-    return tau, {"eta": eta, "survival_at_tau": surv(tau),
-                 "constraint_active": eta > 0.0}
+    return tau, {"eta": eta, "survival_at_tau": surv(tau), "constraint_active": eta > 0.0}
 
 
 def rc_rule(blip, kappa, rule="deterministic", seed=0):
@@ -148,8 +140,7 @@ def rc_rule(blip, kappa, rule="deterministic", seed=0):
     relaxation the paper points to.
     """
     if rule not in _RULES:
-        raise ValueError("rc_rule: rule must be 'deterministic' or "
-                         "'stochastic', got %r" % (rule,))
+        raise ValueError("rc_rule: rule must be 'deterministic' or 'stochastic', got %r" % (rule,))
     b = [float(v) for v in blip]
     n = len(b)
     tau, info = rc_threshold(b, kappa)
@@ -165,19 +156,16 @@ def rc_rule(blip, kappa, rule="deterministic", seed=0):
         share = min(1.0, spare * n / len(at_tau))
         for i in at_tau:
             d[i] = share
-    return d, dict(info, tau=tau, treated_fraction=sum(d) / n,
-                   boundary_share=(d[at_tau[0]] if at_tau else 0.0))
+    return d, dict(info, tau=tau, treated_fraction=sum(d) / n, boundary_share=(d[at_tau[0]] if at_tau else 0.0))
 
 
 def rule_value(q1, q0, d):
     """Psi_d = E[Qbar(d(V), W)], the value of a rule."""
     n = len(q1)
-    return sum(d[i] * q1[i] + (1.0 - d[i]) * q0[i]
-               for i in range(n)) / n
+    return sum(d[i] * q1[i] + (1.0 - d[i]) * q0[i] for i in range(n)) / n
 
 
-def threshold_treatment_msm(y, A, W, threshold_grid=None, kappa=0.1,
-                            V=None, rule="deterministic", seed=0):
+def threshold_treatment_msm(y, A, W, threshold_grid=None, kappa=0.1, V=None, rule="deterministic", seed=0):
     r"""Optimal resource-constrained rule and its value.
 
     Parameters
@@ -216,39 +204,43 @@ def threshold_treatment_msm(y, A, W, threshold_grid=None, kappa=0.1,
     if threshold_grid is not None:
         for t in [float(v) for v in k.vec(threshold_grid)]:
             dt = [1.0 if blip[i] > t else 0.0 for i in range(n)]
-            curve.append({"tau": t, "treated_fraction": sum(dt) / n,
-                          "value": rule_value(q1, q0, dt)})
+            curve.append({"tau": t, "treated_fraction": sum(dt) / n, "value": rule_value(q1, q0, dt)})
 
     treat_all = rule_value(q1, q0, [1.0] * n)
     treat_none = rule_value(q1, q0, [0.0] * n)
     unconstrained = [1.0 if v > 0.0 else 0.0 for v in blip]
 
-    return RichResult(payload={
-        "estimate": rule_value(q1, q0, d),
-        "value": rule_value(q1, q0, d),
-        "tau": rinfo["tau"],
-        "eta": rinfo["eta"],
-        "constraint_active": rinfo["constraint_active"],
-        "rule": d,
-        "treated_fraction": rinfo["treated_fraction"],
-        "blip": blip,
-        "value_treat_all": treat_all,
-        "value_treat_none": treat_none,
-        "value_unconstrained": rule_value(q1, q0, unconstrained),
-        "unconstrained_fraction": sum(unconstrained) / n,
-        "threshold_curve": curve,
-        "kappa": float(kappa), "n": n, "rule_kind": rule,
-        "method": "optimal resource-constrained ITR, Luedtke & van der "
-                  "Laan (2016) Sec. 2 Theorem 1",
-    })
+    return RichResult(
+        payload={
+            "estimate": rule_value(q1, q0, d),
+            "value": rule_value(q1, q0, d),
+            "tau": rinfo["tau"],
+            "eta": rinfo["eta"],
+            "constraint_active": rinfo["constraint_active"],
+            "rule": d,
+            "treated_fraction": rinfo["treated_fraction"],
+            "blip": blip,
+            "value_treat_all": treat_all,
+            "value_treat_none": treat_none,
+            "value_unconstrained": rule_value(q1, q0, unconstrained),
+            "unconstrained_fraction": sum(unconstrained) / n,
+            "threshold_curve": curve,
+            "kappa": float(kappa),
+            "n": n,
+            "rule_kind": rule,
+            "method": "optimal resource-constrained ITR, Luedtke & van der Laan (2016) Sec. 2 Theorem 1",
+        }
+    )
 
 
 def cheatsheet():
-    return ("thrtmt: optimal treatment under a budget kappa. blip "
-            "Qb(v)=E[Q(1,W)-Q(0,W)|V=v]; eta=inf{t: P(Qb>t)<=kappa}; "
-            "tau=max(eta,0); rule d(v)=I(Qb(v)>tau) (Luedtke-vdL 2016 "
-            "Thm 1). The max with 0 stops spare capacity treating "
-            "people the treatment harms.")
+    return (
+        "thrtmt: optimal treatment under a budget kappa. blip "
+        "Qb(v)=E[Q(1,W)-Q(0,W)|V=v]; eta=inf{t: P(Qb>t)<=kappa}; "
+        "tau=max(eta,0); rule d(v)=I(Qb(v)>tau) (Luedtke-vdL 2016 "
+        "Thm 1). The max with 0 stops spare capacity treating "
+        "people the treatment harms."
+    )
 
 
 # compact alias per ledger/NAMING.md

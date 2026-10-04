@@ -1,9 +1,9 @@
 """Tests for ate_d.ate_definition."""
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.ate_d import ate_definition
 
 
@@ -37,7 +37,7 @@ def test_pairing_shrinks_the_standard_error_when_arms_are_correlated():
     """The whole reason `paired` is explicit: it changes the SE a lot."""
     rng = np.random.default_rng(3)
     y0 = rng.normal(0, 5, 200)
-    y1 = y0 + 1.0                      # perfectly correlated arms
+    y1 = y0 + 1.0  # perfectly correlated arms
     se_paired = ate_definition(y1, y0, paired=True)["se"]
     se_indep = ate_definition(y1, y0, paired=False)["se"]
     assert se_paired < se_indep / 10

@@ -1,7 +1,6 @@
 """Tests for morie.fn.ppurs -- Projection pursuit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ppurs import ppurs, projection_pursuit
 

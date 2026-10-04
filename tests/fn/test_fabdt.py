@@ -1,7 +1,6 @@
 """Tests for fabdt (Freund-Ansari-Bradley-David test)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fabdt import fabdt
 
 

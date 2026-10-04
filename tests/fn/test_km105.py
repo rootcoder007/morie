@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
 Deep Dive, eq. 6.29, the GeDi combined loss. Expected values are recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km105 import kamath_ch6_gedi_combined_loss

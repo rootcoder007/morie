@@ -23,16 +23,14 @@ def test_the_two_level_gaussian_codebook_is_the_printed_pair():
 
 
 def test_distortion_falls_as_levels_rise():
-    d = [lloyd_max_codebook(levels=k, source="gaussian")["distortion"]
-         for k in (1, 2, 4, 8)]
+    d = [lloyd_max_codebook(levels=k, source="gaussian")["distortion"] for k in (1, 2, 4, 8)]
     assert all(d[i + 1] < d[i] for i in range(len(d) - 1))
 
 
 def test_the_iteration_never_increases_distortion():
     res = lloyd_max_codebook(levels=4, source="gaussian")
     hist = res["distortion_history"]
-    assert all(hist[i + 1] <= hist[i] + 1e-12
-               for i in range(len(hist) - 1))
+    assert all(hist[i + 1] <= hist[i] + 1e-12 for i in range(len(hist) - 1))
     assert res["converged"]
 
 
@@ -65,11 +63,12 @@ def test_an_empirical_source_uses_the_data():
 
 
 def test_validation():
-    for call in (lambda: lloyd_max_codebook(levels=0),
-                 lambda: lloyd_max_codebook(source="cauchy"),
-                 lambda: lloyd_max_codebook(source="uniform", lo=1.0,
-                                            hi=0.0),
-                 lambda: lloyd_max_codebook(source="empirical")):
+    for call in (
+        lambda: lloyd_max_codebook(levels=0),
+        lambda: lloyd_max_codebook(source="cauchy"),
+        lambda: lloyd_max_codebook(source="uniform", lo=1.0, hi=0.0),
+        lambda: lloyd_max_codebook(source="empirical"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

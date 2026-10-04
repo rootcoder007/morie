@@ -4,8 +4,6 @@ import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.rfppos import reactive_pose_filter
 
 
@@ -15,9 +13,9 @@ def test_rfppos_basic():
     pose = {
         "smiles": "CC=O",
         "coords": [
-            [0.0, 0.0, 0.0],   # methyl carbon
-            [1.5, 0.0, 0.0],   # carbonyl carbon
-            [2.0, 1.0, 0.0],   # oxygen
+            [0.0, 0.0, 0.0],  # methyl carbon
+            [1.5, 0.0, 0.0],  # carbonyl carbon
+            [2.0, 1.0, 0.0],  # oxygen
         ],
     }
     # Cysteine residue: provide SG and optional CB

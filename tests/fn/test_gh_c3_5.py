@@ -1,7 +1,6 @@
 """Tests for gh_c3_5.ghosal_countable_dp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_5 import ghosal_countable_dp
 
 

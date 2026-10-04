@@ -34,19 +34,23 @@ def kamath_memorization_exposure(canary_ll, candidate_lls):
     c = float(canary_ll)
     others = np.atleast_1d(np.asarray(candidate_lls, dtype=float))
     if others.size == 0:
-        raise ValueError("no competing candidates were given; a rank "
-                         "in a space of one is not informative.")
+        raise ValueError("no competing candidates were given; a rank in a space of one is not informative.")
     if not (np.isfinite(c) and np.all(np.isfinite(others))):
         raise ValueError("log-likelihoods must be finite.")
     total = int(others.size) + 1
     rank = 1 + int(np.sum(others >= c))
     exposure = math.log2(total) - math.log2(rank)
-    return RichResult(payload={
-        "estimate": exposure, "exposure": exposure, "rank": rank,
-        "n_candidates": total,
-        "max_exposure": math.log2(total),
-        "n": total,
-        "method": "canary exposure (Kamath Ch 6)"})
+    return RichResult(
+        payload={
+            "estimate": exposure,
+            "exposure": exposure,
+            "rank": rank,
+            "n_candidates": total,
+            "max_exposure": math.log2(total),
+            "n": total,
+            "method": "canary exposure (Kamath Ch 6)",
+        }
+    )
 
 
 def cheatsheet():

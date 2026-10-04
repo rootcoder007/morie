@@ -1,7 +1,6 @@
 """Tests for morie.fn.birtl — Bayesian IRT log-likelihood."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.birtl import birtl
 
 

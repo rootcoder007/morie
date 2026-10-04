@@ -26,18 +26,17 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equat
     eq. (2.11).
     """
     payload = dict(_acd.or_ci_logistic(b1, var_b1, c, z))
-    value = float(payload['or'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["or"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.11)"
     return RichResult(
-        title='Wald confidence interval for OR = exp(c beta1)',
+        title="Wald confidence interval for OR = exp(c beta1)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e11: exp(c b1 +/- c z sqrt(Var(b1))) [Bilder & Loughin 2025, eq. 2.11]'
+    return "2e11: exp(c b1 +/- c z sqrt(Var(b1))) [Bilder & Loughin 2025, eq. 2.11]"

@@ -1,6 +1,5 @@
 """Tests for gb_med (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_med import gibbons_median_dist

@@ -27,18 +27,17 @@ def ca_chapter_2_equation_21(b0, bs, dummy_index):
     ch.2 eq.2.21
     """
     payload = dict(_ca_crim.dummy_subgroup_equation(b0, bs, dummy_index, 0))
-    value = payload['intercept']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["intercept"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.21)"
     return RichResult(
-        title='Regression equation for the dummy = 0 subgroup',
+        title="Regression equation for the dummy = 0 subgroup",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e21: y = b0 + b1 x1 + b2 x2 (dummy term drops out at 0) [Weisburd et al. 2022, eq. 2.21]'
+    return "ca2e21: y = b0 + b1 x1 + b2 x2 (dummy term drops out at 0) [Weisburd et al. 2022, eq. 2.21]"

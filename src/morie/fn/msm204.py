@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -32,13 +30,16 @@ def mvsml_ridge_lasso_elastic_eq_9_30(alpha, X, y, beta0, beta, tol=1e-6):
     slack = [ys[i] * f[i] - 1.0 for i in range(len(a))]
     prod = [a[i] * slack[i] for i in range(len(a))]
     on_margin = [i for i in range(len(a)) if abs(slack[i]) < tol]
-    res = RichResult(payload={"estimate": max(abs(v) for v in prod),
-                              "complementary_products": prod,
-                              "margin_slack": slack,
-                              "on_margin": on_margin,
-                              "satisfied": max(abs(v) for v in prod)
-                              < tol,
-                              "method": "KKT conditions (MVSML 2022 eq. 9.30)"})
+    res = RichResult(
+        payload={
+            "estimate": max(abs(v) for v in prod),
+            "complementary_products": prod,
+            "margin_slack": slack,
+            "on_margin": on_margin,
+            "satisfied": max(abs(v) for v in prod) < tol,
+            "method": "KKT conditions (MVSML 2022 eq. 9.30)",
+        }
+    )
     return with_describe_pointer(res, "msm204")
 
 

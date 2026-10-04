@@ -1,7 +1,6 @@
 """Tests for sestrg.s_estimator_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sestrg import s_estimator_regression
 
 

@@ -1,7 +1,6 @@
 """Test complex_demodulation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cxdmd import complex_demodulation, cxdmd
 

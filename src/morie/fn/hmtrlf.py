@@ -169,7 +169,12 @@ def geron_trl_finetune(
         margin = float(np.mean(D @ theta))
         return RichResult(
             title="TRL DPO trainer",
-            summary_lines=[("Preference pairs", int(C.shape[0])), ("beta", b), ("Loss", losses[-1]), ("Margin", margin)],
+            summary_lines=[
+                ("Preference pairs", int(C.shape[0])),
+                ("beta", b),
+                ("Loss", losses[-1]),
+                ("Margin", margin),
+            ],
             interpretation=(
                 "DPO skips the reward model entirely: the Bradley-Terry preference likelihood is "
                 "optimised directly, with the reference policy acting as the KL anchor."

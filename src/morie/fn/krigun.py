@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["universal_kriging"]
 
 
-def universal_kriging(coords, values, s_predict, trend_order=1,
-                      model="exponential", nugget=0.0, sill=1.0, range_=1.0):
+def universal_kriging(coords, values, s_predict, trend_order=1, model="exponential", nugget=0.0, sill=1.0, range_=1.0):
     r"""Universal kriging: ordinary kriging of the residuals from a polynomial trend.
 
     .. math::
@@ -60,8 +59,7 @@ def universal_kriging(coords, values, s_predict, trend_order=1,
     """
     from .ukrig import universal_kriging as _uk
 
-    res = _uk(values, coords, s_predict, model, nugget, sill, range_,
-              trend_order)
+    res = _uk(values, coords, s_predict, model, nugget, sill, range_, trend_order)
     est = res["estimate"]
     se = res["se"]
     if not isinstance(est, list):
@@ -73,8 +71,7 @@ def universal_kriging(coords, values, s_predict, trend_order=1,
             "se": [float(v) for v in se],
             "n": int(res["n"]),
             "trend_order": int(trend_order),
-            "method": "Universal kriging with a polynomial trend of order %d"
-                      % (int(trend_order),),
+            "method": "Universal kriging with a polynomial trend of order %d" % (int(trend_order),),
         }
     )
 

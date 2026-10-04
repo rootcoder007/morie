@@ -64,9 +64,11 @@ def wasserman_kfold_cv(X, y, model, k):
     if not 2 <= k <= n:
         raise ValueError(f"cross-validation needs 2 <= k <= n; got k={k}, n={n}.")
     if model is None:
+
         def model(Xtr, ytr, Xte):
             beta = np.linalg.lstsq(Xtr, ytr, rcond=None)[0]
             return Xte @ beta
+
     bounds = np.linspace(0, n, k + 1).astype(int)
     fold_mse, fold_sizes, sq_sum = [], [], 0.0
     for f in range(k):
@@ -78,10 +80,16 @@ def wasserman_kfold_cv(X, y, model, k):
         fold_mse.append(float(np.mean(sq)))
         fold_sizes.append(int(te.size))
         sq_sum += float(np.sum(sq))
-    return RichResult(payload={
-        "estimate": float(sq_sum / n), "fold_mse": fold_mse,
-        "fold_sizes": fold_sizes, "k": k, "n": int(n),
-        "method": "k-fold CV, contiguous deterministic folds, squared error"})
+    return RichResult(
+        payload={
+            "estimate": float(sq_sum / n),
+            "fold_mse": fold_mse,
+            "fold_sizes": fold_sizes,
+            "k": k,
+            "n": int(n),
+            "method": "k-fold CV, contiguous deterministic folds, squared error",
+        }
+    )
 
 
 def cheatsheet():

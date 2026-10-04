@@ -89,18 +89,29 @@ def shewhart(x, mu, sigma, k=3.0):
     alerts = [1 if abs(zi) > kk else 0 for zi in z]
     n_alerts = sum(alerts)
     p = 2.0 * (1.0 - core.pnorm(kk))
-    return RichResult(payload={
-        "estimate": int(n_alerts), "alerts": alerts, "z": z,
-        "lcl": lcl, "ucl": ucl, "n_alerts": int(n_alerts),
-        "alarm_rate": n_alerts / n,
-        "false_alarm_prob": p, "arl0": (1.0 / p) if p > 0.0 else float("inf"),
-        "n": int(n), "k": kk,
-        "method": "Shewhart (1926) k-sigma control chart, k = %g" % kk})
+    return RichResult(
+        payload={
+            "estimate": int(n_alerts),
+            "alerts": alerts,
+            "z": z,
+            "lcl": lcl,
+            "ucl": ucl,
+            "n_alerts": int(n_alerts),
+            "alarm_rate": n_alerts / n,
+            "false_alarm_prob": p,
+            "arl0": (1.0 / p) if p > 0.0 else float("inf"),
+            "n": int(n),
+            "k": kk,
+            "method": "Shewhart (1926) k-sigma control chart, k = %g" % kk,
+        }
+    )
 
 
 def cheatsheet():
-    return ("shewh: three sigma buys ARL0 about 370 -- one meaningless alarm "
-            "per 370 in-control points, which is the price of the limit")
+    return (
+        "shewh: three sigma buys ARL0 about 370 -- one meaningless alarm "
+        "per 370 in-control points, which is the price of the limit"
+    )
 
 
 # compact alias per ledger/NAMING.md

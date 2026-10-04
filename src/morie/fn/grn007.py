@@ -59,7 +59,7 @@ def geron_ch4_mse_gradient_vector(X, y, theta):
     >>> [round(v, 12) for v in g]
     [0.0, 0.0]
     """
-    fit = geron_linreg_mse_cost(X, y, theta)          # validates shapes
+    fit = geron_linreg_mse_cost(X, y, theta)  # validates shapes
     X = np.atleast_2d(np.asarray(X, dtype=float))
     resid = np.asarray(fit["residuals"], dtype=float)
     m = X.shape[0]

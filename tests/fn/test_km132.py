@@ -5,10 +5,6 @@ recomputed in the test body and the docstring's own worked value is
 asserted too.
 """
 
-import math
-
-import pytest
-
 from morie.fn.km132 import kamath_ch9_llm_signal_tokens
 
 
@@ -21,8 +17,7 @@ def test_the_language_model_returns_both_text_and_signal_tokens():
 
 
 def test_the_signal_token_count_is_the_headline_value():
-    res = kamath_ch9_llm_signal_tokens([[0.0]], [[1.0]],
-               llm=lambda p, f: ("x", ["<IMG>", "<AUD>", "<VID>"]))
+    res = kamath_ch9_llm_signal_tokens([[0.0]], [[1.0]], llm=lambda p, f: ("x", ["<IMG>", "<AUD>", "<VID>"]))
     assert res["estimate"] == 3
 
 

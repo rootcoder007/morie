@@ -5,11 +5,10 @@ the definitions of SDNN, RMSSD and pNN50. Expected values are computed by
 hand from those definitions on a short RR series.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rghrv import rangayyan_hrv
-
 
 # RR = [800, 810, 790, 805, 795] ms
 #   mean            = 800.0

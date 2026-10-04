@@ -57,18 +57,23 @@ def boot_iid_resample(x, stat, B=1000, seed=0):
     reps = bootstrap_replicates(d, stat, B=B, seed=seed)
     est = float(stat(d))
     lo, hi = np.percentile(reps, [2.5, 97.5])
-    return RichResult(payload={
-        "replicates": reps, "estimate": est,
-        "se": float(np.std(reps, ddof=1)),
-        "bias": float(np.mean(reps) - est),
-        "ci_percentile": (float(lo), float(hi)),
-        "B": int(reps.size), "n": int(d.shape[0]),
-        "consistency_caveat": "the bootstrap estimates the statistic's "
-                              "distribution under the EMPIRICAL law; for "
-                              "statistics it is inconsistent for -- the "
-                              "sample maximum above all -- it fails without "
-                              "warning",
-        "method": "Efron (1979) nonparametric IID bootstrap"})
+    return RichResult(
+        payload={
+            "replicates": reps,
+            "estimate": est,
+            "se": float(np.std(reps, ddof=1)),
+            "bias": float(np.mean(reps) - est),
+            "ci_percentile": (float(lo), float(hi)),
+            "B": int(reps.size),
+            "n": int(d.shape[0]),
+            "consistency_caveat": "the bootstrap estimates the statistic's "
+            "distribution under the EMPIRICAL law; for "
+            "statistics it is inconsistent for -- the "
+            "sample maximum above all -- it fails without "
+            "warning",
+            "method": "Efron (1979) nonparametric IID bootstrap",
+        }
+    )
 
 
 def cheatsheet():

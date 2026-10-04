@@ -1,7 +1,6 @@
 """Tests for multitrait_ridge_form.multitrait_ridge_form."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.multitrait_ridge_form import multitrait_ridge_form
 
 

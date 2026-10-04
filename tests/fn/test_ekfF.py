@@ -3,8 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.ekfF import extended_kalman
 
 
@@ -62,10 +60,8 @@ def test_ekfF_basic():
     ref_loglik = 0.0
     for t in range(n):
         xp = [sum(Fk[i][k] * x[k] for k in range(d)) for i in range(d)]
-        FP = [[sum(Fk[i][k] * P[k][j] for k in range(d)) for j in range(d)]
-              for i in range(d)]
-        Pp = [[sum(FP[i][k] * Fk[j][k] for k in range(d)) + Q[i][j]
-               for j in range(d)] for i in range(d)]
+        FP = [[sum(Fk[i][k] * P[k][j] for k in range(d)) for j in range(d)] for i in range(d)]
+        Pp = [[sum(FP[i][k] * Fk[j][k] for k in range(d)) + Q[i][j] for j in range(d)] for i in range(d)]
         PH = [sum(Pp[i][k] * Hk[k] for k in range(d)) for i in range(d)]
         S = sum(Hk[i] * PH[i] for i in range(d)) + R
         K = [PH[i] / S for i in range(d)]

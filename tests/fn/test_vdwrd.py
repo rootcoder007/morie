@@ -1,7 +1,6 @@
 """Tests for vdwrd.van_der_waerden_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vdwrd import van_der_waerden_test
 
 

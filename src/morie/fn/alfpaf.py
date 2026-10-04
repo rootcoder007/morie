@@ -52,8 +52,7 @@ def alphafold_pair_repr(m, wa, wb, wo, layernorm=True):
     """
     s = len(m)
     n = len(m[0])
-    mn = [[A.lnorm(m[si][i]) if layernorm else list(m[si][i])
-           for i in range(n)] for si in range(s)]
+    mn = [[A.lnorm(m[si][i]) if layernorm else list(m[si][i]) for i in range(n)] for si in range(s)]
     # line 2
     av = [[A.lin(mn[si][i], wa) for i in range(n)] for si in range(s)]
     bv = [[A.lin(mn[si][i], wb) for i in range(n)] for si in range(s)]
@@ -67,8 +66,7 @@ def alphafold_pair_repr(m, wa, wb, wo, layernorm=True):
             f = []
             for p in range(c):
                 for q in range(c):
-                    f.append(sum(av[si][i][p] * bv[si][j][q]
-                                 for si in range(s)) / s)
+                    f.append(sum(av[si][i][p] * bv[si][j][q] for si in range(s)) / s)
             row.append(f)
         o.append(row)
 

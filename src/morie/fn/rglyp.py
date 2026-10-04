@@ -97,8 +97,7 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10, dt=1.0):
     M = N - (m - 1) * tau
     if M < 10:
         raise ValueError(
-            f"Series too short for embedding: {N} samples at m={m}, tau={tau} "
-            f"gives {M} embedded points, need >= 10."
+            f"Series too short for embedding: {N} samples at m={m}, tau={tau} gives {M} embedded points, need >= 10."
         )
     # The Theiler window excludes temporally close pairs from the neighbour
     # search. If it swallows every candidate, argmin over an all-inf row
@@ -106,8 +105,7 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10, dt=1.0):
     # the kind, and a lambda computed from it means nothing.
     if 2 * theiler + 1 >= M:
         raise ValueError(
-            f"Theiler window {theiler} excludes every neighbour for {M} "
-            f"embedded points; need 2*theiler + 1 < {M}."
+            f"Theiler window {theiler} excludes every neighbour for {M} embedded points; need 2*theiler + 1 < {M}."
         )
     Y = np.empty((M, m))
     for i in range(m):
@@ -145,8 +143,7 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10, dt=1.0):
         title="Largest Lyapunov exponent (Rosenstein)",
         summary_lines=[("m", m), ("τ", tau), ("Theiler", theiler), ("Δt", dt), ("λ₁", lam)],
         interpretation=f"λ₁ = {lam:.4g}. >0 chaotic, ~0 marginal, <0 stable.",
-        payload={"lyapunov": lam, "divergence_curve": div,
-                 "t": np.arange(max_t), "dt": dt},
+        payload={"lyapunov": lam, "divergence_curve": div, "t": np.arange(max_t), "dt": dt},
     )
     return with_describe_pointer(res, "rglyp")
 

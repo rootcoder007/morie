@@ -17,9 +17,8 @@ def _gelu(z, approximate):
         return 0.5 * z * (1.0 + _erf(z / math.sqrt(2.0)))
     if approximate == "tanh":
         c = math.sqrt(2.0 / math.pi)
-        return 0.5 * z * (1.0 + np.tanh(c * (z + 0.044715 * z ** 3)))
-    raise ValueError("approximate must be 'none' (the exact erf GELU) "
-                     "or 'tanh'.")
+        return 0.5 * z * (1.0 + np.tanh(c * (z + 0.044715 * z**3)))
+    raise ValueError("approximate must be 'none' (the exact erf GELU) or 'tanh'.")
 
 
 def kamath_houlsby_adapter(h, W_down, W_up, approximate="none"):
@@ -52,24 +51,24 @@ def kamath_houlsby_adapter(h, W_down, W_up, approximate="none"):
     Wu = np.atleast_2d(np.asarray(W_up, dtype=float))
     m, d = Wd.shape
     if H.shape[1] != d:
-        raise ValueError(
-            f"W_down expects a {d}-dimensional hidden state; got "
-            f"{H.shape[1]}.")
+        raise ValueError(f"W_down expects a {d}-dimensional hidden state; got {H.shape[1]}.")
     if Wu.shape != (d, m):
-        raise ValueError(
-            f"W_up must be {d}x{m} to project back; got {Wu.shape}.")
+        raise ValueError(f"W_up must be {d}x{m} to project back; got {Wu.shape}.")
     if m >= d:
-        raise ValueError(
-            f"the bottleneck m = {m} is not smaller than d = {d}; a "
-            "Houlsby adapter needs m << d.")
+        raise ValueError(f"the bottleneck m = {m} is not smaller than d = {d}; a Houlsby adapter needs m << d.")
     inner = _gelu(H @ Wd.T, approximate)
     out = H + inner @ Wu.T
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(out - H)),
-        "h_adapted": [[float(v) for v in row] for row in out],
-        "bottleneck": [[float(v) for v in row] for row in inner],
-        "m": int(m), "d": int(d), "n": int(H.shape[0]),
-        "method": "Houlsby bottleneck adapter (Kamath Ch 4)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(out - H)),
+            "h_adapted": [[float(v) for v in row] for row in out],
+            "bottleneck": [[float(v) for v in row] for row in inner],
+            "m": int(m),
+            "d": int(d),
+            "n": int(H.shape[0]),
+            "method": "Houlsby bottleneck adapter (Kamath Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

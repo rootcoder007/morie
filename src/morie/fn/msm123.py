@@ -32,19 +32,22 @@ def mvsml_categorical_count_eq_8_1(K, y, beta, eta0=0.0, lam=1.0, loss="squared"
     if loss == "squared":
         emp = sum((a - b) ** 2 for a, b in zip(ys, f)) / n
     elif loss == "logistic":
-        emp = sum(math.log(1.0 + math.exp(-(2 * a - 1) * b))
-                  for a, b in zip(ys, f)) / n
+        emp = sum(math.log(1.0 + math.exp(-(2 * a - 1) * b)) for a, b in zip(ys, f)) / n
     elif loss == "hinge":
-        emp = sum(max(0.0, 1.0 - (2 * a - 1) * b)
-                  for a, b in zip(ys, f)) / n
+        emp = sum(max(0.0, 1.0 - (2 * a - 1) * b) for a, b in zip(ys, f)) / n
     else:
         raise ValueError("unknown loss: %s" % loss)
     norm = _gp.rkhs_norm(beta, K)
     obj = emp + float(lam) * norm
-    res = RichResult(payload={"estimate": obj, "objective": obj,
-                              "empirical_risk": emp,
-                              "rkhs_norm2": norm,
-                              "method": "RKHS penalized risk (MVSML 2022 eq. 8.1)"})
+    res = RichResult(
+        payload={
+            "estimate": obj,
+            "objective": obj,
+            "empirical_risk": emp,
+            "rkhs_norm2": norm,
+            "method": "RKHS penalized risk (MVSML 2022 eq. 8.1)",
+        }
+    )
     return with_describe_pointer(res, "msm123")
 
 

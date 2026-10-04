@@ -63,10 +63,17 @@ def wasserman_covariance(x, y):
     sx = float(np.sqrt(np.mean((x - mx) ** 2)))
     sy = float(np.sqrt(np.mean((y - my) ** 2)))
     corr = cov_pop / (sx * sy) if sx > 0 and sy > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": cov_pop, "sample_covariance": cov_samp,
-        "correlation": corr, "mean_x": mx, "mean_y": my, "n": int(n),
-        "method": "Cov(X,Y) = E[XY] - E[X]E[Y] (population divisor n)"})
+    return RichResult(
+        payload={
+            "estimate": cov_pop,
+            "sample_covariance": cov_samp,
+            "correlation": corr,
+            "mean_x": mx,
+            "mean_y": my,
+            "n": int(n),
+            "method": "Cov(X,Y) = E[XY] - E[X]E[Y] (population divisor n)",
+        }
+    )
 
 
 def cheatsheet():

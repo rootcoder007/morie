@@ -34,9 +34,14 @@ def hockstick(n, k):
     total, closed = _morin.hockey_stick(n, k)
     if total != closed:
         raise AssertionError("hockey-stick sum and closed form disagree")
-    payload = {"n": float(n), "k": float(k), "stick_sum": float(total),
-               "closed_form": float(closed),
-               "n_terms": float(int(n) - int(k) + 1), "forms_agree": 1.0}
+    payload = {
+        "n": float(n),
+        "k": float(k),
+        "stick_sum": float(total),
+        "closed_form": float(closed),
+        "n_terms": float(int(n) - int(k) + 1),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Hockey-stick identity.",
         summary_lines=[("sum", total), ("C(n,k)", closed)],

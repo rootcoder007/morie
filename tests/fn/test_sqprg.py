@@ -1,7 +1,6 @@
 """Tests for morie.fn.sqprg -- SQP optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sqprg import sqp_optimize, sqprg
 

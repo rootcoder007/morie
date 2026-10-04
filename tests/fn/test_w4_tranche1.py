@@ -12,9 +12,9 @@ stub cannot satisfy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hma2c import geron_a2c
 from morie.fn.hma3c import geron_a3c
 from morie.fn.hmadab import geron_adaboost
@@ -55,7 +55,6 @@ from morie.fn.hmbrnn import geron_bidirectional_rnn
 from morie.fn.hmbrob import geron_roberta
 from morie.fn.hmbsz import geron_batch_size_heuristic
 from morie.fn.hmbv import geron_bias_variance_tradeoff
-
 
 # ── shared helpers ────────────────────────────────────────────────────
 
@@ -695,6 +694,7 @@ def test_bagging_rejects_a_non_callable_estimator_factory():
 
 def test_beam_search_with_full_width_matches_exhaustive_enumeration():
     lp = np.log(np.array([0.5, 0.3, 0.2]))
+
     # Prefix-dependent scorer: rotate the distribution by the last token.
     def model(src, prefix):
         shift = (sum(prefix) % 3) if prefix else 0
@@ -816,7 +816,13 @@ def test_arima_rejects_orders_the_series_cannot_support():
 
 def test_alexnet_parameter_count_matches_layerwise_hand_arithmetic():
     r = geron_alexnet(1000)
-    conv = [96 * 11 * 11 * 3 + 96, 256 * 5 * 5 * 96 + 256, 384 * 3 * 3 * 256 + 384, 384 * 3 * 3 * 384 + 384, 256 * 3 * 3 * 384 + 256]
+    conv = [
+        96 * 11 * 11 * 3 + 96,
+        256 * 5 * 5 * 96 + 256,
+        384 * 3 * 3 * 256 + 384,
+        384 * 3 * 3 * 384 + 384,
+        256 * 3 * 3 * 384 + 256,
+    ]
     fc = [9216 * 4096 + 4096, 4096 * 4096 + 4096, 4096 * 1000 + 1000]
     assert r["conv_params"] == sum(conv)
     assert r["fc_params"] == sum(fc)

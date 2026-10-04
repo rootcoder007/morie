@@ -1,7 +1,6 @@
 """Tests for morie.fn.mmds — Metric MDS."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mmds import mmds
 
 

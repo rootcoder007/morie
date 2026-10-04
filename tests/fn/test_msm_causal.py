@@ -6,16 +6,17 @@ confounder affects both treatment and outcome, the unweighted
 regression is biased and the IPT-weighted one recovers the causal
 parameter.
 """
+
 import math
 
 from morie.fn import _gp_core as gp
+from morie.fn.msmaft import msm_accelerated_failure
+from morie.fn.msmcox import msm_cox_marginal
+from morie.fn.msmgmm import msm_gmm_estimator
 from morie.fn.msmlin import msm_linear
 from morie.fn.msmlog import msm_logistic
-from morie.fn.msmpoi import msm_poisson
 from morie.fn.msmnbi import msm_negative_binomial
-from morie.fn.msmcox import msm_cox_marginal
-from morie.fn.msmaft import msm_accelerated_failure
-from morie.fn.msmgmm import msm_gmm_estimator
+from morie.fn.msmpoi import msm_poisson
 from morie.fn.msmtve import msm_time_varying_exposure
 
 
@@ -179,16 +180,12 @@ def test_time_varying_exposure_reports_weight_diagnostics():
 def test_weighted_glm_families_agree_with_unweighted_fits():
     rng = gp.np.random.default_rng(2)
     X = [[1.0, float(rng.normal(0, 1))] for _ in range(300)]
-    y = [1.0 if float(rng.uniform(0, 1))
-         < 1.0 / (1.0 + math.exp(-(0.3 + 0.7 * row[1]))) else 0.0
-         for row in X]
+    y = [1.0 if float(rng.uniform(0, 1)) < 1.0 / (1.0 + math.exp(-(0.3 + 0.7 * row[1]))) else 0.0 for row in X]
     a = gp.msm_weighted_glm(y, X, family="binomial")
-    b = gp.msm_weighted_glm(y, X, weights=[1.0] * 300,
-                            family="binomial")
+    b = gp.msm_weighted_glm(y, X, weights=[1.0] * 300, family="binomial")
     for u, v in zip(a["beta"], b["beta"]):
         assert abs(u - v) < 1e-12
     # doubling every weight cannot move the estimate
-    c = gp.msm_weighted_glm(y, X, weights=[2.0] * 300,
-                            family="binomial")
+    c = gp.msm_weighted_glm(y, X, weights=[2.0] * 300, family="binomial")
     for u, v in zip(a["beta"], c["beta"]):
         assert abs(u - v) < 1e-8

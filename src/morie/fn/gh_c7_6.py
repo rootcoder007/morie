@@ -61,18 +61,21 @@ def ghosal_pt_dens_con(x, grid=None, levels=6, a_scale=1.0, lo=None, hi=None):
         raise ValueError(f"a_scale must be positive, got {sc}.")
     a0 = float(xv.min()) if lo is None else float(lo)
     a1 = float(xv.max()) if hi is None else float(hi)
-    g = np.linspace(a0, a1, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
-    dens = polya_tree_density(xv, g, levels=levels,
-                              a_fn=lambda m: sc * m ** 2, lo=a0, hi=a1)
-    return RichResult(payload={
-        "grid": g, "density": dens, "levels": int(levels),
-        "a_rule": "a_m = a_scale * m^2 (growing, so the prior is on densities)",
-        "absolutely_continuous_prior": True,
-        "mass": float(np.trapezoid(dens, g)),
-        "consistent_at": "any Lipschitz density, in Hellinger distance",
-        "n": int(xv.size),
-        "method": "Polya tree posterior mean (Sec. 7.2.3); closed form by Beta conjugacy"})
+    g = np.linspace(a0, a1, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    dens = polya_tree_density(xv, g, levels=levels, a_fn=lambda m: sc * m**2, lo=a0, hi=a1)
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "levels": int(levels),
+            "a_rule": "a_m = a_scale * m^2 (growing, so the prior is on densities)",
+            "absolutely_continuous_prior": True,
+            "mass": float(np.trapezoid(dens, g)),
+            "consistent_at": "any Lipschitz density, in Hellinger distance",
+            "n": int(xv.size),
+            "method": "Polya tree posterior mean (Sec. 7.2.3); closed form by Beta conjugacy",
+        }
+    )
 
 
 def cheatsheet():

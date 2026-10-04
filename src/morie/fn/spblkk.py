@@ -47,5 +47,4 @@ def schabenberger_block_kriging(coords, z, blocks, cov_model=None):
 
 
 def cheatsheet():
-    return ("spblkk: block kriging for an areal unit; delegates to "
-            "spatial_block_kriging (spblk).")
+    return "spblkk: block kriging for an areal unit; delegates to spatial_block_kriging (spblk)."

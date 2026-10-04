@@ -28,8 +28,7 @@ def morans_i_expected(n):
     """
     value = _ca_crim.morans_i_expected(n)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (12.2)"
@@ -41,4 +40,4 @@ def morans_i_expected(n):
 
 
 def cheatsheet():
-    return 'ca12e2: E(I) = -1 / (n - 1) [Weisburd et al. 2022, eq. 12.2]'
+    return "ca12e2: E(I) = -1 / (n - 1) [Weisburd et al. 2022, eq. 12.2]"

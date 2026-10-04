@@ -12,9 +12,7 @@ def _lr_uc(p, t, n):
     """The docstring's LR_uc, written out in plain arithmetic."""
     phat = n / t
     ll_null = (t - n) * math.log(1.0 - p) + (n * math.log(p) if n else 0.0)
-    ll_alt = ((t - n) * math.log(1.0 - phat) if n < t else 0.0) + (
-        n * math.log(phat) if n else 0.0
-    )
+    ll_alt = ((t - n) * math.log(1.0 - phat) if n < t else 0.0) + (n * math.log(phat) if n else 0.0)
     return -2.0 * (ll_null - ll_alt)
 
 

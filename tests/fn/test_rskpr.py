@@ -1,7 +1,6 @@
 """Tests for morie.fn.rskpr — risk profile by subgroups."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rskpr import risk_profile
 
 

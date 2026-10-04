@@ -9,5 +9,6 @@ def test_bklap_basic():
 
 def test_bklap_edge():
     import pytest
+
     with pytest.raises(ValueError, match="cannot exceed"):
         burkov_laplace_add_one(5, 4, 3)

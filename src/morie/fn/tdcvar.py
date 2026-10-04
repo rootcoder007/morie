@@ -49,7 +49,6 @@ studies with a sustained exposure period", *Mathematical Modelling*
 problem and the weighted solution were first set out.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -58,8 +57,7 @@ __all__ = ["time_dep_covariate"]
 _CONTRASTS = ("cumulative", "final", "everexposed")
 
 
-def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative",
-                       kind="binary", stabilize=True, trim=None):
+def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative", kind="binary", stabilize=True, trim=None):
     r"""IP-weighted MSM for a time-varying treatment, with the two
     naive comparators alongside it.
 
@@ -92,30 +90,31 @@ def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative",
         r["estimate"], r["adjusted"], r["unadjusted"]
     """
     if contrast not in _CONTRASTS:
-        raise ValueError("time_dep_covariate: contrast must be one of %r, "
-                         "got %r" % (_CONTRASTS, contrast))
-    A_hist = list(A) if isinstance(A, (list, tuple)) and A and isinstance(
-        A[0], (list, tuple)) else [A]
-    L_hist = list(L_t) if isinstance(L_t, (list, tuple)) and (
-        not L_t or isinstance(L_t[0], (list, tuple)) or L_t[0] is None
-    ) else [L_t]
+        raise ValueError("time_dep_covariate: contrast must be one of %r, got %r" % (_CONTRASTS, contrast))
+    A_hist = list(A) if isinstance(A, (list, tuple)) and A and isinstance(A[0], (list, tuple)) else [A]
+    L_hist = (
+        list(L_t)
+        if isinstance(L_t, (list, tuple)) and (not L_t or isinstance(L_t[0], (list, tuple)) or L_t[0] is None)
+        else [L_t]
+    )
     K = len(A_hist)
     if K == 0:
         raise ValueError("time_dep_covariate: need at least one time point")
     if len(L_hist) != K:
         raise ValueError(
             "time_dep_covariate: %d treatment times but %d covariate "
-            "blocks; Sec. 21.2 needs L-bar_k at every k" % (K, len(L_hist)))
+            "blocks; Sec. 21.2 needs L-bar_k at every k" % (K, len(L_hist))
+        )
     yv = k.vec(y)
     n = len(yv)
     for kk in range(K):
         if len(k.vec(A_hist[kk])) != n:
-            raise ValueError("time_dep_covariate: outcome has %d rows but "
-                             "treatment at time %d has %d"
-                             % (n, kk, len(k.vec(A_hist[kk]))))
+            raise ValueError(
+                "time_dep_covariate: outcome has %d rows but "
+                "treatment at time %d has %d" % (n, kk, len(k.vec(A_hist[kk])))
+            )
 
-    w, per_time = k.ip_weights_history(A_hist, L_hist, kind=kind,
-                                       stabilize=stabilize, trim=trim)
+    w, per_time = k.ip_weights_history(A_hist, L_hist, kind=kind, stabilize=stabilize, trim=trim)
 
     cum = [sum(k.vec(A_hist[kk])[i] for kk in range(K)) for i in range(n)]
     if contrast == "cumulative":
@@ -145,39 +144,45 @@ def time_dep_covariate(y, A, L_t, time=None, contrast="cumulative",
 
     s1 = sum(w)
     s2 = sum(v * v for v in w)
-    return RichResult(payload={
-        "estimate": msm["coef"][1],
-        "se": msm["se"][1],
-        "msm": msm["coef"][1],
-        "msm_se": msm["se"][1],
-        "adjusted": adj["coef"][1],
-        "adjusted_se": adj["se"][1],
-        "unadjusted": unadj["coef"][1],
-        "unadjusted_se": unadj["se"][1],
-        "coef": msm["coef"],
-        "vcov": msm["vcov"],
-        "weights": w,
-        "mean_weight": s1 / n,
-        "max_weight": max(w),
-        "effective_sample_size": (s1 * s1 / s2) if s2 > 0.0 else 0.0,
-        "cumulative_exposure": cum,
-        "exposure": expo,
-        "per_time": [{"time": (time[t] if time is not None
-                               and t < len(time) else t),
-                      "mean_weight": sum(p["weight"]) / n}
-                     for t, p in enumerate(per_time)],
-        "n_times": K, "n": n, "contrast": contrast,
-        "method": "IP-weighted MSM for a time-varying treatment, "
-                  "Hernan & Robins (2020) Sec. 21.2, with the "
-                  "over-adjusted and unadjusted comparators of Ch. 20",
-    })
+    return RichResult(
+        payload={
+            "estimate": msm["coef"][1],
+            "se": msm["se"][1],
+            "msm": msm["coef"][1],
+            "msm_se": msm["se"][1],
+            "adjusted": adj["coef"][1],
+            "adjusted_se": adj["se"][1],
+            "unadjusted": unadj["coef"][1],
+            "unadjusted_se": unadj["se"][1],
+            "coef": msm["coef"],
+            "vcov": msm["vcov"],
+            "weights": w,
+            "mean_weight": s1 / n,
+            "max_weight": max(w),
+            "effective_sample_size": (s1 * s1 / s2) if s2 > 0.0 else 0.0,
+            "cumulative_exposure": cum,
+            "exposure": expo,
+            "per_time": [
+                {"time": (time[t] if time is not None and t < len(time) else t), "mean_weight": sum(p["weight"]) / n}
+                for t, p in enumerate(per_time)
+            ],
+            "n_times": K,
+            "n": n,
+            "contrast": contrast,
+            "method": "IP-weighted MSM for a time-varying treatment, "
+            "Hernan & Robins (2020) Sec. 21.2, with the "
+            "over-adjusted and unadjusted comparators of Ch. 20",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tdcvar: time-varying IPTW MSM (H&R Ch.21). Returns the "
-            "weighted MSM plus the two biased comparators -- adjusting "
-            "for a treatment-affected confounder over-adjusts, omitting "
-            "it under-adjusts, and Ch.20 says they straddle the truth.")
+    return (
+        "tdcvar: time-varying IPTW MSM (H&R Ch.21). Returns the "
+        "weighted MSM plus the two biased comparators -- adjusting "
+        "for a treatment-affected confounder over-adjusts, omitting "
+        "it under-adjusts, and Ch.20 says they straddle the truth."
+    )
 
 
 # compact alias per ledger/NAMING.md

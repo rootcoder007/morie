@@ -57,12 +57,19 @@ def imai_keele_yamamoto_mediation(X, M, Y, Cc=None):
     z0 = theta[1] + theta[3] * bc0
     z1 = theta[1] + theta[3] * (bc0 + beta[1])
     total = 0.5 * (d0 + d1) + 0.5 * (z0 + z1)
-    return RichResult(payload={
-        "estimate": 0.5 * (d0 + d1), "acme_0": d0, "acme_1": d1,
-        "ade_0": z0, "ade_1": z1, "total": total,
-        "prop_mediated": 0.5 * (d0 + d1) / total if total != 0.0 else float("nan"),
-        "n": len(C.vec(Y)),
-        "method": "Imai-Keele-Yamamoto causal mediation"})
+    return RichResult(
+        payload={
+            "estimate": 0.5 * (d0 + d1),
+            "acme_0": d0,
+            "acme_1": d1,
+            "ade_0": z0,
+            "ade_1": z1,
+            "total": total,
+            "prop_mediated": 0.5 * (d0 + d1) / total if total != 0.0 else float("nan"),
+            "n": len(C.vec(Y)),
+            "method": "Imai-Keele-Yamamoto causal mediation",
+        }
+    )
 
 
 def cheatsheet():

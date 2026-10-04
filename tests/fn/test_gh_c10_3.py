@@ -1,14 +1,12 @@
 """Tests for gh_c10_3.ghosal_param_rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_3 import ghosal_param_rate
 
 
 def test_gh_c10_3_basic():
     """Test basic functionality."""
-    result = ghosal_param_rate(d_true=2, ns=(100, 1000, 10000),
-                               lam=1.0, seed=42)
+    result = ghosal_param_rate(d_true=2, ns=(100, 1000, 10000), lam=1.0, seed=42)
     assert "estimate" in result
     est = np.asarray(result["estimate"], dtype=float)
     assert np.all(np.isfinite(est))

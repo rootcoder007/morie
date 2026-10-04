@@ -51,9 +51,17 @@ def turboquant_score_distortion(eps, r, n):
     n = float(n)
     m = 2.0 * r * r / (eps * eps) * math.log(n)
     m_min = float(math.ceil(m))
-    return RichResult(payload={
-        "m_min": m_min, "m_real": m, "estimate": m_min, "eps": eps, "r": r,
-        "n": n, "method": "QJL attention-score distortion bound"})
+    return RichResult(
+        payload={
+            "m_min": m_min,
+            "m_real": m,
+            "estimate": m_min,
+            "eps": eps,
+            "r": r,
+            "n": n,
+            "method": "QJL attention-score distortion bound",
+        }
+    )
 
 
 def cheatsheet():

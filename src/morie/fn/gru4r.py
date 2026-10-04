@@ -66,12 +66,9 @@ using RNN Encoder-Decoder for Statistical Machine Translation",
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["session_parallel_batches", "bpr_loss", "top1_loss",
-           "gru_step", "recall_at_k", "mrr_at_k"]
+__all__ = ["session_parallel_batches", "bpr_loss", "top1_loss", "gru_step", "recall_at_k", "mrr_at_k"]
 
 _EPS = 1e-12
 _LOSSES = ("bpr", "top1", "cross_entropy")
@@ -91,12 +88,10 @@ def session_parallel_batches(sessions, batch_size):
     """
     S = [[int(v) for v in s] for s in sessions]
     if any(len(s) < 2 for s in S):
-        raise ValueError("gru4r: every session needs at least 2 "
-                         "events")
+        raise ValueError("gru4r: every session needs at least 2 events")
     B = int(batch_size)
-    if B < 1 or B > len(S):
-        raise ValueError("gru4r: batch_size must lie in 1..%d, got %d"
-                         % (len(S), B))
+    if B < 1 or len(S) < B:
+        raise ValueError("gru4r: batch_size must lie in 1..%d, got %d" % (len(S), B))
     slot = list(range(B))
     pos = [0] * B
     nxt = B
@@ -131,11 +126,13 @@ def session_parallel_batches(sessions, batch_size):
         if not alive:
             break
         steps.append({"input": x, "target": y, "reset": reset})
-    return {"steps": steps, "n_steps": len(steps), "batch_size": B,
-            "n_sessions": len(S),
-            "note": "a slot's hidden state is reset when a new "
-                    "session takes it, because sessions are assumed "
-                    "independent"}
+    return {
+        "steps": steps,
+        "n_steps": len(steps),
+        "batch_size": B,
+        "n_sessions": len(S),
+        "note": "a slot's hidden state is reset when a new session takes it, because sessions are assumed independent",
+    }
 
 
 def bpr_loss(r_target, r_negatives):
@@ -143,8 +140,7 @@ def bpr_loss(r_target, r_negatives):
     neg = [float(v) for v in k.vec(r_negatives)]
     if not neg:
         raise ValueError("gru4r: at least one negative is needed")
-    return -sum(math.log(max(_sig(float(r_target) - v), _EPS))
-                for v in neg) / len(neg)
+    return -sum(math.log(max(_sig(float(r_target) - v), _EPS)) for v in neg) / len(neg)
 
 
 def top1_loss(r_target, r_negatives, regularize=True):
@@ -165,39 +161,40 @@ def gru_step(x, h, Wz, Uz, Wr, Ur, Wh, Uh):
     n = len(h)
 
     def lin(W, U, xv, hv):
-        return [sum(W[o][j] * xv[j] for j in range(len(xv)))
-                + sum(U[o][j] * hv[j] for j in range(len(hv)))
-                for o in range(n)]
+        return [
+            sum(W[o][j] * xv[j] for j in range(len(xv))) + sum(U[o][j] * hv[j] for j in range(len(hv)))
+            for o in range(n)
+        ]
 
     z = [_sig(v) for v in lin(Wz, Uz, x, h)]
     r = [_sig(v) for v in lin(Wr, Ur, x, h)]
-    hh = [math.tanh(v) for v in
-          lin(Wh, Uh, x, [r[i] * h[i] for i in range(n)])]
+    hh = [math.tanh(v) for v in lin(Wh, Uh, x, [r[i] * h[i] for i in range(n)])]
     return [(1.0 - z[i]) * h[i] + z[i] * hh[i] for i in range(n)]
 
 
 def recall_at_k(ranked, target, kk=20):
     r"""Whether the target appears in the top :math:`k`."""
-    return 1.0 if int(target) in list(ranked)[:int(kk)] else 0.0
+    return 1.0 if int(target) in list(ranked)[: int(kk)] else 0.0
 
 
 def mrr_at_k(ranked, target, kk=20):
     r"""Reciprocal rank, zero beyond :math:`k`."""
-    top = list(ranked)[:int(kk)]
-    return 1.0 / (top.index(int(target)) + 1.0) \
-        if int(target) in top else 0.0
+    top = list(ranked)[: int(kk)]
+    return 1.0 / (top.index(int(target)) + 1.0) if int(target) in top else 0.0
 
 
 def cheatsheet():
-    return ("gru4r: no user profile, just the current session. "
-            "SESSION-PARALLEL mini-batches -- slot b holds one "
-            "session, refilled with a hidden-state RESET when it ends "
-            "-- because padding or fragmenting destroys how a session "
-            "evolves. Cross-entropy over a huge item set was stable in "
-            "only 10 of 100 runs; use BPR or TOP1. TOP1 = smoothed "
-            "relative rank PLUS sigma(r_neg^2), and that second term "
-            "is load-bearing: without it positives acting as negatives "
-            "drive every score upward.")
+    return (
+        "gru4r: no user profile, just the current session. "
+        "SESSION-PARALLEL mini-batches -- slot b holds one "
+        "session, refilled with a hidden-state RESET when it ends "
+        "-- because padding or fragmenting destroys how a session "
+        "evolves. Cross-entropy over a huge item set was stable in "
+        "only 10 of 100 runs; use BPR or TOP1. TOP1 = smoothed "
+        "relative rank PLUS sigma(r_neg^2), and that second term "
+        "is load-bearing: without it positives acting as negatives "
+        "drive every score upward."
+    )
 
 
 # compact alias per ledger/NAMING.md

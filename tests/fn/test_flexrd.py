@@ -1,7 +1,6 @@
 """Tests for flexrd.flexible_receptor_dock."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.flexrd import flexible_receptor_dock
 
 
@@ -35,9 +34,16 @@ def test_flexrd_basic():
     flex_residues = []
 
     result = flexible_receptor_dock(
-        receptor, ligand, flex_residues,
-        angles=[0.0], soft=0.7, epsilon=1.0, cutoff=8.0,
-        search="coordinate", passes=3, n_keep=2,
+        receptor,
+        ligand,
+        flex_residues,
+        angles=[0.0],
+        soft=0.7,
+        epsilon=1.0,
+        cutoff=8.0,
+        search="coordinate",
+        passes=3,
+        n_keep=2,
     )
 
     # The function returns a RichResult; expose its payload as dict-like.
@@ -70,14 +76,10 @@ def test_flexrd_basic():
     assert payload["n_receptor"] == 6
     assert payload["n_ligand"] == 4
     assert payload["kept"] == sorted(payload["kept"])
-    assert sorted(payload["stage1"]) == [
-        payload["stage1"][i] for i in payload["stage1_order"]
-    ]
+    assert sorted(payload["stage1"]) == [payload["stage1"][i] for i in payload["stage1_order"]]
 
     # ``gain`` must equal rigid_hard - flexible_hard exactly.
-    assert payload["gain"] == pytest_approx(
-        payload["rigid_energy"] - payload["energy"]
-    )
+    assert payload["gain"] == pytest_approx(payload["rigid_energy"] - payload["energy"])
 
     # With no chi flexibility, the refined receptor is the input receptor,
     # so the flexible hard energy equals the rigid hard energy.
@@ -115,8 +117,11 @@ def test_flexrd_edge():
     ligand = {"poses": [lp0, lp1, lp2], "radii": lr}
 
     result = flexible_receptor_dock(
-        receptor, ligand, [],
-        angles=[0.0], n_keep=1,
+        receptor,
+        ligand,
+        [],
+        angles=[0.0],
+        n_keep=1,
     )
     payload = dict(result.payload) if hasattr(result, "payload") else dict(result)
 
@@ -128,9 +133,12 @@ def test_flexrd_edge():
 
 def pytest_approx(x):
     """Tiny inline stand-in for pytest.approx to avoid the extra import."""
+
     class _A:
         def __eq__(self, other):
             return abs(x - other) < 1e-9
+
         def __repr__(self):
             return f"approx({x})"
+
     return _A()

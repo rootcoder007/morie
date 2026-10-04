@@ -1,7 +1,6 @@
 """Tests for sbmest.stochastic_block_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sbmest import stochastic_block_model
 
 

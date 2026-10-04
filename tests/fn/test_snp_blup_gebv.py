@@ -23,8 +23,7 @@ def _solve(A, b):
 def _data(n=12, p=5):
     X = [[1.0, float(k % 2)] for k in range(n)]
     M = [[float((3 * i + 7 * j + i * j) % 3) - 1.0 for j in range(p)] for i in range(n)]
-    y = [2.0 + 0.5 * x[1] + 0.3 * m[0] - 0.2 * m[3] + 0.1 * math.sin(5.0 * i)
-         for i, (x, m) in enumerate(zip(X, M))]
+    y = [2.0 + 0.5 * x[1] + 0.3 * m[0] - 0.2 * m[3] + 0.1 * math.sin(5.0 * i) for i, (x, m) in enumerate(zip(X, M))]
     return X, y, M
 
 
@@ -33,8 +32,7 @@ def _mme(X, y, M, s2m, s2e):
     [X'X  X'M; M'X  M'M + (s2e/s2m) I] [b; u] = [X'y; M'y]."""
     C = [x + m for x, m in zip(X, M)]
     q, px = len(C[0]), len(X[0])
-    A = [[sum(c[r] * c[s] for c in C) + (s2e / s2m if r == s and r >= px else 0.0)
-          for s in range(q)] for r in range(q)]
+    A = [[sum(c[r] * c[s] for c in C) + (s2e / s2m if r == s and r >= px else 0.0) for s in range(q)] for r in range(q)]
     sol = _solve(A, [sum(c[r] * t for c, t in zip(C, y)) for r in range(q)])
     return sol[:px], sol[px:]
 

@@ -1,7 +1,6 @@
 """Tests for ghs025.ghosal_ch3_tailfree_density_product."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs025 import ghosal_ch3_tailfree_density_product
 
 

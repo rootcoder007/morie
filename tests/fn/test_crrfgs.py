@@ -1,7 +1,6 @@
 """Tests for crrfgs.competing_risks_fg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crrfgs import competing_risks_fg
 
 
@@ -14,6 +13,8 @@ def test_crrfgs_basic():
     result = competing_risks_fg(time, event_type, X, cause)
     assert isinstance(result, dict)
     assert "beta" in result
+
+
 def test_crrfgs_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

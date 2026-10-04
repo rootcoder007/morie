@@ -1,7 +1,6 @@
 """Tests for alfbnp.af3_protein_ligand."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfbnp import af3_protein_ligand
 
 
@@ -22,7 +21,7 @@ def test_alfbnp_basic():
     assert len(result.coords) == n
     assert all(len(p) == 3 for p in result.coords)
     assert len(result.sigmas) == 5  # steps + 1 (initial sigma included)
-    assert len(result.trace) == 4   # one trace entry per step
+    assert len(result.trace) == 4  # one trace entry per step
     assert result.denoiser_coefs is not None
 
 

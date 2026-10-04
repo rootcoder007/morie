@@ -1,7 +1,6 @@
 """Tests for morie.fn.kron — Kronecker product."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kron import kronecker_product
 
 

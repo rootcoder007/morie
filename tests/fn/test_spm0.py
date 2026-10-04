@@ -1,7 +1,6 @@
 """Test spectral_moment (spm0)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spm0 import spectral_moment, spm0
 

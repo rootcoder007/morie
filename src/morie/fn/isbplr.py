@@ -65,8 +65,7 @@ def isgp_bayes(y, sigma=0.5, alpha=1.0, c=1.0):
     cc = float(c)
     newd = []
     for i in range(1, n + 1):
-        t = math.exp(math.lgamma(1.0 + cc) + math.lgamma(i - 1.0 + cc + s)
-                     - math.lgamma(i + cc) - math.lgamma(cc + s))
+        t = math.exp(math.lgamma(1.0 + cc) + math.lgamma(i - 1.0 + cc + s) - math.lgamma(i + cc) - math.lgamma(cc + s))
         newd.append(a * t)
     path = []
     acc = 0.0

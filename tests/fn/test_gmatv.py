@@ -14,14 +14,12 @@ so the PDF is the source of truth and the txt is only a search index.
 import json
 import pathlib
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gmatv import grm_vanraden
 
-_FIXTURE = json.loads(
-    (pathlib.Path(__file__).parent / "fixtures" / "gmatv.json").read_text()
-)
+_FIXTURE = json.loads((pathlib.Path(__file__).parent / "fixtures" / "gmatv.json").read_text())
 X = np.array(_FIXTURE["input"]["X_markers_8x7"], dtype=float)
 
 
@@ -31,9 +29,7 @@ def test_transcription_matches_printed_allele_frequencies():
     The book prints phat alongside the worked example; reproducing it proves
     the matrix was copied correctly without relying on a method being right.
     """
-    assert np.allclose(
-        X.mean(axis=0) / 2.0, _FIXTURE["transcription_check"]["printed_phat"]
-    )
+    assert np.allclose(X.mean(axis=0) / 2.0, _FIXTURE["transcription_check"]["printed_phat"])
 
 
 def test_gvr1_matches_book_worked_example():

@@ -1,7 +1,5 @@
 """Tests for trimit.weight_trimming."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.trimit import weight_trimming
 
 

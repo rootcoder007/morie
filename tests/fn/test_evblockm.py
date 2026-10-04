@@ -1,7 +1,6 @@
 """Tests for evblockm.evt_block_maxima_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evblockm import evt_block_maxima_fit
 
 

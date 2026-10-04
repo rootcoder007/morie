@@ -77,10 +77,17 @@ def ot_gromov_sinkhorn(Cx, Cy, a, b, epsilon, max_iter=20, inner_iter=200):
     cost, _ = ot.gw_cost(A, B, T, aa, bb)
     if cost < 0.0:
         cost = 0.0
-    return RichResult(payload={
-        "T": T, "cost": cost, "GW": cost ** 0.5, "n": n, "m": m,
-        "iters": it,
-        "method": "Entropic Gromov-Wasserstein coupling"})
+    return RichResult(
+        payload={
+            "T": T,
+            "cost": cost,
+            "GW": cost**0.5,
+            "n": n,
+            "m": m,
+            "iters": it,
+            "method": "Entropic Gromov-Wasserstein coupling",
+        }
+    )
 
 
 def cheatsheet():

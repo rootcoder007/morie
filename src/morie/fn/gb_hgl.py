@@ -67,7 +67,7 @@ def gibbons_hodges_lehmann(x, alpha=0.05):
         raise ValueError("need at least 1 observation.")
     if np.any(~np.isfinite(v)):
         raise ValueError("x contains non-finite values.")
-    i, k = np.triu_indices(n, k=0)          # i <= k, so i == k is kept
+    i, k = np.triu_indices(n, k=0)  # i <= k, so i == k is kept
     walsh = np.sort((v[i] + v[k]) / 2.0)
     m = walsh.size
     est = float(np.median(walsh))
@@ -93,8 +93,7 @@ def gibbons_hodges_lehmann(x, alpha=0.05):
             "ci_upper": hi,
             "coverage": float(cov),
             "coverage_note": (
-                "attained coverage, which exceeds the nominal level because "
-                "the Walsh averages are discrete"
+                "attained coverage, which exceeds the nominal level because the Walsh averages are discrete"
             ),
             "alpha": float(alpha),
             "walsh_averages": walsh,
@@ -128,7 +127,7 @@ def _signed_rank_cdf(n, t):
     if t < 0:
         return 0.0
     dp = _signed_rank_counts(n)
-    return float(dp[: int(t) + 1].sum() / 2.0 ** n)
+    return float(dp[: int(t) + 1].sum() / 2.0**n)
 
 
 def _signed_rank_cut(n, alpha):
@@ -139,13 +138,14 @@ def _signed_rank_cut(n, alpha):
         z = 1.959963984540054 if abs(alpha - 0.05) < 1e-12 else _z(1 - alpha / 2)
         return max(int(np.floor(mu - z * sd)) + 1, 1)
     dp = _signed_rank_counts(n)
-    cum = np.cumsum(dp) / 2.0 ** n
+    cum = np.cumsum(dp) / 2.0**n
     idx = np.nonzero(cum <= alpha / 2.0)[0]
     return int(idx[-1]) + 1 if idx.size else 1
 
 
 def _z(q):
     import math
+
     lo, hi = -12.0, 12.0
     for _ in range(200):
         mid = 0.5 * (lo + hi)
@@ -158,6 +158,5 @@ def _z(q):
 
 def cheatsheet():
     return (
-        "gb_hgl: Hodges-Lehmann median as the median of the N(N+1)/2 Walsh "
-        "averages, with an exact signed-rank interval"
+        "gb_hgl: Hodges-Lehmann median as the median of the N(N+1)/2 Walsh averages, with an exact signed-rank interval"
     )

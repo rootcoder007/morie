@@ -10,8 +10,7 @@ def _img():
 
 def _changed(a, b):
     A, B = np.asarray(a).tolist(), np.asarray(b).tolist()
-    return {(i, j) for i in range(4) for j in range(4)
-            if any(abs(x - y) > 1e-12 for x, y in zip(A[i][j], B[i][j]))}
+    return {(i, j) for i in range(4) for j in range(4) if any(abs(x - y) > 1e-12 for x, y in zip(A[i][j], B[i][j]))}
 
 
 def test_hmswin_basic():
@@ -51,7 +50,7 @@ import morie.fn.hmswin as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

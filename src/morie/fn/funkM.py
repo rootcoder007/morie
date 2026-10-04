@@ -68,8 +68,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["global_mean", "predict", "sgd_epoch", "fit",
-           "imputed_svd_error", "rmse"]
+__all__ = ["global_mean", "predict", "sgd_epoch", "fit", "imputed_svd_error", "rmse"]
 
 _EPS = 1e-12
 
@@ -87,10 +86,8 @@ def predict(mu, b_user, b_item, p_u, q_i):
     p = [float(v) for v in k.vec(p_u)]
     q = [float(v) for v in k.vec(q_i)]
     if len(p) != len(q):
-        raise ValueError("funkM: the factors differ in width "
-                         "(%d, %d)" % (len(p), len(q)))
-    return (float(mu) + float(b_user) + float(b_item)
-            + sum(p[a] * q[a] for a in range(len(p))))
+        raise ValueError("funkM: the factors differ in width (%d, %d)" % (len(p), len(q)))
+    return float(mu) + float(b_user) + float(b_item) + sum(p[a] * q[a] for a in range(len(p)))
 
 
 def sgd_epoch(ratings, mu, bu, bi, P, Q, lr, reg, factor=None):
@@ -100,7 +97,7 @@ def sgd_epoch(ratings, mu, bu, bi, P, Q, lr, reg, factor=None):
     which is what Funk's incremental schedule does.
     """
     se = 0.0
-    for (u, i, r) in ratings:
+    for u, i, r in ratings:
         u, i = int(u), int(i)
         e = float(r) - predict(mu, bu[u], bi[i], P[u], Q[i])
         se += e * e
@@ -114,8 +111,9 @@ def sgd_epoch(ratings, mu, bu, bi, P, Q, lr, reg, factor=None):
     return math.sqrt(se / len(ratings))
 
 
-def fit(ratings, n_users, n_items, factors=8, epochs=60, lr=0.005,
-        reg=0.02, seed=0, incremental=False, epochs_per_factor=20):
+def fit(
+    ratings, n_users, n_items, factors=8, epochs=60, lr=0.005, reg=0.02, seed=0, incremental=False, epochs_per_factor=20
+):
     r"""Regularised MF on the observed entries.
 
     ``incremental=True`` is Funk's own schedule: fit factor 0 to
@@ -129,37 +127,39 @@ def fit(ratings, n_users, n_items, factors=8, epochs=60, lr=0.005,
     if min(nu, ni, d) < 1:
         raise ValueError("funkM: the counts must be positive")
     if float(reg) < 0.0:
-        raise ValueError("funkM: the regularisation cannot be "
-                         "negative")
+        raise ValueError("funkM: the regularisation cannot be negative")
     mu = global_mean(R)
     rng = np.random.default_rng(seed)
     bu = [0.0] * nu
     bi = [0.0] * ni
-    P = [[0.1 * (float(rng.uniform()) - 0.5) for _ in range(d)]
-         for _ in range(nu)]
-    Q = [[0.1 * (float(rng.uniform()) - 0.5) for _ in range(d)]
-         for _ in range(ni)]
+    P = [[0.1 * (float(rng.uniform()) - 0.5) for _ in range(d)] for _ in range(nu)]
+    Q = [[0.1 * (float(rng.uniform()) - 0.5) for _ in range(d)] for _ in range(ni)]
     hist = []
     if incremental:
         for f in range(d):
             for _ in range(int(epochs_per_factor)):
-                hist.append(sgd_epoch(R, mu, bu, bi, P, Q, lr, reg,
-                                      factor=f))
+                hist.append(sgd_epoch(R, mu, bu, bi, P, Q, lr, reg, factor=f))
     else:
         for _ in range(int(epochs)):
             hist.append(sgd_epoch(R, mu, bu, bi, P, Q, lr, reg))
-    return RichResult(payload={
-        "estimate": hist[-1], "rmse": hist[-1],
-        "rmse_history": hist, "mu": mu, "b_user": bu, "b_item": bi,
-        "P": P, "Q": Q, "factors": d,
-        "incremental": bool(incremental),
-        "observed": len(R),
-        "density": len(R) / float(nu * ni),
-        "method": "regularised MF on the observed entries; Funk "
-                  "(2006), published form in Koren (2008)",
-        "note": "the missing entries are never imputed -- only the "
-                "observed set is summed over",
-    })
+    return RichResult(
+        payload={
+            "estimate": hist[-1],
+            "rmse": hist[-1],
+            "rmse_history": hist,
+            "mu": mu,
+            "b_user": bu,
+            "b_item": bi,
+            "P": P,
+            "Q": Q,
+            "factors": d,
+            "incremental": bool(incremental),
+            "observed": len(R),
+            "density": len(R) / float(nu * ni),
+            "method": "regularised MF on the observed entries; Funk (2006), published form in Koren (2008)",
+            "note": "the missing entries are never imputed -- only the observed set is summed over",
+        }
+    )
 
 
 def rmse(ratings, mu, bu, bi, P, Q):
@@ -167,13 +167,10 @@ def rmse(ratings, mu, bu, bi, P, Q):
     R = [(int(u), int(i), float(r)) for u, i, r in ratings]
     if not R:
         raise ValueError("funkM: no ratings to score")
-    return math.sqrt(sum((r - predict(mu, bu[u], bi[i], P[u],
-                                      Q[i])) ** 2
-                         for u, i, r in R) / len(R))
+    return math.sqrt(sum((r - predict(mu, bu[u], bi[i], P[u], Q[i])) ** 2 for u, i, r in R) / len(R))
 
 
-def imputed_svd_error(ratings, n_users, n_items, rank=2,
-                      fill="zero"):
+def imputed_svd_error(ratings, n_users, n_items, rank=2, fill="zero"):
     r"""What filling the holes and running an SVD actually gives.
 
     Kept so the comparison is measurable: the imputation dominates the
@@ -190,34 +187,34 @@ def imputed_svd_error(ratings, n_users, n_items, rank=2,
     elif fill == "mean":
         base = global_mean(R)
     else:
-        raise ValueError("funkM: fill must be zero or mean, got %r"
-                         % (fill,))
-    M = [[obs.get((u, i), base) for i in range(ni)]
-         for u in range(nu)]
+        raise ValueError("funkM: fill must be zero or mean, got %r" % (fill,))
+    M = [[obs.get((u, i), base) for i in range(ni)] for u in range(nu)]
     U, S, Vt = np.linalg.svd(M)
     kk = int(rank)
-    approx = [[sum(U[u][t] * S[t] * Vt[t][i]
-                   for t in range(min(kk, len(S))))
-               for i in range(ni)] for u in range(nu)]
-    err = math.sqrt(sum((obs[(u, i)] - approx[u][i]) ** 2
-                        for (u, i) in obs) / len(obs))
-    return {"rmse_on_observed": err, "fill": fill, "rank": kk,
-            "note": "the SVD spent its rank on the imputed cells, "
-                    "which outnumber the real ones"}
+    approx = [[sum(U[u][t] * S[t] * Vt[t][i] for t in range(min(kk, len(S)))) for i in range(ni)] for u in range(nu)]
+    err = math.sqrt(sum((obs[(u, i)] - approx[u][i]) ** 2 for (u, i) in obs) / len(obs))
+    return {
+        "rmse_on_observed": err,
+        "fill": fill,
+        "rank": kk,
+        "note": "the SVD spent its rank on the imputed cells, which outnumber the real ones",
+    }
 
 
 def cheatsheet():
-    return ("funkM: a true SVD needs a COMPLETE matrix and a ratings "
-            "matrix is >99% missing -- filling the holes with zeros or "
-            "means fits the IMPUTATION, not the data. So sum only over "
-            "the OBSERVED entries: minimise (r - mu - b_u - b_i - "
-            "q'p)^2 + lambda(||p||^2 + ||q||^2 + b_u^2 + b_i^2) by "
-            "SGD. Regularisation is load-bearing -- one vector per user "
-            "and item would otherwise just memorise. Baselines "
-            "mu + b_u + b_i first, or the factors waste capacity on "
-            "effects that are not interactions. Funk's own schedule "
-            "trained ONE FACTOR AT A TIME against the previous "
-            "residual, which is what makes the recipe distinct.")
+    return (
+        "funkM: a true SVD needs a COMPLETE matrix and a ratings "
+        "matrix is >99% missing -- filling the holes with zeros or "
+        "means fits the IMPUTATION, not the data. So sum only over "
+        "the OBSERVED entries: minimise (r - mu - b_u - b_i - "
+        "q'p)^2 + lambda(||p||^2 + ||q||^2 + b_u^2 + b_i^2) by "
+        "SGD. Regularisation is load-bearing -- one vector per user "
+        "and item would otherwise just memorise. Baselines "
+        "mu + b_u + b_i first, or the factors waste capacity on "
+        "effects that are not interactions. Funk's own schedule "
+        "trained ONE FACTOR AT A TIME against the previous "
+        "residual, which is what makes the recipe distinct."
+    )
 
 
 # compact alias per ledger/NAMING.md

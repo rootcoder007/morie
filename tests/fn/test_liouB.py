@@ -1,7 +1,6 @@
 """Tests for liouB.liouville_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.liouB import liouville_test
 
 

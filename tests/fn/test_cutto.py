@@ -1,7 +1,6 @@
 """Tests for morie.fn.cutto — Cutting plane."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cutto import cutto
 
 

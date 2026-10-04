@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["ghosal_beta_ker"]
 
 
-def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0,
-                    n_draws=200):
+def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0, n_draws=200):
     r"""Dirichlet-process mixture of a Beta kernel for a density on
     ``[0, 1]`` (Ghosal Sec. 5.5):
 
@@ -56,29 +55,33 @@ def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0,
     if xv.size < 2:
         raise ValueError(f"need at least 2 observations, got {xv.size}.")
     if np.any(xv < 0) or np.any(xv > 1):
-        raise ValueError("a Beta kernel needs observations in [0, 1]; "
-                         "rescale before calling.")
+        raise ValueError("a Beta kernel needs observations in [0, 1]; rescale before calling.")
     a = float(alpha)
     prec = float(precision)
     if a <= 0 or prec <= 0:
         raise ValueError(f"alpha and precision must be positive, got {(a, prec)}.")
-    g = np.linspace(0.005, 0.995, 199) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(0.005, 0.995, 199) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     rng = np.random.default_rng(int(seed))
     kk = int(K)
     dens = np.zeros(g.size)
     for _ in range(int(n_draws)):
         w = stick_breaking(a, kk, rng)
         th = np.clip(rng.beta(2.0, 2.0, kk), 1e-4, 1 - 1e-4)
-        comp = np.stack([_st.beta.pdf(g, prec * t, prec * (1 - t))
-                         for t in th], axis=1)
+        comp = np.stack([_st.beta.pdf(g, prec * t, prec * (1 - t)) for t in th], axis=1)
         dens += comp @ w
     dens /= float(n_draws)
-    return RichResult(payload={
-        "grid": g, "density": dens, "alpha": a, "precision": prec,
-        "support": (0.0, 1.0), "mass_outside_support": 0.0,
-        "n": int(xv.size),
-        "method": "DP mixture of Be(a*theta, a*(1-theta)) (Sec. 5.5); supported exactly on [0, 1]"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "alpha": a,
+            "precision": prec,
+            "support": (0.0, 1.0),
+            "mass_outside_support": 0.0,
+            "n": int(xv.size),
+            "method": "DP mixture of Be(a*theta, a*(1-theta)) (Sec. 5.5); supported exactly on [0, 1]",
+        }
+    )
 
 
 def cheatsheet():

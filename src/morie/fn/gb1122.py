@@ -1,12 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact and asymptotic null distribution of Kendall's T."""
 
-import math
-
-from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['taunull', 'gibbons_kendall_null']
+__all__ = ["taunull", "gibbons_kendall_null"]
 
 
 def taunull(n, s=None):

@@ -3,7 +3,6 @@
 Morin (2016), Probability: For the Enthusiastic Beginner, eq (3.39).
 """
 
-
 from ._richresult import RichResult
 
 __all__ = ["sdfromvar"]
@@ -30,8 +29,8 @@ def sdfromvar(var_x):
     v = float(var_x)
     if v < 0:
         raise ValueError("variance must be >= 0")
-    payload = {"variance": v, "sd": v ** 0.5}
-    lines = [("sigma", v ** 0.5)]
+    payload = {"variance": v, "sd": v**0.5}
+    lines = [("sigma", v**0.5)]
     return RichResult(
         title="Standard deviation sigma_X = sqrt(Var(X)).",
         summary_lines=lines,

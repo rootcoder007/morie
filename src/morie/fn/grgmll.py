@@ -20,8 +20,8 @@ def _log_gauss(X, mu, Sigma):
             "a covariance matrix is not positive definite, so its Gaussian "
             "density is undefined; add a ridge to the diagonal."
         ) from None
-    diff = (X - mu).T                       # (d, m)
-    sol = np.linalg.solve(L, diff)          # L is lower-triangular
+    diff = (X - mu).T  # (d, m)
+    sol = np.linalg.solve(L, diff)  # L is lower-triangular
     maha = np.sum(sol**2, axis=0)
     log_det = 2.0 * np.sum(np.log(np.diag(L)))
     return -0.5 * (d * np.log(2.0 * np.pi) + log_det + maha)

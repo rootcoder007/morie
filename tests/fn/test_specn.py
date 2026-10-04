@@ -1,8 +1,8 @@
 """Tests for morie.fn.specn -- Periodogram."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.specn import periodogram
 
 

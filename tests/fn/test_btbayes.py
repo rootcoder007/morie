@@ -1,7 +1,6 @@
 """Tests for btbayes.boot_bayesian."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btbayes import boot_bayesian
 
 

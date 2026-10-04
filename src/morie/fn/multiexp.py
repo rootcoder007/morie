@@ -64,9 +64,14 @@ def multiexp(xs, N):
     direct = float(np.sum(xs)) ** N
     if abs(total - direct) > 1e-9 * max(1.0, abs(direct)):
         raise AssertionError("multinomial expansion does not match the direct power")
-    payload = {"k": float(k), "power": float(N), "n_terms": float(n_terms),
-               "expansion": float(total), "direct_power": float(direct),
-               "max_coefficient": float(max_coef)}
+    payload = {
+        "k": float(k),
+        "power": float(N),
+        "n_terms": float(n_terms),
+        "expansion": float(total),
+        "direct_power": float(direct),
+        "max_coefficient": float(max_coef),
+    }
     return RichResult(
         title="Multinomial theorem expansion.",
         summary_lines=[("terms", n_terms), ("total", total)],

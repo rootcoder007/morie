@@ -65,17 +65,15 @@ def subwords(word, n_min=3, n_max=6, boundary=True, whole_word=True):
     """
     lo, hi = int(n_min), int(n_max)
     if lo < 1:
-        raise ValueError("subwords: n_min must be at least 1, got %r"
-                         % (n_min,))
+        raise ValueError("subwords: n_min must be at least 1, got %r" % (n_min,))
     if hi < lo:
-        raise ValueError("subwords: n_max (%r) is below n_min (%r)"
-                         % (n_max, n_min))
+        raise ValueError("subwords: n_max (%r) is below n_min (%r)" % (n_max, n_min))
     w = str(word)
     padded = "<" + w + ">" if boundary else w
     grams, seen = [], set()
     for n in range(lo, hi + 1):
         for i in range(0, len(padded) - n + 1):
-            g = padded[i:i + n]
+            g = padded[i : i + n]
             if g not in seen:
                 seen.add(g)
                 grams.append(g)
@@ -86,8 +84,7 @@ def subwords(word, n_min=3, n_max=6, boundary=True, whole_word=True):
     return grams
 
 
-def word_vector(word, Z, gram_index, n_min=3, n_max=6, boundary=True,
-                whole_word=True, hash_buckets=None):
+def word_vector(word, Z, gram_index, n_min=3, n_max=6, boundary=True, whole_word=True, hash_buckets=None):
     """Sum of the word's n-gram vectors -- the representation itself.
 
     A word made entirely of unseen n-grams gets a zero vector rather
@@ -122,9 +119,21 @@ def _fnv1a(s):
     return h
 
 
-def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
-             lr=0.05, negative=5, min_count=1, boundary=True,
-             whole_word=True, hash_buckets=None, seed=0):
+def fasttext(
+    corpus,
+    dim=50,
+    n_min=3,
+    n_max=6,
+    window=5,
+    epochs=5,
+    lr=0.05,
+    negative=5,
+    min_count=1,
+    boundary=True,
+    whole_word=True,
+    hash_buckets=None,
+    seed=0,
+):
     r"""Train subword word vectors by skipgram with negative sampling.
 
     Parameters
@@ -153,8 +162,7 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
     docs = _as_docs(corpus)
     d = int(dim)
     if d < 1:
-        raise ValueError("fasttext: dim must be at least 1, got %r"
-                         % (dim,))
+        raise ValueError("fasttext: dim must be at least 1, got %r" % (dim,))
     counts = {}
     for doc in docs:
         for t in doc:
@@ -162,8 +170,8 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
     vocab = sorted(t for t, c in counts.items() if c >= int(min_count))
     if len(vocab) < 2:
         raise ValueError(
-            "fasttext: %d word(s) above min_count=%r; skipgram needs a "
-            "context to predict" % (len(vocab), min_count))
+            "fasttext: %d word(s) above min_count=%r; skipgram needs a context to predict" % (len(vocab), min_count)
+        )
     windex = {t: i for i, t in enumerate(vocab)}
 
     grams = []
@@ -177,9 +185,8 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
 
     rng = np.random.default_rng(int(seed))
     sc = 0.5 / d
-    Z = [[(float(rng.uniform()) - 0.5) * sc for _ in range(d)]
-         for _ in range(n_slots)]          # n-gram (input) vectors
-    Vc = [[0.0] * d for _ in range(len(vocab))]   # context vectors
+    Z = [[(float(rng.uniform()) - 0.5) * sc for _ in range(d)] for _ in range(n_slots)]  # n-gram (input) vectors
+    Vc = [[0.0] * d for _ in range(len(vocab))]  # context vectors
 
     # negative sampling distribution: unigram^(3/4), Mikolov et al.
     freqs = [counts[t] ** 0.75 for t in vocab]
@@ -207,11 +214,14 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
         for doc in docs:
             ids = [t for t in doc if t in windex]
             for pos, wd in enumerate(ids):
-                slots = [s for s in
-                         (_gram_slot(g, gram_index, hash_buckets)
-                          for g in subwords(wd, n_min, n_max, boundary,
-                                            whole_word))
-                         if s is not None]
+                slots = [
+                    s
+                    for s in (
+                        _gram_slot(g, gram_index, hash_buckets)
+                        for g in subwords(wd, n_min, n_max, boundary, whole_word)
+                    )
+                    if s is not None
+                ]
                 if not slots:
                     continue
                 u = [sum(Z[s][t] for s in slots) for t in range(d)]
@@ -226,11 +236,9 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
                     grad_u = [0.0] * d
                     for ci, label in targets:
                         dot = sum(u[t] * Vc[ci][t] for t in range(d))
-                        p = 1.0 / (1.0 + math.exp(-max(-30.0,
-                                                       min(30.0, dot))))
-                        g = (p - label)
-                        total += -(math.log(p + 1e-12) if label > 0.5
-                                   else math.log(1.0 - p + 1e-12))
+                        p = 1.0 / (1.0 + math.exp(-max(-30.0, min(30.0, dot))))
+                        g = p - label
+                        total += -(math.log(p + 1e-12) if label > 0.5 else math.log(1.0 - p + 1e-12))
                         n_upd += 1
                         for t in range(d):
                             grad_u[t] += g * Vc[ci][t]
@@ -242,32 +250,36 @@ def fasttext(corpus, dim=50, n_min=3, n_max=6, window=5, epochs=5,
 
     vecs = []
     for wd in vocab:
-        v, _ = word_vector(wd, Z, gram_index, n_min, n_max, boundary,
-                           whole_word, hash_buckets)
+        v, _ = word_vector(wd, Z, gram_index, n_min, n_max, boundary, whole_word, hash_buckets)
         vecs.append(v)
 
     def oov(word):
         """The vector for any word, seen or not -- the point of fastText."""
-        return word_vector(word, Z, gram_index, n_min, n_max, boundary,
-                           whole_word, hash_buckets)[0]
+        return word_vector(word, Z, gram_index, n_min, n_max, boundary, whole_word, hash_buckets)[0]
 
-    return RichResult(payload={
-        "estimate": vecs,
-        "vectors": vecs,
-        "vocab": vocab,
-        "index": windex,
-        "ngrams": grams,
-        "ngram_index": gram_index,
-        "Z": Z, "context": Vc,
-        "loss_history": losses,
-        "final_loss": losses[-1] if losses else float("nan"),
-        "oov": oov,
-        "n_vocab": len(vocab), "n_ngrams": len(grams), "dim": d,
-        "n_min": int(n_min), "n_max": int(n_max),
-        "hash_buckets": hash_buckets,
-        "method": "fastText subword skipgram with negative sampling, "
-                  "Bojanowski, Grave, Joulin & Mikolov (2017) Sec. 3.2",
-    })
+    return RichResult(
+        payload={
+            "estimate": vecs,
+            "vectors": vecs,
+            "vocab": vocab,
+            "index": windex,
+            "ngrams": grams,
+            "ngram_index": gram_index,
+            "Z": Z,
+            "context": Vc,
+            "loss_history": losses,
+            "final_loss": losses[-1] if losses else float("nan"),
+            "oov": oov,
+            "n_vocab": len(vocab),
+            "n_ngrams": len(grams),
+            "dim": d,
+            "n_min": int(n_min),
+            "n_max": int(n_max),
+            "hash_buckets": hash_buckets,
+            "method": "fastText subword skipgram with negative sampling, "
+            "Bojanowski, Grave, Joulin & Mikolov (2017) Sec. 3.2",
+        }
+    )
 
 
 def _as_docs(corpus):
@@ -285,7 +297,9 @@ def _as_docs(corpus):
 
 
 def cheatsheet():
-    return ("fastxt: word = bag of character n-grams with < > "
-            "boundaries plus the whole word; s(w,c) = sum_g z_g . v_c "
-            "(Bojanowski et al. 2017 Sec.3.2). where/n=3 -> <wh whe her "
-            "ere re> + <where>. n in 3..6. Gives OOV words a vector.")
+    return (
+        "fastxt: word = bag of character n-grams with < > "
+        "boundaries plus the whole word; s(w,c) = sum_g z_g . v_c "
+        "(Bojanowski et al. 2017 Sec.3.2). where/n=3 -> <wh whe her "
+        "ere re> + <where>. n in 3..6. Gives OOV words a vector."
+    )

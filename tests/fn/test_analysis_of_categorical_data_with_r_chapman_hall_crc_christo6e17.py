@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17 import (
     analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17,
 )

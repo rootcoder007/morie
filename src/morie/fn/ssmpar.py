@@ -50,12 +50,9 @@ Mellon University. The up-sweep/down-sweep work-efficient scan.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["compose", "sequential_scan", "parallel_scan",
-           "check_associativity", "scan_depth"]
+__all__ = ["compose", "sequential_scan", "parallel_scan", "check_associativity", "scan_depth"]
 
 _EPS = 1e-12
 
@@ -76,12 +73,15 @@ def sequential_scan(pairs, x0=0.0):
     P = [(float(a), float(b)) for a, b in pairs]
     x = float(x0)
     out = []
-    for (A, b) in P:
+    for A, b in P:
         x = A * x + b
         out.append(x)
-    return {"states": out, "steps": len(P), "depth": len(P),
-            "note": "depth equals length -- the reason RNNs do not "
-                    "use the hardware"}
+    return {
+        "states": out,
+        "steps": len(P),
+        "depth": len(P),
+        "note": "depth equals length -- the reason RNNs do not use the hardware",
+    }
 
 
 def _upsweep(P):
@@ -128,10 +128,13 @@ def parallel_scan(pairs, x0=0.0):
         prefix[i] = acc
     x = float(x0)
     states = [A * x + b for (A, b) in prefix]
-    return {"states": states, "prefix": prefix,
-            "depth": len(tree) - 1 if len(tree) > 1 else 1,
-            "work": n,
-            "note": "identical states, logarithmic DEPTH"}
+    return {
+        "states": states,
+        "prefix": prefix,
+        "depth": len(tree) - 1 if len(tree) > 1 else 1,
+        "work": n,
+        "note": "identical states, logarithmic DEPTH",
+    }
 
 
 def check_associativity(a, b, c, tol=1e-12):
@@ -143,9 +146,13 @@ def check_associativity(a, b, c, tol=1e-12):
     left = compose(compose(a, b), c)
     right = compose(a, compose(b, c))
     d = max(abs(left[0] - right[0]), abs(left[1] - right[1]))
-    return {"left": left, "right": right, "deviation": d,
-            "associative": d <= float(tol),
-            "note": "the property the parallel scan rests on"}
+    return {
+        "left": left,
+        "right": right,
+        "deviation": d,
+        "associative": d <= float(tol),
+        "note": "the property the parallel scan rests on",
+    }
 
 
 def scan_depth(length):
@@ -154,28 +161,34 @@ def scan_depth(length):
     if n < 1:
         raise ValueError("ssmpar: the length must be positive")
     d = max(1, int(math.ceil(math.log(n, 2)))) if n > 1 else 1
-    return RichResult(payload={
-        "estimate": d, "parallel_depth": d, "sequential_depth": n,
-        "work": n, "speedup": n / float(d),
-        "method": "parallel associative scan; Smith, Warrington & "
-                  "Linderman (2023), after Blelloch (1990)",
-        "note": "O(L) work in O(log L) depth; with input-dependent "
-                "parameters (Mamba) the convolutional shortcut is "
-                "gone and this scan is what is left",
-    })
+    return RichResult(
+        payload={
+            "estimate": d,
+            "parallel_depth": d,
+            "sequential_depth": n,
+            "work": n,
+            "speedup": n / float(d),
+            "method": "parallel associative scan; Smith, Warrington & Linderman (2023), after Blelloch (1990)",
+            "note": "O(L) work in O(log L) depth; with input-dependent "
+            "parameters (Mamba) the convolutional shortcut is "
+            "gone and this scan is what is left",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ssmpar: x_t = A_t x_{t-1} + b_t looks sequential, but "
-            "each step is an AFFINE MAP and composition "
-            "(A2,b2)o(A1,b1) = (A2A1, A2b1+b2) is ASSOCIATIVE -- so the "
-            "prefixes come from a parallel scan: O(L) work, O(log L) "
-            "depth, identical states. Associativity is load-bearing "
-            "(cut the tree anywhere and the answer must not change), "
-            "so test it. This is what makes SELECTIVE state space "
-            "models viable: once the parameters depend on the input "
-            "there is no fixed convolution kernel left, and the scan "
-            "is the only route to the hardware.")
+    return (
+        "ssmpar: x_t = A_t x_{t-1} + b_t looks sequential, but "
+        "each step is an AFFINE MAP and composition "
+        "(A2,b2)o(A1,b1) = (A2A1, A2b1+b2) is ASSOCIATIVE -- so the "
+        "prefixes come from a parallel scan: O(L) work, O(log L) "
+        "depth, identical states. Associativity is load-bearing "
+        "(cut the tree anywhere and the answer must not change), "
+        "so test it. This is what makes SELECTIVE state space "
+        "models viable: once the parameters depend on the input "
+        "there is no fixed convolution kernel left, and the scan "
+        "is the only route to the hardware."
+    )
 
 
 # compact alias per ledger/NAMING.md

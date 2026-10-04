@@ -1,7 +1,6 @@
 """Tests for morie.fn.d2nnt -- Convert Cohen's d to NNT."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.d2nnt import d_to_nnt
 
 

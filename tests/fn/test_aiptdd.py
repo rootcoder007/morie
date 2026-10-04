@@ -1,8 +1,8 @@
 """Tests for aiptdd.aipw_did (Sant'Anna & Zhao 2020)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.aiptdd import aipw_did
 
 
@@ -67,7 +67,7 @@ def test_trimming_is_reported_not_hidden():
     rng = np.random.default_rng(8)
     n = 800
     x = rng.normal(0, 1, n)
-    d = (x > -0.5).astype(float)      # near-deterministic assignment
+    d = (x > -0.5).astype(float)  # near-deterministic assignment
     pre = rng.normal(0, 1, n)
     post = pre + 1.0 * d + rng.normal(0, 1, n)
     r = aipw_did(pre, post, d, x.reshape(-1, 1), trim=0.9)
@@ -84,7 +84,8 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="at least 2 units per arm"):
         aipw_did(pre, post, np.zeros_like(d), x)
     with pytest.raises(ValueError, match="must be finite"):
-        bad = pre.copy(); bad[0] = np.nan
+        bad = pre.copy()
+        bad[0] = np.nan
         aipw_did(bad, post, d, x)
     with pytest.raises(ValueError, match=r"trim must lie in \(0, 1\)"):
         aipw_did(pre, post, d, x, trim=1.0)

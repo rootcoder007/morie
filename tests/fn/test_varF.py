@@ -1,7 +1,6 @@
 """Tests for varF.vector_autoregression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.varF import vector_autoregression
 
 

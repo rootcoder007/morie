@@ -1,4 +1,5 @@
 """Tests for evgevq.evt_gev_quantile."""
+
 from morie.fn.evgevc import evt_gev_cdf
 from morie.fn.evgevq import evt_gev_quantile
 

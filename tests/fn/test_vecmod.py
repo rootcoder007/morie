@@ -1,15 +1,15 @@
 """Tests for vecmod."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.vecmod import vector_error_correction
+
 
 def _system(seed=0, n=400):
     rng = np.random.default_rng(seed)
     trend = np.cumsum(rng.standard_normal(n))
-    return np.column_stack([trend + rng.standard_normal(n) * 0.5,
-                            2 * trend + rng.standard_normal(n) * 0.5])
+    return np.column_stack([trend + rng.standard_normal(n) * 0.5, 2 * trend + rng.standard_normal(n) * 0.5])
 
 
 def test_vecmod_basic():

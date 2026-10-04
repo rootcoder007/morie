@@ -1,10 +1,10 @@
 """Tests for gatemd.graph_attention_net."""
 
 import math
+
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.gatemd import graph_attention_net
 
 

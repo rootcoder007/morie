@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmoob import geron_oob_score
 
 
@@ -31,8 +30,7 @@ def test_hmoob_basic():
 
     result = geron_oob_score(X, y, models)
     assert isinstance(result, dict)
-    for key in ("oob_score", "oob_predictions", "covered",
-                "mean_oob_votes", "estimate", "n", "method"):
+    for key in ("oob_score", "oob_predictions", "covered", "mean_oob_votes", "estimate", "n", "method"):
         assert key in result
     assert int(result["n"]) == 100
     assert math.isfinite(float(result["oob_score"]))
@@ -69,8 +67,7 @@ def test_hmoob_edge():
 
     result = geron_oob_score(X, y, models, task="classification")
     assert isinstance(result, dict)
-    for key in ("oob_score", "oob_predictions", "covered",
-                "mean_oob_votes", "estimate", "n", "method"):
+    for key in ("oob_score", "oob_predictions", "covered", "mean_oob_votes", "estimate", "n", "method"):
         assert key in result
     assert int(result["n"]) == 100
     assert 0.0 <= float(result["oob_score"]) <= 1.0
@@ -92,7 +89,7 @@ import morie.fn.hmoob as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

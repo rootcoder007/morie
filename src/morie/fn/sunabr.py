@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sun-Abraham interaction-weighted difference in differences."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['iwdid', 'sun_abraham_did', 'sunabrahamdid']
+__all__ = ["iwdid", "sun_abraham_did", "sunabrahamdid"]
 
 
 def iwdid(y, unit, time, cohort, never=0):
@@ -44,7 +42,8 @@ def iwdid(y, unit, time, cohort, never=0):
     cohort.  Verified against the paper.
     """
     y = C.vec(y)
-    unit = list(unit); time = [float(t) for t in time]
+    unit = list(unit)
+    time = [float(t) for t in time]
     cohort = [float(c) for c in cohort]
     n = len(y)
     cell = {}
@@ -61,18 +60,23 @@ def iwdid(y, unit, time, cohort, never=0):
         for g in treated:
             keys = [(g, g + e), (g, g - 1.0), (nev, g + e), (nev, g - 1.0)]
             if all(k in cm for k in keys):
-                catt = ((cm[keys[0]] - cm[keys[1]])
-                        - (cm[keys[2]] - cm[keys[3]]))
+                catt = (cm[keys[0]] - cm[keys[1]]) - (cm[keys[2]] - cm[keys[3]])
                 num += size[g] * catt
                 den += size[g]
         if den > 0:
-            ev_out.append(e); att_out.append(num / den)
+            ev_out.append(e)
+            att_out.append(num / den)
     post = [a for e, a in zip(ev_out, att_out) if e >= 0]
-    return RichResult(payload={
-        "event_time": ev_out, "att": att_out,
-        "overall": (sum(post) / len(post)) if post else float("nan"),
-        "cohorts": treated, "n": n,
-        "method": "Sun-Abraham interaction-weighted DID"})
+    return RichResult(
+        payload={
+            "event_time": ev_out,
+            "att": att_out,
+            "overall": (sum(post) / len(post)) if post else float("nan"),
+            "cohorts": treated,
+            "n": n,
+            "method": "Sun-Abraham interaction-weighted DID",
+        }
+    )
 
 
 sun_abraham_did = iwdid

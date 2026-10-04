@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 4.4: the LoRA objective, optimised over Theta alone."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km056 import _sequence_objective
 
@@ -35,11 +34,17 @@ def kamath_ch4_lora_obj(Theta, Phi_0, x, y):
     """
     adapted, per_pair = _sequence_objective(Theta, x, y)
     base, base_pairs = _sequence_objective(Phi_0, x, y)
-    return RichResult(payload={
-        "estimate": float(adapted), "base_objective": float(base),
-        "improvement": float(adapted - base), "per_pair": per_pair,
-        "base_per_pair": base_pairs, "n": len(per_pair),
-        "method": "LoRA objective over Theta (Kamath Eq 4.4)"})
+    return RichResult(
+        payload={
+            "estimate": float(adapted),
+            "base_objective": float(base),
+            "improvement": float(adapted - base),
+            "per_pair": per_pair,
+            "base_per_pair": base_pairs,
+            "n": len(per_pair),
+            "method": "LoRA objective over Theta (Kamath Eq 4.4)",
+        }
+    )
 
 
 def cheatsheet():

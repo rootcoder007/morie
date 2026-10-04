@@ -1,7 +1,6 @@
 """Tests for btparm.boot_parametric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btparm import boot_parametric
 
 

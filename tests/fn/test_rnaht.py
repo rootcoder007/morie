@@ -1,8 +1,8 @@
 """Tests for morie.fn.rnaht -- R0 from next-generation matrix."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rnaht import r_naught_ngm
 
 

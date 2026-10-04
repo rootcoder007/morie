@@ -1,7 +1,6 @@
 """Tests for gh_c13_14.ghosal_cox_post."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_14 import ghosal_cox_post
 
 
@@ -24,9 +23,7 @@ def test_gh_c13_14_edge():
     # actually returns, and confirm determinism with the same seed.
     assert "error" in result
     again = ghosal_cox_post(beta0=0.6, n=400, prior_sd=2.0, seed=42)
-    assert float(np.asarray(result["estimate"], dtype=float)) == \
-           float(np.asarray(again["estimate"], dtype=float))
+    assert float(np.asarray(result["estimate"], dtype=float)) == float(np.asarray(again["estimate"], dtype=float))
     # Changing the seed should (very likely) produce a different estimate.
     other = ghosal_cox_post(beta0=0.6, n=400, prior_sd=2.0, seed=43)
-    assert float(np.asarray(result["estimate"], dtype=float)) != \
-           float(np.asarray(other["estimate"], dtype=float))
+    assert float(np.asarray(result["estimate"], dtype=float)) != float(np.asarray(other["estimate"], dtype=float))

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxncl -- Network spatial clustering"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zxncl import network_cluster_sp
 
 

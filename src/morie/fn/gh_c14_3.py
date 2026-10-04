@@ -5,10 +5,7 @@ Implements sec. 14.1.1 (eq. 4.13) of Ghosal & van der Vaart (2017), *Fundamental
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_crp_def"]
@@ -34,11 +31,15 @@ def ghosal_crp_def(n=100, alpha=2.0, seed=42):
             else:
                 tables[-1] += 1
     EK = sum(alpha / (alpha + i - 1.0) for i in range(1, int(n) + 1))
-    res = RichResult(payload={"estimate": float(len(tables)),
-                              "expected_K_n": EK,
-                              "sizes": sorted(tables, reverse=True),
-                              "total_seated": sum(tables),
-                              "method": "CRP (GvdV 2017 eq. 4.13)"})
+    res = RichResult(
+        payload={
+            "estimate": float(len(tables)),
+            "expected_K_n": EK,
+            "sizes": sorted(tables, reverse=True),
+            "total_seated": sum(tables),
+            "method": "CRP (GvdV 2017 eq. 4.13)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_3")
 
 

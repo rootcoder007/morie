@@ -1,7 +1,6 @@
 """Tests for analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10 import (
     analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10,
 )
@@ -20,6 +19,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10_basic(
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
     # Jackknife variance must be non-negative
     assert result["value"] >= 0.0
@@ -37,5 +37,6 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10_edge()
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
     assert result["value"] >= 0.0

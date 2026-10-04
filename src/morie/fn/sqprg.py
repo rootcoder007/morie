@@ -67,8 +67,13 @@ def sqp_optimize(
         return rows
 
     r = sequential_quadratic_programming(
-        f, [float(v) for v in np.asarray(x0, dtype=float)], grad=lambda x: [float(v) for v in grad_f(np.asarray(x))],
-        eq=cons, eq_jac=jac, tol=tol, max_iter=maxiter,
+        f,
+        [float(v) for v in np.asarray(x0, dtype=float)],
+        grad=lambda x: [float(v) for v in grad_f(np.asarray(x))],
+        eq=cons,
+        eq_jac=jac,
+        tol=tol,
+        max_iter=maxiter,
     )
     return DescriptiveResult(
         name="SQP",

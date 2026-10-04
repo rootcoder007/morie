@@ -1,7 +1,6 @@
 """Tests for gh_ap_c3.ghosal_bracket_num."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_c3 import ghosal_bracket_num
 
 

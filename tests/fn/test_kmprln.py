@@ -1,7 +1,6 @@
 """Tests for kmprln.kamath_pre_ln_transformer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmprln import kamath_pre_ln_transformer
 
 

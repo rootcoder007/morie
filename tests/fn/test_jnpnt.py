@@ -1,8 +1,8 @@
 """Tests for morie.fn.jnpnt -- Joinpoint survival regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.jnpnt import jnpnt
 
 

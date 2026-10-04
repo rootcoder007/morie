@@ -4,9 +4,16 @@ import pytest
 
 from morie.fn.hmoptn import tpe_suggest
 
-
-TRIALS = [([0.1], 1.0), ([0.9], 5.0), ([0.2], 1.2), ([0.8], 4.0),
-          ([0.15], 0.9), ([0.6], 3.1), ([0.45], 2.0), ([0.3], 1.4)]
+TRIALS = [
+    ([0.1], 1.0),
+    ([0.9], 5.0),
+    ([0.2], 1.2),
+    ([0.8], 4.0),
+    ([0.15], 0.9),
+    ([0.6], 3.1),
+    ([0.45], 2.0),
+    ([0.3], 1.4),
+]
 
 
 def test_hmoptn_basic():
@@ -40,7 +47,7 @@ import morie.fn.hmoptn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

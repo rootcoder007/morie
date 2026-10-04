@@ -1,7 +1,6 @@
 """Tests for tmlbas.tmle_baseline_adj."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlbas import tmle_baseline_adj
 
 

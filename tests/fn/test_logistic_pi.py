@@ -1,7 +1,5 @@
 """Tests for logistic_pi.logistic_pi."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.logistic_pi import (
     logistic_pi,
 )

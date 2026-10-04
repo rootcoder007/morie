@@ -1,9 +1,9 @@
 """Tests for copcla."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.copcla import clayton_copula
+
 
 def test_copcla_basic():
     out = clayton_copula(0.5, 0.5, 2.0)

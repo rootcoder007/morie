@@ -3,10 +3,9 @@
 
 import math
 
-from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['ctrlmed', 'gibbons_ctrl_median']
+__all__ = ["ctrlmed", "gibbons_ctrl_median"]
 
 
 def ctrlmed(x, y, alternative="two-sided"):
@@ -54,10 +53,7 @@ def ctrlmed(x, y, alternative="two-sided"):
     my = ys[r]
     v = sum(1 for t in xs if t <= my)
     den = math.comb(m + 2 * r + 1, m)
-    pmf = [
-        math.comb(m + r - j, m - j) * math.comb(j + r, j) / den
-        for j in range(m + 1)
-    ]
+    pmf = [math.comb(m + r - j, m - j) * math.comb(j + r, j) / den for j in range(m + 1)]
     lower = sum(pmf[: v + 1])
     upper = sum(pmf[v:])
     if alternative == "greater":

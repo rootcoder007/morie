@@ -24,6 +24,6 @@ def test_cluster_total_si_scales_linearly_with_the_population_count():
 
 def test_cluster_total_si_rejects_bad_input():
     with pytest.raises(ValueError):
-        cluster_total_si([1.0, 2.0], 10.0, 5)     # n /= sample size
+        cluster_total_si([1.0, 2.0], 10.0, 5)  # n /= sample size
     with pytest.raises(ValueError):
-        cluster_total_si([1.0, 2.0], 0.0, 2)      # empty population
+        cluster_total_si([1.0, 2.0], 0.0, 2)  # empty population

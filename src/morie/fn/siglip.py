@@ -50,15 +50,16 @@ def siglip_pairwise(image_emb, text_emb, t_prime=1.0, bias=0.0):
     B = C.mat(text_emb)
     n = len(A)
     d = len(A[0])
+
     def unit(M):
         out = []
         for row in M:
             nm = math.sqrt(sum(v * v for v in row))
             out.append([v / nm if nm > 0 else 0.0 for v in row])
         return out
+
     A, B = unit(A), unit(B)
-    logits = [[t_prime * sum(A[i][k] * B[j][k] for k in range(d)) + bias
-               for j in range(n)] for i in range(n)]
+    logits = [[t_prime * sum(A[i][k] * B[j][k] for k in range(d)) + bias for j in range(n)] for i in range(n)]
     loss = 0.0
     hit = 0
     for i in range(n):
@@ -67,9 +68,15 @@ def siglip_pairwise(image_emb, text_emb, t_prime=1.0, bias=0.0):
             loss -= math.log(S.expit(z * logits[i][j]))
         if max(range(n), key=lambda j: logits[i][j]) == i:
             hit += 1
-    return RichResult(payload={
-        "estimate": loss / n, "logits": logits, "acc": hit / n, "n": n,
-        "method": "SigLIP pairwise sigmoid loss"})
+    return RichResult(
+        payload={
+            "estimate": loss / n,
+            "logits": logits,
+            "acc": hit / n,
+            "n": n,
+            "method": "SigLIP pairwise sigmoid loss",
+        }
+    )
 
 
 siglippairwise = siglip_pairwise

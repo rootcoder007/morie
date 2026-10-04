@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """GPT-2: scaled-up decoder-only LM."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .hmdctr import geron_decoder_only
 
@@ -111,7 +110,13 @@ def geron_gpt2(X, n_layers=None, n_heads=None, size="small", **config):
     return RichResult(
         title=f"GPT-2 ({size})",
         summary_lines=[("Parameters", total), ("Layers", cfg["n_layers"]), ("d_model", cfg["d_model"])],
-        tables=[{"title": "Released sizes", "headers": ["variant", "params"], "rows": [[k, v] for k, v in all_sizes.items()]}],
+        tables=[
+            {
+                "title": "Released sizes",
+                "headers": ["variant", "params"],
+                "rows": [[k, v] for k, v in all_sizes.items()],
+            }
+        ],
         interpretation="Depth is linear in the parameter count, width quadratic; the embedding table is a fixed 50257-row cost.",
         payload={
             "total_params": total,

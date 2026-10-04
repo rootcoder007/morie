@@ -77,11 +77,9 @@ and the Pólya tree are instances.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["level_parameters", "continuity_regime", "finite_tree",
-           "set_probability", "partition_index", "tree_density"]
+__all__ = ["level_parameters", "continuity_regime", "finite_tree", "set_probability", "partition_index", "tree_density"]
 
 _EPS = 1e-12
 _RULES = ("m_squared", "constant", "linear")
@@ -105,26 +103,21 @@ def level_parameters(level, c=1.0, rule="m_squared"):
     elif rule == "linear":
         a = float(c) * m
     else:
-        raise ValueError("poltrx: rule must be one of %s, got %r"
-                         % (", ".join(_RULES), rule))
+        raise ValueError("poltrx: rule must be one of %s, got %r" % (", ".join(_RULES), rule))
     return {"alpha": a, "level": m, "rule": rule}
 
 
 def continuity_regime(rule):
     r"""What the parameter rule implies about the draws."""
     if rule not in _RULES:
-        raise ValueError("poltrx: rule must be one of %s, got %r"
-                         % (", ".join(_RULES), rule))
+        raise ValueError("poltrx: rule must be one of %s, got %r" % (", ".join(_RULES), rule))
     table = {
-        "m_squared": ("absolutely continuous",
-                      "branch probabilities concentrate near 1/2 "
-                      "fast enough that the limit has a density"),
-        "constant": ("discrete, DP-like",
-                     "the DP is the special case; draws are "
-                     "atomic"),
-        "linear": ("borderline",
-                   "between the two; growth is not fast enough to "
-                   "guarantee a density"),
+        "m_squared": (
+            "absolutely continuous",
+            "branch probabilities concentrate near 1/2 fast enough that the limit has a density",
+        ),
+        "constant": ("discrete, DP-like", "the DP is the special case; draws are atomic"),
+        "linear": ("borderline", "between the two; growth is not fast enough to guarantee a density"),
     }
     kind, why = table[rule]
     return {"rule": rule, "draws": kind, "reason": why}
@@ -139,8 +132,7 @@ def partition_index(x, level, lo=0.0, hi=1.0):
     a, b = float(lo), float(hi)
     v = float(x)
     if not a <= v <= b:
-        raise ValueError("poltrx: x = %r lies outside the "
-                         "partitioned interval [%r, %r]" % (x, lo, hi))
+        raise ValueError("poltrx: x = %r lies outside the partitioned interval [%r, %r]" % (x, lo, hi))
     bits = []
     for _ in range(m):
         mid = 0.5 * (a + b)
@@ -167,8 +159,8 @@ def finite_tree(levels, c=1.0, rule="m_squared", rng=None, seed=0):
     for m in range(1, M + 1):
         a = level_parameters(m, c, rule)["alpha"]
         for idx in range(2 ** (m - 1)):
-            eps = tuple(int(b) for b in
-                        bin(idx)[2:].zfill(m - 1)) if m > 1 else ()
+            eps = tuple(int(b) for b in bin(idx)[2:].zfill(m - 1)) if m > 1 else ()
+
             # Beta(a, a) by two gamma draws
             def gamma(shape):
                 if shape < 1.0:
@@ -177,26 +169,26 @@ def finite_tree(levels, c=1.0, rule="m_squared", rng=None, seed=0):
                 d = shape - 1.0 / 3.0
                 cc = 1.0 / math.sqrt(9.0 * d)
                 while True:
-                    u1 = min(max(float(r.uniform()), 1e-12),
-                             1 - 1e-12)
-                    u2 = min(max(float(r.uniform()), 1e-12),
-                             1 - 1e-12)
-                    z = math.sqrt(-2.0 * math.log(u1)) * math.cos(
-                        2.0 * math.pi * u2)
+                    u1 = min(max(float(r.uniform()), 1e-12), 1 - 1e-12)
+                    u2 = min(max(float(r.uniform()), 1e-12), 1 - 1e-12)
+                    z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2)
                     v = (1.0 + cc * z) ** 3
                     if v <= 0.0:
                         continue
                     u = max(float(r.uniform()), 1e-15)
-                    if math.log(u) < (0.5 * z * z + d - d * v
-                                      + d * math.log(v)):
+                    if math.log(u) < (0.5 * z * z + d - d * v + d * math.log(v)):
                         return d * v
+
             g0, g1 = gamma(a), gamma(a)
             Y[eps] = g0 / (g0 + g1) if (g0 + g1) > _EPS else 0.5
-    return {"Y": Y, "levels": M, "rule": rule, "c": float(c),
-            "n_nodes": len(Y),
-            "note": "truncated at level %d; the partition depth is "
-                    "part of the model, not an approximation to hide"
-                    % M}
+    return {
+        "Y": Y,
+        "levels": M,
+        "rule": rule,
+        "c": float(c),
+        "n_nodes": len(Y),
+        "note": "truncated at level %d; the partition depth is part of the model, not an approximation to hide" % M,
+    }
 
 
 def set_probability(epsilon, tree):
@@ -204,21 +196,21 @@ def set_probability(epsilon, tree):
     :math:`B_\varepsilon`."""
     eps = tuple(int(b) for b in epsilon)
     if len(eps) > tree["levels"]:
-        raise ValueError("poltrx: the tree was truncated at level "
-                         "%d, so it says nothing about level %d"
-                         % (tree["levels"], len(eps)))
+        raise ValueError(
+            "poltrx: the tree was truncated at level %d, so it says nothing about level %d" % (tree["levels"], len(eps))
+        )
     p = 1.0
     for m in range(len(eps)):
         parent = eps[:m]
         y = tree["Y"][parent]
-        p *= (y if eps[m] == 0 else 1.0 - y)
+        p *= y if eps[m] == 0 else 1.0 - y
     return {"probability": p, "epsilon": eps, "level": len(eps)}
 
 
 def tree_density(tree, level=None, lo=0.0, hi=1.0):
     r"""The piecewise-constant density the truncated tree implies."""
     M = int(tree["levels"]) if level is None else int(level)
-    n = 2 ** M
+    n = 2**M
     width = (float(hi) - float(lo)) / n
     probs, dens, edges = [], [], []
     for idx in range(n):
@@ -226,31 +218,36 @@ def tree_density(tree, level=None, lo=0.0, hi=1.0):
         p = set_probability(eps, tree)["probability"]
         probs.append(p)
         dens.append(p / width)
-        edges.append((float(lo) + idx * width,
-                      float(lo) + (idx + 1) * width))
-    return RichResult(payload={
-        "estimate": dens, "density": dens, "probabilities": probs,
-        "edges": edges, "level": M, "total": sum(probs),
-        "method": "Polya tree; Muller & Quintana (2004) Sec. 2.3, "
-                  "after Lavine (1992, 1994)",
-        "note": "the probabilities at a level sum to 1 by "
-                "construction, whatever the branch draws were",
-    })
+        edges.append((float(lo) + idx * width, float(lo) + (idx + 1) * width))
+    return RichResult(
+        payload={
+            "estimate": dens,
+            "density": dens,
+            "probabilities": probs,
+            "edges": edges,
+            "level": M,
+            "total": sum(probs),
+            "method": "Polya tree; Muller & Quintana (2004) Sec. 2.3, after Lavine (1992, 1994)",
+            "note": "the probabilities at a level sum to 1 by construction, whatever the branch draws were",
+        }
+    )
 
 
 def cheatsheet():
-    return ("poltrx: the DP is DISCRETE with probability one, which "
-            "is fine for clustering and wrong for a prior on a "
-            "DENSITY. A Polya tree fixes it directly and CONTAINS the "
-            "DP as a special case: nested binary partitions, with "
-            "independent Y_eps ~ Beta(alpha_eps0, alpha_eps1) at each "
-            "node and a set's probability the accumulated product "
-            "down the tree. The parameter rule is the whole decision "
-            "-- alpha = c m^2 concentrates the branches near 1/2 fast "
-            "enough to give an absolutely continuous draw, while "
-            "constant alpha gives DP-like atoms. Equal alphas centre "
-            "the tree on the partitioning measure. The PARTITION is "
-            "part of the prior, so the depth is stated, not hidden.")
+    return (
+        "poltrx: the DP is DISCRETE with probability one, which "
+        "is fine for clustering and wrong for a prior on a "
+        "DENSITY. A Polya tree fixes it directly and CONTAINS the "
+        "DP as a special case: nested binary partitions, with "
+        "independent Y_eps ~ Beta(alpha_eps0, alpha_eps1) at each "
+        "node and a set's probability the accumulated product "
+        "down the tree. The parameter rule is the whole decision "
+        "-- alpha = c m^2 concentrates the branches near 1/2 fast "
+        "enough to give an absolutely continuous draw, while "
+        "constant alpha gives DP-like atoms. Equal alphas centre "
+        "the tree on the partitioning measure. The PARTITION is "
+        "part of the prior, so the depth is stated, not hidden."
+    )
 
 
 # compact alias per ledger/NAMING.md

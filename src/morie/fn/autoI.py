@@ -74,8 +74,7 @@ def autoint(X, y=None, K=1, Wq=None, Wk=None, Wv=None, Wres=None, v=None):
     def proj(W, hh):
         if W is None:
             return None
-        if isinstance(W, list) and W and isinstance(W[0], list) and \
-                isinstance(W[0][0], (list, tuple)):
+        if isinstance(W, list) and W and isinstance(W[0], list) and isinstance(W[0][0], (list, tuple)):
             return k.mat(W[hh % len(W)])
         return k.mat(W)
 

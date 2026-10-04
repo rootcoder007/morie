@@ -108,9 +108,11 @@ def ardl_bounds_test(y, X, p=1, q=1, case=3):
     if p < 1 or q < 1:
         raise ValueError("p and q must be at least 1")
     if case not in (3, 5):
-        raise ValueError("only cases 3 and 5 are fitted here; cases 2 and 4 "
-                         "restrict the deterministic term inside the error "
-                         "correction term and need a different estimator")
+        raise ValueError(
+            "only cases 3 and 5 are fitted here; cases 2 and 4 "
+            "restrict the deterministic term inside the error "
+            "correction term and need a different estimator"
+        )
 
     dy = [yv[t] - yv[t - 1] for t in range(1, n)]
     dx = [[xm[t][j] - xm[t - 1][j] for j in range(k)] for t in range(1, n)]
@@ -127,21 +129,20 @@ def ardl_bounds_test(y, X, p=1, q=1, case=3):
         row = [1.0]
         if case == 5:
             row.append(float(t + 1))
-        row.append(yv[t - 1])                      # pi_yy
+        row.append(yv[t - 1])  # pi_yy
         for j in range(k):
-            row.append(xm[t - 1][j])               # pi_yx_j
+            row.append(xm[t - 1][j])  # pi_yx_j
         for i in range(1, p):
-            row.append(dy[t - i - 1])              # psi_i
+            row.append(dy[t - i - 1])  # psi_i
         for j in range(k):
             for i in range(0, q):
-                row.append(dx[t - i - 1][j])       # beta_ji
+                row.append(dx[t - i - 1][j])  # beta_ji
         design.append(row)
 
     ndet = 2 if case == 5 else 1
     fit = _ols_coef_se(design, resp)
     if fit is None:
-        raise ValueError("the conditional ECM design is rank deficient; "
-                         "reduce p or q")
+        raise ValueError("the conditional ECM design is rank deficient; reduce p or q")
     beta, se = fit
     m = len(design[0])
     nu = len(rows)
@@ -188,8 +189,7 @@ def ardl_bounds_test(y, X, p=1, q=1, case=3):
             "case": case,
             "p": p,
             "q": q,
-            "method": "ARDL bounds test for a level relationship "
-                      "(Pesaran, Shin & Smith 2001, eq. 16)",
+            "method": "ARDL bounds test for a level relationship (Pesaran, Shin & Smith 2001, eq. 16)",
         }
     )
 

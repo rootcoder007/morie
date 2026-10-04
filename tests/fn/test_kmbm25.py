@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), chapter 7, the BM25 relevance score.
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.kmbm25 import kamath_bm25_score
@@ -22,8 +20,7 @@ def test_bm25_matches_the_saturating_term_weight():
     for t in q:
         f = doc.count(t)
         if f:
-            total += idf[t] * f * (k1 + 1.0) / (
-                f + k1 * (1.0 - b + b * len(doc) / avgdl))
+            total += idf[t] * f * (k1 + 1.0) / (f + k1 * (1.0 - b + b * len(doc) / avgdl))
     assert res["estimate"] == pytest.approx(total, rel=1e-12)
     assert res["doc_length"] == len(doc)
 

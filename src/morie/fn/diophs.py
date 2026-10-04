@@ -5,7 +5,6 @@ Classical number theory (the extended Euclidean algorithm).  Triage confirmed th
 standard definition is implemented and no citation is manufactured.
 """
 
-
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["diophantine"]
@@ -51,18 +50,28 @@ def diophantine(a, b, c):
         x = -x
     if bi < 0:
         y = -y
-    solvable = (ci % g == 0)
+    solvable = ci % g == 0
     if solvable:
         m = ci // g
         x0, y0 = x * m, y * m
         xs, ys = bi // g, -(ai // g)
     else:
         x0 = y0 = xs = ys = None
-    return with_describe_pointer(RichResult(payload={
-        "estimate": 1.0 if solvable else 0.0, "solvable": solvable,
-        "x": x0, "y": y0, "gcd": g, "x_step": xs, "y_step": ys,
-        "method": "linear Diophantine equation (extended Euclid)",
-    }), "diophs")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": 1.0 if solvable else 0.0,
+                "solvable": solvable,
+                "x": x0,
+                "y": y0,
+                "gcd": g,
+                "x_step": xs,
+                "y_step": ys,
+                "method": "linear Diophantine equation (extended Euclid)",
+            }
+        ),
+        "diophs",
+    )
 
 
 def cheatsheet():

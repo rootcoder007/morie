@@ -1,7 +1,6 @@
 """Tests for morie.fn.bfsc — Bayesian factor scores."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bfsc import bayesian_factor_scores
 
 

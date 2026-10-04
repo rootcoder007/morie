@@ -5,9 +5,6 @@ Implements sec. 12.4.1 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,10 +22,14 @@ def ghosal_wn_full_bvm(y=(0.5, -0.2, 0.1), n=400, prior_var=1e6):
     vars_ = [1.0 / (1.0 / prior_var + n) for _ in ys]
     gap = max(abs(m - v) for m, v in zip(means, ys))
     var_gap = max(abs(v - 1.0 / n) for v in vars_)
-    res = RichResult(payload={"estimate": gap,
-                              "mean_matches_Y": gap < 1e-6,
-                              "var_matches_In": var_gap < 1e-8,
-                              "method": "white-noise full BvM (GvdV 2017 sec. 12.4.1)"})
+    res = RichResult(
+        payload={
+            "estimate": gap,
+            "mean_matches_Y": gap < 1e-6,
+            "var_matches_In": var_gap < 1e-8,
+            "method": "white-noise full BvM (GvdV 2017 sec. 12.4.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c12_9")
 
 

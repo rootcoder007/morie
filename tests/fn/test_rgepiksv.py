@@ -6,11 +6,9 @@ import pytest
 
 from morie.fn.bsaclass import rangayyan_epilepsy_ksvd
 
-
 N = 8
 BASIS = [[1.0 if i == j else 0.0 for i in range(N)] for j in range(N)]
-SIG = [[5, 1, 0, 0, 0, 0, 3, 0], [4, 0, 2, 0, 0, 0, 0, 1],
-       [0, 0, 0, 6, 0, 2, 0, 0], [0, 1, 0, 5, 3, 0, 0, 0]]
+SIG = [[5, 1, 0, 0, 0, 0, 3, 0], [4, 0, 2, 0, 0, 0, 0, 1], [0, 0, 0, 6, 0, 2, 0, 0], [0, 1, 0, 5, 3, 0, 0, 0]]
 LAB = [0, 0, 1, 1]
 
 

@@ -1,7 +1,6 @@
 """Tests for dwtfn.py - Discrete Wavelet Transform."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dwtfn import dwt_decompose, dwtfn
 
 

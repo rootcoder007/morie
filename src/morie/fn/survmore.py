@@ -18,13 +18,26 @@ from . import _sci_core as _sc
 from ._richresult import RichResult
 
 __all__ = [
-    "rmst", "rmstdiff", "martingale", "devresid", "coxsnell",
-    "schoenfeld", "hazratio", "cif", "finegray", "ltkm", "landmark",
-    "turnbull", "parasurv", "aftfit", "paracompare",
+    "rmst",
+    "rmstdiff",
+    "martingale",
+    "devresid",
+    "coxsnell",
+    "schoenfeld",
+    "hazratio",
+    "cif",
+    "finegray",
+    "ltkm",
+    "landmark",
+    "turnbull",
+    "parasurv",
+    "aftfit",
+    "paracompare",
 ]
 
 
 # ------------------------------------------------------------------ utils
+
 
 def _flat(v):
     if hasattr(v, "tolist"):
@@ -91,7 +104,7 @@ def _km_curve(time, event):
     for u in ut:
         n_i = sum(1 for x in t if x >= u)
         d_i = sum(1 for i in range(len(t)) if t[i] == u and e[i] == 1)
-        surv *= (1.0 - d_i / n_i)
+        surv *= 1.0 - d_i / n_i
         if n_i > d_i:
             v += d_i / (n_i * (n_i - d_i))
         S.append(surv)
@@ -113,8 +126,7 @@ def _breslow_baseline(time, event, X, beta):
         raise ValueError("X must have one row per observation")
     if len(beta) != p:
         raise ValueError("beta must have one entry per column of X")
-    w = [exp(fsum(Xm[i][k] * beta[k] for k in range(p)))
-         for i in range(len(t))]
+    w = [exp(fsum(Xm[i][k] * beta[k] for k in range(p))) for i in range(len(t))]
     ut = sorted(set(t[i] for i in range(len(t)) if e[i] == 1))
     H, cum = [], 0.0
     for u in ut:
@@ -151,6 +163,7 @@ def _h0_at(ut, H, t):
 
 
 # -------------------------------------------------- restricted mean, 1 & 2
+
 
 def rmst(time, event, tau=None, alpha=0.05):
     """Restricted mean survival time.
@@ -197,7 +210,7 @@ def rmst(time, event, tau=None, alpha=0.05):
         if nr[i] <= ne[i]:
             continue
         tail, pt, ps = 0.0, u, S[i]
-        for v, s in zip(ut[i + 1:], S[i + 1:]):
+        for v, s in zip(ut[i + 1 :], S[i + 1 :]):
             if v >= horizon:
                 break
             tail += ps * (v - pt)
@@ -206,15 +219,23 @@ def rmst(time, event, tau=None, alpha=0.05):
         var += tail * tail * ne[i] / (nr[i] * (nr[i] - ne[i]))
     se = sqrt(var) if var > 0 else 0.0
     z = _norm_q(1.0 - alpha / 2.0)
-    return RichResult(payload={
-        "rmst": area, "se": se, "variance": var, "tau": horizon,
-        "lower": area - z * se, "upper": area + z * se,
-        "max_time": tmax, "max_event_time": ut[-1] if ut else 0.0,
-        "tau_beyond_data": horizon > tmax,
-        "tau_beyond_last_event": bool(ut) and horizon > ut[-1],
-        "n": len(t), "n_events": sum(e),
-        "method": "Klein and Moeschberger (2003) eq. (4.5.4); area under "
-                  "the Kaplan-Meier curve"})
+    return RichResult(
+        payload={
+            "rmst": area,
+            "se": se,
+            "variance": var,
+            "tau": horizon,
+            "lower": area - z * se,
+            "upper": area + z * se,
+            "max_time": tmax,
+            "max_event_time": ut[-1] if ut else 0.0,
+            "tau_beyond_data": horizon > tmax,
+            "tau_beyond_last_event": bool(ut) and horizon > ut[-1],
+            "n": len(t),
+            "n_events": sum(e),
+            "method": "Klein and Moeschberger (2003) eq. (4.5.4); area under the Kaplan-Meier curve",
+        }
+    )
 
 
 def rmstdiff(time, event, group, tau=None, alpha=0.05):
@@ -236,8 +257,7 @@ def rmstdiff(time, event, group, tau=None, alpha=0.05):
         raise ValueError("group must have one entry per observation")
     levels = sorted(set(g), key=str)
     if len(levels) != 2:
-        raise ValueError("rmstdiff compares exactly two groups, got %d"
-                         % len(levels))
+        raise ValueError("rmstdiff compares exactly two groups, got %d" % len(levels))
     parts = []
     for lv in levels:
         idx = [i for i in range(len(t)) if g[i] == lv]
@@ -253,17 +273,26 @@ def rmstdiff(time, event, group, tau=None, alpha=0.05):
     se = sqrt(a["variance"] + b["variance"])
     z = _norm_q(1.0 - alpha / 2.0)
     stat = diff / se if se > 0 else 0.0
-    return RichResult(payload={
-        "difference": diff, "se": se, "z": stat,
-        "p_value": 2.0 * _norm_sf(abs(stat)),
-        "lower": diff - z * se, "upper": diff + z * se,
-        "tau": horizon, "tau_capped": capped, "levels": levels,
-        "rmst": [a["rmst"], b["rmst"]],
-        "ratio": (a["rmst"] / b["rmst"]) if b["rmst"] else None,
-        "method": "difference of restricted means over a COMMON horizon"})
+    return RichResult(
+        payload={
+            "difference": diff,
+            "se": se,
+            "z": stat,
+            "p_value": 2.0 * _norm_sf(abs(stat)),
+            "lower": diff - z * se,
+            "upper": diff + z * se,
+            "tau": horizon,
+            "tau_capped": capped,
+            "levels": levels,
+            "rmst": [a["rmst"], b["rmst"]],
+            "ratio": (a["rmst"] / b["rmst"]) if b["rmst"] else None,
+            "method": "difference of restricted means over a COMMON horizon",
+        }
+    )
 
 
 # ------------------------------------------------------------- residuals
+
 
 def martingale(time, event, X, beta):
     """Martingale residuals from a fitted Cox model.
@@ -284,13 +313,20 @@ def martingale(time, event, X, beta):
     ut, H, w = _breslow_baseline(t, e, X, beta)
     h = _h0_at(ut, H, t)
     m = [e[i] - h[i] * w[i] for i in range(len(t))]
-    return RichResult(payload={
-        "residuals": m, "expected": [h[i] * w[i] for i in range(len(t))],
-        "sum": fsum(m), "sums_to_zero": abs(fsum(m)) < 1e-6 * len(t),
-        "max": max(m), "min": min(m), "upper_bound": 1.0,
-        "n": len(t), "skewed": True,
-        "method": "M_i = delta_i - H0(t_i) exp(x_i' beta), Breslow "
-                  "baseline"})
+    return RichResult(
+        payload={
+            "residuals": m,
+            "expected": [h[i] * w[i] for i in range(len(t))],
+            "sum": fsum(m),
+            "sums_to_zero": abs(fsum(m)) < 1e-6 * len(t),
+            "max": max(m),
+            "min": min(m),
+            "upper_bound": 1.0,
+            "n": len(t),
+            "skewed": True,
+            "method": "M_i = delta_i - H0(t_i) exp(x_i' beta), Breslow baseline",
+        }
+    )
 
 
 def devresid(time, event, X, beta):
@@ -316,18 +352,22 @@ def devresid(time, event, X, beta):
         if e[i]:
             arg = e[i] - m[i]
             if arg <= 0:
-                raise ValueError("delta - M is not positive at i = %d; the "
-                                 "deviance residual is undefined there" % i)
+                raise ValueError("delta - M is not positive at i = %d; the deviance residual is undefined there" % i)
             inner = m[i] + e[i] * log(arg)
         val = -2.0 * inner
         s = 1.0 if m[i] >= 0 else -1.0
         d.append(s * sqrt(val if val > 0 else 0.0))
-    return RichResult(payload={
-        "residuals": d, "martingale": m,
-        "sum_of_squares": fsum(v * v for v in d),
-        "max_abs": max(abs(v) for v in d), "n": len(t),
-        "is_model_deviance": False,
-        "method": "d_i = sign(M) sqrt(-2[M + delta log(delta - M)])"})
+    return RichResult(
+        payload={
+            "residuals": d,
+            "martingale": m,
+            "sum_of_squares": fsum(v * v for v in d),
+            "max_abs": max(abs(v) for v in d),
+            "n": len(t),
+            "is_model_deviance": False,
+            "method": "d_i = sign(M) sqrt(-2[M + delta log(delta - M)])",
+        }
+    )
 
 
 def coxsnell(time, event, X, beta):
@@ -356,19 +396,23 @@ def coxsnell(time, event, X, beta):
         if e[i] != 1:
             continue
         n_i = sum(1 for j in range(len(r)) if r[j] >= r[i])
-        d_i = sum(1 for j in range(len(r))
-                  if r[j] == r[i] and e[j] == 1)
+        d_i = sum(1 for j in range(len(r)) if r[j] == r[i] and e[j] == 1)
         cum += d_i / n_i
         rt.append(r[i])
         rH.append(cum)
     dev = max((abs(a - b) for a, b in zip(rt, rH)), default=0.0)
-    return RichResult(payload={
-        "residuals": r, "diagnostic_x": rt, "diagnostic_h": rH,
-        "max_deviation": dev, "n": len(t),
-        "reference": "unit exponential; the Nelson-Aalen hazard of the "
-                     "residuals should follow the 45-degree line",
-        "in_sample_check": True,
-        "method": "r_i = H0(t_i) exp(x_i' beta) = delta_i - M_i"})
+    return RichResult(
+        payload={
+            "residuals": r,
+            "diagnostic_x": rt,
+            "diagnostic_h": rH,
+            "max_deviation": dev,
+            "n": len(t),
+            "reference": "unit exponential; the Nelson-Aalen hazard of the residuals should follow the 45-degree line",
+            "in_sample_check": True,
+            "method": "r_i = H0(t_i) exp(x_i' beta) = delta_i - M_i",
+        }
+    )
 
 
 def schoenfeld(time, event, X, beta, vcov=None, scaled=True):
@@ -397,8 +441,7 @@ def schoenfeld(time, event, X, beta, vcov=None, scaled=True):
     b = _flat(beta)
     if len(b) != p:
         raise ValueError("beta must have one entry per column of X")
-    w = [exp(fsum(Xm[i][k] * b[k] for k in range(p)))
-         for i in range(len(t))]
+    w = [exp(fsum(Xm[i][k] * b[k] for k in range(p))) for i in range(len(t))]
     ut = sorted(set(t[i] for i in range(len(t)) if e[i] == 1))
     times, res, dropped = [], [], 0
     for u in ut:
@@ -410,21 +453,24 @@ def schoenfeld(time, event, X, beta, vcov=None, scaled=True):
         i0 = ev[0]
         times.append(u)
         res.append([Xm[i0][k] - xbar[k] for k in range(p)])
-    out = {"time": times, "residuals": res, "n_events": len(res),
-           "ties_dropped": dropped, "p": p,
-           "method": "s_i = x_i - weighted risk-set mean"}
+    out = {
+        "time": times,
+        "residuals": res,
+        "n_events": len(res),
+        "ties_dropped": dropped,
+        "p": p,
+        "method": "s_i = x_i - weighted risk-set mean",
+    }
     if scaled:
         if vcov is None:
-            raise ValueError("scaling needs the covariance of beta; pass "
-                             "vcov= from the Cox fit, or scaled=False")
+            raise ValueError("scaling needs the covariance of beta; pass vcov= from the Cox fit, or scaled=False")
         V, q = _mat(vcov)
         if q != p or len(V) != p:
             raise ValueError("vcov must be p x p")
         d = float(len(res))
         sc = []
         for r in res:
-            sc.append([b[k] + d * fsum(V[k][j] * r[j] for j in range(p))
-                       for k in range(p)])
+            sc.append([b[k] + d * fsum(V[k][j] * r[j] for j in range(p)) for k in range(p)])
         out["scaled"] = sc
         # correlation of each scaled residual with time, and a z test
         stats = []
@@ -441,16 +487,12 @@ def schoenfeld(time, event, X, beta, vcov=None, scaled=True):
             if st <= 0 or sy <= 0:
                 stats.append({"rho": 0.0, "z": 0.0, "p_value": 1.0})
                 continue
-            rho = fsum((a - mt) * (c - my)
-                       for a, c in zip(times, y)) / sqrt(st * sy)
+            rho = fsum((a - mt) * (c - my) for a, c in zip(times, y)) / sqrt(st * sy)
             z = rho * sqrt(n - 1)
-            stats.append({"rho": rho, "z": z,
-                          "p_value": 2.0 * _norm_sf(abs(z))})
+            stats.append({"rho": rho, "z": z, "p_value": 2.0 * _norm_sf(abs(z))})
         out["ph_test"] = stats
-        out["ph_violated"] = [s["p_value"] is not None and s["p_value"] < 0.05
-                              for s in stats]
-        out["method"] = ("Grambsch and Therneau (1994) scaled Schoenfeld "
-                         "residuals and the correlation-with-time PH test")
+        out["ph_violated"] = [s["p_value"] is not None and s["p_value"] < 0.05 for s in stats]
+        out["method"] = "Grambsch and Therneau (1994) scaled Schoenfeld residuals and the correlation-with-time PH test"
     return RichResult(payload=out)
 
 
@@ -480,17 +522,26 @@ def hazratio(beta, se, alpha=0.05, names=None):
     lo = [exp(v - z * u) for v, u in zip(b, s)]
     hi = [exp(v + z * u) for v, u in zip(b, s)]
     zs = [(v / u if u > 0 else 0.0) for v, u in zip(b, s)]
-    return RichResult(payload={
-        "hazard_ratio": hr, "lower": lo, "upper": hi, "coef": b, "se": s,
-        "z": zs, "p_value": [2.0 * _norm_sf(abs(v)) for v in zs],
-        "names": list(names) if names is not None else None,
-        "alpha": alpha, "interval_on_log_scale": True,
-        "assumes_proportional_hazards": True,
-        "method": "HR = exp(beta), interval exponentiated from the log "
-                  "scale"})
+    return RichResult(
+        payload={
+            "hazard_ratio": hr,
+            "lower": lo,
+            "upper": hi,
+            "coef": b,
+            "se": s,
+            "z": zs,
+            "p_value": [2.0 * _norm_sf(abs(v)) for v in zs],
+            "names": list(names) if names is not None else None,
+            "alpha": alpha,
+            "interval_on_log_scale": True,
+            "assumes_proportional_hazards": True,
+            "method": "HR = exp(beta), interval exponentiated from the log scale",
+        }
+    )
 
 
 # ---------------------------------------------------------- competing risks
+
 
 def cif(time, cause, code=1, alpha=0.05):
     """Cumulative incidence function under competing risks.
@@ -539,8 +590,8 @@ def cif(time, cause, code=1, alpha=0.05):
         cum += surv * d_k / n_i
         # Aalen's variance, the delta-method form
         if n_i > d_all:
-            v += (surv ** 2) * d_k * (n_i - d_k) / (n_i ** 3)
-        surv *= (1.0 - d_all / n_i)
+            v += (surv**2) * d_k * (n_i - d_k) / (n_i**3)
+        surv *= 1.0 - d_all / n_i
         times.append(u)
         F.append(cum)
         nr.append(n_i)
@@ -552,17 +603,24 @@ def cif(time, cause, code=1, alpha=0.05):
     naive = [1.0 - s for s in S_naive]
     z = _norm_q(1.0 - alpha / 2.0)
     se = [sqrt(x) if x > 0 else 0.0 for x in var]
-    return RichResult(payload={
-        "time": times, "cif": F, "se": se,
-        "lower": [max(0.0, a - z * b) for a, b in zip(F, se)],
-        "upper": [min(1.0, a + z * b) for a, b in zip(F, se)],
-        "n_risk": nr, "n_event": nk,
-        "naive_one_minus_km": naive,
-        "naive_overstates_by": (naive[-1] - F[-1]) if naive and F else 0.0,
-        "overall_survival_at_end": surv,
-        "cause": k, "n": len(t),
-        "method": "Aalen-Johansen cumulative incidence; the naive curve "
-                  "censors the competing events and overstates"})
+    return RichResult(
+        payload={
+            "time": times,
+            "cif": F,
+            "se": se,
+            "lower": [max(0.0, a - z * b) for a, b in zip(F, se)],
+            "upper": [min(1.0, a + z * b) for a, b in zip(F, se)],
+            "n_risk": nr,
+            "n_event": nk,
+            "naive_one_minus_km": naive,
+            "naive_overstates_by": (naive[-1] - F[-1]) if naive and F else 0.0,
+            "overall_survival_at_end": surv,
+            "cause": k,
+            "n": len(t),
+            "method": "Aalen-Johansen cumulative incidence; the naive curve "
+            "censors the competing events and overstates",
+        }
+    )
 
 
 def finegray(time, cause, X, code=1, max_iter=50, tol=1e-9):
@@ -630,8 +688,7 @@ def finegray(time, cause, X, code=1, max_iter=50, tol=1e-9):
         for u in ut:
             rs = riskset(u)
             ev = [i for i in range(n) if t[i] == u and c[i] == k]
-            wt = {i: w * exp(fsum(Xm[i][q] * beta[q] for q in range(p)))
-                  for i, w in rs}
+            wt = {i: w * exp(fsum(Xm[i][q] * beta[q] for q in range(p))) for i, w in rs}
             s0 = fsum(wt.values())
             if s0 <= 0:
                 continue
@@ -641,8 +698,7 @@ def finegray(time, cause, X, code=1, max_iter=50, tol=1e-9):
             for a in range(p):
                 for bq in range(p):
                     s2 = fsum(Xm[i][a] * Xm[i][bq] * wt[i] for i in wt)
-                    Hm[a][bq] += len(ev) * (s2 / s0
-                                            - s1[a] * s1[bq] / (s0 * s0))
+                    Hm[a][bq] += len(ev) * (s2 / s0 - s1[a] * s1[bq] / (s0 * s0))
         step = _solve(Hm, g)
         beta = [beta[q] + step[q] for q in range(p)]
         if max(abs(v) for v in step) < tol:
@@ -650,17 +706,23 @@ def finegray(time, cause, X, code=1, max_iter=50, tol=1e-9):
     V = _inv(Hm)
     se = [sqrt(V[q][q]) if V[q][q] > 0 else float("nan") for q in range(p)]
     z = [beta[q] / se[q] if se[q] > 0 else 0.0 for q in range(p)]
-    return RichResult(payload={
-        "coef": beta, "se": se, "z": z,
-        "p_value": [2.0 * _norm_sf(abs(v)) for v in z],
-        "subdistribution_hazard_ratio": [exp(v) for v in beta],
-        "vcov": V, "n": n, "n_events": sum(1 for v in c if v == k),
-        "n_competing": sum(1 for v in c if v != 0 and v != k),
-        "cause": k,
-        "covariate_independent_censoring_assumed": True,
-        "differs_from_cause_specific": True,
-        "method": "Fine and Gray (1999) subdistribution hazard, IPCW "
-                  "risk set"})
+    return RichResult(
+        payload={
+            "coef": beta,
+            "se": se,
+            "z": z,
+            "p_value": [2.0 * _norm_sf(abs(v)) for v in z],
+            "subdistribution_hazard_ratio": [exp(v) for v in beta],
+            "vcov": V,
+            "n": n,
+            "n_events": sum(1 for v in c if v == k),
+            "n_competing": sum(1 for v in c if v != 0 and v != k),
+            "cause": k,
+            "covariate_independent_censoring_assumed": True,
+            "differs_from_cause_specific": True,
+            "method": "Fine and Gray (1999) subdistribution hazard, IPCW risk set",
+        }
+    )
 
 
 def _solve(A, b):
@@ -684,12 +746,12 @@ def _solve(A, b):
 
 def _inv(A):
     n = len(A)
-    cols = [_solve(A, [1.0 if i == j else 0.0 for i in range(n)])
-            for j in range(n)]
+    cols = [_solve(A, [1.0 if i == j else 0.0 for i in range(n)]) for j in range(n)]
     return [[cols[j][i] for j in range(n)] for i in range(n)]
 
 
 # ------------------------------------------- truncation, landmark, interval
+
 
 def ltkm(entry, time, event, alpha=0.05):
     """Kaplan-Meier with left truncation (delayed entry).
@@ -713,8 +775,7 @@ def ltkm(entry, time, event, alpha=0.05):
     if len(en) != len(t):
         raise ValueError("entry and time must have the same length")
     if any(en[i] >= t[i] for i in range(len(t))):
-        raise ValueError("every entry time must be strictly before its "
-                         "follow-up time")
+        raise ValueError("every entry time must be strictly before its follow-up time")
     ut = sorted(set(t[i] for i in range(len(t)) if e[i] == 1))
     S, se, nr, ne = [], [], [], []
     surv, v, empty = 1.0, 0.0, []
@@ -728,7 +789,7 @@ def ltkm(entry, time, event, alpha=0.05):
             nr.append(0)
             ne.append(d_i)
             continue
-        surv *= (1.0 - d_i / n_i)
+        surv *= 1.0 - d_i / n_i
         if n_i > d_i:
             v += d_i / (n_i * (n_i - d_i))
         S.append(surv)
@@ -737,16 +798,23 @@ def ltkm(entry, time, event, alpha=0.05):
         ne.append(d_i)
     naive = _km_curve(t, e)[1]
     z = _norm_q(1.0 - alpha / 2.0)
-    return RichResult(payload={
-        "time": ut, "surv": S, "se": se, "n_risk": nr, "n_event": ne,
-        "lower": [max(0.0, a - z * b) for a, b in zip(S, se)],
-        "upper": [min(1.0, a + z * b) for a, b in zip(S, se)],
-        "ignoring_truncation": naive,
-        "max_difference": max((abs(a - b) for a, b in zip(S, naive)),
-                              default=0.0),
-        "empty_risk_sets": empty, "n": len(t), "n_events": sum(e),
-        "method": "Kaplan-Meier with the risk set restricted to "
-                  "entry < t <= time"})
+    return RichResult(
+        payload={
+            "time": ut,
+            "surv": S,
+            "se": se,
+            "n_risk": nr,
+            "n_event": ne,
+            "lower": [max(0.0, a - z * b) for a, b in zip(S, se)],
+            "upper": [min(1.0, a + z * b) for a, b in zip(S, se)],
+            "ignoring_truncation": naive,
+            "max_difference": max((abs(a - b) for a, b in zip(S, naive)), default=0.0),
+            "empty_risk_sets": empty,
+            "n": len(t),
+            "n_events": sum(e),
+            "method": "Kaplan-Meier with the risk set restricted to entry < t <= time",
+        }
+    )
 
 
 def landmark(time, event, landmark_time, X=None, group=None, alpha=0.05):
@@ -772,16 +840,20 @@ def landmark(time, event, landmark_time, X=None, group=None, alpha=0.05):
         raise ValueError("the landmark must be positive")
     keep = [i for i in range(len(t)) if t[i] > lm]
     if len(keep) < 2:
-        raise ValueError("the landmark leaves %d subjects; it is past the "
-                         "bulk of the follow-up" % len(keep))
+        raise ValueError("the landmark leaves %d subjects; it is past the bulk of the follow-up" % len(keep))
     tt = [t[i] - lm for i in keep]
     ee = [e[i] for i in keep]
-    out = {"landmark": lm, "n_original": len(t), "n_retained": len(keep),
-           "n_dropped": len(t) - len(keep), "kept_index": keep,
-           "time": tt, "event": ee,
-           "conditional_on_surviving_to_landmark": True,
-           "method": "landmark analysis; the clock is reset at the "
-                     "landmark and earlier subjects are dropped"}
+    out = {
+        "landmark": lm,
+        "n_original": len(t),
+        "n_retained": len(keep),
+        "n_dropped": len(t) - len(keep),
+        "kept_index": keep,
+        "time": tt,
+        "event": ee,
+        "conditional_on_surviving_to_landmark": True,
+        "method": "landmark analysis; the clock is reset at the landmark and earlier subjects are dropped",
+    }
     km = _km_curve(tt, ee)
     out["km_time"] = km[0]
     out["km_surv"] = km[1]
@@ -849,20 +921,16 @@ def turnbull(left, right, max_iter=1000, tol=1e-10):
             continue
         p_end = min(cand)
         # maximal: no other endpoint strictly inside (q, p_end)
-        if any(q < x < p_end for x in lefts) or \
-           any(q < x < p_end for x in rights):
+        if any(q < x < p_end for x in lefts) or any(q < x < p_end for x in rights):
             continue
         inner.append((q, p_end))
     inner = sorted(set(inner))
     if not inner:
-        raise ValueError("no Turnbull interval could be formed; every "
-                         "observation may be right-censored")
+        raise ValueError("no Turnbull interval could be formed; every observation may be right-censored")
     m = len(inner)
-    alpha = [[1.0 if (L[i] <= q and p <= R[i]) else 0.0
-              for (q, p) in inner] for i in range(n)]
+    alpha = [[1.0 if (L[i] <= q and p <= R[i]) else 0.0 for (q, p) in inner] for i in range(n)]
     if any(not any(row) for row in alpha):
-        raise ValueError("an observation is compatible with no Turnbull "
-                         "interval; check the endpoints")
+        raise ValueError("an observation is compatible with no Turnbull interval; check the endpoints")
     p_mass = [1.0 / m] * m
     it, change = 0, inf
     for it in range(1, int(max_iter) + 1):
@@ -883,18 +951,27 @@ def turnbull(left, right, max_iter=1000, tol=1e-10):
     for j in range(m):
         s -= p_mass[j]
         surv.append(max(0.0, s))
-    ll = fsum(log(fsum(alpha[i][j] * p_mass[j] for j in range(m)))
-              for i in range(n)
-              if fsum(alpha[i][j] * p_mass[j] for j in range(m)) > 0)
-    return RichResult(payload={
-        "intervals": inner, "mass": p_mass, "surv": surv,
-        "loglik": ll, "iterations": it, "change": change,
-        "converged": change < tol,
-        "ambiguous_intervals": [iv for iv, pm in zip(inner, p_mass)
-                                if pm > 1e-8],
-        "n": n, "n_intervals": m,
-        "npmle_not_unique_within_intervals": True,
-        "method": "Turnbull (1976) self-consistency / EM"})
+    ll = fsum(
+        log(fsum(alpha[i][j] * p_mass[j] for j in range(m)))
+        for i in range(n)
+        if fsum(alpha[i][j] * p_mass[j] for j in range(m)) > 0
+    )
+    return RichResult(
+        payload={
+            "intervals": inner,
+            "mass": p_mass,
+            "surv": surv,
+            "loglik": ll,
+            "iterations": it,
+            "change": change,
+            "converged": change < tol,
+            "ambiguous_intervals": [iv for iv, pm in zip(inner, p_mass) if pm > 1e-8],
+            "n": n,
+            "n_intervals": m,
+            "npmle_not_unique_within_intervals": True,
+            "method": "Turnbull (1976) self-consistency / EM",
+        }
+    )
 
 
 # --------------------------------------------------------- parametric fits
@@ -927,8 +1004,7 @@ def _logsf_logpdf(dist, y, mu, logsig):
         ez = exp(z)
         S = 1.0 / (1.0 + ez)
         return log(S), (z - 2.0 * log(1.0 + ez) - logsig)
-    raise ValueError("unknown distribution %r; known: %s"
-                     % (dist, ", ".join(_DISTS)))
+    raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
 
 
 def _fit_lls(dist, time, event, X=None):
@@ -946,7 +1022,7 @@ def _fit_lls(dist, time, event, X=None):
             raise ValueError("X must have one row per observation")
         Xm = [[1.0] + row for row in Xm]
         p += 1
-    fixed_scale = (dist == "exponential")
+    fixed_scale = dist == "exponential"
 
     def nll(theta):
         beta = theta[:p]
@@ -970,13 +1046,19 @@ def _fit_lls(dist, time, event, X=None):
     theta = list(res["x"]) if isinstance(res, dict) else list(res.x)
     ll = -nll(theta)
     k = len(theta)
-    return {"dist": dist, "coef": theta[:p],
-            "log_scale": (0.0 if fixed_scale else theta[p]),
-            "scale": (1.0 if fixed_scale else exp(theta[p])),
-            "loglik": ll, "n_par": k, "n": n, "n_events": sum(e),
-            "aic": 2.0 * k - 2.0 * ll,
-            "bic": k * log(n) - 2.0 * ll,
-            "fixed_scale": fixed_scale}
+    return {
+        "dist": dist,
+        "coef": theta[:p],
+        "log_scale": (0.0 if fixed_scale else theta[p]),
+        "scale": (1.0 if fixed_scale else exp(theta[p])),
+        "loglik": ll,
+        "n_par": k,
+        "n": n,
+        "n_events": sum(e),
+        "aic": 2.0 * k - 2.0 * ll,
+        "bic": k * log(n) - 2.0 * ll,
+        "fixed_scale": fixed_scale,
+    }
 
 
 def parasurv(time, event, dist="weibull"):
@@ -998,8 +1080,7 @@ def parasurv(time, event, dist="weibull"):
     hazard is really constant, and it is returned.
     """
     if dist not in _DISTS:
-        raise ValueError("unknown distribution %r; known: %s"
-                         % (dist, ", ".join(_DISTS)))
+        raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
     fit = _fit_lls(dist, time, event)
     out = dict(fit)
     out["intercept"] = fit["coef"][0]
@@ -1012,8 +1093,7 @@ def parasurv(time, event, dist="weibull"):
         out["lr_vs_exponential"] = lr
         out["lr_p_value"] = _chi2_sf(max(lr, 0.0), 1)
         out["constant_hazard_rejected"] = out["lr_p_value"] < 0.05
-    out["method"] = ("maximum likelihood for a log-location-scale family "
-                     "with right censoring")
+    out["method"] = "maximum likelihood for a log-location-scale family with right censoring"
     return RichResult(payload=out)
 
 
@@ -1039,8 +1119,7 @@ def aftfit(time, event, X, dist="weibull", alpha=0.05):
     hold for log-normal or log-logistic.
     """
     if dist not in _DISTS:
-        raise ValueError("unknown distribution %r; known: %s"
-                         % (dist, ", ".join(_DISTS)))
+        raise ValueError("unknown distribution %r; known: %s" % (dist, ", ".join(_DISTS)))
     fit = _fit_lls(dist, time, event, X)
     beta = fit["coef"]
     out = dict(fit)
@@ -1055,7 +1134,7 @@ def aftfit(time, event, X, dist="weibull", alpha=0.05):
         out["ph_equivalent"] = True
     else:
         out["ph_equivalent"] = False
-    out["method"] = ("accelerated failure time, log T = x'beta + sigma W")
+    out["method"] = "accelerated failure time, log T = x'beta + sigma W"
     return RichResult(payload=out)
 
 
@@ -1080,22 +1159,26 @@ def paracompare(time, event, X=None, dists=None):
     fits, errs = {}, {}
     for d in names:
         try:
-            fits[d] = (aftfit(time, event, X, dist=d) if X is not None
-                       else parasurv(time, event, dist=d))
-        except Exception as exc:                       # noqa: BLE001
+            fits[d] = aftfit(time, event, X, dist=d) if X is not None else parasurv(time, event, dist=d)
+        except Exception as exc:  # noqa: BLE001
             errs[d] = "%s: %s" % (type(exc).__name__, exc)
     if not fits:
         raise ValueError("no family could be fitted: %r" % errs)
-    rows = [{"dist": d, "loglik": f["loglik"], "aic": f["aic"],
-             "bic": f["bic"], "n_par": f["n_par"]}
-            for d, f in fits.items()]
+    rows = [
+        {"dist": d, "loglik": f["loglik"], "aic": f["aic"], "bic": f["bic"], "n_par": f["n_par"]}
+        for d, f in fits.items()
+    ]
     rows.sort(key=lambda r: r["aic"])
-    out = {"table": rows, "best_aic": rows[0]["dist"],
-           "best_bic": min(rows, key=lambda r: r["bic"])["dist"],
-           "fits": fits, "failed": errs,
-           "families_not_nested": True,
-           "aic_is_not_goodness_of_fit": True,
-           "method": "AIC / BIC comparison of parametric survival families"}
+    out = {
+        "table": rows,
+        "best_aic": rows[0]["dist"],
+        "best_bic": min(rows, key=lambda r: r["bic"])["dist"],
+        "fits": fits,
+        "failed": errs,
+        "families_not_nested": True,
+        "aic_is_not_goodness_of_fit": True,
+        "method": "AIC / BIC comparison of parametric survival families",
+    }
     if "weibull" in fits and "exponential" in fits:
         lr = 2.0 * (fits["weibull"]["loglik"] - fits["exponential"]["loglik"])
         out["lr_weibull_vs_exponential"] = lr

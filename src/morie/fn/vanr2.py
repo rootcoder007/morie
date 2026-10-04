@@ -71,14 +71,22 @@ def vanraden_method2(marker_matrix, weights=None, freq=None):
         w = [float(v) for v in weights]
     Z = [[M[i][j] - 2.0 * pj[j] for j in range(p)] for i in range(J)]
     den = sum(w[j] * var[j] for j in range(p))
-    G = [[sum(w[k] * Z[i][k] * Z[j][k] for k in range(p)) / den
-          for j in range(J)] for i in range(J)]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(G[i][i] for i in range(J)) / J),
-        "G": G, "freq": pj, "weights": w, "denominator": float(den),
-        "n_lines": J, "n_markers": p,
-        "method": "VanRaden (2008) method 2 weighted relationship matrix",
-    }), "vanr2")
+    G = [[sum(w[k] * Z[i][k] * Z[j][k] for k in range(p)) / den for j in range(J)] for i in range(J)]
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(G[i][i] for i in range(J)) / J),
+                "G": G,
+                "freq": pj,
+                "weights": w,
+                "denominator": float(den),
+                "n_lines": J,
+                "n_markers": p,
+                "method": "VanRaden (2008) method 2 weighted relationship matrix",
+            }
+        ),
+        "vanr2",
+    )
 
 
 def cheatsheet():

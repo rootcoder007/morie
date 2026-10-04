@@ -112,30 +112,32 @@ def bound_nonlinear(data, g, theta_grid, alpha=0.05, B=500, seed=0):
         # only the (nearly) binding moments can contribute under the
         # null; slack ones are pushed to -inf by the sqrt(n) scaling
         binding = t > -np.sqrt(2 * np.log(np.log(max(n, 3))))
-        bq = np.sum(np.maximum(boot_t[:, binding], 0.0) ** 2, axis=1) \
-            if binding.any() else np.zeros(int(B))
+        bq = np.sum(np.maximum(boot_t[:, binding], 0.0) ** 2, axis=1) if binding.any() else np.zeros(int(B))
         crit[i] = float(np.quantile(bq, 1 - a))
-    inset = Q <= crit
-    argmin = np.flatnonzero(Q <= Q.min() + 1e-12)
+    inset = crit >= Q
+    argmin = np.flatnonzero(Q.min() + 1e-12 >= Q)
     flat = grid if grid.ndim == 1 else np.arange(len(thetas))
-    cs = (float(np.min(flat[inset])), float(np.max(flat[inset]))) \
-        if inset.any() and grid.ndim == 1 else None
-    return RichResult(payload={
-        "theta_grid": grid, "criterion": Q, "critical_value": crit,
-        "in_confidence_set": inset,
-        "set_estimate": flat[argmin] if grid.ndim == 1 else argmin,
-        "confidence_set_bounds": cs,
-        "positive_part_note": "only VIOLATED inequalities enter Q_n; deep "
-                              "inside the identified set every sample moment "
-                              "is negative and Q_n is exactly zero",
-        "recentring_note": "the bootstrap recentres the moments because the "
-                           "null sits at the boundary of the binding "
-                           "inequalities, not at the sample slack",
-        "n_binding_max": nbind,
-        "n": int(n), "J": int(np.atleast_2d(np.asarray(
-            g(d, thetas[0]), dtype=float)).shape[-1]),
-        "method": "Chernozhukov-Hong-Tamer criterion-function confidence "
-                  "region for moment inequalities"})
+    cs = (float(np.min(flat[inset])), float(np.max(flat[inset]))) if inset.any() and grid.ndim == 1 else None
+    return RichResult(
+        payload={
+            "theta_grid": grid,
+            "criterion": Q,
+            "critical_value": crit,
+            "in_confidence_set": inset,
+            "set_estimate": flat[argmin] if grid.ndim == 1 else argmin,
+            "confidence_set_bounds": cs,
+            "positive_part_note": "only VIOLATED inequalities enter Q_n; deep "
+            "inside the identified set every sample moment "
+            "is negative and Q_n is exactly zero",
+            "recentring_note": "the bootstrap recentres the moments because the "
+            "null sits at the boundary of the binding "
+            "inequalities, not at the sample slack",
+            "n_binding_max": nbind,
+            "n": int(n),
+            "J": int(np.atleast_2d(np.asarray(g(d, thetas[0]), dtype=float)).shape[-1]),
+            "method": "Chernozhukov-Hong-Tamer criterion-function confidence region for moment inequalities",
+        }
+    )
 
 
 def cheatsheet():

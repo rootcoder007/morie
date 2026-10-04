@@ -1,7 +1,6 @@
 """Tests for dpfed.dp_fedavg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpfed import dp_fedavg
 
 

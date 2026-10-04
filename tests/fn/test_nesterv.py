@@ -1,7 +1,6 @@
 """Tests for nesterv.nesterov_accelerated."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nesterv import nesterov_accelerated
 
 

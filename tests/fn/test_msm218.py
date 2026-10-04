@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm218 import softsvm
 
-
 X = [[1.0, 1.0], [-1.0, -1.0]]
 Y = [1, -1]
 

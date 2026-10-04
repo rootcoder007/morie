@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_pred_consist"]
@@ -25,15 +24,18 @@ def ghosal_pred_consist(theta0=0.35, n=800, seed=42):
     path = []
     for i in range(n):
         pred = (1.0 + S) / (2.0 + i)
-        tot_kl += theta0 * math.log(theta0 / pred) \
-            + (1 - theta0) * math.log((1 - theta0) / (1 - pred))
+        tot_kl += theta0 * math.log(theta0 / pred) + (1 - theta0) * math.log((1 - theta0) / (1 - pred))
         if (i + 1) % (n // 8) == 0:
             path.append(tot_kl / (i + 1))
         S += 1 if float(rng.uniform(0, 1)) < theta0 else 0
-    res = RichResult(payload={"estimate": path[-1],
-                              "cesaro_kl_path": path,
-                              "decaying": path[-1] < path[0],
-                              "method": "predictive Cesaro consistency (GvdV 2017 Thm 6.50)"})
+    res = RichResult(
+        payload={
+            "estimate": path[-1],
+            "cesaro_kl_path": path,
+            "decaying": path[-1] < path[0],
+            "method": "predictive Cesaro consistency (GvdV 2017 Thm 6.50)",
+        }
+    )
     return with_describe_pointer(res, "gh_c6_14")
 
 

@@ -1,14 +1,13 @@
 """Tests for cvxcjg.boyd_conjugate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxcjg import boyd_conjugate
 
 
 def test_cvxcjg_basic():
     """Test basic functionality for the self-conjugate quadratic f(x) = x^2/2."""
     g = np.linspace(-10.0, 10.0, 20001)
-    result = boyd_conjugate(lambda x: 0.5 * x ** 2, [1.0, 2.0, 3.0], x_grid=g)
+    result = boyd_conjugate(lambda x: 0.5 * x**2, [1.0, 2.0, 3.0], x_grid=g)
     # The function returns a RichResult; assert key payload fields exist.
     assert hasattr(result, "payload")
     payload = result.payload

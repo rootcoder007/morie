@@ -106,12 +106,18 @@ def wasserman_chi_sq_gof(observed, expected):
     per = (obs - exp_) ** 2 / exp_
     stat = float(np.sum(per))
     df = k - 1
-    return RichResult(payload={
-        "estimate": stat, "p_value": float(_chi2_sf(stat, df)),
-        "df": int(df), "per_cell": [float(v) for v in per],
-        "total_observed": float(np.sum(obs)),
-        "total_expected": float(np.sum(exp_)), "k": int(k),
-        "method": "chi-square GOF sum (O-E)^2/E vs Chi2_{k-1}"})
+    return RichResult(
+        payload={
+            "estimate": stat,
+            "p_value": float(_chi2_sf(stat, df)),
+            "df": int(df),
+            "per_cell": [float(v) for v in per],
+            "total_observed": float(np.sum(obs)),
+            "total_expected": float(np.sum(exp_)),
+            "k": int(k),
+            "method": "chi-square GOF sum (O-E)^2/E vs Chi2_{k-1}",
+        }
+    )
 
 
 def cheatsheet():

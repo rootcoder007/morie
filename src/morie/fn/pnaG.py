@@ -122,8 +122,7 @@ def pna(A, X, aggregators=_AGGREGATORS, scalers=_SCALERS):
     for i in range(n):
         per_agg = []
         for a in aggs:
-            per_agg.append([_aggregate(a, [Xm[j][c] for j in nb[i]])
-                            for c in range(f)])
+            per_agg.append([_aggregate(a, [Xm[j][c] for j in nb[i]]) for c in range(f)])
         aggregated.append(per_agg)
 
     # eq. (6) scale factors per node per scaler
@@ -141,7 +140,7 @@ def pna(A, X, aggregators=_AGGREGATORS, scalers=_SCALERS):
                 # amplification and is left unscaled under attenuation.
                 row.append(0.0 if al > 0.0 else 1.0)
             else:
-                row.append(base ** al)
+                row.append(base**al)
         scale.append(row)
 
     # eq. (7): scalers (outer) tensor aggregators (inner)
@@ -154,15 +153,21 @@ def pna(A, X, aggregators=_AGGREGATORS, scalers=_SCALERS):
                     row.append(scale[i][si] * aggregated[i][ai][c])
         out.append(row)
 
-    return RichResult(payload={
-        "out": out,
-        "aggregated": aggregated,
-        "degree": deg,
-        "delta": float(delta),
-        "scale": scale,
-        "aggregators": aggs, "scalers": scls,
-        "n": n, "n_features": f, "n_columns": len(scls) * len(aggs) * f,
-        "method": "Corso et al. (2020) PNA, eq. (7) of arXiv:2004.05718"})
+    return RichResult(
+        payload={
+            "out": out,
+            "aggregated": aggregated,
+            "degree": deg,
+            "delta": float(delta),
+            "scale": scale,
+            "aggregators": aggs,
+            "scalers": scls,
+            "n": n,
+            "n_features": f,
+            "n_columns": len(scls) * len(aggs) * f,
+            "method": "Corso et al. (2020) PNA, eq. (7) of arXiv:2004.05718",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for emgrm -- EMG RMS envelope."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.emgrm import emgrm
 

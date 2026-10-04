@@ -12,9 +12,9 @@ tests are reproducible without seeding numpy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gr1cy import geron_1cycle_schedule
 from morie.fn.grac import geron_actor_critic_advantage
 from morie.fn.grada2 import geron_adagrad_update
@@ -56,8 +56,8 @@ from morie.fn.grddqn import geron_double_dqn_target
 from morie.fn.grdeit import geron_deit_distillation_loss
 from morie.fn.grdetr import geron_detr_hungarian_matching
 
-
 # ── deterministic LCG ────────────────────────────────────────────────
+
 
 def lcg(n, seed=12345):
     """n draws uniform on (0, 1) from the stated LCG."""
@@ -81,11 +81,12 @@ def lcg_normal(n, seed=12345):
 
 # ── gr1cy: 1cycle schedule ───────────────────────────────────────────
 
+
 def test_gr1cy_closed_form_and_shape():
     T, lo, hi = 11, 0.01, 0.1
     r = geron_1cycle_schedule(lo, hi, t=0, T=T)
     lr = np.asarray(r["lr_schedule"])
-    assert lr.size == T                       # full curve, not one point
+    assert lr.size == T  # full curve, not one point
     peak = r["peak_step"]
     assert peak == (T - 1) // 2
     # Closed form: linear interpolation on [0, peak] and [peak, T-1].
@@ -102,10 +103,10 @@ def test_gr1cy_monotone_up_then_down_and_momentum_mirrors():
     lr = np.asarray(r["lr_schedule"])
     mom = np.asarray(r["momentum_schedule"])
     peak = r["peak_step"]
-    assert np.all(np.diff(lr[:peak + 1]) > 0)
+    assert np.all(np.diff(lr[: peak + 1]) > 0)
     assert np.all(np.diff(lr[peak:]) < 0)
     # Momentum is the mirror: it falls while the LR rises and vice versa.
-    assert np.all(np.diff(mom[:peak + 1]) < 0)
+    assert np.all(np.diff(mom[: peak + 1]) < 0)
     assert np.all(np.diff(mom[peak:]) > 0)
     assert float(r) == pytest.approx(lr[3])
 
@@ -118,6 +119,7 @@ def test_gr1cy_rejects_bad_bounds():
 
 
 # ── grac: actor-critic advantage ─────────────────────────────────────
+
 
 def test_grac_matches_hand_computed_td_error():
     V = [1.0, 4.0, -2.0]
@@ -136,6 +138,7 @@ def test_grac_terminal_drops_bootstrap():
 
 
 # ── grada2: AdaGrad ──────────────────────────────────────────────────
+
 
 def test_grada2_first_step_and_monotone_lr_decay():
     theta, g, s, eta = np.array([1.0, -2.0]), np.array([3.0, 4.0]), np.zeros(2), 0.5
@@ -156,10 +159,11 @@ def test_grada2_rejects_negative_accumulator():
 
 # ── gradaw: AdaBoost weights ─────────────────────────────────────────
 
+
 def test_gradaw_boost_ratio_is_exp_alpha_after_normalisation():
     alpha = 0.7
     w = [0.2, 0.3, 0.5]
-    y, p = [0, 1, 1], [1, 1, 1]          # only sample 0 is wrong
+    y, p = [0, 1, 1], [1, 1, 1]  # only sample 0 is wrong
     r = geron_adaboost_weight_update(y, p, w, alpha)
     new = np.asarray(r["weights_new"])
     assert new.sum() == pytest.approx(1.0)
@@ -175,10 +179,10 @@ def test_gradaw_alpha_zero_only_renormalises():
 
 # ── gradmo: Adam ─────────────────────────────────────────────────────
 
+
 def test_gradmo_bias_correction_makes_first_step_eta():
     eta = 0.01
-    r = geron_adam_update([0.0], [7.0], [0.0], [0.0], t=1, eta=eta,
-                          b1=0.9, b2=0.999, eps=1e-12)
+    r = geron_adam_update([0.0], [7.0], [0.0], [0.0], t=1, eta=eta, b1=0.9, b2=0.999, eps=1e-12)
     # m_hat = g, s_hat = g^2 at t=1 -> step = eta * g / |g| = eta.
     assert r["m_hat"][0] == pytest.approx(7.0)
     assert r["s_hat"][0] == pytest.approx(49.0)
@@ -196,8 +200,7 @@ def test_gradmo_second_step_matches_hand_recursion():
     s2 = b2 * s1 + (1 - b2) * g2**2
     step2 = eta * (m2 / (1 - b1**2)) / (math.sqrt(s2 / (1 - b2**2)) + eps)
     r1 = geron_adam_update([0.0], [g1], [0.0], [0.0], 1, eta, b1, b2, eps)
-    r2 = geron_adam_update(r1["theta_new"], [g2], r1["m_new"], r1["s_new"],
-                           2, eta, b1, b2, eps)
+    r2 = geron_adam_update(r1["theta_new"], [g2], r1["m_new"], r1["s_new"], 2, eta, b1, b2, eps)
     assert r2["m_new"][0] == pytest.approx(m2)
     assert r2["s_new"][0] == pytest.approx(s2)
     assert r2["step"][0] == pytest.approx(step2)
@@ -210,6 +213,7 @@ def test_gradmo_rejects_zero_step_counter():
 
 # ── grael: autoencoder loss ──────────────────────────────────────────
 
+
 def test_grael_loss_is_mean_squared_l2_norm():
     X = lcg_normal(12, seed=7).reshape(4, 3)
     D = X + lcg_normal(12, seed=99).reshape(4, 3) * 0.1
@@ -217,10 +221,11 @@ def test_grael_loss_is_mean_squared_l2_norm():
     r = geron_autoencoder_reconstruction_loss(X, X[:, :1], D)
     assert r["loss"] == pytest.approx(want)
     assert r["compression_ratio"] == pytest.approx(3.0)
-    assert r["loss"] != pytest.approx(float(np.mean(X)))    # not a mean-of-inputs stub
+    assert r["loss"] != pytest.approx(float(np.mean(X)))  # not a mean-of-inputs stub
 
 
 # ── graic / grbic ────────────────────────────────────────────────────
+
 
 def test_graic_grbic_penalty_difference_is_p_times_logn_minus_2():
     ll, p, n = -37.5, 8, 250
@@ -239,6 +244,7 @@ def test_gmm_n_params_counts_free_parameters():
 
 
 # ── grarma ───────────────────────────────────────────────────────────
+
 
 def test_grarma_ar1_forecast_and_integration():
     # w = diff(y) is constant 3, phi=0.5 -> w_hat = 1.5, level = y[-1] + 1.5
@@ -266,9 +272,10 @@ def test_grarma_rejects_too_short_series():
 
 # ── grauc ────────────────────────────────────────────────────────────
 
+
 def test_grauc_equals_mann_whitney_with_half_credit_for_ties():
     y = np.array([0, 1, 0, 1, 1, 0, 0, 1])
-    sc = np.round(lcg(8, seed=3) * 3) / 3.0          # deliberate ties
+    sc = np.round(lcg(8, seed=3) * 3) / 3.0  # deliberate ties
     pos, neg = sc[y == 1], sc[y == 0]
     wins = sum((1.0 if p > n else 0.5 if p == n else 0.0) for p in pos for n in neg)
     want = wins / (pos.size * neg.size)
@@ -292,9 +299,10 @@ def test_grauc_needs_both_classes():
 
 # ── graut ────────────────────────────────────────────────────────────
 
+
 def test_graut_matches_explicit_jacobian_product():
-    J1 = lcg_normal(6, seed=5).reshape(3, 2)     # x(2) -> u(3)
-    J2 = lcg_normal(3, seed=6).reshape(1, 3)     # u(3) -> y(1)
+    J1 = lcg_normal(6, seed=5).reshape(3, 2)  # x(2) -> u(3)
+    J2 = lcg_normal(3, seed=6).reshape(1, 3)  # u(3) -> y(1)
     g = np.array([2.5])
     want = g @ J2 @ J1
     got = geron_autograd_chain_rule([J1, J2], g)["grad_input"]
@@ -308,6 +316,7 @@ def test_graut_rejects_shape_mismatch():
 
 # ── grbag ────────────────────────────────────────────────────────────
 
+
 def test_grbag_mean_and_variance_reduction():
     P = lcg_normal(30, seed=11).reshape(6, 5)
     r = geron_bagging_predictor(P)
@@ -318,11 +327,11 @@ def test_grbag_mean_and_variance_reduction():
 
 
 def test_grbag_hard_vote_picks_the_mode():
-    assert geron_bagging_predictor([[0, 2], [1, 2], [1, 5]],
-                                   aggregate="vote")["prediction"] == [1.0, 2.0]
+    assert geron_bagging_predictor([[0, 2], [1, 2], [1, 5]], aggregate="vote")["prediction"] == [1.0, 2.0]
 
 
 # ── grbah ────────────────────────────────────────────────────────────
+
 
 def test_grbah_scores_and_context_by_explicit_loop():
     h = lcg_normal(2, seed=13)
@@ -342,11 +351,13 @@ def test_grbah_scores_and_context_by_explicit_loop():
 
 # ── grbeam ───────────────────────────────────────────────────────────
 
+
 def test_grbeam_wide_beam_matches_brute_force():
     S = np.round(lcg_normal(12, seed=19).reshape(4, 3), 3)
     T, V = S.shape
     best, best_score = None, -np.inf
     import itertools
+
     for seq in itertools.product(range(V), repeat=T):
         sc = sum(S[t, seq[t]] for t in range(T))
         if sc > best_score:
@@ -367,6 +378,7 @@ def test_grbeam_keeps_exactly_beam_width_hypotheses():
 
 # ── grbf16 ───────────────────────────────────────────────────────────
 
+
 def test_grbf16_relative_error_bounded_by_half_ulp():
     x = lcg_normal(64, seed=23) * 100.0
     r = geron_bf16_range(x)
@@ -386,6 +398,7 @@ def test_grbf16_exact_on_representable_values_and_ties_to_even():
 
 # ── grbgd ────────────────────────────────────────────────────────────
 
+
 def test_grbgd_first_step_matches_hand_gradient():
     X = np.array([[1.0, 1.0], [1.0, 2.0], [1.0, 3.0]])
     y = np.array([1.0, 2.0, 3.0])
@@ -403,15 +416,16 @@ def test_grbgd_converges_to_normal_equation_solution():
     exact = np.linalg.lstsq(X, y, rcond=None)[0]
     r = geron_batch_gradient_descent(X, y, np.zeros(2), 0.4, n_iter=5000)
     assert r["theta"] == pytest.approx(exact, abs=1e-6)
-    assert np.all(np.diff(r["loss_history"]) <= 1e-12)   # monotone descent
+    assert np.all(np.diff(r["loss_history"]) <= 1e-12)  # monotone descent
 
 
 # ── grblip ───────────────────────────────────────────────────────────
 
+
 def test_grblip_components_match_independent_formulas():
     I = np.array([[1.0, 0.0], [0.0, 1.0]])
     T = np.array([[1.0, 0.0], [0.0, 1.0]])
-    CL = np.zeros((2, 3, 4))                      # uniform over 4 tokens
+    CL = np.zeros((2, 3, 4))  # uniform over 4 tokens
     tgt = np.array([[0, 1, 2], [3, 0, 1]])
     r = geron_blip_itm_itc(I, T, CL, tgt, tau=1.0)
     # ITC: logits = I2 identity; each row CE = log(1 + e^-1).
@@ -428,12 +442,12 @@ def test_grblip_components_match_independent_formulas():
 def test_grblip_weights_scale_the_terms():
     I = np.array([[1.0, 0.0]])
     r0 = geron_blip_itm_itc(I, I, np.zeros((1, 1, 2)), [[0]], tau=1.0)
-    r1 = geron_blip_itm_itc(I, I, np.zeros((1, 1, 2)), [[0]], tau=1.0,
-                            lam_lm=3.0)
+    r1 = geron_blip_itm_itc(I, I, np.zeros((1, 1, 2)), [[0]], tau=1.0, lam_lm=3.0)
     assert (r1["loss"] - r0["loss"]) == pytest.approx(2.0 * r0["lm"])
 
 
 # ── grbn ─────────────────────────────────────────────────────────────
+
 
 def test_grbn_output_has_zero_mean_unit_variance_before_affine():
     X = lcg_normal(40, seed=37).reshape(10, 4) * 5.0 + 3.0
@@ -461,6 +475,7 @@ def test_grbn_constant_feature_with_zero_eps_raises():
 
 # ── grbo ─────────────────────────────────────────────────────────────
 
+
 def test_grbo_fixed_point_satisfies_the_bellman_equation():
     # 2 states, 2 actions, deterministic ring.
     T = np.zeros((2, 2, 2))
@@ -481,13 +496,11 @@ def test_grbo_fixed_point_satisfies_the_bellman_equation():
 
 def test_grbo_geometric_series_closed_form():
     for g in (0.0, 0.5, 0.99):
-        r = geron_bellman_optimality([[0.0]], [[[1.0]]], [[[1.0]]], g,
-                                     max_iter=20000)
+        r = geron_bellman_optimality([[0.0]], [[[1.0]]], [[[1.0]]], g, max_iter=20000)
         assert r["Q"][0][0] == pytest.approx(1.0 / (1.0 - g), abs=1e-6)
         assert r["converged"]
     # Hitting the sweep cap is reported, not hidden.
-    capped = geron_bellman_optimality([[0.0]], [[[1.0]]], [[[1.0]]], 0.99,
-                                      max_iter=10)
+    capped = geron_bellman_optimality([[0.0]], [[[1.0]]], [[[1.0]]], 0.99, max_iter=10)
     assert not capped["converged"] and capped.warnings
 
 
@@ -497,6 +510,7 @@ def test_grbo_rejects_non_stochastic_rows():
 
 
 # ── grbp ─────────────────────────────────────────────────────────────
+
 
 def test_grbp_gradient_matches_finite_differences():
     rng_a0 = lcg_normal(6, seed=53).reshape(2, 3)
@@ -510,8 +524,7 @@ def test_grbp_gradient_matches_finite_differences():
         return a1, a2
 
     a1, a2 = forward(W1, W2)
-    r = geron_backpropagation_gradient([rng_a0, a1, a2], [W1, W2], y,
-                                       activation="tanh")
+    r = geron_backpropagation_gradient([rng_a0, a1, a2], [W1, W2], y, activation="tanh")
     # Central differences on L = 0.5*sum (a2 - y)^2.
     h = 1e-6
     num = np.zeros_like(W1)
@@ -528,11 +541,11 @@ def test_grbp_gradient_matches_finite_differences():
 
 def test_grbp_rejects_mismatched_layer_shapes():
     with pytest.raises(ValueError):
-        geron_backpropagation_gradient([[[1.0, 2.0]], [[3.0]]],
-                                       [[[1.0], [1.0], [1.0]]], [[1.0]])
+        geron_backpropagation_gradient([[[1.0, 2.0]], [[3.0]]], [[[1.0], [1.0], [1.0]]], [[1.0]])
 
 
 # ── grbpe ────────────────────────────────────────────────────────────
+
 
 def test_grbpe_merges_the_most_frequent_pair_first():
     corpus = {"ab": 10, "cb": 3}
@@ -559,6 +572,7 @@ def test_grbpe_rejects_empty_corpus():
 
 # ── grbptt ───────────────────────────────────────────────────────────
 
+
 def test_grbptt_recurrent_deltas_match_the_backward_recursion():
     G = lcg_normal(6, seed=71).reshape(3, 2)
     H = np.tanh(lcg_normal(6, seed=73).reshape(3, 2))
@@ -579,7 +593,7 @@ def test_grbptt_gradient_is_summed_over_time_not_averaged():
     H = np.zeros((4, 1))
     X = np.ones((4, 1))
     r = geron_backprop_through_time(G, H, X)
-    assert r["grad_Wx"][0][0] == pytest.approx(4.0)     # sum, not mean (=1)
+    assert r["grad_Wx"][0][0] == pytest.approx(4.0)  # sum, not mean (=1)
 
 
 def test_grbptt_rejects_hidden_states_outside_tanh_range():
@@ -588,6 +602,7 @@ def test_grbptt_rejects_hidden_states_outside_tanh_range():
 
 
 # ── grbrnn ───────────────────────────────────────────────────────────
+
 
 def test_grbrnn_concat_width_and_content():
     F = lcg_normal(6, seed=89).reshape(3, 2)
@@ -601,12 +616,13 @@ def test_grbrnn_concat_width_and_content():
 
 def test_grbrnn_reverse_flag_repairs_the_pairing():
     F = np.array([[1.0], [2.0], [3.0]])
-    B_rev = np.array([[30.0], [20.0], [10.0]])     # emitted last-step-first
+    B_rev = np.array([[30.0], [20.0], [10.0]])  # emitted last-step-first
     r = geron_bidirectional_rnn(F, B_rev, backward_in_reverse_order=True)
     assert r["h"] == [[1.0, 10.0], [2.0, 20.0], [3.0, 30.0]]
 
 
 # ── grca ─────────────────────────────────────────────────────────────
+
 
 def test_grca_matches_explicit_scaled_dot_product():
     Xd = lcg_normal(8, seed=101).reshape(2, 4)
@@ -625,13 +641,13 @@ def test_grca_matches_explicit_scaled_dot_product():
 
 
 def test_grca_scale_is_one_over_sqrt_dk():
-    r = geron_cross_attention([[1.0, 0.0, 0.0, 0.0]], [[1.0, 0.0, 0.0, 0.0]],
-                              np.eye(4), np.eye(4), np.eye(4))
+    r = geron_cross_attention([[1.0, 0.0, 0.0, 0.0]], [[1.0, 0.0, 0.0, 0.0]], np.eye(4), np.eye(4), np.eye(4))
     assert r["d_k"] == 4
     assert r["scale"] == pytest.approx(0.5)
 
 
 # ── grcae ────────────────────────────────────────────────────────────
+
 
 def test_grcae_loss_equals_explicit_squared_error():
     x = np.arange(1.0, 5.0).reshape(2, 2)
@@ -648,12 +664,13 @@ def test_grcae_shape_mismatch_is_reported_not_cropped():
 
 # ── grcart ───────────────────────────────────────────────────────────
 
+
 def test_grcart_cost_matches_weighted_gini_by_hand():
     X = np.array([[1.0], [2.0], [3.0], [4.0], [5.0]])
     y = np.array([0, 0, 1, 0, 1])
     r = geron_cart_split_cost(X, y, 0, 2.5)
-    gl = 1 - (2 / 2) ** 2                      # left = [0,0] -> 0
-    gr = 1 - ((1 / 3) ** 2 + (2 / 3) ** 2)     # right = [1,0,1]
+    gl = 1 - (2 / 2) ** 2  # left = [0,0] -> 0
+    gr = 1 - ((1 / 3) ** 2 + (2 / 3) ** 2)  # right = [1,0,1]
     assert r["impurity_left"] == pytest.approx(gl)
     assert r["impurity_right"] == pytest.approx(gr)
     assert r["cost"] == pytest.approx((2 / 5) * gl + (3 / 5) * gr)
@@ -677,6 +694,7 @@ def test_grcart_mse_criterion_is_variance_weighted():
 
 # ── grcfm ────────────────────────────────────────────────────────────
 
+
 def test_grcfm_counts_and_derived_metrics():
     yt = [0, 0, 1, 1, 2, 2, 2]
     yp = [0, 1, 1, 1, 2, 0, 1]
@@ -699,14 +717,17 @@ def test_grcfm_rejects_out_of_range_labels():
 
 # ── grclp ────────────────────────────────────────────────────────────
 
+
 def test_grclp_symmetric_and_matches_manual_cross_entropy():
     E = lcg_normal(12, seed=127).reshape(3, 4)
     F = lcg_normal(12, seed=131).reshape(3, 4)
     En = E / np.linalg.norm(E, axis=1, keepdims=True)
     Fn = F / np.linalg.norm(F, axis=1, keepdims=True)
     L = En @ Fn.T / 0.5
+
     def ce(M):
         return float(np.mean([-(M[i, i] - np.log(np.exp(M[i]).sum())) for i in range(3)]))
+
     r = geron_clip_contrastive_loss(E, F, tau=0.5)
     assert r["loss_i2t"] == pytest.approx(ce(L))
     assert r["loss_t2i"] == pytest.approx(ce(L.T))
@@ -721,6 +742,7 @@ def test_grclp_degenerate_embeddings_give_chance_loss():
 
 
 # ── grcos ────────────────────────────────────────────────────────────
+
 
 def test_grcos_matches_the_floor_formula_over_a_sweep():
     for in_s in (7, 8, 28, 31):
@@ -747,6 +769,7 @@ def test_grcos_rejects_oversized_kernel():
 
 # ── grctr ────────────────────────────────────────────────────────────
 
+
 def test_grctr_matches_manual_softmax_cross_entropy():
     a = lcg_normal(3, seed=137).reshape(1, 3)
     p = lcg_normal(3, seed=139).reshape(1, 3)
@@ -772,6 +795,7 @@ def test_grctr_loss_decreases_as_positive_gets_closer():
 
 # ── grcvf ────────────────────────────────────────────────────────────
 
+
 def test_grcvf_matches_explicit_windowed_sum():
     X = lcg_normal(25, seed=151).reshape(5, 5)
     W = lcg_normal(9, seed=157).reshape(3, 3)
@@ -781,8 +805,7 @@ def test_grcvf_matches_explicit_windowed_sum():
     assert Y.shape == (3, 3)
     for i in range(3):
         for j in range(3):
-            assert Y[i, j] == pytest.approx(
-                float(np.sum(Xp[2 * i:2 * i + 3, 2 * j:2 * j + 3] * W)) + 0.5)
+            assert Y[i, j] == pytest.approx(float(np.sum(Xp[2 * i : 2 * i + 3, 2 * j : 2 * j + 3] * W)) + 0.5)
 
 
 def test_grcvf_output_shape_agrees_with_grcos():
@@ -803,13 +826,14 @@ def test_grcvf_is_cross_correlation_not_flipped_convolution():
 
 # ── grcvs ────────────────────────────────────────────────────────────
 
+
 def test_grcvs_averages_the_per_fold_scores_and_partitions_the_data():
     X = np.column_stack([np.ones(9), lcg(9, seed=163)])
     y = 1.0 + 2.0 * X[:, 1]
     r = geron_cross_validation_score(X, y, K=3)
     assert sum(r["fold_sizes"]) == 9
     assert r["cv_score"] == pytest.approx(float(np.mean(r["fold_scores"])))
-    assert r["cv_score"] == pytest.approx(1.0)          # noiseless -> R^2 = 1
+    assert r["cv_score"] == pytest.approx(1.0)  # noiseless -> R^2 = 1
 
 
 def test_grcvs_uses_a_caller_supplied_model():
@@ -824,9 +848,10 @@ def test_grcvs_uses_a_caller_supplied_model():
 
     X = np.arange(8.0).reshape(8, 1)
     y = np.array([1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0])
-    r = geron_cross_validation_score(X, y, K=4, fit=fit, predict=predict,
-                                     score=lambda a, b: -float(np.mean((a - b) ** 2)))
-    assert calls == [6, 6, 6, 6]                        # K-1 folds of training data
+    r = geron_cross_validation_score(
+        X, y, K=4, fit=fit, predict=predict, score=lambda a, b: -float(np.mean((a - b) ** 2))
+    )
+    assert calls == [6, 6, 6, 6]  # K-1 folds of training data
     assert r["K"] == 4 and len(r["fold_scores"]) == 4
 
 
@@ -836,6 +861,7 @@ def test_grcvs_rejects_too_many_folds():
 
 
 # ── grdae ────────────────────────────────────────────────────────────
+
 
 def test_grdae_scores_against_clean_input_not_corrupted():
     x = lcg_normal(8, seed=167).reshape(2, 4)
@@ -849,14 +875,14 @@ def test_grdae_scores_against_clean_input_not_corrupted():
 
 
 def test_grdae_dropout_mask_multiplies():
-    r = geron_denoising_autoencoder([[1.0, 2.0]], [[1.0, 0.0]], [[1.0, 2.0]],
-                                    corruption="dropout")
+    r = geron_denoising_autoencoder([[1.0, 2.0]], [[1.0, 0.0]], [[1.0, 2.0]], corruption="dropout")
     assert r["x_tilde"] == [[1.0, 0.0]]
     with pytest.raises(ValueError):
         geron_denoising_autoencoder([[1.0]], [[0.5]], [[1.0]], corruption="dropout")
 
 
 # ── grdal ────────────────────────────────────────────────────────────
+
 
 def test_grdal_likelihood_is_the_product_over_positions():
     logits = {0: np.array([0.0, math.log(3.0)]), 1: np.array([math.log(2.0), 0.0])}
@@ -869,7 +895,7 @@ def test_grdal_likelihood_is_the_product_over_positions():
     # step 1: ctx len 2 -> logits[0], token 0 -> p = 1/(1+3) = 1/4
     assert r["token_logprobs"] == pytest.approx([math.log(1 / 3), math.log(1 / 4)])
     assert r["log_likelihood"] == pytest.approx(math.log(1 / 12))
-    assert r["perplexity"] == pytest.approx(12 ** 0.5)
+    assert r["perplexity"] == pytest.approx(12**0.5)
 
 
 def test_grdal_enforces_the_callable_contract():
@@ -883,11 +909,12 @@ def test_grdal_enforces_the_callable_contract():
 
 # ── grdbs ────────────────────────────────────────────────────────────
 
+
 def test_grdbs_counts_include_self_and_match_brute_force():
     X = lcg_normal(20, seed=179).reshape(10, 2)
     eps = 1.2
     D = np.sqrt(((X[:, None, :] - X[None, :, :]) ** 2).sum(2))
-    want = (D <= eps).sum(axis=1)
+    want = (eps >= D).sum(axis=1)
     r = geron_dbscan_core_point(X, eps, 3)
     assert r["neighbor_counts"] == want.tolist()
     assert r["is_core"] == (want >= 3).tolist()
@@ -907,12 +934,12 @@ def test_grdbs_partitions_into_core_border_noise():
 
 # ── grdcgan ──────────────────────────────────────────────────────────
 
+
 def test_grdcgan_upsamples_by_stride_and_bounds_output_in_tanh_range():
-    W0 = lcg_normal(16, seed=181).reshape(2, 8)      # z(2) -> 8 = 4x2 seed
+    W0 = lcg_normal(16, seed=181).reshape(2, 8)  # z(2) -> 8 = 4x2 seed
     K1 = lcg_normal(9, seed=191).reshape(3, 3)
     K2 = lcg_normal(16, seed=193).reshape(4, 4)
-    r = geron_dcgan_generator(lcg_normal(2, seed=197), [W0, K1, K2],
-                              seed_shape=(4, 2))
+    r = geron_dcgan_generator(lcg_normal(2, seed=197), [W0, K1, K2], seed_shape=(4, 2))
     img = np.asarray(r["image"])
     # transposed conv: (n-1)*s + k, twice.
     h = (4 - 1) * 2 + 3
@@ -920,7 +947,7 @@ def test_grdcgan_upsamples_by_stride_and_bounds_output_in_tanh_range():
     w = (2 - 1) * 2 + 3
     w = (w - 1) * 2 + 4
     assert r["image_shape"] == (h, w)
-    assert np.all(np.abs(img) < 1.0)                 # tanh output
+    assert np.all(np.abs(img) < 1.0)  # tanh output
 
 
 def test_grdcgan_transposed_conv_scatters_and_sums():
@@ -930,7 +957,8 @@ def test_grdcgan_transposed_conv_scatters_and_sums():
     r = geron_dcgan_generator([1.0], [W0, K], seed_shape=(2, 2), stride=1)
     # pre-tanh output is [[1,2,1],[2,4,2],[1,2,1]]
     assert np.asarray(r["image"]) == pytest.approx(
-        np.tanh(np.array([[1.0, 2.0, 1.0], [2.0, 4.0, 2.0], [1.0, 2.0, 1.0]])))
+        np.tanh(np.array([[1.0, 2.0, 1.0], [2.0, 4.0, 2.0], [1.0, 2.0, 1.0]]))
+    )
 
 
 def test_grdcgan_rejects_non_square_projection_without_seed_shape():
@@ -939,6 +967,7 @@ def test_grdcgan_rejects_non_square_projection_without_seed_shape():
 
 
 # ── grddim ───────────────────────────────────────────────────────────
+
 
 def test_grddim_step_is_the_two_stage_formula():
     ab = [1.0, 0.9, 0.7, 0.4]
@@ -972,6 +1001,7 @@ def test_grddim_rejects_forward_steps_and_bad_schedules():
 
 # ── grddqn ───────────────────────────────────────────────────────────
 
+
 def test_grddqn_evaluates_the_online_argmax_with_the_target_net():
     Qo = lcg_normal(12, seed=223).reshape(3, 4)
     Qt = lcg_normal(12, seed=227).reshape(3, 4)
@@ -993,6 +1023,7 @@ def test_grddqn_matches_vanilla_when_both_nets_agree():
 
 # ── grdeit ───────────────────────────────────────────────────────────
 
+
 def test_grdeit_is_the_weighted_sum_of_two_cross_entropies():
     Lc = lcg_normal(6, seed=233).reshape(2, 3)
     Ld = lcg_normal(6, seed=239).reshape(2, 3)
@@ -1001,8 +1032,7 @@ def test_grdeit_is_the_weighted_sum_of_two_cross_entropies():
     tl = teach.argmax(axis=1)
 
     def ce(Z, lab):
-        return float(np.mean([-(Z[i, lab[i]] - np.log(np.exp(Z[i]).sum()))
-                              for i in range(2)]))
+        return float(np.mean([-(Z[i, lab[i]] - np.log(np.exp(Z[i]).sum())) for i in range(2)]))
 
     r = geron_deit_distillation_loss(Lc, Ld, y, teach, alpha=0.25)
     assert r["loss_cls"] == pytest.approx(ce(Lc, y))
@@ -1022,9 +1052,11 @@ def test_grdeit_alpha_endpoints_select_one_head():
 
 # ── grdetr ───────────────────────────────────────────────────────────
 
+
 def _brute_force_assignment(C):
     """Exhaustive minimum-cost matching of rows onto distinct columns."""
     import itertools
+
     n, m = C.shape
     best, best_cost = None, math.inf
     for cols in itertools.permutations(range(m), n):
@@ -1037,6 +1069,7 @@ def _brute_force_assignment(C):
 def test_grdetr_hungarian_agrees_with_brute_force():
     # Random cost via the module's own matcher, checked exhaustively.
     from morie.fn.grdetr import _linear_sum_assignment
+
     for seed in (251, 257, 263):
         C = np.round(lcg_normal(20, seed=seed).reshape(4, 5), 4)
         rows, cols = _linear_sum_assignment(C)
@@ -1080,12 +1113,13 @@ def test_grdetr_no_object_term_penalises_spare_queries():
 
 def test_grdetr_rejects_fewer_queries_than_objects():
     with pytest.raises(ValueError):
-        geron_detr_hungarian_matching([[0.0, 0.0, 1.0, 1.0]], [[1.0, 0.0]],
-                                      [[0.0, 0.0, 1.0, 1.0], [2.0, 2.0, 3.0, 3.0]],
-                                      [0, 1])
+        geron_detr_hungarian_matching(
+            [[0.0, 0.0, 1.0, 1.0]], [[1.0, 0.0]], [[0.0, 0.0, 1.0, 1.0], [2.0, 2.0, 3.0, 3.0]], [0, 1]
+        )
 
 
 # ── a mean-of-inputs stub must fail every one of these ───────────────
+
 
 def test_placeholder_bodies_would_be_caught():
     """Guard: the old placeholder returned float(np.mean(inputs))."""
@@ -1093,7 +1127,5 @@ def test_placeholder_bodies_would_be_caught():
     stub = float(np.mean(x))
     assert geron_batch_normalization(x, 1.0, 0.0)["estimate"] != pytest.approx(stub)
     assert geron_conv2d_forward(x, [[1.0, 1.0]])["estimate"] != pytest.approx(stub)
-    assert float(geron_1cycle_schedule(0.1, 0.5, 1, 5)) != pytest.approx(
-        float(np.mean([0.1, 0.5, 1, 5])))
-    assert geron_adam_update([1.0, 2.0], [0.1, 0.2], [0.0, 0.0], [0.0, 0.0],
-                             1, 0.01)["estimate"] != pytest.approx(1.5)
+    assert float(geron_1cycle_schedule(0.1, 0.5, 1, 5)) != pytest.approx(float(np.mean([0.1, 0.5, 1, 5])))
+    assert geron_adam_update([1.0, 2.0], [0.1, 0.2], [0.0, 0.0], [0.0, 0.0], 1, 0.01)["estimate"] != pytest.approx(1.5)

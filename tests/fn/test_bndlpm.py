@@ -1,7 +1,6 @@
 """Tests for bndlpm.bound_lp_method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndlpm import bound_lp_method
 
 

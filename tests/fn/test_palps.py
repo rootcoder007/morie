@@ -1,7 +1,6 @@
 """Tests for morie.fn.palps — Parallel analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.palps import palps, parallel_analysis
 
 

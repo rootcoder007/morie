@@ -1,7 +1,6 @@
 """Tests for isotropy test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgiso import sgiso
 
 

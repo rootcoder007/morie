@@ -13,6 +13,8 @@ def test_km040_doctest():
 
 def test_km040_edge():
     import pytest
+
     from morie.fn.km040 import kamath_ch2_moe_topk_gating
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_moe_topk_gating(*([None] * 3))

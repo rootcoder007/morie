@@ -1,7 +1,6 @@
 """Tests for rbfk.rbf_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rbfk import rbf_kernel
 
 

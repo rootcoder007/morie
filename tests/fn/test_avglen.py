@@ -1,7 +1,6 @@
 """Tests for avglen.avg_path_length."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.avglen import avg_path_length
 
 

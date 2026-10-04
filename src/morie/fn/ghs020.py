@@ -5,8 +5,6 @@ Implements sec. 3.6 (atom products vanish, p.43) of Ghosal & van der Vaart (2017
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,9 +20,14 @@ def ghosal_ch3_tree_countable_additivity(EV, depth=60):
     if not 0.0 <= ev < 1.0:
         raise ValueError("E(V) must lie in [0, 1)")
     prod = ev ** int(depth)
-    res = RichResult(payload={"estimate": prod, "value": prod,
-                              "vanishes": prod < 1e-12,
-                              "method": "atom mass product (GvdV 2017 sec. 3.6)"})
+    res = RichResult(
+        payload={
+            "estimate": prod,
+            "value": prod,
+            "vanishes": prod < 1e-12,
+            "method": "atom mass product (GvdV 2017 sec. 3.6)",
+        }
+    )
     return with_describe_pointer(res, "ghs020")
 
 

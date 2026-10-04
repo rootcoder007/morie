@@ -38,7 +38,7 @@ def test_the_moment_estimator_is_msa_minus_mse_over_n0():
     res = ranova(y, g)
     want = (res["msa"] - res["mse"]) / res["n0"]
     assert abs(res["sigma2_a_raw"] - want) < 1e-9
-    assert abs(res["n0"] - 4.0) < 1e-9        # balanced, four per class
+    assert abs(res["n0"] - 4.0) < 1e-9  # balanced, four per class
 
 
 def test_a_negative_component_is_truncated_but_reported_raw():
@@ -55,7 +55,7 @@ def test_the_icc_is_the_share_of_the_between_class_variance():
     res = ranova(y, g)
     want = res["sigma2_a"] / (res["sigma2_a"] + res["sigma2_e"])
     assert abs(res["icc"] - want) < 1e-12
-    assert res["icc"] > 0.9        # classes 10, 20, 30 are far apart
+    assert res["icc"] > 0.9  # classes 10, 20, 30 are far apart
 
 
 def test_unbalanced_classes_are_handled_and_flagged():
@@ -67,9 +67,11 @@ def test_unbalanced_classes_are_handled_and_flagged():
 
 
 def test_validation():
-    for call in (lambda: ranova([1.0, 2.0], [0]),
-                 lambda: ranova([1.0, 2.0], [0, 0]),
-                 lambda: ranova([1.0, 2.0], [0, 1])):
+    for call in (
+        lambda: ranova([1.0, 2.0], [0]),
+        lambda: ranova([1.0, 2.0], [0, 0]),
+        lambda: ranova([1.0, 2.0], [0, 1]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

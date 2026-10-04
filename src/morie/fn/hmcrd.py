@@ -131,7 +131,11 @@ def geron_credit_assignment(trajectory, gamma=0.95, lam=None, normalize=False):
 
     return RichResult(
         title="Credit assignment",
-        summary_lines=[("Total return", total), ("gamma", g), ("Effective horizon", float(1.0 / (1.0 - g)) if g < 1 else float("inf"))],
+        summary_lines=[
+            ("Total return", total),
+            ("gamma", g),
+            ("Effective horizon", float(1.0 / (1.0 - g)) if g < 1 else float("inf")),
+        ],
         interpretation="Discounted returns credit an action by what followed it; eligibility traces credit it by how recently it fired.",
         payload={
             "returns": out.tolist(),

@@ -79,8 +79,7 @@ anchors do.
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["dreamr", "dreamer", "lambda_return", "imagine",
-           "value_update"]
+__all__ = ["dreamr", "dreamer", "lambda_return", "imagine", "value_update"]
 
 
 def _vec(x, name):
@@ -90,8 +89,7 @@ def _vec(x, name):
     return v
 
 
-def imagine(state, action_model, transition, reward_model, horizon,
-            value_model=None):
+def imagine(state, action_model, transition, reward_model, horizon, value_model=None):
     r"""Roll an imagined trajectory forward for ``horizon`` steps.
 
     ``transition(s, a) -> s'`` is the paper's :math:`q(s_t \mid
@@ -103,9 +101,7 @@ def imagine(state, action_model, transition, reward_model, horizon,
     H = int(horizon)
     if H < 1:
         raise ValueError("dreamr: horizon must be >= 1")
-    for fn, name in ((action_model, "action_model"),
-                     (transition, "transition"),
-                     (reward_model, "reward_model")):
+    for fn, name in ((action_model, "action_model"), (transition, "transition"), (reward_model, "reward_model")):
         if not callable(fn):
             raise TypeError("dreamr: %s must be callable" % name)
     states = [state]
@@ -119,21 +115,21 @@ def imagine(state, action_model, transition, reward_model, horizon,
         rewards.append(r)
         s = transition(s, a)
         states.append(s)
-    values = ([float(value_model(x)) for x in states]
-              if value_model is not None else None)
-    return RichResult(payload={
-        "estimate": rewards,
-        "states": states,
-        "actions": actions,
-        "rewards": rewards,
-        "values": values,
-        "horizon": H,
-        "method": "Dreamer latent imagination (Hafner et al. 2020 eq. 1)",
-    })
+    values = [float(value_model(x)) for x in states] if value_model is not None else None
+    return RichResult(
+        payload={
+            "estimate": rewards,
+            "states": states,
+            "actions": actions,
+            "rewards": rewards,
+            "values": values,
+            "horizon": H,
+            "method": "Dreamer latent imagination (Hafner et al. 2020 eq. 1)",
+        }
+    )
 
 
-def lambda_return(rewards, values, gamma=0.99, lam=0.95, estimator="lambda",
-                  k=1):
+def lambda_return(rewards, values, gamma=0.99, lam=0.95, estimator="lambda", k=1):
     r"""The value estimators of eqs. 4-6 at every step of an imagined
     trajectory.
 
@@ -165,14 +161,12 @@ def lambda_return(rewards, values, gamma=0.99, lam=0.95, estimator="lambda",
     Hafner, Lillicrap, Ba & Norouzi (2020) arXiv:1912.01603, eqs. 4-6.
     """
     if estimator not in ("lambda", "k-step", "reward"):
-        raise ValueError("dreamr: estimator must be 'lambda', 'k-step' "
-                         "or 'reward', got %r" % (estimator,))
+        raise ValueError("dreamr: estimator must be 'lambda', 'k-step' or 'reward', got %r" % (estimator,))
     r = _vec(rewards, "rewards")
     H = len(r)
     v = _vec(values, "values")
     if len(v) != H + 1:
-        raise ValueError("dreamr: values must have one more entry than "
-                         "rewards (got %d and %d)" % (len(v), H))
+        raise ValueError("dreamr: values must have one more entry than rewards (got %d and %d)" % (len(v), H))
     gamma = float(gamma)
     lam = float(lam)
     if not 0.0 <= lam <= 1.0:
@@ -210,12 +204,14 @@ def lambda_return(rewards, values, gamma=0.99, lam=0.95, estimator="lambda",
 
 
 def _pack(vals, name):
-    return RichResult(payload={
-        "estimate": vals,
-        "returns": vals,
-        "n": len(vals),
-        "method": "Dreamer %s (Hafner et al. 2020)" % name,
-    })
+    return RichResult(
+        payload={
+            "estimate": vals,
+            "returns": vals,
+            "n": len(vals),
+            "method": "Dreamer %s (Hafner et al. 2020)" % name,
+        }
+    )
 
 
 def value_update(values, targets):
@@ -230,21 +226,32 @@ def value_update(values, targets):
     v = _vec(values, "values")
     t = _vec(targets, "targets")
     if len(v) != len(t):
-        raise ValueError("dreamr: values and targets must be the same "
-                         "length")
+        raise ValueError("dreamr: values and targets must be the same length")
     resid = [v[i] - t[i] for i in range(len(v))]
     loss = sum(0.5 * e * e for e in resid)
-    return RichResult(payload={
-        "estimate": float(loss),
-        "loss": float(loss),
-        "residual": resid,
-        "grad": resid,
-        "method": "Dreamer value loss (Hafner et al. 2020, Alg. 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(loss),
+            "loss": float(loss),
+            "residual": resid,
+            "grad": resid,
+            "method": "Dreamer value loss (Hafner et al. 2020, Alg. 1)",
+        }
+    )
 
 
-def dreamr(state, action_model, transition, reward_model, value_model,
-           horizon=15, gamma=0.99, lam=0.95, estimator="lambda", k=1):
+def dreamr(
+    state,
+    action_model,
+    transition,
+    reward_model,
+    value_model,
+    horizon=15,
+    gamma=0.99,
+    lam=0.95,
+    estimator="lambda",
+    k=1,
+):
     r"""Imagine forward from a latent state and return the value
     estimates and the critic's update.
 
@@ -266,37 +273,39 @@ def dreamr(state, action_model, transition, reward_model, value_model,
         with respect to :math:`v_\psi`, and the imagined
         ``states`` / ``actions`` / ``rewards`` / ``values``.
     """
-    traj = imagine(state, action_model, transition, reward_model, horizon,
-                   value_model=value_model)
-    ret = lambda_return(traj["rewards"], traj["values"], gamma=gamma,
-                        lam=lam, estimator=estimator, k=k)
+    traj = imagine(state, action_model, transition, reward_model, horizon, value_model=value_model)
+    ret = lambda_return(traj["rewards"], traj["values"], gamma=gamma, lam=lam, estimator=estimator, k=k)
     upd = value_update(traj["values"][:-1], ret["returns"])
-    return RichResult(payload={
-        "estimate": ret["returns"],
-        "returns": ret["returns"],
-        "objective": float(sum(ret["returns"])),
-        "value_loss": upd["loss"],
-        "residual": upd["residual"],
-        "states": traj["states"],
-        "actions": traj["actions"],
-        "rewards": traj["rewards"],
-        "values": traj["values"],
-        "horizon": int(horizon),
-        "gamma": float(gamma),
-        "lam": float(lam),
-        "estimator": estimator,
-        "method": "Dreamer behaviour step (Hafner et al. 2020, Alg. 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": ret["returns"],
+            "returns": ret["returns"],
+            "objective": float(sum(ret["returns"])),
+            "value_loss": upd["loss"],
+            "residual": upd["residual"],
+            "states": traj["states"],
+            "actions": traj["actions"],
+            "rewards": traj["rewards"],
+            "values": traj["values"],
+            "horizon": int(horizon),
+            "gamma": float(gamma),
+            "lam": float(lam),
+            "estimator": estimator,
+            "method": "Dreamer behaviour step (Hafner et al. 2020, Alg. 1)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dreamr: learn behaviour inside a latent world model "
-            "(Hafner 2020). Imagine H steps with the TRANSITION model "
-            "(no observations), then V_R (eq. 4, no value model), "
-            "V_N^k (eq. 5, h = min(tau+k, t+H)) or V_lambda (eq. 6, "
-            "the exponentially weighted average Dreamer uses). Actor "
-            "ascends sum_tau V_lambda through the dynamics; critic "
-            "regresses v_psi onto V_lambda.")
+    return (
+        "dreamr: learn behaviour inside a latent world model "
+        "(Hafner 2020). Imagine H steps with the TRANSITION model "
+        "(no observations), then V_R (eq. 4, no value model), "
+        "V_N^k (eq. 5, h = min(tau+k, t+H)) or V_lambda (eq. 6, "
+        "the exponentially weighted average Dreamer uses). Actor "
+        "ascends sum_tau V_lambda through the dynamics; critic "
+        "regresses v_psi onto V_lambda."
+    )
 
 
 # compact alias per ledger/NAMING.md

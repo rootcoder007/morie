@@ -30,14 +30,19 @@ used as the anchor.
 
 __all__ = ["blake2b", "BLOCK_SIZE", "MAX_DIGEST"]
 
-_MASK64 = 0xffffffffffffffff
+_MASK64 = 0xFFFFFFFFFFFFFFFF
 BLOCK_SIZE = 128
 MAX_DIGEST = 64
 
 _IV = [
-    0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b,
-    0xa54ff53a5f1d36f1, 0x510e527fade682d1, 0x9b05688c2b3e6c1f,
-    0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
+    0x6A09E667F3BCC908,
+    0xBB67AE8584CAA73B,
+    0x3C6EF372FE94F82B,
+    0xA54FF53A5F1D36F1,
+    0x510E527FADE682D1,
+    0x9B05688C2B3E6C1F,
+    0x1F83D9ABFB41BD6B,
+    0x5BE0CD19137E2179,
 ]
 
 _SIGMA = [
@@ -59,7 +64,7 @@ def _as_bytes(data):
         return bytes(data)
     if isinstance(data, str):
         return data.encode("utf-8")
-    return bytes(bytearray(int(v) & 0xff for v in data))
+    return bytes(bytearray(int(v) & 0xFF for v in data))
 
 
 def _rotr(x, n):
@@ -78,8 +83,7 @@ def _G(v, a, b, c, d, x, y):
 
 
 def _compress(h, block, t, last):
-    m = [int.from_bytes(bytes(block[i:i + 8]), "little")
-         for i in range(0, 128, 8)]
+    m = [int.from_bytes(bytes(block[i : i + 8]), "little") for i in range(0, 128, 8)]
     v = list(h) + list(_IV)
     v[12] ^= t & _MASK64
     v[13] ^= (t >> 64) & _MASK64
@@ -108,11 +112,9 @@ def blake2b(data=b"", digest_size=64, key=b""):
     n = int(digest_size)
     k = _as_bytes(key)
     if not 1 <= n <= MAX_DIGEST:
-        raise ValueError("_blake2: the digest size must lie in "
-                         "1..64, got %d" % n)
+        raise ValueError("_blake2: the digest size must lie in 1..64, got %d" % n)
     if len(k) > MAX_DIGEST:
-        raise ValueError("_blake2: the key may be at most 64 bytes, "
-                         "got %d" % len(k))
+        raise ValueError("_blake2: the key may be at most 64 bytes, got %d" % len(k))
     h = list(_IV)
     h[0] ^= 0x01010000 ^ (len(k) << 8) ^ n
     msg = bytearray()
@@ -127,7 +129,7 @@ def blake2b(data=b"", digest_size=64, key=b""):
         pos = 0
         while total - pos > BLOCK_SIZE:
             pos += BLOCK_SIZE
-            _compress(h, msg[pos - BLOCK_SIZE:pos], pos, False)
+            _compress(h, msg[pos - BLOCK_SIZE : pos], pos, False)
         tail = bytearray(msg[pos:])
         counted = total
         tail += bytearray(BLOCK_SIZE - len(tail))

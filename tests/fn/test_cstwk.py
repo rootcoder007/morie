@@ -1,8 +1,8 @@
 """Tests for morie.fn.cstwk — custody work program."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn._containers import CrimeResult
 from morie.fn.cstwk import custody_work_program
 

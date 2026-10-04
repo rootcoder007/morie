@@ -1,6 +1,5 @@
 """Tests for gb32vr (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb32vr import gibbons_runs_var

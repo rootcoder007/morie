@@ -24,20 +24,15 @@ def _adapter_core(H_o, H_in, W_down, W_up, f):
     Wd = np.atleast_2d(np.asarray(W_down, dtype=float))
     Wu = np.atleast_2d(np.asarray(W_up, dtype=float))
     if H_in.shape[1] != Wd.shape[0]:
-        raise ValueError(
-            f"W_down has {Wd.shape[0]} rows but the adapter input has "
-            f"width {H_in.shape[1]}.")
+        raise ValueError(f"W_down has {Wd.shape[0]} rows but the adapter input has width {H_in.shape[1]}.")
     if Wd.shape[1] != Wu.shape[0]:
-        raise ValueError(
-            f"the bottleneck disagrees: W_down is {Wd.shape}, W_up is "
-            f"{Wu.shape}.")
+        raise ValueError(f"the bottleneck disagrees: W_down is {Wd.shape}, W_up is {Wu.shape}.")
     if Wu.shape[1] != H_o.shape[1]:
         raise ValueError(
-            f"W_up returns width {Wu.shape[1]} but H_o has width "
-            f"{H_o.shape[1]}; the residual could not be added.")
+            f"W_up returns width {Wu.shape[1]} but H_o has width {H_o.shape[1]}; the residual could not be added."
+        )
     if H_in.shape[0] != H_o.shape[0]:
-        raise ValueError("the adapter input and H_o must have the same "
-                         "number of rows (positions).")
+        raise ValueError("the adapter input and H_o must have the same number of rows (positions).")
     if not callable(f):
         raise ValueError("f must be a callable activation.")
     delta = f(H_in @ Wd) @ Wu
@@ -65,14 +60,17 @@ def kamath_ch4_series_adapter(H_o, W_down, W_up, f=None):
     >>> out["bottleneck_rank"]
     1
     """
-    out, delta, r = _adapter_core(H_o, H_o, W_down, W_up,
-                                  _relu if f is None else f)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in out],
-        "delta": [[float(v) for v in row] for row in delta],
-        "bottleneck_rank": int(r), "estimate": float(out[0, 0]),
-        "n": int(out.shape[0]),
-        "method": "series adapter (Kamath Eq 4.1)"})
+    out, delta, r = _adapter_core(H_o, H_o, W_down, W_up, _relu if f is None else f)
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in out],
+            "delta": [[float(v) for v in row] for row in delta],
+            "bottleneck_rank": int(r),
+            "estimate": float(out[0, 0]),
+            "n": int(out.shape[0]),
+            "method": "series adapter (Kamath Eq 4.1)",
+        }
+    )
 
 
 def cheatsheet():

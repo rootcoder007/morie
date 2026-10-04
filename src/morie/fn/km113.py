@@ -35,29 +35,29 @@ def kamath_ch8_perplexity(X, N=None, p_theta=None):
     if len(toks) == 0:
         raise ValueError("an empty sequence has no perplexity.")
     if p_theta is None:
-        raise ValueError("p_theta is required: either a callable "
-                         "p_theta(x_i, x_prefix) or one probability "
-                         "per token.")
+        raise ValueError("p_theta is required: either a callable p_theta(x_i, x_prefix) or one probability per token.")
     if callable(p_theta):
-        probs = np.array([float(p_theta(toks[i], toks[:i]))
-                          for i in range(len(toks))], dtype=float)
+        probs = np.array([float(p_theta(toks[i], toks[:i])) for i in range(len(toks))], dtype=float)
     else:
         probs = np.atleast_1d(np.asarray(p_theta, dtype=float))
         if probs.size != len(toks):
-            raise ValueError(
-                f"{probs.size} probabilities for {len(toks)} tokens.")
+            raise ValueError(f"{probs.size} probabilities for {len(toks)} tokens.")
     if np.any((probs < 0) | (probs > 1)):
         raise ValueError("token probabilities must lie in [0, 1].")
     if N is not None and int(N) != probs.size:
-        raise ValueError(
-            f"N = {N} contradicts the {probs.size} tokens scored.")
+        raise ValueError(f"N = {N} contradicts the {probs.size} tokens scored.")
     with np.errstate(divide="ignore"):
         logp = np.log(probs)
     nll = float(-logp.mean())
-    return RichResult(payload={
-        "estimate": float(np.exp(nll)), "mean_nll": nll,
-        "log_probs": [float(v) for v in logp], "n": int(probs.size),
-        "method": "perplexity (Kamath Eq 8.1)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.exp(nll)),
+            "mean_nll": nll,
+            "log_probs": [float(v) for v in logp],
+            "n": int(probs.size),
+            "method": "perplexity (Kamath Eq 8.1)",
+        }
+    )
 
 
 def cheatsheet():

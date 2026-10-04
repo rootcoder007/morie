@@ -1,7 +1,5 @@
 """Anchored tests for ldcmpr.ld_r2 (LD r^2, Hill-Robertson 1968)."""
 
-import math
-
 from morie.fn.ldcmpr import ld_r2
 
 
@@ -21,7 +19,7 @@ def test_phased_hand_anchor():
     assert abs(res["pAB"] - 0.5) < 1e-12
     assert abs(res["D"] - 0.14) < 1e-12
     assert abs(res["r"] - 0.14 / 0.24) < 1e-12
-    assert abs(res["estimate"] - 0.14 ** 2 / 0.0576) < 1e-12
+    assert abs(res["estimate"] - 0.14**2 / 0.0576) < 1e-12
     assert abs(res["Dprime"] - 0.14 / 0.24) < 1e-12
 
 
@@ -48,6 +46,7 @@ def test_unphased_no_double_het_exact():
 def test_unphased_matches_twoldp():
     """The EM path must agree exactly with two_locus_dprime (reuse)."""
     from morie.fn.twoldp import two_locus_dprime
+
     g1 = [0, 1, 2, 1, 0, 2, 1, 1, 2, 0, 1, 2]
     g2 = [0, 1, 1, 2, 0, 2, 0, 1, 2, 1, 1, 2]
     res = ld_r2(g1, g2)

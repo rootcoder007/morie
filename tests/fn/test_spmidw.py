@@ -1,7 +1,6 @@
 """Tests for spmidw.schabenberger_idw."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spmidw import schabenberger_idw
 
 

@@ -1,23 +1,23 @@
 """Causal signal/NN cluster: rng032, rng033, rng036, rng037, rng049,
 rng053, rng103, rng196, rgztf, hmc1d, grc1d, kmclm, kmprf, nchunk."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn.bsafilt import rangayyan_ch3_integral_causal, rangayyan_ch3_z_transform_fir
+from morie.fn.bsaqrs import rangayyan_ch4_dicrotic_notch_second_derivative
+from morie.fn.bsasig import (
+    rangayyan_ch3_causal_convolution,
+    rangayyan_ch3_causal_convolution_alt,
+    rangayyan_ch3_discrete_convolution_causal,
+    rangayyan_ch3_discrete_convolution_causal_alt,
+)
+from morie.fn.bsaxfrm import rangayyan_ch3_laplace_transform_causal_finite, rangayyan_z_transform
 from morie.fn.grc1d import geron_causal_1d_cnn
 from morie.fn.hmc1d import geron_causal_1d_conv
 from morie.fn.kmclm import kamath_causal_lm_loss
 from morie.fn.kmprf import kamath_prefix_lm_mask
 from morie.fn.nchunk import causal_chunked_attention
-from morie.fn.bsaxfrm import rangayyan_z_transform
-from morie.fn.bsasig import rangayyan_ch3_causal_convolution
-from morie.fn.bsasig import rangayyan_ch3_causal_convolution_alt
-from morie.fn.bsasig import rangayyan_ch3_discrete_convolution_causal
-from morie.fn.bsasig import rangayyan_ch3_discrete_convolution_causal_alt
-from morie.fn.bsaxfrm import rangayyan_ch3_laplace_transform_causal_finite
-from morie.fn.bsafilt import rangayyan_ch3_z_transform_fir
-from morie.fn.bsafilt import rangayyan_ch3_integral_causal
-from morie.fn.bsaqrs import rangayyan_ch4_dicrotic_notch_second_derivative
 
 
 def test_rng036_hand_and_commutativity():
@@ -89,9 +89,7 @@ def test_rng196_book_equation():
     out = rangayyan_ch4_dicrotic_notch_second_derivative(np.ones(9))
     assert out["p"][out["valid"]] == pytest.approx(np.zeros(5), abs=1e-12)
     ramp = np.arange(9.0)
-    assert rangayyan_ch4_dicrotic_notch_second_derivative(ramp)["p"][2:7] == pytest.approx(
-        np.zeros(5), abs=1e-12
-    )
+    assert rangayyan_ch4_dicrotic_notch_second_derivative(ramp)["p"][2:7] == pytest.approx(np.zeros(5), abs=1e-12)
     # a single unit spike reproduces the reversed tap sequence
     spike = np.zeros(9)
     spike[4] = 1.0

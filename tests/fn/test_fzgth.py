@@ -1,7 +1,5 @@
 """Tests for fzgth.fauzi_g_theta_distribution."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzgth import fauzi_g_theta_distribution
 
 

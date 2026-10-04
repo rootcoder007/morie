@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Delta method variance propagation."""
 
-import math
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_delta_method"]
@@ -65,10 +63,16 @@ def wasserman_delta_method(theta_hat, se, g_prime):
     if g_prime == 0:
         raise ValueError("g'(theta) = 0: first-order delta method degenerate; use second order.")
     se_g = abs(g_prime) * se
-    return RichResult(payload={
-        "estimate": float(se_g), "variance": float(se_g ** 2),
-        "theta_hat": theta_hat, "se_theta": se, "g_prime": g_prime,
-        "method": "delta method se(g) = |g'| se(theta)"})
+    return RichResult(
+        payload={
+            "estimate": float(se_g),
+            "variance": float(se_g**2),
+            "theta_hat": theta_hat,
+            "se_theta": se,
+            "g_prime": g_prime,
+            "method": "delta method se(g) = |g'| se(theta)",
+        }
+    )
 
 
 def cheatsheet():

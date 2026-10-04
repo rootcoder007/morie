@@ -112,9 +112,7 @@ def geron_encoder_decoder_transformer(
     if d % Hh:
         raise ValueError(f"geron_encoder_decoder_transformer: d_model={d} is not divisible by n_heads={Hh}")
     if Ts > M or Tt > M:
-        raise ValueError(
-            f"geron_encoder_decoder_transformer: sequence lengths ({Ts}, {Tt}) exceed max_len {M}"
-        )
+        raise ValueError(f"geron_encoder_decoder_transformer: sequence lengths ({Ts}, {Tt}) exceed max_len {M}")
 
     enc = block_params(d, d_ff=d_ff, cross_attention=False)
     dec = block_params(d, d_ff=d_ff, cross_attention=True)

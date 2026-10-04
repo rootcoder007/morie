@@ -70,8 +70,7 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["flexible_receptor_dock", "rotate_about_axis", "energy",
-           "apply_chi", "STAGGERED", "cheatsheet"]
+__all__ = ["flexible_receptor_dock", "rotate_about_axis", "energy", "apply_chi", "STAGGERED", "cheatsheet"]
 
 # The staggered torsions. Elementary conformational analysis, not a
 # fitted rotamer library.
@@ -97,11 +96,8 @@ def rotate_about_axis(p, a, b, degrees):
     c = math.cos(t)
     s = math.sin(t)
     kv = _w.dot(k, v)
-    cr = [k[1] * v[2] - k[2] * v[1],
-          k[2] * v[0] - k[0] * v[2],
-          k[0] * v[1] - k[1] * v[0]]
-    return [a[d] + v[d] * c + cr[d] * s + k[d] * kv * (1.0 - c)
-            for d in range(3)]
+    cr = [k[1] * v[2] - k[2] * v[1], k[2] * v[0] - k[0] * v[2], k[0] * v[1] - k[1] * v[0]]
+    return [a[d] + v[d] * c + cr[d] * s + k[d] * kv * (1.0 - c) for d in range(3)]
 
 
 def apply_chi(coords, chi, degrees):
@@ -143,8 +139,7 @@ def energy(rec, lig, rec_r, lig_r, scale=1.0, epsilon=1.0, cutoff=8.0):
                 continue
             r = math.sqrt(r2)
             if r == 0.0:
-                raise ValueError("two atoms are on top of each other, "
-                                 "which is not a pose")
+                raise ValueError("two atoms are on top of each other, which is not a pose")
             sig = (float(lig_r[i]) + float(rec_r[j])) * float(scale)
             q = sig / r
             q6 = q * q * q * q * q * q
@@ -164,10 +159,18 @@ def _grid(chis, angles):
     return out
 
 
-def flexible_receptor_dock(receptor, ligand, flex_residues,
-                           angles=None, soft=0.7, epsilon=1.0,
-                           cutoff=8.0, search="coordinate", passes=3,
-                           n_keep=3):
+def flexible_receptor_dock(
+    receptor,
+    ligand,
+    flex_residues,
+    angles=None,
+    soft=0.7,
+    epsilon=1.0,
+    cutoff=8.0,
+    search="coordinate",
+    passes=3,
+    n_keep=3,
+):
     """Dock a ligand into a receptor whose side chains may move.
 
     Parameters
@@ -207,8 +210,7 @@ def flexible_receptor_dock(receptor, ligand, flex_residues,
     if len(rc) != len(rr):
         raise ValueError("one radius per receptor atom")
     if "poses" in ligand:
-        poses = [[[float(v) for v in p] for p in pose]
-                 for pose in ligand["poses"]]
+        poses = [[[float(v) for v in p] for p in pose] for pose in ligand["poses"]]
     else:
         poses = [[[float(v) for v in p] for p in ligand["coords"]]]
     lr = [float(v) for v in ligand["radii"]]
@@ -233,10 +235,9 @@ def flexible_receptor_dock(receptor, ligand, flex_residues,
         angles = [0.0] + angles
 
     # Stage one: soften and rank the poses on the receptor as supplied.
-    soft_e = [energy(rc, pose, rr, lr, soft, epsilon, cutoff)
-              for pose in poses]
+    soft_e = [energy(rc, pose, rr, lr, soft, epsilon, cutoff) for pose in poses]
     order = sorted(range(len(poses)), key=lambda i: (soft_e[i], i))
-    kept = order[:max(1, int(n_keep))]
+    kept = order[: max(1, int(n_keep))]
 
     def build(chosen):
         out = rc
@@ -261,8 +262,7 @@ def flexible_receptor_dock(receptor, ligand, flex_residues,
                 if bestc is None or e < bestc[0]:
                     bestc = (e, list(combo), rc2)
             rc2 = bestc[2]
-            cand = (energy(rc2, pose, rr, lr, 1.0, epsilon, cutoff),
-                    pi, bestc[1], bestc[0], rc2)
+            cand = (energy(rc2, pose, rr, lr, 1.0, epsilon, cutoff), pi, bestc[1], bestc[0], rc2)
         else:
             chosen = [0.0] * len(chis)
             cur = build(chosen)
@@ -274,49 +274,50 @@ def flexible_receptor_dock(receptor, ligand, flex_residues,
                         trial = list(chosen)
                         trial[k] = a
                         rc2 = build(trial)
-                        e2 = energy(rc2, pose, rr, lr, soft, epsilon,
-                                    cutoff)
+                        e2 = energy(rc2, pose, rr, lr, soft, epsilon, cutoff)
                         if e2 < e:
                             e, chosen, cur = e2, trial, rc2
                             moved = True
                 if not moved:
                     break
-            cand = (energy(cur, pose, rr, lr, 1.0, epsilon, cutoff),
-                    pi, chosen, e, cur)
+            cand = (energy(cur, pose, rr, lr, 1.0, epsilon, cutoff), pi, chosen, e, cur)
         if best is None or cand[0] < best[0]:
             best = cand
 
     e_hard, pi, chosen, e_soft, refined = best
     rigid_soft = energy(rc, poses[pi], rr, lr, soft, epsilon, cutoff)
     rigid_hard = energy(rc, poses[pi], rr, lr, 1.0, epsilon, cutoff)
-    return RichResult(payload={
-        "pose_index": pi,
-        "pose": poses[pi],
-        "chi": chosen,
-        "receptor": refined,
-        "energy": e_hard,
-        "energy_soft": e_soft,
-        "rigid_energy": rigid_hard,
-        "rigid_energy_soft": rigid_soft,
-        "gain": rigid_hard - e_hard,
-        "stage1": soft_e,
-        "stage1_order": order,
-        "kept": kept,
-        "n_pose": len(poses),
-        "n_chi": len(chis),
-        "n_receptor": len(rc),
-        "n_ligand": len(lr),
-        "soft": float(soft),
-        "cutoff": float(cutoff),
-        "epsilon": float(epsilon),
-        "angles": angles,
-        "search": search,
-        "method": "induced-fit docking: soften, refine side chains, "
-                  "rescore hard",
-    })
+    return RichResult(
+        payload={
+            "pose_index": pi,
+            "pose": poses[pi],
+            "chi": chosen,
+            "receptor": refined,
+            "energy": e_hard,
+            "energy_soft": e_soft,
+            "rigid_energy": rigid_hard,
+            "rigid_energy_soft": rigid_soft,
+            "gain": rigid_hard - e_hard,
+            "stage1": soft_e,
+            "stage1_order": order,
+            "kept": kept,
+            "n_pose": len(poses),
+            "n_chi": len(chis),
+            "n_receptor": len(rc),
+            "n_ligand": len(lr),
+            "soft": float(soft),
+            "cutoff": float(cutoff),
+            "epsilon": float(epsilon),
+            "angles": angles,
+            "search": search,
+            "method": "induced-fit docking: soften, refine side chains, rescore hard",
+        }
+    )
 
 
 def cheatsheet():
-    return ("flexrd: induced-fit docking. Soften the radii and rank "
-            "poses, turn the side-chain chi angles by Rodrigues "
-            "rotation, rescore at full radii")
+    return (
+        "flexrd: induced-fit docking. Soften the radii and rank "
+        "poses, turn the side-chain chi angles by Rodrigues "
+        "rotation, rescore at full radii"
+    )

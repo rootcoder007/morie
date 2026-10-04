@@ -3,8 +3,6 @@
 Replaces the generated stub, which imported ``mirt_factor_loading``.
 """
 
-import math
-
 from morie.fn.mfird import mfird
 
 
@@ -21,7 +19,7 @@ def test_a_larger_discrimination_gives_a_larger_loading():
     small = mfird([[0.2, 0.0]])["loadings"][0][0]
     large = mfird([[3.0, 0.0]])["loadings"][0][0]
     assert large > small
-    assert large < 1.0                    # a loading cannot reach one
+    assert large < 1.0  # a loading cannot reach one
 
 
 def test_zero_discrimination_gives_zero_loading():
@@ -48,9 +46,11 @@ def test_intercepts_become_thresholds():
 
 
 def test_validation():
-    for call in (lambda: mfird([[1.0, 0.5], [1.0]]),
-                 lambda: mfird([[1.0, 0.5]], d=[0.1, 0.2]),
-                 lambda: mfird([[0.99, 0.99]], inverse=True)):
+    for call in (
+        lambda: mfird([[1.0, 0.5], [1.0]]),
+        lambda: mfird([[1.0, 0.5]], d=[0.1, 0.2]),
+        lambda: mfird([[0.99, 0.99]], inverse=True),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

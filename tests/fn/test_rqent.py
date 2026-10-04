@@ -1,7 +1,6 @@
 """Tests for recurrence quantification entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rqent import recurrence_entropy, rqent
 
 

@@ -46,13 +46,17 @@ def normlap(W):
         raise ValueError("W must be square")
     d = [sum(W[i]) for i in range(n)]
     s = [0.0 if d[i] == 0.0 else 1.0 / math.sqrt(d[i]) for i in range(n)]
-    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)]
-         for i in range(n)]
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)] for i in range(n)]
     Lc = [[s[i] * L[i][j] * s[j] for j in range(n)] for i in range(n)]
-    return RichResult(payload={
-        "Lcal": Lc, "degree": d,
-        "isolated": [i + 1 for i in range(n) if d[i] == 0.0], "n": n,
-        "method": "Normalised Laplacian T^-1/2 L T^-1/2"})
+    return RichResult(
+        payload={
+            "Lcal": Lc,
+            "degree": d,
+            "isolated": [i + 1 for i in range(n) if d[i] == 0.0],
+            "n": n,
+            "method": "Normalised Laplacian T^-1/2 L T^-1/2",
+        }
+    )
 
 
 sgt_normalised_laplacian = normlap

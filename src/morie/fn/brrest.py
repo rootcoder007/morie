@@ -117,14 +117,19 @@ def brr_balanced(strata, fay_k=0.0):
             W[r, members[1 - pick]] = fay_k
     return RichResult(
         title="BRR half-samples",
-        summary_lines=[("strata", int(H)), ("replicates", int(R)),
-                       ("Fay k", fay_k)],
-        warnings=["pair these weights with the (1-k)^2 divisor in brr_variance; "
-                  "using fewer replicates than strata biases the variance"],
+        summary_lines=[("strata", int(H)), ("replicates", int(R)), ("Fay k", fay_k)],
+        warnings=[
+            "pair these weights with the (1-k)^2 divisor in brr_variance; "
+            "using fewer replicates than strata biases the variance"
+        ],
         payload={
-            "replicate_weights": W, "n_replicates": int(R),
-            "hadamard": Hm, "n_strata": int(H), "fay_k": fay_k,
-            "n": int(n), "method": "brr_balanced",
+            "replicate_weights": W,
+            "n_replicates": int(R),
+            "hadamard": Hm,
+            "n_strata": int(H),
+            "fay_k": fay_k,
+            "n": int(n),
+            "method": "brr_balanced",
         },
     )
 

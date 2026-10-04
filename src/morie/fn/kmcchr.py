@@ -33,29 +33,31 @@ def kamath_christiano_deep_rl_feedback(trajectory_pairs, r_phi):
     0.126928
     """
     if not callable(r_phi):
-        raise ValueError("r_phi must be a callable reward applied to a "
-                         "trajectory segment.")
+        raise ValueError("r_phi must be a callable reward applied to a trajectory segment.")
     pairs = list(trajectory_pairs)
     if len(pairs) == 0:
         raise ValueError("no preference comparisons were given.")
     rw, rl = [], []
     for k, pair in enumerate(pairs):
         if len(pair) != 2:
-            raise ValueError(
-                f"comparison {k} is not a (sigma_w, sigma_l) pair.")
+            raise ValueError(f"comparison {k} is not a (sigma_w, sigma_l) pair.")
         rw.append(float(r_phi(pair[0])))
         rl.append(float(r_phi(pair[1])))
     if not np.all(np.isfinite(rw + rl)):
         raise ValueError("r_phi returned a non-finite return.")
     bt = alammar_reward_model_training_bt(rw, rl)
-    return RichResult(payload={
-        "estimate": float(np.sum(bt["losses"])),
-        "mean_loss": bt["estimate"], "losses": bt["losses"],
-        "pair_accuracy": bt["pair_accuracy"],
-        "returns_preferred": rw, "returns_rejected": rl,
-        "n": len(pairs),
-        "method": "preference-based reward learning (Kamath Ch 5; the "
-                  "Bradley-Terry core in alrmt)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.sum(bt["losses"])),
+            "mean_loss": bt["estimate"],
+            "losses": bt["losses"],
+            "pair_accuracy": bt["pair_accuracy"],
+            "returns_preferred": rw,
+            "returns_rejected": rl,
+            "n": len(pairs),
+            "method": "preference-based reward learning (Kamath Ch 5; the Bradley-Terry core in alrmt)",
+        }
+    )
 
 
 def cheatsheet():

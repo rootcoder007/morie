@@ -22,8 +22,7 @@ def bilinear(F, y, x):
     x1 = min(x0 + 1, W - 1)
     dy = y - y0
     dx = x - x0
-    return (F[y0][x0] * (1 - dy) * (1 - dx) + F[y0][x1] * (1 - dy) * dx
-            + F[y1][x0] * dy * (1 - dx) + F[y1][x1] * dy * dx)
+    return F[y0][x0] * (1 - dy) * (1 - dx) + F[y0][x1] * (1 - dy) * dx + F[y1][x0] * dy * (1 - dx) + F[y1][x1] * dy * dx
 
 
 def deformable_detr(x, queries, K=4, offsets=None, weights=None, seed=42):
@@ -80,14 +79,12 @@ def deformable_detr(x, queries, K=4, offsets=None, weights=None, seed=42):
         raise ValueError("K must be at least 1")
     rng = np.random.default_rng(seed)
     if offsets is None:
-        off = [[[float(rng.normal(0.0, 1.0)) for _ in range(2)]
-                for _ in range(K)] for _ in range(Q)]
+        off = [[[float(rng.normal(0.0, 1.0)) for _ in range(2)] for _ in range(K)] for _ in range(Q)]
     else:
         flat = core.vec(offsets)
         if len(flat) != Q * K * 2:
             raise ValueError("offsets must hold Q x K x 2 values")
-        off = [[[flat[(q * K + k) * 2 + c] for c in range(2)]
-                for k in range(K)] for q in range(Q)]
+        off = [[[flat[(q * K + k) * 2 + c] for c in range(2)] for k in range(K)] for q in range(Q)]
     if weights is None:
         wt = [[1.0 / K] * K for _ in range(Q)]
     else:
@@ -109,15 +106,17 @@ def deformable_detr(x, queries, K=4, offsets=None, weights=None, seed=42):
             s += wt[q][k] * v
         samples.append(row)
         out.append(s / tot if tot != 0.0 else 0.0)
-    return RichResult(payload={
-        "estimate": sum(out) / Q,
-        "out": out,
-        "samples": samples,
-        "ref_pixels": refs,
-        "Q": Q,
-        "K": K,
-        "method": "Deformable DETR sparse attention",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(out) / Q,
+            "out": out,
+            "samples": samples,
+            "ref_pixels": refs,
+            "Q": Q,
+            "K": K,
+            "method": "Deformable DETR sparse attention",
+        }
+    )
 
 
 def cheatsheet():

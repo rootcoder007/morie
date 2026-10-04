@@ -1,7 +1,6 @@
 """Tests for dpgan.dp_gan."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpgan import dp_gan
 
 
@@ -22,6 +21,7 @@ def test_dpgan_basic():
     # The privatised gradient must equal DP-SGD on the same input, since
     # dp_gan is exactly DP-SGD with an extra -lr*g step accounted for.
     from morie.fn.dpsgd import dp_sgd
+
     ref = dp_sgd(G, C=1.0, sigma=1.0, lr=1.0, seed=0)["private_gradient"]
     assert bool(np.allclose(result["private_gradient"], ref))
 

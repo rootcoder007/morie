@@ -9,17 +9,11 @@ __all__ = ["kamath_ch6_lpbs_bias"]
 
 
 def _pair_probs(p, name):
-    v = np.atleast_1d(np.asarray(
-        [float(x) for x in (p.values() if isinstance(p, dict) else p)],
-        dtype=float))
+    v = np.atleast_1d(np.asarray([float(x) for x in (p.values() if isinstance(p, dict) else p)], dtype=float))
     if v.size != 2:
-        raise ValueError(
-            f"{name} must hold exactly two probabilities, one per social "
-            f"group; got {v.size}.")
+        raise ValueError(f"{name} must hold exactly two probabilities, one per social group; got {v.size}.")
     if np.any(v <= 0) or np.any(v > 1):
-        raise ValueError(
-            f"every entry of {name} must lie in (0, 1]; a zero makes the "
-            "log ratio undefined.")
+        raise ValueError(f"every entry of {name} must lie in (0, 1]; a zero makes the log ratio undefined.")
     return v
 
 
@@ -47,11 +41,15 @@ def kamath_ch6_lpbs_bias(p_a, p_prior):
     pa = _pair_probs(p_a, "p_a")
     pp = _pair_probs(p_prior, "p_prior")
     logs = np.log(pa / pp)
-    return RichResult(payload={
-        "estimate": float(logs[0] - logs[1]),
-        "normalised_log_i": float(logs[0]),
-        "normalised_log_j": float(logs[1]), "n": 2,
-        "method": "Log-Probability Bias Score (Kamath Eq 6.8)"})
+    return RichResult(
+        payload={
+            "estimate": float(logs[0] - logs[1]),
+            "normalised_log_i": float(logs[0]),
+            "normalised_log_j": float(logs[1]),
+            "n": 2,
+            "method": "Log-Probability Bias Score (Kamath Eq 6.8)",
+        }
+    )
 
 
 def cheatsheet():

@@ -124,17 +124,19 @@ def evt_pot_fit(x, u):
                 best = (nll, pr[1], pr[0])
     nll, sigma, xi = best
     zeta = k / float(n)
-    return RichResult(payload={
-        "sigma": sigma,
-        "xi": xi,
-        "zeta_u": zeta,
-        "estimate": xi,
-        "n_exceed": k,
-        "n": n,
-        "nll": nll,
-        "modified_scale": sigma - xi * u,
-        "method": "GPD maximum likelihood on threshold exceedances",
-    })
+    return RichResult(
+        payload={
+            "sigma": sigma,
+            "xi": xi,
+            "zeta_u": zeta,
+            "estimate": xi,
+            "n_exceed": k,
+            "n": n,
+            "nll": nll,
+            "modified_scale": sigma - xi * u,
+            "method": "GPD maximum likelihood on threshold exceedances",
+        }
+    )
 
 
 def cheatsheet():

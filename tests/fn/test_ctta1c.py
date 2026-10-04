@@ -1,7 +1,6 @@
 """Tests for ctta1c.ctt_alpha_classic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ctta1c import ctt_alpha_classic
 
 

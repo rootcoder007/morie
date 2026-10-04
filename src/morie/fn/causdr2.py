@@ -73,7 +73,7 @@ def causdr2(y, d, X, K=2, seed=1):
     if Xa.shape[0] != n or len(dv) != n:
         raise ValueError("y, d, X must have matching first dimension")
     K = int(K)
-    if K < 1 or K > n:
+    if K < 1 or n < K:
         raise ValueError("K must lie in 1..n")
     # The nuisance regressions add their own intercept, so a constant
     # column in X makes the design singular. That surfaced as a bare
@@ -86,7 +86,8 @@ def causdr2(y, d, X, K=2, seed=1):
             raise ValueError(
                 "causdr2: column %d of X is constant; the nuisance "
                 "regressions add their own intercept, so do not pass "
-                "one" % j)
+                "one" % j
+            )
     Dg = np.concatenate([np.ones((n, 1)), Xa], axis=1)
     if K == 1:
         folds = [0] * n
@@ -116,13 +117,16 @@ def causdr2(y, d, X, K=2, seed=1):
     psi = (ry - theta * v) * v
     J = -denom / n
     sigma2 = float(np.mean(psi * psi)) / (J * J)
-    return RichResult(payload={
-        "estimate": theta,
-        "se": float(np.sqrt(sigma2 / n)),
-        "K": K, "n": n,
-        "folds": [f + 1 for f in folds],
-        "method": "Chernozhukov et al. (2018) DML2, partialling-out score Eq. 4.4",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "se": float(np.sqrt(sigma2 / n)),
+            "K": K,
+            "n": n,
+            "folds": [f + 1 for f in folds],
+            "method": "Chernozhukov et al. (2018) DML2, partialling-out score Eq. 4.4",
+        }
+    )
 
 
 causal_orthogonal_score = causdr2
@@ -130,6 +134,7 @@ causal_orthogonal_score = causdr2
 
 def cheatsheet():
     return "causdr2(y, d, X, K, seed) -> DML2 partially linear theta with cross-fit OLS nuisances."
+
 
 # public names resolved by fn/_lazy_map.json
 causal_dr_orthogonal = causdr2

@@ -109,7 +109,9 @@ def geron_one_vs_one(X, y, base_estimator=None, X_new=None):
         for (i, j), f in zip(pairs, models):
             p = np.asarray(f(B), dtype=float).ravel()
             if p.size != B.shape[0]:
-                raise ValueError(f"geron_one_vs_one: pair classifier {(i, j)} returned {p.size} predictions for {B.shape[0]} rows")
+                raise ValueError(
+                    f"geron_one_vs_one: pair classifier {(i, j)} returned {p.size} predictions for {B.shape[0]} rows"
+                )
             tally[:, j] += p
             tally[:, i] += 1.0 - p
         return tally

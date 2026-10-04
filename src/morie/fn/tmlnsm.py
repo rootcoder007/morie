@@ -94,21 +94,29 @@ def tmle_non_smooth(y, D, X, bw):
             dens += inc * math.exp(-0.5 * u * u) / (bw * math.sqrt(2.0 * math.pi))
         if dens < 1e-12:
             raise ValueError("tmle_non_smooth: kernel density at the median is zero; widen bw")
-        icf = [(1.0 - w) * IC[a][j - 1][i] + w * IC[a][j][i] if j > 0 else IC[a][0][i]
-               for i in range(n)]
+        icf = [(1.0 - w) * IC[a][j - 1][i] + w * IC[a][j][i] if j > 0 else IC[a][0][i] for i in range(n)]
         out.append((m, dens, [-v / dens for v in icf]))
     est = out[1][0] - out[0][0]
     ic = [out[1][2][i] - out[0][2][i] for i in range(n)]
     mn = sum(ic) / n
     se = math.sqrt(sum((v - mn) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": est, "se": se, "m1": out[1][0], "m0": out[0][0],
-        "f1": out[1][1], "f0": out[0][1], "n": n,
-        "method": "TMLE for the counterfactual median difference"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "m1": out[1][0],
+            "m0": out[0][0],
+            "f1": out[1][1],
+            "f0": out[0][1],
+            "n": n,
+            "method": "TMLE for the counterfactual median difference",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlnsm: TMLE for a non-smooth functional (median difference)."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlenonsmooth = tmle_non_smooth

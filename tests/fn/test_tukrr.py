@@ -1,7 +1,6 @@
 """Tests for tukrr.tukey_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tukrr import tukey_regression
 
 

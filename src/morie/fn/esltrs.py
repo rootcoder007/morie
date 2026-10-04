@@ -67,7 +67,7 @@ def esl_basis_truncated(x, knots, p=3):
         raise ValueError(f"the degree must be >= 0; got {p}.")
     if knots.size and np.any(np.diff(np.sort(knots)) == 0):
         raise ValueError("duplicate knots make the basis rank deficient.")
-    cols = [x ** j for j in range(p + 1)]
+    cols = [x**j for j in range(p + 1)]
     for k in np.sort(knots):
         cols.append(np.where(x > k, (x - k) ** p, 0.0))
     B = np.column_stack(cols)
@@ -75,13 +75,18 @@ def esl_basis_truncated(x, knots, p=3):
         cond = float(np.linalg.cond(B))
     except np.linalg.LinAlgError:
         cond = float("inf")
-    return RichResult(payload={
-        "estimate": int(B.shape[1]),
-        "basis": [float(v) for v in B.ravel()],
-        "n_basis": int(B.shape[1]), "degree": p,
-        "knots": [float(v) for v in np.sort(knots)],
-        "condition_number": cond, "n": int(x.size),
-        "method": "truncated power basis; ill-conditioned by construction, B-splines preferred"})
+    return RichResult(
+        payload={
+            "estimate": int(B.shape[1]),
+            "basis": [float(v) for v in B.ravel()],
+            "n_basis": int(B.shape[1]),
+            "degree": p,
+            "knots": [float(v) for v in np.sort(knots)],
+            "condition_number": cond,
+            "n": int(x.size),
+            "method": "truncated power basis; ill-conditioned by construction, B-splines preferred",
+        }
+    )
 
 
 def cheatsheet():

@@ -19,10 +19,14 @@ def burkov_vector_norm(a):
     5.0
     """
     a = np.atleast_1d(np.asarray(a, dtype=float))
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(a)),
-        "squared": float(np.dot(a, a)), "n": len(a),
-        "method": "L2 norm (Burkov Ch 1)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(a)),
+            "squared": float(np.dot(a, a)),
+            "n": len(a),
+            "method": "L2 norm (Burkov Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

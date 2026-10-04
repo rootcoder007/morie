@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['friedmc', 'gibbons_friedman_mult']
+__all__ = ["friedmc", "gibbons_friedman_mult"]
 
 
 def friedmc(rank_sums, k, alpha=0.20):

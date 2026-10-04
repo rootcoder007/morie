@@ -1,7 +1,6 @@
 """Tests for spatial logistic regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sglgt import sglgt
 
 

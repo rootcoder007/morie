@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmprs — Competing risks."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmprs import competing_risks
 
 

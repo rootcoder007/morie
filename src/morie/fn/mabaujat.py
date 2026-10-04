@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Baujat plot coordinates for a meta-analysis."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['baujat', 'ma_baujat_plot_data']
+__all__ = ["baujat", "ma_baujat_plot_data"]
 
 
 def baujat(yi, vi):
@@ -39,7 +37,8 @@ def baujat(yi, vi):
     standardised squared difference between the overall estimate with
     and without that study.
     """
-    y = C.vec(yi); v = C.vec(vi)
+    y = C.vec(yi)
+    v = C.vec(vi)
     k = len(y)
     if any(t <= 0 for t in v):
         raise ValueError("variances must be positive")
@@ -51,13 +50,15 @@ def baujat(yi, vi):
         xs.append(w[i] * (y[i] - th) ** 2)
         sw_i = sw - w[i]
         if sw_i <= 0:
-            loo.append(float("nan")); ys.append(float("nan")); continue
+            loo.append(float("nan"))
+            ys.append(float("nan"))
+            continue
         th_i = (sum(w[j] * y[j] for j in range(k)) - w[i] * y[i]) / sw_i
         loo.append(th_i)
         ys.append((th - th_i) ** 2 * sw_i)
-    return RichResult(payload={
-        "x": xs, "y": ys, "theta_fe": th, "theta_loo": loo, "k": k,
-        "method": "Baujat plot coordinates"})
+    return RichResult(
+        payload={"x": xs, "y": ys, "theta_fe": th, "theta_loo": loo, "k": k, "method": "Baujat plot coordinates"}
+    )
 
 
 ma_baujat_plot_data = baujat

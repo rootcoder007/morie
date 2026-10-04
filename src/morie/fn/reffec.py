@@ -57,11 +57,16 @@ def effective_reproduction(R0, S, N):
         raise ValueError("effective_reproduction: S must lie in [0, N]")
     frac = S / N
     rt = R0 * frac
-    return RichResult(payload={
-        "estimate": rt, "Rt": rt, "growing": 1.0 if rt > 1.0 else 0.0,
-        "susceptible_fraction": frac,
-        "herd_immunity_threshold": 1.0 - 1.0 / R0 if R0 > 0.0 else float("nan"),
-        "method": "Effective reproduction number Rt = R0 S / N"})
+    return RichResult(
+        payload={
+            "estimate": rt,
+            "Rt": rt,
+            "growing": 1.0 if rt > 1.0 else 0.0,
+            "susceptible_fraction": frac,
+            "herd_immunity_threshold": 1.0 - 1.0 / R0 if R0 > 0.0 else float("nan"),
+            "method": "Effective reproduction number Rt = R0 S / N",
+        }
+    )
 
 
 def cheatsheet():

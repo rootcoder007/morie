@@ -1,4 +1,5 @@
 """Tests for evchibd.evt_chibar_dependence."""
+
 from morie.fn import _array_core as np
 from morie.fn.evchibd import evt_chibar_dependence
 

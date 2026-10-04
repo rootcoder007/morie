@@ -77,13 +77,21 @@ def random_walk(G, start=0, steps=1):
     for i in range(n):
         if p[i] > p[am]:
             am = i
-    return RichResult(payload={
-        "p": p, "estimate": p[am], "argmax": am, "p_start": p[start], "n": n,
-        "method": "Exact random-walk law e_start P^steps"})
+    return RichResult(
+        payload={
+            "p": p,
+            "estimate": p[am],
+            "argmax": am,
+            "p_start": p[start],
+            "n": n,
+            "method": "Exact random-walk law e_start P^steps",
+        }
+    )
 
 
 def cheatsheet():
     return "randwk: Random walk on a network"
+
 
 # public names resolved by fn/_lazy_map.json
 randomwalk = random_walk

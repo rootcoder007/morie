@@ -1,7 +1,6 @@
 """Tests for chwld.py - Choi-Williams distribution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.chwld import choi_williams_fn, chwld
 
 

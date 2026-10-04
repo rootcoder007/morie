@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_3h_alignment"]
 
 
-def kamath_3h_alignment(helpful_score, harmless_score, honest_score,
-                        weights=None):
+def kamath_3h_alignment(helpful_score, harmless_score, honest_score, weights=None):
     r"""score_3H = w_H*helpful + w_A*harmless + w_O*honest.
 
     The three rubric scores may be scalars or equal-length arrays of
@@ -33,13 +32,10 @@ def kamath_3h_alignment(helpful_score, harmless_score, honest_score,
     a = np.atleast_1d(np.asarray(harmless_score, dtype=float))
     o = np.atleast_1d(np.asarray(honest_score, dtype=float))
     if not (h.shape == a.shape == o.shape):
-        raise ValueError(
-            f"the three rubric scores must line up; got shapes "
-            f"{h.shape}, {a.shape} and {o.shape}.")
+        raise ValueError(f"the three rubric scores must line up; got shapes {h.shape}, {a.shape} and {o.shape}.")
     if h.size == 0:
         raise ValueError("no responses were scored.")
-    w = np.array([1 / 3, 1 / 3, 1 / 3]) if weights is None else \
-        np.atleast_1d(np.asarray(weights, dtype=float))
+    w = np.array([1 / 3, 1 / 3, 1 / 3]) if weights is None else np.atleast_1d(np.asarray(weights, dtype=float))
     if w.size != 3:
         raise ValueError(f"3H needs exactly 3 weights; got {w.size}.")
     if np.any(w < 0):
@@ -48,11 +44,16 @@ def kamath_3h_alignment(helpful_score, harmless_score, honest_score,
         raise ValueError("the 3H weights are all zero.")
     per = w[0] * h + w[1] * a + w[2] * o
     est = float(per[0]) if per.size == 1 else [float(v) for v in per]
-    return RichResult(payload={
-        "estimate": est, "score": [float(v) for v in per],
-        "weights": [float(v) for v in w], "weight_sum": float(w.sum()),
-        "n": int(per.size),
-        "method": "3H alignment score (Kamath Ch 5)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "score": [float(v) for v in per],
+            "weights": [float(v) for v in w],
+            "weight_sum": float(w.sum()),
+            "n": int(per.size),
+            "method": "3H alignment score (Kamath Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

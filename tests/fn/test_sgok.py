@@ -1,7 +1,6 @@
 """Tests for ordinary kriging."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgok import sgok
 
 

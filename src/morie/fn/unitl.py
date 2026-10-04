@@ -41,10 +41,18 @@ def unit_length_normalization(x):
     v = [float(t) for t in x]
     nrm = math.sqrt(sum(t * t for t in v))
     out = [t / nrm for t in v] if nrm > 0 else list(v)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(nrm), "x_unit": out, "norm": float(nrm),
-        "n": len(v), "method": "unit-length (L2) normalization",
-    }), "unitl")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(nrm),
+                "x_unit": out,
+                "norm": float(nrm),
+                "n": len(v),
+                "method": "unit-length (L2) normalization",
+            }
+        ),
+        "unitl",
+    )
 
 
 def cheatsheet():

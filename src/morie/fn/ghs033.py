@@ -5,16 +5,13 @@ Implements sec. 3.7.2 (theta-indexed prior mean, eq. 3.22 form) of Ghosal & van 
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_mixture_second_kind"]
 
 
-def ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta,
-                                              thetas, weights=None):
+def ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta, thetas, weights=None):
     """g_theta(x) = prod_j 2 alpha_{x_1..x_j}(theta) /
     (alpha_..0(theta) + alpha_..1(theta)): the eq. (3.22) prior mean
     density with theta-dependent parameters, mixed over theta
@@ -29,13 +26,17 @@ def ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta,
     for th in ths:
         m1 = 1.0
         for a_take, a_other in alpha_path_of_theta(th, x0):
-            m1 *= 2.0 * float(a_take) / (float(a_take)
-                                         + float(a_other))
+            m1 *= 2.0 * float(a_take) / (float(a_take) + float(a_other))
         per.append(m1)
     mix = sum(wi * gi for wi, gi in zip(w, per))
-    res = RichResult(payload={"estimate": mix, "distribution": mix,
-                              "per_theta": per,
-                              "method": "PT mixture second kind (GvdV 2017 sec. 3.7.2)"})
+    res = RichResult(
+        payload={
+            "estimate": mix,
+            "distribution": mix,
+            "per_theta": per,
+            "method": "PT mixture second kind (GvdV 2017 sec. 3.7.2)",
+        }
+    )
     return with_describe_pointer(res, "ghs033")
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.sntsr — proportion of sentence served."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sntsr import sentence_served
 
 

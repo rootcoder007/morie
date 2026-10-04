@@ -1,7 +1,6 @@
 """Tests for morie.fn.sntrl — sentence trends over years."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.sntrl import sentence_by_year
 
 

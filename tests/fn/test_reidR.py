@@ -1,7 +1,6 @@
 """Tests for reidR.reidentification_risk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.reidR import reidentification_risk
 
 

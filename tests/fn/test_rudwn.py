@@ -1,8 +1,8 @@
 """Tests for rudwn (runs up and down test)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rudwn import rudwn
 
 

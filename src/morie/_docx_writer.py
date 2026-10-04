@@ -84,7 +84,7 @@ class _Cell:
 
     def xml(self):
         body = "".join(p.xml() for p in self.paragraphs) or "<w:p/>"
-        return '<w:tc><w:tcPr><w:tcW w:w="0" w:type="auto"/>' f"</w:tcPr>{body}</w:tc>"
+        return f'<w:tc><w:tcPr><w:tcW w:w="0" w:type="auto"/></w:tcPr>{body}</w:tc>'
 
 
 class _Row:
@@ -118,7 +118,7 @@ class _Table:
             )
             + "</w:tblBorders>"
         )
-        return '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/>{}' "</w:tblPr>{}</w:tbl>".format(
+        return '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/>{}</w:tblPr>{}</w:tbl>'.format(
             borders, "".join(r.xml() for r in self.rows)
         )
 

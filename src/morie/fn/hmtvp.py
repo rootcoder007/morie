@@ -60,7 +60,12 @@ def pretprep(image, size, mean, sd, logits=None, topk=1):
     res = _core.pretprep(image=image, size=size, mean=mean, sd=sd, logits=logits, topk=topk)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("size", res["size"]), ("channels", res["channels"]), ("cropside", res["cropside"]), ("pixelmean", res["pixelmean"])],
+        summary_lines=[
+            ("size", res["size"]),
+            ("channels", res["channels"]),
+            ("cropside", res["cropside"]),
+            ("pixelmean", res["pixelmean"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

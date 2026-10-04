@@ -160,9 +160,7 @@ def cma_es(f, x0, sigma=0.5, Z=None, lam=None, iters=10):
         Cn = [[0.0] * N for _ in range(N)]
         for r in range(N):
             for c in range(N):
-                Cn[r][c] = (1.0 - c1 - cmu) * C[r][c] + c1 * (
-                    pc[r] * pc[c] + (1.0 - hsig) * cc * (2.0 - cc) * C[r][c]
-                )
+                Cn[r][c] = (1.0 - c1 - cmu) * C[r][c] + c1 * (pc[r] * pc[c] + (1.0 - hsig) * cc * (2.0 - cc) * C[r][c])
         for i in range(mu):
             y = ary[order[i]]
             for r in range(N):

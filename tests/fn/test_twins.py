@@ -1,7 +1,6 @@
 """Tests for morie.fn.twins -- phase locking value."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.twins import phase_locking_value, twins
 

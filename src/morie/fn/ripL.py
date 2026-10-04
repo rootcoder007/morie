@@ -75,8 +75,7 @@ def ripley_l_function(points, window=None, r=None, correction="border"):
     # letting max(K, 0) quietly turn an undefined value into zero -- with
     # the bounding box as the window this happens for every r beyond the
     # largest border distance.
-    lu = [float("nan") if kk[i] != kk[i] else np.sqrt(max(kk[i], 0.0) / np.pi)
-          for i in range(len(rr))]
+    lu = [float("nan") if kk[i] != kk[i] else np.sqrt(max(kk[i], 0.0) / np.pi) for i in range(len(rr))]
     lc = [lu[i] - rr[i] for i in range(len(rr))]
     return RichResult(
         title="Besag L function (centred)",

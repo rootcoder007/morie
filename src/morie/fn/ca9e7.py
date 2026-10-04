@@ -27,18 +27,17 @@ def ca_chapter_9_equation_7(groups):
     ch.9 eq.9.7
     """
     payload = dict(_ca_crim.anova_oneway(groups))
-    value = payload['f']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["f"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.7)"
     return RichResult(
-        title='One-way ANOVA F = MS_between / MS_within',
+        title="One-way ANOVA F = MS_between / MS_within",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e7: F = MS_between / MS_within [Weisburd et al. 2022, eq. 9.7]'
+    return "ca9e7: F = MS_between / MS_within [Weisburd et al. 2022, eq. 9.7]"

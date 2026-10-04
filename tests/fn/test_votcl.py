@@ -1,7 +1,6 @@
 """Test voting_classify (votcl)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.votcl import votcl, voting_classify
 

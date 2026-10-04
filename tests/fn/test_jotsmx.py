@@ -35,5 +35,3 @@ def test_jotsmx_edge():
     x = [[1.0, 2.0, 0.5, -1.0]]
     with pytest.raises(ValueError, match="horizon"):
         joseph_tsmixer(x, _w(4, 4, 0.1), [0.0] * 4, [[1.0]], [0.0], _w(3, 4, 0.3), [0.0] * 3, 2)
-
-

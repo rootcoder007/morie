@@ -106,9 +106,17 @@ def _vec(x, name):
     return v
 
 
-def dpoF(logp_w=None, logp_l=None, logp_ref_w=None, logp_ref_l=None,
-         beta=0.1, model="bradley-terry", logp=None, logp_ref=None,
-         label_smoothing=0.0):
+def dpoF(
+    logp_w=None,
+    logp_l=None,
+    logp_ref_w=None,
+    logp_ref_l=None,
+    beta=0.1,
+    model="bradley-terry",
+    logp=None,
+    logp_ref=None,
+    label_smoothing=0.0,
+):
     r"""Evaluate the DPO objective and its per-pair gradient weights.
 
     Parameters
@@ -152,8 +160,7 @@ def dpoF(logp_w=None, logp_l=None, logp_ref_w=None, logp_ref_l=None,
     and the gradient expression of section 4.
     """
     if model not in _MODELS:
-        raise ValueError("dpoF: model must be one of %r, got %r"
-                         % (_MODELS, model))
+        raise ValueError("dpoF: model must be one of %r, got %r" % (_MODELS, model))
     beta = float(beta)
     if not beta > 0.0:
         raise ValueError("dpoF: beta must be > 0, got %r" % (beta,))
@@ -163,16 +170,14 @@ def dpoF(logp_w=None, logp_l=None, logp_ref_w=None, logp_ref_l=None,
 
     eps = float(label_smoothing)
     if not 0.0 <= eps < 0.5:
-        raise ValueError("dpoF: label_smoothing must lie in [0, 0.5), "
-                         "got %r" % (eps,))
+        raise ValueError("dpoF: label_smoothing must lie in [0, 0.5), got %r" % (eps,))
     pw = _vec(logp_w, "logp_w")
     pl = _vec(logp_l, "logp_l")
     rw = _vec(logp_ref_w, "logp_ref_w")
     rl = _vec(logp_ref_l, "logp_ref_l")
     n = len(pw)
     if not (len(pl) == len(rw) == len(rl) == n):
-        raise ValueError("dpoF: logp_w, logp_l, logp_ref_w and logp_ref_l "
-                         "must have the same length")
+        raise ValueError("dpoF: logp_w, logp_l, logp_ref_w and logp_ref_l must have the same length")
 
     reward_w = [beta * (pw[i] - rw[i]) for i in range(n)]
     reward_l = [beta * (pl[i] - rl[i]) for i in range(n)]
@@ -180,40 +185,37 @@ def dpoF(logp_w=None, logp_l=None, logp_ref_w=None, logp_ref_l=None,
     if eps == 0.0:
         losses = [-_logsigmoid(m) for m in margin]
     else:
-        losses = [-(1.0 - eps) * _logsigmoid(m) - eps * _logsigmoid(-m)
-                  for m in margin]
+        losses = [-(1.0 - eps) * _logsigmoid(m) - eps * _logsigmoid(-m) for m in margin]
     grad_w = [_sigmoid(-m) for m in margin]
     acc = sum(1.0 for m in margin if m > 0.0) / n
 
     loss = sum(losses) / n
-    return RichResult(payload={
-        "estimate": float(loss),
-        "loss": float(loss),
-        "losses": losses,
-        "reward_w": reward_w,
-        "reward_l": reward_l,
-        "margin": margin,
-        "grad_weight": grad_w,
-        "accuracy": float(acc),
-        "beta": beta,
-        "n": n,
-        "model": "bradley-terry",
-        "method": "DPO (Rafailov et al. 2023 eq. 7)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(loss),
+            "loss": float(loss),
+            "losses": losses,
+            "reward_w": reward_w,
+            "reward_l": reward_l,
+            "margin": margin,
+            "grad_weight": grad_w,
+            "accuracy": float(acc),
+            "beta": beta,
+            "n": n,
+            "model": "bradley-terry",
+            "method": "DPO (Rafailov et al. 2023 eq. 7)",
+        }
+    )
 
 
 def _plackett_luce(logp, logp_ref, beta):
     r"""Eq. 20. Rows are rankings, already ordered best-first."""
     if logp is None or logp_ref is None:
-        raise ValueError("dpoF: model='plackett-luce' needs logp and "
-                         "logp_ref, shape (n_rankings, K)")
-    P = [[float(v) for v in row]
-         for row in np.atleast_2d(np.asarray(logp, dtype=float))]
-    R = [[float(v) for v in row]
-         for row in np.atleast_2d(np.asarray(logp_ref, dtype=float))]
+        raise ValueError("dpoF: model='plackett-luce' needs logp and logp_ref, shape (n_rankings, K)")
+    P = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(logp, dtype=float))]
+    R = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(logp_ref, dtype=float))]
     if len(P) != len(R):
-        raise ValueError("dpoF: logp and logp_ref must have the same "
-                         "number of rankings")
+        raise ValueError("dpoF: logp and logp_ref must have the same number of rankings")
     losses = []
     rewards = []
     for i, row in enumerate(P):
@@ -221,8 +223,7 @@ def _plackett_luce(logp, logp_ref, beta):
         if K < 2:
             raise ValueError("dpoF: each ranking needs K >= 2 completions")
         if len(R[i]) != K:
-            raise ValueError("dpoF: ranking %d has %d policy entries but %d "
-                             "reference entries" % (i, K, len(R[i])))
+            raise ValueError("dpoF: ranking %d has %d policy entries but %d reference entries" % (i, K, len(R[i])))
         rhat = [beta * (row[k] - R[i][k]) for k in range(K)]
         rewards.append(rhat)
         # log prod_k exp(r_k) / sum_{j>=k} exp(r_j)
@@ -231,16 +232,18 @@ def _plackett_luce(logp, logp_ref, beta):
             ll += rhat[k] - _logsumexp(rhat[k:])
         losses.append(-ll)
     loss = sum(losses) / len(losses)
-    return RichResult(payload={
-        "estimate": float(loss),
-        "loss": float(loss),
-        "losses": losses,
-        "rewards": rewards,
-        "beta": beta,
-        "n": len(losses),
-        "model": "plackett-luce",
-        "method": "DPO (Rafailov et al. 2023 eq. 20)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(loss),
+            "loss": float(loss),
+            "losses": losses,
+            "rewards": rewards,
+            "beta": beta,
+            "n": len(losses),
+            "model": "plackett-luce",
+            "method": "DPO (Rafailov et al. 2023 eq. 20)",
+        }
+    )
 
 
 def optimal_policy(logp_ref, reward, beta):
@@ -256,8 +259,7 @@ def optimal_policy(logp_ref, reward, beta):
     lr = _vec(logp_ref, "logp_ref")
     rr = _vec(reward, "reward")
     if len(lr) != len(rr):
-        raise ValueError("optimal_policy: logp_ref and reward must have "
-                         "the same length")
+        raise ValueError("optimal_policy: logp_ref and reward must have the same length")
     beta = float(beta)
     if not beta > 0.0:
         raise ValueError("optimal_policy: beta must be > 0")
@@ -267,11 +269,13 @@ def optimal_policy(logp_ref, reward, beta):
 
 
 def cheatsheet():
-    return ("dpoF: DPO loss -log sigma(beta log pi_w/ref_w - beta log "
-            "pi_l/ref_l) (Rafailov 2023 eq. 7); implicit reward "
-            "rhat = beta log pi/pi_ref; grad weight sigma(rhat_l - "
-            "rhat_w); model='plackett-luce' is eq. 20 and reduces to "
-            "eq. 7 at K=2. optimal_policy() is eq. 4.")
+    return (
+        "dpoF: DPO loss -log sigma(beta log pi_w/ref_w - beta log "
+        "pi_l/ref_l) (Rafailov 2023 eq. 7); implicit reward "
+        "rhat = beta log pi/pi_ref; grad weight sigma(rhat_l - "
+        "rhat_w); model='plackett-luce' is eq. 20 and reduces to "
+        "eq. 7 at K=2. optimal_policy() is eq. 4."
+    )
 
 
 # compact aliases per ledger/NAMING.md

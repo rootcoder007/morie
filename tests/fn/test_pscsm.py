@@ -1,7 +1,6 @@
 """Tests for pscsm.propensity_score_matching."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pscsm import propensity_score_matching
 
 

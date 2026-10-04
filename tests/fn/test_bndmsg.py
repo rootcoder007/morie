@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndmsg import bound_missing_outcome
 
 
@@ -18,8 +17,7 @@ def test_bndmsg_basic():
     assert isinstance(result, dict)
 
     # All six documented payload keys must be present.
-    for key in ("estimate", "lower", "upper", "width",
-                "p_observed", "mean_observed"):
+    for key in ("estimate", "lower", "upper", "width", "p_observed", "mean_observed"):
         assert key in result
 
     # Reconstruct the quantities from the inputs using the documented
@@ -44,8 +42,7 @@ def test_bndmsg_basic():
 
     # lower <= estimate <= upper and width == upper - lower.
     assert result["lower"] <= result["estimate"] <= result["upper"]
-    assert math.isclose(result["upper"] - result["lower"],
-                        result["width"], rel_tol=1e-12, abs_tol=1e-12)
+    assert math.isclose(result["upper"] - result["lower"], result["width"], rel_tol=1e-12, abs_tol=1e-12)
 
 
 def test_bndmsg_edge():
@@ -60,6 +57,4 @@ def test_bndmsg_edge():
     # Width must equal (y_max - y_min) * P(R = 0).
     n = len(R)
     p_obs = sum(int(r) for r in R) / n
-    assert math.isclose(result["width"],
-                        (y_max - y_min) * (1.0 - p_obs),
-                        rel_tol=1e-12, abs_tol=1e-12)
+    assert math.isclose(result["width"], (y_max - y_min) * (1.0 - p_obs), rel_tol=1e-12, abs_tol=1e-12)

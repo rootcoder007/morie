@@ -69,7 +69,7 @@ def exp3_bandit(x, gamma_, T=None, seed=0):
         raise ValueError("x must be a (T, K) reward table")
     rows, K = x.shape
     T = rows if T is None else int(T)
-    if T > rows:
+    if rows < T:
         raise ValueError("x has only %d rows" % rows)
     g = float(gamma_)
     if not (0.0 < g <= 1.0):
@@ -102,15 +102,17 @@ def exp3_bandit(x, gamma_, T=None, seed=0):
     for j in range(1, K):
         if w[j] > w[best]:
             best = j
-    return RichResult(payload={
-        "estimate": float(best),
-        "actions": actions,
-        "rewards": rewards,
-        "probs": probs,
-        "weights": np.asarray(w),
-        "total_reward": float(np.sum(rewards)),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": float(best),
+            "actions": actions,
+            "rewards": rewards,
+            "probs": probs,
+            "weights": np.asarray(w),
+            "total_reward": float(np.sum(rewards)),
+            "method": _METHOD,
+        }
+    )
 
 
 exp3 = exp3_bandit

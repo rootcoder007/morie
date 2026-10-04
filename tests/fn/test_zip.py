@@ -1,7 +1,6 @@
 """Tests for zero_inflated_poisson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zip import zero_inflated_poisson
 
 

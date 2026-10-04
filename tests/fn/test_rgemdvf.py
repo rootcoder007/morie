@@ -1,7 +1,6 @@
 """Tests for rgemdvf.rangayyan_emd_vf_detect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_emd_vf_detect
 
 

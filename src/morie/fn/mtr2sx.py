@@ -90,11 +90,9 @@ estimate itself.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["ratio_estimates", "ivw_variance", "ivw", "weighted_regression",
-           "heterogeneity", "MODELS", "WEIGHTS"]
+__all__ = ["ratio_estimates", "ivw_variance", "ivw", "weighted_regression", "heterogeneity", "MODELS", "WEIGHTS"]
 
 MODELS = ("multiplicative", "fixed", "additive")
 WEIGHTS = ("first_order", "second_order")
@@ -103,14 +101,11 @@ WEIGHTS = ("first_order", "second_order")
 def _check(beta_x, se_x, beta_y, se_y):
     L = len(beta_x)
     if not (L == len(se_x) == len(beta_y) == len(se_y)):
-        raise ValueError("mtr2sx: the four summary vectors must have "
-                         "the same length")
+        raise ValueError("mtr2sx: the four summary vectors must have the same length")
     if L == 0:
         raise ValueError("mtr2sx: no genetic variants supplied")
     if any(v == 0.0 for v in beta_x):
-        raise ValueError("mtr2sx: a variant with zero association to "
-                         "the risk factor has an undefined ratio "
-                         "estimate")
+        raise ValueError("mtr2sx: a variant with zero association to the risk factor has an undefined ratio estimate")
     if any(v <= 0.0 for v in se_y) or any(v < 0.0 for v in se_x):
         raise ValueError("mtr2sx: standard errors must be positive")
     return L
@@ -123,16 +118,13 @@ def ratio_estimates(beta_x, beta_y):
         raise ValueError("mtr2sx: mismatched lengths")
     if any(v == 0.0 for v in beta_x):
         raise ValueError("mtr2sx: zero association to the risk factor")
-    return [float(beta_y[j]) / float(beta_x[j])
-            for j in range(len(beta_x))]
+    return [float(beta_y[j]) / float(beta_x[j]) for j in range(len(beta_x))]
 
 
-def ivw_variance(beta_x, se_x, beta_y, se_y, weights="first_order",
-                 theta=0.0):
+def ivw_variance(beta_x, se_x, beta_y, se_y, weights="first_order", theta=0.0):
     r"""Delta-method variance of each ratio estimate, eqs (2)-(5)."""
     if weights not in WEIGHTS:
-        raise ValueError("mtr2sx: weights must be one of %s, got %r"
-                         % (", ".join(WEIGHTS), weights))
+        raise ValueError("mtr2sx: weights must be one of %s, got %r" % (", ".join(WEIGHTS), weights))
     L = _check(beta_x, se_x, beta_y, se_y)
     out = []
     for j in range(L):
@@ -140,12 +132,10 @@ def ivw_variance(beta_x, se_x, beta_y, se_y, weights="first_order",
         sy, sx = float(se_y[j]), float(se_x[j])
         v = sy * sy / (bx * bx)
         if weights == "second_order":
-            v += by * by * sx * sx / (bx ** 4)
-            v -= 2.0 * float(theta) * by * sy * sx / (bx ** 3)
+            v += by * by * sx * sx / (bx**4)
+            v -= 2.0 * float(theta) * by * sy * sx / (bx**3)
             if v <= 0.0:
-                raise ValueError("mtr2sx: the second-order variance "
-                                 "for variant %d is non-positive; "
-                                 "check theta" % j)
+                raise ValueError("mtr2sx: the second-order variance for variant %d is non-positive; check theta" % j)
         out.append(v)
     return out
 
@@ -160,9 +150,13 @@ def weighted_regression(beta_x, beta_y, w):
     resid = [beta_y[j] - est * beta_x[j] for j in range(len(w))]
     rss = sum(w[j] * resid[j] ** 2 for j in range(len(w)))
     dof = len(w) - 1
-    return {"estimate": est, "se_fixed": math.sqrt(1.0 / den),
-            "residuals": resid, "rss": rss,
-            "residual_se": math.sqrt(rss / dof) if dof > 0 else 1.0}
+    return {
+        "estimate": est,
+        "se_fixed": math.sqrt(1.0 / den),
+        "residuals": resid,
+        "rss": rss,
+        "residual_se": math.sqrt(rss / dof) if dof > 0 else 1.0,
+    }
 
 
 def heterogeneity(estimates, variances, pooled):
@@ -178,34 +172,28 @@ def heterogeneity(estimates, variances, pooled):
     sw2 = sum(v * v for v in w)
     denom = sw - sw2 / sw
     tau2 = max((Q - dof) / denom, 0.0) if denom > 0.0 else 0.0
-    return {"Q": Q, "df": dof, "tau2": tau2,
-            "I2": max(0.0, (Q - dof) / Q) if Q > 0.0 else 0.0}
+    return {"Q": Q, "df": dof, "tau2": tau2, "I2": max(0.0, (Q - dof) / Q) if Q > 0.0 else 0.0}
 
 
-def ivw(beta_x, se_x, beta_y, se_y, model="multiplicative",
-        weights="first_order", theta=0.0):
+def ivw(beta_x, se_x, beta_y, se_y, model="multiplicative", weights="first_order", theta=0.0):
     r"""The inverse-variance weighted causal estimate."""
     if model not in MODELS:
-        raise ValueError("mtr2sx: model must be one of %s, got %r"
-                         % (", ".join(MODELS), model))
+        raise ValueError("mtr2sx: model must be one of %s, got %r" % (", ".join(MODELS), model))
     L = _check(beta_x, se_x, beta_y, se_y)
     bx = [float(v) for v in beta_x]
     by = [float(v) for v in beta_y]
     var = ivw_variance(bx, se_x, by, se_y, weights, theta)
     ratios = ratio_estimates(bx, by)
     w = [1.0 / v for v in var]
-    est = (sum(ratios[j] * w[j] for j in range(L))
-           / sum(w))
+    est = sum(ratios[j] * w[j] for j in range(L)) / sum(w)
     se_fixed = math.sqrt(1.0 / sum(w))
     het = heterogeneity(ratios, var, est)
-    reg = weighted_regression(bx, by, [1.0 / (float(se_y[j]) ** 2)
-                                       for j in range(L)])
+    reg = weighted_regression(bx, by, [1.0 / (float(se_y[j]) ** 2) for j in range(L)])
     if model == "fixed":
         se = se_fixed
         phi = 1.0
     elif model == "multiplicative":
-        phi = max(math.sqrt(het["Q"] / het["df"]), 1.0) \
-            if het["df"] > 0 else 1.0
+        phi = max(math.sqrt(het["Q"] / het["df"]), 1.0) if het["df"] > 0 else 1.0
         se = se_fixed * phi
     else:
         w2 = [1.0 / (var[j] + het["tau2"]) for j in range(L)]
@@ -213,35 +201,45 @@ def ivw(beta_x, se_x, beta_y, se_y, model="multiplicative",
         se = math.sqrt(1.0 / sum(w2))
         phi = 1.0
     z = est / se if se > 0.0 else float("inf")
-    return RichResult(payload={
-        "estimate": est, "se": se, "z": z,
-        "p_value": math.erfc(abs(z) / math.sqrt(2.0)),
-        "ci": (est - 1.96 * se, est + 1.96 * se),
-        "ratio_estimates": ratios, "variances": var,
-        "weights_used": weights, "model": model,
-        "phi_multiplicative": phi, "tau2": het["tau2"],
-        "Q": het["Q"], "df": het["df"], "I2": het["I2"],
-        "se_fixed": se_fixed,
-        "regression_estimate": reg["estimate"],
-        "regression_se_fixed": reg["se_fixed"],
-        "n_variants": L,
-        "method": "inverse-variance weighted MR (%s model, %s "
-                  "weights); Burgess & Bowden (2015) Sec. 2"
-                  % (model, weights),
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "z": z,
+            "p_value": math.erfc(abs(z) / math.sqrt(2.0)),
+            "ci": (est - 1.96 * se, est + 1.96 * se),
+            "ratio_estimates": ratios,
+            "variances": var,
+            "weights_used": weights,
+            "model": model,
+            "phi_multiplicative": phi,
+            "tau2": het["tau2"],
+            "Q": het["Q"],
+            "df": het["df"],
+            "I2": het["I2"],
+            "se_fixed": se_fixed,
+            "regression_estimate": reg["estimate"],
+            "regression_se_fixed": reg["se_fixed"],
+            "n_variants": L,
+            "method": "inverse-variance weighted MR (%s model, %s "
+            "weights); Burgess & Bowden (2015) Sec. 2" % (model, weights),
+        }
+    )
 
 
 def cheatsheet():
-    return ("mtr2sx: IVW = weighted mean of the per-variant ratio "
-            "estimates beta_Y/beta_X, identically a weighted "
-            "regression of beta_Y on beta_X through the origin with "
-            "sigma_Y^-2 weights, identically 2SLS for uncorrelated "
-            "variants. First-order weights over-reject under sample "
-            "overlap -- use the second-order delta weights with "
-            "theta. Fixed and multiplicative share a point estimate "
-            "and differ by phi_M (floored at 1); the additive "
-            "DerSimonian-Laird model moves the estimate too. "
-            "Multiplicative is the default, as the paper recommends.")
+    return (
+        "mtr2sx: IVW = weighted mean of the per-variant ratio "
+        "estimates beta_Y/beta_X, identically a weighted "
+        "regression of beta_Y on beta_X through the origin with "
+        "sigma_Y^-2 weights, identically 2SLS for uncorrelated "
+        "variants. First-order weights over-reject under sample "
+        "overlap -- use the second-order delta weights with "
+        "theta. Fixed and multiplicative share a point estimate "
+        "and differ by phi_M (floored at 1); the additive "
+        "DerSimonian-Laird model moves the estimate too. "
+        "Multiplicative is the default, as the paper recommends."
+    )
 
 
 # compact alias per ledger/NAMING.md

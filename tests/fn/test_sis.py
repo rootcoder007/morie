@@ -1,8 +1,8 @@
 """Tests for morie.fn.sis — SIS compartmental model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sis import sis_model
 
 

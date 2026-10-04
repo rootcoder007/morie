@@ -63,13 +63,10 @@ Springer, doi:10.1007/978-3-319-65304-4_19.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["lag_summary", "stochastic_intervention",
-           "martingale_variance", "martingale_check",
-           "online_tmle_series"]
+__all__ = ["lag_summary", "stochastic_intervention", "martingale_variance", "martingale_check", "online_tmle_series"]
 
 _EPS = 1e-12
 
@@ -82,7 +79,7 @@ def lag_summary(series, t, lags=2):
         raise ValueError("tlonts: lags must be non-negative")
     if t <= 0:
         return [0.0] * L
-    past = v[max(0, t - L):t]
+    past = v[max(0, t - L) : t]
     return [0.0] * (L - len(past)) + past
 
 
@@ -97,17 +94,18 @@ def stochastic_intervention(A, nodes, shift=None, prob=None):
     a = [float(v) for v in k.vec(A)]
     idx = set(int(v) for v in nodes)
     if any(v < 0 or v >= len(a) for v in idx):
-        raise ValueError("tlonts: an intervention node is outside the "
-                         "series")
+        raise ValueError("tlonts: an intervention node is outside the series")
     if (shift is None) == (prob is None):
         raise ValueError("tlonts: give exactly one of shift or prob")
     out = list(a)
     for i in idx:
-        out[i] = a[i] + float(shift) if shift is not None \
-            else float(prob)
-    return {"intervened": out, "nodes": sorted(idx),
-            "n_intervened": len(idx),
-            "kind": "shift" if shift is not None else "bernoulli"}
+        out[i] = a[i] + float(shift) if shift is not None else float(prob)
+    return {
+        "intervened": out,
+        "nodes": sorted(idx),
+        "n_intervened": len(idx),
+        "kind": "shift" if shift is not None else "bernoulli",
+    }
 
 
 def martingale_variance(D):
@@ -123,9 +121,12 @@ def martingale_variance(D):
     if T < 2:
         raise ValueError("tlonts: at least 2 time points are needed")
     s2 = sum(q * q for q in v) / T
-    return {"variance": s2, "se": math.sqrt(s2 / T), "T": T,
-            "note": "asymptotics are in TIME, not in independent "
-                    "units"}
+    return {
+        "variance": s2,
+        "se": math.sqrt(s2 / T),
+        "T": T,
+        "note": "asymptotics are in TIME, not in independent units",
+    }
 
 
 def martingale_check(D, past, tol=0.2):
@@ -138,17 +139,17 @@ def martingale_check(D, past, tol=0.2):
     d = [float(q) for q in k.vec(D)]
     p = [float(q) for q in k.vec(past)]
     if len(d) != len(p):
-        raise ValueError("tlonts: %d influence terms but %d past "
-                         "values" % (len(d), len(p)))
+        raise ValueError("tlonts: %d influence terms but %d past values" % (len(d), len(p)))
     n = len(d)
     md, mp = sum(d) / n, sum(p) / n
     num = sum((d[i] - md) * (p[i] - mp) for i in range(n))
-    den = math.sqrt(sum((d[i] - md) ** 2 for i in range(n))
-                    * sum((p[i] - mp) ** 2 for i in range(n)))
+    den = math.sqrt(sum((d[i] - md) ** 2 for i in range(n)) * sum((p[i] - mp) ** 2 for i in range(n)))
     r = num / den if den > _EPS else 0.0
-    return {"correlation": r, "is_martingale": abs(r) < float(tol),
-            "note": "a non-zero correlation says the summary measure "
-                    "omits something the present still depends on"}
+    return {
+        "correlation": r,
+        "is_martingale": abs(r) < float(tol),
+        "note": "a non-zero correlation says the summary measure omits something the present still depends on",
+    }
 
 
 def online_tmle_series(Y, A, Z, Q_fn, g_fn, target_prob, burn_in=10):
@@ -172,8 +173,7 @@ def online_tmle_series(Y, A, Z, Q_fn, g_fn, target_prob, burn_in=10):
     for t in range(b, T):
         g = float(g_fn(z[t]))
         if g <= 0.0 or g >= 1.0:
-            raise ValueError("tlonts: the treatment probability left "
-                             "(0,1) at time %d" % t)
+            raise ValueError("tlonts: the treatment probability left (0,1) at time %d" % t)
         gs = float(target_prob)
         h = (gs / g) if a[t] == 1.0 else ((1.0 - gs) / (1.0 - g))
         q1 = float(Q_fn(1.0, z[t]))
@@ -185,32 +185,38 @@ def online_tmle_series(Y, A, Z, Q_fn, g_fn, target_prob, burn_in=10):
         est.append(cur)
         D.append(h * (y[t] - qa) + psi_t - cur)
     mv = martingale_variance(D)
-    return RichResult(payload={
-        "estimate": est[-1], "psi": est[-1], "path": est,
-        "se": mv["se"], "ci": (est[-1] - 1.96 * mv["se"],
-                               est[-1] + 1.96 * mv["se"]),
-        "T_scored": mv["T"],
-        "method": "online TMLE for a time series under a stochastic "
-                  "intervention; van der Laan & Rose (2018) Chap. 19",
-        "note": "one series, no independent units -- the sample size "
-                "is TIME, and the influence terms form a martingale "
-                "difference sequence",
-    })
+    return RichResult(
+        payload={
+            "estimate": est[-1],
+            "psi": est[-1],
+            "path": est,
+            "se": mv["se"],
+            "ci": (est[-1] - 1.96 * mv["se"], est[-1] + 1.96 * mv["se"]),
+            "T_scored": mv["T"],
+            "method": "online TMLE for a time series under a stochastic "
+            "intervention; van der Laan & Rose (2018) Chap. 19",
+            "note": "one series, no independent units -- the sample size "
+            "is TIME, and the influence terms form a martingale "
+            "difference sequence",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlonts: ONE time series -- covariate, treatment, outcome "
-            "at each step -- with the conditional law depending on the "
-            "past only through a FIXED-DIMENSIONAL summary and a "
-            "time-invariant mechanism. Effects are defined by "
-            "STOCHASTIC interventions on a SUBSET of future treatment "
-            "nodes, since with a single series there is no population "
-            "to set treatment for. Sample size comes from TIME: the "
-            "influence terms are a MARTINGALE difference sequence, so "
-            "variance is the sum of squares and the CLT is the "
-            "martingale one. If the summary is too small the "
-            "martingale property fails and the interval is simply "
-            "wrong.")
+    return (
+        "tlonts: ONE time series -- covariate, treatment, outcome "
+        "at each step -- with the conditional law depending on the "
+        "past only through a FIXED-DIMENSIONAL summary and a "
+        "time-invariant mechanism. Effects are defined by "
+        "STOCHASTIC interventions on a SUBSET of future treatment "
+        "nodes, since with a single series there is no population "
+        "to set treatment for. Sample size comes from TIME: the "
+        "influence terms are a MARTINGALE difference sequence, so "
+        "variance is the sum of squares and the CLT is the "
+        "martingale one. If the summary is too small the "
+        "martingale property fails and the interval is simply "
+        "wrong."
+    )
 
 
 # compact alias per ledger/NAMING.md

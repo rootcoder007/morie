@@ -1,7 +1,6 @@
 """Tests for stefan.stefan_boltzmann."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stefan import stefan_boltzmann
 
 

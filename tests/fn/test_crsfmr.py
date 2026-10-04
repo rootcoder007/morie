@@ -1,13 +1,19 @@
 """crsfmr -- Crossformer. Source: Zhang, Y. & Yan, J. (2023)
 "Crossformer: Transformer Utilizing Cross-Dimension Dependency for
 Multivariate Time Series Forecasting", ICLR 2023 (no DOI)."""
+
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.crsfmr import (attention, complexity,
-                             cross_dimension_stage, cross_time_stage,
-                             dsw_embed, segment_merge,
-                             two_stage_attention)
+from morie.fn.crsfmr import (
+    attention,
+    complexity,
+    cross_dimension_stage,
+    cross_time_stage,
+    dsw_embed,
+    segment_merge,
+    two_stage_attention,
+)
 
 T, D, LSEG = 24, 4, 6
 
@@ -31,8 +37,7 @@ def test_the_identity_projection_returns_the_raw_segment():
 def test_segments_partition_the_series():
     X = series()
     e = dsw_embed(X, LSEG)
-    flat = [e["H"][i][0][q] for i in range(e["n_seg"])
-            for q in range(LSEG)]
+    flat = [e["H"][i][0][q] for i in range(e["n_seg"]) for q in range(LSEG)]
     assert flat == [X[t][0] for t in range(T)]
 
 
@@ -106,16 +111,13 @@ def test_cross_time_is_equivariant_to_dimension_permutation():
     for i in range(len(a)):
         for d in range(D):
             for q in range(LSEG):
-                assert b[i][d][q] == pytest.approx(a[i][perm[d]][q],
-                                                   abs=1e-12)
+                assert b[i][d][q] == pytest.approx(a[i][perm[d]][q], abs=1e-12)
 
 
 def test_the_router_changes_the_array():
     Z = cross_time_stage(dsw_embed(series(), LSEG)["H"])
     zd = cross_dimension_stage(Z, n_router=2)
-    assert any(abs(zd[i][d][q] - Z[i][d][q]) > 1e-6
-               for i in range(len(Z)) for d in range(D)
-               for q in range(LSEG))
+    assert any(abs(zd[i][d][q] - Z[i][d][q]) > 1e-6 for i in range(len(Z)) for d in range(D) for q in range(LSEG))
 
 
 def test_a_router_below_one_is_refused():
@@ -152,8 +154,7 @@ def test_a_merged_vector_is_the_mean_of_its_parts():
     m = segment_merge(Z, 2)
     for d in range(D):
         for q in range(LSEG):
-            assert m[0][d][q] == pytest.approx(
-                0.5 * (Z[0][d][q] + Z[1][d][q]), abs=1e-12)
+            assert m[0][d][q] == pytest.approx(0.5 * (Z[0][d][q] + Z[1][d][q]), abs=1e-12)
 
 
 def test_an_indivisible_merge_is_refused():

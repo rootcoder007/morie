@@ -27,8 +27,7 @@ def loglinear_odds_ratio(bxz_ij, bxz_ipjp, bxz_ipj, bxz_ijp):
     """
     value = _acd.loglinear_odds_ratio(bxz_ij, bxz_ipjp, bxz_ipj, bxz_ijp)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.7)"

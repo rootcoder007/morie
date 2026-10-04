@@ -1,8 +1,8 @@
 """Tests for dvres.deviance_residual_cox."""
+
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.dvres import deviance_residual_cox
 from morie.fn.efrnt import efron_tie_correction
 

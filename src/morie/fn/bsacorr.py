@@ -10,130 +10,130 @@ from __future__ import annotations
 
 import math as _math
 from math import atan2 as _atan2
-from math import cos, fsum, log, log10, pi, sin, sqrt
+from math import cos, fsum, log10, pi, sin, sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._containers import DescriptiveResult, SignalResult
 from ._rgcore import aslist, gridint
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = [
-    'coherence',
-    'matched_filter',
-    'rangayyan_acf_estimate',
-    'rangayyan_bartlett_psd',
-    'rangayyan_bandwidth',
-    'xcorr',
-    'rangayyan_ccf',
-    'cardioresp',
-    'rangayyan_coupled_freq_select',
-    'rangayyan_coherence',
-    'msc',
-    'rangayyan_coherence_cxy',
-    'rangayyan_eeg_bands',
-    'eegacf',
-    'rangayyan_eeg_autocorr',
-    'alpharhy',
-    'rangayyan_eeg_rhythm_detect',
-    'rangayyan_eeg_spectral',
-    'emgfreq',
-    'rangayyan_emg_peak_freq',
-    'corrconv',
-    'rangayyan_ch3_correlation_sum',
-    'erpartifact',
-    'rangayyan_erp_artifact_remove',
-    'matchedfilt',
-    'rangayyan_matched_filter',
-    'mfmaxsnr',
-    'rangayyan_matched_filter_snr',
-    'rangayyan_periodogram',
-    'rangayyan_psd',
-    'psdhz',
-    'rangayyan_psd_to_hz',
-    'rangayyan_psd_to_acf',
-    'pcgsyncavg',
-    'rangayyan_pcg_sync_avg',
-    'seizcohere',
-    'rangayyan_seizure_detect',
-    'specmoments',
-    'rangayyan_spectral_moments',
-    'specres',
-    'rangayyan_spectral_resolution',
-    'template',
-    'rangayyan_template_match',
-    'rangayyan_welch_psd',
-    'rangayyan_ch3_acf_continuous',
-    'rangayyan_ch3_acf_ensemble_estimate',
-    'ensavg',
-    'rangayyan_ch3_ensemble_average_function',
-    'rangayyan_ch3_time_averaged_acf',
-    'xcorrproc',
-    'rangayyan_ch3_ccf_continuous',
-    'idft',
-    'rangayyan_ch3_idft_definition',
-    'parseval',
-    'rangayyan_ch3_parseval_theorem',
-    'syncsum',
-    'rangayyan_ch3_synchronized_averaging_sum',
-    'nccftpl',
-    'rangayyan_ch3_normalized_cross_correlation_template',
-    'dotprod',
-    'rangayyan_ch4_dot_product_discrete',
-    'corrdot',
-    'rangayyan_ch4_correlation_coefficient_normalized_dot',
-    'contproj',
-    'rangayyan_ch4_continuous_dot_product',
-    'xcorrcont',
-    'rangayyan_ch4_ccf_continuous_with_delay',
-    'xcorrdisc',
-    'rangayyan_ch4_ccf_discrete_with_delay',
-    'ccfouter',
-    'rangayyan_ch4_ccf_outer_product_random_signals',
-    'csd',
-    'rangayyan_ch4_csd_from_ccf',
-    'cohere',
-    'rangayyan_ch4_coherence_spectrum',
-    'mfinput',
-    'rangayyan_ch4_matched_filter_input_ft',
-    'mfoutput',
-    'rangayyan_ch4_matched_filter_output_inverse_ft',
-    'mfnoisein',
-    'rangayyan_ch4_white_noise_psd_input',
-    'mfnoiseout',
-    'rangayyan_ch4_noise_psd_at_output',
-    'rangayyan_ch4_average_output_noise_power',
-    'mfpeak',
-    'rangayyan_ch4_matched_filter_instantaneous_signal',
-    'mfsnr',
-    'rangayyan_ch4_peak_power_snr',
-    'sigenergy',
-    'rangayyan_ch4_signal_total_energy',
-    'mfratio',
-    'rangayyan_ch4_snr_normalized_ratio',
-    'schwarzc',
-    'rangayyan_ch4_schwarz_inequality_complex',
-    'schwarzr',
-    'rangayyan_ch4_schwarz_inequality_real',
-    'cauchysch',
-    'rangayyan_ch4_cauchy_schwarz_vectors',
-    'triangle',
-    'rangayyan_ch4_triangle_inequality_vectors',
-    'mftf',
-    'rangayyan_ch4_matched_filter_optimal_transfer_function',
-    'mfimpulse',
-    'rangayyan_ch4_matched_filter_impulse_response',
-    'mfacf',
-    'rangayyan_ch4_matched_filter_output_acf',
-    'refpattern',
-    'rangayyan_ch4_basic_signal_g',
-    'mftfeeg',
-    'rangayyan_ch4_matched_filter_optimal_H_eeg',
-    'mfimpeeg',
-    'rangayyan_ch4_matched_filter_impulse_response_eeg',
-    'mfpsd',
-    'rangayyan_ch4_matched_filter_output_psd',
+    "coherence",
+    "matched_filter",
+    "rangayyan_acf_estimate",
+    "rangayyan_bartlett_psd",
+    "rangayyan_bandwidth",
+    "xcorr",
+    "rangayyan_ccf",
+    "cardioresp",
+    "rangayyan_coupled_freq_select",
+    "rangayyan_coherence",
+    "msc",
+    "rangayyan_coherence_cxy",
+    "rangayyan_eeg_bands",
+    "eegacf",
+    "rangayyan_eeg_autocorr",
+    "alpharhy",
+    "rangayyan_eeg_rhythm_detect",
+    "rangayyan_eeg_spectral",
+    "emgfreq",
+    "rangayyan_emg_peak_freq",
+    "corrconv",
+    "rangayyan_ch3_correlation_sum",
+    "erpartifact",
+    "rangayyan_erp_artifact_remove",
+    "matchedfilt",
+    "rangayyan_matched_filter",
+    "mfmaxsnr",
+    "rangayyan_matched_filter_snr",
+    "rangayyan_periodogram",
+    "rangayyan_psd",
+    "psdhz",
+    "rangayyan_psd_to_hz",
+    "rangayyan_psd_to_acf",
+    "pcgsyncavg",
+    "rangayyan_pcg_sync_avg",
+    "seizcohere",
+    "rangayyan_seizure_detect",
+    "specmoments",
+    "rangayyan_spectral_moments",
+    "specres",
+    "rangayyan_spectral_resolution",
+    "template",
+    "rangayyan_template_match",
+    "rangayyan_welch_psd",
+    "rangayyan_ch3_acf_continuous",
+    "rangayyan_ch3_acf_ensemble_estimate",
+    "ensavg",
+    "rangayyan_ch3_ensemble_average_function",
+    "rangayyan_ch3_time_averaged_acf",
+    "xcorrproc",
+    "rangayyan_ch3_ccf_continuous",
+    "idft",
+    "rangayyan_ch3_idft_definition",
+    "parseval",
+    "rangayyan_ch3_parseval_theorem",
+    "syncsum",
+    "rangayyan_ch3_synchronized_averaging_sum",
+    "nccftpl",
+    "rangayyan_ch3_normalized_cross_correlation_template",
+    "dotprod",
+    "rangayyan_ch4_dot_product_discrete",
+    "corrdot",
+    "rangayyan_ch4_correlation_coefficient_normalized_dot",
+    "contproj",
+    "rangayyan_ch4_continuous_dot_product",
+    "xcorrcont",
+    "rangayyan_ch4_ccf_continuous_with_delay",
+    "xcorrdisc",
+    "rangayyan_ch4_ccf_discrete_with_delay",
+    "ccfouter",
+    "rangayyan_ch4_ccf_outer_product_random_signals",
+    "csd",
+    "rangayyan_ch4_csd_from_ccf",
+    "cohere",
+    "rangayyan_ch4_coherence_spectrum",
+    "mfinput",
+    "rangayyan_ch4_matched_filter_input_ft",
+    "mfoutput",
+    "rangayyan_ch4_matched_filter_output_inverse_ft",
+    "mfnoisein",
+    "rangayyan_ch4_white_noise_psd_input",
+    "mfnoiseout",
+    "rangayyan_ch4_noise_psd_at_output",
+    "rangayyan_ch4_average_output_noise_power",
+    "mfpeak",
+    "rangayyan_ch4_matched_filter_instantaneous_signal",
+    "mfsnr",
+    "rangayyan_ch4_peak_power_snr",
+    "sigenergy",
+    "rangayyan_ch4_signal_total_energy",
+    "mfratio",
+    "rangayyan_ch4_snr_normalized_ratio",
+    "schwarzc",
+    "rangayyan_ch4_schwarz_inequality_complex",
+    "schwarzr",
+    "rangayyan_ch4_schwarz_inequality_real",
+    "cauchysch",
+    "rangayyan_ch4_cauchy_schwarz_vectors",
+    "triangle",
+    "rangayyan_ch4_triangle_inequality_vectors",
+    "mftf",
+    "rangayyan_ch4_matched_filter_optimal_transfer_function",
+    "mfimpulse",
+    "rangayyan_ch4_matched_filter_impulse_response",
+    "mfacf",
+    "rangayyan_ch4_matched_filter_output_acf",
+    "refpattern",
+    "rangayyan_ch4_basic_signal_g",
+    "mftfeeg",
+    "rangayyan_ch4_matched_filter_optimal_H_eeg",
+    "mfimpeeg",
+    "rangayyan_ch4_matched_filter_impulse_response_eeg",
+    "mfpsd",
+    "rangayyan_ch4_matched_filter_output_psd",
 ]
+
 
 def _angle(z):
     """Principal argument in (-pi, pi], without importing cmath."""
@@ -319,9 +319,16 @@ def rangayyan_acf_estimate(x, max_lag=None, biased=False):
     raw = np.array([float(np.dot(x[: N - m], x[m:])) for m in lags])
     unb = raw / (N - lags)
     bia = raw / N
-    return RichResult(payload={"lags": lags, "acf": bia if biased else unb,
-                               "acf_unbiased": unb, "acf_biased": bia, "N": int(N),
-                               "method": "R_xx(m) with divisor N-|m| (unbiased, not PSD-guaranteed)"})
+    return RichResult(
+        payload={
+            "lags": lags,
+            "acf": bia if biased else unb,
+            "acf_unbiased": unb,
+            "acf_biased": bia,
+            "N": int(N),
+            "method": "R_xx(m) with divisor N-|m| (unbiased, not PSD-guaranteed)",
+        }
+    )
 
 
 # -- rgbartl: Bartlett's averaged periodogram.
@@ -403,7 +410,7 @@ def rangayyan_bartlett_psd(x, fs=1.0, n_segments=None, segment_length=None):
 
     acc = None
     for i in range(k):
-        seg = xs[i * m:(i + 1) * m]
+        seg = xs[i * m : (i + 1) * m]
         p = [v / m for v in _dft_power(seg)]
         acc = p if acc is None else [a + b for a, b in zip(acc, p)]
     psd = [v / k for v in acc]
@@ -411,9 +418,13 @@ def rangayyan_bartlett_psd(x, fs=1.0, n_segments=None, segment_length=None):
     return RichResult(
         title="Bartlett averaged periodogram (Rangayyan eq. 6.16)",
         summary_lines=[("segments", k), ("segment length", m)],
-        payload={"psd": psd, "freqs": freqs, "n_segments": k,
-                 "segment_length": m,
-                 "method": "Rangayyan (2024) eqs. (6.14)-(6.16)"},
+        payload={
+            "psd": psd,
+            "freqs": freqs,
+            "n_segments": k,
+            "segment_length": m,
+            "method": "Rangayyan (2024) eqs. (6.14)-(6.16)",
+        },
     )
 
 
@@ -463,7 +474,7 @@ def rangayyan_bandwidth(psd, freqs, criterion="3dB"):
     ipk = int(np.argmax(S))
     if criterion == "3dB":
         thr = S[ipk] / 2.0
-        above = np.flatnonzero(S >= thr)
+        above = np.flatnonzero(thr <= S)
         lo, hi = float(f[above[0]]), float(f[above[-1]])
     elif criterion == "99":
         total = float(S.sum())
@@ -483,9 +494,16 @@ def rangayyan_bandwidth(psd, freqs, criterion="3dB"):
         lo, hi = float(f[lo_i]), float(f[hi_i])
     else:
         raise ValueError("criterion must be '3dB' or '99'.")
-    return RichResult(payload={"bandwidth": hi - lo, "f_low": lo, "f_high": hi,
-                               "f_peak": float(f[ipk]), "criterion": criterion,
-                               "method": f"{criterion} bandwidth about the spectral peak"})
+    return RichResult(
+        payload={
+            "bandwidth": hi - lo,
+            "f_low": lo,
+            "f_high": hi,
+            "f_peak": float(f[ipk]),
+            "criterion": criterion,
+            "method": f"{criterion} bandwidth about the spectral peak",
+        }
+    )
 
 
 # -- rgccf: Cross-correlation function (CCF) between two signals.
@@ -525,8 +543,7 @@ def xcorr(x, y, maxlag=None, normalize=False, biased=True):
     lags = list(range(-lim, lim + 1))
     vals = []
     for m in lags:
-        acc = fsum(xs[i] * ys[i + m] for i in range(n)
-                   if 0 <= i + m < len(ys) and i < len(xs))
+        acc = fsum(xs[i] * ys[i + m] for i in range(n) if 0 <= i + m < len(ys) and i < len(xs))
         cnt = sum(1 for i in range(n) if 0 <= i + m < len(ys) and i < len(xs))
         vals.append(acc / (n if biased else max(cnt, 1)))
     if normalize:
@@ -535,17 +552,25 @@ def xcorr(x, y, maxlag=None, normalize=False, biased=True):
         if ex > 0 and ey > 0:
             vals = [v / (ex * ey) for v in vals]
     k = max(range(len(vals)), key=lambda i: vals[i])
-    return RichResult(payload={
-        "lags": lags, "ccf": vals, "peak": vals[k], "peak_lag": lags[k],
-        "n": n, "biased": bool(biased), "normalized": bool(normalize),
-        "positive_lag_means_y_trails_x": True,
-        "biased_peak_can_be_pulled_toward_zero_lag": bool(biased),
-        "biased_keeps_nonnegative_definiteness": True,
-        "method": "Rangayyan (2024) Chapters 3 and 4 (cross-correlation)"})
+    return RichResult(
+        payload={
+            "lags": lags,
+            "ccf": vals,
+            "peak": vals[k],
+            "peak_lag": lags[k],
+            "n": n,
+            "biased": bool(biased),
+            "normalized": bool(normalize),
+            "positive_lag_means_y_trails_x": True,
+            "biased_peak_can_be_pulled_toward_zero_lag": bool(biased),
+            "biased_keeps_nonnegative_definiteness": True,
+            "method": "Rangayyan (2024) Chapters 3 and 4 (cross-correlation)",
+        }
+    )
 
 
 rangayyan_ccf = xcorr
-rangayyanccf = xcorr   # pre-policy spelling, kept live
+rangayyanccf = xcorr  # pre-policy spelling, kept live
 
 
 # -- rgcfsle: Cardiorespiratory coupling analysis via coherence and PLV.
@@ -623,7 +648,7 @@ def cardioresp(ecg_rate, resp, fs, band=(0.15, 0.40), nperseg=None):
             if not (lo <= abs(f) < hi):
                 continue
             if f < 0:
-                continue                      # analytic: drop negatives
+                continue  # analytic: drop negatives
             scale = 1.0 if k in (0, n // 2) else 2.0
             out_re[k] = scale * re[k]
             out_im[k] = scale * im[k]
@@ -641,24 +666,28 @@ def cardioresp(ecg_rate, resp, fs, band=(0.15, 0.40), nperseg=None):
 
     ar, ai = analytic(a)
     br, bi = analytic(b)
-    dphi = [_angle(complex(ar[i], ai[i])) - _angle(complex(br[i], bi[i]))
-            for i in range(n)]
+    dphi = [_angle(complex(ar[i], ai[i])) - _angle(complex(br[i], bi[i])) for i in range(n)]
     cre = fsum(cos(d) for d in dphi) / n
     cim = fsum(sin(d) for d in dphi) / n
     plv = sqrt(cre * cre + cim * cim)
     coh = cohere(a, b, fs=fsv, nperseg=nperseg)
-    inband = [g for f, g in zip(coh["freqs"], coh["coherence"])
-              if lo <= f < hi]
+    inband = [g for f, g in zip(coh["freqs"], coh["coherence"]) if lo <= f < hi]
     peak = max(inband) if inband else 0.0
-    return RichResult(payload={
-        "plv": plv, "mean_phase_difference": _angle(complex(cre, cim)),
-        "phase_difference": dphi,
-        "coherence_peak": peak,
-        "coherence_mean": fsum(inband) / len(inband) if inband else 0.0,
-        "coherence": coh["coherence"], "freqs": coh["freqs"],
-        "band": (lo, hi), "n": n, "fs": fsv,
-        "method": "coherence per Rangayyan (2024) eq. (4.32); PLV per "
-                  "Lachaux et al. (1999)"})
+    return RichResult(
+        payload={
+            "plv": plv,
+            "mean_phase_difference": _angle(complex(cre, cim)),
+            "phase_difference": dphi,
+            "coherence_peak": peak,
+            "coherence_mean": fsum(inband) / len(inband) if inband else 0.0,
+            "coherence": coh["coherence"],
+            "freqs": coh["freqs"],
+            "band": (lo, hi),
+            "n": n,
+            "fs": fsv,
+            "method": "coherence per Rangayyan (2024) eq. (4.32); PLV per Lachaux et al. (1999)",
+        }
+    )
 
 
 rangayyan_coupled_freq_select = cardioresp  # pre-policy spelling
@@ -859,8 +888,7 @@ def eegacf(x, fs, maxlag=None):
         raise ValueError("maxlag must lie in 1..n-1")
     mu = fsum(xs) / n
     c = [v - mu for v in xs]
-    phi = [fsum(c[i] * c[i + m] for i in range(n - m)) / n
-           for m in range(lim + 1)]
+    phi = [fsum(c[i] * c[i + m] for i in range(n - m)) / n for m in range(lim + 1)]
     if phi[0] <= 0:
         raise ValueError("the epoch has no variance")
     rho = [v / phi[0] for v in phi]
@@ -869,15 +897,21 @@ def eegacf(x, fs, maxlag=None):
         if rho[m] > rho[m - 1] and rho[m] >= rho[m + 1] and rho[m] > 0:
             peak_lag = m
             break
-    return RichResult(payload={
-        "acf": phi, "normalized": rho, "lags": list(range(lim + 1)),
-        "fs": fsv, "peak_lag": peak_lag,
-        "peak_lag_seconds": (peak_lag / fsv) if peak_lag else None,
-        "implied_frequency_hz": (fsv / peak_lag) if peak_lag else None,
-        "peak_value": rho[peak_lag] if peak_lag else None,
-        "a_rhythm_gives_a_periodic_acf": True,
-        "robust_to_amplitude_variation": True,
-        "method": "Rangayyan (2024) Ch. 4 (EEG rhythm detection by ACF)"})
+    return RichResult(
+        payload={
+            "acf": phi,
+            "normalized": rho,
+            "lags": list(range(lim + 1)),
+            "fs": fsv,
+            "peak_lag": peak_lag,
+            "peak_lag_seconds": (peak_lag / fsv) if peak_lag else None,
+            "implied_frequency_hz": (fsv / peak_lag) if peak_lag else None,
+            "peak_value": rho[peak_lag] if peak_lag else None,
+            "a_rhythm_gives_a_periodic_acf": True,
+            "robust_to_amplitude_variation": True,
+            "method": "Rangayyan (2024) Ch. 4 (EEG rhythm detection by ACF)",
+        }
+    )
 
 
 rangayyan_eeg_autocorr = eegacf  # pre-policy spelling
@@ -905,8 +939,7 @@ def alpharhy(x, fs, band=(8.0, 13.0), threshold=0.3):
         raise ValueError("the band exceeds the Nyquist frequency")
     thr = float(threshold)
     if not 0 <= thr <= 1:
-        raise ValueError("the threshold is a fraction of the zero-lag "
-                         "value and must lie in [0, 1]")
+        raise ValueError("the threshold is a fraction of the zero-lag value and must lie in [0, 1]")
     lag_lo = int(fsv / hi)
     lag_hi = int(fsv / lo) + 1
     r = eegacf(x, fsv, maxlag=min(lag_hi + 2, len(aslist(x)) - 1))
@@ -919,19 +952,26 @@ def alpharhy(x, fs, band=(8.0, 13.0), threshold=0.3):
     # faster component riding on the alpha rhythm does not mask it.
     best, best_lag = None, None
     for m in range(2, min(lag_hi, len(rho) - 1) + 1):
-        if rho[m] > rho[m - 1] and \
-                (m + 1 >= len(rho) or rho[m] >= rho[m + 1]) and rho[m] >= thr:
+        if rho[m] > rho[m - 1] and (m + 1 >= len(rho) or rho[m] >= rho[m + 1]) and rho[m] >= thr:
             best, best_lag = rho[m], m
             break
     present = best_lag is not None and lag_lo <= best_lag <= lag_hi
-    return RichResult(payload={
-        "present": bool(present), "peak": best, "peak_lag": best_lag,
-        "frequency_hz": (fsv / best_lag) if best_lag else None,
-        "band": (lo, hi), "lag_range": (lag_lo, lag_hi),
-        "threshold": thr, "acf": r["normalized"], "fs": fsv,
-        "needs_both_the_band_and_the_amplitude": True,
-        "same_test_serves_other_bands": True,
-        "method": "Rangayyan (2024) Ch. 4 (alpha rhythm detection)"})
+    return RichResult(
+        payload={
+            "present": bool(present),
+            "peak": best,
+            "peak_lag": best_lag,
+            "frequency_hz": (fsv / best_lag) if best_lag else None,
+            "band": (lo, hi),
+            "lag_range": (lag_lo, lag_hi),
+            "threshold": thr,
+            "acf": r["normalized"],
+            "fs": fsv,
+            "needs_both_the_band_and_the_amplitude": True,
+            "same_test_serves_other_bands": True,
+            "method": "Rangayyan (2024) Ch. 4 (alpha rhythm detection)",
+        }
+    )
 
 
 rangayyan_eeg_rhythm_detect = alpharhy  # pre-policy spelling
@@ -976,14 +1016,11 @@ def rangayyan_eeg_spectral(eeg, fs, n_ch=None):
     X = np.atleast_2d(np.asarray(eeg, dtype=float))
     fs = float(fs)
     if fs <= 60.0:
-        raise ValueError(
-            f"fs = {fs} is too low: the 13-30 Hz beta band needs fs > 60 Hz."
-        )
+        raise ValueError(f"fs = {fs} is too low: the 13-30 Hz beta band needs fs > 60 Hz.")
     m, N = X.shape
     if n_ch is not None and int(n_ch) != m:
         raise ValueError(f"n_ch = {n_ch} does not match the {m} channels.")
-    edges = {"delta": (0.0, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 13.0),
-             "beta": (13.0, 30.0)}
+    edges = {"delta": (0.0, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 13.0), "beta": (13.0, 30.0)}
     bands = {k: np.zeros(m) for k in edges}
     psd_all, freqs = [], None
     for c in range(m):
@@ -995,21 +1032,22 @@ def rangayyan_eeg_spectral(eeg, fs, n_ch=None):
             sel = (freqs >= a) & (freqs < b)
             bands[k][c] = float(np.trapezoid(psd[sel], freqs[sel])) if sel.any() else 0.0
     total = sum(bands[k] for k in edges)
-    rel = {k: np.where(total > 0, bands[k] / np.maximum(total, 1e-300), 0.0)
-           for k in edges}
+    rel = {k: np.where(total > 0, bands[k] / np.maximum(total, 1e-300), 0.0) for k in edges}
     squeeze = m == 1
-    return RichResult(payload={
-        "bands": {k: (float(v[0]) if squeeze else v) for k, v in bands.items()},
-        "relative": {k: (float(v[0]) if squeeze else v) for k, v in rel.items()},
-        "total_power": float(total[0]) if squeeze else total,
-        "freqs": freqs, "psd": psd_all[0] if squeeze else np.array(psd_all),
-        "n_ch": int(m),
-        "method": "Welch PSD integrated over the book's band edges; relative powers too"})
+    return RichResult(
+        payload={
+            "bands": {k: (float(v[0]) if squeeze else v) for k, v in bands.items()},
+            "relative": {k: (float(v[0]) if squeeze else v) for k, v in rel.items()},
+            "total_power": float(total[0]) if squeeze else total,
+            "freqs": freqs,
+            "psd": psd_all[0] if squeeze else np.array(psd_all),
+            "n_ch": int(m),
+            "method": "Welch PSD integrated over the book's band edges; relative powers too",
+        }
+    )
 
 
 # -- rgemgpk: EMG mean/median frequency from power spectrum.
-
-
 
 
 def emgfreq(x, fs, nperseg=None):
@@ -1043,13 +1081,20 @@ def emgfreq(x, fs, nperseg=None):
     p = [(re[k] ** 2 + im[k] ** 2) / m for k in range(half)]
     f = [k * fsv / m for k in range(half)]
     mom = specmoments(p, freqs=f)
-    return RichResult(payload={
-        "mean_frequency": mom["mean_frequency"],
-        "median_frequency": mom["median_frequency"],
-        "difference": mom["mean_frequency"] - mom["median_frequency"],
-        "bandwidth": mom["bandwidth"], "total_power": mom["total_power"],
-        "psd": p, "freqs": f, "fs": fsv, "nperseg": m,
-        "method": "Rangayyan (2024) eqs. (6.34)-(6.35)"})
+    return RichResult(
+        payload={
+            "mean_frequency": mom["mean_frequency"],
+            "median_frequency": mom["median_frequency"],
+            "difference": mom["mean_frequency"] - mom["median_frequency"],
+            "bandwidth": mom["bandwidth"],
+            "total_power": mom["total_power"],
+            "psd": p,
+            "freqs": f,
+            "fs": fsv,
+            "nperseg": m,
+            "method": "Rangayyan (2024) eqs. (6.34)-(6.35)",
+        }
+    )
 
 
 rangayyan_emg_peak_freq = emgfreq  # pre-policy spelling
@@ -1074,18 +1119,22 @@ def corrconv(x, y):
         raise ValueError("both signals need at least one sample")
     rev = list(reversed(xs))
     m = len(rev) + len(ys) - 1
-    conv = [fsum(rev[j] * ys[i - j] for j in range(len(rev))
-                 if 0 <= i - j < len(ys)) for i in range(m)]
+    conv = [fsum(rev[j] * ys[i - j] for j in range(len(rev)) if 0 <= i - j < len(ys)) for i in range(m)]
     lags = list(range(-(len(xs) - 1), len(ys)))
-    direct = [fsum(xs[i] * ys[i + k] for i in range(len(xs))
-                   if 0 <= i + k < len(ys)) for k in lags]
+    direct = [fsum(xs[i] * ys[i + k] for i in range(len(xs)) if 0 <= i + k < len(ys)) for k in lags]
     gap = max(abs(a - b) for a, b in zip(conv, direct))
     scale = max(abs(v) for v in direct) or 1.0
-    return RichResult(payload={
-        "ccf": direct, "via_convolution": conv, "lags": lags,
-        "max_difference": gap, "identity_holds": gap <= 1e-9 * scale,
-        "correlation_is_convolution_with_one_reversed": True,
-        "method": "Rangayyan (2024) Ch. 3 (correlation as convolution)"})
+    return RichResult(
+        payload={
+            "ccf": direct,
+            "via_convolution": conv,
+            "lags": lags,
+            "max_difference": gap,
+            "identity_holds": gap <= 1e-9 * scale,
+            "correlation_is_convolution_with_one_reversed": True,
+            "method": "Rangayyan (2024) Ch. 3 (correlation as convolution)",
+        }
+    )
 
 
 rangayyan_ch3_correlation_sum = corrconv  # pre-policy spelling
@@ -1130,23 +1179,30 @@ def erpartifact(epochs, reject=None):
             raise ValueError("every epoch exceeds the rejection threshold")
     k = len(kept)
     avg = [fsum(recs[i][j] for i in kept) / k for j in range(n)]
-    sd = [sqrt(fsum((recs[i][j] - avg[j]) ** 2 for i in kept) / k)
-          for j in range(n)]
-    return RichResult(payload={
-        "average": avg, "sd": sd, "m": m, "m_kept": k,
-        "rejected": dropped, "n_rejected": len(dropped),
-        "peaks": peaks, "n": n,
-        "snr_gain": sqrt(k), "snr_gain_db": 10.0 * log10(k) if k else None,
-        "artifact_factor": 1.0 / sqrt(k) if k else None,
-        "method": "Rangayyan (2024) Section 3.5 (synchronized averaging)"})
+    sd = [sqrt(fsum((recs[i][j] - avg[j]) ** 2 for i in kept) / k) for j in range(n)]
+    return RichResult(
+        payload={
+            "average": avg,
+            "sd": sd,
+            "m": m,
+            "m_kept": k,
+            "rejected": dropped,
+            "n_rejected": len(dropped),
+            "peaks": peaks,
+            "n": n,
+            "snr_gain": sqrt(k),
+            "snr_gain_db": 10.0 * log10(k) if k else None,
+            "artifact_factor": 1.0 / sqrt(k) if k else None,
+            "method": "Rangayyan (2024) Section 3.5 (synchronized averaging)",
+        }
+    )
 
 
 rangayyan_erp_artifact_remove = erpartifact  # pre-policy spelling
 
 
 # -- rgmflt: Matched filter transfer function for signal detection in noise.
-def matchedfilt(ref, x=None, noise_psd=None, freqs=None, t0=None,
-                gain=1.0, dt=1.0):
+def matchedfilt(ref, x=None, noise_psd=None, freqs=None, t0=None, gain=1.0, dt=1.0):
     """Design a matched filter, and optionally run it.
 
     Rangayyan (2024) eqs. (4.48)-(4.49) give the white-noise case,
@@ -1193,14 +1249,17 @@ def matchedfilt(ref, x=None, noise_psd=None, freqs=None, t0=None,
             raise ValueError("the noise PSD must be positive everywhere")
         H = [h / p for h, p in zip(H, pn)]
         whitened = True
-    h = mfimpulse(rs, t0=shift * step, gain=gain, dt=step)["h"] \
-        if not whitened else None
-    out = {"H": H, "h": h, "shift_samples": shift, "gain": float(gain),
-           "whitened": whitened, "n_reference": n,
-           "freqs": [k / (n * step) for k in range(n)]
-           if freqs is None else aslist(freqs),
-           "method": "Rangayyan (2024) eqs. (4.48)-(4.49); the noise_psd "
-                     "branch is the coloured-noise generalization"}
+    h = mfimpulse(rs, t0=shift * step, gain=gain, dt=step)["h"] if not whitened else None
+    out = {
+        "H": H,
+        "h": h,
+        "shift_samples": shift,
+        "gain": float(gain),
+        "whitened": whitened,
+        "n_reference": n,
+        "freqs": [k / (n * step) for k in range(n)] if freqs is None else aslist(freqs),
+        "method": "Rangayyan (2024) eqs. (4.48)-(4.49); the noise_psd branch is the coloured-noise generalization",
+    }
     if x is not None:
         xs = aslist(x)
         taps = h if h is not None else _ifft_taps(H)
@@ -1258,12 +1317,17 @@ def mfmaxsnr(x, noise_power, t=None, dt=1.0):
     ts = [i * float(dt) for i in range(len(xs))] if t is None else aslist(t)
     energy = gridint([v * v for v in xs], ts)
     snr = 2.0 * energy / p
-    return RichResult(payload={
-        "snr": snr, "snr_db": 10.0 * log10(snr) if snr > 0
-        else float("-inf"),
-        "energy": energy, "noise_power": p, "n0": p,
-        "depends_only_on_energy": True,
-        "method": "Rangayyan (2024) eq. (4.46)"})
+    return RichResult(
+        payload={
+            "snr": snr,
+            "snr_db": 10.0 * log10(snr) if snr > 0 else float("-inf"),
+            "energy": energy,
+            "noise_power": p,
+            "n0": p,
+            "depends_only_on_energy": True,
+            "method": "Rangayyan (2024) eq. (4.46)",
+        }
+    )
 
 
 rangayyan_matched_filter_snr = mfmaxsnr  # pre-policy spelling
@@ -1308,10 +1372,16 @@ def rangayyan_periodogram(x, fs=1.0):
     X = np.fft.rfft(x)
     psd = (np.abs(X) ** 2) / N
     freqs = np.fft.rfftfreq(N, d=1.0 / fs)
-    return RichResult(payload={"freqs": freqs, "psd": psd,
-                               "total_power": float(np.mean(x**2)), "N": int(N),
-                               "fs": fs,
-                               "method": "P(f) = |DFT(x)|^2/N; inconsistent -- variance does not shrink"})
+    return RichResult(
+        payload={
+            "freqs": freqs,
+            "psd": psd,
+            "total_power": float(np.mean(x**2)),
+            "N": int(N),
+            "fs": fs,
+            "method": "P(f) = |DFT(x)|^2/N; inconsistent -- variance does not shrink",
+        }
+    )
 
 
 # -- rgpsd: Power spectral density via Welch's method -- Rangayyan & Krishnan Sec 6.3.2-6.3.4.
@@ -1378,7 +1448,9 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
             ("Peak power", float(pxx[peak_idx])),
             ("Total power", float(_trapezoid_rgpsd(pxx, freqs))),
         ],
-        interpretation=(f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power {float(_trapezoid_rgpsd(pxx, freqs)):.4g}."),
+        interpretation=(
+            f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power {float(_trapezoid_rgpsd(pxx, freqs)):.4g}."
+        ),
         payload={
             "freqs": freqs,
             "psd": pxx,
@@ -1438,23 +1510,26 @@ def psdhz(psd, fs, n=None, bands=None):
         raise ValueError("the DFT length must be at least 2")
     width = fsv / nn
     freqs = [k * width for k in range(len(p))]
-    out = {"freqs": freqs, "bin_width": width, "psd": p, "n": nn,
-           "fs": fsv, "total_power": fsum(p) * width,
-           "nyquist": fsv / 2.0,
-           "method": "Rangayyan (2024) Section 6.4"}
+    out = {
+        "freqs": freqs,
+        "bin_width": width,
+        "psd": p,
+        "n": nn,
+        "fs": fsv,
+        "total_power": fsum(p) * width,
+        "nyquist": fsv / 2.0,
+        "method": "Rangayyan (2024) Section 6.4",
+    }
     if bands is not None:
-        items = bands.items() if hasattr(bands, "items") \
-            else [(i, b) for i, b in enumerate(bands)]
+        items = bands.items() if hasattr(bands, "items") else [(i, b) for i, b in enumerate(bands)]
         powers = {}
         for name, (lo, hi) in items:
             if hi <= lo:
                 raise ValueError("band %r has hi <= lo" % (name,))
-            powers[name] = fsum(v * width for f, v in zip(freqs, p)
-                                if lo <= f < hi)
+            powers[name] = fsum(v * width for f, v in zip(freqs, p) if lo <= f < hi)
         out["band_power"] = powers
         tot = fsum(powers.values())
-        out["band_fraction"] = {k: (v / tot if tot > 0 else 0.0)
-                                for k, v in powers.items()}
+        out["band_fraction"] = {k: (v / tot if tot > 0 else 0.0) for k, v in powers.items()}
     return RichResult(payload=out)
 
 
@@ -1502,14 +1577,17 @@ def rangayyan_psd_to_acf(psd, freqs=None):
         f = np.asarray(freqs, dtype=float).ravel()
         if f.size != S.size:
             raise ValueError("freqs must match the length of psd.")
-    return RichResult(payload={"acf": acf[:n_lag], "lags": lags,
-                               "r0": float(acf[0]),
-                               "method": "R_xx = irfft(S_xx); real by construction"})
+    return RichResult(
+        payload={
+            "acf": acf[:n_lag],
+            "lags": lags,
+            "r0": float(acf[0]),
+            "method": "R_xx = irfft(S_xx); real by construction",
+        }
+    )
 
 
 # -- rgpsync: Synchronized averaging of PCG spectra for murmur analysis.
-
-
 
 
 def pcgsyncavg(cycles, fs=1.0):
@@ -1547,25 +1625,26 @@ def pcgsyncavg(cycles, fs=1.0):
     mean_wave = [fsum(r[i] for r in recs) / m for i in range(n)]
     mu = fsum(mean_wave) / n
     re, im = _dft([v - mu for v in mean_wave])
-    psd_of_avg = [(re[k] ** 2 + im[k] ** 2) / n
-                  for k in range(len(acc))]
-    return RichResult(payload={
-        "average_psd": avg_psd, "psd_of_average": psd_of_avg,
-        "mean_waveform": mean_wave,
-        "freqs": [k * float(fs) / n for k in range(len(acc))],
-        "m": m, "n": n,
-        "power_retained": (fsum(psd_of_avg) / fsum(avg_psd))
-        if fsum(avg_psd) > 0 else 0.0,
-        "method": "spectral synchronized averaging; contrast the waveform "
-                  "averaging of Rangayyan (2024) eq. (3.96)"})
+    psd_of_avg = [(re[k] ** 2 + im[k] ** 2) / n for k in range(len(acc))]
+    return RichResult(
+        payload={
+            "average_psd": avg_psd,
+            "psd_of_average": psd_of_avg,
+            "mean_waveform": mean_wave,
+            "freqs": [k * float(fs) / n for k in range(len(acc))],
+            "m": m,
+            "n": n,
+            "power_retained": (fsum(psd_of_avg) / fsum(avg_psd)) if fsum(avg_psd) > 0 else 0.0,
+            "method": "spectral synchronized averaging; contrast the waveform averaging of Rangayyan (2024) eq. (3.96)",
+        }
+    )
 
 
 rangayyan_pcg_sync_avg = pcgsyncavg  # pre-policy spelling
 
 
 # -- rgseiz: EEG seizure detection via rhythm coherence analysis.
-def seizcohere(channels, fs, window, step=None, bands=None,
-               nperseg=None):
+def seizcohere(channels, fs, window, step=None, bands=None, nperseg=None):
     """Seizure detection from sustained inter-channel band coherence.
 
     Rangayyan (2024) Section 4.5.3: the coherence spectrum of eq. (4.32)
@@ -1596,32 +1675,35 @@ def seizcohere(channels, fs, window, step=None, bands=None,
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if bands is None:
-        bands = {"delta": (0.5, 4.0), "theta": (4.0, 8.0),
-                 "alpha": (8.0, 13.0), "beta": (13.0, 30.0)}
+        bands = {"delta": (0.5, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 13.0), "beta": (13.0, 30.0)}
     seg = int(nperseg) if nperseg else max(8, w // 8)
     times, curves = [], {k: [] for k in bands}
     for s in range(0, n - w + 1, hop):
         pairs = {k: [] for k in bands}
         for i in range(len(chans)):
             for j in range(i + 1, len(chans)):
-                c = cohere(chans[i][s:s + w], chans[j][s:s + w],
-                           fs=fsv, nperseg=seg)
+                c = cohere(chans[i][s : s + w], chans[j][s : s + w], fs=fsv, nperseg=seg)
                 for name, (lo, hi) in bands.items():
-                    vals = [g for f, g in zip(c["freqs"], c["coherence"])
-                            if lo <= f < hi]
+                    vals = [g for f, g in zip(c["freqs"], c["coherence"]) if lo <= f < hi]
                     if vals:
                         pairs[name].append(fsum(vals) / len(vals))
         times.append(s / fsv)
         for name in bands:
-            curves[name].append(fsum(pairs[name]) / len(pairs[name])
-                                if pairs[name] else 0.0)
-    return RichResult(payload={
-        "times": times, "coherence": curves, "bands": bands,
-        "window": w, "step": hop, "nperseg": seg,
-        "n_windows": len(times), "n_channels": len(chans),
-        "sustained_criterion": "a seizure is a RUN of elevated windows; "
-                               "one high window is a transient",
-        "method": "Rangayyan (2024) Section 4.5.3, eq. (4.32)"})
+            curves[name].append(fsum(pairs[name]) / len(pairs[name]) if pairs[name] else 0.0)
+    return RichResult(
+        payload={
+            "times": times,
+            "coherence": curves,
+            "bands": bands,
+            "window": w,
+            "step": hop,
+            "nperseg": seg,
+            "n_windows": len(times),
+            "n_channels": len(chans),
+            "sustained_criterion": "a seizure is a RUN of elevated windows; one high window is a transient",
+            "method": "Rangayyan (2024) Section 4.5.3, eq. (4.32)",
+        }
+    )
 
 
 rangayyan_seizure_detect = seizcohere  # pre-policy spelling
@@ -1679,14 +1761,22 @@ def specmoments(psd, fs=1.0, freqs=None):
     fm4 = fsum((a - fmean) ** 4 * b for a, b in zip(f, p)) / ep
     sd = sqrt(fm2) if fm2 > 0 else 0.0
     mx = max(p)
-    return RichResult(payload={
-        "total_power": ep, "mean_frequency": fmean,
-        "median_frequency": fmed, "variance": fm2, "bandwidth": sd,
-        "skewness": fm3 / fm2 ** 1.5 if fm2 > 0 else None,
-        "kurtosis": fm4 / (fm2 * fm2) if fm2 > 0 else None,
-        "fm3": fm3, "fm4": fm4, "n_bins": n_half,
-        "uniformity": (ep / n_half) / mx if mx > 0 else 0.0,
-        "method": "Rangayyan (2024) eqs. (6.32)-(6.43)"})
+    return RichResult(
+        payload={
+            "total_power": ep,
+            "mean_frequency": fmean,
+            "median_frequency": fmed,
+            "variance": fm2,
+            "bandwidth": sd,
+            "skewness": fm3 / fm2**1.5 if fm2 > 0 else None,
+            "kurtosis": fm4 / (fm2 * fm2) if fm2 > 0 else None,
+            "fm3": fm3,
+            "fm4": fm4,
+            "n_bins": n_half,
+            "uniformity": (ep / n_half) / mx if mx > 0 else 0.0,
+            "method": "Rangayyan (2024) eqs. (6.32)-(6.43)",
+        }
+    )
 
 
 rangayyan_spectral_moments = specmoments  # pre-policy spelling
@@ -1728,18 +1818,24 @@ def specres(n, fs=1.0, window="rectangular"):
     }
     key = str(window).lower()
     if key not in table:
-        raise ValueError("unknown window %r; known: %s"
-                         % (window, ", ".join(sorted(table))))
+        raise ValueError("unknown window %r; known: %s" % (window, ", ".join(sorted(table))))
     lobe, side, enbw = table[key]
     df = fsv / nn
-    return RichResult(payload={
-        "delta_f": df, "resolution": df * lobe / 2.0,
-        "main_lobe_bins": lobe, "sidelobe_db": side,
-        "equivalent_noise_bandwidth_bins": enbw,
-        "duration": nn / fsv, "n": nn, "fs": fsv, "window": key,
-        "zero_padding_helps": False,
-        "method": "Rayleigh criterion; Rangayyan (2024) Section 6.4 on "
-                  "windowing and leakage"})
+    return RichResult(
+        payload={
+            "delta_f": df,
+            "resolution": df * lobe / 2.0,
+            "main_lobe_bins": lobe,
+            "sidelobe_db": side,
+            "equivalent_noise_bandwidth_bins": enbw,
+            "duration": nn / fsv,
+            "n": nn,
+            "fs": fsv,
+            "window": key,
+            "zero_padding_helps": False,
+            "method": "Rayleigh criterion; Rangayyan (2024) Section 6.4 on windowing and leakage",
+        }
+    )
 
 
 rangayyan_spectral_resolution = specres  # pre-policy spelling
@@ -1780,7 +1876,7 @@ def template(x, ref, threshold=None, subtract_mean=True):
         raise ValueError("the template has zero energy")
     gam = []
     for k in range(n - m + 1):
-        seg = xs[k:k + m]
+        seg = xs[k : k + m]
         if subtract_mean:
             ms = fsum(seg) / m
             seg = [v - ms for v in seg]
@@ -1790,10 +1886,15 @@ def template(x, ref, threshold=None, subtract_mean=True):
             continue
         gam.append(fsum(a * b for a, b in zip(seg, ts)) / sqrt(es * et))
     best = max(range(len(gam)), key=lambda i: gam[i])
-    out = {"gamma": gam, "best_shift": best, "best_gamma": gam[best],
-           "n_positions": len(gam), "template_length": m,
-           "mean_removed": bool(subtract_mean),
-           "method": "Rangayyan (2024) eqs. (4.25), (4.28)"}
+    out = {
+        "gamma": gam,
+        "best_shift": best,
+        "best_gamma": gam[best],
+        "n_positions": len(gam),
+        "template_length": m,
+        "mean_removed": bool(subtract_mean),
+        "method": "Rangayyan (2024) eqs. (4.25), (4.28)",
+    }
     if threshold is not None:
         thr = float(threshold)
         hits, i = [], 0
@@ -1882,9 +1983,17 @@ def rangayyan_welch_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
     if K == 0:
         raise ValueError("no complete segments; reduce nperseg.")
     psd = acc / (K * U * seg)
-    return RichResult(payload={"freqs": np.fft.rfftfreq(seg, d=1.0 / fs), "psd": psd,
-                               "n_segments": K, "U": U, "nperseg": seg, "fs": fs,
-                               "method": "Welch averaged periodogram with window power U"})
+    return RichResult(
+        payload={
+            "freqs": np.fft.rfftfreq(seg, d=1.0 / fs),
+            "psd": psd,
+            "n_segments": K,
+            "U": U,
+            "nperseg": seg,
+            "fs": fs,
+            "method": "Welch averaged periodogram with window power U",
+        }
+    )
 
 
 # -- rng016: Autocorrelation function of a random process by ensemble average (Eq 3.16/3.17).
@@ -2012,9 +2121,15 @@ def rangayyan_ch3_acf_ensemble_estimate(x_k, t1, tau, M=None):
         raise ValueError(f"t1 must lie in 0..{T - 1}, got {t1}.")
     if not 0 <= t1 + tau < T:
         raise ValueError(f"t1 + tau must lie in 0..{T - 1}, got {t1 + tau}.")
-    return RichResult(payload={"acf": float(np.mean(X[:, t1] * X[:, t1 + tau])),
-                               "t1": t1, "tau": tau, "M": int(m),
-                               "method": "phi(t1, t1+tau) across realisations; two-time, not lag-only"})
+    return RichResult(
+        payload={
+            "acf": float(np.mean(X[:, t1] * X[:, t1 + tau])),
+            "t1": t1,
+            "tau": tau,
+            "M": int(m),
+            "method": "phi(t1, t1+tau) across realisations; two-time, not lag-only",
+        }
+    )
 
 
 # -- rng018: Ensemble average function (Rangayyan eq. 3.18).
@@ -2044,22 +2159,27 @@ def ensavg(observations, M=None):
     if m == 0:
         raise ValueError("need at least one observation")
     if M is not None and int(M) != m:
-        raise ValueError("M=%d was asserted but %d records were given"
-                         % (int(M), m))
+        raise ValueError("M=%d was asserted but %d records were given" % (int(M), m))
     n = len(recs[0])
     if n == 0:
         raise ValueError("records must be nonempty")
     if any(len(r) != n for r in recs):
         raise ValueError("all records must have the same length")
     avg = [fsum(r[i] for r in recs) / m for i in range(n)]
-    sd = [sqrt(fsum((r[i] - avg[i]) ** 2 for r in recs) / m)
-          for i in range(n)]
-    return RichResult(payload={
-        "average": avg, "ensemble_mean": avg, "sd": sd, "m": m, "n": n,
-        "se": [s / sqrt(m) for s in sd],
-        "snr_gain": sqrt(m),
-        "noise_averages_down_as_one_over_sqrt_m": True,
-        "method": "Rangayyan (2024) eq. (3.18); SNR gain, Section 3.3"})
+    sd = [sqrt(fsum((r[i] - avg[i]) ** 2 for r in recs) / m) for i in range(n)]
+    return RichResult(
+        payload={
+            "average": avg,
+            "ensemble_mean": avg,
+            "sd": sd,
+            "m": m,
+            "n": n,
+            "se": [s / sqrt(m) for s in sd],
+            "snr_gain": sqrt(m),
+            "noise_averages_down_as_one_over_sqrt_m": True,
+            "method": "Rangayyan (2024) eq. (3.18); SNR gain, Section 3.3",
+        }
+    )
 
 
 rangayyan_ch3_ensemble_average_function = ensavg  # pre-policy spelling
@@ -2102,9 +2222,14 @@ def rangayyan_ch3_time_averaged_acf(x_k, tau, T=None):
     if T is not None and int(T) != n:
         raise ValueError(f"T = {T} does not match the {n} samples.")
     vals = np.array([float(np.mean(X[k, : n - tau] * X[k, tau:])) for k in range(m)])
-    return RichResult(payload={"acf": float(vals[0]) if m == 1 else vals,
-                               "tau": tau, "n_used": int(n - tau),
-                               "method": "time-averaged phi(tau); -> ensemble ACF under ergodicity"})
+    return RichResult(
+        payload={
+            "acf": float(vals[0]) if m == 1 else vals,
+            "tau": tau,
+            "n_used": int(n - tau),
+            "method": "time-averaged phi(tau); -> ensemble ACF under ergodicity",
+        }
+    )
 
 
 # -- rng023: Cross-correlation function (CCF) between two random processes x and y..
@@ -2136,16 +2261,20 @@ def xcorrproc(x, y, lags=None, remove_mean=True):
     if lim < 0 or lim > n - 1:
         raise ValueError("lags must lie in 0..n-1")
     ks = list(range(-lim, lim + 1))
-    vals = [fsum(a[i] * b[i + k] for i in range(n) if 0 <= i + k < n) / n
-            for k in ks]
-    return RichResult(payload={
-        "lags": ks, "ccf": vals, "means": [mx, my],
-        "mean_removed": bool(remove_mean),
-        "is_cross_covariance_when_mean_removed": bool(remove_mean),
-        "expectation_estimated_by_time_average": True,
-        "requires_joint_stationarity_and_ergodicity": True,
-        "mean_product": mx * my,
-        "method": "Rangayyan (2024) Ch. 3 (CCF of two random processes)"})
+    vals = [fsum(a[i] * b[i + k] for i in range(n) if 0 <= i + k < n) / n for k in ks]
+    return RichResult(
+        payload={
+            "lags": ks,
+            "ccf": vals,
+            "means": [mx, my],
+            "mean_removed": bool(remove_mean),
+            "is_cross_covariance_when_mean_removed": bool(remove_mean),
+            "expectation_estimated_by_time_average": True,
+            "requires_joint_stationarity_and_ergodicity": True,
+            "mean_product": mx * my,
+            "method": "Rangayyan (2024) Ch. 3 (CCF of two random processes)",
+        }
+    )
 
 
 rangayyan_ch3_ccf_continuous = xcorrproc  # pre-policy spelling
@@ -2176,18 +2305,21 @@ def idft(X):
             ang = step * i * k
             acc += Xv * complex(cos(ang), sin(ang))
         out.append(acc / n)
-    return RichResult(payload={
-        "x": [v.real for v in out], "complex": out, "n": n,
-        "max_imaginary": max(abs(v.imag) for v in out),
-        "method": "Rangayyan (2024) eq. (3.81)"})
+    return RichResult(
+        payload={
+            "x": [v.real for v in out],
+            "complex": out,
+            "n": n,
+            "max_imaginary": max(abs(v.imag) for v in out),
+            "method": "Rangayyan (2024) eq. (3.81)",
+        }
+    )
 
 
 rangayyan_ch3_idft_definition = idft  # pre-policy spelling
 
 
 # -- rng080: Parseval's theorem: total signal energy preserved under Fourier transform..
-
-
 
 
 def parseval(x):
@@ -2213,12 +2345,17 @@ def parseval(x):
     time_energy = fsum(v * v for v in xs)
     freq_energy = fsum(a * a + b * b for a, b in zip(re, im)) / n
     gap = abs(time_energy - freq_energy)
-    return RichResult(payload={
-        "energy_time": time_energy, "energy_freq": freq_energy,
-        "psd": [(a * a + b * b) / n for a, b in zip(re, im)],
-        "max_difference": gap,
-        "holds": gap <= 1e-9 * max(time_energy, 1.0), "n": n,
-        "method": "Rangayyan (2024) eq. (3.91)"})
+    return RichResult(
+        payload={
+            "energy_time": time_energy,
+            "energy_freq": freq_energy,
+            "psd": [(a * a + b * b) / n for a, b in zip(re, im)],
+            "max_difference": gap,
+            "holds": gap <= 1e-9 * max(time_energy, 1.0),
+            "n": n,
+            "method": "Rangayyan (2024) eq. (3.91)",
+        }
+    )
 
 
 rangayyan_ch3_parseval_theorem = parseval  # pre-policy spelling
@@ -2252,10 +2389,17 @@ def syncsum(observations):
     if any(len(r) != n for r in recs):
         raise ValueError("all realizations must have the same length")
     total = [fsum(r[i] for r in recs) for i in range(n)]
-    return RichResult(payload={
-        "sum": total, "average": [v / m for v in total], "m": m, "n": n,
-        "signal_growth": "linear in M", "noise_growth": "sqrt(M)",
-        "method": "Rangayyan (2024) eq. (3.96)"})
+    return RichResult(
+        payload={
+            "sum": total,
+            "average": [v / m for v in total],
+            "m": m,
+            "n": n,
+            "signal_growth": "linear in M",
+            "noise_growth": "sqrt(M)",
+            "method": "Rangayyan (2024) eq. (3.96)",
+        }
+    )
 
 
 rangayyan_ch3_synchronized_averaging_sum = syncsum  # pre-policy spelling
@@ -2285,27 +2429,28 @@ def nccftpl(x, template):
     shifts = list(range(len(xs) - len(t) + 1))
     out = []
     for k in shifts:
-        seg = xs[k:k + len(t)]
+        seg = xs[k : k + len(t)]
         es = sqrt(fsum(v * v for v in seg))
-        out.append(fsum(t[i] * seg[i] for i in range(len(t))) / (et * es)
-                   if es > 0 else 0.0)
+        out.append(fsum(t[i] * seg[i] for i in range(len(t))) / (et * es) if es > 0 else 0.0)
     j = max(range(len(out)), key=lambda i: out[i])
-    return RichResult(payload={
-        "gamma": out, "shifts": shifts, "peak": out[j], "peak_shift": j,
-        "bounded_in_unit_interval": all(-1.0 - 1e-9 <= v <= 1.0 + 1e-9
-                                        for v in out),
-        "normalized_per_shift": True,
-        "loud_beats_matching_without_normalization": True,
-        "method": "Rangayyan (2024) Ch. 3 (normalized CCF for template "
-                  "matching)"})
+    return RichResult(
+        payload={
+            "gamma": out,
+            "shifts": shifts,
+            "peak": out[j],
+            "peak_shift": j,
+            "bounded_in_unit_interval": all(-1.0 - 1e-9 <= v <= 1.0 + 1e-9 for v in out),
+            "normalized_per_shift": True,
+            "loud_beats_matching_without_normalization": True,
+            "method": "Rangayyan (2024) Ch. 3 (normalized CCF for template matching)",
+        }
+    )
 
 
 rangayyan_ch3_normalized_cross_correlation_template = nccftpl  # pre-policy spelling
 
 
 # -- rng198: Discrete-time dot product (inner product) of two N-sample signals..
-
-
 
 
 def dotprod(x, y, subtract_mean=False):
@@ -2337,10 +2482,17 @@ def dotprod(x, y, subtract_mean=False):
     ex = fsum(v * v for v in xs)
     ey = fsum(v * v for v in ys)
     gamma = dp / sqrt(ex * ey) if ex > 0 and ey > 0 else None
-    return RichResult(payload={
-        "dot_product": dp, "gamma": gamma, "energy_x": ex, "energy_y": ey,
-        "n": len(xs), "mean_removed": bool(subtract_mean),
-        "method": "Rangayyan (2024) eqs. (4.24)-(4.25)"})
+    return RichResult(
+        payload={
+            "dot_product": dp,
+            "gamma": gamma,
+            "energy_x": ex,
+            "energy_y": ey,
+            "n": len(xs),
+            "mean_removed": bool(subtract_mean),
+            "method": "Rangayyan (2024) eqs. (4.24)-(4.25)",
+        }
+    )
 
 
 rangayyan_ch4_dot_product_discrete = dotprod  # pre-policy spelling
@@ -2366,14 +2518,17 @@ def corrdot(x, y):
     if raw["gamma"] is None:
         raise ValueError("a signal with no energy has no direction")
     centred = dotprod(x, y, subtract_mean=True)
-    return RichResult(payload={
-        "gamma": raw["gamma"], "dot_product": raw["dot_product"],
-        "norms": [sqrt(raw["energy_x"]), sqrt(raw["energy_y"])],
-        "pearson": centred["gamma"],
-        "is_a_cosine_not_an_agreement": True,
-        "unity_for_a_positive_rescaling": True,
-        "method": "Rangayyan (2024) Ch. 4 (correlation as a normalized "
-                  "dot product), via eqs. (4.24)-(4.25)"})
+    return RichResult(
+        payload={
+            "gamma": raw["gamma"],
+            "dot_product": raw["dot_product"],
+            "norms": [sqrt(raw["energy_x"]), sqrt(raw["energy_y"])],
+            "pearson": centred["gamma"],
+            "is_a_cosine_not_an_agreement": True,
+            "unity_for_a_positive_rescaling": True,
+            "method": "Rangayyan (2024) Ch. 4 (correlation as a normalized dot product), via eqs. (4.24)-(4.25)",
+        }
+    )
 
 
 rangayyan_ch4_correlation_coefficient_normalized_dot = corrdot  # pre-policy spelling
@@ -2402,10 +2557,16 @@ def contproj(x, y, t=None, dt=1.0):
         raise ValueError("t and x must have the same length")
     prod = [a * b for a, b in zip(xs, ys)]
     theta = gridint(prod, ts)
-    return RichResult(payload={
-        "theta": theta, "integrand": prod,
-        "discrete_sum": fsum(prod), "duration": ts[-1] - ts[0],
-        "n": len(xs), "method": "Rangayyan (2024) eq. (4.26)"})
+    return RichResult(
+        payload={
+            "theta": theta,
+            "integrand": prod,
+            "discrete_sum": fsum(prod),
+            "duration": ts[-1] - ts[0],
+            "n": len(xs),
+            "method": "Rangayyan (2024) eq. (4.26)",
+        }
+    )
 
 
 rangayyan_ch4_continuous_dot_product = contproj  # pre-policy spelling
@@ -2431,8 +2592,7 @@ def xcorrcont(x, y, t, delays):
         raise ValueError("need at least two samples")
     if any(ts[i + 1] <= ts[i] for i in range(len(ts) - 1)):
         raise ValueError("t must be strictly increasing")
-    taus = aslist(delays) if isinstance(delays, (list, tuple)) \
-        else [float(delays)]
+    taus = aslist(delays) if isinstance(delays, (list, tuple)) else [float(delays)]
 
     def interp(tt):
         if tt < ts[0] or tt > ts[-1]:
@@ -2463,17 +2623,21 @@ def xcorrcont(x, y, t, delays):
             continue
         acc = 0.0
         for i in range(len(pts) - 1):
-            acc += 0.5 * (pts[i][1] + pts[i + 1][1]) * \
-                (pts[i + 1][0] - pts[i][0])
+            acc += 0.5 * (pts[i][1] + pts[i + 1][1]) * (pts[i + 1][0] - pts[i][0])
         out.append(acc)
         cover.append((pts[-1][0] - pts[0][0]) / (ts[-1] - ts[0]))
     scalar = not isinstance(delays, (list, tuple))
-    return RichResult(payload={
-        "ccf": out[0] if scalar else out, "delays": delays,
-        "overlap_fraction": cover[0] if scalar else cover,
-        "interpolated": True, "trapezoidal": True,
-        "long_delays_use_less_data": True,
-        "method": "Rangayyan (2024) Ch. 4 (continuous-time CCF)"})
+    return RichResult(
+        payload={
+            "ccf": out[0] if scalar else out,
+            "delays": delays,
+            "overlap_fraction": cover[0] if scalar else cover,
+            "interpolated": True,
+            "trapezoidal": True,
+            "long_delays_use_less_data": True,
+            "method": "Rangayyan (2024) Ch. 4 (continuous-time CCF)",
+        }
+    )
 
 
 rangayyan_ch4_ccf_continuous_with_delay = xcorrcont  # pre-policy spelling
@@ -2500,15 +2664,20 @@ def xcorrdisc(x, y, delays=None):
         ks = [int(delays)]
     out = []
     for k in ks:
-        out.append(fsum(xs[i] * ys[i + k] for i in range(len(xs))
-                        if 0 <= i + k < len(ys)))
+        out.append(fsum(xs[i] * ys[i + k] for i in range(len(xs)) if 0 <= i + k < len(ys)))
     j = max(range(len(out)), key=lambda i: out[i])
     scalar = delays is not None and not isinstance(delays, (list, tuple))
-    return RichResult(payload={
-        "ccf": out[0] if scalar else out, "lags": ks,
-        "peak": out[j], "peak_lag": ks[j], "normalized": False,
-        "is_the_matched_filter_output": True,
-        "method": "Rangayyan (2024) Ch. 4 (discrete CCF with delay)"})
+    return RichResult(
+        payload={
+            "ccf": out[0] if scalar else out,
+            "lags": ks,
+            "peak": out[j],
+            "peak_lag": ks[j],
+            "normalized": False,
+            "is_the_matched_filter_output": True,
+            "method": "Rangayyan (2024) Ch. 4 (discrete CCF with delay)",
+        }
+    )
 
 
 rangayyan_ch4_ccf_discrete_with_delay = xcorrdisc  # pre-policy spelling
@@ -2545,8 +2714,7 @@ def ccfouter(x, y, order, tol=1e-3):
     mat = [[0.0] * n for _ in range(n)]
     for i in range(n):
         for j in range(n):
-            mat[i][j] = fsum(xs[k - i] * ys[k - j]
-                             for k in range(n - 1, len(xs))) / m
+            mat[i][j] = fsum(xs[k - i] * ys[k - j] for k in range(n - 1, len(xs))) / m
     dev = 0.0
     for d in range(-(n - 1), n):
         band = [mat[i][i - d] for i in range(n) if 0 <= i - d < n]
@@ -2554,12 +2722,18 @@ def ccfouter(x, y, order, tol=1e-3):
             mu = fsum(band) / len(band)
             dev = max(dev, max(abs(v - mu) for v in band))
     scale = max(abs(mat[i][j]) for i in range(n) for j in range(n)) or 1.0
-    return RichResult(payload={
-        "theta": mat, "order": n, "n_positions": m,
-        "toeplitz_deviation": dev,
-        "relative_deviation": dev / scale,
-        "tol": float(tol), "toeplitz": dev <= float(tol) * scale,
-        "method": "Rangayyan (2024) eq. (4.29)"})
+    return RichResult(
+        payload={
+            "theta": mat,
+            "order": n,
+            "n_positions": m,
+            "toeplitz_deviation": dev,
+            "relative_deviation": dev / scale,
+            "tol": float(tol),
+            "toeplitz": dev <= float(tol) * scale,
+            "method": "Rangayyan (2024) eq. (4.29)",
+        }
+    )
 
 
 rangayyan_ch4_ccf_outer_product_random_signals = ccfouter  # pre-policy spelling
@@ -2590,19 +2764,24 @@ def csd(x, y, fs=1.0):
         raise ValueError("need at least two samples")
     xr, xi = _dft(xs)
     yr, yi = _dft(ys)
-    prod = [complex(a, b) * complex(c, -d)
-            for a, b, c, d in zip(xr, xi, yr, yi)]
-    circ = [fsum(xs[i] * ys[(i + k) % n] for i in range(n))
-            for k in range(n)]
+    prod = [complex(a, b) * complex(c, -d) for a, b, c, d in zip(xr, xi, yr, yi)]
+    circ = [fsum(xs[i] * ys[(i + k) % n] for i in range(n)) for k in range(n)]
     cr, ci = _dft(circ)
     viaccf = [complex(a, -b) for a, b in zip(cr, ci)]
     gap = max(abs(a - b) for a, b in zip(prod, viaccf))
     scale = max(abs(v) for v in prod) or 1.0
-    return RichResult(payload={
-        "csd": prod, "via_ccf": viaccf, "ccf_circular": circ,
-        "freqs": [k * float(fs) / n for k in range(n)],
-        "max_difference": gap, "agrees": gap <= 1e-8 * scale, "n": n,
-        "method": "Rangayyan (2024) eqs. (4.30)-(4.31)"})
+    return RichResult(
+        payload={
+            "csd": prod,
+            "via_ccf": viaccf,
+            "ccf_circular": circ,
+            "freqs": [k * float(fs) / n for k in range(n)],
+            "max_difference": gap,
+            "agrees": gap <= 1e-8 * scale,
+            "n": n,
+            "method": "Rangayyan (2024) eqs. (4.30)-(4.31)",
+        }
+    )
 
 
 rangayyan_ch4_csd_from_ccf = csd  # pre-policy spelling
@@ -2639,16 +2818,18 @@ def cohere(x, y, fs=1.0, nperseg=None, noverlap=None):
         raise ValueError("noverlap must be smaller than nperseg")
     starts = list(range(0, n - m + 1, step))
     if len(starts) < 2:
-        raise ValueError("eq. (4.32) needs the spectra AVERAGED over "
-                         "several observations; %d segment(s) of %d "
-                         "samples would give a coherence of 1 at every "
-                         "frequency" % (len(starts), m))
+        raise ValueError(
+            "eq. (4.32) needs the spectra AVERAGED over "
+            "several observations; %d segment(s) of %d "
+            "samples would give a coherence of 1 at every "
+            "frequency" % (len(starts), m)
+        )
     half = m // 2 + 1
     sxx = [0.0] * half
     syy = [0.0] * half
     sxy = [0j] * half
     for s in starts:
-        a, b = xs[s:s + m], ys[s:s + m]
+        a, b = xs[s : s + m], ys[s : s + m]
         ma, mb = fsum(a) / m, fsum(b) / m
         ar, ai = _dft([v - ma for v in a])
         br, bi = _dft([v - mb for v in b])
@@ -2667,11 +2848,19 @@ def cohere(x, y, fs=1.0, nperseg=None, noverlap=None):
         den = sxx[k] * syy[k]
         gam.append(sqrt(abs(sxy[k]) ** 2 / den) if den > 0 else 0.0)
         ph.append(_angle(sxy[k]))
-    return RichResult(payload={
-        "coherence": gam, "phase": ph, "sxx": sxx, "syy": syy, "sxy": sxy,
-        "freqs": [k * float(fs) / m for k in range(half)],
-        "n_segments": len(starts), "nperseg": m,
-        "method": "Rangayyan (2024) eq. (4.32)"})
+    return RichResult(
+        payload={
+            "coherence": gam,
+            "phase": ph,
+            "sxx": sxx,
+            "syy": syy,
+            "sxy": sxy,
+            "freqs": [k * float(fs) / m for k in range(half)],
+            "n_segments": len(starts),
+            "nperseg": m,
+            "method": "Rangayyan (2024) eq. (4.32)",
+        }
+    )
 
 
 rangayyan_ch4_coherence_spectrum = cohere  # pre-policy spelling
@@ -2702,10 +2891,15 @@ def mfinput(x, omega, dt=1.0):
         re = fsum(v * cos(-w * i * step) for i, v in enumerate(xs))
         im = fsum(v * sin(-w * i * step) for i, v in enumerate(xs))
         vals.append(complex(re, im) * step)
-    return RichResult(payload={
-        "X": vals[0] if scalar else vals,
-        "omega": ws[0] if scalar else ws, "dt": step, "n": len(xs),
-        "method": "Rangayyan (2024) eq. (4.33)"})
+    return RichResult(
+        payload={
+            "X": vals[0] if scalar else vals,
+            "omega": ws[0] if scalar else ws,
+            "dt": step,
+            "n": len(xs),
+            "method": "Rangayyan (2024) eq. (4.33)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_input_ft = mfinput  # pre-policy spelling
@@ -2736,11 +2930,17 @@ def mfoutput(x, h, dt=1.0):
         lo, hi = max(0, k - len(hs) + 1), min(k, len(xs) - 1)
         y.append(fsum(xs[i] * hs[k - i] for i in range(lo, hi + 1)) * step)
     peak = max(range(len(y)), key=lambda i: abs(y[i]))
-    return RichResult(payload={
-        "y": y, "t": [i * step for i in range(len(y))],
-        "peak_index": peak, "peak_time": peak * step,
-        "peak_magnitude": abs(y[peak]), "dt": step,
-        "method": "Rangayyan (2024) eq. (4.34)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "t": [i * step for i in range(len(y))],
+            "peak_index": peak,
+            "peak_time": peak * step,
+            "peak_magnitude": abs(y[peak]),
+            "dt": step,
+            "method": "Rangayyan (2024) eq. (4.34)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_output_inverse_ft = mfoutput  # pre-policy spelling
@@ -2764,8 +2964,7 @@ def mfnoisein(power, freqs=None):
     if p < 0:
         raise ValueError("noise power cannot be negative")
     density = p / 2.0
-    out = {"density": density, "power": p, "two_sided": True,
-           "method": "Rangayyan (2024) eq. (4.35)"}
+    out = {"density": density, "power": p, "two_sided": True, "method": "Rangayyan (2024) eq. (4.35)"}
     if freqs is not None:
         fs_ = aslist(freqs)
         out["psd"] = [density] * len(fs_)
@@ -2805,10 +3004,16 @@ def mfnoiseout(power, H, freqs=None, df=1.0):
         total = gridint(psd, fv) if len(fv) > 1 else psd[0] * step
     else:
         total = fsum(psd) * step
-    return RichResult(payload={
-        "psd": psd, "power": total, "rms": sqrt(total) if total > 0 else 0.0,
-        "input_power": p, "input_density": density,
-        "method": "Rangayyan (2024) eqs. (4.36)-(4.37)"})
+    return RichResult(
+        payload={
+            "psd": psd,
+            "power": total,
+            "rms": sqrt(total) if total > 0 else 0.0,
+            "input_power": p,
+            "input_density": density,
+            "method": "Rangayyan (2024) eqs. (4.36)-(4.37)",
+        }
+    )
 
 
 rangayyan_ch4_noise_psd_at_output = mfnoiseout  # pre-policy spelling
@@ -2865,10 +3070,14 @@ def rangayyan_ch4_average_output_noise_power(P_eta_i, H, freqs=None, df=None):
             raise ValueError("df must be positive.")
         integral = float(np.trapezoid(Hm, dx=step))
     peak = float(Hm.max())
-    return RichResult(payload={"output_power": P_in / 2.0 * integral,
-                               "energy_integral": integral,
-                               "noise_equivalent_bw": integral / peak if peak > 0 else 0.0,
-                               "method": "P_out = (P_in/2) int |H(f)|^2 df"})
+    return RichResult(
+        payload={
+            "output_power": P_in / 2.0 * integral,
+            "energy_integral": integral,
+            "noise_equivalent_bw": integral / peak if peak > 0 else 0.0,
+            "method": "P_out = (P_in/2) int |H(f)|^2 df",
+        }
+    )
 
 
 # -- rng212: Magnitude of instantaneous output signal of a matched filter at t = t0..
@@ -2899,9 +3108,9 @@ def mfpeak(X, H, freqs, t0):
         re.append(p.real)
         im.append(p.imag)
     val = complex(gridint(re, fv), gridint(im, fv))
-    return RichResult(payload={
-        "my": abs(val), "y": val, "t0": t, "phase": _angle(val),
-        "method": "Rangayyan (2024) eq. (4.38)"})
+    return RichResult(
+        payload={"my": abs(val), "y": val, "t0": t, "phase": _angle(val), "method": "Rangayyan (2024) eq. (4.38)"}
+    )
 
 
 rangayyan_ch4_matched_filter_instantaneous_signal = mfpeak  # pre-policy spelling
@@ -2926,11 +3135,17 @@ def mfsnr(my, noise_power):
     if p <= 0:
         raise ValueError("the output noise power must be positive")
     ratio = m * m / p
-    return RichResult(payload={
-        "snr": ratio, "snr_db": 10.0 * log10(ratio) if ratio > 0
-        else float("-inf"),
-        "amplitude_snr": m / sqrt(p), "my": m, "noise_power": p,
-        "peak_to_mean": True, "method": "Rangayyan (2024) eq. (4.39)"})
+    return RichResult(
+        payload={
+            "snr": ratio,
+            "snr_db": 10.0 * log10(ratio) if ratio > 0 else float("-inf"),
+            "amplitude_snr": m / sqrt(p),
+            "my": m,
+            "noise_power": p,
+            "peak_to_mean": True,
+            "method": "Rangayyan (2024) eq. (4.39)",
+        }
+    )
 
 
 rangayyan_ch4_peak_power_snr = mfsnr  # pre-policy spelling
@@ -2956,8 +3171,7 @@ def sigenergy(x, t=None, dt=1.0, X=None, freqs=None):
         xs = aslist(x)
         if len(xs) < 2:
             raise ValueError("need at least two samples to integrate")
-        ts = [i * float(dt) for i in range(len(xs))] if t is None \
-            else aslist(t)
+        ts = [i * float(dt) for i in range(len(xs))] if t is None else aslist(t)
         out["energy_time"] = gridint([v * v for v in xs], ts)
         out["energy"] = out["energy_time"]
     if X is not None:
@@ -3014,11 +3228,17 @@ def mfratio(X, H, freqs, t0, noise_power):
         raise ValueError("the denominator of eq. (4.41) vanishes")
     ratio = num / den
     bound = 2.0 / p
-    return RichResult(payload={
-        "ratio": ratio, "bound": bound,
-        "optimality": ratio / bound if bound > 0 else None,
-        "numerator": num, "energy_h": eh, "energy_x": ex,
-        "method": "Rangayyan (2024) eqs. (4.41), (4.46)"})
+    return RichResult(
+        payload={
+            "ratio": ratio,
+            "bound": bound,
+            "optimality": ratio / bound if bound > 0 else None,
+            "numerator": num,
+            "energy_h": eh,
+            "energy_x": ex,
+            "method": "Rangayyan (2024) eqs. (4.41), (4.46)",
+        }
+    )
 
 
 rangayyan_ch4_snr_normalized_ratio = mfratio  # pre-policy spelling
@@ -3049,22 +3269,26 @@ def schwarzc(A, B, grid):
     if len(g) < 2:
         raise ValueError("need at least two grid points to integrate")
     prod = [a * b for a, b in zip(As, Bs)]
-    inner = complex(gridint([v.real for v in prod], g),
-                    gridint([v.imag for v in prod], g))
+    inner = complex(gridint([v.real for v in prod], g), gridint([v.imag for v in prod], g))
     ea = gridint([abs(v) ** 2 for v in As], g)
     eb = gridint([abs(v) ** 2 for v in Bs], g)
     lhs = abs(inner) ** 2
     rhs = ea * eb
     ks = [a / b.conjugate() for a, b in zip(As, Bs) if abs(b) > 1e-300]
     k = ks[0] if ks else None
-    collinear = bool(ks) and all(abs(v - k) <= 1e-9 * (1 + abs(k))
-                                 for v in ks)
-    return RichResult(payload={
-        "lhs": lhs, "rhs": rhs, "holds": lhs <= rhs * (1 + 1e-9),
-        "ratio": lhs / rhs if rhs > 0 else None,
-        "equality": rhs > 0 and abs(lhs - rhs) <= 1e-9 * rhs,
-        "k": k, "collinear": collinear,
-        "method": "Rangayyan (2024) eq. (4.42)"})
+    collinear = bool(ks) and all(abs(v - k) <= 1e-9 * (1 + abs(k)) for v in ks)
+    return RichResult(
+        payload={
+            "lhs": lhs,
+            "rhs": rhs,
+            "holds": lhs <= rhs * (1 + 1e-9),
+            "ratio": lhs / rhs if rhs > 0 else None,
+            "equality": rhs > 0 and abs(lhs - rhs) <= 1e-9 * rhs,
+            "k": k,
+            "collinear": collinear,
+            "method": "Rangayyan (2024) eq. (4.42)",
+        }
+    )
 
 
 rangayyan_ch4_schwarz_inequality_complex = schwarzc  # pre-policy spelling
@@ -3086,8 +3310,7 @@ def schwarzr(a, b, grid=None, dt=1.0):
         raise ValueError("a and b must have the same length")
     if len(av) < 2:
         raise ValueError("need at least two samples to integrate")
-    g = [i * float(dt) for i in range(len(av))] if grid is None \
-        else aslist(grid)
+    g = [i * float(dt) for i in range(len(av))] if grid is None else aslist(grid)
     inner = gridint([p * q for p, q in zip(av, bv)], g)
     ea = gridint([v * v for v in av], g)
     eb = gridint([v * v for v in bv], g)
@@ -3095,12 +3318,17 @@ def schwarzr(a, b, grid=None, dt=1.0):
     rhs = ea * eb
     ks = [p / q for p, q in zip(av, bv) if abs(q) > 1e-300]
     k = ks[0] if ks else None
-    return RichResult(payload={
-        "lhs": lhs, "rhs": rhs, "holds": lhs <= rhs * (1 + 1e-9),
-        "equality": rhs > 0 and abs(lhs - rhs) <= 1e-9 * rhs, "k": k,
-        "collinear": bool(ks) and all(abs(v - k) <= 1e-9 * (1 + abs(k))
-                                      for v in ks),
-        "method": "Rangayyan (2024) eq. (4.43)"})
+    return RichResult(
+        payload={
+            "lhs": lhs,
+            "rhs": rhs,
+            "holds": lhs <= rhs * (1 + 1e-9),
+            "equality": rhs > 0 and abs(lhs - rhs) <= 1e-9 * rhs,
+            "k": k,
+            "collinear": bool(ks) and all(abs(v - k) <= 1e-9 * (1 + abs(k)) for v in ks),
+            "method": "Rangayyan (2024) eq. (4.43)",
+        }
+    )
 
 
 rangayyan_ch4_schwarz_inequality_real = schwarzr  # pre-policy spelling
@@ -3125,14 +3353,18 @@ def cauchysch(a, b):
     dp = fsum(p * q for p, q in zip(av, bv))
     na = sqrt(fsum(v * v for v in av))
     nb = sqrt(fsum(v * v for v in bv))
-    return RichResult(payload={
-        "lhs": abs(dp), "rhs": na * nb,
-        "holds": abs(dp) <= na * nb * (1 + 1e-12),
-        "cosine": dp / (na * nb) if na > 0 and nb > 0 else None,
-        "equality": na > 0 and nb > 0
-        and abs(abs(dp) - na * nb) <= 1e-9 * na * nb,
-        "norm_a": na, "norm_b": nb,
-        "method": "Rangayyan (2024) eq. (4.44)"})
+    return RichResult(
+        payload={
+            "lhs": abs(dp),
+            "rhs": na * nb,
+            "holds": abs(dp) <= na * nb * (1 + 1e-12),
+            "cosine": dp / (na * nb) if na > 0 and nb > 0 else None,
+            "equality": na > 0 and nb > 0 and abs(abs(dp) - na * nb) <= 1e-9 * na * nb,
+            "norm_a": na,
+            "norm_b": nb,
+            "method": "Rangayyan (2024) eq. (4.44)",
+        }
+    )
 
 
 rangayyan_ch4_cauchy_schwarz_vectors = cauchysch  # pre-policy spelling
@@ -3159,11 +3391,18 @@ def triangle(a, b):
     ns = sqrt(fsum(v * v for v in s))
     na = sqrt(fsum(v * v for v in av))
     nb = sqrt(fsum(v * v for v in bv))
-    return RichResult(payload={
-        "lhs": ns, "rhs": na + nb, "holds": ns <= (na + nb) * (1 + 1e-12),
-        "equality": abs(ns - (na + nb)) <= 1e-9 * (na + nb + 1.0),
-        "norm_sum": ns, "norm_a": na, "norm_b": nb,
-        "method": "Rangayyan (2024) eq. (4.45)"})
+    return RichResult(
+        payload={
+            "lhs": ns,
+            "rhs": na + nb,
+            "holds": ns <= (na + nb) * (1 + 1e-12),
+            "equality": abs(ns - (na + nb)) <= 1e-9 * (na + nb + 1.0),
+            "norm_sum": ns,
+            "norm_a": na,
+            "norm_b": nb,
+            "method": "Rangayyan (2024) eq. (4.45)",
+        }
+    )
 
 
 rangayyan_ch4_triangle_inequality_vectors = triangle  # pre-policy spelling
@@ -3196,11 +3435,17 @@ def mftf(X, freqs, t0, gain=1.0):
     for Xv, f in zip(Xs, fv):
         ang = -2.0 * pi * f * t
         H.append(k * Xv.conjugate() * complex(cos(ang), sin(ang)))
-    return RichResult(payload={
-        "H": H, "freqs": fv, "t0": t, "gain": k,
-        "magnitude": [abs(v) for v in H],
-        "conjugate_of_signal": True,
-        "method": "Rangayyan (2024) eqs. (4.48), (4.55)"})
+    return RichResult(
+        payload={
+            "H": H,
+            "freqs": fv,
+            "t0": t,
+            "gain": k,
+            "magnitude": [abs(v) for v in H],
+            "conjugate_of_signal": True,
+            "method": "Rangayyan (2024) eqs. (4.48), (4.55)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_optimal_transfer_function = mftf  # pre-policy spelling
@@ -3232,27 +3477,34 @@ def mfimpulse(x, t0=None, gain=1.0, dt=1.0):
         raise ValueError("dt must be positive")
     shift = n if t0 is None else int(round(float(t0) / step))
     if shift < n:
-        raise ValueError("t0 must be at least the reference duration "
-                         "(%d samples) for a causal filter; the DFT of "
-                         "eq. (4.55) at length N supplies only N-1"
-                         % n)
+        raise ValueError(
+            "t0 must be at least the reference duration "
+            "(%d samples) for a causal filter; the DFT of "
+            "eq. (4.55) at length N supplies only N-1" % n
+        )
     h = [0.0] * (shift + 1)
     for i, v in enumerate(xs):
         j = shift - i
         if 0 <= j <= shift:
             h[j] = float(gain) * v
-    return RichResult(payload={
-        "h": h, "t0": shift * step, "shift_samples": shift,
-        "gain": float(gain), "causal": True, "reversed": True,
-        "n_reference": n, "method": "Rangayyan (2024) eqs. (4.49), (4.56)"})
+    return RichResult(
+        payload={
+            "h": h,
+            "t0": shift * step,
+            "shift_samples": shift,
+            "gain": float(gain),
+            "causal": True,
+            "reversed": True,
+            "n_reference": n,
+            "method": "Rangayyan (2024) eqs. (4.49), (4.56)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_impulse_response = mfimpulse  # pre-policy spelling
 
 
 # -- rng222: Matched-filter output equals scaled, delayed ACF of the reference signal..
-
-
 
 
 def mfacf(x, gain=1.0, dt=1.0):
@@ -3285,15 +3537,22 @@ def mfacf(x, gain=1.0, dt=1.0):
     peak = max(range(len(y)), key=lambda i: y[i])
     energy = fsum(v * v for v in xs)
     offset = peak - (n - 1)
-    aligned = y[offset:offset + len(shifted)] if offset >= 0 else []
-    gap = (max(abs(a - b) for a, b in zip(aligned, shifted))
-           if len(aligned) == len(shifted) else float("inf"))
-    return RichResult(payload={
-        "y": y, "acf": acf, "lags": lags, "peak_index": peak,
-        "peak_value": y[peak], "expected_peak": float(gain) * energy,
-        "energy": energy, "max_difference": gap,
-        "equals_acf": gap <= 1e-9 * (1 + abs(float(gain) * energy)),
-        "method": "Rangayyan (2024) Section 4.6.1, y(t) = K phi_x(t - t0)"})
+    aligned = y[offset : offset + len(shifted)] if offset >= 0 else []
+    gap = max(abs(a - b) for a, b in zip(aligned, shifted)) if len(aligned) == len(shifted) else float("inf")
+    return RichResult(
+        payload={
+            "y": y,
+            "acf": acf,
+            "lags": lags,
+            "peak_index": peak,
+            "peak_value": y[peak],
+            "expected_peak": float(gain) * energy,
+            "energy": energy,
+            "max_difference": gap,
+            "equals_acf": gap <= 1e-9 * (1 + abs(float(gain) * energy)),
+            "method": "Rangayyan (2024) Section 4.6.1, y(t) = K phi_x(t - t0)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_output_acf = mfacf  # pre-policy spelling
@@ -3324,13 +3583,20 @@ def refpattern(amplitudes=None):
         y.append(fsum(g[i] * h[k - i] for i in range(lo, hi + 1)))
     acf = []
     for k in range(-(len(g) - 1), len(g)):
-        acf.append(fsum(g[i] * g[i + k] for i in range(len(g))
-                        if 0 <= i + k < len(g)))
+        acf.append(fsum(g[i] * g[i + k] for i in range(len(g)) if 0 <= i + k < len(g)))
     gap = max(abs(a - b) for a, b in zip(y, acf))
-    return RichResult(payload={
-        "g": g, "h": h, "y": y, "acf": acf, "delay": len(g) - 1,
-        "max_difference": gap, "output_is_acf": gap <= 1e-12,
-        "method": "Rangayyan (2024) eqs. (4.53)-(4.54)"})
+    return RichResult(
+        payload={
+            "g": g,
+            "h": h,
+            "y": y,
+            "acf": acf,
+            "delay": len(g) - 1,
+            "max_difference": gap,
+            "output_is_acf": gap <= 1e-12,
+            "method": "Rangayyan (2024) eqs. (4.53)-(4.54)",
+        }
+    )
 
 
 rangayyan_ch4_basic_signal_g = refpattern  # pre-policy spelling
@@ -3350,9 +3616,9 @@ def mftfeeg(X, freqs, t0, gain=1.0):
     """
     r = mftf(X, freqs, t0, gain=gain)
     out = dict(r)
-    out["dft_shift_caveat"] = ("an N-point DFT of an N-sample template "
-                               "supplies a shift of N-1; the causal "
-                               "filter needs N")
+    out["dft_shift_caveat"] = (
+        "an N-point DFT of an N-sample template supplies a shift of N-1; the causal filter needs N"
+    )
     out["method"] = "Rangayyan (2024) eq. (4.55)"
     return RichResult(payload=out)
 
@@ -3407,81 +3673,88 @@ def mfpsd(x, dt=1.0):
     Y = [a * b for a, b in zip(X, H)]
     psd = [abs(v) ** 2 for v in X]
     gap = max(abs(a.real - b) for a, b in zip(Y, psd))
-    return RichResult(payload={
-        "Y": Y, "psd": psd, "max_imaginary": max(abs(v.imag) for v in Y),
-        "max_difference": gap, "is_psd": gap <= 1e-9 * (1 + max(psd)),
-        "n": n, "method": "Rangayyan (2024) eq. (4.57)"})
+    return RichResult(
+        payload={
+            "Y": Y,
+            "psd": psd,
+            "max_imaginary": max(abs(v.imag) for v in Y),
+            "max_difference": gap,
+            "is_psd": gap <= 1e-9 * (1 + max(psd)),
+            "n": n,
+            "method": "Rangayyan (2024) eq. (4.57)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_output_psd = mfpsd  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'coher: Coherence between two signals.',
-    'mchfl: Matched filter for template detection in biomedical signals.',
-    'rgacf: Autocorrelation estimate.',
+    "coher: Coherence between two signals.",
+    "mchfl: Matched filter for template detection in biomedical signals.",
+    "rgacf: Autocorrelation estimate.",
     "rgbartl: Bartlett's averaged periodogram.",
-    'rgbwbnd: Spectral bandwidth.',
-    'cross-correlation function',
-    'rgcfsle: Cardiorespiratory coupling analysis via coherence and PLV.',
-    'rgcoh: Magnitude-squared coherence -- Rangayyan & Krishnan Sec 4.5.1.',
-    'rgcxy: Magnitude-squared coherence (MSC) function.',
-    'rgeeg: EEG band power (delta theta alpha beta gamma) -- Rangayyan & Krishnan Sec 4.4.1.',
-    'EEG autocorrelation for rhythm detection',
-    'alpha-rhythm detection from the ACF',
-    'rgeegsp: EEG band powers.',
-    'rgemgpk: EMG mean/median frequency from power spectrum.',
-    'cross-correlation as a convolution',
-    'rgerpflt: ERP artifact removal via synchronized averaging.',
-    'rgmflt: Matched filter transfer function for signal detection in noise.',
-    'rgmfsnr: Output SNR of matched filter (maximum SNR theorem).',
-    'rgperio: Periodogram.',
+    "rgbwbnd: Spectral bandwidth.",
+    "cross-correlation function",
+    "rgcfsle: Cardiorespiratory coupling analysis via coherence and PLV.",
+    "rgcoh: Magnitude-squared coherence -- Rangayyan & Krishnan Sec 4.5.1.",
+    "rgcxy: Magnitude-squared coherence (MSC) function.",
+    "rgeeg: EEG band power (delta theta alpha beta gamma) -- Rangayyan & Krishnan Sec 4.4.1.",
+    "EEG autocorrelation for rhythm detection",
+    "alpha-rhythm detection from the ACF",
+    "rgeegsp: EEG band powers.",
+    "rgemgpk: EMG mean/median frequency from power spectrum.",
+    "cross-correlation as a convolution",
+    "rgerpflt: ERP artifact removal via synchronized averaging.",
+    "rgmflt: Matched filter transfer function for signal detection in noise.",
+    "rgmfsnr: Output SNR of matched filter (maximum SNR theorem).",
+    "rgperio: Periodogram.",
     "rgpsd: Power spectral density via Welch's method -- Rangayyan & Krishnan Sec 6.3.2-6.3.4.",
-    'rgpsd2hz: Convert PSD to frequency-in-Hz units and compute bin-level features.',
-    'rgpsdacf: PSD to autocorrelation.',
-    'rgpsync: Synchronized averaging of PCG spectra for murmur analysis.',
-    'rgseiz: EEG seizure detection via rhythm coherence analysis.',
-    'rgsmom: Spectral moments: centroid (mean freq), variance (bandwidth), skewness.',
-    'rgspres: Spectral resolution and leakage analysis (Rayleigh criterion).',
-    'rgtmpl: Template matching for EEG spike-and-wave detection.',
-    'rgwelch: Welch power spectral density.',
-    'rng016: Autocorrelation function of a random process by ensemble average (Eq 3.16/3.17).',
-    'rng017: Ensemble autocorrelation.',
-    'rng018: Ensemble average function (Rangayyan eq. 3.18).',
-    'rng020: Time-averaged autocorrelation.',
-    'CCF of two random processes, Chapter 3',
-    'rng070: Inverse discrete Fourier transform (IDFT) of an N-point spectrum..',
+    "rgpsd2hz: Convert PSD to frequency-in-Hz units and compute bin-level features.",
+    "rgpsdacf: PSD to autocorrelation.",
+    "rgpsync: Synchronized averaging of PCG spectra for murmur analysis.",
+    "rgseiz: EEG seizure detection via rhythm coherence analysis.",
+    "rgsmom: Spectral moments: centroid (mean freq), variance (bandwidth), skewness.",
+    "rgspres: Spectral resolution and leakage analysis (Rayleigh criterion).",
+    "rgtmpl: Template matching for EEG spike-and-wave detection.",
+    "rgwelch: Welch power spectral density.",
+    "rng016: Autocorrelation function of a random process by ensemble average (Eq 3.16/3.17).",
+    "rng017: Ensemble autocorrelation.",
+    "rng018: Ensemble average function (Rangayyan eq. 3.18).",
+    "rng020: Time-averaged autocorrelation.",
+    "CCF of two random processes, Chapter 3",
+    "rng070: Inverse discrete Fourier transform (IDFT) of an N-point spectrum..",
     "rng080: Parseval's theorem: total signal energy preserved under Fourier transform..",
-    'rng085: Synchronized sum across M observations to form ensemble averaging..',
-    'normalized CCF for template matching',
-    'rng198: Discrete-time dot product (inner product) of two N-sample signals..',
-    'correlation coefficient as a normalized dot product',
-    'rng200: Projection (inner product) of two continuous-time signals over R..',
-    'continuous-time CCF at given delays',
-    'discrete CCF at given shifts',
-    'rng203: CCF of random signals as expectation of outer product of vector samples..',
-    'rng205: Cross-spectral density (CSD) as the Fourier transform of the CCF..',
-    'rng206: Magnitude coherence spectrum between two signals from CSD and PSDs..',
-    'rng207: Fourier transform of input signal to a matched filter..',
-    'rng208: Output of matched filter via inverse Fourier transform of X(omega)*H(omega)..',
-    'rng209: PSD of white noise at the input of a matched filter (two-sided)..',
-    'rng210: Noise PSD at the output of a matched filter..',
-    'rng211: Average output noise power.',
-    'rng212: Magnitude of instantaneous output signal of a matched filter at t = t0..',
-    'rng213: Peak-power SNR at output of a matched filter..',
+    "rng085: Synchronized sum across M observations to form ensemble averaging..",
+    "normalized CCF for template matching",
+    "rng198: Discrete-time dot product (inner product) of two N-sample signals..",
+    "correlation coefficient as a normalized dot product",
+    "rng200: Projection (inner product) of two continuous-time signals over R..",
+    "continuous-time CCF at given delays",
+    "discrete CCF at given shifts",
+    "rng203: CCF of random signals as expectation of outer product of vector samples..",
+    "rng205: Cross-spectral density (CSD) as the Fourier transform of the CCF..",
+    "rng206: Magnitude coherence spectrum between two signals from CSD and PSDs..",
+    "rng207: Fourier transform of input signal to a matched filter..",
+    "rng208: Output of matched filter via inverse Fourier transform of X(omega)*H(omega)..",
+    "rng209: PSD of white noise at the input of a matched filter (two-sided)..",
+    "rng210: Noise PSD at the output of a matched filter..",
+    "rng211: Average output noise power.",
+    "rng212: Magnitude of instantaneous output signal of a matched filter at t = t0..",
+    "rng213: Peak-power SNR at output of a matched filter..",
     "rng214: Total energy of a signal via Parseval's theorem..",
-    'rng215: Normalized ratio used in maximizing matched-filter SNR..',
-    'rng216: Schwarz inequality for complex functions A(f) and B(f)..',
-    'rng217: Schwarz inequality for real functions a(t) and b(t)..',
-    'rng218: Schwarz (Cauchy-Schwarz) inequality for two vectors..',
-    'rng219: Triangle inequality for two vectors..',
-    'rng220: Optimal frequency response of the matched filter..',
-    'rng221: Impulse response of the matched filter is a scaled, time-reversed, shifted reference signal..',
-    'rng222: Matched-filter output equals scaled, delayed ACF of the reference signal..',
-    'rng224: Basic three-sample reference pattern used in matched-filter illustration..',
-    'rng227: Frequency-domain optimal matched-filter response for EEG spike-and-wave detection..',
-    'rng228: Time-domain impulse response of the matched filter for EEG spike-and-wave detection..',
-    'rng229: Frequency-domain output of matched filter equals PSD of the reference signal..',
+    "rng215: Normalized ratio used in maximizing matched-filter SNR..",
+    "rng216: Schwarz inequality for complex functions A(f) and B(f)..",
+    "rng217: Schwarz inequality for real functions a(t) and b(t)..",
+    "rng218: Schwarz (Cauchy-Schwarz) inequality for two vectors..",
+    "rng219: Triangle inequality for two vectors..",
+    "rng220: Optimal frequency response of the matched filter..",
+    "rng221: Impulse response of the matched filter is a scaled, time-reversed, shifted reference signal..",
+    "rng222: Matched-filter output equals scaled, delayed ACF of the reference signal..",
+    "rng224: Basic three-sample reference pattern used in matched-filter illustration..",
+    "rng227: Frequency-domain optimal matched-filter response for EEG spike-and-wave detection..",
+    "rng228: Time-domain impulse response of the matched filter for EEG spike-and-wave detection..",
+    "rng229: Frequency-domain output of matched filter equals PSD of the reference signal..",
 ]
 
 

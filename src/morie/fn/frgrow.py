@@ -74,13 +74,21 @@ References
 
 import math
 
-from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["frgrow", "fragment_growing", "binding_energy",
-           "ligand_efficiency", "group_efficiency", "metrics",
-           "ENERGY_ROUTES", "R_KCAL", "T_STANDARD", "LE_SHORTCUT",
-           "cheatsheet"]
+__all__ = [
+    "frgrow",
+    "fragment_growing",
+    "binding_energy",
+    "ligand_efficiency",
+    "group_efficiency",
+    "metrics",
+    "ENERGY_ROUTES",
+    "R_KCAL",
+    "T_STANDARD",
+    "LE_SHORTCUT",
+    "cheatsheet",
+]
 
 ENERGY_ROUTES = ("rt", "shortcut")
 
@@ -126,8 +134,7 @@ def ligand_efficiency(kd, hac, route="rt", temperature=T_STANDARD):
     return LE_SHORTCUT * (-math.log10(float(kd))) / n
 
 
-def group_efficiency(kd_parent, hac_parent, kd_grown, hac_grown,
-                     route="rt", temperature=T_STANDARD):
+def group_efficiency(kd_parent, hac_parent, kd_grown, hac_grown, route="rt", temperature=T_STANDARD):
     """The efficiency of the atoms that were added, on their own.
 
     Not the grown compound's efficiency -- the ADDED group's. A group
@@ -137,18 +144,15 @@ def group_efficiency(kd_parent, hac_parent, kd_grown, hac_grown,
     """
     dn = float(hac_grown) - float(hac_parent)
     if dn <= 0.0:
-        raise ValueError("growing must add heavy atoms; use the parent's "
-                         "own efficiency for a compound that added none")
+        raise ValueError("growing must add heavy atoms; use the parent's own efficiency for a compound that added none")
     if route == "rt":
-        dg = (binding_energy(kd_grown, temperature)
-              - binding_energy(kd_parent, temperature))
+        dg = binding_energy(kd_grown, temperature) - binding_energy(kd_parent, temperature)
         return -dg / dn
     dp = (-math.log10(float(kd_grown))) - (-math.log10(float(kd_parent)))
     return LE_SHORTCUT * dp / dn
 
 
-def metrics(kd, hac, logp=None, mw=None, psa=None, route="rt",
-            temperature=T_STANDARD):
+def metrics(kd, hac, logp=None, mw=None, psa=None, route="rt", temperature=T_STANDARD):
     """The efficiency metrics that the supplied descriptors allow.
 
     A metric whose descriptor is absent is reported as None rather than
@@ -158,8 +162,15 @@ def metrics(kd, hac, logp=None, mw=None, psa=None, route="rt",
     kd = float(kd)
     pkd = -math.log10(kd)
     le = ligand_efficiency(kd, hac, route, temperature)
-    out = {"pkd": pkd, "dg": binding_energy(kd, temperature), "le": le,
-           "lle": None, "lelp": None, "bei": None, "sei": None}
+    out = {
+        "pkd": pkd,
+        "dg": binding_energy(kd, temperature),
+        "le": le,
+        "lle": None,
+        "lelp": None,
+        "bei": None,
+        "sei": None,
+    }
     if logp is not None:
         out["lle"] = pkd - float(logp)
         # LELP is the one metric where smaller is better, and it is also
@@ -184,8 +195,7 @@ def _nan_if_none(v):
     return float("nan") if v is None else float(v)
 
 
-def fragment_growing(fragment, linker_lib, route="rt",
-                     temperature=T_STANDARD):
+def fragment_growing(fragment, linker_lib, route="rt", temperature=T_STANDARD):
     """Score a set of grown analogues against the fragment they came from.
 
     Parameters
@@ -214,6 +224,7 @@ def fragment_growing(fragment, linker_lib, route="rt",
     Hopkins et al. (2004) Drug Discov Today 9(10), 430-431; Verdonk and
     Rees (2008) ChemMedChem 3(8), 1179-1180.
     """
+
     def unpack(row):
         kd = float(row[0])
         hac = float(row[1])
@@ -235,59 +246,69 @@ def fragment_growing(fragment, linker_lib, route="rt",
         # efficiency is the atom-weighted average of the parent's and
         # the added group's. Recomputing it here rather than trusting it
         # is what makes the check in the tests meaningful.
-        blend = ((parent["le"] * phac + ge * (hac - phac))
-                 / hac)
-        rows.append({"name": nm, "kd": kd, "hac": hac,
-                     "d_hac": hac - phac, "ge": ge, "blend": blend,
-                     "improved": ge > parent["le"], "metrics": m})
+        blend = (parent["le"] * phac + ge * (hac - phac)) / hac
+        rows.append(
+            {
+                "name": nm,
+                "kd": kd,
+                "hac": hac,
+                "d_hac": hac - phac,
+                "ge": ge,
+                "blend": blend,
+                "improved": ge > parent["le"],
+                "metrics": m,
+            }
+        )
 
-    order = sorted(range(len(rows)),
-                   key=lambda i: (-rows[i]["ge"], i))
+    order = sorted(range(len(rows)), key=lambda i: (-rows[i]["ge"], i))
     improved = [i for i in range(len(rows)) if rows[i]["improved"]]
     best = order[0] if order else -1
-    return RichResult(payload={
-        "parent_le": parent["le"],
-        "parent_pkd": parent["pkd"],
-        "parent_dg": parent["dg"],
-        "parent_lle": parent["lle"],
-        "parent_lelp": parent["lelp"],
-        "parent_bei": parent["bei"],
-        "parent_sei": parent["sei"],
-        "name": [r["name"] for r in rows],
-        "kd": [r["kd"] for r in rows],
-        "hac": [r["hac"] for r in rows],
-        "d_hac": [r["d_hac"] for r in rows],
-        "group_efficiency": [r["ge"] for r in rows],
-        "le": [r["metrics"]["le"] for r in rows],
-        "le_from_blend": [r["blend"] for r in rows],
-        "pkd": [r["metrics"]["pkd"] for r in rows],
-        "dg": [r["metrics"]["dg"] for r in rows],
-        # Inside a per-analogue COLUMN an absent metric has to be a
-        # number, because a column is a vector and a vector cannot hold
-        # an absence. It is not-a-number, not zero: zero would rank the
-        # compound first on LELP and last on everything else. The
-        # parent's scalars above keep the honest None.
-        "lle": [_nan_if_none(r["metrics"]["lle"]) for r in rows],
-        "lelp": [_nan_if_none(r["metrics"]["lelp"]) for r in rows],
-        "bei": [_nan_if_none(r["metrics"]["bei"]) for r in rows],
-        "sei": [_nan_if_none(r["metrics"]["sei"]) for r in rows],
-        "improved": improved,
-        "n_improved": len(improved),
-        "ranking": order,
-        "best": best,
-        "estimate": rows[best]["ge"] if rows else float("nan"),
-        "se": float("nan"),
-        "n": len(rows),
-        "temperature": float(temperature),
-        "route": route,
-        "method": "fragment growing by ligand and group efficiency",
-    })
+    return RichResult(
+        payload={
+            "parent_le": parent["le"],
+            "parent_pkd": parent["pkd"],
+            "parent_dg": parent["dg"],
+            "parent_lle": parent["lle"],
+            "parent_lelp": parent["lelp"],
+            "parent_bei": parent["bei"],
+            "parent_sei": parent["sei"],
+            "name": [r["name"] for r in rows],
+            "kd": [r["kd"] for r in rows],
+            "hac": [r["hac"] for r in rows],
+            "d_hac": [r["d_hac"] for r in rows],
+            "group_efficiency": [r["ge"] for r in rows],
+            "le": [r["metrics"]["le"] for r in rows],
+            "le_from_blend": [r["blend"] for r in rows],
+            "pkd": [r["metrics"]["pkd"] for r in rows],
+            "dg": [r["metrics"]["dg"] for r in rows],
+            # Inside a per-analogue COLUMN an absent metric has to be a
+            # number, because a column is a vector and a vector cannot hold
+            # an absence. It is not-a-number, not zero: zero would rank the
+            # compound first on LELP and last on everything else. The
+            # parent's scalars above keep the honest None.
+            "lle": [_nan_if_none(r["metrics"]["lle"]) for r in rows],
+            "lelp": [_nan_if_none(r["metrics"]["lelp"]) for r in rows],
+            "bei": [_nan_if_none(r["metrics"]["bei"]) for r in rows],
+            "sei": [_nan_if_none(r["metrics"]["sei"]) for r in rows],
+            "improved": improved,
+            "n_improved": len(improved),
+            "ranking": order,
+            "best": best,
+            "estimate": rows[best]["ge"] if rows else float("nan"),
+            "se": float("nan"),
+            "n": len(rows),
+            "temperature": float(temperature),
+            "route": route,
+            "method": "fragment growing by ligand and group efficiency",
+        }
+    )
 
 
 frgrow = fragment_growing
 
 
 def cheatsheet():
-    return ("frgrow: fragment growing by ligand and group efficiency. "
-            "routes " + ", ".join(ENERGY_ROUTES)
-            + "; LE = -RT ln(Kd)/HAC, GE on the added atoms only")
+    return (
+        "frgrow: fragment growing by ligand and group efficiency. "
+        "routes " + ", ".join(ENERGY_ROUTES) + "; LE = -RT ln(Kd)/HAC, GE on the added atoms only"
+    )

@@ -1,7 +1,6 @@
 """Tests for morie.fn.tq3 — 3-bit TurboQuant."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tq3 import turboquant_3bit
 
 

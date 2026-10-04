@@ -1,8 +1,8 @@
 """totcorr: total correlation / multi-information (Watanabe 1960)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.totcorr import total_correlation as tc
 
 
@@ -16,13 +16,7 @@ def test_totcorr_two_variables_equal_the_mutual_information():
     """For n = 2, TC(X1,X2) = H(X1) + H(X2) - H(X1,X2) = I(X1;X2)."""
     p = np.array([[0.1, 0.2], [0.3, 0.4]])
     px, py = p.sum(1), p.sum(0)
-    mi = float(
-        sum(
-            p[i, j] * np.log2(p[i, j] / (px[i] * py[j]))
-            for i in range(2)
-            for j in range(2)
-        )
-    )
+    mi = float(sum(p[i, j] * np.log2(p[i, j] / (px[i] * py[j])) for i in range(2) for j in range(2)))
     assert tc(p)["estimate"] == pytest.approx(mi, rel=1e-12)
 
 
@@ -49,9 +43,7 @@ def test_totcorr_is_non_negative_on_random_distributions():
 
 def test_totcorr_nats_are_bits_times_ln_two():
     p = np.array([[0.5, 0.0], [0.0, 0.5]])
-    assert tc(p, base="nats")["estimate"] == pytest.approx(
-        tc(p, base="bits")["estimate"] * np.log(2.0)
-    )
+    assert tc(p, base="nats")["estimate"] == pytest.approx(tc(p, base="bits")["estimate"] * np.log(2.0))
 
 
 def test_totcorr_rejects_a_one_dimensional_input():

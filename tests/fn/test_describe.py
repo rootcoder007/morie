@@ -57,11 +57,7 @@ def test_describe_skeleton_for_callable_without_md():
     # Must survive describe()'s truthfulness gate too: the name has to be
     # a REAL export (in the lazy import table), not merely a REGISTRY row.
     table = set(json.loads((fn_dir / "_lazy_map.json").read_text()))
-    bare = next(
-        name
-        for name in sorted(REGISTRY)
-        if name in table and not (fn_dir / f"describe_{name}.md").exists()
-    )
+    bare = next(name for name in sorted(REGISTRY) if name in table and not (fn_dir / f"describe_{name}.md").exists())
     r = describe(bare)
     assert r.warnings
     assert any("skeleton" in w.lower() or "describe_" in w for w in r.warnings)

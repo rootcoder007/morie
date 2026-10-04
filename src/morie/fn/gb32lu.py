@@ -79,8 +79,12 @@ def gibbons_runs_up_down_recur(x=None, n=None):
     mean = float(np.sum(support * pmf))
     var = float(np.sum(support**2 * pmf) - mean**2)
     payload = {
-        "support": support.astype(int), "pmf": pmf, "mean": mean, "var": var,
-        "n": n, "method": "Exact runs up/down pmf by enumeration (Gibbons Ch. 3.4)",
+        "support": support.astype(int),
+        "pmf": pmf,
+        "mean": mean,
+        "var": var,
+        "n": n,
+        "method": "Exact runs up/down pmf by enumeration (Gibbons Ch. 3.4)",
     }
     if obs is not None:
         payload["observed"] = obs

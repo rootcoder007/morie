@@ -1,8 +1,8 @@
 """Tests for morie.fn.cocht -- Cochran's Q test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import TestResult
 from morie.fn.cocht import cochrans_q_test
 

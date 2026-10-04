@@ -59,12 +59,10 @@ doi:10.1214/15-AOS1384. The nonexceptional law condition.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["blip", "resource_threshold", "constrained_rule",
-           "constrained_value", "exceptional_law"]
+__all__ = ["blip", "resource_threshold", "constrained_rule", "constrained_value", "exceptional_law"]
 
 _EPS = 1e-12
 
@@ -89,19 +87,20 @@ def resource_threshold(B, kappa):
     b = sorted(float(v) for v in k.vec(B))
     kp = float(kappa)
     if not 0.0 < kp <= 1.0:
-        raise ValueError("tloilr: kappa must lie in (0,1], got %r"
-                         % (kappa,))
+        raise ValueError("tloilr: kappa must lie in (0,1], got %r" % (kappa,))
     n = len(b)
     idx = int(math.ceil((1.0 - kp) * n)) - 1
     idx = min(max(idx, 0), n - 1)
     q = b[idx]
     binding = sum(1 for v in b if v > 0.0) > kp * n
-    return {"tau": max(0.0, q), "quantile": q, "kappa": kp,
-            "binding": binding,
-            "fraction_positive_blip": sum(1 for v in b
-                                          if v > 0.0) / float(n),
-            "note": "tau = 0 exactly when the budget is not binding, "
-                    "which recovers the unconstrained rule"}
+    return {
+        "tau": max(0.0, q),
+        "quantile": q,
+        "kappa": kp,
+        "binding": binding,
+        "fraction_positive_blip": sum(1 for v in b if v > 0.0) / float(n),
+        "note": "tau = 0 exactly when the budget is not binding, which recovers the unconstrained rule",
+    }
 
 
 def constrained_rule(B, kappa):
@@ -109,9 +108,7 @@ def constrained_rule(B, kappa):
     b = [float(v) for v in k.vec(B)]
     t = resource_threshold(b, kappa)
     d = [1.0 if v > t["tau"] else 0.0 for v in b]
-    return {"rule": d, "tau": t["tau"],
-            "treated_fraction": sum(d) / len(d),
-            "binding": t["binding"]}
+    return {"rule": d, "tau": t["tau"], "treated_fraction": sum(d) / len(d), "binding": t["binding"]}
 
 
 def constrained_value(Q1, Q0, kappa):
@@ -121,20 +118,24 @@ def constrained_value(Q1, Q0, kappa):
     B = blip(q1, q0)
     r = constrained_rule(B, kappa)
     n = len(q1)
-    val = sum(q1[i] if r["rule"][i] == 1.0 else q0[i]
-              for i in range(n)) / n
+    val = sum(q1[i] if r["rule"][i] == 1.0 else q0[i] for i in range(n)) / n
     unc = sum(max(q1[i], q0[i]) for i in range(n)) / n
-    return RichResult(payload={
-        "estimate": val, "value": val,
-        "unconstrained_value": unc, "cost_of_constraint": unc - val,
-        "tau": r["tau"], "treated_fraction": r["treated_fraction"],
-        "kappa": float(kappa), "binding": r["binding"],
-        "method": "optimal resource-constrained value; van der Laan & "
-                  "Rose (2018) Chap. 23",
-        "note": "a binding constraint makes the estimation problem "
-                "EASIER: the condition concerns the blip's density at "
-                "tau > 0 rather than the absence of an atom at zero",
-    })
+    return RichResult(
+        payload={
+            "estimate": val,
+            "value": val,
+            "unconstrained_value": unc,
+            "cost_of_constraint": unc - val,
+            "tau": r["tau"],
+            "treated_fraction": r["treated_fraction"],
+            "kappa": float(kappa),
+            "binding": r["binding"],
+            "method": "optimal resource-constrained value; van der Laan & Rose (2018) Chap. 23",
+            "note": "a binding constraint makes the estimation problem "
+            "EASIER: the condition concerns the blip's density at "
+            "tau > 0 rather than the absence of an atom at zero",
+        }
+    )
 
 
 def exceptional_law(B, tol=1e-9):
@@ -148,25 +149,29 @@ def exceptional_law(B, tol=1e-9):
     b = [float(v) for v in k.vec(B)]
     n = len(b)
     at_zero = sum(1 for v in b if abs(v) <= float(tol))
-    return {"mass_at_zero": at_zero / float(n),
-            "exceptional": at_zero > 0,
-            "n_at_zero": at_zero,
-            "note": "exceptional laws break regular estimation of the "
-                    "UNCONSTRAINED optimal value; the constrained "
-                    "problem is unaffected when tau > 0"}
+    return {
+        "mass_at_zero": at_zero / float(n),
+        "exceptional": at_zero > 0,
+        "n_at_zero": at_zero,
+        "note": "exceptional laws break regular estimation of the "
+        "UNCONSTRAINED optimal value; the constrained "
+        "problem is unaffected when tau > 0",
+    }
 
 
 def cheatsheet():
-    return ("tloilr: at most a proportion kappa can be treated, so the "
-            "rule is a THRESHOLD on the blip B(W) = Q(1,W) - Q(0,W): "
-            "treat the largest blips until the budget runs out, "
-            "tau = max(0, (1-kappa) quantile), and tau = 0 recovers "
-            "the unconstrained rule. The constraint makes inference "
-            "EASIER: regular estimation of the unconstrained value "
-            "needs a NONEXCEPTIONAL law (no atom of blip at zero), "
-            "while an ACTIVE constraint with continuous covariates "
-            "only needs a condition at tau > 0 -- far more reasonable, "
-            "and root-n estimation follows.")
+    return (
+        "tloilr: at most a proportion kappa can be treated, so the "
+        "rule is a THRESHOLD on the blip B(W) = Q(1,W) - Q(0,W): "
+        "treat the largest blips until the budget runs out, "
+        "tau = max(0, (1-kappa) quantile), and tau = 0 recovers "
+        "the unconstrained rule. The constraint makes inference "
+        "EASIER: regular estimation of the unconstrained value "
+        "needs a NONEXCEPTIONAL law (no atom of blip at zero), "
+        "while an ACTIVE constraint with continuous covariates "
+        "only needs a condition at tau > 0 -- far more reasonable, "
+        "and root-n estimation follows."
+    )
 
 
 # compact alias per ledger/NAMING.md

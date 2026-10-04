@@ -108,11 +108,20 @@ def fistalasso(X, y, lam, steps=100, lipschitz=None):
     res = [sum(Xm[i][j] * x[j] for j in range(p)) - y[i] for i in range(n)]
     rss = 0.5 * sum(e * e for e in res)
     l1 = sum(abs(b) for b in x)
-    return RichResult(payload={
-        "beta": x, "objective": rss + lam * l1, "rss": rss, "l1": l1,
-        "lipschitz": L, "steps": steps,
-        "nonzero": sum(1 for b in x if b != 0.0), "n": n, "p": p,
-        "method": "FISTA for the LASSO (Beck-Teboulle 2009 Sect. 4)"})
+    return RichResult(
+        payload={
+            "beta": x,
+            "objective": rss + lam * l1,
+            "rss": rss,
+            "l1": l1,
+            "lipschitz": L,
+            "steps": steps,
+            "nonzero": sum(1 for b in x if b != 0.0),
+            "n": n,
+            "p": p,
+            "method": "FISTA for the LASSO (Beck-Teboulle 2009 Sect. 4)",
+        }
+    )
 
 
 accelerated_lasso = fistalasso

@@ -1,7 +1,6 @@
 """Tests for hmdbrt.geron_distilbert."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdbrt import geron_distilbert
 
 
@@ -15,9 +14,19 @@ def test_hmdbrt_basic():
     mlm_labels = rng.integers(0, C, B)
     result = geron_distilbert(teacher, student, X, mlm_labels=mlm_labels)
     assert isinstance(result, dict)
-    for key in ("loss", "loss_ce", "loss_mlm", "loss_cos",
-                "teacher_params", "student_params", "param_reduction",
-                "agreement", "estimate", "n", "method"):
+    for key in (
+        "loss",
+        "loss_ce",
+        "loss_mlm",
+        "loss_cos",
+        "teacher_params",
+        "student_params",
+        "param_reduction",
+        "agreement",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     assert result["n"] == B
 
@@ -49,7 +58,7 @@ import morie.fn.hmdbrt as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

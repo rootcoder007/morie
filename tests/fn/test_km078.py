@@ -5,8 +5,6 @@ recomputed in the test body, and the value the docstring quotes is
 asserted as well.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km078 import kamath_ch6_alignment_function
@@ -20,8 +18,9 @@ def test_the_alignment_function_is_checked_against_its_output_space():
 
 
 def test_a_regression_head_returns_its_own_score():
-    assert kamath_ch6_alignment_function("x", "y", "reg", f=lambda a, b: 0.25)["estimate"] == \
-        pytest.approx(0.25, rel=1e-12)
+    assert kamath_ch6_alignment_function("x", "y", "reg", f=lambda a, b: 0.25)["estimate"] == pytest.approx(
+        0.25, rel=1e-12
+    )
 
 
 def test_a_label_outside_the_declared_space_is_refused():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mpat — missing data pattern analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mpat import missing_pattern
 
 

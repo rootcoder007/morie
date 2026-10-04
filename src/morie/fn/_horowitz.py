@@ -14,9 +14,18 @@ rate it implies, while root-n functionals report a standard error.
 from . import _array_core as np
 
 __all__ = [
-    "kernel", "kernel_deriv", "silverman_bw", "kde", "kde_deriv",
-    "nw_regression", "local_linear", "local_linear_quantile",
-    "sieve_basis", "check_rate", "coord_min", "qirls",
+    "kernel",
+    "kernel_deriv",
+    "silverman_bw",
+    "kde",
+    "kde_deriv",
+    "nw_regression",
+    "local_linear",
+    "local_linear_quantile",
+    "sieve_basis",
+    "check_rate",
+    "coord_min",
+    "qirls",
 ]
 
 
@@ -29,9 +38,7 @@ def kernel(u, name="gaussian"):
         return np.where(np.abs(u) <= 1, 0.75 * (1 - u**2), 0.0)
     if name == "uniform":
         return np.where(np.abs(u) <= 1, 0.5, 0.0)
-    raise ValueError(
-        f"kernel must be 'gaussian', 'epanechnikov' or 'uniform', got {name!r}."
-    )
+    raise ValueError(f"kernel must be 'gaussian', 'epanechnikov' or 'uniform', got {name!r}.")
 
 
 def kernel_deriv(u, name="gaussian"):
@@ -78,8 +85,11 @@ def kde(x, grid=None, h=None, name="gaussian"):
     h = silverman_bw(x) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(x.min() - 3 * h, x.max() + 3 * h, 512) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = (
+        np.linspace(x.min() - 3 * h, x.max() + 3 * h, 512)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     dens = kernel((g[:, None] - x[None, :]) / h, name).sum(axis=1) / (n * h)
     return g, dens, h
 
@@ -99,8 +109,7 @@ def kde_deriv(x, grid=None, h=None, name="gaussian"):
     h = float(silverman_bw(x) * n ** (0.2 - 1.0 / 7.0)) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(x.min(), x.max(), 512) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(x.min(), x.max(), 512) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     d = kernel_deriv((g[:, None] - x[None, :]) / h, name).sum(axis=1) / (n * h**2)
     return g, d, h
 
@@ -120,8 +129,7 @@ def nw_regression(x, y, grid=None, h=None, name="gaussian"):
     h = silverman_bw(x) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(x.min(), x.max(), 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(x.min(), x.max(), 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     W = kernel((g[:, None] - x[None, :]) / h, name)
     den = W.sum(axis=1)
     with np.errstate(invalid="ignore", divide="ignore"):
@@ -141,8 +149,7 @@ def local_linear(x, y, grid=None, h=None, name="gaussian"):
     h = silverman_bw(x) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(x.min(), x.max(), 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(x.min(), x.max(), 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     m = np.empty(g.size)
     b = np.empty(g.size)
     for i, pt in enumerate(g):
@@ -161,8 +168,7 @@ def local_linear(x, y, grid=None, h=None, name="gaussian"):
     return g, m, b, h
 
 
-def local_linear_quantile(x, y, tau=0.5, grid=None, h=None, name="gaussian",
-                          n_iter=60):
+def local_linear_quantile(x, y, tau=0.5, grid=None, h=None, name="gaussian", n_iter=60):
     r"""Local linear quantile regression: minimise
     :math:`\sum_i K_h(x-X_i)\rho_\tau(Y_i - a - b(X_i-x))` by
     iteratively reweighted least squares on the check loss.
@@ -174,8 +180,7 @@ def local_linear_quantile(x, y, tau=0.5, grid=None, h=None, name="gaussian",
     if x.size != y.size:
         raise ValueError("x and y must have the same length.")
     h = silverman_bw(x) if h is None else float(h)
-    g = np.linspace(x.min(), x.max(), 100) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(x.min(), x.max(), 100) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     q = np.empty(g.size)
     for i, pt in enumerate(g):
         w0 = kernel((x - pt) / h, name)
@@ -272,20 +277,18 @@ def optimize_scale_normalized(objective, d, n_restarts=8, seed=0, x0=None):
     if d < 2:
         raise ValueError(f"need at least 2 coefficients, got {d}.")
     if d == 2:
-        grid = np.linspace(-GRID_SCAN_HALF_WIDTH, GRID_SCAN_HALF_WIDTH,
-                           GRID_SCAN_POINTS)
+        grid = np.linspace(-GRID_SCAN_HALF_WIDTH, GRID_SCAN_HALF_WIDTH, GRID_SCAN_POINTS)
         vals = np.array([objective(np.array([1.0, g])) for g in grid])
         k = int(np.argmin(vals))
         return np.array([1.0, float(grid[k])]), float(vals[k])
     rng = np.random.default_rng(seed)
-    starts = [np.zeros(d - 1) if x0 is None else
-              np.atleast_1d(np.asarray(x0, dtype=float)).ravel()[-(d - 1):]]
+    starts = [np.zeros(d - 1) if x0 is None else np.atleast_1d(np.asarray(x0, dtype=float)).ravel()[-(d - 1) :]]
     starts += [rng.standard_normal(d - 1) for _ in range(int(n_restarts))]
     best, best_val = None, np.inf
     for st in starts:
-        r = _opt.minimize(lambda z: objective(np.r_[1.0, z]), st,
-                          method="Nelder-Mead",
-                          options={"maxiter": 3000, "fatol": 1e-9})
+        r = _opt.minimize(
+            lambda z: objective(np.r_[1.0, z]), st, method="Nelder-Mead", options={"maxiter": 3000, "fatol": 1e-9}
+        )
         if r.fun < best_val:
             best_val, best = float(r.fun), r.x
     return np.r_[1.0, best], best_val
@@ -343,8 +346,7 @@ def qirls(X, y, w, tau, niter=40, eps=1e-3):
         # decided by machine noise, and 40 iterations amplify that into
         # a visible cross-language difference, so a residual within eps
         # of zero is treated as a tie and given the average weight.
-        num = np.where(np.abs(r) < eps, 0.5,
-                       np.where(r > 0, tau, 1.0 - tau))
+        num = np.where(np.abs(r) < eps, 0.5, np.where(r > 0, tau, 1.0 - tau))
         wk = w * num / np.maximum(np.abs(r), eps)
         A = X.T @ (X * wk[:, None]) + 1e-10 * np.eye(p)
         b = X.T @ (wk * y)

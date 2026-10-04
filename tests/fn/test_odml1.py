@@ -1,7 +1,6 @@
 """Tests for morie.fn.odml1 — DML ATE by region."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.odml1 import otis_dml_region
 
 

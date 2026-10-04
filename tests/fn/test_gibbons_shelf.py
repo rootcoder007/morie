@@ -5,19 +5,19 @@ with a known answer, and on the book's own statements. Page and equation
 numbers are from the 5th edition.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb1241r import gibbons_concordance_rho_link
 from morie.fn.gb2312 import gibbons_edf_consistent
 from morie.fn.gb_hg2 import gibbons_hodges_lehmann_2
 from morie.fn.gb_hgl import gibbons_hodges_lehmann
 from morie.fn.gb_wsp import gibbons_concordance_preference
 
-
 # --------------------------------------------------------------------
 # Hodges-Lehmann, one sample
 # --------------------------------------------------------------------
+
 
 def test_walsh_average_count_is_n_times_n_plus_one_over_two():
     for n in (1, 4, 6, 9):
@@ -97,6 +97,7 @@ def test_hodges_lehmann_beats_the_mean_under_heavy_tails():
 # Hodges-Lehmann, two samples
 # --------------------------------------------------------------------
 
+
 def test_two_sample_estimator_is_the_median_of_all_differences():
     x, y = [1, 6, 7], [2, 4, 9, 10, 12]
     out = gibbons_hodges_lehmann_2(x, y)
@@ -134,10 +135,8 @@ def test_a_common_shift_moves_the_estimate_by_exactly_that_amount():
 
 def test_unequal_spread_is_flagged_because_no_single_shift_exists():
     rng = np.random.default_rng(0)
-    same = gibbons_hodges_lehmann_2(rng.normal(size=40),
-                                    rng.normal(size=40) + 1.0)
-    diff = gibbons_hodges_lehmann_2(rng.normal(size=40),
-                                    rng.normal(size=40) * 8.0 + 1.0)
+    same = gibbons_hodges_lehmann_2(rng.normal(size=40), rng.normal(size=40) + 1.0)
+    diff = gibbons_hodges_lehmann_2(rng.normal(size=40), rng.normal(size=40) * 8.0 + 1.0)
     assert same["shift_plausible"] is True
     assert diff["shift_plausible"] is False
     assert "translation" in diff["shift_note"]
@@ -158,6 +157,7 @@ def test_two_sample_interval_covers_the_true_shift():
 # --------------------------------------------------------------------
 # W and the average rank correlation
 # --------------------------------------------------------------------
+
 
 def test_perfect_concordance_maps_to_rho_one():
     assert gibbons_concordance_rho_link(1.0, 4)["rho_av"] == pytest.approx(1.0)
@@ -188,7 +188,7 @@ def test_rho_minus_one_is_unattainable_beyond_two_rankings():
 def test_null_moments_match_equation_12_4_8():
     out = gibbons_concordance_rho_link(0.4, k=5, n=9)
     assert out["expected_W"] == pytest.approx(1 / 5)
-    assert out["var_W"] == pytest.approx(2 * (5 - 1) / (5 ** 3 * (9 - 1)))
+    assert out["var_W"] == pytest.approx(2 * (5 - 1) / (5**3 * (9 - 1)))
     assert out["chi2"] == pytest.approx(5 * 8 * 0.4)
     assert out["df"] == 8
 
@@ -203,6 +203,7 @@ def test_rho_link_validation():
 # --------------------------------------------------------------------
 # consensus ordering
 # --------------------------------------------------------------------
+
 
 def test_unanimous_rankings_reproduce_themselves():
     r = [[1, 2, 3, 4]] * 5
@@ -223,6 +224,7 @@ def test_consensus_follows_the_rank_totals():
 def test_the_consensus_maximises_average_agreement():
     # the book's optimality claim, checked against every permutation
     from itertools import permutations
+
     rng = np.random.default_rng(3)
     R = np.vstack([rng.permutation(5) + 1 for _ in range(4)])
     out = gibbons_concordance_preference(R)
@@ -277,11 +279,10 @@ def test_preference_validation():
 # empirical distribution function
 # --------------------------------------------------------------------
 
+
 def test_edf_is_a_step_function_reaching_one():
     out = gibbons_edf_consistent([3.0, 1.0, 2.0])
-    assert list(np.round(out["edf"], 10)) == [pytest.approx(1 / 3),
-                                              pytest.approx(2 / 3),
-                                              pytest.approx(1.0)]
+    assert list(np.round(out["edf"], 10)) == [pytest.approx(1 / 3), pytest.approx(2 / 3), pytest.approx(1.0)]
     assert out["jump"] == pytest.approx(1 / 3)
 
 
@@ -304,8 +305,7 @@ def test_variance_is_f_times_one_minus_f_over_n():
 
 def test_variance_peaks_at_the_median_and_vanishes_in_the_tails():
     rng = np.random.default_rng(0)
-    out = gibbons_edf_consistent(rng.normal(size=400),
-                                 at=[-3.0, 0.0, 3.0])
+    out = gibbons_edf_consistent(rng.normal(size=400), at=[-3.0, 0.0, 3.0])
     v = out["variance"]
     assert v[1] > v[0] and v[1] > v[2]
 
@@ -328,8 +328,7 @@ def test_the_dkw_band_covers_the_truth_simultaneously():
     for s in range(reps):
         rng = np.random.default_rng(s)
         out = gibbons_edf_consistent(rng.uniform(size=60), at=grid, alpha=0.05)
-        inside = np.all((out["band_lower"] <= grid)
-                        & (grid <= out["band_upper"]))
+        inside = np.all((out["band_lower"] <= grid) & (grid <= out["band_upper"]))
         hits += bool(inside)
     # simultaneous over all x, so coverage is conservative by design
     assert hits / reps >= 0.95
@@ -338,9 +337,8 @@ def test_the_dkw_band_covers_the_truth_simultaneously():
 def test_dkw_epsilon_matches_massarts_constant():
     out = gibbons_edf_consistent(np.arange(100.0), alpha=0.05)
     import math
-    assert out["dkw_epsilon"] == pytest.approx(
-        math.sqrt(math.log(2 / 0.05) / 200.0)
-    )
+
+    assert out["dkw_epsilon"] == pytest.approx(math.sqrt(math.log(2 / 0.05) / 200.0))
 
 
 def test_edf_validation():

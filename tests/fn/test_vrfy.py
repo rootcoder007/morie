@@ -1,8 +1,8 @@
 """Tests for morie.fn.vrfy — verify statistical output."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn.vrfy import verify_statistical_output, vrfy
 from morie.inspector import VerificationReport
 

@@ -1,7 +1,6 @@
 """Tests for otdom.ot_domain_adaptation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otdom import ot_domain_adaptation
 
 

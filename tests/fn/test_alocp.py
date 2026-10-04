@@ -11,5 +11,6 @@ def test_alocp_basic():
 
 def test_alocp_edge():
     import pytest
+
     with pytest.raises(ValueError, match="at least 2"):
         alammar_openclip_contrastive([[1.0]], [[1.0]])

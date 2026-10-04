@@ -8,8 +8,7 @@ from ._schaben import cressie_hawkins, matheron
 __all__ = ["schabenberger_cressie_hawkins"]
 
 
-def schabenberger_cressie_hawkins(coords, z, lag_bins=None, cutoff=None,
-                                  exact=False, full_correction=False):
+def schabenberger_cressie_hawkins(coords, z, lag_bins=None, cutoff=None, exact=False, full_correction=False):
     r"""The robust semivariogram estimator, Schabenberger eq (4.26).
 
     .. math::
@@ -71,7 +70,7 @@ def schabenberger_cressie_hawkins(coords, z, lag_bins=None, cutoff=None,
     lag, gam, npair = cressie_hawkins(coords, z, lag_bins, cutoff, exact)
     if full_correction:
         base = gam * (0.457 + 0.494 / npair)
-        gam = base / (0.457 + 0.494 / npair + 0.045 / npair ** 2)
+        gam = base / (0.457 + 0.494 / npair + 0.045 / npair**2)
     _, mat, _, _ = matheron(coords, z, lag_bins, cutoff, exact)
     with np.errstate(divide="ignore", invalid="ignore"):
         ratio = np.where(mat > 0, gam / mat, np.nan)
@@ -91,9 +90,9 @@ def schabenberger_cressie_hawkins(coords, z, lag_bins=None, cutoff=None,
             ),
             "full_correction": bool(full_correction),
             "correction_note": (
-                "the 0.045/|N(h)|^2 term is included" if full_correction else
-                "equation (4.26) as printed, which omits the "
-                "0.045/|N(h)|^2 term the derivation on p. 160 carries"
+                "the 0.045/|N(h)|^2 term is included"
+                if full_correction
+                else "equation (4.26) as printed, which omits the 0.045/|N(h)|^2 term the derivation on p. 160 carries"
             ),
             "robustness_note": (
                 "resistant to slight contamination of a Gaussian field only; "

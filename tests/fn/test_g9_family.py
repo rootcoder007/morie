@@ -1,4 +1,5 @@
 """Tests for sdpwts, mehtad and miprgr."""
+
 import importlib
 import math
 
@@ -18,8 +19,7 @@ F1 = [[1.0, 0.0], [0.0, -1.0]]
 def test_sdp_recovers_the_minimum_eigenvalue():
     r = sd.min_eigenvalue_sdp(SYM)
     assert r["error"] < 1e-5
-    assert r["lambda_min"] == pytest.approx(min(np.linalg.eigh(SYM)[0]),
-                                            abs=1e-12)
+    assert r["lambda_min"] == pytest.approx(min(np.linalg.eigh(SYM)[0]), abs=1e-12)
 
 
 def test_sdp_lmi_assembly_and_psd_test():
@@ -32,8 +32,7 @@ def test_sdp_lmi_assembly_and_psd_test():
 
 def test_sdp_barrier_is_infinite_outside_the_cone():
     assert not math.isfinite(sd.barrier([2.0], F0, [F1])["value"])
-    assert sd.barrier([0.0], F0, [F1])["value"] == pytest.approx(0.0,
-                                                                abs=1e-12)
+    assert sd.barrier([0.0], F0, [F1])["value"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_sdp_central_path_gap_is_m_over_t():
@@ -65,8 +64,7 @@ def test_mehtad_solves_the_lp_exactly():
 
 def test_mehtad_strong_duality_and_residuals():
     r = mh.solve_lp(AM, BM, CM)
-    assert r["objective"] == pytest.approx(r["dual_objective"],
-                                           abs=1e-6)
+    assert r["objective"] == pytest.approx(r["dual_objective"], abs=1e-6)
     assert r["primal_residual"] < 1e-8
     assert r["dual_residual"] < 1e-8
 
@@ -79,10 +77,8 @@ def test_mehtad_corrector_costs_no_more_iterations():
 
 
 def test_mehtad_centering_parameter_is_the_cubed_ratio():
-    assert mh.centering_parameter(1.0, 0.01)["sigma"] == \
-        pytest.approx(1e-6)
-    assert mh.centering_parameter(1.0, 0.9)["sigma"] == \
-        pytest.approx(0.729)
+    assert mh.centering_parameter(1.0, 0.01)["sigma"] == pytest.approx(1e-6)
+    assert mh.centering_parameter(1.0, 0.9)["sigma"] == pytest.approx(0.729)
     with pytest.raises(ValueError):
         mh.centering_parameter(1.0, 0.5, nu=20.0)
     with pytest.raises(ValueError):
@@ -90,8 +86,7 @@ def test_mehtad_centering_parameter_is_the_cubed_ratio():
 
 
 def test_mehtad_fraction_to_boundary():
-    assert mh.max_step([1.0, 2.0], [-2.0, 1.0], 1.0) == \
-        pytest.approx(0.5)
+    assert mh.max_step([1.0, 2.0], [-2.0, 1.0], 1.0) == pytest.approx(0.5)
     step = mh.max_step([1.0, 2.0], [-2.0, 1.0])
     assert 1.0 - 2.0 * step > 0.0
 

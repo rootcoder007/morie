@@ -1,7 +1,5 @@
 """Tests for logit_form.logit_form."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.logit_form import (
     logit_form,
 )

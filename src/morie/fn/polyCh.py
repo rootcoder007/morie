@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['chebbasis', 'chebyshev_basis']
+__all__ = ["chebbasis", "chebyshev_basis"]
 
 
 def chebbasis(x, K=5):
@@ -47,11 +47,18 @@ def chebbasis(x, K=5):
         for n in range(1, K):
             row.append(2.0 * v * row[n] - row[n - 1])
         out.append(row)
-    trig = [[math.cos(n * math.acos(v)) for n in range(K + 1)]
-            if abs(v) <= 1.0 else [float("nan")] * (K + 1) for v in x]
-    return RichResult(payload={
-        "basis": out, "degree": K, "trig": trig, "n": len(x),
-        "method": "Chebyshev polynomial basis (first kind)"})
+    trig = [
+        [math.cos(n * math.acos(v)) for n in range(K + 1)] if abs(v) <= 1.0 else [float("nan")] * (K + 1) for v in x
+    ]
+    return RichResult(
+        payload={
+            "basis": out,
+            "degree": K,
+            "trig": trig,
+            "n": len(x),
+            "method": "Chebyshev polynomial basis (first kind)",
+        }
+    )
 
 
 chebyshev_basis = chebbasis

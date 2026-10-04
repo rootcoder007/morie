@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,9 +21,14 @@ def mvsml_functional_regression_eq_15_1(mu_pred, theta_pred):
     and response are general nonparametric functions estimated by two
     random forests rather than linear predictors. Keys: estimate."""
     f = _gp.zap_link(mu_pred, theta_pred)
-    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
-                              "theta": f["theta"],
-                              "method": "ZAP nonparametric links (MVSML 2022 eq. 15.1)"})
+    res = RichResult(
+        payload={
+            "estimate": f["mu"],
+            "mu": f["mu"],
+            "theta": f["theta"],
+            "method": "ZAP nonparametric links (MVSML 2022 eq. 15.1)",
+        }
+    )
     return with_describe_pointer(res, "msm323")
 
 

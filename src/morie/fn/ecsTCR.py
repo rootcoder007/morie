@@ -167,22 +167,21 @@ def _step_analytic(T, TD, F, lam, gam, eps, C, CD, h):
     c2 = (d2 * v1a - d1 * v1b) / dd
     e1 = math.exp(r1 * h)
     e2 = math.exp(r2 * h)
-    return (eq1 + c1 * v1a * e1 + c2 * v2a * e2,
-            eq2 + c1 * v1b * e1 + c2 * v2b * e2)
+    return (eq1 + c1 * v1a * e1 + c2 * v2a * e2, eq2 + c1 * v1b * e1 + c2 * v2b * e2)
 
 
 def _step_rk4(T, TD, F, lam, gam, eps, C, CD, h):
     k1 = _deriv(T, TD, F, lam, gam, eps, C, CD)
-    k2 = _deriv(T + 0.5 * h * k1[0], TD + 0.5 * h * k1[1], F, lam, gam,
-                eps, C, CD)
-    k3 = _deriv(T + 0.5 * h * k2[0], TD + 0.5 * h * k2[1], F, lam, gam,
-                eps, C, CD)
+    k2 = _deriv(T + 0.5 * h * k1[0], TD + 0.5 * h * k1[1], F, lam, gam, eps, C, CD)
+    k3 = _deriv(T + 0.5 * h * k2[0], TD + 0.5 * h * k2[1], F, lam, gam, eps, C, CD)
     k4 = _deriv(T + h * k3[0], TD + h * k3[1], F, lam, gam, eps, C, CD)
     # The four-term combination goes through the compensated sum for the
     # same reason the dot products do: it is the one accumulation left in
     # the step, and a single differing bit here compounds over the run.
-    return (T + h * _csum([k1[0], 2.0 * k2[0], 2.0 * k3[0], k4[0]]) / 6.0,
-            TD + h * _csum([k1[1], 2.0 * k2[1], 2.0 * k3[1], k4[1]]) / 6.0)
+    return (
+        T + h * _csum([k1[0], 2.0 * k2[0], 2.0 * k3[0], k4[0]]) / 6.0,
+        TD + h * _csum([k1[1], 2.0 * k2[1], 2.0 * k3[1], k4[1]]) / 6.0,
+    )
 
 
 def _step_euler(T, TD, F, lam, gam, eps, C, CD, h):
@@ -190,12 +189,10 @@ def _step_euler(T, TD, F, lam, gam, eps, C, CD, h):
     return T + h * d[0], TD + h * d[1]
 
 
-_STEPPERS = {"analytic": _step_analytic, "rk4": _step_rk4,
-             "euler": _step_euler}
+_STEPPERS = {"analytic": _step_analytic, "rk4": _step_rk4, "euler": _step_euler}
 
 
-def integrate(forcing, lam, gamma=0.7, epsilon=1.0, C=8.0, C_deep=100.0,
-              solver="analytic", dt=1.0, T0=0.0, TD0=0.0):
+def integrate(forcing, lam, gamma=0.7, epsilon=1.0, C=8.0, C_deep=100.0, solver="analytic", dt=1.0, T0=0.0, TD0=0.0):
     """Run the two-layer model over a forcing series, one entry per year.
 
     Returns the surface series, the deep series and the net top-of-
@@ -203,8 +200,7 @@ def integrate(forcing, lam, gamma=0.7, epsilon=1.0, C=8.0, C_deep=100.0,
     and len(forcing) for the imbalance.
     """
     if solver not in _SOLVERS:
-        raise ValueError("ecsTCR: solver = %r; expected one of %s"
-                         % (solver, ", ".join(_SOLVERS)))
+        raise ValueError("ecsTCR: solver = %r; expected one of %s" % (solver, ", ".join(_SOLVERS)))
     step = _STEPPERS[solver]
     T, TD = float(T0), float(TD0)
     Ts = [T]
@@ -240,17 +236,29 @@ def _ols(x, y):
     sxx = _csum([(v - mx) * (v - mx) for v in x])
     sxy = _csum([(x[i] - mx) * (y[i] - my) for i in range(n)])
     if sxx == 0.0:
-        raise ValueError("ecsTCR: the temperature series has no spread, so "
-                         "the Gregory regression is not identified")
+        raise ValueError("ecsTCR: the temperature series has no spread, so the Gregory regression is not identified")
     slope = sxy / sxx
     return slope, my - slope * mx
 
 
-def ecs_tcr(model_run=None, CO2_traj=None, route="parameters",
-            lam=None, gamma=0.7, epsilon=1.0, C=8.0, C_deep=100.0,
-            f2x=F2X_AR6, solver="analytic", years=70, rate=0.01,
-            temperature=None, imbalance=None, forcing_multiple=2.0,
-            dt=1.0):
+def ecs_tcr(
+    model_run=None,
+    CO2_traj=None,
+    route="parameters",
+    lam=None,
+    gamma=0.7,
+    epsilon=1.0,
+    C=8.0,
+    C_deep=100.0,
+    f2x=F2X_AR6,
+    solver="analytic",
+    years=70,
+    rate=0.01,
+    temperature=None,
+    imbalance=None,
+    forcing_multiple=2.0,
+    dt=1.0,
+):
     """Equilibrium and transient climate sensitivity.
 
     Parameters
@@ -292,40 +300,37 @@ def ecs_tcr(model_run=None, CO2_traj=None, route="parameters",
         within_charney, route, solver, method.
     """
     if route not in _ROUTES:
-        raise ValueError("ecsTCR: route = %r; expected one of %s"
-                         % (route, ", ".join(_ROUTES)))
+        raise ValueError("ecsTCR: route = %r; expected one of %s" % (route, ", ".join(_ROUTES)))
     if temperature is None:
         temperature = model_run
 
     fitted = None
     if route in ("gregory", "emulate"):
         if temperature is None or imbalance is None:
-            raise ValueError("ecsTCR: the %s route needs both a temperature "
-                             "series and the net imbalance" % route)
+            raise ValueError("ecsTCR: the %s route needs both a temperature series and the net imbalance" % route)
         T = [float(v) for v in temperature]
         N = [float(v) for v in imbalance]
         if len(T) != len(N):
-            raise ValueError("ecsTCR: temperature has %d entries and "
-                             "imbalance %d" % (len(T), len(N)))
+            raise ValueError("ecsTCR: temperature has %d entries and imbalance %d" % (len(T), len(N)))
         slope, intercept = _ols(T, N)
         lam_fit = -slope
         if lam_fit <= 0.0:
-            raise ValueError("ecsTCR: the regression gives a non-positive "
-                             "feedback parameter (%g), so the system has no "
-                             "equilibrium" % lam_fit)
+            raise ValueError(
+                "ecsTCR: the regression gives a non-positive "
+                "feedback parameter (%g), so the system has no "
+                "equilibrium" % lam_fit
+            )
         # The intercept is the forcing of whatever step was run; scale to
         # the doubling value by the logarithmic CO2 relation.
         scale = math.log(forcing_multiple) / math.log(2.0)
         f2x = intercept / scale
         lam = lam_fit
-        fitted = {"slope": slope, "intercept": intercept,
-                  "forcing_multiple": forcing_multiple}
+        fitted = {"slope": slope, "intercept": intercept, "forcing_multiple": forcing_multiple}
 
     if lam is None:
         raise ValueError("ecsTCR: give lam, or use a route that fits it")
     if lam <= 0.0:
-        raise ValueError("ecsTCR: lam = %g; a non-positive feedback "
-                         "parameter has no equilibrium" % lam)
+        raise ValueError("ecsTCR: lam = %g; a non-positive feedback parameter has no equilibrium" % lam)
 
     ecs = f2x / lam
 
@@ -343,8 +348,7 @@ def ecs_tcr(model_run=None, CO2_traj=None, route="parameters",
     else:
         traj = [float(v) for v in CO2_traj]
     forcing = [co2_forcing(r, f2x) for r in traj]
-    Ts, TDs, N = integrate(forcing, lam, gamma, epsilon, C, C_deep,
-                           solver=solver, dt=dt)
+    Ts, TDs, N = integrate(forcing, lam, gamma, epsilon, C, C_deep, solver=solver, dt=dt)
 
     # TCR is the warming at the moment of doubling. With the standard
     # 1%/yr trajectory that is year 70; with a supplied trajectory, find
@@ -356,37 +360,42 @@ def ecs_tcr(model_run=None, CO2_traj=None, route="parameters",
             break
     tcr = Ts[idx + 1]
 
-    return RichResult(payload={
-        "ecs": ecs,
-        "tcr": tcr,
-        "tcr_ecs_ratio": tcr / ecs if ecs != 0.0 else float("nan"),
-        "lambda": lam,
-        "f2x": f2x,
-        "doubling_year": idx + 1,
-        "realised_warming_fraction": tcr / ecs if ecs != 0.0 else float("nan"),
-        "temperature": Ts,
-        "deep_temperature": TDs,
-        "imbalance": N,
-        "fitted": fitted,
-        "charney_range": [CHARNEY_LOW, CHARNEY_HIGH],
-        "within_charney": bool(CHARNEY_LOW <= ecs <= CHARNEY_HIGH),
-        "route": route,
-        "solver": solver,
-        "method": ("two-layer energy balance (Held et al. 2010; Geoffroy "
-                   "et al. 2013), ECS = F_2x / lambda, TCR at CO2 "
-                   "doubling in a %g%%/yr run, %s route, %s solver"
-                   % (rate * 100.0, route, solver)),
-    })
+    return RichResult(
+        payload={
+            "ecs": ecs,
+            "tcr": tcr,
+            "tcr_ecs_ratio": tcr / ecs if ecs != 0.0 else float("nan"),
+            "lambda": lam,
+            "f2x": f2x,
+            "doubling_year": idx + 1,
+            "realised_warming_fraction": tcr / ecs if ecs != 0.0 else float("nan"),
+            "temperature": Ts,
+            "deep_temperature": TDs,
+            "imbalance": N,
+            "fitted": fitted,
+            "charney_range": [CHARNEY_LOW, CHARNEY_HIGH],
+            "within_charney": bool(CHARNEY_LOW <= ecs <= CHARNEY_HIGH),
+            "route": route,
+            "solver": solver,
+            "method": (
+                "two-layer energy balance (Held et al. 2010; Geoffroy "
+                "et al. 2013), ECS = F_2x / lambda, TCR at CO2 "
+                "doubling in a %g%%/yr run, %s route, %s solver" % (rate * 100.0, route, solver)
+            ),
+        }
+    )
 
 
 ecsTCR = ecs_tcr
 
 
 def cheatsheet():
-    return ("ecsTCR: ECS and TCR from a two-layer energy balance. "
-            "route = parameters | gregory | emulate; "
-            "solver = analytic | rk4 | euler. F_2xCO2 defaults to AR6's "
-            "3.93 W m-2; Charney (1979) put ECS at 1.5-4.5 K.")
+    return (
+        "ecsTCR: ECS and TCR from a two-layer energy balance. "
+        "route = parameters | gregory | emulate; "
+        "solver = analytic | rk4 | euler. F_2xCO2 defaults to AR6's "
+        "3.93 W m-2; Charney (1979) put ECS at 1.5-4.5 K."
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

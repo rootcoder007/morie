@@ -84,12 +84,20 @@ def resultant(p, q):
         for j, v in enumerate(bh):
             S[n + i][i + j] = v
     res = _bareiss(S)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(res), "resultant": float(res),
-        "sylvester": S, "deg_p": m, "deg_q": n,
-        "share_root": abs(res) < 1e-12,
-        "method": "resultant via the Sylvester matrix (Bareiss)",
-    }), "resaln")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(res),
+                "resultant": float(res),
+                "sylvester": S,
+                "deg_p": m,
+                "deg_q": n,
+                "share_root": abs(res) < 1e-12,
+                "method": "resultant via the Sylvester matrix (Bareiss)",
+            }
+        ),
+        "resaln",
+    )
 
 
 def cheatsheet():

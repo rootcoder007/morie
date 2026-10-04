@@ -115,13 +115,23 @@ def grubbs_test(x, alpha=0.05, opposite=False):
     ta = float(stats.t.ppf(float(alpha) / n, n - 2))
     ta2 = ta * ta
     crit = ((n - 1.0) / math.sqrt(n)) * math.sqrt(ta2 / (n - 2.0 + ta2))
-    return RichResult(payload={
-        "statistic": float(g), "p_value": float(p),
-        "critical_value": float(crit), "reject": bool(g > crit),
-        "outlier": float(xs[idx]), "index": idx, "side": side,
-        "mean": float(m), "sd": float(sd), "alpha": float(alpha), "n": n,
-        "method": "Grubbs (1969) single-outlier test, outliers::grubbs.test "
-                  "type 10; p = n (1 - pt(t, n-2)), one-sided"})
+    return RichResult(
+        payload={
+            "statistic": float(g),
+            "p_value": float(p),
+            "critical_value": float(crit),
+            "reject": bool(g > crit),
+            "outlier": float(xs[idx]),
+            "index": idx,
+            "side": side,
+            "mean": float(m),
+            "sd": float(sd),
+            "alpha": float(alpha),
+            "n": n,
+            "method": "Grubbs (1969) single-outlier test, outliers::grubbs.test "
+            "type 10; p = n (1 - pt(t, n-2)), one-sided",
+        }
+    )
 
 
 def cheatsheet():

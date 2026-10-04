@@ -30,9 +30,7 @@ def test_drdyn_basic():
                 te = 0.0
             y_vals.append(base_val + te)
 
-    result = dr_dynamic_did(
-        y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=3
-    )
+    result = dr_dynamic_did(y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=3)
 
     assert isinstance(result, dict)
     assert "estimate" in result
@@ -69,9 +67,7 @@ def test_drdyn_edge():
                 te = 0.0
             y_vals.append(base_val + te)
 
-    result = dr_dynamic_did(
-        y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=1
-    )
+    result = dr_dynamic_did(y_vals, unit=unit_ids, time=time_ids, cohort=cohort_vals, horizon=1)
 
     assert isinstance(result, dict)
     assert "estimate" in result

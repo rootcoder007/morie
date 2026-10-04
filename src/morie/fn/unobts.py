@@ -163,8 +163,7 @@ def _loglik(lv, lf, d):
     return s2, ll
 
 
-def unobserved_components(y, components="level", period=4, ratio_grid=None,
-                          kappa=1.0e10):
+def unobserved_components(y, components="level", period=4, ratio_grid=None, kappa=1.0e10):
     """Fit a basic structural model and return the filtered components.
 
     Parameters

@@ -110,8 +110,12 @@ def ecod(X):
         title="ECOD",
         summary_lines=[("n", n), ("d", d), ("max score", float(score.max()))],
         payload={
-            "score": score, "rank": rank, "tail_left": left,
-            "tail_right": right, "skewness": skew, "method": "ecod",
+            "score": score,
+            "rank": rank,
+            "tail_left": left,
+            "tail_right": right,
+            "skewness": skew,
+            "method": "ecod",
         },
     )
 

@@ -27,7 +27,10 @@ def test_every_shared_name_reaches_the_same_one_function():
 
 
 def test_the_alias_carries_the_hosts_documentation_unchanged():
-    assert alias.mvsml_linear_mixed_models_eq_5_3.__module__ == getattr(host, "mvsml_linear_mixed_models_eq_5_3").__module__
+    assert (
+        alias.mvsml_linear_mixed_models_eq_5_3.__module__
+        == getattr(host, "mvsml_linear_mixed_models_eq_5_3").__module__
+    )
     assert alias.mvsml_linear_mixed_models_eq_5_3.__doc__ == getattr(host, "mvsml_linear_mixed_models_eq_5_3").__doc__
 
 

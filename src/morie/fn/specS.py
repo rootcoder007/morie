@@ -81,18 +81,22 @@ def speculative_decoding(draft, target, gamma=4):
     else:
         expect = (1.0 - alpha ** (g + 1)) / (1.0 - alpha)
 
-    return RichResult(payload={
-        "alpha": alpha,
-        "tv_distance": tv,
-        "expected_tokens": expect,
-        "gamma": float(g),
-        "max_tokens": float(g + 1),
-        "deterministic_expectation_not_a_sampled_run": True,
-        "n": len(p),
-        "method": ("Speculative decoding acceptance rate and expected "
-                   "token yield (Leviathan, Kalman & Matias 2023); NOT in "
-                   "Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "alpha": alpha,
+            "tv_distance": tv,
+            "expected_tokens": expect,
+            "gamma": float(g),
+            "max_tokens": float(g + 1),
+            "deterministic_expectation_not_a_sampled_run": True,
+            "n": len(p),
+            "method": (
+                "Speculative decoding acceptance rate and expected "
+                "token yield (Leviathan, Kalman & Matias 2023); NOT in "
+                "Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

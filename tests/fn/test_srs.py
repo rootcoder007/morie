@@ -1,9 +1,9 @@
 """Tests for fn/srs.py -- Simple random sample."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.srs import simple_random_sample, srs
 
 

@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -18,12 +17,11 @@ def evt_gpd_pdf(y, sigma, xi):
     """GPD density h(y) = (1/sigma)(1+xi y/sigma)^(-1-1/xi)
     (derivative of Coles 2001 eq. 4.2)."""
     import math
+
     ys = _ev._flat(y)
-    f = [math.exp(_ev.gpd_logpdf(v, float(sigma), float(xi)))
-         for v in ys]
+    f = [math.exp(_ev.gpd_logpdf(v, float(sigma), float(xi))) for v in ys]
     out = f[0] if len(f) == 1 else f
-    res = RichResult(payload={"f": out,
-                              "method": "GPD density (Coles 2001 eq. 4.2)"})
+    res = RichResult(payload={"f": out, "method": "GPD density (Coles 2001 eq. 4.2)"})
     return with_describe_pointer(res, "evgpdp")
 
 

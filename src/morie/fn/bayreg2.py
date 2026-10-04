@@ -35,7 +35,6 @@ doi:10.1080/01621459.1989.10478852. The EM/IRLS algorithm used here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -44,8 +43,7 @@ __all__ = ["student_t_regression"]
 _EPS = 1e-12
 
 
-def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10,
-                         add_intercept=True):
+def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10, add_intercept=True):
     r"""EM for the Student-t linear model: IRLS with model-chosen weights."""
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     yv = [float(v) for v in k.vec(y)]
@@ -61,12 +59,10 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10,
     if nu <= 0.0:
         raise ValueError("bayreg2: the degrees of freedom must be positive")
     if n <= p:
-        raise ValueError("bayreg2: %d observations cannot identify %d "
-                         "coefficients" % (n, p))
+        raise ValueError("bayreg2: %d observations cannot identify %d coefficients" % (n, p))
 
     def wls(w):
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
         for a in range(p):
             A[a][a] += 1e-12
         b = [sum(w[i] * Xm[i][a] * yv[i] for i in range(n)) for a in range(p)]
@@ -77,8 +73,7 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10,
     s2 = 1.0
     it, converged = 0, False
     for it in range(1, int(max_iter) + 1):
-        res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p))
-               for i in range(n)]
+        res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
         s2 = sum(w[i] * res[i] * res[i] for i in range(n)) / n
         if s2 <= _EPS:
             s2 = _EPS
@@ -90,8 +85,7 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10,
             converged = True
             break
 
-    res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p))
-           for i in range(n)]
+    res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
     # weighted information matrix -> approximate standard errors
     cov = []
     for a in range(p):
@@ -101,26 +95,41 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10,
     loglik = 0.0
     for i in range(n):
         z = res[i] * res[i] / s2
-        loglik += (math.lgamma((nu + 1.0) / 2.0) - math.lgamma(nu / 2.0)
-                   - 0.5 * math.log(math.pi * nu * s2)
-                   - (nu + 1.0) / 2.0 * math.log1p(z / nu))
+        loglik += (
+            math.lgamma((nu + 1.0) / 2.0)
+            - math.lgamma(nu / 2.0)
+            - 0.5 * math.log(math.pi * nu * s2)
+            - (nu + 1.0) / 2.0 * math.log1p(z / nu)
+        )
 
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta, "std_error": se,
-        "weights": w, "residuals": res, "scale2": s2,
-        "fitted": [yv[i] - res[i] for i in range(n)],
-        "iterations": it, "converged": converged, "nu": nu,
-        "loglik": loglik, "n": n, "p": p,
-        "method": "Student-t linear model by EM as a scale mixture of "
-                  "normals (West 1984; Geweke 1993; Lange, Little & "
-                  "Taylor 1989)",
-        "note": "the weight (nu+1)/(nu+r^2/s^2) is chosen by the model, not "
-                "by a threshold; as nu grows every weight tends to 1 and the "
-                "fit returns to least squares",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "std_error": se,
+            "weights": w,
+            "residuals": res,
+            "scale2": s2,
+            "fitted": [yv[i] - res[i] for i in range(n)],
+            "iterations": it,
+            "converged": converged,
+            "nu": nu,
+            "loglik": loglik,
+            "n": n,
+            "p": p,
+            "method": "Student-t linear model by EM as a scale mixture of "
+            "normals (West 1984; Geweke 1993; Lange, Little & "
+            "Taylor 1989)",
+            "note": "the weight (nu+1)/(nu+r^2/s^2) is chosen by the model, not "
+            "by a threshold; as nu grows every weight tends to 1 and the "
+            "fit returns to least squares",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bayreg2: student_t_regression(X, y, nu) -> robust regression by "
-            "EM on the Student-t scale mixture (West 1984, JRSS B 46(3), "
-            "431-439; Lange, Little & Taylor 1989, JASA 84(408), 881-896)")
+    return (
+        "bayreg2: student_t_regression(X, y, nu) -> robust regression by "
+        "EM on the Student-t scale mixture (West 1984, JRSS B 46(3), "
+        "431-439; Lange, Little & Taylor 1989, JASA 84(408), 881-896)"
+    )

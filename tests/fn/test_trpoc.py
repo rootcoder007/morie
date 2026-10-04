@@ -1,7 +1,6 @@
 """Tests for trpoc.trpo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.trpoc import trpo
 
 

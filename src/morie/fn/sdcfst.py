@@ -75,9 +75,16 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["semi_doubly_robust_forest", "sdcfst", "honest_forest",
-           "forest_predict", "logistic_fit", "SCORES", "LEARNERS",
-           "cheatsheet"]
+__all__ = [
+    "semi_doubly_robust_forest",
+    "sdcfst",
+    "honest_forest",
+    "forest_predict",
+    "logistic_fit",
+    "SCORES",
+    "LEARNERS",
+    "cheatsheet",
+]
 
 SCORES = ("aipw", "partialling_out", "ipw", "plugin")
 LEARNERS = ("forest", "linear")
@@ -126,15 +133,15 @@ def _best_split(X, y, rows, feats, min_leaf):
     return best
 
 
-def _grow(X, y, struct_rows, leaf_rows, feats_n, min_leaf, max_depth,
-          rng, depth=0):
+def _grow(X, y, struct_rows, leaf_rows, feats_n, min_leaf, max_depth, rng, depth=0):
     """One honest tree: split on struct_rows, fill leaves from leaf_rows."""
     p = len(X[0])
-    if (depth >= max_depth or len(struct_rows) < 2 * min_leaf
-            or not leaf_rows):
-        val = (_w.csum(y[i] for i in leaf_rows) / len(leaf_rows)
-               if leaf_rows else
-               _w.csum(y[i] for i in struct_rows) / len(struct_rows))
+    if depth >= max_depth or len(struct_rows) < 2 * min_leaf or not leaf_rows:
+        val = (
+            _w.csum(y[i] for i in leaf_rows) / len(leaf_rows)
+            if leaf_rows
+            else _w.csum(y[i] for i in struct_rows) / len(struct_rows)
+        )
         return {"leaf": True, "value": val, "n": len(leaf_rows)}
     # mtry features, drawn WITHOUT replacement so a small mtry cannot
     # waste its draws on the same column twice.
@@ -158,22 +165,22 @@ def _grow(X, y, struct_rows, leaf_rows, feats_n, min_leaf, max_depth,
     if not ll or not lr:
         val = _w.csum(y[i] for i in leaf_rows) / len(leaf_rows)
         return {"leaf": True, "value": val, "n": len(leaf_rows)}
-    return {"leaf": False, "feature": f, "cut": cut,
-            "left": _grow(X, y, sl, ll, feats_n, min_leaf, max_depth,
-                          rng, depth + 1),
-            "right": _grow(X, y, sr, lr, feats_n, min_leaf, max_depth,
-                           rng, depth + 1)}
+    return {
+        "leaf": False,
+        "feature": f,
+        "cut": cut,
+        "left": _grow(X, y, sl, ll, feats_n, min_leaf, max_depth, rng, depth + 1),
+        "right": _grow(X, y, sr, lr, feats_n, min_leaf, max_depth, rng, depth + 1),
+    }
 
 
 def _tree_predict(node, x):
     while not node["leaf"]:
-        node = node["left"] if x[node["feature"]] <= node["cut"] \
-            else node["right"]
+        node = node["left"] if x[node["feature"]] <= node["cut"] else node["right"]
     return node["value"]
 
 
-def honest_forest(X, y, rows, n_trees=20, mtry=None, min_leaf=5,
-                  max_depth=6, seed=1, rng=None):
+def honest_forest(X, y, rows, n_trees=20, mtry=None, min_leaf=5, max_depth=6, seed=1, rng=None):
     """Grow an honest regression forest on the given rows.
 
     Each tree draws a subsample and splits it in HALF: one half chooses
@@ -199,16 +206,13 @@ def honest_forest(X, y, rows, n_trees=20, mtry=None, min_leaf=5,
             pool[k], pool[j] = pool[j], pool[k]
         struct_rows = sorted(pool[:half])
         leaf_rows = sorted(pool[half:])
-        trees.append(_grow(X, y, struct_rows, leaf_rows, mtry, min_leaf,
-                           max_depth, rng))
-    return {"trees": trees, "mtry": mtry, "min_leaf": min_leaf,
-            "max_depth": max_depth}
+        trees.append(_grow(X, y, struct_rows, leaf_rows, mtry, min_leaf, max_depth, rng))
+    return {"trees": trees, "mtry": mtry, "min_leaf": min_leaf, "max_depth": max_depth}
 
 
 def forest_predict(forest, x):
     """Average of the trees' leaf values at x."""
-    return (_w.csum(_tree_predict(t, x) for t in forest["trees"])
-            / len(forest["trees"]))
+    return _w.csum(_tree_predict(t, x) for t in forest["trees"]) / len(forest["trees"])
 
 
 def logistic_fit(X, z, rows, ridge=1e-6, iters=50):
@@ -277,10 +281,21 @@ def _folds(n, k, rng):
     return lab
 
 
-def semi_doubly_robust_forest(y, D, X, K_fold=5, score="aipw",
-                              learner="forest", n_trees=20, mtry=None,
-                              min_leaf=5, max_depth=6, trim=0.02,
-                              seed=1, ridge=1e-6):
+def semi_doubly_robust_forest(
+    y,
+    D,
+    X,
+    K_fold=5,
+    score="aipw",
+    learner="forest",
+    n_trees=20,
+    mtry=None,
+    min_leaf=5,
+    max_depth=6,
+    trim=0.02,
+    seed=1,
+    ridge=1e-6,
+):
     """Cross-fitted treatment effect with honest-forest nuisances.
 
     Parameters
@@ -337,7 +352,7 @@ def semi_doubly_robust_forest(y, D, X, K_fold=5, score="aipw",
     if n < 8:
         raise ValueError("need at least eight observations")
     K = int(K_fold)
-    if K < 1 or K > n:
+    if K < 1 or n < K:
         raise ValueError("K_fold must lie in 1..n")
 
     rng = _core._SplitMix64(seed)
@@ -354,17 +369,12 @@ def semi_doubly_robust_forest(y, D, X, K_fold=5, score="aipw",
         tr1 = [i for i in tr if dv[i] == 1.0]
         tr0 = [i for i in tr if dv[i] == 0.0]
         if not tr1 or not tr0:
-            raise ValueError("a fold left one treatment arm empty; use "
-                             "fewer folds")
+            raise ValueError("a fold left one treatment arm empty; use fewer folds")
         if learner == "forest":
-            f1 = honest_forest(Xv, yv, tr1, n_trees, mtry, min_leaf,
-                               max_depth, rng=rng)
-            f0 = honest_forest(Xv, yv, tr0, n_trees, mtry, min_leaf,
-                               max_depth, rng=rng)
-            fa = honest_forest(Xv, yv, tr, n_trees, mtry, min_leaf,
-                               max_depth, rng=rng)
-            fd = honest_forest(Xv, dv, tr, n_trees, mtry, min_leaf,
-                               max_depth, rng=rng)
+            f1 = honest_forest(Xv, yv, tr1, n_trees, mtry, min_leaf, max_depth, rng=rng)
+            f0 = honest_forest(Xv, yv, tr0, n_trees, mtry, min_leaf, max_depth, rng=rng)
+            fa = honest_forest(Xv, yv, tr, n_trees, mtry, min_leaf, max_depth, rng=rng)
+            fd = honest_forest(Xv, dv, tr, n_trees, mtry, min_leaf, max_depth, rng=rng)
             for i in te:
                 m1[i] = forest_predict(f1, Xv[i])
                 m0[i] = forest_predict(f0, Xv[i])
@@ -401,28 +411,22 @@ def semi_doubly_robust_forest(y, D, X, K_fold=5, score="aipw",
         num = _w.csum(vres[i] * ures[i] for i in range(n))
         den = _w.csum(vres[i] * vres[i] for i in range(n))
         if den <= 0.0:
-            raise ValueError("no variation left in the treatment after "
-                             "residualising")
+            raise ValueError("no variation left in the treatment after residualising")
         est = num / den
-        psi = [vres[i] * (ures[i] - est * vres[i]) / (den / n)
-               for i in range(n)]
+        psi = [vres[i] * (ures[i] - est * vres[i]) / (den / n) for i in range(n)]
     else:
         psi = []
         for i in range(n):
             if score == "aipw":
-                v = (m1[i] - m0[i]
-                     + dv[i] * (yv[i] - m1[i]) / ps[i]
-                     - (1.0 - dv[i]) * (yv[i] - m0[i]) / (1.0 - ps[i]))
+                v = m1[i] - m0[i] + dv[i] * (yv[i] - m1[i]) / ps[i] - (1.0 - dv[i]) * (yv[i] - m0[i]) / (1.0 - ps[i])
             elif score == "ipw":
-                v = (dv[i] * yv[i] / ps[i]
-                     - (1.0 - dv[i]) * yv[i] / (1.0 - ps[i]))
+                v = dv[i] * yv[i] / ps[i] - (1.0 - dv[i]) * yv[i] / (1.0 - ps[i])
             else:
                 v = m1[i] - m0[i]
             psi.append(v)
         est = _w.csum(psi) / n
 
-    var = _w.csum((v - est) * (v - est) for v in psi) / (n * (n - 1)) \
-        if n > 1 else float("nan")
+    var = _w.csum((v - est) * (v - est) for v in psi) / (n * (n - 1)) if n > 1 else float("nan")
     se = math.sqrt(var) if var == var and var >= 0.0 else float("nan")
 
     fold_est = []
@@ -432,35 +436,38 @@ def semi_doubly_robust_forest(y, D, X, K_fold=5, score="aipw",
             fold_est.append(_w.csum(psi[i] for i in te) / len(te))
 
     z = est / se if se > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": est,
-        "se": se,
-        "z": z,
-        "p": (2.0 * (1.0 - _w.ncdf(abs(z))) if z == z else float("nan")),
-        "ci_lower": est - 1.959963984540054 * se,
-        "ci_upper": est + 1.959963984540054 * se,
-        "fold_estimates": fold_est,
-        "influence": psi,
-        "propensity": ps,
-        "m1": m1,
-        "m0": m0,
-        "trimmed": trimmed,
-        "min_propensity": min(ps),
-        "max_propensity": max(ps),
-        "n": n,
-        "n_treated": int(_w.csum(dv)),
-        "K_fold": K,
-        "score": score,
-        "learner": learner,
-        "seed": int(seed),
-        "method": "cross-fitted doubly robust treatment effect",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "z": z,
+            "p": (2.0 * (1.0 - _w.ncdf(abs(z))) if z == z else float("nan")),
+            "ci_lower": est - 1.959963984540054 * se,
+            "ci_upper": est + 1.959963984540054 * se,
+            "fold_estimates": fold_est,
+            "influence": psi,
+            "propensity": ps,
+            "m1": m1,
+            "m0": m0,
+            "trimmed": trimmed,
+            "min_propensity": min(ps),
+            "max_propensity": max(ps),
+            "n": n,
+            "n_treated": int(_w.csum(dv)),
+            "K_fold": K,
+            "score": score,
+            "learner": learner,
+            "seed": int(seed),
+            "method": "cross-fitted doubly robust treatment effect",
+        }
+    )
 
 
 sdcfst = semi_doubly_robust_forest
 
 
 def cheatsheet():
-    return ("sdcfst: cross-fitted doubly robust treatment effects. "
-            "scores " + ", ".join(SCORES) + "; learners "
-            + ", ".join(LEARNERS))
+    return (
+        "sdcfst: cross-fitted doubly robust treatment effects. "
+        "scores " + ", ".join(SCORES) + "; learners " + ", ".join(LEARNERS)
+    )

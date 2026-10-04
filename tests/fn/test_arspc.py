@@ -1,7 +1,6 @@
 """Tests for arspc.py - AR model spectrum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.arspc import ar_spectrum_fn, arspc
 
 

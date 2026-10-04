@@ -35,9 +35,7 @@ def gmm_n_params(k, d, covariance_type="full"):
         "spherical": 1,
     }
     if covariance_type not in per_cov:
-        raise ValueError(
-            f"covariance_type must be one of {sorted(per_cov)}, got {covariance_type!r}."
-        )
+        raise ValueError(f"covariance_type must be one of {sorted(per_cov)}, got {covariance_type!r}.")
     return (k - 1) + k * d + k * per_cov[covariance_type]
 
 

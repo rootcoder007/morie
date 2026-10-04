@@ -35,5 +35,3 @@ def test_eslsoc_edge():
     """Lattice neighbours stay close in data space: low topographic error."""
     r = esl_self_organize(_clusters(), grid=(3, 3), seed=2)
     assert r["topographic_error"] < 0.2
-
-

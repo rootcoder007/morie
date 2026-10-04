@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_stochastic_equicontinuity", "kosorok_ch2_z_master_stochastic_equicontinuity"]
 
 
-def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
-                                      grid=None):
+def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq, grid=None):
     r"""The stochastic equicontinuity condition (Kosorok Eq. 2.12,
     p. 26):
 
@@ -53,8 +52,7 @@ def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
     ----------
     Kosorok, Ch. 2, Eq. (2.12), p. 26.
     """
-    g = np.linspace(0.0, 1.0, 51) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(0.0, 1.0, 51) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     ths = list(theta_seq)
     ns = np.atleast_1d(np.asarray(n_seq, dtype=float)).ravel()
     if len(ths) != ns.size:
@@ -66,16 +64,21 @@ def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
         a = np.array([float(psi_n(th, v) - psi(th, v)) for v in g])
         b = np.array([float(psi_n(theta0, v) - psi(theta0, v)) for v in g])
         nu = float(np.sqrt(nn) * np.max(np.abs(a - b)))
-        de = 1.0 + float(np.sqrt(nn) *
-                         np.abs(np.asarray(th, dtype=float) -
-                                np.asarray(theta0, dtype=float)).max())
-        num.append(nu); den.append(de); rat.append(nu / de)
-    return RichResult(payload={
-        "n": ns, "ratio": np.array(rat), "numerator": np.array(num),
-        "denominator": np.array(den),
-        "holds": bool(rat[-1] < rat[0]),
-        "denominator_is_essential": True,
-        "method": "Stochastic equicontinuity (Eq. 2.12); a condition on the PROCESS, not a realisation"})
+        de = 1.0 + float(np.sqrt(nn) * np.abs(np.asarray(th, dtype=float) - np.asarray(theta0, dtype=float)).max())
+        num.append(nu)
+        den.append(de)
+        rat.append(nu / de)
+    return RichResult(
+        payload={
+            "n": ns,
+            "ratio": np.array(rat),
+            "numerator": np.array(num),
+            "denominator": np.array(den),
+            "holds": bool(rat[-1] < rat[0]),
+            "denominator_is_essential": True,
+            "method": "Stochastic equicontinuity (Eq. 2.12); a condition on the PROCESS, not a realisation",
+        }
+    )
 
 
 def cheatsheet():

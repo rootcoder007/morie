@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,16 +18,17 @@ def ghosal_kl_props(p, q):
     (App B). All three checked. Keys: estimate."""
     p = _bnp.normalize_weights(p)
     q = _bnp.normalize_weights(q)
-    kl = sum(a * math.log(a / max(b, 1e-300))
-             for a, b in zip(p, q) if a > 0)
+    kl = sum(a * math.log(a / max(b, 1e-300)) for a, b in zip(p, q) if a > 0)
     tv = 0.5 * sum(abs(a - b) for a, b in zip(p, q))
-    res = RichResult(payload={"estimate": kl,
-                              "nonneg": kl >= -1e-15,
-                              "pinsker_holds": tv * tv <= kl / 2.0
-                              + 1e-12,
-                              "zero_iff_equal": (kl < 1e-14)
-                              == (tv < 1e-14),
-                              "method": "KL properties + Pinsker (GvdV 2017 App B)"})
+    res = RichResult(
+        payload={
+            "estimate": kl,
+            "nonneg": kl >= -1e-15,
+            "pinsker_holds": tv * tv <= kl / 2.0 + 1e-12,
+            "zero_iff_equal": (kl < 1e-14) == (tv < 1e-14),
+            "method": "KL properties + Pinsker (GvdV 2017 App B)",
+        }
+    )
     return with_describe_pointer(res, "gh_ap_b1")
 
 

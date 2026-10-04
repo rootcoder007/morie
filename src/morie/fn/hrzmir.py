@@ -86,22 +86,19 @@ def horowitz_marginal_integration(x, y, bandwidth=None, j=0, grid=None):
     if n < 20:
         raise ValueError(f"need at least 20 observations, got {n}.")
     if d < 2:
-        raise ValueError(
-            f"an additive model needs at least 2 components, got {d}.")
+        raise ValueError(f"an additive model needs at least 2 components, got {d}.")
     jj = int(j)
     if not 0 <= jj < d:
         raise ValueError(f"j must lie in 0..{d - 1}, got {jj}.")
 
-    hb = np.atleast_1d(np.asarray(bandwidth, dtype=float)).ravel() \
-        if bandwidth is not None else None
+    hb = np.atleast_1d(np.asarray(bandwidth, dtype=float)).ravel() if bandwidth is not None else None
     xj = X[:, jj]
     rest = np.delete(X, jj, axis=1)
     if hb is None:
         h1 = float(silverman_bw(xj))
         # the integrated-out directions are smoothed jointly, so their
         # bandwidth is inflated by the dimension they span
-        h2 = float(np.mean([silverman_bw(rest[:, k]) for k in range(d - 1)])
-                   * n ** (1.0 / 5.0 - 1.0 / (4.0 + d)))
+        h2 = float(np.mean([silverman_bw(rest[:, k]) for k in range(d - 1)]) * n ** (1.0 / 5.0 - 1.0 / (4.0 + d)))
     elif hb.size == 1:
         h1 = h2 = float(hb[0])
     else:
@@ -109,35 +106,44 @@ def horowitz_marginal_integration(x, y, bandwidth=None, j=0, grid=None):
     if h1 <= 0 or h2 <= 0:
         raise ValueError(f"bandwidths must be positive, got {(h1, h2)}.")
 
-    g = np.linspace(np.quantile(xj, 0.05), np.quantile(xj, 0.95), 41) \
-        if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
-    mu = float(yv.mean())                                   # (3.7)
+    g = (
+        np.linspace(np.quantile(xj, 0.05), np.quantile(xj, 0.95), 41)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
+    mu = float(yv.mean())  # (3.7)
 
     # (3.9): K_1 on the held component, K_2 (a product kernel) on the
     # rest; then average over the observed X^{(-1)} and subtract mu
-    K2 = np.prod(
-        kernel((rest[:, None, :] - rest[None, :, :]) / h2), axis=2)   # (n, n)
+    K2 = np.prod(kernel((rest[:, None, :] - rest[None, :, :]) / h2), axis=2)  # (n, n)
     m_hat = np.empty(g.size)
     for t, v in enumerate(g):
-        k1 = kernel((v - xj) / h1)                          # (n,)
+        k1 = kernel((v - xj) / h1)  # (n,)
         num = K2 * (k1 * yv)[None, :]
         den = K2 * k1[None, :]
         ds = den.sum(axis=1)
         with np.errstate(invalid="ignore", divide="ignore"):
-            ghat = np.where(ds > 0, num.sum(axis=1) / np.maximum(ds, 1e-300),
-                            np.nan)
+            ghat = np.where(ds > 0, num.sum(axis=1) / np.maximum(ds, 1e-300), np.nan)
         m_hat[t] = float(np.nanmean(ghat)) - mu
     q_req = d  # Theorem 3.1(b): q > d - 1, so the smallest integer is d
 
-    return RichResult(payload={
-        "grid": g, "m_hat": m_hat, "mu_hat": mu, "component": jj,
-        "h1": h1, "h2": h2,
-        "normalisation": "E[m_j(X^j)] = 0 for every j, so mu = E(Y)",
-        "mean_of_m_hat": float(np.nanmean(m_hat)),
-        "smoothness_required": int(q_req),
-        "curse_of_dimensionality": True,
-        "n": int(n), "d": int(d),
-        "method": "Marginal integration (3.8)/(3.9); simple, but K_2 is (d-1)-dimensional"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "m_hat": m_hat,
+            "mu_hat": mu,
+            "component": jj,
+            "h1": h1,
+            "h2": h2,
+            "normalisation": "E[m_j(X^j)] = 0 for every j, so mu = E(Y)",
+            "mean_of_m_hat": float(np.nanmean(m_hat)),
+            "smoothness_required": int(q_req),
+            "curse_of_dimensionality": True,
+            "n": int(n),
+            "d": int(d),
+            "method": "Marginal integration (3.8)/(3.9); simple, but K_2 is (d-1)-dimensional",
+        }
+    )
 
 
 def cheatsheet():

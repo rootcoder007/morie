@@ -35,25 +35,26 @@ def kamath_ch9_flamingo_dataset_mix(D_m, lambda_m, x=None, y=None):
     if len(datasets) == 0:
         raise ValueError("no datasets were given.")
     if lam.size != len(datasets):
-        raise ValueError(
-            f"{lam.size} weights for {len(datasets)} datasets.")
+        raise ValueError(f"{lam.size} weights for {len(datasets)} datasets.")
     if np.any(lam < 0):
         raise ValueError("dataset weights cannot be negative.")
     per_dataset = []
     for m, D in enumerate(datasets):
         seqs = list(D)
         if len(seqs) == 0:
-            raise ValueError(f"dataset {m} is empty; its expectation "
-                             "is undefined.")
-        nlls = [float(kamath_ch9_flamingo_factorized(s)["nll"])
-                for s in seqs]
+            raise ValueError(f"dataset {m} is empty; its expectation is undefined.")
+        nlls = [float(kamath_ch9_flamingo_factorized(s)["nll"]) for s in seqs]
         per_dataset.append(float(np.mean(nlls)))
     total = float(np.dot(lam, per_dataset))
-    return RichResult(payload={
-        "estimate": total, "per_dataset_nll": per_dataset,
-        "weights": [float(v) for v in lam], "n": len(datasets),
-        "method": "Flamingo weighted multi-dataset loss "
-                  "(Kamath Eq 9.22; per-sequence NLL from km149)"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "per_dataset_nll": per_dataset,
+            "weights": [float(v) for v in lam],
+            "n": len(datasets),
+            "method": "Flamingo weighted multi-dataset loss (Kamath Eq 9.22; per-sequence NLL from km149)",
+        }
+    )
 
 
 def cheatsheet():

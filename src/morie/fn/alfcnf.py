@@ -72,8 +72,7 @@ def alphafold_confidence(s, w1, w2, w3, bins=None, rtrue=None):
 
     loss = None
     if rtrue is not None:
-        loss = sum(A.xent(A.onehotnb(rtrue[i], bins), ps[i])
-                   for i in range(n)) / n
+        loss = sum(A.xent(A.onehotnb(rtrue[i], bins), ps[i]) for i in range(n)) / n
 
     return RichResult(
         payload={

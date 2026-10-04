@@ -1,7 +1,6 @@
 """Tests for abod.abod."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.abod import abod
 
 
@@ -11,6 +10,8 @@ def test_abod_basic():
     result = abod(X)
     assert isinstance(result, dict)
     assert "abof" in result
+
+
 def test_abod_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

@@ -1,8 +1,8 @@
 """Tests for WHO 2021 Air Quality Guidelines compliance check."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.whoaqg import who_aqg_compliance, whoaqg
 
 

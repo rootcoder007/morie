@@ -23,14 +23,18 @@ def kamath_ch8_bertscore_f1(P_BERT, R_BERT):
     p = float(P_BERT)
     r = float(R_BERT)
     if p + r == 0:
-        raise ValueError("precision and recall are both 0, so the "
-                         "harmonic mean is 0/0 -- undefined.")
+        raise ValueError("precision and recall are both 0, so the harmonic mean is 0/0 -- undefined.")
     if p + r < 0:
-        raise ValueError("a negative precision+recall has no harmonic "
-                         "mean on this scale; check the inputs.")
-    return RichResult(payload={
-        "estimate": 2.0 * p * r / (p + r), "precision": p, "recall": r,
-        "n": 2, "method": "BERTScore F1 (Kamath Eq 8.9)"})
+        raise ValueError("a negative precision+recall has no harmonic mean on this scale; check the inputs.")
+    return RichResult(
+        payload={
+            "estimate": 2.0 * p * r / (p + r),
+            "precision": p,
+            "recall": r,
+            "n": 2,
+            "method": "BERTScore F1 (Kamath Eq 8.9)",
+        }
+    )
 
 
 def cheatsheet():

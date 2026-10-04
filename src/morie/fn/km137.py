@@ -28,13 +28,17 @@ def kamath_ch9_itm_hard_negative(Pos, HardNeg):
     True
     """
     r = kamath_ch9_mml_vlm_loss(Pos, HardNeg)
-    return RichResult(payload={
-        "estimate": r["estimate"], "positive_loss": r["positive_loss"],
-        "negative_loss": r["negative_loss"],
-        "n_positive": r["n_positive"],
-        "n_hard_negative": r["n_negative"], "n": r["n"],
-        "method": "ITM loss with hard negatives (Kamath Eq 9.9; the "
-                  "Eq 9.8 core in km136)"})
+    return RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "positive_loss": r["positive_loss"],
+            "negative_loss": r["negative_loss"],
+            "n_positive": r["n_positive"],
+            "n_hard_negative": r["n_negative"],
+            "n": r["n"],
+            "method": "ITM loss with hard negatives (Kamath Eq 9.9; the Eq 9.8 core in km136)",
+        }
+    )
 
 
 def cheatsheet():

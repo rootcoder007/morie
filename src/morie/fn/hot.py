@@ -79,7 +79,7 @@ def hot(x, window, alphabet=3, word_length=None):
     if n < 2 or n > m // 2:
         raise ValueError("need 2 <= window <= len(x)/2")
     nsub = m - n + 1
-    subs = [_znorm(xs[p:p + n]) for p in range(nsub)]
+    subs = [_znorm(xs[p : p + n]) for p in range(nsub)]
     # SAX words for the ordering heuristic
     if word_length is None:
         word_length = 1
@@ -89,7 +89,7 @@ def hot(x, window, alphabet=3, word_length=None):
                 break
     words = []
     for p in range(nsub):
-        words.append(saxR(xs[p:p + n], word_length, alphabet)["word"])
+        words.append(saxR(xs[p : p + n], word_length, alphabet)["word"])
     counts = {}
     for w in words:
         counts[w] = counts.get(w, 0) + 1
@@ -105,8 +105,7 @@ def hot(x, window, alphabet=3, word_length=None):
         nnd = math.inf
         nnq = -1
         # inner: same-word first, then index order
-        inner = by_word[words[p]] + [q for q in range(nsub)
-                                     if words[q] != words[p]]
+        inner = by_word[words[p]] + [q for q in range(nsub) if words[q] != words[p]]
         for q in inner:
             if abs(p - q) < n:
                 continue
@@ -123,15 +122,17 @@ def hot(x, window, alphabet=3, word_length=None):
             best_dist = nnd
             best_loc = p
             best_nb = nnq
-    return RichResult(payload={
-        "location": best_loc + 1,
-        "distance": float(best_dist),
-        "neighbor": best_nb + 1,
-        "window": n,
-        "estimate": best_loc + 1,
-        "n": m,
-        "method": "HOT SAX discord (Keogh-Lin-Fu 2005)",
-    })
+    return RichResult(
+        payload={
+            "location": best_loc + 1,
+            "distance": float(best_dist),
+            "neighbor": best_nb + 1,
+            "window": n,
+            "estimate": best_loc + 1,
+            "n": m,
+            "method": "HOT SAX discord (Keogh-Lin-Fu 2005)",
+        }
+    )
 
 
 def hot_sax(x, window, alphabet=3, word_length=None):
@@ -141,6 +142,7 @@ def hot_sax(x, window, alphabet=3, word_length=None):
 
 def cheatsheet():
     return "hot(x, window) -> most unusual subsequence (discord) via HOT SAX search"
+
 
 # public names resolved by fn/_lazy_map.json
 hotsax = hot

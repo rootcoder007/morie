@@ -56,9 +56,16 @@ def turboquant_orthogonalized_jl(S_mat):
             v = sum(So[i][t] * So[j][t] for t in range(d)) - (1.0 if i == j else 0.0)
             if abs(v) > err:
                 err = abs(v)
-    return RichResult(payload={
-        "S_orth": So, "estimate": So[0][0], "m": m, "d": d, "orth_err": err,
-        "method": "Orthogonalized JL sketch matrix"})
+    return RichResult(
+        payload={
+            "S_orth": So,
+            "estimate": So[0][0],
+            "m": m,
+            "d": d,
+            "orth_err": err,
+            "method": "Orthogonalized JL sketch matrix",
+        }
+    )
 
 
 def cheatsheet():

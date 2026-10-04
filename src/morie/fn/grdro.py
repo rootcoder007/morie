@@ -90,8 +90,7 @@ def geron_dropout(a, p, seed=0):
     p = float(p)
     if not (0.0 <= p < 1.0):
         raise ValueError(
-            f"p is the drop probability and must lie in [0, 1); p = 1 drops every "
-            f"unit and divides by zero. Got {p}."
+            f"p is the drop probability and must lie in [0, 1); p = 1 drops every unit and divides by zero. Got {p}."
         )
 
     keep = 1.0 - p

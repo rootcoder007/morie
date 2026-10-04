@@ -40,7 +40,7 @@ def set_partitions(coll):
     first, rest = coll[0], coll[1:]
     for smaller in set_partitions(rest):
         for i, sub in enumerate(smaller):
-            yield smaller[:i] + [[first] + sub] + smaller[i + 1:]
+            yield smaller[:i] + [[first] + sub] + smaller[i + 1 :]
         yield [[first]] + smaller
 
 
@@ -61,12 +61,13 @@ def n_cycles(p):
 # Exact integers
 # --------------------------------------------------------------------
 
+
 def test_the_double_limit_is_where_it_should_be():
-    assert fits_double(2 ** 53) is True
-    assert fits_double(2 ** 53 + 1) is False
-    assert fits_double(-(2 ** 53)) is True
-    assert below_double_threshold(2 ** 53) is True
-    assert below_double_threshold(2 ** 53 + 1) is False
+    assert fits_double(2**53) is True
+    assert fits_double(2**53 + 1) is False
+    assert fits_double(-(2**53)) is True
+    assert below_double_threshold(2**53) is True
+    assert below_double_threshold(2**53 + 1) is False
 
 
 def test_the_threshold_rule_is_sufficient_but_not_necessary():
@@ -74,7 +75,7 @@ def test_the_threshold_rule_is_sufficient_but_not_necessary():
     # representable: it is 2^18 times an odd number, so its low-order
     # bits are already zero. Only the round trip knows.
     v = big_factorial(20)
-    assert v > 2 ** 53
+    assert v > 2**53
     assert below_double_threshold(v) is False
     assert fits_double(v) is True
     assert int(float(v)) == v
@@ -91,7 +92,7 @@ def test_binomial_is_exact_where_r_is_not():
 def test_the_precision_flag_reports_the_actual_error():
     out = exact_or_flag(big_binomial(100, 50), "binomial")
     assert out["exact_as_double"] is False
-    assert out["absolute_error"] > 10 ** 12
+    assert out["absolute_error"] > 10**12
     assert out["n_digits"] == 30
     assert any("2^53" in w for w in out.warnings)
 
@@ -112,6 +113,7 @@ def test_factorial_digit_counts_match_known_values():
 # --------------------------------------------------------------------
 # Stirling numbers, against the partitions and permutations themselves
 # --------------------------------------------------------------------
+
 
 def test_stirling_second_counts_set_partitions_by_block_count():
     for n in range(1, 8):
@@ -150,8 +152,7 @@ def test_the_two_stirling_matrices_are_mutually_inverse():
     # sum_k s(n,k) S(k,m) = [n == m]; this is the defining relation
     for n in range(1, 8):
         for m in range(1, n + 1):
-            tot = sum(stirling_first(n, k, signed=True) * stirling_second(k, m)
-                      for k in range(m, n + 1))
+            tot = sum(stirling_first(n, k, signed=True) * stirling_second(k, m) for k in range(m, n + 1))
             assert tot == (1 if n == m else 0)
 
 
@@ -168,6 +169,7 @@ def test_stirling_edge_cases():
 # Bell numbers
 # --------------------------------------------------------------------
 
+
 def test_bell_counts_all_set_partitions():
     for n in range(1, 8):
         assert bell_number(n) == sum(1 for _ in set_partitions(list(range(n))))
@@ -175,13 +177,11 @@ def test_bell_counts_all_set_partitions():
 
 def test_bell_is_the_row_sum_of_stirling_second():
     for n in range(30):
-        assert bell_number(n) == sum(stirling_second(n, k)
-                                     for k in range(n + 1))
+        assert bell_number(n) == sum(stirling_second(n, k) for k in range(n + 1))
 
 
 def test_the_first_bell_numbers_are_the_known_sequence():
-    assert [bell_number(i) for i in range(11)] == \
-        [1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975]
+    assert [bell_number(i) for i in range(11)] == [1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975]
 
 
 def test_bell_stays_exact_beyond_the_double_range():
@@ -193,6 +193,7 @@ def test_bell_stays_exact_beyond_the_double_range():
 # --------------------------------------------------------------------
 # Catalan numbers
 # --------------------------------------------------------------------
+
 
 def balanced_bracket_count(n):
     c = 0
@@ -223,18 +224,16 @@ def test_catalan_matches_the_closed_form():
 def test_catalan_satisfies_its_own_recurrence():
     # C_{n+1} = sum_i C_i C_{n-i}
     for n in range(12):
-        assert catalan_number(n + 1) == sum(
-            catalan_number(i) * catalan_number(n - i) for i in range(n + 1)
-        )
+        assert catalan_number(n + 1) == sum(catalan_number(i) * catalan_number(n - i) for i in range(n + 1))
 
 
 # --------------------------------------------------------------------
 # Partitions
 # --------------------------------------------------------------------
 
+
 def test_the_first_partition_numbers_are_the_known_sequence():
-    assert [partition_count(i) for i in range(11)] == \
-        [1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42]
+    assert [partition_count(i) for i in range(11)] == [1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42]
 
 
 def test_partition_count_matches_published_landmarks():
@@ -253,14 +252,12 @@ def test_partitions_stay_exact_far_beyond_the_double_range():
 def test_eulers_theorem_distinct_equals_odd():
     # a theorem, so this must hold at every n, not on average
     for n in range(60):
-        assert partition_count(n, distinct=True) == \
-            partition_count(n, odd_only=True)
+        assert partition_count(n, distinct=True) == partition_count(n, odd_only=True)
 
 
 def test_partitions_by_part_count_sum_to_the_total():
     for n in range(1, 40):
-        assert sum(partitions_into_parts(n, k) for k in range(1, n + 1)) == \
-            partition_count(n)
+        assert sum(partitions_into_parts(n, k) for k in range(1, n + 1)) == partition_count(n)
 
 
 def test_partitions_into_parts_edge_cases():
@@ -282,17 +279,16 @@ def test_partition_validation():
 # Derangements
 # --------------------------------------------------------------------
 
+
 def test_derangements_count_fixed_point_free_permutations():
     for n in range(8):
-        brute = sum(1 for p in permutations(range(n))
-                    if all(p[i] != i for i in range(n)))
+        brute = sum(1 for p in permutations(range(n)) if all(p[i] != i for i in range(n)))
         assert derangements(n) == brute
 
 
 def test_derangements_match_the_inclusion_exclusion_form():
     for n in range(1, 15):
-        ie = sum((-1) ** i * math.factorial(n) // math.factorial(i)
-                 for i in range(n + 1))
+        ie = sum((-1) ** i * math.factorial(n) // math.factorial(i) for i in range(n + 1))
         assert derangements(n) == ie
 
 
@@ -305,16 +301,14 @@ def test_the_derangement_ratio_approaches_one_over_e():
 # Twelvefold way
 # --------------------------------------------------------------------
 
+
 def test_labelled_cells_against_direct_enumeration():
     for n in range(5):
         for k in range(1, 5):
-            assert twelvefold_way(n, k)["count"] == k ** n
-            surj = sum(1 for f in product(range(k), repeat=n)
-                       if len(set(f)) == k)
-            assert twelvefold_way(n, k, condition="surjective")["count"] == \
-                surj
-            inj = sum(1 for f in product(range(k), repeat=n)
-                      if len(set(f)) == n)
+            assert twelvefold_way(n, k)["count"] == k**n
+            surj = sum(1 for f in product(range(k), repeat=n) if len(set(f)) == k)
+            assert twelvefold_way(n, k, condition="surjective")["count"] == surj
+            inj = sum(1 for f in product(range(k), repeat=n) if len(set(f)) == n)
             assert twelvefold_way(n, k, condition="injective")["count"] == inj
 
 
@@ -329,13 +323,10 @@ def test_unlabelled_balls_count_multisets():
 def test_unlabelled_boxes_surjective_is_stirling_or_partitions():
     for n in range(1, 7):
         for k in range(1, n + 1):
-            assert twelvefold_way(n, k, boxes="unlabelled",
-                                  condition="surjective")["count"] == \
-                stirling_second(n, k)
-            assert twelvefold_way(n, k, balls="unlabelled",
-                                  boxes="unlabelled",
-                                  condition="surjective")["count"] == \
-                partitions_into_parts(n, k)
+            assert twelvefold_way(n, k, boxes="unlabelled", condition="surjective")["count"] == stirling_second(n, k)
+            assert twelvefold_way(n, k, balls="unlabelled", boxes="unlabelled", condition="surjective")[
+                "count"
+            ] == partitions_into_parts(n, k)
 
 
 def test_every_cell_reports_its_formula_and_is_non_negative():
@@ -363,10 +354,10 @@ def test_twelvefold_validation():
 # Mobius inversion
 # --------------------------------------------------------------------
 
+
 def test_mobius_inverts_the_divisor_sum_exactly():
     g = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
-    f = [sum(g[d - 1] for d in range(1, m + 1) if m % d == 0)
-         for m in range(1, len(g) + 1)]
+    f = [sum(g[d - 1] for d in range(1, m + 1) if m % d == 0) for m in range(1, len(g) + 1)]
     out = mobius_inversion(f)
     assert out["g"] == g
     assert out["reconstruction_residual"] == 0

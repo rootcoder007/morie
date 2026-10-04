@@ -128,11 +128,7 @@ def _skeletons() -> tuple[dict[tuple[str, str], str], collections.Counter]:
                 continue
             # Drop the docstring: two functions differing only in prose are
             # the same body.
-            body = [
-                s
-                for s in node.body
-                if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))
-            ]
+            body = [s for s in node.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
             if not body:
                 continue
             module = ast.Module(body=body, type_ignores=[])
@@ -237,10 +233,7 @@ def main() -> int:
         writer.writerows(rows)
     counts = collections.Counter(r["target_kind"] for r in rows)
     print(f"{len(rows)} trivial tests -> {OUT.relative_to(REPO)}")
-    print(
-        f"  target real={counts['real']}  stub={counts['stub']}  "
-        f"unknown={counts['unknown']}"
-    )
+    print(f"  target real={counts['real']}  stub={counts['stub']}  unknown={counts['unknown']}")
     print("  'real' rows are the actionable ones; 'stub' rows are blocked on")
     print("  the stub itself and are out of scope for the red series.")
     return 0

@@ -61,9 +61,9 @@ __all__ = ["variational_inference"]
 _MODELS = ("normal-gamma", "gaussian-gamma", "normalgamma")
 
 
-def variational_inference(log_p="normal-gamma", q_family="meanfield", x=None,
-                          mu0=0.0, lambda0=0.0, a0=0.0, b0=0.0,
-                          max_iter=200, tol=1e-12):
+def variational_inference(
+    log_p="normal-gamma", q_family="meanfield", x=None, mu0=0.0, lambda0=0.0, a0=0.0, b0=0.0, max_iter=200, tol=1e-12
+):
     """Coordinate-ascent mean-field VI for the Normal-Gamma joint.
 
     Parameters
@@ -146,9 +146,8 @@ def variational_inference(log_p="normal-gamma", q_family="meanfield", x=None,
         elbo = 0.5 * n * e_log_tau - 0.5 * new_tau * quad
         elbo += 0.5 * e_log_tau - 0.5 * math.log(2.0 * math.pi)
         elbo += (a0 - 1.0) * e_log_tau - b0 * new_tau
-        elbo -= (-0.5 * math.log(2.0 * math.pi * var_mu) - 0.5)
-        elbo -= (a_n * math.log(b_n) - core.lgamma(a_n)
-                 + (a_n - 1.0) * e_log_tau - a_n)
+        elbo -= -0.5 * math.log(2.0 * math.pi * var_mu) - 0.5
+        elbo -= a_n * math.log(b_n) - core.lgamma(a_n) + (a_n - 1.0) * e_log_tau - a_n
         path.append(elbo)
         if abs(new_tau - e_tau) < float(tol):
             e_tau = new_tau

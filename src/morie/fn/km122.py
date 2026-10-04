@@ -46,19 +46,15 @@ def _solve_transport(a, b, C):
                 if dist[m + j] == INF:
                     continue
                 for i in range(m):
-                    if F[i, j] > tol and \
-                            dist[m + j] - C[i, j] < dist[i] - 1e-15:
+                    if F[i, j] > tol and dist[m + j] - C[i, j] < dist[i] - 1e-15:
                         dist[i] = dist[m + j] - C[i, j]
                         prev[i] = ("b", i, j)
                         changed = True
             if not changed:
                 break
-        cand = [j for j in range(n)
-                if demand[j] > tol and dist[m + j] < INF]
+        cand = [j for j in range(n) if demand[j] > tol and dist[m + j] < INF]
         if not cand:
-            raise ValueError("the transport problem is infeasible: no "
-                             "residual path reaches a column still in "
-                             "deficit.")
+            raise ValueError("the transport problem is infeasible: no residual path reaches a column still in deficit.")
         j = min(cand, key=lambda j: dist[m + j])
         # Walk the path back, collecting the bottleneck.
         path = []
@@ -73,18 +69,15 @@ def _solve_transport(a, b, C):
             if kind == "b":
                 push = min(push, F[pi, pj])
         if push <= tol:
-            raise ValueError("the transport solver stalled on a "
-                             "zero-capacity augmenting path.")
+            raise ValueError("the transport solver stalled on a zero-capacity augmenting path.")
         for kind, pi, pj in path:
             F[pi, pj] += push if kind == "f" else -push
         supply[node] -= push
         demand[j] -= push
     else:
-        raise ValueError("the transport solver did not converge within "
-                         "its iteration guard.")
+        raise ValueError("the transport solver did not converge within its iteration guard.")
     if supply.sum() > 1e-9 or demand.sum() > 1e-9:
-        raise ValueError("the transport problem was left unbalanced by "
-                         "the solver.")
+        raise ValueError("the transport problem was left unbalanced by the solver.")
     # Optimality certificate: Bellman-Ford from a virtual source over
     # the residual graph. No relaxation left => no negative cycle =>
     # the flow is optimal, and the distances are a feasible LP dual.
@@ -102,9 +95,7 @@ def _solve_transport(a, b, C):
         if not changed:
             break
     else:
-        raise ValueError("the residual graph still has a negative "
-                         "cycle; the transport solution is not "
-                         "optimal.")
+        raise ValueError("the residual graph still has a negative cycle; the transport solution is not optimal.")
     u = -d[:m]
     v = d[m:]
     return F, u, v
@@ -138,51 +129,53 @@ def kamath_ch8_wmd(x_n, y_n, C, F=None):
     if a.size == 0 or b.size == 0:
         raise ValueError("both weight vectors must be non-empty.")
     if np.any(a < 0) or np.any(b < 0):
-        raise ValueError("n-gram weights are a distribution and cannot "
-                         "be negative.")
+        raise ValueError("n-gram weights are a distribution and cannot be negative.")
     if Cm.shape != (a.size, b.size):
-        raise ValueError(
-            f"C must be {a.size}x{b.size}; got {Cm.shape}.")
+        raise ValueError(f"C must be {a.size}x{b.size}; got {Cm.shape}.")
     if abs(a.sum() - b.sum()) > 1e-9:
         raise ValueError(
-            f"the marginals differ in total mass ({a.sum()} vs "
-            f"{b.sum()}); the transport problem is infeasible.")
+            f"the marginals differ in total mass ({a.sum()} vs {b.sum()}); the transport problem is infeasible."
+        )
     if a.sum() <= 0:
         raise ValueError("both weight vectors are all zero.")
     if F is not None:
         Fm = np.atleast_2d(np.asarray(F, dtype=float))
         if Fm.shape != Cm.shape:
-            raise ValueError(
-                f"F must be {Cm.shape}; got {Fm.shape}.")
+            raise ValueError(f"F must be {Cm.shape}; got {Fm.shape}.")
         if np.any(Fm < -1e-12):
-            raise ValueError("a transport plan cannot carry negative "
-                             "flow.")
-        if np.max(np.abs(Fm.sum(axis=1) - a)) > 1e-8 or \
-                np.max(np.abs(Fm.sum(axis=0) - b)) > 1e-8:
-            raise ValueError("F violates the marginal constraints "
-                             "F 1 = f_x, F^T 1 = f_y.")
+            raise ValueError("a transport plan cannot carry negative flow.")
+        if np.max(np.abs(Fm.sum(axis=1) - a)) > 1e-8 or np.max(np.abs(Fm.sum(axis=0) - b)) > 1e-8:
+            raise ValueError("F violates the marginal constraints F 1 = f_x, F^T 1 = f_y.")
         cost = float((Cm * Fm).sum())
-        return RichResult(payload={
-            "estimate": cost, "flow": [[float(v) for v in row]
-                                       for row in Fm],
-            "optimal": False, "n": int(a.size),
-            "method": "cost of a supplied transport plan (Kamath "
-                      "Eq 8.10)"})
+        return RichResult(
+            payload={
+                "estimate": cost,
+                "flow": [[float(v) for v in row] for row in Fm],
+                "optimal": False,
+                "n": int(a.size),
+                "method": "cost of a supplied transport plan (Kamath Eq 8.10)",
+            }
+        )
     Fm, u, v = _solve_transport(a, b, Cm)
     cost = float((Cm * Fm).sum())
     dual = float(a @ u + b @ v)
     if abs(cost - dual) > 1e-6 * max(1.0, abs(cost)):
         raise ValueError(
             f"the transport solution failed its duality certificate "
-            f"(primal {cost}, dual {dual}); no answer is returned.")
-    return RichResult(payload={
-        "estimate": cost,
-        "flow": [[float(w) for w in row] for row in Fm],
-        "dual_objective": dual, "potentials_u": [float(w) for w in u],
-        "potentials_v": [float(w) for w in v], "optimal": True,
-        "n": int(a.size),
-        "method": "Word Mover's Distance, exact transport LP "
-                  "(Kamath Eq 8.10)"})
+            f"(primal {cost}, dual {dual}); no answer is returned."
+        )
+    return RichResult(
+        payload={
+            "estimate": cost,
+            "flow": [[float(w) for w in row] for row in Fm],
+            "dual_objective": dual,
+            "potentials_u": [float(w) for w in u],
+            "potentials_v": [float(w) for w in v],
+            "optimal": True,
+            "n": int(a.size),
+            "method": "Word Mover's Distance, exact transport LP (Kamath Eq 8.10)",
+        }
+    )
 
 
 def cheatsheet():

@@ -43,11 +43,19 @@ def zscore_normalization(x, ddof=1):
     den = n - int(ddof)
     sd = math.sqrt(sum((t - mu) ** 2 for t in v) / den) if den > 0 else 0.0
     out = [(t - mu) / sd for t in v] if sd > 0 else [0.0] * n
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sd), "x_std": out, "mean": float(mu),
-        "sd": float(sd), "n": n,
-        "method": "z-score standardization (MVSML 2022 p.57)",
-    }), "zscnm")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sd),
+                "x_std": out,
+                "mean": float(mu),
+                "sd": float(sd),
+                "n": n,
+                "method": "z-score standardization (MVSML 2022 p.57)",
+            }
+        ),
+        "zscnm",
+    )
 
 
 def cheatsheet():

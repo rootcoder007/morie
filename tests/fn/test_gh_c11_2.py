@@ -1,7 +1,6 @@
 """Tests for gh_c11_2.ghosal_rkhs_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_2 import ghosal_rkhs_norm
 
 

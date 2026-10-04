@@ -1,7 +1,6 @@
 """Tests for msmlin.msm_linear."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msmlin import msm_linear
 
 

@@ -1,7 +1,5 @@
 """Tests for kmrlaif.kamath_rlaif_objective."""
 
-from morie.fn import _array_core as np
-
 import math
 
 import pytest
@@ -18,8 +16,13 @@ def test_kmrlaif_basic():
     assert isinstance(result, dict)
     # The documented payload keys are present
     expected_keys = {
-        "items", "strengths", "scores", "loss", "accuracy",
-        "n_preferences", "estimate",
+        "items",
+        "strengths",
+        "scores",
+        "loss",
+        "accuracy",
+        "n_preferences",
+        "estimate",
     }
     assert expected_keys.issubset(result.keys())
     # The number of preferences matches the input

@@ -83,21 +83,24 @@ def boot_ci_median(x, B=200, alpha=0.05, rng=2, exhaustive=False):
     sm = sorted(meds)
     lo = core.quantile7(sm, a / 2.0)
     hi = core.quantile7(sm, 1.0 - a / 2.0)
-    return RichResult(payload={
-        "estimate": _median(sorted(v)),
-        "lo": lo,
-        "hi": hi,
-        "medians": meds,
-        "alpha": a,
-        "B": len(meds),
-        "n": n,
-        "exhaustive": bool(exhaustive),
-        "method": "Bootstrap CI for the median",
-    })
+    return RichResult(
+        payload={
+            "estimate": _median(sorted(v)),
+            "lo": lo,
+            "hi": hi,
+            "medians": meds,
+            "alpha": a,
+            "B": len(meds),
+            "n": n,
+            "exhaustive": bool(exhaustive),
+            "method": "Bootstrap CI for the median",
+        }
+    )
 
 
 def cheatsheet():
     return "btcimed: Bootstrap CI for the median"
+
 
 # public names resolved by fn/_lazy_map.json
 bootcimedian = boot_ci_median

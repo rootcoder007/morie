@@ -1,7 +1,6 @@
 """Test integrate_signal (intgs)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.intgs import integrate_signal, intgs
 

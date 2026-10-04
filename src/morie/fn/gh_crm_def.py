@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_completely_random_measure"]
@@ -27,12 +26,11 @@ def ghosal_completely_random_measure(n_sim=1500, seed=42):
     mx = sum(xs) / n_sim
     my = sum(ys) / n_sim
     num = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
-    den = math.sqrt(sum((x - mx) ** 2 for x in xs)
-                    * sum((y - my) ** 2 for y in ys))
+    den = math.sqrt(sum((x - mx) ** 2 for x in xs) * sum((y - my) ** 2 for y in ys))
     corr = num / den
-    res = RichResult(payload={"estimate": corr,
-                              "independent": abs(corr) < 0.08,
-                              "method": "CRM independence (GvdV 2017 App J)"})
+    res = RichResult(
+        payload={"estimate": corr, "independent": abs(corr) < 0.08, "method": "CRM independence (GvdV 2017 App J)"}
+    )
     return with_describe_pointer(res, "gh_crm_def")
 
 

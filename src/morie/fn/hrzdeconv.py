@@ -76,8 +76,7 @@ def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
         hh = float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(W.min(), W.max(), 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(W.min(), W.max(), 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
 
     # sinc-kernel Fourier transform: compactly supported in tau, which
     # is what keeps 1/psi_eps from being evaluated where it vanishes
@@ -94,13 +93,18 @@ def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
         note = "psi_eps decays polynomially: rate stays polynomial, n^{-r}"
     damp = (1.0 - (tau / T) ** 2) ** 3  # vanishes at the cut-off
     integrand = psi_W / psi_e * damp
-    dens = np.array([
-        float(np.real(np.trapezoid(integrand * np.exp(-1j * tau * u), tau)) / (2 * np.pi))
-        for u in g
-    ])
-    return RichResult(payload={"grid": g, "density": dens, "bandwidth": hh,
-                               "regime": regime, "rate_note": note, "n": int(n),
-                               "method": "Fourier deconvolution with a compact damping kernel"})
+    dens = np.array([float(np.real(np.trapezoid(integrand * np.exp(-1j * tau * u), tau)) / (2 * np.pi)) for u in g])
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "bandwidth": hh,
+            "regime": regime,
+            "rate_note": note,
+            "n": int(n),
+            "method": "Fourier deconvolution with a compact damping kernel",
+        }
+    )
 
 
 def cheatsheet():

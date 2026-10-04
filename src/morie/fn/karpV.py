@@ -51,9 +51,19 @@ Reference
 
 from ._richresult import RichResult
 
-__all__ = ["genetic_programming", "karpV", "cheatsheet", "evaluate",
-           "raw_fitness", "adjusted_fitness", "ramped_half_and_half",
-           "depth", "size", "to_string", "DEFAULT_FUNCTIONS"]
+__all__ = [
+    "genetic_programming",
+    "karpV",
+    "cheatsheet",
+    "evaluate",
+    "raw_fitness",
+    "adjusted_fitness",
+    "ramped_half_and_half",
+    "depth",
+    "size",
+    "to_string",
+    "DEFAULT_FUNCTIONS",
+]
 
 _MASK = 0xFFFFFFFF
 
@@ -95,6 +105,7 @@ class _Rng:
 
 # ---------------------------------------------------------------- trees
 
+
 def _fnode(op, args):
     return {"op": op, "args": args}
 
@@ -129,7 +140,7 @@ def evaluate(node, env):
         t = node["term"]
         if t in env:
             return float(env[t])
-        return float(t)                  # an ephemeral constant
+        return float(t)  # an ephemeral constant
     return _apply(node["op"], [evaluate(a, env) for a in node["args"]])
 
 
@@ -154,8 +165,7 @@ def to_string(node):
             # arms produce the same expression text.
             return "%.17g" % t
         return str(t)
-    return "(%s %s)" % (node["op"],
-                        " ".join(to_string(a) for a in node["args"]))
+    return "(%s %s)" % (node["op"], " ".join(to_string(a) for a in node["args"]))
 
 
 def _random_terminal(rng, terminals, erc):
@@ -181,8 +191,7 @@ def _grow(rng, functions, terminals, erc, d, full):
         if rng.below(total) >= len(functions):
             return _random_terminal(rng, terminals, erc)
     op, arity = functions[rng.below(len(functions))]
-    return _fnode(op, [_grow(rng, functions, terminals, erc, d - 1, full)
-                       for _ in range(arity)])
+    return _fnode(op, [_grow(rng, functions, terminals, erc, d - 1, full) for _ in range(arity)])
 
 
 def ramped_half_and_half(rng, n, functions, terminals, erc, max_depth):
@@ -191,12 +200,12 @@ def ramped_half_and_half(rng, n, functions, terminals, erc, max_depth):
     span = max_depth - 1
     for i in range(n):
         d = 2 + (i % span) if span > 0 else 2
-        pop.append(_grow(rng, functions, terminals, erc, d,
-                         full=((i // max(span, 1)) % 2 == 1)))
+        pop.append(_grow(rng, functions, terminals, erc, d, full=((i // max(span, 1)) % 2 == 1)))
     return pop
 
 
 # ---------------------------------------------------------------- nodes
+
 
 def _collect(node, out, path):
     out.append((path, node))
@@ -239,6 +248,7 @@ def _copy(node):
 
 
 # ---------------------------------------------------------------- run
+
 
 def _csum(v):
     s = 0.0
@@ -290,11 +300,23 @@ def _roulette(rng, adj, total):
     return len(adj) - 1
 
 
-def genetic_programming(fitness=None, ops=None, gens=20, cases=None,
-                        terminals=("x",), functions=None, erc=(-5.0, 5.0),
-                        pop_size=100, max_depth_init=6, max_depth=17,
-                        p_crossover=0.9, p_mutation=0.0,
-                        internal_bias=0.9, seed=1, elitism=0):
+def genetic_programming(
+    fitness=None,
+    ops=None,
+    gens=20,
+    cases=None,
+    terminals=("x",),
+    functions=None,
+    erc=(-5.0, 5.0),
+    pop_size=100,
+    max_depth_init=6,
+    max_depth=17,
+    p_crossover=0.9,
+    p_mutation=0.0,
+    internal_bias=0.9,
+    seed=1,
+    elitism=0,
+):
     """Breed a population of expression trees.
 
     Parameters
@@ -337,17 +359,16 @@ def genetic_programming(fitness=None, ops=None, gens=20, cases=None,
     terminals = [str(t) for t in terminals]
     if fitness is None:
         if not cases:
-            raise ValueError("karpV: give either a fitness function or "
-                             "fitness cases")
+            raise ValueError("karpV: give either a fitness function or fitness cases")
+
         def fitness(tree):
             return raw_fitness(tree, cases, terminals)
+
     if max_depth_init < 2:
-        raise ValueError("karpV: max_depth_init = %d; ramped half-and-half "
-                         "needs at least 2" % max_depth_init)
+        raise ValueError("karpV: max_depth_init = %d; ramped half-and-half needs at least 2" % max_depth_init)
 
     rng = _Rng(seed)
-    pop = ramped_half_and_half(rng, int(pop_size), functions, terminals,
-                               erc, int(max_depth_init))
+    pop = ramped_half_and_half(rng, int(pop_size), functions, terminals, erc, int(max_depth_init))
     evals = 0
     best = None
     best_raw = float("inf")
@@ -365,16 +386,16 @@ def genetic_programming(fitness=None, ops=None, gens=20, cases=None,
                 best = _copy(pop[i])
                 best_gen = g
         finite = [r for r in raws if r != float("inf")]
-        hist.append((min(raws), _csum(finite) / len(finite) if finite
-                     else float("inf"),
-                     size(pop[raws.index(min(raws))])))
+        hist.append(
+            (min(raws), _csum(finite) / len(finite) if finite else float("inf"), size(pop[raws.index(min(raws))]))
+        )
         if g == int(gens):
             break
 
         nxt = []
         if elitism:
             order = sorted(range(len(pop)), key=lambda i: raws[i])
-            for i in order[:int(elitism)]:
+            for i in order[: int(elitism)]:
                 nxt.append(_copy(pop[i]))
         while len(nxt) < len(pop):
             r = rng.unit()
@@ -385,48 +406,52 @@ def genetic_programming(fitness=None, ops=None, gens=20, cases=None,
                 pb = _pick_point(rng, b, internal_bias)
                 child = _replace(a, pa, _get(b, pb))
                 if depth(child) > max_depth:
-                    child = _copy(a)     # Koza: keep the parent instead
+                    child = _copy(a)  # Koza: keep the parent instead
                 nxt.append(child)
             elif r < p_crossover + p_mutation:
                 a = pop[_roulette(rng, adj, total)]
                 pa = _pick_point(rng, a, internal_bias)
-                sub = _grow(rng, functions, terminals, erc,
-                            int(max_depth_init), False)
+                sub = _grow(rng, functions, terminals, erc, int(max_depth_init), False)
                 child = _replace(a, pa, sub)
                 if depth(child) > max_depth:
                     child = _copy(a)
                 nxt.append(child)
             else:
                 nxt.append(_copy(pop[_roulette(rng, adj, total)]))
-        pop = nxt[:len(pop)]
+        pop = nxt[: len(pop)]
 
-    return RichResult(payload={
-        "best": best,
-        "best_string": to_string(best) if best else None,
-        "best_raw": best_raw,
-        "best_adjusted": adjusted_fitness(best_raw),
-        "best_size": size(best) if best else 0,
-        "best_depth": depth(best) if best else 0,
-        "generation_found": best_gen,
-        "history": hist,
-        "evaluations": evals,
-        "generations": int(gens),
-        "pop_size": int(pop_size),
-        "seed": int(seed),
-        "method": ("genetic programming (Koza 1992): ramped half-and-half "
-                   "over depths 2..%d, fitness-proportionate selection on "
-                   "adjusted fitness, %g crossover with a %g internal-node "
-                   "bias, depth cap %d"
-                   % (max_depth_init, p_crossover, internal_bias, max_depth)),
-    })
+    return RichResult(
+        payload={
+            "best": best,
+            "best_string": to_string(best) if best else None,
+            "best_raw": best_raw,
+            "best_adjusted": adjusted_fitness(best_raw),
+            "best_size": size(best) if best else 0,
+            "best_depth": depth(best) if best else 0,
+            "generation_found": best_gen,
+            "history": hist,
+            "evaluations": evals,
+            "generations": int(gens),
+            "pop_size": int(pop_size),
+            "seed": int(seed),
+            "method": (
+                "genetic programming (Koza 1992): ramped half-and-half "
+                "over depths 2..%d, fitness-proportionate selection on "
+                "adjusted fitness, %g crossover with a %g internal-node "
+                "bias, depth cap %d" % (max_depth_init, p_crossover, internal_bias, max_depth)
+            ),
+        }
+    )
 
 
 karpV = genetic_programming
 
 
 def cheatsheet():
-    return ("karpV: genetic programming over expression trees (Koza "
-            "1992). Ramped half-and-half init, adjusted fitness, "
-            "fitness-proportionate selection, 90/10 crossover point "
-            "bias, protected division. Seeded by the module's own "
-            "xorshift so runs reproduce across language arms.")
+    return (
+        "karpV: genetic programming over expression trees (Koza "
+        "1992). Ramped half-and-half init, adjusted fitness, "
+        "fitness-proportionate selection, 90/10 crossover point "
+        "bias, protected division. Seeded by the module's own "
+        "xorshift so runs reproduce across language arms."
+    )

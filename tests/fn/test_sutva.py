@@ -1,7 +1,6 @@
 """Tests for sutva.sutva_assumption."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sutva import sutva_assumption
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.dceof."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dceof import dceof
 
 

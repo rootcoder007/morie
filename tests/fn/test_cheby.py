@@ -1,7 +1,6 @@
 """Tests for cheby (Chebyshev distance)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cheby import chebyshev_dist
 
 

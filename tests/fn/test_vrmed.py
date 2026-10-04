@@ -1,7 +1,5 @@
 """Tests for vrmed.variance_based_mediation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.vrmed import variance_based_mediation
 
 

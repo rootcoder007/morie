@@ -1,8 +1,8 @@
 """Tests for ksr032 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr032 import kosorok_ch2_weak_convergence_iff
 
 

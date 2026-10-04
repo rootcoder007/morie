@@ -1,7 +1,6 @@
 """Tests for ghs001.ghosal_ch1_bayes_formula."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs001 import ghosal_ch1_bayes_formula
 
 

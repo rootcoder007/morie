@@ -61,7 +61,7 @@ def ucb_bandit(x, T=None):
     T = rows if T is None else int(T)
     if T < K:
         raise ValueError("need at least K = %d plays" % K)
-    if T > rows:
+    if rows < T:
         raise ValueError("x has only %d rows" % rows)
     counts = [0] * K
     sums = [0.0] * K
@@ -75,8 +75,7 @@ def ucb_bandit(x, T=None):
             best = 0
             bestidx = -float("inf")
             for k in range(K):
-                idx = sums[k] / counts[k] + float(
-                    np.sqrt(2.0 * float(np.log(float(n))) / counts[k]))
+                idx = sums[k] / counts[k] + float(np.sqrt(2.0 * float(np.log(float(n))) / counts[k]))
                 if idx > bestidx:
                     bestidx = idx
                     best = k
@@ -90,22 +89,23 @@ def ucb_bandit(x, T=None):
     index = np.zeros(K)
     for k in range(K):
         means[k] = sums[k] / counts[k]
-        index[k] = means[k] + float(
-            np.sqrt(2.0 * float(np.log(float(T))) / counts[k]))
+        index[k] = means[k] + float(np.sqrt(2.0 * float(np.log(float(T))) / counts[k]))
     best = 0
     for k in range(1, K):
         if means[k] > means[best]:
             best = k
-    return RichResult(payload={
-        "estimate": float(best),
-        "actions": actions,
-        "rewards": rewards,
-        "means": means,
-        "counts": np.asarray([float(c) for c in counts]),
-        "index": index,
-        "total_reward": float(np.sum(rewards)),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": float(best),
+            "actions": actions,
+            "rewards": rewards,
+            "means": means,
+            "counts": np.asarray([float(c) for c in counts]),
+            "index": index,
+            "total_reward": float(np.sum(rewards)),
+            "method": _METHOD,
+        }
+    )
 
 
 ucbb = ucb_bandit
@@ -113,6 +113,7 @@ ucbb = ucb_bandit
 
 def cheatsheet():
     return "ucbb(x) -> deterministic UCB1 play sequence on a (T, K) reward table (Auer et al 2002, fig 1)."
+
 
 # public names resolved by fn/_lazy_map.json
 ucbbandit = ucb_bandit

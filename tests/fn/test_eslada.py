@@ -1,7 +1,6 @@
 """Tests for eslada.esl_adaboost."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslada import esl_adaboost
 
 

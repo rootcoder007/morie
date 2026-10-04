@@ -51,10 +51,16 @@ def complrm(X, total=1.0):
     e = [math.exp(v) for v in zm]
     s = sum(e)
     k = float(total)
-    return RichResult(payload={
-        "clr_mean": zm, "center": [k * v / s for v in e],
-        "sum_clr_mean": sum(zm), "n": n, "D": D,
-        "method": "Log-ratio mean (clr average, closed back)"})
+    return RichResult(
+        payload={
+            "clr_mean": zm,
+            "center": [k * v / s for v in e],
+            "sum_clr_mean": sum(zm),
+            "n": n,
+            "D": D,
+            "method": "Log-ratio mean (clr average, closed back)",
+        }
+    )
 
 
 compositional_lrmean = complrm

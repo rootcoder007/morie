@@ -91,8 +91,7 @@ def geron_one_vs_one(X, y, base_fit=None, eta=0.5, n_iter=400):
             yp = (yv[sel] == cj).astype(float)
             if yp.min() == yp.max():
                 raise ValueError(
-                    f"the pair ({int(ci)}, {int(cj)}) has only one class present; "
-                    "the duel cannot be trained."
+                    f"the pair ({int(ci)}, {int(cj)}) has only one class present; the duel cannot be trained."
                 )
             if base_fit is None:
                 w = train_logreg(Xp, yp, eta=eta, n_iter=n_iter)
@@ -106,8 +105,7 @@ def geron_one_vs_one(X, y, base_fit=None, eta=0.5, n_iter=400):
                 s = np.asarray(model(A), dtype=float).ravel()
                 if s.size != A.shape[0]:
                     raise ValueError(
-                        f"pair ({int(ci)}, {int(cj)}) scorer returned {s.size} scores "
-                        f"for {A.shape[0]} rows."
+                        f"pair ({int(ci)}, {int(cj)}) scorer returned {s.size} scores for {A.shape[0]} rows."
                     )
                 if not np.all(np.isfinite(s)):
                     raise ValueError(f"pair ({int(ci)}, {int(cj)}) scorer returned non-finite scores.")

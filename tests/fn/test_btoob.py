@@ -1,7 +1,6 @@
 """Tests for btoob.boot_oob_error."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btoob import boot_oob_error
 
 
@@ -68,5 +67,4 @@ def test_btoob_edge():
 
     assert "n_dropped" in result
     assert result["n_dropped"] >= 0
-    assert result["n_dropped"] + int(np.sum(
-        np.isfinite(np.asarray(result["per_observation"])))) == 20
+    assert result["n_dropped"] + int(np.sum(np.isfinite(np.asarray(result["per_observation"])))) == 20

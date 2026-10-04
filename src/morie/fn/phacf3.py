@@ -63,13 +63,21 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["phacf3", "pharmacophore_3d", "canonical_triangle", "bit_space",
-           "distance_bin", "tanimoto", "FEATURES", "DEFAULT_EDGES",
-           "MODES", "cheatsheet"]
+__all__ = [
+    "phacf3",
+    "pharmacophore_3d",
+    "canonical_triangle",
+    "bit_space",
+    "distance_bin",
+    "tanimoto",
+    "FEATURES",
+    "DEFAULT_EDGES",
+    "MODES",
+    "cheatsheet",
+]
 
 # The six feature classes of the classical pharmacophore alphabet.
-FEATURES = ("donor", "acceptor", "positive", "negative", "hydrophobic",
-            "aromatic")
+FEATURES = ("donor", "acceptor", "positive", "negative", "hydrophobic", "aromatic")
 
 # Bin EDGES in angstroms, so there are len(edges) - 1 bins and anything
 # outside the outer edges is not a pharmacophore distance at all. These
@@ -107,12 +115,10 @@ def canonical_triangle(t1, t2, t3, d12, d13, d23):
     a six-letter alphabet is most of the time.
     """
     # (i, j, k) vertex order; edges are (ij, ik, jk) in that order.
-    perms = ((0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (2, 0, 1),
-             (2, 1, 0))
+    perms = ((0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (2, 0, 1), (2, 1, 0))
     t = (t1, t2, t3)
     # d[a][b] as a lookup so an edge follows its endpoints.
-    d = {(0, 1): d12, (1, 0): d12, (0, 2): d13, (2, 0): d13,
-         (1, 2): d23, (2, 1): d23}
+    d = {(0, 1): d12, (1, 0): d12, (0, 2): d13, (2, 0): d13, (1, 2): d23, (2, 1): d23}
     best = None
     for i, j, k in perms:
         cand = (t[i], t[j], t[k], d[(i, j)], d[(i, k)], d[(j, k)])
@@ -151,8 +157,7 @@ def bit_space(features=FEATURES, n_bins=None, edges=DEFAULT_EDGES):
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t])
-                             for t in range(3)))
+    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t]) for t in range(3)))
 
 
 def tanimoto(a, b):
@@ -178,8 +183,7 @@ def tanimoto(a, b):
     return num / den if den > 0.0 else float("nan")
 
 
-def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES,
-                     mode="binary", space=None):
+def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES, mode="binary", space=None):
     """Fingerprint a set of typed 3D feature points.
 
     Parameters
@@ -222,8 +226,7 @@ def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES,
         t = str(row[3])
         if t not in feats:
             raise ValueError("feature type %r is not in the alphabet" % t)
-        pts.append(([float(row[0]), float(row[1]), float(row[2])],
-                    feats.index(t)))
+        pts.append(([float(row[0]), float(row[1]), float(row[2])], feats.index(t)))
     n = len(pts)
     if space is None:
         space = bit_space(feats, len(edges) - 1, edges)
@@ -244,8 +247,7 @@ def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES,
                 # as somebody feeds in a distance matrix instead of
                 # coordinates. Counting it is cheaper than debugging
                 # the fingerprint later.
-                if (d12 + d13 < d23 or d12 + d23 < d13
-                        or d13 + d23 < d12):
+                if d12 + d13 < d23 or d12 + d23 < d13 or d13 + d23 < d12:
                     degenerate += 1
                     continue
                 b12 = distance_bin(d12, edges)
@@ -254,8 +256,7 @@ def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES,
                 if b12 < 0 or b13 < 0 or b23 < 0:
                     out_of_range += 1
                     continue
-                key = canonical_triangle(pts[i][1], pts[j][1], pts[k][1],
-                                         b12, b13, b23)
+                key = canonical_triangle(pts[i][1], pts[j][1], pts[k][1], b12, b13, b23)
                 bit = index[key]
                 if mode == "binary":
                     fp[bit] = 1
@@ -266,31 +267,37 @@ def pharmacophore_3d(mol_3d, feature_set=FEATURES, edges=DEFAULT_EDGES,
     total = 0
     for v in fp:
         total += v
-    return RichResult(payload={
-        "fingerprint": fp,
-        "bits_on": on,
-        "n_bits_on": len(on),
-        "n_bits": len(fp),
-        "density": len(on) / float(len(fp)) if fp else float("nan"),
-        "total": total,
-        "hit_i": [h[0] for h in hits],
-        "hit_j": [h[1] for h in hits],
-        "hit_k": [h[2] for h in hits],
-        "hit_bit": [h[3] for h in hits],
-        "n_triangles": len(hits),
-        "n_out_of_range": out_of_range,
-        "n_degenerate": degenerate,
-        "n_features": n,
-        "estimate": len(on),
-        "se": float("nan"),
-        "mode": mode,
-        "method": "three-point 3D pharmacophore fingerprint",
-    })
+    return RichResult(
+        payload={
+            "fingerprint": fp,
+            "bits_on": on,
+            "n_bits_on": len(on),
+            "n_bits": len(fp),
+            "density": len(on) / float(len(fp)) if fp else float("nan"),
+            "total": total,
+            "hit_i": [h[0] for h in hits],
+            "hit_j": [h[1] for h in hits],
+            "hit_k": [h[2] for h in hits],
+            "hit_bit": [h[3] for h in hits],
+            "n_triangles": len(hits),
+            "n_out_of_range": out_of_range,
+            "n_degenerate": degenerate,
+            "n_features": n,
+            "estimate": len(on),
+            "se": float("nan"),
+            "mode": mode,
+            "method": "three-point 3D pharmacophore fingerprint",
+        }
+    )
 
 
 phacf3 = pharmacophore_3d
 
 
 def cheatsheet():
-    return ("phacf3: three-point 3D pharmacophore fingerprint. modes "
-            + ", ".join(MODES) + "; features " + ", ".join(FEATURES))
+    return (
+        "phacf3: three-point 3D pharmacophore fingerprint. modes "
+        + ", ".join(MODES)
+        + "; features "
+        + ", ".join(FEATURES)
+    )

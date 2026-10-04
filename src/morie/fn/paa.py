@@ -64,10 +64,16 @@ def paa(x, N):
                 s += (b - a) * v[j]
             j += 1
         out.append(s / w)
-    return RichResult(payload={
-        "paa": out, "estimate": out[0], "segment_width": w,
-        "N": k, "n": n,
-        "method": "Piecewise aggregate approximation"})
+    return RichResult(
+        payload={
+            "paa": out,
+            "estimate": out[0],
+            "segment_width": w,
+            "N": k,
+            "n": n,
+            "method": "Piecewise aggregate approximation",
+        }
+    )
 
 
 def cheatsheet():

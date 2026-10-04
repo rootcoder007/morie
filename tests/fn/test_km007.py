@@ -13,6 +13,8 @@ def test_km007_doctest():
 
 def test_km007_edge():
     import pytest
+
     from morie.fn.km007 import kamath_ch2_attention_score
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_attention_score(*([None] * 3))

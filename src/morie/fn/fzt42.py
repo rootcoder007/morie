@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bias and variance of the second cumulative-survival estimator (Theorem 4.2)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["srvbv2", "fauzi_thm4_2_surv2_bias_var"]

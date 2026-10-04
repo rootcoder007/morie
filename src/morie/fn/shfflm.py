@@ -18,7 +18,6 @@ def _exp(v):
         return float("inf")
 
 
-
 def shuffle_model(epsilon0, n, delta):
     r"""Central (:math:`\varepsilon, \delta`)-DP guarantee obtained by
     shuffling *n* reports, each produced by an
@@ -95,8 +94,10 @@ def shuffle_model(epsilon0, n, delta):
     e1 = 2.0 * _exp(2.0 * e0) * (_exp(e0) - 1.0) / nn
     general = e1 * math.sqrt(2.0 * nn * logd) + nn * e1 * (_exp(e1) - 1.0)
 
-    refined = _exp(2.0 * e0) * (_exp(e0) - 1.0) * math.sqrt(8.0 * logd / nn) \
+    refined = (
+        _exp(2.0 * e0) * (_exp(e0) - 1.0) * math.sqrt(8.0 * logd / nn)
         + 6.0 * _exp(4.0 * e0) * (_exp(e0) - 1.0) ** 2 / nn
+    )
     simple = 12.0 * e0 * math.sqrt(logd / nn)
 
     refined_valid = 1.0 if e0 <= math.log(nn / 4.0) / 3.0 else 0.0

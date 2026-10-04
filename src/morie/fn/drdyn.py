@@ -30,8 +30,7 @@ from ._richresult import RichResult
 __all__ = ["dr_dynamic_did"]
 
 
-def dr_dynamic_did(y, D=None, unit=None, time=None, cohort=None, horizon=3,
-                   X=None):
+def dr_dynamic_did(y, D=None, unit=None, time=None, cohort=None, horizon=3, X=None):
     """ATT by event time, e = -horizon .. +horizon.
 
     Parameters
@@ -103,8 +102,7 @@ def dr_dynamic_did(y, D=None, unit=None, time=None, cohort=None, horizon=3,
             if not treated:
                 # never-treated contribute the same calendar contrast as the
                 # cohorts observed at this horizon
-                for gg2 in sorted(set([gof[z] for z in units
-                                       if gof[z] > 0.0 and gof[z] != float("inf")])):
+                for gg2 in sorted(set([gof[z] for z in units if gof[z] > 0.0 and gof[z] != float("inf")])):
                     p = gg2 + e
                     base = gg2 - 1.0
                     if (uu, p) in val and (uu, base) in val:

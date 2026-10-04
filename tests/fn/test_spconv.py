@@ -16,8 +16,8 @@ def test_spconv_basic():
     quadrature is exact to rounding."""
     h = [0.0, 0.5, 1.0, 2.0, 3.0]
     r = schabenberger_convolution_representation(
-        kernel=lambda u: np.exp(-0.5 * np.asarray(u, dtype=float) ** 2),
-        h=h, sigma2_x=2.0, half_width=12.0, n=4001)
+        kernel=lambda u: np.exp(-0.5 * np.asarray(u, dtype=float) ** 2), h=h, sigma2_x=2.0, half_width=12.0, n=4001
+    )
     for hh, c, rho in zip(h, r["covariance"], r["correlation"]):
         assert float(c) == pytest.approx(2.0 * math.sqrt(math.pi) * math.exp(-hh * hh / 4), rel=1e-12)
         assert float(rho) == pytest.approx(math.exp(-hh * hh / 4), rel=1e-12)

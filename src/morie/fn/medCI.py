@@ -74,12 +74,20 @@ def asymmetric_indirect_ci(a, b, sa, sb, n_sim=20000, level=0.95):
     est = av * bv
     sob = math.sqrt(av * av * sbv * sbv + bv * bv * sav * sav)
     z = core.qnorm(1.0 - alo)
-    return RichResult(payload={
-        "estimate": est, "ci_lo": lo, "ci_hi": hi,
-        "se_mc": math.sqrt(var), "sobel_se": sob,
-        "sobel_lo": est - z * sob, "sobel_hi": est + z * sob,
-        "asymmetry": (hi - est) - (est - lo), "n_sim": n,
-        "method": "Distribution-of-the-product confidence limits"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "ci_lo": lo,
+            "ci_hi": hi,
+            "se_mc": math.sqrt(var),
+            "sobel_se": sob,
+            "sobel_lo": est - z * sob,
+            "sobel_hi": est + z * sob,
+            "asymmetry": (hi - est) - (est - lo),
+            "n_sim": n,
+            "method": "Distribution-of-the-product confidence limits",
+        }
+    )
 
 
 def cheatsheet():

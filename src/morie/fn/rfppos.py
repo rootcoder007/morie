@@ -62,8 +62,7 @@ from . import _w3num as _w
 from ._richresult import RichResult
 from .avalon import _adjacency, parse_smiles
 
-__all__ = ["reactive_pose_filter", "find_warhead", "angle", "dihedral",
-           "distance", "cheatsheet"]
+__all__ = ["reactive_pose_filter", "find_warhead", "angle", "dihedral", "distance", "cheatsheet"]
 
 # Buergi and Dunitz's approach angle for nucleophilic addition to a
 # carbonyl, in degrees. A property of the orbitals, not a fitted value.
@@ -76,9 +75,7 @@ def _sub(a, b):
 
 
 def _cross(a, b):
-    return [a[1] * b[2] - a[2] * b[1],
-            a[2] * b[0] - a[0] * b[2],
-            a[0] * b[1] - a[1] * b[0]]
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
 
 
 def _norm(a):
@@ -164,8 +161,7 @@ def find_warhead(smiles, mode="burgi_dunitz"):
             if el[i] != "C" or arom[i]:
                 continue
             for v, o, k in adj[i]:
-                if (o == 2 and el[v] in ("O", "N")) or \
-                        (o == 3 and el[v] == "N"):
+                if (o == 2 and el[v] in ("O", "N")) or (o == 3 and el[v] == "N"):
                     third = None
                     for w, oo, kk in adj[i]:
                         if w != v:
@@ -192,9 +188,9 @@ def find_warhead(smiles, mode="burgi_dunitz"):
     return None
 
 
-def reactive_pose_filter(pose, cys_residue, mode="burgi_dunitz",
-                         d_min=1.5, d_max=3.5, ideal=None,
-                         angle_tol=15.0, warhead=None):
+def reactive_pose_filter(
+    pose, cys_residue, mode="burgi_dunitz", d_min=1.5, d_max=3.5, ideal=None, angle_tol=15.0, warhead=None
+):
     """Does this pose present its warhead so the cysteine can attack?
 
     Parameters
@@ -237,8 +233,7 @@ def reactive_pose_filter(pose, cys_residue, mode="burgi_dunitz",
     coords = [[float(v) for v in row] for row in pose["coords"]]
     el, arom, chg, hexp, bonds, closures = parse_smiles(smiles)
     if len(coords) != len(el):
-        raise ValueError("one coordinate triple per atom, in the order "
-                         "the SMILES lists them")
+        raise ValueError("one coordinate triple per atom, in the order the SMILES lists them")
     sg = [float(v) for v in cys_residue["SG"]]
     cb = cys_residue.get("CB") if hasattr(cys_residue, "get") else None
     if cb is not None:
@@ -247,20 +242,33 @@ def reactive_pose_filter(pose, cys_residue, mode="burgi_dunitz",
     if warhead is None:
         warhead = find_warhead(smiles, mode)
     if warhead is None:
-        return RichResult(payload={
-            "passes": False,
-            "reason": ("the ligand carries no %s warhead: there is no "
-                       "electrophilic carbon for the cysteine to attack, "
-                       "so there is no pose geometry to judge" % mode),
-            "electrophile": None, "reference": None, "torsion_atom": None,
-            "distance": None, "angle": None, "angle_error": None,
-            "dihedral": None, "warhead_torsion": None,
-            "distance_ok": False, "angle_ok": False,
-            "d_min": float(d_min), "d_max": float(d_max),
-            "angle_tol": float(angle_tol),
-            "ideal": None, "mode": mode, "n_atoms": len(el),
-            "method": "covalent near-attack geometry filter",
-        })
+        return RichResult(
+            payload={
+                "passes": False,
+                "reason": (
+                    "the ligand carries no %s warhead: there is no "
+                    "electrophilic carbon for the cysteine to attack, "
+                    "so there is no pose geometry to judge" % mode
+                ),
+                "electrophile": None,
+                "reference": None,
+                "torsion_atom": None,
+                "distance": None,
+                "angle": None,
+                "angle_error": None,
+                "dihedral": None,
+                "warhead_torsion": None,
+                "distance_ok": False,
+                "angle_ok": False,
+                "d_min": float(d_min),
+                "d_max": float(d_max),
+                "angle_tol": float(angle_tol),
+                "ideal": None,
+                "mode": mode,
+                "n_atoms": len(el),
+                "method": "covalent near-attack geometry filter",
+            }
+        )
     e, r, t = warhead
     if ideal is None:
         ideal = BURGI_DUNITZ if mode == "burgi_dunitz" else 90.0
@@ -275,33 +283,36 @@ def reactive_pose_filter(pose, cys_residue, mode="burgi_dunitz",
 
     dok = d_min <= d <= d_max
     aok = abs(th - ideal) <= angle_tol
-    return RichResult(payload={
-        "passes": bool(dok and aok),
-        "reason": "" if (dok and aok) else
-                  ("the warhead is %s" % ("too far or too close"
-                                          if not dok
-                                          else "at the wrong angle")),
-        "electrophile": e,
-        "reference": r,
-        "torsion_atom": t,
-        "distance": d,
-        "angle": th,
-        "angle_error": th - ideal,
-        "dihedral": di,
-        "warhead_torsion": tor,
-        "distance_ok": bool(dok),
-        "angle_ok": bool(aok),
-        "ideal": ideal,
-        "d_min": float(d_min),
-        "d_max": float(d_max),
-        "angle_tol": float(angle_tol),
-        "mode": mode,
-        "n_atoms": len(el),
-        "method": "covalent near-attack geometry filter",
-    })
+    return RichResult(
+        payload={
+            "passes": bool(dok and aok),
+            "reason": ""
+            if (dok and aok)
+            else ("the warhead is %s" % ("too far or too close" if not dok else "at the wrong angle")),
+            "electrophile": e,
+            "reference": r,
+            "torsion_atom": t,
+            "distance": d,
+            "angle": th,
+            "angle_error": th - ideal,
+            "dihedral": di,
+            "warhead_torsion": tor,
+            "distance_ok": bool(dok),
+            "angle_ok": bool(aok),
+            "ideal": ideal,
+            "d_min": float(d_min),
+            "d_max": float(d_max),
+            "angle_tol": float(angle_tol),
+            "mode": mode,
+            "n_atoms": len(el),
+            "method": "covalent near-attack geometry filter",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rfppos: covalent pose filter. Sulfur-to-electrophile "
-            "distance, Buergi-Dunitz or perpendicular attack angle, and "
-            "the torsion; the warhead is found from the bond orders")
+    return (
+        "rfppos: covalent pose filter. Sulfur-to-electrophile "
+        "distance, Buergi-Dunitz or perpendicular attack angle, and "
+        "the torsion; the warhead is found from the bond orders"
+    )

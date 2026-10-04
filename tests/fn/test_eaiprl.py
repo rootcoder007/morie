@@ -1,7 +1,6 @@
 """Tests for eaiprl.aipw_efficient_influence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eaiprl import aipw_efficient_influence
 
 
@@ -44,15 +43,11 @@ def test_eaiprl_basic():
     el = [float(v) for v in ml_propensity]
     n = len(ys)
     phi = [
-        dd[i] * (ys[i] - m1l[i]) / el[i] + m1l[i]
-        - (1.0 - dd[i]) * (ys[i] - m0l[i]) / (1.0 - el[i]) - m0l[i]
+        dd[i] * (ys[i] - m1l[i]) / el[i] + m1l[i] - (1.0 - dd[i]) * (ys[i] - m0l[i]) / (1.0 - el[i]) - m0l[i]
         for i in range(n)
     ]
     expected_estimate = sum(phi) / n
-    expected_ipw = sum(
-        dd[i] * ys[i] / el[i] - (1.0 - dd[i]) * ys[i] / (1.0 - el[i])
-        for i in range(n)
-    ) / n
+    expected_ipw = sum(dd[i] * ys[i] / el[i] - (1.0 - dd[i]) * ys[i] / (1.0 - el[i]) for i in range(n)) / n
     expected_plugin = sum(m1l[i] - m0l[i] for i in range(n)) / n
     expected_se = (sum((v - expected_estimate) ** 2 for v in phi) / (n * n)) ** 0.5
 

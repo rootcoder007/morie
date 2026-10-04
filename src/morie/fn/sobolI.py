@@ -97,8 +97,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sample_matrices", "sobol_indices", "ishigami",
-           "ishigami_exact"]
+__all__ = ["sample_matrices", "sobol_indices", "ishigami", "ishigami_exact"]
 
 _PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 _DESIGNS = ("sobol", "halton", "random")
@@ -119,38 +118,38 @@ def sample_matrices(N, d, design="sobol", skip=1, seed=0):
     if n < 2 or dd < 1:
         raise ValueError("sobolI: need N >= 2 and d >= 1")
     if design not in _DESIGNS:
-        raise ValueError("sobolI: design must be one of %s, got %r"
-                         % (", ".join(_DESIGNS), design))
+        raise ValueError("sobolI: design must be one of %s, got %r" % (", ".join(_DESIGNS), design))
     if design == "sobol":
         from .abcgp import sobol_sequence
+
         pts = sobol_sequence(n, 2 * dd, skip=int(skip))
         A = [[float(pts[j][a]) for a in range(dd)] for j in range(n)]
-        B = [[float(pts[j][dd + a]) for a in range(dd)]
-             for j in range(n)]
+        B = [[float(pts[j][dd + a]) for a in range(dd)] for j in range(n)]
     elif design == "halton":
         if 2 * dd > len(_PRIMES):
-            raise ValueError("sobolI: the Halton design here has "
-                             "only %d bases, so d <= %d"
-                             % (len(_PRIMES), len(_PRIMES) // 2))
-        A = [[k.vdc(j + int(skip), _PRIMES[a]) for a in range(dd)]
-             for j in range(n)]
-        B = [[k.vdc(j + int(skip), _PRIMES[dd + a])
-              for a in range(dd)] for j in range(n)]
+            raise ValueError(
+                "sobolI: the Halton design here has only %d bases, so d <= %d" % (len(_PRIMES), len(_PRIMES) // 2)
+            )
+        A = [[k.vdc(j + int(skip), _PRIMES[a]) for a in range(dd)] for j in range(n)]
+        B = [[k.vdc(j + int(skip), _PRIMES[dd + a]) for a in range(dd)] for j in range(n)]
     else:
         rng = np.random.default_rng(seed)
-        A = [[float(rng.uniform()) for _ in range(dd)]
-             for _ in range(n)]
-        B = [[float(rng.uniform()) for _ in range(dd)]
-             for _ in range(n)]
-    return {"A": A, "B": B, "design": design, "N": n, "d": dd,
-            "model_runs": n * (dd + 2),
-            "note": "a 2d-dimensional low-discrepancy sequence split "
-                    "by COLUMN; the halton design is what this module "
-                    "used to call 'Sobol'"}
+        A = [[float(rng.uniform()) for _ in range(dd)] for _ in range(n)]
+        B = [[float(rng.uniform()) for _ in range(dd)] for _ in range(n)]
+    return {
+        "A": A,
+        "B": B,
+        "design": design,
+        "N": n,
+        "d": dd,
+        "model_runs": n * (dd + 2),
+        "note": "a 2d-dimensional low-discrepancy sequence split "
+        "by COLUMN; the halton design is what this module "
+        "used to call 'Sobol'",
+    }
 
 
-def sobol_indices(model, input_dist=None, N=64, d=None,
-                  design="sobol", skip=1, seed=0):
+def sobol_indices(model, input_dist=None, N=64, d=None, design="sobol", skip=1, seed=0):
     r"""First-order and total indices by the Saltelli/Jansen
     estimators.
 
@@ -158,8 +157,7 @@ def sobol_indices(model, input_dist=None, N=64, d=None,
     scalar; ``input_dist`` is an optional list of per-dimension
     inverse CDFs applied first.
     """
-    dd = int(d) if d is not None else (len(input_dist)
-                                       if input_dist else 2)
+    dd = int(d) if d is not None else (len(input_dist) if input_dist else 2)
     n = int(N)
     S_ = sample_matrices(n, dd, design=design, skip=skip, seed=seed)
     A, B = S_["A"], S_["B"]
@@ -173,29 +171,34 @@ def sobol_indices(model, input_dist=None, N=64, d=None,
     fB = [float(model(tf(B[j]))) for j in range(n)]
     V = k.variance(fA + fB, 1)
     if V <= 0.0:
-        raise ValueError("sobolI: the model output has zero variance, "
-                         "so no index is defined")
+        raise ValueError("sobolI: the model output has zero variance, so no index is defined")
     S, ST = [], []
     for i in range(dd):
-        AB = [[B[j][a] if a == i else A[j][a] for a in range(dd)]
-              for j in range(n)]
+        AB = [[B[j][a] if a == i else A[j][a] for a in range(dd)] for j in range(n)]
         fAB = [float(model(tf(AB[j]))) for j in range(n)]
         vi = sum(fB[j] * (fAB[j] - fA[j]) for j in range(n)) / n
         vti = sum((fA[j] - fAB[j]) ** 2 for j in range(n)) / (2.0 * n)
         S.append(vi / V)
         ST.append(vti / V)
-    return RichResult(payload={
-        "estimate": S[0], "S": S, "ST": ST, "V": V, "n": n, "d": dd,
-        "design": S_["design"], "model_runs": S_["model_runs"],
-        "sum_S": sum(S),
-        "interaction": [ST[i] - S[i] for i in range(dd)],
-        "additive": abs(sum(S) - 1.0) < 0.05,
-        "method": "Saltelli et al. (2010) Table 2 design with the "
-                  "Jansen (1999) total-index estimator, on a Sobol "
-                  "(1967) sequence",
-        "note": "ST - S is the interaction share; sum(S) = 1 only "
-                "when the model is additive",
-    })
+    return RichResult(
+        payload={
+            "estimate": S[0],
+            "S": S,
+            "ST": ST,
+            "V": V,
+            "n": n,
+            "d": dd,
+            "design": S_["design"],
+            "model_runs": S_["model_runs"],
+            "sum_S": sum(S),
+            "interaction": [ST[i] - S[i] for i in range(dd)],
+            "additive": abs(sum(S) - 1.0) < 0.05,
+            "method": "Saltelli et al. (2010) Table 2 design with the "
+            "Jansen (1999) total-index estimator, on a Sobol "
+            "(1967) sequence",
+            "note": "ST - S is the interaction share; sum(S) = 1 only when the model is additive",
+        }
+    )
 
 
 def ishigami(x, a=7.0, b=0.1):
@@ -207,10 +210,8 @@ def ishigami(x, a=7.0, b=0.1):
     """
     v = [float(q) for q in k.vec(x)]
     if len(v) != 3:
-        raise ValueError("sobolI: the Ishigami function takes 3 "
-                         "inputs, got %d" % len(v))
-    return (math.sin(v[0]) + float(a) * math.sin(v[1]) ** 2
-            + float(b) * v[2] ** 4 * math.sin(v[0]))
+        raise ValueError("sobolI: the Ishigami function takes 3 inputs, got %d" % len(v))
+    return math.sin(v[0]) + float(a) * math.sin(v[1]) ** 2 + float(b) * v[2] ** 4 * math.sin(v[0])
 
 
 def ishigami_exact(a=7.0, b=0.1):
@@ -223,31 +224,33 @@ def ishigami_exact(a=7.0, b=0.1):
     """
     A, B = float(a), float(b)
     pi = math.pi
-    V = (A * A / 8.0 + B * pi ** 4 / 5.0
-         + B * B * pi ** 8 / 18.0 + 0.5)
-    V1 = 0.5 * (1.0 + B * pi ** 4 / 5.0) ** 2
+    V = A * A / 8.0 + B * pi**4 / 5.0 + B * B * pi**8 / 18.0 + 0.5
+    V1 = 0.5 * (1.0 + B * pi**4 / 5.0) ** 2
     V2 = A * A / 8.0
     V3 = 0.0
-    VT3 = 8.0 * B * B * pi ** 8 / 225.0
-    return {"V": V, "S": [V1 / V, V2 / V, V3 / V],
-            "ST": [(V1 + VT3) / V, V2 / V, VT3 / V],
-            "note": "x3 has first-order index EXACTLY zero and a "
-                    "large total index -- the case that separates the "
-                    "two"}
+    VT3 = 8.0 * B * B * pi**8 / 225.0
+    return {
+        "V": V,
+        "S": [V1 / V, V2 / V, V3 / V],
+        "ST": [(V1 + VT3) / V, V2 / V, VT3 / V],
+        "note": "x3 has first-order index EXACTLY zero and a large total index -- the case that separates the two",
+    }
 
 
 def cheatsheet():
-    return ("sobolI: S_i is what fixing x_i alone would remove; S_Ti "
-            "includes every interaction x_i is in. S_i = S_Ti iff x_i "
-            "does not interact, and sum(S_i) = 1 iff nothing does -- so "
-            "the GAP is the interaction structure. Estimators on A, B "
-            "and A_B^(i) (A with column i from B): V_i = mean f(B)"
-            "(f(A_B)-f(A)), V_Ti = mean (f(A)-f(A_B))^2 / 2, costing "
-            "N(d+2) runs. The design must give INDEPENDENT A and B: "
-            "take a 2d-dimensional Sobol sequence and split by COLUMN. "
-            "Van der Corput in distinct primes is HALTON, not Sobol -- "
-            "this module used to confuse the two. Anchor on Ishigami, "
-            "where x3 has S3 = 0 exactly but a large total index.")
+    return (
+        "sobolI: S_i is what fixing x_i alone would remove; S_Ti "
+        "includes every interaction x_i is in. S_i = S_Ti iff x_i "
+        "does not interact, and sum(S_i) = 1 iff nothing does -- so "
+        "the GAP is the interaction structure. Estimators on A, B "
+        "and A_B^(i) (A with column i from B): V_i = mean f(B)"
+        "(f(A_B)-f(A)), V_Ti = mean (f(A)-f(A_B))^2 / 2, costing "
+        "N(d+2) runs. The design must give INDEPENDENT A and B: "
+        "take a 2d-dimensional Sobol sequence and split by COLUMN. "
+        "Van der Corput in distinct primes is HALTON, not Sobol -- "
+        "this module used to confuse the two. Anchor on Ishigami, "
+        "where x3 has S3 = 0 exactly but a large total index."
+    )
 
 
 # compact alias per ledger/NAMING.md

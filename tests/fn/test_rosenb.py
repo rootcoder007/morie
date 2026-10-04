@@ -1,7 +1,6 @@
 """Tests for rosenb.rosenbaum_bounds."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rosenb import rosenbaum_bounds
 
 

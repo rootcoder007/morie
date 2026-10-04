@@ -1,7 +1,5 @@
 """Tests for likelihood_ratio_chi2.likelihood_ratio_chi2."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.likelihood_ratio_chi2 import likelihood_ratio_chi2
 
 

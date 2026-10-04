@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["alammar_image_captioning_pipeline"]
 
 
-def alammar_image_captioning_pipeline(image, visual_encoder, projector,
-                                      llm, prompt="Describe the image."):
+def alammar_image_captioning_pipeline(image, visual_encoder, projector, llm, prompt="Describe the image."):
     """z = W_proj VisEnc(img); caption = LLM([z; prompt]).
 
     Encoder and LLM are the caller's callables; the projection -- the
@@ -29,16 +28,20 @@ def alammar_image_captioning_pipeline(image, visual_encoder, projector,
     else:
         W = np.atleast_2d(np.asarray(projector, dtype=float))
         if W.shape[1] != len(feats):
-            raise ValueError(
-                f"projector has {W.shape[1]} columns but the encoder "
-                f"produced {len(feats)} features.")
+            raise ValueError(f"projector has {W.shape[1]} columns but the encoder produced {len(feats)} features.")
         z = W @ feats
     caption = str(llm([float(v) for v in z], str(prompt)))
-    return RichResult(payload={
-        "caption": caption, "projected": [float(v) for v in z],
-        "feature_dim": len(feats), "projected_dim": len(z),
-        "estimate": float(len(caption)), "n": len(z),
-        "method": "Visual projection into the LM (Alammar Ch 9)"})
+    return RichResult(
+        payload={
+            "caption": caption,
+            "projected": [float(v) for v in z],
+            "feature_dim": len(feats),
+            "projected_dim": len(z),
+            "estimate": float(len(caption)),
+            "n": len(z),
+            "method": "Visual projection into the LM (Alammar Ch 9)",
+        }
+    )
 
 
 def cheatsheet():

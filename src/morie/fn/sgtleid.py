@@ -96,11 +96,17 @@ def sgt_leiden_step(A, labels, gamma=1.0):
     q = 0.0
     for c in range(k):
         mem = [i for i in range(n) if newlab[i] == c]
-        e = sum(W[a][b] for ai, a in enumerate(mem) for b in mem[ai + 1:])
+        e = sum(W[a][b] for ai, a in enumerate(mem) for b in mem[ai + 1 :])
         q += e - gamma * len(mem) * (len(mem) - 1) / 2.0
-    return RichResult(payload={
-        "labels_new": newlab, "Q_new": q, "n_communities": k, "n": n,
-        "method": "Leiden refinement phase, CPM quality"})
+    return RichResult(
+        payload={
+            "labels_new": newlab,
+            "Q_new": q,
+            "n_communities": k,
+            "n": n,
+            "method": "Leiden refinement phase, CPM quality",
+        }
+    )
 
 
 sgtleidenstep = sgt_leiden_step

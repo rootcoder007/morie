@@ -1,8 +1,8 @@
 """Tests for morie.fn.odm_s — OTIS demo standardize."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.odm_s import otis_demo_standardize
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.cfaln -- CFA standardized loadings."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._mapq_const import SUBSCALES
 from morie.fn.cfaln import cfa_loadings
 

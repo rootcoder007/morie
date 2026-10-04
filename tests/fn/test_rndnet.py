@@ -1,7 +1,6 @@
 """Tests for rndnet.random_network_distillation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rndnet import random_network_distillation
 
 

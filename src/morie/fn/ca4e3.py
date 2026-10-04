@@ -28,17 +28,16 @@ def ca_chapter_4_equation_3(xb):
     """
     value = _ca_crim.inv_logit(xb)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.3)"
     return RichResult(
-        title='General logistic probability P(Y=1) = 1/(1+e^-Xb)',
+        title="General logistic probability P(Y=1) = 1/(1+e^-Xb)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e3: P(Y=1) = 1 / (1 + e^-Xb) [Weisburd et al. 2022, eq. 4.3]'
+    return "ca4e3: P(Y=1) = 1 / (1 + e^-Xb) [Weisburd et al. 2022, eq. 4.3]"

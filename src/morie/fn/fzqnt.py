@@ -37,6 +37,7 @@ def _silverman_h(x):
 def _kdfe_h(x):
     """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3)."""
     from ._fauzi import kdfe_bandwidth
+
     return kdfe_bandwidth(x)
 
 

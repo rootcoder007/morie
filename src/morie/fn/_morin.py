@@ -41,6 +41,7 @@ def _check_nonneg_int(n, name):
 
 # ---------------------------------------------------------------- chapter 1
 
+
 def factorial(n):
     """N! -- eq (1.1)."""
     return math.factorial(_check_nonneg_int(n, "n"))
@@ -82,7 +83,7 @@ def binomial_expansion(a, b, n):
     """
     a, b = float(a), float(b)
     n = _check_nonneg_int(n, "n")
-    terms = [math.comb(n, k) * a ** (n - k) * b ** k for k in range(n + 1)]
+    terms = [math.comb(n, k) * a ** (n - k) * b**k for k in range(n + 1)]
     return terms, float(sum(terms))
 
 
@@ -136,6 +137,7 @@ def sd_of_iid_sum(sigma, n):
 
 
 # ---------------------------------------------------------------- chapter 2
+
 
 def prob_and_independent(ps):
     """P(A1 and ... and Ak) = prod P(Ai) for independent events -- eqs (2.2), (2.70)."""
@@ -240,8 +242,15 @@ def conditional_subset(p_b, p_a):
 
 def inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc):
     """P(A or B or C) -- eq (2.92)."""
-    for v, nm in [(p_a, "p_a"), (p_b, "p_b"), (p_c, "p_c"), (p_ab, "p_ab"),
-                  (p_ac, "p_ac"), (p_bc, "p_bc"), (p_abc, "p_abc")]:
+    for v, nm in [
+        (p_a, "p_a"),
+        (p_b, "p_b"),
+        (p_c, "p_c"),
+        (p_ab, "p_ab"),
+        (p_ac, "p_ac"),
+        (p_bc, "p_bc"),
+        (p_abc, "p_abc"),
+    ]:
         _check_prob(v, nm)
     return p_a + p_b + p_c - p_ab - p_ac - p_bc + p_abc
 
@@ -256,7 +265,7 @@ def at_least_one_of_iid(p, k):
     k = _check_nonneg_int(k, "k")
     total = 0.0
     for j in range(1, k + 1):
-        total += (-1) ** (j + 1) * math.comb(k, j) * p ** j
+        total += (-1) ** (j + 1) * math.comb(k, j) * p**j
     closed = 1.0 - (1.0 - p) ** k
     if abs(total - closed) > 1e-12:
         raise AssertionError("inclusion-exclusion and complement forms disagree")
@@ -266,7 +275,7 @@ def at_least_one_of_iid(p, k):
 def exact_half_heads(n):
     """P(exactly n Heads in 2n fair flips) = C(2n, n) / 4^n -- eq (2.65)."""
     n = _check_nonneg_int(n, "n")
-    return math.comb(2 * n, n) / 4.0 ** n
+    return math.comb(2 * n, n) / 4.0**n
 
 
 def stirling_factorial(n):
@@ -274,7 +283,7 @@ def stirling_factorial(n):
     n = float(n)
     if n <= 0:
         raise ValueError("n must be positive")
-    return n ** n * math.exp(-n) * math.sqrt(2.0 * math.pi * n)
+    return n**n * math.exp(-n) * math.sqrt(2.0 * math.pi * n)
 
 
 def stirling_half_heads(n):
@@ -289,8 +298,7 @@ def suit_full_house_probability(n_suits=4, n_ranks=13, k_major=3, k_minor=2):
     """P(5-card hand has k_major cards of one suit, k_minor of another) -- eq (2.41)."""
     n_cards = n_suits * n_ranks
     hand = k_major + k_minor
-    favorable = (n_suits * math.comb(n_ranks, k_major)
-                 * (n_suits - 1) * math.comb(n_ranks, k_minor))
+    favorable = n_suits * math.comb(n_ranks, k_major) * (n_suits - 1) * math.comb(n_ranks, k_minor)
     total = math.comb(n_cards, hand)
     return favorable, total, favorable / total
 
@@ -311,6 +319,7 @@ def at_most_two_suits_probability(n_suits=4, n_ranks=13, hand=5):
 
 
 # ---------------------------------------------------------------- chapter 3
+
 
 def _check_pmf(values, probs):
     values = np.atleast_1d(np.asarray(values, dtype=float))
@@ -333,7 +342,7 @@ def pmf_variance(values, probs):
     values, probs = _check_pmf(values, probs)
     mu = float(np.sum(values * probs))
     definition = float(np.sum(probs * (values - mu) ** 2))
-    computational = float(np.sum(probs * values ** 2)) - mu ** 2
+    computational = float(np.sum(probs * values**2)) - mu**2
     if abs(definition - computational) > 1e-9 * max(1.0, abs(definition)):
         raise AssertionError("definition and computational forms disagree")
     return definition, mu
@@ -421,7 +430,7 @@ def sd_sum_independent(sigmas):
     s = np.atleast_1d(np.asarray(sigmas, dtype=float))
     if np.any(s < 0):
         raise ValueError("sigmas must be >= 0")
-    return float(math.sqrt(np.sum(s ** 2)))
+    return float(math.sqrt(np.sum(s**2)))
 
 
 def sd_bernoulli(p):
@@ -472,7 +481,7 @@ def sd_of_mean_hetero(sigmas):
     s = np.atleast_1d(np.asarray(sigmas, dtype=float))
     if np.any(s < 0) or s.size == 0:
         raise ValueError("sigmas must be a non-empty vector of >= 0 values")
-    return float(math.sqrt(np.sum(s ** 2)) / s.size)
+    return float(math.sqrt(np.sum(s**2)) / s.size)
 
 
 def population_variance(x):
@@ -482,7 +491,7 @@ def population_variance(x):
         raise ValueError("x must be non-empty")
     xbar = float(np.mean(x))
     definition = float(np.mean((x - xbar) ** 2))
-    computational = float(np.mean(x ** 2)) - xbar ** 2
+    computational = float(np.mean(x**2)) - xbar**2
     if abs(definition - computational) > 1e-9 * max(1.0, abs(definition)):
         raise AssertionError("definition and computational forms disagree")
     return definition
@@ -502,7 +511,7 @@ def e_x_squared(sigma, mu):
     sigma = float(sigma)
     if sigma < 0:
         raise ValueError("sigma must be >= 0")
-    return sigma ** 2 + float(mu) ** 2
+    return sigma**2 + float(mu) ** 2
 
 
 def var_of_sample_mean(sigma, N):
@@ -513,10 +522,11 @@ def var_of_sample_mean(sigma, N):
     N = _check_nonneg_int(N, "N")
     if N == 0:
         raise ValueError("N must be >= 1")
-    return sigma ** 2 / N
+    return sigma**2 / N
 
 
 # ---------------------------------------------------------------- chapter 4
+
 
 def density_interval_probability(grid, density, a, b):
     """P(a <= X <= b) = integral of rho over [a, b], trapezoid on a grid -- eqs (4.2), (4.4)."""
@@ -560,9 +570,10 @@ def binomial_pmf(k, n, p):
     if p == 1.0:
         return float(k == n)
     if n <= 1000:
-        return math.comb(n, k) * p ** k * (1.0 - p) ** (n - k)
-    log_pmf = (math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
-               + k * math.log(p) + (n - k) * math.log1p(-p))
+        return math.comb(n, k) * p**k * (1.0 - p) ** (n - k)
+    log_pmf = (
+        math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1) + k * math.log(p) + (n - k) * math.log1p(-p)
+    )
     return math.exp(log_pmf)
 
 
@@ -593,7 +604,7 @@ def binomial_second_moment(n, p):
     """E(k^2) = p^2 n(n-1) + pn -- eq (4.66)."""
     n = _check_nonneg_int(n, "n")
     p = _check_prob(p, "p")
-    return p ** 2 * n * (n - 1) + p * n
+    return p**2 * n * (n - 1) + p * n
 
 
 def poisson_pmf(k, a):
@@ -661,10 +672,10 @@ def exponential_moments(tau):
     t = np.linspace(0.0, 60.0 * tau, 200001)
     rho = np.exp(-t / tau) / tau
     mean_num = float(np.trapezoid(t * rho, t))
-    second_num = float(np.trapezoid(t ** 2 * rho, t))
-    if abs(mean_num - tau) > 1e-4 * tau or abs(second_num - 2 * tau ** 2) > 1e-3 * tau ** 2:
+    second_num = float(np.trapezoid(t**2 * rho, t))
+    if abs(mean_num - tau) > 1e-4 * tau or abs(second_num - 2 * tau**2) > 1e-3 * tau**2:
         raise AssertionError("numeric integrals disagree with analytic moments")
-    return tau, 2.0 * tau ** 2, tau ** 2
+    return tau, 2.0 * tau**2, tau**2
 
 
 def binomial_poisson_limit(k, n, lam_eps_total):
@@ -687,7 +698,7 @@ def poisson_zero_series(a, terms=60):
     partial = 0.0
     partials = []
     for j in range(terms):
-        partial += (-1) ** j * a ** j / math.factorial(j)
+        partial += (-1) ** j * a**j / math.factorial(j)
         partials.append(partial)
     closed = math.exp(-a)
     return partials, closed
@@ -712,7 +723,7 @@ def poisson_mean_var(a, kmax=None):
     ks = np.arange(0, kmax)
     pmf = np.array([poisson_pmf(int(k), a) for k in ks])
     mean = float(np.sum(ks * pmf))
-    var = float(np.sum(ks ** 2 * pmf)) - mean ** 2
+    var = float(np.sum(ks**2 * pmf)) - mean**2
     return mean, var
 
 
@@ -752,6 +763,7 @@ def poisson_binomial_peak_ratio(n, p):
 
 
 # ---------------------------------------------------------------- chapter 5
+
 
 def binomial_centered_pmf(x, n):
     """PB(x) = C(2n, n+x)/2^(2n): probability of n+x Heads in 2n flips -- eqs (5.3), (5.5)."""
@@ -799,8 +811,7 @@ def poisson_stirling(k, a):
     a = float(a)
     if a <= 0:
         raise ValueError("a must be > 0")
-    log_val = (k * math.log(a) - a
-               - (k * math.log(k) - k + 0.5 * math.log(2.0 * math.pi * k)))
+    log_val = k * math.log(a) - a - (k * math.log(k) - k + 0.5 * math.log(2.0 * math.pi * k))
     return math.exp(log_val)
 
 
@@ -810,7 +821,7 @@ def poisson_gaussian(k, a):
     if a <= 0:
         raise ValueError("a must be > 0")
     k = float(k)
-    return math.exp(-(k - a) ** 2 / (2.0 * a)) / math.sqrt(2.0 * math.pi * a)
+    return math.exp(-((k - a) ** 2) / (2.0 * a)) / math.sqrt(2.0 * math.pi * a)
 
 
 def normal_pdf(x, mu, sigma):
@@ -819,7 +830,7 @@ def normal_pdf(x, mu, sigma):
     if sigma <= 0:
         raise ValueError("sigma must be > 0")
     x, mu = float(x), float(mu)
-    return math.exp(-(x - mu) ** 2 / (2.0 * sigma ** 2)) / math.sqrt(2.0 * math.pi * sigma ** 2)
+    return math.exp(-((x - mu) ** 2) / (2.0 * sigma**2)) / math.sqrt(2.0 * math.pi * sigma**2)
 
 
 def pmf_sd(values, probs):
@@ -829,6 +840,7 @@ def pmf_sd(values, probs):
 
 
 # ---------------------------------------------------------------- chapter 6
+
 
 def linear_model_stats(m, mu_x, sigma_x, mu_z, sigma_z):
     """Y = mX + Z with independent noise Z -- eqs (6.3)-(6.6), (6.17), (6.52), (6.76).
@@ -841,7 +853,7 @@ def linear_model_stats(m, mu_x, sigma_x, mu_z, sigma_z):
     if sigma_x < 0 or sigma_z < 0:
         raise ValueError("sigmas must be >= 0")
     mu_y = m * float(mu_x) + float(mu_z)
-    sigma_y = math.sqrt(m ** 2 * sigma_x ** 2 + sigma_z ** 2)
+    sigma_y = math.sqrt(m**2 * sigma_x**2 + sigma_z**2)
     if sigma_y == 0:
         raise ValueError("degenerate model: sigma_y = 0")
     r = m * sigma_x / sigma_y
@@ -951,7 +963,7 @@ def least_squares_fit(x, y):
     if abs(B_first - B_second) > 1e-9 * max(1.0, abs(B_first)):
         raise AssertionError("the two intercept forms disagree")
     resid = y - (A * x + B_second)
-    S = float(np.sum(resid ** 2))
+    S = float(np.sum(resid**2))
     if abs(float(np.sum(resid))) > 1e-9 * max(1.0, float(np.sum(np.abs(resid)))):
         raise AssertionError("residuals do not sum to zero")
     return A, B_second, S
@@ -996,7 +1008,7 @@ def gaussian_sum_density(z, sigma_x, sigma_y):
     sigma_x, sigma_y = float(sigma_x), float(sigma_y)
     if sigma_x <= 0 or sigma_y <= 0:
         raise ValueError("sigmas must be > 0")
-    s = math.sqrt(sigma_x ** 2 + sigma_y ** 2)
+    s = math.sqrt(sigma_x**2 + sigma_y**2)
     return normal_pdf(z, 0.0, s)
 
 
@@ -1014,6 +1026,7 @@ def excess_score_factor(r):
 
 # ---------------------------------------------------------------- chapter 7
 
+
 def exp_taylor(x, terms=30):
     """e^x = sum x^k / k! -- Appendix eq (7.7); e^x ~ 1 + x for small x -- eq (7.9)."""
     x = float(x)
@@ -1021,7 +1034,7 @@ def exp_taylor(x, terms=30):
     partial = 0.0
     partials = []
     for k in range(terms):
-        partial += x ** k / math.factorial(k)
+        partial += x**k / math.factorial(k)
         partials.append(partial)
     return partials, math.exp(x)
 
@@ -1042,7 +1055,7 @@ def one_plus_a_to_n(a, n, order=1):
         validity = abs(n * a * a)
     elif order == 2:
         approx = math.exp(n * a - n * a * a / 2.0)
-        validity = abs(n * a ** 3)
+        validity = abs(n * a**3)
     else:
         raise ValueError("order must be 1 or 2")
     return exact, approx, validity
@@ -1054,6 +1067,6 @@ def power_derivative_quotient(x, n, delta):
     n = _check_nonneg_int(n, "n")
     if delta == 0:
         raise ValueError("delta must be nonzero")
-    quotient = ((x + delta) ** n - x ** n) / delta
+    quotient = ((x + delta) ** n - x**n) / delta
     derivative = n * x ** (n - 1) if n >= 1 else 0.0
     return quotient, derivative

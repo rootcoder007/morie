@@ -1,7 +1,6 @@
 """Tests for sgolay — Savitzky-Golay smoothing."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.sgolay import savgol_smooth
 

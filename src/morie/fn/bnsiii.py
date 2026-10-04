@@ -66,14 +66,23 @@ def bound_iii(y, X, moments):
             qmax = qm
         if q <= 0.0:
             nin += 1
-    return RichResult(payload={
-        "lower": mL, "upper": mU, "width": mU - mL,
-        "n_in_set": nin, "q_min": qmin, "q_max_stat": qmax, "n": n,
-        "method": "Identification by intersection of inequalities"})
+    return RichResult(
+        payload={
+            "lower": mL,
+            "upper": mU,
+            "width": mU - mL,
+            "n_in_set": nin,
+            "q_min": qmin,
+            "q_max_stat": qmax,
+            "n": n,
+            "method": "Identification by intersection of inequalities",
+        }
+    )
 
 
 def cheatsheet():
     return "bnsiii: identified set as the zero-level set of the CHT criterion"
+
 
 # public names resolved by fn/_lazy_map.json
 boundiii = bound_iii

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.linear_predictor_variance import (
     linear_predictor_variance,
 )

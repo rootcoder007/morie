@@ -39,8 +39,7 @@ def kamath_alibi_bias(Q, K, V, slopes, causal=False):
     if m.size == 0:
         raise ValueError("no ALiBi slopes were given.")
     if np.any(m < 0):
-        raise ValueError("ALiBi slopes are non-negative; a negative m "
-                         "rewards distance instead of penalizing it.")
+        raise ValueError("ALiBi slopes are non-negative; a negative m rewards distance instead of penalizing it.")
     i = np.arange(Qm.shape[0])[:, None]
     j = np.arange(Km.shape[0])[None, :]
     D = -(i - j).astype(float)
@@ -52,13 +51,17 @@ def kamath_alibi_bias(Q, K, V, slopes, causal=False):
         r = scaled_dot_product_attention(Qm, Km, V, mask=bias)
         outs.append(r["output"])
         attns.append(r["attention"])
-    return RichResult(payload={
-        "estimate": float(outs[0][0][0]), "output": outs,
-        "attention": attns,
-        "bias": [[float(v) for v in row] for row in D],
-        "slopes": [float(v) for v in m], "n": int(Qm.shape[0]),
-        "method": "ALiBi biased attention (Kamath Ch 2; softmax core "
-                  "in attsdp)"})
+    return RichResult(
+        payload={
+            "estimate": float(outs[0][0][0]),
+            "output": outs,
+            "attention": attns,
+            "bias": [[float(v) for v in row] for row in D],
+            "slopes": [float(v) for v in m],
+            "n": int(Qm.shape[0]),
+            "method": "ALiBi biased attention (Kamath Ch 2; softmax core in attsdp)",
+        }
+    )
 
 
 def cheatsheet():

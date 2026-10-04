@@ -21,9 +21,14 @@ def ghosal_dir_simplex(x, alpha=None, seed=42):
     rng = np.random.default_rng(seed)
     g = [float(rng.gamma(ai, 1.0)) for ai in a]
     p = _bnp.normalize_weights(g)
-    res = RichResult(payload={"estimate": p[0], "p": p,
-                              "alpha": a,
-                              "method": "Dirichlet by gamma normalization (GvdV 2017 sec. 3.3.1)"})
+    res = RichResult(
+        payload={
+            "estimate": p[0],
+            "p": p,
+            "alpha": a,
+            "method": "Dirichlet by gamma normalization (GvdV 2017 sec. 3.3.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_3")
 
 

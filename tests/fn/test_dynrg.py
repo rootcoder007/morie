@@ -1,7 +1,6 @@
 """Test dynamic_range (dynrg)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dynrg import dynamic_range, dynrg
 

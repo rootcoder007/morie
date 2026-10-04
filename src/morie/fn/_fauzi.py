@@ -17,15 +17,23 @@ the whole line and back (Ch. 4).
 
 from . import _array_core as np
 
-__all__ = ["kernel_K", "kernel_W", "kernel_V", "mu2", "gamma_kernel_density",
-           "boundary_free_transform", "muller_order_m",
-           "rratio", "agamma_kernel"]
+__all__ = [
+    "kernel_K",
+    "kernel_W",
+    "kernel_V",
+    "mu2",
+    "gamma_kernel_density",
+    "boundary_free_transform",
+    "muller_order_m",
+    "rratio",
+    "agamma_kernel",
+]
 
 
 def kernel_K(u):
     """Gaussian kernel."""
     u = np.asarray(u, dtype=float)
-    return np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+    return np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
 
 
 def kernel_W(u):
@@ -39,6 +47,7 @@ def kernel_W(u):
     :math:`f''`.
     """
     from . import _stats_core as stats
+
     return stats.norm.cdf(np.asarray(u, dtype=float))
 
 
@@ -104,14 +113,17 @@ def boundary_free_transform(kind="log"):
     edge.
     """
     if kind == "log":
-        return {"g": np.exp, "g_inv": np.log,
-                "dg": np.exp, "d2g": np.exp,
-                "support": (0.0, np.inf), "name": "exp/log"}
+        return {"g": np.exp, "g_inv": np.log, "dg": np.exp, "d2g": np.exp, "support": (0.0, np.inf), "name": "exp/log"}
     if kind == "identity":
         one = np.ones_like
-        return {"g": lambda z: z, "g_inv": lambda t: t,
-                "dg": one, "d2g": lambda z: np.zeros_like(z),
-                "support": (-np.inf, np.inf), "name": "identity"}
+        return {
+            "g": lambda z: z,
+            "g_inv": lambda t: t,
+            "dg": one,
+            "d2g": lambda z: np.zeros_like(z),
+            "support": (-np.inf, np.inf),
+            "name": "identity",
+        }
     raise ValueError("kind must be 'log' or 'identity'.")
 
 
@@ -133,9 +145,9 @@ def muller_order_m(u, m=4):
     if m == 2:
         return kernel_K(u)
     if m == 4:
-        return (3.0 - u ** 2) / 2.0 * kernel_K(u)
+        return (3.0 - u**2) / 2.0 * kernel_K(u)
     if m == 6:
-        return (15.0 - 10.0 * u ** 2 + u ** 4) / 8.0 * kernel_K(u)
+        return (15.0 - 10.0 * u**2 + u**4) / 8.0 * kernel_K(u)
     raise ValueError("m must be 2, 4 or 6.")
 
 
@@ -233,10 +245,18 @@ def rratio(z):
     overflow for the small bandwidths this suite uses (``z ~ h^{-1/2}``).
     """
     import math as _math
+
     z = np.asarray(z, dtype=float)
     if np.any(z <= 0):
         raise ValueError("R(z) is defined for z > 0.")
-    log_r = 0.5 * np.log(2.0 * np.pi) + (z + 0.5) * np.log(z) - z - np.asarray([_math.lgamma(float(v) + 1.0) for v in np.atleast_1d(z)]).reshape(np.shape(z)) if np.ndim(z) else _math.lgamma(float(z) + 1.0)
+    log_r = (
+        0.5 * np.log(2.0 * np.pi)
+        + (z + 0.5) * np.log(z)
+        - z
+        - np.asarray([_math.lgamma(float(v) + 1.0) for v in np.atleast_1d(z)]).reshape(np.shape(z))
+        if np.ndim(z)
+        else _math.lgamma(float(z) + 1.0)
+    )
     return np.exp(log_r)
 
 
@@ -253,6 +273,7 @@ def agamma_kernel(x, v, h):
     which is then bought back by the geometric extrapolation (1.14).
     """
     from . import _stats_core as stats
+
     xv = np.asarray(x, dtype=float).ravel()
     hh = float(h)
     if hh <= 0:

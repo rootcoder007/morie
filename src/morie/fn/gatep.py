@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["gate_estimation"]
 
 
-def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
-                    labels=None):
+def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None, labels=None):
     r"""Average an estimated CATE within groups, with the caveat attached.
 
     .. math:: GATE_g = E[\tau(X) \mid X \in G_g].
@@ -83,9 +82,7 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
         raise ValueError("need at least 2 units, got %d." % n)
     sev = None if se is None else np.asarray(se, dtype=float).ravel()
     if sev is not None and sev.size != n:
-        raise ValueError(
-            "se has %d entries for %d units." % (sev.size, n)
-        )
+        raise ValueError("se has %d entries for %d units." % (sev.size, n))
 
     selection = False
     if group_var is None:
@@ -93,29 +90,22 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
         selection = True
     elif isinstance(group_var, (int, np.integer)):
         if X is None:
-            raise ValueError(
-                "group_var was given as a column index but X is None."
-            )
+            raise ValueError("group_var was given as a column index but X is None.")
         Xa = np.asarray(X, dtype=float)
         if Xa.ndim == 1:
             Xa = Xa[:, None]
         if not 0 <= int(group_var) < Xa.shape[1]:
             raise ValueError(
-                "group_var index %d is out of range for X with %d columns."
-                % (int(group_var), Xa.shape[1])
+                "group_var index %d is out of range for X with %d columns." % (int(group_var), Xa.shape[1])
             )
         source = Xa[:, int(group_var)]
     else:
         gv = np.asarray(group_var).ravel()
         if gv.size != n:
-            raise ValueError(
-                "group_var has %d entries for %d units." % (gv.size, n)
-            )
+            raise ValueError("group_var has %d entries for %d units." % (gv.size, n))
         source = gv
 
-    discrete = source.dtype.kind not in "fc" or np.unique(source).size <= max(
-        int(n_groups), 2
-    )
+    discrete = source.dtype.kind not in "fc" or np.unique(source).size <= max(int(n_groups), 2)
     if discrete:
         keys = list(dict.fromkeys(np.asarray(source).tolist()))
         idx = [np.asarray(source) == k for k in keys]
@@ -133,23 +123,16 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
                 keys.append("Q%d" % (j + 1))
     if labels is not None:
         if len(labels) != len(keys):
-            raise ValueError(
-                "labels has %d entries for %d groups."
-                % (len(labels), len(keys))
-            )
+            raise ValueError("labels has %d entries for %d groups." % (len(labels), len(keys)))
         keys = list(labels)
     if len(idx) < 2:
-        raise ValueError(
-            "the grouping produced %d non-empty group(s); at least 2 are "
-            "needed." % len(idx)
-        )
+        raise ValueError("the grouping produced %d non-empty group(s); at least 2 are needed." % len(idx))
 
     gate = np.array([float(tau[m].mean()) for m in idx])
     ns = np.array([int(m.sum()) for m in idx])
     ses = None
     if sev is not None:
-        ses = np.array([float(np.sqrt(np.sum(sev[m] ** 2)) / m.sum())
-                        for m in idx])
+        ses = np.array([float(np.sqrt(np.sum(sev[m] ** 2)) / m.sum()) for m in idx])
 
     z = 1.959963984540054
     order = np.argsort(gate)
@@ -168,11 +151,11 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
             "groups": keys,
             "n_by_group": ns,
             "se": ses,
-            "ci": (None if ses is None
-                   else np.column_stack([gate - z * ses, gate + z * ses])),
+            "ci": (None if ses is None else np.column_stack([gate - z * ses, gate + z * ses])),
             "se_note": (
-                None if ses is None else
-                "computed as if group members were independent, which they "
+                None
+                if ses is None
+                else "computed as if group members were independent, which they "
                 "are not when the CATE came from a forest; read it as a "
                 "lower bound"
             ),
@@ -180,8 +163,7 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
             "difference": diff,
             "difference_groups": (keys[lo], keys[hi]),
             "difference_p": diff_p,
-            "monotone": bool(np.all(np.diff(gate) >= 0)
-                             or np.all(np.diff(gate) <= 0)),
+            "monotone": bool(np.all(np.diff(gate) >= 0) or np.all(np.diff(gate) <= 0)),
             "selection_on_estimate": selection,
             "selection_warning": (
                 "the groups were cut from the estimated CATE itself, so the "
@@ -189,7 +171,8 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
                 "estimate; the spread between groups overstates the real "
                 "heterogeneity. Cut the groups on held-out predictions or a "
                 "pre-registered covariate instead"
-                if selection else None
+                if selection
+                else None
             ),
             "n_groups": len(idx),
             "n": int(n),

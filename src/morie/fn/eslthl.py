@@ -111,7 +111,7 @@ def esl_thin_plate_spline(X, y, lambda_=1.0, newdata=None):
     # O(1) linear block outright -- the fit stops converging to the
     # least-squares plane and drifts instead.
     Q, _ = np.linalg.qr(A, mode="complete")
-    Q2 = Q[:, 3:]                                   # basis for null(A'), n x (n-3)
+    Q2 = Q[:, 3:]  # basis for null(A'), n x (n-3)
     Elam = E + lambda_ * np.eye(n)
     gamma = np.linalg.solve(Q2.T @ Elam @ Q2, Q2.T @ y)
     delta = Q2 @ gamma
@@ -132,8 +132,13 @@ def esl_thin_plate_spline(X, y, lambda_=1.0, newdata=None):
         title="Thin-plate spline",
         summary_lines=[("n", n), ("lambda", float(lambda_)), ("edf", edf)],
         payload={
-            "fitted": fitted, "delta": delta, "beta": beta,
-            "residuals": resid, "edf": edf, "rss": rss, "gcv": float(gcv),
+            "fitted": fitted,
+            "delta": delta,
+            "beta": beta,
+            "residuals": resid,
+            "edf": edf,
+            "rss": rss,
+            "gcv": float(gcv),
             "lambda_": float(lambda_),
             "method": "esl_thin_plate_spline",
         },

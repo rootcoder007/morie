@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """GoogLeNet/Inception with parallel filter modules."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_googlenet", "inception_module"]
@@ -164,7 +163,15 @@ def geron_googlenet(n_classes=1000, input_size=224, in_channels=3, dropout=0.4):
         mod["in_channels"] = int(ch)
         mod["out"] = int(size)
         modules.append(mod)
-        layers.append({"kind": "inception", "name": name, "out": int(size), "channels": mod["out_channels"], "params": mod["params"]})
+        layers.append(
+            {
+                "kind": "inception",
+                "name": name,
+                "out": int(size),
+                "channels": mod["out_channels"],
+                "params": mod["params"],
+            }
+        )
         ch = mod["out_channels"]
         if name in _POOL_AFTER:
             pool(f"pool_{name}")
@@ -179,11 +186,13 @@ def geron_googlenet(n_classes=1000, input_size=224, in_channels=3, dropout=0.4):
     return RichResult(
         title="GoogLeNet / Inception",
         summary_lines=[("Total parameters", total), ("Inception modules", len(modules)), ("Classes", C)],
-        tables=[{
-            "title": "Inception modules",
-            "headers": ["name", "in", "out", "params"],
-            "rows": [[m["name"], m["in_channels"], m["out_channels"], m["params"]] for m in modules],
-        }],
+        tables=[
+            {
+                "title": "Inception modules",
+                "headers": ["name", "in", "out", "params"],
+                "rows": [[m["name"], m["in_channels"], m["out_channels"], m["params"]] for m in modules],
+            }
+        ],
         interpretation="Branch outputs are concatenated, so widths add; the 1x1 reductions are what keep that affordable.",
         payload={
             "layers": layers,

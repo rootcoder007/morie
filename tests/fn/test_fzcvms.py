@@ -1,7 +1,6 @@
 """Tests for fzcvms.fauzi_cvm_statistic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzcvms import fauzi_cvm_statistic
 
 

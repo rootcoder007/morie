@@ -62,7 +62,7 @@ def wasserman_undirected_graph(graph, psi):
         raise ValueError(f"{len(cliques)} cliques but {len(psi)} potentials.")
     for c in cliques:
         if any(not 0 <= v < n for v in c):
-            raise ValueError(f"clique {c} references a node outside 0..{n-1}.")
+            raise ValueError(f"clique {c} references a node outside 0..{n - 1}.")
     weights = []
     for config in itertools.product((0, 1), repeat=n):
         w = 1.0
@@ -73,11 +73,15 @@ def wasserman_undirected_graph(graph, psi):
             w *= val
         weights.append(w)
     Z = float(np.sum(weights))
-    return RichResult(payload={
-        "estimate": Z,
-        "probabilities": [float(w / Z) for w in weights],
-        "n_nodes": n, "n_cliques": len(cliques),
-        "method": "exact undirected model; brute-force Z over 2^n configs"})
+    return RichResult(
+        payload={
+            "estimate": Z,
+            "probabilities": [float(w / Z) for w in weights],
+            "n_nodes": n,
+            "n_cliques": len(cliques),
+            "method": "exact undirected model; brute-force Z over 2^n configs",
+        }
+    )
 
 
 def cheatsheet():

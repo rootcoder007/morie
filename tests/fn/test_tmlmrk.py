@@ -13,15 +13,15 @@ def _traj(n=400):
     u = 12345
     s, S, A, R = 0, [], [], []
     for _ in range(n):
-        u = (1103515245 * u + 12345) % 2 ** 31
-        a = 1 if u / 2 ** 31 < 0.4 + 0.2 * s else 0
-        u = (1103515245 * u + 12345) % 2 ** 31
-        r = 0.5 * s + a - 0.3 * s * a + (u / 2 ** 31 - 0.5)
+        u = (1103515245 * u + 12345) % 2**31
+        a = 1 if u / 2**31 < 0.4 + 0.2 * s else 0
+        u = (1103515245 * u + 12345) % 2**31
+        r = 0.5 * s + a - 0.3 * s * a + (u / 2**31 - 0.5)
         S.append(s)
         A.append(a)
         R.append(r)
-        u = (1103515245 * u + 12345) % 2 ** 31
-        s = (s + 1 + a) % 3 if u / 2 ** 31 < 0.7 else s
+        u = (1103515245 * u + 12345) % 2**31
+        s = (s + 1 + a) % 3 if u / 2**31 < 0.7 else s
     return S, A, R
 
 
@@ -32,10 +32,15 @@ def _reference(S, A, R, pol):
     and it automatically satisfies d'h = 0); IC per transition
     (d/d_b) 1{A=pi(S)}/b (R + h(S') - h(S) - V)."""
     n, ns = len(S), 3
-    b = [sum(1 for j in range(n) if S[j] == s and A[j] == pol[s]) / sum(1 for j in range(n) if S[j] == s)
-         for s in range(ns)]
-    r = [sum(R[i] for i in range(n) if S[i] == s and A[i] == pol[s])
-         / sum(1 for i in range(n) if S[i] == s and A[i] == pol[s]) for s in range(ns)]
+    b = [
+        sum(1 for j in range(n) if S[j] == s and A[j] == pol[s]) / sum(1 for j in range(n) if S[j] == s)
+        for s in range(ns)
+    ]
+    r = [
+        sum(R[i] for i in range(n) if S[i] == s and A[i] == pol[s])
+        / sum(1 for i in range(n) if S[i] == s and A[i] == pol[s])
+        for s in range(ns)
+    ]
     P = [[0.0] * ns for _ in range(ns)]
     for i in range(n - 1):
         if A[i] == pol[S[i]]:
@@ -50,8 +55,9 @@ def _reference(S, A, R, pol):
         h = [x + y for x, y in zip(h, term)]
         term = [sum(P[k][j] * term[j] for j in range(ns)) for k in range(ns)]
     db = [sum(1 for i in range(n - 1) if S[i] == s) / (n - 1) for s in range(ns)]
-    D = [(d[S[i]] / db[S[i]]) * (A[i] == pol[S[i]]) / b[S[i]] * (R[i] + h[S[i + 1]] - h[S[i]] - V)
-         for i in range(n - 1)]
+    D = [
+        (d[S[i]] / db[S[i]]) * (A[i] == pol[S[i]]) / b[S[i]] * (R[i] + h[S[i + 1]] - h[S[i]] - V) for i in range(n - 1)
+    ]
     return V, math.sqrt(sum(x * x for x in D)) / (n - 1)
 
 

@@ -13,11 +13,11 @@ _KERNELS = ("epanechnikov", "tri-cube", "gaussian")
 def _kernel_weights(t, kernel):
     """t is |x0 - xi| / lambda."""
     if kernel == "gaussian":
-        return np.exp(-0.5 * t ** 2)
+        return np.exp(-0.5 * t**2)
     inside = t <= 1.0
     if kernel == "epanechnikov":
-        return np.where(inside, 0.75 * (1.0 - t ** 2), 0.0)
-    return np.where(inside, (1.0 - t ** 3) ** 3, 0.0)      # tri-cube
+        return np.where(inside, 0.75 * (1.0 - t**2), 0.0)
+    return np.where(inside, (1.0 - t**3) ** 3, 0.0)  # tri-cube
 
 
 def esl_nadaraya_watson(x0, x_data, y_data, lambda_, kernel="epanechnikov"):
@@ -120,10 +120,18 @@ def esl_nadaraya_watson(x0, x_data, y_data, lambda_, kernel="epanechnikov"):
         eff.append(s)
         cnt.append(int(np.sum(w > 0)))
         vals.append(float(np.sum(w * yd) / s) if s > 0 else float("nan"))
-    return RichResult(payload={
-        "estimate": vals[0], "values": vals, "effective_n": eff,
-        "n_in_window": cnt, "lambda": lam, "kernel": kernel, "n": int(xd.size),
-        "method": f"Nadaraya-Watson, {kernel} kernel; empty window -> nan; biased at boundaries"})
+    return RichResult(
+        payload={
+            "estimate": vals[0],
+            "values": vals,
+            "effective_n": eff,
+            "n_in_window": cnt,
+            "lambda": lam,
+            "kernel": kernel,
+            "n": int(xd.size),
+            "method": f"Nadaraya-Watson, {kernel} kernel; empty window -> nan; biased at boundaries",
+        }
+    )
 
 
 def cheatsheet():

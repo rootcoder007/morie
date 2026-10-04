@@ -1,7 +1,6 @@
 """Tests for cvxnda.boyd_newton_decrement."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxnda import boyd_newton_decrement
 
 
@@ -25,13 +24,13 @@ def test_cvxnda_basic():
     Hm = np.asarray(hess, dtype=float)
     quad = float(g @ np.linalg.solve(Hm, g))
     expected_lam = float(np.sqrt(quad))
-    expected_subopt = expected_lam ** 2 / 2
+    expected_subopt = expected_lam**2 / 2
     expected_gnorm = float(np.linalg.norm(g))
 
     assert abs(result["decrement"] - expected_lam) < 1e-10
     assert abs(result["suboptimality"] - expected_subopt) < 1e-10
     assert abs(result["grad_norm"] - expected_gnorm) < 1e-10
-    assert abs(result["suboptimality"] - expected_lam ** 2 / 2) < 1e-10
+    assert abs(result["suboptimality"] - expected_lam**2 / 2) < 1e-10
 
 
 def test_cvxnda_edge():

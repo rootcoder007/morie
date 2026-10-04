@@ -1,7 +1,6 @@
 """Tests for morie.fn.bgibbs — Gibbs sampler for normal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bgibbs import gibbs_normal
 
 

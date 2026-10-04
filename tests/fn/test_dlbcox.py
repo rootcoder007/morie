@@ -1,7 +1,6 @@
 """Tests for dlbcox.dfbeta_cox."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dlbcox import dfbeta_cox
 
 
@@ -13,6 +12,8 @@ def test_dlbcox_basic():
     result = dfbeta_cox(time, event, X)
     assert isinstance(result, dict)
     assert "dfbeta" in result
+
+
 def test_dlbcox_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

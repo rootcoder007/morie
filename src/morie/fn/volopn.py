@@ -60,9 +60,7 @@ def vol_implied_volatility_bs(S, K, T, r, price_obs, kind="call"):
     else:
         lo_b, hi_b = max(K * disc - S, 0.0), K * disc
     if not lo_b < price_obs < hi_b:
-        raise ValueError(
-            f"price {price_obs} violates the no-arbitrage bounds ({lo_b:.6g}, {hi_b:.6g})."
-        )
+        raise ValueError(f"price {price_obs} violates the no-arbitrage bounds ({lo_b:.6g}, {hi_b:.6g}).")
 
     f = lambda s: _bs_price(S, K, T, r, s, kind) - price_obs
     sigma = float(optimize.brentq(f, 1e-4, 5.0, xtol=1e-12))

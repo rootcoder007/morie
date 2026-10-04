@@ -5,17 +5,21 @@ import math
 
 import pytest
 
-from morie.fn.comet import (comet, estimator_score, kendall_tau,
-                            pooled_features, reference_free, triplet_loss)
+from morie.fn.comet import comet, estimator_score, kendall_tau, pooled_features, reference_free, triplet_loss
 
 H, S, R = [1.0, -2.0, 0.5], [0.5, 1.0, 0.5], [2.0, -1.0, 0.0]
 
 
 def _features(h, s, r):
     d = range(len(h))
-    return (list(h) + list(r) + [h[i] * r[i] for i in d]
-            + [abs(h[i] - r[i]) for i in d]
-            + [h[i] * s[i] for i in d] + [abs(h[i] - s[i]) for i in d])
+    return (
+        list(h)
+        + list(r)
+        + [h[i] * r[i] for i in d]
+        + [abs(h[i] - r[i]) for i in d]
+        + [h[i] * s[i] for i in d]
+        + [abs(h[i] - s[i]) for i in d]
+    )
 
 
 def test_comet_basic():

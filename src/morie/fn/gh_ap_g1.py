@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,12 +21,15 @@ def ghosal_fin_dir_def(alpha=(2.0, 3.0, 5.0), seed=42):
     A = sum(a)
     mean = [ai / A for ai in a]
     logC = math.lgamma(A) - sum(math.lgamma(ai) for ai in a)
-    logdens = logC + sum((ai - 1.0) * math.log(mi)
-                         for ai, mi in zip(a, mean))
-    res = RichResult(payload={"estimate": math.exp(logdens),
-                              "mean": mean,
-                              "log_norm_const": logC,
-                              "method": "finite Dirichlet (GvdV 2017 App G)"})
+    logdens = logC + sum((ai - 1.0) * math.log(mi) for ai, mi in zip(a, mean))
+    res = RichResult(
+        payload={
+            "estimate": math.exp(logdens),
+            "mean": mean,
+            "log_norm_const": logC,
+            "method": "finite Dirichlet (GvdV 2017 App G)",
+        }
+    )
     return with_describe_pointer(res, "gh_ap_g1")
 
 

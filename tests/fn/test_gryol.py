@@ -9,10 +9,11 @@ from morie.fn.gryol import geron_yolo_grid_loss
 
 def _grid():
     # 2x2 grid, 2 classes; cells (0,0) and (1,1) hold objects
-    T = [[[0.4, 0.6, 0.25, 0.36, 1.0, 1.0, 0.0], [0.0] * 7],
-         [[0.0] * 7, [0.5, 0.2, 0.49, 0.16, 1.0, 0.0, 1.0]]]
-    P = [[[0.5, 0.5, 0.16, 0.25, 0.8, 0.7, 0.3], [0.2, 0.1, 0.3, 0.3, 0.3, 0.5, 0.5]],
-         [[0.9, 0.9, 0.1, 0.1, 0.1, 0.2, 0.8], [0.45, 0.3, 0.64, 0.09, 0.6, 0.1, 0.9]]]
+    T = [[[0.4, 0.6, 0.25, 0.36, 1.0, 1.0, 0.0], [0.0] * 7], [[0.0] * 7, [0.5, 0.2, 0.49, 0.16, 1.0, 0.0, 1.0]]]
+    P = [
+        [[0.5, 0.5, 0.16, 0.25, 0.8, 0.7, 0.3], [0.2, 0.1, 0.3, 0.3, 0.3, 0.5, 0.5]],
+        [[0.9, 0.9, 0.1, 0.1, 0.1, 0.2, 0.8], [0.45, 0.3, 0.64, 0.09, 0.6, 0.1, 0.9]],
+    ]
     return P, T
 
 
@@ -28,9 +29,12 @@ def test_gryol_basic():
         for j in range(2):
             p, t = P[i][j], T[i][j]
             if t[4] == 1.0:
-                coord += 5.0 * ((p[0] - t[0]) ** 2 + (p[1] - t[1]) ** 2
-                                + (math.sqrt(p[2]) - math.sqrt(t[2])) ** 2
-                                + (math.sqrt(p[3]) - math.sqrt(t[3])) ** 2)
+                coord += 5.0 * (
+                    (p[0] - t[0]) ** 2
+                    + (p[1] - t[1]) ** 2
+                    + (math.sqrt(p[2]) - math.sqrt(t[2])) ** 2
+                    + (math.sqrt(p[3]) - math.sqrt(t[3])) ** 2
+                )
                 obj += (p[4] - t[4]) ** 2
                 cls += sum((p[5 + c] - t[5 + c]) ** 2 for c in range(2))
             else:
@@ -63,7 +67,7 @@ import morie.fn.gryol as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

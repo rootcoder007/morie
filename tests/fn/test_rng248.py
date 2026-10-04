@@ -1,7 +1,6 @@
 """Tests for rng248.rangayyan_ch4_z_transform_signal_echo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_ch4_z_transform_signal_echo
 
 

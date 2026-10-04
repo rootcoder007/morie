@@ -14,12 +14,12 @@ from morie.fn.bsaar import aicorder
 from morie.fn.bsacep import ar2cep
 from morie.fn.bsacorr import bartlettpsd
 
-
 # ---- eq (7.60): I(P) = log(eps_P) + 2P/Ne ---------------------------
+
 
 def test_aic_matches_equation_7_60():
     eps = [10.0, 4.0, 3.9, 3.85]
-    n, n_eff = 100, 40.0            # Hamming: Ne = 0.4 N
+    n, n_eff = 100, 40.0  # Hamming: Ne = 0.4 N
     want = [math.log(e) + 2 * (i + 1) / n_eff for i, e in enumerate(eps)]
     r = aicorder(eps, n)
     assert all(abs(a - b) < 1e-15 for a, b in zip(r["criterion"], want))
@@ -49,12 +49,12 @@ def test_aic_window_controls_effective_sample_size():
 
 # ---- eqs (6.14)-(6.16): Bartlett averaged periodogram ---------------
 
+
 def test_bartlett_locates_a_pure_tone():
     fs, n, f0 = 64.0, 256, 8.0
     x = [math.sin(2 * math.pi * f0 * t / fs) for t in range(n)]
     b = bartlettpsd(x, fs=fs, n_segments=4)
-    peak = b["freqs"][max(range(len(b["psd"])),
-                          key=lambda i: b["psd"][i])]
+    peak = b["freqs"][max(range(len(b["psd"])), key=lambda i: b["psd"][i])]
     assert peak == pytest.approx(f0)
     assert b["n_segments"] == 4
     assert b["segment_length"] == 64
@@ -72,14 +72,15 @@ def test_bartlett_averages_rather_than_sums():
 def test_bartlett_segmentation_is_validated():
     x = [float(i) for i in range(16)]
     with pytest.raises(ValueError):
-        bartlettpsd(x)                                  # neither given
+        bartlettpsd(x)  # neither given
     with pytest.raises(ValueError):
         bartlettpsd(x, n_segments=2, segment_length=8)  # both given
     with pytest.raises(ValueError):
-        bartlettpsd([1.0])                              # too short
+        bartlettpsd([1.0])  # too short
 
 
 # ---- eq (7.65): AR -> cepstrum recursion ----------------------------
+
 
 def test_cepstrum_matches_equation_7_65():
     a = [0.5, -0.3, 0.2]

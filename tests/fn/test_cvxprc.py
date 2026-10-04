@@ -1,7 +1,6 @@
 """Tests for cvxprc.boyd_projection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxprc import boyd_projection
 
 
@@ -11,6 +10,8 @@ def test_cvxprc_basic():
     result = boyd_projection(v)
     assert isinstance(result, dict)
     assert "x" in result
+
+
 def test_cvxprc_edge():
     """Test edge cases."""
     v = np.random.default_rng(44).normal(0, 1, 100)

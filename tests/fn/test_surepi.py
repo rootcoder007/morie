@@ -1,11 +1,10 @@
 """surepi -- EARS. Source: Hutwagner, L., Thompson, W., Seeman, G. M.
 & Treadwell, T. (2003) Journal of Urban Health 80(2 Suppl 1), i89-i96
 (the article prints no DOI)."""
+
 import pytest
 
-from morie.fn.surepi import (c1_mild, c2_medium, c3_ultra,
-                             compound_smoothing, ears_detect,
-                             salmonella_cusum)
+from morie.fn.surepi import c1_mild, c2_medium, c3_ultra, compound_smoothing, ears_detect, salmonella_cusum
 
 FLAT = [10.0] * 20
 SPIKE = FLAT + [40.0] + [10.0] * 5
@@ -54,8 +53,7 @@ def test_c3_is_the_sum_of_three_consecutive_c2_values():
 
 def test_c2_beats_c1_on_a_rising_ramp():
     ramp = [10.0] * 15 + [14.0, 18.0, 22.0, 26.0, 30.0]
-    assert (c2_medium(ramp)["statistic"][-1]
-            > c1_mild(ramp)["statistic"][-1])
+    assert c2_medium(ramp)["statistic"][-1] > c1_mild(ramp)["statistic"][-1]
 
 
 def test_a_higher_threshold_flags_no_more_days():
@@ -65,8 +63,7 @@ def test_a_higher_threshold_flags_no_more_days():
 
 
 def test_salmonella_cusum_matches_the_recursion():
-    got = salmonella_cusum([3.0, 4.0, 12.0], mu0=4.0, sigma=2.0,
-                           k_shift=1.0)["cusum"]
+    got = salmonella_cusum([3.0, 4.0, 12.0], mu0=4.0, sigma=2.0, k_shift=1.0)["cusum"]
     S, want = 0.0, []
     for x in (3.0, 4.0, 12.0):
         S = max(0.0, S + (x - (4.0 + 2.0)) / 2.0)
@@ -80,8 +77,7 @@ def test_salmonella_cusum_never_goes_negative():
 
 
 def test_a_small_count_is_not_flagged_however_high_the_cusum():
-    r = salmonella_cusum([3.0] * 5 + [4.0], mu0=0.0, sigma=1.0,
-                         k_shift=0.0, min_count=5)
+    r = salmonella_cusum([3.0] * 5 + [4.0], mu0=0.0, sigma=1.0, k_shift=0.0, min_count=5)
     assert r["cusum"][-1] > 0.5
     assert r["flag"][-1] is False
 

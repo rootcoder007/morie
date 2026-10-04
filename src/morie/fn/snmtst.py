@@ -84,14 +84,10 @@ Stanford University, draft of 26 November 2025. Chapter 13, Assumption
 13.2, for the parallel-trends assumption being relaxed here.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["identified_set", "sensitivity_curve", "breakdown_value",
-           "fixed_length_ci"]
+__all__ = ["identified_set", "sensitivity_curve", "breakdown_value", "fixed_length_ci"]
 
 _EPS = 1e-12
 _FAMILIES = ("SD", "RM")
@@ -100,12 +96,10 @@ _FAMILIES = ("SD", "RM")
 def _split(beta, n_pre, n_post):
     b = [float(v) for v in k.vec(beta)]
     if len(b) != int(n_pre) + int(n_post):
-        raise ValueError("snmtst: %d coefficients but n_pre + n_post "
-                         "= %d" % (len(b), int(n_pre) + int(n_post)))
+        raise ValueError("snmtst: %d coefficients but n_pre + n_post = %d" % (len(b), int(n_pre) + int(n_post)))
     if int(n_pre) < 1 or int(n_post) < 1:
-        raise ValueError("snmtst: need at least one pre and one post "
-                         "period, got %d and %d" % (n_pre, n_post))
-    return b[:int(n_pre)], b[int(n_pre):]
+        raise ValueError("snmtst: need at least one pre and one post period, got %d and %d" % (n_pre, n_post))
+    return b[: int(n_pre)], b[int(n_pre) :]
 
 
 def _target(post, l_vec):
@@ -113,13 +107,11 @@ def _target(post, l_vec):
         return [1.0] + [0.0] * (len(post) - 1)
     lv = [float(v) for v in k.vec(l_vec)]
     if len(lv) != len(post):
-        raise ValueError("snmtst: the target vector has %d entries "
-                         "for %d post periods" % (len(lv), len(post)))
+        raise ValueError("snmtst: the target vector has %d entries for %d post periods" % (len(lv), len(post)))
     return lv
 
 
-def identified_set(beta, n_pre, n_post, M=0.0, family="SD",
-                   l_vec=None, grid=None):
+def identified_set(beta, n_pre, n_post, M=0.0, family="SD", l_vec=None, grid=None):
     r"""The set of :math:`\theta = l'\tau_{\text{post}}` consistent
     with :math:`\delta \in \Delta`.
 
@@ -135,12 +127,10 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD",
     agree, and the option exists so the closed form can be falsified.
     """
     if family not in _FAMILIES:
-        raise ValueError("snmtst: family must be SD or RM, got %r"
-                         % (family,))
+        raise ValueError("snmtst: family must be SD or RM, got %r" % (family,))
     Mv = float(M)
     if Mv < 0.0:
-        raise ValueError("snmtst: M must be non-negative, got %r"
-                         % (M,))
+        raise ValueError("snmtst: M must be non-negative, got %r" % (M,))
     pre, post = _split(beta, n_pre, n_post)
     lv = _target(post, l_vec)
     Tp = len(post)
@@ -150,9 +140,7 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD",
         # the last two pre-period values and let the second difference
         # wander within +-M each step.
         if len(pre) < 2:
-            raise ValueError("snmtst: Delta^SD needs at least 2 "
-                             "pre-periods to define a slope, got %d"
-                             % len(pre))
+            raise ValueError("snmtst: Delta^SD needs at least 2 pre-periods to define a slope, got %d" % len(pre))
         base, slope = pre[-1], pre[-1] - pre[-2]
         # the linear path: delta_t = base + slope * t
         lin = [base + slope * (t + 1) for t in range(Tp)]
@@ -173,40 +161,44 @@ def identified_set(beta, n_pre, n_post, M=0.0, family="SD",
         # same r and cannot be pushed to their individual extremes at
         # once unless l has a single non-zero entry.
         dev = [Mv * (t + 1) * (t + 2) / 2.0 for t in range(Tp)]
-        c = [sum(lv[t] * (t - j + 2) for t in range(j - 1, Tp))
-             for j in range(1, Tp + 1)]
+        c = [sum(lv[t] * (t - j + 2) for t in range(j - 1, Tp)) for j in range(1, Tp + 1)]
         point = sum(lv[t] * (post[t] - lin[t]) for t in range(Tp))
         if grid is None:
             half = Mv * sum(abs(v) for v in c)
             lo, hi = point - half, point + half
         else:
-            lo, hi = _brute(point, c, Mv, int(grid), post=post,
-                            lin=lin, lv=lv)
-        return {"lower": lo, "upper": hi, "estimate": point,
-                "linear_path": lin, "max_deviation": dev,
-                "coefficients": c,
-                "M": Mv, "family": "SD",
-                "width": hi - lo,
-                "note": "M = 0 is exactly linear extrapolation from "
-                        "the pre-period"}
+            lo, hi = _brute(point, c, Mv, int(grid), post=post, lin=lin, lv=lv)
+        return {
+            "lower": lo,
+            "upper": hi,
+            "estimate": point,
+            "linear_path": lin,
+            "max_deviation": dev,
+            "coefficients": c,
+            "M": Mv,
+            "family": "SD",
+            "width": hi - lo,
+            "note": "M = 0 is exactly linear extrapolation from the pre-period",
+        }
 
     # RM: |delta_t| <= M * max pre-period first difference
     if len(pre) < 2:
-        raise ValueError("snmtst: Delta^RM needs at least 2 "
-                         "pre-periods to form a first difference, got "
-                         "%d" % len(pre))
+        raise ValueError("snmtst: Delta^RM needs at least 2 pre-periods to form a first difference, got %d" % len(pre))
     scale = max(abs(pre[i + 1] - pre[i]) for i in range(len(pre) - 1))
     bound = Mv * scale
-    hi = sum(lv[t] * post[t] for t in range(Tp)) \
-        + bound * sum(abs(v) for v in lv)
-    lo = sum(lv[t] * post[t] for t in range(Tp)) \
-        - bound * sum(abs(v) for v in lv)
-    return {"lower": lo, "upper": hi,
-            "estimate": sum(lv[t] * post[t] for t in range(Tp)),
-            "pre_max_change": scale, "bound": bound,
-            "M": Mv, "family": "RM", "width": hi - lo,
-            "note": "M = 1 says the post violation is no larger than "
-                    "the largest observed pre-period change"}
+    hi = sum(lv[t] * post[t] for t in range(Tp)) + bound * sum(abs(v) for v in lv)
+    lo = sum(lv[t] * post[t] for t in range(Tp)) - bound * sum(abs(v) for v in lv)
+    return {
+        "lower": lo,
+        "upper": hi,
+        "estimate": sum(lv[t] * post[t] for t in range(Tp)),
+        "pre_max_change": scale,
+        "bound": bound,
+        "M": Mv,
+        "family": "RM",
+        "width": hi - lo,
+        "note": "M = 1 says the post violation is no larger than the largest observed pre-period change",
+    }
 
 
 def _brute(point, c, M, grid, post=None, lin=None, lv=None):
@@ -220,13 +212,13 @@ def _brute(point, c, M, grid, post=None, lin=None, lv=None):
     is the point of having it.
     """
     if grid < 2:
-        raise ValueError("snmtst: the brute-force grid needs at least "
-                         "2 points per coordinate, got %d" % grid)
+        raise ValueError("snmtst: the brute-force grid needs at least 2 points per coordinate, got %d" % grid)
     p = len(c)
-    if grid ** p > 2000000:
-        raise ValueError("snmtst: a %d-point grid over %d coordinates "
-                         "is %d evaluations -- refuse rather than hang"
-                         % (grid, p, grid ** p))
+    if grid**p > 2000000:
+        raise ValueError(
+            "snmtst: a %d-point grid over %d coordinates "
+            "is %d evaluations -- refuse rather than hang" % (grid, p, grid**p)
+        )
     steps = [-M + 2.0 * M * j / (grid - 1) for j in range(grid)]
     idx = [0] * p
     lo = hi = None
@@ -240,8 +232,7 @@ def _brute(point, c, M, grid, post=None, lin=None, lv=None):
                 cur = 2.0 * e_prev - e_prev2 + r[t]
                 e.append(cur)
                 e_prev2, e_prev = e_prev, cur
-            val = sum(lv[t] * (post[t] - (lin[t] + e[t]))
-                      for t in range(p))
+            val = sum(lv[t] * (post[t] - (lin[t] + e[t])) for t in range(p))
         else:
             val = point - sum(c[j] * steps[idx[j]] for j in range(p))
         lo = val if lo is None else min(lo, val)
@@ -258,8 +249,7 @@ def _brute(point, c, M, grid, post=None, lin=None, lv=None):
     return lo, hi
 
 
-def sensitivity_curve(beta, n_pre, n_post, Ms, family="SD",
-                      l_vec=None):
+def sensitivity_curve(beta, n_pre, n_post, Ms, family="SD", l_vec=None):
     """The identified set as a function of the relaxation parameter.
 
     The width is non-decreasing in ``M`` by construction -- a larger
@@ -268,17 +258,12 @@ def sensitivity_curve(beta, n_pre, n_post, Ms, family="SD",
     """
     out = []
     for M in Ms:
-        s = identified_set(beta, n_pre, n_post, M=M, family=family,
-                           l_vec=l_vec)
-        out.append({"M": s["M"], "lower": s["lower"],
-                    "upper": s["upper"], "width": s["width"]})
-    return {"curve": out, "family": family,
-            "M": [o["M"] for o in out],
-            "width": [o["width"] for o in out]}
+        s = identified_set(beta, n_pre, n_post, M=M, family=family, l_vec=l_vec)
+        out.append({"M": s["M"], "lower": s["lower"], "upper": s["upper"], "width": s["width"]})
+    return {"curve": out, "family": family, "M": [o["M"] for o in out], "width": [o["width"] for o in out]}
 
 
-def breakdown_value(beta, n_pre, n_post, family="SD", l_vec=None,
-                    sign="positive", M_max=10.0, tol=1e-9):
+def breakdown_value(beta, n_pre, n_post, family="SD", l_vec=None, sign="positive", M_max=10.0, tol=1e-9):
     r"""The largest relaxation at which the sign conclusion survives.
 
     With ``sign="positive"`` this is
@@ -290,23 +275,21 @@ def breakdown_value(beta, n_pre, n_post, family="SD", l_vec=None,
     silent endpoint.
     """
     if sign not in ("positive", "negative"):
-        raise ValueError("snmtst: sign must be positive or negative, "
-                         "got %r" % (sign,))
+        raise ValueError("snmtst: sign must be positive or negative, got %r" % (sign,))
 
     def holds(M):
-        s = identified_set(beta, n_pre, n_post, M=M, family=family,
-                           l_vec=l_vec)
-        return s["lower"] > 0.0 if sign == "positive" \
-            else s["upper"] < 0.0
+        s = identified_set(beta, n_pre, n_post, M=M, family=family, l_vec=l_vec)
+        return s["lower"] > 0.0 if sign == "positive" else s["upper"] < 0.0
 
     if not holds(0.0):
-        return {"breakdown": 0.0, "family": family, "sign": sign,
-                "status": "the conclusion fails even at M = 0"}
+        return {"breakdown": 0.0, "family": family, "sign": sign, "status": "the conclusion fails even at M = 0"}
     if holds(float(M_max)):
-        return {"breakdown": float(M_max), "family": family,
-                "sign": sign,
-                "status": "survives the whole search range; increase "
-                          "M_max to find the true breakdown"}
+        return {
+            "breakdown": float(M_max),
+            "family": family,
+            "sign": sign,
+            "status": "survives the whole search range; increase M_max to find the true breakdown",
+        }
     lo, hi = 0.0, float(M_max)
     while hi - lo > tol:
         mid = 0.5 * (lo + hi)
@@ -314,12 +297,10 @@ def breakdown_value(beta, n_pre, n_post, family="SD", l_vec=None,
             lo = mid
         else:
             hi = mid
-    return {"breakdown": lo, "family": family, "sign": sign,
-            "status": "interior"}
+    return {"breakdown": lo, "family": family, "sign": sign, "status": "interior"}
 
 
-def fixed_length_ci(beta, sigma, n_pre, n_post, M=0.0, family="SD",
-                    l_vec=None, level=0.95):
+def fixed_length_ci(beta, sigma, n_pre, n_post, M=0.0, family="SD", l_vec=None, level=0.95):
     r"""A confidence set for :math:`\theta` that covers the identified
     set, adding sampling uncertainty to the partial-identification
     width.
@@ -331,38 +312,42 @@ def fixed_length_ci(beta, sigma, n_pre, n_post, M=0.0, family="SD",
     labelled as such: the exact fixed-length construction of Sec. 3
     solves a further optimisation that this does not attempt.
     """
-    s = identified_set(beta, n_pre, n_post, M=M, family=family,
-                       l_vec=l_vec)
+    s = identified_set(beta, n_pre, n_post, M=M, family=family, l_vec=l_vec)
     if float(sigma) < 0.0:
-        raise ValueError("snmtst: sigma must be non-negative, got %r"
-                         % (sigma,))
+        raise ValueError("snmtst: sigma must be non-negative, got %r" % (sigma,))
     if not 0.0 < float(level) < 1.0:
-        raise ValueError("snmtst: level must be in (0, 1), got %r"
-                         % (level,))
+        raise ValueError("snmtst: level must be in (0, 1), got %r" % (level,))
     z = k.qnorm(0.5 + float(level) / 2.0)
-    return RichResult(payload={
-        "estimate": s["estimate"],
-        "lower": s["lower"] - z * float(sigma),
-        "upper": s["upper"] + z * float(sigma),
-        "identified_lower": s["lower"], "identified_upper": s["upper"],
-        "M": s["M"], "family": family, "level": float(level),
-        "conservative": True,
-        "method": "identified set (Rambachan & Roth 2023 Sec. 2.3) "
-                  "widened by the normal critical value; the exact "
-                  "fixed-length construction of their Sec. 3 is "
-                  "tighter",
-    })
+    return RichResult(
+        payload={
+            "estimate": s["estimate"],
+            "lower": s["lower"] - z * float(sigma),
+            "upper": s["upper"] + z * float(sigma),
+            "identified_lower": s["lower"],
+            "identified_upper": s["upper"],
+            "M": s["M"],
+            "family": family,
+            "level": float(level),
+            "conservative": True,
+            "method": "identified set (Rambachan & Roth 2023 Sec. 2.3) "
+            "widened by the normal critical value; the exact "
+            "fixed-length construction of their Sec. 3 is "
+            "tighter",
+        }
+    )
 
 
 def cheatsheet():
-    return ("snmtst: honest DiD. beta = tau + delta with tau_pre = 0, "
-            "so the PRE coefficients estimate the violation. Instead "
-            "of assuming delta = 0, bound it: Delta^SD(M) caps the "
-            "SECOND differences (M=0 IS linear extrapolation), "
-            "Delta^RM(Mbar) caps the post violation at Mbar times the "
-            "largest pre-period change. Report the BREAKDOWN value -- "
-            "the M at which the sign flips -- not a pre-trends "
-            "p-value, which has low power exactly where it matters.")
+    return (
+        "snmtst: honest DiD. beta = tau + delta with tau_pre = 0, "
+        "so the PRE coefficients estimate the violation. Instead "
+        "of assuming delta = 0, bound it: Delta^SD(M) caps the "
+        "SECOND differences (M=0 IS linear extrapolation), "
+        "Delta^RM(Mbar) caps the post violation at Mbar times the "
+        "largest pre-period change. Report the BREAKDOWN value -- "
+        "the M at which the sign flips -- not a pre-trends "
+        "p-value, which has low power exactly where it matters."
+    )
 
 
 # compact alias per ledger/NAMING.md

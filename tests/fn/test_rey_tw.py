@@ -1,9 +1,9 @@
 """Tests for morie.fn.rey_tw — Tweedie regression."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.rey_tw import rey_tw
 
 
@@ -43,6 +43,7 @@ class TestReyTw:
 
 def _rey_data(zeros=False):
     import math
+
     n = 80
     x = [math.sin(1.3 * i) for i in range(n)]
     y = [math.exp(1.0 + 0.5 * a) * (0.5 + ((i * 37) % 23) / 22) for i, a in enumerate(x)]

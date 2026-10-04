@@ -64,14 +64,18 @@ def kosorok_survival_psi(S, t_grid, S0, L, G):
     if tg.size < 2:
         raise ValueError(f"need at least 2 grid points, got {tg.size}.")
     psi = survival_psi(S, tg, S0, L, G)
-    return RichResult(payload={
-        "t_grid": tg, "psi": psi,
-        "sup_norm": float(np.max(np.abs(psi))),
-        "parameter_is": "a FUNCTION, so the norm is uniform",
-        "norm": "supremum",
-        "components_supplied": True,
-        "n": int(tg.size),
-        "method": "Kaplan-Meier as a Z-estimator (Eq. 2.11); its root is the estimator"})
+    return RichResult(
+        payload={
+            "t_grid": tg,
+            "psi": psi,
+            "sup_norm": float(np.max(np.abs(psi))),
+            "parameter_is": "a FUNCTION, so the norm is uniform",
+            "norm": "supremum",
+            "components_supplied": True,
+            "n": int(tg.size),
+            "method": "Kaplan-Meier as a Z-estimator (Eq. 2.11); its root is the estimator",
+        }
+    )
 
 
 def cheatsheet():

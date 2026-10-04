@@ -1,7 +1,6 @@
 """Tests for gh_c5_5.ghosal_blk_gibbs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c5_5 import ghosal_blk_gibbs
 
 
@@ -28,4 +27,4 @@ def test_gh_c5_5_edge():
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
     # K weights and K atoms are produced by the truncated stick-breaking scheme.
     assert len(result["weights"]) == 10  # default K
-    assert len(result["atoms"]) == 10    # default K
+    assert len(result["atoms"]) == 10  # default K

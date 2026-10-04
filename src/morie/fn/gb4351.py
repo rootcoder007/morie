@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chi-square form of the one-sided K-S limit."""
 
-from . import _array_core as np
 from . import _stats_core as stats
 from ._richresult import RichResult
 
@@ -44,8 +43,10 @@ def gibbons_ks_chi2_approx(n, Dplus):
     stat = 4.0 * n * Dplus**2
     return RichResult(
         payload={
-            "chi2_stat": float(stat), "df": 2,
-            "p_value": float(stats.chi2.sf(stat, 2)), "n": n,
+            "chi2_stat": float(stat),
+            "df": 2,
+            "p_value": float(stats.chi2.sf(stat, 2)),
+            "n": n,
             "method": "4n(D+)^2 -> chi2(2) (Gibbons Corollary 4.3.5.1)",
         }
     )

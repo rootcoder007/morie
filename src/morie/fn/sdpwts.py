@@ -65,8 +65,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["lmi", "is_psd", "barrier", "central_path_gap",
-           "solve_sdp", "min_eigenvalue_sdp"]
+__all__ = ["lmi", "is_psd", "barrier", "central_path_gap", "solve_sdp", "min_eigenvalue_sdp"]
 
 _EPS = 1e-12
 
@@ -76,8 +75,7 @@ def lmi(x, F0, Fs):
     v = [float(t) for t in k.vec(x)]
     A = [[float(t) for t in r] for r in k.mat(F0)]
     if len(v) != len(Fs):
-        raise ValueError("sdpwts: %d variables but %d matrices"
-                         % (len(v), len(Fs)))
+        raise ValueError("sdpwts: %d variables but %d matrices" % (len(v), len(Fs)))
     n = len(A)
     out = [row[:] for row in A]
     for i in range(len(v)):
@@ -94,9 +92,12 @@ def is_psd(M, tol=-1e-10):
     r"""Eigenvalue test on the constraint matrix."""
     A = [[float(t) for t in r] for r in k.mat(M)]
     vals, _ = np.linalg.eigh(A)
-    return {"eigenvalues": list(vals), "min_eigenvalue": min(vals),
-            "psd": min(vals) >= float(tol),
-            "strictly_feasible": min(vals) > 0.0}
+    return {
+        "eigenvalues": list(vals),
+        "min_eigenvalue": min(vals),
+        "psd": min(vals) >= float(tol),
+        "strictly_feasible": min(vals) > 0.0,
+    }
 
 
 def barrier(x, F0, Fs):
@@ -108,13 +109,18 @@ def barrier(x, F0, Fs):
     M = lmi(x, F0, Fs)
     vals, _ = np.linalg.eigh(M)
     if min(vals) <= 0.0:
-        return {"value": float("inf"), "feasible": False,
-                "min_eigenvalue": min(vals),
-                "note": "outside the cone the barrier is +inf, not a "
-                        "large number"}
-    return {"value": -sum(math.log(v) for v in vals),
-            "feasible": True, "min_eigenvalue": min(vals),
-            "eigenvalues": list(vals)}
+        return {
+            "value": float("inf"),
+            "feasible": False,
+            "min_eigenvalue": min(vals),
+            "note": "outside the cone the barrier is +inf, not a large number",
+        }
+    return {
+        "value": -sum(math.log(v) for v in vals),
+        "feasible": True,
+        "min_eigenvalue": min(vals),
+        "eigenvalues": list(vals),
+    }
 
 
 def central_path_gap(t, m):
@@ -125,18 +131,15 @@ def central_path_gap(t, m):
     """
     tt, mm = float(t), int(m)
     if tt <= 0.0 or mm < 1:
-        raise ValueError("sdpwts: t must be positive and m at least "
-                         "1")
-    return {"gap": mm / tt, "t": tt, "m": mm,
-            "note": "an exact suboptimality bound at every stage"}
+        raise ValueError("sdpwts: t must be positive and m at least 1")
+    return {"gap": mm / tt, "t": tt, "m": mm, "note": "an exact suboptimality bound at every stage"}
 
 
 def _objective(x, c, F0, Fs, t):
     b = barrier(x, F0, Fs)
     if not b["feasible"]:
         return float("inf")
-    return float(t) * sum(float(c[i]) * float(x[i])
-                          for i in range(len(x))) + b["value"]
+    return float(t) * sum(float(c[i]) * float(x[i]) for i in range(len(x))) + b["value"]
 
 
 def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
@@ -158,8 +161,7 @@ def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
     Fm = [[[float(q) for q in r] for r in k.mat(M)] for M in Fs]
     f = _objective(x, cc, F0, Fs, t)
     if not math.isfinite(f):
-        raise ValueError("sdpwts: the starting point is not strictly "
-                         "feasible, so the barrier is infinite there")
+        raise ValueError("sdpwts: the starting point is not strictly feasible, so the barrier is infinite there")
     it = 0
     for it in range(1, int(iters) + 1):
         F = lmi(x, F0, Fs)
@@ -167,14 +169,10 @@ def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
         vals, vecs = np.linalg.eigh(F)
         V = [[float(vecs[a][b]) for b in range(m)] for a in range(m)]
         lv = [float(v) for v in vals]
-        Finv = [[sum(V[a][q] * V[b][q] / lv[q] for q in range(m))
-                 for b in range(m)] for a in range(m)]
-        P = [[[sum(Finv[a][q] * Fm[i][q][b] for q in range(m))
-               for b in range(m)] for a in range(m)] for i in range(n)]
-        g = [float(t) * cc[i] - sum(P[i][a][a] for a in range(m))
-             for i in range(n)]
-        H = [[sum(P[i][a][b] * P[j][b][a] for a in range(m) for b in range(m))
-              for j in range(n)] for i in range(n)]
+        Finv = [[sum(V[a][q] * V[b][q] / lv[q] for q in range(m)) for b in range(m)] for a in range(m)]
+        P = [[[sum(Finv[a][q] * Fm[i][q][b] for q in range(m)) for b in range(m)] for a in range(m)] for i in range(n)]
+        g = [float(t) * cc[i] - sum(P[i][a][a] for a in range(m)) for i in range(n)]
+        H = [[sum(P[i][a][b] * P[j][b][a] for a in range(m) for b in range(m)) for j in range(n)] for i in range(n)]
         dx = [float(v) for v in np.linalg.solve(H, [-v for v in g])]
         dec2 = -sum(g[i] * dx[i] for i in range(n))
         if dec2 / 2.0 <= float(tol):
@@ -184,8 +182,7 @@ def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
         for _ in range(80):
             cand = [x[i] + step * dx[i] for i in range(n)]
             fc = _objective(cand, cc, F0, Fs, t)
-            if math.isfinite(fc) and (dec2 < 0.25 and step == 1.0
-                                      or fc <= f - 0.01 * step * dec2):
+            if math.isfinite(fc) and (dec2 < 0.25 and step == 1.0 or fc <= f - 0.01 * step * dec2):
                 x, f = cand, fc
                 moved = True
                 break
@@ -195,8 +192,7 @@ def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
     return {"x": x, "value": f, "iterations": it}
 
 
-def solve_sdp(c, F0, Fs, x0, t0=1.0, mu=10.0, tol=1e-8,
-              max_outer=60):
+def solve_sdp(c, F0, Fs, x0, t0=1.0, mu=10.0, tol=1e-8, max_outer=60):
     r"""The barrier method: centre, increase :math:`t`, repeat.
 
     ``mu`` trades outer iterations against the difficulty of each
@@ -207,35 +203,35 @@ def solve_sdp(c, F0, Fs, x0, t0=1.0, mu=10.0, tol=1e-8,
     x = [float(v) for v in k.vec(x0)]
     m = len(k.mat(F0))
     if not is_psd(lmi(x, F0, Fs))["strictly_feasible"]:
-        raise ValueError("sdpwts: the starting point must be "
-                         "STRICTLY feasible -- the barrier method "
-                         "cannot begin on the boundary")
+        raise ValueError(
+            "sdpwts: the starting point must be STRICTLY feasible -- the barrier method cannot begin on the boundary"
+        )
     if float(mu) <= 1.0:
-        raise ValueError("sdpwts: mu must exceed 1, or t never "
-                         "increases")
+        raise ValueError("sdpwts: mu must exceed 1, or t never increases")
     t = float(t0)
     path, outer = [], 0
     for outer in range(1, int(max_outer) + 1):
         r = _centre(x, cc, F0, Fs, t)
         x = r["x"]
         gap = central_path_gap(t, m)["gap"]
-        path.append({"t": t, "gap": gap,
-                     "objective": sum(cc[i] * x[i]
-                                      for i in range(len(x)))})
+        path.append({"t": t, "gap": gap, "objective": sum(cc[i] * x[i] for i in range(len(x)))})
         if gap < float(tol):
             break
         t *= float(mu)
-    return RichResult(payload={
-        "estimate": [float(v) for v in x], "x": x,
-        "objective": sum(cc[i] * x[i] for i in range(len(x))),
-        "gap": path[-1]["gap"], "outer_iterations": outer,
-        "path": path, "m": m,
-        "min_eigenvalue": is_psd(lmi(x, F0, Fs))["min_eigenvalue"],
-        "method": "barrier method for SDP; Boyd & Vandenberghe "
-                  "(2004) Sec. 11.2-11.3",
-        "note": "the gap m/t is an exact bound, so 'converged' is a "
-                "measurement rather than a guess",
-    })
+    return RichResult(
+        payload={
+            "estimate": [float(v) for v in x],
+            "x": x,
+            "objective": sum(cc[i] * x[i] for i in range(len(x))),
+            "gap": path[-1]["gap"],
+            "outer_iterations": outer,
+            "path": path,
+            "m": m,
+            "min_eigenvalue": is_psd(lmi(x, F0, Fs))["min_eigenvalue"],
+            "method": "barrier method for SDP; Boyd & Vandenberghe (2004) Sec. 11.2-11.3",
+            "note": "the gap m/t is an exact bound, so 'converged' is a measurement rather than a guess",
+        }
+    )
 
 
 def min_eigenvalue_sdp(A, t0=1.0, mu=10.0, tol=1e-9):
@@ -250,34 +246,37 @@ def min_eigenvalue_sdp(A, t0=1.0, mu=10.0, tol=1e-9):
     lam = min(vals)
     # minimise -t subject to A - tI >= 0
     F0 = M
-    F1 = [[-1.0 if a == b else 0.0 for b in range(n)]
-          for a in range(n)]
+    F1 = [[-1.0 if a == b else 0.0 for b in range(n)] for a in range(n)]
     start = [lam - 1.0]
     r = solve_sdp([-1.0], F0, [F1], start, t0, mu, tol)
-    return RichResult(payload={
-        "estimate": r["x"][0], "t": r["x"][0],
-        "lambda_min": lam, "error": abs(r["x"][0] - lam),
-        "outer_iterations": r["outer_iterations"],
-        "gap": r["gap"],
-        "method": "eigenvalue problem as an SDP; Vandenberghe & Boyd "
-                  "(1996)",
-        "note": "the exact answer is lambda_min(A), so the solver is "
-                "checked against something other than itself",
-    })
+    return RichResult(
+        payload={
+            "estimate": r["x"][0],
+            "t": r["x"][0],
+            "lambda_min": lam,
+            "error": abs(r["x"][0] - lam),
+            "outer_iterations": r["outer_iterations"],
+            "gap": r["gap"],
+            "method": "eigenvalue problem as an SDP; Vandenberghe & Boyd (1996)",
+            "note": "the exact answer is lambda_min(A), so the solver is checked against something other than itself",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sdpwts: minimise c'x subject to a LINEAR MATRIX "
-            "INEQUALITY F0 + sum x_i F_i >= 0. The feasible set is the "
-            "PSD cone cut by an affine subspace -- convex, which is why "
-            "it is tractable, and LP is the diagonal special case. The "
-            "barrier is -log det F(x): FINITE only on the interior "
-            "(so an iterate cannot leave the cone) and SELF-CONCORDANT "
-            "(which is what earns Newton's complexity guarantee). "
-            "Solve the centring problem for increasing t; at a central "
-            "point the duality gap is EXACTLY m/t, so accuracy is "
-            "known, not inferred. Check against max t s.t. A - tI >= "
-            "0, whose answer is lambda_min(A).")
+    return (
+        "sdpwts: minimise c'x subject to a LINEAR MATRIX "
+        "INEQUALITY F0 + sum x_i F_i >= 0. The feasible set is the "
+        "PSD cone cut by an affine subspace -- convex, which is why "
+        "it is tractable, and LP is the diagonal special case. The "
+        "barrier is -log det F(x): FINITE only on the interior "
+        "(so an iterate cannot leave the cone) and SELF-CONCORDANT "
+        "(which is what earns Newton's complexity guarantee). "
+        "Solve the centring problem for increasing t; at a central "
+        "point the duality gap is EXACTLY m/t, so accuracy is "
+        "known, not inferred. Check against max t s.t. A - tI >= "
+        "0, whose answer is lambda_min(A)."
+    )
 
 
 # compact alias per ledger/NAMING.md

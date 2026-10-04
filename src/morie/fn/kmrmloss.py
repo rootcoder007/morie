@@ -43,9 +43,7 @@ def kamath_reward_model_training_loss(scores_w, scores_l):
     w = np.atleast_1d(np.asarray(scores_w, dtype=float)).ravel()
     l = np.atleast_1d(np.asarray(scores_l, dtype=float)).ravel()
     if w.size != l.size:
-        raise ValueError(
-            f"{w.size} chosen scores against {l.size} rejected ones; "
-            "the loss is over PAIRS.")
+        raise ValueError(f"{w.size} chosen scores against {l.size} rejected ones; the loss is over PAIRS.")
     if w.size == 0:
         raise ValueError("no preference pairs supplied.")
     if not (np.all(np.isfinite(w)) and np.all(np.isfinite(l))):
@@ -53,14 +51,18 @@ def kamath_reward_model_training_loss(scores_w, scores_l):
     d = w - l
     per = np.logaddexp(0.0, -d)
     loss = float(per.mean())
-    return RichResult(payload={
-        "estimate": loss, "loss": loss,
-        "per_pair": [float(v) for v in per],
-        "margins": [float(v) for v in d],
-        "mean_margin": float(d.mean()),
-        "accuracy": float(np.mean(d > 0)),
-        "n": int(w.size),
-        "method": "Bradley-Terry reward-model NLL over preference pairs"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "per_pair": [float(v) for v in per],
+            "margins": [float(v) for v in d],
+            "mean_margin": float(d.mean()),
+            "accuracy": float(np.mean(d > 0)),
+            "n": int(w.size),
+            "method": "Bradley-Terry reward-model NLL over preference pairs",
+        }
+    )
 
 
 def cheatsheet():

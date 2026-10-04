@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['comptotvar', 'aitchison_total_variance']
+__all__ = ["comptotvar", "aitchison_total_variance"]
 
 
 def comptotvar(X):
@@ -36,7 +36,8 @@ def comptotvar(X):
     var{log(x_i/x_j)}.
     """
     X = C.mat(X)
-    n = len(X); D = len(X[0])
+    n = len(X)
+    D = len(X[0])
     for row in X:
         if any(v <= 0 for v in row):
             raise ValueError("compositions must be strictly positive")
@@ -48,9 +49,16 @@ def comptotvar(X):
     tot /= D
     clr = [[L[k][i] - sum(L[k]) / D for i in range(D)] for k in range(n)]
     cv = [C.var([clr[k][i] for k in range(n)], 1) for i in range(D)]
-    return RichResult(payload={
-        "totvar": tot, "totvar_trace": sum(cv), "clr_var": cv,
-        "n": n, "D": D, "method": "Compositional total variance"})
+    return RichResult(
+        payload={
+            "totvar": tot,
+            "totvar_trace": sum(cv),
+            "clr_var": cv,
+            "n": n,
+            "D": D,
+            "method": "Compositional total variance",
+        }
+    )
 
 
 aitchison_total_variance = comptotvar

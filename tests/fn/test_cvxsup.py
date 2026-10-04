@@ -1,7 +1,6 @@
 """Tests for cvxsup.boyd_support_hyperplane."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsup import boyd_support_hyperplane
 
 
@@ -12,6 +11,8 @@ def test_cvxsup_basic():
     result = boyd_support_hyperplane(C, x0)
     assert isinstance(result, dict)
     assert "a" in result
+
+
 def test_cvxsup_edge():
     """Test edge cases."""
     C = np.random.default_rng(42).normal(0, 1, 100)

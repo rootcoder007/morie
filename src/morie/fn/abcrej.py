@@ -81,13 +81,19 @@ def abcrej(sim, obs, eps, prior, n_draws=1000, seed=0):
         pm = [sum(a[j] for a in accepted) / k for j in range(p)]
     else:
         pm = [np.nan for _ in bounds]
-    return RichResult(payload={
-        "samples": accepted, "n_accepted": int(k),
-        "acceptance_rate": k / float(n_draws), "distances": dists,
-        "posterior_mean": pm, "eps": eps, "n_draws": int(n_draws),
-        "seed": int(seed),
-        "method": "ABC rejection (Pritchard et al. 1999)",
-    })
+    return RichResult(
+        payload={
+            "samples": accepted,
+            "n_accepted": int(k),
+            "acceptance_rate": k / float(n_draws),
+            "distances": dists,
+            "posterior_mean": pm,
+            "eps": eps,
+            "n_draws": int(n_draws),
+            "seed": int(seed),
+            "method": "ABC rejection (Pritchard et al. 1999)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

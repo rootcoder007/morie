@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 5.5, a Dirichlet-process mixture of Gaussian kernels.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c5_8 import ghosal_gauss_ker
 
 

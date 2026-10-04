@@ -8,12 +8,11 @@ window counts rescaled to the peak width.
 
 import math
 
-from morie.fn.chipsq import chipsq, chip_seq_peak
+from morie.fn.chipsq import chip_seq_peak, chipsq
 
 
 def _pois_upper_closed(k, lam):
-    return 1.0 - math.exp(-lam) * sum(lam ** i / math.factorial(i)
-                                      for i in range(k))
+    return 1.0 - math.exp(-lam) * sum(lam**i / math.factorial(i) for i in range(k))
 
 
 def test_chipsq_lambda_local_hand():
@@ -25,8 +24,7 @@ def test_chipsq_lambda_local_hand():
 
 
 def test_chipsq_no_control_drops_1k():
-    res = chipsq(12, 500.0, 2.0, count_1k=10, count_5k=30, count_10k=80,
-                 use_1k=False)
+    res = chipsq(12, 500.0, 2.0, count_1k=10, count_5k=30, count_10k=80, use_1k=False)
     assert abs(res["lambda_local"][0] - 4.0) < 1e-15
 
 

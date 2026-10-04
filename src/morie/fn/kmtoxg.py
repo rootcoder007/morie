@@ -39,43 +39,42 @@ def kamath_toxigen_score(text, classifier, threshold=0.5):
     False
     """
     if not callable(classifier):
-        raise ValueError(
-            "classifier must be callable text -> p(toxic).")
+        raise ValueError("classifier must be callable text -> p(toxic).")
     if not 0.0 <= float(threshold) <= 1.0:
-        raise ValueError(
-            f"threshold must lie in [0, 1]; got {threshold}.")
+        raise ValueError(f"threshold must lie in [0, 1]; got {threshold}.")
     raw = classifier(text)
     if isinstance(raw, dict):
         if "toxic" not in raw:
-            raise ValueError(
-                "a mapping result must carry a 'toxic' key.")
+            raise ValueError("a mapping result must carry a 'toxic' key.")
         p = raw["toxic"]
     elif isinstance(raw, (tuple, list)):
         if len(raw) != 2:
-            raise ValueError(
-                f"a sequence result must be (p_benign, p_toxic); got "
-                f"{len(raw)} entries.")
+            raise ValueError(f"a sequence result must be (p_benign, p_toxic); got {len(raw)} entries.")
         if abs(float(raw[0]) + float(raw[1]) - 1.0) > 1e-6:
-            raise ValueError(
-                "the two class probabilities do not sum to 1.")
+            raise ValueError("the two class probabilities do not sum to 1.")
         p = raw[1]
     else:
         p = raw
     try:
         p = float(p)
     except (TypeError, ValueError):
-        raise ValueError(
-            "the classifier must return a numeric probability.") from None
+        raise ValueError("the classifier must return a numeric probability.") from None
     if not 0.0 <= p <= 1.0:
         raise ValueError(
             f"the classifier returned {p}, which is not a probability; "
-            "a logit or margin needs a sigmoid or softmax first.")
-    return RichResult(payload={
-        "estimate": p, "probability": p,
-        "toxic": bool(p >= float(threshold)),
-        "threshold": float(threshold),
-        "text": text, "n": 1,
-        "method": "ToxiGen classifier toxicity probability"})
+            "a logit or margin needs a sigmoid or softmax first."
+        )
+    return RichResult(
+        payload={
+            "estimate": p,
+            "probability": p,
+            "toxic": bool(p >= float(threshold)),
+            "threshold": float(threshold),
+            "text": text,
+            "n": 1,
+            "method": "ToxiGen classifier toxicity probability",
+        }
+    )
 
 
 def cheatsheet():

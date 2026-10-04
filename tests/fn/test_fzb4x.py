@@ -1,7 +1,5 @@
 """Tests for fzb4x.fauzi_b4_coefficient."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzb4x import fauzi_b4_coefficient
 
 

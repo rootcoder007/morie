@@ -1,7 +1,6 @@
 """Tests for baysmplr.sampler_dispatch."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.baysmplr import sampler_dispatch
 
 
@@ -46,8 +45,7 @@ def test_baysmplr_basic():
     log_p, grad_p, mean, cov_inv = _make_normal_log_p_and_grad(dim, seed=0)
     x0 = [0.1, -0.2, 0.3]
 
-    result = sampler_dispatch(log_p, grad_p, x0, n_iter=200, burn=50,
-                              seed=1, sampler="nuts")
+    result = sampler_dispatch(log_p, grad_p, x0, n_iter=200, burn=50, seed=1, sampler="nuts")
 
     assert isinstance(result, dict)
     assert result["sampler"] == "nuts"
@@ -81,10 +79,9 @@ def test_baysmplr_edge():
     log_p, grad_p, mean, cov_inv = _make_normal_log_p_and_grad(dim, seed=1)
     x0 = [0.0, 0.0]
 
-    result = sampler_dispatch(log_p, grad_p=None, x0=x0,
-                              cov_inv=cov_inv, mean=mean,
-                              n_iter=300, burn=100, seed=2,
-                              sampler="gibbs")
+    result = sampler_dispatch(
+        log_p, grad_p=None, x0=x0, cov_inv=cov_inv, mean=mean, n_iter=300, burn=100, seed=2, sampler="gibbs"
+    )
 
     assert isinstance(result, dict)
     assert result["sampler"] == "gibbs"

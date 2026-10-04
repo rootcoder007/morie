@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 5.5, a Dirichlet-process mixture of Beta kernels.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c5_9 import ghosal_beta_ker

@@ -11,8 +11,7 @@ from .crpcol import norm_logpdf
 __all__ = ["crp_gibbs"]
 
 
-def crp_gibbs(y, alpha=1.0, n_iter=50, m=3, mu0=0.0, tau2=10.0, sigma2=1.0,
-              seed=42):
+def crp_gibbs(y, alpha=1.0, n_iter=50, m=3, mu0=0.0, tau2=10.0, sigma2=1.0, seed=42):
     """
     CRP Gibbs sampler with auxiliary parameters
 
@@ -77,8 +76,7 @@ def crp_gibbs(y, alpha=1.0, n_iter=50, m=3, mu0=0.0, tau2=10.0, sigma2=1.0,
                 aux[0] = theta[k]
             w = []
             for c in range(len(counts)):
-                w.append(counts[c] * math.exp(norm_logpdf(y[i], theta[c], sigma2))
-                         if counts[c] > 0 else 0.0)
+                w.append(counts[c] * math.exp(norm_logpdf(y[i], theta[c], sigma2)) if counts[c] > 0 else 0.0)
             for j in range(m):
                 w.append(alpha / m * math.exp(norm_logpdf(y[i], aux[j], sigma2)))
             tot = sum(w)
@@ -108,16 +106,18 @@ def crp_gibbs(y, alpha=1.0, n_iter=50, m=3, mu0=0.0, tau2=10.0, sigma2=1.0,
             mpost = (mu0 / tau2 + s / sigma2) / prec
             theta[c] = float(rng.normal(mpost, math.sqrt(1.0 / prec)))
     ll = sum(norm_logpdf(y[i], theta[z[i]], sigma2) for i in range(n))
-    return RichResult(payload={
-        "estimate": len(counts),
-        "z": z,
-        "counts": counts,
-        "theta": theta,
-        "n_clusters": len(counts),
-        "loglik": ll,
-        "n": n,
-        "method": "CRP Gibbs sampler, Neal algorithm 8",
-    })
+    return RichResult(
+        payload={
+            "estimate": len(counts),
+            "z": z,
+            "counts": counts,
+            "theta": theta,
+            "n_clusters": len(counts),
+            "loglik": ll,
+            "n": n,
+            "method": "CRP Gibbs sampler, Neal algorithm 8",
+        }
+    )
 
 
 def cheatsheet():

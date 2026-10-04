@@ -68,9 +68,11 @@ def test_shrunken_estimates_sit_between_the_group_and_the_mean():
 
 def test_validation():
     b = _betas()
-    for call in (lambda: hlmgr(b[:2]),
-                 lambda: hlmgr([[1.0, 2.0], [1.0], [1.0, 2.0]]),
-                 lambda: hlmgr(b, [[[1.0, 0.0], [0.0, 1.0]]])):
+    for call in (
+        lambda: hlmgr(b[:2]),
+        lambda: hlmgr([[1.0, 2.0], [1.0], [1.0, 2.0]]),
+        lambda: hlmgr(b, [[[1.0, 0.0], [0.0, 1.0]]]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

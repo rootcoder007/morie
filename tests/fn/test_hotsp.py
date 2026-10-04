@@ -1,7 +1,6 @@
 """Tests for morie.fn.hotsp -- Hot-spot analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hotsp import hot_spots, hotsp
 

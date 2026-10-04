@@ -10,8 +10,9 @@ satisfy. Data is explicit or from the LCG.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 # ---------------------------------------------------------------- helpers
 
@@ -40,8 +41,8 @@ def fd_grad(f, x, h=1e-6):
         up[i] += h
         dn[i] -= h
         g.append(
-            (f(np.reshape(np.asarray(up, dtype=float), shape))
-             - f(np.reshape(np.asarray(dn, dtype=float), shape))) / (2 * h)
+            (f(np.reshape(np.asarray(up, dtype=float), shape)) - f(np.reshape(np.asarray(dn, dtype=float), shape)))
+            / (2 * h)
         )
     return np.reshape(np.asarray(g, dtype=float), shape)
 
@@ -376,8 +377,9 @@ def test_hmearl_first_iteration_matches_hand_gradient_step():
 def test_hmearl_keeps_the_best_snapshot_not_the_last():
     from morie.fn.hmearl import geron_early_stopping
 
-    r = geron_early_stopping([[0.0], [1.0], [2.0], [3.0]], [0.0, 2.0, 4.0, 6.0],
-                             [[0.0], [1.0]], [3.0, 3.0], n_iter=150, eta=0.05)
+    r = geron_early_stopping(
+        [[0.0], [1.0], [2.0], [3.0]], [0.0, 2.0, 4.0, 6.0], [[0.0], [1.0]], [3.0, 3.0], n_iter=150, eta=0.05
+    )
     assert r["best_val_rmse"] == pytest.approx(min(r["val_rmse"]))
     assert r["best_val_rmse"] <= r["final_val_rmse"]
 
@@ -399,8 +401,7 @@ def test_hmfth_weight_decay_and_freezing():
     def two(th, batch):
         return float(th[0] ** 2 + th[1] ** 2), np.array([2 * th[0], 2 * th[1]])
 
-    r = geron_finetune_lm(two, [1], epochs=1, lr=0.1, theta=[1.0, 1.0],
-                          freeze=[True, False], weight_decay=1.0)
+    r = geron_finetune_lm(two, [1], epochs=1, lr=0.1, theta=[1.0, 1.0], freeze=[True, False], weight_decay=1.0)
     assert r["theta"][0] == 1.0
     assert r["theta"][1] == pytest.approx(1.0 - 0.1 * (2.0 + 1.0))
     with pytest.raises(ValueError):
@@ -470,8 +471,11 @@ def test_hmcart_split_matches_exhaustive_search():
         return float(1 - np.sum(p * p))
 
     best = min(
-        ((len([a for a in X if a[0] <= t]) / 5) * gini([c for a, c in zip(X, y) if a[0] <= t])
-         + (len([a for a in X if a[0] > t]) / 5) * gini([c for a, c in zip(X, y) if a[0] > t]), t)
+        (
+            (len([a for a in X if a[0] <= t]) / 5) * gini([c for a, c in zip(X, y) if a[0] <= t])
+            + (len([a for a in X if a[0] > t]) / 5) * gini([c for a, c in zip(X, y) if a[0] > t]),
+            t,
+        )
         for t in (1.5, 2.5, 3.5, 4.5)
     )
     r = geron_cart_algorithm(X, y)
@@ -540,8 +544,7 @@ def test_hmdtr_leaf_floor_blocks_illegal_splits():
 def test_hmdthv_variance_is_zero_only_when_trees_agree():
     from morie.fn.hmdthv import geron_tree_high_variance
 
-    r = geron_tree_high_variance([[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]],
-                                 [0, 1, 0, 1, 1, 0], n_resamples=12, seed=4)
+    r = geron_tree_high_variance([[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]], [0, 1, 0, 1, 1, 0], n_resamples=12, seed=4)
     P = np.asarray([[0]])  # placeholder to keep the intent explicit
     assert 0.0 <= r["variance"] <= 1.0
     assert 0.0 <= r["structural_instability"] <= 1.0
@@ -612,7 +615,7 @@ def test_hmgbrt_first_round_matches_hand_computed_update():
     X, y = [[1.0], [2.0], [3.0], [4.0]], [0.0, 0.0, 10.0, 10.0]
     eta = 0.1
     init = 5.0
-    resid = np.array(y) - init            # [-5, -5, 5, 5]
+    resid = np.array(y) - init  # [-5, -5, 5, 5]
     stump = np.array([-5.0, -5.0, 5.0, 5.0])
     hand = init + eta * stump
     r = geron_gradient_boosting(X, y, n_estimators=1, learning_rate=eta, max_depth=1)
@@ -757,9 +760,9 @@ def test_hmfa_tiling_is_exact_against_direct_attention():
     from morie.fn.hmfa import geron_flash_attention
 
     u = lcg(36, seed=21)
-    Q = (u[:12].reshape(6, 2) * 2 - 1)
-    K = (u[12:24].reshape(6, 2) * 2 - 1)
-    V = (u[24:].reshape(6, 2) * 2 - 1)
+    Q = u[:12].reshape(6, 2) * 2 - 1
+    K = u[12:24].reshape(6, 2) * 2 - 1
+    V = u[24:].reshape(6, 2) * 2 - 1
     direct = softmax_rows(Q @ K.T / math.sqrt(2)) @ V
     for bs in (1, 2, 3, 6):
         out = np.asarray(geron_flash_attention(Q, K, V, block_size=bs)["output"])
@@ -910,8 +913,12 @@ def test_hmdrv_reverse_recovers_x0_when_noise_is_known():
     x0, eps = 2.5, 0.8
     xT = math.sqrt(abar[-1]) * x0 + math.sqrt(1 - abar[-1]) * eps
     # A one-step reverse from t=1 with the true noise returns x0 exactly.
-    r = geron_diffusion_reverse([math.sqrt(abar[0]) * x0 + math.sqrt(1 - abar[0]) * eps],
-                                lambda x, t: np.full_like(x, eps), T=1, beta_schedule=[betas[0]])
+    r = geron_diffusion_reverse(
+        [math.sqrt(abar[0]) * x0 + math.sqrt(1 - abar[0]) * eps],
+        lambda x, t: np.full_like(x, eps),
+        T=1,
+        beta_schedule=[betas[0]],
+    )
     assert r["x_0"][0] == pytest.approx(x0)
 
 
@@ -931,7 +938,7 @@ def test_hmddim_deterministic_and_fewer_model_calls():
     a = geron_ddim([1.0], zero, T=8, n_steps=2, beta_schedule=[0.2] * 8)
     b = geron_ddim([1.0], zero, T=8, n_steps=2, beta_schedule=[0.2] * 8)
     full = geron_ddim([1.0], zero, T=8, n_steps=8, beta_schedule=[0.2] * 8)
-    assert a["x_0"] == pytest.approx(b["x_0"])          # deterministic
+    assert a["x_0"] == pytest.approx(b["x_0"])  # deterministic
     assert a["model_calls"] == 2 and full["model_calls"] == 8
     # With eps = 0 both paths end at x_T / sqrt(abar_T).
     abar = float(np.prod([0.8] * 8))
@@ -1113,9 +1120,8 @@ def test_hmdqn_terminal_drops_the_bootstrap_and_converges():
 def test_hmddqn_removes_the_max_operator_bias():
     from morie.fn.hmddqn import geron_double_dqn
 
-    r = geron_double_dqn(None, [[0.0, 1.0]], [[10.0, -10.0]], [(0, 0, 0.0, 0, False)],
-                         epochs=1, lr=1.0, gamma=1.0)
-    assert r["targets"][0] == pytest.approx(-10.0)      # evaluate with the target net
+    r = geron_double_dqn(None, [[0.0, 1.0]], [[10.0, -10.0]], [(0, 0, 0.0, 0, False)], epochs=1, lr=1.0, gamma=1.0)
+    assert r["targets"][0] == pytest.approx(-10.0)  # evaluate with the target net
     assert r["vanilla_targets"][0] == pytest.approx(10.0)
     assert r["overestimation_gap"][0] == pytest.approx(20.0)
 
@@ -1152,9 +1158,8 @@ def test_hmddpg_polyak_and_deterministic_policy():
     from morie.fn.hmddpg import geron_ddpg
 
     env = lambda s, a: (s, -float((a - 1.0) ** 2), False)
-    r = geron_ddpg(env, [0.5], [0.0, 0.0], epochs=1, lr=0.0, ou_sigma=0.0, s0=[2.0],
-                   tau=0.25, critic_target=[0.0, 0.0])
-    assert r["actions"][0] == pytest.approx(1.0)   # mu(s) = 0.5 * 2
+    r = geron_ddpg(env, [0.5], [0.0, 0.0], epochs=1, lr=0.0, ou_sigma=0.0, s0=[2.0], tau=0.25, critic_target=[0.0, 0.0])
+    assert r["actions"][0] == pytest.approx(1.0)  # mu(s) = 0.5 * 2
     assert r["ou_noise"][0] == 0.0
     assert r["critic_target"] == pytest.approx([0.0, 0.0])
 
@@ -1173,7 +1178,6 @@ def test_hmddpg_learns_to_raise_the_reward():
 
 
 def test_hmclsn_output_gradient_matches_finite_differences():
-    from morie.fn.hmcec import geron_cross_entropy_cost
     from morie.fn.hmclsn import geron_classification_mlp, mlp_init
 
     # One-layer (softmax regression) network: compare the trained step with
@@ -1194,8 +1198,9 @@ def test_hmclsn_output_gradient_matches_finite_differences():
 def test_hmclsn_parameter_count_and_xor_needs_depth():
     from morie.fn.hmclsn import geron_classification_mlp
 
-    r = geron_classification_mlp([[0.0, 0.0], [1.0, 1.0], [0.0, 1.0], [1.0, 0.0]],
-                                 [0, 0, 1, 1], hidden_sizes=(3,), epochs=1, lr=0.1)
+    r = geron_classification_mlp(
+        [[0.0, 0.0], [1.0, 1.0], [0.0, 1.0], [1.0, 0.0]], [0, 0, 1, 1], hidden_sizes=(3,), epochs=1, lr=0.1
+    )
     assert r["n_params"] == 2 * 3 + 3 + 3 * 2 + 2
     Xx = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
     yx = [0, 1, 1, 0]
@@ -1253,8 +1258,7 @@ def test_hmdctr_block_parameter_count_itemised():
     assert p["ffn"] == 2 * d * ff + ff + d
     assert p["layer_norms"] == 4 * d
     assert p["total"] == p["self_attention"] + p["ffn"] + p["layer_norms"]
-    r = geron_decoder_only([1, 2], n_layers=3, n_heads=4, d_model=d, vocab_size=7,
-                           max_len=4, d_ff=ff)
+    r = geron_decoder_only([1, 2], n_layers=3, n_heads=4, d_model=d, vocab_size=7, max_len=4, d_ff=ff)
     assert r["total_params"] == 7 * d + 4 * d + 3 * p["total"] + 2 * d
 
 
@@ -1285,8 +1289,7 @@ def test_hmencox_classifier_head_and_length_guard():
     from morie.fn.hmencox import geron_encoder_only
 
     base = geron_encoder_only([1, 2], n_layers=1, n_heads=2, d_model=8, vocab_size=5, max_len=8)
-    head = geron_encoder_only([1, 2], n_layers=1, n_heads=2, d_model=8, vocab_size=5,
-                              max_len=8, n_classes=3)
+    head = geron_encoder_only([1, 2], n_layers=1, n_heads=2, d_model=8, vocab_size=5, max_len=8, n_classes=3)
     assert head["total_params"] - base["total_params"] == 8 * 3 + 3
     with pytest.raises(ValueError):
         geron_encoder_only([1, 2, 3, 4], max_len=4)  # [CLS]/[SEP] push it over
@@ -1297,8 +1300,9 @@ def test_hmencd_decoder_block_costs_one_extra_attention_and_norm():
     from morie.fn.hmencd import geron_encoder_decoder_transformer
 
     d = 8
-    r = geron_encoder_decoder_transformer([1, 2], [3, 4, 5], n_layers=1, n_heads=2,
-                                          d_model=d, vocab_size=5, max_len=8, d_ff=32)
+    r = geron_encoder_decoder_transformer(
+        [1, 2], [3, 4, 5], n_layers=1, n_heads=2, d_model=d, vocab_size=5, max_len=8, d_ff=32
+    )
     extra = (4 * d * d + 4 * d) + 2 * d
     assert r["extra_per_decoder_block"] == extra
     assert r["decoder_block_params"] == block_params(d, d_ff=32)["total"] + extra
@@ -1307,8 +1311,9 @@ def test_hmencd_decoder_block_costs_one_extra_attention_and_norm():
 def test_hmencd_three_masks_have_the_right_shapes():
     from morie.fn.hmencd import geron_encoder_decoder_transformer
 
-    r = geron_encoder_decoder_transformer([1, 2], [3, 4, 5], n_layers=1, n_heads=2,
-                                          d_model=8, vocab_size=5, max_len=8, d_ff=32)
+    r = geron_encoder_decoder_transformer(
+        [1, 2], [3, 4, 5], n_layers=1, n_heads=2, d_model=8, vocab_size=5, max_len=8, d_ff=32
+    )
     assert np.asarray(r["src_mask"]).shape == (2, 2)
     assert np.asarray(r["tgt_mask"]).shape == (3, 3)
     assert np.asarray(r["cross_mask"]).shape == (3, 2)
@@ -1322,10 +1327,12 @@ def test_hmgpt1_lm_loss_against_hand_log_sum():
     logits = [[0.0, 2.0], [1.0, 0.0], [0.0, 0.0]]
     seq = [0, 1, 0]
     # Positions 0 and 1 predict tokens 1 and 0.
-    hand = np.mean([
-        math.log(math.exp(0.0) + math.exp(2.0)) - 2.0,
-        math.log(math.exp(1.0) + math.exp(0.0)) - 1.0,
-    ])
+    hand = np.mean(
+        [
+            math.log(math.exp(0.0) + math.exp(2.0)) - 2.0,
+            math.log(math.exp(1.0) + math.exp(0.0)) - 1.0,
+        ]
+    )
     r = geron_gpt1(seq, logits=logits, n_layers=1, n_heads=1, d_model=2, vocab_size=2, max_len=8)
     assert r["loss"] == pytest.approx(hand)
     assert r["n_predicted"] == 2
@@ -1370,7 +1377,7 @@ def test_hmgoog_inception_widths_add_and_reductions_save():
     assert m["naive_5x5_params"] == 25 * 192 * 32 + 32
     assert m["reduction_saving"] > 0
     r = geron_googlenet(1000)
-    assert 6.5e6 < r["total_params"] < 7.5e6      # ~a tenth of AlexNet
+    assert 6.5e6 < r["total_params"] < 7.5e6  # ~a tenth of AlexNet
     assert r["modules"][0]["in_channels"] == 192
 
 
@@ -1397,8 +1404,12 @@ def test_hmfmn_training_config_is_validated():
     from morie.fn.hmfmn import geron_fashion_mnist
 
     r = geron_fashion_mnist(epochs=3, lr=0.01, batch_size=64)
-    assert r["training_config"] == {"epochs": 3, "lr": 0.01, "batch_size": 64,
-                                    "loss": "sparse categorical cross-entropy"}
+    assert r["training_config"] == {
+        "epochs": 3,
+        "lr": 0.01,
+        "batch_size": 64,
+        "loss": "sparse categorical cross-entropy",
+    }
     assert r["steps_per_epoch"] == math.ceil(60000 / 64)
     with pytest.raises(ValueError):
         geron_fashion_mnist(batch_size=0)
@@ -1410,7 +1421,7 @@ def test_hmdeit_token_count_and_distillation_overhead():
     img = np.zeros((3, 32, 32))
     r = geron_deit(img, patch_size=16, n_layers=1, d_model=8, n_heads=2, n_classes=4)
     assert r["n_patches"] == 4
-    assert r["n_tokens"] == 6                       # patches + CLS + distillation
+    assert r["n_tokens"] == 6  # patches + CLS + distillation
     assert r["patch_embed_params"] == 16 * 16 * 3 * 8 + 8
     assert r["distillation_overhead"] == 8 + (8 * 4 + 4)
     with pytest.raises(ValueError):
@@ -1421,9 +1432,19 @@ def test_hmdeit_hard_distillation_loss_against_hand_terms():
     from morie.fn.hmdeit import geron_deit
 
     img = np.zeros((3, 32, 32))
-    r = geron_deit(img, patch_size=16, n_layers=1, d_model=8, n_heads=2, n_classes=2,
-                   logits_cls=[[10.0, 0.0]], logits_dist=[[10.0, 0.0]], y=[0],
-                   teacher=[[0.0, 10.0]], alpha=0.5)
+    r = geron_deit(
+        img,
+        patch_size=16,
+        n_layers=1,
+        d_model=8,
+        n_heads=2,
+        n_classes=2,
+        logits_cls=[[10.0, 0.0]],
+        logits_dist=[[10.0, 0.0]],
+        y=[0],
+        teacher=[[0.0, 10.0]],
+        alpha=0.5,
+    )
     ce_correct = math.log(1 + math.exp(-10.0))
     ce_wrong = 10.0 + math.log(1 + math.exp(-10.0))
     assert r["loss_cls"] == pytest.approx(ce_correct, abs=1e-9)
@@ -1434,8 +1455,7 @@ def test_hmdeit_hard_distillation_loss_against_hand_terms():
 def test_hmdetr_token_count_and_quadratic_attention_cost():
     from morie.fn.hmdetr import geron_detr
 
-    r = geron_detr(np.zeros((3, 224, 224)), n_queries=10, n_layers=1, d_model=8,
-                   n_heads=2, n_classes=3)
+    r = geron_detr(np.zeros((3, 224, 224)), n_queries=10, n_layers=1, d_model=8, n_heads=2, n_classes=3)
     assert r["feature_shape"] == (7, 7)
     assert r["n_tokens"] == 49
     assert r["encoder_attention_cost"] == 49**2
@@ -1447,14 +1467,29 @@ def test_hmdetr_matching_is_bipartite():
 
     pb = [[0.0, 0.0, 1.0, 1.0], [10.0, 10.0, 11.0, 11.0]]
     pc = [[10.0, 0.0], [0.0, 10.0]]
-    r = geron_detr(np.zeros((3, 224, 224)), n_queries=2, n_layers=1, d_model=8, n_heads=2,
-                   n_classes=2, pred_boxes=pb, pred_classes=pc,
-                   gt_boxes=[[0.0, 0.0, 1.0, 1.0]], gt_classes=[0])
+    r = geron_detr(
+        np.zeros((3, 224, 224)),
+        n_queries=2,
+        n_layers=1,
+        d_model=8,
+        n_heads=2,
+        n_classes=2,
+        pred_boxes=pb,
+        pred_classes=pc,
+        gt_boxes=[[0.0, 0.0, 1.0, 1.0]],
+        gt_classes=[0],
+    )
     assert r["matching"] == [(0, 0)]
     assert r["loss_bbox"] == 0.0
     with pytest.raises(ValueError):
-        geron_detr(np.zeros((3, 224, 224)), n_queries=1, pred_boxes=pb, pred_classes=pc,
-                   gt_boxes=[[0.0, 0.0, 1.0, 1.0]], gt_classes=[0])
+        geron_detr(
+            np.zeros((3, 224, 224)),
+            n_queries=1,
+            pred_boxes=pb,
+            pred_classes=pc,
+            gt_boxes=[[0.0, 0.0, 1.0, 1.0]],
+            gt_classes=[0],
+        )
 
 
 def test_hmdino_centering_removes_a_constant_offset():
@@ -1492,7 +1527,7 @@ def test_hmdbrt_compression_is_about_forty_percent():
     from morie.fn.hmdbrt import geron_distilbert
 
     r = geron_distilbert([[1.0, 0.0]], [[1.0, 0.0]], [1], alpha_mlm=0.0, alpha_ce=1.0)
-    assert 0.35 < r["param_reduction"] < 0.45      # not 0.5: embeddings are shared
+    assert 0.35 < r["param_reduction"] < 0.45  # not 0.5: embeddings are shared
     assert r["loss_ce"] == pytest.approx(0.0, abs=1e-12)
     with pytest.raises(ValueError):
         geron_distilbert([[1.0, 0.0]], [[1.0, 0.0]], [1], alpha_mlm=1.0)  # no labels
@@ -1573,7 +1608,7 @@ def test_hmfsf_prompt_contains_exactly_k_demonstrations():
     ex = [("a", "1"), ("b", "2"), ("c", "3")]
     for k in (0, 1, 3):
         r = geron_few_shot(model, ex, "q", k=k)
-        assert r["prompt"].count("->") == k + 1     # demos plus the query
+        assert r["prompt"].count("->") == k + 1  # demos plus the query
         assert r["k"] == k
     with pytest.raises(ValueError):
         geron_few_shot(model, ex, "q", k=5)
@@ -1686,7 +1721,7 @@ def test_hmdqnt_int8_scale_and_round_trip():
     assert r["scales"]["W"] == pytest.approx(s)
     assert r["quantized"]["W"] == [round(v / s) for v in W]
     assert r["max_abs_error"]["W"] <= s / 2 + 1e-12
-    assert r["dequantized"]["W"][2] == 0.0     # symmetric: zero is exact
+    assert r["dequantized"]["W"][2] == 0.0  # symmetric: zero is exact
 
 
 def test_hmdqnt_activation_scale_comes_from_the_batch():

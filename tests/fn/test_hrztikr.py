@@ -1,7 +1,6 @@
 """Tests for hrztikr.horowitz_tikhonov_npiv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrztikr import horowitz_tikhonov_npiv
 
 

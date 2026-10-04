@@ -1,8 +1,8 @@
 """Tests for morie.fn.splrg — Spline regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.splrg import splrg
 
 
@@ -34,7 +34,7 @@ def test_returns_dict():
 def test_smoothing_spline():
     rng = np.random.default_rng(42)
     x = rng.uniform(0, 1, 100)
-    y = x ** 2 + rng.normal(0, 0.3, 100)
+    y = x**2 + rng.normal(0, 0.3, 100)
     # Use explicit knots so we don't trigger the shim's scalar-percentile limit.
     knots = np.array([0.2, 0.4, 0.6, 0.8])
     result = splrg(x, y, knots=knots, penalty=10.0)

@@ -6,18 +6,21 @@ A parameter value is in the identified set when the observed sequence
 frequencies lie in the convex hull of the model's sequence probabilities.
 """
 
-import itertools
 import math
 
 import pytest
 
-from morie.fn.bnshrt import (bound_short_panel, identified_set,
-                             in_identified_set, sequence_frequencies,
-                             sequence_probabilities)
+from morie.fn.bnshrt import (
+    bound_short_panel,
+    identified_set,
+    in_identified_set,
+    sequence_frequencies,
+    sequence_probabilities,
+)
 
-X = [[0.5], [-0.2], [0.3]]           # one covariate over T = 3 periods
+X = [[0.5], [-0.2], [0.3]]  # one covariate over T = 3 periods
 BETA, GAMMA = 0.8, 0.6
-SUPPORT = [(-1.0, 0, 0.4), (1.2, 1, 0.6)]   # (alpha, y0, mixing weight)
+SUPPORT = [(-1.0, 0, 0.4), (1.2, 1, 0.6)]  # (alpha, y0, mixing weight)
 
 
 def _logistic(z):
@@ -50,8 +53,7 @@ def test_bnshrt_basic():
 
     # one period: P(y = 1) is the logistic index itself
     one = sequence_probabilities([BETA], GAMMA, [[0.5]], 0.3, 1)
-    assert one[(1,)] == pytest.approx(_logistic(0.5 * BETA + GAMMA + 0.3),
-                                      rel=1e-12)
+    assert one[(1,)] == pytest.approx(_logistic(0.5 * BETA + GAMMA + 0.3), rel=1e-12)
 
     Y = [[0, 1, 1], [0, 1, 1], [1, 0, 0], [1, 1, 1]]
     f = sequence_frequencies(Y)
@@ -62,14 +64,14 @@ def test_bnshrt_basic():
 
 def test_true_parameter_is_feasible_and_a_distant_one_is_not():
     freq = _population_freq()
-    alpha_grid = [-1.0, 1.2]            # contains the true support
+    alpha_grid = [-1.0, 1.2]  # contains the true support
     ok = in_identified_set(freq, [BETA], GAMMA, X, alpha_grid)
     assert ok["feasible"]
     assert ok["discrepancy"] < 1e-6
     # the recovered weights put the true mass on the true support points
-    w = ok["weights"]                   # order: (a, y0) over grid x {0, 1}
-    assert w[0] == pytest.approx(0.4, abs=1e-4)   # alpha=-1, y0=0
-    assert w[3] == pytest.approx(0.6, abs=1e-4)   # alpha=1.2, y0=1
+    w = ok["weights"]  # order: (a, y0) over grid x {0, 1}
+    assert w[0] == pytest.approx(0.4, abs=1e-4)  # alpha=-1, y0=0
+    assert w[3] == pytest.approx(0.6, abs=1e-4)  # alpha=1.2, y0=1
     bad = in_identified_set(freq, [-3.0], -2.5, X, alpha_grid)
     assert not bad["feasible"]
 
@@ -80,8 +82,7 @@ def test_identified_set_contains_the_truth():
     Y = []
     for seq, p in freq.items():
         Y += [list(seq)] * int(round(p * N))
-    res = bound_short_panel(Y, X, [0.0, BETA, 2.5], [-1.5, GAMMA, 2.0],
-                            [-1.0, 1.2])
+    res = bound_short_panel(Y, X, [0.0, BETA, 2.5], [-1.5, GAMMA, 2.0], [-1.0, 1.2])
     assert (BETA, GAMMA) in res["set"]
     assert identified_set is bound_short_panel
 

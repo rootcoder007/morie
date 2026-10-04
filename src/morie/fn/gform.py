@@ -55,6 +55,7 @@ def g_formula(
 
     XA = np.column_stack([np.ones(len(Y)), A, X])
     from morie.fn._array_core import linalg as _acl
+
     lstsq = _acl.lstsq
 
     beta, _, _, _ = lstsq(XA, Y, rcond=None)

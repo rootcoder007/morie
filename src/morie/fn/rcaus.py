@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["random_common_cause_refutation", "random_cause_refutation"]
 
 
-def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0,
-                                   tol=0.1):
+def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0, tol=0.1):
     r"""Add an independent random covariate; the estimate should not move.
 
     A random common cause is independent of everything, so conditioning
@@ -84,11 +83,10 @@ def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0,
     rel = float(abs(mean - orig) / denom)
     # a covariate that genuinely predicts the outcome, as the control
     ctrl = rng.normal(size=n) + yv / max(float(np.std(yv)), 1e-12)
-    sens = float(abs(
-        float(estimator(yv, dv, np.hstack([Xa, ctrl[:, None]]))) - orig
-    ) / denom)
+    sens = float(abs(float(estimator(yv, dv, np.hstack([Xa, ctrl[:, None]]))) - orig) / denom)
     z = float((mean - orig) / (sd / np.sqrt(vals.size))) if sd > 0 else 0.0
     import math
+
     return RichResult(
         payload={
             "estimate": mean,
@@ -122,8 +120,7 @@ def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0,
 
 def cheatsheet():
     return (
-        "rcaus: add an independent covariate and check the estimate holds, "
-        "with a control that catches a trivial pass"
+        "rcaus: add an independent covariate and check the estimate holds, with a control that catches a trivial pass"
     )
 
 

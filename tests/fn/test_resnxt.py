@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.resnxt import block_equivalence, block_parameters, match_complexity, resnext_block
 
-
 X = [0.5, -1.0, 2.0]
 WIN = [[[0.2, -0.1, 0.4], [0.3, 0.5, -0.2]], [[-0.6, 0.1, 0.2], [0.4, 0.4, 0.1]]]
 WMID = [[[1.0, -0.5], [0.2, 0.3]], [[0.7, 0.1], [-0.2, 0.9]]]

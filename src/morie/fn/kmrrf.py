@@ -39,13 +39,9 @@ def kamath_reciprocal_rank_fusion(rankings, k=60):
     if not lists:
         raise ValueError("no rankings supplied.")
     if any(not r for r in lists):
-        raise ValueError(
-            "a ranker returned an empty list; fusing it in silently "
-            "would hide a broken retriever.")
+        raise ValueError("a ranker returned an empty list; fusing it in silently would hide a broken retriever.")
     if k <= 0:
-        raise ValueError(
-            f"k must be positive; got {k}. A non-positive k can divide "
-            "by zero at the top of a list.")
+        raise ValueError(f"k must be positive; got {k}. A non-positive k can divide by zero at the top of a list.")
     scores, seen = {}, {}
     for r in lists:
         if len(set(map(repr, r))) != len(r):
@@ -54,15 +50,19 @@ def kamath_reciprocal_rank_fusion(rankings, k=60):
             scores[doc] = scores.get(doc, 0.0) + 1.0 / (k + pos)
             seen[doc] = seen.get(doc, 0) + 1
     order = sorted(scores, key=lambda d: (-scores[d], repr(d)))
-    return RichResult(payload={
-        "ranking": order,
-        "scores": scores,
-        "appearances": seen,
-        "n_rankers": len(lists),
-        "n_documents": len(scores),
-        "estimate": float(scores[order[0]]),
-        "k": k, "n": len(scores),
-        "method": "Reciprocal rank fusion sum 1/(k + rank)"})
+    return RichResult(
+        payload={
+            "ranking": order,
+            "scores": scores,
+            "appearances": seen,
+            "n_rankers": len(lists),
+            "n_documents": len(scores),
+            "estimate": float(scores[order[0]]),
+            "k": k,
+            "n": len(scores),
+            "method": "Reciprocal rank fusion sum 1/(k + rank)",
+        }
+    )
 
 
 def cheatsheet():

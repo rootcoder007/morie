@@ -1,12 +1,16 @@
 """ttrace -- contact tracing and isolation. Source: Hellewell, J. et
 al. (2020) The Lancet Global Health 8, e488-e496."""
+
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.ttrace import (effective_reproduction_number,
-                             negbinom_offspring,
-                             probability_of_control,
-                             serial_interval_draw, simulate_outbreak)
+from morie.fn.ttrace import (
+    effective_reproduction_number,
+    negbinom_offspring,
+    probability_of_control,
+    serial_interval_draw,
+    simulate_outbreak,
+)
 
 
 def moments(R0, k, n=40000, seed=1):
@@ -40,65 +44,46 @@ def test_small_dispersion_gives_far_more_variance():
 
 def test_zero_r0_produces_no_offspring():
     rng = np.random.default_rng(0)
-    assert all(negbinom_offspring(0.0, 1.0, rng) == 0
-               for _ in range(50))
+    assert all(negbinom_offspring(0.0, 1.0, rng) == 0 for _ in range(50))
 
 
 def test_serial_interval_without_presymptomatic_is_non_negative():
     rng = np.random.default_rng(0)
-    vals = [serial_interval_draw(1.0, 5.0, rng,
-                                 allow_presymptomatic=False)
-            for _ in range(200)]
+    vals = [serial_interval_draw(1.0, 5.0, rng, allow_presymptomatic=False) for _ in range(200)]
     assert all(v >= 0.0 for v in vals)
 
 
 def test_r_eff_never_exceeds_r0():
-    r = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4,
-                                      trace_prob=0.0, draws=4000,
-                                      seed=1)
+    r = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4, trace_prob=0.0, draws=4000, seed=1)
     assert r["R_eff"] <= 2.5 + 1e-9
 
 
 def test_tracing_lowers_r_eff():
-    a = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4,
-                                      trace_prob=0.0, draws=4000,
-                                      seed=1)["R_eff"]
-    b = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4,
-                                      trace_prob=1.0, draws=4000,
-                                      seed=1)["R_eff"]
+    a = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4, trace_prob=0.0, draws=4000, seed=1)["R_eff"]
+    b = effective_reproduction_number(2.5, 4.7, 2.9, 3.8, 2.4, trace_prob=1.0, draws=4000, seed=1)["R_eff"]
     assert b < a
 
 
 def test_a_shorter_delay_lowers_r_eff():
-    a = effective_reproduction_number(2.5, 4.7, 2.9, 9.0, 1.0,
-                                      trace_prob=0.5, draws=4000,
-                                      seed=2)["R_eff"]
-    b = effective_reproduction_number(2.5, 4.7, 2.9, 1.0, 1.0,
-                                      trace_prob=0.5, draws=4000,
-                                      seed=2)["R_eff"]
+    a = effective_reproduction_number(2.5, 4.7, 2.9, 9.0, 1.0, trace_prob=0.5, draws=4000, seed=2)["R_eff"]
+    b = effective_reproduction_number(2.5, 4.7, 2.9, 1.0, 1.0, trace_prob=0.5, draws=4000, seed=2)["R_eff"]
     assert b < a
 
 
 def test_subclinical_cases_survive_perfect_tracing():
-    r = effective_reproduction_number(2.5, 4.7, 2.9, 0.0, 0.001,
-                                      trace_prob=1.0,
-                                      subclinical=0.5, draws=6000,
-                                      seed=3)
+    r = effective_reproduction_number(2.5, 4.7, 2.9, 0.0, 0.001, trace_prob=1.0, subclinical=0.5, draws=6000, seed=3)
     assert r["R_eff"] > 0.9 * 2.5 * 0.5
 
 
 def test_a_subcritical_outbreak_is_controlled():
-    r = probability_of_control(reps=30, seed=1, R0=0.3,
-                               dispersion=0.5, n_initial=5,
-                               trace_prob=0.0, max_weeks=10)
+    r = probability_of_control(reps=30, seed=1, R0=0.3, dispersion=0.5, n_initial=5, trace_prob=0.0, max_weeks=10)
     assert r["probability_of_control"] > 0.9
 
 
 def test_a_supercritical_untraced_outbreak_is_not():
-    r = probability_of_control(reps=30, seed=1, R0=3.5,
-                               dispersion=1.0, n_initial=40,
-                               trace_prob=0.0, delay_mean=8.0,
-                               max_weeks=12)
+    r = probability_of_control(
+        reps=30, seed=1, R0=3.5, dispersion=1.0, n_initial=40, trace_prob=0.0, delay_mean=8.0, max_weeks=12
+    )
     assert r["probability_of_control"] < 0.3
 
 

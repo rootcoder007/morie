@@ -13,8 +13,8 @@ def _lcg_uniforms(count, seed=13):
     s = int(seed)
     out = np.empty(count)
     for i in range(count):
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        out[i] = (s + 0.5) / 2 ** 32
+        s = (1664525 * s + 1013904223) % 2**32
+        out[i] = (s + 0.5) / 2**32
     return out
 
 
@@ -91,11 +91,17 @@ def esl_subsampling(eta, n=None, seed=13):
         n_s = max(1, int(round(eta * n)))
         u = _lcg_uniforms(n, seed)
         idx = sorted(int(v) for v in np.argsort(u, kind="stable")[:n_s])
-    return RichResult(payload={
-        "estimate": n_s if n_s is not None else eta,
-        "eta": eta, "n": n, "n_sampled": n_s, "indices": idx,
-        "cost_multiplier": eta,
-        "method": "stochastic gradient boosting subsample, LCG-deterministic, no replacement"})
+    return RichResult(
+        payload={
+            "estimate": n_s if n_s is not None else eta,
+            "eta": eta,
+            "n": n,
+            "n_sampled": n_s,
+            "indices": idx,
+            "cost_multiplier": eta,
+            "method": "stochastic gradient boosting subsample, LCG-deterministic, no replacement",
+        }
+    )
 
 
 def cheatsheet():

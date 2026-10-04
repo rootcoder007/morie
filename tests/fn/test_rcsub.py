@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcsub -- subset roll calls."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rcsub import rcsub, subset_roll_calls
 
 

@@ -2,8 +2,7 @@
 
 import pytest
 
-from morie.fn.impFB import (als_step, confidence, cost, explain,
-                            implicit_feedback_loss, preference)
+from morie.fn.impFB import als_step, confidence, cost, explain, implicit_feedback_loss, preference
 
 R = [[0, 3, 0, 1, 0], [2, 0, 0, 0, 5], [0, 1, 4, 0, 0], [1, 0, 0, 2, 0]]
 
@@ -18,8 +17,7 @@ def test_impFB_basic():
     slow = als_step(Y, C, P, 0.1, fast=False)
     assert fast == pytest.approx(slow, rel=1e-12)
     for a in range(2):
-        lhs = sum(sum(C[i] * Y[i][a] * Y[i][b] for i in range(5)) * fast[b]
-                  for b in range(2)) + 0.1 * fast[a]
+        lhs = sum(sum(C[i] * Y[i][a] * Y[i][b] for i in range(5)) * fast[b] for b in range(2)) + 0.1 * fast[a]
         assert lhs == pytest.approx(sum(C[i] * P[i] * Y[i][a] for i in range(5)), rel=1e-12)
     r = implicit_feedback_loss(R, f=2, iters=8, seed=1)
     h = r["cost_history"]

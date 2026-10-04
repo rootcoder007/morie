@@ -1,7 +1,6 @@
 """Tests for sgtgrn.sgt_graph_neural_propagation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtgrn import sgt_graph_neural_propagation
 
 

@@ -1,8 +1,6 @@
 """Tests for ggmaft.generalized_gamma_aft."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.ggmaft import generalized_gamma_aft
 
 
@@ -16,8 +14,14 @@ def test_ggmaft_basic():
 
     # Function returns a RichResult with these documented keys
     expected_keys = {
-        "beta", "sigma", "q", "loglik",
-        "lr_vs_weibull", "p_vs_weibull", "lr_vs_lognormal", "preferred",
+        "beta",
+        "sigma",
+        "q",
+        "loglik",
+        "lr_vs_weibull",
+        "p_vs_weibull",
+        "lr_vs_lognormal",
+        "preferred",
     }
     assert expected_keys.issubset(set(result.keys()))
 

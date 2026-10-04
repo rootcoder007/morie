@@ -20,6 +20,7 @@ def test_inits_grid():
     assert r.value.shape == (n, n_dims)
     # Independent numeric check: reproduce the documented formula.
     from morie.fn import _array_core as np
+
     rng = np.random.default_rng(7)
     expected = rng.standard_normal((n, n_dims))
     assert r.value.shape == expected.shape

@@ -79,10 +79,16 @@ def esl_cross_entropy(y, p):
     with np.errstate(divide="ignore", invalid="ignore"):
         terms = np.where(Y > 0, -Y * np.log(p), 0.0)
     per = [float(v) for v in terms.sum(axis=1)]
-    return RichResult(payload={
-        "estimate": float(np.mean(per)), "per_observation": per,
-        "n": int(n), "K": int(K), "label_form": form,
-        "method": "cross-entropy -sum y_k log p_k, mean over observations"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(per)),
+            "per_observation": per,
+            "n": int(n),
+            "K": int(K),
+            "label_form": form,
+            "method": "cross-entropy -sum y_k log p_k, mean over observations",
+        }
+    )
 
 
 def cheatsheet():

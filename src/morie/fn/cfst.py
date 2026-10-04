@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["causal_forest"]
 
 
-def causal_forest(Y, T, X, n_trees=200, min_node_size=10, max_depth=6,
-                  mtry=None, subsample=0.5, seed=0):
+def causal_forest(Y, T, X, n_trees=200, min_node_size=10, max_depth=6, mtry=None, subsample=0.5, seed=0):
     r"""Honest causal forest, over the shared engine in ``_cforest``.
 
     A causal forest is not a random forest fitted to the treatment
@@ -74,8 +73,11 @@ def causal_forest(Y, T, X, n_trees=200, min_node_size=10, max_depth=6,
     y = np.asarray(Y, dtype=float).ravel()
     t = np.asarray(T, dtype=float).ravel()
     forest = CausalForest(
-        n_trees=int(n_trees), min_leaf=int(min_node_size),
-        max_depth=int(max_depth), mtry=mtry, subsample=float(subsample),
+        n_trees=int(n_trees),
+        min_leaf=int(min_node_size),
+        max_depth=int(max_depth),
+        mtry=mtry,
+        subsample=float(subsample),
         seed=int(seed),
     ).fit(Xa, y, t)
 

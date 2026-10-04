@@ -2,9 +2,18 @@
 
 import math
 
-from morie.fn.limmav import (digamma, ebayes, limma_voom, limmav, log_cpm,
-                             lowess, trigamma, trigamma_inverse, voom,
-                             voom_weights)
+from morie.fn.limmav import (
+    digamma,
+    ebayes,
+    limma_voom,
+    limmav,
+    log_cpm,
+    lowess,
+    trigamma,
+    trigamma_inverse,
+    voom,
+    voom_weights,
+)
 
 
 def _lcg(seed):
@@ -13,6 +22,7 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -26,15 +36,12 @@ def _nb(rnd, mu, disp):
         v = (1.0 + c * z) ** 3
         if v <= 0:
             continue
-        if math.log(max(rnd(), 1e-12)) < 0.5 * z * z + d - d * v + \
-                d * math.log(v):
+        if math.log(max(rnd(), 1e-12)) < 0.5 * z * z + d - d * v + d * math.log(v):
             lam = mu * d * v / shape
             break
     if lam > 400:
         u1 = max(rnd(), 1e-12)
-        return max(0, int(lam + math.sqrt(lam) *
-                          math.sqrt(-2 * math.log(u1)) *
-                          math.cos(2 * math.pi * rnd())))
+        return max(0, int(lam + math.sqrt(lam) * math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * rnd())))
     L, k, p = math.exp(-lam), 0, 1.0
     while True:
         p *= max(rnd(), 1e-12)
@@ -55,8 +62,7 @@ def _panel(n_genes=120, seed=11, up=0, down=0):
         disp = 0.05 + 0.15 * rnd()
         lfc = 2.0 if g < up else (-2.0 if g < up + down else 0.0)
         row = [_nb(rnd, base * LIBS[i] / 1e6, disp) for i in range(3)]
-        row += [_nb(rnd, base * 2 ** lfc * LIBS[i] / 1e6, disp)
-                for i in range(3, 6)]
+        row += [_nb(rnd, base * 2**lfc * LIBS[i] / 1e6, disp) for i in range(3, 6)]
         K.append(row)
         truth.append(lfc != 0.0)
     return K, truth
@@ -126,9 +132,7 @@ def test_the_trend_is_steep_where_poisson_noise_dominates():
     def pois(lam):
         if lam > 400:
             u1 = max(rnd(), 1e-12)
-            return max(0, int(lam + math.sqrt(lam) *
-                              math.sqrt(-2 * math.log(u1)) *
-                              math.cos(2 * math.pi * rnd())))
+            return max(0, int(lam + math.sqrt(lam) * math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * rnd())))
         L, k, p = math.exp(-lam), 0, 1.0
         while True:
             p *= max(rnd(), 1e-12)
@@ -152,8 +156,7 @@ def test_weighted_and_unweighted_fits_differ():
     K, _ = _panel()
     w = limmav(K, DESIGN)
     u = limmav(K, DESIGN, weights=False)
-    assert max(abs(w["estimate"][g] - u["estimate"][g])
-               for g in range(len(K))) > 1e-6
+    assert max(abs(w["estimate"][g] - u["estimate"][g]) for g in range(len(K))) > 1e-6
 
 
 def test_t_distribution_and_testing():
@@ -163,8 +166,7 @@ def test_t_distribution_and_testing():
     for g in (0, 50, 99):
         assert abs(r["t"][g] * r["se"][g] - r["estimate"][g]) < 1e-9
     assert all(0.0 <= p <= 1.0 for p in r["pvalue"])
-    assert all(r["padj"][g] >= r["pvalue"][g] - 1e-12
-               for g in range(len(K)))
+    assert all(r["padj"][g] >= r["pvalue"][g] - 1e-12 for g in range(len(K)))
 
 
 def test_detects_planted_genes():
@@ -180,13 +182,15 @@ def test_detects_planted_genes():
 
 def test_validation():
     K, _ = _panel(n_genes=20)
-    for call in (lambda: limmav([], ["A", "B"]),
-                 lambda: log_cpm([[-1, 2]], [10.0, 10.0]),
-                 lambda: log_cpm([[1, 2]], [0.0, 10.0]),
-                 lambda: limmav(K, [[1.0, 0.0]] * 4),
-                 lambda: limmav(K, ["A"] * 6),
-                 lambda: limmav(K, DESIGN, contrast=[1.0]),
-                 lambda: lowess([1.0, 2.0], [1.0, 2.0], span=0.0)):
+    for call in (
+        lambda: limmav([], ["A", "B"]),
+        lambda: log_cpm([[-1, 2]], [10.0, 10.0]),
+        lambda: log_cpm([[1, 2]], [0.0, 10.0]),
+        lambda: limmav(K, [[1.0, 0.0]] * 4),
+        lambda: limmav(K, ["A"] * 6),
+        lambda: limmav(K, DESIGN, contrast=[1.0]),
+        lambda: lowess([1.0, 2.0], [1.0, 2.0], span=0.0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")
@@ -200,11 +204,10 @@ def test_alias():
 
 def test_digamma_and_trigamma_against_closed_forms():
     assert abs(digamma(1.0) + 0.5772156649015329) < 1e-10
-    assert abs(digamma(0.5) -
-               (-0.5772156649015329 - 2.0 * math.log(2.0))) < 1e-10
+    assert abs(digamma(0.5) - (-0.5772156649015329 - 2.0 * math.log(2.0))) < 1e-10
     for x in (0.3, 1.7, 4.2, 30.0):
         assert abs(digamma(x + 1.0) - digamma(x) - 1.0 / x) < 1e-10
-    assert abs(trigamma(1.0) - math.pi ** 2 / 6.0) < 1e-12
+    assert abs(trigamma(1.0) - math.pi**2 / 6.0) < 1e-12
 
 
 def test_trigamma_inverse_round_trip():
@@ -239,8 +242,9 @@ def test_ebayes_recovers_its_own_hyperparameters():
         assert abs(eb["s2_post"][g] - want) < 1e-12
         assert abs(eb["df_total"][g] - (dg + eb["d0"])) < 1e-12
     # Every posterior variance lies between the prior and the gene's own.
-    assert all(min(eb["s0_sq"], s2[g]) - 1e-12 <= eb["s2_post"][g] <=
-               max(eb["s0_sq"], s2[g]) + 1e-12 for g in range(len(s2)))
+    assert all(
+        min(eb["s0_sq"], s2[g]) - 1e-12 <= eb["s2_post"][g] <= max(eb["s0_sq"], s2[g]) + 1e-12 for g in range(len(s2))
+    )
 
 
 def test_ebayes_degenerate_branch():
@@ -259,12 +263,10 @@ def test_moderation_is_on_by_default_and_can_be_turned_off():
     assert ord_["d0"] is None and ord_["df_total"] is None
     assert mod["df_total"][0] > ord_["df"]
     # Moderation touches the denominator only.
-    assert all(abs(mod["estimate"][g] - ord_["estimate"][g]) < 1e-12
-               for g in range(len(K)))
+    assert all(abs(mod["estimate"][g] - ord_["estimate"][g]) < 1e-12 for g in range(len(K)))
     tiny = sorted(range(len(K)), key=lambda g: mod["s2_gene"][g])[:30]
     assert all(mod["s2_post"][g] > mod["s2_gene"][g] for g in tiny)
-    assert sum(1 for g in tiny
-               if abs(mod["t"][g]) < abs(ord_["t"][g])) >= 28
+    assert sum(1 for g in tiny if abs(mod["t"][g]) < abs(ord_["t"][g])) >= 28
     big = sorted(range(len(K)), key=lambda g: -mod["s2_gene"][g])[:30]
     assert all(mod["s2_post"][g] < mod["s2_gene"][g] for g in big)
 
@@ -273,8 +275,6 @@ def test_moderation_buys_power_at_n_equals_three():
     K, truth = _panel(n_genes=200, seed=77, up=20, down=20)
     mod = limmav(K, DESIGN)
     ord_ = limmav(K, DESIGN, moderate=False)
-    tp_m = sum(1 for g in range(200)
-               if mod["padj"][g] < 0.1 and truth[g])
-    tp_o = sum(1 for g in range(200)
-               if ord_["padj"][g] < 0.1 and truth[g])
+    tp_m = sum(1 for g in range(200) if mod["padj"][g] < 0.1 and truth[g])
+    tp_o = sum(1 for g in range(200) if ord_["padj"][g] < 0.1 and truth[g])
     assert tp_m >= tp_o + 10

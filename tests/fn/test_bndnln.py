@@ -14,10 +14,12 @@ def _moment_fn(data, theta):
     orientation of `g`.
     """
     n = data.shape[0]
-    return np.column_stack([
-        np.full(n, theta - 1.0),
-        np.full(n, theta - 2.0),
-    ])
+    return np.column_stack(
+        [
+            np.full(n, theta - 1.0),
+            np.full(n, theta - 2.0),
+        ]
+    )
 
 
 def test_bndnln_basic():
@@ -33,10 +35,18 @@ def test_bndnln_basic():
     result = bound_nonlinear(data, _moment_fn, theta_grid=0.0)
 
     # Documented keys.
-    for key in ("theta_grid", "criterion", "critical_value",
-                "in_confidence_set", "set_estimate",
-                "confidence_set_bounds", "n_binding_max", "n", "J",
-                "method"):
+    for key in (
+        "theta_grid",
+        "criterion",
+        "critical_value",
+        "in_confidence_set",
+        "set_estimate",
+        "confidence_set_bounds",
+        "n_binding_max",
+        "n",
+        "J",
+        "method",
+    ):
         assert key in result, f"missing key {key!r} in result"
 
     # Deep inside the identified set: every sample moment equals its
@@ -63,7 +73,11 @@ def test_bndnln_basic():
     # SD = 0 each, so the function substitutes 1.0 and t = sqrt(n)*2 and
     # sqrt(n)*1, giving the independent value below.
     result_outside = bound_nonlinear(
-        data, _moment_fn, theta_grid=3.0, B=50, seed=0,
+        data,
+        _moment_fn,
+        theta_grid=3.0,
+        B=50,
+        seed=0,
     )
     Q_outside = float(result_outside["criterion"][0])
     n = 200
@@ -79,8 +93,7 @@ def test_bndnln_edge():
     data = rng_x.normal(0.0, 1.0, (100, 3))
 
     grid = np.linspace(-0.5, 0.5, 5)
-    result = bound_nonlinear(data, _moment_fn, theta_grid=grid,
-                             alpha=0.1, B=50, seed=1)
+    result = bound_nonlinear(data, _moment_fn, theta_grid=grid, alpha=0.1, B=50, seed=1)
 
     # Confidence-set bounds should bracket the grid values that are
     # inside the region; for this dataset every grid point sits inside

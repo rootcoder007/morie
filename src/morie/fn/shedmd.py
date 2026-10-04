@@ -24,7 +24,10 @@ def shedcurve(days, load, t_peak, t_plateau):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Piecewise log-linear shedding curve", payload=_c.shedcurve(days=days, load=load, t_peak=t_peak, t_plateau=t_plateau))
+    return RichResult(
+        title="Piecewise log-linear shedding curve",
+        payload=_c.shedcurve(days=days, load=load, t_peak=t_peak, t_plateau=t_plateau),
+    )
 
 
 viral_shedding_model = shedcurve

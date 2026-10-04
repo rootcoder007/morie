@@ -99,8 +99,8 @@ def dr_clustered_did(y, D, X=None, cluster=None):
         summary_lines=[("clusters", G)],
         payload={
             "estimate": fit["tau"],
-            "se": v_cr ** 0.5,
-            "se_iid": v_iid ** 0.5,
+            "se": v_cr**0.5,
+            "se_iid": v_iid**0.5,
             "vif": (v_cr / v_iid) if v_iid > 0.0 else float("nan"),
             "n_clusters": G,
             "dof_adj": adj,

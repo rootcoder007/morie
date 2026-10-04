@@ -64,10 +64,17 @@ def betweenness_centrality(A, node=0):
     est = ordered / 2.0 if sym else ordered
     denom = (n - 1) * (n - 2) / 2.0 if sym else (n - 1) * (n - 2)
     norm = est / denom if denom > 0 else 0.0
-    return RichResult(payload={
-        "estimate": est, "normalized": norm, "cb_ordered": ordered,
-        "node": v, "n": n, "symmetric": 1.0 if sym else 0.0,
-        "method": "Freeman betweenness centrality"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "normalized": norm,
+            "cb_ordered": ordered,
+            "node": v,
+            "n": n,
+            "symmetric": 1.0 if sym else 0.0,
+            "method": "Freeman betweenness centrality",
+        }
+    )
 
 
 betweennesscentrality = betweenness_centrality

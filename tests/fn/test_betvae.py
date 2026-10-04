@@ -1,7 +1,6 @@
 """Tests for betvae.beta_vae_disentangle."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.betvae import beta_vae_disentangle
 
 
@@ -18,17 +17,14 @@ def test_betvae_basic():
     result = beta_vae_disentangle(x, xhat, mu, logvar, beta)
     assert isinstance(result, dict)
     # Documented keys from the RichResult payload.
-    for key in ("objective", "recon", "kl", "klper", "penalty",
-                "beta", "J", "d"):
+    for key in ("objective", "recon", "kl", "klper", "penalty", "beta", "J", "d"):
         assert key in result, f"missing key: {key}"
 
     # Recompute the expected quantities from the documented formulas
     # using plain arithmetic on the same inputs.
     nv = 1.0
-    rec_expected = -sum((x[i] - xhat[i]) ** 2 for i in range(d)) / (2.0 * nv) \
-        - 0.5 * d * np.log(2.0 * np.pi * nv)
-    per_expected = [0.5 * (mu[j] * mu[j] + np.exp(logvar[j]) - 1.0 - logvar[j])
-                    for j in range(J)]
+    rec_expected = -sum((x[i] - xhat[i]) ** 2 for i in range(d)) / (2.0 * nv) - 0.5 * d * np.log(2.0 * np.pi * nv)
+    per_expected = [0.5 * (mu[j] * mu[j] + np.exp(logvar[j]) - 1.0 - logvar[j]) for j in range(J)]
     kl_expected = sum(per_expected)
     pen_expected = beta * kl_expected
     obj_expected = rec_expected - pen_expected
@@ -62,8 +58,6 @@ def test_betvae_edge():
     # Capacity variant with explicit gamma.
     C = 10.0
     gamma = 1.5
-    result_cap = beta_vae_disentangle(x, xhat, mu, logvar, beta=4.0,
-                                      capacity=C, gamma=gamma)
+    result_cap = beta_vae_disentangle(x, xhat, mu, logvar, beta=4.0, capacity=C, gamma=gamma)
     assert np.allclose(result_cap["penalty"], gamma * abs(result_cap["kl"] - C))
-    assert np.allclose(result_cap["objective"],
-                       result_cap["recon"] - result_cap["penalty"])
+    assert np.allclose(result_cap["objective"], result_cap["recon"] - result_cap["penalty"])

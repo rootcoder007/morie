@@ -29,12 +29,15 @@ def kamath_ch2_scaled_dot_score(q, k, d_k=None):
         raise ValueError("q and k must have the same dimension.")
     d = len(q) if d_k is None else int(d_k)
     if d != len(q):
-        raise ValueError(
-            f"d_k = {d} contradicts the vector dimension {len(q)}.")
-    return RichResult(payload={
-        "estimate": float(np.dot(q, k) / np.sqrt(d)), "d_k": d,
-        "n": len(q),
-        "method": "Scaled dot score (Kamath Eq 2.11)"})
+        raise ValueError(f"d_k = {d} contradicts the vector dimension {len(q)}.")
+    return RichResult(
+        payload={
+            "estimate": float(np.dot(q, k) / np.sqrt(d)),
+            "d_k": d,
+            "n": len(q),
+            "method": "Scaled dot score (Kamath Eq 2.11)",
+        }
+    )
 
 
 def cheatsheet():

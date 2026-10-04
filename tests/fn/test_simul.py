@@ -1,7 +1,6 @@
 """Tests for morie.fn.simul -- simulation goodness of fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import TestResult
 from morie.fn.simul import simul, simulation_gof
 

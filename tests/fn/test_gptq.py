@@ -1,7 +1,6 @@
 """Tests for morie.fn.gptq — GPTQ weight quantizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gptq import gptq_quantize
 
 

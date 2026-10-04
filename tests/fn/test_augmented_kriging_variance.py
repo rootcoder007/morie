@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.augmented_kriging_variance import (
     augmented_kriging_variance,
 )

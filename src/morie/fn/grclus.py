@@ -58,8 +58,6 @@ parts each side still has to produce, so an odd ``k`` splits unevenly on
 purpose.
 """
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -76,6 +74,7 @@ __all__ = [
 
 # ------------------------------------------------------------ graph type
 
+
 def _as_graph(A, name="A"):
     """Adjacency matrix or edge list to ``{u: {v: w}}``, symmetric."""
     rows = [list(map(float, r)) for r in np.asarray(A, dtype=float)]
@@ -83,8 +82,7 @@ def _as_graph(A, name="A"):
         raise ValueError("grclus: %s is empty" % name)
     n = len(rows)
     if len(rows[0]) != n:
-        raise ValueError("grclus: %s must be a square adjacency matrix "
-                         "(got %d x %d)" % (name, n, len(rows[0])))
+        raise ValueError("grclus: %s must be a square adjacency matrix (got %d x %d)" % (name, n, len(rows[0])))
     adj = [{} for _ in range(n)]
     for i in range(n):
         if len(rows[i]) != n:
@@ -92,17 +90,16 @@ def _as_graph(A, name="A"):
         for j in range(n):
             w = rows[i][j]
             if w != w or w in (float("inf"), float("-inf")):
-                raise ValueError("grclus: %s contains a non-finite value"
-                                 % name)
+                raise ValueError("grclus: %s contains a non-finite value" % name)
             if w < 0:
-                raise ValueError("grclus: edge weights must be "
-                                 "non-negative (found %g)" % w)
+                raise ValueError("grclus: edge weights must be non-negative (found %g)" % w)
             if i == j or w == 0.0:
                 continue
             if abs(w - rows[j][i]) > 1e-9 * max(1.0, abs(w)):
-                raise ValueError("grclus: %s must be symmetric; entry "
-                                 "(%d, %d) is %g but (%d, %d) is %g"
-                                 % (name, i, j, w, j, i, rows[j][i]))
+                raise ValueError(
+                    "grclus: %s must be symmetric; entry "
+                    "(%d, %d) is %g but (%d, %d) is %g" % (name, i, j, w, j, i, rows[j][i])
+                )
             adj[i][j] = w
     return adj
 
@@ -113,11 +110,9 @@ def total_edge_weight(adj):
 
 def edge_cut(A, parts):
     """Total weight of edges whose endpoints are in different parts."""
-    adj = A if isinstance(A, list) and A and isinstance(A[0], dict) \
-        else _as_graph(A)
+    adj = A if isinstance(A, list) and A and isinstance(A[0], dict) else _as_graph(A)
     if len(parts) != len(adj):
-        raise ValueError("grclus: the partition has %d entries for %d "
-                         "vertices" % (len(parts), len(adj)))
+        raise ValueError("grclus: the partition has %d entries for %d vertices" % (len(parts), len(adj)))
     cut = 0.0
     for u in range(len(adj)):
         for v, w in adj[u].items():
@@ -127,6 +122,7 @@ def edge_cut(A, parts):
 
 
 # ------------------------------------------------------------ coarsening
+
 
 def match_vertices(adj, scheme="hem", seed=17, order=None):
     """One matching, by the paper's RM, HEM or LEM rule.
@@ -153,13 +149,11 @@ def match_vertices(adj, scheme="hem", seed=17, order=None):
         elif scheme == "hem":
             best = max(adj[u][v] for v in cands)
             tie = [v for v in cands if adj[u][v] == best]
-            v = tie[0] if len(tie) == 1 else tie[int(rng.integers(
-                0, len(tie)))]
+            v = tie[0] if len(tie) == 1 else tie[int(rng.integers(0, len(tie)))]
         else:
             best = min(adj[u][v] for v in cands)
             tie = [v for v in cands if adj[u][v] == best]
-            v = tie[0] if len(tie) == 1 else tie[int(rng.integers(
-                0, len(tie)))]
+            v = tie[0] if len(tie) == 1 else tie[int(rng.integers(0, len(tie)))]
         mate[u], mate[v] = v, u
         matched[u] = matched[v] = True
     return mate
@@ -207,6 +201,7 @@ def coarsen(adj, vw, mate):
 
 # ------------------------------------------------------- initial cut
 
+
 def _gains(adj, parts, side):
     """g_v = external weight - internal weight, for a bisection."""
     g = [0.0] * len(adj)
@@ -241,16 +236,14 @@ def _grow_partition(adj, vw, target, seed, greedy=True, n_starts=None):
                 # gain of inserting v into the growing region
                 best_v, best_g = None, None
                 for v in frontier:
-                    ins = sum(w for u, w in adj[v].items()
-                              if parts[u] == 0)
-                    out = sum(w for u, w in adj[v].items()
-                              if parts[u] == 1)
+                    ins = sum(w for u, w in adj[v].items() if parts[u] == 0)
+                    out = sum(w for u, w in adj[v].items() if parts[u] == 1)
                     g = ins - out
                     if best_g is None or g > best_g:
                         best_g, best_v = g, v
                 v = best_v
             else:
-                v = next(iter(frontier))          # breadth-first order
+                v = next(iter(frontier))  # breadth-first order
             del frontier[v]
             parts[v] = 0
             weight += vw[v]
@@ -267,8 +260,8 @@ def _grow_partition(adj, vw, target, seed, greedy=True, n_starts=None):
 
 # ------------------------------------------------------- refinement
 
-def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True,
-                  max_passes=10, patience=50):
+
+def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True, max_passes=10, patience=50):
     r"""KL refinement of a bisection, in the paper's form.
 
     Each pass repeatedly moves the highest-gain unmarked vertex out of the
@@ -281,8 +274,8 @@ def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True,
     n = len(adj)
     parts = list(parts)
     total_w = sum(vw)
-    lo = (target - tolerance * total_w)
-    hi = (target + tolerance * total_w)
+    lo = target - tolerance * total_w
+    hi = target + tolerance * total_w
     best_cut = edge_cut(adj, parts)
     for _ in range(int(max_passes)):
         g = _gains(adj, parts, 0)
@@ -296,8 +289,7 @@ def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True,
             for v in range(n):
                 if locked[v]:
                     continue
-                if boundary and not any(parts[u] != parts[v]
-                                        for u in adj[v]):
+                if boundary and not any(parts[u] != parts[v] for u in adj[v]):
                     continue
                 # A move is allowed if it leaves the partition inside
                 # the balance window -- or, when the partition is already
@@ -341,6 +333,7 @@ def kernighan_lin(adj, vw, parts, target, tolerance=0.03, boundary=True,
 
 # ------------------------------------------------------- the bisection
 
+
 def balance_bisection(adj, vw, parts, target, tolerance=0.03):
     """Force a bisection inside the balance window, cheapest moves first.
 
@@ -372,8 +365,7 @@ def balance_bisection(adj, vw, parts, target, tolerance=0.03):
     return parts
 
 
-def _bisect(adj, vw, target, matching="hem", initial="gggp",
-            refinement="bkl", tolerance=0.03, coarsest=20, seed=17):
+def _bisect(adj, vw, target, matching="hem", initial="gggp", refinement="bkl", tolerance=0.03, coarsest=20, seed=17):
     levels = []
     cur_adj, cur_vw = adj, list(vw)
     guard = 0
@@ -382,29 +374,24 @@ def _bisect(adj, vw, target, matching="hem", initial="gggp",
         mate = match_vertices(cur_adj, matching, seed + guard)
         nxt_adj, nxt_vw, mapping = coarsen(cur_adj, cur_vw, mate)
         if len(nxt_adj) >= len(cur_adj):
-            break                      # nothing collapsed; stop coarsening
+            break  # nothing collapsed; stop coarsening
         levels.append((cur_adj, cur_vw, mapping))
         cur_adj, cur_vw = nxt_adj, nxt_vw
 
     scale = sum(cur_vw) / sum(vw) if sum(vw) else 1.0
-    parts = _grow_partition(cur_adj, cur_vw, target * scale, seed,
-                            greedy=(initial == "gggp"))
-    parts, _ = kernighan_lin(cur_adj, cur_vw, parts, target * scale,
-                             tolerance, boundary=(refinement == "bkl"))
+    parts = _grow_partition(cur_adj, cur_vw, target * scale, seed, greedy=(initial == "gggp"))
+    parts, _ = kernighan_lin(cur_adj, cur_vw, parts, target * scale, tolerance, boundary=(refinement == "bkl"))
     for lvl_adj, lvl_vw, mapping in reversed(levels):
         parts = [parts[mapping[u]] for u in range(len(lvl_adj))]
         scale = sum(lvl_vw) / sum(vw) if sum(vw) else 1.0
-        parts = balance_bisection(lvl_adj, lvl_vw, parts, target * scale,
-                                  tolerance)
-        parts, _ = kernighan_lin(lvl_adj, lvl_vw, parts, target * scale,
-                                 tolerance,
-                                 boundary=(refinement == "bkl"))
+        parts = balance_bisection(lvl_adj, lvl_vw, parts, target * scale, tolerance)
+        parts, _ = kernighan_lin(lvl_adj, lvl_vw, parts, target * scale, tolerance, boundary=(refinement == "bkl"))
     return balance_bisection(adj, vw, parts, target, tolerance)
 
 
-def metis_partition(A, k=2, weights=None, matching="hem", initial="gggp",
-                    refinement="bkl", tolerance=0.03, coarsest=20,
-                    seed=17):
+def metis_partition(
+    A, k=2, weights=None, matching="hem", initial="gggp", refinement="bkl", tolerance=0.03, coarsest=20, seed=17
+):
     """Multilevel recursive bisection into ``k`` parts."""
     adj = _as_graph(A)
     n = len(adj)
@@ -412,8 +399,7 @@ def metis_partition(A, k=2, weights=None, matching="hem", initial="gggp",
     if k < 1:
         raise ValueError("grclus: k must be at least 1")
     if k > n:
-        raise ValueError("grclus: k = %d exceeds the %d vertices"
-                         % (k, n))
+        raise ValueError("grclus: k = %d exceeds the %d vertices" % (k, n))
     if matching not in ("hem", "rm", "lem"):
         raise ValueError("grclus: matching must be 'hem', 'rm' or 'lem'")
     if initial not in ("gggp", "ggp"):
@@ -425,15 +411,14 @@ def metis_partition(A, k=2, weights=None, matching="hem", initial="gggp",
     if weights is None:
         vw = [1.0] * n
     else:
-        vw = [float(t) for t in np.atleast_1d(np.asarray(weights,
-                                                         dtype=float))]
+        vw = [float(t) for t in np.atleast_1d(np.asarray(weights, dtype=float))]
         if len(vw) != n:
-            raise ValueError("grclus: weights has %d entries for %d "
-                             "vertices" % (len(vw), n))
+            raise ValueError("grclus: weights has %d entries for %d vertices" % (len(vw), n))
         if any(t <= 0 for t in vw):
             raise ValueError("grclus: vertex weights must be positive")
 
     parts = [0] * n
+
     # recursive bisection; each call splits a set of vertices into two
     # groups sized by how many parts each side still owes
     def rec(members, n_parts, label, depth):
@@ -444,11 +429,10 @@ def metis_partition(A, k=2, weights=None, matching="hem", initial="gggp",
         left_parts = n_parts // 2
         sub_adj, sub_vw, index = _subgraph(adj, vw, members)
         target = sum(sub_vw) * left_parts / float(n_parts)
-        cut = _bisect(sub_adj, sub_vw, target, matching, initial,
-                      refinement, tolerance, coarsest, seed + depth)
+        cut = _bisect(sub_adj, sub_vw, target, matching, initial, refinement, tolerance, coarsest, seed + depth)
         left = [members[i] for i in range(len(members)) if cut[i] == 0]
         right = [members[i] for i in range(len(members)) if cut[i] == 1]
-        if not left or not right:            # degenerate; split by index
+        if not left or not right:  # degenerate; split by index
             half = max(1, len(members) * left_parts // n_parts)
             left, right = members[:half], members[half:]
         rec(left, left_parts, label, depth + 1)
@@ -464,29 +448,34 @@ def metis_partition(A, k=2, weights=None, matching="hem", initial="gggp",
     cut = edge_cut(adj, parts)
     total = total_edge_weight(adj)
     ideal = sum(vw) / float(k)
-    return RichResult(payload={
-        "estimate": cut,
-        "partition": parts,
-        "edge_cut": cut,
-        "k": k,
-        "sizes": sizes,
-        "part_weights": part_w,
-        "balance": (max(part_w) / ideal) if ideal > 0 else 1.0,
-        "total_edge_weight": total,
-        "cut_fraction": (cut / total) if total > 0 else 0.0,
-        "matching": matching,
-        "initial": initial,
-        "refinement": refinement,
-        "tolerance": tolerance,
-        "n": n,
-        "method": ("multilevel recursive bisection (Karypis & Kumar "
-                   "1998): %s matching, %s initial partition, %s "
-                   "refinement" % (matching.upper(), initial.upper(),
-                                   refinement.upper())),
-        "note": ("edge_cut is the total weight of edges between parts; "
-                 "balance is the heaviest part divided by the ideal "
-                 "equal share, so 1.0 is perfect"),
-    })
+    return RichResult(
+        payload={
+            "estimate": cut,
+            "partition": parts,
+            "edge_cut": cut,
+            "k": k,
+            "sizes": sizes,
+            "part_weights": part_w,
+            "balance": (max(part_w) / ideal) if ideal > 0 else 1.0,
+            "total_edge_weight": total,
+            "cut_fraction": (cut / total) if total > 0 else 0.0,
+            "matching": matching,
+            "initial": initial,
+            "refinement": refinement,
+            "tolerance": tolerance,
+            "n": n,
+            "method": (
+                "multilevel recursive bisection (Karypis & Kumar "
+                "1998): %s matching, %s initial partition, %s "
+                "refinement" % (matching.upper(), initial.upper(), refinement.upper())
+            ),
+            "note": (
+                "edge_cut is the total weight of edges between parts; "
+                "balance is the heaviest part divided by the ideal "
+                "equal share, so 1.0 is perfect"
+            ),
+        }
+    )
 
 
 def _subgraph(adj, vw, members):
@@ -506,12 +495,14 @@ def graph_clustering(A, k=2, **kw):
 
 
 def cheatsheet():
-    return ("grclus: multilevel graph partitioning (Karypis & Kumar "
-            "1998, METIS). Coarsen by matching (hem/rm/lem) so that "
-            "W(E_{i+1}) = W(E_i) - W(M_i) and the coarse cut equals the "
-            "fine cut; partition the coarsest graph by growing a region "
-            "(gggp greedy, 4 starts; ggp breadth-first, 10 starts); "
-            "uncoarsen, refining at every level with KL moves of gain "
-            "g_v = external - internal weight, stopping after 50 "
-            "unproductive moves and rolling back. bkl looks only at "
-            "boundary vertices. k parts by recursive bisection.")
+    return (
+        "grclus: multilevel graph partitioning (Karypis & Kumar "
+        "1998, METIS). Coarsen by matching (hem/rm/lem) so that "
+        "W(E_{i+1}) = W(E_i) - W(M_i) and the coarse cut equals the "
+        "fine cut; partition the coarsest graph by growing a region "
+        "(gggp greedy, 4 starts; ggp breadth-first, 10 starts); "
+        "uncoarsen, refining at every level with KL moves of gain "
+        "g_v = external - internal weight, stopping after 50 "
+        "unproductive moves and rolling back. bkl looks only at "
+        "boundary vertices. k parts by recursive bisection."
+    )

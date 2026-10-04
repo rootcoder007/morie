@@ -53,8 +53,7 @@ from ._richresult import RichResult
 __all__ = ["vae_cf"]
 
 
-def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None,
-           w_scale=1.0, skip=0):
+def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None, w_scale=1.0, skip=0):
     """Mult-VAE ELBO and top-K ranking metrics.
 
     Parameters
@@ -111,7 +110,7 @@ def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None,
             if v < 0.0:
                 raise ValueError("vae_cf: R must be non-negative")
     K = int(K)
-    if K < 1 or K > ni:
+    if K < 1 or ni < K:
         raise ValueError("vae_cf: K must lie in 1 .. n_items")
     m = int(latent_dim)
     if m < 1:
@@ -198,8 +197,8 @@ def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None,
         for r in range(K):
             h = 1.0 if R0[u][idx[r]] > 0.0 else 0.0
             hit += int(h)
-            dcg += (2.0 ** h - 1.0) / math.log(r + 2.0, 2.0)
-        den = K if K < nrel else nrel
+            dcg += (2.0**h - 1.0) / math.log(r + 2.0, 2.0)
+        den = K if nrel > K else nrel
         rec[u] = hit / den if den > 0 else 0.0
         ide = 0.0
         for r in range(den):
@@ -236,6 +235,7 @@ def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None,
 
 def cheatsheet():
     return "vaeCF: multinomial VAE for collaborative filtering (Liang et al. 2018)"
+
 
 # public names resolved by fn/_lazy_map.json
 vaecf = vae_cf

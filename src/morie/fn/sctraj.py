@@ -79,7 +79,6 @@ the shrunken curves.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = [
@@ -120,9 +119,9 @@ def _solve(A, b):
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-12:
-            raise ValueError("sctraj: the pooled covariance is singular; "
-                             "use cov='diagonal' as the paper suggests "
-                             "for small clusters")
+            raise ValueError(
+                "sctraj: the pooled covariance is singular; use cov='diagonal' as the paper suggests for small clusters"
+            )
         M[c], M[piv] = M[piv], M[c]
         for r in range(n):
             if r == c:
@@ -155,16 +154,14 @@ def cluster_distances(X, labels, cov="full", weights=None):
         weights = [1.0] * n
     weights = [float(w) for w in weights]
     if len(weights) != n or any(w < 0 for w in weights):
-        raise ValueError("sctraj: one non-negative weight per cell is "
-                         "required")
+        raise ValueError("sctraj: one non-negative weight per cell is required")
     centers, covs = {}, {}
     for c in names:
         idx = [i for i in range(n) if lab[i] == c]
         wsum = sum(weights[i] for i in idx)
         if wsum <= 0:
             raise ValueError("sctraj: cluster %r has no weight" % (c,))
-        mu = [sum(weights[i] * rows[i][j] for i in idx) / wsum
-              for j in range(p)]
+        mu = [sum(weights[i] * rows[i][j] for i in idx) / wsum for j in range(p)]
         S = [[0.0] * p for _ in range(p)]
         if cov != "euclidean" and len(idx) > 1:
             denom = wsum - (sum(weights[i] ** 2 for i in idx) / wsum)
@@ -173,9 +170,7 @@ def cluster_distances(X, labels, cov="full", weights=None):
                 for b in range(p):
                     if cov == "diagonal" and a != b:
                         continue
-                    S[a][b] = sum(weights[i] * (rows[i][a] - mu[a]) *
-                                  (rows[i][b] - mu[b])
-                                  for i in idx) / denom
+                    S[a][b] = sum(weights[i] * (rows[i][a] - mu[a]) * (rows[i][b] - mu[b]) for i in idx) / denom
         centers[c] = mu
         covs[c] = S
     D = {}
@@ -188,16 +183,14 @@ def cluster_distances(X, labels, cov="full", weights=None):
             if cov == "euclidean":
                 D[(a, b)] = math.sqrt(sum(v * v for v in diff))
                 continue
-            P = [[covs[a][i][j] + covs[b][i][j] for j in range(p)]
-                 for i in range(p)]
+            P = [[covs[a][i][j] + covs[b][i][j] for j in range(p)] for i in range(p)]
             for i in range(p):
                 if abs(P[i][i]) < 1e-12:
                     P[i][i] += 1e-12
             sol = _solve(P, diff)
             d2 = sum(diff[j] * sol[j] for j in range(p))
             D[(a, b)] = math.sqrt(max(d2, 0.0))
-    return {"distances": D, "clusters": names, "centers": centers,
-            "covariances": covs}
+    return {"distances": D, "clusters": names, "centers": centers, "covariances": covs}
 
 
 def minimum_spanning_tree(D, clusters, ends=None):
@@ -214,8 +207,7 @@ def minimum_spanning_tree(D, clusters, ends=None):
     ends = [e for e in (ends or [])]
     for e in ends:
         if e not in nodes:
-            raise ValueError("sctraj: terminal state %r is not a cluster"
-                             % (e,))
+            raise ValueError("sctraj: terminal state %r is not a cluster" % (e,))
     inner = [v for v in nodes if v not in ends]
     if not inner:
         raise ValueError("sctraj: every cluster was marked terminal")
@@ -264,11 +256,11 @@ def lineages_from_tree(tree, root):
 
 # ------------------------------------------------------ principal curves
 
+
 def _arc_length(points):
     s = [0.0]
     for i in range(1, len(points)):
-        s.append(s[-1] + math.sqrt(sum((points[i][j] - points[i - 1][j]) ** 2
-                                       for j in range(len(points[i])))))
+        s.append(s[-1] + math.sqrt(sum((points[i][j] - points[i - 1][j]) ** 2 for j in range(len(points[i])))))
     return s
 
 
@@ -282,8 +274,7 @@ def _project(point, curve, s):
         if L2 <= 0:
             t = 0.0
         else:
-            t = sum((point[j] - a[j]) * seg[j]
-                    for j in range(len(a))) / L2
+            t = sum((point[j] - a[j]) * seg[j] for j in range(len(a))) / L2
             t = min(max(t, 0.0), 1.0)
         proj = [a[j] + t * seg[j] for j in range(len(a))]
         d2 = sum((point[j] - proj[j]) ** 2 for j in range(len(a)))
@@ -317,8 +308,7 @@ def _smooth(t, y, w, span=0.4):
     return out
 
 
-def principal_curve(X, init, weights=None, max_iter=15, tol=1e-3,
-                    span=0.4, n_knots=None):
+def principal_curve(X, init, weights=None, max_iter=15, tol=1e-3, span=0.4, n_knots=None):
     """The Hastie-Stuetzle iteration, initialised from a given path.
 
     Returns pseudotimes (arc length along the curve, lowest set to zero),
@@ -350,16 +340,14 @@ def principal_curve(X, init, weights=None, max_iter=15, tol=1e-3,
         if prev is not None and abs(prev - sse) <= tol * max(prev, 1e-12):
             break
         prev = sse
-        fitted = [_smooth(lam, [rows[i][j] for i in range(n)], weights,
-                          span) for j in range(p)]
+        fitted = [_smooth(lam, [rows[i][j] for i in range(n)], weights, span) for j in range(p)]
         # The curve belongs to THIS lineage, so it is drawn only through
         # the cells assigned to it. Including zero-weight cells would let
         # a sibling branch pull the curve off its own trunk even though
         # those cells contribute nothing to the smoother.
         live = [i for i in range(n) if weights[i] > 0]
         if len(live) < 2:
-            raise ValueError("sctraj: a lineage has fewer than two "
-                             "weighted cells")
+            raise ValueError("sctraj: a lineage has fewer than two weighted cells")
         order = sorted(live, key=lambda i: lam[i])
         curve = [[fitted[j][i] for j in range(p)] for i in order]
         # collapse duplicate points so the polyline stays well defined
@@ -370,8 +358,12 @@ def principal_curve(X, init, weights=None, max_iter=15, tol=1e-3,
         if len(dedup) < 2:
             break
         curve = dedup
-    return {"pseudotime": lam, "curve": curve, "distance": dist,
-            "sse": sum(weights[i] * dist[i] ** 2 for i in range(n))}
+    return {
+        "pseudotime": lam,
+        "curve": curve,
+        "distance": dist,
+        "sse": sum(weights[i] * dist[i] ** 2 for i in range(n)),
+    }
 
 
 def average_curve(curves, n_points=100, return_grid=False):
@@ -414,8 +406,7 @@ def _interp(s, c, u):
         if s[k] <= u <= s[k + 1]:
             span = s[k + 1] - s[k]
             t = 0.0 if span <= 0 else (u - s[k]) / span
-            return [c[k][j] + t * (c[k + 1][j] - c[k][j])
-                    for j in range(len(c[k]))]
+            return [c[k][j] + t * (c[k + 1][j] - c[k][j]) for j in range(len(c[k]))]
     return list(c[-1])
 
 
@@ -475,8 +466,10 @@ def _non_outlier_range(vals):
 
 # --------------------------------------------------------------- driver
 
-def sctraj(X, labels, root, ends=None, cov="full", max_iter=15,
-           shrink=True, weight_arg="shifted", span=0.4, n_points=100):
+
+def sctraj(
+    X, labels, root, ends=None, cov="full", max_iter=15, shrink=True, weight_arg="shifted", span=0.4, n_points=100
+):
     """Infer lineages and pseudotime (Street et al. 2018).
 
     Returns one pseudotime vector and one cell-weight vector per lineage;
@@ -510,10 +503,9 @@ def sctraj(X, labels, root, ends=None, cov="full", max_iter=15,
     if shrink and len(lins) > 1:
         avg, avg_grid = average_curve(curves, n_points, return_grid=True)
         for m, path in enumerate(lins):
-            shared = [i for i in range(n)
-                      if lab[i] in path and
-                      any(lab[i] in other for k, other in enumerate(lins)
-                          if k != m)]
+            shared = [
+                i for i in range(n) if lab[i] in path and any(lab[i] in other for k, other in enumerate(lins) if k != m)
+            ]
             if not shared:
                 continue
             t_min, t_max = _non_outlier_range([pts[m][i] for i in shared])
@@ -543,50 +535,58 @@ def sctraj(X, labels, root, ends=None, cov="full", max_iter=15,
         col = []
         for i in range(n):
             best = min(dists[k][i] for k in range(len(lins)))
-            col.append(1.0 if dists[m][i] <= best + 1e-12 else
-                       best / dists[m][i] if dists[m][i] > 0 else 1.0)
+            col.append(1.0 if dists[m][i] <= best + 1e-12 else best / dists[m][i] if dists[m][i] > 0 else 1.0)
         W.append(col)
 
-    return RichResult(payload={
-        "estimate": pts,
-        "pseudotime": pts,
-        "weights": W,
-        "lineages": lins,
-        "curves": shrunk,
-        "tree": tree["edges"],
-        "distance": dists,
-        "clusters": info["clusters"],
-        "centers": info["centers"],
-        "n_lineages": len(lins),
-        "root": root,
-        "cov": cov,
-        "shrink": bool(shrink),
-        "method": ("Slingshot (Street et al. 2018): covariance-scaled "
-                   "MST over cluster centres, then simultaneous "
-                   "principal curves with recursive averaging and "
-                   "shrinkage"),
-        "note": ("Equation 4 is typeset with t, not t - t_min, in the "
-                 "numerator; the default 'shifted' reading is the one "
-                 "that is continuous and non-increasing as the paper "
-                 "states, and weight_arg='as_printed' gives the literal "
-                 "form"),
-    })
+    return RichResult(
+        payload={
+            "estimate": pts,
+            "pseudotime": pts,
+            "weights": W,
+            "lineages": lins,
+            "curves": shrunk,
+            "tree": tree["edges"],
+            "distance": dists,
+            "clusters": info["clusters"],
+            "centers": info["centers"],
+            "n_lineages": len(lins),
+            "root": root,
+            "cov": cov,
+            "shrink": bool(shrink),
+            "method": (
+                "Slingshot (Street et al. 2018): covariance-scaled "
+                "MST over cluster centres, then simultaneous "
+                "principal curves with recursive averaging and "
+                "shrinkage"
+            ),
+            "note": (
+                "Equation 4 is typeset with t, not t - t_min, in the "
+                "numerator; the default 'shifted' reading is the one "
+                "that is continuous and non-increasing as the paper "
+                "states, and weight_arg='as_printed' gives the literal "
+                "form"
+            ),
+        }
+    )
 
 
 pseudotime_trajectory = sctraj
 
 
 def cheatsheet():
-    return ("sctraj: Slingshot (Street et al. 2018). Stage 1 draws an "
-            "MST over cluster centres using the covariance-scaled "
-            "distance d^2 = (xi-xj)'(Si+Sj)^-1(xi-xj), and every path "
-            "from the root to a leaf is a lineage; terminal states can "
-            "be imposed by building the MST without them and attaching "
-            "each to its nearest neighbour. Stage 2 fits simultaneous "
-            "principal curves: average curves recursively from the "
-            "leaves, then shrink from the root outward with a cosine "
-            "kernel weight that is 1 at the origin and 0 past the last "
-            "shared cell. Pseudotime is arc length along the curve.")
+    return (
+        "sctraj: Slingshot (Street et al. 2018). Stage 1 draws an "
+        "MST over cluster centres using the covariance-scaled "
+        "distance d^2 = (xi-xj)'(Si+Sj)^-1(xi-xj), and every path "
+        "from the root to a leaf is a lineage; terminal states can "
+        "be imposed by building the MST without them and attaching "
+        "each to its nearest neighbour. Stage 2 fits simultaneous "
+        "principal curves: average curves recursively from the "
+        "leaves, then shrink from the root outward with a cosine "
+        "kernel weight that is 1 at the origin and 0 past the last "
+        "shared cell. Pseudotime is arc length along the curve."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 scrnaseq_trajectory = sctraj

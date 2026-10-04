@@ -110,18 +110,20 @@ def matrxP(x, window):
             ib = i
         if P[i] < P[iw]:
             iw = i
-    return RichResult(payload={
-        "profile": [float(v) for v in P],
-        "index": [i + 1 for i in I],
-        "discord": ib + 1,
-        "discord_distance": float(P[ib]),
-        "motif": [iw + 1, I[iw] + 1],
-        "motif_distance": float(P[iw]),
-        "window": m,
-        "estimate": ib + 1,
-        "n": nlen,
-        "method": "Matrix profile self-join (Yeh et al. 2016)",
-    })
+    return RichResult(
+        payload={
+            "profile": [float(v) for v in P],
+            "index": [i + 1 for i in I],
+            "discord": ib + 1,
+            "discord_distance": float(P[ib]),
+            "motif": [iw + 1, I[iw] + 1],
+            "motif_distance": float(P[iw]),
+            "window": m,
+            "estimate": ib + 1,
+            "n": nlen,
+            "method": "Matrix profile self-join (Yeh et al. 2016)",
+        }
+    )
 
 
 def matrix_profile(x, window):
@@ -131,6 +133,7 @@ def matrix_profile(x, window):
 
 def cheatsheet():
     return "matrxP(x, m) -> matrix profile + index; max = discord, min = motif"
+
 
 # public names resolved by fn/_lazy_map.json
 matrixprofile = matrxP

@@ -1,8 +1,8 @@
 """Tests for morie.fn.irteap — EAP theta estimation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.irteap import irt_eap_theta
 
 

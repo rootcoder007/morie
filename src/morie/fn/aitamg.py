@@ -57,10 +57,16 @@ def amalgam(x, parts, total=1.0):
     raw = [x[i - 1] for i in keep] + [amal]
     s = sum(raw)
     k = float(total)
-    return RichResult(payload={
-        "composition": [k * v / s for v in raw], "amalgamated": amal,
-        "parts": idx, "kept": keep, "D": len(raw),
-        "method": "Amalgamation"})
+    return RichResult(
+        payload={
+            "composition": [k * v / s for v in raw],
+            "amalgamated": amal,
+            "parts": idx,
+            "kept": keep,
+            "D": len(raw),
+            "method": "Amalgamation",
+        }
+    )
 
 
 aitchison_amalgamation = amalgam

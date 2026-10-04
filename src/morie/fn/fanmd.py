@@ -57,7 +57,7 @@ def fanova_decomposition(f, input_dist=None, d=2, grid=8):
     idx = [0] * dd
     vals = []
     rows = []
-    total = g ** dd
+    total = g**dd
     for c in range(total):
         rem = c
         for a in range(dd - 1, -1, -1):
@@ -95,8 +95,8 @@ def fanova_decomposition(f, input_dist=None, d=2, grid=8):
             s = 0.0
             for t in range(g):
                 for u in range(g):
-                    comp = (m[t][u] / cnt[t][u] - mainf[a][t] - mainf[b][u] - f0)
-                    s += comp ** 2 / (g * g)
+                    comp = m[t][u] / cnt[t][u] - mainf[a][t] - mainf[b][u] - f0
+                    s += comp**2 / (g * g)
             inter.append(s)
     acc = 0.0
     for v in main:

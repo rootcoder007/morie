@@ -1,8 +1,8 @@
 """Tests for nbeat.nbeats_basis."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.nbeat import nbeats_basis
 
 

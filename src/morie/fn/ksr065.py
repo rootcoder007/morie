@@ -57,11 +57,14 @@ def kosorok_ch3_efficient_influence_general(A, psi_tilde, chi_tilde=None, eta=No
     resid = float(np.linalg.norm(Amat @ chi - rhs))
     scale = max(1.0, float(np.linalg.norm(rhs)))
     return RichResult(
-        payload={"chi": chi, "residual_norm": resid,
-                 "consistent": bool(resid < 1e-8 * scale),
-                 "rank": int(np.linalg.matrix_rank(Amat)),
-                 "efficient_variance": float(chi @ chi),
-                 "method": "Solve A* psi = chi; a large residual means NOT pathwise diff."}
+        payload={
+            "chi": chi,
+            "residual_norm": resid,
+            "consistent": bool(resid < 1e-8 * scale),
+            "rank": int(np.linalg.matrix_rank(Amat)),
+            "efficient_variance": float(chi @ chi),
+            "method": "Solve A* psi = chi; a large residual means NOT pathwise diff.",
+        }
     )
 
 

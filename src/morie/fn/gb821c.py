@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Confidence interval for the shift from the rank-sum test."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['wrsci', 'gibbons_wrs_ci']
+__all__ = ["wrsci", "gibbons_wrs_ci"]
 
 
 def wrsci(x, y, wcrit):

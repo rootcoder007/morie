@@ -35,7 +35,6 @@ Matheron, G. (1963) "Principles of geostatistics", *Economic Geology*
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -55,17 +54,15 @@ def _gamma(h, model, nugget, sill, rng):
         if h >= rng:
             return sill
         r = h / rng
-        return nugget + ps * (1.5 * r - 0.5 * r ** 3)
+        return nugget + ps * (1.5 * r - 0.5 * r**3)
     if model == "exponential":
         return nugget + ps * (1.0 - math.exp(-3.0 * h / rng))
     if model == "gaussian":
         return nugget + ps * (1.0 - math.exp(-3.0 * (h / rng) ** 2))
-    raise ValueError("krpkrg: model must be spherical, exponential or "
-                     "gaussian, got %r" % (model,))
+    raise ValueError("krpkrg: model must be spherical, exponential or gaussian, got %r" % (model,))
 
 
-def ordinary_kriging(coords, values, targets, model="spherical",
-                     nugget=0.0, sill=1.0, rng=1.0):
+def ordinary_kriging(coords, values, targets, model="spherical", nugget=0.0, sill=1.0, rng=1.0):
     r"""Predict at ``targets`` from data at ``coords``."""
     C = [[float(v) for v in r] for r in k.mat(coords)]
     z = [float(v) for v in k.vec(values)]
@@ -92,12 +89,11 @@ def ordinary_kriging(coords, values, targets, model="spherical",
 
     preds, variances, weightsets = [], [], []
     for t in Tg:
-        g0 = [_gamma(dist(C[i], t), model, nugget, sill, rng)
-              for i in range(n)] + [1.0]
-        sol = k.cholsolve([[sum(G[u][a] * G[u][b] for u in range(n + 1))
-                            for b in range(n + 1)] for a in range(n + 1)],
-                          [sum(G[u][a] * g0[u] for u in range(n + 1))
-                           for a in range(n + 1)])
+        g0 = [_gamma(dist(C[i], t), model, nugget, sill, rng) for i in range(n)] + [1.0]
+        sol = k.cholsolve(
+            [[sum(G[u][a] * G[u][b] for u in range(n + 1)) for b in range(n + 1)] for a in range(n + 1)],
+            [sum(G[u][a] * g0[u] for u in range(n + 1)) for a in range(n + 1)],
+        )
         lam = sol[:n]
         mu = sol[n]
         preds.append(sum(lam[i] * z[i] for i in range(n)))
@@ -108,22 +104,31 @@ def ordinary_kriging(coords, values, targets, model="spherical",
         variances.append(0.0 if v < floor else v)
         weightsets.append(lam)
 
-    return RichResult(payload={
-        "estimate": preds, "prediction": preds, "variance": variances,
-        "std_error": [math.sqrt(v) for v in variances],
-        "weights": weightsets, "n": n, "n_targets": len(Tg),
-        "model": model, "nugget": float(nugget), "sill": float(sill),
-        "range": float(rng),
-        "method": "ordinary kriging with a Lagrange unbiasedness constraint "
-                  "(Goovaerts 2005 Ch. 5)",
-        "note": "the kriging variance depends on the configuration and the "
-                "variogram, never on the observed values -- which is what "
-                "makes it usable as a design criterion",
-    })
+    return RichResult(
+        payload={
+            "estimate": preds,
+            "prediction": preds,
+            "variance": variances,
+            "std_error": [math.sqrt(v) for v in variances],
+            "weights": weightsets,
+            "n": n,
+            "n_targets": len(Tg),
+            "model": model,
+            "nugget": float(nugget),
+            "sill": float(sill),
+            "range": float(rng),
+            "method": "ordinary kriging with a Lagrange unbiasedness constraint (Goovaerts 2005 Ch. 5)",
+            "note": "the kriging variance depends on the configuration and the "
+            "variogram, never on the observed values -- which is what "
+            "makes it usable as a design criterion",
+        }
+    )
 
 
 def cheatsheet():
-    return ("krpkrg: ordinary_kriging(coords, values, targets, model, "
-            "nugget, sill, range) -> BLUP and kriging variance "
-            "(Goovaerts 2005, Geostatistics for Natural Resources "
-            "Evaluation, Ch. 5)")
+    return (
+        "krpkrg: ordinary_kriging(coords, values, targets, model, "
+        "nugget, sill, range) -> BLUP and kriging variance "
+        "(Goovaerts 2005, Geostatistics for Natural Resources "
+        "Evaluation, Ch. 5)"
+    )

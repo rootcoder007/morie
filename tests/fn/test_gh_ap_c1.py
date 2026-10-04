@@ -1,7 +1,6 @@
 """Tests for gh_ap_c1.ghosal_covering_num."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_c1 import ghosal_covering_num
 
 
@@ -21,8 +20,7 @@ def test_gh_ap_c1_basic():
     assert np.isclose(estimate, expected_estimate)
     assert np.isclose(float(np.asarray(result["lower"], dtype=float)), expected_lo)
     assert np.isclose(float(np.asarray(result["upper"], dtype=float)), expected_hi)
-    assert np.isclose(float(np.asarray(result["log_upper"], dtype=float)),
-                      dim * np.log(3.0 * R / eps))
+    assert np.isclose(float(np.asarray(result["log_upper"], dtype=float)), dim * np.log(3.0 * R / eps))
 
 
 def test_gh_ap_c1_custom():
@@ -36,8 +34,7 @@ def test_gh_ap_c1_custom():
     assert np.isclose(float(np.asarray(result["estimate"], dtype=float)), expected_hi)
     assert np.isclose(float(np.asarray(result["lower"], dtype=float)), expected_lo)
     assert np.isclose(float(np.asarray(result["upper"], dtype=float)), expected_hi)
-    assert np.isclose(float(np.asarray(result["log_upper"], dtype=float)),
-                      dim * np.log(3.0 * R / eps))
+    assert np.isclose(float(np.asarray(result["log_upper"], dtype=float)), dim * np.log(3.0 * R / eps))
 
 
 def test_gh_ap_c1_edge():

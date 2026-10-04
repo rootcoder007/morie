@@ -1,7 +1,6 @@
 """Tests for rgbp.rangayyan_basis_pursuit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_basis_pursuit
 
 

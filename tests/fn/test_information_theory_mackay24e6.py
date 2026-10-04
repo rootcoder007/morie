@@ -17,8 +17,7 @@ def test_gllsuff_matches_the_likelihood_computed_from_the_sample():
     xbar = sum(data) / n
     s = sum((x - xbar) ** 2 for x in data)
     mu, sigma = 1.0, 0.9
-    direct = sum(-math.log(math.sqrt(2.0 * math.pi) * sigma)
-                 - (x - mu) ** 2 / (2.0 * sigma ** 2) for x in data)
+    direct = sum(-math.log(math.sqrt(2.0 * math.pi) * sigma) - (x - mu) ** 2 / (2.0 * sigma**2) for x in data)
     res = gllsuff(xbar, s, n, mu, sigma)
     assert res["loglik"] == pytest.approx(direct, abs=1e-12)
 

@@ -1,7 +1,5 @@
 """Tests for bt632.boot_632_estimator."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bt632 import boot_632_estimator
 
 

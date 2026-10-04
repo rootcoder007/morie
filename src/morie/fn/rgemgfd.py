@@ -108,7 +108,7 @@ def higuchi_fd(x, kmax):
             idx = list(range(m - 1, N, k))
             if len(idx) < 2:
                 continue
-            terms = len(idx) - 1          # = floor((N-m)/k)
+            terms = len(idx) - 1  # = floor((N-m)/k)
             s = 0.0
             for i in range(terms):
                 s += abs(xs[idx[i + 1]] - xs[idx[i]])
@@ -117,7 +117,7 @@ def higuchi_fd(x, kmax):
             used += 1
         if used == 0:
             continue
-        Lk.append(acc / used)             # eq (5.41)
+        Lk.append(acc / used)  # eq (5.41)
         ks.append(k)
     pts = [(log(1.0 / ks[i]), log(Lk[i])) for i in range(len(ks)) if Lk[i] > 0.0]
     if len(pts) < 2:
@@ -182,7 +182,7 @@ def rangayyan_emg_fractal_dim(emg, force, fs, kmax=10, rest_level=0.0):
     lev = []
     fd = []
     ivs = []
-    for (a, b) in _runs(f):
+    for a, b in _runs(f):
         if f[a] <= rest_level:
             continue
         stop = min(b, a + seglen)

@@ -122,8 +122,7 @@ def boyd_qp_dual(P, q, G, h):
         # A P that is indefinite (or singular along a feasible
         # direction) leaves the dual unbounded below; refusing is
         # honest, silently pseudo-inverting is not.
-        raise ValueError(
-            f"P must be positive definite; smallest eigenvalue {lo:.6g}")
+        raise ValueError(f"P must be positive definite; smallest eigenvalue {lo:.6g}")
     Pinv_q = np.linalg.solve(Pm, qv)
     H = Gm @ np.linalg.solve(Pm, Gm.T)
     H = 0.5 * (H + H.T)
@@ -134,9 +133,14 @@ def boyd_qp_dual(P, q, G, h):
         return 0.5 * lam @ H @ lam + lin @ lam - const
 
     m = Gm.shape[0]
-    res = minimize(neg_g, np.zeros(m), jac=lambda lam: H @ lam + lin,
-                   method="L-BFGS-B", bounds=[(0.0, None)] * m,
-                   options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000})
+    res = minimize(
+        neg_g,
+        np.zeros(m),
+        jac=lambda lam: H @ lam + lin,
+        method="L-BFGS-B",
+        bounds=[(0.0, None)] * m,
+        options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000},
+    )
     lam = np.maximum(np.asarray(res.x, dtype=float), 0.0)
     dual_val = -float(neg_g(lam))
     x = -np.linalg.solve(Pm, qv + Gm.T @ lam)
@@ -146,20 +150,26 @@ def boyd_qp_dual(P, q, G, h):
     scale = max(1.0, abs(primal_val))
     return RichResult(
         title="QP dual",
-        summary_lines=[("n", int(n)), ("m", int(m)),
-                       ("primal", primal_val), ("dual", dual_val),
-                       ("gap", gap),
-                       ("active", int(np.sum(np.abs(slack) < 1e-07)))],
+        summary_lines=[
+            ("n", int(n)),
+            ("m", int(m)),
+            ("primal", primal_val),
+            ("dual", dual_val),
+            ("gap", gap),
+            ("active", int(np.sum(np.abs(slack) < 1e-07))),
+        ],
         payload={
-            "lambda_": lam, "dual_value": dual_val, "x": x,
-            "primal_value": primal_val, "gap": gap,
+            "lambda_": lam,
+            "dual_value": dual_val,
+            "x": x,
+            "primal_value": primal_val,
+            "gap": gap,
             "strong_duality": bool(abs(gap) < 1e-06 * scale),
             "slack": slack,
             "active": np.abs(slack) < 1e-07,
-            "complementary_slackness": bool(
-                np.max(np.abs(lam * slack)) < 1e-06 * scale)
-            if m else True,
-            "converged": bool(res.success), "method": "boyd_qp_dual",
+            "complementary_slackness": bool(np.max(np.abs(lam * slack)) < 1e-06 * scale) if m else True,
+            "converged": bool(res.success),
+            "method": "boyd_qp_dual",
         },
     )
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.bpost -- Conjugate posterior updating."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bpost import conjugate_posterior
 
 

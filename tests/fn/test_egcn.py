@@ -24,8 +24,7 @@ def test_egcn_edge():
     X = [[0.0, 0.0], [1.0, 0.0], [0.0, 2.0]]
     th = 0.7
     Q = [[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]]
-    move = lambda P: [[Q[0][0] * p[0] + Q[0][1] * p[1] + 4.0,
-                       Q[1][0] * p[0] + Q[1][1] * p[1] - 1.0] for p in P]
+    move = lambda P: [[Q[0][0] * p[0] + Q[0][1] * p[1] + 4.0, Q[1][0] * p[0] + Q[1][1] * p[1] - 1.0] for p in P]
     a = e_gcn(H, X, 2, phi_e, phi_x, phi_h)
     b = e_gcn(H, move(X), 2, phi_e, phi_x, phi_h)
     for i in range(3):

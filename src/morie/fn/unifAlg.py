@@ -49,9 +49,21 @@ algorithm, the occurs check, and the factorisation
 
 from ._richresult import RichResult
 
-__all__ = ["var", "app", "const", "is_var", "variables", "occurs",
-           "apply_subst", "substitute", "compose", "unify", "match",
-           "factor_through", "unification"]
+__all__ = [
+    "var",
+    "app",
+    "const",
+    "is_var",
+    "variables",
+    "occurs",
+    "apply_subst",
+    "substitute",
+    "compose",
+    "unify",
+    "match",
+    "factor_through",
+    "unification",
+]
 
 VAR = "VAR"
 APP = "APP"
@@ -80,11 +92,9 @@ def is_var(t):
 def _check(t):
     if is_var(t):
         return t
-    if (isinstance(t, tuple) and len(t) == 3 and t[0] == APP
-            and isinstance(t[1], str)):
+    if isinstance(t, tuple) and len(t) == 3 and t[0] == APP and isinstance(t[1], str):
         return (APP, t[1], tuple(_check(a) for a in t[2]))
-    raise ValueError("unifAlg: not a term: %r -- build terms with "
-                     "var(), app() or const()" % (t,))
+    raise ValueError("unifAlg: not a term: %r -- build terms with var(), app() or const()" % (t,))
 
 
 def variables(t):
@@ -121,9 +131,11 @@ def apply_subst(t, subst):
         if nxt == cur:
             return cur
         cur = nxt
-    raise ValueError("unifAlg: the substitution %r does not reach a "
-                     "fixed point -- it binds a variable to a term "
-                     "containing itself" % (subst,))
+    raise ValueError(
+        "unifAlg: the substitution %r does not reach a "
+        "fixed point -- it binds a variable to a term "
+        "containing itself" % (subst,)
+    )
 
 
 def substitute(t, subst):
@@ -188,45 +200,61 @@ def unify(t1, t2, occurs_check=True):
     for _ in range(4096):
         d = disagreement(apply_subst(a, sub), apply_subst(b, sub))
         if d is None:
-            return RichResult(payload={
-                "estimate": True, "unified": True, "mgu": sub,
-                "reason": None, "occurs_check": bool(occurs_check),
-                "cyclic": False, "n_bindings": len(sub),
-                "method": "Robinson (1965) Sec. 5 disagreement-set "
-                          "unification"})
+            return RichResult(
+                payload={
+                    "estimate": True,
+                    "unified": True,
+                    "mgu": sub,
+                    "reason": None,
+                    "occurs_check": bool(occurs_check),
+                    "cyclic": False,
+                    "n_bindings": len(sub),
+                    "method": "Robinson (1965) Sec. 5 disagreement-set unification",
+                }
+            )
         x, y = d
         if is_var(y) and not is_var(x):
             x, y = y, x
         if not is_var(x):
-            why = ("symbol clash: %s/%d against %s/%d"
-                   % (x[1], len(x[2]), y[1], len(y[2])))
+            why = "symbol clash: %s/%d against %s/%d" % (x[1], len(x[2]), y[1], len(y[2]))
             return _fail(sub, why, occurs_check)
         if occurs(x[1], y):
             if occurs_check:
-                why = ("occurs check: %s occurs in the term it would "
-                       "be bound to" % x[1])
+                why = "occurs check: %s occurs in the term it would be bound to" % x[1]
                 return _fail(sub, why, occurs_check)
             # No finite term satisfies this. Record the binding and
             # stop: pretending to continue would not terminate.
             cyc = dict(sub)
             cyc[x[1]] = y
-            return RichResult(payload={
-                "estimate": True, "unified": True, "mgu": cyc,
-                "reason": None, "occurs_check": False, "cyclic": True,
-                "n_bindings": len(cyc),
-                "method": "Robinson (1965) Sec. 5 disagreement-set "
-                          "unification, occurs check suppressed"})
+            return RichResult(
+                payload={
+                    "estimate": True,
+                    "unified": True,
+                    "mgu": cyc,
+                    "reason": None,
+                    "occurs_check": False,
+                    "cyclic": True,
+                    "n_bindings": len(cyc),
+                    "method": "Robinson (1965) Sec. 5 disagreement-set unification, occurs check suppressed",
+                }
+            )
         sub = compose({x[1]: y}, sub)
     raise ValueError("unifAlg: unification did not terminate")
 
 
 def _fail(sub, why, oc):
-    return RichResult(payload={
-        "estimate": False, "unified": False, "mgu": None,
-        "reason": why, "occurs_check": bool(oc),
-        "partial": sub, "n_bindings": 0,
-        "method": "Robinson (1965) Sec. 5 disagreement-set "
-                  "unification"})
+    return RichResult(
+        payload={
+            "estimate": False,
+            "unified": False,
+            "mgu": None,
+            "reason": why,
+            "occurs_check": bool(oc),
+            "partial": sub,
+            "n_bindings": 0,
+            "method": "Robinson (1965) Sec. 5 disagreement-set unification",
+        }
+    )
 
 
 def match(pattern, subject):

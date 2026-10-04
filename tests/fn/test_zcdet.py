@@ -1,7 +1,6 @@
 """Test zero_cross_detect (zcdet)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.zcdet import zcdet, zero_cross_detect
 

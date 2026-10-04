@@ -10,8 +10,7 @@ __all__ = ["mdppol", "mdp_policy_iteration"]
 _METHOD = "Policy iteration (iterative policy evaluation + greedy improvement)"
 
 
-def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000,
-                         max_improve=1000, pi0=None):
+def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000, max_improve=1000, pi0=None):
     r"""
     Howard-style policy iteration for a finite Markov decision process.
 
@@ -98,8 +97,7 @@ def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000,
         stable = True
         for s in range(S):
             old = pol[s]
-            qs = [float(R[s, a]) + gamma * float(np.sum(Pm[a][s] * V))
-                  for a in range(A)]
+            qs = [float(R[s, a]) + gamma * float(np.sum(Pm[a][s] * V)) for a in range(A)]
             b = 0
             for a in range(1, A):
                 if qs[a] > qs[b]:
@@ -113,15 +111,17 @@ def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000,
     for s in range(S):
         for a in range(A):
             Q[s, a] = float(R[s, a]) + gamma * float(np.sum(Pm[a][s] * V))
-    return RichResult(payload={
-        "estimate": V,
-        "policy": np.asarray([float(a) for a in pol]),
-        "q": Q,
-        "n_improve": rounds,
-        "n_eval": n_eval,
-        "policy_stable": bool(stable),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": V,
+            "policy": np.asarray([float(a) for a in pol]),
+            "q": Q,
+            "n_improve": rounds,
+            "n_eval": n_eval,
+            "policy_stable": bool(stable),
+            "method": _METHOD,
+        }
+    )
 
 
 mdppol = mdp_policy_iteration

@@ -113,7 +113,7 @@ def read_mat(path):
     data = Path(path).read_bytes()
     if data[:8] == b"\x89HDF\r\n\x1a\n" or data[:4] == b"\x89HDF":
         raise ValueError(
-            f"{path} is a MATLAB v7.3 (HDF5) file; save it with " "-v7 in MATLAB, or convert it, to load natively"
+            f"{path} is a MATLAB v7.3 (HDF5) file; save it with -v7 in MATLAB, or convert it, to load natively"
         )
     if len(data) < 128:
         raise ValueError(f"{path} is too short to be a MAT-file")

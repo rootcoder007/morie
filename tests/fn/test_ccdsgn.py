@@ -1,7 +1,6 @@
 """Tests for ccdsgn.case_control."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ccdsgn import case_control
 
 
@@ -27,12 +26,12 @@ def test_ccdsgn_basic():
 
     assert isinstance(result, dict)
     # Function returns the documented keys.
-    for key in ("estimate", "a", "b", "c", "d", "log_or", "se_log",
-                "ci_low", "ci_high", "chisq", "significant", "n"):
+    for key in ("estimate", "a", "b", "c", "d", "log_or", "se_log", "ci_low", "ci_high", "chisq", "significant", "n"):
         assert key in result
 
     # Independent recomputation of the literature formula.
     import math
+
     orr = (a * d) / (b * c)
     log_or = math.log(orr)
     se = math.sqrt(1.0 / a + 1.0 / b + 1.0 / c + 1.0 / d)
@@ -67,6 +66,7 @@ def test_ccdsgn_edge():
     assert result["estimate"] == float("inf")
     # A zero cell -> Woolf SE and CI are NaN per the source.
     import math
+
     assert math.isnan(result["se_log"])
     assert math.isnan(result["ci_low"])
     assert math.isnan(result["ci_high"])

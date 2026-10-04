@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["btdbl", "double_bootstrap_ci"]
 
 
-def btdbl(x, statistic=None, alpha=0.05, B_outer=400, B_inner=200,
-          seed=0):
+def btdbl(x, statistic=None, alpha=0.05, B_outer=400, B_inner=200, seed=0):
     """
     Prepivoted (double) bootstrap confidence interval.
 
@@ -69,8 +68,7 @@ def btdbl(x, statistic=None, alpha=0.05, B_outer=400, B_inner=200,
     sqn = math.sqrt(n)
 
     def _resample(base):
-        return [base[min(int(float(rng.uniform()) * n), n - 1)]
-                for _ in range(n)]
+        return [base[min(int(float(rng.uniform()) * n), n - 1)] for _ in range(n)]
 
     outer_roots = []
     prepiv = []
@@ -96,18 +94,20 @@ def btdbl(x, statistic=None, alpha=0.05, B_outer=400, B_inner=200,
     j = min(int(math.ceil(c1 * B_outer)) - 1, B_outer - 1)
     crit = so[max(j, 0)]
     half = crit / sqn
-    return RichResult(payload={
-        "estimate": that,
-        "lower": that - half,
-        "upper": that + half,
-        "critical_root": crit,
-        "c_level": c1,
-        "alpha": alpha,
-        "B_outer": int(B_outer),
-        "B_inner": int(B_inner),
-        "seed": int(seed),
-        "method": "Beran (1987) prepivoted double bootstrap (Eq. 2.7)",
-    })
+    return RichResult(
+        payload={
+            "estimate": that,
+            "lower": that - half,
+            "upper": that + half,
+            "critical_root": crit,
+            "c_level": c1,
+            "alpha": alpha,
+            "B_outer": int(B_outer),
+            "B_inner": int(B_inner),
+            "seed": int(seed),
+            "method": "Beran (1987) prepivoted double bootstrap (Eq. 2.7)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -116,6 +116,7 @@ double_bootstrap_ci = btdbl
 
 def cheatsheet():
     return "btdbl: c1 = q_{1-a}(H*_b(R*_b)); crit = H_n^{-1}(c1); theta in t +- crit/sqrt(n)"
+
 
 # public names resolved by fn/_lazy_map.json
 boot_double = btdbl

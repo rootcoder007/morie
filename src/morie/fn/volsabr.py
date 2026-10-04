@@ -69,32 +69,47 @@ def volsabr(K, f, T, alpha, beta, rho, nu):
     omb = 1.0 - beta
     lfk = math.log(f / K)
     fkb = (f * K) ** (omb / 2.0)
-    denom = fkb * (1.0 + omb ** 2 / 24.0 * lfk ** 2
-                   + omb ** 4 / 1920.0 * lfk ** 4)
+    denom = fkb * (1.0 + omb**2 / 24.0 * lfk**2 + omb**4 / 1920.0 * lfk**4)
     z = (nu / alpha) * fkb * lfk
     if abs(z) < 1e-7:
         # z/x(z) = 1 + rho z/2 + (2 - 3 rho^2) z^2 / 12 + O(z^3)
-        zoxz = 1.0 + rho * z / 2.0 + (2.0 - 3.0 * rho ** 2) * z * z / 12.0
+        zoxz = 1.0 + rho * z / 2.0 + (2.0 - 3.0 * rho**2) * z * z / 12.0
         x_z = z / zoxz if z != 0.0 else float("nan")
     else:
-        x_z = math.log((math.sqrt(1.0 - 2.0 * rho * z + z * z)
-                        + z - rho) / (1.0 - rho))
+        x_z = math.log((math.sqrt(1.0 - 2.0 * rho * z + z * z) + z - rho) / (1.0 - rho))
         zoxz = z / x_z
-    corr = 1.0 + (omb ** 2 / 24.0 * alpha ** 2 / (f * K) ** omb
-                  + rho * beta * nu * alpha / (4.0 * fkb)
-                  + (2.0 - 3.0 * rho ** 2) / 24.0 * nu ** 2) * T
+    corr = (
+        1.0
+        + (
+            omb**2 / 24.0 * alpha**2 / (f * K) ** omb
+            + rho * beta * nu * alpha / (4.0 * fkb)
+            + (2.0 - 3.0 * rho**2) / 24.0 * nu**2
+        )
+        * T
+    )
     sigma = alpha / denom * zoxz * corr
-    atm = alpha / f ** omb * (
-        1.0 + (omb ** 2 / 24.0 * alpha ** 2 / f ** (2.0 * omb)
-               + rho * beta * alpha * nu / (4.0 * f ** omb)
-               + (2.0 - 3.0 * rho ** 2) / 24.0 * nu ** 2) * T)
-    return RichResult(payload={
-        "estimate": sigma,
-        "z": z,
-        "x_z": x_z,
-        "atm": atm,
-        "method": "SABR implied vol (Hagan et al. 2002, Eq. 2.17)",
-    })
+    atm = (
+        alpha
+        / f**omb
+        * (
+            1.0
+            + (
+                omb**2 / 24.0 * alpha**2 / f ** (2.0 * omb)
+                + rho * beta * alpha * nu / (4.0 * f**omb)
+                + (2.0 - 3.0 * rho**2) / 24.0 * nu**2
+            )
+            * T
+        )
+    )
+    return RichResult(
+        payload={
+            "estimate": sigma,
+            "z": z,
+            "x_z": x_z,
+            "atm": atm,
+            "method": "SABR implied vol (Hagan et al. 2002, Eq. 2.17)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -103,6 +118,7 @@ sabr_implied_volatility = volsabr
 
 def cheatsheet():
     return "volsabr: sigma_B = alpha/((fK)^((1-b)/2)(1+...)) * z/x(z) * (1+corr T)"
+
 
 # public names resolved by fn/_lazy_map.json
 vol_sabr_implied = volsabr

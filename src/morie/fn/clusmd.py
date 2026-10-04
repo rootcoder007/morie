@@ -48,16 +48,14 @@ coefficient itself; see :mod:`morie.fn.sasimi`.
 from ._richresult import RichResult
 from .sasimi import fingerprint, tanimoto
 
-__all__ = ["neighbour_lists", "butina_clusters", "cluster_summary",
-           "butina_clustering"]
+__all__ = ["neighbour_lists", "butina_clusters", "cluster_summary", "butina_clustering"]
 
 
 def neighbour_lists(fps, threshold=0.8):
     r"""For each compound, the set of others within ``threshold``."""
     th = float(threshold)
     if not 0.0 <= th <= 1.0:
-        raise ValueError("clusmd: the threshold must lie in [0, 1], "
-                         "got %g" % th)
+        raise ValueError("clusmd: the threshold must lie in [0, 1], got %g" % th)
     F = [fingerprint(x) for x in fps]
     if len(F) < 1:
         raise ValueError("clusmd: no compounds given")
@@ -85,8 +83,7 @@ def butina_clusters(fps, threshold=0.8, recount=False):
         # Ties broken by index, so the result is deterministic.
         centre = min(live, key=lambda i: (-counts[i], i))
         members = sorted({centre} | (nb[centre] & live))
-        clusters.append({"centroid": centre, "members": members,
-                         "size": len(members)})
+        clusters.append({"centroid": centre, "members": members, "size": len(members)})
         live -= set(members)
     clusters.sort(key=lambda c: (-c["size"], c["centroid"]))
     return clusters
@@ -99,27 +96,34 @@ def cluster_summary(clusters):
     for k, c in enumerate(clusters):
         for m in c["members"]:
             assign[m] = k
-    return {"n_clusters": len(clusters), "n_compounds": n,
-            "sizes": [c["size"] for c in clusters],
-            "n_singletons": sum(1 for c in clusters
-                                if c["size"] == 1),
-            "assignment": assign,
-            "centroids": [c["centroid"] for c in clusters]}
+    return {
+        "n_clusters": len(clusters),
+        "n_compounds": n,
+        "sizes": [c["size"] for c in clusters],
+        "n_singletons": sum(1 for c in clusters if c["size"] == 1),
+        "assignment": assign,
+        "centroids": [c["centroid"] for c in clusters],
+    }
 
 
 def butina_clustering(fps, threshold=0.8, recount=False):
     r"""Entry point: cluster fingerprints by exclusion sphere."""
     cl = butina_clusters(fps, threshold, recount)
     s = cluster_summary(cl)
-    return RichResult(payload={
-        "estimate": cl, "clusters": cl, "threshold": float(threshold),
-        "recount": bool(recount),
-        "n_clusters": s["n_clusters"], "sizes": s["sizes"],
-        "n_singletons": s["n_singletons"],
-        "assignment": s["assignment"], "centroids": s["centroids"],
-        "method": "Butina (1999) exclusion-sphere clustering at "
-                  "Tanimoto >= %g" % float(threshold),
-    })
+    return RichResult(
+        payload={
+            "estimate": cl,
+            "clusters": cl,
+            "threshold": float(threshold),
+            "recount": bool(recount),
+            "n_clusters": s["n_clusters"],
+            "sizes": s["sizes"],
+            "n_singletons": s["n_singletons"],
+            "assignment": s["assignment"],
+            "centroids": s["centroids"],
+            "method": "Butina (1999) exclusion-sphere clustering at Tanimoto >= %g" % float(threshold),
+        }
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

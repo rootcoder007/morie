@@ -1,7 +1,6 @@
 """Tests for groupnm.group_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.groupnm import group_norm
 
 

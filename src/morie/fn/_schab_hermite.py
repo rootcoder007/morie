@@ -75,8 +75,7 @@ def hermite_e(x, degree):
 def hermite_orthonormal(x, degree):
     """eta_p(x) = H_p(x)/sqrt(p!), the orthonormal system."""
     h = hermite_e(x, degree)
-    scale = np.sqrt(np.array([_factorial(p) for p in range(degree + 1)],
-                             dtype=float))
+    scale = np.sqrt(np.array([_factorial(p) for p in range(degree + 1)], dtype=float))
     return h / scale.reshape((-1,) + (1,) * (h.ndim - 1))
 
 
@@ -126,8 +125,7 @@ def hermite_coefficients(g, degree, n_quad=None):
     return eta @ (weights * gvals)
 
 
-def disjunctive_kriging(coords, y, target, correlation_fn, g, degree=8,
-                        n_quad=None):
+def disjunctive_kriging(coords, y, target, correlation_fn, g, degree=8, n_quad=None):
     """Predict g(Z(s0)) by disjunctive kriging, Sec. 5.6.4.
 
     `y` are the data on the GAUSSIAN scale (apply the normal-scores
@@ -150,7 +148,7 @@ def disjunctive_kriging(coords, y, target, correlation_fn, g, degree=8,
     b = hermite_coefficients(g, degree, n_quad=n_quad)
     eta_data = hermite_orthonormal(y, degree)
 
-    pred = float(b[0])                     # eta_0 == 1, so b_0 enters as is
+    pred = float(b[0])  # eta_0 == 1, so b_0 enters as is
     var = 0.0
     comp_var = np.zeros(degree + 1)
     for p in range(1, degree + 1):
@@ -161,9 +159,9 @@ def disjunctive_kriging(coords, y, target, correlation_fn, g, degree=8,
         except np.linalg.LinAlgError:
             lam = np.linalg.lstsq(r_mat, r_vec, rcond=None)[0]
         pred += float(b[p]) * float(lam @ eta_data[p])
-        s2 = 1.0 - float(lam @ r_vec)      # eq (5.69)
+        s2 = 1.0 - float(lam @ r_vec)  # eq (5.69)
         comp_var[p] = s2
-        var += float(b[p]) ** 2 * s2       # eq (5.71)
+        var += float(b[p]) ** 2 * s2  # eq (5.71)
     return pred, var, b, comp_var
 
 
@@ -182,6 +180,7 @@ def standard_normal_cdf(x):
     avoids.
     """
     from math import erf, sqrt
+
     x = np.asarray(x, dtype=float)
     return np.vectorize(lambda v: 0.5 * (1.0 + erf(v / sqrt(2.0))))(x)
 

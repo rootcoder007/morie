@@ -1,7 +1,6 @@
 """Tests for bnsadm.bound_admissible_estimators."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnsadm import bound_admissible_estimators
 
 

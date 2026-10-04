@@ -1,7 +1,6 @@
 """Tests for morie.fn.bmapr -- Bayesian model averaging."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bmapr import bayesian_model_averaging
 
 

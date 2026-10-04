@@ -73,11 +73,18 @@ def bound_treatment_variation(y, D, X):
     refuted = 1.0 if (lo1 > hi1 or lo0 > hi0) else 0.0
     lo = lo1 - hi0
     hi = hi1 - lo0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "n_cells": len(grp),
-        "refuted": refuted, "n": n,
-        "method": "Bound with treatment-variation assumption"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "n_cells": len(grp),
+            "refuted": refuted,
+            "n": n,
+            "method": "Bound with treatment-variation assumption",
+        }
+    )
 
 
 def cheatsheet():

@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["dp_logistic"]
 
 
-def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
-                n_iter=100, lr=0.1, seed=None):
+def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0, n_iter=100, lr=0.1, seed=None):
     r"""Fit logistic regression under differential privacy.
 
     Two mechanisms, with genuinely different behaviour.
@@ -135,8 +134,7 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
         # (the previous code) under-noised by a factor of n and voided
         # the stated epsilon.
         c_s = 0.25
-        slack = np.log(1.0 + 2.0 * c_s / (n * lam)
-                       + c_s * c_s / (n * n * lam * lam))
+        slack = np.log(1.0 + 2.0 * c_s / (n * lam) + c_s * c_s / (n * n * lam * lam))
         if epsilon > slack:
             eps_p = epsilon - slack
         else:
@@ -160,14 +158,18 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
     prob = 1.0 / (1.0 + np.exp(-np.clip(Xc @ beta, -500, 500)))
     return RichResult(
         title=f"DP logistic regression ({method})",
-        summary_lines=[("epsilon", epsilon), ("method", method),
-                       ("accuracy", float(np.mean((prob >= 0.5) == y)))],
+        summary_lines=[("epsilon", epsilon), ("method", method), ("accuracy", float(np.mean((prob >= 0.5) == y)))],
         payload={
-            "beta": beta, "prob": prob,
+            "beta": beta,
+            "prob": prob,
             "accuracy": float(np.mean((prob >= 0.5) == y)),
             "clipped_fraction": float(np.mean(norms > C)),
-            "method_used": method, "epsilon": epsilon, "lam": float(lam),
-            "C": float(C), "n": int(n), "method": "dp_logistic",
+            "method_used": method,
+            "epsilon": epsilon,
+            "lam": float(lam),
+            "C": float(C),
+            "n": int(n),
+            "method": "dp_logistic",
         },
     )
 

@@ -1,7 +1,6 @@
 """Tests for blue_blup_via_v.blue_blup_via_v."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.blue_blup_via_v import blue_blup_via_v
 
 

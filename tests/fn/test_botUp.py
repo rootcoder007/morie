@@ -1,7 +1,5 @@
 """Tests for botUp.bottom_up_aggregation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.botUp import bottom_up_aggregation
 
 
@@ -31,8 +29,7 @@ def test_botUp_basic():
 
     # Independent reference computation of S @ bottoms.
     expected_total = sum(bottoms)
-    expected_estimate = [sum(S[i][j] * bottoms[j] for j in range(len(bottoms)))
-                         for i in range(len(S))]
+    expected_estimate = [sum(S[i][j] * bottoms[j] for j in range(len(bottoms))) for i in range(len(S))]
 
     assert list(result["bottom"]) == bottoms
     assert result["total"] == expected_total
@@ -52,8 +49,7 @@ def test_botUp_edge():
     assert isinstance(result, dict)
     assert "estimate" in result
 
-    expected_estimate = [sum(S[i][j] * bottoms[j] for j in range(len(bottoms)))
-                         for i in range(len(S))]
+    expected_estimate = [sum(S[i][j] * bottoms[j] for j in range(len(bottoms))) for i in range(len(S))]
     assert list(result["estimate"]) == expected_estimate
     assert result["total"] == sum(bottoms)
     assert result["n"] == len(S)

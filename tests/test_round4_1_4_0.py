@@ -302,7 +302,7 @@ def test_login_browser_open_does_not_wait_for_the_browser(tmp_path, monkeypatch)
     seen = tmp_path / "seen.txt"
     script = tmp_path / "slow_browser.py"
     script.write_text(
-        "import sys, time, pathlib\n" f"pathlib.Path({str(seen)!r}).write_text(sys.argv[1])\n" "time.sleep(30)\n"
+        f"import sys, time, pathlib\npathlib.Path({str(seen)!r}).write_text(sys.argv[1])\ntime.sleep(30)\n"
     )
     monkeypatch.setenv("BROWSER", f"{sys.executable} {script}")
     monkeypatch.setenv("DISPLAY", ":0")

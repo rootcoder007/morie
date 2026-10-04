@@ -1,4 +1,5 @@
 """Tests for evbgrev.evt_bayes_gev."""
+
 from morie.fn.evbgrev import evt_bayes_gev
 from morie.fn.evgevs import evt_gev_sample
 

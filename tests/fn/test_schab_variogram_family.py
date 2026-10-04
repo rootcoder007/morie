@@ -7,17 +7,17 @@ Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
 Spatial Data Analysis*. Chapman & Hall/CRC.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spexp import schabenberger_exponential_variogram as exponential
 from morie.fn.spgaus import schabenberger_gaussian_variogram as gaussian
-from morie.fn.spsph import schabenberger_spherical_variogram as spherical
-from morie.fn.sppow import schabenberger_power_variogram as power
-from morie.fn.spnug import schabenberger_nugget_effect as nugget_effect
 from morie.fn.spnest import schabenberger_nested_variogram as nested
-from morie.fn.spssoc import schabenberger_stationary_cov_semivario as cov_semivario
+from morie.fn.spnug import schabenberger_nugget_effect as nugget_effect
+from morie.fn.sppow import schabenberger_power_variogram as power
 from morie.fn.spsemv import schabenberger_semivariogram_def as empirical
+from morie.fn.spsph import schabenberger_spherical_variogram as spherical
+from morie.fn.spssoc import schabenberger_stationary_cov_semivario as cov_semivario
 
 H = np.array([0.0, 0.25, 0.5, 1.0, 2.0, 5.0])
 
@@ -83,15 +83,15 @@ def test_nesting_a_white_noise_component_reproduces_the_nugget_form():
     that model written with the nugget directly -- the book's own
     justification for the nugget being a nested white-noise term.
     """
-    a = nested(H, [{"model": "nugget", "sill": 0.3},
-                   {"model": "exponential", "sill": 1.0, "range": 1.0}])["gamma"]
+    a = nested(H, [{"model": "nugget", "sill": 0.3}, {"model": "exponential", "sill": 1.0, "range": 1.0}])["gamma"]
     b = exponential(H, nugget=0.3, sill=1.0, range=1.0)["gamma"]
     np.testing.assert_allclose(a, b, rtol=1e-12)
 
 
 def test_nested_total_sill_is_the_sum_of_component_sills():
-    r = nested(H, [{"model": "exponential", "sill": 0.5, "range": 1.0},
-                   {"model": "spherical", "sill": 1.25, "range": 3.0}])
+    r = nested(
+        H, [{"model": "exponential", "sill": 0.5, "range": 1.0}, {"model": "spherical", "sill": 1.25, "range": 3.0}]
+    )
     assert r["total_sill"] == pytest.approx(1.75)
 
 
@@ -103,9 +103,7 @@ def test_gamma_equals_c0_minus_ch_under_second_order_stationarity():
         return sill * np.exp(-3.0 * np.asarray(h, dtype=float) / alpha)
 
     got = cov_semivario(C, H)
-    np.testing.assert_allclose(
-        got["gamma"], exponential(H, 0.0, sill, alpha)["gamma"], rtol=1e-12
-    )
+    np.testing.assert_allclose(got["gamma"], exponential(H, 0.0, sill, alpha)["gamma"], rtol=1e-12)
     assert got["sill"] == pytest.approx(sill)
 
 

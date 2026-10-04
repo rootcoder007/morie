@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["poisdir", "ghosal_poisson_dirichlet"]
@@ -67,8 +66,9 @@ def poisdir(sigma, M, k, n=None):
     if not 0.0 <= sigma < 1.0:
         raise ValueError(
             "only the sigma in [0, 1) branch is implemented; the "
-            "negative-sigma branch has finite support and is refused")
-    if M <= -sigma:
+            "negative-sigma branch has finite support and is refused"
+        )
+    if -sigma >= M:
         raise ValueError("M must exceed -sigma")
     if k < 1:
         raise ValueError("k must be at least 1")
@@ -77,7 +77,7 @@ def poisdir(sigma, M, k, n=None):
     rest = 1.0
     for j in range(k):
         w.append(rest * ev[j])
-        rest *= (1.0 - ev[j])
+        rest *= 1.0 - ev[j]
     lv = float("nan")
     vv = float("nan")
     if n is not None:
@@ -91,10 +91,19 @@ def poisdir(sigma, M, k, n=None):
         den = sum(math.log(M + 1.0 + i) for i in range(n - 1))
         lv = num - den
         vv = math.exp(lv)
-    return RichResult(payload={
-        "weights": w, "expected_stick": ev, "remaining": rest,
-        "log_Vnk": lv, "Vnk": vv, "sigma": sigma, "M": M, "k": float(k),
-        "method": "Pitman-Yor weights and V_{n,k}, Ghosal Definition 14.31"})
+    return RichResult(
+        payload={
+            "weights": w,
+            "expected_stick": ev,
+            "remaining": rest,
+            "log_Vnk": lv,
+            "Vnk": vv,
+            "sigma": sigma,
+            "M": M,
+            "k": float(k),
+            "method": "Pitman-Yor weights and V_{n,k}, Ghosal Definition 14.31",
+        }
+    )
 
 
 ghosal_poisson_dirichlet = poisdir

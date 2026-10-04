@@ -1,7 +1,6 @@
 """Tests for little_mcar_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ltmcr import little_mcar_test
 
 

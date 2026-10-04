@@ -52,8 +52,7 @@ def test_the_symmetric_variant_runs_and_agrees_closely():
 
 def test_validation():
     src = _items()
-    for call in (lambda: linkhae(src[:1], src[:1]),
-                 lambda: linkhae(src, src[:-1])):
+    for call in (lambda: linkhae(src[:1], src[:1]), lambda: linkhae(src, src[:-1])):
         try:
             call()
             raise AssertionError("expected ValueError")

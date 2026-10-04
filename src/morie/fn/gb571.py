@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsr', 'gibbons_wilcoxon_signed_rank']
+__all__ = ["wsr", "gibbons_wilcoxon_signed_rank"]
 
 
 def wsr(x, m0=0.0):

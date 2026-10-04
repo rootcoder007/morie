@@ -86,8 +86,7 @@ def efron_tie_correction(time, event, X, **kwargs):
     """
     t, e, Xm = prepare(time, event, X)
     beta, ll, I, U, it, conv = cox_fit(t, e, Xm, ties="efron", **kwargs)
-    return _cox_result(t, e, beta, ll, I, it, conv, "Efron",
-                       "efron_tie_correction", X=Xm)
+    return _cox_result(t, e, beta, ll, I, it, conv, "Efron", "efron_tie_correction", X=Xm)
 
 
 def cheatsheet():

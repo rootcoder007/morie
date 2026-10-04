@@ -1,7 +1,5 @@
 """Tests for nonproportional_odds_logit.nonproportional_odds_logit."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.nonproportional_odds_logit import (
     nonproportional_odds_logit,
 )

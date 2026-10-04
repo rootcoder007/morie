@@ -1,7 +1,6 @@
 """Tests for imfex.py - IMF extraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.imfex import imf_extract, imfex
 
 

@@ -1,7 +1,5 @@
 """Tests for ghs012.ghosal_ch3_countable_dirichlet_posterior_l."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ghs012 import ghosal_ch3_countable_dirichlet_posterior_l
 
 
@@ -11,9 +9,7 @@ def test_ghs012_basic():
     N_j = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0]  # 6 counts so l=3 leaves a tail
     l = 3
     alpha_tail = 100.0
-    result = ghosal_ch3_countable_dirichlet_posterior_l(
-        alpha_j, N_j, l, alpha_tail
-    )
+    result = ghosal_ch3_countable_dirichlet_posterior_l(alpha_j, N_j, l, alpha_tail)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -36,9 +32,7 @@ def test_ghs012_edge():
     N_j = [2.0, 4.0, 6.0]
     l = 3
     alpha_tail = 7.5
-    result = ghosal_ch3_countable_dirichlet_posterior_l(
-        alpha_j, N_j, l, alpha_tail
-    )
+    result = ghosal_ch3_countable_dirichlet_posterior_l(alpha_j, N_j, l, alpha_tail)
     assert isinstance(result, dict)
 
     # Independent computation

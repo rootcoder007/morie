@@ -13,6 +13,8 @@ def test_km017_doctest():
 
 def test_km017_edge():
     import pytest
+
     from morie.fn.km017 import kamath_ch2_ffn_relu
+
     with pytest.raises(ValueError):
         kamath_ch2_ffn_relu([[1.0, 2.0]], [[1.0]], [[1.0]], [0.0], [0.0])

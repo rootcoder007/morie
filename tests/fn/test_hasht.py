@@ -1,7 +1,6 @@
 """Tests for morie.fn.hasht."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hasht import hash_table
 
 

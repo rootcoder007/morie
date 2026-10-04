@@ -17,31 +17,31 @@ happened to produce.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.fzkde import fauzi_kde
-from morie.fn.fzmise import fauzi_mise
-from morie.fn.fzgkde import fauzi_gamma_kde
-from morie.fn.fzkdfe import fauzi_kdfe
-from morie.fn.fzbfkd import fauzi_boundary_free_kde
-from morie.fn.fzcs1 import fauzi_cumulative_survival_1
-from morie.fn.fzcs2 import fauzi_cumulative_survival_2
+from morie.fn import _array_core as np
+from morie.fn.fzamse import fauzi_quantile_amse
 from morie.fn.fzb1t import fauzi_b1_coefficient
 from morie.fn.fzb2t import fauzi_b2_coefficient
 from morie.fn.fzb3t import fauzi_b3_coefficient
-from morie.fn.fzmrln import fauzi_mrl_naive
+from morie.fn.fzbfkd import fauzi_boundary_free_kde
+from morie.fn.fzc1c6 import fauzi_conditions_c1_c6
+from morie.fn.fzcs1 import fauzi_cumulative_survival_1
+from morie.fn.fzcs2 import fauzi_cumulative_survival_2
+from morie.fn.fzgkde import fauzi_gamma_kde
+from morie.fn.fzkde import fauzi_kde
+from morie.fn.fzkdfe import fauzi_kdfe
+from morie.fn.fzkoc import fauzi_order_m_kernel
+from morie.fn.fzkqe import fauzi_kernel_quantile
+from morie.fn.fzl31 import fauzi_lemma_3_1
+from morie.fn.fzmise import fauzi_mise
+from morie.fn.fzmkrn import fauzi_muller_kernel
 from morie.fn.fzmr2 import fauzi_mrl_boundary_free_2
+from morie.fn.fzmrln import fauzi_mrl_naive
 from morie.fn.fzt43 import fauzi_theorem_4_3
 from morie.fn.fzt44 import fauzi_theorem_4_4
 from morie.fn.fzt45 import fauzi_theorem_4_5
 from morie.fn.fzt46 import fauzi_theorem_4_6
-from morie.fn.fzc1c6 import fauzi_conditions_c1_c6
-from morie.fn.fzkqe import fauzi_kernel_quantile
-from morie.fn.fzamse import fauzi_quantile_amse
-from morie.fn.fzkoc import fauzi_order_m_kernel
-from morie.fn.fzmkrn import fauzi_muller_kernel
-from morie.fn.fzl31 import fauzi_lemma_3_1
 
 
 def exp_sample(n=600, rate=1.0, seed=0):
@@ -80,8 +80,10 @@ def test_kde_at_zero_is_biased_toward_one_half():
     roughly half the true density. f(0) = 1 for a unit exponential;
     the estimate should sit near 0.5, and that is a defect, not
     noise -- it does not shrink as n grows."""
-    est = [fauzi_kde(exp_sample(n, seed=s), grid=[0.0], h=n ** (-0.2))["density"][0]
-           for n, s in ((400, 1), (4000, 2), (20000, 3))]
+    est = [
+        fauzi_kde(exp_sample(n, seed=s), grid=[0.0], h=n ** (-0.2))["density"][0]
+        for n, s in ((400, 1), (4000, 2), (20000, 3))
+    ]
     for e in est:
         assert 0.35 < e < 0.72
     # more data does not repair it
@@ -195,8 +197,7 @@ def test_kdfe_beats_the_edf_where_the_edf_jumps():
         sd = np.std(x, ddof=1)
         iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.349
         sig = min(sd, iqr) if iqr > 0 else sd
-        assert o["bandwidth"] == pytest.approx(
-            4 ** (1 / 3) * sig * 120 ** (-1 / 3), rel=1e-12)
+        assert o["bandwidth"] == pytest.approx(4 ** (1 / 3) * sig * 120 ** (-1 / 3), rel=1e-12)
     # this comparison is the reason the bandwidth rule matters: under
     # the n^{-1/5} density rule the estimator OVERSMOOTHS and loses to
     # the step function it is supposed to improve on
@@ -232,8 +233,8 @@ def test_the_density_bandwidth_rule_would_lose_to_the_empirical_df():
         right.append(np.mean((o["F_hat"] - truth) ** 2))
         wrong.append(np.mean((w["F_hat"] - truth) ** 2))
         edf.append(np.mean((o["F_empirical"] - truth) ** 2))
-    assert np.mean(right) < np.mean(edf)     # the estimator earns its keep
-    assert np.mean(wrong) > np.mean(edf)     # under the density rule it does not
+    assert np.mean(right) < np.mean(edf)  # the estimator earns its keep
+    assert np.mean(wrong) > np.mean(edf)  # under the density rule it does not
     assert np.mean(right) < np.mean(wrong)
 
 
@@ -242,6 +243,7 @@ def test_the_two_bandwidth_rates_diverge_as_n_grows():
     grows like n^{2/15}, so the error compounds with sample size
     rather than washing out."""
     from morie.fn._fauzi import kdfe_bandwidth
+
     prev = None
     for n in (100, 10_000, 1_000_000):
         df = kdfe_bandwidth(None, sigma=1.0, n=n)
@@ -254,8 +256,7 @@ def test_the_two_bandwidth_rates_diverge_as_n_grows():
     # the ratio is exactly (1.06 / 4^(1/3)) n^(2/15): slow, but it
     # never stops growing, and by n = 10^6 the density rule is more
     # than four times too wide
-    assert prev == pytest.approx(
-        1.06 / 4 ** (1 / 3) * 1_000_000 ** (2 / 15), rel=1e-12)
+    assert prev == pytest.approx(1.06 / 4 ** (1 / 3) * 1_000_000 ** (2 / 15), rel=1e-12)
     assert prev > 4
 
 
@@ -338,12 +339,10 @@ def test_bias_coefficients_use_the_transformation_derivatives():
         assert o["g_prime"] == pytest.approx(t, rel=1e-12)
         assert o["g_double_prime"] == pytest.approx(t, rel=1e-12)
         assert o["bias_order"].startswith("O(h^2)")
-        assert np.isfinite(o["b_1" if f is fauzi_b1_coefficient else
-                             ("b_2" if f is fauzi_b2_coefficient else "b_3")])
+        assert np.isfinite(o["b_1" if f is fauzi_b1_coefficient else ("b_2" if f is fauzi_b2_coefficient else "b_3")])
     # under the identity transform g'' = 0, which must change the answer
     a = fauzi_b1_coefficient(t, f_X=0.5, f_X_prime=-0.5, S_X=0.3)
-    b = fauzi_b1_coefficient(t, f_X=0.5, f_X_prime=-0.5, S_X=0.3,
-                             transform="identity")
+    b = fauzi_b1_coefficient(t, f_X=0.5, f_X_prime=-0.5, S_X=0.3, transform="identity")
     assert b["g_double_prime"] == 0.0
     assert a["b_1"] != pytest.approx(b["b_1"])
 
@@ -352,7 +351,7 @@ def test_mean_residual_life_of_an_exponential_is_its_mean_everywhere():
     """The memoryless property: E[X - t | X > t] = 1/lambda for
     every t. A constant oracle at every grid point, which is a much
     stronger test than a single value."""
-    x = exp_sample(4000, rate=0.5, seed=43)   # mean 2
+    x = exp_sample(4000, rate=0.5, seed=43)  # mean 2
     tg = np.linspace(0.5, 3.0, 40)
     o = fauzi_mrl_boundary_free_2(x, tg)
     assert np.max(np.abs(o["mrl"] - 2.0)) < 0.35
@@ -391,8 +390,7 @@ def test_theorem_4_3_biases_differ_only_in_b2_versus_b3():
     b = fauzi_theorem_4_3(b2=0.7, b3=-0.2, **{**kw, "h": 0.1})["bias_1"]
     assert a / b == pytest.approx(16.0, rel=1e-9)
     # variance is O(1/n) -- the bandwidth is a lower-order effect
-    v = [fauzi_theorem_4_3(b2=0.7, b3=-0.2, **{**kw, "n": n})["variance"]
-         for n in (500, 5000)]
+    v = [fauzi_theorem_4_3(b2=0.7, b3=-0.2, **{**kw, "n": n})["variance"] for n in (500, 5000)]
     assert v[0] / v[1] == pytest.approx(10.0, rel=0.05)
 
 
@@ -422,8 +420,7 @@ def test_theorem_4_6_recovers_the_sample_mean_at_the_start_of_support():
     the support nobody has failed yet, so the expected remaining
     lifetime is the expected lifetime."""
     x = exp_sample(2000, seed=53)
-    o = fauzi_theorem_4_6(x, a1=0.0, mrl_at_a1=fauzi_mrl_boundary_free_2(
-        x, [1e-6])["mrl"][0])
+    o = fauzi_theorem_4_6(x, a1=0.0, mrl_at_a1=fauzi_mrl_boundary_free_2(x, [1e-6])["mrl"][0])
     assert o["identity_lhs"] == pytest.approx(o["sample_mean"], abs=0.2)
     assert o["expected_order"] == "O(h^2)"
     assert o["gap"] >= 0
@@ -443,17 +440,14 @@ def test_kernel_quantile_smooths_in_p_and_sits_near_the_sample_quantile():
     x = exp_sample(2000, seed=61)
     for p in (0.25, 0.5, 0.75):
         o = fauzi_kernel_quantile(x, p)
-        assert o["quantile"][0] == pytest.approx(
-            o["sample_quantile"][0], abs=0.15)
+        assert o["quantile"][0] == pytest.approx(o["sample_quantile"][0], abs=0.15)
         # truth: Q(p) = -log(1-p)
         assert o["quantile"][0] == pytest.approx(-np.log(1 - p), abs=0.15)
         assert o["weights_sum"][0] == pytest.approx(1.0, abs=0.02)
     assert "PROBABILITY" in o["smooths_in"].upper()
     # a vector of levels must give the same answers as the scalar calls
     v = fauzi_kernel_quantile(x, [0.25, 0.5, 0.75])["quantile"]
-    assert v == pytest.approx(
-        [fauzi_kernel_quantile(x, p)["quantile"][0]
-         for p in (0.25, 0.5, 0.75)], rel=1e-12)
+    assert v == pytest.approx([fauzi_kernel_quantile(x, p)["quantile"][0] for p in (0.25, 0.5, 0.75)], rel=1e-12)
 
 
 def test_kernel_quantile_is_continuous_in_p_where_the_sample_one_jumps():
@@ -465,7 +459,7 @@ def test_kernel_quantile_is_continuous_in_p_where_the_sample_one_jumps():
     kq = np.array([fauzi_kernel_quantile(x, p)["quantile"][0] for p in ps])
     sq = np.quantile(x, ps)
     assert np.max(np.abs(np.diff(kq))) < np.max(np.abs(np.diff(sq)))
-    assert np.all(np.diff(kq) > -1e-9)   # still monotone in p
+    assert np.all(np.diff(kq) > -1e-9)  # still monotone in p
 
 
 def test_quantile_amse_is_the_two_equivalent_forms_of_the_same_number():
@@ -473,16 +467,14 @@ def test_quantile_amse_is_the_two_equivalent_forms_of_the_same_number():
     quantity, because Q' = 1/f(Q). Supplying either input must give
     the same answer."""
     p, n = 0.3, 500
-    f = np.exp(np.log(1 - p))           # Exp(1): f(Q(p)) = 1 - p
+    f = np.exp(np.log(1 - p))  # Exp(1): f(Q(p)) = 1 - p
     a = fauzi_quantile_amse(p, n, f_at_quantile=f)["amse"][0]
     b = fauzi_quantile_amse(p, n, Q_prime=1.0 / f)["amse"][0]
     assert a == pytest.approx(b, rel=1e-12)
-    assert a == pytest.approx(p * (1 - p) / (n * f ** 2), rel=1e-12)
-    assert fauzi_quantile_amse(p, n, f_at_quantile=f)["se"][0] == \
-        pytest.approx(np.sqrt(a), rel=1e-12)
+    assert a == pytest.approx(p * (1 - p) / (n * f**2), rel=1e-12)
+    assert fauzi_quantile_amse(p, n, f_at_quantile=f)["se"][0] == pytest.approx(np.sqrt(a), rel=1e-12)
     # halving n doubles the AMSE
-    assert fauzi_quantile_amse(p, 250, f_at_quantile=f)["amse"][0] == \
-        pytest.approx(2 * a, rel=1e-12)
+    assert fauzi_quantile_amse(p, 250, f_at_quantile=f)["amse"][0] == pytest.approx(2 * a, rel=1e-12)
 
 
 def test_quantile_amse_blows_up_in_the_tail_despite_the_binomial_part():
@@ -492,7 +484,7 @@ def test_quantile_amse_blows_up_in_the_tail_despite_the_binomial_part():
     n = 1000
     prev = None
     for p in (0.5, 0.9, 0.99, 0.999):
-        f = 1 - p                       # Exp(1)
+        f = 1 - p  # Exp(1)
         a = fauzi_quantile_amse(p, n, f_at_quantile=f)
         assert a["binomial_part"][0] == pytest.approx(p * (1 - p) / n, rel=1e-12)
         if prev is not None:
@@ -507,10 +499,10 @@ def test_order_m_kernel_moments_vanish_up_to_m_minus_one():
         K = o["K"]
         assert np.trapezoid(K, u) == pytest.approx(1.0, abs=1e-8)
         for j in range(1, m):
-            assert abs(np.trapezoid(u ** j * K, u)) < 1e-6
+            assert abs(np.trapezoid(u**j * K, u)) < 1e-6
         # the m-th moment is finite and NOT zero -- that is what
         # makes the order exactly m rather than higher
-        assert abs(np.trapezoid(u ** m * K, u)) > 1e-6
+        assert abs(np.trapezoid(u**m * K, u)) > 1e-6
         assert o["bias_order"] == f"O(h^{m})"
     with pytest.raises(ValueError, match="2, 4 or 6"):
         fauzi_order_m_kernel(u, m=3)
@@ -542,7 +534,7 @@ def test_muller_kernel_turns_negative_exactly_at_root_three():
     u = np.linspace(-12, 12, 40001)
     Ku = fauzi_muller_kernel(u)["K"]
     assert np.trapezoid(Ku, u) == pytest.approx(1.0, abs=1e-8)
-    assert abs(np.trapezoid(u ** 2 * Ku, u)) < 1e-6      # mu_2 = 0
+    assert abs(np.trapezoid(u**2 * Ku, u)) < 1e-6  # mu_2 = 0
 
 
 def test_lemma_3_1_remainder_is_smaller_order_than_the_linear_term():
@@ -555,16 +547,15 @@ def test_lemma_3_1_remainder_is_smaller_order_than_the_linear_term():
         o = fauzi_lemma_3_1(exp_sample(n, seed=s), 0.5, q_true=np.log(2.0))
         assert o["centre"] == pytest.approx(np.log(2.0), rel=1e-12)
         ratios.append(abs(o["remainder"]) / max(abs(o["linear_term"]), 1e-12))
-        assert o["asymptotic_variance"] == pytest.approx(
-            0.25 / (n * o["density_at_quantile"] ** 2), rel=1e-12)
+        assert o["asymptotic_variance"] == pytest.approx(0.25 / (n * o["density_at_quantile"] ** 2), rel=1e-12)
     assert ratios[-1] < ratios[0]
     # centred on the sample quantile the linear term collapses, and
     # the module has to say so rather than quietly reporting a
     # decomposition that carries no information
     d = fauzi_lemma_3_1(exp_sample(2500, seed=73), 0.5)
     assert abs(d["linear_term"]) < 1e-2 * abs(
-        fauzi_lemma_3_1(exp_sample(2500, seed=73), 0.5,
-                        q_true=np.log(2.0))["linear_term"])
+        fauzi_lemma_3_1(exp_sample(2500, seed=73), 0.5, q_true=np.log(2.0))["linear_term"]
+    )
     assert "degenerate" in d["centred_at"]
 
 
@@ -572,8 +563,7 @@ def test_lemma_3_1_influence_function_is_centred():
     """The linear term is an i.i.d. average of influence-function
     values, so those values must average to (nearly) zero -- that is
     what makes the representation a mean-zero average at all."""
-    o = fauzi_lemma_3_1(exp_sample(3000, seed=83), 0.4,
-                        q_true=-np.log(0.6))
+    o = fauzi_lemma_3_1(exp_sample(3000, seed=83), 0.4, q_true=-np.log(0.6))
     assert abs(np.mean(o["influence"])) < 0.05
     assert o["linear_term"] == pytest.approx(np.mean(o["influence"]), rel=1e-9)
     assert "Bahadur" in o["representation"]

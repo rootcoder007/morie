@@ -94,22 +94,29 @@ def esl_pca_svd(X, k, center=True, scale=False):
         i = int(np.argmax(np.abs(V[:, j])))
         if V[i, j] < 0:
             V[:, j] = -V[:, j]
-    eig = (S ** 2) / (n - 1)
+    eig = (S**2) / (n - 1)
     total = float(np.sum(eig))
     ratio = (eig[:k] / total) if total > 0 else np.full(k, np.nan)
     scores = Z @ V
-    return RichResult(payload={
-        "estimate": float(eig[0]),
-        "eigenvalues": [float(v) for v in eig[:k]],
-        "singular_values": [float(v) for v in S[:k]],
-        "components": [float(v) for v in V.T.ravel()],
-        "scores": [float(v) for v in scores.ravel()],
-        "explained_variance_ratio": [float(v) for v in ratio],
-        "cumulative_ratio": [float(v) for v in np.cumsum(ratio)],
-        "mean": [float(v) for v in mu], "sd": [float(v) for v in sd],
-        "centered": bool(center), "scaled": bool(scale),
-        "n": int(n), "p": int(p), "k": k,
-        "method": "PCA via SVD; sign fixed by max-|loading|; scaling off by default"})
+    return RichResult(
+        payload={
+            "estimate": float(eig[0]),
+            "eigenvalues": [float(v) for v in eig[:k]],
+            "singular_values": [float(v) for v in S[:k]],
+            "components": [float(v) for v in V.T.ravel()],
+            "scores": [float(v) for v in scores.ravel()],
+            "explained_variance_ratio": [float(v) for v in ratio],
+            "cumulative_ratio": [float(v) for v in np.cumsum(ratio)],
+            "mean": [float(v) for v in mu],
+            "sd": [float(v) for v in sd],
+            "centered": bool(center),
+            "scaled": bool(scale),
+            "n": int(n),
+            "p": int(p),
+            "k": k,
+            "method": "PCA via SVD; sign fixed by max-|loading|; scaling off by default",
+        }
+    )
 
 
 def esl_pca_transform(model, X):

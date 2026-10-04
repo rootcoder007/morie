@@ -1,7 +1,6 @@
 """Tests for dpadam.dp_adam."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpadam import dp_adam
 
 
@@ -17,14 +16,12 @@ def test_dpadam_basic():
     result = dp_adam(grads, C=C, sigma=sigma, lr=lr, betas=betas, seed=42)
     assert isinstance(result, dict)
     # Documented keys returned by dp_adam
-    for key in ("update", "state", "private_gradient",
-                "signal_to_noise", "clipped_fraction"):
+    for key in ("update", "state", "private_gradient", "signal_to_noise", "clipped_fraction"):
         assert key in result
     # Independent arithmetic check of the first Adam step on the
     # privatised gradient (sigma=0, so private_gradient == clipped mean).
     expected = -lr * (grads.mean(axis=0)) / (np.sqrt(grads.mean(axis=0) ** 2) + 1e-8)
-    assert bool(np.allclose(np.asarray(result["update"]).reshape(-1),
-                            expected.reshape(-1), atol=1e-10))
+    assert bool(np.allclose(np.asarray(result["update"]).reshape(-1), expected.reshape(-1), atol=1e-10))
 
 
 def test_dpadam_edge():

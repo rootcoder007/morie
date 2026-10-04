@@ -17,8 +17,7 @@ def test_gblpq_basic():
     result = gblup_equivalence(Z, G, sigma2_g)
 
     # Documented keys
-    for key in ("Zstar", "L", "V_original", "V_reparameterized",
-                "max_gap", "n", "q"):
+    for key in ("Zstar", "L", "V_original", "V_reparameterized", "max_gap", "n", "q"):
         assert key in result, f"missing key {key!r} in result"
 
     assert result["n"] == n

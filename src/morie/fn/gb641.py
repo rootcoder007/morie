@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['medtest', 'gibbons_median_test']
+__all__ = ["medtest", "gibbons_median_test"]
 
 
 def medtest(x, y):
@@ -45,11 +45,7 @@ def medtest(x, y):
         raise ValueError("both samples must be non-empty.")
     pooled = sorted(xs + ys)
     nn = m + n
-    med = (
-        pooled[nn // 2]
-        if nn % 2
-        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
-    )
+    med = pooled[nn // 2] if nn % 2 else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
     t = sum(1 for v in pooled if v > med)
     u = sum(1 for v in xs if v > med)
 
@@ -61,11 +57,7 @@ def medtest(x, y):
     lower = sum(_p(k) for k in range(0, u + 1))
     upper = sum(_p(k) for k in range(u, m + 1))
     mean = m * t / float(nn)
-    var = (
-        m * n * t * (nn - t) / (float(nn) ** 2 * (nn - 1.0))
-        if nn > 1
-        else float("nan")
-    )
+    var = m * n * t * (nn - t) / (float(nn) ** 2 * (nn - 1.0)) if nn > 1 else float("nan")
     return RichResult(
         payload={
             "statistic": int(u),

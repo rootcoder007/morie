@@ -10,5 +10,6 @@ def test_bkintr_basic():
 
 def test_bkintr_edge():
     import pytest
+
     with pytest.raises(ValueError, match="sum to 1"):
         burkov_ngram_interpolation([0.5, 0.5], [0.5, 0.6])

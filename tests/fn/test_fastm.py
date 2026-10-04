@@ -1,11 +1,10 @@
 """Tests for fastm.fast_mcd."""
 
-from morie.fn import _array_core as np
-
 import math
 
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fastm import fast_mcd
 
 
@@ -16,8 +15,7 @@ def test_fastm_basic():
     result = fast_mcd(X, n_starts=10)
     assert isinstance(result, dict)
     # all keys promised by the docstring must be present
-    expected_keys = {"estimate", "center", "cov_raw", "cov", "factor",
-                     "subset", "h", "n", "p", "n_starts_used", "dets"}
+    expected_keys = {"estimate", "center", "cov_raw", "cov", "factor", "subset", "h", "n", "p", "n_starts_used", "dets"}
     assert expected_keys.issubset(result.keys())
     # the determinant (estimate) should be a finite number
     assert math.isfinite(result["estimate"])

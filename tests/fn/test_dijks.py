@@ -1,7 +1,6 @@
 """Tests for dijks (Dijkstra shortest paths)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dijks import dijkstra
 
 

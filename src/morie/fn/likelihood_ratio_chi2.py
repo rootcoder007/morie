@@ -28,17 +28,16 @@ def likelihood_ratio_chi2(neg2ll_reduced, neg2ll_full):
     """
     value = _ca_crim.likelihood_ratio_chi2(neg2ll_reduced, neg2ll_full)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.18)"
     return RichResult(
-        title='Likelihood ratio chi2 = (-2LLreduced) - (-2LLfull)',
+        title="Likelihood ratio chi2 = (-2LLreduced) - (-2LLfull)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e18: LR chi2 = (-2LL_reduced) - (-2LL_full) [Weisburd et al. 2022, eq. 4.18]'
+    return "ca4e18: LR chi2 = (-2LL_reduced) - (-2LL_full) [Weisburd et al. 2022, eq. 4.18]"

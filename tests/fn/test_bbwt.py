@@ -1,7 +1,6 @@
 """Tests for morie.fn.bbwt — Blackbox weight matrix."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bbwt import bbwt
 
 

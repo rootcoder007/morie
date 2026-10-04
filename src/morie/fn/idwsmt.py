@@ -57,7 +57,7 @@ def inverse_distance_weighting(coords, values, s_predict=None, power=2.0):
             d = math.sqrt(s)
             if d == 0.0:
                 hit = i
-            w.append(1.0 / (d ** p) if d > 0.0 else 0.0)
+            w.append(1.0 / (d**p) if d > 0.0 else 0.0)
         if hit >= 0:
             out.append(z[hit])
             ess.append(1.0)

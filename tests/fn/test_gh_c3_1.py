@@ -1,7 +1,6 @@
 """Tests for gh_c3_1.ghosal_random_measure_def."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_1 import ghosal_random_measure_def
 
 

@@ -34,8 +34,7 @@ from ._richresult import RichResult
 __all__ = ["information_bottleneck"]
 
 
-def information_bottleneck(X, Y=None, beta=5.0, T=2, iters=500, tol=1e-14,
-                           pxy=None):
+def information_bottleneck(X, Y=None, beta=5.0, T=2, iters=500, tol=1e-14, pxy=None):
     """Iterate the information-bottleneck fixed point.
 
     Parameters
@@ -73,8 +72,7 @@ def information_bottleneck(X, Y=None, beta=5.0, T=2, iters=500, tol=1e-14,
         for j in range(m):
             s += J[i][j]
         px[i] = s
-    pygx = [[J[i][j] / px[i] if px[i] > 0.0 else 0.0 for j in range(m)]
-            for i in range(n)]
+    pygx = [[J[i][j] / px[i] if px[i] > 0.0 else 0.0 for j in range(m)] for i in range(n)]
     Tn = int(T)
     Q = [[0.0] * Tn for _ in range(n)]
     for i in range(n):
@@ -107,8 +105,7 @@ def information_bottleneck(X, Y=None, beta=5.0, T=2, iters=500, tol=1e-14,
                         kl += pygx[i][j] * math.log(pygx[i][j] / pygt[t][j])
                     elif pygx[i][j] > 0.0:
                         kl += pygx[i][j] * 700.0
-                lw.append(math.log(pt[t] if pt[t] > 1e-300 else 1e-300)
-                          - float(beta) * kl)
+                lw.append(math.log(pt[t] if pt[t] > 1e-300 else 1e-300) - float(beta) * kl)
             z = k.logsumexp(lw)
             for t in range(Tn):
                 nv = math.exp(lw[t] - z)

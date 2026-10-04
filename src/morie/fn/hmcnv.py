@@ -51,7 +51,13 @@ def convlayer(x, kernel, bias=None, stride=(1, 1), padding=(0, 0)):
     res = _core.convlayer(x=x, kernel=kernel, bias=bias, stride=stride, padding=padding)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("height", res["height"]), ("width", res["width"]), ("channels", res["channels"]), ("total", res["total"]), ("nparams", res["nparams"])],
+        summary_lines=[
+            ("height", res["height"]),
+            ("width", res["width"]),
+            ("channels", res["channels"]),
+            ("total", res["total"]),
+            ("nparams", res["nparams"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

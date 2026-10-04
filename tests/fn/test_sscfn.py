@@ -1,7 +1,6 @@
 """Test slope_sign_changes_fn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sscfn import alias, slope_sign_changes_fn
 

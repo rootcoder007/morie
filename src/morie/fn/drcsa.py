@@ -28,7 +28,7 @@ def _dr_cell(dY, treated, ctrl, Xu, trim):
     r = dy - m0
     a1 = float(np.sum(w1 * r) / np.sum(w1))
     a0 = float(np.sum(w0 * r) / np.sum(w0))
-    infl_sub = (w1 * (r - a1) / w1.mean() - w0 * (r - a0) / w0.mean())
+    infl_sub = w1 * (r - a1) / w1.mean() - w0 * (r - a0) / w0.mean()
     infl = np.zeros(dY.size)
     infl[sub] = infl_sub
     return {
@@ -41,8 +41,7 @@ def _dr_cell(dY, treated, ctrl, Xu, trim):
     }
 
 
-def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None,
-                         control="notyet", trim=0.995):
+def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None, control="notyet", trim=0.995):
     r"""Group-time ATT with covariates, estimated doubly robustly.
 
     Callaway and Sant'Anna's estimator with conditional parallel
@@ -122,13 +121,11 @@ def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None,
     if cohort is None:
         g, _, _, _ = first_treatment(D, unit, time, units, periods)
     else:
-        cm, _, _ = as_panel(np.where(np.isfinite(cohort), cohort, -1.0),
-                            unit, time)
+        cm, _, _ = as_panel(np.where(np.isfinite(cohort), cohort, -1.0), unit, time)
         if np.any(cm.max(axis=1) != cm.min(axis=1)):
             raise ValueError("cohort must be constant within a unit.")
         lookup = {float(p): i for i, p in enumerate(periods)}
-        g = np.array([lookup.get(float(v), np.inf) if v >= 0 else np.inf
-                      for v in cm[:, 0]])
+        g = np.array([lookup.get(float(v), np.inf) if v >= 0 else np.inf for v in cm[:, 0]])
     if not np.isfinite(g).any():
         raise ValueError("no unit is ever treated.")
 
@@ -148,10 +145,7 @@ def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None,
         elif Xa.shape[0] == n_u:
             Xu = add_intercept(Xa)
         else:
-            raise ValueError(
-                "X has %d rows; expected %d (long) or %d (one per unit)."
-                % (Xa.shape[0], len(y), n_u)
-            )
+            raise ValueError("X has %d rows; expected %d (long) or %d (one per unit)." % (Xa.shape[0], len(y), n_u))
 
     cells, dropped, warn = {}, [], []
     for gg in np.unique(g[np.isfinite(g)]):
@@ -197,8 +191,7 @@ def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None,
         w = sum(sizes[k] for k in keys)
         e = sum(sizes[k] / w * post[k]["att"] for k in keys)
         i = sum(sizes[k] / w * post[k]["infl"] for k in keys)
-        event[rel] = {"att": e,
-                      "se": float(np.sqrt(np.sum(i**2)) / n_u)}
+        event[rel] = {"att": e, "se": float(np.sqrt(np.sum(i**2)) / n_u)}
 
     z = 1.959963984540054
     return RichResult(

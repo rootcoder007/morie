@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcdds — recidivism desistance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rcdds import recidivism_desistance
 

@@ -90,8 +90,7 @@ def phylotr(distance, labels=None):
     if n < 4:
         raise ValueError("need at least 4 OTUs")
     D = [[float(Dm[i, j]) for j in range(n)] for i in range(n)]
-    labs = ([str(x) for x in labels] if labels is not None
-            else [str(i + 1) for i in range(n)])
+    labs = [str(x) for x in labels] if labels is not None else [str(i + 1) for i in range(n)]
     if len(labs) != n:
         raise ValueError("labels length must match matrix size")
     # eq. (1): S_0 = sum_{i<j} D_ij / (n - 1)
@@ -108,15 +107,12 @@ def phylotr(distance, labels=None):
                 if best is None or s < best:
                     best, bi, bj = s, i, j
         # eqs. (6a)-(6b)
-        diz = sum(D[bi][k] for k in range(m)
-                  if k != bi and k != bj) / (m - 2.0)
-        djz = sum(D[bj][k] for k in range(m)
-                  if k != bi and k != bj) / (m - 2.0)
+        diz = sum(D[bi][k] for k in range(m) if k != bi and k != bj) / (m - 2.0)
+        djz = sum(D[bj][k] for k in range(m) if k != bi and k != bj) / (m - 2.0)
         li = (D[bi][bj] + diz - djz) / 2.0
         lj = (D[bi][bj] + djz - diz) / 2.0
         new_lab = "(" + labs[bi] + "-" + labs[bj] + ")"
-        joins.append({"a": labs[bi], "b": labs[bj], "new": new_lab,
-                      "La": li, "Lb": lj, "S": best})
+        joins.append({"a": labs[bi], "b": labs[bj], "new": new_lab, "La": li, "Lb": lj, "S": best})
         # eq. (5) averaged update; build the reduced matrix
         keep = [k for k in range(m) if k != bi and k != bj]
         Dn = [[0.0] * (m - 1) for _ in range(m - 1)]
@@ -133,19 +129,20 @@ def phylotr(distance, labels=None):
     la = (D[0][1] + D[0][2] - D[1][2]) / 2.0
     lb = (D[0][1] + D[1][2] - D[0][2]) / 2.0
     lc = (D[0][2] + D[1][2] - D[0][1]) / 2.0
-    return RichResult(payload={
-        "joins": joins,
-        "s0": s0,
-        "final_labels": list(labs),
-        "final_lengths": np.asarray([la, lb, lc]),
-        "n": n,
-        "method": "neighbor joining, original 1987 algorithm (Saitou-Nei)",
-    })
+    return RichResult(
+        payload={
+            "joins": joins,
+            "s0": s0,
+            "final_labels": list(labs),
+            "final_lengths": np.asarray([la, lb, lc]),
+            "n": n,
+            "method": "neighbor joining, original 1987 algorithm (Saitou-Nei)",
+        }
+    )
 
 
 phylogenetic_tree = phylotr
 
 
 def cheatsheet():
-    return ("phylotr(D, labels=None) -> Saitou-Nei (1987) neighbor "
-            "joining: S_ij criterion, eq 6a/6b branch lengths.")
+    return "phylotr(D, labels=None) -> Saitou-Nei (1987) neighbor joining: S_ij criterion, eq 6a/6b branch lengths."

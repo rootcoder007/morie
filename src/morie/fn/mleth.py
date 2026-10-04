@@ -80,17 +80,23 @@ def mle_theta_estimator(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
     allw = bool(np.all(yv == 0))
     if allc or allw:
         inf = np.inf if allc else -np.inf
-        return RichResult(payload={
-            "theta": inf, "se": np.inf, "finite": False,
-            "information": 0.0, "loglik": np.nan,
-            "n_local_maxima": 0,
-            "pattern": "all correct" if allc else "all incorrect",
-            "n_items": int(m),
-            "why_infinite": "the likelihood is monotone in theta for a "
-                            "perfect pattern, so its supremum is at "
-                            "infinity and no maximum exists; use a MAP/EAP "
-                            "estimator or Warm's weighted likelihood",
-            "method": "3PL maximum likelihood (no finite maximum here)"})
+        return RichResult(
+            payload={
+                "theta": inf,
+                "se": np.inf,
+                "finite": False,
+                "information": 0.0,
+                "loglik": np.nan,
+                "n_local_maxima": 0,
+                "pattern": "all correct" if allc else "all incorrect",
+                "n_items": int(m),
+                "why_infinite": "the likelihood is monotone in theta for a "
+                "perfect pattern, so its supremum is at "
+                "infinity and no maximum exists; use a MAP/EAP "
+                "estimator or Warm's weighted likelihood",
+                "method": "3PL maximum likelihood (no finite maximum here)",
+            }
+        )
 
     lo, hi = float(bounds[0]), float(bounds[1])
     grid = np.linspace(lo, hi, 401)
@@ -105,8 +111,7 @@ def mle_theta_estimator(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
     phi = (np.sqrt(5) - 1) / 2
 
     def negll(t):
-        p = np.clip(logistic_3pl(np.array([t]), av, bv, cv)[0],
-                    1e-12, 1 - 1e-12)
+        p = np.clip(logistic_3pl(np.array([t]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
         return -float(np.sum(yv * np.log(p) + (1 - yv) * np.log(1 - p)))
 
     x1, x2 = right - phi * (right - left), left + phi * (right - left)
@@ -126,27 +131,33 @@ def mle_theta_estimator(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
     # polish on the score equation, well conditioned where the
     # log-likelihood is flat
     from ._psycho import score_root, theta_score
+
     yl, al, bl, cl = ([float(v) for v in q.tolist()] for q in (yv, av, bv, cv))
     gl_ = [float(v) for v in grid.tolist()]
-    r = score_root(lambda t: theta_score(t, yl, al, bl, cl),
-                   gl_[max(i - 1, 0)], gl_[min(i + 1, len(gl_) - 1)])
+    r = score_root(lambda t: theta_score(t, yl, al, bl, cl), gl_[max(i - 1, 0)], gl_[min(i + 1, len(gl_) - 1)])
     if r is not None:
         th = r
-    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
-                 1e-12, 1 - 1e-12)
+    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
-    info = float(np.sum(dP ** 2 / (Pt * (1 - Pt))))
-    return RichResult(payload={
-        "theta": th, "se": float(1 / np.sqrt(info)) if info > 0 else np.inf,
-        "finite": True, "information": info,
-        "loglik": -negll(th),
-        "n_local_maxima": int(interior.size),
-        "multimodality_note": "the 3PL likelihood can be multimodal when "
-                              "guessing is present (Samejima 1973; Yen et "
-                              "al. 1991), so a dense scan precedes local "
-                              "refinement rather than a Newton step",
-        "pattern": "mixed", "n_items": int(m), "grid_step": float(step),
-        "method": "3PL maximum-likelihood theta by scan plus golden-section refinement"})
+    info = float(np.sum(dP**2 / (Pt * (1 - Pt))))
+    return RichResult(
+        payload={
+            "theta": th,
+            "se": float(1 / np.sqrt(info)) if info > 0 else np.inf,
+            "finite": True,
+            "information": info,
+            "loglik": -negll(th),
+            "n_local_maxima": int(interior.size),
+            "multimodality_note": "the 3PL likelihood can be multimodal when "
+            "guessing is present (Samejima 1973; Yen et "
+            "al. 1991), so a dense scan precedes local "
+            "refinement rather than a Newton step",
+            "pattern": "mixed",
+            "n_items": int(m),
+            "grid_step": float(step),
+            "method": "3PL maximum-likelihood theta by scan plus golden-section refinement",
+        }
+    )
 
 
 def cheatsheet():

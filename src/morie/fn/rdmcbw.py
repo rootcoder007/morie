@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MSE-optimal bandwidth selector for RDD (Imbens-Kalyanaraman)."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -213,19 +211,37 @@ def mse_optimal_bandwidth_rdd(y, x, cutoff=0.0, kernel_constant=CK_EDGE):
     m2m = _curv(i2m, "left")
 
     # ---- Step 3: regularisation and the bandwidth itself
-    r_plus = 720.0 * sigma2 / (n2p * h2p ** 4)
-    r_minus = 720.0 * sigma2 / (n2m * h2m ** 4)
+    r_plus = 720.0 * sigma2 / (n2p * h2p**4)
+    r_minus = 720.0 * sigma2 / (n2m * h2m**4)
     h_opt = ik_hopt(sigma2, f_hat, m2p, m2m, r_plus, r_minus, n, ck)
     h_no_reg = ik_hopt(sigma2, f_hat, m2p, m2m, 0.0, 0.0, n, ck)
 
-    return RichResult(payload={
-        "estimate": h_opt, "h_opt": h_opt, "h_no_reg": h_no_reg, "h1": h1,
-        "f_hat": f_hat, "sigma2": sigma2, "m3": m3,
-        "h2_plus": h2p, "h2_minus": h2m, "m2_plus": m2p, "m2_minus": m2m,
-        "r_plus": r_plus, "r_minus": r_minus,
-        "n_plus": n_plus, "n_minus": n_minus, "n2_plus": n2p, "n2_minus": n2m,
-        "n1_plus": n1p, "n1_minus": n1m, "n": n, "ck": ck,
-        "method": "IK (2012) MSE-optimal RDD bandwidth"})
+    return RichResult(
+        payload={
+            "estimate": h_opt,
+            "h_opt": h_opt,
+            "h_no_reg": h_no_reg,
+            "h1": h1,
+            "f_hat": f_hat,
+            "sigma2": sigma2,
+            "m3": m3,
+            "h2_plus": h2p,
+            "h2_minus": h2m,
+            "m2_plus": m2p,
+            "m2_minus": m2m,
+            "r_plus": r_plus,
+            "r_minus": r_minus,
+            "n_plus": n_plus,
+            "n_minus": n_minus,
+            "n2_plus": n2p,
+            "n2_minus": n2m,
+            "n1_plus": n1p,
+            "n1_minus": n1m,
+            "n": n,
+            "ck": ck,
+            "method": "IK (2012) MSE-optimal RDD bandwidth",
+        }
+    )
 
 
 def cheatsheet():

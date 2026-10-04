@@ -74,9 +74,7 @@ def test_btjkab_basic():
             tm_independent.append(m_val)
             infl_independent.append(m_val - grand_independent)
 
-    max_abs_independent = max(
-        (abs(v) for v in infl_independent if v == v), default=0.0
-    )
+    max_abs_independent = max((abs(v) for v in infl_independent if v == v), default=0.0)
 
     assert payload["grand_mean"] == grand_independent
     assert payload["max_abs_influence"] == max_abs_independent

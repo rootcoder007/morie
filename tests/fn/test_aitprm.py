@@ -1,7 +1,6 @@
 """Tests for aitprm.compositional_permanova."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitprm import compositional_permanova
 
 
@@ -32,6 +31,7 @@ def test_aitprm_basic():
     # Aitchison (clr -> Euclidean) distances, to verify the closed-form
     # statistic in the docstring rather than trust the function's number.
     import math
+
     N, D = 30, 4
     clr = []
     for r in X:

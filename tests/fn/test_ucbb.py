@@ -42,8 +42,7 @@ def test_ucbb_indices_recomputed_independently():
             j = t
         else:
             n = t
-            idx = [sums[k] / counts[k] + math.sqrt(2.0 * math.log(n) / counts[k])
-                   for k in range(K)]
+            idx = [sums[k] / counts[k] + math.sqrt(2.0 * math.log(n) / counts[k]) for k in range(K)]
             j = max(range(K), key=lambda k: (idx[k], -k))
             # ties to lowest index: max over (value, -k)
         counts[j] += 1

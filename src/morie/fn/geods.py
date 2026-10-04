@@ -68,16 +68,23 @@ def geods(
             xm[mu] -= h
             gp, gm = _mat(xp), _mat(xm)
             dg.append([[(gp[i][j] - gm[i][j]) / (2.0 * h) for j in range(4)] for i in range(4)])
-        return [[[0.5 * sum(ginv[lam][sig] * (dg[mu][sig][nu] + dg[nu][sig][mu] - dg[sig][mu][nu])
-                            for sig in range(4))
-                  for nu in range(4)] for mu in range(4)] for lam in range(4)]
+        return [
+            [
+                [
+                    0.5
+                    * sum(ginv[lam][sig] * (dg[mu][sig][nu] + dg[nu][sig][mu] - dg[sig][mu][nu]) for sig in range(4))
+                    for nu in range(4)
+                ]
+                for mu in range(4)
+            ]
+            for lam in range(4)
+        ]
 
     def rhs(tau, y):
         yl = [float(v) for v in y]
         x, u = yl[:4], yl[4:]
         G = christoffel(x)
-        accel = [-sum(G[mu][a][b] * u[a] * u[b] for a in range(4) for b in range(4))
-                 for mu in range(4)]
+        accel = [-sum(G[mu][a][b] * u[a] * u[b] for a in range(4) for b in range(4)) for mu in range(4)]
         return np.asarray(u + accel, dtype=float)
 
     y0 = np.concatenate([x0, u0])

@@ -58,7 +58,7 @@ def mgkde(x, grid, h):
     a4h = np.asarray(agamma_kernel(xv, g, 4.0 * float(h)), dtype=float)
     if np.any(a4h <= 0):
         raise ValueError("A_4h vanished on the grid; (1.14) divides by it.")
-    est = ah ** 2 / a4h
+    est = ah**2 / a4h
     return RichResult(
         payload={
             "estimate": [float(v) for v in est],

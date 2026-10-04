@@ -7,15 +7,13 @@ import math
 import pytest
 
 from morie.fn.bsaadapt import eegadapt, glr
-from morie.fn.bsacorr import (alpharhy, xcorr, xcorrcont, xcorrdisc, xcorrproc,
-                              corrconv, corrdot, eegacf, nccftpl)
+from morie.fn.bsacorr import alpharhy, corrconv, corrdot, eegacf, nccftpl, xcorr, xcorrcont, xcorrdisc, xcorrproc
 from morie.fn.bsasig import compsig, sincostest
 from morie.fn.bsastat import corrcoef
 
 
 def sine(n, cycles_hz, fs=100.0, amp=1.0, phase=0.0):
-    return [amp * math.sin(2 * math.pi * cycles_hz * i / fs + phase)
-            for i in range(n)]
+    return [amp * math.sin(2 * math.pi * cycles_hz * i / fs + phase) for i in range(n)]
 
 
 # --------------------------------------------------------------- GLR, 8.30/31
@@ -23,8 +21,7 @@ def test_glr_is_the_book_difference_of_log_likelihoods():
     """d(n) = H(1:n) - [H(1:m-1) + H(m:n)], eq. (8.31), exactly."""
     x = sine(400, 5)
     r = glr(x, 201, order=4)
-    assert r["d"] == pytest.approx(
-        r["h_pooled"] - (r["h_reference"] + r["h_test"]), abs=1e-12)
+    assert r["d"] == pytest.approx(r["h_pooled"] - (r["h_reference"] + r["h_test"]), abs=1e-12)
 
 
 def test_glr_rises_when_the_process_changes():
@@ -62,8 +59,7 @@ def test_eegadapt_finds_the_one_boundary_and_restarts_the_reference():
 def test_eegadapt_threshold_is_robust_by_default():
     r = eegadapt(sine(400, 5), 100.0, window=60, step=20)
     assert r["robust_threshold"] is True
-    assert r["threshold"] == pytest.approx(
-        r["median"] + 3.0 * 1.4826 * r["mad"], abs=1e-12)
+    assert r["threshold"] == pytest.approx(r["median"] + 3.0 * 1.4826 * r["mad"], abs=1e-12)
 
 
 def test_eegadapt_refuses_a_window_longer_than_the_record():
@@ -82,8 +78,7 @@ def test_ccf_peak_lag_is_the_delay_with_the_books_sign():
 def test_ccf_zero_lag_of_x_with_itself_is_the_mean_square():
     x = [1.0, 2.0, 3.0, 4.0]
     r = xcorr(x, x, maxlag=0, biased=True)
-    assert r["ccf"][0] == pytest.approx(sum(v * v for v in x) / 4,
-                                           abs=1e-12)
+    assert r["ccf"][0] == pytest.approx(sum(v * v for v in x) / 4, abs=1e-12)
 
 
 def test_ccf_normalized_is_bounded_and_hits_one_on_a_copy():
@@ -108,8 +103,7 @@ def test_ccfcont_overlap_shrinks_as_the_delay_grows():
 
 
 def test_ccfproc_with_the_mean_removed_is_the_cross_covariance():
-    r = xcorrproc([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 8.0], lags=0,
-                remove_mean=True)
+    r = xcorrproc([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 8.0], lags=0, remove_mean=True)
     assert r["is_cross_covariance_when_mean_removed"] is True
     x = [1.0, 2.0, 3.0, 4.0]
     y = [2.0, 4.0, 6.0, 8.0]
@@ -135,12 +129,11 @@ def test_nccftpl_is_bounded_and_locates_the_template():
 
 
 def test_corrdot_is_the_cosine_and_is_scale_free():
-    assert corrdot([1.0, 2.0, 3.0], [2.0, 4.0, 6.0])["gamma"] == \
-        pytest.approx(1.0, abs=1e-12)
-    assert corrdot([1.0, 0.0], [0.0, 1.0])["gamma"] == pytest.approx(0.0,
-                                                                     abs=1e-12)
-    assert corrdot([1.0, 2.0], [1.0, 2.0])["gamma"] == \
-        pytest.approx(corrdot([1.0, 2.0], [100.0, 200.0])["gamma"], abs=1e-12)
+    assert corrdot([1.0, 2.0, 3.0], [2.0, 4.0, 6.0])["gamma"] == pytest.approx(1.0, abs=1e-12)
+    assert corrdot([1.0, 0.0], [0.0, 1.0])["gamma"] == pytest.approx(0.0, abs=1e-12)
+    assert corrdot([1.0, 2.0], [1.0, 2.0])["gamma"] == pytest.approx(
+        corrdot([1.0, 2.0], [100.0, 200.0])["gamma"], abs=1e-12
+    )
 
 
 def test_eegacf_recovers_the_rhythm_frequency():
@@ -166,8 +159,7 @@ def test_sincostest_length_is_duration_times_rate():
 def test_sincostest_is_the_sum_of_its_two_named_components():
     r = sincostest(fs=100.0, duration=0.5, f1=5.0, f2=20.0, a1=2.0, a2=0.5)
     for i, (t, v) in enumerate(zip(r["t"], r["x"])):
-        want = (r["a1"] * math.sin(2 * math.pi * r["f1"] * t)
-                + r["a2"] * math.cos(2 * math.pi * r["f2"] * t))
+        want = r["a1"] * math.sin(2 * math.pi * r["f1"] * t) + r["a2"] * math.cos(2 * math.pi * r["f2"] * t)
         assert v == pytest.approx(want, abs=1e-12), i
 
 
@@ -183,10 +175,8 @@ def test_compsig_reports_overlap_when_the_shifts_are_closer_than_the_pulse():
 
 # ------------------------------------------------------------------- corrcoef
 def test_corrcoef_is_one_on_a_positive_scaling_and_minus_one_on_negation():
-    assert corrcoef([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 8.0])["r"] == \
-        pytest.approx(1.0, abs=1e-12)
-    assert corrcoef([1.0, 2.0, 3.0, 4.0], [-2.0, -4.0, -6.0, -8.0])["r"] == \
-        pytest.approx(-1.0, abs=1e-12)
+    assert corrcoef([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 8.0])["r"] == pytest.approx(1.0, abs=1e-12)
+    assert corrcoef([1.0, 2.0, 3.0, 4.0], [-2.0, -4.0, -6.0, -8.0])["r"] == pytest.approx(-1.0, abs=1e-12)
 
 
 def test_corrcoef_is_the_zero_lag_normalized_ccf_of_the_centred_signals():

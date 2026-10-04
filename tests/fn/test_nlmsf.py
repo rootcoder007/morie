@@ -1,7 +1,6 @@
 """Test nlms_filter (nlmsf)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.nlmsf import nlms_filter, nlmsf
 

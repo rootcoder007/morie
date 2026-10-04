@@ -1,7 +1,6 @@
 """Tests for gh_ap_h1.ghosal_inv_gauss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_h1 import ghosal_inv_gauss
 
 
@@ -12,13 +11,13 @@ def test_gh_ap_h1_basic():
     vals = np.array([ghosal_inv_gauss(x)["estimate"] for x in xs], dtype=float)
     # Independently compute the literature formula on each x.
     import math
+
     alpha_loc = 1.0
     gamma_sh = 2.0
     expected = np.array(
         [
-            math.sqrt(gamma_sh / (2.0 * math.pi * x ** 3))
-            * math.exp(-gamma_sh * (x - alpha_loc) ** 2
-                        / (2.0 * alpha_loc ** 2 * x))
+            math.sqrt(gamma_sh / (2.0 * math.pi * x**3))
+            * math.exp(-gamma_sh * (x - alpha_loc) ** 2 / (2.0 * alpha_loc**2 * x))
             for x in xs
         ],
         dtype=float,

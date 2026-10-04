@@ -6,9 +6,9 @@ interval". Expected values below are counted by hand from that definition,
 not read back from the implementation.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsastat import rangayyan_zero_crossing
 
 

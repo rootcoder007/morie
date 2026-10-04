@@ -15,8 +15,7 @@ def _lcg(state):
     return (_LCG_A * state) % _LCG_M
 
 
-def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
-                  seed=1, crosses=None, l2=0.0):
+def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05, seed=1, crosses=None, l2=0.0):
     """
     Wide & Deep
 
@@ -86,6 +85,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
     Recommender Systems (DLRS 2016), 7-10.  arXiv:1606.07792.
     Equations (1), (2) and (3).
     """
+
     def _mat(a, name):
         arr = np.asarray(a, dtype=float).tolist()
         if len(arr) == 0:
@@ -146,8 +146,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
     for l in range(nlayer):
         fan_in = widths[l]
         scale = np.sqrt(6.0 / (fan_in + widths[l + 1]))
-        W.append([[_rnd(scale) for _ in range(fan_in)]
-                  for _ in range(widths[l + 1])])
+        W.append([[_rnd(scale) for _ in range(fan_in)] for _ in range(widths[l + 1])])
         B.append([0.0] * widths[l + 1])
     w_wide = [0.0] * pw
     w_deep = [0.0] * widths[nlayer]
@@ -163,7 +162,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
                 wl = W[l][u]
                 for k in range(widths[l]):
                     s += wl[k] * a[k]
-                nxt.append(s if s > 0.0 else 0.0)   # eq. (2), ReLU
+                nxt.append(s if s > 0.0 else 0.0)  # eq. (2), ReLU
             acts.append(nxt)
             a = nxt
         return acts
@@ -173,8 +172,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
         g_wide = [0.0] * pw
         g_deep = [0.0] * widths[nlayer]
         g_bias = 0.0
-        gW = [[[0.0] * widths[l] for _ in range(widths[l + 1])]
-              for l in range(nlayer)]
+        gW = [[[0.0] * widths[l] for _ in range(widths[l + 1])] for l in range(nlayer)]
         gB = [[0.0] * widths[l + 1] for l in range(nlayer)]
         loss = 0.0
         for i in range(n):
@@ -205,8 +203,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
             for l in range(nlayer - 1, -1, -1):
                 a_prev = acts[l]
                 a_cur = acts[l + 1]
-                dpre = [delta[u] if a_cur[u] > 0.0 else 0.0
-                        for u in range(widths[l + 1])]
+                dpre = [delta[u] if a_cur[u] > 0.0 else 0.0 for u in range(widths[l + 1])]
                 for u in range(widths[l + 1]):
                     du = dpre[u]
                     if du == 0.0:
@@ -246,8 +243,7 @@ def wide_and_deep(X_wide, X_deep, y, hidden=(8,), epochs=300, lr=0.05,
             z += w_wide[k] * xw[i][k]
         for k in range(widths[nlayer]):
             z += w_deep[k] * top[k]
-        fitted.append(1.0 / (1.0 + np.exp(-z)) if z >= 0.0
-                      else np.exp(z) / (1.0 + np.exp(z)))
+        fitted.append(1.0 / (1.0 + np.exp(-z)) if z >= 0.0 else np.exp(z) / (1.0 + np.exp(z)))
 
     return RichResult(
         payload={

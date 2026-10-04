@@ -75,30 +75,30 @@ def linkqp(items_from, items_to, symmetric=False, theta_points=None):
         f1 = 0.0
         for th in grid:
             tcc_t = sum(_p3pl(th, at, bt, ct) for at, bt, ct in to)
-            tcc_star = sum(_p3pl(th, af / A, A * bf + B, cf)
-                           for af, bf, cf in fr)
+            tcc_star = sum(_p3pl(th, af / A, A * bf + B, cf) for af, bf, cf in fr)
             f1 += (tcc_t - tcc_star) ** 2
         f = f1 / l_norm
         if symmetric:
             f2 = 0.0
             for th in grid:
                 tcc_f = sum(_p3pl(th, af, bf, cf) for af, bf, cf in fr)
-                tcc_hash = sum(_p3pl(th, A * at, (bt - B) / A, ct)
-                               for at, bt, ct in to)
+                tcc_hash = sum(_p3pl(th, A * at, (bt - B) / A, ct) for at, bt, ct in to)
                 f2 += (tcc_f - tcc_hash) ** 2
             f += f2 / l_norm
         return f
 
     res = minimize(crit, [1.0, 0.0], method="Nelder-Mead")
     A, B = float(res.x[0]), float(res.x[1])
-    return RichResult(payload={
-        "A": A,
-        "B": B,
-        "criterion": float(res.fun),
-        "symmetric": bool(symmetric),
-        "n_common": s,
-        "method": "Stocking-Lord characteristic-curve linking (plink Eq. 15)",
-    })
+    return RichResult(
+        payload={
+            "A": A,
+            "B": B,
+            "criterion": float(res.fun),
+            "symmetric": bool(symmetric),
+            "n_common": s,
+            "method": "Stocking-Lord characteristic-curve linking (plink Eq. 15)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -107,6 +107,7 @@ irt_linking_stocking_lord = linkqp
 
 def cheatsheet():
     return "linkqp: min sum [TCC_to - TCC_from*(A,B)]^2 (Stocking-Lord)"
+
 
 # public names resolved by fn/_lazy_map.json
 linking_stocking_lord = linkqp

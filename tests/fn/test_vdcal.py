@@ -27,5 +27,3 @@ def test_vdcal_edge():
         fut_from_vss(0.05, 0.2)
     with pytest.raises(ValueError, match="free fraction"):
         volume_of_distribution(None, 1.5, fut=0.5)
-
-

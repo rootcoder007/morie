@@ -1,7 +1,6 @@
 """Tests for morie.fn.stdb -- standardized regression coefficients."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.stdb import standardized_coefficients
 
 

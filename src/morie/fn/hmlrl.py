@@ -78,18 +78,14 @@ def geron_linear_regression_life(gdp, theta0, theta1, life_sat=None):
     if life_sat is not None:
         y = np.atleast_1d(np.asarray(life_sat, dtype=float)).ravel()
         if y.size != x.size:
-            raise ValueError(
-                f"geron_linear_regression_life: life_sat has {y.size} entries but gdp has {x.size}"
-            )
+            raise ValueError(f"geron_linear_regression_life: life_sat has {y.size} entries but gdp has {x.size}")
         if not np.all(np.isfinite(y)):
             raise ValueError("geron_linear_regression_life: life_sat contains non-finite values")
         resid = y - pred
         rmse = float(np.sqrt(np.mean(resid**2)))
         ss_tot = float(np.sum((y - y.mean()) ** 2))
         if ss_tot == 0:
-            raise ValueError(
-                "geron_linear_regression_life: life_sat has zero variance, so R^2 is undefined"
-            )
+            raise ValueError("geron_linear_regression_life: life_sat has zero variance, so R^2 is undefined")
         r2 = 1.0 - float(np.sum(resid**2)) / ss_tot
 
     lines = [("theta0 (intercept)", t0), ("theta1 (slope)", t1), ("Countries", int(x.size))]

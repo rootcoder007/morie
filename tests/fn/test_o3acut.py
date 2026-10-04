@@ -1,8 +1,8 @@
 """Tests for acute O3 mortality RR (NMMAPS / APHENA)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.o3acut import o3_acute_rr, o3acut
 
 

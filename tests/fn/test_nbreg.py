@@ -1,21 +1,22 @@
 """Tests for negbin_regression."""
 
-from morie.fn import _array_core as np
-
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.nbreg import negbin_regression
 
 
 def _counts():
     """Overdispersed counts with extra zeros, built without an RNG."""
     import math
+
     n = 120
     x1 = [math.sin(1.3 * i) for i in range(n)]
     x2 = [((i * 7) % 11 - 5) / 5 for i in range(n)]
-    y = [0 if (i * 5) % 6 == 0 else
-         math.floor(math.exp(0.6 + 0.5 * a - 0.3 * b) * ((i * 17) % 7) ** 2 / 6.0)
-         for i, (a, b) in enumerate(zip(x1, x2))]
+    y = [
+        0 if (i * 5) % 6 == 0 else math.floor(math.exp(0.6 + 0.5 * a - 0.3 * b) * ((i * 17) % 7) ** 2 / 6.0)
+        for i, (a, b) in enumerate(zip(x1, x2))
+    ]
     return y, [[a, b] for a, b in zip(x1, x2)]
 
 

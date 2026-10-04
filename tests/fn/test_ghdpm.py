@@ -1,7 +1,6 @@
 """Tests for ghdpm.ghosal_dpmixture_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghdpm import ghosal_dpmixture_density
 
 

@@ -140,17 +140,19 @@ def boot_block_length_pr(x, method="circular", c=2.0, m_max=None):
     if not found:
         mhat = min(m_max, kmax)
     M = 2 * mhat
-    if M > kmax:
+    if kmax < M:
         M = kmax
     # equation (8)
     G = 0.0
     for k in range(-M, M + 1):
         G += _lam(k / float(M)) * abs(k) * R[abs(k)]
+
     def ghat(w):
         s = 0.0
         for k in range(-M, M + 1):
             s += _lam(k / float(M)) * R[abs(k)] * math.cos(w * k)
         return s
+
     g0 = ghat(0.0)
     # (2/pi) int_{-pi}^{pi} (1 + cos w) ghat^2(w) dw, fixed trapezoid grid
     h = 2.0 * math.pi / _NPANEL
@@ -163,10 +165,12 @@ def boot_block_length_pr(x, method="circular", c=2.0, m_max=None):
     integ = acc * h
     D_sb = 4.0 * g0 * g0 + (2.0 / math.pi) * integ
     D_cb = (4.0 / 3.0) * g0 * g0
+
     def bopt(D):
         if G == 0.0 or D <= 0.0:
             return 1.0
         return (2.0 * G * G / D) ** (1.0 / 3.0) * n ** (1.0 / 3.0)
+
     b_sb = bopt(D_sb)
     b_cb = bopt(D_cb)
     b = b_sb if method == "stationary" else b_cb

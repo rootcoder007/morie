@@ -1,7 +1,6 @@
 """Tests for thnsst.thiessen_polygons."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.thnsst import thiessen_polygons
 
 

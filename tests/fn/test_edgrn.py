@@ -1,7 +1,6 @@
 """Tests for edgrn.edger_diff."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.edgrn import edger_diff
 
 

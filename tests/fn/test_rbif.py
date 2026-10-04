@@ -1,7 +1,6 @@
 """Tests for rbif -- bifactor omega."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import ESRes
 from morie.fn.rbif import bifactor_omega
 

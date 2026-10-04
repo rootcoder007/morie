@@ -62,10 +62,16 @@ def tmle_disparity(y, S_grp, X, X_target=None):
     resid = [yv[i] - C.dot(W[i], b1) for i in i1]
     mr = sum(resid) / len(resid)
     se = math.sqrt(sum((v - mr) ** 2 for v in resid) / (len(resid) - 1) / len(resid))
-    return RichResult(payload={
-        "estimate": mu1 - std, "crude": mu1 - mu0,
-        "explained": (mu1 - mu0) - (mu1 - std), "se": se, "n": n,
-        "method": "Standardised disparity remaining after covariates"})
+    return RichResult(
+        payload={
+            "estimate": mu1 - std,
+            "crude": mu1 - mu0,
+            "explained": (mu1 - mu0) - (mu1 - std),
+            "se": se,
+            "n": n,
+            "method": "Standardised disparity remaining after covariates",
+        }
+    )
 
 
 tmledisparity = tmle_disparity

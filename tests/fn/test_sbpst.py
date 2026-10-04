@@ -1,7 +1,6 @@
 """Tests for sbpst.stick_breaking_post."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sbpst import stick_breaking_post
 
 

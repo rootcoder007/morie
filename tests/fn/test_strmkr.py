@@ -11,8 +11,8 @@ def _pattern(n=40):
     """A regular-ish pattern: jittered lattice with a deterministic hash."""
     P = []
     for k in range(n):
-        u = ((math.sin(12.9898 * k + 4.1) * 43758.5453) % 1)
-        v = ((math.sin(78.233 * k + 1.7) * 12345.678) % 1)
+        u = (math.sin(12.9898 * k + 4.1) * 43758.5453) % 1
+        v = (math.sin(78.233 * k + 1.7) * 12345.678) % 1
         P.append([((k % 7) + 0.3 + 0.4 * u) / 7.0, ((k // 7) + 0.3 + 0.4 * v) / 6.0])
     return P
 
@@ -22,11 +22,19 @@ def _scheme(P, r, nx, ny, win=(0.0, 1.0, 0.0, 1.0)):
     grid, counting weights (tile area / points in the tile), and
     t(u) = number of data points within r of u, excluding u itself."""
     n = len(P)
-    D = [[win[0] + (a + 0.5) * (win[1] - win[0]) / nx, win[2] + (b + 0.5) * (win[3] - win[2]) / ny]
-         for a in range(nx) for b in range(ny)]
+    D = [
+        [win[0] + (a + 0.5) * (win[1] - win[0]) / nx, win[2] + (b + 0.5) * (win[3] - win[2]) / ny]
+        for a in range(nx)
+        for b in range(ny)
+    ]
     Q = P + D
-    tile = [(min(int((q[0] - win[0]) / (win[1] - win[0]) * nx), nx - 1),
-             min(int((q[1] - win[2]) / (win[3] - win[2]) * ny), ny - 1)) for q in Q]
+    tile = [
+        (
+            min(int((q[0] - win[0]) / (win[1] - win[0]) * nx), nx - 1),
+            min(int((q[1] - win[2]) / (win[3] - win[2]) * ny), ny - 1),
+        )
+        for q in Q
+    ]
     cnt = {t: tile.count(t) for t in set(tile)}
     area = (win[1] - win[0]) * (win[3] - win[2])
     w = [area / (nx * ny) / cnt[t] for t in tile]

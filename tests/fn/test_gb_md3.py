@@ -1,7 +1,6 @@
 """Tests for gb_md3.gibbons_median_ties."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_md3 import gibbons_median_ties
 
 
@@ -12,6 +11,8 @@ def test_gb_md3_basic():
     result = gibbons_median_ties(x, y)
     assert isinstance(result, dict)
     assert "u_strict" in result
+
+
 def test_gb_md3_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

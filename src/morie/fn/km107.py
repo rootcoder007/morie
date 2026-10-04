@@ -35,26 +35,26 @@ def kamath_ch6_pii_likelihood(a_m, A, x, L_q, L_r):
     q = list(x)
     Lq, Lr = int(L_q), int(L_r)
     if Lr < 1:
-        raise ValueError("L_r must be at least 1; an empty answer has no "
-                         "likelihood.")
+        raise ValueError("L_r must be at least 1; an empty answer has no likelihood.")
     if p.size != Lr:
-        raise ValueError(
-            f"a_m holds {p.size} token probabilities but L_r = {Lr}.")
+        raise ValueError(f"a_m holds {p.size} token probabilities but L_r = {Lr}.")
     if len(q) != Lq:
-        raise ValueError(
-            f"x holds {len(q)} query tokens but L_q = {Lq}.")
+        raise ValueError(f"x holds {len(q)} query tokens but L_q = {Lq}.")
     if Lq < 1:
-        raise ValueError("L_q must be at least 1; the model must be "
-                         "prompted with something.")
+        raise ValueError("L_q must be at least 1; the model must be prompted with something.")
     if np.any(p <= 0) or np.any(p > 1):
         raise ValueError("every token probability must lie in (0, 1].")
-    return RichResult(payload={
-        "estimate": float(np.prod(p)),
-        "log_likelihood": float(np.sum(np.log(p))),
-        "per_token": [float(v) for v in p],
-        "context_lengths": [Lq + r - 1 for r in range(1, Lr + 1)],
-        "n_other_pii": len(list(A)), "n": Lr,
-        "method": "ProPILE PII likelihood (Kamath Eq 6.31)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.prod(p)),
+            "log_likelihood": float(np.sum(np.log(p))),
+            "per_token": [float(v) for v in p],
+            "context_lengths": [Lq + r - 1 for r in range(1, Lr + 1)],
+            "n_other_pii": len(list(A)),
+            "n": Lr,
+            "method": "ProPILE PII likelihood (Kamath Eq 6.31)",
+        }
+    )
 
 
 def cheatsheet():

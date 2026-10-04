@@ -1,7 +1,5 @@
 """Tests for doop.do_operator."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.doop import do_operator
 
 

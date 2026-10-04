@@ -11,5 +11,6 @@ def test_altkp_basic():
 
 def test_altkp_edge():
     import pytest
+
     with pytest.raises(ValueError, match="UNK"):
         alammar_tokenization_pipeline("x", ["[CLS]", "[SEP]", "x"])

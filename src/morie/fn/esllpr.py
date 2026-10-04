@@ -80,17 +80,27 @@ def esl_local_linear(x0, x, y, lambda_, kernel="epanechnikov"):
         w = _kernel_weights(np.abs(q - xd) / lam, kernel)
         cnt.append(int(np.sum(w > 0)))
         if np.sum(w > 0) < 2:
-            vals.append(float("nan")); slopes.append(float("nan")); continue
+            vals.append(float("nan"))
+            slopes.append(float("nan"))
+            continue
         D = np.column_stack([np.ones_like(xd), xd - q])
         sw = np.sqrt(w)
         qr = np.linalg.lstsq(D * sw[:, None], yd * sw, rcond=None)
         b = qr[0]
-        vals.append(float(b[0]))            # centred at q, so alpha IS the fit
+        vals.append(float(b[0]))  # centred at q, so alpha IS the fit
         slopes.append(float(b[1]))
-    return RichResult(payload={
-        "estimate": vals[0], "values": vals, "slopes": slopes,
-        "n_in_window": cnt, "lambda": lam, "kernel": kernel, "n": int(xd.size),
-        "method": "local linear WLS on (x - x0); corrects NW boundary bias to first order"})
+    return RichResult(
+        payload={
+            "estimate": vals[0],
+            "values": vals,
+            "slopes": slopes,
+            "n_in_window": cnt,
+            "lambda": lam,
+            "kernel": kernel,
+            "n": int(xd.size),
+            "method": "local linear WLS on (x - x0); corrects NW boundary bias to first order",
+        }
+    )
 
 
 def cheatsheet():

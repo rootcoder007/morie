@@ -89,11 +89,9 @@ def wasserman_bagging(X, y, model=None, B=100, newdata=None, seed=0):
     if Bn < 1:
         raise ValueError(f"need at least one replicate, got {Bn}.")
     fit = _least_squares if model is None else model
-    Q = A if newdata is None else np.atleast_2d(
-        np.asarray(newdata, dtype=float))
+    Q = A if newdata is None else np.atleast_2d(np.asarray(newdata, dtype=float))
     if Q.shape[1] != A.shape[1]:
-        raise ValueError(
-            f"newdata has {Q.shape[1]} columns, expected {A.shape[1]}.")
+        raise ValueError(f"newdata has {Q.shape[1]} columns, expected {A.shape[1]}.")
 
     rng = np.random.default_rng(seed)
     reps = np.empty((Bn, Q.shape[0]))
@@ -112,26 +110,32 @@ def wasserman_bagging(X, y, model=None, B=100, newdata=None, seed=0):
     has_oob = oob_cnt > 0
     oob_pred = np.where(has_oob, oob_sum / np.maximum(oob_cnt, 1), np.nan)
     spread = float(np.mean(np.var(reps, axis=0)))
-    return RichResult(payload={
-        "prediction": bagged, "single_fit": single,
-        "oob_prediction": oob_pred,
-        "oob_mse": (float(np.mean((yv[has_oob] - oob_pred[has_oob]) ** 2))
-                    if has_oob.any() and newdata is None else None),
-        "replicate_spread": spread,
-        # the Monte-Carlo variance of the average of B replicates,
-        # which is what the averaging actually buys
-        "bagged_spread": spread / Bn,
-        "max_shift_from_single_fit": float(np.max(np.abs(bagged - single))),
-        "n_oob_missing": int((~has_oob).sum()),
-        "B": Bn, "n": int(n),
-        "helps_when": "the base procedure is high-variance, low-bias and "
-                      "NONLINEAR in y; for a linear procedure such as least "
-                      "squares the bootstrap average converges back to the "
-                      "original fit and bagging does essentially nothing",
-        "leaves_bias_alone": "the replicates are identically distributed, so "
-                             "the average has the same expectation as any one "
-                             "of them; only the variance moves",
-        "method": "Bagging, ESL Sec. 8.7: f_bag(x) = (1/B) sum_b f*b(x)"})
+    return RichResult(
+        payload={
+            "prediction": bagged,
+            "single_fit": single,
+            "oob_prediction": oob_pred,
+            "oob_mse": (
+                float(np.mean((yv[has_oob] - oob_pred[has_oob]) ** 2)) if has_oob.any() and newdata is None else None
+            ),
+            "replicate_spread": spread,
+            # the Monte-Carlo variance of the average of B replicates,
+            # which is what the averaging actually buys
+            "bagged_spread": spread / Bn,
+            "max_shift_from_single_fit": float(np.max(np.abs(bagged - single))),
+            "n_oob_missing": int((~has_oob).sum()),
+            "B": Bn,
+            "n": int(n),
+            "helps_when": "the base procedure is high-variance, low-bias and "
+            "NONLINEAR in y; for a linear procedure such as least "
+            "squares the bootstrap average converges back to the "
+            "original fit and bagging does essentially nothing",
+            "leaves_bias_alone": "the replicates are identically distributed, so "
+            "the average has the same expectation as any one "
+            "of them; only the variance moves",
+            "method": "Bagging, ESL Sec. 8.7: f_bag(x) = (1/B) sum_b f*b(x)",
+        }
+    )
 
 
 def cheatsheet():

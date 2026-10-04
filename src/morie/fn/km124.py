@@ -31,25 +31,26 @@ def kamath_ch8_ngram_embedding(x, i, n):
     """
     A = np.asarray(x, dtype=float)
     if A.ndim > 2:
-        raise ValueError("x must be a 1-D idf sequence or a 2-D matrix "
-                         "of per-token vectors.")
+        raise ValueError("x must be a 1-D idf sequence or a 2-D matrix of per-token vectors.")
     i = int(i)
     n = int(n)
     if n < 1:
         raise ValueError(f"the n-gram length must be >= 1; got {n}.")
     if i < 0 or i + n > A.shape[0]:
-        raise ValueError(
-            f"the window [{i}, {i + n}) runs off a sequence of length "
-            f"{A.shape[0]}.")
-    win = A[i:i + n]
+        raise ValueError(f"the window [{i}, {i + n}) runs off a sequence of length {A.shape[0]}.")
+    win = A[i : i + n]
     emb = win.sum(axis=0)
     est = float(emb) if np.ndim(emb) == 0 else [float(v) for v in emb]
-    return RichResult(payload={
-        "estimate": est,
-        "embedding": est if isinstance(est, list) else [est],
-        "window": [float(v) for v in np.ravel(win)],
-        "i": i, "n": n,
-        "method": "MoverScore n-gram embedding (Kamath Eq 8.12)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "embedding": est if isinstance(est, list) else [est],
+            "window": [float(v) for v in np.ravel(win)],
+            "i": i,
+            "n": n,
+            "method": "MoverScore n-gram embedding (Kamath Eq 8.12)",
+        }
+    )
 
 
 def cheatsheet():

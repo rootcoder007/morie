@@ -10,12 +10,10 @@ from ._richresult import RichResult
 __all__ = ["alphafold_loss_decomposition"]
 
 #: Published coefficients of equation (7).
-WEIGHTS = {"fape": 0.5, "aux": 0.5, "dist": 0.3, "msa": 2.0, "conf": 0.01,
-           "expres": 0.01, "viol": 1.0}
+WEIGHTS = {"fape": 0.5, "aux": 0.5, "dist": 0.3, "msa": 2.0, "conf": 0.01, "expres": 0.01, "viol": 1.0}
 
 
-def alphafold_loss_decomposition(fape, aux, dist, msa, conf, expres=0.0,
-                                 viol=0.0, phase="training", ncrop=None):
+def alphafold_loss_decomposition(fape, aux, dist, msa, conf, expres=0.0, viol=0.0, phase="training", ncrop=None):
     """Total per-example loss -- supplement equation (7), p. 32.
 
     A fixed weighted sum of the FAPE loss, the structure module's auxiliary

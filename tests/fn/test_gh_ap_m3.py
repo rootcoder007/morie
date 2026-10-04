@@ -1,7 +1,6 @@
 """Tests for gh_ap_m3.ghosal_slice_sampler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_m3 import ghosal_slice_sampler
 
 
@@ -24,7 +23,7 @@ def test_gh_ap_m3_mean_close_to_target():
     n = 50000
     res = ghosal_slice_sampler(n_draws=n, seed=123)
     # Independent Monte-Carlo expectation: 95% CLT half-width for Exp(1) is ~1.96/sqrt(n)
-    half_width = 1.96 / (n ** 0.5)
+    half_width = 1.96 / (n**0.5)
     assert abs(res["estimate"] - 1.0) < half_width
     assert abs(res["target_mean"] - 1.0) < 1e-12
     assert abs(res["gap"] - abs(res["estimate"] - 1.0)) < 1e-12

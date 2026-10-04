@@ -1,7 +1,6 @@
 """Tests for hmlntr.geron_layer_normalization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlntr import geron_layer_normalization
 
 

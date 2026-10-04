@@ -1,7 +1,5 @@
 """Tests for pooled_sd.pooled_sd."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.pooled_sd import pooled_sd
 
 

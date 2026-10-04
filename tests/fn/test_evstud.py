@@ -1,8 +1,6 @@
 """Tests for evstud.event_study_coefficients."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.evstud import event_study_coefficients
 
 
@@ -25,21 +23,29 @@ def test_evstud_basic():
 
     g = cohort
     e = np.where(np.isnan(g), -999, time - g)
-    feats = mu_e[2] * (e == 2).astype(float) \
-        + mu_e[3] * (e == 3).astype(float) \
-        + mu_e[5] * (e == 5).astype(float) \
+    feats = (
+        mu_e[2] * (e == 2).astype(float)
+        + mu_e[3] * (e == 3).astype(float)
+        + mu_e[5] * (e == 5).astype(float)
         + mu_e[7] * (e == 7).astype(float)
+    )
     y = alpha[unit.astype(int)] + beta_t[time.astype(int) - 1] + feats
     y = y + np.random.default_rng(0).normal(0, 0.1, n)
 
-    result = event_study_coefficients(
-        y, D, unit, time, cohort, max_lead=10, max_lag=10, ref=-1
-    )
+    result = event_study_coefficients(y, D, unit, time, cohort, max_lead=10, max_lag=10, ref=-1)
 
     assert isinstance(result, dict)
     expected_keys = {
-        "estimate", "event_times", "coef", "se", "sigma2",
-        "resid_df", "n_units", "n_periods", "n", "method",
+        "estimate",
+        "event_times",
+        "coef",
+        "se",
+        "sigma2",
+        "resid_df",
+        "n_units",
+        "n_periods",
+        "n",
+        "method",
     }
     assert set(result.keys()) == expected_keys
     # No "statistic" key exists
@@ -78,9 +84,7 @@ def test_evstud_edge():
     y = np.zeros(n) + feats
     y = y + np.random.default_rng(1).normal(0, 0.1, n)
 
-    result = event_study_coefficients(
-        y, D, unit, time, cohort, max_lead=5, max_lag=5, ref=-1
-    )
+    result = event_study_coefficients(y, D, unit, time, cohort, max_lead=5, max_lag=5, ref=-1)
 
     assert isinstance(result, dict)
     # max_lead/max_lag must truncate event_times window

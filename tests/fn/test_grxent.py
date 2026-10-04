@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grxent import geron_softmax_cross_entropy_cost
 
 
@@ -18,8 +17,7 @@ def test_grxent_basic():
     theta = rng_t.normal(0, 1, (p, K))
     result = geron_softmax_cross_entropy_cost(X, Y, theta)
     assert isinstance(result, dict)
-    for key in ("cost", "per_instance", "probabilities",
-                "accuracy", "estimate", "n", "method"):
+    for key in ("cost", "per_instance", "probabilities", "accuracy", "estimate", "n", "method"):
         assert key in result
     assert math.isfinite(result["cost"])
     assert result["cost"] >= 0.0
@@ -65,7 +63,7 @@ import morie.fn.grxent as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

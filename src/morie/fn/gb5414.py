@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['signpow', 'gibbons_sign_power']
+__all__ = ["signpow", "gibbons_sign_power"]
 
 
 def signpow(n, theta, alpha=0.05, exact=True):
@@ -56,10 +56,7 @@ def signpow(n, theta, alpha=0.05, exact=True):
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly inside (0, 1).")
     za = stats.norm.ppf(1.0 - alpha)
-    approx = stats.norm.sf(
-        (n * (0.5 - theta) + 0.5 * math.sqrt(n) * za)
-        / math.sqrt(n * theta * (1.0 - theta))
-    )
+    approx = stats.norm.sf((n * (0.5 - theta) + 0.5 * math.sqrt(n) * za) / math.sqrt(n * theta * (1.0 - theta)))
     ka = n
     aex = float("nan")
     pex = float("nan")
@@ -71,10 +68,7 @@ def signpow(n, theta, alpha=0.05, exact=True):
                 ka = c
                 aex = tail
                 break
-        pex = sum(
-            math.comb(n, i) * theta**i * (1.0 - theta) ** (n - i)
-            for i in range(ka, n + 1)
-        )
+        pex = sum(math.comb(n, i) * theta**i * (1.0 - theta) ** (n - i) for i in range(ka, n + 1))
     return RichResult(
         payload={
             "power": float(approx),

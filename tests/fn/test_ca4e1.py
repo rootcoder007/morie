@@ -1,10 +1,8 @@
 """Tests for ca4e1.ca_chapter_4_equation_1."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.ca4e1 import ca_chapter_4_equation_1
-
-import math
 
 
 def test_ca4e1_basic():

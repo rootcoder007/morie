@@ -68,25 +68,26 @@ def causal_iv_2sls(y, X, Z, cluster=None):
     n, k = Xm.shape
     m = Zm.shape[1]
     if Zm.shape[0] != n:
-        raise ValueError(
-            f"Z has {Zm.shape[0]} rows for {n} observations.")
+        raise ValueError(f"Z has {Zm.shape[0]} rows for {n} observations.")
     if m < k:
         raise ValueError(
             f"the order condition fails: {m} instruments (including the "
-            f"constant) for {k} regressors. 2SLS is not identified.")
+            f"constant) for {k} regressors. 2SLS is not identified."
+        )
     Xhat = projection(Zm, Xm)
     XtX = Xhat.T @ Xhat
     if np.linalg.matrix_rank(XtX) < k:
         raise ValueError(
             "the rank condition fails: the projected regressors are "
             "collinear, so Z carries no independent variation for at least "
-            "one endogenous regressor.")
+            "one endogenous regressor."
+        )
     beta = np.linalg.lstsq(XtX, Xhat.T @ yv, rcond=None)[0]
     # residuals use the ORIGINAL X, not the projection
     u = yv - Xm @ beta
     bread = np.linalg.pinv(XtX)
     if cluster is None:
-        meat = Xhat.T @ (Xhat * (u ** 2)[:, None])
+        meat = Xhat.T @ (Xhat * (u**2)[:, None])
         vt = "heteroskedasticity-robust (HC0)"
     else:
         cl = np.asarray(cluster).ravel()
@@ -108,20 +109,29 @@ def causal_iv_2sls(y, X, Z, cluster=None):
         sargan = float(n * r2)
         sargan_p = float(stats.chi2.sf(sargan, nres))
     excl = Zm[:, ~np.all(np.isclose(Zm, 1.0), axis=0)]
-    return RichResult(payload={
-        "beta": beta, "se": se,
-        "t": np.divide(beta, se, out=np.full(k, np.nan), where=se > 0),
-        "residuals": u, "fitted": Xm @ beta,
-        "first_stage_F": first_stage_f(Xm[:, -1], excl),
-        "order_condition": True,
-        "overidentified": bool(nres > 0), "n_overid_restrictions": int(nres),
-        "sargan": sargan, "sargan_p": sargan_p,
-        "vcov_type": vt,
-        "residual_note": "residuals are y - X beta with the ORIGINAL X; "
-                         "using the first-stage fitted values gives a "
-                         "smaller number that is not a standard error",
-        "n": int(n), "k": int(k), "m": int(m),
-        "method": "Two-stage least squares, beta = (X'P_Z X)^-1 X'P_Z y"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "t": np.divide(beta, se, out=np.full(k, np.nan), where=se > 0),
+            "residuals": u,
+            "fitted": Xm @ beta,
+            "first_stage_F": first_stage_f(Xm[:, -1], excl),
+            "order_condition": True,
+            "overidentified": bool(nres > 0),
+            "n_overid_restrictions": int(nres),
+            "sargan": sargan,
+            "sargan_p": sargan_p,
+            "vcov_type": vt,
+            "residual_note": "residuals are y - X beta with the ORIGINAL X; "
+            "using the first-stage fitted values gives a "
+            "smaller number that is not a standard error",
+            "n": int(n),
+            "k": int(k),
+            "m": int(m),
+            "method": "Two-stage least squares, beta = (X'P_Z X)^-1 X'P_Z y",
+        }
+    )
 
 
 def cheatsheet():

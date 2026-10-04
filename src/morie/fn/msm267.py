@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,11 +21,15 @@ def mvsml_convolutional_nn_eq_14_4(t, X_curves, y, L1=3, L2=5, kind="fourier"):
     the maximum likelihood estimates once the functional covariate has
     been reduced to scalar scores. Keys: estimate."""
     f = _gp.fda_fit(t, X_curves, y, L1=L1, L2=L2, kind=kind)
-    res = RichResult(payload={"estimate": f["beta"][0],
-                              "beta": f["beta"],
-                              "sigma2": f["sigma2"],
-                              "fitted": f["fitted"],
-                              "method": "functional regression ML fit (MVSML 2022 eq. 14.4-14.5)"})
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][0],
+            "beta": f["beta"],
+            "sigma2": f["sigma2"],
+            "fitted": f["fitted"],
+            "method": "functional regression ML fit (MVSML 2022 eq. 14.4-14.5)",
+        }
+    )
     return with_describe_pointer(res, "msm267")
 
 

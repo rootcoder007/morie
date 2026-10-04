@@ -1,7 +1,6 @@
 """Test cross_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.xfit import cross_fit, xfit
 

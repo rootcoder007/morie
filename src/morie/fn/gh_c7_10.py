@@ -5,10 +5,7 @@ Implements sec. 7.4.3 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_mono_reg_con"]
@@ -38,8 +35,8 @@ def ghosal_mono_reg_con(n=600, seed=42):
         if vals[i] > vals[i + 1] + 1e-12:
             wm = wts[i] + wts[i + 1]
             vm = (vals[i] * wts[i] + vals[i + 1] * wts[i + 1]) / wm
-            vals[i:i + 2] = [vm]
-            wts[i:i + 2] = [wm]
+            vals[i : i + 2] = [vm]
+            wts[i : i + 2] = [wm]
             i = max(i - 1, 0)
         else:
             i += 1
@@ -50,11 +47,14 @@ def ghosal_mono_reg_con(n=600, seed=42):
     F = F[:k] + [vals[-1]] * max(0, k - len(F))
     truth = [(c + 0.5) / k for c in range(k)]
     err = max(abs(a - b) for a, b in zip(F, truth))
-    res = RichResult(payload={"estimate": err,
-                              "F_cells": F,
-                              "monotone": all(F[i] <= F[i + 1] + 1e-9
-                                              for i in range(k - 1)),
-                              "method": "monotone binary regression (GvdV 2017 sec. 7.4.3)"})
+    res = RichResult(
+        payload={
+            "estimate": err,
+            "F_cells": F,
+            "monotone": all(F[i] <= F[i + 1] + 1e-9 for i in range(k - 1)),
+            "method": "monotone binary regression (GvdV 2017 sec. 7.4.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c7_10")
 
 

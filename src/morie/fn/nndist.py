@@ -75,10 +75,18 @@ def nearest_neighbor_distance(coords, r_grid, window=None):
         mu.append(float(m))
         G.append(hit / m if m else float("nan"))
         Gc.append(1.0 - math.exp(-lam * math.pi * h * h))
-    return RichResult(payload={
-        "G": G, "G_csr": Gc, "r": rs, "m_used": mu,
-        "estimate": sum(d) / n, "lambda_hat": lam, "n": n,
-        "method": "Border-corrected nearest-neighbour distance CDF G(r)"})
+    return RichResult(
+        payload={
+            "G": G,
+            "G_csr": Gc,
+            "r": rs,
+            "m_used": mu,
+            "estimate": sum(d) / n,
+            "lambda_hat": lam,
+            "n": n,
+            "method": "Border-corrected nearest-neighbour distance CDF G(r)",
+        }
+    )
 
 
 def cheatsheet():

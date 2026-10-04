@@ -56,9 +56,7 @@ def geron_bias_variance_tradeoff(preds, y, f_true=None):
     if P.size == 0:
         raise ValueError("geron_bias_variance_tradeoff: preds is empty")
     if P.shape[1] != yv.size:
-        raise ValueError(
-            f"geron_bias_variance_tradeoff: preds has {P.shape[1]} points but y has {yv.size} entries"
-        )
+        raise ValueError(f"geron_bias_variance_tradeoff: preds has {P.shape[1]} points but y has {yv.size} entries")
     if not (np.all(np.isfinite(P)) and np.all(np.isfinite(yv))):
         raise ValueError("geron_bias_variance_tradeoff: preds and y must be finite")
 
@@ -71,9 +69,7 @@ def geron_bias_variance_tradeoff(preds, y, f_true=None):
 
     target = yv if f_true is None else np.asarray(f_true, dtype=float).ravel()
     if target.size != yv.size:
-        raise ValueError(
-            f"geron_bias_variance_tradeoff: f_true has {target.size} entries but y has {yv.size}"
-        )
+        raise ValueError(f"geron_bias_variance_tradeoff: f_true has {target.size} entries but y has {yv.size}")
     bias2 = float(np.mean((mean_pred - target) ** 2))
     if f_true is None:
         noise = mse - bias2 - variance

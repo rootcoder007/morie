@@ -19,12 +19,19 @@ def burkov_lm_ch1_linear_function(x, w, b):
     [2.0, 5.0]
     """
     x = np.atleast_1d(np.asarray(x, dtype=float))
-    w = float(w); b = float(b)
+    w = float(w)
+    b = float(b)
     y = w * x + b
-    return RichResult(payload={
-        "predictions": [float(v) for v in y],
-        "estimate": float(y[0]), "w": w, "b": b, "n": len(x),
-        "method": "Linear model f(x) = wx + b (Burkov Eq 1.1)"})
+    return RichResult(
+        payload={
+            "predictions": [float(v) for v in y],
+            "estimate": float(y[0]),
+            "w": w,
+            "b": b,
+            "n": len(x),
+            "method": "Linear model f(x) = wx + b (Burkov Eq 1.1)",
+        }
+    )
 
 
 def cheatsheet():

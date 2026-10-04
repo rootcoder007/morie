@@ -39,16 +39,29 @@ _METHOD = "Ramsey number lookup with certified bounds"
 # Only nine are known for k, l >= 3 -- that is the entire list, and the
 # reason larger ones are quoted as intervals rather than numbers.
 _KNOWN = {
-    (3, 3): 6, (3, 4): 9, (3, 5): 14, (3, 6): 18, (3, 7): 23,
-    (3, 8): 28, (3, 9): 36, (4, 4): 18, (4, 5): 25,
+    (3, 3): 6,
+    (3, 4): 9,
+    (3, 5): 14,
+    (3, 6): 18,
+    (3, 7): 23,
+    (3, 8): 28,
+    (3, 9): 36,
+    (4, 4): 18,
+    (4, 5): 25,
 }
 
 # Best published bounds for a few unknown cases, DS1 Tables Ia and Ib.
 # Upper bounds for k >= 4 are the 2023 Angeltveit-McKay values.
 _BOUNDS = {
-    (3, 10): (40, 41), (3, 11): (47, 50), (3, 12): (53, 59),
-    (3, 13): (60, 68), (4, 6): (36, 40), (4, 7): (49, 58),
-    (4, 8): (59, 79), (5, 5): (43, 46), (5, 6): (59, 85),
+    (3, 10): (40, 41),
+    (3, 11): (47, 50),
+    (3, 12): (53, 59),
+    (3, 13): (60, 68),
+    (4, 6): (36, 40),
+    (4, 7): (49, 58),
+    (4, 8): (59, 79),
+    (5, 5): (43, 46),
+    (5, 6): (59, 85),
     (6, 6): (102, 160),
 }
 
@@ -151,7 +164,8 @@ def ramsey_number(k, l=None):
             ("Erdos-Szekeres upper bound", es),
         ],
         payload={
-            "k": k, "l": l,
+            "k": k,
+            "l": l,
             "value": val,
             "estimate": float(val) if val is not None else float("nan"),
             "lower": lo,
@@ -165,10 +179,10 @@ def ramsey_number(k, l=None):
         },
         interpretation=(
             f"R({k}, {l}) = {val}."
-            if val is not None else
-            f"R({k}, {l}) is not known; it lies in [{lo}, {hi}]."
-            if lo is not None else
-            f"R({k}, {l}) is not known and no tabulated lower bound is "
+            if val is not None
+            else f"R({k}, {l}) is not known; it lies in [{lo}, {hi}]."
+            if lo is not None
+            else f"R({k}, {l}) is not known and no tabulated lower bound is "
             f"carried here; Erdos-Szekeres gives R <= {es}."
         ),
     )
@@ -246,8 +260,13 @@ def ramsey_upper_bound(k, l, use_known=True):
 
     r = rec(k, l)
     binom = _erdos_szekeres(min(k, l), max(k, l))
-    return {"binomial": binom, "recursive": r, "best": min(binom, r),
-            "parity_saving": binom - r, "used_known_values": bool(use_known)}
+    return {
+        "binomial": binom,
+        "recursive": r,
+        "best": min(binom, r),
+        "parity_saving": binom - r,
+        "used_known_values": bool(use_known),
+    }
 
 
 def ramsey_lower_bound_probabilistic(k):
@@ -278,19 +297,17 @@ def ramsey_lower_bound_probabilistic(k):
     n = k
     best = k - 1
     while n < 100000:
-        log2_exp = (math.lgamma(n + 1) - math.lgamma(k + 1)
-                    - math.lgamma(n - k + 1)) / math.log(2.0) + exponent
+        log2_exp = (math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)) / math.log(2.0) + exponent
         if log2_exp < 0:
             best = n
             n += 1
         else:
             break
-    log2_at = (math.lgamma(best + 1) - math.lgamma(k + 1)
-               - math.lgamma(best - k + 1)) / math.log(2.0) + exponent
+    log2_at = (math.lgamma(best + 1) - math.lgamma(k + 1) - math.lgamma(best - k + 1)) / math.log(2.0) + exponent
     return {
         "bound": best,
         "certifies": f"R({k},{k}) > {best}",
-        "expected_at_bound": float(2.0 ** log2_at),
+        "expected_at_bound": float(2.0**log2_at),
         "asymptotic_2_to_k_over_2": float(2.0 ** (k / 2.0)),
     }
 
@@ -440,9 +457,7 @@ def goodman_minimum(n):
     max_bi_x2 = n * ((n - 1) ** 2 // 4)
     # the vertex sum must be even for a realisable colouring
     max_bi = max_bi_x2 // 2
-    return {"minimum": max(total - max_bi, 0),
-            "total_triangles": total,
-            "max_bichromatic": max_bi}
+    return {"minimum": max(total - max_bi, 0), "total_triangles": total, "max_bichromatic": max_bi}
 
 
 def verify_ramsey_witness(colouring, k, l):
@@ -478,10 +493,13 @@ def verify_ramsey_witness(colouring, k, l):
             if all(not R[i, j] for i, j in combinations(c, 2)):
                 blue = list(c)
                 break
-    return {"valid": red is None and blue is None,
-            "red_clique": red, "blue_clique": blue, "n": n,
-            "certifies": (f"R({k},{l}) > {n}"
-                          if red is None and blue is None else None)}
+    return {
+        "valid": red is None and blue is None,
+        "red_clique": red,
+        "blue_clique": blue,
+        "n": n,
+        "certifies": (f"R({k},{l}) > {n}" if red is None and blue is None else None),
+    }
 
 
 def party_problem(n_people=6):
@@ -550,9 +568,8 @@ def party_problem(n_people=6):
             f"Among any {n} people there must be at least {gmin} "
             "monochromatic triangle(s): three mutual acquaintances or three "
             "mutual strangers."
-            if guaranteed else
-            f"With {n} people no monochromatic triangle is forced; the cycle "
-            "colouring avoids one entirely."
+            if guaranteed
+            else f"With {n} people no monochromatic triangle is forced; the cycle colouring avoids one entirely."
         ),
     )
     return out

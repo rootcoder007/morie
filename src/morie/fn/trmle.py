@@ -93,24 +93,19 @@ def trmle(
     for j in range(p):
         col = [r[j] for r in Xm]
         if max(col) - min(col) == 0.0:
-            raise ValueError("X must not contain a constant column; the "
-                             "intercept is part of h.")
+            raise ValueError("X must not contain a constant column; the intercept is part of h.")
     lo_, hi_ = min(yv), max(yv)
     if hi_ <= lo_:
         raise ValueError("y is constant.")
     M = K - 1
     w = hi_ - lo_
     s = [(v - lo_) / w for v in yv]
-    B = [[math.comb(M, k) * si ** k * (1 - si) ** (M - k) for k in range(K)]
-         for si in s]
+    B = [[math.comb(M, k) * si**k * (1 - si) ** (M - k) for k in range(K)] for si in s]
     # h'(y) = sum_k theta_k D_k(y), D_k = (M/w)(b^{M-1}_{k-1} - b^{M-1}_k)
     D = []
     for si in s:
-        lower = [math.comb(M - 1, k) * si ** k * (1 - si) ** (M - 1 - k)
-                 for k in range(M)]
-        D.append([(M / w) * ((lower[k - 1] if k >= 1 else 0.0)
-                             - (lower[k] if k < M else 0.0))
-                  for k in range(K)])
+        lower = [math.comb(M - 1, k) * si**k * (1 - si) ** (M - 1 - k) for k in range(M)]
+        D.append([(M / w) * ((lower[k - 1] if k >= 1 else 0.0) - (lower[k] if k < M else 0.0)) for k in range(K)])
     q = K + p
 
     def parts(par):
@@ -153,15 +148,13 @@ def trmle(
             return None
         ll_, g_, H_ = r
         # theta_j = u_0 + sum_{i=1..j} u_i: d theta_j / d u_i = 1 for i <= j
-        J = [[1.0 if (c == 0 or c <= r_) else 0.0 for c in range(K)]
-             for r_ in range(K)]
+        J = [[1.0 if (c == 0 or c <= r_) else 0.0 for c in range(K)] for r_ in range(K)]
         gu = [sum(J[r_][c] * g_[r_] for r_ in range(K)) for c in range(K)] + g_[K:]
         Hu = [[0.0] * q for _ in range(q)]
         for a_ in range(q):
             for c in range(q):
                 if a_ < K and c < K:
-                    Hu[a_][c] = sum(J[r1][a_] * J[r2][c] * H_[r1][r2]
-                                    for r1 in range(K) for r2 in range(K))
+                    Hu[a_][c] = sum(J[r1][a_] * J[r2][c] * H_[r1][r2] for r1 in range(K) for r2 in range(K))
                 elif a_ < K:
                     Hu[a_][c] = sum(J[r1][a_] * H_[r1][c] for r1 in range(K))
                 elif c < K:
@@ -204,9 +197,7 @@ def trmle(
     par = to_theta(u)
     cur = parts(par)
     ll, g, H = cur
-    q_inv = [_solve([[-v for v in row] for row in H],
-                    [1.0 if r == c else 0.0 for r in range(q)])
-             for c in range(q)]
+    q_inv = [_solve([[-v for v in row] for row in H], [1.0 if r == c else 0.0 for r in range(q)]) for c in range(q)]
     beta = par[K:]
     se = [math.sqrt(max(q_inv[K + j][K + j], 0.0)) for j in range(p)]
     t_stat = [b / s_ if s_ > 0 else float("nan") for b, s_ in zip(beta, se)]

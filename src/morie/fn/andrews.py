@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['andrewspsi', 'andrews_sine']
+__all__ = ["andrewspsi", "andrews_sine"]
 
 
 def andrewspsi(r, c=1.339):
@@ -45,13 +45,19 @@ def andrewspsi(r, c=1.339):
         raise ValueError("c must be positive")
     lim = c * math.pi
     psi = [c * math.sin(v / c) if abs(v) <= lim else 0.0 for v in r]
-    rho = [c * c * (1.0 - math.cos(v / c)) if abs(v) <= lim else 2.0 * c * c
-           for v in r]
+    rho = [c * c * (1.0 - math.cos(v / c)) if abs(v) <= lim else 2.0 * c * c for v in r]
     dpsi = [math.cos(v / c) if abs(v) <= lim else 0.0 for v in r]
-    return RichResult(payload={
-        "psi": psi, "rho": rho, "psi_deriv": dpsi,
-        "rejected": sum(1 for v in r if abs(v) > lim),
-        "c": c, "n": len(r), "method": "Andrews sine psi"})
+    return RichResult(
+        payload={
+            "psi": psi,
+            "rho": rho,
+            "psi_deriv": dpsi,
+            "rejected": sum(1 for v in r if abs(v) > lim),
+            "c": c,
+            "n": len(r),
+            "method": "Andrews sine psi",
+        }
+    )
 
 
 andrews_sine = andrewspsi

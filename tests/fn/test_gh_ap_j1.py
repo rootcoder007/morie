@@ -1,7 +1,6 @@
 """Tests for gh_ap_j1.ghosal_levy_ito."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_j1 import ghosal_levy_ito
 
 
@@ -9,8 +8,7 @@ def test_gh_ap_j1_basic():
     """Test basic functionality."""
     fixed_atoms = (0.5,)
     atom_masses = (0.2,)
-    result = ghosal_levy_ito(fixed_atoms=fixed_atoms, atom_masses=atom_masses,
-                             n_random_jumps=200, seed=42)
+    result = ghosal_levy_ito(fixed_atoms=fixed_atoms, atom_masses=atom_masses, n_random_jumps=200, seed=42)
     assert "estimate" in result
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
@@ -29,8 +27,7 @@ def test_gh_ap_j1_edge():
     """Test edge cases: single fixed atom, no random jumps."""
     fixed_atoms = (0.5,)
     atom_masses = (42.0,)
-    result = ghosal_levy_ito(fixed_atoms=fixed_atoms, atom_masses=atom_masses,
-                             n_random_jumps=1, seed=42)
+    result = ghosal_levy_ito(fixed_atoms=fixed_atoms, atom_masses=atom_masses, n_random_jumps=1, seed=42)
     # The function does not return key 'n'; correct keys are 'estimate',
     # 'fixed_mass', 'poisson_mass', 'method'.
     assert "estimate" in result

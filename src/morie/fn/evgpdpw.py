@@ -56,8 +56,7 @@ def ev_gpd_pwm(x, threshold=None):
         u = None
         exc = xv
         if np.any(exc < 0):
-            raise ValueError("excesses must be non-negative; pass the "
-                             "threshold to have them formed here.")
+            raise ValueError("excesses must be non-negative; pass the threshold to have them formed here.")
     n = exc.size
     if n < 10:
         raise ValueError(f"need at least 10 excesses, got {n}.")
@@ -73,21 +72,30 @@ def ev_gpd_pwm(x, threshold=None):
             return base + sigma * np.log(m)
         return base + sigma / k * (1.0 - m ** (-k))
 
-    return RichResult(payload={
-        "sigma": sigma, "k_hosking": k, "xi": xi,
-        "n_excesses": int(n), "threshold": u,
-        "mean_excess": float(exc.mean()),
-        "reliable": bool(reliable),
-        "reliability_note": None if reliable else (
-            "k <= -0.5 (xi >= 0.5): infinite variance territory, where the "
-            "PWM estimator's own theory stops -- treat the numbers as "
-            "indicative only"),
-        "why_pwm": "lower bias than ML for -0.5 < k < 0.5 and none of ML's "
-                   "convergence failures at exceedance sample sizes "
-                   "(Hosking-Wallis Sec. 4)",
-        "sign_convention": "Hosking's k = -xi",
-        "return_level_fn": return_level,
-        "method": "GPD by probability-weighted moments (Hosking-Wallis 1987)"})
+    return RichResult(
+        payload={
+            "sigma": sigma,
+            "k_hosking": k,
+            "xi": xi,
+            "n_excesses": int(n),
+            "threshold": u,
+            "mean_excess": float(exc.mean()),
+            "reliable": bool(reliable),
+            "reliability_note": None
+            if reliable
+            else (
+                "k <= -0.5 (xi >= 0.5): infinite variance territory, where the "
+                "PWM estimator's own theory stops -- treat the numbers as "
+                "indicative only"
+            ),
+            "why_pwm": "lower bias than ML for -0.5 < k < 0.5 and none of ML's "
+            "convergence failures at exceedance sample sizes "
+            "(Hosking-Wallis Sec. 4)",
+            "sign_convention": "Hosking's k = -xi",
+            "return_level_fn": return_level,
+            "method": "GPD by probability-weighted moments (Hosking-Wallis 1987)",
+        }
+    )
 
 
 def cheatsheet():

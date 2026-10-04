@@ -1,7 +1,6 @@
 """Tests for morie.fn.outam — A-M outlier detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.outam import outam
 
 

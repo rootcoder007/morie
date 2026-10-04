@@ -55,7 +55,7 @@ def bound_linear_min_max(theta, moments):
         raise ValueError("bound_linear_min_max: theta and moments must have the same number of rows")
     K = len(L[0])
     J = len(U[0])
-    rn = n ** 0.5
+    rn = n**0.5
     zK = C.qnorm(1.0 - 0.5 / K)
     zJ = C.qnorm(1.0 - 0.5 / J)
     lo = None
@@ -80,11 +80,20 @@ def bound_linear_min_max(theta, moments):
         v = m + zJ * s / rn
         if hi_pc is None or v < hi_pc:
             hi_pc = v
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "lower_pc": lo_pc, "upper_pc": hi_pc, "width_pc": hi_pc - lo_pc,
-        "K": K, "J": J, "n": n,
-        "method": "Linear min-max bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "lower_pc": lo_pc,
+            "upper_pc": hi_pc,
+            "width_pc": hi_pc - lo_pc,
+            "K": K,
+            "J": J,
+            "n": n,
+            "method": "Linear min-max bound",
+        }
+    )
 
 
 def cheatsheet():

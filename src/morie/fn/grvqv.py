@@ -68,10 +68,7 @@ def geron_vqvae_quantize(z_e, codebook, beta=0.25):
     Z = np.atleast_2d(np.asarray(z_e, dtype=float))
     E = np.atleast_2d(np.asarray(codebook, dtype=float))
     if Z.shape[1] != E.shape[1]:
-        raise ValueError(
-            "z_e has dimension %d, codebook has %d."
-            % (Z.shape[1], E.shape[1])
-        )
+        raise ValueError("z_e has dimension %d, codebook has %d." % (Z.shape[1], E.shape[1]))
     n, K = Z.shape[0], E.shape[0]
     if K < 1:
         raise ValueError("codebook is empty.")
@@ -82,8 +79,8 @@ def geron_vqvae_quantize(z_e, codebook, beta=0.25):
     idx = np.argmin(d2, axis=1)
     zq = E[idx]
 
-    cb = float(np.mean(np.sum((zq - Z) ** 2, axis=1)))       # updates codebook
-    commit = float(np.mean(np.sum((Z - zq) ** 2, axis=1)))   # updates encoder
+    cb = float(np.mean(np.sum((zq - Z) ** 2, axis=1)))  # updates codebook
+    commit = float(np.mean(np.sum((Z - zq) ** 2, axis=1)))  # updates encoder
     counts = np.bincount(idx, minlength=K).astype(float)
     p = counts / counts.sum()
     nz = p[p > 0]
@@ -125,8 +122,7 @@ def geron_vqvae_quantize(z_e, codebook, beta=0.25):
 
 def cheatsheet():
     return (
-        "grvqv: VQ-VAE quantisation with codebook and commitment losses, "
-        "straight-through gradient and a collapse check"
+        "grvqv: VQ-VAE quantisation with codebook and commitment losses, straight-through gradient and a collapse check"
     )
 
 

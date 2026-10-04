@@ -71,7 +71,6 @@ Seventeenth Conference on Uncertainty in Artificial Intelligence*,
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -84,8 +83,7 @@ def _cell_key(row):
     return tuple(round(float(v), 12) for v in row)
 
 
-def mediation_functional(Y, E, M, X, strategy="em", saturated=True,
-                         ridge=1e-8):
+def mediation_functional(Y, E, M, X, strategy="em", saturated=True, ridge=1e-8):
     r"""theta_0 = E(Y_{1, M_0}) by one of the paper's three strategies.
 
     `saturated=True` estimates every conditional nonparametrically by
@@ -96,20 +94,20 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True,
     noise.
     """
     if strategy not in _STRATEGIES:
-        raise ValueError("mediation_functional: strategy must be one of "
-                         "%r, got %r" % (_STRATEGIES, strategy))
+        raise ValueError("mediation_functional: strategy must be one of %r, got %r" % (_STRATEGIES, strategy))
     yv, ev = k.vec(Y), k.vec(E)
     Mm = k.mat(M) if M is not None else [[0.0]] * len(yv)
     Xm = k.mat(X) if X is not None else [[0.0]] * len(yv)
     n = len(yv)
     for name, arr in (("E", ev), ("M", Mm), ("X", Xm)):
         if len(arr) != n:
-            raise ValueError("mediation_functional: Y has %d rows but %s "
-                             "has %d" % (n, name, len(arr)))
+            raise ValueError("mediation_functional: Y has %d rows but %s has %d" % (n, name, len(arr)))
     if any(v not in (0.0, 1.0) for v in ev):
-        raise ValueError("mediation_functional: E must be binary 0/1; the "
-                         "mediation formula of eq. (2) is defined for a "
-                         "binary exposure")
+        raise ValueError(
+            "mediation_functional: E must be binary 0/1; the "
+            "mediation formula of eq. (2) is defined for a "
+            "binary exposure"
+        )
 
     if saturated:
         fe1, fm = _saturated_models(ev, Mm, Xm)
@@ -123,7 +121,8 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True,
             raise ValueError(
                 "mediation_functional: f(E|X) is %g at observation %d, so "
                 "positivity fails in the sample and the functional is not "
-                "identified there" % (p, i))
+                "identified there" % (p, i)
+            )
 
     out = {}
     if strategy in ("ye", "all"):
@@ -142,7 +141,8 @@ def mediation_functional(Y, E, M, X, strategy="em", saturated=True,
                     raise ValueError(
                         "mediation_functional: f(M|E,X) is zero at "
                         "observation %d, so the inverse-odds weight is "
-                        "undefined" % i)
+                        "undefined" % i
+                    )
                 tot += yv[i] * (d0 / d1) / fe1(i)
         out["em"] = tot / n
     if strategy in ("ym", "all"):
@@ -228,8 +228,7 @@ def _parametric_models(yv, ev, Mm, Xm, ridge):
     resid = [m1[i] - muo[i] for i in range(n)]
     s2 = sum(r * r for r in resid) / max(1, n - len(bm))
     if s2 <= 0.0:
-        raise ValueError("mediation_functional: the mediator model has "
-                         "zero residual variance")
+        raise ValueError("mediation_functional: the mediator model has zero residual variance")
 
     Zy = [[ev[i], m1[i]] + list(Xm[i]) for i in range(n)]
     by = k.lstsq(k.design(Zy, n), yv, ridge)
@@ -279,49 +278,51 @@ def weight_based_mediation(X, M, C, Y, strategy="em", saturated=True):
     ev = k.vec(X)
     yv = k.vec(Y)
     n = len(yv)
-    theta = mediation_functional(yv, ev, M, C, strategy=strategy,
-                                 saturated=saturated)
+    theta = mediation_functional(yv, ev, M, C, strategy=strategy, saturated=saturated)
     thetas = theta if isinstance(theta, dict) else {strategy: theta}
-    point = (thetas["em"] if "em" in thetas
-             else list(thetas.values())[0])
+    point = thetas["em"] if "em" in thetas else list(thetas.values())[0]
 
     # E(Y_1) and E(Y_0) by the same nonparametric standardisation, so
     # the effects are internally consistent with theta.
     if saturated:
-        fe1, _ = _saturated_models(ev, k.mat(M) if M is not None
-                                   else [[0.0]] * n,
-                                   k.mat(C) if C is not None
-                                   else [[0.0]] * n)
+        fe1, _ = _saturated_models(
+            ev, k.mat(M) if M is not None else [[0.0]] * n, k.mat(C) if C is not None else [[0.0]] * n
+        )
     else:
         fe1, _, _ = _parametric_models(
-            yv, ev, k.mat(M) if M is not None else [[0.0]] * n,
-            k.mat(C) if C is not None else [[0.0]] * n, 1e-8)
+            yv, ev, k.mat(M) if M is not None else [[0.0]] * n, k.mat(C) if C is not None else [[0.0]] * n, 1e-8
+        )
     ey1 = sum(yv[i] * ev[i] / fe1(i) for i in range(n)) / n
-    ey0 = sum(yv[i] * (1.0 - ev[i]) / (1.0 - fe1(i))
-              for i in range(n)) / n
+    ey0 = sum(yv[i] * (1.0 - ev[i]) / (1.0 - fe1(i)) for i in range(n)) / n
 
-    out = {"estimate": ey1 - point,        # natural indirect effect
-           "nie": ey1 - point,
-           "nde": point - ey0,
-           "theta": point,
-           "ey1": ey1, "ey0": ey0,
-           "total": ey1 - ey0,
-           "n": n, "saturated": bool(saturated),
-           "strategy": strategy,
-           "method": "natural direct and indirect effects via the "
-                     "mediation functional, Tchetgen Tchetgen & "
-                     "Shpitser (2012) strategy %r" % (strategy,)}
+    out = {
+        "estimate": ey1 - point,  # natural indirect effect
+        "nie": ey1 - point,
+        "nde": point - ey0,
+        "theta": point,
+        "ey1": ey1,
+        "ey0": ey0,
+        "total": ey1 - ey0,
+        "n": n,
+        "saturated": bool(saturated),
+        "strategy": strategy,
+        "method": "natural direct and indirect effects via the "
+        "mediation functional, Tchetgen Tchetgen & "
+        "Shpitser (2012) strategy %r" % (strategy,),
+    }
     for kk, v in thetas.items():
         out["theta_" + kk] = v
     return RichResult(payload=out)
 
 
 def cheatsheet():
-    return ("wenge: mediation functional theta = E(Y_1,M_0) three ways "
-            "(Tchetgen Tchetgen-Shpitser 2012). em = inverse-odds "
-            "Y I(E=1)/f(E|X) * f(M|E=0,X)/f(M|E,X); ye = outcome model "
-            "reweighted to the unexposed; ym = plug-in. Identical on a "
-            "saturated model. NDE = theta - E(Y_0), NIE = E(Y_1) - theta.")
+    return (
+        "wenge: mediation functional theta = E(Y_1,M_0) three ways "
+        "(Tchetgen Tchetgen-Shpitser 2012). em = inverse-odds "
+        "Y I(E=1)/f(E|X) * f(M|E=0,X)/f(M|E,X); ye = outcome model "
+        "reweighted to the unexposed; ym = plug-in. Identical on a "
+        "saturated model. NDE = theta - E(Y_0), NIE = E(Y_1) - theta."
+    )
 
 
 # compact alias per ledger/NAMING.md

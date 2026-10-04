@@ -56,18 +56,27 @@ def ghosal_pt_adaptive(x, s=None, n=None, levels=6, a_scale=1.0):
     if nn < 2:
         raise ValueError(f"n must be at least 2, got {nn}.")
     lg = float(np.log(nn))
-    scan = [(float(sv), minimax_rate(nn, sv) * lg)
-            for sv in (0.5, 1.0, 1.5, 2.0, 3.0)]
+    scan = [(float(sv), minimax_rate(nn, sv) * lg) for sv in (0.5, 1.0, 1.5, 2.0, 3.0)]
     sv = 1.0 if s is None else float(s)
     if sv <= 0:
         raise ValueError(f"smoothness must be positive, got {sv}.")
     mm = minimax_rate(nn, sv)
-    return RichResult(payload={
-        "n": nn, "smoothness": sv, "rate": mm * lg, "minimax_rate": mm,
-        "log_factor": lg, "ratio_to_minimax": lg,
-        "adaptive": True, "requires_knowing_s": False, "scan": scan,
-        "a_rule": f"a_m = {float(a_scale)} * m^2", "levels": int(levels),
-        "method": "Adaptive Polya tree: n^{-s/(2s+1)} log n for every s, without knowing s"})
+    return RichResult(
+        payload={
+            "n": nn,
+            "smoothness": sv,
+            "rate": mm * lg,
+            "minimax_rate": mm,
+            "log_factor": lg,
+            "ratio_to_minimax": lg,
+            "adaptive": True,
+            "requires_knowing_s": False,
+            "scan": scan,
+            "a_rule": f"a_m = {float(a_scale)} * m^2",
+            "levels": int(levels),
+            "method": "Adaptive Polya tree: n^{-s/(2s+1)} log n for every s, without knowing s",
+        }
+    )
 
 
 def cheatsheet():

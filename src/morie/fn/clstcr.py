@@ -100,9 +100,7 @@ def cluster_causal_inference(y, D, cluster, X=None, alpha=0.05):
     cm_d = np.array([D[inv == j].mean() for j in range(G)])
     treated = cm_d > 0.5
     collapsed = (
-        float(cm_y[treated].mean() - cm_y[~treated].mean())
-        if treated.any() and (~treated).any()
-        else float("nan")
+        float(cm_y[treated].mean() - cm_y[~treated].mean()) if treated.any() and (~treated).any() else float("nan")
     )
 
     # one-way ANOVA intraclass correlation of the outcome

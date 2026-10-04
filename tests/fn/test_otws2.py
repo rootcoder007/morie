@@ -1,7 +1,6 @@
 """Tests for otws2.ot_wasserstein_p_1d."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otws2 import ot_wasserstein_p_1d
 
 

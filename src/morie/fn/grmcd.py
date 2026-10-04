@@ -42,7 +42,11 @@ def mcdrop(logits):
     res = _core.mcdrop(logits=logits)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("meanmaxprob", res["meanmaxprob"]), ("meanmaxsd", res["meanmaxsd"]), ("meanentropy", res["meanentropy"])],
+        summary_lines=[
+            ("meanmaxprob", res["meanmaxprob"]),
+            ("meanmaxsd", res["meanmaxsd"]),
+            ("meanentropy", res["meanentropy"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

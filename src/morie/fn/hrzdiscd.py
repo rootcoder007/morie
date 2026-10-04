@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_direct_discrete_x"]
 
 
-def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None,
-                               bandwidth=None, n_grid=60):
+def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None, bandwidth=None, n_grid=60):
     r"""Direct estimation of a single-index model with both
     continuous and DISCRETE covariates (Horowitz Sec. 2.6.3),
     equations (2.45)-(2.51):
@@ -104,16 +103,14 @@ def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None,
     if n < 20:
         raise ValueError(f"need at least 20 observations, got {n}.")
     if d < 1:
-        raise ValueError("identification requires at least one continuous "
-                         "covariate.")
+        raise ValueError("identification requires at least one continuous covariate.")
 
     def _normalise(vec):
         v = np.atleast_1d(np.asarray(vec, dtype=float)).ravel()
         if v.size != d:
             raise ValueError(f"beta has {v.size} entries for {d} covariates.")
         if v[0] == 0:
-            raise ValueError("the scale normalisation needs a nonzero first "
-                             "coefficient.")
+            raise ValueError("the scale normalisation needs a nonzero first coefficient.")
         return v / abs(v[0])
 
     if z is None:
@@ -122,14 +119,25 @@ def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None,
             b = delta / abs(delta[0])
         else:
             b = _normalise(beta)
-        return RichResult(payload={
-            "beta": b, "alpha": None, "support_z": None,
-            "delta_by_stratum": None, "weights": None, "J": None,
-            "beta_source": "supplied" if beta is not None else "average derivative",
-            "c0": None, "c1": None, "identified": True,
-            "average_derivative_can_estimate_alpha": False,
-            "n": int(n), "d": int(d), "dz": 0,
-            "method": "No discrete covariates: this is the plain average-derivative estimate"})
+        return RichResult(
+            payload={
+                "beta": b,
+                "alpha": None,
+                "support_z": None,
+                "delta_by_stratum": None,
+                "weights": None,
+                "J": None,
+                "beta_source": "supplied" if beta is not None else "average derivative",
+                "c0": None,
+                "c1": None,
+                "identified": True,
+                "average_derivative_can_estimate_alpha": False,
+                "n": int(n),
+                "d": int(d),
+                "dz": 0,
+                "method": "No discrete covariates: this is the plain average-derivative estimate",
+            }
+        )
 
     Z = np.atleast_2d(np.asarray(z, dtype=float))
     if Z.shape[0] != n:
@@ -153,20 +161,17 @@ def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None,
             sel = inverse == m
             nm = int(sel.sum())
             if nm < 10:
-                raise ValueError(
-                    f"stratum {m} has {nm} observations, too few for an "
-                    "average-derivative estimate.")
-            deltas.append(np.atleast_1d(
-                hrz_average_derivative(X[sel], yv[sel])["delta"]))
+                raise ValueError(f"stratum {m} has {nm} observations, too few for an average-derivative estimate.")
+            deltas.append(np.atleast_1d(hrz_average_derivative(X[sel], yv[sel])["delta"]))
             wn.append(nm / n)
         deltas = np.array(deltas)
         wn = np.array(wn)
         num = (wn[:, None] * deltas).sum(axis=0)
         den = float((wn * deltas[:, 0]).sum())
         if den == 0:
-            raise ValueError("the weighted first component of the stratum "
-                             "average derivatives is zero; beta is not "
-                             "normalisable.")
+            raise ValueError(
+                "the weighted first component of the stratum average derivatives is zero; beta is not normalisable."
+            )
         b = num / den
         beta_source = "stratum-wise (2.46)"
     else:
@@ -201,14 +206,25 @@ def horowitz_direct_discrete_x(x, y, z=None, beta=None, c0=None, c1=None,
     identified = bool(np.linalg.matrix_rank(WtW) == dz)
     alpha = (np.linalg.solve(WtW, W.T @ dJ) / (cc1 - cc0)) if identified else None
 
-    return RichResult(payload={
-        "beta": b, "alpha": alpha, "support_z": support,
-        "delta_by_stratum": deltas, "weights": wn, "J": J,
-        "beta_source": beta_source,
-        "c0": cc0, "c1": cc1, "identified": identified,
-        "average_derivative_can_estimate_alpha": False,
-        "n": int(n), "d": int(d), "dz": int(dz),
-        "method": "(2.46) for beta stratum-wise; (2.48) for alpha, since derivatives in z do not exist"})
+    return RichResult(
+        payload={
+            "beta": b,
+            "alpha": alpha,
+            "support_z": support,
+            "delta_by_stratum": deltas,
+            "weights": wn,
+            "J": J,
+            "beta_source": beta_source,
+            "c0": cc0,
+            "c1": cc1,
+            "identified": identified,
+            "average_derivative_can_estimate_alpha": False,
+            "n": int(n),
+            "d": int(d),
+            "dz": int(dz),
+            "method": "(2.46) for beta stratum-wise; (2.48) for alpha, since derivatives in z do not exist",
+        }
+    )
 
 
 def cheatsheet():

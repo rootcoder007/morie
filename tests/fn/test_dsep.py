@@ -1,7 +1,5 @@
 """Tests for dsep.d_separation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dsep import d_separation
 
 

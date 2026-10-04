@@ -182,7 +182,7 @@ class _TokenizerUnpickler(pickle.Unpickler):
         if module.split(".")[0] in self._ALLOWED_ROOTS:
             return super().find_class(module, name)
         raise pickle.UnpicklingError(
-            f"blocked pickle global {module}.{name} -- tokenizer files may " "only contain tiktoken objects"
+            f"blocked pickle global {module}.{name} -- tokenizer files may only contain tiktoken objects"
         )
 
 
@@ -302,8 +302,7 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
         )
 
     warnings.warn(
-        f"MORIE_TRUST_CHECKPOINT is set: deserializing {checkpoint_path!r}. Only do this "
-        "with checkpoints you trust.",
+        f"MORIE_TRUST_CHECKPOINT is set: deserializing {checkpoint_path!r}. Only do this with checkpoints you trust.",
         RuntimeWarning,
         stacklevel=2,
     )

@@ -12,5 +12,6 @@ def test_alhds_basic():
 
 def test_alhds_edge():
     import pytest
+
     with pytest.raises(ValueError, match="at least 2"):
         alammar_hdbscan_cluster([[0, 0], [1, 1], [2, 2]], 1)

@@ -1,8 +1,8 @@
 """Tests for morie.fn.aucpr — AUC-PR."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.aucpr import auc_pr, aucpr
 
 

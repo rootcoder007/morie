@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def mean_semivariance_stsi_variance(gamma_bar_h, weights, n_h):
     """
     value = _brus.mean_semivariance_stsi_variance(gamma_bar_h, weights, n_h)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (13.5)"
     return RichResult(
-        title='Model-expected STSI variance from mean semivariances',
+        title="Model-expected STSI variance from mean semivariances",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r13e5: E_xi{V_STSI} = sum w_h^2 gammabar_h/n_h [Brus 2022, eq. 13.5]'
+    return "r13e5: E_xi{V_STSI} = sum w_h^2 gammabar_h/n_h [Brus 2022, eq. 13.5]"

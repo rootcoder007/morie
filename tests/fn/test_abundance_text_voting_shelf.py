@@ -9,9 +9,9 @@ Rosenthal (1985) *AJPS* 29:357-384.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.abndst import (
     abundance_estimation,
     kmer_distribution_from_assignments,
@@ -26,10 +26,10 @@ from morie.fn.midor import (
 )
 from morie.fn.wnoma import wnominate_alternating
 
-
 # --------------------------------------------------------------------
 # Bracken abundance
 # --------------------------------------------------------------------
+
 
 def test_shared_ancestor_reads_split_by_kmer_compatibility():
     P = np.array([[0.5, 0.0], [0.0, 0.5], [0.5, 0.5]])
@@ -47,21 +47,21 @@ def test_the_naive_species_count_understates_and_by_unequal_amounts():
     assert naive[0] < out["estimate"][0]
     assert naive[1] < out["estimate"][1]
     # the shortfall differs between species, so the RANKING can flip
-    assert abs(out["estimate"][0] - naive[0]) != pytest.approx(
-        abs(out["estimate"][1] - naive[1]), rel=0.1
-    )
+    assert abs(out["estimate"][0] - naive[0]) != pytest.approx(abs(out["estimate"][1] - naive[1]), rel=0.1)
 
 
 def test_the_estimator_recovers_a_known_mixture():
     rng = np.random.default_rng(0)
     truth = np.array([0.5, 0.3, 0.2])
-    P = np.array([
-        [0.6, 0.0, 0.0],
-        [0.0, 0.5, 0.0],
-        [0.0, 0.0, 0.4],
-        [0.4, 0.5, 0.0],
-        [0.0, 0.0, 0.6],
-    ])
+    P = np.array(
+        [
+            [0.6, 0.0, 0.0],
+            [0.0, 0.5, 0.0],
+            [0.0, 0.0, 0.4],
+            [0.4, 0.5, 0.0],
+            [0.0, 0.0, 0.6],
+        ]
+    )
     node_p = P @ truth
     reads = rng.multinomial(200000, node_p / node_p.sum()).astype(float)
     out = abundance_estimation(reads, P)
@@ -114,19 +114,19 @@ def test_abundance_input_validation():
     with pytest.raises(ValueError, match="no reads"):
         abundance_estimation([0.0, 0.0], P)
     with pytest.raises(ValueError, match="undefined"):
-        kmer_distribution_from_assignments(np.array([[1.0, 0.0],
-                                                     [1.0, 0.0]]))
+        kmer_distribution_from_assignments(np.array([[1.0, 0.0], [1.0, 0.0]]))
 
 
 # --------------------------------------------------------------------
 # Training-loss variance
 # --------------------------------------------------------------------
 
+
 def ar1(n, rho, seed=0, sd=1.0):
     rng = np.random.default_rng(seed)
     e = rng.normal(scale=sd, size=n)
     x = np.empty(n)
-    x[0] = e[0] / math.sqrt(1 - rho ** 2)
+    x[0] = e[0] / math.sqrt(1 - rho**2)
     for i in range(1, n):
         x[i] = rho * x[i - 1] + e[i]
     return x
@@ -163,8 +163,7 @@ def test_the_effective_sample_size_falls_as_correlation_rises():
 
 def test_the_honest_interval_is_wider_than_the_naive_one():
     out = alphazero_loss_var(2.0 + ar1(4000, 0.85, seed=4))
-    assert (out["ci_upper"] - out["ci_lower"]) > \
-           (out["ci_naive_upper"] - out["ci_naive_lower"])
+    assert (out["ci_upper"] - out["ci_lower"]) > (out["ci_naive_upper"] - out["ci_naive_lower"])
 
 
 def test_shuffling_destroys_the_structure_being_measured():
@@ -182,11 +181,9 @@ def test_components_are_decomposed_and_shares_sum_to_one():
     v = rng.normal(1.0, 0.2, size=n)
     p = rng.normal(0.5, 0.1, size=n)
     r = rng.normal(0.1, 0.01, size=n)
-    out = alphazero_loss_var(v + p + r, value_loss=v, policy_loss=p,
-                             reg_loss=r)
+    out = alphazero_loss_var(v + p + r, value_loss=v, policy_loss=p, reg_loss=r)
     assert set(out["components"]) == {"value", "policy", "regularisation"}
-    assert sum(out["component_shares"].values()) == pytest.approx(1.0,
-                                                                 abs=1e-9)
+    assert sum(out["component_shares"].values()) == pytest.approx(1.0, abs=1e-9)
 
 
 def test_effective_sample_size_of_white_noise_is_about_n():
@@ -208,13 +205,12 @@ def test_loss_variance_input_validation():
 # Text-borne confounding
 # --------------------------------------------------------------------
 
+
 def text_confounded(n=600, seed=0, tau=1.0):
     rng = np.random.default_rng(seed)
     sev = rng.random(n) < 0.4
-    stem = ["routine case stable outcome",
-            "severe acute presentation critical"]
-    texts = [stem[int(s)] + " " + " ".join(
-        rng.choice(["alpha", "beta", "gamma", "delta"], 4)) for s in sev]
+    stem = ["routine case stable outcome", "severe acute presentation critical"]
+    texts = [stem[int(s)] + " " + " ".join(rng.choice(["alpha", "beta", "gamma", "delta"], 4)) for s in sev]
     p = np.where(sev, 0.8, 0.25)
     T = (rng.random(n) < p).astype(float)
     Y = tau * T + 3.0 * sev + rng.normal(size=n)
@@ -224,16 +220,14 @@ def text_confounded(n=600, seed=0, tau=1.0):
 def test_adjusting_for_text_removes_the_confounding():
     texts, T, Y, _ = text_confounded()
     out = causalbert_text(texts, T, Y, n_components=5)
-    assert abs(out["naive_difference"] - 1.0) > 1.0     # badly confounded
+    assert abs(out["naive_difference"] - 1.0) > 1.0  # badly confounded
     assert out["estimate"] == pytest.approx(1.0, abs=0.2)
 
 
 def test_the_movement_from_the_unadjusted_contrast_is_reported():
     texts, T, Y, _ = text_confounded()
     out = causalbert_text(texts, T, Y, n_components=5)
-    assert out["adjustment_movement"] == pytest.approx(
-        out["estimate"] - out["naive_difference"]
-    )
+    assert out["adjustment_movement"] == pytest.approx(out["estimate"] - out["naive_difference"])
     assert out["adjustment_movement"] < -1.0
 
 
@@ -242,9 +236,7 @@ def test_a_supplied_embedding_is_used_instead_of_the_bag_of_words():
     # consumes a matrix and takes no model dependency
     _, T, Y, sev = text_confounded()
     rng = np.random.default_rng(1)
-    E = np.column_stack([sev.astype(float) + rng.normal(scale=0.1,
-                                                        size=T.size),
-                         rng.normal(size=T.size)])
+    E = np.column_stack([sev.astype(float) + rng.normal(scale=0.1, size=T.size), rng.normal(size=T.size)])
     out = causalbert_text(None, T, Y, embedding=E)
     assert out["estimate"] == pytest.approx(1.0, abs=0.25)
     assert out["n_components"] == 2
@@ -256,15 +248,14 @@ def test_the_bag_of_words_cannot_see_negation():
     cos = float(A["matrix"][0] @ A["matrix"][1])
     assert cos > 0.7
     # once "no" falls below the document-frequency floor they coincide
-    B = tfidf_matrix(["history of psychosis", "no history of psychosis"],
-                     min_df=2)
+    B = tfidf_matrix(["history of psychosis", "no history of psychosis"], min_df=2)
     assert float(B["matrix"][0] @ B["matrix"][1]) == pytest.approx(1.0)
     assert "no" not in B["vocabulary"]
 
 
 def test_tfidf_rows_are_unit_norm():
     A = tfidf_matrix(["a b c", "b c d d", "c"])["matrix"]
-    assert np.sqrt((A ** 2).sum(axis=1)) == pytest.approx(np.ones(3))
+    assert np.sqrt((A**2).sum(axis=1)) == pytest.approx(np.ones(3))
 
 
 def test_rare_terms_carry_more_weight_than_common_ones():
@@ -301,10 +292,10 @@ def test_text_confounding_input_validation():
 # FACE covariance smoothing
 # --------------------------------------------------------------------
 
+
 def kl_curves(n=400, p=60, sigma=0.3, seed=0, lam=(1.0, 0.5)):
     t = np.linspace(0.0, 1.0, p)
-    phi = np.column_stack([math.sqrt(2) * np.sin(2 * np.pi * t),
-                           math.sqrt(2) * np.cos(2 * np.pi * t)])
+    phi = np.column_stack([math.sqrt(2) * np.sin(2 * np.pi * t), math.sqrt(2) * np.cos(2 * np.pi * t)])
     rng = np.random.default_rng(seed)
     xi = rng.normal(size=(n, 2)) * np.sqrt(np.asarray(lam))
     return xi @ phi.T + rng.normal(scale=sigma, size=(n, p)), t, phi
@@ -328,8 +319,7 @@ def test_eigenfunctions_recover_the_truth():
     Y, t, phi = kl_curves()
     out = face_smooth(Y, t, n_basis=12)
     for k in range(2):
-        c = abs(float(np.corrcoef(out["eigenfunctions"][:, k],
-                                  phi[:, k])[0, 1]))
+        c = abs(float(np.corrcoef(out["eigenfunctions"][:, k], phi[:, k])[0, 1]))
         assert c > 0.99
 
 
@@ -337,7 +327,7 @@ def test_the_noise_variance_is_estimated_not_absorbed():
     for sigma in (0.1, 0.3, 0.5):
         Y, t, _ = kl_curves(sigma=sigma)
         out = face_smooth(Y, t, n_basis=12)
-        assert out["noise_variance"] == pytest.approx(sigma ** 2, rel=0.35)
+        assert out["noise_variance"] == pytest.approx(sigma**2, rel=0.35)
 
 
 def test_smoothing_through_the_diagonal_biases_it_upward():
@@ -360,7 +350,7 @@ def test_the_smoothed_covariance_is_essentially_positive_semidefinite():
 def test_the_covariance_is_symmetric():
     Y, t, _ = kl_curves(n=100)
     C = face_smooth(Y, t, n_basis=10)["covariance"]
-    assert C == pytest.approx(C.T)
+    assert pytest.approx(C.T) == C
 
 
 def test_two_components_are_selected_for_a_two_component_process():
@@ -394,9 +384,10 @@ def test_face_input_validation():
 # Identify, estimate, refute
 # --------------------------------------------------------------------
 
+
 def test_the_backdoor_criterion_on_a_confounder():
     A = np.zeros((3, 3), bool)
-    A[0, 1] = A[0, 2] = A[1, 2] = True      # Z -> T, Z -> Y, T -> Y
+    A[0, 1] = A[0, 2] = A[1, 2] = True  # Z -> T, Z -> Y, T -> Y
     assert is_backdoor_admissible(A, 1, 2, []) is False
     assert is_backdoor_admissible(A, 1, 2, [0]) is True
     assert backdoor_sets(A, 1, 2) == [(0,)]
@@ -404,14 +395,14 @@ def test_the_backdoor_criterion_on_a_confounder():
 
 def test_a_mediator_is_not_admissible():
     A = np.zeros((3, 3), bool)
-    A[0, 1] = A[1, 2] = True                # T -> M -> Y
+    A[0, 1] = A[1, 2] = True  # T -> M -> Y
     assert is_backdoor_admissible(A, 0, 2, []) is True
     assert is_backdoor_admissible(A, 0, 2, [1]) is False
 
 
 def test_conditioning_on_a_collider_opens_a_path():
     A = np.zeros((3, 3), bool)
-    A[0, 1] = A[2, 1] = True                # T -> C <- Y
+    A[0, 1] = A[2, 1] = True  # T -> C <- Y
     assert is_backdoor_admissible(A, 0, 2, []) is True
     assert backdoor_sets(A, 0, 2)[0] == ()
 
@@ -452,8 +443,7 @@ def test_the_placebo_treatment_collapses_to_zero():
     Y = 2.0 * T + 1.5 * Z + rng.normal(size=n)
     A = np.zeros((3, 3), bool)
     A[0, 1] = A[0, 2] = A[1, 2] = True
-    out = model_identify_estimate_refute(A, np.column_stack([Z, T, Y]), 1, 2,
-                                         n_refute=60)
+    out = model_identify_estimate_refute(A, np.column_stack([Z, T, Y]), 1, 2, n_refute=60)
     assert abs(out["placebo_effect"]) < 0.05
     assert out["passed_placebo"] is True
 
@@ -466,10 +456,8 @@ def test_a_random_common_cause_leaves_the_estimate_alone():
     Y = 2.0 * T + 1.5 * Z + rng.normal(size=n)
     A = np.zeros((3, 3), bool)
     A[0, 1] = A[0, 2] = A[1, 2] = True
-    out = model_identify_estimate_refute(A, np.column_stack([Z, T, Y]), 1, 2,
-                                         n_refute=60)
-    assert out["random_cause_effect"] == pytest.approx(out["estimate"],
-                                                       abs=0.05)
+    out = model_identify_estimate_refute(A, np.column_stack([Z, T, Y]), 1, 2, n_refute=60)
+    assert out["random_cause_effect"] == pytest.approx(out["estimate"], abs=0.05)
     assert out["passed_random_cause"] is True
 
 
@@ -478,31 +466,28 @@ def test_conditioning_on_a_mediator_is_flagged_and_attenuates():
     n = 3000
     T = rng.normal(size=n)
     M = 1.0 * T + rng.normal(size=n)
-    Y = 1.0 * M + rng.normal(size=n)       # total effect of T on Y is 1.0
+    Y = 1.0 * M + rng.normal(size=n)  # total effect of T on Y is 1.0
     A = np.zeros((3, 3), bool)
     A[0, 1] = A[1, 2] = True
     D = np.column_stack([T, M, Y])
-    good = model_identify_estimate_refute(A, D, 0, 2, adjustment=[],
-                                          n_refute=20)
-    bad = model_identify_estimate_refute(A, D, 0, 2, adjustment=[1],
-                                         n_refute=20)
+    good = model_identify_estimate_refute(A, D, 0, 2, adjustment=[], n_refute=20)
+    bad = model_identify_estimate_refute(A, D, 0, 2, adjustment=[1], n_refute=20)
     assert good["estimate"] == pytest.approx(1.0, abs=0.1)
-    assert abs(bad["estimate"]) < 0.15          # the effect is absorbed
+    assert abs(bad["estimate"]) < 0.15  # the effect is absorbed
     assert bad["adjusted_for_mediator"] == [1]
     assert any("mediator" in w for w in bad.warnings)
 
 
 def test_conditioning_on_a_collider_is_flagged():
     A = np.zeros((4, 4), bool)
-    A[0, 2] = A[1, 2] = A[0, 3] = True      # T -> C <- U, T -> Y
+    A[0, 2] = A[1, 2] = A[0, 3] = True  # T -> C <- U, T -> Y
     rng = np.random.default_rng(4)
     n = 2000
     T = rng.normal(size=n)
     U = rng.normal(size=n)
     C = T + U + rng.normal(size=n)
     Y = 1.0 * T + rng.normal(size=n)
-    out = model_identify_estimate_refute(A, np.column_stack([T, U, C, Y]),
-                                         0, 3, adjustment=[2], n_refute=20)
+    out = model_identify_estimate_refute(A, np.column_stack([T, U, C, Y]), 0, 3, adjustment=[2], n_refute=20)
     assert out["adjusted_for_collider"] == [2]
     assert any("collider" in w for w in out.warnings)
 
@@ -514,11 +499,9 @@ def test_no_admissible_set_is_reported_as_unidentified():
     rng = np.random.default_rng(5)
     n = 500
     D = rng.normal(size=(n, 3))
-    out = model_identify_estimate_refute(A, D, 1, 2, adjustment=[2],
-                                         n_refute=10)
+    out = model_identify_estimate_refute(A, D, 1, 2, adjustment=[2], n_refute=10)
     assert out["identified"] is False
-    assert any("back-door criterion is not satisfied" in w
-               for w in out.warnings)
+    assert any("back-door criterion is not satisfied" in w for w in out.warnings)
 
 
 def test_dag_input_validation():
@@ -539,22 +522,23 @@ def test_dag_input_validation():
 # W-NOMINATE
 # --------------------------------------------------------------------
 
+
 def chamber(n=120, m=220, dims=1, seed=3, beta=2.0):
     rng = np.random.default_rng(seed)
     truth = rng.normal(size=(n, dims))
     zy = rng.normal(size=(m, dims)) * 0.8
     zn = rng.normal(size=(m, dims)) * 0.8
-    eta = beta * (np.sum((truth[:, None, :] - zn[None, :, :]) ** 2, axis=2)
-                  - np.sum((truth[:, None, :] - zy[None, :, :]) ** 2, axis=2))
-    p = 0.5 * np.array([[math.erfc(-v / math.sqrt(2)) for v in row]
-                        for row in eta])
+    eta = beta * (
+        np.sum((truth[:, None, :] - zn[None, :, :]) ** 2, axis=2)
+        - np.sum((truth[:, None, :] - zy[None, :, :]) ** 2, axis=2)
+    )
+    p = 0.5 * np.array([[math.erfc(-v / math.sqrt(2)) for v in row] for row in eta])
     return (rng.random((n, m)) < p).astype(float), truth
 
 
 def test_ideal_points_are_recovered_in_one_dimension():
     V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
     r = abs(float(np.corrcoef(out["ideal_points"][:, 0], truth[:, 0])[0, 1]))
     assert r > 0.95
     assert out["converged"] is True
@@ -564,23 +548,17 @@ def test_the_svd_start_reaches_a_better_optimum_than_a_random_one():
     # the objective is not jointly concave, so the start matters: from
     # noise the fit sits at a materially worse likelihood
     V, truth = chamber()
-    good = wnominate_alternating(V, n_dims=1, start="svd",
-                                 polarity=int(np.argmax(truth[:, 0])))
-    poor = wnominate_alternating(V, n_dims=1, start="random", seed=1,
-                                 max_iter=60,
-                                 polarity=int(np.argmax(truth[:, 0])))
+    good = wnominate_alternating(V, n_dims=1, start="svd", polarity=int(np.argmax(truth[:, 0])))
+    poor = wnominate_alternating(V, n_dims=1, start="random", seed=1, max_iter=60, polarity=int(np.argmax(truth[:, 0])))
     assert good["log_likelihood"] > poor["log_likelihood"]
-    r_good = abs(float(np.corrcoef(good["ideal_points"][:, 0],
-                                   truth[:, 0])[0, 1]))
-    r_poor = abs(float(np.corrcoef(poor["ideal_points"][:, 0],
-                                   truth[:, 0])[0, 1]))
+    r_good = abs(float(np.corrcoef(good["ideal_points"][:, 0], truth[:, 0])[0, 1]))
+    r_poor = abs(float(np.corrcoef(poor["ideal_points"][:, 0], truth[:, 0])[0, 1]))
     assert r_good > r_poor
 
 
 def test_ideal_points_are_recovered_in_two_dimensions_up_to_rotation():
     V, truth = chamber(dims=2)
-    out = wnominate_alternating(V, n_dims=2,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=2, polarity=int(np.argmax(truth[:, 0])))
     A = truth - truth.mean(0)
     B = out["ideal_points"] - out["ideal_points"].mean(0)
     U, _, Vt = np.linalg.svd(A.T @ B)
@@ -595,8 +573,7 @@ def test_polarity_fixes_the_otherwise_arbitrary_sign():
     b = wnominate_alternating(V, n_dims=1, polarity=k, seed=99)
     assert a["ideal_points"][k, 0] > 0
     assert b["ideal_points"][k, 0] > 0
-    assert float(np.corrcoef(a["ideal_points"][:, 0],
-                             b["ideal_points"][:, 0])[0, 1]) > 0.95
+    assert float(np.corrcoef(a["ideal_points"][:, 0], b["ideal_points"][:, 0])[0, 1]) > 0.95
 
 
 def test_without_polarity_the_sign_is_reported_as_arbitrary():
@@ -607,27 +584,23 @@ def test_without_polarity_the_sign_is_reported_as_arbitrary():
 
 def test_the_configuration_is_normalised():
     V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
     x = out["ideal_points"]
     assert float(np.mean(x)) == pytest.approx(0.0, abs=1e-9)
-    assert math.sqrt(float(np.mean(np.sum(x ** 2, axis=1)))) == \
-        pytest.approx(1.0, abs=1e-9)
+    assert math.sqrt(float(np.mean(np.sum(x**2, axis=1)))) == pytest.approx(1.0, abs=1e-9)
 
 
 def test_unanimous_rollcalls_are_dropped():
     V, truth = chamber(m=100)
     V = np.column_stack([V, np.ones((V.shape[0], 5))])
-    out = wnominate_alternating(V, n_dims=1,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
     assert out["n_dropped_rollcalls"] == 5
     assert any("unanimous" in w for w in out.warnings)
 
 
 def test_classification_beats_the_modal_baseline():
     V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
     assert out["correct_classification"] > out["modal_baseline"]
     assert out["aggregate_pre"] > 0.3
 
@@ -644,8 +617,7 @@ def test_absences_are_tolerated():
     rng = np.random.default_rng(11)
     V = V.copy()
     V[rng.random(V.shape) < 0.1] = np.nan
-    out = wnominate_alternating(V, n_dims=1,
-                                polarity=int(np.argmax(truth[:, 0])))
+    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
     r = abs(float(np.corrcoef(out["ideal_points"][:, 0], truth[:, 0])[0, 1]))
     assert r > 0.9
 
@@ -658,7 +630,7 @@ def test_voting_input_validation():
         wnominate_alternating(V, n_dims=0)
     with pytest.raises(ValueError, match="polarity must lie"):
         wnominate_alternating(V, n_dims=1, polarity=999)
-    with pytest.raises(ValueError, match='start must be'):
+    with pytest.raises(ValueError, match="start must be"):
         wnominate_alternating(V, n_dims=1, start="pca")
     with pytest.raises(ValueError, match="roll calls divide"):
         wnominate_alternating(np.ones((10, 6)), n_dims=1)

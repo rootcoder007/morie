@@ -62,16 +62,13 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["inclusion_probabilities", "draw_sample",
-           "horvitz_thompson", "design_efficiency",
-           "adaptive_survey_tmle"]
+__all__ = ["inclusion_probabilities", "draw_sample", "horvitz_thompson", "design_efficiency", "adaptive_survey_tmle"]
 
 _EPS = 1e-12
 _DESIGNS = ("uniform", "proportional", "adaptive")
 
 
-def inclusion_probabilities(V, n, design="adaptive", influence=None,
-                            floor=0.01):
+def inclusion_probabilities(V, n, design="adaptive", influence=None, floor=0.01):
     r"""Choose :math:`\pi_i`, summing to :math:`n`.
 
     ``adaptive`` sets :math:`\pi_i \propto` the expected influence
@@ -80,26 +77,22 @@ def inclusion_probabilities(V, n, design="adaptive", influence=None,
     probability makes the estimand unidentifiable for that stratum.
     """
     if design not in _DESIGNS:
-        raise ValueError("tlsurvy: design must be one of %s, got %r"
-                         % (", ".join(_DESIGNS), design))
+        raise ValueError("tlsurvy: design must be one of %s, got %r" % (", ".join(_DESIGNS), design))
     v = [float(q) for q in k.vec(V)]
     N = len(v)
     nn = int(n)
     if nn < 1 or nn > N:
-        raise ValueError("tlsurvy: n must lie in 1..%d, got %d"
-                         % (N, nn))
+        raise ValueError("tlsurvy: n must lie in 1..%d, got %d" % (N, nn))
     if design == "uniform":
         base = [1.0] * N
     elif design == "proportional":
         base = [abs(q) + _EPS for q in v]
     else:
         if influence is None:
-            raise ValueError("tlsurvy: the adaptive design needs the "
-                             "expected influence given V")
+            raise ValueError("tlsurvy: the adaptive design needs the expected influence given V")
         base = [abs(float(q)) + _EPS for q in k.vec(influence)]
         if len(base) != N:
-            raise ValueError("tlsurvy: %d influence values for %d "
-                             "units" % (len(base), N))
+            raise ValueError("tlsurvy: %d influence values for %d units" % (len(base), N))
     # Rescale to sum exactly to n, iterating because capping at 1 and
     # flooring both remove mass that has to go somewhere -- a single
     # pass leaves the expected sample size short of n.
@@ -115,18 +108,20 @@ def inclusion_probabilities(V, n, design="adaptive", influence=None,
         if not free:
             break
         slack = nn - tot
-        room = sum((1.0 - pi[i]) if slack > 0 else (pi[i] - fl)
-                   for i in free)
+        room = sum((1.0 - pi[i]) if slack > 0 else (pi[i] - fl) for i in free)
         if room <= _EPS:
             break
         for i in free:
-            share = ((1.0 - pi[i]) if slack > 0
-                     else (pi[i] - fl)) / room
+            share = ((1.0 - pi[i]) if slack > 0 else (pi[i] - fl)) / room
             pi[i] += slack * share
-    return {"pi": pi, "design": design, "n_expected": sum(pi),
-            "N": N, "min_pi": min(pi),
-            "note": "a zero inclusion probability makes that stratum "
-                    "unidentifiable, so the floor is not cosmetic"}
+    return {
+        "pi": pi,
+        "design": design,
+        "n_expected": sum(pi),
+        "N": N,
+        "min_pi": min(pi),
+        "note": "a zero inclusion probability makes that stratum unidentifiable, so the floor is not cosmetic",
+    }
 
 
 def draw_sample(pi, seed=0):
@@ -136,10 +131,8 @@ def draw_sample(pi, seed=0):
     rng = np.random.default_rng(seed)
     idx = [i for i in range(len(p)) if float(rng.uniform()) < p[i]]
     if not idx:
-        raise ValueError("tlsurvy: the draw selected nothing; raise "
-                         "the inclusion probabilities")
-    return {"selected": idx, "n": len(idx),
-            "fraction": len(idx) / float(len(p))}
+        raise ValueError("tlsurvy: the draw selected nothing; raise the inclusion probabilities")
+    return {"selected": idx, "n": len(idx), "fraction": len(idx) / float(len(p))}
 
 
 def horvitz_thompson(values, pi, selected, N=None):
@@ -155,13 +148,10 @@ def horvitz_thompson(values, pi, selected, N=None):
     idx = [int(q) for q in selected]
     n_total = len(p) if N is None else int(N)
     if any(p[i] <= 0.0 for i in idx):
-        raise ValueError("tlsurvy: a selected unit has zero inclusion "
-                         "probability")
+        raise ValueError("tlsurvy: a selected unit has zero inclusion probability")
     est = sum(y[i] / p[i] for i in idx) / n_total
-    var = sum((1.0 - p[i]) * (y[i] / p[i]) ** 2 for i in idx) \
-        / (n_total ** 2)
-    return {"estimate": est, "se": math.sqrt(max(var, 0.0)),
-            "n_used": len(idx), "N": n_total}
+    var = sum((1.0 - p[i]) * (y[i] / p[i]) ** 2 for i in idx) / (n_total**2)
+    return {"estimate": est, "se": math.sqrt(max(var, 0.0)), "n_used": len(idx), "N": n_total}
 
 
 def design_efficiency(values, influence, n, seed=0):
@@ -174,57 +164,55 @@ def design_efficiency(values, influence, n, seed=0):
     y = [float(q) for q in k.vec(values)]
     out = {}
     for d in ("uniform", "adaptive"):
-        pi = inclusion_probabilities(y, n, d,
-                                     influence if d == "adaptive"
-                                     else None)["pi"]
+        pi = inclusion_probabilities(y, n, d, influence if d == "adaptive" else None)["pi"]
         s = draw_sample(pi, seed)["selected"]
         out[d] = horvitz_thompson(y, pi, s)
-    return {"uniform_se": out["uniform"]["se"],
-            "adaptive_se": out["adaptive"]["se"],
-            "ratio": out["adaptive"]["se"] / out["uniform"]["se"]
-            if out["uniform"]["se"] > 0 else float("nan"),
-            "note": "with a flat influence the designs coincide -- "
-                    "adaptation cannot buy anything there"}
+    return {
+        "uniform_se": out["uniform"]["se"],
+        "adaptive_se": out["adaptive"]["se"],
+        "ratio": out["adaptive"]["se"] / out["uniform"]["se"] if out["uniform"]["se"] > 0 else float("nan"),
+        "note": "with a flat influence the designs coincide -- adaptation cannot buy anything there",
+    }
 
 
-def adaptive_survey_tmle(V, influence_proxy, full_estimator, n,
-                         seed=0):
+def adaptive_survey_tmle(V, influence_proxy, full_estimator, n, seed=0):
     r"""Sample by the adaptive design, then run the estimator on the
     sample.
 
     Reports both error sources: the sampling variance from using
     :math:`n` of :math:`N`, and the estimator's own standard error.
     """
-    pi = inclusion_probabilities(V, n, "adaptive",
-                                 influence_proxy)["pi"]
+    pi = inclusion_probabilities(V, n, "adaptive", influence_proxy)["pi"]
     s = draw_sample(pi, seed)
-    r = full_estimator(s["selected"], [1.0 / pi[i]
-                                       for i in s["selected"]])
-    return RichResult(payload={
-        "estimate": float(r["estimate"]),
-        "psi": float(r["estimate"]),
-        "se_estimator": float(r.get("se", float("nan"))),
-        "n_used": s["n"], "N": len(pi),
-        "sampling_fraction": s["fraction"],
-        "inclusion_probabilities": pi,
-        "method": "TMLE on an adaptive survey sample; van der Laan & "
-                  "Rose (2018) Chap. 29",
-        "note": "asymptotics in both n and N with n/N -> 0, so the "
-                "computational saving does not vanish",
-    })
+    r = full_estimator(s["selected"], [1.0 / pi[i] for i in s["selected"]])
+    return RichResult(
+        payload={
+            "estimate": float(r["estimate"]),
+            "psi": float(r["estimate"]),
+            "se_estimator": float(r.get("se", float("nan"))),
+            "n_used": s["n"],
+            "N": len(pi),
+            "sampling_fraction": s["fraction"],
+            "inclusion_probabilities": pi,
+            "method": "TMLE on an adaptive survey sample; van der Laan & Rose (2018) Chap. 29",
+            "note": "asymptotics in both n and N with n/N -> 0, so the computational saving does not vanish",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlsurvy: N too large to use, so SAMPLE the data rather "
-            "than approximate the estimator -- select n of N with "
-            "UNEQUAL inclusion probabilities and run TMLE on the "
-            "sample, with n/N -> 0 so the saving persists. A cheap "
-            "low-dimensional V is observed for ALL N, which is what "
-            "makes the design adaptive: set pi_i proportional to the "
-            "expected INFLUENCE given V and the variance is minimised "
-            "for that n. Weight by 1/pi (Horvitz-Thompson) to stay "
-            "unbiased for the FULL-data parameter. Where the influence "
-            "is flat, adaptation buys nothing.")
+    return (
+        "tlsurvy: N too large to use, so SAMPLE the data rather "
+        "than approximate the estimator -- select n of N with "
+        "UNEQUAL inclusion probabilities and run TMLE on the "
+        "sample, with n/N -> 0 so the saving persists. A cheap "
+        "low-dimensional V is observed for ALL N, which is what "
+        "makes the design adaptive: set pi_i proportional to the "
+        "expected INFLUENCE given V and the variance is minimised "
+        "for that n. Weight by 1/pi (Horvitz-Thompson) to stay "
+        "unbiased for the FULL-data parameter. Where the influence "
+        "is flat, adaptation buys nothing."
+    )
 
 
 # compact alias per ledger/NAMING.md

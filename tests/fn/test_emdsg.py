@@ -1,7 +1,6 @@
 """Tests for emdsg -- Empirical Mode Decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bsaphys import emd
 
@@ -55,6 +54,7 @@ def test_emd_imfs_and_residue_sum_to_the_signal():
     """Sifting subtracts each IMF from what remains, so the IMFs plus the
     residue reconstruct the input exactly."""
     import math
+
     t = [k / 500 for k in range(500)]
     x = [math.sin(2 * math.pi * 10 * s) + 0.5 * math.sin(2 * math.pi * 50 * s) + 0.3 * s for s in t]
     r = emd(x, max_imfs=5)

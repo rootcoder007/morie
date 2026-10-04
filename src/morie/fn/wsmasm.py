@@ -60,11 +60,17 @@ def wasserman_mle_asymptotic(data, f, theta_hat, x_grid=None):
     info = wasserman_fisher_info(f, theta_hat, x_grid=x_grid)["estimate"]
     se = 1.0 / float(np.sqrt(n * info))
     z = 1.959963984540054
-    return RichResult(payload={
-        "estimate": theta_hat, "se": se, "information": float(info),
-        "ci_lower": theta_hat - z * se, "ci_upper": theta_hat + z * se,
-        "n": int(n),
-        "method": "MLE se = 1/sqrt(n I(theta_hat)), Wald 95 CI"})
+    return RichResult(
+        payload={
+            "estimate": theta_hat,
+            "se": se,
+            "information": float(info),
+            "ci_lower": theta_hat - z * se,
+            "ci_upper": theta_hat + z * se,
+            "n": int(n),
+            "method": "MLE se = 1/sqrt(n I(theta_hat)), Wald 95 CI",
+        }
+    )
 
 
 def cheatsheet():

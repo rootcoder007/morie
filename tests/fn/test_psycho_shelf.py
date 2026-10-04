@@ -13,9 +13,9 @@ answer: a different heterogeneity estimator is a different pooled
 effect, not a footnote.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._psycho import anova_two_way, spearman_brown
 from morie.fn.eapth import eap_theta_estimator
 from morie.fn.icc1k import icc_one_way_average
@@ -31,21 +31,13 @@ from morie.fn.theteap import theta_eap
 from morie.fn.theteap2 import theta_map
 from morie.fn.wleth import weighted_likelihood_theta
 
-
 # Shrout and Fleiss (1979), Table 2: 6 targets rated by 4 judges.
-SF_TABLE = np.array([[9, 2, 5, 8],
-                     [6, 1, 3, 2],
-                     [8, 4, 6, 8],
-                     [7, 1, 2, 6],
-                     [10, 5, 6, 9],
-                     [6, 2, 4, 7]], dtype=float)
+SF_TABLE = np.array([[9, 2, 5, 8], [6, 1, 3, 2], [8, 4, 6, 8], [7, 1, 2, 6], [10, 5, 6, 9], [6, 2, 4, 7]], dtype=float)
 
 
 def sf_long():
     n, k = SF_TABLE.shape
-    return (SF_TABLE.ravel(),
-            np.repeat(np.arange(n), k),
-            np.tile(np.arange(k), n))
+    return (SF_TABLE.ravel(), np.repeat(np.arange(n), k), np.tile(np.arange(k), n))
 
 
 # ------------------------------------------------- ICC
@@ -78,18 +70,14 @@ def test_the_cases_are_ordered_and_the_ordering_has_a_reason():
     assert a["value"] < b["value"] < c["value"]
     assert a["icc_single"] < b["icc_single"] < c["icc_single"]
     # the gap between cases 2 and 3 IS the rater penalty
-    assert b["rater_penalty"] == pytest.approx(c["value"] - b["value"],
-                                               rel=1e-9)
+    assert b["rater_penalty"] == pytest.approx(c["value"] - b["value"], rel=1e-9)
     assert c["icc2k"] == pytest.approx(b["value"], rel=1e-12)
 
 
 def test_average_measure_follows_spearman_brown_exactly():
     y, sub, rat = sf_long()
-    for o in (icc_one_way_average(y, sub),
-              icc_two_way_random_avg(y, sub, rat),
-              icc_two_way_mixed_avg(y, sub, rat)):
-        assert o["value"] == pytest.approx(
-            spearman_brown(o["icc_single"], o["k"]), rel=1e-9)
+    for o in (icc_one_way_average(y, sub), icc_two_way_random_avg(y, sub, rat), icc_two_way_mixed_avg(y, sub, rat)):
+        assert o["value"] == pytest.approx(spearman_brown(o["icc_single"], o["k"]), rel=1e-9)
 
 
 def test_a_constant_rater_offset_costs_case_3_nothing():
@@ -139,15 +127,12 @@ def test_no_finite_mle_for_a_perfect_pattern_but_the_others_deliver():
         assert ml["finite"] is False
         assert ml["theta"] == sign * np.inf
         assert "no maximum exists" in ml["why_infinite"]
-        for f in (map_theta_estimator, eap_theta_estimator,
-                  weighted_likelihood_theta):
+        for f in (map_theta_estimator, eap_theta_estimator, weighted_likelihood_theta):
             o = f(pattern, a=a, b=b)
             assert np.isfinite(o["theta"])
-            assert sign * o["theta"] > 0        # right direction
-    assert map_theta_estimator(np.ones(20), a=a,
-                               b=b)["exists_for_perfect_patterns"] is True
-    assert weighted_likelihood_theta(
-        np.ones(20), a=a, b=b)["finite_for_perfect_patterns"] is True
+            assert sign * o["theta"] > 0  # right direction
+    assert map_theta_estimator(np.ones(20), a=a, b=b)["exists_for_perfect_patterns"] is True
+    assert weighted_likelihood_theta(np.ones(20), a=a, b=b)["finite_for_perfect_patterns"] is True
 
 
 def test_map_and_eap_shrink_toward_the_prior_mean():
@@ -164,8 +149,7 @@ def test_map_and_eap_shrink_toward_the_prior_mean():
     assert mp["shrinkage_vs_ml"] is not None
     # the prior adds information, so the MAP interval is narrower
     assert mp["se"] < ml["se"]
-    assert mp["posterior_information"] == pytest.approx(
-        mp["information"] + 1.0, rel=1e-12)
+    assert mp["posterior_information"] == pytest.approx(mp["information"] + 1.0, rel=1e-12)
     # EAP is a genuine posterior SD, not a curvature approximation
     assert ep["posterior_sd"] == pytest.approx(ep["se"], rel=1e-15)
     assert ep["no_optimisation"] is True
@@ -180,6 +164,7 @@ def test_warms_weighted_likelihood_reduces_the_ml_bias():
     = -0.0066 against E[MLE - theta | finite MLE] = +0.0136."""
     import itertools
     import math
+
     a, b = irt_items(8)
     true = 1.0
     P = [1 / (1 + math.exp(-float(ai) * (true - float(bi)))) for ai, bi in zip(a, b)]
@@ -191,8 +176,12 @@ def test_warms_weighted_likelihood_reduces_the_ml_bias():
             em += pr * (mle_theta_estimator(np.array(y), a=a, b=b)["theta"] - true)
             pm += pr
     assert abs(ew) < abs(em / pm)
-    assert weighted_likelihood_theta(np.r_[np.ones(10), np.zeros(10)],
-                                     a=np.full(20, 1.2), b=np.linspace(-2, 2, 20))["bias_corrected"] is True
+    assert (
+        weighted_likelihood_theta(np.r_[np.ones(10), np.zeros(10)], a=np.full(20, 1.2), b=np.linspace(-2, 2, 20))[
+            "bias_corrected"
+        ]
+        is True
+    )
 
 
 def test_the_matrix_aliases_share_the_single_pattern_implementations():
@@ -202,10 +191,8 @@ def test_the_matrix_aliases_share_the_single_pattern_implementations():
     X = (rng.random((5, 20)) < 0.6).astype(float)
     te = theta_eap(X, items)
     tm = theta_map(X, items)
-    assert te["theta"][0] == pytest.approx(
-        eap_theta_estimator(X[0], a=a, b=b)["theta"], rel=1e-15)
-    assert tm["theta"][0] == pytest.approx(
-        map_theta_estimator(X[0], a=a, b=b)["theta"], rel=1e-15)
+    assert te["theta"][0] == pytest.approx(eap_theta_estimator(X[0], a=a, b=b)["theta"], rel=1e-15)
+    assert tm["theta"][0] == pytest.approx(map_theta_estimator(X[0], a=a, b=b)["theta"], rel=1e-15)
     assert te["alias_of"] == "morie.fn.eapth.eap_theta_estimator"
     assert tm["alias_of"] == "morie.fn.mapth.map_theta_estimator"
     # mode and mean are NOT the same number
@@ -230,8 +217,7 @@ def test_irt_validates_its_inputs():
 def meta_sim(k=25, mu=0.5, tau2=0.09, seed=0):
     rng = np.random.default_rng(seed)
     vi = rng.uniform(0.01, 0.15, k)
-    yi = mu + rng.normal(scale=np.sqrt(tau2), size=k) + \
-        rng.normal(scale=np.sqrt(vi))
+    yi = mu + rng.normal(scale=np.sqrt(tau2), size=k) + rng.normal(scale=np.sqrt(vi))
     return yi, vi
 
 
@@ -257,7 +243,7 @@ def test_paule_mandel_reports_a_boundary_truncation_as_one():
     from an interior estimate of zero."""
     rng = np.random.default_rng(3)
     vi = rng.uniform(0.05, 0.2, 15)
-    yi = 0.4 + rng.normal(scale=np.sqrt(vi))     # tau^2 = 0 truly
+    yi = 0.4 + rng.normal(scale=np.sqrt(vi))  # tau^2 = 0 truly
     o = ma_paule_mandel(yi, vi)
     assert o["tau2"] == 0.0
     assert o["at_boundary"] is True
@@ -271,13 +257,11 @@ def test_reml_exceeds_ml_by_the_degree_of_freedom_correction():
     yi, vi = meta_sim(seed=7)
     o = ma_random_reml(yi, vi)
     assert o["tau2"] >= o["tau2_ml"]
-    assert o["reml_correction"] == pytest.approx(o["tau2"] - o["tau2_ml"],
-                                                 rel=1e-12)
+    assert o["reml_correction"] == pytest.approx(o["tau2"] - o["tau2_ml"], rel=1e-12)
     assert o["converged"] is True
     # the pooled estimate uses 1/(v + tau^2) weights
     w = 1.0 / (vi + o["tau2"])
-    assert o["mu"] == pytest.approx(float(np.sum(w * yi) / np.sum(w)),
-                                    rel=1e-12)
+    assert o["mu"] == pytest.approx(float(np.sum(w * yi) / np.sum(w)), rel=1e-12)
 
 
 def test_the_tau2_estimator_changes_the_pooled_effect():
@@ -335,13 +319,12 @@ def test_leave_one_out_refits_tau2_and_flags_conclusion_changes():
     vi = rng.uniform(0.005, 0.03, 12)
     yi = 0.3 + rng.normal(scale=0.4, size=12) + rng.normal(scale=np.sqrt(vi))
     o = ma_leave_one_out(yi, vi, method="PM")
-    assert o["tau2_loo"].std() > 1e-6           # tau^2 really is refit
+    assert o["tau2_loo"].std() > 1e-6  # tau^2 really is refit
     assert np.max(np.abs(o["tau2_loo"] - o["tau2_full"])) > 1e-3
     assert o["mu_loo"].size == 12
     assert o["ci_loo"].shape == (12, 2)
     assert 0 <= o["most_influential"] < 12
-    assert o["max_abs_delta"] == pytest.approx(
-        float(np.max(np.abs(o["delta_mu"]))), rel=1e-12)
+    assert o["max_abs_delta"] == pytest.approx(float(np.max(np.abs(o["delta_mu"]))), rel=1e-12)
     assert o["flips_significance"].dtype == bool
     with pytest.raises(ValueError, match="at least 3 studies"):
         ma_leave_one_out(yi[:2], vi[:2])

@@ -1,7 +1,6 @@
 """Tests for morie.fn.clvr — clever covariate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clvr import clvr
 
 

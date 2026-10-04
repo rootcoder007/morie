@@ -158,8 +158,11 @@ def _no_recursive_delete_of_the_checkout():
 
     def guarded(path, *args, **kwargs):
         p = Path(path).expanduser().resolve()
-        if p == root or p in root.parents or p == Path.home().resolve() or (
-            root in p.parents and p.relative_to(root).parts[0] in {"src", "tests", ".git", "docs", "r-package"}
+        if (
+            p == root
+            or p in root.parents
+            or p == Path.home().resolve()
+            or (root in p.parents and p.relative_to(root).parts[0] in {"src", "tests", ".git", "docs", "r-package"})
         ):
             raise RuntimeError(f"a test tried to remove {p}, part of the morie checkout")
         return real(path, *args, **kwargs)

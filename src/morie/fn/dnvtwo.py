@@ -69,12 +69,10 @@ arXiv:1806.03198. The KoLeo regularizer.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["deduplicate", "retrieve_augment", "koleo",
-           "sinkhorn_knopp", "self_distillation_loss"]
+__all__ = ["deduplicate", "retrieve_augment", "koleo", "sinkhorn_knopp", "self_distillation_loss"]
 
 _EPS = 1e-12
 
@@ -103,14 +101,16 @@ def deduplicate(embeddings, threshold=0.999):
             keep.append(i)
         else:
             dropped.append((i, dup))
-    return {"keep": keep, "dropped": dropped,
-            "n_before": len(E), "n_after": len(keep),
-            "note": "similarity, not metadata -- no annotation is "
-                    "required"}
+    return {
+        "keep": keep,
+        "dropped": dropped,
+        "n_before": len(E),
+        "n_after": len(keep),
+        "note": "similarity, not metadata -- no annotation is required",
+    }
 
 
-def retrieve_augment(curated, uncurated, per_query=2,
-                     min_similarity=0.0):
+def retrieve_augment(curated, uncurated, per_query=2, min_similarity=0.0):
     r"""Augment the curated set with its own nearest neighbours.
 
     Retrieval against curated images is what supplies diversity
@@ -120,26 +120,24 @@ def retrieve_augment(curated, uncurated, per_query=2,
     C = [[float(v) for v in r] for r in k.mat(curated)]
     U = [[float(v) for v in r] for r in k.mat(uncurated)]
     if not C:
-        raise ValueError("dnvtwo: the curated corpus is empty, so "
-                         "there is nothing to retrieve against")
+        raise ValueError("dnvtwo: the curated corpus is empty, so there is nothing to retrieve against")
     picked, per = [], {}
     for qi, c in enumerate(C):
-        sims = sorted(((_cos(c, U[j]), j) for j in range(len(U))),
-                      reverse=True)
-        got = [j for s, j in sims[:int(per_query)]
-               if s >= float(min_similarity)]
+        sims = sorted(((_cos(c, U[j]), j) for j in range(len(U))), reverse=True)
+        got = [j for s, j in sims[: int(per_query)] if s >= float(min_similarity)]
         per[qi] = got
         picked.extend(got)
     counts = {}
     for j in picked:
         counts[j] = counts.get(j, 0) + 1
-    return {"retrieved": sorted(set(picked)), "per_query": per,
-            "duplication": counts,
-            "n_added": len(set(picked)),
-            "max_times_retrieved": max(counts.values()) if counts
-            else 0,
-            "note": "a few dominant modes would otherwise be "
-                    "retrieved by every query"}
+    return {
+        "retrieved": sorted(set(picked)),
+        "per_query": per,
+        "duplication": counts,
+        "n_added": len(set(picked)),
+        "max_times_retrieved": max(counts.values()) if counts else 0,
+        "note": "a few dominant modes would otherwise be retrieved by every query",
+    }
 
 
 def koleo(features):
@@ -154,15 +152,15 @@ def koleo(features):
         raise ValueError("dnvtwo: KoLeo needs at least 2 features")
     tot, dmin = 0.0, []
     for i in range(n):
-        d = min(math.sqrt(sum((F[i][a] - F[j][a]) ** 2
-                              for a in range(len(F[i]))))
-                for j in range(n) if j != i)
+        d = min(math.sqrt(sum((F[i][a] - F[j][a]) ** 2 for a in range(len(F[i])))) for j in range(n) if j != i)
         dmin.append(d)
         tot += math.log(max(d, _EPS))
-    return {"loss": -tot / n, "nearest_distances": dmin,
-            "min_distance": min(dmin),
-            "note": "collapsed features give a huge loss; a uniform "
-                    "span gives the smallest"}
+    return {
+        "loss": -tot / n,
+        "nearest_distances": dmin,
+        "min_distance": min(dmin),
+        "note": "collapsed features give a huge loss; a uniform span gives the smallest",
+    }
 
 
 def sinkhorn_knopp(scores, iterations=3, epsilon=0.05):
@@ -173,8 +171,7 @@ def sinkhorn_knopp(scores, iterations=3, epsilon=0.05):
     """
     S = [[float(v) for v in r] for r in k.mat(scores)]
     n, K = len(S), len(S[0])
-    Q = [[math.exp(S[i][j] / float(epsilon)) for j in range(K)]
-         for i in range(n)]
+    Q = [[math.exp(S[i][j] / float(epsilon)) for j in range(K)] for i in range(n)]
     tot = sum(sum(r) for r in Q) or 1.0
     Q = [[v / tot for v in r] for r in Q]
     for _ in range(int(iterations)):
@@ -186,14 +183,15 @@ def sinkhorn_knopp(scores, iterations=3, epsilon=0.05):
             r = sum(Q[i]) or 1.0
             for j in range(K):
                 Q[i][j] = Q[i][j] / r / n
-    return {"Q": [[v * n for v in r] for r in Q],
-            "iterations": int(iterations),
-            "row_sums": [sum(r) * n for r in Q],
-            "note": "3 iterations, as specified"}
+    return {
+        "Q": [[v * n for v in r] for r in Q],
+        "iterations": int(iterations),
+        "row_sums": [sum(r) * n for r in Q],
+        "note": "3 iterations, as specified",
+    }
 
 
-def self_distillation_loss(student, teacher, temperature_s=0.1,
-                           temperature_t=0.04, patch_level=False):
+def self_distillation_loss(student, teacher, temperature_s=0.1, temperature_t=0.04, patch_level=False):
     r"""Cross entropy of student against a sharpened teacher.
 
     ``patch_level=True`` is the iBOT term -- the reason the features
@@ -202,8 +200,7 @@ def self_distillation_loss(student, teacher, temperature_s=0.1,
     s = [float(v) for v in k.vec(student)]
     t = [float(v) for v in k.vec(teacher)]
     if len(s) != len(t):
-        raise ValueError("dnvtwo: the student and teacher outputs "
-                         "differ in width")
+        raise ValueError("dnvtwo: the student and teacher outputs differ in width")
     ts, tt = float(temperature_s), float(temperature_t)
     if ts <= 0.0 or tt <= 0.0:
         raise ValueError("dnvtwo: the temperatures must be positive")
@@ -215,32 +212,36 @@ def self_distillation_loss(student, teacher, temperature_s=0.1,
         return [v / z for v in e]
 
     ps, pt = soft(s, ts), soft(t, tt)
-    loss = -sum(pt[i] * math.log(max(ps[i], _EPS))
-                for i in range(len(ps)))
-    return RichResult(payload={
-        "estimate": loss, "loss": loss, "student": ps, "teacher": pt,
-        "level": "patch" if patch_level else "image",
-        "teacher_entropy": -sum(v * math.log(max(v, _EPS))
-                                for v in pt),
-        "method": "self-distillation with a sharpened teacher; "
-                  "Oquab et al. (2024)",
-        "note": "the teacher is sharper (lower temperature), which is "
-                "what gives the student a target to move toward",
-    })
+    loss = -sum(pt[i] * math.log(max(ps[i], _EPS)) for i in range(len(ps)))
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "student": ps,
+            "teacher": pt,
+            "level": "patch" if patch_level else "image",
+            "teacher_entropy": -sum(v * math.log(max(v, _EPS)) for v in pt),
+            "method": "self-distillation with a sharpened teacher; Oquab et al. (2024)",
+            "note": "the teacher is sharper (lower temperature), which is "
+            "what gives the student a target to move toward",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dnvtwo: self-supervision lost feature quality when scaled "
-            "to UNCURATED data -- the cause is data quality and "
-            "diversity, not the objective. So CURATE automatically: "
-            "embed, DEDUPLICATE, then RETRIEVE uncurated images "
-            "against a small curated corpus, using similarity rather "
-            "than metadata, and rebalance clusters so a few dominant "
-            "modes do not take over. Learn at BOTH image level "
-            "(self-distillation) and patch level (iBOT), which is why "
-            "the features work for dense tasks. KoLeo = -(1/n) sum log "
-            "d_{n,i} keeps the batch spread out; coincident features "
-            "send it to infinity.")
+    return (
+        "dnvtwo: self-supervision lost feature quality when scaled "
+        "to UNCURATED data -- the cause is data quality and "
+        "diversity, not the objective. So CURATE automatically: "
+        "embed, DEDUPLICATE, then RETRIEVE uncurated images "
+        "against a small curated corpus, using similarity rather "
+        "than metadata, and rebalance clusters so a few dominant "
+        "modes do not take over. Learn at BOTH image level "
+        "(self-distillation) and patch level (iBOT), which is why "
+        "the features work for dense tasks. KoLeo = -(1/n) sum log "
+        "d_{n,i} keeps the batch spread out; coincident features "
+        "send it to infinity."
+    )
 
 
 # compact alias per ledger/NAMING.md

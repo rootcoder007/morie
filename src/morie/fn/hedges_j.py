@@ -28,8 +28,7 @@ def hedges_j(n1, n2):
     """
     value = _ca_crim.hedges_j(n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.3)"
@@ -41,7 +40,7 @@ def hedges_j(n1, n2):
 
 
 def cheatsheet():
-    return 'ca11e3: J = 1 - 3/(4(n1+n2)-9) [Weisburd et al. 2022, eq. 11.3]'
+    return "ca11e3: J = 1 - 3/(4(n1+n2)-9) [Weisburd et al. 2022, eq. 11.3]"
 
 
 # compact alias per ledger/NAMING.md

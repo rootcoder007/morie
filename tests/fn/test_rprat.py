@@ -1,7 +1,6 @@
 """Tests for rprat — placement rate."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rprat import rplace_rate
 
 

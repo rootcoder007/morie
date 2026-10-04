@@ -6,14 +6,14 @@ nu = 1 must reduce to, so those are exact targets rather than
 self-generated numbers.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn._sci_core import kv
 
-from morie.fn.spmatr import schabenberger_matern_covariance as matern
-from morie.fn.spbesf import schabenberger_bessel_function as bessel_k
-from morie.fn.spbesf import _bessel_i
+from morie.fn import _array_core as np
+from morie.fn._sci_core import kv
 from morie.fn.spanis import schabenberger_geometric_anisotropy as anisotropy
+from morie.fn.spbesf import _bessel_i
+from morie.fn.spbesf import schabenberger_bessel_function as bessel_k
+from morie.fn.spmatr import schabenberger_matern_covariance as matern
 
 H = np.array([0.0, 0.3, 1.0, 2.5, 4.0])
 THETA, SIGMA2 = 1.7, 2.0
@@ -35,16 +35,14 @@ def test_matern_at_nu_one_is_whittles_model():
     """nu = 1 gives C(h) = sigma^2 theta h K_1(theta h) (eq 4.12, p. 144)."""
     t = THETA * H
     expected = np.where(t > 0, SIGMA2 * t * kv(1, np.where(t > 0, t, 1.0)), SIGMA2)
-    np.testing.assert_allclose(matern(H, SIGMA2, 1.0, THETA)["covariance"],
-                               expected, rtol=1e-12)
+    np.testing.assert_allclose(matern(H, SIGMA2, 1.0, THETA)["covariance"], expected, rtol=1e-12)
 
 
 def test_matern_smoothness_increases_with_nu():
-    """"the semivariogram rises more quickly from the origin as nu
+    """ "the semivariogram rises more quickly from the origin as nu
     decreases" (p. 145, Figure 4.2)."""
     near = np.array([0.05])
-    g = [matern(near, 1.0, nu, 1.0)["semivariogram"][0]
-         for nu in (0.25, 0.5, 1.0, 3.0)]
+    g = [matern(near, 1.0, nu, 1.0)["semivariogram"][0] for nu in (0.25, 0.5, 1.0, 3.0)]
     assert g[0] > g[1] > g[2] > g[3]
 
 
@@ -68,16 +66,14 @@ def test_bessel_k_matches_the_books_own_identity_where_it_is_stable():
     """
     t = np.array([0.05, 0.2, 0.5, 1.0, 2.0, 4.0])
     for nu in (0.25, 0.5, 1.5, 2.5):
-        identity = (np.pi / 2.0) * (_bessel_i(-nu, t) - _bessel_i(nu, t)) \
-            / np.sin(np.pi * nu)
+        identity = (np.pi / 2.0) * (_bessel_i(-nu, t) - _bessel_i(nu, t)) / np.sin(np.pi * nu)
         np.testing.assert_allclose(bessel_k(t, nu)["value"], identity, rtol=1e-9)
 
 
 def test_bessel_k_half_order_closed_form():
     """K_{1/2}(t) = sqrt(pi/2t) e^-t (p. 143)."""
     t = np.array([0.1, 1.0, 5.0, 20.0])
-    np.testing.assert_allclose(bessel_k(t, 0.5)["value"],
-                               np.sqrt(np.pi / (2 * t)) * np.exp(-t), rtol=1e-12)
+    np.testing.assert_allclose(bessel_k(t, 0.5)["value"], np.sqrt(np.pi / (2 * t)) * np.exp(-t), rtol=1e-12)
 
 
 def test_bessel_k_diverges_at_the_origin():
@@ -93,10 +89,10 @@ def test_anisotropy_correction_restores_isotropy():
     semivariogram.
     """
     rng = np.random.default_rng(7)
-    star = rng.random((300, 2)) * 10.0            # isotropic space
+    star = rng.random((300, 2)) * 10.0  # isotropic space
     z = np.sin(star[:, 0] * 0.7) + np.cos(star[:, 1] * 0.7)
-    B = np.array([[1.0, 0.0], [0.0, 4.0]])        # stretch y fourfold
-    observed = star @ np.linalg.inv(B).T          # what we would have measured
+    B = np.array([[1.0, 0.0], [0.0, 4.0]])  # stretch y fourfold
+    observed = star @ np.linalg.inv(B).T  # what we would have measured
     A = B
 
     r = anisotropy(observed, z, A, n_bins=10)
@@ -121,5 +117,4 @@ def test_anisotropy_identity_matrix_is_a_no_op():
 def test_anisotropy_rejects_a_singular_map():
     rng = np.random.default_rng(3)
     with pytest.raises(ValueError, match="singular"):
-        anisotropy(rng.random((20, 2)), rng.normal(size=20),
-                   np.array([[1.0, 2.0], [2.0, 4.0]]))
+        anisotropy(rng.random((20, 2)), rng.normal(size=20), np.array([[1.0, 2.0], [2.0, 4.0]]))

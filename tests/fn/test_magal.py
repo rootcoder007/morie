@@ -1,7 +1,6 @@
 """Tests for magal.ma_galbraith."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.magal import ma_galbraith
 
 

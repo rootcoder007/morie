@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.spwkth import schabenberger_wiener_khinchin
 
 # A Gaussian covariance is its own transform pair, which makes every
@@ -16,14 +15,13 @@ _RESULT = None
 
 
 def _gaussian_cov(h):
-    return np.exp(-np.asarray(h, dtype=float) ** 2 / 2.0)
+    return np.exp(-(np.asarray(h, dtype=float) ** 2) / 2.0)
 
 
 def _result():
     global _RESULT
     if _RESULT is None:
-        _RESULT = schabenberger_wiener_khinchin(_gaussian_cov, omega=OMEGA,
-                                                h_max=8.0, n=81)
+        _RESULT = schabenberger_wiener_khinchin(_gaussian_cov, omega=OMEGA, h_max=8.0, n=81)
     return _RESULT
 
 
@@ -60,11 +58,8 @@ def test_spwkth_edge():
     result = _result()
     s = [float(v) for v in np.asarray(result["spectral_density"]).ravel()]
     # s is even, so evaluating at -omega must reproduce the same values.
-    mirror = schabenberger_wiener_khinchin(_gaussian_cov,
-                                           omega=[-w for w in OMEGA],
-                                           h_max=8.0, n=41)
-    for a, b in zip(s, [float(v) for v in
-                        np.asarray(mirror["spectral_density"]).ravel()]):
+    mirror = schabenberger_wiener_khinchin(_gaussian_cov, omega=[-w for w in OMEGA], h_max=8.0, n=41)
+    for a, b in zip(s, [float(v) for v in np.asarray(mirror["spectral_density"]).ravel()]):
         assert abs(a - b) < 1e-12
     # A density is non-negative and peaks at omega = 0.
     assert s[0] == max(s) > 0.0

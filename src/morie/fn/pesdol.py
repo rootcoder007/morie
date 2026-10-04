@@ -34,9 +34,6 @@ Econometrics* **16**(3), 289-326, doi:10.1002/jae.616. The bounds test
 and its two critical-value surfaces.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -47,8 +44,7 @@ _EPS = 1e-12
 
 def _ols(X, y):
     n, p = len(X), len(X[0])
-    XtX = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)]
-           for a in range(p)]
+    XtX = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     # numerical floor scaled to the matrix: a fixed absolute ridge does
     # nothing when the design is nearly collinear and the coefficients small
     scale = sum(XtX[a][a] for a in range(p)) / p
@@ -68,28 +64,26 @@ def ardl_bounds(y, x, p=1, q=1):
     Xm = [[float(v) for v in r] for r in k.mat(x)]
     n0 = len(yv)
     if n0 != len(Xm):
-        raise ValueError("pesdol: %d responses but %d regressor rows"
-                         % (n0, len(Xm)))
+        raise ValueError("pesdol: %d responses but %d regressor rows" % (n0, len(Xm)))
     m = len(Xm[0])
     p, q = int(p), int(q)
     if p < 1 or q < 0:
         raise ValueError("pesdol: need p >= 1 and q >= 0")
     start = max(p, q) + 1
     if n0 - start < p + q * m + m + 3:
-        raise ValueError("pesdol: too few observations for ARDL(%d, %d) "
-                         "with %d regressors" % (p, q, m))
+        raise ValueError("pesdol: too few observations for ARDL(%d, %d) with %d regressors" % (p, q, m))
 
     rows, dep = [], []
     for t in range(start, n0):
         r = [1.0]
-        r.append(yv[t - 1])                                  # level of y
+        r.append(yv[t - 1])  # level of y
         for j in range(m):
-            r.append(Xm[t - 1][j])                           # levels of x
+            r.append(Xm[t - 1][j])  # levels of x
         for i in range(1, p):
-            r.append(yv[t - i] - yv[t - i - 1])              # dy lags
+            r.append(yv[t - i] - yv[t - i - 1])  # dy lags
         for j in range(m):
             for l in range(0, q + 1):
-                r.append(Xm[t - l][j] - Xm[t - l - 1][j])    # dx lags
+                r.append(Xm[t - l][j] - Xm[t - l - 1][j])  # dx lags
         rows.append(r)
         dep.append(yv[t] - yv[t - 1])
 
@@ -105,44 +99,55 @@ def ardl_bounds(y, x, p=1, q=1):
     rss_r = sum(v * v for v in rres)
     n_rest = 1 + m
     dfe = n - kk
-    F = ((rss_r - rss_u) / n_rest) / (rss_u / dfe) if dfe > 0 and rss_u > _EPS \
-        else float("nan")
+    F = ((rss_r - rss_u) / n_rest) / (rss_u / dfe) if dfe > 0 and rss_u > _EPS else float("nan")
 
-    phi = beta[1]                       # coefficient on y_{t-1}
-    theta = [(-beta[1 + 1 + j] / phi) if abs(phi) > _EPS else float("nan")
-             for j in range(m)]
+    phi = beta[1]  # coefficient on y_{t-1}
+    theta = [(-beta[1 + 1 + j] / phi) if abs(phi) > _EPS else float("nan") for j in range(m)]
 
     # Pesaran, Shin & Smith (2001) Table CI(iii), case III (unrestricted
     # intercept, no trend), 5% level, indexed by the number of regressors.
-    TAB = {1: (4.94, 5.73), 2: (3.79, 4.85), 3: (3.23, 4.35),
-           4: (2.86, 4.01), 5: (2.62, 3.79)}
+    TAB = {1: (4.94, 5.73), 2: (3.79, 4.85), 3: (3.23, 4.35), 4: (2.86, 4.01), 5: (2.62, 3.79)}
     lo, hi = TAB.get(m, (float("nan"), float("nan")))
     if F != F or lo != lo:
         verdict = "unavailable"
-    elif F > hi:
+    elif hi < F:
         verdict = "cointegrated"
-    elif F < lo:
+    elif lo > F:
         verdict = "no long-run relationship"
     else:
         verdict = "inconclusive"
 
-    return RichResult(payload={
-        "estimate": theta, "long_run": theta,
-        "coefficients": beta, "residuals": res, "fitted": fit,
-        "speed_of_adjustment": phi,
-        "f_statistic": F, "bound_lower": lo, "bound_upper": hi,
-        "verdict": verdict, "n_used": n, "n_params": kk,
-        "rss_unrestricted": rss_u, "rss_restricted": rss_r,
-        "p": p, "q": q, "n_regressors": m,
-        "method": "ARDL conditional ECM with the Pesaran-Shin-Smith bounds "
-                  "test (Pesaran & Shin 1998; Pesaran, Shin & Smith 2001)",
-        "note": "the bounds test avoids a unit-root PRE-TEST; between the "
-                "two critical values the answer is INCONCLUSIVE, which is "
-                "the method working rather than failing",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "long_run": theta,
+            "coefficients": beta,
+            "residuals": res,
+            "fitted": fit,
+            "speed_of_adjustment": phi,
+            "f_statistic": F,
+            "bound_lower": lo,
+            "bound_upper": hi,
+            "verdict": verdict,
+            "n_used": n,
+            "n_params": kk,
+            "rss_unrestricted": rss_u,
+            "rss_restricted": rss_r,
+            "p": p,
+            "q": q,
+            "n_regressors": m,
+            "method": "ARDL conditional ECM with the Pesaran-Shin-Smith bounds "
+            "test (Pesaran & Shin 1998; Pesaran, Shin & Smith 2001)",
+            "note": "the bounds test avoids a unit-root PRE-TEST; between the "
+            "two critical values the answer is INCONCLUSIVE, which is "
+            "the method working rather than failing",
+        }
+    )
 
 
 def cheatsheet():
-    return ("pesdol: ardl_bounds(y, x, p, q) -> ARDL long-run coefficients "
-            "and the bounds test (Pesaran & Shin 1998; Pesaran, Shin & "
-            "Smith 2001, J. Appl. Econometrics 16(3), 289-326)")
+    return (
+        "pesdol: ardl_bounds(y, x, p, q) -> ARDL long-run coefficients "
+        "and the bounds test (Pesaran & Shin 1998; Pesaran, Shin & "
+        "Smith 2001, J. Appl. Econometrics 16(3), 289-326)"
+    )

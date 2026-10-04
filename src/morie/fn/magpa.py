@@ -93,11 +93,9 @@ def ma_glmm_ipd_proportion(xi, ni, quad=21, level=0.95):
     fmm = _nll(x, n, lgc, mu + h, sigma, nodes, wts)
     fpp = _nll(x, n, lgc, mu - h, sigma, nodes, wts)
     hmm = (fmm - 2.0 * nll + fpp) / (h * h)
-    fss = (
-        _nll(x, n, lgc, mu, sigma + h, nodes, wts)
-        - 2.0 * nll
-        + _nll(x, n, lgc, mu, abs(sigma - h), nodes, wts)
-    ) / (h * h)
+    fss = (_nll(x, n, lgc, mu, sigma + h, nodes, wts) - 2.0 * nll + _nll(x, n, lgc, mu, abs(sigma - h), nodes, wts)) / (
+        h * h
+    )
     fms = (
         _nll(x, n, lgc, mu + h, sigma + h, nodes, wts)
         - _nll(x, n, lgc, mu + h, abs(sigma - h), nodes, wts)

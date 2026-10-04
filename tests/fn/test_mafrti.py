@@ -1,7 +1,6 @@
 """Tests for mafrti.ma_freeman_tukey_inverse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mafrti import ma_freeman_tukey_inverse
 
 

@@ -109,7 +109,9 @@ def test_a_limit_preview_announces_the_rows_it_fetches(monkeypatch, tmp_path, ca
 
     rows = [{"_id": i, "a": i} for i in range(10)]
     monkeypatch.delenv("MORIE_NO_PROGRESS", raising=False)
-    monkeypatch.setattr(data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": 61096}})
+    monkeypatch.setattr(
+        data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": 61096}}
+    )
     key = next(k for k in data.CKAN_DATASETS if not data._ckan_source(k)[2])
     monkeypatch.setitem(data.CKAN_DATASETS[key], "resource_id", "rid")
     df = data.fetch_ckan_to_cache(key, limit=10, max_records=10, db_path=tmp_path / "c.sqlite")
@@ -202,7 +204,9 @@ def test_a_python_capable_module_takes_the_python_route_when_r_is_another_versio
     import morie.modules as m
 
     def mismatch():
-        raise RuntimeError("R rmorie 1.3.4 is installed, but this is morie 1.4.0: the R-backed modules need the same version")
+        raise RuntimeError(
+            "R rmorie 1.3.4 is installed, but this is morie 1.4.0: the R-backed modules need the same version"
+        )
 
     def no_r(*a, **k):
         raise AssertionError("the R arm of another version must not run")
@@ -219,7 +223,11 @@ def test_tps_dates_build_from_text_parts_with_month_names():
     from morie.tps_stochastic import _date_series
 
     df = pd.DataFrame(
-        {"OCC_YEAR": ["2024", "2024", "2024"], "OCC_MONTH": ["January", "February", "Smarch"], "OCC_DAY": ["1", "29", "3"]}
+        {
+            "OCC_YEAR": ["2024", "2024", "2024"],
+            "OCC_MONTH": ["January", "February", "Smarch"],
+            "OCC_DAY": ["1", "29", "3"],
+        }
     )
     ts = _date_series(df)
     assert [str(v)[:10] for v in ts.tolist()] == ["2024-01-01", "2024-02-29"]
@@ -240,7 +248,14 @@ def test_native_to_datetime_reads_month_names_parts_and_epochs():
 
     from morie.fn import _frame_core as pd
 
-    for text in ("January 5, 2024", "5 January 2024", "5th of Jan 2024", "2024-January-05", "05-Jan-2024", "JAN 5 2024"):
+    for text in (
+        "January 5, 2024",
+        "5 January 2024",
+        "5th of Jan 2024",
+        "2024-January-05",
+        "05-Jan-2024",
+        "JAN 5 2024",
+    ):
         assert pd.to_datetime(text) == dt.datetime(2024, 1, 5), text
     assert pd.to_datetime("2024-Sept-03") == dt.datetime(2024, 9, 3)
     parts = pd.DataFrame({"year": ["2024", "2024"], "month": ["December", "Smarch"], "day": ["31", "2"]})
@@ -290,7 +305,10 @@ def test_pull_of_a_missing_own_file_says_where_it_goes_and_writes_nothing(monkey
     monkeypatch.setattr("sys.argv", ["morie", "pull", "mapq"])
     assert runner.main() == 1
     err = capsys.readouterr().err
-    assert f"mapq is your own research file and it is not at {tmp_path / 'data' / 'datasets' / 'vsr' / 'TKARONTOMAPQ.xlsx'}" in err
+    assert (
+        f"mapq is your own research file and it is not at {tmp_path / 'data' / 'datasets' / 'vsr' / 'TKARONTOMAPQ.xlsx'}"
+        in err
+    )
     assert not (tmp_path / "mapq.csv").exists()
 
 
@@ -432,7 +450,9 @@ def test_convert_checkpoint_names_a_file_that_is_not_one(monkeypatch, tmp_path, 
     fake = tmp_path / "fake.pt"
     fake.write_text("notapt\n")
     monkeypatch.setenv("MORIE_TRUST_CHECKPOINT", "1")
-    monkeypatch.setattr("sys.argv", ["morie", "convert-checkpoint", "--checkpoint", str(fake), "--output", str(tmp_path / "f.gguf")])
+    monkeypatch.setattr(
+        "sys.argv", ["morie", "convert-checkpoint", "--checkpoint", str(fake), "--output", str(tmp_path / "f.gguf")]
+    )
     assert runner.main() == 2
     err = capsys.readouterr().err
     assert "is not a PyTorch checkpoint (a .pt file is a zip archive)" in err and "Traceback" not in err
@@ -444,7 +464,11 @@ def test_percysuits_names_an_unreachable_ssh_host(monkeypatch, capsys):
     from morie import runner
 
     monkeypatch.setattr(
-        subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 255, "", "ssh: connect to host 127.0.0.1 port 22: Connection refused")
+        subprocess,
+        "run",
+        lambda *a, **k: subprocess.CompletedProcess(
+            a, 255, "", "ssh: connect to host 127.0.0.1 port 22: Connection refused"
+        ),
     )
     assert runner._percysuits_get_installed_ssh("nobody@127.0.0.1") == (None, None)
     assert "cannot reach nobody@127.0.0.1 over SSH: ssh: connect to host" in capsys.readouterr().out
@@ -544,7 +568,9 @@ def test_run_modules_skips_r_modules_without_an_r_package_and_runs_the_rest(monk
 
     def fake(name, **k):
         if name == "data-wrangling":
-            raise RuntimeError("No R package for the R-backed modules is installed (install rmorie, or morie's R package)")
+            raise RuntimeError(
+                "No R package for the R-backed modules is installed (install rmorie, or morie's R package)"
+            )
         warnings.warn("synthetic CPADS frame in use", UserWarning, stacklevel=1)
         return {}
 
@@ -643,7 +669,10 @@ def test_an_unknown_option_shows_the_verbs_usage(monkeypatch, capsys):
 
     from morie import runner
 
-    for argv, prog in ((["list-modules", "--nosuchflag-xyz"], "morie list-modules"), (["doctor", "--nope"], "morie doctor")):
+    for argv, prog in (
+        (["list-modules", "--nosuchflag-xyz"], "morie list-modules"),
+        (["doctor", "--nope"], "morie doctor"),
+    ):
         monkeypatch.setattr("sys.argv", ["morie", *argv])
         with pytest.raises(SystemExit) as e:
             runner.main()
@@ -710,7 +739,6 @@ def test_french_siu_reports_give_the_service_the_dates_and_the_person():
         "2024-11-26",
     )
     assert (p["age_affected"], p["sex_gender_affected"]) == ("21", "man")
-
 
 
 def test_brent_root_converges_on_the_root_not_the_bracket():
@@ -781,7 +809,7 @@ def test_an_unbounded_dual_is_reported_not_an_overflow():
     r = boyd_dual_problem(lambda lam, nu: lam[0] ** 2, n_lambda=1)
     assert r["unbounded"] is True and r["dual_value"] == float("inf")
     assert r["concave"] is False
-    ok = boyd_dual_problem(lambda lam, nu: -lam[0] ** 2 + lam[0] - 1.0, n_lambda=1)
+    ok = boyd_dual_problem(lambda lam, nu: -(lam[0] ** 2) + lam[0] - 1.0, n_lambda=1)
     assert ok["unbounded"] is False and abs(float(ok["lambda_"][0]) - 0.5) < 1e-6
 
 
@@ -830,11 +858,13 @@ def test_a_title_row_above_the_header_is_dropped_and_stacked_tables_are_cut():
     from morie.fn import _frame_core as pd
 
     nan = float("nan")
-    df = pd.DataFrame({
-        "Table 1 Hospital stays": ["Jurisdiction", "Canada", "Ontario", nan, "Table 1b", "Jurisdiction"],
-        "Unnamed: 1": ["Number of stays", "196717", "70000", nan, nan, "Number"],
-        "Unnamed: 2": ["Rate", "1.5", "2.0", nan, nan, "Rate"],
-    })
+    df = pd.DataFrame(
+        {
+            "Table 1 Hospital stays": ["Jurisdiction", "Canada", "Ontario", nan, "Table 1b", "Jurisdiction"],
+            "Unnamed: 1": ["Number of stays", "196717", "70000", nan, nan, "Number"],
+            "Unnamed: 2": ["Rate", "1.5", "2.0", nan, nan, "Rate"],
+        }
+    )
     out = _xlsx_promote_header(df)
     assert list(out.columns) == ["Jurisdiction", "Number of stays", "Rate"]
     assert out.shape == (2, 3)

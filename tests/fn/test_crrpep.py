@@ -1,7 +1,6 @@
 """Tests for crrpep.pepe_mori."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crrpep import pepe_mori
 
 

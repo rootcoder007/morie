@@ -1,7 +1,6 @@
 """Tests for morie.fn.acfmc -- MCMC autocorrelation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.acfmc import acfmc, autocorrelation_mcmc
 
 

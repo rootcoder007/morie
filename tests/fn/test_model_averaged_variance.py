@@ -1,7 +1,6 @@
 """Tests for model_averaged_variance.model_averaged_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.model_averaged_variance import (
     model_averaged_variance,
 )

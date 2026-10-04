@@ -67,16 +67,22 @@ from . import _w3num as _w
 from ._richresult import RichResult
 from .slbpdg import slice_break_dp
 
-__all__ = ["bnp_percent_quantile", "bnppct", "mixture_cdf",
-           "mixture_quantile", "expand_bracket", "ROUTES", "cheatsheet"]
+__all__ = [
+    "bnp_percent_quantile",
+    "bnppct",
+    "mixture_cdf",
+    "mixture_quantile",
+    "expand_bracket",
+    "ROUTES",
+    "cheatsheet",
+]
 
 ROUTES = ("mixture", "predictive", "bayesian_bootstrap")
 
 
 def mixture_cdf(x, w, mu, s2):
     """sum_k w_k Phi((x - mu_k)/sqrt(s2_k)), unnormalised."""
-    return _w.csum(w[k] * _w.ncdf((x - mu[k]) / math.sqrt(s2[k]))
-                   for k in range(len(w)))
+    return _w.csum(w[k] * _w.ncdf((x - mu[k]) / math.sqrt(s2[k])) for k in range(len(w)))
 
 
 def expand_bracket(f, lo, hi, iters=60):
@@ -143,11 +149,25 @@ def _weighted_quantile(ys_sorted, weights, q):
     return ys_sorted[-1]
 
 
-def bnp_percent_quantile(y, quantile=0.5, route="mixture", alpha=1.0,
-                         n_iter=500, burn=None, thin=1, seed=1,
-                         cred=0.9, sampler_route="walker", kappa=0.5,
-                         m0=None, kappa0=0.01, a0=2.0, b0=None,
-                         n_bootstrap=500, alpha_update=None):
+def bnp_percent_quantile(
+    y,
+    quantile=0.5,
+    route="mixture",
+    alpha=1.0,
+    n_iter=500,
+    burn=None,
+    thin=1,
+    seed=1,
+    cred=0.9,
+    sampler_route="walker",
+    kappa=0.5,
+    m0=None,
+    kappa0=0.01,
+    a0=2.0,
+    b0=None,
+    n_bootstrap=500,
+    alpha_update=None,
+):
     """Posterior of the quantile function of a nonparametric F.
 
     Parameters
@@ -188,8 +208,7 @@ def bnp_percent_quantile(y, quantile=0.5, route="mixture", alpha=1.0,
     """
     if route not in ROUTES:
         raise ValueError("route must be one of %r" % (ROUTES,))
-    qs = ([float(quantile)] if not hasattr(quantile, "__len__")
-          else [float(v) for v in quantile])
+    qs = [float(quantile)] if not hasattr(quantile, "__len__") else [float(v) for v in quantile]
     if any(not (0.0 < v < 1.0) for v in qs):
         raise ValueError("quantiles must lie strictly inside (0, 1)")
     if not (0.0 < cred < 1.0):
@@ -220,19 +239,29 @@ def bnp_percent_quantile(y, quantile=0.5, route="mixture", alpha=1.0,
             for q in qs:
                 draws[q].append(_weighted_quantile(ysort, wts, q))
     else:
-        fit = slice_break_dp(ys, alpha=alpha, n_iter=n_iter, burn=burn,
-                             thin=thin, route=sampler_route, kappa=kappa,
-                             m0=m0, kappa0=kappa0, a0=a0, b0=b0,
-                             seed=seed, alpha_update=alpha_update,
-                             keep_draws=True)
+        fit = slice_break_dp(
+            ys,
+            alpha=alpha,
+            n_iter=n_iter,
+            burn=burn,
+            thin=thin,
+            route=sampler_route,
+            kappa=kappa,
+            m0=m0,
+            kappa0=kappa0,
+            a0=a0,
+            b0=b0,
+            seed=seed,
+            alpha_update=alpha_update,
+            keep_draws=True,
+        )
         for d in fit["draws"]:
             mass = _w.csum(d["w"])
             if mass < min_mass:
                 min_mass = mass
             if route == "mixture":
                 for q in qs:
-                    draws[q].append(mixture_quantile(q, d["w"], d["mu"],
-                                                     d["s2"], None, None))
+                    draws[q].append(mixture_quantile(q, d["w"], d["mu"], d["s2"], None, None))
         if route == "predictive":
             # Average the CDF over sweeps, then invert ONCE. The order
             # matters: inversion does not commute with averaging, and
@@ -242,12 +271,10 @@ def bnp_percent_quantile(y, quantile=0.5, route="mixture", alpha=1.0,
             m = len(sweeps)
 
             def fbar(x):
-                return _w.csum(
-                    mixture_cdf(x, d["w"], d["mu"], d["s2"])
-                    / _w.csum(d["w"]) for d in sweeps) / m
+                return _w.csum(mixture_cdf(x, d["w"], d["mu"], d["s2"]) / _w.csum(d["w"]) for d in sweeps) / m
 
             for q in qs:
-                g = (lambda qq: (lambda x: fbar(x) - qq))(q)
+                g = (lambda qq: lambda x: fbar(x) - qq)(q)
                 a, b = expand_bracket(g, lo, hi)
                 draws[q].append(_w.bisect(g, a, b))
 
@@ -257,20 +284,21 @@ def bnp_percent_quantile(y, quantile=0.5, route="mixture", alpha=1.0,
         m = len(v)
         mean = _w.csum(v) / m
         if m > 1:
-            sdq = math.sqrt(_w.csum((t - mean) * (t - mean) for t in v)
-                            / (m - 1))
+            sdq = math.sqrt(_w.csum((t - mean) * (t - mean) for t in v) / (m - 1))
         else:
             sdq = 0.0
         a = (1.0 - cred) / 2.0
-        out.append({
-            "q": q,
-            "estimate": mean,
-            "sd": sdq,
-            "median": _weighted_quantile(v, [1.0 / m] * m, 0.5),
-            "lower": _weighted_quantile(v, [1.0 / m] * m, a),
-            "upper": _weighted_quantile(v, [1.0 / m] * m, 1.0 - a),
-            "draws": draws[q],
-        })
+        out.append(
+            {
+                "q": q,
+                "estimate": mean,
+                "sd": sdq,
+                "median": _weighted_quantile(v, [1.0 / m] * m, 0.5),
+                "lower": _weighted_quantile(v, [1.0 / m] * m, a),
+                "upper": _weighted_quantile(v, [1.0 / m] * m, 1.0 - a),
+                "draws": draws[q],
+            }
+        )
 
     payload = {
         "quantiles": out,
@@ -294,5 +322,4 @@ bnppct = bnp_percent_quantile
 
 
 def cheatsheet():
-    return ("bnppct: nonparametric Bayes posterior of the quantile "
-            "function. routes " + ", ".join(ROUTES))
+    return "bnppct: nonparametric Bayes posterior of the quantile function. routes " + ", ".join(ROUTES)

@@ -1,7 +1,6 @@
 """Tests for rgmtnart.rangayyan_motion_artifact."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_motion_artifact
 
 

@@ -1,7 +1,6 @@
 """Tests for jarow.jaro_winkler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jarow import jaro_winkler
 
 

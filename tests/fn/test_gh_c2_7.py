@@ -1,7 +1,6 @@
 """Tests for gh_c2_7.ghosal_bernstein_feller."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c2_7 import ghosal_bernstein_feller
 
 

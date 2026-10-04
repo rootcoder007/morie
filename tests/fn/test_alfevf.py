@@ -1,7 +1,6 @@
 """Tests for alfevf.alphafold_evoformer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfevf import alphafold_evoformer
 
 

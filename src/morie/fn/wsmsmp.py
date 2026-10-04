@@ -81,11 +81,16 @@ def wasserman_smoothing_spline(x, y, lambda_):
     S = np.linalg.inv(np.eye(n) + lam * D.T @ D)
     fit = S @ y
     resid = y - fit
-    return RichResult(payload={
-        "estimate": [float(v) for v in fit],
-        "effective_df": float(np.trace(S)), "rss": float(resid @ resid),
-        "lambda": lam, "n": int(n),
-        "method": "discrete smoothing spline (I + lam D'D)^-1 y, uneven spacings"})
+    return RichResult(
+        payload={
+            "estimate": [float(v) for v in fit],
+            "effective_df": float(np.trace(S)),
+            "rss": float(resid @ resid),
+            "lambda": lam,
+            "n": int(n),
+            "method": "discrete smoothing spline (I + lam D'D)^-1 y, uneven spacings",
+        }
+    )
 
 
 def cheatsheet():

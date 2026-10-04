@@ -66,7 +66,7 @@ def evt_pickands_dep_fn(x, y, t_grid=None, u=None):
     A, lu = [], -math.log(u)
     for t in t_grid:
         a = u ** (1.0 - t)
-        b = u ** t
+        b = u**t
         c = 0
         for i in range(n):
             if ux[i] <= a and uy[i] <= b:
@@ -88,15 +88,17 @@ def evt_pickands_dep_fn(x, y, t_grid=None, u=None):
     for i in range(1, len(A) - 1):
         if A[i] > 0.5 * (A[i - 1] + A[i + 1]) + 1e-9:
             convex = 0
-    return RichResult(payload={
-        "A": A,
-        "t": list(t_grid),
-        "estimate": half,
-        "chi": 2.0 - 2.0 * half,
-        "convex_ok": convex,
-        "n": n,
-        "method": "empirical Pickands dependence function",
-    })
+    return RichResult(
+        payload={
+            "A": A,
+            "t": list(t_grid),
+            "estimate": half,
+            "chi": 2.0 - 2.0 * half,
+            "convex_ok": convex,
+            "n": n,
+            "method": "empirical Pickands dependence function",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for ghs004.ghosal_ch2_exponential_link_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs004 import ghosal_ch2_exponential_link_density
 
 

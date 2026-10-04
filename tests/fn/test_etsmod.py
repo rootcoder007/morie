@@ -1,7 +1,6 @@
 """Tests for etsmod.ets."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.etsmod import ets
 
 

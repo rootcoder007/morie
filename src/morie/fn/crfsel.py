@@ -58,15 +58,12 @@ solution", *BMC Bioinformatics* 8, 25, doi:10.1186/1471-2105-8-25. Why a
 raw split count is biased toward high-cardinality covariates.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .hntfst import forest_weights, grow_forest, tree_predict
+from .hntfst import forest_weights, grow_forest
 
-__all__ = ["cate_variable_importance", "split_frequency_importance",
-           "permutation_importance"]
+__all__ = ["cate_variable_importance", "split_frequency_importance", "permutation_importance"]
 
 _EPS = 1e-12
 
@@ -87,10 +84,7 @@ def _center(y, W, X, n_folds, n_trees, min_leaf, seed):
         Xt = [X[i] for i in tr]
         for src, dest in ((y, mh), (W, eh)):
             vt = [src[i] for i in tr]
-            trees, _, _ = grow_forest(Xt, vt, n_trees=n_trees,
-                                      min_leaf=min_leaf,
-                                      seed=seed + (0 if dest is mh
-                                                   else 1))
+            trees, _, _ = grow_forest(Xt, vt, n_trees=n_trees, min_leaf=min_leaf, seed=seed + (0 if dest is mh else 1))
             for i in val:
                 w = forest_weights(trees, Xt, X[i])
                 dest[i] = sum(w[t] * vt[t] for t in range(len(tr)))
@@ -120,11 +114,9 @@ def split_frequency_importance(trees, d, max_depth=4, decay=2.0):
     the answer no matter what the decay is.
     """
     if max_depth < 1:
-        raise ValueError("crfsel: max_depth must be at least 1, got %d"
-                         % max_depth)
+        raise ValueError("crfsel: max_depth must be at least 1, got %d" % max_depth)
     if decay < 0.0:
-        raise ValueError("crfsel: decay must be non-negative, got %r"
-                         % (decay,))
+        raise ValueError("crfsel: decay must be non-negative, got %r" % (decay,))
     total = [0.0] * d
     for depth in range(1, max_depth + 1):
         at_depth = [0.0] * d
@@ -135,15 +127,14 @@ def split_frequency_importance(trees, d, max_depth=4, decay=2.0):
         tot = sum(at_depth)
         if tot <= 0.0:
             continue
-        w = 1.0 / (depth ** decay)
+        w = 1.0 / (depth**decay)
         for j in range(d):
             total[j] += w * at_depth[j] / tot
     s = sum(total)
     return [v / s for v in total] if s > 0 else [1.0 / d] * d
 
 
-def permutation_importance(trees, X, y, features=None, seed=0,
-                           n_repeats=3):
+def permutation_importance(trees, X, y, features=None, seed=0, n_repeats=3):
     """The rise in weighted prediction error when a covariate is
     shuffled: how much the PREDICTIONS depend on it, which is a
     different question from how often it is split on."""
@@ -174,9 +165,9 @@ def permutation_importance(trees, X, y, features=None, seed=0,
     return out, base
 
 
-def cate_variable_importance(y, W, X, n_trees=200, min_leaf=5,
-                             max_depth=4, decay=2.0, seed=0,
-                             names=None, permutation=False):
+def cate_variable_importance(
+    y, W, X, n_trees=200, min_leaf=5, max_depth=4, decay=2.0, seed=0, names=None, permutation=False
+):
     r"""Rank covariates by how the CATE forest uses them.
 
     The forest is grown on the treatment-residualised outcome, so the
@@ -186,68 +177,73 @@ def cate_variable_importance(y, W, X, n_trees=200, min_leaf=5,
     yv, Wv = k.vec(y), k.vec(W)
     n = len(yv)
     if len(Wv) != n:
-        raise ValueError("crfsel: %d outcomes but %d treatments"
-                         % (n, len(Wv)))
+        raise ValueError("crfsel: %d outcomes but %d treatments" % (n, len(Wv)))
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("crfsel: %d covariate rows for %d outcomes"
-                         % (len(Xm), n))
+        raise ValueError("crfsel: %d covariate rows for %d outcomes" % (len(Xm), n))
     d = len(Xm[0]) if Xm and Xm[0] else 0
     if d == 0:
         raise ValueError("crfsel: no covariates")
-    nm = (list(names) if names is not None
-          else ["X%d" % (j + 1) for j in range(d)])
+    nm = list(names) if names is not None else ["X%d" % (j + 1) for j in range(d)]
     if len(nm) != d:
-        raise ValueError("crfsel: %d names for %d covariates"
-                         % (len(nm), d))
+        raise ValueError("crfsel: %d names for %d covariates" % (len(nm), d))
     if n < 60:
-        raise ValueError("crfsel: need at least 60 observations, got %d"
-                         % n)
+        raise ValueError("crfsel: need at least 60 observations, got %d" % n)
 
     # Local centering FIRST. Without it the pseudo-outcome still
     # carries m(X), so the forest splits on the confounding surface and
     # ranks the confounder above the effect modifier -- which is exactly
     # what the anchor caught when this used a global mean instead.
-    mh, eh = _center(yv, Wv, Xm, n_folds=5,
-                     n_trees=max(50, n_trees // 2), min_leaf=min_leaf,
-                     seed=seed)
+    mh, eh = _center(yv, Wv, Xm, n_folds=5, n_trees=max(50, n_trees // 2), min_leaf=min_leaf, seed=seed)
     yr = [yv[i] - mh[i] for i in range(n)]
     wr = [Wv[i] - eh[i] for i in range(n)]
     denom = sum(wr[i] * wr[i] for i in range(n)) / n
     if denom < _EPS:
         raise ValueError("crfsel: the treatment does not vary")
     pseudo = [wr[i] * yr[i] / denom for i in range(n)]
-    trees, _, _ = grow_forest(Xm, pseudo, n_trees=n_trees,
-                              min_leaf=min_leaf, seed=seed)
-    freq = split_frequency_importance(trees, d, max_depth=max_depth,
-                                      decay=decay)
-    perm, base = ((None, None) if not permutation
-                  else permutation_importance(trees, Xm, pseudo,
-                                              seed=seed))
+    trees, _, _ = grow_forest(Xm, pseudo, n_trees=n_trees, min_leaf=min_leaf, seed=seed)
+    freq = split_frequency_importance(trees, d, max_depth=max_depth, decay=decay)
+    perm, base = (None, None) if not permutation else permutation_importance(trees, Xm, pseudo, seed=seed)
     order = sorted(range(d), key=lambda j: -freq[j])
-    ranking = [{"variable": nm[j], "index": j, "importance": freq[j],
-                "rank": r + 1,
-                "permutation": (perm[j] if perm else None)}
-               for r, j in enumerate(order)]
-    return RichResult(payload={
-        "estimate": freq, "importance": freq,
-        "importance_by_name": {nm[j]: freq[j] for j in range(d)},
-        "ranking": ranking, "top": nm[order[0]],
-        "permutation": perm, "baseline_error": base,
-        "n": n, "d": d, "n_trees": int(n_trees),
-        "max_depth": int(max_depth), "decay": float(decay),
-        "method": "depth-weighted split-frequency variable importance "
-                  "for a CATE forest, Athey, Tibshirani & Wager (2019)",
-    })
+    ranking = [
+        {
+            "variable": nm[j],
+            "index": j,
+            "importance": freq[j],
+            "rank": r + 1,
+            "permutation": (perm[j] if perm else None),
+        }
+        for r, j in enumerate(order)
+    ]
+    return RichResult(
+        payload={
+            "estimate": freq,
+            "importance": freq,
+            "importance_by_name": {nm[j]: freq[j] for j in range(d)},
+            "ranking": ranking,
+            "top": nm[order[0]],
+            "permutation": perm,
+            "baseline_error": base,
+            "n": n,
+            "d": d,
+            "n_trees": int(n_trees),
+            "max_depth": int(max_depth),
+            "decay": float(decay),
+            "method": "depth-weighted split-frequency variable importance "
+            "for a CATE forest, Athey, Tibshirani & Wager (2019)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("crfsel: grow the forest on the treatment-residualised "
-            "pseudo-outcome so splits separate EFFECTS; score each "
-            "covariate by depth-weighted split share, taking the share "
-            "WITHIN each depth first (level k holds 2^k splits). Under "
-            "Def. 3 every covariate gets a nonzero floor, so a nonzero "
-            "score is not evidence of use.")
+    return (
+        "crfsel: grow the forest on the treatment-residualised "
+        "pseudo-outcome so splits separate EFFECTS; score each "
+        "covariate by depth-weighted split share, taking the share "
+        "WITHIN each depth first (level k holds 2^k splits). Under "
+        "Def. 3 every covariate gets a nonzero floor, so a nonzero "
+        "score is not evidence of use."
+    )
 
 
 # compact alias per ledger/NAMING.md

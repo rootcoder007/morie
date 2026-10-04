@@ -1,7 +1,6 @@
 """Tests for morie.fn.pkdet — advanced peak detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pkdet import peak_detect_advanced, pkdet
 
 

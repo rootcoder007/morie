@@ -3,7 +3,6 @@ Tests for L-BFGS quasi-Newton method.
 """
 
 from morie.fn import _array_core as np
-
 from morie.fn.lbfgs import lbfgs
 
 

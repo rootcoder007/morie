@@ -1,7 +1,6 @@
 """Tests for ols_beta.ols_beta."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ols_beta import (
     ols_beta,
 )

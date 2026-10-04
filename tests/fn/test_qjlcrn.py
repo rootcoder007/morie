@@ -5,9 +5,9 @@ exported. Rewritten against johnson_lindenstrauss and anchored on the
 lemma itself: the projection preserves norms in expectation.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qjlcrn import johnson_lindenstrauss, target_dimension
 
 

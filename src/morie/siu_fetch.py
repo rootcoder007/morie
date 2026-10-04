@@ -264,9 +264,7 @@ def fetch_siu_dataframe(**kwargs):
     return pd.read_csv(fetch_siu_cases(**kwargs), low_memory=False)
 
 
-_CORPUS_URL = (
-    "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/" "inst/extdata/siu_directors_reports.csv.gz"
-)
+_CORPUS_URL = "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/inst/extdata/siu_directors_reports.csv.gz"
 
 
 def _materialize_corpus(out_path, years, progress):

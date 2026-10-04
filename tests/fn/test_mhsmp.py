@@ -1,7 +1,6 @@
 """Tests for morie.fn.mhsmp -- Metropolis-Hastings sampler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mhsmp import metropolis_hastings
 
 

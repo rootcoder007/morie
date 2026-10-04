@@ -1,7 +1,6 @@
 """Tests for gh_c9_6.ghosal_wishart_dpm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c9_6 import ghosal_wishart_dpm
 
 

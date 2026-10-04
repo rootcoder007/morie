@@ -8,7 +8,6 @@ permutation of the other sites.
 
 import itertools
 import math
-import random
 
 import pytest
 
@@ -32,10 +31,10 @@ X9 = [5.0, 4.0, 1.0, 4.5, 3.0, 0.5, 2.0, 1.0, 0.0]
 
 
 def _local(x, W):
-    n = len(x); m = sum(x) / n
+    n = len(x)
+    m = sum(x) / n
     S2 = sum((v - m) ** 2 for v in x) / (n - 1)
-    return [n / ((n - 1) * S2) * (x[i] - m) * sum(W[i][j] * (x[j] - m) for j in range(n))
-            for i in range(n)]
+    return [n / ((n - 1) * S2) * (x[i] - m) * sum(W[i][j] * (x[j] - m) for j in range(n)) for i in range(n)]
 
 
 def test_spcllm_basic():
@@ -48,7 +47,8 @@ def test_spcllm_basic():
 def test_conditional_randomization_moments_match_brute_force():
     """Hold site i fixed, permute the rest: the exact mean and variance."""
     r = spatial_cluster_lisa(X9, W9, 0.05)
-    n = 9; m = sum(X9) / n
+    n = 9
+    m = sum(X9) / n
     S2 = sum((v - m) ** 2 for v in X9) / (n - 1)
     for i in (0, 4, 8):
         others = [X9[k] for k in range(n) if k != i]
@@ -58,8 +58,7 @@ def test_conditional_randomization_moments_match_brute_force():
             xs = list(X9)
             for k, v in zip(nbr, perm):
                 xs[k] = v
-            vals.append(n / ((n - 1) * S2) * (X9[i] - m)
-                        * sum(W9[i][j] * (xs[j] - m) for j in range(n)))
+            vals.append(n / ((n - 1) * S2) * (X9[i] - m) * sum(W9[i][j] * (xs[j] - m) for j in range(n)))
         mu = sum(vals) / len(vals)
         var = sum((v - mu) ** 2 for v in vals) / len(vals)
         # the book's mean: -(n-1)^-1 sum_j w_ij (up to the fixed factor)

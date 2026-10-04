@@ -26,10 +26,14 @@ def kamath_ch2_attention_softmax_weights(a):
         raise ValueError("no scores supplied.")
     z = a - a.max()
     b = np.exp(z) / np.exp(z).sum()
-    return RichResult(payload={
-        "weights": [float(v) for v in b], "estimate": float(b[0]),
-        "n": len(a),
-        "method": "Attention softmax weights (Kamath Eq 2.8)"})
+    return RichResult(
+        payload={
+            "weights": [float(v) for v in b],
+            "estimate": float(b[0]),
+            "n": len(a),
+            "method": "Attention softmax weights (Kamath Eq 2.8)",
+        }
+    )
 
 
 def cheatsheet():

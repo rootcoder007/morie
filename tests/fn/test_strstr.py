@@ -1,7 +1,6 @@
 """Tests for morie.fn.strstr -- stress-strain curve analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.strstr import stress_strain, strstr
 

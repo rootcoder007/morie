@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GEM (stick-breaking) weights of a Dirichlet process."""
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -54,16 +52,18 @@ def gem_distribution(alpha=1.0, K=10, seed=42):
         v = float(rng.beta(1.0, alpha))
         V.append(v)
         w.append(v * rest)
-        rest *= (1.0 - v)
-    return RichResult(payload={
-        "estimate": max(w),
-        "weights": w,
-        "V": V,
-        "remaining": rest,
-        "expected_remaining": (alpha / (1.0 + alpha)) ** K,
-        "K": K,
-        "method": "GEM stick-breaking weights",
-    })
+        rest *= 1.0 - v
+    return RichResult(
+        payload={
+            "estimate": max(w),
+            "weights": w,
+            "V": V,
+            "remaining": rest,
+            "expected_remaining": (alpha / (1.0 + alpha)) ** K,
+            "K": K,
+            "method": "GEM stick-breaking weights",
+        }
+    )
 
 
 def cheatsheet():

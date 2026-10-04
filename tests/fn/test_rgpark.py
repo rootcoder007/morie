@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_freq_domain_feat, rangayyan_parkinson_multimodal
 
-
 FS = 200.0
 TREMOR = [math.sin(2 * math.pi * 5 * t / FS) + 0.1 * math.sin(2 * math.pi * 30 * t / FS) for t in range(800)]
 STEADY = [math.sin(2 * math.pi * 20 * t / FS) + 0.1 * math.sin(2 * math.pi * 1 * t / FS) for t in range(800)]

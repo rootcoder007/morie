@@ -57,10 +57,16 @@ def wasserman_clt(data):
     if s == 0:
         raise ValueError("a constant sample has sd 0; z is undefined.")
     se = s / float(np.sqrt(n))
-    return RichResult(payload={
-        "estimate": float(xbar / se), "mean": xbar, "sd": s, "se": se,
-        "n": int(n),
-        "method": "CLT z = sqrt(n)(X_bar - mu0)/s, mu0 = 0"})
+    return RichResult(
+        payload={
+            "estimate": float(xbar / se),
+            "mean": xbar,
+            "sd": s,
+            "se": se,
+            "n": int(n),
+            "method": "CLT z = sqrt(n)(X_bar - mu0)/s, mu0 = 0",
+        }
+    )
 
 
 def cheatsheet():

@@ -60,29 +60,32 @@ def ev_extremal_intervals(x, threshold):
     exc = np.flatnonzero(xv > u)
     N = exc.size
     if N < 3:
-        raise ValueError(
-            f"only {N} exceedance(s) of {u}; lower the threshold.")
+        raise ValueError(f"only {N} exceedance(s) of {u}; lower the threshold.")
     T = np.diff(exc).astype(float)
     if T.max() <= 2:
-        theta = min(1.0, 2.0 * T.sum() ** 2 / ((N - 1) * np.sum(T ** 2)))
+        theta = min(1.0, 2.0 * T.sum() ** 2 / ((N - 1) * np.sum(T**2)))
         form = "Eq. (4): max gap <= 2, uncorrected moments"
     else:
         num = 2.0 * np.sum(T - 1.0) ** 2
         den = (N - 1) * np.sum((T - 1.0) * (T - 2.0))
         theta = min(1.0, num / den)
         form = "Eq. (34): gaps beyond 2 present, corrected moments"
-    return RichResult(payload={
-        "theta": float(theta), "n_exceedances": int(N),
-        "form_used": form,
-        "mean_interexceedance": float(T.mean()),
-        "max_interexceedance": float(T.max()),
-        "implied_mean_cluster_size": float(1.0 / theta) if theta > 0
-        else np.inf,
-        "no_tuning_note": "unlike the runs estimator there is no run-length "
-                          "parameter: the interexceedance-time mixture "
-                          "identifies theta by a moment ratio",
-        "threshold": u, "n": int(n),
-        "method": "Intervals estimator of the extremal index (Ferro-Segers 2003)"})
+    return RichResult(
+        payload={
+            "theta": float(theta),
+            "n_exceedances": int(N),
+            "form_used": form,
+            "mean_interexceedance": float(T.mean()),
+            "max_interexceedance": float(T.max()),
+            "implied_mean_cluster_size": float(1.0 / theta) if theta > 0 else np.inf,
+            "no_tuning_note": "unlike the runs estimator there is no run-length "
+            "parameter: the interexceedance-time mixture "
+            "identifies theta by a moment ratio",
+            "threshold": u,
+            "n": int(n),
+            "method": "Intervals estimator of the extremal index (Ferro-Segers 2003)",
+        }
+    )
 
 
 def cheatsheet():

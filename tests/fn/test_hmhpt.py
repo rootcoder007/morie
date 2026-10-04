@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmhpt import geron_hyperparameter_tuning
 
 
@@ -35,9 +34,7 @@ def test_hmhpt_edge():
     X = rng.normal(0, 1, (n, p))
     y = rng.normal(0, 1, n)
     param_grid = {"alpha": [0.0, 0.1, 1.0, 10.0]}
-    result = geron_hyperparameter_tuning(
-        param_grid, X, y, search="random", n_iter=3, K=2, seed=0
-    )
+    result = geron_hyperparameter_tuning(param_grid, X, y, search="random", n_iter=3, K=2, seed=0)
     assert isinstance(result, dict)
     assert "best_params" in result
     assert "best_score" in result

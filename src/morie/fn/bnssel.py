@@ -76,15 +76,23 @@ def bound_selection(y, D, X):
         wgt = ng / float(n)
         lo += wgt * a[0]
         hi += wgt * a[1]
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "p_observed": len(obs) / float(n),
-        "n_strata": len(grp), "n": n,
-        "method": "Sample-selection bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "p_observed": len(obs) / float(n),
+            "n_strata": len(grp),
+            "n": n,
+            "method": "Sample-selection bound",
+        }
+    )
 
 
 def cheatsheet():
     return "bnssel: Sample-selection bound (Heckman model)"
+
 
 # public names resolved by fn/_lazy_map.json
 boundselection = bound_selection

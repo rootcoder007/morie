@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb434 import gibbons_ks_one_sided_dist
 
 
@@ -31,11 +29,7 @@ def test_gb434_basic():
     #     * (c + j/n)**(j-1) * (1 - c - j/n)**(n-j)
     total = 0.0
     for j in range(int(math.floor(n * (1.0 - c))) + 1):
-        total += (
-            math.comb(n, j)
-            * (c + j / n) ** (j - 1)
-            * (1.0 - c - j / n) ** (n - j)
-        )
+        total += math.comb(n, j) * (c + j / n) ** (j - 1) * (1.0 - c - j / n) ** (n - j)
     expected_sf = min(1.0, max(0.0, c * total))
     assert math.isclose(result["sf"], expected_sf, rel_tol=1e-10)
 

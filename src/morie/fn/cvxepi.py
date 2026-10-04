@@ -78,11 +78,15 @@ def boyd_epigraph(f, x, t):
     inside = slack >= 0
     return RichResult(
         title="Epigraph membership",
-        summary_lines=[("points", int(xv.size)),
-                       ("inside", int(inside.sum())),
-                       ("on boundary", int(np.sum(np.abs(slack) <= 1e-12)))],
+        summary_lines=[
+            ("points", int(xv.size)),
+            ("inside", int(inside.sum())),
+            ("on boundary", int(np.sum(np.abs(slack) <= 1e-12))),
+        ],
         payload={
-            "in_epigraph": inside, "fx": fx, "slack": slack,
+            "in_epigraph": inside,
+            "fx": fx,
+            "slack": slack,
             "on_boundary": np.abs(slack) <= 1e-12,
             "fraction_inside": float(inside.mean()),
             "method": "boyd_epigraph",

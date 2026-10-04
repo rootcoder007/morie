@@ -1,7 +1,6 @@
 """Tests for sarima.seasonal_arima."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sarima import seasonal_arima
 
 

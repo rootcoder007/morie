@@ -27,22 +27,30 @@ def kamath_ch2_attention_score(q, k_i, alpha="scaled_dot"):
     if q.shape != k.shape:
         raise ValueError("q and k_i must have the same dimension.")
     if callable(alpha):
-        a = float(alpha(q, k)); name = "callable"
+        a = float(alpha(q, k))
+        name = "callable"
     elif alpha == "dot":
-        a = float(np.dot(q, k)); name = "dot"
+        a = float(np.dot(q, k))
+        name = "dot"
     elif alpha == "scaled_dot":
-        a = float(np.dot(q, k) / np.sqrt(len(q))); name = "scaled_dot"
+        a = float(np.dot(q, k) / np.sqrt(len(q)))
+        name = "scaled_dot"
     elif alpha == "cosine":
         nq, nk = np.linalg.norm(q), np.linalg.norm(k)
         if nq == 0 or nk == 0:
-            raise ValueError("cosine score is undefined for a zero "
-                             "vector.")
-        a = float(np.dot(q, k) / (nq * nk)); name = "cosine"
+            raise ValueError("cosine score is undefined for a zero vector.")
+        a = float(np.dot(q, k) / (nq * nk))
+        name = "cosine"
     else:
         raise ValueError(f"unknown alpha {alpha!r}.")
-    return RichResult(payload={
-        "estimate": a, "alpha": name, "n": len(q),
-        "method": "Attention score a_i = alpha(q, k_i) (Kamath Eq 2.7)"})
+    return RichResult(
+        payload={
+            "estimate": a,
+            "alpha": name,
+            "n": len(q),
+            "method": "Attention score a_i = alpha(q, k_i) (Kamath Eq 2.7)",
+        }
+    )
 
 
 def cheatsheet():

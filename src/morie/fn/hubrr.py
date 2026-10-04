@@ -58,8 +58,7 @@ def huber_regression(X, y, c=None, max_iter=100):
     A, yv = prepare_design(X, y)
     n, p = A.shape
     if n <= p:
-        raise ValueError(f"need more observations than parameters, "
-                         f"got n = {n}, p = {p}.")
+        raise ValueError(f"need more observations than parameters, got n = {n}, p = {p}.")
     cc = HUBER_C_95 if c is None else float(c)
     if cc <= 0:
         raise ValueError(f"c must be positive, got {cc}.")
@@ -88,20 +87,28 @@ def huber_regression(X, y, c=None, max_iter=100):
     psi = np.clip(u, -cc, cc)
     dpsi = (np.abs(u) <= cc).astype(float)
     denom = float(dpsi.mean())
-    kappa = float(np.mean(psi ** 2)) / max(denom ** 2, 1e-12)
+    kappa = float(np.mean(psi**2)) / max(denom**2, 1e-12)
     XtX_inv = np.linalg.pinv(A.T @ A)
-    se = np.sqrt(np.maximum(np.diag(XtX_inv) * kappa * scale ** 2, 0.0))
-    return RichResult(payload={
-        "beta": beta, "scale": float(scale), "se": se,
-        "residuals": r, "weights": w, "c": cc,
-        "efficiency_at_c": 0.95 if c is None else None,
-        "converged": bool(conv),
-        "bounded_influence_in": "the residual only -- NOT the design; a bad "
-                                "leverage cluster still breaks it, which is "
-                                "what the S/MM estimators fix",
-        "breakdown": 0.0,
-        "n": int(n), "p": int(p),
-        "method": "Huber M-regression by IRLS, c = 1.345 for 95% normal efficiency"})
+    se = np.sqrt(np.maximum(np.diag(XtX_inv) * kappa * scale**2, 0.0))
+    return RichResult(
+        payload={
+            "beta": beta,
+            "scale": float(scale),
+            "se": se,
+            "residuals": r,
+            "weights": w,
+            "c": cc,
+            "efficiency_at_c": 0.95 if c is None else None,
+            "converged": bool(conv),
+            "bounded_influence_in": "the residual only -- NOT the design; a bad "
+            "leverage cluster still breaks it, which is "
+            "what the S/MM estimators fix",
+            "breakdown": 0.0,
+            "n": int(n),
+            "p": int(p),
+            "method": "Huber M-regression by IRLS, c = 1.345 for 95% normal efficiency",
+        }
+    )
 
 
 def cheatsheet():

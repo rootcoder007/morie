@@ -1,9 +1,7 @@
 """Tests for hmgrs.geron_grid_search."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmgrs import geron_grid_search
-
 
 # Workaround: _array_core.setdiff1d does not accept the assume_unique kwarg
 # that geron_cross_validation_score passes through.

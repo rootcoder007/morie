@@ -1,7 +1,6 @@
 """Tests for frwol2.frank_wolfe."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.frwol2 import frank_wolfe
 
 
@@ -68,8 +67,7 @@ def test_frwol2_basic():
     # Independent recomputation of the frank-wolfe update for t = 0.
     t = 0
     gamma = 2.0 / (t + 2.0)  # 1.0
-    i0 = min(range(len(domain)), key=lambda j: sum(grad_vals[k] * domain[j][k]
-                                                   for k in range(d)))
+    i0 = min(range(len(domain)), key=lambda j: sum(grad_vals[k] * domain[j][k] for k in range(d)))
     expected_x = [(1.0 - gamma) * x0[k] + gamma * domain[i0][k] for k in range(d)]
     # x at iteration 0 must match the independently computed expected_x.
     assert len(result["x"]) == d

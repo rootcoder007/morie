@@ -1,7 +1,6 @@
 """Tests for coxtmv.cox_time_varying."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxtmv import cox_time_varying
 
 
@@ -13,6 +12,8 @@ def test_coxtmv_basic():
     result = cox_time_varying(time, event, X)
     assert isinstance(result, dict)
     assert "beta" in result
+
+
 def test_coxtmv_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

@@ -63,8 +63,7 @@ References
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["metagenome_assembly", "de_bruijn", "unitigs", "n50",
-           "kmers", "cheatsheet"]
+__all__ = ["metagenome_assembly", "de_bruijn", "unitigs", "n50", "kmers", "cheatsheet"]
 
 
 def kmers(seq, k):
@@ -72,7 +71,7 @@ def kmers(seq, k):
     k = int(k)
     if k < 2:
         raise ValueError("a de Bruijn graph needs k of at least two")
-    return [seq[i:i + k] for i in range(len(seq) - k + 1)]
+    return [seq[i : i + k] for i in range(len(seq) - k + 1)]
 
 
 def de_bruijn(reads, k):
@@ -104,9 +103,7 @@ def de_bruijn(reads, k):
         nodes.add(b)
         out.setdefault(a, []).append(km)
         inc.setdefault(b, []).append(km)
-    return {"edges": edges, "out": out, "in": inc,
-            "nodes": sorted(nodes), "k": k, "short": short,
-            "used": used}
+    return {"edges": edges, "out": out, "in": inc, "nodes": sorted(nodes), "k": k, "short": short, "used": used}
 
 
 def _outdeg(g, v):
@@ -146,8 +143,7 @@ def unitigs(g):
     seen = {}
     out = []
     for v in g["nodes"]:
-        if _outdeg(g, v) > 0 and not (_outdeg(g, v) == 1
-                                      and _indeg(g, v) == 1):
+        if _outdeg(g, v) > 0 and not (_outdeg(g, v) == 1 and _indeg(g, v) == 1):
             for e in g["out"][v]:
                 if e in seen:
                     continue
@@ -165,15 +161,17 @@ def unitigs(g):
     rows = []
     for p in out:
         w = [float(g["edges"][e]) for e in p]
-        rows.append({
-            "path": p,
-            "seq": _seq(p),
-            "start": p[0][:-1],
-            "end": p[-1][1:],
-            "length": len(_seq(p)),
-            "coverage": _w.csum(w) / len(w),
-            "n_edges": len(p),
-        })
+        rows.append(
+            {
+                "path": p,
+                "seq": _seq(p),
+                "start": p[0][:-1],
+                "end": p[-1][1:],
+                "length": len(_seq(p)),
+                "coverage": _w.csum(w) / len(w),
+                "n_edges": len(p),
+            }
+        )
     rows.sort(key=lambda r: (-r["length"], r["seq"]))
     return rows
 
@@ -221,8 +219,7 @@ def _drop(g, es):
     return g
 
 
-def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2,
-                        bubble_ratio=0.5, rounds=2, min_length=None):
+def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2, bubble_ratio=0.5, rounds=2, min_length=None):
     """Assemble a community from its reads.
 
     Parameters
@@ -274,8 +271,7 @@ def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2,
         us = unitigs(g)
         by_start = {}
         for u in us:
-            by_start.setdefault(u["start"] + "|" + u["end"],
-                                []).append(u)
+            by_start.setdefault(u["start"] + "|" + u["end"], []).append(u)
         drop = []
         for key in sorted(by_start):
             grp = by_start[key]
@@ -292,8 +288,7 @@ def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2,
         drop = []
         for ui in range(len(us)):
             u = us[ui]
-            dead = (_outdeg(g, u["end"]) == 0
-                    or _indeg(g, u["start"]) == 0)
+            dead = _outdeg(g, u["end"]) == 0 or _indeg(g, u["start"]) == 0
             if not dead or u["length"] >= tip_length:
                 continue
             neigh = []
@@ -301,9 +296,7 @@ def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2,
                 if oi == ui:
                     continue
                 o = us[oi]
-                if (o["end"] == u["start"] or o["start"] == u["end"]
-                        or o["start"] == u["start"]
-                        or o["end"] == u["end"]):
+                if o["end"] == u["start"] or o["start"] == u["end"] or o["start"] == u["start"] or o["end"] == u["end"]:
                     neigh.append(o["coverage"])
             if not neigh:
                 continue
@@ -329,36 +322,39 @@ def metagenome_assembly(reads, k, tip_length=None, tip_ratio=0.2,
     total = 0
     for v in lens:
         total += v
-    return RichResult(payload={
-        "contigs": [u["seq"] for u in keep],
-        "lengths": lens,
-        "coverage": [u["coverage"] for u in keep],
-        "starts": [u["start"] for u in keep],
-        "ends": [u["end"] for u in keep],
-        "short_contigs": [u["seq"] for u in short],
-        "n_contigs": len(keep),
-        "n_short": len(short),
-        "total_length": total,
-        "longest": lens[0] if lens else 0,
-        "n50": n50(lens),
-        "n_tips_removed": tips,
-        "n_bubbles_removed": bubbles,
-        "n_kmers": len(g["edges"]),
-        "n_kmers_initial": n_edges0,
-        "n_nodes": len(g["nodes"]),
-        "n_reads": len(rs),
-        "n_reads_used": g["used"],
-        "n_reads_too_short": g["short"],
-        "k": k,
-        "tip_length": int(tip_length),
-        "tip_ratio": float(tip_ratio),
-        "bubble_ratio": float(bubble_ratio),
-        "method": "de Bruijn assembly with relative tip and bubble "
-                  "removal",
-    })
+    return RichResult(
+        payload={
+            "contigs": [u["seq"] for u in keep],
+            "lengths": lens,
+            "coverage": [u["coverage"] for u in keep],
+            "starts": [u["start"] for u in keep],
+            "ends": [u["end"] for u in keep],
+            "short_contigs": [u["seq"] for u in short],
+            "n_contigs": len(keep),
+            "n_short": len(short),
+            "total_length": total,
+            "longest": lens[0] if lens else 0,
+            "n50": n50(lens),
+            "n_tips_removed": tips,
+            "n_bubbles_removed": bubbles,
+            "n_kmers": len(g["edges"]),
+            "n_kmers_initial": n_edges0,
+            "n_nodes": len(g["nodes"]),
+            "n_reads": len(rs),
+            "n_reads_used": g["used"],
+            "n_reads_too_short": g["short"],
+            "k": k,
+            "tip_length": int(tip_length),
+            "tip_ratio": float(tip_ratio),
+            "bubble_ratio": float(bubble_ratio),
+            "method": "de Bruijn assembly with relative tip and bubble removal",
+        }
+    )
 
 
 def cheatsheet():
-    return ("metsem: metagenome assembly. de Bruijn graph, maximal "
-            "non-branching unitigs, tips and bubbles removed on "
-            "RELATIVE coverage so rare organisms survive")
+    return (
+        "metsem: metagenome assembly. de Bruijn graph, maximal "
+        "non-branching unitigs, tips and bubbles removed on "
+        "RELATIVE coverage so rare organisms survive"
+    )

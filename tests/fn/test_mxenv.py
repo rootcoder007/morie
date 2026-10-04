@@ -11,11 +11,10 @@ ENV = [0, 0, 0, 0, 1, 1, 1, 1]
 Y = [3.1, 2.8, 4.0, 4.4, 2.2, 2.6, 5.1, 4.7]
 G = [[1.0, 0.3], [0.3, 1.0]]
 SE = [[0.8, 0.2], [0.2, 0.5]]
-XE = [[float(e)] for e in ENV]          # environment effect beyond mu
+XE = [[float(e)] for e in ENV]  # environment effect beyond mu
 ZL = [[1.0 if LINE[i] == j else 0.0 for j in range(2)] for i in range(8)]
 # Sigma_E (x) G orders the GxE effects environment-major: column e*J + j
-ZEL = [[1.0 if (ENV[i] == e and LINE[i] == j) else 0.0 for e in range(2) for j in range(2)]
-       for i in range(8)]
+ZEL = [[1.0 if (ENV[i] == e and LINE[i] == j) else 0.0 for e in range(2) for j in range(2)] for i in range(8)]
 
 
 def _gls_blup(s2g, s2e):
@@ -27,8 +26,7 @@ def _gls_blup(s2g, s2e):
     y = np.array(Y)
     beta = np.linalg.solve(X.T @ Vi @ X, X.T @ Vi @ y)
     r = Vi @ (y - X @ beta)
-    return (beta.tolist(), (s2g * (np.array(G) @ ZLm.T @ r)).tolist(),
-            (np.array(K) @ ZELm.T @ r).tolist())
+    return (beta.tolist(), (s2g * (np.array(G) @ ZLm.T @ r)).tolist(), (np.array(K) @ ZELm.T @ r).tolist())
 
 
 def test_mxenv_basic():

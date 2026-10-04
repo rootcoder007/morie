@@ -58,10 +58,17 @@ def ot_sliced_wasserstein(X, Y, p=2, n_proj=32):
         py = ot.project(B, th)
         per.append(ot.wp1d(px, py, pp) ** pp)
     swp = sum(per) / L
-    return RichResult(payload={
-        "SW": swp ** (1.0 / pp), "SW_p": swp, "per_proj": per,
-        "n": len(A), "d": d, "n_proj": L,
-        "method": "Sliced Wasserstein distance"})
+    return RichResult(
+        payload={
+            "SW": swp ** (1.0 / pp),
+            "SW_p": swp,
+            "per_proj": per,
+            "n": len(A),
+            "d": d,
+            "n_proj": L,
+            "method": "Sliced Wasserstein distance",
+        }
+    )
 
 
 def cheatsheet():

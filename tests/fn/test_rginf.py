@@ -1,7 +1,6 @@
 """Tests for rginf.rangayyan_infomax_ica."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_infomax_ica
 
 

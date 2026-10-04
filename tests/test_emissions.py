@@ -126,9 +126,9 @@ class TestEmissionsTracker:
             assert len(lines) == 2, "Header + 1 data row"
             header_cols = len(lines[0].split(","))
             data_cols = len(lines[1].split(","))
-            assert (
-                header_cols == expected_cols
-            ), f"Header has {header_cols} cols but EmissionsData defines {expected_cols}"
+            assert header_cols == expected_cols, (
+                f"Header has {header_cols} cols but EmissionsData defines {expected_cols}"
+            )
             assert data_cols == header_cols, f"Data row has {data_cols} cols but header has {header_cols}"
             assert "timestamp" in lines[0]
             assert "emissions" in lines[0]

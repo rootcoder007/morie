@@ -1,7 +1,6 @@
 """Tests for spman.schabenberger_mantel_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spman import schabenberger_mantel_test
 
 

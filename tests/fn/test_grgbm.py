@@ -1,7 +1,6 @@
 """Tests for grgbm.geron_gradient_boosting_residual."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grgbm import geron_gradient_boosting_residual
 
 

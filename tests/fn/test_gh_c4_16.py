@@ -1,7 +1,6 @@
 """Tests for gh_c4_16.ghosal_dp_tails."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c4_16 import ghosal_dp_tails
 
 
@@ -15,9 +14,10 @@ def test_gh_c4_16_basic():
     # Independent computation of the upper bound from the documented formula
     # exp(-1/(MG(x) |log MG(x)|^r)) with r=2, MG(x)=m
     import math
+
     r = 2.0
     ll = abs(math.log(m))
-    expected_hi = math.exp(-1.0 / (m * ll ** r))
+    expected_hi = math.exp(-1.0 / (m * ll**r))
     assert np.all(np.isclose(est, expected_hi))
 
 

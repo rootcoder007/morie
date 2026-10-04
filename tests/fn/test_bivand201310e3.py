@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.bivand201310e3 import bivand2013_chapter_10_equation_3
 
 
@@ -20,8 +18,7 @@ def test_bivand201310e3_basic():
     assert isinstance(result, dict)
 
     # Documented return keys.
-    for key in ("loglr", "best", "maxloglr", "bestzone", "Oz", "Ez",
-                "rrin", "rrout", "Otot", "Etot", "nzone"):
+    for key in ("loglr", "best", "maxloglr", "bestzone", "Oz", "Ez", "rrin", "rrout", "Otot", "Etot", "nzone"):
         assert key in result
 
     # Per-zone bookkeeping matches what we supplied.
@@ -35,9 +32,7 @@ def test_bivand201310e3_basic():
     assert result["Etot"] == sum(E)
 
     # Per-zone Oz/Ez match independent sums over each zone.
-    for zs, oz_expected, ez_expected in zip(
-        zones, result["Oz"], result["Ez"]
-    ):
+    for zs, oz_expected, ez_expected in zip(zones, result["Oz"], result["Ez"]):
         assert oz_expected == sum(O[t] for t in zs)
         assert ez_expected == sum(E[t] for t in zs)
 
@@ -51,9 +46,7 @@ def test_bivand201310e3_basic():
         eo = result["Etot"] - ez
         # highonly=True: zones whose internal risk doesn't exceed
         # overall risk are scored -inf.
-        if ez <= 0.0 or eo <= 0.0:
-            expected = float("-inf")
-        elif oz / ez <= rr:
+        if ez <= 0.0 or eo <= 0.0 or oz / ez <= rr:
             expected = float("-inf")
         else:
             v = 0.0

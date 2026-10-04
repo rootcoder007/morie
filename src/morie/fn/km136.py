@@ -11,11 +11,9 @@ __all__ = ["kamath_ch9_mml_vlm_loss"]
 def _check_probs(p, name):
     q = np.atleast_1d(np.asarray(p, dtype=float))
     if q.size == 0:
-        raise ValueError(f"{name} is empty; a matching loss needs at "
-                         "least one pair on each side.")
+        raise ValueError(f"{name} is empty; a matching loss needs at least one pair on each side.")
     if np.any((q < 0) | (q > 1)):
-        raise ValueError(f"{name} holds probabilities and must lie in "
-                         "[0, 1].")
+        raise ValueError(f"{name} holds probabilities and must lie in [0, 1].")
     return q
 
 
@@ -47,13 +45,17 @@ def kamath_ch9_mml_vlm_loss(Pos, Neg):
     with np.errstate(divide="ignore"):
         lp = -np.log(pos)
         ln = -np.log(neg)
-    return RichResult(payload={
-        "estimate": float(lp.sum() + ln.sum()),
-        "positive_loss": float(lp.sum()),
-        "negative_loss": float(ln.sum()),
-        "n_positive": int(pos.size), "n_negative": int(neg.size),
-        "n": int(pos.size + neg.size),
-        "method": "visual-linguistic matching loss (Kamath Eq 9.8)"})
+    return RichResult(
+        payload={
+            "estimate": float(lp.sum() + ln.sum()),
+            "positive_loss": float(lp.sum()),
+            "negative_loss": float(ln.sum()),
+            "n_positive": int(pos.size),
+            "n_negative": int(neg.size),
+            "n": int(pos.size + neg.size),
+            "method": "visual-linguistic matching loss (Kamath Eq 9.8)",
+        }
+    )
 
 
 def cheatsheet():

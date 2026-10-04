@@ -66,10 +66,8 @@ def thompson_sampling(p, T, alpha0=None, beta0=None, seed=0):
         if p[k] < 0.0 or p[k] > 1.0:
             raise ValueError("p must lie in [0, 1]")
     T = int(T)
-    a = [1.0] * K if alpha0 is None else [float(v) for v in np.atleast_1d(
-        np.asarray(alpha0, dtype=float))]
-    b = [1.0] * K if beta0 is None else [float(v) for v in np.atleast_1d(
-        np.asarray(beta0, dtype=float))]
+    a = [1.0] * K if alpha0 is None else [float(v) for v in np.atleast_1d(np.asarray(alpha0, dtype=float))]
+    b = [1.0] * K if beta0 is None else [float(v) for v in np.atleast_1d(np.asarray(beta0, dtype=float))]
     if len(a) != K or len(b) != K:
         raise ValueError("alpha0/beta0 must have length K")
     rng = np.random.default_rng(seed)
@@ -96,17 +94,19 @@ def thompson_sampling(p, T, alpha0=None, beta0=None, seed=0):
     for k in range(1, K):
         if pm[k] > pm[est]:
             est = k
-    return RichResult(payload={
-        "estimate": float(est),
-        "actions": actions,
-        "rewards": rewards,
-        "alpha": np.asarray(a),
-        "beta": np.asarray(b),
-        "post_mean": np.asarray(pm),
-        "counts": np.asarray(counts),
-        "total_reward": float(np.sum(rewards)),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": float(est),
+            "actions": actions,
+            "rewards": rewards,
+            "alpha": np.asarray(a),
+            "beta": np.asarray(b),
+            "post_mean": np.asarray(pm),
+            "counts": np.asarray(counts),
+            "total_reward": float(np.sum(rewards)),
+            "method": _METHOD,
+        }
+    )
 
 
 thomp = thompson_sampling

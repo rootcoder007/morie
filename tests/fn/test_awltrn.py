@@ -1,12 +1,11 @@
 """awltrn -- augmented outcome-weighted learning. Source: Liu, Y.,
 Wang, Y., Kosorok, M. R., Zhao, Y. & Zeng, D. (2018) Statistics in
 Medicine, doi:10.1002/sim.7844."""
+
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.awltrn import (aol_weights, fit_aol, fit_stages,
-                             owl_weights, regimen_value,
-                             weighted_rule)
+from morie.fn.awltrn import aol_weights, fit_aol, fit_stages, owl_weights, regimen_value, weighted_rule
 
 
 def trial(n=600, seed=7, prognosis=20.0):
@@ -16,9 +15,7 @@ def trial(n=600, seed=7, prognosis=20.0):
         x0 = float(rng.normal())
         x1 = float(rng.normal())
         a = 1 if float(rng.uniform()) < 0.5 else -1
-        R.append(prognosis + 5.0 * x1
-                 + a * (1.0 if x0 > 0.0 else -1.0)
-                 + float(rng.normal(0.0, 0.5)))
+        R.append(prognosis + 5.0 * x1 + a * (1.0 if x0 > 0.0 else -1.0) + float(rng.normal(0.0, 0.5)))
         A.append(a)
         H.append([x0, x1])
     return R, A, H
@@ -57,8 +54,7 @@ def test_aol_flips_labels_on_negative_residuals():
 def test_aol_recovers_the_planted_rule():
     R, A, H = trial()
     f = fit_aol(R, A, H, propensity=0.5)
-    acc = sum(1 for i in range(len(H))
-              if f["rule"](H[i]) == oracle(H[i])) / len(H)
+    acc = sum(1 for i in range(len(H)) if f["rule"](H[i]) == oracle(H[i])) / len(H)
     assert acc > 0.85
 
 
@@ -66,10 +62,8 @@ def test_aol_beats_owl_when_prognosis_dominates():
     R, A, H = trial(prognosis=50.0)
     a = fit_aol(R, A, H, propensity=0.5, method="aol")
     o = fit_aol(R, A, H, propensity=0.5, method="owl")
-    acc_a = sum(1 for i in range(len(H))
-                if a["rule"](H[i]) == oracle(H[i])) / len(H)
-    acc_o = sum(1 for i in range(len(H))
-                if o["rule"](H[i]) == oracle(H[i])) / len(H)
+    acc_a = sum(1 for i in range(len(H)) if a["rule"](H[i]) == oracle(H[i])) / len(H)
+    acc_o = sum(1 for i in range(len(H)) if o["rule"](H[i]) == oracle(H[i])) / len(H)
     assert acc_a > acc_o
 
 
@@ -77,10 +71,8 @@ def test_aol_is_invariant_to_shifting_the_outcome():
     R, A, H = trial()
     a = fit_aol(R, A, H, propensity=0.5)
     b = fit_aol([v - 100.0 for v in R], A, H, propensity=0.5)
-    acc_a = sum(1 for i in range(len(H))
-                if a["rule"](H[i]) == oracle(H[i])) / len(H)
-    acc_b = sum(1 for i in range(len(H))
-                if b["rule"](H[i]) == oracle(H[i])) / len(H)
+    acc_a = sum(1 for i in range(len(H)) if a["rule"](H[i]) == oracle(H[i])) / len(H)
+    acc_b = sum(1 for i in range(len(H)) if b["rule"](H[i]) == oracle(H[i])) / len(H)
     assert acc_a == pytest.approx(acc_b, abs=0.02)
 
 

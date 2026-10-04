@@ -1,7 +1,6 @@
 """Tests for gb641.gibbons_median_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb641 import gibbons_median_test
 
 

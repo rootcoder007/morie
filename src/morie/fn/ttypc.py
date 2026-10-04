@@ -72,10 +72,16 @@ def typical_sampling(logits, tau):
     filt = [probs[i] if keep[i] > 0.5 else 0.0 for i in range(V)]
     fs = sum(filt)
     filt = [v / fs for v in filt]
-    return RichResult(payload={
-        "tensor": filt, "keep_mask": keep, "n_kept": float(nk),
-        "entropy": ent, "tau": tau,
-        "method": "locally typical truncated softmax"})
+    return RichResult(
+        payload={
+            "tensor": filt,
+            "keep_mask": keep,
+            "n_kept": float(nk),
+            "entropy": ent,
+            "tau": tau,
+            "method": "locally typical truncated softmax",
+        }
+    )
 
 
 def cheatsheet():

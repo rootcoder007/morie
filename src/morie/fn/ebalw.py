@@ -108,7 +108,7 @@ def entropy_balancing(X, treat, moments=1, max_iter=200, tol=1e-8):
 
     C = design(X[t0])
     target = design(X[t1]).mean(axis=0)
-    Cc = C - target                     # constraints become sum(w * Cc) = 0
+    Cc = C - target  # constraints become sum(w * Cc) = 0
 
     lam = np.zeros(Cc.shape[1])
     converged = False
@@ -135,20 +135,35 @@ def entropy_balancing(X, treat, moments=1, max_iter=200, tol=1e-8):
     ess = float(1.0 / np.sum(w**2))
     return RichResult(
         title="Entropy balancing",
-        summary_lines=[("controls", int(t0.sum())), ("constraints", int(Cc.shape[1])),
-                       ("max imbalance", imb), ("ESS", ess)],
-        warnings=(["balance is exact only on the moments you specified, and "
-                   "says nothing about unmeasured confounders"]
-                  + ([] if converged else
-                     ["the constraints could not be satisfied: the treated "
-                      "group may occupy covariate regions the controls do not, "
-                      "which is a positivity problem"])),
+        summary_lines=[
+            ("controls", int(t0.sum())),
+            ("constraints", int(Cc.shape[1])),
+            ("max imbalance", imb),
+            ("ESS", ess),
+        ],
+        warnings=(
+            ["balance is exact only on the moments you specified, and says nothing about unmeasured confounders"]
+            + (
+                []
+                if converged
+                else [
+                    "the constraints could not be satisfied: the treated "
+                    "group may occupy covariate regions the controls do not, "
+                    "which is a positivity problem"
+                ]
+            )
+        ),
         payload={
-            "weights": w, "lambda": lam,
-            "balance_achieved": bool(imb < 1e-6), "max_imbalance": imb,
-            "ess": ess, "n_constraints": int(Cc.shape[1]),
-            "moments": moments, "converged": converged,
-            "target": target, "method": "entropy_balancing",
+            "weights": w,
+            "lambda": lam,
+            "balance_achieved": bool(imb < 1e-6),
+            "max_imbalance": imb,
+            "ess": ess,
+            "n_constraints": int(Cc.shape[1]),
+            "moments": moments,
+            "converged": converged,
+            "target": target,
+            "method": "entropy_balancing",
         },
     )
 

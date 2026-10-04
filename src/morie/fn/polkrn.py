@@ -54,7 +54,6 @@ Chapman & Hall/CRC, Sec. 21.2.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -72,14 +71,12 @@ def exposure_summary(A_history, how="cumulative"):
     about what part of the history matters.
     """
     if how not in _SUMMARIES:
-        raise ValueError("exposure_summary: how must be one of %r, got %r"
-                         % (_SUMMARIES, how))
+        raise ValueError("exposure_summary: how must be one of %r, got %r" % (_SUMMARIES, how))
     cols = [k.vec(a) for a in A_history]
     n = len(cols[0])
     for j, c in enumerate(cols):
         if len(c) != n:
-            raise ValueError("exposure_summary: time 0 has %d rows but "
-                             "time %d has %d" % (n, j, len(c)))
+            raise ValueError("exposure_summary: time 0 has %d rows but time %d has %d" % (n, j, len(c)))
     if how == "cumulative":
         return [sum(c[i] for c in cols) for i in range(n)]
     if how == "final":
@@ -99,29 +96,36 @@ def rbf_basis(x, n_centres=5, width=None):
     xs = [float(v) for v in k.vec(x)]
     m = int(n_centres)
     if m < 1:
-        raise ValueError("rbf_basis: need at least one centre, got %r"
-                         % (n_centres,))
+        raise ValueError("rbf_basis: need at least one centre, got %r" % (n_centres,))
     centres = [k.quantile7(xs, (j + 0.5) / m) for j in range(m)]
     uniq = sorted(set(centres))
     if len(uniq) < 2:
         raise ValueError(
-            "rbf_basis: the exposure takes one distinct value at the "
-            "requested quantiles, so no basis can be built")
+            "rbf_basis: the exposure takes one distinct value at the requested quantiles, so no basis can be built"
+        )
     if width is None:
         gaps = [uniq[j + 1] - uniq[j] for j in range(len(uniq) - 1)]
         width = sum(gaps) / len(gaps)
     h = float(width)
     if h <= 0.0:
-        raise ValueError("rbf_basis: width must be positive, got %r"
-                         % (width,))
-    return [[math.exp(-0.5 * ((v - c) / h) ** 2) for c in centres]
-            for v in xs], centres, h
+        raise ValueError("rbf_basis: width must be positive, got %r" % (width,))
+    return [[math.exp(-0.5 * ((v - c) / h) ** 2) for c in centres] for v in xs], centres, h
 
 
-def polynomial_kernel_msm(y, A_history, H_history, degree=2,
-                          basis="both", summary="cumulative",
-                          n_centres=5, width=None, kind="binary",
-                          stabilize=True, trim=None, grid=None):
+def polynomial_kernel_msm(
+    y,
+    A_history,
+    H_history,
+    degree=2,
+    basis="both",
+    summary="cumulative",
+    n_centres=5,
+    width=None,
+    kind="binary",
+    stabilize=True,
+    trim=None,
+    grid=None,
+):
     r"""MSM with a flexible function of cumulative exposure.
 
     Parameters
@@ -154,37 +158,39 @@ def polynomial_kernel_msm(y, A_history, H_history, degree=2,
         r["estimate"], r["curve_polynomial"]
     """
     if basis not in _BASES:
-        raise ValueError("polynomial_kernel_msm: basis must be one of %r, "
-                         "got %r" % (_BASES, basis))
+        raise ValueError("polynomial_kernel_msm: basis must be one of %r, got %r" % (_BASES, basis))
     deg = int(degree)
     if deg < 1:
-        raise ValueError("polynomial_kernel_msm: degree must be at least "
-                         "1, got %r" % (degree,))
+        raise ValueError("polynomial_kernel_msm: degree must be at least 1, got %r" % (degree,))
     A_hist = list(A_history)
-    L_hist = list(H_history) if H_history is not None else \
-        [None] * len(A_hist)
+    L_hist = list(H_history) if H_history is not None else [None] * len(A_hist)
     if len(L_hist) != len(A_hist):
         raise ValueError(
-            "polynomial_kernel_msm: %d treatment times but %d covariate "
-            "blocks" % (len(A_hist), len(L_hist)))
+            "polynomial_kernel_msm: %d treatment times but %d covariate blocks" % (len(A_hist), len(L_hist))
+        )
     yv = k.vec(y)
     n = len(yv)
 
-    w, per_time = k.ip_weights_history(A_hist, L_hist, kind=kind,
-                                       stabilize=stabilize, trim=trim)
+    w, per_time = k.ip_weights_history(A_hist, L_hist, kind=kind, stabilize=stabilize, trim=trim)
     e = exposure_summary(A_hist, summary)
     if grid is None:
         lo, hi = min(e), max(e)
-        grid = [lo + (hi - lo) * t / 20.0 for t in range(21)] \
-            if hi > lo else [lo]
+        grid = [lo + (hi - lo) * t / 20.0 for t in range(21)] if hi > lo else [lo]
     grid = [float(v) for v in k.vec(grid)]
 
-    out = {"exposure": e, "weights": w, "grid": grid,
-           "n": n, "n_times": len(A_hist), "degree": deg,
-           "summary": summary, "basis": basis,
-           "mean_weight": sum(w) / n, "max_weight": max(w),
-           "per_time_mean_weight": [sum(p["weight"]) / n
-                                    for p in per_time]}
+    out = {
+        "exposure": e,
+        "weights": w,
+        "grid": grid,
+        "n": n,
+        "n_times": len(A_hist),
+        "degree": deg,
+        "summary": summary,
+        "basis": basis,
+        "mean_weight": sum(w) / n,
+        "max_weight": max(w),
+        "per_time_mean_weight": [sum(p["weight"]) / n for p in per_time],
+    }
 
     if basis in ("polynomial", "both"):
         Xp = [[e[i] ** d for d in range(1, deg + 1)] for i in range(n)]
@@ -193,9 +199,7 @@ def polynomial_kernel_msm(y, A_history, H_history, degree=2,
         out["coef_polynomial"] = bp
         out["se_polynomial"] = fp["se"]
         out["vcov_polynomial"] = fp["vcov"]
-        out["curve_polynomial"] = [
-            bp[0] + sum(bp[d] * (g ** d) for d in range(1, deg + 1))
-            for g in grid]
+        out["curve_polynomial"] = [bp[0] + sum(bp[d] * (g**d) for d in range(1, deg + 1)) for g in grid]
         out["estimate"] = bp[1]
         out["se"] = fp["se"][1]
 
@@ -208,31 +212,34 @@ def polynomial_kernel_msm(y, A_history, H_history, degree=2,
         out["centres"] = centres
         out["width"] = h
         out["curve_kernel"] = [
-            bk[0] + sum(bk[j + 1] * math.exp(-0.5 * ((g - centres[j]) / h)
-                                             ** 2)
-                        for j in range(len(centres)))
-            for g in grid]
+            bk[0] + sum(bk[j + 1] * math.exp(-0.5 * ((g - centres[j]) / h) ** 2) for j in range(len(centres)))
+            for g in grid
+        ]
         if basis == "kernel":
             # no single slope exists, so report the average derivative
-            slopes = [(out["curve_kernel"][t + 1] - out["curve_kernel"][t])
-                      / (grid[t + 1] - grid[t])
-                      for t in range(len(grid) - 1)
-                      if grid[t + 1] != grid[t]]
-            out["estimate"] = (sum(slopes) / len(slopes) if slopes
-                               else float("nan"))
+            slopes = [
+                (out["curve_kernel"][t + 1] - out["curve_kernel"][t]) / (grid[t + 1] - grid[t])
+                for t in range(len(grid) - 1)
+                if grid[t + 1] != grid[t]
+            ]
+            out["estimate"] = sum(slopes) / len(slopes) if slopes else float("nan")
             out["se"] = float("nan")
 
-    out["method"] = ("marginal structural model with a %s exposure basis, "
-                     "Hernan, Brumback & Robins (2002); weights by "
-                     "Robins, Hernan & Brumback (2000)" % basis)
+    out["method"] = (
+        "marginal structural model with a %s exposure basis, "
+        "Hernan, Brumback & Robins (2002); weights by "
+        "Robins, Hernan & Brumback (2000)" % basis
+    )
     return RichResult(payload=out)
 
 
 def cheatsheet():
-    return ("polkrn: MSM on a flexible function of cumulative exposure "
-            "(Hernan-Brumback-Robins 2002). polynomial degree D or RBF "
-            "with quantile centres; weights are the Sec.21.2 product. "
-            "summary = cumulative | final | duration.")
+    return (
+        "polkrn: MSM on a flexible function of cumulative exposure "
+        "(Hernan-Brumback-Robins 2002). polynomial degree D or RBF "
+        "with quantile centres; weights are the Sec.21.2 product. "
+        "summary = cumulative | final | duration."
+    )
 
 
 # compact alias per ledger/NAMING.md

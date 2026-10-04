@@ -64,8 +64,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["nuclear_norm", "coherence", "sample_bound", "svt",
-           "relative_error"]
+__all__ = ["nuclear_norm", "coherence", "sample_bound", "svt", "relative_error"]
 
 _EPS = 1e-12
 
@@ -96,26 +95,31 @@ def coherence(A, rank=None):
     n1, n2 = len(M), len(M[0])
     mu_u = max(sum(U[i][j] ** 2 for j in range(r)) for i in range(n1))
     mu_v = max(sum(Vt[j][i] ** 2 for j in range(r)) for i in range(n2))
-    return {"mu_row": n1 * mu_u / r, "mu_col": n2 * mu_v / r,
-            "mu": max(n1 * mu_u / r, n2 * mu_v / r), "rank": r,
-            "note": "large mu means concentrated singular vectors, "
-                    "and then sampling reveals nothing"}
+    return {
+        "mu_row": n1 * mu_u / r,
+        "mu_col": n2 * mu_v / r,
+        "mu": max(n1 * mu_u / r, n2 * mu_v / r),
+        "rank": r,
+        "note": "large mu means concentrated singular vectors, and then sampling reveals nothing",
+    }
 
 
 def sample_bound(n, r, C=1.0, exponent=1.2):
     r""":math:`C n^{1.2} r \log n`, or 1.25 to cover all ranks."""
     if exponent not in (1.2, 1.25):
-        raise ValueError("meglt: the exponent must be 1.2 (moderate "
-                         "rank) or 1.25 (all ranks), got %r"
-                         % (exponent,))
+        raise ValueError("meglt: the exponent must be 1.2 (moderate rank) or 1.25 (all ranks), got %r" % (exponent,))
     nn, rr = int(n), int(r)
     if nn < 2 or rr < 1:
         raise ValueError("meglt: need n >= 2 and r >= 1")
     m = float(C) * (nn ** float(exponent)) * rr * math.log(nn)
-    return {"m": m, "fraction": m / float(nn * nn), "n": nn, "r": rr,
-            "exponent": float(exponent),
-            "note": "the 1.25 exponent holds for ALL ranks; 1.2 "
-                    "assumes the rank is not too large"}
+    return {
+        "m": m,
+        "fraction": m / float(nn * nn),
+        "n": nn,
+        "r": rr,
+        "exponent": float(exponent),
+        "note": "the 1.25 exponent holds for ALL ranks; 1.2 assumes the rank is not too large",
+    }
 
 
 def svt(M, observed, tau=None, step=1.9, iters=200, tol=1e-6):
@@ -133,51 +137,53 @@ def svt(M, observed, tau=None, step=1.9, iters=200, tol=1e-6):
     for _ in range(int(iters)):
         U, s, Vt = _svd(Y)
         sh = [max(0.0, v - t) for v in s]
-        X = [[sum(U[i][q] * sh[q] * Vt[q][j]
-                  for q in range(len(sh))) for j in range(n2)]
-             for i in range(n1)]
+        X = [[sum(U[i][q] * sh[q] * Vt[q][j] for q in range(len(sh))) for j in range(n2)] for i in range(n1)]
         res = 0.0
-        for (i, j) in obs:
+        for i, j in obs:
             d = A[i][j] - X[i][j]
             res += d * d
             Y[i][j] += float(step) * d
         hist.append(math.sqrt(res))
         if hist[-1] < float(tol):
             break
-    return RichResult(payload={
-        "estimate": X, "X": X, "residual_history": hist,
-        "final_residual": hist[-1], "tau": t,
-        "n_observed": len(obs),
-        "fraction_observed": len(obs) / float(n1 * n2),
-        "nuclear_norm": nuclear_norm(X),
-        "method": "singular value thresholding for the nuclear-norm "
-                  "program; Candes & Recht (2009), Cai, Candes & Shen "
-                  "(2010)",
-    })
+    return RichResult(
+        payload={
+            "estimate": X,
+            "X": X,
+            "residual_history": hist,
+            "final_residual": hist[-1],
+            "tau": t,
+            "n_observed": len(obs),
+            "fraction_observed": len(obs) / float(n1 * n2),
+            "nuclear_norm": nuclear_norm(X),
+            "method": "singular value thresholding for the nuclear-norm "
+            "program; Candes & Recht (2009), Cai, Candes & Shen "
+            "(2010)",
+        }
+    )
 
 
 def relative_error(X, M):
     r""":math:`\|X - M\|_F/\|M\|_F`."""
     A = [[float(v) for v in r] for r in k.mat(M)]
-    num = math.sqrt(sum((X[i][j] - A[i][j]) ** 2
-                        for i in range(len(A))
-                        for j in range(len(A[0]))))
-    den = math.sqrt(sum(A[i][j] ** 2 for i in range(len(A))
-                        for j in range(len(A[0]))))
+    num = math.sqrt(sum((X[i][j] - A[i][j]) ** 2 for i in range(len(A)) for j in range(len(A[0]))))
+    den = math.sqrt(sum(A[i][j] ** 2 for i in range(len(A)) for j in range(len(A[0]))))
     if den <= _EPS:
         raise ValueError("meglt: the reference matrix is zero")
     return num / den
 
 
 def cheatsheet():
-    return ("meglt: most low-rank matrices are recovered EXACTLY from "
-            "m >= C n^1.2 r log n sampled entries -- 1.25 covers all "
-            "ranks. Rank minimisation is NP-hard, so minimise the "
-            "NUCLEAR NORM (sum of singular values), the rank's convex "
-            "surrogate as l1 is for sparsity. INCOHERENCE is required, "
-            "not decorative: e_1 e_1' is rank 1 and unrecoverable "
-            "because nearly every sampled entry is zero. Solved by "
-            "singular value thresholding.")
+    return (
+        "meglt: most low-rank matrices are recovered EXACTLY from "
+        "m >= C n^1.2 r log n sampled entries -- 1.25 covers all "
+        "ranks. Rank minimisation is NP-hard, so minimise the "
+        "NUCLEAR NORM (sum of singular values), the rank's convex "
+        "surrogate as l1 is for sparsity. INCOHERENCE is required, "
+        "not decorative: e_1 e_1' is rank 1 and unrecoverable "
+        "because nearly every sampled entry is zero. Solved by "
+        "singular value thresholding."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -28,8 +28,10 @@ def _ols(Xtr, ytr):
     Z = [[1.0] + [float(v) for v in row] for row in Xtr.tolist()]
     t = [float(v) for v in ytr.tolist()]
     q = len(Z[0])
-    b = _solve([[sum(z[r] * z[c] for z in Z) for c in range(q)] for r in range(q)],
-               [sum(z[r] * y for z, y in zip(Z, t)) for r in range(q)])
+    b = _solve(
+        [[sum(z[r] * z[c] for z in Z) for c in range(q)] for r in range(q)],
+        [sum(z[r] * y for z, y in zip(Z, t)) for r in range(q)],
+    )
     return lambda Xn: [b[0] + sum(u * v for u, v in zip(row, b[1:])) for row in np.asarray(Xn).tolist()]
 
 
@@ -45,7 +47,7 @@ def _r2(y, p):
     mse = sum((a - b) ** 2 for a, b in zip(y, p)) / n
     mu = sum(y) / n
     var = sum((a - mu) ** 2 for a in y) / n
-    g = [-(((a - b) ** 2 - mse) / var - mse * ((a - mu) ** 2 - var) / var ** 2) for a, b in zip(y, p)]
+    g = [-(((a - b) ** 2 - mse) / var - mse * ((a - mu) ** 2 - var) / var**2) for a, b in zip(y, p)]
     return 1 - mse / var, g
 
 
@@ -70,7 +72,8 @@ def _reference(y, X, s, K=4, seed=3):
             vals.append(v)
             etas.append(sum(x * x for x in g) / len(g))
         return statistics.fmean(vals), statistics.fmean(etas)
-    a, b = half[: n // 2], half[n // 2:]
+
+    a, b = half[: n // 2], half[n // 2 :]
     vf, ef = cf(a, list(range(len(X[0]))))
     vr, er = cf(b, keep)
     return vf - vr, math.sqrt(ef / len(a) + er / len(b)), vf, vr
@@ -116,7 +119,7 @@ import morie.fn.tmlavp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

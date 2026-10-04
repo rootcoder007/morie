@@ -80,9 +80,13 @@ def boyd_support_hyperplane(C, x0, tol=1e-07):
     # Find a with a'x <= a'x0 for all x in S, maximising the slack that
     # separates x0 from the interior. Bounded a keeps the LP finite.
     A_ub = S - x0
-    res = linprog(-(np.mean(S, axis=0) - x0) * 0.0 - (x0 - np.mean(S, axis=0)),
-                  A_ub=A_ub, b_ub=np.full(m, tol),
-                  bounds=[(-1.0, 1.0)] * n, method="highs")
+    res = linprog(
+        -(np.mean(S, axis=0) - x0) * 0.0 - (x0 - np.mean(S, axis=0)),
+        A_ub=A_ub,
+        b_ub=np.full(m, tol),
+        bounds=[(-1.0, 1.0)] * n,
+        method="highs",
+    )
     if res.status != 0 or np.linalg.norm(res.x) < 1e-9:
         a = x0 - np.mean(S, axis=0)
         nrm = float(np.linalg.norm(a))
@@ -97,10 +101,11 @@ def boyd_support_hyperplane(C, x0, tol=1e-07):
     touching = int(np.sum(np.abs(slack) <= 1e-07))
     return RichResult(
         title="Supporting hyperplane",
-        summary_lines=[("dimension", int(n)), ("supports", supports),
-                       ("touching generators", touching)],
+        summary_lines=[("dimension", int(n)), ("supports", supports), ("touching generators", touching)],
         payload={
-            "a": a, "offset": off, "supports": supports,
+            "a": a,
+            "offset": off,
+            "supports": supports,
             "n_touching": touching,
             # One touching generator means x0 is extreme: a corner, where
             # the supporting hyperplane is one of a whole normal cone.

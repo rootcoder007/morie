@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,8 +21,7 @@ def mvsml_reproducing_kernel_eq_10_5(y_hat, y):
     whose partial derivatives with respect to the weights drive
     backpropagation. Keys: estimate."""
     v = _gp.ann_sse(y_hat, y)
-    res = RichResult(payload={"estimate": v, "sse": v,
-                              "method": "SSE loss (MVSML 2022 eq. 10.5)"})
+    res = RichResult(payload={"estimate": v, "sse": v, "method": "SSE loss (MVSML 2022 eq. 10.5)"})
     return with_describe_pointer(res, "msm249")
 
 

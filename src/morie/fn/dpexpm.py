@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["dp_exponential_mechanism"]
 
 
-def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0,
-                             seed=None):
+def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0, seed=None):
     r"""Privately select from a discrete candidate set.
 
     Samples candidate :math:`r` with probability proportional to
@@ -97,9 +96,7 @@ def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0,
     cands = list(candidates)
     u = np.atleast_1d(np.asarray(utility, dtype=float)).ravel()
     if u.size != len(cands):
-        raise ValueError(
-            f"utility has {u.size} entries but there are {len(cands)} candidates"
-        )
+        raise ValueError(f"utility has {u.size} entries but there are {len(cands)} candidates")
     if not np.all(np.isfinite(u)):
         raise ValueError("utility must be finite")
     # The 2 is required: one record can move the chosen candidate's utility
@@ -111,12 +108,15 @@ def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0,
     idx = int(np.random.default_rng(seed).choice(len(cands), p=p))
     return RichResult(
         title="Exponential mechanism",
-        summary_lines=[("epsilon", epsilon), ("candidates", len(cands)),
-                       ("selected", str(cands[idx]))],
+        summary_lines=[("epsilon", epsilon), ("candidates", len(cands)), ("selected", str(cands[idx]))],
         payload={
-            "selected": cands[idx], "index": idx, "probabilities": p,
-            "epsilon": epsilon, "sensitivity": sensitivity,
-            "mechanism": "exponential", "method": "dp_exponential_mechanism",
+            "selected": cands[idx],
+            "index": idx,
+            "probabilities": p,
+            "epsilon": epsilon,
+            "sensitivity": sensitivity,
+            "mechanism": "exponential",
+            "method": "dp_exponential_mechanism",
         },
     )
 

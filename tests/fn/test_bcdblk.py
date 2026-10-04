@@ -3,14 +3,12 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.bcdblk import block_coordinate_descent
 
 
 def _spd_matrix(rng, p):
     A = rng.normal(0, 1, (p, p))
-    return [[sum(A[k][i] * A[k][j] for k in range(p)) + (1.0 if i == j else 0.0)
-             for j in range(p)] for i in range(p)]
+    return [[sum(A[k][i] * A[k][j] for k in range(p)) + (1.0 if i == j else 0.0) for j in range(p)] for i in range(p)]
 
 
 def test_bcdblk_basic():

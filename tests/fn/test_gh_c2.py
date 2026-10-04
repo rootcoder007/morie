@@ -1,4 +1,5 @@
 """Tests for the Ghosal Ch 2 function-space priors."""
+
 import math
 
 from morie.fn.gh_c2_1 import ghosal_random_basis_expansion
@@ -37,8 +38,7 @@ def test_increasing_process_is_increasing():
 def test_exp_link_normalizes():
     r = ghosal_exp_link(GRID)
     d = r["density"]
-    Z = sum(0.5 * (d[i] + d[i - 1]) * (GRID[i] - GRID[i - 1])
-            for i in range(1, len(GRID)))
+    Z = sum(0.5 * (d[i] + d[i - 1]) * (GRID[i] - GRID[i - 1]) for i in range(1, len(GRID)))
     assert abs(Z - 1.0) < 1e-9
     assert min(d) > 0
 
@@ -47,7 +47,7 @@ def test_histogram_weights_simplex():
     r = ghosal_histogram_prior(GRID, K=8, seed=5)
     assert abs(sum(r["weights"]) - 1.0) < 1e-12
     Z = sum(v * (GRID[1] - GRID[0]) for v in r["density"][:-1])
-    assert abs(Z - 1.0) < 0.06        # Riemann error only
+    assert abs(Z - 1.0) < 0.06  # Riemann error only
 
 
 def test_mixture_density_positive_weights_simplex():

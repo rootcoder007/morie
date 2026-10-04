@@ -84,17 +84,22 @@ def boyd_slater(f, affine=None, h=None, tol=1e-12):
     margin = float(-fv.max()) if fv.size else float("inf")
     return RichResult(
         title="Slater's condition",
-        summary_lines=[("holds", holds), ("strict margin", margin),
-                       ("non-affine constraints", int(fv.size))],
-        warnings=[] if holds else
-        ["Slater's condition fails, so strong duality is not guaranteed; "
-         "a convex problem can still have a positive duality gap"],
+        summary_lines=[("holds", holds), ("strict margin", margin), ("non-affine constraints", int(fv.size))],
+        warnings=[]
+        if holds
+        else [
+            "Slater's condition fails, so strong duality is not guaranteed; "
+            "a convex problem can still have a positive duality gap"
+        ],
         payload={
-            "holds": holds, "strict_margin": margin,
+            "holds": holds,
+            "strict_margin": margin,
             "binding": np.flatnonzero(fv >= -tol) if fv.size else np.zeros(0, dtype=int),
             "strong_duality_guaranteed": holds,
-            "strict_inequalities_ok": strict, "affine_ok": aff_ok,
-            "equalities_ok": eq_ok, "method": "boyd_slater",
+            "strict_inequalities_ok": strict,
+            "affine_ok": aff_ok,
+            "equalities_ok": eq_ok,
+            "method": "boyd_slater",
         },
     )
 

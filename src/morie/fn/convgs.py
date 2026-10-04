@@ -55,14 +55,16 @@ def convergent_validity(loadings, residuals=None):
         raise ValueError("degenerate construct: total variance is zero")
     ave = sl2 / (sl2 + sth)
     cr = sl * sl / (sl * sl + sth)
-    return RichResult(payload={
-        "estimate": ave,
-        "ave": ave,
-        "cr": cr,
-        "adequate": 1 if (ave >= 0.5 and cr >= 0.7) else 0,
-        "n_items": p,
-        "method": "convergent validity: AVE and composite reliability",
-    })
+    return RichResult(
+        payload={
+            "estimate": ave,
+            "ave": ave,
+            "cr": cr,
+            "adequate": 1 if (ave >= 0.5 and cr >= 0.7) else 0,
+            "n_items": p,
+            "method": "convergent validity: AVE and composite reliability",
+        }
+    )
 
 
 def cheatsheet():

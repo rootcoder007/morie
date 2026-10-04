@@ -24,8 +24,9 @@ from ._richresult import RichResult
 __all__ = ["alphazero_priority_target"]
 
 
-def alphazero_priority_target(replay_buffer, priorities=None, z=None, v=None,
-                              alpha=0.6, beta=0.4, eps=1e-6, variant="proportional"):
+def alphazero_priority_target(
+    replay_buffer, priorities=None, z=None, v=None, alpha=0.6, beta=0.4, eps=1e-6, variant="proportional"
+):
     """Sampling probabilities and importance weights from value residuals.
 
     Parameters

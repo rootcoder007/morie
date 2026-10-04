@@ -46,8 +46,7 @@ def kamath_yarn_context_extrapolation(theta, scale, d, ramp=None):
     d = int(d)
     s = float(scale)
     if d < 2 or d % 2 != 0:
-        raise ValueError(
-            f"d must be a positive even embedding width; got {d}.")
+        raise ValueError(f"d must be a positive even embedding width; got {d}.")
     if s <= 0:
         raise ValueError(f"the scale factor must be positive; got {s}.")
     half = d // 2
@@ -57,17 +56,13 @@ def kamath_yarn_context_extrapolation(theta, scale, d, ramp=None):
     if np.isscalar(theta):
         base = float(theta)
         if base <= 1.0:
-            raise ValueError(
-                f"a scalar theta is the RoPE base and must exceed 1; "
-                f"got {base}.")
+            raise ValueError(f"a scalar theta is the RoPE base and must exceed 1; got {base}.")
         i = np.arange(half, dtype=float)
         freqs = base ** (-2.0 * i / d)
     else:
         freqs = t.ravel()
         if freqs.size != half:
-            raise ValueError(
-                f"an array theta must hold the d/2 = {half} "
-                f"frequencies; got {freqs.size}.")
+            raise ValueError(f"an array theta must hold the d/2 = {half} frequencies; got {freqs.size}.")
         if np.any(freqs <= 0):
             raise ValueError("RoPE frequencies must be positive.")
     i = np.arange(half, dtype=float)
@@ -76,19 +71,22 @@ def kamath_yarn_context_extrapolation(theta, scale, d, ramp=None):
     if ramp is not None:
         lo, hi = (float(v) for v in ramp)
         if not 0 <= lo < hi <= half:
-            raise ValueError(
-                f"ramp must be (lo, hi) with 0 <= lo < hi <= {half}.")
+            raise ValueError(f"ramp must be (lo, hi) with 0 <= lo < hi <= {half}.")
         w = np.clip((i - lo) / (hi - lo), 0.0, 1.0)
         new = (1.0 - w) * freqs + w * new
-    return RichResult(payload={
-        "theta": [float(v) for v in freqs],
-        "theta_new": [float(v) for v in new],
-        "scale_factors": [float(v) for v in factor],
-        "effective_context_multiplier": s,
-        "ramp": None if ramp is None else (float(ramp[0]), float(ramp[1])),
-        "estimate": float(new[-1]),
-        "d": d, "n": half,
-        "method": "YaRN NTK-aware RoPE frequency rescaling"})
+    return RichResult(
+        payload={
+            "theta": [float(v) for v in freqs],
+            "theta_new": [float(v) for v in new],
+            "scale_factors": [float(v) for v in factor],
+            "effective_context_multiplier": s,
+            "ramp": None if ramp is None else (float(ramp[0]), float(ramp[1])),
+            "estimate": float(new[-1]),
+            "d": d,
+            "n": half,
+            "method": "YaRN NTK-aware RoPE frequency rescaling",
+        }
+    )
 
 
 def cheatsheet():

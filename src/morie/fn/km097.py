@@ -35,9 +35,7 @@ def kamath_ch6_ear_entropy_reg(A, L=None, lam=1.0):
     if not layers:
         raise ValueError("A is empty; there are no layers to regularise.")
     if L is not None and int(L) != len(layers):
-        raise ValueError(
-            f"L = {int(L)} contradicts the {len(layers)} attention "
-            "matrices supplied.")
+        raise ValueError(f"L = {int(L)} contradicts the {len(layers)} attention matrices supplied.")
     lam = float(lam)
     if lam < 0 or not np.isfinite(lam):
         raise ValueError("lam must be finite and non-negative.")
@@ -50,18 +48,21 @@ def kamath_ch6_ear_entropy_reg(A, L=None, lam=1.0):
             raise ValueError(f"layer {i} has a negative attention weight.")
         sums = Am.sum(axis=1)
         if np.any(np.abs(sums - 1.0) > 1e-8):
-            raise ValueError(
-                f"every attention row of layer {i} must sum to 1; got "
-                f"{[float(v) for v in sums[:4]]!r}.")
+            raise ValueError(f"every attention row of layer {i} must sum to 1; got {[float(v) for v in sums[:4]]!r}.")
         with np.errstate(divide="ignore", invalid="ignore"):
             terms = np.where(Am > 0, -Am * np.log(Am), 0.0)
         ents.append(float(terms.sum(axis=1).mean()))
     total = float(sum(ents))
-    return RichResult(payload={
-        "estimate": -lam * total, "per_layer_entropy": ents,
-        "total_entropy": total, "lam": lam, "n": len(layers),
-        "method": "entropy-based attention regularisation "
-                  "(Kamath Eq 6.21)"})
+    return RichResult(
+        payload={
+            "estimate": -lam * total,
+            "per_layer_entropy": ents,
+            "total_entropy": total,
+            "lam": lam,
+            "n": len(layers),
+            "method": "entropy-based attention regularisation (Kamath Eq 6.21)",
+        }
+    )
 
 
 def cheatsheet():

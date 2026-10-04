@@ -1,7 +1,6 @@
 """Tests for morie.fn.slice -- slice sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.slice import slice_sampler
 
 

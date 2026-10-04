@@ -89,12 +89,21 @@ def multboot(x, B=200, seed=1, deterministic_seed=None):
     q = sorted(stats)
     lo = q[max(0, int(math.floor(0.025 * (B - 1))))]
     hi = q[min(B - 1, int(math.ceil(0.975 * (B - 1))))]
-    return RichResult(payload={
-        "estimate": Pn, "boot_mean": bm, "boot_sd": bsd,
-        "process_sd": math.sqrt(n) * 1.0 * bsd, "ci_lower": lo,
-        "ci_upper": hi, "mu": 1.0, "tau": 1.0, "B": float(B),
-        "n": float(n),
-        "method": "Multiplier bootstrap, Kosorok Section 2.2.3"})
+    return RichResult(
+        payload={
+            "estimate": Pn,
+            "boot_mean": bm,
+            "boot_sd": bsd,
+            "process_sd": math.sqrt(n) * 1.0 * bsd,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "mu": 1.0,
+            "tau": 1.0,
+            "B": float(B),
+            "n": float(n),
+            "method": "Multiplier bootstrap, Kosorok Section 2.2.3",
+        }
+    )
 
 
 kosorok_multiplier_bootstrap = multboot

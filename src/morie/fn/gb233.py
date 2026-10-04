@@ -49,8 +49,10 @@ def gibbons_edf_asymp_normal(S_n_x, F_x, n):
     z = (S - F) / se
     return RichResult(
         payload={
-            "z": float(z), "p_two_sided": float(2 * stats.norm.sf(abs(z))),
-            "se": float(se), "n": n,
+            "z": float(z),
+            "p_two_sided": float(2 * stats.norm.sf(abs(z))),
+            "se": float(se),
+            "n": n,
             "method": "sqrt(n)(S_n - F)/sqrt(F(1-F)) -> N(0,1) (Theorem 2.3.3)",
         }
     )

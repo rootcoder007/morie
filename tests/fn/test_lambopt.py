@@ -1,7 +1,6 @@
 """Tests for lambopt.lamb_optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lambopt import lamb_optimizer
 
 
@@ -13,6 +12,8 @@ def test_lambopt_basic():
     result = lamb_optimizer(g, layer_idx, lr)
     assert isinstance(result, dict)
     assert "update" in result
+
+
 def test_lambopt_edge():
     """Test edge cases."""
     g = np.random.default_rng(43).normal(0, 1, 100)

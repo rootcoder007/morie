@@ -64,12 +64,10 @@ paper renames D-MPNN.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["directed_edges", "count_totters", "dmpnn_message_pass",
-           "atom_readout", "concat_descriptors"]
+__all__ = ["directed_edges", "count_totters", "dmpnn_message_pass", "atom_readout", "concat_descriptors"]
 
 _EPS = 1e-12
 
@@ -98,8 +96,7 @@ def count_totters(adj, length=3, exclude_reverse=True):
         nonlocal paths, tot
         if len(path) == L:
             paths += 1
-            if any(path[i] == path[i + 2]
-                   for i in range(len(path) - 2)):
+            if any(path[i] == path[i + 2] for i in range(len(path) - 2)):
                 tot += 1
             return
         v = path[-1]
@@ -110,13 +107,15 @@ def count_totters(adj, length=3, exclude_reverse=True):
 
     for s in sorted(adj):
         walk([s])
-    return {"paths": paths, "totters": tot,
-            "fraction": tot / float(paths) if paths else 0.0,
-            "excluded_reverse": bool(exclude_reverse)}
+    return {
+        "paths": paths,
+        "totters": tot,
+        "fraction": tot / float(paths) if paths else 0.0,
+        "excluded_reverse": bool(exclude_reverse),
+    }
 
 
-def dmpnn_message_pass(h0, adj, T=3, W=None, activation="relu",
-                       exclude_reverse=True):
+def dmpnn_message_pass(h0, adj, T=3, W=None, activation="relu", exclude_reverse=True):
     r"""Update directed-bond hidden states, excluding the reverse edge.
 
     ``exclude_reverse=False`` reinstates the totters, so the effect of
@@ -130,13 +129,12 @@ def dmpnn_message_pass(h0, adj, T=3, W=None, activation="relu",
             return max(0.0, x)
         if activation == "tanh":
             return math.tanh(x)
-        raise ValueError("dmlqs: activation must be relu or tanh, "
-                         "got %r" % (activation,))
+        raise ValueError("dmlqs: activation must be relu or tanh, got %r" % (activation,))
 
     H0 = {k_: list(H[k_]) for k_ in H}
     for _ in range(int(T)):
         new = {}
-        for (v, w) in H:
+        for v, w in H:
             m = [0.0] * d
             for u in sorted(set(adj.get(v, ())) - {v}):
                 if exclude_reverse and u == w:
@@ -145,18 +143,17 @@ def dmpnn_message_pass(h0, adj, T=3, W=None, activation="relu",
                     for a in range(d):
                         m[a] += H[(u, v)][a]
             if W is None:
-                new[(v, w)] = [act(H0[(v, w)][a] + m[a])
-                               for a in range(d)]
+                new[(v, w)] = [act(H0[(v, w)][a] + m[a]) for a in range(d)]
             else:
-                Wm = [sum(W[o][a] * m[a] for a in range(d))
-                      for o in range(d)]
-                new[(v, w)] = [act(H0[(v, w)][a] + Wm[a])
-                               for a in range(d)]
+                Wm = [sum(W[o][a] * m[a] for a in range(d)) for o in range(d)]
+                new[(v, w)] = [act(H0[(v, w)][a] + Wm[a]) for a in range(d)]
         H = new
-    return {"edge_states": H, "T": int(T),
-            "excluded_reverse": bool(exclude_reverse),
-            "note": "the exclusion of the reverse edge IS the "
-                    "anti-tottering mechanism"}
+    return {
+        "edge_states": H,
+        "T": int(T),
+        "excluded_reverse": bool(exclude_reverse),
+        "note": "the exclusion of the reverse edge IS the anti-tottering mechanism",
+    }
 
 
 def atom_readout(edge_states, adj, n):
@@ -183,25 +180,30 @@ def concat_descriptors(learned, descriptors):
     """
     a = [float(v) for v in k.vec(learned)]
     b = [float(v) for v in k.vec(descriptors)]
-    return RichResult(payload={
-        "estimate": a + b, "representation": a + b,
-        "learned_dim": len(a), "descriptor_dim": len(b),
-        "method": "D-MPNN representation with computed features; "
-                  "Yang et al. (2019)",
-    })
+    return RichResult(
+        payload={
+            "estimate": a + b,
+            "representation": a + b,
+            "learned_dim": len(a),
+            "descriptor_dim": len(b),
+            "method": "D-MPNN representation with computed features; Yang et al. (2019)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dmlqs: pass messages along DIRECTED BONDS, not atoms. The "
-            "stated reason is TOTTERS -- paths v1 v2 ... vn with "
-            "v_i = v_{i+2}, where a message goes A -> B and comes "
-            "straight back carrying A's own information as news, "
-            "adding noise. The mechanism is one exclusion: "
-            "m_vw = sum over u in N(v) EXCLUDING w. Atom "
-            "representations are formed at the end from incoming bond "
-            "messages, and computed molecule-level descriptors are "
-            "concatenated with the learned representation -- expert "
-            "features and learned ones are not rivals.")
+    return (
+        "dmlqs: pass messages along DIRECTED BONDS, not atoms. The "
+        "stated reason is TOTTERS -- paths v1 v2 ... vn with "
+        "v_i = v_{i+2}, where a message goes A -> B and comes "
+        "straight back carrying A's own information as news, "
+        "adding noise. The mechanism is one exclusion: "
+        "m_vw = sum over u in N(v) EXCLUDING w. Atom "
+        "representations are formed at the end from incoming bond "
+        "messages, and computed molecule-level descriptors are "
+        "concatenated with the learned representation -- expert "
+        "features and learned ones are not rivals."
+    )
 
 
 # compact alias per ledger/NAMING.md

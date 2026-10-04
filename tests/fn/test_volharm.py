@@ -1,7 +1,5 @@
 """Tests for volharm.vol_harmonic_volatility."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.volharm import vol_harmonic_volatility
 
 

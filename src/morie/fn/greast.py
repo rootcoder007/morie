@@ -88,9 +88,7 @@ def geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta, theta0=Non
     if A.ndim != 2 or V.ndim != 2:
         raise ValueError(f"X_train and X_val must be 2-D, got {A.shape} and {V.shape}.")
     if A.shape[1] != V.shape[1]:
-        raise ValueError(
-            f"X_train has {A.shape[1]} columns but X_val has {V.shape[1]}."
-        )
+        raise ValueError(f"X_train has {A.shape[1]} columns but X_val has {V.shape[1]}.")
     if ytr.size != A.shape[0]:
         raise ValueError(f"y_train has {ytr.size} entries but X_train has {A.shape[0]} rows.")
     if yva.size != V.shape[0]:
@@ -115,10 +113,7 @@ def geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta, theta0=Non
         g = geron_ch4_mse_gradient_vector(A, ytr, th)["gradient"]
         th = th - eta * np.asarray(g, dtype=float)
         if not np.all(np.isfinite(th)):
-            raise ValueError(
-                f"parameters diverged to non-finite values at step {it}; "
-                f"eta = {eta} is too large."
-            )
+            raise ValueError(f"parameters diverged to non-finite values at step {it}; eta = {eta} is too large.")
         tr_hist.append(geron_linreg_mse_cost(A, ytr, th)["rmse"])
         v = geron_linreg_mse_cost(V, yva, th)["rmse"]
         va_hist.append(v)
@@ -127,9 +122,11 @@ def geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta, theta0=Non
 
     return RichResult(
         title="Early stopping",
-        summary_lines=[("Best iteration", best_it),
-                       ("Best val RMSE", va_hist[best_it]),
-                       ("Final val RMSE", va_hist[-1])],
+        summary_lines=[
+            ("Best iteration", best_it),
+            ("Best val RMSE", va_hist[best_it]),
+            ("Final val RMSE", va_hist[-1]),
+        ],
         payload={
             "theta": best_theta.tolist(),
             "best_iteration": int(best_it),

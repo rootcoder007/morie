@@ -96,8 +96,7 @@ def em_step_random_effects(y, X, cluster, sigma2_u, sigma2_e, beta=None):
             sy = sum(y[i] for i in g)
             for a in range(p):
                 for c in range(p):
-                    A[a][c] += (sum(Xm[i][a] * Xm[i][c] for i in g)
-                                - f * sx[a] * sx[c]) / s2e
+                    A[a][c] += (sum(Xm[i][a] * Xm[i][c] for i in g) - f * sx[a] * sx[c]) / s2e
                 b[a] += (sum(Xm[i][a] * y[i] for i in g) - f * sx[a] * sy) / s2e
         bet = core.cholsolve(A, b)
     else:
@@ -121,17 +120,19 @@ def em_step_random_effects(y, X, cluster, sigma2_u, sigma2_e, beta=None):
             tot += (r[i] - uh[j]) ** 2
         tot += len(grp[j]) * vu[j]
     new_e = tot / N
-    return RichResult(payload={
-        "estimate": new_u,
-        "sigma2_u": new_u,
-        "sigma2_e": new_e,
-        "beta": bet,
-        "u_hat": uh,
-        "var_u": vu,
-        "J": J,
-        "n": N,
-        "method": "EM step (single iteration) for random-effects variance",
-    })
+    return RichResult(
+        payload={
+            "estimate": new_u,
+            "sigma2_u": new_u,
+            "sigma2_e": new_e,
+            "beta": bet,
+            "u_hat": uh,
+            "var_u": vu,
+            "J": J,
+            "n": N,
+            "method": "EM step (single iteration) for random-effects variance",
+        }
+    )
 
 
 def cheatsheet():

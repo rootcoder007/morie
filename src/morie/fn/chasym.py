@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymptotic-variance check for a marginal structural model."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -18,6 +16,7 @@ def _lcg(seed):
     def nxt():
         state[0] = (state[0] * 48271) % 2147483647
         return (state[0] - 1) / 2147483646.0
+
     return nxt
 
 
@@ -98,18 +97,20 @@ def check_asymptote_msm(y, A=None, H=None, B=200, seed=42):
     var_b = sum((v - mb) ** 2 for v in reps) / (B - 1)
     ess = sw * sw / sum(v * v for v in w)
     ratio = var_b / var_if if var_if > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": ratio,
-        "theta": theta,
-        "var_if": var_if,
-        "var_boot": var_b,
-        "ratio": ratio,
-        "ess": ess,
-        "agree": 1 if (ratio == ratio and 0.5 <= ratio <= 2.0) else 0,
-        "n": n,
-        "B": B,
-        "method": "asymptotic-variance check for an IPW MSM",
-    })
+    return RichResult(
+        payload={
+            "estimate": ratio,
+            "theta": theta,
+            "var_if": var_if,
+            "var_boot": var_b,
+            "ratio": ratio,
+            "ess": ess,
+            "agree": 1 if (ratio == ratio and 0.5 <= ratio <= 2.0) else 0,
+            "n": n,
+            "B": B,
+            "method": "asymptotic-variance check for an IPW MSM",
+        }
+    )
 
 
 def cheatsheet():

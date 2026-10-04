@@ -1,7 +1,7 @@
 """Morin (2016) chapters 1-2: tests anchored on the book's worked numbers."""
+
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _morin
@@ -11,12 +11,14 @@ P = "david_j_morin_probability_for_the_enthusiastic_beginner"
 
 def front(suffix):
     import importlib
+
     mod = importlib.import_module(f"morie.fn.{P}{suffix}")
     ch, e = suffix.split("e")
     return getattr(mod, f"{P}_chapter_{ch}_equation_{e}")
 
 
 # ------------------------------------------------------------- chapter 1
+
 
 def test_factorials_match_eq_1_1_table():
     # book: 1!..6! = 1, 2, 6, 24, 120, 720; 10! = 3,628,800
@@ -45,7 +47,7 @@ def test_binomial_theorem_eq_1_21():
     # a = b = 1 gives sum C(8,k) = 2^8 (book's proof of eq (1.19))
     assert r["sum"] == pytest.approx(256.0)
     r2 = front("1e21")(2.0, -0.5, 7)
-    assert r2["sum"] == pytest.approx(1.5 ** 7, rel=1e-12)
+    assert r2["sum"] == pytest.approx(1.5**7, rel=1e-12)
 
 
 def test_hockey_stick_eq_1_29():
@@ -60,7 +62,8 @@ def test_committee_counts_eqs_1_35():
     # book: same committees from 16 people -> 16!/(3!2!5!6!) ~ 20 million
     r = front("1e35")([3, 2, 5], 16)
     assert r["assignments"] == math.factorial(16) // (
-        math.factorial(3) * math.factorial(2) * math.factorial(5) * math.factorial(6))
+        math.factorial(3) * math.factorial(2) * math.factorial(5) * math.factorial(6)
+    )
     assert 19_000_000 < r["assignments"] < 21_000_000
 
 
@@ -83,6 +86,7 @@ def test_sd_of_dice_sum_book_page_253():
 
 
 # ------------------------------------------------------------- chapter 2
+
 
 def test_and_rule_eqs_2_2_to_2_4():
     # dice: P(2 and 5) = 1/36; cards: P(king and heart) = 1/52
@@ -138,8 +142,7 @@ def test_conditionals_eqs_2_48_2_49():
 
 def test_bayes_simple_eq_2_51_consistency():
     p_a, p_z_a, p_z = 0.02, 0.95, 0.02 * 0.95 + 0.98 * 0.10
-    assert front("2e51")(p_z_a, p_a, p_z)["posterior"] == pytest.approx(
-        front("2e58")()["posterior"])
+    assert front("2e51")(p_z_a, p_a, p_z)["posterior"] == pytest.approx(front("2e58")()["posterior"])
 
 
 def test_evidence_eq_2_55():
@@ -174,8 +177,7 @@ def test_summary_rules_eqs_2_70_2_74():
 def test_decomposition_eq_2_86():
     # book second solution: P(B) = (2/5)(1/10)... anchor 64% example:
     # P(B) = P(A)P(B|A) + P(~A)P(B|~A) with 16/25 = 64%
-    assert front("2e86")(2 / 5, 1 / 10, 14 / 15)["p_b"] == pytest.approx(
-        (2 / 5) * (1 / 10) + (3 / 5) * (14 / 15))
+    assert front("2e86")(2 / 5, 1 / 10, 14 / 15)["p_b"] == pytest.approx((2 / 5) * (1 / 10) + (3 / 5) * (14 / 15))
 
 
 def test_three_dice_eqs_2_92_to_2_96():

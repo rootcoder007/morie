@@ -66,12 +66,10 @@ policies.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["shift_regime", "positivity_shift", "stochastic_estimand",
-           "shift_tmle", "density_ratio"]
+__all__ = ["shift_regime", "positivity_shift", "stochastic_estimand", "shift_tmle", "density_ratio"]
 
 _EPS = 1e-12
 
@@ -94,8 +92,7 @@ def shift_regime(A, delta, lower=None, upper=None):
             s = float(upper)
             clipped += 1
         out.append(s)
-    return {"shifted": out, "delta": d, "n_clipped": clipped,
-            "fraction_clipped": clipped / float(len(a))}
+    return {"shifted": out, "delta": d, "n_clipped": clipped, "fraction_clipped": clipped / float(len(a))}
 
 
 def positivity_shift(A, delta, W=None, bins=5):
@@ -111,24 +108,23 @@ def positivity_shift(A, delta, W=None, bins=5):
     if W is None:
         lo, hi = min(a), max(a)
         out = sum(1 for v in a if v + d < lo or v + d > hi)
-        return {"fraction_outside": out / float(len(a)),
-                "support": (lo, hi), "delta": d,
-                "satisfied": out == 0}
+        return {"fraction_outside": out / float(len(a)), "support": (lo, hi), "delta": d, "satisfied": out == 0}
     w = [float(v) for v in k.vec(W)]
     lo_w, hi_w = min(w), max(w)
     width = (hi_w - lo_w) / int(bins) or 1.0
     out = 0
     for i in range(len(a)):
         b = min(int((w[i] - lo_w) / width), int(bins) - 1)
-        same = [a[j] for j in range(len(a))
-                if min(int((w[j] - lo_w) / width),
-                       int(bins) - 1) == b]
+        same = [a[j] for j in range(len(a)) if min(int((w[j] - lo_w) / width), int(bins) - 1) == b]
         if a[i] + d < min(same) or a[i] + d > max(same):
             out += 1
-    return {"fraction_outside": out / float(len(a)), "delta": d,
-            "bins": int(bins), "satisfied": out == 0,
-            "note": "milder than deterministic positivity: the shift "
-                    "only has to stay inside the CONDITIONAL support"}
+    return {
+        "fraction_outside": out / float(len(a)),
+        "delta": d,
+        "bins": int(bins),
+        "satisfied": out == 0,
+        "note": "milder than deterministic positivity: the shift only has to stay inside the CONDITIONAL support",
+    }
 
 
 def stochastic_estimand(Q_fn, A, W, delta, lower=None, upper=None):
@@ -140,15 +136,16 @@ def stochastic_estimand(Q_fn, A, W, delta, lower=None, upper=None):
     a = [float(v) for v in k.vec(A)]
     rows = [[float(v) for v in r] for r in k.mat(W)]
     if len(rows) != len(a):
-        raise ValueError("tlstoch: %d exposures but %d covariate rows"
-                         % (len(a), len(rows)))
+        raise ValueError("tlstoch: %d exposures but %d covariate rows" % (len(a), len(rows)))
     sh = shift_regime(a, delta, lower, upper)["shifted"]
     vals = [float(Q_fn(sh[i], rows[i])) for i in range(len(a))]
     obs = [float(Q_fn(a[i], rows[i])) for i in range(len(a))]
-    return {"psi": sum(vals) / len(vals),
-            "observed_mean": sum(obs) / len(obs),
-            "contrast": sum(vals) / len(vals) - sum(obs) / len(obs),
-            "delta": float(delta)}
+    return {
+        "psi": sum(vals) / len(vals),
+        "observed_mean": sum(obs) / len(obs),
+        "contrast": sum(vals) / len(vals) - sum(obs) / len(obs),
+        "delta": float(delta),
+    }
 
 
 def density_ratio(A, W, delta, g_fn, lower=None, upper=None):
@@ -167,16 +164,17 @@ def density_ratio(A, W, delta, g_fn, lower=None, upper=None):
         num = float(g_fn(a[i] - d, rows[i]))
         den = float(g_fn(a[i], rows[i]))
         if den <= _EPS:
-            raise ValueError("tlstoch: the observed exposure has zero "
-                             "density at observation %d -- the "
-                             "conditional density estimate is "
-                             "degenerate" % i)
+            raise ValueError(
+                "tlstoch: the observed exposure has zero "
+                "density at observation %d -- the "
+                "conditional density estimate is "
+                "degenerate" % i
+            )
         out.append(num / den)
     return {"H": out, "max": max(out), "mean": sum(out) / len(out)}
 
 
-def shift_tmle(Y, A, W, Q_fn, g_fn, delta, lower=None, upper=None,
-               iters=60):
+def shift_tmle(Y, A, W, Q_fn, g_fn, delta, lower=None, upper=None, iters=60):
     r"""TMLE of the mean outcome under a shift intervention."""
     y = [float(v) for v in k.vec(Y)]
     a = [float(v) for v in k.vec(A)]
@@ -198,35 +196,40 @@ def shift_tmle(Y, A, W, Q_fn, g_fn, delta, lower=None, upper=None,
     sh = shift_regime(a, delta, lower, upper)["shifted"]
     qs = [float(Q_fn(sh[i], rows[i])) + e for i in range(n)]
     psi = sum(qs) / n
-    d = [H[i] * (y[i] - (q[i] + e * H[i])) + qs[i] - psi
-         for i in range(n)]
+    d = [H[i] * (y[i] - (q[i] + e * H[i])) + qs[i] - psi for i in range(n)]
     m = sum(d) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in d) / n ** 2)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "epsilon": e, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "mean_eic": m, "delta": float(delta),
-        "max_density_ratio": max(H),
-        "method": "TMLE for a stochastic (shift) regime; van der Laan "
-                  "& Rose (2018) Chap. 14",
-        "note": "the clever covariate is a DENSITY RATIO, not an "
-                "inverse probability",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in d) / n**2)
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "epsilon": e,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "mean_eic": m,
+            "delta": float(delta),
+            "max_density_ratio": max(H),
+            "method": "TMLE for a stochastic (shift) regime; van der Laan & Rose (2018) Chap. 14",
+            "note": "the clever covariate is a DENSITY RATIO, not an inverse probability",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlstoch: static and dynamic regimes are both "
-            "DETERMINISTIC, and that is the wrong frame twice over -- "
-            "you cannot set someone's exercise regime by a rule, and a "
-            "media campaign is deterministic at the community level "
-            "but stochastic at the individual one; and a deterministic "
-            "regime may be UNIDENTIFIABLE because nobody in the data "
-            "behaves that way. A stochastic regime SHIFTS the "
-            "treatment distribution: Psi = E[Q(A + delta, W)]. "
-            "Positivity becomes a support condition -- the shift need "
-            "only stay inside the conditional support -- and the "
-            "clever covariate is a DENSITY RATIO rather than an "
-            "inverse probability.")
+    return (
+        "tlstoch: static and dynamic regimes are both "
+        "DETERMINISTIC, and that is the wrong frame twice over -- "
+        "you cannot set someone's exercise regime by a rule, and a "
+        "media campaign is deterministic at the community level "
+        "but stochastic at the individual one; and a deterministic "
+        "regime may be UNIDENTIFIABLE because nobody in the data "
+        "behaves that way. A stochastic regime SHIFTS the "
+        "treatment distribution: Psi = E[Q(A + delta, W)]. "
+        "Positivity becomes a support condition -- the shift need "
+        "only stay inside the conditional support -- and the "
+        "clever covariate is a DENSITY RATIO rather than an "
+        "inverse probability."
+    )
 
 
 # compact alias per ledger/NAMING.md

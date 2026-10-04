@@ -131,7 +131,7 @@ def olsfit(X, y):
             f = aug[r][c]
             if f != 0.0:
                 aug[r] = [aug[r][k] - f * aug[c][k] for k in range(len(aug[r]))]
-    xtxinv = [row[p:2 * p] for row in aug]
+    xtxinv = [row[p : 2 * p] for row in aug]
     beta = [row[2 * p] for row in aug]
     fitted = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
     resid = [y[i] - fitted[i] for i in range(n)]
@@ -173,9 +173,7 @@ def kendalltaub(x, y):
     vu = sum(t * (t - 1) * (2.0 * t + 5) for t in ty)
     v1 = sum(t * (t - 1) for t in tx) * sum(t * (t - 1) for t in ty)
     v2 = sum(t * (t - 1) * (t - 2) for t in tx) * sum(t * (t - 1) * (t - 2) for t in ty)
-    v = ((v0 - vt - vu) / 18.0
-         + v1 / (2.0 * n * (n - 1))
-         + v2 / (9.0 * n * (n - 1) * (n - 2)))
+    v = (v0 - vt - vu) / 18.0 + v1 / (2.0 * n * (n - 1)) + v2 / (9.0 * n * (n - 1) * (n - 2))
     z = S / math.sqrt(v) if v > 0 else float("nan")
     return tau, z
 

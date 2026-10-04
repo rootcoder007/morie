@@ -1,7 +1,6 @@
 """Tests for cvxstd.boyd_steepest_desc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxstd import boyd_steepest_desc
 
 
@@ -11,6 +10,8 @@ def test_cvxstd_basic():
     result = boyd_steepest_desc(grad)
     assert isinstance(result, dict)
     assert "direction" in result
+
+
 def test_cvxstd_edge():
     """Test edge cases."""
     grad = np.random.default_rng(42).normal(0, 1, 100)

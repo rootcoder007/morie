@@ -3,14 +3,14 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_nonstat import haas_window, moving_window_krige
+from ._schab_nonstat import moving_window_krige
 
 __all__ = ["schabenberger_moving_window"]
 
 
-def schabenberger_moving_window(coords, z, window_size=None, targets=None,
-                                min_sites=35, step=5, n_lags=10,
-                                local_variogram=True, local_mean=False):
+def schabenberger_moving_window(
+    coords, z, window_size=None, targets=None, min_sites=35, step=5, n_lags=10, local_variogram=True, local_mean=False
+):
     """Haas's moving-window approach, Sec. 8.3.1.
 
     Local kriging restricts the solve to a neighbourhood but keeps ONE global
@@ -79,12 +79,11 @@ def schabenberger_moving_window(coords, z, window_size=None, targets=None,
         fixed_counts = (d <= w).sum(axis=1)
         min_sites = max(2, int(fixed_counts.min()))
 
-    res = moving_window_krige(s, z, tg, min_sites=min_sites, step=step,
-                              n_lags=n_lags, local_mean=local_mean,
-                              local_variogram=local_variogram)
+    res = moving_window_krige(
+        s, z, tg, min_sites=min_sites, step=step, n_lags=n_lags, local_mean=local_mean, local_variogram=local_variogram
+    )
     payload = dict(res)
-    payload["local_variograms"] = np.column_stack(
-        [res["local_sill"], res["local_range"]])
+    payload["local_variograms"] = np.column_stack([res["local_sill"], res["local_range"]])
     payload["targets"] = tg
     if fixed_counts is not None:
         payload["fixed_window_size"] = float(window_size)
@@ -93,15 +92,16 @@ def schabenberger_moving_window(coords, z, window_size=None, targets=None,
             payload["warning"] = (
                 f"the requested window holds as few as {int(fixed_counts.min())} "
                 "sites, below the 35 that Sec. 8.3.1 sets as the starting "
-                "point for a reliable local semivariogram")
-    lines = [("targets", tg.shape[0]),
-             ("theta re-estimated per window", not res["theta_is_global"]),
-             ("median window size", float(np.median(res["window_sizes"]))),
-             ("windows that converged", int(np.sum(res["converged"])))]
-    return RichResult(title="Moving-window local semivariograms",
-                      summary_lines=lines, payload=payload)
+                "point for a reliable local semivariogram"
+            )
+    lines = [
+        ("targets", tg.shape[0]),
+        ("theta re-estimated per window", not res["theta_is_global"]),
+        ("median window size", float(np.median(res["window_sizes"]))),
+        ("windows that converged", int(np.sum(res["converged"]))),
+    ]
+    return RichResult(title="Moving-window local semivariograms", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spmwst: Haas moving-window kriging with per-window semivariogram "
-            "re-estimation (Sec. 8.3.1)")
+    return "spmwst: Haas moving-window kriging with per-window semivariogram re-estimation (Sec. 8.3.1)"

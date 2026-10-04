@@ -10,8 +10,7 @@ import pytest
 from morie.fn.icc12c import icc_two_way
 
 # Table 2, p. 423: four ratings on six targets
-SF = [[9, 2, 5, 8], [6, 1, 3, 2], [8, 4, 6, 8],
-      [7, 1, 2, 6], [10, 5, 6, 9], [6, 2, 4, 7]]
+SF = [[9, 2, 5, 8], [6, 1, 3, 2], [8, 4, 6, 8], [7, 1, 2, 6], [10, 5, 6, 9], [6, 2, 4, 7]]
 
 
 def test_shrout_fleiss_table_3_mean_squares():
@@ -50,8 +49,14 @@ def test_icc3k_is_cronbach_alpha():
 
 def test_model_selector_covers_all_six_forms():
     r = icc_two_way(SF)
-    for lab, key in (("ICC(1,1)", "icc11"), ("1-k", "icc1k"), ("2,1", "icc21"),
-                     ("icc(2,k)", "icc2k"), ("3 1", "icc31"), ("3k", "icc3k")):
+    for lab, key in (
+        ("ICC(1,1)", "icc11"),
+        ("1-k", "icc1k"),
+        ("2,1", "icc21"),
+        ("icc(2,k)", "icc2k"),
+        ("3 1", "icc31"),
+        ("3k", "icc3k"),
+    ):
         assert icc_two_way(SF, lab)["estimate"] == r[key]
     # the paper labels its own table with the concrete k
     assert icc_two_way(SF, "ICC(1,4)")["estimate"] == r["icc1k"]

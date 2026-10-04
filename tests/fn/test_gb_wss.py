@@ -1,7 +1,6 @@
 """Tests for gb_wss.gibbons_wrs_normal_approx."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_wss import gibbons_wrs_normal_approx
 
 

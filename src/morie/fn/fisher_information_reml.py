@@ -28,17 +28,16 @@ def fisher_information_reml(a, da_list):
     arr = np.asarray(_brus.fisher_information_reml(a, da_list), dtype=float)
     value = float(arr.ravel()[0])
     payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (24.2)"
     return RichResult(
-        title='REML Fisher information of covariance parameters',
+        title="REML Fisher information of covariance parameters",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r24e2: I_ij = 0.5 Tr(A^-1 dA_i A^-1 dA_j) [Brus 2022, eq. 24.2]'
+    return "r24e2: I_ij = 0.5 Tr(A^-1 dA_i A^-1 dA_j) [Brus 2022, eq. 24.2]"

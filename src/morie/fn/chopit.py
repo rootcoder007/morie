@@ -95,14 +95,15 @@ def chopit_vignette(self_ratings, vignette_ratings, group=None, n_categories=Non
                 total -= np.sum(np.log(np.clip(hi - lo, 1e-10, None)))
         return total
 
-    p0 = np.concatenate([
-        np.linspace(-1, 1, 1),          # t0
-        np.log(np.full(max(K - 2, 0), 2.0 / max(K - 1, 1))),
-        np.zeros(G - 1),
-        np.nanmean(np.where(np.isnan(Vg), np.nan, Vg), axis=0) - (K + 1) / 2,
-    ])
-    res = optimize.minimize(nll, p0, method="Nelder-Mead",
-                            options={"maxiter": 4000, "xatol": 1e-6, "fatol": 1e-6})
+    p0 = np.concatenate(
+        [
+            np.linspace(-1, 1, 1),  # t0
+            np.log(np.full(max(K - 2, 0), 2.0 / max(K - 1, 1))),
+            np.zeros(G - 1),
+            np.nanmean(np.where(np.isnan(Vg), np.nan, Vg), axis=0) - (K + 1) / 2,
+        ]
+    )
+    res = optimize.minimize(nll, p0, method="Nelder-Mead", options={"maxiter": 4000, "xatol": 1e-6, "fatol": 1e-6})
     taus, shifts, mu = unpack(res.x)
     # the likelihood only pins tau - mu differences; anchor the location by
     # setting the mean vignette level to zero (any joint shift is likelihood-

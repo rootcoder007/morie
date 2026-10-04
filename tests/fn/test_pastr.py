@@ -1,7 +1,6 @@
 """Tests for morie.fn.pastr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pastr import pastr
 
 

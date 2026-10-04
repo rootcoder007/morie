@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["boot_ci_ratio"]
 
 
-def boot_ci_ratio(x, y, stat_x=None, stat_y=None, B=2000, alpha=0.05,
-                  seed=0, paired=False):
+def boot_ci_ratio(x, y, stat_x=None, stat_y=None, B=2000, alpha=0.05, seed=0, paired=False):
     r"""Percentile bootstrap confidence interval for a ratio of two
     statistics, :math:`\theta = T_x(F_x)/T_y(F_y)` (Davison and
     Hinkley 1997, Chs. 2-3 and 5).
@@ -70,14 +69,12 @@ def boot_ci_ratio(x, y, stat_x=None, stat_y=None, B=2000, alpha=0.05,
         raise ValueError(f"alpha must lie in (0, 1), got {a}.")
     Bn = int(B)
     if Bn < 100:
-        raise ValueError(f"need at least 100 replicates for quantiles, "
-                         f"got {Bn}.")
+        raise ValueError(f"need at least 100 replicates for quantiles, got {Bn}.")
     if paired and xv.size != yv.size:
         raise ValueError("paired resampling needs equal-length samples.")
     den0 = float(sy(yv))
     if den0 == 0:
-        raise ValueError("the denominator statistic is zero on the data; "
-                         "the ratio is undefined.")
+        raise ValueError("the denominator statistic is zero on the data; the ratio is undefined.")
     ratio = float(sx(xv)) / den0
     rng = np.random.default_rng(seed)
     reps = np.empty(Bn)
@@ -96,20 +93,27 @@ def boot_ci_ratio(x, y, stat_x=None, stat_y=None, B=2000, alpha=0.05,
         reps[b] = num / den if den != 0 else np.nan
     good = reps[np.isfinite(reps)]
     lo, hi = np.percentile(good, [100 * a / 2, 100 * (1 - a / 2)])
-    return RichResult(payload={
-        "ratio": ratio, "ci": (float(lo), float(hi)),
-        "replicates": reps, "se": float(np.std(good, ddof=1)),
-        "small_denominator_fraction": small / Bn,
-        "why_bootstrap": "a ratio's distribution is skewed and the delta "
-                         "method breaks down for small denominators; the "
-                         "percentile interval reads the quantiles directly",
-        "paired": bool(paired),
-        "pairing_note": "paired data must be resampled as PAIRS to keep the "
-                        "dependence; independent samples separately -- this "
-                        "is a modelling statement, not a convenience flag",
-        "B": Bn, "alpha": a,
-        "n_x": int(xv.size), "n_y": int(yv.size),
-        "method": "Percentile bootstrap CI for a ratio (Davison-Hinkley 1997)"})
+    return RichResult(
+        payload={
+            "ratio": ratio,
+            "ci": (float(lo), float(hi)),
+            "replicates": reps,
+            "se": float(np.std(good, ddof=1)),
+            "small_denominator_fraction": small / Bn,
+            "why_bootstrap": "a ratio's distribution is skewed and the delta "
+            "method breaks down for small denominators; the "
+            "percentile interval reads the quantiles directly",
+            "paired": bool(paired),
+            "pairing_note": "paired data must be resampled as PAIRS to keep the "
+            "dependence; independent samples separately -- this "
+            "is a modelling statement, not a convenience flag",
+            "B": Bn,
+            "alpha": a,
+            "n_x": int(xv.size),
+            "n_y": int(yv.size),
+            "method": "Percentile bootstrap CI for a ratio (Davison-Hinkley 1997)",
+        }
+    )
 
 
 def cheatsheet():

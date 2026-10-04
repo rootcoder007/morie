@@ -27,8 +27,12 @@ def test_johanc_has_no_ks_residue():
 def test_johanc_runs_on_a_cointegrated_pair():
     n = 120
     common = np.array([float((i * 7) % 13) + 0.5 * i for i in range(n)])
-    Y = np.column_stack([common + np.array([float((i * 3) % 5) for i in range(n)]),
-                         2.0 * common + np.array([float((i * 11) % 7) for i in range(n)])])
+    Y = np.column_stack(
+        [
+            common + np.array([float((i * 3) % 5) for i in range(n)]),
+            2.0 * common + np.array([float((i * 11) % 7) for i in range(n)]),
+        ]
+    )
     res = johansen_cointegration(Y, k_ar_diff=1)
     assert len(res["trace_stat"]) == 2
     assert len(res["eigenvalues"]) >= 2

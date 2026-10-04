@@ -1,7 +1,6 @@
 """Tests for vidgen.video_diffusion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vidgen import video_diffusion
 
 

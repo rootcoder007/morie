@@ -1,7 +1,6 @@
 """Tests for eslica.esl_ica."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslica import esl_ica
 
 
@@ -11,6 +10,8 @@ def test_eslica_basic():
     result = esl_ica(X)
     assert isinstance(result, dict)
     assert "sources" in result
+
+
 def test_eslica_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

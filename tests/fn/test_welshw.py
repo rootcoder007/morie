@@ -1,7 +1,6 @@
 """Tests for welshw.welsch_weight."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.welshw import welsch_weight
 
 

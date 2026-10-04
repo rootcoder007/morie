@@ -21,14 +21,13 @@ def _dprime_ci(h, grid=200):
     n = sum(h)
     if n == 0:
         return 0.0, 0.0, 0.0
-    pA = (h[0] + h[1]) / n          # first locus allele 0 frequency
-    pB = (h[0] + h[2]) / n          # second locus allele 0 frequency
+    pA = (h[0] + h[1]) / n  # first locus allele 0 frequency
+    pB = (h[0] + h[2]) / n  # second locus allele 0 frequency
     if pA in (0.0, 1.0) or pB in (0.0, 1.0):
         return 0.0, 0.0, 0.0
     p00 = h[0] / n
     D = p00 - pA * pB
-    dmax = min(pA * (1 - pB), (1 - pA) * pB) if D > 0 else \
-        min(pA * pB, (1 - pA) * (1 - pB))
+    dmax = min(pA * (1 - pB), (1 - pA) * pB) if D > 0 else min(pA * pB, (1 - pA) * (1 - pB))
     if dmax <= 0:
         return 0.0, 0.0, 0.0
     dprime = abs(D) / dmax
@@ -38,8 +37,7 @@ def _dprime_ci(h, grid=200):
     for g in range(grid + 1):
         dp = g / grid
         Dg = sgn * dp * dmax
-        p = [pA * pB + Dg, pA * (1 - pB) - Dg,
-             (1 - pA) * pB - Dg, (1 - pA) * (1 - pB) + Dg]
+        p = [pA * pB + Dg, pA * (1 - pB) - Dg, (1 - pA) * pB - Dg, (1 - pA) * (1 - pB) + Dg]
         if any(v < -1e-12 for v in p):
             logl.append(-1e18)
             continue
@@ -62,8 +60,7 @@ def _dprime_ci(h, grid=200):
     return dprime, lo, hi
 
 
-def hapblk(H, strong_hi=0.98, strong_lo=0.70, recomb_hi=0.90,
-           frac=0.95):
+def hapblk(H, strong_hi=0.98, strong_lo=0.70, recomb_hi=0.90, frac=0.95):
     """
     Haplotype blocks by the Gabriel et al. (2002) confidence rule.
 
@@ -154,14 +151,16 @@ def hapblk(H, strong_hi=0.98, strong_lo=0.70, recomb_hi=0.90,
             start = best_end + 1
         else:
             start += 1
-    return RichResult(payload={
-        "blocks": blocks,
-        "dprime": dp,
-        "ci_lo": lo_m,
-        "ci_hi": hi_m,
-        "pair_class": cls,
-        "method": "Gabriel et al. (2002) confidence-bound blocks",
-    })
+    return RichResult(
+        payload={
+            "blocks": blocks,
+            "dprime": dp,
+            "ci_lo": lo_m,
+            "ci_hi": hi_m,
+            "pair_class": cls,
+            "method": "Gabriel et al. (2002) confidence-bound blocks",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -170,6 +169,7 @@ haplotype_blocks = hapblk
 
 def cheatsheet():
     return "hapblk: strong LD = CI(D') in (0.7, ...)+hi>0.98; block = 95% strong pairs"
+
 
 # public names resolved by fn/_lazy_map.json
 haplotype_block = hapblk

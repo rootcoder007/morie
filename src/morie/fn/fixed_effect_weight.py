@@ -33,17 +33,16 @@ def fixed_effect_weight(se):
     """
     value = _ca_crim.fixed_effect_weight(se)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.34)"
     return RichResult(
-        title='Fixed-effect inverse-variance weight w = 1/se^2',
+        title="Fixed-effect inverse-variance weight w = 1/se^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e34: w_i = 1 / se_i^2 [Weisburd et al. 2022, eq. 11.34]'
+    return "ca11e34: w_i = 1 / se_i^2 [Weisburd et al. 2022, eq. 11.34]"

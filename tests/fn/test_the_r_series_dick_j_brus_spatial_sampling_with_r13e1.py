@@ -4,11 +4,11 @@ Brus (2022), Spatial Sampling with R, eq. (13.1), the stationary Gaussian proces
 recomputed from the formula in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r13e1 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_1
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r13e1 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_1,
+)
 
 
 def test_the_model_reports_one_location_per_mean_value():
@@ -26,4 +26,6 @@ def test_a_single_location_is_accepted():
 
 def test_a_covariance_that_does_not_match_the_mean_is_refused():
     with pytest.raises((ValueError, IndexError)):
-        the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_1([1.0, 2.0, 3.0], [[1.0, 0.0], [0.0, 1.0]])
+        the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_1(
+            [1.0, 2.0, 3.0], [[1.0, 0.0], [0.0, 1.0]]
+        )

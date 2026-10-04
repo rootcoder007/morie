@@ -1,7 +1,6 @@
 """Tests for dpexpm.dp_exponential_mechanism."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpexpm import dp_exponential_mechanism
 
 
@@ -12,6 +11,8 @@ def test_dpexpm_basic():
     result = dp_exponential_mechanism(candidates, utility)
     assert isinstance(result, dict)
     assert "selected" in result
+
+
 def test_dpexpm_edge():
     """Test edge cases."""
     candidates = np.random.default_rng(42).normal(0, 1, 100)

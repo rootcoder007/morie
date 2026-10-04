@@ -1,7 +1,6 @@
 """Tests for morie.fn.modin."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.modin import modin
 
 

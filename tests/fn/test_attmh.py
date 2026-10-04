@@ -11,6 +11,7 @@ def test_attmh_basic():
 
 def test_attmh_edge():
     import pytest
+
     I2 = [[1.0, 0.0], [0.0, 1.0]]
     with pytest.raises(ValueError, match="one per head"):
         multi_head_attention(I2, I2, I2, [I2], [I2], [I2], I2, 2)

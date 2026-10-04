@@ -5,10 +5,10 @@ designs with a known answer everywhere else. Page and equation numbers
 are the book's.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._schaben import (fit_variogram_wls, matheron, variogram_model)
+from morie.fn import _array_core as np
+from morie.fn._schaben import fit_variogram_wls, matheron, variogram_model
 from morie.fn.spclk import schabenberger_composite_likelihood
 from morie.fn.spcrhk import schabenberger_cressie_hawkins
 from morie.fn.spintp import schabenberger_intensity_estimation
@@ -23,8 +23,8 @@ from morie.fn.vargm import empirical_variogram
 # outlier, and it contributes to four of the five lag classes.
 EX43_COORDS = np.array([[1, 1], [1, 4], [2, 2], [3, 1], [3, 4]], float)
 EX43_Z = np.array([1.0, 4.0, 2.0, 3.0, 20.0])
-EX43_MATHERON = [0.5, 65.0, 82.0, 74.5, 90.5]          # printed p. 157
-EX43_CH = [0.71, 38.14, 45.5, 52.2, 36.6]              # printed p. 161
+EX43_MATHERON = [0.5, 65.0, 82.0, 74.5, 90.5]  # printed p. 157
+EX43_CH = [0.71, 38.14, 45.5, 52.2, 36.6]  # printed p. 161
 
 
 def test_matheron_reproduces_example_4_3():
@@ -43,10 +43,9 @@ def test_the_printed_bias_factor_omits_the_third_term():
     # writes equation (4.26) without the last term. At |N(h)| = 2 the
     # worked example uses 0.704, which is 0.457 + 0.494/2 exactly -- so
     # the printed estimator, not the derivation, is what it evaluates.
-    assert 0.457 + 0.494 / 2 == pytest.approx(0.704)
+    assert pytest.approx(0.704) == 0.457 + 0.494 / 2
     plain = schabenberger_cressie_hawkins(EX43_COORDS, EX43_Z, exact=True)
-    full = schabenberger_cressie_hawkins(EX43_COORDS, EX43_Z, exact=True,
-                                         full_correction=True)
+    full = schabenberger_cressie_hawkins(EX43_COORDS, EX43_Z, exact=True, full_correction=True)
     assert round(float(plain["gamma"][1]), 2) == 38.14
     assert float(full["gamma"][1]) != float(plain["gamma"][1])
 
@@ -55,9 +54,7 @@ def test_the_outlier_is_what_separates_the_two_estimators():
     # p. 158: dropping Z([3,4]) leaves gamma(2) = 2, gamma(sqrt5) = 2,
     # gamma(3) = 4.5, gamma(sqrt13) = 0.5 -- i.e. the classical estimator
     # was reporting 65, 82, 74.5, 90.5 almost entirely because of it
-    clean = schabenberger_matheron_estimator(
-        EX43_COORDS[:4], EX43_Z[:4], exact=True
-    )
+    clean = schabenberger_matheron_estimator(EX43_COORDS[:4], EX43_Z[:4], exact=True)
     assert max(float(g) for g in clean["gamma"]) < 6.0
     ch = schabenberger_cressie_hawkins(EX43_COORDS, EX43_Z, exact=True)
     mat = schabenberger_matheron_estimator(EX43_COORDS, EX43_Z, exact=True)
@@ -84,8 +81,8 @@ def test_sparse_lag_classes_are_flagged():
 # fitting: a field simulated from a known covariance must be recovered
 # --------------------------------------------------------------------
 
-def gaussian_field(seed=0, n=220, nugget=0.2, psill=1.8, rng_par=3.0,
-                   model="exponential", size=20.0):
+
+def gaussian_field(seed=0, n=220, nugget=0.2, psill=1.8, rng_par=3.0, model="exponential", size=20.0):
     """Draw an exact realisation by Cholesky of the target covariance."""
     gen = np.random.default_rng(seed)
     P = gen.uniform(0, size, size=(n, 2))
@@ -156,7 +153,7 @@ def test_composite_likelihood_is_the_variance_weighted_gee():
     # constant gamma the two weightings coincide up to a scale, so the
     # objective must be a pure rescaling. Checked on the weight itself.
     g = np.array([2.0, 2.0, 2.0])
-    w_cl = 1.0 / (8.0 * g ** 2)
+    w_cl = 1.0 / (8.0 * g**2)
     assert np.allclose(w_cl / w_cl[0], np.ones(3))
 
 
@@ -197,6 +194,7 @@ def test_ml_variance_bias_is_theta_over_n_for_independent_data():
 # covariance-parameter estimation with a trend
 # --------------------------------------------------------------------
 
+
 def test_trend_leaks_into_the_raw_semivariogram():
     # equation (5.35): with a spatially varying mean the empirical
     # semivariogram of the RAW data estimates the semivariogram plus a
@@ -215,9 +213,7 @@ def test_irwgls_recovers_the_trend_coefficients():
     gen = np.random.default_rng(7)
     P = gen.uniform(0, 20, size=(120, 2))
     z = 3.0 + 1.5 * P[:, 0] + gen.normal(scale=0.6, size=120)
-    out = schabenberger_cov_param_estimation_kriging(
-        P, z, method="wls", X=P[:, :1]
-    )
+    out = schabenberger_cov_param_estimation_kriging(P, z, method="wls", X=P[:, :1])
     beta = out["beta"]
     assert beta.size == 2
     assert abs(float(beta[0]) - 3.0) < 1.0
@@ -244,6 +240,7 @@ def test_convergence_is_reported_as_lack_of_progress():
 # prediction error
 # --------------------------------------------------------------------
 
+
 def test_the_correction_only_ever_increases_the_prediction_error():
     P, z = gaussian_field(seed=10, n=70)
     out = schabenberger_kriging_pred_error(P, z, [[10.0, 10.0], [5.0, 15.0]])
@@ -254,18 +251,14 @@ def test_the_correction_only_ever_increases_the_prediction_error():
 
 def test_known_parameters_still_report_the_plugin_baseline():
     P, z = gaussian_field(seed=11, n=70)
-    out = schabenberger_kriging_pred_error(
-        P, z, [10.0, 10.0], nugget=0.2, psill=1.8, rng=3.0
-    )
+    out = schabenberger_kriging_pred_error(P, z, [10.0, 10.0], nugget=0.2, psill=1.8, rng=3.0)
     assert out["parameters_estimated"] is False
     assert np.all(out["mse_plugin"] > 0)
 
 
 def test_kriging_honours_the_data_at_an_observed_location():
     P, z = gaussian_field(seed=12, n=60, nugget=0.0)
-    out = schabenberger_kriging_pred_error(
-        P, z, P[3], nugget=1e-8, psill=2.0, rng=3.0
-    )
+    out = schabenberger_kriging_pred_error(P, z, P[3], nugget=1e-8, psill=2.0, rng=3.0)
     # with no nugget the predictor interpolates
     assert abs(float(out["prediction"][0]) - float(z[3])) < 0.05
 
@@ -273,6 +266,7 @@ def test_kriging_honours_the_data_at_an_observed_location():
 # --------------------------------------------------------------------
 # intensity
 # --------------------------------------------------------------------
+
 
 def test_intensity_of_a_homogeneous_process_matches_the_count_over_area():
     gen = np.random.default_rng(13)
@@ -286,10 +280,8 @@ def test_intensity_of_a_homogeneous_process_matches_the_count_over_area():
 def test_edge_correction_lifts_the_boundary():
     gen = np.random.default_rng(14)
     pts = gen.uniform(0, 10, size=(300, 2))
-    on = schabenberger_intensity_estimation(pts, region=(0, 10, 0, 10),
-                                            edge_correct=True)
-    off = schabenberger_intensity_estimation(pts, region=(0, 10, 0, 10),
-                                             edge_correct=False)
+    on = schabenberger_intensity_estimation(pts, region=(0, 10, 0, 10), edge_correct=True)
+    off = schabenberger_intensity_estimation(pts, region=(0, 10, 0, 10), edge_correct=False)
     # corners lose the most kernel mass, so that is where the correction
     # must bite hardest
     assert on["intensity_surface"][0, 0] > off["intensity_surface"][0, 0]
@@ -308,26 +300,24 @@ def test_clustered_pattern_has_a_more_variable_surface():
     gen = np.random.default_rng(16)
     even = gen.uniform(0, 10, size=(300, 2))
     centres = gen.uniform(1, 9, size=(4, 2))
-    clumped = np.vstack([
-        centres[i % 4] + gen.normal(scale=0.4, size=2) for i in range(300)
-    ])
+    clumped = np.vstack([centres[i % 4] + gen.normal(scale=0.4, size=2) for i in range(300)])
     a = schabenberger_intensity_estimation(even, region=(0, 10, 0, 10))
     b = schabenberger_intensity_estimation(clumped, region=(0, 10, 0, 10))
     assert b["intensity_surface"].std() > a["intensity_surface"].std()
 
 
-@pytest.mark.parametrize("kern", ["gaussian", "quadratic",
-                                  "minimum_variance", "uniform"])
+@pytest.mark.parametrize("kern", ["gaussian", "quadratic", "minimum_variance", "uniform"])
 def test_every_kernel_integrates_to_one(kern):
     from morie.fn.spintp import _kernel
+
     t = np.linspace(-8, 8, 200001)
-    assert float(np.trapezoid(_kernel(t, kern), t)) == pytest.approx(1.0,
-                                                                    abs=1e-4)
+    assert float(np.trapezoid(_kernel(t, kern), t)) == pytest.approx(1.0, abs=1e-4)
 
 
 # --------------------------------------------------------------------
 # spatial autoregression
 # --------------------------------------------------------------------
+
 
 def ring_weights(n):
     W = np.zeros((n, n))
@@ -356,8 +346,7 @@ def test_sar_error_recovers_beta():
     gen = np.random.default_rng(18)
     X = np.column_stack([np.ones(n), gen.normal(size=n)])
     e = np.linalg.solve(np.eye(n) - 0.5 * W, gen.normal(size=n) * 0.4)
-    out = schabenberger_sar_ml(X, X @ np.array([1.0, 2.0]) + e, W,
-                               model="error")
+    out = schabenberger_sar_ml(X, X @ np.array([1.0, 2.0]) + e, W, model="error")
     assert abs(float(out["beta"][0]) - 1.0) < 0.4
     assert abs(float(out["beta"][1]) - 2.0) < 0.15
 
@@ -383,8 +372,7 @@ def test_lag_and_error_are_different_models_not_aliases():
     W = ring_weights(n)
     gen = np.random.default_rng(20)
     X = np.column_stack([np.ones(n), gen.normal(size=n)])
-    y = np.linalg.solve(np.eye(n) - 0.6 * W,
-                        X @ np.array([1.0, 2.0]) + gen.normal(size=n) * 0.5)
+    y = np.linalg.solve(np.eye(n) - 0.6 * W, X @ np.array([1.0, 2.0]) + gen.normal(size=n) * 0.5)
     lag = schabenberger_sar_ml(X, y, W, model="lag")
     err = schabenberger_sar_ml(X, y, W, model="error")
     # data generated by the lag process: fitting the error model to it
@@ -438,5 +426,4 @@ def test_input_validation_across_the_shelf():
     with pytest.raises(ValueError, match="kernel must be one of"):
         schabenberger_intensity_estimation(P, kernel="tricube")
     with pytest.raises(ValueError, match="'error' or 'lag'"):
-        schabenberger_sar_ml(np.ones((30, 2)), np.zeros(30),
-                             ring_weights(30), model="car")
+        schabenberger_sar_ml(np.ones((30, 2)), np.zeros(30), ring_weights(30), model="car")

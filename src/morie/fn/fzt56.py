@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Equivalence of the boundary-free and empirical KS statistics (Theorem 5.6)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bfkseq", "fauzi_thm5_6_bdfree_ks_equiv"]

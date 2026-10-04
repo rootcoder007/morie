@@ -1,7 +1,6 @@
 """Tests for basisR.basis_representation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.basisR import basis_representation
 
 

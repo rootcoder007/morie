@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ks2asymp', 'gibbons_ks2_asymp']
+__all__ = ["ks2asymp", "gibbons_ks2_asymp"]
 
 
 def ks2asymp(d, m, n):

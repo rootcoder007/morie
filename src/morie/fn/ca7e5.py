@@ -5,7 +5,6 @@ Book-as-spec implementation; see reference for context.
 
 import math as _math  # noqa: F401
 
-from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_7_equation_5"]
@@ -28,17 +27,16 @@ def ca_chapter_7_equation_5(beta00, u_j):
     """
     value = float(beta00) + float(u_j)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.5)"
     return RichResult(
-        title='Level-2 model for cluster intercepts beta0j = beta00 + u_j',
+        title="Level-2 model for cluster intercepts beta0j = beta00 + u_j",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e5: beta_0j = beta_00 + u_j [Weisburd et al. 2022, eq. 7.5]'
+    return "ca7e5: beta_0j = beta_00 + u_j [Weisburd et al. 2022, eq. 7.5]"

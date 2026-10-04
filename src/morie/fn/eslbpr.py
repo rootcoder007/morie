@@ -126,14 +126,20 @@ def esl_backprop(X, y, weights, task="regression"):
     else:
         raise ValueError('task must be "regression" or "classification"')
 
-    s = (delta @ b.T) * Z * (1 - Z)          # ESL eq. (11.5)
+    s = (delta @ b.T) * Z * (1 - Z)  # ESL eq. (11.5)
     return RichResult(
         title="Backpropagation sweep",
         summary_lines=[("n", n), ("hidden units", int(M)), ("loss", loss)],
         payload={
-            "grad_alpha": X.T @ s, "grad_alpha0": s.sum(axis=0),
-            "grad_beta": Z.T @ delta, "grad_beta0": delta.sum(axis=0),
-            "delta": delta, "s": s, "hidden": Z, "output": T, "loss": loss,
+            "grad_alpha": X.T @ s,
+            "grad_alpha0": s.sum(axis=0),
+            "grad_beta": Z.T @ delta,
+            "grad_beta0": delta.sum(axis=0),
+            "delta": delta,
+            "s": s,
+            "hidden": Z,
+            "output": T,
+            "loss": loss,
             "method": "esl_backprop",
         },
     )

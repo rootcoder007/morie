@@ -69,18 +69,28 @@ def gamma_frailty_cox(time, event, X, cluster, **kwargs):
     th = r["theta"]
     return RichResult(
         title="Gamma-frailty Cox model",
-        summary_lines=[("clusters", int(r["n_clusters"])), ("theta", float(th)),
-                       ("Kendall tau", float(r["kendall_tau"]))],
+        summary_lines=[
+            ("clusters", int(r["n_clusters"])),
+            ("theta", float(th)),
+            ("Kendall tau", float(r["kendall_tau"])),
+        ],
         warnings=list(r.warnings),
         payload={
-            "beta": r["beta"], "se": r["se"], "z": r["z"],
-            "p_value": r["p_value"], "hazard_ratio": r["hazard_ratio"],
-            "theta": th, "kendall_tau": r["kendall_tau"],
-            "frailty": r["frailty"], "clusters": r["clusters"],
-            "n_clusters": r["n_clusters"], "loglik": r["loglik"],
+            "beta": r["beta"],
+            "se": r["se"],
+            "z": r["z"],
+            "p_value": r["p_value"],
+            "hazard_ratio": r["hazard_ratio"],
+            "theta": th,
+            "kendall_tau": r["kendall_tau"],
+            "frailty": r["frailty"],
+            "clusters": r["clusters"],
+            "n_clusters": r["n_clusters"],
+            "loglik": r["loglik"],
             # Marginal HRs attenuate toward 1 over time under gamma frailty.
             "marginal_attenuation": True,
-            "converged": r["converged"], "method": "gamma_frailty_cox",
+            "converged": r["converged"],
+            "method": "gamma_frailty_cox",
         },
     )
 

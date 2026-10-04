@@ -89,14 +89,19 @@ def cox_breslow_step(time, event, X, beta=None, ties="efron"):
     times, dH, H = baseline_hazard(t, e, Xm, beta)
     return RichResult(
         title="Breslow baseline hazard",
-        summary_lines=[("event times", int(times.size)),
-                       ("max cumhazard", float(H[-1]) if H.size else float("nan"))],
-        warnings=["the baseline is undefined beyond the last event time; the "
-                  "curve is flat there by convention, not by evidence"],
+        summary_lines=[("event times", int(times.size)), ("max cumhazard", float(H[-1]) if H.size else float("nan"))],
+        warnings=[
+            "the baseline is undefined beyond the last event time; the "
+            "curve is flat there by convention, not by evidence"
+        ],
         payload={
-            "times": times, "hazard": dH, "cumhazard": H,
-            "survival": np.exp(-H), "beta": beta,
-            "n": int(t.size), "method": "cox_breslow_step",
+            "times": times,
+            "hazard": dH,
+            "cumhazard": H,
+            "survival": np.exp(-H),
+            "beta": beta,
+            "n": int(t.size),
+            "method": "cox_breslow_step",
         },
     )
 

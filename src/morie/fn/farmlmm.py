@@ -62,12 +62,10 @@ doi:10.1038/ng.2314. MLMM, the stepwise predecessor.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["kinship_from_markers", "fixed_effect_scan",
-           "random_effect_step", "farmcpu", "confounding"]
+__all__ = ["kinship_from_markers", "fixed_effect_scan", "random_effect_step", "farmcpu", "confounding"]
 
 _EPS = 1e-12
 
@@ -80,8 +78,7 @@ def kinship_from_markers(G, markers=None):
     """
     M = [[float(v) for v in r] for r in k.mat(G)]
     n, p = len(M), len(M[0])
-    cols = list(range(p)) if markers is None else \
-        [int(v) for v in markers]
+    cols = list(range(p)) if markers is None else [int(v) for v in markers]
     if not cols:
         raise ValueError("farmlmm: kinship needs at least one marker")
     Z = []
@@ -90,10 +87,8 @@ def kinship_from_markers(G, markers=None):
         m = sum(col) / n
         s = math.sqrt(sum((v - m) ** 2 for v in col) / n) or 1.0
         Z.append([(v - m) / s for v in col])
-    K = [[sum(Z[t][i] * Z[t][j] for t in range(len(Z))) / len(Z)
-          for j in range(n)] for i in range(n)]
-    return {"K": K, "markers_used": cols, "n_markers": len(cols),
-            "all_markers": markers is None}
+    K = [[sum(Z[t][i] * Z[t][j] for t in range(len(Z))) / len(Z) for j in range(n)] for i in range(n)]
+    return {"K": K, "markers_used": cols, "n_markers": len(cols), "all_markers": markers is None}
 
 
 def confounding(G, K, marker):
@@ -105,16 +100,15 @@ def confounding(G, K, marker):
     M = [[float(v) for v in r] for r in k.mat(G)]
     n = len(M)
     g = [M[i][int(marker)] for i in range(n)]
-    kg = [sum(K[i][j] * g[j] for j in range(n)) / n
-          for i in range(n)]
+    kg = [sum(K[i][j] * g[j] for j in range(n)) / n for i in range(n)]
     mg, mk = sum(g) / n, sum(kg) / n
     num = sum((g[i] - mg) * (kg[i] - mk) for i in range(n))
-    den = math.sqrt(sum((g[i] - mg) ** 2 for i in range(n))
-                    * sum((kg[i] - mk) ** 2 for i in range(n)))
-    return {"correlation": num / den if den > _EPS else 0.0,
-            "marker": int(marker),
-            "note": "kinship from ALL markers contains the tested "
-                    "marker; that is the confounding"}
+    den = math.sqrt(sum((g[i] - mg) ** 2 for i in range(n)) * sum((kg[i] - mk) ** 2 for i in range(n)))
+    return {
+        "correlation": num / den if den > _EPS else 0.0,
+        "marker": int(marker),
+        "note": "kinship from ALL markers contains the tested marker; that is the confounding",
+    }
 
 
 def fixed_effect_scan(y, G, covariates=(), K=None):
@@ -124,8 +118,7 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
     M = [[float(v) for v in r] for r in k.mat(G)]
     n, p = len(M), len(M[0])
     if len(yv) != n:
-        raise ValueError("farmlmm: %d phenotypes but %d genotypes"
-                         % (len(yv), n))
+        raise ValueError("farmlmm: %d phenotypes but %d genotypes" % (len(yv), n))
     cov = [int(v) for v in covariates]
     pv, betas = [], []
     for j in range(p):
@@ -137,9 +130,7 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
             pv.append(1.0)
             betas.append(0.0)
             continue
-        fit = [co[0] + sum(X[i][a] * co[1 + a]
-                           for a in range(len(cols)))
-               for i in range(n)]
+        fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(len(cols))) for i in range(n)]
         res = [yv[i] - fit[i] for i in range(n)]
         dof = max(n - len(cols) - 1, 1)
         s2 = sum(v * v for v in res) / dof
@@ -149,9 +140,12 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
         t = co[1] / se if se > 0 else 0.0
         pv.append(2.0 * (_norm_cdf(-(abs(t)))))
         betas.append(co[1])
-    return {"p": pv, "beta": betas, "covariates": cov,
-            "note": "associated markers enter as COVARIATES, which is "
-                    "what controls false positives"}
+    return {
+        "p": pv,
+        "beta": betas,
+        "covariates": cov,
+        "note": "associated markers enter as COVARIATES, which is what controls false positives",
+    }
 
 
 def _norm_cdf(x):
@@ -166,19 +160,23 @@ def random_effect_step(y, G, selected, bins=None):
     """
     sel = [int(v) for v in selected]
     if not sel:
-        return {"K": None, "markers_used": [],
-                "note": "no associated markers yet; kinship is the "
-                        "identity at the first iteration"}
+        return {
+            "K": None,
+            "markers_used": [],
+            "note": "no associated markers yet; kinship is the identity at the first iteration",
+        }
     kk = kinship_from_markers(G, sel)
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
     Kk = kk["K"]
     m = sum(yv) / n
-    blup = [sum(Kk[i][j] * (yv[j] - m) for j in range(n)) / n
-            for i in range(n)]
-    return {"K": Kk, "markers_used": sel, "blup": blup,
-            "note": "kinship from a SMALL selected set, so it no "
-                    "longer contains the marker under test"}
+    blup = [sum(Kk[i][j] * (yv[j] - m) for j in range(n)) / n for i in range(n)]
+    return {
+        "K": Kk,
+        "markers_used": sel,
+        "blup": blup,
+        "note": "kinship from a SMALL selected set, so it no longer contains the marker under test",
+    }
 
 
 def farmcpu(y, G, max_iter=10, threshold=None, seed=0):
@@ -203,30 +201,37 @@ def farmcpu(y, G, max_iter=10, threshold=None, seed=0):
             break
         sel = new
         random_effect_step(yv, M, sel)
-    return RichResult(payload={
-        "estimate": sel, "selected": sel, "p": fem["p"],
-        "iterations": len(hist), "converged": converged,
-        "oscillating": (not converged and len(hist) >= 3
-                        and hist[-1] == hist[-3]),
-        "threshold": thr, "history": hist,
-        "method": "FarmCPU; Liu, Huang, Fan, Buckler & Zhang (2016)",
-        "note": "kinship rebuilt from the SELECTED markers each "
-                "round, so the confounding is removed rather than "
-                "reduced",
-    })
+    return RichResult(
+        payload={
+            "estimate": sel,
+            "selected": sel,
+            "p": fem["p"],
+            "iterations": len(hist),
+            "converged": converged,
+            "oscillating": (not converged and len(hist) >= 3 and hist[-1] == hist[-3]),
+            "threshold": thr,
+            "history": hist,
+            "method": "FarmCPU; Liu, Huang, Fan, Buckler & Zhang (2016)",
+            "note": "kinship rebuilt from the SELECTED markers each "
+            "round, so the confounding is removed rather than "
+            "reduced",
+        }
+    )
 
 
 def cheatsheet():
-    return ("farmlmm: an MLM controls false positives with kinship "
-            "estimated from ALL markers -- which therefore contains "
-            "the marker being tested, and that confounding costs "
-            "power. Split the model: FEM tests one marker at a time "
-            "with the currently associated markers as COVARIATES; REM "
-            "estimates those associated markers by using them to "
-            "DEFINE KINSHIP, avoiding over-fitting. Alternate, unify "
-            "the p-values each round, and the confounding is removed "
-            "rather than reduced. Cost is linear in individuals AND "
-            "markers.")
+    return (
+        "farmlmm: an MLM controls false positives with kinship "
+        "estimated from ALL markers -- which therefore contains "
+        "the marker being tested, and that confounding costs "
+        "power. Split the model: FEM tests one marker at a time "
+        "with the currently associated markers as COVARIATES; REM "
+        "estimates those associated markers by using them to "
+        "DEFINE KINSHIP, avoiding over-fitting. Alternate, unify "
+        "the p-values each round, and the confounding is removed "
+        "rather than reduced. Cost is linear in individuals AND "
+        "markers."
+    )
 
 
 # compact alias per ledger/NAMING.md

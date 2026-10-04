@@ -1,7 +1,6 @@
 """Tests for morie.fn.kalfil -- Kalman filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.kalfil import kalfil, kalman_filter
 

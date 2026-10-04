@@ -75,8 +75,7 @@ def kosorok_ch3_cox_partial_likelihood(beta, Z, V, d, n=None):
         raise ValueError(f"beta must have {p} entries, got {beta.size}.")
 
     at_beta = cox_score(beta, Z, V, d)
-    res = optimize.root(lambda b: cox_score(b, Z, V, d)["score"], np.zeros(p),
-                        method="hybr")
+    res = optimize.root(lambda b: cox_score(b, Z, V, d)["score"], np.zeros(p), method="hybr")
     hat = res.x
     at_hat = cox_score(hat, Z, V, d)
     info = at_hat["information"]
@@ -93,9 +92,11 @@ def kosorok_ch3_cox_partial_likelihood(beta, Z, V, d, n=None):
             "se": se if p > 1 else float(se[0]),
             "ci_lower": hat - 1.96 * se if p > 1 else float(hat[0] - 1.96 * se[0]),
             "ci_upper": hat + 1.96 * se if p > 1 else float(hat[0] + 1.96 * se[0]),
-            "score": at_beta["score"], "information": info,
+            "score": at_beta["score"],
+            "information": info,
             "converged": bool(res.success),
-            "n_events": at_hat["n_events"], "n": int(nobs),
+            "n_events": at_hat["n_events"],
+            "n": int(nobs),
             "method": "Cox partial likelihood (Kosorok eq. 3.4); SE from the information",
         }
     )

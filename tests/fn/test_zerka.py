@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerka -- Adaptive bandwidth relative risk"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zerka import risk_adaptive_bw
 
 

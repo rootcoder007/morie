@@ -1,8 +1,8 @@
 """toppd: nucleus (top-p) sampling (Holtzman et al. 2020)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.toppd import top_p_nucleus as tp
 
 
@@ -56,6 +56,4 @@ def test_toppd_preserves_the_relative_odds_of_kept_tokens():
 
 def test_toppd_is_invariant_to_a_constant_logit_shift():
     z = np.array([2.0, 1.0, 0.5, -3.0])
-    assert np.asarray(tp(z + 9.0, p=0.8)["tensor"]) == pytest.approx(
-        np.asarray(tp(z, p=0.8)["tensor"])
-    )
+    assert np.asarray(tp(z + 9.0, p=0.8)["tensor"]) == pytest.approx(np.asarray(tp(z, p=0.8)["tensor"]))

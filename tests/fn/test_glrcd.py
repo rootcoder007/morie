@@ -1,7 +1,6 @@
 """Tests for glrcd.py - GLR change point detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.glrcd import glr_change, glrcd
 
 

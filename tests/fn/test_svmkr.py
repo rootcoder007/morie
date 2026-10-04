@@ -1,8 +1,6 @@
 """Tests for svmkr.svm_kernel_trick."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.svmkr import svm_kernel_trick
 
 

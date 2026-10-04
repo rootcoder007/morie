@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ColBERT late-interaction retrieval scoring."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 from .clipsi import l2_normalize
@@ -74,16 +72,18 @@ def colbert(query, docs):
         maxsim.append(row)
         scores.append(s)
     order = sorted(range(len(scores)), key=lambda i: (-scores[i], i))
-    return RichResult(payload={
-        "estimate": scores[order[0]],
-        "scores": scores,
-        "ranking": order,
-        "best": order[0],
-        "max_sim": maxsim,
-        "nq": nq,
-        "n_docs": len(dl),
-        "method": "ColBERT late-interaction retrieval scoring",
-    })
+    return RichResult(
+        payload={
+            "estimate": scores[order[0]],
+            "scores": scores,
+            "ranking": order,
+            "best": order[0],
+            "max_sim": maxsim,
+            "nq": nq,
+            "n_docs": len(dl),
+            "method": "ColBERT late-interaction retrieval scoring",
+        }
+    )
 
 
 def cheatsheet():

@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), Ex 11.16, the eigenexpansion of a Gaussian process kernel.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c11_10 import ghosal_series_gp

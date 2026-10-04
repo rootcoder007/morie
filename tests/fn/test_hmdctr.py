@@ -1,7 +1,6 @@
 """Tests for hmdctr.geron_decoder_only."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdctr import geron_decoder_only
 
 

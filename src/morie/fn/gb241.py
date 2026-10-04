@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ostatcdf', 'gibbons_order_cdf']
+__all__ = ["ostatcdf", "gibbons_order_cdf"]
 
 
 def ostatcdf(t, r, n, cdf):

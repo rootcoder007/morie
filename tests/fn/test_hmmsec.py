@@ -1,7 +1,6 @@
 """Tests for hmmsec.geron_linreg_mse_cost."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmsec import geron_linreg_mse_cost
 
 

@@ -1,7 +1,6 @@
 """Tests for dssoot.bootstrap_indirect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dssoot import bootstrap_indirect
 
 
@@ -14,8 +13,20 @@ def test_dssoot_basic():
     n_boot = 100
     result = bootstrap_indirect(Y, X, M, n_boot)
     assert isinstance(result, dict)
-    for key in ("estimate", "a", "b", "c_prime", "c_total",
-                "ci_lo", "ci_hi", "se_boot", "bias", "n_boot", "alpha", "n"):
+    for key in (
+        "estimate",
+        "a",
+        "b",
+        "c_prime",
+        "c_total",
+        "ci_lo",
+        "ci_hi",
+        "se_boot",
+        "bias",
+        "n_boot",
+        "alpha",
+        "n",
+    ):
         assert key in result
     # arity/shape sanity
     assert result["n"] == 100

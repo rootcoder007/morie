@@ -22,7 +22,6 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np  # noqa: F401
-from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["transfer_entropy_te"]
@@ -33,8 +32,7 @@ def _te(src, dst, lag):
     L = int(lag)
     trip = {}
     for t in range(L, n - 1):
-        key = (dst[t + 1], dst[t - L + 1] if L > 1 else dst[t], src[t - L + 1]
-               if L > 1 else src[t])
+        key = (dst[t + 1], dst[t - L + 1] if L > 1 else dst[t], src[t - L + 1] if L > 1 else src[t])
         trip[key] = trip.get(key, 0.0) + 1.0
     tot = 0.0
     for v in trip.values():

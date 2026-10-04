@@ -26,21 +26,20 @@ def wilson_interval(w, n, z):
     eq. (1.4).
     """
     payload = dict(_acd.wilson_interval(w, n, z))
-    value = float(payload['estimate'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["estimate"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (1.4)"
     return RichResult(
-        title='Wilson (score) confidence interval for pi',
+        title="Wilson (score) confidence interval for pi",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '1e4: pi_tilde +/- (z sqrt(n)/(n+z^2)) sqrt(pi_hat(1-pi_hat) + z^2/4n) [Bilder & Loughin 2025, eq. 1.4]'
+    return "1e4: pi_tilde +/- (z sqrt(n)/(n+z^2)) sqrt(pi_hat(1-pi_hat) + z^2/4n) [Bilder & Loughin 2025, eq. 1.4]"
 
 
 # compact alias per ledger/NAMING.md

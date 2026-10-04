@@ -15,16 +15,13 @@ from morie.fn.grn021 import geron_ch4_softmax_function
 def test_the_score_is_exponentiated_and_divided_by_the_total():
     res = geron_ch4_softmax_function([0.0, 1.0, 2.0], k=2, K=3)
     total = 1.0 + math.exp(1.0) + math.exp(2.0)
-    assert res["probability"] == pytest.approx(math.exp(2.0) / total,
-                                                rel=1e-12)
-    assert round(res["probability"], 6) == pytest.approx(0.665241,
-                                                          abs=1e-6)
+    assert res["probability"] == pytest.approx(math.exp(2.0) / total, rel=1e-12)
+    assert round(res["probability"], 6) == pytest.approx(0.665241, abs=1e-6)
 
 
 def test_the_probabilities_sum_to_one():
     res = geron_ch4_softmax_function([0.0, 1.0, 2.0], k=2, K=3)
-    assert round(sum(res["probabilities"]), 12) == pytest.approx(
-        1.0, abs=1e-12)
+    assert round(sum(res["probabilities"]), 12) == pytest.approx(1.0, abs=1e-12)
 
 
 def test_adding_a_constant_to_every_score_changes_nothing():
@@ -57,7 +54,7 @@ import morie.fn.grn021 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

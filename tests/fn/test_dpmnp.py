@@ -1,7 +1,6 @@
 """Tests for dpmnp.dp_minmax."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpmnp import dp_minmax
 
 
@@ -12,6 +11,8 @@ def test_dpmnp_basic():
     result = dp_minmax(x, epsilon)
     assert isinstance(result, dict)
     assert "lower" in result
+
+
 def test_dpmnp_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

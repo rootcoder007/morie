@@ -1,6 +1,7 @@
 """Equivalence tests: morie.fn._signal_core vs frozen scipy.signal
 anchors (versions recorded in oracle_anchors.json; scipy itself is not
 imported)."""
+
 import json
 import math
 import pathlib
@@ -9,14 +10,16 @@ import pytest
 
 from morie.fn import _signal_core as ms
 
-A = json.loads(pathlib.Path(__file__).with_name(
-    "oracle_anchors.json").read_text())
+A = json.loads(pathlib.Path(__file__).with_name("oracle_anchors.json").read_text())
 
 
 def _sig(n=400):
-    return [math.sin(2 * math.pi * 0.05 * i)
-            + 0.5 * math.sin(2 * math.pi * 0.2 * i + 0.3)
-            + 0.1 * math.cos(2 * math.pi * 0.37 * i) for i in range(n)]
+    return [
+        math.sin(2 * math.pi * 0.05 * i)
+        + 0.5 * math.sin(2 * math.pi * 0.2 * i + 0.3)
+        + 0.1 * math.cos(2 * math.pi * 0.37 * i)
+        for i in range(n)
+    ]
 
 
 def test_butter_ba_lowpass_matches():
@@ -76,7 +79,6 @@ def test_sosfiltfilt_matches_low_high_band():
 def test_sosfilt_zi_steady_state():
     sos = ms.butter(4, 0.2, output="sos")
     zi = ms.sosfilt_zi(sos)
-    y, _ = ms.sosfilt(sos, [1.0] * 50,
-                      zi=[[v for v in z] for z in zi])
+    y, _ = ms.sosfilt(sos, [1.0] * 50, zi=[[v for v in z] for z in zi])
     # steady-state ic -> unit step passes through at DC gain immediately
     assert y.tolist()[0] == pytest.approx(y.tolist()[-1], rel=1e-9)

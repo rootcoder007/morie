@@ -64,8 +64,7 @@ def ma_peto_or(a, b, c, d, level=0.95):
         if n <= 1.0:
             raise ValueError("each table needs at least two observations")
         e = (A[i] + B[i]) * (A[i] + C[i]) / n
-        v = ((A[i] + B[i]) * (C[i] + D[i]) * (A[i] + C[i]) * (B[i] + D[i])
-             / (n * n * (n - 1.0)))
+        v = (A[i] + B[i]) * (C[i] + D[i]) * (A[i] + C[i]) * (B[i] + D[i]) / (n * n * (n - 1.0))
         oe += A[i] - e
         vv += v
     if vv <= 0.0:
@@ -73,11 +72,18 @@ def ma_peto_or(a, b, c, d, level=0.95):
     lor = oe / vv
     se = 1.0 / math.sqrt(vv)
     z = core.qnorm(1.0 - (1.0 - float(level)) / 2.0)
-    return RichResult(payload={
-        "OR": math.exp(lor), "log_OR": lor, "se_log": se,
-        "ci": [math.exp(lor - z * se), math.exp(lor + z * se)],
-        "O_E": oe, "V": vv, "k": k,
-        "method": "Peto one-step pooled odds ratio"})
+    return RichResult(
+        payload={
+            "OR": math.exp(lor),
+            "log_OR": lor,
+            "se_log": se,
+            "ci": [math.exp(lor - z * se), math.exp(lor + z * se)],
+            "O_E": oe,
+            "V": vv,
+            "k": k,
+            "method": "Peto one-step pooled odds ratio",
+        }
+    )
 
 
 def cheatsheet():

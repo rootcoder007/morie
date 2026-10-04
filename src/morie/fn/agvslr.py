@@ -68,9 +68,7 @@ def alphazero_value_lr(t, T, lr_0=0.2, kind="cosine", floor=0.0):
             idx = 3
         lr = float(lr_0) * (_STEPS[idx] / _STEPS[0])
     else:
-        lr = float(floor) + (float(lr_0) - float(floor)) * 0.5 * (
-            1.0 + math.cos(math.pi * frac)
-        )
+        lr = float(floor) + (float(lr_0) - float(floor)) * 0.5 * (1.0 + math.cos(math.pi * frac))
     return RichResult(
         title="AlphaZero learning-rate schedule",
         summary_lines=[("lr", lr), ("kind", kind)],

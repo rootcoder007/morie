@@ -1,8 +1,8 @@
 """Tests for morie.fn.arimm -- ARIMA(p,d,q)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.arimm import arima_fit
 
 

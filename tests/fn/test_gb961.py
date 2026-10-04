@@ -1,7 +1,6 @@
 """Tests for gb961.gibbons_pct_mod_rank_sc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb961 import gibbons_pct_mod_rank_sc
 
 

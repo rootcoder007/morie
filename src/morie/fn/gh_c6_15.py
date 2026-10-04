@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Martingale route to posterior consistency."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -73,10 +71,17 @@ def martcons(dh2, variances=None):
             raise ValueError("variances must be non-negative")
         ls = sum(v[i] / ((i + 1) ** 2) for i in range(n))
         sm = 1.0 if ls < float("inf") else 0.0
-    return RichResult(payload={
-        "cesaro": ces, "final": ces[-1], "tail_mean": tail,
-        "lemma652_sum": ls, "summable": sm, "n": float(n),
-        "method": "Martingale consistency check, Ghosal Section 6.8.4"})
+    return RichResult(
+        payload={
+            "cesaro": ces,
+            "final": ces[-1],
+            "tail_mean": tail,
+            "lemma652_sum": ls,
+            "summable": sm,
+            "n": float(n),
+            "method": "Martingale consistency check, Ghosal Section 6.8.4",
+        }
+    )
 
 
 ghosal_martg_consist = martcons

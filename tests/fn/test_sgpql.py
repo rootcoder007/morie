@@ -1,7 +1,6 @@
 """Tests for PQL spatial GLMM."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgpql import sgpql
 
 

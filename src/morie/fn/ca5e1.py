@@ -28,17 +28,16 @@ def ca_chapter_5_equation_1(b0, bs, xs):
     """
     value = _ca_crim.linear_predictor(b0, bs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (5.1)"
     return RichResult(
-        title='Binary logit conditional on x (multinomial baseline case)',
+        title="Binary logit conditional on x (multinomial baseline case)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca5e1: logit(y=1|x) = b0 + b1 x1 + ... + bk xk [Weisburd et al. 2022, eq. 5.1]'
+    return "ca5e1: logit(y=1|x) = b0 + b1 x1 + ... + bk xk [Weisburd et al. 2022, eq. 5.1]"

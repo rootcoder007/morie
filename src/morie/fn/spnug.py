@@ -1,14 +1,12 @@
 """Nugget effect in the semivariogram: discontinuity at the origin."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._schab_vario import _as_lag, semivariogram
 
 __all__ = ["schabenberger_nugget_effect"]
 
 
-def schabenberger_nugget_effect(h, nugget=0.0, sill=1.0, range=1.0,
-                                model="exponential"):
+def schabenberger_nugget_effect(h, nugget=0.0, sill=1.0, range=1.0, model="exponential"):
     r"""
     Nugget effect in the semivariogram: discontinuity at the origin.
 
@@ -54,12 +52,20 @@ def schabenberger_nugget_effect(h, nugget=0.0, sill=1.0, range=1.0,
     g = semivariogram(h, nugget, sill, range, model)
     return RichResult(
         title="Nugget effect (discontinuity at the origin)",
-        summary_lines=[("gamma(0)", 0.0), ("limit as h -> 0+", float(nugget)),
-                       ("total sill", float(nugget) + float(sill))],
-        payload={"gamma": g, "gamma_at_zero": 0.0,
-                 "limit_at_zero_plus": float(nugget),
-                 "nugget": float(nugget), "sill": float(sill),
-                 "total_sill": float(nugget) + float(sill), "model": model},
+        summary_lines=[
+            ("gamma(0)", 0.0),
+            ("limit as h -> 0+", float(nugget)),
+            ("total sill", float(nugget) + float(sill)),
+        ],
+        payload={
+            "gamma": g,
+            "gamma_at_zero": 0.0,
+            "limit_at_zero_plus": float(nugget),
+            "nugget": float(nugget),
+            "sill": float(sill),
+            "total_sill": float(nugget) + float(sill),
+            "model": model,
+        },
     )
 
 

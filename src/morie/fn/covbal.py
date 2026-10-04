@@ -110,14 +110,17 @@ def covariate_balance_check(X, treat, weights=None, threshold=0.1):
         w = np.atleast_1d(np.asarray(weights, dtype=float)).ravel()
         if w.size != tr.size:
             raise ValueError(f"weights has {w.size} entries but treat has {tr.size}")
+
         def wmean(m):
             ww = w[m]
             return (X[m] * ww[:, None]).sum(axis=0) / max(ww.sum(), 1e-300)
+
         def wvar(m):
             ww = w[m]
             mu = wmean(m)
             s = ww.sum()
             return ((X[m] - mu) ** 2 * ww[:, None]).sum(axis=0) / max(s, 1e-300)
+
         smd_after = (wmean(t1) - wmean(t0)) / pooled
         vr = wvar(t1) / np.maximum(wvar(t0), 1e-300)
 
@@ -125,16 +128,20 @@ def covariate_balance_check(X, treat, weights=None, threshold=0.1):
     worst = int(np.argmax(np.abs(smd_after)))
     return RichResult(
         title="Covariate balance",
-        summary_lines=[("p", int(X.shape[1])), ("imbalanced", bad),
-                       ("max |SMD|", float(np.max(np.abs(smd_after))))],
-        warnings=(["balance on means is necessary, not sufficient; check "
-                   "variance_ratio, which should sit near 1"]
-                  + ([f"{bad} covariates exceed |SMD| = {threshold}"] if bad else [])),
+        summary_lines=[("p", int(X.shape[1])), ("imbalanced", bad), ("max |SMD|", float(np.max(np.abs(smd_after))))],
+        warnings=(
+            ["balance on means is necessary, not sufficient; check variance_ratio, which should sit near 1"]
+            + ([f"{bad} covariates exceed |SMD| = {threshold}"] if bad else [])
+        ),
         payload={
-            "smd_before": smd_before, "smd_after": smd_after,
-            "variance_ratio": vr, "n_imbalanced": bad,
-            "balanced": bool(bad == 0), "worst": worst,
-            "threshold": float(threshold), "method": "covariate_balance_check",
+            "smd_before": smd_before,
+            "smd_after": smd_after,
+            "variance_ratio": vr,
+            "n_imbalanced": bad,
+            "balanced": bool(bad == 0),
+            "worst": worst,
+            "threshold": float(threshold),
+            "method": "covariate_balance_check",
         },
     )
 

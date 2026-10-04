@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 13.3.3, the beta-process jump path.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c13_6 import ghosal_bp_path_gen
 
 

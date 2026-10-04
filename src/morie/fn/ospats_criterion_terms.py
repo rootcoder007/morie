@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def ospats_criterion_terms(w_h, s_h):
     """
     value = _brus.ospats_criterion_terms(w_h, s_h)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (13.12)"
     return RichResult(
-        title='Stratification objective O = (sum w_h S_h)^2',
+        title="Stratification objective O = (sum w_h S_h)^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r13e12: O = (sum_h w_h S_h)^2 [Brus 2022, eq. 13.12]'
+    return "r13e12: O = (sum_h w_h S_h)^2 [Brus 2022, eq. 13.12]"

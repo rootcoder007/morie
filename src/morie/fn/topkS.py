@@ -71,14 +71,22 @@ def top_k_sampling(logits, k, temp):
     fs = sum(filt)
     filt = [v / fs for v in filt]
     ent = -sum(v * math.log(v) for v in filt if v > 0.0)
-    return RichResult(payload={
-        "tensor": filt, "keep_mask": keep, "n_kept": float(k),
-        "entropy": ent, "k": float(k), "temp": temp,
-        "method": "top-k truncated softmax"})
+    return RichResult(
+        payload={
+            "tensor": filt,
+            "keep_mask": keep,
+            "n_kept": float(k),
+            "entropy": ent,
+            "k": float(k),
+            "temp": temp,
+            "method": "top-k truncated softmax",
+        }
+    )
 
 
 def cheatsheet():
     return "topkS(logits, k, temp): top-k truncated softmax."
+
 
 # public names resolved by fn/_lazy_map.json
 topksampling = top_k_sampling

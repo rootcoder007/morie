@@ -2,10 +2,10 @@
 
 import math
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.te_ana import run_treatment_effects_analysis
 
 

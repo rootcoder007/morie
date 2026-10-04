@@ -2,7 +2,6 @@
 """Concordance for incomplete rankings."""
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._richresult import RichResult
 
 __all__ = ["gibbons_concordance_incomplete"]
@@ -79,8 +78,12 @@ def gibbons_concordance_incomplete(incomplete_rankings):
         raise ValueError("degenerate design; concordance undefined.")
     return RichResult(
         payload={
-            "W": float(min(S / S_max, 1.0)), "S": S, "S_max": S_max,
-            "counts": counts.astype(int), "k": int(k), "n": int(n),
+            "W": float(min(S / S_max, 1.0)),
+            "S": S,
+            "S_max": S_max,
+            "counts": counts.astype(int),
+            "k": int(k),
+            "n": int(n),
             "method": "Concordance for incomplete rankings (Gibbons Ch. 12.5)",
         }
     )

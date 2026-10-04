@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pareto k importance-weight diagnostic."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -51,9 +49,17 @@ def pareto_k_diagnostic(log_lik):
         _, k = S.psis([-L[s][i] for s in range(Sn)])
         ks.append(k)
     bad = sum(1 for v in ks if v > 0.7)
-    return RichResult(payload={
-        "estimate": float("nan") if any(v != v for v in ks) else max(ks), "k": ks, "n_bad": bad, "n_ok": n - bad,
-        "S": Sn, "n": n, "method": "Pareto k importance-weight diagnostic"})
+    return RichResult(
+        payload={
+            "estimate": float("nan") if any(v != v for v in ks) else max(ks),
+            "k": ks,
+            "n_bad": bad,
+            "n_ok": n - bad,
+            "S": Sn,
+            "n": n,
+            "method": "Pareto k importance-weight diagnostic",
+        }
+    )
 
 
 def cheatsheet():

@@ -7,9 +7,9 @@ Both correct a bias that the naive back-transform carries, so the tests
 check the CORRECTION, not merely that a number comes out.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_krig import ordinary_kriging, simple_kriging
 from morie.fn._schab_vario import semivariogram
 from morie.fn.splgk import schabenberger_lognormal_kriging as splgk
@@ -34,8 +34,7 @@ def test_ordinary_kriging_weights_sum_to_one():
     """The unbiasedness constraint of Sec 5.2.2.2 -- lambda'1 = 1 is what the
     Lagrange multiplier is there to enforce."""
     coords = _sites()
-    _, _, lam, _ = ordinary_kriging(coords, _y(coords), np.array([2.3, 1.7]),
-                                    _gamma)
+    _, _, lam, _ = ordinary_kriging(coords, _y(coords), np.array([2.3, 1.7]), _gamma)
     assert lam.sum() == pytest.approx(1.0, abs=1e-12)
 
 
@@ -53,8 +52,7 @@ def test_ordinary_kriging_variance_has_both_published_forms():
 
 def test_ordinary_kriging_reproduces_a_constant_field():
     coords = _sites()
-    pred, _, _, _ = ordinary_kriging(coords, np.full(coords.shape[0], 7.0),
-                                     np.array([2.3, 1.7]), _gamma)
+    pred, _, _, _ = ordinary_kriging(coords, np.full(coords.shape[0], 7.0), np.array([2.3, 1.7]), _gamma)
     assert pred == pytest.approx(7.0, abs=1e-9)
 
 
@@ -71,8 +69,7 @@ def test_lognormal_correction_uses_the_kriging_variance_not_the_process_variance
     var_sk = float(np.asarray(var_arr).ravel()[0])
     assert res["log_variance"] == pytest.approx(var_sk, abs=1e-12)
     assert res["bias_factor"] == pytest.approx(np.exp(0.5 * var_sk), rel=1e-12)
-    assert res["prediction"] == pytest.approx(
-        res["naive_prediction"] * res["bias_factor"], rel=1e-12)
+    assert res["prediction"] == pytest.approx(res["naive_prediction"] * res["bias_factor"], rel=1e-12)
 
 
 def test_lognormal_prediction_exceeds_the_naive_back_transform():
@@ -88,6 +85,7 @@ def test_lognormal_matches_the_aitchison_brown_moment():
     """The result the correction is built on: for Y ~ G(mu, s2),
     E[exp Y] = exp{mu + s2/2}. Checked against the native generator."""
     from morie.fn._rng import random_normal
+
     mu, s2 = 0.7, 0.6
     y = mu + np.sqrt(s2) * random_normal(400000, seed=17)
     assert np.exp(y).mean() == pytest.approx(np.exp(mu + 0.5 * s2), rel=0.01)
@@ -132,8 +130,7 @@ def test_identity_transformation_needs_no_correction():
     coords = _sites()
     y = _y(coords)
     target = np.array([2.3, 1.7])
-    res = sptgk(coords, y, target,
-                lambda v: v, lambda v: 1.0, lambda v: 0.0, _gamma)
+    res = sptgk(coords, y, target, lambda v: v, lambda v: 1.0, lambda v: 0.0, _gamma)
     pred_ok, _, _, _ = ordinary_kriging(coords, y, target, _gamma)
     assert res["correction"] == pytest.approx(0.0, abs=1e-15)
     assert res["prediction"] == pytest.approx(pred_ok, rel=1e-12)

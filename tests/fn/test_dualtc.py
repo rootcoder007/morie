@@ -1,8 +1,8 @@
 """dualtc: dual total correlation (Han 1978)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dualtc import dual_total_correlation as dtc
 from morie.fn.totcorr import total_correlation as tc
 
@@ -60,9 +60,7 @@ def test_dualtc_is_non_negative_on_random_distributions():
 def test_dualtc_nats_are_bits_times_ln_two():
     p = np.zeros((2, 2, 2))
     p[0, 0, 0] = p[1, 1, 1] = 0.5
-    assert dtc(p, base="nats")["estimate"] == pytest.approx(
-        dtc(p, base="bits")["estimate"] * np.log(2.0)
-    )
+    assert dtc(p, base="nats")["estimate"] == pytest.approx(dtc(p, base="bits")["estimate"] * np.log(2.0))
 
 
 def test_dualtc_rejects_bad_input():

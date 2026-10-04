@@ -1,7 +1,6 @@
 """Tests for rgperio.rangayyan_periodogram."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsacorr import rangayyan_periodogram
 
 

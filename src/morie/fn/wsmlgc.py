@@ -69,14 +69,19 @@ def wasserman_log_linear(table):
     n = float(np.sum(T))
     mu_ind = np.outer(T.sum(axis=1), T.sum(axis=0)) / n
     g2 = float(2.0 * np.sum(T * np.log(T / mu_ind)))
-    return RichResult(payload={
-        "estimate": g2, "lambda0": lam0,
-        "lambda_row": [float(v) for v in lr],
-        "lambda_col": [float(v) for v in lc],
-        "lambda_int": [float(v) for v in lint.ravel()],
-        "independence_fit": [float(v) for v in mu_ind.ravel()],
-        "df": int((I - 1) * (J - 1)), "n": n,
-        "method": "saturated log-linear (zero-sum ANOVA of log counts) + G^2"})
+    return RichResult(
+        payload={
+            "estimate": g2,
+            "lambda0": lam0,
+            "lambda_row": [float(v) for v in lr],
+            "lambda_col": [float(v) for v in lc],
+            "lambda_int": [float(v) for v in lint.ravel()],
+            "independence_fit": [float(v) for v in mu_ind.ravel()],
+            "df": int((I - 1) * (J - 1)),
+            "n": n,
+            "method": "saturated log-linear (zero-sum ANOVA of log counts) + G^2",
+        }
+    )
 
 
 def cheatsheet():

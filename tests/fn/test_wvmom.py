@@ -1,7 +1,6 @@
 """Tests for wvmom.py - Wavelet moments."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvmom import wavelet_moments, wvmom
 
 

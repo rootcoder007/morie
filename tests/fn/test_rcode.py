@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcode — recode responses."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rcode import rcode
 
 

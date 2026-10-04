@@ -1,7 +1,6 @@
 """Tests for hdpgmm.hdp_gaussian_mixture."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hdpgmm import hdp_gaussian_mixture
 
 

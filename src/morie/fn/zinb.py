@@ -20,7 +20,7 @@ def _loglik_grad(theta, y, X):
     n = len(y)
     k = len(X[0])
     g = theta[0]
-    beta = theta[1:1 + k]
+    beta = theta[1 : 1 + k]
     la = theta[1 + k]
     r = math.exp(-la)
     # log pi and log(1 - pi) without overflow for large |gamma|
@@ -44,9 +44,9 @@ def _loglik_grad(theta, y, X):
             a, b = lpi, l1pi + l0
             m = a if a > b else b
             li = m + math.log(math.exp(a - m) + math.exp(b - m))
-            w0 = math.exp(b - li)          # posterior share of the count class
+            w0 = math.exp(b - li)  # posterior share of the count class
             ll += li
-            dg += (1.0 - w0) - pi          # d/dgamma
+            dg += (1.0 - w0) - pi  # d/dgamma
             deta = w0 * (-mu * r / (r + mu))
             dr += w0 * (lp + mu / (r + mu))
         else:
@@ -60,8 +60,7 @@ def _loglik_grad(theta, y, X):
             else:
                 lg = math.lgamma(yi + r) - math.lgamma(r)
                 dgm = _digamma(yi + r) - _digamma(r)
-            ll += (l1pi + lg - math.lgamma(yi + 1.0) + r * lp
-                   + yi * (eta - math.log(r + mu)))
+            ll += l1pi + lg - math.lgamma(yi + 1.0) + r * lp + yi * (eta - math.log(r + mu))
             dg += -pi
             deta = (yi - mu) * r / (r + mu)
             dr += dgm + lp + (mu - yi) / (r + mu)
@@ -122,11 +121,13 @@ def zero_inflated_negbin(
     k = len(Xi[0])
     nz = sum(1 for v in y if v == 0)
     if nz == 0:
-        raise ValueError("no zeros: the inflation probability is not "
-                         "identified")
+        raise ValueError("no zeros: the inflation probability is not identified")
     ybar = sum(y) / n
-    theta = [math.log(max(nz / n * 0.5, 1e-3) / (1 - max(nz / n * 0.5, 1e-3))),
-             math.log(max(ybar, 1e-3))] + [0.0] * (k - 1) + [0.0]
+    theta = (
+        [math.log(max(nz / n * 0.5, 1e-3) / (1 - max(nz / n * 0.5, 1e-3))), math.log(max(ybar, 1e-3))]
+        + [0.0] * (k - 1)
+        + [0.0]
+    )
     ll, g = _loglik_grad(theta, y, Xi)
     converged = False
     m = len(theta)
@@ -171,7 +172,7 @@ def zero_inflated_negbin(
     if not converged and max(abs(v) for v in g) < tol:
         converged = True
     gam = theta[0]
-    beta = theta[1:1 + k]
+    beta = theta[1 : 1 + k]
     alpha = math.exp(theta[1 + k])
     pi = 1.0 / (1.0 + math.exp(-gam))
     mus = [math.exp(sum(Xi[i][j] * beta[j] for j in range(k))) for i in range(n)]

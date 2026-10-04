@@ -95,10 +95,21 @@ class _MinMax:
         return v
 
 
-def muzero(observation, actions, representation, dynamics, prediction,
-           simulations=50, gamma=0.997, c1=1.25, c2=19652.0,
-           dirichlet_alpha=None, exploration_fraction=0.25,
-           temperature=1.0, seed=0):
+def muzero(
+    observation,
+    actions,
+    representation,
+    dynamics,
+    prediction,
+    simulations=50,
+    gamma=0.997,
+    c1=1.25,
+    c2=19652.0,
+    dirichlet_alpha=None,
+    exploration_fraction=0.25,
+    temperature=1.0,
+    seed=0,
+):
     r"""Run MuZero's MCTS from one observation and return the search
     policy.
 
@@ -155,8 +166,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
     A = list(actions)
     if not A:
         raise ValueError("muzero: actions must be non-empty")
-    for fn, name in ((representation, "representation"),
-                     (dynamics, "dynamics"), (prediction, "prediction")):
+    for fn, name in ((representation, "representation"), (dynamics, "dynamics"), (prediction, "prediction")):
         if not callable(fn):
             raise TypeError("muzero: %s must be callable" % name)
     simulations = int(simulations)
@@ -165,15 +175,14 @@ def muzero(observation, actions, representation, dynamics, prediction,
     if c2 <= 0.0:
         raise ValueError("muzero: c2 must be > 0")
 
-    calls = [0, 0]                     # dynamics, prediction
+    calls = [0, 0]  # dynamics, prediction
 
     def predict(s):
         calls[1] += 1
         p, v = prediction(s)
         p = [float(x) for x in p]
         if len(p) != len(A):
-            raise ValueError("muzero: prediction returned %d priors for "
-                             "%d actions" % (len(p), len(A)))
+            raise ValueError("muzero: prediction returned %d priors for %d actions" % (len(p), len(A)))
         tot = sum(p)
         if tot <= 0.0:
             raise ValueError("muzero: prior must have positive mass")
@@ -183,8 +192,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
     s0 = representation(observation)
     prior, _v0 = predict(s0)
     if dirichlet_alpha is not None:
-        prior = _add_noise(prior, float(dirichlet_alpha),
-                           float(exploration_fraction), seed)
+        prior = _add_noise(prior, float(dirichlet_alpha), float(exploration_fraction), seed)
     root.expand(s0, prior, A)
 
     mm = _MinMax()
@@ -211,8 +219,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
     visits = [root.children[a].visits for a in A]
     total = float(sum(visits))
     if total <= 0:
-        raise ValueError("muzero: no simulations reached the root's "
-                         "children")
+        raise ValueError("muzero: no simulations reached the root's children")
     if temperature == 0:
         best = max(range(len(A)), key=lambda i: visits[i])
         policy = [1.0 if i == best else 0.0 for i in range(len(A))]
@@ -223,24 +230,25 @@ def muzero(observation, actions, representation, dynamics, prediction,
     Qa = dict((a, _edge_q(root.children[a], gamma)) for a in A)
     root_value = sum(root.children[a].visits * Qa[a] for a in A) / total
 
-    return RichResult(payload={
-        "estimate": policy,
-        "policy": policy,
-        "action": A[max(range(len(A)), key=lambda i: policy[i])],
-        "value": float(root_value),
-        "visits": dict((A[i], visits[i]) for i in range(len(A))),
-        "Q": Qa,
-        "prior": dict((a, root.children[a].prior) for a in A),
-        "n_dynamics_calls": calls[0],
-        "n_prediction_calls": calls[1],
-        "simulations": simulations,
-        "method": "MuZero MCTS (Schrittwieser et al. 2020, eqs. 2-5)",
-    })
+    return RichResult(
+        payload={
+            "estimate": policy,
+            "policy": policy,
+            "action": A[max(range(len(A)), key=lambda i: policy[i])],
+            "value": float(root_value),
+            "visits": dict((A[i], visits[i]) for i in range(len(A))),
+            "Q": Qa,
+            "prior": dict((a, root.children[a].prior) for a in A),
+            "n_dynamics_calls": calls[0],
+            "n_prediction_calls": calls[1],
+            "simulations": simulations,
+            "method": "MuZero MCTS (Schrittwieser et al. 2020, eqs. 2-5)",
+        }
+    )
 
 
 class _Node:
-    __slots__ = ("visits", "value_sum", "prior", "children", "state",
-                 "reward", "expanded")
+    __slots__ = ("visits", "value_sum", "prior", "children", "state", "reward", "expanded")
 
     def __init__(self, prior=0.0):
         self.visits = 0
@@ -276,8 +284,7 @@ def _select(node, A, mm, c1, c2, gamma):
     best_a = A[0]
     for a in A:
         ch = node.children[a]
-        explore = (ch.prior * sqrt_total / (1.0 + ch.visits)
-                   * (c1 + math.log((total + c2 + 1.0) / c2)))
+        explore = ch.prior * sqrt_total / (1.0 + ch.visits) * (c1 + math.log((total + c2 + 1.0) / c2))
         q = mm.normalize(_edge_q(ch, gamma)) if ch.visits > 0 else 0.0
         score = q + explore
         if best is None or score > best:
@@ -292,7 +299,7 @@ def _backup(path, value, gamma, mm):
     for node in reversed(path):
         node.value_sum += g
         node.visits += 1
-        if node is not path[0]:          # the edge into this node
+        if node is not path[0]:  # the edge into this node
             mm.update(node.reward + gamma * node.value())
         g = node.reward + gamma * g
 
@@ -309,8 +316,7 @@ def _add_noise(prior, alpha, frac, seed):
     g = [_gamma(alpha, rng) for _ in prior]
     s = sum(g)
     noise = [x / s for x in g]
-    return [(1.0 - frac) * prior[i] + frac * noise[i]
-            for i in range(len(prior))]
+    return [(1.0 - frac) * prior[i] + frac * noise[i] for i in range(len(prior))]
 
 
 def _gamma(alpha, rng):
@@ -330,14 +336,16 @@ def _gamma(alpha, rng):
 
 
 def cheatsheet():
-    return ("muzero: MCTS over a LEARNED latent model -- h (represent), "
-            "g (dynamics -> reward, next latent), f (predict -> prior, "
-            "value); no observation is ever reconstructed. pUCT eq. 2 "
-            "with c1=1.25, c2=19652; backup eqs. 3-4 form the l-k step "
-            "bootstrapped return G^k and fold it into a running mean; "
-            "Q is min-max normalised over the whole tree (eq. 5) "
-            "because values are unbounded. Search policy = visit "
-            "counts. One g and one f call per simulation.")
+    return (
+        "muzero: MCTS over a LEARNED latent model -- h (represent), "
+        "g (dynamics -> reward, next latent), f (predict -> prior, "
+        "value); no observation is ever reconstructed. pUCT eq. 2 "
+        "with c1=1.25, c2=19652; backup eqs. 3-4 form the l-k step "
+        "bootstrapped return G^k and fold it into a running mean; "
+        "Q is min-max normalised over the whole tree (eq. 5) "
+        "because values are unbounded. Search policy = visit "
+        "counts. One g and one f call per simulation."
+    )
 
 
 # compact alias per ledger/NAMING.md

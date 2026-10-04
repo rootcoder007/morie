@@ -1,9 +1,9 @@
 """NOMINATE/OC cluster: wnomp, wnoml, ricei, apre, agpar, oclin,
 pscrc, brdgo."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.agpar import party_unity_score
 from morie.fn.apre import oc_apre
 from morie.fn.brdgo import bridge_observations

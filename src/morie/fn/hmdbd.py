@@ -79,7 +79,9 @@ def geron_decision_boundary(theta, X_grid, fit_intercept=True):
         b, w = float(th[0]), th[1:]
     else:
         if th.size != G.shape[1]:
-            raise ValueError(f"geron_decision_boundary: theta has {th.size} entries but X_grid has {G.shape[1]} columns")
+            raise ValueError(
+                f"geron_decision_boundary: theta has {th.size} entries but X_grid has {G.shape[1]} columns"
+            )
         b, w = 0.0, th
 
     nw = float(np.linalg.norm(w))

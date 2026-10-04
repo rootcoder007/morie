@@ -124,26 +124,40 @@ def causal_overlap_diagnostic(ps, treat, bins=20, eps=0.05):
 
     warn = []
     if ovl < 0.5:
-        warn.append(f"the overlap coefficient is {ovl:.2f}; the two arms barely "
-                    "occupy the same propensity region and the estimand is "
-                    "close to unidentified")
+        warn.append(
+            f"the overlap coefficient is {ovl:.2f}; the two arms barely "
+            "occupy the same propensity region and the estimand is "
+            "close to unidentified"
+        )
     if extreme > 0.1:
-        warn.append(f"{extreme:.1%} of units have propensity beyond {eps}; "
-                    "weights there are extreme and the estimate is fragile")
-    warn.append("positivity is an assumption about the population and cannot "
-                "be verified from a sample; an empty region may be structurally "
-                "impossible or merely unobserved")
+        warn.append(
+            f"{extreme:.1%} of units have propensity beyond {eps}; "
+            "weights there are extreme and the estimate is fragile"
+        )
+    warn.append(
+        "positivity is an assumption about the population and cannot "
+        "be verified from a sample; an empty region may be structurally "
+        "impossible or merely unobserved"
+    )
     return RichResult(
         title="Overlap / positivity diagnostic",
-        summary_lines=[("n", int(e.size)), ("common support", f"[{lo:.3f}, {hi:.3f}]"),
-                       ("overlap coefficient", ovl), ("outside support", outside)],
+        summary_lines=[
+            ("n", int(e.size)),
+            ("common support", f"[{lo:.3f}, {hi:.3f}]"),
+            ("overlap coefficient", ovl),
+            ("outside support", outside),
+        ],
         warnings=warn,
         payload={
-            "common_support": (lo, hi), "n_outside": outside,
-            "prop_extreme": extreme, "min_treated_ps": float(t1.min()),
+            "common_support": (lo, hi),
+            "n_outside": outside,
+            "prop_extreme": extreme,
+            "min_treated_ps": float(t1.min()),
             "max_control_ps": float(t0.max()),
-            "overlap_coefficient": ovl, "hist_treated": p1,
-            "hist_control": p0, "n": int(e.size),
+            "overlap_coefficient": ovl,
+            "hist_treated": p1,
+            "hist_control": p0,
+            "n": int(e.size),
             "method": "causal_overlap_diagnostic",
         },
     )

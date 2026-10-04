@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['kctrlmed', 'gibbons_k_ctrl_median']
+__all__ = ["kctrlmed", "gibbons_k_ctrl_median"]
 
 
 def kctrlmed(samples, p=(0.5,)):
@@ -72,9 +72,7 @@ def kctrlmed(samples, p=(0.5,)):
             row[j] += 1
         counts.append(row)
     edges = [0] + r + [n1 + 1]
-    pcell = [
-        (edges[j + 1] - edges[j]) / (n1 + 1.0) for j in range(q + 1)
-    ]
+    pcell = [(edges[j + 1] - edges[j]) / (n1 + 1.0) for j in range(q + 1)]
     stat = 0.0
     for i, row in enumerate(counts):
         ni = sum(row)

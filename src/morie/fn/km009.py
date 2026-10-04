@@ -27,14 +27,19 @@ def kamath_ch2_softmax_element(a_i, a):
     matches = np.flatnonzero(np.isclose(a, ai))
     if len(matches) == 0:
         raise ValueError(
-            "a_i is not one of the scores in a; Eq 2.9 is an element of "
-            "Eq 2.8's vector, not a free function.")
+            "a_i is not one of the scores in a; Eq 2.9 is an element of Eq 2.8's vector, not a free function."
+        )
     full = kamath_ch2_attention_softmax_weights(a)["weights"]
     b_i = full[int(matches[0])]
-    return RichResult(payload={
-        "estimate": float(b_i), "index": int(matches[0]),
-        "full_weights": full, "n": len(a),
-        "method": "Softmax element (Kamath Eq 2.9)"})
+    return RichResult(
+        payload={
+            "estimate": float(b_i),
+            "index": int(matches[0]),
+            "full_weights": full,
+            "n": len(a),
+            "method": "Softmax element (Kamath Eq 2.9)",
+        }
+    )
 
 
 def cheatsheet():

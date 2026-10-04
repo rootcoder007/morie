@@ -69,10 +69,16 @@ def wasserman_credible_interval(posterior, alpha):
     cdf = np.concatenate([[0.0], np.cumsum(seg)]) / total
     lo = float(np.interp(alpha / 2.0, cdf, grid))
     hi = float(np.interp(1.0 - alpha / 2.0, cdf, grid))
-    return RichResult(payload={
-        "estimate": float(hi - lo), "lower": lo, "upper": hi,
-        "mass_drift": float(drift), "alpha": alpha,
-        "method": "equal-tail credible interval via trapezoid CDF inversion"})
+    return RichResult(
+        payload={
+            "estimate": float(hi - lo),
+            "lower": lo,
+            "upper": hi,
+            "mass_drift": float(drift),
+            "alpha": alpha,
+            "method": "equal-tail credible interval via trapezoid CDF inversion",
+        }
+    )
 
 
 def cheatsheet():

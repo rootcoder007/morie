@@ -1,11 +1,22 @@
 """Tests for mafft (Katoh et al. 2002)."""
 
-from morie.fn.mafft import (GRANTHAM_POLARITY, GRANTHAM_VOLUME, jtt_matrix,
-                            arrange_segments, correlation,
-                            find_homologous_segments, group_align,
-                            guide_tree, iterative_refine, mafft_alignment,
-                            mafftalignment, normalized_similarity_matrix,
-                            residue_vectors, sixtuple_distance, wsp_score)
+from morie.fn.mafft import (
+    GRANTHAM_POLARITY,
+    GRANTHAM_VOLUME,
+    arrange_segments,
+    correlation,
+    find_homologous_segments,
+    group_align,
+    guide_tree,
+    iterative_refine,
+    jtt_matrix,
+    mafft_alignment,
+    mafftalignment,
+    normalized_similarity_matrix,
+    residue_vectors,
+    sixtuple_distance,
+    wsp_score,
+)
 
 AA = "ARNDCQEGHILKMFPSTWYV"
 SC = normalized_similarity_matrix(s_a=0.06)
@@ -17,6 +28,7 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -34,19 +46,18 @@ def test_the_grantham_tables():
 
 def test_the_jtt_200_default_matrix():
     from morie.fn.mafft import _JTT_COUNTS, _JTT_FREQ
+
     assert len(_JTT_COUNTS) == 190 and len(_JTT_FREQ) == 20
     assert abs(sum(_JTT_FREQ) - 1.0) < 1e-9
     j = jtt_matrix(200)
     P, f = j["P"], j["freqs"]
     order = AA
     assert max(abs(sum(row) - 1.0) for row in P) < 1e-9
-    assert max(abs(f[order[i]] * P[i][k] - f[order[k]] * P[k][i])
-               for i in range(20) for k in range(20)) < 1e-12
+    assert max(abs(f[order[i]] * P[i][k] - f[order[k]] * P[k][i]) for i in range(20) for k in range(20)) < 1e-12
     assert abs(j["rate"] - 0.01) < 1e-12
     M = j["matrix"]
     assert max(abs(M[(a, b)] - M[(b, a)]) for a in AA for b in AA) < 1e-9
-    assert all(M[(a, a)] > max(M[(a, b)] for b in AA if b != a)
-               for a in AA)
+    assert all(M[(a, a)] > max(M[(a, b)] for b in AA if b != a) for a in AA)
     assert max(AA, key=lambda a: M[(a, a)]) == "W"
 
 
@@ -101,6 +112,7 @@ def test_the_all_positive_control():
 
 def test_the_gap_penalty_vanishes_on_an_existing_gap():
     from morie.fn.mafft import _gap_profiles
+
     s_op = 2.4
     gs, ge = _gap_profiles(["AC--GT", "AC--GT"], [0.5, 0.5])
     assert abs(s_op * (1.0 - (gs[1] + ge[4]) / 2.0)) < 1e-12
@@ -115,19 +127,16 @@ def test_segments_cover_a_planted_block():
     a = _rand(_lcg(101), 25) + block + _rand(_lcg(202), 25)
     b = _rand(_lcg(303), 40) + block + _rand(_lcg(404), 10)
     segs = find_homologous_segments([a], [b], SC, window=30, threshold=0.7)
-    assert any(s[4] == 15 and s[0] <= 25 and s[0] + s[2] >= 85
-               for s in segs)
+    assert any(s[4] == 15 and s[0] <= 25 and s[0] + s[2] >= 85 for s in segs)
     u1, u2 = _rand(_lcg(7), 90), _rand(_lcg(8), 90)
     assert find_homologous_segments([u1], [u2], SC, window=30) == []
     chain = arrange_segments(segs)
-    assert all(chain[i][0] + chain[i][2] <= chain[i + 1][0]
-               for i in range(len(chain) - 1))
+    assert all(chain[i][0] + chain[i][2] <= chain[i + 1][0] for i in range(len(chain) - 1))
 
 
 def test_max_len_cuts_long_segments():
     long_block = "".join(AA[(i * 3) % 20] for i in range(400))
-    segs = find_homologous_segments([long_block], [long_block], SC,
-                                    window=30, max_len=150)
+    segs = find_homologous_segments([long_block], [long_block], SC, window=30, max_len=150)
     assert segs and max(s[2] for s in segs) <= 150
 
 
@@ -156,8 +165,7 @@ def test_the_guide_tree_recovers_planted_families():
             t[int(rr() * len(t))] = AA[int(rr() * 20)]
         return "".join(t)
 
-    fam = [mut(base, 3, 1), mut(base, 4, 2), mut(other, 3, 3),
-           mut(other, 4, 4)]
+    fam = [mut(base, 3, 1), mut(base, 4, 2), mut(other, 3, 3), mut(other, 4, 4)]
     D = sixtuple_distance(fam)
     assert max(D[0][1], D[2][3]) < min(D[0][2], D[0][3], D[1][2], D[1][3])
     assert all(D[i][i] == 0.0 for i in range(4))
@@ -167,10 +175,12 @@ def test_the_guide_tree_recovers_planted_families():
 
 
 def test_every_named_method_aligns():
-    seqs = ["ACDEFGHIKLMNPQRSTVWY",
-            "ACDEFGHIKLMNPQRSTVWY".replace("F", ""),
-            "ACDEFGHIKLMNPQRSTVWY".replace("MN", "M"),
-            "ACDEFGHIKLMNPQRSTVWY"]
+    seqs = [
+        "ACDEFGHIKLMNPQRSTVWY",
+        "ACDEFGHIKLMNPQRSTVWY".replace("F", ""),
+        "ACDEFGHIKLMNPQRSTVWY".replace("MN", "M"),
+        "ACDEFGHIKLMNPQRSTVWY",
+    ]
     out = {}
     for meth in ("FFT-NS-1", "FFT-NS-2", "FFT-NS-i", "NW-NS-2"):
         res = mafft_alignment(seqs, method=meth)
@@ -184,23 +194,20 @@ def test_every_named_method_aligns():
 
 
 def test_identical_and_nucleotide_input():
-    assert mafft_alignment(["ACDEFGHIK"] * 3)["alignment"] == \
-        ["ACDEFGHIK"] * 3
+    assert mafft_alignment(["ACDEFGHIK"] * 3)["alignment"] == ["ACDEFGHIK"] * 3
     nt = mafft_alignment(["ACGTACGTAC", "ACGTCGTAC", "ACGTACGTAC"])
     assert nt["seq_type"] == "nt"
     assert len(set(len(s) for s in nt["alignment"])) == 1
 
 
 def test_the_wsp_score_reacts_to_damage():
-    good = mafft_alignment(["ACDEFGHIK", "ACDEFGHIK", "ACDEGHIK"],
-                           method="FFT-NS-2")["alignment"]
+    good = mafft_alignment(["ACDEFGHIK", "ACDEFGHIK", "ACDEGHIK"], method="FFT-NS-2")["alignment"]
     bad = [good[0]] + ["---" + s[:-3] for s in good[1:]]
     assert wsp_score(bad, SC) < wsp_score(good, SC)
 
 
 def test_iterative_refine_never_worsens():
-    aln = mafft_alignment(["ACDEFGHIK", "ACDEFGHIK", "ACDEGHIK"],
-                          method="FFT-NS-2")["alignment"]
+    aln = mafft_alignment(["ACDEFGHIK", "ACDEFGHIK", "ACDEGHIK"], method="FFT-NS-2")["alignment"]
     before = wsp_score(aln, SC)
     out, score, rounds = iterative_refine(aln, SC)
     assert score >= before - 1e-9
@@ -209,37 +216,31 @@ def test_iterative_refine_never_worsens():
 
 
 def test_validation():
-    for call in (lambda: mafft_alignment(["ACDEF"]),
-                 lambda: mafft_alignment(["ACDEF", "ACDEF"],
-                                         method="T-COFFEE"),
-                 lambda: mafft_alignment(["ACDEF", "ACDEF"], matrix="raw"),
-                 lambda: mafft_alignment(["ACDEF", ""]),
-                 lambda: mafft_alignment(["ACDEF", "ACDEF"],
-                                         seq_type="rna"),
-                 lambda: correlation(["ACDEF"], ["ACDEF"], method="dft"),
-                 lambda: residue_vectors([]),
-                 lambda: residue_vectors(["ACD", "AC"]),
-                 lambda: residue_vectors(["ACD"], weights=[1.0, 1.0]),
-                 lambda: normalized_similarity_matrix(mode="positive"),
-                 lambda: normalized_similarity_matrix(default="blosum62"),
-                 lambda: jtt_matrix(pam=0),
-                 lambda: normalized_similarity_matrix(
-                     dict(((a, b), 1.0) for a in AA for b in AA)),
-                 lambda: normalized_similarity_matrix({("A", "A"): 1.0}),
-                 lambda: group_align([], ["AC"], SC),
-                 lambda: group_align(["AC", "ACG"], ["AC"], SC),
-                 lambda: group_align(["AC"], ["AC"], SC,
-                                     weights1=[1.0, 1.0]),
-                 lambda: group_align(["ACGT"], ["ACGT"], SC,
-                                     anchors=[(1, 3), (3, 1)]),
-                 lambda: group_align(["ACGT"], ["ACGT"], SC,
-                                     anchors=[(9, 1)]),
-                 lambda: find_homologous_segments(["AC"], ["AC"], SC,
-                                                  window=0),
-                 lambda: guide_tree([[0.0]]),
-                 lambda: wsp_score(["ACD", "AC"], SC),
-                 lambda: iterative_refine(["ACD", "ACD"], SC,
-                                          max_iterate=0)):
+    for call in (
+        lambda: mafft_alignment(["ACDEF"]),
+        lambda: mafft_alignment(["ACDEF", "ACDEF"], method="T-COFFEE"),
+        lambda: mafft_alignment(["ACDEF", "ACDEF"], matrix="raw"),
+        lambda: mafft_alignment(["ACDEF", ""]),
+        lambda: mafft_alignment(["ACDEF", "ACDEF"], seq_type="rna"),
+        lambda: correlation(["ACDEF"], ["ACDEF"], method="dft"),
+        lambda: residue_vectors([]),
+        lambda: residue_vectors(["ACD", "AC"]),
+        lambda: residue_vectors(["ACD"], weights=[1.0, 1.0]),
+        lambda: normalized_similarity_matrix(mode="positive"),
+        lambda: normalized_similarity_matrix(default="blosum62"),
+        lambda: jtt_matrix(pam=0),
+        lambda: normalized_similarity_matrix(dict(((a, b), 1.0) for a in AA for b in AA)),
+        lambda: normalized_similarity_matrix({("A", "A"): 1.0}),
+        lambda: group_align([], ["AC"], SC),
+        lambda: group_align(["AC", "ACG"], ["AC"], SC),
+        lambda: group_align(["AC"], ["AC"], SC, weights1=[1.0, 1.0]),
+        lambda: group_align(["ACGT"], ["ACGT"], SC, anchors=[(1, 3), (3, 1)]),
+        lambda: group_align(["ACGT"], ["ACGT"], SC, anchors=[(9, 1)]),
+        lambda: find_homologous_segments(["AC"], ["AC"], SC, window=0),
+        lambda: guide_tree([[0.0]]),
+        lambda: wsp_score(["ACD", "AC"], SC),
+        lambda: iterative_refine(["ACD", "ACD"], SC, max_iterate=0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

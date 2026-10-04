@@ -1,7 +1,6 @@
 """Tests for sgtnsne.sgt_isomap."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtnsne import sgt_isomap
 
 

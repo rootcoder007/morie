@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['runstab', 'gibbons_total_runs_dist_table']
+__all__ = ["runstab", "gibbons_total_runs_dist_table"]
 
 
 def runstab(n1, n2, r=None):
@@ -56,10 +56,7 @@ def runstab(n1, n2, r=None):
             p = 2.0 * math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k)
-                + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
-            )
+            p = math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k) + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
         pmf.append(p / den)
     cdf = []
     acc = 0.0

@@ -56,15 +56,17 @@ def evt_angular_measure(X, k):
     atoms = sorted(f0[i] / rad[i] for i in idx)
     w = [1.0 / k] * k
     mean_angle = sum(atoms) / k
-    return RichResult(payload={
-        "H": sum(w),
-        "atoms": atoms,
-        "weights": w,
-        "estimate": mean_angle,
-        "n_used": k,
-        "n": n,
-        "method": "empirical angular measure of the k largest radii",
-    })
+    return RichResult(
+        payload={
+            "H": sum(w),
+            "atoms": atoms,
+            "weights": w,
+            "estimate": mean_angle,
+            "n_used": k,
+            "n": n,
+            "method": "empirical angular measure of the k largest radii",
+        }
+    )
 
 
 def cheatsheet():

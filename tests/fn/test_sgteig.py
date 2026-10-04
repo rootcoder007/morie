@@ -1,7 +1,6 @@
 """Tests for sgteig.sgt_eigenvector_centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgteig import sgt_eigenvector_centrality
 
 

@@ -1,8 +1,8 @@
 """Tests for cov2s.two_sample_coverage."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cov2s import two_sample_coverage
 
 
@@ -12,8 +12,8 @@ def test_cov2s_blocks_partition_the_second_sample():
     y = rng.normal(size=25)
     r = two_sample_coverage(x, y)
     freq = np.asarray(r["block_freq"], dtype=int)
-    assert freq.shape == (11,)          # m + 1 blocks
-    assert int(freq.sum()) == 25        # every y lands somewhere
+    assert freq.shape == (11,)  # m + 1 blocks
+    assert int(freq.sum()) == 25  # every y lands somewhere
     assert int(r["cumulative"]) == 25
 
 

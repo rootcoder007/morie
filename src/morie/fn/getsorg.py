@@ -115,11 +115,13 @@ def getis_ord_g(x, W):
     b3 = 4.0 * n1 * s1 - 2.0 * (n + 1.0) * s2 + 8.0 * s02
     b4 = s1 - s2 + s02
     m1 = sum(x)
-    m2 = sum(xi ** 2 for xi in x)
-    m3 = sum(xi ** 3 for xi in x)
-    m4 = sum(xi ** 4 for xi in x)
-    vg = ((b0 * m2 * m2 + b1 * m4 + b2 * m1 * m1 * m2 + b3 * m1 * m3 + b4 * m1 ** 4)
-          / (((m1 * m1 - m2) ** 2) * n * n1 * n2 * n3)) - eg * eg
+    m2 = sum(xi**2 for xi in x)
+    m3 = sum(xi**3 for xi in x)
+    m4 = sum(xi**4 for xi in x)
+    vg = (
+        (b0 * m2 * m2 + b1 * m4 + b2 * m1 * m1 * m2 + b3 * m1 * m3 + b4 * m1**4)
+        / (((m1 * m1 - m2) ** 2) * n * n1 * n2 * n3)
+    ) - eg * eg
     z = (g - eg) / math.sqrt(vg) if vg > 0 else float("nan")
     p = 2.0 * (stats.norm.sf(abs(z))) if vg > 0 else float("nan")
     return RichResult(

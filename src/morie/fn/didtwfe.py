@@ -130,6 +130,5 @@ def twoway_fixed_effects_did(y, D, unit, time):
 
 def cheatsheet():
     return (
-        "didtwfe: TWFE DiD coefficient plus the staggered-timing diagnosis "
-        "(share of controls that are already treated)"
+        "didtwfe: TWFE DiD coefficient plus the staggered-timing diagnosis (share of controls that are already treated)"
     )

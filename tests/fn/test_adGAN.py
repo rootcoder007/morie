@@ -1,7 +1,6 @@
 """Tests for adGAN.adversarial_anomaly."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adGAN import adversarial_anomaly
 
 
@@ -12,6 +11,8 @@ def test_adGAN_basic():
     result = adversarial_anomaly(x, D)
     assert isinstance(result, dict)
     assert "score" in result
+
+
 def test_adGAN_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

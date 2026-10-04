@@ -10,5 +10,6 @@ def test_bkkn_basic():
 
 def test_bkkn_edge():
     import pytest
+
     with pytest.raises(ValueError, match="discount"):
         burkov_kneser_ney(2, 4, (2, 3, 10), d=1.5)

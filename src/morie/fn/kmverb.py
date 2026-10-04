@@ -43,14 +43,11 @@ def kamath_verbalizer_mapping(logits, vocab, verbalizer_map):
     z = np.atleast_1d(np.asarray(logits, dtype=float)).ravel()
     vocab = list(vocab)
     if z.size != len(vocab):
-        raise ValueError(
-            f"{z.size} logits for a vocabulary of {len(vocab)} tokens.")
+        raise ValueError(f"{z.size} logits for a vocabulary of {len(vocab)} tokens.")
     if not np.all(np.isfinite(z)):
         raise ValueError("logits must be finite.")
     if not isinstance(verbalizer_map, dict) or not verbalizer_map:
-        raise ValueError(
-            "verbalizer_map must be a non-empty dict "
-            "{class: [answer tokens]}.")
+        raise ValueError("verbalizer_map must be a non-empty dict {class: [answer tokens]}.")
     index = {t: i for i, t in enumerate(vocab)}
     if len(index) != len(vocab):
         raise ValueError("the vocabulary contains a duplicate token.")
@@ -67,34 +64,31 @@ def kamath_verbalizer_mapping(logits, vocab, verbalizer_map):
         tot = 0.0
         for t in toks:
             if t not in index:
-                raise ValueError(
-                    f"the answer token {t!r} for class {cls!r} is not in "
-                    "the vocabulary.")
+                raise ValueError(f"the answer token {t!r} for class {cls!r} is not in the vocabulary.")
             if t in seen:
-                raise ValueError(
-                    f"{t!r} verbalises both {seen[t]!r} and {cls!r}; the "
-                    "classes would not be exclusive.")
+                raise ValueError(f"{t!r} verbalises both {seen[t]!r} and {cls!r}; the classes would not be exclusive.")
             seen[t] = cls
             tot += float(p[index[t]])
         probs[cls] = tot
         used[cls] = toks
     total = sum(probs.values())
     if total <= 0:
-        raise ValueError(
-            "every answer token has probability 0; there is nothing to "
-            "renormalise.")
+        raise ValueError("every answer token has probability 0; there is nothing to renormalise.")
     normalized = {c: v / total for c, v in probs.items()}
     pred = max(probs, key=lambda c: (probs[c], repr(c)))
-    return RichResult(payload={
-        "probabilities": probs, "normalized": normalized,
-        "prediction": pred,
-        "mass_on_labels": total,
-        "mass_outside": 1.0 - total,
-        "answer_tokens": used,
-        "estimate": probs[pred],
-        "n": len(probs),
-        "method": "Verbalizer class probability = sum of answer-token "
-                  "probabilities"})
+    return RichResult(
+        payload={
+            "probabilities": probs,
+            "normalized": normalized,
+            "prediction": pred,
+            "mass_on_labels": total,
+            "mass_outside": 1.0 - total,
+            "answer_tokens": used,
+            "estimate": probs[pred],
+            "n": len(probs),
+            "method": "Verbalizer class probability = sum of answer-token probabilities",
+        }
+    )
 
 
 def cheatsheet():

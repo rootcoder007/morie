@@ -50,7 +50,9 @@ def ma_higgins_i2(yi, vi, level=0.95):
     i2 = 100.0 * max(0.0, (q - df) / q)
     h = float(np.sqrt(q / df))
     if q > k:
-        selnh = (float(np.log(q)) - float(np.log(df))) / (2.0 * (float(np.sqrt(2.0 * q)) - float(np.sqrt(2.0 * k - 3.0))))
+        selnh = (float(np.log(q)) - float(np.log(df))) / (
+            2.0 * (float(np.sqrt(2.0 * q)) - float(np.sqrt(2.0 * k - 3.0)))
+        )
     else:
         selnh = float(np.sqrt((1.0 / (2.0 * (k - 2))) * (1.0 - 1.0 / (3.0 * (k - 2) ** 2))))
     crit = k02z(0.5 + 0.5 * float(level))

@@ -28,17 +28,16 @@ def ca_chapter_11_equation_8(a, b, c, d):
     """
     value = _ca_crim.risk_ratio(a, b, c, d)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.8)"
     return RichResult(
-        title='Risk ratio RR = [a/(a+b)] / [c/(c+d)]',
+        title="Risk ratio RR = [a/(a+b)] / [c/(c+d)]",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e8: RR = (a/(a+b)) / (c/(c+d)) = p1/p2 [Weisburd et al. 2022, eq. 11.8]'
+    return "ca11e8: RR = (a/(a+b)) / (c/(c+d)) = p1/p2 [Weisburd et al. 2022, eq. 11.8]"

@@ -15,9 +15,7 @@ def _check_mdp(policy, transitions, rewards, gamma):
     R = np.asarray(rewards, dtype=float)
     pi = np.asarray(policy, dtype=float)
     if P.ndim != 3:
-        raise ValueError(
-            f"transitions must be (n_states, n_actions, n_states), got shape {P.shape}."
-        )
+        raise ValueError(f"transitions must be (n_states, n_actions, n_states), got shape {P.shape}.")
     S, A, S2 = P.shape
     if S2 != S:
         raise ValueError(f"transitions last axis is {S2} but there are {S} states.")
@@ -25,9 +23,7 @@ def _check_mdp(policy, transitions, rewards, gamma):
         if R.shape == (S, A):
             R = np.repeat(R[:, :, None], S, axis=2)
         else:
-            raise ValueError(
-                f"rewards must be (S, A, S') = {P.shape} or (S, A) = {(S, A)}, got {R.shape}."
-            )
+            raise ValueError(f"rewards must be (S, A, S') = {P.shape} or (S, A) = {(S, A)}, got {R.shape}.")
     if pi.shape == (S,):
         det = pi.astype(int)
         if np.any(det < 0) or np.any(det >= A):
@@ -44,9 +40,7 @@ def _check_mdp(policy, transitions, rewards, gamma):
         raise ValueError("rewards contains non-finite values.")
     gamma = float(gamma)
     if not (0.0 <= gamma < 1.0):
-        raise ValueError(
-            f"gamma must lie in [0, 1) for the value system to have a unique solution, got {gamma}."
-        )
+        raise ValueError(f"gamma must lie in [0, 1) for the value system to have a unique solution, got {gamma}.")
     return pi, P, R, gamma
 
 
@@ -54,7 +48,7 @@ def policy_evaluation(policy, transitions, rewards, gamma):
     """Exact ``V^pi`` by solving ``(I - gamma P_pi) V = r_pi``."""
     pi, P, R, gamma = _check_mdp(policy, transitions, rewards, gamma)
     S = P.shape[0]
-    r_sa = np.einsum("sap,sap->sa", P, R)          # expected immediate reward
+    r_sa = np.einsum("sap,sap->sa", P, R)  # expected immediate reward
     r_pi = np.einsum("sa,sa->s", pi, r_sa)
     P_pi = np.einsum("sa,sap->sp", pi, P)
     V = np.linalg.solve(np.eye(S) - gamma * P_pi, r_pi)

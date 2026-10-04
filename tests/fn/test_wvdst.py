@@ -1,7 +1,6 @@
 """Tests for wvdst -- Wigner-Ville distribution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bsatf import wigner_ville
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.scsum — sum score."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.scsum import score_sum
 
 

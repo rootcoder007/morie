@@ -11,5 +11,6 @@ def test_alldat_basic():
 
 def test_alldat_edge():
     import pytest
+
     with pytest.raises(ValueError, match="at least 2"):
         alammar_lda_topic_distribution([["a"]], 1)

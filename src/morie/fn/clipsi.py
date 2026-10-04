@@ -62,8 +62,7 @@ def clip_similarity(I_emb, T_emb, tau=0.01):
         raise ValueError("tau must be strictly positive")
     In = [l2_normalize(r) for r in I]
     Tn = [l2_normalize(r) for r in T]
-    cos = [[sum(In[i][k] * Tn[j][k] for k in range(d)) for j in range(n)]
-           for i in range(n)]
+    cos = [[sum(In[i][k] * Tn[j][k] for k in range(d)) for j in range(n)] for i in range(n)]
     logits = [[cos[i][j] / tau for j in range(n)] for i in range(n)]
     retrieved = []
     for i in range(n):
@@ -73,16 +72,18 @@ def clip_similarity(I_emb, T_emb, tau=0.01):
                 b = j
         retrieved.append(b)
     acc = sum(1 for i in range(n) if retrieved[i] == i) / float(n)
-    return RichResult(payload={
-        "estimate": sum(cos[i][i] for i in range(n)) / n,
-        "logits": logits,
-        "cosine": cos,
-        "retrieved": retrieved,
-        "accuracy": acc,
-        "n": n,
-        "d": d,
-        "method": "CLIP image-text cosine similarity",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(cos[i][i] for i in range(n)) / n,
+            "logits": logits,
+            "cosine": cos,
+            "retrieved": retrieved,
+            "accuracy": acc,
+            "n": n,
+            "d": d,
+            "method": "CLIP image-text cosine similarity",
+        }
+    )
 
 
 def cheatsheet():

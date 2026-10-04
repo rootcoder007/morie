@@ -1,7 +1,6 @@
 """Tests for icafn.py - Independent Component Analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.icafn import ica_fn, icafn
 
 

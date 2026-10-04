@@ -70,9 +70,16 @@ def rope_ntk_dynamic(y, q, m, theta=10000.0, L_new=None, L_train=None):
         a0, a1 = qv[2 * i], qv[2 * i + 1]
         out[2 * i] = a0 * c_ - a1 * s_
         out[2 * i + 1] = a0 * s_ + a1 * c_
-    return RichResult(payload={
-        "estimate": out, "theta_base": base, "freqs": freqs, "scale": scale,
-        "d": d, "method": "NTK-aware dynamically scaled RoPE"})
+    return RichResult(
+        payload={
+            "estimate": out,
+            "theta_base": base,
+            "freqs": freqs,
+            "scale": scale,
+            "d": d,
+            "method": "NTK-aware dynamically scaled RoPE",
+        }
+    )
 
 
 ropentkdynamic = rope_ntk_dynamic

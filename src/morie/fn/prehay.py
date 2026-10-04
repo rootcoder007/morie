@@ -15,8 +15,7 @@ def _paths(x, M, y):
     one = np.ones(n)
     Xa = np.stack([one, x], axis=1)
     AtA = Xa.T @ Xa
-    a = np.asarray([float(np.linalg.solve(AtA, Xa.T @ M[:, k])[1])
-                    for k in range(j)])
+    a = np.asarray([float(np.linalg.solve(AtA, Xa.T @ M[:, k])[1]) for k in range(j)])
     Xb = np.concatenate([Xa, M], axis=1)
     cb = np.linalg.solve(Xb.T @ Xb, Xb.T @ y)
     c_prime = float(cb[1])
@@ -109,7 +108,7 @@ def prehay(x, M, y, B=1000, alpha=0.05, seed=1):
             boot_spec[k].append(v)
             tot_r += v
         boot_tot.append(tot_r)
-    lo_i = int(B * (alpha / 2.0))          # 1-based rank, PH2004 p.722
+    lo_i = int(B * (alpha / 2.0))  # 1-based rank, PH2004 p.722
     hi_i = int(B * (1.0 - alpha / 2.0)) + 1
     lo_i = min(max(lo_i, 1), B)
     hi_i = min(max(hi_i, 1), B)
@@ -120,18 +119,24 @@ def prehay(x, M, y, B=1000, alpha=0.05, seed=1):
         sk = sorted(boot_spec[k])
         sl.append(float(sk[lo_i - 1]))
         su.append(float(sk[hi_i - 1]))
-    return RichResult(payload={
-        "estimate": total,
-        "specific": spec,
-        "a": a, "b": b, "c_prime": c_prime,
-        "ci_lower": float(st[lo_i - 1]),
-        "ci_upper": float(st[hi_i - 1]),
-        "specific_lower": np.asarray(sl),
-        "specific_upper": np.asarray(su),
-        "se": float(np.std(np.asarray(boot_tot), ddof=1)),
-        "B": B, "n": n, "conf_level": 1.0 - alpha,
-        "method": "Preacher-Hayes (2008) multiple-mediator percentile bootstrap",
-    })
+    return RichResult(
+        payload={
+            "estimate": total,
+            "specific": spec,
+            "a": a,
+            "b": b,
+            "c_prime": c_prime,
+            "ci_lower": float(st[lo_i - 1]),
+            "ci_upper": float(st[hi_i - 1]),
+            "specific_lower": np.asarray(sl),
+            "specific_upper": np.asarray(su),
+            "se": float(np.std(np.asarray(boot_tot), ddof=1)),
+            "B": B,
+            "n": n,
+            "conf_level": 1.0 - alpha,
+            "method": "Preacher-Hayes (2008) multiple-mediator percentile bootstrap",
+        }
+    )
 
 
 preacher_hayes_indirect = prehay

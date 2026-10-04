@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """One-shot learning: a single labelled example in the prompt."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_one_shot"]

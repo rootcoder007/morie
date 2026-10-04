@@ -1,7 +1,6 @@
 """Tests for gh_ap_g2.ghosal_dir_moments."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_g2 import ghosal_dir_moments
 
 

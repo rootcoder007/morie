@@ -2,8 +2,6 @@
 """IPW-weighted OLS ATE estimator."""
 
 from . import _frame_core as pd
-
-
 from ._glm_core import formula as smf
 
 

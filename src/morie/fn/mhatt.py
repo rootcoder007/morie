@@ -89,8 +89,9 @@ def mhatt(
     output = np.concatenate(heads, axis=1)
     attention_weights = np.asarray(weights)
 
-    return RichResult(payload={"output": output, "attention_weights": attention_weights,
-                               "d_k": d_k, "num_heads": num_heads})
+    return RichResult(
+        payload={"output": output, "attention_weights": attention_weights, "d_k": d_k, "num_heads": num_heads}
+    )
 
 
 def cheatsheet() -> str:

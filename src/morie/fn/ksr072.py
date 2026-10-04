@@ -63,15 +63,21 @@ def kosorok_semipar_efficiency(scores, nuisance_scores=None):
         eff_info, eff = efficient_information(S, nuisance_scores)
     avar = np.linalg.pinv(eff_info)
     loss = float(np.trace(full) - np.trace(eff_info))
-    return RichResult(payload={
-        "efficient_information": eff_info, "full_information": full,
-        "efficient_scores": eff, "avar": avar,
-        "se": np.sqrt(np.maximum(np.diag(avar), 0.0) / n),
-        "information_loss": loss,
-        "adaptive": bool(abs(loss) < 1e-9),
-        "ordering": "efficient information <= full information, always",
-        "n": int(n), "p": int(p),
-        "method": "Semiparametric efficiency (Thm. 3.1); the projection IS the cost of the nuisance"})
+    return RichResult(
+        payload={
+            "efficient_information": eff_info,
+            "full_information": full,
+            "efficient_scores": eff,
+            "avar": avar,
+            "se": np.sqrt(np.maximum(np.diag(avar), 0.0) / n),
+            "information_loss": loss,
+            "adaptive": bool(abs(loss) < 1e-9),
+            "ordering": "efficient information <= full information, always",
+            "n": int(n),
+            "p": int(p),
+            "method": "Semiparametric efficiency (Thm. 3.1); the projection IS the cost of the nuisance",
+        }
+    )
 
 
 def cheatsheet():

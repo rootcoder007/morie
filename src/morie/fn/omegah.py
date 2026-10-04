@@ -1,9 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """McDonald omega hierarchical."""
 
-import math
-
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -56,11 +53,16 @@ def omega_hierarchical(X, loadings_g, loadings_specific=None):
     sg2 = sum(lg) ** 2
     ss2 = sum(ls) ** 2
     var_t = sg2 + ss2 + sum(psi)
-    return RichResult(payload={
-        "estimate": sg2 / var_t if var_t != 0.0 else float("nan"),
-        "omega_total": (sg2 + ss2) / var_t if var_t != 0.0 else float("nan"),
-        "var_total": var_t, "uniqueness": psi, "p": p,
-        "method": "McDonald omega hierarchical"})
+    return RichResult(
+        payload={
+            "estimate": sg2 / var_t if var_t != 0.0 else float("nan"),
+            "omega_total": (sg2 + ss2) / var_t if var_t != 0.0 else float("nan"),
+            "var_total": var_t,
+            "uniqueness": psi,
+            "p": p,
+            "method": "McDonald omega hierarchical",
+        }
+    )
 
 
 def cheatsheet():

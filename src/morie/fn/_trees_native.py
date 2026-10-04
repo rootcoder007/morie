@@ -93,10 +93,8 @@ def _grow(X, g, h, idx, depth, max_depth, min_node, lam, alpha, gamma_pen, imp):
         "leaf": False,
         "j": j,
         "thr": thr,
-        "left": _grow(X, g, h, left, depth + 1, max_depth, min_node, lam, alpha,
-                      gamma_pen, imp),
-        "right": _grow(X, g, h, right, depth + 1, max_depth, min_node, lam, alpha,
-                       gamma_pen, imp),
+        "left": _grow(X, g, h, left, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
+        "right": _grow(X, g, h, right, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
     }
 
 
@@ -116,9 +114,18 @@ def _predict_tree(node, X):
     return out
 
 
-def gb_fit(X, y, task="regression", n_estimators=100, learning_rate=0.1,
-           max_depth=3, min_node=1, reg_lambda=0.0, reg_alpha=0.0,
-           gamma_pen=0.0):
+def gb_fit(
+    X,
+    y,
+    task="regression",
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    min_node=1,
+    reg_lambda=0.0,
+    reg_alpha=0.0,
+    gamma_pen=0.0,
+):
     """Fit a native gradient-boosted tree ensemble.
 
     ``task="regression"`` uses squared-error loss, for which the negative
@@ -150,8 +157,19 @@ def gb_fit(X, y, task="regression", n_estimators=100, learning_rate=0.1,
             pr = 1.0 / (1.0 + np.exp(-f))
             g = pr - yv
             h = np.maximum(pr * (1 - pr), 1e-6)
-        tree = _grow(X, g, h, np.arange(n), 0, int(max_depth), int(min_node),
-                     float(reg_lambda), float(reg_alpha), float(gamma_pen), imp)
+        tree = _grow(
+            X,
+            g,
+            h,
+            np.arange(n),
+            0,
+            int(max_depth),
+            int(min_node),
+            float(reg_lambda),
+            float(reg_alpha),
+            float(gamma_pen),
+            imp,
+        )
         trees.append(tree)
         f = f + learning_rate * _predict_tree(tree, X)
     total = imp.sum()

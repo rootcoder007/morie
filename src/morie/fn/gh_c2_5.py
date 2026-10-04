@@ -21,11 +21,15 @@ def ghosal_histogram_prior(x, K=8, alpha=1.0, seed=42):
     g = [float(rng.gamma(alpha, 1.0)) for _ in range(K)]
     p = _bnp.normalize_weights(g)
     width = 1.0 / K
-    dens = [p[min(int(v * K), K - 1)] / width
-            if 0.0 <= v <= 1.0 else 0.0 for v in xs]
-    res = RichResult(payload={"estimate": sum(dens) / len(dens),
-                              "density": dens, "weights": p,
-                              "method": "Dirichlet histogram prior (GvdV 2017 sec. 2.3.2)"})
+    dens = [p[min(int(v * K), K - 1)] / width if 0.0 <= v <= 1.0 else 0.0 for v in xs]
+    res = RichResult(
+        payload={
+            "estimate": sum(dens) / len(dens),
+            "density": dens,
+            "weights": p,
+            "method": "Dirichlet histogram prior (GvdV 2017 sec. 2.3.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c2_5")
 
 

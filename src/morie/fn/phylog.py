@@ -58,8 +58,7 @@ def phylog(dates, divergence):
     tbar = float(np.mean(t))
     dbar = float(np.mean(d))
     sxx = sum((float(t[i]) - tbar) ** 2 for i in range(n))
-    sxy = sum((float(t[i]) - tbar) * (float(d[i]) - dbar)
-              for i in range(n))
+    sxy = sum((float(t[i]) - tbar) * (float(d[i]) - dbar) for i in range(n))
     syy = sum((float(d[i]) - dbar) ** 2 for i in range(n))
     if sxx <= 0.0:
         raise ValueError("all sampling dates identical")
@@ -67,23 +66,23 @@ def phylog(dates, divergence):
     a = dbar - u * tbar
     tmrca = -a / u if u != 0.0 else float("nan")
     corr = (sxy / math.sqrt(sxx * syy)) if syy > 0.0 else float("nan")
-    resid = np.asarray([float(d[i]) - (a + u * float(t[i]))
-                        for i in range(n)])
-    return RichResult(payload={
-        "rate": u,
-        "intercept": a,
-        "tmrca": tmrca,
-        "correlation": corr,
-        "r_squared": corr * corr if corr == corr else float("nan"),
-        "residuals": resid,
-        "n": n,
-        "method": "root-to-tip regression dating (Rambaut et al. 2016)",
-    })
+    resid = np.asarray([float(d[i]) - (a + u * float(t[i])) for i in range(n)])
+    return RichResult(
+        payload={
+            "rate": u,
+            "intercept": a,
+            "tmrca": tmrca,
+            "correlation": corr,
+            "r_squared": corr * corr if corr == corr else float("nan"),
+            "residuals": resid,
+            "n": n,
+            "method": "root-to-tip regression dating (Rambaut et al. 2016)",
+        }
+    )
 
 
 phylogenetic_dating = phylog
 
 
 def cheatsheet():
-    return ("phylog(dates, divergence) -> TempEst root-to-tip "
-            "regression: rate = slope, TMRCA = x-intercept.")
+    return "phylog(dates, divergence) -> TempEst root-to-tip regression: rate = slope, TMRCA = x-intercept."

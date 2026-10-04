@@ -1,7 +1,6 @@
 """Tests for spmom.py - spectral moment."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spmom import spectral_moment_fn, spmom
 
 

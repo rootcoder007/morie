@@ -31,7 +31,7 @@ def _ehh_curve(hap, core, carriers):
     out = []
     for j in range(L):
         lo, hi = (j, core) if j < core else (core, j)
-        rows = [tuple(hap[i][lo:hi + 1]) for i in carriers]
+        rows = [tuple(hap[i][lo : hi + 1]) for i in carriers]
         num, _ = _groups_hh(rows)
         out.append(num / denom)
     return out
@@ -113,12 +113,20 @@ def ehh_decay(hap, core, positions=None):
     ehh1 = _ehh_curve(H, core, car1) if len(car1) >= 2 else [float("nan")] * L
     ehh0 = _ehh_curve(H, core, car0) if len(car0) >= 2 else [float("nan")] * L
     ehhs = _ehh_curve(H, core, list(range(N)))
-    return RichResult(payload={
-        "estimate": ehh1, "ehh1": ehh1, "ehh0": ehh0, "ehhs": ehhs,
-        "positions": pos, "core": core,
-        "n1": len(car1), "n0": len(car0), "n": N,
-        "method": "EHH decay (Sabeti 2002/2007), allele-wise and site-wise",
-    })
+    return RichResult(
+        payload={
+            "estimate": ehh1,
+            "ehh1": ehh1,
+            "ehh0": ehh0,
+            "ehhs": ehhs,
+            "positions": pos,
+            "core": core,
+            "n1": len(car1),
+            "n0": len(car0),
+            "n": N,
+            "method": "EHH decay (Sabeti 2002/2007), allele-wise and site-wise",
+        }
+    )
 
 
 def cheatsheet():

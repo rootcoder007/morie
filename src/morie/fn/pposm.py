@@ -58,11 +58,19 @@ def ppmean(yrep):
     N = len(q)
     lo = q[max(0, int(math.floor(0.025 * (N - 1))))]
     hi = q[min(N - 1, int(math.ceil(0.975 * (N - 1))))]
-    return RichResult(payload={
-        "estimate": est, "sd": C.sd(rm, 1), "sd_pooled": C.sd(pooled, 1),
-        "ci_lower": lo, "ci_upper": hi, "rep_mean": rm, "S": float(S),
-        "n": float(n),
-        "method": "Posterior predictive summary, BDA3 Section 6.3"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "sd": C.sd(rm, 1),
+            "sd_pooled": C.sd(pooled, 1),
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "rep_mean": rm,
+            "S": float(S),
+            "n": float(n),
+            "method": "Posterior predictive summary, BDA3 Section 6.3",
+        }
+    )
 
 
 posterior_predictive_mean = ppmean

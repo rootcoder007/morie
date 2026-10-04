@@ -79,8 +79,7 @@ def geron_precision_recall_curve(y_true, y_scores):
 
     return RichResult(
         title="Precision-recall curve",
-        summary_lines=[("Points", len(prec)), ("Average precision", float(ap)),
-                       ("Best F1", float(f1[best]))],
+        summary_lines=[("Points", len(prec)), ("Average precision", float(ap)), ("Best F1", float(f1[best]))],
         payload={
             "precision": prec,
             "recall": rec,

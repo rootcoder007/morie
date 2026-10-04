@@ -2,7 +2,7 @@
 """Univariate kernel density estimate."""
 
 from . import _array_core as np
-from ._horowitz import kde, silverman_bw
+from ._horowitz import kde
 from ._richresult import RichResult
 
 __all__ = ["hrz_kde", "horowitz_appendix_kde"]
@@ -42,11 +42,17 @@ def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
     density estimation); NOT Ch. 2, which is Single-Index Models.
     """
     g, d, hh = kde(x, grid=grid, h=h, name=kernel_name)
-    return RichResult(payload={"grid": g, "density": d, "bandwidth": hh,
-                               "rate_exponent": -0.4,
-                               "integrates_to": float(np.trapezoid(d, g)),
-                               "n": int(np.asarray(x).size),
-                               "method": "KDE with n^{-1/5} bandwidth; rate n^{-2/5}"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": d,
+            "bandwidth": hh,
+            "rate_exponent": -0.4,
+            "integrates_to": float(np.trapezoid(d, g)),
+            "n": int(np.asarray(x).size),
+            "method": "KDE with n^{-1/5} bandwidth; rate n^{-2/5}",
+        }
+    )
 
 
 def cheatsheet():

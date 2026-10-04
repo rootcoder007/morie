@@ -1,7 +1,6 @@
 """Tests for gh_c14_25.ghosal_ibp_poisson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_25 import ghosal_ibp_poisson
 
 
@@ -12,8 +11,7 @@ def test_gh_c14_25_basic():
     n_sim = 300
     seed = 42
 
-    result = ghosal_ibp_poisson(n_customers=n_customers, alpha=alpha,
-                                n_sim=n_sim, seed=seed)
+    result = ghosal_ibp_poisson(n_customers=n_customers, alpha=alpha, n_sim=n_sim, seed=seed)
 
     assert "estimate" in result
     assert "theory" in result
@@ -44,8 +42,7 @@ def test_gh_c14_25_edge():
     n_sim = 1
     seed = 0
 
-    result = ghosal_ibp_poisson(n_customers=n_customers, alpha=alpha,
-                                n_sim=n_sim, seed=seed)
+    result = ghosal_ibp_poisson(n_customers=n_customers, alpha=alpha, n_sim=n_sim, seed=seed)
 
     assert "estimate" in result
     assert "theory" in result

@@ -27,17 +27,16 @@ def bernoulli_likelihood(pis, ys):
     """
     value = _acd.bernoulli_likelihood(pis, ys)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.1)"
     return RichResult(
-        title='Bernoulli likelihood L = prod pi^y (1-pi)^(1-y) (log form)',
+        title="Bernoulli likelihood L = prod pi^y (1-pi)^(1-y) (log form)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e1: L(pi_1..pi_n|y) = prod pi_i^y_i (1-pi_i)^(1-y_i) [Bilder & Loughin 2025, eq. 2.1]'
+    return "2e1: L(pi_1..pi_n|y) = prod pi_i^y_i (1-pi_i)^(1-y_i) [Bilder & Loughin 2025, eq. 2.1]"

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Duval-Tweedie trim and fill."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -75,21 +73,28 @@ def ma_trim_fill(yi, vi, side="left", n_iter=50):
         if k0 > k - 1:
             k0 = k - 1
         o = S.order([sgn * y[i] for i in range(k)])
-        keep = o[:k - k0]
+        keep = o[: k - k0]
         sw = sum(w[i] for i in keep)
         theta = sum(w[i] * y[i] for i in keep) / sw
     o = S.order([sgn * y[i] for i in range(k)])
-    trimmed = o[k - k0:]
+    trimmed = o[k - k0 :]
     fill = [2.0 * theta - y[i] for i in trimmed]
     fill_v = [v[i] for i in trimmed]
     ally = y + fill
     allv = v + fill_v
     allw = [1.0 / t for t in allv]
     theta_adj = sum(allw[i] * ally[i] for i in range(len(ally))) / sum(allw)
-    return RichResult(payload={
-        "theta_adj": theta_adj, "estimate": theta_adj, "k_filled": k0,
-        "fill_yi": fill, "theta_raw": theta_raw, "k": k,
-        "method": "Duval-Tweedie trim and fill, L0 estimator"})
+    return RichResult(
+        payload={
+            "theta_adj": theta_adj,
+            "estimate": theta_adj,
+            "k_filled": k0,
+            "fill_yi": fill,
+            "theta_raw": theta_raw,
+            "k": k,
+            "method": "Duval-Tweedie trim and fill, L0 estimator",
+        }
+    )
 
 
 matrimfill = ma_trim_fill

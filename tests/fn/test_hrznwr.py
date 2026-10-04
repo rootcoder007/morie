@@ -1,7 +1,6 @@
 """Tests for hrznwr.horowitz_nw_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrznwr import horowitz_nw_regression
 
 

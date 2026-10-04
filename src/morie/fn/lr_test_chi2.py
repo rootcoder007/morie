@@ -28,20 +28,19 @@ def lr_test_chi2(ll_null, ll_full):
     """
     value = _ca_crim.lr_test_chi2(ll_null, ll_full)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.8)"
     return RichResult(
-        title='Likelihood ratio test chi2 = -2 (LL1 - LL2)',
+        title="Likelihood ratio test chi2 = -2 (LL1 - LL2)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e8: chi2 = -2 (LL_1 - LL_2) [Weisburd et al. 2022, eq. 7.8]'
+    return "ca7e8: chi2 = -2 (LL_1 - LL_2) [Weisburd et al. 2022, eq. 7.8]"
 
 
 # compact alias per ledger/NAMING.md

@@ -1,7 +1,6 @@
 """Tests for pisrl.py - Pisarenko harmonic decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pisrl import pisarenko_fn, pisrl
 
 

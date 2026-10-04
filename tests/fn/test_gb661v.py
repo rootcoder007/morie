@@ -1,6 +1,5 @@
 """Tests for gb661v (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb661v import gibbons_mw_var

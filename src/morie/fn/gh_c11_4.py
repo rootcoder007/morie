@@ -69,8 +69,7 @@ def ghosal_gp_dens_crt(x, s=None, n=None, kernel="squared_exponential"):
     if sv <= 0:
         raise ValueError(f"smoothness must be positive, got {sv}.")
     if kernel not in ("squared_exponential", "matern", "rescaled_se"):
-        raise ValueError("kernel must be 'squared_exponential', 'matern' "
-                         "or 'rescaled_se'.")
+        raise ValueError("kernel must be 'squared_exponential', 'matern' or 'rescaled_se'.")
     mm = minimax_rate(nn, sv)
     if kernel == "matern":
         rate, kind, attains = mm, "polynomial (minimax)", True
@@ -80,13 +79,21 @@ def ghosal_gp_dens_crt(x, s=None, n=None, kernel="squared_exponential"):
     else:
         rate = float(np.log(nn) ** (-sv))
         kind, attains = "LOGARITHMIC", False
-    return RichResult(payload={
-        "n": nn, "smoothness": sv, "kernel": kernel, "rate": float(rate),
-        "minimax_rate": mm, "attains_minimax": attains, "rate_kind": kind,
-        "ratio_to_minimax": float(rate / mm),
-        "link": "f = exp(psi) / int exp(psi): positivity and normalisation for free",
-        "driver": "the concentration function: RKHS approximation + small-ball probability",
-        "method": "GP density contraction (Sec. 11.3.1); the kernel's smoothness decides the rate"})
+    return RichResult(
+        payload={
+            "n": nn,
+            "smoothness": sv,
+            "kernel": kernel,
+            "rate": float(rate),
+            "minimax_rate": mm,
+            "attains_minimax": attains,
+            "rate_kind": kind,
+            "ratio_to_minimax": float(rate / mm),
+            "link": "f = exp(psi) / int exp(psi): positivity and normalisation for free",
+            "driver": "the concentration function: RKHS approximation + small-ball probability",
+            "method": "GP density contraction (Sec. 11.3.1); the kernel's smoothness decides the rate",
+        }
+    )
 
 
 def cheatsheet():

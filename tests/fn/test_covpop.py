@@ -1,7 +1,6 @@
 """Tests for covpop.coverage_correction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.covpop import coverage_correction
 
 

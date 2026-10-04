@@ -1,7 +1,6 @@
 """Tests for ksr13.kosorok_tangent_space."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr13 import kosorok_tangent_space
 
 

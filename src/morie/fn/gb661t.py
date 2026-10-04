@@ -57,10 +57,15 @@ def gibbons_mw_ties(x, y):
     z = (U - mean) / np.sqrt(var)
     return RichResult(
         payload={
-            "U": float(U), "mean": mean, "var_corrected": float(var),
-            "var_uncorrected": float(var0), "z": float(z),
+            "U": float(U),
+            "mean": mean,
+            "var_corrected": float(var),
+            "var_uncorrected": float(var0),
+            "z": float(z),
             "p_two_sided": float(2 * stats.norm.sf(abs(z))),
-            "tie_sum": tie_sum, "m": m, "n": n,
+            "tie_sum": tie_sum,
+            "m": m,
+            "n": n,
             "method": "Mann-Whitney with tie-corrected variance (Gibbons Ch. 6.6)",
         }
     )

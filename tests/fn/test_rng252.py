@@ -1,7 +1,5 @@
 """Tests for rng252.rangayyan_ch4_complex_cepstrum_signal_with_echo."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_ch4_complex_cepstrum_signal_with_echo
 
 

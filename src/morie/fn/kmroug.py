@@ -14,7 +14,7 @@ def _toks(x):
 
 
 def _ngrams(tokens, n):
-    return Counter(tuple(tokens[i:i + n]) for i in range(len(tokens) - n + 1))
+    return Counter(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
 
 
 def kamath_rouge_n(hypothesis, reference, n=1):
@@ -51,28 +51,30 @@ def kamath_rouge_n(hypothesis, reference, n=1):
     if not r:
         raise ValueError("the reference is empty; recall would be 0/0.")
     if len(r) < n:
-        raise ValueError(
-            f"the reference has {len(r)} tokens, too few for "
-            f"{n}-grams.")
+        raise ValueError(f"the reference has {len(r)} tokens, too few for {n}-grams.")
     if not h:
-        raise ValueError(
-            "the hypothesis is empty; ROUGE is 0 by construction, "
-            "which says nothing about the model.")
+        raise ValueError("the hypothesis is empty; ROUGE is 0 by construction, which says nothing about the model.")
     hg, rg = _ngrams(h, n), _ngrams(r, n)
     total_r = sum(rg.values())
     total_h = sum(hg.values())
     match = sum(min(c, hg[g]) for g, c in rg.items())
     recall = match / total_r
     precision = match / total_h if total_h else 0.0
-    f1 = (0.0 if recall + precision == 0
-          else 2 * recall * precision / (recall + precision))
-    return RichResult(payload={
-        "estimate": recall, "recall": recall,
-        "precision": precision, "f1": f1,
-        "n_matched": match, "n_reference_ngrams": total_r,
-        "n_hypothesis_ngrams": total_h,
-        "order": n, "n": total_r,
-        "method": f"ROUGE-{n} recall with clipped n-gram counts"})
+    f1 = 0.0 if recall + precision == 0 else 2 * recall * precision / (recall + precision)
+    return RichResult(
+        payload={
+            "estimate": recall,
+            "recall": recall,
+            "precision": precision,
+            "f1": f1,
+            "n_matched": match,
+            "n_reference_ngrams": total_r,
+            "n_hypothesis_ngrams": total_h,
+            "order": n,
+            "n": total_r,
+            "method": f"ROUGE-{n} recall with clipped n-gram counts",
+        }
+    )
 
 
 def cheatsheet():

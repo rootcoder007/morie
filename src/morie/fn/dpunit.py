@@ -93,9 +93,12 @@ def dp_unit_definition(records, unit=None):
             "multiply the noise or cap contributions first"
         )
     payload = {
-        "n_records": int(r.size), "n_units": int(units.size),
-        "max_contribution": mx, "sensitivity_multiplier": mx,
-        "units": units, "contributions": counts,
+        "n_records": int(r.size),
+        "n_units": int(units.size),
+        "max_contribution": mx,
+        "sensitivity_multiplier": mx,
+        "units": units,
+        "contributions": counts,
         "mean_contribution": float(counts.mean()),
         "method": "dp_unit_definition",
     }
@@ -103,8 +106,7 @@ def dp_unit_definition(records, unit=None):
         payload["unit_contribution"] = int(np.sum(r == unit))
     return RichResult(
         title="Privacy unit",
-        summary_lines=[("records", int(r.size)), ("units", int(units.size)),
-                       ("max contribution", mx)],
+        summary_lines=[("records", int(r.size)), ("units", int(units.size)), ("max contribution", mx)],
         warnings=warn,
         payload=payload,
     )

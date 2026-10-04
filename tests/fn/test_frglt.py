@@ -1,8 +1,8 @@
 """Tests for morie.fn.frglt -- Frailty model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.frglt import frglt
 
 

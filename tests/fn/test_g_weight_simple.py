@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.g_weight_simple import (
     g_weight_simple,
 )

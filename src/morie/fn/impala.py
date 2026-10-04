@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["impala_vtrace"]
 
 
-def impala_vtrace(rewards, values, behavior_logp, target_logp, gamma=0.99,
-                  rho_bar=1.0, c_bar=1.0, bootstrap_value=0.0):
+def impala_vtrace(rewards, values, behavior_logp, target_logp, gamma=0.99, rho_bar=1.0, c_bar=1.0, bootstrap_value=0.0):
     r"""V-trace targets for off-policy actor-critic learning.
 
     .. math::
@@ -113,15 +112,24 @@ def impala_vtrace(rewards, values, behavior_logp, target_logp, gamma=0.99,
     adv = rho * (rw + gamma * vs_next - V)
     return RichResult(
         title="V-trace targets",
-        summary_lines=[("T", int(T)), ("rho_bar", float(rho_bar)),
-                       ("c_bar", float(c_bar)),
-                       ("truncated rho", int(np.sum(ratio > rho_bar)))],
-        warnings=["rho_bar sets WHAT is learned (the fixed point lies between "
-                  "behaviour and target policy); c_bar sets HOW FAST, and does "
-                  "not move the fixed point"],
+        summary_lines=[
+            ("T", int(T)),
+            ("rho_bar", float(rho_bar)),
+            ("c_bar", float(c_bar)),
+            ("truncated rho", int(np.sum(ratio > rho_bar))),
+        ],
+        warnings=[
+            "rho_bar sets WHAT is learned (the fixed point lies between "
+            "behaviour and target policy); c_bar sets HOW FAST, and does "
+            "not move the fixed point"
+        ],
         payload={
-            "vs": vs, "advantage": adv, "rho": rho, "c": c,
-            "delta": delta, "ratio": ratio,
+            "vs": vs,
+            "advantage": adv,
+            "rho": rho,
+            "c": c,
+            "delta": delta,
+            "ratio": ratio,
             "n_truncated_rho": int(np.sum(ratio > rho_bar)),
             "n_truncated_c": int(np.sum(ratio > c_bar)),
             "method": "impala_vtrace",

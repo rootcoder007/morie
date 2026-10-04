@@ -1,13 +1,12 @@
 """Tests for gb_wrc.gibbons_runs_critical."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_wrc import gibbons_runs_critical
 
 
 def _runs_pmf(n1, n2):
     """Independent reference for the total-runs PMF (Gibbons & Chakraborti, Sec. 3.2)."""
     from math import comb
+
     n = n1 + n2
     den = comb(n, n1)
     support = list(range(2, n + 1))
@@ -18,10 +17,7 @@ def _runs_pmf(n1, n2):
             p = 2.0 * comb(n1 - 1, k - 1) * comb(n2 - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                comb(n1 - 1, k - 1) * comb(n2 - 1, k)
-                + comb(n1 - 1, k) * comb(n2 - 1, k - 1)
-            )
+            p = comb(n1 - 1, k - 1) * comb(n2 - 1, k) + comb(n1 - 1, k) * comb(n2 - 1, k - 1)
         pmf.append(p / den)
     return support, pmf
 
@@ -36,8 +32,7 @@ def test_gb_wrc_basic():
     assert hasattr(result, "keys") or isinstance(result, dict)
     payload = result.payload if hasattr(result, "payload") else result
 
-    for key in ("lower", "upper", "alpha_lower", "alpha_upper",
-                "alpha_exact", "n1", "n2", "method"):
+    for key in ("lower", "upper", "alpha_lower", "alpha_upper", "alpha_exact", "n1", "n2", "method"):
         assert key in payload, f"missing key {key!r}"
 
     # Round-trip of n1/n2.

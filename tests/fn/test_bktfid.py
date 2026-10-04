@@ -10,5 +10,6 @@ def test_bktfid_basic():
 
 def test_bktfid_edge():
     import pytest
+
     with pytest.raises(ValueError, match="no corpus document"):
         burkov_tf_idf("z", ["z"], [["a"]])

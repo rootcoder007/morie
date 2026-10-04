@@ -46,9 +46,9 @@ def welsch_weight(y, c=2.9846):
     w = [math.exp(-((t / c) ** 2)) for t in v]
     rho = [(c * c / 2.0) * (1.0 - w[i]) for i in range(len(v))]
     psi = [v[i] * w[i] for i in range(len(v))]
-    return RichResult(payload={
-        "estimate": sum(rho), "w": w, "rho": rho, "psi": psi, "n": len(v),
-        "method": "Welsch robust weight"})
+    return RichResult(
+        payload={"estimate": sum(rho), "w": w, "rho": rho, "psi": psi, "n": len(v), "method": "Welsch robust weight"}
+    )
 
 
 welschweight = welsch_weight

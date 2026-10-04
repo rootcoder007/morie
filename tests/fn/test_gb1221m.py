@@ -1,7 +1,6 @@
 """Tests for gb1221m.gibbons_friedman_mult."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb1221m import gibbons_friedman_mult
 
 
@@ -13,6 +12,8 @@ def test_gb1221m_basic():
     result = gibbons_friedman_mult(data, k, alpha)
     assert isinstance(result, dict)
     assert "bound" in result
+
+
 def test_gb1221m_edge():
     """Test edge cases."""
     data = np.random.default_rng(42).normal(0, 1, 100)

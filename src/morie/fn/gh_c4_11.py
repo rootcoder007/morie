@@ -5,8 +5,6 @@ Implements Theorem 4.12 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
@@ -24,9 +22,14 @@ def ghosal_dp_stickbr(n_terms, alpha, seed=42):
     W = _bnp.stick_breaking(V)
     th = [float(v) for v in rng.uniform(0, 1, int(n_terms))._flat()]
     mean = sum(wi * t for wi, t in zip(W, th))
-    res = RichResult(payload={"estimate": mean, "weights": W[:20],
-                              "total_mass": sum(W),
-                              "method": "Sethuraman representation (GvdV 2017 Thm 4.12)"})
+    res = RichResult(
+        payload={
+            "estimate": mean,
+            "weights": W[:20],
+            "total_mass": sum(W),
+            "method": "Sethuraman representation (GvdV 2017 Thm 4.12)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_11")
 
 

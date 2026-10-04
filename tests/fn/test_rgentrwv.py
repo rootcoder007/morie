@@ -1,7 +1,6 @@
 """Tests for rgentrwv.rangayyan_wavelet_entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_wavelet_entropy
 
 

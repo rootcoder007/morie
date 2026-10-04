@@ -1,7 +1,6 @@
 """Tests for morie.fn.absfea -- transfer learning feature extraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.absfea import absfea, absorption_features
 

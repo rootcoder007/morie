@@ -84,8 +84,7 @@ def dr_spillover(y, D, X=None, exposure=None):
         if len(a) == 0 or len(b) == 0 or len(idx) < 3:
             return float("nan"), float("nan")
         lab = [1.0] * len(a) + [0.0] * len(b)
-        f = k.drdid_panel([yv[i] for i in idx], lab,
-                          [Xr[i] for i in idx] if Xr is not None else None)
+        f = k.drdid_panel([yv[i] for i in idx], lab, [Xr[i] for i in idx] if Xr is not None else None)
         return f["tau"], f["se"]
 
     td, sd = _fit(dirt, ctrl)

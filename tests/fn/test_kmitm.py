@@ -3,8 +3,8 @@
 import math
 
 import pytest
-from morie.fn import _array_core as np
 
+from morie.fn import _array_core as np
 from morie.fn.kmitm import kamath_image_text_matching
 
 
@@ -41,12 +41,12 @@ def test_kmitm_edge():
     assert math.isfinite(zero_result["estimate"])
     assert abs(zero_result["estimate"] - 0.5) < 1e-12
     assert zero_result["match"] is True
+
     # Caller-supplied fusion produces a fused width that W must match.
     def fuse(I, T):
         return [I[0] * T[0], I[0] + T[0]]
-    custom_result = kamath_image_text_matching(image_emb, text_emb,
-                                               [1.0, 1.0], 0.0,
-                                               fuse=fuse)
+
+    custom_result = kamath_image_text_matching(image_emb, text_emb, [1.0, 1.0], 0.0, fuse=fuse)
     assert isinstance(custom_result, dict)
     assert custom_result["fusion"] == "caller-supplied fusion"
     assert custom_result["n"] == 2
@@ -61,8 +61,7 @@ def test_kmitm_edge():
         kamath_image_text_matching(image_emb, text_emb, [0.0], 0.0)
     # Non-callable fuse raises (docstring: "fuse must be callable").
     with pytest.raises(ValueError):
-        kamath_image_text_matching(image_emb, text_emb, [0.0, 0.0], 0.0,
-                                   fuse=0.0)
+        kamath_image_text_matching(image_emb, text_emb, [0.0, 0.0], 0.0, fuse=0.0)
 
 
 # --- appended: the module's own worked example as a gate -----------
@@ -77,7 +76,7 @@ import morie.fn.kmitm as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

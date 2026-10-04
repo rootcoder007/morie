@@ -91,14 +91,21 @@ def placebo_dr_did(y_pre1, y_pre2, D, X, **kwargs):
     return RichResult(
         title="Placebo DR difference-in-differences",
         summary_lines=[("placebo effect", est), ("se", se), ("p", p)],
-        warnings=["failure is informative, passing is weak: a pre-trend "
-                  "smaller than the effect of interest is not evidence of "
-                  "parallel trends"],
+        warnings=[
+            "failure is informative, passing is weak: a pre-trend "
+            "smaller than the effect of interest is not evidence of "
+            "parallel trends"
+        ],
         payload={
-            "placebo_effect": est, "se": se, "z": float(z), "p_value": p,
-            "ci": r["ci"], "passed": bool(p > 0.05) if np.isfinite(p) else False,
+            "placebo_effect": est,
+            "se": se,
+            "z": float(z),
+            "p_value": p,
+            "ci": r["ci"],
+            "passed": bool(p > 0.05) if np.isfinite(p) else False,
             "min_detectable": float(2.8 * se),
-            "propensity": r["propensity"], "method": "placebo_dr_did",
+            "propensity": r["propensity"],
+            "method": "placebo_dr_did",
         },
     )
 

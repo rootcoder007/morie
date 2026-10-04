@@ -62,8 +62,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["query_tokens", "qformer_attend", "trainable_fraction",
-           "stage_one_objectives", "project_to_llm"]
+__all__ = ["query_tokens", "qformer_attend", "trainable_fraction", "stage_one_objectives", "project_to_llm"]
 
 _EPS = 1e-12
 _STAGES = (1, 2)
@@ -77,11 +76,9 @@ def query_tokens(n_queries, dim, seed=0, scale=0.02):
     """
     n, d = int(n_queries), int(dim)
     if n < 1 or d < 1:
-        raise ValueError("blip2v: the query count and dimension must "
-                         "be positive")
+        raise ValueError("blip2v: the query count and dimension must be positive")
     rng = np.random.default_rng(seed)
-    return [[(float(rng.uniform()) - 0.5) * 2.0 * scale
-             for _ in range(d)] for _ in range(n)]
+    return [[(float(rng.uniform()) - 0.5) * 2.0 * scale for _ in range(d)] for _ in range(n)]
 
 
 def qformer_attend(queries, image_features, WQ, WK, WV):
@@ -96,31 +93,30 @@ def qformer_attend(queries, image_features, WQ, WK, WV):
     dk = len(WQ)
 
     def proj(W, x):
-        return [sum(W[o][j] * x[j] for j in range(len(x)))
-                for o in range(len(W))]
+        return [sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
 
     out, weights = [], []
     for q in Q:
         qq = proj(WQ, q)
-        sc = [sum(qq[a] * proj(WK, f)[a] for a in range(dk))
-              / math.sqrt(dk) for f in F]
+        sc = [sum(qq[a] * proj(WK, f)[a] for a in range(dk)) / math.sqrt(dk) for f in F]
         m = max(sc)
         e = [math.exp(v - m) for v in sc]
         z = sum(e)
         w = [v / z for v in e]
         weights.append(w)
         vs = [proj(WV, f) for f in F]
-        out.append([sum(w[j] * vs[j][a] for j in range(len(F)))
-                    for a in range(len(vs[0]))])
-    return {"output": out, "weights": weights,
-            "n_queries": len(Q), "n_patches": len(F),
-            "compression": len(F) / float(len(Q)),
-            "note": "the output width is the QUERY count, whatever "
-                    "the image resolution"}
+        out.append([sum(w[j] * vs[j][a] for j in range(len(F))) for a in range(len(vs[0]))])
+    return {
+        "output": out,
+        "weights": weights,
+        "n_queries": len(Q),
+        "n_patches": len(F),
+        "compression": len(F) / float(len(Q)),
+        "note": "the output width is the QUERY count, whatever the image resolution",
+    }
 
 
-def trainable_fraction(qformer_params, frozen_vision_params,
-                       frozen_llm_params):
+def trainable_fraction(qformer_params, frozen_vision_params, frozen_llm_params):
     r"""What fraction is actually trained.
 
     The whole argument is about what is NOT trained, so the ratio is
@@ -129,11 +125,14 @@ def trainable_fraction(qformer_params, frozen_vision_params,
     q = float(qformer_params)
     tot = q + float(frozen_vision_params) + float(frozen_llm_params)
     if tot <= 0.0:
-        raise ValueError("blip2v: the parameter counts must be "
-                         "positive")
-    return {"trainable": q, "total": tot, "fraction": q / tot,
-            "frozen_fraction": 1.0 - q / tot,
-            "note": "vision encoder and language model both frozen"}
+        raise ValueError("blip2v: the parameter counts must be positive")
+    return {
+        "trainable": q,
+        "total": tot,
+        "fraction": q / tot,
+        "frozen_fraction": 1.0 - q / tot,
+        "note": "vision encoder and language model both frozen",
+    }
 
 
 def stage_one_objectives(query_out, text_out, temperature=0.07):
@@ -153,19 +152,19 @@ def stage_one_objectives(query_out, text_out, temperature=0.07):
         na = math.sqrt(sum(x * x for x in a))
         nb = math.sqrt(sum(x * x for x in b))
         if na <= _EPS or nb <= _EPS:
-            raise ValueError("blip2v: a zero embedding has no "
-                             "direction")
+            raise ValueError("blip2v: a zero embedding has no direction")
         return sum(a[i] * b[i] for i in range(len(a))) / (na * nb)
 
     sims = [cos(q, T) for q in Q]
-    return {"per_query_similarity": sims,
-            "image_text_similarity": max(sims),
-            "best_query": max(range(len(sims)),
-                              key=lambda i: sims[i]),
-            "logit": max(sims) / t,
-            "note": "the image-text score is the MAXIMUM over "
-                    "queries, not the mean -- one query may carry the "
-                    "relevant content"}
+    return {
+        "per_query_similarity": sims,
+        "image_text_similarity": max(sims),
+        "best_query": max(range(len(sims)), key=lambda i: sims[i]),
+        "logit": max(sims) / t,
+        "note": "the image-text score is the MAXIMUM over "
+        "queries, not the mean -- one query may carry the "
+        "relevant content",
+    }
 
 
 def project_to_llm(query_out, W, b=None):
@@ -177,34 +176,36 @@ def project_to_llm(query_out, W, b=None):
     out = []
     for q in Q:
         if len(W[0]) != len(q):
-            raise ValueError("blip2v: the projection expects %d "
-                             "inputs but the query output is %d"
-                             % (len(W[0]), len(q)))
-        out.append([bb[o] + sum(W[o][j] * q[j]
-                                for j in range(len(q)))
-                    for o in range(d_out)])
-    return RichResult(payload={
-        "estimate": out, "soft_prompt": out,
-        "n_tokens": len(out), "dim": d_out,
-        "method": "BLIP-2 two-stage bridging; Li, Li, Savarese & Hoi "
-                  "(2023)",
-        "note": "the projected queries act as a soft prompt prefixed "
-                "to the frozen LLM's input",
-    })
+            raise ValueError(
+                "blip2v: the projection expects %d inputs but the query output is %d" % (len(W[0]), len(q))
+            )
+        out.append([bb[o] + sum(W[o][j] * q[j] for j in range(len(q))) for o in range(d_out)])
+    return RichResult(
+        payload={
+            "estimate": out,
+            "soft_prompt": out,
+            "n_tokens": len(out),
+            "dim": d_out,
+            "method": "BLIP-2 two-stage bridging; Li, Li, Savarese & Hoi (2023)",
+            "note": "the projected queries act as a soft prompt prefixed to the frozen LLM's input",
+        }
+    )
 
 
 def cheatsheet():
-    return ("blip2v: the expensive parts already exist -- FREEZE the "
-            "image encoder and the LLM and train only a lightweight "
-            "Q-Former between them. A FIXED small set of learnable "
-            "queries (32) cross-attends to hundreds of patch features, "
-            "so the visual input handed to the language model has "
-            "constant width whatever the resolution, and the queries "
-            "must EXTRACT rather than pass through. TWO stages, "
-            "because the gaps differ: representation alignment from "
-            "the frozen encoder, then generative learning into the "
-            "frozen LLM. The claim is economic: beating Flamingo80B "
-            "with 54x fewer trainable parameters.")
+    return (
+        "blip2v: the expensive parts already exist -- FREEZE the "
+        "image encoder and the LLM and train only a lightweight "
+        "Q-Former between them. A FIXED small set of learnable "
+        "queries (32) cross-attends to hundreds of patch features, "
+        "so the visual input handed to the language model has "
+        "constant width whatever the resolution, and the queries "
+        "must EXTRACT rather than pass through. TWO stages, "
+        "because the gaps differ: representation alignment from "
+        "the frozen encoder, then generative learning into the "
+        "frozen LLM. The claim is economic: beating Flamingo80B "
+        "with 54x fewer trainable parameters."
+    )
 
 
 # compact alias per ledger/NAMING.md

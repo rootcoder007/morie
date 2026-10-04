@@ -40,8 +40,7 @@ def _gauss(u):
     return np.exp(-0.5 * u * u) / np.sqrt(2.0 * np.pi)
 
 
-def simquant(x, y, alpha=0.5, h=None, hg=None, niter=40, ngrid=25,
-             weights=None):
+def simquant(x, y, alpha=0.5, h=None, hg=None, niter=40, ngrid=25, weights=None):
     """Average-derivative estimator of beta in the quantile index model.
 
     Parameters
@@ -77,7 +76,7 @@ def simquant(x, y, alpha=0.5, h=None, hg=None, niter=40, ngrid=25,
     if not 0.0 < a < 1.0:
         raise ValueError("alpha must lie strictly between 0 and 1.")
     hh = float(n ** (-1.0 / (d + 4.0))) if h is None else float(h)
-    hgv = float(n ** -0.2) if hg is None else float(hg)
+    hgv = float(n**-0.2) if hg is None else float(hg)
     W = np.ones(n) if weights is None else np.asarray(weights, dtype=float).ravel()
 
     delta = np.zeros(d)
@@ -89,11 +88,12 @@ def simquant(x, y, alpha=0.5, h=None, hg=None, niter=40, ngrid=25,
         Dm = np.column_stack([np.ones(n), X - X[i][None, :]])
         co = qirls(Dm, yv, w, a, niter=int(niter))
         delta = delta + W[i] * co[1:]
-    delta = delta / n                                            # (2.57)
+    delta = delta / n  # (2.57)
     if abs(float(delta[0])) < 1e-300:
         raise ValueError(
             "the average derivative in the first coordinate is zero, so the "
-            "scale normalisation beta_1 = 1 is unavailable.")
+            "scale normalisation beta_1 = 1 is unavailable."
+        )
     beta = delta / float(delta[0])
 
     z = X @ beta
@@ -106,10 +106,18 @@ def simquant(x, y, alpha=0.5, h=None, hg=None, niter=40, ngrid=25,
         gh[t] = float(co[0])
     return RichResult(
         title="Single-index conditional-quantile model (eq. 2.56)",
-        payload={"estimate": beta, "delta": delta, "index": z,
-                 "grid": g, "ghat": gh, "alpha": a, "bandwidth": hh,
-                 "hg": hgv, "n": n,
-                 "method": "Horowitz (2009) eq. (2.56)-(2.57) quantile average derivative"},
+        payload={
+            "estimate": beta,
+            "delta": delta,
+            "index": z,
+            "grid": g,
+            "ghat": gh,
+            "alpha": a,
+            "bandwidth": hh,
+            "hg": hgv,
+            "n": n,
+            "method": "Horowitz (2009) eq. (2.56)-(2.57) quantile average derivative",
+        },
     )
 
 
@@ -123,10 +131,9 @@ def cheatsheet():
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
     n = 90
-    X = np.column_stack([np.linspace(-2, 2, n),
-                         np.cos(np.arange(1, n + 1) * 0.9)])
+    X = np.column_stack([np.linspace(-2, 2, n), np.cos(np.arange(1, n + 1) * 0.9)])
     z = X @ np.array([1.0, 0.7])
-    y = z + 0.2 * z ** 2                       # median = the index itself
+    y = z + 0.2 * z**2  # median = the index itself
     r = simquant(X, y, alpha=0.5, h=0.8, hg=0.4)
     got = float(r["estimate"][1])
     assert abs(got - 0.7) < 0.3, got

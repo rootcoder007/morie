@@ -28,8 +28,7 @@ def d_probit(p1, p2):
     """
     value = _ca_crim.d_probit(p1, p2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.20)"
@@ -41,7 +40,7 @@ def d_probit(p1, p2):
 
 
 def cheatsheet():
-    return 'ca11e20: d = probit(p1) - probit(p2) = z1 - z2 [Weisburd et al. 2022, eq. 11.20]'
+    return "ca11e20: d = probit(p1) - probit(p2) = z1 - z2 [Weisburd et al. 2022, eq. 11.20]"
 
 
 # compact alias per ledger/NAMING.md

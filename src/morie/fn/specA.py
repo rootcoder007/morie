@@ -71,11 +71,11 @@ def spectral_anomaly(x, q=3):
         else:
             lg.append(log(a))
     half = q // 2
-    sm = [fsum([lg[(k + t) % n] for t in range(-half, half + 1)]) / q
-          for k in range(n)]
+    sm = [fsum([lg[(k + t) % n] for t in range(-half, half + 1)]) / q for k in range(n)]
     res = [lg[k] - sm[k] for k in range(n)]
     ph = phase(re, im)
     from math import cos, exp, sin
+
     nre = [exp(res[k]) * cos(ph[k]) for k in range(n)]
     nim = [exp(res[k]) * sin(ph[k]) for k in range(n)]
     rec = idftre(nre, nim)
@@ -83,19 +83,20 @@ def spectral_anomaly(x, q=3):
     pk = max(sal)
     pi_ = sal.index(pk)
 
-    return RichResult(payload={
-        "saliency": sal,
-        "peak": pk,
-        "peak_index": float(pi_),
-        "residual": res,
-        "log_amplitude": lg,
-        "floored": float(floored),
-        "phase_is_preserved": True,
-        "q": float(q),
-        "n": n,
-        "method": ("Spectral residual saliency (Hou & Zhang 2007); NOT in "
-                   "Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "saliency": sal,
+            "peak": pk,
+            "peak_index": float(pi_),
+            "residual": res,
+            "log_amplitude": lg,
+            "floored": float(floored),
+            "phase_is_preserved": True,
+            "q": float(q),
+            "n": n,
+            "method": ("Spectral residual saliency (Hou & Zhang 2007); NOT in Schabenberger & Gotway"),
+        }
+    )
 
 
 def cheatsheet():

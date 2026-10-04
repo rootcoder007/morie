@@ -9,8 +9,7 @@ __all__ = ["causal_estimand", "estimand_framework"]
 ESTIMANDS = ("ate", "att", "atc", "late", "cate")
 
 
-def causal_estimand(d, weights=None, propensity=None, estimand="ate",
-                    complier=None):
+def causal_estimand(d, weights=None, propensity=None, estimand="ate", complier=None):
     r"""Define which population an effect is averaged over.
 
     The four aggregate estimands differ only in the weight each unit
@@ -80,12 +79,8 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate",
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if estimand not in ESTIMANDS:
-        raise ValueError(
-            "estimand must be one of %s, got %r." % (ESTIMANDS, estimand)
-        )
-    sw = np.ones(n) if weights is None else np.asarray(
-        weights, dtype=float
-    ).ravel()
+        raise ValueError("estimand must be one of %s, got %r." % (ESTIMANDS, estimand))
+    sw = np.ones(n) if weights is None else np.asarray(weights, dtype=float).ravel()
     if sw.size != n:
         raise ValueError("weights has %d entries for %d rows." % (sw.size, n))
 
@@ -99,8 +94,7 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate",
     if estimand == "ate":
         w = sw.copy()
         share = 1.0
-        question = ("the effect of treating everyone, which may not "
-                    "correspond to any available intervention")
+        question = "the effect of treating everyone, which may not correspond to any available intervention"
     elif estimand == "att":
         if e is None:
             w = sw * dv
@@ -116,18 +110,16 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate",
         share = float(np.mean(1 - dv))
         question = "whether to extend treatment to those not treated"
     elif estimand == "late":
-        w = sw * (np.asarray(complier, dtype=float).ravel()
-                  if complier is not None else np.ones(n))
-        share = (float(np.mean(complier)) if complier is not None else np.nan)
-        question = ("the effect among compliers, a group defined by "
-                    "response to the instrument")
+        w = sw * (np.asarray(complier, dtype=float).ravel() if complier is not None else np.ones(n))
+        share = float(np.mean(complier)) if complier is not None else np.nan
+        question = "the effect among compliers, a group defined by response to the instrument"
     else:
         w = sw.copy()
         share = np.nan
         question = "the effect as a function of covariates, not a scalar"
 
     s = w.sum()
-    ess = float(s ** 2 / np.sum(w ** 2)) if s > 0 else np.nan
+    ess = float(s**2 / np.sum(w**2)) if s > 0 else np.nan
     overlap = None
     if e is not None:
         t, c = e[dv == 1], e[dv == 0]
@@ -166,7 +158,8 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate",
             "late_note": (
                 "the complier population is defined by response to the "
                 "instrument, so no unit can be identified as belonging to it"
-                if estimand == "late" else None
+                if estimand == "late"
+                else None
             ),
             "n_treated": int(dv.sum()),
             "n": int(n),
@@ -176,10 +169,7 @@ def causal_estimand(d, weights=None, propensity=None, estimand="ate",
 
 
 def cheatsheet():
-    return (
-        "estnd: the weights each estimand implies, with overlap and the "
-        "decision question each one answers"
-    )
+    return "estnd: the weights each estimand implies, with overlap and the decision question each one answers"
 
 
 #: Catalogue alias for :func:`causal_estimand`.

@@ -13,7 +13,7 @@ from morie.fn.information_theory_mackay24e13 import sigevid
 
 def test_sigevid_splits_into_best_fit_and_occam_factor():
     s, n, sigma, sigmamu = 4.0, 9, 1.5, 2.0
-    bestfit = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - s / (2.0 * sigma ** 2)
+    bestfit = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - s / (2.0 * sigma**2)
     occam = math.log(math.sqrt(2.0 * math.pi) * sigma / math.sqrt(n) / sigmamu)
     res = sigevid(s, n, sigma, sigmamu)
     assert res["bestfit"] == pytest.approx(bestfit, abs=1e-12)

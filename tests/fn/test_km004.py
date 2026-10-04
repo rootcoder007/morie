@@ -13,6 +13,8 @@ def test_km004_doctest():
 
 def test_km004_edge():
     import pytest
+
     from morie.fn.km004 import kamath_ch2_decoder_hidden_state
+
     with pytest.raises(ValueError):
         kamath_ch2_decoder_hidden_state([1.0], [1.0], [1.0, 2.0])

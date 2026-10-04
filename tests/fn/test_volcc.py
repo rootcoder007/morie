@@ -47,11 +47,9 @@ def test_volcc_counts_the_transitions_and_adds_the_two_halves():
     # LR_cc = LR_uc + LR_ind, chi2_2
     assert out["statistic"] == pytest.approx(want_uc + want_ind, rel=1e-12)
     assert out["df"] == 2
-    assert out["pvalue"] == pytest.approx(
-        float(stats.chi2.sf(want_uc + want_ind, 2)), rel=1e-12)
+    assert out["pvalue"] == pytest.approx(float(stats.chi2.sf(want_uc + want_ind, 2)), rel=1e-12)
     assert out["pvalue_uc"] == pytest.approx(float(stats.chi2.sf(want_uc, 1)), rel=1e-12)
-    assert out["pvalue_ind"] == pytest.approx(
-        float(stats.chi2.sf(want_ind, 1)), rel=1e-12)
+    assert out["pvalue_ind"] == pytest.approx(float(stats.chi2.sf(want_ind, 1)), rel=1e-12)
 
 
 def test_volcc_independence_half_vanishes_on_a_degenerate_chain():

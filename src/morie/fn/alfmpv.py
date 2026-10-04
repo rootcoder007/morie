@@ -65,9 +65,7 @@ def _field(chain, name, n, default):
         return [default] * n
     v = list(v)
     if len(v) != n:
-        raise ValueError(
-            "alfmpv: chain field %s has %d entries but %d hits"
-            % (name, len(v), n))
+        raise ValueError("alfmpv: chain field %s has %d entries but %d hits" % (name, len(v), n))
     return v
 
 
@@ -109,11 +107,10 @@ def _rank_key(tab, mode, i, order):
         return (-tab["identity"][i], order)
     if mode == "colabfold":
         return (tab["evalue"][i], order)
-    return (order,)                       # folddock: MSA rank as given
+    return (order,)  # folddock: MSA rank as given
 
 
-def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
-                copies=None, max_pairs=None):
+def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=None, max_pairs=None):
     """Pair MSA rows across the chains of a complex.
 
     Parameters
@@ -148,8 +145,7 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
         n_paired, n_unpaired, n_rows, n_chains, pairing_rule, mode.
     """
     if mode not in _MODES:
-        raise ValueError("alfmpv: mode = %r; expected one of %s"
-                         % (mode, ", ".join(_MODES)))
+        raise ValueError("alfmpv: mode = %r; expected one of %s" % (mode, ", ".join(_MODES)))
     if not msas:
         raise ValueError("alfmpv: no chains given")
 
@@ -159,15 +155,13 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
     # than searching again, so the copies are the same table.
     if copies is not None:
         if len(copies) != len(tabs):
-            raise ValueError("alfmpv: copies has %d entries for %d chains"
-                             % (len(copies), len(tabs)))
+            raise ValueError("alfmpv: copies has %d entries for %d chains" % (len(copies), len(tabs)))
         expanded = []
         source = []
         for j, k in enumerate(copies):
             k = int(k)
             if k < 1:
-                raise ValueError("alfmpv: copies[%d] = %d; need at least 1"
-                                 % (j, k))
+                raise ValueError("alfmpv: copies[%d] = %d; need at least 1" % (j, k))
             for _ in range(k):
                 expanded.append(tabs[j])
                 source.append(j)
@@ -196,9 +190,7 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
         for pos, i in enumerate(kept[c]):
             d.setdefault(tabs[c]["species"][i], []).append((pos, i))
         for s in d:
-            d[s] = [i for _, i in
-                    sorted(d[s], key=lambda pi: _rank_key(
-                        tabs[c], mode, pi[1], pi[0]))]
+            d[s] = [i for _, i in sorted(d[s], key=lambda pi: _rank_key(tabs[c], mode, pi[1], pi[0]))]
         by_species.append(d)
 
     paired = []
@@ -207,9 +199,8 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
     for s in order:
         lists = [by_species[c].get(s, []) for c in range(nc)]
         if any(len(l) == 0 for l in lists):
-            continue                      # species must cover every chain
-        depth = 1 if mode in ("colabfold", "folddock") \
-            else min(len(l) for l in lists)
+            continue  # species must cover every chain
+        depth = 1 if mode in ("colabfold", "folddock") else min(len(l) for l in lists)
         for k in range(depth):
             if max_pairs is not None and len(paired) >= int(max_pairs):
                 break
@@ -223,32 +214,35 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9,
 
     unpaired = [[i for i in kept[c] if i not in used[c]] for c in range(nc)]
 
-    rule = ("pair up to the smallest per-species hit count; the surplus "
-            "goes block diagonal (this implementation's reading -- Evans "
-            "et al. state the same-rank rule but not the unequal case)"
-            if mode == "multimer" else
-            "one hit per species, so counts cannot disagree")
+    rule = (
+        "pair up to the smallest per-species hit count; the surplus "
+        "goes block diagonal (this implementation's reading -- Evans "
+        "et al. state the same-rank rule but not the unequal case)"
+        if mode == "multimer"
+        else "one hit per species, so counts cannot disagree"
+    )
 
-    return RichResult(payload={
-        "paired": paired,
-        "species_paired": species_paired,
-        "unpaired": unpaired,
-        "n_paired": len(paired),
-        "n_unpaired": [len(u) for u in unpaired],
-        "n_rows": len(paired) + sum(len(u) for u in unpaired),
-        "n_chains": nc,
-        "chain_source": source,
-        "n_filtered": [tabs[c]["n"] - len(kept[c]) for c in range(nc)],
-        "mode": mode,
-        "pairing_rule": rule,
-        "method": {
-            "multimer": "AlphaFold-Multimer species pairing (Evans et al. "
-                        "2022, section 2.1)",
-            "colabfold": "ColabFold best-hit-per-species pairing (Mirdita "
-                         "et al. 2022), coverage >= %g" % min_coverage,
-            "folddock": "FoldDock top-ranked-per-organism pairing (Bryant "
-                        "et al. 2022), gaps <= %g" % max_gap}[mode],
-    })
+    return RichResult(
+        payload={
+            "paired": paired,
+            "species_paired": species_paired,
+            "unpaired": unpaired,
+            "n_paired": len(paired),
+            "n_unpaired": [len(u) for u in unpaired],
+            "n_rows": len(paired) + sum(len(u) for u in unpaired),
+            "n_chains": nc,
+            "chain_source": source,
+            "n_filtered": [tabs[c]["n"] - len(kept[c]) for c in range(nc)],
+            "mode": mode,
+            "pairing_rule": rule,
+            "method": {
+                "multimer": "AlphaFold-Multimer species pairing (Evans et al. 2022, section 2.1)",
+                "colabfold": "ColabFold best-hit-per-species pairing (Mirdita "
+                "et al. 2022), coverage >= %g" % min_coverage,
+                "folddock": "FoldDock top-ranked-per-organism pairing (Bryant et al. 2022), gaps <= %g" % max_gap,
+            }[mode],
+        }
+    )
 
 
 def alphafold_multimer(chains=None, msas=None, mode="multimer", **kw):
@@ -268,7 +262,9 @@ alfmpv = alphafold_multimer
 
 
 def cheatsheet():
-    return ("alfmpv: MSA pairing for a complex. mode = multimer (Evans "
-            "2022, same-rank within species) | colabfold (Mirdita 2022, "
-            "best E-value per species, coverage >= 0.5) | folddock "
-            "(Bryant 2022, top-ranked per organism, gaps <= 0.9).")
+    return (
+        "alfmpv: MSA pairing for a complex. mode = multimer (Evans "
+        "2022, same-rank within species) | colabfold (Mirdita 2022, "
+        "best E-value per species, coverage >= 0.5) | folddock "
+        "(Bryant 2022, top-ranked per organism, gaps <= 0.9)."
+    )

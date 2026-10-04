@@ -40,9 +40,13 @@ def starbars(n, N):
     alt = _morin.binom(int(n) + int(N) - 1, int(n))
     if count != alt:
         raise AssertionError("the two stars-and-bars forms disagree")
-    payload = {"n_picks": float(n), "n_types": float(N),
-               "count": float(count), "count_alt": float(alt),
-               "forms_agree": 1.0}
+    payload = {
+        "n_picks": float(n),
+        "n_types": float(N),
+        "count": float(count),
+        "count_alt": float(alt),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Stars and bars: N_U_n = C(n + N - 1, N - 1).",
         summary_lines=[("n", n), ("N", N), ("count", count)],

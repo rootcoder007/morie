@@ -1,9 +1,6 @@
 """Tests for morie.fn.eegbf -- EEG band filter."""
 
 from morie.fn import _array_core as np
-import pytest
-
-
 from morie.fn.eegbf import eegbf
 
 

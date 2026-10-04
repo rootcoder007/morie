@@ -1,7 +1,6 @@
 """Tests for dprrep.randomized_response_dp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dprrep import randomized_response_dp
 
 

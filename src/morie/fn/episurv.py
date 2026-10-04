@@ -490,6 +490,7 @@ def cheatsheet() -> str:
         "buffer_exposure / kernel_exposure -> spatial epidemiology."
     )
 
+
 # alias kept from the retired placeholder of the same name
 bym2_model = bym2_structure
 

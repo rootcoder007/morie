@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.bookadvanced_elementsofstatisticallearning2e16 import (
     bookadvanced_elementsofstatisticallearning_chapter_2_equation_16,
 )
@@ -17,9 +16,7 @@ def test_bookadvanced_elementsofstatisticallearning2e16_basic():
     result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_16(x, y)
     assert isinstance(result, dict)
     assert len(result) > 0
-    assert any(
-        isinstance(v, (int, float)) and math.isfinite(v) for v in result.values()
-    )
+    assert any(isinstance(v, (int, float)) and math.isfinite(v) for v in result.values())
 
 
 def test_bookadvanced_elementsofstatisticallearning2e16_edge():
@@ -30,6 +27,4 @@ def test_bookadvanced_elementsofstatisticallearning2e16_edge():
     result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_16(x, y)
     assert isinstance(result, dict)
     assert len(result) > 0
-    assert any(
-        isinstance(v, (int, float)) and math.isfinite(v) for v in result.values()
-    )
+    assert any(isinstance(v, (int, float)) and math.isfinite(v) for v in result.values())

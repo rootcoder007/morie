@@ -1,7 +1,6 @@
 """Tests for evpot.evt_pot_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evpot import evt_pot_fit
 
 
@@ -12,8 +11,7 @@ def test_evpot_basic():
     u = 0.5
     result = evt_pot_fit(x, u)
     assert isinstance(result, dict)
-    for key in ("sigma", "xi", "zeta_u", "estimate",
-                "n_exceed", "n", "nll", "modified_scale"):
+    for key in ("sigma", "xi", "zeta_u", "estimate", "n_exceed", "n", "nll", "modified_scale"):
         assert key in result
     # n must equal the original sample size.
     assert result["n"] == len(x)
@@ -23,8 +21,7 @@ def test_evpot_basic():
     # zeta_u = n_exceed / n.
     assert abs(result["zeta_u"] - len(y) / float(len(x))) < 1e-12
     # Independent computation of modified_scale from returned sigma, xi and u.
-    assert abs(result["modified_scale"]
-               - (result["sigma"] - result["xi"] * u)) < 1e-12
+    assert abs(result["modified_scale"] - (result["sigma"] - result["xi"] * u)) < 1e-12
 
 
 def test_evpot_edge():
@@ -34,9 +31,7 @@ def test_evpot_edge():
     u = 0.3
     result = evt_pot_fit(x, u)
     assert isinstance(result, dict)
-    for key in ("sigma", "xi", "zeta_u", "estimate",
-                "n_exceed", "n", "nll", "modified_scale"):
+    for key in ("sigma", "xi", "zeta_u", "estimate", "n_exceed", "n", "nll", "modified_scale"):
         assert key in result
     assert result["n"] == len(x)
-    assert abs(result["modified_scale"]
-               - (result["sigma"] - result["xi"] * u)) < 1e-12
+    assert abs(result["modified_scale"] - (result["sigma"] - result["xi"] * u)) < 1e-12

@@ -1,7 +1,6 @@
 """Tests for hmdtst.geron_tree_sensitivity_scale."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdtst import geron_tree_sensitivity_scale
 
 
@@ -14,9 +13,17 @@ def test_hmdtst_basic():
     result = geron_tree_sensitivity_scale(X, y, criterion="mse")
     assert isinstance(result, dict)
     expected_keys = {
-        "predictions_match", "thresholds", "scaled_thresholds",
-        "expected_thresholds", "thresholds_match", "knn_predictions",
-        "knn_scaled_predictions", "knn_match", "estimate", "n", "method"
+        "predictions_match",
+        "thresholds",
+        "scaled_thresholds",
+        "expected_thresholds",
+        "thresholds_match",
+        "knn_predictions",
+        "knn_scaled_predictions",
+        "knn_match",
+        "estimate",
+        "n",
+        "method",
     }
     assert expected_keys.issubset(set(result.keys()))
 

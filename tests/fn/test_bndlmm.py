@@ -1,7 +1,6 @@
 """Tests for bndlmm.bound_linear_min_max."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndlmm import bound_linear_min_max
 
 
@@ -15,8 +14,7 @@ def test_bndlmm_basic():
     result = bound_linear_min_max(theta, moments)
     assert isinstance(result, dict)
     # Documented return keys
-    for key in ("lower", "upper", "width", "lower_pc", "upper_pc",
-                "width_pc", "K", "J", "n"):
+    for key in ("lower", "upper", "width", "lower_pc", "upper_pc", "width_pc", "K", "J", "n"):
         assert key in result
 
     n, K, J = 100, 3, 2
@@ -36,6 +34,7 @@ def test_bndlmm_basic():
     # Independent recomputation of the Bonferroni precision-corrected bounds.
     from math import sqrt
     from statistics import NormalDist
+
     zK = NormalDist().inv_cdf(1.0 - 0.5 / K)
     zJ = NormalDist().inv_cdf(1.0 - 0.5 / J)
     rn = sqrt(n)

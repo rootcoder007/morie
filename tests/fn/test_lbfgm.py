@@ -1,7 +1,6 @@
 """Tests for morie.fn.lbfgm -- L-BFGS optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lbfgm import lbfgm, lbfgs_optimize
 

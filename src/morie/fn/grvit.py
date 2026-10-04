@@ -76,15 +76,11 @@ def geron_vit_patch_embedding(image, patch_size, E, E_pos=None, cls_token=None):
         raise ValueError(f"patch_size must be at least 1, got {p}.")
     H, W, C = A.shape
     if H % p or W % p:
-        raise ValueError(
-            f"patch_size {p} does not divide the {H}x{W} image; cropping would drop pixels."
-        )
+        raise ValueError(f"patch_size {p} does not divide the {H}x{W} image; cropping would drop pixels.")
     Em = np.atleast_2d(np.asarray(E, dtype=float))
     dim = p * p * C
     if Em.shape[0] != dim:
-        raise ValueError(
-            f"E must have {dim} rows (patch_size^2 * channels), got {Em.shape[0]}."
-        )
+        raise ValueError(f"E must have {dim} rows (patch_size^2 * channels), got {Em.shape[0]}.")
     d_model = Em.shape[1]
 
     patches = []
@@ -105,9 +101,7 @@ def geron_vit_patch_embedding(image, patch_size, E, E_pos=None, cls_token=None):
     if E_pos is not None:
         Ep = np.atleast_2d(np.asarray(E_pos, dtype=float))
         if Ep.shape != Z.shape:
-            raise ValueError(
-                f"E_pos must have shape {Z.shape} (patches + CLS), got {Ep.shape}."
-            )
+            raise ValueError(f"E_pos must have shape {Z.shape} (patches + CLS), got {Ep.shape}.")
         Z = Z + Ep
 
     return RichResult(

@@ -82,8 +82,7 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
                 raise ValueError("swinmw: x contains non-finite values")
     M = int(window_size)
     if M < 1 or H % M or W % M:
-        raise ValueError(
-            f"swinmw: window_size must divide H and W, got {M} for ({H}, {W})")
+        raise ValueError(f"swinmw: window_size must divide H and W, got {M} for ({H}, {W})")
     eye = [[1.0 if i == j else 0.0 for j in range(d)] for i in range(d)]
     Wq = np.atleast_2d(np.asarray(WQ if WQ is not None else eye, dtype=float))
     Wk = np.atleast_2d(np.asarray(WK if WK is not None else eye, dtype=float))
@@ -99,8 +98,7 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
     else:
         T = np.atleast_2d(np.asarray(relative_bias, dtype=float))
         if T.shape != (2 * M - 1, 2 * M - 1):
-            raise ValueError(
-                f"swinmw: relative_bias must be ({2 * M - 1}, {2 * M - 1}), got {T.shape}")
+            raise ValueError(f"swinmw: relative_bias must be ({2 * M - 1}, {2 * M - 1}), got {T.shape}")
         table = [[float(v) for v in row] for row in T]
     B = _window_bias(M, table)
     out = [[[0.0] * dv for _ in range(W)] for _ in range(H)]
@@ -115,8 +113,7 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
             K = X @ Wk
             V = X @ Wv
             S = (Q @ K.T) * scale
-            Sm = [[float(S[p][q]) + B[p][q] for q in range(M * M)]
-                  for p in range(M * M)]
+            Sm = [[float(S[p][q]) + B[p][q] for q in range(M * M)] for p in range(M * M)]
             Wt = []
             for row in Sm:
                 mx = max(row)
@@ -127,15 +124,17 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
             for p in range(M * M):
                 i, j = divmod(p, M)
                 out[h0 + i][w0 + j] = [float(v) for v in O[p]]
-    return RichResult(payload={
-        "output": out,
-        "bias": B,
-        "n_windows": n_windows,
-        "tokens_per_window": M * M,
-        "estimate": float(out[0][0][0]),
-        "n": int(H * W),
-        "method": "Swin window MSA softmax(QK^T/sqrt(d) + B)V (Liu et al. 2021, Eq 4)",
-    })
+    return RichResult(
+        payload={
+            "output": out,
+            "bias": B,
+            "n_windows": n_windows,
+            "tokens_per_window": M * M,
+            "estimate": float(out[0][0][0]),
+            "n": int(H * W),
+            "method": "Swin window MSA softmax(QK^T/sqrt(d) + B)V (Liu et al. 2021, Eq 4)",
+        }
+    )
 
 
 swin_msa_window = swinmw
@@ -143,6 +142,7 @@ swin_msa_window = swinmw
 
 def cheatsheet():
     return "swinmw: Swin window MSA with relative position bias (Liu et al. 2021, arXiv:2103.14030, Eq 4)"
+
 
 # public names resolved by fn/_lazy_map.json
 swinmsawindow = swinmw

@@ -11,5 +11,6 @@ def test_alctxemb_basic():
 
 def test_alctxemb_edge():
     import pytest
+
     with pytest.raises(ValueError, match="out of range"):
         alammar_contextualized_embedding([[[1.0]]], 5, 0)

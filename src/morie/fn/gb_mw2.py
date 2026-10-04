@@ -46,8 +46,12 @@ def gibbons_mw_rs_equiv(x, y):
     U_d = float(gt + 0.5 * eq)
     return RichResult(
         payload={
-            "W": W, "U_from_W": float(U_w), "U_direct": U_d,
-            "identity_holds": bool(abs(U_w - U_d) < 1e-9), "m": m, "n": n,
+            "W": W,
+            "U_from_W": float(U_w),
+            "U_direct": U_d,
+            "identity_holds": bool(abs(U_w - U_d) < 1e-9),
+            "m": m,
+            "n": n,
             "method": "W and U computed independently; U = W - m(m+1)/2 checked",
         }
     )

@@ -1,7 +1,6 @@
 """Tests for mard.ma_risk_difference."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mard import ma_risk_difference
 
 

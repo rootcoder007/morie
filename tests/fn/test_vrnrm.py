@@ -1,7 +1,6 @@
 """Tests for morie.fn.vrnrm — normalized variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vrnrm import vrnrm
 
 

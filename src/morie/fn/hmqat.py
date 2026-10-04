@@ -90,9 +90,7 @@ def geron_quantization_aware_training(model, X, y, epochs=200, lr=0.1, bits=8):
     if A.ndim != 2 or A.size == 0:
         raise ValueError(f"geron_quantization_aware_training: X must be a non-empty 2-D array, got shape {A.shape}")
     if yv.size != A.shape[0]:
-        raise ValueError(
-            f"geron_quantization_aware_training: X has {A.shape[0]} rows but y has {yv.size} entries"
-        )
+        raise ValueError(f"geron_quantization_aware_training: X has {A.shape[0]} rows but y has {yv.size} entries")
     if w.size != A.shape[1]:
         raise ValueError(
             f"geron_quantization_aware_training: model has {w.size} weights but X has {A.shape[1]} columns"

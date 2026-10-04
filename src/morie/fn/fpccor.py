@@ -67,14 +67,9 @@ def functional_correlation(X, Y, argvals=None):
     xa = np.asarray(X, dtype=float)
     ya = np.asarray(Y, dtype=float)
     if xa.ndim != 2 or ya.ndim != 2:
-        raise ValueError(
-            f"X and Y must be 2-D (n_curves x n_points); got {xa.shape} and {ya.shape}"
-        )
+        raise ValueError(f"X and Y must be 2-D (n_curves x n_points); got {xa.shape} and {ya.shape}")
     if xa.shape != ya.shape:
-        raise ValueError(
-            f"X and Y must have the same shape -- the curves are paired; got "
-            f"{xa.shape} and {ya.shape}"
-        )
+        raise ValueError(f"X and Y must have the same shape -- the curves are paired; got {xa.shape} and {ya.shape}")
     n_curves, n_points = xa.shape
     if n_curves < 2:
         raise ValueError(f"need at least 2 curves to have any variation; got {n_curves}")
@@ -102,8 +97,7 @@ def functional_correlation(X, Y, argvals=None):
     vy = float(trapezoid(var_y_t, t))
     if vx <= 0 or vy <= 0:
         raise ValueError(
-            "one of the samples has zero integrated variance -- every curve is "
-            "identical, so no correlation is defined."
+            "one of the samples has zero integrated variance -- every curve is identical, so no correlation is defined."
         )
     r = c / np.sqrt(vx * vy)
     return RichResult(

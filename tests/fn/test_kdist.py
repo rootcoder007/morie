@@ -1,8 +1,8 @@
 """Tests for morie.fn.kdist — kernel CDF estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kdist import kdist
 
 

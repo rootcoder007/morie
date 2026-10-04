@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["geron_rmsprop_update"]
 
 
-def geron_rmsprop_update(params, grads, state=None, lr=0.001, rho=0.9,
-                         eps=1e-7, steps=1):
+def geron_rmsprop_update(params, grads, state=None, lr=0.001, rho=0.9, eps=1e-7, steps=1):
     r"""One or more RMSProp steps.
 
     .. math::
@@ -59,17 +58,12 @@ def geron_rmsprop_update(params, grads, state=None, lr=0.001, rho=0.9,
     p = np.asarray(params, dtype=float).copy()
     g = np.asarray(grads, dtype=float)
     if g.shape != p.shape:
-        raise ValueError(
-            "params and grads must match in shape, got %s and %s."
-            % (p.shape, g.shape)
-        )
+        raise ValueError("params and grads must match in shape, got %s and %s." % (p.shape, g.shape))
     if not 0.0 <= rho < 1.0:
         raise ValueError("rho must lie in [0, 1), got %r." % rho)
     if lr <= 0:
         raise ValueError("lr must be positive, got %r." % lr)
-    s = np.zeros_like(p) if state is None else np.asarray(
-        state.get("s", np.zeros_like(p)), dtype=float
-    ).copy()
+    s = np.zeros_like(p) if state is None else np.asarray(state.get("s", np.zeros_like(p)), dtype=float).copy()
     step = np.zeros_like(p)
     for _ in range(max(int(steps), 1)):
         s = rho * s + (1.0 - rho) * g * g

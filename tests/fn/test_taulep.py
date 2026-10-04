@@ -47,6 +47,7 @@ def test_the_mean_follows_the_deterministic_solution():
         finals.append(res["path"][-1][0])
     mean = sum(finals) / len(finals)
     import math
+
     want = x0 * math.exp(-rate * t)
     assert abs(mean - want) / want < 0.1
 
@@ -70,9 +71,11 @@ def test_seed_reproducibility():
 
 def test_validation():
     nu, prop = _decay()
-    for call in (lambda: taulep([[-1, 1]], prop, [10], 0.1, 5),
-                 lambda: taulep(nu, prop, [10], 0.0, 5),
-                 lambda: taulep(nu, lambda x: [-1.0], [10], 0.1, 5)):
+    for call in (
+        lambda: taulep([[-1, 1]], prop, [10], 0.1, 5),
+        lambda: taulep(nu, prop, [10], 0.0, 5),
+        lambda: taulep(nu, lambda x: [-1.0], [10], 0.1, 5),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

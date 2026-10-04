@@ -1,15 +1,12 @@
 """Tests for gh_iid_consist.ghosal_iid_posterior_consistency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_iid_consist import ghosal_iid_posterior_consistency
 
 
 def test_gh_iid_consist_basic():
     """Test basic functionality with documented parameters."""
-    result = ghosal_iid_posterior_consistency(
-        theta0=0.5, eps=0.2, n=600, seed=42
-    )
+    result = ghosal_iid_posterior_consistency(theta0=0.5, eps=0.2, n=600, seed=42)
     assert "estimate" in result
     assert "decay_exponent" in result
     assert "exponential" in result

@@ -42,8 +42,7 @@ __all__ = ["cox_partial_likelihood"]
 def _inv(A):
     """Inverse by Gauss-Jordan with partial pivoting."""
     k = len(A)
-    M = [list(A[i]) + [1.0 if i == j else 0.0 for j in range(k)]
-         for i in range(k)]
+    M = [list(A[i]) + [1.0 if i == j else 0.0 for j in range(k)] for i in range(k)]
     for c in range(k):
         piv = max(range(c, k), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
@@ -100,14 +99,12 @@ def _terms(time, event, X, beta):
             for a in range(p):
                 score[a] -= d * s1[a] / s0
                 for b in range(p):
-                    info[a][b] += d * (s2[a][b] / s0
-                                       - (s1[a] / s0) * (s1[b] / s0))
+                    info[a][b] += d * (s2[a][b] / s0 - (s1[a] / s0) * (s1[b] / s0))
         k = j
     return loglik, score, info, nevent
 
 
-def cox_partial_likelihood(time, event, X, beta=None, max_iter=50,
-                           tol=1e-10):
+def cox_partial_likelihood(time, event, X, beta=None, max_iter=50, tol=1e-10):
     """Cox partial likelihood, its score and information, optionally fitted.
 
     Parameters

@@ -67,11 +67,18 @@ def esl_se_beta(X, y, beta):
         se = [0.0] * p
     else:
         se = esl_var_beta_hat(X, sigma2)["se"]
-    return RichResult(payload={
-        "estimate": float(se[0]), "se": [float(v) for v in se],
-        "sigma2_hat": float(sigma2), "rss": rss["estimate"],
-        "df_residual": int(dfr), "n": int(n), "p": int(p),
-        "method": "se(beta_j) = sqrt(sigma_hat^2 v_jj), sigma_hat^2 = RSS/(n-p)"})
+    return RichResult(
+        payload={
+            "estimate": float(se[0]),
+            "se": [float(v) for v in se],
+            "sigma2_hat": float(sigma2),
+            "rss": rss["estimate"],
+            "df_residual": int(dfr),
+            "n": int(n),
+            "p": int(p),
+            "method": "se(beta_j) = sqrt(sigma_hat^2 v_jj), sigma_hat^2 = RSS/(n-p)",
+        }
+    )
 
 
 def cheatsheet():

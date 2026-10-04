@@ -87,9 +87,14 @@ def drift_forecast(y, h=1):
         title="Drift forecast",
         summary_lines=[("n", int(n)), ("drift", drift), ("h", h)],
         payload={
-            "forecast": fc, "drift": drift, "se": se,
-            "lower": fc - 1.96 * se, "upper": fc + 1.96 * se,
-            "sigma": sigma, "h": h, "method": "drift_forecast",
+            "forecast": fc,
+            "drift": drift,
+            "se": se,
+            "lower": fc - 1.96 * se,
+            "upper": fc + 1.96 * se,
+            "sigma": sigma,
+            "h": h,
+            "method": "drift_forecast",
         },
     )
 

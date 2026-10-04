@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Relationship between Kendall's W and the average Spearman rho."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_concordance_rho_link"]
@@ -94,23 +93,22 @@ def gibbons_concordance_rho_link(W, k, n=None):
         nn = int(n)
         if nn < 2:
             raise ValueError("need at least 2 objects, got %d." % nn)
-        payload.update({
-            "n": nn,
-            "expected_W": 1.0 / k,
-            "var_W": 2.0 * (k - 1.0) / (k ** 3 * (nn - 1.0)),
-            "chi2": float(k * (nn - 1.0) * Wv),
-            "df": nn - 1,
-            "chi2_note": (
-                "k(n-1)W is approximately chi-square on n-1 degrees of "
-                "freedom; the beta approximation behind it degrades when "
-                "k(n-1) is small"
-            ),
-        })
+        payload.update(
+            {
+                "n": nn,
+                "expected_W": 1.0 / k,
+                "var_W": 2.0 * (k - 1.0) / (k**3 * (nn - 1.0)),
+                "chi2": float(k * (nn - 1.0) * Wv),
+                "df": nn - 1,
+                "chi2_note": (
+                    "k(n-1)W is approximately chi-square on n-1 degrees of "
+                    "freedom; the beta approximation behind it degrades when "
+                    "k(n-1) is small"
+                ),
+            }
+        )
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return (
-        "gb1241r: W <-> average Spearman rho by (12.4.6), with the "
-        "-1/(k-1) floor that makes W a 0-to-1 measure"
-    )
+    return "gb1241r: W <-> average Spearman rho by (12.4.6), with the -1/(k-1) floor that makes W a 0-to-1 measure"

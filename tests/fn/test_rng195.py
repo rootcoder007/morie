@@ -14,10 +14,10 @@ def test_rng195_basic():
     """L(n) = sum_{k=n}^{n+W-1} sqrt(sum_j (x_j(k+1) - x_j(k))^2), the
     multichannel arc length over W = round(w fs) steps, recomputed; a
     window that would run off the record is left at 0."""
-    fs, w = 100.0, 0.03                  # W = 3 samples
+    fs, w = 100.0, 0.03  # W = 3 samples
     r = lengthxfm([A, B], w, fs)
     step = [math.hypot(A[k + 1] - A[k], B[k + 1] - B[k]) for k in range(9)]
-    exp = [sum(step[n:n + 3]) for n in range(7)] + [0.0] * 3
+    exp = [sum(step[n : n + 3]) for n in range(7)] + [0.0] * 3
     assert r["length"] == pytest.approx(exp, rel=1e-14, abs=0)
     assert (r["wsamp"], r["nchan"], r["n"]) == (3, 2, 10)
 

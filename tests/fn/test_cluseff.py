@@ -1,7 +1,6 @@
 """Tests for cluseff.intracluster_correlation_rho."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cluseff import intracluster_correlation_rho
 
 
@@ -16,12 +15,8 @@ def test_cluseff_basic():
     # there is genuine between-cluster variation.
     effects = rng_y.normal(0.0, 1.0, a)
     noise = rng_c.normal(0.0, 0.5, n)
-    y = np.concatenate(
-        [effects[i] + noise[i * n_per:(i + 1) * n_per] for i in range(a)]
-    )
-    cluster = np.concatenate(
-        [np.full(n_per, i, dtype=int) for i in range(a)]
-    )
+    y = np.concatenate([effects[i] + noise[i * n_per : (i + 1) * n_per] for i in range(a)])
+    cluster = np.concatenate([np.full(n_per, i, dtype=int) for i in range(a)])
     result = intracluster_correlation_rho(y, cluster)
 
     # Independent recomputation of every returned statistic from the
@@ -36,14 +31,8 @@ def test_cluseff_basic():
     n_tot = len(v)
     grand = sum(v) / n_tot
     sizes = [len(vals) for vals in groups.values()]
-    ssb = sum(
-        len(vals) * (sum(vals) / len(vals) - grand) ** 2
-        for vals in groups.values()
-    )
-    ssw = sum(
-        sum((t - sum(vals) / len(vals)) ** 2 for t in vals)
-        for vals in groups.values()
-    )
+    ssb = sum(len(vals) * (sum(vals) / len(vals) - grand) ** 2 for vals in groups.values())
+    ssw = sum(sum((t - sum(vals) / len(vals)) ** 2 for t in vals) for vals in groups.values())
     msb = ssb / (a_chk - 1)
     msw = ssw / (n_tot - a_chk)
     n0 = (n_tot - sum(s * s for s in sizes) / n_tot) / (a_chk - 1)
@@ -94,11 +83,7 @@ def test_cluseff_edge():
     n = a * n_per
     effects = rng_y.normal(0.0, 1.0, a)
     noise = rng_c.normal(0.0, 0.5, n)
-    y = np.concatenate(
-        [effects[i] + noise[i * n_per:(i + 1) * n_per] for i in range(a)]
-    )
-    cluster = np.concatenate(
-        [np.full(n_per, i, dtype=int) for i in range(a)]
-    )
+    y = np.concatenate([effects[i] + noise[i * n_per : (i + 1) * n_per] for i in range(a)])
+    cluster = np.concatenate([np.full(n_per, i, dtype=int) for i in range(a)])
     result = intracluster_correlation_rho(y, cluster)
     assert isinstance(result, dict)

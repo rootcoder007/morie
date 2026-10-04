@@ -24,15 +24,18 @@ def ghosal_bayes_boot(data, n_draws=200, seed=42):
     rng = np.random.default_rng(seed)
     means = []
     for _ in range(int(n_draws)):
-        Y = [-math.log(max(float(rng.uniform(0, 1)), 1e-300))
-             for _ in range(n)]
+        Y = [-math.log(max(float(rng.uniform(0, 1)), 1e-300)) for _ in range(n)]
         tot = sum(Y)
         means.append(sum(y / tot * x for y, x in zip(Y, xs)))
     est = sum(means) / len(means)
-    res = RichResult(payload={"estimate": est,
-                              "draws_head": means[:10],
-                              "sample_mean": sum(xs) / n,
-                              "method": "Bayesian bootstrap (GvdV 2017 sec. 4.7)"})
+    res = RichResult(
+        payload={
+            "estimate": est,
+            "draws_head": means[:10],
+            "sample_mean": sum(xs) / n,
+            "method": "Bayesian bootstrap (GvdV 2017 sec. 4.7)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_24")
 
 

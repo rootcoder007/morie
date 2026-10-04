@@ -16,8 +16,7 @@ def test_a_straight_line_is_reproduced_by_a_local_linear_fit():
     x = _grid()
     y = [3.0 + 2.0 * v for v in x]
     res = locp(x, y, degree=1, bandwidth=1.0)
-    assert max(abs(res["fitted"][i] - y[i])
-               for i in range(len(x))) < 1e-9
+    assert max(abs(res["fitted"][i] - y[i]) for i in range(len(x))) < 1e-9
 
 
 def test_local_linear_recovers_the_slope():
@@ -45,28 +44,26 @@ def test_degree_zero_is_a_kernel_average():
 
 def test_all_three_kernels_run_and_a_wider_band_smooths_more():
     x = _grid()
-    y = [math.sin(v) + (0.2 if i % 7 == 0 else 0.0)
-         for i, v in enumerate(x)]
+    y = [math.sin(v) + (0.2 if i % 7 == 0 else 0.0) for i, v in enumerate(x)]
     for kern in ("tricube", "epanechnikov", "gaussian"):
-        assert len(locp(x, y, kernel=kern, bandwidth=0.8)["fitted"]) == \
-            len(x)
+        assert len(locp(x, y, kernel=kern, bandwidth=0.8)["fitted"]) == len(x)
     rough = locp(x, y, bandwidth=0.2)["fitted"]
     smooth = locp(x, y, bandwidth=1.5)["fitted"]
-    var_rough = sum((rough[i + 1] - rough[i]) ** 2
-                    for i in range(len(x) - 1))
-    var_smooth = sum((smooth[i + 1] - smooth[i]) ** 2
-                     for i in range(len(x) - 1))
+    var_rough = sum((rough[i + 1] - rough[i]) ** 2 for i in range(len(x) - 1))
+    var_smooth = sum((smooth[i + 1] - smooth[i]) ** 2 for i in range(len(x) - 1))
     assert var_smooth < var_rough
 
 
 def test_validation():
     x = _grid()
     y = [1.0] * len(x)
-    for call in (lambda: locp([1.0], [1.0]),
-                 lambda: locp(x, y[:-1]),
-                 lambda: locp(x, y, degree=-1),
-                 lambda: locp(x, y, bandwidth=0.0),
-                 lambda: locp(x, y, kernel="boxcar")):
+    for call in (
+        lambda: locp([1.0], [1.0]),
+        lambda: locp(x, y[:-1]),
+        lambda: locp(x, y, degree=-1),
+        lambda: locp(x, y, bandwidth=0.0),
+        lambda: locp(x, y, kernel="boxcar"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

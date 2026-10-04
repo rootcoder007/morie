@@ -1,7 +1,6 @@
 """Tests for bvtrA.bias_variance_tradeoff."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bvtrA import bias_variance_tradeoff
 
 
@@ -39,10 +38,7 @@ def test_bvtrA_basic():
     # inputs (plain arithmetic, no call to the function under test).
     row_means = [sum(F[r][j] for r in range(R)) / R for j in range(n)]
     exp_bias2_pt = [(row_means[j] - f[j]) ** 2 for j in range(n)]
-    exp_var_pt = [
-        sum((F[r][j] - row_means[j]) ** 2 for r in range(R)) / R
-        for j in range(n)
-    ]
+    exp_var_pt = [sum((F[r][j] - row_means[j]) ** 2 for r in range(R)) / R for j in range(n)]
 
     # Element-wise equality using zip on the two pointwise lists.
     for got, want in zip(result["bias2_point"], exp_bias2_pt):

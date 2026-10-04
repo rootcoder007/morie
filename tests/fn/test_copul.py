@@ -1,7 +1,6 @@
 """Tests for copul.copula_estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.copul import copula_estimation
 
 

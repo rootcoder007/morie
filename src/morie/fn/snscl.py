@@ -91,11 +91,17 @@ def sn_scale(y, constant=1.1926, finite_corr=True):
     else:
         corr = 1.0
     est = est * corr
-    return RichResult(payload={
-        "estimate": float(est), "raw": float(raw),
-        "inner": [float(v) for v in inner], "correction": float(corr),
-        "constant": float(constant), "n": n,
-        "method": "Rousseeuw & Croux (1993) Sn, robustbase qnsn.R definition"})
+    return RichResult(
+        payload={
+            "estimate": float(est),
+            "raw": float(raw),
+            "inner": [float(v) for v in inner],
+            "correction": float(corr),
+            "constant": float(constant),
+            "n": n,
+            "method": "Rousseeuw & Croux (1993) Sn, robustbase qnsn.R definition",
+        }
+    )
 
 
 def cheatsheet():

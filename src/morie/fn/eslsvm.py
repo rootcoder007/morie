@@ -10,8 +10,9 @@ from ._svm import kernel_matrix, smo
 __all__ = ["esl_svm_kernel"]
 
 
-def esl_svm_kernel(X, y, C=1.0, kernel="rbf", gamma=None, degree=3, coef0=1.0,
-                   newdata=None, tol=1e-3, max_passes=50, seed=0):
+def esl_svm_kernel(
+    X, y, C=1.0, kernel="rbf", gamma=None, degree=3, coef0=1.0, newdata=None, tol=1e-3, max_passes=50, seed=0
+):
     r"""Fit a kernel SVM by sequential minimal optimisation.
 
     The dual problem is
@@ -125,15 +126,27 @@ def esl_svm_kernel(X, y, C=1.0, kernel="rbf", gamma=None, degree=3, coef0=1.0,
 
     return RichResult(
         title=f"Kernel SVM ({kernel})",
-        summary_lines=[("n", int(X.shape[0])), ("support vectors", int(sv.size)),
-                       ("C", float(C)), ("train accuracy", acc)],
+        summary_lines=[
+            ("n", int(X.shape[0])),
+            ("support vectors", int(sv.size)),
+            ("C", float(C)),
+            ("train accuracy", acc),
+        ],
         warnings=[] if converged else [f"SMO stopped after {n_iter} iterations without settling"],
         payload={
-            "alpha": alpha, "b": b, "support_": sv, "n_support": int(sv.size),
-            "decision": dec, "class_": cls, "accuracy": acc,
+            "alpha": alpha,
+            "b": b,
+            "support_": sv,
+            "n_support": int(sv.size),
+            "decision": dec,
+            "class_": cls,
+            "accuracy": acc,
             "dual_gap_check": float(alpha @ ypm),
-            "kernel": kernel, "C": float(C), "classes": classes,
-            "n_iter": int(n_iter), "converged": bool(converged),
+            "kernel": kernel,
+            "C": float(C),
+            "classes": classes,
+            "n_iter": int(n_iter),
+            "converged": bool(converged),
             "method": "esl_svm_kernel",
         },
     )

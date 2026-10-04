@@ -73,24 +73,33 @@ def wasserman_plug_in_estimator(data, T, B=1000, seed=0, se=True):
         raise ValueError("T must be callable on a sample.")
     est = float(T(d))
     if not se:
-        return RichResult(payload={
-            "estimate": est, "se": None, "n": int(n), "B": 0,
-            "method": "Plug-in estimator T(F_n), no standard error requested"})
+        return RichResult(
+            payload={
+                "estimate": est,
+                "se": None,
+                "n": int(n),
+                "B": 0,
+                "method": "Plug-in estimator T(F_n), no standard error requested",
+            }
+        )
     reps = bootstrap_replicates(d, T, B=B, seed=seed)
     lo, hi = np.percentile(reps, [2.5, 97.5])
-    return RichResult(payload={
-        "estimate": est,
-        "se": float(np.std(reps, ddof=1)),
-        "bootstrap_bias": float(np.mean(reps) - est),
-        "replicates": reps,
-        "ci_percentile": (float(lo), float(hi)),
-        "n": int(n), "B": int(len(reps)),
-        "validity_condition":
-            "asymptotic normality needs T to be Hadamard-differentiable at F "
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": float(np.std(reps, ddof=1)),
+            "bootstrap_bias": float(np.mean(reps) - est),
+            "replicates": reps,
+            "ci_percentile": (float(lo), float(hi)),
+            "n": int(n),
+            "B": int(len(reps)),
+            "validity_condition": "asymptotic normality needs T to be Hadamard-differentiable at F "
             "tangentially to the relevant subspace (functional delta method); "
             "this function cannot verify that for an opaque callable, and a "
             "non-differentiable T returns a number that is simply wrong",
-        "method": "Plug-in estimator theta_hat = T(F_n) with a nonparametric bootstrap SE"})
+            "method": "Plug-in estimator theta_hat = T(F_n) with a nonparametric bootstrap SE",
+        }
+    )
 
 
 def cheatsheet():

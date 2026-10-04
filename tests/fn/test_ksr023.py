@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.ksr023 import kosorok_ch1_cox_estimating_equation
 
-
 I = range(30)
 Z = [((i * 7) % 11) / 5 - 1 for i in I]
 T = [1 + ((i * 13) % 17) / 3 + 0.01 * i for i in I]
@@ -24,7 +23,7 @@ def test_ksr023_basic():
             risk = [j for j in I if T[j] >= T[i]]
             w = [math.exp(b * Z[j]) for j in risk]
             u += Z[i] - sum(wj * Z[j] for wj, j in zip(w, risk)) / sum(w)
-    assert float(r["U_final"]) == pytest.approx(u / 30, rel=1e-12)   # (1/n) sum, eq. (1.4)
+    assert float(r["U_final"]) == pytest.approx(u / 30, rel=1e-12)  # (1/n) sum, eq. (1.4)
 
 
 def test_ksr023_edge():
@@ -42,5 +41,3 @@ def test_ksr023_edge():
             w = [math.exp(0.3 * Z[j]) for j in risk]
             u += Z[i] - sum(wj * Z[j] for wj, j in zip(w, risk)) / sum(w)
     assert float(r["U_final"]) == pytest.approx(u / 30, rel=1e-12)
-
-

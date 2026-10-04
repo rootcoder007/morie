@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpcla import gp_classification
 
 
@@ -27,11 +26,12 @@ def test_gpcla_basic():
     sd_latent = result.payload["latent_var"]
     mu_latent = result.payload["latent_mean"]
     p = result.payload["p"]
+
     # Reproduce the probit transform: standard normal CDF
     def _phi(z):
         return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
-    expected = [_phi(mu_latent[j] / math.sqrt(1.0 + sd_latent[j]))
-                for j in range(len(X_test))]
+
+    expected = [_phi(mu_latent[j] / math.sqrt(1.0 + sd_latent[j])) for j in range(len(X_test))]
     for a, b in zip(expected, p):
         assert abs(a - b) < 1e-9
     assert result.payload["estimate"] == p[0]

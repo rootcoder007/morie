@@ -1,7 +1,6 @@
 """Tests for brrest.brr_balanced."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.brrest import brr_balanced
 
 
@@ -18,7 +17,7 @@ def test_brrest_basic():
     # weight 2 and the other at weight 0 (fay_k=0 -> non-selected dropped).
     for r in range(8):
         for h in range(5):
-            row = W[r, h * 2:(h + 1) * 2]
+            row = W[r, h * 2 : (h + 1) * 2]
             assert sorted(np.round(row, 6).tolist()) == [0.0, 2.0]
     # Columns of the Hadamard slice must be mutually orthogonal (up to R).
     Hm = result["hadamard"]
@@ -46,6 +45,7 @@ def test_brrest_edge():
     # Stratified input of the wrong shape must raise: a stratum with 1 PSU
     # is invalid by construction, not silently coerced.
     import pytest
+
     with pytest.raises(ValueError, match="requires exactly 2"):
         brr_balanced([0, 0, 1])
 
@@ -59,5 +59,5 @@ def test_brrest_edge():
     picked, dropped = 2.0 - 0.3, 0.3
     for r in range(8):
         for h in range(5):
-            row = Wf[r, h * 2:(h + 1) * 2]
+            row = Wf[r, h * 2 : (h + 1) * 2]
             assert sorted(np.round(row, 6).tolist()) == [dropped, picked]

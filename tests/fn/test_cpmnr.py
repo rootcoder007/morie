@@ -1,7 +1,6 @@
 """Tests for morie.fn.cpmnr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cpmnr import cpmnr
 
 

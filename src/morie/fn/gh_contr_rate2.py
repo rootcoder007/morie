@@ -14,8 +14,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_contraction_rate_iid"]
 
 
-def ghosal_contraction_rate_iid(p0=(0.4, 0.3, 0.2, 0.1),
-                                ns=(50, 500, 5000), seed=42):
+def ghosal_contraction_rate_iid(p0=(0.4, 0.3, 0.2, 0.1), ns=(50, 500, 5000), seed=42):
     """Pi_n(||p - p0||_1 > M eps_n | X^n) -> 0 at eps_n = n^{-1/2}
     for finite multinomials (Thm 8.9: entropy of the simplex is
     finite-dimensional, prior mass polynomial). Reports the exact
@@ -42,12 +41,15 @@ def ghosal_contraction_rate_iid(p0=(0.4, 0.3, 0.2, 0.1),
             sd = math.sqrt(m * (1.0 - m) / (A + 1.0))
             d += abs(m - q) + sd
         dists.append(d)
-    rate_hat = math.log(dists[0] / dists[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
-    res = RichResult(payload={"estimate": rate_hat,
-                              "l1_by_n": dists,
-                              "half_rate": abs(rate_hat - 0.5) < 0.2,
-                              "method": "iid L1 contraction (GvdV 2017 Thm 8.9)"})
+    rate_hat = math.log(dists[0] / dists[-1]) / math.log(float(ns[-1]) / ns[0])
+    res = RichResult(
+        payload={
+            "estimate": rate_hat,
+            "l1_by_n": dists,
+            "half_rate": abs(rate_hat - 0.5) < 0.2,
+            "method": "iid L1 contraction (GvdV 2017 Thm 8.9)",
+        }
+    )
     return with_describe_pointer(res, "gh_contr_rate2")
 
 

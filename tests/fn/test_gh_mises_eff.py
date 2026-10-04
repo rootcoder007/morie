@@ -1,7 +1,6 @@
 """Tests for gh_mises_eff.ghosal_mises_efficiency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_mises_eff import ghosal_mises_efficiency
 
 
@@ -28,7 +27,7 @@ def test_gh_mises_eff_basic():
     # Expansion is exact: influence function is linear in (P - P0).
     assert result["expansion_exact"] is True
     # Influence at x=0.2 against P0 = Uniform[0,1]: I(x) = 1{x<=t} - t.
-    expected_infl_02 = (1.0 if 0.2 <= t_eval else 0.0) - P0_t
+    expected_infl_02 = (1.0 if t_eval >= 0.2 else 0.0) - P0_t
     assert abs(float(result["influence_at_02"]) - expected_infl_02) < 1e-14
 
 

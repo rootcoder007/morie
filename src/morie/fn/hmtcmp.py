@@ -108,9 +108,7 @@ def geron_torch_compile(model, mode="default", example_inputs=None):
     if not ops:
         raise ValueError("geron_torch_compile: model has no ops to compile")
     if example_inputs is None:
-        raise ValueError(
-            "geron_torch_compile: example_inputs is required -- graph capture is shape-specialised"
-        )
+        raise ValueError("geron_torch_compile: example_inputs is required -- graph capture is shape-specialised")
     m = str(mode).lower()
     if m not in ("default", "reduce-overhead", "max-autotune"):
         raise ValueError(

@@ -95,8 +95,7 @@ def epidemic_curve(
     while b <= last:
         bins.append(b)
         b = next_start(b)
-    df = pd.DataFrame({"bin_start": bins,
-                       "count": [int(counts.get(b, 0)) for b in bins]})
+    df = pd.DataFrame({"bin_start": bins, "count": [int(counts.get(b, 0)) for b in bins]})
 
     return DescriptiveResult(
         name="Epidemic curve",

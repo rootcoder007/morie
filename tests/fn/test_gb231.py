@@ -1,7 +1,5 @@
 """Tests for gb231.gibbons_edf_binomial."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb231 import gibbons_edf_binomial
 
 

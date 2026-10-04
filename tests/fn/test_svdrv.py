@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdrv -- Directional voting model (Rabinowitz-Macdonald)"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svdrv import directional_vote
 
 

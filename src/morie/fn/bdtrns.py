@@ -62,14 +62,16 @@ def bdtrns(y_obs, p_obs, y_lo, y_hi):
     m = sum(yv) / len(yv)
     lo = m * p + g0 * (1.0 - p)
     hi = m * p + g1 * (1.0 - p)
-    return RichResult(payload={
-        "lower": lo,
-        "upper": hi,
-        "width": hi - lo,
-        "observed_mean": m,
-        "p_obs": p,
-        "method": "Manski (2007) worst-case bound (Eqs. 2.8-2.9)",
-    })
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "observed_mean": m,
+            "p_obs": p,
+            "method": "Manski (2007) worst-case bound (Eqs. 2.8-2.9)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -78,6 +80,7 @@ manski_bound = bdtrns
 
 def cheatsheet():
     return "bdtrns: [m p + g0 (1-p), m p + g1 (1-p)]; width = (g1-g0)(1-p)"
+
 
 # public names resolved by fn/_lazy_map.json
 bound_transport = bdtrns

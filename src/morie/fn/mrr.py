@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean reciprocal rank."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -51,10 +49,15 @@ def mrr(pred_rank, relevant):
                 v = 1.0 / (k + 1.0)
                 break
         rr.append(v)
-    return RichResult(payload={
-        "estimate": sum(rr) / Q, "rr": rr,
-        "n_hit": sum(1 for v in rr if v > 0.0), "Q": Q,
-        "method": "Mean reciprocal rank"})
+    return RichResult(
+        payload={
+            "estimate": sum(rr) / Q,
+            "rr": rr,
+            "n_hit": sum(1 for v in rr if v > 0.0),
+            "Q": Q,
+            "method": "Mean reciprocal rank",
+        }
+    )
 
 
 def cheatsheet():

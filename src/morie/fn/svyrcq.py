@@ -39,9 +39,6 @@ algorithm", *Journal of Computational and Graphical Statistics* **9**(1),
 algorithm used here.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -50,9 +47,7 @@ __all__ = ["survey_quantile_regression"]
 _EPS = 1e-12
 
 
-def survey_quantile_regression(X, y, tau=0.5, weights=None,
-                               add_intercept=True, max_iter=200,
-                               tol=1e-10, eps=1e-6):
+def survey_quantile_regression(X, y, tau=0.5, weights=None, add_intercept=True, max_iter=200, tol=1e-10, eps=1e-6):
     r"""Minimise sum_i w_i rho_tau(y_i - x_i'beta) by majorise-minimise."""
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     yv = [float(v) for v in k.vec(y)]
@@ -63,8 +58,7 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None,
         raise ValueError("svyrcq: %d rows but %d responses" % (n, len(yv)))
     tau = float(tau)
     if not 0.0 < tau < 1.0:
-        raise ValueError("svyrcq: tau must lie strictly in (0, 1), got %r"
-                         % (tau,))
+        raise ValueError("svyrcq: tau must lie strictly in (0, 1), got %r" % (tau,))
     if weights is None:
         w = [1.0] * n
     else:
@@ -77,8 +71,7 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None,
         Xm = [[1.0] + r for r in Xm]
     p = len(Xm[0])
     if n <= p:
-        raise ValueError("svyrcq: %d observations cannot identify %d "
-                         "coefficients" % (n, p))
+        raise ValueError("svyrcq: %d observations cannot identify %d coefficients" % (n, p))
 
     def check_loss(beta):
         s = 0.0
@@ -88,17 +81,15 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None,
         return s
 
     def wls(om, adj):
-        A = [[sum(om[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
+        A = [[sum(om[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
         scale = sum(A[a][a] for a in range(p)) / p
         ridge = 1e-10 * scale if scale > _EPS else 1e-12
         for a in range(p):
             A[a][a] += ridge
-        b = [sum(Xm[i][a] * (om[i] * yv[i] + adj[i]) for i in range(n))
-             for a in range(p)]
+        b = [sum(Xm[i][a] * (om[i] * yv[i] + adj[i]) for i in range(n)) for a in range(p)]
         return k.cholsolve(A, b)
 
-    beta = wls([wi for wi in w], [0.0] * n)      # weighted LS start
+    beta = wls([wi for wi in w], [0.0] * n)  # weighted LS start
     obj = [check_loss(beta)]
     it, converged = 0, False
     for it in range(1, int(max_iter) + 1):
@@ -116,29 +107,39 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None,
             converged = True
             break
 
-    res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p))
-           for i in range(n)]
+    res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
     below = sum(w[i] for i in range(n) if res[i] < 0.0)
     tot = sum(w)
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta, "residuals": res,
-        "fitted": [yv[i] - res[i] for i in range(n)],
-        "objective": obj[-1], "objective_path": obj,
-        "weighted_fraction_below": below / tot if tot > _EPS else 0.0,
-        "tau": tau, "iterations": it, "converged": converged,
-        "n": n, "p": p, "sum_weights": tot,
-        "method": "survey-weighted quantile regression by majorise-minimise "
-                  "(Koenker 2005; Hunter & Lange 2000; Lumley 2010)",
-        "note": "the majorising quadratic touches the check loss at the "
-                "current fit, so the objective cannot increase -- "
-                "objective_path makes that checkable rather than asserted",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "residuals": res,
+            "fitted": [yv[i] - res[i] for i in range(n)],
+            "objective": obj[-1],
+            "objective_path": obj,
+            "weighted_fraction_below": below / tot if tot > _EPS else 0.0,
+            "tau": tau,
+            "iterations": it,
+            "converged": converged,
+            "n": n,
+            "p": p,
+            "sum_weights": tot,
+            "method": "survey-weighted quantile regression by majorise-minimise "
+            "(Koenker 2005; Hunter & Lange 2000; Lumley 2010)",
+            "note": "the majorising quadratic touches the check loss at the "
+            "current fit, so the objective cannot increase -- "
+            "objective_path makes that checkable rather than asserted",
+        }
+    )
 
 
 def cheatsheet():
-    return ("svyrcq: survey_quantile_regression(X, y, tau, weights) -> "
-            "design-weighted quantile regression by MM (Koenker 2005, "
-            "Quantile Regression, CUP; Lumley 2010, Complex Surveys)")
+    return (
+        "svyrcq: survey_quantile_regression(X, y, tau, weights) -> "
+        "design-weighted quantile regression by MM (Koenker 2005, "
+        "Quantile Regression, CUP; Lumley 2010, Complex Surveys)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

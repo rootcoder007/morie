@@ -1,7 +1,6 @@
 """Tests for mai2.ma_higgins_i2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mai2 import ma_higgins_i2
 
 

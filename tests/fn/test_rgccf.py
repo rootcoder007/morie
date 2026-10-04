@@ -1,7 +1,6 @@
 """Tests for rgccf.rangayyan_ccf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsacorr import rangayyan_ccf
 
 

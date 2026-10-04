@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e38 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e38 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38,
+)
 
 
 def test_multinomial_expansion_sums_to_the_direct_power():

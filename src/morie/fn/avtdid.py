@@ -89,17 +89,12 @@ def avg_treatment_did(y, D, X=None, y_pre=None, assume="conditional"):
         dY = dY - np.asarray(y_pre, dtype=float).ravel()
     n = dY.size
     if Dv.size != n:
-        raise ValueError(
-            "y has %d entries and D has %d." % (n, Dv.size)
-        )
+        raise ValueError("y has %d entries and D has %d." % (n, Dv.size))
     if not np.all(np.isin(Dv, (0.0, 1.0))):
         raise ValueError("D must be binary 0/1.")
     nt, nc = int(Dv.sum()), int(n - Dv.sum())
     if nt < 2 or nc < 2:
-        raise ValueError(
-            "need at least 2 treated and 2 control units, got %d and %d."
-            % (nt, nc)
-        )
+        raise ValueError("need at least 2 treated and 2 control units, got %d and %d." % (nt, nc))
     if assume not in ("conditional", "homogeneous"):
         raise ValueError("assume must be 'conditional' or 'homogeneous'.")
     if assume == "conditional" and X is None:
@@ -124,9 +119,7 @@ def avg_treatment_did(y, D, X=None, y_pre=None, assume="conditional"):
     else:
         Xd = add_intercept(np.asarray(X, dtype=float))
         if Xd.shape[0] != n:
-            raise ValueError(
-                "X has %d rows for %d observations." % (Xd.shape[0], n)
-            )
+            raise ValueError("X has %d rows for %d observations." % (Xd.shape[0], n))
         b1 = ols_fit(Xd[tr], dY[tr])
         b0 = ols_fit(Xd[ct], dY[ct])
         tau_i = Xd @ (b1 - b0)
@@ -174,8 +167,7 @@ def avg_treatment_did(y, D, X=None, y_pre=None, assume="conditional"):
             "assumption": (
                 "effects are constant, so ATU = ATT"
                 if assume == "homogeneous"
-                else "effects vary only with X, so the treated trend model "
-                "extrapolates to control covariate values"
+                else "effects vary only with X, so the treated trend model extrapolates to control covariate values"
             ),
             "extrapolation": extrap,
             "n": int(n),

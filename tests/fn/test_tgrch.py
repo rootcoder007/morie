@@ -1,8 +1,8 @@
 """Tests for tgrch.tgarch_model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tgrch import tgarch_model
 
 

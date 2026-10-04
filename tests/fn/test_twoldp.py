@@ -60,5 +60,3 @@ def test_twoldp_edge():
     assert two_locus_dprime(G1 + [-1], G2 + [1])["n"] == 20
     with pytest.raises(ValueError):
         two_locus_dprime([1], [1])
-
-

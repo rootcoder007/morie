@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["difference_in_coefficients"]
 
 
-def difference_in_coefficients(c, c_prime, a=None, b=None, se_c=None,
-                               se_c_prime=None, alpha=0.05):
+def difference_in_coefficients(c, c_prime, a=None, b=None, se_c=None, se_c_prime=None, alpha=0.05):
     r"""Indirect effect as :math:`c - c'`.
 
     Fit the total effect and then the direct effect controlling for the
@@ -96,8 +95,9 @@ def difference_in_coefficients(c, c_prime, a=None, b=None, se_c=None,
             ),
             "ci": ci,
             "ci_note": (
-                None if ci is None else
-                "c and c' are estimated on the same data and are correlated; "
+                None
+                if ci is None
+                else "c and c' are estimated on the same data and are correlated; "
                 "ignoring that covariance makes this an upper bound on the "
                 "width"
             ),
@@ -115,6 +115,5 @@ def difference_in_coefficients(c, c_prime, a=None, b=None, se_c=None,
 
 def cheatsheet():
     return (
-        "diffmed: c - c' with the exact OLS identity against ab and the "
-        "non-collapsibility warning for binary outcomes"
+        "diffmed: c - c' with the exact OLS identity against ab and the non-collapsibility warning for binary outcomes"
     )

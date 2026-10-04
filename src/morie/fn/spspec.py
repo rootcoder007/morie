@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["schabenberger_spectral_representation"]
 
 
-def schabenberger_spectral_representation(h, sigma2=None, omega=None, mu=0.0,
-                                          seed=None):
+def schabenberger_spectral_representation(h, sigma2=None, omega=None, mu=0.0, seed=None):
     r"""
     Sum-of-sinusoids representation, eq. (2.26)-(2.27).
 
@@ -70,15 +69,19 @@ def schabenberger_spectral_representation(h, sigma2=None, omega=None, mu=0.0,
     rng = np.random.default_rng(seed)
     amp = np.sqrt(2.0 * sigma2)
     phase = rng.uniform(0.0, 2 * np.pi, omega.size)
-    realisation = mu + np.array(
-        [np.sum(amp * np.cos(omega * s + phase)) for s in h])
+    realisation = mu + np.array([np.sum(amp * np.cos(omega * s + phase)) for s in h])
     return RichResult(
         title="Spectral representation",
-        summary_lines=[("C(0)", float(np.sum(sigma2))),
-                       ("frequencies", int(omega.size))],
-        payload={"h": h, "covariance": cov, "variance": float(np.sum(sigma2)),
-                 "sum_sigma2": float(np.sum(sigma2)), "omega": omega,
-                 "sigma2": sigma2, "realisation": realisation},
+        summary_lines=[("C(0)", float(np.sum(sigma2))), ("frequencies", int(omega.size))],
+        payload={
+            "h": h,
+            "covariance": cov,
+            "variance": float(np.sum(sigma2)),
+            "sum_sigma2": float(np.sum(sigma2)),
+            "omega": omega,
+            "sigma2": sigma2,
+            "realisation": realisation,
+        },
     )
 
 

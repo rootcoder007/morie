@@ -7,8 +7,19 @@ import pytest
 from morie.fn.sentpc import sentencepiece
 
 SP = "▁"
-LOGP = {SP: -3.0, SP + "un": -2.0, "un": -2.5, "u": -4.0, "n": -4.0, "do": -2.2,
-        "d": -4.5, "o": -4.5, SP + "undo": -5.0, "undo": -4.8, SP + "u": -3.9}
+LOGP = {
+    SP: -3.0,
+    SP + "un": -2.0,
+    "un": -2.5,
+    "u": -4.0,
+    "n": -4.0,
+    "do": -2.2,
+    "d": -4.5,
+    "o": -4.5,
+    SP + "undo": -5.0,
+    "undo": -4.8,
+    SP + "u": -3.9,
+}
 
 
 def _best(s):

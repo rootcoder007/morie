@@ -19,9 +19,7 @@ def _skew_ged_loglik(z, nu, lam):
     if nu <= 0 or lam <= 0:
         return -np.inf
     a = np.sqrt(2 ** (-2 / nu) * special.gamma(1 / nu) / special.gamma(3 / nu))
-    c = np.log(2) - np.log(lam + 1 / lam) + np.log(nu) - np.log(a) - (
-        1 + 1 / nu
-    ) * np.log(2) - special.gammaln(1 / nu)
+    c = np.log(2) - np.log(lam + 1 / lam) + np.log(nu) - np.log(a) - (1 + 1 / nu) * np.log(2) - special.gammaln(1 / nu)
     scaled = np.where(z < 0, z * lam, z / lam)
     return float(np.sum(c - 0.5 * np.abs(scaled / a) ** nu))
 
@@ -69,19 +67,19 @@ def vol_nelson_skew_garch(r):
         ll = _skew_ged_loglik(z, nu, lam)
         return 1e10 if not np.isfinite(ll) else -ll
 
-    res = optimize.minimize(neg, [0.0, 0.0], method="Nelder-Mead",
-                            options={"maxiter": 2000, "fatol": 1e-8})
+    res = optimize.minimize(neg, [0.0, 0.0], method="Nelder-Mead", options={"maxiter": 2000, "fatol": 1e-8})
     nu = 0.2 + 4.0 / (1 + np.exp(-np.clip(res.x[0], -30, 30)))
     lam = float(np.exp(np.clip(res.x[1], -3, 3)))
     sym = -optimize.minimize_scalar(
-        lambda t: -_skew_ged_loglik(z, 0.2 + 4.0 / (1 + np.exp(-t)), 1.0),
-        bounds=(-30, 30), method="bounded"
+        lambda t: -_skew_ged_loglik(z, 0.2 + 4.0 / (1 + np.exp(-t)), 1.0), bounds=(-30, 30), method="bounded"
     ).fun
 
     out = dict(fit)
     out.update(
         {
-            "nu": float(nu), "lambda_skew": lam, "skew_loglik": float(-res.fun),
+            "nu": float(nu),
+            "lambda_skew": lam,
+            "skew_loglik": float(-res.fun),
             "symmetric_loglik": float(sym),
             "skew_lr_stat": float(2 * (-res.fun - sym)),
             "method": "EGARCH variance with skew-GED innovations (Nelson 1991)",

@@ -1,7 +1,6 @@
 """Tests for mtrbnd.monotone_treatment_response."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mtrbnd import monotone_treatment_response
 
 

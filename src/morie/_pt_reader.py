@@ -164,7 +164,7 @@ class _Unpickler(pickle.Unpickler):
         if module == "torch" and name in _DTYPES:
             return _StorageType(name)
         raise pickle.UnpicklingError(
-            f"refusing to unpickle {module}.{name}: only tensors and containers " "load (the weights_only contract)"
+            f"refusing to unpickle {module}.{name}: only tensors and containers load (the weights_only contract)"
         )
 
     def persistent_load(self, pid):
@@ -194,7 +194,7 @@ def load_checkpoint(path):
     with zipfile.ZipFile(path) as zf:
         pkl = [n for n in zf.namelist() if n.endswith("/data.pkl")]
         if not pkl:
-            raise ValueError(f"{path} is not a torch zip checkpoint " "(no data.pkl)")
+            raise ValueError(f"{path} is not a torch zip checkpoint (no data.pkl)")
         prefix = pkl[0][: -len("/data.pkl")]
         with zf.open(pkl[0]) as fh:
             return _Unpickler(fh, zf, prefix).load()

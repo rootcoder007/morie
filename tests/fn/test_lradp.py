@@ -1,7 +1,6 @@
 """Test learning rate scheduler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lradp import lradp
 
 

@@ -107,6 +107,5 @@ def cross_correlation(x, y, max_lag: int | None = None):
     return DescriptiveResult(
         name="cross_correlation",
         value=float(np.max(np.abs(corr))),
-        extra={"correlation": corr, "max_lag": max_lag,
-               "lag_axis_runs_positive_to_negative": True},
+        extra={"correlation": corr, "max_lag": max_lag, "lag_axis_runs_positive_to_negative": True},
     )

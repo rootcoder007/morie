@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['signp', 'gibbons_sign_pvalue']
+__all__ = ["signp", "gibbons_sign_pvalue"]
 
 
 def signp(k, n, alternative="two-sided"):

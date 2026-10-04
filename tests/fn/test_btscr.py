@@ -1,7 +1,6 @@
 """Tests for btscr.boot_score_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btscr import boot_score_test
 
 

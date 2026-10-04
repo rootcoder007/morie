@@ -3,13 +3,12 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_spectral import fourier_frequencies, periodogram, periodogram_from_covariance, sample_covariance_2d
+from ._schab_spectral import periodogram, periodogram_from_covariance, sample_covariance_2d
 
 __all__ = ["schabenberger_periodogram"]
 
 
-def schabenberger_periodogram(z_lattice, coords=None, omit_zero_frequency=True,
-                              check_identity=True):
+def schabenberger_periodogram(z_lattice, coords=None, omit_zero_frequency=True, check_identity=True):
     """The periodogram on an r x c lattice, Sec. 4.7.1.
 
     eq (4.57)::
@@ -70,9 +69,11 @@ def schabenberger_periodogram(z_lattice, coords=None, omit_zero_frequency=True,
         "r": p["r"],
         "c": p["c"],
     }
-    lines = [("lattice", "%d x %d" % (p["r"], p["c"])),
-             ("frequencies", "%d x %d" % (p["omega1"].size, p["omega2"].size)),
-             ("mean-invariant off the origin", p["mean_invariant"])]
+    lines = [
+        ("lattice", "%d x %d" % (p["r"], p["c"])),
+        ("frequencies", "%d x %d" % (p["omega1"].size, p["omega2"].size)),
+        ("mean-invariant off the origin", p["mean_invariant"]),
+    ]
     if check_identity:
         q = periodogram_from_covariance(z_lattice)
         m = p["nonzero_mask"]
@@ -85,11 +86,10 @@ def schabenberger_periodogram(z_lattice, coords=None, omit_zero_frequency=True,
             payload["warning"] = (
                 "the periodogram does not match the Fourier transform of the "
                 "sample covariance function; eq (4.59) should hold to machine "
-                "precision away from the origin")
-    return RichResult(title="Periodogram on a rectangular lattice",
-                      summary_lines=lines, payload=payload)
+                "precision away from the origin"
+            )
+    return RichResult(title="Periodogram on a rectangular lattice", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spperiod: periodogram on an r x c lattice at the Fourier "
-            "frequencies (Sec. 4.7.1, eqs (4.57) and (4.59))")
+    return "spperiod: periodogram on an r x c lattice at the Fourier frequencies (Sec. 4.7.1, eqs (4.57) and (4.59))"

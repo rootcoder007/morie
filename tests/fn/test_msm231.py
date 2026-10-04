@@ -6,12 +6,9 @@ Springer, ch 9, eqs. 9.44 and 9.45 p.354, the soft margin dual. Expected values 
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm231 import svmsdual
-
 
 X = [[1.0, 1.0], [-1.0, -1.0]]
 Y = [1, -1]
@@ -29,8 +26,7 @@ def _dual(alpha):
 
 def test_the_dual_objective_is_the_linear_less_half_the_quadratic_form():
     res = svmsdual(X, Y, 1.0)
-    assert res["objective"] == pytest.approx(_dual(list(res["alpha"])),
-                                              rel=1e-9)
+    assert res["objective"] == pytest.approx(_dual(list(res["alpha"])), rel=1e-9)
 
 
 def test_the_optimum_of_this_two_point_problem_is_a_quarter_each():
@@ -50,8 +46,7 @@ def test_the_multipliers_respect_both_constraints_of_equation_9_45():
 
 def test_the_coefficients_follow_from_the_multipliers():
     res = svmsdual(X, Y, 1.0)
-    rebuilt = [sum(a * y * xi[j] for a, y, xi in zip(res["alpha"], Y, X))
-               for j in range(2)]
+    rebuilt = [sum(a * y * xi[j] for a, y, xi in zip(res["alpha"], Y, X)) for j in range(2)]
     assert list(res["beta"]) == pytest.approx(rebuilt, rel=1e-9)
 
 

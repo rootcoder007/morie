@@ -3,7 +3,7 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-from ._copula import copula_tau, tau_to_theta
+from ._copula import tau_to_theta
 from ._richresult import RichResult
 
 __all__ = ["copula_vine_sp"]
@@ -16,8 +16,8 @@ def copula_vine_sp(data):
     dependence structure by matching Kendall's tau pairwise (Czado
     2019 Table 3.2, p. 54).
     For the vine, a C-vine first tree is selected by taking the variable with the largest total absolute tau as the root, and each edge is fitted independently -- the greedy Dissmann selection restricted to tree 1.
-    
-    
+
+
 
     Parameters
     ----------
@@ -56,7 +56,7 @@ def copula_vine_sp(data):
     root = int(np.argmax(strength))
     edges = [(root, j) for j in range(d) if j != root]
     th = []
-    for (a, b) in edges:
+    for a, b in edges:
         t = tau[a, b]
         fam_ij = "gumbel" if t > 0 else "frank"
         try:

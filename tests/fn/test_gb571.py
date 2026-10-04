@@ -1,7 +1,6 @@
 """Tests for gb571.gibbons_wilcoxon_signed_rank."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb571 import gibbons_wilcoxon_signed_rank
 
 

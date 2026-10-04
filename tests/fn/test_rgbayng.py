@@ -35,5 +35,3 @@ def test_rgbayng_edge():
     r = rangayyan_bayes_gaussian([1.5, 1.0], means, covs)
     shift = [a - b for a, b in zip(r["d_full"], r["d_dropped_constant"])]
     assert shift == pytest.approx([-math.log(2 * math.pi)] * 2, rel=1e-12)
-
-

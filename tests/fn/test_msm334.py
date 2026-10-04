@@ -6,8 +6,6 @@ Springer, ch 3, sec. 3.5 p.80, the expected prediction error. Expected values ar
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm334 import mvsml_preprocessing_eq_2_22

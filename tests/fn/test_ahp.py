@@ -1,7 +1,6 @@
 """Tests for morie.fn.ahp — AHP weights."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ahp import ahp_weights
 
 

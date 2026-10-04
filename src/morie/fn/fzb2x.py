@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """The b_2 bias coefficient of the kernel distribution function estimator."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kdfb2", "fauzi_b2_coefficient_kdfe"]

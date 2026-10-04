@@ -1,7 +1,6 @@
 """Tests for km071.kamath_ch5_dpo_reward_optimal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km071 import kamath_ch5_dpo_reward_optimal
 
 

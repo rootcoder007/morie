@@ -66,26 +66,29 @@ def life_table_smoothed(time, event, bandwidth=None, grid=None):
         sd = float(np.std(tv, ddof=1))
         iqr = float(np.subtract(*np.percentile(tv, [75, 25])))
         scale = min(sd, iqr / 1.349) if iqr > 0 else sd
-        h = 1.06 * (scale if scale > 0 else 1.0) * n ** -0.2
+        h = 1.06 * (scale if scale > 0 else 1.0) * n**-0.2
     else:
         h = float(bandwidth)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(uniq.min(), uniq.max(), 100) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(uniq.min(), uniq.max(), 100) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     W = np.exp(-0.5 * ((g[:, None] - uniq[None, :]) / h) ** 2)
     den = W.sum(axis=1)
     sm = np.where(den > 0, (W @ km) / np.maximum(den, 1e-300), np.nan)
-    return RichResult(payload={
-        "grid": g, "survival_smooth": sm,
-        "survival_km": np.interp(g, uniq, km),
-        "bandwidth": h,
-        "monotone": bool(np.all(np.diff(sm[np.isfinite(sm)]) <= 1e-12)),
-        "is_npmle": False,
-        "cost": "not the NPMLE any more, can lose monotonicity at small h, "
-                "and is biased at the boundaries",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Kernel-smoothed survival; buys differentiability, costs the exact NPMLE interpretation"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "survival_smooth": sm,
+            "survival_km": np.interp(g, uniq, km),
+            "bandwidth": h,
+            "monotone": bool(np.all(np.diff(sm[np.isfinite(sm)]) <= 1e-12)),
+            "is_npmle": False,
+            "cost": "not the NPMLE any more, can lose monotonicity at small h, and is biased at the boundaries",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Kernel-smoothed survival; buys differentiability, costs the exact NPMLE interpretation",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.tridg -- Thomas algorithm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.tridg import thomas_solve, tridg
 

@@ -1,7 +1,6 @@
 """Tests for ebmZD.zonal_ebm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ebmZD import zonal_ebm
 
 
@@ -9,8 +8,7 @@ def test_ebmZD_basic():
     """Test basic functionality."""
     result = zonal_ebm(1.0, start=20.0)
     assert isinstance(result, dict)
-    expected_keys = {"temperature", "global_mean", "ice_fraction",
-                     "albedo", "latitude", "converged", "snowball"}
+    expected_keys = {"temperature", "global_mean", "ice_fraction", "albedo", "latitude", "converged", "snowball"}
     assert expected_keys.issubset(result.keys())
     assert len(result["temperature"]) == 9
     assert len(result["latitude"]) == 9

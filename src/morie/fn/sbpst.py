@@ -68,7 +68,7 @@ def stick_breaking_post(partition, alpha=1.0):
     rest = 1.0
     for i in range(K):
         pi.append(Vs[i] * rest)
-        rest *= (1.0 - Vs[i])
+        rest *= 1.0 - Vs[i]
     return RichResult(
         title="Posterior stick-breaking weights",
         summary_lines=[("clusters", K), ("alpha", a)],

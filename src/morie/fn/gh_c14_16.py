@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,11 +20,14 @@ def ghosal_ncrm_levy(f_vals, nu_masses, u_atoms):
     fs = _bnp._flat(f_vals)
     ms = _bnp._flat(nu_masses)
     us = _bnp._flat(u_atoms)
-    expo = sum(m * (1.0 - math.exp(-f * u))
-               for f, m, u in zip(fs, ms, us))
-    res = RichResult(payload={"estimate": math.exp(-expo),
-                              "exponent": expo,
-                              "method": "NCRM Laplace functional (GvdV 2017 sec. 14.7)"})
+    expo = sum(m * (1.0 - math.exp(-f * u)) for f, m, u in zip(fs, ms, us))
+    res = RichResult(
+        payload={
+            "estimate": math.exp(-expo),
+            "exponent": expo,
+            "method": "NCRM Laplace functional (GvdV 2017 sec. 14.7)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_16")
 
 

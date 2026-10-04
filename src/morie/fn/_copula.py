@@ -133,9 +133,9 @@ def _bt_cdf(x, y, rho, nu):
     def inner(w):
         # given the scale mixture, (x, y) sqrt(nu/w) is bivariate normal
         s = np.sqrt(w / nu)
-        return stats.multivariate_normal.cdf(
-            [x * s, y * s], mean=[0, 0], cov=[[1, rho], [rho, 1]]
-        ) * stats.chi2.pdf(w, nu)
+        return stats.multivariate_normal.cdf([x * s, y * s], mean=[0, 0], cov=[[1, rho], [rho, 1]]) * stats.chi2.pdf(
+            w, nu
+        )
 
     val, _ = integrate.quad(inner, 1e-8, nu + 12 * np.sqrt(2 * nu), limit=120)
     return float(val)
@@ -195,8 +195,7 @@ def copula_tau(family, theta=None, nu=None):
         g = 0.5772156649015329  # Euler-Mascheroni
         return float(
             1.0
-            + (-2.0 + 2.0 * g + 2.0 * np.log(2.0) + special.digamma(1.0 / d)
-               + special.digamma(0.5 * (2.0 + d) / d) + d)
+            + (-2.0 + 2.0 * g + 2.0 * np.log(2.0) + special.digamma(1.0 / d) + special.digamma(0.5 * (2.0 + d) / d) + d)
             / (-2.0 + d)
         )
     # plackett: numeric, no closed form in Table 3.2

@@ -1,7 +1,6 @@
 """Tests for dpamp.privacy_amplification."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpamp import privacy_amplification
 
 

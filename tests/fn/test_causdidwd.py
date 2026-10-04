@@ -1,10 +1,10 @@
 """causdidwd -- ETWFE. Source: Wooldridge, J. M. (2025) Empirical
 Economics 69, 2545-2587, doi:10.1007/s00181-025-02807-z."""
+
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.causdidwd import (aggregate, etwfe, imputation,
-                                two_way_fixed_effects, two_way_mundlak)
+from morie.fn.causdidwd import aggregate, etwfe, imputation, two_way_fixed_effects, two_way_mundlak
 
 
 def panel(noise=0.0, seed=5):
@@ -18,8 +18,7 @@ def panel(noise=0.0, seed=5):
             if g is not None and t >= int(g):
                 eff = 1.0 + 0.5 * (t - int(g))
                 true[(g, str(t))] = eff
-            Y.append(ai + 0.4 * t + eff
-                     + (float(rng.normal(0.0, noise)) if noise else 0.0))
+            Y.append(ai + 0.4 * t + eff + (float(rng.normal(0.0, noise)) if noise else 0.0))
             U.append("u%d" % i)
             T.append(str(t))
             FT.append(g)
@@ -27,8 +26,7 @@ def panel(noise=0.0, seed=5):
 
 
 def treat_col(T, FT):
-    return [[1.0 if (FT[i] is not None and int(T[i]) >= int(FT[i]))
-             else 0.0] for i in range(len(T))]
+    return [[1.0 if (FT[i] is not None and int(T[i]) >= int(FT[i])) else 0.0] for i in range(len(T))]
 
 
 def test_mundlak_reproduces_twfe_on_a_time_varying_regressor():
@@ -95,8 +93,7 @@ def test_event_aggregation_returns_a_profile():
 def test_a_single_period_panel_is_refused():
     Y, U, T, FT, _ = panel()
     with pytest.raises(ValueError):
-        two_way_fixed_effects(Y[:8], U[:8], ["1"] * 8,
-                              [[1.0]] * 8)
+        two_way_fixed_effects(Y[:8], U[:8], ["1"] * 8, [[1.0]] * 8)
 
 
 def test_an_adoption_period_outside_the_data_is_refused():

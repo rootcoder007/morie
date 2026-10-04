@@ -63,15 +63,26 @@ def bound_iv_partial(y, D, Z):
     lo = iv_lo if iv_lo > mtr_lo else mtr_lo
     hi = iv_hi if iv_hi < mtr_hi else mtr_hi
     refuted = 1.0 if (lo > hi or lo1 > hi1 or lo0 > hi0) else 0.0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "iv_lower": iv_lo, "iv_upper": iv_hi,
-        "mtr_lower": mtr_lo, "mtr_upper": mtr_hi, "refuted": refuted,
-        "n": n, "method": "Partial IV bound under one-sided compliance"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "iv_lower": iv_lo,
+            "iv_upper": iv_hi,
+            "mtr_lower": mtr_lo,
+            "mtr_upper": mtr_hi,
+            "refuted": refuted,
+            "n": n,
+            "method": "Partial IV bound under one-sided compliance",
+        }
+    )
 
 
 def cheatsheet():
     return "bnsipv: IV bound intersected with monotone treatment response"
+
 
 # public names resolved by fn/_lazy_map.json
 boundivpartial = bound_iv_partial

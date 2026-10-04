@@ -55,10 +55,17 @@ def mediated_interaction(Y, X, M, Cc=None, a=1.0, astar=0.0):
     """
     theta, beta, cbar = S.medmodels(Y, X, M, Cc)
     d = a - astar
-    return RichResult(payload={
-        "estimate": theta[3] * beta[1] * d * d, "interaction": theta[3],
-        "mediator_shift": beta[1] * d, "theta": theta, "beta": beta,
-        "n": len(C.vec(Y)), "method": "Mediated interaction INTmed"})
+    return RichResult(
+        payload={
+            "estimate": theta[3] * beta[1] * d * d,
+            "interaction": theta[3],
+            "mediator_shift": beta[1] * d,
+            "theta": theta,
+            "beta": beta,
+            "n": len(C.vec(Y)),
+            "method": "Mediated interaction INTmed",
+        }
+    )
 
 
 def cheatsheet():

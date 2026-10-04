@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficacy of the sign test -- Gibbons eq. (13.3.3)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['effsign', 'gibbons_sign_efficacy']
+__all__ = ["effsign", "gibbons_sign_efficacy"]
 
 
 def effsign(n, fmed):

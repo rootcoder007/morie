@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 14.1.2, the Chinese restaurant franchise.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c14_4 import ghosal_crf_def
 
 

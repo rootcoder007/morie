@@ -5,7 +5,6 @@ Implements sec. 1.3.1 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, Cambridge University Press.
 """
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,6 +18,7 @@ def ghosal_absolute_continuity(x, log_lik=None, log_prior=None):
     marginal likelihood) alongside the posterior; a zero marginal
     would mean the domination assumption failed on this grid."""
     import math
+
     th = _bnp._flat(x)
     if log_lik is None:
         log_lik = lambda t: -0.5 * (1.0 - t) ** 2
@@ -31,10 +31,14 @@ def ghosal_absolute_continuity(x, log_lik=None, log_prior=None):
     marg = math.log(tot / len(th)) + mx
     post = [v / tot for v in w]
     est = sum(t * p for t, p in zip(th, post))
-    res = RichResult(payload={"estimate": est,
-                              "log_marginal": marg,
-                              "posterior": post,
-                              "method": "dominated posterior, Radon-Nikodym (GvdV 2017 sec. 1.3.1)"})
+    res = RichResult(
+        payload={
+            "estimate": est,
+            "log_marginal": marg,
+            "posterior": post,
+            "method": "dominated posterior, Radon-Nikodym (GvdV 2017 sec. 1.3.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c1_2")
 
 

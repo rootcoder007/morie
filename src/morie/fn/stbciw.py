@@ -79,12 +79,21 @@ def stabilized_censoring_weights(C, H=None, numerator=None):
             nm *= N[i][t]
         w.append(nm / dn)
         uw.append(1.0 / dn)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(w) / n), "weights": w,
-        "unstabilized": uw, "mean_weight": float(sum(w) / n),
-        "max_weight": float(max(w)), "n": n, "n_times": nt,
-        "method": "stabilized censoring weights (Robins 1993)",
-    }), "stbciw")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(w) / n),
+                "weights": w,
+                "unstabilized": uw,
+                "mean_weight": float(sum(w) / n),
+                "max_weight": float(max(w)),
+                "n": n,
+                "n_times": nt,
+                "method": "stabilized censoring weights (Robins 1993)",
+            }
+        ),
+        "stbciw",
+    )
 
 
 def cheatsheet():

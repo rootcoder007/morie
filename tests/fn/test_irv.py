@@ -1,7 +1,6 @@
 """Tests for morie.fn.irv — Instant runoff voting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.irv import irv
 
 

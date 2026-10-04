@@ -67,10 +67,17 @@ def hrz_kde_multivariate(x, grid=None, h=None, kernel_name="gaussian"):
         u = (pt[None, :] - X) / hs[None, :]
         dens[i] = np.prod(kernel(u, kernel_name), axis=1).sum()
     dens /= n * np.prod(hs)
-    return RichResult(payload={"grid": G, "density": dens, "bandwidths": hs,
-                               "rate_exponent": -2.0 / (4.0 + d), "d": int(d),
-                               "n": int(n),
-                               "method": "Product kernel; rate n^{-2/(4+d)} -- the curse, exactly"})
+    return RichResult(
+        payload={
+            "grid": G,
+            "density": dens,
+            "bandwidths": hs,
+            "rate_exponent": -2.0 / (4.0 + d),
+            "d": int(d),
+            "n": int(n),
+            "method": "Product kernel; rate n^{-2/(4+d)} -- the curse, exactly",
+        }
+    )
 
 
 def cheatsheet():

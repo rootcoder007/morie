@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e56 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_56
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e56 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_56,
+)
 
 
 def test_hockey_stick_sum_equals_the_single_coefficient():

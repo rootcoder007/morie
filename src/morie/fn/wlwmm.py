@@ -50,23 +50,26 @@ def wlw_marginal_model(time, event, X, occurrence, max_iter=50, tol=1e-9):
                 np.asarray([time[i] for i in idx]),
                 np.asarray([event[i] for i in idx]),
                 np.asarray([Xa[i].tolist() for i in idx]),
-                max_iter=max_iter, tol=tol)
+                max_iter=max_iter,
+                tol=tol,
+            )
         except ValueError:
             continue
         per_event[k] = sub["beta"]
 
-    fit = cox_counting_process(zeros, time, event, Xa, strata=occ,
-                               max_iter=max_iter, tol=tol)
-    return RichResult(payload={
-        "estimate": fit["beta"],
-        "se": fit["se"],
-        "cov": fit["cov"],
-        "per_event_beta": per_event,
-        "loglik": fit["loglik"],
-        "n_iter": fit["n_iter"],
-        "n_events": fit["n_events"],
-        "method": "Wei-Lin-Weissfeld (1989) marginal model, total-time stratified Cox, Breslow ties",
-    })
+    fit = cox_counting_process(zeros, time, event, Xa, strata=occ, max_iter=max_iter, tol=tol)
+    return RichResult(
+        payload={
+            "estimate": fit["beta"],
+            "se": fit["se"],
+            "cov": fit["cov"],
+            "per_event_beta": per_event,
+            "loglik": fit["loglik"],
+            "n_iter": fit["n_iter"],
+            "n_events": fit["n_events"],
+            "method": "Wei-Lin-Weissfeld (1989) marginal model, total-time stratified Cox, Breslow ties",
+        }
+    )
 
 
 def cheatsheet():

@@ -9,101 +9,101 @@ symbols are unchanged.
 from math import atan2, cos, fsum, hypot, pi, sin, sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._rgcore import aslist
 from ._richresult import RichResult
 
 __all__ = [
-    'blwander',
-    'rangayyan_baseline_wander',
-    'cpulsefeat',
-    'rangayyan_carotid_pulse',
-    'qrsderiv',
-    'rangayyan_deriv_qrs',
-    'dicnotch',
-    'rangayyan_dicrotic_notch',
-    'ecgemgcpl',
-    'rangayyan_ecg_emg_coupling',
-    'ecgfeat',
-    'rangayyan_ecg_features',
-    'ecgwaveshp',
-    'rangayyan_ecg_waveshape',
-    'exerecgst',
-    'rangayyan_exercise_ecg',
-    'hrvfreq',
-    'rangayyan_hrv_freq_domain',
-    'hrvtime',
-    'rangayyan_hrv_time_domain',
-    'hsoundid',
-    'rangayyan_heart_sound_id',
-    'mecgfilt',
-    'rangayyan_maternal_ecg_filter',
-    'motionart',
-    'rangayyan_motion_artifact',
-    'qrsdetect',
-    'rangayyan_pan_tompkins',
-    'pcgparts',
-    'rangayyan_pcg_segments',
-    'plinenotch',
-    'rangayyan_powerline_removal',
-    'ppgfeat',
-    'rangayyan_ppg_features',
-    'pwavedet',
-    'rangayyan_p_wave_detect',
-    'edrsignal',
-    'rangayyan_resp_signal',
-    'apneaedr',
-    'rangayyan_sleep_apnea',
-    'lfhfratio',
-    'rangayyan_spectral_power_ratio',
-    'twaspectr',
-    'rangayyan_twave_alternans',
-    'rangayyan_twa_spectral_mx',
-    'twavedet',
-    'rangayyan_t_wave_detect',
-    'vfdetect',
-    'rangayyan_vf_detect',
-    'qrsderiv1',
-    'rangayyan_ch4_qrs_first_derivative_balda',
-    'qrsderiv2',
-    'rangayyan_ch4_qrs_second_derivative_balda',
-    'qrsderivmx',
-    'rangayyan_ch4_qrs_combined_balda',
-    'qrswsqdrv',
-    'rangayyan_ch4_filtered_derivative_murthy',
-    'qrsdrvsmth',
-    'rangayyan_ch4_qrs_smoothing_ma_filter',
-    'qrslpasstf',
-    'rangayyan_ch4_pan_tompkins_lowpass_transfer',
-    'qrslpassdf',
-    'rangayyan_ch4_pan_tompkins_lowpass_difference_eq',
-    'qrshplptf',
-    'rangayyan_ch4_pan_tompkins_highpass_lp_component',
-    'qrshplpdf',
-    'rangayyan_ch4_pan_tompkins_highpass_lp_difference_eq',
-    'qrshpasstf',
-    'rangayyan_ch4_pan_tompkins_highpass_transfer',
-    'qrshpassdf',
-    'rangayyan_ch4_pan_tompkins_highpass_difference_eq',
-    'qrshpassio',
-    'rangayyan_ch4_pan_tompkins_highpass_combined',
-    'qrsderivop',
-    'rangayyan_ch4_pan_tompkins_derivative_operator',
-    'qrsmwint',
-    'rangayyan_ch4_pan_tompkins_moving_window_integrator',
-    'qrsthresh',
-    'rangayyan_ch4_pan_tompkins_thresholds',
-    'qrsspkiupd',
-    'rangayyan_ch4_pan_tompkins_searchback_update',
-    'hrfromcnt',
-    'rangayyan_ch4_heart_rate_from_count',
-    'rangayyan_ch4_heart_rate_from_rr',
-    'lengthxfm',
-    'rangayyan_ch4_length_transformation',
-    'rangayyan_ch4_dicrotic_notch_second_derivative',
-    'dnotchsmth',
-    'rangayyan_ch4_dicrotic_notch_smoothed_squared',
+    "blwander",
+    "rangayyan_baseline_wander",
+    "cpulsefeat",
+    "rangayyan_carotid_pulse",
+    "qrsderiv",
+    "rangayyan_deriv_qrs",
+    "dicnotch",
+    "rangayyan_dicrotic_notch",
+    "ecgemgcpl",
+    "rangayyan_ecg_emg_coupling",
+    "ecgfeat",
+    "rangayyan_ecg_features",
+    "ecgwaveshp",
+    "rangayyan_ecg_waveshape",
+    "exerecgst",
+    "rangayyan_exercise_ecg",
+    "hrvfreq",
+    "rangayyan_hrv_freq_domain",
+    "hrvtime",
+    "rangayyan_hrv_time_domain",
+    "hsoundid",
+    "rangayyan_heart_sound_id",
+    "mecgfilt",
+    "rangayyan_maternal_ecg_filter",
+    "motionart",
+    "rangayyan_motion_artifact",
+    "qrsdetect",
+    "rangayyan_pan_tompkins",
+    "pcgparts",
+    "rangayyan_pcg_segments",
+    "plinenotch",
+    "rangayyan_powerline_removal",
+    "ppgfeat",
+    "rangayyan_ppg_features",
+    "pwavedet",
+    "rangayyan_p_wave_detect",
+    "edrsignal",
+    "rangayyan_resp_signal",
+    "apneaedr",
+    "rangayyan_sleep_apnea",
+    "lfhfratio",
+    "rangayyan_spectral_power_ratio",
+    "twaspectr",
+    "rangayyan_twave_alternans",
+    "rangayyan_twa_spectral_mx",
+    "twavedet",
+    "rangayyan_t_wave_detect",
+    "vfdetect",
+    "rangayyan_vf_detect",
+    "qrsderiv1",
+    "rangayyan_ch4_qrs_first_derivative_balda",
+    "qrsderiv2",
+    "rangayyan_ch4_qrs_second_derivative_balda",
+    "qrsderivmx",
+    "rangayyan_ch4_qrs_combined_balda",
+    "qrswsqdrv",
+    "rangayyan_ch4_filtered_derivative_murthy",
+    "qrsdrvsmth",
+    "rangayyan_ch4_qrs_smoothing_ma_filter",
+    "qrslpasstf",
+    "rangayyan_ch4_pan_tompkins_lowpass_transfer",
+    "qrslpassdf",
+    "rangayyan_ch4_pan_tompkins_lowpass_difference_eq",
+    "qrshplptf",
+    "rangayyan_ch4_pan_tompkins_highpass_lp_component",
+    "qrshplpdf",
+    "rangayyan_ch4_pan_tompkins_highpass_lp_difference_eq",
+    "qrshpasstf",
+    "rangayyan_ch4_pan_tompkins_highpass_transfer",
+    "qrshpassdf",
+    "rangayyan_ch4_pan_tompkins_highpass_difference_eq",
+    "qrshpassio",
+    "rangayyan_ch4_pan_tompkins_highpass_combined",
+    "qrsderivop",
+    "rangayyan_ch4_pan_tompkins_derivative_operator",
+    "qrsmwint",
+    "rangayyan_ch4_pan_tompkins_moving_window_integrator",
+    "qrsthresh",
+    "rangayyan_ch4_pan_tompkins_thresholds",
+    "qrsspkiupd",
+    "rangayyan_ch4_pan_tompkins_searchback_update",
+    "hrfromcnt",
+    "rangayyan_ch4_heart_rate_from_count",
+    "rangayyan_ch4_heart_rate_from_rr",
+    "lengthxfm",
+    "rangayyan_ch4_length_transformation",
+    "rangayyan_ch4_dicrotic_notch_second_derivative",
+    "dnotchsmth",
+    "rangayyan_ch4_dicrotic_notch_smoothed_squared",
 ]
+
 
 def _rgpad(seq, k):
     """Left-pad a per-sample operator output with k zeros to keep the length."""
@@ -303,8 +303,7 @@ def blwander(ecg, fs, pole=0.995):
         raise ValueError("fs must be positive")
     a = float(pole)
     if not 0.0 <= a < 1.0:
-        raise ValueError("the pole must lie inside the unit circle, "
-                         "0 <= pole < 1; got %g" % a)
+        raise ValueError("the pole must lie inside the unit circle, 0 <= pole < 1; got %g" % a)
 
     # y(n) = a y(n-1) + (1/T) [ x(n) - x(n-1) ],  T = 1/fs
     y = [0.0] * n
@@ -318,7 +317,7 @@ def blwander(ecg, fs, pole=0.995):
     # taking them on trust.
     def _gain(f):
         w = 2.0 * pi * f / fsv
-        num = complex(1.0 - cos(w), sin(w))          # 1 - e^-jw
+        num = complex(1.0 - cos(w), sin(w))  # 1 - e^-jw
         den = complex(1.0 - a * cos(w), a * sin(w))  # 1 - a e^-jw
         if abs(den) == 0.0:
             return float("inf")
@@ -327,16 +326,24 @@ def blwander(ecg, fs, pole=0.995):
     g0 = _gain(0.0)
     ghalf = _gain(0.5)
     gnyq = _gain(fsv / 2.0)
-    return RichResult(payload={
-        "ecg_detrended": y, "n": n, "fs": fsv, "pole": a,
-        "gain_dc": g0, "gain_at_half_hz": ghalf, "gain_at_nyquist": gnyq,
-        "gain_relative_at_half_hz": (ghalf / gnyq) if gnyq > 0 else None,
-        "dc_is_rejected": g0 < 1e-12,
-        "zero_at_z_equals_one": True,
-        "pole_restores_gain_above_the_wander_band": True,
-        "differentiates_by_the_one_over_T_factor": True,
-        "method": "Rangayyan (2024) eqs. (3.132)-(3.133), modified "
-                  "first-order difference for baseline-wander removal"})
+    return RichResult(
+        payload={
+            "ecg_detrended": y,
+            "n": n,
+            "fs": fsv,
+            "pole": a,
+            "gain_dc": g0,
+            "gain_at_half_hz": ghalf,
+            "gain_at_nyquist": gnyq,
+            "gain_relative_at_half_hz": (ghalf / gnyq) if gnyq > 0 else None,
+            "dc_is_rejected": g0 < 1e-12,
+            "zero_at_z_equals_one": True,
+            "pole_restores_gain_above_the_wander_band": True,
+            "differentiates_by_the_one_over_T_factor": True,
+            "method": "Rangayyan (2024) eqs. (3.132)-(3.133), modified "
+            "first-order difference for baseline-wander removal",
+        }
+    )
 
 
 rangayyan_baseline_wander = blwander  # pre-policy spelling
@@ -416,26 +423,28 @@ def cpulsefeat(cp, fs, qrs, hr=None):
     pepc = [v + 0.4 * hr for v in pep]
     etc = [v + 1.6 * hr for v in et]
     mean = lambda v: (fsum(v) / len(v)) if v else None
-    return RichResult(payload={
-        "upstroke": ups,
-        "percussion": perc,
-        "notch": notch,
-        "dicwave": dicw,
-        "pep": pep,
-        "et": et,
-        "pepc": pepc,
-        "etc": etc,
-        "peppmean": mean(pep),
-        "etmean": mean(et),
-        "pepcmean": mean(pepc),
-        "etcmean": mean(etc),
-        "hr": hr,
-        "fs": fs,
-        "normpepc": (131.0, 13.0),
-        "normetcmale": (395.0, 13.0),
-        "normetcfemale": (415.0, 11.0),
-        "method": "carotid pulse features and systolic time intervals, Rangayyan (2024) Sections 1.2.10 and 4.9",
-    })
+    return RichResult(
+        payload={
+            "upstroke": ups,
+            "percussion": perc,
+            "notch": notch,
+            "dicwave": dicw,
+            "pep": pep,
+            "et": et,
+            "pepc": pepc,
+            "etc": etc,
+            "peppmean": mean(pep),
+            "etmean": mean(et),
+            "pepcmean": mean(pepc),
+            "etcmean": mean(etc),
+            "hr": hr,
+            "fs": fs,
+            "normpepc": (131.0, 13.0),
+            "normetcmale": (395.0, 13.0),
+            "normetcfemale": (415.0, 11.0),
+            "method": "carotid pulse features and systolic time intervals, Rangayyan (2024) Sections 1.2.10 and 4.9",
+        }
+    )
 
 
 rangayyan_carotid_pulse = cpulsefeat  # pre-policy spelling
@@ -494,7 +503,7 @@ def qrsderiv(x, fs, thresh=1.0):
     i = 0
     while i < n:
         if y2[i] > thresh:
-            seg = y2[i:i + 8]
+            seg = y2[i : i + 8]
             if sum(1 for v in seg if v > thresh) >= 6:
                 for j in range(i, min(n, i + 8)):
                     mask[j] = True
@@ -516,18 +525,20 @@ def qrsderiv(x, fs, thresh=1.0):
             i = j
         else:
             i += 1
-    return RichResult(payload={
-        "qrs": qrs,
-        "y0": y0,
-        "y1": y1,
-        "y2": y2,
-        "y3": y3,
-        "mask": mask,
-        "thresh": thresh,
-        "fs": fs,
-        "hr": 60.0 * len(qrs) / (n / fs) if qrs else 0.0,
-        "method": "derivative-based QRS detection, Rangayyan (2024) Section 4.3.1, Eqs 4.1-4.3 with the 8-point MA of Eq 3.108 (Balda et al.)",
-    })
+    return RichResult(
+        payload={
+            "qrs": qrs,
+            "y0": y0,
+            "y1": y1,
+            "y2": y2,
+            "y3": y3,
+            "mask": mask,
+            "thresh": thresh,
+            "fs": fs,
+            "hr": 60.0 * len(qrs) / (n / fs) if qrs else 0.0,
+            "method": "derivative-based QRS detection, Rangayyan (2024) Section 4.3.1, Eqs 4.1-4.3 with the 8-point MA of Eq 3.108 (Balda et al.)",
+        }
+    )
 
 
 rangayyan_deriv_qrs = qrsderiv  # pre-policy spelling
@@ -579,12 +590,10 @@ def dicnotch(cp, fs, qrs=None, mwin=16):
     n = len(cp)
     p = [0.0] * n
     for i in range(2, n - 2):
-        p[i] = (2.0 * cp[i - 2] - cp[i - 1] - 2.0 * cp[i]
-                - cp[i + 1] + 2.0 * cp[i + 2])
+        p[i] = 2.0 * cp[i - 2] - cp[i - 1] - 2.0 * cp[i] - cp[i + 1] + 2.0 * cp[i + 2]
     s = [0.0] * n
     for i in range(n):
-        s[i] = fsum(p[i - k + 1] ** 2 * (mwin - k + 1)
-                    for k in range(1, mwin + 1) if 0 <= i - k + 1)
+        s[i] = fsum(p[i - k + 1] ** 2 * (mwin - k + 1) for k in range(1, mwin + 1) if i - k + 1 >= 0)
 
     tol = max(1, int(round(0.020 * fs)))
     guard = max(1, int(round(0.050 * fs)))
@@ -615,16 +624,18 @@ def dicnotch(cp, fs, qrs=None, mwin=16):
                 upstroke.append(idx)
             else:
                 notch.append(_localmin(idx))
-    return RichResult(payload={
-        "notch": notch,
-        "upstroke": upstroke,
-        "s": s,
-        "p": p,
-        "mwin": mwin,
-        "fs": fs,
-        "tolerancems": 20.0,
-        "method": "dicrotic notch detection, Rangayyan (2024) Section 4.3.5, Eqs 4.22 and 4.23 (Lehner and Rangayyan)",
-    })
+    return RichResult(
+        payload={
+            "notch": notch,
+            "upstroke": upstroke,
+            "s": s,
+            "p": p,
+            "mwin": mwin,
+            "fs": fs,
+            "tolerancems": 20.0,
+            "method": "dicrotic notch detection, Rangayyan (2024) Section 4.3.5, Eqs 4.22 and 4.23 (Lehner and Rangayyan)",
+        }
+    )
 
 
 rangayyan_dicrotic_notch = dicnotch  # pre-policy spelling
@@ -687,20 +698,21 @@ def ecgemgcpl(ecg, emg, qrs, fs):
         rms.append(sqrt(fsum(v * v for v in seg) / len(seg)))
         freqs, power = _rgpsd(seg, fs)
         tot = fsum(power)
-        mnf.append((fsum(freqs[i] * power[i] for i in range(len(freqs))) / tot)
-                   if tot > 0.0 else 0.0)
+        mnf.append((fsum(freqs[i] * power[i] for i in range(len(freqs))) / tot) if tot > 0.0 else 0.0)
     if len(hr) < 2:
         raise ValueError("too few usable cardiac cycles for a coupling estimate")
-    return RichResult(payload={
-        "hr": hr,
-        "rms": rms,
-        "meanfreq": mnf,
-        "rrms": _rgcorr(hr, rms),
-        "rmnf": _rgcorr(hr, mnf),
-        "nbeats": len(hr),
-        "fs": fs,
-        "method": "per-cycle EMG RMS and mean frequency correlated with instantaneous heart rate, Rangayyan (2024) Sections 2.2.5 and 2.2.6",
-    })
+    return RichResult(
+        payload={
+            "hr": hr,
+            "rms": rms,
+            "meanfreq": mnf,
+            "rrms": _rgcorr(hr, rms),
+            "rmnf": _rgcorr(hr, mnf),
+            "nbeats": len(hr),
+            "fs": fs,
+            "method": "per-cycle EMG RMS and mean frequency correlated with instantaneous heart rate, Rangayyan (2024) Sections 2.2.5 and 2.2.6",
+        }
+    )
 
 
 rangayyan_ecg_emg_coupling = ecgemgcpl  # pre-policy spelling
@@ -806,16 +818,27 @@ def ecgfeat(x, qrs, fs):
             qtdur.append((te - qs) / fs)
 
     mean = lambda v: (fsum(v) / len(v)) if v else None
-    return RichResult(payload={
-        "pamp": pamp, "qamp": qamp, "ramp": ramp, "samp": samp, "tamp": tamp,
-        "qrsdur": qrsdur, "pdur": pdur, "tdur": tdur,
-        "prdur": prdur, "qtdur": qtdur,
-        "qrsdurmean": mean(qrsdur), "prdurmean": mean(prdur),
-        "qtdurmean": mean(qtdur), "rampmean": mean(ramp),
-        "nbeats": len(q),
-        "fs": fs,
-        "method": "ECG wave amplitudes and durations against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
-    })
+    return RichResult(
+        payload={
+            "pamp": pamp,
+            "qamp": qamp,
+            "ramp": ramp,
+            "samp": samp,
+            "tamp": tamp,
+            "qrsdur": qrsdur,
+            "pdur": pdur,
+            "tdur": tdur,
+            "prdur": prdur,
+            "qtdur": qtdur,
+            "qrsdurmean": mean(qrsdur),
+            "prdurmean": mean(prdur),
+            "qtdurmean": mean(qtdur),
+            "rampmean": mean(ramp),
+            "nbeats": len(q),
+            "fs": fs,
+            "method": "ECG wave amplitudes and durations against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
+        }
+    )
 
 
 rangayyan_ecg_features = ecgfeat  # pre-policy spelling
@@ -884,22 +907,28 @@ def ecgwaveshp(qrsdur, stdev, rdur=None, sdur=None, qpresent=None):
         st = "depressed"
     req = []
     if 105.0 <= ms <= 120.0:
-        req.append("LBBB also needs: negative QRS in V1,V2; Q or S >= 80 ms in V1,V2; no Q in any two of I,V5,V6; R > 60 ms in any two of I,aVL,V5,V6")
+        req.append(
+            "LBBB also needs: negative QRS in V1,V2; Q or S >= 80 ms in V1,V2; no Q in any two of I,V5,V6; R > 60 ms in any two of I,aVL,V5,V6"
+        )
     if 91.0 <= ms <= 120.0:
-        req.append("RBBB also needs: S >= 40 ms in any two of I,aVL,V4,V5,V6; and in V1 or V2 either R (or R') > 30 ms with amplitude > 100 uV and no S (or S')")
-    return RichResult(payload={
-        "qrsdurms": ms,
-        "qrswide": ms > 120.0,
-        "lbbbdur": 105.0 <= ms <= 120.0,
-        "rbbbdur": 91.0 <= ms <= 120.0,
-        "sdurok": (None if sdur is None else float(sdur) * 1000.0 >= 40.0),
-        "rdurok": (None if rdur is None else float(rdur) * 1000.0 > 60.0),
-        "qabsent": (None if qpresent is None else not bool(qpresent)),
-        "stdev": stdev,
-        "stfinding": st,
-        "required": req,
-        "method": "ECG waveshape rules for ischemia and bundle-branch block, Rangayyan (2024) Sections 1.2.5 and 10.2.1",
-    })
+        req.append(
+            "RBBB also needs: S >= 40 ms in any two of I,aVL,V4,V5,V6; and in V1 or V2 either R (or R') > 30 ms with amplitude > 100 uV and no S (or S')"
+        )
+    return RichResult(
+        payload={
+            "qrsdurms": ms,
+            "qrswide": ms > 120.0,
+            "lbbbdur": 105.0 <= ms <= 120.0,
+            "rbbbdur": 91.0 <= ms <= 120.0,
+            "sdurok": (None if sdur is None else float(sdur) * 1000.0 >= 40.0),
+            "rdurok": (None if rdur is None else float(rdur) * 1000.0 > 60.0),
+            "qabsent": (None if qpresent is None else not bool(qpresent)),
+            "stdev": stdev,
+            "stfinding": st,
+            "required": req,
+            "method": "ECG waveshape rules for ischemia and bundle-branch block, Rangayyan (2024) Sections 1.2.5 and 10.2.1",
+        }
+    )
 
 
 rangayyan_ecg_waveshape = ecgwaveshp  # pre-policy spelling
@@ -980,19 +1009,21 @@ def exerecgst(x, qrs, fs, jofs=0.060, thresh=0.1):
     if not dev:
         raise ValueError("no beat had enough samples after the J point for an ST measurement")
     mean = fsum(dev) / len(dev)
-    return RichResult(payload={
-        "stdev": dev,
-        "stslope": slope,
-        "pattern": pattern,
-        "stdevmean": mean,
-        "stslopemean": fsum(slope) / len(slope),
-        "flagged": sum(1 for v in dev if abs(v) >= thresh),
-        "thresh": thresh,
-        "threshnote": "0.1 mV is a conventional clinical figure, not from Rangayyan (2024); no primary source verified here",
-        "jofs": jofs,
-        "fs": fs,
-        "method": "ST level and slope against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
-    })
+    return RichResult(
+        payload={
+            "stdev": dev,
+            "stslope": slope,
+            "pattern": pattern,
+            "stdevmean": mean,
+            "stslopemean": fsum(slope) / len(slope),
+            "flagged": sum(1 for v in dev if abs(v) >= thresh),
+            "thresh": thresh,
+            "threshnote": "0.1 mV is a conventional clinical figure, not from Rangayyan (2024); no primary source verified here",
+            "jofs": jofs,
+            "fs": fs,
+            "method": "ST level and slope against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
+        }
+    )
 
 
 rangayyan_exercise_ecg = exerecgst  # pre-policy spelling
@@ -1077,17 +1108,23 @@ def hrvfreq(rr, fsr=4.0, bands="taskforce"):
     hf = _band(*lim["hf"])
     tot = vlf + lf + hf
     pct = lambda v: (100.0 * v / tot) if tot > 0.0 else 0.0
-    return RichResult(payload={
-        "vlf": vlf, "lf": lf, "hf": hf,
-        "total": tot,
-        "vlfpct": pct(vlf), "lfpct": pct(lf), "hfpct": pct(hf),
-        "lfhf": (lf / hf) if hf > 0.0 else None,
-        "bands": bands,
-        "limits": lim,
-        "fsr": fsr,
-        "n": len(rr),
-        "method": "frequency-domain HRV bands, Rangayyan (2024) Section 8.12 (Bianchi et al. bands, and the Task Force bands quoted there)",
-    })
+    return RichResult(
+        payload={
+            "vlf": vlf,
+            "lf": lf,
+            "hf": hf,
+            "total": tot,
+            "vlfpct": pct(vlf),
+            "lfpct": pct(lf),
+            "hfpct": pct(hf),
+            "lfhf": (lf / hf) if hf > 0.0 else None,
+            "bands": bands,
+            "limits": lim,
+            "fsr": fsr,
+            "n": len(rr),
+            "method": "frequency-domain HRV bands, Rangayyan (2024) Section 8.12 (Bianchi et al. bands, and the Task Force bands quoted there)",
+        }
+    )
 
 
 rangayyan_hrv_freq_domain = hrvfreq  # pre-policy spelling
@@ -1135,17 +1172,19 @@ def hrvtime(rr):
     d = [ms[i] - ms[i - 1] for i in range(1, n)]
     rmssd = sqrt(fsum(v * v for v in d) / len(d))
     nn50 = sum(1 for v in d if abs(v) > 50.0)
-    return RichResult(payload={
-        "sdnn": sdnn,
-        "rmssd": rmssd,
-        "nn50": nn50,
-        "pnn50": 100.0 * nn50 / len(d),
-        "meannn": mean,
-        "meanhr": 60000.0 / mean,
-        "n": n,
-        "units": "ms",
-        "method": "time-domain HRV (SDNN, RMSSD, pNN50), Task Force of the ESC and NASPE, Circulation 93(5):1043-1065, 1996; Rangayyan (2024) Section 2.2.5 motivates but does not define these",
-    })
+    return RichResult(
+        payload={
+            "sdnn": sdnn,
+            "rmssd": rmssd,
+            "nn50": nn50,
+            "pnn50": 100.0 * nn50 / len(d),
+            "meannn": mean,
+            "meanhr": 60000.0 / mean,
+            "n": n,
+            "units": "ms",
+            "method": "time-domain HRV (SDNN, RMSSD, pNN50), Task Force of the ESC and NASPE, Circulation 93(5):1043-1065, 1996; Rangayyan (2024) Section 2.2.5 motivates but does not define these",
+        }
+    )
 
 
 rangayyan_hrv_time_domain = hrvtime  # pre-policy spelling
@@ -1198,17 +1237,19 @@ def hsoundid(ecg, cp, fs):
     notch = list(dicnotch(cp, fs, qrs=q)["notch"])
     lag = int(round(0.0526 * fs))
     s2 = [max(0, d - lag) for d in notch]
-    return RichResult(payload={
-        "s1": q,
-        "s2": s2,
-        "notch": notch,
-        "qrs": q,
-        "s2delayms": 52.6,
-        "s2delaymeasured": (42.6, 5.0),
-        "searchwindowms": 500.0,
-        "fs": fs,
-        "method": "S1/S2 identification from ECG and carotid pulse timing, Rangayyan (2024) Section 4.9 (Lehner and Rangayyan)",
-    })
+    return RichResult(
+        payload={
+            "s1": q,
+            "s2": s2,
+            "notch": notch,
+            "qrs": q,
+            "s2delayms": 52.6,
+            "s2delaymeasured": (42.6, 5.0),
+            "searchwindowms": 500.0,
+            "fs": fs,
+            "method": "S1/S2 identification from ECG and carotid pulse timing, Rangayyan (2024) Section 4.9 (Lehner and Rangayyan)",
+        }
+    )
 
 
 rangayyan_heart_sound_id = hsoundid  # pre-policy spelling
@@ -1292,15 +1333,17 @@ def mecgfilt(abd, thor, order=16, mu=0.01):
         g = mu / (p + eps)
         for k in range(order):
             w[k] += g * e * xv[k]
-    return RichResult(payload={
-        "fetal": err,
-        "maternal": est,
-        "weights": w,
-        "order": order,
-        "mu": mu,
-        "n": n,
-        "method": "adaptive cancellation of the maternal ECG with a thoracic reference, Rangayyan (2024) Sections 3.3.5 and 9.7.2 (normalised LMS)",
-    })
+    return RichResult(
+        payload={
+            "fetal": err,
+            "maternal": est,
+            "weights": w,
+            "order": order,
+            "mu": mu,
+            "n": n,
+            "method": "adaptive cancellation of the maternal ECG with a thoracic reference, Rangayyan (2024) Sections 3.3.5 and 9.7.2 (normalised LMS)",
+        }
+    )
 
 
 rangayyan_maternal_ecg_filter = mecgfilt  # pre-policy spelling
@@ -1358,7 +1401,7 @@ def motionart(x, fs, win=1.0, factor=4.0):
     starts = list(range(0, n, w))
     rng, act = [], []
     for a in starts:
-        seg = x[a:min(n, a + w)]
+        seg = x[a : min(n, a + w)]
         rng.append(max(seg) - min(seg))
         act.append(fsum(abs(seg[i] - seg[i - 1]) for i in range(1, len(seg))) / max(1, len(seg) - 1))
 
@@ -1368,8 +1411,7 @@ def motionart(x, fs, win=1.0, factor=4.0):
         return s[m // 2] if m % 2 else 0.5 * (s[m // 2 - 1] + s[m // 2])
 
     mr, ma = _median(rng), _median(act)
-    bad = [(rng[i] > factor * mr and mr > 0.0) or (act[i] > factor * ma and ma > 0.0)
-           for i in range(len(starts))]
+    bad = [(rng[i] > factor * mr and mr > 0.0) or (act[i] > factor * ma and ma > 0.0) for i in range(len(starts))]
 
     segs = []
     i = 0
@@ -1392,16 +1434,18 @@ def motionart(x, fs, win=1.0, factor=4.0):
             t = (k - a + 1) / float(span + 1)
             clean[k] = lv * (1.0 - t) + rv * t
     flagged = fsum(min(n, b) - a for a, b in segs)
-    return RichResult(payload={
-        "clean": clean,
-        "artifact": segs,
-        "nsegments": len(segs),
-        "fraction": flagged / float(n),
-        "win": win,
-        "factor": factor,
-        "fs": fs,
-        "method": "motion-artifact detection by window range and activity against their medians; Rangayyan (2024) Section 1.2.11 characterises the artifact but gives no detection equation",
-    })
+    return RichResult(
+        payload={
+            "clean": clean,
+            "artifact": segs,
+            "nsegments": len(segs),
+            "fraction": flagged / float(n),
+            "win": win,
+            "factor": factor,
+            "fs": fs,
+            "method": "motion-artifact detection by window range and activity against their medians; Rangayyan (2024) Section 1.2.11 characterises the artifact but gives no detection equation",
+        }
+    )
 
 
 rangayyan_motion_artifact = motionart  # pre-policy spelling
@@ -1496,7 +1540,7 @@ def qrsdetect(x, fs=200.0):
                 best = max(window, key=lambda j: ig[j])
                 qrs.append(best)
                 peaks.append(ig[best])
-                spki = 0.25 * ig[best] + 0.75 * spki          # Eq 4.18
+                spki = 0.25 * ig[best] + 0.75 * spki  # Eq 4.18
                 searchback += 1
                 t1 = npki + 0.25 * (spki - npki)
                 t2 = 0.5 * t1
@@ -1504,7 +1548,7 @@ def qrsdetect(x, fs=200.0):
         if pk > t1:
             qrs.append(i)
             peaks.append(pk)
-            spki = 0.125 * pk + 0.875 * spki                   # Eq 4.16
+            spki = 0.125 * pk + 0.875 * spki  # Eq 4.16
             if len(qrs) > 1:
                 rr = (qrs[-1] - qrs[-2]) / fs
                 rr1.append(rr)
@@ -1519,29 +1563,31 @@ def qrsdetect(x, fs=200.0):
                 elif rr1:
                     rrave2 = fsum(rr1) / len(rr1)
         else:
-            npki = 0.125 * pk + 0.875 * npki                   # Eq 4.16
-        t1 = npki + 0.25 * (spki - npki)                       # Eq 4.17
+            npki = 0.125 * pk + 0.875 * npki  # Eq 4.16
+        t1 = npki + 0.25 * (spki - npki)  # Eq 4.17
         t2 = 0.5 * t1
 
     loc = sorted(set(max(0, i - delay) for i in qrs))
     rr = [(loc[i] - loc[i - 1]) / fs for i in range(1, len(loc))]
     hr = 60.0 * len(loc) / (len(x) / fs) if loc else 0.0
-    return RichResult(payload={
-        "qrs": loc,
-        "rr": rr,
-        "hr": hr,
-        "integrated": ig,
-        "bandpass": bp,
-        "delay": delay,
-        "spki": spki,
-        "npki": npki,
-        "thresh1": t1,
-        "thresh2": t2,
-        "searchback": searchback,
-        "fs": fs,
-        "fsnote": "filter coefficients are integers fixed for fs = 200 Hz; timing constants scale with fs",
-        "method": "Pan-Tompkins QRS detection, Rangayyan (2024) Section 4.3.2, Eqs 4.8-4.18; Pan and Tompkins, IEEE TBME 32(3):230-236, 1985",
-    })
+    return RichResult(
+        payload={
+            "qrs": loc,
+            "rr": rr,
+            "hr": hr,
+            "integrated": ig,
+            "bandpass": bp,
+            "delay": delay,
+            "spki": spki,
+            "npki": npki,
+            "thresh1": t1,
+            "thresh2": t2,
+            "searchback": searchback,
+            "fs": fs,
+            "fsnote": "filter coefficients are integers fixed for fs = 200 Hz; timing constants scale with fs",
+            "method": "Pan-Tompkins QRS detection, Rangayyan (2024) Section 4.3.2, Eqs 4.8-4.18; Pan and Tompkins, IEEE TBME 32(3):230-236, 1985",
+        }
+    )
 
 
 rangayyan_pan_tompkins = qrsdetect  # pre-policy spelling
@@ -1604,16 +1650,18 @@ def pcgparts(pcg, ecg, cp, fs):
         nxt = [v for v in s1 if v > b]
         if nxt:
             diastole.append((b, nxt[0]))
-    return RichResult(payload={
-        "s1": s1,
-        "s2": s2,
-        "systole": systole,
-        "diastole": diastole,
-        "systolerms": [rms(a, b) for a, b in systole],
-        "diastolerms": [rms(a, b) for a, b in diastole],
-        "fs": fs,
-        "method": "PCG segmentation into systole and diastole, Rangayyan (2024) Section 4.9",
-    })
+    return RichResult(
+        payload={
+            "s1": s1,
+            "s2": s2,
+            "systole": systole,
+            "diastole": diastole,
+            "systolerms": [rms(a, b) for a, b in systole],
+            "diastolerms": [rms(a, b) for a, b in diastole],
+            "fs": fs,
+            "method": "PCG segmentation into systole and diastole, Rangayyan (2024) Section 4.9",
+        }
+    )
 
 
 rangayyan_pcg_segments = pcgparts  # pre-policy spelling
@@ -1682,21 +1730,21 @@ def plinenotch(x, fs, f0=60.0, harmonics=1):
         notched.append(f)
         z = [0.0] * len(y)
         for i in range(len(y)):
-            z[i] = (b[0] * y[i]
-                    + b[1] * (y[i - 1] if i >= 1 else 0.0)
-                    + b[2] * (y[i - 2] if i >= 2 else 0.0))
+            z[i] = b[0] * y[i] + b[1] * (y[i - 1] if i >= 1 else 0.0) + b[2] * (y[i - 2] if i >= 2 else 0.0)
         y = z
     if not notched:
         raise ValueError("f0 is at or above the Nyquist frequency; nothing to notch")
-    return RichResult(payload={
-        "y": y,
-        "coeffs": coeffs,
-        "notched": notched,
-        "f0": f0,
-        "fs": fs,
-        "n": len(y),
-        "method": "unit-circle comb notch filter, Rangayyan (2024) Eq 3.150",
-    })
+    return RichResult(
+        payload={
+            "y": y,
+            "coeffs": coeffs,
+            "notched": notched,
+            "f0": f0,
+            "fs": fs,
+            "n": len(y),
+            "method": "unit-circle comb notch filter, Rangayyan (2024) Eq 3.150",
+        }
+    )
 
 
 rangayyan_powerline_removal = plinenotch  # pre-policy spelling
@@ -1768,19 +1816,21 @@ def ppgfeat(ppg, fs, mwin=16):
     ac = fsum(amp) / len(amp)
     pi = (100.0 * ac / dc) if dc != 0.0 else None
     rate = 60.0 * len(sysp) / (n / fs)
-    return RichResult(payload={
-        "systolic": sysp,
-        "notch": notch,
-        "diastolic": diap,
-        "onset": feet,
-        "amplitude": amp,
-        "ac": ac,
-        "dc": dc,
-        "pi": pi,
-        "rate": rate,
-        "fs": fs,
-        "method": "PPG pulse features with the carotid dicrotic-notch operator, Rangayyan (2024) Sections 1.2.11 and 4.3.5 (Eqs 4.22, 4.23)",
-    })
+    return RichResult(
+        payload={
+            "systolic": sysp,
+            "notch": notch,
+            "diastolic": diap,
+            "onset": feet,
+            "amplitude": amp,
+            "ac": ac,
+            "dc": dc,
+            "pi": pi,
+            "rate": rate,
+            "fs": fs,
+            "method": "PPG pulse features with the carotid dicrotic-notch operator, Rangayyan (2024) Sections 1.2.11 and 4.3.5 (Eqs 4.22, 4.23)",
+        }
+    )
 
 
 rangayyan_ppg_features = ppgfeat  # pre-policy spelling
@@ -1842,7 +1892,7 @@ def pwavedet(x, qrs, fs, template=None):
     y = list(x)
     for pos in q:
         a, b = max(0, pos - half), min(n, pos + half)
-        ref = x[max(0, a - base):a]
+        ref = x[max(0, a - base) : a]
         lvl = (fsum(ref) / len(ref)) if ref else 0.0
         for i in range(a, b):
             y[i] = lvl
@@ -1857,6 +1907,7 @@ def pwavedet(x, qrs, fs, template=None):
         raise ValueError("fs must exceed 22 Hz for the 3-11 Hz bandpass")
     from ._signal_core import butter as _butter
     from ._signal_core import filtfilt as _filtfilt
+
     _b, _a = _butter(2, [3.0, 11.0], btype="band", fs=fs)
     bp = [float(v) for v in _filtfilt(_b, _a, y)]
 
@@ -1929,14 +1980,16 @@ def pwavedet(x, qrs, fs, template=None):
             if bestv is None or v > bestv:
                 best, bestv = s, v
         ppos.append(a + best + tl // 2)
-    return RichResult(payload={
-        "p": ppos,
-        "template": list(template),
-        "windows": wins,
-        "bandpass": bp,
-        "fs": fs,
-        "method": "P-wave detection, Rangayyan (2024) Section 4.3.3 (Hengeveld and van Bemmel)",
-    })
+    return RichResult(
+        payload={
+            "p": ppos,
+            "template": list(template),
+            "windows": wins,
+            "bandpass": bp,
+            "fs": fs,
+            "method": "P-wave detection, Rangayyan (2024) Section 4.3.3 (Hengeveld and van Bemmel)",
+        }
+    )
 
 
 rangayyan_p_wave_detect = pwavedet  # pre-policy spelling
@@ -2032,15 +2085,17 @@ def edrsignal(x, qrs, fs, fsr=4.0):
         rate = 60.0 * freqs[kbest]
     else:
         rate = None
-    return RichResult(payload={
-        "edr": edr,
-        "amp": amps,
-        "times": times,
-        "resprate": rate,
-        "fsr": fsr,
-        "nbeats": len(amps),
-        "method": "ECG-derived respiration from R-wave amplitude modulation; Rangayyan (2024) Section 2.2.4 for the physiology, Arunachalam and Brown, Proc. IEEE EMBC 2009, pp. 5681-5684, for the estimator",
-    })
+    return RichResult(
+        payload={
+            "edr": edr,
+            "amp": amps,
+            "times": times,
+            "resprate": rate,
+            "fsr": fsr,
+            "nbeats": len(amps),
+            "method": "ECG-derived respiration from R-wave amplitude modulation; Rangayyan (2024) Section 2.2.4 for the physiology, Arunachalam and Brown, Proc. IEEE EMBC 2009, pp. 5681-5684, for the estimator",
+        }
+    )
 
 
 rangayyan_resp_signal = edrsignal  # pre-policy spelling
@@ -2120,9 +2175,9 @@ def apneaedr(edr, spo2, fs, hours=None, mindur=10.0, desat=3.0):
             while j < n and low[j]:
                 j += 1
             if j - i >= need:
-                pre = spo2[max(0, i - look):i] or spo2[i:i + 1]
+                pre = spo2[max(0, i - look) : i] or spo2[i : i + 1]
                 lvl = max(pre)
-                after = spo2[i:min(n, j + look)]
+                after = spo2[i : min(n, j + look)]
                 drop = lvl - min(after) if after else 0.0
                 if drop >= desat:
                     events.append((i, j))
@@ -2130,17 +2185,19 @@ def apneaedr(edr, spo2, fs, hours=None, mindur=10.0, desat=3.0):
             i = j
         else:
             i += 1
-    return RichResult(payload={
-        "events": events,
-        "nevents": len(events),
-        "ahi": len(events) / hours,
-        "desatdepth": depth,
-        "hours": hours,
-        "mindur": mindur,
-        "desat": desat,
-        "fs": fs,
-        "method": "apnea event scoring from respiratory-envelope pauses confirmed by SpO2 desaturation; Rangayyan (2024) Section 10.2.5 frames the problem and the AHI but gives no detection algorithm",
-    })
+    return RichResult(
+        payload={
+            "events": events,
+            "nevents": len(events),
+            "ahi": len(events) / hours,
+            "desatdepth": depth,
+            "hours": hours,
+            "mindur": mindur,
+            "desat": desat,
+            "fs": fs,
+            "method": "apnea event scoring from respiratory-envelope pauses confirmed by SpO2 desaturation; Rangayyan (2024) Section 10.2.5 frames the problem and the AHI but gives no detection algorithm",
+        }
+    )
 
 
 rangayyan_sleep_apnea = apneaedr  # pre-policy spelling
@@ -2180,17 +2237,19 @@ def lfhfratio(rr, fsr=4.0, bands="taskforce"):
     v = _rgcheck(rr, 2, "RR series")
     mu = fsum(v) / len(v)
     var = fsum((x - mu) ** 2 for x in v) / (len(v) - 1)
-    return RichResult(payload={
-        "lfhf": res["lfhf"],
-        "lf": res["lf"],
-        "hf": res["hf"],
-        "lfpct": res["lfpct"],
-        "hfpct": res["hfpct"],
-        "rrvar": var,
-        "bands": bands,
-        "n": len(v),
-        "method": "LF/HF spectral power ratio, Rangayyan (2024) Section 8.12 and Figure 8.38 (Bianchi et al.)",
-    })
+    return RichResult(
+        payload={
+            "lfhf": res["lfhf"],
+            "lf": res["lf"],
+            "hf": res["hf"],
+            "lfpct": res["lfpct"],
+            "hfpct": res["hfpct"],
+            "rrvar": var,
+            "bands": bands,
+            "n": len(v),
+            "method": "LF/HF spectral power ratio, Rangayyan (2024) Section 8.12 and Figure 8.38 (Bianchi et al.)",
+        }
+    )
 
 
 rangayyan_spectral_power_ratio = lfhfratio  # pre-policy spelling
@@ -2262,7 +2321,7 @@ def twaspectr(twaves, noiselo=0.33, noisehi=0.45):
     acc = [v / npts for v in acc]
 
     cyc = [k / float(m) for k in range(m // 2 + 1)]
-    kalt = m // 2                      # 0.5 cycles per beat
+    kalt = m // 2  # 0.5 cycles per beat
     band = [k for k in range(len(cyc)) if noiselo <= cyc[k] <= noisehi]
     if len(band) < 2:
         raise ValueError("noise band contains fewer than two spectral bins; use more beats")
@@ -2271,18 +2330,20 @@ def twaspectr(twaves, noiselo=0.33, noisehi=0.45):
     altp = acc[kalt]
     valt = sqrt(altp - nm) if altp > nm else 0.0
     kscore = ((altp - nm) / nsd) if nsd > 0.0 else None
-    return RichResult(payload={
-        "valt": valt,
-        "kscore": kscore,
-        "altpower": altp,
-        "noisemean": nm,
-        "noisesd": nsd,
-        "nbeats": m,
-        "npoints": npts,
-        "cyclesperbeat": 0.5,
-        "present": bool(kscore is not None and kscore >= 3.0),
-        "method": "spectral method for T-wave alternans, Rangayyan (2024) Section 9.10 citing Smith et al., Circulation 77(1):110-121, 1988",
-    })
+    return RichResult(
+        payload={
+            "valt": valt,
+            "kscore": kscore,
+            "altpower": altp,
+            "noisemean": nm,
+            "noisesd": nsd,
+            "nbeats": m,
+            "npoints": npts,
+            "cyclesperbeat": 0.5,
+            "present": bool(kscore is not None and kscore >= 3.0),
+            "method": "spectral method for T-wave alternans, Rangayyan (2024) Section 9.10 citing Smith et al., Circulation 77(1):110-121, 1988",
+        }
+    )
 
 
 rangayyan_twave_alternans = twaspectr  # pre-policy spelling
@@ -2336,9 +2397,7 @@ def rangayyan_twa_spectral_mx(ecg, fs, r_peaks, t_window=None, n_beats=128):
     r = np.asarray(r_peaks, dtype=int).ravel()
     if r.size < 8:
         raise ValueError(f"need at least 8 beats, got {r.size}.")
-    lo, hi = (int(0.10 * fs), int(0.30 * fs)) if t_window is None else (
-        int(t_window[0]), int(t_window[1])
-    )
+    lo, hi = (int(0.10 * fs), int(0.30 * fs)) if t_window is None else (int(t_window[0]), int(t_window[1]))
     if not 0 <= lo < hi:
         raise ValueError("t_window must satisfy 0 <= start < stop.")
     usable = [p for p in r if p + hi <= x.size]
@@ -2356,11 +2415,17 @@ def rangayyan_twa_spectral_mx(ecg, fs, r_peaks, t_window=None, n_beats=128):
     ns = float(noise_band.std()) if noise_band.size else 0.0
     excess = float(spec[k_alt]) - nm
     volt = float(np.sqrt(max(excess, 0.0)))
-    return RichResult(payload={"alternans_voltage": volt,
-                               "k_score": (excess / ns) if ns > 0 else np.inf,
-                               "noise_mean": nm, "noise_std": ns, "spectrum": spec,
-                               "n_beats_used": int(M),
-                               "method": "FFT along the beat axis; power at 0.5 cyc/beat over noise"})
+    return RichResult(
+        payload={
+            "alternans_voltage": volt,
+            "k_score": (excess / ns) if ns > 0 else np.inf,
+            "noise_mean": nm,
+            "noise_std": ns,
+            "spectrum": spec,
+            "n_beats_used": int(M),
+            "method": "FFT along the beat axis; power at 0.5 cyc/beat over noise",
+        }
+    )
 
 
 # -- rgtwave: T-wave detection in ECG.
@@ -2420,7 +2485,7 @@ def twavedet(chans, qrs, fs, tdur=0.160):
         b = list(c)
         for pos in q:
             a1, a2 = max(0, pos - half), min(n, pos + half)
-            ref = c[max(0, a1 - base):a1]
+            ref = c[max(0, a1 - base) : a1]
             lvl = (fsum(ref) / len(ref)) if ref else 0.0
             for i in range(a1, a2):
                 b[i] = lvl
@@ -2444,16 +2509,18 @@ def twavedet(chans, qrs, fs, tdur=0.160):
         offset.append(min(n - 1, s + wsamp))
         seg = range(s, min(n, s + wsamp))
         tpos.append(max(seg, key=lambda i: abs(fsum(c[i] for c in blank))))
-    return RichResult(payload={
-        "t": tpos,
-        "onset": onset,
-        "offset": offset,
-        "length": lt,
-        "tdur": tdur,
-        "nchan": len(ch),
-        "fs": fs,
-        "method": "T-wave detection by the length transformation, Rangayyan (2024) Section 4.3.4, Eq 4.21 (Gritzali et al.)",
-    })
+    return RichResult(
+        payload={
+            "t": tpos,
+            "onset": onset,
+            "offset": offset,
+            "length": lt,
+            "tdur": tdur,
+            "nchan": len(ch),
+            "fs": fs,
+            "method": "T-wave detection by the length transformation, Rangayyan (2024) Section 4.3.4, Eq 4.21 (Gritzali et al.)",
+        }
+    )
 
 
 rangayyan_t_wave_detect = twavedet  # pre-policy spelling
@@ -2531,7 +2598,7 @@ def vfdetect(x, fs, win=4.0, conc=0.60, crest=4.0):
 
     flags, doms, concs, rates, crests = [], [], [], [], []
     for a in range(0, len(x) - wsamp + 1, wsamp):
-        seg = x[a:a + wsamp]
+        seg = x[a : a + wsamp]
         mu = fsum(seg) / len(seg)
         seg = [v - mu for v in seg]
         freqs, power = _rgpsd(seg, fs)
@@ -2557,20 +2624,22 @@ def vfdetect(x, fs, win=4.0, conc=0.60, crest=4.0):
         concs.append(cval)
         rates.append(rate)
         crests.append(cf)
-    return RichResult(payload={
-        "flag": flags,
-        "domfreq": doms,
-        "concentration": concs,
-        "crest": crests,
-        "rate": rates,
-        "conc": conc,
-        "crestmax": crest,
-        "nwin": len(flags),
-        "fraction": sum(1 for f in flags if f) / float(len(flags)),
-        "win": win,
-        "fs": fs,
-        "method": "VF heuristic from QRS absence and spectral concentration; Rangayyan (2024) Sections 1.2.5 and 8.11 describe VF but give no detector, and no external primary source was verified for this rule",
-    })
+    return RichResult(
+        payload={
+            "flag": flags,
+            "domfreq": doms,
+            "concentration": concs,
+            "crest": crests,
+            "rate": rates,
+            "conc": conc,
+            "crestmax": crest,
+            "nwin": len(flags),
+            "fraction": sum(1 for f in flags if f) / float(len(flags)),
+            "win": win,
+            "fs": fs,
+            "method": "VF heuristic from QRS absence and spectral concentration; Rangayyan (2024) Sections 1.2.5 and 8.11 describe VF but give no detector, and no external primary source was verified for this rule",
+        }
+    )
 
 
 rangayyan_vf_detect = vfdetect  # pre-policy spelling
@@ -2600,11 +2669,13 @@ def qrsderiv1(x):
     """
     x = _rgcheck(x, 3, "ECG")
     y0 = [abs(x[n] - x[n - 2]) for n in range(2, len(x))]
-    return RichResult(payload={
-        "y0": _rgpad(y0, 2),
-        "n": len(x),
-        "method": "first-derivative QRS operator, Rangayyan (2024) Eq 4.1 (Balda et al.)",
-    })
+    return RichResult(
+        payload={
+            "y0": _rgpad(y0, 2),
+            "n": len(x),
+            "method": "first-derivative QRS operator, Rangayyan (2024) Eq 4.1 (Balda et al.)",
+        }
+    )
 
 
 rangayyan_ch4_qrs_first_derivative_balda = qrsderiv1  # pre-policy spelling
@@ -2631,11 +2702,13 @@ def qrsderiv2(x):
     """
     x = _rgcheck(x, 5, "ECG")
     y1 = [abs(x[n] - 2.0 * x[n - 2] + x[n - 4]) for n in range(4, len(x))]
-    return RichResult(payload={
-        "y1": _rgpad(y1, 4),
-        "n": len(x),
-        "method": "second-derivative QRS operator, Rangayyan (2024) Eq 4.2 (Balda et al.)",
-    })
+    return RichResult(
+        payload={
+            "y1": _rgpad(y1, 4),
+            "n": len(x),
+            "method": "second-derivative QRS operator, Rangayyan (2024) Eq 4.2 (Balda et al.)",
+        }
+    )
 
 
 rangayyan_ch4_qrs_second_derivative_balda = qrsderiv2  # pre-policy spelling
@@ -2665,13 +2738,15 @@ def qrsderivmx(y0, y1):
     y1 = _rgcheck(y1, 1, "y1")
     if len(y0) != len(y1):
         raise ValueError("y0 and y1 must have the same length")
-    return RichResult(payload={
-        "y2": [1.3 * a + 1.1 * b for a, b in zip(y0, y1)],
-        "w0": 1.3,
-        "w1": 1.1,
-        "n": len(y0),
-        "method": "combined derivative QRS operator, Rangayyan (2024) Eq 4.3 (Balda et al.)",
-    })
+    return RichResult(
+        payload={
+            "y2": [1.3 * a + 1.1 * b for a, b in zip(y0, y1)],
+            "w0": 1.3,
+            "w1": 1.1,
+            "n": len(y0),
+            "method": "combined derivative QRS operator, Rangayyan (2024) Eq 4.3 (Balda et al.)",
+        }
+    )
 
 
 rangayyan_ch4_qrs_combined_balda = qrsderivmx  # pre-policy spelling
@@ -2707,16 +2782,15 @@ def qrswsqdrv(x, nwin=8):
         raise ValueError("signal must be longer than the window width")
     g1 = []
     for n in range(nwin, len(x)):
-        g1.append(fsum(
-            (x[n - i + 1] - x[n - i]) ** 2 * (nwin - i + 1)
-            for i in range(1, nwin + 1)
-        ))
-    return RichResult(payload={
-        "g1": _rgpad(g1, nwin),
-        "nwin": nwin,
-        "n": len(x),
-        "method": "weighted squared first-derivative operator, Rangayyan (2024) Eq 4.4 (Murthy and Rangaraj)",
-    })
+        g1.append(fsum((x[n - i + 1] - x[n - i]) ** 2 * (nwin - i + 1) for i in range(1, nwin + 1)))
+    return RichResult(
+        payload={
+            "g1": _rgpad(g1, nwin),
+            "nwin": nwin,
+            "n": len(x),
+            "method": "weighted squared first-derivative operator, Rangayyan (2024) Eq 4.4 (Murthy and Rangaraj)",
+        }
+    )
 
 
 rangayyan_ch4_filtered_derivative_murthy = qrswsqdrv  # pre-policy spelling
@@ -2748,12 +2822,14 @@ def qrsdrvsmth(g1, mwin=8):
     mwin = int(mwin)
     if mwin < 1:
         raise ValueError("mwin must be >= 1")
-    return RichResult(payload={
-        "g": _rgmavg(g1, mwin),
-        "mwin": mwin,
-        "n": len(g1),
-        "method": "MA smoothing of the weighted-derivative output, Rangayyan (2024) Eq 4.5",
-    })
+    return RichResult(
+        payload={
+            "g": _rgmavg(g1, mwin),
+            "mwin": mwin,
+            "n": len(g1),
+            "method": "MA smoothing of the weighted-derivative output, Rangayyan (2024) Eq 4.5",
+        }
+    )
 
 
 rangayyan_ch4_qrs_smoothing_ma_filter = qrsdrvsmth  # pre-policy spelling
@@ -2802,17 +2878,18 @@ def qrslpasstf(freq, fs=200.0):
         im = (2.0 * sr * si) / 32.0
         mag.append(hypot(re, im))
         ph.append(atan2(im, re))
-    return RichResult(payload={
-        "freq": fr,
-        "mag": mag,
-        "phase": ph,
-        "b": [1.0 / 32.0, 0.0, 0.0, 0.0, 0.0, 0.0, -2.0 / 32.0,
-              0.0, 0.0, 0.0, 0.0, 0.0, 1.0 / 32.0],
-        "a": [1.0, -2.0, 1.0],
-        "fs": fs,
-        "fsnote": "integer coefficients designed for fs = 200 Hz (fc = 11 Hz, 5-sample delay)",
-        "method": "Pan-Tompkins lowpass transfer function, Rangayyan (2024) Eq 4.7",
-    })
+    return RichResult(
+        payload={
+            "freq": fr,
+            "mag": mag,
+            "phase": ph,
+            "b": [1.0 / 32.0, 0.0, 0.0, 0.0, 0.0, 0.0, -2.0 / 32.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 / 32.0],
+            "a": [1.0, -2.0, 1.0],
+            "fs": fs,
+            "fsnote": "integer coefficients designed for fs = 200 Hz (fc = 11 Hz, 5-sample delay)",
+            "method": "Pan-Tompkins lowpass transfer function, Rangayyan (2024) Eq 4.7",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_lowpass_transfer = qrslpasstf  # pre-policy spelling
@@ -2844,16 +2921,17 @@ def qrslpassdf(x):
         y[i] = (
             (2.0 * y[i - 1] if i >= 1 else 0.0)
             - (y[i - 2] if i >= 2 else 0.0)
-            + (x[i] - (2.0 * x[i - 6] if i >= 6 else 0.0)
-               + (x[i - 12] if i >= 12 else 0.0)) / 32.0
+            + (x[i] - (2.0 * x[i - 6] if i >= 6 else 0.0) + (x[i - 12] if i >= 12 else 0.0)) / 32.0
         )
-    return RichResult(payload={
-        "y": y,
-        "delay": 5,
-        "n": n,
-        "fsnote": "coefficients fixed for fs = 200 Hz",
-        "method": "Pan-Tompkins lowpass difference equation, Rangayyan (2024) Eq 4.8",
-    })
+    return RichResult(
+        payload={
+            "y": y,
+            "delay": 5,
+            "n": n,
+            "fsnote": "coefficients fixed for fs = 200 Hz",
+            "method": "Pan-Tompkins lowpass difference equation, Rangayyan (2024) Eq 4.8",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_lowpass_difference_eq = qrslpassdf  # pre-policy spelling
@@ -2891,14 +2969,16 @@ def qrshplptf(freq, fs=200.0):
         im = fsum(sin(-w * k) for k in range(32))
         mag.append(hypot(re, im))
         ph.append(atan2(im, re))
-    return RichResult(payload={
-        "freq": fr,
-        "mag": mag,
-        "phase": ph,
-        "b": [1.0] * 32,
-        "fs": fs,
-        "method": "lowpass component of the Pan-Tompkins highpass, Rangayyan (2024) Eq 4.9",
-    })
+    return RichResult(
+        payload={
+            "freq": fr,
+            "mag": mag,
+            "phase": ph,
+            "b": [1.0] * 32,
+            "fs": fs,
+            "method": "lowpass component of the Pan-Tompkins highpass, Rangayyan (2024) Eq 4.9",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_highpass_lp_component = qrshplptf  # pre-policy spelling
@@ -2927,11 +3007,13 @@ def qrshplpdf(x):
     y = [0.0] * n
     for i in range(n):
         y[i] = (y[i - 1] if i >= 1 else 0.0) + x[i] - (x[i - 32] if i >= 32 else 0.0)
-    return RichResult(payload={
-        "y": y,
-        "n": n,
-        "method": "recursive 32-point running sum, Rangayyan (2024) Eq 4.10",
-    })
+    return RichResult(
+        payload={
+            "y": y,
+            "n": n,
+            "method": "recursive 32-point running sum, Rangayyan (2024) Eq 4.10",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_highpass_lp_difference_eq = qrshplpdf  # pre-policy spelling
@@ -2971,14 +3053,16 @@ def qrshpasstf(freq, fs=200.0):
         im = sin(-w * 16) - lim
         mag.append(hypot(re, im))
         ph.append(atan2(im, re))
-    return RichResult(payload={
-        "freq": fr,
-        "mag": mag,
-        "phase": ph,
-        "fs": fs,
-        "fsnote": "fc = 5 Hz and 80 ms delay hold at fs = 200 Hz",
-        "method": "Pan-Tompkins highpass transfer function, Rangayyan (2024) Eq 4.11",
-    })
+    return RichResult(
+        payload={
+            "freq": fr,
+            "mag": mag,
+            "phase": ph,
+            "fs": fs,
+            "fsnote": "fc = 5 Hz and 80 ms delay hold at fs = 200 Hz",
+            "method": "Pan-Tompkins highpass transfer function, Rangayyan (2024) Eq 4.11",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_highpass_transfer = qrshpasstf  # pre-policy spelling
@@ -3012,12 +3096,14 @@ def qrshpassdf(x):
         p[i] = (x[i - 16] if i >= 16 else 0.0) - (
             (y[i - 1] if i >= 1 else 0.0) + x[i] - (x[i - 32] if i >= 32 else 0.0)
         ) / 32.0
-    return RichResult(payload={
-        "p": p,
-        "y": y,
-        "n": n,
-        "method": "Pan-Tompkins highpass difference equation, Rangayyan (2024) Eq 4.12",
-    })
+    return RichResult(
+        payload={
+            "p": p,
+            "y": y,
+            "n": n,
+            "method": "Pan-Tompkins highpass difference equation, Rangayyan (2024) Eq 4.12",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_highpass_difference_eq = qrshpassdf  # pre-policy spelling
@@ -3053,13 +3139,15 @@ def qrshpassio(x):
             - (x[i - 17] if i >= 17 else 0.0)
             + ((x[i - 32] / 32.0) if i >= 32 else 0.0)
         )
-    return RichResult(payload={
-        "p": p,
-        "n": n,
-        "delayms": 80.0,
-        "fsnote": "the 80 ms delay and 5 Hz cutoff hold at fs = 200 Hz",
-        "method": "combined Pan-Tompkins highpass relation, Rangayyan (2024) Eq 4.13",
-    })
+    return RichResult(
+        payload={
+            "p": p,
+            "n": n,
+            "delayms": 80.0,
+            "fsnote": "the 80 ms delay and 5 Hz cutoff hold at fs = 200 Hz",
+            "method": "combined Pan-Tompkins highpass relation, Rangayyan (2024) Eq 4.13",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_highpass_combined = qrshpassio  # pre-policy spelling
@@ -3095,13 +3183,15 @@ def qrsderivop(x):
             - (x[i - 3] if i >= 3 else 0.0)
             - 2.0 * (x[i - 4] if i >= 4 else 0.0)
         ) / 8.0
-    return RichResult(payload={
-        "y": y,
-        "b": [2.0 / 8.0, 1.0 / 8.0, 0.0, -1.0 / 8.0, -2.0 / 8.0],
-        "n": n,
-        "fsnote": "linear up to about 30 Hz at fs = 200 Hz",
-        "method": "Pan-Tompkins derivative operator, Rangayyan (2024) Eq 4.14",
-    })
+    return RichResult(
+        payload={
+            "y": y,
+            "b": [2.0 / 8.0, 1.0 / 8.0, 0.0, -1.0 / 8.0, -2.0 / 8.0],
+            "n": n,
+            "fsnote": "linear up to about 30 Hz at fs = 200 Hz",
+            "method": "Pan-Tompkins derivative operator, Rangayyan (2024) Eq 4.14",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_derivative_operator = qrsderivop  # pre-policy spelling
@@ -3138,13 +3228,15 @@ def qrsmwint(x, nwin=30, fs=None):
     nwin = int(nwin)
     if nwin < 1:
         raise ValueError("nwin must be >= 1")
-    return RichResult(payload={
-        "y": _rgmavg(x, nwin),
-        "nwin": nwin,
-        "widthsec": (nwin / float(fs)) if fs is not None else None,
-        "n": len(x),
-        "method": "Pan-Tompkins moving-window integrator, Rangayyan (2024) Eq 4.15",
-    })
+    return RichResult(
+        payload={
+            "y": _rgmavg(x, nwin),
+            "nwin": nwin,
+            "widthsec": (nwin / float(fs)) if fs is not None else None,
+            "n": len(x),
+            "method": "Pan-Tompkins moving-window integrator, Rangayyan (2024) Eq 4.15",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_moving_window_integrator = qrsmwint  # pre-policy spelling
@@ -3187,15 +3279,17 @@ def qrsthresh(peaki, spki, npki, issignal):
     else:
         npki = 0.125 * peaki + 0.875 * npki
     t1 = npki + 0.25 * (spki - npki)
-    return RichResult(payload={
-        "spki": spki,
-        "npki": npki,
-        "thresh1": t1,
-        "thresh2": 0.5 * t1,
-        "peaki": peaki,
-        "issignal": bool(issignal),
-        "method": "Pan-Tompkins adaptive thresholds, Rangayyan (2024) Eqs 4.16 and 4.17",
-    })
+    return RichResult(
+        payload={
+            "spki": spki,
+            "npki": npki,
+            "thresh1": t1,
+            "thresh2": 0.5 * t1,
+            "peaki": peaki,
+            "issignal": bool(issignal),
+            "method": "Pan-Tompkins adaptive thresholds, Rangayyan (2024) Eqs 4.16 and 4.17",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_thresholds = qrsthresh  # pre-policy spelling
@@ -3226,12 +3320,14 @@ def qrsspkiupd(peaki, spki):
     peaki = float(peaki)
     spki = float(spki)
     new = 0.25 * peaki + 0.75 * spki
-    return RichResult(payload={
-        "spki": new,
-        "previous": spki,
-        "peaki": peaki,
-        "method": "Pan-Tompkins search-back SPKI update, Rangayyan (2024) Eq 4.18",
-    })
+    return RichResult(
+        payload={
+            "spki": new,
+            "previous": spki,
+            "peaki": peaki,
+            "method": "Pan-Tompkins search-back SPKI update, Rangayyan (2024) Eq 4.18",
+        }
+    )
 
 
 rangayyan_ch4_pan_tompkins_searchback_update = qrsspkiupd  # pre-policy spelling
@@ -3264,12 +3360,14 @@ def hrfromcnt(nbeats, duration):
         raise ValueError("nbeats must be non-negative")
     if not duration > 0.0:
         raise ValueError("duration must be positive")
-    return RichResult(payload={
-        "hr": 60.0 * nbeats / duration,
-        "nbeats": nbeats,
-        "duration": duration,
-        "method": "average heart rate from beat count, Rangayyan (2024) Eq 4.19",
-    })
+    return RichResult(
+        payload={
+            "hr": 60.0 * nbeats / duration,
+            "nbeats": nbeats,
+            "duration": duration,
+            "method": "average heart rate from beat count, Rangayyan (2024) Eq 4.19",
+        }
+    )
 
 
 rangayyan_ch4_heart_rate_from_count = hrfromcnt  # pre-policy spelling
@@ -3308,10 +3406,14 @@ def rangayyan_ch4_heart_rate_from_rr(RR_a):
     hr = 60.0 / rr
     scalar = np.ndim(RR_a) == 0
     return RichResult(
-        payload={"heart_rate": float(hr[0]) if scalar else hr,
-                 "mean_instantaneous_hr": float(np.mean(hr)),
-                 "hr_from_mean_rr": float(60.0 / np.mean(rr)), "n": int(rr.size),
-                 "method": "HR = 60/RR; mean of rates != rate of mean interval"})
+        payload={
+            "heart_rate": float(hr[0]) if scalar else hr,
+            "mean_instantaneous_hr": float(np.mean(hr)),
+            "hr_from_mean_rr": float(60.0 / np.mean(rr)),
+            "n": int(rr.size),
+            "method": "HR = 60/RR; mean of rates != rate of mean interval",
+        }
+    )
 
 
 # -- rng195: Length transformation used to detect P, QRS, and T waves across multiple ECG channels..
@@ -3359,10 +3461,7 @@ def lengthxfm(chans, wwin, fs):
     nlen = len(ch[0])
     if any(len(c) != nlen for c in ch):
         raise ValueError("all channels must have the same length")
-    step = [
-        sqrt(fsum((c[k + 1] - c[k]) ** 2 for c in ch))
-        for k in range(nlen - 1)
-    ]
+    step = [sqrt(fsum((c[k + 1] - c[k]) ** 2 for c in ch)) for k in range(nlen - 1)]
     wsamp = max(1, int(round(wwin * fs)))
     out = [0.0] * nlen
     run = 0.0
@@ -3372,15 +3471,17 @@ def lengthxfm(chans, wwin, fs):
             run -= step[k - wsamp]
         start = max(0, k - wsamp + 1)
         out[start] = run
-    return RichResult(payload={
-        "length": out,
-        "nchan": len(ch),
-        "wsamp": wsamp,
-        "wsec": wwin,
-        "fs": fs,
-        "n": nlen,
-        "method": "length transformation, Rangayyan (2024) Eq 4.21 (Gritzali et al.)",
-    })
+    return RichResult(
+        payload={
+            "length": out,
+            "nchan": len(ch),
+            "wsamp": wsamp,
+            "wsec": wwin,
+            "fs": fs,
+            "n": nlen,
+            "method": "length transformation, Rangayyan (2024) Eq 4.21 (Gritzali et al.)",
+        }
+    )
 
 
 rangayyan_ch4_length_transformation = lengthxfm  # pre-policy spelling
@@ -3483,70 +3584,68 @@ def dnotchsmth(p, mwin=16):
     n = len(p)
     s = [0.0] * n
     for i in range(n):
-        s[i] = fsum(
-            p[i - k + 1] ** 2 * w[k - 1]
-            for k in range(1, mwin + 1)
-            if 0 <= i - k + 1
-        )
-    return RichResult(payload={
-        "s": s,
-        "weights": w,
-        "mwin": mwin,
-        "n": n,
-        "method": "squared weighted smoothing for dicrotic notch, Rangayyan (2024) Eq 4.23 (Lehner and Rangayyan)",
-    })
+        s[i] = fsum(p[i - k + 1] ** 2 * w[k - 1] for k in range(1, mwin + 1) if i - k + 1 >= 0)
+    return RichResult(
+        payload={
+            "s": s,
+            "weights": w,
+            "mwin": mwin,
+            "n": n,
+            "method": "squared weighted smoothing for dicrotic notch, Rangayyan (2024) Eq 4.23 (Lehner and Rangayyan)",
+        }
+    )
 
 
 rangayyan_ch4_dicrotic_notch_smoothed_squared = dnotchsmth  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'baseline-wander removal, eqs. (3.132)-(3.133)',
-    'rgcpulse: Carotid pulse waveform feature extraction.',
-    'rgderqrs: Derivative-based QRS detection (first and second differences).',
-    'rgdnot: Dicrotic notch detection in carotid pulse waveform.',
-    'rgecgemu: ECG-EMG coupling during physical effort (VMG correlation).',
-    'rgecgf: ECG waveform feature extraction (P, QRS, T amplitudes and durations).',
-    'rgecgwvf: ECG waveform analysis for ischemia and bundle branch block.',
-    'rgexecg: Exercise ECG analysis: ST deviation, slope, and ischemia detection.',
-    'rghrvf: HRV frequency-domain metrics: VLF/LF/HF power and LF/HF ratio.',
-    'rghrvt: HRV time-domain metrics: SDNN, RMSSD, pNN50.',
-    'rghsnd: Heart sound (S1/S2) identification via PCG-ECG timing.',
-    'rgmatefp: Maternal ECG filtering from abdominal ECG recording.',
-    'rgmtnart: Motion artifact detection and removal from ECG/PPG.',
-    'rgpantp: Pan-Tompkins QRS detection algorithm.',
-    'rgpcg: PCG segmentation into S1/systole/S2/diastole using ECG gating.',
-    'rgpowerl: Powerline interference (50/60 Hz) removal from ECG.',
-    'rgppg: PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak).',
-    'rgpwave: P-wave detection in ECG using search window relative to R-peak.',
-    'rgrpsig: ECG-derived respiration (EDR) via R-wave amplitude modulation.',
-    'rgsapn: Sleep apnea detection via ECG-derived respiration + SpO2 fusion.',
-    'rgspr: Spectral power ratio (LF/HF) for HRV analysis.',
-    'rgtwa: T-wave alternans (TWA) detection via spectral method.',
-    'rgtwamx: T-wave alternans spectral method.',
-    'rgtwave: T-wave detection in ECG.',
-    'rgvf: Ventricular fibrillation (VF) detection in ECG.',
-    'rng176: Smoothed three-point first derivative used in QRS detection (Balda et al.)..',
-    'rng177: Approximation of the second derivative used in QRS detection..',
-    'rng178: Weighted combination of first and second derivatives for QRS detection..',
-    'rng179: Filtered weighted-squared first-derivative operator for QRS detection (Murthy and Rangaraj)..',
-    'rng180: MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector..',
-    'rng181: Lowpass transfer function used in the Pan-Tompkins QRS detector..',
-    'rng182: Difference equation of the Pan-Tompkins lowpass filter..',
-    'rng183: Lowpass component of the Pan-Tompkins highpass filter..',
-    'rng184: Difference equation of the lowpass component used in the Pan-Tompkins highpass filter..',
-    'rng185: Transfer function of the Pan-Tompkins highpass filter..',
-    'rng186: Difference equation of the Pan-Tompkins highpass filter (intermediate)..',
-    'rng187: Combined input-output relationship of the Pan-Tompkins highpass filter..',
-    'rng188: Derivative operator used by Pan and Tompkins for QRS detection..',
-    'rng189: Moving-window integrator used in the Pan-Tompkins QRS detector..',
-    'rng191: Adaptive thresholds for QRS detection in the Pan-Tompkins algorithm..',
-    'rng192: Updated SPKI rule when a QRS is detected in the search-back procedure..',
-    'rng193: Heart rate computed from number of QRS complexes detected over duration T..',
-    'rng194: Heart rate from RR interval.',
-    'rng195: Length transformation used to detect P, QRS, and T waves across multiple ECG channels..',
-    'rng196: Noncausal least-squares second derivative used to detect the dicrotic notch.',
-    'rng197: Squared and weighted smoothing of the second derivative for dicrotic notch detection..',
+    "baseline-wander removal, eqs. (3.132)-(3.133)",
+    "rgcpulse: Carotid pulse waveform feature extraction.",
+    "rgderqrs: Derivative-based QRS detection (first and second differences).",
+    "rgdnot: Dicrotic notch detection in carotid pulse waveform.",
+    "rgecgemu: ECG-EMG coupling during physical effort (VMG correlation).",
+    "rgecgf: ECG waveform feature extraction (P, QRS, T amplitudes and durations).",
+    "rgecgwvf: ECG waveform analysis for ischemia and bundle branch block.",
+    "rgexecg: Exercise ECG analysis: ST deviation, slope, and ischemia detection.",
+    "rghrvf: HRV frequency-domain metrics: VLF/LF/HF power and LF/HF ratio.",
+    "rghrvt: HRV time-domain metrics: SDNN, RMSSD, pNN50.",
+    "rghsnd: Heart sound (S1/S2) identification via PCG-ECG timing.",
+    "rgmatefp: Maternal ECG filtering from abdominal ECG recording.",
+    "rgmtnart: Motion artifact detection and removal from ECG/PPG.",
+    "rgpantp: Pan-Tompkins QRS detection algorithm.",
+    "rgpcg: PCG segmentation into S1/systole/S2/diastole using ECG gating.",
+    "rgpowerl: Powerline interference (50/60 Hz) removal from ECG.",
+    "rgppg: PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak).",
+    "rgpwave: P-wave detection in ECG using search window relative to R-peak.",
+    "rgrpsig: ECG-derived respiration (EDR) via R-wave amplitude modulation.",
+    "rgsapn: Sleep apnea detection via ECG-derived respiration + SpO2 fusion.",
+    "rgspr: Spectral power ratio (LF/HF) for HRV analysis.",
+    "rgtwa: T-wave alternans (TWA) detection via spectral method.",
+    "rgtwamx: T-wave alternans spectral method.",
+    "rgtwave: T-wave detection in ECG.",
+    "rgvf: Ventricular fibrillation (VF) detection in ECG.",
+    "rng176: Smoothed three-point first derivative used in QRS detection (Balda et al.)..",
+    "rng177: Approximation of the second derivative used in QRS detection..",
+    "rng178: Weighted combination of first and second derivatives for QRS detection..",
+    "rng179: Filtered weighted-squared first-derivative operator for QRS detection (Murthy and Rangaraj)..",
+    "rng180: MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector..",
+    "rng181: Lowpass transfer function used in the Pan-Tompkins QRS detector..",
+    "rng182: Difference equation of the Pan-Tompkins lowpass filter..",
+    "rng183: Lowpass component of the Pan-Tompkins highpass filter..",
+    "rng184: Difference equation of the lowpass component used in the Pan-Tompkins highpass filter..",
+    "rng185: Transfer function of the Pan-Tompkins highpass filter..",
+    "rng186: Difference equation of the Pan-Tompkins highpass filter (intermediate)..",
+    "rng187: Combined input-output relationship of the Pan-Tompkins highpass filter..",
+    "rng188: Derivative operator used by Pan and Tompkins for QRS detection..",
+    "rng189: Moving-window integrator used in the Pan-Tompkins QRS detector..",
+    "rng191: Adaptive thresholds for QRS detection in the Pan-Tompkins algorithm..",
+    "rng192: Updated SPKI rule when a QRS is detected in the search-back procedure..",
+    "rng193: Heart rate computed from number of QRS complexes detected over duration T..",
+    "rng194: Heart rate from RR interval.",
+    "rng195: Length transformation used to detect P, QRS, and T waves across multiple ECG channels..",
+    "rng196: Noncausal least-squares second derivative used to detect the dicrotic notch.",
+    "rng197: Squared and weighted smoothing of the second derivative for dicrotic notch detection..",
 ]
 
 

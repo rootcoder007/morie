@@ -9,5 +9,6 @@ def test_bkdot_basic():
 
 def test_bkdot_edge():
     import pytest
+
     with pytest.raises(ValueError, match="same length"):
         burkov_dot_product([1.0], [1.0, 2.0])

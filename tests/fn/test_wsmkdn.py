@@ -1,7 +1,6 @@
 """Tests for wsmkdn.wasserman_kde."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmkdn import wasserman_kde
 
 
@@ -13,6 +12,8 @@ def test_wsmkdn_basic():
     result = wasserman_kde(x, data, h)
     assert isinstance(result, dict)
     assert "x" in result
+
+
 def test_wsmkdn_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

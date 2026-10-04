@@ -1,9 +1,9 @@
 """Tests for copfra."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.copfra import frank_copula
+
 
 def test_copfra_basic():
     pos = frank_copula(0.5, 0.5, 5.0)

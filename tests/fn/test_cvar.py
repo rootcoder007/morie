@@ -1,7 +1,6 @@
 """Tests for morie.fn.cvar."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvar import cvar
 
 

@@ -24,8 +24,8 @@ def _lcg(count, seed):
     s = int(seed)
     out = np.empty(count)
     for i in range(count):
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        out[i] = (s + 0.5) / 2 ** 32
+        s = (1664525 * s + 1013904223) % 2**32
+        out[i] = (s + 0.5) / 2**32
     return out
 
 
@@ -141,14 +141,28 @@ def esl_nmf(X, k, max_iter=500, tol=1e-10, seed=13, loss="frobenius", W0=None, H
     WH = W @ H
     extra = {}
     if loss == "kl":
-        extra = {"kl_divergence": _kl(X, WH), "loglik": float(np.sum(X * np.log(WH + 1e-300) - WH)), "divergence_path": path}
-    return RichResult(payload={**extra,
-        "estimate": err / normX, "W": [float(v) for v in W.ravel()],
-        "H": [float(v) for v in H.ravel()], "frobenius_error": err,
-        "relative_error": err / normX, "iterations": int(it),
-        "converged": bool(converged), "n": int(n), "p": int(p), "k": k,
-        "loss": loss,
-        "method": "NMF by Lee-Seung multiplicative updates; non-unique, start-dependent"})
+        extra = {
+            "kl_divergence": _kl(X, WH),
+            "loglik": float(np.sum(X * np.log(WH + 1e-300) - WH)),
+            "divergence_path": path,
+        }
+    return RichResult(
+        payload={
+            **extra,
+            "estimate": err / normX,
+            "W": [float(v) for v in W.ravel()],
+            "H": [float(v) for v in H.ravel()],
+            "frobenius_error": err,
+            "relative_error": err / normX,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "p": int(p),
+            "k": k,
+            "loss": loss,
+            "method": "NMF by Lee-Seung multiplicative updates; non-unique, start-dependent",
+        }
+    )
 
 
 def cheatsheet():

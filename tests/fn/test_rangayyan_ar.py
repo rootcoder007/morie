@@ -9,9 +9,22 @@ import math
 
 import pytest
 
-from morie.fn.bsaar import (armafit, arfit, fpeorder, hrvar, hrvratio, levinson,
-                            lpc, lpcsynth, mdlorder, pcgar, polezero, pzform,
-                            pzformz, pzresp)
+from morie.fn.bsaar import (
+    arfit,
+    armafit,
+    fpeorder,
+    hrvar,
+    hrvratio,
+    levinson,
+    lpc,
+    lpcsynth,
+    mdlorder,
+    pcgar,
+    polezero,
+    pzform,
+    pzformz,
+    pzresp,
+)
 
 
 def ar1(n, a1=0.8, seed=7):
@@ -25,6 +38,7 @@ def ar1(n, a1=0.8, seed=7):
 
 
 # ------------------------------------------------- Levinson-Durbin 7.37-7.39
+
 
 def test_levinson_first_order_matches_the_hand_recursion():
     # eq (7.37) at i = 1: gamma_1 = -phi(1)/phi(0); eq (7.39) follows
@@ -67,6 +81,7 @@ def test_levinson_rejects_an_order_beyond_the_supplied_lags():
 
 # ----------------------------------------------------------- LPC / AR fit
 
+
 def test_lpc_recovers_a_known_ar1_with_the_books_sign():
     # x(n) = 0.8 x(n-1) + e means y~(n) = -a1 y(n-1), so a1 = -0.8
     r = lpc(ar1(4000, 0.8), 1)
@@ -90,10 +105,9 @@ def test_lpc_residual_whitens_a_known_ar_process():
     resid = r["residual"][2:]
     n = len(resid)
     mu = sum(resid) / n
-    lag1 = sum((resid[i] - mu) * (resid[i + 1] - mu)
-               for i in range(n - 1)) / n
+    lag1 = sum((resid[i] - mu) * (resid[i + 1] - mu) for i in range(n - 1)) / n
     var = sum((v - mu) ** 2 for v in resid) / n
-    assert abs(lag1 / var) < 0.1          # the input's lag-1 was 0.85
+    assert abs(lag1 / var) < 0.1  # the input's lag-1 was 0.85
 
 
 def test_lpc_refuses_the_covariance_method_rather_than_faking_it():
@@ -140,6 +154,7 @@ def test_lpcsynth_rejects_a_wrong_length_initial_state():
 
 # ------------------------------------------------------------ AR spectrum
 
+
 def test_arfit_psd_peaks_at_the_ar_resonance():
     fs = 1000.0
     # a conjugate pole pair at radius 0.95, angle 2 pi 100 / fs
@@ -155,8 +170,7 @@ def test_arfit_psd_peaks_at_the_ar_resonance():
         hist = [v, hist[0]]
         x.append(v)
     r = arfit(x, 6, fs=fs, nfreq=512)
-    peak = r["freqs"][max(range(len(r["psd"])),
-                          key=lambda i: r["psd"][i])]
+    peak = r["freqs"][max(range(len(r["psd"])), key=lambda i: r["psd"][i])]
     assert peak == pytest.approx(100.0, abs=8.0)
     assert r["max_peaks"] == 3
 
@@ -167,6 +181,7 @@ def test_arfit_rejects_a_bad_sampling_rate():
 
 
 # --------------------------------------------------------- order criteria
+
 
 def test_fpeorder_penalises_order():
     # errors barely improve past p = 2, so FPE must not choose the largest
@@ -194,10 +209,8 @@ def test_mdlorder_is_at_least_as_strict_as_aic():
 
 def test_mdlorder_formula_matches_rissanen():
     r = mdlorder([1.0, 0.5], n_samples=64)
-    assert r["criterion"][0] == pytest.approx(64 * math.log(1.0)
-                                              + 1 * math.log(64))
-    assert r["criterion"][1] == pytest.approx(64 * math.log(0.5)
-                                              + 2 * math.log(64))
+    assert r["criterion"][0] == pytest.approx(64 * math.log(1.0) + 1 * math.log(64))
+    assert r["criterion"][1] == pytest.approx(64 * math.log(0.5) + 2 * math.log(64))
 
 
 def test_order_criteria_reject_nonpositive_variances():
@@ -208,6 +221,7 @@ def test_order_criteria_reject_nonpositive_variances():
 
 
 # --------------------------------------------------------- pole-zero forms
+
 
 def test_pzform_eq369_evaluates_the_factored_form():
     r = pzform([0.5], [0.8], z=2.0)
@@ -285,6 +299,7 @@ def test_polezero_flags_a_zero_on_the_unit_circle():
 
 # --------------------------------------------------------------- ARMA, PCG
 
+
 def test_armafit_returns_both_polynomials():
     r = armafit(ar1(1000, 0.7), p=2, q=1)
     assert len(r["a"]) == 2
@@ -300,8 +315,7 @@ def test_armafit_rejects_a_negative_ma_order():
 def test_pcgar_reports_resonances_once_per_conjugate_pair():
     fs = 1000.0
     n = 2000
-    x = [math.sin(2 * math.pi * 60 * i / fs)
-         + 0.4 * math.sin(2 * math.pi * 180 * i / fs) for i in range(n)]
+    x = [math.sin(2 * math.pi * 60 * i / fs) + 0.4 * math.sin(2 * math.pi * 180 * i / fs) for i in range(n)]
     r = pcgar(x, fs=fs, order=8)
     freqs = [d["frequency"] for d in r["resonances"]]
     assert all(0.0 < f <= fs / 2 for f in freqs)
@@ -316,11 +330,11 @@ def test_pcgar_default_order_scales_with_fs():
 
 # ------------------------------------------------------------------- HRV
 
+
 def rr_series(n=300, mean=0.8, lf=0.10, hf=0.25, amp_lf=0.02, amp_hf=0.02):
     rr, t = [], 0.0
     for _ in range(n):
-        v = mean + amp_lf * math.sin(2 * math.pi * lf * t) \
-            + amp_hf * math.sin(2 * math.pi * hf * t)
+        v = mean + amp_lf * math.sin(2 * math.pi * lf * t) + amp_hf * math.sin(2 * math.pi * hf * t)
         rr.append(v)
         t += v
     return rr
@@ -352,10 +366,8 @@ def test_hrvar_rejects_nonpositive_intervals():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsaar import (rangayyan_ar_order_mdl,
-                                rangayyan_levinson_durbin,
-                                rangayyan_pole_zero_plot)
+    from morie.fn.bsaar import rangayyan_ar_order_mdl, rangayyan_levinson_durbin, rangayyan_pole_zero_plot
+
     assert rangayyan_levinson_durbin([1.0, 0.5])["a"] == pytest.approx([-0.5])
     assert rangayyan_ar_order_mdl([1.0, 0.5], 64)["order"] in (1, 2)
-    assert rangayyan_pole_zero_plot([1.0, -0.5])["zeros"][0] == \
-        pytest.approx(0.5 + 0j, abs=1e-9)
+    assert rangayyan_pole_zero_plot([1.0, -0.5])["zeros"][0] == pytest.approx(0.5 + 0j, abs=1e-9)

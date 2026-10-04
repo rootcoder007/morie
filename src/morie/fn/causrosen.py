@@ -110,19 +110,24 @@ def causal_rosenbaum_bound(paired_diff, gamma_max=3.0, n_gamma=25, alpha=0.05):
     gcrit = float(grid[sig][-1]) if sig.any() else 1.0
     return RichResult(
         title="Rosenbaum sensitivity bound",
-        summary_lines=[("pairs", int(n)), ("Gamma*", gcrit),
-                       ("p at Gamma=1", float(p_up[0]))],
-        warnings=["this does not test whether hidden bias exists; it states "
-                  "how large it would have to be, and is only meaningful "
-                  "against the plausible confounders in the application"],
+        summary_lines=[("pairs", int(n)), ("Gamma*", gcrit), ("p at Gamma=1", float(p_up[0]))],
+        warnings=[
+            "this does not test whether hidden bias exists; it states "
+            "how large it would have to be, and is only meaningful "
+            "against the plausible confounders in the application"
+        ],
         payload={
-            "gamma_critical": gcrit, "gamma_grid": grid, "p_upper": p_up,
+            "gamma_critical": gcrit,
+            "gamma_grid": grid,
+            "p_upper": p_up,
             "significant_at_gamma_1": bool(p_up[0] < alpha),
             "interpretation": (
                 f"an unmeasured confounder would need to change treatment odds "
                 f"by a factor of {gcrit:.2f} within matched pairs to overturn "
-                "this result"),
-            "n_pairs": int(n), "alpha": float(alpha),
+                "this result"
+            ),
+            "n_pairs": int(n),
+            "alpha": float(alpha),
             "method": "causal_rosenbaum_bound",
         },
     )

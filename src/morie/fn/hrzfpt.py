@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_first_passage_time"]
 
 
-def horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u,
-                                f_eps, grid_z):
+def horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u, f_eps, grid_z):
     r"""Probability that a first-passage time exceeds theta in a panel
     model (Horowitz Sec. 5.2.3), equation (5.20):
 
@@ -79,8 +78,7 @@ def horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u,
     if X.shape[1] != b.size:
         raise ValueError(f"x must have {b.size} columns to match beta.")
     if X.shape[0] < th:
-        raise ValueError(
-            f"x has {X.shape[0]} periods but theta = {th} needs {th}.")
+        raise ValueError(f"x has {X.shape[0]} periods but theta = {th} needs {th}.")
     gu = np.asarray(grid_u, dtype=float).ravel()
     fu = np.asarray(f_U, dtype=float).ravel()
     gz = np.asarray(grid_z, dtype=float).ravel()
@@ -88,15 +86,13 @@ def horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u,
     if fu.size != gu.size:
         raise ValueError(f"f_U has {fu.size} entries for {gu.size} grid points.")
     if fe.size != gz.size:
-        raise ValueError(
-            f"f_eps has {fe.size} entries for {gz.size} grid points.")
+        raise ValueError(f"f_eps has {fe.size} entries for {gz.size} grid points.")
     if np.any(fu < 0) or np.any(fe < 0):
         raise ValueError("densities must be non-negative.")
 
     # F_eps by integrating f_eps, clipped to [0, 1] since the
     # deconvolved density is only approximately a density
-    F_cum = np.concatenate([[0.0], np.cumsum(
-        np.diff(gz) * (fe[:-1] + fe[1:]) / 2.0)])
+    F_cum = np.concatenate([[0.0], np.cumsum(np.diff(gz) * (fe[:-1] + fe[1:]) / 2.0)])
     total = F_cum[-1]
     F_cum = F_cum / total if total > 0 else F_cum
 
@@ -119,14 +115,18 @@ def horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u,
     f_W = float(np.trapezoid(f_eps_at(idx1 - gu) * fu, gu))
     if f_W <= 0:
         raise ValueError(
-            "f_W vanishes at the initial residual; the conditioning event "
-            "has zero estimated density there.")
-    return RichResult(payload={
-        "probability": float(np.clip(numer / f_W, 0.0, 1.0)),
-        "theta": th, "f_W_at_initial": f_W,
-        "periods_conditionally_independent": True,
-        "periods_marginally_independent": False,
-        "method": "(5.20): the product is integrated against f_U, since periods share U_j"})
+            "f_W vanishes at the initial residual; the conditioning event has zero estimated density there."
+        )
+    return RichResult(
+        payload={
+            "probability": float(np.clip(numer / f_W, 0.0, 1.0)),
+            "theta": th,
+            "f_W_at_initial": f_W,
+            "periods_conditionally_independent": True,
+            "periods_marginally_independent": False,
+            "method": "(5.20): the product is integrated against f_U, since periods share U_j",
+        }
+    )
 
 
 def cheatsheet():

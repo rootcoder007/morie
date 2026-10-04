@@ -1,7 +1,6 @@
 """Test bits_per_byte."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bpb import bits_per_byte, bpb
 

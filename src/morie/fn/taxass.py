@@ -77,11 +77,16 @@ def taxass(kmer_taxa, parent):
         weights[t] = weights.get(t, 0) + 1
     n_hit = sum(weights.values())
     if n_hit == 0:
-        return RichResult(payload={
-            "taxon": 0, "leaf_scores": {}, "weights": {},
-            "n_kmers": len(hits), "n_hit": 0,
-            "method": "Kraken RTL-path classification (Wood-Salzberg 2014)",
-        })
+        return RichResult(
+            payload={
+                "taxon": 0,
+                "leaf_scores": {},
+                "weights": {},
+                "n_kmers": len(hits),
+                "n_hit": 0,
+                "method": "Kraken RTL-path classification (Wood-Salzberg 2014)",
+            }
+        )
     # classification tree: hit taxa plus their ancestors
     tree = set()
     for t in weights:
@@ -94,26 +99,26 @@ def taxass(kmer_taxa, parent):
     leaves = sorted(t for t in tree if children[t] == 0)
     scores = {}
     for leaf in leaves:
-        scores[leaf] = sum(weights.get(t, 0)
-                           for t in _path_to_root(leaf, par))
+        scores[leaf] = sum(weights.get(t, 0) for t in _path_to_root(leaf, par))
     best = max(scores.values())
     top = [leaf for leaf in leaves if scores[leaf] == best]
     label = top[0]
     for other in top[1:]:
         label = _lca(label, other, par)
-    return RichResult(payload={
-        "taxon": label,
-        "leaf_scores": scores,
-        "weights": weights,
-        "n_kmers": len(hits),
-        "n_hit": n_hit,
-        "method": "Kraken RTL-path classification (Wood-Salzberg 2014)",
-    })
+    return RichResult(
+        payload={
+            "taxon": label,
+            "leaf_scores": scores,
+            "weights": weights,
+            "n_kmers": len(hits),
+            "n_hit": n_hit,
+            "method": "Kraken RTL-path classification (Wood-Salzberg 2014)",
+        }
+    )
 
 
 taxonomic_assignment = taxass
 
 
 def cheatsheet():
-    return ("taxass(kmer_taxa, parent) -> Kraken root-to-leaf path "
-            "scoring; ties resolve to the LCA of maximal leaves.")
+    return "taxass(kmer_taxa, parent) -> Kraken root-to-leaf path scoring; ties resolve to the LCA of maximal leaves."

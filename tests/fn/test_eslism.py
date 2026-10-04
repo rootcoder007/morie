@@ -64,8 +64,7 @@ def test_eslism_edge():
 
     # Two far-apart pairs with neighbors=1 leave the graph disconnected.
     with pytest.raises(ValueError, match="disconnected components"):
-        esl_isomap([[0.0, 0.0], [0.0, 1.0], [50.0, 50.0], [50.0, 51.0]],
-                   k=1, neighbors=1)
+        esl_isomap([[0.0, 0.0], [0.0, 1.0], [50.0, 50.0], [50.0, 51.0]], k=1, neighbors=1)
 
     with pytest.raises(ValueError, match="k must be between"):
         esl_isomap(X, k=0, neighbors=2)

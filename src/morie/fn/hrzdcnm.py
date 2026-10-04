@@ -58,10 +58,15 @@ def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
         raise ValueError(f"sigma must be positive, got {sig}.")
     scale = np.sqrt(n * h / b)
     z = scale * (float(fn_u) - float(f_u) - float(bias)) / sig
-    return RichResult(payload={"z": float(z), "scaling": float(scale),
-                               "p_two_sided": float(2 * stats.norm.sf(abs(z))),
-                               "bias_subtracted": float(bias),
-                               "method": "[n h / b]^{1/2}(f-hat - f - bias) -> N(0, sigma^2)"})
+    return RichResult(
+        payload={
+            "z": float(z),
+            "scaling": float(scale),
+            "p_two_sided": float(2 * stats.norm.sf(abs(z))),
+            "bias_subtracted": float(bias),
+            "method": "[n h / b]^{1/2}(f-hat - f - bias) -> N(0, sigma^2)",
+        }
+    )
 
 
 def cheatsheet():

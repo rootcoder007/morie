@@ -1,7 +1,6 @@
 """Test baseline_corrected_correlation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bscor import baseline_corrected_correlation, bscor
 

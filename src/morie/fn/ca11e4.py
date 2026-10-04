@@ -28,8 +28,7 @@ def ca_chapter_11_equation_4(d, n1, n2):
     """
     value = _ca_crim.hedges_g(d, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.4)"
@@ -41,4 +40,4 @@ def ca_chapter_11_equation_4(d, n1, n2):
 
 
 def cheatsheet():
-    return 'ca11e4: g = J d [Weisburd et al. 2022, eq. 11.4]'
+    return "ca11e4: g = J d [Weisburd et al. 2022, eq. 11.4]"

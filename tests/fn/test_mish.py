@@ -1,7 +1,6 @@
 """Test Mish activation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mish import mish
 
 

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grkdl import geron_knowledge_distillation_loss
 
 
@@ -14,16 +13,22 @@ def test_grkdl_basic():
     student_logits = rng.normal(0, 1, (m, K))
     teacher_logits = rng.normal(0, 1, (m, K))
     y = rng.integers(0, K, m)
-    result = geron_knowledge_distillation_loss(
-        student_logits, teacher_logits, y, alpha=0.5, T=2.0
-    )
+    result = geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha=0.5, T=2.0)
     assert isinstance(result, dict)
-    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
-                "kl_teacher_student", "soft_targets", "teacher_entropy",
-                "estimate", "n", "method"):
+    for key in (
+        "loss",
+        "ce_hard",
+        "kl_soft",
+        "kl_student_teacher",
+        "kl_teacher_student",
+        "soft_targets",
+        "teacher_entropy",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
-    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
-                "kl_teacher_student", "teacher_entropy"):
+    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher", "kl_teacher_student", "teacher_entropy"):
         assert math.isfinite(result[key])
     assert result["n"] == m
     assert len(result["soft_targets"]) == m
@@ -36,13 +41,20 @@ def test_grkdl_edge():
     student_logits = rng.normal(0, 1, (m, K))
     teacher_logits = rng.normal(0, 1, (m, K))
     y = rng.integers(0, K, m)
-    result = geron_knowledge_distillation_loss(
-        student_logits, teacher_logits, y, alpha=0.0, T=2.0
-    )
+    result = geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha=0.0, T=2.0)
     assert isinstance(result, dict)
-    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
-                "kl_teacher_student", "soft_targets", "teacher_entropy",
-                "estimate", "n", "method"):
+    for key in (
+        "loss",
+        "ce_hard",
+        "kl_soft",
+        "kl_student_teacher",
+        "kl_teacher_student",
+        "soft_targets",
+        "teacher_entropy",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     assert math.isfinite(result["loss"])
     assert math.isfinite(result["ce_hard"])
@@ -64,7 +76,7 @@ import morie.fn.grkdl as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

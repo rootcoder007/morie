@@ -16,7 +16,7 @@ def _conv_transpose2d(Z, K, s):
     out = np.zeros(((h - 1) * s + kh, (w - 1) * s + kw), dtype=float)
     for i in range(h):
         for j in range(w):
-            out[i * s:i * s + kh, j * s:j * s + kw] += Z[i, j] * K
+            out[i * s : i * s + kh, j * s : j * s + kw] += Z[i, j] * K
     return out
 
 
@@ -95,9 +95,7 @@ def geron_dcgan_generator(z, weights, seed_shape=None, stride=2, batch_norm=True
         )
     W0 = np.atleast_2d(np.asarray(ws[0], dtype=float))
     if W0.shape[0] != z.size:
-        raise ValueError(
-            f"projection matrix has {W0.shape[0]} rows but z has {z.size} entries."
-        )
+        raise ValueError(f"projection matrix has {W0.shape[0]} rows but z has {z.size} entries.")
     if not np.all(np.isfinite(W0)):
         raise ValueError("the projection matrix contains non-finite values.")
     flat = z @ W0
@@ -105,15 +103,12 @@ def geron_dcgan_generator(z, weights, seed_shape=None, stride=2, batch_norm=True
         side = int(round(np.sqrt(flat.size)))
         if side * side != flat.size:
             raise ValueError(
-                f"projection gives {flat.size} units, which is not a perfect square; "
-                "pass seed_shape=(h0, w0)."
+                f"projection gives {flat.size} units, which is not a perfect square; pass seed_shape=(h0, w0)."
             )
         seed_shape = (side, side)
     h0, w0 = (int(v) for v in seed_shape)
     if h0 < 1 or w0 < 1 or h0 * w0 != flat.size:
-        raise ValueError(
-            f"seed_shape {(h0, w0)} does not match the {flat.size} projected units."
-        )
+        raise ValueError(f"seed_shape {(h0, w0)} does not match the {flat.size} projected units.")
     stride = int(stride)
     if stride < 1:
         raise ValueError(f"stride must be positive, got {stride}.")
@@ -138,8 +133,7 @@ def geron_dcgan_generator(z, weights, seed_shape=None, stride=2, batch_norm=True
 
     return RichResult(
         title="DCGAN generator",
-        summary_lines=[("Output shape", tuple(int(v) for v in image.shape)),
-                       ("Layers", len(kernels))],
+        summary_lines=[("Output shape", tuple(int(v) for v in image.shape)), ("Layers", len(kernels))],
         payload={
             "image": image.tolist(),
             "image_shape": (int(image.shape[0]), int(image.shape[1])),

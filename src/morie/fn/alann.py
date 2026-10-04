@@ -63,13 +63,19 @@ def alammar_approximate_nearest_neighbor(query_vec, index, ef_search=8):
         frontier = nxt
     best = min(cand, key=d)
     true_best = int(np.argmin(np.linalg.norm(P - q, axis=1)))
-    return RichResult(payload={
-        "nearest": int(best), "distance": d(best),
-        "greedy_path": hops, "candidates_examined": len(cand),
-        "exact_nearest": true_best,
-        "found_exact": best == true_best,
-        "estimate": float(best), "n": P.shape[0],
-        "method": "Greedy NSW descent + beam (Malkov and Yashunin 2020)"})
+    return RichResult(
+        payload={
+            "nearest": int(best),
+            "distance": d(best),
+            "greedy_path": hops,
+            "candidates_examined": len(cand),
+            "exact_nearest": true_best,
+            "found_exact": best == true_best,
+            "estimate": float(best),
+            "n": P.shape[0],
+            "method": "Greedy NSW descent + beam (Malkov and Yashunin 2020)",
+        }
+    )
 
 
 def cheatsheet():

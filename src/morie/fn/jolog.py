@@ -41,7 +41,12 @@ def logtrans(x, offset=0.0):
     res = _core.logtrans(x=x, offset=offset)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("mean", res["mean"]), ("sd", res["sd"]), ("cvbefore", res["cvbefore"]), ("cvafter", res["cvafter"])],
+        summary_lines=[
+            ("mean", res["mean"]),
+            ("sd", res["sd"]),
+            ("cvbefore", res["cvbefore"]),
+            ("cvafter", res["cvafter"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

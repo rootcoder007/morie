@@ -132,9 +132,7 @@ def geron_dino(
     if ts <= 0 or tt <= 0:
         raise ValueError(f"geron_dino: temperatures must be positive, got tau_s={ts}, tau_t={tt}")
     if tt >= ts:
-        raise ValueError(
-            f"geron_dino: tau_t must be smaller than tau_s for sharpening, got tau_t={tt} and tau_s={ts}"
-        )
+        raise ValueError(f"geron_dino: tau_t must be smaller than tau_s for sharpening, got tau_t={tt} and tau_s={ts}")
     mom, cmom = float(momentum), float(center_momentum)
     if not (0.0 <= mom < 1.0) or not (0.0 <= cmom < 1.0):
         raise ValueError("geron_dino: momentum and center_momentum must lie in [0, 1)")

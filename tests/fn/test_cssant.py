@@ -1,7 +1,6 @@
 """Tests for cssant.callaway_santanna."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cssant import callaway_santanna
 
 

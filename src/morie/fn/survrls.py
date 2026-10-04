@@ -49,10 +49,14 @@ def restricted_lifetime(fit, event, t_star):
         raise ValueError("restricted_lifetime: t_star must be positive")
     r = rmst_estimate(fit, event, tau=float(t_star))
     d = r.to_dict()
-    return RichResult(payload={
-        "estimate": float(d["value"]), "tau": float(d["tau"]),
-        "n_events": int(d["n_events"]),
-        "method": "RMST(t*) = area under the KM curve [Royston & Parmar 2013]"})
+    return RichResult(
+        payload={
+            "estimate": float(d["value"]),
+            "tau": float(d["tau"]),
+            "n_events": int(d["n_events"]),
+            "method": "RMST(t*) = area under the KM curve [Royston & Parmar 2013]",
+        }
+    )
 
 
 # CANONICAL TEST

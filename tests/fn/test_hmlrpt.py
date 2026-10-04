@@ -1,7 +1,6 @@
 """Tests for hmlrpt.geron_linreg_pytorch."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlrpt import geron_linreg_pytorch
 
 

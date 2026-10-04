@@ -1,7 +1,6 @@
 """Tests for emdtsm.emd_decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.emdtsm import emd_decomposition
 
 

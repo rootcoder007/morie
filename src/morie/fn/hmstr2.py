@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Stride: step size of kernel sliding over input."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_stride"]

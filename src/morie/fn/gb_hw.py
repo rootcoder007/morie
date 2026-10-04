@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hodges-Lehmann estimator and its identity with the Walsh-average counts."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['hlwsrlink', 'gibbons_hodges_wilcoxon']
+__all__ = ["hlwsrlink", "gibbons_hodges_wilcoxon"]
 
 
 def hlwsrlink(x, m0=0.0):
@@ -44,9 +42,7 @@ def hlwsrlink(x, m0=0.0):
     if n < 2:
         raise ValueError("need at least 2 observations.")
     m0 = float(m0)
-    walsh = sorted(
-        (xs[i] + xs[k]) / 2.0 for i in range(n) for k in range(i, n)
-    )
+    walsh = sorted((xs[i] + xs[k]) / 2.0 for i in range(n) for k in range(i, n))
     nw = len(walsh)
     below = sum(1 for w in walsh if w < m0)
     equal = sum(1 for w in walsh if w == m0)

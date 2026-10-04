@@ -1,9 +1,10 @@
 """Tests for chzlt.cinelli_hazlett."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.chzlt import cinelli_hazlett
 
 
@@ -20,11 +21,22 @@ def test_chzlt_basic():
     q = 0.5
     result = cinelli_hazlett(model, treat, cov, R2_yu, R2_du, q)
     assert isinstance(result, dict)
-    expected_keys = {"estimate", "tau", "se", "t", "df", "bias", "adjusted_se",
-                     "rv_q", "r2_yd_x", "robust", "n", "method"}
+    expected_keys = {
+        "estimate",
+        "tau",
+        "se",
+        "t",
+        "df",
+        "bias",
+        "adjusted_se",
+        "rv_q",
+        "r2_yd_x",
+        "robust",
+        "n",
+        "method",
+    }
     assert expected_keys.issubset(result.keys())
-    for key in ("estimate", "tau", "se", "t", "df", "bias", "adjusted_se",
-                "rv_q", "r2_yd_x"):
+    for key in ("estimate", "tau", "se", "t", "df", "bias", "adjusted_se", "rv_q", "r2_yd_x"):
         assert math.isfinite(result[key]), f"{key} not finite"
     assert result["robust"] in (0, 1)
     assert result["n"] == n

@@ -11,5 +11,6 @@ def test_altrip_basic():
 
 def test_altrip_edge():
     import pytest
+
     with pytest.raises(ValueError, match="non-negative"):
         alammar_sbert_triplet_loss([[0.0]], [[0.0]], [[1.0]], margin=-1)

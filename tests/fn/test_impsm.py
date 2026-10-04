@@ -1,7 +1,6 @@
 """Tests for impsm.importance_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.impsm import importance_sampling
 
 

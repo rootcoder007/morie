@@ -93,14 +93,16 @@ def polynomial_gcd(p, q, tol=1e-10):
         g = [1.0]
     else:
         g = [v / lead for v in g]
-    return RichResult(payload={
-        "estimate": float(len(g) - 1),
-        "gcd": g,
-        "degree": len(g) - 1,
-        "steps": steps,
-        "n": len(g),
-        "method": "Polynomial GCD via Euclid",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(len(g) - 1),
+            "gcd": g,
+            "degree": len(g) - 1,
+            "steps": steps,
+            "n": len(g),
+            "method": "Polynomial GCD via Euclid",
+        }
+    )
 
 
 def cheatsheet():

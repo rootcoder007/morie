@@ -54,13 +54,10 @@ He, K., Chen, X., Xie, S., Li, Y., Dollar, P. & Girshick, R. (2022)
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["encode_point_prompt", "encode_box_prompt",
-           "encode_mask_prompt", "amortised_cost",
-           "promptable_segment"]
+__all__ = ["encode_point_prompt", "encode_box_prompt", "encode_mask_prompt", "amortised_cost", "promptable_segment"]
 
 _EPS = 1e-12
 _TYPES = ("foreground", "background", "box_tl", "box_br")
@@ -70,7 +67,7 @@ def _pos_enc(x, y, dim=8, scale=1.0):
     r"""Fourier positional encoding of a normalised coordinate."""
     out = []
     for j in range(int(dim) // 2):
-        f = (2.0 ** j) * math.pi * float(scale)
+        f = (2.0**j) * math.pi * float(scale)
         out.append(math.sin(f * float(x)))
         out.append(math.cos(f * float(y)))
     return out
@@ -86,11 +83,9 @@ def encode_point_prompt(points, labels, dim=8, type_embeddings=None):
     P = [(float(a), float(b)) for a, b in points]
     L = [int(v) for v in labels]
     if len(P) != len(L):
-        raise ValueError("samseg: %d points but %d labels"
-                         % (len(P), len(L)))
+        raise ValueError("samseg: %d points but %d labels" % (len(P), len(L)))
     if any(v not in (0, 1) for v in L):
-        raise ValueError("samseg: a point label must be 1 "
-                         "(foreground) or 0 (background)")
+        raise ValueError("samseg: a point label must be 1 (foreground) or 0 (background)")
     te = type_embeddings or {}
     out = []
     for i in range(len(P)):
@@ -98,12 +93,14 @@ def encode_point_prompt(points, labels, dim=8, type_embeddings=None):
         name = "foreground" if L[i] == 1 else "background"
         t = te.get(name, [0.0] * len(e))
         if len(t) != len(e):
-            raise ValueError("samseg: the type embedding has the "
-                             "wrong width")
+            raise ValueError("samseg: the type embedding has the wrong width")
         out.append([e[a] + t[a] for a in range(len(e))])
-    return {"tokens": out, "n_prompts": len(out), "sparse": True,
-            "note": "a background click at the same place is a "
-                    "DIFFERENT token, by the type embedding"}
+    return {
+        "tokens": out,
+        "n_prompts": len(out),
+        "sparse": True,
+        "note": "a background click at the same place is a DIFFERENT token, by the type embedding",
+    }
 
 
 def encode_box_prompt(box, dim=8, type_embeddings=None):
@@ -116,9 +113,11 @@ def encode_box_prompt(box, dim=8, type_embeddings=None):
     b = _pos_enc(x1, y1, dim)
     ta = te.get("box_tl", [0.0] * len(a))
     tb = te.get("box_br", [0.0] * len(b))
-    return {"tokens": [[a[i] + ta[i] for i in range(len(a))],
-                       [b[i] + tb[i] for i in range(len(b))]],
-            "n_prompts": 2, "sparse": True}
+    return {
+        "tokens": [[a[i] + ta[i] for i in range(len(a))], [b[i] + tb[i] for i in range(len(b))]],
+        "n_prompts": 2,
+        "sparse": True,
+    }
 
 
 def encode_mask_prompt(mask, image_embedding, weight=1.0):
@@ -131,15 +130,15 @@ def encode_mask_prompt(mask, image_embedding, weight=1.0):
     M = [[float(v) for v in r] for r in k.mat(mask)]
     E = [[float(v) for v in r] for r in k.mat(image_embedding)]
     if len(M) != len(E) or len(M[0]) != len(E[0]):
-        raise ValueError("samseg: the mask prompt is %dx%d but the "
-                         "image embedding is %dx%d"
-                         % (len(M), len(M[0]), len(E), len(E[0])))
+        raise ValueError(
+            "samseg: the mask prompt is %dx%d but the image embedding is %dx%d" % (len(M), len(M[0]), len(E), len(E[0]))
+        )
     w = float(weight)
-    return {"embedding": [[E[i][j] + w * M[i][j]
-                           for j in range(len(E[0]))]
-                          for i in range(len(E))],
-            "sparse": False,
-            "note": "summed, so the decoder input shape is unchanged"}
+    return {
+        "embedding": [[E[i][j] + w * M[i][j] for j in range(len(E[0]))] for i in range(len(E))],
+        "sparse": False,
+        "note": "summed, so the decoder input shape is unchanged",
+    }
 
 
 def amortised_cost(encoder_ms, decoder_ms, n_prompts):
@@ -155,15 +154,17 @@ def amortised_cost(encoder_ms, decoder_ms, n_prompts):
     if e <= 0.0 or d <= 0.0:
         raise ValueError("samseg: the timings must be positive")
     total = e + P * d
-    return {"total_ms": total, "per_prompt_ms": total / P,
-            "naive_ms": P * (e + d),
-            "speedup": P * (e + d) / total,
-            "interactive": d < 100.0,
-            "note": "the image embedding is computed once and reused"}
+    return {
+        "total_ms": total,
+        "per_prompt_ms": total / P,
+        "naive_ms": P * (e + d),
+        "speedup": P * (e + d) / total,
+        "interactive": d < 100.0,
+        "note": "the image embedding is computed once and reused",
+    }
 
 
-def promptable_segment(image_embedding, prompt_tokens, decoder,
-                       multimask=True):
+def promptable_segment(image_embedding, prompt_tokens, decoder, multimask=True):
     r"""Run the light decoder against a cached image embedding.
 
     ``decoder`` maps (embedding, tokens, multimask) to a list of
@@ -173,29 +174,34 @@ def promptable_segment(image_embedding, prompt_tokens, decoder,
     """
     masks = decoder(image_embedding, prompt_tokens, multimask)
     if not masks:
-        raise ValueError("samseg: the decoder returned no mask; the "
-                         "task requires a valid mask for ANY prompt")
-    return RichResult(payload={
-        "estimate": masks[0], "masks": masks, "n_masks": len(masks),
-        "multimask": bool(multimask),
-        "method": "promptable segmentation; Kirillov et al. (2023)",
-        "note": "a valid mask for any prompt, and for an ambiguous "
-                "prompt a valid mask for at least one intended object",
-    })
+        raise ValueError("samseg: the decoder returned no mask; the task requires a valid mask for ANY prompt")
+    return RichResult(
+        payload={
+            "estimate": masks[0],
+            "masks": masks,
+            "n_masks": len(masks),
+            "multimask": bool(multimask),
+            "method": "promptable segmentation; Kirillov et al. (2023)",
+            "note": "a valid mask for any prompt, and for an ambiguous "
+            "prompt a valid mask for at least one intended object",
+        }
+    )
 
 
 def cheatsheet():
-    return ("samseg: the task is 'return a VALID mask for any prompt, "
-            "and for an AMBIGUOUS prompt a valid mask for at least one "
-            "intended object' -- which is what makes it usable as "
-            "pre-training and for zero-shot transfer by prompting. "
-            "Three constraints force the architecture: flexible "
-            "prompts, amortised real-time use, ambiguity-awareness. "
-            "So a heavy image encoder runs ONCE per image and a light "
-            "prompt encoder plus mask decoder run per prompt (~50 ms). "
-            "Sparse prompts are positional encodings plus a learned "
-            "PER-TYPE embedding; dense mask prompts are SUMMED with "
-            "the image embedding.")
+    return (
+        "samseg: the task is 'return a VALID mask for any prompt, "
+        "and for an AMBIGUOUS prompt a valid mask for at least one "
+        "intended object' -- which is what makes it usable as "
+        "pre-training and for zero-shot transfer by prompting. "
+        "Three constraints force the architecture: flexible "
+        "prompts, amortised real-time use, ambiguity-awareness. "
+        "So a heavy image encoder runs ONCE per image and a light "
+        "prompt encoder plus mask decoder run per prompt (~50 ms). "
+        "Sparse prompts are positional encodings plus a learned "
+        "PER-TYPE embedding; dense mask prompts are SUMMED with "
+        "the image embedding."
+    )
 
 
 # compact alias per ledger/NAMING.md

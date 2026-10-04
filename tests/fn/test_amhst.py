@@ -1,7 +1,6 @@
 """Test amplitude_hist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.amhst import alias, amplitude_hist
 

@@ -1,7 +1,6 @@
 """Tests for fzchsp.fauzi_chung_smirnov."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzchsp import fauzi_chung_smirnov
 
 
@@ -22,12 +21,11 @@ def test_fzchsp_basic():
 
     # Recompute expected statistic independently from the documented formula.
     from scipy.stats import norm as _norm
+
     xv = np.asarray(x, dtype=float).ravel()
     n = int(xv.size)
     g = np.sort(xv)
-    khat = np.asarray(
-        [float(np.mean(_norm.cdf((float(t) - xv) / h))) for t in g], dtype=float
-    )
+    khat = np.asarray([float(np.mean(_norm.cdf((float(t) - xv) / h))) for t in g], dtype=float)
     fv = np.asarray([float(cdf(float(t))) for t in g], dtype=float)
     sup = float(np.max(np.abs(khat - fv)))
     scale = float(np.sqrt(2.0 * n / np.log(np.log(n))))

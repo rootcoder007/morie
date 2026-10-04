@@ -1,8 +1,8 @@
 """Tests for morie.fn.zestm — Z-estimator (estimating equations)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.zestm import ZEstimatorResult, zestm
 
 

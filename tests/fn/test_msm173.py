@@ -6,8 +6,6 @@ Springer, ch 9, eq. 9.5 p.341, the support vector fitting function. Expected val
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm173 import mvsml_ridge_lasso_elastic_eq_9_5
@@ -16,8 +14,7 @@ from morie.fn.msm173 import mvsml_ridge_lasso_elastic_eq_9_5
 def test_the_fitting_function_is_the_intercept_plus_the_inner_product():
     # eq 9.5: f(x_i) = beta_0 + x_i' beta
     res = mvsml_ridge_lasso_elastic_eq_9_5([[1.0, 2.0], [-1.0, -1.0]], 0.5, [1.0, 2.0])
-    assert list(res["f"]) == pytest.approx(
-        [0.5 + 1.0 + 4.0, 0.5 - 1.0 - 2.0], rel=1e-12)
+    assert list(res["f"]) == pytest.approx([0.5 + 1.0 + 4.0, 0.5 - 1.0 - 2.0], rel=1e-12)
     assert res["estimate"] == pytest.approx(5.5, rel=1e-12)
 
 

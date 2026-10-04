@@ -1,7 +1,6 @@
 """Tests for hmdetr.geron_detr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdetr import geron_detr
 
 

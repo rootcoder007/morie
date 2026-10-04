@@ -1,7 +1,6 @@
 """Tests for comspr.spectral_clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.comspr import spectral_clustering
 
 
@@ -12,6 +11,8 @@ def test_comspr_basic():
     result = spectral_clustering(G, k)
     assert isinstance(result, dict)
     assert "cluster" in result
+
+
 def test_comspr_edge():
     """Test edge cases."""
     G = np.eye(10)

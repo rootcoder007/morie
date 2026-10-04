@@ -317,6 +317,7 @@ def lipinski_descriptors(smiles: str) -> RichResult:
 def cheatsheet() -> str:
     return "smiles_molecular_weight / smiles_hba / smiles_hbd / smiles_rotatable_bonds / smiles_tpsa -> descriptors."
 
+
 # alias kept from the retired placeholder of the same name
 hbond_acceptor_count = smiles_hba
 

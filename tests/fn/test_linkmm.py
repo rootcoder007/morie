@@ -52,14 +52,13 @@ def test_transformed_parameters_land_on_the_target_scale():
 
 
 def test_validation():
-    for call in (lambda: linkmm([1.0], [0.0], [1.0], [0.0]),
-                 lambda: linkmm([1.0, 1.0], [0.0, 1.0], [1.0], [0.0]),
-                 lambda: linkmm([1.0, 1.0], [0.0, 1.0], [0.0, 0.0],
-                                [0.0, 1.0]),
-                 lambda: linkmm([1.0, 1.0], [1.0, 1.0], [1.0, 1.0],
-                                [0.0, 1.0], method="mean/sigma"),
-                 lambda: linkmm([1.0, 1.0], [0.0, 1.0], [1.0, 1.0],
-                                [0.0, 1.0], method="haebara")):
+    for call in (
+        lambda: linkmm([1.0], [0.0], [1.0], [0.0]),
+        lambda: linkmm([1.0, 1.0], [0.0, 1.0], [1.0], [0.0]),
+        lambda: linkmm([1.0, 1.0], [0.0, 1.0], [0.0, 0.0], [0.0, 1.0]),
+        lambda: linkmm([1.0, 1.0], [1.0, 1.0], [1.0, 1.0], [0.0, 1.0], method="mean/sigma"),
+        lambda: linkmm([1.0, 1.0], [0.0, 1.0], [1.0, 1.0], [0.0, 1.0], method="haebara"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

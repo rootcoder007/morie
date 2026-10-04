@@ -1,9 +1,9 @@
 """Tests for morie.fn.sdid -- Synthetic DiD."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import ESRes
 from morie.fn.sdid import sdid, synthetic_did
 

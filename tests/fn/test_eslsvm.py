@@ -19,8 +19,7 @@ def test_eslsvm_basic():
     result = esl_svm_kernel(X, y, C=1.0, kernel="rbf", seed=1)
 
     assert isinstance(result, dict)
-    for key in ("alpha", "b", "support_", "n_support",
-                "decision", "class_", "accuracy", "dual_gap_check"):
+    for key in ("alpha", "b", "support_", "n_support", "decision", "class_", "accuracy", "dual_gap_check"):
         assert key in result
 
     # alpha is bounded by the box constraint C
@@ -47,8 +46,7 @@ def test_eslsvm_edge():
     nd2 = rng.normal(2.0, 1.0, (n_new, p))
     newdata = list(nd1) + list(nd2)
 
-    result = esl_svm_kernel(X, y, C=1.0, kernel="linear",
-                            newdata=newdata, seed=2)
+    result = esl_svm_kernel(X, y, C=1.0, kernel="linear", newdata=newdata, seed=2)
 
     assert isinstance(result, dict)
     # decision and class_ are evaluated at the new points

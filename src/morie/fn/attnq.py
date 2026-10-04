@@ -69,8 +69,7 @@ def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
     logits = Q @ K.T / np.sqrt(d_k)
     if mask is not None:
         m = np.asarray(mask)
-        if getattr(mask, "_is_mask", False) or getattr(m, "_is_mask", False) \
-                or _is_bool_mask(mask):
+        if getattr(mask, "_is_mask", False) or getattr(m, "_is_mask", False) or _is_bool_mask(mask):
             # a boolean mask keeps True positions (torch convention)
             m = np.where(m, 0.0, -np.inf)
         logits = logits + np.asarray(m, dtype=float)

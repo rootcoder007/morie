@@ -6,8 +6,6 @@ Springer, ch 9, eqs. 9.15 to 9.26 pp.346-347, the quadratic program. Expected va
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm188 import qplincon
@@ -36,8 +34,7 @@ def test_the_second_illustrative_example_matches_the_printed_solution():
 def test_strong_duality_holds_at_the_optimum():
     for a, c in ([[1.0], 1.0], [[1.0, 1.0], 2.0], [[3.0, 4.0], 10.0]):
         res = qplincon(a, c)
-        assert res["dual_value"] == pytest.approx(res["primal_value"],
-                                                   rel=1e-12)
+        assert res["dual_value"] == pytest.approx(res["primal_value"], rel=1e-12)
 
 
 def test_the_constraint_is_met_exactly_at_the_optimum():

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Funnel-plot coordinates with pseudo-confidence contours."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -55,14 +53,20 @@ def ma_funnel_plot_data(yi, se_i, level=0.95):
     sw = sum(w)
     center = sum(w[i] * y[i] for i in range(k)) / sw
     z = core.qnorm(1.0 - (1.0 - float(level)) / 2.0)
-    return RichResult(payload={
-        "x_funnel": y, "y_funnel": s,
-        "precision": [1.0 / t for t in s],
-        "center": center,
-        "ci_lo": [center - z * t for t in s],
-        "ci_hi": [center + z * t for t in s],
-        "se_center": (1.0 / sw) ** 0.5, "z_crit": z, "k": k,
-        "method": "Funnel-plot coordinates with pseudo-confidence contours"})
+    return RichResult(
+        payload={
+            "x_funnel": y,
+            "y_funnel": s,
+            "precision": [1.0 / t for t in s],
+            "center": center,
+            "ci_lo": [center - z * t for t in s],
+            "ci_hi": [center + z * t for t in s],
+            "se_center": (1.0 / sw) ** 0.5,
+            "z_crit": z,
+            "k": k,
+            "method": "Funnel-plot coordinates with pseudo-confidence contours",
+        }
+    )
 
 
 def cheatsheet():

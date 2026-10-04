@@ -89,7 +89,12 @@ def ipopt_solver(f, constraints, x0, mu0=1.0, outer=8, inner=30):
             for j in range(n):
                 H[j][j] = (plus[j] - 2.0 * base + minus[j]) / (_H * _H) + 1e-8
                 for k in range(j + 1, n):
-                    v = (cross[(j, k, 1.0, 1.0)] - cross[(j, k, 1.0, -1.0)] - cross[(j, k, -1.0, 1.0)] + cross[(j, k, -1.0, -1.0)]) / (4.0 * _H * _H)
+                    v = (
+                        cross[(j, k, 1.0, 1.0)]
+                        - cross[(j, k, 1.0, -1.0)]
+                        - cross[(j, k, -1.0, 1.0)]
+                        + cross[(j, k, -1.0, -1.0)]
+                    ) / (4.0 * _H * _H)
                     H[j][k] = v
                     H[k][j] = v
             try:

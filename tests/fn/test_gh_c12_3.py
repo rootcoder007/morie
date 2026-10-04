@@ -1,7 +1,6 @@
 """Tests for gh_c12_3.ghosal_strong_apx_dp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c12_3 import ghosal_strong_apx_dp
 
 
@@ -30,6 +29,7 @@ def test_gh_c12_3_basic():
         if d2 > sup:
             sup = d2
     import math
+
     expected_ks = math.sqrt(n) * sup
     assert float(arr) == expected_ks
 

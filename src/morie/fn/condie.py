@@ -76,14 +76,10 @@ def conditional_indirect_effect(a1, a3, b, w, sa1=None, sa3=None, sa1a3=0.0, sb=
         se_slope = [float("nan")] * n
     else:
         vslope = [
-            float(sa1) ** 2 + 2.0 * float(sa1a3) * float(wv[i]) + float(sa3) ** 2 * float(wv[i]) ** 2
-            for i in range(n)
+            float(sa1) ** 2 + 2.0 * float(sa1a3) * float(wv[i]) + float(sa3) ** 2 * float(wv[i]) ** 2 for i in range(n)
         ]
         se_slope = [float(np.sqrt(v)) if v >= 0.0 else float("nan") for v in vslope]
-        se = [
-            float(np.sqrt(slope[i] ** 2 * float(sb) ** 2 + float(b) ** 2 * vslope[i]))
-            for i in range(n)
-        ]
+        se = [float(np.sqrt(slope[i] ** 2 * float(sb) ** 2 + float(b) ** 2 * vslope[i])) for i in range(n)]
     z = [eff[i] / se[i] if se[i] == se[i] and se[i] > 0.0 else float("nan") for i in range(n)]
     pv = [2.0 * (1.0 - float(_t3.normcdf(abs(z[i])))) if z[i] == z[i] else float("nan") for i in range(n)]
     if n == 1:

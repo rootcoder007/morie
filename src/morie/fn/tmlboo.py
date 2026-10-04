@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["tmleboot", "tmle_bootstrap_ci"]
 
 
-def tmleboot(Y, A, QAW, Q1W, Q0W, g1W, B=200, seed=1, gbound=0.025,
-             level=0.95):
+def tmleboot(Y, A, QAW, Q1W, Q0W, g1W, B=200, seed=1, gbound=0.025, level=0.95):
     """Nonparametric bootstrap interval for the targeted risk difference.
 
     Note what is and is not resampled: the INITIAL FITS are carried
@@ -98,9 +97,15 @@ def tmleboot(Y, A, QAW, Q1W, Q0W, g1W, B=200, seed=1, gbound=0.025,
             # targeted; it is skipped rather than silently contributing
             # a degenerate estimate.
             continue
-        f = T.target([Y[j] for j in idx], [A[j] for j in idx],
-                     [QAW[j] for j in idx], [Q1W[j] for j in idx],
-                     [Q0W[j] for j in idx], [g1W[j] for j in idx], gbound)
+        f = T.target(
+            [Y[j] for j in idx],
+            [A[j] for j in idx],
+            [QAW[j] for j in idx],
+            [Q1W[j] for j in idx],
+            [Q0W[j] for j in idx],
+            [g1W[j] for j in idx],
+            gbound,
+        )
         reps.append(sum(f["Q1star"]) / n - sum(f["Q0star"]) / n)
     if len(reps) < 2:
         raise ValueError("too few usable bootstrap replicates")
@@ -109,12 +114,21 @@ def tmleboot(Y, A, QAW, Q1W, Q0W, g1W, B=200, seed=1, gbound=0.025,
     a = (1.0 - float(level)) / 2.0
     lo = q[max(0, int(math.floor(a * (m - 1))))]
     hi = q[min(m - 1, int(math.ceil((1.0 - a) * (m - 1))))]
-    return RichResult(payload={
-        "estimate": psi, "boot_se": C.sd(reps, 1), "ci_lower": lo,
-        "ci_upper": hi, "ic_se": icse, "ic_lower": psi - z * icse,
-        "ic_upper": psi + z * icse, "boot_mean": sum(reps) / m,
-        "B": float(m), "n": float(n),
-        "method": "Bootstrap and influence-curve intervals for a TMLE"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "boot_se": C.sd(reps, 1),
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "ic_se": icse,
+            "ic_lower": psi - z * icse,
+            "ic_upper": psi + z * icse,
+            "boot_mean": sum(reps) / m,
+            "B": float(m),
+            "n": float(n),
+            "method": "Bootstrap and influence-curve intervals for a TMLE",
+        }
+    )
 
 
 tmle_bootstrap_ci = tmleboot

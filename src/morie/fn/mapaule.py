@@ -94,26 +94,36 @@ def ma_paule_mandel(yi, vi, max_iter=200, tol=1e-12):
     mu = float(np.sum(w * y) / np.sum(w))
     se = float(np.sqrt(1.0 / np.sum(w)))
     z = stats.norm.ppf(0.975)
-    return RichResult(payload={
-        "tau2": float(t2), "tau": float(np.sqrt(t2)),
-        "mu": mu, "se": se, "ci": (mu - z * se, mu + z * se),
-        "Q": Q0, "I2": float(max(0.0, (Q0 - (k - 1)) / Q0)) if Q0 > 0
-        else 0.0,
-        "tau2_dl": float(dersimonian_laird(y, v)),
-        "at_boundary": bool(at_boundary),
-        "boundary_note": None if not at_boundary else (
-            "Q is already below its expectation at tau^2 = 0, so the "
-            "estimate is a truncation at the boundary rather than an "
-            "interior solution"),
-        "weights": w, "k": int(k),
-        "uniqueness_note": "the generalised Q is strictly decreasing in "
-                           "tau^2, so the root is unique and bisection "
-                           "cannot fail -- unlike the likelihood-based "
-                           "estimators",
-        "why_it_matters": "the weights are 1/(v_i + tau^2), so a different "
-                          "tau^2 is a different POOLED EFFECT, not just a "
-                          "heterogeneity footnote",
-        "method": "Paule-Mandel (1982) tau^2 by bisection on the generalised Q"})
+    return RichResult(
+        payload={
+            "tau2": float(t2),
+            "tau": float(np.sqrt(t2)),
+            "mu": mu,
+            "se": se,
+            "ci": (mu - z * se, mu + z * se),
+            "Q": Q0,
+            "I2": float(max(0.0, (Q0 - (k - 1)) / Q0)) if Q0 > 0 else 0.0,
+            "tau2_dl": float(dersimonian_laird(y, v)),
+            "at_boundary": bool(at_boundary),
+            "boundary_note": None
+            if not at_boundary
+            else (
+                "Q is already below its expectation at tau^2 = 0, so the "
+                "estimate is a truncation at the boundary rather than an "
+                "interior solution"
+            ),
+            "weights": w,
+            "k": int(k),
+            "uniqueness_note": "the generalised Q is strictly decreasing in "
+            "tau^2, so the root is unique and bisection "
+            "cannot fail -- unlike the likelihood-based "
+            "estimators",
+            "why_it_matters": "the weights are 1/(v_i + tau^2), so a different "
+            "tau^2 is a different POOLED EFFECT, not just a "
+            "heterogeneity footnote",
+            "method": "Paule-Mandel (1982) tau^2 by bisection on the generalised Q",
+        }
+    )
 
 
 def cheatsheet():

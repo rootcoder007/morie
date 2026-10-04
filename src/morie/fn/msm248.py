@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,10 +23,14 @@ def mvsml_reproducing_kernel_eq_10_9(V_h, W_l, activation="identity"):
     continuous, logistic for binary, exponential for counts.
     Keys: estimate."""
     f = _gp.ann_forward(V_h, [W_l], [activation])
-    res = RichResult(payload={"estimate": f["output"][0][0],
-                              "z": f["nets"][0],
-                              "y_hat": f["output"],
-                              "method": "output-layer prediction (MVSML 2022 eq. 10.8-10.9)"})
+    res = RichResult(
+        payload={
+            "estimate": f["output"][0][0],
+            "z": f["nets"][0],
+            "y_hat": f["output"],
+            "method": "output-layer prediction (MVSML 2022 eq. 10.8-10.9)",
+        }
+    )
     return with_describe_pointer(res, "msm248")
 
 

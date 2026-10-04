@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel density derivative."""
 
-from . import _array_core as np
 from ._horowitz import kde_deriv
 from ._richresult import RichResult
 
@@ -49,16 +48,24 @@ def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
         raise ValueError(
             "only the first derivative (r=1) is implemented: the shared"
             " kde_deriv kernel computes f' only, and silently returning"
-            " it labelled as an r-th derivative would be wrong.")
+            " it labelled as an r-th derivative would be wrong."
+        )
     if r < 1:
         raise ValueError(f"r must be at least 1, got {r}.")
     g, d, hh = kde_deriv(x, grid=grid, h=h, name=kernel_name)
-    return RichResult(payload={"grid": g, "derivative": d, "bandwidth": hh,
-                               # RMSE rate for the r-th derivative with a second-order kernel
-                               # is n^(-2/(2r+5)): -2/7 at r=1, matching the
-                               # n^(-1/7) bandwidth _horowitz.kde_deriv uses.
-                               "rate_exponent": -2.0 / (2.0 * r + 5.0), "r": r,
-                               "method": "f-hat'(x) via K'; needs a WIDER bandwidth than the density"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "derivative": d,
+            "bandwidth": hh,
+            # RMSE rate for the r-th derivative with a second-order kernel
+            # is n^(-2/(2r+5)): -2/7 at r=1, matching the
+            # n^(-1/7) bandwidth _horowitz.kde_deriv uses.
+            "rate_exponent": -2.0 / (2.0 * r + 5.0),
+            "r": r,
+            "method": "f-hat'(x) via K'; needs a WIDER bandwidth than the density",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for vrgft.variogram_fitting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vrgft import variogram_fitting
 
 

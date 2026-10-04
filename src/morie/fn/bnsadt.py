@@ -84,9 +84,17 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["bound_adversarial", "bnsadt", "publication_probability",
-           "selection_loglik", "median_unbiased", "fit_selection",
-           "group_counts", "FAMILIES", "cheatsheet"]
+__all__ = [
+    "bound_adversarial",
+    "bnsadt",
+    "publication_probability",
+    "selection_loglik",
+    "median_unbiased",
+    "fit_selection",
+    "group_counts",
+    "FAMILIES",
+    "cheatsheet",
+]
 
 # Each family is (signed cutoffs, one group index per interval). A group
 # index of -1 means the interval's probability is fixed at 1, which is
@@ -95,8 +103,7 @@ __all__ = ["bound_adversarial", "bnsadt", "publication_probability",
 FAMILIES = {
     "none": ((), (-1,)),
     "symmetric_step": ((-1.96, 1.96), (-1, 0, -1)),
-    "symmetric_step2": ((-1.96, -1.645, 1.645, 1.96),
-                        (-1, 1, 0, 1, -1)),
+    "symmetric_step2": ((-1.96, -1.645, 1.645, 1.96), (-1, 1, 0, 1, -1)),
     "signed_step": ((-1.96, 0.0, 1.96), (0, 1, 2, -1)),
 }
 
@@ -155,8 +162,7 @@ def _expected_p(sigma, mu, tau, family, params):
     return _w.csum(terms)
 
 
-def selection_loglik(x, sigma, mu, tau, family="symmetric_step",
-                     params=()):
+def selection_loglik(x, sigma, mu, tau, family="symmetric_step", params=()):
     """Log-likelihood of the published estimates under the model."""
     n = len(x)
     terms = []
@@ -169,9 +175,7 @@ def selection_loglik(x, sigma, mu, tau, family="symmetric_step",
         if d <= 0.0:
             return float("-inf")
         z = (x[i] - mu) / s
-        terms.append(math.log(p) - 0.5 * z * z
-                     - math.log(s * math.sqrt(2.0 * math.pi))
-                     - math.log(d))
+        terms.append(math.log(p) - 0.5 * z * z - math.log(s * math.sqrt(2.0 * math.pi)) - math.log(d))
     return _w.csum(terms)
 
 
@@ -201,8 +205,7 @@ def group_counts(x, sigma, family):
     return counts
 
 
-def fit_selection(x, sigma, family="symmetric_step", mu0=None, tau0=None,
-                  beta0=0.5, iters=600):
+def fit_selection(x, sigma, family="symmetric_step", mu0=None, tau0=None, beta0=0.5, iters=600):
     """Maximum likelihood over (mu, tau, beta) by Nelder-Mead.
 
     tau and every beta are optimised on the log scale, so the simplex
@@ -259,11 +262,18 @@ def fit_selection(x, sigma, family="symmetric_step", mu0=None, tau0=None,
 
     r = _w.nelder_mead(neg, start, iters=iters)
     mu, tau, ps = expand(r["x"])
-    return {"mu": mu, "tau": tau, "betas": ps, "loglik": -r["value"],
-            "family": family, "n_free": len(active) + 2,
-            "counts": counts, "unidentified": unident,
-            "tau_at_floor": tau <= tau_floor,
-            "tau_floor": tau_floor}
+    return {
+        "mu": mu,
+        "tau": tau,
+        "betas": ps,
+        "loglik": -r["value"],
+        "family": family,
+        "n_free": len(active) + 2,
+        "counts": counts,
+        "unidentified": unident,
+        "tau_at_floor": tau <= tau_floor,
+        "tau_floor": tau_floor,
+    }
 
 
 def _published_cdf(x, theta, sigma, family, params):
@@ -293,8 +303,7 @@ def _published_cdf(x, theta, sigma, family, params):
     return _w.csum(num) / d
 
 
-def median_unbiased(x, sigma, family="symmetric_step", params=(),
-                    lo=None, hi=None):
+def median_unbiased(x, sigma, family="symmetric_step", params=(), lo=None, hi=None):
     """The theta for which the published X has median x.
 
     Solved by bisection on a bracketing interval; the published CDF is
@@ -306,13 +315,10 @@ def median_unbiased(x, sigma, family="symmetric_step", params=(),
         hi = x + 20.0 * sigma
     # The published CDF decreases in theta, so f(lo) > 0 and f(hi) < 0;
     # bisect only needs a sign change, not a direction.
-    return _w.bisect(
-        lambda th: _published_cdf(x, th, sigma, family, params) - 0.5,
-        lo, hi)
+    return _w.bisect(lambda th: _published_cdf(x, th, sigma, family, params) - 0.5, lo, hi)
 
 
-def bound_adversarial(y, D, family="symmetric_step", grid=None,
-                      target=None, target_se=None, fit=True, iters=600):
+def bound_adversarial(y, D, family="symmetric_step", grid=None, target=None, target_se=None, fit=True, iters=600):
     """Publication-bias correction with its adversarial bound.
 
     Parameters
@@ -375,11 +381,14 @@ def bound_adversarial(y, D, family="symmetric_step", grid=None,
         raise ValueError("target_se is required when target is given")
 
     k = _n_free(family)
-    res = {"family": family, "n": n, "target": float(target),
-           "target_se": float(target_se),
-           "target_z": float(target) / float(target_se),
-           "method": "Andrews-Kasy publication-bias correction with an "
-                     "adversarial bound over the selection family"}
+    res = {
+        "family": family,
+        "n": n,
+        "target": float(target),
+        "target_se": float(target_se),
+        "target_z": float(target) / float(target_se),
+        "method": "Andrews-Kasy publication-bias correction with an adversarial bound over the selection family",
+    }
 
     if fit:
         f = fit_selection(x, sigma, family, iters=iters)
@@ -390,8 +399,7 @@ def bound_adversarial(y, D, family="symmetric_step", grid=None,
         res["unidentified"] = f["unidentified"]
         res["tau_at_floor"] = f["tau_at_floor"]
         res["loglik"] = f["loglik"]
-        res["estimate"] = median_unbiased(target, target_se, family,
-                                          f["betas"])
+        res["estimate"] = median_unbiased(target, target_se, family, f["betas"])
         # The naive number the literature would report, for contrast.
         res["uncorrected"] = float(target)
         res["correction"] = res["estimate"] - float(target)
@@ -401,18 +409,14 @@ def bound_adversarial(y, D, family="symmetric_step", grid=None,
         res["loglik_no_selection"] = ll0
         res["lr_statistic"] = 2.0 * (f["loglik"] - ll0)
         res["lr_df"] = k - len(f["unidentified"])
-        res["lr_p"] = (float("nan") if res["lr_df"] == 0 else
-                       _w.gammq(res["lr_df"] / 2.0,
-                                res["lr_statistic"] / 2.0))
+        res["lr_p"] = float("nan") if res["lr_df"] == 0 else _w.gammq(res["lr_df"] / 2.0, res["lr_statistic"] / 2.0)
 
     if grid is None:
         grid = [1.0, 0.8, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05]
     sweep = []
     for b in grid:
         ps = [float(b)] * k
-        sweep.append({"beta": float(b),
-                      "estimate": median_unbiased(target, target_se,
-                                                  family, ps)})
+        sweep.append({"beta": float(b), "estimate": median_unbiased(target, target_se, family, ps)})
     ests = [s["estimate"] for s in sweep]
     lo_i = min(range(len(ests)), key=lambda i: (ests[i], i))
     hi_i = max(range(len(ests)), key=lambda i: (ests[i], -i))
@@ -430,6 +434,7 @@ bnsadt = bound_adversarial
 
 
 def cheatsheet():
-    return ("bnsadt: Andrews-Kasy publication-bias correction plus the "
-            "adversarial bound over the selection family. families "
-            + ", ".join(sorted(FAMILIES)))
+    return (
+        "bnsadt: Andrews-Kasy publication-bias correction plus the "
+        "adversarial bound over the selection family. families " + ", ".join(sorted(FAMILIES))
+    )

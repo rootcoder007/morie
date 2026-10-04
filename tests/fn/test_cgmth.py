@@ -1,8 +1,8 @@
 """Tests for cgmth (conjugate gradient minimisation)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cgmth import cgmth
 
 

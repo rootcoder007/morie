@@ -5,15 +5,21 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlstm import geron_lstm
 
-
 _KEYS = (
-    "W_i", "U_i", "b_i",
-    "W_f", "U_f", "b_f",
-    "W_o", "U_o", "b_o",
-    "W_g", "U_g", "b_g",
+    "W_i",
+    "U_i",
+    "b_i",
+    "W_f",
+    "U_f",
+    "b_f",
+    "W_o",
+    "U_o",
+    "b_o",
+    "W_g",
+    "U_g",
+    "b_g",
 )
 
 
@@ -89,7 +95,7 @@ import morie.fn.hmlstm as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

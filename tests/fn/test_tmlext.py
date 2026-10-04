@@ -1,7 +1,6 @@
 """Tests for tmlext.tmle_external_data."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlext import tmle_external_data
 
 

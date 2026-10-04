@@ -6,16 +6,14 @@ import pytest
 
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp11e1 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_11_equation_1 as eq11_1,
+)
+from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp11e1 import (
     facrisk,
 )
 
 ALPHA0 = -0.25
 # five areas, two latent factors: W is n by L, phi is one value per factor
-W = [[1.0, 0.0],
-     [0.5, 0.5],
-     [0.0, 1.0],
-     [0.25, 0.75],
-     [0.8, 0.2]]
+W = [[1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [0.25, 0.75], [0.8, 0.2]]
 PHI = [0.4, -0.6]
 
 

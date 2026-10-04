@@ -1,7 +1,6 @@
 """Tests for lcfsdq.lc_first_sd_query."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lcfsdq import lc_first_sd_query
 
 

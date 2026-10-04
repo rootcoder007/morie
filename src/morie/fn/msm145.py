@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,10 +25,15 @@ def mvsml_categorical_count_eq_8_11(K, tol=1e-10):
     and multi-trait models, so the reparameterization is much cheaper.
     Keys: estimate."""
     f = _gp.kernel_eigen_design(K, tol=tol)
-    res = RichResult(payload={"estimate": float(f["rank"]),
-                              "P": f["P"], "rank": f["rank"],
-                              "eigenvalues": f["eigenvalues"],
-                              "method": "eigenvalue kernel reparameterization (MVSML 2022 eq. 8.11)"})
+    res = RichResult(
+        payload={
+            "estimate": float(f["rank"]),
+            "P": f["P"],
+            "rank": f["rank"],
+            "eigenvalues": f["eigenvalues"],
+            "method": "eigenvalue kernel reparameterization (MVSML 2022 eq. 8.11)",
+        }
+    )
     return with_describe_pointer(res, "msm145")
 
 

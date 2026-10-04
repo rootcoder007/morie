@@ -1,8 +1,8 @@
 """Tests for morie.fn.vrfydr — verify directory."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn.vrfydr import verify_directory, vrfydr
 from morie.inspector import VerificationReport
 

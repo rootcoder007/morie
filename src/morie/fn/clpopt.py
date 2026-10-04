@@ -69,13 +69,11 @@ _EPS = 1e-9
 def _mat(A, name, ncol=None):
     M = [[float(v) for v in row] for row in A]
     if ncol is not None and any(len(r) != ncol for r in M):
-        raise ValueError("clpopt: %s has rows of differing length; "
-                         "every row needs %d entries" % (name, ncol))
+        raise ValueError("clpopt: %s has rows of differing length; every row needs %d entries" % (name, ncol))
     return M
 
 
-def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
-                  upper=None):
+def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None):
     r"""Convert an inequality-form program to :math:`Ax = b,\ x \ge 0`.
 
     Slack variables are appended for ``<=`` rows and for any finite
@@ -92,8 +90,7 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
         M = _mat(A_ub, "A_ub", n)
         bb = [float(v) for v in b_ub]
         if len(M) != len(bb):
-            raise ValueError("clpopt: A_ub has %d rows but b_ub has "
-                             "%d entries" % (len(M), len(bb)))
+            raise ValueError("clpopt: A_ub has %d rows but b_ub has %d entries" % (len(M), len(bb)))
         for r, v in zip(M, bb):
             rows.append((list(r), v, "ub"))
             n_slack += 1
@@ -102,8 +99,7 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
             if u is None:
                 continue
             if j >= n:
-                raise ValueError("clpopt: an upper bound was given "
-                                 "for variable %d of %d" % (j, n))
+                raise ValueError("clpopt: an upper bound was given for variable %d of %d" % (j, n))
             r = [0.0] * n
             r[j] = 1.0
             rows.append((r, float(u), "ub"))
@@ -112,14 +108,11 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
         M = _mat(A_eq, "A_eq", n)
         bb = [float(v) for v in b_eq]
         if len(M) != len(bb):
-            raise ValueError("clpopt: A_eq has %d rows but b_eq has "
-                             "%d entries" % (len(M), len(bb)))
+            raise ValueError("clpopt: A_eq has %d rows but b_eq has %d entries" % (len(M), len(bb)))
         for r, v in zip(M, bb):
             rows.append((list(r), v, "eq"))
     if not rows:
-        raise ValueError("clpopt: the program has no constraints, so "
-                         "it is unbounded unless the objective is "
-                         "zero")
+        raise ValueError("clpopt: the program has no constraints, so it is unbounded unless the objective is zero")
     m = len(rows)
     A = []
     b = []
@@ -136,9 +129,14 @@ def standard_form(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
         if b[i] < 0:
             A[i] = [-v for v in A[i]]
             b[i] = -b[i]
-    return {"A": A, "b": b, "c": cv + [0.0] * n_slack,
-            "n_original": n, "n_slack": n_slack,
-            "row_kinds": [k for _r, _v, k in rows]}
+    return {
+        "A": A,
+        "b": b,
+        "c": cv + [0.0] * n_slack,
+        "n_original": n,
+        "n_slack": n_slack,
+        "row_kinds": [k for _r, _v, k in rows],
+    }
 
 
 def _pivot(T, row, col):
@@ -157,14 +155,11 @@ def _run(T, basis, cols, rule, blocked, max_iter):
     m = len(basis)
     seen = set()
     for _ in range(int(max_iter)):
-        cand = [j for j in cols
-                if j not in blocked and T[m][j] < -_EPS]
+        cand = [j for j in cols if j not in blocked and T[m][j] < -_EPS]
         if not cand:
             return "optimal"
-        j = min(cand) if rule == "bland" else min(
-            cand, key=lambda k: (T[m][k], k))
-        ratios = [(T[i][-1] / T[i][j], basis[i], i)
-                  for i in range(m) if T[i][j] > _EPS]
+        j = min(cand) if rule == "bland" else min(cand, key=lambda k: (T[m][k], k))
+        ratios = [(T[i][-1] / T[i][j], basis[i], i) for i in range(m) if T[i][j] > _EPS]
         if not ratios:
             return "unbounded"
         _r, _bi, row = min(ratios)
@@ -177,8 +172,7 @@ def _run(T, basis, cols, rule, blocked, max_iter):
     return "iteration_limit"
 
 
-def simplex(c, A, b, rule="bland", max_iter=10000,
-            initial_basis=None):
+def simplex(c, A, b, rule="bland", max_iter=10000, initial_basis=None):
     r"""Two-phase primal simplex on :math:`Ax = b,\ x \ge 0`.
 
     ``b`` must be non-negative; :func:`standard_form` arranges that.
@@ -189,8 +183,7 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
     starting there rather than wherever phase I happens to land.
     """
     if rule not in PIVOT_RULES:
-        raise ValueError("clpopt: rule must be one of %s, got %r"
-                         % (", ".join(PIVOT_RULES), rule))
+        raise ValueError("clpopt: rule must be one of %s, got %r" % (", ".join(PIVOT_RULES), rule))
     cv = [float(v) for v in c]
     n = len(cv)
     M = _mat(A, "A", n)
@@ -199,25 +192,18 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
     if m == 0:
         raise ValueError("clpopt: no constraints")
     if len(bb) != m:
-        raise ValueError("clpopt: A has %d rows but b has %d entries"
-                         % (m, len(bb)))
+        raise ValueError("clpopt: A has %d rows but b has %d entries" % (m, len(bb)))
     if any(v < -_EPS for v in bb):
-        raise ValueError("clpopt: every right-hand side must be "
-                         "non-negative in standard form")
+        raise ValueError("clpopt: every right-hand side must be non-negative in standard form")
     total = n + m
-    T = [[M[i][j] for j in range(n)]
-         + [1.0 if k == i else 0.0 for k in range(m)]
-         + [bb[i]] for i in range(m)]
+    T = [[M[i][j] for j in range(n)] + [1.0 if k == i else 0.0 for k in range(m)] + [bb[i]] for i in range(m)]
     basis = [n + i for i in range(m)]
     if initial_basis is not None:
         want = [int(j) for j in initial_basis]
         if len(want) != m:
-            raise ValueError("clpopt: initial_basis needs %d columns, "
-                             "got %d" % (m, len(want)))
+            raise ValueError("clpopt: initial_basis needs %d columns, got %d" % (m, len(want)))
         if any(not 0 <= j < n for j in want) or len(set(want)) != m:
-            raise ValueError("clpopt: initial_basis must name %d "
-                             "distinct structural columns in [0, %d)"
-                             % (m, n))
+            raise ValueError("clpopt: initial_basis must name %d distinct structural columns in [0, %d)" % (m, n))
         for i, j in enumerate(want):
             if abs(T[i][j]) <= _EPS:
                 for r in range(i + 1, m):
@@ -225,14 +211,11 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
                         T[i], T[r] = T[r], T[i]
                         break
                 else:
-                    raise ValueError("clpopt: the columns of "
-                                     "initial_basis are linearly "
-                                     "dependent")
+                    raise ValueError("clpopt: the columns of initial_basis are linearly dependent")
             _pivot(T, i, j)
             basis[i] = j
         if any(T[i][-1] < -_EPS for i in range(m)):
-            raise ValueError("clpopt: initial_basis is not feasible "
-                             "-- it gives a negative basic value")
+            raise ValueError("clpopt: initial_basis is not feasible -- it gives a negative basic value")
         obj2 = [0.0] * (total + 1)
         for j in range(n):
             obj2[j] = cv[j]
@@ -242,18 +225,21 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
                 for k in range(total + 1):
                     obj2[k] -= f * T[i][k]
         T.append(obj2)
-        st = _run(T, basis, range(n), rule, set(range(n, total)),
-                  max_iter)
+        st = _run(T, basis, range(n), rule, set(range(n, total)), max_iter)
         if st in ("cycling", "iteration_limit"):
             return _fail(st, rule, "phase 2")
         if st == "unbounded":
-            return RichResult(payload={
-                "estimate": None, "status": "unbounded", "x": None,
-                "fun": None, "rule": rule,
-                "message": "the objective decreases without bound "
-                           "along a feasible ray",
-                "method": "primal simplex (Dantzig 1963) from a "
-                          "given basis"})
+            return RichResult(
+                payload={
+                    "estimate": None,
+                    "status": "unbounded",
+                    "x": None,
+                    "fun": None,
+                    "rule": rule,
+                    "message": "the objective decreases without bound along a feasible ray",
+                    "method": "primal simplex (Dantzig 1963) from a given basis",
+                }
+            )
         return _report(T, basis, cv, n, m, total, rule)
     # Phase I: minimise the sum of the artificials.
     obj = [0.0] * (total + 1)
@@ -267,13 +253,17 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
     if st in ("cycling", "iteration_limit"):
         return _fail(st, rule, "phase 1")
     if -T[m][-1] > 1e-7:
-        return RichResult(payload={
-            "estimate": None, "status": "infeasible", "x": None,
-            "fun": None, "message": "no point satisfies every "
-                                    "constraint (phase 1 residual "
-                                    "%.3g)" % (-T[m][-1]),
-            "rule": rule,
-            "method": "two-phase primal simplex (Dantzig 1963)"})
+        return RichResult(
+            payload={
+                "estimate": None,
+                "status": "infeasible",
+                "x": None,
+                "fun": None,
+                "message": "no point satisfies every constraint (phase 1 residual %.3g)" % (-T[m][-1]),
+                "rule": rule,
+                "method": "two-phase primal simplex (Dantzig 1963)",
+            }
+        )
     # Drive any artificial still basic out of the basis if possible.
     for i in range(m):
         if basis[i] >= n:
@@ -292,17 +282,21 @@ def simplex(c, A, b, rule="bland", max_iter=10000,
             for k in range(total + 1):
                 obj2[k] -= f * T[i][k]
     T[m] = obj2
-    st = _run(T, basis, range(n), rule, set(range(n, total)),
-              max_iter)
+    st = _run(T, basis, range(n), rule, set(range(n, total)), max_iter)
     if st in ("cycling", "iteration_limit"):
         return _fail(st, rule, "phase 2")
     if st == "unbounded":
-        return RichResult(payload={
-            "estimate": None, "status": "unbounded", "x": None,
-            "fun": None, "rule": rule,
-            "message": "the objective decreases without bound along "
-                       "a feasible ray",
-            "method": "two-phase primal simplex (Dantzig 1963)"})
+        return RichResult(
+            payload={
+                "estimate": None,
+                "status": "unbounded",
+                "x": None,
+                "fun": None,
+                "rule": rule,
+                "message": "the objective decreases without bound along a feasible ray",
+                "method": "two-phase primal simplex (Dantzig 1963)",
+            }
+        )
     return _report(T, basis, cv, n, m, total, rule)
 
 
@@ -313,47 +307,55 @@ def _report(T, basis, cv, n, m, total, rule):
             x[basis[i]] = T[i][-1]
     y = [-T[m][n + i] for i in range(m)]
     fun = sum(cv[j] * x[j] for j in range(n))
-    degenerate = [basis[i] for i in range(m)
-                  if abs(T[i][-1]) < _EPS]
-    alt = [j for j in range(n)
-           if j not in basis and abs(T[m][j]) < _EPS]
-    return RichResult(payload={
-        "estimate": x, "status": "optimal", "x": x, "fun": fun,
-        "duals": y, "basis": list(basis),
-        "reduced_costs": [T[m][j] for j in range(n)],
-        "degenerate": degenerate,
-        "multiple_optima": bool(alt), "alternate_entering": alt,
-        "rule": rule,
-        "method": "two-phase primal simplex (Dantzig 1963) with "
-                  "%s's pivot rule" % ("Bland" if rule == "bland"
-                                       else "Dantzig"),
-    })
+    degenerate = [basis[i] for i in range(m) if abs(T[i][-1]) < _EPS]
+    alt = [j for j in range(n) if j not in basis and abs(T[m][j]) < _EPS]
+    return RichResult(
+        payload={
+            "estimate": x,
+            "status": "optimal",
+            "x": x,
+            "fun": fun,
+            "duals": y,
+            "basis": list(basis),
+            "reduced_costs": [T[m][j] for j in range(n)],
+            "degenerate": degenerate,
+            "multiple_optima": bool(alt),
+            "alternate_entering": alt,
+            "rule": rule,
+            "method": "two-phase primal simplex (Dantzig 1963) with "
+            "%s's pivot rule" % ("Bland" if rule == "bland" else "Dantzig"),
+        }
+    )
 
 
 def _fail(st, rule, phase):
-    why = ("the basis repeated, so the method is cycling"
-           if st == "cycling" else "the iteration limit was reached")
-    hint = (" -- Dantzig's rule can cycle on degenerate problems; "
-            "rule='bland' is guaranteed to terminate"
-            if rule == "dantzig" else "")
-    return RichResult(payload={
-        "estimate": None, "status": st, "x": None, "fun": None,
-        "rule": rule,
-        "message": "%s in %s%s" % (why, phase, hint),
-        "method": "two-phase primal simplex (Dantzig 1963)"})
+    why = "the basis repeated, so the method is cycling" if st == "cycling" else "the iteration limit was reached"
+    hint = (
+        " -- Dantzig's rule can cycle on degenerate problems; rule='bland' is guaranteed to terminate"
+        if rule == "dantzig"
+        else ""
+    )
+    return RichResult(
+        payload={
+            "estimate": None,
+            "status": st,
+            "x": None,
+            "fun": None,
+            "rule": rule,
+            "message": "%s in %s%s" % (why, phase, hint),
+            "method": "two-phase primal simplex (Dantzig 1963)",
+        }
+    )
 
 
-def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
-            upper=None, rule="bland", maximise=False,
-            max_iter=10000):
+def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None, rule="bland", maximise=False, max_iter=10000):
     r"""Solve an inequality-form linear program.
 
     Minimises by default; ``maximise=True`` negates the objective and
     negates the reported value back.
     """
     sign = -1.0 if maximise else 1.0
-    sf = standard_form([sign * float(v) for v in c], A_ub, b_ub,
-                       A_eq, b_eq, upper)
+    sf = standard_form([sign * float(v) for v in c], A_ub, b_ub, A_eq, b_eq, upper)
     r = simplex(sf["c"], sf["A"], sf["b"], rule, max_iter)
     if r["status"] != "optimal":
         return r
@@ -361,12 +363,20 @@ def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
     x = r["x"][:n]
     fun = sign * r["fun"]
     out = dict(r)
-    out.update({"estimate": x, "x": x, "fun": fun,
-                # Report duals in the sign convention of the problem
-                # as posed, so b'y equals the reported objective.
-                "duals": [sign * d for d in r["duals"]],
-                "slack": r["x"][n:], "maximise": bool(maximise),
-                "n_original": n, "n_slack": sf["n_slack"]})
+    out.update(
+        {
+            "estimate": x,
+            "x": x,
+            "fun": fun,
+            # Report duals in the sign convention of the problem
+            # as posed, so b'y equals the reported objective.
+            "duals": [sign * d for d in r["duals"]],
+            "slack": r["x"][n:],
+            "maximise": bool(maximise),
+            "n_original": n,
+            "n_slack": sf["n_slack"],
+        }
+    )
     return RichResult(payload=out)
 
 

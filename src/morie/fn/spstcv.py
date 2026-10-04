@@ -3,14 +3,14 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_st import is_separable, is_valid_covariance, separable_covariance, st_lag_matrices
+from ._schab_st import is_separable, is_valid_covariance, separable_covariance
 
 __all__ = ["schabenberger_st_cov_separable"]
 
 
-def schabenberger_st_cov_separable(spatial_h, temporal_u, cov_spatial,
-                                   cov_temporal, form="product", coords=None,
-                                   times=None):
+def schabenberger_st_cov_separable(
+    spatial_h, temporal_u, cov_spatial, cov_temporal, form="product", coords=None, times=None
+):
     """Separable spatio-temporal covariance, Sec. 9.2.
 
     A separable covariance decomposes Cov[Z(s,t), Z(s+h,t+k)] into a purely
@@ -65,8 +65,7 @@ def schabenberger_st_cov_separable(spatial_h, temporal_u, cov_spatial,
     ----------
     Schabenberger & Gotway (2005), Sec. 9.2, eqs (9.5)-(9.6).
     """
-    c = separable_covariance(spatial_h, temporal_u, cov_spatial, cov_temporal,
-                             form=form)
+    c = separable_covariance(spatial_h, temporal_u, cov_spatial, cov_temporal, form=form)
     h = np.atleast_1d(np.asarray(spatial_h, dtype=float))
     k = np.atleast_1d(np.asarray(temporal_u, dtype=float))
     zero = np.zeros_like(h)
@@ -76,35 +75,33 @@ def schabenberger_st_cov_separable(spatial_h, temporal_u, cov_spatial,
         "separable": is_separable(form),
         # C(h, 0) and C(0, k), which Sec. 9.2 names as the spatial and
         # temporal covariance functions of the process
-        "spatial_only": separable_covariance(h, zero, cov_spatial,
-                                             cov_temporal, form=form),
-        "temporal_only": separable_covariance(np.zeros_like(k), k, cov_spatial,
-                                              cov_temporal, form=form),
-        "sill": float(np.asarray(separable_covariance(
-            np.array(0.0), np.array(0.0), cov_spatial, cov_temporal,
-            form=form)).ravel()[0]),
+        "spatial_only": separable_covariance(h, zero, cov_spatial, cov_temporal, form=form),
+        "temporal_only": separable_covariance(np.zeros_like(k), k, cov_spatial, cov_temporal, form=form),
+        "sill": float(
+            np.asarray(
+                separable_covariance(np.array(0.0), np.array(0.0), cov_spatial, cov_temporal, form=form)
+            ).ravel()[0]
+        ),
     }
-    lines = [("form", form), ("separable", payload["separable"]),
-             ("C(0,0)", payload["sill"])]
+    lines = [("form", form), ("separable", payload["separable"]), ("C(0,0)", payload["sill"])]
 
     if coords is not None and times is not None:
         v = is_valid_covariance(
-            coords, times,
-            lambda d, u: separable_covariance(d, u, cov_spatial, cov_temporal,
-                                              form=form))
+            coords, times, lambda d, u: separable_covariance(d, u, cov_spatial, cov_temporal, form=form)
+        )
         payload.update(valid=v["valid"], min_eigenvalue=v["min_eigenvalue"])
-        lines += [("positive definite", v["valid"]),
-                  ("min eigenvalue", v["min_eigenvalue"])]
+        lines += [("positive definite", v["valid"]), ("min eigenvalue", v["min_eigenvalue"])]
         if not v["valid"]:
             payload["warning"] = (
-                "eq (9.5) fails on this design: the construction does not "
-                "yield a valid covariance function here")
+                "eq (9.5) fails on this design: the construction does not yield a valid covariance function here"
+            )
 
-    return RichResult(title="Separable spatio-temporal covariance",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Separable spatio-temporal covariance", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spstcv: separable spatio-temporal covariance (Sec. 9.2) -- "
-            "product, sum and product-sum forms, with the eq (9.5) validity "
-            "check")
+    return (
+        "spstcv: separable spatio-temporal covariance (Sec. 9.2) -- "
+        "product, sum and product-sum forms, with the eq (9.5) validity "
+        "check"
+    )

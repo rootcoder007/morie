@@ -22,8 +22,7 @@ def _rmspe(gap, sl):
     return float(np.sqrt(np.mean(gap[sl] ** 2)))
 
 
-def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time,
-                      n_placebo=None):
+def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time, n_placebo=None):
     r"""Weight the donor pool to reproduce the treated unit's past.
 
     Abadie and Gardeazabal's method for the case where there is ONE
@@ -107,20 +106,14 @@ def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time,
         M, units, periods = as_panel(Ya, unit_id, time_id)
     n_u, T = M.shape
     if n_u < 3:
-        raise ValueError(
-            "need at least 3 units (one treated, two donors), got %d." % n_u
-        )
+        raise ValueError("need at least 3 units (one treated, two donors), got %d." % n_u)
     idx = np.nonzero(units == treated_unit)[0]
     if idx.size != 1:
-        raise ValueError(
-            "treated_unit %r is not in the unit set." % (treated_unit,)
-        )
+        raise ValueError("treated_unit %r is not in the unit set." % (treated_unit,))
     row = int(idx[0])
     tt = np.nonzero(periods >= treatment_time)[0]
     if tt.size == 0:
-        raise ValueError(
-            "treatment_time %r is after the last period." % (treatment_time,)
-        )
+        raise ValueError("treatment_time %r is after the last period." % (treatment_time,))
     t0 = int(tt[0])
     if t0 < 2:
         raise ValueError(

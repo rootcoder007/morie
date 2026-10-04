@@ -55,10 +55,17 @@ def randomized_response(bit, epsilon=1.0):
     g = C.Lcg(1)
     rel = [(1.0 - b[i]) if g.unif() < q else b[i] for i in range(n)]
     raw = sum(rel) / n
-    return RichResult(payload={
-        "estimate": (raw - q) / (1.0 - 2.0 * q), "released": rel, "q": q,
-        "raw_rate": raw, "true_rate": sum(b) / n, "n": n,
-        "method": "Randomized response under local differential privacy"})
+    return RichResult(
+        payload={
+            "estimate": (raw - q) / (1.0 - 2.0 * q),
+            "released": rel,
+            "q": q,
+            "raw_rate": raw,
+            "true_rate": sum(b) / n,
+            "n": n,
+            "method": "Randomized response under local differential privacy",
+        }
+    )
 
 
 def cheatsheet():

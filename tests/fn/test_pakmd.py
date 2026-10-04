@@ -1,7 +1,6 @@
 """Tests for morie.fn.pakmd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pakmd import pakmd
 
 

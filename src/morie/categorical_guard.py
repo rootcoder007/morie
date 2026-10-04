@@ -253,7 +253,7 @@ def marginals_verify(x, published: dict, tolerance: float = 0, strict: bool = Tr
     obs = {lab: sum(1 for v in x if not _is_na(v) and v == lab) for lab in labs}
     extra = [v for v in _uniq(x) if v not in labs]
     if extra:
-        msg = "morie_marginals_verify: labels present in the data but not in the " "published counts: " + ", ".join(
+        msg = "morie_marginals_verify: labels present in the data but not in the published counts: " + ", ".join(
             _squote(e) for e in extra
         )
         if strict:
@@ -426,7 +426,7 @@ def decode_labelled(codes, value_labels: dict | None = None) -> dict:
     maps code -> label (pyreadstat's value_labels[var] shape). Levels come
     out in code order, never alphabetical."""
     if value_labels is None:
-        raise ValueError("decode_labelled: no value labels supplied; the codes alone are NOT " "the categories")
+        raise ValueError("decode_labelled: no value labels supplied; the codes alone are NOT the categories")
     vl = {str(k): str(v) for k, v in value_labels.items()}
     out = safe_recode(
         [None if _is_na(c) else str(int(c) if isinstance(c, float) and c == int(c) else c) for c in codes], vl
@@ -449,7 +449,7 @@ def relabel_forensics(value_labels: dict, observed: dict, counts: dict | None = 
     L = [str(v) for v in value_labels.values()]
     k = len(L)
     if set(observed) != set(L) or set(observed.values()) != set(L):
-        raise ValueError("relabel_forensics: `observed` must be a permutation of the labels " "in `value_labels`")
+        raise ValueError("relabel_forensics: `observed` must be a permutation of the labels in `value_labels`")
     obs = [str(observed[lab]) for lab in L]
     mech = {
         "labels sorted alphabetically, assigned by code position": sorted(L),

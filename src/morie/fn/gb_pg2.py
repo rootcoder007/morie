@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['pageasymp', 'gibbons_page_asymp']
+__all__ = ["pageasymp", "gibbons_page_asymp"]
 
 
 def pageasymp(ell, k, n, correct=True):
@@ -51,9 +51,7 @@ def pageasymp(ell, k, n, correct=True):
     if n < 2:
         raise ValueError("n must be at least 2.")
     e = ell - 0.5 if correct else ell
-    z = (12.0 * e - 3.0 * k * n * (n + 1.0) ** 2) / (
-        n * (n + 1.0) * math.sqrt(k * (n - 1.0))
-    )
+    z = (12.0 * e - 3.0 * k * n * (n + 1.0) ** 2) / (n * (n + 1.0) * math.sqrt(k * (n - 1.0)))
     mean = k * n * (n + 1.0) ** 2 / 4.0
     var = k * float(n) ** 2 * (n + 1.0) ** 2 * (n - 1.0) / 144.0
     return RichResult(

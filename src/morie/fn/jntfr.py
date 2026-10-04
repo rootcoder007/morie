@@ -86,7 +86,7 @@ def _loglik(lamR, lamT, theta, alpha, N, A, dl, T):
         for q in range(_NQ):
             w = xs[q]
             lp = N[i] * math.log(lamR * w) - lamR * w * A[i]
-            wa = w ** alpha
+            wa = w**alpha
             lp += dl[i] * math.log(lamT * wa) - lamT * wa * T[i]
             acc += ws[q] * math.exp(lp)
         if acc <= 0.0:

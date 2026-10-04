@@ -37,7 +37,7 @@ def powlogser(a, n, terms=12):
         raise ValueError("need |a| < 1 for the log series")
     s = 0.0
     for j in range(1, int(terms) + 1):
-        s += (-1) ** (j + 1) * a_f ** j / j
+        s += (-1) ** (j + 1) * a_f**j / j
     product_form = math.exp(n_f * s)
     exact = (1.0 + a_f) ** n_f
     payload = {

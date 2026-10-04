@@ -33,8 +33,7 @@ __all__ = ["gp_warped"]
 _WARPS = {
     "identity": (lambda y: y, lambda t: t, lambda y: 1.0),
     "log": (lambda y: math.log(y), lambda t: math.exp(t), lambda y: 1.0 / y),
-    "sqrt": (lambda y: math.sqrt(y), lambda t: t * t,
-             lambda y: 0.5 / math.sqrt(y)),
+    "sqrt": (lambda y: math.sqrt(y), lambda t: t * t, lambda y: 0.5 / math.sqrt(y)),
 }
 
 

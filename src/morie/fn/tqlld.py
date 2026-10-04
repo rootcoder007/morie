@@ -70,7 +70,7 @@ def _gaussian_cells(bounds, lo, hi, n_grid):
         h = (b - a) / m
         s0 = s1 = 0.0
         for i in range(m):
-            x = a + (i + 0.5) * h          # midpoint rule
+            x = a + (i + 0.5) * h  # midpoint rule
             w = _phi(x) * h
             s0 += w
             s1 += x * w
@@ -79,8 +79,7 @@ def _gaussian_cells(bounds, lo, hi, n_grid):
     return mass, mom
 
 
-def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
-                       hi=None, max_iter=200, tol=1e-12, n_grid=20000):
+def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None, hi=None, max_iter=200, tol=1e-12, n_grid=20000):
     r"""Optimal ``levels``-point scalar codebook.
 
     Returns
@@ -92,13 +91,10 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
     """
     N = int(levels)
     if N < 1:
-        raise ValueError("lloyd_max_codebook: levels must be >= 1, got %r"
-                         % (levels,))
+        raise ValueError("lloyd_max_codebook: levels must be >= 1, got %r" % (levels,))
     src = str(source).lower()
     if src not in _SOURCES:
-        raise ValueError(
-            "lloyd_max_codebook: source must be one of %s, got %r"
-            % (", ".join(_SOURCES), source))
+        raise ValueError("lloyd_max_codebook: source must be one of %s, got %r" % (", ".join(_SOURCES), source))
 
     if src == "uniform":
         a = -1.0 if lo is None else float(lo)
@@ -110,33 +106,36 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
         bnd = [a + (k + 1) * w for k in range(N - 1)]
         # For a flat density the MSE of a cell of width w is w^2/12.
         dist = w * w / 12.0
-        return RichResult(payload={
-            "estimate": cb, "codebook": cb, "boundaries": bnd,
-            "distortion": dist, "distortion_history": [dist],
-            "iterations": 0, "converged": True, "source": src,
-            "levels": N, "lo": a, "hi": b,
-            "method": "Uniform-source Lloyd-Max, closed form "
-                      "(Lloyd 1982; Max 1960)",
-        })
+        return RichResult(
+            payload={
+                "estimate": cb,
+                "codebook": cb,
+                "boundaries": bnd,
+                "distortion": dist,
+                "distortion_history": [dist],
+                "iterations": 0,
+                "converged": True,
+                "source": src,
+                "levels": N,
+                "lo": a,
+                "hi": b,
+                "method": "Uniform-source Lloyd-Max, closed form (Lloyd 1982; Max 1960)",
+            }
+        )
 
     if src == "empirical":
         # check before converting: asarray(None) raises a TypeError from
         # deep inside the array core, which tells the caller nothing about
         # which argument was missing
         if data is None:
-            raise ValueError("lloyd_max_codebook: empirical source needs "
-                             "data")
-        xs = sorted(float(v) for v in
-                    np.atleast_1d(np.asarray(data, dtype=float)))
+            raise ValueError("lloyd_max_codebook: empirical source needs data")
+        xs = sorted(float(v) for v in np.atleast_1d(np.asarray(data, dtype=float)))
         if not xs:
             raise ValueError("lloyd_max_codebook: empirical source needs data")
         if len(xs) < N:
-            raise ValueError(
-                "lloyd_max_codebook: %d samples cannot support %d levels"
-                % (len(xs), N))
+            raise ValueError("lloyd_max_codebook: %d samples cannot support %d levels" % (len(xs), N))
         # Initial codewords at evenly spaced sample quantiles.
-        cb = [xs[min(len(xs) - 1, int((k + 0.5) * len(xs) / N))]
-              for k in range(N)]
+        cb = [xs[min(len(xs) - 1, int((k + 0.5) * len(xs) / N))] for k in range(N)]
     else:
         LO, HI = -8.0, 8.0
         # Initial codewords evenly spaced over the bulk of the density.
@@ -167,8 +166,7 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
             dist /= float(len(xs))
         else:
             mass, mom = _gaussian_cells(bnd, LO, HI, n_grid)
-            new = [(mom[k] / mass[k]) if mass[k] > 1e-300 else cb[k]
-                   for k in range(N)]
+            new = [(mom[k] / mass[k]) if mass[k] > 1e-300 else cb[k] for k in range(N)]
             # E[(X - y_k)^2] over each cell, using E[X^2] = 1 overall.
             dist = 1.0 - sum(mom[k] * new[k] for k in range(N))
 
@@ -182,19 +180,20 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
 
     cb = sorted(cb)
     bnd = [0.5 * (cb[k] + cb[k + 1]) for k in range(N - 1)]
-    return RichResult(payload={
-        "estimate": cb,
-        "codebook": cb,
-        "boundaries": bnd,
-        "distortion": float(hist[-1]) if hist else 0.0,
-        "distortion_history": hist,
-        "iterations": int(it),
-        "converged": bool(converged),
-        "source": src,
-        "levels": N,
-        "method": "Lloyd-Max alternating nearest-neighbour and centroid "
-                  "conditions (Lloyd 1982; Max 1960)",
-    })
+    return RichResult(
+        payload={
+            "estimate": cb,
+            "codebook": cb,
+            "boundaries": bnd,
+            "distortion": float(hist[-1]) if hist else 0.0,
+            "distortion_history": hist,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "source": src,
+            "levels": N,
+            "method": "Lloyd-Max alternating nearest-neighbour and centroid conditions (Lloyd 1982; Max 1960)",
+        }
+    )
 
 
 def quantize_with_codebook(x, codebook):
@@ -213,20 +212,25 @@ def quantize_with_codebook(x, codebook):
                 bd, best = d, k
         idx.append(best)
         val.append(cb[best])
-    mse = (sum((float(a) - b) ** 2 for a, b in
-               zip(np.atleast_1d(np.asarray(x, dtype=float)), val))
-           / float(len(val)))
-    return RichResult(payload={
-        "estimate": val, "indices": idx, "values": val, "mse": float(mse),
-        "levels": len(cb),
-        "method": "Nearest-codeword quantisation",
-    })
+    mse = sum((float(a) - b) ** 2 for a, b in zip(np.atleast_1d(np.asarray(x, dtype=float)), val)) / float(len(val))
+    return RichResult(
+        payload={
+            "estimate": val,
+            "indices": idx,
+            "values": val,
+            "mse": float(mse),
+            "levels": len(cb),
+            "method": "Nearest-codeword quantisation",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tqlld: Lloyd-Max, boundaries b_k = (y_k + y_k+1)/2 and "
-            "codewords y_k = E[X | cell k]; distortion is monotone "
-            "non-increasing; sources gaussian / empirical / uniform.")
+    return (
+        "tqlld: Lloyd-Max, boundaries b_k = (y_k + y_k+1)/2 and "
+        "codewords y_k = E[X | cell k]; distortion is monotone "
+        "non-increasing; sources gaussian / empirical / uniform."
+    )
 
 
 tqlld = lloyd_max_codebook

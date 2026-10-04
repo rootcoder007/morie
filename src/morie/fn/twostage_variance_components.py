@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def twostage_variance_components(s2_between, s2_within, n, m):
     """
     value = _brus.twostage_variance_components(s2_between, s2_within, n, m)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (7.3)"
     return RichResult(
-        title='True two-stage variance S2_b/n + S2_w/(n m)',
+        title="True two-stage variance S2_b/n + S2_w/(n m)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r7e3: V = S2_b/n + S2_w/(n m) [Brus 2022, eq. 7.3]'
+    return "r7e3: V = S2_b/n + S2_w/(n m) [Brus 2022, eq. 7.3]"

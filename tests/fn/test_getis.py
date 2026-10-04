@@ -1,8 +1,8 @@
 """Tests for morie.fn.getis — Getis-Ord Gi* hot spot statistic."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.getis import getis_ord_gi_star
 
 

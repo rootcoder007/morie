@@ -71,10 +71,17 @@ def tukey_regression(X, y, c=4.685, n_iter=25):
         beta, _, _, _ = C.lstsq(Xw, yw)
         fitted = [C.dot(Xm[i], beta) for i in range(n)]
         resid = [yv[i] - fitted[i] for i in range(n)]
-    return RichResult(payload={
-        "estimate": beta, "scale": s, "weights": w, "fitted": fitted,
-        "resid": resid, "n": n,
-        "method": "Biweight IRLS robust regression"})
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "scale": s,
+            "weights": w,
+            "fitted": fitted,
+            "resid": resid,
+            "n": n,
+            "method": "Biweight IRLS robust regression",
+        }
+    )
 
 
 def cheatsheet():

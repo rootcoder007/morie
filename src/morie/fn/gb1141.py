@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Durbin-Stuart / Daniels inequalities between tau and rho."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_tau_rho_relation"]
@@ -57,9 +56,13 @@ def gibbons_tau_rho_relation(tau, rho):
     ds = lo - 1e-12 <= 2 * rho <= hi + 1e-12
     return RichResult(
         payload={
-            "consistent": bool(daniels and ds), "daniels_ok": bool(daniels),
-            "durbin_stuart_ok": bool(ds), "lower_2rho": float(lo),
-            "upper_2rho": float(hi), "tau": tau, "rho": rho,
+            "consistent": bool(daniels and ds),
+            "daniels_ok": bool(daniels),
+            "durbin_stuart_ok": bool(ds),
+            "lower_2rho": float(lo),
+            "upper_2rho": float(hi),
+            "tau": tau,
+            "rho": rho,
             "method": "tau/rho attainability bounds (Gibbons Ch. 11.4)",
         }
     )

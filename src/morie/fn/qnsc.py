@@ -56,8 +56,7 @@ def qn_scale(x):
     diffs = np.abs(xv[:, None] - xv[None, :])[np.triu_indices(n, 1)]
     stat = float(np.partition(diffs, k - 1)[k - 1])
     # finite-sample corrections, Rousseeuw and Croux Sec. 4
-    small = {2: 0.399, 3: 0.994, 4: 0.512, 5: 0.844,
-             6: 0.611, 7: 0.857, 8: 0.669, 9: 0.872}
+    small = {2: 0.399, 3: 0.994, 4: 0.512, 5: 0.844, 6: 0.611, 7: 0.857, 8: 0.669, 9: 0.872}
     if n <= 9:
         corr = small[n]
     elif n % 2 == 1:
@@ -65,17 +64,23 @@ def qn_scale(x):
     else:
         corr = n / (n + 3.8)
     value = QN_D * corr * stat
-    return RichResult(payload={
-        "value": value, "k": int(k), "h": int(h), "d": QN_D,
-        "correction": float(corr),
-        "breakdown": 0.5, "gaussian_efficiency": 0.82,
-        "location_free": True,
-        "versus_mad": "no location is used at all, so Qn is not aimed at "
-                      "symmetric distributions the way the MAD is, and its "
-                      "normal efficiency is 82% against the MAD's 37%",
-        "n": int(n),
-        "method": "Qn = d * k-th order statistic of pairwise |differences| "
-                  "(Rousseeuw-Croux 1993)"})
+    return RichResult(
+        payload={
+            "value": value,
+            "k": int(k),
+            "h": int(h),
+            "d": QN_D,
+            "correction": float(corr),
+            "breakdown": 0.5,
+            "gaussian_efficiency": 0.82,
+            "location_free": True,
+            "versus_mad": "no location is used at all, so Qn is not aimed at "
+            "symmetric distributions the way the MAD is, and its "
+            "normal efficiency is 82% against the MAD's 37%",
+            "n": int(n),
+            "method": "Qn = d * k-th order statistic of pairwise |differences| (Rousseeuw-Croux 1993)",
+        }
+    )
 
 
 def cheatsheet():

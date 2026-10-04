@@ -137,13 +137,18 @@ def luvR(A, resolution=1.0, max_levels=20):
                 agg[comm[i], comm[j]] += float(cur[i, j])
         cur = agg
         mapping = [comm[mapping[i]] for i in range(n)]
-    return RichResult(payload={
-        "communities": labels, "estimate": float(qs[-1]) if qs else 0.0,
-        "n_communities": int(max(labels) + 1), "levels": len(qs),
-        "modularity_by_level": [float(v) for v in qs], "n": int(n),
-        "resolution": gamma,
-        "method": "Louvain with resolution gamma (Blondel 2008 / Reichardt-Bornholdt 2006)",
-    })
+    return RichResult(
+        payload={
+            "communities": labels,
+            "estimate": float(qs[-1]) if qs else 0.0,
+            "n_communities": int(max(labels) + 1),
+            "levels": len(qs),
+            "modularity_by_level": [float(v) for v in qs],
+            "n": int(n),
+            "resolution": gamma,
+            "method": "Louvain with resolution gamma (Blondel 2008 / Reichardt-Bornholdt 2006)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

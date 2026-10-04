@@ -60,14 +60,10 @@ Tang, J., Qu, M., Wang, M., Zhang, M., Yan, J. & Mei, Q. (2015)
 shallow model whose two proximities this deepens.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["penalty_matrix", "second_order_loss",
-           "first_order_loss", "proximity_counts", "sdne_loss"]
+__all__ = ["penalty_matrix", "second_order_loss", "first_order_loss", "proximity_counts", "sdne_loss"]
 
 _EPS = 1e-12
 
@@ -80,13 +76,13 @@ def penalty_matrix(adjacency, beta=5.0):
     A = [[float(v) for v in r] for r in k.mat(adjacency)]
     b = float(beta)
     if b < 1.0:
-        raise ValueError("sdne: beta must be at least 1; below it the "
-                         "zeros would be weighted MORE than the "
-                         "edges")
-    return {"B": [[b if v != 0.0 else 1.0 for v in r] for r in A],
-            "beta": b,
-            "n_nonzero": sum(1 for r in A for v in r if v != 0.0),
-            "n_zero": sum(1 for r in A for v in r if v == 0.0)}
+        raise ValueError("sdne: beta must be at least 1; below it the zeros would be weighted MORE than the edges")
+    return {
+        "B": [[b if v != 0.0 else 1.0 for v in r] for r in A],
+        "beta": b,
+        "n_nonzero": sum(1 for r in A for v in r if v != 0.0),
+        "n_zero": sum(1 for r in A for v in r if v == 0.0),
+    }
 
 
 def second_order_loss(adjacency, reconstruction, beta=5.0):
@@ -98,17 +94,18 @@ def second_order_loss(adjacency, reconstruction, beta=5.0):
     X = [[float(v) for v in r] for r in k.mat(adjacency)]
     H = [[float(v) for v in r] for r in k.mat(reconstruction)]
     if len(X) != len(H) or len(X[0]) != len(H[0]):
-        raise ValueError("sdne: the adjacency is %dx%d but the "
-                         "reconstruction is %dx%d"
-                         % (len(X), len(X[0]), len(H), len(H[0])))
+        raise ValueError(
+            "sdne: the adjacency is %dx%d but the reconstruction is %dx%d" % (len(X), len(X[0]), len(H), len(H[0]))
+        )
     B = penalty_matrix(X, beta)["B"]
-    weighted = sum(((H[i][j] - X[i][j]) * B[i][j]) ** 2
-                   for i in range(len(X)) for j in range(len(X[0])))
-    plain = sum((H[i][j] - X[i][j]) ** 2
-                for i in range(len(X)) for j in range(len(X[0])))
-    return {"loss": weighted, "unweighted": plain, "beta": float(beta),
-            "note": "the row is mostly zeros, so the unweighted loss "
-                    "rewards predicting nothing"}
+    weighted = sum(((H[i][j] - X[i][j]) * B[i][j]) ** 2 for i in range(len(X)) for j in range(len(X[0])))
+    plain = sum((H[i][j] - X[i][j]) ** 2 for i in range(len(X)) for j in range(len(X[0])))
+    return {
+        "loss": weighted,
+        "unweighted": plain,
+        "beta": float(beta),
+        "note": "the row is mostly zeros, so the unweighted loss rewards predicting nothing",
+    }
 
 
 def first_order_loss(adjacency, embeddings):
@@ -121,18 +118,15 @@ def first_order_loss(adjacency, embeddings):
     Y = [[float(v) for v in r] for r in k.mat(embeddings)]
     n = len(S)
     if len(Y) != n:
-        raise ValueError("sdne: %d vertices but %d embeddings"
-                         % (n, len(Y)))
+        raise ValueError("sdne: %d vertices but %d embeddings" % (n, len(Y)))
     tot, pairs = 0.0, 0
     for i in range(n):
         for j in range(n):
             if S[i][j] == 0.0 or i == j:
                 continue
             pairs += 1
-            tot += S[i][j] * sum((Y[i][a] - Y[j][a]) ** 2
-                                 for a in range(len(Y[0])))
-    return {"loss": tot, "linked_pairs": pairs,
-            "note": "zero iff every LINKED pair shares an embedding"}
+            tot += S[i][j] * sum((Y[i][a] - Y[j][a]) ** 2 for a in range(len(Y[0])))
+    return {"loss": tot, "linked_pairs": pairs, "note": "zero iff every LINKED pair shares an embedding"}
 
 
 def proximity_counts(adjacency):
@@ -149,52 +143,57 @@ def proximity_counts(adjacency):
         for j in range(i + 1, n):
             if A[i][j] != 0.0:
                 first += 1
-            shared = sum(1 for t in range(n)
-                         if A[i][t] != 0.0 and A[j][t] != 0.0)
+            shared = sum(1 for t in range(n) if A[i][t] != 0.0 and A[j][t] != 0.0)
             if shared > 0:
                 second += 1
     total = n * (n - 1) // 2
-    return {"first_order_pairs": first, "second_order_pairs": second,
-            "total_pairs": total,
-            "density": first / float(total) if total else 0.0,
-            "ratio": second / float(first) if first else float("inf"),
-            "note": "many legitimate links are missing, so the "
-                    "first-order set is far the smaller"}
+    return {
+        "first_order_pairs": first,
+        "second_order_pairs": second,
+        "total_pairs": total,
+        "density": first / float(total) if total else 0.0,
+        "ratio": second / float(first) if first else float("inf"),
+        "note": "many legitimate links are missing, so the first-order set is far the smaller",
+    }
 
 
-def sdne_loss(adjacency, reconstruction, embeddings, beta=5.0,
-              alpha=0.1, nu=0.0, parameters=None):
+def sdne_loss(adjacency, reconstruction, embeddings, beta=5.0, alpha=0.1, nu=0.0, parameters=None):
     r"""The joint semi-supervised objective."""
     s2 = second_order_loss(adjacency, reconstruction, beta)
     s1 = first_order_loss(adjacency, embeddings)
     reg = 0.0
     if parameters is not None:
-        reg = float(nu) * sum(float(v) ** 2
-                              for r in k.mat(parameters) for v in r)
+        reg = float(nu) * sum(float(v) ** 2 for r in k.mat(parameters) for v in r)
     total = s2["loss"] + float(alpha) * s1["loss"] + reg
-    return RichResult(payload={
-        "estimate": total, "loss": total,
-        "second_order": s2["loss"], "first_order": s1["loss"],
-        "regulariser": reg, "alpha": float(alpha),
-        "beta": float(beta),
-        "method": "SDNE joint objective; Wang, Cui & Zhu (2016)",
-        "note": "unsupervised autoencoder for the GLOBAL structure, "
-                "supervised Laplacian term for the LOCAL one",
-    })
+    return RichResult(
+        payload={
+            "estimate": total,
+            "loss": total,
+            "second_order": s2["loss"],
+            "first_order": s1["loss"],
+            "regulariser": reg,
+            "alpha": float(alpha),
+            "beta": float(beta),
+            "method": "SDNE joint objective; Wang, Cui & Zhu (2016)",
+            "note": "unsupervised autoencoder for the GLOBAL structure, supervised Laplacian term for the LOCAL one",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sdne: shallow embeddings (IsoMap, Laplacian Eigenmaps, "
-            "LINE) cannot capture a highly NON-LINEAR network, so go "
-            "deep -- and preserve TWO proximities jointly. FIRST-order "
-            "is the local similarity between LINKED vertices, and in a "
-            "sparse network most legitimate links are missing, so it "
-            "is not enough. SECOND-order is the similarity of "
-            "NEIGHBOURHOODS, which needs no edge between the pair. An "
-            "autoencoder reconstructs the adjacency row (global) and a "
-            "Laplacian term pulls linked vertices together (local). "
-            "The reconstruction MUST re-weight: with B = 1 the "
-            "all-zero output wins, so put beta > 1 on the edges.")
+    return (
+        "sdne: shallow embeddings (IsoMap, Laplacian Eigenmaps, "
+        "LINE) cannot capture a highly NON-LINEAR network, so go "
+        "deep -- and preserve TWO proximities jointly. FIRST-order "
+        "is the local similarity between LINKED vertices, and in a "
+        "sparse network most legitimate links are missing, so it "
+        "is not enough. SECOND-order is the similarity of "
+        "NEIGHBOURHOODS, which needs no edge between the pair. An "
+        "autoencoder reconstructs the adjacency row (global) and a "
+        "Laplacian term pulls linked vertices together (local). "
+        "The reconstruction MUST re-weight: with B = 1 the "
+        "all-zero output wins, so put beta > 1 on the edges."
+    )
 
 
 # compact alias per ledger/NAMING.md

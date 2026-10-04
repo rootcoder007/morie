@@ -58,9 +58,15 @@ def turboquant_rotation_matrix(d, seed=1):
             v = sum(Q[r][i] * Q[r][j] for r in range(d)) - (1.0 if i == j else 0.0)
             if abs(v) > err:
                 err = abs(v)
-    return RichResult(payload={
-        "Q": Q, "estimate": Q[0][0], "d": d, "orth_err": err,
-        "method": "Random orthogonal rotation, QR of a Gaussian matrix"})
+    return RichResult(
+        payload={
+            "Q": Q,
+            "estimate": Q[0][0],
+            "d": d,
+            "orth_err": err,
+            "method": "Random orthogonal rotation, QR of a Gaussian matrix",
+        }
+    )
 
 
 def cheatsheet():

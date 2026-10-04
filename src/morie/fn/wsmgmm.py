@@ -65,14 +65,19 @@ def wasserman_gmm_em(X, k):
     if s == 0:
         raise ValueError("a constant sample cannot support a mixture fit.")
     core = wasserman_em_algorithm(X, (0.5, float(q1), float(q3), s, s))
-    return RichResult(payload={
-        "estimate": core["log_likelihood"],
-        "weights": [1.0 - core["pi"], core["pi"]],
-        "means": [core["mu1"], core["mu2"]],
-        "sds": [core["sd1"], core["sd2"]],
-        "iterations": core["iterations"], "converged": core["converged"],
-        "n": int(n), "k": 2,
-        "method": "GMM k=2 via wsmemt EM; quartile+pooled-sd deterministic init"})
+    return RichResult(
+        payload={
+            "estimate": core["log_likelihood"],
+            "weights": [1.0 - core["pi"], core["pi"]],
+            "means": [core["mu1"], core["mu2"]],
+            "sds": [core["sd1"], core["sd2"]],
+            "iterations": core["iterations"],
+            "converged": core["converged"],
+            "n": int(n),
+            "k": 2,
+            "method": "GMM k=2 via wsmemt EM; quartile+pooled-sd deterministic init",
+        }
+    )
 
 
 def cheatsheet():

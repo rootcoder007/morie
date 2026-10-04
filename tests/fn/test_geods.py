@@ -1,8 +1,8 @@
 """Tests for morie.fn.geods -- geodesic equation solver."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.geods import geods
 
 
@@ -54,8 +54,9 @@ def test_straight_line_in_spherical_coordinates():
         r, th = x[1], x[2]
         return np.diag([-1.0, 1.0, r * r, (r * math.sin(th)) ** 2])
 
-    out = geods(sph, np.array([0.0, 1.0, math.pi / 2, 0.0]),
-                np.array([1.0, 0.0, 0.0, 1.0]), tau_span=(0, 2), n_points=21)
+    out = geods(
+        sph, np.array([0.0, 1.0, math.pi / 2, 0.0]), np.array([1.0, 0.0, 0.0, 1.0]), tau_span=(0, 2), n_points=21
+    )
     for tau, pos in zip(out["tau"].tolist(), out["position"].tolist()):
         assert pos[1] == pytest.approx(math.sqrt(1 + tau * tau), abs=1e-6)
         assert pos[3] == pytest.approx(math.atan(tau), abs=1e-6)

@@ -1,7 +1,6 @@
 """Tests for rirr — inter-rater reliability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rirr import rirr
 
 

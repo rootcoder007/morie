@@ -12,8 +12,7 @@ def _additive(Z):
 
 def _grid_x():
     """Forty rows on a lattice, so the two columns are uncorrelated."""
-    return [[-2.0 + 4.0 * (i % 8) / 7.0, -1.0 + 2.0 * (i // 8) / 4.0]
-            for i in range(40)]
+    return [[-2.0 + 4.0 * (i % 8) / 7.0, -1.0 + 2.0 * (i // 8) / 4.0] for i in range(40)]
 
 
 def test_eslprt_basic():

@@ -1,7 +1,6 @@
 """Tests for baysrnd.shrinkage_random."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.baysrnd import shrinkage_random
 
 
@@ -60,10 +59,7 @@ def test_baysrnd_basic():
 
     mu_expected = sum(n_g_list[g] * theta_nopool[g] for g in range(G)) / sum(n_g_list)
     lam_expected = [tau2 / (tau2 + sigma2 / n_g_list[g]) for g in range(G)]
-    theta_expected = [
-        lam_expected[g] * theta_nopool[g] + (1.0 - lam_expected[g]) * mu_expected
-        for g in range(G)
-    ]
+    theta_expected = [lam_expected[g] * theta_nopool[g] + (1.0 - lam_expected[g]) * mu_expected for g in range(G)]
     u_expected = [theta_expected[g] - mu_expected for g in range(G)]
 
     assert abs(mu - mu_expected) < 1e-10

@@ -1,8 +1,8 @@
 """Tests for morie.fn.cross — Crossover trial analysis."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cross import crossover_analysis
 
 

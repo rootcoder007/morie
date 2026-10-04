@@ -1,7 +1,5 @@
 """Tests for otmtxe.ot_matrix_scaling."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.otmtxe import ot_matrix_scaling
 
 

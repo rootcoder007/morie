@@ -1,7 +1,6 @@
 """Tests for msm045.mvsml_bayesian_regression_eq_6_1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm045 import mvsml_bayesian_regression_eq_6_1
 
 

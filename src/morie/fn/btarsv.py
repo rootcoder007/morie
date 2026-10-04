@@ -12,8 +12,7 @@ def _yule_walker(xc, p):
     # Levinson-Durbin on sample autocovariances (Buhlmann Sec. 2:
     # "usually ... by the Yule-Walker estimates")
     n = len(xc)
-    g = [sum(xc[t] * xc[t + k] for t in range(n - k)) / n
-         for k in range(p + 1)]
+    g = [sum(xc[t] * xc[t + k] for t in range(n - k)) / n for k in range(p + 1)]
     if g[0] <= 0:
         raise ValueError("degenerate series")
     phi = [0.0] * p
@@ -25,13 +24,12 @@ def _yule_walker(xc, p):
         phi[k - 1] = ref
         for j in range(k - 1):
             phi[j] = prev[j] - ref * prev[k - 2 - j]
-        v *= (1.0 - ref * ref)
+        v *= 1.0 - ref * ref
         prev = phi[:]
     return phi[:p], v
 
 
-def btarsv(x, p=None, statistic=None, B=500, burn=100, seed=0,
-           p_max=None):
+def btarsv(x, p=None, statistic=None, B=500, burn=100, seed=0, p_max=None):
     """
     Sieve bootstrap: AR(p) approximation + residual resampling.
 
@@ -101,7 +99,7 @@ def btarsv(x, p=None, statistic=None, B=500, burn=100, seed=0,
         e = xc[t] - sum(phi[j] * xc[t - 1 - j] for j in range(p))
         resid.append(e)
     rbar = sum(resid) / len(resid)
-    resid = [e - rbar for e in resid]                 # centred
+    resid = [e - rbar for e in resid]  # centred
     m = len(resid)
     rng = np.random.default_rng(seed)
     that = float(statistic(xv))
@@ -112,24 +110,26 @@ def btarsv(x, p=None, statistic=None, B=500, burn=100, seed=0,
         for t in range(burn + n):
             eps = resid[min(int(float(rng.uniform()) * m), m - 1)]
             val = sum(phi[j] * state[j] for j in range(p)) + eps
-            state = [val] + state[:p - 1]
+            state = [val] + state[: p - 1]
             if t >= burn:
                 series.append(val + xbar)
         reps.append(float(statistic(series)))
     mu = sum(reps) / len(reps)
     se = math.sqrt(sum((r - mu) ** 2 for r in reps) / (len(reps) - 1))
-    return RichResult(payload={
-        "estimate": that,
-        "se": se,
-        "replicates": reps,
-        "phi": phi,
-        "p": p,
-        "sigma2": sigma2,
-        "residual_mean": sum(resid) / m,
-        "B": int(B),
-        "seed": int(seed),
-        "method": "AR-sieve bootstrap (Buhlmann 1997, Sec. 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": that,
+            "se": se,
+            "replicates": reps,
+            "phi": phi,
+            "p": p,
+            "sigma2": sigma2,
+            "residual_mean": sum(resid) / m,
+            "B": int(B),
+            "seed": int(seed),
+            "method": "AR-sieve bootstrap (Buhlmann 1997, Sec. 2)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -138,6 +138,7 @@ ar_sieve_bootstrap = btarsv
 
 def cheatsheet():
     return "btarsv: YW AR(p) fit; resample centred residuals; regen AR + Xbar"
+
 
 # public names resolved by fn/_lazy_map.json
 boot_ar_sieve = btarsv

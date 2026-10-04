@@ -6,8 +6,6 @@ Implements eq. (7.6) p.225 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,12 +18,15 @@ def multinomial_probabilities(X, beta0, beta, baseline_last=True):
     identifiable as written, so the book sets
     (beta_0C, beta_C) = (0, 0) for the baseline category (p.225),
     which is what ``baseline_last`` does. Keys: estimate."""
-    P = _gp.multinomial_probabilities(X, beta0, beta,
-                                      baseline_last=baseline_last)
-    res = RichResult(payload={"estimate": P[0][0],
-                              "probabilities": P,
-                              "n_categories": len(P[0]),
-                              "method": "multinomial logistic probabilities (MVSML 2022 eq. 7.6)"})
+    P = _gp.multinomial_probabilities(X, beta0, beta, baseline_last=baseline_last)
+    res = RichResult(
+        payload={
+            "estimate": P[0][0],
+            "probabilities": P,
+            "n_categories": len(P[0]),
+            "method": "multinomial logistic probabilities (MVSML 2022 eq. 7.6)",
+        }
+    )
     return with_describe_pointer(res, "msm106")
 
 

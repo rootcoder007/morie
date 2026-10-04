@@ -4,7 +4,7 @@
 from . import _gp_core as G
 from ._richresult import RichResult
 
-__all__ = ['arckern', 'arc_cosine_kernel']
+__all__ = ["arckern", "arc_cosine_kernel"]
 
 
 def arckern(X, Z=None, depth=1):
@@ -32,13 +32,13 @@ def arckern(X, Z=None, depth=1):
     """
     out = G.arccos_kernel(X, Z=Z, depth=int(depth))
     K = out["K"] if isinstance(out, dict) else out
-    return RichResult(payload={
-        "K": K, "depth": int(depth), "n": len(K), "m": len(K[0]),
-        "method": "Arc-cosine kernel, MVSML Chap. 8"})
+    return RichResult(
+        payload={"K": K, "depth": int(depth), "n": len(K), "m": len(K[0]), "method": "Arc-cosine kernel, MVSML Chap. 8"}
+    )
 
 
 arc_cosine_kernel = arckern
 
 
 def cheatsheet():
-    return 'arckn: Arc-cosine kernel matrix.'
+    return "arckn: Arc-cosine kernel matrix."

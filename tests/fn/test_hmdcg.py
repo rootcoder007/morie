@@ -1,8 +1,8 @@
 """Tests for hmdcg.geron_dcgan."""
 
 import pytest
-from morie.fn import _array_core as np
 
+from morie.fn import _array_core as np
 from morie.fn.hmdcg import geron_dcgan
 
 

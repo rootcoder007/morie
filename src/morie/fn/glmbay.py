@@ -40,7 +40,6 @@ McCullagh, P. and Nelder, J. A. (1989) *Generalized Linear Models*,
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -51,6 +50,7 @@ _EPS = 1e-12
 
 def _links(family):
     if family == "binomial":
+
         def inv(e):
             e = max(-500.0, min(500.0, e))
             return 1.0 / (1.0 + math.exp(-e))
@@ -61,8 +61,10 @@ def _links(family):
         def ll(y, m):
             m = min(max(m, 1e-12), 1.0 - 1e-12)
             return y * math.log(m) + (1.0 - y) * math.log(1.0 - m)
+
         return inv, var, ll
     if family == "poisson":
+
         def inv(e):
             return math.exp(max(-500.0, min(500.0, e)))
 
@@ -72,8 +74,10 @@ def _links(family):
         def ll(y, m):
             m = max(m, 1e-12)
             return y * math.log(m) - m - math.lgamma(y + 1.0)
+
         return inv, var, ll
     if family == "gaussian":
+
         def inv(e):
             return e
 
@@ -82,13 +86,12 @@ def _links(family):
 
         def ll(y, m):
             return -0.5 * (math.log(2.0 * math.pi) + (y - m) ** 2)
+
         return inv, var, ll
-    raise ValueError("glmbay: family must be binomial, poisson or gaussian, "
-                     "got %r" % (family,))
+    raise ValueError("glmbay: family must be binomial, poisson or gaussian, got %r" % (family,))
 
 
-def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True,
-                 max_iter=100, tol=1e-10):
+def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True, max_iter=100, tol=1e-10):
     r"""Posterior mode and Laplace covariance for a GLM with a normal prior.
 
     Examples
@@ -118,8 +121,7 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True,
     inv, var, ll = _links(family)
     ps = float(prior_sd)
     if ps <= 0.0:
-        raise ValueError("glmbay: the prior standard deviation must be "
-                         "positive")
+        raise ValueError("glmbay: the prior standard deviation must be positive")
     tau = 1.0 / (ps * ps)
 
     beta = [0.0] * p
@@ -130,10 +132,9 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True,
         mu = [inv(e) for e in eta]
         w = [var(m) for m in mu]
         z = [eta[i] + (yv[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
         for a in range(p):
-            A[a][a] += tau                      # the prior's contribution
+            A[a][a] += tau  # the prior's contribution
         b = [sum(w[i] * Xm[i][a] * z[i] for i in range(n)) for a in range(p)]
         new = k.cholsolve(A, b)
         shift = max(abs(new[a] - beta[a]) for a in range(p))
@@ -152,49 +153,57 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True,
     eta = [sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
     mu = [inv(e) for e in eta]
     loglik = sum(ll(yv[i], mu[i]) for i in range(n))
-    logprior = sum(-0.5 * tau * beta[a] ** 2
-                   - 0.5 * math.log(2.0 * math.pi * ps * ps)
-                   for a in range(p))
+    logprior = sum(-0.5 * tau * beta[a] ** 2 - 0.5 * math.log(2.0 * math.pi * ps * ps) for a in range(p))
     # log|H| from the Cholesky factor of H, without forming a determinant
     L = k.cholsolve  # marker: H is used only through solves above
     logdet = 0.0
     Hc = [row[:] for row in H]
-    for a in range(p):                    # in-place Cholesky for log|H|
+    for a in range(p):  # in-place Cholesky for log|H|
         s = Hc[a][a] - sum(Hc[a][u] ** 2 for u in range(a))
         s = max(s, 1e-300)
         Hc[a][a] = math.sqrt(s)
         for b2 in range(a + 1, p):
-            Hc[b2][a] = ((Hc[b2][a]
-                          - sum(Hc[b2][u] * Hc[a][u] for u in range(a)))
-                         / Hc[a][a])
+            Hc[b2][a] = (Hc[b2][a] - sum(Hc[b2][u] * Hc[a][u] for u in range(a))) / Hc[a][a]
         logdet += 2.0 * math.log(Hc[a][a])
-    log_marginal = (loglik + logprior + 0.5 * p * math.log(2.0 * math.pi)
-                    - 0.5 * logdet)
+    log_marginal = loglik + logprior + 0.5 * p * math.log(2.0 * math.pi) - 0.5 * logdet
 
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta, "posterior_sd": se,
-        "std_error": se,
-        "ci_lower": [beta[a] - 1.959963984540054 * se[a] for a in range(p)],
-        "ci_upper": [beta[a] + 1.959963984540054 * se[a] for a in range(p)],
-        "fitted": mu, "linear_predictor": eta,
-        "loglik": loglik, "log_prior": logprior,
-        "log_marginal": log_marginal, "log_det_hessian": logdet,
-        "iterations": it, "converged": converged,
-        "family": family, "prior_sd": ps, "n": n, "p": p,
-        "method": "Bayesian GLM: penalised IRLS to the posterior mode with a "
-                  "normal prior, Laplace covariance (Gelman et al. BDA3 "
-                  "Ch. 16, Sec. 4.1)",
-        "note": "the prior is what separates this from ML -- under "
-                "separation the ML coefficient diverges while the posterior "
-                "mode stays finite; the Laplace approximation is exact for "
-                "the Gaussian family",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "posterior_sd": se,
+            "std_error": se,
+            "ci_lower": [beta[a] - 1.959963984540054 * se[a] for a in range(p)],
+            "ci_upper": [beta[a] + 1.959963984540054 * se[a] for a in range(p)],
+            "fitted": mu,
+            "linear_predictor": eta,
+            "loglik": loglik,
+            "log_prior": logprior,
+            "log_marginal": log_marginal,
+            "log_det_hessian": logdet,
+            "iterations": it,
+            "converged": converged,
+            "family": family,
+            "prior_sd": ps,
+            "n": n,
+            "p": p,
+            "method": "Bayesian GLM: penalised IRLS to the posterior mode with a "
+            "normal prior, Laplace covariance (Gelman et al. BDA3 "
+            "Ch. 16, Sec. 4.1)",
+            "note": "the prior is what separates this from ML -- under "
+            "separation the ML coefficient diverges while the posterior "
+            "mode stays finite; the Laplace approximation is exact for "
+            "the Gaussian family",
+        }
+    )
 
 
 def cheatsheet():
-    return ("glmbay: bayesian_glm(X, y, family, prior_sd) -> posterior mode, "
-            "Laplace covariance and log marginal likelihood (Gelman et al. "
-            "2013, Bayesian Data Analysis 3rd ed., Ch. 16)")
+    return (
+        "glmbay: bayesian_glm(X, y, family, prior_sd) -> posterior mode, "
+        "Laplace covariance and log marginal likelihood (Gelman et al. "
+        "2013, Bayesian Data Analysis 3rd ed., Ch. 16)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

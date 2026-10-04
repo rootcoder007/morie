@@ -1,12 +1,11 @@
 """Tests for beta_pdf.beta_pdf."""
 
-from morie.fn import _array_core as np
+import math
 
+from morie.fn import _array_core as np
 from morie.fn.beta_pdf import (
     beta_pdf,
 )
-
-import math
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5_basic():

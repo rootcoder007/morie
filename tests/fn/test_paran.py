@@ -1,7 +1,6 @@
 """Tests for morie.fn.paran — Horn's parallel analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn import paran
 
 

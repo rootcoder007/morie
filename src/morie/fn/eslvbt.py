@@ -60,13 +60,17 @@ def esl_var_beta_hat(X, sigma2):
         raise ValueError(f"X'X is singular (rank < {p}); the design is collinear.")
     V = sigma2 * np.linalg.inv(G)
     var = np.diag(V)
-    return RichResult(payload={
-        "estimate": float(np.sqrt(var[0])),
-        "covariance": [float(v) for v in V.ravel()],
-        "variances": [float(v) for v in var],
-        "se": [float(v) for v in np.sqrt(var)],
-        "n": int(n), "p": int(p),
-        "method": "Var(beta_hat) = sigma^2 (X'X)^-1, row-major"})
+    return RichResult(
+        payload={
+            "estimate": float(np.sqrt(var[0])),
+            "covariance": [float(v) for v in V.ravel()],
+            "variances": [float(v) for v in var],
+            "se": [float(v) for v in np.sqrt(var)],
+            "n": int(n),
+            "p": int(p),
+            "method": "Var(beta_hat) = sigma^2 (X'X)^-1, row-major",
+        }
+    )
 
 
 def cheatsheet():

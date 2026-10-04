@@ -83,8 +83,7 @@ from . import sarima as _sa
 from ._richresult import RichResult
 from ._sci_core import minimize
 
-__all__ = ["fit", "profile_beta", "auto_order", "aic", "aicc",
-           "neighbours", "starting_models"]
+__all__ = ["fit", "profile_beta", "auto_order", "aic", "aicc", "neighbours", "starting_models"]
 
 # set while auto_order is traversing the model space: one
 # optimiser pass per candidate instead of restarting to
@@ -109,15 +108,12 @@ def _filter_column(w, ar, ma):
         v = w[t] - a[0]
         PZ = [P[i][0] for i in range(r)]
         a = [a[i] + PZ[i] * v / f for i in range(r)]
-        P = [[P[i][j] - PZ[i] * PZ[j] / f for j in range(r)]
-             for i in range(r)]
+        P = [[P[i][j] - PZ[i] * PZ[j] / f for j in range(r)] for i in range(r)]
         v_out.append(v)
         f_out.append(f)
         a = [sum(T[i][j] * a[j] for j in range(r)) for i in range(r)]
-        TP = [[sum(T[i][k] * P[k][j] for k in range(r))
-               for j in range(r)] for i in range(r)]
-        P = [[sum(TP[i][k] * T[j][k] for k in range(r)) + R[i] * R[j]
-              for j in range(r)] for i in range(r)]
+        TP = [[sum(T[i][k] * P[k][j] for k in range(r)) for j in range(r)] for i in range(r)]
+        P = [[sum(TP[i][k] * T[j][k] for k in range(r)) + R[i] * R[j] for j in range(r)] for i in range(r)]
     return v_out, f_out
 
 
@@ -134,60 +130,52 @@ def profile_beta(wy, wX, ar=(), ma=(), filter="exact"):
     """
     n = len(wy)
     if any(len(c) != n for c in wX):
-        raise ValueError("sarimax: regressor columns must match the "
-                         "differenced series length %d" % n)
+        raise ValueError("sarimax: regressor columns must match the differenced series length %d" % n)
     if filter not in ("exact", "conditional"):
-        raise ValueError("sarimax: filter must be 'exact' or "
-                         "'conditional', got %r" % filter)
+        raise ValueError("sarimax: filter must be 'exact' or 'conditional', got %r" % filter)
     _col = _filter_column if filter == "exact" else _residual_column
     vy, f = _col(wy, ar, ma)
     if not wX:
         ssq = sum(vy[t] * vy[t] / f[t] for t in range(n))
-        return {"beta": [], "ssq": ssq, "v": vy, "f": f,
-                "information": [],
-                "sum_log_f": sum(math.log(v) for v in f)}
+        return {"beta": [], "ssq": ssq, "v": vy, "f": f, "information": [], "sum_log_f": sum(math.log(v) for v in f)}
     for j, c in enumerate(wX):
         if max(abs(v) for v in c) <= 1e-12:
             raise ValueError(
                 "sarimax: regressor %d is annihilated by the "
                 "differencing operator (a linear trend vanishes under "
                 "nabla, a seasonal dummy under nabla_s), so beta is "
-                "not identified" % j)
+                "not identified" % j
+            )
     vx = [_col(c, ar, ma)[0] for c in wX]
     k = len(vx)
-    A = [[sum(vx[i][t] * vx[j][t] / f[t] for t in range(n))
-          for j in range(k)] for i in range(k)]
-    b = [sum(vx[i][t] * vy[t] / f[t] for t in range(n))
-         for i in range(k)]
+    A = [[sum(vx[i][t] * vx[j][t] / f[t] for t in range(n)) for j in range(k)] for i in range(k)]
+    b = [sum(vx[i][t] * vy[t] / f[t] for t in range(n)) for i in range(k)]
     beta = [float(v) for v in np.linalg.solve(np.array(A), np.array(b))]
-    resid = [vy[t] - sum(beta[i] * vx[i][t] for i in range(k))
-             for t in range(n)]
+    resid = [vy[t] - sum(beta[i] * vx[i][t] for i in range(k)) for t in range(n)]
     ssq = sum(resid[t] * resid[t] / f[t] for t in range(n))
-    return {"beta": beta, "ssq": ssq, "v": resid, "f": f,
-            "information": A,
-            "sum_log_f": sum(math.log(v) for v in f)}
+    return {"beta": beta, "ssq": ssq, "v": resid, "f": f, "information": A, "sum_log_f": sum(math.log(v) for v in f)}
 
 
 def _columns(X, n):
     if X is None:
         return []
-    cols = [list(c) for c in X] if not hasattr(X[0], "__len__") \
+    cols = (
+        [list(c) for c in X]
+        if not hasattr(X[0], "__len__")
         else [[float(row[j]) for row in X] for j in range(len(X[0]))]
+    )
     if not hasattr(X[0], "__len__"):
         cols = [[float(v) for v in X]]
     for c in cols:
         if len(c) != n:
-            raise ValueError("sarimax: regressor has %d rows but the "
-                             "series has %d" % (len(c), n))
+            raise ValueError("sarimax: regressor has %d rows but the series has %d" % (len(c), n))
     return cols
 
 
-def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12,
-        include_constant=None, method="ml"):
+def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12, include_constant=None, method="ml"):
     r"""Fit a regression with seasonal ARIMA errors."""
     if method not in ("ml", "uls", "css"):
-        raise ValueError("sarimax: method must be 'ml', 'uls' or "
-                         "'css', got %r" % method)
+        raise ValueError("sarimax: method must be 'ml', 'uls' or 'css', got %r" % method)
     y = [float(v) for v in y]
     p, d, q = (int(v) for v in order)
     P, D, Q = (int(v) for v in seasonal_order)
@@ -196,9 +184,11 @@ def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12,
     if include_constant is None:
         include_constant = (d + D) < 2
     if include_constant and (d + D) >= 2:
-        raise ValueError("sarimax: a constant is admitted only when "
-                         "d + D < 2 (Hyndman-Khandakar 2008 Sec. 3.1), "
-                         "got d = %d, D = %d" % (d, D))
+        raise ValueError(
+            "sarimax: a constant is admitted only when "
+            "d + D < 2 (Hyndman-Khandakar 2008 Sec. 3.1), "
+            "got d = %d, D = %d" % (d, D)
+        )
     if include_constant:
         cols = [[1.0] * len(y)] + cols
     wy = _sa.difference(y, d, D, s)
@@ -211,23 +201,23 @@ def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12,
 
     def unpack(v):
         i = 0
-        phi = list(v[i:i + p]); i += p
-        th = list(v[i:i + q]); i += q
-        Ph = list(v[i:i + P]); i += P
-        return phi, th, Ph, list(v[i:i + Q])
+        phi = list(v[i : i + p])
+        i += p
+        th = list(v[i : i + q])
+        i += q
+        Ph = list(v[i : i + P])
+        i += P
+        return phi, th, Ph, list(v[i : i + Q])
 
     def objective(v):
         phi, th, Ph, Th = unpack(v)
-        if not (_sa._roots_ok(phi, ROOT_TOL)
-                and _sa._roots_ok(Ph, ROOT_TOL)):
+        if not (_sa._roots_ok(phi, ROOT_TOL) and _sa._roots_ok(Ph, ROOT_TOL)):
             return 1e10
         ar, ma = _sa.expand_polynomials(phi, Ph, th, Th, s)
         if not _sa._roots_ok(ma, ROOT_TOL):
             return 1e10
         try:
-            r = profile_beta(wy, wX, ar, ma,
-                             "conditional" if method == "css"
-                             else "exact")
+            r = profile_beta(wy, wX, ar, ma, "conditional" if method == "css" else "exact")
         except (ValueError, ZeroDivisionError):
             return 1e10
         n = len(wy)
@@ -236,8 +226,7 @@ def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12,
             return 1e10
         if method in ("uls", "css"):
             return r["ssq"]
-        return (0.5 * n * (math.log(2.0 * math.pi * s2) + 1.0)
-                + 0.5 * r["sum_log_f"])
+        return 0.5 * n * (math.log(2.0 * math.pi * s2) + 1.0) + 0.5 * r["sum_log_f"]
 
     x0 = [0.1] * npar
     best, xhat = objective(x0), list(x0)
@@ -256,30 +245,41 @@ def fit(y, X=None, order=(0, 1, 1), seasonal_order=(0, 1, 1), s=12,
     r = profile_beta(wy, wX, ar, ma)
     n = len(wy)
     sigma2 = r["ssq"] / n
-    ll = (-0.5 * n * (math.log(2.0 * math.pi * sigma2) + 1.0)
-          - 0.5 * r["sum_log_f"])
+    ll = -0.5 * n * (math.log(2.0 * math.pi * sigma2) + 1.0) - 0.5 * r["sum_log_f"]
     k = npar + len(r["beta"]) + 1
     if r["beta"]:
         cov = np.linalg.inv(np.array(r["information"]))
-        beta_se = [math.sqrt(max(sigma2 * float(cov[i][i]), 0.0))
-                   for i in range(len(r["beta"]))]
+        beta_se = [math.sqrt(max(sigma2 * float(cov[i][i]), 0.0)) for i in range(len(r["beta"]))]
     else:
         beta_se = []
-    return RichResult(payload={
-        "beta_se": beta_se,
-        "estimate": r["beta"][0] if r["beta"] else sigma2,
-        "beta": r["beta"], "phi": phi, "theta": th,
-        "Phi": Ph, "Theta": Th, "ar": ar, "ma": ma,
-        "sigma2": sigma2, "loglik": ll,
-        "aic": -2.0 * ll + 2.0 * k, "n_par": k, "n_used": n,
-        "residuals": r["v"], "innovation_variance": r["f"],
-        "include_constant": bool(include_constant),
-        "order": (p, d, q), "seasonal_order": (P, D, Q), "s": s,
-        "fit_method": method,
-        "method": "regression with seasonal ARIMA errors, beta "
-                  "profiled out by exact GLS; Box et al. (2016) "
-                  "Sec. 9.5, Hyndman & Khandakar (2008) Sec. 3.1",
-    })
+    return RichResult(
+        payload={
+            "beta_se": beta_se,
+            "estimate": r["beta"][0] if r["beta"] else sigma2,
+            "beta": r["beta"],
+            "phi": phi,
+            "theta": th,
+            "Phi": Ph,
+            "Theta": Th,
+            "ar": ar,
+            "ma": ma,
+            "sigma2": sigma2,
+            "loglik": ll,
+            "aic": -2.0 * ll + 2.0 * k,
+            "n_par": k,
+            "n_used": n,
+            "residuals": r["v"],
+            "innovation_variance": r["f"],
+            "include_constant": bool(include_constant),
+            "order": (p, d, q),
+            "seasonal_order": (P, D, Q),
+            "s": s,
+            "fit_method": method,
+            "method": "regression with seasonal ARIMA errors, beta "
+            "profiled out by exact GLS; Box et al. (2016) "
+            "Sec. 9.5, Hyndman & Khandakar (2008) Sec. 3.1",
+        }
+    )
 
 
 def aic(loglik, n_par):
@@ -298,11 +298,9 @@ def aicc(loglik, n_par, n):
 def starting_models(d, D, s):
     r"""Step 1: the four models the search starts from."""
     if int(s) > 1:
-        out = [((2, d, 2), (1, D, 1)), ((0, d, 0), (0, D, 0)),
-               ((1, d, 0), (1, D, 0)), ((0, d, 1), (0, D, 1))]
+        out = [((2, d, 2), (1, D, 1)), ((0, d, 0), (0, D, 0)), ((1, d, 0), (1, D, 0)), ((0, d, 1), (0, D, 1))]
     else:
-        out = [((2, d, 2), (0, D, 0)), ((0, d, 0), (0, D, 0)),
-               ((1, d, 0), (0, D, 0)), ((0, d, 1), (0, D, 0))]
+        out = [((2, d, 2), (0, D, 0)), ((0, d, 0), (0, D, 0)), ((1, d, 0), (0, D, 0)), ((0, d, 1), (0, D, 0))]
     return out
 
 
@@ -311,12 +309,20 @@ def neighbours(order, seasonal_order, constant, s):
     p, d, q = order
     P, D, Q = seasonal_order
     out = []
-    for dp, dq, dP, dQ in ((1, 0, 0, 0), (-1, 0, 0, 0),
-                           (0, 1, 0, 0), (0, -1, 0, 0),
-                           (0, 0, 1, 0), (0, 0, -1, 0),
-                           (0, 0, 0, 1), (0, 0, 0, -1),
-                           (1, 1, 0, 0), (-1, -1, 0, 0),
-                           (0, 0, 1, 1), (0, 0, -1, -1)):
+    for dp, dq, dP, dQ in (
+        (1, 0, 0, 0),
+        (-1, 0, 0, 0),
+        (0, 1, 0, 0),
+        (0, -1, 0, 0),
+        (0, 0, 1, 0),
+        (0, 0, -1, 0),
+        (0, 0, 0, 1),
+        (0, 0, 0, -1),
+        (1, 1, 0, 0),
+        (-1, -1, 0, 0),
+        (0, 0, 1, 1),
+        (0, 0, -1, -1),
+    ):
         np_, nq = p + dp, q + dq
         nP, nQ = P + dP, Q + dQ
         if min(np_, nq, nP, nQ) < 0:
@@ -335,12 +341,10 @@ def neighbours(order, seasonal_order, constant, s):
 def _try_fit(y, X, order, seasonal_order, s, constant, method):
     if constant and (order[1] + seasonal_order[1]) >= 2:
         return None
-    if order[0] + order[2] + seasonal_order[0] + seasonal_order[2] == 0 \
-            and not constant and X is None:
+    if order[0] + order[2] + seasonal_order[0] + seasonal_order[2] == 0 and not constant and X is None:
         return None
     try:
-        return fit(y, X, order, seasonal_order, s,
-                   include_constant=constant, method=method)
+        return fit(y, X, order, seasonal_order, s, include_constant=constant, method=method)
     except (ValueError, ZeroDivisionError, ArithmeticError):
         return None
 
@@ -365,10 +369,15 @@ def auto_order(y, X=None, d=0, D=0, s=1, method="css", max_steps=20):
             return visited[key]
         r = _try_fit(y, X, order, seasonal, s, constant, method)
         visited[key] = r
-        tried.append({"order": order, "seasonal_order": seasonal,
-                      "constant": bool(constant),
-                      "aic": None if r is None else r["aic"],
-                      "rejected": r is None})
+        tried.append(
+            {
+                "order": order,
+                "seasonal_order": seasonal,
+                "constant": bool(constant),
+                "aic": None if r is None else r["aic"],
+                "rejected": r is None,
+            }
+        )
         return r
 
     constant = (d + D) < 2
@@ -398,30 +407,39 @@ def auto_order(y, X=None, d=0, D=0, s=1, method="css", max_steps=20):
     final = _try_fit(y, X, order, seasonal, s, constant, method)
     if final is not None:
         r = final
-    return RichResult(payload={
-        "estimate": r["aic"], "aic": r["aic"], "fit": r,
-        "order": order, "seasonal_order": seasonal,
-        "constant": bool(constant), "steps": steps,
-        "n_models_tried": len(tried), "tried": tried,
-        "s": s, "search_method": method,
-        "differencing_note": "d and D are inputs; Hyndman & Khandakar "
-                             "select them with KPSS and Canova-Hansen "
-                             "tests, which are not implemented here",
-        "method": "step-wise order selection; Hyndman & Khandakar "
-                  "(2008) Sec. 3.2",
-    })
+    return RichResult(
+        payload={
+            "estimate": r["aic"],
+            "aic": r["aic"],
+            "fit": r,
+            "order": order,
+            "seasonal_order": seasonal,
+            "constant": bool(constant),
+            "steps": steps,
+            "n_models_tried": len(tried),
+            "tried": tried,
+            "s": s,
+            "search_method": method,
+            "differencing_note": "d and D are inputs; Hyndman & Khandakar "
+            "select them with KPSS and Canova-Hansen "
+            "tests, which are not implemented here",
+            "method": "step-wise order selection; Hyndman & Khandakar (2008) Sec. 3.2",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sarimax: y = beta'x + n with seasonal ARIMA errors. beta "
-            "is profiled out by exact GLS on the Kalman innovations, "
-            "so only the ARIMA parameters go to the optimiser. "
-            "auto_order is Hyndman-Khandakar's step-wise search: four "
-            "starting models, thirteen neighbours, AIC, and the four "
-            "stated constraints (p,q<=5, P,Q<=2, root >= 1.001, drop "
-            "anything that will not fit). d and D are inputs -- the "
-            "KPSS and Canova-Hansen tests that choose them are not "
-            "implemented.")
+    return (
+        "sarimax: y = beta'x + n with seasonal ARIMA errors. beta "
+        "is profiled out by exact GLS on the Kalman innovations, "
+        "so only the ARIMA parameters go to the optimiser. "
+        "auto_order is Hyndman-Khandakar's step-wise search: four "
+        "starting models, thirteen neighbours, AIC, and the four "
+        "stated constraints (p,q<=5, P,Q<=2, root >= 1.001, drop "
+        "anything that will not fit). d and D are inputs -- the "
+        "KPSS and Canova-Hansen tests that choose them are not "
+        "implemented."
+    )
 
 
 # compact alias per ledger/NAMING.md

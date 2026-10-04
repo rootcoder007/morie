@@ -1,8 +1,8 @@
 """Tests for morie.fn.mxcrk -- Mixture cure model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mxcrk import mxcrk
 
 

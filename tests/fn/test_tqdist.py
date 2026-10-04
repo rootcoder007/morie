@@ -1,7 +1,5 @@
 """Tests for tqdist.turboquant_distortion_bound."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.tqdist import turboquant_distortion_bound
 
 

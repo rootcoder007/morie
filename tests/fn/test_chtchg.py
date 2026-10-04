@@ -1,7 +1,6 @@
 """Tests for chtchg.changeover_dr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.chtchg import changeover_dr
 
 

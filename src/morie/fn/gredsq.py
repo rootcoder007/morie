@@ -10,8 +10,7 @@ __all__ = ["geron_encoder_decoder_seq2seq"]
 _METHOD = "Encoder-decoder seq2seq decoding loop"
 
 
-def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len,
-                                  start_token=None, eos_token=None):
+def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len, start_token=None, eos_token=None):
     r"""Encode once, then decode step by step.
 
     .. math::
@@ -111,9 +110,7 @@ def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len,
         if first_shape is None:
             first_shape = y.shape
         elif y.shape != first_shape:
-            raise ValueError(
-                f"decoder changed output shape at step {t}: {y.shape} after {first_shape}."
-            )
+            raise ValueError(f"decoder changed output shape at step {t}: {y.shape} after {first_shape}.")
         # morie has no 0-d arrays: ask the decoder's own return value
         outputs.append(float(y) if np.ndim(y_raw) == 0 else y.tolist())
         y_prev = y
@@ -123,8 +120,7 @@ def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len,
 
     return RichResult(
         title="Encoder-decoder seq2seq",
-        summary_lines=[("Context dim", int(c.size)), ("Steps", len(outputs)),
-                       ("Stopped at EOS", stopped)],
+        summary_lines=[("Context dim", int(c.size)), ("Steps", len(outputs)), ("Stopped at EOS", stopped)],
         payload={
             "outputs": outputs,
             "context": c.tolist(),

@@ -12,8 +12,7 @@ __all__ = [
 ]
 
 
-def sparse_vector(queries, threshold, c=1, epsilon=1.0,
-                  threshold_noise=0.0, query_noise=None):
+def sparse_vector(queries, threshold, c=1, epsilon=1.0, threshold_noise=0.0, query_noise=None):
     """AboveThreshold / sparse vector, with the noise supplied by the caller.
 
     NOT IN SCHABENBERGER & GOTWAY -- this is differential privacy, not
@@ -74,8 +73,7 @@ def sparse_vector(queries, threshold, c=1, epsilon=1.0,
     if c < 1:
         raise ValueError("`c` must be at least 1")
     if c > m:
-        raise ValueError("`c` (%d) exceeds the number of queries (%d)"
-                         % (c, m))
+        raise ValueError("`c` (%d) exceeds the number of queries (%d)" % (c, m))
     if eps <= 0:
         raise ValueError("`epsilon` must be positive")
     if query_noise is None:
@@ -105,23 +103,27 @@ def sparse_vector(queries, threshold, c=1, epsilon=1.0,
         above.append(None)
         released.append(None)
 
-    return RichResult(payload={
-        "above": above,
-        "released": released,
-        "halted_at": float(halted),
-        "n_above": float(hits),
-        "noisy_threshold": tn,
-        "noise_scales": {"threshold": 2.0 / eps, "query": 2.0 * c / eps},
-        "epsilon_split": {"threshold": eps / 2.0, "queries": eps / 2.0},
-        "epsilon": eps,
-        "c": float(c),
-        "cost_scales_with_c_not_with_m": True,
-        "answered": fsum([1.0 for a in above if a is not None]),
-        "n": m,
-        "method": ("Sparse vector / AboveThreshold (Dwork & Roth 2014, "
-                   "Alg. 2; Hardt & Rothblum 2010) with caller-supplied "
-                   "noise; NOT in Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "above": above,
+            "released": released,
+            "halted_at": float(halted),
+            "n_above": float(hits),
+            "noisy_threshold": tn,
+            "noise_scales": {"threshold": 2.0 / eps, "query": 2.0 * c / eps},
+            "epsilon_split": {"threshold": eps / 2.0, "queries": eps / 2.0},
+            "epsilon": eps,
+            "c": float(c),
+            "cost_scales_with_c_not_with_m": True,
+            "answered": fsum([1.0 for a in above if a is not None]),
+            "n": m,
+            "method": (
+                "Sparse vector / AboveThreshold (Dwork & Roth 2014, "
+                "Alg. 2; Hardt & Rothblum 2010) with caller-supplied "
+                "noise; NOT in Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

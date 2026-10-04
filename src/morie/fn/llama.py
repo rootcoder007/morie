@@ -52,8 +52,20 @@ def _rope(v, pos, base=10000.0):
     return out
 
 
-def llama(tokens, model=None, Wq=None, Wk=None, Wv=None, Wo=None,
-          W1=None, W3=None, W2=None, g1=None, g2=None, rope_base=10000.0):
+def llama(
+    tokens,
+    model=None,
+    Wq=None,
+    Wk=None,
+    Wv=None,
+    Wo=None,
+    W1=None,
+    W3=None,
+    W2=None,
+    g1=None,
+    g2=None,
+    rope_base=10000.0,
+):
     """A single pre-norm, RoPE, SwiGLU decoder block over a token sequence.
 
     Parameters

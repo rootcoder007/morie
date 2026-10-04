@@ -1,7 +1,5 @@
 """Tests for smrest.standardized_mortality_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.smrest import standardized_mortality_ratio
 
 

@@ -45,8 +45,7 @@ def test_more_iterations_concentrate_the_visits():
     a, s, r, t = _one_move_game()
     few = mctsr("root", a, s, r, t, n_iter=40, seed=1)
     many = mctsr("root", a, s, r, t, n_iter=400, seed=1)
-    assert (many["child_visits"]["good"] / 400.0) > \
-        (few["child_visits"]["good"] / 40.0)
+    assert (many["child_visits"]["good"] / 400.0) > (few["child_visits"]["good"] / 40.0)
 
 
 def test_exploration_constant_zero_is_greedy():
@@ -58,11 +57,9 @@ def test_exploration_constant_zero_is_greedy():
 def test_both_final_move_rules_and_both_backups_run():
     a, s, r, t = _one_move_game()
     for final in ("robust", "max"):
-        assert mctsr("root", a, s, r, t, n_iter=60, seed=1,
-                     final=final)["action"] == "good"
+        assert mctsr("root", a, s, r, t, n_iter=60, seed=1, final=final)["action"] == "good"
     for backup in ("sum", "negamax"):
-        assert mctsr("root", a, s, r, t, n_iter=60, seed=1,
-                     backup=backup)["backup"] == backup
+        assert mctsr("root", a, s, r, t, n_iter=60, seed=1, backup=backup)["backup"] == backup
 
 
 def test_seed_reproducibility():
@@ -74,9 +71,11 @@ def test_seed_reproducibility():
 
 def test_validation():
     a, s, r, t = _one_move_game()
-    for call in (lambda: mctsr("root", a, s, r, t, backup="mean"),
-                 lambda: mctsr("root", a, s, r, t, final="first"),
-                 lambda: mctsr("good", a, s, r, t)):
+    for call in (
+        lambda: mctsr("root", a, s, r, t, backup="mean"),
+        lambda: mctsr("root", a, s, r, t, final="first"),
+        lambda: mctsr("good", a, s, r, t),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

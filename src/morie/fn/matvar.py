@@ -57,7 +57,7 @@ def matern_variogram_model(h, c0=0.0, c=1.0, a=1.0, nu=0.5):
             expo.append(0.0)
             continue
         u = x / aa
-        C = (2.0 ** (1.0 - v) / math.exp(math.lgamma(v))) * (u ** v) * k.besselk(v, u)
+        C = (2.0 ** (1.0 - v) / math.exp(math.lgamma(v))) * (u**v) * k.besselk(v, u)
         cor.append(C)
         out.append(float(c0) + float(c) * (1.0 - C))
         expo.append(float(c0) + float(c) * (1.0 - math.exp(-u)))

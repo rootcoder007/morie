@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 5.9: the same preference, written as a sigmoid."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km072 import kamath_ch5_bradley_terry_pref
 
@@ -20,7 +19,8 @@ def _pair(r_star):
         raise ValueError(
             "r_star must hold exactly two rewards (winner, loser), or a "
             "mapping with the keys 'y_w' and 'y_l'; got "
-            f"{len(vals)} values.")
+            f"{len(vals)} values."
+        )
     return float(vals[0]), float(vals[1])
 
 
@@ -43,12 +43,17 @@ def kamath_ch5_pref_sigmoid_form(r_star):
     0.5
     """
     rw, rl = _pair(r_star)
-    inner = kamath_ch5_bradley_terry_pref({"y_w": rw, "y_l": rl},
-                                          "y_w", "y_l")
-    return RichResult(payload={
-        "estimate": inner["estimate"], "margin": inner["margin"],
-        "r_w": rw, "r_l": rl, "n": 2,
-        "method": "preference as sigmoid of the margin (Kamath Eq 5.9)"})
+    inner = kamath_ch5_bradley_terry_pref({"y_w": rw, "y_l": rl}, "y_w", "y_l")
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "margin": inner["margin"],
+            "r_w": rw,
+            "r_l": rl,
+            "n": 2,
+            "method": "preference as sigmoid of the margin (Kamath Eq 5.9)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for agnodu.alphazero_node_update."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agnodu import alphazero_node_update
 
 

@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,8 +22,9 @@ def mvsml_convolutional_nn_eq_14_7(t, x_t, L2=5, kind="fourier"):
     likelihood estimate. Keys: estimate."""
     Psi = _gp.fda_basis_matrix(t, L2, kind=kind)
     c = _gp.fda_basis_coefficients(Psi, x_t)
-    res = RichResult(payload={"estimate": c[0], "c": c, "Psi": Psi,
-                              "method": "basis coefficients (MVSML 2022 eq. 14.7-14.8)"})
+    res = RichResult(
+        payload={"estimate": c[0], "c": c, "Psi": Psi, "method": "basis coefficients (MVSML 2022 eq. 14.7-14.8)"}
+    )
     return with_describe_pointer(res, "msm270")
 
 

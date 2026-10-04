@@ -1,7 +1,6 @@
 """Tests for hrzn1.horowitz_nonparametric_iv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzn1 import horowitz_nonparametric_iv
 
 

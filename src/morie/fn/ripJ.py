@@ -78,8 +78,7 @@ def ripley_j_function(points, window=None, r=None, n_grid=40):
 
     denom = 1.0 - f
     j = np.array(
-        [float("nan") if denom[i] <= 0.0 else (1.0 - g[i]) / denom[i]
-         for i in range(len(r))],
+        [float("nan") if denom[i] <= 0.0 else (1.0 - g[i]) / denom[i] for i in range(len(r))],
         dtype=float,
     )
     n_defined = int(sum(1 for v in j if v == v))
@@ -102,6 +101,7 @@ def ripley_j_function(points, window=None, r=None, n_grid=40):
 
 def cheatsheet():
     return "ripJ: J(r) = (1-G(r))/(1-F(r)); J = 1 under CSR, < 1 clustered, > 1 regular."
+
 
 # alias kept from the retired placeholder of the same name
 j_function = ripley_j_function

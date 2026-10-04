@@ -28,20 +28,19 @@ def adjusted_r2(r2, n, k):
     """
     value = _ca_crim.adjusted_r2(r2, n, k)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.15)"
     return RichResult(
-        title='Adjusted R^2 penalizing model complexity',
+        title="Adjusted R^2 penalizing model complexity",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e15: Adj R^2 = 1 - (1-R^2)(n-1)/(n-k-1) [Weisburd et al. 2022, eq. 2.15]'
+    return "ca2e15: Adj R^2 = 1 - (1-R^2)(n-1)/(n-k-1) [Weisburd et al. 2022, eq. 2.15]"
 
 
 # compact alias per ledger/NAMING.md

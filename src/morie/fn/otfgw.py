@@ -67,20 +67,26 @@ def ot_fused_gromov_wasserstein(M, Cx, Cy, a, b, alpha=0.5, max_iter=20):
     it = int(max_iter)
     for k in range(it):
         _, CT = ot.gw_cost(A, B, T, aa, bb)
-        G = [[(1.0 - al) * Mm[i][j] - 4.0 * al * CT[i][j] for j in range(m)]
-             for i in range(n)]
+        G = [[(1.0 - al) * Mm[i][j] - 4.0 * al * CT[i][j] for j in range(m)] for i in range(n)]
         Th, _ = ot.emd(aa, bb, G)
         gam = 2.0 / (k + 2.0)
-        T = [[(1.0 - gam) * T[i][j] + gam * Th[i][j] for j in range(m)]
-             for i in range(n)]
+        T = [[(1.0 - gam) * T[i][j] + gam * Th[i][j] for j in range(m)] for i in range(n)]
     gw, _ = ot.gw_cost(A, B, T, aa, bb)
     if gw < 0.0:
         gw = 0.0
     wpart = ot.frob(T, Mm)
-    return RichResult(payload={
-        "T": T, "cost": (1.0 - al) * wpart + al * gw,
-        "wass_part": wpart, "gromov_part": gw, "n": n, "m": m, "iters": it,
-        "method": "Fused Gromov-Wasserstein distance"})
+    return RichResult(
+        payload={
+            "T": T,
+            "cost": (1.0 - al) * wpart + al * gw,
+            "wass_part": wpart,
+            "gromov_part": gw,
+            "n": n,
+            "m": m,
+            "iters": it,
+            "method": "Fused Gromov-Wasserstein distance",
+        }
+    )
 
 
 def cheatsheet():

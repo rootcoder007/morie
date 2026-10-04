@@ -83,9 +83,17 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["turboquant_inner_product_distortion_bound", "tqipb",
-           "distortion_constant", "variance_bound", "tail_probability",
-           "bits_required", "cheatsheet", "ROUTES", "TAILS"]
+__all__ = [
+    "turboquant_inner_product_distortion_bound",
+    "tqipb",
+    "distortion_constant",
+    "variance_bound",
+    "tail_probability",
+    "bits_required",
+    "cheatsheet",
+    "ROUTES",
+    "TAILS",
+]
 
 ROUTES = ("table", "panter_dite", "qjl", "lower_bound")
 TAILS = ("chebyshev", "sub_gaussian")
@@ -165,8 +173,7 @@ def _blocks_of(d, n_blocks):
     return [base + 1 if j < rem else base for j in range(k)]
 
 
-def variance_bound(bits, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1,
-                   route="table"):
+def variance_bound(bits, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1, route="table"):
     """Variance of the inner-product estimate, summed over packed blocks.
 
     Mass is split across blocks in proportion to their dimension, which
@@ -199,13 +206,11 @@ def variance_bound(bits, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1,
     total = 0.0
     for dj in dims:
         share = float(dj) / float(d)
-        total += (distortion_constant(bits, dj, route)
-                  * (x_norm_sq * share) * (norm_sq * share))
+        total += distortion_constant(bits, dj, route) * (x_norm_sq * share) * (norm_sq * share)
     return total
 
 
-def tail_probability(var, eps, norm_sq=1.0, x_norm_sq=1.0,
-                     tail="chebyshev"):
+def tail_probability(var, eps, norm_sq=1.0, x_norm_sq=1.0, tail="chebyshev"):
     """delta such that Pr[|error| > eps ||x|| ||y||] <= delta.
 
     Parameters
@@ -242,8 +247,7 @@ def tail_probability(var, eps, norm_sq=1.0, x_norm_sq=1.0,
     return p if p < 1.0 else 1.0
 
 
-def bits_required(eps, delta, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1,
-                  route="table", tail="chebyshev", max_bits=32):
+def bits_required(eps, delta, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1, route="table", tail="chebyshev", max_bits=32):
     """Smallest bit-width meeting (eps, delta), or None within max_bits.
 
     Searched rather than inverted in closed form: the "table" route is
@@ -257,11 +261,9 @@ def bits_required(eps, delta, d, norm_sq=1.0, x_norm_sq=1.0, n_blocks=1,
     return None
 
 
-def turboquant_inner_product_distortion_bound(bits, norm_sq=1.0, d=None,
-                                              eps=0.1, delta=None,
-                                              x_norm_sq=1.0, n_blocks=1,
-                                              route="table",
-                                              tail="chebyshev"):
+def turboquant_inner_product_distortion_bound(
+    bits, norm_sq=1.0, d=None, eps=0.1, delta=None, x_norm_sq=1.0, n_blocks=1, route="table", tail="chebyshev"
+):
     """Inner-product distortion and tail bound for TurboQuant blocks.
 
     Parameters
@@ -320,16 +322,16 @@ def turboquant_inner_product_distortion_bound(bits, norm_sq=1.0, d=None,
         "block_dims": dims,
         "route": route,
         "tail": tail,
-        "assumption": ("variance only" if tail == "chebyshev"
-                       else "error sub-Gaussian with the stated variance "
-                            "proxy -- an assumption, not a paper result"),
+        "assumption": (
+            "variance only"
+            if tail == "chebyshev"
+            else "error sub-Gaussian with the stated variance proxy -- an assumption, not a paper result"
+        ),
         "method": "TurboQuant inner-product distortion bound",
     }
     if delta is not None:
         payload["target_delta"] = float(delta)
-        payload["bits_needed"] = bits_required(eps, delta, d, norm_sq,
-                                               x_norm_sq, n_blocks,
-                                               route, tail)
+        payload["bits_needed"] = bits_required(eps, delta, d, norm_sq, x_norm_sq, n_blocks, route, tail)
     return RichResult(payload=payload)
 
 
@@ -337,5 +339,6 @@ tqipb = turboquant_inner_product_distortion_bound
 
 
 def cheatsheet():
-    return ("tqipb: TurboQuant inner-product distortion bounds. "
-            "routes " + ", ".join(ROUTES) + "; tails " + ", ".join(TAILS))
+    return (
+        "tqipb: TurboQuant inner-product distortion bounds. routes " + ", ".join(ROUTES) + "; tails " + ", ".join(TAILS)
+    )

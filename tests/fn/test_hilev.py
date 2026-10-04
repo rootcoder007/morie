@@ -1,7 +1,6 @@
 """Test hilbert_envelope (hilev)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hilev import hilbert_envelope, hilev
 

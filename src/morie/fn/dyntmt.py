@@ -93,17 +93,14 @@ def dynamic_marginal_msm(y, D_history, H_history, regime_fn=None):
             if v != 0.0 and v != 1.0:
                 raise ValueError("D_history must be binary 0/1")
     if regime_fn is None:
-        pres = [[1.0 if H[i][t] > 0.0 else 0.0 for t in range(T)]
-                for i in range(n)]
+        pres = [[1.0 if H[i][t] > 0.0 else 0.0 for t in range(T)] for i in range(n)]
     elif callable(regime_fn):
-        pres = [[1.0 if regime_fn(H[i][t]) else 0.0 for t in range(T)]
-                for i in range(n)]
+        pres = [[1.0 if regime_fn(H[i][t]) else 0.0 for t in range(T)] for i in range(n)]
     else:
         R = core.mat(regime_fn)
         if len(R) != n or len(R[0]) != T:
             raise ValueError("regime_fn as an array must be n x T")
-        pres = [[1.0 if R[i][t] > 0.5 else 0.0 for t in range(T)]
-                for i in range(n)]
+        pres = [[1.0 if R[i][t] > 0.5 else 0.0 for t in range(T)] for i in range(n)]
     follow = [1.0] * n
     for i in range(n):
         for t in range(T):

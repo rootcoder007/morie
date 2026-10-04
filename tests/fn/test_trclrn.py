@@ -1,11 +1,11 @@
 """trclrn -- tree-based ITR. Sources: Laber, E. B. & Zhao, Y. Q.
 (2015) Biometrika 102(3), 501-514, doi:10.1093/biomet/asv028; Tao, Y.
 & Wang, L. (2017) Biometrics 73, 145-155, doi:10.1111/biom.12539."""
+
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.trclrn import (fit_tree, predict_rule, rule_value,
-                             tree_rules)
+from morie.fn.trclrn import fit_tree, predict_rule, rule_value, tree_rules
 
 
 def trial(n=800, seed=9, hetero=True):
@@ -16,8 +16,7 @@ def trial(n=800, seed=9, hetero=True):
         x1 = float(rng.uniform())
         a = 1 if float(rng.uniform()) < 0.5 else 0
         tau = (2.0 if x0 > 0.5 else -2.0) if hetero else 1.0
-        Y.append(1.0 + 3.0 * x1 + a * tau
-                 + float(rng.normal(0.0, 0.4)))
+        Y.append(1.0 + 3.0 * x1 + a * tau + float(rng.normal(0.0, 0.4)))
         A.append(a)
         X.append([x0, x1])
     return Y, A, X
@@ -32,8 +31,7 @@ def test_ipw_value_is_twice_the_concordant_mean_at_half():
 
 def test_the_oracle_rule_beats_both_fixed_arms():
     Y, A, X = trial()
-    v_or = rule_value(Y, A, X, lambda x: 1 if x[0] > 0.5 else 0,
-                      propensity=0.5)
+    v_or = rule_value(Y, A, X, lambda x: 1 if x[0] > 0.5 else 0, propensity=0.5)
     v_1 = rule_value(Y, A, X, lambda x: 1, propensity=0.5)
     v_0 = rule_value(Y, A, X, lambda x: 0, propensity=0.5)
     assert v_or > v_1 and v_or > v_0
@@ -62,8 +60,7 @@ def test_the_learned_rule_mostly_agrees_with_the_oracle():
     Y, A, X = trial()
     f = fit_tree(Y, A, X, propensity=0.5, max_depth=2, min_leaf=40)
     pred = predict_rule(f["tree"], X)
-    agree = sum(1 for i in range(len(X))
-                if pred[i] == (1 if X[i][0] > 0.5 else 0)) / len(X)
+    agree = sum(1 for i in range(len(X)) if pred[i] == (1 if X[i][0] > 0.5 else 0)) / len(X)
     assert agree > 0.85
 
 
@@ -79,8 +76,7 @@ def test_the_augmented_route_also_finds_the_rule():
     def om(x, a):
         return 1.0 + 3.0 * x[1] + a * (2.0 if x[0] > 0.5 else -2.0)
 
-    f = fit_tree(Y, A, X, propensity=0.5, method="augmented",
-                 outcome_model=om, max_depth=2, min_leaf=40)
+    f = fit_tree(Y, A, X, propensity=0.5, method="augmented", outcome_model=om, max_depth=2, min_leaf=40)
     assert f["tree"]["feature"] == 0
 
 
@@ -89,8 +85,7 @@ def test_tree_rules_print_one_line_per_node():
     f = fit_tree(Y, A, X, propensity=0.5, max_depth=1, min_leaf=40)
     lines = tree_rules(f["tree"], names=["x0", "x1"])
     assert any("if x0 <" in ln for ln in lines)
-    assert sum(1 for ln in lines if "treat with" in ln) == \
-        f["n_leaves"]
+    assert sum(1 for ln in lines if "treat with" in ln) == f["n_leaves"]
 
 
 def test_depth_zero_gives_a_single_leaf():

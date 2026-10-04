@@ -1,7 +1,6 @@
 """Tests for cvxprx.boyd_proximal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxprx import boyd_proximal
 
 

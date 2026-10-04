@@ -1,7 +1,5 @@
 """Tests for gb1332w.gibbons_wrs_efficacy."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1332w import gibbons_wrs_efficacy
 
 

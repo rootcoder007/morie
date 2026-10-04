@@ -1,7 +1,6 @@
 """Tests for btbias.boot_bias_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btbias import boot_bias_estimator
 
 
@@ -29,7 +28,7 @@ def test_btbias_basic():
     samples = x[idx]
     means = samples.mean(axis=1)
     devs = samples - means[:, None]
-    theta_b = np.sum(devs ** 2, axis=1) / n
+    theta_b = np.sum(devs**2, axis=1) / n
 
     result = boot_bias_estimator(theta_hat, theta_b)
 

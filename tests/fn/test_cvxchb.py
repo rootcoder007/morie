@@ -1,7 +1,6 @@
 """Tests for cvxchb.boyd_chebyshev_center."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxchb import boyd_chebyshev_center
 
 
@@ -12,6 +11,8 @@ def test_cvxchb_basic():
     result = boyd_chebyshev_center(A, b)
     assert isinstance(result, dict)
     assert "center" in result
+
+
 def test_cvxchb_edge():
     """Test edge cases."""
     A = np.random.default_rng(42).normal(0, 1, (100, 10))

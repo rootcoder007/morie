@@ -11,5 +11,6 @@ def test_alt5c_basic():
 
 def test_alt5c_edge():
     import pytest
+
     with pytest.raises(ValueError, match="label tokens"):
         alammar_t5_text_to_text_classify("q", [], lambda i, l: 0)

@@ -3,17 +3,97 @@
 Values come from survfit, survdiff, coxph and concordance run on the
 same 40-subject fixture with censoring in both groups.
 """
+
 import math
 
 import pytest
 
 from morie.fn import _survival_core as sv
 
-T = [5, 8, 12, 3, 15, 7, 20, 11, 4, 18, 9, 22, 6, 14, 25, 10, 17, 2,
-     13, 19, 16, 21, 1, 24, 23, 27, 26, 30, 28, 29, 31, 33, 32, 35,
-     34, 37, 36, 39, 38, 40]
-E = [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1,
-     1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1]
+T = [
+    5,
+    8,
+    12,
+    3,
+    15,
+    7,
+    20,
+    11,
+    4,
+    18,
+    9,
+    22,
+    6,
+    14,
+    25,
+    10,
+    17,
+    2,
+    13,
+    19,
+    16,
+    21,
+    1,
+    24,
+    23,
+    27,
+    26,
+    30,
+    28,
+    29,
+    31,
+    33,
+    32,
+    35,
+    34,
+    37,
+    36,
+    39,
+    38,
+    40,
+]
+E = [
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+]
 G = [1] * 20 + [2] * 20
 X1 = [((i * 7) % 11) / 5 - 1 for i in range(40)]
 X2 = [((i * 5) % 7) / 3 - 1 for i in range(40)]
@@ -26,7 +106,7 @@ def _at(km, t):
 
 def test_kaplan_meier_matches_survfit():
     km = sv.kaplan_meier(T, E)
-    assert len(km["time"]) == 30            # distinct event times
+    assert len(km["time"]) == 30  # distinct event times
     assert abs(km["surv"][0] - 0.975) < 1e-15
     i = _at(km, 10)
     assert abs(km["surv"][i] - 0.774193548387097) < 1e-14
@@ -42,8 +122,7 @@ def test_kaplan_meier_std_err_is_the_cumulative_hazard_one():
     assert abs(km["se_cumhaz"][0] - 0.0253184841770917) < 1e-15
     assert abs(km["se_cumhaz"][4] - 0.0597614304667197) < 1e-15
     for j in range(len(km["time"])):
-        assert abs(km["se"][j]
-                   - km["surv"][j] * km["se_cumhaz"][j]) < 1e-15
+        assert abs(km["se"][j] - km["surv"][j] * km["se_cumhaz"][j]) < 1e-15
 
 
 def test_kaplan_meier_is_monotone_and_bounded():
@@ -76,8 +155,7 @@ def test_logrank_matches_survdiff():
     r = sv.logrank_test(T, E, G)
     assert abs(r["statistic"] - 20.5279554955505) < 1e-11
     assert r["df"] == 1
-    assert abs(r["p_value"] - 5.87666766058383e-06) / \
-        5.87666766058383e-06 < 1e-10
+    assert abs(r["p_value"] - 5.87666766058383e-06) / 5.87666766058383e-06 < 1e-10
 
 
 def test_logrank_observed_and_expected_totals_agree():
@@ -112,8 +190,7 @@ def test_cox_hazard_ratio_is_exp_of_the_coefficient():
 def test_cox_likelihood_ratio_is_positive_and_consistent():
     c = sv.cox_ph(T, E, X)
     assert c["loglik"] >= c["loglik_null"]
-    assert abs(c["lr_statistic"]
-               - 2 * (c["loglik"] - c["loglik_null"])) < 1e-12
+    assert abs(c["lr_statistic"] - 2 * (c["loglik"] - c["loglik_null"])) < 1e-12
 
 
 def test_cox_partial_loglik_at_zero_is_the_null_loglik():
@@ -137,10 +214,8 @@ def test_efron_and_breslow_differ_only_with_ties():
 
 def test_concordance_matches_survival_concordance():
     c = sv.cox_ph(T, E, X)
-    risk = [math.exp(c["coef"][0] * X1[i] + c["coef"][1] * X2[i])
-            for i in range(40)]
-    assert abs(sv.concordance_index(T, E, risk)["c_index"]
-               - 0.483443708609272) < 1e-12
+    risk = [math.exp(c["coef"][0] * X1[i] + c["coef"][1] * X2[i]) for i in range(40)]
+    assert abs(sv.concordance_index(T, E, risk)["c_index"] - 0.483443708609272) < 1e-12
 
 
 def test_concordance_is_one_for_a_perfect_predictor():

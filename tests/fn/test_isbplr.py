@@ -1,7 +1,6 @@
 """Tests for isbplr.isgp_bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.isbplr import isgp_bayes
 
 

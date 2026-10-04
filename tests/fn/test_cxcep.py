@@ -1,7 +1,6 @@
 """Test complex_cepstrum (cxcep)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cxcep import complex_cepstrum, cxcep
 

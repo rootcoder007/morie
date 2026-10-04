@@ -72,13 +72,12 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
     T, k = S.shape
     if T < 3:
         raise ValueError("need at least 3 observations, got %d." % T)
-    L = (int(np.floor(4.0 * (T / 100.0) ** (2.0 / 9.0)))
-         if lags is None else int(lags))
+    L = int(np.floor(4.0 * (T / 100.0) ** (2.0 / 9.0))) if lags is None else int(lags)
     L = max(min(L, T - 1), 0)
 
     A = None
     W = S - S.mean(axis=0, keepdims=True)
-    if prewhiten and T > k + 2:
+    if prewhiten and k + 2 < T:
         Y, Xp = W[1:], W[:-1]
         A = np.linalg.lstsq(Xp, Y, rcond=None)[0]
         ev = np.max(np.abs(np.linalg.eigvals(A))) if k > 1 else abs(float(A))
@@ -86,7 +85,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
             W = Y - Xp @ A
             T = W.shape[0]
         else:
-            A = None                      # too close to a unit root to whiten
+            A = None  # too close to a unit root to whiten
 
     G0 = W.T @ W / T
     Om = G0.copy()
@@ -119,8 +118,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
             "se": se,
             "omega": Om,
             "lags": int(L),
-            "lag_rule": ("supplied" if lags is not None
-                         else "Newey-West automatic, floor(4 (T/100)^(2/9))"),
+            "lag_rule": ("supplied" if lags is not None else "Newey-West automatic, floor(4 (T/100)^(2/9))"),
             "lag_note": (
                 "too few lags leaves autocorrelation in and understates the "
                 "standard errors; too many makes the estimate itself noisy"
@@ -131,8 +129,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
                 "with a negative eigenvalue and hence imaginary standard "
                 "errors"
             ),
-            "inflation": (se / np.maximum(naive, 1e-300)
-                          if X is None else None),
+            "inflation": (se / np.maximum(naive, 1e-300) if X is None else None),
             "inflation_note": (
                 "HAC standard errors divided by the naive ones; above 1 "
                 "under positive autocorrelation, which is how much ordinary "
@@ -151,8 +148,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
 
 def cheatsheet():
     return (
-        "nwest: Bartlett-kernel HAC covariance with the automatic lag rule "
-        "and the PSD guarantee the weights exist for"
+        "nwest: Bartlett-kernel HAC covariance with the automatic lag rule and the PSD guarantee the weights exist for"
     )
 
 

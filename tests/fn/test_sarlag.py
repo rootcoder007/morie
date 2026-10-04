@@ -1,7 +1,6 @@
 """Tests for sarlag.spatial_ar_lag_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sarlag import spatial_ar_lag_model
 
 

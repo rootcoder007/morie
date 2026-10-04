@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['compnorm', 'aitchison_norm', 'aitchisonnorm']
+__all__ = ["compnorm", "aitchison_norm", "aitchisonnorm"]
 
 
 def compnorm(x):
@@ -40,9 +40,7 @@ def compnorm(x):
         for j in range(i + 1, D):
             tot += (lx[i] - lx[j]) ** 2
     n2 = tot / D
-    return RichResult(payload={
-        "norm": math.sqrt(n2), "norm2": n2, "D": D,
-        "method": "Aitchison norm"})
+    return RichResult(payload={"norm": math.sqrt(n2), "norm2": n2, "D": D, "method": "Aitchison norm"})
 
 
 aitchison_norm = compnorm
@@ -50,4 +48,4 @@ aitchisonnorm = compnorm
 
 
 def cheatsheet():
-    return 'aitnrm: Aitchison norm of a composition.'
+    return "aitnrm: Aitchison norm of a composition."

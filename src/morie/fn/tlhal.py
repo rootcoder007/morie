@@ -72,8 +72,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["indicator_basis", "variation_norm", "hal_fit",
-           "hal_predict", "cv_select_lambda"]
+__all__ = ["indicator_basis", "variation_norm", "hal_fit", "hal_predict", "cv_select_lambda"]
 
 _EPS = 1e-12
 
@@ -86,26 +85,20 @@ def indicator_basis(X, knots=None, max_order=2):
     """
     rows = [[float(v) for v in r] for r in k.mat(X)]
     n, d = len(rows), len(rows[0])
-    K = rows if knots is None else [[float(v) for v in r]
-                                    for r in k.mat(knots)]
+    K = rows if knots is None else [[float(v) for v in r] for r in k.mat(knots)]
     subsets = [[j] for j in range(d)]
     if int(max_order) >= 2:
         subsets += [[a, b] for a in range(d) for b in range(a + 1, d)]
     if int(max_order) >= 3:
-        subsets += [[a, b, c] for a in range(d)
-                    for b in range(a + 1, d)
-                    for c in range(b + 1, d)]
+        subsets += [[a, b, c] for a in range(d) for b in range(a + 1, d) for c in range(b + 1, d)]
     cols = []
     for S in subsets:
         for u in K:
             cols.append((tuple(S), tuple(u[j] for j in S)))
     design = []
     for i in range(n):
-        design.append([1.0 if all(rows[i][S[t]] >= v[t]
-                                  for t in range(len(S)))
-                       else 0.0 for (S, v) in cols])
-    return {"design": design, "columns": cols,
-            "n_basis": len(cols), "max_order": int(max_order)}
+        design.append([1.0 if all(rows[i][S[t]] >= v[t] for t in range(len(S))) else 0.0 for (S, v) in cols])
+    return {"design": design, "columns": cols, "n_basis": len(cols), "max_order": int(max_order)}
 
 
 def variation_norm(beta):
@@ -118,8 +111,7 @@ def variation_norm(beta):
     return sum(abs(v) for v in b)
 
 
-def hal_fit(X, y, lam=1.0, iters=2000, step=0.05, max_order=2,
-            knots=None, intercept=True):
+def hal_fit(X, y, lam=1.0, iters=2000, step=0.05, max_order=2, knots=None, intercept=True):
     r"""Empirical risk minimisation under
     :math:`\sum_j|\beta_j| \le \lambda`.
 
@@ -132,8 +124,7 @@ def hal_fit(X, y, lam=1.0, iters=2000, step=0.05, max_order=2,
     t = [float(v) for v in k.vec(y)]
     n, p = len(D), len(D[0])
     if len(t) != n:
-        raise ValueError("tlhal: %d rows but %d outcomes"
-                         % (n, len(t)))
+        raise ValueError("tlhal: %d rows but %d outcomes" % (n, len(t)))
     if float(lam) <= 0.0:
         raise ValueError("tlhal: lambda must be positive")
     b = [0.0] * p
@@ -154,30 +145,33 @@ def hal_fit(X, y, lam=1.0, iters=2000, step=0.05, max_order=2,
     step = min(float(step), 0.9 * n / max(2.0 * lmax, _EPS))
     hist = []
     for _ in range(int(iters)):
-        pred = [b0 + sum(D[i][j] * b[j] for j in range(p)
-                         if b[j] != 0.0) for i in range(n)]
+        pred = [b0 + sum(D[i][j] * b[j] for j in range(p) if b[j] != 0.0) for i in range(n)]
         res = [pred[i] - t[i] for i in range(n)]
         hist.append(sum(v * v for v in res) / n)
-        gr = [2.0 * sum(D[i][j] * res[i] for i in range(n)) / n
-              for j in range(p)]
+        gr = [2.0 * sum(D[i][j] * res[i] for i in range(n)) / n for j in range(p)]
         b = [b[j] - float(step) * gr[j] for j in range(p)]
         if intercept:
             b0 -= float(step) * 2.0 * sum(res) / n
         b = _project_l1(b, float(lam))
-    pred = [b0 + sum(D[i][j] * b[j] for j in range(p))
-            for i in range(n)]
-    return RichResult(payload={
-        "estimate": b, "beta": b, "intercept": b0,
-        "columns": B["columns"], "n_basis": B["n_basis"],
-        "variation_norm": variation_norm(b), "lambda": float(lam),
-        "mse": sum((pred[i] - t[i]) ** 2 for i in range(n)) / n,
-        "mse_history": hist, "max_order": int(max_order),
-        "method": "highly adaptive lasso; van der Laan & Rose (2018) "
-                  "Chap. 6",
-        "note": "the L1 bound IS the variation norm of the fit, and "
-                "the rate beats n^{-1/4} without any smoothness "
-                "assumption",
-    })
+    pred = [b0 + sum(D[i][j] * b[j] for j in range(p)) for i in range(n)]
+    return RichResult(
+        payload={
+            "estimate": b,
+            "beta": b,
+            "intercept": b0,
+            "columns": B["columns"],
+            "n_basis": B["n_basis"],
+            "variation_norm": variation_norm(b),
+            "lambda": float(lam),
+            "mse": sum((pred[i] - t[i]) ** 2 for i in range(n)) / n,
+            "mse_history": hist,
+            "max_order": int(max_order),
+            "method": "highly adaptive lasso; van der Laan & Rose (2018) Chap. 6",
+            "note": "the L1 bound IS the variation norm of the fit, and "
+            "the rate beats n^{-1/4} without any smoothness "
+            "assumption",
+        }
+    )
 
 
 def _project_l1(v, lam):
@@ -221,36 +215,39 @@ def cv_select_lambda(X, y, lambdas, V=5, seed=0, **kw):
     for i in range(n - 1, 0, -1):
         j = int(float(rng.uniform()) * (i + 1)) % (i + 1)
         idx[i], idx[j] = idx[j], idx[i]
-    folds = [idx[v::int(V)] for v in range(int(V))]
+    folds = [idx[v :: int(V)] for v in range(int(V))]
     risks = {}
     for lam in lambdas:
         tot, m = 0.0, 0
         for f in folds:
             tr = [i for i in range(n) if i not in set(f)]
-            fit = hal_fit([rows[i] for i in tr], [t[i] for i in tr],
-                          lam=lam, knots=[rows[i] for i in tr], **kw)
+            fit = hal_fit([rows[i] for i in tr], [t[i] for i in tr], lam=lam, knots=[rows[i] for i in tr], **kw)
             pr = hal_predict(fit, [rows[i] for i in f])
             for a, i in enumerate(f):
                 tot += (pr[a] - t[i]) ** 2
                 m += 1
         risks[lam] = tot / m
     best = min(sorted(risks), key=lambda v: risks[v])
-    return {"lambda": best, "cv_risks": risks,
-            "note": "lambda bounds the variation norm, so the tuning "
-                    "parameter is interpretable"}
+    return {
+        "lambda": best,
+        "cv_risks": risks,
+        "note": "lambda bounds the variation norm, so the tuning parameter is interpretable",
+    }
 
 
 def cheatsheet():
-    return ("tlhal: replace SMOOTHNESS with a VARIATION NORM bound. "
-            "Any cadlag function of finite variation is a sum over "
-            "subsets of integrals against products of indicators, so "
-            "fit a linear combination of INDICATOR BASIS functions "
-            "under sum|beta| <= lambda -- and for the discrete "
-            "approximation that L1 bound IS the variation norm. "
-            "Lambda is chosen by cross-validation. The rate beats "
-            "n^{-1/4} even in a fully nonparametric model, which is "
-            "exactly the threshold double-robust efficiency arguments "
-            "require of nuisance estimators.")
+    return (
+        "tlhal: replace SMOOTHNESS with a VARIATION NORM bound. "
+        "Any cadlag function of finite variation is a sum over "
+        "subsets of integrals against products of indicators, so "
+        "fit a linear combination of INDICATOR BASIS functions "
+        "under sum|beta| <= lambda -- and for the discrete "
+        "approximation that L1 bound IS the variation norm. "
+        "Lambda is chosen by cross-validation. The rate beats "
+        "n^{-1/4} even in a fully nonparametric model, which is "
+        "exactly the threshold double-robust efficiency arguments "
+        "require of nuisance estimators."
+    )
 
 
 # compact alias per ledger/NAMING.md

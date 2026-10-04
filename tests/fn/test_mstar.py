@@ -1,8 +1,8 @@
 """Tests for morie.fn.mstar -- Markov-switching AR."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mstar import ms_ar
 
 

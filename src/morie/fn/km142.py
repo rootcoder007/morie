@@ -34,16 +34,16 @@ def kamath_ch9_itg_loss(x, y):
     if x is not None:
         ctx = list(x)
         if len(ctx) != len(seqs):
-            raise ValueError(
-                f"{len(ctx)} visual contexts for {len(seqs)} text "
-                "sequences; the pairs do not line up.")
-    per_pair = [float(kamath_ch9_mmllm_autoregressive(s, None)["estimate"])
-                for s in seqs]
-    return RichResult(payload={
-        "estimate": float(sum(per_pair)), "per_pair": per_pair,
-        "n": len(per_pair),
-        "method": "image-conditioned text generation loss "
-                  "(Kamath Eq 9.14; the per-pair core in km145)"})
+            raise ValueError(f"{len(ctx)} visual contexts for {len(seqs)} text sequences; the pairs do not line up.")
+    per_pair = [float(kamath_ch9_mmllm_autoregressive(s, None)["estimate"]) for s in seqs]
+    return RichResult(
+        payload={
+            "estimate": float(sum(per_pair)),
+            "per_pair": per_pair,
+            "n": len(per_pair),
+            "method": "image-conditioned text generation loss (Kamath Eq 9.14; the per-pair core in km145)",
+        }
+    )
 
 
 def cheatsheet():

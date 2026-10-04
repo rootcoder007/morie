@@ -49,10 +49,15 @@ def wasserman_aic(loglik, k):
     k = int(k)
     if k < 0:
         raise ValueError(f"the parameter count cannot be negative; got {k}.")
-    return RichResult(payload={
-        "estimate": float(-2.0 * loglik + 2.0 * k),
-        "aic_wasserman": float(loglik - k), "loglik": loglik, "k": k,
-        "method": "AIC = -2 log L + 2k (classical); Wasserman form alongside"})
+    return RichResult(
+        payload={
+            "estimate": float(-2.0 * loglik + 2.0 * k),
+            "aic_wasserman": float(loglik - k),
+            "loglik": loglik,
+            "k": k,
+            "method": "AIC = -2 log L + 2k (classical); Wasserman form alongside",
+        }
+    )
 
 
 def cheatsheet():

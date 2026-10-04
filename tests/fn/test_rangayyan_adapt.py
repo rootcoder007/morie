@@ -11,20 +11,47 @@ import math
 
 import pytest
 
-from morie.fn.bsaadapt import (abcdlemma, acfseg, anc, ancinput, ancout,
-                               kalman, lmsdescent, lmsfilt, lmsout,
-                               lmssqerr, lmsvarstep, lmszhang, msegrad,
-                               pcgseg, psdacf, riccati, rlsapriori,
-                               rlsfilt, rlslattice, rlsmonitor, rlsnormal,
-                               rlsobj, rlsupdate, sem, whopf, widrowhoff,
-                               wienerconv, wienerdot, wienerfilt,
-                               wienerfreq, wienerfreqrel, wienerhopf,
-                               wienermin, wieneropt, wienerout, wienersnr)
+from morie.fn.bsaadapt import (
+    abcdlemma,
+    acfseg,
+    ancinput,
+    ancout,
+    kalman,
+    lmsdescent,
+    lmsfilt,
+    lmsout,
+    lmssqerr,
+    lmsvarstep,
+    lmszhang,
+    msegrad,
+    pcgseg,
+    psdacf,
+    riccati,
+    rlsapriori,
+    rlsfilt,
+    rlslattice,
+    rlsmonitor,
+    rlsnormal,
+    rlsobj,
+    rlsupdate,
+    sem,
+    whopf,
+    widrowhoff,
+    wienerconv,
+    wienerdot,
+    wienerfilt,
+    wienerfreq,
+    wienerfreqrel,
+    wienerhopf,
+    wienermin,
+    wieneropt,
+    wienerout,
+    wienersnr,
+)
 
 
 def sine(n, cycles, amp=1.0, phase=0.0):
-    return [amp * math.sin(2 * math.pi * cycles * i / n + phase)
-            for i in range(n)]
+    return [amp * math.sin(2 * math.pi * cycles * i / n + phase) for i in range(n)]
 
 
 def lcg(n, seed=7, lo=-0.5, hi=0.5):
@@ -36,6 +63,7 @@ def lcg(n, seed=7, lo=-0.5, hi=0.5):
 
 
 # --------------------------------------------------- Wiener, eqs 3.154-3.176
+
 
 def test_wienerout_eq3154_is_a_convolution():
     r = wienerout([1.0, 0.5], [1.0, 2.0, 3.0])
@@ -89,7 +117,7 @@ def test_wienermin_eq3172_is_the_variance_less_the_explained_part():
     Phi = [[2.0, 1.0], [1.0, 2.0]]
     Theta = [3.0, 3.0]
     r = wienermin(Phi, Theta, var_d=10.0)
-    assert r["explained"] == pytest.approx(6.0)     # Theta' w_o
+    assert r["explained"] == pytest.approx(6.0)  # Theta' w_o
     assert r["j_min"] == pytest.approx(4.0)
     assert r["consistent"] is True
 
@@ -136,11 +164,11 @@ def test_wienersnr_eq3186_has_the_three_stated_properties():
     sd = [0.0, 1.0, 4.0, 1.0]
     seta = [1.0, 0.0, 1.0, 9.0]
     r = wienersnr(sd, seta)
-    assert r["W"][0] == 0.0                      # nothing to restore
-    assert r["W"][1] == 1.0                      # noiseless
+    assert r["W"][0] == 0.0  # nothing to restore
+    assert r["W"][1] == 1.0  # noiseless
     assert r["W"][2] == pytest.approx(0.8)
     assert r["W"][3] == pytest.approx(0.1)
-    assert r["W"][2] > r["W"][3]                 # falls with the SNR
+    assert r["W"][2] > r["W"][3]  # falls with the SNR
     assert r["zero_where_signal_absent"] is True
     assert r["unity_where_noise_absent"] is True
 
@@ -202,6 +230,7 @@ def test_wienerfilt_frequency_route_suppresses_a_noisy_band():
 
 
 # ------------------------------------------------------- ANC, eqs 3.187-3.196
+
 
 def test_ancinput_checks_the_independence_premise():
     v = sine(256, 3)
@@ -333,6 +362,7 @@ def test_lmsfilt_variable_step_survives_a_reference_starting_at_zero():
 
 # ------------------------------------------------------ RLS, eqs 3.206-3.225
 
+
 def test_rlsobj_eq3206_weights_recent_errors_more():
     e = [1.0, 1.0, 1.0]
     r = rlsobj(e, 0.5)
@@ -417,7 +447,7 @@ def test_rlslattice_reports_every_order_and_its_stability():
 
 def test_rlsmonitor_excludes_the_convergence_transient():
     n = 800
-    x = sine(n, 7)[:n // 2] + sine(n, 61)[n // 2:]
+    x = sine(n, 7)[: n // 2] + sine(n, 61)[n // 2 :]
     r = rlsmonitor(x, order=4, settle=100, window=40)
     assert r["transient_excluded"] is True
     assert r["settle"] == 100
@@ -426,12 +456,13 @@ def test_rlsmonitor_excludes_the_convergence_transient():
 
 def test_rlsmonitor_finds_a_change_of_statistics():
     n = 800
-    x = sine(n, 5)[:n // 2] + sine(n, 71)[n // 2:]
+    x = sine(n, 5)[: n // 2] + sine(n, 71)[n // 2 :]
     r = rlsmonitor(x, order=4, settle=80, window=30, threshold=3.0)
     assert r["n_boundaries"] >= 1
 
 
 # ------------------------------------------------------ Kalman and Riccati
+
 
 def test_kalman_tracks_a_constant_state():
     F = [[1.0]]
@@ -472,12 +503,12 @@ def test_riccati_is_the_fixed_point_of_the_kalman_recursion():
     post = r["P"][0][0] * (1.0 - r["K"][0][0])
     assert k["covariances"][-1][0][0] == pytest.approx(post, abs=1e-9)
     # and the scalar DARE has a closed form here: p^2 + 0.09 p - 0.1 = 0
-    assert r["P"][0][0] == pytest.approx(
-        (-0.09 + math.sqrt(0.09 ** 2 + 0.4)) / 2, abs=1e-9)
+    assert r["P"][0][0] == pytest.approx((-0.09 + math.sqrt(0.09**2 + 0.4)) / 2, abs=1e-9)
     assert r["steady_state_is_the_wiener_solution"] is True
 
 
 # ---------------------------------------------------------- segmentation
+
 
 def test_sem_is_scale_free():
     a = [1.0, 2.0, 4.0, 8.0]
@@ -529,8 +560,7 @@ def test_acfseg_eq829_weights_the_two_distances_by_their_thresholds():
     a = sine(200, 5)
     b = sine(200, 47)
     r = acfseg(b, a, thp=2.0, thf=4.0)
-    assert r["distance"] == pytest.approx(
-        r["power_distance"] / 2.0 + r["spectral_distance"] / 4.0)
+    assert r["distance"] == pytest.approx(r["power_distance"] / 2.0 + r["spectral_distance"] / 4.0)
     assert r["boundary"] is (r["distance"] > 1.0)
 
 
@@ -563,7 +593,7 @@ def test_acfseg_rejects_a_dead_window_and_a_bad_threshold():
 def test_pcgseg_restarts_the_reference_at_each_boundary():
     fs = 1000.0
     n = 1200
-    x = sine(n, 20)[:n // 2] + sine(n, 120)[n // 2:]
+    x = sine(n, 20)[: n // 2] + sine(n, 120)[n // 2 :]
     r = pcgseg(x, fs=fs, window=100, step=50, order=4)
     assert r["reference_restarted_at_boundaries"] is True
     assert r["robust_threshold"] is True
@@ -577,13 +607,14 @@ def test_psdacf_eq430_agrees_with_the_circular_acf():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsaadapt import (rangayyan_ch3_widrow_hoff_lms,
-                                   rangayyan_ch3_wiener_hopf_normal_equation,
-                                   rangayyan_lms_filter)
-    assert rangayyan_ch3_wiener_hopf_normal_equation(
-        [[2.0, 1.0], [1.0, 2.0]], [3.0, 3.0])["w"] == pytest.approx(
-            [1.0, 1.0])
-    assert rangayyan_ch3_widrow_hoff_lms(
-        [0.0], 1.0, [1.0], 0.1)["w_next"] == pytest.approx([0.2])
-    assert rangayyan_lms_filter(sine(128, 3), sine(128, 29),
-                                order=2)["order"] == 2
+    from morie.fn.bsaadapt import (
+        rangayyan_ch3_widrow_hoff_lms,
+        rangayyan_ch3_wiener_hopf_normal_equation,
+        rangayyan_lms_filter,
+    )
+
+    assert rangayyan_ch3_wiener_hopf_normal_equation([[2.0, 1.0], [1.0, 2.0]], [3.0, 3.0])["w"] == pytest.approx(
+        [1.0, 1.0]
+    )
+    assert rangayyan_ch3_widrow_hoff_lms([0.0], 1.0, [1.0], 0.1)["w_next"] == pytest.approx([0.2])
+    assert rangayyan_lms_filter(sine(128, 3), sine(128, 29), order=2)["order"] == 2

@@ -14,14 +14,12 @@ def _pairs(ai_preferences):
     for p in ai_preferences:
         if isinstance(p, dict):
             if "winner" not in p or "loser" not in p:
-                raise ValueError(
-                    "a dict preference needs 'winner' and 'loser' keys.")
+                raise ValueError("a dict preference needs 'winner' and 'loser' keys.")
             out.append((p["winner"], p["loser"]))
         else:
             pair = tuple(p)
             if len(pair) != 2:
-                raise ValueError(
-                    f"each preference must be (winner, loser); got {p!r}.")
+                raise ValueError(f"each preference must be (winner, loser); got {p!r}.")
             out.append(pair)
     return out
 
@@ -86,8 +84,7 @@ def kamath_rlaif_objective(ai_preferences, max_iter=1000, tol=1e-12):
     index = {it: k for k, it in enumerate(items)}
     n = len(items)
     if n < 2:
-        raise ValueError(
-            "preferences over a single item carry no information.")
+        raise ValueError("preferences over a single item carry no information.")
     edges = [(index[w], index[l]) for w, l in prefs]
     for w, l in edges:
         if w == l:
@@ -96,7 +93,8 @@ def kamath_rlaif_objective(ai_preferences, max_iter=1000, tol=1e-12):
         raise ValueError(
             "the preference graph is not strongly connected, so the "
             "Bradley-Terry maximum likelihood does not exist (some "
-            "item is never beaten and its strength diverges).")
+            "item is never beaten and its strength diverges)."
+        )
 
     wins = np.zeros(n)
     counts = np.zeros((n, n))
@@ -107,9 +105,7 @@ def kamath_rlaif_objective(ai_preferences, max_iter=1000, tol=1e-12):
 
     p = np.full(n, 1.0 / n)
     for _ in range(int(max_iter)):
-        denom = np.array([
-            np.sum(counts[i] / (p[i] + p)) - counts[i, i] / (2 * p[i])
-            for i in range(n)])
+        denom = np.array([np.sum(counts[i] / (p[i] + p)) - counts[i, i] / (2 * p[i]) for i in range(n)])
         if np.any(denom <= 0):
             raise ValueError("the BT iteration hit a zero denominator.")
         new = wins / denom
@@ -122,16 +118,19 @@ def kamath_rlaif_objective(ai_preferences, max_iter=1000, tol=1e-12):
     sw = np.array([scores[w] for w, _ in edges])
     sl = np.array([scores[l] for _, l in edges])
     loss = kamath_reward_model_training_loss(sw, sl)
-    return RichResult(payload={
-        "items": items,
-        "strengths": [float(v) for v in p],
-        "scores": [float(v) for v in scores],
-        "loss": float(loss["estimate"]),
-        "accuracy": float(loss["accuracy"]),
-        "n_preferences": len(edges),
-        "estimate": float(loss["estimate"]),
-        "n": n,
-        "method": "RLAIF Bradley-Terry reward fit (loss via kmrmloss)"})
+    return RichResult(
+        payload={
+            "items": items,
+            "strengths": [float(v) for v in p],
+            "scores": [float(v) for v in scores],
+            "loss": float(loss["estimate"]),
+            "accuracy": float(loss["accuracy"]),
+            "n_preferences": len(edges),
+            "estimate": float(loss["estimate"]),
+            "n": n,
+            "method": "RLAIF Bradley-Terry reward fit (loss via kmrmloss)",
+        }
+    )
 
 
 def cheatsheet():

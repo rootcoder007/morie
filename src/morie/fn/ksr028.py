@@ -49,15 +49,18 @@ def kosorok_ch2_glivenko_cantelli_classical(X, F=None, n_grid=None):
         xs = np.sort(sub)
         m = xs.size
         Ft = np.clip(xs, 0, 1) if F is None else np.array([F(v) for v in xs])
-        return float(max((np.arange(1, m + 1) / m - Ft).max(),
-                         (Ft - np.arange(0, m) / m).max()))
+        return float(max((np.arange(1, m + 1) / m - Ft).max(), (Ft - np.arange(0, m) / m).max()))
 
     sup = np.array([sup_at(X[:g]) for g in n_grid])
     dkw = np.array([2 * np.exp(-2 * g * s**2) for g, s in zip(n_grid, sup)])
     return RichResult(
-        payload={"n_grid": np.array(n_grid), "sup_distance": sup,
-                 "dkw_bound": np.minimum(dkw, 1.0), "n": int(N),
-                 "method": "sup_t |F_n - F| at the order statistics (Kosorok Ch. 2)"}
+        payload={
+            "n_grid": np.array(n_grid),
+            "sup_distance": sup,
+            "dkw_bound": np.minimum(dkw, 1.0),
+            "n": int(N),
+            "method": "sup_t |F_n - F| at the order statistics (Kosorok Ch. 2)",
+        }
     )
 
 

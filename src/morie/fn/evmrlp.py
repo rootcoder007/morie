@@ -67,15 +67,17 @@ def evt_mean_residual_life(x, u_grid=None):
     sxx = sum((v - mu_u) ** 2 for v in us)
     sxy = sum((us[i] - mu_u) * (es[i] - mu_e) for i in range(len(us)))
     slope = sxy / sxx if sxx > 0.0 else float("nan")
-    return RichResult(payload={
-        "u": us,
-        "e_u": es,
-        "se": se,
-        "n_exceed": nex,
-        "estimate": slope,
-        "n": n,
-        "method": "mean residual life (mean excess) plot",
-    })
+    return RichResult(
+        payload={
+            "u": us,
+            "e_u": es,
+            "se": se,
+            "n_exceed": nex,
+            "estimate": slope,
+            "n": n,
+            "method": "mean residual life (mean excess) plot",
+        }
+    )
 
 
 def cheatsheet():

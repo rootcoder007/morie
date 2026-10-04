@@ -1,8 +1,8 @@
 """Tests for morie.fn.lornz -- Lorenz curve and the Gini it implies (Lorenz 1905)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lornz import lorenz_curve
 
 
@@ -58,9 +58,9 @@ def test_lornz_curve_is_monotone_and_convex_and_anchored():
     x, y = np.asarray(r.extra["x"]), np.asarray(r.extra["y"])
     assert x[0] == 0.0 and y[0] == 0.0
     assert x[-1] == pytest.approx(1.0) and y[-1] == pytest.approx(1.0)
-    assert np.all(np.diff(y) >= -1e-12)              # non-decreasing
-    assert np.all(np.diff(np.diff(y)) >= -1e-9)      # convex
-    assert np.all(y <= x + 1e-12)                    # never above the diagonal
+    assert np.all(np.diff(y) >= -1e-12)  # non-decreasing
+    assert np.all(np.diff(np.diff(y)) >= -1e-9)  # convex
+    assert np.all(y <= x + 1e-12)  # never above the diagonal
 
 
 def test_lornz_gini_lies_in_the_unit_interval():
@@ -72,10 +72,7 @@ def test_lornz_gini_lies_in_the_unit_interval():
 
 def test_lornz_more_dispersion_means_more_inequality():
     rng = np.random.default_rng(5)
-    ginis = [
-        lorenz_curve(incomes=rng.lognormal(9.0, s, 3000)).extra["gini_from_lorenz"]
-        for s in (0.2, 0.6, 1.2)
-    ]
+    ginis = [lorenz_curve(incomes=rng.lognormal(9.0, s, 3000)).extra["gini_from_lorenz"] for s in (0.2, 0.6, 1.2)]
     assert ginis == sorted(ginis)
 
 

@@ -82,12 +82,7 @@ def dr_learner(y, T, X, n_folds=5, seed=0, trunc=0.01):
         e = np.clip(_logit_fit(X[tr], T[tr]), trunc, 1 - trunc)
         # propensity for the held-out rows: refit coefficients via the same routine
         e_te = np.clip(_logit_fit(X, T)[te], trunc, 1 - trunc)
-        psi[te] = (
-            m1
-            - m0
-            + T[te] * (y[te] - m1) / e_te
-            - (1 - T[te]) * (y[te] - m0) / (1 - e_te)
-        )
+        psi[te] = m1 - m0 + T[te] * (y[te] - m1) / e_te - (1 - T[te]) * (y[te] - m0) / (1 - e_te)
 
     b, *_ = np.linalg.lstsq(np.column_stack([np.ones(n), X]), psi, rcond=None)
     cate = np.column_stack([np.ones(n), X]) @ b

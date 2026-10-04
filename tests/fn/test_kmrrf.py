@@ -1,7 +1,6 @@
 """Tests for kmrrf.kamath_reciprocal_rank_fusion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmrrf import kamath_reciprocal_rank_fusion
 
 

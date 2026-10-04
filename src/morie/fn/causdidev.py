@@ -35,8 +35,7 @@ from .boryis import (  # noqa: F401
     impute_untreated,
 )
 
-__all__ = ["causdidev", "causal_did_eventstudy", "borusyak_jaravel_spiess",
-           "impute_untreated"]
+__all__ = ["causdidev", "causal_did_eventstudy", "borusyak_jaravel_spiess", "impute_untreated"]
 
 # primary name = module name; stub-era long name kept as alias.
 causdidev = borusyak_jaravel_spiess
@@ -44,6 +43,8 @@ causal_did_eventstudy = borusyak_jaravel_spiess
 
 
 def cheatsheet():
-    return ("causdidev: Borusyak-Jaravel-Spiess (2024) imputation "
-            "event study -- alias of boryis.borusyak_jaravel_spiess; "
-            "for the naive relative-time-dummy TWFE see evstud")
+    return (
+        "causdidev: Borusyak-Jaravel-Spiess (2024) imputation "
+        "event study -- alias of boryis.borusyak_jaravel_spiess; "
+        "for the naive relative-time-dummy TWFE see evstud"
+    )

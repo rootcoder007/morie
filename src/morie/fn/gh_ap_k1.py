@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["fano", "ghosal_fano_ineq"]
@@ -55,10 +54,16 @@ def fano(M, mutual_info, base_e=True):
     lg = math.log(M) if base_e else math.log(M, 2.0)
     l2 = math.log(2.0) if base_e else 1.0
     raw = 1.0 - (I + l2) / lg
-    return RichResult(payload={
-        "bound": min(1.0, max(0.0, raw)), "raw_bound": raw, "log_M": lg,
-        "informative": 1.0 if raw > 0.0 else 0.0, "M": float(M),
-        "method": "Fano inequality lower bound"})
+    return RichResult(
+        payload={
+            "bound": min(1.0, max(0.0, raw)),
+            "raw_bound": raw,
+            "log_M": lg,
+            "informative": 1.0 if raw > 0.0 else 0.0,
+            "M": float(M),
+            "method": "Fano inequality lower bound",
+        }
+    )
 
 
 ghosal_fano_ineq = fano

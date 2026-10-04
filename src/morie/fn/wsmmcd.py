@@ -57,14 +57,19 @@ def wasserman_mcdiarmid(t, c):
         raise ValueError(f"McDiarmid needs t > 0; got {t}.")
     if np.any(c <= 0):
         raise ValueError("bounded-difference constants must be positive.")
-    s = float(np.sum(c ** 2))
+    s = float(np.sum(c**2))
     expo = math.exp(-2.0 * t * t / s)
-    return RichResult(payload={
-        "estimate": float(min(2.0 * expo, 1.0)),
-        "two_sided_raw": float(2.0 * expo),
-        "one_sided": float(min(expo, 1.0)), "sum_c_sq": s,
-        "n": int(c.size), "t": t,
-        "method": "McDiarmid 2 exp(-2t^2 / sum c_i^2) (capped at 1)"})
+    return RichResult(
+        payload={
+            "estimate": float(min(2.0 * expo, 1.0)),
+            "two_sided_raw": float(2.0 * expo),
+            "one_sided": float(min(expo, 1.0)),
+            "sum_c_sq": s,
+            "n": int(c.size),
+            "t": t,
+            "method": "McDiarmid 2 exp(-2t^2 / sum c_i^2) (capped at 1)",
+        }
+    )
 
 
 def cheatsheet():

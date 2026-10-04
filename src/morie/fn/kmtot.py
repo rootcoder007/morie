@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_tree_of_thoughts"]
 
 
-def kamath_tree_of_thoughts(problem, branch_factor, max_depth, model,
-                            beam=1):
+def kamath_tree_of_thoughts(problem, branch_factor, max_depth, model, beam=1):
     """Search a tree of thought-nodes, each scored by the model's own
     evaluation, keeping the best ``beam`` states at every depth.
 
@@ -52,9 +51,7 @@ def kamath_tree_of_thoughts(problem, branch_factor, max_depth, model,
     if beam < 1:
         raise ValueError(f"beam must be at least 1; got {beam}.")
     if not callable(model):
-        raise ValueError(
-            "model must be callable (state, branch_factor) -> "
-            "[(thought, score), ...].")
+        raise ValueError("model must be callable (state, branch_factor) -> [(thought, score), ...].")
 
     # (state, cumulative score, path)
     frontier = [(problem, 0.0, [])]
@@ -67,45 +64,44 @@ def kamath_tree_of_thoughts(problem, branch_factor, max_depth, model,
             try:
                 kids = [tuple(c) for c in out]
             except TypeError:
-                raise ValueError(
-                    "model must return a sequence of (thought, score) "
-                    "pairs.") from None
+                raise ValueError("model must return a sequence of (thought, score) pairs.") from None
             if len(kids) > b:
-                raise ValueError(
-                    f"the model returned {len(kids)} children for a "
-                    f"branch factor of {b}.")
+                raise ValueError(f"the model returned {len(kids)} children for a branch factor of {b}.")
             if not kids:
                 dead_ends += 1
                 continue
             for c in kids:
                 if len(c) != 2:
-                    raise ValueError(
-                        "each child must be a (thought, score) pair.")
+                    raise ValueError("each child must be a (thought, score) pair.")
                 thought, s = c
                 try:
                     s = float(s)
                 except (TypeError, ValueError):
-                    raise ValueError(
-                        "a child's score is not numeric.") from None
+                    raise ValueError("a child's score is not numeric.") from None
                 children.append((thought, score + s, path + [thought]))
         if not children:
             break
         children.sort(key=lambda t: -t[1])
         frontier = children[:beam]
     if not frontier or not frontier[0][2]:
-        raise ValueError(
-            "the search produced no complete thought at all; every "
-            "branch was a dead end.")
+        raise ValueError("the search produced no complete thought at all; every branch was a dead end.")
     best_state, best_score, best_path = frontier[0]
-    return RichResult(payload={
-        "best_state": best_state, "best_path": best_path,
-        "best_score": best_score,
-        "frontier": [(s, sc) for s, sc, _ in frontier],
-        "n_expanded": expanded, "n_dead_ends": dead_ends,
-        "depth": len(best_path), "beam": beam,
-        "branch_factor": b,
-        "estimate": best_score, "n": len(frontier),
-        "method": "Tree-of-thoughts beam search over scored thoughts"})
+    return RichResult(
+        payload={
+            "best_state": best_state,
+            "best_path": best_path,
+            "best_score": best_score,
+            "frontier": [(s, sc) for s, sc, _ in frontier],
+            "n_expanded": expanded,
+            "n_dead_ends": dead_ends,
+            "depth": len(best_path),
+            "beam": beam,
+            "branch_factor": b,
+            "estimate": best_score,
+            "n": len(frontier),
+            "method": "Tree-of-thoughts beam search over scored thoughts",
+        }
+    )
 
 
 def cheatsheet():

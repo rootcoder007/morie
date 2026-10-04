@@ -107,17 +107,24 @@ def boyd_nuclear_norm(X, tol=None):
     Y = U @ Vt
     return RichResult(
         title="Nuclear norm",
-        summary_lines=[("shape", f"{Xm.shape[0]}x{Xm.shape[1]}"),
-                       ("nuclear", nuc), ("spectral", spec),
-                       ("frobenius", fro), ("rank", rank)],
+        summary_lines=[
+            ("shape", f"{Xm.shape[0]}x{Xm.shape[1]}"),
+            ("nuclear", nuc),
+            ("spectral", spec),
+            ("frobenius", fro),
+            ("rank", rank),
+        ],
         payload={
-            "nuclear": nuc, "spectral": spec, "frobenius": fro,
-            "singular_values": s, "rank": rank,
+            "nuclear": nuc,
+            "spectral": spec,
+            "frobenius": fro,
+            "singular_values": s,
+            "rank": rank,
             "dual_certificate": Y,
             "dual_value": float(np.trace(Y.T @ Xm)),
-            "norm_order_holds": bool(spec <= fro + 1e-09
-                                     and fro <= nuc + 1e-09),
-            "tol": float(tol), "method": "boyd_nuclear_norm",
+            "norm_order_holds": bool(spec <= fro + 1e-09 and fro <= nuc + 1e-09),
+            "tol": float(tol),
+            "method": "boyd_nuclear_norm",
         },
     )
 

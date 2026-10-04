@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_bm_prior"]
@@ -33,11 +32,15 @@ def ghosal_bm_prior(n_grid=200, n_sim=400, seed=42):
         acc_st += ws * wt / n_sim
         acc_ss += ws * ws / n_sim
     s = s_idx / n_grid
-    res = RichResult(payload={"estimate": acc_st,
-                              "theory_min_st": s,
-                              "cov_gap": abs(acc_st - s),
-                              "var_gap": abs(acc_ss - s),
-                              "method": "Brownian motion prior (GvdV 2017 Ex 11.5)"})
+    res = RichResult(
+        payload={
+            "estimate": acc_st,
+            "theory_min_st": s,
+            "cov_gap": abs(acc_st - s),
+            "var_gap": abs(acc_ss - s),
+            "method": "Brownian motion prior (GvdV 2017 Ex 11.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_6")
 
 

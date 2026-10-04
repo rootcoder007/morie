@@ -89,7 +89,7 @@ def geron_multilabel_classification(X, Y, thresholds=0.5):
     if t.size != K:
         raise ValueError(f"thresholds has {t.size} entries but there are {K} labels.")
 
-    P = (S > t).astype(int)
+    P = (t < S).astype(int)
 
     f1s, precs, recs = [], [], []
     for k in range(K):
@@ -111,8 +111,7 @@ def geron_multilabel_classification(X, Y, thresholds=0.5):
 
     return RichResult(
         title="Multilabel classification",
-        summary_lines=[("Labels", int(K)), ("Macro F1", float(np.mean(f1s))),
-                       ("Micro F1", micro)],
+        summary_lines=[("Labels", int(K)), ("Macro F1", float(np.mean(f1s))), ("Micro F1", micro)],
         payload={
             "predictions": P.tolist(),
             "per_label_f1": f1s,
@@ -120,8 +119,8 @@ def geron_multilabel_classification(X, Y, thresholds=0.5):
             "per_label_recall": recs,
             "macro_f1": float(np.mean(f1s)),
             "micro_f1": micro,
-            "exact_match_ratio": float(np.mean(np.all(P == Ti, axis=1))),
-            "hamming_loss": float(np.mean(P != Ti)),
+            "exact_match_ratio": float(np.mean(np.all(Ti == P, axis=1))),
+            "hamming_loss": float(np.mean(Ti != P)),
             "thresholds": t.tolist(),
             "estimate": float(np.mean(f1s)),
             "n": int(m),

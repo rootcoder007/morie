@@ -74,11 +74,16 @@ def momprior(moments):
                 worst = v
             if v < -1e-12:
                 bad += 1
-    return RichResult(payload={
-        "feasible": 1.0 if bad == 0 else 0.0, "min_difference": worst,
-        "n_violations": float(bad), "order": float(N - 1),
-        "differences": tri,
-        "method": "Hausdorff moment feasibility, Ghosal Section 3.4.4"})
+    return RichResult(
+        payload={
+            "feasible": 1.0 if bad == 0 else 0.0,
+            "min_difference": worst,
+            "n_violations": float(bad),
+            "order": float(N - 1),
+            "differences": tri,
+            "method": "Hausdorff moment feasibility, Ghosal Section 3.4.4",
+        }
+    )
 
 
 ghosal_moment_prior = momprior

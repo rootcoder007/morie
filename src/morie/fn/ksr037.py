@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch2_glivenko_cantelli_uniform"]
 
 
-def kosorok_ch2_glivenko_cantelli_uniform(N_uniform, envelope_mean, eps_grid=None,
-                                          F=None, P=None):
+def kosorok_ch2_glivenko_cantelli_uniform(N_uniform, envelope_mean, eps_grid=None, F=None, P=None):
     r"""Uniform-entropy Glivenko-Cantelli theorem: if
 
     .. math:: \sup_Q N(\epsilon\|F\|_{Q,1}, \mathcal F, L_1(Q))
@@ -52,11 +51,15 @@ def kosorok_ch2_glivenko_cantelli_uniform(N_uniform, envelope_mean, eps_grid=Non
     env = float(envelope_mean)
     env_ok = bool(np.isfinite(env) and env < np.inf)
     return RichResult(
-        payload={"entropy_finite": ent, "envelope_integrable": env_ok,
-                 "conditions_met": bool(ent and env_ok),
-                 "covering_numbers": counts, "eps_grid": np.array(eps_grid),
-                 "envelope_mean": env,
-                 "method": "Uniform entropy AND P*F < inf => GC (both required)"}
+        payload={
+            "entropy_finite": ent,
+            "envelope_integrable": env_ok,
+            "conditions_met": bool(ent and env_ok),
+            "covering_numbers": counts,
+            "eps_grid": np.array(eps_grid),
+            "envelope_mean": env,
+            "method": "Uniform entropy AND P*F < inf => GC (both required)",
+        }
     )
 
 

@@ -48,10 +48,15 @@ def ma_fail_safe_n(z_scores, alpha=0.05):
         raise ValueError("alpha must lie strictly between 0 and 1")
     za = core.qnorm(1.0 - a)
     s = sum(z)
-    return RichResult(payload={
-        "Nfs": s * s / (za * za) - k,
-        "z_combined": s / math.sqrt(k), "z_alpha": za, "k": k,
-        "method": "Rosenthal's fail-safe N"})
+    return RichResult(
+        payload={
+            "Nfs": s * s / (za * za) - k,
+            "z_combined": s / math.sqrt(k),
+            "z_alpha": za,
+            "k": k,
+            "method": "Rosenthal's fail-safe N",
+        }
+    )
 
 
 def cheatsheet():

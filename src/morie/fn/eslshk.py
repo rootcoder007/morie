@@ -78,10 +78,17 @@ def esl_shrinkage(nu, M=None, target_capacity=None):
     else:
         regime = "no shrinkage (nu = 1): each stage fully committed"
     est = req if req is not None else cap
-    return RichResult(payload={
-        "estimate": est, "nu": nu, "M": None if M is None else int(M),
-        "capacity": cap, "required_M": req, "regime": regime,
-        "method": "shrinkage f_m = f_{m-1} + nu h_m; capacity ~ nu * M"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "nu": nu,
+            "M": None if M is None else int(M),
+            "capacity": cap,
+            "required_M": req,
+            "regime": regime,
+            "method": "shrinkage f_m = f_{m-1} + nu h_m; capacity ~ nu * M",
+        }
+    )
 
 
 def cheatsheet():

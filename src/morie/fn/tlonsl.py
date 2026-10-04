@@ -56,12 +56,10 @@ version; implemented in :mod:`tlseqsl`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sequential_risk", "online_super_learner",
-           "update_weights", "summary_measure"]
+__all__ = ["sequential_risk", "online_super_learner", "update_weights", "summary_measure"]
 
 _EPS = 1e-12
 _LOSSES = ("squared", "log")
@@ -90,21 +88,18 @@ def summary_measure(history, lags=1):
     return z
 
 
-def sequential_risk(y, algorithm, loss="squared", burn_in=5,
-                    lags=1):
+def sequential_risk(y, algorithm, loss="squared", burn_in=5, lags=1):
     r"""Train on the past, score the one-step-ahead prediction.
 
     V-fold cross-validation would train on the future; this is the
     honest analogue for a sequentially generated sample.
     """
     if loss not in _LOSSES:
-        raise ValueError("tlonsl: loss must be one of %s, got %r"
-                         % (", ".join(_LOSSES), loss))
+        raise ValueError("tlonsl: loss must be one of %s, got %r" % (", ".join(_LOSSES), loss))
     v = [float(q) for q in k.vec(y)]
     b = int(burn_in)
     if b < 1 or b >= len(v):
-        raise ValueError("tlonsl: burn_in must lie in 1..%d, got %d"
-                         % (len(v) - 1, b))
+        raise ValueError("tlonsl: burn_in must lie in 1..%d, got %d" % (len(v) - 1, b))
     tot, preds, losses = 0.0, [], []
     for t in range(b, len(v)):
         fit = algorithm(v[:t])
@@ -114,10 +109,13 @@ def sequential_risk(y, algorithm, loss="squared", burn_in=5,
         l = _loss(loss, v[t], p)
         losses.append(l)
         tot += l
-    return {"risk": tot / len(losses), "predictions": preds,
-            "losses": losses, "n_scored": len(losses),
-            "note": "each prediction is scored on a genuinely "
-                    "held-out FUTURE observation"}
+    return {
+        "risk": tot / len(losses),
+        "predictions": preds,
+        "losses": losses,
+        "n_scored": len(losses),
+        "note": "each prediction is scored on a genuinely held-out FUTURE observation",
+    }
 
 
 def update_weights(cum_losses, eta=1.0):
@@ -135,8 +133,7 @@ def update_weights(cum_losses, eta=1.0):
     return [v / s for v in e]
 
 
-def online_super_learner(y, library, loss="squared", burn_in=5,
-                         lags=1, eta=1.0):
+def online_super_learner(y, library, loss="squared", burn_in=5, lags=1, eta=1.0):
     r"""Sequentially-validated ensemble over a library.
 
     Weights are updated as data arrive; the reported risk is the
@@ -155,38 +152,43 @@ def online_super_learner(y, library, loss="squared", burn_in=5,
     for s in range(T):
         w = update_weights([cum[n] for n in names], eta)
         weight_path.append(dict(zip(names, w)))
-        p = sum(w[j] * per[names[j]]["predictions"][s]
-                for j in range(len(names)))
+        p = sum(w[j] * per[names[j]]["predictions"][s] for j in range(len(names)))
         ens_loss += _loss(loss, v[burn_in + s], p)
         for j, n in enumerate(names):
             cum[n] += per[n]["losses"][s]
     best = min(names, key=lambda n: per[n]["risk"])
-    return RichResult(payload={
-        "estimate": weight_path[-1], "weights": weight_path[-1],
-        "risk": ens_loss / T, "member_risks":
-            {n: per[n]["risk"] for n in names},
-        "best_single": per[best]["risk"], "best_member": best,
-        "weight_path": weight_path, "n_scored": T,
-        "method": "online super learner with sequential validation; "
-                  "van der Laan & Rose (2018) Chap. 18",
-        "note": "an EMPTY summary measure recovers the i.i.d. case; "
-                "a parametric conditional density recovers a "
-                "classical time series model",
-    })
+    return RichResult(
+        payload={
+            "estimate": weight_path[-1],
+            "weights": weight_path[-1],
+            "risk": ens_loss / T,
+            "member_risks": {n: per[n]["risk"] for n in names},
+            "best_single": per[best]["risk"],
+            "best_member": best,
+            "weight_path": weight_path,
+            "n_scored": T,
+            "method": "online super learner with sequential validation; van der Laan & Rose (2018) Chap. 18",
+            "note": "an EMPTY summary measure recovers the i.i.d. case; "
+            "a parametric conditional density recovers a "
+            "classical time series model",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlonsl: data arrive sequentially, O(t) given a "
-            "FIXED-DIMENSIONAL summary of the past, one common "
-            "parameter across time -- empty summary = i.i.d., "
-            "parametric conditional density = classical time series, "
-            "and group sequential adaptive designs are covered too. "
-            "V-fold CV would train on the FUTURE; use SEQUENTIAL "
-            "validation instead: train on 1..t-1, score the "
-            "one-step-ahead prediction of t. The oracle property "
-            "survives because every loss is evaluated on a held-out "
-            "future point. Cumulative losses are sufficient, so the "
-            "weight update is O(1) in memory.")
+    return (
+        "tlonsl: data arrive sequentially, O(t) given a "
+        "FIXED-DIMENSIONAL summary of the past, one common "
+        "parameter across time -- empty summary = i.i.d., "
+        "parametric conditional density = classical time series, "
+        "and group sequential adaptive designs are covered too. "
+        "V-fold CV would train on the FUTURE; use SEQUENTIAL "
+        "validation instead: train on 1..t-1, score the "
+        "one-step-ahead prediction of t. The oracle property "
+        "survives because every loss is evaluated on a held-out "
+        "future point. Cumulative losses are sufficient, so the "
+        "weight update is O(1) in memory."
+    )
 
 
 # compact alias per ledger/NAMING.md

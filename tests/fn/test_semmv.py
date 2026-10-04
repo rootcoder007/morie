@@ -1,7 +1,6 @@
 """Tests for morie.fn.semmv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.semmv import spatial_error_ml
 
 

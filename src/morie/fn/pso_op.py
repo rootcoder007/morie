@@ -9,8 +9,7 @@ __all__ = ["particle_swarm"]
 _PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53]
 
 
-def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5,
-                   maxiter=200):
+def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5, maxiter=200):
     """Swarm search whose "randomness" is a Halton stream, not a PRNG.
 
     ``morie.fn.pswrm.particle_swarm`` is the seeded stochastic version of
@@ -70,14 +69,15 @@ def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5,
         raise ValueError("particle_swarm: n_particles must be at least 1")
     if maxiter < 0:
         raise ValueError("particle_swarm: maxiter must be non-negative")
-    w = float(w); c1 = float(c1); c2 = float(c2)
+    w = float(w)
+    c1 = float(c1)
+    c2 = float(c2)
     if w < 0.0 or c1 < 0.0 or c2 < 0.0:
         raise ValueError("particle_swarm: coefficients must be non-negative")
 
     pos = []
     for i in range(n_particles):
-        pos.append([bnd[j][0] + (bnd[j][1] - bnd[j][0]) * core.vdc(i + 1, _PRIMES[j])
-                    for j in range(d)])
+        pos.append([bnd[j][0] + (bnd[j][1] - bnd[j][0]) * core.vdc(i + 1, _PRIMES[j]) for j in range(d)])
     vel = [[0.0] * d for _ in range(n_particles)]
     pbest = [list(p) for p in pos]
     pval = [float(f(p)) for p in pos]
@@ -95,9 +95,7 @@ def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5,
                 r1 = core.vdc(k, 2)
                 r2 = core.vdc(k, 3)
                 k += 1
-                vel[i][j] = (w * vel[i][j]
-                             + c1 * r1 * (pbest[i][j] - pos[i][j])
-                             + c2 * r2 * (gbest[j] - pos[i][j]))
+                vel[i][j] = w * vel[i][j] + c1 * r1 * (pbest[i][j] - pos[i][j]) + c2 * r2 * (gbest[j] - pos[i][j])
                 v = pos[i][j] + vel[i][j]
                 if v < bnd[j][0]:
                     v = bnd[j][0]
@@ -112,14 +110,23 @@ def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5,
                 if val < gval:
                     gval = val
                     gbest = list(pos[i])
-    return RichResult(payload={
-        "estimate": gval, "value": gval, "x": gbest, "n_eval": n_eval,
-        "n_particles": n_particles, "maxiter": maxiter, "d": d,
-        "method": "Particle swarm on a van der Corput stream"})
+    return RichResult(
+        payload={
+            "estimate": gval,
+            "value": gval,
+            "x": gbest,
+            "n_eval": n_eval,
+            "n_particles": n_particles,
+            "maxiter": maxiter,
+            "d": d,
+            "method": "Particle swarm on a van der Corput stream",
+        }
+    )
 
 
 def cheatsheet():
     return "pso_op: Particle swarm optimisation (deterministic stream)"
+
 
 # public names resolved by fn/_lazy_map.json
 particleswarm = particle_swarm

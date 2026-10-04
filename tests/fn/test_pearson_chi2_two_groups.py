@@ -1,7 +1,5 @@
 """Tests for pearson_chi2_two_groups.pearson_chi2_two_groups."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.pearson_chi2_two_groups import (
     pearson_chi2_two_groups,
 )

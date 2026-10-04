@@ -70,10 +70,29 @@ def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2, wproj, bpr
     ----------
     Liu et al. (2024) ICLR, arXiv:2310.06625, eqs. (1)-(2)
     """
-    res = _core.itrans(x=x, wembed=wembed, bembed=bembed, wq=wq, wk=wk, wv=wv, wffn1=wffn1, bffn1=bffn1, wffn2=wffn2, bffn2=bffn2, wproj=wproj, bproj=bproj)
+    res = _core.itrans(
+        x=x,
+        wembed=wembed,
+        bembed=bembed,
+        wq=wq,
+        wk=wk,
+        wv=wv,
+        wffn1=wffn1,
+        bffn1=bffn1,
+        wffn2=wffn2,
+        bffn2=bffn2,
+        wproj=wproj,
+        bproj=bproj,
+    )
     return RichResult(
         title=_METHOD,
-        summary_lines=[("nvariates", res["nvariates"]), ("T", res["T"]), ("D", res["D"]), ("attndiag", res["attndiag"]), ("sumsq", res["sumsq"])],
+        summary_lines=[
+            ("nvariates", res["nvariates"]),
+            ("T", res["T"]),
+            ("D", res["D"]),
+            ("attndiag", res["attndiag"]),
+            ("sumsq", res["sumsq"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

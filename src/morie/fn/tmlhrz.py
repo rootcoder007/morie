@@ -183,10 +183,18 @@ def tmle_hazard_ratio(time, event, D, X):
     ic = [d1 * ic1[i] + d0 * ic0[i] for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": est, "se": se, "s1": psi[1], "s0": psi[0], "eps": eps,
-        "t0": t0, "n": n,
-        "method": "TMLE for the marginal hazard ratio under non-proportional hazards"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "s1": psi[1],
+            "s0": psi[0],
+            "eps": eps,
+            "t0": t0,
+            "n": n,
+            "method": "TMLE for the marginal hazard ratio under non-proportional hazards",
+        }
+    )
 
 
 def cheatsheet():

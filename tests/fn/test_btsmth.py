@@ -1,7 +1,6 @@
 """Tests for btsmth.boot_smoothed."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btsmth import boot_smoothed
 
 

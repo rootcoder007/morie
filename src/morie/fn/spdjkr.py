@@ -3,14 +3,14 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_hermite import disjunctive_kriging, hermite_coefficients, indicator_coefficients
+from ._schab_hermite import disjunctive_kriging, indicator_coefficients
 
 __all__ = ["schabenberger_disjunctive_kriging"]
 
 
-def schabenberger_disjunctive_kriging(coords, z, target, phi_func=None,
-                                      cov_model=None, degree=8,
-                                      indicator_threshold=None):
+def schabenberger_disjunctive_kriging(
+    coords, z, target, phi_func=None, cov_model=None, degree=8, indicator_threshold=None
+):
     """Predict g(Z(s0)) by disjunctive kriging, Sec. 5.6.4.
 
     Matheron's (1976) method expands g in the Chebyshev-Hermite system,
@@ -71,6 +71,7 @@ def schabenberger_disjunctive_kriging(coords, z, target, phi_func=None,
     target = np.asarray(target, dtype=float).ravel()
     degree = int(degree)
     if cov_model is None:
+
         def cov_model(h):
             return np.exp(-np.asarray(h, dtype=float))
 
@@ -80,29 +81,35 @@ def schabenberger_disjunctive_kriging(coords, z, target, phi_func=None,
 
         def g(_x, _b=b):
             raise RuntimeError("coefficients supplied directly")
-        pred, var, _, comp = _predict_with_coefficients(
-            coords, z, target, cov_model, b, degree)
+
+        pred, var, _, comp = _predict_with_coefficients(coords, z, target, cov_model, b, degree)
     else:
         if phi_func is None:
+
             def phi_func(v):
                 return v
-        pred, var, b, comp = disjunctive_kriging(
-            coords, z, target, cov_model, phi_func, degree=degree)
+
+        pred, var, b, comp = disjunctive_kriging(coords, z, target, cov_model, phi_func, degree=degree)
         label = "g supplied as phi_func"
 
     return RichResult(
         title="Disjunctive kriging",
-        summary_lines=[("prediction", pred), ("variance", var),
-                       ("Hermite degree", degree), ("target", label)],
-        payload={"prediction": float(pred), "variance": float(var),
-                 "coefficients": b, "component_variances": comp,
-                 "degree": degree, "method": "disjunctive kriging"},
+        summary_lines=[("prediction", pred), ("variance", var), ("Hermite degree", degree), ("target", label)],
+        payload={
+            "prediction": float(pred),
+            "variance": float(var),
+            "coefficients": b,
+            "component_variances": comp,
+            "degree": degree,
+            "method": "disjunctive kriging",
+        },
     )
 
 
 def _predict_with_coefficients(coords, z, target, correlation_fn, b, degree):
     """The (5.67)-(5.71) loop for coefficients already in hand."""
     from ._schab_hermite import hermite_orthonormal
+
     d_mat = np.linalg.norm(coords[:, None, :] - coords[None, :, :], axis=-1)
     d_vec = np.linalg.norm(coords - target, axis=1)
     rho_mat = np.asarray(correlation_fn(d_mat), dtype=float)

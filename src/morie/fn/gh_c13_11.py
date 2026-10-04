@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ntr_bvm"]
@@ -23,18 +22,20 @@ def ghosal_ntr_bvm(n=1500, n_sim=300, seed=42):
     F0_1 = 1.0 - math.exp(-1.0)
     devs = []
     for _ in range(n_sim):
-        cnt = sum(1 for _ in range(n)
-                  if -math.log(max(float(rng.uniform(0, 1)),
-                                   1e-12)) <= 1.0)
+        cnt = sum(1 for _ in range(n) if -math.log(max(float(rng.uniform(0, 1)), 1e-12)) <= 1.0)
         post = (2.0 * F0_1 + cnt) / (2.0 + n)
         devs.append(math.sqrt(n) * (post - F0_1))
     m = sum(devs) / n_sim
     v = sum((d - m) ** 2 for d in devs) / (n_sim - 1)
     target = F0_1 * (1.0 - F0_1)
-    res = RichResult(payload={"estimate": v,
-                              "efficient_variance": target,
-                              "gap": abs(v - target),
-                              "method": "NTR functional BvM (GvdV 2017 sec. 13.4.2)"})
+    res = RichResult(
+        payload={
+            "estimate": v,
+            "efficient_variance": target,
+            "gap": abs(v - target),
+            "method": "NTR functional BvM (GvdV 2017 sec. 13.4.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_11")
 
 

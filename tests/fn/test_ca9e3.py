@@ -1,7 +1,6 @@
 """Tests for ca9e3.ca_chapter_9_equation_3."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca9e3 import ca_chapter_9_equation_3
 
 
@@ -19,7 +18,7 @@ def test_ca9e3_basic():
 
     # Independent recomputation of the documented formula
     sp_num = s1**2 * (n1 - 1) + s2**2 * (n2 - 1)
-    sp_den = (n1 + n2 - 2)
+    sp_den = n1 + n2 - 2
     sp = sp_num / sp_den
     se = np.sqrt(sp * (n1 + n2) / (n1 * n2))
     expected_t = (m1 - m2) / se

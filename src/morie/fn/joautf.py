@@ -57,7 +57,13 @@ def autoform(q, k, v, kernel=3, c=1.0):
     res = _core.autoform(q=q, k=k, v=v, kernel=kernel, c=c)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("k", res["k"]), ("L", res["L"]), ("outmean", res["outmean"]), ("outmax", res["outmax"]), ("trendmean", res["trendmean"])],
+        summary_lines=[
+            ("k", res["k"]),
+            ("L", res["L"]),
+            ("outmean", res["outmean"]),
+            ("outmax", res["outmax"]),
+            ("trendmean", res["trendmean"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

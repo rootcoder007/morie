@@ -93,10 +93,7 @@ def geron_kmeans_pp_seeding(X, k, seed=0):
         if total <= 0:
             remaining = [i for i in range(m) if i not in idx]
             if not remaining:
-                raise ValueError(
-                    f"k={k} centroids requested but X has only "
-                    f"{len(idx)} distinct points."
-                )
+                raise ValueError(f"k={k} centroids requested but X has only {len(idx)} distinct points.")
             pick = remaining[0]
             probs.append(None)
         else:
@@ -117,8 +114,7 @@ def geron_kmeans_pp_seeding(X, k, seed=0):
 
     return RichResult(
         title="k-means++ seeding",
-        summary_lines=[("k", k), ("Indices", idx),
-                       ("Min centroid separation", mind)],
+        summary_lines=[("k", k), ("Indices", idx), ("Min centroid separation", mind)],
         payload={
             "centroids": C.tolist(),
             "indices": [int(i) for i in idx],

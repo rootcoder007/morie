@@ -1,7 +1,6 @@
 """Tests for hrzboxc.horowitz_box_cox."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzboxc import horowitz_box_cox
 
 

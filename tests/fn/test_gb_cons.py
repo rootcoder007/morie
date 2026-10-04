@@ -1,13 +1,14 @@
 """Tests for gb_cons.gibbons_consistency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_cons import gibbons_consistency
 
 
 def _expected_power(nvals, effect, alpha=0.05):
-    from scipy import stats
     import math
+
+    from scipy import stats
+
     za = stats.norm.ppf(1.0 - alpha)
     return [1.0 - stats.norm.cdf(za - math.sqrt(v) * effect) for v in nvals]
 

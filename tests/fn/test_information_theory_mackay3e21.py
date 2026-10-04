@@ -4,8 +4,6 @@ The expected values are recomputed from MacKay (2003) eq. (3.21) p. 53 in the te
 drift in the implementation fails the test.
 """
 
-import math
-
 import pytest
 
 from morie.fn.information_theory_mackay3e21 import postodds

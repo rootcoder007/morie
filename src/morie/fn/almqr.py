@@ -23,8 +23,7 @@ def alammar_multi_query_retrieval(query, K, retriever, rephraser):
     k = int(K)
     if k < 0:
         raise ValueError("K must be non-negative.")
-    queries = [str(query)] + [str(rephraser(str(query), i))
-                              for i in range(k)]
+    queries = [str(query)] + [str(rephraser(str(query), i)) for i in range(k)]
     seen = []
     added = []
     for q in queries:
@@ -32,11 +31,16 @@ def alammar_multi_query_retrieval(query, K, retriever, rephraser):
         new = [h for h in hits if h not in seen]
         seen.extend(new)
         added.append(len(new))
-    return RichResult(payload={
-        "documents": seen, "queries": queries,
-        "added_per_query": added,
-        "estimate": float(len(seen)), "n": len(queries),
-        "method": "Multi-query retrieval union (Alammar Ch 8)"})
+    return RichResult(
+        payload={
+            "documents": seen,
+            "queries": queries,
+            "added_per_query": added,
+            "estimate": float(len(seen)),
+            "n": len(queries),
+            "method": "Multi-query retrieval union (Alammar Ch 8)",
+        }
+    )
 
 
 def cheatsheet():

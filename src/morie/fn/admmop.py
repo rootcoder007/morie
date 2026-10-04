@@ -69,8 +69,7 @@ def admmlasso(X, y, lam, rho=1.0, steps=100):
         raise ValueError("lam must be non-negative")
     if rho <= 0.0:
         raise ValueError("rho must be strictly positive")
-    A = [[sum(Xm[i][a] * Xm[i][b] for i in range(n)) + (rho if a == b else 0.0)
-          for b in range(p)] for a in range(p)]
+    A = [[sum(Xm[i][a] * Xm[i][b] for i in range(n)) + (rho if a == b else 0.0) for b in range(p)] for a in range(p)]
     Xty = [sum(Xm[i][a] * y[i] for i in range(n)) for a in range(p)]
     x = [0.0] * p
     z = [0.0] * p
@@ -85,11 +84,21 @@ def admmlasso(X, y, lam, rho=1.0, steps=100):
         dual = rho * C.norm2([z[a] - zold[a] for a in range(p)])
     res = [sum(Xm[i][a] * z[a] for a in range(p)) - y[i] for i in range(n)]
     obj = 0.5 * sum(e * e for e in res) + lam * sum(abs(v) for v in z)
-    return RichResult(payload={
-        "x": x, "z": z, "u": u, "objective": obj,
-        "primalres": C.norm2([x[a] - z[a] for a in range(p)]),
-        "dualres": dual, "rho": rho, "steps": steps, "n": n, "p": p,
-        "method": "ADMM for the LASSO, scaled form (Boyd et al. 2011 Sect. 6.4)"})
+    return RichResult(
+        payload={
+            "x": x,
+            "z": z,
+            "u": u,
+            "objective": obj,
+            "primalres": C.norm2([x[a] - z[a] for a in range(p)]),
+            "dualres": dual,
+            "rho": rho,
+            "steps": steps,
+            "n": n,
+            "p": p,
+            "method": "ADMM for the LASSO, scaled form (Boyd et al. 2011 Sect. 6.4)",
+        }
+    )
 
 
 admm = admmlasso

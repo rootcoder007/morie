@@ -80,15 +80,15 @@ def qedgew(x, n, h, sigma, e1, e2, e3, e4, e5, e6, delta=0.0, book=False):
     xv = np.atleast_1d(np.asarray(x, dtype=float)) - float(delta) / (s * np.sqrt(n))
     phi = stats.norm.pdf(xv)
     base = stats.norm.cdf(xv)
-    he2 = xv ** 2 - 1.0
-    he3 = xv ** 3 - 3.0 * xv
-    he5 = xv ** 5 - 10.0 * xv ** 3 + 15.0 * xv
-    term1 = he2 / (6.0 * np.sqrt(n) * s ** 3) * (float(e1) + 3.0 * float(e2) / h)
+    he2 = xv**2 - 1.0
+    he3 = xv**3 - 3.0 * xv
+    he5 = xv**5 - 10.0 * xv**3 + 15.0 * xv
+    term1 = he2 / (6.0 * np.sqrt(n) * s**3) * (float(e1) + 3.0 * float(e2) / h)
     mid = float(e2) if book else float(e3)
     inner = (
-        xv / (4.0 * s ** 2) * (4.0 * float(e5) + float(e6))
-        + he3 / (6.0 * s ** 4) * (3.0 * mid + float(e4))
-        + he5 / (8.0 * s ** 6) * float(e2) ** 2
+        xv / (4.0 * s**2) * (4.0 * float(e5) + float(e6))
+        + he3 / (6.0 * s**4) * (3.0 * mid + float(e4))
+        + he5 / (8.0 * s**6) * float(e2) ** 2
     )
     corr = phi * (term1 + inner / (n * h * h))
     return RichResult(

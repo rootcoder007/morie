@@ -27,17 +27,16 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equat
     """
     value = _acd.logistic_loglik(b, x, y)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.5)"
     return RichResult(
-        title='Logistic log-likelihood, simplified linear-predictor form',
+        title="Logistic log-likelihood, simplified linear-predictor form",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e5: log L = sum y_i Xb_i - log(1 + exp(Xb_i)) [Bilder & Loughin 2025, eq. 2.5]'
+    return "2e5: log L = sum y_i Xb_i - log(1 + exp(Xb_i)) [Bilder & Loughin 2025, eq. 2.5]"

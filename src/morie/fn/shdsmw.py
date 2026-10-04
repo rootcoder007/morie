@@ -50,15 +50,13 @@ Chapman & Hall/CRC, Sec. 12.3 -- the stabilized weights and the
 mean-1 diagnostic; Fine Point 12.2 on checking positivity.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["shrinkage_msm", "penalty_path"]
 
 
-def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0,
-                  contrast="cumulative", path=None, trim=None):
+def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0, contrast="cumulative", path=None, trim=None):
     r"""IP-weighted MSM whose propensity model is ridge-penalized.
 
     Parameters
@@ -92,19 +90,16 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0,
         r["estimate"], r["path"]
     """
     if float(lam) < 0.0:
-        raise ValueError("shrinkage_msm: lam must be non-negative, got %r"
-                         % (lam,))
+        raise ValueError("shrinkage_msm: lam must be non-negative, got %r" % (lam,))
     A_hist = _hist(treatment_history)
     L_hist = _hist(covariate_history, allow_none=True)
     if len(L_hist) != len(A_hist):
-        raise ValueError("shrinkage_msm: %d treatment times but %d "
-                         "covariate blocks" % (len(A_hist), len(L_hist)))
+        raise ValueError("shrinkage_msm: %d treatment times but %d covariate blocks" % (len(A_hist), len(L_hist)))
     yv = k.vec(y)
     n = len(yv)
 
     def fit_at(lm):
-        w, per = k.ip_weights_history(A_hist, L_hist,
-                                      penalty=float(lm), trim=trim)
+        w, per = k.ip_weights_history(A_hist, L_hist, penalty=float(lm), trim=trim)
         cum = [sum(k.vec(a)[i] for a in A_hist) for i in range(n)]
         if contrast == "cumulative":
             e = cum
@@ -113,16 +108,21 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0,
         elif contrast == "everexposed":
             e = [1.0 if v > 0.0 else 0.0 for v in cum]
         else:
-            raise ValueError("shrinkage_msm: contrast must be "
-                             "'cumulative', 'final' or 'everexposed', "
-                             "got %r" % (contrast,))
+            raise ValueError(
+                "shrinkage_msm: contrast must be 'cumulative', 'final' or 'everexposed', got %r" % (contrast,)
+            )
         f = k.wls([[v] for v in e], yv, w)
         s1, s2 = sum(w), sum(v * v for v in w)
-        return {"lam": float(lm), "estimate": f["coef"][1],
-                "se": f["se"][1], "weights": w,
-                "mean_weight": s1 / n, "max_weight": max(w),
-                "effective_sample_size": (s1 * s1 / s2) if s2 else 0.0,
-                "exposure": e}
+        return {
+            "lam": float(lm),
+            "estimate": f["coef"][1],
+            "se": f["se"][1],
+            "weights": w,
+            "mean_weight": s1 / n,
+            "max_weight": max(w),
+            "effective_sample_size": (s1 * s1 / s2) if s2 else 0.0,
+            "exposure": e,
+        }
 
     main = fit_at(lam)
     if path is None:
@@ -130,46 +130,60 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam=0.0,
     rows = []
     for lm in path:
         r = fit_at(lm)
-        rows.append({"lam": r["lam"], "estimate": r["estimate"],
-                     "se": r["se"], "max_weight": r["max_weight"],
-                     "effective_sample_size":
-                         r["effective_sample_size"]})
+        rows.append(
+            {
+                "lam": r["lam"],
+                "estimate": r["estimate"],
+                "se": r["se"],
+                "max_weight": r["max_weight"],
+                "effective_sample_size": r["effective_sample_size"],
+            }
+        )
     unadj = k.wls([[v] for v in main["exposure"]], yv, [1.0] * n)
 
     out = dict(main)
-    out.update({"path": rows, "unadjusted": unadj["coef"][1],
-                "n": n, "n_times": len(A_hist), "contrast": contrast,
-                "method": "MSM with ridge-penalized propensity weights, "
-                          "Setoguchi et al. (2008) and Westreich, Lessler "
-                          "& Funk (2010); weights per Hernan & Robins "
-                          "(2020) Sec. 12.3"})
+    out.update(
+        {
+            "path": rows,
+            "unadjusted": unadj["coef"][1],
+            "n": n,
+            "n_times": len(A_hist),
+            "contrast": contrast,
+            "method": "MSM with ridge-penalized propensity weights, "
+            "Setoguchi et al. (2008) and Westreich, Lessler "
+            "& Funk (2010); weights per Hernan & Robins "
+            "(2020) Sec. 12.3",
+        }
+    )
     return RichResult(payload=out)
 
 
-def penalty_path(y, treatment_history, covariate_history, path=None,
-                 contrast="cumulative"):
+def penalty_path(y, treatment_history, covariate_history, path=None, contrast="cumulative"):
     """Just the path, for when the sensitivity is the whole question."""
-    r = shrinkage_msm(y, treatment_history, covariate_history, lam=0.0,
-                      contrast=contrast, path=path)
+    r = shrinkage_msm(y, treatment_history, covariate_history, lam=0.0, contrast=contrast, path=path)
     return r["path"]
 
 
 def _hist(obj, allow_none=False):
     if obj is None:
         return [None] if allow_none else []
-    if isinstance(obj, (list, tuple)) and obj and (
-            isinstance(obj[0], (list, tuple)) or obj[0] is None
-            or hasattr(obj[0], "shape")):
+    if (
+        isinstance(obj, (list, tuple))
+        and obj
+        and (isinstance(obj[0], (list, tuple)) or obj[0] is None or hasattr(obj[0], "shape"))
+    ):
         return list(obj)
     return [obj]
 
 
 def cheatsheet():
-    return ("shdsmw: MSM with a ridge-penalized propensity model "
-            "(Setoguchi 2008; Westreich 2010). lam=0 is plain MLE; "
-            "lam -> inf shrinks the weights to 1 and the estimate to "
-            "the unadjusted one. Reports ESS and max weight along a "
-            "penalty path.")
+    return (
+        "shdsmw: MSM with a ridge-penalized propensity model "
+        "(Setoguchi 2008; Westreich 2010). lam=0 is plain MLE; "
+        "lam -> inf shrinks the weights to 1 and the estimate to "
+        "the unadjusted one. Reports ESS and max weight along a "
+        "penalty path."
+    )
 
 
 # compact alias per ledger/NAMING.md

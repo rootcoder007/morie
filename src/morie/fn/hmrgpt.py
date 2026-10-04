@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Regression MLP expressed as a PyTorch nn.Sequential architecture."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .hmregn import geron_regression_mlp
 
@@ -77,7 +76,11 @@ def geron_regression_mlp_pytorch(X, y, hidden=(8,), epochs=400, lr=0.05, seed=0)
 
     return RichResult(
         title="Regression MLP (nn.Sequential architecture)",
-        summary_lines=[("Modules", len(layers)), ("Parameters", int(base["n_parameters"])), ("Training MSE", float(base["mse"]))],
+        summary_lines=[
+            ("Modules", len(layers)),
+            ("Parameters", int(base["n_parameters"])),
+            ("Training MSE", float(base["mse"])),
+        ],
         warnings=[
             "No torch call is made: morie.fn is numpy-only. The architecture, the forward pass and the MSE "
             "objective are the ones torch would use; the initialisation stream is not."

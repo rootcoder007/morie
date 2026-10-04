@@ -1,7 +1,6 @@
 """Tests for LM spatial tests."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sglml import sglml
 
 

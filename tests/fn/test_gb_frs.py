@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_frs import gibbons_friedman_chi2_approp
 
 

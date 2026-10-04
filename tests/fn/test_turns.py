@@ -1,7 +1,6 @@
 """Test turns_count_fn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.turns import alias, turns_count_fn
 

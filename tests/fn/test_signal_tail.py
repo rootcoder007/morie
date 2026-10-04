@@ -1,6 +1,7 @@
 """Equivalence tests: _signal_core spectral tail vs frozen scipy
 anchors (versions recorded in oracle_anchors.json; scipy itself is not
 imported)."""
+
 import json
 import pathlib
 
@@ -9,14 +10,12 @@ import pytest
 from morie.fn import _array_core as np
 from morie.fn import _signal_core as mg
 
-A = json.loads(pathlib.Path(__file__).with_name(
-    "oracle_anchors.json").read_text())
+A = json.loads(pathlib.Path(__file__).with_name("oracle_anchors.json").read_text())
 
 
 def _sig(n=600):
     rng = np.random.default_rng(5)
-    return np.sin(2 * np.pi * 0.1 * np.arange(n)) \
-        + 0.4 * rng.normal(0, 1, n)
+    return np.sin(2 * np.pi * 0.1 * np.arange(n)) + 0.4 * rng.normal(0, 1, n)
 
 
 def test_welch_matches():
@@ -29,8 +28,7 @@ def test_welch_matches():
 def test_coherence_matches():
     xa = _sig()
     rng = np.random.default_rng(6)
-    ya = np.cos(2 * np.pi * 0.1 * np.arange(600)) \
-        + 0.4 * rng.normal(0, 1, 600)
+    ya = np.cos(2 * np.pi * 0.1 * np.arange(600)) + 0.4 * rng.normal(0, 1, 600)
     fg, cg = mg.coherence(xa.tolist(), ya.tolist(), fs=2.0, nperseg=128)
     assert cg.tolist() == pytest.approx(A["coherence"], rel=1e-6)
 
@@ -68,8 +66,7 @@ def test_medfilt_and_detrend():
     x = [3.0, 1.0, 4.0, 1.0, 5.0, 9.0, 2.0, 6.0]
     assert mg.medfilt(x, 3).tolist() == A["medfilt"]
     xa = _sig(50)
-    assert mg.detrend(xa.tolist()).tolist() == pytest.approx(
-        A["detrend50"], rel=1e-9, abs=1e-12)
+    assert mg.detrend(xa.tolist()).tolist() == pytest.approx(A["detrend50"], rel=1e-9, abs=1e-12)
 
 
 def test_stft_matches():
@@ -77,8 +74,7 @@ def test_stft_matches():
     fg, tg, zg = mg.stft(xa.tolist(), fs=2.0, nperseg=64)
     for k in (2, 5, 20):
         for t in (0, 2):
-            assert abs(zg[k][t]) == pytest.approx(
-                A["stft_absz"]["%d_%d" % (k, t)], rel=1e-7, abs=1e-12)
+            assert abs(zg[k][t]) == pytest.approx(A["stft_absz"]["%d_%d" % (k, t)], rel=1e-7, abs=1e-12)
 
 
 def test_spectrogram_matches():

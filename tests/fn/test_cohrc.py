@@ -1,8 +1,8 @@
 """Tests for morie.fn.cohrc -- Coherence function."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cohrc import coherence
 
 

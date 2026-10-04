@@ -119,7 +119,9 @@ def geron_grid_search(param_grid, X, y, estimator=None, K=3, score=None, shuffle
     Géron Ch 2
     """
     if not hasattr(param_grid, "items"):
-        raise ValueError(f"geron_grid_search: param_grid must be a mapping name -> values, got {type(param_grid).__name__}")
+        raise ValueError(
+            f"geron_grid_search: param_grid must be a mapping name -> values, got {type(param_grid).__name__}"
+        )
     names = list(param_grid.keys())
     if not names:
         raise ValueError("geron_grid_search: param_grid is empty; there is nothing to search")
@@ -147,9 +149,7 @@ def geron_grid_search(param_grid, X, y, estimator=None, K=3, score=None, shuffle
         def _fit(Xtr, ytr, _p=params):
             pred = est(Xtr, ytr, **_p)
             if not callable(pred):
-                raise ValueError(
-                    f"estimator returned {type(pred).__name__}, expected a callable predict(X_test)"
-                )
+                raise ValueError(f"estimator returned {type(pred).__name__}, expected a callable predict(X_test)")
             return pred
 
         def _predict(model, Xte):
@@ -157,8 +157,14 @@ def geron_grid_search(param_grid, X, y, estimator=None, K=3, score=None, shuffle
 
         try:
             cv = geron_cross_validation_score(
-                A, yy, K=K, fit=_fit, predict=_predict, score=score,
-                shuffle=shuffle, random_state=random_state,
+                A,
+                yy,
+                K=K,
+                fit=_fit,
+                predict=_predict,
+                score=score,
+                shuffle=shuffle,
+                random_state=random_state,
             )
         except ValueError as exc:
             raise ValueError(f"geron_grid_search: candidate {params} failed: {exc}") from None

@@ -1,7 +1,6 @@
 """Tests for adjusted_r2.adjusted_r2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adjusted_r2 import adjusted_r2
 
 

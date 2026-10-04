@@ -66,8 +66,9 @@ def psdmt(
     # one-sided density: fold the negative frequencies onto the positive
     # ones -- every bin except DC (and Nyquist for even nfft) doubles, as
     # in scipy.signal.periodogram, so the PSD integrates to the variance
-    psd = np.asarray([v * (1.0 if k == 0 or (nfft % 2 == 0 and k == nfreqs - 1) else 2.0)
-                      for k, v in enumerate(psd.tolist())])
+    psd = np.asarray(
+        [v * (1.0 if k == 0 or (nfft % 2 == 0 and k == nfreqs - 1) else 2.0) for k, v in enumerate(psd.tolist())]
+    )
 
     freqs = np.fft.rfftfreq(nfft, d=1.0 / fs)
 

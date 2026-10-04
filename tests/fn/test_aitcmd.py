@@ -1,7 +1,6 @@
 """Tests for aitcmd.compositional_median."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitcmd import compositional_median
 
 

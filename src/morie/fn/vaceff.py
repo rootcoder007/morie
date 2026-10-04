@@ -9,9 +9,15 @@ from ._richresult import RichResult
 __all__ = ["vaccine_efficacy"]
 
 
-def vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control,
-                     n_control, person_time_vaccinated=None,
-                     person_time_control=None, alpha=0.05):
+def vaccine_efficacy(
+    cases_vaccinated,
+    n_vaccinated,
+    cases_control,
+    n_control,
+    person_time_vaccinated=None,
+    person_time_control=None,
+    alpha=0.05,
+):
     r"""Vaccine efficacy with an interval that behaves at the boundary.
 
     .. math::
@@ -72,8 +78,7 @@ def vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control,
     if av > nv or ac > nc:
         raise ValueError("cases cannot exceed the arm size.")
 
-    rate_basis = (person_time_vaccinated is not None
-                  and person_time_control is not None)
+    rate_basis = person_time_vaccinated is not None and person_time_control is not None
     if rate_basis:
         pv = float(person_time_vaccinated)
         pc = float(person_time_control)
@@ -83,13 +88,10 @@ def vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control,
         var_log = (1.0 / av if av else np.inf) + (1.0 / ac if ac else np.inf)
     else:
         rv, rc = av / nv, ac / nc
-        var_log = ((1.0 / av - 1.0 / nv) if av else np.inf) + \
-                  ((1.0 / ac - 1.0 / nc) if ac else np.inf)
+        var_log = ((1.0 / av - 1.0 / nv) if av else np.inf) + ((1.0 / ac - 1.0 / nc) if ac else np.inf)
 
     if rc <= 0:
-        raise ValueError(
-            "no cases in the control arm; efficacy is not estimable."
-        )
+        raise ValueError("no cases in the control arm; efficacy is not estimable.")
     rr = rv / rc
     ve = 1.0 - rr
     z = 1.959963984540054 if abs(alpha - 0.05) < 1e-12 else _z(1 - alpha / 2)
@@ -106,10 +108,12 @@ def vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control,
         total = av + ac
         ratio = (nv / nc) if not rate_basis else (pv / pc)
         lo_p, hi_p = _clopper_pearson(av, total, alpha)
+
         def to_ve(p):
             if p >= 1.0:
                 return -np.inf
             return 1.0 - (p / (1.0 - p)) / ratio
+
         ci = (to_ve(hi_p), to_ve(lo_p))
         method_ci = "exact conditional binomial"
     return RichResult(
@@ -132,16 +136,16 @@ def vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control,
                 "upper bound above 1, which is not a possible value"
             ),
             "zero_note": (
-                None if not zero else
-                "no cases in the vaccinated arm, so log RR is -inf and the "
+                None
+                if not zero
+                else "no cases in the vaccinated arm, so log RR is -inf and the "
                 "standard interval fails; the exact conditional binomial is "
                 "used instead, as in regulatory practice"
             ),
             "prevented_fraction": float(ve * ac / max(ac, 1)),
             "cases": (av, ac),
             "n": (nv, nc),
-            "method": "Vaccine efficacy (1 - %s ratio)"
-                      % ("rate" if rate_basis else "risk"),
+            "method": "Vaccine efficacy (1 - %s ratio)" % ("rate" if rate_basis else "risk"),
         }
     )
 
@@ -208,7 +212,4 @@ def _z(q):
 
 
 def cheatsheet():
-    return (
-        "vaceff: vaccine efficacy on the log-RR scale, with an exact "
-        "fallback when the vaccinated arm has zero cases"
-    )
+    return "vaceff: vaccine efficacy on the log-RR scale, with an exact fallback when the vaccinated arm has zero cases"

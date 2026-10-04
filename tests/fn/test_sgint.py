@@ -1,7 +1,6 @@
 """Tests for intensity estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgint import sgint
 
 

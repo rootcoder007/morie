@@ -82,10 +82,17 @@ def wasserman_bootstrap_percentile(data, T, B, alpha, seed=13):
     reps = np.sort(_boot_replicates(data, T, B, seed))
     lo = _type1_quantile(reps, alpha / 2.0)
     hi = _type1_quantile(reps, 1.0 - alpha / 2.0)
-    return RichResult(payload={
-        "estimate": float(T(data)), "lower": lo, "upper": hi,
-        "alpha": alpha, "B": B, "n": int(data.size),
-        "method": "bootstrap percentile CI, type-1 quantiles, LCG"})
+    return RichResult(
+        payload={
+            "estimate": float(T(data)),
+            "lower": lo,
+            "upper": hi,
+            "alpha": alpha,
+            "B": B,
+            "n": int(data.size),
+            "method": "bootstrap percentile CI, type-1 quantiles, LCG",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.gseid -- Gauss-Seidel solver."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gseid import gauss_seidel, gseid
 

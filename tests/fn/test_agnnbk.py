@@ -1,7 +1,6 @@
 """Tests for agnnbk.alphazero_resnet_block."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agnnbk import alphazero_resnet_block
 
 

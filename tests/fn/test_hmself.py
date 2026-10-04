@@ -1,7 +1,6 @@
 """Tests for hmself.geron_self_supervised."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmself import geron_self_supervised
 
 

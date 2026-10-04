@@ -1,7 +1,6 @@
 """Tests for fn/ess_s.py -- Effective sample size (survey/sampling)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ess_s import effective_sample_size, ess_s
 
 

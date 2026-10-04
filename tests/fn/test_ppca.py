@@ -1,7 +1,6 @@
 """Tests for probabilistic_pca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ppca import probabilistic_pca
 
 

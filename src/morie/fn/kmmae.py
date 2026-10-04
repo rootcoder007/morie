@@ -45,20 +45,15 @@ def kamath_multimodal_mae(x_visible, x_masked_true, masks, decoders=None):
     2
     """
     if decoders is None:
-        raise ValueError(
-            "decoders is required: pass {modality: callable(visible, "
-            "mask) -> reconstruction}.")
+        raise ValueError("decoders is required: pass {modality: callable(visible, mask) -> reconstruction}.")
     vis = _as_modality_dict(x_visible, "x_visible")
     true = _as_modality_dict(x_masked_true, "x_masked_true")
     msk = _as_modality_dict(masks, "masks")
     dec = _as_modality_dict(decoders, "decoders")
     keys = list(vis.keys())
-    for other, nm in ((true, "x_masked_true"), (msk, "masks"),
-                      (dec, "decoders")):
+    for other, nm in ((true, "x_masked_true"), (msk, "masks"), (dec, "decoders")):
         if set(other.keys()) != set(keys):
-            raise ValueError(
-                f"{nm} covers modalities {sorted(other.keys())} but "
-                f"x_visible covers {sorted(keys)}.")
+            raise ValueError(f"{nm} covers modalities {sorted(other.keys())} but x_visible covers {sorted(keys)}.")
 
     per_modality = {}
     total = 0.0
@@ -69,35 +64,38 @@ def kamath_multimodal_mae(x_visible, x_masked_true, masks, decoders=None):
             raise ValueError(f"the decoder for modality {m!r} is not callable.")
         mask = np.asarray(msk[m])
         if mask.dtype != bool and not np.all(np.isin(mask, (0, 1))):
-            raise ValueError(
-                f"the mask for modality {m!r} must be boolean or 0/1.")
+            raise ValueError(f"the mask for modality {m!r} must be boolean or 0/1.")
         mask = mask.astype(bool)
         if not mask.any():
             raise ValueError(
                 f"modality {m!r} has nothing masked; an autoencoder "
                 "that reconstructs only what it was shown learns "
-                "nothing.")
+                "nothing."
+            )
         gold = np.atleast_1d(np.asarray(true[m], dtype=float)).ravel()
         if gold.size != int(mask.sum()):
             raise ValueError(
                 f"modality {m!r}: {int(mask.sum())} positions are masked "
-                f"but {gold.size} ground-truth values were supplied.")
-        rec = np.atleast_1d(np.asarray(
-            f(vis[m], mask), dtype=float)).ravel()
+                f"but {gold.size} ground-truth values were supplied."
+            )
+        rec = np.atleast_1d(np.asarray(f(vis[m], mask), dtype=float)).ravel()
         if rec.size != gold.size:
-            raise ValueError(
-                f"the decoder for {m!r} returned {rec.size} values for "
-                f"{gold.size} masked positions.")
+            raise ValueError(f"the decoder for {m!r} returned {rec.size} values for {gold.size} masked positions.")
         sse = float(np.sum((gold - rec) ** 2))
         per_modality[m] = sse
         total += sse
         n_masked += gold.size
-    return RichResult(payload={
-        "estimate": total, "loss": total,
-        "per_modality": per_modality,
-        "modalities": keys, "n_masked": int(n_masked),
-        "n": len(keys),
-        "method": "Multimodal MAE squared reconstruction loss"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "loss": total,
+            "per_modality": per_modality,
+            "modalities": keys,
+            "n_masked": int(n_masked),
+            "n": len(keys),
+            "method": "Multimodal MAE squared reconstruction loss",
+        }
+    )
 
 
 def cheatsheet():

@@ -79,12 +79,10 @@ intrinsic CAR and the convolution prior the chapter builds on.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["poissp", "poisson_spatial_glm", "car_precision", "rho_bounds",
-           "cheatsheet"]
+__all__ = ["poissp", "poisson_spatial_glm", "car_precision", "rho_bounds", "cheatsheet"]
 
 
 def _adjacency(W):
@@ -95,14 +93,12 @@ def _adjacency(W):
         raise ValueError("poissp: W must be a square weight matrix")
     for i in range(n):
         if A[i][i] != 0.0:
-            raise ValueError("poissp: W must have a zero diagonal; area %d "
-                             "is its own neighbour" % i)
+            raise ValueError("poissp: W must have a zero diagonal; area %d is its own neighbour" % i)
         for j in range(n):
             if A[i][j] < 0.0:
                 raise ValueError("poissp: weights must be non-negative")
             if abs(A[i][j] - A[j][i]) > 1e-12:
-                raise ValueError("poissp: W must be symmetric; w[%d][%d] "
-                                 "and w[%d][%d] differ" % (i, j, j, i))
+                raise ValueError("poissp: W must be symmetric; w[%d][%d] and w[%d][%d] differ" % (i, j, j, i))
     return A, n
 
 
@@ -117,8 +113,7 @@ def car_precision(W, tau=1.0, rho=1.0):
     t, r = float(tau), float(rho)
     if t <= 0.0:
         raise ValueError("poissp: tau must be positive")
-    return [[t * ((d[i] if i == j else 0.0) - r * A[i][j])
-             for j in range(n)] for i in range(n)]
+    return [[t * ((d[i] if i == j else 0.0) - r * A[i][j]) for j in range(n)] for i in range(n)]
 
 
 def rho_bounds(W):
@@ -133,20 +128,20 @@ def rho_bounds(W):
     d = [sum(A[i]) for i in range(n)]
     if any(v <= 0.0 for v in d):
         raise ValueError("poissp: every area needs at least one neighbour")
-    S = [[A[i][j] / math.sqrt(d[i] * d[j]) for j in range(n)]
-         for i in range(n)]
+    S = [[A[i][j] / math.sqrt(d[i] * d[j]) for j in range(n)] for i in range(n)]
     ev, _ = k.jacobi(S)
     lo, hi = min(ev), max(ev)
-    return {"lower": 1.0 / lo if lo < 0 else float("-inf"),
-            "upper": 1.0 / hi if hi > 0 else float("inf"),
-            "eigenvalues": list(ev)}
+    return {
+        "lower": 1.0 / lo if lo < 0 else float("-inf"),
+        "upper": 1.0 / hi if hi > 0 else float("inf"),
+        "eigenvalues": list(ev),
+    }
 
 
 def _logdet_pd(A, ridge=0.0):
     """log|A| for a symmetric positive-definite A, via Cholesky."""
     n = len(A)
-    M = [[A[i][j] + (ridge if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    M = [[A[i][j] + (ridge if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = k.chol(M)
     return 2.0 * sum(math.log(L[i][i]) for i in range(n))
 
@@ -156,7 +151,7 @@ def _logdet_gen(A, rank_deficit=0):
     eigenvalues, dropping the ``rank_deficit`` smallest in magnitude."""
     ev, _ = k.jacobi(A)
     vals = sorted((abs(v) for v in ev), reverse=True)
-    keep = vals[:len(vals) - int(rank_deficit)] if rank_deficit else vals
+    keep = vals[: len(vals) - int(rank_deficit)] if rank_deficit else vals
     return sum(math.log(v) for v in keep if v > 1e-300)
 
 
@@ -208,8 +203,7 @@ def _fit_mode(y, X, off, Q, constrain, iters, tol, ridge):
     u = [0.0] * n
     dim = p + n
     for _ in range(int(iters)):
-        eta = [sum(X[i][a] * beta[a] for a in range(p)) + u[i]
-               for i in range(n)]
+        eta = [sum(X[i][a] * beta[a] for a in range(p)) + u[i] for i in range(n)]
         m = [off[i] * math.exp(eta[i]) for i in range(n)]
         # score
         r = [y[i] - m[i] for i in range(n)]
@@ -246,9 +240,20 @@ def _poisson_loglik(y, m):
     return tot
 
 
-def poissp(counts, X=None, offset=None, W=None, rho=1.0, tau=None,
-           constrain=None, iters=100, tol=1e-11, ridge=1e-10,
-           tau_grid=None, level=0.95):
+def poissp(
+    counts,
+    X=None,
+    offset=None,
+    W=None,
+    rho=1.0,
+    tau=None,
+    constrain=None,
+    iters=100,
+    tol=1e-11,
+    ridge=1e-10,
+    tau_grid=None,
+    level=0.95,
+):
     r"""Fit the Poisson-CAR areal model.
 
     Parameters
@@ -300,8 +305,7 @@ def poissp(counts, X=None, offset=None, W=None, rho=1.0, tau=None,
         raise ValueError("poissp: offsets must be positive")
     Xd = k.design(X, n)
     if len(Xd) != n:
-        raise ValueError("poissp: %d counts but %d covariate rows"
-                         % (n, len(Xd)))
+        raise ValueError("poissp: %d counts but %d covariate rows" % (n, len(Xd)))
 
     if W is None:
         Q = [[0.0] * n for _ in range(n)]
@@ -320,17 +324,14 @@ def poissp(counts, X=None, offset=None, W=None, rho=1.0, tau=None,
             if not (b["lower"] < rho_used < b["upper"]):
                 raise ValueError(
                     "poissp: rho = %g is outside the propriety interval "
-                    "(%g, %g); the CAR prior would be improper"
-                    % (rho_used, b["lower"], b["upper"]))
+                    "(%g, %g); the CAR prior would be improper" % (rho_used, b["lower"], b["upper"])
+                )
         if tau is None:
-            grid = (tau_grid if tau_grid is not None else
-                    [0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0, 25.0,
-                     50.0, 100.0])
+            grid = tau_grid if tau_grid is not None else [0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0, 25.0, 50.0, 100.0]
             best = None
             for t in grid:
                 Qt = car_precision(W, t, rho_used)
-                bb, uu, mm, _ = _fit_mode(y, Xd, off, Qt, constrain,
-                                          iters, tol, ridge)
+                bb, uu, mm, _ = _fit_mode(y, Xd, off, Qt, constrain, iters, tol, ridge)
                 lap = _laplace(y, uu, mm, Qt, constrain)
                 if best is None or lap > best[0]:
                     best = (lap, t)
@@ -343,8 +344,7 @@ def poissp(counts, X=None, offset=None, W=None, rho=1.0, tau=None,
 
     beta, u, m, eta = _fit_mode(y, Xd, off, Q, constrain, iters, tol, ridge)
     p = len(Xd[0])
-    score = [sum(Xd[i][a] * (y[i] - m[i]) for i in range(n))
-             for a in range(p)]
+    score = [sum(Xd[i][a] * (y[i] - m[i]) for i in range(n)) for a in range(p)]
 
     # Fixed-effect covariance: the (beta, beta) block of the INVERSE joint
     # Hessian, obtained by solving H z = e_a rather than by forming the
@@ -359,45 +359,47 @@ def poissp(counts, X=None, offset=None, W=None, rho=1.0, tau=None,
         e = [1.0 if t == a else 0.0 for t in range(p + n)]
         z = k.ridgesolve(H, e, ridge)
         cov.append(z[:p])
-    se = [math.sqrt(cov[a][a]) if cov[a][a] > 0 else float("nan")
-          for a in range(p)]
+    se = [math.sqrt(cov[a][a]) if cov[a][a] > 0 else float("nan") for a in range(p)]
     z = k.qnorm(0.5 + 0.5 * float(level))
     lo = [beta[a] - z * se[a] for a in range(p)]
     hi = [beta[a] + z * se[a] for a in range(p)]
 
     ll = _poisson_loglik(y, m)
-    dev = 2.0 * sum((y[i] * math.log(y[i] / m[i]) if y[i] > 0 else 0.0)
-                    - (y[i] - m[i]) for i in range(n))
+    dev = 2.0 * sum((y[i] * math.log(y[i] / m[i]) if y[i] > 0 else 0.0) - (y[i] - m[i]) for i in range(n))
 
-    return RichResult(payload={
-        "estimate": list(beta),
-        "beta": list(beta),
-        "se": se,
-        "lower": lo,
-        "upper": hi,
-        "u": list(u),
-        "eta": list(eta),
-        "fitted": list(m),
-        "relative_risk": [math.exp(v) for v in eta],
-        "score_beta": score,
-        "loglik": ll,
-        "deviance": dev,
-        "tau": tau_used,
-        "rho": rho_used,
-        "spatial": spatial,
-        "constrained": bool(constrain),
-        "n": n,
-        "p": p,
-        "level": float(level),
-        "method": ("Poisson areal regression with a %s CAR effect, "
-                   "Banerjee, Carlin & Gelfand (2014) Ch. 4 and 6"
-                   % ("intrinsic" if spatial and
-                      abs((rho_used or 0.0) - 1.0) < 1e-12 else
-                      ("proper" if spatial else "no"))),
-        "note": ("the offset enters with coefficient fixed at one, so "
-                 "exp(eta) is a relative risk; score_beta is zero at the "
-                 "mode because the fixed effects are unpenalised"),
-    })
+    return RichResult(
+        payload={
+            "estimate": list(beta),
+            "beta": list(beta),
+            "se": se,
+            "lower": lo,
+            "upper": hi,
+            "u": list(u),
+            "eta": list(eta),
+            "fitted": list(m),
+            "relative_risk": [math.exp(v) for v in eta],
+            "score_beta": score,
+            "loglik": ll,
+            "deviance": dev,
+            "tau": tau_used,
+            "rho": rho_used,
+            "spatial": spatial,
+            "constrained": bool(constrain),
+            "n": n,
+            "p": p,
+            "level": float(level),
+            "method": (
+                "Poisson areal regression with a %s CAR effect, "
+                "Banerjee, Carlin & Gelfand (2014) Ch. 4 and 6"
+                % ("intrinsic" if spatial and abs((rho_used or 0.0) - 1.0) < 1e-12 else ("proper" if spatial else "no"))
+            ),
+            "note": (
+                "the offset enters with coefficient fixed at one, so "
+                "exp(eta) is a relative risk; score_beta is zero at the "
+                "mode because the fixed effects are unpenalised"
+            ),
+        }
+    )
 
 
 def _laplace(y, u, m, Q, constrain):
@@ -409,8 +411,7 @@ def _laplace(y, u, m, Q, constrain):
         quad += u[i] * Qu[i]
     deficit = 1 if constrain else 0
     ldQ = _logdet_gen(Q, deficit)
-    MQ = [[Q[i][j] + (m[i] if i == j else 0.0) for j in range(n)]
-          for i in range(n)]
+    MQ = [[Q[i][j] + (m[i] if i == j else 0.0) for j in range(n)] for i in range(n)]
     ldH = _logdet_pd(MQ, 1e-12)
     return _poisson_loglik(y, m) - 0.5 * quad + 0.5 * ldQ - 0.5 * ldH
 
@@ -420,9 +421,11 @@ poisson_spatial_glm = poissp
 
 
 def cheatsheet():
-    return ("poissp: Poisson areal regression, log mu = X beta + u with a "
-            "known offset E entering at coefficient one, and u ~ CAR with "
-            "precision tau(D_w - rho W). rho=1 is the INTRINSIC CAR: Q1=0, "
-            "improper, needs sum(u)=0. The fixed-effect score X'(y-m) is "
-            "zero at the mode, so an intercept forces sum(y)=sum(fitted). "
-            "tau by Laplace marginal likelihood. BCG (2014) Ch. 4, 6.")
+    return (
+        "poissp: Poisson areal regression, log mu = X beta + u with a "
+        "known offset E entering at coefficient one, and u ~ CAR with "
+        "precision tau(D_w - rho W). rho=1 is the INTRINSIC CAR: Q1=0, "
+        "improper, needs sum(u)=0. The fixed-effect score X'(y-m) is "
+        "zero at the mode, so an intercept forces sum(y)=sum(fitted). "
+        "tau by Laplace marginal likelihood. BCG (2014) Ch. 4, 6."
+    )

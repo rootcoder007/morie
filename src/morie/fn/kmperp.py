@@ -35,27 +35,30 @@ def kamath_perplexity(log_probs, base="e"):
     """
     lp = np.atleast_1d(np.asarray(log_probs, dtype=float)).ravel()
     if lp.size == 0:
-        raise ValueError(
-            "no tokens scored; perplexity over an empty sequence is "
-            "undefined, not 1.")
+        raise ValueError("no tokens scored; perplexity over an empty sequence is undefined, not 1.")
     if np.any(np.isnan(lp)):
         raise ValueError("a log-probability is nan.")
     if np.any(lp > 0):
         bad = float(lp[lp > 0][0])
         raise ValueError(
-            f"log-probabilities must be <= 0; got {bad}. These look "
-            "like probabilities or logits, not natural logs.")
+            f"log-probabilities must be <= 0; got {bad}. These look like probabilities or logits, not natural logs."
+        )
     if base not in ("e", "2"):
         raise ValueError("base must be 'e' (nats) or '2' (bits).")
     mean_nll = float(-lp.mean())
-    ppl = float(np.exp(mean_nll)) if base == "e" else float(2.0 ** mean_nll)
-    return RichResult(payload={
-        "estimate": ppl, "perplexity": ppl,
-        "mean_nll": mean_nll,
-        "total_nll": float(-lp.sum()),
-        "bits_per_token": mean_nll / np.log(2.0),
-        "base": base, "n": int(lp.size),
-        "method": "Perplexity exp(mean negative log-likelihood)"})
+    ppl = float(np.exp(mean_nll)) if base == "e" else float(2.0**mean_nll)
+    return RichResult(
+        payload={
+            "estimate": ppl,
+            "perplexity": ppl,
+            "mean_nll": mean_nll,
+            "total_nll": float(-lp.sum()),
+            "bits_per_token": mean_nll / np.log(2.0),
+            "base": base,
+            "n": int(lp.size),
+            "method": "Perplexity exp(mean negative log-likelihood)",
+        }
+    )
 
 
 def cheatsheet():

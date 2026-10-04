@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.shscl import scaled_schoenfeld_residual
 
-
 N = 40
 X1 = [((i * 7) % 11) / 5 - 1 for i in range(N)]
 X2 = [math.cos(i) for i in range(N)]
@@ -35,8 +34,7 @@ def test_shscl_edge():
     for k in range(2):
         assert sum(row[k] for row in r["scaled"]) / d == pytest.approx(r["beta"][k], abs=1e-9)
     assert [row[0] for row in r["scaled"][:3]] == pytest.approx(
-        [-1.9526065958053183, 2.1756979662607723, 0.64193251674218321], rel=1e-9)
+        [-1.9526065958053183, 2.1756979662607723, 0.64193251674218321], rel=1e-9
+    )
     with pytest.raises(ValueError, match="transform"):
         scaled_schoenfeld_residual(TIME, EVENT, X, transform="sqrt")
-
-

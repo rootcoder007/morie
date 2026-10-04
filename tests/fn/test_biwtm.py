@@ -1,7 +1,6 @@
 """Test biwtm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.biwtm import biweight_midcorrelation
 
 

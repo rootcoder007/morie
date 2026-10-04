@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_projection"]
 
 
-def boyd_projection(v, C="ball", radius=1.0, lo=None, hi=None, A=None,
-                    b=None):
+def boyd_projection(v, C="ball", radius=1.0, lo=None, hi=None, A=None, b=None):
     r"""The projection :math:`P_C(v) = \arg\min_{x \in C}
     \lVert x - v\rVert_2`.
 
@@ -104,20 +103,20 @@ def boyd_projection(v, C="ball", radius=1.0, lo=None, hi=None, A=None,
         Am = np.atleast_2d(np.asarray(A, dtype=float))
         bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()
         # v + A'(AA')^{-1}(b - Av)
-        x = vv + Am.T @ np.linalg.lstsq(Am @ Am.T, bv - Am @ vv,
-                                        rcond=None)[0]
+        x = vv + Am.T @ np.linalg.lstsq(Am @ Am.T, bv - Am @ vv, rcond=None)[0]
         boundary = True
     else:
-        raise ValueError(
-            'C must be one of "ball", "box", "simplex", "affine", "nonneg"')
+        raise ValueError('C must be one of "ball", "box", "simplex", "affine", "nonneg"')
     dist = float(np.linalg.norm(x - vv))
     return RichResult(
         title=f"Projection onto {C}",
-        summary_lines=[("set", C), ("distance", dist),
-                       ("changed", bool(dist > 1e-15))],
+        summary_lines=[("set", C), ("distance", dist), ("changed", bool(dist > 1e-15))],
         payload={
-            "x": x, "distance": dist, "changed": bool(dist > 1e-15),
-            "set": C, "on_boundary": boundary,
+            "x": x,
+            "distance": dist,
+            "changed": bool(dist > 1e-15),
+            "set": C,
+            "on_boundary": boundary,
             "method": "boyd_projection",
         },
     )

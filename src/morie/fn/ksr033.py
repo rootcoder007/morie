@@ -69,6 +69,7 @@ def kosorok_ch2_uniform_covering_number(F, X, eps, r=2, n_measures=8, rng=None):
         env_norm = float((np.sum(w * np.abs(env) ** r)) ** (1.0 / r))
         if env_norm <= 0:
             continue
+
         # L_r(Q) distance between functions, weighted by this measure
         def dist(a, b, w=w, r=r):
             return float((np.sum(w * np.abs(a - b) ** r)) ** (1.0 / r))
@@ -78,11 +79,15 @@ def kosorok_ch2_uniform_covering_number(F, X, eps, r=2, n_measures=8, rng=None):
     if not counts:
         raise ValueError("degenerate envelope; covering number undefined.")
     return RichResult(
-        payload={"covering_number": int(max(counts)),
-                 "per_measure": np.array(counts),
-                 "envelope_norms": np.array(norms), "eps": eps, "r": r,
-                 "is_lower_bound": True,
-                 "method": "sup_Q N(eps ||F||_{Q,r}, F, L_r(Q)), sampled over Q"}
+        payload={
+            "covering_number": int(max(counts)),
+            "per_measure": np.array(counts),
+            "envelope_norms": np.array(norms),
+            "eps": eps,
+            "r": r,
+            "is_lower_bound": True,
+            "method": "sup_Q N(eps ||F||_{Q,r}, F, L_r(Q)), sampled over Q",
+        }
     )
 
 

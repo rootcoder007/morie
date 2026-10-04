@@ -1,7 +1,6 @@
 """Tests for stratified_variance.stratified_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stratified_variance import (
     stratified_variance,
 )

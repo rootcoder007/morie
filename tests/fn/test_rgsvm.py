@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaclass import rangayyan_svm
 
-
 X = [[1, 2], [2, 3], [3, 3.5], [-1, -0.5], [-2, -1.5], [0, -1]]
 Y = [1, 1, 1, -1, -1, -1]
 

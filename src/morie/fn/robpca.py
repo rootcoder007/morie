@@ -78,10 +78,11 @@ __all__ = [
     "classify_outliers",
 ]
 
-_Z975 = 1.959963984540054      # Phi^{-1}(0.975)
+_Z975 = 1.959963984540054  # Phi^{-1}(0.975)
 
 
 # ------------------------------------------------------------ helpers
+
 
 def _matrix(X, name="X"):
     rows = [list(map(float, r)) for r in np.asarray(X, dtype=float)]
@@ -95,8 +96,7 @@ def _matrix(X, name="X"):
             raise ValueError("robpca: %s is ragged" % name)
         for v in r:
             if v != v or v in (float("inf"), float("-inf")):
-                raise ValueError("robpca: %s contains a non-finite value"
-                                 % name)
+                raise ValueError("robpca: %s contains a non-finite value" % name)
     return rows, len(rows), p
 
 
@@ -125,7 +125,7 @@ def _cov(rows):
                 C[a][b] += da * d[b]
     for a in range(p):
         for b in range(a, p):
-            C[a][b] /= (n - 1.0)
+            C[a][b] /= n - 1.0
             C[b][a] = C[a][b]
     return mu, C
 
@@ -142,8 +142,7 @@ def _eigh_desc(C):
 
 def _matmul(A, B):
     """A (n x p) times B given as a list of p-vectors (columns)."""
-    return [[sum(row[t] * col[t] for t in range(len(row))) for col in B]
-            for row in A]
+    return [[sum(row[t] * col[t] for t in range(len(row))) for col in B] for row in A]
 
 
 def _det_from_chol(C):
@@ -173,8 +172,7 @@ def _mahalanobis(rows, mu, C):
     """Robust distances (eq. 11); raises if C is singular."""
     p = len(mu)
     # inverse by Gauss-Jordan on a copy, with the identity alongside
-    A = [list(C[i]) + [1.0 if i == j else 0.0 for j in range(p)]
-         for i in range(p)]
+    A = [list(C[i]) + [1.0 if i == j else 0.0 for j in range(p)] for i in range(p)]
     for col in range(p):
         piv = max(range(col, p), key=lambda r: abs(A[r][col]))
         if abs(A[piv][col]) < 1e-12:
@@ -233,8 +231,7 @@ def univariate_mcd(values, h=None, consistent=True):
         h = (n + 2) // 2
     h = int(h)
     if not 2 <= h <= n:
-        raise ValueError("robpca: h must lie in [2, n] for the univariate "
-                         "MCD")
+        raise ValueError("robpca: h must lie in [2, n] for the univariate MCD")
     csum = [0.0]
     csq = [0.0]
     for t in v:
@@ -363,8 +360,7 @@ def _fast_mcd(rows, h, n_start=250, seed=17):
         if _det_from_chol(C) <= 0.0:
             # enlarge to an h-subset by nearest points in Euclidean terms
             base = _colmeans([rows[i] for i in sub])
-            d = [math.sqrt(sum((rows[i][t] - base[t]) ** 2
-                               for t in range(p))) for i in range(n)]
+            d = [math.sqrt(sum((rows[i][t] - base[t]) ** 2 for t in range(p))) for i in range(n)]
             sub = sorted(range(n), key=lambda i: d[i])[:h]
             mu, C = _cov([rows[i] for i in sub])
             if _det_from_chol(C) <= 0.0:
@@ -415,8 +411,8 @@ def classify_outliers(sd, od, sd_cut, od_cut):
 
 # ------------------------------------------------------------ ROBPCA
 
-def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
-               seed=17, reweight=True):
+
+def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250, seed=17, reweight=True):
     r"""ROBPCA (Hubert, Rousseeuw & Vanden Branden 2005).
 
     Parameters
@@ -465,16 +461,14 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
     # --- Stage 1: the affine subspace the data actually span (eq. 7)
     mu0 = _colmeans(rows)
     Xc = _center(rows, mu0)
-    U, s, Vt = np.linalg.svd(np.asarray(Xc, dtype=float),
-                             full_matrices=False)
+    U, s, Vt = np.linalg.svd(np.asarray(Xc, dtype=float), full_matrices=False)
     sv = [float(t) for t in s]
     tol = max(n, p) * (max(sv) if sv else 0.0) * 2.22e-16
     r0 = sum(1 for t in sv if t > tol)
     if r0 == 0:
         raise ValueError("robpca: every observation is identical")
     V = [[float(Vt[j][t]) for t in range(p)] for j in range(r0)]  # rows
-    Z = [[sum(Xc[i][t] * V[j][t] for t in range(p)) for j in range(r0)]
-         for i in range(n)]
+    Z = [[sum(Xc[i][t] * V[j][t] for t in range(p)) for j in range(r0)] for i in range(n)]
 
     h = max(int(alpha * n), (n + kmax + 1) // 2)
     h = min(h, n)
@@ -490,8 +484,7 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
         # exact fit: reflect so that v becomes e1 and drop that coordinate
         work = _drop_direction(work, exact)
         if len(work[0]) == 0:
-            raise ValueError("robpca: the data collapsed to a point under "
-                             "repeated exact fits")
+            raise ValueError("robpca: the data collapsed to a point under repeated exact fits")
     else:
         raise ValueError("robpca: exact fit reduction did not terminate")
     r1 = len(work[0])
@@ -501,18 +494,15 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
     l0, P0 = _eigh_desc(S0)
     pos = [v for v in l0 if v > 1e-12]
     if not pos:
-        raise ValueError("robpca: the h least outlying points are "
-                         "identical")
+        raise ValueError("robpca: the h least outlying points are identical")
     k0 = _choose_k(l0, k, kmax, r1)
 
-    Xs = [[sum((work[i][t] - mu1[t]) * P0[j][t] for t in range(r1))
-           for j in range(k0)] for i in range(n)]
+    Xs = [[sum((work[i][t] - mu1[t]) * P0[j][t] for t in range(r1)) for j in range(k0)] for i in range(n)]
 
     # --- Stage 3: MCD on that subspace
     h3 = max(h, k0 + 1)
     h3 = min(h3, n)
-    from_h0 = _c_steps(Xs, H0[:h3] if len(H0) >= h3 else
-                       sorted(range(n), key=lambda i: outl[i])[:h3])
+    from_h0 = _c_steps(Xs, H0[:h3] if len(H0) >= h3 else sorted(range(n), key=lambda i: outl[i])[:h3])
     best = from_h0
     rnd = _fast_mcd(Xs, h3, n_start=n_start, seed=seed)
     if rnd is not None and rnd[3] < best[3]:
@@ -524,8 +514,7 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
     try:
         d = _mahalanobis(Xs, mu4, S3)
     except ZeroDivisionError:
-        raise ValueError("robpca: the scatter on the k-dimensional "
-                         "subspace is singular; ask for fewer components")
+        raise ValueError("robpca: the scatter on the k-dimensional subspace is singular; ask for fewer components")
     if reweight:
         # consistency factor c1, with the hth quantile of the squared
         # robust distances rather than their median
@@ -558,72 +547,69 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250,
     lam, P2 = _eigh_desc(S4)
     kk = min(k0, sum(1 for v in lam if v > 1e-12))
     if kk == 0:
-        raise ValueError("robpca: the robust scatter has no positive "
-                         "eigenvalues")
+        raise ValueError("robpca: the robust scatter has no positive eigenvalues")
     lam = lam[:kk]
     P2 = P2[:kk]
 
     # scores in the subspace, then loadings pushed back to the original p
-    T = [[sum((Xs[i][t] - mu5[t]) * P2[j][t] for t in range(k0))
-          for j in range(kk)] for i in range(n)]
+    T = [[sum((Xs[i][t] - mu5[t]) * P2[j][t] for t in range(k0)) for j in range(kk)] for i in range(n)]
 
     # P0 (r1 x k0) composed with P2 (k0 x kk), then V (r1 -> p)
-    load_r1 = [[sum(P0[a][t] * P2[j][a] for a in range(k0))
-                for t in range(r1)] for j in range(kk)]
+    load_r1 = [[sum(P0[a][t] * P2[j][a] for a in range(k0)) for t in range(r1)] for j in range(kk)]
     loadings = [_expand(vec, V, p) for vec in load_r1]
     # The robust centre, back in the original p variables. mu5 is a
     # k0-vector in the stage-2 eigenbasis P0, NOT in the final loading
     # basis P2, so it goes back through P0 first and only then through V.
-    center_r1 = [mu1[t] + sum(mu5[j] * P0[j][t] for j in range(k0))
-                 for t in range(r1)]
-    center = [mu0[t] + sum(center_r1[a] * V[a][t] for a in range(r1))
-              for t in range(p)]
+    center_r1 = [mu1[t] + sum(mu5[j] * P0[j][t] for j in range(k0)) for t in range(r1)]
+    center = [mu0[t] + sum(center_r1[a] * V[a][t] for a in range(r1)) for t in range(p)]
 
     # --- diagnostics (eqs. 3 and 4)
-    sd = [math.sqrt(sum(T[i][j] ** 2 / lam[j] for j in range(kk)))
-          for i in range(n)]
-    fitted = [[center[t] + sum(T[i][j] * loadings[j][t]
-                               for j in range(kk)) for t in range(p)]
-              for i in range(n)]
-    od = [math.sqrt(sum((rows[i][t] - fitted[i][t]) ** 2
-                        for t in range(p))) for i in range(n)]
+    sd = [math.sqrt(sum(T[i][j] ** 2 / lam[j] for j in range(kk))) for i in range(n)]
+    fitted = [[center[t] + sum(T[i][j] * loadings[j][t] for j in range(kk)) for t in range(p)] for i in range(n)]
+    od = [math.sqrt(sum((rows[i][t] - fitted[i][t]) ** 2 for t in range(p))) for i in range(n)]
     sd_cut = math.sqrt(_st.chi2.ppf(0.975, kk))
     od_cut = _od_cutoff(od, h3)
     cls = classify_outliers(sd, od, sd_cut, od_cut)
 
-    return RichResult(payload={
-        "estimate": lam[0],
-        "loadings": loadings,
-        "eigenvalues": lam,
-        "center": center,
-        "scores": T,
-        "k": kk,
-        "k0": k0,
-        "h": h3,
-        "alpha": alpha,
-        "rank": r0,
-        "subspace_rank": r1,
-        "outlyingness": outl,
-        "h_subset": sorted(best[0]),
-        "reweighted_kept": keep,
-        "consistency_factor": scale,
-        "score_distance": sd,
-        "orthogonal_distance": od,
-        "sd_cutoff": sd_cut,
-        "od_cutoff": od_cut,
-        "classification": cls,
-        "n_outliers": sum(1 for c in cls if c != "regular"),
-        "n": n,
-        "p": p,
-        "reweighted": bool(reweight),
-        "method": ("ROBPCA (Hubert, Rousseeuw & Vanden Branden 2005): "
-                   "projection-pursuit outlyingness, then MCD on the "
-                   "resulting subspace"),
-        "note": ("loadings are orthonormal columns in the original p "
-                 "variables; the diagnostic plot is score distance "
-                 "against orthogonal distance, with the four regions of "
-                 "the paper's Figure 1 given in classification"),
-    })
+    return RichResult(
+        payload={
+            "estimate": lam[0],
+            "loadings": loadings,
+            "eigenvalues": lam,
+            "center": center,
+            "scores": T,
+            "k": kk,
+            "k0": k0,
+            "h": h3,
+            "alpha": alpha,
+            "rank": r0,
+            "subspace_rank": r1,
+            "outlyingness": outl,
+            "h_subset": sorted(best[0]),
+            "reweighted_kept": keep,
+            "consistency_factor": scale,
+            "score_distance": sd,
+            "orthogonal_distance": od,
+            "sd_cutoff": sd_cut,
+            "od_cutoff": od_cut,
+            "classification": cls,
+            "n_outliers": sum(1 for c in cls if c != "regular"),
+            "n": n,
+            "p": p,
+            "reweighted": bool(reweight),
+            "method": (
+                "ROBPCA (Hubert, Rousseeuw & Vanden Branden 2005): "
+                "projection-pursuit outlyingness, then MCD on the "
+                "resulting subspace"
+            ),
+            "note": (
+                "loadings are orthonormal columns in the original p "
+                "variables; the diagnostic plot is score distance "
+                "against orthogonal distance, with the four regions of "
+                "the paper's Figure 1 given in classification"
+            ),
+        }
+    )
 
 
 def _choose_k(l0, k, kmax, r1):
@@ -631,11 +617,10 @@ def _choose_k(l0, k, kmax, r1):
     r = len(pos)
     if isinstance(k, int) and not isinstance(k, bool):
         if not 1 <= k <= r:
-            raise ValueError("robpca: k must lie in [1, %d], the rank of "
-                             "the preliminary scatter" % r)
+            raise ValueError("robpca: k must lie in [1, %d], the rank of the preliminary scatter" % r)
         return k
     rule = "cumulative" if k is None else k
-    if rule == "cumulative":                      # eq. 5
+    if rule == "cumulative":  # eq. 5
         tot = sum(pos)
         run = 0.0
         for j in range(r):
@@ -643,11 +628,10 @@ def _choose_k(l0, k, kmax, r1):
             if run / tot >= 0.90:
                 return min(j + 1, kmax, r1)
         return min(r, kmax, r1)
-    if rule == "ratio":                           # eq. 6
+    if rule == "ratio":  # eq. 6
         kk = sum(1 for v in pos if v / pos[0] >= 1e-3)
         return max(1, min(kk, kmax, r1))
-    raise ValueError("robpca: k must be an integer, 'cumulative' (eq. 5) "
-                     "or 'ratio' (eq. 6)")
+    raise ValueError("robpca: k must be an integer, 'cumulative' (eq. 5) or 'ratio' (eq. 6)")
 
 
 def _drop_direction(rows, v):
@@ -668,15 +652,13 @@ def _drop_direction(rows, v):
             basis.append([t / nw for t in w])
         if len(basis) == p - 1:
             break
-    return [[sum(r[t] * b[t] for t in range(p)) for b in basis]
-            for r in rows]
+    return [[sum(r[t] * b[t] for t in range(p)) for b in basis] for r in rows]
 
 
 def _expand(vec_r1, V, p):
     """Take a vector expressed in the r1 stage-1 basis back to R^p."""
     r1 = len(vec_r1)
-    return [sum(vec_r1[a] * V[a][t] for a in range(min(r1, len(V))))
-            for t in range(p)]
+    return [sum(vec_r1[a] * V[a][t] for a in range(min(r1, len(V)))) for t in range(p)]
 
 
 def _reweight_factor(q, k):
@@ -701,7 +683,7 @@ def _od_cutoff(od, h):
     cut = loc + scale * _Z975
     if cut <= 0:
         return 0.0
-    return cut ** 1.5
+    return cut**1.5
 
 
 robpca = robust_pca
@@ -709,15 +691,17 @@ robustpca = robust_pca
 
 
 def cheatsheet():
-    return ("robpca: ROBPCA (Hubert, Rousseeuw & Vanden Branden 2005). "
-            "Stage 1 SVD onto the span of the data; stage 2 ranks points "
-            "by the outlyingness max_v |x'v - t_MCD|/s_MCD over "
-            "directions through pairs of points and keeps the h = "
-            "max([alpha n], [(n+kmax+1)/2]) least outlying; stage 3 runs "
-            "the MCD on that subspace, rescales by c1 = d^2_(h)/chi2_"
-            "{k,h/n} and reweights with hard rejection at chi2_{k,.975}. "
-            "Diagnostics: SD_i = sqrt(sum t_ij^2/l_j), OD_i = "
-            "||x_i - mu - P t_i||, cut off at sqrt(chi2_{k,.975}) and at "
-            "(mu + sigma z_.975)^{3/2} from the univariate MCD of "
-            "OD^{2/3}. k by eq. 5 (90% cumulative) or eq. 6 (l_k/l_1 >= "
-            "1e-3).")
+    return (
+        "robpca: ROBPCA (Hubert, Rousseeuw & Vanden Branden 2005). "
+        "Stage 1 SVD onto the span of the data; stage 2 ranks points "
+        "by the outlyingness max_v |x'v - t_MCD|/s_MCD over "
+        "directions through pairs of points and keeps the h = "
+        "max([alpha n], [(n+kmax+1)/2]) least outlying; stage 3 runs "
+        "the MCD on that subspace, rescales by c1 = d^2_(h)/chi2_"
+        "{k,h/n} and reweights with hard rejection at chi2_{k,.975}. "
+        "Diagnostics: SD_i = sqrt(sum t_ij^2/l_j), OD_i = "
+        "||x_i - mu - P t_i||, cut off at sqrt(chi2_{k,.975}) and at "
+        "(mu + sigma z_.975)^{3/2} from the univariate MCD of "
+        "OD^{2/3}. k by eq. 5 (90% cumulative) or eq. 6 (l_k/l_1 >= "
+        "1e-3)."
+    )

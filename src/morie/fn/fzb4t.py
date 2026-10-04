@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """The b_4 coefficient of the mean-residual-life variance (Eq. 4.28)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["mrlb4", "fauzi_b4_coefficient_mrl"]

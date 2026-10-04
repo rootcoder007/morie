@@ -9,8 +9,7 @@ def test_conti_basic():
     result = continued_fraction_pi(n)
     assert isinstance(result, dict)
     # The function returns a RichResult dict with these documented keys.
-    for key in ("estimate", "terms", "convergents",
-                "numerator", "denominator", "error", "n", "method"):
+    for key in ("estimate", "terms", "convergents", "numerator", "denominator", "error", "n", "method"):
         assert key in result
 
     # n is echoed back as an int.

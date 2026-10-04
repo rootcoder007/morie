@@ -1,7 +1,6 @@
 """Tests for morie.fn.waved."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.waved import wave_1d
 
 

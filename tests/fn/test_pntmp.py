@@ -1,7 +1,6 @@
 """Test pan_tompkins_qrs (pntmp)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.pntmp import pan_tompkins_qrs, pntmp
 

@@ -1,7 +1,6 @@
 """Tests for hmgrp.geron_gaussian_rand_projection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmgrp import geron_gaussian_rand_projection
 
 

@@ -1,12 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local Moran's I per location (re-export)."""
 
-import math
-
-from . import _tail1core as C
-from ._richresult import RichResult
-
-__all__ = ['lisamoran', 'local_morans_i']
+__all__ = ["lisamoran", "local_morans_i"]
 
 
 def lisamoran(x, W, mlvar=True):
@@ -40,6 +35,7 @@ def lisamoran(x, W, mlvar=True):
     implementation, which cites that equation explicitly.
     """
     from .lismor import localmoran as _lm
+
     return _lm(x, W, mlvar=mlvar)
 
 

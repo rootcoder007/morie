@@ -1,7 +1,6 @@
 """Tests for hmpcav.geron_pca_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmpcav import geron_pca_variance
 
 

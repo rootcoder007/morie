@@ -27,11 +27,19 @@ replaces already had that problem.
 from . import _array_core as np
 
 __all__ = [
-    "z_estimator_map", "sup_difference", "survival_psi",
+    "z_estimator_map",
+    "sup_difference",
+    "survival_psi",
     "efficient_information",
-    "empirical_df", "empirical_process", "bridge_cov", "sup_norm",
-    "bootstrap_multiplier_process", "bracketing_number_monotone",
-    "covering_number_grid", "hadamard_derivative", "cox_score",
+    "empirical_df",
+    "empirical_process",
+    "bridge_cov",
+    "sup_norm",
+    "bootstrap_multiplier_process",
+    "bracketing_number_monotone",
+    "covering_number_grid",
+    "hadamard_derivative",
+    "cox_score",
 ]
 
 
@@ -58,9 +66,7 @@ def empirical_process(X, t, F=None):
         raise ValueError("X must be non-empty.")
     t = np.atleast_1d(np.asarray(t, dtype=float))
     Fn = empirical_df(X, t)
-    Ft = np.clip(t, 0.0, 1.0) if F is None else np.asarray(
-        [F(v) for v in t], dtype=float
-    )
+    Ft = np.clip(t, 0.0, 1.0) if F is None else np.asarray([F(v) for v in t], dtype=float)
     return np.sqrt(n) * (Fn - Ft)
 
 
@@ -92,9 +98,7 @@ def sup_norm(X, F=None, grid=None):
     if n < 1:
         raise ValueError("X must be non-empty.")
     xs = np.sort(X)
-    Ft = np.clip(xs, 0.0, 1.0) if F is None else np.asarray(
-        [F(v) for v in xs], dtype=float
-    )
+    Ft = np.clip(xs, 0.0, 1.0) if F is None else np.asarray([F(v) for v in xs], dtype=float)
     upper = np.arange(1, n + 1) / n - Ft  # just after each jump
     lower = Ft - np.arange(0, n) / n  # just before
     return float(np.sqrt(n) * max(upper.max(), lower.max()))
@@ -189,19 +193,14 @@ def hadamard_derivative(phi, theta, h, t_grid=None, tol=1e-6):
     base = np.asarray(phi(theta), dtype=float)
     theta = np.asarray(theta, dtype=float)
     h = np.asarray(h, dtype=float)
-    ts = np.array([1e-2, 5e-3, 1e-3, 5e-4]) if t_grid is None else np.asarray(
-        t_grid, dtype=float
-    )
+    ts = np.array([1e-2, 5e-3, 1e-3, 5e-4]) if t_grid is None else np.asarray(t_grid, dtype=float)
     if np.any(ts <= 0):
         raise ValueError("t_grid entries must be positive.")
-    D = np.array([(np.asarray(phi(theta + t * h), dtype=float) - base) / t
-                  for t in ts])
+    D = np.array([(np.asarray(phi(theta + t * h), dtype=float) - base) / t for t in ts])
     # Richardson on the successive halvings (ts[1] = ts[0]/2, etc.)
     rich = 2.0 * D[1::2] - D[0::2]
     est = rich[-1]
-    drift = float(np.max(np.abs(rich[-1] - rich[0]))) if rich.shape[0] > 1 else float(
-        np.max(np.abs(D[-1] - D[-2]))
-    )
+    drift = float(np.max(np.abs(rich[-1] - rich[0]))) if rich.shape[0] > 1 else float(np.max(np.abs(D[-1] - D[-2])))
     scale = max(1.0, float(np.max(np.abs(est))))
     return est, drift, bool(drift < tol * scale)
 
@@ -250,11 +249,11 @@ def cox_score(beta, Z, time, event):
         s2 = (Zr * wr[:, None]).T @ Zr / s0
         I += s2 - np.outer(s1, s1)
         loglik += lin[i] - (np.log(s0) + lin.max())
-    return {"score": U, "information": I, "loglik": float(loglik),
-            "n_events": int(event.sum()), "n": int(n)}
+    return {"score": U, "information": I, "loglik": float(loglik), "n_events": int(event.sum()), "n": int(n)}
 
 
 # --- Z- and M-estimator machinery (Ch. 2-3) -----------------------
+
 
 def z_estimator_map(theta, psi, data):
     """Empirical criterion Psi_n(theta) = P_n psi_theta."""
@@ -300,8 +299,7 @@ def survival_psi(S, t_grid, S0, L, G):
     Gv = np.asarray(G, dtype=float)
     for name, arr in (("S", Sv), ("S0", S0v), ("L", Lv), ("G", Gv)):
         if arr.size != tg.size:
-            raise ValueError(
-                f"{name} has {arr.size} entries for {tg.size} grid points.")
+            raise ValueError(f"{name} has {arr.size} entries for {tg.size} grid points.")
     dG = np.diff(np.concatenate([[0.0], Gv]))
     safe = np.where(Sv > 0, Sv, np.inf)
     integ = np.cumsum(S0v / safe * dG)

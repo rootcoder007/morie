@@ -25,18 +25,20 @@ def p_ibs_given_ibd(X, Y, T):
     c3 = (T / (T - 1.0)) * (T / (T - 2.0)) * (T / (T - 3.0))
     c2 = (T / (T - 1.0)) * (T / (T - 2.0))
     p00 = 2.0 * p * p * q * q * ((X - 1) / X) * ((Y - 1) / Y) * c3
-    p10 = (4.0 * p ** 3 * q * ((X - 1) / X) * ((X - 2) / X)
-           + 4.0 * p * q ** 3 * ((Y - 1) / Y) * ((Y - 2) / Y)) * c3
-    p20 = (p ** 4 * ((X - 1) / X) * ((X - 2) / X) * ((X - 3) / X)
-           + q ** 4 * ((Y - 1) / Y) * ((Y - 2) / Y) * ((Y - 3) / Y)
-           + 4.0 * p * p * q * q * ((X - 1) / X) * ((Y - 1) / Y)) * c3
+    p10 = (4.0 * p**3 * q * ((X - 1) / X) * ((X - 2) / X) + 4.0 * p * q**3 * ((Y - 1) / Y) * ((Y - 2) / Y)) * c3
+    p20 = (
+        p**4 * ((X - 1) / X) * ((X - 2) / X) * ((X - 3) / X)
+        + q**4 * ((Y - 1) / Y) * ((Y - 2) / Y) * ((Y - 3) / Y)
+        + 4.0 * p * p * q * q * ((X - 1) / X) * ((Y - 1) / Y)
+    ) * c3
     p01 = 0.0
-    p11 = (2.0 * p * p * q * ((X - 1) / X)
-           + 2.0 * p * q * q * ((Y - 1) / Y)) * c2
-    p21 = (p ** 3 * ((X - 1) / X) * ((X - 2) / X)
-           + q ** 3 * ((Y - 1) / Y) * ((Y - 2) / Y)
-           + p * p * q * ((X - 1) / X)
-           + p * q * q * ((Y - 1) / Y)) * c2
+    p11 = (2.0 * p * p * q * ((X - 1) / X) + 2.0 * p * q * q * ((Y - 1) / Y)) * c2
+    p21 = (
+        p**3 * ((X - 1) / X) * ((X - 2) / X)
+        + q**3 * ((Y - 1) / Y) * ((Y - 2) / Y)
+        + p * p * q * ((X - 1) / X)
+        + p * q * q * ((Y - 1) / Y)
+    ) * c2
     return [[p00, p10, p20], [p01, p11, p21], [0.0, 0.0, 1.0]]
 
 
@@ -108,7 +110,7 @@ def ibd_matrix(G):
     for j in range(m):
         obs = [rows[i][j] for i in range(n) if rows[i][j] in valid]
         T = 2.0 * len(obs)
-        Xa = T - sum(obs)   # count of the 0-coded (A) allele
+        Xa = T - sum(obs)  # count of the 0-coded (A) allele
         Ya = sum(obs)
         if T < 4 or Xa == 0 or Ya == 0:
             continue
@@ -169,12 +171,19 @@ def ibd_matrix(G):
             Z1[i][k] = Z1[k][i] = z1
             Z2[i][k] = Z2[k][i] = z2
             counts_out.append((i, k, Nobs[0], Nobs[1], Nobs[2]))
-    return RichResult(payload={
-        "estimate": pihat, "Z0": Z0, "Z1": Z1, "Z2": Z2,
-        "ibs_counts": counts_out, "n_snps_used": used,
-        "n": int(n), "m": int(m),
-        "method": "Pairwise IBD (Purcell 2007 PLINK method of moments, Table 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": pihat,
+            "Z0": Z0,
+            "Z1": Z1,
+            "Z2": Z2,
+            "ibs_counts": counts_out,
+            "n_snps_used": used,
+            "n": int(n),
+            "m": int(m),
+            "method": "Pairwise IBD (Purcell 2007 PLINK method of moments, Table 1)",
+        }
+    )
 
 
 def cheatsheet():

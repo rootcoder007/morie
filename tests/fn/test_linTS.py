@@ -1,7 +1,6 @@
 """Tests for linTS.lin_thompson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.linTS import lin_thompson
 
 

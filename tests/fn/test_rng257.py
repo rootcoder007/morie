@@ -1,7 +1,6 @@
 """Tests for rng257.rangayyan_ch4_log_power_spectrum_signal_echo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_ch4_log_power_spectrum_signal_echo
 
 

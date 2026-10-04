@@ -1,8 +1,5 @@
 """Tests for gb_frd2.gibbons_friedman_ties."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gb_frd2 import gibbons_friedman_ties
 
 

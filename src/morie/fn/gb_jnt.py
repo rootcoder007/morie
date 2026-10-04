@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ostatjoint', 'gibbons_joint_order']
+__all__ = ["ostatjoint", "gibbons_joint_order"]
 
 
 def ostatjoint(x, y, r, s, n, cdf, pdf):
@@ -45,14 +45,17 @@ def ostatjoint(x, y, r, s, n, cdf, pdf):
         raise ValueError("need 1 <= r < s <= n.")
     x = float(x)
     y = float(y)
-    coef = math.factorial(n) / (
-        math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s)
-    )
+    coef = math.factorial(n) / (math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s))
     if x >= y:
         return RichResult(
             payload={
-                "pdf": 0.0, "coef": float(coef), "fx": float("nan"),
-                "fy": float("nan"), "r": r, "s": s, "n": n,
+                "pdf": 0.0,
+                "coef": float(coef),
+                "fx": float("nan"),
+                "fy": float("nan"),
+                "r": r,
+                "s": s,
+                "n": n,
                 "method": "joint pdf of X_(r), X_(s) -- support requires x < y",
             }
         )
@@ -60,14 +63,7 @@ def ostatjoint(x, y, r, s, n, cdf, pdf):
     fy = float(cdf(y)) if callable(cdf) else float(cdf)
     dx = float(pdf(x)) if callable(pdf) else float(pdf)
     dy = float(pdf(y)) if callable(pdf) else float(pdf)
-    val = (
-        coef
-        * fx ** (r - 1)
-        * (fy - fx) ** (s - r - 1)
-        * (1.0 - fy) ** (n - s)
-        * dx
-        * dy
-    )
+    val = coef * fx ** (r - 1) * (fy - fx) ** (s - r - 1) * (1.0 - fy) ** (n - s) * dx * dy
     return RichResult(
         payload={
             "pdf": float(val),

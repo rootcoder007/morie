@@ -106,5 +106,7 @@ def bootstrap_replicates(data, statistic, B=1000, seed=0):
 
 
 def cheatsheet():
-    return ("_wsm: Silverman's rule is 0.9 A n^(-1/5) (3.31), NOT 1.06 sigma "
-            "n^(-1/5) (3.28) -- the second is what he improves on")
+    return (
+        "_wsm: Silverman's rule is 0.9 A n^(-1/5) (3.31), NOT 1.06 sigma "
+        "n^(-1/5) (3.28) -- the second is what he improves on"
+    )

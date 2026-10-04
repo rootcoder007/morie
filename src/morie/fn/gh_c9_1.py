@@ -28,30 +28,31 @@ def ghosal_logspline_crt(data=None, smoothness=2.0, n=500, seed=42):
     beta = [0.0] * K
     grid = 200
     gx = [(i + 0.5) / grid for i in range(grid)]
+
     def basis(x, k):
         return math.sqrt(2.0) * math.cos((k + 1) * math.pi * x)
+
     for _ in range(60):
-        f = [math.exp(sum(b * basis(x, k)
-                          for k, b in enumerate(beta)))
-             for x in gx]
+        f = [math.exp(sum(b * basis(x, k) for k, b in enumerate(beta))) for x in gx]
         Z = sum(f) / grid
         # gradient: mean basis over data - E_f[basis]
         for k in range(K):
             emp = sum(basis(x, k) for x in xs) / n
-            mod = sum(fi * basis(x, k)
-                      for fi, x in zip(f, gx)) / grid / Z
+            mod = sum(fi * basis(x, k) for fi, x in zip(f, gx)) / grid / Z
             beta[k] += 0.5 * (emp - mod)
-    f = [math.exp(sum(b * basis(x, k) for k, b in enumerate(beta)))
-         for x in gx]
+    f = [math.exp(sum(b * basis(x, k) for k, b in enumerate(beta))) for x in gx]
     Z = sum(f) / grid
     dens = [v / Z for v in f]
-    res = RichResult(payload={"estimate": dens[grid // 2],
-                              "K_n": K, "beta": beta,
-                              "normalization_gap":
-                                  abs(sum(dens) / grid - 1.0),
-                              "rate": n ** (-smoothness
-                                            / (2 * smoothness + 1)),
-                              "method": "log-spline density (GvdV 2017 sec. 9.1)"})
+    res = RichResult(
+        payload={
+            "estimate": dens[grid // 2],
+            "K_n": K,
+            "beta": beta,
+            "normalization_gap": abs(sum(dens) / grid - 1.0),
+            "rate": n ** (-smoothness / (2 * smoothness + 1)),
+            "method": "log-spline density (GvdV 2017 sec. 9.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_1")
 
 

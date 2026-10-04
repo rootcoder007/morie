@@ -1,7 +1,6 @@
 """Tests for rrand.randomized_response."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rrand import randomized_response
 
 

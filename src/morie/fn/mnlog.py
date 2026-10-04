@@ -5,10 +5,10 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['mnpenlik', 'multinomial_logistic_penalized']
+__all__ = ["mnpenlik", "multinomial_logistic_penalized"]
 
 
-def mnpenlik(X, y, beta0, beta, lam, penalty='ridge'):
+def mnpenlik(X, y, beta0, beta, lam, penalty="ridge"):
     """Penalized log-likelihood of the multinomial logistic model.
 
     Formula: l_p = l(beta; y) - lambda sum_c beta_c'beta_c (ridge)  or  - lambda sum_c sum_j |beta_cj| (lasso)
@@ -37,18 +37,20 @@ def mnpenlik(X, y, beta0, beta, lam, penalty='ridge'):
     ----------
     Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 7, Eq. (7.7) p. 226 for the ridge penalty and Eq. (7.10) p. 227 for the lasso penalty.  The book states on p. 226 that only the slopes are penalized, never the intercepts.  Delegates to the chapter routine in morie.fn._gp_core, which was verified against this book in the earlier tranches of this shelf recorded in ledger/SHELF_LEDGER.txt; the page and equation number above are that routine's own, re-read against the chapter PDF here.
     """
-    out = G.penalized_multinomial_loglik(X, [int(v) - 1 for v in y], beta0, beta,
-                                         float(lam), penalty=penalty)
-    return RichResult(payload={
-        "loglik": out["loglik"], "penalty": out["penalty"],
-        "penalized_loglik": out.get("penalized_loglik",
-                                    out["loglik"] - out["penalty"]),
-        "n": len(C.mat(X)),
-        "method": "Penalized multinomial log-likelihood, MVSML Eq. (7.7)/(7.10)"})
+    out = G.penalized_multinomial_loglik(X, [int(v) - 1 for v in y], beta0, beta, float(lam), penalty=penalty)
+    return RichResult(
+        payload={
+            "loglik": out["loglik"],
+            "penalty": out["penalty"],
+            "penalized_loglik": out.get("penalized_loglik", out["loglik"] - out["penalty"]),
+            "n": len(C.mat(X)),
+            "method": "Penalized multinomial log-likelihood, MVSML Eq. (7.7)/(7.10)",
+        }
+    )
 
 
 multinomial_logistic_penalized = mnpenlik
 
 
 def cheatsheet():
-    return 'mnlog: Penalized log-likelihood of the multinomial logistic model.'
+    return "mnlog: Penalized log-likelihood of the multinomial logistic model."

@@ -1,7 +1,6 @@
 """Tests for morie.fn.rskcb — risk calibration."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rskcb import risk_calibration
 
 

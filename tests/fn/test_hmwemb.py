@@ -1,7 +1,6 @@
 """Tests for hmwemb.geron_word_embeddings."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmwemb import geron_word_embeddings
 
 

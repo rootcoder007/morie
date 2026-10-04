@@ -27,17 +27,16 @@ def linear_predictor_variance(xs, cov):
     """
     value = _acd.linear_predictor_variance(xs, cov)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.16)"
     return RichResult(
-        title='Variance of the linear predictor',
+        title="Variance of the linear predictor",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e16: Var(b0 + b1 x1 + ... + bp xp) = sum_i sum_j x_i x_j Cov(b_i, b_j) [Bilder & Loughin 2025, eq. 2.16]'
+    return "2e16: Var(b0 + b1 x1 + ... + bp xp) = sum_i sum_j x_i x_j Cov(b_i, b_j) [Bilder & Loughin 2025, eq. 2.16]"

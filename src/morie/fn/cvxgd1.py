@@ -10,8 +10,7 @@ from .cvxprc import boyd_projection
 __all__ = ["boyd_grad_proj"]
 
 
-def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500,
-                   tol=1e-08, **set_kw):
+def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500, tol=1e-08, **set_kw):
     r"""Iterate :math:`x^{k+1} = P_C\!\left(x^k - t\nabla f(x^k)\right)`.
 
     The projection is what makes the method feasible at every iterate, not
@@ -109,13 +108,17 @@ def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500,
     fp = float(np.max(np.abs(boyd_projection(x - t * g, C, **set_kw)["x"] - x)))
     return RichResult(
         title="Projected gradient descent",
-        summary_lines=[("iterations", int(it)), ("f", float(f(x))),
-                       ("converged", conv),
-                       ("fixed-point residual", fp)],
+        summary_lines=[("iterations", int(it)), ("f", float(f(x))), ("converged", conv), ("fixed-point residual", fp)],
         payload={
-            "x": x, "f": float(f(x)), "n_iter": int(it), "converged": conv,
-            "feasible": True, "fixed_point_residual": fp,
-            "trajectory": np.asarray(traj), "set": C, "step": float(t),
+            "x": x,
+            "f": float(f(x)),
+            "n_iter": int(it),
+            "converged": conv,
+            "feasible": True,
+            "fixed_point_residual": fp,
+            "trajectory": np.asarray(traj),
+            "set": C,
+            "step": float(t),
             "method": "boyd_grad_proj",
         },
     )

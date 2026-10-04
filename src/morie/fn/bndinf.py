@@ -61,7 +61,7 @@ def bound_inference(theta, moments, alpha=0.05):
     n, mL, sL, mU, sU = MI.stats(yl, yu)
     z = C.qnorm(1.0 - a)
     cut = z * z
-    rn = n ** 0.5
+    rn = n**0.5
     lo = mL - z * sL / rn
     hi = mU + z * sU / rn
     gl = None
@@ -78,16 +78,25 @@ def bound_inference(theta, moments, alpha=0.05):
                 gl = t
             if gh is None or t > gh:
                 gh = t
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "grid_lower": gl if gl is not None else float("nan"),
-        "grid_upper": gh if gh is not None else float("nan"),
-        "n_in_set": nin, "cutoff": cut, "criterion_min": qmin, "n": n,
-        "method": "Inference for partially identified parameters"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "grid_lower": gl if gl is not None else float("nan"),
+            "grid_upper": gh if gh is not None else float("nan"),
+            "n_in_set": nin,
+            "cutoff": cut,
+            "criterion_min": qmin,
+            "n": n,
+            "method": "Inference for partially identified parameters",
+        }
+    )
 
 
 def cheatsheet():
     return "bndinf: test-inversion CI for an interval-identified scalar"
+
 
 # public names resolved by fn/_lazy_map.json
 boundinference = bound_inference

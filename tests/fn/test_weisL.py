@@ -1,7 +1,6 @@
 """Tests for weisL.wl_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.weisL import wl_kernel
 
 

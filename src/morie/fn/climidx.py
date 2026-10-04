@@ -585,6 +585,7 @@ def cheatsheet() -> str:
         "probability_ratio -> climate indices and climate-change diagnostics."
     )
 
+
 # alias kept from the retired placeholder of the same name
 bcsd_downscaling = bcsd_downscale
 

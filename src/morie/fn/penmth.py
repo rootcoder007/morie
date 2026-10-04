@@ -56,9 +56,9 @@ def _grad(fun, x, h):
     return g
 
 
-def penalty_method(f, constraints, x0, mu, n_outer=8, growth=10.0,
-                   n_inner=200, step0=1.0, h=1e-6, armijo=1e-4,
-                   max_halving=40):
+def penalty_method(
+    f, constraints, x0, mu, n_outer=8, growth=10.0, n_inner=200, step0=1.0, h=1e-6, armijo=1e-4, max_halving=40
+):
     """Minimise f subject to g_i(x) <= 0 by Courant's quadratic penalty.
 
     Parameters
@@ -91,8 +91,10 @@ def penalty_method(f, constraints, x0, mu, n_outer=8, growth=10.0,
     if growth <= 1.0:
         raise ValueError("growth must exceed 1 or the penalty never tightens")
     for _outer in range(int(n_outer)):
+
         def q(z, _mu=mu):
             return _q(f, constraints, z, _mu)
+
         cur = q(x)
         for _inner in range(int(n_inner)):
             g = _grad(q, x, h)

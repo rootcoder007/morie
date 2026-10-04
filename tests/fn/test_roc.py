@@ -1,7 +1,6 @@
 """Tests for morie.fn.roc — ROC curve and AUC."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.roc import roc, roc_auc
 
 

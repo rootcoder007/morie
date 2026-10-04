@@ -61,8 +61,18 @@ __all__ = [
 ORTHOLOGY_TYPES = ("one2one", "one2many", "many2one", "many2many")
 
 #: The annotation sources the paper lists.
-ANNOTATION_SOURCES = ("name", "kegg_pathway", "kegg_module", "go", "ec",
-                      "bigg", "cazy", "cog_category", "og", "description")
+ANNOTATION_SOURCES = (
+    "name",
+    "kegg_pathway",
+    "kegg_module",
+    "go",
+    "ec",
+    "bigg",
+    "cazy",
+    "cog_category",
+    "og",
+    "description",
+)
 
 _SEARCHERS = ("diamond", "mmseqs", "hmmer")
 
@@ -72,11 +82,14 @@ def _hit(h):
         q, t = h["query"], h["target"]
     except (KeyError, TypeError):
         raise ValueError("funcal: a hit needs 'query' and 'target'")
-    out = {"query": q, "target": t,
-           "evalue": float(h.get("evalue", 0.0)),
-           "score": float(h.get("score", 0.0)),
-           "query_cov": float(h.get("query_cov", 1.0)),
-           "target_cov": float(h.get("target_cov", 1.0))}
+    out = {
+        "query": q,
+        "target": t,
+        "evalue": float(h.get("evalue", 0.0)),
+        "score": float(h.get("score", 0.0)),
+        "query_cov": float(h.get("query_cov", 1.0)),
+        "target_cov": float(h.get("target_cov", 1.0)),
+    }
     if out["evalue"] < 0:
         raise ValueError("funcal: an e-value cannot be negative")
     for k in ("query_cov", "target_cov"):
@@ -85,19 +98,16 @@ def _hit(h):
     return out
 
 
-def seed_orthologs(hits, evalue=1e-3, score=60.0, query_cov=0.2,
-                   target_cov=0.2, searcher="diamond"):
+def seed_orthologs(hits, evalue=1e-3, score=60.0, query_cov=0.2, target_cov=0.2, searcher="diamond"):
     """Stage 1: the best surviving hit per query.
 
     A hit must clear every cut-off; among those, the one with the lowest
     e-value wins, ties broken by the higher bit-score.
     """
     if searcher not in _SEARCHERS:
-        raise ValueError("funcal: searcher must be one of %s"
-                         % (_SEARCHERS,))
+        raise ValueError("funcal: searcher must be one of %s" % (_SEARCHERS,))
     if evalue <= 0 or score < 0:
-        raise ValueError("funcal: evalue must be positive and score "
-                         "non-negative")
+        raise ValueError("funcal: evalue must be positive and score non-negative")
     for c in (query_cov, target_cov):
         if not 0.0 <= c <= 1.0:
             raise ValueError("funcal: coverage cut-offs are fractions")
@@ -109,8 +119,7 @@ def seed_orthologs(hits, evalue=1e-3, score=60.0, query_cov=0.2,
         if h["query_cov"] < query_cov or h["target_cov"] < target_cov:
             continue
         best = kept.get(h["query"])
-        if best is None or (h["evalue"], -h["score"]) < \
-                (best["evalue"], -best["score"]):
+        if best is None or (h["evalue"], -h["score"]) < (best["evalue"], -best["score"]):
             kept[h["query"]] = h
     return dict((q, dict(h, searcher=searcher)) for q, h in kept.items())
 
@@ -121,8 +130,7 @@ def _type_of(n_query_side, n_target_side):
     return "%s2%s" % (left, right)
 
 
-def assign_orthologs(seeds, groups, taxa=None, target_taxa=None,
-                     target_types=None):
+def assign_orthologs(seeds, groups, taxa=None, target_taxa=None, target_types=None):
     """Stages 2 and 3: group members, typed, then restricted by lineage.
 
     ``groups`` maps a seed target to ``{"og": name, "members": [...]}``.
@@ -138,29 +146,23 @@ def assign_orthologs(seeds, groups, taxa=None, target_taxa=None,
     for q, seed in seeds.items():
         g = groups.get(seed["target"])
         if not g:
-            out[q] = {"og": None, "orthologs": [], "seed": seed["target"],
-                      "dropped_by_scope": 0}
+            out[q] = {"og": None, "orthologs": [], "seed": seed["target"], "dropped_by_scope": 0}
             continue
         members = [m for m in g.get("members", []) if m != seed["target"]]
         # how many query-side genes share this group: the co-orthologues
-        same_group = [p for p, s in seeds.items()
-                      if groups.get(s["target"], {}).get("og") ==
-                      g.get("og")]
+        same_group = [p for p, s in seeds.items() if groups.get(s["target"], {}).get("og") == g.get("og")]
         rels, dropped = [], 0
         for m in members:
             lineage = taxa.get(m, [])
-            if target_taxa is not None and not any(t in lineage
-                                                   for t in target_taxa):
+            if target_taxa is not None and not any(t in lineage for t in target_taxa):
                 dropped += 1
                 continue
-            n_target = sum(1 for x in members if taxa.get(x, [None])[:1] ==
-                           lineage[:1]) if lineage else 1
+            n_target = sum(1 for x in members if taxa.get(x, [None])[:1] == lineage[:1]) if lineage else 1
             kind = _type_of(len(same_group), n_target)
             if target_types is not None and kind not in target_types:
                 continue
             rels.append({"ortholog": m, "type": kind, "lineage": lineage})
-        out[q] = {"og": g.get("og"), "orthologs": rels,
-                  "seed": seed["target"], "dropped_by_scope": dropped}
+        out[q] = {"og": g.get("og"), "orthologs": rels, "seed": seed["target"], "dropped_by_scope": dropped}
     return out
 
 
@@ -187,61 +189,78 @@ def transfer_terms(assignments, annotations, sources=None, min_support=1):
                     counts[s][term] = counts[s].get(term, 0) + 1
         kept = {}
         for s in srcs:
-            kept[s] = sorted(t for t, c in counts.get(s, {}).items()
-                             if c >= min_support)
-        out[q] = {"og": a["og"], "seed": a["seed"],
-                  "n_orthologs": len(a["orthologs"]),
-                  "terms": kept, "support": counts}
+            kept[s] = sorted(t for t, c in counts.get(s, {}).items() if c >= min_support)
+        out[q] = {
+            "og": a["og"],
+            "seed": a["seed"],
+            "n_orthologs": len(a["orthologs"]),
+            "terms": kept,
+            "support": counts,
+        }
     return out
 
 
-def funcal(hits, groups, annotations, taxa=None, target_taxa=None,
-           target_types=None, sources=None, evalue=1e-3, score=60.0,
-           query_cov=0.2, target_cov=0.2, min_support=1,
-           searcher="diamond"):
+def funcal(
+    hits,
+    groups,
+    annotations,
+    taxa=None,
+    target_taxa=None,
+    target_types=None,
+    sources=None,
+    evalue=1e-3,
+    score=60.0,
+    query_cov=0.2,
+    target_cov=0.2,
+    min_support=1,
+    searcher="diamond",
+):
     """Annotate queries by orthology (Cantalapiedra et al. 2021)."""
-    seeds = seed_orthologs(hits, evalue, score, query_cov, target_cov,
-                           searcher)
-    assigned = assign_orthologs(seeds, groups, taxa, target_taxa,
-                                target_types)
-    annotated = transfer_terms(assigned, annotations, sources,
-                               min_support)
+    seeds = seed_orthologs(hits, evalue, score, query_cov, target_cov, searcher)
+    assigned = assign_orthologs(seeds, groups, taxa, target_taxa, target_types)
+    annotated = transfer_terms(assigned, annotations, sources, min_support)
     queries = sorted(set(_hit(h)["query"] for h in hits))
-    n_ann = sum(1 for q in annotated
-                if any(annotated[q]["terms"][s] for s in
-                       annotated[q]["terms"]))
-    return RichResult(payload={
-        "estimate": annotated,
-        "annotations": annotated,
-        "seeds": seeds,
-        "orthologs": assigned,
-        "n_queries": len(queries),
-        "n_with_seed": len(seeds),
-        "n_annotated": n_ann,
-        "searcher": searcher,
-        "target_taxa": list(target_taxa) if target_taxa else None,
-        "target_types": list(target_types) if target_types else None,
-        "min_support": int(min_support),
-        "method": ("eggNOG-mapper v2 (Cantalapiedra et al. 2021): seed "
-                   "orthologs, orthologous-group assignment, taxonomic "
-                   "scoping, then functional transfer from orthologs"),
-        "note": ("no sequence search and no eggNOG v5 database are "
-                 "bundled -- hits and the orthologous-group table are "
-                 "supplied; everything that decides what is annotated "
-                 "and with what is computed here. min_support=1 is the "
-                 "paper's behaviour"),
-    })
+    n_ann = sum(1 for q in annotated if any(annotated[q]["terms"][s] for s in annotated[q]["terms"]))
+    return RichResult(
+        payload={
+            "estimate": annotated,
+            "annotations": annotated,
+            "seeds": seeds,
+            "orthologs": assigned,
+            "n_queries": len(queries),
+            "n_with_seed": len(seeds),
+            "n_annotated": n_ann,
+            "searcher": searcher,
+            "target_taxa": list(target_taxa) if target_taxa else None,
+            "target_types": list(target_types) if target_types else None,
+            "min_support": int(min_support),
+            "method": (
+                "eggNOG-mapper v2 (Cantalapiedra et al. 2021): seed "
+                "orthologs, orthologous-group assignment, taxonomic "
+                "scoping, then functional transfer from orthologs"
+            ),
+            "note": (
+                "no sequence search and no eggNOG v5 database are "
+                "bundled -- hits and the orthologous-group table are "
+                "supplied; everything that decides what is annotated "
+                "and with what is computed here. min_support=1 is the "
+                "paper's behaviour"
+            ),
+        }
+    )
 
 
 functional_annotation = funcal
 
 
 def cheatsheet():
-    return ("funcal: eggNOG-mapper v2 (Cantalapiedra et al. 2021). "
-            "Function is transferred from ORTHOLOGS, not from the best "
-            "hit: filter hits to a seed ortholog per query, take the "
-            "members of its orthologous group, type each relationship "
-            "one2one/one2many/many2one/many2many, drop orthologs outside "
-            "the requested taxonomic scope, then transfer terms (name, "
-            "KEGG, GO, EC, BiGG, CAZy, COG category, OG, description) "
-            "held by the survivors.")
+    return (
+        "funcal: eggNOG-mapper v2 (Cantalapiedra et al. 2021). "
+        "Function is transferred from ORTHOLOGS, not from the best "
+        "hit: filter hits to a seed ortholog per query, take the "
+        "members of its orthologous group, type each relationship "
+        "one2one/one2many/many2one/many2many, drop orthologs outside "
+        "the requested taxonomic scope, then transfer terms (name, "
+        "KEGG, GO, EC, BiGG, CAZy, COG category, OG, description) "
+        "held by the survivors."
+    )

@@ -88,16 +88,12 @@ def geron_autograd_chain_rule(graph, grad_output):
         else:
             J = np.asarray(node, dtype=float)
             if J.ndim != 2:
-                raise ValueError(
-                    f"node {k} must be a 2-D Jacobian (out_dim, in_dim) or a "
-                    f"callable, got ndim={J.ndim}."
-                )
+                raise ValueError(f"node {k} must be a 2-D Jacobian (out_dim, in_dim) or a callable, got ndim={J.ndim}.")
             if not np.all(np.isfinite(J)):
                 raise ValueError(f"node {k} Jacobian contains non-finite values.")
             if J.shape[0] != g.size:
                 raise ValueError(
-                    f"node {k} Jacobian has out_dim={J.shape[0]} but the upstream "
-                    f"gradient has length {g.size}."
+                    f"node {k} Jacobian has out_dim={J.shape[0]} but the upstream gradient has length {g.size}."
                 )
             out = g @ J
         if not np.all(np.isfinite(out)):

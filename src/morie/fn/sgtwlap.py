@@ -63,11 +63,18 @@ def wgtlap(edges, n=None):
         if u != v:
             W[v][u] += w
     d = [sum(W[i]) for i in range(N)]
-    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(N)]
-         for i in range(N)]
-    return RichResult(payload={
-        "W": W, "L": L, "degree": d, "volume": sum(d), "n": N, "m": m,
-        "method": "Weighted Laplacian from an edge list"})
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(N)] for i in range(N)]
+    return RichResult(
+        payload={
+            "W": W,
+            "L": L,
+            "degree": d,
+            "volume": sum(d),
+            "n": N,
+            "m": m,
+            "method": "Weighted Laplacian from an edge list",
+        }
+    )
 
 
 sgt_weighted_laplacian = wgtlap

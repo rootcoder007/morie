@@ -4,11 +4,11 @@ Brus (2022), Spatial Sampling with R, eq. (10.14), the residual variance. Expect
 recomputed from the formula in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e14 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_14
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e14 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_14,
+)
 
 
 def test_residual_variance_divides_by_n_minus_one():
@@ -16,7 +16,7 @@ def test_residual_variance_divides_by_n_minus_one():
     e = [0.5, -1.2, 0.3, 0.8, -0.4]
     n = len(e)
     res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_14(e, n, 200)
-    assert res["s2_e"] == pytest.approx(sum(v ** 2 for v in e) / (n - 1), rel=1e-12)
+    assert res["s2_e"] == pytest.approx(sum(v**2 for v in e) / (n - 1), rel=1e-12)
 
 
 def test_zero_residuals_give_zero_variance():

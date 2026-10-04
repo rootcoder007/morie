@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TMLE for treatment effects within covariate strata."""
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 from ._stats_core import chi2 as _chi2
@@ -89,37 +87,30 @@ def tmle_heterogeneous(y, treatment, W, strata, trunc=0.01, min_stratum=20):
     n = y.size
     if not (A.size == n == Wm.shape[0] == s.size):
         raise ValueError(
-            "y, treatment, W and strata must agree in length, got %d, %d, %d "
-            "and %d." % (n, A.size, Wm.shape[0], s.size)
+            "y, treatment, W and strata must agree in length, got %d, %d, %d and %d." % (n, A.size, Wm.shape[0], s.size)
         )
     if not np.all(np.isin(A, (0.0, 1.0))):
         raise ValueError("treatment must be binary 0/1.")
     labels = list(dict.fromkeys(s.tolist()))
     if len(labels) < 2:
-        raise ValueError(
-            "need at least 2 strata to speak of heterogeneity, got %d."
-            % len(labels)
-        )
+        raise ValueError("need at least 2 strata to speak of heterogeneity, got %d." % len(labels))
 
     by, dropped = {}, {}
     for lab in labels:
         m = s == lab
         k = int(m.sum())
         if k < int(min_stratum):
-            dropped[lab] = "only %d observations (min_stratum=%d)" % (
-                k, int(min_stratum)
-            )
+            dropped[lab] = "only %d observations (min_stratum=%d)" % (k, int(min_stratum))
             continue
         if A[m].sum() < 2 or (1 - A[m]).sum() < 2:
-            dropped[lab] = (
-                "%d treated and %d control: a stratum with one arm has no "
-                "effect to estimate"
-                % (int(A[m].sum()), int((1 - A[m]).sum()))
+            dropped[lab] = "%d treated and %d control: a stratum with one arm has no effect to estimate" % (
+                int(A[m].sum()),
+                int((1 - A[m]).sum()),
             )
             continue
         try:
             fit = _tmle_ate(y[m], A[m], Wm[m], trunc=trunc)
-        except Exception as exc:                      # pragma: no cover
+        except Exception as exc:  # pragma: no cover
             dropped[lab] = "estimation failed: %s" % exc
             continue
         by[lab] = {
@@ -133,8 +124,7 @@ def tmle_heterogeneous(y, treatment, W, strata, trunc=0.01, min_stratum=20):
     if len(by) < 2:
         raise ValueError(
             "only %d stratum survived the size and overlap checks; "
-            "heterogeneity needs at least 2. Dropped: %s"
-            % (len(by), dropped)
+            "heterogeneity needs at least 2. Dropped: %s" % (len(by), dropped)
         )
 
     est = np.array([v["estimate"] for v in by.values()])

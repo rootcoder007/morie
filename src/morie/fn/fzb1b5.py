@@ -70,7 +70,7 @@ def kdfassum(kernel=None, h=None, n=None, smooth=None, tol=1e-6, lo=-8.0, hi=8.0
     kv = np.asarray([kfun(float(t)) for t in w], dtype=float)
     mass = float(np.trapezoid(kv, w))
     sym = float(np.max(np.abs(kv - kv[::-1])))
-    mu4 = float(np.trapezoid(w ** 4 * kv, w))
+    mu4 = float(np.trapezoid(w**4 * kv, w))
     b1 = bool(np.all(kv >= 0) and abs(mass - 1.0) < float(tol) and sym < float(tol))
     b2 = bool(np.isfinite(mu4))
     if h is None or n is None:

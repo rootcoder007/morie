@@ -1,7 +1,6 @@
 """Tests for tqorth.turboquant_orthogonalized_jl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tqorth import turboquant_orthogonalized_jl
 
 

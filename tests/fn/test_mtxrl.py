@@ -1,7 +1,6 @@
 """Tests for mtxrl.matrix_game."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mtxrl import matrix_game
 
 

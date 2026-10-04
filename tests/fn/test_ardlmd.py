@@ -1,7 +1,6 @@
 """Tests for ardlmd.ardl_bounds_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ardlmd import ardl_bounds_test
 
 
@@ -12,6 +11,8 @@ def test_ardlmd_basic():
     result = ardl_bounds_test(y, X)
     assert isinstance(result, dict)
     assert "f_statistic" in result
+
+
 def test_ardlmd_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

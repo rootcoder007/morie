@@ -41,9 +41,7 @@ def gibbons_are_normal_case(distribution="normal", cdf=None):
     Statistical Inference* (5th ed.). CRC Press. Table 13.3.1.
     """
     if distribution not in ("normal",):
-        raise ValueError(
-            f"this module carries the normal case, got {distribution!r}."
-        )
+        raise ValueError(f"this module carries the normal case, got {distribution!r}.")
     from morie.fn import _array_core as np
 
     from . import _stats_core as stats

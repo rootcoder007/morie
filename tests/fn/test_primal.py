@@ -17,7 +17,7 @@ def test_tv_denoising_removes_a_spike_but_keeps_the_step():
     # erase it
     assert x[10] < 1.2
     assert x[10] > x[5]
-    assert x[-1] - x[0] > 3.0                # the real step survives
+    assert x[-1] - x[0] > 3.0  # the real step survives
 
 
 def test_a_large_penalty_flattens_the_signal():
@@ -52,25 +52,32 @@ def test_chambolle_pock_solves_a_simple_saddle_point():
     def prox_g(x, tau):
         return [(x[i] + tau * b[i]) / (1.0 + tau) for i in range(2)]
 
-    res = chambolle_pock(lambda x: list(x), lambda y: list(y),
-                         lambda y, s: [0.0, 0.0], prox_g,
-                         [0.0, 0.0], [0.0, 0.0], tau=0.5, sigma=0.5)
+    res = chambolle_pock(
+        lambda x: list(x),
+        lambda y: list(y),
+        lambda y, s: [0.0, 0.0],
+        prox_g,
+        [0.0, 0.0],
+        [0.0, 0.0],
+        tau=0.5,
+        sigma=0.5,
+    )
     assert abs(res["x"][0] - 3.0) < 1e-3
     assert abs(res["x"][1] + 1.0) < 1e-3
     assert res["converged"]
 
 
 def test_validation():
-    for call in (lambda: tv_denoise_1d([1.0]),
-                 lambda: tv_denoise_1d([1.0, 2.0], lam=-1.0),
-                 lambda: chambolle_pock(lambda x: x, lambda y: y,
-                                        lambda y, s: y, lambda x, t: x,
-                                        [0.0], [0.0], tau=-1.0,
-                                        sigma=0.5),
-                 lambda: chambolle_pock(lambda x: x, lambda y: y,
-                                        lambda y, s: y, lambda x, t: x,
-                                        [0.0], [0.0], tau=10.0,
-                                        sigma=10.0, norm_K=1.0)):
+    for call in (
+        lambda: tv_denoise_1d([1.0]),
+        lambda: tv_denoise_1d([1.0, 2.0], lam=-1.0),
+        lambda: chambolle_pock(
+            lambda x: x, lambda y: y, lambda y, s: y, lambda x, t: x, [0.0], [0.0], tau=-1.0, sigma=0.5
+        ),
+        lambda: chambolle_pock(
+            lambda x: x, lambda y: y, lambda y, s: y, lambda x, t: x, [0.0], [0.0], tau=10.0, sigma=10.0, norm_K=1.0
+        ),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

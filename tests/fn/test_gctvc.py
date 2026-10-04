@@ -1,8 +1,8 @@
 """Tests for gctvc.g_computation_time_varying."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gctvc import g_computation_time_varying
 
 
@@ -16,9 +16,7 @@ def test_gctvc_basic():
     y = A1 + A2 + L2 + rng.normal(scale=0.5, size=n)
     treatment_history = np.column_stack([A1, A2])
     covariate_history = np.column_stack([L1, L2])
-    result = g_computation_time_varying(
-        y, treatment_history, covariate_history, n_mc=4000
-    )
+    result = g_computation_time_varying(y, treatment_history, covariate_history, n_mc=4000)
     assert result["estimate"] == pytest.approx(2.7, abs=0.25)  # measured ~2.68
     assert result["estimate"] == pytest.approx(result["EY_always"] - result["EY_never"])
     assert result["n"] == n

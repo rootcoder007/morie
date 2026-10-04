@@ -1,8 +1,6 @@
 """Tests for ffmFM.field_aware_fm."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.ffmFM import field_aware_fm
 
 
@@ -18,8 +16,7 @@ def _to_rows(X, fields):
     n_samples, n_features = X.shape
     rows = []
     for i in range(n_samples):
-        row = [(j, float(X[i, j])) for j in range(n_features)
-               if abs(float(X[i, j])) > 1e-12]
+        row = [(j, float(X[i, j])) for j in range(n_features) if abs(float(X[i, j])) > 1e-12]
         rows.append(row)
     return rows
 
@@ -68,9 +65,16 @@ def test_ffmFM_basic():
     fields = [i % n_fields for i in range(n_features)]
 
     result = field_aware_fm(
-        rows, labels, fields,
-        n_features=n_features, n_fields=n_fields,
-        k_dim=4, eta=0.1, lam=2e-5, epochs=5, seed=0,
+        rows,
+        labels,
+        fields,
+        n_features=n_features,
+        n_fields=n_fields,
+        k_dim=4,
+        eta=0.1,
+        lam=2e-5,
+        epochs=5,
+        seed=0,
     )
 
     # Documented return value is a RichResult; its .payload is a dict.
@@ -122,9 +126,16 @@ def test_ffmFM_edge():
     fields = [0] * n_features  # all features in field 0
 
     result = field_aware_fm(
-        rows, labels, fields,
-        n_features=n_features, n_fields=n_fields,
-        k_dim=3, eta=0.05, lam=1e-4, epochs=3, seed=7,
+        rows,
+        labels,
+        fields,
+        n_features=n_features,
+        n_fields=n_fields,
+        k_dim=3,
+        eta=0.05,
+        lam=1e-4,
+        epochs=3,
+        seed=7,
     )
 
     payload = result.payload

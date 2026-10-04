@@ -64,17 +64,24 @@ at each state, the Q-table is fitted by the eq. 18 backup, and the
 "target network" :math:`\theta'` is the previous sweep's table.
 """
 
-import math
-
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bcq", "batch_constrained_q"]
 
 
-def bcq(dataset, states=None, actions=None, tau=0.3, gamma=0.99, lr=0.5,
-        iters=2000, loss="huber", huber_c=1.0, behavior=None,
-        tol=1e-12):
+def bcq(
+    dataset,
+    states=None,
+    actions=None,
+    tau=0.3,
+    gamma=0.99,
+    lr=0.5,
+    iters=2000,
+    loss="huber",
+    huber_c=1.0,
+    behavior=None,
+    tol=1e-12,
+):
     r"""Fit a batch-constrained Q-function to a fixed dataset.
 
     Parameters
@@ -121,8 +128,7 @@ def bcq(dataset, states=None, actions=None, tau=0.3, gamma=0.99, lr=0.5,
     if not 0.0 <= tau <= 1.0:
         raise ValueError("bcq: tau must lie in [0, 1], got %r" % (tau,))
     if loss not in ("huber", "squared"):
-        raise ValueError("bcq: loss must be 'huber' or 'squared', got %r"
-                         % (loss,))
+        raise ValueError("bcq: loss must be 'huber' or 'squared', got %r" % (loss,))
     huber_c = float(huber_c)
     if huber_c <= 0.0:
         raise ValueError("bcq: huber_c must be > 0")
@@ -135,16 +141,13 @@ def bcq(dataset, states=None, actions=None, tau=0.3, gamma=0.99, lr=0.5,
         elif len(t) == 5:
             s, a, r, s1, done = t
         else:
-            raise ValueError("bcq: each transition must be (s, a, r, "
-                             "s_next) or (s, a, r, s_next, done)")
+            raise ValueError("bcq: each transition must be (s, a, r, s_next) or (s, a, r, s_next, done)")
         D.append((s, a, float(r), s1, bool(done)))
     if not D:
         raise ValueError("bcq: dataset must be non-empty")
 
-    S = list(states) if states is not None else sorted(
-        set([t[0] for t in D] + [t[3] for t in D]), key=repr)
-    A = list(actions) if actions is not None else sorted(
-        set(t[1] for t in D), key=repr)
+    S = list(states) if states is not None else sorted(set([t[0] for t in D] + [t[3] for t in D]), key=repr)
+    A = list(actions) if actions is not None else sorted(set(t[1] for t in D), key=repr)
     if not S or not A:
         raise ValueError("bcq: states and actions must be non-empty")
 
@@ -159,8 +162,7 @@ def bcq(dataset, states=None, actions=None, tau=0.3, gamma=0.99, lr=0.5,
         G = {}
         for s in S:
             for a in A:
-                G[(s, a)] = (n_sa.get((s, a), 0) / float(n_s[s])
-                             if s in n_s else 1.0 / len(A))
+                G[(s, a)] = n_sa.get((s, a), 0) / float(n_s[s]) if s in n_s else 1.0 / len(A)
     elif callable(behavior):
         G = dict(((s, a), float(behavior(s, a))) for s in S for a in A)
     else:
@@ -215,35 +217,38 @@ def bcq(dataset, states=None, actions=None, tau=0.3, gamma=0.99, lr=0.5,
     for s, a, r, s1, done in D:
         t = r if done else r + gamma * max(Q[(s1, b)] for b in allowed[s1])
         e = t - Q[(s, a)]
-        berr += (0.5 * e * e if loss == "squared" or abs(e) <= huber_c
-                 else huber_c * (abs(e) - 0.5 * huber_c))
+        berr += 0.5 * e * e if loss == "squared" or abs(e) <= huber_c else huber_c * (abs(e) - 0.5 * huber_c)
     berr /= len(D)
 
     n_elim = sum(len(A) - len(allowed[s]) for s in S)
-    return RichResult(payload={
-        "estimate": Q,
-        "q": Q,
-        "policy": policy,
-        "allowed": allowed,
-        "behavior": G,
-        "value": value,
-        "n_eliminated": n_elim,
-        "bellman_error": float(berr),
-        "tau": tau,
-        "gamma": float(gamma),
-        "n_transitions": len(D),
-        "method": "discrete BCQ (Fujimoto et al. 2019, eqs. 17-18)",
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "q": Q,
+            "policy": policy,
+            "allowed": allowed,
+            "behavior": G,
+            "value": value,
+            "n_eliminated": n_elim,
+            "bellman_error": float(berr),
+            "tau": tau,
+            "gamma": float(gamma),
+            "n_transitions": len(D),
+            "method": "discrete BCQ (Fujimoto et al. 2019, eqs. 17-18)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bcq: constrain the argmax to actions the behaviour policy "
-            "plausibly took -- pi(s) = argmax_{a: G(a|s)/max G > tau} "
-            "Q(s,a) (eq. 17), and the same constrained max inside the "
-            "backup (eq. 18). Threshold is RELATIVE to the peak of G, "
-            "so it adapts to how peaked pi_b is. tau=0 IS Q-learning, "
-            "tau=1 IS imitation of the batch. Kills extrapolation "
-            "error on actions the batch never contains.")
+    return (
+        "bcq: constrain the argmax to actions the behaviour policy "
+        "plausibly took -- pi(s) = argmax_{a: G(a|s)/max G > tau} "
+        "Q(s,a) (eq. 17), and the same constrained max inside the "
+        "backup (eq. 18). Threshold is RELATIVE to the peak of G, "
+        "so it adapts to how peaked pi_b is. tau=0 IS Q-learning, "
+        "tau=1 IS imitation of the batch. Kills extrapolation "
+        "error on actions the batch never contains."
+    )
 
 
 # compact alias per ledger/NAMING.md

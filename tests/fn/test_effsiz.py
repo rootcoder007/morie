@@ -1,7 +1,6 @@
 """Tests for effsiz.effective_sample_size."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.effsiz import effective_sample_size
 
 

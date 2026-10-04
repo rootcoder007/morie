@@ -16,7 +16,7 @@ def _reml_loglik(gs, ns, s2a, s2e):
     #   -2 l_R = log|V| + log|X' V^{-1} X| + y' P y
     # with X = 1 for the single fixed effect mu.
     logdetV = 0.0
-    xvx = 0.0          # X' V^{-1} X = sum_i n_i / (s2e + n_i s2a)
+    xvx = 0.0  # X' V^{-1} X = sum_i n_i / (s2e + n_i s2a)
     xvy = 0.0
     yvy = 0.0
     for g, n in zip(gs, ns):
@@ -118,7 +118,7 @@ def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
         raise ValueError("need at least two classes")
     ns = [len(g) for g in gs]
     N = sum(ns)
-    if N == a:
+    if a == N:
         raise ValueError("need replication within classes")
     # start from the ANOVA solution, floored away from zero
     st = ranova(y, group)
@@ -136,27 +136,34 @@ def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
     # better than ~1e-5, while the closed form is exact.
     if solver not in ("auto", "closed", "optim"):
         raise ValueError("solver must be 'auto', 'closed' or 'optim'")
-    use_closed = (solver == "closed" or
-                  (solver == "auto" and bool(st["balanced"]) and
-                   float(st["sigma2_a_raw"]) > 0.0))
+    use_closed = solver == "closed" or (solver == "auto" and bool(st["balanced"]) and float(st["sigma2_a_raw"]) > 0.0)
     if solver == "closed" and not bool(st["balanced"]):
         raise ValueError(
             "solver='closed' is only valid for balanced data; Searle "
-            "Sec. 4.8 states REML = ANOVA for balanced data only")
+            "Sec. 4.8 states REML = ANOVA for balanced data only"
+        )
     if use_closed:
         s2a = float(st["sigma2_a_raw"])
         s2e = float(st["mse"])
         ll, mu = _reml_loglik(gs, ns, s2a, s2e)
         denom = s2a + s2e
-        return RichResult(payload={
-            "sigma2_a": s2a, "sigma2_e": s2e, "mu": mu, "loglik": ll,
-            "n_iter": 0, "converged": True,
-            "icc": (s2a / denom) if denom > 0 else 0.0,
-            "a": a, "N": N, "closed_form": True,
-            "solver": solver,
-            "method": "REML variance components (Searle et al. 1992, "
-                      "Sec. 4.8 closed form: REML = ANOVA on balanced data)",
-        })
+        return RichResult(
+            payload={
+                "sigma2_a": s2a,
+                "sigma2_e": s2e,
+                "mu": mu,
+                "loglik": ll,
+                "n_iter": 0,
+                "converged": True,
+                "icc": (s2a / denom) if denom > 0 else 0.0,
+                "a": a,
+                "N": N,
+                "closed_form": True,
+                "solver": solver,
+                "method": "REML variance components (Searle et al. 1992, "
+                "Sec. 4.8 closed form: REML = ANOVA on balanced data)",
+            }
+        )
 
     # Maximize the restricted log-likelihood directly over
     # (log sigma_a^2, log sigma_e^2) by Nelder-Mead.  REML *is* the
@@ -180,8 +187,7 @@ def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
         return -val
 
     x0 = [math.log(max(s2a, 1e-12)), math.log(max(s2e, 1e-12))]
-    res = sci.minimize(_neg, x0, method="nelder-mead",
-                       xatol=tol, fatol=tol, maxiter=int(max_iter))
+    res = sci.minimize(_neg, x0, method="nelder-mead", xatol=tol, fatol=tol, maxiter=int(max_iter))
     xb = list(res["x"])
     # Nelder-Mead stalls at simplex scale on this surface: l_R is very
     # flat in sigma_a^2 near the optimum, so the simplex stops moving
@@ -197,19 +203,24 @@ def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
             hi = xb[k] + 0.5
             c = hi - gr * (hi - lo)
             d = lo + gr * (hi - lo)
-            pc = list(xb); pc[k] = c
-            pd = list(xb); pd[k] = d
-            fc = _neg(pc); fd = _neg(pd)
+            pc = list(xb)
+            pc[k] = c
+            pd = list(xb)
+            pd[k] = d
+            fc = _neg(pc)
+            fd = _neg(pd)
             for _j in range(200):
                 if fc < fd:
                     hi, d, fd = d, c, fc
                     c = hi - gr * (hi - lo)
-                    pc = list(xb); pc[k] = c
+                    pc = list(xb)
+                    pc[k] = c
                     fc = _neg(pc)
                 else:
                     lo, c, fc = c, d, fd
                     d = lo + gr * (hi - lo)
-                    pd = list(xb); pd[k] = d
+                    pd = list(xb)
+                    pd[k] = d
                     fd = _neg(pd)
                 if hi - lo < 1e-14:
                     break
@@ -224,20 +235,22 @@ def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
     it = int(res.get("nit", 0))
     converged = bool(res.get("success", True))
     denom = s2a + s2e
-    return RichResult(payload={
-        "sigma2_a": s2a,
-        "sigma2_e": s2e,
-        "mu": mu,
-        "loglik": ll,
-        "n_iter": it,
-        "converged": converged,
-        "icc": (s2a / denom) if denom > 0 else 0.0,
-        "a": a,
-        "N": N,
-        "closed_form": False,
-        "solver": solver,
-        "method": "REML variance components (Searle et al. 1992, Sec. 6.6)",
-    })
+    return RichResult(
+        payload={
+            "sigma2_a": s2a,
+            "sigma2_e": s2e,
+            "mu": mu,
+            "loglik": ll,
+            "n_iter": it,
+            "converged": converged,
+            "icc": (s2a / denom) if denom > 0 else 0.0,
+            "a": a,
+            "N": N,
+            "closed_form": False,
+            "solver": solver,
+            "method": "REML variance components (Searle et al. 1992, Sec. 6.6)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -245,8 +258,10 @@ reml_variance_components = remlfn
 
 
 def cheatsheet():
-    return ("remlfn: REML for the one-way random model; balanced data "
-            "REML solutions = ANOVA estimators (Searle Sec. 4.8)")
+    return (
+        "remlfn: REML for the one-way random model; balanced data REML solutions = ANOVA estimators (Searle Sec. 4.8)"
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 reml_loglik = remlfn

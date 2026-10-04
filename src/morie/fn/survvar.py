@@ -75,8 +75,7 @@ def variance_cox_estimator(beta, z, time, event, robust=False, cluster=None):
         if sw <= 0:
             continue
         zbar = (w[at, None] * Z[at]).sum(axis=0) / sw
-        zz = (w[at, None, None] * (Z[at][:, :, None] * Z[at][:, None, :])
-              ).sum(axis=0) / sw
+        zz = (w[at, None, None] * (Z[at][:, :, None] * Z[at][:, None, :])).sum(axis=0) / sw
         info += zz - np.outer(zbar, zbar)
         # Lin & Wei (1989) score residual: the event term for subject i
         # and, for EVERY subject still at risk, minus its share of the
@@ -85,8 +84,7 @@ def variance_cox_estimator(beta, z, time, event, robust=False, cluster=None):
         score_i[i] += Z[i] - zbar
         score_i[at] -= (w[at] / sw)[:, None] * (Z[at] - zbar)
     var = np.linalg.pinv(info)
-    out = {"information": info, "variance": var,
-           "se": np.sqrt(np.maximum(np.diag(var), 0.0))}
+    out = {"information": info, "variance": var, "se": np.sqrt(np.maximum(np.diag(var), 0.0))}
     if robust:
         if cluster is None:
             meat = score_i.T @ score_i
@@ -99,19 +97,21 @@ def variance_cox_estimator(beta, z, time, event, robust=False, cluster=None):
         rob = var @ meat @ var
         out["robust_variance"] = rob
         out["robust_se"] = np.sqrt(np.maximum(np.diag(rob), 0.0))
-        out["ratio"] = float(out["robust_se"][0] / out["se"][0]) \
-            if out["se"][0] > 0 else np.nan
+        out["ratio"] = float(out["robust_se"][0] / out["se"][0]) if out["se"][0] > 0 else np.nan
     else:
         out["robust_variance"] = None
         out["robust_se"] = None
         out["ratio"] = None
-    out.update({
-        "partial_likelihood_note": "the baseline hazard is profiled out, yet "
-                                   "the observed information behaves as a real one",
-        "diagnostic": "model-based and robust SEs diverge exactly when "
-                      "proportional hazards fails",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Cox variance from the observed partial-likelihood information"})
+    out.update(
+        {
+            "partial_likelihood_note": "the baseline hazard is profiled out, yet "
+            "the observed information behaves as a real one",
+            "diagnostic": "model-based and robust SEs diverge exactly when proportional hazards fails",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Cox variance from the observed partial-likelihood information",
+        }
+    )
     return RichResult(payload=out)
 
 

@@ -8,9 +8,9 @@ finite-tree correction removed; the GATE reports whether its groups
 were cut from the estimate they summarise.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.catep import cate_estimation
 from morie.fn.cfst import causal_forest
 from morie.fn.crfvar import causal_forest_variance
@@ -33,7 +33,7 @@ def test_tmle_recovers_the_effect_under_confounding():
     out = tmle_ate(y, A, W)
     assert abs(out["estimate"] - 0.25) < 4 * out["se"]
     naive = float(y[A == 1].mean() - y[A == 0].mean())
-    assert abs(naive - 0.25) > 4 * out["se"]        # confounding is real
+    assert abs(naive - 0.25) > 4 * out["se"]  # confounding is real
     assert out["ey1"] - out["ey0"] == pytest.approx(out["estimate"], abs=1e-9)
 
 
@@ -42,16 +42,14 @@ def test_tmle_targeting_solves_the_influence_equation():
     out = tmle_ate(y, A, W)
     # this is the definition of the targeting step, not a coincidence
     assert abs(out["eif_mean"]) < 1e-6
-    assert out["se"] == pytest.approx(
-        float(np.sqrt(np.var(out["eif"], ddof=0) / out["n"])), rel=1e-6
-    )
+    assert out["se"] == pytest.approx(float(np.sqrt(np.var(out["eif"], ddof=0) / out["n"])), rel=1e-6)
 
 
 def test_tmle_reports_positivity_rather_than_hiding_it():
     rng = np.random.default_rng(1)
     n = 2000
     W = rng.normal(size=(n, 1))
-    p = 1 / (1 + np.exp(-(6.0 * W[:, 0])))         # near-deterministic
+    p = 1 / (1 + np.exp(-(6.0 * W[:, 0])))  # near-deterministic
     A = (rng.uniform(size=n) < p).astype(float)
     y = 0.1 * W[:, 0] + 0.2 * A + rng.normal(scale=0.1, size=n)
     out = tmle_ate(y, A, W, trunc=0.05)
@@ -66,7 +64,7 @@ def test_tmle_accepts_a_known_propensity():
     rng = np.random.default_rng(2)
     n = 3000
     W = rng.normal(size=(n, 1))
-    A = (rng.uniform(size=n) < 0.5).astype(float)   # randomised
+    A = (rng.uniform(size=n) < 0.5).astype(float)  # randomised
     y = 0.2 * W[:, 0] + 0.3 * A + rng.normal(scale=0.1, size=n)
     known = tmle_ate(y, A, W, g=np.full(n, 0.5))
     assert known["propensity_supplied"] is True
@@ -80,8 +78,7 @@ def test_stratum_tmle_finds_real_heterogeneity_and_not_imaginary():
     s = rng.integers(0, 2, size=n)
     W = rng.normal(size=(n, 1))
     A = (rng.uniform(size=n) < 0.5).astype(float)
-    y = 0.3 + 0.1 * W[:, 0] + A * (0.1 + 0.3 * s) + \
-        rng.normal(scale=0.1, size=n)
+    y = 0.3 + 0.1 * W[:, 0] + A * (0.1 + 0.3 * s) + rng.normal(scale=0.1, size=n)
     out = tmle_heterogeneous(y, A, W, s)
     assert out["by_stratum"][0]["estimate"] == pytest.approx(0.1, abs=0.03)
     assert out["by_stratum"][1]["estimate"] == pytest.approx(0.4, abs=0.03)
@@ -99,7 +96,7 @@ def test_stratum_tmle_drops_strata_it_cannot_estimate_with_a_reason():
     s = rng.integers(0, 3, size=n)
     W = rng.normal(size=(n, 1))
     A = (rng.uniform(size=n) < 0.5).astype(float)
-    A[s == 2] = 1.0                                 # stratum 2: no controls
+    A[s == 2] = 1.0  # stratum 2: no controls
     y = 0.2 * A + 0.1 * W[:, 0] + rng.normal(scale=0.1, size=n)
     out = tmle_heterogeneous(y, A, W, s)
     assert 2 in out["dropped"]
@@ -148,7 +145,7 @@ def test_causal_forest_reports_out_of_bag_spread():
     n = 600
     X = rng.normal(size=(n, 3))
     T = (rng.uniform(size=n) < 0.5).astype(float)
-    Y = rng.normal(scale=0.5, size=n)              # no effect at all
+    Y = rng.normal(scale=0.5, size=n)  # no effect at all
     out = causal_forest(Y, T, X, n_trees=100, seed=2)
     assert np.isfinite(out["oob_spread"])
     assert abs(out["ate"]) < 0.15
@@ -186,19 +183,13 @@ def test_the_finite_tree_correction_shrinks_like_one_over_b():
     # the correction is Monte-Carlo noise in the forest, so it falls as
     # trees are added -- it does not fall as the sample grows
     assert shares[0] > shares[1] > shares[2]
-    small = causal_forest_variance(
-        causal_forest(Y, T, X, n_trees=200, seed=1), Xq
-    )
-    big = causal_forest_variance(
-        causal_forest(Y, T, X, n_trees=2000, seed=1), Xq
-    )
+    small = causal_forest_variance(causal_forest(Y, T, X, n_trees=200, seed=1), Xq)
+    big = causal_forest_variance(causal_forest(Y, T, X, n_trees=2000, seed=1), Xq)
     assert small["reliable"] is False
     assert small["reliability_note"] is not None
     assert big["reliable"] is True
     # uncorrected, the estimate would be inflated at every tree count
-    raw = causal_forest_variance(
-        causal_forest(Y, T, X, n_trees=2000, seed=1), Xq, bias_correct=False
-    )
+    raw = causal_forest_variance(causal_forest(Y, T, X, n_trees=2000, seed=1), Xq, bias_correct=False)
     assert np.all(raw["variance"] >= big["variance"])
 
 
@@ -211,8 +202,7 @@ def test_variance_estimator_refuses_what_it_cannot_compute():
     T = (rng.uniform(size=n) < 0.5).astype(float)
     Y = rng.normal(size=n)
     with pytest.raises(ValueError, match="subsample < 1"):
-        causal_forest_variance(causal_forest(Y, T, X, n_trees=20,
-                                             subsample=1.0, seed=0))
+        causal_forest_variance(causal_forest(Y, T, X, n_trees=20, subsample=1.0, seed=0))
 
 
 def linear_cate(n=2000, seed=0, confound=False):
@@ -317,8 +307,7 @@ def test_the_shelf_composes_end_to_end():
     forest = causal_forest(Y, T, X, n_trees=400, seed=1)
     v = causal_forest_variance(forest)
     # group on the covariate, not on the fitted effect
-    out = gate_estimation(forest["cate"], X=X, group_var=0, n_groups=4,
-                          se=v["se"])
+    out = gate_estimation(forest["cate"], X=X, group_var=0, n_groups=4, se=v["se"])
     assert out["selection_on_estimate"] is False
     assert out["monotone"] is True
     assert out["gate"][0] < 0 < out["gate"][-1]

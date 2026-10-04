@@ -22,22 +22,26 @@ def alammar_kv_cache_lookup(K_cache, V_cache, k_new, v_new, q_new):
     v_new = np.atleast_2d(np.asarray(v_new, dtype=float))
     q_new = np.atleast_2d(np.asarray(q_new, dtype=float))
     if K_cache is None or len(np.atleast_2d(K_cache)) == 0:
-        K = k_new; V = v_new
+        K = k_new
+        V = v_new
     else:
-        K = np.vstack([np.atleast_2d(np.asarray(K_cache, dtype=float)),
-                       k_new])
-        V = np.vstack([np.atleast_2d(np.asarray(V_cache, dtype=float)),
-                       v_new])
+        K = np.vstack([np.atleast_2d(np.asarray(K_cache, dtype=float)), k_new])
+        V = np.vstack([np.atleast_2d(np.asarray(V_cache, dtype=float)), v_new])
     if K.shape[0] != V.shape[0]:
         raise ValueError("K and V caches must stay the same length.")
     out = scaled_dot_product_attention(q_new, K, V)
-    return RichResult(payload={
-        "output": out["output"][0], "attention": out["attention"][0],
-        "K_cache": [[float(v) for v in r] for r in K],
-        "V_cache": [[float(v) for v in r] for r in V],
-        "cache_length": K.shape[0],
-        "estimate": out["estimate"], "n": K.shape[0],
-        "method": "KV-cache single-step attention (Alammar Ch 3)"})
+    return RichResult(
+        payload={
+            "output": out["output"][0],
+            "attention": out["attention"][0],
+            "K_cache": [[float(v) for v in r] for r in K],
+            "V_cache": [[float(v) for v in r] for r in V],
+            "cache_length": K.shape[0],
+            "estimate": out["estimate"],
+            "n": K.shape[0],
+            "method": "KV-cache single-step attention (Alammar Ch 3)",
+        }
+    )
 
 
 def cheatsheet():

@@ -85,16 +85,18 @@ def cross_classified_membership(y, cluster1, cluster2=None, weights=None):
                     W[i][off + j] = wc[k]
         off += len(levels[k])
     rs = [sum(r) for r in W]
-    return RichResult(payload={
-        "estimate": sum(rs) / n,
-        "W": W,
-        "row_sums": rs,
-        "levels1": [float(len(levels[0]))],
-        "levels2": [float(len(levels[1]))] if C > 1 else [0.0],
-        "n_units": n,
-        "n_levels": cols,
-        "method": "cross-classified membership weight matrix",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(rs) / n,
+            "W": W,
+            "row_sums": rs,
+            "levels1": [float(len(levels[0]))],
+            "levels2": [float(len(levels[1]))] if C > 1 else [0.0],
+            "n_units": n,
+            "n_levels": cols,
+            "method": "cross-classified membership weight matrix",
+        }
+    )
 
 
 def cheatsheet():

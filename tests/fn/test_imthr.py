@@ -1,7 +1,6 @@
 """Tests for morie.fn.imthr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.imthr import imthr
 
 

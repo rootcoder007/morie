@@ -7,8 +7,8 @@ that single object; the arithmetic is verified against the book in the
 lilf tests.
 """
 
-import morie.fn.lilf as host
 import morie.fn.lbrst as alias
+import morie.fn.lilf as host
 from morie.fn.lbrst import lilliefors_test
 
 

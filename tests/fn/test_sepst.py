@@ -1,7 +1,5 @@
 """Tests for sepst.separation_set."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.sepst import separation_set
 
 

@@ -50,9 +50,9 @@ def esl_aic_score(loglik, d):
     d = int(d)
     if d < 0:
         raise ValueError(f"the parameter count cannot be negative; got {d}.")
-    return RichResult(payload={
-        "estimate": -2.0 * loglik + 2.0 * d, "loglik": loglik, "d": d,
-        "method": "AIC = -2 log L + 2 d"})
+    return RichResult(
+        payload={"estimate": -2.0 * loglik + 2.0 * d, "loglik": loglik, "d": d, "method": "AIC = -2 log L + 2 d"}
+    )
 
 
 def cheatsheet():

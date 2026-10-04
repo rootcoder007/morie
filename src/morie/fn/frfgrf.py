@@ -62,10 +62,9 @@ import math
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .hntfst import grow_forest, honest_tree, tree_predict
+from .hntfst import grow_forest, honest_tree
 
-__all__ = ["forest_fit_check", "beta_min", "honesty_test",
-            "split_share", "regularity"]
+__all__ = ["forest_fit_check", "beta_min", "honesty_test", "split_share", "regularity"]
 
 _EPS = 1e-12
 
@@ -73,8 +72,7 @@ _EPS = 1e-12
 def beta_min(d, alpha=0.05, pi=0.5):
     r"""Theorem 3's lower bound on the subsample exponent."""
     if not 0.0 < alpha < 0.5:
-        raise ValueError("frfgrf: alpha must be in (0, 0.5), got %r"
-                         % (alpha,))
+        raise ValueError("frfgrf: alpha must be in (0, 0.5), got %r" % (alpha,))
     if not 0.0 < pi <= 1.0:
         raise ValueError("frfgrf: pi must be in (0, 1], got %r" % (pi,))
     if d < 1:
@@ -86,12 +84,10 @@ def beta_min(d, alpha=0.05, pi=0.5):
 def _structure(tree):
     if tree["leaf"]:
         return ["leaf"]
-    return ([(tree["feature"], round(tree["threshold"], 12))]
-            + _structure(tree["left"]) + _structure(tree["right"]))
+    return [(tree["feature"], round(tree["threshold"], 12))] + _structure(tree["left"]) + _structure(tree["right"])
 
 
-def honesty_test(X, y, kind="double-sample", min_leaf=5, seed=11,
-                 n_permutations=3):
+def honesty_test(X, y, kind="double-sample", min_leaf=5, seed=11, n_permutations=3):
     r"""Permute the responses the leaves will average; the splits must
     not move.
 
@@ -100,31 +96,29 @@ def honesty_test(X, y, kind="double-sample", min_leaf=5, seed=11,
     every response would pass the first test trivially, so the second
     is what makes the first mean something.
     """
-    tree, info = honest_tree(X, y, kind=kind, min_leaf=min_leaf,
-                             seed=seed)
+    tree, info = honest_tree(X, y, kind=kind, min_leaf=min_leaf, seed=seed)
     base = _structure(tree)
     rng = np.random.default_rng(seed + 1)
     stable = True
     for _ in range(int(n_permutations)):
         yp = list(y)
-        for a, b in zip(info["I"], sorted(
-                info["I"], key=lambda _i: float(rng.uniform()))):
+        for a, b in zip(info["I"], sorted(info["I"], key=lambda _i: float(rng.uniform()))):
             yp[a] = y[b]
-        tp, _ = honest_tree(X, yp, kind=kind, min_leaf=min_leaf,
-                            seed=seed)
+        tp, _ = honest_tree(X, yp, kind=kind, min_leaf=min_leaf, seed=seed)
         if _structure(tp) != base:
             stable = False
             break
     yj = list(y)
-    for a, b in zip(info["J"], sorted(
-            info["J"], key=lambda _i: float(rng.uniform()))):
+    for a, b in zip(info["J"], sorted(info["J"], key=lambda _i: float(rng.uniform()))):
         yj[a] = y[b]
     tj, _ = honest_tree(X, yj, kind=kind, min_leaf=min_leaf, seed=seed)
     responsive = _structure(tj) != base
-    return {"honest": stable and (responsive or kind == "propensity"),
-            "splits_stable_under_I_permutation": stable,
-            "splits_move_under_J_permutation": responsive,
-            "n_splits": sum(1 for v in base if v != "leaf")}
+    return {
+        "honest": stable and (responsive or kind == "propensity"),
+        "splits_stable_under_I_permutation": stable,
+        "splits_move_under_J_permutation": responsive,
+        "n_splits": sum(1 for v in base if v != "leaf"),
+    }
 
 
 def split_share(trees, d):
@@ -170,28 +164,32 @@ def regularity(trees):
     return worst
 
 
-def forest_fit_check(y, X, n_trees=100, min_leaf=5, subsample_frac=0.5,
-                     alpha=0.05, pi=0.5, seed=0, kind="double-sample",
-                     sizes=None):
+def forest_fit_check(
+    y, X, n_trees=100, min_leaf=5, subsample_frac=0.5, alpha=0.05, pi=0.5, seed=0, kind="double-sample", sizes=None
+):
     r"""Audit a forest against the conditions its theory requires."""
     yv = k.vec(y)
     n = len(yv)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("frfgrf: %d covariate rows for %d outcomes"
-                         % (len(Xm), n))
+        raise ValueError("frfgrf: %d covariate rows for %d outcomes" % (len(Xm), n))
     d = len(Xm[0]) if Xm and Xm[0] else 0
     if d == 0:
         raise ValueError("frfgrf: no features")
     if n < 40:
-        raise ValueError("frfgrf: need at least 40 observations, got %d"
-                         % n)
-    trees, bags, s = grow_forest(Xm, yv, kind=kind, n_trees=n_trees,
-                                 min_leaf=min_leaf,
-                                 subsample_frac=subsample_frac,
-                                 alpha=alpha, pi=pi, seed=seed)
-    hon = honesty_test(Xm, yv, kind=kind, min_leaf=min_leaf,
-                       seed=seed + 11)
+        raise ValueError("frfgrf: need at least 40 observations, got %d" % n)
+    trees, bags, s = grow_forest(
+        Xm,
+        yv,
+        kind=kind,
+        n_trees=n_trees,
+        min_leaf=min_leaf,
+        subsample_frac=subsample_frac,
+        alpha=alpha,
+        pi=pi,
+        seed=seed,
+    )
+    hon = honesty_test(Xm, yv, kind=kind, min_leaf=min_leaf, seed=seed + 11)
     share, counts = split_share(trees, d)
     floor = pi / d
     reg = regularity(trees)
@@ -211,31 +209,46 @@ def forest_fit_check(y, X, n_trees=100, min_leaf=5, subsample_frac=0.5,
     # pass/fail would mean every honest forest ever grown "fails", which
     # tells the user nothing. It is surfaced as a number to compare.
     rate_ok = bmin < beta < 1.0
-    return RichResult(payload={
-        "estimate": all(checks.values()), "passes": all(checks.values()),
-        "checks": checks, "honesty": hon,
-        "subsample_rate_ok": rate_ok,
-        "subsample_rate_note": (
-            "beta = log(s)/log(n) = %.3f against beta_min = %.3f; the "
-            "bound is near 1 for any moderate d, so it is reported "
-            "rather than scored" % (beta, bmin)),
-        "split_share": share, "split_counts": counts,
-        "random_split_floor": floor, "min_share": min(share),
-        "regularity": reg, "alpha": float(alpha), "pi": float(pi),
-        "beta": beta, "beta_min": bmin, "s": s, "n": n, "d": d,
-        "n_trees": int(n_trees), "kind": kind,
-        "failed": [nm for nm, ok in checks.items() if not ok],
-        "method": "forest-fit consistency diagnostics, Wager & Athey "
-                  "(2018) Definitions 2-5 and Theorem 3",
-    })
+    return RichResult(
+        payload={
+            "estimate": all(checks.values()),
+            "passes": all(checks.values()),
+            "checks": checks,
+            "honesty": hon,
+            "subsample_rate_ok": rate_ok,
+            "subsample_rate_note": (
+                "beta = log(s)/log(n) = %.3f against beta_min = %.3f; the "
+                "bound is near 1 for any moderate d, so it is reported "
+                "rather than scored" % (beta, bmin)
+            ),
+            "split_share": share,
+            "split_counts": counts,
+            "random_split_floor": floor,
+            "min_share": min(share),
+            "regularity": reg,
+            "alpha": float(alpha),
+            "pi": float(pi),
+            "beta": beta,
+            "beta_min": bmin,
+            "s": s,
+            "n": n,
+            "d": d,
+            "n_trees": int(n_trees),
+            "kind": kind,
+            "failed": [nm for nm, ok in checks.items() if not ok],
+            "method": "forest-fit consistency diagnostics, Wager & Athey (2018) Definitions 2-5 and Theorem 3",
+        }
+    )
 
 
 def cheatsheet():
-    return ("frfgrf: audit the conditions the theory needs -- honesty "
-            "(tested by permuting the leaf-averaged responses, with a "
-            "J-permutation control), the pi/d split floor, "
-            "alpha-regularity, and beta = log(s)/log(n) above "
-            "beta_min = 1 - (1 + (d/pi) log(1/alpha)/log(1/(1-alpha)))^-1.")
+    return (
+        "frfgrf: audit the conditions the theory needs -- honesty "
+        "(tested by permuting the leaf-averaged responses, with a "
+        "J-permutation control), the pi/d split floor, "
+        "alpha-regularity, and beta = log(s)/log(n) above "
+        "beta_min = 1 - (1 + (d/pi) log(1/alpha)/log(1/(1-alpha)))^-1."
+    )
 
 
 # compact alias per ledger/NAMING.md

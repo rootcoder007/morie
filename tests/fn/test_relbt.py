@@ -1,7 +1,6 @@
 """Tests for relbt.reliability_metric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.relbt import reliability_metric
 
 

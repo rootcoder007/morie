@@ -1,7 +1,6 @@
 """Tests for morie.fn.oipw1 — IPW for placement effect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.oipw1 import otis_ipw_placement
 
 

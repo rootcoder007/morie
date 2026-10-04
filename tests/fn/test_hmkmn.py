@@ -1,7 +1,6 @@
 """Tests for hmkmn.geron_kmeans."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmkmn import geron_kmeans
 
 

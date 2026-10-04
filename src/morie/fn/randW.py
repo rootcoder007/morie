@@ -71,9 +71,9 @@ def random_walk_kernel(G1, G2, lam=0.05):
         tr += W[i][i]
         for j in range(N):
             tot += W[i][j]
-    return RichResult(payload={
-        "estimate": tot, "trace": tr, "n1": n1, "n2": n2,
-        "method": "Direct-product random-walk graph kernel"})
+    return RichResult(
+        payload={"estimate": tot, "trace": tr, "n1": n1, "n2": n2, "method": "Direct-product random-walk graph kernel"}
+    )
 
 
 def cheatsheet():

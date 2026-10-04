@@ -4,7 +4,6 @@
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km073 import kamath_ch5_pref_sigmoid_form
 from .km075 import _implicit_rewards, kamath_ch5_dpo_pref_simplified
@@ -44,13 +43,21 @@ def kamath_ch5_dpo_pref_substituted(pi_star, pi_ref, beta, Z=None):
     if not cancels:
         raise ValueError(
             "the beta log Z terms failed to cancel; substituted "
-            f"{inner['estimate']!r} vs simplified {simple['estimate']!r}.")
-    return RichResult(payload={
-        "estimate": inner["estimate"], "margin": inner["margin"],
-        "z_offset": float(off), "z_terms_cancel": bool(cancels),
-        "simplified": simple["estimate"], "beta": beta, "Z": Zv, "n": 2,
-        "method": "DPO preference with Z carried explicitly "
-                  "(Kamath Eq 5.10)"})
+            f"{inner['estimate']!r} vs simplified {simple['estimate']!r}."
+        )
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "margin": inner["margin"],
+            "z_offset": float(off),
+            "z_terms_cancel": bool(cancels),
+            "simplified": simple["estimate"],
+            "beta": beta,
+            "Z": Zv,
+            "n": 2,
+            "method": "DPO preference with Z carried explicitly (Kamath Eq 5.10)",
+        }
+    )
 
 
 def cheatsheet():

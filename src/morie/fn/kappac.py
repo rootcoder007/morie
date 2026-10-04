@@ -68,11 +68,18 @@ def cohens_kappa(rater1, rater2):
     kap = (po - pe) / (1.0 - pe) if pe < 1.0 else 0.0
     se = (math.sqrt(po * (1.0 - po) / n) / (1.0 - pe)) if pe < 1.0 else 0.0
     z = kap / se if se > 0.0 else 0.0
-    return RichResult(payload={
-        "kappa": float(kap), "p_observed": float(po),
-        "p_expected": float(pe), "se": float(se), "z": float(z),
-        "n": n, "n_categories": k,
-        "method": "Cohen (1960) kappa, two raters, nominal scale"})
+    return RichResult(
+        payload={
+            "kappa": float(kap),
+            "p_observed": float(po),
+            "p_expected": float(pe),
+            "se": float(se),
+            "z": float(z),
+            "n": n,
+            "n_categories": k,
+            "method": "Cohen (1960) kappa, two raters, nominal scale",
+        }
+    )
 
 
 def cheatsheet():

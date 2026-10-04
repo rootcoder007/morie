@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wwruns', 'gibbons_ks2samp']
+__all__ = ["wwruns", "gibbons_ks2samp"]
 
 
 def wwruns(x, y):
@@ -62,10 +62,7 @@ def wwruns(x, y):
             p = 2.0 * math.comb(m - 1, k - 1) * math.comb(n - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                math.comb(m - 1, k - 1) * math.comb(n - 1, k)
-                + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
-            )
+            p = math.comb(m - 1, k - 1) * math.comb(n - 1, k) + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
         tail += p / den
     mean = 2.0 * m * n / nn + 1.0
     var = 2.0 * m * n * (2.0 * m * n - nn) / (float(nn) ** 2 * (nn - 1.0))

@@ -1,7 +1,6 @@
 """Tests for gh_c10_7.ghosal_frs_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_7 import ghosal_frs_density
 
 
@@ -26,5 +25,6 @@ def test_gh_c10_7_basic():
 def test_gh_c10_7_edge():
     """Test edge cases."""
     import pytest
+
     with pytest.raises(ValueError):
         ghosal_frs_density(np.array([42.0]))

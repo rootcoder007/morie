@@ -81,13 +81,15 @@ def bayeslogit(X, y, prior_sd=10.0, iters=50, tol=1e-12):
     it = 0
     for it in range(1, int(iters) + 1):
         eta = [sum(Z[i][j] * b[j] for j in range(p)) for i in range(n)]
-        mu = [1.0 / (1.0 + math.exp(-min(500.0, max(-500.0, e))))
-              for e in eta]
-        g = [sum(Z[i][j] * (y[i] - mu[i]) for i in range(n))
-             - b[j] * inv_s2 for j in range(p)]
-        H = [[sum(Z[i][a] * mu[i] * (1.0 - mu[i]) * Z[i][c]
-                  for i in range(n)) + (inv_s2 if a == c else 0.0)
-              for c in range(p)] for a in range(p)]
+        mu = [1.0 / (1.0 + math.exp(-min(500.0, max(-500.0, e)))) for e in eta]
+        g = [sum(Z[i][j] * (y[i] - mu[i]) for i in range(n)) - b[j] * inv_s2 for j in range(p)]
+        H = [
+            [
+                sum(Z[i][a] * mu[i] * (1.0 - mu[i]) * Z[i][c] for i in range(n)) + (inv_s2 if a == c else 0.0)
+                for c in range(p)
+            ]
+            for a in range(p)
+        ]
         step = C.solvev(H, g)
         b = [b[j] + step[j] for j in range(p)]
         if max(abs(v) for v in step) < tol:
@@ -95,17 +97,28 @@ def bayeslogit(X, y, prior_sd=10.0, iters=50, tol=1e-12):
             break
     eta = [sum(Z[i][j] * b[j] for j in range(p)) for i in range(n)]
     mu = [1.0 / (1.0 + math.exp(-min(500.0, max(-500.0, e)))) for e in eta]
-    H = [[sum(Z[i][a] * mu[i] * (1.0 - mu[i]) * Z[i][c] for i in range(n))
-          + (inv_s2 if a == c else 0.0) for c in range(p)] for a in range(p)]
+    H = [
+        [
+            sum(Z[i][a] * mu[i] * (1.0 - mu[i]) * Z[i][c] for i in range(n)) + (inv_s2 if a == c else 0.0)
+            for c in range(p)
+        ]
+        for a in range(p)
+    ]
     V = C.inv(H)
-    ll = sum(y[i] * eta[i] - math.log1p(math.exp(min(500.0, eta[i])))
-             for i in range(n))
+    ll = sum(y[i] * eta[i] - math.log1p(math.exp(min(500.0, eta[i]))) for i in range(n))
     lp = ll - 0.5 * inv_s2 * sum(v * v for v in b)
-    return RichResult(payload={
-        "estimate": b, "se": [math.sqrt(V[j][j]) for j in range(p)],
-        "log_posterior": lp, "iterations": float(it), "converged": conv,
-        "n": float(n), "p": float(p),
-        "method": "Logistic regression posterior mode, BDA3 Section 4.1"})
+    return RichResult(
+        payload={
+            "estimate": b,
+            "se": [math.sqrt(V[j][j]) for j in range(p)],
+            "log_posterior": lp,
+            "iterations": float(it),
+            "converged": conv,
+            "n": float(n),
+            "p": float(p),
+            "method": "Logistic regression posterior mode, BDA3 Section 4.1",
+        }
+    )
 
 
 bayes_logistic = bayeslogit

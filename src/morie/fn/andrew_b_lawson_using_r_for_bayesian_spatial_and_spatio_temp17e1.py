@@ -20,11 +20,16 @@ def logitre(gamma0, gamma1, d, gamma2, x, R):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Binary spatial regression with random effect", payload=_c.logitre(gamma0=gamma0, gamma1=gamma1, d=d, gamma2=gamma2, x=x, R=R))
+    return RichResult(
+        title="Binary spatial regression with random effect",
+        payload=_c.logitre(gamma0=gamma0, gamma1=gamma1, d=d, gamma2=gamma2, x=x, R=R),
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_17_equation_1 = logitre
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp17e1: Binary spatial regression with random effect"
+    return (
+        "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp17e1: Binary spatial regression with random effect"
+    )

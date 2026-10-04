@@ -22,5 +22,3 @@ def test_rgppv_edge():
         rangayyan_ppv(0, 0)
     with pytest.raises(ValueError, match="both"):
         rangayyan_ppv(1, 1, prevalence=0.1)
-
-

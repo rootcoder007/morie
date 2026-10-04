@@ -73,12 +73,10 @@ sample/population distinction.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sate_influence_curve", "pate_influence_curve",
-           "variance_gap", "sate_tmle", "paired_variance"]
+__all__ = ["sate_influence_curve", "pate_influence_curve", "variance_gap", "sate_tmle", "paired_variance"]
 
 _EPS = 1e-12
 
@@ -93,8 +91,7 @@ def _check(A, Y, Q1, Q0, g):
     if not (len(y) == len(q1) == len(q0) == len(gg) == n):
         raise ValueError("tlsate: the inputs differ in length")
     if any(v <= 0.0 or v >= 1.0 for v in gg):
-        raise ValueError("tlsate: the treatment probability must lie "
-                         "strictly inside (0,1)")
+        raise ValueError("tlsate: the treatment probability must lie strictly inside (0,1)")
     return a, y, q1, q0, gg, n
 
 
@@ -141,11 +138,13 @@ def variance_gap(A, Y, Q1, Q0, g, psi):
         return sum((q - m) ** 2 for q in v) / (len(v) - 1)
 
     eff = [q1[i] - q0[i] for i in range(n)]
-    return {"var_pate": var(icp), "var_sate": var(ics),
-            "gap": var(icp) - var(ics),
-            "var_conditional_effect": var(eff),
-            "note": "the gap IS the variance of the conditional "
-                    "effect; with no effect modification it is zero"}
+    return {
+        "var_pate": var(icp),
+        "var_sate": var(ics),
+        "gap": var(icp) - var(ics),
+        "var_conditional_effect": var(eff),
+        "note": "the gap IS the variance of the conditional effect; with no effect modification it is zero",
+    }
 
 
 def sate_tmle(A, Y, Q1, Q0, g):
@@ -155,8 +154,7 @@ def sate_tmle(A, Y, Q1, Q0, g):
     influence curve, and therefore the interval, differs.
     """
     a, y, q1, q0, gg, n = _check(A, Y, Q1, Q0, g)
-    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i])
-         for i in range(n)]
+    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i]) for i in range(n)]
     qa = [q1[i] if a[i] == 1.0 else q0[i] for i in range(n)]
 
     def logit(p):
@@ -183,22 +181,24 @@ def sate_tmle(A, Y, Q1, Q0, g):
 
     def se(v):
         m = sum(v) / len(v)
-        return math.sqrt(sum((q - m) ** 2 for q in v)
-                         / (len(v) - 1) / len(v))
+        return math.sqrt(sum((q - m) ** 2 for q in v) / (len(v) - 1) / len(v))
 
     sp, ss = se(icp), se(ics)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi,
-        "se_population": sp, "se_sample": ss,
-        "ci_population": (psi - 1.96 * sp, psi + 1.96 * sp),
-        "ci_sample": (psi - 1.96 * ss, psi + 1.96 * ss),
-        "width_ratio": ss / sp if sp > 0 else float("nan"),
-        "method": "TMLE with sample-effect inference; van der Laan & "
-                  "Rose (2018) Chap. 12",
-        "note": "same point estimate; the SAMPLE interval is narrower "
-                "by the variance of the conditional effect, and is "
-                "asymptotically conservative for the SATE",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "se_population": sp,
+            "se_sample": ss,
+            "ci_population": (psi - 1.96 * sp, psi + 1.96 * sp),
+            "ci_sample": (psi - 1.96 * ss, psi + 1.96 * ss),
+            "width_ratio": ss / sp if sp > 0 else float("nan"),
+            "method": "TMLE with sample-effect inference; van der Laan & Rose (2018) Chap. 12",
+            "note": "same point estimate; the SAMPLE interval is narrower "
+            "by the variance of the conditional effect, and is "
+            "asymptotically conservative for the SATE",
+        }
+    )
 
 
 def paired_variance(pair_ids, ic):
@@ -210,33 +210,32 @@ def paired_variance(pair_ids, ic):
     p = list(pair_ids)
     v = [float(q) for q in k.vec(ic)]
     if len(p) != len(v):
-        raise ValueError("tlsate: %d pair labels for %d influence "
-                         "values" % (len(p), len(v)))
+        raise ValueError("tlsate: %d pair labels for %d influence values" % (len(p), len(v)))
     agg = {}
     for i in range(len(p)):
         agg.setdefault(p[i], []).append(v[i])
     if any(len(q) != 2 for q in agg.values()):
-        raise ValueError("tlsate: every pair must contain exactly 2 "
-                         "units")
+        raise ValueError("tlsate: every pair must contain exactly 2 units")
     sums = [sum(q) / 2.0 for q in agg.values()]
     m = sum(sums) / len(sums)
     var = sum((q - m) ** 2 for q in sums) / (len(sums) - 1)
-    return {"se": math.sqrt(var / len(sums)), "n_pairs": len(sums),
-            "note": "the PAIR is the independent unit"}
+    return {"se": math.sqrt(var / len(sums)), "n_pairs": len(sums), "note": "the PAIR is the independent unit"}
 
 
 def cheatsheet():
-    return ("tlsate: in a cluster randomized trial the units are not "
-            "sampled from any defined population, so the PATE is a "
-            "parameter of a superpopulation nobody drew from. The "
-            "SATE -- the mean counterfactual difference for THESE "
-            "units -- is interpretable without inventing one. It is "
-            "not identifiable in finite samples, but the SAME TMLE is "
-            "consistent and asymptotically linear for it; only the "
-            "influence curve changes, dropping Q1 - Q0 - psi. The "
-            "variance falls by EXACTLY the variance of the conditional "
-            "effect, so effect modification is where the power gain "
-            "comes from.")
+    return (
+        "tlsate: in a cluster randomized trial the units are not "
+        "sampled from any defined population, so the PATE is a "
+        "parameter of a superpopulation nobody drew from. The "
+        "SATE -- the mean counterfactual difference for THESE "
+        "units -- is interpretable without inventing one. It is "
+        "not identifiable in finite samples, but the SAME TMLE is "
+        "consistent and asymptotically linear for it; only the "
+        "influence curve changes, dropping Q1 - Q0 - psi. The "
+        "variance falls by EXACTLY the variance of the conditional "
+        "effect, so effect modification is where the power gain "
+        "comes from."
+    )
 
 
 # compact alias per ledger/NAMING.md

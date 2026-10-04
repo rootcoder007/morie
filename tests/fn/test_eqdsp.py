@@ -1,8 +1,8 @@
 """Tests for morie.fn.eqdsp — disparity decomposition."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.eqdsp import disparity_decompose
 

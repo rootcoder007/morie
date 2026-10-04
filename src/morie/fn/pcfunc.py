@@ -67,12 +67,19 @@ def pair_correlation_function(points, window, r, h=None):
     Klo = [float(v) for v in pp.k_function(p, region, lo, correction="border")]
     Khi = [float(v) for v in pp.k_function(p, region, hi, correction="border")]
     Kat = [float(v) for v in pp.k_function(p, region, rs, correction="border")]
-    g = [(Khi[i] - Klo[i]) / (2.0 * hh) / (2.0 * math.pi * rs[i])
-         for i in range(len(rs))]
-    return RichResult(payload={
-        "g": g, "r": rs, "K": Kat, "h": hh, "estimate": g[0],
-        "lambda_hat": pp.intensity(p, region), "n": n,
-        "method": "Pair correlation function from K'(r) / (2 pi r)"})
+    g = [(Khi[i] - Klo[i]) / (2.0 * hh) / (2.0 * math.pi * rs[i]) for i in range(len(rs))]
+    return RichResult(
+        payload={
+            "g": g,
+            "r": rs,
+            "K": Kat,
+            "h": hh,
+            "estimate": g[0],
+            "lambda_hat": pp.intensity(p, region),
+            "n": n,
+            "method": "Pair correlation function from K'(r) / (2 pi r)",
+        }
+    )
 
 
 def cheatsheet():

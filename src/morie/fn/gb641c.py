@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Confidence interval for the location shift from the median test."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['medtestci', 'gibbons_median_test_ci']
+__all__ = ["medtestci", "gibbons_median_test_ci"]
 
 
 def medtestci(x, y, c):

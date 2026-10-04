@@ -113,8 +113,7 @@ def _inv_spd(A, ridge):
     return [[cols[j][i] for j in range(n)] for i in range(n)]
 
 
-def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0,
-                             a=0.0, b=1.0, period=None, ridge=1e-8):
+def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0, b=1.0, period=None, ridge=1e-8):
     """Genomic plus phenomic functional predictor.
 
     Parameters
@@ -161,7 +160,7 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0,
     if len(Mk) != n:
         raise ValueError("htp_functional_predictor: y and markers disagree on the number of lines")
     L = int(n_basis)
-    if L < 1 or L > m:
+    if L < 1 or m < L:
         raise ValueError("htp_functional_predictor: n_basis must lie between 1 and the number of grid points")
     lam = float(lam)
     if not lam > 0.0:
@@ -286,4 +285,3 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0,
 
 def cheatsheet():
     return "htpfn: Ch 14 eq. (14.9) functional design with the Ch 5 eq. (5.3) genomic random effect"
-

@@ -13,6 +13,8 @@ def test_km036_doctest():
 
 def test_km036_edge():
     import pytest
+
     from morie.fn.km036 import kamath_ch2_gpt_supervised_obj
+
     with pytest.raises(ValueError):
         kamath_ch2_gpt_supervised_obj([1.5])

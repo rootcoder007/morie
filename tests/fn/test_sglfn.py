@@ -1,7 +1,6 @@
 """Tests for L function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sglfn import sglfn
 
 

@@ -80,14 +80,23 @@ def schabenberger_mantel_standard(coords, x, w, u=None):
     if u is not None:
         uu = sqmat(u, n, "u")
         m2 = fsum([ww[i][j] * uu[i][j] for i in range(n) for j in range(n)])
-        return RichResult(payload={
-            "m2": m2, "expectation": None, "variance": None,
-            "z": None, "p_value": None, "sigma2": ss / (n - 1.0), "n": n,
-            "gaussian_moments_apply": False,
-            "method": ("Mantel M2 with a user-supplied U; the Gaussian "
-                       "Z-test of Schabenberger & Gotway Sec. 1.3.1 needs "
-                       "U of eq (1.10) and is not reported"),
-        })
+        return RichResult(
+            payload={
+                "m2": m2,
+                "expectation": None,
+                "variance": None,
+                "z": None,
+                "p_value": None,
+                "sigma2": ss / (n - 1.0),
+                "n": n,
+                "gaussian_moments_apply": False,
+                "method": (
+                    "Mantel M2 with a user-supplied U; the Gaussian "
+                    "Z-test of Schabenberger & Gotway Sec. 1.3.1 needs "
+                    "U of eq (1.10) and is not reported"
+                ),
+            }
+        )
 
     m2 = fsum([ww[i][j] * d[i] * d[j] for i in range(n) for j in range(n)])
     a = [[0.5 * (ww[i][j] + ww[j][i]) for j in range(n)] for i in range(n)]
@@ -100,24 +109,27 @@ def schabenberger_mantel_standard(coords, x, w, u=None):
     ex = s2 * trace(am)
     var = 2.0 * s2 * s2 * trace(matmul(am, am))
     if var <= 0:
-        raise ValueError("the null variance of M2 is not positive; "
-                         "the weight matrix carries no information")
+        raise ValueError("the null variance of M2 is not positive; the weight matrix carries no information")
     zz = (m2 - ex) / sqrt(var)
 
-    return RichResult(payload={
-        "m2": m2,
-        "expectation": ex,
-        "variance": var,
-        "z": zz,
-        "p_value": twosidep(zz),
-        "sigma2": s2,
-        "n": n,
-        "gaussian_moments_apply": True,
-        "method": ("Standardized Mantel z_M, Gaussian Z-test of "
-                   "Schabenberger & Gotway (2005) Sec. 1.3.1 with U of "
-                   "eq (1.10); the moments are derived, the book states "
-                   "only the approach"),
-    })
+    return RichResult(
+        payload={
+            "m2": m2,
+            "expectation": ex,
+            "variance": var,
+            "z": zz,
+            "p_value": twosidep(zz),
+            "sigma2": s2,
+            "n": n,
+            "gaussian_moments_apply": True,
+            "method": (
+                "Standardized Mantel z_M, Gaussian Z-test of "
+                "Schabenberger & Gotway (2005) Sec. 1.3.1 with U of "
+                "eq (1.10); the moments are derived, the book states "
+                "only the approach"
+            ),
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.sentn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sentn import sentiment_lexicon
 
 

@@ -1,7 +1,5 @@
 """Tests for random_effects_weight.random_effects_weight."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.random_effects_weight import random_effects_weight
 
 

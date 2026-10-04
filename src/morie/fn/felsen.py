@@ -13,8 +13,7 @@ def _pij(t, pi):
     # F81 substitution probabilities, Felsenstein (1981) Eq. 7:
     # P_ij(t) = e^{-ut} delta_ij + (1 - e^{-ut}) pi_j   (u = 1)
     e = math.exp(-t)
-    return [[e * (1.0 if i == j else 0.0) + (1.0 - e) * pi[j]
-             for j in range(4)] for i in range(4)]
+    return [[e * (1.0 if i == j else 0.0) + (1.0 - e) * pi[j] for j in range(4)] for i in range(4)]
 
 
 def _prune(node, site, pi):
@@ -86,13 +85,15 @@ def felsen(tree, sites, pi=None):
             raise ValueError("zero likelihood site (bad pattern?)")
         liks.append(L)
         ll += math.log(L)
-    return RichResult(payload={
-        "loglik": ll,
-        "site_likelihoods": liks,
-        "n_sites": len(sites),
-        "pi": pi,
-        "method": "Felsenstein (1981) pruning, F81 model (Eqs. 5-7)",
-    })
+    return RichResult(
+        payload={
+            "loglik": ll,
+            "site_likelihoods": liks,
+            "n_sites": len(sites),
+            "pi": pi,
+            "method": "Felsenstein (1981) pruning, F81 model (Eqs. 5-7)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

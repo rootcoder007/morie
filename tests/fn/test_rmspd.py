@@ -1,7 +1,6 @@
 """Tests for morie.fn.rmspd -- RMSProp optimizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rmspd import rmspd, rmsprop_optimize
 

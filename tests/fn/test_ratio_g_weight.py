@@ -1,7 +1,5 @@
 """Tests for ratio_g_weight.ratio_g_weight."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ratio_g_weight import (
     ratio_g_weight,
 )

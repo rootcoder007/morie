@@ -211,7 +211,7 @@ def sperner_width(n):
         summary_lines=[
             ("Largest antichain", w),
             ("Attaining layer(s)", layers),
-            ("Total subsets", 2 ** n),
+            ("Total subsets", 2**n),
         ],
         payload={
             "count": w,
@@ -219,14 +219,13 @@ def sperner_width(n):
             "exact": str(w),
             "extremal_layers": layers,
             "unique_extremal": n % 2 == 0,
-            "total_subsets": 2 ** n,
-            "fraction_of_powerset": w / 2 ** n if n < 1000 else float("nan"),
+            "total_subsets": 2**n,
+            "fraction_of_powerset": w / 2**n if n < 1000 else float("nan"),
             "n": n,
             "method": "Sperner's theorem (Sperner 1928)",
         },
         interpretation=(
-            f"No antichain of subsets of a {n}-set exceeds {w} members; the "
-            f"middle layer(s) {layers} attain it."
+            f"No antichain of subsets of a {n}-set exceeds {w} members; the middle layer(s) {layers} attain it."
         ),
     )
 
@@ -284,8 +283,8 @@ def erdos_ko_rado(n, k):
         interpretation=(
             f"The largest intersecting family of {k}-subsets has {count} "
             "members, attained by the star through any fixed element."
-            if regime else
-            f"With n < 2k no two {k}-subsets are disjoint, so every family "
+            if regime
+            else f"With n < 2k no two {k}-subsets are disjoint, so every family "
             f"is intersecting and the maximum is all {count} of them."
         ),
     )
@@ -330,18 +329,12 @@ def dilworth_decomposition(leq):
     for i in range(n):
         for j in range(n):
             if i != j and M[i][j] and M[j][i]:
-                raise ValueError(
-                    f"leq must be antisymmetric; {i} and {j} are mutually "
-                    "below one another."
-                )
+                raise ValueError(f"leq must be antisymmetric; {i} and {j} are mutually below one another.")
     for i in range(n):
         for j in range(n):
             for k in range(n):
                 if M[i][j] and M[j][k] and not M[i][k]:
-                    raise ValueError(
-                        f"leq must be transitive; {i} <= {j} <= {k} but not "
-                        f"{i} <= {k}."
-                    )
+                    raise ValueError(f"leq must be transitive; {i} <= {j} <= {k} but not {i} <= {k}.")
 
     strict = [[M[i][j] and i != j for j in range(n)] for i in range(n)]
     # minimum chain cover = n - maximum matching in the split graph
@@ -382,8 +375,7 @@ def dilworth_decomposition(leq):
     for size_try in range(n, 0, -1):
         found = None
         for c in combinations(range(n), size_try):
-            if all(not (strict[i][j] or strict[j][i])
-                   for i, j in combinations(c, 2)):
+            if all(not (strict[i][j] or strict[j][i]) for i, j in combinations(c, 2)):
                 found = list(c)
                 break
         if found is not None:

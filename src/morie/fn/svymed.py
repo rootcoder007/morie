@@ -44,11 +44,19 @@ def survey_median(y, weights=None):
     w = [1.0] * n if weights is None else C.vec(weights)
     tot = sum(w)
     mu = sum(w[i] * yy[i] for i in range(n)) / tot
-    return RichResult(payload={
-        "estimate": float(r["estimate"]), "se": float(r["se"]),
-        "lower": float(r["lower"]), "upper": float(r["upper"]),
-        "F": float(r["F"]), "mean": float(mu), "sumw": float(tot), "n": n,
-        "method": "weighted median, F_w inverted at 1/2 [Francisco & Fuller 1991]"})
+    return RichResult(
+        payload={
+            "estimate": float(r["estimate"]),
+            "se": float(r["se"]),
+            "lower": float(r["lower"]),
+            "upper": float(r["upper"]),
+            "F": float(r["F"]),
+            "mean": float(mu),
+            "sumw": float(tot),
+            "n": n,
+            "method": "weighted median, F_w inverted at 1/2 [Francisco & Fuller 1991]",
+        }
+    )
 
 
 # CANONICAL TEST
@@ -59,6 +67,7 @@ def survey_median(y, weights=None):
 
 def cheatsheet():
     return "svymed(y, weights): weighted median with a Woodruff interval."
+
 
 # public names resolved by fn/_lazy_map.json
 surveymedian = survey_median

@@ -124,7 +124,7 @@ def geron_reverse_mode_autodiff(graph, loss_grad=1.0, output=None):
         order.append(n)
 
     visit(output)
-    order.reverse()          # output first, leaves last
+    order.reverse()  # output first, leaves last
 
     loss_grad = float(loss_grad)
     if not np.isfinite(loss_grad):

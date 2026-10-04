@@ -1,7 +1,6 @@
 """Tests for jonaiv.joseph_naive_forecast."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jonaiv import joseph_naive_forecast
 
 

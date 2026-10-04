@@ -62,8 +62,7 @@ def content_based(item_feat, user_profile, ratings=None, topn=3):
         prof = [sum(up[j] * F[j][t] for j in rated) / w for t in range(f)]
     else:
         if len(up) != f:
-            raise ValueError("user_profile must be a length-f profile or a "
-                             "length-n_items rating vector")
+            raise ValueError("user_profile must be a length-f profile or a length-n_items rating vector")
         prof = list(up)
     pn = math.sqrt(sum(v * v for v in prof))
     if pn <= 0.0:
@@ -71,24 +70,26 @@ def content_based(item_feat, user_profile, ratings=None, topn=3):
     scores = []
     for j in range(ni):
         fn = math.sqrt(sum(v * v for v in F[j]))
-        scores.append(sum(prof[t] * F[j][t] for t in range(f)) / (pn * fn)
-                      if fn > 0.0 else 0.0)
+        scores.append(sum(prof[t] * F[j][t] for t in range(f)) / (pn * fn) if fn > 0.0 else 0.0)
     order = sorted(range(ni), key=lambda j: (-scores[j], j))
-    rec = [j for j in order if j not in rated][:int(topn)]
-    return RichResult(payload={
-        "estimate": scores[rec[0]] if rec else float("nan"),
-        "scores": scores,
-        "ranking": order,
-        "recommended": rec,
-        "profile": prof,
-        "n_items": ni,
-        "f": f,
-        "method": "content-based recommendation",
-    })
+    rec = [j for j in order if j not in rated][: int(topn)]
+    return RichResult(
+        payload={
+            "estimate": scores[rec[0]] if rec else float("nan"),
+            "scores": scores,
+            "ranking": order,
+            "recommended": rec,
+            "profile": prof,
+            "n_items": ni,
+            "f": f,
+            "method": "content-based recommendation",
+        }
+    )
 
 
 def cheatsheet():
     return "contRC: content-based recommendation"
+
 
 # public names resolved by fn/_lazy_map.json
 contentbased = content_based

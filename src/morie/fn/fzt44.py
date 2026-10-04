@@ -58,14 +58,18 @@ def fauzi_theorem_4_4(mrl_hat, mrl_true, variance):
     sd = np.sqrt(np.maximum(v, 0.0))
     with np.errstate(divide="ignore", invalid="ignore"):
         z = np.where(sd > 0, (mh - mt) / np.maximum(sd, 1e-300), np.nan)
-    return RichResult(payload={
-        "z": z, "p_two_sided": 2 * stats.norm.sf(np.abs(z)),
-        "holds_for": "both m_tilde_{X,1} and m_tilde_{X,2}",
-        "why_lyapunov_works": "V is bounded in [0, 1], so every moment exists "
-                              "automatically and the Lyapunov condition needs "
-                              "no extra assumption",
-        "valid_at_boundary": True,
-        "method": "Theorem 4.4: standardised boundary-free MRL estimators are asymptotically N(0, 1)"})
+    return RichResult(
+        payload={
+            "z": z,
+            "p_two_sided": 2 * stats.norm.sf(np.abs(z)),
+            "holds_for": "both m_tilde_{X,1} and m_tilde_{X,2}",
+            "why_lyapunov_works": "V is bounded in [0, 1], so every moment exists "
+            "automatically and the Lyapunov condition needs "
+            "no extra assumption",
+            "valid_at_boundary": True,
+            "method": "Theorem 4.4: standardised boundary-free MRL estimators are asymptotically N(0, 1)",
+        }
+    )
 
 
 def cheatsheet():

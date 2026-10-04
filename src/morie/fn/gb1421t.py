@@ -2,7 +2,6 @@
 """Phi coefficient and Cramer's V."""
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._richresult import RichResult
 
 __all__ = ["gibbons_phi_cramers_v"]
@@ -53,8 +52,12 @@ def gibbons_phi_cramers_v(table):
     phi = float(np.sqrt(Q / ntot)) if (r, c) == (2, 2) else None
     return RichResult(
         payload={
-            "phi": phi, "cramers_v": V, "chi2": Q, "n": int(ntot),
-            "r": int(r), "c": int(c),
+            "phi": phi,
+            "cramers_v": V,
+            "chi2": Q,
+            "n": int(ntot),
+            "r": int(r),
+            "c": int(c),
             "method": "phi = sqrt(Q/n); V = sqrt(Q/(n min(r-1,c-1))) (Ch. 14.2)",
         }
     )

@@ -103,8 +103,7 @@ def geron_bf16_range(x):
             ("bf16 machine epsilon", _BF16_EPS),
         ],
         interpretation=(
-            "bf16 shares fp32's exponent range, so overflow is rare; the cost is "
-            "precision, about 2-3 decimal digits."
+            "bf16 shares fp32's exponent range, so overflow is rare; the cost is precision, about 2-3 decimal digits."
         ),
         payload={
             "bf16": b64.tolist(),

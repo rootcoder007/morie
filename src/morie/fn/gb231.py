@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['edfbinom', 'gibbons_edf_binomial']
+__all__ = ["edfbinom", "gibbons_edf_binomial"]
 
 
 def edfbinom(n, fx, i=None):

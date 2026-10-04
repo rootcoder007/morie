@@ -36,20 +36,19 @@ def gls_estimator(x, c, zhat):
     arr = np.asarray(_brus.gls_estimator(x, c, zhat), dtype=float)
     value = float(arr.ravel()[0])
     payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (15.10)"
     return RichResult(
-        title='GLS estimator across repeated surveys',
+        title="GLS estimator across repeated surveys",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r15e10: zhat_GLS = (X^T C^-1 X)^-1 X^T C^-1 zhat [Brus 2022, eq. 15.10]'
+    return "r15e10: zhat_GLS = (X^T C^-1 X)^-1 X^T C^-1 zhat [Brus 2022, eq. 15.10]"
 
 
 # compact alias per ledger/NAMING.md

@@ -5,10 +5,9 @@ threshold sigma*sqrt(2 log n) and soft thresholding. Application context:
 Rangayyan & Krishnan (2024) Sec 8.14, p.493.
 """
 
-
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgwav import rangayyan_wavelet_denoise
 
 # Without pywt the function documents a moving-average fallback that reports

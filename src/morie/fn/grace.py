@@ -65,12 +65,10 @@ representations by mutual information estimation and maximization",
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["drop_edges", "mask_features", "generate_view",
-           "pair_loss", "grace_objective"]
+__all__ = ["drop_edges", "mask_features", "generate_view", "pair_loss", "grace_objective"]
 
 _EPS = 1e-12
 
@@ -80,8 +78,7 @@ def drop_edges(edges, p, rng):
     :math:`p`."""
     pp = float(p)
     if not 0.0 <= pp < 1.0:
-        raise ValueError("grace: the drop rate must lie in [0,1), got "
-                         "%r" % (p,))
+        raise ValueError("grace: the drop rate must lie in [0,1), got %r" % (p,))
     return [e for e in edges if float(rng.uniform()) >= pp]
 
 
@@ -93,30 +90,28 @@ def mask_features(X, p, rng):
     """
     pp = float(p)
     if not 0.0 <= pp < 1.0:
-        raise ValueError("grace: the mask rate must lie in [0,1), got "
-                         "%r" % (p,))
+        raise ValueError("grace: the mask rate must lie in [0,1), got %r" % (p,))
     rows = [[float(v) for v in r] for r in k.mat(X)]
     d = len(rows[0])
-    keep = [0.0 if float(rng.uniform()) < pp else 1.0
-            for _ in range(d)]
-    return {"X": [[rows[i][f] * keep[f] for f in range(d)]
-                  for i in range(len(rows))],
-            "kept": keep, "n_masked": int(d - sum(keep))}
+    keep = [0.0 if float(rng.uniform()) < pp else 1.0 for _ in range(d)]
+    return {
+        "X": [[rows[i][f] * keep[f] for f in range(d)] for i in range(len(rows))],
+        "kept": keep,
+        "n_masked": int(d - sum(keep)),
+    }
 
 
 def generate_view(X, edges, p_edge, p_feature, rng):
     r"""One view, corrupted on BOTH levels."""
     m = mask_features(X, p_feature, rng)
-    return {"X": m["X"], "edges": drop_edges(edges, p_edge, rng),
-            "n_masked_features": m["n_masked"]}
+    return {"X": m["X"], "edges": drop_edges(edges, p_edge, rng), "n_masked_features": m["n_masked"]}
 
 
 def _cos(a, b):
     na = math.sqrt(sum(v * v for v in a))
     nb = math.sqrt(sum(v * v for v in b))
     if na <= _EPS or nb <= _EPS:
-        raise ValueError("grace: cosine similarity needs non-zero "
-                         "vectors")
+        raise ValueError("grace: cosine similarity needs non-zero vectors")
     return sum(a[i] * b[i] for i in range(len(a))) / (na * nb)
 
 
@@ -130,10 +125,8 @@ def pair_loss(U, V, i, tau=0.5, intra=True):
     if t <= 0.0:
         raise ValueError("grace: the temperature must be positive")
     pos = math.exp(_cos(U[i], V[i]) / t)
-    inter = sum(math.exp(_cos(U[i], V[j]) / t)
-                for j in range(len(V)) if j != i)
-    same = sum(math.exp(_cos(U[i], U[j]) / t)
-               for j in range(len(U)) if j != i) if intra else 0.0
+    inter = sum(math.exp(_cos(U[i], V[j]) / t) for j in range(len(V)) if j != i)
+    same = sum(math.exp(_cos(U[i], U[j]) / t) for j in range(len(U)) if j != i) if intra else 0.0
     return -math.log(pos / (pos + inter + same))
 
 
@@ -141,35 +134,37 @@ def grace_objective(U, V, tau=0.5, intra=True):
     r"""The symmetric average over both views."""
     n = len(U)
     if n != len(V):
-        raise ValueError("grace: the views have %d and %d nodes"
-                         % (n, len(V)))
+        raise ValueError("grace: the views have %d and %d nodes" % (n, len(V)))
     if n < 2:
-        raise ValueError("grace: at least 2 nodes are needed for "
-                         "negatives")
-    tot = sum(pair_loss(U, V, i, tau, intra)
-              + pair_loss(V, U, i, tau, intra) for i in range(n))
-    return RichResult(payload={
-        "estimate": tot / (2.0 * n), "loss": tot / (2.0 * n),
-        "tau": float(tau), "intra_view_negatives": bool(intra),
-        "n_nodes": n,
-        "method": "node-level contrastive objective; Zhu et al. "
-                  "(2020) Sec. 3",
-        "note": "negatives come from BOTH views -- inter-view and "
-                "intra-view; omitting the latter leaves same-view "
-                "nodes unseparated",
-    })
+        raise ValueError("grace: at least 2 nodes are needed for negatives")
+    tot = sum(pair_loss(U, V, i, tau, intra) + pair_loss(V, U, i, tau, intra) for i in range(n))
+    return RichResult(
+        payload={
+            "estimate": tot / (2.0 * n),
+            "loss": tot / (2.0 * n),
+            "tau": float(tau),
+            "intra_view_negatives": bool(intra),
+            "n_nodes": n,
+            "method": "node-level contrastive objective; Zhu et al. (2020) Sec. 3",
+            "note": "negatives come from BOTH views -- inter-view and "
+            "intra-view; omitting the latter leaves same-view "
+            "nodes unseparated",
+        }
+    )
 
 
 def cheatsheet():
-    return ("grace: contrast NODE AGAINST NODE, not node against a "
-            "global summary -- DGI's local-global objective leans on "
-            "the readout being expressive. Two views by corrupting "
-            "BOTH topology (drop edges) and attributes (mask feature "
-            "DIMENSIONS). (u_i, v_i) is positive; every other node is "
-            "a negative in the other view AND in the same view, and "
-            "the INTRA-view term is the one people drop. InfoNCE with "
-            "cosine similarity and temperature tau, averaged "
-            "symmetrically. Fully unsupervised.")
+    return (
+        "grace: contrast NODE AGAINST NODE, not node against a "
+        "global summary -- DGI's local-global objective leans on "
+        "the readout being expressive. Two views by corrupting "
+        "BOTH topology (drop edges) and attributes (mask feature "
+        "DIMENSIONS). (u_i, v_i) is positive; every other node is "
+        "a negative in the other view AND in the same view, and "
+        "the INTRA-view term is the one people drop. InfoNCE with "
+        "cosine similarity and temperature tau, averaged "
+        "symmetrically. Fully unsupervised."
+    )
 
 
 # compact alias per ledger/NAMING.md

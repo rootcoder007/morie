@@ -86,13 +86,10 @@ approximations for maximizing submodular set functions - I",
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["genre_distribution", "calibration_kl",
-           "calibration_hellinger", "diversity_prior",
-           "calibrated_rerank"]
+__all__ = ["genre_distribution", "calibration_kl", "calibration_hellinger", "diversity_prior", "calibrated_rerank"]
 
 _EPS = 1e-12
 _METRICS = ("kl", "hellinger")
@@ -115,16 +112,13 @@ def genre_distribution(items, p_g_given_i, weights=None):
     if not it:
         raise ValueError("caltbR: no items given")
     G = len(p_g_given_i[0])
-    w = [1.0] * len(it) if weights is None \
-        else [float(v) for v in k.vec(weights)]
+    w = [1.0] * len(it) if weights is None else [float(v) for v in k.vec(weights)]
     if len(w) != len(it):
-        raise ValueError("caltbR: %d weights for %d items"
-                         % (len(w), len(it)))
+        raise ValueError("caltbR: %d weights for %d items" % (len(w), len(it)))
     tot = sum(w)
     if tot <= _EPS:
         raise ValueError("caltbR: the weights sum to zero")
-    return [sum(w[n] * p_g_given_i[it[n]][g]
-                for n in range(len(it))) / tot for g in range(G)]
+    return [sum(w[n] * p_g_given_i[it[n]][g] for n in range(len(it))) / tot for g in range(G)]
 
 
 def calibration_kl(p, q, alpha=0.01):
@@ -132,12 +126,10 @@ def calibration_kl(p, q, alpha=0.01):
     pp = _norm([float(v) for v in k.vec(p)])
     qq = _norm([float(v) for v in k.vec(q)])
     if len(pp) != len(qq):
-        raise ValueError("caltbR: %d genres in p but %d in q"
-                         % (len(pp), len(qq)))
+        raise ValueError("caltbR: %d genres in p but %d in q" % (len(pp), len(qq)))
     a = float(alpha)
     if not 0.0 < a < 1.0:
-        raise ValueError("caltbR: alpha must lie in (0,1), got %r"
-                         % (alpha,))
+        raise ValueError("caltbR: alpha must lie in (0,1), got %r" % (alpha,))
     tot = 0.0
     for g in range(len(pp)):
         if pp[g] <= _EPS:
@@ -155,8 +147,7 @@ def calibration_hellinger(p, q):
     """
     pp = _norm([float(v) for v in k.vec(p)])
     qq = _norm([float(v) for v in k.vec(q)])
-    s = sum((math.sqrt(pp[g]) - math.sqrt(qq[g])) ** 2
-            for g in range(len(pp)))
+    s = sum((math.sqrt(pp[g]) - math.sqrt(qq[g])) ** 2 for g in range(len(pp)))
     return math.sqrt(s) / math.sqrt(2.0)
 
 
@@ -170,16 +161,13 @@ def diversity_prior(p_u, p0, beta):
     b = [float(v) for v in k.vec(p0)]
     t = float(beta)
     if not 0.0 <= t <= 1.0:
-        raise ValueError("caltbR: beta must lie in [0,1], got %r"
-                         % (beta,))
+        raise ValueError("caltbR: beta must lie in [0,1], got %r" % (beta,))
     if len(a) != len(b):
-        raise ValueError("caltbR: prior has %d genres, target %d"
-                         % (len(b), len(a)))
+        raise ValueError("caltbR: prior has %d genres, target %d" % (len(b), len(a)))
     return [t * b[g] + (1.0 - t) * a[g] for g in range(len(a))]
 
 
-def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5,
-                      metric="kl", alpha=0.01, rank_weights=None):
+def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5, metric="kl", alpha=0.01, rank_weights=None):
     r"""Eq. (6) by greedy maximisation of the submodular surrogate.
 
     Every prefix of the returned list is :math:`(1-1/e)` optimal, so a
@@ -187,8 +175,7 @@ def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5,
     view.
     """
     if metric not in _METRICS:
-        raise ValueError("caltbR: metric must be one of %s, got %r"
-                         % (", ".join(_METRICS), metric))
+        raise ValueError("caltbR: metric must be one of %s, got %r" % (", ".join(_METRICS), metric))
     s = [float(v) for v in k.vec(scores)]
     n = len(s)
     if n == 0:
@@ -198,16 +185,13 @@ def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5,
         raise ValueError("caltbR: N must be at least 1")
     lm = float(lam)
     if not 0.0 <= lm <= 1.0:
-        raise ValueError("caltbR: lambda must lie in [0,1], got %r"
-                         % (lam,))
+        raise ValueError("caltbR: lambda must lie in [0,1], got %r" % (lam,))
     pt = _norm([float(v) for v in k.vec(p_target)])
 
     def cal(sel):
-        w = None if rank_weights is None \
-            else [rank_weights[r] for r in range(len(sel))]
+        w = None if rank_weights is None else [rank_weights[r] for r in range(len(sel))]
         q = genre_distribution(sel, p_g_given_i, w)
-        return (calibration_kl(pt, q, alpha) if metric == "kl"
-                else calibration_hellinger(pt, q))
+        return calibration_kl(pt, q, alpha) if metric == "kl" else calibration_hellinger(pt, q)
 
     chosen, obj = [], []
     for _ in range(Nn):
@@ -216,45 +200,49 @@ def calibrated_rerank(scores, p_g_given_i, p_target, N=10, lam=0.5,
             if i in chosen:
                 continue
             cand = chosen + [i]
-            val = (1.0 - lm) * sum(s[j] for j in cand) \
-                - lm * cal(cand)
+            val = (1.0 - lm) * sum(s[j] for j in cand) - lm * cal(cand)
             if best is None or val > best:
                 best, bi = val, i
         chosen.append(bi)
         obj.append(best)
     q_final = genre_distribution(
-        chosen, p_g_given_i,
-        None if rank_weights is None
-        else [rank_weights[r] for r in range(len(chosen))])
+        chosen, p_g_given_i, None if rank_weights is None else [rank_weights[r] for r in range(len(chosen))]
+    )
     top = sorted(range(n), key=lambda i: -s[i])[:Nn]
-    return RichResult(payload={
-        "estimate": chosen, "ranking": chosen,
-        "objective_path": obj,
-        "q": q_final, "p_target": pt,
-        "calibration": cal(chosen),
-        "calibration_uncalibrated": cal(top),
-        "score": sum(s[i] for i in chosen),
-        "score_uncalibrated": sum(s[i] for i in top),
-        "lambda": lm, "metric": metric, "N": Nn,
-        "guarantee": "(1 - 1/e) optimal at EVERY prefix, by "
-                     "submodularity",
-        "method": "greedy maximum marginal relevance; Steck (2018) "
-                  "eq. (6)",
-    })
+    return RichResult(
+        payload={
+            "estimate": chosen,
+            "ranking": chosen,
+            "objective_path": obj,
+            "q": q_final,
+            "p_target": pt,
+            "calibration": cal(chosen),
+            "calibration_uncalibrated": cal(top),
+            "score": sum(s[i] for i in chosen),
+            "score_uncalibrated": sum(s[i] for i in top),
+            "lambda": lm,
+            "metric": metric,
+            "N": Nn,
+            "guarantee": "(1 - 1/e) optimal at EVERY prefix, by submodularity",
+            "method": "greedy maximum marginal relevance; Steck (2018) eq. (6)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("caltbR: ranking by accuracy CROWDS OUT the user's "
-            "minority interests -- with 70/30 genre proportions the "
-            "top-10 by p(i|u) is all romance, because the imbalanced "
-            "majority label is the accuracy-optimal prediction. "
-            "Calibration therefore costs accuracy by construction. "
-            "C_KL = KL(p || (1-alpha)q + alpha*p), alpha = 0.01, "
-            "chosen because it is zero only at equality, punishes "
-            "errors where p is SMALL, and prefers the less extreme "
-            "deviation. Applied by greedy MMR re-ranking, submodular, "
-            "so every PREFIX is (1-1/e) optimal. Not the same as "
-            "diversity: diversity would return 50/50.")
+    return (
+        "caltbR: ranking by accuracy CROWDS OUT the user's "
+        "minority interests -- with 70/30 genre proportions the "
+        "top-10 by p(i|u) is all romance, because the imbalanced "
+        "majority label is the accuracy-optimal prediction. "
+        "Calibration therefore costs accuracy by construction. "
+        "C_KL = KL(p || (1-alpha)q + alpha*p), alpha = 0.01, "
+        "chosen because it is zero only at equality, punishes "
+        "errors where p is SMALL, and prefers the less extreme "
+        "deviation. Applied by greedy MMR re-ranking, submodular, "
+        "so every PREFIX is (1-1/e) optimal. Not the same as "
+        "diversity: diversity would return 50/50."
+    )
 
 
 # compact alias per ledger/NAMING.md

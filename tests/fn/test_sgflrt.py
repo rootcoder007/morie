@@ -1,7 +1,6 @@
 """Tests for sgflrt.spatial_glmm_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgflrt import spatial_glmm_fit
 
 

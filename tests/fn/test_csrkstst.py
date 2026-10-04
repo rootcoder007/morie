@@ -6,9 +6,9 @@ replaced by tests of what the procedure must actually do: hold its size
 under the null, and have power against clustered and regular patterns.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.csrkstst import kstest_csr
 
 
@@ -50,7 +50,9 @@ def test_regular_pattern_is_rejected():
 
 def test_clustering_shortens_nearest_neighbour_distance():
     """The direction the book states: clustered patterns give smaller mean NN."""
-    assert kstest_csr(_clustered(seed=4), nsim=9, seed=7)["mean_nn"] < kstest_csr(_csr(seed=4), nsim=9, seed=7)["mean_nn"]
+    assert (
+        kstest_csr(_clustered(seed=4), nsim=9, seed=7)["mean_nn"] < kstest_csr(_csr(seed=4), nsim=9, seed=7)["mean_nn"]
+    )
 
 
 def test_p_value_is_a_rank_and_respects_its_bounds():

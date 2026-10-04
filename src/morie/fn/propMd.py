@@ -41,9 +41,14 @@ def proportion_mediated(NIE, NDE):
     nde = float(NDE)
     te = nie + nde
     same = 1.0 if (nie >= 0.0) == (nde >= 0.0) else 0.0
-    return RichResult(payload={
-        "estimate": nie / te if te != 0.0 else float("nan"), "te": te,
-        "same_sign": same, "method": "Proportion mediated, NIE / TE"})
+    return RichResult(
+        payload={
+            "estimate": nie / te if te != 0.0 else float("nan"),
+            "te": te,
+            "same_sign": same,
+            "method": "Proportion mediated, NIE / TE",
+        }
+    )
 
 
 def cheatsheet():

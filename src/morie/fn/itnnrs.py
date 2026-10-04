@@ -100,7 +100,11 @@ def item_nonresponse(y, R, X, weights=None):
     rates = [resp[k] / tot[k] for k in order]
     return RichResult(
         title="Item nonresponse adjustment",
-        summary_lines=[("classes", len(order)), ("response rate", sum(resp.values()) / sum(tot.values())), ("estimate", est)],
+        summary_lines=[
+            ("classes", len(order)),
+            ("response rate", sum(resp.values()) / sum(tot.values())),
+            ("estimate", est),
+        ],
         payload={
             "estimate": est,
             "se": se,

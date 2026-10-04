@@ -77,8 +77,7 @@ def target(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025, iters=100, tol=1e-12):
     QAs = [expit(off[i] + e[0] * H0[i] + e[1] * H1[i]) for i in range(n)]
     Q1s = [expit(logit(Q1W[i]) + e[1] / g1[i]) for i in range(n)]
     Q0s = [expit(logit(Q0W[i]) + e[0] / g0[i]) for i in range(n)]
-    return {"epsilon": e, "QAstar": QAs, "Q1star": Q1s, "Q0star": Q0s,
-            "g1": g1, "g0": g0, "H1": H1, "H0": H0}
+    return {"epsilon": e, "QAstar": QAs, "Q1star": Q1s, "Q0star": Q0s, "g1": g1, "g0": g0, "H1": H1, "H0": H0}
 
 
 def curves(Y, A, fit):
@@ -92,6 +91,5 @@ def curves(Y, A, fit):
     mu1 = sum(Q1s) / n
     mu0 = sum(Q0s) / n
     ic1 = [A[i] / g1[i] * (Y[i] - QAs[i]) + Q1s[i] - mu1 for i in range(n)]
-    ic0 = [(1.0 - A[i]) / g0[i] * (Y[i] - QAs[i]) + Q0s[i] - mu0
-           for i in range(n)]
+    ic0 = [(1.0 - A[i]) / g0[i] * (Y[i] - QAs[i]) + Q0s[i] - mu0 for i in range(n)]
     return mu1, mu0, ic1, ic0

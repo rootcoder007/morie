@@ -1,7 +1,5 @@
 """Tests for fzc1x.fauzi_c1_coefficient."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzc1x import fauzi_c1_coefficient
 
 
@@ -20,7 +18,7 @@ def test_fzc1x_basic():
 
     # Independent computation from Eq. (5.8):
     #   c_1(x) = g''(g^{-1}(x)) * f_X(x) + [g'(g^{-1}(x))]^2 * f_X'(x)
-    expected = d2g * density + (dg ** 2) * fp
+    expected = d2g * density + (dg**2) * fp
     assert abs(result["estimate"] - expected) < 1e-12
 
 

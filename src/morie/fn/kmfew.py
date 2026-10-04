@@ -37,8 +37,8 @@ def kamath_few_shot_exemplar_selection(D, query_embed, K, metric="cosine"):
         raise ValueError("D must be a 2-D pool of exemplar embeddings.")
     if D.shape[1] != q.size:
         raise ValueError(
-            f"exemplars have width {D.shape[1]} but the query has "
-            f"{q.size}; they are not in the same embedding space.")
+            f"exemplars have width {D.shape[1]} but the query has {q.size}; they are not in the same embedding space."
+        )
     if not 1 <= K <= n:
         raise ValueError(f"K must lie in [1, {n}]; got {K}.")
     if metric not in ("cosine", "dot"):
@@ -48,9 +48,7 @@ def kamath_few_shot_exemplar_selection(D, query_embed, K, metric="cosine"):
         nq = np.linalg.norm(q)
         nd = np.linalg.norm(D, axis=1)
         if nq == 0 or np.any(nd == 0):
-            raise ValueError(
-                "a zero embedding has no direction, so cosine "
-                "similarity is undefined; use metric='dot'.")
+            raise ValueError("a zero embedding has no direction, so cosine similarity is undefined; use metric='dot'.")
         sims = (D @ q) / (nd * nq)
     else:
         sims = D @ q
@@ -58,13 +56,18 @@ def kamath_few_shot_exemplar_selection(D, query_embed, K, metric="cosine"):
     # -sims sorts descending; 'stable' keeps ties in pool order.
     order = np.argsort(-sims, kind="stable")[:K]
     sel = [int(i) for i in order]
-    return RichResult(payload={
-        "selected": sel,
-        "similarities": [float(sims[i]) for i in sel],
-        "all_similarities": [float(v) for v in sims],
-        "estimate": float(sims[sel[0]]),
-        "K": K, "metric": metric, "n": n,
-        "method": "Top-K few-shot exemplar selection by similarity"})
+    return RichResult(
+        payload={
+            "selected": sel,
+            "similarities": [float(sims[i]) for i in sel],
+            "all_similarities": [float(v) for v in sims],
+            "estimate": float(sims[sel[0]]),
+            "K": K,
+            "metric": metric,
+            "n": n,
+            "method": "Top-K few-shot exemplar selection by similarity",
+        }
+    )
 
 
 def cheatsheet():

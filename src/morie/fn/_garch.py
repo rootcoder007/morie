@@ -75,8 +75,11 @@ def garch_recursion(eps, params, spec="garch"):
             s2[t] = w + (a + g * neg) * eps[t - 1] ** 2 + b * s2[t - 1]
     elif spec == "aparch":
         w, a, g, b, d = (
-            params["omega"], params["alpha"], params["gamma"],
-            params["beta"], params["delta"],
+            params["omega"],
+            params["alpha"],
+            params["gamma"],
+            params["beta"],
+            params["delta"],
         )
         sd = np.empty(n)
         sd[0] = s2[0] ** (d / 2.0)
@@ -87,8 +90,11 @@ def garch_recursion(eps, params, spec="garch"):
         # Engle-Lee component model: a slow permanent component q_t and
         # a transitory deviation, so persistence splits in two.
         w, rho, phi, a, b = (
-            params["omega"], params["rho"], params["phi"],
-            params["alpha"], params["beta"],
+            params["omega"],
+            params["rho"],
+            params["phi"],
+            params["alpha"],
+            params["beta"],
         )
         q = np.empty(n)
         q[0] = s2[0]
@@ -145,7 +151,9 @@ def _pack(spec, x):
         return {"omega": np.exp(np.clip(x[0], -30, 5)), "beta": sig(x[1]) * 0.999}
     if spec == "egarch":
         return {
-            "omega": x[0], "alpha": x[1], "gamma": x[2],
+            "omega": x[0],
+            "alpha": x[1],
+            "gamma": x[2],
             "beta": np.tanh(x[3]) * 0.999,
         }
     if spec in ("gjr", "tgarch"):
@@ -153,7 +161,8 @@ def _pack(spec, x):
         frac = sig(x[2])
         return {
             "omega": np.exp(np.clip(x[0], -30, 5)),
-            "alpha": tot * frac, "beta": tot * (1 - frac),
+            "alpha": tot * frac,
+            "beta": tot * (1 - frac),
             "gamma": np.tanh(x[3]) * 0.5,
         }
     if spec == "aparch":
@@ -161,27 +170,36 @@ def _pack(spec, x):
         frac = sig(x[2])
         return {
             "omega": np.exp(np.clip(x[0], -30, 5)),
-            "alpha": tot * frac, "beta": tot * (1 - frac),
+            "alpha": tot * frac,
+            "beta": tot * (1 - frac),
             "gamma": np.tanh(x[3]) * 0.99,
             "delta": 0.5 + 2.5 * sig(x[4]),
         }
     if spec == "cgarch":
         return {
             "omega": np.exp(np.clip(x[0], -30, 5)),
-            "rho": sig(x[1]) * 0.9999, "phi": sig(x[2]) * 0.5,
-            "alpha": sig(x[3]) * 0.5, "beta": sig(x[4]) * 0.9,
+            "rho": sig(x[1]) * 0.9999,
+            "phi": sig(x[2]) * 0.5,
+            "alpha": sig(x[3]) * 0.5,
+            "beta": sig(x[4]) * 0.9,
         }
     return {
         "omega": np.exp(np.clip(x[0], -30, 5)),
-        "d": sig(x[1]) * 0.999, "beta": sig(x[2]) * 0.99, "phi": sig(x[3]) * 0.99,
+        "d": sig(x[1]) * 0.999,
+        "beta": sig(x[2]) * 0.99,
+        "phi": sig(x[3]) * 0.99,
     }
 
 
 _X0 = {
-    "garch": [-4.0, 2.0, -1.5], "igarch": [-6.0, 2.0],
-    "egarch": [-0.5, 0.15, -0.05, 2.0], "gjr": [-4.0, 2.0, -1.5, 0.2],
-    "tgarch": [-4.0, 2.0, -1.5, 0.2], "aparch": [-4.0, 2.0, -1.5, 0.2, 0.0],
-    "cgarch": [-6.0, 3.0, -2.0, -2.0, 0.5], "figarch": [-4.0, 0.0, 0.0, 0.0],
+    "garch": [-4.0, 2.0, -1.5],
+    "igarch": [-6.0, 2.0],
+    "egarch": [-0.5, 0.15, -0.05, 2.0],
+    "gjr": [-4.0, 2.0, -1.5, 0.2],
+    "tgarch": [-4.0, 2.0, -1.5, 0.2],
+    "aparch": [-4.0, 2.0, -1.5, 0.2, 0.0],
+    "cgarch": [-6.0, 3.0, -2.0, -2.0, 0.5],
+    "figarch": [-4.0, 0.0, 0.0, 0.0],
 }
 
 
@@ -193,9 +211,7 @@ def _loglik(eps, s2, dist="normal", nu=8.0):
         if nu <= 2:
             return -np.inf
         # standardised t: unit variance, so scale by sqrt((nu-2)/nu)
-        c = special.gammaln((nu + 1) / 2) - special.gammaln(nu / 2) - 0.5 * np.log(
-            np.pi * (nu - 2)
-        )
+        c = special.gammaln((nu + 1) / 2) - special.gammaln(nu / 2) - 0.5 * np.log(np.pi * (nu - 2))
         z2 = eps**2 / s2
         return float(np.sum(c - 0.5 * np.log(s2) - (nu + 1) / 2 * np.log1p(z2 / (nu - 2))))
     if dist == "ged":
@@ -269,8 +285,7 @@ def garch_fit(r, spec="garch", dist="normal", nu=None, mean="constant"):
         ll = _loglik(e, s2, dist, 8.0 if shape is None else shape)
         return 1e10 if not np.isfinite(ll) else -ll
 
-    res = optimize.minimize(neg, x0, method="Nelder-Mead",
-                            options={"maxiter": 6000, "xatol": 1e-8, "fatol": 1e-8})
+    res = optimize.minimize(neg, x0, method="Nelder-Mead", options={"maxiter": 6000, "xatol": 1e-8, "fatol": 1e-8})
     p = _pack(spec, res.x)
     shape = nu
     if fit_nu:
@@ -306,12 +321,20 @@ def garch_fit(r, spec="garch", dist="normal", nu=None, mean="constant"):
     k = len(x0)
     ll = -res.fun
     return {
-        "params": pp, "sigma2": s2, "sigma": np.sqrt(s2), "loglik": ll,
-        "aic": 2 * k - 2 * ll, "bic": k * np.log(n) - 2 * ll,
-        "persistence": float(pers), "residuals": eps,
-        "std_residuals": eps / np.sqrt(s2), "mu": mu,
-        "nu": None if shape is None else float(shape), "spec": spec,
-        "converged": bool(res.success and res.fun < 1e9), "n": int(n),
+        "params": pp,
+        "sigma2": s2,
+        "sigma": np.sqrt(s2),
+        "loglik": ll,
+        "aic": 2 * k - 2 * ll,
+        "bic": k * np.log(n) - 2 * ll,
+        "persistence": float(pers),
+        "residuals": eps,
+        "std_residuals": eps / np.sqrt(s2),
+        "mu": mu,
+        "nu": None if shape is None else float(shape),
+        "spec": spec,
+        "converged": bool(res.success and res.fun < 1e9),
+        "n": int(n),
         "component": None if q is None else q * scale**2,
         "dist": dist,
     }
@@ -401,20 +424,25 @@ def bekk_fit(R, diagonal=True):
             except np.linalg.LinAlgError:
                 return 1e10
             sol = np.linalg.solve(L, E[t])
-            ll += -0.5 * (k * np.log(2 * np.pi) + 2 * np.sum(np.log(np.diag(L)))
-                          + float(sol @ sol))
+            ll += -0.5 * (k * np.log(2 * np.pi) + 2 * np.sum(np.log(np.diag(L))) + float(sol @ sol))
         return -ll if np.isfinite(ll) else 1e10
 
-    res = optimize.minimize(neg, [-2.0, 2.0], method="Nelder-Mead",
-                            options={"maxiter": 800, "fatol": 1e-6})
+    res = optimize.minimize(neg, [-2.0, 2.0], method="Nelder-Mead", options={"maxiter": 800, "fatol": 1e-6})
     a = 0.999 / (1 + np.exp(-np.clip(res.x[0], -30, 30)))
     b = (0.999 - a) / (1 + np.exp(-np.clip(res.x[1], -30, 30)))
     H = recur(a, b)
     return {
-        "H": H, "a": float(a), "b": float(b), "H_bar": Hbar,
-        "C": Hbar * (1 - a - b), "persistence": float(a + b),
-        "loglik": float(-res.fun), "T": int(T), "k": int(k),
-        "diagonal": bool(diagonal), "converged": bool(res.fun < 1e9),
+        "H": H,
+        "a": float(a),
+        "b": float(b),
+        "H_bar": Hbar,
+        "C": Hbar * (1 - a - b),
+        "persistence": float(a + b),
+        "loglik": float(-res.fun),
+        "T": int(T),
+        "k": int(k),
+        "diagonal": bool(diagonal),
+        "converged": bool(res.fun < 1e9),
         "method": "Scalar BEKK(1,1) with variance targeting (Engle-Kroner 1995)",
     }
 
@@ -487,20 +515,16 @@ def ms_garch_fit(r, n_regimes=2, max_iter=60):
     for j in range(K):
         x0 += [np.log(v * (0.5 + j)) - 2, 2.0, -1.5 + j]
     x0 += [-2.5] * (K * (K - 1))  # start persistent
-    res = optimize.minimize(lambda x: filt(x)[0], x0, method="Nelder-Mead",
-                            options={"maxiter": 4000, "fatol": 1e-6})
+    res = optimize.minimize(lambda x: filt(x)[0], x0, method="Nelder-Mead", options={"maxiter": 4000, "fatol": 1e-6})
     _, pars, P = filt(res.x)
     order = np.argsort([p[0] / max(1 - p[1] - p[2], 1e-6) for p in pars])
     return {
-        "params": [
-            {"omega": pars[i][0], "alpha": pars[i][1], "beta": pars[i][2]}
-            for i in order
-        ],
+        "params": [{"omega": pars[i][0], "alpha": pars[i][1], "beta": pars[i][2]} for i in order],
         "transition": P[np.ix_(order, order)],
-        "unconditional_var": [
-            float(pars[i][0] / max(1 - pars[i][1] - pars[i][2], 1e-6)) for i in order
-        ],
-        "loglik": float(-res.fun), "n_regimes": K, "n": int(n),
+        "unconditional_var": [float(pars[i][0] / max(1 - pars[i][1] - pars[i][2], 1e-6)) for i in order],
+        "loglik": float(-res.fun),
+        "n_regimes": K,
+        "n": int(n),
         "converged": bool(res.fun < 1e9),
         "method": "Markov-switching GARCH, Gray (1996) collapsed recursion",
         # Gray, S. F. (1996) "Modeling the conditional distribution of
@@ -530,7 +554,9 @@ def var_es(mu, sigma, alpha=0.05, dist="normal", nu=8.0):
         return {
             "var": -(mu + sigma * z),
             "es": -(mu - sigma * stats.norm.pdf(z) / alpha),
-            "quantile": float(z), "alpha": alpha, "dist": dist,
+            "quantile": float(z),
+            "alpha": alpha,
+            "dist": dist,
         }
     if dist == "t":
         if nu <= 2:
@@ -540,7 +566,11 @@ def var_es(mu, sigma, alpha=0.05, dist="normal", nu=8.0):
         pdf = stats.t.pdf(z / s, nu) / s
         es_std = -pdf / alpha * (nu + (z / s) ** 2) / (nu - 1) * s**2 / s
         return {
-            "var": -(mu + sigma * z), "es": -(mu + sigma * es_std),
-            "quantile": float(z), "alpha": alpha, "dist": dist, "nu": float(nu),
+            "var": -(mu + sigma * z),
+            "es": -(mu + sigma * es_std),
+            "quantile": float(z),
+            "alpha": alpha,
+            "dist": dist,
+            "nu": float(nu),
         }
     raise ValueError(f"dist must be 'normal' or 't', got {dist!r}.")

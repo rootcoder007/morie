@@ -1,10 +1,10 @@
 """Tests for morie.fn.sugpln — suggest analysis plan."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.dataset import profile_dataset
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.sugpln import suggest_analysis_plan, sugpln
 
 

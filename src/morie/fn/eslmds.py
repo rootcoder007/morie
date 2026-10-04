@@ -84,28 +84,33 @@ def esl_mds(D, k):
     if not 1 <= k <= n - 1:
         raise ValueError(f"k must lie in [1, {n - 1}]; got {k}.")
     J = np.eye(n) - np.ones((n, n)) / n
-    B = -0.5 * J @ (D ** 2) @ J
+    B = -0.5 * J @ (D**2) @ J
     vals, vecs = np.linalg.eigh(B)
     order = np.argsort(vals)[::-1]
     vals, vecs = vals[order], vecs[:, order]
     neg = float(-np.sum(vals[vals < -1e-9]))
     pos = np.clip(vals[:k], 0.0, None)
     Z = vecs[:, :k] * np.sqrt(pos)
-    for j in range(k):                       # deterministic orientation
+    for j in range(k):  # deterministic orientation
         i = int(np.argmax(np.abs(Z[:, j]))) if Z[:, j].any() else 0
         if Z[i, j] < 0:
             Z[:, j] = -Z[:, j]
-    rec = np.sqrt(np.maximum(
-        np.sum((Z[:, None, :] - Z[None, :, :]) ** 2, axis=2), 0.0))
-    denom = float(np.sum(D ** 2))
+    rec = np.sqrt(np.maximum(np.sum((Z[:, None, :] - Z[None, :, :]) ** 2, axis=2), 0.0))
+    denom = float(np.sum(D**2))
     stress = float(np.sqrt(np.sum((D - rec) ** 2) / denom)) if denom > 0 else 0.0
-    return RichResult(payload={
-        "estimate": stress, "coordinates": [float(v) for v in Z.ravel()],
-        "eigenvalues": [float(v) for v in vals[:k]],
-        "negative_eigenvalue_mass": neg,
-        "is_euclidean": bool(neg <= 1e-9), "stress": stress,
-        "n": int(n), "k": k,
-        "method": "classical MDS via double-centred Gram; negative eigenvalues reported"})
+    return RichResult(
+        payload={
+            "estimate": stress,
+            "coordinates": [float(v) for v in Z.ravel()],
+            "eigenvalues": [float(v) for v in vals[:k]],
+            "negative_eigenvalue_mass": neg,
+            "is_euclidean": bool(neg <= 1e-9),
+            "stress": stress,
+            "n": int(n),
+            "k": k,
+            "method": "classical MDS via double-centred Gram; negative eigenvalues reported",
+        }
+    )
 
 
 def cheatsheet():

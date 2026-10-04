@@ -9,18 +9,17 @@ example around eq 5.2, and spline continuity at the knots (eq 6.35).
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _acd as ac
+from morie.fn import _array_core as np
 
 
 class TestCh1:
     def test_binomial_pmf_sums_to_one(self):
         total = sum(ac.binomial_pmf(w, 10, 0.3) for w in range(11))
         assert total == pytest.approx(1.0, rel=1e-12)
-        assert ac.binomial_pmf(3, 10, 0.3) == pytest.approx(
-            math.comb(10, 3) * 0.3 ** 3 * 0.7 ** 7, rel=1e-12)
+        assert ac.binomial_pmf(3, 10, 0.3) == pytest.approx(math.comb(10, 3) * 0.3**3 * 0.7**7, rel=1e-12)
 
     def test_mle_variance(self):
         assert ac.mle_variance_pi(0.4, 25) == pytest.approx(0.24 / 25)
@@ -57,7 +56,7 @@ class TestCh1:
 
         c_wald = ac.true_confidence_level(10, 0.05, wald)
         c_wilson = ac.true_confidence_level(10, 0.05, wilson)
-        assert c_wilson > c_wald            # book's central comparison
+        assert c_wilson > c_wald  # book's central comparison
         assert 0 <= c_wald <= 1 and 0 <= c_wilson <= 1
 
     def test_pearson_equals_score_squared(self):
@@ -65,12 +64,11 @@ class TestCh1:
         w1, n1, w2, n2 = 12, 30, 20, 35
         x2 = ac.pearson_chi2_two_groups(w1, n1, w2, n2)
         p_bar = (w1 + w2) / (n1 + n2)
-        zs = (w1 / n1 - w2 / n2) / math.sqrt(
-            p_bar * (1 - p_bar) * (1 / n1 + 1 / n2))
-        assert x2["x2"] == pytest.approx(zs ** 2, rel=1e-9)
+        zs = (w1 / n1 - w2 / n2) / math.sqrt(p_bar * (1 - p_bar) * (1 / n1 + 1 / n2))
+        assert x2["x2"] == pytest.approx(zs**2, rel=1e-9)
 
     def test_lrt_zero_when_equal(self):
-        out = ac.lrt_two_groups(10, 20, 15, 30)   # both p = 0.5
+        out = ac.lrt_two_groups(10, 20, 15, 30)  # both p = 0.5
         assert out["stat"] == pytest.approx(0.0, abs=1e-12)
         out2 = ac.lrt_two_groups(5, 20, 15, 20)
         assert out2["stat"] > 0
@@ -80,8 +78,7 @@ class TestCh1:
         or_hat = (20 / 30) / (10 / 40)
         assert got["or"] == pytest.approx(or_hat, rel=1e-12)
         se = math.sqrt(1 / 20 + 1 / 30 + 1 / 10 + 1 / 40)
-        assert got["upper"] / got["or"] == pytest.approx(
-            math.exp(1.96 * se), rel=1e-12)
+        assert got["upper"] / got["or"] == pytest.approx(math.exp(1.96 * se), rel=1e-12)
 
 
 class TestCh2Logistic:
@@ -96,7 +93,7 @@ class TestCh2Logistic:
         fit = ac.logistic_mle(self.X, self.Y)
         pi = 1 / (1 + np.exp(-(self.X @ fit["beta"])))
         score = self.X.T @ (self.Y - pi)
-        assert np.abs(score).max() < 1e-8        # MLE solves score = 0
+        assert np.abs(score).max() < 1e-8  # MLE solves score = 0
         # loglik forms agree, eqs (2.4)-(2.5) vs (2.1)
         ll_a = ac.logistic_loglik(fit["beta"], self.X, self.Y)
         ll_b = ac.bernoulli_likelihood(pi, self.Y)
@@ -116,14 +113,13 @@ class TestCh2Logistic:
     def test_or_ci_and_pi_ci(self):
         got = ac.or_ci_logistic(0.5, 0.04, 2.0, 1.96)
         assert got["or"] == pytest.approx(math.e, rel=1e-12)
-        assert got["lower"] == pytest.approx(
-            math.exp(1.0 - 2 * 1.96 * 0.2), rel=1e-12)
+        assert got["lower"] == pytest.approx(math.exp(1.0 - 2 * 1.96 * 0.2), rel=1e-12)
         cov = np.array([[0.5, -0.1], [-0.1, 0.05]])
         v = ac.linear_predictor_variance([1.0, 3.0], cov)
         assert v == pytest.approx(0.5 + 9 * 0.05 + 2 * 3 * -0.1, rel=1e-12)
         ci = ac.pi_wald_interval(0.2, v, 1.96)
         assert ci["lower"] < ci["pi"] < ci["upper"]
-        assert 0 < ci["lower"] and ci["upper"] < 1   # respects (0,1)
+        assert ci["lower"] > 0 and ci["upper"] < 1  # respects (0,1)
 
     def test_interaction_logit(self):
         b = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -141,14 +137,14 @@ class TestCh3Multicategory:
                 total += ac.multinomial_pmf([a, b, 4 - a - b], p)
         assert total == pytest.approx(1.0, rel=1e-10)
         # J=2 reduces to the binomial, eq (1.1)
-        assert ac.multinomial_pmf([3, 7], [0.3, 0.7]) == pytest.approx(
-            ac.binomial_pmf(3, 10, 0.3), rel=1e-12)
+        assert ac.multinomial_pmf([3, 7], [0.3, 0.7]) == pytest.approx(ac.binomial_pmf(3, 10, 0.3), rel=1e-12)
 
     def test_contingency_and_product_forms(self):
         counts = np.array([[2, 1], [1, 3]])
         joint = np.array([[0.2, 0.1], [0.3, 0.4]])
         assert ac.contingency_pmf(counts, joint) == pytest.approx(
-            ac.multinomial_pmf(counts.ravel(), joint.ravel()), rel=1e-12)
+            ac.multinomial_pmf(counts.ravel(), joint.ravel()), rel=1e-12
+        )
         cond = joint / joint.sum(axis=1, keepdims=True)
         pm = ac.product_multinomial_pmf(counts, cond)
         assert 0 < pm <= 1
@@ -180,8 +176,7 @@ class TestCh3Multicategory:
     def test_ordinal_or_interval_3e50(self):
         # ordinal OR interval (stub 3e50's provenance): symmetric on log scale
         got = ac.or_ci_logistic(0.43, 0.01, 4.0, 1.96)
-        assert math.sqrt(got["lower"] * got["upper"]) == pytest.approx(
-            got["or"], rel=1e-9)
+        assert math.sqrt(got["lower"] * got["upper"]) == pytest.approx(got["or"], rel=1e-9)
 
 
 class TestCh4Counts:
@@ -194,24 +189,20 @@ class TestCh4Counts:
             assert zs == pytest.approx(1.96, rel=1e-9)
 
     def test_log_link_and_loglik(self):
-        assert ac.poisson_log_link(0.1, [1.0], [1.0]) == pytest.approx(
-            math.exp(1.1), rel=1e-12)
+        assert ac.poisson_log_link(0.1, [1.0], [1.0]) == pytest.approx(math.exp(1.1), rel=1e-12)
         x = np.column_stack([np.ones(4), [0.0, 1, 2, 3]])
         y = np.array([1.0, 2, 4, 8])
         b = np.array([0.0, math.log(2)])
         ll = ac.poisson_loglik(b, x, y)
         mu = np.exp(x @ b)
-        want = np.sum(-mu + y * np.log(mu)
-                      - np.array([math.lgamma(v + 1) for v in y]))
+        want = np.sum(-mu + y * np.log(mu) - np.array([math.lgamma(v + 1) for v in y]))
         assert ll == pytest.approx(float(want), rel=1e-12)
 
     def test_loglinear_or(self):
         # 2x2: OR = exp(bXZ_22) when all other interaction terms are 0
-        assert ac.loglinear_odds_ratio(0.0, 0.7, 0.0, 0.0) == pytest.approx(
-            math.exp(0.7), rel=1e-12)
+        assert ac.loglinear_odds_ratio(0.0, 0.7, 0.0, 0.0) == pytest.approx(math.exp(0.7), rel=1e-12)
         # independence model -> OR = 1
-        mu = [[ac.loglinear_independence_mean(1.0, bx, bz)
-               for bz in (0.0, 0.4)] for bx in (0.0, 0.9)]
+        mu = [[ac.loglinear_independence_mean(1.0, bx, bz) for bz in (0.0, 0.4)] for bx in (0.0, 0.9)]
         or_tab = mu[0][0] * mu[1][1] / (mu[0][1] * mu[1][0])
         assert or_tab == pytest.approx(1.0, rel=1e-12)
         sat = ac.loglinear_saturated_mean(1.0, 0.9, 0.4, 0.7)
@@ -220,8 +211,7 @@ class TestCh4Counts:
     def test_ordinal_scores_and_rates(self):
         r = ac.ordinal_score_mean_ratio(0.4, 0.1, 0.2, 3.0, 1.0)
         assert r == pytest.approx(math.exp(0.3 + 0.4), rel=1e-12)
-        assert ac.poisson_rate_mean(0.1, [1.0], [1.0], 100.0) == \
-            pytest.approx(100 * math.exp(1.1), rel=1e-12)
+        assert ac.poisson_rate_mean(0.1, [1.0], [1.0], 100.0) == pytest.approx(100 * math.exp(1.1), rel=1e-12)
 
 
 class TestCh5Selection:
@@ -229,8 +219,8 @@ class TestCh5Selection:
         # book: two models with Delta = 2 -> 25% vs 75% (approximately)
         taus = ac.bic_posterior_probs([100.0, 102.0])
         assert taus[1] / taus[0] == pytest.approx(math.exp(-1.0), rel=1e-12)
-        assert taus[1] == pytest.approx(0.2689, abs=1e-3)   # ~25%
-        assert taus[0] == pytest.approx(0.7311, abs=1e-3)   # ~75%
+        assert taus[1] == pytest.approx(0.2689, abs=1e-3)  # ~25%
+        assert taus[0] == pytest.approx(0.7311, abs=1e-3)  # ~75%
 
     def test_model_averaging(self):
         taus = [0.6, 0.4]
@@ -247,8 +237,7 @@ class TestCh6Additional:
         # eq (6.1): apparent pi from true pi_tilde, then invert
         se, sp, pt = 0.95, 0.98, 0.1
         pi = se * pt + (1 - sp) * (1 - pt)
-        assert ac.prevalence_from_apparent(pi, se, sp) == pytest.approx(
-            pt, rel=1e-12)
+        assert ac.prevalence_from_apparent(pi, se, sp) == pytest.approx(pt, rel=1e-12)
         # perfect test: identity
         assert ac.prevalence_from_apparent(0.3, 1.0, 1.0) == pytest.approx(0.3)
 
@@ -258,8 +247,7 @@ class TestCh6Additional:
         mle = ac.prevalence_from_apparent(w / n, se, sp)
         ll_mle = ac.misclassified_binomial_loglik(mle, se, sp, w, n)
         for eps in (-0.01, 0.01):
-            assert ll_mle >= ac.misclassified_binomial_loglik(
-                mle + eps, se, sp, w, n)
+            assert ll_mle >= ac.misclassified_binomial_loglik(mle + eps, se, sp, w, n)
 
     def test_exact_conditional_pmf(self):
         got = ac.exact_conditional_pmf([0.0, 1.0, 2.0], [1, 4, 2], 0.5, 1.0)
@@ -269,39 +257,30 @@ class TestCh6Additional:
         assert flat["p_at_t"] == pytest.approx(4 / 7, rel=1e-12)
 
     def test_survey_family(self):
-        assert ac.weighted_category_total([2.0, 3.0, 5.0], ["a", "b", "a"],
-                                          "a") == pytest.approx(7.0)
+        assert ac.weighted_category_total([2.0, 3.0, 5.0], ["a", "b", "a"], "a") == pytest.approx(7.0)
         jv = ac.jackknife_variance([1.0, 1.2, 0.8, 1.1], 1.0)
-        assert jv == pytest.approx(3 / 4 * (0.0 + 0.04 + 0.04 + 0.01),
-                                   rel=1e-9)
+        assert jv == pytest.approx(3 / 4 * (0.0 + 0.04 + 0.04 + 0.01), rel=1e-9)
         v = ac.survey_proportion_variance(4.0, 9.0, 1.5, 0.3, 100.0)
-        assert v == pytest.approx((4 + 0.09 * 9 - 0.6 * 1.5) / 1e4,
-                                  rel=1e-12)
+        assert v == pytest.approx((4 + 0.09 * 9 - 0.6 * 1.5) / 1e4, rel=1e-12)
         kc = ac.kott_carr_interval(0.3, 0.01, 2.0)
         assert kc["n_effective"] == pytest.approx(0.21 / 0.01, rel=1e-12)
         assert 0 < kc["lower"] < 0.3 < kc["upper"] < 1
 
     def test_mrcv_and_glmm(self):
-        assert ac.spmi_loglinear_mean(1.0, 0.2, 0.3) == pytest.approx(
-            math.exp(1.5), rel=1e-12)
-        assert ac.three_mrcv_mean(1.0, 0.2, 0.3, 0.1) == pytest.approx(
-            math.exp(1.6), rel=1e-12)
-        assert ac.glmm_linear_predictor(0.5, 0.0, 0.0, -0.2) == \
-            pytest.approx(0.3)
-        assert ac.glmm_linear_predictor(0.5, 2.0, 1.5, -0.2) == \
-            pytest.approx(0.5 + 3.0 - 0.2)
+        assert ac.spmi_loglinear_mean(1.0, 0.2, 0.3) == pytest.approx(math.exp(1.5), rel=1e-12)
+        assert ac.three_mrcv_mean(1.0, 0.2, 0.3, 0.1) == pytest.approx(math.exp(1.6), rel=1e-12)
+        assert ac.glmm_linear_predictor(0.5, 0.0, 0.0, -0.2) == pytest.approx(0.3)
+        assert ac.glmm_linear_predictor(0.5, 2.0, 1.5, -0.2) == pytest.approx(0.5 + 3.0 - 0.2)
 
     def test_bayes_family(self):
         # eq (6.21) classic: rare disease screening
         post = ac.bayes_rule(0.99, 0.01, 0.05)
-        assert post == pytest.approx(0.99 * 0.01 / (0.0099 + 0.0495),
-                                     rel=1e-12)
+        assert post == pytest.approx(0.99 * 0.01 / (0.0099 + 0.0495), rel=1e-12)
         # eqs (6.22)-(6.23): posterior is Beta(w+a, n-w+b)
         d = ac.posterior_density_binomial(0.4, 7, 20, 1, 1)
         assert d == pytest.approx(ac.beta_pdf(0.4, 8, 14), rel=1e-12)
         # eq (6.24) identity is asserted inside; check the value
-        assert ac.bayes_estimate_binomial(7, 20, 1, 1) == pytest.approx(
-            8 / 22, rel=1e-12)
+        assert ac.bayes_estimate_binomial(7, 20, 1, 1) == pytest.approx(8 / 22, rel=1e-12)
         # eq (6.25): flat prior -> weights proportional to likelihood
         ll = np.array([-3.0, -1.0, -2.0])
         w = ac.posterior_kernel_regression(ll, np.zeros(3))
@@ -310,10 +289,9 @@ class TestCh6Additional:
     def test_group_testing(self):
         # perfect test: E(T) = 1 + I(1 - (1-pt)^I)
         et = ac.group_testing_expected_tests(5, 1.0, 1.0, 0.1)
-        assert et == pytest.approx(1 + 5 * (1 - 0.9 ** 5), rel=1e-12)
+        assert et == pytest.approx(1 + 5 * (1 - 0.9**5), rel=1e-12)
         # pt = 0, perfect test: only the group test runs
-        assert ac.group_testing_expected_tests(5, 1.0, 1.0, 0.0) == \
-            pytest.approx(1.0)
+        assert ac.group_testing_expected_tests(5, 1.0, 1.0, 0.0) == pytest.approx(1.0)
         p = ac.group_testing_logit(-1.0, [0.5], [2.0])
         assert p == pytest.approx(1 / (1 + math.exp(0.0)), rel=1e-12)
 
@@ -326,17 +304,18 @@ class TestCh6Additional:
         right = ac.truncated_power_spline(2.0 + eps, betas, k)
         assert left == pytest.approx(right, abs=1e-5)
         # piecewise form of eq (6.34) matches when pieces share the value
-        pl = ac.piecewise_cubic(1.5, 2.0, [1.0, 0.5, -0.2, 0.1],
-                                [9.9, 9.9, 9.9, 9.9])
-        assert pl == pytest.approx(
-            ac.truncated_power_spline(1.5, betas, k), rel=1e-12)
+        pl = ac.piecewise_cubic(1.5, 2.0, [1.0, 0.5, -0.2, 0.1], [9.9, 9.9, 9.9, 9.9])
+        assert pl == pytest.approx(ac.truncated_power_spline(1.5, betas, k), rel=1e-12)
         # eq (6.36)/(6.37): basis evaluation and the OR from differences
-        basis = [lambda x: 1.0, lambda x: x, lambda x: x ** 2,
-                 lambda x: x ** 3,
-                 lambda x: (x - 2.0) ** 3 if x > 2.0 else 0.0]
+        basis = [
+            lambda x: 1.0,
+            lambda x: x,
+            lambda x: x**2,
+            lambda x: x**3,
+            lambda x: (x - 2.0) ** 3 if x > 2.0 else 0.0,
+        ]
         fa = ac.spline_basis_eval(3.0, betas, basis)
-        assert fa == pytest.approx(
-            ac.truncated_power_spline(3.0, betas, k), rel=1e-12)
+        assert fa == pytest.approx(ac.truncated_power_spline(3.0, betas, k), rel=1e-12)
         orr = ac.spline_odds_ratio(betas, basis, 3.0, 1.0)
         fb = ac.spline_basis_eval(1.0, betas, basis)
         assert orr == pytest.approx(math.exp(fa - fb), rel=1e-12)

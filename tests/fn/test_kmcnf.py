@@ -1,8 +1,8 @@
 """Tests for kmcnf: KM confidence intervals."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kmcnf import kmcnf
 
 

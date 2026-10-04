@@ -1,7 +1,6 @@
 """Tests for btsubrho.boot_subsample_rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btsubrho import boot_subsample_rate
 
 

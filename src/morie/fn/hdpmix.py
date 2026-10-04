@@ -82,8 +82,7 @@ def hierarchical_dp(y, groups=None, gamma=1.0, alpha=1.0, truncation=6):
         nj = 0.0
         for x in row:
             nj += x
-        pi.append([(float(alpha) * beta[t] + row[t]) / (float(alpha) + nj)
-                   for t in range(K)])
+        pi.append([(float(alpha) * beta[t] + row[t]) / (float(alpha) + nj) for t in range(K)])
     shared = 0
     for t in range(K):
         used = 0

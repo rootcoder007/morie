@@ -48,9 +48,16 @@ def turboquant_distortion_bound(eps, delta):
     delta = float(delta)
     m = (4.0 / 3.0) * (1.0 + eps) / (eps * eps) * math.log(2.0 / delta)
     m_min = float(math.ceil(m))
-    return RichResult(payload={
-        "m_min": m_min, "m_real": m, "estimate": m_min, "eps": eps,
-        "delta": delta, "method": "QJL inner-product distortion bound"})
+    return RichResult(
+        payload={
+            "m_min": m_min,
+            "m_real": m,
+            "estimate": m_min,
+            "eps": eps,
+            "delta": delta,
+            "method": "QJL inner-product distortion bound",
+        }
+    )
 
 
 def cheatsheet():

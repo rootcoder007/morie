@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.causdidsap import causal_did_sun_abraham
 
 
@@ -13,8 +12,7 @@ def test_causdidsap_basic():
     n, T = 40, 10
     Y_panel = rng.normal(0, 1, (n, T))
     G_first_treat = [3] * 30 + [math.inf] * 10
-    result = causal_did_sun_abraham(
-        Y_panel, G_first_treat, rel_periods=list(range(-3, 6)))
+    result = causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=list(range(-3, 6)))
     assert isinstance(result, dict)
     assert "mu" in result
     assert "naive_twfe" in result
@@ -36,11 +34,7 @@ def test_causdidsap_edge():
     n, T = 40, 10
     Y_panel = rng.normal(0, 1, (n, T))
     G_first_treat = [3] * 30 + [math.inf] * 10
-    result = causal_did_sun_abraham(
-        Y_panel,
-        G_first_treat,
-        rel_periods=list(range(-2, 4)),
-        control="notyet")
+    result = causal_did_sun_abraham(Y_panel, G_first_treat, rel_periods=list(range(-2, 4)), control="notyet")
     assert isinstance(result, dict)
     assert "mu" in result
     assert "naive_twfe" in result

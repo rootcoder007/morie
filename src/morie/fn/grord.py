@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Ordinal encoding: map K ordered categories to {0, 1, ..., K-1}."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_ordinal_encoding"]
@@ -62,18 +61,14 @@ def geron_ordinal_encoding(categories, levels=None):
         try:
             lv = sorted(set(cats))
         except TypeError as exc:
-            raise ValueError(
-                "categories are not mutually orderable; pass levels= explicitly."
-            ) from exc
+            raise ValueError("categories are not mutually orderable; pass levels= explicitly.") from exc
     else:
         lv = list(levels)
         if len(set(lv)) != len(lv):
             raise ValueError("levels contains duplicates.")
         missing = set(cats) - set(lv)
         if missing:
-            raise ValueError(
-                f"categories contain values absent from levels: {sorted(map(str, missing))}."
-            )
+            raise ValueError(f"categories contain values absent from levels: {sorted(map(str, missing))}.")
     mapping = {c: i for i, c in enumerate(lv)}
     enc = [mapping[c] for c in cats]
 

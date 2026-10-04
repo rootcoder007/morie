@@ -114,7 +114,7 @@ def l_diversity(X, quasi_ids, sensitive, l, c=1.0):
         # descending counts; ties broken by first appearance so both
         # language arms scan the same order
         r = sorted((cnt[s] for s in seen), reverse=True)
-        tail = sum(r[ll - 1:]) if ll <= m else 0.0
+        tail = sum(r[ll - 1 :]) if ll <= m else 0.0
         need = float("inf") if tail <= 0.0 else r[0] / float(tail)
         if c_min < need:
             c_min = need

@@ -79,10 +79,18 @@ def ppssamp(z, y, n, seed=1):
     r = [y[i] / p[i] for i in idx]
     est = sum(r) / n
     var = sum((v - est) ** 2 for v in r) / (n * (n - 1))
-    return RichResult(payload={
-        "index": [i + 1 for i in idx], "p": p, "estimate": est,
-        "se": math.sqrt(var), "true_total": sum(y), "n": n, "N": N,
-        "method": "PPS with replacement, Hansen-Hurwitz estimator"})
+    return RichResult(
+        payload={
+            "index": [i + 1 for i in idx],
+            "p": p,
+            "estimate": est,
+            "se": math.sqrt(var),
+            "true_total": sum(y),
+            "n": n,
+            "N": N,
+            "method": "PPS with replacement, Hansen-Hurwitz estimator",
+        }
+    )
 
 
 lottery_sampling = ppssamp

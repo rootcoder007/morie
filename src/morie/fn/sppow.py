@@ -58,8 +58,7 @@ def schabenberger_power_variogram(h, nugget=0.0, c1=1.0, alpha=1.0):
     return RichResult(
         title="Power semivariogram (unbounded)",
         summary_lines=[("nugget", nugget), ("theta", c1), ("lambda", alpha)],
-        payload={"gamma": g, "nugget": float(nugget), "theta": float(c1),
-                 "lambda": float(alpha), "model": "power"},
+        payload={"gamma": g, "nugget": float(nugget), "theta": float(c1), "lambda": float(alpha), "model": "power"},
     )
 
 

@@ -1,7 +1,6 @@
 """Tests for cvxcvc.boyd_convex_combination."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxcvc import boyd_convex_combination
 
 
@@ -11,6 +10,8 @@ def test_cvxcvc_basic():
     result = boyd_convex_combination(x)
     assert isinstance(result, dict)
     assert "value" in result
+
+
 def test_cvxcvc_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

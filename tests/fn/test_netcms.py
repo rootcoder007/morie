@@ -6,9 +6,15 @@ import pytest
 
 from morie.fn.netcms import network_psychometrics
 
-
-DATA = [[math.sin(1.1 * i), math.sin(1.1 * i) + 0.5 * math.cos(2.3 * i), math.cos(0.7 * i),
-         0.4 * math.cos(0.7 * i) + math.sin(3.1 * i)] for i in range(60)]
+DATA = [
+    [
+        math.sin(1.1 * i),
+        math.sin(1.1 * i) + 0.5 * math.cos(2.3 * i),
+        math.cos(0.7 * i),
+        0.4 * math.cos(0.7 * i) + math.sin(3.1 * i),
+    ]
+    for i in range(60)
+]
 
 
 def _cov(rows):
@@ -38,7 +44,9 @@ def test_netcms_basic():
             else:
                 assert abs(W[a][b] - S[a][b]) <= lam + 1e-9
             if a != b:
-                assert r["partial_correlations"][a][b] == pytest.approx(-Th[a][b] / math.sqrt(Th[a][a] * Th[b][b]), rel=1e-12)
+                assert r["partial_correlations"][a][b] == pytest.approx(
+                    -Th[a][b] / math.sqrt(Th[a][a] * Th[b][b]), rel=1e-12
+                )
     assert r["n_edges"] == sum(r["adjacency"][a][b] for a in range(p) for b in range(a + 1, p))
     # lambda = 0 is the unpenalised MLE: Theta = S^-1, so W = S
     z = network_psychometrics(S=S, lam=0.0, tol=1e-13, maxit=5000)

@@ -1,7 +1,6 @@
 """Tests for gh_ap_b2.ghosal_kl_variation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_b2 import ghosal_kl_variation
 
 
@@ -15,12 +14,10 @@ def test_gh_ap_b2_basic():
 
     # Independent expectation: V_2 with k=2 (default).
     import math
+
     p_n = p / np.sum(p)
     q_n = q / np.sum(q)
-    expected = sum(
-        a * abs(math.log(a / max(b, 1e-300))) ** 2
-        for a, b in zip(p_n, q_n) if a > 0
-    )
+    expected = sum(a * abs(math.log(a / max(b, 1e-300))) ** 2 for a, b in zip(p_n, q_n) if a > 0)
     assert np.isclose(result["estimate"], expected)
 
 

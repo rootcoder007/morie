@@ -140,7 +140,9 @@ def geron_mlp(X, weights, biases, activations):
                 f"geron_mlp: weights[{l}] expects {W.shape[0]} inputs but the previous layer produced {a.shape[1]}"
             )
         if b.size != W.shape[1]:
-            raise ValueError(f"geron_mlp: biases[{l}] has {b.size} entries but weights[{l}] has {W.shape[1]} output units")
+            raise ValueError(
+                f"geron_mlp: biases[{l}] has {b.size} entries but weights[{l}] has {W.shape[1]} output units"
+            )
         if not np.all(np.isfinite(W)) or not np.all(np.isfinite(b)):
             raise ValueError(f"geron_mlp: weights[{l}] or biases[{l}] contains non-finite values")
         spec = activations[l]
@@ -158,18 +160,14 @@ def geron_mlp(X, weights, biases, activations):
         z = a @ W + b
         a = np.asarray(fn(z), dtype=float)
         if a.shape != z.shape:
-            raise ValueError(
-                f"geron_mlp: activations[{l}] changed the shape from {z.shape} to {a.shape}"
-            )
+            raise ValueError(f"geron_mlp: activations[{l}] changed the shape from {z.shape} to {a.shape}")
         pres.append(z)
         acts.append(a)
         n_params += int(W.size + b.size)
 
     warns = []
     if all(f in ("identity", "linear") for f in fns) and L > 1:
-        warns.append(
-            f"all {L} layers are linear, so the network collapses to a single linear map; depth adds nothing."
-        )
+        warns.append(f"all {L} layers are linear, so the network collapses to a single linear map; depth adds nothing.")
 
     return RichResult(
         title="MLP forward pass",

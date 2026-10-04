@@ -1,7 +1,6 @@
 """Tests for wsmrgr.wasserman_ridge."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmrgr import wasserman_ridge
 
 

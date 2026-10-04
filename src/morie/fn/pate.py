@@ -77,9 +77,17 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["pate", "private_aggregation", "pate_aggregate",
-           "noisy_argmax", "teacher_votes", "epsilon_data_independent",
-           "moments_accountant", "lemma4_bound", "theorem3_moment"]
+__all__ = [
+    "pate",
+    "private_aggregation",
+    "pate_aggregate",
+    "noisy_argmax",
+    "teacher_votes",
+    "epsilon_data_independent",
+    "moments_accountant",
+    "lemma4_bound",
+    "theorem3_moment",
+]
 
 
 def teacher_votes(teacher_predicts, rows, n_classes=None):
@@ -144,8 +152,7 @@ def epsilon_data_independent(T, gamma, delta):
         raise ValueError("pate: need T >= 0 and gamma > 0")
     if not 0.0 < delta < 1.0:
         raise ValueError("pate: delta must lie in (0, 1)")
-    return 4.0 * T * gamma ** 2 + 2.0 * gamma * math.sqrt(
-        2.0 * T * math.log(1.0 / delta))
+    return 4.0 * T * gamma**2 + 2.0 * gamma * math.sqrt(2.0 * T * math.log(1.0 / delta))
 
 
 def lemma4_bound(counts, gamma):
@@ -197,11 +204,10 @@ def theorem3_moment(q, gamma, l):
     ratio = (1.0 - q) / (1.0 - math.exp(2.0 * gamma) * q)
     if ratio <= 0.0:
         return None
-    return math.log((1.0 - q) * ratio ** l + q * math.exp(2.0 * gamma * l))
+    return math.log((1.0 - q) * ratio**l + q * math.exp(2.0 * gamma * l))
 
 
-def moments_accountant(vote_counts, gamma, delta, lambdas=None,
-                       data_dependent=True):
+def moments_accountant(vote_counts, gamma, delta, lambdas=None, data_dependent=True):
     r"""Compose the per-query moment bounds and convert to
     :math:`(\varepsilon, \delta)`.
 
@@ -227,7 +233,7 @@ def moments_accountant(vote_counts, gamma, delta, lambdas=None,
     for counts in vote_counts:
         q = lemma4_bound(counts, gamma)[0] if data_dependent else 1.0
         for l in lams:
-            indep = 2.0 * gamma ** 2 * l * (l + 1)
+            indep = 2.0 * gamma**2 * l * (l + 1)
             dep = theorem3_moment(q, gamma, l) if data_dependent else None
             if dep is not None and dep < indep:
                 alpha[l] += dep
@@ -244,13 +250,27 @@ def moments_accountant(vote_counts, gamma, delta, lambdas=None,
         eps = (alpha[l] + log_inv_delta) / l
         if best is None or eps < best:
             best, best_l = eps, l
-    return {"epsilon": best, "lambda": best_l, "alpha": alpha,
-            "delta": delta, "queries": len(vote_counts), "used": used}
+    return {
+        "epsilon": best,
+        "lambda": best_l,
+        "alpha": alpha,
+        "delta": delta,
+        "queries": len(vote_counts),
+        "used": used,
+    }
 
 
-def pate(teacher_predicts, queries, gamma=0.05, delta=1e-5, n_classes=None,
-         student_train_fn=None, student_features=None, seed=0,
-         lambdas=None):
+def pate(
+    teacher_predicts,
+    queries,
+    gamma=0.05,
+    delta=1e-5,
+    n_classes=None,
+    student_train_fn=None,
+    student_features=None,
+    seed=0,
+    lambdas=None,
+):
     r"""Label ``queries`` by noisy teacher aggregation and account for the
     privacy cost.
 
@@ -323,42 +343,45 @@ def pate(teacher_predicts, queries, gamma=0.05, delta=1e-5, n_classes=None,
         if len(X) != len(labels):
             raise ValueError("pate: student_features must be one per query")
         student = student_train_fn(X, labels)
-    return RichResult(payload={
-        "estimate": labels,
-        "labels": labels,
-        "clean_labels": clean,
-        "votes": votes,
-        "agreement": sum(1 for a, b in zip(labels, clean) if a == b) /
-                     float(len(labels)),
-        "epsilon": eps,
-        "epsilon_accountant": acct["epsilon"],
-        "epsilon_data_independent": indep,
-        "accountant": acct,
-        "delta": float(delta),
-        "gamma": float(gamma),
-        "n_teachers": len(list(teacher_predicts)),
-        "n_queries": len(rows),
-        "student": student,
-        "note": "clean_labels are the noiseless plurality and carry NO "
-                "privacy guarantee; the semi-supervised GAN student of "
-                "section 4 is not implemented",
-        "method": "PATE noisy teacher aggregation (Papernot et al. 2017)",
-    })
+    return RichResult(
+        payload={
+            "estimate": labels,
+            "labels": labels,
+            "clean_labels": clean,
+            "votes": votes,
+            "agreement": sum(1 for a, b in zip(labels, clean) if a == b) / float(len(labels)),
+            "epsilon": eps,
+            "epsilon_accountant": acct["epsilon"],
+            "epsilon_data_independent": indep,
+            "accountant": acct,
+            "delta": float(delta),
+            "gamma": float(gamma),
+            "n_teachers": len(list(teacher_predicts)),
+            "n_queries": len(rows),
+            "student": student,
+            "note": "clean_labels are the noiseless plurality and carry NO "
+            "privacy guarantee; the semi-supervised GAN student of "
+            "section 4 is not implemented",
+            "method": "PATE noisy teacher aggregation (Papernot et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("pate: private aggregation of teacher ensembles (Papernot et "
-            "al. 2017). Teachers trained on disjoint partitions vote; the "
-            "student sees only argmax_j {n_j + Lap(1/gamma)} (eq.1), which "
-            "is (2 gamma, 0)-DP per query since one record moves one "
-            "teacher. Two accountings: data-independent "
-            "4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)), which reproduces "
-            "the paper's 26 and 5.80; and data-dependent, where a strong "
-            "quorum makes the majority near-certain, q from Lemma 4 feeds "
-            "Theorem 3, the smaller of that and 2 gamma^2 l(l+1) is taken "
-            "per query, summed by Theorem 1, and converted by the tail "
-            "bound eps = min_lambda (alpha + ln(1/delta))/lambda. The "
-            "noiseless plurality is NOT private.")
+    return (
+        "pate: private aggregation of teacher ensembles (Papernot et "
+        "al. 2017). Teachers trained on disjoint partitions vote; the "
+        "student sees only argmax_j {n_j + Lap(1/gamma)} (eq.1), which "
+        "is (2 gamma, 0)-DP per query since one record moves one "
+        "teacher. Two accountings: data-independent "
+        "4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)), which reproduces "
+        "the paper's 26 and 5.80; and data-dependent, where a strong "
+        "quorum makes the majority near-certain, q from Lemma 4 feeds "
+        "Theorem 3, the smaller of that and 2 gamma^2 l(l+1) is taken "
+        "per query, summed by Theorem 1, and converted by the tail "
+        "bound eps = min_lambda (alpha + ln(1/delta))/lambda. The "
+        "noiseless plurality is NOT private."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -62,7 +62,7 @@ def cvmstat(x, cdf):
     if z > 0:
         acc = 0.0
         for k in range(100):
-            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi ** 2 / (8.0 * z)))
+            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi**2 / (8.0 * z)))
         pval = max(0.0, min(1.0, 1.0 - acc * float(np.sqrt(2.0 / z))))
     return RichResult(
         payload={

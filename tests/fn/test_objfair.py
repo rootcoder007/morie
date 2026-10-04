@@ -1,7 +1,6 @@
 """Tests for objfair.individual_fairness_lipschitz."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.objfair import individual_fairness_lipschitz
 
 

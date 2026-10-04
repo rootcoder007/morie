@@ -117,8 +117,7 @@ def cox_stratified(time, event, X, stratum, ties="efron", max_iter=50, tol=1e-9)
             m = st == lv
             if e[m].sum() == 0:
                 continue
-            b_s, ll_s, I_s, U_s, _, _ = cox_fit(t[m], e[m], Xm[m], ties=ties,
-                                                max_iter=1, tol=tol)
+            b_s, ll_s, I_s, U_s, _, _ = cox_fit(t[m], e[m], Xm[m], ties=ties, max_iter=1, tol=tol)
             # One scoring step per stratum at the shared beta.
             _, ll_s, I_s, U_s, _, _ = _score_at(t[m], e[m], Xm[m], beta, ties)
             U += U_s
@@ -143,18 +142,29 @@ def cox_stratified(time, event, X, stratum, ties="efron", max_iter=50, tol=1e-9)
         z = beta / se
     return RichResult(
         title="Stratified Cox model",
-        summary_lines=[("n", int(n)), ("strata", int(levels.size)),
-                       ("events", int(e.sum())), ("loglik", ll_total)],
-        warnings=(["a stratification variable has no coefficient and no hazard "
-                   "ratio; stratify on the nuisance, never on the exposure"]
-                  + ([f"strata with no events contribute nothing: {empty}"] if empty else [])),
+        summary_lines=[("n", int(n)), ("strata", int(levels.size)), ("events", int(e.sum())), ("loglik", ll_total)],
+        warnings=(
+            [
+                "a stratification variable has no coefficient and no hazard "
+                "ratio; stratify on the nuisance, never on the exposure"
+            ]
+            + ([f"strata with no events contribute nothing: {empty}"] if empty else [])
+        ),
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(beta), "loglik": ll_total,
-            "information": I_total, "strata": levels,
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
+            "hazard_ratio": np.exp(beta),
+            "loglik": ll_total,
+            "information": I_total,
+            "strata": levels,
             "events_per_stratum": np.array([int(e[st == lv].sum()) for lv in levels]),
-            "empty_strata": np.array(empty), "n": int(n),
-            "n_iter": it, "converged": converged, "method": "cox_stratified",
+            "empty_strata": np.array(empty),
+            "n": int(n),
+            "n_iter": it,
+            "converged": converged,
+            "method": "cox_stratified",
         },
     )
 

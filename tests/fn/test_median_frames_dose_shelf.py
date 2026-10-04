@@ -8,17 +8,17 @@ Sect ASA* 203-206 and Lohr and Rao (2000) *JASA* 95:271-280; Finney
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ld50r import acute_toxicity_ld50, effective_dose
 from morie.fn.mdvtr import condorcet_winner, median_voter
 from morie.fn.smplep import optimal_overlap_weight, sample_overlap
 
-
 # --------------------------------------------------------------------
 # Median voter
 # --------------------------------------------------------------------
+
 
 def test_the_winner_is_the_median_not_the_mean():
     # one extremist moves the mean and leaves the winner alone; this is
@@ -87,8 +87,7 @@ def test_the_normal_formula_badly_overstates_for_a_heavy_tail():
 
 def test_the_density_error_tracks_the_sampling_variability():
     rng = np.random.default_rng(3)
-    meds = [float(np.median(rng.standard_t(2.0, size=2000)))
-            for _ in range(400)]
+    meds = [float(np.median(rng.standard_t(2.0, size=2000))) for _ in range(400)]
     emp = float(np.std(meds, ddof=1))
     rep = median_voter(rng.standard_t(2.0, size=2000))["se"]
     assert rep == pytest.approx(emp, rel=0.25)
@@ -105,7 +104,7 @@ def test_the_order_statistic_interval_covers_without_any_assumption():
     hits = 0
     reps = 800
     for _ in range(reps):
-        x = rng.standard_cauchy(size=51)   # no mean, no variance
+        x = rng.standard_cauchy(size=51)  # no mean, no variance
         o = median_voter(x)
         hits += o["ci_exact_lower"] <= 0.0 <= o["ci_exact_upper"]
     # [x_(19), x_(33)] has coverage 1 - 2 P(Bin(51, 1/2) <= 18) = 0.95113
@@ -113,7 +112,8 @@ def test_the_order_statistic_interval_covers_without_any_assumption():
     # failed about half the time. The Monte Carlo share must sit within
     # 4 binomial sd of the exact value (a false alarm has prob. 6e-5).
     import math
-    cover = 1.0 - 2.0 * sum(math.comb(51, i) for i in range(19)) / 2.0 ** 51
+
+    cover = 1.0 - 2.0 * sum(math.comb(51, i) for i in range(19)) / 2.0**51
     assert o["exact_coverage"] == pytest.approx(cover, rel=1e-12)
     assert abs(hits / reps - cover) <= 4 * math.sqrt(cover * (1 - cover) / reps)
 
@@ -186,6 +186,7 @@ def test_median_voter_edge_cases():
 # Dual-frame estimation
 # --------------------------------------------------------------------
 
+
 def test_the_naive_pool_double_counts_the_overlap():
     ya = [1.0, 1.0, 1.0, 1.0]
     yb = [1.0, 1.0, 1.0]
@@ -199,9 +200,7 @@ def test_the_estimator_is_unbiased_for_every_theta():
     # unbiasedness does not depend on theta at all; only precision does
     ya = [2.0, 2.0, 2.0, 2.0]
     yb = [2.0, 2.0, 2.0]
-    ests = [sample_overlap(ya, yb, [0, 0, 1, 1], [1, 1, 0],
-                           theta=t)["estimate"]
-            for t in (0.0, 0.25, 0.5, 0.75, 1.0)]
+    ests = [sample_overlap(ya, yb, [0, 0, 1, 1], [1, 1, 0], theta=t)["estimate"] for t in (0.0, 0.25, 0.5, 0.75, 1.0)]
     assert all(e == pytest.approx(ests[0]) for e in ests)
 
 
@@ -255,12 +254,15 @@ def test_the_estimator_recovers_a_known_population_total():
         g = np.random.default_rng(1000 + r)
         ia = g.choice(70, size=35, replace=False)
         ib = g.choice(np.arange(50, 100), size=25, replace=False)
-        out = sample_overlap(pop[ia], pop[ib],
-                             (ia >= 50).astype(float),
-                             (ib < 70).astype(float),
-                             weights_a=np.full(35, 70 / 35),
-                             weights_b=np.full(25, 50 / 25),
-                             theta=0.5)
+        out = sample_overlap(
+            pop[ia],
+            pop[ib],
+            (ia >= 50).astype(float),
+            (ib < 70).astype(float),
+            weights_a=np.full(35, 70 / 35),
+            weights_b=np.full(25, 50 / 25),
+            theta=0.5,
+        )
         ests.append(out["estimate"])
     assert abs(float(np.mean(ests)) - truth) < 0.03 * truth
 
@@ -275,10 +277,15 @@ def test_the_naive_pool_is_biased_not_noisy():
         g = np.random.default_rng(2000 + r)
         ia = g.choice(70, size=35, replace=False)
         ib = g.choice(np.arange(50, 100), size=25, replace=False)
-        o = sample_overlap(pop[ia], pop[ib], (ia >= 50).astype(float),
-                           (ib < 70).astype(float),
-                           weights_a=np.full(35, 2.0),
-                           weights_b=np.full(25, 2.0), theta=0.5)
+        o = sample_overlap(
+            pop[ia],
+            pop[ib],
+            (ia >= 50).astype(float),
+            (ib < 70).astype(float),
+            weights_a=np.full(35, 2.0),
+            weights_b=np.full(25, 2.0),
+            theta=0.5,
+        )
         naive.append(o["naive_pooled_total"])
         correct.append(o["estimate"])
     # the inflation is large relative to its own scatter, which is the
@@ -297,8 +304,7 @@ def test_a_missing_overlap_is_reported():
 
 def test_design_weights_scale_the_total():
     a = sample_overlap([1.0, 1.0], [1.0, 1.0], [0, 1], [1, 0], theta=0.5)
-    b = sample_overlap([1.0, 1.0], [1.0, 1.0], [0, 1], [1, 0], theta=0.5,
-                       weights_a=[3.0, 3.0], weights_b=[3.0, 3.0])
+    b = sample_overlap([1.0, 1.0], [1.0, 1.0], [0, 1], [1, 0], theta=0.5, weights_a=[3.0, 3.0], weights_b=[3.0, 3.0])
     assert b["estimate"] == pytest.approx(3.0 * a["estimate"])
 
 
@@ -321,8 +327,8 @@ def test_dual_frame_input_validation():
 # Median lethal dose
 # --------------------------------------------------------------------
 
-def quantal(ld50=4.0, slope=2.0, doses=(0.5, 1, 2, 4, 8, 16, 32),
-            per_group=60, seed=0, link="probit"):
+
+def quantal(ld50=4.0, slope=2.0, doses=(0.5, 1, 2, 4, 8, 16, 32), per_group=60, seed=0, link="probit"):
     """Simulate a quantal assay with a known LD50."""
     rng = np.random.default_rng(seed)
     d = np.asarray(doses, dtype=float)
@@ -359,7 +365,7 @@ def test_the_fieller_interval_covers_at_the_nominal_rate():
         if o["bounded"]:
             hits += o["ci_lower"] <= 4.0 <= o["ci_upper"]
         else:
-            hits += 1        # an unbounded interval trivially covers
+            hits += 1  # an unbounded interval trivially covers
     assert hits / reps > 0.93
 
 
@@ -400,8 +406,7 @@ def test_fieller_g_falls_as_the_slope_becomes_better_determined():
 def test_the_interval_narrows_with_more_subjects():
     small = acute_toxicity_ld50(*quantal(per_group=40, seed=4))
     large = acute_toxicity_ld50(*quantal(per_group=1000, seed=4))
-    assert (large["ci_upper"] - large["ci_lower"]) < \
-           (small["ci_upper"] - small["ci_lower"])
+    assert (large["ci_upper"] - large["ci_lower"]) < (small["ci_upper"] - small["ci_lower"])
 
 
 def test_the_ld50_barely_depends_on_the_link():
@@ -450,8 +455,8 @@ def test_the_heterogeneity_warning_does_not_fire_on_correct_models():
         out = acute_toxicity_ld50(*quantal(per_group=400, seed=9000 + s))
         fired += any("heterogeneity factor" in w for w in out.warnings)
         above_one += out["heterogeneity_factor"] > 1.0
-    assert above_one / reps > 0.1        # the naive rule would misfire
-    assert fired / reps < 0.09           # the tail test does not
+    assert above_one / reps > 0.1  # the naive rule would misfire
+    assert fired / reps < 0.09  # the tail test does not
 
 
 def test_the_heterogeneity_test_is_uniform_when_every_group_informs():
@@ -459,9 +464,12 @@ def test_the_heterogeneity_test_is_uniform_when_every_group_informs():
     # every group contributes deviance and the chi-square reference is
     # the right one
     doses = (2.0, 2.8, 3.4, 4.0, 4.7, 5.7, 8.0)
-    ps = np.array([acute_toxicity_ld50(
-        *quantal(doses=doses, per_group=400, seed=9500 + s))[
-            "heterogeneity_p"] for s in range(300)])
+    ps = np.array(
+        [
+            acute_toxicity_ld50(*quantal(doses=doses, per_group=400, seed=9500 + s))["heterogeneity_p"]
+            for s in range(300)
+        ]
+    )
     assert 0.40 < float(np.mean(ps)) < 0.60
     assert 0.02 < float(np.mean(ps < 0.05)) < 0.10
 
@@ -470,13 +478,22 @@ def test_saturated_dose_groups_make_the_test_conservative():
     # a group fitted at essentially 0 or 1 contributes no deviance but
     # still spends a degree of freedom, so the null p-values pile up
     # high and the test under-warns. Safe direction, but not nominal.
-    wide = np.array([acute_toxicity_ld50(
-        *quantal(doses=(0.5, 1, 2, 4, 8, 16, 32), per_group=400,
-                 seed=7000 + s))["heterogeneity_p"] for s in range(300)])
-    narrow = np.array([acute_toxicity_ld50(
-        *quantal(doses=(2.0, 2.8, 3.4, 4.0, 4.7, 5.7, 8.0),
-                 per_group=400, seed=7000 + s))["heterogeneity_p"]
-        for s in range(300)])
+    wide = np.array(
+        [
+            acute_toxicity_ld50(*quantal(doses=(0.5, 1, 2, 4, 8, 16, 32), per_group=400, seed=7000 + s))[
+                "heterogeneity_p"
+            ]
+            for s in range(300)
+        ]
+    )
+    narrow = np.array(
+        [
+            acute_toxicity_ld50(*quantal(doses=(2.0, 2.8, 3.4, 4.0, 4.7, 5.7, 8.0), per_group=400, seed=7000 + s))[
+                "heterogeneity_p"
+            ]
+            for s in range(300)
+        ]
+    )
     assert float(np.mean(wide)) > float(np.mean(narrow)) + 0.1
     assert float(np.mean(wide < 0.05)) < float(np.mean(narrow < 0.05))
 
@@ -491,20 +508,16 @@ def test_saturated_groups_are_flagged():
 
 def test_effective_dose_inverts_the_curve_exactly():
     # with a known intercept and slope the ED is arithmetic, not a fit
-    ed = effective_dose(intercept=-2.0, slope=1.0, cov=np.eye(2) * 1e-8,
-                        level=0.5, link="probit", log_scale=False)
+    ed = effective_dose(intercept=-2.0, slope=1.0, cov=np.eye(2) * 1e-8, level=0.5, link="probit", log_scale=False)
     assert ed["ed"] == pytest.approx(2.0)
     assert ed["bounded"] is True
 
 
 def test_effective_dose_at_other_levels_moves_the_right_way():
     cov = np.eye(2) * 1e-8
-    lo = effective_dose(-2.0, 1.0, cov, level=0.1, link="probit",
-                        log_scale=False)["ed"]
-    mid = effective_dose(-2.0, 1.0, cov, level=0.5, link="probit",
-                         log_scale=False)["ed"]
-    hi = effective_dose(-2.0, 1.0, cov, level=0.9, link="probit",
-                        log_scale=False)["ed"]
+    lo = effective_dose(-2.0, 1.0, cov, level=0.1, link="probit", log_scale=False)["ed"]
+    mid = effective_dose(-2.0, 1.0, cov, level=0.5, link="probit", log_scale=False)["ed"]
+    hi = effective_dose(-2.0, 1.0, cov, level=0.9, link="probit", log_scale=False)["ed"]
     assert lo < mid < hi
 
 
@@ -520,8 +533,7 @@ def test_ld50_input_validation():
     with pytest.raises(ValueError, match="dose must be positive"):
         acute_toxicity_ld50([0.0, 2.0], [1.0, 5.0], [10.0, 10.0])
     with pytest.raises(ValueError, match="link"):
-        acute_toxicity_ld50([1.0, 2.0], [1.0, 5.0], [10.0, 10.0],
-                            link="cloglog")
+        acute_toxicity_ld50([1.0, 2.0], [1.0, 5.0], [10.0, 10.0], link="cloglog")
     with pytest.raises(ValueError, match="level must lie"):
         effective_dose(-2.0, 1.0, np.eye(2), level=1.0)
     with pytest.raises(ValueError, match="cov must be 2x2"):

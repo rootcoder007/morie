@@ -1,7 +1,6 @@
 """Tests for bigtm.bigram_topic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bigtm import bigram_topic
 
 

@@ -75,24 +75,28 @@ def vol_garman_klass(open_, high, low, close, periods_per_year=None):
         raise ValueError(
             "the average Garman-Klass variance is not positive: the "
             "driftless-diffusion model this estimator assumes does not "
-            "describe these bars (strong trend, jumps or gaps).")
+            "describe these bars (strong trend, jumps or gaps)."
+        )
     sig = float(np.sqrt(var))
-    return RichResult(payload={
-        "variance": var, "sigma": sig,
-        "sigma_annualised": (sig * np.sqrt(float(periods_per_year))
-                             if periods_per_year else None),
-        "range_term": float(np.mean(0.5 * hl)),
-        "openclose_term": float(np.mean((2 * np.log(2) - 1) * co)),
-        "negative_sign_note": "the open-close term enters NEGATIVELY: given "
-                              "the range, a large open-to-close move signals "
-                              "trend, not volatility, and the optimal "
-                              "combination partials it out",
-        "efficiency_vs_close": 7.4,
-        "negative_bar_fraction": float(np.mean(per_bar < 0)),
-        "gap_caveat": "O_t is the bar's origin, so overnight gaps leak into "
-                      "nothing here -- and are therefore missed entirely",
-        "n": int(n),
-        "method": "Garman-Klass (1980) Eq. (20): 0.5 (log H/L)^2 - (2 log2 - 1)(log C/O)^2"})
+    return RichResult(
+        payload={
+            "variance": var,
+            "sigma": sig,
+            "sigma_annualised": (sig * np.sqrt(float(periods_per_year)) if periods_per_year else None),
+            "range_term": float(np.mean(0.5 * hl)),
+            "openclose_term": float(np.mean((2 * np.log(2) - 1) * co)),
+            "negative_sign_note": "the open-close term enters NEGATIVELY: given "
+            "the range, a large open-to-close move signals "
+            "trend, not volatility, and the optimal "
+            "combination partials it out",
+            "efficiency_vs_close": 7.4,
+            "negative_bar_fraction": float(np.mean(per_bar < 0)),
+            "gap_caveat": "O_t is the bar's origin, so overnight gaps leak into "
+            "nothing here -- and are therefore missed entirely",
+            "n": int(n),
+            "method": "Garman-Klass (1980) Eq. (20): 0.5 (log H/L)^2 - (2 log2 - 1)(log C/O)^2",
+        }
+    )
 
 
 def cheatsheet():

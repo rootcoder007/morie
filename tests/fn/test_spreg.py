@@ -1,7 +1,6 @@
 """Tests for morie.fn.spreg — spatial regimes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spreg import spatial_regime
 
 

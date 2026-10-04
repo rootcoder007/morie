@@ -1,7 +1,6 @@
 """Tests for ksr04.kosorok_vc_dimension."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr04 import kosorok_vc_dimension
 
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.dkwin -- DKW inequality test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dkwin import dkw_test
 
 

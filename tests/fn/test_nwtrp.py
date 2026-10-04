@@ -3,7 +3,6 @@ Tests for Newton-Raphson root finding.
 """
 
 from morie.fn import _array_core as np
-
 from morie.fn.nwtrp import nwtrp
 
 

@@ -67,7 +67,7 @@ def ets(y, error="A", trend=False, season=0, alpha=None, beta=None, gamma=None):
     def _init():
         if m:
             l0 = sum(y[:m]) / m
-            b0 = ((sum(y[m:2 * m]) / m) - l0) / m if use_b else 0.0
+            b0 = ((sum(y[m : 2 * m]) / m) - l0) / m if use_b else 0.0
             s0 = [y[j] - l0 for j in range(m)]
         else:
             l0 = y[0]
@@ -112,20 +112,22 @@ def ets(y, error="A", trend=False, season=0, alpha=None, beta=None, gamma=None):
     sigma2 = sse / n
     aic = n * math.log(sse / n) + 2.0 * k if sse > 0.0 else float("-inf")
     fc = level + slope + (s[n % m] if m else 0.0)
-    return RichResult(payload={
-        "estimate": fc,
-        "alpha": a,
-        "beta": b,
-        "gamma": g,
-        "sse": sse,
-        "sigma2": sigma2,
-        "aic": aic,
-        "level": level,
-        "slope": slope,
-        "forecast": fc,
-        "n": n,
-        "method": "ETS state-space (error/trend/seasonal)",
-    })
+    return RichResult(
+        payload={
+            "estimate": fc,
+            "alpha": a,
+            "beta": b,
+            "gamma": g,
+            "sse": sse,
+            "sigma2": sigma2,
+            "aic": aic,
+            "level": level,
+            "slope": slope,
+            "forecast": fc,
+            "n": n,
+            "method": "ETS state-space (error/trend/seasonal)",
+        }
+    )
 
 
 def cheatsheet():

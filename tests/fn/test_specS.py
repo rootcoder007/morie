@@ -14,7 +14,7 @@ def test_specS_basic():
     alpha = 0.4 + 0.3 + 0.2
     assert r["alpha"] == pytest.approx(alpha, abs=1e-15)
     assert r["tv_distance"] == pytest.approx(0.5 * sum(abs(a - b) for a, b in zip(p, q)), abs=1e-15)
-    assert r["expected_tokens"] == pytest.approx(sum(alpha ** k for k in range(4)), rel=1e-14)
+    assert r["expected_tokens"] == pytest.approx(sum(alpha**k for k in range(4)), rel=1e-14)
     assert r["max_tokens"] == 4.0
 
 

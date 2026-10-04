@@ -64,16 +64,11 @@ def alphafold_triangle_attn(z, wq, wk, wv, wb, wg, wo, mode="starting"):
     scale = 1.0 / math.sqrt(c)
 
     zn = [[A.lnorm(z[i][j]) for j in range(n)] for i in range(n)]
-    q = [[[A.lin(zn[i][j], wq[h]) for j in range(n)] for i in range(n)]
-         for h in range(nh)]
-    k = [[[A.lin(zn[i][j], wk[h]) for j in range(n)] for i in range(n)]
-         for h in range(nh)]
-    v = [[[A.lin(zn[i][j], wv[h]) for j in range(n)] for i in range(n)]
-         for h in range(nh)]
-    b = [[[A.vdot(wb[h], zn[i][j]) for j in range(n)] for i in range(n)]
-         for h in range(nh)]
-    g = [[[[A.sigm(x) for x in A.lin(zn[i][j], wg[h])] for j in range(n)]
-          for i in range(n)] for h in range(nh)]
+    q = [[[A.lin(zn[i][j], wq[h]) for j in range(n)] for i in range(n)] for h in range(nh)]
+    k = [[[A.lin(zn[i][j], wk[h]) for j in range(n)] for i in range(n)] for h in range(nh)]
+    v = [[[A.lin(zn[i][j], wv[h]) for j in range(n)] for i in range(n)] for h in range(nh)]
+    b = [[[A.vdot(wb[h], zn[i][j]) for j in range(n)] for i in range(n)] for h in range(nh)]
+    g = [[[[A.sigm(x) for x in A.lin(zn[i][j], wg[h])] for j in range(n)] for i in range(n)] for h in range(nh)]
 
     attn = []
     o = []
@@ -84,19 +79,15 @@ def alphafold_triangle_attn(z, wq, wk, wv, wb, wg, wo, mode="starting"):
             for j in range(n):
                 # line 5: the third edge of the triangle enters as a bias
                 if mode == "starting":
-                    logits = [scale * A.vdot(q[h][i][j], k[h][i][kk]) + b[h][j][kk]
-                              for kk in range(n)]
+                    logits = [scale * A.vdot(q[h][i][j], k[h][i][kk]) + b[h][j][kk] for kk in range(n)]
                 else:
-                    logits = [scale * A.vdot(q[h][i][j], k[h][kk][j]) + b[h][kk][i]
-                              for kk in range(n)]
+                    logits = [scale * A.vdot(q[h][i][j], k[h][kk][j]) + b[h][kk][i] for kk in range(n)]
                 a = A.smax(logits)
                 # line 6: gated weighted sum of values
                 if mode == "starting":
-                    ov = [sum(a[kk] * v[h][i][kk][t] for kk in range(n))
-                          for t in range(c)]
+                    ov = [sum(a[kk] * v[h][i][kk][t] for kk in range(n)) for t in range(c)]
                 else:
-                    ov = [sum(a[kk] * v[h][kk][j][t] for kk in range(n))
-                          for t in range(c)]
+                    ov = [sum(a[kk] * v[h][kk][j][t] for kk in range(n)) for t in range(c)]
                 arow.append(a)
                 orow.append([g[h][i][j][t] * ov[t] for t in range(c)])
             ah.append(arow)

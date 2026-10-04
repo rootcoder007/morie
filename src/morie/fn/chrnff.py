@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['chernbnd', 'chernoff_bound']
+__all__ = ["chernbnd", "chernoff_bound"]
 
 
 def chernbnd(mgf, a, s_grid=None):
@@ -40,7 +40,7 @@ def chernbnd(mgf, a, s_grid=None):
     """
     a = float(a)
     if s_grid is None:
-        grid = [0.01 * (1.05 ** k) for k in range(141)]
+        grid = [0.01 * (1.05**k) for k in range(141)]
     else:
         grid = C.vec(s_grid)
     if any(v <= 0 for v in grid):
@@ -55,11 +55,15 @@ def chernbnd(mgf, a, s_grid=None):
             best, bs = v, s
     if best == float("inf"):
         raise ValueError("mgf overflowed at every grid point")
-    return RichResult(payload={
-        "bound": best, "s": bs,
-        "log_bound": math.log(best) if best > 0 else float("-inf"),
-        "at_boundary": bs in (grid[0], grid[-1]),
-        "method": "Chernoff bound"})
+    return RichResult(
+        payload={
+            "bound": best,
+            "s": bs,
+            "log_bound": math.log(best) if best > 0 else float("-inf"),
+            "at_boundary": bs in (grid[0], grid[-1]),
+            "method": "Chernoff bound",
+        }
+    )
 
 
 chernoff_bound = chernbnd

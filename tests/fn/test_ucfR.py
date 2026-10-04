@@ -2,8 +2,7 @@
 
 import math
 
-from morie.fn.ucfR import (co_rated, neighbours, pearson, predict_rating,
-                           significance_weight, user_cf)
+from morie.fn.ucfR import co_rated, neighbours, pearson, predict_rating, significance_weight, user_cf
 
 
 def _pearson_by_hand(xs, ys):
@@ -38,8 +37,7 @@ def test_pearson_matches_the_hand_computed_correlation_on_co_rated_items():
     p = pearson(a, b)
     assert p["n_common"] == 3
     assert p["degenerate"] is False
-    assert abs(p["w"] - _pearson_by_hand([1.0, 2.0, 3.0],
-                                         [2.0, 4.0, 5.0])) < 1e-12
+    assert abs(p["w"] - _pearson_by_hand([1.0, 2.0, 3.0], [2.0, 4.0, 5.0])) < 1e-12
 
 
 def test_pearson_significance_scales_the_weight_by_the_overlap():
@@ -53,8 +51,7 @@ def test_pearson_significance_scales_the_weight_by_the_overlap():
 
 def test_pearson_refuses_a_pair_with_too_little_overlap():
     try:
-        pearson({"i1": 1.0, "i2": 2.0}, {"i2": 3.0, "i9": 1.0},
-                min_common=2)
+        pearson({"i1": 1.0, "i2": 2.0}, {"i2": 3.0, "i9": 1.0}, min_common=2)
     except ValueError as exc:
         assert "co-rated" in str(exc)
     else:
@@ -62,8 +59,7 @@ def test_pearson_refuses_a_pair_with_too_little_overlap():
 
 
 def test_pearson_flags_a_constant_rater_as_degenerate():
-    p = pearson({"i1": 3.0, "i2": 3.0, "i3": 3.0},
-                {"i1": 1.0, "i2": 2.0, "i3": 5.0})
+    p = pearson({"i1": 3.0, "i2": 3.0, "i3": 3.0}, {"i1": 1.0, "i2": 2.0, "i3": 5.0})
     assert p["degenerate"] is True
     assert p["w"] == 0.0
 
@@ -94,8 +90,7 @@ def test_predict_rating_is_the_own_mean_plus_weighted_deviations():
     num = 0.0
     den = 0.0
     for r in others.values():
-        w = _pearson_by_hand([target[k] for k in ("i1", "i2", "i3")],
-                             [r[k] for k in ("i1", "i2", "i3")])
+        w = _pearson_by_hand([target[k] for k in ("i1", "i2", "i3")], [r[k] for k in ("i1", "i2", "i3")])
         mu = sum(r.values()) / len(r)
         num += w * (r["target"] - mu)
         den += abs(w)

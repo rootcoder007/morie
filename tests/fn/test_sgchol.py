@@ -1,7 +1,6 @@
 """Tests for Cholesky GRF simulation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgchol import sgchol
 
 

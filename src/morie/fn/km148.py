@@ -29,28 +29,25 @@ def kamath_ch9_ldm_loss(epsilon, z_t, H_X, eps_net=None, t=None):
     1.0
     """
     if eps_net is None:
-        raise ValueError("eps_net= is required: the denoising network "
-                         "eps_X(z_t, t, H_X), or its prediction.")
-    pred = np.asarray(eps_net(z_t, t, H_X) if callable(eps_net)
-                      else eps_net, dtype=float)
+        raise ValueError("eps_net= is required: the denoising network eps_X(z_t, t, H_X), or its prediction.")
+    pred = np.asarray(eps_net(z_t, t, H_X) if callable(eps_net) else eps_net, dtype=float)
     eps = np.asarray(epsilon, dtype=float)
     if eps.shape != pred.shape:
-        raise ValueError(
-            f"the noise is {eps.shape} but the prediction is "
-            f"{pred.shape}.")
+        raise ValueError(f"the noise is {eps.shape} but the prediction is {pred.shape}.")
     if eps.size == 0:
         raise ValueError("the noise array is empty.")
     if not np.all(np.isfinite(pred)):
-        raise ValueError("the denoising network returned non-finite "
-                         "values.")
-    d = (eps - pred).reshape(eps.shape[0], -1) if eps.ndim > 1 \
-        else (eps - pred).reshape(1, -1)
-    per = (d ** 2).sum(axis=1)
-    return RichResult(payload={
-        "estimate": float(per.mean()),
-        "per_sample": [float(v) for v in per], "n": int(per.size),
-        "method": "conditional LDM noise-prediction loss "
-                  "(Kamath Eq 9.20)"})
+        raise ValueError("the denoising network returned non-finite values.")
+    d = (eps - pred).reshape(eps.shape[0], -1) if eps.ndim > 1 else (eps - pred).reshape(1, -1)
+    per = (d**2).sum(axis=1)
+    return RichResult(
+        payload={
+            "estimate": float(per.mean()),
+            "per_sample": [float(v) for v in per],
+            "n": int(per.size),
+            "method": "conditional LDM noise-prediction loss (Kamath Eq 9.20)",
+        }
+    )
 
 
 def cheatsheet():

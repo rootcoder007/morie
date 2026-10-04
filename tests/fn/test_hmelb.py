@@ -1,7 +1,6 @@
 """Tests for hmelb.geron_elbo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmelb import geron_elbo
 
 

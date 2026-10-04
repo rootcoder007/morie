@@ -65,8 +65,7 @@ def btiseq(x, mu0=0.0, B_outer=300, B_inner=150, seed=0):
         return math.sqrt(n) * abs(m - center) / sd
 
     def _resample(base):
-        return [base[min(int(float(rng.uniform()) * n), n - 1)]
-                for _ in range(n)]
+        return [base[min(int(float(rng.uniform()) * n), n - 1)] for _ in range(n)]
 
     t_obs = _tstat(xv, mu0)
     xbar = sum(xv) / n
@@ -89,17 +88,19 @@ def btiseq(x, mu0=0.0, B_outer=300, B_inner=150, seed=0):
     h_obs = sum(1 for t in outer_t if t <= t_obs) / float(B_outer)
     p_boot = 1.0 - h_obs
     p_iter = sum(1 for u in prepiv_outer if u >= h_obs) / float(B_outer)
-    return RichResult(payload={
-        "statistic": t_obs,
-        "p_boot": p_boot,
-        "p_iterated": p_iter,
-        "prepivoted_value": h_obs,
-        "mu0": mu0,
-        "B_outer": int(B_outer),
-        "B_inner": int(B_inner),
-        "seed": int(seed),
-        "method": "Beran (1988) prepivoted / twice-prepivoted test",
-    })
+    return RichResult(
+        payload={
+            "statistic": t_obs,
+            "p_boot": p_boot,
+            "p_iterated": p_iter,
+            "prepivoted_value": h_obs,
+            "mu0": mu0,
+            "B_outer": int(B_outer),
+            "B_inner": int(B_inner),
+            "seed": int(seed),
+            "method": "Beran (1988) prepivoted / twice-prepivoted test",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -108,6 +109,7 @@ iterated_bootstrap_test = btiseq
 
 def cheatsheet():
     return "btiseq: p_B = 1 - H(T); p_B1 = frac{H*_b(T*_b) >= H(T)}"
+
 
 # public names resolved by fn/_lazy_map.json
 boot_iter_calibrated = btiseq

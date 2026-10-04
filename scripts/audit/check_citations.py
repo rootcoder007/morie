@@ -44,15 +44,14 @@ HERE = pathlib.Path(__file__).resolve().parent
 LEDGER = HERE / "citations_ledger.json"
 
 # "Author, A. (1999). *Journal*, 94(446), 496-509."  -- no title.
-PY_TITLELESS = re.compile(
-    r"\(\d{4}[a-z]?\)\.\s*\*[^*]+\*\s*,?\s*\d")
+PY_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)\.\s*\*[^*]+\*\s*,?\s*\d")
 # "#' @references Author (1999). \emph{Journal}, 94(446), 496-509."
-R_TITLELESS = re.compile(
-    r"\(\d{4}[a-z]?\)\.\s*\\emph\{[^}]+\}[ ,]*\s*\d")
+R_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)\.\s*\\emph\{[^}]+\}[ ,]*\s*\d")
 # "Verdinelli & Wasserman (1995); Dickey (1971)."  -- no venue at all.
 BARE_AUTHOR_YEAR = re.compile(
     r"^\s*(?:#'\s*)?(?:@references\s+)?"
-    r"[A-Z][A-Za-z'\-]+(?:[^.()]{0,60})\(\d{4}[a-z]?\)\s*[;.]\s*$")
+    r"[A-Z][A-Za-z'\-]+(?:[^.()]{0,60})\(\d{4}[a-z]?\)\s*[;.]\s*$"
+)
 PLACEHOLDER = re.compile(r"^\s*(?:#'\s*)?\{[A-Z_][A-Z0-9_]*\}\s*$")
 
 # Telling a journal locator from a book edition. A journal reference reads
@@ -143,8 +142,7 @@ def check_ledger_shape(ledger):
     for key, v in ledger.items():
         src = str(v.get("source", ""))
         if not (src.startswith("doi:") or src.startswith("http")):
-            bad.append(f"ledger[{key}]: E5: no resolvable source "
-                       f"(need doi: or http), got {src!r}")
+            bad.append(f"ledger[{key}]: E5: no resolvable source (need doi: or http), got {src!r}")
         if not v.get("verified"):
             bad.append(f"ledger[{key}]: E5: no `verified` date")
         # An entry may not be BOTH a certificate and a guess. If the page
@@ -152,9 +150,11 @@ def check_ledger_shape(ledger):
         # start page alone -- writing a range here and flagging it in
         # prose would let the flag be ignored while the range is trusted.
         if v.get("pages_unverified") and "-" in str(v.get("pages") or ""):
-            bad.append(f"ledger[{key}]: E5: marked pages_unverified but "
-                       f"still records a RANGE {v.get('pages')!r}; record "
-                       f"the confirmed start page only")
+            bad.append(
+                f"ledger[{key}]: E5: marked pages_unverified but "
+                f"still records a RANGE {v.get('pages')!r}; record "
+                f"the confirmed start page only"
+            )
     return bad
 
 
@@ -163,6 +163,7 @@ def check_ledger_online(ledger):
     import json as _json
     import time
     import urllib.request
+
     bad = []
     ua = {"User-Agent": "morie-citation-gate (mailto:ruhela.vansh@gmail.com)"}
     for key, v in sorted(ledger.items()):
@@ -182,8 +183,7 @@ def check_ledger_online(ledger):
             yr = msg["issued"]["date-parts"][0][0]
         except Exception:
             pass
-        for field, got in (("year", yr), ("volume", msg.get("volume")),
-                           ("pages", msg.get("page"))):
+        for field, got in (("year", yr), ("volume", msg.get("volume")), ("pages", msg.get("page"))):
             want = v.get(field)
             if want is None or got is None:
                 continue
@@ -195,11 +195,9 @@ def check_ledger_online(ledger):
             # FIRST page. A ledger range that begins there is consistent,
             # not contradictory -- flagging it would drown the real
             # mismatches in noise, and a noisy gate gets ignored.
-            if (field == "pages" and "-" not in g
-                    and w.split("-")[0] == g):
+            if field == "pages" and "-" not in g and w.split("-")[0] == g:
                 continue
-            bad.append(f"ledger[{key}]: E6: {field} is {got!r} at the "
-                       f"publisher, ledger says {want!r}")
+            bad.append(f"ledger[{key}]: E6: {field} is {got!r} at the publisher, ledger says {want!r}")
         time.sleep(0.4)
     return bad
 
@@ -217,12 +215,11 @@ def judge(entry, line, ledger, is_r, strict):
         # italics in the whole block. Otherwise a titled journal article
         # followed by a second reference cross-matches: the year comes
         # from the second reference, the italics from the first.
-        sub = e[m.start():]
+        sub = e[m.start() :]
         ital = re.search(r"\\emph\{([^}]+)\}" if is_r else r"\*([^*]+)\*", sub)
-        tail = sub[ital.end():] if ital else ""
+        tail = sub[ital.end() :] if ital else ""
         if not EDITION.match(tail) and JOURNAL_LOCATOR.match(tail):
-            out.append((line, "E1",
-                        f"citation has a venue and locator but NO title: {e[:88]}"))
+            out.append((line, "E1", f"citation has a venue and locator but NO title: {e[:88]}"))
     if BARE_AUTHOR_YEAR.match(entry) and "*" not in e and "\\emph" not in e:
         out.append((line, "E2", f"bare author-year, no venue: {e[:88]}"))
     return out
@@ -254,8 +251,10 @@ def main(argv):
             print("  " + p)
         if len(problems) > 60:
             print(f"  ... and {len(problems) - 60} more")
-        print("\nFix by supplying the missing title/venue from the publisher "
-              "record, then record it in scripts/audit/citations_ledger.json.")
+        print(
+            "\nFix by supplying the missing title/venue from the publisher "
+            "record, then record it in scripts/audit/citations_ledger.json."
+        )
         return 1
     print("citation gate: OK")
     return 0

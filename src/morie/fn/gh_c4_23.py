@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,12 +25,15 @@ def ghosal_pen_dp(p, alpha, lam, counts=None):
     if counts is not None:
         a = [ai + Ni for ai, Ni in zip(a, _bnp._flat(counts))]
     pen = sum((ps[j + 1] - ps[j]) ** 2 for j in range(len(ps) - 1))
-    logdens = sum((ai - 1.0) * math.log(max(pi, 1e-300))
-                  for ai, pi in zip(a, ps)) - float(lam) * pen
-    res = RichResult(payload={"estimate": logdens,
-                              "penalty": pen,
-                              "posterior_alpha": a,
-                              "method": "penalized Dirichlet log density (GvdV 2017 sec. 4.6.3)"})
+    logdens = sum((ai - 1.0) * math.log(max(pi, 1e-300)) for ai, pi in zip(a, ps)) - float(lam) * pen
+    res = RichResult(
+        payload={
+            "estimate": logdens,
+            "penalty": pen,
+            "posterior_alpha": a,
+            "method": "penalized Dirichlet log density (GvdV 2017 sec. 4.6.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_23")
 
 

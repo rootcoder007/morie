@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['kwmc', 'gibbons_kw_mult_comp']
+__all__ = ["kwmc", "gibbons_kw_mult_comp"]
 
 
 def kwmc(rank_means, ns, alpha=0.20):
@@ -64,9 +64,7 @@ def kwmc(rank_means, ns, alpha=0.20):
         brow = []
         drow = []
         for j in range(k):
-            b = zstar * math.sqrt(
-                nn * (nn + 1.0) / 12.0 * (1.0 / nv[i] + 1.0 / nv[j])
-            )
+            b = zstar * math.sqrt(nn * (nn + 1.0) / 12.0 * (1.0 / nv[i] + 1.0 / nv[j]))
             d = abs(rm[i] - rm[j])
             brow.append(float(b))
             drow.append(float(d))

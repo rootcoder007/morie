@@ -41,9 +41,13 @@ def gibbons_runs_var(n1, n2):
         raise ValueError("need n1 + n2 >= 3 for a non-degenerate variance.")
     var = 2.0 * n1 * n2 * (2.0 * n1 * n2 - n1 - n2) / (n**2 * (n - 1))
     return RichResult(
-        payload={"var": float(var), "sd": float(np.sqrt(max(var, 0.0))),
-                 "n1": n1, "n2": n2,
-                 "method": "Var(R) = 2n1n2(2n1n2-n1-n2)/[n^2(n-1)] (eq. 3.2.8)"}
+        payload={
+            "var": float(var),
+            "sd": float(np.sqrt(max(var, 0.0))),
+            "n1": n1,
+            "n2": n2,
+            "method": "Var(R) = 2n1n2(2n1n2-n1-n2)/[n^2(n-1)] (eq. 3.2.8)",
+        }
     )
 
 

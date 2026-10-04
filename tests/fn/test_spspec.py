@@ -21,8 +21,9 @@ def test_spspec_basic():
     assert r["variance"] == r["sum_sigma2"] == 1.75
     ph = [float(v) for v in np.random.default_rng(11).uniform(0.0, 2 * math.pi, 3)]
     for hh, z in zip(h, r["realisation"]):
-        assert float(z) == pytest.approx(3.0 + sum(math.sqrt(2 * a) * math.cos(w * hh + p)
-                                                   for a, w, p in zip(s2, om, ph)), abs=1e-12)
+        assert float(z) == pytest.approx(
+            3.0 + sum(math.sqrt(2 * a) * math.cos(w * hh + p) for a, w, p in zip(s2, om, ph)), abs=1e-12
+        )
 
 
 def test_spspec_edge():
@@ -32,13 +33,15 @@ def test_spspec_edge():
     om, s2 = [0.9], [2.0]
     m = 8
     for hh in (0.0, 1.1):
-        avg = sum(2 * s2[0] * math.cos(2 * math.pi * k / m) * math.cos(om[0] * hh + 2 * math.pi * k / m)
-                  for k in range(m)) / m
+        avg = (
+            sum(
+                2 * s2[0] * math.cos(2 * math.pi * k / m) * math.cos(om[0] * hh + 2 * math.pi * k / m) for k in range(m)
+            )
+            / m
+        )
         c = schabenberger_spectral_representation([hh], sigma2=s2, omega=om)["covariance"]
         assert float(c[0]) == pytest.approx(avg, abs=1e-14)
     with pytest.raises(ValueError):
         schabenberger_spectral_representation([0.0], sigma2=[1.0, 2.0], omega=[1.0])
     with pytest.raises(ValueError):
         schabenberger_spectral_representation([0.0], sigma2=[-1.0], omega=[1.0])
-
-

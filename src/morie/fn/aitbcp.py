@@ -70,12 +70,18 @@ def compositional_bray_curtis(x, y, close=True):
     if den <= 0.0:
         raise ValueError("both vectors are zero; Bray-Curtis is undefined")
     bc = num / den
-    return RichResult(payload={
-        "bc": float(bc), "estimate": float(bc), "numerator": float(num),
-        "denominator": float(den), "similarity": float(1.0 - bc),
-        "closed": bool(close), "n": n,
-        "method": "Bray & Curtis (1957) dissimilarity, "
-                  "sum|x-y| / sum(x+y); a dissimilarity, not a metric"})
+    return RichResult(
+        payload={
+            "bc": float(bc),
+            "estimate": float(bc),
+            "numerator": float(num),
+            "denominator": float(den),
+            "similarity": float(1.0 - bc),
+            "closed": bool(close),
+            "n": n,
+            "method": "Bray & Curtis (1957) dissimilarity, sum|x-y| / sum(x+y); a dissimilarity, not a metric",
+        }
+    )
 
 
 def cheatsheet():

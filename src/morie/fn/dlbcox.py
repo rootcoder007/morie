@@ -65,12 +65,13 @@ def dfbeta_cox(time, event, X, ties="efron"):
     inf = cox_dfbeta_influence(fit)
     return RichResult(
         title="Cox DFBETA (fitted)",
-        summary_lines=[("n", int(inf["dfbeta"].shape[0])),
-                       ("most influential", int(inf["most_influential"]))],
+        summary_lines=[("n", int(inf["dfbeta"].shape[0])), ("most influential", int(inf["most_influential"]))],
         payload={
-            "dfbeta": inf["dfbeta"], "dfbetas": inf["dfbetas"],
+            "dfbeta": inf["dfbeta"],
+            "dfbetas": inf["dfbetas"],
             "score_residuals": inf["score_residuals"],
-            "beta": fit["beta"], "se": fit["se"],
+            "beta": fit["beta"],
+            "se": fit["se"],
             "max_influence": inf["max_influence"],
             "most_influential": inf["most_influential"],
             "method": "dfbeta_cox",

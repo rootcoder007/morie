@@ -22,7 +22,6 @@ after the same mathematician for a different reason.
 """
 
 import math
-from itertools import permutations, product
 
 from ._richresult import RichResult
 
@@ -77,9 +76,7 @@ def hook_lengths(shape):
     if any(x <= 0 for x in lam):
         raise ValueError(f"every part must be positive; got {shape}.")
     if any(a < b for a, b in zip(lam, lam[1:])):
-        raise ValueError(
-            f"a partition must be weakly decreasing; got {shape}."
-        )
+        raise ValueError(f"a partition must be weakly decreasing; got {shape}.")
     conj = [sum(1 for r in lam if r > j) for j in range(lam[0] if lam else 0)]
     hooks = []
     for i, row in enumerate(lam):
@@ -88,8 +85,7 @@ def hook_lengths(shape):
     for r in hooks:
         for h in r:
             prod *= h
-    return {"hooks": hooks, "product": prod, "shape": tuple(lam),
-            "conjugate": tuple(conj), "n": sum(lam)}
+    return {"hooks": hooks, "product": prod, "shape": tuple(lam), "conjugate": tuple(conj), "n": sum(lam)}
 
 
 def standard_tableaux_count(shape):
@@ -194,9 +190,7 @@ def rsk_correspondence(permutation):
     w = [int(x) for x in permutation]
     n = len(w)
     if sorted(w) != list(range(1, n + 1)):
-        raise ValueError(
-            f"expected a permutation of 1..{n}; got {permutation}."
-        )
+        raise ValueError(f"expected a permutation of 1..{n}; got {permutation}.")
     P, Q = [], []
     for step, x in enumerate(w, start=1):
         P, row = rsk_insert(P, x)
@@ -310,9 +304,7 @@ def burnside_orbit_count(group_permutations, n_colours):
         raise ValueError(f"n_colours must be positive; got {k}.")
     for g in G:
         if sorted(g) != list(range(n)):
-            raise ValueError(
-                f"{g} is not a permutation of 0 .. {n - 1}."
-            )
+            raise ValueError(f"{g} is not a permutation of 0 .. {n - 1}.")
 
     def n_cycles(g):
         seen, c = set(), 0
@@ -327,15 +319,15 @@ def burnside_orbit_count(group_permutations, n_colours):
         return c
 
     cyc = [n_cycles(g) for g in G]
-    fixed = [k ** c for c in cyc]
+    fixed = [k**c for c in cyc]
     total = sum(fixed)
     q, r = divmod(total, len(G))
-    naive = k ** n / len(G)
+    naive = k**n / len(G)
     out = RichResult(
         title="Burnside orbit count",
         summary_lines=[
             ("Orbits", q),
-            ("Total colourings", k ** n),
+            ("Total colourings", k**n),
             ("Group order", len(G)),
             ("Naive |X|/|G|", naive),
         ],
@@ -347,7 +339,7 @@ def burnside_orbit_count(group_permutations, n_colours):
             "cycle_counts": cyc,
             "sum_fixed": total,
             "group_order": len(G),
-            "total_colourings": k ** n,
+            "total_colourings": k**n,
             "naive_division": naive,
             "naive_is_wrong": abs(naive - q) > 1e-12,
             "divides_exactly": r == 0,
@@ -401,7 +393,7 @@ def cycle_index_necklaces(n, k):
             r -= r // mm
         return r
 
-    total = sum(phi(n // d) * k ** d for d in range(1, n + 1) if n % d == 0)
+    total = sum(phi(n // d) * k**d for d in range(1, n + 1) if n % d == 0)
     q, rem = divmod(total, n)
     rot = [[(i + s) % n for i in range(n)] for s in range(n)]
     direct = burnside_orbit_count(rot, k)["orbits"]
@@ -419,7 +411,7 @@ def cycle_index_necklaces(n, k):
             "direct_burnside": direct,
             "agrees": q == direct,
             "divides_exactly": rem == 0,
-            "total_colourings": k ** n,
+            "total_colourings": k**n,
             "n": n,
             "k": k,
             "method": "Cycle index of the cyclic group (Polya enumeration)",

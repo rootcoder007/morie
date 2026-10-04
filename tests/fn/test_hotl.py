@@ -1,7 +1,6 @@
 """Tests for hotelling_t2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hotl import hotelling_t2
 
 

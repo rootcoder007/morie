@@ -102,9 +102,9 @@ def geron_flash_attention_tile(Q, K, V, block_size=2):
     O = np.zeros((Tq, dv))
     n_blocks = 0
     for start in range(0, Tk, bs):
-        Kj = Ka[start:start + bs]
-        Vj = Va[start:start + bs]
-        S = (Qa @ Kj.T) * scale                    # (Tq, <=bs) -- the only tile held
+        Kj = Ka[start : start + bs]
+        Vj = Va[start : start + bs]
+        S = (Qa @ Kj.T) * scale  # (Tq, <=bs) -- the only tile held
         m_tilde = S.max(axis=1)
         P = np.exp(S - m_tilde[:, None])
         l_tilde = P.sum(axis=1)
@@ -122,8 +122,7 @@ def geron_flash_attention_tile(Q, K, V, block_size=2):
 
     return RichResult(
         title="FlashAttention (tiled)",
-        summary_lines=[("Blocks", n_blocks), ("Block size", bs),
-                       ("Max abs error vs direct", err)],
+        summary_lines=[("Blocks", n_blocks), ("Block size", bs), ("Max abs error vs direct", err)],
         payload={
             "output": O.tolist(),
             "reference_output": R.tolist(),

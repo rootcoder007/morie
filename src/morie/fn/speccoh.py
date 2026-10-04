@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Magnitude-squared coherence by Welch averaging."""
 
-from math import cos, fsum, pi, sqrt
+from math import cos, pi
 
 from ._richresult import RichResult
 from ._spx import dft, mean, vec
@@ -62,17 +62,18 @@ def coherence(x, y, nperseg=None, overlap=0.5):
     if m < 8:
         raise ValueError("`nperseg` must be at least 8")
     if m > n:
-        raise ValueError("`nperseg` (%d) exceeds the record length (%d)"
-                         % (m, n))
+        raise ValueError("`nperseg` (%d) exceeds the record length (%d)" % (m, n))
     overlap = float(overlap)
     if not 0.0 <= overlap < 1.0:
         raise ValueError("`overlap` must lie in [0, 1)")
     step = max(1, int(round(m * (1.0 - overlap))))
     starts = list(range(0, n - m + 1, step))
     if len(starts) < 2:
-        raise ValueError("fewer than 2 segments: coherence would be "
-                         "identically 1 and would mean nothing; shorten "
-                         "`nperseg` or lengthen the records")
+        raise ValueError(
+            "fewer than 2 segments: coherence would be "
+            "identically 1 and would mean nothing; shorten "
+            "`nperseg` or lengthen the records"
+        )
 
     win = [0.5 - 0.5 * cos(2.0 * pi * t / (m - 1.0)) for t in range(m)]
     ks = [k for k in range(1, m // 2 + 1)]
@@ -81,8 +82,8 @@ def coherence(x, y, nperseg=None, overlap=0.5):
     cre = [0.0] * len(ks)
     cim = [0.0] * len(ks)
     for s in starts:
-        sx = xv[s:s + m]
-        sy = yv[s:s + m]
+        sx = xv[s : s + m]
+        sy = yv[s : s + m]
         mx = mean(sx)
         my = mean(sy)
         wx = [(sx[t] - mx) * win[t] for t in range(m)]
@@ -105,20 +106,24 @@ def coherence(x, y, nperseg=None, overlap=0.5):
         else:
             coh.append((cre[idx] ** 2 + cim[idx] ** 2) / den)
 
-    return RichResult(payload={
-        "omega": [2.0 * pi * k / m for k in ks],
-        "coherence": coh,
-        "sxx": [t / nseg for t in sxx],
-        "syy": [t / nseg for t in syy],
-        "n_segments": nseg,
-        "nperseg": float(m),
-        "step": float(step),
-        "single_segment_coherence_is_identically_one": True,
-        "n": n,
-        "method": ("Magnitude-squared coherence by Welch averaging "
-                   "(Bendat & Piersol 2010, Ch. 5); NOT in Schabenberger "
-                   "& Gotway"),
-    })
+    return RichResult(
+        payload={
+            "omega": [2.0 * pi * k / m for k in ks],
+            "coherence": coh,
+            "sxx": [t / nseg for t in sxx],
+            "syy": [t / nseg for t in syy],
+            "n_segments": nseg,
+            "nperseg": float(m),
+            "step": float(step),
+            "single_segment_coherence_is_identically_one": True,
+            "n": n,
+            "method": (
+                "Magnitude-squared coherence by Welch averaging "
+                "(Bendat & Piersol 2010, Ch. 5); NOT in Schabenberger "
+                "& Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

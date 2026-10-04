@@ -6,8 +6,6 @@ Springer, ch 7, eq. 7.3 p.219, the ordinal latent predictor. Expected values are
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm092 import mvsml_bayesian_regression_pt2_eq_7_3
@@ -20,8 +18,7 @@ def test_the_latent_predictor_stacks_the_three_effect_blocks():
     X_EM = [[1.0], [2.0]]
     res = mvsml_bayesian_regression_pt2_eq_7_3(2, X_E=X_E, X=X, X_EM=X_EM)
     assert res["estimate"] == pytest.approx(2 + 3 + 1, rel=1e-12)
-    assert res["widths"] == {"environments": 2, "markers": 3,
-                             "env_x_marker": 1}
+    assert res["widths"] == {"environments": 2, "markers": 3, "env_x_marker": 1}
 
 
 def test_the_blocks_are_stacked_in_the_printed_order():

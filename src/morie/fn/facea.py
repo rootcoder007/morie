@@ -30,18 +30,14 @@ def bspline_basis(x, n_basis=15, degree=3, lo=None, hi=None):
     if degree < 0:
         raise ValueError(f"degree must be non-negative; got {degree}.")
     if n_basis < degree + 1:
-        raise ValueError(
-            f"n_basis must be at least degree + 1 = {degree + 1}; "
-            f"got {n_basis}."
-        )
+        raise ValueError(f"n_basis must be at least degree + 1 = {degree + 1}; got {n_basis}.")
     a = float(np.min(x)) if lo is None else float(lo)
     b = float(np.max(x)) if hi is None else float(hi)
     if not b > a:
         raise ValueError("the evaluation range is degenerate.")
     n_interior = n_basis - degree - 1
     interior = np.linspace(a, b, n_interior + 2)[1:-1]
-    knots = np.concatenate([np.full(degree + 1, a), interior,
-                            np.full(degree + 1, b)])
+    knots = np.concatenate([np.full(degree + 1, a), interior, np.full(degree + 1, b)])
     m = knots.size - degree - 1
     B = np.zeros((x.size, m))
     for i in range(m):
@@ -62,8 +58,7 @@ def _bspline_one(x, t, i, k, right):
         out += (x - t[i]) / d1 * _bspline_one(x, t, i, k - 1, right)
     d2 = t[i + k + 1] - t[i + 1]
     if d2 > 0:
-        out += (t[i + k + 1] - x) / d2 * _bspline_one(x, t, i + 1, k - 1,
-                                                      right)
+        out += (t[i + k + 1] - x) / d2 * _bspline_one(x, t, i + 1, k - 1, right)
     return out
 
 
@@ -84,8 +79,7 @@ def _smoother(B, P, lam):
     return B @ M
 
 
-def face_smooth(Y, argvals=None, n_basis=12, degree=3, lambdas=None,
-                pve=0.99, penalty_order=2):
+def face_smooth(Y, argvals=None, n_basis=12, degree=3, lambdas=None, pve=0.99, penalty_order=2):
     r"""Smooth a functional covariance and extract its components.
 
     Given curves observed on a common grid, the raw covariance
@@ -160,12 +154,9 @@ def face_smooth(Y, argvals=None, n_basis=12, degree=3, lambdas=None,
         raise ValueError(f"need at least two curves; got {n}.")
     if p < 4:
         raise ValueError(f"need at least four grid points; got {p}.")
-    t = (np.linspace(0.0, 1.0, p) if argvals is None
-         else np.asarray(argvals, dtype=float).ravel())
+    t = np.linspace(0.0, 1.0, p) if argvals is None else np.asarray(argvals, dtype=float).ravel()
     if t.size != p:
-        raise ValueError(
-            f"argvals has length {t.size} but Y has {p} columns."
-        )
+        raise ValueError(f"argvals has length {t.size} but Y has {p} columns.")
     if not 0 < pve <= 1:
         raise ValueError(f"pve must lie in (0, 1]; got {pve}.")
 
@@ -173,8 +164,7 @@ def face_smooth(Y, argvals=None, n_basis=12, degree=3, lambdas=None,
     cnt = obs.sum(axis=0)
     if np.any(cnt < 2):
         raise ValueError(
-            "every grid point needs at least two observed curves; points "
-            f"{np.flatnonzero(cnt < 2).tolist()} do not."
+            f"every grid point needs at least two observed curves; points {np.flatnonzero(cnt < 2).tolist()} do not."
         )
     mu = np.nansum(np.where(obs, M, 0.0), axis=0) / cnt
     Z = np.where(obs, M - mu, 0.0)
@@ -294,7 +284,8 @@ def face_smooth(Y, argvals=None, n_basis=12, degree=3, lambdas=None,
             f"{npc} component(s) carry {cum[npc - 1] * 100:.1f}% of the "
             f"smoothed variance, with measurement-error variance estimated "
             f"at {sigma2:.4g}."
-            if total > 0 else "The smoothed covariance has no positive mass."
+            if total > 0
+            else "The smoothed covariance has no positive mass."
         ),
     )
     if neg_mass > 1e-8 * max(total, 1e-300):

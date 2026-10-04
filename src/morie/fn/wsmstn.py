@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sufficient statistics for the Bernoulli and Normal models."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -55,19 +53,33 @@ def suffstat(x, family="normal"):
         if any(v not in (0.0, 1.0) for v in x):
             raise ValueError("Bernoulli data must be 0/1")
         S = sum(x)
-        return RichResult(payload={
-            "T1": S, "T2": float("nan"), "n": n, "dim": 1.0,
-            "mle_mu": S / n, "mle_sigma2": float("nan"),
-            "method": "Bernoulli sufficient statistic, Wasserman Ex 9.33"})
+        return RichResult(
+            payload={
+                "T1": S,
+                "T2": float("nan"),
+                "n": n,
+                "dim": 1.0,
+                "mle_mu": S / n,
+                "mle_sigma2": float("nan"),
+                "method": "Bernoulli sufficient statistic, Wasserman Ex 9.33",
+            }
+        )
     if fam == "normal":
         if n < 2:
             raise ValueError("the Normal statistic needs at least two points")
         m = sum(x) / n
         s = C.sd(x, 1)
-        return RichResult(payload={
-            "T1": m, "T2": s, "n": n, "dim": 2.0, "mle_mu": m,
-            "mle_sigma2": sum((v - m) ** 2 for v in x) / n,
-            "method": "Normal sufficient statistic, Wasserman Ex 9.34"})
+        return RichResult(
+            payload={
+                "T1": m,
+                "T2": s,
+                "n": n,
+                "dim": 2.0,
+                "mle_mu": m,
+                "mle_sigma2": sum((v - m) ** 2 for v in x) / n,
+                "method": "Normal sufficient statistic, Wasserman Ex 9.34",
+            }
+        )
     raise ValueError("family must be 'bernoulli' or 'normal'")
 
 

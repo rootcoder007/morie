@@ -60,12 +60,9 @@ transpose of this.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["co_rated", "pearson", "neighbours", "predict_rating",
-           "significance_weight"]
+__all__ = ["co_rated", "pearson", "neighbours", "predict_rating", "significance_weight"]
 
 _EPS = 1e-12
 
@@ -75,11 +72,13 @@ def co_rated(ratings_a, ratings_b):
     A = dict(ratings_a)
     B = dict(ratings_b)
     common = sorted(set(A) & set(B))
-    return {"items": common, "n": len(common),
-            "a": [float(A[i]) for i in common],
-            "b": [float(B[i]) for i in common],
-            "note": "an unrated item carries no information; scoring "
-                    "it as 0 would invent a strong opinion"}
+    return {
+        "items": common,
+        "n": len(common),
+        "a": [float(A[i]) for i in common],
+        "b": [float(B[i]) for i in common],
+        "note": "an unrated item carries no information; scoring it as 0 would invent a strong opinion",
+    }
 
 
 def significance_weight(n_common, threshold=50):
@@ -94,8 +93,7 @@ def significance_weight(n_common, threshold=50):
     return min(n / float(t), 1.0)
 
 
-def pearson(ratings_a, ratings_b, min_common=2, significance=False,
-            threshold=50):
+def pearson(ratings_a, ratings_b, min_common=2, significance=False, threshold=50):
     r"""Correlation over the co-rated items.
 
     Refuses a pair with too little overlap rather than returning a
@@ -104,27 +102,30 @@ def pearson(ratings_a, ratings_b, min_common=2, significance=False,
     c = co_rated(ratings_a, ratings_b)
     n = c["n"]
     if n < int(min_common):
-        raise ValueError("ucfR: only %d co-rated items, below the "
-                         "minimum of %d -- a correlation here would "
-                         "be noise" % (n, int(min_common)))
+        raise ValueError(
+            "ucfR: only %d co-rated items, below the "
+            "minimum of %d -- a correlation here would "
+            "be noise" % (n, int(min_common))
+        )
     ma = sum(c["a"]) / n
     mb = sum(c["b"]) / n
     num = sum((c["a"][i] - ma) * (c["b"][i] - mb) for i in range(n))
     da = math.sqrt(sum((v - ma) ** 2 for v in c["a"]))
     db = math.sqrt(sum((v - mb) ** 2 for v in c["b"]))
     if da <= _EPS or db <= _EPS:
-        return {"w": 0.0, "n_common": n, "degenerate": True,
-                "note": "one user gave identical ratings throughout, "
-                        "so no correlation is defined"}
+        return {
+            "w": 0.0,
+            "n_common": n,
+            "degenerate": True,
+            "note": "one user gave identical ratings throughout, so no correlation is defined",
+        }
     w = num / (da * db)
     if significance:
         w *= significance_weight(n, threshold)
-    return {"w": w, "n_common": n, "degenerate": False,
-            "significance_applied": bool(significance)}
+    return {"w": w, "n_common": n, "degenerate": False, "significance_applied": bool(significance)}
 
 
-def neighbours(target, others, min_common=2, top_k=None,
-               significance=False):
+def neighbours(target, others, min_common=2, top_k=None, significance=False):
     r"""Rank the other users by correlation with the target."""
     out = []
     for uid, r in others.items():
@@ -134,18 +135,14 @@ def neighbours(target, others, min_common=2, top_k=None,
             continue
         if p.get("degenerate"):
             continue
-        out.append({"user": uid, "w": p["w"],
-                    "n_common": p["n_common"]})
+        out.append({"user": uid, "w": p["w"], "n_common": p["n_common"]})
     out.sort(key=lambda d: -abs(d["w"]))
     if top_k is not None:
-        out = out[:int(top_k)]
-    return {"neighbours": out, "n": len(out),
-            "note": "ranked by |w|: a reliable DISAGREER is "
-                    "information too"}
+        out = out[: int(top_k)]
+    return {"neighbours": out, "n": len(out), "note": "ranked by |w|: a reliable DISAGREER is information too"}
 
 
-def predict_rating(target, others, item, min_common=2, top_k=None,
-                   significance=False):
+def predict_rating(target, others, item, min_common=2, top_k=None, significance=False):
     r""":math:`\bar r_a + \sum w(r_{ui}-\bar r_u)/\sum|w|`.
 
     Deviations, not raw ratings: otherwise a generous neighbour's
@@ -153,11 +150,9 @@ def predict_rating(target, others, item, min_common=2, top_k=None,
     """
     A = dict(target)
     if not A:
-        raise ValueError("ucfR: the target user has rated nothing, "
-                         "so there is no mean to anchor on")
+        raise ValueError("ucfR: the target user has rated nothing, so there is no mean to anchor on")
     mean_a = sum(float(v) for v in A.values()) / len(A)
-    nb = neighbours(target, others, min_common, top_k,
-                    significance)["neighbours"]
+    nb = neighbours(target, others, min_common, top_k, significance)["neighbours"]
     num, den, used = 0.0, 0.0, 0
     naive_num, naive_den = 0.0, 0.0
     for d in nb:
@@ -171,40 +166,44 @@ def predict_rating(target, others, item, min_common=2, top_k=None,
         naive_den += d["w"]
         used += 1
     if used == 0 or den <= _EPS:
-        return RichResult(payload={
-            "estimate": mean_a, "prediction": mean_a,
-            "n_neighbours": 0, "fell_back": True,
-            "method": "user-based collaborative filtering; Resnick "
-                      "et al. (1994)",
-            "note": "nobody comparable rated this item, so the "
-                    "user's own mean is the honest answer",
-        })
-    return RichResult(payload={
-        "estimate": mean_a + num / den,
-        "prediction": mean_a + num / den,
-        "naive_weighted_mean": naive_num / naive_den
-        if abs(naive_den) > _EPS else None,
-        "user_mean": mean_a, "n_neighbours": used,
-        "fell_back": False,
-        "method": "user-based collaborative filtering; Resnick et "
-                  "al. (1994)",
-        "note": "deviations from each neighbour's own mean, "
-                "normalised by the sum of ABSOLUTE weights",
-    })
+        return RichResult(
+            payload={
+                "estimate": mean_a,
+                "prediction": mean_a,
+                "n_neighbours": 0,
+                "fell_back": True,
+                "method": "user-based collaborative filtering; Resnick et al. (1994)",
+                "note": "nobody comparable rated this item, so the user's own mean is the honest answer",
+            }
+        )
+    return RichResult(
+        payload={
+            "estimate": mean_a + num / den,
+            "prediction": mean_a + num / den,
+            "naive_weighted_mean": naive_num / naive_den if abs(naive_den) > _EPS else None,
+            "user_mean": mean_a,
+            "n_neighbours": used,
+            "fell_back": False,
+            "method": "user-based collaborative filtering; Resnick et al. (1994)",
+            "note": "deviations from each neighbour's own mean, normalised by the sum of ABSOLUTE weights",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ucfR: people who agreed before will probably agree again "
-            "-- so predict from correlated users, with NO content "
-            "analysis, which is why it worked on Usenet news. "
-            "Correlate over CO-RATED items only; unrated is silent, "
-            "not zero. Predict the user's own mean plus a weighted "
-            "average of neighbours' DEVIATIONS from their means, since "
-            "one person's 3 is another's 5 -- averaging raw ratings "
-            "imports the neighbour's generosity. Normalise by the sum "
-            "of ABSOLUTE weights, so a reliable disagreer still "
-            "counts. A correlation of 1.0 from two co-rated items is "
-            "not evidence: scale by min(n/50, 1).")
+    return (
+        "ucfR: people who agreed before will probably agree again "
+        "-- so predict from correlated users, with NO content "
+        "analysis, which is why it worked on Usenet news. "
+        "Correlate over CO-RATED items only; unrated is silent, "
+        "not zero. Predict the user's own mean plus a weighted "
+        "average of neighbours' DEVIATIONS from their means, since "
+        "one person's 3 is another's 5 -- averaging raw ratings "
+        "imports the neighbour's generosity. Normalise by the sum "
+        "of ABSOLUTE weights, so a reliable disagreer still "
+        "counts. A correlation of 1.0 from two co-rated items is "
+        "not evidence: scale by min(n/50, 1)."
+    )
 
 
 # compact alias per ledger/NAMING.md
