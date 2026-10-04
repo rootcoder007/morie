@@ -137,6 +137,7 @@ def test_truncation_is_close_and_the_routes_report_themselves():
     ex = H.fit_hawkes_general(t, T, "gamma", "constant", method="exact")
     tr = H.fit_hawkes_general(t, T, "gamma", "constant", method="truncate", eps=1e-10)
     assert tr["method"] == "truncate" and tr["eps"] == 1e-10 and ex["eps"] is None
+    assert H._resolve_method("auto", "weibull") == "truncate"
     assert abs(tr["nll"] - ex["nll"]) < 1e-3
 
 

@@ -254,11 +254,13 @@ def _resolve_method(method: str, kernel_kind: str) -> str:
     if method not in HAWKES_METHODS:
         raise ValueError(f"method must be one of {', '.join(HAWKES_METHODS)}; got {method!r}")
     if method == "auto":
-        return "soe" if kernel_kind in ("lomax", "gamma") else "exact"
+        # Weibull's exact window is where the kernel underflows: for shape < 1 that is the whole
+        # record (O(n^2)), while its tail mass passes eps within days
+        return {"exponential": "exact", "weibull": "truncate"}.get(kernel_kind, "soe")
     if method == "soe" and kernel_kind not in ("lomax", "gamma"):
         raise ValueError(
             "method='soe' applies to completely monotone kernels: 'lomax', and 'gamma' with shape < 1 "
-            "(a gamma kernel with shape >= 1 is evaluated exactly); use 'exact' or 'truncate'"
+            "(a gamma kernel with shape >= 1 is truncated at eps); use 'exact' or 'truncate'"
         )
     return method
 
@@ -369,17 +371,20 @@ def fit_hawkes_general(
       double sum stops where the kernel underflows to exactly 0 (the same value as the full sum);
       Lomax the full O(n^2) sum.
     * ``"soe"``: the completely monotone kernels (Lomax; gamma with shape < 1) as a sum of
-      exponentials (Beylkin & Monzon 2010), relative error ``eps`` per intensity, O(n K).
+      exponentials (Beylkin & Monzon 2010), relative error ``eps`` per intensity, O(n K); a gamma
+      kernel with shape >= 1 is truncated at ``eps``.
     * ``"truncate"``: each event excites only lags with kernel tail mass above ``eps`` (light tails).
     * ``"em"``: the EM algorithm (Veen & Schoenberg 2008): the same MLE, a different route.
     * ``"inar"``: Kirchner's (2017) INAR(p) least-squares estimator on binned counts, constant
       baseline only: a different (fast, approximate) estimator, also used for starting values.
-    * ``"auto"`` (default): ``"soe"`` for Lomax and gamma, ``"exact"`` otherwise.
+    * ``"auto"`` (default): ``"exact"`` for the exponential kernel, ``"truncate"`` for Weibull,
+      ``"soe"`` for Lomax and gamma (``"exact"`` without the compiled core).
 
     Returns a dict with ``theta``, ``nll``, ``aic``, ``bic``,
     ``branching_ratio``, ``baseline_params``, ``kernel_params``,
     and the time-rescaling KS statistic.
     """
+    auto = method == "auto"
     method = _resolve_method(method, kernel_kind)
     # Clip events strictly inside [0, T) -- jittered timestamps that land at
     # or past T break the kernel-CDF integral term (negative^non-integer = NaN).
@@ -429,7 +434,8 @@ def fit_hawkes_general(
             from types import SimpleNamespace
 
             res = SimpleNamespace(x=best[0], fun=best[1], success=True)
-        elif method == "exact":
+        elif method == "exact" or auto:
+            method = "exact"
             res = minimize(
                 _neg_loglik_general,
                 x0,
