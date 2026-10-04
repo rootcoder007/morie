@@ -332,6 +332,8 @@ class Series:
             d = [v for v, m in zip(self._data, key) if m]
             ix = [i for i, m in zip(self.index, key) if m]
             return Series(d, index=ix, name=self.name)
+        if isinstance(key, list) and not key:
+            return Series([], index=[], name=self.name)  # an empty mask selects nothing
         if isinstance(key, slice):
             return Series(self._data[key], index=self.index[key], name=self.name)
         if key in self.index:
@@ -3399,8 +3401,8 @@ def to_numeric(arg, errors="raise"):
 _DT_FORMATS = [
     "%Y-%m-%d",
     "%Y/%m/%d",
+    "%m/%d/%Y",  # month first, as pandas (dayfirst=False); it was tried after %d/%m/%Y
     "%d/%m/%Y",
-    "%m/%d/%Y",
     "%Y-%m-%d %H:%M:%S",
     "%Y-%m-%dT%H:%M:%S",
     "%Y%m%d",
@@ -3467,7 +3469,41 @@ def _parse_named_date(s):
     return None
 
 
-def _parse_dt(v, fmt=None):
+_NUMERIC_DT_RE = None
+
+
+def _parse_numeric_datetime(s, dayfirst=False):
+    """d/m/y or m/d/y (or y-m-d) with an optional time, 24-hour or with AM/PM, without strptime's
+    locale-dependent %p: "1/1/2014 5:00:00 AM" (the Toronto Police export), "2014-01-01 17:00"."""
+    global _NUMERIC_DT_RE
+    import re as _re
+
+    if _NUMERIC_DT_RE is None:
+        t = r"(?:[ T]+(?P<H>\d{1,2}):(?P<M>\d{2})(?::(?P<S>\d{2})(?:\.(?P<f>\d{1,6}))?)?\s*(?P<p>[AaPp]\.?[Mm]\.?)?)?"
+        _NUMERIC_DT_RE = (
+            _re.compile(r"(?P<a>\d{1,2})[/.-](?P<b>\d{1,2})[/.-](?P<y>\d{4})" + t),
+            _re.compile(r"(?P<y>\d{4})[/.-](?P<a>\d{1,2})[/.-](?P<b>\d{1,2})" + t),
+        )
+    for k, rx in enumerate(_NUMERIC_DT_RE):
+        m = rx.fullmatch(s)
+        if not m:
+            continue
+        a, b = int(m.group("a")), int(m.group("b"))
+        if k == 1:
+            mo, d = a, b
+        else:
+            mo, d = (b, a) if dayfirst else (a, b)
+        H = int(m.group("H") or 0)
+        if m.group("p"):
+            if not 1 <= H <= 12:
+                raise ValueError(f"hour {H} with {m.group('p')}")
+            H = H % 12 + (12 if m.group("p")[0] in "Pp" else 0)
+        f = (m.group("f") or "").ljust(6, "0")
+        return _dt.datetime(int(m.group("y")), mo, d, H, int(m.group("M") or 0), int(m.group("S") or 0), int(f or 0))
+    return None
+
+
+def _parse_dt(v, fmt=None, dayfirst=False):
     if isinstance(v, _dt.date | _dt.datetime):
         return v if isinstance(v, _dt.datetime) else _dt.datetime(v.year, v.month, v.day)
     if _isnan(v):
@@ -3479,6 +3515,9 @@ def _parse_dt(v, fmt=None):
         return _dt.datetime.fromisoformat(s)
     except ValueError:
         pass
+    numeric = _parse_numeric_datetime(s, dayfirst)
+    if numeric is not None:
+        return numeric
     named = _parse_named_date(s)
     if named is not None:
         return named
@@ -3579,10 +3618,11 @@ def _from_parts(row):
     return _dt.datetime(int(float(get["year"])), _month_number(get["month"]), int(float(get["day"])), *hms)
 
 
-def to_datetime(arg, errors="raise", format=None, unit=None):
-    """pandas.to_datetime: strings (ISO, numeric and English month-name forms), datetimes, numbers
-    since the epoch with ``unit`` ("s", "ms", "us", "ns", "D"), or a DataFrame of year/month/day
-    columns (month as a number or a name)."""
+def to_datetime(arg, errors="raise", format=None, unit=None, dayfirst=False):
+    """pandas.to_datetime: strings (ISO, numeric with an optional 12- or 24-hour time, and English
+    month-name forms), datetimes, numbers since the epoch with ``unit`` ("s", "ms", "us", "ns", "D"),
+    or a DataFrame of year/month/day columns (month as a number or a name). Numeric dates are
+    month first unless ``dayfirst=True``, as pandas."""
     if isinstance(arg, DataFrame):
         out = []
         for row in arg.to_dict("records"):
@@ -3603,7 +3643,7 @@ def to_datetime(arg, errors="raise", format=None, unit=None):
                     raise ValueError(f"unknown unit {unit!r}")
                 out.append(_dt.datetime(1970, 1, 1) + _dt.timedelta(seconds=float(v) * _EPOCH_UNITS[unit]))
                 continue
-            out.append(_parse_dt(v, format))
+            out.append(_parse_dt(v, format, dayfirst))
         except (ValueError, OverflowError):
             if errors == "coerce":
                 out.append(_NAN)

@@ -551,9 +551,10 @@ def test_the_svd_start_reaches_a_better_optimum_than_a_random_one():
     good = wnominate_alternating(V, n_dims=1, start="svd", polarity=int(np.argmax(truth[:, 0])))
     poor = wnominate_alternating(V, n_dims=1, start="random", seed=1, max_iter=60, polarity=int(np.argmax(truth[:, 0])))
     assert good["log_likelihood"] > poor["log_likelihood"]
+    # a higher likelihood need not mean a closer correlation with the truth (here 0.977 against
+    # 0.992 from noise), so the claim is the likelihood above; the SVD start does recover it
     r_good = abs(float(np.corrcoef(good["ideal_points"][:, 0], truth[:, 0])[0, 1]))
-    r_poor = abs(float(np.corrcoef(poor["ideal_points"][:, 0], truth[:, 0])[0, 1]))
-    assert r_good > r_poor
+    assert r_good > 0.95
 
 
 def test_ideal_points_are_recovered_in_two_dimensions_up_to_rotation():

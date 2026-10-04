@@ -15,6 +15,11 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/vector.h>
+
+#include <stdexcept>
+#include <utility>
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -24,6 +29,32 @@ namespace {
 using Vec = nb::ndarray<const double, nb::ndim<1>, nb::c_contig>;
 using CVec =
     nb::ndarray<const std::complex<double>, nb::ndim<1>, nb::c_contig>;
+
+// negative log-likelihood and its analytic gradient for any (baseline, kernel,
+// method); see morie::core::hawkes_nll_grad. Returns (nll, [gradient]).
+std::pair<double, std::vector<double>> hawkes_nll_grad(Vec t, double T, int bkind, std::vector<double> a, double eta,
+                                                       int kind, std::vector<double> psi, int method, double eps,
+                                                       double soe_R, double soe_delta, bool want_grad) {
+    const int nb = morie::core::hawkes_baseline_n(bkind);
+    const int np = kind == 0 ? 1 : 2;
+    if (static_cast<int>(a.size()) != nb || static_cast<int>(psi.size()) != np)
+        throw std::invalid_argument("hawkes_nll_grad: wrong number of baseline or kernel parameters");
+    std::vector<double> g(want_grad ? nb + 1 + np : 0);
+    const double nll = morie::core::hawkes_nll_grad(t.data(), t.shape(0), T, bkind, a.data(), eta, kind, psi.data(),
+                                                    method, eps, soe_R, soe_delta, want_grad ? g.data() : nullptr);
+    return {nll, g};
+}
+
+// time-rescaling residuals of a fitted process (morie::core::hawkes_rescaled)
+std::vector<double> hawkes_rescaled(Vec t, double T, int bkind, std::vector<double> a, double eta, int kind,
+                                    std::vector<double> psi) {
+    if (static_cast<int>(a.size()) != morie::core::hawkes_baseline_n(bkind) ||
+        static_cast<int>(psi.size()) != (kind == 0 ? 1 : 2))
+        throw std::invalid_argument("hawkes_rescaled: wrong number of baseline or kernel parameters");
+    std::vector<double> U(t.shape(0));
+    morie::core::hawkes_rescaled(t.data(), t.shape(0), T, bkind, a.data(), eta, kind, psi.data(), U.data());
+    return U;
+}
 
 double hawkes_ll_exp_const(Vec t, double T, double a0, double eta,
                            double beta) {
@@ -150,6 +181,11 @@ double hawkes_ll_gamma_hybrid_ri(Vec t, double T, double a0, double eta,
 }  // namespace
 
 void register_hawkes(nb::module_ &m) {
+    m.def("hawkes_rescaled", &hawkes_rescaled, "t"_a, "T"_a, "bkind"_a, "a"_a, "eta"_a, "kind"_a, "psi"_a,
+          "Time-rescaling residuals of a fitted Hawkes process (morie::core::hawkes_rescaled).");
+    m.def("hawkes_nll_grad", &hawkes_nll_grad, "t"_a, "T"_a, "bkind"_a, "a"_a, "eta"_a, "kind"_a, "psi"_a,
+          "method"_a = 0, "eps"_a = 1e-9, "soe_R"_a = 0.0, "soe_delta"_a = 0.0, "want_grad"_a = true,
+          "Hawkes negative log-likelihood and its analytic gradient (morie::core::hawkes_nll_grad).");
     m.def("hawkes_ll_exp_const", &hawkes_ll_exp_const, "t"_a, "T"_a,
           "a0"_a, "eta"_a, "beta"_a,
           "Hawkes negative log-likelihood -- exponential triggering "

@@ -220,13 +220,23 @@ def _num_grad(fun, x, args, eps=1e-7):
     return g, f0
 
 
-def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
+def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6, fg=None):
+    """Quasi-Newton (BFGS) with an Armijo backtracking line search; ``fg(x) -> (f, g)`` supplies an
+    analytic gradient (one evaluation per point instead of n + 1 for the finite differences)."""
     n = len(x0)
     if maxiter is None:
         maxiter = 200 * n
     x = list(map(float, x0))
     hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
-    g, f = _num_grad(fun, x, args)
+    if fg is not None:
+
+        def _grad(_fun, z, _args):
+            fz, gz = fg(list(z))
+            return [float(v) for v in gz], float(fz)
+
+    else:
+        _grad = _num_grad
+    g, f = _grad(fun, x, args)
     nfev = n + 1
     for it in range(maxiter):  # noqa: B007 - read after the loop
         gnorm = max(abs(v) for v in g)
@@ -255,7 +265,7 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
             # that converges in 27 objective calls burned 6,468.
             break
         s = [xn[i] - x[i] for i in range(n)]
-        gn, fn2 = _num_grad(fun, xn, args)
+        gn, fn2 = _grad(fun, xn, args)
         nfev += n + 1
         # A numerical gradient has a noise floor, so gnorm alone may
         # never reach gtol on a flat optimum. Stop when neither the
@@ -315,6 +325,9 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
         method = "BFGS"
     m = method.lower().replace("-", "")
     opts = kw.get("options", {}) or {}
+    jac = kw.get("jac")
+    if jac and m in ("bfgs", "lbfgsb", "cg") and not kw.get("constraints"):
+        return _minimize_with_gradient(fun, x0, args, jac, bounds, opts)
 
     lo = hi = None
     if bounds is not None:
@@ -369,6 +382,108 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
             message=str(getattr(res, "message", "")),
         )
     return res
+
+
+def _minimize_with_gradient(fun, x0, args, jac, bounds, opts):
+    """Projected BFGS with an analytic gradient (Bertsekas 1982, the scheme L-BFGS-B builds on).
+
+    ``jac=True``: ``fun`` returns (f, g); a callable ``jac``: the gradient. A variable held at a
+    bound by a gradient pointing out of the box is fixed for the step; the quasi-Newton direction
+    acts on the others; the Armijo line search runs along the projected path
+    x(alpha) = P[x + alpha d], so every iterate is feasible and the gradient is the objective's own
+    (no clipping kink, no change of variables that flattens it near a bound). Stops when the
+    projected gradient falls below ``gtol`` or neither f nor x moves.
+    """
+    n = len(x0)
+    lo = [-_math.inf] * n
+    hi = [_math.inf] * n
+    if bounds is not None:
+        bl = list(bounds)
+        if len(bl) != n:
+            raise ValueError(f"bounds has {int(len(bl))} entries but x0 has {int(n)}")
+        lo = [(-_math.inf if b is None or b[0] is None else float(b[0])) for b in bl]
+        hi = [(_math.inf if b is None or b[1] is None else float(b[1])) for b in bl]
+        for a, b in zip(lo, hi):
+            if a > b:
+                raise ValueError(f"lower bound {a:g} exceeds upper bound {b:g}")
+
+    def proj(v):
+        return [min(max(vi, a), b) for vi, a, b in zip(v, lo, hi)]
+
+    def fg(x):
+        if jac is True:
+            fx, gx = fun(_ac.marr(list(x)), *args)
+        else:
+            fx, gx = fun(_ac.marr(list(x)), *args), jac(_ac.marr(list(x)), *args)
+        return float(fx), [float(v) for v in _ac.asarray(gx)._flat()]
+
+    maxiter = opts.get("maxiter") or 200 * n
+    gtol = opts.get("gtol", 1e-6)
+    x = proj([float(v) for v in x0])
+    f, g = fg(x)
+    hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    first = True
+    scale_h0 = True
+    it = 0
+    message = "maximum iterations reached"
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
+        pg = [xi - min(max(xi - gi, a), b) for xi, gi, a, b in zip(x, g, lo, hi)]
+        if max(abs(v) for v in pg) < gtol:
+            message = "projected gradient below gtol"
+            break
+        free = [not ((x[i] <= lo[i] and g[i] > 0) or (x[i] >= hi[i] and g[i] < 0)) for i in range(n)]
+        d = [-_math.fsum(hinv[i][j] * g[j] for j in range(n) if free[j]) if free[i] else 0.0 for i in range(n)]
+        if _math.fsum(g[i] * d[i] for i in range(n)) >= 0:  # not a descent direction: steepest descent
+            hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+            d = [-g[i] if free[i] else 0.0 for i in range(n)]
+            first = scale_h0 = True
+        step = min(1.0, 1.0 / max(max(abs(v) for v in d), 1e-300)) if first else 1.0
+        accepted = False
+        for _ in range(60):
+            xn = proj([x[i] + step * d[i] for i in range(n)])
+            fn_, gn = fg(xn)
+            if _math.isfinite(fn_) and fn_ <= f + 1e-4 * _math.fsum(g[i] * (xn[i] - x[i]) for i in range(n)):
+                accepted = True
+                break
+            step *= 0.5
+        if not accepted:
+            message = "line search found no decrease"
+            break
+        first = False
+        sv = [xn[i] - x[i] for i in range(n)]
+        yv = [gn[i] - g[i] for i in range(n)]
+        done = abs(f - fn_) <= 1e-13 * max(1.0, abs(f)) and max(abs(v) for v in sv) <= 1e-12 * max(
+            1.0, max(abs(v) for v in x)
+        )
+        sy = _math.fsum(sv[i] * yv[i] for i in range(n))
+        if sy > 1e-12 * _math.sqrt(_math.fsum(v * v for v in sv) * _math.fsum(v * v for v in yv)):
+            rho = 1.0 / sy
+            if scale_h0:
+                # H0 = (s'y / y'y) I before the first update (Nocedal & Wright 2006, eq. 6.20): the
+                # identity is the wrong scale when parameters differ by orders of magnitude
+                gam = sy / _math.fsum(v * v for v in yv)
+                hinv = [[gam if i == j else 0.0 for j in range(n)] for i in range(n)]
+                scale_h0 = False
+            hy = [_math.fsum(hinv[i][j] * yv[j] for j in range(n)) for i in range(n)]
+            yhy = _math.fsum(yv[i] * hy[i] for i in range(n))
+            hinv = [
+                [
+                    hinv[i][j] - rho * (hy[i] * sv[j] + sv[i] * hy[j]) + (rho * rho * yhy + rho) * sv[i] * sv[j]
+                    for j in range(n)
+                ]
+                for i in range(n)
+            ]
+        x, f, g = xn, fn_, gn
+        if done:
+            message = "no further progress"
+            break
+    return OptimizeResult(
+        x=_ac.asarray(x),
+        fun=float(f),
+        success=message != "line search found no decrease" or max(abs(v) for v in pg) < 1e-3,
+        nit=it,
+        message=message,
+    )
 
 
 def _constrained(fun, x0, constraints, args=(), maxiter=None, ftol=1e-9, lo=None, hi=None):

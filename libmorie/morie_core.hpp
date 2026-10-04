@@ -19,9 +19,11 @@
 
 #pragma once
 
+#include <algorithm>
 #include <climits>
 #include <cmath>
 #include <complex>
+#include <limits>
 #include <cstddef>
 #include <random>
 #include <vector>
@@ -883,6 +885,425 @@ inline double hawkes_ll_gamma_hybrid(
     }
     if (!std::isfinite(log_sum) || !std::isfinite(integral)) return kBig;
     return -(log_sum - integral);
+}
+// --- general Hawkes likelihood with analytic gradient (any baseline) --------
+//
+// lambda(t) = nu(t) + eta * sum_{t_j < t} g(t - t_j), g a normalised kernel:
+//   kernel 0  exponential  g = b e^{-bu}                          psi = (b)
+//   kernel 1  Weibull      g = (k/l)(u/l)^{k-1} e^{-(u/l)^k}       psi = (k, l)
+//   kernel 2  gamma        g = b^a u^{a-1} e^{-bu} / Gamma(a)     psi = (a, b)
+//   kernel 3  Lomax        g = a c^a (u+c)^{-(a+1)}               psi = (a, c)
+// The baseline enters only through nu_i = nu(t_i) (the caller adds its own
+// integral and gradient, using inv_lam), so one routine serves every baseline.
+//
+// Returns  L = sum_i log lambda_i - eta * sum_i G(T - t_i)  (G the kernel CDF),
+// and, when grad is non-null, grad[0] = dL/deta, grad[1..npsi] = dL/dpsi, and
+// inv_lam[i] = 1/lambda_i (so the caller gets dL/d(baseline params) as
+// sum_i dnu_i * inv_lam[i]). A non-finite or non-positive intensity returns -kBig.
+//
+// method 0  exact: O(n) recursion for the exponential kernel (Ozaki 1979, with
+//           a second state for d/db); for Weibull and gamma the double sum stops
+//           where the kernel underflows to exactly 0 (bit-identical to the full
+//           O(n^2) sum); Lomax is the full O(n^2) sum.
+// method 1  sum of exponentials (Lomax; gamma with a < 1): the completely
+//           monotone part r^{-beta} = (1/Gamma(beta)) Int exp(-r e^s + beta s) ds
+//           by the trapezoid rule with the step of Beylkin & Monzon (2010,
+//           ACHA 28:131, Theorem 3), relative error <= eps per term on
+//           r in [delta, 1]; O(n K) with one Ozaki state per node (two for the
+//           gamma rate). The gradient is that of the approximation.
+// method 2  truncated: each event excites only lags with kernel tail mass
+//           above eps, u <= G^{-1}(1 - eps); O(n w). An approximation (the
+//           omitted excitation is non-negative), for light-tailed kernels.
+
+inline double digamma_fn(double x) {
+    double r = 0.0;
+    while (x < 6.0) {
+        r -= 1.0 / x;
+        x += 1.0;
+    }
+    const double f = 1.0 / (x * x);
+    return r + std::log(x) - 0.5 / x -
+           f * (1.0 / 12 - f * (1.0 / 120 - f * (1.0 / 252 - f * (1.0 / 240 - f * (1.0 / 132)))));
+}
+
+struct HawkesKernel {
+    int kind;
+    double p0, p1;
+    // density and d(density)/d(psi); false when the term is exactly 0
+    bool dens(double u, double &g, double &d0, double &d1) const {
+        switch (kind) {
+        case 0: {
+            const double e = std::exp(-p0 * u);
+            g = p0 * e;
+            d0 = e * (1.0 - p0 * u);
+            d1 = 0.0;
+            return true;
+        }
+        case 1: {
+            const double x = u / p1;
+            if (!(x > 1e-12)) return false;
+            const double lx = std::log(x), z = std::exp(p0 * lx);
+            if (!(z < 700.0)) return false;
+            g = (p0 / p1) * std::exp((p0 - 1.0) * lx - z);
+            d0 = g * (1.0 / p0 + lx - z * lx);
+            d1 = g * p0 * (z - 1.0) / p1;
+            return true;
+        }
+        case 2: {
+            if (!(u > 1e-300)) return false;
+            const double lu = std::log(u);
+            const double lg = p0 * std::log(p1) - std::lgamma(p0) + (p0 - 1.0) * lu - p1 * u;
+            if (lg < -745.0) return false;
+            g = std::exp(lg);
+            d0 = g * (std::log(p1) - digamma_fn(p0) + lu);
+            d1 = g * (p0 / p1 - u);
+            return true;
+        }
+        default: {
+            const double luc = std::log(u + p1);
+            g = std::exp(std::log(p0) + p0 * std::log(p1) - (p0 + 1.0) * luc);
+            d0 = g * (1.0 / p0 + std::log(p1) - luc);
+            d1 = g * (p0 / p1 - (p0 + 1.0) / (u + p1));
+            return true;
+        }
+        }
+    }
+    void cdf(double u, double &G, double &d0, double &d1) const {
+        d0 = d1 = 0.0;
+        if (!(u > 0.0)) {
+            G = 0.0;
+            return;
+        }
+        switch (kind) {
+        case 0: {
+            const double e = std::exp(-p0 * u);
+            G = 1.0 - e;
+            d0 = u * e;
+            return;
+        }
+        case 1: {
+            const double x = u / p1, z = std::pow(x, p0), e = std::exp(-z);
+            G = 1.0 - e;
+            if (x > 0.0) d0 = e * z * std::log(x);
+            d1 = -e * z * p0 / p1;
+            return;
+        }
+        case 2: {
+            G = gamma_cdf_regularized(p0, p1 * u);
+            const double lg = p0 * std::log(p1) - std::lgamma(p0) + (p0 - 1.0) * std::log(u) - p1 * u;
+            d1 = std::exp(lg) * u / p1;
+            const double h = 1e-5 * std::max(1.0, p0);
+            d0 = (gamma_cdf_regularized(p0 + h, p1 * u) - gamma_cdf_regularized(p0 - h, p1 * u)) / (2.0 * h);
+            return;
+        }
+        default: {
+            const double q = p1 / (u + p1), qa = std::pow(q, p0);
+            G = 1.0 - qa;
+            d0 = -qa * std::log(q);
+            d1 = -p0 * std::pow(q, p0 - 1.0) * u / ((u + p1) * (u + p1));
+            return;
+        }
+        }
+    }
+    // the lag beyond which a term is exactly 0 in double precision (exact method)
+    double underflow_lag() const {
+        switch (kind) {
+        case 0: return 745.2 / p0 + 1.0;
+        case 1: return p1 * std::pow(700.0, 1.0 / p0);
+        case 2: {
+            const double lc = p0 * std::log(p1) - std::lgamma(p0);
+            if (p0 > 1.0 + 1e-12) {
+                const double K = (p0 - 1.0) * std::log(2.0 * (p0 - 1.0) / p1) - (p0 - 1.0);
+                return 2.0 * (lc + K + 745.2) / p1;
+            }
+            return std::max(1.0, (lc + 745.2) / p1);
+        }
+        default: return std::numeric_limits<double>::infinity();
+        }
+    }
+    // the lag with tail mass eps: G(u) = 1 - eps
+    double tail_lag(double eps) const {
+        switch (kind) {
+        case 0: return -std::log(eps) / p0;
+        case 1: return p1 * std::pow(-std::log(eps), 1.0 / p0);
+        case 3: return p1 * (std::pow(eps, -1.0 / p0) - 1.0);
+        default: {
+            double lo = 0.0, hi = std::max(1.0, p0 / p1);
+            while (gamma_cdf_regularized(p0, p1 * hi) < 1.0 - eps && hi < 1e300) hi *= 2.0;
+            for (int it = 0; it < 200 && hi - lo > 1e-12 * hi; ++it) {
+                const double mid = 0.5 * (lo + hi);
+                (gamma_cdf_regularized(p0, p1 * mid) < 1.0 - eps ? lo : hi) = mid;
+            }
+            return hi;
+        }
+        }
+    }
+};
+
+// nodes s_k and step h for r^{-beta} on r in [delta, 1], relative error eps
+inline void soe_nodes(double beta, double delta, double eps, std::vector<double> &s, double &h) {
+    h = 6.283185307179586 / (std::log(3.0) + beta * std::log(1.0 / std::cos(1.0)) + std::log(1.0 / eps));
+    const double s_lo = (std::log(eps) + std::lgamma(beta) + std::log(beta)) / beta - 2.0 * h;
+    const double s_hi = std::log((std::log(1.0 / eps) + beta * std::max(0.0, std::log(1.0 / delta)) + 40.0) / delta);
+    s.clear();
+    for (double x = s_lo; x <= s_hi + h; x += h) s.push_back(x);
+}
+
+inline double hawkes_eval(const double *t, std::size_t n, double T, const double *nu, double eta,
+                          int kind, const double *psi, int method, double eps, double soe_R, double soe_delta,
+                          double *grad, double *inv_lam) {
+    HawkesKernel k{kind, psi[0], kind == 0 ? 0.0 : psi[1]};
+    const int np = kind == 0 ? 1 : 2;
+    double L = 0.0, gE = 0.0, g0 = 0.0, g1 = 0.0;
+    std::vector<double> S(n, 0.0), D0(n, 0.0), D1(n, 0.0);  // excitation and its psi-derivatives
+
+    const bool soe = method == 1 && (kind == 3 || (kind == 2 && psi[0] < 1.0));
+    if (kind == 0 && method != 2) {
+        // Ozaki: A_i = sum e^{-b d}, B_i = sum d e^{-b d}
+        double A = 0.0, B = 0.0;
+        for (std::size_t i = 1; i < n; ++i) {
+            const double dt = t[i] - t[i - 1], e = std::exp(-psi[0] * dt);
+            B = e * (B + dt * (A + 1.0));
+            A = e * (A + 1.0);
+            S[i] = psi[0] * A;
+            D0[i] = A - psi[0] * B;
+        }
+    } else if (soe) {
+        const double beta = kind == 3 ? psi[0] + 1.0 : 1.0 - psi[0];
+        std::vector<double> s;
+        double h;
+        soe_nodes(beta, soe_delta, eps, s, h);
+        const std::size_t K = s.size();
+        std::vector<double> rate(K), w(K), dw0(K), dw1(K);
+        for (std::size_t m = 0; m < K; ++m) {
+            const double rho = std::exp(s[m]) / soe_R;
+            if (kind == 3) {  // g = a c^a R^{-(a+1)} (h/Gamma(a+1)) sum e^{(a+1)s} e^{-rho c} e^{-rho u}
+                const double a = psi[0], c = psi[1];
+                const double lw = std::log(a) + a * std::log(c) - (a + 1.0) * std::log(soe_R) + std::log(h) -
+                                  std::lgamma(a + 1.0) + (a + 1.0) * s[m] - rho * c;
+                rate[m] = rho;
+                w[m] = std::exp(lw);
+                dw0[m] = w[m] * (1.0 / a + std::log(c) - std::log(soe_R) - digamma_fn(a + 1.0) + s[m]);
+                dw1[m] = w[m] * (a / c - rho);
+            } else {  // gamma a<1: g = b^a R^{-beta} h e^{beta s} / (Gamma(a) Gamma(beta)) e^{-(rho+b) u}
+                const double a = psi[0], b = psi[1];
+                const double lw = a * std::log(b) - beta * std::log(soe_R) + std::log(h) + beta * s[m] -
+                                  std::lgamma(a) - std::lgamma(beta);
+                rate[m] = rho + b;
+                w[m] = std::exp(lw);
+                dw0[m] = w[m] * (std::log(b) + std::log(soe_R) - s[m] - digamma_fn(a) + digamma_fn(beta));
+                dw1[m] = w[m] * (a / b);
+            }
+        }
+        std::vector<double> A(K, 0.0), B(K, 0.0);
+        for (std::size_t i = 1; i < n; ++i) {
+            const double dt = t[i] - t[i - 1];
+            double si = 0.0, d0 = 0.0, d1 = 0.0;
+            for (std::size_t m = 0; m < K; ++m) {
+                const double e = std::exp(-rate[m] * dt);
+                if (kind == 2) B[m] = e * (B[m] + dt * (A[m] + 1.0));
+                A[m] = e * (A[m] + 1.0);
+                si += w[m] * A[m];
+                d0 += dw0[m] * A[m];
+                d1 += dw1[m] * A[m] - (kind == 2 ? w[m] * B[m] : 0.0);
+            }
+            S[i] = si;
+            D0[i] = d0;
+            D1[i] = d1;
+        }
+    } else {
+        const double cut = method == 2 ? std::min(k.tail_lag(eps), k.underflow_lag()) : k.underflow_lag();
+        std::size_t lo = 0;
+        for (std::size_t i = 1; i < n; ++i) {
+            while (lo < i && t[i] - t[lo] > cut) ++lo;
+            double si = 0.0, d0 = 0.0, d1 = 0.0, g, a0, a1;
+            for (std::size_t j = lo; j < i; ++j) {
+                if (k.dens(t[i] - t[j], g, a0, a1)) {
+                    si += g;
+                    d0 += a0;
+                    d1 += a1;
+                }
+            }
+            S[i] = si;
+            D0[i] = d0;
+            D1[i] = d1;
+        }
+    }
+    for (std::size_t i = 0; i < n; ++i) {
+        const double lam = nu[i] + eta * S[i];
+        if (!(lam > 0.0) || !std::isfinite(lam)) return -kBig;
+        L += std::log(lam);
+        const double il = 1.0 / lam;
+        if (inv_lam) inv_lam[i] = il;
+        gE += S[i] * il;
+        g0 += eta * D0[i] * il;
+        g1 += eta * D1[i] * il;
+    }
+    for (std::size_t i = 0; i < n; ++i) {
+        double G, c0, c1;
+        k.cdf(T - t[i], G, c0, c1);
+        L -= eta * G;
+        gE -= G;
+        g0 -= eta * c0;
+        g1 -= eta * c1;
+    }
+    if (grad) {
+        grad[0] = gE;
+        grad[1] = g0;
+        if (np > 1) grad[2] = g1;
+    }
+    return std::isfinite(L) ? L : -kBig;
+}
+
+
+// The baselines of the TPS Hawkes models (log link):
+//   kind 0  nu(t) = exp(a0)
+//   kind 1  nu(t) = exp(a0 + a1 t/T + a2 sin(2 pi t/365.25) + a3 cos(2 pi t/365.25))
+// with the integral by the trapezoid rule on max(64, floor(T)+1) points, as
+// morie's and rmorie's own code (the sinusoid has no closed-form integral).
+inline int hawkes_baseline_n(int bkind) { return bkind == 0 ? 1 : 4; }
+
+inline void hawkes_baseline_terms(double t, double T, int bkind, double *f) {
+    f[0] = 1.0;
+    if (bkind == 1) {
+        f[1] = t / std::max(T, 1.0);
+        f[2] = std::sin(6.283185307179586 * t / 365.25);
+        f[3] = std::cos(6.283185307179586 * t / 365.25);
+    }
+}
+
+// negative log-likelihood and (when grad is non-null) its gradient over
+// theta = (a[0..nb), eta, psi[0..np)): the routine the optimisers call.
+inline double hawkes_nll_grad(const double *t, std::size_t n, double T, int bkind, const double *a, double eta,
+                              int kind, const double *psi, int method, double eps, double soe_R, double soe_delta,
+                              double *grad) {
+    const int nb = hawkes_baseline_n(bkind);
+    std::vector<double> nu(n), f(nb);
+    for (std::size_t i = 0; i < n; ++i) {
+        hawkes_baseline_terms(t[i], T, bkind, f.data());
+        double lin = 0.0;
+        for (int m = 0; m < nb; ++m) lin += a[m] * f[m];
+        nu[i] = std::exp(lin);
+    }
+    std::vector<double> il(grad ? n : 0);
+    double g[3] = {0.0, 0.0, 0.0};
+    const double L = hawkes_eval(t, n, T, nu.data(), eta, kind, psi, method, eps, soe_R, soe_delta,
+                                 grad ? g : nullptr, grad ? il.data() : nullptr);
+    if (!(L > -kBig)) return kBig;
+    // baseline integral and its gradient
+    double I = 0.0;
+    std::vector<double> dI(nb, 0.0);
+    if (bkind == 0) {
+        I = std::exp(a[0]) * T;
+        dI[0] = I;
+    } else {
+        const std::size_t m = std::max<std::size_t>(64, static_cast<std::size_t>(T) + 1);
+        const double step = T / static_cast<double>(m - 1);
+        for (std::size_t q = 0; q < m; ++q) {
+            const double tq = step * static_cast<double>(q);
+            hawkes_baseline_terms(tq, T, bkind, f.data());
+            double lin = 0.0;
+            for (int r = 0; r < nb; ++r) lin += a[r] * f[r];
+            const double w = (q == 0 || q == m - 1 ? 0.5 : 1.0) * step * std::exp(lin);
+            I += w;
+            for (int r = 0; r < nb; ++r) dI[r] += w * f[r];
+        }
+    }
+    if (grad) {
+        for (int r = 0; r < nb; ++r) {
+            double s = 0.0;
+            for (std::size_t i = 0; i < n; ++i) {
+                hawkes_baseline_terms(t[i], T, bkind, f.data());
+                s += nu[i] * f[r] * il[i];
+            }
+            grad[r] = -(s - dI[r]);
+        }
+        const int np = kind == 0 ? 1 : 2;
+        for (int q = 0; q <= np; ++q) grad[nb + q] = -g[q];
+    }
+    const double nll = -(L - I);
+    return std::isfinite(nll) ? nll : kBig;
+}
+// Time-rescaling residuals U_i = 1 - exp(-(Lambda(t_i) - Lambda(t_{i-1}))) of a
+// fitted Hawkes process (Brown et al. 2002, Neural Comput. 14:325), with
+// Lambda(t) = int_0^t nu + eta sum_{t_j < t} G(t - t_j). Writing the kernel
+// part through the survival Sbar = 1 - G, sum_{j<i} G(t_i - t_j) = i - Q_i with
+// Q_i = sum_{j<i} Sbar(t_i - t_j), so each increment is eta (1 - Q_i + Q_{i-1})
+// plus the baseline's: Q by Ozaki's recursion (exponential), a window that
+// ends where Sbar < 1e-15 (Weibull, gamma), or a sum of exponentials of
+// Sbar = c^a (u+c)^{-a} (Lomax, relative error 1e-12). The baseline integral
+// is the trapezoid rule on max(256, floor(T)+1) points, interpolated, as
+// morie's Python code. Replaces an O(n^2) Python loop.
+inline void hawkes_rescaled(const double *t, std::size_t n, double T, int bkind, const double *a, double eta,
+                            int kind, const double *psi, double *U) {
+    HawkesKernel k{kind, psi[0], kind == 0 ? 0.0 : psi[1]};
+    const int nb = hawkes_baseline_n(bkind);
+    std::vector<double> Q(n, 0.0), f(nb);
+    if (kind == 0) {
+        double A = 0.0;
+        for (std::size_t i = 1; i < n; ++i) {
+            A = std::exp(-psi[0] * (t[i] - t[i - 1])) * (A + 1.0);
+            Q[i] = A;
+        }
+    } else if (kind == 3) {
+        const double av = psi[0], c = psi[1], R = T + c, eps = 1e-12;
+        std::vector<double> s;
+        double h;
+        soe_nodes(av, c / R, eps, s, h);
+        const std::size_t K = s.size();
+        std::vector<double> rate(K), w(K), A(K, 0.0);
+        for (std::size_t m = 0; m < K; ++m) {
+            rate[m] = std::exp(s[m]) / R;
+            w[m] = std::exp(av * std::log(c) - av * std::log(R) + std::log(h) - std::lgamma(av) + av * s[m] - rate[m] * c);
+        }
+        for (std::size_t i = 1; i < n; ++i) {
+            const double dt = t[i] - t[i - 1];
+            double q = 0.0;
+            for (std::size_t m = 0; m < K; ++m) {
+                A[m] = std::exp(-rate[m] * dt) * (A[m] + 1.0);
+                q += w[m] * A[m];
+            }
+            Q[i] = q;
+        }
+    } else {
+        const double cut = std::max(k.underflow_lag(), k.tail_lag(1e-15));
+        std::size_t lo = 0;
+        for (std::size_t i = 1; i < n; ++i) {
+            while (lo < i && t[i] - t[lo] > cut) ++lo;
+            double q = 0.0, G, d0, d1;
+            for (std::size_t j = lo; j < i; ++j) {
+                k.cdf(t[i] - t[j], G, d0, d1);
+                q += 1.0 - G;
+            }
+            Q[i] = q;
+        }
+    }
+    // cumulative baseline on the grid, then linear interpolation at the events
+    const std::size_t m = std::max<std::size_t>(256, static_cast<std::size_t>(T) + 1);
+    const double step = T / static_cast<double>(m - 1);
+    std::vector<double> cum(m, 0.0), val(m);
+    for (std::size_t q = 0; q < m; ++q) {
+        hawkes_baseline_terms(step * static_cast<double>(q), T, bkind, f.data());
+        double lin = 0.0;
+        for (int r = 0; r < nb; ++r) lin += a[r] * f[r];
+        val[q] = std::exp(lin);
+        if (q) cum[q] = cum[q - 1] + 0.5 * (val[q] + val[q - 1]) * step;
+    }
+    auto cumB = [&](double x) {
+        if (x <= 0.0) return 0.0;
+        if (x >= T) return cum[m - 1];
+        const double pos = x / step;
+        const std::size_t q = std::min<std::size_t>(static_cast<std::size_t>(pos), m - 2);
+        return cum[q] + (pos - static_cast<double>(q)) * (cum[q + 1] - cum[q]);
+    };
+    double prevB = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double B = cumB(t[i]);
+        double inc = B - prevB + (i ? eta * (1.0 - Q[i] + Q[i - 1]) : 0.0);
+        prevB = B;
+        if (!(inc > 1e-12)) inc = 1e-12;
+        U[i] = 1.0 - std::exp(-inc);
+    }
 }
 
 }  // namespace morie::core
