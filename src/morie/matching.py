@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import logging
 import math
+import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Union
@@ -44,6 +45,53 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
 from morie.fn._sci_core import cdist
+
+
+def _logit_clamped(p, eps):
+    out = []
+    for v in p:
+        v = min(max(float(v), eps), 1.0 - eps)
+        out.append(math.log(v / (1.0 - v)))
+    return out
+
+
+def _sd(values):
+    n = len(values)
+    if n < 2:
+        return float("nan")
+    m = sum(values) / n
+    return math.sqrt(sum((v - m) ** 2 for v in values) / (n - 1))
+
+
+def _quantile7(values, probs):
+    """R's quantile(type = 7), the same arithmetic (so cut points agree to the last bit)."""
+    x = sorted(values)
+    n = len(x)
+    out = []
+    for pr in probs:
+        index = 1 + max(n - 1, 0) * pr
+        lo = math.floor(index)
+        hi = math.ceil(index)
+        q = x[lo - 1]
+        if index > lo and x[hi - 1] != q:
+            h = index - lo
+            q = (1 - h) * q + h * x[hi - 1]
+        out.append(q)
+    return out
+
+
+def _find_interval_inside(x, breaks):
+    """R's findInterval(x, breaks, all.inside = TRUE)."""
+    import bisect
+
+    i = bisect.bisect_right(breaks, x)
+    return min(max(i, 1), len(breaks) - 1)
+
+
+def _ps_prob(df, treatment, covariates, ps):
+    if ps is None:
+        return [float(v) for v in estimate_propensity_score(df, treatment, covariates).reindex(df.index).tolist()]
+    return [float(v) for v in ps.reindex(df.index).tolist()]
 
 
 class _MissingDep:
@@ -322,10 +370,13 @@ def match_nearest_neighbor(
     ps: pd.Series | None = None,
     alpha: float = 0.05,
 ) -> MatchResult:
-    """Nearest-neighbour matching on propensity score.
+    """Nearest-neighbour matching on the logit propensity score.
 
-    For each treated unit, finds the *n_neighbors* closest control units
-    by propensity score distance.
+    MatchIt's matcher (the R arm's native port, pair-identical to
+    ``MatchIt::matchit(method = "nearest", link = "linear.logit")``): without
+    replacement every treated unit gets its first control before any gets a
+    second, treated units taken in decreasing score; with replacement each
+    treated unit takes its *n_neighbors* nearest controls.
 
     Parameters
     ----------
@@ -335,78 +386,52 @@ def match_nearest_neighbor(
     n_neighbors : int
         Number of matches per treated unit.
     caliper : float, optional
-        Maximum propensity score distance for a valid match (in SD of
-        the logit of the propensity score).
+        Maximum logit-propensity distance for a valid match, in standard
+        deviations of the logit score.
     replace : bool
         Whether controls can be matched to multiple treated units.
     ps : pd.Series, optional
-        Pre-computed propensity scores.  If ``None``, estimated
-        internally.
+        Pre-computed propensity scores (replace the fitted model).
     alpha : float
-        Significance level for balance checks.
+        Significance level for the balance checks in ``details``.
 
     Returns
     -------
     MatchResult
     """
+    from morie._matchit_native import nn_match
+
     df = data.dropna(subset=[treatment] + covariates).copy()
-    if ps is None:
-        ps = estimate_propensity_score(df, treatment, covariates)
-    df["_ps"] = ps.reindex(df.index)
-
-    treated_idx = df.index[df[treatment] == 1].tolist()
-    control_idx = df.index[df[treatment] == 0].tolist()
-    ps_treated = df.loc[treated_idx, "_ps"].values
-    ps_control = df.loc[control_idx, "_ps"].values
-
-    # Convert to logit for distance calculation
-    eps = 1e-6
-    logit_t = np.log(np.clip(ps_treated, eps, 1 - eps) / (1 - np.clip(ps_treated, eps, 1 - eps)))
-    logit_c = np.log(np.clip(ps_control, eps, 1 - eps) / (1 - np.clip(ps_control, eps, 1 - eps)))
-
-    caliper_val = caliper * np.std(np.concatenate([logit_t, logit_c])) if caliper is not None else np.inf
-
-    nn = NearestNeighbors(n_neighbors=min(n_neighbors * 5, len(control_idx)), metric="euclidean")
-    nn.fit(logit_c.reshape(-1, 1))
-    distances, indices = nn.kneighbors(logit_t.reshape(-1, 1))
-
+    tr = [1 if v == 1 else 0 for v in df[treatment].tolist()]
+    idx_t = [i for i, t in enumerate(tr) if t == 1]
+    if not replace and len(idx_t) * n_neighbors > len(tr) - len(idx_t):
+        warnings.warn(
+            "Fewer control units than treated: matching without replacement leaves treated "
+            "units unmatched and the ATT is estimated on the matchable subset only; pass "
+            "replace=True to re-use controls.",
+            UserWarning,
+            stacklevel=2,
+        )
+    p = _ps_prob(df, treatment, covariates, ps)
+    lp = _logit_clamped(p, 1e-12 if ps is None else 1e-6)
+    cal = caliper * _sd(lp) if caliper is not None else None
+    rows = nn_match(tr, lp, [int(n_neighbors)] * len(idx_t), bool(replace), cal)
+    labels = list(df.index)
     match_records = []
-    used_controls = set()
-
-    for i, t_idx in enumerate(treated_idx):
-        matched = []
-        for j in range(indices.shape[1]):
-            c_pos = int(indices[i, j])
-            c_idx = control_idx[c_pos]
-            dist = distances[i, j]
-
-            if dist > caliper_val:
-                break
-            if not replace and c_idx in used_controls:
-                continue
-
-            matched.append(c_idx)
-            used_controls.add(c_idx)
-
-            if len(matched) >= n_neighbors:
-                break
-
-        for c_idx in matched:
-            match_records.append(
-                {
-                    "treated_idx": t_idx,
-                    "control_idx": c_idx,
-                    "distance": float(abs(df.loc[t_idx, "_ps"] - df.loc[c_idx, "_ps"])),
-                }
-            )
-
-    match_df = pd.DataFrame(match_records)
-    matched_control_ids = set(match_df["control_idx"]) if len(match_df) > 0 else set()
-    matched_treated_ids = set(match_df["treated_idx"]) if len(match_df) > 0 else set()
-    all_matched_ids = list(matched_treated_ids | matched_control_ids)
-    matched_data = df.loc[df.index.isin(all_matched_ids)].copy()
-    # covariate balance after matching: standardised mean difference and
-    # a two-sample t-test per covariate, judged at alpha
+    for k in range(max((len(r) for r in rows), default=0)):
+        for r, cu in enumerate(rows):
+            if k < len(cu):
+                t, c = idx_t[r], cu[k]
+                match_records.append(
+                    {"treated_idx": labels[t], "control_idx": labels[c], "distance": abs(lp[t] - lp[c])}
+                )
+    match_df = (
+        pd.DataFrame(match_records)
+        if match_records
+        else pd.DataFrame(columns=["treated_idx", "control_idx", "distance"])
+    )
+    keep = sorted({idx_t[r] for r, cu in enumerate(rows) if cu} | {c for cu in rows for c in cu})
+    matched_data = df.iloc[keep].copy()
     balance = {}
     mt = matched_data[matched_data[treatment] == 1]
     mc = matched_data[matched_data[treatment] == 0]
@@ -419,21 +444,22 @@ def match_nearest_neighbor(
         smd = float((a_v.mean() - b_v.mean()) / pooled) if pooled > 0 else 0.0
         p_val = float(stats.ttest_ind(a_v, b_v, equal_var=False).pvalue) if pooled > 0 else 1.0
         balance[cov] = {"smd": smd, "p_value": p_val}
-
+    n_t_matched = sum(1 for cu in rows if cu)
     return MatchResult(
         matched_data=matched_data,
-        n_treated=len(matched_treated_ids),
-        n_matched_control=len(matched_control_ids),
+        n_treated=n_t_matched,
+        n_matched_control=len({c for cu in rows for c in cu}),
         match_pairs=match_df,
         method="nearest_neighbor",
         details={
-            "caliper": caliper_val,
+            "caliper": caliper,
             "replace": replace,
             "n_neighbors": n_neighbors,
-            "n_unmatched": len(treated_idx) - len(matched_treated_ids),
+            "n_unmatched": len(idx_t) - n_t_matched,
             "alpha": alpha,
             "balance": balance,
             "balanced_at_alpha": bool(balance) and all(b["p_value"] > alpha for b in balance.values()),
+            "propensity_logit_sd": _sd(lp),
         },
     )
 
@@ -811,11 +837,13 @@ def match_full(
     ps: pd.Series | None = None,
     n_subclasses: int = 10,
 ) -> MatchResult:
-    """Full matching via propensity score subclassification.
+    """Optimal full matching (Rosenbaum 1991; Hansen 2004).
 
-    Every unit is placed into a subclass containing at least one treated
-    and one control unit.  Approximated here via quantile-based
-    stratification of the propensity score.
+    Every unit is placed in a matched set of one treated unit and one or more
+    controls, or one control and one or more treated units, with the smallest
+    possible total within-set propensity-score distance -- computed exactly as a
+    minimum-weight edge cover (the R arm's engine). Weights are MatchIt's ATT
+    weights for ``method = "full"``.
 
     Parameters
     ----------
@@ -823,69 +851,50 @@ def match_full(
     treatment : str
     covariates : list of str
     ps : pd.Series, optional
+        Propensity scores; estimated by logistic regression when omitted.
     n_subclasses : int
-        Number of propensity score strata.
+        Ignored (the number of sets is part of the optimum); kept for compatibility.
 
     Returns
     -------
     MatchResult
+        ``matched_data`` with ``distance``, ``weights`` and ``subclass`` columns;
+        ``details["total_distance"]``.
 
     References
     ----------
+    Rosenbaum, P. R. (1991). A characterization of optimal designs for
+    observational studies. *JRSS B*, 53(3), 597--610.
     Hansen, B. B. (2004). Full matching in an observational study of
-    coaching for the SAT. *Journal of the American Statistical
-    Association*, 99(467), 609--618.
+    coaching for the SAT. *JASA*, 99(467), 609--618.
     """
+    from morie._matchit_native import full_match, subclass_weights
+
     df = data.dropna(subset=[treatment] + covariates).copy()
-    if ps is None:
-        ps = estimate_propensity_score(df, treatment, covariates)
-    df["_ps"] = ps.reindex(df.index)
-
-    # Stratify
-    df["_subclass"] = pd.qcut(df["_ps"], n_subclasses, labels=False, duplicates="drop")
-
-    # Drop strata without both treated and control
-    valid = df.groupby("_subclass")[treatment].apply(lambda x: x.nunique() == 2)
-    valid_strata = valid[valid].index.tolist()
-    df_matched = df[df["_subclass"].isin(valid_strata)].copy()
-
-    # Compute subclass weights
-    df_matched["_full_weight"] = 1.0
-    for s in valid_strata:
-        mask_s = df_matched["_subclass"] == s
-        n_t = (df_matched.loc[mask_s, treatment] == 1).sum()
-        n_c = (df_matched.loc[mask_s, treatment] == 0).sum()
-        if n_c > 0:
-            df_matched.loc[mask_s & (df_matched[treatment] == 0), "_full_weight"] = n_t / n_c
-        if n_t > 0:
-            df_matched.loc[mask_s & (df_matched[treatment] == 1), "_full_weight"] = 1.0
-
-    # Match pairs (each treated to all controls in its subclass)
-    records = []
-    for s in valid_strata:
-        grp = df_matched[df_matched["_subclass"] == s]
-        t_ids = grp.index[grp[treatment] == 1].tolist()
-        c_ids = grp.index[grp[treatment] == 0].tolist()
-        for t_id in t_ids:
-            for c_id in c_ids:
-                records.append(
-                    {
-                        "treated_idx": t_id,
-                        "control_idx": c_id,
-                        "distance": abs(df_matched.loc[t_id, "_ps"] - df_matched.loc[c_id, "_ps"]),
-                    }
-                )
-
-    match_df = pd.DataFrame(records) if records else pd.DataFrame(columns=["treated_idx", "control_idx", "distance"])
-    df_matched = df_matched.drop(columns=["_subclass", "_ps"], errors="ignore")
-
+    tr = [1 if v == 1 else 0 for v in df[treatment].tolist()]
+    if 1 not in tr or 0 not in tr:
+        raise ValueError("full matching needs both treated and control units")
+    p = _ps_prob(df, treatment, covariates, ps)
+    sub, edges = full_match(p, tr)
+    df["distance"] = p
+    df["weights"] = subclass_weights(sub, tr)
+    df["subclass"] = sub
+    labels = list(df.index)
+    match_df = pd.DataFrame(
+        [{"treated_idx": labels[t], "control_idx": labels[c], "distance": abs(p[t] - p[c])} for t, c in edges],
+        columns=["treated_idx", "control_idx", "distance"],
+    )
     return MatchResult(
-        matched_data=df_matched,
-        n_treated=int((df_matched[treatment] == 1).sum()),
-        n_matched_control=int((df_matched[treatment] == 0).sum()),
+        matched_data=df,
+        n_treated=sum(tr),
+        n_matched_control=len(tr) - sum(tr),
         match_pairs=match_df,
         method="full_matching",
-        details={"n_subclasses": len(valid_strata)},
+        details={
+            "engine": "native-min-edge-cover",
+            "n_subclasses": max(sub),
+            "total_distance": float(sum(abs(p[t] - p[c]) for t, c in edges)),
+        },
     )
 
 
@@ -902,7 +911,13 @@ def subclassify(
     ps: pd.Series | None = None,
     n_strata: int = 5,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Subclassification (stratification) on the propensity score.
+    """Subclassification on the propensity score, MatchIt's rules.
+
+    Cut points are quantiles of the treated units' scores; a subclass left
+    without a treated or a control unit takes the nearest unit of that group
+    from the closest subclass that can spare one (MatchIt's ``min.n = 1``).
+    Weights: 1 for treated, the subclass's treated/control ratio for controls,
+    each group rescaled to its size (the R arm's engine).
 
     Parameters
     ----------
@@ -915,32 +930,50 @@ def subclassify(
     Returns
     -------
     data_with_strata : pd.DataFrame
-        Input data with a ``_stratum`` column appended.
+        The data with ``distance``, ``weights``, ``subclass``, ``_ps`` and
+        ``_stratum`` columns.
     stratum_effects : pd.DataFrame
-        Within-stratum treatment effect estimates.
+        Per-stratum sample sizes and score ranges.
     """
-    df = data.dropna(subset=[treatment] + covariates).copy()
-    if ps is None:
-        ps = estimate_propensity_score(df, treatment, covariates)
-    df["_ps"] = ps.reindex(df.index)
-    df["_stratum"] = pd.qcut(df["_ps"], n_strata, labels=False, duplicates="drop")
+    from morie._matchit_native import subclass_scoot, subclass_weights
 
+    if not isinstance(n_strata, (int, float)) or isinstance(n_strata, bool) or n_strata < 1:
+        raise ValueError("`n_strata` must be one number >= 1")
+    df = data.dropna(subset=[treatment] + covariates).copy()
+    tr = [1 if v == 1 else 0 for v in df[treatment].tolist()]
+    if 1 not in tr or 0 not in tr:
+        raise ValueError("subclassification needs both treated and control units")
+    p = _ps_prob(df, treatment, covariates, ps)
+    k = int(round(n_strata))
+    sprobs = [i * (1.0 / k) for i in range(k)] + [1.0]
+    qu = _quantile7([p[i] for i in range(len(p)) if tr[i] == 1], sprobs)
+    cls = [_find_interval_inside(v, qu) for v in p]
+    if len(set(cls)) < k:
+        warnings.warn(
+            "due to discreteness in the propensity scores, fewer subclasses were generated than were requested",
+            UserWarning,
+            stacklevel=2,
+        )
+    cls = subclass_scoot(cls, tr, p)
+    levels = sorted(set(cls))
+    cls = [levels.index(c) + 1 for c in cls]
+    df["distance"] = p
+    df["weights"] = subclass_weights(cls, tr)
+    df["subclass"] = cls
+    df["_ps"] = p
+    df["_stratum"] = cls
     records = []
-    for s, grp in df.groupby("_stratum"):
-        y_t = grp.loc[grp[treatment] == 1]
-        y_c = grp.loc[grp[treatment] == 0]
-        if len(y_t) == 0 or len(y_c) == 0:
-            continue
+    for s in sorted(set(cls)):
+        g = [i for i, c in enumerate(cls) if c == s]
         records.append(
             {
                 "stratum": s,
-                "n_treated": len(y_t),
-                "n_control": len(y_c),
-                "ps_range_low": float(grp["_ps"].min()),
-                "ps_range_high": float(grp["_ps"].max()),
+                "n_treated": sum(1 for i in g if tr[i] == 1),
+                "n_control": sum(1 for i in g if tr[i] == 0),
+                "ps_range_low": min(p[i] for i in g),
+                "ps_range_high": max(p[i] for i in g),
             }
         )
-
     return df, pd.DataFrame(records)
 
 
@@ -1212,13 +1245,16 @@ def match_variable_ratio(
     *,
     min_ratio: int = 1,
     max_ratio: int = 5,
-    caliper: float = 0.2,
+    caliper: float | None = 0.2,
     ps: pd.Series | None = None,
 ) -> MatchResult:
-    """Variable-ratio matching on propensity score.
+    """Variable-ratio ("extremal") matching (Ming & Rosenbaum 2000).
 
-    Each treated unit is matched to between *min_ratio* and *max_ratio*
-    controls within the caliper.
+    MatchIt's rules for ``method = "nearest", min.controls, max.controls``
+    (the R arm's engine): treated units with the most typical scores get
+    *max_ratio* controls and the rest *min_ratio*, about the midpoint per
+    treated unit in all; greedy matching without replacement on the propensity
+    score within *caliper* standard deviations of it.
 
     Parameters
     ----------
@@ -1226,63 +1262,76 @@ def match_variable_ratio(
     treatment : str
     covariates : list of str
     min_ratio, max_ratio : int
-    caliper : float
+    caliper : float or None
     ps : pd.Series, optional
 
     Returns
     -------
     MatchResult
+        ``matched_data`` with ``distance``, ``weights`` and ``subclass`` columns.
     """
+    from morie._matchit_native import mm_subclass, mm_weights, nn_match
+
+    for name, v in (("min_ratio", min_ratio), ("max_ratio", max_ratio)):
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 1:
+            raise ValueError(f"`{name}` must be one number >= 1")
+    min_ratio, max_ratio = int(min_ratio), int(max_ratio)
+    if min_ratio > max_ratio:
+        raise ValueError("`min_ratio` must not exceed `max_ratio`")
+    if caliper is not None and (isinstance(caliper, bool) or not isinstance(caliper, (int, float)) or caliper <= 0):
+        raise ValueError("`caliper` must be None or one positive number")
     df = data.dropna(subset=[treatment] + covariates).copy()
-    if ps is None:
-        ps = estimate_propensity_score(df, treatment, covariates)
-    df["_ps"] = ps.reindex(df.index)
-
-    treated_idx = df.index[df[treatment] == 1].tolist()
-    control_idx = df.index[df[treatment] == 0].tolist()
-
-    ps_sd = df["_ps"].std()
-    caliper_val = caliper * ps_sd
-
-    match_records = []
-    for t_id in treated_idx:
-        ps_t = df.loc[t_id, "_ps"]
-        dists = []
-        for c_id in control_idx:
-            d = abs(ps_t - df.loc[c_id, "_ps"])
-            if d <= caliper_val:
-                dists.append((d, c_id))
-        dists.sort()
-
-        n_match = min(max(len(dists), min_ratio), max_ratio)
-        n_match = min(n_match, len(dists))
-        for i in range(n_match):
-            match_records.append(
-                {
-                    "treated_idx": t_id,
-                    "control_idx": dists[i][1],
-                    "distance": float(dists[i][0]),
-                }
-            )
-
-    match_df = (
-        pd.DataFrame(match_records)
-        if match_records
-        else pd.DataFrame(columns=["treated_idx", "control_idx", "distance"])
-    )
-    all_ids = set()
-    for r in match_records:
-        all_ids.add(r["treated_idx"])
-        all_ids.add(r["control_idx"])
-    matched_data = df.loc[df.index.isin(all_ids)].copy()
-
+    tr = [1 if v == 1 else 0 for v in df[treatment].tolist()]
+    if 1 not in tr or 0 not in tr:
+        raise ValueError("matching needs both treated and control units")
+    p = _ps_prob(df, treatment, covariates, ps)
+    idx_t = [i for i, t in enumerate(tr) if t == 1]
+    n1 = len(idx_t)
+    if max_ratio > min_ratio:
+        target = max(min(max_ratio - 1, math.ceil((min_ratio + max_ratio) / 2)), min_ratio)
+        m = round(target * n1)
+        kmax = math.floor((m - min_ratio * (n1 - 1)) / (max_ratio - min_ratio))
+        kmin = n1 - kmax - 1
+        kmed = m - (min_ratio * kmin + max_ratio * kmax)
+        ratio0 = [min_ratio] * kmin + [kmed] + [max_ratio] * kmax
+        while 0 in ratio0:
+            i = ratio0.index(0)
+            ratio0[i] = 1
+            if i == len(ratio0) - 1:
+                break
+            ratio0[i + 1] -= 1
+        pt = [p[i] for i in idx_t]
+        pc = [p[i] for i in range(len(p)) if tr[i] == 0]
+        dec = sum(pt) / len(pt) > sum(pc) / len(pc)
+        order = sorted(range(n1), key=lambda k: -pt[k] if dec else pt[k])
+        ratio = [0] * n1
+        for pos, k in enumerate(order):
+            ratio[k] = int(ratio0[pos])
+    else:
+        ratio = [max_ratio] * n1
+    cal = caliper * _sd(p) if caliper is not None else None
+    rows = nn_match(tr, p, ratio, False, cal)
+    w = mm_weights(rows, len(tr), idx_t, tr)
+    sub = mm_subclass(rows, len(tr), idx_t)
+    df["distance"] = p
+    df["weights"] = w
+    df["subclass"] = sub
+    matched = df[[wi > 0 for wi in w]].copy()
+    labels = list(df.index)
+    recs = []
+    for k in range(max((len(r) for r in rows), default=0)):
+        for r, cu in enumerate(rows):
+            if k < len(cu):
+                t, c = idx_t[r], cu[k]
+                recs.append({"treated_idx": labels[t], "control_idx": labels[c], "distance": abs(p[t] - p[c])})
+    match_df = pd.DataFrame(recs, columns=["treated_idx", "control_idx", "distance"])
     return MatchResult(
-        matched_data=matched_data,
-        n_treated=len(set(r["treated_idx"] for r in match_records)),
-        n_matched_control=len(set(r["control_idx"] for r in match_records)),
+        matched_data=matched,
+        n_treated=int((matched[treatment] == 1).sum()),
+        n_matched_control=int((matched[treatment] != 1).sum()),
         match_pairs=match_df,
         method="variable_ratio",
-        details={"caliper": caliper_val, "min_ratio": min_ratio, "max_ratio": max_ratio},
+        details={"caliper": caliper, "min_ratio": min_ratio, "max_ratio": max_ratio, "ratio": ratio},
     )
 
 
