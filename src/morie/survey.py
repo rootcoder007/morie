@@ -33,6 +33,7 @@ Hájek, J. (1971). Comment on "An essay on the logical foundations of survey
 """
 
 import math
+import re
 import warnings
 
 from morie.fn import _array_core as np
@@ -65,21 +66,127 @@ def _native_glm_from_formula(formula, data, family, weights=None):
     return _glm_formula.glm(formula, data, family=family, weights=w).fit()
 
 
-def _svy_glm(formula, data, family, weights, psu=None, strata=None):
-    """Design-based GLM as survey::svyglm: the weighted IRLS fit and the
-    linearisation (sandwich) variance A^-1 M A^-1, where A is the weighted
-    information and M the between-PSU variance of the score totals within
-    strata, scaled by n_h/(n_h - 1); t tests on degf + 1 - p df, degf the
-    number of PSUs less the number of strata (Binder 1983; Lumley 2010,
-    sec. 5.2)."""
+class _Design:
+    """The one-stage design behind every estimator here (strata, PSUs, fpc), as rmorie's."""
+
+    def __init__(self, n, strata=None, cluster=None, fpc=None, nest=False):
+        strata = ["1"] * n if strata is None else [str(v) for v in strata]
+        if any(v in ("None", "nan", "NaN") for v in strata):
+            raise ValueError("missing values in the strata column.")
+        if cluster is None:
+            cluster = [str(i + 1) for i in range(n)]
+        else:
+            cluster = list(cluster)
+            if any(v is None or (isinstance(v, float) and math.isnan(v)) for v in cluster):
+                raise ValueError("missing values in the cluster column.")
+            if nest:
+                cluster = [f"{h}\r{c}" for h, c in zip(strata, cluster)]
+            else:
+                seen = {}
+                for h, c in zip(strata, cluster):
+                    if seen.setdefault(str(c), h) != h:
+                        raise ValueError("Clusters not nested in strata at top level; you may want nest=True.")
+            cluster = [str(c) for c in cluster]
+        psus = {}
+        for h, c in zip(strata, cluster):
+            psus.setdefault(h, set()).add(c)
+        self.strata = strata
+        self.cluster = cluster
+        self.n_psu = [len(psus[h]) for h in strata]
+        self.popsize = None
+        if fpc is not None:
+            fpc = [float(v) for v in fpc]
+            if any(not (v > 0) for v in fpc):
+                raise ValueError("the fpc column must be positive numbers.")
+            per = {}
+            for h, v in zip(strata, fpc):
+                if per.setdefault(h, v) != v:
+                    raise ValueError("the fpc must be the same for every unit of a stratum.")
+            # every value <= 1 means sampling fractions, as survey::svydesign reads them
+            frac = all(v <= 1 for v in fpc)
+            self.popsize = [m / v if frac else v for m, v in zip(self.n_psu, fpc)]
+            if any(ps < m for ps, m in zip(self.popsize, self.n_psu)):
+                raise ValueError("the fpc gives a population smaller than the sample in some stratum.")
+
+    def recvar(self, U):
+        """Taylor-linearisation variance of the totals of the score rows ``U`` (one row per
+        sampled unit, zero rows for units outside the fit): per stratum the PSU totals are
+        centred and scaled by f * n_h / (n_h - 1), f = (N_h - n_h) / N_h with a population size
+        and 1 without -- survey::svyrecvar at stage 1 with lonely.psu = "fail"."""
+        k = len(U[0]) if U else 0
+        V = [[0.0] * k for _ in range(k)]
+        order = []
+        for h in self.strata:
+            if h not in order:
+                order.append(h)
+        for h in order:
+            idx = [i for i, sh in enumerate(self.strata) if sh == h]
+            nh = self.n_psu[idx[0]]
+            f = 1.0
+            if self.popsize is not None and math.isfinite(self.popsize[idx[0]]):
+                f = (self.popsize[idx[0]] - nh) / self.popsize[idx[0]]
+            if f < 1e-7:
+                continue
+            if nh < 2:
+                raise ValueError(f"Stratum ({h}) has only one PSU at stage 1")
+            tot = {}
+            for i in idx:
+                t = tot.setdefault(self.cluster[i], [0.0] * k)
+                for j in range(k):
+                    t[j] += U[i][j]
+            rows = list(tot.values())
+            while len(rows) < nh:
+                rows.append([0.0] * k)
+            mean = [sum(r[j] for r in rows) / len(rows) for j in range(k)]
+            sc = f * nh / (nh - 1)
+            for r in rows:
+                d = [r[j] - mean[j] for j in range(k)]
+                for x in range(k):
+                    for y in range(k):
+                        V[x][y] += sc * d[x] * d[y]
+        return V
+
+
+def _formula_vars(formula, columns):
+    names = set(re.findall(r"[A-Za-z_.][A-Za-z0-9_.]*", formula))
+    return [c for c in columns if c in names]
+
+
+def _svy_glm(formula, data, family, weights, psu=None, strata=None, design=None):
+    """Design-based GLM as survey::svyglm: the weighted IRLS fit and the linearisation
+    (sandwich) variance A^-1 M A^-1, M the Taylor variance of the score totals over the design's
+    strata and PSUs (with its finite-population correction); rows with a missing model variable
+    leave the fit but stay in the design with a zero score; t tests on PSUs - strata + 1 - p df
+    among the rows in the fit (Binder 1983; Lumley 2010, sec. 5.2)."""
     from morie.fn import _glm_formula
 
     fam = family
     if not isinstance(fam, str):
         fam = getattr(fam, "name", None) or type(fam).__name__.lower()
     fam = str(fam).lower().replace("-", "").replace("_", "")
-    w = [float(v) for v in (weights.values if hasattr(weights, "values") else weights)]
-    model = _glm_formula.glm(formula, data, family=fam, weights=w)
+    w_all = [float(v) for v in (weights.values if hasattr(weights, "values") else weights)]
+    n_all = len(w_all)
+    if design is None:
+        design = _Design(
+            n_all,
+            strata=None if strata is None else list(strata.values if hasattr(strata, "values") else strata),
+            cluster=None if psu is None else list(psu.values if hasattr(psu, "values") else psu),
+            nest=psu is not None and strata is not None,
+        )
+    cols = _formula_vars(formula, list(data.columns))
+    kept = []
+    for i in range(n_all):
+        ok = True
+        for c in cols:
+            v = data[c].iloc[i]
+            if v is None or (isinstance(v, float) and math.isnan(v)):
+                ok = False
+                break
+        if ok:
+            kept.append(i)
+    sub = data.iloc[kept] if len(kept) < n_all else data
+    w = [w_all[i] for i in kept]
+    model = _glm_formula.glm(formula, sub, family=fam, weights=w)
     res = model.fit()
     F = _glm_core.FAMILIES[fam]
     beta = [float(b) for b in res.params]
@@ -87,42 +194,23 @@ def _svy_glm(formula, data, family, weights, psu=None, strata=None):
     y = [float(v) for v in model.y]
     n, k = len(y), len(beta)
     A = [[0.0] * k for _ in range(k)]
-    U = []
-    for i in range(n):
-        eta = sum(X[i][j] * beta[j] for j in range(k))
+    U = [[0.0] * k for _ in range(n_all)]
+    for r, i in enumerate(kept):
+        eta = sum(X[r][j] * beta[j] for j in range(k))
         mu = F["linkinv"](eta)
         g = F["mu_eta"](eta)
         v = F["variance"](mu)
-        U.append([w[i] * X[i][j] * (y[i] - mu) * g / v for j in range(k)])
-        c = w[i] * g * g / v
+        U[i] = [w[r] * X[r][j] * (y[r] - mu) * g / v for j in range(k)]
+        c = w[r] * g * g / v
         for a in range(k):
             for b in range(k):
-                A[a][b] += c * X[i][a] * X[i][b]
-    psu = list(range(n)) if psu is None else [v for v in (psu.values if hasattr(psu, "values") else psu)]
-    strata = [0] * n if strata is None else [v for v in (strata.values if hasattr(strata, "values") else strata)]
-    # M = S'S with one row of S per PSU, so V = (A^-1 S')(A^-1 S')' is
-    # positive semidefinite even when A is near singular (separation)
-    S = []
-    n_psu = 0
-    for h in sorted(set(strata), key=str):
-        tot = {}
-        for i in range(n):
-            if strata[i] == h:
-                t = tot.setdefault(psu[i], [0.0] * k)
-                for j in range(k):
-                    t[j] += U[i][j]
-        nh = len(tot)
-        n_psu += nh
-        if nh < 2:
-            continue
-        ub = [sum(t[j] for t in tot.values()) / nh for j in range(k)]
-        f = math.sqrt(nh / (nh - 1))
-        S.extend([f * (t[j] - ub[j]) for j in range(k)] for t in tot.values())
+                A[a][b] += c * X[r][a] * X[r][b]
     Ai = _glm_core._inv(A)
-    Z = [[sum(Ai[a][c] * r[c] for c in range(k)) for a in range(k)] for r in S]
-    V = [[sum(z[a] * z[b] for z in Z) for b in range(k)] for a in range(k)]
-    se = [math.sqrt(V[j][j]) for j in range(k)]
-    df_res = n_psu - len(set(strata)) + 1 - k
+    M = design.recvar(U)
+    V = [[sum(Ai[a][x] * M[x][y] * Ai[y][b] for x in range(k) for y in range(k)) for b in range(k)] for a in range(k)]
+    se = [math.sqrt(V[j][j]) if V[j][j] > 0 else 0.0 for j in range(k)]
+    inset = [i for i in kept if w_all[i] != 0]
+    df_res = len({design.cluster[i] for i in inset}) - len({design.strata[i] for i in inset}) + 1 - k
     tv = [b / e if e > 0 else float("nan") for b, e in zip(beta, se)]
     pv = [2.0 * float(scipy_stats.t.sf(abs(t), df_res)) if df_res > 0 and t == t else float("nan") for t in tv]
     from morie.fn._glm_formula import _Result
@@ -143,71 +231,82 @@ def _svy_glm(formula, data, family, weights, psu=None, strata=None):
 
 
 class SurveyDesign:
-    """
-    Encapsulates survey data with its corresponding sampling weights and strata.
-    """
+    """A one-stage survey design: sampling weights, optional strata, primary sampling units
+    (clusters) and a finite-population correction -- the design of rmorie's
+    ``morie_survey_design()``; the variance of every estimator on it is the Taylor
+    linearisation of ``survey::svyrecvar``."""
 
-    def __init__(self, data: pd.DataFrame, weights_col: str, strata_col: str | None = None):
+    def __init__(
+        self,
+        data: pd.DataFrame,
+        weights_col: str,
+        strata_col: str | None = None,
+        cluster_col: str | None = None,
+        fpc_col: str | None = None,
+        nest: bool = False,
+    ):
         """
-        Initialize the survey design object.
-
-        :param data: The pandas DataFrame containing the survey data.
-        :type data: pandas.DataFrame
-        :param weights_col: The column name corresponding to the survey weights.
-        :type weights_col: str
-        :param strata_col: The column name indicating survey strata, defaults to None.
-        :type strata_col: str, optional
+        :param data: The survey data.
+        :param weights_col: Column of sampling weights (inverse inclusion probabilities).
+        :param strata_col: Optional strata column.
+        :param cluster_col: Optional PSU / cluster column.
+        :param fpc_col: Optional finite-population correction: the population size of the stratum
+            (number of PSUs when clustered), or the sampling fraction when every value is <= 1.
+        :param nest: If True, cluster IDs are only unique within a stratum; if False a cluster ID
+            that appears in two strata is an error, as in ``survey::svydesign``.
         """
+        for col in (weights_col, strata_col, cluster_col, fpc_col):
+            if col is not None and col not in data.columns:
+                raise ValueError(f"column '{col}' not in data.")
+        w = [float(v) for v in data[weights_col].tolist()]
+        if any(math.isnan(v) or v < 0 for v in w):
+            raise ValueError("the sampling weights must be numeric, >= 0 and not missing.")
         self.data = data
         self.weights = data[weights_col]
         self.strata = data[strata_col] if strata_col else None
+        self.design = _Design(
+            len(w),
+            strata=None if strata_col is None else data[strata_col].tolist(),
+            cluster=None if cluster_col is None else data[cluster_col].tolist(),
+            fpc=None if fpc_col is None else data[fpc_col].tolist(),
+            nest=nest,
+        )
 
     def weighted_mean(self, variable: str) -> float:
-        """
-        Compute the survey-weighted mean of a continuous variable.
-
-        :param variable: The name of the variable to average.
-        :type variable: str
-        :return: The weighted average.
-        :rtype: float
-        """
+        """The survey-weighted (Hajek) mean of a variable."""
         y = self.data[variable]
         return float(np.average(y, weights=self.weights))
 
-    def svyglm(self, formula: str, family=None):
-        """
-        Fit a survey-weighted generalized linear model.
+    def mean(self, variable: str) -> dict:
+        """The Hajek mean and its design-based (Taylor) SE, as ``survey::svymean``; a missing
+        value gives NaN, as there."""
+        if variable not in self.data.columns:
+            raise ValueError("`variable` must name one column of the design's data.")
+        y = [float(v) for v in self.data[variable].tolist()]
+        if any(math.isnan(v) for v in y):
+            return {"mean": float("nan"), "se": float("nan")}
+        w = [float(v) for v in self.weights.tolist()]
+        sw = sum(w)
+        m = sum(wi * yi for wi, yi in zip(w, y)) / sw
+        z = [[wi * (yi - m) / sw] for wi, yi in zip(w, y)]
+        return {"mean": m, "se": math.sqrt(self.design.recvar(z)[0][0])}
 
-        Survey probability weights (such as CPADS ``weight`` / ``wtpumf``) are
-        probability weights, **not** frequency expansion weights. The fit is
-        the weighted IRLS estimate and the standard errors are the
-        design-based linearisation (sandwich) variance, with the design's
-        strata and each unit its own PSU, as ``survey::svyglm``.
+    def svyglm(self, formula: str, family=None):
+        """A design-weighted GLM with the linearisation (sandwich) variance of
+        ``survey::svyglm`` over this design's strata, PSUs and fpc.
 
         :param formula: A formula string.
-        :type formula: str
         :param family: Family name or object, defaults to binomial.
-        :return: A fitted GLM result with design-based standard errors.
 
         References
         ----------
-        Lumley, T. (2010). *Complex Surveys: A Guide to Analysis Using R*.
-        Wiley. (Chapter 2 -- probability weights vs. frequency weights.)
+        Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex
+        surveys. *International Statistical Review*, 51, 279-292.
+        Lumley, T. (2010). *Complex Surveys: A Guide to Analysis Using R*. Wiley.
         """
         if family is None:
             family = "binomial"
-
-        # var_weights: analytic/probability weights -- correct for survey data.
-        # Each weight w_i re-scales the variance of observation i by 1/w_i,
-        # which is the appropriate treatment for unequal-probability sampling.
-        # Do NOT use freq_weights, which expands the dataset by the weight
-        # value and thus inflates n_effective and deflates standard errors.
-        return _svy_glm(formula, self.data, family, self.weights, strata=self.strata)
-
-
-# ===========================================================================
-# SECTION 2 -- HORVITZ-THOMPSON AND HÁJEK ESTIMATORS
-# ===========================================================================
+        return _svy_glm(formula, self.data, family, self.weights, design=self.design)
 
 
 def horvitz_thompson_total(
@@ -667,6 +766,7 @@ def complex_survey_glm(
     family: str = "gaussian",
     cluster_col: str | None = None,
     strata_col: str | None = None,
+    nest: bool = False,
 ) -> object:
     """
     Fit a GLM with complex survey design (weights, optional clustering, strata).
@@ -708,11 +808,5 @@ def complex_survey_glm(
     w = df[weight_col].astype(float)
     if np.any(w.values <= 0):
         raise ValueError("All survey weights must be > 0.")
-    return _svy_glm(
-        formula,
-        df,
-        family_str,
-        w,
-        psu=None if cluster_col is None else df[cluster_col],
-        strata=None if strata_col is None else df[strata_col],
-    )
+    design = SurveyDesign(df, weight_col, strata_col=strata_col, cluster_col=cluster_col, nest=nest)
+    return _svy_glm(formula, df, family_str, w, design=design.design)
