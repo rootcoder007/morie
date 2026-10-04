@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from morie.selftest import run_selftest
 
 
@@ -40,7 +42,7 @@ def test_a_big_ckan_table_says_which_step_runs_after_the_download(monkeypatch, t
     monkeypatch.setattr(data, "_STAGES_MIN_CELLS", 10)
     monkeypatch.delenv("MORIE_NO_PROGRESS", raising=False)
     monkeypatch.setattr(
-        data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": len(rows)}}
+        data, "_urlopen_json_with_retry", lambda url, timeout, **_kw: {"result": {"records": rows, "total": len(rows)}}
     )
     key = next(k for k in data.CKAN_DATASETS if data._ckan_source(k)[1] != "cpads" and not data._ckan_source(k)[2])
     monkeypatch.setitem(data.CKAN_DATASETS[key], "resource_id", "rid")
@@ -110,7 +112,7 @@ def test_a_limit_preview_announces_the_rows_it_fetches(monkeypatch, tmp_path, ca
     rows = [{"_id": i, "a": i} for i in range(10)]
     monkeypatch.delenv("MORIE_NO_PROGRESS", raising=False)
     monkeypatch.setattr(
-        data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": 61096}}
+        data, "_urlopen_json_with_retry", lambda url, timeout, **_kw: {"result": {"records": rows, "total": 61096}}
     )
     key = next(k for k in data.CKAN_DATASETS if not data._ckan_source(k)[2])
     monkeypatch.setitem(data.CKAN_DATASETS[key], "resource_id", "rid")
@@ -435,8 +437,26 @@ def test_chat_refuses_an_unknown_agent(monkeypatch, capsys):
     assert "unknown agent 'nosuch-agent' (known: analyst)" in capsys.readouterr().err
 
 
+def test_chat_refuses_any_agent_when_no_personas_are_installed(monkeypatch, capsys):
+    from morie import chat, runner
+
+    monkeypatch.setattr(chat, "list_agents", lambda: [])
+    monkeypatch.setattr(chat, "run_chat_repl", lambda agent=None: 0)
+    monkeypatch.setattr("sys.argv", ["morie", "chat", "--agent", "nosuch-agent"])
+    assert runner.main() == 2
+    assert "this install has no agent personas" in capsys.readouterr().err
+
+
 def test_percy_local_without_ollama_exits_non_zero(monkeypatch, capsys):
-    from morie import runner
+    from pathlib import Path
+
+    from morie import _interactive, runner
+
+    if (
+        not _interactive.present(_interactive.data_dir())
+        and not Path(runner.__file__).with_name("polyglot.py").is_file()
+    ):
+        pytest.skip("percy --local runs the interactive layer's agent (morie interactive install)")
 
     monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:9")
     monkeypatch.setattr("sys.argv", ["morie", "percy", "--local", "--no-stream", "hi"])
@@ -642,6 +662,7 @@ def test_every_relative_import_in_the_package_resolves():
     import pathlib
 
     import morie
+    from morie._interactive import FILES as layer
 
     root = pathlib.Path(morie.__file__).parent
     missing = []
@@ -657,6 +678,8 @@ def test_every_relative_import_in_the_package_resolves():
                     continue  # optional extras / the interactive layer
                 for a in node.names:
                     if a.name != "*" and not hasattr(mod, a.name):
+                        if modname == "morie" and f"{a.name}.py" in layer:
+                            continue  # the interactive layer, installed per user by `morie interactive install`
                         try:
                             importlib.import_module(f"{modname}.{a.name}")
                         except ImportError:

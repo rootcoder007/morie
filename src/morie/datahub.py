@@ -101,8 +101,15 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
         raise
 
 
+def offline() -> bool:
+    """True under ``MORIE_OFFLINE`` (set by ``morie selftest``): nothing is fetched, the disk copy is used."""
+    return os.environ.get("MORIE_OFFLINE", "").strip() not in ("", "0", "false", "no")
+
+
 def hosted_manifest(refresh: bool = False) -> dict:
-    """The gateway's manifest, cached for a day under the user cache dir."""
+    """The gateway's manifest, cached for a day under the user cache dir (only the cached copy when offline)."""
+    if offline() and not refresh:
+        return cached_manifest() or {}
     p = _manifest_cache_path()
     if not refresh and p.exists() and time.time() - p.stat().st_mtime < _MANIFEST_TTL:
         return json.loads(p.read_text(encoding="utf-8"))

@@ -92,8 +92,11 @@ def _write_cache(latest: str) -> None:
 
 
 def check_pypi_latest(timeout: float = _NET_TIMEOUT) -> str | None:
-    """Return morie's latest version on PyPI, or None on any failure."""
+    """Return morie's latest version on PyPI, or None on any failure (or under ``MORIE_OFFLINE``)."""
     import urllib.request
+
+    if os.environ.get("MORIE_OFFLINE", "").strip() not in ("", "0", "false", "no"):
+        return None
 
     try:
         with urllib.request.urlopen(PYPI_JSON_URL, timeout=timeout) as resp:

@@ -418,9 +418,9 @@ def test_a_limited_ckan_fetch_is_never_cached(monkeypatch):
     rows = [{"a": i} for i in range(5)]
     monkeypatch.setattr(data, "_ckan_source", lambda key: ({"resource_id": "rid", "metadata_url": ""}, "tbl", False))
     monkeypatch.setattr(
-        data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": len(rows)}}
+        data, "_urlopen_json_with_retry", lambda url, timeout, **_kw: {"result": {"records": rows, "total": len(rows)}}
     )
-    monkeypatch.setattr(data, "cache_store", lambda df, name, db=None: stored.append((name, len(df))))
+    monkeypatch.setattr(data, "cache_store", lambda df, name, db=None, **_kw: stored.append((name, len(df))))
     preview = data.fetch_ckan_to_cache("ocs22bt", max_records=3)
     assert len(preview) >= 3 and stored == []
     data.fetch_ckan_to_cache("ocs22bt")

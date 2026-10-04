@@ -24,6 +24,44 @@ from morie.fn._array_core import NDArray
 # GGUF magic number: "GGUF" in little-endian
 GGUF_MAGIC = 0x46554747  # 'G','G','U','F'
 
+
+def find_local_gguf(root: str | Path | None = None) -> Path | None:
+    """The first GGUF model file on this machine, or None.
+
+    Looks in Ollama's model store (``$OLLAMA_MODELS``, else ``~/.ollama/models``) for a blob
+    that starts with the GGUF magic, largest first (the weights, not a projector or adapter).
+
+    Examples:
+        >>> import tempfile
+        >>> d = Path(tempfile.mkdtemp())
+        >>> (d / "blobs").mkdir()
+        >>> _ = (d / "blobs" / "sha256-a").write_bytes(b"GGUF" + bytes(12))
+        >>> _ = (d / "blobs" / "sha256-b").write_bytes(b"{}")
+        >>> find_local_gguf(d).name
+        'sha256-a'
+        >>> find_local_gguf(d / "nowhere") is None
+        True
+    """
+    import os
+
+    base = (
+        Path(root) if root is not None else Path(os.environ.get("OLLAMA_MODELS") or Path.home() / ".ollama" / "models")
+    )
+    blobs = base / "blobs"
+    if not blobs.is_dir():
+        return None
+    found = []
+    for f in blobs.iterdir():
+        try:
+            if f.is_file():
+                with open(f, "rb") as fh:
+                    if struct.unpack("<I", fh.read(4).ljust(4, b"\0"))[0] == GGUF_MAGIC:
+                        found.append(f)
+        except OSError:
+            continue
+    return max(found, key=lambda f: f.stat().st_size) if found else None
+
+
 # GGML tensor types
 GGML_TYPE_F32 = 0
 GGML_TYPE_F16 = 1

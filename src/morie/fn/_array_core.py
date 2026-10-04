@@ -4388,7 +4388,12 @@ def _is_scalar_like(v):
 def isclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
     # same predicate as allclose, so allclose(x, y) == all(isclose(x, y))
     if _is_scalar_like(a) and _is_scalar_like(b):
-        return bool(_close_scalar(float(a), float(b), rtol, atol, equal_nan))
+        # complex stays complex: numpy compares by modulus, |a - b| <= atol + rtol * |b|
+        def _num(v):
+            v = v.item() if hasattr(v, "item") else v
+            return v if isinstance(v, complex) else float(v)
+
+        return bool(_close_scalar(_num(a), _num(b), rtol, atol, equal_nan))
     return asarray(a)._zip(b, lambda x, y: 1.0 if _close_scalar(x, y, rtol, atol, equal_nan) else 0.0)
 
 

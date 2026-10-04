@@ -5,6 +5,7 @@ import os
 import re
 import sqlite3
 from copy import deepcopy
+from http.client import HTTPException
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -1202,8 +1203,13 @@ def cache_connect(db_path: str | Path | None = None) -> sqlite3.Connection:
     return conn
 
 
-def cache_store(df: pd.DataFrame, table: str, db_path: str | Path | None = None) -> int:
+def cache_store(df: pd.DataFrame, table: str, db_path: str | Path | None = None, quiet: bool = False) -> int:
     """Write a DataFrame to the SQLite cache, replacing any existing table."""
+    if not quiet and len(df) * max(len(df.columns), 1) >= _STAGES_MIN_CELLS:
+        from ._progress import note
+
+        # a large table takes a while to cache: say so instead of sitting silent
+        note(table, f"caching {len(df):,} rows x {len(df.columns):,} columns so the next load is fast")
     conn = cache_connect(db_path)
     try:
         try:
@@ -1285,20 +1291,54 @@ def download_with_wayback(url: str, timeout: int = 60) -> tuple[bytes, str]:
         return urlopen(snap, timeout=timeout).read(), snap
 
 
-def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4) -> dict:
-    """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff."""
+def _read_with_progress(resp, label: str | None) -> bytes:
+    """The body of ``resp``, with a progress bar under ``label`` (a datastore page can be ~50 MB)."""
+    if not label or getattr(resp, "headers", None) is None:
+        return resp.read()  # no label, or not an HTTP response (an opener's own object): read it whole
+    from ._progress import Progress
+
+    size = resp.headers.get("Content-Length") if getattr(resp, "headers", None) else None
+    prog = Progress(label, int(size) if size and size.isdigit() else None)
+    parts = []
+    while True:
+        chunk = resp.read(1 << 20)
+        if not chunk:
+            break
+        parts.append(chunk)
+        prog.update(len(chunk))
+    prog.close()
+    return b"".join(parts)
+
+
+def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: str | None = None) -> dict:
+    """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff,
+    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection), which
+    escaped every handler before and ended the pull."""
+    import sys as _sys
     import time as _time
+    from http.client import HTTPException
 
     delay = 2.0
     for attempt in range(attempts):
         try:
-            return json.loads(urlopen(url, timeout=timeout).read().decode())
+            resp = urlopen(url, timeout=timeout)
+            try:
+                return json.loads(_read_with_progress(resp, label).decode())
+            finally:
+                getattr(resp, "close", lambda: None)()
         except HTTPError as exc:
             if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
                 raise
             logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
-            _time.sleep(delay)
-            delay *= 2
+        except (HTTPException, ConnectionError, TimeoutError) as exc:
+            if attempt == attempts - 1:
+                raise
+            _sys.stderr.write(
+                f"{label or 'CKAN datastore'}: the transfer dropped ({type(exc).__name__}); "
+                f"retrying in {delay:.0f} s, attempt {attempt + 2} of {attempts}\n"
+            )
+        _time.sleep(delay)
+        delay *= 2
     raise RuntimeError("unreachable")
 
 
@@ -1363,8 +1403,9 @@ def fetch_ckan_to_cache(
     while True:
         params = {"resource_id": resource_id, "limit": limit, "offset": offset}
         url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
+        page = offset // limit + 1
         try:
-            payload = _urlopen_json_with_retry(url, timeout)
+            payload = _urlopen_json_with_retry(url, timeout, label=f"{dataset_key} (CKAN datastore, page {page})")
         except HTTPError as exc:
             # 404: no datastore behind this resource. 500: the datastore
             # cannot serve a full page of it (the 2018-2022 CCS microdata,
@@ -1373,9 +1414,9 @@ def fetch_ckan_to_cache(
             if exc.code not in (404, 500) or offset:
                 raise
             payload = {}
-        except (URLError, OSError) as exc:
-            # The datastore API is unreachable: the resource file is the
-            # route, live or from its Wayback Machine snapshot.
+        except (URLError, OSError, HTTPException) as exc:
+            # The datastore API is unreachable, or its first page kept dropping: the
+            # resource file is the route, live or from its Wayback Machine snapshot.
             if offset:
                 raise
             logger.warning("CKAN datastore unreachable for %s (%s); reading the resource file", dataset_key, exc)
@@ -1429,7 +1470,7 @@ def fetch_ckan_to_cache(
     # Cache under the name load_dataset() looks up next time.
     if stages is not None:
         stages.step("caching it so the next pull is fast")
-    cache_store(df, table_name, db_path)
+    cache_store(df, table_name, db_path, quiet=stages is not None)
 
     # If CPADS, also canonicalize and cache the canonical version.
     if is_cpads and has_raw_cpads_columns(df):
@@ -1484,6 +1525,10 @@ def _download_url_table(entry: dict, matched: str, timeout: int = 60) -> pd.Data
         tmp = dest.with_suffix(dest.suffix + ".part")
         _download_file(url, tmp, timeout, label=matched)
         tmp.replace(dest)
+    from ._progress import fmt_bytes, note
+
+    if dest.stat().st_size >= 5_000_000:
+        note(matched, f"reading {dest.name} ({fmt_bytes(dest.stat().st_size)})")
     if zipfile.is_zipfile(dest):
         member = entry.get("zip_member") or ""
         with zipfile.ZipFile(dest) as zf:
@@ -1607,7 +1652,10 @@ def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> 
             df = _download_url_table(entry, matched, timeout)
         except Exception as exc:  # noqa: BLE001 - the hosted copy is the fallback
             err = exc
-            logger.warning("Direct download of %s failed (%s)", matched, exc)
+            from .i18n import t as _t
+
+            # in the user's language, like the error line that may follow it
+            logger.warning("%s", _t("data.direct_failed", dataset=matched, err=exc))
     hk = entry.get("hosted_key")
     if df is None and hk:
         from .datahub import load_hosted_dataset
@@ -1902,6 +1950,10 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
             tmp.replace(csv_path)  # atomic: a concurrent pull either sees the old file or the new one
         finally:
             tmp.unlink(missing_ok=True)
+    from ._progress import fmt_bytes, note
+
+    # reading the converted table back is the long part (cihidt: ~3 minutes, silent before)
+    note("CIHI workbook", f"reading the converted table ({fmt_bytes(csv_path.stat().st_size)})")
     return pd.read_csv(csv_path, low_memory=False)
 
 

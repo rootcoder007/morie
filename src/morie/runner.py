@@ -984,11 +984,13 @@ def main() -> int:
     """
     Entry point for the MORIE command line interface.
     """
-    # fail-silent, daily-cached notice of a newer release (MORIE_NO_UPDATE_CHECK=1 silences it)
+    # fail-silent, daily-cached notice of a newer release (MORIE_NO_UPDATE_CHECK=1 silences it);
+    # not for selftest, which promises no network
     try:
         from ._update_check import maybe_notify as _maybe_notify
 
-        _maybe_notify(__version__)
+        if sys.argv[1:2] != ["selftest"]:
+            _maybe_notify(__version__)
     except Exception:
         pass
     _cli_warning_notes()
@@ -1378,8 +1380,14 @@ def _main_impl() -> int:
 
         if args.agent:
             known = [a["name"] for a in list_agents()]
-            if known and args.agent not in known:
-                print(f"chat: unknown agent '{args.agent}' (known: {', '.join(known)})", file=sys.stderr)
+            if args.agent not in known:
+                # an installed wheel ships no personas: any name is unknown, not silently ignored
+                hint = (
+                    f"known: {', '.join(known)}"
+                    if known
+                    else "this install has no agent personas; run `morie chat` without --agent"
+                )
+                print(f"chat: unknown agent '{args.agent}' ({hint})", file=sys.stderr)
                 return 2
         return run_chat_repl(agent=args.agent)
 
@@ -1760,6 +1768,10 @@ def _main_impl() -> int:
                 file=sys.stderr,
             )
             return 1
+        if args.out and len(df) * max(len(df.columns), 1) >= 1_000_000:
+            from ._progress import note
+
+            note(f"pull {args.dataset}", f"writing {args.out} ({len(df):,} rows x {len(df.columns):,} columns)")
         _integral_floats_as_int(df)  # a cached pull and a fresh one write the same numbers
         if args.out:
             args.out = Path(args.out)

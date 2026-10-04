@@ -233,6 +233,12 @@ def download_url(
     return written
 
 
+def note(label: str, what: str, stream: IO[str] | None = None) -> None:
+    """One status line on stderr for a long step with nothing to count (``MORIE_NO_PROGRESS=1`` silences it)."""
+    if not _progress_off():
+        (stream if stream is not None else sys.stderr).write(f"{label}: {what}\n")
+
+
 class Stages:
     """Numbered stage lines on stderr for a long computation with no byte count to show.
 

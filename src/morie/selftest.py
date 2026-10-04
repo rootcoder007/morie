@@ -423,8 +423,20 @@ def run_selftest() -> int:
     print()
 
     t0_total = time.monotonic()
-    for name, fn in tests:
-        _test(name, fn)
+    # offline, as the README promises: with a stored key the dataset checks fetched the
+    # data.rmorie.com manifest (170 KB); now they read the copy on disk, if any
+    import os
+
+    was = os.environ.get("MORIE_OFFLINE")
+    os.environ["MORIE_OFFLINE"] = "1"
+    try:
+        for name, fn in tests:
+            _test(name, fn)
+    finally:
+        if was is None:
+            os.environ.pop("MORIE_OFFLINE", None)
+        else:
+            os.environ["MORIE_OFFLINE"] = was
 
     total_elapsed = time.monotonic() - t0_total
     passed = sum(1 for r in _results if r["passed"])

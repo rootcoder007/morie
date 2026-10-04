@@ -8,7 +8,36 @@ Falls back to SentencePiece if a ``.model`` file is provided explicitly.
 
 from __future__ import annotations
 
+import functools
+import re
 from pathlib import Path
+
+
+@functools.lru_cache(maxsize=1)
+def _bytes_to_unicode() -> dict[int, str]:
+    """GPT-2's reversible byte -> printable-character map (Radford et al. 2019, encoder.py)."""
+    bs = (
+        list(range(ord("!"), ord("~") + 1))
+        + list(range(ord("\xa1"), ord("\xac") + 1))
+        + list(range(ord("\xae"), ord("\xff") + 1))
+    )
+    cs = bs[:]
+    n = 0
+    for b in range(256):
+        if b not in bs:
+            bs.append(b)
+            cs.append(256 + n)
+            n += 1
+    return dict(zip(bs, map(chr, cs)))
+
+
+# the pre-tokeniser of llama.cpp's "llama-bpe" (Llama 3) / tiktoken cl100k, with \p{L} written as
+# [^\W\d_] and \p{N} as \d (the stdlib re has no Unicode property classes)
+_PRE_LLAMA3 = re.compile(
+    r"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\w]?[^\W\d_]+|\d{1,3}| ?[^\s\w]+[\r\n]*|\s*[\r\n]+|\s+(?!\S)|\s+"
+)
+# GPT-2's own pattern, for "gpt2"-model vocabularies with another pre-tokeniser
+_PRE_GPT2 = re.compile(r"'s|'t|'re|'ve|'m|'ll|'d| ?[^\W\d_]+| ?\d+| ?[^\s\w]+|\s+(?!\S)|\s+")
 
 
 class Tokenizer:
@@ -46,6 +75,8 @@ class Tokenizer:
         self._eos_id: int = 2
         self._bos_id: int = 1
         self._sp = None  # SentencePiece processor (optional fallback)
+        self._byte_level = False  # GPT-2 byte-level BPE (Llama 3, Qwen, ...)
+        self._control: set[int] = set()
 
         if gguf_model is not None:
             self._load_from_gguf(gguf_model)
@@ -82,9 +113,22 @@ class Tokenizer:
         merges_raw = meta.get("tokenizer.ggml.merges", [])
         self._merges = []
         for m in merges_raw:
-            parts = m.split(" ", 1) if isinstance(m, str) else []
+            m = m if isinstance(m, str) else m.decode("utf-8", errors="replace")
+            parts = m.split(" ", 1)
             if len(parts) == 2:
                 self._merges.append((parts[0], parts[1]))
+        # "gpt2": byte-level BPE with ranked merges (Llama 3 and most current models); "llama": SentencePiece
+        self._byte_level = meta.get("tokenizer.ggml.model") == "gpt2" and bool(self._merges)
+        self._ranks = {pair: r for r, pair in enumerate(self._merges)}
+        self._pre = (
+            _PRE_LLAMA3
+            if meta.get("tokenizer.ggml.pre", "llama-bpe") in ("llama-bpe", "llama3", "default")
+            else _PRE_GPT2
+        )
+        # control tokens (<|begin_of_text|>, <|eot_id|>, ...) are not text: decode leaves them out
+        types = meta.get("tokenizer.ggml.token_type", [])
+        self._control = {i for i, t in enumerate(types) if t == 3}
+        self._add_bos = bool(meta.get("tokenizer.ggml.add_bos_token", True))
 
     def _load_sentencepiece(self, path: Path) -> None:
         """Load from a SentencePiece .model file."""
@@ -118,6 +162,14 @@ class Tokenizer:
                 ids = [self._bos_id] + ids
             return ids
 
+        if self._byte_level:
+            ids = []
+            enc = _bytes_to_unicode()
+            for chunk in self._pre.findall(text):
+                word = "".join(enc[b] for b in chunk.encode("utf-8"))
+                ids.extend(self._token_to_id[t] for t in self._bpe_merge(word))
+            return [self._bos_id, *ids] if add_bos and self._add_bos else ids
+
         # Greedy byte-fallback encoding for GGUF vocab
         tokens = self._bpe_encode(text)
         ids = [self._token_to_id.get(t, 0) for t in tokens]
@@ -129,6 +181,14 @@ class Tokenizer:
         """Decode token IDs back to text."""
         if self._sp is not None:
             return self._sp.Decode(ids)
+
+        if self._byte_level:
+            dec = {c: b for b, c in _bytes_to_unicode().items()}
+            raw = bytearray()
+            for i in ids:
+                if 0 <= i < len(self._vocab) and i not in self._control:
+                    raw.extend(dec[c] for c in self._vocab[i] if c in dec)
+            return raw.decode("utf-8", errors="replace")
 
         pieces = []
         for i in ids:
@@ -149,6 +209,22 @@ class Tokenizer:
         if text.startswith(" "):
             text = text[1:]
         return text
+
+    def _bpe_merge(self, word: str) -> list[str]:
+        """Byte-level BPE on one pre-token: repeatedly merge the adjacent pair of lowest rank."""
+        if word in self._token_to_id:
+            return [word]
+        parts = list(word)
+        while len(parts) > 1:
+            best, at = None, -1
+            for k in range(len(parts) - 1):
+                r = self._ranks.get((parts[k], parts[k + 1]))
+                if r is not None and (best is None or r < best):
+                    best, at = r, k
+            if best is None:
+                break
+            parts[at : at + 2] = [parts[at] + parts[at + 1]]
+        return parts
 
     def _bpe_encode(self, text: str) -> list[str]:
         """Greedy longest-match encoding with UTF-8 byte fallback."""

@@ -40,6 +40,7 @@ EN: dict[str, str] = {
     "cheatsheet.refs": "REFERENCE",
     "pull.wrote_n_rows": "wrote {path}  ({rows:,} rows, {cols} cols)",
     "error.network_failed": "Network call failed: {msg}",
+    "data.direct_failed": "Direct download of {dataset} failed ({err})",
 }
 
 FR: dict[str, str] = {
@@ -58,6 +59,7 @@ FR: dict[str, str] = {
     "cheatsheet.refs": "RÉFÉRENCE",
     "pull.wrote_n_rows": "écrit {path}  ({rows:,} lignes, {cols} colonnes)",
     "error.network_failed": "L'appel réseau a échoué : {msg}",
+    "data.direct_failed": "Le téléchargement direct de {dataset} a échoué ({err})",
 }
 
 ES: dict[str, str] = {
@@ -76,6 +78,7 @@ ES: dict[str, str] = {
     "cheatsheet.refs": "REFERENCIA",
     "pull.wrote_n_rows": "se escribió {path}  ({rows:,} filas, {cols} columnas)",
     "error.network_failed": "Falló la llamada de red: {msg}",
+    "data.direct_failed": "La descarga directa de {dataset} falló ({err})",
 }
 
 DE: dict[str, str] = {
@@ -94,6 +97,7 @@ DE: dict[str, str] = {
     "cheatsheet.refs": "REFERENZ",
     "pull.wrote_n_rows": "{path} geschrieben  ({rows:,} Zeilen, {cols} Spalten)",
     "error.network_failed": "Netzwerkaufruf fehlgeschlagen: {msg}",
+    "data.direct_failed": "Direkter Download von {dataset} fehlgeschlagen ({err})",
 }
 
 ZH: dict[str, str] = {
@@ -112,6 +116,7 @@ ZH: dict[str, str] = {
     "cheatsheet.refs": "参考资料",
     "pull.wrote_n_rows": "已写入 {path}  ({rows:,} 行, {cols} 列)",
     "error.network_failed": "网络调用失败: {msg}",
+    "data.direct_failed": "{dataset} 的直接下载失败 ({err})",
 }
 
 PT: dict[str, str] = {
@@ -130,6 +135,7 @@ PT: dict[str, str] = {
     "cheatsheet.refs": "REFERÊNCIA",
     "pull.wrote_n_rows": "{path} gravado  ({rows:,} linhas, {cols} colunas)",
     "error.network_failed": "Falha na chamada de rede: {msg}",
+    "data.direct_failed": "O download direto de {dataset} falhou ({err})",
 }
 
 JA: dict[str, str] = {
@@ -148,6 +154,7 @@ JA: dict[str, str] = {
     "cheatsheet.refs": "リファレンス",
     "pull.wrote_n_rows": "{path} に書き込みました  ({rows:,} 行, {cols} 列)",
     "error.network_failed": "ネットワーク呼び出しに失敗しました: {msg}",
+    "data.direct_failed": "{dataset} の直接ダウンロードに失敗しました ({err})",
 }
 
 AR: dict[str, str] = {
@@ -166,6 +173,7 @@ AR: dict[str, str] = {
     "cheatsheet.refs": "المرجع",
     "pull.wrote_n_rows": "تمت كتابة {path}  ({rows:,} صفًّا، {cols} عمودًا)",
     "error.network_failed": "فشل الاتصال بالشبكة: {msg}",
+    "data.direct_failed": "فشل التنزيل المباشر لـ {dataset} ({err})",
 }
 
 HI: dict[str, str] = {
@@ -184,6 +192,7 @@ HI: dict[str, str] = {
     "cheatsheet.refs": "संदर्भ",
     "pull.wrote_n_rows": "{path} लिखा गया  ({rows:,} पंक्तियाँ, {cols} स्तंभ)",
     "error.network_failed": "नेटवर्क कॉल विफल: {msg}",
+    "data.direct_failed": "{dataset} का सीधा डाउनलोड विफल ({err})",
 }
 
 LOCALES: dict[str, dict[str, str]] = {
