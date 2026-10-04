@@ -1571,8 +1571,12 @@ def _xlsx_promote_header(df: pd.DataFrame) -> pd.DataFrame:
     if sum(bool(_PLACEHOLDER.match(c)) or not c.strip() for c in names[1:]) < 0.5 * (n_cols - 1):
         return df
     cols = [df[c].tolist() for c in df.columns]
-    need = max(2, -(-4 * n_cols // 5))
-    hdr = next((i for i in range(min(n_rows, 20)) if sum(_xlsx_cell_set(col[i]) for col in cols) >= need), None)
+    # the share is of the columns the table uses: a stray note far to the right widens the sheet
+    # (cihi820b: a 5-column table on a 13-column tab) without being part of it
+    head = min(n_rows, 20)
+    used = sum(1 for col in cols if any(_xlsx_cell_set(col[i]) for i in range(head)))
+    need = max(2, -(-4 * used // 5))
+    hdr = next((i for i in range(head) if sum(_xlsx_cell_set(col[i]) for col in cols) >= need), None)
     if hdr is None:
         return df
     end = n_rows
@@ -1582,6 +1586,8 @@ def _xlsx_promote_header(df: pd.DataFrame) -> pd.DataFrame:
             if any(_xlsx_cell_set(col[j]) for col in cols for j in range(i, n_rows)):
                 logger.info("rows after the table's first blank line (notes, or further tables) are left out")
             break
+    # an unnamed column with nothing in the table is not part of it
+    cols = [col for col in cols if _xlsx_cell_set(col[hdr]) or any(_xlsx_cell_set(v) for v in col[hdr + 1 : end])]
     new, seen = [], {}
     for j, col in enumerate(cols):
         nm = " ".join(str(col[hdr]).split()) if _xlsx_cell_set(col[hdr]) else f"...{j + 1}"

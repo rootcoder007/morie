@@ -1287,35 +1287,25 @@ def otis_irm_dml(
     data = df[_cols].dropna().copy()
 
     if match_first:
-        # Pre-match on the full data, then keep only the matched rows.
-        d_all = _binarise(data[treatment])
+        # 1:1 nearest neighbour without replacement on the propensity score, caliper in its SD,
+        # treated in decreasing score: MatchIt's matcher (the R arm's native port), so both arms
+        # keep the same rows
+        from morie._matchit_native import nn_match
+
+        d_all = [int(v) for v in _binarise(data[treatment]).tolist()]
         X_all = _design_matrix(data, covariates)
-        beta = _logit_fit(X_all, d_all)
+        beta = _logit_fit(X_all, np.asarray(d_all))
         eta = np.clip(X_all @ beta, -30, 30)
-        e_all = _propensity_clip(1.0 / (1.0 + np.exp(-eta)), eps=eps)
-        logit_e = np.log(e_all / (1 - e_all))
-        sd_logit = float(logit_e.std(ddof=1))
-        caliper = match_caliper_sd * sd_logit if match_caliper_sd is not None else None
-        rng_m = np.random.default_rng(seed + 7)
-        treated_idx = np.where(d_all == 1)[0]
-        control_idx = np.where(d_all == 0)[0]
-        treated_order = rng_m.permutation(treated_idx)
-        available = np.ones(control_idx.size, dtype=bool)
-        kept = []
-        for t in treated_order:
-            dist = np.abs(logit_e[control_idx] - logit_e[t])
-            dist = np.where(available, dist, np.inf)
-            if caliper is not None:
-                dist = np.where(dist <= caliper, dist, np.inf)
-            nearest = int(np.argmin(dist))
-            if not np.isfinite(dist[nearest]):
-                continue
-            available[nearest] = False
-            kept.append(int(t))
-            kept.append(int(control_idx[nearest]))
+        e_all = [float(v) for v in (1.0 / (1.0 + np.exp(-eta))).tolist()]
+        m_e = sum(e_all) / len(e_all)
+        sd_e = math.sqrt(sum((v - m_e) ** 2 for v in e_all) / (len(e_all) - 1))
+        idx_t = [i for i, t in enumerate(d_all) if t == 1]
+        cal = match_caliper_sd * sd_e if match_caliper_sd is not None else None
+        rows = nn_match(d_all, e_all, [1] * len(idx_t), False, cal)
+        kept = sorted([idx_t[r] for r, cu in enumerate(rows) if cu] + [c for cu in rows for c in cu])
         if not kept:
             raise RuntimeError("match_first: no treated unit had a control inside the caliper")
-        data = data.iloc[sorted(set(kept))].reset_index(drop=True)
+        data = data.iloc[kept].reset_index(drop=True)
 
     d = _binarise(data[treatment]).astype(np.float64)
     y = data[outcome].astype(np.float64).to_numpy()
