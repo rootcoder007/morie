@@ -235,9 +235,11 @@ def _frame_or_plain(obj):
             cols = {}
             for nm, col in zip(names, obj.value):
                 vals = _plain(col)
-                if vals and all(v is None or isinstance(v, (int, float)) and not isinstance(v, bool) for v in vals):
-                    if any(v is None for v in vals):
-                        vals = [math.nan if v is None else float(v) for v in vals]
+                numeric = vals and all(
+                    v is None or isinstance(v, (int, float)) and not isinstance(v, bool) for v in vals
+                )
+                if numeric and any(v is None for v in vals):
+                    vals = [math.nan if v is None else float(v) for v in vals]  # NA in a numeric column: NaN
                 cols[nm] = vals
             return pd.DataFrame(cols)
     return _plain(obj)
