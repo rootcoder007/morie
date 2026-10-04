@@ -190,6 +190,8 @@ build-frontend = "build"
 target-version = "py310"
 line-length = 120
 src = ["src"]
+# Python sources only: ruff 0.16 would also reformat the python blocks inside the docs Markdown
+include = ["*.py", "*.pyi"]
 
 [tool.ruff.lint]
 select = [
