@@ -929,6 +929,18 @@ inline double digamma_fn(double x) {
 struct HawkesKernel {
     int kind;
     double p0, p1;
+    // per-parameter constants, computed once (not per pair): log-normaliser and digamma (gamma),
+    // log(c) (Lomax), log(l) (Weibull)
+    double lconst = 0.0, dig = 0.0, lp1 = 0.0;
+    HawkesKernel(int k, double a, double b) : kind(k), p0(a), p1(b) {
+        if (kind == 2) {
+            lp1 = std::log(p1);
+            lconst = p0 * lp1 - std::lgamma(p0);
+            dig = digamma_fn(p0);
+        } else if (kind == 3 || kind == 1) {
+            lp1 = std::log(p1);
+        }
+    }
     // density and d(density)/d(psi); false when the term is exactly 0
     bool dens(double u, double &g, double &d0, double &d1) const {
         switch (kind) {
@@ -952,17 +964,17 @@ struct HawkesKernel {
         case 2: {
             if (!(u > 1e-300)) return false;
             const double lu = std::log(u);
-            const double lg = p0 * std::log(p1) - std::lgamma(p0) + (p0 - 1.0) * lu - p1 * u;
+            const double lg = lconst + (p0 - 1.0) * lu - p1 * u;
             if (lg < -745.0) return false;
             g = std::exp(lg);
-            d0 = g * (std::log(p1) - digamma_fn(p0) + lu);
+            d0 = g * (lp1 - dig + lu);
             d1 = g * (p0 / p1 - u);
             return true;
         }
         default: {
             const double luc = std::log(u + p1);
-            g = std::exp(std::log(p0) + p0 * std::log(p1) - (p0 + 1.0) * luc);
-            d0 = g * (1.0 / p0 + std::log(p1) - luc);
+            g = std::exp(std::log(p0) + p0 * lp1 - (p0 + 1.0) * luc);
+            d0 = g * (1.0 / p0 + lp1 - luc);
             d1 = g * (p0 / p1 - (p0 + 1.0) / (u + p1));
             return true;
         }
@@ -990,7 +1002,7 @@ struct HawkesKernel {
         }
         case 2: {
             G = gamma_cdf_regularized(p0, p1 * u);
-            const double lg = p0 * std::log(p1) - std::lgamma(p0) + (p0 - 1.0) * std::log(u) - p1 * u;
+            const double lg = lconst + (p0 - 1.0) * std::log(u) - p1 * u;
             d1 = std::exp(lg) * u / p1;
             const double h = 1e-5 * std::max(1.0, p0);
             d0 = (gamma_cdf_regularized(p0 + h, p1 * u) - gamma_cdf_regularized(p0 - h, p1 * u)) / (2.0 * h);
@@ -1057,7 +1069,15 @@ inline double hawkes_eval(const double *t, std::size_t n, double T, const double
     double L = 0.0, gE = 0.0, g0 = 0.0, g1 = 0.0;
     std::vector<double> S(n, 0.0), D0(n, 0.0), D1(n, 0.0);  // excitation and its psi-derivatives
 
-    const bool soe = method == 1 && (kind == 3 || (kind == 2 && psi[0] < 1.0));
+    bool soe = method == 1 && (kind == 3 || (kind == 2 && psi[0] < 1.0));
+    std::vector<double> soe_s;
+    double soe_h = 0.0;
+    if (soe) {
+        // K nodes cost O(n K); the exact pair loop at most O(n^2 / 2): with fewer than 2K events
+        // (small data, or gamma near shape 1 where K grows like log(eps)/(1 - shape)) exact is cheaper
+        soe_nodes(kind == 3 ? psi[0] + 1.0 : 1.0 - psi[0], soe_delta, eps, soe_s, soe_h);
+        if (2 * soe_s.size() > n) soe = false;
+    }
     if (kind == 0 && method != 2) {
         // Ozaki: A_i = sum e^{-b d}, B_i = sum d e^{-b d}
         double A = 0.0, B = 0.0;
@@ -1070,9 +1090,8 @@ inline double hawkes_eval(const double *t, std::size_t n, double T, const double
         }
     } else if (soe) {
         const double beta = kind == 3 ? psi[0] + 1.0 : 1.0 - psi[0];
-        std::vector<double> s;
-        double h;
-        soe_nodes(beta, soe_delta, eps, s, h);
+        const std::vector<double> &s = soe_s;
+        const double h = soe_h;
         const std::size_t K = s.size();
         std::vector<double> rate(K), w(K), dw0(K), dw1(K);
         for (std::size_t m = 0; m < K; ++m) {
@@ -1304,6 +1323,285 @@ inline void hawkes_rescaled(const double *t, std::size_t n, double T, int bkind,
         if (!(inc > 1e-12)) inc = 1e-12;
         U[i] = 1.0 - std::exp(-inc);
     }
+}
+// --- EM for the Hawkes process (Veen & Schoenberg 2008, JASA 103:614) --------
+//
+// With the branching structure as missing data, the E-step gives each event i
+// the probabilities p_i0 = nu_i / lambda_i (immigrant) and
+// p_ij = eta g(t_i - t_j) / lambda_i (offspring of j); the M-step maximises
+//   Q = sum_i p_i0 log nu_i - int nu
+//     + sum_{i,j} p_ij log(eta g(t_i - t_j; psi)) - eta sum_j G(T - t_j; psi).
+// hawkes_intensity gives the lambda_i of the E-step; hawkes_em_pass the kernel
+// part of Q for a new psi with the p_ij of the old parameters recomputed on the
+// fly (no n x w matrix is stored): P = sum p_ij, Qk = sum p_ij log g(u; psi_new)
+// and dQk/dpsi_new. The pair loop is the exact method's (it stops where the
+// old kernel underflows to 0, so the sum is the full one).
+inline void hawkes_intensity(const double *t, std::size_t n, double T, int bkind, const double *a, double eta,
+                             int kind, const double *psi, double *lam) {
+    const int nb = hawkes_baseline_n(bkind);
+    std::vector<double> nu(n), f(nb), il(n);
+    for (std::size_t i = 0; i < n; ++i) {
+        hawkes_baseline_terms(t[i], T, bkind, f.data());
+        double lin = 0.0;
+        for (int m = 0; m < nb; ++m) lin += a[m] * f[m];
+        nu[i] = std::exp(lin);
+    }
+    double g[3];
+    hawkes_eval(t, n, T, nu.data(), eta, kind, psi, 0, 1e-12, 0.0, 0.0, g, il.data());
+    for (std::size_t i = 0; i < n; ++i) lam[i] = il[i] > 0.0 ? 1.0 / il[i] : 0.0;
+}
+
+inline double hawkes_em_pass(const double *t, std::size_t n, const double *lam_old, double eta_old, int kind,
+                             const double *psi_old, const double *psi_new, double *P, double *dQ) {
+    HawkesKernel ko{kind, psi_old[0], kind == 0 ? 0.0 : psi_old[1]};
+    HawkesKernel kn{kind, psi_new[0], kind == 0 ? 0.0 : psi_new[1]};
+    const double cut = ko.underflow_lag();
+    double Q = 0.0, sumP = 0.0, d0 = 0.0, d1 = 0.0;
+    std::size_t lo = 0;
+    for (std::size_t i = 1; i < n; ++i) {
+        while (lo < i && t[i] - t[lo] > cut) ++lo;
+        const double inv = 1.0 / lam_old[i];
+        for (std::size_t j = lo; j < i; ++j) {
+            const double u = t[i] - t[j];
+            double go, a0, a1, gn, b0, b1;
+            if (!ko.dens(u, go, a0, a1)) continue;
+            const double p = eta_old * go * inv;
+            if (!kn.dens(u, gn, b0, b1) || !(gn > 0.0)) {
+                Q = -std::numeric_limits<double>::infinity();
+                continue;
+            }
+            sumP += p;
+            Q += p * std::log(gn);
+            d0 += p * b0 / gn;
+            d1 += p * b1 / gn;
+        }
+    }
+    *P = sumP;
+    dQ[0] = d0;
+    dQ[1] = d1;
+    return Q;
+}
+// sum_j G(T - t_j; psi) and its psi-gradient: the expected number of offspring
+// per unit branching ratio (the compensator's kernel part; EM's M-step).
+inline double hawkes_cdf_sum(const double *t, std::size_t n, double T, int kind, const double *psi, double *grad) {
+    HawkesKernel k{kind, psi[0], kind == 0 ? 0.0 : psi[1]};
+    double S = 0.0, g0 = 0.0, g1 = 0.0, G, d0, d1;
+    for (std::size_t i = 0; i < n; ++i) {
+        k.cdf(T - t[i], G, d0, d1);
+        S += G;
+        g0 += d0;
+        g1 += d1;
+    }
+    grad[0] = g0;
+    grad[1] = g1;
+    return S;
+}
+// --- exact one-sample Kolmogorov-Smirnov distribution -----------------------
+//
+// P(D_n < d) by Marsaglia, Tsang & Wang (2003, J. Stat. Softw. 8(18)): with
+// k = floor(n d) + 1, m = 2k - 1 and h = k - n d, the m x m matrix H of the
+// paper raised to the n-th power gives P = n!/n^n (H^n)_{kk}. The power is
+// taken by repeated squaring, the entries rescaled by 1e140 when they grow, the
+// exponent carried separately. O(m^3 log n).
+inline void ks_mat_mult(const std::vector<double> &A, const std::vector<double> &B, std::vector<double> &C, int m) {
+    std::vector<double> R(static_cast<std::size_t>(m) * m, 0.0);
+    for (int i = 0; i < m; ++i)
+        for (int l = 0; l < m; ++l) {
+            const double a = A[static_cast<std::size_t>(i) * m + l];
+            if (a == 0.0) continue;
+            for (int j = 0; j < m; ++j) R[static_cast<std::size_t>(i) * m + j] += a * B[static_cast<std::size_t>(l) * m + j];
+        }
+    C.swap(R);
+}
+
+inline void ks_mat_power(const std::vector<double> &A, int eA, std::vector<double> &V, int &eV, int m, int n) {
+    if (n == 1) {
+        V = A;
+        eV = eA;
+        return;
+    }
+    ks_mat_power(A, eA, V, eV, m, n / 2);
+    std::vector<double> B;
+    ks_mat_mult(V, V, B, m);
+    int eB = 2 * eV;
+    if (n % 2 == 0) {
+        V.swap(B);
+        eV = eB;
+    } else {
+        ks_mat_mult(A, B, V, m);
+        eV = eA + eB;
+    }
+    if (V[static_cast<std::size_t>(m / 2) * m + m / 2] > 1e140) {
+        for (double &v : V) v *= 1e-140;
+        eV += 140;
+    }
+}
+
+inline double ks_pkolmogorov_exact(int n, double d) {
+    if (!(d > 0.0)) return 0.0;
+    if (d >= 1.0) return 1.0;
+    const int k = static_cast<int>(n * d) + 1, m = 2 * k - 1;
+    const double h = k - n * d;
+    std::vector<double> H(static_cast<std::size_t>(m) * m);
+    for (int i = 0; i < m; ++i)
+        for (int j = 0; j < m; ++j) H[static_cast<std::size_t>(i) * m + j] = (i - j + 1 < 0) ? 0.0 : 1.0;
+    for (int i = 0; i < m; ++i) {
+        H[static_cast<std::size_t>(i) * m] -= std::pow(h, i + 1);
+        H[static_cast<std::size_t>(m - 1) * m + i] -= std::pow(h, m - i);
+    }
+    H[static_cast<std::size_t>(m - 1) * m] += (2 * h - 1 > 0 ? std::pow(2 * h - 1, m) : 0.0);
+    for (int i = 0; i < m; ++i)
+        for (int j = 0; j < m; ++j)
+            if (i - j + 1 > 0)
+                for (int g = 1; g <= i - j + 1; ++g) H[static_cast<std::size_t>(i) * m + j] /= g;
+    std::vector<double> Q;
+    int eQ = 0;
+    ks_mat_power(H, 0, Q, eQ, m, n);
+    double s = Q[static_cast<std::size_t>(k - 1) * m + k - 1];
+    for (int i = 1; i <= n; ++i) {
+        s = s * i / n;
+        if (s < 1e-140) {
+            s *= 1e140;
+            eQ -= 140;
+        }
+    }
+    return s * std::pow(10.0, eQ);
+}
+// --- the whole fit in C++: projected BFGS on hawkes_nll_grad -----------------
+//
+// Bertsekas's projected quasi-Newton (the scheme L-BFGS-B builds on): variables
+// held at a bound by a gradient pointing out of the box are fixed for the step,
+// the BFGS direction acts on the rest, the Armijo search runs along the
+// projected path, H0 = (s'y / y'y) I before the first update, and a stalled
+// direction restarts once from steepest descent. One routine for morie's
+// Python and R arms, so the two reach the same optimum from the same start.
+inline double hawkes_fit_pbfgs(const double *t, std::size_t n, double T, int bkind, int kind, int method,
+                               double eps, double soe_R, double soe_delta, const double *lo, const double *hi,
+                               double *x, int maxiter, double gtol, int *iters) {
+    const int nb = hawkes_baseline_n(bkind), np = kind == 0 ? 1 : 2, d = nb + 1 + np;
+    auto fgrad = [&](const std::vector<double> &v, std::vector<double> &g) {
+        double f = hawkes_nll_grad(t, n, T, bkind, v.data(), v[nb], kind, v.data() + nb + 1, method, eps, soe_R,
+                                   soe_delta, g.data());
+        if (!std::isfinite(f) || f >= 1e11) {
+            std::fill(g.begin(), g.end(), 0.0);
+            return kBig;
+        }
+        return f;
+    };
+    auto proj = [&](std::vector<double> &v) {
+        for (int i = 0; i < d; ++i) v[i] = std::min(std::max(v[i], lo[i]), hi[i]);
+    };
+    std::vector<double> xv(x, x + d), g(d), xn(d), gn(d), dir(d), s(d), y(d), hy(d);
+    proj(xv);
+    double f = fgrad(xv, g);
+    std::vector<double> H(static_cast<std::size_t>(d) * d, 0.0);
+    auto reset = [&]() {
+        std::fill(H.begin(), H.end(), 0.0);
+        for (int i = 0; i < d; ++i) H[static_cast<std::size_t>(i) * d + i] = 1.0;
+    };
+    reset();
+    bool first = true, scale_h0 = true, just_reset = false;
+    int it = 0, slow = 0;
+    for (it = 1; it <= maxiter; ++it) {
+        double pg = 0.0;
+        for (int i = 0; i < d; ++i) pg = std::max(pg, std::fabs(xv[i] - std::min(std::max(xv[i] - g[i], lo[i]), hi[i])));
+        if (pg < gtol) break;
+        std::vector<char> fr(d);
+        for (int i = 0; i < d; ++i) fr[i] = !((xv[i] <= lo[i] && g[i] > 0) || (xv[i] >= hi[i] && g[i] < 0));
+        double slope = 0.0;
+        for (int i = 0; i < d; ++i) {
+            double acc = 0.0;
+            if (fr[i])
+                for (int j = 0; j < d; ++j)
+                    if (fr[j]) acc += H[static_cast<std::size_t>(i) * d + j] * g[j];
+            dir[i] = fr[i] ? -acc : 0.0;
+            slope += g[i] * dir[i];
+        }
+        if (slope >= 0.0) {
+            reset();
+            for (int i = 0; i < d; ++i) dir[i] = fr[i] ? -g[i] : 0.0;
+            first = scale_h0 = true;
+        }
+        double step = 1.0;
+        if (first) {
+            double dm = 0.0;
+            for (int i = 0; i < d; ++i) dm = std::max(dm, std::fabs(dir[i]));
+            step = std::min(1.0, 1.0 / std::max(dm, 1e-300));
+        }
+        bool accepted = false;
+        double fn = kBig;
+        for (int ls = 0; ls < 60; ++ls) {
+            for (int i = 0; i < d; ++i) xn[i] = xv[i] + step * dir[i];
+            proj(xn);
+            fn = fgrad(xn, gn);
+            double dec = 0.0;
+            for (int i = 0; i < d; ++i) dec += g[i] * (xn[i] - xv[i]);
+            if (std::isfinite(fn) && fn <= f + 1e-4 * dec) {
+                accepted = true;
+                break;
+            }
+            step *= 0.5;
+        }
+        if (!accepted) {
+            if (!just_reset) {
+                reset();
+                first = scale_h0 = just_reset = true;
+                continue;
+            }
+            break;
+        }
+        first = false;
+        double sy = 0.0, ss = 0.0, yy = 0.0, smax = 0.0, xmax = 1.0;
+        for (int i = 0; i < d; ++i) {
+            s[i] = xn[i] - xv[i];
+            y[i] = gn[i] - g[i];
+            sy += s[i] * y[i];
+            ss += s[i] * s[i];
+            yy += y[i] * y[i];
+            smax = std::max(smax, std::fabs(s[i]));
+            xmax = std::max(xmax, std::fabs(xv[i]));
+        }
+        const bool done = std::fabs(f - fn) <= 1e-13 * std::max(1.0, std::fabs(f)) && smax <= 1e-12 * xmax;
+        if (sy > 1e-12 * std::sqrt(ss * yy)) {
+            const double rho = 1.0 / sy;
+            if (scale_h0) {
+                const double gam = sy / yy;
+                std::fill(H.begin(), H.end(), 0.0);
+                for (int i = 0; i < d; ++i) H[static_cast<std::size_t>(i) * d + i] = gam;
+                scale_h0 = false;
+            }
+            double yhy = 0.0;
+            for (int i = 0; i < d; ++i) {
+                double acc = 0.0;
+                for (int j = 0; j < d; ++j) acc += H[static_cast<std::size_t>(i) * d + j] * y[j];
+                hy[i] = acc;
+                yhy += y[i] * acc;
+            }
+            for (int i = 0; i < d; ++i)
+                for (int j = 0; j < d; ++j)
+                    H[static_cast<std::size_t>(i) * d + j] +=
+                        -rho * (hy[i] * s[j] + s[i] * hy[j]) + (rho * rho * yhy + rho) * s[i] * s[j];
+        }
+        // relative decrease below 1e-12 three times running: the remaining iterations only polish
+        // digits that cannot matter (scipy's L-BFGS-B stops the same way, by factr)
+        slow = (f - fn) <= 1e-12 * std::max(1.0, std::fabs(f)) ? slow + 1 : 0;
+        xv = xn;
+        f = fn;
+        g = gn;
+        if (slow >= 3) break;
+        if (done) {
+            if (!just_reset) {
+                reset();
+                first = scale_h0 = just_reset = true;
+                continue;
+            }
+            break;
+        }
+        just_reset = false;
+    }
+    for (int i = 0; i < d; ++i) x[i] = xv[i];
+    if (iters) *iters = it;
+    return f;
 }
 
 }  // namespace morie::core

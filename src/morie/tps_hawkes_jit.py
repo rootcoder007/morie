@@ -984,3 +984,173 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     if w is None:
         raise ValueError("matrix-pencil fit produced a non-decaying mode")
     return (list(w), list(pole_beta), float(err))
+
+
+# ── EM and INAR routes for the general Hawkes fit (tps_hawkes_advanced) ──────
+
+_KIND = {"exponential": 0, "weibull": 1, "gamma": 2, "lomax": 3}
+_BKIND = {"constant": 0, "sinusoidal": 1}
+
+
+def _baseline_feats(tt, T, bkind):
+    if bkind == 0:
+        return [1.0]
+    return [1.0, tt / max(T, 1.0), math.sin(2 * math.pi * tt / 365.25), math.cos(2 * math.pi * tt / 365.25)]
+
+
+def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=500, tol=1e-9):
+    """EM for the Hawkes MLE (Veen & Schoenberg 2008): the branching structure as missing data.
+
+    E-step: the intensity at each event (compiled core). M-step, with p_i0 = nu_i/lambda_i and
+    p_ij = eta g(t_i - t_j)/lambda_i: the baseline maximises sum p_i0 log nu_i - int nu (closed form
+    for a constant one); the kernel maximises sum p_ij log g(.; psi) - P log sum_j G(T - t_j; psi),
+    with eta = P / sum_j G (P = sum p_ij), its weights recomputed in the pair loop. Each step does
+    not lower the likelihood; the same maximum as the direct fit. Returns (theta, nll, iterations).
+    """
+    from morie.fn._sci_core import minimize
+
+    if not HAS_CORE or not hasattr(_core_ext, "hawkes_em_pass"):
+        raise RuntimeError("method='em' needs morie's compiled core (morie._core)")
+    tb = _f64(t)
+    tl = list(tb)
+    kind, bk = _KIND[kernel_kind], _BKIND[baseline_kind]
+    nb = 1 if bk == 0 else 4
+    lo = [b[0] for b in bounds]
+    hi = [b[1] for b in bounds]
+    theta = [min(max(float(v), a), b) for v, a, b in zip(x0, lo, hi)]
+    feats = [_baseline_feats(x, T, bk) for x in tl]
+    m = max(64, int(T) + 1)
+    grid = [T * q / (m - 1) for q in range(m)]
+    gfeats = [_baseline_feats(x, T, bk) for x in grid]
+    wq = [(0.5 if q in (0, m - 1) else 1.0) * T / (m - 1) for q in range(m)]
+
+    def nll_of(th):
+        return _core_ext.hawkes_nll_grad(
+            tb, float(T), bk, th[:nb], th[nb], kind, th[nb + 1 :], 0, 1e-12, 0.0, 0.0, False
+        )[0]
+
+    cur = nll_of(theta)
+    it = 0
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
+        a, eta, psi = theta[:nb], theta[nb], theta[nb + 1 :]
+        lam = _core_ext.hawkes_intensity(tb, float(T), bk, a, eta, kind, psi)
+        p0 = [math.exp(sum(ai * fi for ai, fi in zip(a, f))) / li for f, li in zip(feats, lam)]
+        # baseline M-step
+        if bk == 0:
+            a_new = [min(max(math.log(max(sum(p0), 1e-300) / T), lo[0]), hi[0])]
+        else:
+            sp = [sum(p * f[r] for p, f in zip(p0, feats)) for r in range(nb)]
+
+            def fb(av, sp=sp):
+                av = list(av)
+                vals = [math.exp(sum(x * y for x, y in zip(av, f))) * w for f, w in zip(gfeats, wq)]
+                integ = sum(vals)
+                dint = [sum(v * f[r] for v, f in zip(vals, gfeats)) for r in range(nb)]
+                lin = sum(sp[r] * av[r] for r in range(nb))
+                return -(lin - integ), [-(sp[r] - dint[r]) for r in range(nb)]
+
+            a_new = list(minimize(fb, a, jac=True, method="L-BFGS-B", bounds=bounds[:nb]).x)
+        # kernel M-step
+        lam_buf = _f64(lam)
+
+        def fk(ps, psi=psi, eta=eta, lam_buf=lam_buf):
+            ps = list(ps)
+            Q, P, dQ = _core_ext.hawkes_em_pass(tb, lam_buf, eta, kind, list(psi), ps)
+            SG, dSG = _core_ext.hawkes_cdf_sum(tb, float(T), kind, ps)
+            if not math.isfinite(Q) or SG <= 0:
+                return 1e12, [0.0] * len(ps)
+            return -(Q - P * math.log(SG)), [-(dq - P * ds / SG) for dq, ds in zip(dQ, dSG)]
+
+        psi_new = list(minimize(fk, psi, jac=True, method="L-BFGS-B", bounds=bounds[nb + 1 :]).x)
+        _, P, _ = _core_ext.hawkes_em_pass(tb, lam_buf, eta, kind, list(psi), psi_new)
+        SG, _ = _core_ext.hawkes_cdf_sum(tb, float(T), kind, psi_new)
+        eta_new = min(max(P / SG, lo[nb]), hi[nb])
+        new_theta = a_new + [eta_new] + psi_new
+        new = nll_of(new_theta)
+        theta = new_theta
+        if abs(cur - new) <= tol * max(1.0, abs(cur)):
+            cur = new
+            break
+        cur = new
+    return theta, cur, it
+
+
+def hawkes_inar(t, T, kernel_kind, baseline_kind, bounds, delta=None, support=None):
+    """Kirchner's (2017, Quant. Finance 17:571) INAR(p) estimator: binned counts X_k (width delta)
+    regressed on their p lags by conditional least squares (here the equivalent Yule-Walker
+    equations from the sample autocovariances), so alpha_0 = nu delta and alpha_l ~ eta delta g(l delta);
+    the parametric kernel is then fitted to the alpha_l by least squares. A different estimator from
+    the MLE (consistent as delta -> 0 and p delta -> infinity), fast, and a starting point for it.
+    Constant baseline only (it assumes stationarity).
+    """
+    from morie.fn._sci_core import minimize
+
+    if baseline_kind != "constant":
+        raise ValueError("method='inar' assumes a stationary process: use baseline_kind='constant'")
+    tl = [float(v) for v in t]
+    n = len(tl)
+    rate = n / T
+    if delta is None:
+        delta = max(T / 20000.0, 0.25 / rate)  # at most 20,000 bins
+    if support is None:
+        support = min(T / 10.0, 200.0 * delta)
+    p = max(2, int(math.ceil(support / delta)))
+    B = int(math.ceil(T / delta))
+    X = [0] * B
+    for x in tl:
+        X[min(int(x / delta), B - 1)] += 1
+    mu = sum(X) / B
+    xc = [v - mu for v in X]
+    gam = [sum(xc[k] * xc[k - h] for k in range(h, B)) / B for h in range(p + 1)]
+    # Toeplitz system  sum_l gam[|h-l|] alpha_l = gam[h], h = 1..p  (Levinson-Durbin)
+    a_ = [0.0] * (p + 1)
+    e = gam[0]
+    for k in range(1, p + 1):
+        acc = gam[k] - sum(a_[j] * gam[k - j] for j in range(1, k))
+        kap = acc / e
+        a_new = a_[:]
+        a_new[k] = kap
+        for j in range(1, k):
+            a_new[j] = a_[j] - kap * a_[k - j]
+        a_ = a_new
+        e *= 1.0 - kap * kap
+    alpha = a_[1:]
+    alpha0 = mu * (1.0 - sum(alpha))
+    nu = max(alpha0 / delta, 1e-12)
+    # least squares of the lag coefficients on eta * (G(l delta) - G((l-1) delta))
+    kind = _KIND[kernel_kind]
+    lo_k = bounds[2:]
+    edges = [delta * lag for lag in range(p + 1)]
+
+    def fk(par):
+        par = list(par)
+        eta, psi = par[0], par[1:]
+        try:
+            cdf = list(_kernel_cdf_py(edges, kernel_kind, psi))
+        except (ValueError, OverflowError):
+            return 1e12
+        return sum((alpha[lag] - eta * (cdf[lag + 1] - cdf[lag])) ** 2 for lag in range(p))
+
+    x0 = [min(max(sum(alpha), bounds[1][0]), bounds[1][1])] + [
+        min(max(v, b[0]), b[1]) for v, b in zip(_psi0(kernel_kind, T / n), lo_k)
+    ]
+    r = minimize(fk, x0, method="Nelder-Mead")
+    par = [min(max(v, b[0]), b[1]) for v, b in zip(list(r.x), bounds[1:])]
+    del kind
+    return [min(max(math.log(nu), bounds[0][0]), bounds[0][1])] + par
+
+
+def _psi0(kernel_kind, mean_dt):
+    if kernel_kind == "exponential":
+        return [1.0 / max(mean_dt, 1e-3)]
+    if kernel_kind == "gamma":
+        return [1.5, 1.0 / max(mean_dt, 1e-3)]
+    if kernel_kind == "weibull":
+        return [1.5, max(mean_dt, 1e-3) * 1.2]
+    return [2.5, max(mean_dt, 1e-3) * 5.0]
+
+
+def _kernel_cdf_py(u, kernel_kind, psi):
+    from .tps_hawkes_advanced import _kernel_cdf
+
+    return [float(v) for v in _kernel_cdf(np.asarray(u, dtype=float), kernel_kind, tuple(psi))]

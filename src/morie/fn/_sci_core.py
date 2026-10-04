@@ -424,6 +424,7 @@ def _minimize_with_gradient(fun, x0, args, jac, bounds, opts):
     hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     first = True
     scale_h0 = True
+    just_reset = False
     it = 0
     message = "maximum iterations reached"
     for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
@@ -447,6 +448,11 @@ def _minimize_with_gradient(fun, x0, args, jac, bounds, opts):
                 break
             step *= 0.5
         if not accepted:
+            if not just_reset:
+                # a poor quasi-Newton direction: restart from scaled steepest descent before giving up
+                hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+                first = scale_h0 = just_reset = True
+                continue
             message = "line search found no decrease"
             break
         first = False
@@ -475,8 +481,15 @@ def _minimize_with_gradient(fun, x0, args, jac, bounds, opts):
             ]
         x, f, g = xn, fn_, gn
         if done:
+            if not just_reset:
+                # a tiny step with the projected gradient still large: the direction, not the
+                # optimum -- restart once from steepest descent
+                hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+                first = scale_h0 = just_reset = True
+                continue
             message = "no further progress"
             break
+        just_reset = False
     return OptimizeResult(
         x=_ac.asarray(x),
         fun=float(f),

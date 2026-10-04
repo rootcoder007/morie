@@ -263,6 +263,48 @@ def _resolve_method(method: str, kernel_kind: str) -> str:
     return method
 
 
+def _soe_window(t, T, kernel_kind):
+    """The sum-of-exponentials window: r = (u + c)/R in [delta, 1] for Lomax (c <= 100 in the fit),
+    r = u/R from the smallest gap for gamma -- as rmoriebricklayer's core_hawkes_fit."""
+    if kernel_kind == "lomax":
+        return float(T) + 100.0, 1e-3 / (float(T) + 100.0)
+    tl = [float(v) for v in t]
+    gaps = [b - a for a, b in zip(tl[:-1], tl[1:]) if b > a]
+    return float(T), max(min(gaps) if gaps else 1e-9, 1e-12) / float(T)
+
+
+def _core_fit(t, T, kernel_kind, baseline_kind, method, eps, x0, bounds):
+    """The whole fit in the compiled core (projected BFGS on the analytic gradient,
+    morie::core::hawkes_fit_pbfgs): (theta, nll), or None without the core. The same routine
+    rmoriebricklayer's core_hawkes_fit calls, so both arms reach the same optimum."""
+    from .tps_hawkes_jit import HAS_CORE, _f64
+
+    if not HAS_CORE:
+        return None
+    from .tps_hawkes_jit import _core_ext
+
+    if not hasattr(_core_ext, "hawkes_fit_pbfgs"):
+        return None
+    R, delta = _soe_window(t, T, kernel_kind)
+    code = {"exact": 0, "soe": 1, "truncate": 2}[method]
+    th, f, _ = _core_ext.hawkes_fit_pbfgs(
+        _f64(t),
+        float(T),
+        _BASELINE_CODE[baseline_kind],
+        _KIND_CODE[kernel_kind],
+        code,
+        float(eps),
+        R,
+        delta,
+        [float(b[0]) for b in bounds],
+        [float(b[1]) for b in bounds],
+        [float(v) for v in (x0._flat() if hasattr(x0, "_flat") else x0)],
+        2000,
+        1e-6,
+    )
+    return list(th), float(f)
+
+
 def _core_objective(t, T, kernel_kind, baseline_kind, method, eps):
     """(nll, gradient) from the compiled core (morie::core::hawkes_nll_grad), or None without it."""
     from .tps_hawkes_jit import HAS_CORE, _f64
@@ -277,11 +319,7 @@ def _core_objective(t, T, kernel_kind, baseline_kind, method, eps):
     nb = _n_baseline_params(baseline_kind)
     kind, bk = _KIND_CODE[kernel_kind], _BASELINE_CODE[baseline_kind]
     code = {"exact": 0, "soe": 1, "truncate": 2}[method]
-    gaps = [b - a for a, b in zip(list(tb)[:-1], list(tb)[1:]) if b > a]
-    if kernel_kind == "lomax":
-        soe_R, soe_delta = float(T) + 100.0, 1e-3 / (float(T) + 100.0)  # c in [1e-3, 100] (the fit's bounds)
-    else:
-        soe_R, soe_delta = float(T), max(min(gaps) if gaps else 1e-9, 1e-12) / float(T)
+    soe_R, soe_delta = _soe_window(t, T, kernel_kind)
 
     def f(theta):
         th = [float(v) for v in np.asarray(theta)._flat()] if hasattr(np.asarray(theta), "_flat") else list(theta)
@@ -293,6 +331,25 @@ def _core_objective(t, T, kernel_kind, baseline_kind, method, eps):
         return nll, list(g)
 
     return f
+
+
+def _warm_start(t, T, kernel_kind, baseline_kind, bounds):
+    """The exponential-kernel fit mapped into another kernel: Weibull (1, 1/beta) and gamma (1, beta)
+    are the exponential kernel itself; Lomax (30, 30/beta) is its nearest member (Lomax tends to it
+    as the shape grows with c = shape/beta)."""
+    nb = _n_baseline_params(baseline_kind)
+    n = int(np.asarray(t).size)
+    mean_dt = float(np.mean(np.diff(np.asarray(t)))) if n > 1 else 1.0
+    x0 = _x0("exponential", baseline_kind, n, T, mean_dt)
+    eb = list(bounds[: nb + 1]) + [(0.1, 25.0)]
+    fit = _core_fit(t, T, "exponential", baseline_kind, "exact", 1e-9, x0, eb)
+    if fit is None:
+        return None
+    th = fit[0]
+    beta = th[-1]
+    psi = {"weibull": [1.0, 1.0 / beta], "gamma": [1.0, beta], "lomax": [30.0, 30.0 / beta]}[kernel_kind]
+    start = th[:-1] + psi
+    return [min(max(v, b[0]), b[1]) for v, b in zip(start, bounds)]
 
 
 def fit_hawkes_general(
@@ -359,9 +416,19 @@ def fit_hawkes_general(
         theta = hawkes_inar(t, T, kernel_kind, baseline_kind, bounds)
         res = None
     else:
-        obj = _core_objective(t, T, kernel_kind, baseline_kind, method, eps)
-        if obj is not None:
-            res = minimize(obj, x0, jac=True, method="L-BFGS-B", bounds=bounds, options={"maxiter": 2000, "gtol": 1e-6})
+        best = _core_fit(t, T, kernel_kind, baseline_kind, method, eps, x0, bounds)
+        if best is not None:
+            warm = _warm_start(t, T, kernel_kind, baseline_kind, bounds) if kernel_kind != "exponential" else None
+            if warm is not None:
+                # a second, deterministic start at the exponential fit (the kernel's shape-1 member for
+                # Weibull and gamma): the likelihood is multimodal, and a model that contains the
+                # exponential one should not report a worse maximum than it
+                other = _core_fit(t, T, kernel_kind, baseline_kind, method, eps, warm, bounds)
+                if other[1] < best[1]:
+                    best = other
+            from types import SimpleNamespace
+
+            res = SimpleNamespace(x=best[0], fun=best[1], success=True)
         elif method == "exact":
             res = minimize(
                 _neg_loglik_general,

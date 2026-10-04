@@ -2701,10 +2701,13 @@ def ks_1samp(x, cdf, args=(), alternative="two-sided"):
       "greater"    F >  G, statistic D+ = max(ECDF - CDF)
       "less"       F <  G, statistic D- = max(CDF - ECDF)
 
-    The one-sided p-values are EXACT (Birnbaum-Tingey).  The two-sided
-    one is the asymptotic Kolmogorov series with Stephens' small-sample
-    correction, which is why ``exact`` is reported: at small n a
-    two-sided p-value near the decision boundary should not be leaned on.
+    The one-sided p-values are EXACT (Birnbaum-Tingey). The two-sided one is
+    the exact distribution (Marsaglia, Tsang & Wang 2003) up to n = 10,000,
+    as scipy's "auto" and R's ks.test(exact = TRUE): in the compiled core
+    when it is built, here in Python below n = 100; above n = 10,000 it is the
+    Kolmogorov limit 1 - K(sqrt(n) d), as R's ks.test(exact = FALSE). Without
+    the core, 100 <= n <= 10,000 falls back to the limit with Stephens'
+    small-sample correction, and ``exact`` says so.
     """
     _ks_check_alt(alternative)
     v = sorted(_flatten(x))
@@ -2722,12 +2725,28 @@ def ks_1samp(x, cdf, args=(), alternative="two-sided"):
         d, pv, exact = dminus, _KSOne.sf(dminus, n), True
     else:
         d = _bi.max(dplus, dminus)
+        core = _ks_exact_core()
         if n < 100:
             pv = _bi.max(0.0, _bi.min(1.0, 1.0 - _ks_pkolmogorov(d, n)))
             exact = True
+        elif n <= 10000 and core is not None:
+            pv = _bi.max(0.0, _bi.min(1.0, 1.0 - core(n, d)))
+            exact = True
+        elif n > 10000:
+            pv, exact = _KSTwoBign.sf(_math.sqrt(n) * d), False
         else:
             pv, exact = _ks_sf(d, n), False
     return _TestResult(d, pv, n=n, d_plus=dplus, d_minus=dminus, alternative=alternative, exact=exact)
+
+
+def _ks_exact_core():
+    """The compiled exact KS distribution (morie._core.ks_pkolmogorov_exact), or None."""
+    try:
+        from morie import _core
+
+        return getattr(_core, "ks_pkolmogorov_exact", None)
+    except ImportError:
+        return None
 
 
 def kstest(rvs, cdf, args=(), alternative="two-sided"):
