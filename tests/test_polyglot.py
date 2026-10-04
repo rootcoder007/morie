@@ -293,12 +293,7 @@ class TestPolyglotBridging:
         engine.close()
 
 
-@pytest.mark.skipif(
-    not any(
-        os.path.exists(p) for p in ["/usr/bin/R", "/usr/local/bin/R", "/Library/Frameworks/R.framework/Resources/bin/R"]
-    ),
-    reason="R not installed",
-)
+@pytest.mark.skipif(not shutil.which("Rscript"), reason="R not on PATH")  # the engine runs R from PATH
 class TestPolyglotR:
     def test_r_exec(self):
         engine = PolyglotEngine(polyglot=False, auto_detect=True)

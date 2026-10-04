@@ -1468,8 +1468,40 @@ def _download_url_table(entry: dict, matched: str, timeout: int = 60) -> pd.Data
             with zf.open(pick[0]) as fh:
                 return pd.read_csv(fh, low_memory=False)
     if entry.get("format") == "xlsx":
-        return pd.read_excel(dest)
+        return _xlsx_data_sheet(dest)
     return pd.read_csv(dest, low_memory=False)
+
+
+_COVER_SHEET = re.compile(
+    r"^(instructions?|notes?( to readers?)?|(table of )?contents|about|read ?me|cover|footnotes?|glossary|definitions|methodology)$",
+    re.IGNORECASE,
+)
+
+
+def _xlsx_data_sheet(path) -> pd.DataFrame:
+    """The data sheet of a workbook: cover sheets ("Instructions", "Notes to readers") skipped, the most cells wins.
+
+    CIHI data tables open on an Instructions sheet; reading sheet 0 returned that cover text as the dataset.
+    """
+    import zipfile
+
+    from .fn._frame_core import _xlsx_sheet_map
+
+    with zipfile.ZipFile(path) as zf:
+        names = [nm for nm, _ in _xlsx_sheet_map(zf)]
+    candidates = [nm for nm in names if not _COVER_SHEET.match((nm or "").strip())] or names
+    best, best_cells = None, -1
+    for nm in candidates:
+        try:
+            df = pd.read_excel(path, sheet_name=nm)
+        except Exception:  # noqa: BLE001 - an unreadable sheet is skipped; the others still count
+            continue
+        cells = int(df.shape[0]) * int(df.shape[1])
+        if cells > best_cells:
+            best, best_cells = df, cells
+    if best is None:
+        raise RuntimeError(f"no readable sheet in {Path(path).name}")
+    return best
 
 
 def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:

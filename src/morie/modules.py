@@ -1116,6 +1116,13 @@ def run_module(
         valid = ", ".join(sorted(MODULE_SPECS))
         raise ValueError(f"Unknown module: {module_name}. Valid modules: {valid}")
 
+    if dataset_key:
+        # a key that names nothing is the user's mistake, reported before anything about R
+        from .data import _fuzzy_match_key
+        from .datahub import is_hosted_key
+
+        if _fuzzy_match_key(dataset_key) is None and not is_hosted_key(dataset_key):
+            raise KeyError(f"Unknown dataset key: {dataset_key!r} (morie list-datasets shows the keys)")
     if module_name not in _PY_FALLBACK_MODULES:
         _r_route_ready()  # R and its package first: loading the frame took 10-14 s before this failed
     cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)

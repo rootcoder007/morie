@@ -208,8 +208,10 @@ def test_verify_pollution_unknown_outcome_and_infinite_inputs():
         assert json.loads(r.stdout[r.stdout.index("{") :])["status"] == "assumption_failure"
 
 
-def test_emissions_unknown_country_is_labelled_world_average(tmp_path):
+def test_emissions_unknown_country_is_labelled_world_average(tmp_path, monkeypatch):
     from morie.emissions import known_country_codes, run_check, summary_text
+
+    monkeypatch.setenv("MORIE_EMISSIONS_OFFLINE", "1")  # the unknown code falls back to detection; keep it offline
 
     if not known_country_codes():
         pytest.skip("energy-mix table not bundled")

@@ -492,7 +492,8 @@ def _detect_location() -> tuple[str, str, str, float, float]:
         resp = httpx.get("https://ipapi.co/json/", timeout=5)
         data = resp.json()
         return (
-            data.get("country_code", ""),
+            # the energy-mix table is keyed by ISO-3 ("CAN"); country_code is ISO-2 ("CA")
+            data.get("country_code_iso3") or data.get("country_code", ""),
             data.get("region", ""),
             data.get("country_name", ""),
             float(data.get("latitude", 0)),

@@ -117,7 +117,7 @@ def _pos(j):
         return j
     if isinstance(j, float):
         if j != int(j):
-            raise IndexError("non-integer positional index: %r" % j)
+            raise IndexError(f"non-integer positional index: {j!r}")
         return int(j)
     return j
 
@@ -139,7 +139,7 @@ class Series:
             self._data = []
         elif hasattr(data, "tolist") and not isinstance(data, Series):
             self._data = list(data.tolist())
-        elif isinstance(data, (int, float, str, bool)):
+        elif isinstance(data, int | float | str | bool):
             n = len(index) if index is not None else 1
             self._data = [data] * n
         else:
@@ -157,7 +157,7 @@ class Series:
         return iter(self._data)
 
     def __repr__(self):
-        return "Series(%r, name=%r)" % (self._data[:10], self.name)
+        return f"Series({self._data[:10]!r}, name={self.name!r})"
 
     def unstack(self, level=-1, fill_value=None):
         """pandas Series.unstack for a tuple (multi-level) index: the
@@ -268,7 +268,7 @@ class Series:
         return Series(vals)
 
     def _is_numeric(self):
-        return all(isinstance(v, (int, float, bool)) or _isnan(v) for v in self._data)
+        return all(isinstance(v, int | float | bool) or _isnan(v) for v in self._data)
 
     def to_numpy(self, dtype=None):
         v = self.values
@@ -371,13 +371,13 @@ class Series:
         # it was broadcast whole against each element, so
         # produced a column OF ARRAYS instead of an elementwise sum.
         if (
-            not isinstance(other, (str, bytes))
+            not isinstance(other, str | bytes)
             and hasattr(other, "__len__")
             and hasattr(other, "__iter__")
             and not isinstance(other, dict)
         ):
             other = list(other)
-        if isinstance(other, (list, tuple)):
+        if isinstance(other, list | tuple):
             if len(other) != len(self._data):
                 raise ValueError("length mismatch in Series arithmetic: %d vs %d" % (len(self._data), len(other)))
             d = [fn(a, b) for a, b in zip(self._data, other)]
@@ -421,7 +421,7 @@ class Series:
     def _cmp(self, other, fn):
         if isinstance(other, Series):
             other = other._data
-        if isinstance(other, (list, tuple)):
+        if isinstance(other, list | tuple):
             d = [bool(fn(a, b)) for a, b in zip(self._data, other)]
         else:
             d = [bool(fn(a, other)) for a in self._data]
@@ -509,7 +509,7 @@ class Series:
         c = sorted(self._clean())
         if not c:
             return _NAN
-        if isinstance(q, (list, tuple)):
+        if isinstance(q, list | tuple):
             return Series([self.quantile(v) for v in q], index=list(q), name=self.name)
         h = (len(c) - 1) * float(q)
         lo = int(_math.floor(h))
@@ -830,8 +830,8 @@ class Series:
         nothing is LEFT ALONE rather than turned into NaN."""
         if isinstance(to_replace, dict):
             table = dict(to_replace)
-        elif isinstance(to_replace, (list, tuple)):
-            if isinstance(value, (list, tuple)):
+        elif isinstance(to_replace, list | tuple):
+            if isinstance(value, list | tuple):
                 if len(value) != len(to_replace):
                     raise ValueError("replace: %d targets but %d replacements" % (len(to_replace), len(value)))
                 table = dict(zip(to_replace, value))
@@ -862,7 +862,7 @@ class Series:
                 seen.add(k)
                 out.append(v)
         # pandas returns an array: carry .size/.shape/.tolist
-        if all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in out):
+        if all(isinstance(v, int | float) and not isinstance(v, bool) for v in out):
             return _ac.marr([float(v) for v in out])
         return _ac.oarr(out)
 
@@ -1021,7 +1021,7 @@ def _cast_list(data, dtype):
         return [bool(v) for v in data]
     if d == "category":
         return list(data)
-    raise ValueError("unsupported dtype %r" % dtype)
+    raise ValueError(f"unsupported dtype {dtype!r}")
 
 
 class _SeriesILoc:
@@ -1043,7 +1043,7 @@ class _SeriesLoc:
 
     def __getitem__(self, key):
         s = self._s
-        if isinstance(key, Index) or (isinstance(key, (list, tuple)) and key and not isinstance(key[0], bool)):
+        if isinstance(key, Index) or (isinstance(key, list | tuple) and key and not isinstance(key[0], bool)):
             # label-based selection, as pandas' .loc with a list of labels
             labels = list(key)
             pos = {}
@@ -1051,7 +1051,7 @@ class _SeriesLoc:
                 pos.setdefault(lab, i)
             missing = [lab for lab in labels if lab not in pos]
             if missing:
-                raise KeyError("%r not in index" % (missing[:5],))
+                raise KeyError(f"{missing[:5]!r} not in index")
             return Series([s._data[pos[lab]] for lab in labels], index=labels, name=s.name)
         return s[key]
 
@@ -1300,9 +1300,9 @@ class DataFrame:
                 if hasattr(v, "tolist"):
                     vv = v.tolist()
                     return list(vv) if isinstance(vv, list) else None
-                if isinstance(v, (list, tuple, range)):
+                if isinstance(v, list | tuple | range):
                     return list(v)
-                if isinstance(v, (str, bytes, dict)):
+                if isinstance(v, str | bytes | dict):
                     return None
                 if hasattr(v, "__iter__"):
                     return list(v)
@@ -1330,7 +1330,7 @@ class DataFrame:
         elif isinstance(data, list):
             rows = [
                 list(r.tolist() if hasattr(r, "tolist") else r)
-                if isinstance(r, (list, tuple)) or hasattr(r, "tolist")
+                if isinstance(r, list | tuple) or hasattr(r, "tolist")
                 else [r]
                 for r in data
             ]
@@ -1393,7 +1393,7 @@ class DataFrame:
                 out[c] = "bool"
             elif vals and all(isinstance(v, int) and not isinstance(v, bool) for v in vals):
                 out[c] = "int64"
-            elif all(isinstance(v, (int, float)) or _isnan(v) for v in vals):
+            elif all(isinstance(v, int | float) or _isnan(v) for v in vals):
                 out[c] = "float64"
             else:
                 out[c] = "object"
@@ -1461,7 +1461,7 @@ class DataFrame:
 
     def __setitem__(self, key, value):
         n = self.shape[0]
-        if isinstance(key, (list, tuple)):
+        if isinstance(key, list | tuple):
             # df[["a", "b"]] = 2-D array / frame / list of rows: one
             # column at a time (pandas semantics); a scalar fills all
             if isinstance(value, DataFrame):
@@ -1485,7 +1485,7 @@ class DataFrame:
             value = list(value._data)
         elif hasattr(value, "tolist"):
             value = value.tolist()
-        elif isinstance(value, (range, tuple)) or (hasattr(value, "__iter__") and hasattr(value, "__next__")):
+        elif isinstance(value, range | tuple) or (hasattr(value, "__iter__") and hasattr(value, "__next__")):
             value = list(value)  # a range or iterator is a column
         if not isinstance(value, list):
             value = [value] * (n if self._cols else 1)
@@ -1520,13 +1520,13 @@ class DataFrame:
             columns = labels
             labels = None
         if columns is not None:
-            if not isinstance(columns, (list, tuple)):
+            if not isinstance(columns, list | tuple):
                 columns = [columns]
             missing = [c for c in columns if c not in self._cols]
             if missing and errors == "raise":
                 raise KeyError(missing)
             return DataFrame({c: list(v) for c, v in self._cols.items() if c not in columns}, index=list(self.index))
-        if not isinstance(labels, (list, tuple)):
+        if not isinstance(labels, list | tuple):
             labels = [labels]
         keep = [i for i, ix in enumerate(self.index) if ix not in labels]
         return self._take(keep)
@@ -1676,7 +1676,7 @@ class DataFrame:
     def _n_extreme(self, n, columns, keep, largest):
         if columns is None:
             raise TypeError("nlargest/nsmallest need the column(s) to rank by")
-        cols = [columns] if not isinstance(columns, (list, tuple)) else list(columns)
+        cols = [columns] if not isinstance(columns, list | tuple) else list(columns)
         rows = [i for i in range(self.shape[0]) if not any(_isnan(self._cols[c][i]) for c in cols)]
         rows.sort(key=lambda i: tuple(self._cols[c][i] for c in cols), reverse=largest)
         if keep == "last":
@@ -1687,9 +1687,9 @@ class DataFrame:
     def sort_values(self, by, ascending=True, na_position="last"):
         """pandas: NaN keys go last (or first) whichever way the sort runs;
         reversing the (is_nan, value) key put them FIRST on descending."""
-        if not isinstance(by, (list, tuple)):
+        if not isinstance(by, list | tuple):
             by = [by]
-        if not isinstance(ascending, (list, tuple)):
+        if not isinstance(ascending, list | tuple):
             ascending = [ascending] * len(by)
         order = list(range(self.shape[0]))
         for col, asc in list(zip(by, ascending))[::-1]:
@@ -1764,7 +1764,7 @@ class DataFrame:
         dt = self.dtypes.to_dict()
 
         def match(kind, spec):
-            spec = list(spec) if isinstance(spec, (list, tuple, set)) else [spec]
+            spec = list(spec) if isinstance(spec, list | tuple | set) else [spec]
             for s in spec:
                 # accept dtype objects/classes as well as the strings
                 if not isinstance(s, str):
@@ -1845,7 +1845,7 @@ class DataFrame:
         # booleans count as 1/0 here: (df > 0).sum(axis=1) is the idiom for
         # "how many columns satisfy the predicate", and excluding bool made it
         # return 0 for every row
-        cols = [c for c in self._cols if all(isinstance(v, (int, float, bool)) for v in self._cols[c])]
+        cols = [c for c in self._cols if all(isinstance(v, int | float | bool) for v in self._cols[c])]
         out = []
         for i in range(self.shape[0]):
             vals = [
@@ -1938,9 +1938,9 @@ class DataFrame:
     def merge(self, right, on=None, how="inner", left_on=None, right_on=None, suffixes=("_x", "_y")):
         lk = left_on or on
         rk = right_on or on
-        if not isinstance(lk, (list, tuple)):
+        if not isinstance(lk, list | tuple):
             lk = [lk]
-        if not isinstance(rk, (list, tuple)):
+        if not isinstance(rk, list | tuple):
             rk = [rk]
         rmap = {}
         for j in range(right.shape[0]):
@@ -2005,7 +2005,7 @@ class DataFrame:
             elif not isinstance(val, list):
                 val = [val] * out.shape[0]
             if len(val) != out.shape[0]:
-                raise ValueError("assign: length mismatch for %r" % name)
+                raise ValueError(f"assign: length mismatch for {name!r}")
             out._cols[name] = list(val)
         return out
 
@@ -2077,7 +2077,7 @@ class DataFrame:
             out.index_name = index
             return out
         # index may be one column or a list of them (a MultiIndex of rows)
-        multi = isinstance(index, (list, tuple))
+        multi = isinstance(index, list | tuple)
         icols = list(index) if multi else [index]
         gb = {}
         for i in range(self.shape[0]):
@@ -2105,7 +2105,7 @@ class DataFrame:
         this frame's columns against its index, as pandas does."""
         cols = list(self._cols)
         left = [[_to_float(self._cols[c][i]) for c in cols] for i in range(self.shape[0])]
-        if isinstance(other, (DataFrame, Series)):
+        if isinstance(other, DataFrame | Series):
             oidx = list(other.index)
             if sorted(map(str, oidx)) != sorted(map(str, cols)):
                 raise ValueError("matrices are not aligned")
@@ -2212,16 +2212,16 @@ class DataFrame:
         """
         del kw
         if if_exists not in ("fail", "replace", "append"):
-            raise ValueError("if_exists must be 'fail', 'replace' or 'append', got %r" % (if_exists,))
+            raise ValueError(f"if_exists must be 'fail', 'replace' or 'append', got {if_exists!r}")
         cur = con.cursor()
-        quoted = '"%s"' % str(name).replace('"', '""')
+        quoted = '"{}"'.format(str(name).replace('"', '""'))
 
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (str(name),))
         exists = cur.fetchone() is not None
         if exists and if_exists == "fail":
-            raise ValueError("table %r already exists" % (name,))
+            raise ValueError(f"table {name!r} already exists")
         if exists and if_exists == "replace":
-            cur.execute("DROP TABLE %s" % quoted)
+            cur.execute(f"DROP TABLE {quoted}")
             exists = False
 
         idx_name = index_label or "index"
@@ -2232,7 +2232,7 @@ class DataFrame:
             for v in values:
                 if v is None or _isnan(v):
                     continue
-                if isinstance(v, bool) or isinstance(v, int):
+                if isinstance(v, bool | int):
                     seen.add("INTEGER")
                 elif isinstance(v, float):
                     seen.add("REAL")
@@ -2248,8 +2248,8 @@ class DataFrame:
 
         if not exists:
             types = ([sql_type(list(self.index))] if index else []) + [sql_type(self._cols[c]) for c in self._cols]
-            decl = ", ".join('"%s" %s' % (c.replace('"', '""'), t) for c, t in zip(cols, types))
-            cur.execute("CREATE TABLE %s (%s)" % (quoted, decl))
+            decl = ", ".join('"{}" {}'.format(c.replace('"', '""'), t) for c, t in zip(cols, types))
+            cur.execute(f"CREATE TABLE {quoted} ({decl})")
 
         n = self.shape[0]
         rows = []
@@ -2257,8 +2257,8 @@ class DataFrame:
             row = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
             rows.append(tuple(None if (v is not None and _isnan(v)) else v for v in row))
         placeholders = ", ".join(["?"] * len(cols))
-        collist = ", ".join('"%s"' % c.replace('"', '""') for c in cols)
-        cur.executemany("INSERT INTO %s (%s) VALUES (%s)" % (quoted, collist, placeholders), rows)
+        collist = ", ".join('"{}"'.format(c.replace('"', '""')) for c in cols)
+        cur.executemany(f"INSERT INTO {quoted} ({collist}) VALUES ({placeholders})", rows)
         con.commit()
         return n
 
@@ -2292,7 +2292,7 @@ class DataFrame:
             if _isnan(v):
                 return na_rep
             if isinstance(v, float):
-                return "%g" % v
+                return f"{v:g}"
             return str(v)
 
         table = [[cell(v) for v in self._cols[c]] for c in cols]
@@ -2357,7 +2357,7 @@ class _ILoc:
                 list(range(len(cols)))[ck]
                 if isinstance(ck, slice)
                 else [int(ck)]
-                if not isinstance(ck, (list, tuple))
+                if not isinstance(ck, list | tuple)
                 else [int(c) for c in ck]
             )
         else:
@@ -2366,7 +2366,7 @@ class _ILoc:
             list(range(n))[rk]
             if isinstance(rk, slice)
             else [int(rk) if int(rk) >= 0 else n + int(rk)]
-            if not isinstance(rk, (list, tuple))
+            if not isinstance(rk, list | tuple)
             else [int(r) for r in rk]
         )
         vals = value.tolist() if hasattr(value, "tolist") else value
@@ -2390,7 +2390,7 @@ class _ILoc:
             rk, ck = key
             cols = list(df._cols)
             ck = _pos(ck)
-            rk = _pos(rk) if not isinstance(rk, (slice, list, tuple)) else rk
+            rk = _pos(rk) if not isinstance(rk, slice | list | tuple) else rk
             if isinstance(ck, int):
                 sel = cols[ck]
                 sub = df.iloc[rk] if not isinstance(rk, int) else None
@@ -2451,17 +2451,17 @@ class _Loc:
                 sub = df[rk]
             elif isinstance(rk, slice):
                 sub = df.iloc[rk]
-            elif isinstance(rk, (list, Index)) or (hasattr(rk, "tolist") and not isinstance(rk, str)):
+            elif isinstance(rk, list | Index) or (hasattr(rk, "tolist") and not isinstance(rk, str)):
                 # label-list row selection
                 labels = list(rk.tolist() if hasattr(rk, "tolist") else rk)
                 pos = {k: i for i, k in enumerate(df.index)}
                 sub = df._take([pos[k] for k in labels])
             else:
                 i = df.index.index(rk)
-                if isinstance(ck, str) or (not isinstance(ck, (list, tuple)) and ck in df._cols):
+                if isinstance(ck, str) or (not isinstance(ck, list | tuple) and ck in df._cols):
                     return df._cols[ck][i]
                 return Series([df._cols[c][i] for c in ck], index=ck)
-            if isinstance(ck, str) or not isinstance(ck, (list, tuple)):
+            if isinstance(ck, str) or not isinstance(ck, list | tuple):
                 return sub[ck]
             return sub[list(ck)]
         key = _loc_key(key, df.index)
@@ -2583,7 +2583,7 @@ def _cov(x, y, ddof=1):
 class GroupBy:
     def __init__(self, df, by, sort=True, dropna=True):
         self._df = df
-        by = by if isinstance(by, (list, tuple)) else [by]
+        by = by if isinstance(by, list | tuple) else [by]
         # pandas: a key is a column label, a Series (its name labels the
         # level) or an array of per-row values (unnamed level)
         names, vecs = [], []
@@ -2639,7 +2639,7 @@ class GroupBy:
             yield k, self._df._take(self._groups[key])
 
     def __getitem__(self, col):
-        if isinstance(col, (list, tuple)):
+        if isinstance(col, list | tuple):
             return _GroupByFrame(self, list(col))
         return _GroupBySeries(self, col)
 
@@ -2786,7 +2786,7 @@ class GroupBy:
         keys = self._keys()
         out = [fn(self._df._take(self._groups[k])) for k in keys]
         ix = [k[0] if len(self._by) == 1 else k for k in keys]
-        if all(isinstance(v, (int, float)) for v in out):
+        if all(isinstance(v, int | float) for v in out):
             res = Series(out, index=ix)
             # label the (Multi)Index so reset_index restores the keys
             if len(self._by) == 1:
@@ -2799,7 +2799,7 @@ class GroupBy:
             # columns are the Series index
             cols = list(out[0].index)
             res = DataFrame(
-                {c: [float(o[c]) if isinstance(o[c], (int, float)) else o[c] for o in out] for c in cols}, index=ix
+                {c: [float(o[c]) if isinstance(o[c], int | float) else o[c] for o in out] for c in cols}, index=ix
             )
             if len(self._by) == 1:
                 res.index_name = self._by[0]
@@ -2814,7 +2814,7 @@ class GroupBy:
         fn = _agg_fn(fn)
         val_cols = [c for c in self._df._cols if c not in self._by]
         out = {c: [_NAN] * self._df.shape[0] for c in val_cols}
-        for k, rows in self._groups.items():
+        for _k, rows in self._groups.items():
             for c in val_cols:
                 v = fn(Series([self._df._cols[c][i] for i in rows]))
                 for i in rows:
@@ -2889,7 +2889,7 @@ class _SeriesOwnGroupBy:
         return Series([len(self._groups[k]) for k in self._order], index=list(self._order), name=self._s.name)
 
     def agg(self, spec):
-        if isinstance(spec, (list, tuple)):
+        if isinstance(spec, list | tuple):
             # a list of aggregations: one column per name, as pandas
             parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
             first = next(iter(parts.values()))
@@ -2951,7 +2951,7 @@ class _GroupByFrame:
         if callable(how):
             return lambda s: how(s)
         if how not in self._NAMED:
-            raise ValueError("unknown aggregation %r" % (how,))
+            raise ValueError(f"unknown aggregation {how!r}")
         if how == "size":
             return lambda s: len(s)
         if how == "first":
@@ -2967,9 +2967,9 @@ class _GroupByFrame:
         gb = self._gb
         keys = gb._keys()
         if isinstance(func, dict):
-            plan = [(c, f) for c, fs in func.items() for f in (fs if isinstance(fs, (list, tuple)) else [fs])]
-            multi = any(isinstance(fs, (list, tuple)) for fs in func.values())
-        elif isinstance(func, (list, tuple)):
+            plan = [(c, f) for c, fs in func.items() for f in (fs if isinstance(fs, list | tuple) else [fs])]
+            multi = any(isinstance(fs, list | tuple) for fs in func.values())
+        elif isinstance(func, list | tuple):
             plan = [(c, f) for c in self._cols_sel for f in func]
             multi = True
         else:
@@ -3080,7 +3080,7 @@ class _GroupBySeries:
         fn = _agg_fn(fn)
         gb = self._gb
         out = [_NAN] * gb._df.shape[0]
-        for k, rows in gb._groups.items():
+        for _k, rows in gb._groups.items():
             v = fn(Series([gb._df._cols[self._col][i] for i in rows]))
             for i in rows:
                 out[i] = v
@@ -3095,7 +3095,7 @@ class _GroupBySeries:
             out = DataFrame({k: list(v._data) for k, v in parts.items()}, index=list(first.index))
             out.index_name = getattr(first, "index_name", None)
             return out
-        if isinstance(spec, (list, tuple)):
+        if isinstance(spec, list | tuple):
             # a list of aggregations: one column per name, as pandas
             parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
             first = next(iter(parts.values()))
@@ -3234,7 +3234,7 @@ class _GroupBySeries:
 def _na_map(v, keep):
     # pandas: array-like in, elementwise boolean array out (same shape).
     def rec(x):
-        if isinstance(x, (list, tuple)):
+        if isinstance(x, list | tuple):
             return [rec(e) for e in x]
         return _isnan(x) is keep
 
@@ -3242,7 +3242,7 @@ def _na_map(v, keep):
 
 
 def _is_listlike(v):
-    return isinstance(v, (list, tuple)) or (hasattr(v, "tolist") and hasattr(v, "shape"))
+    return isinstance(v, list | tuple) or (hasattr(v, "tolist") and hasattr(v, "shape"))
 
 
 def isna(v):
@@ -3259,7 +3259,7 @@ isnull = isna
 
 
 def notna(v):
-    if isinstance(v, (Series, DataFrame)):
+    if isinstance(v, Series | DataFrame):
         return v.notna()
     if _is_listlike(v):
         return _na_map(v, False)
@@ -3291,7 +3291,7 @@ def factorize(values):
 
 def _coerce_frame(o):
     """Adopt a real pandas DataFrame/Series into the native core."""
-    if isinstance(o, (DataFrame, Series)) or o is None:
+    if isinstance(o, DataFrame | Series) or o is None:
         return o
     if hasattr(o, "columns") and hasattr(o, "__getitem__"):
         return DataFrame({c: list(o[c]) for c in o.columns}, index=list(o.index))
@@ -3313,15 +3313,13 @@ def concat(objs, axis=0, ignore_index=False):
     if axis == 1:
         out = {}
         index = objs[0].index
-        used = 0
-        for o in objs:
+        for used, o in enumerate(objs):
             if isinstance(o, Series):
                 key = o.name if o.name is not None else used
                 out[key] = list(o._data)
             else:
                 for c in o._cols:
                     out[c] = list(o._cols[c])
-            used += 1
         return DataFrame(out, index=list(index))
     cols = []
     for o in objs:
@@ -3353,13 +3351,13 @@ def to_numeric(arg, errors="raise"):
                 if f == int(f) and not isinstance(v, float) and "." not in str(v) and "e" not in str(v).lower()
                 else f
             )
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
             if errors == "coerce":
                 out.append(_NAN)
             elif errors == "ignore":
                 out.append(v)
             else:
-                raise ValueError("Unable to parse %r" % (v,))
+                raise ValueError(f"Unable to parse {v!r}") from exc
     if isinstance(arg, Series):
         return Series(out, index=list(arg.index), name=arg.name)
     return Series(out)
@@ -3380,7 +3378,7 @@ _DT_FORMATS = [
 
 
 def _parse_dt(v, fmt=None):
-    if isinstance(v, (_dt.date, _dt.datetime)):
+    if isinstance(v, _dt.date | _dt.datetime):
         return v if isinstance(v, _dt.datetime) else _dt.datetime(v.year, v.month, v.day)
     if _isnan(v):
         return _NAN
@@ -3396,7 +3394,7 @@ def _parse_dt(v, fmt=None):
             return _dt.datetime.strptime(s, f)
         except ValueError:
             continue
-    raise ValueError("cannot parse datetime %r" % (v,))
+    raise ValueError(f"cannot parse datetime {v!r}")
 
 
 class _TimedeltaArray(list):
@@ -3453,11 +3451,11 @@ class Timedelta(_dt.timedelta):
 
             m = _re.fullmatch(r"\s*([-+]?[\d.]+)\s*([A-Za-z]+)\s*", value)
             if not m:
-                raise ValueError("unrecognised timedelta %r" % (value,))
+                raise ValueError(f"unrecognised timedelta {value!r}")
             value, unit = float(m.group(1)), m.group(2)
         key = cls._UNITS.get(unit)
         if key is None:
-            raise ValueError("unknown unit %r" % (unit,))
+            raise ValueError(f"unknown unit {unit!r}")
         v = float(value)
         if key == "nanoseconds":
             return super().__new__(cls, microseconds=v / 1000.0)
@@ -3471,7 +3469,7 @@ def to_timedelta(arg, unit="D"):
         return Series([_dt.timedelta(**{key: float(v)}) for v in arg._data], index=list(arg.index), name=arg.name)
     if hasattr(arg, "_flat"):
         vals = [float(v) for v in arg._flat()]
-    elif isinstance(arg, (list, tuple)):
+    elif isinstance(arg, list | tuple):
         vals = [float(v) for v in arg]
     else:
         return _dt.timedelta(**{key: float(arg)})
@@ -3479,7 +3477,7 @@ def to_timedelta(arg, unit="D"):
 
 
 def to_datetime(arg, errors="raise", format=None):
-    scalar = not (isinstance(arg, (list, tuple, Series)) or hasattr(arg, "tolist"))
+    scalar = not (isinstance(arg, list | tuple | Series) or hasattr(arg, "tolist"))
     vals = [arg] if scalar else (arg.tolist() if hasattr(arg, "tolist") else list(arg))
     out = []
     for v in vals:
@@ -3525,7 +3523,7 @@ def date_range(start=None, periods=None, freq="D", end=None):
 
     m_ = _re.fullmatch(r"\s*(\d*)\s*([A-Za-z]+(?:-[A-Za-z]+)?)\s*", str(freq))
     if not m_:
-        raise ValueError("invalid frequency: %r" % (freq,))
+        raise ValueError(f"invalid frequency: {freq!r}")
     k = int(m_.group(1) or 1)
     unit = m_.group(2)
     fixed = {
@@ -3582,7 +3580,7 @@ def date_range(start=None, periods=None, freq="D", end=None):
         return Series(out)
     months = {"ME": 1, "M": 1, "MS": 1, "QE": 3, "Q": 3, "QS": 3, "YE": 12, "A": 12, "Y": 12, "YS": 12, "AS": 12}
     if unit not in months:
-        raise ValueError("unsupported frequency: %r" % (freq,))
+        raise ValueError(f"unsupported frequency: {freq!r}")
     step = months[unit] * k
     start_anchor = unit in ("MS", "QS", "YS", "AS")
     if start_anchor:
@@ -3664,9 +3662,9 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
                     if labels is False
                     else labels[i]
                     if labels is not None
-                    else "(%g, %g]" % (lo_e, hi_e)
+                    else f"({lo_e:g}, {hi_e:g}]"
                     if right
-                    else "[%g, %g)" % (lo_e, hi_e)
+                    else f"[{lo_e:g}, {hi_e:g})"
                 )
                 break
         out.append(placed)
@@ -3678,7 +3676,7 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
             list(labels)
             if labels is not None
             else [
-                "(%g, %g]" % (edges[i], edges[i + 1]) if right else "[%g, %g)" % (edges[i], edges[i + 1])
+                f"({edges[i]:g}, {edges[i + 1]:g}]" if right else f"[{edges[i]:g}, {edges[i + 1]:g})"
                 for i in range(len(edges) - 1)
             ]
         )
@@ -3690,10 +3688,7 @@ def qcut(x, q, labels=None, duplicates="raise"):
     # pandas duplicates="drop"
     vals = x.tolist() if hasattr(x, "tolist") else list(x)
     s = Series(vals)
-    if isinstance(q, int):
-        qs = [i / q for i in range(q + 1)]
-    else:
-        qs = list(q)
+    qs = [i / q for i in range(q + 1)] if isinstance(q, int) else list(q)
     edges = []
     for v in qs:
         e = s.quantile(v)
@@ -3706,7 +3701,7 @@ def get_dummies(data, prefix=None, drop_first=False, columns=None, dtype=None):
     del dtype
     # a real pandas frame would otherwise fall through to the Series
     # branch and be iterated as its column NAMES
-    if not isinstance(data, (DataFrame, Series)):
+    if not isinstance(data, DataFrame | Series):
         data = _coerce_frame(data)
     if isinstance(data, DataFrame):
         cols = columns if columns is not None else [c for c in data._cols if not Series(data._cols[c])._is_numeric()]
@@ -3723,7 +3718,7 @@ def get_dummies(data, prefix=None, drop_first=False, columns=None, dtype=None):
     name = prefix  # pandas ignores Series name unless prefix=
     out = {}
     for c in cats:
-        key = "%s_%s" % (name, c) if name is not None else c
+        key = f"{name}_{c}" if name is not None else c
         out[key] = [1 if v == c else 0 for v in vals]
     return DataFrame(out)
 
@@ -3775,7 +3770,7 @@ def read_csv(
             raw = raw.decode(encoding or "utf-8")
         f = _io.StringIO(raw)
     else:
-        f = open(path, newline="", encoding=encoding or "utf-8")
+        f = open(path, newline="", encoding=encoding or "utf-8")  # noqa: SIM115 - closed in the finally below, shared with the StringIO branch
     try:
         rows = list(_csv.reader(f, delimiter=sep))
     finally:
@@ -3838,7 +3833,7 @@ class _PdApiTypes:
         k = _foreign_kind(obj)
         if k is not None:
             return k in "iufc"
-        return isinstance(obj, (int, float))
+        return isinstance(obj, int | float)
 
     @staticmethod
     def is_string_dtype(obj):
@@ -3863,11 +3858,11 @@ class _PdApiTypes:
     @staticmethod
     def is_datetime64_any_dtype(obj):
         if isinstance(obj, Series):
-            return any(isinstance(v, (_dt.date, _dt.datetime)) for v in obj._data)
+            return any(isinstance(v, _dt.date | _dt.datetime) for v in obj._data)
         k = _foreign_kind(obj)
         if k is not None:
             return k == "M"
-        return isinstance(obj, (_dt.date, _dt.datetime))
+        return isinstance(obj, _dt.date | _dt.datetime)
 
     @staticmethod
     def is_object_dtype(obj):
@@ -4059,7 +4054,7 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     else:
         names = [nm for nm, _ in smap]
         if sheet_name not in names:
-            raise ValueError("no sheet named %r; the workbook has %r" % (sheet_name, names))
+            raise ValueError(f"no sheet named {sheet_name!r}; the workbook has {names!r}")
         target = smap[names.index(sheet_name)][1]
     ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
     root = ET.fromstring(zf.read(target))
@@ -4098,7 +4093,17 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     rows = [[grid.get((r, c), _NAN) for c in range(maxc)] for r in range(maxr)]
     if header is None:
         return DataFrame(rows)
-    cols = [str(v) for v in rows[header]]
+    # as pandas names them: a blank header cell is "Unnamed: j", a repeated name gets ".1", ".2";
+    # without this a title row ("Table 1 ...", then blanks) collapsed 23 columns into 2
+    cols, seen = [], {}
+    for j, v in enumerate(rows[header]):
+        name = "Unnamed: %d" % j if v is _NAN or v is None or (isinstance(v, str) and not v.strip()) else str(v)
+        if name in seen:
+            seen[name] += 1
+            name = "%s.%d" % (name, seen[name])
+        else:
+            seen[name] = 0
+        cols.append(name)
     body = rows[header + 1 :]
     return DataFrame({cols[j]: [row[j] for row in body] for j in range(maxc)})
 
@@ -4159,10 +4164,10 @@ class ExcelWriter:
                     continue
                 if isinstance(v, bool):
                     out.append('<c r="%s" t="b"><v>%d</v></c>' % (ref, 1 if v else 0))
-                elif isinstance(v, (int, float)):
-                    out.append('<c r="%s"><v>%r</v></c>' % (ref, v))
+                elif isinstance(v, int | float):
+                    out.append(f'<c r="{ref}"><v>{v!r}</v></c>')
                 else:
-                    out.append('<c r="%s" t="inlineStr"><is><t>%s</t></is></c>' % (ref, _xml_escape(v)))
+                    out.append(f'<c r="{ref}" t="inlineStr"><is><t>{_xml_escape(v)}</t></is></c>')
             out.append("</row>")
         out.append("</sheetData></worksheet>")
         return "".join(out)
@@ -4187,9 +4192,9 @@ class ExcelWriter:
         ]
         for nm in names:
             ct.append(
-                '<Override PartName="/%s" ContentType="application/'
+                f'<Override PartName="/{nm}" ContentType="application/'
                 "vnd.openxmlformats-officedocument.spreadsheetml."
-                'worksheet+xml"/>' % nm
+                'worksheet+xml"/>'
             )
         ct.append("</Types>")
 
@@ -4321,7 +4326,7 @@ def _assert_frame_equal(left, right, check_dtype=True, check_names=True, rtol=1e
     del check_dtype, check_names
     lc, rc = list(left.columns), list(right.columns)
     if lc != rc:
-        raise AssertionError("columns differ: %r vs %r. %s" % (lc, rc, err_msg))
+        raise AssertionError(f"columns differ: {lc!r} vs {rc!r}. {err_msg}")
     if len(left) != len(right):
         raise AssertionError("row count differs: %d vs %d. %s" % (len(left), len(right), err_msg))
     for c in lc:
@@ -4362,7 +4367,7 @@ def coerce_frame(data, what: str = "data") -> DataFrame:
     """
     if isinstance(data, DataFrame):
         return data
-    if isinstance(data, (str, os.PathLike)):
+    if isinstance(data, str | os.PathLike):
         path = os.fspath(data)
         if not os.path.exists(path):
             raise FileNotFoundError(f"{what}: no such file {path!r}")
@@ -4376,7 +4381,7 @@ def coerce_frame(data, what: str = "data") -> DataFrame:
         return DataFrame(out)
     if isinstance(data, dict):
         return DataFrame(data)
-    if isinstance(data, (list, tuple)):
+    if isinstance(data, list | tuple):
         rows = list(data)
         if rows and all(isinstance(r, dict) for r in rows):
             cols = list(rows[0].keys())

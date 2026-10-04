@@ -15,6 +15,8 @@ Adding a new module's output files means adding entries here.
 
 from __future__ import annotations
 
+import re
+
 # Map filename (no path) → multi-line explanation.
 # Keep each entry to a paragraph + a short table; the goal is "scan
 # in 30 seconds, know what to do next", not a methodology paper.
@@ -168,7 +170,7 @@ Bonferroni / Benjamini-Hochberg yourself if your design demands it.
 def describe(filename: str) -> str:
     """Return the human-readable description of an output CSV, or a fallback."""
     # Normalise: strip path, lowercase, common suffix variations
-    name = filename.rsplit("/", 1)[-1]
+    name = re.split(r"[\\/]", filename)[-1]  # a Windows path names the file after a backslash
     if name in _EXPLANATIONS:
         return _EXPLANATIONS[name]
     from ._explain_tables import explain_table

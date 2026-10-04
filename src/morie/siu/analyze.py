@@ -11,7 +11,10 @@ inputs and produce CSV/JSON output under data/manifest/outputs/siu/.
 
 from __future__ import annotations
 
+import datetime
 import json
+import re
+import statistics
 from collections import Counter
 from pathlib import Path
 
@@ -19,19 +22,71 @@ from morie.fn import _frame_core as pd
 
 from ..fn._richresult import RichResult
 
-PROJECT = Path(__file__).resolve().parents[6]
-DEFAULT_CSV = PROJECT / "data/datasets/vsr/SIU_by_case.csv"
-DEFAULT_OUT = PROJECT / "data/manifest/outputs/siu"
-
 
 def _load(csv_path: Path | str | None = None) -> pd.DataFrame:
-    """Load SIU_by_case.csv (or whichever path is given)."""
-    p = Path(csv_path) if csv_path else DEFAULT_CSV
+    """Load the SIU case table: the given CSV, else the reviewed corpus (``morie pull siu``)."""
+    if csv_path is None:
+        from ..data import load_dataset
+
+        return _clean(load_dataset("siu"))
+    p = Path(csv_path)
     if not p.exists():
         raise FileNotFoundError(
-            f"SIU dataset not found at {p}. Run scripts/scrape_siu_full.py and scripts/reparse_siu_cache.py first."
+            f"SIU dataset not found at {p}. Without a path the reviewed corpus is used; "
+            "a file comes from `morie pull siu --out FILE`."
         )
-    return pd.read_csv(p)
+    return _clean(pd.read_csv(p))
+
+
+def _clean(df: pd.DataFrame) -> pd.DataFrame:
+    """One spelling per police service and real incident dates (the SIU was created in 1990)."""
+    from .native import to_iso_date
+
+    if "police_service" in df.columns:
+        # "Ontario Provincial Police (OPP)" and "Ontario Provincial Police" are one service
+        df["police_service"] = [
+            re.sub(r"\s*\([A-Z]{2,6}\)$", "", str(v)).strip() if isinstance(v, str) else v for v in df["police_service"]
+        ]
+    if "date_of_incident_iso" in df.columns:
+        this_year = datetime.date.today().year
+        fixed = []
+        for v in df["date_of_incident_iso"]:
+            d = v if isinstance(v, str) else ""
+            if d and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+                d = to_iso_date(d)  # "July 18, 2021" stored in an _iso column
+            if d and not 1990 <= int(d[:4]) <= this_year:
+                d = ""
+            fixed.append(d)
+        df["date_of_incident_iso"] = fixed
+    return df
+
+
+_FALSY_TEXT = re.compile(r"^(no|not|none|there are no)\b|not warranted|no (grounds|basis|criminal|charges)")
+
+
+def _charge_flags(values) -> list:
+    """charges_recommended as True / False / None: the corpus holds booleans and the Director's own
+    words ("no criminal charges warranted", "No Charges to Issue")."""
+    out = []
+    for v in values:
+        if isinstance(v, bool):
+            out.append(v)
+            continue
+        t = str(v).strip().lower() if v is not None and v == v else ""
+        if t in ("true", "yes", "1", "t"):
+            out.append(True)
+        elif t in ("false", "no", "0", "f", "none") or (t and _FALSY_TEXT.search(t)):
+            out.append(False)
+        else:
+            out.append(None)
+    return out
+
+
+def _iso_day(v):
+    try:
+        return datetime.date.fromisoformat(str(v)[:10]) if isinstance(v, str) and v else None
+    except ValueError:
+        return None
 
 
 def by_police_service(csv_path: Path | str | None = None) -> RichResult:
@@ -39,26 +94,24 @@ def by_police_service(csv_path: Path | str | None = None) -> RichResult:
     rate, common injuries.
     """
     df = _load(csv_path)
-    g = df.groupby("police_service", dropna=False)
-    n_cases = g.size()
-    charges = g["charges_recommended"].apply(lambda s: s.eq(True).sum() if hasattr(s, "eq") else 0)
-    no_charges = g["charges_recommended"].apply(lambda s: s.eq(False).sum() if hasattr(s, "eq") else 0)
+    svcs = [v if isinstance(v, str) and v.strip() else "(not recorded)" for v in df["police_service"]]
+    flags = _charge_flags(df["charges_recommended"]) if "charges_recommended" in df.columns else [None] * len(svcs)
+    n_cases = Counter(svcs)
+    charges = Counter(s for s, f in zip(svcs, flags) if f is True)
+    no_charges = Counter(s for s, f in zip(svcs, flags) if f is False)
     out_rows = []
-    for svc in n_cases.index:
-        n = int(n_cases[svc])
-        c = int(charges.get(svc, 0))
-        nc = int(no_charges.get(svc, 0))
-        rate = (c / (c + nc)) if (c + nc) > 0 else float("nan")
-        out_rows.append([str(svc)[:50], n, c, nc, f"{rate * 100:.1f}%" if not pd.isna(rate) else "--"])
+    for svc, n in n_cases.items():
+        c, nc = charges.get(svc, 0), no_charges.get(svc, 0)
+        out_rows.append([svc[:50], n, c, nc, f"{100 * c / (c + nc):.1f}%" if (c + nc) else "--"])
     out_rows.sort(key=lambda r: -r[1])  # by case count
 
     return RichResult(
         title="SIU cases by police service",
         summary_lines=[
-            ("Unique police services", int(n_cases.size)),
+            ("Unique police services", len(n_cases)),
             ("Total cases", int(df.shape[0])),
-            ("With charges_recommended True", int(charges.sum())),
-            ("With charges_recommended False", int(no_charges.sum())),
+            ("With charges_recommended True", sum(charges.values())),
+            ("With charges_recommended False", sum(no_charges.values())),
         ],
         tables=[
             {
@@ -74,45 +127,29 @@ def by_police_service(csv_path: Path | str | None = None) -> RichResult:
             "truly justified force or systematic under-charging -- "
             "context-dependent interpretation."
         ),
-        payload={
-            "counts": dict(zip([str(s) for s in n_cases.index], n_cases.tolist())),
-            "charges": charges.to_dict(),
-            "no_charges": no_charges.to_dict(),
-        },
+        payload={"counts": dict(n_cases), "charges": dict(charges), "no_charges": dict(no_charges)},
     )
 
 
 def by_year(csv_path: Path | str | None = None) -> RichResult:
     """Year-over-year case volume + charges rate from date_of_incident."""
     df = _load(csv_path)
-    df["_year"] = df["date_of_incident_iso"].astype(str).str[:4]
-    df["_year"] = pd.to_numeric(df["_year"], errors="coerce")
-    valid = df.dropna(subset=["_year"])
-    g = valid.groupby("_year")
-    n = g.size()
-    charged = g["charges_recommended"].apply(lambda s: s.eq(True).sum() if hasattr(s, "eq") else 0)
-    no_charged = g["charges_recommended"].apply(lambda s: s.eq(False).sum() if hasattr(s, "eq") else 0)
+    years = [int(d[:4]) if isinstance(d, str) and d else None for d in df["date_of_incident_iso"]]
+    flags = _charge_flags(df["charges_recommended"]) if "charges_recommended" in df.columns else [None] * len(years)
+    n = Counter(y for y in years if y is not None)
+    charged = Counter(y for y, f in zip(years, flags) if y is not None and f is True)
+    no_charged = Counter(y for y, f in zip(years, flags) if y is not None and f is False)
     rows = []
-    for year in sorted(n.index):
-        rows.append(
-            [
-                int(year),
-                int(n[year]),
-                int(charged.get(year, 0)),
-                int(no_charged.get(year, 0)),
-                (
-                    f"{100 * charged[year] / (charged[year] + no_charged[year]):.1f}%"
-                    if (charged.get(year, 0) + no_charged.get(year, 0)) > 0
-                    else "--"
-                ),
-            ]
-        )
+    for year in sorted(n):
+        c, nc = charged.get(year, 0), no_charged.get(year, 0)
+        rows.append([year, n[year], c, nc, f"{100 * c / (c + nc):.1f}%" if (c + nc) else "--"])
+    n_valid = sum(n.values())
     return RichResult(
         title="SIU cases by year",
         summary_lines=[
-            ("Years covered", f"{int(n.index.min())}–{int(n.index.max())}" if len(n) else "n/a"),
-            ("Total cases with parseable date", int(valid.shape[0])),
-            ("Cases with no parseable date", int(df.shape[0] - valid.shape[0])),
+            ("Years covered", f"{min(n)}–{max(n)}" if n else "n/a"),
+            ("Total cases with parseable date", n_valid),
+            ("Cases with no parseable date", int(df.shape[0]) - n_valid),
         ],
         tables=[
             {
@@ -121,7 +158,7 @@ def by_year(csv_path: Path | str | None = None) -> RichResult:
                 "rows": rows,
             }
         ],
-        payload={"by_year": {int(y): int(n[y]) for y in n.index}},
+        payload={"by_year": {y: n[y] for y in sorted(n)}},
     )
 
 
@@ -168,11 +205,16 @@ def demographics(csv_path: Path | str | None = None) -> RichResult:
     sex = df["sex_gender_affected"].fillna("unknown").value_counts()
     sex_rows = [[k, int(v), f"{100 * v / sex.sum():.1f}%"] for k, v in sex.items()]
     age = pd.to_numeric(df["age_affected"], errors="coerce").dropna()
+    # an "age" of 1985 is a birth year: ages outside 0-110 are left out and counted
+    plausible = (age >= 0) & (age <= 110)
+    n_implausible = int((~plausible).sum())
+    age = age[plausible]
     return RichResult(
         title="Affected-person demographics",
         summary_lines=[
             ("Total cases", int(df.shape[0])),
             ("Cases with parseable age", int(age.size)),
+            ("Ages outside 0-110 (left out)", n_implausible),
             ("Mean age", float(age.mean()) if age.size else float("nan")),
             ("Median age", float(age.median()) if age.size else float("nan")),
             ("Age range", f"{int(age.min())}–{int(age.max())}" if age.size else "n/a"),
@@ -233,19 +275,29 @@ def mental_health_race_indicators(csv_path: Path | str | None = None) -> RichRes
 def decision_timing(csv_path: Path | str | None = None) -> RichResult:
     """Distributions of intervals: incident -> notification -> director's decision."""
     df = _load(csv_path)
-    inc = pd.to_datetime(df["date_of_incident_iso"], errors="coerce")
-    notif = pd.to_datetime(df["date_siu_notified_iso"], errors="coerce")
-    decision = pd.to_datetime(df["date_of_director_decision_iso"], errors="coerce")
+    inc = [_iso_day(v) for v in df["date_of_incident_iso"]]
+    notif = [_iso_day(v) for v in df["date_siu_notified_iso"]]
+    decision = [_iso_day(v) for v in df["date_of_director_decision_iso"]]
 
-    inc_to_notif = (notif - inc).dt.days
-    notif_to_decision = (decision - notif).dt.days
-    inc_to_decision = (decision - inc).dt.days
+    def _days(a, b):
+        # a later step dated before an earlier one is a recording error: left out
+        return [(y - x).days for x, y in zip(a, b) if x is not None and y is not None and y >= x]
 
-    def _row(label, series):
-        v = series.dropna()
-        if v.size == 0:
+    inc_to_notif = _days(inc, notif)
+    notif_to_decision = _days(notif, decision)
+    inc_to_decision = _days(inc, decision)
+
+    def _row(label, v):
+        if not v:
             return [label, "n/a", "n/a", "n/a", "n/a", "n/a"]
-        return [label, int(v.size), f"{v.mean():.1f}", f"{v.median():.0f}", f"{v.min():.0f}", f"{v.max():.0f}"]
+        return [
+            label,
+            len(v),
+            f"{statistics.fmean(v):.1f}",
+            f"{statistics.median(v):.0f}",
+            f"{min(v):.0f}",
+            f"{max(v):.0f}",
+        ]
 
     return RichResult(
         title="SIU decision timing (days)",
@@ -265,10 +317,11 @@ def decision_timing(csv_path: Path | str | None = None) -> RichResult:
 
 
 def all_analyses(csv_path: Path | str | None = None, out_dir: Path | None = None) -> dict:
-    """Run every analysis and write each to its own file under
-    data/manifest/outputs/siu/. Returns a dict of name -> RichResult."""
-    out_dir = out_dir or DEFAULT_OUT
-    out_dir.mkdir(parents=True, exist_ok=True)
+    """Run every analysis; with *out_dir*, write each to its own .txt/.json file there.
+    Returns a dict of name -> RichResult."""
+    if out_dir is not None:
+        out_dir = Path(out_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, RichResult] = {}
     for name, fn in [
         ("by_police_service", by_police_service),
@@ -281,10 +334,11 @@ def all_analyses(csv_path: Path | str | None = None, out_dir: Path | None = None
         try:
             r = fn(csv_path)
             results[name] = r
-            (out_dir / f"siu_analysis_{name}.txt").write_text(str(r))
-            (out_dir / f"siu_analysis_{name}.json").write_text(
-                json.dumps(r.payload, indent=2, default=str, ensure_ascii=False)
-            )
+            if out_dir is not None:
+                (out_dir / f"siu_analysis_{name}.txt").write_text(str(r))
+                (out_dir / f"siu_analysis_{name}.json").write_text(
+                    json.dumps(r.payload, indent=2, default=str, ensure_ascii=False)
+                )
         except Exception as e:  # noqa: BLE001
             results[name] = RichResult(
                 title=f"siu.{name} (failed)",

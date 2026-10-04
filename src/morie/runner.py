@@ -2032,7 +2032,7 @@ def _main_impl() -> int:
                     f"{flag} {col}: not a column of {args.csv} (columns: {', '.join(map(str, df.columns))})",
                     file=sys.stderr,
                 )
-                return 1
+                return 2
         profile = profile_dataset(
             df,
             hint_treatment=args.treatment,
@@ -2081,7 +2081,7 @@ def _main_impl() -> int:
                     f"{flag} {col}: not a column of {args.csv} (columns: {', '.join(map(str, df.columns))})",
                     file=sys.stderr,
                 )
-                return 1
+                return 2
         if args.per_stratum and method != "stratified":
             print("--per-stratum applies to --method stratified only", file=sys.stderr)
             return 2
