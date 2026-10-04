@@ -34,7 +34,7 @@ def test_gb1041m_basic():
     assert "method" in result
 
     # Equal-n case: bound should equal z* sqrt(k(N+1)/6).
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     expected_zstar = stats.norm.ppf(1.0 - alpha / (k * (k - 1.0)))
     expected_bound = expected_zstar * math.sqrt(k * (N + 1.0) / 6.0)
@@ -85,7 +85,7 @@ def test_gb1041m_edge():
 
     # Pairwise bounds must use the general formula
     # z* sqrt(N(N+1)/12 * (1/n_i + 1/n_j)).
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     zstar = stats.norm.ppf(1.0 - alpha / (k * (k - 1.0)))
     for i in range(k):

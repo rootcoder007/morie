@@ -33,7 +33,7 @@ def test_gb243_basic():
     assert abs(result["pdf"] - expected_pdf) < 1e-12
 
     # CDF: P(U_(r) <= u) = Beta(r, n-r+1).cdf(u)
-    from scipy.stats import beta
+    from morie.fn._stats_core import beta
 
     expected_cdf = float(beta.cdf(u, float(r), float(n - r + 1)))
     assert abs(result["cdf"] - expected_cdf) < 1e-12

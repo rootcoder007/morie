@@ -22,7 +22,7 @@ def test_fzt53_basic():
     assert np.isclose(result["se"], se)
     assert np.isclose(result["level"], level)
 
-    from scipy.stats import norm as _norm
+    from morie.fn._stats_core import norm as _norm
 
     expected_p = 2.0 * (1.0 - _norm.cdf(abs(expected_stat)))
     assert np.isclose(result["p_value"], expected_p)

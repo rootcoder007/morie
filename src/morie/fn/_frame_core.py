@@ -1429,6 +1429,10 @@ class DataFrame:
     def __contains__(self, key):
         return key in self._cols
 
+    def __iter__(self):
+        # the column labels, as pandas (without it Python fell back to frame[0], frame[1], ...)
+        return iter(list(self._cols))
+
     def copy(self):
         return DataFrame({c: list(v) for c, v in self._cols.items()}, index=list(self.index))
 

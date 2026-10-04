@@ -23,7 +23,7 @@ def test_fzchsp_basic():
     assert "method" in result
 
     # Recompute expected statistic independently from the documented formula.
-    from scipy.stats import norm as _norm
+    from morie.fn._stats_core import norm as _norm
 
     xv = np.asarray(x, dtype=float).ravel()
     n = int(xv.size)
