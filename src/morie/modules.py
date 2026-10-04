@@ -1170,7 +1170,9 @@ def run_module(
         staging = Path(staged).parent
         if staging in _STAGED_DIRS:
             _STAGED_DIRS.discard(staging)
-            shutil.rmtree(staging, ignore_errors=True)
+            from ._safe_rm import rmtree_owned
+
+            rmtree_owned(staging, owned=True)
 
 
 def _run_module_on(module_name: str, cpads_csv, dataset_key, output_dir) -> dict[str, object]:

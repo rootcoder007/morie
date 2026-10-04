@@ -216,7 +216,15 @@ def remove(out=print) -> int:
     if not d.exists():
         out(f"Nothing to remove: {d} does not exist.")
         return 0
-    shutil.rmtree(d)
+    from ._safe_rm import refuse_reason, rmtree_owned
+
+    # the installer writes VERSION: without it the directory (MORIE_INTERACTIVE_DIR can point anywhere) is not ours
+    why = None if (d / "VERSION").is_file() else "it holds no interactive layer (no VERSION file)"
+    why = why or refuse_reason(d)
+    if why:
+        out(f"Not removing {d}: {why}.")
+        return 1
+    rmtree_owned(d, owned=True)
     out(f"Removed {d}.")
     return 0
 
