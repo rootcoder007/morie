@@ -1505,7 +1505,7 @@ _COVER_SHEET = re.compile(
 
 
 def _xlsx_data_sheet(path) -> pd.DataFrame:
-    """The data sheet of a workbook: cover sheets ("Instructions", "Notes to readers") skipped, the most cells wins.
+    """The data sheet of a workbook: cover sheets ("Instructions", "Notes to readers") skipped, the most filled cells wins.
 
     CIHI data tables open on an Instructions sheet; reading sheet 0 returned that cover text as the dataset.
     """
@@ -1522,7 +1522,8 @@ def _xlsx_data_sheet(path) -> pd.DataFrame:
             df = pd.read_excel(path, sheet_name=nm)
         except Exception:  # noqa: BLE001 - an unreadable sheet is skipped; the others still count
             continue
-        cells = int(df.shape[0]) * int(df.shape[1])
+        # filled cells, not the rectangle: a stray note far to the right widens a sheet without adding data
+        cells = sum(1 for c in df.columns for v in df[c].tolist() if _xlsx_cell_set(v))
         if cells > best_cells:
             best, best_cells = df, cells
     if best is None:

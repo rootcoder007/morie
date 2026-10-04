@@ -1466,8 +1466,11 @@ class TestPsMatchCanonical:
         naive = float(df["Y"][df["T"] == 1].mean() - df["Y"][df["T"] == 0].mean())
         naive_bias = abs(naive - tau_true)
 
-        # Matched ATT
-        m = match_nearest_neighbor(df, "T", ["X1", "X2", "X3"])
+        # Matched ATT. This DGP has more treated units than controls, so 1:1 matching
+        # without replacement must use every control and reproduces the naive contrast
+        # (MatchIt's behaviour, which the matcher warns about); with replacement, as the
+        # warning advises, each treated unit gets its own nearest control.
+        m = match_nearest_neighbor(df, "T", ["X1", "X2", "X3"], replace=True)
         result = estimate_att_matched(df, "Y", "T", m.match_pairs)
         matched_bias = abs(float(result.estimate) - tau_true)
 
