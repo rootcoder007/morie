@@ -113,3 +113,42 @@ def test_cli(tmp_path, capsys):
     assert siu_cli(["resolve", str(t)]) == 0
     assert "subject_officers=1" in capsys.readouterr().out
     assert siu_cli(["bogus"]) == 2
+
+
+def test_sections_are_read_from_the_body_not_the_table_of_contents():
+    """Report pages open with a contents list repeating every section title; the parser read that."""
+    from morie.siu import native
+
+    html = (
+        "<ul><li><a>The Investigation</a></li><li><a>Incident Narrative</a></li><li><a>Evidence</a></li></ul>"
+        "<h2>The Investigation</h2><p>At approximately 11:46 a.m. on August 3rd, 2017, the Guelph Police "
+        "Service (GPS) notified the SIU of an injury.</p>"
+        "<h2>Incident Narrative</h2><p>Just prior to 10:00 a.m. on August 2nd, 2017, three men attempted a robbery.</p>"
+        "<h2>Evidence</h2><p>none</p>"
+    )
+    r = native.parse_report_html(html)
+    assert r["police_service"] == "Guelph Police Service"
+    assert r["date_siu_notified_iso"] == "2017-08-03"
+    assert r["date_of_incident_iso"] == "2017-08-02"
+
+
+def test_dates_in_ordinal_french_and_abbreviated_forms():
+    from morie.siu import native
+
+    got = [
+        native.to_iso_date(s)
+        for s in (
+            "3 août 2017",
+            "August 3rd, 2017",
+            "1er janvier 2020",
+            "December 1st, 2020",
+            "Aug 3, 2017",
+            "3 August 2017",
+            "Sept. 5, 2019",
+            "soon",
+        )
+    ]
+    assert got == ["2017-08-03", "2017-08-03", "2020-01-01", "2020-12-01", "2017-08-03", "2017-08-03", "2019-09-05", ""]
+    assert (
+        native.html_to_text("<p>Fran&ccedil;ais &eacute;t&eacute; &#233; &hellip;</p>").strip() == "Français été é ..."
+    )
