@@ -63,12 +63,13 @@ Quick start
 
 .. code-block:: python
 
-   # needs the TPS CSVs under data/datasets/TPS (morie pull tps-major writes a year's feed)
-   from morie.tps_io import load_tps
+   # one year of Major Crime Indicators from the TPS open-data portal (network, about a minute)
+   from morie.datasets import tps_major_crime
    from morie.tps_hawkes_advanced import compare_hawkes_kernels
 
-   df = load_tps("Assault")
-   results = compare_hawkes_kernels(df)
+   df = tps_major_crime(year=2024)
+   assault = df[df["CSI_CATEGORY"] == "Assault"]
+   results = compare_hawkes_kernels(assault, ds_name="Assault 2024")
    print(results)  # ranks 8 (kernel x baseline) combinations by AIC
 
 References

@@ -34,6 +34,12 @@ class DataHubAuthError(RuntimeError):
 
 
 def data_url() -> str:
+    """Base URL of the hosted dataset hub (``MORIE_DATA_URL``, else the default), without a trailing slash.
+
+    Examples:
+        >>> data_url().startswith("https://")
+        True
+    """
     return os.environ.get("MORIE_DATA_URL", DEFAULT_DATA_URL).rstrip("/")
 
 
@@ -113,10 +119,22 @@ def cached_manifest() -> dict | None:
 
 
 def hosted_table_name(key: str) -> str:
+    """Cache-table name for a hosted dataset key: ``hub_`` plus the key with ``/`` written as ``__``.
+
+    Examples:
+        >>> hosted_table_name("ethereum_tokens/ethereum_tokens")
+        'hub_ethereum_tokens__ethereum_tokens'
+    """
     return "hub_" + key.replace("/", "__")
 
 
 def is_hosted_key(key: str) -> bool:
+    """True for a hosted dataset key of the form ``group/table`` (not a file path).
+
+    Examples:
+        >>> is_hosted_key("ethereum_tokens/ethereum_tokens"), is_hosted_key("./data.csv"), is_hosted_key("cihi849")
+        (True, False, False)
+    """
     return "/" in key and not key.startswith(("/", ".")) and not key.endswith("/")
 
 

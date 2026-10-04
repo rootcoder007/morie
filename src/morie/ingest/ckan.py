@@ -277,7 +277,7 @@ def cli(args: list[str]) -> int:
             target = ns.out / f"{safe}.csv"
             df.to_csv(target, index=False)
             sys.stderr.write(f"wrote {target}  ({len(df):,} rows, {len(df.columns)} cols)\n")
-        sys.stdout.write(json.dumps({"package": ns.package, "files": list(dfs)}, indent=2) + "\n")
+        sys.stdout.write(json.dumps({"package": ns.package, "files": list(dfs)}, indent=2, ensure_ascii=False) + "\n")
         return 0
 
     p.error("provide --package or --search")

@@ -34,7 +34,9 @@ if (is.null(output_dir) || !nzchar(output_dir)) {
 
 # rmorie (r-universe, what `morie r-install` installs) carries the same modules as the
 # repository's own R arm; whichever is installed runs them.
-pkg <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else "morie"
+# morie passes the one whose version matches it (MORIE_R_PACKAGE); run by hand, rmorie first.
+pkg <- Sys.getenv("MORIE_R_PACKAGE", "")
+if (!nzchar(pkg)) pkg <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else "morie"
 if (!requireNamespace(pkg, quietly = TRUE)) {
   # requireNamespace() returns FALSE for two very different situations:
   # the package is absent, or it is installed but cannot be loaded (most

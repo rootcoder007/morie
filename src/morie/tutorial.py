@@ -170,5 +170,4 @@ You can quit at any prompt (press q) and resume by re-running
         "  • File an issue if stuck:      https://github.com/rootcoder007/morie/issues\n\n"
         "Welcome aboard.",
     )
-    _prompt()
     return 0

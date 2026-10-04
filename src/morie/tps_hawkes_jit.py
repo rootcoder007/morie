@@ -32,6 +32,12 @@ prange = range
 
 
 def njit(*args, **kwargs):
+    """Identity stand-in for ``numba.njit``: returns the function unchanged, with or without arguments.
+
+    Examples:
+        >>> njit(len) is len, njit(cache=True)(len) is len
+        (True, True)
+    """
     if len(args) == 1 and callable(args[0]) and not kwargs:
         return args[0]
 
@@ -434,6 +440,12 @@ def _gamma_trunc_cutoff(alpha, beta):
 
 
 def has_jit_path(kernel: str, baseline: str) -> bool:
+    """True if a compiled likelihood exists for this kernel and baseline.
+
+    Examples:
+        >>> has_jit_path("no-such-kernel", "constant")
+        False
+    """
     if HAS_CORE and baseline == "constant" and kernel in ("exponential", "weibull", "lomax", "gamma"):
         return True
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):

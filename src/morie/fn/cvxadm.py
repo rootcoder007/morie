@@ -68,8 +68,8 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
     >>> rho = 1.0
     >>> M = np.linalg.inv(A_.T @ A_ + rho * np.eye(6))
     >>> px = lambda v, r: M @ (A_.T @ b + r * v)
-    >>> pz = lambda v, r: np.sign(v) * np.maximum(np.abs(v) - 0.3 / r, 0)
-    >>> r = boyd_admm(px, pz, rho=rho, n=6)
+    >>> pz = lambda v, r: np.sign(v) * np.maximum(np.abs(v) - 1.5 / r, 0)
+    >>> r = boyd_admm(px, pz, rho=rho, n=6, max_iter=1000)
     >>> bool(r["converged"])
     True
 

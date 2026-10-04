@@ -18,6 +18,7 @@ import csv as _csv
 import datetime as _dt
 import math as _math
 import os
+import sys
 
 from . import _array_core as _ac
 
@@ -892,6 +893,22 @@ class Series:
         )
         out.index_name = self.name
         return out
+
+    def sample(self, n=None, frac=None, replace=False, random_state=None):
+        """Random rows, the same draw DataFrame.sample makes for the same random_state."""
+        from . import _array_core as _ac
+
+        rng = _ac.random.default_rng(random_state)
+        total = len(self._data)
+        k = int(round(total * frac)) if frac is not None else (1 if n is None else int(n))
+        if replace:
+            rows = [int(v) for v in rng.integers(0, total, k).tolist()] if k else []
+        else:
+            if k > total:
+                raise ValueError("Cannot take a larger sample than population when replace=False")
+            rows = [int(v) for v in rng.permutation(total).tolist()[:k]]
+        idx = list(self.index)
+        return Series([self._data[r] for r in rows], index=[idx[r] for r in rows], name=self.name)
 
     def sort_values(self, ascending=True, na_position="last"):
         live = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
@@ -2233,7 +2250,8 @@ class DataFrame:
                 if v is None or _isnan(v):
                     continue
                 if isinstance(v, bool | int):
-                    seen.add("INTEGER")
+                    # SQLite INTEGER is 64-bit: a larger int (a wei balance) is kept as its digits
+                    seen.add("INTEGER" if -(2**63) <= v < 2**63 else "TEXT")
                 elif isinstance(v, float):
                     seen.add("REAL")
                 else:
@@ -2252,10 +2270,21 @@ class DataFrame:
             cur.execute(f"CREATE TABLE {quoted} ({decl})")
 
         n = self.shape[0]
+        decl_types = [(r[2] or "").upper() for r in cur.execute(f"PRAGMA table_info({quoted})").fetchall()]
+
+        def cell(v, t):
+            if v is None or _isnan(v):
+                return None
+            # a number in a TEXT column: SQLite would render a float with 17 digits
+            # (13.05057096247961 -> 13.050570962479609); Python's own text round-trips
+            if t == "TEXT" and isinstance(v, bool | int | float):
+                return str(v)
+            return v
+
         rows = []
         for i in range(n):
             row = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
-            rows.append(tuple(None if (v is not None and _isnan(v)) else v for v in row))
+            rows.append(tuple(cell(v, t) for v, t in zip(row, decl_types)))
         placeholders = ", ".join(["?"] * len(cols))
         collist = ", ".join('"{}"'.format(c.replace('"', '""')) for c in cols)
         cur.executemany(f"INSERT INTO {quoted} ({collist}) VALUES ({placeholders})", rows)
@@ -3377,6 +3406,49 @@ _DT_FORMATS = [
 ]
 
 
+_MONTH_NAMES = (
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+)
+_MONTH_NUM = {**{m: i for i, m in enumerate(_MONTH_NAMES, 1)}, **{m[:3]: i for i, m in enumerate(_MONTH_NAMES, 1)}, "sept": 9}
+_MONTH_RE = r"(?P<m>" + "|".join(sorted(_MONTH_NUM, key=len, reverse=True)) + r")\.?"
+_DAY_RE = r"(?P<d>\d{1,2})(?:st|nd|rd|th)?"
+_NAMED_DATE_RES = None
+
+
+def _month_number(m):
+    """1..12 from 1, "01", "January", "jan", "Sept." (English, whatever the locale)."""
+    t = str(m).strip().lower().rstrip(".")
+    k = int(float(t)) if t.replace(".", "", 1).isdigit() else _MONTH_NUM.get(t)
+    if k is None or not 1 <= k <= 12:
+        raise ValueError(f"not a month: {m!r}")
+    return k
+
+
+def _parse_named_date(s):
+    """English month-name dates without strptime's %B, which only knows the current locale's names:
+    "January 5, 2024", "5 January 2024", "5th of Jan 2024", "2024-January-05", "05-Jan-2024"."""
+    global _NAMED_DATE_RES
+    import re as _re
+
+    if _NAMED_DATE_RES is None:
+        y = r"(?P<y>\d{4})"
+        _NAMED_DATE_RES = [
+            _re.compile(p, _re.IGNORECASE)
+            for p in (
+                _MONTH_RE + r"\s+" + _DAY_RE + r",?\s+" + y,
+                _DAY_RE + r"\s+(?:of\s+)?" + _MONTH_RE + r",?\s+" + y,
+                y + r"[-\s/]" + _MONTH_RE + r"[-\s/]" + _DAY_RE,
+                _DAY_RE + r"[-/]" + _MONTH_RE + r"[-/]" + y,
+            )
+        ]
+    for rx in _NAMED_DATE_RES:
+        m = rx.fullmatch(s)
+        if m:
+            return _dt.datetime(int(m.group("y")), _month_number(m.group("m")), int(m.group("d")))
+    return None
+
+
 def _parse_dt(v, fmt=None):
     if isinstance(v, _dt.date | _dt.datetime):
         return v if isinstance(v, _dt.datetime) else _dt.datetime(v.year, v.month, v.day)
@@ -3389,6 +3461,9 @@ def _parse_dt(v, fmt=None):
         return _dt.datetime.fromisoformat(s)
     except ValueError:
         pass
+    named = _parse_named_date(s)
+    if named is not None:
+        return named
     for f in _DT_FORMATS:
         try:
             return _dt.datetime.strptime(s, f)
@@ -3476,14 +3551,42 @@ def to_timedelta(arg, unit="D"):
     return _TimedeltaArray(_dt.timedelta(**{key: v}) for v in vals)
 
 
-def to_datetime(arg, errors="raise", format=None):
+_EPOCH_UNITS = {"s": 1.0, "ms": 1e-3, "us": 1e-6, "ns": 1e-9, "D": 86400.0}
+
+
+def _from_parts(row):
+    """A row of year/month/day (+ hour/minute/second) columns -> datetime; month may be a name."""
+    get = {str(k).lower(): v for k, v in row.items()}
+    hms = [int(float(get.get(k, 0) or 0)) for k in ("hour", "minute", "second")]
+    return _dt.datetime(int(float(get["year"])), _month_number(get["month"]), int(float(get["day"])), *hms)
+
+
+def to_datetime(arg, errors="raise", format=None, unit=None):
+    """pandas.to_datetime: strings (ISO, numeric and English month-name forms), datetimes, numbers
+    since the epoch with ``unit`` ("s", "ms", "us", "ns", "D"), or a DataFrame of year/month/day
+    columns (month as a number or a name)."""
+    if isinstance(arg, DataFrame):
+        out = []
+        for row in arg.to_dict("records"):
+            try:
+                out.append(_from_parts(row))
+            except (KeyError, TypeError, ValueError):
+                if errors != "coerce":
+                    raise ValueError(f"cannot assemble a date from {row!r}") from None
+                out.append(_NAN)
+        return Series(out, index=list(arg.index))
     scalar = not (isinstance(arg, list | tuple | Series) or hasattr(arg, "tolist"))
     vals = [arg] if scalar else (arg.tolist() if hasattr(arg, "tolist") else list(arg))
     out = []
     for v in vals:
         try:
+            if unit is not None and not _isnan(v):
+                if unit not in _EPOCH_UNITS:
+                    raise ValueError(f"unknown unit {unit!r}")
+                out.append(_dt.datetime(1970, 1, 1) + _dt.timedelta(seconds=float(v) * _EPOCH_UNITS[unit]))
+                continue
             out.append(_parse_dt(v, format))
-        except ValueError:
+        except (ValueError, OverflowError):
             if errors == "coerce":
                 out.append(_NAN)
             else:
@@ -3772,6 +3875,7 @@ def read_csv(
     else:
         f = open(path, newline="", encoding=encoding or "utf-8")  # noqa: SIM115 - closed in the finally below, shared with the StringIO branch
     try:
+        _csv.field_size_limit(min(sys.maxsize, 2**31 - 1))  # WKT geometry cells exceed the 128 KiB default
         rows = list(_csv.reader(f, delimiter=sep))
     finally:
         f.close()
@@ -3801,11 +3905,23 @@ def read_csv(
         except ValueError:
             return v
 
+    def column(raw):
+        # one type per column, as pandas infers it: any text keeps the column as its raw text;
+        # decimals or gaps make a numeric column float; whole numbers only stay int. Converting
+        # cell by cell left "100" an int beside 45.3 floats, so the same table written from the
+        # download and from the cache read 100 vs 100.0.
+        vals = [conv(v) for v in raw]
+        if any(isinstance(v, str) for v in vals):
+            return [v if (isinstance(v, float) and v != v) else r for v, r in zip(vals, raw)]
+        if any(isinstance(v, float) for v in vals):
+            return [float(v) for v in vals]
+        return vals
+
     data = {}
     for j, c in enumerate(cols):
         if usecols is not None and c not in usecols and j not in (usecols or []):
             continue
-        data[c] = [conv(r[j]) if j < len(r) else _NAN for r in rows]
+        data[c] = column([r[j] if j < len(r) else "" for r in rows])
     df = DataFrame(data)
     if dtype is not None:
         df = df.astype(dtype)

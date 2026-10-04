@@ -100,7 +100,9 @@ def describe(name: str):
     REGISTRY metadata + docstring with a "(full guide pending)" header.
 
     >>> from morie.fn import describe
-    >>> print(describe("welcht"))
+    >>> print(describe("welcht"))   # doctest: +ELLIPSIS
+    describe('welcht') -- Welch's two-sample t-test (unequal variances)
+    ...
     """
     from ._registry import REGISTRY
 

@@ -504,7 +504,7 @@ def cli(args: list[str]) -> int:
     )
     p.add_argument("--list", action="store_true", help="Fetch the index page and emit CSV to stdout")
     p.add_argument("--report-id", help="Report id (e.g. 17-OVI-201); requires --out")
-    p.add_argument("--url", help="Direct PDF URL of a single report")
+    p.add_argument("--url", help="URL of a single report page (an siu.on.ca director's report)")
     p.add_argument("--out", type=Path, help="Output directory for the fetched report's text + fields")
     ns = p.parse_args(args)
 
@@ -512,6 +512,11 @@ def cli(args: list[str]) -> int:
         df = list_reports()
         sys.stdout.write(df.to_csv(index=False))
         return 0
+
+    if (ns.url or ns.report_id) and not ns.out:
+        # before anything is downloaded (the index lookup fetches 6.5 MB)
+        p.error("--out <dir> is required when fetching a report")
+        return 2
 
     url = ns.url
     if url is None and ns.report_id:
@@ -541,6 +546,6 @@ def cli(args: list[str]) -> int:
     if fields.get("incident_date"):
         fields["incident_date"] = to_iso_date(fields["incident_date"]) or fields["incident_date"]
     (ns.out / "report.txt").write_text(text)
-    (ns.out / "fields.json").write_text(json.dumps(fields, indent=2))
+    (ns.out / "fields.json").write_text(json.dumps(fields, indent=2, ensure_ascii=False), encoding="utf-8")
     sys.stderr.write(f"wrote {ns.out / 'report.txt'} ({len(text):,} chars) + fields.json\n")
     return 0

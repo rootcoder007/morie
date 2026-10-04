@@ -2123,6 +2123,8 @@ class oarr(list):
     def astype(self, dtype=None):
         if dtype is None or _is_object_like(None, dtype):
             return oarr(self)
+        if dtype is str or (isinstance(dtype, str) and dtype.lstrip("<").startswith(("U", "str"))):
+            return oarr([str(v) for v in self])  # numpy: astype(str) gives the text of each entry
         return marr([float(v) for v in self])
 
     def reshape(self, *shape, order="C"):
@@ -2488,7 +2490,12 @@ def array(x, dtype=None, copy=True, ndmin=0):
     if ndmin >= 2 and _nested_depth(x) < 2 and not isinstance(x, marr):
         return atleast_2d(array(x, dtype))
     if _is_object_like(x, dtype):
-        return oarr(x.tolist() if hasattr(x, "tolist") else x)
+        v = x.tolist() if hasattr(x, "tolist") else x
+        if (isinstance(v, (list, tuple)) and v
+                and _bi.all(isinstance(r, (list, tuple)) for r in v)
+                and len({len(r) for r in v}) == 1 and len(v[0])):
+            return oarr2(v)  # numpy: a rectangular nested list is 2-D, not a 1-D array of lists
+        return oarr(v)
     if isinstance(x, (list, tuple)) and _nested_depth(x) >= 3:
         return ndlist(x)
     out = marr(x)
@@ -5931,6 +5938,17 @@ linalg.LinAlgError = _LinAlgError
 
 # ------------------------------------------- batch 2: gap-scan closure
 
+def _stacked_rows(x, y, rowvar):
+    """numpy's corrcoef/cov(x, y): every variable of x, then every variable of y."""
+    out = []
+    for v in (x, y):
+        a = atleast_2d(v)
+        if not rowvar:
+            a = transpose(a)
+        out.extend(marr(r) for r in a.data)
+    return out
+
+
 def corrcoef(x, y=None, rowvar=True):
     if y is None:
         a = atleast_2d(x)
@@ -5938,7 +5956,7 @@ def corrcoef(x, y=None, rowvar=True):
             a = a.T
         rows = [marr(r) for r in a.data]
     else:
-        rows = [asarray(x), asarray(y)]
+        rows = _stacked_rows(x, y, rowvar)
     n = len(rows)
     out = [[0.0] * n for _ in range(n)]
     for i in range(n):
@@ -5965,7 +5983,7 @@ def cov(x, y=None, rowvar=True, bias=False, ddof=None):
             a = transpose(a)
         rows = [marr(r) for r in a.data]
     else:
-        rows = [asarray(x), asarray(y)]
+        rows = _stacked_rows(x, y, rowvar)
     n = len(rows)
     m = rows[0].shape[0]
     out = [[0.0] * n for _ in range(n)]

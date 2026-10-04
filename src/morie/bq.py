@@ -133,7 +133,10 @@ def bq_query(db: str, sql: str) -> list[dict[str, Any]]:
 
     Examples
     --------
-    >>> rows = bq_query("nyc_311_historic", "SELECT borough, count(*) FROM nyc_311_historic GROUP BY 1")
+    Needs MORIE_REMOTE_URL (a query endpoint) or MORIE_LOCAL_DB_DIR (a local
+    SQLite mirror):
+
+    >>> rows = bq_query("nyc_311_historic", "SELECT borough, count(*) FROM nyc_311_historic GROUP BY 1")  # doctest: +SKIP
     """
     return _query(db, sql)
 

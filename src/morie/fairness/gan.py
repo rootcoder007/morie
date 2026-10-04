@@ -233,7 +233,11 @@ class SpatialGAN:
     >>> from morie.fairness.gan import SpatialGAN
     >>> rng = np.random.default_rng(0)
     >>> pts = rng.normal([5.0, -3.0], 1.0, size=(800, 2))
-    >>> gan = SpatialGAN(seed=0).fit(pts, steps=400)
+
+    A small network and a few steps show the interface; a usable fit takes the
+    default 1500 steps at ``hidden=64`` (minutes in pure Python).
+
+    >>> gan = SpatialGAN(hidden=8, seed=0).fit(pts, steps=20, batch_size=32)
     >>> samples = gan.sample(500, seed=1)
     >>> samples.shape
     (500, 2)

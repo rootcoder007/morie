@@ -251,6 +251,21 @@ def _turbo_compress_tensor(tensor_np, bits):
 
 
 def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
+    """Convert a PyTorch checkpoint to a GGUF file.
+
+    The checkpoint is read only when ``MORIE_TRUST_CHECKPOINT=1``:
+    unpickling an untrusted file can run code, so the gate is checked
+    before the file is opened.
+
+    Args:
+        checkpoint_path: the ``.pt`` zip checkpoint.
+        output_path: the GGUF file to write.
+        tokenizer_dir: directory with the tokenizer files, if any.
+        turbo_bits: quantisation bits for the TurboQuant path (0 keeps full precision).
+
+    Returns:
+        The path written.
+    """
     # Native zip-checkpoint reader (morie._pt_reader): same allowlist
     # posture as torch.load(weights_only=True) -- storages, tensors and
     # containers resolve, anything else refuses to unpickle -- with no

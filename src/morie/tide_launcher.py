@@ -34,6 +34,11 @@ def _find_tide() -> str | None:
 
 
 def main() -> None:
+    """Run the TIDE binary with this process's arguments and exit with its code.
+
+    The binary is found via ``TIDE_BIN`` or ``PATH``; without one, this
+    prints how to install it and exits 1. Ctrl-C exits 130.
+    """
     binary = _find_tide()
     if binary is None:
         print(

@@ -429,12 +429,102 @@ def html_to_text(html: str) -> str:
     return _s(_html_to_text(_b(html)))
 
 
+# ---- French reports: the SIU publishes every report in both languages, and the French copy has its
+# ---- own headings and phrasing ("Le 12 novembre 2022", "a communiqué ... à l'UES"); rmorie and
+# ---- rmoriebricklayer carry the same detectors in C++
+_FR_MONTHS = "(?:janvier|f\u00e9vrier|fevrier|mars|avril|mai|juin|juillet|ao\u00fbt|aout|septembre|octobre|novembre|d\u00e9cembre|decembre)"
+_FR_DATE = _b("(\\d{1,2}(?:er)?\\s+" + _FR_MONTHS + "\\s+\\d{4})")
+_APOS = _b("(?:'|\u2019)")
+
+
+def _sentence_at(s: bytes, pos: int) -> bytes:
+    end = s.find(b"\n", pos)
+    stop = s.find(b". ", pos)
+    if stop != -1 and (end == -1 or stop < end):
+        end = stop
+    if end == -1 or end > pos + 300:
+        end = min(len(s), pos + 300)
+    return s[pos:end]
+
+
+def _detect_police_service_fr(text: bytes) -> bytes:
+    notif = (
+        rb"(Service de police[^\n,.;()]*?|Police provinciale de l" + _APOS + rb"Ontario)"
+        rb"\s*(?:\(\s*[A-Z]{2,6}\s*\)\s*)?(?:a|ont) (?:communiqu|avis|inform)"
+    )
+    m = re.search(notif, text)
+    if m:
+        return _trim(m.group(1))
+    pat = (
+        rb"(Service de police(?: [a-z\xc3\xa9]+){0,2} (?:de la |de |du |des |d" + _APOS + rb")"
+        rb"[A-Z\xc3][^\s,.;()]*(?: [A-Z\xc3][^\s,.;()]*)*|Police provinciale de l" + _APOS + rb"Ontario)"
+    )
+    counts: dict[bytes, int] = {}
+    for mm in re.finditer(pat, text):
+        k = _trim(mm.group(1))
+        counts[k] = counts.get(k, 0) + 1
+    best, bestc = b"", 0
+    for k in sorted(counts):  # the same tie rule as the C++ std::map walk: most frequent, then longer
+        v = counts[k]
+        if v > bestc or (v == bestc and len(k) > len(best)):
+            best, bestc = k, v
+    return best
+
+
+def _detect_incident_date_fr(text: bytes) -> bytes:
+    sec = _section_text(text, "L\u2019enqu\u00eate") or _section_text(text, "L'enqu\u00eate") or text
+    ues = rb"l" + _APOS + rb"\s*UES\b"
+    for m in re.finditer(rb"\b[Ll]e\s+" + _FR_DATE, sec):
+        before = sec[max(0, m.start() - 60) : m.start()].lower()
+        if re.search(ues, _sentence_at(sec, m.start())) or b"envoi de l" in before or _b("arriv\u00e9e de l") in before:
+            continue
+        return m.group(1)
+    return b""
+
+
+def _detect_siu_notified_fr(text: bytes) -> bytes:
+    heads = list(re.finditer(rb"(^|\n)Notification de l" + _APOS + rb"\s*UES[^\n]*\n", text))
+    if not heads:
+        return b""
+    m = re.search(_FR_DATE, text[heads[-1].end() : heads[-1].end() + 1500])
+    return m.group(1) if m else b""
+
+
+def _detect_decision_date_fr(text: bytes) -> bytes:
+    m = re.search(rb"Date\s*:\s*(?:[Ll]e\s+)?" + _FR_DATE, text)
+    return m.group(1) if m else b""
+
+
+_FR_PERSON = {
+    b"femme": b"woman",
+    b"homme": b"man",
+    b"fille": b"girl",
+    _b("gar\u00e7on"): b"boy",
+    b"adolescente": b"youth",
+    b"adolescent": b"youth",
+    b"personne": b"person",
+}
+
+
+def _detect_age_sex_fr(text: bytes) -> tuple[bytes, bytes]:
+    m = re.search(
+        rb"\b(femme|homme|fille|" + _b("gar\u00e7on") + rb"|adolescente|adolescent|personne)\s+de\s+(\d{1,3})\s+ans\b",
+        text,
+        _I,
+    )
+    if not m:
+        return b"", b""
+    w = m.group(1).lower()
+    return m.group(2), _FR_PERSON.get(w, w)
+
+
 def _parse(t: bytes) -> dict[str, str]:
     f: dict[bytes, bytes] = {b"_language": _detect_language(t)}
-    f[b"police_service"] = _detect_police_service(t)
-    f[b"date_of_incident_iso"] = _iso(_detect_incident_date(t))
-    f[b"date_siu_notified_iso"] = _iso(_detect_siu_notified(t))
-    f[b"date_of_director_decision_iso"] = _iso(_detect_decision_date(t))
+    fr = f[b"_language"] == b"fr"
+    f[b"police_service"] = (fr and _detect_police_service_fr(t)) or _detect_police_service(t)
+    f[b"date_of_incident_iso"] = _iso((fr and _detect_incident_date_fr(t)) or _detect_incident_date(t))
+    f[b"date_siu_notified_iso"] = _iso((fr and _detect_siu_notified_fr(t)) or _detect_siu_notified(t))
+    f[b"date_of_director_decision_iso"] = _iso((fr and _detect_decision_date_fr(t)) or _detect_decision_date(t))
     f[b"siu_investigators"] = _team_count(t, "SIU Investigators")
     f[b"siu_forensics_investigators"] = _team_count(t, "SIU Forensic Investigators")
     so = _section_text(t, "Subject Officers", ("Incident Narrative", "Evidence", "Witness Officers"))
@@ -453,6 +543,8 @@ def _parse(t: bytes) -> dict[str, str]:
     )
     f[b"number_of_civilian_witnesses"] = _count_tagged(cw, "CW")
     age, sex = _detect_age_sex(t)
+    if fr and not age:
+        age, sex = _detect_age_sex_fr(t)
     f[b"age_affected"] = age
     f[b"sex_gender_affected"] = sex
     f[b"charges_recommended"] = _detect_charges(t)

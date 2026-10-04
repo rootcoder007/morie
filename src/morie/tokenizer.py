@@ -24,11 +24,13 @@ class Tokenizer:
 
     Examples
     --------
+    Needs a GGUF model file on disk (the path below is a placeholder):
+
     >>> from morie.gguf_loader import GGUFModel
-    >>> model = GGUFModel("path/to/model.gguf")
-    >>> tok = Tokenizer(gguf_model=model)
-    >>> ids = tok.encode("Hello world")
-    >>> tok.decode(ids)
+    >>> model = GGUFModel("path/to/model.gguf")  # doctest: +SKIP
+    >>> tok = Tokenizer(gguf_model=model)  # doctest: +SKIP
+    >>> ids = tok.encode("Hello world")  # doctest: +SKIP
+    >>> tok.decode(ids)  # doctest: +SKIP
     'Hello world'
     """
 

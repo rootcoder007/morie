@@ -380,9 +380,10 @@ def fetch_earth_engine(
     dict with keys::
         {'mean': float, 'stdDev': float, 'count': int, 'unit': str}
 
-    Example (port of your Toronto NO2 app to MORIE):
+    Example (Toronto tropospheric NO2 over 2024). Needs the
+    ``earthengine-api`` package and an authenticated Earth Engine account:
 
-        >>> no2 = fetch_earth_engine(
+        >>> no2 = fetch_earth_engine(  # doctest: +SKIP
         ...     dataset="COPERNICUS/S5P/OFFL/L3_NO2",
         ...     region=(-79.64, 43.58, -79.12, 43.86),   # Toronto bbox
         ...     date_from="2024-01-01",
@@ -390,7 +391,7 @@ def fetch_earth_engine(
         ...     band="tropospheric_NO2_column_number_density",
         ...     scale=1113,
         ... )
-        >>> print(no2["mean"])   # mol/m^2 averaged over Toronto in 2024
+        >>> print(no2["mean"])   # doctest: +SKIP
     """
     ee = _ensure_ee_initialized()
 

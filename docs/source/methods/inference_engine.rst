@@ -154,7 +154,7 @@ without requiring SentencePiece at runtime:
    from morie.tokenizer import Tokenizer
    from morie.gguf_loader import GGUFModel
 
-   model = GGUFModel("path/to/model.gguf")
+   model = GGUFModel("path/to/model.gguf")   # needs a GGUF model file on this machine
    tok = Tokenizer(gguf_model=model)
    ids = tok.encode("Hello world")
    print(tok.decode(ids))  # "Hello world"
@@ -169,7 +169,7 @@ Engine — Forward Pass
 
    from morie.engine import MORIEEngine
 
-   engine = MORIEEngine("path/to/model.gguf", kv_bits=3)
+   engine = MORIEEngine("path/to/model.gguf", kv_bits=3)   # needs a GGUF model file on this machine
    result = engine.generate("The capital of France is", max_tokens=20)
    print(result.text)
    print(f"{result.tokens_per_second:.1f} tok/s")

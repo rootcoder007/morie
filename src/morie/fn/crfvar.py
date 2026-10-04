@@ -66,9 +66,16 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
     >>> X = rng.normal(size=(600, 2))
     >>> T = (rng.uniform(size=600) < 0.5).astype(float)
     >>> Y = T * X[:, 0] + rng.normal(scale=0.3, size=600)
-    >>> f = causal_forest(Y, T, X, n_trees=120, seed=2)
+    >>> f = causal_forest(Y, T, X, n_trees=400, seed=2)
     >>> v = causal_forest_variance(f, X[:5])
     >>> bool(np.all(v["se"] > 0))
+    True
+
+    With too few trees the Monte-Carlo bias is as large as the raw variance
+    itself, and the corrected variance is clipped at zero for some points.
+
+    >>> w = causal_forest_variance(causal_forest(Y, T, X, n_trees=120, seed=2), X[:5])
+    >>> bool(np.any(w["se"] == 0))
     True
     """
     if hasattr(forest, "get") and not hasattr(forest, "trees_"):

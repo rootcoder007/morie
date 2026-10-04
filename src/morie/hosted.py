@@ -52,10 +52,12 @@ def hosted_base_url() -> str | None:
 
 
 def hosted_auth_url() -> str:
+    """Base URL of the hosted-tier login service (``MORIE_HOSTED_AUTH_URL``, else the default), without a trailing slash."""
     return os.environ.get("MORIE_HOSTED_AUTH_URL", DEFAULT_HOSTED_AUTH_URL).strip().rstrip("/")
 
 
 def hosted_model() -> str:
+    """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the built-in default)."""
     return os.environ.get("MORIE_HOSTED_MODEL", DEFAULT_HOSTED_MODEL).strip() or DEFAULT_HOSTED_MODEL
 
 
@@ -66,6 +68,7 @@ def credentials_path() -> Path:
 
 
 def read_credentials() -> dict:
+    """The stored credentials as a dict; ``{}`` when the file is missing, unreadable or not a JSON object."""
     try:
         with open(credentials_path(), encoding="utf-8") as fh:
             data = json.load(fh)
@@ -101,6 +104,7 @@ _hosted_failure: str | None = None
 
 
 def reset_probe_cache() -> None:
+    """Forget the cached hosted-tier probe (reachability, model list, last failure) so the next call probes again."""
     global _hosted_cached, _hosted_models, _hosted_failure
     _hosted_cached = None
     _hosted_models = None
@@ -418,6 +422,14 @@ def provider_set(base_url: str, key: str, model: str | None = None, echo=_say) -
 
 
 def provider_show(echo=_say) -> dict:
+    """Describe the attached OpenAI-compatible endpoint without printing its key.
+
+    Args:
+        echo: where the description goes (default: stdout).
+
+    Returns:
+        The stored ``api_base_url``, ``api_model`` and ``api_key`` entries (``None`` where unset).
+    """
     data = read_credentials()
     base, model = data.get("api_base_url"), data.get("api_model")
     if not base:
@@ -431,6 +443,18 @@ def provider_show(echo=_say) -> dict:
 
 
 def provider_unset(echo=_say) -> bool:
+    """Detach the OpenAI-compatible endpoint from the stored credentials.
+
+    Other stored credentials are kept; the file is removed only when
+    nothing else is left in it, and nothing is written when no endpoint
+    was attached.
+
+    Args:
+        echo: where the outcome line goes (default: stdout).
+
+    Returns:
+        True if an endpoint was attached.
+    """
     data = read_credentials()
     had = any(k in data for k in _PROVIDER_KEYS)
     for k in _PROVIDER_KEYS:

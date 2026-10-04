@@ -152,27 +152,28 @@ def crba(
     )
 
 
-def _paf(R, nf: int, max_iter: int = 200, tol: float = 1e-6):
-    """Principal-axis factoring: communalities iterated on the diagonal of the reduced
-    correlation matrix from a squared-multiple-correlation start (rmorie's .morie_paf)."""
+def _paf(R, nf: int, min_err: float = 0.001, max_iter: int = 50):
+    """Principal-axis factoring as psych::fa(fm = "pa") runs it (rmorie's .morie_paf): squared
+    multiple correlations on the diagonal, iterated until the total communality moves by less
+    than 0.001 (at most 50 rounds); the first factor loads positively."""
     k = R.shape[0]
+    r = R.copy()
     try:
-        h2 = 1.0 - 1.0 / np.diag(np.linalg.inv(R))
+        np.fill_diagonal(r, 1.0 - 1.0 / np.diag(np.linalg.inv(R)))
     except np.linalg.LinAlgError:
-        h2 = np.full(k, 0.5)
-    h2 = np.clip(h2, 0.05, 0.995)
+        np.fill_diagonal(r, 0.5)
+    comm = float(np.trace(r))
     loads = np.zeros((k, nf))
     for _ in range(max_iter):
-        Rr = R.copy()
-        np.fill_diagonal(Rr, h2)
-        ev, evec = np.linalg.eigh(Rr)
+        ev, evec = np.linalg.eigh(r)
         order = np.argsort(-ev)
         ev, evec = ev[order], evec[:, order]
         loads = evec[:, :nf] * np.sqrt(np.maximum(ev[:nf], 0))
-        new_h2 = np.minimum(np.sum(loads**2, axis=1), 0.995)
-        converged = np.max(np.abs(new_h2 - h2)) < tol
-        h2 = new_h2
-        if converged:
+        h2 = np.sum(loads**2, axis=1)
+        np.fill_diagonal(r, h2)
+        err = abs(comm - float(h2.sum()))
+        comm = float(h2.sum())
+        if err <= min_err:
             break
     if loads[:, 0].sum() < 0:
         loads[:, 0] = -loads[:, 0]  # the general factor loads positively
@@ -200,11 +201,11 @@ def _inv_sqrt_psd(a):
     return out, sum(max(x, 0.0) ** 0.5 for x in w)
 
 
-def _varimax(x, eps: float = 1e-5):
-    """stats::varimax(normalize = TRUE): Kaiser-normalised rotation; the SVD step u v' is
-    computed as the polar factor B (B'B)^(-1/2), the same matrix."""
+def _varimax(x, eps: float = 1e-5, normalize: bool = True):
+    """stats::varimax: the rotation (Kaiser-normalised unless ``normalize=False``); the SVD
+    step u v' is computed as the polar factor B (B'B)^(-1/2), the same matrix."""
     k, nc = len(x), len(x[0])
-    sc = [sum(v * v for v in row) ** 0.5 for row in x]
+    sc = [sum(v * v for v in row) ** 0.5 for row in x] if normalize else [1.0] * k
     xn = [[v / sc[i] for v in row] for i, row in enumerate(x)]
     TT = [[1.0 if i == j else 0.0 for j in range(nc)] for i in range(nc)]
     d = 0.0
@@ -223,8 +224,9 @@ def _varimax(x, eps: float = 1e-5):
 
 
 def _promax(x, m: int = 4):
-    """stats::promax: varimax, then the least-squares fit to the powered target."""
-    z, rot = _varimax(x)
+    """psych::Promax: varimax without Kaiser normalisation, then the least-squares fit to the
+    powered target (stats::promax normalises, which moved omega_h by up to 0.009)."""
+    z, rot = _varimax(x, normalize=False)
     Q = [[v * abs(v) ** (m - 1) for v in row] for row in z]
     U = _mm(_inv(_mm(_tr(z), z)), _mm(_tr(z), Q))
     dg = _inv(_mm(_tr(U), U))

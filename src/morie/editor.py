@@ -49,6 +49,11 @@ def edit_file(path: str, lang_hint: str | None = None) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point of ``morie-edit <file>``: open the file in the built-in editor.
+
+    Returns:
+        2 with a usage line when no file is given, else the editor's exit code.
+    """
     args = list(sys.argv[1:] if argv is None else argv)
     if not args:
         print("usage: morie-edit <file>", file=sys.stderr)

@@ -47,7 +47,7 @@ def wasserman_pca(X, k):
     [0.707106781187, 0.707106781187]
     >>> round(out["estimate"], 12)
     2.0
-    >>> out["explained_ratio"]
+    >>> round(out["explained_ratio"], 12)
     1.0
     >>> wasserman_pca(X, 3)
     Traceback (most recent call last):

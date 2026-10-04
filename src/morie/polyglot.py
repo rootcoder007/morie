@@ -937,7 +937,9 @@ class PolyglotEngine:
                 ["R", "--no-echo", "--no-save", "--no-restore"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                # one stream: R's errors arrive in order with its output (an unread stderr pipe
+                # swallowed `stop("boom")` and could fill up and block R)
+                stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1,
             )
@@ -1204,6 +1206,14 @@ class PolyglotEngine:
                     break
                 lines.append(raw.rstrip("\n"))
 
+            err_at = next((k for k, ln in enumerate(lines) if ln.startswith("Error")), None)
+            if err_at is not None:
+                return ExecResult(
+                    language="r",
+                    stdout="\n".join(lines[:err_at]),
+                    stderr="\n".join(lines[err_at:]),
+                    success=False,
+                )
             variables = {}
             for m in re.finditer(r"(\w+)\s*<-", code):
                 name = m.group(1)
@@ -1939,8 +1949,7 @@ def run_headless_repl(
     lang: str = "python",
 ) -> int:
     engine = PolyglotEngine(polyglot=polyglot, auto_detect=auto_detect)
-    if not auto_detect:
-        engine._default_lang = lang
+    engine._default_lang = lang  # also with auto-detect on: an ambiguous line runs in the chosen language
 
     avail = engine.available_languages()
     langs = [k for k, v in avail.items() if v]

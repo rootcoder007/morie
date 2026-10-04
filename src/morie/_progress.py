@@ -15,6 +15,11 @@ from typing import IO
 _SPIN = "|/-\\"
 
 
+def _progress_off() -> bool:
+    """``MORIE_NO_PROGRESS`` set to a true value (1, yes, true, on); ``0``/``false``/``no``/``off`` keep the bars."""
+    return os.environ.get("MORIE_NO_PROGRESS", "").strip().lower() not in ("", "0", "false", "no", "off")
+
+
 def fmt_bytes(n: float) -> str:
     for unit in ("B", "KB", "MB", "GB"):
         if n < 1024 or unit == "GB":
@@ -31,7 +36,7 @@ class Progress:
         self.total = int(total) if total and total > 0 else None
         self.unit = unit
         self.stream = stream if stream is not None else sys.stderr
-        self.enabled = not os.environ.get("MORIE_NO_PROGRESS")
+        self.enabled = not _progress_off()
         self.tty = bool(self.enabled and getattr(self.stream, "isatty", lambda: False)())
         self.done = 0
         self.t0 = time.monotonic()
@@ -109,7 +114,7 @@ def run_step(cmd: list[str], label: str, *, env: dict | None = None, cwd: str | 
     import tempfile
 
     stream = sys.stderr
-    tty = bool(getattr(stream, "isatty", lambda: False)()) and not os.environ.get("MORIE_NO_PROGRESS")
+    tty = bool(getattr(stream, "isatty", lambda: False)()) and not _progress_off()
     t0 = time.monotonic()
     if not tty:
         stream.write(f"-> {label} ...\n")
@@ -175,6 +180,17 @@ def stream_to_file(resp, dest, label: str, chunk_size: int = 1 << 20, offset: in
         return prog.done
 
 
+def _no_route(exc: BaseException) -> bool:
+    """True when the machine has no network or the host name does not resolve (nothing to resume)."""
+    import errno
+    import socket
+
+    reason = getattr(exc, "reason", exc)
+    if isinstance(reason, socket.gaierror):
+        return True
+    return isinstance(reason, OSError) and reason.errno in (errno.ENETUNREACH, errno.EHOSTUNREACH)
+
+
 def download_url(
     url: str, dest, label: str, timeout: int = 60, headers: dict | None = None, attempts: int = 3, opener=None
 ) -> int:
@@ -206,8 +222,8 @@ def download_url(
         except HTTPError:
             raise
         except (IncompleteRead, ConnectionError, TimeoutError, OSError) as exc:
-            if attempt == attempts:
-                raise
+            if attempt == attempts or _no_route(exc):
+                raise  # no network / no such host: resuming cannot help
             written = dest.stat().st_size if dest.exists() else 0
             sys.stderr.write(
                 f"{label}: the transfer dropped ({type(exc).__name__}); "
@@ -228,7 +244,7 @@ class Stages:
     def __init__(self, label: str, total: int, stream: IO[str] | None = None) -> None:
         self.label, self.total, self.n = label, total, 0
         self.stream = stream if stream is not None else sys.stderr
-        self.enabled = not os.environ.get("MORIE_NO_PROGRESS")
+        self.enabled = not _progress_off()
         self.t0 = time.monotonic()
 
     def step(self, what: str) -> None:

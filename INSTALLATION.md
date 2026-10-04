@@ -465,11 +465,12 @@ Every helper returns a DataFrame from morie's own pandas-compatible frame core (
 morie modules name canonical concepts ("weight", "alcohol_past12m", "age_group"…) but your dataset probably uses different names. You don't have to rename your columns — morie's schema layer handles it:
 
 ```python
-import pandas as pd
+from morie.fn import _frame_core as pd  # pandas is optional; pandas.read_csv works the same
 import morie.schema as ms
 from morie.cpads import CPADS_REQUIRED_VARIABLES
 
-your_df = pd.read_csv("your-data.csv")  # has columns like 'wt', 'binge30', 'sex'
+# your own file: pd.read_csv("your-data.csv"); a two-row stand-in here
+your_df = pd.DataFrame({"wt": [1.2, 0.8], "binge30": [0, 1], "sex": ["F", "M"]})
 
 # Let morie figure out the mapping
 mapping, scores = ms.infer_mapping(your_df, canonical=CPADS_REQUIRED_VARIABLES)
@@ -481,6 +482,10 @@ canon_df = ms.apply_mapping(your_df, mapping)
 Or be explicit if you don't trust the fuzzy match:
 
 ```python
+import morie.schema as ms
+from morie.fn import _frame_core as pd
+
+your_df = pd.DataFrame({"wt": [1.2, 0.8], "binge30": [0, 1], "sex": ["F", "M"]})  # as above
 canon_df = ms.apply_mapping(your_df, {
     "wt": "weight",
     "binge30": "heavy_drinking_30d",

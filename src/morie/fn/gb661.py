@@ -54,19 +54,17 @@ def mwu(x, y):
                 u += 1.0
             elif yj == xi:
                 u += 0.5
-    # exact null counts of U over 0..mn by DP on the rank-sum recursion
+    # exact null counts of U over 0..mn: the recursion (6.6.14) r_{m,n}(u) = r_{m-1,n}(u-n) + r_{m,n-1}(u)
+    # is solved by the Gaussian binomial [m+n choose m]_q = prod_{k=1..m} (1 - q^(n+k)) / (1 - q^k),
+    # built factor by factor in exact integers (each partial product is itself [n+k choose k]_q)
     total = m * n
-    counts = [0.0] * (total + 1)
-    counts[0] = 1.0
-    for i in range(1, m + 1):
-        new = [0.0] * (total + 1)
-        run = 0.0
-        for k in range(total + 1):
-            run += counts[k]
-            if k - n - 1 >= 0:
-                run -= counts[k - n - 1]
-            new[k] = run
-        counts = new
+    counts = [0] * (total + 1)
+    counts[0] = 1
+    for k in range(1, m + 1):
+        for i in range(total, n + k - 1, -1):  # times (1 - q^(n+k))
+            counts[i] -= counts[i - n - k]
+        for i in range(k, total + 1):  # divided by (1 - q^k)
+            counts[i] += counts[i - k]
     denom = math.comb(m + n, m)
     pmf = [c / denom for c in counts]
     ui = int(round(u))

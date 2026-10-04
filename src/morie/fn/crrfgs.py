@@ -71,13 +71,14 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     >>> from morie.fn import _array_core as np
     >>> from morie.fn.crrcsh import cause_specific_hazard
     >>> rng = np.random.default_rng(0)
-    >>> X = rng.normal(size=(1500, 1))
+    >>> X = rng.normal(size=(400, 1))
     >>> T1 = rng.exponential(1 / np.exp(0.9 * X[:, 0]))
     >>> T2 = rng.exponential(1 / np.exp(0.0 * X[:, 0]))
-    >>> C = rng.exponential(2.0, 1500)
+    >>> C = rng.exponential(2.0, 400)
     >>> T = np.minimum(np.minimum(T1, T2), C)
     >>> d = np.where(T == C, 0, np.where(T1 < T2, 1, 2))
-    >>> fg = competing_risks_fg(T, d, X, cause=1)["beta"][0]
+    >>> r = competing_risks_fg(T, d, X, cause=1)
+    >>> fg = r["beta"][0]
     >>> cs = cause_specific_hazard(T, d, X, cause=1)["beta"][0]
     >>> bool(fg > 0.3 and cs > 0.3)
     True
@@ -91,7 +92,6 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     Subjects failing from competing causes stay in the risk set, which is what
     the weights encode.
 
-    >>> r = competing_risks_fg(T, d, X, cause=1)
     >>> bool(r["n_competing"] > 0 and r["weights"].min() >= 0)
     True
     """

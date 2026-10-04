@@ -678,11 +678,17 @@ class SemiparKernels:
 
     Examples
     --------
+    >>> from morie.fn import _array_core as np
     >>> from morie.semipar_bridge import SemiparKernels
     >>> sk = SemiparKernels()
-    >>> print(sk.backend)  # 'c' or 'numpy'
+    >>> sk.backend in ("c", "numpy")
+    True
+    >>> x = np.linspace(0.0, 1.0, 50)
+    >>> y = 2.0 * x
     >>> bw = sk.silverman_bandwidth(x)
-    >>> y_hat = sk.nw_regression(x, y, x_eval, bw)
+    >>> y_hat = sk.nw_regression(x, y, np.array([0.5]), bw)
+    >>> round(float(y_hat[0]), 2)       # a straight line is smoothed to itself mid-range
+    1.0
     """
 
     def __init__(self) -> None:

@@ -84,7 +84,7 @@ def geron_embedding_lookup(ids, E):
             raise ValueError("token ids must be integers.")
         I = I.astype(int)
     if I.min() < 0 or I.max() >= V:
-        raise ValueError(f"token ids must lie in [0, {V - 1}], got range [{I.min()}, {I.max()}].")
+        raise ValueError(f"token ids must lie in [0, {V - 1}], got range [{int(I.min())}, {int(I.max())}].")
 
     out = T[I]
 

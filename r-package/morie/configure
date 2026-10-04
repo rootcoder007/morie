@@ -75,7 +75,7 @@ if [ -n "${OQS_LIBS}" ]; then
     :
   else
     echo "configure: liboqs was found but its probe will not run; building without post-quantum support" >&2
-    OQS_CFLAGS=""
+    OQS_CFLAGS="-DMORIE_OQS_UNLOADABLE"
     OQS_LIBS=""
   fi
   rm -f "${RUN_SRC}" "${RUN_OUT}" 2>/dev/null

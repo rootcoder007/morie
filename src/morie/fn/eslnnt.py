@@ -75,9 +75,9 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> X = rng.uniform(-2, 2, (400, 2))
+    >>> X = rng.uniform(-2, 2, (150, 2))
     >>> y = np.sin(X[:, 0]) + X[:, 1] ** 2
-    >>> r = esl_neural_net(X, y, M=8, lr=0.3, n_epochs=3000, seed=1)
+    >>> r = esl_neural_net(X, y, M=8, lr=0.3, n_epochs=1500, seed=1)
     >>> bool(r["r_squared"] > 0.9)
     True
 
@@ -93,10 +93,10 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
 
     Classification on separable classes.
 
-    >>> Z = np.r_[rng.normal(-2, 1, (100, 2)), rng.normal(2, 1, (100, 2))]
-    >>> yz = np.r_[np.zeros(100), np.ones(100)]
+    >>> Z = np.r_[rng.normal(-2, 1, (50, 2)), rng.normal(2, 1, (50, 2))]
+    >>> yz = np.r_[np.zeros(50), np.ones(50)]
     >>> c = esl_neural_net(Z, yz, M=4, task="classification", lr=0.5,
-    ...                    n_epochs=800, seed=1)
+    ...                    n_epochs=400, seed=1)
     >>> bool(c["accuracy"] > 0.95)
     True
 

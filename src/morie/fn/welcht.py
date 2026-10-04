@@ -15,8 +15,11 @@ def welcht(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
     or access fields like ``.statistic``, ``.pvalue``, ``.df``.
 
     >>> r = welcht([1,2,3,4,5], [10,20,30,40,50])
-    >>> r.statistic         # numeric access still works
-    >>> print(r)            # multi-section summary
+    >>> round(r.statistic, 4), round(r.pvalue, 4), round(r.df, 2)   # numeric access still works
+    (-3.7994, 0.0184, 4.08)
+    >>> print(r)            # doctest: +ELLIPSIS
+    Welch's two-sample t-test (unequal variances)
+    ...
 
     References
     ----------

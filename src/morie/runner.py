@@ -219,7 +219,7 @@ def build_parser() -> argparse.ArgumentParser:
     parity.add_argument("--epiml-root", required=True, help="Path to the internal reference checkout")
     parity.add_argument("--output", help="Optional CSV path for the audit matrix")
 
-    subparsers.add_parser("list-modules", help="List implemented MORIE CPADS modules")
+    subparsers.add_parser("list-modules", help="List the analysis modules (CPADS, OTIS, MAPQ, ...) and the files each writes")
 
     run_cmd = subparsers.add_parser("run-module", help="Run one MORIE module")
     run_cmd.add_argument("module", help="Module name to run")
@@ -304,7 +304,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     login_cmd = subparsers.add_parser(
         "login",
-        help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub; stores a per-user key",
+        help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub, or --email for a code by email; stores a per-user key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
     login_cmd.add_argument(
@@ -483,6 +483,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Execute code inline, from stdin, or create-and-open (co) a file",
     )
     exec_cmd.add_argument("code", nargs="?", default=None, help="Code string, or 'co' for create-and-open mode")
+    exec_cmd.add_argument("-c", dest="code_opt", default=None, metavar="CODE", help="Code string, as python -c")
     exec_cmd.add_argument("filename", nargs="?", default=None, help="Filename for 'co' mode (e.g. test.py)")
     exec_cmd.add_argument("--lang", choices=["python", "r"], default="python", help="Language (default: python)")
     exec_cmd.add_argument("--file", default=None, dest="exec_file", help="Read code from file instead")
@@ -618,10 +619,10 @@ def build_parser() -> argparse.ArgumentParser:
     except ImportError:
         pass
 
-    # ── ingest: pull open-data feeds (CKAN, TPS ArcGIS, SIU PDFs, A2AJ) ─
+    # ── ingest: pull open-data feeds (CKAN, TPS ArcGIS, SIU reports, A2AJ) ─
     ingest_cmd = subparsers.add_parser(
         "ingest",
-        help="Pull open-data feeds (CKAN portals, TPS ArcGIS layers, SIU PDFs, A2AJ legal data)",
+        help="Pull open-data feeds (CKAN portals, TPS ArcGIS layers, SIU reports, A2AJ legal data)",
     )
     ingest_cmd.add_argument(
         "portal",
@@ -683,6 +684,7 @@ def build_parser() -> argparse.ArgumentParser:
         "tps-homicide, tps-layers, tps-major-toy, cpads, otis-a01-toy, siu-toy, siu-index",
     )
     pull_cmd.add_argument("--all", action="store_true", help="Download every catalog dataset into --out (a directory)")
+    pull_cmd.add_argument("-y", "--yes", action="store_true", help="pull --all without asking first (several GB)")
     pull_cmd.add_argument("--year", type=int, help="Filter to a single year (TPS only)")
     pull_cmd.add_argument("--max", type=int, dest="max_features", help="Cap rows fetched (TPS only)")
     pull_cmd.add_argument("--out", type=Path, help="Output CSV path (stdout if omitted)")
@@ -814,10 +816,17 @@ def _drain_stream(stream) -> int:
     payload's ``mode`` was fixed before any bytes arrived.
     """
     n = 0
+    started = False
     for chunk in stream:
+        n += 1
+        if not started:
+            # some models open with blank lines (an empty reasoning preamble): an answer starts at its text
+            chunk = chunk.lstrip()
+            if not chunk:
+                continue
+            started = True
         sys.stdout.write(chunk)
         sys.stdout.flush()
-        n += 1
     sys.stdout.write("\n")
     return n
 
@@ -934,6 +943,41 @@ def _add_interactive_layer(what: str) -> bool:
     return True
 
 
+def _cli_warning_notes() -> None:
+    """On the command line a UserWarning (the synthetic-frame notice, ...) is one `note:` line, once,
+    not Python's "path:line: UserWarning" with the source line under it."""
+    import warnings
+
+    seen: set[str] = set()
+    default = warnings.showwarning
+
+    def show(message, category, filename, lineno, file=None, line=None):
+        if issubclass(category, UserWarning) and not issubclass(category, DeprecationWarning):
+            text = str(message)
+            if text not in seen:
+                seen.add(text)
+                print(f"note: {text}", file=sys.stderr)
+            return
+        default(message, category, filename, lineno, file, line)
+
+    warnings.showwarning = show
+
+
+def _sigterm_runs_cleanup() -> None:
+    """SIGTERM (``timeout``, ``kill``) ends the CLI like Ctrl-C does, through the finally blocks.
+
+    Python's default SIGTERM action exits at once, so a pull stopped that way left its partial
+    download in the temp directory.
+    """
+    import signal
+
+    try:
+        if signal.getsignal(signal.SIGTERM) is signal.SIG_DFL:
+            signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(128 + signum))
+    except (ValueError, OSError, AttributeError):  # not the main thread, or no SIGTERM here
+        pass
+
+
 def main() -> int:
     """
     Entry point for the MORIE command line interface.
@@ -945,6 +989,8 @@ def main() -> int:
         _maybe_notify(__version__)
     except Exception:
         pass
+    _cli_warning_notes()
+    _sigterm_runs_cleanup()
     try:
         return _main_impl()
     except KeyboardInterrupt:
@@ -955,6 +1001,14 @@ def main() -> int:
     except PermissionError as exc:
         print(f"morie: cannot write {exc.filename or 'here'}: permission denied", file=sys.stderr)
         return 1
+    except BrokenPipeError:
+        # the reader closed the pipe (`morie list-datasets | head`): stop quietly, and point stdout at
+        # /dev/null so the interpreter's final flush does not raise again
+        import os
+
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+        return 0
     except BaseException as exc:  # noqa: BLE001
         hint = _friendly_error(exc)
         if hint is not None:
@@ -964,6 +1018,43 @@ def main() -> int:
             return 1
         # Unknown errors — re-raise so the traceback shows.
         raise
+
+
+def _network_failure(exc: BaseException) -> str | None:
+    """The reason when a failure is the network itself (no route, no DNS, refused, timed out); else None."""
+    import socket
+    from urllib.error import HTTPError, URLError
+
+    seen = 0
+    while exc is not None and seen < 5:
+        if isinstance(exc, URLError) and not isinstance(exc, HTTPError):
+            return str(exc.reason)
+        if isinstance(exc, socket.gaierror | ConnectionError | TimeoutError):
+            return str(exc)
+        exc = exc.__cause__ or exc.__context__
+        seen += 1
+    return None
+
+
+def _own_file_missing(key: str):
+    """The path an own-file dataset belongs at, when the file is not there yet; else None."""
+    from .data import DATASET_CATALOG, _find_local_file, _own_file_target, dataset_route
+
+    entry = DATASET_CATALOG.get(key)
+    if not entry or not dataset_route(entry).startswith("own file"):
+        return None
+    return None if _find_local_file(entry["local_path"]) is not None else _own_file_target(entry["local_path"])
+
+
+def _deepest_parser(parser: argparse.ArgumentParser, args: argparse.Namespace) -> argparse.ArgumentParser:
+    """The parser of the (sub-)verb that was typed: `morie interactive install` -> its own parser."""
+    cur = parser
+    while True:
+        acts = [a for a in cur._actions if isinstance(a, argparse._SubParsersAction)]
+        name = getattr(args, acts[0].dest, None) if acts else None
+        if not acts or name not in acts[0].choices:
+            return cur
+        cur = acts[0].choices[name]
 
 
 def _main_impl() -> int:
@@ -979,11 +1070,14 @@ def _main_impl() -> int:
         payload = ask_percy(question, stream=sys.stdout.isatty())
         if "output_stream" in payload:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-        print(payload.get("output_text", ""))
+        print(str(payload.get("output_text", "")).strip())
         return _llm_exit_code(payload)
 
     parser = build_parser()
-    args = parser.parse_args()
+    args, extra = parser.parse_known_args()
+    if extra:
+        # report an unknown option against the verb typed, with that verb's usage, not all 43 verbs
+        _deepest_parser(parser, args).error(f"unrecognized arguments: {' '.join(extra)}")
 
     # Auto-detect: no subcommand + interactive TTY -> launch TUI or chat REPL.
     if args.command is None:
@@ -1149,22 +1243,46 @@ def _main_impl() -> int:
         selected = args.modules or [item["name"] for item in list_modules()]
         ds_key = getattr(args, "dataset", None)
         before = _files_under(args.output_dir)
+        import warnings as _w
+
+        from .modules import _r_package_absent, r_route_problem
+
         results = {}
+        no_r, failed, notes_seen = [], [], set()
         for i, module_name in enumerate(selected, 1):
             # one line per module as it finishes, so a redirected log shows a long run moving
             t0 = _time.monotonic()
             print(f"[{i}/{len(selected)}] {module_name} ...", flush=True)
-            results[module_name] = run_module(
-                module_name,
-                cpads_csv=args.cpads_csv,
-                dataset_key=ds_key,
-                output_dir=args.output_dir,
-            )
+            try:
+                with _w.catch_warnings(record=True) as rec:
+                    _w.simplefilter("always", UserWarning)
+                    results[module_name] = run_module(
+                        module_name,
+                        cpads_csv=args.cpads_csv,
+                        dataset_key=ds_key,
+                        output_dir=args.output_dir,
+                    )
+                for w in rec:  # the synthetic-frame notice and the like: one line each, once
+                    if str(w.message) not in notes_seen:
+                        notes_seen.add(str(w.message))
+                        print(f"note: {w.message}", file=sys.stderr)
+            except RuntimeError as exc:
+                if _r_package_absent(exc) or "the R-backed modules need the same version" in str(exc):
+                    if not no_r:
+                        print(r_route_problem(module_name, exc), file=sys.stderr)
+                    no_r.append(module_name)
+                    print(f"[{i}/{len(selected)}] {module_name} skipped (runs in R)", flush=True)
+                    continue
+                failed.append(module_name)
+                print(f"[{i}/{len(selected)}] {module_name} failed: {exc}", file=sys.stderr, flush=True)
+                continue
             print(f"[{i}/{len(selected)}] {module_name} done ({_time.monotonic() - t0:.0f} s)", flush=True)
-        print("Completed modules:", ", ".join(results.keys()))
+        print("Completed modules:", ", ".join(results.keys()) or "none")
+        if no_r:
+            print(f"Skipped {len(no_r)} R-backed module(s): {', '.join(no_r)} (`morie r-install` adds them)")
         if args.output_dir:
             print(_tables_written_line(args.output_dir, before))
-        return 0
+        return 1 if failed or not results else 0
 
     if args.command in ("percy", "perseus"):
         return _handle_percy(args)
@@ -1212,7 +1330,7 @@ def _main_impl() -> int:
                 payload = ask_percy(args.question, context=getattr(args, "context", None), stream=use_stream)
                 if use_stream:
                     return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-                print(payload["output_text"])
+                print(str(payload["output_text"]).strip())
                 return _llm_exit_code(payload)
         except Exception:
             from . import _interactive as _inter
@@ -1236,7 +1354,7 @@ def _main_impl() -> int:
             )
             if use_stream:
                 return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-            print(payload["output_text"])
+            print(str(payload["output_text"]).strip())
             return _llm_exit_code(payload)
         return 0
 
@@ -1250,12 +1368,17 @@ def _main_impl() -> int:
         )
         if use_stream:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-        print(payload["output_text"])
+        print(str(payload["output_text"]).strip())
         return _llm_exit_code(payload)
 
     if args.command == "chat":
-        from .chat import run_chat_repl
+        from .chat import list_agents, run_chat_repl
 
+        if args.agent:
+            known = [a["name"] for a in list_agents()]
+            if known and args.agent not in known:
+                print(f"chat: unknown agent '{args.agent}' (known: {', '.join(known)})", file=sys.stderr)
+                return 2
         return run_chat_repl(agent=args.agent)
 
     if args.command == "tui":
@@ -1324,7 +1447,7 @@ def _main_impl() -> int:
         print(
             f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal, rmoriedata or data.rmorie.com "
             f"on first use; {n_own} {'is' if n_own == 1 else 'are'} your own research file{'' if n_own == 1 else 's'}, "
-            f"placed under $MORIE_DATA_DIR/datasets/ with the path{'' if n_own == 1 else 's'} shown."
+            f"placed at the path{'' if n_own == 1 else 's'} shown (MORIE_DATA_DIR moves them)."
         )
         n_hub = sum(d["type"] == "hosted" for d in datasets)
         if n_hub:
@@ -1457,6 +1580,18 @@ def _main_impl() -> int:
 
         if args.all:
             out_dir = Path(args.out or "datasets")
+            if not args.yes:
+                # several GB: ask on a terminal, and need -y where nobody can answer
+                if not sys.stdin.isatty():
+                    print("pull --all downloads several GB; no terminal to confirm on: pass -y", file=sys.stderr)
+                    return 2
+                try:
+                    ans = input(f"pull --all writes every catalog dataset to {out_dir.resolve()} (several GB). Continue? [y/N] ")
+                except EOFError:
+                    ans = ""
+                if ans.strip().lower() not in ("y", "yes"):
+                    print("pull --all: nothing downloaded", file=sys.stderr)
+                    return 1
             out_dir.mkdir(parents=True, exist_ok=True)
             print(
                 f"pull --all: every catalog key is fetched and written to {out_dir.resolve()} (several GB; Ctrl-C stops it)",
@@ -1464,6 +1599,10 @@ def _main_impl() -> int:
             )
             failed = 0
             for key in sorted(DATASET_CATALOG):
+                missing = _own_file_missing(key)
+                if missing is not None:
+                    print(f"  {key:<12} skipped: your own research file is not at {missing}", file=sys.stderr)
+                    continue
                 try:
                     frame = load_dataset(key)
                 except MemoryError:
@@ -1475,7 +1614,7 @@ def _main_impl() -> int:
                     continue
                 except Exception as exc:  # noqa: BLE001 - report and continue
                     failed += 1
-                    print(f"  {key:<12} FAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
+                    print(f"  {key:<12} FAILED: {exc or type(exc).__name__}", file=sys.stderr)
                     continue
                 dest = out_dir / f"{key}.csv"
                 frame.to_csv(dest, index=False)
@@ -1497,8 +1636,19 @@ def _main_impl() -> int:
                 else:
                     _warnings.showwarning(w.message, w.category, w.filename, w.lineno)
 
+        missing = _own_file_missing(args.dataset)
+        if missing is not None:
+            # pull writes real data only: the synthetic panel the analyses fall back on is not the file
+            print(
+                f"{args.dataset} is your own research file and it is not at {missing}: put it there "
+                "(MORIE_DATA_DIR moves the data directory). The analyses use a synthetic toy panel until then.",
+                file=sys.stderr,
+            )
+            return 1
         if args.year is not None and not args.dataset.startswith("tps-"):
             print(f"note: --year applies to the TPS feeds only; {args.dataset} is written in full", file=sys.stderr)
+        if args.max_features is not None and not args.dataset.startswith("tps-"):
+            print(f"note: --max applies to the TPS feeds only; {args.dataset} is written in full", file=sys.stderr)
         try:
             if args.dataset == "tps-major":
                 df = md.tps_major_crime(year=args.year, max_features=args.max_features)
@@ -1584,7 +1734,13 @@ def _main_impl() -> int:
                     file=sys.stderr,
                 )
                 return 0
-            print(f"pull failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            net = _network_failure(exc)
+            if net is not None:
+                from .i18n import t
+
+                print(f"pull {args.dataset}: {t('error.network_failed', msg=net)}", file=sys.stderr)
+                return 1
+            print(f"pull {args.dataset}: {exc or type(exc).__name__}", file=sys.stderr)
             return 1
         if len(df) == 0:
             print(
@@ -1662,7 +1818,7 @@ def _main_impl() -> int:
             if not rid:
                 print(f"  {key}: no CKAN resource ID -- download the CSV manually to {entry['local_path']}")
                 continue
-            print(f"  Downloading {key} ({entry['name']}) from CKAN (limit={args.limit})...")
+            print(f"  Downloading {key} ({entry['name']}) from CKAN (limit={args.limit})...", flush=True)
             try:
                 df = fetch_ckan_to_cache(
                     key, limit=min(args.limit, 32000) if args.limit else 32000, max_records=args.limit
@@ -1912,8 +2068,26 @@ def _main_impl() -> int:
         if not Path(args.checkpoint).is_file():
             print(f"convert-checkpoint: checkpoint not found: {args.checkpoint}", file=sys.stderr)
             return 2
+        import warnings as _w
+        import zipfile
+
+        if not zipfile.is_zipfile(args.checkpoint):
+            print(
+                f"convert-checkpoint: {args.checkpoint} is not a PyTorch checkpoint (a .pt file is a zip archive)",
+                file=sys.stderr,
+            )
+            return 2
         try:
-            convert(args.checkpoint, args.output, args.tokenizer_dir, args.turbo_bits)
+            with _w.catch_warnings(record=True) as _rec:
+                _w.simplefilter("always", RuntimeWarning)
+                try:
+                    convert(args.checkpoint, args.output, args.tokenizer_dir, args.turbo_bits)
+                finally:
+                    for w in _rec:  # the trust-knob notice, as one line rather than a warning with a source line
+                        print(f"note: {w.message}", file=sys.stderr)
+        except zipfile.BadZipFile as exc:
+            print(f"convert-checkpoint: {args.checkpoint} is not a readable checkpoint ({exc})", file=sys.stderr)
+            return 1
         except ImportError as exc:  # torch / gguf are optional extras
             print(f"convert-checkpoint: {exc}", file=sys.stderr)
             return 1
@@ -1925,18 +2099,26 @@ def _main_impl() -> int:
     if args.command == "login":
         from .hosted import device_login, email_login, store_token
 
+        if getattr(args, "to_email", False) and not getattr(args, "email", None):
+            print("--to-email needs --email ADDRESS (the key is emailed to that address)", file=sys.stderr)
+            return 2
         try:
             if getattr(args, "token", None) is not None:
                 token = args.token
                 if not token:
                     if not _stdin_is_terminal():
-                        print(
-                            "no terminal to paste the key into: pass it as `morie login --token KEY`", file=sys.stderr
-                        )
-                        return 1
-                    import getpass
+                        # piped (`echo KEY | morie login --token`, kept out of the shell history)
+                        token = sys.stdin.readline().strip()
+                        if not token:
+                            print(
+                                "no key on stdin and no terminal to paste it into: `morie login --token KEY`",
+                                file=sys.stderr,
+                            )
+                            return 1
+                    else:
+                        import getpass
 
-                    token = getpass.getpass("Paste your MORIE key: ")
+                        token = getpass.getpass("Paste your MORIE key: ")
                 store_token(token)
             else:
                 from .hosted import read_credentials
@@ -2270,6 +2452,15 @@ def _handle_exec(args: argparse.Namespace) -> int:
     import subprocess
     import tempfile
 
+    # usage errors in the arguments themselves come first, on any install
+    if getattr(args, "code_opt", None) is not None and args.code is not None:
+        print("exec: give the code once, as -c CODE or as the argument", file=sys.stderr)
+        return 2
+    given = args.code_opt if getattr(args, "code_opt", None) is not None else args.code
+    if given is not None and not args.exec_file and not str(given).strip():
+        print("No code provided: morie exec CODE | --file PATH", file=sys.stderr)
+        return 2
+
     # Absent from the published wheel by design: without the guard module
     # there is no exec surface to authorise, so refuse rather than raise
     # ModuleNotFoundError at the user.
@@ -2286,6 +2477,8 @@ def _handle_exec(args: argparse.Namespace) -> int:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 
+    if getattr(args, "code_opt", None) is not None:
+        args.code = args.code_opt
     if args.code == "co":
         return _handle_exec_co(args)
 
@@ -2313,31 +2506,38 @@ def _handle_exec(args: argparse.Namespace) -> int:
         finally:
             os.unlink(tmp)
 
-    # The code runs in a child interpreter with the same prelude the in-process version
-    # offered (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution,
-    # and a crash in the user's code cannot take the CLI down with it.
-    prelude = (
-        "import sys\n"
-        "__name__ = '__morie_exec__'\n"
+    # The code runs in a child interpreter with the same names the in-process version offered
+    # (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution, and a crash
+    # in the user's code cannot take the CLI down with it. The user's own file is run in place,
+    # so tracebacks, __file__, sys.argv and sys.path[0] are what `python FILE` gives; inline code
+    # goes to a temporary file first (its line numbers are still the user's).
+    boot = (
+        "import os, runpy, sys\n"
+        "g = {}\n"
         "try:\n"
         "    from morie.fn import _array_core as np, _frame_core as pd\n"
+        "    g.update(np=np, pd=pd)\n"
         "except ImportError:\n"
         "    pass\n"
         "try:\n"
         "    from morie import fn\n"
         "    from morie.fn._registry import REGISTRY\n"
+        "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
         "except ImportError:\n"
         "    pass\n"
-        "del sys\n"
+        "path = sys.argv[1]\n"
+        "sys.argv = sys.argv[1:]\n"
+        "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
+        "del os, sys\n"
+        "runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
     )
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8") as f:
-        f.write(prelude + code)
-        tmp = f.name
-    try:
-        proc = subprocess.run([sys.executable, tmp], check=False)
-    finally:
-        os.unlink(tmp)
-    return proc.returncode
+    if args.exec_file:
+        return subprocess.run([sys.executable, "-c", boot, args.exec_file], check=False).returncode
+    with tempfile.TemporaryDirectory() as d:
+        tmp = os.path.join(d, "morie_exec.py")
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(code)
+        return subprocess.run([sys.executable, "-c", boot, tmp], check=False).returncode
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:
@@ -2381,20 +2581,9 @@ def _handle_exec_co(args: argparse.Namespace) -> int:
     if not (sys.stdin.isatty() and sys.stdout.isatty()):
         print(f"no terminal to edit in; open {filepath} in your editor, or run `morie exec --file {filepath}`")
         return 0
-    try:
-        from .editor import launch_editor
-
-        return launch_editor(str(filepath), run_on_save=True, lang_hint=lang)
-    except ImportError:
-        if not _add_interactive_layer("The built-in editor"):
-            editor = os.environ.get("EDITOR") or "nano"
-            print(f"falling back to {editor}")
-            import subprocess
-
-            return subprocess.call([editor, str(filepath)])
-        from .editor import launch_editor
-
-        return launch_editor(str(filepath), run_on_save=True, lang_hint=lang)
+    # the editor `morie edit` uses, then run the file when it is Python or R (the run-on-save step)
+    del os
+    return _handle_edit(argparse.Namespace(file=str(filepath), lang=lang, run=lang in ("python", "r")))
 
 
 def _handle_edit(args: argparse.Namespace) -> int:
@@ -2530,6 +2719,17 @@ def _handle_percy(args: argparse.Namespace) -> int:
         host_part = pi.split("@")[-1] if "@" in pi else pi
         base_url = f"http://{host_part}:11434"
 
+    # --local / --pi name one Ollama server: when it does not answer, say so and stop (no fallback)
+    explicit = getattr(args, "local", False) or bool(getattr(args, "pi", None))
+    if explicit:
+        import urllib.request
+
+        target = base_url or os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+        try:
+            urllib.request.urlopen(target.rstrip("/") + "/api/tags", timeout=5).close()
+        except Exception as exc:  # noqa: BLE001 - any failure means nothing answers there
+            print(f"Perseus: no Ollama answers at {target} ({exc}); --local/--pi use only that server", file=sys.stderr)
+            return 1
     try:
         if base_url is None and cloud_url is None and not getattr(args, "local", False):
             from .llm import detect_available_provider
@@ -2544,15 +2744,16 @@ def _handle_percy(args: argparse.Namespace) -> int:
     except Exception as exc:
         # Perseus's tool-calling agent needs a local Ollama; without one, answer
         # through the provider chain (hosted tier, your own endpoint, ...)
-        print(f"Perseus: no local Ollama ({exc}); answering through the provider chain instead.", file=sys.stderr)
         question = getattr(args, "question", None)
         if question is None:
             print('Give the question on the command line: morie percy "..."  (or run `morie chat`)', file=sys.stderr)
             return 1
+        where = f"the relay at {cloud_url} did not answer" if cloud_url else "no local Ollama"
+        print(f"Perseus: {where} ({exc}); answering through the provider chain instead.", file=sys.stderr)
         payload = ask_percy(question, stream=use_stream, model=model)
         if use_stream:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-        print(payload["output_text"])
+        print(str(payload["output_text"]).strip())
         return _llm_exit_code(payload)
     print(f"Perseus [{model_name}] ready.\n")
 
@@ -2560,15 +2761,19 @@ def _handle_percy(args: argparse.Namespace) -> int:
         try:
             _percy_answer(agent, q, use_stream, sys.stdout)
             return 0
-        except Exception as exc:  # the Ollama backend died mid-answer: provider chain instead
+        except Exception as exc:  # the backend died mid-answer
+            if explicit:
+                print(f"Perseus: {exc}", file=sys.stderr)
+                return 1
+            which = f"the relay at {cloud_url}" if cloud_url else "the local agent backend"
             print(
-                f"Perseus: the local agent backend failed ({exc}); answering through the provider chain.",
+                f"Perseus: {which} failed ({exc}); answering through the provider chain.",
                 file=sys.stderr,
             )
             payload = ask_percy(q, stream=use_stream, model=model)
             if use_stream:
                 return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
-            print(payload["output_text"])
+            print(str(payload["output_text"]).strip())
             return _llm_exit_code(payload)
 
     question = getattr(args, "question", None)
@@ -2602,6 +2807,8 @@ def _percy_answer(agent, question, use_stream, out):
         out.write("\n")
     else:
         resp = agent.chat(question)
+        if getattr(resp, "failed", False):
+            raise RuntimeError(resp.text)  # "LLM request failed: ..." is not an answer
         out.write(resp.text + "\n")
         if resp.tool_calls_made:
             out.write(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]\n")
@@ -2675,6 +2882,12 @@ def _percysuits_get_installed_ssh(ssh_target: str):
             text=True,
             timeout=20,
         )
+        if result.returncode == 255:  # ssh's own failure: the host, not Ollama
+            print(f"ERROR: cannot reach {ssh_target} over SSH: {result.stderr.strip() or 'ssh exited 255'}")
+            return None, None
+        if not result.stdout.strip():
+            print(f"ERROR: {ssh_target} answered over SSH, but no Ollama answers on its localhost:11434")
+            return None, None
         models_data = _json.loads(result.stdout).get("models", [])
         installed = set()
         sizes = {}

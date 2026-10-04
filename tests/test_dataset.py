@@ -208,16 +208,16 @@ class TestProfileDataset:
 class TestLoadDataset:
     """Test file ingestion."""
 
-    def test_load_csv(self, epi_df):
-        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False, mode="w") as f:
-            epi_df.to_csv(f.name, index=False)
-            loaded = load_dataset(f.name)
+    def test_load_csv(self, epi_df, tmp_path):
+        path = tmp_path / "data.csv"
+        epi_df.to_csv(path, index=False)
+        loaded = load_dataset(path)
         assert loaded.shape == epi_df.shape
 
-    def test_load_tsv(self, epi_df):
-        with tempfile.NamedTemporaryFile(suffix=".tsv", delete=False, mode="w") as f:
-            epi_df.to_csv(f.name, sep="\t", index=False)
-            loaded = load_dataset(f.name)
+    def test_load_tsv(self, epi_df, tmp_path):
+        path = tmp_path / "data.tsv"
+        epi_df.to_csv(path, sep="\t", index=False)
+        loaded = load_dataset(path)
         assert loaded.shape == epi_df.shape
 
     def test_raises_on_missing_file(self):

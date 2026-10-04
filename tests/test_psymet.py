@@ -85,7 +85,8 @@ class TestCrba:
 
 class TestMcdo:
     def test_returns_omgres(self, likert):
-        o = mcdo(likert)
+        with pytest.warns(UserWarning, match="reverse-keyed item"):
+            o = mcdo(likert)
         assert isinstance(o, OmgRes)
 
     def test_mapq_omega_high(self, mapq):
@@ -93,7 +94,8 @@ class TestMcdo:
         assert o.total > 0.90
 
     def test_omega_geq_alpha(self, likert):
-        o = mcdo(likert)
+        with pytest.warns(UserWarning, match="reverse-keyed item"):
+            o = mcdo(likert)
         assert o.total >= o.alpha - 0.01  # omega >= alpha (approx)
 
 

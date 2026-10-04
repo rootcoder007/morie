@@ -429,7 +429,7 @@ class TestCheckpointTrustGate:
         # The assertion the test actually exists to make is unchanged: with
         # the knob set, convert() must get PAST the trust gate. So assert
         # that whatever it raises, it is not the gate's refusal.
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(Exception) as excinfo, pytest.warns(RuntimeWarning, match="MORIE_TRUST_CHECKPOINT is set"):
             pt2gguf.convert("nonexistent.pt", "out.gguf")
         assert "MORIE_TRUST_CHECKPOINT" not in str(
             excinfo.value

@@ -323,7 +323,8 @@ def run_propensity_ipw_analysis(
     return {
         "analysis_frame": frame,
         "ipw_results": ipw_results,
-        "diagnostics": diagnostics,
+        # the module declares (and explain describes) ipw_diagnostics.csv
+        "ipw_diagnostics": diagnostics,
     }
 
 

@@ -456,11 +456,18 @@ def _run_r_module(
             f"--cpads-csv={cpads_csv}",
             f"--output-dir={output_dir}",
         ]
-        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True)
+        env = dict(os.environ, MORIE_R_PACKAGE=_R_PACKAGE) if _R_PACKAGE else None
+        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True, env=env)
         if proc.returncode != 0:
             raise RuntimeError(
                 f"R-backed module run failed for {module_name}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
             )
+        import warnings
+
+        # the R module says when it ran on stand-in data ("... synthetic ... not findings"): pass that on
+        for line in (proc.stderr or "").splitlines():
+            if "synthetic" in line.lower():
+                warnings.warn(line.strip(), UserWarning, stacklevel=2)
         return _load_written_outputs(module_name, output_dir)
     finally:
         if _tmp_ctx is not None:
@@ -1003,45 +1010,53 @@ _R_INSTALL_HINT = (
 
 
 _R_READY: bool | None = None
+_R_PACKAGE: str | None = None  # the R package the bridge loads: rmorie or morie, whichever matches this version
 
 
 def _r_route_ready() -> None:
-    """Raise at once when Rscript or the R package (rmorie or morie) is missing; cached per process."""
-    global _R_READY
+    """Raise at once when Rscript or a matching R package (rmorie or morie) is missing; cached per process.
+
+    Both R arms carry the modules. The one whose version equals this morie's is used (rmorie when both
+    match); another version computes other numbers without saying so, so it is refused unless
+    ``MORIE_ALLOW_R_VERSION_MISMATCH`` is set.
+    """
+    global _R_READY, _R_PACKAGE
     if _R_READY:
         return
     rscript = _rscript_bin()
     if rscript is None:
         raise RuntimeError("Rscript is not available on PATH.")
-    # the package the bridge script loads (rmorie first, then morie's R package) and its version
     probe = subprocess.run(
         [
             rscript,
             "--vanilla",
             "-e",
-            'p <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else if '
-            '(requireNamespace("morie", quietly = TRUE)) "morie" else ""; '
-            'cat(p, if (nzchar(p)) as.character(utils::packageVersion(p)) else "", "\\n"); quit(status = !nzchar(p))',
+            'for (p in c("rmorie", "morie")) if (requireNamespace(p, quietly = TRUE)) '
+            'cat(p, as.character(utils::packageVersion(p)), "\\n")',
         ],
         stdin=subprocess.DEVNULL,
         capture_output=True,
         text=True,
         timeout=120,
     )
-    if probe.returncode != 0:
+    found = [ln.split()[:2] for ln in probe.stdout.splitlines() if len(ln.split()) >= 2]
+    if not found:
         raise RuntimeError(
-            "The R package for the R-backed modules is required for R-backed modules but is not installed "
-            "(install rmorie, or morie's R package)"
+            "No R package for the R-backed modules is installed (install rmorie, or morie's R package)"
         )
-    pkg, _, r_version = probe.stdout.strip().partition(" ")
     from . import __version__ as py_version
 
-    # the two arms are released in lockstep: another version computes other numbers without saying so
-    if r_version.strip() and r_version.strip() != py_version and not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
-        raise RuntimeError(
-            f"R {pkg} {r_version.strip()} is installed, but this is morie {py_version}: the R-backed modules need the "
-            f"same version (run `morie r-install`; MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
-        )
+    match = next((pkg for pkg, ver in found if ver == py_version), None)
+    if match is None:
+        if not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
+            have = ", ".join(f"{pkg} {ver}" for pkg, ver in found)
+            raise RuntimeError(
+                f"R {have} {'is' if len(found) == 1 else 'are'} installed, but this is morie {py_version}: "
+                f"the R-backed modules need the same version (run `morie r-install`; "
+                f"MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
+            )
+        match = found[0][0]
+    _R_PACKAGE = match
     _R_READY = True
 
 
@@ -1050,7 +1065,7 @@ def _r_package_absent(exc: BaseException) -> bool:
     text = str(exc)
     return (
         "Rscript is not available" in text
-        or "is required for R-backed modules but is not installed" in text
+        or "No R package for the R-backed modules is installed" in text
         or "there is no package called" in text
     )
 
@@ -1077,6 +1092,10 @@ def r_route_problem(module_name: str, exc: BaseException) -> str:
     return f"{module_name}: the R-backed run failed{tail} (`morie doctor` checks the R side)"
 
 
+# directories made by _cpads_csv_for_run, the only ones run_module may remove
+_STAGED_DIRS: set[Path] = set()
+
+
 def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | Path:
     """The CSV the module stages (R bridge or Python) will read.
 
@@ -1100,7 +1119,11 @@ def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | 
         label = "ocp21-cached"
     if frame is None:
         return cpads_csv
-    dest = Path(tempfile.gettempdir()) / f"morie-dataset-{label}.csv"
+    # a private directory (mode 0700), removed when the run ends: a fixed name in the shared
+    # temp dir let runs overwrite each other's input and left the copy behind
+    staging = Path(tempfile.mkdtemp(prefix="morie-dataset-"))
+    _STAGED_DIRS.add(staging)
+    dest = staging / f"{label.replace('/', '__')}.csv"
     frame.to_csv(dest, index=False)
     return dest
 
@@ -1139,8 +1162,23 @@ def run_module(
             raise KeyError(f"Unknown dataset key: {dataset_key!r} (morie list-datasets shows the keys)")
     if module_name not in _PY_FALLBACK_MODULES:
         _r_route_ready()  # R and its package first: loading the frame took 10-14 s before this failed
-    cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)
+    staged = _cpads_csv_for_run(cpads_csv, dataset_key)
     try:
+        return _run_module_on(module_name, staged, dataset_key, output_dir)
+    finally:
+        # only a directory _cpads_csv_for_run made itself: never a caller's (a path's parent can be ".")
+        staging = Path(staged).parent
+        if staging in _STAGED_DIRS:
+            _STAGED_DIRS.discard(staging)
+            shutil.rmtree(staging, ignore_errors=True)
+
+
+def _run_module_on(module_name: str, cpads_csv, dataset_key, output_dir) -> dict[str, object]:
+    """``run_module`` once its input CSV is staged."""
+    try:
+        # the same version rule for every module: a Python-capable one takes the Python route
+        # instead of running another version of the R arm
+        _r_route_ready()
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
     except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
         # Only these exception classes mean "the R stage itself failed"
@@ -1148,9 +1186,9 @@ def run_module(
         # in OUR code and must not be masked by the Python fallback.
         if module_name not in _PY_FALLBACK_MODULES:
             raise
-        if _r_package_absent(exc):
+        if _r_package_absent(exc) or "the R-backed modules need the same version" in str(exc):
             logging.getLogger(__name__).info(
-                "%s: the R package is not installed; using the Python implementation", module_name
+                "%s: no R package of this version is installed; using the Python implementation", module_name
             )
         else:
             logging.getLogger(__name__).warning(

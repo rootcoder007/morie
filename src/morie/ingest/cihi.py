@@ -83,10 +83,13 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
     try:
         import openpyxl
     except ImportError:
+        from morie.data import _xlsx_promote_header
         from morie.fn import _frame_core as pd
 
         xl = pd.ExcelFile(path)
-        return _pick_data_sheet(xl, **read_excel_kwargs) if sheet is None else xl.parse(sheet, **read_excel_kwargs)
+        df = _pick_data_sheet(xl, **read_excel_kwargs) if sheet is None else xl.parse(sheet, **read_excel_kwargs)
+        df.columns = [" ".join(str(c).split()) for c in df.columns]
+        return _xlsx_promote_header(df)
     from morie.fn import _frame_core as pd
 
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
@@ -124,9 +127,11 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
                     row = tuple(row[: last + 1])  # the sheet may declare 16,384 columns; count the used ones
                 filled = sum(v is not None for v in row) if row else 0
                 if row and filled >= 2 and filled >= max(1, len(row) // 2):  # a sheet title is one cell
-                    header = [str(v) if v is not None else f"col{i}" for i, v in enumerate(row)]
+                    header = [" ".join(str(v).split()) if v is not None else f"col{i}" for i, v in enumerate(row)]
                 continue
-            if row is None or all(v is None for v in row):
+            if row is None or all(v is None or str(v).strip() == "" for v in row):
+                if records:
+                    break  # the table ends here; notes, or further tables on the tab, follow
                 continue
             records.append(list(row[: len(header)]) + [None] * max(0, len(header) - len(row)))
         if header is None:

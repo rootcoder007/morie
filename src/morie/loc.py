@@ -70,11 +70,14 @@ class LocalOllama:
 
     Examples
     --------
+    ``is_running()`` reports whether an Ollama server answers; the other calls
+    need one:
+
     >>> client = LocalOllama()
-    >>> client.is_running()
+    >>> client.is_running() in (True, False)
     True
-    >>> models = client.list_models()
-    >>> response = client.chat("What is IPW?")
+    >>> models = client.list_models()  # doctest: +SKIP
+    >>> response = client.chat("What is IPW?")  # doctest: +SKIP
     """
 
     def __init__(

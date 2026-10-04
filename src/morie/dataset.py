@@ -334,7 +334,7 @@ def infer_measurement_level(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> infer_measurement_level(pd.Series(["M", "F", "M", "F"]))
     <MeasurementLevel.NOMINAL: 'nominal'>
 
@@ -533,7 +533,7 @@ def profile_dataset(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({
     ...     "treatment": [0, 1, 0, 1],
     ...     "outcome": [1.2, 3.4, 2.1, 4.5],
@@ -671,8 +671,17 @@ def load_dataset(
 
     Examples
     --------
-    >>> df = load_dataset("data.csv")
-    >>> df = load_dataset("survey.xlsx", sheet_name="wave1")
+    >>> import os, tempfile
+    >>> path = os.path.join(tempfile.mkdtemp(), "data.csv")
+    >>> with open(path, "w") as fh:
+    ...     print("id,score", "1,3.5", "2,4.0", sep=chr(10), file=fh)
+    >>> df = load_dataset(path)
+    >>> df.shape
+    (2, 2)
+
+    A workbook takes its sheet by name:
+
+    >>> df = load_dataset("survey.xlsx", sheet_name="wave1")  # doctest: +SKIP
     """
     path = Path(path)
     if not path.exists():
@@ -741,7 +750,9 @@ def suggest_analysis_plan(profile: DatasetProfile) -> list[dict[str, Any]]:
 
     Examples
     --------
-    >>> plan = suggest_analysis_plan(profile)
+    >>> from morie.fn import _frame_core as pd
+    >>> df = pd.DataFrame({"treatment": [0, 1, 0, 1], "outcome": [1.2, 3.4, 2.1, 4.5]})
+    >>> plan = suggest_analysis_plan(profile_dataset(df))
     >>> plan[0]["analysis"]
     'descriptive_profile'
     """

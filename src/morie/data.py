@@ -1,3 +1,4 @@
+import functools
 import json
 import logging
 import os
@@ -1205,7 +1206,14 @@ def cache_store(df: pd.DataFrame, table: str, db_path: str | Path | None = None)
     """Write a DataFrame to the SQLite cache, replacing any existing table."""
     conn = cache_connect(db_path)
     try:
-        df.to_sql(table, conn, if_exists="replace", index=False)
+        try:
+            df.to_sql(table, conn, if_exists="replace", index=False)
+        except Exception as exc:  # noqa: BLE001
+            # a second process caching the same key at the same moment created the table between
+            # this one's drop and create: the table is there, so the cache is fine
+            if "already exists" not in str(exc):
+                raise
+            logger.info("%s was cached by another process at the same time", table)
         n = len(df)
         logger.info("Cached %d rows -> %s", n, table)
         return n
@@ -1294,6 +1302,10 @@ def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4) -> dict:
     raise RuntimeError("unreachable")
 
 
+# a table this many cells or larger gets stage lines while it is built and cached
+_STAGES_MIN_CELLS = 1_000_000
+
+
 def fetch_ckan_to_cache(
     dataset_key: str = "cpads",
     limit: int = 32000,
@@ -1374,9 +1386,10 @@ def fetch_ckan_to_cache(
         total = result.get("total")
         if batch:
             if prog is None:
-                prog = Progress(
-                    f"{dataset_key} (CKAN datastore)", total if isinstance(total, int) else None, unit="rows"
-                )
+                want = total if isinstance(total, int) else None
+                if max_records is not None:  # a --limit preview fetches only that many
+                    want = max_records if want is None else min(want, max_records)
+                prog = Progress(f"{dataset_key} (CKAN datastore)", want, unit="rows")
             prog.update(len(batch))
         if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
             break
@@ -1386,6 +1399,15 @@ def fetch_ckan_to_cache(
     if prog is not None:
         prog.close()
 
+    # building and caching a big table takes longer than fetching it (ocp21: 16 s fetched, then
+    # ~110 s silent): say which step is running
+    big = len(records) * max(len(records[0]) if records else 0, 1) >= _STAGES_MIN_CELLS
+    stages = None
+    if big:
+        from ._progress import Stages
+
+        stages = Stages(dataset_key, 3 if is_cpads else 2)
+        stages.step(f"building the table ({len(records):,} rows x {len(records[0]):,} columns)")
     if records:
         df = pd.DataFrame.from_records(records)
         # Drop CKAN internal column.
@@ -1405,10 +1427,14 @@ def fetch_ckan_to_cache(
         logger.info("%s: first %d rows fetched (--limit); not cached", dataset_key, len(df))
         return df
     # Cache under the name load_dataset() looks up next time.
+    if stages is not None:
+        stages.step("caching it so the next pull is fast")
     cache_store(df, table_name, db_path)
 
     # If CPADS, also canonicalize and cache the canonical version.
     if is_cpads and has_raw_cpads_columns(df):
+        if stages is not None:
+            stages.step("adding the canonical CPADS columns")
         canonical = canonicalize_cpads_frame(df)
         cache_store(canonical, "cpads_canonical", db_path)
         return canonical
@@ -1501,7 +1527,68 @@ def _xlsx_data_sheet(path) -> pd.DataFrame:
             best, best_cells = df, cells
     if best is None:
         raise RuntimeError(f"no readable sheet in {Path(path).name}")
-    return best
+    # header cells wrapped inside the workbook ("Number of \nhospital stays") become one-line names
+    best.columns = [" ".join(str(c).split()) for c in best.columns]
+    return _xlsx_promote_header(best)
+
+
+_PLACEHOLDER = re.compile(r"^(Unnamed: \d+|\.\.\.\d+)$")
+
+
+def _xlsx_cell_set(v) -> bool:
+    return v is not None and not (isinstance(v, float) and v != v) and str(v).strip() != ""
+
+
+def _xlsx_number(vals: list):
+    """The column as numbers when every set cell is one, else unchanged."""
+    out = []
+    for v in vals:
+        if not _xlsx_cell_set(v):
+            out.append(float("nan"))
+            continue
+        if isinstance(v, int | float) and not isinstance(v, bool):
+            out.append(v)
+            continue
+        try:
+            f = float(str(v).strip())
+        except ValueError:
+            return vals
+        out.append(int(f) if f.is_integer() and "." not in str(v) else f)
+    return out
+
+
+def _xlsx_promote_header(df: pd.DataFrame) -> pd.DataFrame:
+    """A sheet whose first row is a title, its real header a few rows down (CIHI data tables).
+
+    The title in A1 becomes the first column name and the rest are placeholders. The first row
+    filled across most columns is the header; the table ends at the first blank row (what
+    follows is notes, or further tables stacked on the same tab). Same rule as rmorie.
+    """
+    names = [str(c) for c in df.columns]
+    n_rows, n_cols = df.shape
+    if n_cols < 2 or not n_rows:
+        return df
+    if sum(bool(_PLACEHOLDER.match(c)) or not c.strip() for c in names[1:]) < 0.5 * (n_cols - 1):
+        return df
+    cols = [df[c].tolist() for c in df.columns]
+    need = max(2, -(-4 * n_cols // 5))
+    hdr = next((i for i in range(min(n_rows, 20)) if sum(_xlsx_cell_set(col[i]) for col in cols) >= need), None)
+    if hdr is None:
+        return df
+    end = n_rows
+    for i in range(hdr + 1, n_rows):
+        if not any(_xlsx_cell_set(col[i]) for col in cols):
+            end = i
+            if any(_xlsx_cell_set(col[j]) for col in cols for j in range(i, n_rows)):
+                logger.info("rows after the table's first blank line (notes, or further tables) are left out")
+            break
+    new, seen = [], {}
+    for j, col in enumerate(cols):
+        nm = " ".join(str(col[hdr]).split()) if _xlsx_cell_set(col[hdr]) else f"...{j + 1}"
+        k = seen.get(nm, 0)
+        seen[nm] = k + 1
+        new.append(nm if k == 0 else f"{nm}.{k}")
+    return pd.DataFrame({nm: _xlsx_number(col[hdr + 1:end]) for nm, col in zip(new, cols)})
 
 
 def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:
@@ -1628,6 +1715,13 @@ def _data_dir_candidates() -> list[Path]:
     out.append(_project_root() / "data")
     out.append(Path.cwd() / "data")
     return out
+
+
+def _own_file_target(rel: str) -> Path:
+    """Where a user puts an own-file dataset: under ``MORIE_DATA_DIR`` when set, else the per-user data dir."""
+    p = Path(rel)
+    tail = Path(*p.parts[1:]) if p.parts and p.parts[0] == "data" else p
+    return _data_dir_candidates()[0] / tail
 
 
 def _find_local_file(rel: str) -> Path | None:
@@ -1967,7 +2061,7 @@ def synthetic_mapq_panel(n: int = 400, seed: int = 2026) -> pd.DataFrame:
 SYNTHETIC_OWN_FILES = {"mapq": synthetic_mapq_panel}
 
 
-def load_dataset(
+def _load_dataset_raw(
     key: str,
     *,
     db_path: str | Path | None = None,
@@ -2007,7 +2101,7 @@ def load_dataset(
             import warnings
 
             warnings.warn(
-                f"{matched}: your file is not at $MORIE_DATA_DIR/{entry['local_path'].removeprefix('data/')}; "
+                f"{matched}: your file is not at {_own_file_target(entry['local_path'])}; "
                 "returning the synthetic toy panel (n = 400, planted structure) so the analyses run. "
                 "Its numbers demonstrate the pipeline, they are not findings.",
                 UserWarning,
@@ -2095,6 +2189,12 @@ def load_dataset(
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
 
+    # 3a. Research files that are not tables (R environments) kept at data.rmorie.com live in the
+    #     data directory in effect (MORIE_DATA_DIR when set): a copy saved earlier under another
+    #     directory must not win over the one the user chose.
+    if entry.get("hosted_file"):
+        return _load_hosted_file(entry, matched)
+
     # 3. Local file: the catalog path is relative to a data directory.
     #    An installed package has no source tree, so the cascade is
     #    MORIE_DATA_DIR, the per-user data directory, the source checkout
@@ -2115,11 +2215,6 @@ def load_dataset(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
-
-    # 3b. Research files that are not tables (R environments) kept at data.rmorie.com:
-    #     saved under the data directory for R to open.
-    if entry.get("hosted_file"):
-        return _load_hosted_file(entry, matched)
 
     # 3c. A direct portal download (a file, or one member of a zip), then the
     #     data.rmorie.com copy of the same table when the portal fails or the
@@ -2148,7 +2243,7 @@ def load_dataset(
     raise FileNotFoundError(f"Dataset {matched!r} could not be loaded.\n" + dataset_recommendation(matched, entry))
 
 
-def list_datasets(db_path: str | Path | None = None) -> list[dict]:
+def list_datasets(db_path: str | Path | None = None, *, hosted: bool = True) -> list[dict]:
     """List all datasets with their cache status.
 
     Returns a list of dicts with keys: key, name, source, survey, year,
@@ -2199,7 +2294,8 @@ def list_datasets(db_path: str | Path | None = None) -> list[dict]:
     try:
         from .hosted import hosted_key
 
-        manifest = hosted_manifest() if hosted_key() else cached_manifest()
+        # hosted=False: the copy already on disk only (selftest promises no downloads)
+        manifest = hosted_manifest() if hosted and hosted_key() else cached_manifest()
     except DataHubAuthError:
         manifest = cached_manifest()
     except Exception as exc:  # noqa: BLE001 - offline: the local list still prints
@@ -2236,22 +2332,47 @@ def dataset_route(entry: dict) -> str:
         return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
         return "open.canada.ca"
-    rel = entry.get("local_path", "")
-    rel = rel[len("data/") :] if rel.startswith("data/") else rel
-    return "own file: $MORIE_DATA_DIR/" + rel
+    return f"own file: {_own_file_target(entry.get('local_path', ''))}"
+
+
+def _cache_rows(table: str, db_path: str | Path | None = None) -> int | None:
+    """Row count of a cached table without loading it; None when it is not cached."""
+    conn = cache_connect(db_path)
+    try:
+        if not conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone():
+            return None
+        return int(conn.execute(f"SELECT COUNT(*) FROM [{_safe_table_name(table)}]").fetchone()[0])
+    finally:
+        conn.close()
 
 
 def dataset_info(key: str) -> dict:
-    """Return full metadata for a dataset by catalog key."""
-    matched = _fuzzy_match_key(key)
-    if matched is None:
-        raise KeyError(f"Unknown dataset key: {key!r}")
-    info = dict(DATASET_CATALOG[matched])
-    info["key"] = matched
-    info["local_exists"] = Path(info["local_path"]).exists()
-    cached = cache_load(info["table_name"])
-    info["cached"] = cached is not None
-    info["cached_rows"] = len(cached) if cached is not None else None
+    """Return full metadata for a dataset: a catalog key, or a curated ``db/table`` key."""
+    from .datahub import cached_manifest, hosted_entries, hosted_manifest, is_hosted_key
+
+    if is_hosted_key(key):
+        manifest = cached_manifest()
+        if manifest is None:
+            try:
+                manifest = hosted_manifest()
+            except Exception:  # noqa: BLE001 - no key or no network: said below
+                manifest = None
+        row = next((d for d in (manifest or {}).get("datasets", []) if d.get("key") == key), None)
+        if row is None:
+            hint = "" if manifest else " (no data.rmorie.com manifest at hand: run `morie login`, then `morie list-datasets`)"
+            raise KeyError(f"Unknown dataset key: {key!r}{hint}")
+        info = hosted_entries({"datasets": [row]})[0]
+        info["meta"] = row.get("meta") or {}
+    else:
+        matched = _fuzzy_match_key(key)
+        if matched is None:
+            raise KeyError(f"Unknown dataset key: {key!r}")
+        info = dict(DATASET_CATALOG[matched])
+        info["key"] = matched
+        info["local_exists"] = Path(info["local_path"]).exists()
+    rows = _cache_rows(info["table_name"])
+    info["cached"] = rows is not None
+    info["cached_rows"] = rows
     return info
 
 
@@ -2625,3 +2746,24 @@ def check_datasets(
             "recommendations": recommendations,
         },
     )
+
+
+def _post_load(key: str, df):
+    """Column clean-ups a dataset needs however it arrived (portal, data.rmorie.com, cache)."""
+    if key == "siu" and df is not None and "sex_gender_affected" in getattr(df, "columns", ()):
+        # the published corpus holds page text cut at the wrong place in this column
+        # ("ual assault. the unit's jurisdiction ..."): the few real categories, missing kept missing
+        from .siu.analyze import _sex
+
+        df["sex_gender_affected"] = [
+            None if v is None or (isinstance(v, float) and v != v) or v == "" else _sex(v)
+            for v in df["sex_gender_affected"].tolist()
+        ]
+    return df
+
+
+@functools.wraps(_load_dataset_raw)
+def load_dataset(key: str, *args, **kwargs):
+    df = _load_dataset_raw(key, *args, **kwargs)
+    matched = _fuzzy_match_key(key) or key
+    return _post_load(matched, df)

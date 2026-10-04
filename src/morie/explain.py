@@ -266,4 +266,5 @@ CHEATSHEET = _cheatsheet_body.__doc__ or ""
 
 
 def print_cheatsheet() -> None:
+    """Print the ``morie explain`` cheatsheet: the output-file glossary in brief."""
     print(_cheatsheet_body())

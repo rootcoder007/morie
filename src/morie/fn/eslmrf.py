@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import itertools
+
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -113,7 +115,8 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
         if np.shape(P) != (s, s):
             raise ValueError(f"potential for edge {e} has shape {np.shape(P)}, expected ({s}, {s})")
 
-    cfgs = np.array(np.meshgrid(*[np.arange(s)] * V, indexing="ij")).reshape(V, -1).T
+    # same order as numpy's meshgrid(indexing="ij") stack: last node varies fastest
+    cfgs = np.array([list(c) for c in itertools.product(range(s), repeat=V)], dtype=int)
     logw = np.zeros(cfgs.shape[0])
     for (i, j), P in psi.items():
         logw += np.log(np.asarray(P, dtype=float)[cfgs[:, i], cfgs[:, j]] + 1e-300)

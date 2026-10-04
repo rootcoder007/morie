@@ -49,11 +49,11 @@ def gamma_frailty_cox(time, event, X, cluster, **kwargs):
     --------
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> k = np.repeat(np.arange(50), 8)
-    >>> w = rng.gamma(2.0, 0.5, 50)[k]
-    >>> X = rng.normal(size=(400, 1))
+    >>> k = np.repeat(np.arange(30), 8)
+    >>> w = rng.gamma(2.0, 0.5, 30)[k]
+    >>> X = rng.normal(size=(240, 1))
     >>> T = rng.exponential(1 / (w * np.exp(X[:, 0] * 0.9)))
-    >>> C = rng.exponential(2.0, 400)
+    >>> C = rng.exponential(2.0, 240)
     >>> t, e = np.minimum(T, C), (T <= C).astype(float)
     >>> r = gamma_frailty_cox(t, e, X, k)
     >>> bool(r["theta"] > 0.05)

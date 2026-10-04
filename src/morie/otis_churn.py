@@ -54,6 +54,15 @@ def _load(ds_id: str) -> pd.DataFrame:
 
 
 def gini(x: np.ndarray) -> float:
+    """Gini coefficient of non-negative counts; 0 for an empty or all-zero input.
+
+    Computed as ``(n + 1 - 2 * sum(cumsum(sorted x)) / sum(x)) / n``.
+
+    Examples:
+        >>> from morie.fn import _array_core as np
+        >>> gini(np.array([1, 1, 1, 1])), gini(np.array([0, 0, 0, 1]))
+        (0.0, 0.75)
+    """
     if x.size == 0 or x.sum() == 0:
         return 0.0
     sx = np.sort(x.astype(float))
@@ -835,6 +844,17 @@ def irr_glmm_vm(df: pd.DataFrame | None = None) -> RichResult:
 
 
 def analyze_all(out_dir: Path | None = None) -> dict[str, RichResult]:
+    """Run every OTIS churn analysis and write each result as text and JSON.
+
+    An analysis that fails is recorded as a result carrying the error as
+    a warning, so one failure does not stop the rest.
+
+    Args:
+        out_dir: output directory (created if needed); ``None`` uses the default.
+
+    Returns:
+        Results keyed by analysis name.
+    """
     out_dir = out_dir or DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, RichResult] = {}

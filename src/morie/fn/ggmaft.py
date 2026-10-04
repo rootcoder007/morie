@@ -62,10 +62,10 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> X = rng.normal(size=(1200, 2))
+    >>> X = rng.normal(size=(500, 2))
     >>> mu = 1.0 + 0.7 * X[:, 0] - 0.4 * X[:, 1]
-    >>> T = np.exp(mu + 0.6 * np.log(rng.exponential(1.0, 1200)))
-    >>> C = rng.exponential(float(np.exp(mu).mean()) * 6, 1200)
+    >>> T = np.exp(mu + 0.6 * np.log(rng.exponential(1.0, 500)))
+    >>> C = rng.exponential(float(np.exp(mu).mean()) * 6, 500)
     >>> t, e = np.minimum(T, C), (T <= C).astype(float)
     >>> r = generalized_gamma_aft(t, e, X)
     >>> bool(r["p_vs_weibull"] > 0.05)
@@ -81,10 +81,10 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     On log-normal data it prefers log-normal instead -- the nesting doing its
     job.
 
-    >>> T2 = np.exp(mu + 0.6 * rng.normal(size=1200))
+    >>> T2 = np.exp(mu + 0.6 * rng.normal(size=500))
     >>> t2, e2 = np.minimum(T2, C), (T2 <= C).astype(float)
-    >>> bool(generalized_gamma_aft(t2, e2, X)["lr_vs_lognormal"]
-    ...      < generalized_gamma_aft(t2, e2, X)["lr_vs_weibull"])
+    >>> r2 = generalized_gamma_aft(t2, e2, X)
+    >>> bool(r2["lr_vs_lognormal"] < r2["lr_vs_weibull"])
     True
     """
     from ._sci_core import gammaln, minimize

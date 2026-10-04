@@ -11,6 +11,7 @@ text fallback for minimal environments.
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import os
 import shutil
 import subprocess
@@ -209,6 +210,35 @@ _REQUIRED_IMPORTS = [
 _OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels", "textual"]
 
 
+# The trust knobs as morie._exec_guard defines them (that module ships with the interactive layer):
+# environment variables, read the same way, so a plain install reports its posture too.
+_KNOB_DETAILS = (
+    ("MORIE_NO_EXEC", "when set: ALL dynamic execution (REPL/exec/shell) is disabled"),
+    (
+        "MORIE_ALLOW_REMOTE_INSTALL",
+        "when set: the shell launcher (bin/morie, git checkouts) may run the downloaded Ollama install.sh",
+    ),
+    (
+        "MORIE_TRUST_CHECKPOINT",
+        "when set: convert-checkpoint / pt2gguf deserialize a .pt (tensors and plain containers only)",
+    ),
+    ("MORIE_ALLOW_RC", "when set: the shell launcher (bin/morie, git checkouts) sources the ESML_RC shell config"),
+    (
+        "MORIE_ALLOW_CRON",
+        "when set: the shell launcher's `cron add/remove` (bin/morie, git checkouts) may edit your crontab",
+    ),
+)
+
+
+def _knob_status_without_layer() -> list[dict[str, Any]]:
+    out = []
+    for name, detail in _KNOB_DETAILS:
+        v = os.environ.get(name, "").strip()
+        on = v not in ("", "0") if name == "MORIE_NO_EXEC" else v.lower() in ("1", "true", "yes", "on")
+        out.append({"name": name, "enabled": on, "detail": detail})
+    return out
+
+
 def run_checks() -> dict[str, Any]:
     """Run all diagnostics and return a structured results dict."""
     results: dict[str, Any] = {"checks": [], "all_required_passed": True}
@@ -279,7 +309,7 @@ def run_checks() -> dict[str, Any]:
     try:
         from morie._exec_guard import knob_status
     except ImportError:
-        knob_status = None
+        knob_status = _knob_status_without_layer
 
     if knob_status is not None:
         for knob in knob_status():
@@ -369,6 +399,16 @@ def _render(results: dict[str, Any]) -> None:
             _render_plain(results)
 
 
+def _installer() -> list[str] | None:
+    """The command that installs into this interpreter: pip when it has pip, uv when uv made it."""
+    if importlib.util.find_spec("pip") is not None:
+        return [sys.executable, "-m", "pip", "install"]
+    import shutil
+
+    uv = shutil.which("uv")
+    return [uv, "pip", "install", "--python", sys.executable] if uv else None
+
+
 def _heal(results: dict[str, Any]) -> bool:
     """Attempt to remediate failed checks (``morie doctor --fix``).
 
@@ -389,6 +429,7 @@ def _heal(results: dict[str, Any]) -> bool:
         print(f"  [fail] could not create {cache_dir}: {exc}")
 
     fixed_any = False
+    installer = _installer()
     for check in results["checks"]:
         if check["passed"]:
             continue
@@ -396,9 +437,13 @@ def _heal(results: dict[str, Any]) -> bool:
         if label.startswith("import "):
             pkg = label[len("import ") :]
             pip_name = _PIP_NAME.get(pkg, pkg)
-            print(f"  ...    installing {pip_name} via pip ...")
-            rc = subprocess.run([sys.executable, "-m", "pip", "install", pip_name]).returncode
-            print(f"  [{'ok' if rc == 0 else 'fail'}]   pip install {pip_name}")
+            if installer is None:
+                # a uv-made venv has no pip: say what to run instead of printing "No module named pip"
+                print(f"  [hint] {pip_name}: this environment has no pip; run `uv pip install {pip_name}`")
+                continue
+            print(f"  ...    installing {pip_name} ({' '.join(installer[-3:])}) ...")
+            rc = subprocess.run([*installer, pip_name]).returncode
+            print(f"  [{'ok' if rc == 0 else 'fail'}]   install {pip_name}")
             fixed_any = fixed_any or rc == 0
         elif label == "morie version":
             print("  [hint] run `morie update` to upgrade morie itself.")

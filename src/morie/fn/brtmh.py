@@ -5,7 +5,6 @@ Brent's method for root finding.
 Combines bisection, secant, and inverse quadratic interpolation.
 """
 
-from . import _array_core as np
 
 __all__ = ["brtmh"]
 
@@ -53,69 +52,53 @@ def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
     >>> np.isclose(root, 2**(1/3), atol=1e-6)
     True
     """
+    # Brent (1973), ch. 4, procedure zero: b is the best estimate, c the contrapoint
+    # (f(b) and f(c) of opposite sign), a the previous b.
     fa = f(a)
     fb = f(b)
-
     if fa * fb > 0:
         raise ValueError("f(a) and f(b) must have opposite signs")
-
-    if np.abs(fa) < np.abs(fb):
-        a, b = b, a
-        fa, fb = fb, fa
-
-    c = a
-    fc = fa
-    d = c
-    mflag = True
-
+    c, fc = a, fa
+    d = e = b - a
+    eps = 2.220446049250313e-16
     for iteration in range(max_iter):
-        if fa != fc and fb != fc:
-            # Inverse quadratic interpolation
-            L0 = a * fb * fc / ((fa - fb) * (fa - fc))
-            L1 = b * fa * fc / ((fb - fa) * (fb - fc))
-            L2 = c * fa * fb / ((fc - fa) * (fc - fb))
-            s = L0 + L1 + L2
-        else:
-            # Secant method
-            s = b - fb * (b - a) / (fb - fa)
-
-        # Bisection fallback conditions
-        if (
-            (s - b) * (3 * a - b) > 0
-            or (mflag and np.abs(s - b) >= np.abs(b - c) / 2)
-            or (not mflag and np.abs(s - b) >= np.abs(c - d) / 2)
-            or (mflag and np.abs(b - c) < tol)
-            or (not mflag and np.abs(c - d) < tol)
-        ):
-            s = (a + b) / 2
-            mflag = True
-        else:
-            mflag = False
-
-        fs = f(s)
-        d = c
-        c = b
-
-        if fa * fs < 0:
-            b = s
-            fb = fs
-        else:
-            a = s
-            fa = fs
-
-        if np.abs(fa) < np.abs(fb):
-            a, b = b, a
-            fa, fb = fb, fa
-
-        if np.abs(fb) < tol or (b - a) < tol:
+        if fb * fc > 0:
+            c, fc = a, fa
+            d = e = b - a
+        if abs(fc) < abs(fb):
+            a, b, c = b, c, b
+            fa, fb, fc = fb, fc, fb
+        tol1 = 2.0 * eps * abs(b) + 0.5 * tol
+        xm = 0.5 * (c - b)
+        if abs(xm) <= tol1 or fb == 0:
             if full_output:
-                return b, {"iterations": iteration + 1, "converged": True, "final_residual": np.abs(fb)}
+                return b, {"iterations": iteration + 1, "converged": True, "final_residual": abs(fb)}
             return b
-
+        if abs(e) >= tol1 and abs(fa) > abs(fb):
+            s_ = fb / fa
+            if a == c:  # secant
+                p_ = 2.0 * xm * s_
+                q_ = 1.0 - s_
+            else:  # inverse quadratic interpolation
+                q_ = fa / fc
+                r_ = fb / fc
+                p_ = s_ * (2.0 * xm * q_ * (q_ - r_) - (b - a) * (r_ - 1.0))
+                q_ = (q_ - 1.0) * (r_ - 1.0) * (s_ - 1.0)
+            if p_ > 0:
+                q_ = -q_
+            p_ = abs(p_)
+            if 2.0 * p_ < min(3.0 * xm * q_ - abs(tol1 * q_), abs(e * q_)):
+                e, d = d, p_ / q_
+            else:  # interpolation would leave the bracket or shrink too slowly: bisect
+                d = e = xm
+        else:
+            d = e = xm
+        a, fa = b, fb
+        b += d if abs(d) > tol1 else (tol1 if xm > 0 else -tol1)
+        fb = f(b)
     if full_output:
-        return b, {"iterations": max_iter, "converged": False, "final_residual": np.abs(fb)}
+        return b, {"iterations": max_iter, "converged": False, "final_residual": abs(fb)}
     return b
-
 
 def cheatsheet() -> str:
     return "brtmh: brtmh(f, a, b, tol, max_iter, full_output) -> Brent's method for root finding."

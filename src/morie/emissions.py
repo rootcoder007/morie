@@ -913,6 +913,20 @@ def run_check(
 
 
 def summary_text(data: EmissionsData, capsule: dict[str, Any] | None) -> str:
+    """Four-line plain-text summary of a tracked run's emissions.
+
+    Lists kg CO2eq and duration, energy (CPU and RAM), the CPU and its
+    utilisation, and the carbon intensity used (the country set by
+    ``MORIE_COUNTRY_ISO``, else the world average). A provenance capsule,
+    when given, adds a line naming its manifest and whether it was signed.
+
+    Args:
+        data: the measured ``EmissionsData``.
+        capsule: the capsule record from writing the run's provenance, or ``None``.
+
+    Returns:
+        The summary, lines joined by newlines.
+    """
     ci = data.emissions / data.energy_consumed / data.pue if data.energy_consumed > 0 else float("nan")
     where = data.country_iso_code or "world average; set MORIE_COUNTRY_ISO"
     lines = [

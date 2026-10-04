@@ -98,11 +98,28 @@ def mrm_otis_mandela_spectrum(
             rate, pct.
 
     Examples:
-        >>> b01 = pd.read_csv("b01_segregation_detailed_dataset.csv")
+        Four placements over two years; in 2023 one of the two runs past
+        15 days.
+
+        >>> from morie.fn import _frame_core as pd
+        >>> b01 = pd.DataFrame({
+        ...     "UniqueIndividual_ID": [1, 2, 3, 4],
+        ...     "EndFiscalYear": [2023, 2023, 2024, 2024],
+        ...     "NumberConsecutiveDays_Segregation": [20, 3, 16, 40],
+        ...     "MentalHealth_Alert": ["Yes", "No", "No", "No"],
+        ...     "SuicideRisk_Alert": ["No"] * 4,
+        ...     "SuicideWatch_Alert": ["No"] * 4,
+        ... })
         >>> spectrum = mrm_otis_mandela_spectrum(b01)
+        >>> row = spectrum.to_dict("records")[0]
+        >>> row["year"], row["denominator"], row["contact_proxy"], row["pct"]
+        ('2023', 'row', 'none', 50.0)
         >>> spectrum.pivot_table(index=["year", "denominator"],
-        ...                     columns="contact_proxy",
-        ...                     values="pct")
+        ...                      columns="contact_proxy", values="pct").shape
+        (9, 3)
+
+        On the real data, ``pd.read_csv`` the b01 file from the OTIS
+        release and pass it the same way.
     """
     df = pd.coerce_frame(data).copy()
     dur = pd.to_numeric(df[duration_col], errors="coerce")

@@ -195,7 +195,7 @@ def mrm_uof_force_concentration(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"force": ["A"] * 50 + ["B"] * 5})
     >>> r = mrm_uof_force_concentration(df, "force")
     >>> r.n_forces

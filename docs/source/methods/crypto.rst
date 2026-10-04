@@ -37,10 +37,14 @@ confidentiality and integrity for arbitrary-length messages.
 
 .. code-block:: python
 
+   import os
+
    from morie.crypto import chacha20_poly1305_encrypt, chacha20_poly1305_decrypt
 
-   ct = chacha20_poly1305_encrypt(key, nonce, plaintext, aad=b"")
-   pt = chacha20_poly1305_decrypt(key, nonce, ct, aad=b"")
+   key, nonce, plaintext = os.urandom(32), os.urandom(12), b"attack at dawn"
+   ct, tag = chacha20_poly1305_encrypt(key, nonce, plaintext, aad=b"")
+   pt = chacha20_poly1305_decrypt(key, nonce, ct, tag, aad=b"")
+   assert pt == plaintext
 
 HKDF-SHA256 (RFC 5869)
 -----------------------
@@ -49,7 +53,11 @@ Key derivation function for expanding keying material.
 
 .. code-block:: python
 
+   import os
+
    from morie.crypto import hkdf_sha256
+
+   input_key_material = os.urandom(32)  # e.g. a shared secret from the KEM
    derived = hkdf_sha256(input_key_material, length=32, salt=b"", info=b"")
 
 Hybrid KEM-DEM Construction
@@ -85,7 +93,7 @@ password protection:
 
 .. code-block:: python
 
-   from morie.crypto import create_keystore, store_keypair, load_keypair
+   from morie.crypto import create_keystore, hybrid_keygen, load_keypair, store_keypair
 
    create_keystore("my-password")
    pk, sk = hybrid_keygen()

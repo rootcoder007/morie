@@ -20,7 +20,7 @@ from the shared Philox stream, so a seed gives the same path in both.
 
    R.dark_figure_two_source(400, 250, 80, kappa=2)   # Lincoln-Petersen with a dependence box
    R.feedback_loop_limit(0.3, 0.2, 10, 10)            # the proved limit of the patrol share
-   R.meta_random_effects(estimates, variances)        # DerSimonian-Laird, with the truncation flag
+   R.meta_random_effects([0.20, 0.35, 0.10], [0.010, 0.020, 0.015])  # DerSimonian-Laird, with the truncation flag
 
 Problems and functions
 ----------------------

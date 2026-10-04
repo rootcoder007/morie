@@ -213,10 +213,23 @@ def gates() -> list[DatasetGate]:
 
 
 def run_all() -> list[GateResult]:
+    """Run every registered evaluation gate and return their results in registry order."""
     return [run_gate(g) for g in _REGISTRY]
 
 
 def summary(results: list[GateResult]) -> dict[str, int]:
+    """Count gate results by status.
+
+    Args:
+        results: the ``GateResult`` list from ``run_all``.
+
+    Returns:
+        A dict with ``pass``, ``fail``, ``skip``, ``error`` and ``total``.
+
+    Examples:
+        >>> summary([])
+        {'pass': 0, 'fail': 0, 'skip': 0, 'error': 0, 'total': 0}
+    """
     s = {"pass": 0, "fail": 0, "skip": 0, "error": 0, "total": len(results)}
     for r in results:
         s[r.status] = s.get(r.status, 0) + 1

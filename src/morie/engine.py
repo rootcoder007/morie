@@ -153,9 +153,11 @@ class MORIEEngine:
 
     Examples
     --------
-    >>> engine = MORIEEngine("~/.ollama/models/blobs/sha256-abc123", kv_bits=3)
-    >>> result = engine.generate("The capital of France is", max_tokens=20)
-    >>> print(result.text)
+    Needs a GGUF model file on disk (the path below is a placeholder):
+
+    >>> engine = MORIEEngine("~/.ollama/models/blobs/sha256-abc123", kv_bits=3)  # doctest: +SKIP
+    >>> result = engine.generate("The capital of France is", max_tokens=20)  # doctest: +SKIP
+    >>> print(result.text)  # doctest: +SKIP
     """
 
     def __init__(

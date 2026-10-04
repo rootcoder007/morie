@@ -14,15 +14,16 @@
 // All kernels return through caller-visible buffers or Python bytes;
 // nothing here writes to stdout/stderr or terminates the process.
 
-#include <cstddef>
-#include <cstring>
-#include <stdexcept>
-#include <vector>
-
+// nanobind (Python.h) first: a standard header before it defines _POSIX_C_SOURCE and pyconfig.h warns
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/tuple.h>
+
+#include <cstddef>
+#include <cstring>
+#include <stdexcept>
+#include <vector>
 
 #include "linalg_core.hpp"
 

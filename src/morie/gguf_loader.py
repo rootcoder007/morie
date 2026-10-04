@@ -111,11 +111,13 @@ class GGUFModel:
 
     Examples
     --------
-    >>> model = GGUFModel("~/.ollama/models/blobs/sha256-abc123")
-    >>> print(model.config)
+    Needs a GGUF model file on disk (the path below is a placeholder):
+
+    >>> model = GGUFModel("~/.ollama/models/blobs/sha256-abc123")  # doctest: +SKIP
+    >>> print(model.config)  # doctest: +SKIP
     {'architecture': 'llama', 'n_layers': 32, ...}
-    >>> names = model.tensor_names()
-    >>> weight = model.get_tensor("token_embd.weight")
+    >>> names = model.tensor_names()  # doctest: +SKIP
+    >>> weight = model.get_tensor("token_embd.weight")  # doctest: +SKIP
     """
 
     def __init__(self, path: str | Path):

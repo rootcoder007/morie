@@ -44,7 +44,18 @@ def _r_install_expr(github: bool = False) -> str:
             f"install.packages('remotes', repos='{CRAN}'); "
             f"remotes::install_github('{GITHUB_REPO}', subdir = '{GITHUB_SUBDIR}')"
         )
-    return f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}'))"
+    from . import __version__ as v
+
+    # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
+    # serves another version (it lags a release by a build cycle)
+    return (
+        f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}')); "
+        "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
+        f"if (have() != '{v}') {{ "
+        f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
+        f"remotes::install_github('rootcoder007/rmorie@v{v}', upgrade = 'never') }}; "
+        f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
+    )
 
 
 def _have_spec(name: str) -> bool:
@@ -121,6 +132,23 @@ def _mark(ok: bool, label: str) -> None:
 
 
 def run(args) -> int:
+    """Run ``morie bricklayer``: report which members of the morie family are installed.
+
+    Prints one line each for morie (Python), rmorie with its data and
+    bricklayer packages (R), the ``rmorie`` launcher and a C/C++ toolchain,
+    and warns when a compiled core is inactive. With ``args.check`` it
+    only reports. Otherwise, when the R side is missing (or
+    ``args.github`` asks for this repository's R arm), it installs it --
+    rmorie pinned to this morie's version -- after a confirmation that
+    ``args.yes`` skips; off a terminal without ``--yes`` it prints the
+    install command instead.
+
+    Args:
+        args: the parsed ``argparse`` namespace of the ``bricklayer`` verb.
+
+    Returns:
+        The process exit code (0 when everything checked is present).
+    """
     py_ok = True  # we are running inside morie
     r_ok = _have_r_morie()
     cli_ok = _which("rmorie")

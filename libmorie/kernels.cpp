@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <cstddef>
+#include <vector>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
@@ -24,33 +25,27 @@ namespace {
 // A read-only, contiguous 1-D float64 array (the Python shim coerces
 // every input to this layout before calling in).
 using Vec = nb::ndarray<const double, nb::ndim<1>, nb::c_contig>;
-using OutArray = nb::ndarray<nb::numpy, double, nb::ndim<1>>;
+// Results go back as owned float64 bytes the Python shim wraps (morie.fn's
+// frombuffer): a numpy-typed ndarray could not be exported on an install
+// without numpy, which the plain wheel is.
+using OutArray = nb::bytes;
 
-// Allocate an owned float64 array nanobind hands back to numpy; the
-// capsule frees it when the numpy array is garbage-collected.
-OutArray make_array(std::size_t n, double **out) {
-    double *data = new double[n];
-    *out = data;
-    nb::capsule owner(data, [](void *p) noexcept {
-        delete[] static_cast<double *>(p);
-    });
-    return OutArray(data, {n}, owner);
+static OutArray to_bytes(const std::vector<double> &v) {
+    return nb::bytes(reinterpret_cast<const char *>(v.data()), v.size() * sizeof(double));
 }
 
 OutArray normal_pdf(Vec x, double mean, double sd) {
     const std::size_t n = x.shape(0);
-    double *out;
-    OutArray arr = make_array(n, &out);
-    core::normal_pdf(x.data(), n, mean, sd, out);
-    return arr;
+    std::vector<double> out(n);
+    core::normal_pdf(x.data(), n, mean, sd, out.data());
+    return to_bytes(out);
 }
 
 OutArray normal_logpdf(Vec x, double mean, double sd) {
     const std::size_t n = x.shape(0);
-    double *out;
-    OutArray arr = make_array(n, &out);
-    core::normal_logpdf(x.data(), n, mean, sd, out);
-    return arr;
+    std::vector<double> out(n);
+    core::normal_logpdf(x.data(), n, mean, sd, out.data());
+    return to_bytes(out);
 }
 
 double mean_jit(Vec a) { return core::mean(a.data(), a.shape(0)); }
@@ -76,20 +71,18 @@ double euclid_dist_jit(Vec a, Vec b) {
 OutArray trimmed_ipw_weights_jit(Vec treat, Vec propensity, double trim_lo,
                                  double trim_hi) {
     const std::size_t n = treat.shape(0);
-    double *out;
-    OutArray arr = make_array(n, &out);
+    std::vector<double> out(n);
     core::trimmed_ipw_weights(treat.data(), propensity.data(), n, trim_lo,
-                              trim_hi, out);
-    return arr;
+                              trim_hi, out.data());
+    return to_bytes(out);
 }
 
 OutArray bootstrap_mean_jit(Vec a, long long B, long long seed) {
     const std::size_t nB = static_cast<std::size_t>(B);
-    double *out;
-    OutArray arr = make_array(nB, &out);
+    std::vector<double> out(nB);
     core::bootstrap_mean(a.data(), a.shape(0), nB,
-                         static_cast<unsigned long long>(seed), out);
-    return arr;
+                         static_cast<unsigned long long>(seed), out.data());
+    return to_bytes(out);
 }
 
 }  // namespace

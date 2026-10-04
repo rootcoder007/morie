@@ -89,8 +89,8 @@ def wildfire_smoke_rr(
     ...     ambient_pm25_ugm3=10,
     ...     outcome="respiratory"
     ... )
-    >>> round(r.value, 2)   # smoke effect dominates
-    1.59
+    >>> round(r.value, 2)   # exp(ln 1.01 * (10 * 50/10 + 10/10)): smoke effect dominates
+    1.66
 
     References
     ----------

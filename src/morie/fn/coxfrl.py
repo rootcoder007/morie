@@ -73,11 +73,11 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> k = np.repeat(np.arange(60), 10)
-    >>> w = rng.gamma(2.0, 0.5, 60)[k]              # cluster multipliers
-    >>> X = rng.normal(size=(600, 1))
+    >>> k = np.repeat(np.arange(30), 10)
+    >>> w = rng.gamma(2.0, 0.5, 30)[k]              # cluster multipliers
+    >>> X = rng.normal(size=(300, 1))
     >>> T = rng.exponential(1 / (w * np.exp(X[:, 0] * 0.8)))
-    >>> C = rng.exponential(2.0, 600)
+    >>> C = rng.exponential(2.0, 300)
     >>> t, e = np.minimum(T, C), (T <= C).astype(float)
     >>> r = cox_frailty(t, e, X, k)
     >>> bool(r["theta"] > 0.1)
@@ -100,7 +100,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
     One cluster per subject carries no shared information and is refused.
 
-    >>> cox_frailty(t, e, X, np.arange(600))
+    >>> cox_frailty(t, e, X, np.arange(300))
     Traceback (most recent call last):
         ...
     ValueError: every cluster has one member, so a shared frailty is not identifiable

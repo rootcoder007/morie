@@ -133,6 +133,19 @@ def _to_iso(date_str: str) -> str:
 
 
 def siu_cache_path(cache_dir: str | Path = "~/.cache/morie/siu") -> Path:
+    """Path of the cached SIU director's-report table, creating its directory.
+
+    Args:
+        cache_dir: directory for the cache (``~`` is expanded).
+
+    Returns:
+        ``<cache_dir>/SIU.csv``; the file itself need not exist yet.
+
+    Examples:
+        >>> import tempfile
+        >>> siu_cache_path(tempfile.mkdtemp()).name
+        'SIU.csv'
+    """
     p = Path(cache_dir).expanduser()
     p.mkdir(parents=True, exist_ok=True)
     return p / "SIU.csv"

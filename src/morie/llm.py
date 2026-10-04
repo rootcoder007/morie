@@ -681,9 +681,9 @@ def _current_dataset_schema() -> dict[str, str] | None:
 def _stat_command_summary() -> list[str]:
     """Return top stat command names grouped concisely."""
     try:
-        from .stat_commands import list_all_commands
+        from .stat_commands import all_command_names
 
-        return list_all_commands()[:100]
+        return all_command_names()[:100]
     except Exception:
         try:
             from .stat_commands import COMMAND_REGISTRY
@@ -1168,13 +1168,15 @@ def ask(
 
     Examples
     --------
+    Needs a provider (a stored MORIE key, a local Ollama, or a provider key):
+
     >>> # Non-streaming (returns full text)
-    >>> response = ask("What is AIPW?")
-    >>> isinstance(response, str)
+    >>> response = ask("What is AIPW?")  # doctest: +SKIP
+    >>> isinstance(response, str)  # doctest: +SKIP
     True
 
-    >>> # Streaming
-    >>> for chunk in ask("Explain TMLE", stream=True):
+    >>> # Streaming: chunks print as they arrive
+    >>> for chunk in ask("Explain TMLE", stream=True):  # doctest: +SKIP
     ...     print(chunk, end="")
     """
     if provider is None:

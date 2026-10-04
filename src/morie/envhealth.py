@@ -741,6 +741,12 @@ def burden_by_fsa(
 
 
 def cheatsheet() -> str:
+    """One-line list of the environmental-health functions in this module.
+
+    Examples:
+        >>> cheatsheet().startswith("morie.envhealth:")
+        True
+    """
     return (
         "morie.envhealth: concentration_response_pm25/no2, attributable_fraction, "
         "mortality_displaced, burden_of_pollution, exposure_response_sensitivity, "

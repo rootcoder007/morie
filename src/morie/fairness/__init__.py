@@ -16,6 +16,13 @@ paragraph-level :class:`~morie.fn._richresult.RichResult`.
 Later phases add the generalised predictive-policing audit module, the
 multi-city temporal analysis, the JAX simulation framework, and the
 explainability (XAI) layer.
+
+Examples
+--------
+>>> from morie.fairness import fairness_disparate_impact
+>>> r = fairness_disparate_impact([1, 0, 1, 1, 0, 0], ["a", "a", "a", "b", "b", "b"])
+>>> r["value"], r["privileged"], r["adverse_impact"]
+(0.5, 'a', True)
 """
 
 from __future__ import annotations

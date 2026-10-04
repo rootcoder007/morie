@@ -6,6 +6,17 @@ It is NOT constant-time and NOT suitable for production secrets. For
 production-grade encryption, use hardware KMS or audited C implementations.
 
 Pure-Python ML-KEM is ~100x slower than the reference C implementation.
+
+Examples
+--------
+>>> import os
+>>> from morie.crypto import chacha20_poly1305_decrypt, chacha20_poly1305_encrypt, hkdf_sha256
+>>> key, nonce = os.urandom(32), os.urandom(12)
+>>> ct, tag = chacha20_poly1305_encrypt(key, nonce, b"attack at dawn")
+>>> chacha20_poly1305_decrypt(key, nonce, ct, tag)
+b'attack at dawn'
+>>> hkdf_sha256(b"k" * 32, length=8, salt=b"s", info=b"i").hex()
+'7a1153df5b0dbe89'
 """
 
 import contextlib

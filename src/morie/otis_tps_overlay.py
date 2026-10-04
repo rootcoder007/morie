@@ -200,6 +200,15 @@ def composite_overlay(*, sample_rows: int | None = 30_000) -> RichResult:
 
 
 def analyze_all(out_dir: Path | None = None, *, sample_rows: int | None = 30_000) -> dict[str, RichResult]:
+    """Run the OTIS x TPS overlay analyses (regional roll-up, year-over-year correlation) and write each as text and JSON.
+
+    Args:
+        out_dir: output directory (created if needed); ``None`` uses the default.
+        sample_rows: TPS rows sampled for the correlation; ``None`` uses all.
+
+    Returns:
+        Results keyed by analysis name; a failed analysis carries its error as a warning.
+    """
     out_dir = out_dir or DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, RichResult] = {}

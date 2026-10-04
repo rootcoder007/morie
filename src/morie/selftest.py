@@ -12,6 +12,7 @@ Run with::
 from __future__ import annotations
 
 import importlib
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -316,7 +317,7 @@ def _test_datasets():
     """Test built-in dataset database."""
     from morie.data import list_datasets, morie_db
 
-    ds = list_datasets()
+    ds = list_datasets(hosted=False)  # offline: no manifest fetch
     if len(ds) < 50:
         raise RuntimeError(f"catalog lists only {len(ds)} datasets")
     cached = [d for d in ds if d["cached"]]
@@ -431,17 +432,18 @@ def run_selftest() -> int:
     failed = sum(1 for r in _results if not r["passed"] and not r["detail"].startswith("SKIP"))
 
     if use_rich:
-        console = Console()
+        # off a terminal rich assumes 80 columns and cuts the table: give it room instead
+        console = Console() if sys.stdout.isatty() else Console(width=200)
         table = Table(
             title="MORIE Self-Test Results",
             box=box.SIMPLE_HEAVY,
             show_header=True,
             header_style="bold cyan",
         )
-        table.add_column("Status", width=6, justify="center")
+        table.add_column("Status", width=6, justify="center", no_wrap=True)
         table.add_column("Test", style="bold", min_width=30)
         table.add_column("Detail")
-        table.add_column("Time", width=8, justify="right")
+        table.add_column("Time", min_width=6, justify="right", no_wrap=True)
 
         for r in _results:
             if r["passed"]:
@@ -451,7 +453,7 @@ def run_selftest() -> int:
             table.add_row(
                 status,
                 r["name"],
-                r["detail"][:80],
+                r["detail"],
                 f"{r['elapsed']:.2f}s",
             )
 
@@ -464,7 +466,7 @@ def run_selftest() -> int:
     else:
         for r in _results:
             status = ("SKIP" if r["detail"].startswith("SKIP") else " OK ") if r["passed"] else "FAIL"
-            print(f"  [{status}] {r['name']:<35} {r['detail'][:60]}")
+            print(f"  [{status}] {r['name']:<35} {r['detail']}")
 
         print()
         if failed == 0:

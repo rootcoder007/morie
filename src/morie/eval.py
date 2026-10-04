@@ -97,6 +97,19 @@ def _load_callable(path: str) -> Callable:
 
 
 def load_golden_file(path: Path) -> tuple[str, str, str, list[GoldenCase]]:
+    """Read a golden-value JSON file for the evaluation harness.
+
+    The file holds ``fn``, ``callable``, an optional ``source`` and a list
+    of ``cases``, each with ``inputs``, ``expected`` and optional ``rtol``,
+    ``atol``, ``source`` and ``notes`` (defaults 1e-5, 1e-8 and the file's
+    source).
+
+    Args:
+        path: the JSON file.
+
+    Returns:
+        ``(fn, callable, source, cases)`` with ``cases`` as ``GoldenCase`` records.
+    """
     raw = json.loads(path.read_text())
     cases = [
         GoldenCase(

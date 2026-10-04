@@ -26,7 +26,7 @@ def test_run_propensity_ipw_analysis_returns_expected_tables():
 
     assert "ipw_results" in result
     assert list(result["ipw_results"]["estimand"]) == ["ATE"]
-    assert "ess_ipw_trimmed" in set(result["diagnostics"]["metric"])
+    assert "ess_ipw_trimmed" in set(result["ipw_diagnostics"]["metric"])
 
 
 @pytest.mark.filterwarnings("ignore:divide by zero encountered in scalar divide:RuntimeWarning")

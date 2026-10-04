@@ -591,6 +591,12 @@ def _d_simple(ds_id: str, by: str) -> callable:
             ],
         )
 
+    _fn.__name__ = f"analyze_{ds_id}"
+    _fn.__doc__ = (
+        f"OTIS {ds_id}: custodial deaths by year and by {by}.\n\n"
+        f"    Args:\n        df: the {ds_id} table; ``None`` loads it.\n\n"
+        f"    Returns:\n        A ``RichResult`` with the dataset summary, the yearly trend and the {by}-by-year crosstab.\n"
+    )
     return _fn
 
 
@@ -601,6 +607,14 @@ analyze_d05 = _d_simple("d05", "Age_Category")
 
 
 def analyze_d06(df: pd.DataFrame | None = None) -> RichResult:
+    """OTIS d06: custodial deaths by alert type and medical cause of death.
+
+    Args:
+        df: the d06 table; ``None`` loads it.
+
+    Returns:
+        A ``RichResult`` with the dataset summary and the cause-by-alert crosstab.
+    """
     df = df if df is not None else load_otis_dataset("d06")
     return RichResult(
         title="d06 -- Custodial deaths × alert × medical cause",
@@ -612,6 +626,14 @@ def analyze_d06(df: pd.DataFrame | None = None) -> RichResult:
 
 
 def analyze_d07(df: pd.DataFrame | None = None) -> RichResult:
+    """OTIS d07: custodial deaths by alert type and housing-unit type.
+
+    Args:
+        df: the d07 table; ``None`` loads it.
+
+    Returns:
+        A ``RichResult`` with the dataset summary and the housing-unit-by-alert crosstab.
+    """
     df = df if df is not None else load_otis_dataset("d07")
     return RichResult(
         title="d07 -- Custodial deaths × alert × housing unit",

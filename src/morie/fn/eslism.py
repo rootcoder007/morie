@@ -60,19 +60,19 @@ def esl_isomap(X, k=2, neighbors=5):
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> t = rng.uniform(1.5 * np.pi, 4.5 * np.pi, 400)
-    >>> h = rng.uniform(0, 10, 400)
+    >>> t = rng.uniform(1.5 * np.pi, 3 * np.pi, 200)
+    >>> h = rng.uniform(0, 10, 200)
     >>> X = np.column_stack([t * np.cos(t), h, t * np.sin(t)])
-    >>> emb = esl_isomap(X, k=2, neighbors=8)["embedding"]
-    >>> bool(abs(np.corrcoef(emb[:, 0], t)[0, 1]) > 0.9)
+    >>> r = esl_isomap(X, k=2, neighbors=8)
+    >>> s = 0.5 * (t * np.sqrt(1 + t ** 2) + np.arcsinh(t))   # arc length of the spiral r = t
+    >>> bool(abs(np.corrcoef(r["embedding"][:, 0], s)[0, 1]) > 0.99)
     True
 
     Geodesic distance exceeds straight-line distance, because a path along
     the surface can never be shorter than the chord.
 
-    >>> r = esl_isomap(X, k=2, neighbors=8)
-    >>> D = np.sqrt(((X[:, None] - X[None]) ** 2).sum(-1))
-    >>> bool(np.all(r["geodesic"] >= D - 1e-9))
+    >>> all(bool(np.all(r["geodesic"][i] >= np.sqrt(((X - X[i]) ** 2).sum(axis=1)) - 1e-9))
+    ...     for i in range(len(X)))
     True
 
     Too few neighbours disconnects the graph, and that is raised rather

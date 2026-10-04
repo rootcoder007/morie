@@ -73,7 +73,7 @@ def geron_model_based(X, y, add_bias=True, eta=None, n_iter=1000):
     A constant target is fitted by the intercept alone:
 
     >>> c = geron_model_based([[1.0], [2.0]], [5.0, 5.0])
-    >>> round(float(c["theta"][0]), 9), round(float(c["theta"][1]), 9)
+    >>> round(float(c["theta"][0]), 9), abs(round(float(c["theta"][1]), 9))
     (5.0, 0.0)
 
     References

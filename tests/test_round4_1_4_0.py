@@ -60,11 +60,12 @@ def test_current_locale_reports_the_code_in_effect(monkeypatch):
     assert i18n.current_locale() == "en"
 
 
-def test_own_file_route_names_the_path_under_morie_data_dir():
+def test_own_file_route_names_the_path_under_morie_data_dir(monkeypatch, tmp_path):
     from morie import data
 
+    monkeypatch.setenv("MORIE_DATA_DIR", str(tmp_path))
     route = data.dataset_route(data.DATASET_CATALOG["mapq"])
-    assert route == "own file: $MORIE_DATA_DIR/datasets/vsr/TKARONTOMAPQ.xlsx"
+    assert route == f"own file: {tmp_path / 'datasets' / 'vsr' / 'TKARONTOMAPQ.xlsx'}"
 
 
 def test_power_two_proportion_rows_match_the_r_route_columns_and_formulas():

@@ -4248,11 +4248,11 @@ if _TEXTUAL_AVAILABLE:
                 elif action in ("kaplan_meier", "km") and len(parts) >= 4:
                     from morie.fn import _frame_core as pd
 
-                    from .survival import kaplan_meier_curve
+                    from .survival import kaplan_meier
 
                     df = pd.read_csv(parts[1])
                     time_col, event_col = parts[2], parts[3]
-                    result = kaplan_meier_curve(df[time_col].values, df[event_col].values)
+                    result = kaplan_meier(df[time_col].tolist(), df[event_col].tolist())
                     log.write(f"\n[bold]Kaplan-Meier: time={time_col}, event={event_col}[/bold]")
                     log.write(f"  Events: {int(df[event_col].sum())} / {len(df)}")
                     log.write(f"  Median survival: {result.median_survival}")
@@ -4277,10 +4277,10 @@ if _TEXTUAL_AVAILABLE:
                 elif action == "logrank" and len(parts) >= 5:
                     from morie.fn import _frame_core as pd
 
-                    from .survival import log_rank_test
+                    from .survival import logrank_test
 
                     df = pd.read_csv(parts[1])
-                    result = log_rank_test(df[parts[2]].values, df[parts[3]].values, df[parts[4]].values)
+                    result = logrank_test(df[parts[2]].tolist(), df[parts[3]].tolist(), df[parts[4]].tolist())
                     log.write(f"\n[bold]Log-rank test: {parts[2]} by {parts[4]}[/bold]")
                     log.write(f"  chi2 = {result.test_statistic:.4f}")
                     log.write(f"  p = {result.p_value:.6f}")
@@ -4335,16 +4335,16 @@ if _TEXTUAL_AVAILABLE:
                 elif action == "match" and len(parts) >= 4:
                     from morie.fn import _frame_core as pd
 
-                    from .matching import propensity_score_matching
+                    from .matching import match_nearest_neighbor
 
                     df = pd.read_csv(parts[1])
                     covs = parts[3].split(",")
-                    result = propensity_score_matching(df, treatment=parts[2], covariates=covs)
+                    result = match_nearest_neighbor(df, treatment=parts[2], covariates=covs)
                     log.write(f"\n[bold]PS Matching: treatment={parts[2]}[/bold]")
-                    log.write(f"  Matched pairs: {result.n_matched}")
-                    log.write(f"  ATT = {result.att:.4f}")
-                    if hasattr(result, "att_se"):
-                        log.write(f"  SE = {result.att_se:.4f}")
+                    log.write(f"  Treated: {result.n_treated}; matched controls: {result.n_matched_control}")
+                    for k in ("att", "att_se"):
+                        if isinstance(result.details, dict) and k in result.details:
+                            log.write(f"  {k.upper()} = {float(result.details[k]):.4f}")
 
                 # ── Missing Data ────────────────────────────────
                 elif action == "mcar" and len(parts) >= 2:

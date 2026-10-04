@@ -51,8 +51,11 @@ imprisonment rates and crime rates are not consistently correlated.
 ```python
 from morie.doob_trends import decoupling_test
 
-decoupling_test(crime_rate_series, imprisonment_rate_series,
-                 years=range(1960, 2018))
+years = list(range(1960, 2018))
+# your two annual series here; these are illustrative
+crime_rate_series = [5000 + 40 * i - 0.9 * i * i for i in range(len(years))]
+imprisonment_rate_series = [90 + 0.5 * i for i in range(len(years))]
+decoupling_test(crime_rate_series, imprisonment_rate_series, years=years)
 # RichResult with r_pearson, two-sided p, Pettitt change-point per
 # series.
 ```

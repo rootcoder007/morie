@@ -131,9 +131,17 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
     def split(z):
         return z[:n_lambda], z[n_lambda:]
 
+    class _Unbounded(Exception):
+        pass
+
     def neg(z):
         lam, nu = split(z)
-        val = float(g(np.maximum(lam, 0.0), nu))
+        try:
+            val = float(g(np.maximum(lam, 0.0), nu))
+        except OverflowError:
+            raise _Unbounded from None
+        if val == float("inf") or val > 1e300:
+            raise _Unbounded
         # A vacuous bound is legitimate output from g, but -inf derails
         # a quasi-Newton line search; a large finite penalty keeps the
         # iterate moving back toward the useful region.
@@ -141,11 +149,19 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
 
     z0 = np.r_[lam0, nu_0]
     bounds = [(0.0, None)] * n_lambda + [(None, None)] * n_nu
-    res = minimize(neg, z0, method="L-BFGS-B", bounds=bounds,
-                   options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000})
-    lam, nu = split(np.asarray(res.x, dtype=float))
-    lam = np.maximum(lam, 0.0)
-    dual_val = float(g(lam, nu))
+    unbounded = False
+    try:
+        res = minimize(neg, z0, method="L-BFGS-B", bounds=bounds,
+                       options={"ftol": 1e-15, "gtol": 1e-12, "maxiter": 5000})
+        lam, nu = split(np.asarray(res.x, dtype=float))
+        lam = np.maximum(lam, 0.0)
+        dual_val = float(g(lam, nu))
+    except _Unbounded:
+        # g grows without bound over the dual feasible set: the dual optimum
+        # is +inf, which certifies that the primal is infeasible.
+        unbounded = True
+        lam, nu = lam0, nu_0
+        dual_val = float("inf")
     trivial = float(g(np.zeros(n_lambda), np.zeros(n_nu)))
 
     concave = None
@@ -158,8 +174,11 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
                       rng.normal(scale=scale, size=n_nu)]
             b = np.r_[np.abs(rng.normal(scale=scale, size=n_lambda)),
                       rng.normal(scale=scale, size=n_nu)]
-            va, vb = float(g(*split(a))), float(g(*split(b)))
-            vm = float(g(*split(0.5 * (a + b))))
+            try:
+                va, vb = float(g(*split(a))), float(g(*split(b)))
+                vm = float(g(*split(0.5 * (a + b))))
+            except OverflowError:
+                continue
             if not (np.isfinite(va) and np.isfinite(vb)):
                 continue
             if vm < 0.5 * (va + vb) - 1e-08 * max(1.0, abs(va) + abs(vb)):
@@ -184,7 +203,8 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
                                else bool(abs(gap) < 1e-06
                                          * max(1.0, abs(dual_val)))),
             "concave": concave,
-            "converged": bool(res.success),
+            "converged": (not unbounded) and bool(res.success),
+            "unbounded": unbounded,
             "method": "boyd_dual_problem",
         },
     )

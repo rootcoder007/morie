@@ -58,7 +58,7 @@ def tps_major_crime(
     Returns
     -------
     pd.DataFrame with TPS's documented columns (REPORT_DATE, OCC_DATE,
-    OFFENCE, MCI_CATEGORY, etc.) — see
+    OFFENCE, CSI_CATEGORY, etc.) — see
     https://data.torontopolice.on.ca/ for the schema.
     """
     if offline:
