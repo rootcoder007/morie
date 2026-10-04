@@ -12,7 +12,11 @@ from morie.fn import _frame_core as pd
 
 @pytest.fixture
 def isolated(tmp_path, monkeypatch):
+    from morie import _datapaths
+
     monkeypatch.setattr(data, "_user_cache_dir", lambda: tmp_path / "cache")
+    # the per-user data directory too: a copy the user already has there must not leak into the test
+    monkeypatch.setattr(_datapaths, "_user_data_dir", lambda: tmp_path / "xdg")
     monkeypatch.setenv("MORIE_DATA_DIR", str(tmp_path / "data"))
     monkeypatch.setattr(data, "_builtin_db_connect", lambda: None)
     return tmp_path

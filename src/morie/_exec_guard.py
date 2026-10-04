@@ -96,19 +96,19 @@ _KNOBS = {
     ),
     "MORIE_ALLOW_REMOTE_INSTALL": (
         remote_install_allowed,
-        "when set: `curl | sh` remote installers may run",
+        "when set: the shell launcher (bin/morie, git checkouts) may run the downloaded Ollama install.sh",
     ),
     "MORIE_TRUST_CHECKPOINT": (
         checkpoint_trusted,
-        "when set: torch.load may execute pickled code in checkpoints",
+        "when set: convert-checkpoint / pt2gguf deserialize a .pt (tensors and plain containers only)",
     ),
     "MORIE_ALLOW_RC": (
         rc_autoload_allowed,
-        "when set: the ESML_RC shell config is auto-sourced",
+        "when set: the shell launcher (bin/morie, git checkouts) sources the ESML_RC shell config",
     ),
     "MORIE_ALLOW_CRON": (
         cron_allowed,
-        "when set: `morie cron` may write to your crontab",
+        "when set: the shell launcher's `cron add/remove` (bin/morie, git checkouts) may edit your crontab",
     ),
 }
 

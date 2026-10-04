@@ -1906,7 +1906,18 @@ def generate_full_report(
 
     detected_methods = list(dict.fromkeys(detected_methods))  # deduplicate preserving order
 
-    report.add_section(generate_introduction(topic=title))
+    n_tables = len(csv_files)
+    report.add_section(
+        generate_introduction(
+            topic=title,
+            background=(
+                f"This report collects the analyses whose output tables are in {results_dir} "
+                f"({n_tables} table{'s' if n_tables != 1 else ''}"
+                + (f"; methods: {', '.join(m.replace('_', ' ') for m in detected_methods)}" if detected_methods else "")
+                + "). Replace this paragraph with the study's question and its population."
+            ),
+        )
+    )
     report.add_section(
         generate_methods(
             study_design=study_design,

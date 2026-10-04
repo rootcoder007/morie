@@ -2400,8 +2400,12 @@ if _TEXTUAL_AVAILABLE:
                     return
                 from morie.ebac import calculate_ebac, is_over_legal_limit
 
-                gc = 0.68 if gender.lower() == "male" else 0.55
-                bac = calculate_ebac(drinks, weight_lbs, hours, gc)
+                gc = 0.73 if gender.lower() == "male" else 0.66  # the Widmark constants morie.ebac documents
+                try:
+                    bac = calculate_ebac(drinks, weight_lbs, hours, gc)
+                except ValueError as exc:
+                    print(f"  {exc}")
+                    return None
                 over = is_over_legal_limit(bac)
                 print(f"  eBAC: {drinks} drinks, {weight_lbs}lbs, {hours}h, {gender}")
                 print(f"  BAC = {bac:.4f} {'(OVER LIMIT)' if over else '(under limit)'}")

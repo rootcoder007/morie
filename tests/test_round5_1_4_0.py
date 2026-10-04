@@ -271,13 +271,13 @@ def test_logistic_models_enter_survey_codes_as_categories(where):
     mod = importlib.import_module(where)
     out = mod.run_weighted_logistic_analysis(_lcg_frame())
     terms = list(out["logistic_odds_ratios"]["term"])
-    # one odds ratio per non-reference level, not one "per unit of code"
-    assert sum(t.startswith("C(province_region)") for t in terms) == 4
-    assert sum(t.startswith("C(gender)") for t in terms) == 2
-    assert sum(t.startswith("C(age_group)") for t in terms) == 3
+    # one odds ratio per non-reference level, not one "per unit of code", named by label as the R route does
+    assert sum(t.startswith("province_region_label") for t in terms) == 4
+    assert {t for t in terms if t.startswith("gender_label")} == {"gender_labelMale", "gender_labelNon-binary"}
+    assert sum(t.startswith("age_group_label") for t in terms) == 3
     assert "province_region" not in terms and "gender" not in terms
     int_terms = list(out["logistic_interaction_odds_ratios"]["term"])
-    assert sum("cannabis_any_use:C(gender)" in t for t in int_terms) == 2
+    assert sum("cannabis_any_use:gender_label" in t for t in int_terms) == 2
     assert out["logistic_interaction_tests"]["df_num"].tolist() == [2]
 
 
@@ -596,23 +596,21 @@ def test_no_quote_spliced_into_fn_docstrings_or_values():
     assert red_pill_test([0.1, 0.4, -0.2, 0.3, 0.2]).test_name == "One-sample t-test (red pill / blue pill)"
 
 
-def test_doctor_lists_every_trust_knob(monkeypatch, capsys):
+def test_doctor_lists_every_trust_knob_once(monkeypatch):
+    """One row per knob (a second table described MORIE_TRUST_CHECKPOINT differently)."""
     from morie import doctor
 
     monkeypatch.setenv("MORIE_NO_EXEC", "1")
     monkeypatch.delenv("MORIE_TRUST_CHECKPOINT", raising=False)
-    posture = dict((k, on) for k, on, _ in doctor.trust_posture())
-    assert set(posture) == {
-        "MORIE_NO_EXEC",
-        "MORIE_TRUST_CHECKPOINT",
-        "MORIE_ALLOW_REMOTE_INSTALL",
-        "MORIE_ALLOW_RC",
-        "MORIE_ALLOW_CRON",
-    }
-    assert posture["MORIE_NO_EXEC"] is True and posture["MORIE_TRUST_CHECKPOINT"] is False
-    doctor._render_trust_knobs()
-    out = capsys.readouterr().out
-    assert "MORIE_NO_EXEC" in out and "SET" in out and "unset" in out
+    rows = [c for c in doctor.run_checks()["checks"] if c["label"].startswith("trust: ")]
+    names = [c["label"][len("trust: ") :] for c in rows]
+    assert sorted(names) == sorted(
+        {"MORIE_NO_EXEC", "MORIE_TRUST_CHECKPOINT", "MORIE_ALLOW_REMOTE_INSTALL", "MORIE_ALLOW_RC", "MORIE_ALLOW_CRON"}
+    )
+    detail = {n: c["detail"] for n, c in zip(names, rows)}
+    assert detail["MORIE_NO_EXEC"].startswith("ENABLED")
+    assert "tensors and plain containers only" in detail["MORIE_TRUST_CHECKPOINT"]
+    assert not hasattr(doctor, "_render_trust_knobs")
 
 
 def test_smote_sensitivity_is_skipped_on_a_balanced_outcome():
@@ -876,3 +874,105 @@ def test_mat_reader_reads_an_empty_char_matrix():
     payload = flags + dims + name  # no data element at all
     got_name, txt = mr._matrix(payload)
     assert got_name == "s" and txt == ""
+
+
+def test_omega_scores_reverse_keyed_items_the_other_way_round():
+    """Reversed items used to cancel the general factor (omega 0.15 where psych gives 0.80)."""
+    import random
+    import warnings
+
+    from morie.psymet import mcdo
+
+    rng = random.Random(7)
+    rows = []
+    for _ in range(400):
+        f = rng.gauss(0, 1)
+        rows.append([0.8 * f + 0.6 * rng.gauss(0, 1) for _ in range(6)])
+    flipped = [[-v if j in (1, 4) else v for j, v in enumerate(r)] for r in rows]
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        a = mcdo(rows, nf=1)
+        b = mcdo(flipped, nf=1)
+    assert abs(a.total - b.total) < 1e-9 and abs(a.hier - b.hier) < 1e-9 and a.total > 0.8
+    assert any("reverse-keyed" in str(x.message) and "1, 4" in str(x.message) for x in w)
+
+
+def test_multi_treatment_matching_refuses_a_continuous_column():
+    import random
+
+    from morie.fn import _frame_core as pd
+    from morie.matching import match_multi_treatment
+
+    rng = random.Random(1)
+    t = [rng.randrange(3) for _ in range(300)]
+    x = [rng.gauss(0, 1) for _ in range(300)]
+    d = pd.DataFrame({"t": t, "x": x, "y": [a + b + rng.gauss(0, 1) for a, b in zip(t, x)]})
+    with pytest.raises(ValueError, match="300 distinct values"):
+        match_multi_treatment(d, "y", ["x"])
+
+
+def test_siu_analyses_count_one_row_per_case_and_clean_sex_categories():
+    from morie.fn import _frame_core as pd
+    from morie.siu import analyze, native
+
+    assert native.to_iso_date("February 30, 2019") == "" and native.to_iso_date("February 29, 2020") == "2020-02-29"
+    d = pd.DataFrame(
+        {
+            "case_number": ["17-OVI-201", "17-OVI-201", "", "18-TCI-001"],
+            "_language": ["fr", "en", "unknown", "en"],
+            "police_service": ["Toronto Police Service"] * 4,
+        }
+    )
+    s = analyze._clean(d)
+    assert len(s) == 2 and list(s["_language"]) == ["en", "en"]
+    cats = [
+        analyze._sex(v) for v in ("Male", "boy", "female (Complainant #1) and male (Complainant #2)", "trans female")
+    ]
+    assert cats == ["male", "male", "multiple persons", "transgender"]
+    assert analyze._sex("ual assault complaint text " * 4) == "unknown"
+
+
+def test_sample_cluster_beyond_the_clusters_and_strata_dropped_are_said_in_words(tmp_path):
+    import subprocess
+    import sys
+
+    csv = tmp_path / "s.csv"
+    csv.write_text("id,g,school\n" + "".join(f"{i},{'ABCDEFG'[i % 7]},{i // 5}\n" for i in range(100)))
+    r = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "from morie.runner import main; raise SystemExit(main())",
+            "sample",
+            str(csv),
+            "--n",
+            "50",
+            "--method",
+            "cluster",
+            "--cluster-col",
+            "school",
+        ],
+        capture_output=True,
+        text=True,
+        stdin=subprocess.DEVNULL,
+    )
+    assert r.returncode == 1 and "school has 20 clusters" in r.stderr and "Traceback" not in r.stderr
+    r = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "from morie.runner import main; raise SystemExit(main())",
+            "sample",
+            str(csv),
+            "--n",
+            "3",
+            "--method",
+            "stratified",
+            "--strata-col",
+            "g",
+        ],
+        capture_output=True,
+        text=True,
+        stdin=subprocess.DEVNULL,
+    )
+    assert r.returncode == 0 and "with no rows" in r.stderr

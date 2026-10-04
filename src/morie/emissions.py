@@ -411,6 +411,27 @@ def _cpu_tdp_fallback() -> float:
     return 85.0  # conservative default
 
 
+# two-letter codes people type, to the ISO-3 keys of the energy-mix table (the same map as rmorie)
+_ISO2_TO_ISO3 = {
+    "CA": "CAN", "US": "USA", "GB": "GBR", "FR": "FRA", "DE": "DEU", "IN": "IND", "CN": "CHN",
+    "AU": "AUS", "JP": "JPN", "BR": "BRA", "MX": "MEX", "IT": "ITA", "ES": "ESP", "NL": "NLD",
+    "SE": "SWE", "NO": "NOR", "FI": "FIN", "DK": "DNK", "CH": "CHE", "IE": "IRL", "NZ": "NZL",
+    "KR": "KOR", "SG": "SGP", "ZA": "ZAF", "PL": "POL", "BE": "BEL", "AT": "AUT", "PT": "PRT",
+}  # fmt: skip
+
+
+def iso3(code: str) -> str:
+    """``"fr"`` -> ``"FRA"``; an ISO-3 code (or anything else) comes back upper-cased.
+
+    Examples
+    --------
+    >>> iso3("fr"), iso3("CAN")
+    ('FRA', 'CAN')
+    """
+    c = (code or "").strip().upper()
+    return _ISO2_TO_ISO3.get(c, c) if len(c) == 2 else c
+
+
 def known_country_codes() -> set[str]:
     """ISO-3 codes the energy-mix table knows (empty when the table is not bundled)."""
     try:
@@ -566,7 +587,7 @@ class EmissionsTracker:
         self._save_to_file = save_to_file
         self._save_to_logger = save_to_logger
         _logger.setLevel(getattr(logging, str(log_level).upper(), logging.WARNING))
-        iso = (country_iso_code or "").upper()
+        iso = iso3(country_iso_code or "")
         codes = known_country_codes() if iso else set()
         # a code the energy-mix table does not know gets the world average, and must be labelled so,
         # not "(XYZ)" in the summary, the CSV and the signed capsule

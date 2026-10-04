@@ -51,6 +51,22 @@ def _stdin_is_terminal() -> bool:
 _CODECARBON_AVAILABLE = True  # the vendored tracker is always present
 
 
+def _tables_written_line(output_dir, before: set) -> str:
+    """'Written to DIR/ (N new files; ...)' after a multi-module run, from the files it added."""
+    d = Path(output_dir)
+    now = {p for p in d.rglob("*") if p.is_file()} if d.is_dir() else set()
+    n = len(now - before)
+    return (
+        f"Written to {d}/ ({n} new file{'s' if n != 1 else ''}; the modules of one run share this directory so"
+        " figures, tables and final-report can read the others' tables; run-module NAME alone uses morie-output/NAME/)"
+    )
+
+
+def _files_under(output_dir) -> set:
+    d = Path(output_dir) if output_dir else None
+    return {p for p in d.rglob("*") if p.is_file()} if d is not None and d.is_dir() else set()
+
+
 def execute_pipeline(
     modules: list[str] | None = None,
     *,
@@ -107,6 +123,7 @@ def execute_pipeline(
 
     results = {}
     total = len(selected)
+    before = _files_under(output_dir)
 
     # rich progress (rich is a core dependency; enlighten is gone).
     _progress = None
@@ -165,6 +182,8 @@ def execute_pipeline(
         return 1
     print(f"Pipeline completed successfully ({n_ok}/{total}).")
     print("Completed modules:", ", ".join(results.keys()))
+    if output_dir:
+        print(_tables_written_line(output_dir, before))
     return 0
 
 
@@ -821,10 +840,18 @@ def _integral_floats_as_int(df) -> None:
     for col in list(df.columns):
         vals = list(df[col])
         nums = [v for v in vals if isinstance(v, float) and v == v]
-        if not nums or len(nums) + sum(1 for v in vals if v is None or (isinstance(v, float) and v != v)) != len(vals):
+        if not nums:
             continue
-        if all(v.is_integer() and abs(v) < 2**53 for v in nums):
-            df[col] = [None if (v is None or v != v) else int(v) for v in vals]
+        gaps = sum(1 for v in vals if v is None or (isinstance(v, float) and v != v))
+        if len(nums) + gaps == len(vals):
+            # a numeric column: integers only when every value is whole
+            if all(v.is_integer() and abs(v) < 2**53 for v in nums):
+                df[col] = [None if (v is None or v != v) else int(v) for v in vals]
+        elif any(isinstance(v, str) for v in vals):
+            # a text column with numbers in it (the download kept "100"; the cache returned 100.0)
+            df[col] = [
+                int(v) if isinstance(v, float) and v == v and v.is_integer() and abs(v) < 2**53 else v for v in vals
+            ]
 
 
 def _llm_exit_code(payload, chunks=None) -> int:
@@ -881,6 +908,13 @@ def _add_interactive_layer(what: str) -> bool:
 
     from . import _interactive
 
+    changed = _interactive.changed_files()
+    if changed:
+        print(
+            f"{what} is not loaded: {', '.join(changed)} changed since the verified install "
+            "(`morie interactive status` shows it; `morie interactive install` restores it)."
+        )
+        return False
     print(f"{what} is not bundled in this install. Run `morie interactive install` to add it for this user.")
     interactive = _stdin_is_terminal() and sys.stdout.isatty() and not os.environ.get("MORIE_NO_PROMPT", "").strip()
     if not interactive:
@@ -1110,18 +1144,26 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "run-modules":
+        import time as _time
+
         selected = args.modules or [item["name"] for item in list_modules()]
         ds_key = getattr(args, "dataset", None)
-        results = {
-            module_name: run_module(
+        before = _files_under(args.output_dir)
+        results = {}
+        for i, module_name in enumerate(selected, 1):
+            # one line per module as it finishes, so a redirected log shows a long run moving
+            t0 = _time.monotonic()
+            print(f"[{i}/{len(selected)}] {module_name} ...", flush=True)
+            results[module_name] = run_module(
                 module_name,
                 cpads_csv=args.cpads_csv,
                 dataset_key=ds_key,
                 output_dir=args.output_dir,
             )
-            for module_name in selected
-        }
+            print(f"[{i}/{len(selected)}] {module_name} done ({_time.monotonic() - t0:.0f} s)", flush=True)
         print("Completed modules:", ", ".join(results.keys()))
+        if args.output_dir:
+            print(_tables_written_line(args.output_dir, before))
         return 0
 
     if args.command in ("percy", "perseus"):
@@ -1535,9 +1577,10 @@ def _main_impl() -> int:
                     target.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(exc.path, target)
                     where = target
+                opener = "readRDS" if str(where).lower().endswith(".rds") else "load"
                 print(
                     f"{exc.key} is an R object; saved {where}. Open it in R with "
-                    f"rmorie::morie_load_dataset('{exc.key}') or load('{where}')",
+                    f"rmorie::morie_load_dataset('{exc.key}') or {opener}('{where}')",
                     file=sys.stderr,
                 )
                 return 0
@@ -1986,15 +2029,20 @@ def _main_impl() -> int:
             )
             return 2
         if args.country:
-            from .emissions import known_country_codes
+            from .emissions import iso3, known_country_codes
 
-            args.country = args.country.upper()
+            typed = args.country
+            args.country = iso3(args.country)
             codes = known_country_codes()
-            if codes and args.country.upper() not in codes:
+            if codes and args.country not in codes:
+                # as rmorie: the code is dropped and the location detected; the world average only when that fails
                 print(
-                    f"--country {args.country}: not an ISO-3 code in the energy-mix table; the world average will be used",
+                    f"--country {typed}: not a country code in the energy-mix table (ISO-3 such as CAN, FRA, USA; ISO-2 FR"
+                    " also works); ignoring it and detecting the location instead (the world average applies only when"
+                    " detection fails; MORIE_COUNTRY_ISO overrides)",
                     file=sys.stderr,
                 )
+                args.country = None
         data = run_check(args.seconds, args.output_dir, capsule=not args.no_capsule, country_iso_code=args.country)
         print(summary_text(data, getattr(data, "capsule", None)))
         return 0
@@ -2102,13 +2150,19 @@ def _main_impl() -> int:
             sample = simple_random_sample(df, args.n, seed=args.seed)
         elif method == "stratified":
             if not args.strata_col:
-                print("Error: --strata-col is required for stratified sampling")
-                return 1
+                print("--method stratified needs --strata-col COL", file=sys.stderr)
+                return 2
             n_strata = len(set(df[args.strata_col]))
             if args.per_stratum:
                 sample = stratified_sample(df, args.strata_col, args.n, proportional=False, seed=args.seed)
             else:
-                sample = stratified_sample(df, args.strata_col, args.n, proportional=True, seed=args.seed)
+                import warnings as _sw
+
+                with _sw.catch_warnings(record=True) as _rec:
+                    _sw.simplefilter("always")
+                    sample = stratified_sample(df, args.strata_col, args.n, proportional=True, seed=args.seed)
+                for w in _rec:
+                    print(f"note: {w.message}", file=sys.stderr)
                 if not args.proportional:
                     print(
                         f"note: --n {args.n} is the total across {n_strata} strata (--per-stratum for {args.n} each)",
@@ -2116,17 +2170,21 @@ def _main_impl() -> int:
                     )
         elif method == "cluster":
             if not args.cluster_col:
-                print("Error: --cluster-col is required for cluster sampling")
+                print("--method cluster needs --cluster-col COL", file=sys.stderr)
+                return 2
+            n_clusters = len({v for v in df[args.cluster_col] if v == v and v is not None})
+            if args.n > n_clusters:
+                print(f"--n {args.n} clusters asked for; {args.cluster_col} has {n_clusters} clusters", file=sys.stderr)
                 return 1
             sample = cluster_sample(df, args.cluster_col, args.n, seed=args.seed)
         elif method == "pps":
             if not args.size_col:
-                print("Error: --size-col is required for PPS sampling")
-                return 1
+                print("--method pps needs --size-col COL", file=sys.stderr)
+                return 2
             sample = pps_sample(df, args.size_col, args.n, seed=args.seed)
         else:
-            print(f"Unknown method: {method}")
-            return 1
+            print(f"unknown --method '{method}' (methods: srs, stratified, cluster, pps)", file=sys.stderr)
+            return 2
 
         if getattr(args, "no_weight", False) and ".weight" in list(sample.columns):
             sample = sample.drop(columns=[".weight"])

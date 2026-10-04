@@ -180,6 +180,16 @@ def stratified_sample(
     else:
         n_map = {name: n_per_stratum for name in groups.groups}
 
+    if proportional:
+        empty_strata = [str(k) for k, v in n_map.items() if v == 0]
+        if empty_strata:
+            # the weights then stand for the strata that were drawn only: say which are missing
+            warnings.warn(
+                f"stratified sample: {total_n} row(s) over {len(n_map)} strata leaves {', '.join(empty_strata)} with no"
+                " rows (the allocation rounds small strata to zero); raise the total or allocate per stratum",
+                stacklevel=2,
+            )
+
     samples = []
     for stratum_val, group_df in groups:
         n_draw = n_map.get(stratum_val, 0)

@@ -16,9 +16,14 @@ class TestCalculateEbac:
         assert result == pytest.approx(expected, abs=1e-6)
         assert result > 0
 
-    def test_zero_weight_returns_zero(self):
-        """Zero body weight should return 0.0 (guard clause)."""
-        assert ebac(drinks=5, weight_lbs=0, hours=0, gender_constant=0.73) == 0.0
+    def test_impossible_inputs_are_refused(self):
+        """A zero or negative weight, or negative drinks, is a data-entry error, not a sober respondent."""
+        with pytest.raises(ValueError, match="weight_lbs must be > 0"):
+            ebac(drinks=5, weight_lbs=0, hours=0, gender_constant=0.73)
+        with pytest.raises(ValueError, match="weight_lbs must be > 0"):
+            ebac(drinks=5, weight_lbs=-150, hours=2, gender_constant=0.73)
+        with pytest.raises(ValueError, match="cannot be negative"):
+            ebac(drinks=-5, weight_lbs=150, hours=2, gender_constant=0.73)
 
     def test_negative_result_clamped_to_zero(self):
         """Long elapsed time should clamp BAC to zero, not go negative."""

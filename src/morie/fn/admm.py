@@ -10,37 +10,48 @@ from . import _array_core as np
 __all__ = ["admm"]
 
 
-def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
+def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False, prox_g=None):
     """
-    ADMM for constrained optimization.
+    ADMM for minimize f(x) + g(z) subject to Ax + z = b.
 
-    Solves: minimize f(x) + g(z) s.t. Ax + Bz = b via splitting.
+    Scaled form of Boyd et al. (2011), section 3.1.1, with B = I and c = b:
+
+    - x-update: x = argmin f(x) + (rho/2) ||Ax + z - b + u||^2 (numerically)
+    - z-update: z = prox_{g/rho}(b - Ax - u)
+    - u-update: u = u + Ax + z - b
+
+    It stops when the primal residual ||Ax + z - b|| and the dual residual
+    rho ||A^T (z - z_old)|| are both below ``tol`` (section 3.3.1).
 
     Parameters
     ----------
     f : callable
-        Function f(x) to minimize (typically convex).
+        Function f(x) to minimize (convex).
     g : callable
-        Function g(z) to minimize (typically convex).
+        Function g(z) to minimize (convex).
     A : ndarray
         Constraint matrix A (m, n).
     b : ndarray
-        Constraint RHS (m,).
+        Constraint right-hand side (m,).
     rho : float, optional
         Penalty parameter (default 1.0).
     max_iter : int, optional
         Maximum iterations (default 1000).
     tol : float, optional
-        Convergence tolerance (default 1e-4).
+        Tolerance on the primal and dual residuals (default 1e-4).
     full_output : bool, optional
         If True, return (x, info_dict).
+    prox_g : callable, optional
+        ``prox_g(v, t)`` = argmin_z g(z) + ||z - v||^2 / (2 t). Without it the
+        proximal step is solved numerically from the soft-threshold of ``v``
+        (exact for g = ||z||_1).
 
     Returns
     -------
     x : ndarray
         Estimated minimizer.
     info_dict : dict, optional
-        Dictionary with keys: 'iterations', 'converged'.
+        Dictionary with keys: 'iterations', 'converged', 'z', 'primal_residual', 'dual_residual'.
 
     References
     ----------
@@ -50,6 +61,9 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
 
     Examples
     --------
+    minimize ||x||^2 + ||z||_1 subject to x + z = b: for each b_i > 1/2 the
+    solution is x_i = 1/2 (the slope of x^2 meets that of |b - x|).
+
     >>> from morie.fn import _array_core as np
     >>> from morie.fn import admm
     >>> f = lambda x: np.sum(x**2)
@@ -59,40 +73,45 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
     >>> x, info = admm(f, g, A, b, full_output=True)
     >>> info['converged']
     True
+    >>> [round(float(v), 3) for v in x]
+    [0.5, 0.5, 0.5]
     """
+    from ._sci_core import minimize
+
+    A = np.asarray(A, dtype=float)
+    b = np.asarray(b, dtype=float)
     m, n = A.shape
     x = np.zeros(n)
-    z = np.zeros(n)
+    z = np.zeros(m)
     u = np.zeros(m)
+    t = 1.0 / rho
 
+    def prox(v):
+        if prox_g is not None:
+            return np.asarray(prox_g(v, t), dtype=float)
+        start = np.sign(v) * np.maximum(np.abs(v) - t, 0)  # the exact answer when g is the L1 norm
+        res = minimize(lambda z_: g(z_) + np.sum((z_ - v) ** 2) / (2 * t), start, method="Nelder-Mead")
+        cand = np.asarray(res.x, dtype=float)
+        # keep the start when the search did not improve on it
+        obj = lambda z_: g(z_) + np.sum((z_ - v) ** 2) / (2 * t)  # noqa: E731 - local objective
+        return cand if obj(cand) < obj(start) else start
+
+    r_norm = s_norm = float("inf")
     for it in range(max_iter):
-        # x-update
-        from ._sci_core import minimize
+        res = minimize(lambda x_, z=z, u=u: f(x_) + 0.5 * rho * np.sum((A @ x_ + z - b + u) ** 2), x, method="BFGS")
+        x = np.asarray(res.x, dtype=float)
+        z_old = z
+        z = prox(b - A @ x - u)
+        r = A @ x + z - b
+        u = u + r
+        r_norm = float(np.linalg.norm(r))
+        s_norm = float(rho * np.linalg.norm(A.T @ (z - z_old)))
+        if r_norm < tol and s_norm < tol:
+            info = {"iterations": it + 1, "converged": True, "z": z, "primal_residual": r_norm, "dual_residual": s_norm}
+            return (x, info) if full_output else x
 
-        def obj_x(x_):
-            return f(x_) + 0.5 * rho * np.sum((A @ x_ + z - b + u / rho) ** 2)
-
-        res = minimize(obj_x, x, method="BFGS", options={"maxiter": 20})
-        x = res.x
-
-        # z-update (proximal operator of g)
-        z_arg = A @ x - b + u / rho
-        thresh = 1.0 / rho  # Soft threshold for g(z) = ||z||_1
-        z = np.sign(z_arg) * np.maximum(np.abs(z_arg) - thresh, 0)
-
-        # Dual update
-        u_old = u.copy()
-        u = u + rho * (A @ x + z - b)
-
-        residual = np.linalg.norm(u - u_old)
-        if residual < tol:
-            if full_output:
-                return x, {"iterations": it + 1, "converged": True}
-            return x
-
-    if full_output:
-        return x, {"iterations": max_iter, "converged": False}
-    return x
+    info = {"iterations": max_iter, "converged": False, "z": z, "primal_residual": r_norm, "dual_residual": s_norm}
+    return (x, info) if full_output else x
 
 
 def cheatsheet() -> str:

@@ -14,6 +14,7 @@ Public API: :func:`html_to_text`, :func:`parse_report_text`,
 
 from __future__ import annotations
 
+import datetime
 import re
 
 from .corpus import PANEL_FIELDS
@@ -355,7 +356,7 @@ _MONTHS.update(
     }
 )
 _ISO_MD = re.compile(rb"([^\s\d,.]+)\.?\s+(\d{1,2})(?:st|nd|rd|th|er|e)?,?\s+(\d{4})")  # August 3rd, 2017
-_ISO_DM = re.compile(rb"(\d{1,2})(?:er|e|st|nd|rd|th)?\s+([^\s\d,.]+)\.?,?\s+(\d{4})")  # 3 août 2017
+_ISO_DM = re.compile(rb"(\d{1,2})(?:er|e|st|nd|rd|th)?\s+(?:of\s+)?([^\s\d,.]+)\.?,?\s+(\d{4})")  # 3 août 2017
 
 
 def _iso(human: bytes) -> bytes:
@@ -367,6 +368,10 @@ def _iso(human: bytes) -> bytes:
         if not (m and m.group(2).lower() in _MONTHS):
             return human if re.fullmatch(rb"\d{4}-\d{2}-\d{2}", human) else b""
         mo, day, year = _MONTHS[m.group(2).lower()], int(m.group(1)), m.group(3)
+    try:  # "February 30, 2019" is not a date
+        datetime.date(int(year), mo, day)
+    except ValueError:
+        return b""
     return b"%s-%02d-%02d" % (year, mo, day)
 
 
@@ -388,13 +393,13 @@ _HTML_STEPS = (
     (re.compile(rb"<[^>]+>"), b" "),
     (re.compile(rb"&nbsp;"), b" "),
     (re.compile(rb"&amp;"), b"&"),
-    (re.compile(rb"&#8217;|&rsquo;"), b"'"),
-    (re.compile(rb"&#8216;|&lsquo;"), b"'"),
-    (re.compile(rb"&#8220;|&ldquo;|&#8221;|&rdquo;"), b'"'),
+    (re.compile(rb"&#8217;|&rsquo;|&#x2019;", _I), b"'"),
+    (re.compile(rb"&#8216;|&lsquo;|&#x2018;", _I), b"'"),
+    (re.compile(rb"&#8220;|&ldquo;|&#8221;|&rdquo;|&#x201c;|&#x201d;", _I), b'"'),
     (re.compile(rb"&quot;"), b'"'),
     (re.compile(rb"&#0?39;|&apos;"), b"'"),
-    (re.compile(rb"&#8211;|&ndash;"), b"-"),
-    (re.compile(rb"&#8212;|&mdash;"), b"--"),
+    (re.compile(rb"&#8211;|&ndash;|&#x2013;", _I), b"-"),
+    (re.compile(rb"&#8212;|&mdash;|&#x2014;", _I), b"--"),
     (re.compile(rb"&lt;"), b"<"),
     (re.compile(rb"&gt;"), b">"),
     (re.compile(rb"[ \t]+"), b" "),

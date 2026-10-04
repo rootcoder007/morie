@@ -56,7 +56,7 @@ class TestPipelineTrackerPlain:
         assert results[0].status == "success"
         assert results[0].output_files_actual == 2
         assert results[0].elapsed_seconds >= 0
-        mock_run.assert_called_once_with("power-design", cpads_csv="fake.csv", output_dir=None)
+        mock_run.assert_called_once_with("power-design", cpads_csv="fake.csv", dataset_key=None, output_dir=None)
 
     @patch("morie.progress.run_module", side_effect=RuntimeError("bad data"))
     def test_run_handles_error(self, mock_run):
@@ -116,7 +116,7 @@ class TestPipelineTrackerPlain:
         )
         tracker.run()
 
-        mock_run.assert_called_once_with("power-design", cpads_csv="fake.csv", output_dir="/tmp/out")
+        mock_run.assert_called_once_with("power-design", cpads_csv="fake.csv", dataset_key=None, output_dir="/tmp/out")
 
 
 # ---------------------------------------------------------------------------

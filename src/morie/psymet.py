@@ -23,6 +23,7 @@ References
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 
 from morie.fn import _array_core as np
@@ -286,13 +287,26 @@ def mcdo(
 
     evals = np.sort(np.linalg.eigvalsh(R))[::-1]
     loads = _paf(R, nf)
-    comm = np.sum(loads**2, axis=1)
+    g = np.asarray(_schmid_leiman_g(loads.tolist() if hasattr(loads, "tolist") else loads), dtype=np.float64)
+    # items loading negatively on the general factor are reverse-keyed: flip their signs first
+    # (psych::omega's flip = TRUE), or the sums below cancel and omega collapses
+    key = np.where(g < 0, -1.0, 1.0)
+    if (key < 0).any():
+        cols = list(data.columns) if hasattr(data, "columns") else list(range(k))
+        warnings.warn(
+            "mcdo: reverse-keyed item(s) scored the other way round: "
+            + ", ".join(str(c) for c, kk in zip(cols, key) if kk < 0),
+            stacklevel=2,
+        )
+        X = X * key
+        R = R * np.outer(key, key)
+        g = g * key
+    comm = np.sum(np.asarray(loads) ** 2, axis=1)
     uniq = 1 - comm
     omg_t = 1 - uniq.sum() / R.sum()
-    g = _schmid_leiman_g(loads.tolist() if hasattr(loads, "tolist") else loads)
-    omg_h = sum(g) ** 2 / R.sum()
+    omg_h = g.sum() ** 2 / R.sum()
 
-    a = crba(data)
+    a = crba(X)
     expvar = evals[:nf].sum() / evals.sum()
 
     return OmgRes(

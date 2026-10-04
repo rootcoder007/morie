@@ -25,6 +25,8 @@ transformation: the \code{nf} factors are promax-rotated, their correlations are
 one general factor (with two factors both load the square root of their correlation),
 and the items are projected onto it. With \code{nf = 1} the single factor is the general
 factor, so \code{hier} equals \code{total}: a one-factor model cannot separate them.
+Items that load negatively on the general factor are reverse-keyed: they are scored the
+other way round first, as \code{psych::omega()} does, and a message names them.
 }
 \examples{
 if (requireNamespace("psych", quietly = TRUE)) {

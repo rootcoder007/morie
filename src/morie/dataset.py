@@ -569,7 +569,11 @@ def profile_dataset(
         non_null = series.dropna()
         n_unique = int(non_null.nunique())
         # a column with no values, or one value, carries no information for a model
-        role = "empty" if non_null.empty else "constant" if n_unique <= 1 else _detect_role(series, level=level)
+        role = _detect_role(series, level=level)
+        if non_null.empty:
+            role = "empty"
+        elif n_unique <= 1 and role != "weight":  # equal weights are still the weights
+            role = "constant"
         missing_pct = float(series.isna().mean() * 100.0)
         is_binary = n_unique == binary_threshold
         is_constant = n_unique <= 1

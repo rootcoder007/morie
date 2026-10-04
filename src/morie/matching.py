@@ -2063,6 +2063,14 @@ def match_multi_treatment(
     """
     df = data.dropna(subset=[treatment] + covariates).copy()
     levels = sorted(df[treatment].unique())
+    # a continuous column (often the outcome passed by mistake) would be matched value by value
+    if len(levels) > 10:
+        raise ValueError(
+            f"treatment {treatment!r} has {len(levels)} distinct values; a multi-valued treatment needs a few levels"
+            " (at most 10)"
+        )
+    if len(levels) < 2:
+        raise ValueError(f"treatment {treatment!r} has {len(levels)} level; matching needs at least two")
 
     if reference_group is None:
         reference_group = df[treatment].mode().iloc[0]

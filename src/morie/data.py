@@ -1548,7 +1548,7 @@ class RObjectSavedError(NotImplementedError):
         self.key, self.path = key, Path(path)
         super().__init__(
             f"{key} is an R object ({self.path.suffix}), saved at {self.path}. Open it in R with "
-            f"rmorie::morie_load_dataset('{key}'), or readRDS()/load() on that file."
+            f"rmorie::morie_load_dataset('{key}'), or {'readRDS' if str(path).lower().endswith('.rds') else 'load'}() on that file."
         )
 
 

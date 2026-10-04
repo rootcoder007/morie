@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from morie.cpads import validate_cpads_frame
 from morie.fn._helpers import _safe_exp
+from morie.investigation import _labelled_term
 from morie.survey import SurveyDesign
 
 from . import _array_core as np
@@ -57,7 +58,7 @@ def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     conf = fit.conf_int()
     table = pd.DataFrame(
         {
-            "term": fit.params.index,
+            "term": [_labelled_term(t) for t in fit.params.index],
             "log_odds": fit.params.values,
             "SE": fit.bse.values,
             "OR": _safe_exp(fit.params.values),
@@ -209,7 +210,7 @@ def run_weighted_logistic_analysis(
             ).fit()
             smote_or_table = pd.DataFrame(
                 {
-                    "term": smote_fit.params.index,
+                    "term": [_labelled_term(t) for t in smote_fit.params.index],
                     "log_odds": smote_fit.params.values,
                     "SE": smote_fit.bse.values,
                     "OR": _safe_exp(smote_fit.params.values),

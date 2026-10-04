@@ -534,6 +534,12 @@ def cli(args: list[str]) -> int:
 
     text = fetch_report_text(url)
     fields = extract_report_fields(text)
+    # the panel fields the native parser reads (police service, ISO dates, counts, ...) next to the sections
+    from ..siu.native import parse_report_text, to_iso_date
+
+    fields.update(parse_report_text(text))
+    if fields.get("incident_date"):
+        fields["incident_date"] = to_iso_date(fields["incident_date"]) or fields["incident_date"]
     (ns.out / "report.txt").write_text(text)
     (ns.out / "fields.json").write_text(json.dumps(fields, indent=2))
     sys.stderr.write(f"wrote {ns.out / 'report.txt'} ({len(text):,} chars) + fields.json\n")

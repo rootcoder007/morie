@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import math as _math
+import os
 import shutil
 import subprocess
 import tempfile
@@ -1012,13 +1013,15 @@ def _r_route_ready() -> None:
     rscript = _rscript_bin()
     if rscript is None:
         raise RuntimeError("Rscript is not available on PATH.")
+    # the package the bridge script loads (rmorie first, then morie's R package) and its version
     probe = subprocess.run(
         [
             rscript,
             "--vanilla",
             "-e",
-            'quit(status = !(requireNamespace("rmorie", quietly = TRUE) || '
-            'requireNamespace("morie", quietly = TRUE)))',
+            'p <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else if '
+            '(requireNamespace("morie", quietly = TRUE)) "morie" else ""; '
+            'cat(p, if (nzchar(p)) as.character(utils::packageVersion(p)) else "", "\\n"); quit(status = !nzchar(p))',
         ],
         stdin=subprocess.DEVNULL,
         capture_output=True,
@@ -1029,6 +1032,15 @@ def _r_route_ready() -> None:
         raise RuntimeError(
             "The R package for the R-backed modules is required for R-backed modules but is not installed "
             "(install rmorie, or morie's R package)"
+        )
+    pkg, _, r_version = probe.stdout.strip().partition(" ")
+    from . import __version__ as py_version
+
+    # the two arms are released in lockstep: another version computes other numbers without saying so
+    if r_version.strip() and r_version.strip() != py_version and not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
+        raise RuntimeError(
+            f"R {pkg} {r_version.strip()} is installed, but this is morie {py_version}: the R-backed modules need the "
+            f"same version (run `morie r-install`; MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
         )
     _R_READY = True
 
@@ -1045,6 +1057,8 @@ def _r_package_absent(exc: BaseException) -> bool:
 
 def r_route_problem(module_name: str, exc: BaseException) -> str:
     """One line for the terminal when an R-backed module cannot run."""
+    if "the R-backed modules need the same version" in str(exc):
+        return f"{module_name}: {exc}"
     if _r_package_absent(exc):
         hint = (
             "run `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"

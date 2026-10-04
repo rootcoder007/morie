@@ -414,30 +414,6 @@ def _heal(results: dict[str, Any]) -> bool:
     return fixed_any
 
 
-# the knobs of the README "Trust model" table: name -> (what setting it to 1 does, safe when unset)
-TRUST_KNOBS = {
-    "MORIE_NO_EXEC": "turns off every dynamic-execution path (REPL, exec, shell)",
-    "MORIE_TRUST_CHECKPOINT": "lets convert-checkpoint / pt2gguf deserialize a .pt (allowlisted tensors only)",
-    "MORIE_ALLOW_REMOTE_INSTALL": "lets bin/morie run the downloaded Ollama install.sh",
-    "MORIE_ALLOW_RC": "lets bin/morie source the ESML_RC shell config",
-    "MORIE_ALLOW_CRON": "lets bin/morie cron add/remove edit your crontab",
-}
-
-
-def trust_posture() -> list[tuple[str, bool, str]]:
-    """(knob, set?, effect) for each trust knob, in the README's order."""
-    import os
-
-    return [(k, os.environ.get(k, "").strip() not in ("", "0"), v) for k, v in TRUST_KNOBS.items()]
-
-
-def _render_trust_knobs() -> None:
-    print()
-    print("Trust knobs (README 'Trust model'; unset is the safe default except MORIE_NO_EXEC):")
-    for knob, on, effect in trust_posture():
-        print(f"  {knob:<27} {'SET' if on else 'unset':<6} {effect}")
-
-
 def run_doctor(fix: bool = False) -> int:
     """Run diagnostics and print a summary table.
 
@@ -455,7 +431,6 @@ def run_doctor(fix: bool = False) -> int:
     """
     results = run_checks()
     _render(results)
-    _render_trust_knobs()
 
     if fix:
         healed = _heal(results)

@@ -39,8 +39,24 @@ def _load(csv_path: Path | str | None = None) -> pd.DataFrame:
 
 
 def _clean(df: pd.DataFrame) -> pd.DataFrame:
-    """One spelling per police service and real incident dates (the SIU was created in 1990)."""
+    """One row per case, one spelling per police service and real incident dates (the SIU was created in 1990)."""
     from .native import to_iso_date
+
+    if "case_number" in df.columns:
+        # the corpus holds the English and the French copy of a report, and index rows with no case
+        # number; counting those as cases doubled every table
+        lang_col = next((c for c in ("_language", "language") if c in df.columns), None)
+        langs = list(df[lang_col]) if lang_col else [""] * len(df)
+        best: dict[str, tuple[int, int]] = {}
+        for i, (cn, lg) in enumerate(zip(df["case_number"], langs)):
+            c = cn.strip() if isinstance(cn, str) else ""
+            if not c:
+                continue
+            rank = 0 if lg == "en" else 1
+            if c not in best or rank < best[c][0]:
+                best[c] = (rank, i)
+        keep = sorted(i for _, i in best.values())
+        df = df.iloc[keep].reset_index(drop=True)
 
     if "police_service" in df.columns:
         # "Ontario Provincial Police (OPP)" and "Ontario Provincial Police" are one service
@@ -199,10 +215,26 @@ def case_counts(csv_path: Path | str | None = None) -> RichResult:
     )
 
 
+def _sex(v) -> str:
+    """The affected person's sex in a few categories (page text cut at the wrong place is "unknown")."""
+    s = v.strip().lower() if isinstance(v, str) else ""
+    if len(s) > 60:
+        return "unknown"  # page text, not an answer
+    if ("female" in s and re.search(r"\bmale\b", s)) or re.search(r",| and ", s):
+        return "multiple persons"
+    if "trans" in s:
+        return "transgender"
+    if re.search(r"\b(female|woman|girl|she|féminin)\b", s):
+        return "female"
+    if re.search(r"\b(male|man|boy|he|masculin)\b", s):
+        return "male"
+    return "unknown"
+
+
 def demographics(csv_path: Path | str | None = None) -> RichResult:
     """Sex/age distribution of affected persons."""
     df = _load(csv_path)
-    sex = df["sex_gender_affected"].fillna("unknown").value_counts()
+    sex = pd.Series([_sex(v) for v in df["sex_gender_affected"]]).value_counts()
     sex_rows = [[k, int(v), f"{100 * v / sex.sum():.1f}%"] for k, v in sex.items()]
     age = pd.to_numeric(df["age_affected"], errors="coerce").dropna()
     # an "age" of 1985 is a birth year: ages outside 0-110 are left out and counted
@@ -214,10 +246,10 @@ def demographics(csv_path: Path | str | None = None) -> RichResult:
         summary_lines=[
             ("Total cases", int(df.shape[0])),
             ("Cases with parseable age", int(age.size)),
-            ("Ages outside 0-110 (left out)", n_implausible),
             ("Mean age", float(age.mean()) if age.size else float("nan")),
             ("Median age", float(age.median()) if age.size else float("nan")),
             ("Age range", f"{int(age.min())}–{int(age.max())}" if age.size else "n/a"),
+            ("Ages outside 0-110 (left out)", n_implausible),
         ],
         tables=[
             {

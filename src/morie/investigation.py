@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
@@ -56,11 +58,40 @@ def _prepare_analysis_frame(
     return data.loc[:, required].dropna().copy()
 
 
+# CPADS codes as the R route labels them, so the two routes' tables join on term
+_TERM_LABELS = {
+    "gender": {1: "Female", 2: "Male", 3: "Non-binary"},
+    "age_group": {1: "16-19", 2: "20-22", 3: "23-25", 4: "26+"},
+    "province_region": {1: "Atlantic", 2: "Quebec", 3: "Ontario", 4: "Western"},
+}
+_C_TERM = re.compile(r"C\((\w+)\)\[T\.([^\]]+)\]")
+
+
+def _labelled_term(term: str) -> str:
+    """``C(gender)[T.2]`` -> ``gender_labelMale`` (and inside interactions); other terms unchanged.
+
+    Examples
+    --------
+    >>> _labelled_term("cannabis_any_use:C(gender)[T.2]"), _labelled_term("C(mental_health)[T.3.0]")
+    ('cannabis_any_use:gender_labelMale', 'mental_health_label3')
+    """
+
+    def one(m):
+        var, code = m.group(1), m.group(2)
+        try:
+            key = int(float(code))
+        except ValueError:
+            return f"{var}_label{code}"
+        return f"{var}_label{_TERM_LABELS.get(var, {}).get(key, key)}"
+
+    return _C_TERM.sub(one, str(term))
+
+
 def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     conf = fit.conf_int()
     table = pd.DataFrame(
         {
-            "term": fit.params.index,
+            "term": [_labelled_term(t) for t in fit.params.index],
             "log_odds": fit.params.values,
             "SE": fit.bse.values,
             "OR": _safe_exp(fit.params.values),
@@ -193,7 +224,7 @@ def run_weighted_logistic_analysis(
             ).fit()
             smote_or_table = pd.DataFrame(
                 {
-                    "term": smote_fit.params.index,
+                    "term": [_labelled_term(t) for t in smote_fit.params.index],
                     "log_odds": smote_fit.params.values,
                     "SE": smote_fit.bse.values,
                     "OR": _safe_exp(smote_fit.params.values),
@@ -298,7 +329,7 @@ def compare_nested_logistic_models(
             full_coef_rows.append(
                 {
                     "model": label,
-                    "term": term,
+                    "term": _labelled_term(term),
                     "log_odds": float(fit.params[term]),
                     "SE": float(fit.bse[term]),
                     "OR": float(_safe_exp(fit.params[term])),
@@ -316,7 +347,7 @@ def compare_nested_logistic_models(
     for term in int_terms:
         interaction_rows.append(
             {
-                "term": term,
+                "term": _labelled_term(term),
                 "log_odds": float(int_fit.params[term]),
                 "SE": float(int_fit.bse[term]),
                 "OR": float(_safe_exp(int_fit.params[term])),

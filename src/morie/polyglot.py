@@ -1915,6 +1915,24 @@ class PolyglotEngine:
         return result
 
 
+# the line prefix that selects each language, in the order the banner prints them
+_PREFIX_LANGS = (
+    ("R>", "r"),
+    ("J>", "julia"),
+    ("Q>", "q"),
+    ("N>", "node"),
+    ("Go>", "go"),
+    ("Rs>", "rust"),
+    ("C>", "c"),
+    ("C+>", "cpp"),
+    ("ML>", "ocaml"),
+    ("Lu>", "lua"),
+    ("TS>", "typescript"),
+    ("TX>", "latex"),
+    ("PG>", "postgres"),
+)
+
+
 def run_headless_repl(
     polyglot: bool = True,
     auto_detect: bool = True,
@@ -1929,7 +1947,7 @@ def run_headless_repl(
     print(f"MORIE Polyglot REPL -- {len(langs)} languages: {', '.join(langs)}")
     if polyglot:
         print("Polyglot mode ON -- variables bridge automatically across languages")
-    print("Prefixes: R> J> Q> N> Go> Rs> C> C+> ML> Lu> TS> TX> PG> ! (shell)")
+    print("Prefixes: " + " ".join(p for p, lg in _PREFIX_LANGS if avail.get(lg)) + " ! (shell)")
     print(f"Auto-detect: {'ON' if auto_detect else 'OFF'} | Default: {lang}")
 
     try:
