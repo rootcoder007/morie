@@ -120,8 +120,8 @@ def _baseline(t: np.ndarray, kind: BaselineKind, alpha: tuple[float, ...], T: fl
     """Baseline intensity ν(t) on [0, T] in events / day.
 
     ``"constant"``  ->  ν(t) = exp(a₀)  (one parameter, log-link).
-    ``"sinusoidal"``->  ν(t) = exp(a₀ + a₁·(t/T) + a₂ sin(2πt/365)
-                                       + a₃ cos(2πt/365)).
+    ``"sinusoidal"``->  ν(t) = exp(a₀ + a₁·(t/T) + a₂ sin(2πt/365.25)
+                                       + a₃ cos(2πt/365.25)).
     """
     t = np.asarray(t, dtype=float)
     if kind == "constant":
