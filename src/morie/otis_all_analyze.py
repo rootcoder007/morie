@@ -1293,9 +1293,9 @@ def _ruhela_formulations_on(
     balance_summary = "--"
     try:
         balance = oc.otis_balance(data_r, treatment=T_r, covariates=cov_r)
-        smd_data = balance.payload if hasattr(balance, "payload") else {}
-        max_smd = smd_data.get("max_abs_smd", "n/a")
-        balance_summary = f"max |SMD| = {max_smd:.3f}" if isinstance(max_smd, int | float) else str(max_smd)
+        # otis_balance returns one row per covariate; report the largest raw |SMD|, as the R arm does
+        raw = [abs(float(v)) for v in balance["smd_raw"] if v == v]
+        balance_summary = f"max |SMD| = {max(raw):.3f}" if raw else "n/a"
     except Exception as e:  # noqa: BLE001
         balance_summary = f"err: {type(e).__name__}: {e}"
 
@@ -1399,7 +1399,7 @@ def analyze_a01_ruhela_formulations(
             "across IPW (single-robust on propensity), g-computation "
             "(single-robust on outcome), AIPW (doubly-robust), PSM-NN "
             "(ATT, nonparametric), PSM-subclass (ATE, nonparametric), "
-            "then-DoubleML pipeline) is the strongest practical signal "
+            "IRM-DML and the MatchIt-then-DoubleML pipeline is the strongest practical signal "
             "of identification. Naive-arm sensitivity (any-flag, vm-"
             "binary) shows the same Goffmanian sign at smaller magnitude."
         ),
@@ -1555,7 +1555,7 @@ def analyze_ruhela_per_year(
         covariates=covariates,
         year_col=year_col,
         cluster_cols=cl,
-        full_ensemble=True,
+        full_battery=True,
         propensity_calibration=propensity_calibration,
     )
 
@@ -1680,7 +1680,7 @@ def analyze_a01_ruhela_per_year(
 
     if df is None:
         df = load_otis_dataset("a01")
-    data, T, Y, cov = oc.make_pair_alert_to_volatility_a01()
+    data, T, Y, cov = oc.make_pair_alert_to_volatility_a01(df)
     return analyze_ruhela_per_year(
         data, ds_id="a01", treatment=T, outcome=Y, covariates=cov, cluster_col="EndFiscalYear"
     )
