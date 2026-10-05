@@ -9,6 +9,10 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* rmorie 1.4.0 now writes and reads the same hybrid container and key files as `morie.crypto`
+  (its R arm had kept the 1.3.x container), so the two arms open each other's files; the
+  `hybrid` module and `hybrid_encrypt` docstrings now describe the 1.4.0 derivation
+  (`HKDF(shared_secret || kem_ct || pk)`) instead of the 1.3.x one.
 * `fit_hawkes_general(method="em")` finishes with the compiled projected BFGS on the exact
   likelihood from EM's point, as rmoriebricklayer's `core_hawkes_fit()`: EM converges linearly, so a
   small step is not the maximum (the R arm stopped up to 1.5e-5 short, 1.4e-5 on macOS x86_64). Every

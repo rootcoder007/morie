@@ -4,16 +4,18 @@ Combines post-quantum key encapsulation (ML-KEM-768) with symmetric
 authenticated encryption (ChaCha20-Poly1305) via HKDF-SHA256 key
 derivation.
 
-Because the reference ML-KEM-768 implementation uses lossy polynomial
-compression, encaps/decaps may not yield identical shared secrets.
-To guarantee correctness, this hybrid scheme wraps a random symmetric
-key under a key derived from ``HKDF(kem_ct || pk)`` (both sides have
-both values), then encrypts the payload with that symmetric key.
+A random 32-byte symmetric key encrypts the payload; it is wrapped under a
+key derived from ``HKDF(shared_secret || kem_ct || pk)``, where the shared
+secret is the ML-KEM-768 (FIPS 203) encapsulation's, so only the holder of
+the secret key can unwrap it. (morie / rmorie 1.3.x derived the wrapping key
+from ``kem_ct || pk`` alone, which anyone holding the file and the public key
+can compute; such files still open, with a warning, and should be encrypted
+again.) rmorie 1.4.0 writes and reads the same container.
 
 Container format (all big-endian lengths)::
 
-    len(kem_ct) [4B] || kem_ct || wrapped_key_nonce [12B] ||
-    wrapped_key_ct [32B] || wrapped_key_tag [16B] ||
+    "MORIEHYB" 0x02 [9B] || len(kem_ct) [4B] || kem_ct ||
+    wrapped_key_nonce [12B] || wrapped_key_ct [32B] || wrapped_key_tag [16B] ||
     payload_nonce [12B] || aead_ct || payload_tag [16B]
 
 WARNING: Research/educational implementation. NOT constant-time.
@@ -91,10 +93,10 @@ def _wrapping_key(shared_secret: bytes, kem_ct: bytes, pk: bytes) -> bytes:
 def hybrid_encrypt(plaintext: bytes, recipient_pk: bytes) -> bytes:
     """Encrypt data using hybrid ML-KEM-768 + ChaCha20-Poly1305.
 
-    1. Encapsulate with the recipient's ML-KEM public key (binds kem_ct to pk).
-    2. Derive a wrapping key from ``HKDF(kem_ct || pk)``.
+    1. Encapsulate with the recipient's ML-KEM public key: a ciphertext and a shared secret.
+    2. Derive the wrapping key from ``HKDF(shared_secret || kem_ct || pk)``.
     3. Generate a random 32-byte symmetric key, wrap it with ChaCha20-Poly1305.
-    4. Encrypt the plaintext with the symmetric key.
+    4. Encrypt the plaintext with the symmetric key, behind the 1.4.0 container marker.
 
     :param plaintext: Data to encrypt (arbitrary length).
     :param recipient_pk: Recipient's ML-KEM-768 public key.
