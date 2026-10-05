@@ -618,6 +618,11 @@ def hawkes_advanced_fit(
     """
     from .tps_stochastic import _try_savefig
 
+    if isinstance(df, dict):
+        # a plain {column: values} mapping, as the R arm accepts a list
+        df = pd.DataFrame(df)
+    if not hasattr(df, "columns"):
+        raise TypeError(f"df must be a data frame or a dict of columns, got {type(df).__name__}")
     if "OCC_DATE" not in df.columns and "REPORT_DATE" not in df.columns:
         return RichResult(
             title=f"Hawkes-{kernel}/{baseline} -- {ds_name}", warnings=["no OCC_DATE or REPORT_DATE column"]
