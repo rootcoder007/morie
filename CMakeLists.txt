@@ -32,7 +32,10 @@ nanobind_add_module(_core NB_STATIC
   libmorie/_core.cpp
   libmorie/kernels.cpp
   libmorie/hawkes.cpp
-  libmorie/linalg_bind.cpp)
+  libmorie/linalg_bind.cpp
+  libmorie/siu_bind.cpp
+  libmorie/siu/siu_parse.cpp
+  libmorie/siu/siu_resolve.cpp)
 
 # Land the compiled module inside the morie package: morie/_core*.so,
 # importable as ``morie._core``.

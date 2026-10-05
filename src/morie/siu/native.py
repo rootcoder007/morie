@@ -24,6 +24,14 @@ __all__ = ["SCHEMA", "html_to_text", "parse_report_html", "parse_report_text", "
 #: The 16 panel-reviewed fields: (name, is_count, description), as schema.hpp.
 SCHEMA = PANEL_FIELDS
 
+try:  # the compiled twin (libmorie/siu, vendored from rmoriebricklayer)
+    from morie import _core as _cxx
+
+    if not hasattr(_cxx, "siu_parse_report_html"):
+        _cxx = None
+except ImportError:  # pragma: no cover - pure-Python install
+    _cxx = None
+
 _I = re.IGNORECASE
 _META = re.compile(rb"[\^\$\.\|\?\*\+\(\)\[\]\{\}\\]")
 
@@ -397,6 +405,8 @@ def to_iso_date(human: str) -> str:
     >>> to_iso_date("January 5, 2023"), to_iso_date("2023-01-05"), to_iso_date("soon")
     ('2023-01-05', '2023-01-05', '')
     """
+    if _cxx is not None:
+        return _cxx.siu_to_iso_date(human)
     return _s(_iso(_b(human)))
 
 
@@ -440,6 +450,8 @@ def html_to_text(html: str) -> str:
     >>> html_to_text("<p>The&nbsp;Team</p><p>SO #1</p>")
     ' The Team\\nSO #1\\n'
     """
+    if _cxx is not None:
+        return _cxx.siu_html_to_text(html)
     return _s(_html_to_text(_b(html)))
 
 
@@ -763,6 +775,8 @@ def _parse(t: bytes) -> dict[str, str]:
 
 def parse_report_text(text: str) -> dict[str, str]:
     """Parse plain report text into the 16 schema fields plus ``_language`` (``""`` when not stated)."""
+    if _cxx is not None:
+        return _cxx.siu_parse_report_text(text)
     return _parse(_b(text))
 
 
@@ -775,4 +789,6 @@ def parse_report_html(html: str) -> dict[str, str]:
     >>> f["age_affected"], f["sex_gender_affected"], f["location_of_call"]
     ('34', 'man', 'City of Barrie')
     """
+    if _cxx is not None:
+        return _cxx.siu_parse_report_html(html)
     return _parse(_html_to_text(_b(html)))

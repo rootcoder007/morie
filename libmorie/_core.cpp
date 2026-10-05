@@ -23,6 +23,8 @@
 #include "hawkes.h"
 
 namespace nb = nanobind;
+
+void register_siu(nb::module_ &m);
 using namespace nb::literals;
 
 namespace {
@@ -63,4 +65,6 @@ NB_MODULE(_core, m) {
     // Dense linalg / elementwise / FFT kernels (the compiled arm of
     // the pure-Python _array_core reference implementations).
     register_linalg(m);
+    // SIU director's-report parser (vendored from rmoriebricklayer).
+    register_siu(m);
 }
