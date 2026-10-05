@@ -14,22 +14,77 @@ from morie.fn import _array_core as np
 from morie.fn._array_core import NDArray
 
 
-def aldrich_mckelvey(
-    Z: NDArray,
-    n_dims: int = 1,
-    max_iter: int = 100,
-    tol: float = 1e-6,
-) -> dict:
-    """Aldrich-McKelvey scaling (Eqs 2.1-2.3).
+def _am_stimuli(Z) -> list:
+    """Aldrich-McKelvey closed form for the stimulus positions.
 
-    Recovers latent stimulus positions from perceptual data by estimating
-    respondent-specific intercepts and weights: z_ij = a_i + b_i * zhat_j + e_ij.
+    Minimising sum_i ||X_i c_i - z||^2 over unit-length, centred z, with
+    X_i = [1, z_i], leaves z' sum_i (I - P_i) z, so z is the eigenvector of
+    sum_i (I - P_i) with the smallest eigenvalue orthogonal to the constant
+    (which every projection P_i reproduces).  Complete, non-constant rows
+    only, as basicspace::aldmck.  Standardised (sd with n - 1), first
+    stimulus on the left.
+    """
+    rows = [[float(v) for v in r] for r in Z]
+    q = len(rows[0]) if rows else 0
+    if q < 2:
+        raise ValueError("Aldrich-McKelvey scaling needs at least two stimuli.")
+    M = [[0.0] * q for _ in range(q)]
+    used = 0
+    for z in rows:
+        if any(math.isnan(v) for v in z):
+            continue
+        mz = sum(z) / q
+        szz = sum((v - mz) ** 2 for v in z)
+        if szz == 0.0:
+            continue
+        # projection onto span{1, z}: 1/q + (z - mz)(z - mz)' / szz
+        for j in range(q):
+            for k in range(q):
+                M[j][k] += (1.0 if j == k else 0.0) - 1.0 / q - (z[j] - mz) * (z[k] - mz) / szz
+        used += 1
+    if used < 1:
+        raise ValueError(
+            "Aldrich-McKelvey scaling needs at least one respondent who places every "
+            "stimulus and not all at the same point."
+        )
+    # C M C with C the centring projection
+    rm = [sum(M[j]) / q for j in range(q)]
+    cm = [sum(M[j][k] for j in range(q)) / q for k in range(q)]
+    gm = sum(rm) / q
+    CMC = [[M[j][k] - rm[j] - cm[k] + gm for k in range(q)] for j in range(q)]
+    vals, vecs = np.linalg.eigh(np.asarray(CMC))
+    vals = [float(v) for v in vals]
+    V = [[float(vecs[j][k]) for k in range(q)] for j in range(q)]
+    best = None
+    for k in range(q):
+        col = [V[j][k] for j in range(q)]
+        if abs(sum(col)) > 1e-8 * math.sqrt(q):
+            continue  # the constant direction
+        if best is None or vals[k] < vals[best]:
+            best = k
+    v = [V[j][best] for j in range(q)]
+    mv = sum(v) / q
+    sd = math.sqrt(sum((t - mv) ** 2 for t in v) / (q - 1))
+    v = [(t - mv) / sd for t in v]
+    if v[0] > 0:
+        v = [-t for t in v]
+    return v
+
+
+def aldrich_mckelvey(Z: NDArray, n_dims: int = 1) -> dict:
+    """Aldrich-McKelvey scaling (Aldrich & McKelvey 1977; Eqs 2.1-2.3).
+
+    The stimulus positions are the least-squares solution: each
+    respondent's placements are mapped onto the common scale by the best
+    affine transformation and zhat minimises the total squared error, a
+    closed form (the eigenvector in :func:`_am_stimuli`) that equals
+    basicspace::aldmck.  The respondent intercepts and slopes regress each
+    respondent's placements on zhat (any respondent with two placements).
 
     :param Z: (n_respondents x n_stimuli) matrix of perceptual placements.
-    :param n_dims: Number of latent dimensions (typically 1).
-    :param max_iter: Maximum EM iterations.
-    :param tol: Convergence tolerance.
-    :return: dict with zhat (stimulus positions), alpha, beta, weights, iterations.
+    :param n_dims: Number of latent dimensions (must be 1).
+    :return: dict with zhat, alpha, beta, weights, iterations (None: closed
+        form), converged.
     """
     if int(n_dims) != 1:
         raise NotImplementedError(
@@ -37,105 +92,100 @@ def aldrich_mckelvey(
         )
     Z = np.asarray(Z, dtype=float)
     n_resp, n_stim = Z.shape
-
+    zhat = np.asarray(_am_stimuli(Z.tolist()))
     mask = ~np.isnan(Z)
-
-    zhat = np.nanmean(Z, axis=0)
-    if zhat.std() > 0:
-        zhat = (zhat - zhat.mean()) / zhat.std()
-
-    for iteration in range(max_iter):  # noqa: B007 -- read after the loop (iteration count)
-        zhat_old = zhat.copy()
-
-        alpha = np.zeros(n_resp)
-        beta = np.zeros(n_resp)
-        for i in range(n_resp):
-            valid = mask[i]
-            if valid.sum() < 2:
-                alpha[i] = 0.0
-                beta[i] = 1.0
-                continue
-            zi = Z[i, valid]
-            zh = zhat[valid]
-            A = np.column_stack([np.ones(valid.sum()), zh])
-            params, _, _, _ = np.linalg.lstsq(A, zi, rcond=None)
-            alpha[i] = params[0]
-            beta[i] = params[1] if abs(params[1]) > 1e-10 else 1e-10
-
-        for j in range(n_stim):
-            valid = mask[:, j]
-            if valid.sum() < 1:
-                continue
-            # v0.9.5.6+: Aldrich-McKelvey (1977) precision-weighted
-            # stimulus update z_j = sum beta(Z-alpha) / sum beta^2,
-            # NOT the unweighted mean. Reduces bias under
-            # heterogeneous respondent reliability.
-            denom = float((beta[valid] ** 2).sum())
-            if denom < 1e-12:
-                zhat[j] = float(((Z[valid, j] - alpha[valid]) / beta[valid]).mean())
-            else:
-                zhat[j] = float((beta[valid] * (Z[valid, j] - alpha[valid])).sum() / denom)
-
-        zhat = zhat - zhat.mean()
-        if zhat.std() > 0:
-            zhat = zhat / zhat.std()
-
-        if np.max(np.abs(zhat - zhat_old)) < tol:
-            break
-
+    alpha = np.zeros(n_resp)
+    beta = np.zeros(n_resp)
+    for i in range(n_resp):
+        valid = mask[i]
+        if valid.sum() < 2:
+            alpha[i] = 0.0
+            beta[i] = 1.0
+            continue
+        zi = Z[i, valid]
+        zh = zhat[valid]
+        A = np.column_stack([np.ones(valid.sum()), zh])
+        params, _, _, _ = np.linalg.lstsq(A, zi, rcond=None)
+        alpha[i] = params[0]
+        beta[i] = params[1] if abs(params[1]) > 1e-10 else 1e-10
     weights = np.abs(beta)
     weights = weights / weights.sum() * n_resp
-
     return {
         "zhat": zhat,
         "alpha": alpha,
         "beta": beta,
         "weights": weights,
-        "iterations": iteration + 1,
-        "converged": iteration + 1 < max_iter,
+        "iterations": None,
+        "converged": True,
     }
 
 
-def blackbox_scaling(
-    X: NDArray,
-    n_dims: int = 2,
-) -> dict:
-    """Blackbox / Basic Space scaling (Eqs 2.4-2.8).
+def blackbox_scaling(X: NDArray, n_dims: int = 2, minscale: int = 8) -> dict:
+    """Blackbox / Basic Space scaling (Poole 1998; Eqs 2.4-2.8).
 
-    Recovers respondent ideal points from issue scale data via SVD.
-    X_0 = Psi W' + J_n c' + E_0.
+    X_0 = Psi W' + J_n c' + E_0 fitted by least squares over the observed
+    cells only: missing cells are filled with the current fit, the column
+    means and leading singular vectors of the centred matrix recomputed,
+    and the two steps repeated until the filled cells stop moving (one SVD
+    when nothing is missing).  Psi = U D^(1/2), W = V D^(1/2), the scaling
+    basicspace::blackbox reports.  Respondents with fewer than
+    ``minscale`` responses (capped at the number of issues) are not
+    scaled; their rows are NaN.
 
     :param X: (n x p) matrix of issue scale responses (NaN for missing).
     :param n_dims: Number of dimensions to extract.
+    :param minscale: Minimum responses for a respondent to be scaled.
     :return: dict with ideal_points, stimuli_weights, eigenvalues, fit.
     """
-    X = np.asarray(X, dtype=float)
-    n, p = X.shape
-
-    col_means = np.nanmean(X, axis=0)
-    X_centered = X - col_means
-    X_centered = np.nan_to_num(X_centered, nan=0.0)
-
-    U, s, Vt = np.linalg.svd(X_centered, full_matrices=False)
-
-    q = min(n_dims, len(s))
-    Lambda_q = np.diag(s[:q])
-    V_q = Vt[:q, :].T
-    U_q = U[:, :q]
-
-    W = V_q @ np.sqrt(Lambda_q)
-    Psi = U_q @ np.sqrt(Lambda_q)
-
-    total_var = (s**2).sum()
-    explained = (s[:q] ** 2).sum() / total_var if total_var > 0 else 0.0
-
+    rows = [[float(v) for v in r] for r in np.asarray(X, dtype=float).tolist()]
+    n = len(rows)
+    p = len(rows[0]) if rows else 0
+    if p < 2:
+        raise ValueError("Blackbox scaling needs at least two issues (columns).")
+    need = min(int(minscale), p)
+    keep = [i for i in range(n) if sum(not math.isnan(v) for v in rows[i]) >= need]
+    if len(keep) <= int(n_dims):
+        raise ValueError("Too few respondents answer at least `minscale` issues.")
+    Xk = [rows[i] for i in keep]
+    nk = len(Xk)
+    obs = [[not math.isnan(v) for v in r] for r in Xk]
+    colmean = []
+    for j in range(p):
+        vals = [Xk[i][j] for i in range(nk) if obs[i][j]]
+        colmean.append(sum(vals) / len(vals) if vals else 0.0)
+    M = [[Xk[i][j] if obs[i][j] else colmean[j] for j in range(p)] for i in range(nk)]
+    q = min(int(n_dims), p - 1, nk - 1)
+    complete = all(all(o) for o in obs)
+    for _ in range(5000):
+        means = [sum(M[i][j] for i in range(nk)) / nk for j in range(p)]
+        C = [[M[i][j] - means[j] for j in range(p)] for i in range(nk)]
+        U, sv, Vt = np.linalg.svd(np.asarray(C), full_matrices=False)
+        U = [[float(U[i][k]) for k in range(q)] for i in range(nk)]
+        d = [float(sv[k]) for k in range(q)]
+        Vt = [[float(Vt[k][j]) for j in range(p)] for k in range(q)]
+        if complete:
+            break
+        change = 0.0
+        for i in range(nk):
+            for j in range(p):
+                if not obs[i][j]:
+                    f = means[j] + sum(U[i][k] * d[k] * Vt[k][j] for k in range(q))
+                    change = max(change, abs(M[i][j] - f))
+                    M[i][j] = f
+        if change < 1e-10:
+            break
+    Psi = [[float("nan")] * q for _ in range(n)]
+    for r, i in enumerate(keep):
+        Psi[i] = [U[r][k] * math.sqrt(d[k]) for k in range(q)]
+    W = [[Vt[k][j] * math.sqrt(d[k]) for k in range(q)] for j in range(p)]
+    total = sum(sum(c * c for c in row) for row in C)
     return {
-        "ideal_points": Psi,
-        "stimuli_weights": W,
-        "eigenvalues": s[:q] ** 2,
-        "singular_values": s[:q],
-        "explained_variance": explained,
-        "col_means": col_means,
+        "ideal_points": np.asarray(Psi),
+        "stimuli_weights": np.asarray(W),
+        "eigenvalues": np.asarray([t * t for t in d]),
+        "singular_values": np.asarray(d),
+        "explained_variance": (sum(t * t for t in d) / total) if total > 0 else 0.0,
+        "col_means": np.asarray(means),
         "n_dims": q,
     }
 
