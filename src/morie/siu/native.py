@@ -532,10 +532,202 @@ def _detect_age_sex_fr(text: bytes) -> tuple[bytes, bytes]:
     return m.group(2), _FR_PERSON.get(w, w)
 
 
+# ---- the subject officials' service (port of bricklayer detect_subject_service) ----
+# police_service is the service whose officers are the subject officials. The force that notified
+# the SIU is often a different one (custody, requesting or neighbouring service), so the director's
+# analysis decides: the first service named in a sentence that names a subject official ("the SO of
+# the BPS", "un agent du SPT"), else the service the analysis names most. The case number's letter
+# (T Toronto, P OPP, I First Nations, O any other) rules out services of the wrong kind. Legacy
+# reports name the service in a "Police service:" header.
+_CAP = rb"(?:[A-Z]|\xc3[\x80-\x9d])"
+_WORD = rb"[^\s,.;()]*"
+_EN_NAME = (
+    rb"((?:[A-Z][A-Za-z'\-]+[ \t]+){1,5}(?:Police Service|Police Department|Provincial Police|Police|Constabulary))"
+    rb"\b(?![ \t]+Services?[ \t]+(?:Act|Board))"
+)
+_FR_NAME = (
+    rb"([Ss]ervice(?: [a-z\xc3\xa9]+){0,2} de (?:la )?police(?: [a-z\xc3\xa9]+){0,2} (?:de la |de |du |des |d"
+    + _APOS
+    + rb")(?:grand )?"
+    + _CAP
+    + _WORD
+    + rb"(?: "
+    + _CAP
+    + _WORD
+    + rb")*"
+    + rb"|[Ss]ervice de police (?:Nishnawbe[- ]Aski|Anishinabek|Akwesasne|Wikwemikong|UCCM)"
+    + rb"|[Pp]olice r\xc3\xa9gionale (?:de |du |d"
+    + _APOS
+    + rb")"
+    + _CAP
+    + _WORD
+    + rb"(?: "
+    + _CAP
+    + _WORD
+    + rb")*"
+    + rb"|[Pp]olice [Pp]rovinciale(?: de l"
+    + _APOS
+    + rb"Ontario)?"
+    + rb"|[Pp]olice (?:de |d"
+    + _APOS
+    + rb")"
+    + _CAP
+    + _WORD
+    + rb"(?: "
+    + _CAP
+    + _WORD
+    + rb")*)"
+)
+_SVC_NAME = {False: re.compile(_EN_NAME), True: re.compile(_FR_NAME)}
+_SVC_ABBR = {
+    False: re.compile(_EN_NAME + rb"\s*\(\s*([A-Z]{2,6})\s*\)"),
+    True: re.compile(_FR_NAME + rb"\s*\(\s*([A-Z]{2,6})\s*\)"),
+}
+_SVC_FN = re.compile(
+    rb"Nishnawbe|Anishinabek|Treaty|Trait\xc3\xa9|Akwesasne|Wikwemikong|UCCM|Lac Seul|Rama|"
+    rb"Six Nations|Premi\xc3\xa8res? Nations?|First Nations?"
+)
+_SVC_LEAD = re.compile(rb"^(?:The|A|An|Of|And|On|In|By|To|With|From|That|This|Local|While|When|As)\s+")
+_NOT_SERVICE = re.compile(
+    rb"\b(?:Independent|Review|Office|Between|Involving|After|During|Following|Collision|"
+    rb"Crash|Shooting|Death|Injury|Incident|Arrest)\b"
+)
+_SO_MARK = {
+    False: re.compile(rb"\bSOs?\b|[Ss]ubject [Oo]ffic(?:er|ial)s?"),
+    True: re.compile(rb"\bAIs?\b|agente?s? impliqu"),
+}
+_SVC_LEGACY = {
+    False: re.compile(rb"Police service\s*:\s*(.+?)\s+Incident date"),
+    True: re.compile(rb"Service de police\s*:\s*(.+?)\s+Date de l"),
+}
+_CASE_LETTER = re.compile(rb"\b\d\d-([TPOI])[A-Z]{2}-\d{3}\b")
+_SVC_DEFAULT = {
+    True: (
+        (b"PPO", b"Police provinciale de l'Ontario"),
+        (b"SPT", b"Service de police de Toronto"),
+        (b"PRY", b"Police r\xc3\xa9gionale de York"),
+        (b"PRP", b"Police r\xc3\xa9gionale de Peel"),
+        (b"SPRP", b"Service de police r\xc3\xa9gional de Peel"),
+        (b"SPRD", b"Service de police r\xc3\xa9gional de Durham"),
+        (b"SPRN", b"Service de police r\xc3\xa9gional de Niagara"),
+        (b"SPRH", b"Service de police r\xc3\xa9gional de Halton"),
+        (b"SPRW", b"Service de police r\xc3\xa9gional de Waterloo"),
+    ),
+    False: (
+        (b"OPP", b"Ontario Provincial Police"),
+        (b"TPS", b"Toronto Police Service"),
+        (b"YRP", b"York Regional Police"),
+        (b"PRP", b"Peel Regional Police"),
+        (b"DRPS", b"Durham Regional Police Service"),
+        (b"NRPS", b"Niagara Regional Police Service"),
+        (b"HRPS", b"Halton Regional Police Service"),
+        (b"WRPS", b"Waterloo Regional Police Service"),
+    ),
+}
+
+
+def _service_kind(n: bytes) -> bytes:
+    if _SVC_FN.search(n):
+        return b"I"
+    if re.search(rb"Provin\w*al|[Pp]rovinciale", n):
+        return b"P"
+    return b"T" if b"Toronto" in n else b"O"
+
+
+def _clean_service(n: bytes) -> bytes:
+    n = _trim(n)
+    for _ in range(3):
+        n = _SVC_LEAD.sub(b"", n)
+    return n
+
+
+def _is_word(c: int) -> bool:
+    return 65 <= c <= 90 or 97 <= c <= 122 or 48 <= c <= 57 or c == 95
+
+
+def _pick_service(sec: bytes, text: bytes, fr: bool, letter: bytes) -> bytes:
+    abbr = [list(p) for p in _SVC_DEFAULT[fr]]
+    seen: set[bytes] = set()
+    for m in _SVC_ABBR[fr].finditer(text):  # the page's own "<name> ( ABBR )" pairs win; first one counts
+        k = m.group(m.lastindex)
+        if k in seen:
+            continue
+        seen.add(k)
+        v = _clean_service(m.group(1))
+        for p in abbr:
+            if p[0] == k:
+                p[1] = v
+                break
+        else:
+            abbr.append([k, v])
+    ments = []
+    for m in _SVC_NAME[fr].finditer(sec):
+        n = _clean_service(m.group(1))
+        if n and not _NOT_SERVICE.search(n):
+            ments.append((m.start(), n))
+    for k, v in abbr:
+        if not v or _NOT_SERVICE.search(v):
+            continue
+        at = sec.find(k)
+        while at != -1:
+            end = at + len(k)
+            if (at == 0 or not _is_word(sec[at - 1])) and (end == len(sec) or not _is_word(sec[end])):
+                ments.append((at, v))
+            at = sec.find(k, at + 1)
+    ments.sort()
+    if letter:
+        keep = [m for m in ments if _service_kind(m[1]) == letter]
+        if keep:
+            ments = keep
+    if not ments:
+        return b""
+    ments = [(p, n[:1].upper() + n[1:] if 97 <= n[0] <= 122 else n) for p, n in ments]
+    for m in _SO_MARK[fr].finditer(sec):
+        pos = m.start()
+        a = sec.rfind(b".", 0, pos) + 1 if pos else 0
+        b = sec.find(b".", pos)
+        b = len(sec) if b == -1 else b
+        for p, n in ments:
+            if a <= p <= b:
+                return n
+        if a > 0:  # "... arrest by NRPS officers. The SIU named the SO ..." -- the sentence before names it
+            pa = sec.rfind(b".", 0, a - 1) + 1
+            for p, n in ments:
+                if pa <= p < a:
+                    return n
+    counts: dict[bytes, int] = {}
+    for _, n in ments:
+        counts[n] = counts.get(n, 0) + 1
+    best = ments[0]
+    for m in ments:
+        if counts[m[1]] > counts[best[1]]:
+            best = m
+    return best[1]
+
+
+def _detect_subject_service(text: bytes, fr: bool) -> bytes:
+    m = _SVC_LEGACY[fr].search(text)
+    if m:
+        h = _trim(m.group(1))
+        for mm in _SVC_NAME[fr].finditer(text):
+            n = _clean_service(mm.group(1))
+            if h.lower() in n.lower():
+                return n
+        return h
+    m = _CASE_LETTER.search(text)
+    letter = m.group(1) if m else b""
+    head = b"analyse et d\xc3\xa9cision du directeur" if fr else b"analysis and director"
+    i = text.lower().rfind(head)
+    r = _pick_service(text[i:], text, fr, letter) if i != -1 else b""
+    return r or _pick_service(text, text, fr, letter)
+
+
 def _parse(t: bytes) -> dict[str, str]:
     f: dict[bytes, bytes] = {b"_language": _detect_language(t)}
     fr = f[b"_language"] == b"fr"
-    f[b"police_service"] = (fr and _detect_police_service_fr(t)) or _detect_police_service(t)
+    f[b"police_service"] = (
+        _detect_subject_service(t, fr) or (fr and _detect_police_service_fr(t)) or _detect_police_service(t)
+    )
     f[b"date_of_incident_iso"] = _iso((fr and _detect_incident_date_fr(t)) or _detect_incident_date(t))
     f[b"date_siu_notified_iso"] = _iso((fr and _detect_siu_notified_fr(t)) or _detect_siu_notified(t))
     f[b"date_of_director_decision_iso"] = _iso((fr and _detect_decision_date_fr(t)) or _detect_decision_date(t))

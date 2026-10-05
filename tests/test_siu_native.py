@@ -152,3 +152,93 @@ def test_dates_in_ordinal_french_and_abbreviated_forms():
     assert (
         native.html_to_text("<p>Fran&ccedil;ais &eacute;t&eacute; &#233; &hellip;</p>").strip() == "Français été é ..."
     )
+
+
+def _page(*paras):
+    return "<html><body>" + "".join(f"<p>{p}</p>" for p in paras) + "</body></html>"
+
+
+@pytest.mark.parametrize(
+    ("paras", "want"),
+    [
+        # the subject official's service, not the force that notified the SIU
+        (
+            (
+                "The Lakeshore Police Service ( LPS ) notified the SIU of the injury.",
+                "Analysis and Director's Decision",
+                "The Complainant was hurt while in the custody of the LPS.",
+                "The SO of the Hillcrest Police Service was identified as the subject official.",
+            ),
+            "Hillcrest Police Service",
+        ),
+        # the sentence before a subject-official sentence that names no service
+        (
+            (
+                "The Lakeshore Police Service notified the SIU.",
+                "Analysis and Director's Decision",
+                "The Complainant was arrested by Riverton Police Service officers.",
+                "The SO was identified as the subject official.",
+            ),
+            "Riverton Police Service",
+        ),
+        # neither: the service the analysis names most
+        (
+            (
+                "The Lakeshore Police Service notified the SIU.",
+                "Analysis and Director's Decision",
+                "The Complainant fell from a balcony.",
+                "The SO was identified as the subject official.",
+                "Riverton Police Service records were reviewed.",
+                "Riverton Police Service officers had attended; the Lakeshore Police Service assisted.",
+            ),
+            "Riverton Police Service",
+        ),
+        # the case-number letter: P is the Ontario Provincial Police, O any other service
+        (
+            (
+                "Director's Report for Case # 21-PCI-500",
+                "Analysis and Director's Decision",
+                "The SO of the Hillcrest Police Service assisted the OPP in the arrest.",
+            ),
+            "Ontario Provincial Police",
+        ),
+        (
+            (
+                "Director's Report for Case # 21-OCI-502",
+                "Analysis and Director's Decision",
+                "The SO had assisted the OPP before Riverton Police Service officers made the arrest.",
+            ),
+            "Riverton Police Service",
+        ),
+        # French: the agent impliqué's service
+        (
+            (
+                "Témoins civils",
+                "Agents impliqués",
+                "Notification de l’UES",
+                "La Police provinciale de l’Ontario ( PPO ) a avisé l’UES de la blessure.",
+                "Analyse et décision du directeur",
+                "Un agent du Service de police de Rivièreville, l’AI , a été désigné comme agent impliqué.",
+            ),
+            "Service de police de Rivièreville",
+        ),
+        # a legacy report's Police service header, alone or as part of a full name
+        (
+            (
+                "File #: 10-OFD-900 Police service: Lakeshore Incident date: May 9, 2010",
+                "Notification of the SIU The Riverton Police Service notified the SIU.",
+                "Officers of the Lakeshore Police Service attended.",
+            ),
+            "Lakeshore Police Service",
+        ),
+        (
+            (
+                "File #: 10-OFD-901 Police service: Elmwood Incident date: May 9, 2010",
+                "Notification of the SIU The Riverton Police Service notified the SIU.",
+            ),
+            "Elmwood",
+        ),
+    ],
+)
+def test_police_service_is_the_subject_officials_service(paras, want):
+    assert parse_report_html(_page(*paras))["police_service"] == want
