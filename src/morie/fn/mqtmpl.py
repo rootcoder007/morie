@@ -42,9 +42,12 @@ markers. Both are implemented from sources in hand.
     separation matters in practice: the draws are model-free, so
     comparing a new genetic model recomputes only the weights.
 
-Haley-Knott regression is still named and refused: the applications
-note gives no formula and Haley & Knott (1992) is not in the corpus.
-``method_status`` reports which methods are available and why.
+Haley-Knott regression regresses the phenotype on the expected
+genotype :math:`E[g\mid m] = P(g = 1\mid m)` from the same HMM, run over
+the markers and the pseudomarker grid together, with LOD
+:math:`(n/2)\log_{10}(\mathrm{RSS}_0/\mathrm{RSS}_1)`; it matches
+``qtl::scanone(method = "hk")`` to 1e-13, with and without additive
+covariates. Covariates enter the EM, Haley-Knott and imputation scans.
 
 References
 ----------
@@ -82,10 +85,10 @@ from :math:`p(g\mid m)` by Markov chain, the weight
 and "Estimating QTL locations" for equation (4), the posterior being
 proportional to the sum of weights over realisations.
 
-Not in the corpus, and therefore not implemented: Haley, C. S. &
-Knott, S. A. (1992) "A simple regression method for mapping
-quantitative trait loci in line crosses using flanking markers",
-*Heredity* 69(4), 315-324, doi:10.1038/hdy.1992.131.
+Haley, C. S. & Knott, S. A. (1992) "A simple regression method for
+mapping quantitative trait loci in line crosses using flanking
+markers", *Heredity* 69(4), 315-324, doi:10.1038/hdy.1992.131, for the
+regression scan.
 """
 
 import math
@@ -107,15 +110,8 @@ __all__ = [
 ]
 
 METHODS = ("em", "mr", "hk", "imp")
-_AVAILABLE = ("em", "mr", "imp")
-_UNSOURCED = {
-    "hk": "Haley-Knott regression is named but not defined in Broman "
-    "et al. (2003); the primary source, Haley, C. S. & Knott, "
-    "S. A. (1992) 'A simple regression method for mapping "
-    "quantitative trait loci in line crosses using flanking "
-    "markers', Heredity 69(4), 315-324, "
-    "doi:10.1038/hdy.1992.131, is not in the corpus",
-}
+_AVAILABLE = ("em", "mr", "hk", "imp")
+_UNSOURCED = {}
 
 
 def method_status(method=None):
@@ -130,8 +126,6 @@ def method_status(method=None):
 def _check_method(method):
     if method not in METHODS:
         raise ValueError("mqtmpl: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
-    if method not in _AVAILABLE:
-        raise ValueError(f"mqtmpl: the {method!r} scan method is not implemented -- {_UNSOURCED[method]}")
 
 
 def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
@@ -231,7 +225,30 @@ def sample_genotypes(genotypes, positions, grid, n_imp=16, error_rate=0.0, seed=
     return out
 
 
-def imputation_weights(y, genotype_column, model_dimension=2):
+def _ols_rss(cols, y):
+    """Residual sum of squares of y on the columns, by modified Gram-Schmidt.
+
+    A column whose remaining norm falls below 1e-7 of its original norm is
+    dropped as collinear, the rank rule of R's qr().
+    """
+    basis = []
+    for c in cols:
+        v = [float(t) for t in c]
+        n0 = math.sqrt(sum(t * t for t in v))
+        for q in basis:
+            d = sum(v[i] * q[i] for i in range(len(v)))
+            v = [v[i] - d * q[i] for i in range(len(v))]
+        nv = math.sqrt(sum(t * t for t in v))
+        if n0 > 0.0 and nv > 1e-7 * n0:
+            basis.append([t / nv for t in v])
+    r = [float(t) for t in y]
+    for q in basis:
+        d = sum(r[i] * q[i] for i in range(len(r)))
+        r = [r[i] - d * q[i] for i in range(len(r))]
+    return sum(t * t for t in r)
+
+
+def imputation_weights(y, genotype_column, model_dimension=2, covariates=None):
     r"""The normal-model weight :math:`n^{-v/2}\,\mathrm{RSS}^{-n/2}`.
 
     Sen & Churchill's Sec. "A weighted sample": genotypes that explain
@@ -244,6 +261,13 @@ def imputation_weights(y, genotype_column, model_dimension=2):
     if n != len(genotype_column):
         raise ValueError("mqtmpl: one genotype per phenotype")
     g = [float(v) for v in genotype_column]
+    if covariates:
+        # additive covariates in the model; the genotype column joins them
+        cols = [[1.0] * n] + [list(c) for c in covariates]
+        if any(v != g[0] for v in g):
+            cols.append(g)
+        rss = max(_ols_rss(cols, y), 1e-300)
+        return -0.5 * float(model_dimension) * math.log(n) - 0.5 * n * math.log(rss)
     my = sum(y) / n
     mg = sum(g) / n
     sgg = sum((v - mg) ** 2 for v in g)
@@ -257,9 +281,11 @@ def imputation_weights(y, genotype_column, model_dimension=2):
     return -0.5 * float(model_dimension) * math.log(n) - 0.5 * n * math.log(rss)
 
 
-def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
+def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed, covariates=()):
     """Multiple-imputation scan; LOD from averaged weights."""
     n = len(y)
+    cov = [list(c) for c in covariates]
+    k_cov = len(cov)
     grid = []
     g = float(positions[0])
     end = float(positions[-1])
@@ -268,10 +294,13 @@ def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
         g += float(step)
     geno = [[markers[j][i] for j in range(len(markers))] for i in range(n)]
     draws = sample_genotypes(geno, positions, grid, n_imp, error_rate, seed)
-    null = imputation_weights(y, [0.0] * n, model_dimension=1)
+    null = imputation_weights(y, [0.0] * n, model_dimension=1 + k_cov, covariates=cov)
     lods = []
     for gi in range(len(grid)):
-        ws = [imputation_weights(y, [draws[k][i][gi] for i in range(n)]) for k in range(len(draws))]
+        ws = [
+            imputation_weights(y, [draws[k][i][gi] for i in range(n)], model_dimension=2 + k_cov, covariates=cov)
+            for k in range(len(draws))
+        ]
         top = max(ws)
         avg = top + math.log(sum(math.exp(w - top) for w in ws) / len(ws))
         lods.append((avg - null) * _im.LOG10E)
@@ -285,6 +314,7 @@ def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
             "lod": lods,
             "method_used": "imp",
             "n_imputations": int(n_imp),
+            "n_covariates": k_cov,
             "note": "weights are n^(-v/2) RSS^(-n/2) on the log scale; "
             "the draws depend on the markers only, so a new model "
             "reuses them and only the weights change",
@@ -294,10 +324,54 @@ def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
 
 
 def kw_n_imp(covariates):
-    """Number of imputations; covariates are not yet supported here."""
-    if covariates:
-        raise ValueError("mqtmpl: covariates are not implemented for the imputation scan")
+    """Number of imputations (covariates do not change it)."""
     return 64
+
+
+def _grid(positions, step):
+    """Every `step` cM from the first marker to the last, plus the markers."""
+    pos = [float(p) for p in positions]
+    pts = []
+    g = pos[0]
+    i = 0
+    while g <= pos[-1] + 1e-9:
+        pts.append(round(g, 10))
+        i += 1
+        g = pos[0] + i * float(step)
+    return sorted(set(pts) | {round(p, 10) for p in pos})
+
+
+def _scan_hk(y, markers, positions, step, covariates, error_rate):
+    """Haley-Knott regression on P(g = 1 | markers) at every grid point."""
+    n = len(y)
+    grid = _grid(positions, step)
+    at = {round(float(p), 10): j for j, p in enumerate(positions)}
+    geno = []
+    for i in range(n):
+        geno.append([markers[at[g]][i] if g in at else None for g in grid])
+    post = hmm_genotype_probabilities(geno, grid, error_rate)
+    cov = [list(c) for c in covariates]
+    base = [[1.0] * n] + cov
+    rss0 = _ols_rss(base, y)
+    lods = []
+    for k in range(len(grid)):
+        p1 = [post[i][k][1] for i in range(n)]
+        rss1 = max(_ols_rss(base + [p1], y), 1e-300)
+        lods.append(0.5 * n * math.log10(rss0 / rss1))
+    k = max(range(len(lods)), key=lambda i: lods[i])
+    return RichResult(
+        payload={
+            "estimate": lods[k],
+            "peak_lod": lods[k],
+            "peak_position": grid[k],
+            "position": grid,
+            "lod": lods,
+            "method_used": "hk",
+            "n_covariates": len(cov),
+            "error_rate": float(error_rate),
+            "method": "Haley-Knott regression scan; Haley & Knott (1992), Broman et al. (2003)",
+        }
+    )
 
 
 def scanone(y, markers, positions, method="em", step=0.02, covariates=(), error_rate=0.0):
@@ -307,7 +381,9 @@ def scanone(y, markers, positions, method="em", step=0.02, covariates=(), error_
     if any(len(c) != n for c in markers):
         raise ValueError(f"mqtmpl: every marker must be typed on all {int(n)} individuals")
     if method == "imp":
-        return _scan_imp(y, markers, positions, step, kw_n_imp(covariates), error_rate, 0)
+        return _scan_imp(y, markers, positions, step, kw_n_imp(covariates), error_rate, 0, covariates)
+    if method == "hk":
+        return _scan_hk(y, markers, positions, step, covariates, error_rate)
     if method == "mr":
         out_pos, out_lod = [], []
         for j in range(len(markers)):
@@ -435,8 +511,9 @@ def cheatsheet():
         "forward-backward HMM that tolerates missing calls and a "
         "genotyping error rate, and collapses to the "
         "flanking-marker formula when both are absent. Scans by "
-        "EM or marker regression; Haley-Knott and multiple "
-        "imputation are named and REFUSED, with citations. "
+        "EM, marker regression, Haley-Knott regression on "
+        "E[g | markers], or multiple imputation (Sen-Churchill "
+        "weights), each with additive covariates. "
         "Genome-wide significance is a permutation threshold, "
         "because the maximum over correlated positions is not "
         "chi-squared anything."

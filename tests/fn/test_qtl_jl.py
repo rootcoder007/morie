@@ -226,10 +226,60 @@ def test_invalid_hmm_inputs_are_refused(bad):
         bad()
 
 
-def test_haley_knott_is_still_refused():
-    assert not M.method_status("hk")["available"]
-    with pytest.raises(ValueError):
-        M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="hk")
+_G1 = [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1]
+_G2 = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0]
+_G3 = [0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0]
+_NOISE = [0.3, -0.2, 0.1, 0.4, -0.5, 0.2, -0.1, 0.3, -0.3, 0.1, 0.2, -0.4]
+_YQ = [1 + 1.5 * _G2[i] + _NOISE[i] for i in range(12)]
+_CV = [0.5, 1, 0.2, 0.9, 0.1, 0.4, 0.8, 0.3, 0.6, 0.7, 0.05, 0.95]
+
+
+def test_haley_knott_scan_matches_the_r_arm():
+    assert M.method_status("hk")["available"]
+    g2m = list(_G2)
+    g2m[2] = None
+    g2m[7] = None
+    mk = [_G1, g2m, _G3]
+    h = M.scanone(_YQ, mk, [0, 20, 50], method="hk", step=10, error_rate=0.01)
+    assert h["position"] == pytest.approx([0, 10, 20, 30, 40, 50])
+    # rmorie morie_mqtmpl_scanone(method = "hk") on the same data
+    r_lod = [
+        0.727868336060894,
+        2.90386807406597,
+        5.71498618928673,
+        3.2080963850778,
+        1.22478352436004,
+        0.334582088599479,
+    ]
+    assert h["lod"] == pytest.approx(r_lod, abs=1e-12)
+    hc = M.scanone(_YQ, mk, [0, 20, 50], method="hk", step=10, covariates=[_CV], error_rate=0.01)
+    r_lodc = [
+        1.10408080268243,
+        3.58732436565618,
+        5.77550313324079,
+        3.20580514918446,
+        1.23661684555077,
+        0.324555550186643,
+    ]
+    assert hc["lod"] == pytest.approx(r_lodc, abs=1e-12)
+    assert hc["n_covariates"] == 1
+
+
+def test_haley_knott_at_a_typed_marker_is_marker_regression():
+    n = len(_YQ)
+    h = M.scanone(_YQ, [_G1, _G2, _G3], [0, 20, 50], method="hk", step=10)
+    my = sum(_YQ) / n
+    mg = sum(_G2) / n
+    b = sum((_G2[i] - mg) * (_YQ[i] - my) for i in range(n)) / sum((v - mg) ** 2 for v in _G2)
+    rss1 = sum((_YQ[i] - my - b * (_G2[i] - mg)) ** 2 for i in range(n))
+    rss0 = sum((v - my) ** 2 for v in _YQ)
+    assert h["lod"][h["position"].index(20)] == pytest.approx(0.5 * n * math.log10(rss0 / rss1), abs=1e-10)
+
+
+def test_imputation_scan_with_covariates_matches_the_r_arm():
+    r = M.scanone(_YQ, [_G1, _G2, _G3], [0, 20, 50], method="imp", step=25, covariates=[_CV])
+    assert r["lod"] == pytest.approx([0.421620644745827, 4.85888753656546, -0.263459456211683], abs=1e-12)
+    assert r["n_covariates"] == 1
 
 
 def test_the_imputation_weight_penalises_model_dimension():
@@ -251,9 +301,12 @@ def test_imputation_draws_are_reproducible_and_honour_markers():
     assert all(a[k][i][0] == LEFT[i] for k in range(4) for i in range(len(Y)))
 
 
-def test_covariates_are_refused_for_the_imputation_scan():
-    with pytest.raises(ValueError):
-        M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="imp", covariates=[[1.0] * len(Y)])
+def test_a_constant_covariate_leaves_the_imputation_scan_unchanged():
+    # it is collinear with the intercept, so the rank rule drops it from both
+    # models and the penalty difference between them is unchanged
+    plain = M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="imp")
+    cov = M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="imp", covariates=[[1.0] * len(Y)])
+    assert cov["lod"] == pytest.approx(plain["lod"], abs=1e-9)
 
 
 def test_an_unknown_method_is_refused():
