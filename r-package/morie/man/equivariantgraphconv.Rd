@@ -2,7 +2,7 @@
 % Please edit documentation in R/egcn_native.R
 \name{equivariantgraphconv}
 \alias{equivariantgraphconv}
-\title{Compact alias per ledger/NAMING.md}
+\title{Compact alias}
 \usage{
 equivariantgraphconv(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 }
@@ -29,7 +29,6 @@ The value of \code{run_egnn}.
 \description{
 A step of the egcn_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
-source it follows.
 }
 \examples{
 H <- list(c(1, 0), c(0, 1), c(1, 1))              # node features

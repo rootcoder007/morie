@@ -111,22 +111,56 @@
 # Internal: read a downloaded resource path into a data.frame by format.
 #' Internal helper: Morie Ckan Read Path
 #' @noRd
+# The text encoding of a downloaded file: UTF-8 when its bytes are valid UTF-8, else
+# Windows-1252 (Ontario and federal open-data CSVs are often cp1252: a 0x92 apostrophe made
+# R stop with "invalid multibyte string").
+.morie_text_encoding <- function(path) {
+  b <- readBin(path, "raw", n = file.size(path))
+  if (length(b) >= 3L && identical(b[1:3], as.raw(c(0xef, 0xbb, 0xbf)))) return("UTF-8")
+  b <- b[b != as.raw(0L)]
+  if (!length(b) || validUTF8(rawToChar(b))) "UTF-8" else "windows-1252"
+}
+
+# Windows-1252 bytes to a UTF-8 string without iconv (minimal Linux images ship no
+# converter for it): 0x80-0x9F through the code page's table, every other byte is the
+# Unicode code point of the same value; the five undefined bytes become U+FFFD.
+.morie_cp1252_to_utf8 <- function(b) {
+  hi <- c(0x20AC, NA, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021, 0x02C6, 0x2030,
+          0x0160, 0x2039, 0x0152, NA, 0x017D, NA, NA, 0x2018, 0x2019, 0x201C, 0x201D,
+          0x2022, 0x2013, 0x2014, 0x02DC, 0x2122, 0x0161, 0x203A, 0x0153, NA, 0x017E, 0x0178)
+  cp <- as.integer(b[b != as.raw(0L)])
+  m <- cp >= 0x80 & cp <= 0x9F
+  cp[m] <- hi[cp[m] - 0x7F]
+  cp[is.na(cp)] <- 0xFFFD
+  intToUtf8(cp)
+}
+
+.morie_ckan_read_delim <- function(path, sep = ",") {
+  enc <- .morie_text_encoding(path)
+  if (identical(enc, "windows-1252")) {
+    utf8 <- tempfile(fileext = paste0(".", tools::file_ext(path)))
+    on.exit(unlink(utf8), add = TRUE)
+    writeBin(charToRaw(.morie_cp1252_to_utf8(readBin(path, "raw", n = file.size(path)))), utf8)
+    path <- utf8
+    enc <- "UTF-8"
+  }
+  if (requireNamespace("readr", quietly = TRUE)) {
+    loc <- readr::locale(encoding = enc)
+    df <- if (identical(sep, ",")) {
+      readr::read_csv(path, show_col_types = FALSE, progress = FALSE, guess_max = Inf, locale = loc)
+    } else {
+      readr::read_tsv(path, show_col_types = FALSE, progress = FALSE, guess_max = Inf, locale = loc)
+    }
+    return(as.data.frame(df))
+  }
+  utils::read.csv(path, sep = sep, stringsAsFactors = FALSE, encoding = "UTF-8",
+                  check.names = TRUE)
+}
+
 .morie_ckan_read_path <- function(path, fmt) {
   fmt <- tolower(fmt)
-  if (fmt %in% c("csv")) {
-    if (requireNamespace("readr", quietly = TRUE)) {
-      df <- readr::read_csv(path, show_col_types = FALSE, progress = FALSE, guess_max = Inf)
-      return(as.data.frame(df))
-    }
-    return(utils::read.csv(path, stringsAsFactors = FALSE))
-  }
-  if (fmt %in% c("tsv", "tab")) {
-    if (requireNamespace("readr", quietly = TRUE)) {
-      df <- readr::read_tsv(path, show_col_types = FALSE, progress = FALSE, guess_max = Inf)
-      return(as.data.frame(df))
-    }
-    return(utils::read.delim(path, sep = "\t", stringsAsFactors = FALSE))
-  }
+  if (fmt %in% c("csv")) return(.morie_ckan_read_delim(path, ","))
+  if (fmt %in% c("tsv", "tab")) return(.morie_ckan_read_delim(path, "\t"))
   if (fmt %in% c("xlsx", "xls")) {
     if (!requireNamespace("readxl", quietly = TRUE)) {
       stop("Reading CKAN Excel resources requires the 'readxl' package. ",
@@ -145,11 +179,7 @@
   }
   # Unknown extension: most open-data resources are CSV with bad MIME
   # types, so try CSV as a last resort (matches Python behaviour).
-  if (requireNamespace("readr", quietly = TRUE)) {
-    df <- readr::read_csv(path, show_col_types = FALSE, progress = FALSE, guess_max = Inf)
-    return(as.data.frame(df))
-  }
-  utils::read.csv(path, stringsAsFactors = FALSE)
+  .morie_ckan_read_delim(path, ",")
 }
 
 #' Search a CKAN portal for packages (raw)

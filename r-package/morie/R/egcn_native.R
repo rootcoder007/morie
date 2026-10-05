@@ -17,12 +17,11 @@
 # EGCL implementation lives in egnnL_native.R; this file just
 # forwards to it.
 
-# compact alias per ledger/NAMING.md
-#' Compact alias per ledger/NAMING.md
+# compact alias
+#' Compact alias
 #'
 #' A step of the egcn_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param H Passed to \code{run_egnn}.
 #' @param X Passed to \code{run_egnn}.
@@ -53,7 +52,6 @@ equivariantgraphconv <- function(H, X, layers, phi_e, phi_x, phi_h,
 #'
 #' A step of the egcn_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param H Passed to \code{run_egnn}.
 #' @param X Passed to \code{run_egnn}.
@@ -85,7 +83,6 @@ e_gcn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
 #'
 #' A step of the egcn_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param H Carried through into a list the body builds.
 #' @param X Carried through into a list the body builds.

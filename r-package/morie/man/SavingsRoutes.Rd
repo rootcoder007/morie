@@ -42,9 +42,8 @@ SavingsRoutes(D, 1:3, c(0, 1, 1, 1), 2)$routes
 TripGeneration(rbind(c(10, 5), c(0, 20)), c(2, 4.5))
 }
 \references{
-Clarke, G. and Wright, J. W. (1964). Scheduling of vehicles
-from a central depot to a number of delivery points. \emph{Operations
-Research} 12(4), 568-581.
+Clarke, G. and Wright, J. W. (1964). Operations Research 12,
+568-581.
 
 Solomon, M. M. (1987). Algorithms for the vehicle routing and scheduling
 problems with time window constraints. Operations Research 35, 254-265.

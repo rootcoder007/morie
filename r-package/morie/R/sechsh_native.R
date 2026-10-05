@@ -247,7 +247,6 @@ morie_sechsh_verify_inclusion <- function(leaf, index, size, path, root) {
 #' A step of the sechsh_native implementation. Called by \code{.kdf_hmac},
 #' \code{.sech_hmac}, \code{morie_sechsh_chain_entry} and 2 others in the module.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param bytes Passed to \code{as.raw}.
 #' @return The value of \code{out}, as built in the body.
@@ -341,7 +340,6 @@ morie_sechsh_verify_inclusion <- function(leaf, index, size, path, root) {
 #'
 #' A step of the sechsh_native implementation. Called by \code{morie_sechsh_chain_entry}.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param key A vector; its length is taken.
 #' @param msg Passed to \code{as.raw}.
@@ -362,7 +360,6 @@ morie_sechsh_verify_inclusion <- function(leaf, index, size, path, root) {
 #' A step of the sechsh_native implementation. Called by \code{morie_sechsh_build_chain},
 #' \code{morie_sechsh_verify_inclusion}.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param bs Coerced to integer by the body, with \code{as.integer}.
 #' @return A character value.
@@ -376,7 +373,6 @@ morie_sechsh_verify_inclusion <- function(leaf, index, size, path, root) {
 #' A step of the sechsh_native implementation. Called by
 #' \code{morie_sechsh_verify_chain}, \code{morie_sechsh_verify_inclusion}.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param a A vector; its length is taken and its elements indexed.
 #' @param b A vector; its length is taken and its elements indexed.
@@ -406,6 +402,9 @@ morie_sechsh <- morie_sechsh_chain_entry
 #' @param entries See Usage.
 #' @param key See Usage.
 #' @param genesis See Usage.
+#' @examples
+#' ch <- build_chain(list("open", "write", "close"))
+#' ch$head_hex
 #' @export
 build_chain <- function(entries, key = NULL, genesis = .GENESIS) {
   prev <- .sechsh_as_bytes(genesis)
@@ -427,6 +426,9 @@ build_chain <- function(entries, key = NULL, genesis = .GENESIS) {
 #' @param previous_hash See Usage.
 #' @param entry See Usage.
 #' @param key See Usage.
+#' @examples
+#' e <- chain_entry(raw(32), "first entry")
+#' e$hash_hex
 #' @export
 chain_entry <- function(previous_hash, entry, key = NULL) {
   p <- .sechsh_as_bytes(previous_hash)
@@ -445,7 +447,6 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 #' A step of the sechsh_native implementation. Called by \code{verify_chain},
 #' \code{verify_inclusion}.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param a A vector; its length is taken.
 #' @param b A vector; its length is taken.
@@ -469,7 +470,6 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 #' A step of the sechsh_native implementation. Called by \code{build_chain},
 #' \code{chain_entry}, \code{verify_chain} and 1 others in the module.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param x Optional; may be \code{NULL}. Character; the body checks with \code{is.character}.
 #' @return Nothing; this branch always raises.
@@ -487,7 +487,6 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 #' A step of the sechsh_native implementation. Called by \code{build_chain},
 #' \code{verify_inclusion}.
 #' See the file header for the source the module follows.
-#' source it follows.
 #'
 #' @param bs Coerced to integer by the body, with \code{as.integer}.
 #' @return A character value.
@@ -501,6 +500,10 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 #' Build an inclusion proof (audit path) for the given leaf
 #' @param leaves See Usage.
 #' @param index See Usage.
+#' @examples
+#' leaves <- lapply(c("a", "b", "c", "d"), charToRaw)
+#' p <- inclusion_proof(leaves, 2L)
+#' p$path_hex
 #' @export
 inclusion_proof <- function(leaves, index) {
   L <- lapply(leaves, .sechsh_as_bytes)
@@ -533,6 +536,8 @@ inclusion_proof <- function(leaves, index) {
 # -- restored: morie-only definition kept through the rmorie sync --
 #' RFC 6962 Merkle Tree Hash
 #' @param leaves See Usage.
+#' @examples
+#' merkle_root(lapply(c("a", "b", "c"), charToRaw))
 #' @export
 merkle_root <- function(leaves) {
   L <- lapply(leaves, .sechsh_as_bytes)
@@ -551,6 +556,11 @@ merkle_root <- function(leaves) {
 #' @param hashes See Usage.
 #' @param key See Usage.
 #' @param genesis See Usage.
+#' @examples
+#' entries <- list("open", "write", "close")
+#' h <- build_chain(entries)$hashes
+#' verify_chain(entries, h)$intact
+#' verify_chain(list("open", "WRITE", "close"), h)$first_bad   # 0-based index of the edit
 #' @export
 verify_chain <- function(entries, hashes, key = NULL,
                          genesis = .GENESIS) {
@@ -587,6 +597,11 @@ verify_chain <- function(entries, hashes, key = NULL,
 #' @param size See Usage.
 #' @param path See Usage.
 #' @param root See Usage.
+#' @examples
+#' leaves <- lapply(c("a", "b", "c", "d"), charToRaw)
+#' root <- merkle_root(leaves)
+#' p <- inclusion_proof(leaves, 2L)
+#' verify_inclusion(leaves[[3]], 2L, 4L, p$path, root)
 #' @export
 verify_inclusion <- function(leaf, index, size, path, root) {
   m <- as.integer(index)
