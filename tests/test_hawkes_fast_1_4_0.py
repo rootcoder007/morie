@@ -121,7 +121,21 @@ def test_em_reaches_the_direct_maximum_and_inar_is_close():
     t, T = events(250)
     direct = H.fit_hawkes_general(t, T, "exponential", "constant")
     em = H.fit_hawkes_general(t, T, "exponential", "constant", method="em")
-    assert em["nll"] == pytest.approx(direct["nll"], abs=1e-4)
+    assert em["nll"] == pytest.approx(direct["nll"], abs=1e-6)
+    # EM's steps shrink before it reaches the maximum, so it finishes with the direct optimiser
+    # from its own point: every kernel and the sinusoidal baseline end at the direct maximum (as
+    # rmoriebricklayer's test-hawkes-fit.R, on the same 300 events)
+    t3, T3 = events(300)
+    for kernel, baseline in (
+        ("weibull", "constant"),
+        ("gamma", "constant"),
+        ("lomax", "constant"),
+        ("exponential", "sinusoidal"),
+    ):
+        em = H.fit_hawkes_general(t3, T3, kernel, baseline, method="em")
+        direct = H.fit_hawkes_general(t3, T3, kernel, baseline)
+        assert em["method"] == "em"
+        assert em["nll"] == pytest.approx(direct["nll"], abs=1e-6), (kernel, baseline)
     inar = H.fit_hawkes_general(t, T, "exponential", "constant", method="inar")
     assert inar["method"] == "inar" and abs(inar["branching_ratio"] - direct["branching_ratio"]) < 0.25
     with pytest.raises(ValueError, match="stationary"):

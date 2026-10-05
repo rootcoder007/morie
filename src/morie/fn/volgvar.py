@@ -33,9 +33,10 @@ def vol_garch_var_backtest(hits, alpha=0.05):
     ----------
     Christoffersen, P. F. (2003). *Elements of Financial Risk
     Management*. Academic Press, ch. 8.
-    Kupiec, P. H. (1995). *Journal of Derivatives*, 3(2), 73-84.
-    Christoffersen, P. F. (1998). *International Economic Review*,
-    39(4), 841-862.
+    Kupiec, P. H. (1995). Techniques for verifying the accuracy of risk
+    measurement models. *Journal of Derivatives*, 3(2), 73-84.
+    Christoffersen, P. F. (1998). Evaluating interval forecasts.
+    *International Economic Review*, 39(4), 841-862.
     """
     r = vol_christoffersen_cc(hits, alpha=alpha)
     payload = {k: v for k, v in r.items() if k not in ("statistic", "pvalue")}

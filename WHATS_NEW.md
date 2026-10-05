@@ -9,6 +9,21 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* `fit_hawkes_general(method="em")` finishes with the compiled projected BFGS on the exact
+  likelihood from EM's point, as rmoriebricklayer's `core_hawkes_fit()`: EM converges linearly, so a
+  small step is not the maximum (the R arm stopped up to 1.5e-5 short, 1.4e-5 on macOS x86_64). Every
+  kernel and the sinusoidal baseline now end within 1e-6 of the direct fit, asserted in the tests.
+* `mrm_estimate_causal_effect()`'s consensus standard error is the weighted mean of the
+  estimators' standard errors. It pooled them as independent studies (`1 / sqrt(sum w)`), but all
+  four run on the same rows, so the interval was about half as wide as it should be: in 300
+  simulated data sets (n = 500, true effect 0.8) its 95% interval covered the truth 70% of the time;
+  it now covers 97%. `morie.matching.estimate_att_matched` counts a control matched to several
+  treated units once per pair squared (Abadie and Imbens 2006): its interval covered the truth 83%
+  of the time with matching with replacement and now covers 95%. The R package's
+  `morie_mrm_estimate_causal_effect()` and `morie_matching_att_matched()` change the same way.
+* Citations without a title now carry the publisher's title, the citation gate also catches a
+  reference written "Author (year), *Journal* ...", and its Crossref User-Agent names the
+  repository instead of an e-mail address.
 * `mrm_estimate_causal_effect()`'s matching estimate (and the R package's
   `morie_mrm_estimate_causal_effect()`) matches with replacement and takes the ATT from the matched
   pairs. Without replacement, when controls were no more numerous than treated units, nearly every

@@ -349,8 +349,9 @@ def nashq(
 
     References
     ----------
-    Hu & Wellman (2003), *JMLR* 4, 1039-1069: Definitions 5-7 and
-    12-13, eqs. 5-7, Table 2.
+    Hu, J. & Wellman, M. P. (2003). Nash Q-learning for general-sum
+    stochastic games. *Journal of Machine Learning Research* 4, 1039-1069:
+    Definitions 5-7 and 12-13, eqs. 5-7, Table 2.
     """
     if selection not in _SELECTIONS:
         raise ValueError(f"nashq: selection must be one of {_SELECTIONS!r}, got {selection!r}")

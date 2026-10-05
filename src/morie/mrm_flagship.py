@@ -358,7 +358,10 @@ def mrm_estimate_causal_effect(
     Composes morie's own estimators -- nearest-neighbour matching, IPW,
     AIPW and partially-linear DML -- on a single specification, corrects
     the p-values for having asked more than once, and pools by inverse
-    variance.
+    variance. The pooled standard error is the weighted mean of the
+    standard errors: the estimators share one data set, so they are not
+    independent studies and the meta-analytic 1 / sqrt(sum w) would be
+    far too small.
 
     Running four estimators and quoting the friendliest is the failure
     mode this guards against, which is why every answer is returned
@@ -506,11 +509,16 @@ def mrm_estimate_causal_effect(
     for r, a in zip(out, adj):
         r["p_adjusted"] = float(a)
 
+    # The estimators share one data set, so their errors are strongly
+    # correlated and 1 / sqrt(sum w) (independent studies) is far too
+    # small. The weighted mean of the standard errors is the standard
+    # error of the pooled estimate under perfect correlation, an upper
+    # bound under any correlation (Minkowski).
     w = [1.0 / r["std_error"] ** 2 for r in out]
     sw = sum(w)
     consensus = {
         "estimate": sum(wi * r["estimate"] for wi, r in zip(w, out)) / sw,
-        "std_error": (1.0 / sw) ** 0.5,
+        "std_error": sum(wi * r["std_error"] for wi, r in zip(w, out)) / sw,
     }
     return MrmEffect(
         results=out,

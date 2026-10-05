@@ -44,7 +44,13 @@ def test_the_consensus_is_inverse_variance_pooled():
     w = [1 / r["std_error"] ** 2 for r in eff.results]
     want = sum(wi * r["estimate"] for wi, r in zip(w, eff.results)) / sum(w)
     assert eff.consensus["estimate"] == pytest.approx(want, abs=1e-12)
-    assert eff.consensus["std_error"] == pytest.approx((1 / sum(w)) ** 0.5, abs=1e-12)
+    # The four estimators share one data set, so the standard error is the
+    # weighted mean of theirs (perfect correlation), never the
+    # independent-studies 1 / sqrt(sum w), which halved the interval.
+    se = sum(wi * r["std_error"] for wi, r in zip(w, eff.results)) / sum(w)
+    assert eff.consensus["std_error"] == pytest.approx(se, abs=1e-12)
+    assert eff.consensus["std_error"] >= min(r["std_error"] for r in eff.results)
+    assert eff.consensus["std_error"] > (1 / sum(w)) ** 0.5
 
 
 def test_asking_more_than_once_costs_something():
@@ -128,3 +134,28 @@ def test_the_effect_renders_through_the_report():
     out = morie.mrm_report(effect=eff)
     assert "Causal effect" in out and "consensus" in out
     assert "dml plr" in out
+
+
+def test_a_reused_control_counts_once_per_pair_squared():
+    # Treated 1-3 share control c1, treated 4 has c2: c1 enters the ATT
+    # with weight 3/4, so its noise counts 9 times, not 3 (Abadie & Imbens
+    # 2006). Same fixture as rmorie's test-matching.R.
+    import statistics
+
+    pd = pytest.importorskip("pandas")
+
+    from morie.matching import estimate_att_matched
+
+    df = pd.DataFrame(
+        {"y": [3, 4, 6, 5, 1, 2], "d": [1, 1, 1, 1, 0, 0]},
+        index=["t1", "t2", "t3", "t4", "c1", "c2"],
+    )
+    pairs = pd.DataFrame({"treated_idx": ["t1", "t2", "t3", "t4"], "control_idx": ["c1", "c1", "c1", "c2"]})
+    res = estimate_att_matched(df, "y", "d", pairs)
+    d = [2, 3, 5, 3]
+    v = statistics.variance(d) / 4 + statistics.variance(d) / 2 * ((3**2 - 3) + (1**2 - 1)) / 4**2
+    assert res.estimate == pytest.approx(3.25, abs=1e-12)
+    assert res.std_error == pytest.approx(v**0.5, abs=1e-12)
+    assert res.std_error == pytest.approx(0.69270833333333333**0.5, abs=1e-12)
+    one = estimate_att_matched(df, "y", "d", pd.DataFrame({"treated_idx": ["t1", "t4"], "control_idx": ["c1", "c2"]}))
+    assert one.std_error == pytest.approx(statistics.stdev([2, 3]) / 2**0.5, abs=1e-12)

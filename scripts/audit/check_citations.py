@@ -45,9 +45,9 @@ HERE = pathlib.Path(__file__).resolve().parent
 LEDGER = HERE / "citations_ledger.json"
 
 # "Author, A. (1999). *Journal*, 94(446), 496-509."  -- no title.
-PY_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)\.\s*\*[^*]+\*\s*,?\s*\d")
+PY_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)[.,]\s*\*[^*]+\*\s*,?\s*\d")
 # "#' @references Author (1999). \emph{Journal}, 94(446), 496-509."
-R_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)\.\s*\\emph\{[^}]+\}[ ,]*\s*\d")
+R_TITLELESS = re.compile(r"\(\d{4}[a-z]?\)[.,]\s*\\emph\{[^}]+\}[ ,]*\s*\d")
 # "Verdinelli & Wasserman (1995); Dickey (1971)."  -- no venue at all.
 BARE_AUTHOR_YEAR = re.compile(
     r"^\s*(?:#'\s*)?(?:@references\s+)?"
@@ -166,7 +166,7 @@ def check_ledger_online(ledger):
     import urllib.request
 
     bad = []
-    ua = {"User-Agent": "morie-citation-gate (mailto:ruhela.vansh@gmail.com)"}
+    ua = {"User-Agent": "morie-citation-gate (https://github.com/rootcoder007/morie)"}
     for key, v in sorted(ledger.items()):
         src = str(v.get("source", ""))
         if not src.startswith("doi:"):

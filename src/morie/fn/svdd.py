@@ -151,7 +151,8 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3, coef0=1.0, tol=
 
     References
     ----------
-    Tax & Duin (2004), *Machine Learning* 54(1), 45-66: eqs. 1-15.
+    Tax, D. M. J. & Duin, R. P. W. (2004). Support vector data description.
+    *Machine Learning* 54(1), 45-66: eqs. 1-15.
     """
     rows = _mat(X, "X")
     n = len(rows)

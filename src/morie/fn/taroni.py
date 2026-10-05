@@ -91,7 +91,8 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
     ----------
     Tarone, R. E. & Ware, J. (1977). On distribution-free tests for
     equality of survival distributions. *Biometrika*, 64(1), 156-160.
-    Gehan, E. A. (1965). *Biometrika*, 52, 203-223.
+    Gehan, E. A. (1965). A generalized Wilcoxon test for comparing
+    arbitrarily singly-censored samples. *Biometrika*, 52(1-2), 203-224.
     Weight definitions cross-checked against the reference
     implementation in survMisc (``comp.ten``), where the Tarone-Ware
     column is ``sqrt(n)``.

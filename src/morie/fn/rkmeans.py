@@ -208,8 +208,9 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100, huber
 
     References
     ----------
-    Cuesta-Albertos, Gordaliza & Matrán (1997), *Ann. Statist.* 25(2),
-    553-576: section 1 for :math:`V_\Phi`, section 2 for the trimming
+    Cuesta-Albertos, J. A., Gordaliza, A. & Matrán, C. (1997). Trimmed
+    k-means: an attempt to robustify quantizers. *Annals of Statistics*
+    25(2), 553-576: section 1 for :math:`V_\Phi`, section 2 for the trimming
     functions, Corollary 3.2 for the sufficiency of hard trimming.
     """
     rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(X, dtype=float))]

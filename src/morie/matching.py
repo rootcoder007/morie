@@ -1605,6 +1605,7 @@ def estimate_att_matched(
     """
     diffs = []
     wts = []
+    ctrl = []
     for _, row in match_pairs.iterrows():
         t_id = row["treated_idx"]
         c_id = row["control_idx"]
@@ -1612,6 +1613,7 @@ def estimate_att_matched(
             y_t = float(data.loc[t_id, outcome])
             y_c = float(data.loc[c_id, outcome])
             diffs.append(y_t - y_c)
+            ctrl.append(c_id)
             # the treated unit's weight, when a weight column is named
             wts.append(float(data.loc[t_id, weights]) if weights and weights in data.columns else 1.0)
 
@@ -1630,9 +1632,25 @@ def estimate_att_matched(
     w = np.array(wts)
     att = float(np.average(diffs, weights=w))
     if np.allclose(w, w[0]):
-        se = float(diffs.std(ddof=1) / np.sqrt(len(diffs)))
+        var = float(diffs.var(ddof=1) / len(diffs)) if len(diffs) > 1 else 0.0
     else:
-        se = float(np.sqrt(np.sum(w**2 * (diffs - att) ** 2)) / np.sum(w))
+        var = float(np.sum(w**2 * (diffs - att) ** 2) / np.sum(w) ** 2)
+    # A control matched to several treated units (matching with
+    # replacement) enters the estimate with the summed weight of its
+    # pairs, so its outcome noise counts once per pair squared, not once
+    # per pair. Abadie, A. and Imbens, G. W. (2006). Large sample
+    # properties of matching estimators for average treatment effects.
+    # Econometrica 74(1), 235-267. doi:10.1111/j.1468-0262.2006.00655.x
+    # The conditional variance is estimated as half the pair-difference
+    # variance.
+    if len(diffs) > 1:
+        sigma2 = float(diffs.var(ddof=1)) / 2.0
+        reuse = 0.0
+        for c in set(ctrl):
+            wc = w[[k for k, cc in enumerate(ctrl) if cc == c]]
+            reuse += wc.sum() ** 2 - np.sum(wc**2)
+        var += sigma2 * reuse / np.sum(w) ** 2
+    se = float(np.sqrt(var))
     t_val = att / se if se > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))
     z = stats.norm.ppf(1 - alpha / 2)

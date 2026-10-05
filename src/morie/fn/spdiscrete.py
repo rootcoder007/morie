@@ -172,8 +172,10 @@ def spatial_probit_gmm(y, X, W, Z=None, start_rho=0.0, tol=1e-10, maxit=500):
     spatial statistics to discrete-choice models. *Journal of Econometrics* 85,
     125-154.
 
-    Klier, T. and McMillen, D. P. (2008). *Journal of Business and Economic
-    Statistics* 26, 460-471.
+    Klier, T. and McMillen, D. P. (2008). Clustering of auto supplier plants
+    in the United States: generalized method of moments spatial logit for
+    large samples. *Journal of Business and Economic Statistics* 26(4),
+    460-471.
 
     Examples
     --------

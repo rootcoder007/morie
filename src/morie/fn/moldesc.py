@@ -92,7 +92,9 @@ def smiles_hbd(smiles: str) -> int:
 
     References
     ----------
-    Lipinski et al. (1997), *Advanced Drug Delivery Reviews*, 23, 3-25.
+    Lipinski, C. A. et al. (1997). Experimental and computational approaches
+    to estimate solubility and permeability in drug discovery and
+    development settings. *Advanced Drug Delivery Reviews*, 23, 3-25.
 
     Examples
     --------
