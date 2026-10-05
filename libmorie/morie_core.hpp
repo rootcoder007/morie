@@ -1534,6 +1534,7 @@ inline double hawkes_fit_pbfgs(const double *t, std::size_t n, double T, int bki
     };
     reset();
     bool first = true, scale_h0 = true, just_reset = false;
+    std::vector<char> fr_prev;
     int it = 0, slow = 0;
     for (it = 1; it <= maxiter; ++it) {
         double pg = 0.0;
@@ -1541,6 +1542,16 @@ inline double hawkes_fit_pbfgs(const double *t, std::size_t n, double T, int bki
         if (pg < gtol) break;
         std::vector<char> fr(d);
         for (int i = 0; i < d; ++i) fr[i] = !((xv[i] <= lo[i] && g[i] > 0) || (xv[i] >= hi[i] && g[i] < 0));
+        // a variable joining or leaving its bound changes the subspace the BFGS matrix models:
+        // start it afresh there (curvature learned with the variable free mis-scales the rest; a
+        // Lomax fit drifting to the bound on alpha crawled through 1,164 iterations along the ridge)
+        if (fr != fr_prev) {
+            if (!fr_prev.empty()) {
+                reset();
+                first = scale_h0 = true;
+            }
+            fr_prev = fr;
+        }
         double slope = 0.0;
         for (int i = 0; i < d; ++i) {
             double acc = 0.0;
