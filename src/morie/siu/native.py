@@ -544,7 +544,7 @@ def _parse(t: bytes) -> dict[str, str]:
     so = _section_text(t, "Subject Officers", ("Incident Narrative", "Evidence", "Witness Officers"))
     if not so:
         so = _section_text(t, "Subject Officials", ("Incident Narrative", "Evidence", "Witness Officials"))
-    f[b"number_of_subject_officers"] = _count_tagged(so if so else t, "SO")
+    f[b"number_of_subject_officials"] = _count_tagged(so if so else t, "SO")
     wo = _section_text(t, "Witness Officers", ("Incident Narrative", "Evidence", "Subject Officers"))
     if not wo:
         wo = _section_text(t, "Witness Officials", ("Incident Narrative", "Evidence", "Subject Officials"))

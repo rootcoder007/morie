@@ -31,7 +31,7 @@ def test_native_parser_fields():
     assert f["date_of_director_decision_iso"] == "2023-04-28"
     assert f["location_of_call"] == "City of Barrie"
     assert (f["age_affected"], f["sex_gender_affected"]) == ("34", "man")
-    assert f["number_of_subject_officers"] == "2"
+    assert f["number_of_subject_officials"] == "2"
     assert (f["siu_investigators"], f["siu_forensics_investigators"]) == ("3", "1")
     assert f["directors_name"] == "Joseph Martino"
     assert set(f) == {name for name, _, _ in PANEL_FIELDS} | {"_language"}
@@ -82,7 +82,7 @@ def _fake(calls):
         if prompt.startswith("Reply with the word OK."):
             return "" if model == "dead" else "OK"
         if "You are the AUDITOR" in prompt:
-            return '<think>..</think>{"police_service": "Barrie Police Service", "number_of_subject_officers": 2}'
+            return '<think>..</think>{"police_service": "Barrie Police Service", "number_of_subject_officials": 2}'
         return '{"police_service": {"value": "Barrie", "quote": "Barrie", "confidence": "high"}}'
 
     return chat
@@ -94,7 +94,7 @@ def test_audit_panel_modes_and_chain():
     assert r1["json"] == '{"police_service":"Barrie"}' and calls.count("r1") == 2
     calls.clear()
     r4 = siu_audit_panel("report", {}, mode=4, readers=["r1", "r2"], auditors=["a1", "a2"], chat=_fake(calls))
-    assert r4["json"] == '{"number_of_subject_officers":2,"police_service":"Barrie Police Service"}'
+    assert r4["json"] == '{"number_of_subject_officials":2,"police_service":"Barrie Police Service"}'
     assert sum(c in ("r1", "r2") for c in calls) == 3 + 2 and sum(c in ("a1", "a2") for c in calls) == 2 + 2
     with pytest.raises(RuntimeError, match="healthy"):
         siu_audit_panel("report", {}, readers=["dead"], chat=_fake([]))

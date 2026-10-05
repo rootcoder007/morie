@@ -104,11 +104,11 @@ def test_panel_extract_tolerates_prose_and_variants():
     raw = (
         'Sure! Here is the JSON:\n{"police_service": {"value": '
         '"Peel Regional Police", "quote": "the Peel..."}, '
-        '"number_of_subject_officers": {"value": 2, "quote": "SO #2"}}'
+        '"number_of_subject_officials": {"value": 2, "quote": "SO #2"}}'
     )
-    out = _panel_extract(raw, ["police_service", "number_of_subject_officers", "directors_name"])
+    out = _panel_extract(raw, ["police_service", "number_of_subject_officials", "directors_name"])
     assert out["police_service"] == "Peel Regional Police"
-    assert out["number_of_subject_officers"] == "2"
+    assert out["number_of_subject_officials"] == "2"
     assert out["directors_name"] is None
 
 
@@ -116,3 +116,15 @@ def test_panel_extract_per_field_dict():
     raw = {"directors_name": '{"directors_name": {"value": "Joseph Martino"}}'}
     out = _panel_extract(raw, ["directors_name"])
     assert out["directors_name"] == "Joseph Martino"
+
+
+def test_so_subject_officer_and_subject_official_count_the_same_people():
+    # reports before the SIU Act (2019) say "subject officer", later ones "subject official"
+    from morie.siu.corpus import resolve_subject_officials
+
+    for txt in (
+        "Subject Officer #1 declined. Subject Officer #2 was interviewed.",
+        "Subject Official #1 declined. Subject Official #2 was interviewed.",
+        "SO #1 declined. SO #2 was interviewed.",
+    ):
+        assert resolve_subject_officials(txt)[0] == 2, txt

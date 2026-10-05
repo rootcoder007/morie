@@ -130,7 +130,9 @@ _NEXT_SECTION = re.compile(
     r"The Scene|Evidence\n|Nature of Injur)"
 )
 _ENTRY = re.compile(r"\bSO\s*(?:#\s*\d{1,2})?\s{0,3}" r"(?:Interviewed|Declined|Did not consent|Not interviewed)")
-_ANCHOR1 = re.compile(r"\bSO\s*#\s*1\b|subject offic(?:er|ial)\s*#\s*1\b")
+# "SO" stays case-strict (as in the ordinal scan); the spelled-out form is matched in any case --
+# "Subject Officer #1" never anchored and older reports went unresolved
+_ANCHOR1 = re.compile(r"\bSO\s*#\s*1\b|(?i:subject offic(?:er|ial)\s*#\s*1\b)")
 _PLURAL = re.compile(
     r"\bthe\s+(\d{1,2}|one|two|three|four|five|six|seven|eight|nine|ten)" r"\s+subject offic(?:er|ial)s\b",
     re.IGNORECASE,
@@ -242,7 +244,7 @@ PANEL_FIELDS: tuple[tuple[str, bool, str], ...] = (
     ("number_of_witness_officials", True, "the count of distinct WITNESS officers/officials (WO)"),
     ("number_of_civilian_witnesses", True, "the count of distinct civilian witnesses (CW)"),
     (
-        "number_of_subject_officers",
+        "number_of_subject_officials",
         True,
         "the count of distinct SUBJECT officers/officials (SO); a witness-officer-only investigation is 0",
     ),
@@ -419,7 +421,7 @@ def siu_panel(
             "answered every field; their raw answers follow. Read the report "
             "yourself, weigh their answers and quotes, and issue the FINAL "
             "value for every field under its canonical key "
-            "(number_of_subject_officers, never a variant spelling)."
+            "(number_of_subject_officials, never a variant spelling)."
             + (f"\nPrevious auditor verdicts:\n{prior}" if prior else "")
             + f"\n\nReader answers:\n{readers_txt}"
             + f"\n\nFields:\n{schema_txt}\n\nREPORT:\n{text}"
