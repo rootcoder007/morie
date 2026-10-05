@@ -36,6 +36,12 @@
     # starts with the module's name (ebac_core_*, descriptive_statistics_*); only when no table does
     # is the module's first word tried as a prefix (power-design writes power_*), never a substring
     known <- .morie_module_outputs[[module]]
+    if (!is.null(known) && !any(grepl("\\.csv$", known, ignore.case = TRUE))) {
+      # figures, tables, final-report: their outputs are figures / HTML, not tables
+      kinds <- unique(tolower(tools::file_ext(known)))
+      return(structure(character(), note = sprintf("%s writes no tables (its outputs are %s files); nothing to check",
+                                                   module, paste(kinds[nzchar(kinds)], collapse = "/")), rc = 0L))
+    }
     hit <- if (!is.null(known)) {
       # a module morie knows: exactly the tables it writes
       basename(files) %in% basename(known) | grepl(paste0("/", module, "/"), files, fixed = TRUE) |
@@ -46,8 +52,10 @@
     if (is.null(known) && !any(hit) && nzchar(stem)) hit <- startsWith(tolower(basename(files)), paste0(stem, "_"))
     if (any(hit)) {
       files <- files[hit]
-    } else if (!is.null(out)) {
-      out(sprintf("no table in %s names the module %s; using all %d tables\n", target, module, length(files)))
+    } else {
+      # never every table in the tree under another module's name
+      return(structure(character(), note = sprintf("no table of %s in %s (run it: rmorie run-module %s)",
+                                                   module, target, module), rc = 1L))
     }
   }
   files
@@ -142,8 +150,8 @@
   if (dir.exists(target)) {
     files <- .cli_csv_files(target, flag("--module"), out)
     if (!length(files)) {
-      out(sprintf("No CSV files found in %s\n", target))
-      return(1L)
+      out(sprintf("%s\n", attr(files, "note") %||% paste("No CSV files found in", target)))
+      return(attr(files, "rc") %||% 1L)
     }
     for (f in files) out(paste0(.cli_inspect_text(morie_inspect_output(f)), "\n"))
     return(0L)
@@ -168,8 +176,9 @@
   target <- rest[[1L]]
   files <- if (dir.exists(target)) .cli_csv_files(target, flag("--module"), out) else if (file.exists(target)) target else character()
   if (!length(files)) {
-    out(sprintf("%s\n", if (dir.exists(target)) paste("No CSV files found in", target) else paste("Path not found:", target)))
-    return(1L)
+    out(sprintf("%s\n", attr(files, "note") %||%
+                  (if (dir.exists(target)) paste("No CSV files found in", target) else paste("Path not found:", target))))
+    return(attr(files, "rc") %||% 1L)
   }
   failed <- 0L
   for (f in files) {
@@ -484,10 +493,7 @@
   })
   check("sampling: SRS", function() nrow(morie_simple_random_sample(data.frame(x = 1:50), 5L)) == 5L)
   check("crypto: hybrid round trip", function() {
-    # ML-KEM runs without liboqs (rmoriebricklayer's FIPS 203 code); the symmetric layer needs libsodium
-    if (!isTRUE(tryCatch(morie_crypto_sodium_available(), error = function(e) FALSE))) {
-      return(c("skip", "rmorie was built without libsodium (ChaCha20-Poly1305): install libsodium-devel / libsodium-dev and reinstall"))
-    }
+    # ML-KEM is rmoriebricklayer's FIPS 203 code, the symmetric layer native when libsodium is absent
     k <- morie_crypto_hybrid_keygen()
     ct <- morie_crypto_hybrid_encrypt(charToRaw("selftest"), k$pk)
     identical(rawToChar(morie_crypto_hybrid_decrypt(ct, k$sk)), "selftest")
@@ -670,8 +676,6 @@
 }
 
 .cli_keystore_password <- function() {
-  # what the key store needs is said before any prompt (it asked for a password, then for sodium)
-  .morie_keystore_require(sodium = TRUE)
   pw <- Sys.getenv("MORIE_KEYSTORE_PASSWORD", "")
   if (nzchar(pw)) return(pw)
   if (.cli_stdin_closed()) {
@@ -859,31 +863,21 @@
 }
 
 .cli_download_bootstrap <- function(flag, out) {
-  cat_ <- morie_dataset_catalog()
-  boot <- cat_[cat_$type == "bootstrap", , drop = FALSE]
   survey <- flag("--survey")
   if (is.null(survey)) {
     # hundreds of MB per file: never start without being told which one
     out(paste0("usage: rmorie download-bootstrap --survey KEY|all\n",
                "  The bootstrap-weight files are large (hundreds of MB each) and are cached under the morie cache directory.\n",
-               "  Keys: ", paste(boot$key, collapse = ", "), "\n"))
+               "  Keys: ocs22bt, ocs24bt, cu20bt, cu23bt (or csads_2021, csads_2023, csus_2019, csus_2023)\n"))
     return(2L)
   }
-  if (!identical(survey, "all")) {
-    boot <- boot[grepl(sub("_.*$", "", survey), boot$survey, fixed = TRUE) &
-                   grepl(sub("^[a-z]+_", "", survey), boot$year, fixed = TRUE), , drop = FALSE]
-  }
-  if (!nrow(boot)) {
-    out(sprintf("No bootstrap files match '%s'. Keys: %s\n", survey,
-                paste(cat_$key[cat_$type == "bootstrap"], collapse = ", ")))
+  # the R function's own route and key resolution, so the verb and the function cannot disagree
+  r <- tryCatch(morie_download_bootstrap(survey), error = function(e) e)
+  if (inherits(r, "error")) {
+    out(sprintf("%s\n", conditionMessage(r)))
     return(1L)
   }
-  for (i in seq_len(nrow(boot))) {
-    out(sprintf("  Downloading %s (%s)...\n", boot$key[i], boot$name[i]))
-    r <- tryCatch(morie_load_dataset(boot$key[i]), error = function(e) e)
-    if (inherits(r, "error")) out(sprintf("    ERROR: %s\n", conditionMessage(r)))
-    else out(sprintf("    OK: %s rows cached\n", format(nrow(r), big.mark = ",")))
-  }
+  out(sprintf("%d bootstrap file(s) cached\n", r))
   0L
 }
 

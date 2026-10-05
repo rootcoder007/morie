@@ -12,8 +12,11 @@
   placeholder <- grepl("^\\.\\.\\.[0-9]+$", nm) | !nzchar(trimws(nm))
   if (mean(placeholder[-1L]) < 0.5) return(df)  # the sheet's own header row was read as names
   cell_set <- function(v) !is.na(v) & nzchar(trimws(as.character(v)))
-  need <- max(2L, ceiling(0.8 * ncol(df)))
   head_rows <- df[seq_len(min(nrow(df), 20L)), , drop = FALSE]
+  # the share is of the columns the table uses: a stray note far to the right widens the
+  # sheet (cihi820b: a 5-column table on a 13-column tab) without being part of it
+  used <- vapply(head_rows, function(v) any(cell_set(v)), logical(1))
+  need <- max(2L, ceiling(0.8 * sum(used)))
   filled <- Reduce(`+`, lapply(head_rows, function(v) as.integer(cell_set(v))))
   hdr <- which(filled >= need)[1L]
   if (is.na(hdr)) return(df)
@@ -29,6 +32,11 @@
     body <- body[seq_len(cut - 1L), , drop = FALSE]
   }
   unnamed <- is.na(new) | !nzchar(new)
+  # an unnamed column with nothing in it is not part of the table
+  keep <- !unnamed | vapply(body, function(v) any(cell_set(v)), logical(1))
+  body <- body[, keep, drop = FALSE]
+  new <- new[keep]
+  unnamed <- unnamed[keep]
   new[unnamed] <- paste0("...", which(unnamed))
   names(body) <- make.unique(new)
   rownames(body) <- NULL
@@ -47,6 +55,12 @@
   .morie_xlsx_promote_header(.morie_xlsx_data_sheet_raw(path, ...))
 }
 
+# filled cells, not the rectangle: a stray note far to the right widens a sheet
+# without adding data (cihi820b: a 5-column table on a 13-column tab), as morie's Python
+.morie_xlsx_filled <- function(df) {
+  sum(vapply(df, function(v) sum(!is.na(v) & nzchar(trimws(as.character(v)))), numeric(1)))
+}
+
 .morie_xlsx_data_sheet_raw <- function(path, ...) {
   if (!file.exists(path)) stop("no such file: ", path, call. = FALSE)
   if (file.size(path) > 50e6) return(.morie_xlsx_one_line_names(.morie_xlsx_stream(path)))
@@ -62,10 +76,13 @@
     cand <- names_all[!grepl(cover, trimws(names_all), ignore.case = TRUE)]
     if (!length(cand)) cand <- names_all
     best <- NULL
+    best_cells <- -1
     for (nm in cand) {
       df <- tryCatch(.morie_xlsx_stream(path, nm), error = function(e) NULL)
-      if (!is.null(df) && (is.null(best) || nrow(df) * ncol(df) > nrow(best) * ncol(best))) {
+      cells <- if (is.null(df)) -1 else .morie_xlsx_filled(df)
+      if (cells > best_cells) {
         best <- df
+        best_cells <- cells
         attr(best, "morie_sheet") <- nm
       }
     }
@@ -76,11 +93,14 @@
   data_sheets <- sheets[!grepl(cover, trimws(sheets), ignore.case = TRUE)]
   if (!length(data_sheets)) data_sheets <- sheets
   best <- NULL
+  best_cells <- -1
   for (nm in data_sheets) {
     # readxl names blank header cells ...17, ...18 and says so for each: that is not news here
     df <- tryCatch(suppressMessages(as.data.frame(readxl::read_excel(path, sheet = nm, ...))), error = function(e) NULL)
-    if (!is.null(df) && (is.null(best) || nrow(df) * ncol(df) > nrow(best) * ncol(best))) {
+    cells <- if (is.null(df)) -1 else .morie_xlsx_filled(df)
+    if (cells > best_cells) {
       best <- df
+      best_cells <- cells
       attr(best, "morie_sheet") <- nm
     }
   }

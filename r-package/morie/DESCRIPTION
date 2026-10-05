@@ -229,7 +229,8 @@ Suggests:
     writexl,
     WRS2,
     xgboost,
-    xml2
+    xml2,
+    remotes
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues

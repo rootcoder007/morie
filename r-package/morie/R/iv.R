@@ -66,22 +66,12 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-#' Internal helper: Morie Iv Have Ivreg
-#' @noRd
-.morie_iv_have_ivreg <- function() {
-  requireNamespace("ivreg", quietly = TRUE)
-}
-#' Internal helper: Morie Iv Have AER
-#' @noRd
-.morie_iv_have_AER <- function() {
-  requireNamespace("AER", quietly = TRUE)
-}
-
 #' @param outcome See Usage.
 #' @param endogenous See Usage.
 #' @param instruments See Usage.
 #' @param exogenous See Usage.
 #' @keywords internal
+#' @noRd
 .morie_iv_build_formula <- function(outcome, endogenous, instruments,
                                     exogenous = NULL) {
   exo <- if (length(exogenous)) paste(exogenous, collapse = " + ") else "1"
@@ -103,6 +93,7 @@ NULL
 #' @param dof See Usage.
 #' @param details See Usage.
 #' @keywords internal
+#' @noRd
 .morie_iv_result <- function(coef_vec, se_vec, n_obs, method, alpha = 0.05,
                              dof = NA, details = list()) {
   z <- coef_vec / se_vec
@@ -135,6 +126,7 @@ NULL
 #' @param robust See Usage.
 #' @param alpha See Usage.
 #' @keywords internal
+#' @noRd
 .morie_iv_base_2sls <- function(data, outcome, endogenous, instruments,
                                 exogenous = NULL, robust = TRUE, alpha = 0.05) {
   vars <- unique(c(outcome, endogenous, instruments, exogenous))

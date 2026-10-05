@@ -161,10 +161,6 @@ morie_rdd_kernel_gaussian <- function(u) stats::dnorm(u)
   fn
 }
 
-#' Internal helper: Morie Rdd Have Rdrobust
-#' @noRd
-.morie_rdd_have_rdrobust  <- function() requireNamespace("rdrobust",  quietly = TRUE)
-
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -177,6 +173,7 @@ morie_rdd_kernel_gaussian <- function(u) stats::dnorm(u)
 #' @param p See Usage.
 #' @param kernel See Usage.
 #' @keywords internal
+#' @noRd
 .morie_rdd_local_poly_fit <- function(x, y, x0, h, p = 1,
                                       kernel = "triangular") {
   K   <- .morie_rdd_get_kernel(kernel)
