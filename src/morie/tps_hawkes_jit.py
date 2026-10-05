@@ -998,7 +998,7 @@ def _baseline_feats(tt, T, bkind):
     return [1.0, tt / max(T, 1.0), math.sin(2 * math.pi * tt / 365.25), math.cos(2 * math.pi * tt / 365.25)]
 
 
-def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=500, tol=1e-9):
+def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=100, tol=1e-4, inner_iter=8):
     """EM for the Hawkes MLE (Veen & Schoenberg 2008): the branching structure as missing data.
 
     E-step: the intensity at each event (compiled core). M-step, with p_i0 = nu_i/lambda_i and
@@ -1006,6 +1006,12 @@ def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=500, tol=1e
     for a constant one); the kernel maximises sum p_ij log g(.; psi) - P log sum_j G(T - t_j; psi),
     with eta = P / sum_j G (P = sum p_ij), its weights recomputed in the pair loop. Each step does
     not lower the likelihood; the same maximum as the direct fit. Returns (theta, nll, iterations).
+
+    Generalised EM: each M-step takes at most ``inner_iter`` quasi-Newton steps (every one of
+    them an O(n^2) pair pass, which is where a full inner optimisation spent 20-140 s on 1,083
+    events), since the E-step is recomputed next round anyway, and it stops once the likelihood
+    moves by less than ``tol`` (relative): fit_hawkes_general() then seeds the direct optimiser
+    from EM's iterate, so the answer is the direct method's optimum at its precision.
     """
     from morie.fn._sci_core import minimize
 
@@ -1049,7 +1055,9 @@ def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=500, tol=1e
                 lin = sum(sp[r] * av[r] for r in range(nb))
                 return -(lin - integ), [-(sp[r] - dint[r]) for r in range(nb)]
 
-            a_new = list(minimize(fb, a, jac=True, method="L-BFGS-B", bounds=bounds[:nb]).x)
+            a_new = list(
+                minimize(fb, a, jac=True, method="L-BFGS-B", bounds=bounds[:nb], options={"maxiter": inner_iter}).x
+            )
         # kernel M-step
         lam_buf = _f64(lam)
 
@@ -1061,7 +1069,9 @@ def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=500, tol=1e
                 return 1e12, [0.0] * len(ps)
             return -(Q - P * math.log(SG)), [-(dq - P * ds / SG) for dq, ds in zip(dQ, dSG)]
 
-        psi_new = list(minimize(fk, psi, jac=True, method="L-BFGS-B", bounds=bounds[nb + 1 :]).x)
+        psi_new = list(
+            minimize(fk, psi, jac=True, method="L-BFGS-B", bounds=bounds[nb + 1 :], options={"maxiter": inner_iter}).x
+        )
         _, P, _ = _core_ext.hawkes_em_pass(tb, lam_buf, eta, kind, list(psi), psi_new)
         SG, _ = _core_ext.hawkes_cdf_sum(tb, float(T), kind, psi_new)
         eta_new = min(max(P / SG, lo[nb]), hi[nb])

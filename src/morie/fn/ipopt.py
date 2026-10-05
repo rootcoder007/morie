@@ -80,11 +80,11 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
 
         def barrier_grad(x_, *, mu=mu):
             # grad f - mu * sum(grad(log(c_i)))
-            g = grad_f(x_)
+            g = np.array(grad_f(x_), dtype=float)
             for c_dict in constraints:
                 c_val = c_dict["fun"](x_)
-                jac = c_dict.get("jac", lambda z, *, c_dict=c_dict: np.gradient(c_dict["fun"](z)))
-                g -= mu * jac(x_) / (c_val + 1e-14)
+                jac = c_dict.get("jac") or (lambda z, *, c_dict=c_dict: _numeric_grad(c_dict["fun"], z))
+                g = g - mu * np.asarray(jac(x_), dtype=float) / (c_val + 1e-14)
             return g
 
         # Minimize barrier subproblem
@@ -101,6 +101,18 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def _numeric_grad(fun, z, h: float = 1e-6):
+    """Central-difference gradient of a scalar constraint (np.gradient differentiated the
+    constraint's VALUE along a one-element array and raised on every constraint without jac)."""
+    z = np.asarray(z, dtype=float)
+    g = np.zeros(z.shape[0])
+    for i in range(z.shape[0]):
+        e = np.zeros(z.shape[0])
+        e[i] = h
+        g[i] = (float(fun(z + e)) - float(fun(z - e))) / (2 * h)
+    return g
 
 
 def cheatsheet() -> str:

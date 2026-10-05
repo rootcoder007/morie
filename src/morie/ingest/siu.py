@@ -509,7 +509,12 @@ def cli(args: list[str]) -> int:
     ns = p.parse_args(args)
 
     if ns.list:
-        df = list_reports()
+        try:
+            df = list_reports()
+        except (RuntimeError, OSError) as exc:
+            # offline (or the corpus host unreachable): one line, as `morie pull` says it
+            sys.stderr.write(f"morie ingest siu: {exc}\n")
+            return 1
         sys.stdout.write(df.to_csv(index=False))
         return 0
 
@@ -521,7 +526,11 @@ def cli(args: list[str]) -> int:
     url = ns.url
     if url is None and ns.report_id:
         # Resolve from index
-        df = list_reports()
+        try:
+            df = list_reports()
+        except (RuntimeError, OSError) as exc:
+            sys.stderr.write(f"morie ingest siu: {exc}\n")
+            return 1
         match = df[df["case_number"] == ns.report_id]
         if match.empty:
             sys.stderr.write(f"report id {ns.report_id!r} not found in current index\n")

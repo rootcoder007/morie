@@ -173,9 +173,16 @@ def install(
                 _download(url, tmpd / name, name)
             except HTTPError as exc:
                 if exc.code == 404:
-                    out(
-                        f"{url} does not exist: the ref {ref!r} has no such file. Pass --ref (a tag, branch or commit)."
-                    )
+                    if ref == default_ref(version) and ref != "main":
+                        out(
+                            f"morie {version} has no release tag {ref} on GitHub yet (a pre-release build), so its "
+                            "interactive layer cannot be fetched by version. Install it from the branch it was "
+                            "built from: morie interactive install --ref <branch> --no-verify"
+                        )
+                    else:
+                        out(
+                            f"{url} does not exist: the ref {ref!r} has no such file. Pass --ref (a tag, branch or commit)."
+                        )
                 else:
                     out(f"download of {name} failed: HTTP {exc.code}")
                 return 1

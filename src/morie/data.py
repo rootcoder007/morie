@@ -47,7 +47,36 @@ def _user_cache_dir() -> Path:
     always user-writable and never depends on the install location.
     """
     base = os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache")
-    return Path(base).expanduser() / "morie"
+    chosen = Path(base).expanduser() / "morie"
+    # A read-only or quota-limited home (HPC, containers) must not stop a
+    # dataset from being pulled to a writable --out: the cache is a
+    # convenience tier, so fall back to a private directory under the
+    # system temporary directory, once, with a note.
+    global _CACHE_FALLBACK_NOTED
+    try:
+        chosen.mkdir(parents=True, exist_ok=True)
+        if os.access(chosen, os.W_OK):
+            return chosen
+    except OSError:
+        pass
+    import tempfile
+
+    alt = Path(tempfile.gettempdir()) / f"morie-cache-{_uid()}"
+    alt.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if not _CACHE_FALLBACK_NOTED:
+        _CACHE_FALLBACK_NOTED = True
+        logger.warning("%s is not writable; caching under %s for this session", chosen, alt)
+    return alt
+
+
+_CACHE_FALLBACK_NOTED = False
+
+
+def _uid() -> str:
+    try:
+        return str(os.getuid())
+    except AttributeError:  # Windows
+        return os.environ.get("USERNAME", "user")
 
 
 def _project_root() -> Path:
@@ -1813,8 +1842,16 @@ def _find_local_file(rel: str) -> Path | None:
     return None
 
 
-RMORIEDATA_VERSION = "0.3.3"
+RMORIEDATA_VERSION = "0.3.4"
+# The release this morie was built against: CRAN once it carries it, the
+# GitHub release tag (the same tarball contents) meanwhile. morie 1.4.0
+# read CRAN's 0.3.3, whose SIU corpus predates the 2026-10 recrawl
+# (police_service empty in every French row); rmorie 1.4.0 ships 0.3.4.
 RMORIEDATA_TARBALL = f"https://cran.r-project.org/src/contrib/rmoriedata_{RMORIEDATA_VERSION}.tar.gz"
+RMORIEDATA_SOURCES = (
+    RMORIEDATA_TARBALL,
+    f"https://github.com/rootcoder007/rmoriedata/archive/refs/tags/v{RMORIEDATA_VERSION}.tar.gz",
+)
 
 
 def _rmoriedata_extdata(timeout: int = 120) -> Path:
@@ -1831,18 +1868,38 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     import tempfile
 
     root.mkdir(parents=True, exist_ok=True)
+    from urllib.error import HTTPError, URLError
+
     from ._progress import download_url
 
-    logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
-        download_url(
-            RMORIEDATA_TARBALL,
-            tgz,
-            f"rmoriedata {RMORIEDATA_VERSION} (CRAN)",
-            timeout=timeout,
-            opener=lambda req, timeout: urlopen(req, timeout=timeout),
-        )
+        last: Exception | None = None
+        for url in RMORIEDATA_SOURCES:
+            logger.info("Fetching rmoriedata %s (%s)...", RMORIEDATA_VERSION, url)
+            try:
+                download_url(
+                    url,
+                    tgz,
+                    f"rmoriedata {RMORIEDATA_VERSION}",
+                    timeout=timeout,
+                    opener=lambda req, timeout: urlopen(req, timeout=timeout),
+                )
+                last = None
+                break
+            except HTTPError as exc:
+                last = exc  # CRAN does not carry this version yet: try the release tag
+                continue
+            except (URLError, OSError, TimeoutError) as exc:
+                last = exc
+                break
+        if last is not None:
+            host = ", ".join(u.split("/")[2] for u in RMORIEDATA_SOURCES)
+            raise RuntimeError(
+                f"could not fetch rmoriedata {RMORIEDATA_VERSION} ({last}). The SIU corpus and the other "
+                f"rmoriedata tables are downloaded once from {host} into {root}; connect to the "
+                "network (or copy that directory from another machine) and try again."
+            ) from last
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:

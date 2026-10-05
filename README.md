@@ -170,7 +170,7 @@ install.packages(c("rmoriebricklayer", "rmoriedata"))
 # name "morie"), tracking every commit here; build it from source with remotes
 # (needs a C++ toolchain and rmoriebricklayer):
 # install.packages("remotes")
-remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")
+remotes::install_github("rootcoder007/morie@v1.4.0", subdir = "r-package/morie")  # the tag of your morie
 ```
 
 Or let morie run either install for you: `morie r-install` (r-universe) or

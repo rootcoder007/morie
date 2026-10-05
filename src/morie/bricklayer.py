@@ -38,13 +38,20 @@ def _r_install_expr(github: bool = False) -> str:
     rmoriebricklayer). ``github``: this repository's own R arm, built from
     source with remotes (needs a C/C++ toolchain and rmoriebricklayer).
     """
+    from . import __version__ as v
+
     if github:
+        # pinned to this release's tag, as the r-universe route is: the default branch
+        # holds whatever release main is on (1.3.9 while 1.4.0 was on lean), and the
+        # R bridge refuses a mismatched arm. A dev build takes main.
+        import re
+
+        ref = f"@v{v}" if re.match(r"^\d+\.\d+\.\d+$", v) else ""
         return (
             'if (!requireNamespace("remotes", quietly = TRUE)) '
             f"install.packages('remotes', repos='{CRAN}'); "
-            f"remotes::install_github('{GITHUB_REPO}', subdir = '{GITHUB_SUBDIR}')"
+            f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', upgrade = 'never')"
         )
-    from . import __version__ as v
 
     # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
     # serves another version (it lags a release by a build cycle)

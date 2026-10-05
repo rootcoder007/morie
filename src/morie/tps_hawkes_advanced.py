@@ -415,9 +415,12 @@ def fit_hawkes_general(
 
         theta, nll_em, n_iter = hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds)
         # EM converges linearly: its steps shrink long before it reaches the maximum, so a small
-        # step is not a stop. Finish with the projected BFGS on the exact likelihood from EM's
-        # point, as rmoriebricklayer's core_hawkes_fit; it only moves uphill.
-        pol = _core_fit(t, T, kernel_kind, baseline_kind, "exact", 1e-12, theta, bounds)
+        # step is not a stop. Finish with the projected BFGS from EM's point, as
+        # rmoriebricklayer's core_hawkes_fit; it only moves uphill. The likelihood route is the
+        # kernel's own "auto" one (exact for exponential, truncate for Weibull, sum of
+        # exponentials for Lomax and gamma): the full O(n^2) Lomax sum made this polish the
+        # slowest part of the fit.
+        pol = _core_fit(t, T, kernel_kind, baseline_kind, _resolve_method("auto", kernel_kind), eps, theta, bounds)
         if pol is not None and pol[1] <= nll_em:
             theta = pol[0]
         res = None

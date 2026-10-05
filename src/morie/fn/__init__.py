@@ -206,6 +206,11 @@ def _install_fnsrc():
         sources = _decompress_fnsrc(xz_path)
     except Exception:
         return  # corrupt/unreadable archive -> leave loose-file behaviour
+    # MORIE_FN_NO_CACHE=1: never write the 15 MB zip; serve the sources from memory
+    # (inspect.getsource() still works through the loader).
+    if _os.environ.get("MORIE_FN_NO_CACHE", "").strip().lower() in ("1", "true", "yes"):
+        _install_memory_finder(sources)
+        return
     for base in _candidate_cache_dirs():
         cz = _os.path.join(base, cache_name)
         try:
@@ -219,13 +224,48 @@ def _install_fnsrc():
             __path__.append(cz)
         return
 
-    # No writable cache dir anywhere -> a private temporary directory for this process, so the
-    # modules are still imported by zipimport (no in-memory compilation of decompressed source).
-    import tempfile
+    # No writable cache dir anywhere: serve the sources from memory rather than writing a
+    # process-private zip that nothing cleans up.
+    _install_memory_finder(sources)
 
-    cz = _os.path.join(tempfile.mkdtemp(prefix="morie-fnsrc-"), cache_name)
-    _write_cache_zip(cz, sources)
-    __path__.append(cz)
+
+def _install_memory_finder(sources):
+    """Import ``morie.fn.<short>`` from the decompressed source dict, no file written."""
+    import importlib.abc
+    import importlib.util
+    import sys as _sys
+
+    prefix = __name__ + "."
+
+    # a SourceLoader: the import system compiles and runs the module itself (no eval/exec
+    # call in this package), and inspect.getsource() / describe() read get_data()
+    class _Loader(importlib.abc.SourceLoader):
+        def __init__(self, short):
+            self.short = short
+
+        def get_filename(self, fullname):
+            return f"morie-fnsrc:{self.short}.py"
+
+        def get_data(self, path):
+            return sources[self.short].encode("utf-8")
+
+        def path_stats(self, path):
+            raise OSError("no bytecode cache for in-memory sources")
+
+        def is_package(self, fullname):
+            return False
+
+    class _Finder(importlib.abc.MetaPathFinder):
+        def find_spec(self, fullname, path=None, target=None):
+            if not fullname.startswith(prefix):
+                return None
+            short = fullname[len(prefix) :]
+            if short not in sources:
+                return None
+            return importlib.util.spec_from_loader(fullname, _Loader(short), origin=f"morie-fnsrc:{short}.py")
+
+    if not any(isinstance(f, _Finder) for f in _sys.meta_path):
+        _sys.meta_path.append(_Finder())
 
 
 _install_fnsrc()

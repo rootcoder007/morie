@@ -153,10 +153,19 @@ def rplace(
     -------
     RplRes
     """
-    mask = (df[year_col] == year) & df[age_col].notna() & df[region_col].notna()
+    # the OTIS export holds end_fiscal_year as text ("2024"); compare as numbers
+    years = pd.to_numeric(df[year_col], errors="coerce")
+    mask = (years == year) & df[age_col].notna() & df[region_col].notna()
     sub = df[mask].copy()
     if sex is not None:
         sub = sub[sub[gender_col] == sex]
+    if sub.empty:
+        have = sorted(int(v) for v in years.dropna().unique())
+        raise ValueError(
+            f"rplace: no rows for year {year}"
+            + (f" and sex {sex!r}" if sex is not None else "")
+            + (f"; the data hold years {have[0]}-{have[-1]}" if have else "; the year column is empty")
+        )
 
     # Count unique individuals per age × region
     counts = sub.groupby([age_col, region_col])[id_col].nunique().reset_index()
