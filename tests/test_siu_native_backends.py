@@ -107,3 +107,15 @@ def test_resolver(backend, text, want):
     from morie.siu.corpus import resolve_subject_officials
 
     assert tuple(resolve_subject_officials(text)) == want
+
+
+def test_compiled_parser_tolerates_a_field_clipped_inside_utf8():
+    # the C++ clips specific_injuries by byte count and once ended a value inside
+    # a multi-byte character; the binding raised UnicodeDecodeError on a real report
+    if native._cxx is None:
+        pytest.skip("morie._core not built")
+    tail = "é" * 60  # 120 bytes: the 80-byte clip lands between the two bytes of an é
+    html = _report("The Investigation", f"The man suffered a fractured left arm during the arrest {tail}.")
+    f = native._cxx.siu_parse_report_html(html)
+    assert f["specific_injuries"].startswith("fractured left arm")
+    assert "�" in f["specific_injuries"] or f["specific_injuries"].endswith("é")
