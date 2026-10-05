@@ -9,6 +9,13 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* `morie.crypto.mldsa_keygen/sign/verify` are ML-DSA (FIPS 204): ML-DSA-44/65/87 with the
+  standard's byte encodings, so keys and signatures interoperate with rmorie, rmoriebricklayer,
+  OpenSSL 3.5 and liboqs. They were a simplified "Dilithium-lite" with JSON keys (a 9,153-byte public
+  key) that no ML-DSA implementation could read, and verifying an rmorie signature crashed. Signing is
+  hedged by default (`deterministic=True` for the deterministic variant) and takes a context string;
+  `mldsa_keygen(level, seed=)` gives the standard's key pair for a 32-byte seed. The tests assert
+  byte equality with OpenSSL 3.5.7's signatures and with rmoriebricklayer's seeded keys.
 * rmorie 1.4.0 now writes and reads the same hybrid container and key files as `morie.crypto`
   (its R arm had kept the 1.3.x container), so the two arms open each other's files; the
   `hybrid` module and `hybrid_encrypt` docstrings now describe the 1.4.0 derivation
