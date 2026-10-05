@@ -177,10 +177,11 @@ class Client:
             raise CKANError(f"resource fetch -> HTTP {r.status_code}: {url}")
         content = r.content
 
+        enc = _text_encoding(content)
         if fmt in {"csv"}:
-            return pd.read_csv(io.BytesIO(content))
+            return pd.read_csv(io.BytesIO(content), encoding=enc)
         if fmt in {"tsv", "tab"}:
-            return pd.read_csv(io.BytesIO(content), sep="\t")
+            return pd.read_csv(io.BytesIO(content), sep="\t", encoding=enc)
         if fmt in {"xlsx", "xls"}:
             return pd.read_excel(io.BytesIO(content))
         if fmt in {"json"}:
@@ -189,7 +190,21 @@ class Client:
             return pd.read_parquet(io.BytesIO(content))
         # Default: try CSV — most open-data resources are CSV with
         # mis-labelled MIME types.
-        return pd.read_csv(io.BytesIO(content))
+        return pd.read_csv(io.BytesIO(content), encoding=enc)
+
+
+def _text_encoding(content: bytes) -> str:
+    """UTF-8 when the bytes are valid UTF-8, else Windows-1252.
+
+    Ontario and federal open-data CSVs are often Windows-1252 (a 0x92
+    apostrophe made 20 of 25 yearly files of one package fail to decode);
+    the R arm reads them the same way.
+    """
+    try:
+        content.decode("utf-8")
+    except UnicodeDecodeError:
+        return "cp1252"
+    return "utf-8"
 
 
 # ----------------------------------------------------------------------
