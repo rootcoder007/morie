@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kozachenko-Leonenko k-NN entropy estimator."""
 
+import heapq
 import math
 
 from . import _array_core as np
@@ -91,9 +92,12 @@ def knn_entropy(x, k=3, base="nats"):
     if base not in ("nats", "bits"):
         raise ValueError(f"base must be 'nats' or 'bits', got {base!r}.")
 
-    D = np.sqrt(((X[:, None, :] - X[None, :, :]) ** 2).sum(axis=2))
-    np.fill_diagonal(D, np.inf)
-    eps = np.sort(D, axis=1)[:, k - 1]
+    # the k-th neighbour distance row by row: O(n) memory (the full n x n matrix of Python
+    # floats took 2.6 GB at n = 3000 and an out-of-memory kill took the test run with it)
+    rows = [tuple(float(v) for v in r) for r in X.tolist()]
+    eps = np.asarray(
+        [heapq.nsmallest(k, (math.dist(a, b) for j, b in enumerate(rows) if j != i))[-1] for i, a in enumerate(rows)]
+    )
     if np.any(eps <= 0):
         raise ValueError("duplicate points give a zero neighbour distance; jitter the data or lower k.")
     log_cd = (d / 2.0) * math.log(math.pi) - math.lgamma(d / 2.0 + 1.0)

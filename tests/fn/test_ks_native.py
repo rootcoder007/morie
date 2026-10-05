@@ -60,9 +60,12 @@ def test_two_sample_matches_r():
     assert two.exact is True and two.n_ties == 0
 
 
-def test_the_exact_law_is_used_below_n_100_and_the_series_above():
+def test_the_exact_law_is_used_up_to_n_10000_and_the_limit_above():
+    # exact below n = 100 in Python; up to 10,000 through the compiled core (Marsaglia, Tsang &
+    # Wang), as ks_1samp documents; the Kolmogorov limit above
     assert sc.kstest(lcg(90, 3), "uniform").exact is True
-    assert sc.kstest(lcg(120, 3), "uniform").exact is False
+    assert sc.kstest(lcg(120, 3), "uniform").exact is (sc._ks_exact_core() is not None)
+    assert sc.kstest(lcg(10001, 3), "uniform").exact is False
 
 
 def test_ties_are_counted_and_the_exact_law_is_still_used():
