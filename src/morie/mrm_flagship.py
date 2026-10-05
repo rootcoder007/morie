@@ -422,7 +422,8 @@ def mrm_estimate_causal_effect(
         def _matching():
             from morie.matching import estimate_att_matched, match_nearest_neighbor
 
-            m = match_nearest_neighbor(frame, treatment, covariates)
+            # with replacement: without it, scarce controls are all used up and nothing is balanced
+            m = match_nearest_neighbor(frame, treatment, covariates, replace=True)
             pairs = getattr(m, "match_pairs", None)
             if pairs is None:
                 raise ValueError("matching returned no pairs")

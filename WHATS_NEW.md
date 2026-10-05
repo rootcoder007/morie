@@ -9,6 +9,15 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* `mrm_estimate_causal_effect()`'s matching estimate (and the R package's
+  `morie_mrm_estimate_causal_effect()`) matches with replacement and takes the ATT from the matched
+  pairs. Without replacement, when controls were no more numerous than treated units, nearly every
+  control was used and nothing was balanced: on the test's simulated design (true effect 0.8) it
+  returned 1.11, the unadjusted difference; it now gives 0.71 there, and Python and R give the same
+  ATT and standard error to ten decimals on shared data.
+* SIU `police_service` is the service of the subject officials, read from the director's analysis
+  (`morie.siu.native` and the R package's SIU core, as in rmoriebricklayer 0.5.5), not the force
+  that notified the SIU.
 * `morie.fn.ggrcst.granger_causality` and `morie.fn.granci.granger_causality_info` (and the Gaussian
   `transfer_entropy`) refuse a constant or perfectly predictable response: an exact fit leaves
   round-off in the residual sum, which passed the old `<= 0` check and returned noise. The values

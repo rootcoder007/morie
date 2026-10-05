@@ -1,5 +1,12 @@
 # morie 1.4.0 - 2026-10-03
 
+* `morie_mrm_estimate_causal_effect()`'s matching estimate matches with replacement and takes the
+  ATT from the matched pairs. Without replacement, when controls were no more numerous than treated
+  units, nearly every control was used and nothing was balanced: on a simulated design with true
+  effect 0.8 it returned the unadjusted difference, 1.13, while IPW, AIPW and DML gave 0.85; it now
+  gives 0.92, the same ATT and standard error as the Python package to ten decimals.
+* SIU `police_service` is the service of the subject officials, read from the director's analysis
+  (the package's SIU core, as in rmoriebricklayer 0.5.5), not the force that notified the SIU.
 * Research: four new problems join the Lean-backed programme, each with its R function and
   tests. `morie_meta_random_effects()` and `morie_meta_dl_bias()` (pooling evaluations:
   the DerSimonian-Laird truncation is biased upward under homogeneity and the random-effects
