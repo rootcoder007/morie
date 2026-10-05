@@ -83,73 +83,15 @@ def siu_reports(update: bool = False, cache_dir: str | Path | None = None):
 
 
 # ------------------------------------------------- zero-wrong rule engine
-# Faithful port of rmoriebricklayer src/siu_resolve.cpp (the canonical
-# home). Edit the C++ first, then mirror here -- the regression tests pin
-# every failure class from the 2,182-report zero-wrong pass.
-
-_WORD_NUM = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-}
-
-_BOILER = re.compile(
-    r"this information may include[\s\S]*?(?:affected person|evidence)\.?",
-    re.IGNORECASE,
-)
-_GLOSSARY = re.compile(
-    r"who,?\s+in the (?:opinion of the SIU Director|"
-    r"SIU Director(?:'|’)?s opinion),?"
-    r"[\s\S]{0,120}?not a subject offic(?:er|ial)[^.]*\.?",
-    re.IGNORECASE,
-)
+# The resolver lives in morie.siu.native (a byte-faithful port of rmoriebricklayer's
+# src/siu_resolve.cpp, the canonical home) and runs compiled in morie._core when present.
 
 
 def strip_boilerplate(text: str) -> str:
     """Normalise NBSPs and remove the privacy + glossary boilerplate."""
-    norm = text.replace(" ", " ")
-    out = _BOILER.sub(" ", norm)
-    return _GLOSSARY.sub(" ", out)
+    from . import native
 
-
-# "SO" is case-strict and "#" is REQUIRED (an icase optional-# variant
-# matched "...also 59..." in the wild and blew counts up).
-_ORD_SO = re.compile(r"\bSO\s*#\s*(\d{1,2})\b")
-_ORD_SPELLED = re.compile(r"subject offic(?:er|ial)\s*#\s*(\d{1,2})\b", re.IGNORECASE)
-_SECTION = re.compile(r"Subject Offic(?:er|ial)s\b")
-_NEXT_SECTION = re.compile(
-    r"\n\s{0,3}(?:Witness Offic(?:er|ial)s|Civilian Witness(?:es)?|"
-    r"Service Employee Witness|Incident Narrative|Materials [Oo]btained|"
-    r"The Scene|Evidence\n|Nature of Injur)"
-)
-_ENTRY = re.compile(r"\bSO\s*(?:#\s*\d{1,2})?\s{0,3}" r"(?:Interviewed|Declined|Did not consent|Not interviewed)")
-# "SO" stays case-strict (as in the ordinal scan); the spelled-out form is matched in any case --
-# "Subject Officer #1" never anchored and older reports went unresolved
-_ANCHOR1 = re.compile(r"\bSO\s*#\s*1\b|(?i:subject offic(?:er|ial)\s*#\s*1\b)")
-_PLURAL = re.compile(
-    r"\bthe\s+(\d{1,2}|one|two|three|four|five|six|seven|eight|nine|ten)" r"\s+subject offic(?:er|ial)s\b",
-    re.IGNORECASE,
-)
-_THE_SO = re.compile(r"\b[Tt]he SO\b")
-_THE_SUBJ = re.compile(r"\bthe subject offic(?:er|ial)\b", re.IGNORECASE)
-_ANY_PLURAL = re.compile(r"\bthe SOs\b|the subject offic(?:er|ial)s\b", re.IGNORECASE)
-_ZERO = (
-    re.compile(r"no subject offic(?:er|ial)s?\b", re.IGNORECASE),
-    re.compile(r"(?:did not|not|never)\s+designate[d]?\s+(?:a\s+|any\s+)?" r"subject offic", re.IGNORECASE),
-)
-
-
-def _max_ordinal(s: str) -> int:
-    vals = [int(m.group(1)) for m in _ORD_SO.finditer(s)]
-    vals += [int(m.group(1)) for m in _ORD_SPELLED.finditer(s)]
-    return max(vals, default=0)
+    return native._s(native._strip_boilerplate(native._b(text)))
 
 
 def resolve_subject_officials(report_text: str) -> tuple[int | None, str]:
@@ -157,48 +99,9 @@ def resolve_subject_officials(report_text: str) -> tuple[int | None, str]:
 
     ``None`` means "needs a human/panel read" -- never a guess.
     """
-    body = strip_boilerplate(report_text)
+    from . import native
 
-    # 0. The Team block under "Subject Officials/Officers" is authoritative.
-    sec = _SECTION.search(body)
-    if sec:
-        window = body[sec.end() : sec.end() + 2500]
-        nxt = _NEXT_SECTION.search(window)
-        if nxt:
-            window = window[: nxt.start()]
-        sec_ord = _max_ordinal(window)
-        entries = len(_ENTRY.findall(window))
-        sec_n = max(sec_ord, entries)
-        if sec_n > 0:
-            return sec_n, f"section: max(ordinal {sec_ord}, entries {entries})"
-
-    # 1. Document-wide highest ordinal, but only with the "#1" roster anchor
-    # (a lone "SO #7 of YRP" is another force's shorthand).
-    max_ord = _max_ordinal(body)
-    if max_ord > 0 and _ANCHOR1.search(body):
-        return max_ord, f"max ordinal SO #{max_ord}"
-
-    # 2. Spelled-out / numeric plural: "the two subject officials".
-    m = _PLURAL.search(body)
-    if m:
-        tok = m.group(1).lower()
-        n = _WORD_NUM.get(tok) or int(tok)
-        return n, f"plural cue '{m.group(0)}'"
-
-    # 3. A subject official is PRESENT (runs BEFORE the zero rule).
-    the_so = len(_THE_SO.findall(body))
-    the_subj = len(_THE_SUBJ.findall(body))
-    plural = bool(_ANY_PLURAL.search(body))
-    if (the_so + the_subj) >= 1 and not plural:
-        return 1, (f"singular present: 'the SO'x{the_so} 'the subject official'x{the_subj}")
-
-    # 4. Explicitly ZERO (witness-official-only cases; direct assertion only).
-    for rx in _ZERO:
-        if rx.search(body):
-            return 0, "zero: witness-officer-only / 'not a subject official'"
-
-    # 5. Needs a human read.
-    return None, (f"UNRESOLVED: 'the SO'x{the_so} 'the subj off'x{the_subj}")
+    return native._resolve_so(report_text)
 
 
 def siu_resolve_so(text: str | None = None, drid: int | None = None) -> dict:

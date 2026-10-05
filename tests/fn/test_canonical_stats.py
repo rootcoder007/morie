@@ -91,11 +91,13 @@ def test_iqrng_constant_zero():
 
 def test_mad_normal_scaled():
     # MAD of 1..5: median=3, |xᵢ-3|=[2,1,0,1,2], median=1, ×1.4826 = 1.4826
-    assert mad([1, 2, 3, 4, 5]) == pytest.approx(1.4826)
+    assert mad([1, 2, 3, 4, 5], scale="normal") == pytest.approx(1.4826)
 
 
 def test_mad_raw_no_scale():
     assert mad([1, 2, 3, 4, 5], scale="raw") == pytest.approx(1.0)
+    # the default is the raw MAD, as rmorie::morie_mad
+    assert mad([1, 2, 3, 4, 5]) == pytest.approx(1.0)
 
 
 # ── odds ────────────────────────────────────────────────────────────────────
