@@ -1128,10 +1128,16 @@ def hawkes_inar(t, T, kernel_kind, baseline_kind, bounds, delta=None, support=No
 
     def fk(par):
         par = list(par)
+        # Nelder-Mead is unbounded: a point outside the parameter box scores as invalid before any
+        # CDF is evaluated (a negative shape gave NaN), as rmoriebricklayer's INAR
+        if any(not (b[0] <= v <= b[1]) for v, b in zip(par, bounds[1:])):
+            return 1e12
         eta, psi = par[0], par[1:]
         try:
             cdf = list(_kernel_cdf_py(edges, kernel_kind, psi))
         except (ValueError, OverflowError):
+            return 1e12
+        if not all(math.isfinite(c) for c in cdf):
             return 1e12
         return sum((alpha[lag] - eta * (cdf[lag + 1] - cdf[lag])) ** 2 for lag in range(p))
 
