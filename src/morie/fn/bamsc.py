@@ -10,21 +10,23 @@ def bayesian_am_scaling(
     Z,
     n_samples: int = 1000,
     burn_in: int = 200,
-    prior_sd: float = 10.0,
+    polarity: int = 0,
+    seed: int = 42,
 ) -> DescriptiveResult:
     """Bayesian Aldrich-McKelvey scaling via MCMC.
 
     :param Z: Respondent x stimulus placement matrix.
     :param n_samples: Number of posterior samples.
     :param burn_in: Burn-in samples to discard.
-    :param prior_sd: Prior standard deviation on stimulus positions.
+    :param polarity: Column (0-based) of the stimulus placed on the left.
+    :param seed: Random seed.
     :return: DescriptiveResult with posterior samples in ``extra``.
 
     .. epigraph:: Give me a place to stand and I will move the earth. -- Archimedes
     """
     from morie._spatial_voting import bayesian_am_scaling as _fn
 
-    result = _fn(Z, n_samples=n_samples, burn_in=burn_in, prior_sd=prior_sd)
+    result = _fn(Z, n_samples=n_samples, burn_in=burn_in, polarity=polarity, seed=seed)
     return DescriptiveResult(
         name="bayesian_am_scaling",
         value=result["n_samples"],

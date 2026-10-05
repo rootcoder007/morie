@@ -71,6 +71,14 @@ def _am_stimuli(Z) -> list:
     return v
 
 
+def _arrays(res: dict, keys) -> dict:
+    """Matrix-valued results as arrays (``.shape``, ``[:, j]``), like the rest of the module."""
+    for k in keys:
+        if k in res and res[k] is not None:
+            res[k] = np.asarray(res[k])
+    return res
+
+
 def aldrich_mckelvey(Z: NDArray, n_dims: int = 1) -> dict:
     """Aldrich-McKelvey scaling (Aldrich & McKelvey 1977; Eqs 2.1-2.3).
 
@@ -912,88 +920,34 @@ def bayesian_am_scaling(
     Z: NDArray,
     n_samples: int = 1000,
     burn_in: int = 200,
-    prior_sd: float = 10.0,
+    polarity: int = 0,
+    seed: int = 42,
 ) -> dict:
-    """Bayesian Aldrich-McKelvey scaling via Gibbs sampler (Eqs 6.1-6.4).
+    """Bayesian Aldrich-McKelvey scaling (Hare et al. 2015).
 
-    :param Z: (n_resp x n_stim) perceptual placement matrix.
-    :param n_samples: MCMC samples.
-    :param burn_in: Burn-in period.
-    :param prior_sd: Prior SD for stimulus positions.
-    :return: dict with zeta_posterior, alpha_posterior, beta_posterior, diagnostics.
+    z_ij ~ N(a_i + b_i zhat_j, 1 / (tau_i tau_j)) with the priors of the
+    authors' JAGS model: a_i, b_i ~ U(-100, 100), tau_j ~ G(0.1, 0.1),
+    tau_i ~ G(g_a, g_b), g_a, g_b ~ G(0.1, 0.1), and zhat the standardised
+    zstar ~ N(0, 1), the ``polarity`` stimulus (0-based) on the left.  Gibbs
+    with truncated-normal a | b and b | a, conjugate gammas, and slice steps
+    for g_a and each zstar_j; the posterior means and SDs agree with the
+    JAGS model to the third decimal.  See :mod:`morie._bayes_scaling`.
+
+    :return: dict with zeta_mean, zeta_sd, zeta_interval, a, b,
+        tau_stimulus, draws, n_samples, engine.
     """
-    Z = np.asarray(Z, dtype=float)
-    n_resp, n_stim = Z.shape
-    mask = ~np.isnan(Z)
-    rng = np.random.default_rng(42)
+    from morie._bayes_scaling import bayes_am
 
-    zeta = np.nanmean(Z, axis=0)
-    if zeta.std() > 0:
-        zeta = (zeta - zeta.mean()) / zeta.std()
-    alpha = np.zeros(n_resp)
-    beta = np.ones(n_resp)
-    sigma2 = np.ones(n_resp)
-
-    zeta_chain = np.zeros((n_samples, n_stim))
-    alpha_chain = np.zeros((n_samples, n_resp))
-    beta_chain = np.zeros((n_samples, n_resp))
-
-    a0, b0 = 2.0, 1.0
-
-    for t in range(n_samples + burn_in):
-        for i in range(n_resp):
-            valid = mask[i]
-            if valid.sum() < 2:
-                continue
-            zi = Z[i, valid]
-            zh = zeta[valid]
-            A_mat = np.column_stack([np.ones(valid.sum()), zh])
-            AtA = A_mat.T @ A_mat + np.eye(2) / prior_sd**2
-            Atz = A_mat.T @ zi
-            cov = np.linalg.inv(AtA) * sigma2[i]
-            mean = np.linalg.solve(AtA, Atz)
-            params = rng.multivariate_normal(mean, cov)
-            alpha[i] = params[0]
-            beta[i] = params[1]
-
-        for j in range(n_stim):
-            valid = mask[:, j]
-            if valid.sum() < 1:
-                continue
-            resid = (Z[valid, j] - alpha[valid]) / np.where(np.abs(beta[valid]) > 1e-10, beta[valid], 1e-10)
-            var_j = 1.0 / (valid.sum() / np.mean(sigma2[valid]) + 1.0 / prior_sd**2)
-            mean_j = var_j * resid.sum() / np.mean(sigma2[valid])
-            zeta[j] = rng.normal(mean_j, np.sqrt(var_j))
-
-        for i in range(n_resp):
-            valid = mask[i]
-            if valid.sum() < 2:
-                continue
-            resid = Z[i, valid] - alpha[i] - beta[i] * zeta[valid]
-            ss = np.sum(resid**2)
-            a_post = a0 + valid.sum() / 2
-            b_post = b0 + ss / 2
-            sigma2[i] = 1.0 / rng.gamma(a_post, 1.0 / b_post)
-
-        zeta = zeta - zeta.mean()
-        if zeta.std() > 0:
-            zeta = zeta / zeta.std()
-
-        if t >= burn_in:
-            idx = t - burn_in
-            zeta_chain[idx] = zeta
-            alpha_chain[idx] = alpha
-            beta_chain[idx] = beta
-
-    return {
-        "zeta_posterior": zeta_chain,
-        "zeta_mean": zeta_chain.mean(axis=0),
-        "zeta_sd": zeta_chain.std(axis=0),
-        "alpha_posterior": alpha_chain,
-        "beta_posterior": beta_chain,
-        "n_samples": n_samples,
-        "burn_in": burn_in,
-    }
+    return _arrays(
+        bayes_am(
+            np.asarray(Z, dtype=float).tolist(),
+            n_samples=int(n_samples),
+            burn_in=int(burn_in),
+            polarity=int(polarity),
+            seed=seed,
+        ),
+        ["zeta_mean", "zeta_sd", "zeta_interval", "a", "b", "tau_stimulus", "draws"],
+    )
 
 
 def bayesian_mds(
@@ -1002,77 +956,31 @@ def bayesian_mds(
     n_samples: int = 1000,
     burn_in: int = 200,
     sigma_init: float = 1.0,
+    seed: int = 42,
 ) -> dict:
-    """Bayesian MDS with log-normal distances (Eqs 6.5-6.9).
+    """Bayesian metric MDS (Bakker & Poole 2013).
 
-    ln(delta_jm) ~ N(ln(d_jm(X)), sigma^2).
+    log delta_ij ~ N(log ||x_i - x_j||, 1 / tau), x ~ N(0, 10^2),
+    tau ~ U(0, 10) (so sigma >= 0.316), the model of the authors' JAGS
+    code.  Coordinates slice sampled, tau drawn exactly; draws aligned
+    (translation and rotation) on the posterior mean.
 
-    :param D: (n x n) distance matrix.
-    :param n_dims: Number of dimensions.
-    :param n_samples: MCMC samples.
-    :param burn_in: Burn-in.
-    :return: dict with coordinate chain, posterior means, sigma chain.
+    :return: dict with positions, positions_sd, distance_mean, sigma, tau,
+        draws, n_samples, engine.
     """
-    D = np.asarray(D, dtype=float)
-    n = D.shape[0]
-    rng = np.random.default_rng(42)
+    from morie._bayes_scaling import bayes_mds
 
-    mds_init = classical_mds(D, n_dims)
-    X = mds_init["coordinates"].copy()
-    sigma2 = sigma_init**2
-
-    mask = np.triu_indices(n, k=1)
-    log_D = np.log(np.maximum(D[mask], 1e-10))
-
-    X_chain = np.zeros((n_samples, n, n_dims))
-    sigma_chain = np.zeros(n_samples)
-    step_size = 0.1
-
-    for t in range(n_samples + burn_in):
-        for i in range(n):
-            X_prop = X.copy()
-            X_prop[i] += rng.normal(0, step_size, n_dims)
-
-            d_curr = np.array([np.linalg.norm(X[i] - X[j]) for j in range(n) if j != i])
-            d_prop = np.array([np.linalg.norm(X_prop[i] - X_prop[j]) for j in range(n) if j != i])
-            d_curr = np.maximum(d_curr, 1e-10)
-            d_prop = np.maximum(d_prop, 1e-10)
-
-            others = [j for j in range(n) if j != i]
-            d_obs = np.array([D[i, j] for j in others])
-            log_d_obs = np.log(np.maximum(d_obs, 1e-10))
-
-            ll_curr = -np.sum((log_d_obs - np.log(d_curr)) ** 2) / (2 * sigma2)
-            ll_prop = -np.sum((log_d_obs - np.log(d_prop)) ** 2) / (2 * sigma2)
-
-            prior_curr = -np.sum(X[i] ** 2) / 200.0
-            prior_prop = -np.sum(X_prop[i] ** 2) / 200.0
-
-            log_alpha = (ll_prop + prior_prop) - (ll_curr + prior_curr)
-            if np.log(rng.random()) < log_alpha:
-                X[i] = X_prop[i]
-
-        d_model = np.array([np.linalg.norm(X[mask[0][k]] - X[mask[1][k]]) for k in range(len(mask[0]))])
-        d_model = np.maximum(d_model, 1e-10)
-        ss = np.sum((log_D - np.log(d_model)) ** 2)
-        n_pairs = len(mask[0])
-        a_post = 2.0 + n_pairs / 2
-        b_post = 1.0 + ss / 2
-        sigma2 = 1.0 / rng.gamma(a_post, 1.0 / b_post)
-
-        if t >= burn_in:
-            idx = t - burn_in
-            X_chain[idx] = X.copy()
-            sigma_chain[idx] = np.sqrt(sigma2)
-
-    return {
-        "coordinate_chain": X_chain,
-        "coordinate_mean": X_chain.mean(axis=0),
-        "coordinate_sd": X_chain.std(axis=0),
-        "sigma_chain": sigma_chain,
-        "sigma_mean": float(sigma_chain.mean()),
-        "n_samples": n_samples,
-    }
+    return _arrays(
+        bayes_mds(
+            np.asarray(D, dtype=float).tolist(),
+            n_dims=int(n_dims),
+            n_samples=int(n_samples),
+            burn_in=int(burn_in),
+            sigma_init=sigma_init,
+            seed=seed,
+        ),
+        ["positions", "positions_sd", "distance_mean"],
+    )
 
 
 def bayesian_unfolding(
@@ -1080,91 +988,27 @@ def bayesian_unfolding(
     n_dims: int = 2,
     n_samples: int = 1000,
     burn_in: int = 200,
+    seed: int = 42,
 ) -> dict:
-    """Bayesian multidimensional unfolding -- Bakker & Poole (Eqs 6.10-6.16).
+    """Bayesian unfolding (Bakker & Poole 2013), the lognormal model on a
+    respondent-by-stimulus dissimilarity matrix; feeling thermometers enter
+    as (100 - T) / 50.
 
-    :param D: (n_resp x n_stim) rating/distance matrix.
-    :param n_dims: Latent dimensions.
-    :param n_samples: MCMC samples.
-    :param burn_in: Burn-in.
-    :return: dict with respondent/stimulus chains, posterior means.
+    :return: dict with stimuli, stimuli_sd, ideal_points, distance_mean,
+        sigma, tau, n_samples, engine.
     """
-    D = np.asarray(D, dtype=float)
-    n_r, n_s = D.shape
-    rng = np.random.default_rng(42)
+    from morie._bayes_scaling import bayes_unfold
 
-    mlsmu_init = mlsmu6(D, n_dims, max_iter=50, n_restarts=1)
-    X_r = mlsmu_init["respondent_coords"].copy()
-    X_s = mlsmu_init["stimulus_coords"].copy()
-    sigma2 = 1.0
-
-    log_D = np.log(np.maximum(D, 1e-10))
-    mask = ~np.isnan(D)
-
-    X_r_chain = np.zeros((n_samples, n_r, n_dims))
-    X_s_chain = np.zeros((n_samples, n_s, n_dims))
-    step_r = 0.1
-    step_s = 0.1
-
-    for t in range(n_samples + burn_in):
-        for i in range(n_r):
-            X_r_prop = X_r.copy()
-            X_r_prop[i] += rng.normal(0, step_r, n_dims)
-
-            d_curr = np.array([np.linalg.norm(X_r[i] - X_s[j]) for j in range(n_s)])
-            d_prop = np.array([np.linalg.norm(X_r_prop[i] - X_s[j]) for j in range(n_s)])
-            d_curr = np.maximum(d_curr, 1e-10)
-            d_prop = np.maximum(d_prop, 1e-10)
-
-            valid = mask[i]
-            ll_c = -np.sum((log_D[i, valid] - np.log(d_curr[valid])) ** 2) / (2 * sigma2)
-            ll_p = -np.sum((log_D[i, valid] - np.log(d_prop[valid])) ** 2) / (2 * sigma2)
-
-            if np.log(rng.random()) < (ll_p - ll_c):
-                X_r[i] = X_r_prop[i]
-
-        for j in range(n_s):
-            X_s_prop = X_s.copy()
-            X_s_prop[j] += rng.normal(0, step_s, n_dims)
-
-            d_curr = np.array([np.linalg.norm(X_r[i] - X_s[j]) for i in range(n_r)])
-            d_prop = np.array([np.linalg.norm(X_r[i] - X_s_prop[j]) for i in range(n_r)])
-            d_curr = np.maximum(d_curr, 1e-10)
-            d_prop = np.maximum(d_prop, 1e-10)
-
-            valid = mask[:, j]
-            ll_c = -np.sum((log_D[valid, j] - np.log(d_curr[valid])) ** 2) / (2 * sigma2)
-            ll_p = -np.sum((log_D[valid, j] - np.log(d_prop[valid])) ** 2) / (2 * sigma2)
-
-            if np.log(rng.random()) < (ll_p - ll_c):
-                X_s[j] = X_s_prop[j]
-
-        all_d = []
-        all_log_d = []
-        for i in range(n_r):
-            for j in range(n_s):
-                if mask[i, j]:
-                    d = max(np.linalg.norm(X_r[i] - X_s[j]), 1e-10)
-                    all_d.append(np.log(d))
-                    all_log_d.append(log_D[i, j])
-        ss = sum((ld - md) ** 2 for ld, md in zip(all_log_d, all_d))
-        n_obs = len(all_d)
-        sigma2 = 1.0 / rng.gamma(2 + n_obs / 2, 1.0 / (1 + ss / 2))
-
-        if t >= burn_in:
-            idx = t - burn_in
-            X_r_chain[idx] = X_r.copy()
-            X_s_chain[idx] = X_s.copy()
-
-    return {
-        "respondent_chain": X_r_chain,
-        "stimulus_chain": X_s_chain,
-        "respondent_mean": X_r_chain.mean(axis=0),
-        "stimulus_mean": X_s_chain.mean(axis=0),
-        "respondent_sd": X_r_chain.std(axis=0),
-        "stimulus_sd": X_s_chain.std(axis=0),
-        "n_samples": n_samples,
-    }
+    return _arrays(
+        bayes_unfold(
+            np.asarray(D, dtype=float).tolist(),
+            n_dims=int(n_dims),
+            n_samples=int(n_samples),
+            burn_in=int(burn_in),
+            seed=seed,
+        ),
+        ["stimuli", "stimuli_sd", "ideal_points", "distance_mean"],
+    )
 
 
 def cjr_irt(
@@ -1928,106 +1772,47 @@ def nominate_bootstrap(
 
 def alpha_nominate(
     votes: NDArray,
-    n_dims: int = 2,
+    n_dims: int = 1,
     n_samples: int = 500,
     burn_in: int = 100,
     seed: int = 42,
+    thin: int = 1,
+    lop: float = 0.025,
+    minvotes: int = 20,
+    polarity: int = 0,
+    constrain: bool = False,
 ) -> dict:
-    """Alpha-NOMINATE: Bayesian NOMINATE via MCMC (Section 6.5, Eqs 6.31-6.36).
+    """Alpha-NOMINATE (Carroll et al. 2013) by slice-within-Gibbs.
 
-    Carroll et al. (2013). Mixture model nesting Gaussian and quadratic utility.
-    Alpha parameter (0=quadratic, 1=Gaussian) tests functional form.
-    Uses slice sampling (Neal 2003).
+    P(yea) = Phi(Q + alpha (G - Q)), Q the quadratic and G the Gaussian
+    utility difference, weight fixed at 0.5, flat priors on beta > 0 and
+    alpha in [0, 1], inverse-Wishart scale penalties on the coordinates as
+    in the anominate reference code.  Roll calls with minority share below
+    ``lop`` and legislators with fewer than ``minvotes`` kept votes are
+    dropped first; ``polarity`` (0-based) is the legislator put on the
+    positive side.
 
-    :param votes: (n_leg x n_votes) binary vote matrix.
-    :param n_dims: Number of latent dimensions.
-    :param n_samples: MCMC samples after burn-in.
-    :param burn_in: Burn-in samples.
-    :param seed: Random seed.
-    :return: dict with ideal_points, alpha, dim_weights, log_lik_chain.
+    :return: dict with ideal_points, ideal_sd, yea_locations,
+        nay_locations, alpha, alpha_interval, beta, draws,
+        legislators_used, votes_used, n_dims, engine.
     """
-    votes = np.asarray(votes, dtype=float)
-    n_leg, n_votes = votes.shape
-    mask = ~np.isnan(votes)
-    rng = np.random.default_rng(seed)
+    from morie._bayes_scaling import alpha_nominate as _an
 
-    X = rng.standard_normal((n_leg, n_dims)) * 0.3
-    alpha = 0.5
-    w = np.ones(n_dims) / n_dims
-    beta = 7.0
-
-    nv = rng.standard_normal((n_votes, n_dims))
-    for j in range(n_votes):
-        nv[j] /= np.linalg.norm(nv[j]) + 1e-12
-    mid = np.zeros((n_votes, n_dims))
-
-    def _utility(x, o, alpha_val, w_val):
-        d2 = np.sum(w_val * (x - o) ** 2)
-        gauss = np.exp(-0.5 * d2)
-        quad = 1.0 - 0.5 * d2
-        return alpha_val * gauss + (1 - alpha_val) * max(quad, -10.0)
-
-    def _log_lik():
-        ll = 0.0
-        for j in range(n_votes):
-            valid = mask[:, j]
-            if valid.sum() == 0:
-                continue
-            X_v = X[valid]
-            y_v = votes[valid, j]
-            yea_o = mid[j] + 0.5 * nv[j]
-            nay_o = mid[j] - 0.5 * nv[j]
-            for idx, _i_valid in enumerate(np.where(valid)[0]):
-                u_yea = _utility(X_v[idx], yea_o, alpha, w)
-                u_nay = _utility(X_v[idx], nay_o, alpha, w)
-                u_diff = beta * (u_yea - u_nay)
-                u_diff = np.clip(u_diff, -20, 20)
-                p = 1.0 / (1.0 + np.exp(-u_diff))
-                if y_v[idx] == 1:
-                    ll += np.log(p + 1e-15)
-                else:
-                    ll += np.log(1 - p + 1e-15)
-        return ll
-
-    total_samples = burn_in + n_samples
-    alpha_chain = np.zeros(n_samples)
-    X_chain = np.zeros((n_samples, n_leg, n_dims))
-    ll_chain = np.zeros(n_samples)
-
-    for t in range(total_samples):
-        for i in range(n_leg):
-            proposal = X[i] + rng.standard_normal(n_dims) * 0.1
-            X_old = X[i].copy()
-            ll_old = _log_lik()
-            X[i] = proposal
-            ll_new = _log_lik()
-            if np.log(rng.random() + 1e-15) > ll_new - ll_old:
-                X[i] = X_old
-
-        alpha_prop = alpha + rng.standard_normal() * 0.05
-        alpha_prop = np.clip(alpha_prop, 0.0, 1.0)
-        ll_old = _log_lik()
-        alpha_old = alpha
-        alpha = alpha_prop
-        ll_new = _log_lik()
-        if np.log(rng.random() + 1e-15) > ll_new - ll_old:
-            alpha = alpha_old
-
-        if t >= burn_in:
-            s = t - burn_in
-            alpha_chain[s] = alpha
-            X_chain[s] = X.copy()
-            ll_chain[s] = _log_lik()
-
-    return {
-        "ideal_points": X_chain.mean(axis=0),
-        "ideal_points_sd": X_chain.std(axis=0),
-        "alpha_mean": alpha_chain.mean(),
-        "alpha_sd": alpha_chain.std(),
-        "alpha_chain": alpha_chain,
-        "dim_weights": w,
-        "log_lik_chain": ll_chain,
-    }
+    return _arrays(
+        _an(
+            np.asarray(votes, dtype=float).tolist(),
+            n_dims=n_dims,
+            n_samples=int(n_samples),
+            burn_in=int(burn_in),
+            seed=seed,
+            thin=int(thin),
+            lop=lop,
+            minvotes=int(minvotes),
+            polarity=polarity,
+            constrain=bool(constrain),
+        ),
+        ["ideal_points", "ideal_sd", "yea_locations", "nay_locations"],
+    )
 
 
 def ordinal_irt(
@@ -2036,87 +1821,31 @@ def ordinal_irt(
     n_samples: int = 500,
     burn_in: int = 100,
     seed: int = 42,
+    lambda_prior_precision: float = 0.0,
 ) -> dict:
-    """Ordinal IRT / mixed factor analysis (Section 6.6.1, Eqs 6.37-6.38).
+    """Ordinal IRT: the ordinal factor model of Quinn (2004).
 
-    Quinn (2004): Bayesian factor model handling both continuous and ordinal
-    responses with probit link and cutpoint estimation.
+    y*_ij = lambda_j0 + lambda_j' phi_i + e_ij with item-specific cutpoints
+    (the first fixed at 0), phi ~ N(0, I), loadings N(0, I / L0) (L0 = 0 is
+    MCMCpack's flat prior), Cowles (1996) cutpoint steps.  Each item's
+    categories are its observed values in order.
 
-    :param Y: (n x m) response matrix (ordinal categories as integers).
-    :param n_dims: Number of latent dimensions.
-    :param n_samples: MCMC samples after burn-in.
-    :param burn_in: Burn-in samples.
-    :param seed: Random seed.
-    :return: dict with ideal_points, discrimination, cutpoints, log_lik.
+    :return: dict with ideal_points, ideal_sd, discrimination, intercept,
+        cutpoints, acceptance, n_samples, engine.
     """
-    from morie.fn._stats_core import norm as ndist
+    from morie._bayes_scaling import ordinal_irt as _oi
 
-    Y = np.asarray(Y, dtype=float)
-    n, m = Y.shape
-    mask = ~np.isnan(Y)
-    rng = np.random.default_rng(seed)
-
-    categories = {}
-    for j in range(m):
-        cats = np.unique(Y[mask[:, j], j])
-        categories[j] = sorted(cats)
-
-    theta = rng.standard_normal((n, n_dims)) * 0.5
-    a = rng.standard_normal((m, n_dims)) * 0.5
-    d = np.zeros(m)
-
-    gamma = {}
-    for j in range(m):
-        n_cats = len(categories[j])
-        if n_cats > 1:
-            gamma[j] = np.linspace(-1.5, 1.5, n_cats - 1)
-        else:
-            gamma[j] = np.array([0.0])
-
-    total_iter = burn_in + n_samples
-    theta_chain = np.zeros((n_samples, n, n_dims))
-
-    for t in range(total_iter):
-        for i in range(n):
-            proposal = theta[i] + rng.standard_normal(n_dims) * 0.1
-            ll_old = 0.0
-            ll_new = 0.0
-            for j in range(m):
-                if not mask[i, j]:
-                    continue
-                cats = categories[j]
-                y_ij = int(Y[i, j])
-                cat_idx = cats.index(y_ij) if y_ij in cats else 0
-                eta_old = d[j] + a[j] @ theta[i]
-                eta_new = d[j] + a[j] @ proposal
-                g = gamma[j]
-                if cat_idx == 0:
-                    ll_old += np.log(ndist.cdf(g[0] - eta_old) + 1e-15)
-                    ll_new += np.log(ndist.cdf(g[0] - eta_new) + 1e-15)
-                elif cat_idx >= len(g):
-                    ll_old += np.log(1 - ndist.cdf(g[-1] - eta_old) + 1e-15)
-                    ll_new += np.log(1 - ndist.cdf(g[-1] - eta_new) + 1e-15)
-                else:
-                    ll_old += np.log(ndist.cdf(g[cat_idx] - eta_old) - ndist.cdf(g[cat_idx - 1] - eta_old) + 1e-15)
-                    ll_new += np.log(ndist.cdf(g[cat_idx] - eta_new) - ndist.cdf(g[cat_idx - 1] - eta_new) + 1e-15)
-
-            prior_old = -0.5 * np.sum(theta[i] ** 2)
-            prior_new = -0.5 * np.sum(proposal**2)
-            if np.log(rng.random() + 1e-15) < (ll_new + prior_new) - (ll_old + prior_old):
-                theta[i] = proposal
-
-        if t >= burn_in:
-            s = t - burn_in
-            theta_chain[s] = theta.copy()
-
-    return {
-        "ideal_points": theta_chain.mean(axis=0),
-        "ideal_points_sd": theta_chain.std(axis=0),
-        "discrimination": a,
-        "difficulty": d,
-        "cutpoints": gamma,
-        "n_samples": n_samples,
-    }
+    return _arrays(
+        _oi(
+            np.asarray(Y, dtype=float).tolist(),
+            n_dims=int(n_dims),
+            n_samples=int(n_samples),
+            burn_in=int(burn_in),
+            L0=float(lambda_prior_precision),
+            seed=seed,
+        ),
+        ["ideal_points", "ideal_sd", "discrimination", "intercept"],
+    )
 
 
 def dynamic_irt(
@@ -2125,93 +1854,52 @@ def dynamic_irt(
     n_samples: int = 500,
     burn_in: int = 100,
     seed: int = 42,
+    thin: int = 1,
+    tau2: float = 1.0,
+    c0: float = -1.0,
+    d0: float = -1.0,
+    e0: float = 0.0,
+    E0: float = 1.0,
+    a0: float = 0.0,
+    A0: float = 0.1,
+    b0: float = 0.0,
+    B0: float = 0.1,
+    anchor: int | None = None,
 ) -> dict:
-    """Dynamic IRT with random walk priors (Section 6.6.2).
+    """Dynamic IRT of Martin & Quinn (2002), the model of MCMCdynamicIRT1d.
 
-    Time-series IRT: ideal points evolve via random walk
-    phi_{i,t} ~ N(phi_{i,t-1}, tau^2). Binomial model with logit link.
+    z_jk = -alpha_k + beta_k theta_{j,t(k)} + e_jk (probit), ideal points
+    following a random walk theta_{j,t} ~ N(theta_{j,t-1}, tau2_j) from
+    theta_{j,0} ~ N(e0, E0); tau2_j ~ IG(c0/2, d0/2) when c0, d0 > 0, held
+    at ``tau2`` otherwise.  Gibbs with forward-filter backward-sample paths.
+    ``anchor`` (0-based) is reflected onto the positive side.
 
-    :param votes: (n_leg x n_votes) binary vote matrix.
-    :param time_periods: (n_votes,) integer time index per vote.
-    :param n_samples: MCMC samples after burn-in.
-    :param burn_in: Burn-in samples.
-    :param seed: Random seed.
-    :return: dict with ideal_trajectories, discrimination, difficulty, tau.
+    :return: dict with theta (legislators by periods), theta_sd,
+        ideal_trajectories (the same as an array), alpha, beta, tau2,
+        periods, n_samples, anchor, engine.
     """
-    votes = np.asarray(votes, dtype=float)
-    time_periods = np.asarray(time_periods, dtype=int)
-    n_leg, n_votes = votes.shape
-    mask = ~np.isnan(votes)
-    rng = np.random.default_rng(seed)
+    from morie._bayes_scaling import dynamic_irt as _dyn
 
-    periods = np.unique(time_periods)
-    n_periods = len(periods)
-    period_map = {p: idx for idx, p in enumerate(periods)}
-
-    theta = rng.standard_normal((n_leg, n_periods)) * 0.3
-    a = rng.standard_normal(n_votes) * 0.5
-    d = np.zeros(n_votes)
-    tau2 = 0.1
-
-    total_iter = burn_in + n_samples
-    theta_chain = np.zeros((n_samples, n_leg, n_periods))
-    tau_chain = np.zeros(n_samples)
-
-    for it in range(total_iter):
-        for i in range(n_leg):
-            for tp_idx in range(n_periods):
-                proposal = theta[i, tp_idx] + rng.standard_normal() * 0.1
-
-                ll_old = 0.0
-                ll_new = 0.0
-                for j in range(n_votes):
-                    if not mask[i, j]:
-                        continue
-                    if period_map[time_periods[j]] != tp_idx:
-                        continue
-                    eta_old = a[j] * theta[i, tp_idx] + d[j]
-                    eta_new = a[j] * proposal + d[j]
-                    p_old = 1.0 / (1.0 + np.exp(-np.clip(eta_old, -20, 20)))
-                    p_new = 1.0 / (1.0 + np.exp(-np.clip(eta_new, -20, 20)))
-                    y = votes[i, j]
-                    ll_old += y * np.log(p_old + 1e-15) + (1 - y) * np.log(1 - p_old + 1e-15)
-                    ll_new += y * np.log(p_new + 1e-15) + (1 - y) * np.log(1 - p_new + 1e-15)
-
-                if tp_idx == 0:
-                    prior_old = -0.5 * theta[i, tp_idx] ** 2
-                    prior_new = -0.5 * proposal**2
-                else:
-                    prior_old = -0.5 * (theta[i, tp_idx] - theta[i, tp_idx - 1]) ** 2 / tau2
-                    prior_new = -0.5 * (proposal - theta[i, tp_idx - 1]) ** 2 / tau2
-
-                if np.log(rng.random() + 1e-15) < (ll_new + prior_new) - (ll_old + prior_old):
-                    theta[i, tp_idx] = proposal
-
-        sum_sq = 0.0
-        count = 0
-        for i in range(n_leg):
-            for tp_idx in range(1, n_periods):
-                sum_sq += (theta[i, tp_idx] - theta[i, tp_idx - 1]) ** 2
-                count += 1
-        if count > 0:
-            shape = 1.0 + count / 2.0
-            scale = 1.0 / (1.0 + sum_sq / 2.0)
-            tau2 = 1.0 / rng.gamma(shape, scale)
-
-        if it >= burn_in:
-            s = it - burn_in
-            theta_chain[s] = theta.copy()
-            tau_chain[s] = tau2
-
-    return {
-        "ideal_trajectories": theta_chain.mean(axis=0),
-        "ideal_trajectories_sd": theta_chain.std(axis=0),
-        "periods": periods,
-        "tau_mean": tau_chain.mean(),
-        "tau_sd": tau_chain.std(),
-        "discrimination": a,
-        "difficulty": d,
-    }
+    res = _dyn(
+        np.asarray(votes, dtype=float).tolist(),
+        [int(t) for t in time_periods],
+        n_samples=int(n_samples),
+        burn_in=int(burn_in),
+        thin=int(thin),
+        seed=seed,
+        tau2=tau2,
+        e0=e0,
+        E0=E0,
+        a0=a0,
+        A0=A0,
+        b0=b0,
+        B0=B0,
+        c0=c0,
+        d0=d0,
+        anchor=anchor,
+    )
+    res["ideal_trajectories"] = np.asarray(res["theta"])
+    return _arrays(res, ["theta", "theta_sd", "alpha", "beta", "tau2"])
 
 
 def em_irt(

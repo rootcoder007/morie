@@ -29,7 +29,7 @@ def bayesian_mds_fn(
     result = _fn(D, n_dims=n_dims, n_samples=n_samples, burn_in=burn_in, sigma_init=sigma_init)
     return DescriptiveResult(
         name="bayesian_mds",
-        value=result["sigma_mean"],
+        value=result["sigma"],
         extra=result,
     )
 

@@ -12,6 +12,7 @@ def alpha_nominate_estimate(
     n_samples: int = 500,
     burn_in: int = 100,
     seed: int = 42,
+    minvotes: int = 20,
 ) -> DescriptiveResult:
     """Alpha-NOMINATE Bayesian estimation (Carroll et al. 2013).
 
@@ -20,16 +21,17 @@ def alpha_nominate_estimate(
     :param n_samples: MCMC samples after burn-in.
     :param burn_in: Burn-in samples.
     :param seed: Random seed.
+    :param minvotes: Fewest kept roll calls a legislator must have voted on.
     :return: DescriptiveResult with alpha and ideal points.
 
     .. epigraph:: The only true wisdom is in knowing you know nothing. -- Socrates
     """
     from morie._spatial_voting import alpha_nominate as _fn
 
-    result = _fn(votes, n_dims=n_dims, n_samples=n_samples, burn_in=burn_in, seed=seed)
+    result = _fn(votes, n_dims=n_dims, n_samples=n_samples, burn_in=burn_in, seed=seed, minvotes=minvotes)
     return DescriptiveResult(
         name="alpha_nominate_estimate",
-        value=result["alpha_mean"],
+        value=result["alpha"],
         extra=result,
     )
 
