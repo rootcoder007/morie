@@ -6401,7 +6401,7 @@ File,Line,Status,Version,Context
 ./tests/test_services.py,204,STALE_OR_DEP,127.0.0.1,"monkeypatch.setenv(MORIE_SERVICES_URL; http://127.0.0.1/morie-services.json)"
 ./tests/test_siu_hostile.py,2,STALE_OR_DEP,0.5.7,"through the regex passes overflowed the C stack (its 0.5.7 review). The"
 ./tests/test_siu_hostile.py,33,STALE_OR_DEP,0.5.9,"# a 5000-byte date is an error; as in the canonical package (0.5.9); never a silent"
-./tests/test_siu_hostile.py,53,STALE_OR_DEP,0.5.8,"SO #1 + \f * 25000 + x;                                   # form feeds (0.5.8 diff review)"
+./tests/test_siu_hostile.py,55,STALE_OR_DEP,0.5.8,"SO #1 + \f * 25000 + x;  # form feeds (0.5.8 diff review)"
 ./tests/test_statistical_correctness.py,450,STALE_OR_DEP,4.6.1,"# Examples 4.6.1 and 4.7.1 use this exact 10-point sample and publish the"
 ./tests/test_statistical_correctness.py,450,STALE_OR_DEP,4.6.1,"# Examples 4.6.1 and 4.7.1 use this exact 10-point sample and publish the"
 ./tests/test_statistical_correctness.py,476,STALE_OR_DEP,4.7.1,"# (1.062) of Table 4.7.1."
