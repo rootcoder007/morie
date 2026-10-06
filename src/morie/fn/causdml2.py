@@ -140,3 +140,92 @@ def causal_dml_partial_lin(y, D, X, n_folds=5, learner=None, seed=0):
 
 def cheatsheet():
     return "causdml2: residualise BOTH Y and D, and cross-fit -- either omission brings the bias back"
+
+
+def rmorie_folds(n, n_folds, seed=42):
+    """Fold labels ``0..n_folds-1`` identical to rmorie's ``.morie_dml_folds(n, n_folds, seed)``:
+    rank the splitmix64 uniforms of ``seed`` and deal the folds round-robin in that order."""
+    from morie.tps_hawkes_advanced import splitmix_uniforms
+
+    n, n_folds = int(n), int(n_folds)
+    perm = np.argsort(np.asarray(splitmix_uniforms(n, seed)), kind="stable")
+    folds = np.empty(n, dtype=int)
+    folds[perm] = np.arange(n) % n_folds
+    return folds
+
+
+def _xfit_ridge_gcv(X, y, folds, n_folds):
+    """Out-of-fold ridge predictions, lambda chosen per fold by GCV on a 13-point log grid
+    over standardised X -- rmorie's ``.morie_dml_xfit_ridge_gcv``."""
+    n = X.shape[0]
+    grid = 10.0 ** np.linspace(-3, 3, 13)
+    scl = X.std(axis=0, ddof=1)
+    scl[scl == 0] = 1.0
+    Xs = (X - X.mean(axis=0)) / scl
+    pred = np.empty(n)
+    for k in range(n_folds):
+        te = np.flatnonzero(folds == k)
+        tr = np.flatnonzero(folds != k)
+        Xt, yt = Xs[tr], y[tr]
+        yc = yt.mean()
+        ytc = yt - yc
+        G = Xt.T @ Xt
+        Xty = Xt.T @ ytc
+        best, beta = np.inf, None
+        for lam in grid:
+            Glam = G + lam * np.eye(G.shape[0])
+            b = np.linalg.solve(Glam, Xty)
+            rss = np.sum((ytc - Xt @ b) ** 2)
+            edf = np.trace(np.linalg.solve(Glam, G))
+            gcv = len(tr) * rss / (len(tr) - edf) ** 2
+            if gcv < best:
+                best, beta = gcv, b
+        pred[te] = Xs[te] @ beta + yc
+    return pred
+
+
+def causal_dml_plr_gcv(y, D, X, n_folds=5, seed=42):
+    """Partially linear DML with the nuisances rmorie uses: GCV-tuned ridge for both
+    :math:`E[Y|X]` and :math:`E[D|X]`, one shared fold split from ``rmorie_folds``. Given the
+    same rows and seed it returns rmorie's ``morie_estimate_double_ml`` theta and SE.
+
+    Examples:
+        >>> import numpy as np
+        >>> rng = np.random.default_rng(3)
+        >>> X = rng.normal(size=(400, 2)); D = X[:, 0] + rng.normal(size=400)
+        >>> y = 2.0 * D + X[:, 1] + rng.normal(size=400)
+        >>> r = causal_dml_plr_gcv(y, D, X)
+        >>> abs(r["theta"] - 2.0) < 0.2
+        True
+    """
+    yv = np.asarray(y, dtype=float).ravel()
+    Dv = np.asarray(D, dtype=float).ravel()
+    Xm = np.atleast_2d(np.asarray(X, dtype=float))
+    if Xm.shape[0] != yv.size:
+        Xm = Xm.T
+    n, p = Xm.shape
+    if not (Dv.size == yv.size == n):
+        raise ValueError("y, D and X must agree on the number of rows.")
+    n_folds = int(n_folds)
+    if not 2 <= n_folds <= n:
+        raise ValueError(f"n_folds must lie in 2..{n}, got {n_folds}.")
+    folds = rmorie_folds(n, n_folds, seed)
+    u = yv - _xfit_ridge_gcv(Xm, yv, folds, n_folds)
+    v = Dv - _xfit_ridge_gcv(Xm, Dv, folds, n_folds)
+    den = float(v @ v)
+    if den <= 0:
+        raise ValueError("the residualised treatment has no variation left: theta is not identified.")
+    theta = float(v @ u / den)
+    psi = v * (u - theta * v)
+    se = float(np.sqrt(np.sum(psi**2)) / den)
+    return RichResult(
+        payload={
+            "theta": theta,
+            "se": se,
+            "ci": (theta - 1.959963984540054 * se, theta + 1.959963984540054 * se),
+            "n_folds": n_folds,
+            "n": int(n),
+            "p": int(p),
+            "method": "PLR, GCV ridge nuisances, rmorie-identical folds",
+        }
+    )

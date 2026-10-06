@@ -478,12 +478,12 @@ def mrm_estimate_causal_effect(
     if "dml" in methods:
 
         def _dml():
-            from morie.fn.causdml2 import causal_dml_partial_lin
+            from morie.fn.causdml2 import causal_dml_plr_gcv
 
             y = [float(r[outcome]) for r in rows_in]
             d = [float(r[treatment]) for r in rows_in]
             X = [[float(r[c]) for c in covariates] for r in rows_in]
-            a = causal_dml_partial_lin(y, d, X, seed=seed)
+            a = causal_dml_plr_gcv(y, d, X, seed=seed)
             if isinstance(a, tuple):
                 return a[0], a[1]
             pay = getattr(a, "payload", None) or {}

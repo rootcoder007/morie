@@ -29,5 +29,7 @@ def test_causal_design_ipw_uses_the_glm_propensity():
         d = int(0.7 * x1 + 0.4 * math.sin(i * 3.1) > 0)
         rows.append({"x1": x1, "x2": x2, "D": d, "Y": 1 + 0.5 * d + x1 + 0.3 * math.cos(i * 2.2)})
     r = M.mrm_causal_design(pd.DataFrame(rows), treatment_col="D", outcome_col="Y", covariates=["x1", "x2"])
-    # R arm: glm(D ~ x1 + x2, binomial) weights give 1.036702
+    # R arm: glm(D ~ x1 + x2, binomial) weights give 1.036702; the sandwich SE with the
+    # propensity fit credited (Lunceford & Davidian 2004 IPW2) is 0.098274 in both arms
     assert r.estimate == 1.036702
+    assert r.se == 0.098274
