@@ -9,6 +9,12 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* After rmoriebricklayer 0.5.9's network review: the page the sign-in service names is handed
+  to the browser only when it is an https address of a public host; a services mirror without
+  a `.json` suffix finds its `.sig`; the services cache serves only when newer than the bundled
+  document (older is deleted, the same date falls back to the bundled copy); and
+  `MORIE_LLM_BASE_URL` / `MORIE_LLM_API_KEY` / `MORIE_LLM_MODEL`, the own-endpoint names the
+  other three packages read, are accepted beside `LLM_API_BASE_URL` / `LLM_API_KEY`.
 * The hosted MORIE tier is the last resort: `detect_available_provider()` and the fallback
   chain try a local Ollama, then your own Gemini / OpenAI-compatible / OpenAI keys, and only
   then the hosted tier. Its address, model and sign-in service come from the signed services

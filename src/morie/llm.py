@@ -181,20 +181,32 @@ def _stored_provider() -> dict:
 
 
 def _api_base_url() -> str | None:
-    """The generic OpenAI-compatible base URL: LLM_API_BASE_URL, else the attached endpoint."""
-    url = os.environ.get("LLM_API_BASE_URL", "").strip() or str(_stored_provider().get("api_base_url", "")).strip()
+    """The generic OpenAI-compatible base URL: LLM_API_BASE_URL, else MORIE_LLM_BASE_URL (the
+    name rmoriebricklayer, rmoriedata and rmorie read), else the attached endpoint."""
+    url = (
+        os.environ.get("LLM_API_BASE_URL", "").strip()
+        or os.environ.get("MORIE_LLM_BASE_URL", "").strip()
+        or str(_stored_provider().get("api_base_url", "")).strip()
+    )
     return url.rstrip("/") if url else None
 
 
 def _api_key() -> str | None:
-    """The key for that endpoint: LLM_API_KEY, else the attached endpoint's key."""
-    return os.environ.get("LLM_API_KEY", "").strip() or str(_stored_provider().get("api_key", "")).strip() or None
+    """The key for that endpoint: LLM_API_KEY, else MORIE_LLM_API_KEY, else the attached endpoint's key."""
+    return (
+        os.environ.get("LLM_API_KEY", "").strip()
+        or os.environ.get("MORIE_LLM_API_KEY", "").strip()
+        or str(_stored_provider().get("api_key", "")).strip()
+        or None
+    )
 
 
 def _api_model() -> str:
-    """The model for that endpoint: MORIE_API_MODEL, else the attached endpoint's model, else the default."""
+    """The model for that endpoint: MORIE_API_MODEL, else MORIE_LLM_MODEL, else the attached
+    endpoint's model, else the default."""
     return (
         os.environ.get("MORIE_API_MODEL", "").strip()
+        or os.environ.get("MORIE_LLM_MODEL", "").strip()
         or str(_stored_provider().get("api_model", "")).strip()
         or DEFAULT_API_MODEL
     )

@@ -201,6 +201,13 @@ def _download(url: str, timeout: float) -> tuple[int, bytes]:
     return resp.status_code, resp.content
 
 
+def _sig_url(url: str) -> str:
+    """The detached signature beside a document URL: ``.json`` becomes ``.sig``; a mirror
+    URL without the suffix gets ``.sig`` appended (it used to fetch the document as its own
+    signature and fail closed)."""
+    return url[:-5] + ".sig" if url.endswith(".json") else url + ".sig"
+
+
 def fetch(timeout: float = 20.0) -> tuple[dict, bytes, str] | None:
     """The live document, verified and parsed: (document, bytes, signature text), or None."""
     url = os.environ.get("MORIE_SERVICES_URL", "").strip() or SERVICES_URL
@@ -210,7 +217,7 @@ def fetch(timeout: float = 20.0) -> tuple[dict, bytes, str] | None:
         status, doc_bytes = _download(url, timeout)
         if status != 200 or not doc_bytes:
             return None
-        status, sig_bytes = _download(re.sub(r"\.json$", ".sig", url), timeout)
+        status, sig_bytes = _download(_sig_url(url), timeout)
         if status != 200 or not sig_bytes:
             return None
         sig_text = sig_bytes.decode("utf-8")
@@ -249,21 +256,33 @@ def services(refresh: bool = False, max_age: float = 86400, timeout: float = 20.
 
 def _resolve(refresh: bool, max_age: float, timeout: float, offline: bool) -> dict:
     cache = _cache_path()
+    bundled = _read(_bundled_path())
     cached = _read(cache)
+    # The floor every accepted document must reach is the copy shipped with the
+    # package: a validly signed but OLDER document (any one ever published) in the
+    # cache would otherwise pin a retired endpoint, and it is the endpoint that
+    # receives the user's key. A cache earns its place only by being NEWER than the
+    # bundled copy; the same date adds nothing, an older one is deleted.
+    if cached is not None and bundled is not None and (_time(cached["issued"]) or 0) <= (_time(bundled["issued"]) or 0):
+        if (_time(cached["issued"]) or 0) < (_time(bundled["issued"]) or 0):
+            with contextlib.suppress(OSError):
+                cache.unlink()
+                cache.with_suffix(".sig").unlink()
+        cached = None
+    floor = max([(_time(d["issued"]) or 0) for d in (cached, bundled) if d is not None], default=0)
     fresh = cached is not None and not refresh and (time.time() - cache.stat().st_mtime) < max_age
     if cached is not None and (fresh or offline):
         return {**cached, "_source": "cache"}
     live = None if offline else fetch(timeout)
     if live is not None:
         doc, doc_bytes, sig_text = live
-        # a document older than the one already held is a rollback, not an update
-        if cached is None or (_time(doc["issued"]) or 0) >= (_time(cached["issued"]) or 0):
+        # a document older than the one already held, or than the bundled one, is a rollback
+        if (_time(doc["issued"]) or 0) >= floor:
             with contextlib.suppress(OSError):
                 _write(cache, doc_bytes, sig_text)
             return {**doc, "_source": "live"}
     if cached is not None:
         return {**cached, "_source": "cache"}
-    bundled = _read(_bundled_path())
     if bundled is not None:
         return {**bundled, "_source": "bundled"}
     return {**off_document(), "_source": "off"}

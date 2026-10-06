@@ -141,6 +141,37 @@ def test_stale_cache_refreshes_and_an_older_live_document_is_a_rollback(svc, mon
     assert services._read(cache)["llm"]["base_url"] == "https://new.example.org"
 
 
+def test_the_bundled_copy_is_the_floor_for_the_cache(svc, monkeypatch, tmp_path):
+    bundled = doc(issued="2026-10-06T12:00:00Z", base="https://bundled.example.org")
+    bpath = tmp_path / "bundled" / "morie-services.json"
+    services._write(bpath, bundled, sign(bundled))
+    monkeypatch.setattr(services, "_bundled_path", lambda: bpath)
+    cache = services._cache_path()
+    # older than the bundled copy: refused and deleted
+    old = doc(issued="2026-10-01T00:00:00Z", base="https://old.example.org")
+    services._write(cache, old, sign(old))
+    s = services.services(offline=True)
+    assert s["_source"] == "bundled" and s["llm"]["base_url"] == "https://bundled.example.org"
+    assert not cache.exists()
+    # the same date: the bundled copy serves and the cache stays
+    services.forget()
+    services._write(cache, bundled, sign(bundled))
+    assert services.services(offline=True)["_source"] == "bundled"
+    assert cache.exists()
+    # newer: the cache serves
+    services.forget()
+    newer = doc(issued="2026-10-07T00:00:00Z", base="https://new.example.org")
+    services._write(cache, newer, sign(newer))
+    assert services.services(offline=True)["llm"]["base_url"] == "https://new.example.org"
+    # a live document older than the bundled one is a rollback even with no cache at all
+    services.forget()
+    cache.unlink()
+    cache.with_suffix(".sig").unlink()
+    serve(monkeypatch, {services.SERVICES_URL: old, SIG_URL: sign(old)})
+    assert services.services(refresh=True)["_source"] == "bundled"
+    assert not cache.exists()
+
+
 def test_a_document_that_does_not_verify_is_ignored_at_every_step(svc, monkeypatch):
     d = doc()
     _, other_sk = mldsa_keygen(44, seed=bytes([1]) * 32)
@@ -199,3 +230,10 @@ def test_offline_memo_is_per_process_and_a_refresh_replaces_it(svc, monkeypatch)
     assert services.services()["_source"] == "live"
     assert services.services(offline=True)["_source"] == "live"
     assert "rmorie.com/access" in services.access_hint()
+
+
+def test_the_signature_url_of_a_mirror_without_a_json_suffix():
+    assert services._sig_url("https://rmorie.com/.well-known/morie-services.json") == (
+        "https://rmorie.com/.well-known/morie-services.sig"
+    )
+    assert services._sig_url("https://mirror.example.org/services") == "https://mirror.example.org/services.sig"

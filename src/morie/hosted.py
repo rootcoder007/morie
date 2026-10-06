@@ -257,6 +257,23 @@ def _open_browser(uri: str) -> None:
             browser.open(uri)
 
 
+def _browsable(uri: object) -> bool:
+    """Only an https address of a public host is handed to the browser: the sign-in service
+    names the page, and bricklayer's fourth review found that name taken on trust."""
+    import ipaddress
+    from urllib.parse import urlsplit
+
+    if not isinstance(uri, str) or not uri.startswith("https://"):
+        return False
+    host = (urlsplit(uri).hostname or "").lower()
+    if not host or "." not in host or host.endswith((".local", ".internal", ".localhost", ".lan", ".home", ".corp")):
+        return False
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return True
+
+
 def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
     """Run the GitHub device flow against the gateway's auth service.
 
@@ -274,7 +291,7 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
     info = start.json()
     user_code, uri = info["user_code"], info["verification_uri"]
     echo(f"Sign in at {uri} and enter the code: {user_code}  (no GitHub? run: morie login --email you@example.com)")
-    if open_browser:
+    if open_browser and _browsable(uri):
         _open_browser(uri)
     interval = float(info.get("interval", 5))
     deadline = time.monotonic() + poll_max_seconds
