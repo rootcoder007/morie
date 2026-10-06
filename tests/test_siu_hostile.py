@@ -49,14 +49,19 @@ def test_absurd_tag_number_is_noise_not_a_crash():
     assert isinstance(reason, str)
 
 
-@pytest.mark.parametrize("text", [
-    "SO #1" + "\f" * 25000 + "x",                                   # form feeds (0.5.8 diff review)
-    "SO #1" + "\v" * 25000 + "x",
-    "this information may include" + "a b\n" * 15000 + "affected person.",   # boilerplate run (SIU review)
-    "who, in the opinion of the SIU Director, is not a subject officer " + "a b\n" * 12500,
-], ids=["formfeed", "vtab", "boilerplate", "glossary"])
+@pytest.mark.parametrize(
+    "text",
+    [
+        "SO #1" + "\f" * 25000 + "x",  # form feeds (0.5.8 diff review)
+        "SO #1" + "\v" * 25000 + "x",
+        "this information may include" + "a b\n" * 15000 + "affected person.",  # boilerplate run (SIU review)
+        "who, in the opinion of the SIU Director, is not a subject officer " + "a b\n" * 12500,
+    ],
+    ids=["formfeed", "vtab", "boilerplate", "glossary"],
+)
 def test_the_0_5_8_reviews_shapes_return(text):
     import warnings
+
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         assert isinstance(native.siu_parse_report_text(text), dict)
@@ -65,7 +70,9 @@ def test_the_0_5_8_reviews_shapes_return(text):
 
 
 def test_long_lines_are_split_with_a_warning_and_the_scans_are_linear():
-    import time, warnings
+    import time
+    import warnings
+
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         native.siu_html_to_text("<p>" + "word " * 1000 + "</p>")
