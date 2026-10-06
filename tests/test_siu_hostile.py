@@ -35,3 +35,13 @@ def test_caps_match_the_canonical_package():
         native.siu_html_to_text("a" * (3 * 1024 * 1024))
     out = native.siu_html_to_text("<p>" + " ".join(["word"] * 1500) + "</p>")
     assert all(len(line) <= 4000 for line in out.split("\n"))
+
+
+def test_absurd_tag_number_is_noise_not_a_crash():
+    # std::stoi on a \d+ capture past INT_MAX used to abort the process (fuzzer, 2026-10-06)
+    txt = "Subject Officials\nSO\n#" + "4" * 30 + "\nCivilian Witnesses\nCW #2\n"
+    f = native.siu_parse_report_text(txt)
+    assert f["number_of_subject_officials"] == "1"
+    assert f["number_of_civilian_witnesses"] == "2"
+    count, reason = native.siu_resolve_so(txt)
+    assert isinstance(reason, str)
