@@ -295,8 +295,14 @@ def _maximise(f, a, b, tol=1.220703e-4):
 
 
 def _sup_beta(f, limit, eps=1e-3, points=10000):
+    # distance from the asymptote, relative to it; with iid errors and two equal
+    # eigenvalues the TSLS asymptote 1 - 2 min/sum is exactly 0 (a division by
+    # zero on Python 3.10, where the two eigenvalues came out identical), so an
+    # asymptote at 0 is measured on an absolute scale instead
+    scale = abs(limit) if abs(limit) > 1e-12 else 1.0
+
     def off(b):
-        return max(abs(f(b) / limit - 1), abs(f(-b) / limit - 1))
+        return max(abs(f(b) - limit), abs(f(-b) - limit)) / scale
 
     b = 1.0
     while off(b) > eps and b < 1e8:

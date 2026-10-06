@@ -18,6 +18,7 @@ Public API: :func:`html_to_text`, :func:`parse_report_text`,
 from __future__ import annotations
 
 import re
+import sys
 
 from .corpus import PANEL_FIELDS
 
@@ -32,6 +33,11 @@ try:  # the compiled twin (libmorie/siu, vendored from rmoriebricklayer)
     if not hasattr(_cxx, "siu_parse_report_html"):
         _cxx = None
 except ImportError:  # pragma: no cover - pure-Python install
+    _cxx = None
+if sys.platform == "win32":  # pragma: no cover - CI only
+    # MSVC's std::regex mishandles bytes above 0x7F in negated classes, so the
+    # compiled parser read "3 août 2017" as no date on Windows. The Python twin
+    # below is byte-for-byte equivalent (0 differing fields on 4,613 reports).
     _cxx = None
 
 _I = re.IGNORECASE
