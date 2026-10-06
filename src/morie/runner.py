@@ -1484,7 +1484,8 @@ def _main_impl() -> int:
                     print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
             else:
                 print(
-                    "Curated tables at data.rmorie.com appear here after `morie login` (GitHub) or `morie login --email you@example.com` (they need the MORIE key)."
+                    "Curated tables at data.rmorie.com appear here once you hold a MORIE key: issued on request at "
+                    "https://rmorie.com/access (`morie login --token`), or `morie login` (GitHub) / `morie login --email you@example.com`."
                 )
         return 0
 

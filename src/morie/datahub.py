@@ -34,13 +34,28 @@ class DataHubAuthError(RuntimeError):
 
 
 def data_url() -> str:
-    """Base URL of the hosted dataset hub (``MORIE_DATA_URL``, else the default), without a trailing slash.
+    """Base URL of the hosted dataset hub, without a trailing slash.
+
+    ``MORIE_DATA_URL`` overrides; otherwise the signed services document decides
+    (``morie.services``). Raises ``RuntimeError`` when the document says the
+    service is off.
 
     Examples:
         >>> data_url().startswith("https://")
         True
     """
-    return os.environ.get("MORIE_DATA_URL", DEFAULT_DATA_URL).rstrip("/")
+    env = os.environ.get("MORIE_DATA_URL", "").strip()
+    if env:
+        return env.rstrip("/")
+    from . import services
+
+    data = services.data()
+    if data.get("mode") != "key" or not data.get("base_url"):
+        raise RuntimeError(
+            "the curated-data service is not available right now "
+            f"(see {data.get('request_access') or 'https://rmorie.com/access'})"
+        )
+    return str(data["base_url"]).rstrip("/")
 
 
 def _key() -> str | None:
@@ -59,7 +74,9 @@ def _open(path: str, timeout: int = 60):
     key = _key()
     if not key:
         raise DataHubAuthError(
-            "data.rmorie.com needs your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once (R: `rmorie login`)."
+            "the curated tables need your MORIE key: keys are personal and issued on request at "
+            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
+            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
         )
     req = Request(
         data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
@@ -84,7 +101,9 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
     key = _key()
     if not key:
         raise DataHubAuthError(
-            "data.rmorie.com needs your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once (R: `rmorie login`)."
+            "the curated tables need your MORIE key: keys are personal and issued on request at "
+            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
+            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
         )
     try:
         return download_url(

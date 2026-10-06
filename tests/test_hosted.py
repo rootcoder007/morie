@@ -60,7 +60,7 @@ def test_probe_uses_bearer_key_and_caches(isolated_home, monkeypatch):
     assert seen == [(hosted.DEFAULT_HOSTED_BASE_URL + "/v1/models", "Bearer sk-abc")]
 
 
-def test_provider_order_puts_hosted_after_local_ollama(isolated_home, monkeypatch):
+def test_provider_order_puts_hosted_after_local_ollama_and_after_every_cloud_key(isolated_home, monkeypatch):
     for k in ("GEMINI_API_KEY", "LLM_API_BASE_URL", "LLM_API_KEY", "OPENAI_API_KEY"):
         monkeypatch.delenv(k, raising=False)
     assert llm.detect_available_provider() == "local"
@@ -68,8 +68,18 @@ def test_provider_order_puts_hosted_after_local_ollama(isolated_home, monkeypatc
     monkeypatch.setattr(httpx, "get", lambda *a, **k: httpx.Response(200, json={"data": []}))
     hosted.reset_probe_cache()
     assert llm.detect_available_provider() == "hosted"
+    monkeypatch.setenv("GEMINI_API_KEY", "g")
+    assert llm.detect_available_provider() == "gemini"
+    monkeypatch.delenv("GEMINI_API_KEY")
+    monkeypatch.setenv("OPENAI_API_KEY", "o")
+    assert llm.detect_available_provider() == "openai"
+    # and in the fallback chain the hosted tier is the last attempt
+    attempts = llm._provider_attempts("openai", None)
+    assert [a[0] for a in attempts][-1] == hosted.hosted_base_url()
+    monkeypatch.delenv("OPENAI_API_KEY")
     llm._ollama_cached = True
     assert llm.detect_available_provider() == "ollama"
+    assert "rmorie.com/access" in hosted.access_hint()
 
 
 def test_empty_base_url_disables_the_tier(isolated_home, monkeypatch):

@@ -268,13 +268,16 @@ def _probe_ollama(timeout: float = _PROBE_TIMEOUT) -> bool:
 def detect_available_provider() -> str:
     """Detect which LLM provider is currently available.
 
-    The detection order mirrors the provider chain priority:
+    The detection order mirrors the provider chain priority: a local model first,
+    then every key of the user's own, then the hosted MORIE tier as a last resort.
 
     1. **ollama**  -- a local Ollama instance is reachable (probed via HTTP).
-    2. **hosted**  -- the user ran ``morie login`` and llm.rmorie.com answers.
-    3. **gemini**  -- ``GEMINI_API_KEY`` is set.
-    4. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
-    5. **openai**  -- ``OPENAI_API_KEY`` is set.
+    2. **gemini**  -- ``GEMINI_API_KEY`` is set.
+    3. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
+    4. **openai**  -- ``OPENAI_API_KEY`` is set.
+    5. **hosted**  -- the user holds a MORIE key (issued on request at
+       https://rmorie.com/access, or minted by ``morie login``) and the hosted
+       gateway, found through the signed services document, answers.
     6. **local**   -- no live provider; MORIE will return static help text.
 
     Returns
@@ -292,9 +295,6 @@ def detect_available_provider() -> str:
     if _probe_ollama():
         return _PROVIDER_OLLAMA
 
-    if _hosted_ready():
-        return _PROVIDER_HOSTED
-
     if _gemini_key():
         return _PROVIDER_GEMINI
 
@@ -303,6 +303,10 @@ def detect_available_provider() -> str:
 
     if _openai_key():
         return _PROVIDER_OPENAI
+
+    # the hosted tier is a last resort, behind every key of the user's own
+    if _hosted_ready():
+        return _PROVIDER_HOSTED
 
     return _PROVIDER_LOCAL
 
@@ -1075,35 +1079,32 @@ def _provider_attempts(provider: str, model: str | None) -> list[tuple[str, str,
                 None,
             )
         )
-        # Fallback chain if Ollama fails at request time.
-        if _hosted_attempt(model):
-            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+        # Fallback chain if Ollama fails at request time: the user's own keys, then the hosted tier.
         if _gemini_key():
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
         if _api_base_url() and _api_key():
             attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
 
     elif provider == _PROVIDER_HOSTED:
+        # asked for by name, or nothing of the user's own answered: the hosted tier alone
         if _hosted_attempt(model):
             attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
-        if _gemini_key():
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
 
     elif provider == _PROVIDER_GEMINI:
         key = _gemini_key()
         if key:
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
-        # Fallback to generic API then OpenAI if Gemini fails.
+        # Fallback to generic API, then OpenAI, then the hosted tier if Gemini fails.
         if _api_base_url() and _api_key():
             attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
 
     elif provider == _PROVIDER_API:
         base = _api_base_url()
@@ -1112,11 +1113,15 @@ def _provider_attempts(provider: str, model: str | None) -> list[tuple[str, str,
             attempts.append((base, model or _api_model(), key))
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
 
     elif provider == _PROVIDER_OPENAI:
         key = _openai_key()
         if key:
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, key))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
     return attempts
 
 

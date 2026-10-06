@@ -9,6 +9,14 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* The hosted MORIE tier is the last resort: `detect_available_provider()` and the fallback
+  chain try a local Ollama, then your own Gemini / OpenAI-compatible / OpenAI keys, and only
+  then the hosted tier. Its address, model and sign-in service come from the signed services
+  document at `https://rmorie.com/.well-known/morie-services.json` (ML-DSA-44, verified with
+  the key pinned in `morie.services`, cached a day, rollback-proof, bundled copy as the
+  fallback), so they can change without a release. Keys are personal and issued on request at
+  <https://rmorie.com/access> (`morie login --token`; the GitHub and emailed-code sign-ins keep
+  working). The curated-data address follows the same document (`morie.datahub.data_url()`).
 * `morie.crypto.mldsa_keygen/sign/verify` are ML-DSA (FIPS 204): ML-DSA-44/65/87 with the
   standard's byte encodings, so keys and signatures interoperate with rmorie, rmoriebricklayer,
   OpenSSL 3.5 and liboqs. They were a simplified "Dilithium-lite" with JSON keys (a 9,153-byte public

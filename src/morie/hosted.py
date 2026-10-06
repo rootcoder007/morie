@@ -1,11 +1,13 @@
 """The hosted MORIE inference tier at llm.rmorie.com.
 
 An authenticated, rate-limited OpenAI-compatible endpoint run by the
-project (LiteLLM in front of an Ollama server). It is the second stop in
-the provider chain, after a local Ollama and before any cloud API key,
-and it only ever speaks when the user has logged in: ``morie login`` runs
-the GitHub device flow, receives a per-user key, and stores it with mode
-0600 under the XDG config directory. Nothing is sent anywhere without
+project (LiteLLM in front of an Ollama server). It is the last resort in
+the provider chain, after a local Ollama and after every cloud API key of
+the user's own, and it only ever speaks when the user has a key: issued on
+request at https://rmorie.com/access and stored with ``morie login --token``,
+or minted by ``morie login`` (GitHub device flow) or ``morie login --email``,
+with mode 0600 under the XDG config directory. Its address comes from the
+signed services document (``morie.services``), not from a constant here. Nothing is sent anywhere without
 that key, and no anonymous endpoint is contacted.
 
 Environment
@@ -42,23 +44,51 @@ _PROBE_TIMEOUT = 2.0
 
 
 def hosted_base_url() -> str | None:
-    """Return the hosted endpoint, or None when disabled via an override of "" or "off"."""
+    """The hosted endpoint, or None when disabled.
+
+    ``MORIE_HOSTED_BASE_URL`` overrides ("" or "off" disables); otherwise the signed
+    services document decides (``morie.services``), and a document with the tier
+    switched off disables it here too. The tier is a last resort behind a local model
+    or your own API key; keys are issued on request at https://rmorie.com/access.
+    """
     if "MORIE_HOSTED_BASE_URL" in os.environ:
         url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
         if url.lower() in ("off", "none", "disabled"):
             return None
         return url.rstrip("/") or None
-    return DEFAULT_HOSTED_BASE_URL
+    from . import services
+
+    llm = services.llm()
+    if llm.get("mode") != "key" or not llm.get("base_url"):
+        return None
+    return str(llm["base_url"]).rstrip("/")
 
 
 def hosted_auth_url() -> str:
-    """Base URL of the hosted-tier login service (``MORIE_HOSTED_AUTH_URL``, else the default), without a trailing slash."""
-    return os.environ.get("MORIE_HOSTED_AUTH_URL", DEFAULT_HOSTED_AUTH_URL).strip().rstrip("/")
+    """Base URL of the hosted-tier login service (``MORIE_HOSTED_AUTH_URL``, else the services document), without a trailing slash."""
+    env = os.environ.get("MORIE_HOSTED_AUTH_URL", "").strip()
+    if env:
+        return env.rstrip("/")
+    from . import services
+
+    return (str(services.llm().get("auth_url") or "") or DEFAULT_HOSTED_AUTH_URL).rstrip("/")
 
 
 def hosted_model() -> str:
-    """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the built-in default)."""
-    return os.environ.get("MORIE_HOSTED_MODEL", DEFAULT_HOSTED_MODEL).strip() or DEFAULT_HOSTED_MODEL
+    """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the services document, else the built-in default)."""
+    env = os.environ.get("MORIE_HOSTED_MODEL", "").strip()
+    if env:
+        return env
+    from . import services
+
+    return str(services.llm().get("default_model") or "") or DEFAULT_HOSTED_MODEL
+
+
+def access_hint() -> str:
+    """One line on how to get a hosted key."""
+    from . import services
+
+    return services.access_hint()
 
 
 def credentials_path() -> Path:
