@@ -4,6 +4,9 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
 
+#include <stdexcept>
+#include <string>
+
 #include "siu/siu_parse.h"
 #include "siu/siu_resolve.h"
 
@@ -28,19 +31,30 @@ nb::dict fields_to_dict(const siu::ParsedFields &f) {
     return d;
 }
 
+// The caps rmoriebricklayer's own entry points apply (rmbl_siu.cpp): a report
+// page is a few hundred KB, and the core's regexes run over text whose lines
+// normalize_text() has capped (libstdc++'s regex executor recurses once per
+// character a repeated atom consumes). nanobind turns the exception into a
+// ValueError.
+const std::string &checked_page(const std::string &s, const char *what) {
+    if (s.size() > (2u << 20)) throw std::invalid_argument(std::string(what) + " is larger than 2 MiB: not a report page");
+    return s;
+}
+
 }  // namespace
 
 void register_siu(nb::module_ &m) {
-    m.def("siu_html_to_text", [](const std::string &html) { return lossy_str(siu::html_to_text(html)); },
+    m.def("siu_html_to_text", [](const std::string &html) { return lossy_str(siu::html_to_text(checked_page(html, "html"))); },
           "html"_a, "Strip SIU report HTML to plain text.");
-    m.def("siu_parse_report_text", [](const std::string &text) { return fields_to_dict(siu::parse_report_text(text)); },
-          "text"_a, "Parse SIU report plain text into the schema fields.");
-    m.def("siu_parse_report_html", [](const std::string &html) { return fields_to_dict(siu::parse_report_html(html)); },
+    m.def("siu_parse_report_text", [](const std::string &text) {
+        return fields_to_dict(siu::parse_report_text(siu::normalize_text(checked_page(text, "text"))));
+    }, "text"_a, "Parse SIU report plain text into the schema fields.");
+    m.def("siu_parse_report_html", [](const std::string &html) { return fields_to_dict(siu::parse_report_html(checked_page(html, "html"))); },
           "html"_a, "Parse SIU report HTML into the schema fields.");
-    m.def("siu_to_iso_date", &siu::to_iso_date, "human"_a,
-          "English/French long date to ISO 8601 (\"\" when unparseable).");
+    m.def("siu_to_iso_date", [](const std::string &human) { return human.size() > 4096 ? std::string() : siu::to_iso_date(human); },
+          "human"_a, "English/French long date to ISO 8601 (\"\" when unparseable).");
     m.def("siu_resolve_so", [](const std::string &text) {
-        siu::SoResolution r = siu::resolve_subject_officials(text);
+        siu::SoResolution r = siu::resolve_subject_officials(siu::normalize_text(checked_page(text, "text")));
         return nb::make_tuple(r.count ? nb::cast(*r.count) : nb::none(), lossy_str(r.reason));
     }, "text"_a, "Resolve the subject-official count: (count or None, reason).");
 }
