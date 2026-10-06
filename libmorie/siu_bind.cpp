@@ -36,6 +36,24 @@ nb::dict fields_to_dict(const siu::ParsedFields &f) {
 // normalize_text() has capped (libstdc++'s regex executor recurses once per
 // character a repeated atom consumes). nanobind turns the exception into a
 // ValueError.
+// The core polls this inside every whole-document pass; a pending Python signal
+// (Ctrl-C) becomes the KeyboardInterrupt the caller expects. The GIL is held
+// for the whole call, so PyErr_CheckSignals may run here.
+void siu_interrupt_hook() {
+    if (PyErr_CheckSignals() != 0) throw nb::python_error();
+}
+const bool siu_hook_installed = (siu::interrupt_hook() = siu_interrupt_hook, true);
+
+// A line longer than 2000 characters was split before extraction: a warning, as
+// the canonical package gives, never silence.
+void siu_split_warning() {
+    if (siu::last_split_lines() > 0) {
+        PyErr_WarnFormat(PyExc_UserWarning, 1,
+                         "%zu line(s) longer than 2000 characters were split for extraction; a field spanning a split may be incomplete",
+                         siu::last_split_lines());
+    }
+}
+
 const std::string &checked_page(const std::string &s, const char *what) {
     if (s.size() > (2u << 20)) throw std::invalid_argument(std::string(what) + " is larger than 2 MiB: not a report page");
     return s;
@@ -44,14 +62,27 @@ const std::string &checked_page(const std::string &s, const char *what) {
 }  // namespace
 
 void register_siu(nb::module_ &m) {
-    m.def("siu_html_to_text", [](const std::string &html) { return lossy_str(siu::html_to_text(checked_page(html, "html"))); },
+    m.def("siu_html_to_text", [](const std::string &html) {
+        nb::object out = lossy_str(siu::html_to_text(checked_page(html, "html")));
+        siu_split_warning();
+        return out;
+    },
           "html"_a, "Strip SIU report HTML to plain text.");
     m.def("siu_parse_report_text", [](const std::string &text) {
-        return fields_to_dict(siu::parse_report_text(siu::normalize_text(checked_page(text, "text"))));
+        nb::dict d = fields_to_dict(siu::parse_report_text(siu::normalize_text(checked_page(text, "text"))));
+        siu_split_warning();
+        return d;
     }, "text"_a, "Parse SIU report plain text into the schema fields.");
-    m.def("siu_parse_report_html", [](const std::string &html) { return fields_to_dict(siu::parse_report_html(checked_page(html, "html"))); },
+    m.def("siu_parse_report_html", [](const std::string &html) {
+        nb::dict d = fields_to_dict(siu::parse_report_html(checked_page(html, "html")));
+        siu_split_warning();
+        return d;
+    },
           "html"_a, "Parse SIU report HTML into the schema fields.");
-    m.def("siu_to_iso_date", [](const std::string &human) { return human.size() > 4096 ? std::string() : siu::to_iso_date(human); },
+    m.def("siu_to_iso_date", [](const std::string &human) {
+        if (human.size() > 4096) throw std::invalid_argument("x is longer than 4096 bytes: not a date");
+        return siu::to_iso_date(human);
+    },
           "human"_a, "English/French long date to ISO 8601 (\"\" when unparseable).");
     m.def("siu_resolve_so", [](const std::string &text) {
         siu::SoResolution r = siu::resolve_subject_officials(siu::normalize_text(checked_page(text, "text")));

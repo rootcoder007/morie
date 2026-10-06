@@ -30,7 +30,9 @@ def test_every_siu_binding_returns_on_hostile_text(text):
 
 
 def test_caps_match_the_canonical_package():
-    assert native.siu_to_iso_date("x" * 5000) == ""
+    # a 5000-byte "date" is an error, as in the canonical package (0.5.9), never a silent ""
+    with pytest.raises(ValueError, match="longer than 4096 bytes"):
+        native.siu_to_iso_date("x" * 5000)
     with pytest.raises(ValueError, match="larger than 2 MiB"):
         native.siu_html_to_text("a" * (3 * 1024 * 1024))
     out = native.siu_html_to_text("<p>" + " ".join(["word"] * 1500) + "</p>")
@@ -45,3 +47,31 @@ def test_absurd_tag_number_is_noise_not_a_crash():
     assert f["number_of_civilian_witnesses"] == "2"
     count, reason = native.siu_resolve_so(txt)
     assert isinstance(reason, str)
+
+
+@pytest.mark.parametrize("text", [
+    "SO #1" + "\f" * 25000 + "x",                                   # form feeds (0.5.8 diff review)
+    "SO #1" + "\v" * 25000 + "x",
+    "this information may include" + "a b\n" * 15000 + "affected person.",   # boilerplate run (SIU review)
+    "who, in the opinion of the SIU Director, is not a subject officer " + "a b\n" * 12500,
+], ids=["formfeed", "vtab", "boilerplate", "glossary"])
+def test_the_0_5_8_reviews_shapes_return(text):
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        assert isinstance(native.siu_parse_report_text(text), dict)
+        count, reason = native.siu_resolve_so(text)
+        assert isinstance(reason, str)
+
+
+def test_long_lines_are_split_with_a_warning_and_the_scans_are_linear():
+    import time, warnings
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        native.siu_html_to_text("<p>" + "word " * 1000 + "</p>")
+    assert any("longer than 2000" in str(x.message) for x in w)
+    t0 = time.perf_counter()
+    native.siu_html_to_text("<script>" * 40000)
+    assert time.perf_counter() - t0 < 5
+    with pytest.raises(ValueError, match="longer than 4096 bytes"):
+        native.siu_to_iso_date("x" * 5000)
