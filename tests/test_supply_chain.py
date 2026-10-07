@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -101,13 +102,35 @@ def test_fn_sources_load_through_zipimport_even_without_a_cache_dir(monkeypatch,
     (tmp_path / "ro").mkdir()
     (tmp_path / "ro").chmod(0o500)
     before = list(fn.__path__)
+    meta_before = list(sys.meta_path)
     try:
         fn._install_fnsrc()
     finally:
         (tmp_path / "ro").chmod(0o700)
-    added = [p for p in fn.__path__ if p not in before]
-    assert added and added[-1].endswith(".zip")
-    assert not hasattr(fn, "_InMemoryFnFinder")
+    try:
+        # no writable cache dir: nothing is written anywhere (no process-private zip that
+        # nothing cleans up); the sources are served from memory by a meta-path finder
+        assert [p for p in fn.__path__ if p not in before] == []
+        assert list((tmp_path / "ro").iterdir()) == []
+        # the finder is installed once per process; an earlier import may have added it
+        finder = next(
+            (f for f in sys.meta_path if type(f).__name__ == "_Finder" and type(f).__module__ == "morie.fn"),
+            None,
+        )
+        assert finder is not None
+        short = next(iter(fn._decompress_fnsrc(str(xz))))
+        spec = finder.find_spec(f"morie.fn.{short}")
+        assert spec is not None and spec.origin == f"morie-fnsrc:{short}.py"
+        src = spec.loader.get_data(spec.origin).decode("utf-8")
+        assert src.strip()
+        # a SourceLoader: the import system compiles the module, no eval/exec in morie
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        assert mod.__name__ == f"morie.fn.{short}"
+        assert finder.find_spec("morie.fn.__no_such_function__") is None
+        assert finder.find_spec("os.path") is None
+    finally:
+        sys.meta_path[:] = meta_before
 
 
 def test_morie_exec_runs_in_a_child_interpreter(tmp_path):
