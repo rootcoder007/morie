@@ -7,6 +7,15 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.1 (2026-10-07)
+
+* The R package's Wayback fallback test failed on machines that cannot reach archive.org, the
+  1.4.0 CI runners among them, because it pinned the snapshot lookup but not the reachability
+  probe. It now mocks both and asserts each message.
+* `morie pull --out DIR` (R side) with a directory says "cannot write DIR: it is a directory"
+  without R's "not a regular file" warning ahead of it.
+* The Python package is unchanged from 1.4.0 apart from its version.
+
 ## 1.4.0 (2026-10-03)
 
 * After rmoriebricklayer 0.5.9's network review: the page the sign-in service names is handed
