@@ -124,7 +124,8 @@ def c_cheatsheet(s: Smoke):
 @case("explain")
 def c_explain(s: Smoke):
     r = s.run("explain", "power_two_proportion_gender.csv")
-    check(r.returncode == 0 and "effect_size" in r.stdout, r.stdout[:200])
+    # the 1.4.0 explanation names the measure in words ("h ... as an effect size")
+    check(r.returncode == 0 and "effect size" in r.stdout and "Cohen's h" in r.stdout, r.stdout[:200])
 
 
 @case("doctor")
@@ -298,8 +299,10 @@ def c_repl(s: Smoke):
 
 @case("tutorial")
 def c_tutorial(s: Smoke):
+    # 1.4.0: the tutorial refuses a non-terminal stdin with an honest message (exit 2) instead of
+    # reading prompts from a pipe; that message is what a runner can verify
     r = s.run("tutorial", stdin="q\n", timeout=120)
-    check(r.returncode == 0 and "tutorial" in r.stdout.lower(), r.stdout[:200] + r.stderr[-200:])
+    check(r.returncode == 2 and "the tutorial is interactive" in r.stderr, r.stdout[:200] + r.stderr[-200:])
 
 
 @case("login")
@@ -382,8 +385,23 @@ def c_sample(s: Smoke):
     p = _csv(s)
     r = s.run("sample", str(p), "--n", "7", "--output", "s.csv")
     check(r.returncode == 0 and _lines(s.work / "s.csv") == 8, r.stdout[-200:] + r.stderr[-200:])
+    # 1.4.0: --n is the total across strata by default (3 rows + header); --per-stratum keeps 3 each
     r = s.run("sample", str(p), "--n", "3", "--method", "stratified", "--strata-col", "g", "--output", "st.csv")
-    check(r.returncode == 0 and _lines(s.work / "st.csv") == 7, r.stdout[-200:] + r.stderr[-200:])
+    check(r.returncode == 0 and _lines(s.work / "st.csv") == 4, r.stdout[-200:] + r.stderr[-200:])
+    r = s.run(
+        "sample",
+        str(p),
+        "--n",
+        "3",
+        "--method",
+        "stratified",
+        "--strata-col",
+        "g",
+        "--per-stratum",
+        "--output",
+        "st2.csv",
+    )
+    check(r.returncode == 0 and _lines(s.work / "st2.csv") == 7, r.stdout[-200:] + r.stderr[-200:])
 
 
 @case("run-module")
@@ -459,7 +477,10 @@ def c_emissions(s: Smoke):
 @case("verify-pollution")
 def c_pollution(s: Smoke):
     r = s.run("verify-pollution", "--pollutant", "no2", "--demo")
-    check(r.returncode == 0 and "STATUS: ok" in r.stdout and "source:   Atkinson" in r.stdout, r.stdout[-400:])
+    check(
+        r.returncode == 0 and "STATUS: ok" in r.stdout and "source:   Huangfu & Atkinson (2020)" in r.stdout,
+        r.stdout[-400:],
+    )
     r = s.run("verify-pollution", "--pollutant", "pm25", "--exposure-mean", "2", "--exposure-prevalence", "0.5")
     check(r.returncode == 1 and "assumption_failure" in r.stdout, "assumption failure not reported")
     r = s.run("verify-pollution", "--pollutant", "no2", "--demo", "--json")
