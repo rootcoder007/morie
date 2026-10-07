@@ -209,8 +209,9 @@ morie explain power_two_proportion_gender.csv        # how to read an output tab
 morie list-datasets                                  # 71 catalog keys + the curated tables after login
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login                                          # one key for the hosted model tier + data.rmorie.com, with a GitHub account
-morie login --email you@example.com                  # no GitHub account: a code is emailed, type it at the prompt
+morie login --token                                  # the key issued at rmorie.com/access: hosted model tier + data.rmorie.com
+morie login                                          # GitHub sign-in, for accounts that have one
+morie login --email you@example.com                  # an emailed code instead: type it at the prompt
 morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
 morie ask "which module fits a treatment-control design?"
@@ -238,8 +239,8 @@ the reviewed SIU corpus from the
 (fetched as a source tarball, no R needed). One key, the MAPQ workbook, is
 your own file: put it under a data directory and point `MORIE_DATA_DIR` at
 it, keeping the relative path that `morie list-datasets` shows. The curated
-tables at data.rmorie.com join the list after `morie login` (GitHub) or
-`morie login --email you@example.com`.
+tables at data.rmorie.com join the list once a key (issued on request at
+<https://rmorie.com/access>) is stored with `morie login --token`.
 
 ```python
 from morie.data import list_rmoriedata, load_rmoriedata
@@ -251,7 +252,8 @@ Beyond the catalog, the project keeps **160 databases materialised from
 Google BigQuery public datasets, plus the Health Infobase tables and the OTIS research files** (Chicago crime, EPA air quality, US
 census, FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...),
 served from the edge at <https://data.rmorie.com> and opened by the key
-`morie login` stores. `morie list-datasets` shows their `db/table` keys
+`morie login --token` stores (issued on request at <https://rmorie.com/access>,
+under <https://rmorie.com/data-license>). `morie list-datasets` shows their `db/table` keys
 with the route "data.rmorie.com"; `morie pull db/table` and
 `load_dataset("db/table")` fetch one (cached locally), and
 `https://data.rmorie.com/browse` runs SQL on any of them in the browser.
@@ -278,9 +280,9 @@ For the planned roadmap see [ROADMAP.md](https://github.com/rootcoder007/morie/b
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
-- **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key; `/browse` for SQL in the browser.
+- **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key, issued on request at <https://rmorie.com/access>; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; on a server or over SSH, `morie login --no-browser` prints a link and a code to open on any device (1.4.0 opens no browser there on its own); `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the last resort behind `morie ask`, after a local Ollama and every key of your own. Keys are issued on request at <https://rmorie.com/access> and stored with `morie login --token`; `morie login` (GitHub) and `morie login --email you@example.com` still work for accounts that have them. The endpoints and the model list come from a signed services document the package verifies before use, so they can change without a release. On a server or over SSH, `morie login --no-browser` prints a link and a code to open on any device (1.4.0 opens no browser there on its own); `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
 
 ## Citation
 

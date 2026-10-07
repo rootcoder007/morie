@@ -160,9 +160,10 @@ function.
   points (13,655 exports in all), each with a test that recomputes its
   value, and the same names in the Python package, checked against each
   other in CI.
-- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first and
-  falls back to <https://llm.rmorie.com>; sign in with
-  `morie_llm_login()` (GitHub or an emailed code).
+- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first, then
+  your own keys, then <https://llm.rmorie.com> as a last resort; the key is
+  issued on request at <https://rmorie.com/access> and stored with
+  `morie_llm_login(token = )`.
 - **Command line inside the package** — `install_cli()` puts `rmorie` on
   your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
 - **Policing, search and staffing** — police operations research, search

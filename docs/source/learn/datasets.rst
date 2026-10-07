@@ -23,7 +23,7 @@ Each row says where the data comes from: a portal it is pulled from
 health-infobase.canada.ca, ECCC, the Toronto Police ArcGIS hub),
 ``rmoriedata`` on CRAN (sample frames and the provenance records),
 data.rmorie.com (the Health Infobase fallback copy, the OTIS research
-environments and, after ``morie login`` with GitHub or ``--email``, the curated tables), or "own file"
+environments and, once a key from rmorie.com/access is stored with ``morie login --token``, the curated tables), or "own file"
 for the one key that is your own research file (the MAPQ workbook), dropped
 under ``$MORIE_DATA_DIR`` yourself.
 
@@ -81,13 +81,15 @@ Beyond the open portals, the project keeps 160 curated databases built from BigQ
 Google BigQuery public datasets (Chicago crime, EPA air quality, US census,
 FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...) and serves
 their tables from the edge at https://data.rmorie.com. They open with the
-same key ``morie login`` stores for the hosted model tier, and they do not
+same key ``morie login --token`` stores for the hosted model tier (issued on
+request at https://rmorie.com/access, under https://rmorie.com/data-license),
+and they do not
 depend on any project machine being up.
 
 .. code-block:: bash
 
-   morie login                                   # once (GitHub)
-   morie login --email you@example.com           # or a code by email, no GitHub needed
+   morie login --token                           # once: the key issued at rmorie.com/access
+   morie login                                   # or the GitHub sign-in, for accounts that have one
    morie list-datasets                           # the curated tables appear with route "data.rmorie.com"
    morie pull chicago_crime/incidents --out incidents.csv
    rmorie pull epa_pm25_daily/epa_pm25_daily --out pm25.csv

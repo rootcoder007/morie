@@ -74,7 +74,7 @@ See :doc:`learn/datasets` for the walk-through.
    health-infobase.canada.ca, ECCC NAPS whose Canada-wide hourly keys take
    about ten minutes, Toronto Police ArcGIS), ``rmoriedata`` on CRAN,
    data.rmorie.com (the Health Infobase fallback copy and the OTIS research
-   environments; the curated tables join the list after ``morie login``, GitHub or ``--email``),
+   environments; the curated tables join the list once a key from rmorie.com/access is stored with ``morie login --token``),
    or "own file: data/..." for the one key that is your own research file
    (the MAPQ workbook), placed under ``$MORIE_DATA_DIR`` keeping that
    relative path.
@@ -113,9 +113,10 @@ Assistant and LLM
 -----------------
 
 Every assistant verb answers through the same provider chain: a local
-Ollama server, then the hosted tier if you are signed in, then an
-endpoint you attached with ``provider set``, then ``GEMINI_API_KEY`` /
-``OPENAI_API_KEY``, then a local keyword fallback that says it is one.
+Ollama server, then an endpoint you attached with ``provider set``, then
+``GEMINI_API_KEY`` / ``OPENAI_API_KEY``, then the hosted tier as the last
+resort (when a key is stored), then a local keyword fallback that says it is
+one.
 
 ``ask QUESTION`` / ``agent QUESTION`` / ``percy QUESTION`` (alias ``perseus``)
    Ask the MORIE assistant (streams by default; ``--no-stream``,
@@ -124,8 +125,9 @@ endpoint you attached with ``provider set``, then ``GEMINI_API_KEY`` /
    through the chain instead of printing a connection error.
 
 ``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
-   Sign in to the hosted LLM tier (:doc:`hosted`). With no options: the
-   GitHub device flow (``--no-browser`` prints the URL instead of opening
+   Store or mint the key for the hosted LLM tier (:doc:`hosted`); keys are
+   issued on request at https://rmorie.com/access and pasted with
+   ``--token``. With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
    it). ``--email`` asks for a 6-digit code sent to that address;
    ``--to-email`` additionally has the key itself emailed to you instead
    of stored on this machine. ``--token`` stores a key you already have

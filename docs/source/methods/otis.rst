@@ -85,7 +85,7 @@ Usage
 
 .. code-block:: python
 
-   # the expanded OTIS placement frame (1.9 million rows; data.rmorie.com, after `morie login`).
+   # the expanded OTIS placement frame (1.9 million rows; data.rmorie.com, with the key from rmorie.com/access stored by `morie login --token`).
    # It is stored as an R object (.rds); morie reads it natively, no R needed.
    from morie.otis import rplace, astcmb, otdml
    from morie.data import load_dataset

@@ -100,7 +100,7 @@ Run your first analysis in seconds:
    # Run the full pipeline (with enlighten progress bars)
    morie pipeline --all -y
 
-   # Start free AI chat (no API key needed)
+   # Chat with the local model (no API key needed)
    morie chat
 
 From R:
@@ -203,8 +203,9 @@ for function reference.
   OTIS research environments from data.rmorie.com and the reviewed SIU
   corpus from ``rmoriedata`` on CRAN. One, the MAPQ workbook, is your own
   file, resolved through ``MORIE_DATA_DIR``; ``morie list-datasets`` shows
-  the route of every key and the curated data.rmorie.com tables after
-  ``morie login`` (GitHub, or ``--email you@example.com``). Small synthetic
+  the route of every key and the curated data.rmorie.com tables once a key
+  from https://rmorie.com/access is stored with ``morie login --token``.
+  Small synthetic
   samples of the core tables ship in the wheel for tests and tutorials.
   Auto dataset-profiling for arbitrary tabular input
   (``morie.dataset.profile_dataset``).
@@ -229,10 +230,11 @@ for function reference.
   district maps. (See CITATION.cff for the companion Hawkes paper.)
 
 **LLM + assistant**
-  Providers in order: a local Ollama (private, tried first) → the
-  hosted MORIE tier at ``llm.rmorie.com`` (``morie login``, GitHub or ``--email``; per-user key,
-  rate-limited, nothing stored) → your own Gemini / OpenAI-compatible /
-  OpenAI keys → a keyword-matched local fallback that needs no network.
+  Providers in order: a local Ollama (private, tried first) → your own
+  Gemini / OpenAI-compatible / OpenAI keys → the hosted MORIE tier at
+  ``llm.rmorie.com`` as a last resort (key on request at rmorie.com/access,
+  stored with ``morie login --token``; rate-limited, nothing stored) → a
+  keyword-matched local fallback that needs no network.
   See :doc:`hosted`. Vendored TurboQuant KV-cache compression. Polyglot
   REPL bridges variables across Python ↔ R ↔ shell ↔ 12 other
   languages.
@@ -332,8 +334,9 @@ navigation, every page on this site is listed below — top to bottom:
 - :doc:`install` — Installation instructions for Python, R, macOS,
   Linux, Windows, plus LLM provider setup.
 - :doc:`cli` — Reference for every ``morie …`` subcommand.
-- :doc:`hosted` — The hosted LLM tier: signing in with GitHub or an
-  emailed code, pasting a key, limits, what is and is not stored.
+- :doc:`hosted` — The hosted LLM tier, a last resort: requesting a key,
+  storing it, the signed services document, limits, what is and is not
+  stored.
 - :doc:`methods/index` — Statistical-methods reference. Estimands,
   causal estimators, survey statistics, spatial methods, Hawkes
   processes, statistical physics of crime, OTIS / TPS / SIU

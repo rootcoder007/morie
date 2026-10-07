@@ -184,19 +184,20 @@ needs configuring for the first and last tiers.
    ``curl -fsSL https://ollama.com/install.sh | sh``; the model is
    auto-detected from the running instance (``morie percysuits`` pulls the
    Perseus models). Override with ``MORIE_OLLAMA_MODEL``.
-2. **Hosted MORIE tier** (``https://llm.rmorie.com``): sign in once with
-   ``morie login`` (GitHub) or ``morie login --email you@example.com``
-   (a code sent to your inbox), or paste a key you already have with
-   ``morie login --token``. The key is stored owner-only in
+2. **Gemini**: ``export GEMINI_API_KEY=...`` (key at
+   `aistudio.google.com <https://aistudio.google.com>`_); default model
+   ``gemini-2.5-flash`` (``GEMINI_MODEL`` overrides).
+3. **Any OpenAI-compatible endpoint**: ``LLM_API_BASE_URL`` plus
+   ``LLM_API_KEY``.
+4. **OpenAI**: ``export OPENAI_API_KEY=...``; default model ``gpt-4o-mini``.
+5. **Hosted MORIE tier** (``https://llm.rmorie.com``), the last resort when
+   nothing above answers: request a key at https://rmorie.com/access and
+   store it with ``morie login --token`` (``morie login``, the GitHub
+   sign-in, and ``morie login --email you@example.com`` remain for accounts
+   that have them). The key is stored owner-only in
    ``$XDG_CONFIG_HOME/morie/credentials.json`` (``~/.config/morie/`` by
    default) and shared with the R package. Rate-limited per key; no
    prompts or responses are stored. Details in :doc:`hosted`.
-3. **Gemini**: ``export GEMINI_API_KEY=...`` (key at
-   `aistudio.google.com <https://aistudio.google.com>`_); default model
-   ``gemini-2.5-flash`` (``GEMINI_MODEL`` overrides).
-4. **Any OpenAI-compatible endpoint**: ``LLM_API_BASE_URL`` plus
-   ``LLM_API_KEY``.
-5. **OpenAI**: ``export OPENAI_API_KEY=...``; default model ``gpt-4o-mini``.
 6. **Local fallback**: automatic. Keyword-matched help text, no network.
 
 Run ``morie doctor`` to see which providers are currently available.

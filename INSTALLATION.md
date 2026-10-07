@@ -583,5 +583,5 @@ remove.packages(c("rmorie", "rmoriebricklayer", "rmoriedata"))
 - PyPI: <https://pypi.org/project/morie/>
 - `import morie` checks PyPI once a day for a newer release; set `MORIE_NO_UPDATE_CHECK=1` to disable it.
 - r-universe: <https://rootcoder007.r-universe.dev/rmorie>
-- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models: <https://llm.rmorie.com>
+- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models (last resort, key on request at <https://rmorie.com/access>): <https://llm.rmorie.com>
 - Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>
