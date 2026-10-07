@@ -21,3 +21,4 @@ if (requireNamespace("WeightIt", quietly = TRUE)) {
   ps <- morie_estimate_propensity_scores(df, "t", "x")
 }
 }
+\keyword{internal}

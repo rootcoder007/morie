@@ -14,3 +14,4 @@ See the file header for the source the module follows.
 res <- .morie_liboqs_available_impl()
 res
 }
+\keyword{internal}
