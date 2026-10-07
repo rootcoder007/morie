@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
-[![codecov](https://codecov.io/gh/rootcoder007/morie/branch/main/graph/badge.svg)](https://app.codecov.io/gh/rootcoder007/morie)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![rOpenSci review](https://img.shields.io/badge/rOpenSci-under_review_%23770-orange)](https://github.com/ropensci/software-review/issues/770)
 [![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
